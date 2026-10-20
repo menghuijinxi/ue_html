@@ -34,11 +34,16 @@ function record(text) {
     globalThis.__webEngineWorld = JSON.parse(text.slice('P3_ENGINE_WORLD '.length));
   if (text.startsWith('P3_FILE_CACHE '))
     globalThis.__webEngineFileCache = JSON.parse(text.slice('P3_FILE_CACHE '.length));
+  if (text.startsWith('P3_RENDER_SCENE '))
+    globalThis.__webRenderScene = JSON.parse(text.slice('P3_RENDER_SCENE '.length));
   if (/^P3_ENGINE_(?:PREINIT|INIT)_FAILED /.test(text)) globalThis.__webEngineFailure = text;
   refreshResult();
 }
 var Module = {
-  arguments: new URLSearchParams(location.search).get('rhi') === 'webgpu' ? ['-webgpu'] : [],
+  arguments: [
+    ...(new URLSearchParams(location.search).get('rhi') === 'webgpu' ? ['-webgpu'] : []),
+    ...(new URLSearchParams(location.search).get('scene') === '1' ? ['-WebRenderScene'] : [])
+  ],
   canvas: document.getElementById('canvas'),
   preRun: [() => {
     addRunDependency('engine-config');

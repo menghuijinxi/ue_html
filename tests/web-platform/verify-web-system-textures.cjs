@@ -73,15 +73,15 @@ try {
   const build = load('web-engine-webgpu-link-results');
   assert(build.pass && !build.fullNormalUBTBuildVerified && build.sourceFiles.every(valid) &&
     build.linkInputs.length === 415 && build.linkInputs.every(valid) && build.products.every(valid) && valid(build.log));
-  const unity = build.recompiledObjects.find(item => item.source.file.endsWith('web-system-textures-unity.cpp'));
+  const unity = build.recompiledObjects.find(item =>
+    path.basename(item.product.file) === 'Module.Renderer.34.cpp.o');
   assert(unity && unity.exitCode === 0 &&
     ['response', 'source', 'product', 'log'].every(key => valid(unity[key])));
-  const previousUnity = path.join(root,
-    'tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngine/Development/Renderer/Module.Renderer.34.cpp.old');
   const includes = source => source.split('\n').filter(line => line.startsWith('#include'));
-  assert.deepEqual(includes(text(unity.source.file)), includes(text(previousUnity)),
-    'The incremental unity must retain the compiled baseline membership');
-  report.sourceFiles.push(audit(previousUnity));
+  const generatedUnity = path.join(path.dirname(unity.product.file), 'Module.Renderer.34.cpp');
+  assert.equal(unity.source.file, generatedUnity);
+  assert(includes(text(generatedUnity)).includes('#include "Runtime/Renderer/Private/SystemTextures.cpp"'));
+  report.sourceFiles.push(audit(generatedUnity));
   for (const line of includes(text(unity.source.file)))
     report.sourceFiles.push(audit(path.join(root, '.tools/ue58-web-build-host/Engine/Source',
       /^#include "(.+)"$/.exec(line)[1])));

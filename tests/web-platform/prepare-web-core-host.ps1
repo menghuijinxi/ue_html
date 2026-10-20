@@ -255,6 +255,8 @@ foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/Mo
     'Private/SystemTextures.cpp', 'Private/MobileBasePassRendering.cpp',
     'Private/HairStrands/RenderCurveSceneExtension.cpp',
     'Private/Nanite/NaniteMaterialsSceneExtension.cpp', 'Private/Nanite/NaniteOwnershipVisibilitySceneExtension.cpp',
+    'Private/Skinning/SkinningSceneExtension.cpp', 'Private/GPUScene.cpp', 'Private/ViewData.cpp',
+    'Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp',
     'Private/OIT/OIT.cpp',
     'Private/PostProcess/SubpixelMorphologicalAA.cpp', 'Private/PostProcess/PostProcessing.cpp',
     'Private/PostProcess/PostProcessMobile.cpp',

@@ -21,6 +21,7 @@
 #include "UObject/Package.h"
 #include <emscripten.h>
 #include <cstdio>
+#include "WebRenderScene.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
 
@@ -30,6 +31,7 @@ namespace
 {
 int32 Frames = 0;
 bool UseWebGPU = false;
+bool RenderScene = false;
 
 void LogWorld(UWorld* World)
 {
@@ -154,6 +156,8 @@ int32 StartEngine()
         std::printf("P3_ENGINE_INIT_FAILED minimal map did not begin play\n");
         return 1;
     }
+    if (UseWebGPU && RenderScene)
+        CreateWebRenderScene(World);
     const auto* MobileGPUScene = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Mobile.SupportGPUScene"));
     if (!UseWebGPU)
         VerifyFileCache();
@@ -181,7 +185,10 @@ int main(int argc, char** argv)
         FCoreDelegates::GetPreMainInitDelegate().Broadcast();
     }
     for (int Index = 1; Index < argc; ++Index)
+    {
         UseWebGPU |= FCStringAnsi::Strcmp(argv[Index], "-webgpu") == 0;
+        RenderScene |= FCStringAnsi::Strcmp(argv[Index], "-WebRenderScene") == 0;
+    }
     if (!UseWebGPU)
         return StartEngine();
     WebGPUPrepareBrowserDevice([](bool Ready) {

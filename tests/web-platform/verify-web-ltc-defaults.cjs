@@ -52,7 +52,8 @@ try {
   const build = load('web-engine-webgpu-link-results');
   assert(build.pass && build.sourceFiles.every(valid) && build.products.every(valid) &&
     build.linkInputs.every(valid) && !build.fullNormalUBTBuildVerified);
-  const compilation = build.recompiledObjects.find(item => item.source.file.endsWith('web-system-textures-unity.cpp'));
+  const compilation = build.recompiledObjects.find(item =>
+    path.basename(item.product.file) === 'Module.Renderer.34.cpp.o');
   assert(compilation && compilation.exitCode === 0 &&
     ['source', 'response', 'product', 'log'].every(key => valid(compilation[key])) &&
     build.linkInputs.some(item => item.file === compilation.product.file &&

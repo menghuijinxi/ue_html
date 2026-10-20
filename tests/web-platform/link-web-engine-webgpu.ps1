@@ -171,7 +171,9 @@ try {
         'Renderer/Private/MobileBasePassRendering.cpp',
         'Renderer/Private/HairStrands/RenderCurveSceneExtension.cpp',
         'Renderer/Private/Nanite/NaniteMaterialsSceneExtension.cpp',
-        'Renderer/Private/Nanite/NaniteOwnershipVisibilitySceneExtension.cpp')) {
+        'Renderer/Private/Nanite/NaniteOwnershipVisibilitySceneExtension.cpp',
+        'Renderer/Private/Skinning/SkinningSceneExtension.cpp', 'Renderer/Private/GPUScene.cpp',
+        'Renderer/Private/ViewData.cpp', 'Renderer/Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/$taskShaderOverlay"
         $taskFiles += Join-Path $taskHost "Source/Runtime/$taskShaderOverlay"
     }

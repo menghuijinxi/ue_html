@@ -4,6 +4,14 @@
 
 ## 当前进度
 
+**2026-10-20 第四十九轮：未用场景 Uniform 默认资源已排除，浏览器实际分配 SceneDepthZ。** Chrome/Edge 均越过 GetDefaultSkinningParameters 的 Raw Buffer 错误，新增四个 Web 分支只清零蒙皮、GPUScene、ViewData 与 VSM 默认参数，保留注册及其他平台正文。`verify-web-scene-uniform-defaults.cjs` 通过；真实地图 BeginPlay、NullRHI 各 10 Tick。WebGPU 尚无完成 Tick，停止于 RDG 的转换创建校验，深度纹理 1、深度 pass 0，不能视为场景通过。
+
+新增 `iterate-web-engine.ps1` 按编译器、响应、对象、日志及 Clang 依赖哈希复用对象。同输出响应去重，修正 Unity 分组混用；SystemTextures 补 Web 显式 LogRenderer 头。最终诊断链接 34 个受审计对象中本次编译 1、复用 33，5,998 个依赖哈希核验，415 项链接通过。日志 `web-engine-webgpu-link-20261020-214349.log`；先前重复符号和缺头失败保留，没有采用忽略重复符号的链接选项。新增可选 scene=1 验收入口加载已 Cook 的 Cube/EmissiveMeshMaterial 和相机，当前因 Init 尚未返回而没有运行，截图验收仍失败。完整正常 Web UBT、版本一致性、网格实际像素仍待验证。
+
+本地 Git 已建立两个独立仓库：`reference-engine` 的 html 分支保存引擎源码，根仓库保存外围源码/脚本/文档。中文基线提交分别为 609c90f7b、58b5a83；后续按验证批次本地提交，不推送。
+
+以下为历史检查点。
+
 **2026-10-20 第四十八轮：RenderCurve 与 Nanite 默认资源阻塞已越过，当前推进到骨骼蒙皮默认回调。** 本轮只在 Web 排除最小静态网格路径不用的初始化，没有移植毛发、Nanite、骨骼动画或 Raw/Structured Buffer。完整 Runtime、场景首帧仍未通过。
 
 | 本轮检查 | 结果与边界 |
