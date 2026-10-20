@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Web UBT toolchain check</title>
+<pre id="result">Running C++ / WASM check</pre>
+<script>
+var Module = {
+  print(text) {
+    if (text.startsWith('P3_WEB_UBT_RESULT ')) {
+      globalThis.__webUbtReport = JSON.parse(text.substring('P3_WEB_UBT_RESULT '.length));
+      document.getElementById('result').textContent = JSON.stringify(globalThis.__webUbtReport, null, 2);
+    }
+  }
+};
+</script>
+<script src="build/web-ubt-smoke/web-ubt-smoke.js"></script>
+</html>

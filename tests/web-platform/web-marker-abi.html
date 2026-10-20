@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>WASM64 WebGPU debug marker ABI regression</title>
+<script>
+var Module = {
+  print(text) {
+    if (text === 'P3_MARKER_ABI_OK') globalThis.__markerABIOK = true;
+    if (text.startsWith('P3_MARKER_ABI_FAILED')) globalThis.__markerABIError = text;
+    console.log(text);
+  },
+  printErr: text => console.error(text),
+  onAbort: reason => { globalThis.__markerABIError = String(reason); }
+};
+addEventListener('error', event => { globalThis.__markerABIError = event.message; });
+addEventListener('unhandledrejection', event => { globalThis.__markerABIError = String(event.reason); });
+const variant = new URLSearchParams(location.search).get('variant');
+if (!['before', 'fixed'].includes(variant)) throw new Error('Invalid variant');
+const script = document.createElement('script');
+script.src = `build/web-marker-abi/${variant}.js`;
+document.head.appendChild(script);
+</script>

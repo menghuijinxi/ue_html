@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Web BLAKE3 verification</title>
+<pre id="result">Loading</pre>
+<script>
+var Module = {
+  print(text) {
+    document.getElementById('result').textContent = text;
+    if (text === 'P3_WEB_BLAKE3_READY') globalThis.__webBlake3Ready = true;
+  }
+};
+</script>
+<script src="build/web-blake3/web-blake3.js"></script>
+</html>

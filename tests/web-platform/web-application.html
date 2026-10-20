@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UE Web ApplicationCore</title>
+<style>
+body { margin: 16px; font: 14px system-ui, sans-serif; color: #202324; background: #fff; }
+canvas { display: block; width: 640px; max-width: 100%; height: 360px; background: #e2edf0; outline-offset: 3px; }
+input { box-sizing: border-box; width: 240px; max-width: 100%; margin: 16px 0; padding: 8px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+<canvas id="canvas" width="640" height="360" tabindex="0" aria-label="UE application canvas"></canvas>
+<input id="html-ui" aria-label="HTML UI input" placeholder="HTML UI">
+<button id="stop" type="button" onclick="Module._WebApplicationStop()">Stop</button>
+<pre id="result">Loading ApplicationCore</pre>
+<script>
+globalThis.__webApplicationEvents = [];
+function updateResult() {
+  document.getElementById('result').textContent = JSON.stringify({
+    ready: globalThis.__webApplicationReady,
+    frames: globalThis.__webApplicationFrames || 0,
+    stopped: globalThis.__webApplicationStopped,
+    failure: globalThis.__webApplicationFailure,
+    lastEvent: globalThis.__webApplicationEvents.at(-1)
+  }, null, 2);
+}
+var Module = {
+  print(text) {
+    for (const [prefix, key] of [
+      ['P3_APP_READY ', '__webApplicationReady'],
+      ['P3_APP_STOPPED ', '__webApplicationStopped']]) {
+      if (text.startsWith(prefix)) globalThis[key] = JSON.parse(text.slice(prefix.length));
+    }
+    if (text.startsWith('P3_APP_EVENT '))
+      globalThis.__webApplicationEvents.push(JSON.parse(text.slice('P3_APP_EVENT '.length)));
+    updateResult();
+  },
+  onAbort(reason) {
+    globalThis.__webApplicationFailure = String(reason);
+    document.getElementById('result').textContent = String(reason);
+  }
+};
+function refreshResult() {
+  updateResult();
+  requestAnimationFrame(refreshResult);
+}
+requestAnimationFrame(refreshResult);
+</script>
+<script src="build/web-application/UEWebApplication.js"></script>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UE Global Shader P1</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f5f6; color: #182322; font: 14px system-ui, sans-serif; }
+    main { max-width: 960px; margin: 32px auto; padding: 0 20px; }
+    h1 { font-size: 24px; margin: 0 0 20px; }
+    canvas { display: block; width: min(100%, 480px); aspect-ratio: 4/3; background: #202522; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; padding: 16px; background: white; border: 1px solid #d2d8d6; }
+    #state { margin-bottom: 16px; }
+    #state[data-pass="true"] { color: #17633c; }
+    #state[data-pass="false"] { color: #a32c32; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>UE Global Shader P1</h1>
+  <div id="state">Running</div>
+  <canvas id="scene" width="96" height="72"></canvas>
+  <pre id="result"></pre>
+</main>
+<script src="./web-shader-code.js"></script>
+<script src="./ue-shader-runtime.js"></script>
+</body>
+</html>

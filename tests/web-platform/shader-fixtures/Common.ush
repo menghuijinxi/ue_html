@@ -1,0 +1,15 @@
+// Reduced standalone harness, not UE's Common.ush or its renderer environment.
+struct FScreenVertexOutput
+{
+    float4 Position : SV_Position;
+    float2 UV : TEXCOORD0;
+};
+
+void DrawRectangle(float4 InPosition, float2 InUV, out float4 Position, out float2 UV)
+{
+    Position = InPosition;
+    UV = InUV;
+}
+
+#define Texture2DSample(Tex, S, UV) Tex.Sample(S, UV)
+#define Texture2DSampleLevel(Tex, S, UV, L) Tex.SampleLevel(S, UV, L)

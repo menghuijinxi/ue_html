@@ -1,0 +1,24 @@
+// Probe-only shader, compiled through the UE format and Worker pipeline.
+#include "/Engine/Private/Common.ush"
+
+Texture3D<uint4> Volume;
+RWStructuredBuffer<uint4> Output;
+uint3 Extent;
+
+[numthreads(4, 4, 4)]
+void LoadCS(uint3 Id : SV_DispatchThreadID)
+{
+    if (all(Id < Extent))
+        Output[1 + (Id.z * Extent.y + Id.y) * Extent.x + Id.x] = Volume.Load(int4(Id, 0));
+}
+
+[numthreads(4, 4, 4)]
+void InspectCS(uint3 Id : SV_DispatchThreadID)
+{
+    uint Width, Height, Depth, Levels;
+    Volume.GetDimensions(0, Width, Height, Depth, Levels);
+    if (all(Id < Extent))
+        Output[1 + (Id.z * Extent.y + Id.y) * Extent.x + Id.x] = Volume.Load(int4(Extent - 1 - Id, 0));
+    if (all(Id == 0))
+        Output[19] = uint4(Width, Height, Depth, Levels);
+}

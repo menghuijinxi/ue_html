@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.25)
+project(UEWebPlatformProbe LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_package(Threads REQUIRED)
+find_package(Dawn CONFIG REQUIRED)
+add_executable(webgpu_probe probe.cpp)
+target_link_libraries(webgpu_probe PRIVATE dawn::webgpu_dawn)
+add_executable(abi_probe abi.cpp)

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>UE portable libPNG verification</title>
+<pre id="result">Loading libPNG</pre>
+<script>
+var Module = {
+  print(text) {
+    if (text.startsWith('P3_LIBPNG_RESULT ')) {
+      globalThis.__webLibPng = JSON.parse(text.slice('P3_LIBPNG_RESULT '.length));
+      document.getElementById('result').textContent = text;
+    }
+  }
+};
+</script>
+<script src="build/web-libpng/web-libpng.js"></script>
+</html>

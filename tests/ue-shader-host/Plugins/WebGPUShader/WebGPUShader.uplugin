@@ -1,0 +1,37 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1",
+  "FriendlyName": "WebGPU Shader",
+  "CanContainContent": false,
+  "Modules": [
+    {
+      "Name": "WebGPUShaderFormat",
+      "Type": "DeveloperTool",
+      "LoadingPhase": "PostConfigInit"
+    },
+    {
+      "Name": "WebGPUShaderHostTargetPlatform",
+      "Type": "DeveloperTool",
+      "LoadingPhase": "None"
+    },
+    {
+      "Name": "WebCookTargetPlatform",
+      "Type": "DeveloperTool",
+      "LoadingPhase": "None",
+      "PlatformAllowList": ["Win64"]
+    },
+    {
+      "Name": "WebCookTargetPlatformSettings",
+      "Type": "DeveloperTool",
+      "LoadingPhase": "None",
+      "PlatformAllowList": ["Win64"]
+    },
+    {
+      "Name": "WebGPURHI",
+      "Type": "Runtime",
+      "LoadingPhase": "None",
+      "PlatformAllowList": ["Win64"]
+    }
+  ]
+}

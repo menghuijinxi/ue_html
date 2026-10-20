@@ -1,0 +1,26 @@
+// Probe-only shader. This is not an engine shader or general typed-buffer lowering.
+#include "/Engine/Private/Common.ush"
+
+StructuredBuffer<float4> SrcFloat4;
+RWStructuredBuffer<float4> DstFloat4;
+uint SrcOffset;
+uint DstOffset;
+uint Size;
+float4 Scale;
+float4 Bias;
+float4 FillValue;
+
+[numthreads(64, 1, 1)]
+void TransformCS(uint3 DispatchThreadId : SV_DispatchThreadID)
+{
+    if (DispatchThreadId.x < Size)
+        DstFloat4[DstOffset + DispatchThreadId.x] =
+            SrcFloat4[SrcOffset + DispatchThreadId.x] * Scale + Bias;
+}
+
+[numthreads(64, 1, 1)]
+void FillCS(uint3 DispatchThreadId : SV_DispatchThreadID)
+{
+    if (DispatchThreadId.x < Size)
+        DstFloat4[DstOffset + DispatchThreadId.x] = FillValue;
+}

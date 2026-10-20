@@ -1,0 +1,23 @@
+// Probe-only shader, compiled through the UE format and Worker pipeline.
+#include "/Engine/Private/Common.ush"
+
+Texture3D<float4> Volume;
+SamplerState VolumeSampler;
+RWStructuredBuffer<uint4> Output;
+uint3 Extent;
+float3 SampleShift;
+
+[numthreads(4, 4, 4)]
+void LoadCS(uint3 Id : SV_DispatchThreadID)
+{
+    if (all(Id < Extent))
+        Output[(Id.z * Extent.y + Id.y) * Extent.x + Id.x] = uint4(round(Volume.Load(int4(Id, 0)) * 255.0));
+}
+
+[numthreads(4, 4, 4)]
+void SampleCS(uint3 Id : SV_DispatchThreadID)
+{
+    if (all(Id < Extent))
+        Output[(Id.z * Extent.y + Id.y) * Extent.x + Id.x] =
+            uint4(round(Volume.SampleLevel(VolumeSampler, (float3(Id) + 0.5) / float3(Extent) + SampleShift, 0) * 255.0));
+}

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UE Web P0</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f5f6; color: #182322; font: 14px system-ui, sans-serif; }
+    main { max-width: 960px; margin: 32px auto; padding: 0 20px; }
+    h1 { font-size: 24px; margin: 0 0 20px; }
+    .bar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+    select { max-width: 100%; padding: 6px; font: inherit; }
+    canvas { display: block; width: min(100%, 480px); aspect-ratio: 4/3; background: #202522; image-rendering: pixelated; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; background: white; padding: 16px; border: 1px solid #d2d8d6; }
+    #state[data-pass="true"] { color: #17633c; }
+    #state[data-pass="false"] { color: #a32c32; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>UE Web P0</h1>
+  <div class="bar">
+    <select id="variant" aria-label="Test variant">
+      <option>gpu32</option><option>gpu64</option><option>gpu32-thread</option><option>gpu64-thread</option>
+      <option>abi32</option><option>abi64</option><option>abi32-thread</option><option>abi64-thread</option>
+    </select>
+    <span id="state">Running</span>
+  </div>
+  <canvas id="scene" width="64" height="64"></canvas>
+  <pre id="result"></pre>
+</main>
+<script>
+  const variant = new URLSearchParams(location.search).get('variant') || 'gpu32';
+  document.getElementById('variant').value = variant;
+  document.getElementById('variant').onchange = event => {
+    location.search = '?variant=' + encodeURIComponent(event.target.value);
+  };
+  function showReport(report) {
+    const state = document.getElementById('state');
+    state.textContent = report.pass ? 'PASS' : 'FAIL';
+    state.dataset.pass = String(report.pass);
+    document.getElementById('result').textContent = JSON.stringify(report, null, 2);
+  }
+  addEventListener('p0-result', event => showReport(event.detail));
+  globalThis.Module = {
+    canvas: document.getElementById('scene'),
+    print: text => console.log(text),
+    printErr: text => console.error(text),
+    onAbort: reason => {
+      globalThis.__p0Report = {pass: false, kind: 'abort', errors: [String(reason)]};
+      showReport(globalThis.__p0Report);
+    },
+  };
+  if (!/^(gpu(32|64)(-thread)?|abi(32|64)(-thread)?)$/.test(variant)) throw Error('Unknown variant');
+  const script = document.createElement('script');
+  script.src = './build/web/' + variant + '.js';
+  script.onerror = () => {
+    globalThis.__p0Report = {pass: false, errors: ['Build artifact not found']};
+    showReport(globalThis.__p0Report);
+  };
+  document.body.appendChild(script);
+</script>
+</body>
+</html>

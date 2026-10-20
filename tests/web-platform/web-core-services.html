@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>UE Web Core services check</title>
+<pre id="result">Running Core service checks</pre>
+<script>
+var Module = {
+  print(text) {
+    if (text.startsWith('P3_WEB_CORE_SERVICES_RESULT ')) {
+      globalThis.__webCoreServicesReport = JSON.parse(text.substring('P3_WEB_CORE_SERVICES_RESULT '.length));
+      document.getElementById('result').textContent = JSON.stringify(globalThis.__webCoreServicesReport, null, 2);
+    }
+  }
+};
+</script>
+<script src="build/web-core-services/web-ubt-smoke.js"></script>
+</html>

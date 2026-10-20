@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>UE Web Core Program</title>
+<pre id="result">Running UE Core Program</pre>
+<script>
+var Module = {
+  print(text) {
+    if (text.startsWith('P3_WEB_CORE_PROGRAM_RESULT ')) {
+      globalThis.__webCoreProgramReport = JSON.parse(text.substring('P3_WEB_CORE_PROGRAM_RESULT '.length));
+      document.getElementById('result').textContent = JSON.stringify(globalThis.__webCoreProgramReport, null, 2);
+    }
+  },
+  onAbort(reason) {
+    globalThis.__webCoreProgramFailure = String(reason);
+    document.getElementById('result').textContent = String(reason);
+  }
+};
+</script>
+<script src="build/web-core-program/UEWebSmoke.js"></script>
+</html>

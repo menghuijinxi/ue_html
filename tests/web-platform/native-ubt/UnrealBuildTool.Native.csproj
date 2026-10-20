@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>UnrealBuildTool</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <NuGetAudit>false</NuGetAudit>
+    <UEEngineRoot Condition="'$(UEEngineRoot)' == ''">H:/UE_5.8/Engine</UEEngineRoot>
+    <OutputPath>$(MSBuildThisFileDirectory)../../../.tools/ue58-web-native-build-host/Engine/Binaries/DotNET/UnrealBuildTool/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="UEBuildTarget.cs" />
+    <Compile Include="$(UEEngineRoot)/Source/Programs/UnrealBuildTool/**/*.cs"
+             Exclude="$(UEEngineRoot)/Source/Programs/UnrealBuildTool/obj/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/bin/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/Configuration/UEBuildTarget.cs" />
+    <Compile Include="$(UEEngineRoot)/Platforms/*/Source/Programs/UnrealBuildTool/**/*.cs" />
+    <Compile Include="$(UEEngineRoot)/Source/Programs/Shared/MetaData.cs" />
+    <Reference Include="$(UEEngineRoot)/Binaries/DotNET/UnrealBuildTool/*.dll"
+               Exclude="$(UEEngineRoot)/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll" />
+    <Content Include="$(UEEngineRoot)/Binaries/DotNET/UnrealBuildTool/runtimes/win-x64/native/*.dll"
+             Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(UEEngineRoot)/Binaries/DotNET/UnrealBuildTool/runtimes/**/*"
+             Link="runtimes/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

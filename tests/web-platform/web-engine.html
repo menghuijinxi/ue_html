@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UE Web Engine startup</title>
+<style>
+body { margin: 16px; font: 14px system-ui, sans-serif; color: #202324; background: #fff; }
+canvas { display: block; width: 640px; max-width: 100%; height: 360px; background: #e2edf0; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+<canvas id="canvas" width="640" height="360" tabindex="0" aria-label="UE engine canvas"></canvas>
+<pre id="result">Loading Engine</pre>
+<script>
+globalThis.__webEngineLog = [];
+function refreshResult() {
+  document.getElementById('result').textContent = JSON.stringify({
+    ready: globalThis.__webEngineReady || null,
+    world: globalThis.__webEngineWorld || null,
+    frames: globalThis.__webEngineFrames || 0,
+    failure: globalThis.__webEngineFailure || null,
+    log: globalThis.__webEngineLog.slice(-12)
+  }, null, 2);
+}
+function record(text) {
+  text = String(text);
+  console.log(text);
+  globalThis.__webEngineLog.push(text);
+  if (globalThis.__webEngineLog.length > 200) globalThis.__webEngineLog.shift();
+  if (text.startsWith('P3_ENGINE_READY '))
+    globalThis.__webEngineReady = JSON.parse(text.slice('P3_ENGINE_READY '.length));
+  if (text.startsWith('P3_ENGINE_LAYOUT '))
+    globalThis.__webEngineLayout = JSON.parse(text.slice('P3_ENGINE_LAYOUT '.length));
+  if (text.startsWith('P3_ENGINE_WORLD '))
+    globalThis.__webEngineWorld = JSON.parse(text.slice('P3_ENGINE_WORLD '.length));
+  if (text.startsWith('P3_FILE_CACHE '))
+    globalThis.__webEngineFileCache = JSON.parse(text.slice('P3_FILE_CACHE '.length));
+  if (/^P3_ENGINE_(?:PREINIT|INIT)_FAILED /.test(text)) globalThis.__webEngineFailure = text;
+  refreshResult();
+}
+var Module = {
+  arguments: new URLSearchParams(location.search).get('rhi') === 'webgpu' ? ['-webgpu'] : [],
+  canvas: document.getElementById('canvas'),
+  preRun: [() => {
+    addRunDependency('engine-config');
+    fetch('build/web-engine/config-files.json').then(response => {
+      if (!response.ok) throw new Error(`Engine config HTTP ${response.status}`);
+      return response.json();
+    }).then(async files => {
+      globalThis.__webEngineConfigFiles = [];
+      for (const file of files) {
+        const bytes = Uint8Array.from(atob(file.data), value => value.charCodeAt(0));
+        FS.mkdirTree(file.path.slice(0, file.path.lastIndexOf('/')));
+        FS.writeFile(file.path, bytes);
+        const digest = await crypto.subtle.digest('SHA-256', FS.readFile(file.path));
+        const hash = Array.from(new Uint8Array(digest), value => value.toString(16).padStart(2, '0')).join('');
+        if (hash !== file.sha256) throw new Error(`Engine config hash mismatch: ${file.path}`);
+        globalThis.__webEngineConfigFiles.push({path: file.path, sha256: hash});
+      }
+      removeRunDependency('engine-config');
+    }).catch(error => {
+      globalThis.__webEngineFailure = String(error);
+      console.error(error);
+      refreshResult();
+    });
+    addRunDependency('engine-content');
+    const cook = new URLSearchParams(location.search).get('cook');
+    const es31Content = cook === 'es31';
+    const webgpuContent = es31Content || cook === 'webgpu';
+    const shaderPlatform = es31Content ? 'SP_WEBGPU_ES31' : 'SP_WEBGPU_SM5';
+    const contentManifest = es31Content ? 'build/web-engine-webgpu-es31/content-files.json' : webgpuContent ?
+      'build/web-engine-webgpu/content-files.json' : 'build/web-engine/content-files.json';
+    fetch(contentManifest).then(response => {
+      if (!response.ok) throw new Error(`Engine content manifest HTTP ${response.status}`);
+      return response.json();
+    }).then(async manifest => {
+      if (manifest.mode !== (es31Content ? 'WebGPU-ES31' : webgpuContent ? 'WebGPU-SM5' : 'NullRHI-only') ||
+          manifest.architecture !== 'wasm64' || (webgpuContent && manifest.shaderPlatform !== shaderPlatform))
+        throw new Error('Unsupported Engine content mode');
+      const response = await fetch(new URL(manifest.pack.url,
+        new URL(contentManifest, location.href)));
+      if (!response.ok) throw new Error(`Engine content HTTP ${response.status}`);
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      const hash = async data => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', data)),
+        value => value.toString(16).padStart(2, '0')).join('');
+      if (bytes.length !== manifest.pack.size || await hash(bytes) !== manifest.pack.sha256)
+        throw new Error('Engine content pack hash mismatch');
+      globalThis.__webEngineContentFiles = [];
+      for (const file of manifest.files) {
+        const allowedRoot = /^\/Engine\/Content\//.test(file.path) ||
+          /^\/Engine\/Programs\/UEWebEngine\/Content\//.test(file.path) ||
+          (webgpuContent && file.path === `/Engine/GlobalShaderCache-${shaderPlatform}.bin`);
+        if (!allowedRoot || /(?:^|\/)\.\.(?:\/|$)/.test(file.path) ||
+            !Number.isSafeInteger(file.offset) || !Number.isSafeInteger(file.size) ||
+            file.offset < 0 || file.size < 0 || file.offset + file.size > bytes.length)
+          throw new Error(`Invalid Engine content entry: ${file.path}`);
+        FS.mkdirTree(file.path.slice(0, file.path.lastIndexOf('/')));
+        FS.writeFile(file.path, bytes.subarray(file.offset, file.offset + file.size));
+        const digest = await hash(FS.readFile(file.path));
+        if (digest !== file.sha256) throw new Error(`Engine content hash mismatch: ${file.path}`);
+        globalThis.__webEngineContentFiles.push({path: file.path, sha256: digest, size: file.size});
+      }
+      removeRunDependency('engine-content');
+    }).catch(error => {
+      globalThis.__webEngineFailure = String(error);
+      console.error(error);
+      refreshResult();
+    });
+  }],
+  print: record,
+  printErr: record,
+  onAbort(reason) {
+    globalThis.__webEngineFailure = String(reason);
+    refreshResult();
+  }
+};
+addEventListener('error', event => {
+  globalThis.__webEngineFailure = event.message || 'Engine script failed to load';
+  refreshResult();
+}, true);
+addEventListener('unhandledrejection', event => {
+  globalThis.__webEngineFailure = String(event.reason);
+  refreshResult();
+});
+setInterval(refreshResult, 250);
+</script>
+<script>
+const engineScript = document.createElement('script');
+engineScript.src = new URLSearchParams(location.search).get('incremental') === '1' ?
+  'build/web-engine-webgpu/UEWebEngine.js' : 'build/web-engine/UEWebEngine.js';
+document.body.appendChild(engineScript);
+</script>
+</html>

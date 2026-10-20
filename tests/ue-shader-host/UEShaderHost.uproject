@@ -1,0 +1,18 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Modules": [
+    {
+      "Name": "UEShaderHost",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "WebGPUShader",
+      "Enabled": true
+    }
+  ],
+  "DisableEnginePluginsByDefault": true
+}

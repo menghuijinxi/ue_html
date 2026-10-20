@@ -1,0 +1,44 @@
+{
+  "testDate": "2026-10-14",
+  "ue": {
+    "repository": "https://github.com/menghuijinxi/UnrealEngine-1",
+    "branch": "html",
+    "commit": "396c9f059903aed5fec78ecd3d437a40c6415368",
+    "version": "5.8.3"
+  },
+  "emscripten": {
+    "version": "6.0.9",
+    "commit": "4e4223852a0835923411059a3929907d7df1232e",
+    "sdkBuild": "f04ea239d533260dd1db760dd2d668d5f9a88d6b",
+    "directory": "H:/ue_html/.tools/emsdk"
+  },
+  "dawn": {
+    "release": "v20261009.190412",
+    "commit": "c943ea32b614ff53e4fe410fc8f4968b6b8fe46d",
+    "releaseUrl": "https://github.com/google/dawn/releases/tag/v20261009.190412",
+    "nativeArchive": "Dawn-c943ea32b614ff53e4fe410fc8f4968b6b8fe46d-windows-latest-Release.tar.gz",
+    "nativeSha256": "ba97fa93b5e1c265b8a4411698169b40e7696e7e8d574482c94efce6e3ff4228",
+    "browserArchive": "emdawnwebgpu_pkg-v20261009.190412.zip",
+    "browserSha256": "639b1551ffc98ea81f748bfcf311fb3c416464408b4fc1de818c5fae6240786d",
+    "nativeDirectory": "H:/ue_html/.tools/dawn-v20261009.190412",
+    "browserDirectory": "H:/ue_html/.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg"
+  },
+  "dxc": {
+    "release": "v1.9.2609",
+    "version": "1.9.2609.5",
+    "releaseUrl": "https://github.com/microsoft/DirectXShaderCompiler/releases/tag/v1.9.2609",
+    "archive": "dxc_2026_09_29.zip",
+    "archiveSha256": "ad31b1fc8443175d204f77a611fdb3ef2ec42759bdc2f1167368de24a4a7e7f1",
+    "dxcompilerSha256": "0689e2fee0a1c9df8662a59680469f24e2a3ad7ce6bbbcc9284f7a83172bfc59",
+    "dxilSha256": "64be2368211d257a038a7d4ea6bb3e24c878eb8d588c7b8414fccf759b69c2ac"
+  },
+  "host": {
+    "compiler": "MSVC 19.51.36246.0 x64",
+    "cmake": "4.2.3-msvc3",
+    "gpu": "NVIDIA GeForce RTX 3070",
+    "nativeBackend": "D3D12",
+    "driver": "32.0.15.9621",
+    "chrome": "155.0.8059.40",
+    "edge": "155.0.4283.45"
+  }
+}
