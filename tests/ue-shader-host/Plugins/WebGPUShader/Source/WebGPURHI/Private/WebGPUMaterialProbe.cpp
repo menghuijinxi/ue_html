@@ -6,6 +6,7 @@
 #include "ShaderParameterMacros.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "RHITextureReference.h"
 
 namespace
 {
@@ -369,9 +370,14 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
             const auto ViewBytes = FillConstants(*ViewLayout, Left, true);
             const auto LeftPrimitive = FillConstants(*PrimitiveLayout, Left, false);
             const auto RightPrimitive = FillConstants(*PrimitiveLayout, Right, false);
-            const auto LeftMaterial = FillMaterial(Directory, Material, *MaterialLayout, false, Images[0], Sampler);
+            FTextureReferenceRHIRef TextureReference;
+            if (Textured)
+                TextureReference = new FRHITextureReference(Images[0]);
+            const auto LeftMaterial = FillMaterial(Directory, Material, *MaterialLayout, false,
+                Textured ? TextureReference.GetReference() : Images[0].GetReference(), Sampler);
             const auto RightMaterial =
-                FillMaterial(Directory, Material, *MaterialLayout, Right.Override, Images[1], Sampler);
+                FillMaterial(Directory, Material, *MaterialLayout, Right.Override,
+                    Textured ? TextureReference.GetReference() : Images[1].GetReference(), Sampler);
             auto View = RHI.RHICreateUniformBuffer(ViewBytes.GetData(), ViewLayout, UniformBuffer_MultiFrame,
                                                    EUniformBufferValidation::None);
             auto Primitive = RHI.RHICreateUniformBuffer(LeftPrimitive.GetData(), PrimitiveLayout,
@@ -392,6 +398,8 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
                                     TEXT("MaterialUpdates"));
                 Draw(Cmd, Left, View, Primitive, Uniform);
                 RHI.RHIUpdateUniformBuffer(Cmd, Primitive, RightPrimitive.GetData());
+                if (Textured)
+                    RHI.RHIUpdateTextureReference(Cmd, TextureReference, Images[1]);
                 RHI.RHIUpdateUniformBuffer(Cmd, Uniform, RightMaterial.GetData());
                 Draw(Cmd, Right, View, Primitive, Uniform);
                 Cmd.EndRenderPass();

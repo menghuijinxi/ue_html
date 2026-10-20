@@ -100,12 +100,14 @@ class FWebGPUTexture final : public FRHITexture
     WGPUTextureView View;
     WGPUTextureView DepthSampleView = nullptr;
     FWebGPUResourceState State;
+    FWebGPUResourceState StencilState;
     TArray<uint8> InitialBytes;
     TArray<uint8> LockedBytes;
     uint32 LockedMip = MAX_uint32;
     bool SurfaceFrameActive = true;
     FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle)
-        : FRHITexture(Desc), Handle(InHandle), View(wgpuTextureCreateView(Handle, nullptr)), State(Desc.InitialState)
+        : FRHITexture(Desc), Handle(InHandle), View(wgpuTextureCreateView(Handle, nullptr)),
+          State(Desc.InitialState), StencilState(Desc.InitialState)
     {
         if (Desc.Format == PF_DepthStencil && EnumHasAnyFlags(Desc.Flags, ETextureCreateFlags::ShaderResource))
         {
@@ -333,11 +335,12 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                ERHIAccess Access, FString &Error) const;
     bool ValidateSampledTexture(FRHITexture *Texture, FString &Error,
-                                ERHIAccess Access = ERHIAccess::SRVGraphicsPixel) const;
-    FWebGPUResourceState &ResourceState(FRHIViewableResource *Resource) const;
+                                ERHIAccess Access = ERHIAccess::SRVGraphicsPixel, uint32 Plane = 0) const;
+    FWebGPUResourceState &ResourceState(FRHIViewableResource *Resource, uint32 Plane = 0) const;
     bool ValidateAccess(FRHIViewableResource *Resource, ERHIAccess Access, FString &Error,
-                        bool InternalCopy = false) const;
-    void RequireAccess(FRHIViewableResource *Resource, ERHIAccess Access, bool InternalCopy = false);
+                        bool InternalCopy = false, uint32 Plane = 0) const;
+    void RequireAccess(FRHIViewableResource *Resource, ERHIAccess Access, bool InternalCopy = false,
+                       uint32 Plane = 0);
     bool ValidateTransitionCreate(const FRHITransitionCreateInfo &Info, FString &Error) const;
     bool ValidateTransitionBatch(TArrayView<const FRHITransition *> Batch, bool Begin, FString &Error) const;
     bool ValidateTransitionRelease(const FRHITransition *Transition, FString &Error) const;

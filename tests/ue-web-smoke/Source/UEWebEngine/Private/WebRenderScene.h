@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
+#include "Engine/Texture2D.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "Materials/Material.h"
@@ -14,7 +15,7 @@ static void CreateWebRenderScene(UWorld* World)
 {
     UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
     UMaterialInterface* Material = LoadObject<UMaterialInterface>(nullptr,
-        TEXT("/Engine/EngineMaterials/EmissiveMeshMaterial.EmissiveMeshMaterial"));
+        TEXT("/Engine/EngineMaterials/Widget3DPassThrough_Opaque.Widget3DPassThrough_Opaque"));
     check(Mesh && Material);
     AStaticMeshActor* Actor = World->SpawnActor<AStaticMeshActor>();
     check(Actor);
@@ -24,8 +25,11 @@ static void CreateWebRenderScene(UWorld* World)
     Component->SetCastShadow(false);
     Component->SetStaticMesh(Mesh);
     UMaterialInstanceDynamic* Instance = UMaterialInstanceDynamic::Create(Material, Actor);
-    Instance->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.05f, 0.7f, 0.3f));
-    Instance->SetVectorParameterValue(TEXT("EmissiveColor"), FLinearColor(0.05f, 0.7f, 0.3f));
+    UTexture2D* Texture = LoadObject<UTexture2D>(nullptr,
+        TEXT("/Engine/EngineMaterials/DefaultDiffuse.DefaultDiffuse"));
+    check(Texture);
+    Instance->SetTextureParameterValue(TEXT("SlateUI"), Texture);
+    Instance->SetVectorParameterValue(TEXT("TintColorAndOpacity"), FLinearColor(0.05f, 0.7f, 0.3f));
     Component->SetMaterial(0, Instance);
     Actor->SetActorScale3D(FVector(2.0f));
     Actor->SetActorRotation(FRotator(0.0f, 20.0f, 0.0f));
@@ -41,6 +45,6 @@ static void CreateWebRenderScene(UWorld* World)
         Pawn->SetActorHiddenInGame(true);
     Controller->SetViewTarget(Camera);
     std::printf("P3_RENDER_SCENE {\"meshes\":1,\"asset\":\"/Engine/BasicShapes/Cube\","
-        "\"material\":\"/Engine/EngineMaterials/EmissiveMeshMaterial\",\"unlit\":%s,\"camera\":true}\n",
+        "\"material\":\"/Engine/EngineMaterials/Widget3DPassThrough_Opaque\",\"unlit\":%s,\"camera\":true}\n",
         Material->GetMaterial()->GetShadingModels().HasShadingModel(MSM_Unlit) ? "true" : "false");
 }

@@ -16,7 +16,13 @@ function Test-TaskAudit($Item) {
         (Get-TaskAudit $Item.file).sha256 -eq $Item.sha256
 }
 $taskPrior = Get-Content -LiteralPath $taskReportPath -Raw | ConvertFrom-Json
-if (-not $taskPrior.pass) { throw 'Preserve or restore a successful link report before iteration.' }
+if (-not $taskPrior.pass) {
+    if (-not (Test-Path -LiteralPath $taskCachePath)) {
+        throw 'A previous successful compile cache is required after a failed attempt.'
+    }
+    $taskPreviousCache = Get-Content -LiteralPath $taskCachePath -Raw | ConvertFrom-Json
+    $taskPrior.recompiledObjects = @($taskPreviousCache.objects | ForEach-Object { $_.compilation })
+}
 $taskResponses = @($taskPrior.recompiledObjects | ForEach-Object { $_.response.file }) +
     @($AdditionalResponses | ForEach-Object { [IO.Path]::GetFullPath($_) })
 $taskResponses = @($taskResponses | Select-Object -Unique)

@@ -261,6 +261,56 @@ try {
   report.renderCurveDefaultsExcluded = true;
   report.naniteDefaultsExcluded = true;
   report.skinningDefaultBlocked = renderCurve.skinningDefaultBlocked;
+  const sceneDefaults = load('web-scene-uniform-defaults-results');
+  assert(sceneDefaults.pass && sceneDefaults.sceneUniformDefaultsExcluded &&
+    sceneDefaults.sources.every(valid) && sceneDefaults.reports.every(valid) &&
+    sceneDefaults.engineInitReturnedVerified && sceneDefaults.engineLoopBrowserTickVerified &&
+    !report.skinningDefaultBlocked);
+  report.sceneUniformDefaultsExcluded = true;
+  const visibility = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp');
+  const visibilityOverlay = path.join(root, '.tools/ue58-web-build-host/Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp');
+  const visibilityInstalled = 'H:/UE_5.8/Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp';
+  const visibilityText = fs.readFileSync(visibility, 'utf8');
+  const occlusionBranch = /^#if PLATFORM_WEB\r?\n\treturn false;\r?\n#else\r?\n([\s\S]*?)^#endif\r?\n/gm;
+  assert.equal([...visibilityText.matchAll(occlusionBranch)].length, 1);
+  const priorVisibilityBuild = load('web-engine-webgpu-link-results-before-scene-uniform-defaults-20261020');
+  const priorVisibility = priorVisibilityBuild.sourceFiles.find(item => item.file === visibility);
+  assert(priorVisibility);
+  assert.equal(crypto.createHash('sha256').update(visibilityText.replace(occlusionBranch, '$1')).digest('hex'),
+    priorVisibility.sha256, 'Removing the new occlusion guard must preserve every previous source byte');
+  assert.equal(sha(visibility), sha(visibilityOverlay));
+  const visibilityCompile = link.recompiledObjects.find(item =>
+    fs.readFileSync(item.source.file, 'utf8').includes('SceneVisibility.cpp'));
+  assert(visibilityCompile && ['source', 'response', 'product', 'log'].every(key => valid(visibilityCompile[key])) &&
+    link.linkInputs.some(item => item.file === visibilityCompile.product.file &&
+      item.sha256 === visibilityCompile.product.sha256));
+  report.sources.push(...[visibility, visibilityOverlay, visibilityInstalled].map(audit));
+  report.hardwareOcclusionQueriesDisabled = true;
+  const nativeRHI = load('ue-rhi-build-results');
+  const nativeRHISource = path.join(root, 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI');
+  assert(nativeRHI.pass && valid(nativeRHI.runtimeResult) && valid(nativeRHI.verificationSource) &&
+    sha(nativeRHI.moduleFile) === nativeRHI.moduleSha256 && nativeRHI.sourceFiles.every(item =>
+      sha(path.join(nativeRHISource, item.file)) === item.sha256));
+  assert(nativeRHI.runtime.pass && nativeRHI.runtime.draws === 43 &&
+    nativeRHI.runtime.dispatches === 5 && nativeRHI.runtime.checkedValues === 1344520 &&
+    nativeRHI.runtime.transitions.checks.length === 53 &&
+    nativeRHI.runtime.transitions.checks.every(check => check.pass));
+  report.nativeFullRHIRegressionVerified = true;
+  const rendered = load('web-render-scene-results');
+  assert(rendered.pass && rendered.sceneRendered && rendered.sources.every(valid) &&
+    valid(rendered.buildReport) && rendered.buildReport.sha256 === runtime.buildReport.sha256 &&
+    rendered.browserRuns.length === 2 && rendered.browserRuns.every(run =>
+      run.pass && run.frames >= 60 && !run.failure && run.errors.length === 0 &&
+      run.canvas.gpuErrors.length === 0 && run.pixels.pass && valid(run.screenshot)));
+  assert(rendered.negativeControls.length === 2 && rendered.negativeControls.every(run =>
+    run.pass && run.frames >= 60 && !run.failure && run.gpuErrors.length === 0 &&
+    !run.pixels.pass && run.pixels.texturedGreen === 0 && valid(run.screenshot)));
+  report.minimalSceneRenderedVerified = true;
+  report.sceneBrowserRuns = rendered.browserRuns.map(run => ({
+    browser: run.browser, version: run.version, frames: run.frames,
+    foregroundPixels: run.pixels.foreground, greenLevels: run.pixels.greenLevels,
+    screenshot: run.screenshot
+  }));
   report.startupMapMissingObserved = false;
   const targetCache = path.join(root, 'reference-engine/Engine/Source/Runtime/Core/Private/FileCache/FileCache.cpp');
   const installedCache = 'H:/UE_5.8/Engine/Source/Runtime/Core/Private/FileCache/FileCache.cpp';
@@ -292,6 +342,12 @@ try {
   report.boundary += ' Disabled Nanite material/ownership default callbacks are zeroed without Raw/Structured '
     + 'Buffer allocation, their existing capability checks and registrations remain, and their actual unity '
     + 'and the unchanged material symbol provider are recompiled and linked.';
+  report.boundary = report.boundary.replace(
+    'No rendered mesh, camera interaction, HTML UI, physical presentation or fresh full normal Web UBT build is verified.',
+    'A separate scene probe verifies a runtime-spawned UE Cube with a cooked opaque Unlit Texture2D material '
+      + 'and camera in Chrome and Edge for at least 60 ticks, with textured foreground pixels, no GPU errors, '
+      + 'and a same-binary old-facing control that reproduces black pixels. '
+      + 'Interactive camera controls, HTML UI, physical display presentation and a fresh full normal Web UBT build remain unverified.');
 } catch (error) {
   report.failure = error.stack;
 } finally {
@@ -312,6 +368,10 @@ try {
     renderCurveDefaultsExcluded: report.renderCurveDefaultsExcluded,
     naniteDefaultsExcluded: report.naniteDefaultsExcluded,
     skinningDefaultBlocked: report.skinningDefaultBlocked,
+    sceneUniformDefaultsExcluded: report.sceneUniformDefaultsExcluded,
+    hardwareOcclusionQueriesDisabled: report.hardwareOcclusionQueriesDisabled,
+    nativeFullRHIRegressionVerified: report.nativeFullRHIRegressionVerified,
+    minimalSceneRenderedVerified: report.minimalSceneRenderedVerified,
     completeUEScene: report.completeUEScene,
     failure: report.failure}, null, 2));
   process.exitCode = report.pass ? 0 : 1;

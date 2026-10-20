@@ -4,6 +4,30 @@
 
 ## 当前进度
 
+**2026-10-20 第五十轮：最简单的 UE 场景已在 Chrome、Edge 中实际渲染。** 两浏览器都加载 Cook 后的 `/Game/WebMinimal`，运行 UE 的 World、StaticMeshActor、LocalVertexFactory、材质、相机和移动渲染器，画布中显示带纹理的绿色立方体。不是清屏、独立 WebGPU 三角形或像素流。`web-render-scene-results.json` 与 ES31 汇总均通过，`minimalSceneRenderedVerified=true`。
+
+| 本轮检查 | 结果与边界 |
+| --- | --- |
+| 场景 | 运行时生成 `/Engine/BasicShapes/Cube`，相机看向原点；使用已 Cook 的 `Widget3DPassThrough_Opaque` Unlit 材质和 `DefaultDiffuse` Texture2D，设置 SlateUI 与绿色 Tint。材质虽沿用引擎现有资源，场景不创建 UMG 控件；没有为此移植透明雾或新增 Shader 变体 |
+| 真实像素 | Chrome 155.0.8059.85、Edge 155.0.4283.62 各记录 61 个完成 Tick。两张 640x360 截图一致，前景 50,928 像素、62 个绿色亮度等级；包围范围 x=211..448、y=60..321，背景为黑色。PNG SHA256：`b66abb3d659138c1b68388616dc10bfd143cd4f84331032d4bc8b3b441fcfa84` |
+| GPU | 截图采样时各 9 个 ShaderModule、4 条管线、207 次 draw、138 个深度 pass；队列完成，无页面异常、无未捕获 GPU 校验错误。帧数与 GPU 计数取样时点不同，因此不将 draw 计数除以记录 Tick 推算帧率 |
+| 黑屏定位与反例 | 先回读 SceneColor，确认材质输入、贴图与曝光有效；WebGPU 正面朝向由 CCW 改为 CW 后显示纹理。正式探针在同一二进制上单独恢复旧朝向，双浏览器各 65 Tick、无 GPU 错误但前景为 0，证明像素验收能检出旧黑屏。最终正例没有 JavaScript 替换 Shader 或材质 |
+| RDG 转换 | 接受 Graphics 单队列的 AllowDecayPipelines；深度、模板分别记录状态和 split pending，全资源转换展开到两平面，保持批次原子校验、资源所有权及非法范围拒绝。新增 4 项实际转换检查 |
+| 最小网格管线 | 接入深度预通道的无 PixelShader 管线、普通网格所需顶点格式、基础裁剪和模板状态、StencilRef；不启用多采样、线框或深度偏置。Web 单独关闭未用硬件遮挡查询，其他平台正文保留 |
+| 纹理绑定 | 材质资源表和直接绑定解析 FRHITextureReference；已有逐次绘制探针改用真实引用更新验证。普通线性、三线性及各向异性采样映射到 WebGPU，沿用 UE 的各向异性等级计算 |
+| 原生回归 | 正常 Win64 模块构建及完整 RHI 探针重新通过：43 draw、5 dispatch、1,344,520 通道值、32 项材质检查、53 项转换检查。二维纹理 232 项、静态 Uniform 38 项、空 Uniform 8 项、18 项深度/模板以及视口 72 项通过；静态 View/直接绑定 Unlit 图像一致 |
+| WASM | 最新诊断链接 `web-engine-webgpu-link-20261020-225719.log`：35 个受审计对象，本次编译 1、复用 34，6,006 个 Clang 依赖哈希核验，415 项输入链接通过。修复后失败重试可从上次成功缓存取响应，仍逐项核验源文件、依赖、对象、编译器和日志 |
+| Cook 与平台 | 沿用已审计 Cook/Stage，没有重新 Cook：ES31 164 包、329 文件、51,161,232 字节，838 global/211 material/114 LocalVF 作业，0 失败。原 40 项回归通过；两浏览器各 NullRHI/WebGPU 四组运行均 10 个有效 Tick。ApplicationCore 正常构建、四组窗口/DPR 共 68 项重新通过 |
+| 汇总 | Shader payload、FIFO、静态绑定、二维/系统纹理、默认资源、Canvas、WASM64 breadcrumb 正反例、深度、局部雾、RenderCurve/Nanite、场景 Uniform、同二进制 PSO 对照及 ES31 汇总通过。旧启动阻塞均为 false，硬件 Init 返回、连续 Tick、深度分配/pass 与最小场景像素分别核验 |
+
+打开本地服务的 `/web-engine.html?rhi=webgpu&incremental=1&cook=es31&scene=1` 查看场景。截图为 `tests/web-platform/results/web-render-scene-chrome.png`、`web-render-scene-edge.png`；回归入口为 `probe-web-render-scene.cjs`，包含正式正例和旧朝向反例。汇总入口 `verify-web-es31-runtime-integration.cjs` 要求这两组证据有效，不能以 draw 计数代替实际像素。
+
+**当前边界：** 最小场景渲染已经通过；完整正常 Web Engine UBT、5.8.3/5.8.0 版本统一、通用项目打包、交互相机与 HTML UI 仍未验证。`fullNormalUBTBuildVerified`、表示完整应用验收的 `completeUEScene` 保持 false，独立的 `minimalSceneRenderedVerified` 为 true。下一步优先处理完整构建和可重复的项目 Cook/打包，不扩展数组纹理、材质层等未用功能。
+
+引擎本轮提交 `76f33ac6c`：仅 Web 关闭硬件遮挡查询。外围仓库保存配套 RHI、像素探针、回归与本文记录；每轮验证后继续中文本地提交，不推送。
+
+以下为历史检查点。
+
 **2026-10-20 第四十九轮：未用场景 Uniform 默认资源已排除，浏览器实际分配 SceneDepthZ。** Chrome/Edge 均越过 GetDefaultSkinningParameters 的 Raw Buffer 错误，新增四个 Web 分支只清零蒙皮、GPUScene、ViewData 与 VSM 默认参数，保留注册及其他平台正文。`verify-web-scene-uniform-defaults.cjs` 通过；真实地图 BeginPlay、NullRHI 各 10 Tick。WebGPU 尚无完成 Tick，停止于 RDG 的转换创建校验，深度纹理 1、深度 pass 0，不能视为场景通过。
 
 新增 `iterate-web-engine.ps1` 按编译器、响应、对象、日志及 Clang 依赖哈希复用对象。同输出响应去重，修正 Unity 分组混用；SystemTextures 补 Web 显式 LogRenderer 头。最终诊断链接 34 个受审计对象中本次编译 1、复用 33，5,998 个依赖哈希核验，415 项链接通过。日志 `web-engine-webgpu-link-20261020-214349.log`；先前重复符号和缺头失败保留，没有采用忽略重复符号的链接选项。新增可选 scene=1 验收入口加载已 Cook 的 Cube/EmissiveMeshMaterial 和相机，当前因 Init 尚未返回而没有运行，截图验收仍失败。完整正常 Web UBT、版本一致性、网格实际像素仍待验证。

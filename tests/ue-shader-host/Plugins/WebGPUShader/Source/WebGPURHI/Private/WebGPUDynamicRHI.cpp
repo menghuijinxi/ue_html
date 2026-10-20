@@ -4,6 +4,8 @@
 #include "RenderResource.h"
 #include "Containers/ResourceArray.h"
 #include "RHITextureUtils.h"
+#include "RHITextureReference.h"
+#include "RHIUtilities.h"
 
 #include "HAL/PlatformProcess.h"
 #include "HAL/IConsoleManager.h"
@@ -79,6 +81,26 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_Undefined;
     }
 }
+WGPUVertexFormat VertexFormat(EVertexElementType Type)
+{
+    switch (Type)
+    {
+    case VET_Float1: return WGPUVertexFormat_Float32;
+    case VET_Float2: return WGPUVertexFormat_Float32x2;
+    case VET_Float3: return WGPUVertexFormat_Float32x3;
+    case VET_Float4: return WGPUVertexFormat_Float32x4;
+    case VET_PackedNormal: return WGPUVertexFormat_Snorm8x4;
+    case VET_UByte4: return WGPUVertexFormat_Uint8x4;
+    case VET_UByte4N: return WGPUVertexFormat_Unorm8x4;
+    case VET_Color: return WGPUVertexFormat_Unorm8x4BGRA;
+    case VET_Half2: return WGPUVertexFormat_Float16x2;
+    case VET_Half4: return WGPUVertexFormat_Float16x4;
+    case VET_Short4N: return WGPUVertexFormat_Snorm16x4;
+    default:
+        checkf(false, TEXT("WebGPU vertex element type unsupported: %u"), uint32(Type));
+        return WGPUVertexFormat_Float32;
+    }
+}
 WGPULoadOp Load(ERenderTargetActions Action)
 {
     return GetLoadAction(Action) == ERenderTargetLoadAction::ELoad ? WGPULoadOp_Load : WGPULoadOp_Clear;
@@ -116,6 +138,21 @@ WGPUCompareFunction Compare(ECompareFunction In)
     default:
         checkNoEntry();
         return WGPUCompareFunction_Undefined;
+    }
+}
+WGPUStencilOperation StencilOperation(EStencilOp In)
+{
+    switch (In)
+    {
+    case SO_Keep: return WGPUStencilOperation_Keep;
+    case SO_Zero: return WGPUStencilOperation_Zero;
+    case SO_Replace: return WGPUStencilOperation_Replace;
+    case SO_SaturatedIncrement: return WGPUStencilOperation_IncrementClamp;
+    case SO_SaturatedDecrement: return WGPUStencilOperation_DecrementClamp;
+    case SO_Invert: return WGPUStencilOperation_Invert;
+    case SO_Increment: return WGPUStencilOperation_IncrementWrap;
+    case SO_Decrement: return WGPUStencilOperation_DecrementWrap;
+    default: checkNoEntry(); return WGPUStencilOperation_Keep;
     }
 }
 WGPUBlendFactor BlendFactor(EBlendFactor In)
@@ -685,8 +722,8 @@ WGPUSampler FWebGPUDynamicRHI::ResolveSampler(FWebGPUSampler *Sampler)
     if (Sampler->Handle)
         return Sampler->Handle;
     const auto &In = Sampler->Initializer;
-    checkf(In.Filter == SF_Point && In.MipBias == 0 && In.SamplerComparisonFunction == SCF_Never,
-           TEXT("WebGPU sampler binding only supports point filtering without mip bias or comparison"));
+    checkf(In.Filter <= SF_AnisotropicLinear && In.MipBias == 0 && In.SamplerComparisonFunction == SCF_Never,
+           TEXT("WebGPU sampler requires a regular filter without mip bias or comparison"));
     const auto Address = [](ESamplerAddressMode Mode) {
         check(Mode == AM_Wrap || Mode == AM_Clamp || Mode == AM_Mirror);
         return Mode == AM_Wrap     ? WGPUAddressMode_Repeat
@@ -697,6 +734,11 @@ WGPUSampler FWebGPUDynamicRHI::ResolveSampler(FWebGPUSampler *Sampler)
     Desc.addressModeU = Address(In.AddressU);
     Desc.addressModeV = Address(In.AddressV);
     Desc.addressModeW = Address(In.AddressW);
+    const bool Anisotropic = In.Filter == SF_AnisotropicPoint || In.Filter == SF_AnisotropicLinear;
+    Desc.minFilter = Desc.magFilter = In.Filter == SF_Point ? WGPUFilterMode_Nearest : WGPUFilterMode_Linear;
+    Desc.mipmapFilter = In.Filter == SF_Trilinear || Anisotropic ? WGPUMipmapFilterMode_Linear
+                                                               : WGPUMipmapFilterMode_Nearest;
+    Desc.maxAnisotropy = Anisotropic ? FMath::Clamp(ComputeAnisotropyRT(In.MaxAnisotropy), 1, 16) : 1;
     Desc.lodMinClamp = In.MinMipLevel;
     Desc.lodMaxClamp = In.MaxMipLevel;
     Sampler->Handle = wgpuDeviceCreateSampler(Device, &Desc);
@@ -1294,16 +1336,20 @@ bool FWebGPUDynamicRHI::ResolveSampledTexture(FRHIResource *Resource, FWebGPUTex
         Error = TEXT("Sampled binding requires a texture or a texture SRV");
         return false;
     }
-    return ValidateSampledTexture(Texture, Error, Access);
+    const uint32 Plane = Resource->GetType() == RRT_ShaderResourceView &&
+        static_cast<FRHIShaderResourceView *>(Resource)->GetDesc().Texture.SRV.Plane ==
+            ERHITexturePlane::Stencil ? 1 : 0;
+    return ValidateSampledTexture(Texture, Error, Access, Plane);
 }
-bool FWebGPUDynamicRHI::ValidateSampledTexture(FRHITexture *Texture, FString &Error, ERHIAccess Access) const
+bool FWebGPUDynamicRHI::ValidateSampledTexture(FRHITexture *Texture, FString &Error, ERHIAccess Access,
+                                              uint32 Plane) const
 {
     if (Attachments.Contains(static_cast<FWebGPUTexture *>(Texture)))
     {
         Error = TEXT("Sampling an active render attachment is not supported");
         return false;
     }
-    return ValidateAccess(Texture, Access, Error);
+    return ValidateAccess(Texture, Access, Error, false, Plane);
 }
 bool FWebGPUDynamicRHI::ValidateUniform(const FWebGPUShaderData &Shader, uint32 Slot, FRHIUniformBuffer *Uniform,
                                         FString &Error) const
@@ -1444,6 +1490,8 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
             return false;
         }
         Resource = Found->GetReference();
+        if (Resource->GetType() == RRT_TextureReference)
+            Resource = static_cast<FRHITextureReference *>(Resource)->GetReferencedTexture();
         return true;
     }
     const TArray<uint32> *Stream = Descriptor == 2   ? &Shader.ResourceTable.TextureMap
@@ -1506,9 +1554,12 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
                 return false;
             }
             Resource = Uniform->GetResourceTable()[ResourceIndex].GetReference();
+            if (Resource && Resource->GetType() == RRT_TextureReference)
+                Resource = static_cast<FRHITextureReference *>(Resource)->GetReferencedTexture();
             if (!Resource || Resource->GetType() != (Descriptor == 2 ? RRT_Texture : RRT_SamplerState))
             {
-                Error = TEXT("Resource table member is null or has wrong RHI type");
+                Error = FString::Printf(TEXT("Resource table member is null or has wrong RHI type: %s descriptor=%u actual=%u"),
+                    *Name, Descriptor, Resource ? uint32(Resource->GetType()) : MAX_uint32);
                 return false;
             }
             FromTable = true;
@@ -1638,7 +1689,10 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                     checkf(ValidateTextureBinding(Resource, *Binding, Access, Error), TEXT("%s"), *Error);
                     checkf(ResolveSampledTexture(Resource, Texture, Entry.textureView, Access, Error), TEXT("%s"),
                            *Error);
-                    RequireAccess(Texture, Access);
+                    const uint32 Plane = Resource->GetType() == RRT_ShaderResourceView &&
+                        static_cast<FRHIShaderResourceView *>(Resource)->GetDesc().Texture.SRV.Plane ==
+                            ERHITexturePlane::Stencil ? 1 : 0;
+                    RequireAccess(Texture, Access, false, Plane);
                 }
                 else if (Descriptor == 0)
                     Entry.sampler = ResolveSampler(static_cast<FWebGPUSampler *>(Resource));
@@ -1710,10 +1764,10 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
           (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip));
     auto *Result = new FWebGPUGraphicsPipeline(In);
     auto &VS = static_cast<FWebGPUVertexShader *>(In.BoundShaderState.GetVertexShader())->Data;
-    auto &PS = static_cast<FWebGPUPixelShader *>(In.BoundShaderState.GetPixelShader())->Data;
+    auto *Pixel = static_cast<FWebGPUPixelShader *>(In.BoundShaderState.GetPixelShader());
     WGPURenderPipelineDescriptor Desc = WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;
     Desc.vertex.module = VS.Module;
-    const FTCHARToUTF8 VertexEntry(*VS.Entry), PixelEntry(*PS.Entry);
+    const FTCHARToUTF8 VertexEntry(*VS.Entry), PixelEntry(Pixel ? *Pixel->Data.Entry : TEXT(""));
     Desc.vertex.entryPoint = Text(VertexEntry.Get());
     TArray<TArray<WGPUVertexAttribute>> Attributes;
     TArray<WGPUVertexBufferLayout> Layouts;
@@ -1731,10 +1785,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
             WGPUVertexAttribute Attribute = WGPU_VERTEX_ATTRIBUTE_INIT;
             Attribute.offset = Element.Offset;
             Attribute.shaderLocation = Element.AttributeIndex;
-            check(Element.Type == VET_Float2 || Element.Type == VET_Float3 || Element.Type == VET_Float4);
-            Attribute.format = Element.Type == VET_Float2   ? WGPUVertexFormat_Float32x2
-                               : Element.Type == VET_Float3 ? WGPUVertexFormat_Float32x3
-                                                            : WGPUVertexFormat_Float32x4;
+            Attribute.format = VertexFormat(EVertexElementType(Element.Type));
             Attributes[Element.StreamIndex].Add(Attribute);
             auto &Layout = Layouts[Element.StreamIndex];
             check(!Layout.arrayStride || Layout.arrayStride == Element.Stride);
@@ -1759,11 +1810,18 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
     check(In.BlendState->GetInitializer(Blend) && In.DepthStencilState->GetInitializer(DepthState) &&
           In.RasterizerState->GetInitializer(Rasterizer));
     // NumSamples is fixed to one above; UE's rasterizer MSAA permission does not enable multisampling.
-    check(Rasterizer.FillMode == FM_Solid && Rasterizer.CullMode == CM_None && Rasterizer.DepthBias == 0 &&
+    checkf(Rasterizer.FillMode == FM_Solid && Rasterizer.CullMode <= CM_CCW && Rasterizer.DepthBias == 0 &&
           Rasterizer.SlopeScaleDepthBias == 0 &&
           Rasterizer.DepthClipMode == ERasterizerDepthClipMode::DepthClip && !Blend.bUseAlphaToCoverage &&
-          !DepthState.bEnableFrontFaceStencil && !DepthState.bEnableBackFaceStencil &&
-          In.RenderTargetsEnabled <= Limits.maxColorAttachments);
+          In.RenderTargetsEnabled <= Limits.maxColorAttachments,
+          TEXT("Raster state fill=%u cull=%u bias=%g slope=%g clip=%u alphaCoverage=%u stencilFront=%u stencilBack=%u"),
+          uint32(Rasterizer.FillMode), uint32(Rasterizer.CullMode), Rasterizer.DepthBias,
+          Rasterizer.SlopeScaleDepthBias, uint32(Rasterizer.DepthClipMode), Blend.bUseAlphaToCoverage,
+          DepthState.bEnableFrontFaceStencil, DepthState.bEnableBackFaceStencil);
+    // UE's projection and WebGPU's viewport produce clockwise front faces.
+    Desc.primitive.frontFace = WGPUFrontFace_CW;
+    Desc.primitive.cullMode = Rasterizer.CullMode == CM_CW ? WGPUCullMode_Back :
+        Rasterizer.CullMode == CM_CCW ? WGPUCullMode_Front : WGPUCullMode_None;
     TArray<WGPUColorTargetState> Targets;
     TArray<WGPUBlendState> Blends;
     Blends.SetNum(In.RenderTargetsEnabled);
@@ -1782,17 +1840,36 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
         Targets.Add(Target);
     }
     WGPUFragmentState Fragment = WGPU_FRAGMENT_STATE_INIT;
-    Fragment.module = PS.Module;
+    Fragment.module = Pixel ? Pixel->Data.Module : nullptr;
     Fragment.entryPoint = Text(PixelEntry.Get());
     Fragment.targetCount = Targets.Num();
     Fragment.targets = Targets.GetData();
-    Desc.fragment = &Fragment;
+    Desc.fragment = Pixel ? &Fragment : nullptr;
     WGPUDepthStencilState Depth = WGPU_DEPTH_STENCIL_STATE_INIT;
     if (In.DepthStencilTargetFormat != PF_Unknown)
     {
         Depth.format = Format(In.DepthStencilTargetFormat);
         Depth.depthWriteEnabled = DepthState.bEnableDepthWrite ? WGPUOptionalBool_True : WGPUOptionalBool_False;
         Depth.depthCompare = Compare(DepthState.DepthTest);
+        if (DepthState.bEnableFrontFaceStencil || DepthState.bEnableBackFaceStencil)
+        {
+            Depth.stencilFront.compare = Compare(DepthState.FrontFaceStencilTest);
+            Depth.stencilFront.failOp = StencilOperation(DepthState.FrontFaceStencilFailStencilOp);
+            Depth.stencilFront.depthFailOp = StencilOperation(DepthState.FrontFaceDepthFailStencilOp);
+            Depth.stencilFront.passOp = StencilOperation(DepthState.FrontFacePassStencilOp);
+            Depth.stencilBack = Depth.stencilFront;
+            if (DepthState.bEnableBackFaceStencil)
+            {
+                Depth.stencilBack.compare = Compare(DepthState.BackFaceStencilTest);
+                Depth.stencilBack.failOp = StencilOperation(DepthState.BackFaceStencilFailStencilOp);
+                Depth.stencilBack.depthFailOp = StencilOperation(DepthState.BackFaceDepthFailStencilOp);
+                Depth.stencilBack.passOp = StencilOperation(DepthState.BackFacePassStencilOp);
+            }
+            Depth.stencilReadMask = DepthState.StencilReadMask;
+            Depth.stencilWriteMask = DepthState.StencilWriteMask;
+        }
+        else
+            Depth.stencilWriteMask = 0;
         Desc.depthStencil = &Depth;
     }
     Result->Handle = wgpuDeviceCreateRenderPipeline(Device, &Desc);
@@ -1903,6 +1980,9 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
         RequireAccess(Texture, Info.DepthStencilRenderTarget.ExclusiveDepthStencil.IsDepthWrite()
                                    ? ERHIAccess::DSVWrite
                                    : ERHIAccess::DSVRead);
+        if (Info.DepthStencilRenderTarget.ExclusiveDepthStencil.IsUsingStencil())
+            RequireAccess(Texture, Info.DepthStencilRenderTarget.ExclusiveDepthStencil.IsStencilWrite()
+                ? ERHIAccess::DSVWrite : ERHIAccess::DSVRead, false, 1);
         Attachments.Add(Texture);
         Depth.view = Texture->View;
         Depth.depthLoadOp = Load(GetDepthActions(Info.DepthStencilRenderTarget.Action));
@@ -1943,11 +2023,12 @@ void FWebGPUDynamicRHI::RHIEndRenderPass()
 }
 void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *State, uint32 StencilRef, bool)
 {
-    check(Pass && StencilRef == 0);
+    check(Pass && StencilRef <= 255);
     GraphicsPipeline = static_cast<FWebGPUGraphicsPipeline *>(State);
     FString Error;
     checkf(ValidatePipelineDepth(GraphicsPipeline->Initializer, Error), TEXT("%s"), *Error);
     wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
+    wgpuRenderPassEncoderSetStencilReference(Pass, StencilRef);
 }
 #if PLATFORM_USE_FALLBACK_PSO
 void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In, uint32 Stencil,
@@ -1998,9 +2079,9 @@ void FWebGPUDynamicRHI::SetDrawBindings()
                                                  VertexBuffers[Stream]->GetSize() - VertexOffsets[Stream]);
         }
     auto &VS = ShaderData(GraphicsPipeline->GetShader(SF_Vertex));
-    auto &PS = ShaderData(GraphicsPipeline->GetShader(SF_Pixel));
-    FWebGPUShaderData *Shaders[] = {&VS, &PS};
-    const auto Groups = CreateGroups(GraphicsPipeline->Handle, nullptr, Shaders);
+    auto *Pixel = GraphicsPipeline->GetShader(SF_Pixel);
+    FWebGPUShaderData *Shaders[] = {&VS, Pixel ? &ShaderData(Pixel) : nullptr};
+    const auto Groups = CreateGroups(GraphicsPipeline->Handle, nullptr, MakeArrayView(Shaders, Pixel ? 2 : 1));
     for (int32 Index = 0; Index < Groups.Num(); ++Index)
     {
         wgpuRenderPassEncoderSetBindGroup(Pass, Index, Groups[Index], 0, nullptr);

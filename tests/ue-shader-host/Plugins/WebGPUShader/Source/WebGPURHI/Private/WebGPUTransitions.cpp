@@ -49,21 +49,28 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
 }
 } // namespace
 
-FWebGPUResourceState &FWebGPUDynamicRHI::ResourceState(FRHIViewableResource *Resource) const
+FWebGPUResourceState &FWebGPUDynamicRHI::ResourceState(FRHIViewableResource *Resource, uint32 Plane) const
 {
     check(Resource && (Resource->GetType() == RRT_Buffer || Resource->GetType() == RRT_Texture));
+    if (Plane == 1)
+    {
+        check(Resource->GetType() == RRT_Texture &&
+              static_cast<FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil);
+        return static_cast<FWebGPUTexture *>(Resource)->StencilState;
+    }
+    check(Plane == 0);
     return Resource->GetType() == RRT_Buffer ? static_cast<FWebGPUBuffer *>(Resource)->State
                                              : static_cast<FWebGPUTexture *>(Resource)->State;
 }
 bool FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource *Resource, ERHIAccess Access, FString &Error,
-                                       bool InternalCopy) const
+                                       bool InternalCopy, uint32 Plane) const
 {
     if (!SupportedAccess(Resource, Access))
     {
         Error = TEXT("Resource capability does not support requested access");
         return false;
     }
-    const auto &State = ResourceState(Resource);
+    const auto &State = ResourceState(Resource, Plane);
     if (Resource->GetType() == RRT_Buffer && static_cast<FWebGPUBuffer *>(Resource)->Locked)
     {
         Error = TEXT("Resource use while a CPU buffer lock is active");
@@ -98,11 +105,12 @@ bool FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource *Resource, ERHIAcces
     }
     return true;
 }
-void FWebGPUDynamicRHI::RequireAccess(FRHIViewableResource *Resource, ERHIAccess Access, bool InternalCopy)
+void FWebGPUDynamicRHI::RequireAccess(FRHIViewableResource *Resource, ERHIAccess Access, bool InternalCopy,
+                                     uint32 Plane)
 {
     RequireOwner();
     FString Error;
-    checkf(ValidateAccess(Resource, Access, Error, InternalCopy), TEXT("%s"), *Error);
+    checkf(ValidateAccess(Resource, Access, Error, InternalCopy, Plane), TEXT("%s"), *Error);
     ++AccessChecks;
 }
 bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo &Info, FString &Error) const
@@ -112,13 +120,15 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         Error = TEXT("Only Graphics-to-Graphics transitions are implemented");
         return false;
     }
-    if (EnumHasAnyFlags(Info.Flags, ~(ERHITransitionCreateFlags::NoFence | ERHITransitionCreateFlags::NoSplit)) ||
+    if (EnumHasAnyFlags(Info.Flags, ~(ERHITransitionCreateFlags::NoFence | ERHITransitionCreateFlags::NoSplit |
+                                    ERHITransitionCreateFlags::AllowDecayPipelines)) ||
         !Info.AliasingInfos.IsEmpty() || Info.TransitionInfos.IsEmpty())
     {
-        Error = TEXT("Transition flags, aliasing or empty transition batch are unsupported");
+        Error = FString::Printf(TEXT("Unsupported transition: flags=0x%x aliasing=%d resources=%d"),
+            uint32(Info.Flags), Info.AliasingInfos.Num(), Info.TransitionInfos.Num());
         return false;
     }
-    TSet<FRHIViewableResource *> Seen;
+    TSet<const FWebGPUResourceState *> Seen;
     for (const auto &Entry : Info.TransitionInfos)
     {
         if (Entry.Type != FRHITransitionInfo::EType::Buffer && Entry.Type != FRHITransitionInfo::EType::Texture &&
@@ -131,22 +141,33 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         if (!Resource || !SupportedAccess(Resource, Entry.AccessAfter) ||
             (Entry.AccessBefore != ERHIAccess::Unknown && !SupportedAccess(Resource, Entry.AccessBefore)))
         {
-            Error = TEXT("Transition access or resource capability is unsupported");
+            Error = FString::Printf(TEXT("Unsupported transition resource=%s before=0x%x after=0x%x"),
+                Resource ? *Resource->GetName().ToString() : TEXT("null"),
+                uint32(Entry.AccessBefore), uint32(Entry.AccessAfter));
             return false;
         }
+        const bool DepthStencil = Resource->GetType() == RRT_Texture &&
+            static_cast<FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil;
         if (Entry.Flags != EResourceTransitionFlags::None || Entry.CommitInfo.IsSet() ||
             (Entry.MipIndex != 0 && !Entry.IsAllMips()) || (Entry.ArraySlice != 0 && !Entry.IsAllArraySlices()) ||
-            (Entry.PlaneSlice != 0 && !Entry.IsAllPlaneSlices()))
+            (Entry.PlaneSlice != 0 && !Entry.IsAllPlaneSlices() && !(DepthStencil && Entry.PlaneSlice == 1)))
         {
-            Error = TEXT("Transition flags, commit or subresource range are unsupported");
+            Error = FString::Printf(TEXT("Unsupported transition range: flags=0x%x commit=%d mip=%u array=%u plane=%u"),
+                uint32(Entry.Flags), Entry.CommitInfo.IsSet(), Entry.MipIndex, Entry.ArraySlice, Entry.PlaneSlice);
             return false;
         }
-        if (Seen.Contains(Resource))
+        const uint32 FirstPlane = Entry.PlaneSlice == 1 ? 1 : 0;
+        const uint32 LastPlane = DepthStencil && Entry.IsAllPlaneSlices() ? 1 : FirstPlane;
+        for (uint32 Plane = FirstPlane; Plane <= LastPlane; ++Plane)
         {
-            Error = TEXT("Transition batch contains the same resource more than once");
-            return false;
+            const auto *State = &ResourceState(Resource, Plane);
+            if (Seen.Contains(State))
+            {
+                Error = TEXT("Transition batch contains the same resource plane more than once");
+                return false;
+            }
+            Seen.Add(State);
         }
-        Seen.Add(Resource);
     }
     return true;
 }
@@ -158,7 +179,7 @@ bool FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<const FRHITransition 
         Error = TEXT("Transition requires an open context outside a render pass");
         return false;
     }
-    TSet<FRHIViewableResource *> Seen;
+    TSet<const FWebGPUResourceState *> Seen;
     for (const auto *Transition : Batch)
     {
         const auto *Found = Transitions.Find(Transition);
@@ -171,7 +192,7 @@ bool FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<const FRHITransition 
         for (const auto &Entry : (*Found)->Infos)
         {
             auto *Resource = GetViewableResource(Entry);
-            const auto &State = ResourceState(Resource);
+            const auto &State = ResourceState(Resource, Entry.PlaneSlice);
             if (Resource->GetType() == RRT_Buffer && static_cast<FWebGPUBuffer *>(Resource)->Locked)
             {
                 Error = TEXT("Transition while a CPU buffer lock is active");
@@ -183,7 +204,7 @@ bool FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<const FRHITransition 
                 Error = TEXT("Transition while a CPU texture lock is active");
                 return false;
             }
-            if (Seen.Contains(Resource) || (Begin ? State.Pending != nullptr : State.Pending != Transition))
+            if (Seen.Contains(&State) || (Begin ? State.Pending != nullptr : State.Pending != Transition))
             {
                 Error = TEXT("Transition resource is already pending or has another owner");
                 return false;
@@ -193,7 +214,7 @@ bool FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<const FRHITransition 
                 Error = TEXT("Transition AccessBefore does not match the tracked resource state");
                 return false;
             }
-            Seen.Add(Resource);
+            Seen.Add(&State);
         }
     }
     return true;
@@ -215,7 +236,19 @@ void FWebGPUDynamicRHI::RHICreateTransition(FRHITransition *Transition, const FR
     checkf(Transition && !Transitions.Contains(Transition) && ValidateTransitionCreate(Info, Error), TEXT("%s"),
            *Error);
     auto Data = MakeShared<FWebGPUTransitionData>();
-    Data->Infos.Append(Info.TransitionInfos);
+    for (auto Entry : Info.TransitionInfos)
+    {
+        const auto *Resource = GetViewableResource(Entry);
+        const bool BothPlanes = Resource->GetType() == RRT_Texture &&
+            static_cast<const FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil && Entry.IsAllPlaneSlices();
+        Entry.PlaneSlice = Entry.PlaneSlice == 1 ? 1 : 0;
+        Data->Infos.Add(Entry);
+        if (BothPlanes)
+        {
+            Entry.PlaneSlice = 1;
+            Data->Infos.Add(Entry);
+        }
+    }
     for (const auto &Entry : Data->Infos)
         Data->References.Add(Entry.Resource);
     Transitions.Add(Transition, MoveTemp(Data));
@@ -238,7 +271,7 @@ void FWebGPUDynamicRHI::RHIBeginTransitions(TArrayView<const FRHITransition *> B
     {
         auto &Data = *Transitions.FindChecked(Transition);
         for (const auto &Entry : Data.Infos)
-            ResourceState(GetViewableResource(Entry)).Pending = Transition;
+            ResourceState(GetViewableResource(Entry), Entry.PlaneSlice).Pending = Transition;
         Data.Stage = FWebGPUTransitionData::EStage::Begun;
         ++TransitionsBegun;
     }
@@ -255,7 +288,7 @@ void FWebGPUDynamicRHI::RHIEndTransitions(TArrayView<const FRHITransition *> Bat
         auto &Data = *Transitions.FindChecked(Transition);
         for (const auto &Entry : Data.Infos)
         {
-            auto &State = ResourceState(GetViewableResource(Entry));
+            auto &State = ResourceState(GetViewableResource(Entry), Entry.PlaneSlice);
             State.Access = Entry.AccessAfter;
             State.Pending = nullptr;
         }

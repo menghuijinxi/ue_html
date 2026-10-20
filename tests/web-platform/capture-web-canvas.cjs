@@ -2,7 +2,8 @@ module.exports = function captureWebCanvas() {
   const state = {configurations: [], acquisitions: [], debugMarkers: [], failures: [],
     queueSubmissions: 0, submittedCommandBuffers: 0, shaderModules: 0,
     renderPipelines: 0, computePipelines: 0, renderPasses: 0, drawCalls: 0, dispatchCalls: 0,
-    depthTextures: [], depthViews: [], depthPasses: []};
+    depthTextures: [], depthViews: [], depthPasses: [], gpuErrors: []};
+  const observedDevices = new WeakSet();
   const depthViews = new WeakMap();
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(descriptor) {
@@ -73,6 +74,10 @@ module.exports = function captureWebCanvas() {
   GPUCanvasContext.prototype.configure = function(configuration) {
     configure.call(this, configuration);
     device = configuration.device;
+    if (!observedDevices.has(device)) {
+      observedDevices.add(device);
+      device.addEventListener('uncapturederror', event => state.gpuErrors.push(event.error.message));
+    }
     const actual = this.getConfiguration();
     state.configurations.push({
       canvas: this.canvas.id, width: this.canvas.width, height: this.canvas.height,

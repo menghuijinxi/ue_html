@@ -53,6 +53,8 @@ const requiredTransitionChecks = [
   'reject-mip-out-of-range', 'reject-array-slice-out-of-range', 'reject-stencil-plane',
   'reject-ignore-after-state', 'reject-reserved-resource-commit', 'reject-null-transition-resource',
   'reject-duplicate-resource-transition', 'reject-transient-aliasing',
+  'accept-graphics-pipeline-decay', 'depth-stencil-split-pending',
+  'depth-stencil-independent-states', 'depth-stencil-whole-resource-transition',
   'reject-uav-copy-without-transition', 'reject-dispatch-in-copy-state', 'uav-same-state-and-reuse-order',
   'uav-to-copy-preserves-previous-write', 'internal-buffer-readback-preserves-state',
   'transition-owns-resource-after-caller-release', 'transition-resource-lifetime-copy',
@@ -93,13 +95,13 @@ try {
   assert.equal(transitions.transientAliasingImplemented, false);
   assert.deepEqual(transitions.checks.map(check => check.name).sort(), [...requiredTransitionChecks].sort());
   assert(transitions.checks.every(check => check.pass));
-  for (const name of ['created', 'begun', 'ended', 'released']) assert.equal(transitions[name], 15);
+  for (const name of ['created', 'begun', 'ended', 'released']) assert.equal(transitions[name], 17);
   assert.equal(transitions.accessChecks, 26);
   assert.equal(transitions.draws, 5);
   assert.equal(transitions.dispatches, 3);
   assert.equal(transitions.bindGroups, 13);
   assert.equal(transitions.checkedValues, 66056);
-  for (const name of ['Created', 'Begun', 'Ended', 'Released']) assert.equal(runtime[`transitions${name}`], 24);
+  for (const name of ['Created', 'Begun', 'Ended', 'Released']) assert.equal(runtime[`transitions${name}`], 26);
   assert.equal(runtime.pendingTransitionCount, 0);
   assert.equal(runtime.resourceAccessChecks, 305);
   assert.equal(runtime.draws, 43);
@@ -218,6 +220,8 @@ try {
   ].map(file => ({file, sha256: sha(path.join(sourceDirectory, file))}));
   Object.assign(report, {
     pass: true, date: new Date().toISOString(), runtime, shaderPackets: packets, materialPackets, sourceFiles,
+    runtimeResult: {file: path.join(output, 'rhi-results.json'), sha256: sha(path.join(output, 'rhi-results.json'))},
+    verificationSource: {file: __filename, sha256: sha(__filename)},
     materialUniformLayoutArtifact: layoutArtifact, materialUniformArtifacts: materialManifest.uniformArtifacts,
     materialImages,
     hostEngine: read(path.join(engine, 'Build/Build.version')),

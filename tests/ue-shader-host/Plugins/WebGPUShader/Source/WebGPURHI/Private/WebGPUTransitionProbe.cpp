@@ -274,6 +274,36 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
             ValueParameter(Cmd, ClearPS.GetReference(), FVector4f(1, 0, 0, 1));
             Cmd.DrawPrimitive(0, 2, 1);
             Cmd.EndRenderPass();
+            FRHITransitionInfo Planes[] = {
+                FRHITransitionInfo(DepthTexture, ERHIAccess::DSVRead, ERHIAccess::DSVWrite),
+                FRHITransitionInfo(DepthTexture, ERHIAccess::DSVRead, ERHIAccess::DSVRead)
+            };
+            Planes[0].PlaneSlice = 0;
+            Planes[1].PlaneSlice = 1;
+            auto *SplitPlanes = Cmd.CreateLocalTransition(RHI, Planes,
+                ERHITransitionCreateFlags::NoFence | ERHITransitionCreateFlags::AllowDecayPipelines);
+            Cmd.BeginTransition(SplitPlanes);
+            Cmd.EnqueueLambda([&](FRHICommandListBase &) {
+                FString Error;
+                Record(TEXT("depth-stencil-split-pending"),
+                    !RHI.ValidateAccess(DepthTexture, ERHIAccess::DSVRead, Error, false, 0) &&
+                    !RHI.ValidateAccess(DepthTexture, ERHIAccess::DSVRead, Error, false, 1));
+            });
+            Cmd.EndTransition(SplitPlanes);
+            Cmd.ReleaseLocalTransition(RHI, SplitPlanes);
+            Cmd.EnqueueLambda([&](FRHICommandListBase &) {
+                Record(TEXT("depth-stencil-independent-states"),
+                    RHI.ResourceState(DepthTexture, 0).Access == ERHIAccess::DSVWrite &&
+                    RHI.ResourceState(DepthTexture, 1).Access == ERHIAccess::DSVRead &&
+                    !RHI.ResourceState(DepthTexture, 0).Pending &&
+                    !RHI.ResourceState(DepthTexture, 1).Pending);
+            });
+            Cmd.TransitionLocal(RHI, FRHITransitionInfo(DepthTexture, ERHIAccess::Unknown, ERHIAccess::DSVRead));
+            Cmd.EnqueueLambda([&](FRHICommandListBase &) {
+                Record(TEXT("depth-stencil-whole-resource-transition"),
+                    RHI.ResourceState(DepthTexture, 0).Access == ERHIAccess::DSVRead &&
+                    RHI.ResourceState(DepthTexture, 1).Access == ERHIAccess::DSVRead);
+            });
         }
         RHI.SubmitCurrent();
         CheckImage(TEXT("depth-write-to-read-only-preserves-occlusion"), Color, FColor::Green, false);
@@ -312,6 +342,10 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
             Record(Name, !RHI.ValidateTransitionCreate(Info, Error) && !Error.IsEmpty());
         };
         const FRHITransitionInfo Valid(Source, ERHIAccess::CopySrc, ERHIAccess::RTV);
+        const FRHITransitionCreateInfo DecayInfo(ERHIPipeline::Graphics, ERHIPipeline::Graphics,
+            ERHITransitionCreateFlags::NoFence | ERHITransitionCreateFlags::AllowDecayPipelines,
+            MakeArrayView(&Valid, 1));
+        Record(TEXT("accept-graphics-pipeline-decay"), RHI.ValidateTransitionCreate(DecayInfo, Error));
         RejectCreate(TEXT("reject-async-compute-transition"), Valid, ERHITransitionCreateFlags::None,
                      ERHIPipeline::AsyncCompute);
         RejectCreate(TEXT("reject-allow-during-pass-flag"), Valid, ERHITransitionCreateFlags::AllowDuringRenderPass);
