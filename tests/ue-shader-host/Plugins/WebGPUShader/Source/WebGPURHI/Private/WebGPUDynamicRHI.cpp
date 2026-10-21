@@ -51,7 +51,7 @@ bool IsUnsignedTextureFormat(EPixelFormat Value)
 bool IsSampled2DTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_G8 || Value == PF_R8 ||
-           Value == PF_R8G8 || Value == PF_FloatRGBA ||
+           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_R32_FLOAT ||
            IsUnsignedTextureFormat(Value);
 }
 WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
@@ -69,6 +69,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_RG8Unorm;
     case PF_FloatRGBA:
         return WGPUTextureFormat_RGBA16Float;
+    case PF_R32_FLOAT:
+        return WGPUTextureFormat_R32Float;
     case PF_R8G8B8A8_UINT:
         return WGPUTextureFormat_RGBA8Uint;
     case PF_R32_UINT:
@@ -889,7 +891,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         (In.InitAction != ERHITextureInitAction::Default && !Color))
     {
         Error =
-            TEXT("Only 2D RGBA8/BGRA8 (linear or sRGB), linear R8/RG8/RGBA16F/R16_UINT/R32_UINT/RGBA8_UINT, sampled mip chains, single-mip depth, or existing linear sampled 3D textures are implemented");
+            TEXT("Only 2D RGBA8/BGRA8 (linear or sRGB), linear R8/RG8/RGBA16F/R32_FLOAT/R16_UINT/R32_UINT/RGBA8_UINT, sampled mip chains, single-mip depth, or existing linear sampled 3D textures are implemented");
         return false;
     }
     const uint64 Bytes = In.CalcMemorySizeEstimate();
@@ -1036,7 +1038,8 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
 {
     RequireOwner();
     check(Texture->GetDesc().Dimension == ETextureDimension::Texture2D && Mip == 0 &&
-          Texture->GetFormat() == PF_R8G8B8A8 && Region.Width && Region.Height &&
+          (Texture->GetFormat() == PF_R8G8B8A8 || Texture->GetFormat() == PF_R32_FLOAT) &&
+          Region.Width && Region.Height &&
           Region.DestX + Region.Width <= Texture->GetSizeX() && Region.DestY + Region.Height <= Texture->GetSizeY() &&
           Pitch >= (Region.SrcX + Region.Width) * 4);
     const uint32 UploadPitch = Align(Region.Width * 4, 256u);
@@ -1249,10 +1252,14 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
         Error = TEXT("Texture SRV requires a matching supported linear sampled format");
         return false;
     }
-    const auto Info = View.GetViewInfo(const_cast<FWebGPUTexture*>(Texture));
-    const uint32 Layers = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ? 1 : Cube ? 6 : 1;
-    if (uint32(Info.MipRange.First) + Info.MipRange.Num > Target.NumMips ||
-        uint32(Info.ArrayRange.First) + Info.ArrayRange.Num > Layers)
+    // Reject invalid ranges before GetViewInfo, which asserts on malformed descriptors.
+    const uint32 Mips = View.MipRange.Num ? View.MipRange.Num : Target.NumMips;
+    const uint32 Layers = View.Dimension == FRHIViewDesc::EDimension::TextureCube ? 1 : Cube ? 6 : 1;
+    const uint32 Arrays = View.ArrayRange.Num ? View.ArrayRange.Num :
+        Cube && View.Dimension == FRHIViewDesc::EDimension::Texture2DArray ? 6 : Target.ArraySize;
+    if ((!View.MipRange.Num && View.MipRange.First) || (!View.ArrayRange.Num && View.ArrayRange.First) ||
+        uint32(View.MipRange.First) + Mips > Target.NumMips ||
+        uint32(View.ArrayRange.First) + Arrays > Layers)
     {
         Error = TEXT("Texture SRV mip/array range is outside the supported texture");
         return false;
@@ -1914,6 +1921,9 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
             Frequency == SF_Pixel ? WGPUShaderStage_Fragment : WGPUShaderStage_Compute;
         const bool Depth = Name.Contains(TEXT("SceneDepth")) || Name.Contains(TEXT("ShadowDepth")) ||
             Name.Contains(TEXT("DepthTexture"));
+        // ACES tables use integer-coordinate loads from core, unfilterable R32Float textures.
+        const bool ACESLookup = Name.Contains(TEXT("ACESReachTable")) ||
+            Name.Contains(TEXT("ACESGamutTable")) || Name.Contains(TEXT("ACESGammaTable"));
         switch (Binding->GetIntegerField(TEXT("descriptorType")))
         {
         case 0:
@@ -1942,7 +1952,7 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
                 const FString Type = Binding->GetStringField(TEXT("textureSampleType"));
                 Entry.texture.sampleType = Type == TEXT("uint") ? WGPUTextureSampleType_Uint :
                     Type == TEXT("sint") ? WGPUTextureSampleType_Sint :
-                    Depth ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
+                    Depth || ACESLookup ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
                 Entry.texture.viewDimension = ViewDimension;
                 Entry.texture.multisampled = Binding->GetBoolField(TEXT("textureMultisampled"));
             }

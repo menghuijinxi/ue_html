@@ -8,6 +8,13 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ...['Private/PostProcessCombineLUTs.usf', 'Private/PostProcessCombineLUTsInner.usf'].map(file => {
+    const declaration = 'RWTexture3D<float4> RWOutputTexture;';
+    return [file, [{before: declaration, after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '[[vk::image_format("rgba16f")]] [[vk::ext_decorate(25)]]', '#endif', declaration
+    ].join('\n')}]];
+  }),
   ['Private/SkyAtmosphere.usf', [
     ...['TransmittanceLutUAV', 'MultiScatteredLuminanceLutUAV', 'SkyViewLutUAV',
       'CameraAerialPerspectiveVolumeUAV', 'CameraAerialPerspectiveVolumeMieOnlyUAV',

@@ -501,6 +501,50 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
         RHI.RHISubmitCommandLists(MoveTemp(Batch));
         Record(TEXT("ordered-submission-after-rejection"), RHI.Finalized == RHI.Submitted);
     }
+    {
+        const uint32 Initial[] = {0, 0, 0, 0};
+        const uint32 Values[] = {11, 23, 37, 53};
+        FBufferRHIRef Uploads[2];
+        RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        {
+            FCommandList Cmd(&RHI);
+            FRHITransitionInfo Before[2], After[2];
+            for (uint32 Index = 0; Index < 2; ++Index)
+            {
+                Uploads[Index] = Buffer(RHI, Cmd,
+                    FRHIBufferCreateDesc::CreateStructured(TEXT("RDGBatchedUpload"), sizeof(Values), 4)
+                        .AddUsage(BUF_ShaderResource).SetInitialState(ERHIAccess::SRVCompute),
+                    Initial, sizeof(Initial));
+                void* Bytes = RHI.LockBuffer_BottomOfPipe(Cmd, Uploads[Index], 0, sizeof(Values), RLM_WriteOnly);
+                FMemory::Memcpy(Bytes, Values, sizeof(Values));
+                Before[Index] = FRHITransitionInfo(Uploads[Index], ERHIAccess::Unknown, ERHIAccess::CopyDest,
+                    EResourceTransitionFlags::IgnoreAfterState);
+                After[Index] = FRHITransitionInfo(Uploads[Index], ERHIAccess::CopyDest, ERHIAccess::Unknown,
+                    EResourceTransitionFlags::IgnoreAfterState);
+            }
+            const auto TransitionUploads = [&](TArrayView<const FRHITransitionInfo> Infos) {
+                auto* Transition = Cmd.CreateLocalTransition(RHI, Infos,
+                    ERHITransitionCreateFlags::NoSplit | ERHITransitionCreateFlags::AllowDuringRenderPass);
+                Cmd.BeginTransition(Transition);
+                Cmd.EndTransition(Transition);
+                Cmd.ReleaseLocalTransition(RHI, Transition);
+            };
+            TransitionUploads(Before);
+            for (auto& Upload : Uploads)
+                RHI.UnlockBuffer_BottomOfPipe(Cmd, Upload);
+            TransitionUploads(After);
+        }
+        RHI.SubmitCurrent();
+        for (uint32 Index = 0; Index < 2; ++Index)
+        {
+            const auto Bytes = RHI.ReadBuffer(Uploads[Index], sizeof(Values));
+            Record(FString::Printf(TEXT("rdg-batched-upload-%u-data"), Index),
+                Bytes.Num() == sizeof(Values) && FMemory::Memcmp(Bytes.GetData(), Values, sizeof(Values)) == 0);
+            Record(FString::Printf(TEXT("rdg-batched-upload-%u-preserves-access"), Index),
+                RHI.ResourceState(Uploads[Index]).Access == ERHIAccess::SRVCompute);
+            Checked += UE_ARRAY_COUNT(Values);
+        }
+    }
     Record(TEXT("transition-lifecycle-balanced"),
            RHI.Transitions.IsEmpty() && RHI.TransitionsCreated - StartCreated == RHI.TransitionsBegun - StartBegun &&
                RHI.TransitionsCreated - StartCreated == RHI.TransitionsEnded - StartEnded &&

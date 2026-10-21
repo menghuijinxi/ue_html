@@ -73,7 +73,7 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
         Record(TEXT("shader-reflects-float-texture"),
                FloatBinding->GetStringField(TEXT("textureSampleType")) == TEXT("float"));
         for (const EPixelFormat PixelFormat :
-             {PF_R32_UINT, PF_R16_UINT, PF_R8G8B8A8_UINT, PF_FloatRGBA, PF_R8, PF_G8, PF_R8G8})
+             {PF_R32_UINT, PF_R16_UINT, PF_R8G8B8A8_UINT, PF_FloatRGBA, PF_R32_FLOAT, PF_R8, PF_G8, PF_R8G8})
         {
             const FString Prefix = FString::Printf(TEXT("system-2d-%u"), uint32(PixelFormat));
             const bool Unsigned = PixelFormat == PF_R32_UINT || PixelFormat == PF_R16_UINT ||
@@ -106,7 +106,8 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
             Invalid.Dimension = ETextureDimension::Texture3D;
             Invalid.Depth = 2;
             Record(Prefix + TEXT("-volume-scope-retained"),
-                   RHI.ValidateTextureInitialization(Invalid, Error) == (PixelFormat == PF_R8G8B8A8_UINT));
+                   RHI.ValidateTextureInitialization(Invalid, Error) ==
+                       (PixelFormat == PF_R8G8B8A8_UINT || PixelFormat == PF_FloatRGBA));
         }
         auto Base = FRHITextureCreateDesc::Create3D(TEXT("IntegerVolumeProbe"), 3, 2, 3, PF_R8G8B8A8_UINT)
                         .SetFlags(ETextureCreateFlags::ShaderResource)

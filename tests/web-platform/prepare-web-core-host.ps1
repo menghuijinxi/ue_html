@@ -177,7 +177,7 @@ foreach ($taskPart in Get-ChildItem -LiteralPath $taskOriginalEngineModule) {
     Copy-Item -LiteralPath $taskPart.FullName -Destination $taskEngineModule -Recurse -Force
 }
 foreach ($taskEngineSource in @('Private/Shader/Preshader2.cpp', 'Private/SparseVolumeTexture/SparseVolumeTextureData.cpp',
-    'Private/UnrealEngine.cpp',
+    'Private/UnrealEngine.cpp', 'Private/SceneTexturesConfig.cpp',
     'Private/Materials/MeshMaterialShader.cpp',
     'Private/SparseVolumeTexture/SparseVolumeTextureUpload.cpp',
     'Private/GPUSort.cpp', 'Private/GPUBitonicSort.cpp', 'Private/GPUSortManager.cpp',
@@ -259,7 +259,7 @@ foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/Mo
     'Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp',
     'Private/OIT/OIT.cpp',
     'Private/PostProcess/SubpixelMorphologicalAA.cpp', 'Private/PostProcess/PostProcessing.cpp',
-    'Private/PostProcess/PostProcessMobile.cpp',
+    'Private/PostProcess/PostProcessMobile.cpp', 'Private/PostProcess/PostProcessCombineLUTs.cpp',
     'Private/SkyAtmosphereRendering.cpp', 'Private/SkyPassRendering.cpp',
     'Private/VisualizeLightShape.cpp', 'Private/PostProcess/PostProcessVisualizeHDR.cpp',
     'Private/PostProcess/PostProcessCompositePrimitivesCommon.cpp', 'Private/PostProcess/PostProcessCompositePrimitivesCommon.h',

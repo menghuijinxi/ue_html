@@ -2,6 +2,14 @@
 
 namespace
 {
+bool IsBufferUploadTransition(const FRHITransitionInfo& Entry)
+{
+    return Entry.Type == FRHITransitionInfo::EType::Buffer && Entry.Buffer &&
+        Entry.Flags == EResourceTransitionFlags::IgnoreAfterState &&
+        ((Entry.AccessBefore == ERHIAccess::Unknown && Entry.AccessAfter == ERHIAccess::CopyDest) ||
+         (Entry.AccessBefore == ERHIAccess::CopyDest && Entry.AccessAfter == ERHIAccess::Unknown));
+}
+
 bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
 {
     if (!Resource || Access == ERHIAccess::Unknown || IsInvalidAccess(Access))
@@ -144,7 +152,8 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         return false;
     }
     if (EnumHasAnyFlags(Info.Flags, ~(ERHITransitionCreateFlags::NoFence | ERHITransitionCreateFlags::NoSplit |
-                                    ERHITransitionCreateFlags::AllowDecayPipelines)) ||
+                                    ERHITransitionCreateFlags::AllowDecayPipelines |
+                                    ERHITransitionCreateFlags::AllowDuringRenderPass)) ||
         !Info.AliasingInfos.IsEmpty() || Info.TransitionInfos.IsEmpty())
     {
         Error = FString::Printf(TEXT("Unsupported transition: flags=0x%x aliasing=%d resources=%d"),
@@ -161,7 +170,13 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
             return false;
         }
         auto *Resource = GetViewableResource(Entry);
-        if (!Resource || !SupportedAccess(Resource, Entry.AccessAfter) ||
+        const bool Upload = IsBufferUploadTransition(Entry);
+        if (EnumHasAnyFlags(Info.Flags, ERHITransitionCreateFlags::AllowDuringRenderPass) && !Upload)
+        {
+            Error = TEXT("AllowDuringRenderPass is limited to RDG buffer upload transitions outside an active pass");
+            return false;
+        }
+        if (!Resource || (!Upload && !SupportedAccess(Resource, Entry.AccessAfter)) ||
             (Entry.AccessBefore != ERHIAccess::Unknown && !SupportedAccess(Resource, Entry.AccessBefore)))
         {
             Error = FString::Printf(TEXT("Unsupported transition resource=%s before=0x%x after=0x%x"),
@@ -174,7 +189,7 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FRHITexture*>(Resource) : nullptr;
         const uint32 Mips = Texture ? Texture->GetNumMips() : 1;
         const uint32 Slices = Texture && Texture->GetDesc().IsTextureCube() ? 6 : 1;
-        if (Entry.Flags != EResourceTransitionFlags::None || Entry.CommitInfo.IsSet() ||
+        if ((!Upload && Entry.Flags != EResourceTransitionFlags::None) || Entry.CommitInfo.IsSet() ||
             (!Entry.IsAllMips() && Entry.MipIndex >= Mips) ||
             (!Entry.IsAllArraySlices() && Entry.ArraySlice >= Slices) ||
             (Entry.PlaneSlice != 0 && !Entry.IsAllPlaneSlices() && !(DepthStencil && Entry.PlaneSlice == 1)))
@@ -271,6 +286,13 @@ void FWebGPUDynamicRHI::RHICreateTransition(FRHITransition *Transition, const FR
     auto Data = MakeShared<FWebGPUTransitionData>();
     for (const auto& Source : Info.TransitionInfos)
     {
+        // WebGPU orders staging copies automatically. These temporary upload barriers
+        // explicitly preserve the logical access state and can bracket CPU buffer locks.
+        if (IsBufferUploadTransition(Source))
+        {
+            Data->References.Add(Source.Resource);
+            continue;
+        }
         const auto *Resource = GetViewableResource(Source);
         const bool BothPlanes = Resource->GetType() == RRT_Texture &&
             static_cast<const FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil && Source.IsAllPlaneSlices();

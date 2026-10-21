@@ -62,6 +62,21 @@
 - 持续运行测试通过：Chrome 运行 600.973 秒、68,768 帧；Edge 运行 600.995 秒、68,705 帧，结束后再次移动也通过。两个浏览器的历史统计始终为 14 帧，线性内存保持 193,331,200 字节，预热后增长为 0，页面及 GPU 校验错误为 0。这是 10 分钟测试结果，不代表无限时长稳定性已验证。
 - 上述报告分别为 `tests/web-platform/results/web-default-interaction-chrome-results.json`、`web-default-interaction-edge-results.json`。拒绝锁定的备用操作报告 `web-default-interaction-chrome-drag-results.json` 也通过；内置浏览器已刷新，实际按 W 后画面改变，无页面错误。参考引擎的输入修改提交为 `e1b5fc089`。
 
+## 2026-10-21：接入 HDR、色调映射与 FXAA
+
+- 默认关卡独立配置改为 `r.MobileHDR=1`、`r.Mobile.AntiAliasing=1`、`r.AntiAliasingMethod=1`。Cook 和浏览器使用同一份配置，保持原始地图、光源和材质；当前抗锯齿为 FXAA，没有启用 TAA/TSR。
+- Web 不支持默认的 R11G11B10 浮点场景目标时，使用已支持的 RGBA16F；移动后处理的 Bloom、亮度及太阳光遮罩中间目标同样使用 RGBA16F，原生平台继续原有格式。
+- 补入 ACES 色调映射表所需的 R32_FLOAT 二维纹理创建及更新，采样布局使用不要求可选过滤能力的浮点加载。调色 LUT 在 Web 使用 RGBA16F 三维纹理，并在着色器显式声明存储格式，避免创建格式与反射信息不一致。
+- 补齐 RDG 批量缓冲上传的临时转换：只接受缓冲的 `Unknown ↔ CopyDest` 与 `IgnoreAfterState` 组合，保留逻辑访问状态和资源生命周期；仍不允许在实际活动渲染通道内执行转换。原生探针验证两份上传数据及状态保留，原有非法转换检查继续通过。
+- 纹理回归发现 SRV 范围校验在拒绝非法描述前调用了会断言的 `GetViewInfo`，改为先检查原始 mip/数组范围。同步修正旧探针对 RGBA16F 三维纹理范围的过时预期。
+- 普通 UBT 构建、实际 Web 链接和原生 RHI 编译通过。默认关卡 Cook 成功，零着色器转换失败；Stage 得到 383 个文件、108,218,956 字节的资源包，独立目录为 6 个文件、290,172,727 字节。
+- 新增 `probe-web-default-postprocess.cjs`，拦截真实 WebGPU 绘制和计算提交，并按着色器入口查回 Cook 的转换产物。Chrome、Edge 均确认 RGBA16F `SceneColor`、`FTonemapPS`、`FFXAAPS`、Bloom 的 setup/down/up 和 `FLUTBlenderCS` 实际执行，不仅检查配置或着色器已编译。
+- 原生回归通过：材质探针 19 次绘制、1,114,112 个数值检查，转换探针 66,064 个数值检查；纹理记录/直通模式各 124 项、840 个数值检查全部通过。
+- 首次 HDR 图像检查通过，天空和地面继续可见，地面亮度均值约 103。当前固定曝光下画面比编辑器截图暗，不能据此认定光照、曝光或颜色已经对齐。
+- 尚未接入：自动曝光、体积云。雾、间接光照及与编辑器相同视点和曝光的图像对比仍需后续验证。浏览器仍为 ES3.1 移动前向渲染，不代表桌面 Lumen、TSR 或体积云已经移植。
+- 最终包双浏览器回归通过：后处理实际提交、原图光照/天空/缩放均通过；两边各 7 项交互通过。Chrome 持续测试 60.779 秒、最终 7,870 帧，Edge 61.552 秒、最终 7,985 帧；预热后线性内存增长为 0，统计历史保持 14 帧，页面错误和 GPU 校验错误均为 0。本次 HDR 包只完成约一分钟持续测试，之前 LDR 包的十分钟结果不作为 HDR 包长时稳定性的证明。
+- 新增报告为 `tests/web-platform/results/web-default-postprocess-results.json`，截图为同目录 `web-default-postprocess-chrome.png` 和 `web-default-postprocess-edge.png`；原图及交互报告也已更新为最终 HDR 独立包。参考引擎修改提交为 `b5d55f12e`。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行，依次构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
@@ -72,6 +87,7 @@
 node tests/web-platform/stage-web-engine.cjs --default-template
 node tests/web-platform/package-web-default-template.cjs
 $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-default-postprocess.cjs
 node tests/web-platform/probe-web-default-scene.cjs --packaged
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --seconds=600
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Edge --seconds=600

@@ -113,6 +113,8 @@ try {
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot '.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg') -File -Recurse |
         Where-Object { $_.Extension -in @('.py', '.cpp', '.h', '.js') } | ForEach-Object { $_.FullName })
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/GameEngine.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/SceneTexturesConfig.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/SceneTexturesConfig.cpp'
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Experimental/ChaosCore') -File -Recurse | ForEach-Object { $_.FullName })
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Public/Math/UnrealMathFPU.h'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
@@ -145,6 +147,8 @@ try {
         'RenderCore/Public/WebShaderPlatform.h', 'Engine/Private/SkeletalRenderGPUSkin.cpp',
         'Renderer/Private/LightGridInjection.cpp', 'Renderer/Private/MobileFogRendering.cpp',
         'Renderer/Private/MobileBasePassRendering.cpp', 'Renderer/Private/MobileShadingRenderer.cpp',
+        'Renderer/Private/PostProcess/PostProcessMobile.cpp',
+        'Renderer/Private/PostProcess/PostProcessCombineLUTs.cpp',
         'Renderer/Private/SkyAtmosphereRendering.cpp', 'Renderer/Private/SkyPassRendering.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/$taskShaderOverlay"
         $taskFiles += Join-Path $taskHost "Source/Runtime/$taskShaderOverlay"
