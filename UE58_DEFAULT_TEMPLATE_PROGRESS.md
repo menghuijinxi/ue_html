@@ -133,6 +133,24 @@
 - 本轮重新生成六文件独立包，通过 12 次本机/网卡地址的文件响应检查。Chrome、Edge 的可信网卡来源均完成 182 帧且实际移动超过 1,000 单位，无脚本或 GPU 校验错误；Chrome 原本机入口另验收 121 帧。首次启动曾出现此前记录的 `A valid external Instance reference no longer exists`，复跑通过，仅保留为既有偶发问题，未将其宣称为修复。
 - 局域网 HTTP 测试设备仍需手动将 `http://10.1.1.200:8765` 加入可信开发来源并重启浏览器，或部署受该设备信任的 HTTPS。验证仅使用本机访问网卡地址，其他设备及路由连通性需实际测试。
 
+## 2026-10-22：接入原始默认关卡的指数高度雾
+
+- 开放 Web 移动平台原有的 `MobileFog.usf` 编译和运行入口，保留 UE 指数高度雾及天空大气散射计算。继续使用原始关卡的 `ExponentialHeightFog`，密度 0.0436、高度衰减 0.2、起始距离 0、高度 -6850；不改地图、灯光、材质或组件参数。
+- 默认配置显式启用像素雾深度测试和天空大气影响高度雾。实际 WebGPU 管线使用 reversed-Z `greater-equal`、天空模板位 8 的 `not-equal` 测试，以及 `src + dst * src-alpha` 透射率混合，保留天空材质自身处理雾的路径。
+- 只在 Web 排除未使用的体积雾、局部雾和雾散射立方体贴图排列；其他平台保持原有编译条件。原图 `bEnableVolumetricFog=false`，本次没有接入体积雾光照体素、历史重投影、局部光散射或光柱。
+- 隔离原生 RenderCore、Renderer 构建分别完成 8、40 项任务，安装目录输入哈希未变；普通 UBT Web 构建及真实链接通过，最终日志 `web-engine-full-20261022-004957.log`。首次续编中 Clang 编译已有 Engine 单元曾崩溃，降低本次并行数至 4 后该单元通过；不将重试当作修复 Clang。
+- 禁用着色器 DDC 后 Cook 通过，配置一致性通过、零转换失败；全局排列由 947 增至 966，包含 18 个 `FMobileFogPS` 和 1 个 `FMobileFogVS`，19 个 WGSL 模块另经真实 Chrome 解析通过。Stage 为 383 文件、119,327,535 字节；独立包为 6 文件、301,303,376 字节。
+- 新增仅供验收的组件参数导出，正常页面不调用。`probe-web-default-postprocess.cjs --clouds --exposure --fog` 在 Chrome、Edge 验证原始参数、关闭雾、密度翻倍、起始距离改为 50000、高度衰减四倍及恢复六组控制。地面开关平均像素差约 7.35，参数控制差约 4.03、2.20、5.21；恢复差分别约 0.005、0.444，低于开关差的四分之一，随后至少 60 帧继续绘制雾。
+- 自动曝光会改变全图亮度，远近检查改用棋盘格相邻像素对比度，不把绝对亮度变化误认为雾量。开雾/关雾对比度比值：远处约 0.959，近处约 0.979；远处棋盘格衰减更明显。对照仅冻结材质动画，曝光继续使用真实时间收敛，普通页面保持真实时间。
+- 双浏览器曾在同一运行包实际执行高度雾、原云、HDR、FXAA、Bloom、LUT 和直方图自动曝光；云纹理每级抽样回读继续通过。曝光正常/太阳降至十分之一/恢复倍率约 1.155 / 11.568 / 1.155。那些通过运行中的页面错误、GPU 校验错误、设备丢失均为 0；最后一次完整复验在 Chrome 启动时再次失败，当前 `web-default-postprocess-results.json` 保持 `pass=false`，不以较早的成功覆盖本次失败。
+- 当前包的原图光照、天空关闭和恢复、竖屏、恢复窗口，以及两项资源/配置哈希破坏测试均重新通过，报告为 `web-default-scene-results.json`。效果截图为 `web-default-fog-{on,off,dense,start-distance,height-falloff,restored}-{chrome,edge}.png`。
+- 当前包真实时间持续交互通过：Chrome 61.001 秒、4,413 帧，Edge 62.975 秒、4,532 帧，各 7 项操作通过；WASM 线性内存均为 231,997,440 字节，预热后增长为 0，统计历史为 14 帧。报告为 `web-default-interaction-{chrome,edge}-results.json`。这只证明成功启动后的约一分钟运行，不证明冷启动可靠，也不沿用旧包十分钟的结果。
+- 普通页面启动回归有未通过项：Chrome DPR 1、1.5 的启动/竖屏/恢复及实际移动通过，DPR 2 首次启动在第 3 帧设备丢失，该轮汇总保持 `pass=false`。Edge DPR 1/1.5/2 的三次启动、九个窗口状态及实际移动全部通过，单独报告为 `web-default-startup-fog-edge-results.json`。Chrome DPR 2 诊断对照中正常设置一次失败、一次成功；关闭雾、只关闭雾深度测试各两次成功，样本不足以证明雾管线就是根因，不改变发布配置。
+- 已缩小但未修复的启动问题：Chrome 多次在启动第 3～4 帧退出 GPU 进程，随后设备丢失并报 `A valid external Instance reference no longer exists`，没有先行 GPU 校验错误。抓取自有自动化 GPU 进程的异常转储后，确认 `0xC000001D` 来自 Chrome `155.0.8059.86` 内的 `dxcompiler.dll + 0x14248a0`，该位置为编译器断言后的 `ud2`；不是凭 Instance 文本判断 C++ 引用生命周期。
+- 转储中还能找到原天空 `FCubeDownsamplePS` 的入口，但这不足以确认触发着色器。该 WGSL 的 20 个独立管线变体通过；从成功的 Dawn 着色器日志提取 53 份真实 HLSL，再用隔离复制的同一 Google DXC 独立编译，53 份全部成功。未替换安装浏览器或引擎中的 DLL，也未以浏览器启动参数绕过发布包中的校验。
+- 持续订阅控制台的完整探针失败较多，简化探针及普通页面也有成功；Chrome DPR 2 普通页面的失败说明问题不只发生在效果探针。另有一次启动在配置加载中报 WASM 内存越界，原因同样未定位。历史失败保留在 `web-default-fog-first-start-instance-failure.json`、`web-default-fog-second-start-instance-failure.json`、`web-default-fog-dxc-instance-failure.json`、`web-default-startup-fog-dpr2-failure-results.json`；转储及模块判断为 `results/fog-crashes/chrome.exe_261022_013151.dmp`、`web-default-fog-gpu-crash-module.json`。后续成功不代表这些启动问题已修复。
+- 效果探针新增设备丢失记录、`--browser=Chrome|Edge` 和 `--console=page` 诊断选项。默认保留原 CDP 控制台订阅；页面模式仅保存最近 24 条日志并照常转发 console。页面模式也曾复现启动失败，不能作为修复；真实 GPU 调用、页面异常、GPU 校验和设备丢失判定均保留。参考引擎提交为 `ba9aae129`。下一步优先缩小编译器断言的输入与触发条件，暂不扩大体积雾范围。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。随后构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
@@ -147,7 +165,7 @@ node tests/web-platform/package-web-default-template.cjs
 $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
 node tests/web-platform/probe-web-mobile-histogram.cjs
 node tests/web-platform/probe-web-default-startup.cjs --runs=3
-node tests/web-platform/probe-web-default-postprocess.cjs --clouds --exposure
+node tests/web-platform/probe-web-default-postprocess.cjs --clouds --exposure --fog
 node tests/web-platform/probe-web-default-scene.cjs --packaged
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --seconds=600
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Edge --seconds=600

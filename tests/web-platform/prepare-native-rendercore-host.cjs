@@ -70,7 +70,8 @@ try {
     }
     fs.copyFileSync(source, destination);
   }
-  const rendererOverlays = renderer ? ['Private/VolumetricCloudRendering.cpp'] : [];
+  const rendererOverlays = renderer ? ['Private/VolumetricCloudRendering.cpp',
+    'Private/MobileFogRendering.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);
     const destination = path.join(host, 'Source/Runtime/Renderer', name);
@@ -123,7 +124,8 @@ try {
     'Source/Runtime/RenderCore/Private/VertexFactory.cpp',
     'Build/Build.version',
     ...(renderer ? ['Binaries/Win64/UnrealEditor-Renderer.dll',
-      'Source/Runtime/Renderer/Private/VolumetricCloudRendering.cpp'] : []),
+      'Source/Runtime/Renderer/Private/VolumetricCloudRendering.cpp',
+      'Source/Runtime/Renderer/Private/MobileFogRendering.cpp'] : []),
   ].map(name => audit(path.join(stock, name)));
   report.sourceFiles = [audit(__filename),
     ...overlays.map(name => audit(path.join(root, 'reference-engine/Engine/Source/Runtime/RenderCore', name))),

@@ -1,8 +1,8 @@
 # UE Web 平台独立验证
 
-更新日期：2026-10-21。当前默认关卡的构建、打包、画面及回归结果见 [默认关卡进度](H:/ue_html/UE58_DEFAULT_TEMPLATE_PROGRESS.md)。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，工具链和早期移植记录见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。
+更新日期：2026-10-22。当前默认关卡的构建、打包、画面及回归结果见 [默认关卡进度](H:/ue_html/UE58_DEFAULT_TEMPLATE_PROGRESS.md)。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，工具链和早期移植记录见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。
 
-当前已用普通 UBT 构建的 wasm64 Engine 打包并运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光和原材质体积云。Chrome/Edge 的原生云绘制与三维纹理回读通过，18 次高 DPI 启动及 54 个窗口状态通过。当前采用 ES3.1 移动渲染，雾、云影等效果仍需逐项接入和验证。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
+当前已用普通 UBT 构建的 wasm64 Engine 打包并运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光、原材质体积云和指数高度雾。Chrome/Edge 曾通过高度雾参数对照、原生云绘制与三维纹理回读，约一分钟交互通过；最新完整效果及高 DPI 启动回归在 Chrome 遇到浏览器 DXC 断言后设备丢失，整体稳定性验收尚未通过，具体证据见默认关卡进度。当前采用 ES3.1 移动渲染，体积雾、云影等效果仍未接入。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
 
 以下为历史检查点，不能作为当前独立包的验收结果。
 

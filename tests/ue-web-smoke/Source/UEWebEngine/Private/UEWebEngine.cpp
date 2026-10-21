@@ -26,6 +26,7 @@
 #include "WebRenderScene.h"
 #include "Components/SkyAtmosphereComponent.h"
 #include "Components/VolumetricCloudComponent.h"
+#include "Components/ExponentialHeightFogComponent.h"
 #include "Stats/StatsData.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
@@ -190,6 +191,40 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
                 Component->SetVisibility(Mode != 2);
     }
     return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultFogTestMode(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 4)
+        return 0;
+    UWorld* World = nullptr;
+    for (const FWorldContext& Context : GEngine->GetWorldContexts())
+        if (Context.WorldType == EWorldType::Game)
+            World = Context.World();
+    if (!World)
+        return 0;
+    static TMap<TWeakObjectPtr<UExponentialHeightFogComponent>, FVector3f> OriginalParameters;
+    int32 Count = 0;
+    for (TActorIterator<AActor> It(World); It; ++It)
+    {
+        if (auto* Fog = (*It)->FindComponentByClass<UExponentialHeightFogComponent>())
+        {
+            const FVector3f Original = OriginalParameters.FindOrAdd(Fog,
+                FVector3f(Fog->FogDensity, Fog->FogHeightFalloff, Fog->StartDistance));
+            Fog->SetFogDensity(Original.X * (Mode == 2 ? 2.0f : 1.0f));
+            Fog->SetFogHeightFalloff(Original.Y * (Mode == 4 ? 4.0f : 1.0f));
+            Fog->SetStartDistance(Mode == 3 ? 50000.0f : Original.Z);
+            Fog->SetVisibility(Mode != 1);
+            ++Count;
+            EM_ASM({
+                globalThis.__webDefaultFog = ({density: $0, heightFalloff: $1, startDistance: $2,
+                    visible: !!$3, volumetric: !!$4, height: $5});
+            }, double(Fog->FogDensity), double(Fog->FogHeightFalloff), double(Fog->StartDistance),
+                int(Fog->IsVisible()), int(Fog->bEnableVolumetricFog), double(Fog->GetComponentLocation().Z));
+        }
+    }
+    return Count;
 }
 
 int32 StartEngine()

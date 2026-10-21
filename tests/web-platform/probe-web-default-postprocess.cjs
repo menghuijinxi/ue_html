@@ -7,15 +7,32 @@ const {PNG} = require('pngjs');
 const directory = path.join(__dirname, 'results');
 const requireExposure = process.argv.includes('--exposure');
 const requireClouds = process.argv.includes('--clouds');
+const requireFog = process.argv.includes('--fog');
+const consoleCapture = process.argv.includes('--console=page') ? 'page' : 'cdp';
+const requestedBrowser = process.argv.find(argument => argument.startsWith('--browser='))?.slice(10);
+const browsers = [
+  ['Chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe'],
+  ['Edge', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe']
+].filter(([name]) => !requestedBrowser || name.toLowerCase() === requestedBrowser.toLowerCase());
+assert(browsers.length, 'Use --browser=Chrome or --browser=Edge');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, exposureRequired: requireExposure,
-  cloudsRequired: requireClouds, browserRuns: [],
+  cloudsRequired: requireClouds, fogRequired: requireFog, consoleCapture, browserRuns: [],
   sources: [__filename, path.join(__dirname, 'capture-web-canvas.cjs')].map(audit)};
 
-function capturePostprocess(exposureBindings) {
-  const state = {textures: [], draws: {}, dispatches: {}};
+function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
+  const state = {textures: [], draws: {}, dispatches: {}, fogPipelines: [], deviceLosses: [], log: []};
+  for (const method of consoleCapture === 'page' ? ['log', 'warn', 'error'] : []) {
+    const original = console[method];
+    console[method] = function(...args) {
+      state.log.push(args.map(value => String(value)).join(' '));
+      if (state.log.length > 24) state.log.shift();
+      return original.apply(this, args);
+    };
+  }
+  const observedDevices = new WeakSet();
   const textures = new Set();
   const pipelines = new WeakMap();
   const bound = new WeakMap();
@@ -58,6 +75,10 @@ function capturePostprocess(exposureBindings) {
   };
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(descriptor) {
+    if (!observedDevices.has(this)) {
+      observedDevices.add(this);
+      this.lost.then(info => state.deviceLosses.push({reason: info.reason, message: info.message}));
+    }
     const texture = createTexture.call(this, descriptor);
     if (texture.dimension === '3d' && /^VT_/.test(texture.label)) volumeDevice = this;
     const key = JSON.stringify([texture.label, texture.format, texture.width, texture.height, texture.depthOrArrayLayers]);
@@ -78,6 +99,9 @@ function capturePostprocess(exposureBindings) {
       const pipeline = create.call(this, descriptor);
       state.maxComputeSharedMemory = this.limits.maxComputeWorkgroupStorageSize;
       pipelines.set(pipeline, descriptor[stage]?.entryPoint || '');
+      if (fogEntries.includes(descriptor[stage]?.entryPoint))
+        state.fogPipelines.push({entry: descriptor[stage].entryPoint,
+          depthStencil: descriptor.depthStencil, targets: descriptor.fragment.targets});
       return pipeline;
     };
     const set = encoder.setPipeline;
@@ -169,6 +193,16 @@ function capturePostprocess(exposureBindings) {
         assert(setting?.host === value && setting?.target === value, `${name} must match Cook and runtime`);
       }
     }
+    if (requireFog) {
+      for (const [name, value] of Object.entries({
+        'r.Mobile.DisableVertexFog': '1', 'r.Mobile.EarlyZPass': '1',
+        'r.Mobile.PixelFogDepthTest': '1', 'r.SupportSkyAtmosphereAffectsHeightFog': '1',
+        'r.Mobile.AllowFramebufferFetch': '0', 'r.SupportLocalFogVolumes': '0', 'r.VolumetricFog': '0'
+      })) {
+        const setting = cook.shaderInventory.detail.settings[name];
+        assert(setting?.host === value && setting?.target === value, `${name} must match Cook and runtime`);
+      }
+    }
     report.cook = audit(cookFile);
     const shaders = new Map();
     const exposureBindings = {};
@@ -193,21 +227,29 @@ function capturePostprocess(exposureBindings) {
         }
       }
     }
-    for (const [name, executablePath] of [
-      ['Chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe'],
-      ['Edge', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe']
-    ]) {
+    for (const [name, executablePath] of browsers) {
       browser = await chromium.launch({executablePath, headless: true});
       const page = await browser.newPage({viewport: {width: 1100, height: 760}});
       const run = {browser: name, pass: false, errors: [], log: []};
       report.browserRuns.push(run);
       page.on('pageerror', error => run.errors.push(error.stack || error.message));
-      page.on('console', message => {
+      if (consoleCapture === 'cdp') page.on('console', message => {
         run.log.push(message.text());
         if (run.log.length > 24) run.log.shift();
       });
       await page.addInitScript(require('./capture-web-canvas.cjs'));
-      await page.addInitScript(capturePostprocess, exposureBindings);
+      await page.addInitScript(capturePostprocess, {exposureBindings, consoleCapture,
+        fogEntries: [...shaders].filter(([, shader]) => shader.name === 'FMobileFogPS').map(([entry]) => entry)});
+      if (requireFog) {
+        await page.route('**/ue-default-template/index.html', async route => {
+          const response = await route.fetch();
+          const html = await response.text();
+          const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
+          assert(html.includes(original));
+          await route.fulfill({response, body: html.replace(original,
+            "arguments: ['-webgpu', '-WebDefaultTemplate', '-WebVisualTestClock'],")});
+        });
+      }
       await page.goto('http://127.0.0.1:8765/build/ue-default-template/index.html', {waitUntil: 'commit'});
       await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 120,
         null, {timeout: 90000});
@@ -216,9 +258,11 @@ function capturePostprocess(exposureBindings) {
         gpuErrors: globalThis.__webCanvas.gpuErrors, state: globalThis.__webPostprocess
       }));
       Object.assign(run, result);
+      if (consoleCapture === 'page') run.log = result.state.log;
       assert.equal(result.failure, null);
       assert.equal(run.errors.length, 0);
       assert.equal(result.gpuErrors.length, 0);
+      assert.equal(result.state.deviceLosses.length, 0);
       assert((await page.evaluate(() => globalThis.__webCanvasWaitIdle())).pass);
       run.executedShaders = {};
       for (const field of ['draws', 'dispatches']) {
@@ -305,6 +349,116 @@ function capturePostprocess(exposureBindings) {
         assert(run.clouds.restoredDifference.mean < run.clouds.difference.mean * 0.5,
           'Restoring clouds must recover the original sky');
       }
+      if (requireFog) {
+        run.fog = {shaders: executed.filter(shader => shader.name === 'FMobileFogPS'),
+          pipelines: result.state.fogPipelines};
+        assert(run.fog.shaders.length, 'UE mobile pixel fog must actually draw');
+        assert(run.fog.pipelines.length && run.fog.pipelines.every(pipeline =>
+          pipeline.depthStencil?.format === 'depth24plus-stencil8' &&
+          pipeline.depthStencil.depthCompare === 'greater-equal' &&
+          pipeline.depthStencil.stencilFront?.compare === 'not-equal' &&
+          pipeline.depthStencil.stencilReadMask !== 0 &&
+          pipeline.targets[0].blend?.color.dstFactor === 'src-alpha'),
+        'Fog must preserve the UE depth test, sky stencil exclusion and transmittance blending');
+        const clock = await page.evaluate(() => globalThis.__webVisualTestClock);
+        assert(clock?.renderTimeFrozen && clock.deltaSeconds > 0.00001);
+        run.fog.clock = clock;
+        const count = () => page.evaluate(entries => entries.reduce((sum, entry) =>
+          sum + (globalThis.__webPostprocess.draws[entry] || 0), 0), run.fog.shaders.map(shader => shader.entry));
+        const capture = async (mode, label) => {
+          assert.equal(await page.evaluate(value => Module._WebDefaultFogTestMode(value), mode), 1,
+            'The original template must contain exactly one height fog component');
+          let previous, stable = 0;
+          for (let i = 0; i < 48; ++i) {
+            await page.waitForTimeout(250);
+            assert.equal(await page.evaluate(() => globalThis.__webEngineFailure || null), null);
+            const value = await page.evaluate(() => globalThis.__webReadExposure());
+            assert(value && value.scale > 0);
+            stable = previous && Math.abs(value.scale - previous.scale) / value.scale < 0.002 &&
+              Math.abs(value.scale - value.targetScale) / value.scale < 0.02 ? stable + 1 : 0;
+            previous = value;
+            if (stable >= 3) break;
+          }
+          assert(stable >= 3, 'Fog comparisons must wait for automatic exposure to converge');
+          assert((await page.evaluate(() => globalThis.__webCanvasWaitIdle())).pass);
+          const file = path.join(directory, `web-default-fog-${label}-${name.toLowerCase()}.png`);
+          const image = await page.locator('canvas').screenshot({path: file});
+          return {file: audit(file), pixels: PNG.sync.read(image), exposure: previous,
+            component: await page.evaluate(() => globalThis.__webDefaultFog)};
+        };
+        const delta = (a, b, minY, maxY) => {
+          let total = 0, changed = 0, samples = 0;
+          for (let y = Math.ceil(a.height * minY); y < a.height * maxY; ++y)
+          for (let x = Math.ceil(a.width * 0.1); x < a.width * 0.9; ++x) {
+            const offset = (y * a.width + x) * 4;
+            let value = 0;
+            for (let c = 0; c < 3; ++c) value += Math.abs(a.data[offset + c] - b.data[offset + c]);
+            total += value / 3;
+            changed += value > 3;
+            ++samples;
+          }
+          return {mean: total / samples, changedFraction: changed / samples};
+        };
+        const contrast = (image, minY, maxY) => {
+          let total = 0, samples = 0;
+          for (let y = Math.ceil(image.height * minY); y < image.height * maxY; ++y)
+          for (let x = Math.ceil(image.width * 0.1); x < image.width * 0.9; ++x) {
+            const offset = (y * image.width + x) * 4;
+            for (let c = 0; c < 3; ++c)
+              total += Math.abs(image.data[offset + c] - image.data[offset + c + 4]);
+            samples += 3;
+          }
+          return total / samples;
+        };
+        const normal = await capture(0, 'on');
+        assert(Math.abs(normal.component.density - 0.0436) < 0.0001 &&
+          Math.abs(normal.component.heightFalloff - 0.2) < 0.0001 &&
+          normal.component.visible && !normal.component.volumetric,
+        'Use the original default map fog values without enabling volumetric fog');
+        const disabled = await capture(1, 'off');
+        run.fog.difference = delta(normal.pixels, disabled.pixels, 0.48, 0.98);
+        run.fog.nearDifference = delta(normal.pixels, disabled.pixels, 0.85, 0.98);
+        run.fog.farDifference = delta(normal.pixels, disabled.pixels, 0.48, 0.6);
+        assert(run.fog.difference.mean > 0.5 && run.fog.difference.changedFraction > 0.1,
+          'Hiding the original fog must visibly change the rendered ground');
+        // Exposure changes global brightness; compare checker contrast instead of absolute pixel deltas.
+        run.fog.contrast = Object.fromEntries([['far', 0.48, 0.6], ['near', 0.85, 0.98]]
+          .map(([key, minY, maxY]) => {
+            const on = contrast(normal.pixels, minY, maxY);
+            const off = contrast(disabled.pixels, minY, maxY);
+            return [key, {on, off, ratio: on / off}];
+          }));
+        assert(run.fog.contrast.far.ratio < run.fog.contrast.near.ratio &&
+          run.fog.contrast.far.ratio < 1,
+        'Fog must reduce distant checker contrast more than nearby checker contrast');
+        const dense = await capture(2, 'dense');
+        assert(Math.abs(dense.component.density - normal.component.density * 2) < 0.0001);
+        run.fog.densityDifference = delta(normal.pixels, dense.pixels, 0.48, 0.98);
+        assert(run.fog.densityDifference.mean > 0.5, 'Increasing fog density must affect the rendered ground');
+        const distant = await capture(3, 'start-distance');
+        assert.equal(distant.component.startDistance, 50000);
+        run.fog.startDistanceDifference = delta(normal.pixels, distant.pixels, 0.48, 0.98);
+        assert(run.fog.startDistanceDifference.mean > 0.5,
+          'Moving the fog start beyond the floor must affect the rendered ground');
+        const falloff = await capture(4, 'height-falloff');
+        assert(Math.abs(falloff.component.heightFalloff - normal.component.heightFalloff * 4) < 0.0001);
+        run.fog.heightFalloffDifference = delta(normal.pixels, falloff.pixels, 0.48, 0.98);
+        assert(run.fog.heightFalloffDifference.mean > 0.1, 'Height falloff must affect the rendered ground');
+        const restored = await capture(0, 'restored');
+        run.fog.restoredDifference = delta(normal.pixels, restored.pixels, 0.48, 0.98);
+        assert(run.fog.restoredDifference.mean < run.fog.difference.mean * 0.25,
+          'Restoring the original fog must recover the ground appearance');
+        const start = await count();
+        const frames = await page.evaluate(() => globalThis.__webEngineFrames);
+        await page.waitForFunction(frame => globalThis.__webEngineFrames >= frame + 60,
+          frames, {timeout: 60000});
+        run.fog.restoredDraws = await count() - start;
+        assert(run.fog.restoredDraws >= 60, 'Restored fog must keep drawing on consecutive frames');
+        run.fog.controls = Object.fromEntries(Object.entries({normal, disabled, dense, distant, falloff, restored})
+          .map(([key, value]) => [key, {screenshot: value.file, exposure: value.exposure, component: value.component}]));
+        assert.equal((await page.evaluate(() => globalThis.__webCanvas.gpuErrors)).length, 0);
+        assert.equal(run.errors.length, 0);
+      }
       if (requireExposure) {
         run.eyeAdaptation = run.executedShaders.dispatches.filter(shader =>
           /FMobile(?:Histogram|Basic)EyeAdaptationCS/.test(shader.name || ''));
@@ -341,11 +495,14 @@ function capturePostprocess(exposureBindings) {
       await page.locator('canvas').screenshot({path: screenshot});
       run.screenshot = audit(screenshot);
       run.finalFrames = await page.evaluate(() => globalThis.__webEngineFrames);
+      run.deviceLosses = await page.evaluate(() => globalThis.__webPostprocess.deviceLosses);
+      assert.equal(run.deviceLosses.length, 0);
+      if (consoleCapture === 'page') run.log = await page.evaluate(() => globalThis.__webPostprocess.log);
       run.pass = true;
       await browser.close();
       browser = null;
     }
-    report.pass = report.browserRuns.length === 2 && report.browserRuns.every(run => run.pass);
+    report.pass = report.browserRuns.length === browsers.length && report.browserRuns.every(run => run.pass);
   } catch (error) {
     report.failure = error.stack;
   } finally {
@@ -355,6 +512,12 @@ function capturePostprocess(exposureBindings) {
       runs: report.browserRuns.map(run => ({browser: run.browser, pass: run.pass, frames: run.frames,
         finalFrames: run.finalFrames, failure: run.failure, errors: run.errors, gpuErrors: run.gpuErrors,
         ...(!run.pass ? {log: run.log} : {}), exposure: run.exposure,
+        fog: run.fog && {shaders: run.fog.shaders.map(shader => shader.name),
+          difference: run.fog.difference, nearDifference: run.fog.nearDifference,
+          farDifference: run.fog.farDifference, densityDifference: run.fog.densityDifference,
+          startDistanceDifference: run.fog.startDistanceDifference,
+          heightFalloffDifference: run.fog.heightFalloffDifference,
+          restoredDifference: run.fog.restoredDifference, restoredDraws: run.fog.restoredDraws},
         clouds: run.clouds && {shaders: run.clouds.shaders.map(shader => shader.name),
           volumeReadbacks: run.clouds.volumeReadbacks?.map(result => ({
             texture: result.texture, checkedMips: result.checkedMips, samples: result.checks.length, pass: result.pass})),
