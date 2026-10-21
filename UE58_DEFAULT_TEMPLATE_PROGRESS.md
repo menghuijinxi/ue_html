@@ -107,11 +107,31 @@
 - 参考引擎修复提交为 `3090741d9`；普通页面回归报告为 `results/web-default-startup-results.json`，各 DPI 截图为同目录的 `web-default-startup-{chrome,edge}-dpr{1,1.5,2}.png`。
 - 本次 DPI 与竖屏组合均在 Windows 桌面浏览器验证，不代表真机移动端兼容；持续测试时长约两分钟，不作为无限时长稳定性的证明。体积云仍未接入。
 
+## 2026-10-21：接入默认关卡的原始体积云
+
+- Web 移动渲染器在天空大气初始化后准备原生云参数，并在后处理前执行引擎原有的体积云光线步进。保留 `/Engine/Maps/Templates/Template_Default`、`m_SimpleVolumetricCloud_Inst` 及其纹理，没有增加网页云贴图或替换关卡。
+- 原云父材质的 `Shading Path Switch` 移动分支将消光设置为常量，导致最初只有均匀白雾。源码编译器仅对 Web 体积云选择原材质的完整分支；隔离的已安装版本 Cook 主机在内存中选择相同输入，不保存原始资产。最终 WGSL 中实际保留并采样两张材质三维纹理，截图出现完整云层形状。
+- 体积纹理 Cook 为线性 RGBA16F，Web 关闭该资源的流送和 sRGB 创建标志；补齐三维纹理 mip 链及云深度目标所需的 RG16F。沿用已有逐 mip 上传路径，未扩展数组纹理等无关功能。
+- 新增隔离原生 Renderer 模块构建，用于注册 Web 体积云着色器。原生 Renderer 42 项构建任务、RenderCore 8 项构建任务通过，安装目录输入哈希未变。Cook 主机依赖更新为与本次编译所用安装源码匹配的 DLL，替换前解除工作区硬链接，未修改安装引擎。
+- 普通 UBT Web 构建和实际链接通过；禁用着色器 DDC 后重新 Cook，947 个全局着色器排列、零转换失败，新增云相关设置的宿主/目标一致性检查。最终 Stage 为 383 个文件、118,153,220 字节，独立目录为 6 个文件、300,121,394 字节。
+- 最新独立包 Chrome、Edge 均实际执行 `FCloudRenderViewPS000`；`VT_PerlinWorley_Balanced` 为 128³、1 级 mip，`VT_Lightning` 为 64³、7 级 mip。每张纹理每一级各取 3 点 GPU 回读，分别为 3 点和 21 点，全部与上传的半精度字节一致；这不是全部体素逐个校验。
+- 关闭原云组件后云绘制为 0，天空区域平均像素差约 9.31，约 29.8% 像素明显改变；恢复后继续绘制，平均差约 2.30/2.29。HDR、FXAA、Bloom、LUT 与自动曝光回归通过，两浏览器页面和 GPU 校验错误为 0。最终包曝光正常/暗场/恢复倍率：Chrome 约 1.148/11.281/1.152，Edge 约 1.148/11.305/1.153。
+- 首次高 DPI 重复测试在 Chrome 第 9 次启动时遇到整机死机，随后 D3D12 设备丢失，`nvidia-smi` 报 `GPU is lost`，Chrome/Edge 均无可用适配器。用户确认当时电脑死机，已重启恢复；保留 `results/web-default-startup-cloud-device-reset-results.json` 等历史记录，不将此认定为已定位的云渲染缺陷，也不将恢复系统当作代码修复。
+- 重启后云包的 18 次启动、54 个窗口状态全部通过，包含 Chrome/Edge、DPR 1/1.5/2、每档重复 3 次及原生 Pawn 移动。原云接入提交为参考引擎 `51c345340`。
+- 增加仅供验收的材质时间开关并重新链接后，最终独立包再跑 6 次启动、18 个窗口状态，均通过；报告明确检查普通页面没有启用该开关，三个 DPR 下材质保持真实时间动画，画面非黑比例均为 100%。最新 `results/web-default-startup-results.json` 对应最终包；之前 18 次重复检查保存在 `web-default-startup-cloud-before-test-clock-results.json`，不冒充最终构建的重复次数。
+- 云材质随游戏时间移动，旧静态截图的天空恢复差约 10，地面约 0.47。画面对照脚本仅在验收加载时启用 `-WebVisualTestClock`，使用 UE 已有的 `r.RenderTimeFrozen=1` 冻结材质动画，同时保留真实帧时间供曝光适应；不修改独立包页面和资产，不放宽原有阈值。报告确认开关生效，Chrome/Edge 天空恢复差分别约 1.033/1.030，地面分别约 0.460/0.458，均小于原有阈值 5。窗口恢复及两项资源哈希破坏测试通过。真实时间的启动、云、曝光和交互另行验证。
+- 最终包真实时间持续运行通过：Chrome 121.879 秒、11,371 帧，Edge 122.298 秒、10,233 帧，各 7 项交互检查通过。线性内存均保持 231,997,440 字节、预热后增长为 0，统计历史稳定为 14 帧，页面和 GPU 错误均为 0。云纹理使内存基线高于之前无云版本；当前结果只证明约两分钟的持续测试。
+- 鼠标锁定被拒绝时的备用右键拖动及 7 项交互检查通过；该备用流程未另外做长时间持续测试。最终证据为 `web-default-postprocess-results.json`、`web-default-scene-results.json`、`web-default-startup-results.json` 与 `web-default-interaction-{chrome,edge,chrome-drag}-results.json`，均对应当前独立包。
+- 范围：当前仅开放单方向光的像素云步进及原材质密度/散射。云影、云 AO、云进入 SkyLight 实时捕获、体积云时域重建、高质量逐像素大气透射和复杂透明物体组合均未验收；当前直接按视图分辨率绘制云，高分辨率成本需关注。普通构建没有编译原生编辑器 Engine 模块，Cook 使用上述内存适配，不代表完整源码编辑器构建通过。
+- 原图的 `ExponentialHeightFog` 密度为 0.0436，高度衰减为 0.2，`bEnableVolumetricFog=false`。后续先接入该指数高度雾；体积雾的光照体素、历史重投影和局部光散射不在本次云接入范围。
+
 ## 默认关卡的复现入口
 
-以下命令从工作区根目录执行，依次构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
+以下命令从工作区根目录执行。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。随后构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
 
 ```powershell
+& ./tests/web-platform/build-native-rendercore.ps1 -Module RenderCore
+& ./tests/web-platform/build-native-rendercore.ps1 -Module Renderer
 & ./tests/web-platform/build-web-engine.ps1 -MaxParallelActions 8 -SkipHostPreparation
 & ./tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-ES31 -Scene DefaultTemplate -StopOnShaderError -ValidateShaderJobCache
 node tests/web-platform/stage-web-engine.cjs --default-template
@@ -119,7 +139,7 @@ node tests/web-platform/package-web-default-template.cjs
 $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
 node tests/web-platform/probe-web-mobile-histogram.cjs
 node tests/web-platform/probe-web-default-startup.cjs --runs=3
-node tests/web-platform/probe-web-default-postprocess.cjs --exposure
+node tests/web-platform/probe-web-default-postprocess.cjs --clouds --exposure
 node tests/web-platform/probe-web-default-scene.cjs --packaged
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --seconds=600
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Edge --seconds=600

@@ -8,10 +8,16 @@ const directory = path.join(__dirname, 'results');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const repetitions = Number(option('runs') || 3);
 assert(Number.isInteger(repetitions) && repetitions > 0);
+const scales = option('scale') ? [Number(option('scale'))] : [1, 1.5, 2];
+assert(scales.every(scale => Number.isFinite(scale) && scale > 0));
+const startupOnly = process.argv.includes('--startup-only');
+const reportSuffix = option('report') || '';
+assert(/^[a-z0-9-]*$/.test(reportSuffix));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
-const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, browserRuns: [], source: audit(__filename)};
+const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, startupOnly, scales,
+  browserRuns: [], source: audit(__filename)};
 
 (async () => {
   let browser;
@@ -29,7 +35,7 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, br
       if (option('browser') && option('browser') !== name) continue;
       browser = await chromium.launch({executablePath, headless: true});
       for (let index = 0; index < repetitions; ++index) {
-        for (const scale of [1, 1.5, 2]) {
+        for (const scale of scales) {
           const context = await browser.newContext({viewport: {width: 1848, height: 1120}, deviceScaleFactor: scale});
           const page = await context.newPage();
           const run = {browser: name, version: browser.version(), index, scale, pass: false, errors: [], log: [], views: []};
@@ -39,11 +45,13 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, br
             const text = message.text();
             run.log.push(text);
             if (run.log.length > 80) run.log.shift();
-            if (/Fatal error|Assertion failed|GPU validation|GPUValidationError|\[Invalid /.test(text))
+            if (/Fatal error|Assertion failed|GPU validation|GPUValidationError|\[Invalid |DXGI_ERROR_DEVICE|DeviceLost/.test(text))
               run.errors.push(text);
           });
+          const started = Date.now();
           await page.goto('http://127.0.0.1:8765/build/ue-default-template/index.html', {waitUntil: 'commit'});
-          for (const viewport of [null, {width: 390, height: 844}, {width: 1848, height: 1120}]) {
+          for (const viewport of startupOnly ? [null] :
+            [null, {width: 390, height: 844}, {width: 1848, height: 1120}]) {
             if (viewport) await page.setViewportSize(viewport);
             const first = await page.evaluate(() => globalThis.__webEngineFrames || 0);
             await page.waitForFunction(frame => globalThis.__webEngineFailure ||
@@ -51,6 +59,7 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, br
             const state = await page.evaluate(() => ({
               failure: globalThis.__webEngineFailure || null, frames: globalThis.__webEngineFrames,
               runtime: globalThis.__webEngineRuntime, camera: globalThis.__webDefaultCamera,
+              visualTestClock: globalThis.__webVisualTestClock || null,
               canvas: {
                 width: document.querySelector('canvas').width, height: document.querySelector('canvas').height,
                 cssWidth: document.querySelector('canvas').getBoundingClientRect().width,
@@ -59,7 +68,9 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, br
               }
             }));
             run.views.push(state);
+            state.elapsedMilliseconds = Date.now() - started;
             assert.equal(state.failure, null);
+            assert.equal(state.visualTestClock, null, 'The normal page must keep real-time material animation');
             assert.deepEqual(run.errors, []);
             assert(state.runtime && state.camera && state.runtime.statsHistoryFrames < 64);
             assert.equal(state.canvas.width, Math.round(state.canvas.cssWidth * scale));
@@ -108,7 +119,8 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, br
     report.failure = error.stack;
   } finally {
     if (browser) await browser.close();
-    fs.writeFileSync(path.join(directory, 'web-default-startup-results.json'), JSON.stringify(report, null, 2));
+    fs.writeFileSync(path.join(directory, `web-default-startup${reportSuffix ? '-' + reportSuffix : ''}-results.json`),
+      JSON.stringify(report, null, 2));
     console.log(JSON.stringify({pass: report.pass, runs: report.browserRuns.length, failure: report.failure,
       failed: report.browserRuns.filter(run => !run.pass)}, null, 2));
     process.exitCode = report.pass ? 0 : 1;

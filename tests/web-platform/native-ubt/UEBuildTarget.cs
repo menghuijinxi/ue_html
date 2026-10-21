@@ -6856,8 +6856,10 @@ namespace UnrealBuildTool
 			//   been filtered out by the project generator.  This causes the projects to not be added to directories properly.
 			ModuleRules RulesObject = CreateModuleRulesAndSetDefaults(ModuleName, ReferenceChain, Logger);
 
-			if (ModuleName == "RenderCore" &&
-				Environment.GetEnvironmentVariable("UE_WEB_NATIVE_RENDERCORE") == "1")
+			if ((ModuleName == "RenderCore" &&
+				Environment.GetEnvironmentVariable("UE_WEB_NATIVE_RENDERCORE") == "1") ||
+				(ModuleName == "Renderer" &&
+				Environment.GetEnvironmentVariable("UE_WEB_NATIVE_RENDERER") == "1"))
 			{
 				RulesObject.bUsePrecompiled = false;
 				RulesObject.bUseUnity = true;

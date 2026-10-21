@@ -7,6 +7,11 @@
 #include "Misc/Parse.h"
 #include "Modules/ModuleManager.h"
 #include "TextureResource.h"
+#include "Engine/VolumeTexture.h"
+#include "Materials/Material.h"
+#include "MaterialDomain.h"
+#include "Materials/MaterialExpressionShadingPathSwitch.h"
+#include "UObject/UObjectIterator.h"
 #include "WebCookProperties.h"
 
 class FWebCookControls final : public TTargetPlatformControlsBase<FWebCookProperties>
@@ -37,7 +42,7 @@ public:
         for (FName& Format : Layers)
         {
             const FString Name = Format.ToString();
-            if (Name == TEXT("BC6H") || Name == TEXT("BC6H_SF16"))
+            if (Texture->IsA<UVolumeTexture>() || Name == TEXT("BC6H") || Name == TEXT("BC6H_SF16"))
                 Format = TEXT("RGBA16F");
             else if (Name.StartsWith(TEXT("DXT")) || Name.StartsWith(TEXT("BC")) || Name == TEXT("AutoDXT"))
                 Format = TEXT("BGRA8");
@@ -54,6 +59,22 @@ public:
 
 class FWebTargetPlatformModule final : public ITargetPlatformModule
 {
+public:
+    virtual void StartupModule() override
+    {
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebGPUES31Cook")))
+        {
+            // The installed Cook host cannot use the source-branch compiler override.
+            // Select the same existing cloud branch in memory; never save the source asset.
+            LoadedHandle = FCoreUObjectDelegates::OnAssetLoaded.AddRaw(this, &FWebTargetPlatformModule::PrepareCloud);
+            for (TObjectIterator<UMaterial> It; It; ++It)
+                PrepareCloud(*It);
+        }
+    }
+    virtual void ShutdownModule() override
+    {
+        FCoreUObjectDelegates::OnAssetLoaded.Remove(LoadedHandle);
+    }
 protected:
     virtual void GetTargetPlatforms(TArray<ITargetPlatform*>& Platforms) override
     {
@@ -92,6 +113,27 @@ protected:
     }
 
 private:
+    void PrepareCloud(UObject* Object)
+    {
+        UMaterial* Material = Cast<UMaterial>(Object);
+        if (!Material || Material->MaterialDomain != MD_Volume || !Material->GetUsageByFlag(MATUSAGE_VolumetricCloud) ||
+            PreparedClouds.Contains(Material))
+            return;
+        PreparedClouds.Add(Material);
+        for (UMaterialExpression* Expression : Material->GetExpressions())
+        {
+            if (auto* Switch = Cast<UMaterialExpressionShadingPathSwitch>(Expression))
+            {
+                const auto& Full = Switch->Inputs[ERHIShadingPath::Deferred].IsConnected() ?
+                    Switch->Inputs[ERHIShadingPath::Deferred] : Switch->Default;
+                Switch->Inputs[ERHIShadingPath::Mobile] = Full;
+                UE_LOG(LogTemp, Display, TEXT("WEB_CLOUD_COOK: full volume branch %s input=%s"),
+                    *Switch->GetPathName(), *GetPathNameSafe(Full.Expression));
+            }
+        }
+    }
+    FDelegateHandle LoadedHandle;
+    TSet<TWeakObjectPtr<UMaterial>> PreparedClouds;
     TUniquePtr<FWebCookControls> Controls;
 };
 

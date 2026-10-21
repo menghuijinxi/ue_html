@@ -3,6 +3,7 @@
 #include "Misc/CoreDelegates.h"
 #include "Misc/DelayedAutoRegister.h"
 #include "Misc/CommandLine.h"
+#include "Misc/App.h"
 #include "HAL/PlatformTLS.h"
 #include "HAL/LowLevelMemTracker.h"
 #include "Modules/ModuleManager.h"
@@ -24,6 +25,7 @@
 #include <cstdio>
 #include "WebRenderScene.h"
 #include "Components/SkyAtmosphereComponent.h"
+#include "Components/VolumetricCloudComponent.h"
 #include "Stats/StatsData.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
@@ -36,6 +38,7 @@ int32 Frames = 0;
 bool UseWebGPU = false;
 bool RenderScene = false;
 bool DefaultTemplate = false;
+bool VisualTestClock = false;
 TWeakObjectPtr<APlayerController> TemplateController;
 
 const TCHAR* StartupMap()
@@ -124,6 +127,13 @@ void EngineFrame(void*)
     }
     ++Frames;
     EM_ASM({ globalThis.__webEngineFrames = $0; }, Frames);
+    if (VisualTestClock)
+    {
+        const auto* Frozen = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"));
+        EM_ASM({
+            globalThis.__webVisualTestClock = ({renderTimeFrozen: !!$0, deltaSeconds: $1});
+        }, Frozen && Frozen->GetInt() != 0, FApp::GetDeltaTime());
+    }
     if (APlayerController* Controller = TemplateController.Get())
     {
         FVector Location;
@@ -152,7 +162,7 @@ void EngineFrame(void*)
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
-    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 3)
+    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 4)
         return 0;
     UWorld* World = nullptr;
     for (const FWorldContext& Context : GEngine->GetWorldContexts())
@@ -171,6 +181,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
         }
         if (auto* Atmosphere = (*It)->FindComponentByClass<USkyAtmosphereComponent>())
             Atmosphere->SetVisibility(Mode != 2);
+        if (auto* Cloud = (*It)->FindComponentByClass<UVolumetricCloudComponent>())
+            Cloud->SetVisibility(Mode != 2 && Mode != 4);
         TInlineComponentArray<UStaticMeshComponent*> Components(*It);
         for (auto* Component : Components)
             if (Component->GetStaticMesh() &&
@@ -207,6 +219,12 @@ int32 StartEngine()
     {
         std::printf("P3_ENGINE_INIT_FAILED %d\n", InitResult);
         return InitResult;
+    }
+    if (VisualTestClock)
+    {
+        auto* Frozen = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"));
+        check(Frozen);
+        Frozen->Set(1, ECVF_SetByCode);
     }
     UWorld* World = nullptr;
     for (const FWorldContext& Context : GEngine->GetWorldContexts())
@@ -255,6 +273,7 @@ int main(int argc, char** argv)
         UseWebGPU |= FCStringAnsi::Strcmp(argv[Index], "-webgpu") == 0;
         RenderScene |= FCStringAnsi::Strcmp(argv[Index], "-WebRenderScene") == 0;
         DefaultTemplate |= FCStringAnsi::Strcmp(argv[Index], "-WebDefaultTemplate") == 0;
+        VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
     }
     if (!UseWebGPU)
         return StartEngine();

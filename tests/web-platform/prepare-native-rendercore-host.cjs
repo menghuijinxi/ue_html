@@ -6,7 +6,9 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '../..');
 const stock = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const host = path.join(root, '.tools/ue58-web-native-build-host/Engine');
-const reportFile = path.join(__dirname, 'results/native-rendercore-host-results.json');
+const renderer = process.argv.includes('--renderer');
+const moduleName = renderer ? 'Renderer' : 'RenderCore';
+const reportFile = path.join(__dirname, `results/native-${moduleName.toLowerCase()}-host-results.json`);
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const audit = file => ({file, sha256: sha(file)});
 const report = {date: new Date().toISOString(), pass: false, host, installedEngine: stock};
@@ -44,6 +46,16 @@ try {
   for (const entry of fs.readdirSync(path.join(stock, 'Source/Runtime'), {withFileTypes: true})) {
     if (!entry.isDirectory()) continue;
     if (entry.name === 'RenderCore') copyTree('Source/Runtime/RenderCore');
+    else if (entry.name === 'Renderer' && (renderer ||
+      fs.existsSync(path.join(host, '.prepared-Source-Runtime-Renderer.json')))) {
+      const destination = path.join(host, 'Source/Runtime/Renderer');
+      if (fs.existsSync(destination) && fs.lstatSync(destination).isSymbolicLink()) {
+        assert.equal(fs.realpathSync(destination), fs.realpathSync(path.join(stock, 'Source/Runtime/Renderer')));
+        assert(path.resolve(destination).startsWith(path.resolve(root) + path.sep));
+        fs.unlinkSync(destination);
+      }
+      copyTree('Source/Runtime/Renderer');
+    }
     else link(path.join(stock, 'Source/Runtime', entry.name), path.join(host, 'Source/Runtime', entry.name));
   }
   const overlays = ['Private/Shader.cpp', 'Private/RenderUtils.cpp',
@@ -57,6 +69,16 @@ try {
       fs.chmodSync(destination, 0o666);
     }
     fs.copyFileSync(source, destination);
+  }
+  const rendererOverlays = renderer ? ['Private/VolumetricCloudRendering.cpp'] : [];
+  for (const name of rendererOverlays) {
+    const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);
+    const destination = path.join(host, 'Source/Runtime/Renderer', name);
+    assert.equal(fs.statSync(destination).nlink, 1);
+    if (sha(source) !== sha(destination)) {
+      fs.chmodSync(destination, 0o666);
+      fs.copyFileSync(source, destination);
+    }
   }
   for (const name of ['Config', 'Content', 'Shaders', 'Plugins', 'Platforms']) link(path.join(stock, name), path.join(host, name));
   local(path.join(host, 'Binaries'));
@@ -81,6 +103,17 @@ try {
     }
   }
   assert.equal(fs.statSync(path.join(host, 'Binaries/Win64/UnrealEditor-RenderCore.dll')).nlink, 1);
+  if (renderer) {
+    for (const extension of ['dll', 'pdb']) {
+      const file = path.join(host, `Binaries/Win64/UnrealEditor-Renderer.${extension}`);
+      if (fs.existsSync(file) && fs.statSync(file).nlink > 1) {
+        assert.equal(sha(file), sha(path.join(stock, `Binaries/Win64/UnrealEditor-Renderer.${extension}`)));
+        fs.unlinkSync(file);
+        fs.copyFileSync(path.join(stock, `Binaries/Win64/UnrealEditor-Renderer.${extension}`), file);
+      }
+      if (fs.existsSync(file)) assert.equal(fs.statSync(file).nlink, 1);
+    }
+  }
   report.installedInputs = [
     'Binaries/Win64/UnrealEditor-RenderCore.dll',
     'Source/Runtime/RenderCore/Private/Shader.cpp',
@@ -89,11 +122,16 @@ try {
     'Source/Runtime/RenderCore/Private/ResolveShader.cpp',
     'Source/Runtime/RenderCore/Private/VertexFactory.cpp',
     'Build/Build.version',
+    ...(renderer ? ['Binaries/Win64/UnrealEditor-Renderer.dll',
+      'Source/Runtime/Renderer/Private/VolumetricCloudRendering.cpp'] : []),
   ].map(name => audit(path.join(stock, name)));
   report.sourceFiles = [audit(__filename),
     ...overlays.map(name => audit(path.join(root, 'reference-engine/Engine/Source/Runtime/RenderCore', name))),
-    ...overlays.map(name => audit(path.join(host, 'Source/Runtime/RenderCore', name)))];
-  report.boundary = 'Isolated native RenderCore build host using installed source, generated headers and copied import libraries. All writable Intermediate/Build/Win64, BuildRules and RenderCore outputs are independent copies. Other native DLL hardlinks are read-only dependencies; no other module may be rebuilt.';
+    ...overlays.map(name => audit(path.join(host, 'Source/Runtime/RenderCore', name))),
+    ...rendererOverlays.flatMap(name => [
+      audit(path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name)),
+      audit(path.join(host, 'Source/Runtime/Renderer', name))])];
+  report.boundary = `Isolated native ${moduleName} build host using installed source, generated headers and copied import libraries. Writable module sources and outputs are independent copies. Other native DLL hardlinks are read-only dependencies.`;
   report.pass = true;
 } catch (error) {
   report.failure = error.stack;

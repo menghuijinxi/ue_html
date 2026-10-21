@@ -51,7 +51,7 @@ bool IsUnsignedTextureFormat(EPixelFormat Value)
 bool IsSampled2DTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_G8 || Value == PF_R8 ||
-           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_R16F || Value == PF_R32_FLOAT ||
+           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT ||
            IsUnsignedTextureFormat(Value);
 }
 WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
@@ -71,6 +71,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_RGBA16Float;
     case PF_R16F:
         return WGPUTextureFormat_R16Float;
+    case PF_G16R16F:
+        return WGPUTextureFormat_RG16Float;
     case PF_R32_FLOAT:
         return WGPUTextureFormat_R32Float;
     case PF_R8G8B8A8_UINT:
@@ -301,9 +303,9 @@ void FWebGPUDynamicRHI::ConfigureStartup()
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     GMaxRHIFeatureLevel = ERHIFeatureLevel::ES3_1;
     GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_ES31"));
-    // VolumeTexture assets can request sRGB and streaming paths absent from this RHI.
-    // Direct linear 3D RHI textures remain available for atmosphere lookup tables.
-    GSupportsTexture3D = false;
+    GSupportsTexture3D = true;
+    GRHIGlobals.UseTexture3DBulkData = true;
+    GRHIGlobals.SupportsTexture3DAnisotropicFiltering = false;
 #else
     GMaxRHIFeatureLevel = ERHIFeatureLevel::SM5;
     GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
@@ -875,7 +877,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     const uint32 Limit = Volume ? Limits.maxTextureDimension3D : Limits.maxTextureDimension2D;
     if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube) ||
         (Cube && (In.Extent.X != In.Extent.Y || !Color)) || In.ArraySize != 1 || !In.Depth ||
-        (!Volume && In.Depth != 1) || !In.NumMips || (Volume && In.NumMips != 1) ||
+        (!Volume && In.Depth != 1) || !In.NumMips ||
         In.NumSamples != 1 || In.Extent.X <= 0 || In.Extent.Y <= 0 ||
         uint32(In.Extent.X) > Limit || uint32(In.Extent.Y) > Limit || (Volume && In.Depth > Limit) ||
         (!Color && (Volume || (In.Format != PF_DepthStencil && In.Format != PF_ShadowDepth))) ||
@@ -888,7 +890,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
                     !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::DepthStencilTargetable) ||
                     EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB | ETextureCreateFlags::UAV |
                         ETextureCreateFlags::RenderTargetable))) ||
-        In.NumMips > FMath::FloorLog2(FMath::Max(In.Extent.X, In.Extent.Y)) + 1 ||
+        In.NumMips > FMath::FloorLog2(FMath::Max(uint32(FMath::Max(In.Extent.X, In.Extent.Y)), uint32(In.Depth))) + 1 ||
         (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV) &&
          (In.Format != PF_R8G8B8A8 && In.Format != PF_FloatRGBA)) ||
         (In.InitAction != ERHITextureInitAction::Default && In.InitAction != ERHITextureInitAction::Initializer &&

@@ -172,6 +172,8 @@ try {
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-BuildSettings.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-RenderCore.dll'),
+        (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Renderer.dll'),
+        (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Engine.dll'),
         $taskHostDDPI
     ) | Where-Object { Test-Path -LiteralPath $_ } | ForEach-Object { Get-TaskAudit $_ }
     if ($taskWebGPU) {
@@ -216,6 +218,9 @@ try {
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-cook-host.cjs')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-cook-shaders.cjs')
         $taskReport.nativeRenderCoreBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-rendercore-build-results.json')
+        $taskReport.nativeRendererBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-renderer-build-results.json')
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VolumetricCloudRendering.cpp')
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/Materials/MaterialExpressions.cpp')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/Shader.cpp')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Public/WebShaderPlatform.h')

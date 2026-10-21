@@ -1,15 +1,20 @@
-param([string]$Engine = 'H:/UE_5.8')
+param(
+    [string]$Engine = 'H:/UE_5.8',
+    [ValidateSet('RenderCore', 'Renderer')][string]$Module = 'RenderCore'
+)
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-native-build-host/Engine'
 $taskProject = Join-Path $taskRoot 'tests/ue-shader-host/UEShaderHost.uproject'
 $taskStamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$taskLog = Join-Path $PSScriptRoot "results/native-rendercore-$taskStamp.log"
-$taskReportFile = Join-Path $PSScriptRoot 'results/native-rendercore-build-results.json'
-$taskActions = Join-Path $PSScriptRoot "build/native-rendercore-actions-$taskStamp.json"
+$taskModuleName = $Module.ToLowerInvariant()
+$taskLog = Join-Path $PSScriptRoot "results/native-$taskModuleName-$taskStamp.log"
+$taskReportFile = Join-Path $PSScriptRoot "results/native-$taskModuleName-build-results.json"
+$taskActions = Join-Path $PSScriptRoot "build/native-$taskModuleName-actions-$taskStamp.json"
 $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
-$taskSavedFlag = $env:UE_WEB_NATIVE_RENDERCORE
+$taskFlag = "UE_WEB_NATIVE_$($Module.ToUpperInvariant())"
+$taskSavedFlag = [Environment]::GetEnvironmentVariable($taskFlag)
 $taskReport = [ordered]@{
     date = Get-Date -Format o
     pass = $false
@@ -23,10 +28,12 @@ function Get-TaskAudit([string]$File) {
 }
 try {
     $taskProcess.ProcessorAffinity = [IntPtr]3
-    $env:UE_WEB_NATIVE_RENDERCORE = '1'
-    & node (Join-Path $PSScriptRoot 'prepare-native-rendercore-host.cjs') *> "$taskLog.prepare"
+    [Environment]::SetEnvironmentVariable($taskFlag, '1')
+    $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-native-rendercore-host.cjs'))
+    if ($Module -eq 'Renderer') { $taskPrepareArguments += '--renderer' }
+    & node @taskPrepareArguments *> "$taskLog.prepare"
     if ($LASTEXITCODE -ne 0) { throw "Native host preparation failed: $taskLog.prepare" }
-    $taskPreparedFile = Join-Path $PSScriptRoot 'results/native-rendercore-host-results.json'
+    $taskPreparedFile = Join-Path $PSScriptRoot "results/native-$taskModuleName-host-results.json"
     $taskPrepared = Get-Content -LiteralPath $taskPreparedFile -Raw | ConvertFrom-Json
     $taskReport.hostPreparation = Get-TaskAudit $taskPreparedFile
     $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/dotnet.exe'
@@ -37,7 +44,7 @@ try {
     $taskMakefile = Join-Path $taskRoot 'tests/ue-shader-host/Intermediate/Build/Win64/x64/UEShaderHostEditor/Development/Makefile.bin'
     if (Test-Path -LiteralPath $taskMakefile) { Remove-Item -LiteralPath $taskMakefile }
     $taskArguments = @($taskUBT, 'UEShaderHostEditor', 'Win64', 'Development',
-        "-Project=$taskProject", '-Module=RenderCore', '-NoUBA', '-NoUbaLocal',
+        "-Project=$taskProject", "-Module=$Module", '-NoUBA', '-NoUbaLocal',
         '-MaxParallelActions=1', '-NoHotReloadFromIDE')
     & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" "-Log=$taskLog.actions-ubt" *> "$taskLog.actions"
     if ($LASTEXITCODE -ne 0) { throw "Native action export failed: $taskLog.actions" }
@@ -49,8 +56,8 @@ try {
                 $taskResolved.StartsWith((Join-Path $taskRoot 'tests/ue-shader-host/Intermediate/'), [StringComparison]::OrdinalIgnoreCase)
             if (-not $taskAllowed) { throw "Native build output escaped isolated workspace: $taskResolved" }
             if ($taskResolved -match '\.(dll|exe)$' -and
-                [IO.Path]::GetFileName($taskResolved) -ne 'UnrealEditor-RenderCore.dll') {
-                throw "Only RenderCore may be rebuilt: $taskResolved"
+                [IO.Path]::GetFileName($taskResolved) -ne "UnrealEditor-$Module.dll") {
+                throw "Only $Module may be rebuilt: $taskResolved"
             }
         }
     }
@@ -58,7 +65,7 @@ try {
     $taskReport.actionCount = $taskExport.Actions.Count
     & $taskDotnet @taskArguments "-Log=$taskLog.ubt" *> $taskLog
     $taskReport.exitCode = $LASTEXITCODE
-    if ($LASTEXITCODE -ne 0) { throw "Native RenderCore build failed: $taskLog" }
+    if ($LASTEXITCODE -ne 0) { throw "Native $Module build failed: $taskLog" }
     foreach ($taskInput in $taskPrepared.installedInputs) {
         if ((Get-TaskAudit $taskInput.file).sha256 -ne $taskInput.sha256) { throw "Installed input changed: $($taskInput.file)" }
     }
@@ -69,18 +76,18 @@ try {
         (Join-Path $PSScriptRoot 'native-ubt/UEBuildTarget.cs'),
         (Join-Path $PSScriptRoot 'native-ubt/UnrealBuildTool.Native.csproj')
     ) | ForEach-Object { if ($_ -is [string]) { Get-TaskAudit $_ } else { $_ } }
-    $taskReport.products = @('UnrealEditor-RenderCore.dll', 'UnrealEditor-RenderCore.pdb') |
+    $taskReport.products = @("UnrealEditor-$Module.dll", "UnrealEditor-$Module.pdb") |
         ForEach-Object { Get-TaskAudit (Join-Path $taskHost "Binaries/Win64/$_") }
     $taskReport.ubt = Get-TaskAudit $taskUBT
     $taskReport.log = Get-TaskAudit $taskLog
-    $taskReport.boundary = 'Native RenderCore only, using installed 5.8.0 source with target Shader.cpp, RenderUtils.cpp, GPUDebugCrashUtils.cpp, ResolveShader.cpp and shared WebShaderPlatform.h. Other native modules remain installed binaries. Module loading, Cook completion, WASM loading and rendering require separate verification.'
+    $taskReport.boundary = "Isolated native $Module module build using installed 5.8.0 source with audited target Web overlays. Other native modules remain precompiled dependencies. Module loading, Cook completion, WASM loading and rendering require separate verification."
     $taskReport.pass = $true
 } catch {
     $taskReport.failure = $_.ToString()
     throw
 } finally {
     $taskReport | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $taskReportFile -Encoding utf8
-    $env:UE_WEB_NATIVE_RENDERCORE = $taskSavedFlag
+    [Environment]::SetEnvironmentVariable($taskFlag, $taskSavedFlag)
     $taskProcess.ProcessorAffinity = $taskAffinity
 }
 Write-Output ([pscustomobject]$taskReport | Select-Object pass, actionCount, installedInputsUnmodified, log | ConvertTo-Json)

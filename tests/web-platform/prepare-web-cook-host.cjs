@@ -20,6 +20,12 @@ const reportFile = path.join(__dirname, es31 ? 'results/web-es31-cook-host-resul
 const report = {date: new Date().toISOString(), pass: false, host,
   profile: es31 ? 'WebGPU-ES31' : 'WebGPU-SM5', fullSourceEngineBuild: false};
 const valid = item => item?.file && fs.existsSync(item.file) && sha(item.file) === item.sha256;
+const previousCookFile = path.join(__dirname, es31 ?
+  'results/web-engine-webgpu-es31-default-cook-results.json' : 'results/web-engine-webgpu-cook-results.json');
+const previousCook = fs.existsSync(previousCookFile) ?
+  JSON.parse(fs.readFileSync(previousCookFile, 'utf8').replace(/^\uFEFF/, '')) : null;
+const recordedHostProduct = file => previousCook?.hostProducts?.some(item =>
+  path.resolve(item.file) === path.resolve(file) && valid(item));
 
 try {
   fs.mkdirSync(build, {recursive: true});
@@ -47,7 +53,8 @@ try {
       JSON.parse(fs.readFileSync(reportFile, 'utf8').replace(/^\uFEFF/, '')) : null;
     assert(sha(destinationDLL) === sha(installedDLL) ||
       sha(destinationDLL) === sha(path.join(baseline, 'Engine/Binaries/Win64/UnrealEditor-RenderCore.dll')) ||
-      previous?.nativeRenderCore?.sha256 === sha(destinationDLL), 'Unexpected RenderCore DLL in Cook host');
+      previous?.nativeRenderCore?.sha256 === sha(destinationDLL) ||
+      recordedHostProduct(destinationDLL), 'Unexpected RenderCore DLL in Cook host');
     assert.equal(fs.realpathSync(binaries), path.resolve(binaries));
     // Unlink the dependency first; copying over its hardlink would overwrite the installed DLL.
     fs.unlinkSync(destinationDLL);
@@ -58,11 +65,40 @@ try {
   assert(native.installedInputs.every(valid));
   report.nativeRenderCoreBuildReport = audit(nativeReportFile);
   report.nativeRenderCore = audit(destinationDLL);
-  // Shared binary files are read-only inputs. Rebuilt BuildSettings files are always separate.
-  for (const entry of fs.readdirSync(path.join(baseline, 'Engine/Binaries/Win64'), {withFileTypes: true})) {
-    if (/^UnrealEditor-BuildSettings(?:Stock)?\./.test(entry.name)) continue;
-    const source = path.join(baseline, 'Engine/Binaries/Win64', entry.name);
+  const rendererReportFile = path.join(__dirname, 'results/native-renderer-build-results.json');
+  const renderer = JSON.parse(fs.readFileSync(rendererReportFile, 'utf8').replace(/^\uFEFF/, ''));
+  assert(renderer.pass && renderer.installedInputsUnmodified && renderer.sourceFiles.every(valid) &&
+    renderer.products.every(valid) && renderer.installedInputs.every(valid), 'Rebuild native Renderer before Cook');
+  const rendererDLL = renderer.products.find(item => path.basename(item.file) === 'UnrealEditor-Renderer.dll');
+  assert(rendererDLL);
+  const rendererDestination = path.join(binaries, 'UnrealEditor-Renderer.dll');
+  if (fs.existsSync(rendererDestination) && sha(rendererDestination) !== rendererDLL.sha256) {
+    const previous = fs.existsSync(reportFile) ?
+      JSON.parse(fs.readFileSync(reportFile, 'utf8').replace(/^\uFEFF/, '')) : null;
+    assert(sha(rendererDestination) === sha(path.join(engine, 'Binaries/Win64/UnrealEditor-Renderer.dll')) ||
+      sha(rendererDestination) === sha(path.join(baseline, 'Engine/Binaries/Win64/UnrealEditor-Renderer.dll')) ||
+      previous?.nativeRenderer?.sha256 === sha(rendererDestination) ||
+      recordedHostProduct(rendererDestination), 'Unexpected Renderer DLL in Cook host');
+    assert.equal(fs.realpathSync(binaries), path.resolve(binaries));
+    fs.unlinkSync(rendererDestination);
+  }
+  if (!fs.existsSync(rendererDestination)) fs.copyFileSync(rendererDLL.file, rendererDestination);
+  assert.equal(fs.statSync(rendererDestination).nlink, 1);
+  assert.equal(sha(rendererDestination), rendererDLL.sha256);
+  assert(renderer.installedInputs.every(valid));
+  report.nativeRendererBuildReport = audit(rendererReportFile);
+  report.nativeRenderer = audit(rendererDestination);
+  // Match the installed sources used by the rebuilt modules, including their dependent DLL exports.
+  for (const entry of fs.readdirSync(path.join(engine, 'Binaries/Win64'), {withFileTypes: true})) {
+    if (/^UnrealEditor-(?:BuildSettings(?:Stock)?|RenderCore|Renderer)\./.test(entry.name)) continue;
+    const source = path.join(engine, 'Binaries/Win64', entry.name);
     const destination = path.join(binaries, entry.name);
+    if (entry.isFile() && fs.existsSync(destination) && sha(destination) !== sha(source)) {
+      const old = path.join(baseline, 'Engine/Binaries/Win64', entry.name);
+      assert(fs.existsSync(old) && sha(destination) === sha(old), `Unexpected Cook dependency: ${destination}`);
+      assert.equal(fs.realpathSync(binaries), path.resolve(binaries));
+      fs.unlinkSync(destination);
+    }
     if (fs.existsSync(destination)) continue;
     if (entry.isFile()) fs.linkSync(source, destination);
     else if (entry.isDirectory()) fs.symlinkSync(source, destination, 'junction');
@@ -134,11 +170,11 @@ try {
   report.platformMap = rebuilt;
   report.sourceFiles = [__filename, ddpi, generated, compileResponse,
     path.join(build, 'UnrealEditor-Definitions.h'), path.join(build, 'UnrealEditor-Forward.def')].map(audit);
-  report.products = [replacement, preserved, hostDDPI, destinationDLL, path.join(binaries, 'UnrealEditor-Cmd.exe')].map(audit);
+  report.products = [replacement, preserved, hostDDPI, destinationDLL, rendererDestination, path.join(binaries, 'UnrealEditor-Cmd.exe')].map(audit);
   report.boundary = `Isolated installed 5.8.0 native Cook host with ${report.profile} assigned to Web. ` +
-    (es31 ? 'Experimental ES3.1 Cook profile; the browser still uses its existing SM5 build. ' :
+    (es31 ? 'ES3.1 Cook profile matching the Web browser feature level. ' :
       'Uses the target 5.8.3 Web DDPI. ') +
-    'The platform-name map and RenderCore shared Web shader predicates are rebuilt; other BuildSettings exports forward to a separate stock DLL. Other native modules remain installed binaries. No Cook or shader success is implied.';
+    'The platform-name map, RenderCore shared Web shader predicates and Renderer cloud shader gates are rebuilt; other BuildSettings exports forward to a separate stock DLL. Other native modules remain installed binaries. No Cook or shader success is implied.';
   report.pass = true;
 } catch (error) {
   report.failure = error.stack;

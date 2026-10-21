@@ -281,7 +281,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261021-v16-DefaultTemplateSky-StructuredView-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261021-v18-FullCloudDensity-StructuredView-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -336,6 +336,12 @@ class FWebGPUShaderFormat final : public IShaderFormat
                                            FShaderCompilerOutput &Output) const override
     {
         RecordCookInventory(Input);
+        const bool bCloudShader = Input.GenerateShaderName().Contains(TEXT("FCloudRenderViewPS"));
+        if (bCloudShader)
+        {
+            FFileHelper::SaveStringToFile(FString(Preprocessed.GetSourceView()),
+                *(NewDiagnosticDirectory() / TEXT("cloud-preprocessed.hlsl")));
+        }
         FShaderCompilerInput NativeInput = Input;
         NativeInput.ShaderFormat = NativeFormat(Input.ShaderFormat);
         Native->CompilePreprocessedShader(NativeInput, Preprocessed, Output);
@@ -424,6 +430,10 @@ class FWebGPUShaderFormat final : public IShaderFormat
             TEXT("r.Mobile.SupportsGen4TAA"), TEXT("r.Mobile.AllowFramebufferFetch"),
             TEXT("r.Mobile.Forward.EnableLocalLights"), TEXT("r.Mobile.Forward.EnableClusteredReflections"),
             TEXT("r.Mobile.DisableVertexFog"), TEXT("r.SupportSkyAtmosphere"), TEXT("r.SupportLocalFogVolumes"),
+            TEXT("r.VolumetricCloud.Support"), TEXT("r.VolumetricCloud"), TEXT("r.VolumetricRenderTarget"),
+            TEXT("r.VolumetricCloud.DisableCompute"), TEXT("r.VolumetricCloud.ShadowMap"),
+            TEXT("r.VolumetricCloud.SkyAO"), TEXT("r.VolumetricCloud.Shadow.SampleAtmosphericLightShadowmap"),
+            TEXT("r.VolumetricCloud.HighQualityAerialPerspective"),
             TEXT("r.VolumetricFog"), TEXT("r.AllowStaticLighting"), TEXT("r.VirtualTextures"),
             TEXT("landscape.SupportGPUCulling"), TEXT("r.Mobile.SupportGPUScene"),
             TEXT("r.GPUSkin.UseSceneExtension")

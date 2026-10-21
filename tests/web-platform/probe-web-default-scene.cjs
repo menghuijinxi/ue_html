@@ -8,11 +8,13 @@ const directory = path.join(__dirname, 'results');
 const packaged = process.argv.includes('--packaged');
 const normalBuild = packaged || process.argv.includes('--normal-build');
 const runtimeOnly = process.argv.includes('--runtime-only');
+const fixedVisualClock = packaged && !runtimeOnly && !process.argv.includes('--realtime');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const report = {date: new Date().toISOString(), pass: false, completeUEScene: false,
-  fullNormalUBTBuildVerified: false, runtimeOnly, packaged, browserRuns: [], negativeControls: [], sources: [
+  fullNormalUBTBuildVerified: false, runtimeOnly, packaged, fixedVisualClock,
+  browserRuns: [], negativeControls: [], sources: [
     __filename, path.join(__dirname, 'web-engine.html'), path.join(__dirname, 'capture-web-canvas.cjs'),
     path.resolve(__dirname, '../ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp'),
     path.resolve(__dirname, '../ue-web-smoke/Source/UEWebEngine/Private/WebRenderScene.h'),
@@ -136,6 +138,18 @@ async function settle(page) {
       page.on('request', request => run.requests.push(request.url()));
       await page.addInitScript(require('./capture-web-canvas.cjs'));
       const packageRoot = 'http://127.0.0.1:8765/build/ue-default-template/';
+      if (fixedVisualClock) {
+        // Keep animated cloud positions stable for the existing static-image controls.
+        // Real-time startup, interaction and GPU exposure have separate tests.
+        await page.route(packageRoot + 'index.html', async route => {
+          const response = await route.fetch();
+          const html = await response.text();
+          const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
+          assert(html.includes(original));
+          await route.fulfill({response, body: html.replace(original,
+            "arguments: ['-webgpu', '-WebDefaultTemplate', '-WebVisualTestClock'],")});
+        });
+      }
       const url = packaged ? packageRoot + 'index.html' :
         `http://127.0.0.1:8765/web-engine.html?rhi=webgpu&incremental=${normalBuild ? 0 : 1}&cook=default`;
       await page.goto(url,
@@ -149,6 +163,11 @@ async function settle(page) {
         ready: globalThis.__webEngineReady || null, world: globalThis.__webEngineWorld || null,
         scene: globalThis.__webRenderScene || null
       })));
+      if (fixedVisualClock) {
+        run.clock = await page.evaluate(() => globalThis.__webVisualTestClock);
+        assert(run.clock?.renderTimeFrozen && run.clock.deltaSeconds > 0.00001,
+          'Material animation must freeze while exposure keeps a real frame delta');
+      }
       if (run.frames >= 60 && !run.failure && !run.waitFailure && !run.errors.length)
         run.initialSettle = await settle(page);
       run.queue = await page.evaluate(() => globalThis.__webCanvasWaitIdle());
@@ -246,7 +265,7 @@ async function settle(page) {
     report.pass = true;
     report.completeUEScene = !runtimeOnly;
     report.boundary = runtimeOnly ? 'Runtime smoke check only; no visual acceptance.' :
-      'Original default map with mobile Lit lighting, sky sphere, SkyAtmosphere and SkyLight. Mobile volumetric clouds and optional contact shadows remain disabled.';
+      'Original default map with mobile Lit lighting, sky sphere, SkyAtmosphere and SkyLight. Cloud shader execution and volume data require the separate postprocess --clouds checks. Optional contact shadows remain disabled.';
   } catch (error) { report.failure = error.stack; }
   finally {
     if (browser) await browser.close();

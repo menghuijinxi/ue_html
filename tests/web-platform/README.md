@@ -1,8 +1,10 @@
 # UE Web 平台独立验证
 
-更新日期：2026-10-20。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，Web UBT 工具链与普通 Core Program 的构建运行见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。
+更新日期：2026-10-21。当前默认关卡的构建、打包、画面及回归结果见 [默认关卡进度](H:/ue_html/UE58_DEFAULT_TEMPLATE_PROGRESS.md)。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，工具链和早期移植记录见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。
 
-这套测试已从独立 WebGPU、WASM ABI 和 Shader 样本推进到完整 wasm64 Engine 的无渲染启动与循环；完整 Renderer 和场景尚未运行。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
+当前已用普通 UBT 构建的 wasm64 Engine 打包并运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光和原材质体积云。Chrome/Edge 的原生云绘制与三维纹理回读通过，18 次高 DPI 启动及 54 个窗口状态通过。当前采用 ES3.1 移动渲染，雾、云影等效果仍需逐项接入和验证。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
+
+以下为历史检查点，不能作为当前独立包的验收结果。
 
 **2026-10-20 第四十八轮：RenderCurve/Nanite 默认资源阻塞已越过。** 三个文件共新增 16 行 Web 分支，曲线扩展在 Web 禁用、默认参数清零，Nanite 材质/ownership 默认参数清零；注册、已有 Nanite 能力检查和其他平台正文保留。没有增加毛发、Nanite 或缓冲类型支持。重编原有材质提供者解决链接缺符号后，最终 28 单元/415 项诊断链接通过；完整正常 Web Engine UBT 仍待验收。
 

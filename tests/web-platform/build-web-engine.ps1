@@ -149,7 +149,9 @@ try {
         'Renderer/Private/MobileBasePassRendering.cpp', 'Renderer/Private/MobileShadingRenderer.cpp',
         'Renderer/Private/PostProcess/PostProcessMobile.cpp',
         'Renderer/Private/PostProcess/PostProcessCombineLUTs.cpp',
-        'Renderer/Private/SkyAtmosphereRendering.cpp', 'Renderer/Private/SkyPassRendering.cpp')) {
+        'Renderer/Private/SkyAtmosphereRendering.cpp', 'Renderer/Private/SkyPassRendering.cpp',
+        'Renderer/Private/VolumetricCloudRendering.cpp', 'Engine/Private/VolumeTexture.cpp',
+        'Engine/Private/Rendering/Texture3DResource.cpp', 'Engine/Private/Materials/MaterialExpressions.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/$taskShaderOverlay"
         $taskFiles += Join-Path $taskHost "Source/Runtime/$taskShaderOverlay"
     }
