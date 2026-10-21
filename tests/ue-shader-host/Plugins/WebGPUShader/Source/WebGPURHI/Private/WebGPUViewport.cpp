@@ -124,7 +124,10 @@ void FWebGPUDynamicRHI::RHIResizeViewport(FRHIViewport *InViewport, uint32 Width
     check(Format == PF_Unknown || Format == Viewport.Format);
     if (ContextOpen)
         SubmitCurrent();
+#if !defined(PLATFORM_WEB) || !PLATFORM_WEB
     RHIBlockUntilGPUIdle();
+#endif
+    // Submitted WebGPU commands retain their resources; reconfigure in queue order.
     Viewport.Configuration.width = Width;
     Viewport.Configuration.height = Height;
     wgpuSurfaceConfigure(Viewport.Surface, &Viewport.Configuration);
@@ -180,7 +183,9 @@ void FWebGPUDynamicRHI::RHIEndDrawingViewport(FRHICommandListImmediate &Cmd, FRH
     }
     else
     {
+#if !defined(PLATFORM_WEB) || !PLATFORM_WEB
         RHIBlockUntilGPUIdle();
+#endif
         Viewport.InvalidateFrame();
         wgpuSurfaceUnconfigure(Viewport.Surface);
         wgpuSurfaceConfigure(Viewport.Surface, &Viewport.Configuration);

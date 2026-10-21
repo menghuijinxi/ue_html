@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UE 默认关卡</title>
+<style>
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+body { display: grid; place-items: center; }
+canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-ratio: 16 / 9; outline: none; }
+#failure { position: fixed; inset: 16px; margin: 0; color: #fff; font: 14px monospace; white-space: pre-wrap; }
+</style>
+<canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="UE 默认关卡"></canvas>
+<pre id="failure" hidden></pre>
+<script>
+globalThis.__webEngineLog = [];
+function failed(reason) {
+  globalThis.__webEngineFailure = String(reason);
+  const element = document.getElementById('failure');
+  element.textContent = String(reason);
+  element.hidden = false;
+}
+function record(text) {
+  text = String(text);
+  console.log(text);
+  globalThis.__webEngineLog.push(text);
+  if (globalThis.__webEngineLog.length > 200) globalThis.__webEngineLog.shift();
+  for (const [prefix, key] of [
+    ['P3_ENGINE_READY ', '__webEngineReady'],
+    ['P3_ENGINE_WORLD ', '__webEngineWorld'],
+    ['P3_RENDER_SCENE ', '__webRenderScene']
+  ]) {
+    if (text.startsWith(prefix)) globalThis[key] = JSON.parse(text.slice(prefix.length));
+  }
+  if (/^P3_ENGINE_(?:PREINIT|INIT)_FAILED /.test(text)) failed(text);
+}
+async function digest(bytes) {
+  return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
+    value => value.toString(16).padStart(2, '0')).join('');
+}
+async function fetchFile(url, json = false) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
+  return json ? response.json() : new Uint8Array(await response.arrayBuffer());
+}
+function writeFile(path, bytes) {
+  FS.mkdirTree(path.slice(0, path.lastIndexOf('/')));
+  FS.writeFile(path, bytes);
+}
+var Module = {
+  arguments: ['-webgpu', '-WebDefaultTemplate'],
+  canvas: document.getElementById('canvas'),
+  print: record,
+  printErr: record,
+  onAbort: failed,
+  preRun: [() => {
+    addRunDependency('default-template-files');
+    (async () => {
+      const [configs, manifest] = await Promise.all([
+        fetchFile('config-files.json', true), fetchFile('content-files.json', true)
+      ]);
+      if (manifest.mode !== 'WebGPU-ES31' || manifest.architecture !== 'wasm64' ||
+          manifest.shaderPlatform !== 'SP_WEBGPU_ES31' || manifest.pack.url !== 'content.bin')
+        throw new Error('Invalid default-template manifest');
+      const bytes = await fetchFile(manifest.pack.url);
+      if (bytes.length !== manifest.pack.size || await digest(bytes) !== manifest.pack.sha256)
+        throw new Error('Default-template pack hash mismatch');
+      globalThis.__webEngineContentFiles = [];
+      for (const file of manifest.files) {
+        if (!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/|GlobalShaderCache-SP_WEBGPU_ES31\.bin$)/.test(file.path) ||
+            /(?:^|\/)\.\.(?:\/|$)/.test(file.path) ||
+            !Number.isSafeInteger(file.offset) || !Number.isSafeInteger(file.size) ||
+            file.offset < 0 || file.size < 0 || file.offset + file.size > bytes.length)
+          throw new Error(`Invalid content entry: ${file.path}`);
+        const data = bytes.subarray(file.offset, file.offset + file.size);
+        if (await digest(data) !== file.sha256) throw new Error(`Content hash mismatch: ${file.path}`);
+        writeFile(file.path, data);
+        globalThis.__webEngineContentFiles.push({path: file.path, sha256: file.sha256, size: file.size});
+      }
+      globalThis.__webEngineConfigFiles = [];
+      for (const file of configs) {
+        if (!/^\/Engine\/(?:Config\/|Platforms\/Web\/Config\/)/.test(file.path) ||
+            /(?:^|\/)\.\.(?:\/|$)/.test(file.path))
+          throw new Error(`Invalid config entry: ${file.path}`);
+        const data = Uint8Array.from(atob(file.data), value => value.charCodeAt(0));
+        if (await digest(data) !== file.sha256) throw new Error(`Config hash mismatch: ${file.path}`);
+        writeFile(file.path, data);
+        globalThis.__webEngineConfigFiles.push({path: file.path, sha256: file.sha256});
+      }
+      removeRunDependency('default-template-files');
+    })().catch(failed);
+  }]
+};
+addEventListener('error', event => failed(event.message || 'Engine script failed'), true);
+addEventListener('unhandledrejection', event => failed(event.reason));
+</script>
+<script src="UEWebEngine.js"></script>
+</html>

@@ -5,16 +5,19 @@ const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {PNG} = require('pngjs');
 const directory = path.join(__dirname, 'results');
-const normalBuild = process.argv.includes('--normal-build');
+const packaged = process.argv.includes('--packaged');
+const normalBuild = packaged || process.argv.includes('--normal-build');
 const runtimeOnly = process.argv.includes('--runtime-only');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const report = {date: new Date().toISOString(), pass: false, completeUEScene: false,
-  fullNormalUBTBuildVerified: false, runtimeOnly, browserRuns: [], sources: [
+  fullNormalUBTBuildVerified: false, runtimeOnly, packaged, browserRuns: [], negativeControls: [], sources: [
     __filename, path.join(__dirname, 'web-engine.html'), path.join(__dirname, 'capture-web-canvas.cjs'),
     path.resolve(__dirname, '../ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp'),
-    path.resolve(__dirname, '../ue-web-smoke/Source/UEWebEngine/Private/WebRenderScene.h')
+    path.resolve(__dirname, '../ue-web-smoke/Source/UEWebEngine/Private/WebRenderScene.h'),
+    ...(packaged ? [path.join(__dirname, 'web-default-template.html'),
+      path.join(__dirname, 'package-web-default-template.cjs')] : [])
   ].map(audit)};
 
 function pixels(file) {
@@ -92,6 +95,16 @@ async function settle(page) {
         report.fullNormalUBTBuildVerified = true;
       }
     }
+    if (packaged) {
+      const packageFile = path.join(directory, 'web-default-template-package-results.json');
+      const evidence = read(packageFile);
+      assert(evidence.pass && evidence.fullNormalUBTBuildVerified &&
+        evidence.products.every(valid) && evidence.sourceFiles.every(valid) &&
+        valid(evidence.buildReport) && valid(evidence.stageReport));
+      assert.equal(evidence.buildReport.sha256, report.buildReport.sha256);
+      assert.equal(evidence.stageReport.sha256, report.stageReport.sha256);
+      report.packageReport = audit(packageFile);
+    }
     for (const [name, executablePath] of [
       ['Chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe'],
       ['Edge', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe']
@@ -106,8 +119,13 @@ async function settle(page) {
           run.errors.push(message.text());
       });
       page.on('pageerror', error => run.errors.push(error.stack || error.message));
+      run.requests = [];
+      page.on('request', request => run.requests.push(request.url()));
       await page.addInitScript(require('./capture-web-canvas.cjs'));
-      await page.goto(`http://127.0.0.1:8765/web-engine.html?rhi=webgpu&incremental=${normalBuild ? 0 : 1}&cook=default`,
+      const packageRoot = 'http://127.0.0.1:8765/build/ue-default-template/';
+      const url = packaged ? packageRoot + 'index.html' :
+        `http://127.0.0.1:8765/web-engine.html?rhi=webgpu&incremental=${normalBuild ? 0 : 1}&cook=default`;
+      await page.goto(url,
         {waitUntil: 'commit'});
       try {
         await page.waitForFunction(() => globalThis.__webEngineFailure ||
@@ -153,16 +171,63 @@ async function settle(page) {
           floorDifference: difference(screenshot, restored, 'floor')};
         run.restored.pass = run.restored.pixels.pass && run.restored.skyDifference.mean < 5 &&
           run.restored.floorDifference.mean < 5;
+        if (packaged) {
+          await page.setViewportSize({width: 390, height: 844});
+          await settle(page);
+          const portrait = path.join(directory, `web-default-scene-portrait-${run.browser.toLowerCase()}.png`);
+          await page.locator('canvas').screenshot({path: portrait});
+          run.portrait = {screenshot: audit(portrait), pixels: pixels(portrait),
+            bounds: await page.locator('canvas').boundingBox()};
+          run.portrait.pass = run.portrait.pixels.pass && run.portrait.bounds.width <= 390 &&
+            run.portrait.bounds.x >= 0 && run.portrait.bounds.y >= 0 &&
+            run.portrait.bounds.y + run.portrait.bounds.height <= 844;
+          await page.setViewportSize({width: 1440, height: 900});
+          await settle(page);
+          const resized = path.join(directory, `web-default-scene-resized-${run.browser.toLowerCase()}.png`);
+          await page.locator('canvas').screenshot({path: resized});
+          run.resized = {screenshot: audit(resized), pixels: pixels(resized),
+            bounds: await page.locator('canvas').boundingBox()};
+          run.resized.pass = run.resized.pixels.pass && run.resized.bounds.width <= 1440 &&
+            run.resized.bounds.x >= 0 && run.resized.bounds.y >= 0 &&
+            run.resized.bounds.y + run.resized.bounds.height <= 900;
+        }
         run.finalGPU = await page.evaluate(() => globalThis.__webCanvas.gpuErrors);
+        run.finalFrames = await page.evaluate(() => globalThis.__webEngineFrames);
       }
       run.pass = run.runtimePass && (runtimeOnly || run.pixels.pass &&
         run.controls.length === 2 && run.controls.every(control => control.pass) &&
-        run.restored?.pass && !run.finalGPU?.length && !run.errors.length);
+        run.restored?.pass && !run.finalGPU?.length && !run.errors.length) &&
+        (!packaged || run.portrait?.pass && run.resized?.pass &&
+          run.requests.every(request => request.startsWith(packageRoot)));
+      if (packaged && name === 'Chrome' && run.pass) {
+        for (const kind of ['pack-hash', 'config-hash']) {
+          const control = await browser.newPage();
+          const filename = kind === 'pack-hash' ? 'content-files.json' : 'config-files.json';
+          const data = read(path.join(__dirname, 'build/ue-default-template', filename));
+          if (kind === 'pack-hash') data.pack.sha256 = '0'.repeat(64);
+          else data[0].sha256 = '0'.repeat(64);
+          await control.route('**/' + filename, route =>
+            route.fulfill({contentType: 'application/json', body: JSON.stringify(data)}));
+          await control.goto(url, {waitUntil: 'commit'});
+          await control.waitForFunction(() => globalThis.__webEngineFailure, null, {timeout: 60000});
+          const state = await control.evaluate(() => ({
+            failure: globalThis.__webEngineFailure, frames: globalThis.__webEngineFrames || 0,
+            ready: globalThis.__webEngineReady || null
+          }));
+          const expected = kind === 'pack-hash' ? /pack hash mismatch/ : /Config hash mismatch/;
+          report.negativeControls.push({kind, ...state,
+            pass: expected.test(state.failure) && state.frames === 0 && !state.ready});
+          await control.close();
+        }
+      }
       await browser.close();
       browser = null;
     }
     assert(report.browserRuns.length === 2 && report.browserRuns.every(run => run.pass),
       'Both browsers must render the original default map, its sky and lighting, with differential controls.');
+    if (packaged)
+      assert(report.negativeControls.length === 2 && report.negativeControls.every(control => control.pass),
+        'An invalid package or config hash must stop startup before UE begins rendering.');
     report.pass = true;
     report.completeUEScene = !runtimeOnly;
     report.boundary = runtimeOnly ? 'Runtime smoke check only; no visual acceptance.' :

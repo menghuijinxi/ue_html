@@ -38,3 +38,32 @@
 - Chrome、Edge 均显示原图蓝天与受光棋盘地面：全画布 230,400 个非黑像素，上部 56,782 个蓝天像素，地面平均亮度约 203。关太阳后地面均值为 0；关天空后上部蓝天为 0；恢复后图像通过，零 GPU 校验错误。
 - 最新原生编译、天空资源 19 项检查、材质 19 次绘制回归通过。曾有一次启动报外部 Instance 引用失效，后续独立运行超过 2,800 帧及双浏览器对照未复现；正常构建复验时继续留意，不能作为已定位修复的问题。
 - 正常构建显式并行数同时控制 CPU 亲和范围，避免设置多编译任务却全部固定在两个逻辑核上；默认单任务仍保持较小 CPU 范围。
+
+## 2026-10-21：普通构建与独立包最终验收通过
+
+- 普通 UBT Web 目标构建成功，退出码 0，完成实际链接；最终续编的 227 项任务全部通过。最终验收使用这次普通构建产物，已不依赖诊断增量链接。
+- 定位并规避 Clang 24 在 wasm64 `TriangleMeshImplicitObject.cpp` 上的优化崩溃：通过 UBT 源码映射识别对应 Chaos 编译单元，仅该单元使用 `-O1`，其他优化单元仍使用 `-O2`。参考引擎提交 `a00bee989`，普通 UBT 构建已验证。
+- 原始 `/Engine/Maps/Templates/Template_Default` Cook/Stage 通过，383 个运行文件、107,960,567 字节。独立目录含 6 个文件，总计 289,906,690 字节，包含正常构建的 JS/WASM 及该关卡资源；打包时校验构建、Cook、Stage 和产物的来源及哈希。
+- Chrome `155.0.8059.86`、Edge `155.0.4283.62` 均通过独立包验收，各连续运行至 484 帧。截图显示原有天空球、天空大气和受光 Lit 地面；关闭方向光、关闭天空、恢复原图的差异检查全部通过，页面错误和 GPU 校验错误均为 0。
+- 两个浏览器均通过 `390x844` 竖屏窗口及恢复 `1440x900` 窗口的图像检查，继续正常渲染。修正 Web 视口调整时在浏览器主线程同步等待 GPU 的问题，原生等待路径保留；原生视口记录/直通两种模式共 72 项检查通过。
+- 独立包只请求自身目录内的文件；资源包哈希和配置哈希的破坏测试均在 UE 开始渲染前拒绝启动。
+- 最终报告：`tests/web-platform/results/web-default-scene-results.json`，`pass`、`completeUEScene`、`fullNormalUBTBuildVerified`、`packaged` 均为 `true`。截图：`tests/web-platform/results/web-default-scene-chrome.png`、`web-default-scene-edge.png`。
+- 本次目标已完成：默认带光照和天空球的原始关卡已打包并在浏览器运行。当前仍为 ES3.1 移动渲染路径，未启用体积云，也尚未接入编辑器一键 Web 打包。
+
+## 默认关卡的复现入口
+
+以下命令从工作区根目录执行，依次构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
+
+```powershell
+& ./tests/web-platform/build-web-engine.ps1 -MaxParallelActions 8 -SkipHostPreparation
+& ./tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-ES31 -Scene DefaultTemplate -StopOnShaderError
+node tests/web-platform/stage-web-engine.cjs --default-template
+node tests/web-platform/package-web-default-template.cjs
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-default-scene.cjs --packaged
+```
+
+- 独立目录：`tests/web-platform/build/ue-default-template`，含 `index.html`、JS、WASM、配置、资源清单和资源包。需通过 HTTP 服务运行。
+- 当前工作区已有服务：`http://127.0.0.1:8765/build/ue-default-template/index.html`；服务不运行时可在独立终端执行 `node tests/web-platform/serve.cjs`。
+- 构建、Cook、Stage、独立目录和浏览器验收报告分别为 `results/web-engine-full-build-results.json`、`web-engine-webgpu-es31-default-cook-results.json`、`web-engine-webgpu-es31-default-stage-results.json`、`web-default-template-package-results.json`、`web-default-scene-results.json`。
+- 仍是开发验证流程，使用工作区隔离的 5.8.0 原生 Cook 主机和 5.8.3 Web 源码覆盖；尚未接入编辑器一键 Web 打包，也不代表桌面渲染功能已全部移植。
