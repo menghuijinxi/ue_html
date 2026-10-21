@@ -1,6 +1,7 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
     [ValidateSet('NullRHI-only', 'WebGPU-SM5', 'WebGPU-ES31')][string]$Mode = 'NullRHI-only',
+    [ValidateSet('Minimal', 'DefaultTemplate')][string]$Scene = 'Minimal',
     [switch]$StopOnShaderError,
     [switch]$ValidateShaderJobCache,
     [switch]$SkipBuild
@@ -10,6 +11,8 @@ $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-platform-host/Engine'
 $taskWebGPU = $Mode -ne 'NullRHI-only'
 $taskES31 = $Mode -eq 'WebGPU-ES31'
+if ($Scene -eq 'DefaultTemplate' -and -not $taskES31) { throw 'DefaultTemplate requires WebGPU-ES31.' }
+$taskMap = if ($Scene -eq 'DefaultTemplate') { '/Engine/Maps/Templates/Template_Default' } else { '/Game/WebMinimal' }
 $taskFormat = if ($taskES31) { 'SF_WEBGPU_ES31' } else { 'SF_WEBGPU_SM5' }
 $taskShaderPlatformName = if ($taskES31) { 'SP_WEBGPU_ES31' } else { 'SP_WEBGPU_SM5' }
 if ($taskWebGPU) { $taskHost = Join-Path $taskRoot '.tools/ue58-web-cook-host/Engine' }
@@ -22,6 +25,7 @@ $taskResults = Join-Path $PSScriptRoot 'results'
 $taskStamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $taskPrefix = if ($taskWebGPU) { 'web-engine-webgpu-cook' } else { 'web-engine-cook' }
 if ($taskES31) { $taskPrefix = 'web-engine-webgpu-es31-cook' }
+if ($Scene -eq 'DefaultTemplate') { $taskPrefix = 'web-engine-webgpu-es31-default-cook' }
 $taskOutput = Join-Path $PSScriptRoot "build/$taskPrefix/$taskStamp"
 $taskLog = Join-Path $taskResults "$taskPrefix-$taskStamp.log"
 $taskProcess = Get-Process -Id $PID
@@ -35,6 +39,8 @@ $taskReport = [ordered]@{
     date = Get-Date -Format o
     pass = $false
     mode = $Mode
+    scene = $Scene
+    map = $taskMap
     architecture = 'wasm64'
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
@@ -56,9 +62,13 @@ try {
         $taskReport.moduleBuildLog = Get-TaskAudit $taskBuildLog
         if ($LASTEXITCODE -ne 0) { throw "Web Cook module build failed: $taskBuildLog" }
     }
-    & (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1') -Engine $Engine
-    $taskReport.minimalMapPreparation = Get-TaskAudit (Join-Path $taskResults 'web-minimal-map-results.json')
-    $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
+    if ($Scene -eq 'Minimal') {
+        & (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1') -Engine $Engine
+        $taskReport.minimalMapPreparation = Get-TaskAudit (Join-Path $taskResults 'web-minimal-map-results.json')
+        $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
+    } else {
+        $taskReport.templateMap = Get-TaskAudit (Join-Path $Engine 'Engine/Content/Maps/Templates/Template_Default.umap')
+    }
     if ($taskWebGPU) {
         $taskPrepareLog = Join-Path $taskResults "web-cook-host-$taskStamp.log"
         $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-web-cook-host.cjs'))
@@ -97,7 +107,7 @@ try {
         '/Engine/EngineMaterials/DefaultPostProcessMaterial',
         '/Engine/EngineResources/DefaultTexture',
         '/Engine/EngineResources/WhiteSquareTexture',
-        '/Game/WebMinimal'
+        $taskMap
     )
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
     $taskArguments = @($taskProject, '-run=Cook', '-TargetPlatform=Web',
@@ -194,6 +204,7 @@ try {
         ForEach-Object { Get-TaskAudit (Join-Path $taskRoot "tests/ue-shader-host/Source/UEShaderHost/$_") }
     $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1')
     if ($taskReport.minimalMap) { $taskReport.sourceFiles += $taskReport.minimalMap }
+    if ($taskReport.templateMap) { $taskReport.sourceFiles += $taskReport.templateMap }
     if ($taskWebGPU) {
         $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat') -File -Recurse |
             ForEach-Object { Get-TaskAudit $_.FullName })

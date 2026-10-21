@@ -42,12 +42,15 @@ function record(text) {
 var Module = {
   arguments: [
     ...(new URLSearchParams(location.search).get('rhi') === 'webgpu' ? ['-webgpu'] : []),
-    ...(new URLSearchParams(location.search).get('scene') === '1' ? ['-WebRenderScene'] : [])
+    ...(new URLSearchParams(location.search).get('scene') === '1' ? ['-WebRenderScene'] : []),
+    ...(new URLSearchParams(location.search).get('cook') === 'default' ? ['-WebDefaultTemplate'] : [])
   ],
   canvas: document.getElementById('canvas'),
   preRun: [() => {
     addRunDependency('engine-config');
-    fetch('build/web-engine/config-files.json').then(response => {
+    const defaultTemplate = new URLSearchParams(location.search).get('cook') === 'default';
+    fetch(defaultTemplate ? 'build/web-engine-webgpu-es31-default/config-files.json' :
+      'build/web-engine/config-files.json').then(response => {
       if (!response.ok) throw new Error(`Engine config HTTP ${response.status}`);
       return response.json();
     }).then(async files => {
@@ -69,10 +72,11 @@ var Module = {
     });
     addRunDependency('engine-content');
     const cook = new URLSearchParams(location.search).get('cook');
-    const es31Content = cook === 'es31';
+    const es31Content = cook === 'es31' || defaultTemplate;
     const webgpuContent = es31Content || cook === 'webgpu';
     const shaderPlatform = es31Content ? 'SP_WEBGPU_ES31' : 'SP_WEBGPU_SM5';
-    const contentManifest = es31Content ? 'build/web-engine-webgpu-es31/content-files.json' : webgpuContent ?
+    const contentManifest = defaultTemplate ? 'build/web-engine-webgpu-es31-default/content-files.json' :
+      es31Content ? 'build/web-engine-webgpu-es31/content-files.json' : webgpuContent ?
       'build/web-engine-webgpu/content-files.json' : 'build/web-engine/content-files.json';
     fetch(contentManifest).then(response => {
       if (!response.ok) throw new Error(`Engine content manifest HTTP ${response.status}`);

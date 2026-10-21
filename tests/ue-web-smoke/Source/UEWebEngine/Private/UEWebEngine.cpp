@@ -32,6 +32,12 @@ namespace
 int32 Frames = 0;
 bool UseWebGPU = false;
 bool RenderScene = false;
+bool DefaultTemplate = false;
+
+const TCHAR* StartupMap()
+{
+    return DefaultTemplate ? TEXT("/Engine/Maps/Templates/Template_Default") : TEXT("/Game/WebMinimal");
+}
 
 void LogWorld(UWorld* World)
 {
@@ -122,7 +128,7 @@ int32 StartEngine()
     FTaskTagScope Scope(ETaskTag::EGameThread);
     FWorldDelegates::OnPostWorldInitialization.AddLambda(
         [](UWorld* World, const UWorld::InitializationValues) {
-            if (World->GetPackage()->GetName() == TEXT("/Game/WebMinimal"))
+            if (World->GetPackage()->GetName() == StartupMap())
                 World->OnWorldBeginPlay.AddLambda([World] { LogWorld(World); });
         });
     FDelayedAutoRegisterHelper(EDelayedRegisterRunPhase::PreObjectSystemReady, LogMaterialPolicy);
@@ -130,9 +136,10 @@ int32 StartEngine()
     Layout.InitializeForCurrent();
     std::printf("P3_ENGINE_LAYOUT {\"maxFieldAlignment\":%u,\"flags\":%u,\"pointerBytes\":%u}\n",
         Layout.MaxFieldAlignment, Layout.Flags, uint32(sizeof(void*)));
-    const int32 PreInitResult = GEngineLoop.PreInit(UseWebGPU ?
-        TEXT("/Game/WebMinimal -webgpu -WebRHIStartupProbe -WebMinimalStartup -es31 -windowed -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout") :
-        TEXT("/Game/WebMinimal -nullrhi -sm5 -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout"));
+    const FString CommandLine = FString(StartupMap()) + (UseWebGPU ?
+        TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -es31 -windowed -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout") :
+        TEXT(" -nullrhi -sm5 -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout"));
+    const int32 PreInitResult = GEngineLoop.PreInit(*CommandLine);
     if (PreInitResult != 0)
     {
         std::printf("P3_ENGINE_PREINIT_FAILED %d\n", PreInitResult);
@@ -148,15 +155,17 @@ int32 StartEngine()
     for (const FWorldContext& Context : GEngine->GetWorldContexts())
         if (Context.WorldType == EWorldType::Game)
             World = Context.World();
-    const bool MapLoaded = World && World->GetPackage()->GetName() == TEXT("/Game/WebMinimal") &&
+    const bool MapLoaded = World && World->GetPackage()->GetName() == StartupMap() &&
         World->HasBegunPlay();
     LogWorld(World);
     if (!MapLoaded || IsEngineExitRequested())
     {
-        std::printf("P3_ENGINE_INIT_FAILED minimal map did not begin play\n");
+        std::printf("P3_ENGINE_INIT_FAILED selected map did not begin play\n");
         return 1;
     }
-    if (UseWebGPU && RenderScene)
+    if (UseWebGPU && DefaultTemplate)
+        SetWebTemplateCamera(World);
+    else if (UseWebGPU && RenderScene)
         CreateWebRenderScene(World);
     const auto* MobileGPUScene = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Mobile.SupportGPUScene"));
     if (!UseWebGPU)
@@ -188,6 +197,7 @@ int main(int argc, char** argv)
     {
         UseWebGPU |= FCStringAnsi::Strcmp(argv[Index], "-webgpu") == 0;
         RenderScene |= FCStringAnsi::Strcmp(argv[Index], "-WebRenderScene") == 0;
+        DefaultTemplate |= FCStringAnsi::Strcmp(argv[Index], "-WebDefaultTemplate") == 0;
     }
     if (!UseWebGPU)
         return StartEngine();

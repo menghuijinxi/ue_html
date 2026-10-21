@@ -6,9 +6,11 @@ const root = path.resolve(__dirname, '../..');
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
 const audit = file => ({file, sha256: sha(fs.readFileSync(file))});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
-const es31 = process.argv.includes('--es31');
+const defaultTemplate = process.argv.includes('--default-template');
+const es31 = defaultTemplate || process.argv.includes('--es31');
 const webgpu = es31 || process.argv.includes('--webgpu');
-const prefix = es31 ? 'web-engine-webgpu-es31' : webgpu ? 'web-engine-webgpu' : 'web-engine';
+const prefix = defaultTemplate ? 'web-engine-webgpu-es31-default' :
+  es31 ? 'web-engine-webgpu-es31' : webgpu ? 'web-engine-webgpu' : 'web-engine';
 const format = es31 ? 'SF_WEBGPU_ES31' : 'SF_WEBGPU_SM5';
 const platform = es31 ? 'SP_WEBGPU_ES31' : 'SP_WEBGPU_SM5';
 const reportFile = path.join(__dirname, `results/${prefix}-stage-results.json`);
@@ -18,6 +20,9 @@ try {
   const cookFile = path.join(__dirname, `results/${prefix}-cook-results.json`);
   const cook = JSON.parse(fs.readFileSync(cookFile, 'utf8').replace(/^\uFEFF/, ''));
   assert(cook.pass && cook.exitCode === 0 && cook.mode === report.mode && cook.architecture === 'wasm64');
+  assert.equal(cook.scene || 'Minimal', defaultTemplate ? 'DefaultTemplate' : 'Minimal');
+  report.scene = cook.scene || 'Minimal';
+  report.map = cook.map || '/Game/WebMinimal';
   assert(valid(cook.log) && cook.sourceFiles?.length && cook.sourceFiles.every(valid));
   assert(cook.hostProducts?.length >= (webgpu ? 4 : 3) && cook.hostProducts.every(valid));
   if (webgpu) {
@@ -61,8 +66,9 @@ try {
     chunks.push(data);
     offset += data.length;
   }
-  assert(entries.some(item => item.path === '/Engine/Programs/UEWebEngine/Content/WebMinimal.umap'),
-    'The real minimal startup map must be cooked and staged');
+  assert(entries.some(item => item.path === (defaultTemplate ?
+    '/Engine/Content/Maps/Templates/Template_Default.umap' :
+    '/Engine/Programs/UEWebEngine/Content/WebMinimal.umap')), 'The selected startup map must be cooked and staged');
   for (const name of ['WorldGridMaterial', 'DefaultLightFunctionMaterial',
     'DefaultDeferredDecalMaterial', 'DefaultPostProcessMaterial']) {
     assert(entries.some(item => item.path === `/Engine/Content/EngineMaterials/${name}.uasset`),
@@ -88,6 +94,18 @@ try {
   report.manifest = audit(manifestFile);
   report.files = entries;
   report.totalBytes = offset;
+  if (defaultTemplate) {
+    const base = JSON.parse(fs.readFileSync(path.join(__dirname, 'build/web-engine/config-files.json'), 'utf8'));
+    const renderer = cook.minimalRendererConfig;
+    assert(valid(renderer), 'The runtime configuration must match this Cook');
+    const configPath = '/Engine/Platforms/Web/Config/WebEngine.ini';
+    const configs = base.filter(item => item.path !== configPath);
+    configs.push({path: configPath, sha256: renderer.sha256,
+      data: fs.readFileSync(renderer.file).toString('base64')});
+    const configFile = path.join(staged, 'config-files.json');
+    fs.writeFileSync(configFile, JSON.stringify(configs));
+    report.configBundle = audit(configFile);
+  }
   report.pass = true;
 } catch (error) {
   report.failure = error.stack;
