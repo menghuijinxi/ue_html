@@ -307,7 +307,7 @@ NullRHI Cook/Stage 保持 330 文件、23,633,819 字节，两浏览器各 10 �
 | `build-shaders.ps1` | 从固定 UE 提交提取原始 .usf，执行 DXC → SPIR-V → Tint → WGSL 与反射 |
 | `shader-fixtures/` | 精简的 Common include；不是完整 UE Shader 环境 |
 | `shader-runtime.js` | 在浏览器执行生成的 Shader，检查绑定、Uniform、图像和计算读回 |
-| `serve.cjs` | localhost 服务，提供 WASM MIME、COOP、COEP |
+| `serve.cjs` | 默认监听所有 IPv4 地址的本机/局域网服务，提供 WASM MIME、COOP、COEP |
 | `run-browser.cjs` | 用本机 Chrome/Edge 自动执行、截图和检查 Canvas 像素 |
 | `summarize.cjs` | 汇总原生/浏览器实际结果，交叉比较读回哈希 |
 | `toolchain-lock.json` | 实测工具版本、UE 提交与下载包 SHA256 |
@@ -380,11 +380,17 @@ Set-Location H:\ue_html
 & .\tests\web-platform\build-shaders.ps1
 ```
 
-浏览器测试要求 localhost 服务可用。2026-10-16 16:06 已恢复 localhost:8765，页面与 COOP/COEP 响应头检查通过。服务停止后可在独立终端运行：
+浏览器测试要求本机服务可用。服务默认监听 `0.0.0.0:8765`，本机仍可访问 `127.0.0.1:8765`，启动日志同时列出网卡地址。服务停止后可在独立终端运行：
 
 ```powershell
 node .\tests\web-platform\serve.cjs
 ```
+
+当前物理网卡地址为 `10.1.1.200`，同一局域网设备可访问 `http://10.1.1.200:8765/build/ue-default-template/index.html`。IP 变化时以启动日志中的物理网卡地址为准；`HOST`、`PORT` 环境变量可覆盖监听地址和端口，例如设置 `$env:HOST='127.0.0.1'` 可恢复仅本机访问。
+
+局域网 HTTP 地址不是安全上下文，直接访问时 WebGPU、`crypto.subtle` 和跨源隔离不可用。仅用于局域网开发测试时，可在测试设备的 Chrome 打开 `chrome://flags/#unsafely-treat-insecure-origin-as-secure`，在 **Insecure origins treated as secure** 中填入完整来源 `http://10.1.1.200:8765`，选择 **Enabled** 后重启浏览器。Edge 使用对应的 `edge://flags/#unsafely-treat-insecure-origin-as-secure`。配置只填写来源，不包含页面路径；正常分发应使用受设备信任的 HTTPS。此方式来自 [Chrome WebGPU 故障排查文档](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips)；测试设备还需支持当前包使用的 WebGPU 和 wasm64。
+
+独立包会在加载引擎前检查安全上下文、WebGPU、跨源隔离和 Web Crypto；条件不满足时显示具体原因和当前来源的配置步骤，不下载引擎与大资源包。局域网回归命令为 `node tests/web-platform/probe-web-lan.cjs --origin=http://10.1.1.200:8765`，需先设置下方的 `NODE_PATH`。它检查本机/局域网资源响应头、双浏览器未信任来源的明确提示，以及信任后真实渲染和 Pawn 移动；不会修改用户浏览器配置。报告写入 `results/web-lan-results.json`，本机对网卡地址的验证不能替代其他设备的实际连通测试。
 
 自动化使用本机已经具备的 Playwright 和 pngjs；它们位于 Codex 的共享依赖目录：
 

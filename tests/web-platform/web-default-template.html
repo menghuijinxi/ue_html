@@ -7,7 +7,7 @@
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
 body { display: grid; place-items: center; }
 canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-ratio: 16 / 9; outline: none; }
-#failure { position: fixed; inset: 16px; margin: 0; color: #fff; font: 14px monospace; white-space: pre-wrap; }
+#failure { position: fixed; inset: 16px; margin: 0; overflow: auto; color: #fff; font: 14px monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 </style>
 <canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="UE 默认关卡"></canvas>
 <pre id="failure" hidden></pre>
@@ -102,5 +102,25 @@ Module.canvas.addEventListener('click', () => {
 addEventListener('error', event => failed(event.message || 'Engine script failed'), true);
 addEventListener('unhandledrejection', event => failed(event.reason));
 </script>
-<script src="UEWebEngine.js"></script>
+<script>
+if (!globalThis.isSecureContext) {
+  failed(`当前地址 ${location.origin} 不是安全上下文，浏览器已禁用 WebGPU 和资源校验接口。
+局域网开发测试：
+1. Chrome 打开 chrome://flags/#unsafely-treat-insecure-origin-as-secure
+   Edge 打开 edge://flags/#unsafely-treat-insecure-origin-as-secure
+2. 在 Insecure origins treated as secure 中填写 ${location.origin}
+3. 选择 Enabled，重启浏览器后重新打开本页。
+也可以使用受此设备信任的 HTTPS 地址。`);
+} else if (!navigator.gpu) {
+  failed('此浏览器未提供 WebGPU。请检查浏览器版本、硬件加速及设备的 WebGPU 支持。');
+} else if (!globalThis.crossOriginIsolated || typeof SharedArrayBuffer === 'undefined') {
+  failed('页面未启用跨源隔离。请使用提供 COOP: same-origin 和 COEP: require-corp 响应头的服务。');
+} else if (!globalThis.crypto?.subtle) {
+  failed('此浏览器未提供 Web Crypto，无法校验关卡资源。请使用受信任的 HTTPS 或可信本机来源。');
+} else {
+  const engine = document.createElement('script');
+  engine.src = 'UEWebEngine.js';
+  document.body.appendChild(engine);
+}
+</script>
 </html>

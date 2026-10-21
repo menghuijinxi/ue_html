@@ -125,6 +125,14 @@
 - 范围：当前仅开放单方向光的像素云步进及原材质密度/散射。云影、云 AO、云进入 SkyLight 实时捕获、体积云时域重建、高质量逐像素大气透射和复杂透明物体组合均未验收；当前直接按视图分辨率绘制云，高分辨率成本需关注。普通构建没有编译原生编辑器 Engine 模块，Cook 使用上述内存适配，不代表完整源码编辑器构建通过。
 - 原图的 `ExponentialHeightFog` 密度为 0.0436，高度衰减为 0.2，`bEnableVolumetricFog=false`。后续先接入该指数高度雾；体积雾的光照体素、历史重投影和局部光散射不在本次云接入范围。
 
+## 2026-10-21：局域网访问与启动条件检查
+
+- 测试服务由 `127.0.0.1` 改为默认监听 `0.0.0.0:8765`，保留原本机入口，支持 `HOST`、`PORT` 覆盖，启动日志列出网卡地址。当前物理网卡地址为 `10.1.1.200`。
+- 复现局域网 HTTP 的 `TypeError: Cannot read properties of undefined (reading 'digest')`：该来源未被浏览器视为安全上下文，`crypto.subtle` 和 WebGPU 不可用。独立页改为启动前检查并显示当前来源对应的浏览器配置步骤，避免下载大资源后才失败。
+- `probe-web-lan.cjs` 检查本机和局域网地址的六个包文件、WASM MIME、COOP/COEP，验证 Chrome/Edge 未信任来源的提示以及信任后原始关卡的连续渲染和真实 Pawn 移动。浏览器例外只传入自动化进程，不修改用户配置。
+- 本轮重新生成六文件独立包，通过 12 次本机/网卡地址的文件响应检查。Chrome、Edge 的可信网卡来源均完成 182 帧且实际移动超过 1,000 单位，无脚本或 GPU 校验错误；Chrome 原本机入口另验收 121 帧。首次启动曾出现此前记录的 `A valid external Instance reference no longer exists`，复跑通过，仅保留为既有偶发问题，未将其宣称为修复。
+- 局域网 HTTP 测试设备仍需手动将 `http://10.1.1.200:8765` 加入可信开发来源并重启浏览器，或部署受该设备信任的 HTTPS。验证仅使用本机访问网卡地址，其他设备及路由连通性需实际测试。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。随后构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
@@ -147,6 +155,6 @@ node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --poi
 ```
 
 - 独立目录：`tests/web-platform/build/ue-default-template`，含 `index.html`、JS、WASM、配置、资源清单和资源包。需通过 HTTP 服务运行。
-- 当前工作区已有服务：`http://127.0.0.1:8765/build/ue-default-template/index.html`；服务不运行时可在独立终端执行 `node tests/web-platform/serve.cjs`。
+- 当前工作区已有服务，默认监听 `0.0.0.0:8765`：本机入口 `http://127.0.0.1:8765/build/ue-default-template/index.html`，当前局域网入口 `http://10.1.1.200:8765/build/ue-default-template/index.html`。服务不运行时可在独立终端执行 `node tests/web-platform/serve.cjs`；可用 `HOST`、`PORT` 覆盖绑定。局域网 HTTP 运行 WebGPU 需在测试浏览器单独信任该来源，具体步骤见 `tests/web-platform/README.md`；直接公开分发需受信任 HTTPS。
 - 构建、Cook、Stage、独立目录和浏览器验收报告分别为 `results/web-engine-full-build-results.json`、`web-engine-webgpu-es31-default-cook-results.json`、`web-engine-webgpu-es31-default-stage-results.json`、`web-default-template-package-results.json`、`web-default-scene-results.json`。
 - 仍是开发验证流程，使用工作区隔离的 5.8.0 原生 Cook 主机和 5.8.3 Web 源码覆盖；尚未接入编辑器一键 Web 打包，也不代表桌面渲染功能已全部移植。
