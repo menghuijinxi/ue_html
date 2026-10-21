@@ -50,9 +50,9 @@ const nextFrames = page => page.evaluate(() => new Promise(resolve => {
         check(await page.evaluate(n => globalThis.__webApplicationFrames > n, first), 'browser-frames-advance');
         const display = await page.evaluate(() => globalThis.__webApplicationDisplayInfo);
         const css = await page.locator('#canvas').boundingBox();
-        check(display.x === 0 && display.y === 0 && display.width === Math.round(css.width) &&
-          display.height === Math.round(css.height) && display.scale === deviceScaleFactor,
-        'canvas-display-bounds-match-css');
+        check(display.x === 0 && display.y === 0 && display.width === Math.round(css.width * deviceScaleFactor) &&
+          display.height === Math.round(css.height * deviceScaleFactor) && display.scale === deviceScaleFactor,
+        'canvas-display-bounds-match-device-pixels');
         await page.locator('#canvas').click({position: {x: 40, y: 50}});
         await page.keyboard.down('Shift');
         await page.keyboard.down('KeyW');
@@ -80,10 +80,12 @@ const nextFrames = page => page.evaluate(() => new Promise(resolve => {
         check(events.some(e => e.type === 'keyDown' && e.key === 87 && e.repeat), 'ue-key-repeat');
         check(events.some(e => e.type === 'keyUp' && e.key === 87), 'ue-key-up');
         check(events.some(e => e.type === 'char' && e.value === 87), 'ue-ascii-character');
-        check(events.some(e => e.type === 'move' && e.x === 80 && e.y === 90), 'ue-canvas-mouse-position');
+        check(events.some(e => e.type === 'move' && e.x === 80 * deviceScaleFactor &&
+          e.y === 90 * deviceScaleFactor), 'ue-canvas-mouse-position');
         check(events.filter(e => e.type === 'mouseDown' && e.button === 0).length === 2 &&
           events.filter(e => e.type === 'mouseUp' && e.button === 0).length === 2 &&
-          events.some(e => e.type === 'mouseUp' && e.x === 8 - box.x && e.y === box.height + 12),
+          events.some(e => e.type === 'mouseUp' && e.x === Math.round((8 - box.x) * deviceScaleFactor) &&
+            e.y === Math.round((box.height + 12) * deviceScaleFactor)),
         'mouse-release-outside-canvas');
         const domWheel = await page.evaluate(() => globalThis.__webApplicationDOMWheel);
         check(domWheel.deltaMode === 0 && domWheel.deltaY > 0 &&
@@ -98,15 +100,15 @@ const nextFrames = page => page.evaluate(() => new Promise(resolve => {
           await page.evaluate(() => globalThis.__webApplicationEvents.filter(e => e.type === 'keyDown').length) === keysBefore,
         'html-ui-keeps-keyboard-input');
         await page.locator('#canvas').evaluate(canvas => { canvas.style.width = '320px'; canvas.style.height = '180px'; });
-        await page.waitForFunction(() => globalThis.__webApplicationEvents.some(e =>
-          e.type === 'resize' && e.width === 320 && e.height === 180));
+        await page.waitForFunction(scale => globalThis.__webApplicationEvents.some(e =>
+          e.type === 'resize' && e.width === 320 * scale && e.height === 180 * scale), deviceScaleFactor);
         const size = await page.locator('#canvas').evaluate(canvas => ({width: canvas.width, height: canvas.height}));
         check(size.width === 320 * deviceScaleFactor && size.height === 180 * deviceScaleFactor, 'canvas-resize-and-dpi');
         await nextFrames(page);
         const resizedDisplay = await page.evaluate(() => globalThis.__webApplicationDisplayInfo);
-        check(resizedDisplay.x === 0 && resizedDisplay.y === 0 && resizedDisplay.width === 320 &&
-          resizedDisplay.height === 180 && resizedDisplay.scale === deviceScaleFactor,
-        'resized-display-bounds-match-css');
+        check(resizedDisplay.x === 0 && resizedDisplay.y === 0 && resizedDisplay.width === 320 * deviceScaleFactor &&
+          resizedDisplay.height === 180 * deviceScaleFactor && resizedDisplay.scale === deviceScaleFactor,
+        'resized-display-bounds-match-device-pixels');
         await page.locator('#stop').click();
         const stopped = await page.evaluate(() => globalThis.__webApplicationStopped);
         check(stopped && stopped.frames > first, 'ue-stop-and-destroy');

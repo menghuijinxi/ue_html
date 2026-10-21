@@ -94,6 +94,19 @@
 - 参考引擎修改提交为 `fad5ed078`。本轮同时修正原生 RenderCore 构建受插件目标缓存影响而缺失模块输出的问题：仅移除工作区内该目标的 `Makefile.bin` 后重新生成，安装引擎输入哈希检查通过。
 - 仍未接入体积云；当前仍是 ES3.1 移动前向渲染，自动曝光通过不代表与桌面 Lumen、TSR、体积云或编辑器全套画面一致。下一项为默认天空中的云。
 
+## 2026-10-21：修复高 DPI 启动时的 unreachable
+
+- 用户报告自动曝光版本出现 `Uncaught RuntimeError: unreachable`。使用不安装 GPU 拦截器的普通独立包页面复现：CSS 窗口 `1848x1120`、DPR 1.5 时，第 4 帧先报已销毁的交换链纹理被提交，第 5 帧在 `FViewInfo::UpdatePreExposure` 的 `FinalPreExposure > 0` 断言中终止。DPR 1 对照正常。原始失败记录保留在 `results/web-default-startup-before-fix-results.json`，对应包记录为 `web-default-template-package-before-dpi-fix-results.json`，这些是历史证据，不是当前产物验收报告。
+- 根因是尺寸管理冲突：ApplicationCore 向 UE 报告 CSS 尺寸，WebGPU 依此配置交换链；ApplicationCore 又在消息轮询中把同一画布改为 CSS 尺寸乘 DPR，销毁尚待提交的帧纹理。新增曝光回读消费了失效帧的输出，使问题表现为曝光断言。
+- 统一窗口、显示范围、缩放事件及绝对鼠标坐标为实际像素；ApplicationCore 只报告窗口变化，由 RHI 配置表面时设置画布缓冲区。保留高 DPI 分辨率和原有相对视角输入，没有关闭自动曝光或放宽曝光断言。独立 ApplicationCore 探针没有 RHI，由探针自身的画布消费者应用上报尺寸。
+- 新增 `probe-web-default-startup.cjs`，直接打开普通页面，覆盖 Chrome/Edge、DPR 1/1.5/2、每档重复三次；每次检查启动、竖屏、恢复窗口三个状态，各等待至少 180 帧，再验证实际 UE Pawn 移动。检查画布实际尺寸、完整非黑画面、页面错误及 GPU 错误，报告记录当前包和产物哈希。
+- 普通 UBT Web 编译、链接及独立包生成通过；本次没有修改着色器、Cook 配置和资源，复用已校验的原图 Cook/Stage。独立目录仍为 6 个文件，本次总计 290,263,846 字节。
+- 普通页面回归全部通过：18 次独立启动、54 个窗口状态，所有状态的非黑像素比例均为 100%，实际尺寸均为 CSS 尺寸乘 DPR 后取整，页面及 GPU 错误为 0。原有 ApplicationCore 四组回归共 68 项通过；相应旧汇总脚本的尺寸断言也改用实际像素约定。
+- 原图光照、天空、恢复、缩放与资源破坏控制测试通过；实际 HDR、FXAA、Bloom、LUT 和直方图曝光提交及回读通过。曝光正常/暗场/恢复倍率：Chrome 为 1.2075 / 11.8053 / 1.2104，Edge 为 1.2042 / 11.8945 / 1.2083。
+- 最终包持续交互通过：Chrome 120.807 秒、最终 10,882 帧；Edge 121.581 秒、最终 13,768 帧。两边各 7 项交互通过，预热后线性内存增长为 0，保持 193,331,200 字节，统计历史为 14 帧，页面及 GPU 错误为 0。内置浏览器已刷新并确认完整画面，错误显示为空。
+- 参考引擎修复提交为 `3090741d9`；普通页面回归报告为 `results/web-default-startup-results.json`，各 DPI 截图为同目录的 `web-default-startup-{chrome,edge}-dpr{1,1.5,2}.png`。
+- 本次 DPI 与竖屏组合均在 Windows 桌面浏览器验证，不代表真机移动端兼容；持续测试时长约两分钟，不作为无限时长稳定性的证明。体积云仍未接入。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行，依次构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
@@ -105,6 +118,7 @@ node tests/web-platform/stage-web-engine.cjs --default-template
 node tests/web-platform/package-web-default-template.cjs
 $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
 node tests/web-platform/probe-web-mobile-histogram.cjs
+node tests/web-platform/probe-web-default-startup.cjs --runs=3
 node tests/web-platform/probe-web-default-postprocess.cjs --exposure
 node tests/web-platform/probe-web-default-scene.cjs --packaged
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --seconds=600

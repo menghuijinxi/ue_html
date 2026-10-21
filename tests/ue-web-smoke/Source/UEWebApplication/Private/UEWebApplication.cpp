@@ -62,6 +62,8 @@ public:
     }
     bool OnSizeChanged(const TSharedRef<FGenericWindow>&, int32 Width, int32 Height, bool) override
     {
+        // This probe has no RHI; its canvas consumer applies the reported device-pixel size.
+        emscripten_set_canvas_element_size(FWebApplication::CanvasSelector, Width, Height);
         std::printf("P3_APP_EVENT {\"type\":\"resize\",\"width\":%d,\"height\":%d}\n", Width, Height);
         return true;
     }

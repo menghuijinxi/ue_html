@@ -84,10 +84,11 @@ try {
     target.objectAudit.every(item => valid(item) && sha(item.response) === item.responseSha256));
   assert.equal(application.browserRuns.length, 4);
   assert(application.browserRuns.every(run => run.pass && run.errors.length === 0 &&
-    run.checks.length === 17 && run.checks.includes('canvas-display-bounds-match-css') &&
-    run.checks.includes('resized-display-bounds-match-css') &&
+    run.checks.length === 17 && run.checks.includes('canvas-display-bounds-match-device-pixels') &&
+    run.checks.includes('resized-display-bounds-match-device-pixels') &&
     run.display.x === 0 && run.display.y === 0 && run.display.scale === run.deviceScaleFactor &&
-    run.resizedDisplay.width === 320 && run.resizedDisplay.height === 180 &&
+    run.resizedDisplay.width === 320 * run.deviceScaleFactor &&
+    run.resizedDisplay.height === 180 * run.deviceScaleFactor &&
     run.resizedDisplay.scale === run.deviceScaleFactor));
   report.applicationChecks = 68;
   const build = load('web-system-textures-native-results');
