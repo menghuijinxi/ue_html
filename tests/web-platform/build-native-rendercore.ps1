@@ -33,6 +33,9 @@ try {
     & $taskDotnet build (Join-Path $PSScriptRoot 'native-ubt/UnrealBuildTool.Native.csproj') -c Release --no-restore *> "$taskLog.ubt-build"
     if ($LASTEXITCODE -ne 0) { throw "Native UBT build failed: $taskLog.ubt-build" }
     $taskUBT = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll'
+    # A plugin-only build can cache a target without the native RenderCore outputs.
+    $taskMakefile = Join-Path $taskRoot 'tests/ue-shader-host/Intermediate/Build/Win64/x64/UEShaderHostEditor/Development/Makefile.bin'
+    if (Test-Path -LiteralPath $taskMakefile) { Remove-Item -LiteralPath $taskMakefile }
     $taskArguments = @($taskUBT, 'UEShaderHostEditor', 'Win64', 'Development',
         "-Project=$taskProject", '-Module=RenderCore', '-NoUBA', '-NoUbaLocal',
         '-MaxParallelActions=1', '-NoHotReloadFromIDE')

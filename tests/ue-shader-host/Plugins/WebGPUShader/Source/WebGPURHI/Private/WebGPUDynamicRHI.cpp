@@ -51,7 +51,7 @@ bool IsUnsignedTextureFormat(EPixelFormat Value)
 bool IsSampled2DTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_G8 || Value == PF_R8 ||
-           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_R32_FLOAT ||
+           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_R16F || Value == PF_R32_FLOAT ||
            IsUnsignedTextureFormat(Value);
 }
 WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
@@ -69,6 +69,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_RG8Unorm;
     case PF_FloatRGBA:
         return WGPUTextureFormat_RGBA16Float;
+    case PF_R16F:
+        return WGPUTextureFormat_R16Float;
     case PF_R32_FLOAT:
         return WGPUTextureFormat_R32Float;
     case PF_R8G8B8A8_UINT:
@@ -473,7 +475,10 @@ void FWebGPUDynamicRHI::Init()
         EPixelFormatCapabilities::TextureLoad | EPixelFormatCapabilities::TextureSample;
     Queue = wgpuDeviceGetQueue(Device);
     if (StartupProbeMode || GlobalProbeMode)
+    {
         GRHIMaxDispatchThreadGroupsPerDimension = FIntVector(Limits.maxComputeWorkgroupsPerDimension);
+        GRHIGlobals.MaxComputeSharedMemory = Limits.maxComputeWorkgroupStorageSize;
+    }
     if (StartupProbeMode)
     {
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
@@ -891,7 +896,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         (In.InitAction != ERHITextureInitAction::Default && !Color))
     {
         Error =
-            TEXT("Only 2D RGBA8/BGRA8 (linear or sRGB), linear R8/RG8/RGBA16F/R32_FLOAT/R16_UINT/R32_UINT/RGBA8_UINT, sampled mip chains, single-mip depth, or existing linear sampled 3D textures are implemented");
+            TEXT("Only 2D RGBA8/BGRA8 (linear or sRGB), linear R8/RG8/R16F/RGBA16F/R32_FLOAT/R16_UINT/R32_UINT/RGBA8_UINT, sampled mip chains, single-mip depth, or existing linear sampled 3D textures are implemented");
         return false;
     }
     const uint64 Bytes = In.CalcMemorySizeEstimate();
@@ -2264,6 +2269,12 @@ void* FWebGPUDynamicRHI::RHILockStagingBuffer(FRHIStagingBuffer* Buffer, FRHIGPU
     RequireOwner();
     return !Fence || Fence->Poll() ? Buffer->Lock(Offset, Size) : nullptr;
 }
+void FWebGPUDynamicRHI::RHIUnlockStagingBuffer(FRHIStagingBuffer* Buffer)
+{
+    RequireOwner();
+    check(Buffer);
+    Buffer->Unlock();
+}
 void FWebGPUDynamicRHI::SubmitCurrent()
 {
     FRHIFinalizeContextsArgs FinalizeArgs;
@@ -2486,6 +2497,22 @@ void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destina
                       FMath::Max(1u, Info.Size.Y ? uint32(Info.Size.Y) >> Mip : Source->GetSizeY() >> Src.mipLevel), 1};
     wgpuCommandEncoderCopyTextureToTexture(Encoder, &Src, &Dst, &Size);
     }
+}
+void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUintVector4& Values)
+{
+    RequireOwner();
+    if (GlobalProbeMode && !ContextOpen)
+        RHIGetCommandContext(ERHIPipeline::Graphics);
+    check(Encoder && !Pass && View && Values == FUintVector4(0));
+    auto* Resource = View->GetResource();
+    FString Error;
+    checkf(Resource && Resource->GetType() == RRT_Buffer &&
+        ValidateUAV(static_cast<FRHIBuffer*>(Resource), View->GetDesc(), Error), TEXT("%s"), *Error);
+    auto* Buffer = static_cast<FWebGPUBuffer*>(Resource);
+    RequireAccess(Buffer, ERHIAccess::UAVCompute);
+    const auto Info = View->GetDesc().Buffer.UAV.GetViewInfo(Buffer);
+    wgpuCommandEncoderClearBuffer(Encoder, Buffer->Handle, Info.OffsetInBytes,
+        uint64(Info.NumElements) * Info.StrideInBytes);
 }
 void FWebGPUDynamicRHI::RHICopyBufferRegion(FRHIBuffer *Dest, uint64 DstOffset, FRHIBuffer *Src, uint64 SrcOffset,
                                             uint64 Size)

@@ -4,17 +4,33 @@ const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const directory = path.join(__dirname, 'results');
+const requireExposure = process.argv.includes('--exposure');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
-const report = {date: new Date().toISOString(), pass: false, browserRuns: [],
+const report = {date: new Date().toISOString(), pass: false, exposureRequired: requireExposure, browserRuns: [],
   sources: [__filename, path.join(__dirname, 'capture-web-canvas.cjs')].map(audit)};
 
-function capturePostprocess() {
+function capturePostprocess(exposureBindings) {
   const state = {textures: [], draws: {}, dispatches: {}};
   const textures = new Set();
   const pipelines = new WeakMap();
   const bound = new WeakMap();
+  const bindGroups = new WeakMap();
+  const boundGroups = new WeakMap();
+  let exposure;
+  const createBindGroup = GPUDevice.prototype.createBindGroup;
+  GPUDevice.prototype.createBindGroup = function(descriptor) {
+    const group = createBindGroup.call(this, descriptor);
+    bindGroups.set(group, {device: this, entries: descriptor.entries});
+    return group;
+  };
+  const setBindGroup = GPUComputePassEncoder.prototype.setBindGroup;
+  GPUComputePassEncoder.prototype.setBindGroup = function(index, group, ...args) {
+    if (!boundGroups.has(this)) boundGroups.set(this, new Map());
+    boundGroups.get(this).set(index, bindGroups.get(group));
+    return setBindGroup.call(this, index, group, ...args);
+  };
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(descriptor) {
     const texture = createTexture.call(this, descriptor);
@@ -33,6 +49,7 @@ function capturePostprocess() {
     const create = GPUDevice.prototype[method];
     GPUDevice.prototype[method] = function(descriptor) {
       const pipeline = create.call(this, descriptor);
+      state.maxComputeSharedMemory = this.limits.maxComputeWorkgroupStorageSize;
       pipelines.set(pipeline, descriptor[stage]?.entryPoint || '');
       return pipeline;
     };
@@ -46,11 +63,31 @@ function capturePostprocess() {
       encoder[command] = function(...args) {
         const entry = bound.get(this);
         if (entry) state[field][entry] = (state[field][entry] || 0) + 1;
+        const binding = exposureBindings[entry];
+        if (field === 'dispatches' && binding) {
+          const group = boundGroups.get(this)?.get(binding.group);
+          const resource = group?.entries.find(item => item.binding === binding.binding)?.resource;
+          if (resource?.buffer) exposure = {device: group.device, ...resource};
+        }
         return execute.apply(this, args);
       };
     }
   }
   globalThis.__webPostprocess = state;
+  globalThis.__webReadExposure = async () => {
+    if (!exposure) return null;
+    const {device, buffer, offset = 0} = exposure;
+    const readback = device.createBuffer({size: 16, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ});
+    try {
+      const encoder = device.createCommandEncoder();
+      encoder.copyBufferToBuffer(buffer, offset, readback, 0, 16);
+      device.queue.submit([encoder.finish()]);
+      await readback.mapAsync(GPUMapMode.READ);
+      const values = Array.from(new Float32Array(readback.getMappedRange()));
+      readback.unmap();
+      return {scale: values[0], targetScale: values[1], averageLuminance: values[2], compensation: values[3]};
+    } finally { readback.destroy(); }
+  };
 }
 
 (async () => {
@@ -69,6 +106,7 @@ function capturePostprocess() {
     }
     report.cook = audit(cookFile);
     const shaders = new Map();
+    const exposureBindings = {};
     // DDC hits can reuse a shader compiled by an earlier Cook. Entry names include its code hash.
     const cooks = path.join(__dirname, 'build/web-engine-webgpu-es31-default-cook');
     for (const entry of fs.readdirSync(cooks, {withFileTypes: true})) {
@@ -83,6 +121,11 @@ function capturePostprocess() {
         const detail = read(input);
         shaders.set(detail.metadata.webEntry, {name: detail.shaderName, shader: detail.shader,
           input, output});
+        if (/FMobile(?:Histogram|Basic)EyeAdaptationCS/.test(detail.shaderName)) {
+          const binding = detail.metadata.spirvBindings.find(item => item.name === 'OutputBuffer');
+          assert(binding, 'Auto exposure output must have reflected storage buffer coordinates');
+          exposureBindings[detail.metadata.webEntry] = {group: binding.group, binding: binding.binding};
+        }
       }
     }
     for (const [name, executablePath] of [
@@ -99,7 +142,7 @@ function capturePostprocess() {
         if (run.log.length > 24) run.log.shift();
       });
       await page.addInitScript(require('./capture-web-canvas.cjs'));
-      await page.addInitScript(capturePostprocess);
+      await page.addInitScript(capturePostprocess, exposureBindings);
       await page.goto('http://127.0.0.1:8765/build/ue-default-template/index.html', {waitUntil: 'commit'});
       await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 120,
         null, {timeout: 90000});
@@ -132,9 +175,42 @@ function capturePostprocess() {
       assert(run.fxaa.length, 'The UE FXAA pass must actually draw');
       assert.equal(run.bloom.length, 3, 'The UE bloom setup, downsample and upsample passes must actually draw');
       assert(run.colorLUT.length, 'The UE color grading LUT must actually dispatch');
+      if (requireExposure) {
+        run.eyeAdaptation = run.executedShaders.dispatches.filter(shader =>
+          /FMobile(?:Histogram|Basic)EyeAdaptationCS/.test(shader.name || ''));
+        assert(run.eyeAdaptation.length, 'The UE mobile auto exposure must actually dispatch');
+        const sample = async () => {
+          const value = await page.evaluate(() => globalThis.__webReadExposure());
+          assert(value && Object.values(value).every(Number.isFinite) &&
+            value.scale > 0 && value.averageLuminance > 0, 'The GPU exposure result must be finite and positive');
+          return value;
+        };
+        const settle = async mode => {
+          assert.equal(await page.evaluate(value => Module._WebDefaultSceneTestMode(value), mode), 1);
+          let last;
+          for (let i = 0; i < 40; ++i) {
+            await page.waitForTimeout(250);
+            const value = await sample();
+            if (last && Math.abs(value.scale - last.scale) / value.scale < 0.005 &&
+                Math.abs(value.scale - value.targetScale) / value.scale < 0.02) return value;
+            last = value;
+          }
+          assert.fail('Exposure must converge within ten seconds');
+        };
+        run.exposure = {normal: await settle(0)};
+        run.exposure.dimmedSun = await settle(3);
+        assert(run.exposure.dimmedSun.averageLuminance < run.exposure.normal.averageLuminance * 0.9 &&
+          run.exposure.dimmedSun.scale > run.exposure.normal.scale * 1.1,
+          'Dimming the original sunlight must lower measured luminance and increase exposure');
+        run.exposure.restored = await settle(0);
+        assert(Math.abs(run.exposure.restored.scale - run.exposure.normal.scale) / run.exposure.normal.scale < 0.05,
+          'Restoring the original light must restore the measured exposure');
+        assert.equal((await page.evaluate(() => globalThis.__webCanvas.gpuErrors)).length, 0);
+      }
       const screenshot = path.join(directory, `web-default-postprocess-${name.toLowerCase()}.png`);
       await page.locator('canvas').screenshot({path: screenshot});
       run.screenshot = audit(screenshot);
+      run.finalFrames = await page.evaluate(() => globalThis.__webEngineFrames);
       run.pass = true;
       await browser.close();
       browser = null;
@@ -147,8 +223,10 @@ function capturePostprocess() {
     fs.writeFileSync(path.join(directory, 'web-default-postprocess-results.json'), JSON.stringify(report, null, 2));
     console.log(JSON.stringify({pass: report.pass, failure: report.failure,
       runs: report.browserRuns.map(run => ({browser: run.browser, pass: run.pass, frames: run.frames,
-        failure: run.failure, errors: run.errors, gpuErrors: run.gpuErrors, log: run.log,
-        hdrSceneColor: run.hdrSceneColor, tonemap: run.tonemap, fxaa: run.fxaa}))}, null, 2));
+        finalFrames: run.finalFrames, failure: run.failure, errors: run.errors, gpuErrors: run.gpuErrors,
+        ...(!run.pass ? {log: run.log} : {}), exposure: run.exposure,
+        hdrSceneColor: run.hdrSceneColor, tonemapDraws: run.tonemap?.reduce((sum, shader) => sum + shader.count, 0),
+        fxaaDraws: run.fxaa?.reduce((sum, shader) => sum + shader.count, 0)}))}, null, 2));
     process.exitCode = report.pass ? 0 : 1;
   }
 })();

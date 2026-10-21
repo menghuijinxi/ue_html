@@ -21,14 +21,16 @@ const report = {date: new Date().toISOString(), pass: false, completeUEScene: fa
   ].map(audit)};
 
 function pixels(file) {
-  const image = PNG.sync.read(fs.readFileSync(file));
+  const image = PNG.sync.read(Buffer.isBuffer(file) ? file : fs.readFileSync(file));
   let nonBlack = 0, blueSky = 0, floorLuma = 0, floorSamples = 0;
+  let imageLuma = 0;
   let floorMin = 255, floorMax = 0;
   const colors = new Set();
   for (let y = 0; y < image.height; ++y) {
     for (let x = 0; x < image.width; ++x) {
       const offset = (y * image.width + x) * 4;
       const [r, g, b] = image.data.subarray(offset, offset + 3);
+      imageLuma += (r + g + b) / 3;
       if (r + g + b > 30) ++nonBlack;
       if (y < image.height * 0.25 && b > r * 1.1 && b > 40 && g > 30) ++blueSky;
       colors.add((r << 16) | (g << 8) | b);
@@ -42,6 +44,7 @@ function pixels(file) {
     }
   }
   return {width: image.width, height: image.height, nonBlack, blueSky, colors: colors.size,
+    imageMean: imageLuma / (image.width * image.height),
     floorMean: floorLuma / floorSamples, floorRange: floorMax - floorMin,
     pass: blueSky > image.width * image.height * 0.1 &&
       nonBlack > image.width * image.height * 0.9 &&
@@ -75,6 +78,16 @@ async function settle(page) {
     globalThis.__webEngineFrames >= frame + 60, first, {timeout: 60000});
   assert.equal(await page.evaluate(() => globalThis.__webEngineFailure || null), null);
   assert((await page.evaluate(() => globalThis.__webCanvasWaitIdle())).pass);
+  let last, stable = 0;
+  for (let sample = 0; sample < 40; ++sample) {
+    await page.waitForTimeout(250);
+    const value = pixels(await page.locator('canvas').screenshot());
+    stable = last && Math.abs(value.imageMean - last.imageMean) < 0.3 &&
+      Math.abs(value.floorMean - last.floorMean) < 0.3 ? stable + 1 : 0;
+    if (stable >= 3) return {samples: sample + 1, imageMean: value.imageMean, floorMean: value.floorMean};
+    last = value;
+  }
+  assert.fail('The image must settle after UE auto exposure adapts');
 }
 
 (async () => {
@@ -136,6 +149,8 @@ async function settle(page) {
         ready: globalThis.__webEngineReady || null, world: globalThis.__webEngineWorld || null,
         scene: globalThis.__webRenderScene || null
       })));
+      if (run.frames >= 60 && !run.failure && !run.waitFailure && !run.errors.length)
+        run.initialSettle = await settle(page);
       run.queue = await page.evaluate(() => globalThis.__webCanvasWaitIdle());
       const screenshot = path.join(directory, `web-default-scene-${name.toLowerCase()}.png`);
       await page.locator('canvas').screenshot({path: screenshot});

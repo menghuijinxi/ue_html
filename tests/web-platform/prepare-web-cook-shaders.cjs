@@ -8,6 +8,36 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/PostProcessMobile.usf', [
+    ...[['RWBuffer', 'UAV'], ['RWBuffer', 'OutputUIntBuffer'], ['Buffer', 'LogLuminanceWeightBuffer'],
+      ['RWBuffer', 'RWHistogramBuffer'], ['Buffer', 'HistogramBuffer']].map(([type, name]) => {
+      const declaration = `${type}<uint> ${name};`;
+      return {before: declaration, after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        `${type === 'Buffer' ? 'StructuredBuffer' : 'RWStructuredBuffer'}<uint> ${name};`,
+        '#else', declaration, '#endif'].join('\n')};
+    }),
+    {before: '\t\tUNROLL for (uint i = 0; i < ThreadGroupSize; ++i)', after: [
+      '\t\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '\t\tLOOP', '\t\t#else',
+      '\t\tUNROLL', '\t\t#endif', '\t\tfor (uint i = 0; i < ThreadGroupSize; ++i)'
+    ].join('\n')},
+    {before: '\t\tWriteToHistogramBuffer(GroupIndex, NormalizeFactor);', after: [
+      '\t\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && LOW_SHARED_COMPUTE_MEMORY',
+      '\t\tWriteToHistogramBuffer(GroupIndex * 2, NormalizeFactor);', '\t\t#else',
+      '\t\tWriteToHistogramBuffer(GroupIndex, NormalizeFactor);', '\t\t#endif'
+    ].join('\n')},
+  ]],
+  ['Private/PostProcessHistogramCommon.ush', [
+    {before: 'float GetHistogramBucket(Buffer<uint> HistogramBuffer, uint BucketIndex)', after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '#define HISTOGRAM_BUFFER_TYPE StructuredBuffer<uint>',
+      '#else', '#define HISTOGRAM_BUFFER_TYPE Buffer<uint>', '#endif', '',
+      'float GetHistogramBucket(HISTOGRAM_BUFFER_TYPE HistogramBuffer, uint BucketIndex)'
+    ].join('\n')},
+    {before: 'float ComputeHistogramSum(Buffer<uint> HistogramBuffer)',
+      after: 'float ComputeHistogramSum(HISTOGRAM_BUFFER_TYPE HistogramBuffer)'},
+    {before: '// @param MinFractionSum e.g. ComputeHistogramSum() * 0.5f for 50% percentil',
+      after: '#undef HISTOGRAM_BUFFER_TYPE\n\n// @param MinFractionSum e.g. ComputeHistogramSum() * 0.5f for 50% percentil'},
+  ]],
   ...['Private/PostProcessCombineLUTs.usf', 'Private/PostProcessCombineLUTsInner.usf'].map(file => {
     const declaration = 'RWTexture3D<float4> RWOutputTexture;';
     return [file, [{before: declaration, after: [

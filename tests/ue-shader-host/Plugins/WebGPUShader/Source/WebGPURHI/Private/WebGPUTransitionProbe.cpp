@@ -545,6 +545,48 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
             Checked += UE_ARRAY_COUNT(Values);
         }
     }
+    {
+        TArray<uint32> Sentinel;
+        Sentinel.Init(0xa5a5a5a5, 256);
+        FBufferRHIRef Buffers[2];
+        RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        {
+            FCommandList Cmd(&RHI);
+            for (uint32 Index = 0; Index < 2; ++Index)
+            {
+                const bool Structured = Index == 1;
+                Buffers[Index] = Buffer(RHI, Cmd,
+                    FRHIBufferCreateDesc::Create(TEXT("HistogramClear"), 1024, 4,
+                        BUF_UnorderedAccess | (Structured ? BUF_StructuredBuffer : BUF_None))
+                        .SetInitialState(ERHIAccess::UAVCompute), Sentinel.GetData(), 1024);
+                FRHIViewDesc Desc;
+                Desc.Common.ViewType = FRHIViewDesc::EViewType::BufferUAV;
+                Desc.Buffer.UAV.BufferType = Structured ? FRHIViewDesc::EBufferType::Structured :
+                    FRHIViewDesc::EBufferType::Typed;
+                Desc.Buffer.UAV.Format = Structured ? PF_Unknown : PF_R32_UINT;
+                Desc.Buffer.UAV.Stride = Structured ? 4 : 0;
+                Desc.Buffer.UAV.OffsetInBytes = Structured ? 256 : 0;
+                Desc.Buffer.UAV.NumElements = Structured ? 128 : 256;
+                const auto View = RHI.RHICreateUnorderedAccessView(Cmd, Buffers[Index], Desc);
+                Cmd.EnqueueLambda([&RHI, View](FRHICommandListBase&) {
+                    RHI.RHIClearUAVUint(View, FUintVector4(0));
+                });
+            }
+        }
+        RHI.SubmitCurrent();
+        for (uint32 Index = 0; Index < 2; ++Index)
+        {
+            const auto Bytes = RHI.ReadBuffer(Buffers[Index], 1024);
+            bool OK = Bytes.Num() == 1024;
+            for (uint32 Element = 0; Element < 256 && OK; ++Element)
+                OK &= reinterpret_cast<const uint32*>(Bytes.GetData())[Element] ==
+                    (Index == 0 || (Element >= 64 && Element < 192) ? 0u : 0xa5a5a5a5);
+            Record(Index == 0 ? TEXT("typed-uav-zero-clear") : TEXT("structured-uav-range-zero-clear"), OK);
+            Record(FString::Printf(TEXT("uav-clear-%u-preserves-access"), Index),
+                RHI.ResourceState(Buffers[Index]).Access == ERHIAccess::UAVCompute);
+            Checked += 256;
+        }
+    }
     Record(TEXT("transition-lifecycle-balanced"),
            RHI.Transitions.IsEmpty() && RHI.TransitionsCreated - StartCreated == RHI.TransitionsBegun - StartBegun &&
                RHI.TransitionsCreated - StartCreated == RHI.TransitionsEnded - StartEnded &&

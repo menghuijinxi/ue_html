@@ -152,7 +152,7 @@ void EngineFrame(void*)
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
-    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 2)
+    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 3)
         return 0;
     UWorld* World = nullptr;
     for (const FWorldContext& Context : GEngine->GetWorldContexts())
@@ -160,10 +160,15 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
             World = Context.World();
     if (!World)
         return 0;
+    static TMap<TWeakObjectPtr<UDirectionalLightComponent>, float> OriginalIntensities;
     for (TActorIterator<AActor> It(World); It; ++It)
     {
         if (auto* Light = (*It)->FindComponentByClass<UDirectionalLightComponent>())
+        {
+            const float Original = OriginalIntensities.FindOrAdd(Light, Light->Intensity);
+            Light->SetIntensity(Original * (Mode == 3 ? 0.1f : 1.0f));
             Light->SetVisibility(Mode != 1);
+        }
         if (auto* Atmosphere = (*It)->FindComponentByClass<USkyAtmosphereComponent>())
             Atmosphere->SetVisibility(Mode != 2);
         TInlineComponentArray<UStaticMeshComponent*> Components(*It);

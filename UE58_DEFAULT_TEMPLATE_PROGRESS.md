@@ -77,17 +77,35 @@
 - 最终包双浏览器回归通过：后处理实际提交、原图光照/天空/缩放均通过；两边各 7 项交互通过。Chrome 持续测试 60.779 秒、最终 7,870 帧，Edge 61.552 秒、最终 7,985 帧；预热后线性内存增长为 0，统计历史保持 14 帧，页面错误和 GPU 校验错误均为 0。本次 HDR 包只完成约一分钟持续测试，之前 LDR 包的十分钟结果不作为 HDR 包长时稳定性的证明。
 - 新增报告为 `tests/web-platform/results/web-default-postprocess-results.json`，截图为同目录 `web-default-postprocess-chrome.png` 和 `web-default-postprocess-edge.png`；原图及交互报告也已更新为最终 HDR 独立包。参考引擎修改提交为 `b5d55f12e`。
 
+## 2026-10-21：接入 UE 移动端直方图自动曝光
+
+- Web ES3.1 开放引擎原有的移动自动曝光编译及运行开关，保留原图、灯光和材质。实际执行 `TMobileHistogramCS<true>` 与 `FMobileHistogramEyeAdaptationCS`，没有使用网页端亮度滤镜。
+- 曝光着色器在 Web 使用结构化整数存储缓冲，原生平台继续原有声明；直方图归约循环保留循环，避免完全展开后超过 WGSL 解析深度。RHI 根据实际设备上限设置共享内存能力，Chrome、Edge 本次均为 16,384 字节，正确选用低共享内存排列。
+- GPU 数值复现发现低共享内存排列原先重复写部分奇数桶、漏写后半部分偶数桶；Web 分支改为每线程分别写入 `2*i`、`2*i+1`。修复前五档亮度中三档失败，修复后 Chrome、Edge 的五档亮度、每档 64 桶全部通过，每档权重总和均为 100,000。
+- 补齐曝光直方图所需的整数缓冲 UAV 清零，仅支持全零值，并按视图范围清零；原生探针分别验证整段 typed 缓冲及局部 structured 缓冲，范围外哨兵和逻辑访问状态保留。非零清除和纹理清除仍不在本次范围。
+- 亮度中间目标保留单通道 R16F，增加相应 RHI 纹理映射，修正此前统一回退 RGBA16F 与单通道像素输出不匹配的问题。补齐 `RHIUnlockStagingBuffer`，曝光异步回读完成后通过相同 RHI 入口解锁并允许再次锁定。
+- 原生 RenderCore、RHI 编译通过；普通 UBT Web 编译及链接通过。使用 `-ValidateShaderJobCache` 禁用着色器 DDC 后重新 Cook 原图，配置一致性通过，枚举 947 个全局着色器排列，零转换失败。Stage 为 383 个文件、108,307,218 字节；独立目录为 6 个文件、290,264,812 字节。
+- 原生回归通过：材质 1,114,112 个数值检查、资源转换及清零 66,576 个数值检查；天空资源及回读共 20 项检查，视口记录/直通两种模式共 72 项检查通过。
+- 浏览器测试直接回读实际曝光 GPU 输出：Chrome 正常曝光倍率 1.2055，原太阳强度临时降低至十分之一后为 11.8249，恢复后为 1.2116；测得平均亮度从 0.29896 降为 0.02991，再恢复为 0.29895。Edge 对应值几乎相同。测试要求曝光收敛、暗场倍率提高、恢复误差小于 5%，两边均通过，页面及 GPU 校验错误均为 0。
+- 完全关闭太阳会让默认图接近全黑，并受 UE 忽略黑色直方图桶的规则影响；曝光测试改为降低原灯光强度，不改变曝光算法。新增测试模式只在验收脚本调用，正常页面使用原始灯光强度。原图测试改为等待图像亮度稳定后截图，保留原有天空、地面及恢复差异阈值。
+- 新增数值报告为 `tests/web-platform/results/web-mobile-histogram-results.json`；实际曝光及后处理报告为 `web-default-postprocess-results.json`，截图为同目录 `web-default-postprocess-chrome.png`、`web-default-postprocess-edge.png`。
+- 最终独立包原图对照通过：两浏览器关闭太阳、关闭天空、恢复原图、竖屏及恢复窗口检查全部通过；恢复后天空/地面平均像素差均小于 0.54，沿用小于 5 的验收阈值。资源包和配置哈希破坏测试也通过。
+- 自动曝光包持续运行及交互通过：Chrome 61.526 秒、最终 7,280 帧，Edge 60.591 秒、最终 7,143 帧；各 7 项交互通过。预热后线性内存增长为 0，保持 193,331,200 字节，统计历史保持 14 帧，页面及 GPU 校验错误均为 0。本批验证时长约一分钟，不沿用旧包的十分钟结果。
+- 参考引擎修改提交为 `fad5ed078`。本轮同时修正原生 RenderCore 构建受插件目标缓存影响而缺失模块输出的问题：仅移除工作区内该目标的 `Makefile.bin` 后重新生成，安装引擎输入哈希检查通过。
+- 仍未接入体积云；当前仍是 ES3.1 移动前向渲染，自动曝光通过不代表与桌面 Lumen、TSR、体积云或编辑器全套画面一致。下一项为默认天空中的云。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行，依次构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
 
 ```powershell
 & ./tests/web-platform/build-web-engine.ps1 -MaxParallelActions 8 -SkipHostPreparation
-& ./tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-ES31 -Scene DefaultTemplate -StopOnShaderError
+& ./tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-ES31 -Scene DefaultTemplate -StopOnShaderError -ValidateShaderJobCache
 node tests/web-platform/stage-web-engine.cjs --default-template
 node tests/web-platform/package-web-default-template.cjs
 $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
-node tests/web-platform/probe-web-default-postprocess.cjs
+node tests/web-platform/probe-web-mobile-histogram.cjs
+node tests/web-platform/probe-web-default-postprocess.cjs --exposure
 node tests/web-platform/probe-web-default-scene.cjs --packaged
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --seconds=600
 node tests/web-platform/probe-web-default-interaction.cjs --browser=Edge --seconds=600

@@ -524,6 +524,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RHIDrawPrimitive(uint32, uint32, uint32) override;
     void RHIDrawIndexedPrimitive(FRHIBuffer *, int32, uint32, uint32, uint32, uint32, uint32) override;
     void RHIDispatchComputeShader(uint32, uint32, uint32) override;
+    void RHIClearUAVUint(FRHIUnorderedAccessView*, const FUintVector4&) override;
     void RHICopyTexture(FRHITexture *, FRHITexture *, const FRHICopyTextureInfo &) override;
     void RHICopyBufferRegion(FRHIBuffer *, uint64, FRHIBuffer *, uint64, uint64) override;
     void RHIReadSurfaceData(FRHITexture *, FIntRect, TArray<FColor> &, FReadSurfaceDataFlags) override;
@@ -536,6 +537,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RHICopyToStagingBuffer(FRHIBuffer*, FRHIStagingBuffer*, uint32 Offset, uint32 Size) override;
     void RHIWriteGPUFence(FRHIGPUFence*) override;
     void* RHILockStagingBuffer(FRHIStagingBuffer*, FRHIGPUFence*, uint32 Offset, uint32 Size) override;
+    void RHIUnlockStagingBuffer(FRHIStagingBuffer*) override;
     void RHICreateTransition(FRHITransition *, const FRHITransitionCreateInfo &) override;
     void RHIReleaseTransition(FRHITransition *) override;
     void RHIBeginTransitions(TArrayView<const FRHITransition *>) override;

@@ -77,7 +77,14 @@ inline bool RunWebGPUSkyResourceProbe(IDynamicRHIModule& Module, const FString& 
             void* Data = Ready ? RHI.RHILockStagingBuffer(Staging, Fence, 0, sizeof(Values)) : nullptr;
             Record(TEXT("asynchronous-buffer-readback"), Data && FMemory::Memcmp(Data, Values, sizeof(Values)) == 0);
             if (Data)
-                Staging->Unlock();
+            {
+                RHI.RHIUnlockStagingBuffer(Staging);
+                Data = RHI.RHILockStagingBuffer(Staging, Fence, 4, 8);
+                Record(TEXT("readback-rhi-unlock-and-relock"),
+                    Data && FMemory::Memcmp(Data, Values + 1, 8) == 0);
+                if (Data)
+                    RHI.RHIUnlockStagingBuffer(Staging);
+            }
         }
         RHI.ReleaseBindings();
         Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThreadFlushResources);
