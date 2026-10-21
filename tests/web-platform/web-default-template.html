@@ -90,6 +90,15 @@ var Module = {
     })().catch(failed);
   }]
 };
+Module.canvas.addEventListener('click', () => {
+  if (!globalThis.__webEngineReady) return;
+  Module.canvas.focus({preventScroll: true});
+  if (document.pointerLockElement === Module.canvas || !Module.canvas.requestPointerLock) return;
+  try {
+    const pending = Module.canvas.requestPointerLock();
+    if (pending && pending.catch) pending.catch(() => {});
+  } catch (_) {}
+});
 addEventListener('error', event => failed(event.message || 'Engine script failed'), true);
 addEventListener('unhandledrejection', event => failed(event.reason));
 </script>

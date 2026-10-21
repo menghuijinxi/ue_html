@@ -2,6 +2,7 @@
 
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
@@ -14,7 +15,7 @@
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
 
-static void SetWebTemplateCamera(UWorld* World)
+static APlayerController* SetWebTemplateCamera(UWorld* World)
 {
     int32 Meshes = 0, LitMeshes = 0, SkySpheres = 0, DirectionalLights = 0, SkyLights = 0;
     FVector Target(0.0f, 0.0f, 0.0f);
@@ -37,20 +38,20 @@ static void SetWebTemplateCamera(UWorld* World)
         DirectionalLights += (*It)->FindComponentByClass<UDirectionalLightComponent>() ? 1 : 0;
         SkyLights += (*It)->FindComponentByClass<USkyLightComponent>() ? 1 : 0;
     }
-    ACameraActor* Camera = World->SpawnActor<ACameraActor>();
-    check(Camera);
-    Camera->SetActorLocation(Target + FVector(900.0f, -1400.0f, 850.0f));
-    Camera->SetActorRotation(FRotator(-15.0f, 120.0f, 0.0f));
-    Camera->GetCameraComponent()->SetFieldOfView(75.0f);
-    Camera->GetCameraComponent()->bConstrainAspectRatio = false;
     APlayerController* Controller = World->GetFirstPlayerController();
-    check(Controller);
-    if (APawn* Pawn = Controller->GetPawn())
-        Pawn->SetActorHiddenInGame(true);
-    Controller->SetViewTarget(Camera);
+    check(Controller && Controller->GetPawn() && Controller->PlayerCameraManager);
+    APawn* Pawn = Controller->GetPawn();
+    Pawn->SetActorHiddenInGame(true);
+    Pawn->SetActorLocationAndRotation(Target + FVector(900.0f, -1400.0f, 850.0f),
+        FRotator(-15.0f, 120.0f, 0.0f));
+    Controller->SetControlRotation(FRotator(-15.0f, 120.0f, 0.0f));
+    Controller->PlayerCameraManager->SetFOV(75.0f);
+    Controller->SetViewTarget(Pawn);
+    Controller->SetInputMode(FInputModeGameOnly().SetConsumeCaptureMouseDown(false));
     std::printf("P3_RENDER_SCENE {\"map\":\"/Engine/Maps/Templates/Template_Default\","
         "\"meshes\":%d,\"litMeshes\":%d,\"skySpheres\":%d,\"directionalLights\":%d,\"skyLights\":%d,"
-        "\"camera\":true}\n", Meshes, LitMeshes, SkySpheres, DirectionalLights, SkyLights);
+        "\"camera\":true,\"interactive\":true}\n", Meshes, LitMeshes, SkySpheres, DirectionalLights, SkyLights);
+    return Controller;
 }
 
 static void CreateWebRenderScene(UWorld* World)

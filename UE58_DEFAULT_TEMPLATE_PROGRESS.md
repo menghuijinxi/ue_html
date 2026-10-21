@@ -50,6 +50,18 @@
 - 最终报告：`tests/web-platform/results/web-default-scene-results.json`，`pass`、`completeUEScene`、`fullNormalUBTBuildVerified`、`packaged` 均为 `true`。截图：`tests/web-platform/results/web-default-scene-chrome.png`、`web-default-scene-edge.png`。
 - 本次目标已完成：默认带光照和天空球的原始关卡已打包并在浏览器运行。当前仍为 ES3.1 移动渲染路径，未启用体积云，也尚未接入编辑器一键 Web 打包。
 
+## 2026-10-21：修复交互缺失及运行后停帧
+
+- 用户实际运行发现页面不能操作，并在一段时间后停住。原包的相机固定；浏览器日志另有 `FGenericPlatformMemory::OnOutOfMemory`，调用栈落在统计历史数组扩容。之前数百帧的图像验收不能证明持续交互运行。
+- 定位内存原因：Web RHI 的 `RHIEndFrame` 忽略了 `StatsFrame`，没有 GPU profiler 的 EOP 工作线程代为上报帧结束；`CurrentEndOfPipeFrame` 不前进，UE 无法回收统计历史。现在通过 `FEndOfPipeStats` 上报并刷新实际提交的帧标记，保留统计系统，不靠关闭统计或扩大内存上限绕过。
+- 默认关卡改为使用已存在的 UE 默认 Pawn 和 PlayerController 控制视点，沿用原生飞行移动与鼠标轴输入。保留原始地图和材质；不新增 JS 相机或替换渲染画面。
+- Web ApplicationCore 接入鼠标捕获、高精度相对移动和 pointer-lock 状态。锁定与普通鼠标移动只分发一次，丢弃进入锁定时的首个跳变；解除锁定和失焦时释放按下的输入。
+- 运行页面在真实点击事件内请求鼠标锁定，处理拒绝及不支持的情况；锁定不可用时可按住右键拖动视角。WASD 移动、E/Q 升降，Esc 解除锁定。
+- 新增 `probe-web-default-interaction.cjs`：旧包按 W 后图像变化比例为 0，明确复现失败；新包检查实际 UE 位置、角度及画面变化，还检查横移、升降、失焦释放和重新点击恢复操作。另有拒绝锁定的控制测试。
+- 普通 UBT 编译链接、原生 RHI 编译通过。原生视口记录/直通两种模式共 72 项检查通过；ApplicationCore 在 Chrome/Edge 的桌面及窄窗口共 68 项输入、焦点、HTML UI、销毁检查通过。独立包的原图光照、天空及缩放验收重新通过。
+- 持续运行测试通过：Chrome 运行 600.973 秒、68,768 帧；Edge 运行 600.995 秒、68,705 帧，结束后再次移动也通过。两个浏览器的历史统计始终为 14 帧，线性内存保持 193,331,200 字节，预热后增长为 0，页面及 GPU 校验错误为 0。这是 10 分钟测试结果，不代表无限时长稳定性已验证。
+- 上述报告分别为 `tests/web-platform/results/web-default-interaction-chrome-results.json`、`web-default-interaction-edge-results.json`。拒绝锁定的备用操作报告 `web-default-interaction-chrome-drag-results.json` 也通过；内置浏览器已刷新，实际按 W 后画面改变，无页面错误。参考引擎的输入修改提交为 `e1b5fc089`。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行，依次构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
@@ -61,6 +73,9 @@ node tests/web-platform/stage-web-engine.cjs --default-template
 node tests/web-platform/package-web-default-template.cjs
 $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
 node tests/web-platform/probe-web-default-scene.cjs --packaged
+node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --seconds=600
+node tests/web-platform/probe-web-default-interaction.cjs --browser=Edge --seconds=600
+node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --pointer-lock=denied --seconds=0
 ```
 
 - 独立目录：`tests/web-platform/build/ue-default-template`，含 `index.html`、JS、WASM、配置、资源清单和资源包。需通过 HTTP 服务运行。

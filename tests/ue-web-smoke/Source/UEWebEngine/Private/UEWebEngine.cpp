@@ -20,9 +20,11 @@
 #include "Engine/World.h"
 #include "UObject/Package.h"
 #include <emscripten.h>
+#include <emscripten/heap.h>
 #include <cstdio>
 #include "WebRenderScene.h"
 #include "Components/SkyAtmosphereComponent.h"
+#include "Stats/StatsData.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
 
@@ -34,6 +36,7 @@ int32 Frames = 0;
 bool UseWebGPU = false;
 bool RenderScene = false;
 bool DefaultTemplate = false;
+TWeakObjectPtr<APlayerController> TemplateController;
 
 const TCHAR* StartupMap()
 {
@@ -121,6 +124,28 @@ void EngineFrame(void*)
     }
     ++Frames;
     EM_ASM({ globalThis.__webEngineFrames = $0; }, Frames);
+    if (APlayerController* Controller = TemplateController.Get())
+    {
+        FVector Location;
+        FRotator Rotation;
+        Controller->GetPlayerViewPoint(Location, Rotation);
+        EM_ASM({
+            globalThis.__webDefaultCamera = ({x: $0, y: $1, z: $2, pitch: $3, yaw: $4});
+        }, Location.X, Location.Y, Location.Z, Rotation.Pitch, Rotation.Yaw);
+    }
+#if STATS
+    if (Frames % 60 == 0 && !FPlatformProcess::SupportsMultithreading())
+    {
+        const FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
+        EM_ASM({
+            globalThis.__webEngineRuntime = ({
+                statsHistoryFrames: $0, gameFrame: $1, renderFrame: $2,
+                endOfPipeFrame: $3, heapBytes: $4
+            });
+        }, Stats.History.Num(), double(Stats.CurrentGameFrame), double(Stats.CurrentRenderFrame),
+            double(Stats.CurrentEndOfPipeFrame), double(emscripten_get_heap_size()));
+    }
+#endif
 }
 }
 
@@ -191,7 +216,7 @@ int32 StartEngine()
         return 1;
     }
     if (UseWebGPU && DefaultTemplate)
-        SetWebTemplateCamera(World);
+        TemplateController = SetWebTemplateCamera(World);
     else if (UseWebGPU && RenderScene)
         CreateWebRenderScene(World);
     const auto* MobileGPUScene = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Mobile.SupportGPUScene"));

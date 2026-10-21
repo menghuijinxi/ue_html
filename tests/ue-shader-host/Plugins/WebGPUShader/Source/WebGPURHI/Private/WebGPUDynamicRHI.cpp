@@ -15,6 +15,7 @@
 #include "Misc/Parse.h"
 #include "Serialization/JsonSerializer.h"
 #include "ShaderParameterStruct.h"
+#include "Stats/StatsData.h"
 
 namespace
 {
@@ -573,6 +574,16 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 {
     RequireOwner();
     check(!ContextOpen && !Pass && !Args.bProfileNextFrame);
+#if STATS
+    // WebGPU has no GPU-profiler EOP worker; retire the CPU statistics at submission.
+    if (Args.StatsFrame.IsSet())
+    {
+        FEndOfPipeStats* Stats = FEndOfPipeStats::Get();
+        Stats->AddMessage(FStatConstants::AdvanceFrame.GetEncodedName(),
+            EStatOperation::AdvanceFrameEventEndOfPipe, Args.StatsFrame.GetValue());
+        Stats->Flush();
+    }
+#endif
     ++EndFrames;
 }
 FWebGPUDynamicRHI::~FWebGPUDynamicRHI()
