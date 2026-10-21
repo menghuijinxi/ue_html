@@ -40,6 +40,7 @@ $taskAffinityBefore = $taskProcess.ProcessorAffinity
 $taskReport = [ordered]@{
     date = (Get-Date -Format o)
     architecture = 'wasm64'
+    maxParallelActions = $MaxParallelActions
     pass = $false
     buildSucceeded = $false
     fullBuildAttempted = $true
@@ -51,7 +52,9 @@ function Get-TaskAudit([string]$File) {
     return @{ file = $File; sha256 = (Get-FileHash -LiteralPath $File -Algorithm SHA256).Hash.ToLowerInvariant() }
 }
 try {
-    $taskProcess.ProcessorAffinity = [IntPtr]3
+    $taskWorkerThreads = [Math]::Min([Environment]::ProcessorCount, [Math]::Max(2, $MaxParallelActions * 2))
+    $taskWorkerMask = [long]([Math]::Pow(2, [Math]::Min(32, $taskWorkerThreads)) - 1)
+    $taskProcess.ProcessorAffinity = [IntPtr]($taskAffinityBefore.ToInt64() -band $taskWorkerMask)
     $env:WEB_EMSDK_ROOT = Join-Path $taskRoot '.tools/emsdk'
     # Emscripten keys its shared cache by the literal LLVM_ROOT expanded from this path.
     $env:EM_CONFIG = (Join-Path $env:WEB_EMSDK_ROOT '.emscripten').Replace('\', '/')

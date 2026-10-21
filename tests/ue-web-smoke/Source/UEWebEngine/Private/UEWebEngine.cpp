@@ -22,6 +22,7 @@
 #include <emscripten.h>
 #include <cstdio>
 #include "WebRenderScene.h"
+#include "Components/SkyAtmosphereComponent.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
 
@@ -121,6 +122,32 @@ void EngineFrame(void*)
     ++Frames;
     EM_ASM({ globalThis.__webEngineFrames = $0; }, Frames);
 }
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 2)
+        return 0;
+    UWorld* World = nullptr;
+    for (const FWorldContext& Context : GEngine->GetWorldContexts())
+        if (Context.WorldType == EWorldType::Game)
+            World = Context.World();
+    if (!World)
+        return 0;
+    for (TActorIterator<AActor> It(World); It; ++It)
+    {
+        if (auto* Light = (*It)->FindComponentByClass<UDirectionalLightComponent>())
+            Light->SetVisibility(Mode != 1);
+        if (auto* Atmosphere = (*It)->FindComponentByClass<USkyAtmosphereComponent>())
+            Atmosphere->SetVisibility(Mode != 2);
+        TInlineComponentArray<UStaticMeshComponent*> Components(*It);
+        for (auto* Component : Components)
+            if (Component->GetStaticMesh() &&
+                Component->GetStaticMesh()->GetName() == TEXT("SM_SkySphere"))
+                Component->SetVisibility(Mode != 2);
+    }
+    return 1;
 }
 
 int32 StartEngine()

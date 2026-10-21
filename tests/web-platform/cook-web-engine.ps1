@@ -109,6 +109,9 @@ try {
         '/Engine/EngineResources/WhiteSquareTexture',
         $taskMap
     )
+    if ($Scene -eq 'DefaultTemplate') {
+        $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x8'
+    }
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
     $taskArguments = @($taskProject, '-run=Cook', '-TargetPlatform=Web',
         '-ddpi:Web:bIsEnabled=false',

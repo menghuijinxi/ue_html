@@ -2041,8 +2041,8 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
           uint32(Rasterizer.FillMode), uint32(Rasterizer.CullMode), Rasterizer.DepthBias,
           Rasterizer.SlopeScaleDepthBias, uint32(Rasterizer.DepthClipMode), Blend.bUseAlphaToCoverage,
           DepthState.bEnableFrontFaceStencil, DepthState.bEnableBackFaceStencil);
-    // UE's projection and WebGPU's viewport produce clockwise front faces.
-    Desc.primitive.frontFace = WGPUFrontFace_CW;
+    // CM_CW rejects clockwise triangles; keep WebGPU's counter-clockwise front face.
+    Desc.primitive.frontFace = WGPUFrontFace_CCW;
     Desc.primitive.cullMode = Rasterizer.CullMode == CM_CW ? WGPUCullMode_Back :
         Rasterizer.CullMode == CM_CCW ? WGPUCullMode_Front : WGPUCullMode_None;
     TArray<WGPUColorTargetState> Targets;

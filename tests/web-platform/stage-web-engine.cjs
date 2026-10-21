@@ -69,6 +69,10 @@ try {
   assert(entries.some(item => item.path === (defaultTemplate ?
     '/Engine/Content/Maps/Templates/Template_Default.umap' :
     '/Engine/Programs/UEWebEngine/Content/WebMinimal.umap')), 'The selected startup map must be cooked and staged');
+  if (defaultTemplate)
+    assert(entries.some(item =>
+      item.path === '/Engine/Content/EngineMaterials/FastBlueNoise_scalar_128x128x8.uasset'),
+    'SkyAtmosphere requires the mobile scalar blue-noise texture');
   for (const name of ['WorldGridMaterial', 'DefaultLightFunctionMaterial',
     'DefaultDeferredDecalMaterial', 'DefaultPostProcessMaterial']) {
     assert(entries.some(item => item.path === `/Engine/Content/EngineMaterials/${name}.uasset`),
