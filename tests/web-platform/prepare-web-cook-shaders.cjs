@@ -8,6 +8,29 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/SkyAtmosphere.usf', [
+    ...['TransmittanceLutUAV', 'MultiScatteredLuminanceLutUAV', 'SkyViewLutUAV',
+      'CameraAerialPerspectiveVolumeUAV', 'CameraAerialPerspectiveVolumeMieOnlyUAV',
+      'CameraAerialPerspectiveVolumeRayOnlyUAV'].map(name => {
+      const declaration = `RWTexture${name.startsWith('Camera') ? '3D' : '2D'}<float4> ${name};`;
+      return {before: declaration, after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '[[vk::image_format("rgba16f")]] [[vk::ext_decorate(25)]]', '#endif', declaration].join('\n')};
+    }),
+    ...[['Buffer', 'UniformSphereSamplesBuffer'], ['RWBuffer', 'MobileDistantSkyLightLutBufferUAV']]
+      .map(([type, name]) => {
+        const declaration = `${type}<float4> ${name};`;
+        return {before: '\n' + declaration, after: '\n' + [
+          '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+          `${type === 'Buffer' ? 'StructuredBuffer' : 'RWStructuredBuffer'}<float4> ${name};`,
+          '#else', declaration, '#endif'].join('\n')};
+      }),
+  ]],
+  ['Private/ReflectionEnvironmentShaders.usf',
+    ['OutTextureMipColor', 'OutCubeFaces'].map(name => {
+      const declaration = `RWTexture2DArray<float4> ${name};`;
+      return {before: declaration, after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '[[vk::image_format("rgba16f")]] [[vk::ext_decorate(25)]]', '#endif', declaration].join('\n')};
+    })],
   ['Private/DeferredDecal.usf', [
     {
       before: '\tclip(OSPosition.xyz + 1.0f);\n\tclip(1.0f - OSPosition.xyz);',
@@ -203,7 +226,7 @@ function prepare() {
     sourceFiles: [__filename, ...overrideFiles].map(audit),
     files, installedEngineUnmodified: audit(path.join(stock, 'Private/PostProcessTonemap.usf')),
     installedInputs: [...overrides.keys()].map(relative => audit(path.join(stock, relative))),
-    boundary: 'Independent native Cook shader snapshot. Thirteen audited overrides contain only WebGPU decal discard ordering, finite tonemap/capture/shadow math, buffer/texture declarations and the structured indirect-argument helper. Other files are installed-source copies, not a complete 5.8.3 shader snapshot.'};
+    boundary: 'Independent native Cook shader snapshot. Audited overrides contain WebGPU decal ordering, finite math, structured buffers, explicit atmosphere/sky-capture storage image formats and indirect arguments. Other files are installed-source copies, not a complete 5.8.3 shader snapshot.'};
   const previous = fs.existsSync(reportFile) ? JSON.parse(fs.readFileSync(reportFile, 'utf8')) : null;
   if (!previous || JSON.stringify({...previous, date: null}) !== JSON.stringify({...report, date: null})) {
     fs.writeFileSync(reportFile, JSON.stringify(report, null, 2));

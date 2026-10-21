@@ -8,6 +8,7 @@
 #include "HAL/PlatformProcess.h"
 #include "Interfaces/IShaderFormat.h"
 #include "Interfaces/IShaderFormatModule.h"
+#include "Internationalization/Regex.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Crc.h"
 #include "Misc/FileHelper.h"
@@ -280,7 +281,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261020-v13-TargetPlatformSettings-DepthPrepass-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261021-v16-DefaultTemplateSky-StructuredView-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -294,7 +295,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_TargetPlatformSettingsDepthPrepass13_Tint20261009.190412_Uncompressed1");
+        Key += TEXT("_WebGPUShaderSchema1_DefaultTemplateSkyStructuredView16_Tint20261009.190412_Uncompressed1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -313,7 +314,21 @@ class FWebGPUShaderFormat final : public IShaderFormat
     {
         FShaderCompilerInput NativeInput = Input;
         NativeInput.ShaderFormat = NativeFormat(Input.ShaderFormat);
-        return Native->PreprocessShader(NativeInput, Environment, Output);
+        const bool Succeeded = Native->PreprocessShader(NativeInput, Environment, Output);
+        if (Succeeded)
+        {
+            // View's installed native metadata declares a texel buffer; Web uses a float4 storage array.
+            FString Source(Output.GetSourceView());
+            const FRegexPattern Declaration(
+                TEXT("\\bBuffer<float4>\\s+View_MobileDistantSkyLightLutBufferSRV\\s*;"));
+            FRegexMatcher Match(Declaration, Source);
+            if (Match.FindNext())
+            {
+                Source.InsertAt(Match.GetMatchBeginning(), TEXT("Structured"));
+                Output.EditSource() = FAnsiString(Source);
+            }
+        }
+        return Succeeded;
     }
 
     virtual void CompilePreprocessedShader(const FShaderCompilerInput &Input,
@@ -337,6 +352,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         TArray<uint8> Payload;
         if (!Convert(Input, Output, Payload, Error, DiagnosticDirectory))
         {
+            FFileHelper::SaveStringToFile(FString(Preprocessed.GetSourceView()),
+                *(DiagnosticDirectory / TEXT("preprocessed.hlsl")));
             Output.bSucceeded = false;
             FShaderCompilerError Diagnostic;
             Diagnostic.StrippedErrorMessage = TEXT("WebGPU conversion: ") + Error;
@@ -537,11 +554,14 @@ class FWebGPUShaderFormat final : public IShaderFormat
             Json->SetNumberField(TEXT("group"), Binding->set);
             Json->SetNumberField(TEXT("binding"), Binding->binding);
             Json->SetNumberField(TEXT("descriptorType"), Binding->descriptor_type);
-            if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+            if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
+                Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
             {
                 Json->SetNumberField(TEXT("textureDimension"), Binding->image.dim);
                 Json->SetBoolField(TEXT("textureArrayed"), Binding->image.arrayed != 0);
                 Json->SetBoolField(TEXT("textureMultisampled"), Binding->image.ms != 0);
+                if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
+                    Json->SetNumberField(TEXT("storageImageFormat"), Binding->image.image_format);
                 const auto *Type = Binding->type_description;
                 if (!Type || Type->traits.numeric.scalar.width != 32 ||
                     !(Type->type_flags & (SPV_REFLECT_TYPE_FLAG_FLOAT | SPV_REFLECT_TYPE_FLAG_INT)))
@@ -591,7 +611,19 @@ class FWebGPUShaderFormat final : public IShaderFormat
             }
             Bindings.Add(MakeShared<FJsonValueObject>(Json));
         }
-        for (const auto &Parameter : NativeOutput.ParameterMap.GetParameterMap())
+        // The native backend removes static-only UBs from its per-shader parameter map.
+        // Retain their stable layout hashes and slots in Web metadata for RHI static binding.
+        FShaderParameterMap WebParameters = NativeOutput.ParameterMap;
+        for (const auto& Uniform : Input.Environment.UniformBufferMap)
+        {
+            if (!EnumHasAnyFlags(Uniform.Value.BindingFlags, EUniformBufferBindingFlags::Static) ||
+                !Uniform.Value.LayoutHash || WebParameters.GetParameterMap().Contains(Uniform.Key))
+                continue;
+            const int32 Slot = Table.ResourceTableLayoutHashes.IndexOfByKey(Uniform.Value.LayoutHash);
+            if (Slot != INDEX_NONE)
+                WebParameters.AddParameterAllocation(*Uniform.Key, Slot, 0, 0, EShaderParameterType::UniformBuffer);
+        }
+        for (const auto &Parameter : WebParameters.GetParameterMap())
         {
             TSharedRef<FJsonObject> Json = MakeShared<FJsonObject>();
             Json->SetStringField(TEXT("name"), Parameter.Key);
@@ -603,7 +635,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         }
         for (const FUniformResourceEntry &Resource : Input.Environment.ResourceTableMap.Resources)
         {
-            if (!NativeOutput.ParameterMap.GetParameterMap().Contains(FString(Resource.GetUniformBufferName())))
+            if (!WebParameters.GetParameterMap().Contains(FString(Resource.GetUniformBufferName())))
                 continue;
             TSharedRef<FJsonObject> Json = MakeShared<FJsonObject>();
             Json->SetStringField(TEXT("name"), Resource.UniformBufferMemberName);

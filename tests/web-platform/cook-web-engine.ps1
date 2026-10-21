@@ -123,6 +123,7 @@ try {
             '-ini:Engine:[SystemSettings]:r.ShaderDevelopmentMode=0')
         # Some native compiler helpers read the host CVar instead of the target-platform CVar.
         $taskMinimalConfig = Join-Path $taskRoot 'tests/ue-shader-host/Config/Web/WebEngine.ini'
+        if ($Scene -eq 'DefaultTemplate') { $taskMinimalConfig = Join-Path $PSScriptRoot 'cook-profiles/DefaultTemplateEngine.ini' }
         $taskMinimalSettings = @(Get-Content -LiteralPath $taskMinimalConfig | Where-Object { $_ -match '^[a-zA-Z][a-zA-Z0-9.]*=' })
         if (-not $taskMinimalSettings.Count) { throw 'Minimal Web renderer settings are missing.' }
         $taskArguments += @($taskMinimalSettings | ForEach-Object { "-ini:Engine:[SystemSettings]:$_" })
@@ -205,6 +206,7 @@ try {
     $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1')
     if ($taskReport.minimalMap) { $taskReport.sourceFiles += $taskReport.minimalMap }
     if ($taskReport.templateMap) { $taskReport.sourceFiles += $taskReport.templateMap }
+    if ($taskReport.minimalRendererConfig) { $taskReport.sourceFiles += $taskReport.minimalRendererConfig }
     if ($taskWebGPU) {
         $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat') -File -Recurse |
             ForEach-Object { Get-TaskAudit $_.FullName })
