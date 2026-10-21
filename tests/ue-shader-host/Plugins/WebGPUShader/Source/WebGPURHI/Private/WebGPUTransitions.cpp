@@ -14,7 +14,7 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
         const auto *Texture = static_cast<FRHITexture *>(Resource);
         if (!static_cast<const FWebGPUTexture *>(Texture)->SurfaceFrameActive)
             return false;
-        if (Texture->GetFormat() == PF_DepthStencil)
+        if (Texture->GetFormat() == PF_DepthStencil || Texture->GetFormat() == PF_ShadowDepth)
         {
             const ERHIAccess Allowed = ERHIAccess::DSVRead | ERHIAccess::DSVWrite |
                 (EnumHasAnyFlags(Texture->GetFlags(), ETextureCreateFlags::ShaderResource) ? ERHIAccess::SRVMask
@@ -29,7 +29,9 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
             (EnumHasAnyFlags(Texture->GetFlags(), ETextureCreateFlags::RenderTargetable) ? ERHIAccess::RTV
                                                                                          : ERHIAccess::Unknown) |
             (EnumHasAnyFlags(Texture->GetFlags(), ETextureCreateFlags::ShaderResource) ? ERHIAccess::SRVMask
-                                                                                       : ERHIAccess::Unknown);
+                                                                                       : ERHIAccess::Unknown) |
+            (EnumHasAnyFlags(Texture->GetFlags(), ETextureCreateFlags::UAV) ? ERHIAccess::UAVMask
+                                                                          : ERHIAccess::Unknown);
         return !EnumHasAnyFlags(Access, ~Allowed);
     }
     if (Resource->GetType() == RRT_Buffer)
@@ -49,7 +51,8 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
 }
 } // namespace
 
-FWebGPUResourceState &FWebGPUDynamicRHI::ResourceState(FRHIViewableResource *Resource, uint32 Plane) const
+FWebGPUResourceState &FWebGPUDynamicRHI::ResourceState(FRHIViewableResource *Resource, uint32 Plane,
+                                                      uint32 Mip, uint32 Slice) const
 {
     check(Resource && (Resource->GetType() == RRT_Buffer || Resource->GetType() == RRT_Texture));
     if (Plane == 1)
@@ -59,18 +62,23 @@ FWebGPUResourceState &FWebGPUDynamicRHI::ResourceState(FRHIViewableResource *Res
         return static_cast<FWebGPUTexture *>(Resource)->StencilState;
     }
     check(Plane == 0);
+    if (Resource->GetType() == RRT_Texture && (Mip || Slice))
+    {
+        auto* Texture = static_cast<FWebGPUTexture*>(Resource);
+        check(Mip < Texture->GetNumMips() && Slice < (Texture->GetDesc().IsTextureCube() ? 6u : 1u));
+        return Texture->SubresourceStates[Slice * Texture->GetNumMips() + Mip - 1];
+    }
     return Resource->GetType() == RRT_Buffer ? static_cast<FWebGPUBuffer *>(Resource)->State
                                              : static_cast<FWebGPUTexture *>(Resource)->State;
 }
 bool FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource *Resource, ERHIAccess Access, FString &Error,
-                                       bool InternalCopy, uint32 Plane) const
+                                       bool InternalCopy, uint32 Plane, uint32 Mip, uint32 Slice) const
 {
     if (!SupportedAccess(Resource, Access))
     {
         Error = TEXT("Resource capability does not support requested access");
         return false;
     }
-    const auto &State = ResourceState(Resource, Plane);
     if (Resource->GetType() == RRT_Buffer && static_cast<FWebGPUBuffer *>(Resource)->Locked)
     {
         Error = TEXT("Resource use while a CPU buffer lock is active");
@@ -81,36 +89,51 @@ bool FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource *Resource, ERHIAcces
         Error = TEXT("Resource use while a CPU texture lock is active");
         return false;
     }
-    if (State.Pending)
-    {
-        Error = TEXT("Resource use between transition Begin and End");
-        return false;
-    }
-    if (Resource->GetType() == RRT_Texture && Attachments.Contains(static_cast<FWebGPUTexture *>(Resource)) &&
-        Access != ERHIAccess::RTV && Access != ERHIAccess::DSVRead && Access != ERHIAccess::DSVWrite)
-    {
-        Error = TEXT("Active render attachment cannot be copied or sampled");
-        return false;
-    }
     if (InternalCopy && (Pass || (Access != ERHIAccess::CopySrc && Access != ERHIAccess::CopyDest)))
     {
         Error = TEXT("Internal upload/readback requires a copy outside a render pass");
         return false;
     }
-    if (!InternalCopy && !EnumHasAllFlags(State.Access, Access))
+    const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FWebGPUTexture*>(Resource) : nullptr;
+    const uint32 FirstMip = Mip == MAX_uint32 ? 0 : Mip;
+    const uint32 LastMip = Mip == MAX_uint32 ? (Texture ? Texture->GetNumMips() : 1) : Mip + 1;
+    const uint32 FirstSlice = Slice == MAX_uint32 ? 0 : Slice;
+    const uint32 LastSlice = Slice == MAX_uint32 ? (Texture && Texture->GetDesc().IsTextureCube() ? 6 : 1) : Slice + 1;
+    for (uint32 CurrentSlice = FirstSlice; CurrentSlice < LastSlice; ++CurrentSlice)
+    for (uint32 CurrentMip = FirstMip; CurrentMip < LastMip; ++CurrentMip)
     {
-        Error = FString::Printf(TEXT("Resource access mismatch: current=0x%x requested=0x%x"), uint32(State.Access),
-                                uint32(Access));
-        return false;
+        const bool ReadOnlyDepthSample = Texture &&
+            (Texture->GetFormat() == PF_DepthStencil || Texture->GetFormat() == PF_ShadowDepth) &&
+            Plane == 0 && PassDepthReadOnly && !EnumHasAnyFlags(Access, ~ERHIAccess::SRVMask);
+        if (Texture && !ReadOnlyDepthSample &&
+            IsRenderAttachment(static_cast<FWebGPUTexture*>(Resource), CurrentMip, CurrentSlice) &&
+            Access != ERHIAccess::RTV && Access != ERHIAccess::DSVRead && Access != ERHIAccess::DSVWrite)
+        {
+            Error = FString::Printf(TEXT("Active attachment %s mip=%u slice=%u cannot be copied or sampled"),
+                *Resource->GetName().ToString(), CurrentMip, CurrentSlice);
+            return false;
+        }
+        const auto& State = ResourceState(Resource, Plane, CurrentMip, CurrentSlice);
+        if (State.Pending)
+        {
+            Error = TEXT("Resource use between transition Begin and End");
+            return false;
+        }
+        if (!InternalCopy && !EnumHasAllFlags(State.Access, Access))
+        {
+            Error = FString::Printf(TEXT("Resource %s mip=%u slice=%u access mismatch: current=0x%x requested=0x%x"),
+                *Resource->GetName().ToString(), CurrentMip, CurrentSlice, uint32(State.Access), uint32(Access));
+            return false;
+        }
     }
     return true;
 }
 void FWebGPUDynamicRHI::RequireAccess(FRHIViewableResource *Resource, ERHIAccess Access, bool InternalCopy,
-                                     uint32 Plane)
+                                     uint32 Plane, uint32 Mip, uint32 Slice)
 {
     RequireOwner();
     FString Error;
-    checkf(ValidateAccess(Resource, Access, Error, InternalCopy, Plane), TEXT("%s"), *Error);
+    checkf(ValidateAccess(Resource, Access, Error, InternalCopy, Plane, Mip, Slice), TEXT("%s"), *Error);
     ++AccessChecks;
 }
 bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo &Info, FString &Error) const
@@ -148,8 +171,12 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         }
         const bool DepthStencil = Resource->GetType() == RRT_Texture &&
             static_cast<FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil;
+        const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FRHITexture*>(Resource) : nullptr;
+        const uint32 Mips = Texture ? Texture->GetNumMips() : 1;
+        const uint32 Slices = Texture && Texture->GetDesc().IsTextureCube() ? 6 : 1;
         if (Entry.Flags != EResourceTransitionFlags::None || Entry.CommitInfo.IsSet() ||
-            (Entry.MipIndex != 0 && !Entry.IsAllMips()) || (Entry.ArraySlice != 0 && !Entry.IsAllArraySlices()) ||
+            (!Entry.IsAllMips() && Entry.MipIndex >= Mips) ||
+            (!Entry.IsAllArraySlices() && Entry.ArraySlice >= Slices) ||
             (Entry.PlaneSlice != 0 && !Entry.IsAllPlaneSlices() && !(DepthStencil && Entry.PlaneSlice == 1)))
         {
             Error = FString::Printf(TEXT("Unsupported transition range: flags=0x%x commit=%d mip=%u array=%u plane=%u"),
@@ -158,9 +185,15 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         }
         const uint32 FirstPlane = Entry.PlaneSlice == 1 ? 1 : 0;
         const uint32 LastPlane = DepthStencil && Entry.IsAllPlaneSlices() ? 1 : FirstPlane;
+        const uint32 FirstMip = Entry.IsAllMips() ? 0 : Entry.MipIndex;
+        const uint32 LastMip = Entry.IsAllMips() ? Mips : FirstMip + 1;
+        const uint32 FirstSlice = Entry.IsAllArraySlices() ? 0 : Entry.ArraySlice;
+        const uint32 LastSlice = Entry.IsAllArraySlices() ? Slices : FirstSlice + 1;
+        for (uint32 Slice = FirstSlice; Slice < LastSlice; ++Slice)
+        for (uint32 Mip = FirstMip; Mip < LastMip; ++Mip)
         for (uint32 Plane = FirstPlane; Plane <= LastPlane; ++Plane)
         {
-            const auto *State = &ResourceState(Resource, Plane);
+            const auto *State = &ResourceState(Resource, Plane, Mip, Slice);
             if (Seen.Contains(State))
             {
                 Error = TEXT("Transition batch contains the same resource plane more than once");
@@ -192,7 +225,7 @@ bool FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<const FRHITransition 
         for (const auto &Entry : (*Found)->Infos)
         {
             auto *Resource = GetViewableResource(Entry);
-            const auto &State = ResourceState(Resource, Entry.PlaneSlice);
+            const auto &State = ResourceState(Resource, Entry.PlaneSlice, Entry.MipIndex, Entry.ArraySlice);
             if (Resource->GetType() == RRT_Buffer && static_cast<FWebGPUBuffer *>(Resource)->Locked)
             {
                 Error = TEXT("Transition while a CPU buffer lock is active");
@@ -236,17 +269,30 @@ void FWebGPUDynamicRHI::RHICreateTransition(FRHITransition *Transition, const FR
     checkf(Transition && !Transitions.Contains(Transition) && ValidateTransitionCreate(Info, Error), TEXT("%s"),
            *Error);
     auto Data = MakeShared<FWebGPUTransitionData>();
-    for (auto Entry : Info.TransitionInfos)
+    for (const auto& Source : Info.TransitionInfos)
     {
-        const auto *Resource = GetViewableResource(Entry);
+        const auto *Resource = GetViewableResource(Source);
         const bool BothPlanes = Resource->GetType() == RRT_Texture &&
-            static_cast<const FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil && Entry.IsAllPlaneSlices();
-        Entry.PlaneSlice = Entry.PlaneSlice == 1 ? 1 : 0;
-        Data->Infos.Add(Entry);
-        if (BothPlanes)
+            static_cast<const FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil && Source.IsAllPlaneSlices();
+        const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<const FRHITexture*>(Resource) : nullptr;
+        const uint32 FirstMip = Source.IsAllMips() ? 0 : Source.MipIndex;
+        const uint32 LastMip = Source.IsAllMips() ? (Texture ? Texture->GetNumMips() : 1) : FirstMip + 1;
+        const uint32 FirstSlice = Source.IsAllArraySlices() ? 0 : Source.ArraySlice;
+        const uint32 LastSlice = Source.IsAllArraySlices() ?
+            (Texture && Texture->GetDesc().IsTextureCube() ? 6 : 1) : FirstSlice + 1;
+        for (uint32 Slice = FirstSlice; Slice < LastSlice; ++Slice)
+        for (uint32 Mip = FirstMip; Mip < LastMip; ++Mip)
         {
-            Entry.PlaneSlice = 1;
+            auto Entry = Source;
+            Entry.MipIndex = Mip;
+            Entry.ArraySlice = Slice;
+            Entry.PlaneSlice = Source.PlaneSlice == 1 ? 1 : 0;
             Data->Infos.Add(Entry);
+            if (BothPlanes)
+            {
+                Entry.PlaneSlice = 1;
+                Data->Infos.Add(Entry);
+            }
         }
     }
     for (const auto &Entry : Data->Infos)
@@ -271,7 +317,7 @@ void FWebGPUDynamicRHI::RHIBeginTransitions(TArrayView<const FRHITransition *> B
     {
         auto &Data = *Transitions.FindChecked(Transition);
         for (const auto &Entry : Data.Infos)
-            ResourceState(GetViewableResource(Entry), Entry.PlaneSlice).Pending = Transition;
+            ResourceState(GetViewableResource(Entry), Entry.PlaneSlice, Entry.MipIndex, Entry.ArraySlice).Pending = Transition;
         Data.Stage = FWebGPUTransitionData::EStage::Begun;
         ++TransitionsBegun;
     }
@@ -288,7 +334,7 @@ void FWebGPUDynamicRHI::RHIEndTransitions(TArrayView<const FRHITransition *> Bat
         auto &Data = *Transitions.FindChecked(Transition);
         for (const auto &Entry : Data.Infos)
         {
-            auto &State = ResourceState(GetViewableResource(Entry), Entry.PlaneSlice);
+            auto &State = ResourceState(GetViewableResource(Entry), Entry.PlaneSlice, Entry.MipIndex, Entry.ArraySlice);
             State.Access = Entry.AccessAfter;
             State.Pending = nullptr;
         }

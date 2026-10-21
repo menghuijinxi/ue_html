@@ -3,6 +3,7 @@
 #include "WebGPUUnsupportedRHI.h"
 #include "Dom/JsonObject.h"
 #include <webgpu/webgpu.h>
+#include <atomic>
 
 struct FWebGPUShaderData
 {
@@ -101,17 +102,32 @@ class FWebGPUTexture final : public FRHITexture
     WGPUTextureView DepthSampleView = nullptr;
     FWebGPUResourceState State;
     FWebGPUResourceState StencilState;
+    TArray<FWebGPUResourceState> SubresourceStates;
     TArray<uint8> InitialBytes;
     TArray<uint8> LockedBytes;
     uint32 LockedMip = MAX_uint32;
+    uint32 LockedFace = 0;
+    TMap<uint32, WGPUTextureView> AttachmentViews;
     bool SurfaceFrameActive = true;
     FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle)
-        : FRHITexture(Desc), Handle(InHandle), View(wgpuTextureCreateView(Handle, nullptr)),
+        : FRHITexture(Desc), Handle(InHandle),
           State(Desc.InitialState), StencilState(Desc.InitialState)
     {
+        SubresourceStates.Init(FWebGPUResourceState(Desc.InitialState),
+            Desc.NumMips * (Desc.IsTextureCube() ? 6 : 1) - 1);
+        WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
+        if (Desc.Dimension == ETextureDimension::TextureCube)
+        {
+            Sample.dimension = WGPUTextureViewDimension_Cube;
+            Sample.arrayLayerCount = 6;
+            Sample.usage = WGPUTextureUsage_TextureBinding;
+            View = wgpuTextureCreateView(Handle, &Sample);
+        }
+        else
+            View = wgpuTextureCreateView(Handle, nullptr);
         if (Desc.Format == PF_DepthStencil && EnumHasAnyFlags(Desc.Flags, ETextureCreateFlags::ShaderResource))
         {
-            WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
+            Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
             Sample.format = WGPUTextureFormat_Depth24Plus;
             Sample.dimension = WGPUTextureViewDimension_2D;
             Sample.aspect = WGPUTextureAspect_DepthOnly;
@@ -119,14 +135,42 @@ class FWebGPUTexture final : public FRHITexture
             DepthSampleView = wgpuTextureCreateView(Handle, &Sample);
         }
     }
+    WGPUTextureView AttachmentView(uint32 Mip, uint32 Face)
+    {
+        check(Mip < GetNumMips() && Face < (GetDesc().IsTextureCube() ? 6u : 1u));
+        const uint32 Key = Mip * 6 + Face;
+        if (const auto* Existing = AttachmentViews.Find(Key))
+            return *Existing;
+        WGPUTextureViewDescriptor Desc = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
+        Desc.dimension = WGPUTextureViewDimension_2D;
+        Desc.baseMipLevel = Mip;
+        Desc.mipLevelCount = 1;
+        Desc.baseArrayLayer = Face;
+        Desc.arrayLayerCount = 1;
+        Desc.usage = WGPUTextureUsage_RenderAttachment;
+        auto Result = wgpuTextureCreateView(Handle, &Desc);
+        AttachmentViews.Add(Key, Result);
+        return Result;
+    }
     ~FWebGPUTexture() override
     {
         check(LockedMip == MAX_uint32);
         if (DepthSampleView)
             wgpuTextureViewRelease(DepthSampleView);
+        for (const auto& Entry : AttachmentViews)
+            wgpuTextureViewRelease(Entry.Value);
         wgpuTextureViewRelease(View);
         wgpuTextureRelease(Handle);
     }
+};
+
+class FWebGPUTextureUAV final : public FRHIUnorderedAccessView
+{
+  public:
+    WGPUTextureView Handle;
+    FWebGPUTextureUAV(FRHITexture* Texture, const FRHIViewDesc& Desc, WGPUTextureView InHandle)
+        : FRHIUnorderedAccessView(Texture, Desc), Handle(InHandle) {}
+    ~FWebGPUTextureUAV() override { wgpuTextureViewRelease(Handle); }
 };
 
 class FWebGPUViewport final : public FRHIViewport
@@ -250,11 +294,63 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     }
 };
 
+struct FWebGPUReadbackState
+{
+    WGPUBuffer Handle = nullptr;
+    uint32 Size = 0;
+    TArray<uint8> Bytes;
+    std::atomic<bool> Ready{false};
+    ~FWebGPUReadbackState() { if (Handle) wgpuBufferRelease(Handle); }
+};
+using FWebGPUReadbackRef = TSharedPtr<FWebGPUReadbackState, ESPMode::ThreadSafe>;
+
+struct FWebGPUFenceState
+{
+    std::atomic<bool> Complete{false};
+    TArray<FWebGPUReadbackRef> Readbacks;
+};
+using FWebGPUFenceRef = TSharedPtr<FWebGPUFenceState, ESPMode::ThreadSafe>;
+
+class FWebGPUFence final : public FRHIGPUFence
+{
+  public:
+    FWebGPUFenceRef State = MakeShared<FWebGPUFenceState, ESPMode::ThreadSafe>();
+    explicit FWebGPUFence(FName Name) : FRHIGPUFence(Name) {}
+    void Clear() override { State = MakeShared<FWebGPUFenceState, ESPMode::ThreadSafe>(); }
+    bool Poll() const override
+    {
+        return State->Complete.load() && State->Readbacks.ContainsByPredicate(
+            [](const auto& Readback) { return !Readback->Ready.load(); }) == false;
+    }
+    void Wait(FRHICommandListImmediate&, FRHIGPUMask) const override
+    {
+        checkf(Poll(), TEXT("WebGPU readback must be polled across frames; blocking waits are unsupported"));
+    }
+};
+
+class FWebGPUStagingBuffer final : public FRHIStagingBuffer
+{
+  public:
+    FWebGPUReadbackRef State;
+    void* Lock(uint32 Offset, uint32 Size) override
+    {
+        if (!State || !State->Ready.load())
+            return nullptr;
+        check(!bIsLocked && uint64(Offset) + Size <= uint64(State->Bytes.Num()));
+        bIsLocked = true;
+        return State->Bytes.GetData() + Offset;
+    }
+    void Unlock() override { check(bIsLocked); bIsLocked = false; }
+    uint64 GetGPUSizeBytes() const override { return State ? State->Size : 0; }
+};
+
 class FWebGPUCommandList final : public IRHIPlatformCommandList
 {
   public:
     WGPUCommandBuffer Handle;
     uint32 Serial;
+    TArray<FWebGPUReadbackRef> Readbacks;
+    TArray<FWebGPUFenceRef> Fences;
     FWebGPUCommandList(WGPUCommandBuffer In, uint32 InSerial) : Handle(In), Serial(InSerial)
     {
     }
@@ -272,12 +368,13 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     WGPUDevice Device = nullptr;
     WGPUQueue Queue = nullptr;
     WGPULimits Limits = WGPU_LIMITS_INIT;
-    TOptional<FPixelFormatInfo> PreviousDepthFormat, PreviousStencilFormat;
+    TOptional<FPixelFormatInfo> PreviousDepthFormat, PreviousStencilFormat, PreviousShadowFormat;
     WGPUCommandEncoder Encoder = nullptr;
     WGPURenderPassEncoder Pass = nullptr;
     TRefCountPtr<FWebGPUGraphicsPipeline> GraphicsPipeline;
     TRefCountPtr<FWebGPUComputePipeline> ComputePipeline;
     TArray<TRefCountPtr<FWebGPUTexture>> Attachments;
+    TArray<FIntPoint> AttachmentSubresources;
     TArray<FString> Errors;
     FString AdapterName;
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;
@@ -336,11 +433,14 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
                                ERHIAccess Access, FString &Error) const;
     bool ValidateSampledTexture(FRHITexture *Texture, FString &Error,
                                 ERHIAccess Access = ERHIAccess::SRVGraphicsPixel, uint32 Plane = 0) const;
-    FWebGPUResourceState &ResourceState(FRHIViewableResource *Resource, uint32 Plane = 0) const;
+    bool IsRenderAttachment(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice) const;
+    FWebGPUResourceState &ResourceState(FRHIViewableResource *Resource, uint32 Plane = 0,
+                                       uint32 Mip = 0, uint32 Slice = 0) const;
     bool ValidateAccess(FRHIViewableResource *Resource, ERHIAccess Access, FString &Error,
-                        bool InternalCopy = false, uint32 Plane = 0) const;
+                        bool InternalCopy = false, uint32 Plane = 0,
+                        uint32 Mip = MAX_uint32, uint32 Slice = MAX_uint32) const;
     void RequireAccess(FRHIViewableResource *Resource, ERHIAccess Access, bool InternalCopy = false,
-                       uint32 Plane = 0);
+                       uint32 Plane = 0, uint32 Mip = MAX_uint32, uint32 Slice = MAX_uint32);
     bool ValidateTransitionCreate(const FRHITransitionCreateInfo &Info, FString &Error) const;
     bool ValidateTransitionBatch(TArrayView<const FRHITransition *> Batch, bool Begin, FString &Error) const;
     bool ValidateTransitionRelease(const FRHITransition *Transition, FString &Error) const;
@@ -431,6 +531,11 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     IRHIComputeContext *RHIGetCommandContext(ERHIPipeline) override;
     FRHIFinalizeContextsResult RHIFinalizeContexts(FRHIFinalizeContextsArgs &&) override;
     void RHISubmitCommandLists(FRHISubmitCommandListsArgs &&) override;
+    FGPUFenceRHIRef RHICreateGPUFence(const FName& Name) override;
+    FStagingBufferRHIRef RHICreateStagingBuffer() override;
+    void RHICopyToStagingBuffer(FRHIBuffer*, FRHIStagingBuffer*, uint32 Offset, uint32 Size) override;
+    void RHIWriteGPUFence(FRHIGPUFence*) override;
+    void* RHILockStagingBuffer(FRHIStagingBuffer*, FRHIGPUFence*, uint32 Offset, uint32 Size) override;
     void RHICreateTransition(FRHITransition *, const FRHITransitionCreateInfo &) override;
     void RHIReleaseTransition(FRHITransition *) override;
     void RHIBeginTransitions(TArrayView<const FRHITransition *>) override;
@@ -447,4 +552,6 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<uint32> VertexOffsets;
     void SetDrawBindings();
     TArray<TRefCountPtr<FRHIUniformBuffer>> StaticUniformBuffers;
+    TArray<FWebGPUReadbackRef> PendingReadbacks;
+    TArray<FWebGPUFenceRef> PendingFences;
 };
