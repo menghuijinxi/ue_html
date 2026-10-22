@@ -150,13 +150,13 @@ try {
   fs.writeFileSync(compileResponse, response);
   const run = (name, args) => cp.execFileSync(path.join(compiler, name), args,
     {cwd: path.join(engine, 'Source'), stdio: 'inherit'});
-  run('cl.exe', [`@${compileResponse}`]);
+  run('cl.exe', ['/Brepro', `@${compileResponse}`]);
   const preserved = path.join(binaries, 'UnrealEditor-BuildSettingsStock.dll');
   fs.copyFileSync(stockDLL, preserved);
   const replacement = path.join(binaries, 'UnrealEditor-BuildSettings.dll');
   const kit = 'C:/Program Files (x86)/Windows Kits/10';
   const msvc = path.resolve(compiler, '../../..');
-  const linkArguments = ['/nologo', '/DLL', `/OUT:${replacement}`,
+  const linkArguments = ['/nologo', '/Brepro', '/DLL', `/OUT:${replacement}`,
     `/DEF:${path.join(build, 'UnrealEditor-Forward.def')}`,
     `/IMPLIB:${path.join(build, 'UnrealEditor-BuildSettings.lib')}`,
     path.join(build, 'UnrealEditor-Map.obj'),

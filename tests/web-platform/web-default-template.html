@@ -72,6 +72,7 @@ const startupStarted = performance.now();
 const startupOptions = new URLSearchParams(location.search);
 const startupOnly = startupOptions.get('diagnostics') === '1';
 const startupDebug = startupOnly || startupOptions.get('debug') === '1';
+const requiredTextureFeatures = [];
 const startupDiagnostics = globalThis.__webStartupDiagnostics = {
   version: 3, startedAt: new Date().toISOString(), url: location.href,
   userAgent: navigator.userAgent, platform: navigator.platform,
@@ -476,7 +477,9 @@ async function startupProbeGPU() {
   const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
   if (!adapter) throw new Error('WebGPU 未返回可用的 GPU 适配器（requestAdapter returned null）。');
   startupAdapter(adapter);
-  const device = await adapter.requestDevice();
+  for (const feature of requiredTextureFeatures)
+    if (!adapter.features.has(feature)) throw new Error('此资源包需要 GPU 纹理压缩能力：' + feature);
+  const device = await adapter.requestDevice({requiredFeatures: requiredTextureFeatures});
   startupDiagnostics.gpu.deviceCreated = true;
   startupDiagnostics.gpu.deviceLimits = startupLimits(device.limits);
   const checks = startupDiagnostics.gpu.checks = [];
@@ -596,7 +599,7 @@ var Module = {
       }
       globalThis.__webEngineConfigFiles = [];
       for (const file of configs) {
-        if (!/^\/Engine\/(?:Config\/|Platforms\/Web\/Config\/)/.test(file.path) ||
+        if (!/^\/Engine\/(?:Config\/|Platforms\/Web\/Config\/|Programs\/UEWebEngine\/Config\/)/.test(file.path) ||
             /(?:^|\/)\.\.(?:\/|$)/.test(file.path))
           throw new Error(`Invalid config entry: ${file.path}`);
         const data = Uint8Array.from(atob(file.data), value => value.charCodeAt(0));
@@ -739,6 +742,14 @@ if (!capabilities.secureContext) {
   document.getElementById('start-engine').disabled = false;
   startupRender();
 } else {
+  if (requiredTextureFeatures.length) {
+    const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
+    if (!adapter) throw new Error('WebGPU 未返回可用的 GPU 适配器。');
+    startupAdapter(adapter);
+    for (const feature of requiredTextureFeatures)
+      if (!adapter.features.has(feature)) throw new Error('此资源包需要 GPU 纹理压缩能力：' + feature +
+        '。请使用支持该压缩格式的设备。');
+  }
   startupObserveTransfers();
   if (startupDebug) startupObserveGPU();
   startupStage('engine-script-loading');

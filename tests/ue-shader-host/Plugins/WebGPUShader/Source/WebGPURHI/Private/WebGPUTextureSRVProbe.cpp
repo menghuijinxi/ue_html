@@ -8,6 +8,9 @@
 #include "Serialization/JsonSerializer.h"
 #include "ShaderParameterMetadata.h"
 #include "ShaderParameterMacros.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
+#include "Algo/AllOf.h"
 
 namespace
 {
@@ -177,9 +180,11 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
         Record(TEXT("reject-non-texture-binding"),
                !RHI.ResolveSampledTexture(Sampler, Resolved, ResolvedView, ERHIAccess::SRVGraphicsPixel, Error));
         RHI.Attachments.Add(Native);
+        RHI.AttachmentSubresources.Emplace(0, 0);
         Record(TEXT("reject-srv-attachment-feedback"),
                !RHI.ResolveSampledTexture(TestView, Resolved, ResolvedView, ERHIAccess::SRVGraphicsPixel, Error));
         RHI.Attachments.Reset();
+        RHI.AttachmentSubresources.Reset();
         Cmd.Transition(FRHITransitionInfo(Source, ERHIAccess::SRVGraphicsPixel, ERHIAccess::CopyDest));
         Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
         Record(TEXT("reject-srv-access-mismatch"),
@@ -232,11 +237,83 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                        static_cast<FRHIShaderResourceView *>(Bound->GetReference())->GetTexture()->GetRefCount() >= 1);
         }
         Record(TEXT("graphics-pso-reused-for-srv-and-texture"), RHI.GraphicsPipelinesCreated == 1 && RHI.Draws == 6);
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureBCProbe")))
+        {
+            Record(TEXT("bc-device-feature"), wgpuDeviceHasFeature(RHI.Device, WGPUFeatureName_TextureCompressionBC) != 0);
+            auto Invalid = FRHITextureCreateDesc::Create2D(TEXT("InvalidBC"), 6, 8, PF_DXT1)
+                .SetFlags(ETextureCreateFlags::ShaderResource);
+            Record(TEXT("bc-reject-unaligned-base"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Invalid.Extent.X = 8;
+            Invalid.Flags |= ETextureCreateFlags::RenderTargetable;
+            Record(TEXT("bc-reject-render-target"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            const uint16 Endpoints[] = {0xf800, 0x07e0, 0x001f, 0xffff};
+            const FColor Solid[] = {FColor::Red, FColor::Green, FColor::Blue, FColor::White};
+            const auto MakeBC = [&](EPixelFormat Format, bool Cube, bool SRGB) {
+                auto Desc = Cube ? FRHITextureCreateDesc::CreateCube(TEXT("BCMipCube"), 8, Format) :
+                    FRHITextureCreateDesc::Create2D(TEXT("BCMip2D"), 8, 8, Format);
+                Desc.SetNumMips(4).SetFlags(ETextureCreateFlags::ShaderResource |
+                    (SRGB ? ETextureCreateFlags::SRGB : ETextureCreateFlags::None))
+                    .SetInitialState(ERHIAccess::SRVGraphicsPixel).SetInitActionInitializer();
+                auto Init = Cmd.CreateTextureInitializer(Desc);
+                for (int32 Face = 0; Face < (Cube ? 6 : 1); ++Face)
+                for (int32 Mip = 0; Mip < 4; ++Mip)
+                {
+                    auto Data = Cube ? Init.GetTextureCubeSubresource(Face, Mip) : Init.GetTexture2DSubresource(Mip);
+                    FMemory::Memzero(Data.Data, Data.Size);
+                    if (Format == PF_DXT1)
+                        for (uint64 Offset = 0; Offset < Data.Size; Offset += 8)
+                            FMemory::Memcpy(static_cast<uint8*>(Data.Data) + Offset, &Endpoints[(Face + Mip) % 4], 2);
+                }
+                return Init.Finalize();
+            };
+            const auto CheckBC = [&](FRHITexture* Texture, bool Cube, const FString& Prefix) {
+                for (int32 Face = 0; Face < (Cube ? 6 : 1); ++Face)
+                for (int32 Mip = 0; Mip < 4; ++Mip)
+                {
+                    auto View = Cmd.CreateShaderResourceView(Texture, FRHIViewDesc::CreateTextureSRV()
+                        .SetDimension(ETextureDimension::Texture2D).SetMipRange(Mip, 1).SetArrayRange(Face, 1));
+                    Draw(View);
+                    TArray<FColor> Colors;
+                    Cmd.ReadSurfaceData(Destination, FIntRect(0, 0, 16, 16), Colors, RawReadback());
+                    const auto Expected = Solid[(Face + Mip) % 4];
+                    Record(FString::Printf(TEXT("%s-face%d-mip%d"), *Prefix, Face, Mip),
+                        Colors.Num() == 256 && Algo::AllOf(Colors, [&](FColor Value) { return Value == Expected; }));
+                    Checked += Colors.Num() * 4;
+                }
+            };
+            for (auto Format : {PF_DXT1, PF_DXT3, PF_DXT5, PF_BC4, PF_BC5, PF_BC6H, PF_BC7})
+            {
+                auto Texture = MakeBC(Format, false, false);
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+                Record(FString::Printf(TEXT("bc-format-%d-four-mip-upload"), int32(Format)), Texture.IsValid());
+                if (Format == PF_DXT1)
+                {
+                    CheckBC(Texture, false, TEXT("bc1"));
+                    auto Copy = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("BCMipCopy"), 8, 8, PF_DXT1)
+                        .SetNumMips(4).SetFlags(ETextureCreateFlags::ShaderResource)
+                        .SetInitialState(ERHIAccess::CopyDest));
+                    Cmd.Transition(FRHITransitionInfo(Texture, ERHIAccess::SRVGraphicsPixel, ERHIAccess::CopySrc));
+                    FRHICopyTextureInfo CopyInfo;
+                    CopyInfo.NumMips = 4;
+                    Cmd.CopyTexture(Texture, Copy, CopyInfo);
+                    Cmd.Transition(FRHITransitionInfo(Copy, ERHIAccess::CopyDest, ERHIAccess::SRVGraphicsPixel));
+                    CheckBC(Copy, false, TEXT("bc1-copy"));
+                }
+            }
+            auto Cube = MakeBC(PF_DXT1, true, false);
+            CheckBC(Cube, true, TEXT("bc1-cube"));
+            auto SRGB = MakeBC(PF_DXT1, false, true);
+            Draw(SRGB);
+            TArray<FColor> Colors;
+            Cmd.ReadSurfaceData(Destination, FIntRect(0, 0, 16, 16), Colors, RawReadback());
+            Record(TEXT("bc1-srgb-direct-sampling"), Colors.Num() == 256 &&
+                Algo::AllOf(Colors, [](FColor Value) { return Value == FColor::Red; }));
+        }
         RHI.ShaderData(PS).Resources.Reset();
     }
     Scope.PrepareShutdown();
     Record(TEXT("split-transitions-released"),
-           RHI.TransitionsCreated == 2 && RHI.TransitionsReleased == 2 && RHI.Transitions.IsEmpty());
+           RHI.TransitionsCreated == RHI.TransitionsReleased && RHI.TransitionsCreated >= 2 && RHI.Transitions.IsEmpty());
     Record(TEXT("gpu-validation-clean"), RHI.Errors.IsEmpty());
     auto Report = MakeShared<FJsonObject>();
     Report->SetStringField(TEXT("mode"), Mode);

@@ -40,10 +40,13 @@ bool UseWebGPU = false;
 bool RenderScene = false;
 bool DefaultTemplate = false;
 bool VisualTestClock = false;
+FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
 
 const TCHAR* StartupMap()
 {
+    if (!ProjectMap.IsEmpty())
+        return *ProjectMap;
     return DefaultTemplate ? TEXT("/Engine/Maps/Templates/Template_Default") : TEXT("/Game/WebMinimal");
 }
 
@@ -336,6 +339,28 @@ int32 StartEngine()
     }
     if (UseWebGPU && DefaultTemplate)
         TemplateController = SetWebTemplateCamera(World);
+    else if (UseWebGPU && !ProjectMap.IsEmpty())
+    {
+        TemplateController = World->GetFirstPlayerController();
+        int32 Meshes = 0, LitMeshes = 0, Actors = 0;
+        for (TActorIterator<AActor> It(World); It; ++It)
+        {
+            ++Actors;
+            TInlineComponentArray<UStaticMeshComponent*> Components(*It);
+            for (const UStaticMeshComponent* Component : Components)
+                if (Component->GetStaticMesh())
+                {
+                    ++Meshes;
+                    if (const UMaterialInterface* Material = Component->GetMaterial(0);
+                        Material && !Material->GetShadingModels().HasShadingModel(MSM_Unlit))
+                        ++LitMeshes;
+                }
+        }
+        std::printf("P3_RENDER_SCENE {\"map\":\"%s\",\"actors\":%d,\"meshes\":%d,"
+            "\"litMeshes\":%d,\"camera\":%s,\"projectGameplayPreserved\":true}\n",
+            TCHAR_TO_UTF8(*ProjectMap), Actors, Meshes, LitMeshes,
+            TemplateController.IsValid() ? "true" : "false");
+    }
     else if (UseWebGPU && RenderScene)
         CreateWebRenderScene(World);
     const auto* MobileGPUScene = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Mobile.SupportGPUScene"));
@@ -370,6 +395,19 @@ int main(int argc, char** argv)
         RenderScene |= FCStringAnsi::Strcmp(argv[Index], "-WebRenderScene") == 0;
         DefaultTemplate |= FCStringAnsi::Strcmp(argv[Index], "-WebDefaultTemplate") == 0;
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
+        constexpr const ANSICHAR* MapOption = "-WebProjectMap=";
+        if (FCStringAnsi::Strncmp(argv[Index], MapOption, FCStringAnsi::Strlen(MapOption)) == 0)
+        {
+            ProjectMap = UTF8_TO_TCHAR(argv[Index] + FCStringAnsi::Strlen(MapOption));
+            if (!ProjectMap.StartsWith(TEXT("/Game/")) || ProjectMap.Len() > 256 ||
+                !ProjectMap.RightChop(6).GetCharArray().FilterByPredicate([](TCHAR Value) {
+                    return Value && Value != '/' && Value != '_' && !FChar::IsAlnum(Value);
+                }).IsEmpty())
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED invalid project map argument\n");
+                return 1;
+            }
+        }
     }
     if (!UseWebGPU)
         return StartEngine();

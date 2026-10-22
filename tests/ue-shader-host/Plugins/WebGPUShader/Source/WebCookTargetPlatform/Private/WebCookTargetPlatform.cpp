@@ -8,10 +8,16 @@
 #include "Modules/ModuleManager.h"
 #include "TextureResource.h"
 #include "Engine/VolumeTexture.h"
+#include "Engine/TextureCube.h"
+#include "Engine/TextureLightProfile.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
+#include "Components/SkyLightComponent.h"
 #include "Materials/Material.h"
 #include "MaterialDomain.h"
 #include "Materials/MaterialExpressionShadingPathSwitch.h"
 #include "UObject/UObjectIterator.h"
+#include "UObject/ObjectSaveContext.h"
 #include "WebCookProperties.h"
 
 class FWebCookControls final : public TTargetPlatformControlsBase<FWebCookProperties>
@@ -39,6 +45,7 @@ public:
     {
         TArray<FName>& Layers = Formats.AddDefaulted_GetRef();
         GetDefaultTextureFormatNamePerLayer(Layers, TargetPlatformSettings, this, Texture, false, 4, false);
+        const bool BC = FParse::Param(FCommandLine::Get(), TEXT("WebTextureCompressionBC"));
         for (FName& Format : Layers)
         {
             const FString Name = Format.ToString();
@@ -55,9 +62,15 @@ public:
             {
                 Format = TEXT("R16F");
             }
-            else if (Texture->IsA<UVolumeTexture>() || Name == TEXT("BC6H") || Name == TEXT("BC6H_SF16"))
+            else if (Texture->IsA<UVolumeTexture>())
                 Format = TEXT("RGBA16F");
-            else if (Name.StartsWith(TEXT("DXT")) || Name.StartsWith(TEXT("BC")) || Name == TEXT("AutoDXT"))
+            else if (BC && Name == TEXT("RGBA16F") && Texture->IsA<UTextureCube>() &&
+                Texture->CompressionSettings == TC_HDR && !Texture->CompressionNone &&
+                FParse::Param(FCommandLine::Get(), TEXT("WebCompressHDRCubemaps")))
+                Format = TEXT("BC6H");
+            else if (!BC && (Name == TEXT("BC6H") || Name == TEXT("BC6H_SF16")))
+                Format = TEXT("RGBA16F");
+            else if (!BC && (Name.StartsWith(TEXT("DXT")) || Name.StartsWith(TEXT("BC")) || Name == TEXT("AutoDXT")))
                 Format = TEXT("BGRA8");
         }
     }
@@ -65,6 +78,11 @@ public:
     {
         Modules.AddUnique(TEXT("TextureFormatUncompressed"));
         Modules.AddUnique(TEXT("TextureFormatWebCloud"));
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureCompressionBC")))
+        {
+            Modules.AddUnique(TEXT("TextureFormatDXT"));
+            Modules.AddUnique(TEXT("TextureFormatIntelISPCTexComp"));
+        }
     }
     virtual FName GetWaveFormat(const USoundWave*) const override { return NAME_None; }
     virtual void GetAllWaveFormats(TArray<FName>&) const override {}
@@ -83,11 +101,19 @@ public:
             LoadedHandle = FCoreUObjectDelegates::OnAssetLoaded.AddRaw(this, &FWebTargetPlatformModule::PrepareCloud);
             for (TObjectIterator<UMaterial> It; It; ++It)
                 PrepareCloud(*It);
+            for (TObjectIterator<UTextureLightProfile> It; It; ++It)
+                PrepareCloud(*It);
+            SavingHandle = FCoreUObjectDelegates::OnObjectPreSave.AddLambda(
+                [this](UObject* Object, FObjectPreSaveContext Context) {
+                    if (Context.IsCooking() && Object->IsA<UWorld>())
+                        PrepareCloud(Object);
+                });
         }
     }
     virtual void ShutdownModule() override
     {
         FCoreUObjectDelegates::OnAssetLoaded.Remove(LoadedHandle);
+        FCoreUObjectDelegates::OnObjectPreSave.Remove(SavingHandle);
     }
 protected:
     virtual void GetTargetPlatforms(TArray<ITargetPlatform*>& Platforms) override
@@ -129,6 +155,28 @@ protected:
 private:
     void PrepareCloud(UObject* Object)
     {
+        if (auto* World = Cast<UWorld>(Object);
+            World && FParse::Param(FCommandLine::Get(), TEXT("WebProjectDisableSkyLightCook")))
+        {
+            int32 Disabled = 0;
+            for (TActorIterator<AActor> It(World); It; ++It)
+            {
+                TInlineComponentArray<USkyLightComponent*> Components(*It);
+                for (USkyLightComponent* Component : Components)
+                {
+                    Component->SetVisibility(false);
+                    ++Disabled;
+                }
+            }
+            UE_LOG(LogTemp, Display, TEXT("WEB_PROJECT_COOK: disabledSkyLights=%d map=%s"),
+                Disabled, *World->GetPathName());
+        }
+        if (auto* Profile = Cast<UTextureLightProfile>(Object); Profile && Profile->SRGB)
+        {
+            // IES intensities are linear; RGBA16F has no sRGB GPU format.
+            Profile->SRGB = false;
+            UE_LOG(LogTemp, Display, TEXT("WEB_TEXTURE_COOK: linear IES profile %s"), *Profile->GetPathName());
+        }
         UMaterial* Material = Cast<UMaterial>(Object);
         if (!Material || Material->MaterialDomain != MD_Volume || !Material->GetUsageByFlag(MATUSAGE_VolumetricCloud) ||
             PreparedClouds.Contains(Material))
@@ -147,6 +195,7 @@ private:
         }
     }
     FDelegateHandle LoadedHandle;
+    FDelegateHandle SavingHandle;
     TSet<TWeakObjectPtr<UMaterial>> PreparedClouds;
     TUniquePtr<FWebCookControls> Controls;
 };

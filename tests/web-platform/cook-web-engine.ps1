@@ -1,7 +1,14 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
     [ValidateSet('NullRHI-only', 'WebGPU-SM5', 'WebGPU-ES31')][string]$Mode = 'NullRHI-only',
-    [ValidateSet('Minimal', 'DefaultTemplate')][string]$Scene = 'Minimal',
+    [ValidateSet('Minimal', 'DefaultTemplate', 'Project')][string]$Scene = 'Minimal',
+    [string]$Project,
+    [string]$Map,
+    [string]$Profile,
+    [ValidateSet('Uncompressed', 'BC')][string]$TextureCompression = 'Uncompressed',
+    [switch]$CompressHDRCubemaps,
+    [ValidatePattern('^[a-z0-9]+(?:-[a-z0-9]+)*$')][string]$ReportId,
+    [switch]$DisableProjectSkyLight,
     [switch]$StopOnShaderError,
     [switch]$ValidateShaderJobCache,
     [switch]$SkipBuild
@@ -13,6 +20,16 @@ $taskWebGPU = $Mode -ne 'NullRHI-only'
 $taskES31 = $Mode -eq 'WebGPU-ES31'
 if ($Scene -eq 'DefaultTemplate' -and -not $taskES31) { throw 'DefaultTemplate requires WebGPU-ES31.' }
 $taskMap = if ($Scene -eq 'DefaultTemplate') { '/Engine/Maps/Templates/Template_Default' } else { '/Game/WebMinimal' }
+if ($Scene -eq 'Project') {
+    if (-not $taskES31 -or -not $Project -or -not $Map -or -not $Profile -or -not $ReportId) {
+        throw 'Project Cook requires WebGPU-ES31, Project, Map, Profile and ReportId.'
+    }
+    if ($Map -notmatch '^/Game/[a-zA-Z0-9_/]+$') { throw 'Project Map must be an absolute /Game package name.' }
+    $taskMap = $Map
+}
+if ($DisableProjectSkyLight -and $Scene -ne 'Project') { throw 'SkyLight exclusion requires Project Cook.' }
+if ($TextureCompression -eq 'BC' -and -not $taskWebGPU) { throw 'BC compression requires WebGPU Cook.' }
+if ($CompressHDRCubemaps -and $TextureCompression -ne 'BC') { throw 'HDR cube compression requires BC Cook.' }
 $taskFormat = if ($taskES31) { 'SF_WEBGPU_ES31' } else { 'SF_WEBGPU_SM5' }
 $taskShaderPlatformName = if ($taskES31) { 'SP_WEBGPU_ES31' } else { 'SP_WEBGPU_SM5' }
 if ($taskWebGPU) { $taskHost = Join-Path $taskRoot '.tools/ue58-web-cook-host/Engine' }
@@ -21,11 +38,13 @@ $taskHostDDPI = Join-Path $taskHost 'Platforms/Web/Config/DataDrivenPlatformInfo
 $taskDDPI = Join-Path $taskRoot 'reference-engine/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini'
 if ($taskES31) { $taskDDPI = Join-Path $PSScriptRoot 'cook-profiles/WebGPU-ES31.ini' }
 $taskProject = Join-Path $taskRoot 'tests/ue-shader-host/UEShaderHost.uproject'
+if ($Scene -eq 'Project') { $taskProject = [IO.Path]::GetFullPath($Project) }
 $taskResults = Join-Path $PSScriptRoot 'results'
 $taskStamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $taskPrefix = if ($taskWebGPU) { 'web-engine-webgpu-cook' } else { 'web-engine-cook' }
 if ($taskES31) { $taskPrefix = 'web-engine-webgpu-es31-cook' }
 if ($Scene -eq 'DefaultTemplate') { $taskPrefix = 'web-engine-webgpu-es31-default-cook' }
+if ($Scene -eq 'Project') { $taskPrefix = "web-project-$ReportId-cook" }
 $taskOutput = Join-Path $PSScriptRoot "build/$taskPrefix/$taskStamp"
 $taskLog = Join-Path $taskResults "$taskPrefix-$taskStamp.log"
 $taskProcess = Get-Process -Id $PID
@@ -41,7 +60,12 @@ $taskReport = [ordered]@{
     mode = $Mode
     scene = $Scene
     map = $taskMap
+    project = $taskProject
+    projectName = [IO.Path]::GetFileNameWithoutExtension($taskProject)
     architecture = 'wasm64'
+    disabledSkyLight = [bool]$DisableProjectSkyLight
+    textureCompression = $TextureCompression
+    compressHDRCubemaps = [bool]$CompressHDRCubemaps
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
     validateShaderJobCache = [bool]$ValidateShaderJobCache
@@ -57,8 +81,9 @@ try {
     $taskProcess.ProcessorAffinity = [IntPtr]3
     if (-not $SkipBuild) {
         $taskBuildLog = Join-Path $taskResults "web-cook-module-build-$taskStamp.log"
+        $taskModuleProject = Join-Path $taskRoot 'tests/ue-shader-host/UEShaderHost.uproject'
         & (Join-Path $Engine 'Engine/Build/BatchFiles/Build.bat') UEShaderHostEditor Win64 Development `
-            "-Project=$taskProject" -WaitMutex -NoHotReloadFromIDE -NoUBA -MaxParallelActions=1 *> $taskBuildLog
+            "-Project=$taskModuleProject" -WaitMutex -NoHotReloadFromIDE -NoUBA -MaxParallelActions=1 *> $taskBuildLog
         $taskReport.moduleBuildLog = Get-TaskAudit $taskBuildLog
         if ($LASTEXITCODE -ne 0) { throw "Web Cook module build failed: $taskBuildLog" }
     }
@@ -66,8 +91,11 @@ try {
         & (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1') -Engine $Engine
         $taskReport.minimalMapPreparation = Get-TaskAudit (Join-Path $taskResults 'web-minimal-map-results.json')
         $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
-    } else {
+    } elseif ($Scene -eq 'DefaultTemplate') {
         $taskReport.templateMap = Get-TaskAudit (Join-Path $Engine 'Engine/Content/Maps/Templates/Template_Default.umap')
+    } else {
+        $taskMapFile = Join-Path (Split-Path -Parent $taskProject) ("Content/" + $taskMap.Substring(6) + '.umap')
+        $taskReport.projectMap = Get-TaskAudit $taskMapFile
     }
     if ($taskWebGPU) {
         $taskPrepareLog = Join-Path $taskResults "web-cook-host-$taskStamp.log"
@@ -76,7 +104,9 @@ try {
         & node @taskPrepareArguments *> $taskPrepareLog
         if ($LASTEXITCODE -ne 0) { throw "Web Cook host preparation failed: $taskPrepareLog" }
         $taskPrepareReport = if ($taskES31) { 'web-es31-cook-host-results.json' } else { 'web-cook-host-results.json' }
-        $taskReport.hostPreparationReport = Get-TaskAudit (Join-Path $taskResults $taskPrepareReport)
+        $taskPreparationSnapshot = Join-Path $taskOutput 'host-preparation-report.json'
+        Copy-Item -LiteralPath (Join-Path $taskResults $taskPrepareReport) -Destination $taskPreparationSnapshot
+        $taskReport.hostPreparationReport = Get-TaskAudit $taskPreparationSnapshot
         $taskReport.hostPreparationLog = Get-TaskAudit $taskPrepareLog
         $taskReport.shaderSourcesReport = Get-TaskAudit (Join-Path $taskResults 'web-cook-shader-sources.json')
     }
@@ -117,8 +147,16 @@ try {
         '-ddpi:Web:bIsEnabled=false',
         "-OutputDir=$taskOutput", "-PACKAGE=$($taskPackages -join '+')",
         '-SkipZenStore', '-NoDefaultMaps', '-NoGameAlwaysCook',
-        '-SkipSoftReferences', '-CookProcessCount=1', '-unattended', '-nop4', '-nosplash', '-nosound',
+        '-CookProcessCount=1', '-unattended', '-nop4', '-nosplash', '-nosound',
         '-nullrhi', '-sm5', '-processaffinity=2', '-UTF8Output', "-abslog=$taskLog")
+    if ($Scene -ne 'Project') { $taskArguments += '-SkipSoftReferences' }
+    if ($DisableProjectSkyLight) { $taskArguments += '-WebProjectDisableSkyLightCook' }
+    if ($TextureCompression -eq 'BC') { $taskArguments += '-WebTextureCompressionBC' }
+    if ($CompressHDRCubemaps) { $taskArguments += '-WebCompressHDRCubemaps' }
+    if ($TextureCompression -eq 'BC') {
+        # Use the bundled DXT/ISPC encoders; the browser receives standard BC blocks.
+        $taskArguments += '-ini:Engine:[AlternateTextureCompression]:TextureCompressionFormat='
+    }
     if ($taskWebGPU) {
         $taskArguments += @('-WebGPUCook', '-noshaderworker',
             '-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:bShareMaterialShaderCode=True',
@@ -127,6 +165,7 @@ try {
         # Some native compiler helpers read the host CVar instead of the target-platform CVar.
         $taskMinimalConfig = Join-Path $taskRoot 'tests/ue-shader-host/Config/Web/WebEngine.ini'
         if ($Scene -eq 'DefaultTemplate') { $taskMinimalConfig = Join-Path $PSScriptRoot 'cook-profiles/DefaultTemplateEngine.ini' }
+        if ($Scene -eq 'Project') { $taskMinimalConfig = [IO.Path]::GetFullPath($Profile) }
         $taskMinimalSettings = @(Get-Content -LiteralPath $taskMinimalConfig | Where-Object { $_ -match '^[a-zA-Z][a-zA-Z0-9.]*=' })
         if (-not $taskMinimalSettings.Count) { throw 'Minimal Web renderer settings are missing.' }
         $taskArguments += @($taskMinimalSettings | ForEach-Object { "-ini:Engine:[SystemSettings]:$_" })
@@ -214,6 +253,12 @@ try {
     $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1')
     if ($taskReport.minimalMap) { $taskReport.sourceFiles += $taskReport.minimalMap }
     if ($taskReport.templateMap) { $taskReport.sourceFiles += $taskReport.templateMap }
+    if ($taskReport.projectMap) {
+        $taskReport.sourceFiles += $taskReport.projectMap
+        $taskReport.sourceFiles += Get-TaskAudit $taskProject
+        $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path (Split-Path -Parent $taskProject) 'Config') -File -Recurse |
+            ForEach-Object { Get-TaskAudit $_.FullName })
+    }
     if ($taskReport.minimalRendererConfig) { $taskReport.sourceFiles += $taskReport.minimalRendererConfig }
     if ($taskWebGPU) {
         $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat') -File -Recurse |

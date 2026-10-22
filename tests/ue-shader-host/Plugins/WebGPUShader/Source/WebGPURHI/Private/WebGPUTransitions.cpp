@@ -85,6 +85,13 @@ bool FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource *Resource, ERHIAcces
     if (!SupportedAccess(Resource, Access))
     {
         Error = TEXT("Resource capability does not support requested access");
+        if (Resource && Resource->GetType() == RRT_Texture)
+        {
+            const auto* Texture = static_cast<const FWebGPUTexture*>(Resource);
+            Error += FString::Printf(TEXT(": texture=%s format=%u flags=0x%llx access=0x%x surfaceActive=%d"),
+                *Texture->GetName().ToString(), uint32(Texture->GetFormat()), uint64(Texture->GetFlags()),
+                uint32(Access), int(Texture->SurfaceFrameActive));
+        }
         return false;
     }
     if (Resource->GetType() == RRT_Buffer && static_cast<FWebGPUBuffer *>(Resource)->Locked)

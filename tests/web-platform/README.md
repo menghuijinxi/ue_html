@@ -2,6 +2,8 @@
 
 更新日期：2026-10-22。当前默认关卡的构建、打包、画面及回归结果见 [默认关卡进度](H:/ue_html/UE58_DEFAULT_TEMPLATE_PROGRESS.md)。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，工具链和早期移植记录见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。
 
+外部内容项目的准备、Cook、网页目录、BC GPU 纹理压缩及当前显存/性能边界见 [别墅项目进度](H:/ue_html/UE58_PROJECT_WEB_PROGRESS.md)。当前桌面 BC 包需要 `texture-compression-bc`，不支持时在大文件下载前明确提示；ASTC/ETC2 与实际手机验收待做。
+
 当前已用普通 UBT 构建的 wasm64 Engine 打包并运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光、原材质体积云和指数高度雾。云已接入原生低分辨率步进、历史重建和深度合成；Chrome/Edge 完整效果与窗口缩放回归通过。冷启动回归曾在 Chrome 遇到浏览器 DXC 断言后设备丢失，整体稳定性验收尚未通过，具体证据见默认关卡进度。当前采用 ES3.1 移动渲染，体积雾、云影等效果仍未接入。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
 
 启动故障现已在不加载 UE 的实际管线回放及独立 DXC 中复现。受限核心条件下完整效果对照可以通过，默认调度也有长循环通过的反例，尚不能据此认定硬件损坏或编译器并发缺陷；诊断复现见 [DXC 主机对照](H:/ue_html/tests/web-platform/diagnostics/README.md)。限制核心仅用于测试，不改变发布包或正常页面。

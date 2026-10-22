@@ -48,11 +48,21 @@ bool IsUnsignedTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8_UINT || Value == PF_R32_UINT || Value == PF_R16_UINT;
 }
+bool IsBCTextureFormat(EPixelFormat Value)
+{
+    return Value == PF_DXT1 || Value == PF_DXT3 || Value == PF_DXT5 || Value == PF_BC4 ||
+           Value == PF_BC5 || Value == PF_BC6H || Value == PF_BC7;
+}
+bool SupportsSRGB(EPixelFormat Value)
+{
+    return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_DXT1 ||
+           Value == PF_DXT3 || Value == PF_DXT5 || Value == PF_BC7;
+}
 bool IsSampled2DTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_G8 || Value == PF_R8 ||
            Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT ||
-           IsUnsignedTextureFormat(Value);
+           IsUnsignedTextureFormat(Value) || IsBCTextureFormat(Value);
 }
 WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
 {
@@ -81,6 +91,20 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_R32Uint;
     case PF_R16_UINT:
         return WGPUTextureFormat_R16Uint;
+    case PF_DXT1:
+        return SRGB ? WGPUTextureFormat_BC1RGBAUnormSrgb : WGPUTextureFormat_BC1RGBAUnorm;
+    case PF_DXT3:
+        return SRGB ? WGPUTextureFormat_BC2RGBAUnormSrgb : WGPUTextureFormat_BC2RGBAUnorm;
+    case PF_DXT5:
+        return SRGB ? WGPUTextureFormat_BC3RGBAUnormSrgb : WGPUTextureFormat_BC3RGBAUnorm;
+    case PF_BC4:
+        return WGPUTextureFormat_BC4RUnorm;
+    case PF_BC5:
+        return WGPUTextureFormat_BC5RGUnorm;
+    case PF_BC6H:
+        return WGPUTextureFormat_BC6HRGBUfloat;
+    case PF_BC7:
+        return SRGB ? WGPUTextureFormat_BC7RGBAUnormSrgb : WGPUTextureFormat_BC7RGBAUnorm;
     case PF_DepthStencil:
         return WGPUTextureFormat_Depth24PlusStencil8;
     case PF_ShadowDepth:
@@ -233,15 +257,17 @@ void WriteTextureMip(FWebGPUDynamicRHI &RHI, FWebGPUTexture *Texture, uint32 Mip
 {
     uint64 Stride;
     check(UE::RHITextureUtils::CalculateTextureMipSize(Texture->GetDesc(), Mip, Stride) == Size);
-    const auto Extents = UE::RHITextureUtils::CalculateMipExtents(Texture->GetDesc(), Mip);
+    const auto Blocks = UE::RHITextureUtils::CalculateMipBlockCounts(Texture->GetDesc(), Mip);
+    const auto &Pixel = GPixelFormats[Texture->GetFormat()];
     WGPUTexelCopyTextureInfo Destination = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
     Destination.texture = Texture->Handle;
     Destination.mipLevel = Mip;
     Destination.origin.z = Face;
     WGPUTexelCopyBufferLayout Layout = WGPU_TEXEL_COPY_BUFFER_LAYOUT_INIT;
     Layout.bytesPerRow = Stride;
-    Layout.rowsPerImage = Extents.Y;
-    WGPUExtent3D Extent{Extents.X, Extents.Y, Extents.Z};
+    Layout.rowsPerImage = Blocks.Y;
+    // WebGPU copies address physical blocks, including the 2x2 and 1x1 mip tails.
+    WGPUExtent3D Extent{Blocks.X * Pixel.BlockSizeX, Blocks.Y * Pixel.BlockSizeY, Blocks.Z * Pixel.BlockSizeZ};
     wgpuQueueWriteTexture(RHI.Queue, &Destination, Bytes, Size, &Layout, &Extent);
     if (RHI.StartupProbeMode)
         UE_LOG(LogRHI, Display, TEXT("P3_TEXTURE_UPLOAD name=%s mip=%u extent=%ux%ux%u bytes=%llu"),
@@ -379,6 +405,12 @@ void FWebGPUDynamicRHI::BeginBrowserDevice(void (*Completion)(bool))
             return;
         }
         WGPUDeviceDescriptor DeviceDesc = WGPU_DEVICE_DESCRIPTOR_INIT;
+        const WGPUFeatureName BC = WGPUFeatureName_TextureCompressionBC;
+        if (wgpuAdapterHasFeature(Adapter, BC))
+        {
+            DeviceDesc.requiredFeatureCount = 1;
+            DeviceDesc.requiredFeatures = &BC;
+        }
         DeviceDesc.uncapturedErrorCallbackInfo.userdata1 = &RHI;
         DeviceDesc.uncapturedErrorCallbackInfo.callback = [](WGPUDevice const*, WGPUErrorType,
                                                             WGPUStringView Message, void* Self, void*) {
@@ -436,6 +468,12 @@ void FWebGPUDynamicRHI::Init()
     wgpuAdapterInfoFreeMembers(Info);
     bool DeviceDone = false;
     WGPUDeviceDescriptor Desc = WGPU_DEVICE_DESCRIPTOR_INIT;
+    const WGPUFeatureName BC = WGPUFeatureName_TextureCompressionBC;
+    if (wgpuAdapterHasFeature(Adapter, BC))
+    {
+        Desc.requiredFeatureCount = 1;
+        Desc.requiredFeatures = &BC;
+    }
     Desc.uncapturedErrorCallbackInfo.userdata1 = this;
     Desc.uncapturedErrorCallbackInfo.callback = [](WGPUDevice const *, WGPUErrorType, WGPUStringView Message,
                                                    void *Self, void *) {
@@ -871,6 +909,16 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
 {
     const bool Volume = In.Dimension == ETextureDimension::Texture3D;
     const bool Cube = In.Dimension == ETextureDimension::TextureCube;
+    if (IsBCTextureFormat(In.Format) &&
+        (!wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureCompressionBC) ||
+         (Volume || In.Extent.X % 4 || In.Extent.Y % 4) ||
+         !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
+         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable | ETextureCreateFlags::DepthStencilTargetable |
+             ETextureCreateFlags::UAV)))
+    {
+        Error = TEXT("BC textures require texture-compression-bc, block-aligned sampled 2D/cube data and no render/storage usage");
+        return false;
+    }
     const bool Color = Volume ? In.Format == PF_R8G8B8A8 || In.Format == PF_B8G8R8A8 ||
                                     In.Format == PF_R8G8B8A8_UINT || In.Format == PF_FloatRGBA ||
                                     In.Format == PF_R16F || In.Format == PF_G16R16F
@@ -885,8 +933,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         (Volume && (!EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
                     EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable))) ||
         (Volume && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)) ||
-        (In.Format != PF_R8G8B8A8 && In.Format != PF_B8G8R8A8 &&
-         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)) ||
+        (!SupportsSRGB(In.Format) && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)) ||
         (!Color && (In.NumMips != 1 ||
                     !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::DepthStencilTargetable) ||
                     EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB | ETextureCreateFlags::UAV |
@@ -899,7 +946,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         (In.InitAction != ERHITextureInitAction::Default && !Color))
     {
         Error =
-            TEXT("Only 2D RGBA8/BGRA8 (linear or sRGB), linear R8/RG8/R16F/RGBA16F/R32_FLOAT/R16_UINT/R32_UINT/RGBA8_UINT, sampled mip chains, single-mip depth, or existing linear sampled 3D textures are implemented");
+            TEXT("Only supported sampled 2D/cube formats (including BC), single-mip depth or existing linear sampled 3D textures are implemented");
         return false;
     }
     const uint64 Bytes = In.CalcMemorySizeEstimate();
@@ -913,9 +960,14 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     return true;
 }
 FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHICommandListBase &Cmd,
-                                                                      const FRHITextureCreateDesc &In)
+                                                                      const FRHITextureCreateDesc &Requested)
 {
     RequireOwner();
+    FRHITextureCreateDesc In = Requested;
+    // FTextureCubeResource uses the legacy implicit sampling capability for asset cubes.
+    if (In.IsTextureCube() &&
+        !EnumHasAnyFlags(In.Flags, ~(ETextureCreateFlags::SRGB | ETextureCreateFlags::OfflineProcessed)))
+        In.Flags |= ETextureCreateFlags::ShaderResource;
     if (StartupProbeMode)
         UE_LOG(LogRHI, Display,
                TEXT("P3_TEXTURE_CREATE name=%s dimension=%u format=%u extent=%dx%d depth=%u array=%u "
@@ -936,7 +988,7 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     Desc.size = {uint32(In.Extent.X), uint32(In.Extent.Y), In.IsTextureCube() ? 6u : uint32(In.Depth)};
     Desc.format = Format(In.Format, EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB));
     Desc.mipLevelCount = In.NumMips;
-    Desc.usage = Volume ? WGPUTextureUsage_None : WGPUTextureUsage_RenderAttachment;
+    Desc.usage = Volume || IsBCTextureFormat(In.Format) ? WGPUTextureUsage_None : WGPUTextureUsage_RenderAttachment;
     if (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV))
         Desc.usage |= WGPUTextureUsage_StorageBinding;
     if (In.Format != PF_DepthStencil && In.Format != PF_ShadowDepth)
@@ -2506,6 +2558,20 @@ void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destina
     Dst.origin = {uint32(Info.DestPosition.X) >> Mip, uint32(Info.DestPosition.Y) >> Mip, Info.DestSliceIndex + Slice};
     WGPUExtent3D Size{FMath::Max(1u, Info.Size.X ? uint32(Info.Size.X) >> Mip : Source->GetSizeX() >> Src.mipLevel),
                       FMath::Max(1u, Info.Size.Y ? uint32(Info.Size.Y) >> Mip : Source->GetSizeY() >> Src.mipLevel), 1};
+    if (IsBCTextureFormat(Source->GetFormat()))
+    {
+        const auto& Pixel = GPixelFormats[Source->GetFormat()];
+        check(Src.origin.x % Pixel.BlockSizeX == 0 && Src.origin.y % Pixel.BlockSizeY == 0 &&
+              Dst.origin.x % Pixel.BlockSizeX == 0 && Dst.origin.y % Pixel.BlockSizeY == 0);
+        check((Size.width % Pixel.BlockSizeX == 0 ||
+                (Src.origin.x + Size.width == FMath::Max(1u, Source->GetSizeX() >> Src.mipLevel) &&
+                 Dst.origin.x + Size.width == FMath::Max(1u, Destination->GetSizeX() >> Dst.mipLevel))) &&
+              (Size.height % Pixel.BlockSizeY == 0 ||
+                (Src.origin.y + Size.height == FMath::Max(1u, Source->GetSizeY() >> Src.mipLevel) &&
+                 Dst.origin.y + Size.height == FMath::Max(1u, Destination->GetSizeY() >> Dst.mipLevel))));
+        Size.width = Align(Size.width, uint32(Pixel.BlockSizeX));
+        Size.height = Align(Size.height, uint32(Pixel.BlockSizeY));
+    }
     wgpuCommandEncoderCopyTextureToTexture(Encoder, &Src, &Dst, &Size);
     }
 }
