@@ -183,6 +183,22 @@ try {
     } else {
         $taskArguments += @('-WebNullRHICook', '-ForceDisableSaveGlobalShaders')
     }
+    if ($Scene -eq 'Project' -and -not $DisableProjectSkyLight) {
+        $taskSkyFile = Join-Path $taskOutput "$($taskReport.projectName)/Content/WebSkyCaptures.bin"
+        New-Item -ItemType Directory -Path (Split-Path -Parent $taskSkyFile) -Force | Out-Null
+        $taskSkyLog = Join-Path $taskResults "$taskPrefix-$taskStamp-skylight.log"
+        $taskSkyInventory = Join-Path $taskOutput 'skylight-map.json'
+        & (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject '-run=WebTemplateMap' `
+            "-Map=$taskMap" "-Output=$taskSkyInventory" "-SkyCaptureOutput=$taskSkyFile" `
+            '-AllowCommandletRendering' '-d3d12' '-unattended' '-nop4' '-nosplash' '-nosound' `
+            '-ini:Engine:[SystemSettings]:r.RayTracing=0' "-abslog=$taskSkyLog" *> "$taskSkyLog.console.txt"
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $taskSkyFile)) {
+            throw "Native SkyLight preparation failed: $taskSkyLog"
+        }
+        $taskReport.skyLightCapture = Get-TaskAudit $taskSkyFile
+        $taskReport.skyLightInventory = Get-TaskAudit $taskSkyInventory
+        $taskReport.skyLightLog = Get-TaskAudit $taskSkyLog
+    }
     $taskReport.arguments = $taskArguments
     & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') @taskArguments *> "$taskLog.console.txt"
     $taskReport.exitCode = $LASTEXITCODE
@@ -200,7 +216,9 @@ try {
         }
     }
     $taskReport.products = @($taskAssets | ForEach-Object { Get-TaskAudit $_.FullName })
+    if ($taskReport.skyLightCapture) { $taskReport.products += $taskReport.skyLightCapture }
     $taskReport.totalBytes = ($taskAssets | Measure-Object -Property Length -Sum).Sum
+    if ($taskReport.skyLightCapture) { $taskReport.totalBytes += (Get-Item -LiteralPath $taskReport.skyLightCapture.file).Length }
     $taskReport.pass = $true
 } catch {
     $taskReport.failure = $_.ToString()
@@ -248,7 +266,8 @@ try {
         ForEach-Object { $_.FullName }) + @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebCookTargetPlatform') -File -Recurse |
         ForEach-Object { $_.FullName }) + @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebCookTargetPlatformSettings') -File -Recurse |
         ForEach-Object { $_.FullName }) | ForEach-Object { Get-TaskAudit $_ }
-    $taskReport.sourceFiles += @('Public/WebMinimalMapCommandlet.h', 'Private/WebMinimalMapCommandlet.cpp') |
+    $taskReport.sourceFiles += @('Public/WebMinimalMapCommandlet.h', 'Private/WebMinimalMapCommandlet.cpp',
+        'Public/WebTemplateMapCommandlet.h', 'Private/WebTemplateMapCommandlet.cpp') |
         ForEach-Object { Get-TaskAudit (Join-Path $taskRoot "tests/ue-shader-host/Source/UEShaderHost/$_") }
     $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1')
     if ($taskReport.minimalMap) { $taskReport.sourceFiles += $taskReport.minimalMap }

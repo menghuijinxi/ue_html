@@ -8,6 +8,13 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/LightGridInjection.usf', [{
+    before: '#include "WaveOpUtil.ush"',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '// WGSL subgroup operations require uniform flow; use ordinary atomic allocation.',
+      '#undef COMPILER_SUPPORTS_WAVE_VOTE', '#define COMPILER_SUPPORTS_WAVE_VOTE 0',
+      '#endif', '#include "WaveOpUtil.ush"'].join('\n'),
+  }]],
   ['Private/PostProcessMobile.usf', [
     ...[['RWBuffer', 'UAV'], ['RWBuffer', 'OutputUIntBuffer'], ['Buffer', 'LogLuminanceWeightBuffer'],
       ['RWBuffer', 'RWHistogramBuffer'], ['Buffer', 'HistogramBuffer']].map(([type, name]) => {

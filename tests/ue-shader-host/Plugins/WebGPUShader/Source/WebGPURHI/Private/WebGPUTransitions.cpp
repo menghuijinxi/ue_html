@@ -73,7 +73,7 @@ FWebGPUResourceState &FWebGPUDynamicRHI::ResourceState(FRHIViewableResource *Res
     if (Resource->GetType() == RRT_Texture && (Mip || Slice))
     {
         auto* Texture = static_cast<FWebGPUTexture*>(Resource);
-        check(Mip < Texture->GetNumMips() && Slice < (Texture->GetDesc().IsTextureCube() ? 6u : 1u));
+        check(Mip < Texture->GetNumMips() && Slice < Texture->LayerCount());
         return Texture->SubresourceStates[Slice * Texture->GetNumMips() + Mip - 1];
     }
     return Resource->GetType() == RRT_Buffer ? static_cast<FWebGPUBuffer *>(Resource)->State
@@ -113,7 +113,7 @@ bool FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource *Resource, ERHIAcces
     const uint32 FirstMip = Mip == MAX_uint32 ? 0 : Mip;
     const uint32 LastMip = Mip == MAX_uint32 ? (Texture ? Texture->GetNumMips() : 1) : Mip + 1;
     const uint32 FirstSlice = Slice == MAX_uint32 ? 0 : Slice;
-    const uint32 LastSlice = Slice == MAX_uint32 ? (Texture && Texture->GetDesc().IsTextureCube() ? 6 : 1) : Slice + 1;
+    const uint32 LastSlice = Slice == MAX_uint32 ? (Texture ? Texture->LayerCount() : 1) : Slice + 1;
     for (uint32 CurrentSlice = FirstSlice; CurrentSlice < LastSlice; ++CurrentSlice)
     for (uint32 CurrentMip = FirstMip; CurrentMip < LastMip; ++CurrentMip)
     {
@@ -193,9 +193,9 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         }
         const bool DepthStencil = Resource->GetType() == RRT_Texture &&
             static_cast<FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil;
-        const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FRHITexture*>(Resource) : nullptr;
+        const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FWebGPUTexture*>(Resource) : nullptr;
         const uint32 Mips = Texture ? Texture->GetNumMips() : 1;
-        const uint32 Slices = Texture && Texture->GetDesc().IsTextureCube() ? 6 : 1;
+        const uint32 Slices = Texture ? Texture->LayerCount() : 1;
         if ((!Upload && Entry.Flags != EResourceTransitionFlags::None) || Entry.CommitInfo.IsSet() ||
             (!Entry.IsAllMips() && Entry.MipIndex >= Mips) ||
             (!Entry.IsAllArraySlices() && Entry.ArraySlice >= Slices) ||
@@ -303,12 +303,12 @@ void FWebGPUDynamicRHI::RHICreateTransition(FRHITransition *Transition, const FR
         const auto *Resource = GetViewableResource(Source);
         const bool BothPlanes = Resource->GetType() == RRT_Texture &&
             static_cast<const FRHITexture *>(Resource)->GetFormat() == PF_DepthStencil && Source.IsAllPlaneSlices();
-        const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<const FRHITexture*>(Resource) : nullptr;
+        const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<const FWebGPUTexture*>(Resource) : nullptr;
         const uint32 FirstMip = Source.IsAllMips() ? 0 : Source.MipIndex;
         const uint32 LastMip = Source.IsAllMips() ? (Texture ? Texture->GetNumMips() : 1) : FirstMip + 1;
         const uint32 FirstSlice = Source.IsAllArraySlices() ? 0 : Source.ArraySlice;
         const uint32 LastSlice = Source.IsAllArraySlices() ?
-            (Texture && Texture->GetDesc().IsTextureCube() ? 6 : 1) : FirstSlice + 1;
+            (Texture ? Texture->LayerCount() : 1) : FirstSlice + 1;
         for (uint32 Slice = FirstSlice; Slice < LastSlice; ++Slice)
         for (uint32 Mip = FirstMip; Mip < LastMip; ++Mip)
         {

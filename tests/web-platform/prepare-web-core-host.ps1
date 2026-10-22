@@ -253,7 +253,7 @@ $taskSceneCulling = 'Private/SceneCulling/SceneCullingRenderer.cpp'
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/$taskSceneCulling") -Destination (Join-Path $taskRendererModule $taskSceneCulling) -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp') -Destination (Join-Path $taskRendererModule 'Private/FXRenderingUtils.cpp') -Force
 foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/MobileFogRendering.cpp', 'Private/ShaderPrint.cpp',
-    'Private/SystemTextures.cpp', 'Private/MobileBasePassRendering.cpp',
+    'Private/SystemTextures.cpp', 'Private/MobileBasePassRendering.cpp', 'Private/ReflectionEnvironmentCapture.cpp',
     'Private/HairStrands/RenderCurveSceneExtension.cpp',
     'Private/Nanite/NaniteMaterialsSceneExtension.cpp', 'Private/Nanite/NaniteOwnershipVisibilitySceneExtension.cpp',
     'Private/Skinning/SkinningSceneExtension.cpp', 'Private/GPUScene.cpp', 'Private/ViewData.cpp',

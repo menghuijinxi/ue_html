@@ -109,17 +109,25 @@ class FWebGPUTexture final : public FRHITexture
     uint32 LockedFace = 0;
     TMap<uint32, WGPUTextureView> AttachmentViews;
     bool SurfaceFrameActive = true;
+    uint32 LayerCount() const { return GetDesc().IsTextureCube() ? 6u : uint32(GetDesc().ArraySize); }
     FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle)
         : FRHITexture(Desc), Handle(InHandle),
           State(Desc.InitialState), StencilState(Desc.InitialState)
     {
         SubresourceStates.Init(FWebGPUResourceState(Desc.InitialState),
-            Desc.NumMips * (Desc.IsTextureCube() ? 6 : 1) - 1);
+            Desc.NumMips * LayerCount() - 1);
         WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
         if (Desc.Dimension == ETextureDimension::TextureCube)
         {
             Sample.dimension = WGPUTextureViewDimension_Cube;
             Sample.arrayLayerCount = 6;
+            Sample.usage = WGPUTextureUsage_TextureBinding;
+            View = wgpuTextureCreateView(Handle, &Sample);
+        }
+        else if (Desc.Dimension == ETextureDimension::Texture2DArray)
+        {
+            Sample.dimension = WGPUTextureViewDimension_2DArray;
+            Sample.arrayLayerCount = Desc.ArraySize;
             Sample.usage = WGPUTextureUsage_TextureBinding;
             View = wgpuTextureCreateView(Handle, &Sample);
         }
@@ -137,8 +145,8 @@ class FWebGPUTexture final : public FRHITexture
     }
     WGPUTextureView AttachmentView(uint32 Mip, uint32 Face)
     {
-        check(Mip < GetNumMips() && Face < (GetDesc().IsTextureCube() ? 6u : 1u));
-        const uint32 Key = Mip * 6 + Face;
+        check(Mip < GetNumMips() && Face < LayerCount());
+        const uint32 Key = Mip * LayerCount() + Face;
         if (const auto* Existing = AttachmentViews.Find(Key))
             return *Existing;
         WGPUTextureViewDescriptor Desc = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;

@@ -9,14 +9,18 @@ const id = option('project');
 const suffix = option('report') || 'current';
 const seconds = Number(option('seconds') || 5);
 const warmupFrames = Number(option('warmup-frames') || 120);
+const view = option('view')?.split(',').map(Number);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) && /^[a-z0-9-]+$/.test(suffix));
 assert(seconds >= 1 && seconds <= 60);
 assert(Number.isInteger(warmupFrames) && warmupFrames >= 2 && warmupFrames <= 120);
+assert(!view || (view.length === 5 && view.every(Number.isFinite)));
 const directory = path.join(__dirname, 'results');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, projectId: id, runs: [],
   warmupFrames, physicalPhoneTested: false, performanceAccepted: false, vramBudgetVerified: false,
+  lightingControlsRequired: option('lighting') === '1', localLightsRequired: option('local-lights') === '1',
+  requestedView: view || null,
   sources: [__filename, path.join(__dirname, 'web-default-template.html')].map(audit)};
 let browser;
 function instrumentation() {
@@ -110,16 +114,41 @@ function instrumentation() {
 const quantile = (values, fraction) => [...values].sort((a, b) => a - b)[Math.floor((values.length - 1) * fraction)];
 function pixels(file) {
   const png = PNG.sync.read(fs.readFileSync(file));
-  let nonBlack = 0, total = 0;
+  let nonBlack = 0, total = 0, interiorTotal = 0, interiorVisible = 0, interiorCount = 0;
   const colors = new Set();
   for (let index = 0; index < png.data.length; index += 4) {
     const sum = png.data[index] + png.data[index + 1] + png.data[index + 2];
     total += sum;
     if (sum > 12) ++nonBlack;
     colors.add(png.data.readUInt32LE(index));
+    const x = (index / 4) % png.width, y = Math.floor(index / 4 / png.width);
+    if ((x < png.width * 0.4 || x > png.width * 0.7) && y > png.height * 0.15) {
+      ++interiorCount;
+      interiorTotal += sum / 3;
+      if (sum > 36) ++interiorVisible;
+    }
   }
   return {width: png.width, height: png.height, nonBlackFraction: nonBlack / (png.width * png.height),
-    colors: colors.size, mean: total / (png.width * png.height * 3)};
+    colors: colors.size, mean: total / (png.width * png.height * 3),
+    interiorMean: interiorTotal / interiorCount, interiorVisibleFraction: interiorVisible / interiorCount};
+}
+function pixelDifference(first, second) {
+  const a = PNG.sync.read(fs.readFileSync(first)), b = PNG.sync.read(fs.readFileSync(second));
+  assert(a.width === b.width && a.height === b.height);
+  let square = 0, absolute = 0, changed = 0;
+  for (let index = 0; index < a.data.length; index += 4) {
+    let maximum = 0;
+    for (let channel = 0; channel < 3; ++channel) {
+      const delta = Math.abs(a.data[index + channel] - b.data[index + channel]);
+      absolute += delta;
+      square += delta * delta;
+      maximum = Math.max(maximum, delta);
+    }
+    if (maximum > 4) ++changed;
+  }
+  const count = a.width * a.height;
+  return {meanAbsolute: absolute / (count * 3), rms: Math.sqrt(square / (count * 3)),
+    changedFraction: changed / count};
 }
 (async () => {
   try {
@@ -138,7 +167,7 @@ function pixels(file) {
       ];
       for (const profile of profiles) {
         const run = {browser: name, version: browser.version(), profile, pass: false,
-          emulatedMobile: !!profile.mobile, errors: [], contentErrors: [], log: []};
+          emulatedMobile: !!profile.mobile, errors: [], contentErrors: [], skyCaptureLog: [], log: []};
         report.runs.push(run);
         const context = await browser.newContext({viewport: {width: profile.width, height: profile.height},
           deviceScaleFactor: profile.dpr, isMobile: !!profile.mobile, hasTouch: !!profile.mobile});
@@ -148,6 +177,7 @@ function pixels(file) {
         page.on('console', message => {
           run.log.push(message.text());
           if (run.log.length > 400) run.log.shift();
+          if (message.text().includes('WEB_SKY_CAPTURE:')) run.skyCaptureLog.push(message.text());
           if (/Log(?:Material|Linker|Streaming|Class|Blueprint|UObjectGlobals): Error:|Failed to load.*(?:Class|Package)|Can't find file/.test(message.text()) &&
               run.contentErrors.length < 80) run.contentErrors.push(message.text());
         });
@@ -166,6 +196,12 @@ function pixels(file) {
           assert(run.world?.package === packaged.map && run.world.begunPlay && run.scene?.meshes > 0);
           await page.waitForFunction(() => document.getElementById('loading').hidden);
           await page.evaluate(() => globalThis.__projectIdle());
+          if (view) {
+            assert(await page.evaluate(view => Module._WebProjectViewTest(...view), view));
+            const frame = await page.evaluate(() => globalThis.__webEngineFrames);
+            await page.waitForFunction(frame => globalThis.__webEngineFrames >= frame + 4, frame, {timeout: 60000});
+            await page.evaluate(() => globalThis.__projectIdle());
+          }
           const before = await page.evaluate(() => ({...globalThis.__projectProbe,
             heap: globalThis.__webEngineRuntime?.heapBytes || null}));
           const sample = await page.evaluate(async milliseconds => {
@@ -205,6 +241,7 @@ function pixels(file) {
             textureDescriptorBytesCreated: sample.textureDescriptorBytesCreated,
             textureUncompressedEquivalentBytesCreated: sample.textureUncompressedEquivalentBytesCreated,
             memoryBoundary: 'Cumulative texture descriptor estimates; excludes driver alignment, buffers and residency. Not measured VRAM.'};
+          run.camera = sample.camera;
           if (packaged.textureCompression === 'BC') {
             assert(sample.deviceFeatures.includes('texture-compression-bc'));
             assert(Object.keys(sample.textureFormats).some(format => /^bc/.test(format)), 'No compressed GPU textures');
@@ -216,6 +253,40 @@ function pixels(file) {
           run.screenshot = audit(screenshot);
           run.pixels = pixels(screenshot);
           assert(run.pixels.nonBlackFraction > 0.1 && run.pixels.colors > 64, 'Rendered page is blank');
+          if (option('lighting') === '1') {
+            assert(run.pixels.interiorMean > 18 && run.pixels.interiorVisibleFraction > 0.65,
+              'Interior remains dark despite visible window pixels: ' + JSON.stringify(run.pixels));
+            run.lighting = {};
+            for (const [mode, label] of [[1, 'sky-off'], [2, 'local-off'], [0, 'restored']]) {
+              assert(await page.evaluate(mode => Module._WebProjectLightingTestMode(mode), mode));
+              const frame = await page.evaluate(() => globalThis.__webEngineFrames);
+              await page.waitForFunction(frame => globalThis.__webEngineFrames >= frame + 4, frame, {timeout: 60000});
+              await page.evaluate(() => globalThis.__projectIdle());
+              const file = screenshot.replace(/\.png$/, '-' + label + '.png');
+              await page.screenshot({path: file});
+              run.lighting[label] = {screenshot: audit(file), pixels: pixels(file),
+                difference: pixelDifference(screenshot, file)};
+            }
+            assert(run.pixels.interiorMean - run.lighting['sky-off'].pixels.interiorMean > 8,
+              'Original SkyLight has no measurable effect on interior illumination');
+            assert(Math.abs(run.pixels.interiorMean - run.lighting.restored.pixels.interiorMean) < 5,
+              'Lighting did not recover after restoring scene lights');
+            if (option('local-lights') === '1') {
+              const local = run.lighting['local-off'].difference, restored = run.lighting.restored.difference;
+              assert(local.rms > 2 && local.changedFraction > 0.02 &&
+                local.rms > restored.rms * 3 && restored.rms < 3,
+                'Local-light image change must exceed restored-frame variation: ' +
+                  JSON.stringify({local, restored}));
+            }
+            const diagnostics = await page.evaluate(() => ({
+              errors: globalThis.__projectProbe.errors,
+              deviceLosses: globalThis.__projectProbe.deviceLosses,
+              failure: globalThis.__webEngineFailure || null
+            }));
+            Object.assign(run.gpu, diagnostics);
+            assert(!diagnostics.failure && !diagnostics.errors.length &&
+              !diagnostics.deviceLosses.length && !run.errors.length, 'Lighting controls produced GPU or page errors');
+          }
           run.contentCompatibilityPass = run.contentErrors.length === 0;
           run.pass = true;
         } catch (error) {

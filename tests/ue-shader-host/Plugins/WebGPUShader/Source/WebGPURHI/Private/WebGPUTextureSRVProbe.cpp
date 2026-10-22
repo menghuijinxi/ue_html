@@ -237,6 +237,69 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                        static_cast<FRHIShaderResourceView *>(Bound->GetReference())->GetTexture()->GetRefCount() >= 1);
         }
         Record(TEXT("graphics-pso-reused-for-srv-and-texture"), RHI.GraphicsPipelinesCreated == 1 && RHI.Draws == 6);
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureIESProbe")))
+        {
+            auto Desc = FRHITextureCreateDesc::Create2DArray(TEXT("IESArrayProbe"), 4, 4, 2, PF_R16F)
+                .SetFlags(ETextureCreateFlags::ShaderResource | ETextureCreateFlags::RenderTargetable |
+                    ETextureCreateFlags::TargetArraySlicesIndependently)
+                .SetClearValue(FClearValueBinding(FLinearColor(0.5f, 0, 0, 1)))
+                .SetInitialState(ERHIAccess::RTV);
+            Record(TEXT("ies-array-create-valid"), RHI.ValidateTextureInitialization(Desc, Error));
+            auto Invalid = Desc;
+            Invalid.SetInitActionInitializer();
+            Record(TEXT("ies-array-reject-cpu-initializer"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Invalid = Desc;
+            Invalid.NumMips = 2;
+            Record(TEXT("ies-array-reject-multiple-mips"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            auto Atlas = Cmd.CreateTextureInitializer(Desc).Finalize();
+            auto View = Cmd.CreateShaderResourceView(Atlas, FRHIViewDesc::CreateTextureSRV().SetDimensionFromTexture(Atlas));
+            auto BadView = View->GetDesc();
+            BadView.Texture.SRV.ArrayRange = {2, 1};
+            Record(TEXT("ies-array-reject-slice-overflow"), !RHI.ValidateTextureSRV(Atlas, BadView, Error));
+            FRHIRenderPassInfo AtlasPass(Atlas, ERenderTargetActions::Clear_Store);
+            AtlasPass.ColorRenderTargets[0].ArraySlice = 1;
+            Cmd.BeginRenderPass(AtlasPass, TEXT("IESArrayLayerClear"));
+            Cmd.EndRenderPass();
+            Cmd.Transition(FRHITransitionInfo(Atlas, ERHIAccess::RTV, ERHIAccess::CopySrc));
+            Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+            auto* Texture = static_cast<FWebGPUTexture*>(Atlas.GetReference());
+            WGPUBufferDescriptor ReadDesc = WGPU_BUFFER_DESCRIPTOR_INIT;
+            ReadDesc.size = 2048;
+            ReadDesc.usage = WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead;
+            auto Readback = wgpuDeviceCreateBuffer(RHI.Device, &ReadDesc);
+            auto Encoder = wgpuDeviceCreateCommandEncoder(RHI.Device, nullptr);
+            WGPUTexelCopyTextureInfo Src = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+            Src.texture = Texture->Handle;
+            WGPUTexelCopyBufferInfo Dst = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+            Dst.buffer = Readback;
+            Dst.layout.bytesPerRow = 256;
+            Dst.layout.rowsPerImage = 4;
+            const WGPUExtent3D Size{4, 4, 2};
+            wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Src, &Dst, &Size);
+            auto Commands = wgpuCommandEncoderFinish(Encoder, nullptr);
+            wgpuQueueSubmit(RHI.Queue, 1, &Commands);
+            const auto Bytes = RHI.MapBuffer(Readback, ReadDesc.size);
+            bool Match = Bytes.Num() == ReadDesc.size;
+            for (int32 Layer = 0; Match && Layer < 2; ++Layer)
+            for (int32 Y = 0; Y < 4; ++Y)
+            for (int32 X = 0; X < 4; ++X)
+            {
+                uint16 Value = 0;
+                FMemory::Memcpy(&Value, Bytes.GetData() + Layer * 1024 + Y * 256 + X * 2, 2);
+                Match &= Value == (Layer ? 0x3800 : 0);
+            }
+            Record(TEXT("ies-array-raster-clear-layer-isolation"), Match);
+            wgpuCommandBufferRelease(Commands);
+            wgpuCommandEncoderRelease(Encoder);
+            wgpuBufferRelease(Readback);
+            Cmd.Transition(FRHITransitionInfo(Atlas, ERHIAccess::CopySrc, ERHIAccess::SRVGraphicsPixel));
+            Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+            FRHIResource* Resource = View.GetReference();
+            WGPUTextureView Handle;
+            FWebGPUTexture* ResolvedAtlas;
+            Record(TEXT("ies-array-srv-resolves-all-layers"),
+                RHI.ResolveSampledTexture(Resource, ResolvedAtlas, Handle, ERHIAccess::SRVGraphicsPixel, Error));
+        }
         if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureBCProbe")))
         {
             Record(TEXT("bc-device-feature"), wgpuDeviceHasFeature(RHI.Device, WGPUFeatureName_TextureCompressionBC) != 0);

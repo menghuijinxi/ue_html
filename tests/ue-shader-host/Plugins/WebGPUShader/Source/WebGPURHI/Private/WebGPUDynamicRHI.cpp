@@ -909,6 +909,15 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
 {
     const bool Volume = In.Dimension == ETextureDimension::Texture3D;
     const bool Cube = In.Dimension == ETextureDimension::TextureCube;
+    const bool Array = In.Dimension == ETextureDimension::Texture2DArray;
+    if (Array && (In.Format != PF_R16F || In.NumMips != 1 ||
+        In.InitAction != ERHITextureInitAction::Default ||
+        !EnumHasAllFlags(In.Flags, ETextureCreateFlags::ShaderResource | ETextureCreateFlags::RenderTargetable) ||
+        EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV | ETextureCreateFlags::SRGB)))
+    {
+        Error = TEXT("2D arrays currently support only raster-populated single-mip linear R16F atlases");
+        return false;
+    }
     if (IsBCTextureFormat(In.Format) &&
         (!wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureCompressionBC) ||
          (Volume || In.Extent.X % 4 || In.Extent.Y % 4) ||
@@ -924,8 +933,9 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
                                     In.Format == PF_R16F || In.Format == PF_G16R16F
                               : IsSampled2DTextureFormat(In.Format);
     const uint32 Limit = Volume ? Limits.maxTextureDimension3D : Limits.maxTextureDimension2D;
-    if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube) ||
-        (Cube && (In.Extent.X != In.Extent.Y || !Color)) || In.ArraySize != 1 || !In.Depth ||
+    if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube && !Array) ||
+        (Cube && (In.Extent.X != In.Extent.Y || !Color)) ||
+        (Array ? !In.ArraySize || In.ArraySize > Limits.maxTextureArrayLayers : In.ArraySize != 1) || !In.Depth ||
         (!Volume && In.Depth != 1) || !In.NumMips ||
         In.NumSamples != 1 || In.Extent.X <= 0 || In.Extent.Y <= 0 ||
         uint32(In.Extent.X) > Limit || uint32(In.Extent.Y) > Limit || (Volume && In.Depth > Limit) ||
@@ -985,7 +995,8 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     WGPUTextureDescriptor Desc = WGPU_TEXTURE_DESCRIPTOR_INIT;
     Desc.label = {Label.Get(), size_t(Label.Length())};
     Desc.dimension = Volume ? WGPUTextureDimension_3D : WGPUTextureDimension_2D;
-    Desc.size = {uint32(In.Extent.X), uint32(In.Extent.Y), In.IsTextureCube() ? 6u : uint32(In.Depth)};
+    Desc.size = {uint32(In.Extent.X), uint32(In.Extent.Y), In.IsTextureCube() ? 6u :
+        In.Dimension == ETextureDimension::Texture2DArray ? uint32(In.ArraySize) : uint32(In.Depth)};
     Desc.format = Format(In.Format, EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB));
     Desc.mipLevelCount = In.NumMips;
     Desc.usage = Volume || IsBCTextureFormat(In.Format) ? WGPUTextureUsage_None : WGPUTextureUsage_RenderAttachment;
@@ -1285,15 +1296,19 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
     }
     const bool Volume = Target.Dimension == ETextureDimension::Texture3D;
     const bool Cube = Target.Dimension == ETextureDimension::TextureCube;
+    const bool Array = Target.Dimension == ETextureDimension::Texture2DArray;
     const bool DepthStencil = Target.Format == PF_DepthStencil || Target.Format == PF_ShadowDepth;
     const bool DepthPlane = View.Plane == ERHITexturePlane::Primary || View.Plane == ERHITexturePlane::Depth ||
         (Target.Format == PF_DepthStencil && View.Plane == ERHITexturePlane::Stencil);
-    if ((Target.Dimension != ETextureDimension::Texture2D && !Volume && !Cube) || Target.ArraySize != 1 ||
+    if ((Target.Dimension != ETextureDimension::Texture2D && !Volume && !Cube && !Array) ||
+        (!Array && Target.ArraySize != 1) ||
         (!Volume && Target.Depth != 1) || Target.NumSamples != 1 ||
         (Volume ? View.Dimension != FRHIViewDesc::EDimension::Texture3D :
          Cube ? View.Dimension != FRHIViewDesc::EDimension::TextureCube &&
                     View.Dimension != FRHIViewDesc::EDimension::Texture2DArray &&
                     View.Dimension != FRHIViewDesc::EDimension::Texture2D :
+         Array ? View.Dimension != FRHIViewDesc::EDimension::Texture2DArray &&
+                     View.Dimension != FRHIViewDesc::EDimension::Texture2D :
          View.Dimension != FRHIViewDesc::EDimension::Texture2D) ||
         (DepthStencil ? !DepthPlane : View.Plane != ERHITexturePlane::Primary))
     {
@@ -1315,7 +1330,7 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
     }
     // Reject invalid ranges before GetViewInfo, which asserts on malformed descriptors.
     const uint32 Mips = View.MipRange.Num ? View.MipRange.Num : Target.NumMips;
-    const uint32 Layers = View.Dimension == FRHIViewDesc::EDimension::TextureCube ? 1 : Cube ? 6 : 1;
+    const uint32 Layers = View.Dimension == FRHIViewDesc::EDimension::TextureCube ? 1 : Texture->LayerCount();
     const uint32 Arrays = View.ArrayRange.Num ? View.ArrayRange.Num :
         Cube && View.Dimension == FRHIViewDesc::EDimension::Texture2DArray ? 6 : Target.ArraySize;
     if ((!View.MipRange.Num && View.MipRange.First) || (!View.ArrayRange.Num && View.ArrayRange.First) ||
@@ -1339,6 +1354,7 @@ bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FJs
     const auto ViewDimension = Resource->GetType() == RRT_ShaderResourceView ?
         static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Texture.SRV.Dimension :
         Texture->GetDesc().IsTextureCube() ? FRHIViewDesc::EDimension::TextureCube :
+        Texture->GetDesc().Dimension == ETextureDimension::Texture2DArray ? FRHIViewDesc::EDimension::Texture2DArray :
         Texture->GetDesc().Dimension == ETextureDimension::Texture3D ? FRHIViewDesc::EDimension::Texture3D :
         FRHIViewDesc::EDimension::Texture2D;
     const bool ArrayView = ViewDimension == FRHIViewDesc::EDimension::Texture2DArray;

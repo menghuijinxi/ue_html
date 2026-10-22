@@ -145,8 +145,9 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     foreach ($taskShaderOverlay in @('RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',
         'RenderCore/Public/WebShaderPlatform.h', 'Engine/Private/SkeletalRenderGPUSkin.cpp',
-        'Renderer/Private/LightGridInjection.cpp', 'Renderer/Private/MobileFogRendering.cpp',
+        'Renderer/Private/LightGridInjection.cpp', 'Renderer/Private/IESTextureManager.cpp', 'Renderer/Private/MobileFogRendering.cpp',
         'Renderer/Private/MobileBasePassRendering.cpp', 'Renderer/Private/MobileShadingRenderer.cpp',
+        'Renderer/Private/ReflectionEnvironmentCapture.cpp',
         'Renderer/Private/PostProcess/PostProcessMobile.cpp',
         'Renderer/Private/PostProcess/PostProcessCombineLUTs.cpp',
         'Renderer/Private/SkyAtmosphereRendering.cpp', 'Renderer/Private/SkyPassRendering.cpp',

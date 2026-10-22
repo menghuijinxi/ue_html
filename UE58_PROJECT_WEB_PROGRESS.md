@@ -1,6 +1,47 @@
 # 外部项目 Web 打包进度
 
-## 2026-10-22：别墅项目与 GPU 纹理压缩
+## 2026-10-23：修复室内照明
+
+用户指出别墅网页几乎全黑。本轮对照关卡清单确认：原地图有强度 7 的指定 HDRI SkyLight、103 个聚光灯、4 个点光源和9个矩形灯；先前兼容性包在 Cook 时关闭了 SkyLight，配置也禁用了本地灯。这些设置直接影响画面，原有“非空白”检查却把窗外少量亮像素算作通过。
+
+现在新增室内区域亮度检查，以及运行时 SkyLight 关闭、本地灯关闭、全部恢复三组画面对照。固定视点参数为 `--view=x,y,z,pitch,yaw`；该测试相机只在探针调用时启用。运行和开关灯后均检查页面错误、GPU 校验和设备丢失。本地灯验收使用逐像素 RMS、变化像素比例与恢复误差的对比；保留原地图自动曝光时，关闭灯光后曝光提高，不能要求全图平均亮度一定下降。
+
+指定立方体 SkyLight 在原生 UE 中按原组件参数计算平均亮度及三阶 RGB 球谐，并保存 `WebSkyCaptures.bin`。浏览器核对组件路径、立方体、分辨率、旋转和下半球设置后读取系数；立方体 GPU 过滤继续执行，只绕开浏览器目前缺少的同步浮点读回。缺失、过期或损坏的数据使加载明确失败。光源强度、后处理曝光与原地图保持一致。
+
+Web 移动前向路径接通本地灯网格；WGSL 不接受的 subgroup 裁剪变体在 Web 局部排除，编译和运行均选择每单元单线程路径，同时关闭 Web 的双层网格及 specialization constants 变体。Web 使用固定列表以减少存储缓冲绑定数量，每格容量至少覆盖当前可见灯光和反射捕获数量；不提高设备默认绑定上限。未接入的 GPU 灯网格调试反馈与灯名缓冲在 Web 局部排除。其他平台继续使用原逻辑。
+
+IES 图集在 Web 选择 UE 现有栅格更新路径，避免 WebGPU 不支持的 R16F storage image；RHI 增加单 mip、线性 R16F 二维数组的分层渲染、采样视图和状态转换。仍拒绝该数组的 CPU 初始化和 UAV 用途。原生 `-WebTextureIESProbe` 只清除第二层并读回两层，验证第一层不受影响；和 BC 探针一起在记录、直通两种模式执行。
+
+最终照明汇总 `verify-web-project-lighting.cjs` 已通过：核对 9,099 个审计条目、8,946 个不同文件，源码、构建、Cook、包和截图哈希均一致。普通 UBT Web 构建、原生 Renderer/RenderCore 构建、两个关卡重新 Cook 和打包均通过，安装引擎审计输入保持原样。之前关闭 SkyLight 的 BC 基线保留为历史记录。
+
+对应独立引擎仓库提交为 `bd55e94ef`（恢复 Web 天空光与移动前向局部灯照明）；外围 RHI、打包与回归脚本由工作区根仓库保存。
+
+原生纹理测试已通过 172 项；指定 HDRI 的平均亮度为 `0.535156`，球谐首项为 `(1.63477, 1.76367, 2.23242)`，准备文件为 310 字节。当前纹理审计仍为 667 张、607 张多 mip、60 张单 mip，压缩估算仍是 210,559,592 字节。这里的数字不表示实测总显存。
+
+最终餐桌视角在 Chrome、Edge 均通过，室内采样可见比例约 98.4%，亮度均值约 155.3；关闭天空光后降到 36.5 / 40.5。关闭局部灯后逐像素 RMS 为 11.62 / 8.19，恢复误差仅 1.12 / 0.48，证明变化超过画面自身漂移。两次运行均无 GPU 校验错误或设备丢失。缺少天空光数据的故障注入在两浏览器均于第 0 帧明确失败；默认关卡的灯光、窗口恢复及损坏包/配置拦截回归通过。
+
+当前独立目录 6 文件共 562,698,698 字节。最终双浏览器累计纹理创建描述估算均为 500,972,160 字节，展开等价估算为 1,536,155,628 字节；含运行时光照/阴影目标，不是实际驻留显存。固定餐桌视角短时约 5.25 / 5.03 FPS，尚未达到可用帧率。
+
+额外冷启动及不同取景中遇到浏览器页面崩溃和 GPU 设备失效，保留 `lighting-chrome-crash`、`lighting-kitchen-angle` 等失败记录；不能声明稳定性验收通过。Lumen 间接光、桌面反射、接触阴影和部分材质仍与编辑器有差异，未完成同视点原生画质匹配。低帧率、8 GB 总显存预算与长期稳定性继续单独验收。
+
+本轮证据位于 `tests/web-platform/results`：`web-project-triplex-house-villa-lighting-final-results.json`、对应原图/开关灯/恢复截图、`web-project-triplex-house-villa-skylight-cache-results.json`、`triplex-textures-lighting-final.json` 和 `triplex-house-villa-lighting-audit-results.json`。原生 172 项纹理结果位于 `tests/web-platform/build/lighting-native-texture/texture-srv-results.json`。
+
+当前照明包的复现命令如下；需要先完成普通 UBT Web 构建及原生 Renderer/RenderCore 宿主构建。与历史压缩基线相比，项目 Cook 不再传 `-DisableProjectSkyLight`。
+
+```powershell
+& tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-ES31 -Scene Project -Project H:/ue_html/tests/web-platform/build/projects/triplex-house-villa/TriplexHouseVilla.uproject -Map /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla -Profile H:/ue_html/tests/web-platform/cook-profiles/TriplexHouseVillaEngine.ini -ReportId triplex-house-villa -TextureCompression BC -CompressHDRCubemaps -StopOnShaderError -SkipBuild
+node tests/web-platform/stage-web-engine.cjs --project=triplex-house-villa
+node tests/web-platform/package-web-project.cjs --project=triplex-house-villa
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-project.cjs --project=triplex-house-villa --smoke=1 --warmup-frames=10 --seconds=15 --lighting=1 --local-lights=1 --report=lighting-final --view=-175,-80,160,-5,50
+node tests/web-platform/probe-web-project-skylight-cache.cjs
+node tests/web-platform/audit-cooked-textures.cjs --cook-report=tests/web-platform/results/web-project-triplex-house-villa-cook-results.json --output=tests/web-platform/results/triplex-textures-lighting-final.json
+node tests/web-platform/verify-web-project-lighting.cjs
+```
+
+## 2026-10-22：历史 BC 兼容性基线
+
+以下为关闭天空光时的压缩验证记录，保留其数据与失败边界，不代表当前照明包的验收结论。
 
 本轮继承 TriplexHouseVilla 打包工作，按用户要求先接通 GPU 纹理压缩，再处理帧率。所有项目准备、Cook 和构建输出均在 `H:/ue_html`；原项目 `H:/TriplexHouseVilla` 和安装引擎源码保持原样。`reference-engine` 本轮无修改。
 

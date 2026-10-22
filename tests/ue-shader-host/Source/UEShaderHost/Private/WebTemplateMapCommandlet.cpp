@@ -1,5 +1,6 @@
 #include "WebTemplateMapCommandlet.h"
 
+#include "AssetCompilingManager.h"
 #include "Components/LightComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/SkyLightComponent.h"
@@ -12,17 +13,22 @@
 #include "Engine/TextureCube.h"
 #include "Engine/VolumeTexture.h"
 #include "Engine/World.h"
+#include "Engine/PostProcessVolume.h"
+#include "SceneInterface.h"
+#include "RenderingThread.h"
+#include "Serialization/MemoryWriter.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialExpressionFeatureLevelSwitch.h"
 #include "UObject/UObjectIterator.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Parse.h"
+#include "Misc/ScopeExit.h"
 #include "Serialization/JsonSerializer.h"
 #include "UObject/Package.h"
 
 UWebTemplateMapCommandlet::UWebTemplateMapCommandlet()
 {
-    IsClient = false;
+    IsClient = true;
     IsServer = false;
     IsEditor = true;
     LogToConsole = true;
@@ -39,6 +45,65 @@ int32 UWebTemplateMapCommandlet::Main(const FString& Params)
     UWorld* World = Package ? UWorld::FindWorldInPackage(Package) : nullptr;
     if (!World || !World->PersistentLevel)
         return 1;
+    bool InitializedForCapture = false;
+    ON_SCOPE_EXIT
+    {
+        if (InitializedForCapture)
+        {
+            World->CleanupWorld();
+            FlushRenderingCommands();
+        }
+    };
+    FString SkyCaptureOutput;
+    if (FParse::Value(*Params, TEXT("SkyCaptureOutput="), SkyCaptureOutput))
+    {
+        World->WorldType = EWorldType::Editor;
+        World->InitWorld(UWorld::InitializationValues().AllowAudioPlayback(false)
+            .CreatePhysicsScene(false).CreateNavigation(false).CreateAISystem(false));
+        InitializedForCapture = true;
+        World->UpdateWorldComponents(true, false);
+        FAssetCompilingManager::Get().FinishAllCompilation();
+        FlushRenderingCommands();
+        TArray<USkyLightComponent*> Skies;
+        for (AActor* Actor : World->PersistentLevel->Actors)
+            if (Actor)
+                for (UActorComponent* Component : Actor->GetComponents())
+                    if (auto* Sky = Cast<USkyLightComponent>(Component);
+                        Sky && Sky->GetVisibleFlag() && Sky->SourceType == SLS_SpecifiedCubemap && Sky->Cubemap)
+                        Skies.Add(Sky);
+        TArray<uint8> Bytes;
+        FMemoryWriter Writer(Bytes);
+        uint32 Magic = 0x57425348, Version = 1;
+        int32 Count = Skies.Num();
+        Writer << Magic << Version << Count;
+        for (USkyLightComponent* Sky : Skies)
+        {
+            FString Component = Sky->GetPathName();
+            FString Cubemap = Sky->Cubemap->GetPathName();
+            int32 Resolution = Sky->CubemapResolution;
+            float Angle = Sky->SourceCubemapAngle;
+            bool LowerBlack = Sky->bLowerHemisphereIsBlack;
+            FLinearColor LowerColor = Sky->LowerHemisphereColor;
+            float Brightness = 0.0f;
+            FSHVectorRGB3 Irradiance;
+            FLinearColor Scale = FLinearColor::White;
+            World->Scene->UpdateSkyCaptureContents(Sky, Sky->bCaptureEmissiveOnly,
+                Sky->Cubemap, nullptr, Brightness, Irradiance, nullptr, &Scale);
+            FlushRenderingCommands();
+            if (!FMath::IsFinite(Brightness) || Brightness <= 0.0f)
+            {
+                UE_LOG(LogTemp, Error, TEXT("WEB_SKY_CAPTURE: invalid brightness=%g component=%s client=%d featureLevel=%d"),
+                    Brightness, *Component, GIsClient, int32(World->GetFeatureLevel()));
+                return 1;
+            }
+            Writer << Component << Cubemap << Resolution << Angle << LowerBlack << LowerColor;
+            Writer << Brightness << Irradiance << Scale;
+            UE_LOG(LogTemp, Display, TEXT("WEB_SKY_CAPTURE: component=%s brightness=%g sh0=(%g,%g,%g)"),
+                *Component, Brightness, Irradiance.R.V[0], Irradiance.G.V[0], Irradiance.B.V[0]);
+        }
+        if (Writer.IsError() || !FFileHelper::SaveArrayToFile(Bytes, *SkyCaptureOutput))
+            return 1;
+    }
     TSharedRef<FJsonObject> Result = MakeShared<FJsonObject>();
     Result->SetStringField(TEXT("map"), Map);
     TArray<TSharedPtr<FJsonValue>> Actors;
@@ -140,6 +205,19 @@ int32 UWebTemplateMapCommandlet::Main(const FString& Params)
             Components.Add(MakeShared<FJsonValueObject>(Entry));
         }
         Item->SetArrayField(TEXT("components"), Components);
+        if (auto* Volume = Cast<APostProcessVolume>(Actor))
+        {
+            const FPostProcessSettings& Settings = Volume->Settings;
+            Item->SetBoolField(TEXT("unbound"), Volume->bUnbound);
+            Item->SetNumberField(TEXT("exposureMethod"), int32(Settings.AutoExposureMethod));
+            Item->SetNumberField(TEXT("exposureBias"), Settings.AutoExposureBias);
+            Item->SetNumberField(TEXT("exposureMin"), Settings.AutoExposureMinBrightness);
+            Item->SetNumberField(TEXT("exposureMax"), Settings.AutoExposureMaxBrightness);
+            Item->SetBoolField(TEXT("overrideExposureMethod"), Settings.bOverride_AutoExposureMethod);
+            Item->SetBoolField(TEXT("overrideExposureBias"), Settings.bOverride_AutoExposureBias);
+            Item->SetBoolField(TEXT("overrideExposureMin"), Settings.bOverride_AutoExposureMinBrightness);
+            Item->SetBoolField(TEXT("overrideExposureMax"), Settings.bOverride_AutoExposureMaxBrightness);
+        }
         Actors.Add(MakeShared<FJsonValueObject>(Item));
     }
     Result->SetArrayField(TEXT("actors"), Actors);

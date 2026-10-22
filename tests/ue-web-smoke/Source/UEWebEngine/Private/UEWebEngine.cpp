@@ -27,6 +27,9 @@
 #include "Components/SkyAtmosphereComponent.h"
 #include "Components/VolumetricCloudComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
+#include "Components/SkyLightComponent.h"
+#include "Components/LightComponent.h"
+#include "Camera/CameraActor.h"
 #include "Stats/StatsData.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
@@ -193,6 +196,47 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
                 Component->GetStaticMesh()->GetName() == TEXT("SM_SkySphere"))
                 Component->SetVisibility(Mode != 2);
     }
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectLightingTestMode(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (ProjectMap.IsEmpty() || !GEngine || Mode < 0 || Mode > 2)
+        return 0;
+    UWorld* World = nullptr;
+    for (const FWorldContext& Context : GEngine->GetWorldContexts())
+        if (Context.WorldType == EWorldType::Game)
+            World = Context.World();
+    if (!World)
+        return 0;
+    static TMap<TWeakObjectPtr<ULightComponentBase>, bool> Visibility;
+    for (TActorIterator<AActor> It(World); It; ++It)
+        for (UActorComponent* Component : (*It)->GetComponents())
+            if (auto* Light = Cast<ULightComponentBase>(Component))
+            {
+                const bool Original = Visibility.FindOrAdd(Light, Light->GetVisibleFlag());
+                const bool Sky = Light->IsA<USkyLightComponent>();
+                const bool Local = !Sky && !Light->IsA<UDirectionalLightComponent>();
+                Light->SetVisibility(Original && !(Mode == 1 && Sky) && !(Mode == 2 && Local));
+            }
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, double Z, double Pitch, double Yaw)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    APlayerController* Controller = TemplateController.Get();
+    if (ProjectMap.IsEmpty() || !Controller || !FMath::IsFinite(X) || !FMath::IsFinite(Y) ||
+        !FMath::IsFinite(Z) || !FMath::IsFinite(Pitch) || !FMath::IsFinite(Yaw))
+        return 0;
+    static TWeakObjectPtr<ACameraActor> Camera;
+    if (!Camera.IsValid())
+        Camera = Controller->GetWorld()->SpawnActor<ACameraActor>();
+    if (!Camera.IsValid())
+        return 0;
+    Camera->SetActorLocationAndRotation(FVector(X, Y, Z), FRotator(Pitch, Yaw, 0));
+    Controller->SetViewTarget(Camera.Get());
     return 1;
 }
 
