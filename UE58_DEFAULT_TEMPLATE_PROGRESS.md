@@ -142,7 +142,7 @@
 - 禁用着色器 DDC 后 Cook 通过，配置一致性通过、零转换失败；全局排列由 947 增至 966，包含 18 个 `FMobileFogPS` 和 1 个 `FMobileFogVS`，19 个 WGSL 模块另经真实 Chrome 解析通过。Stage 为 383 文件、119,327,535 字节；独立包为 6 文件、301,303,376 字节。
 - 新增仅供验收的组件参数导出，正常页面不调用。`probe-web-default-postprocess.cjs --clouds --exposure --fog` 在 Chrome、Edge 验证原始参数、关闭雾、密度翻倍、起始距离改为 50000、高度衰减四倍及恢复六组控制。地面开关平均像素差约 7.35，参数控制差约 4.03、2.20、5.21；恢复差分别约 0.005、0.444，低于开关差的四分之一，随后至少 60 帧继续绘制雾。
 - 自动曝光会改变全图亮度，远近检查改用棋盘格相邻像素对比度，不把绝对亮度变化误认为雾量。开雾/关雾对比度比值：远处约 0.959，近处约 0.979；远处棋盘格衰减更明显。对照仅冻结材质动画，曝光继续使用真实时间收敛，普通页面保持真实时间。
-- 双浏览器曾在同一运行包实际执行高度雾、原云、HDR、FXAA、Bloom、LUT 和直方图自动曝光；云纹理每级抽样回读继续通过。曝光正常/太阳降至十分之一/恢复倍率约 1.155 / 11.568 / 1.155。那些通过运行中的页面错误、GPU 校验错误、设备丢失均为 0；最后一次完整复验在 Chrome 启动时再次失败，当前 `web-default-postprocess-results.json` 保持 `pass=false`，不以较早的成功覆盖本次失败。
+- 双浏览器曾在同一运行包实际执行高度雾、原云、HDR、FXAA、Bloom、LUT 和直方图自动曝光；云纹理每级抽样回读继续通过。曝光正常/太阳降至十分之一/恢复倍率约 1.155 / 11.568 / 1.155。那些通过运行中的页面错误、GPU 校验错误、设备丢失均为 0；本阶段最后一次完整复验在 Chrome 启动时再次失败，当时 `web-default-postprocess-results.json` 为 `pass=false`。后续诊断结果另见下一节，不将后续成功视为该故障已修复。
 - 当前包的原图光照、天空关闭和恢复、竖屏、恢复窗口，以及两项资源/配置哈希破坏测试均重新通过，报告为 `web-default-scene-results.json`。效果截图为 `web-default-fog-{on,off,dense,start-distance,height-falloff,restored}-{chrome,edge}.png`。
 - 当前包真实时间持续交互通过：Chrome 61.001 秒、4,413 帧，Edge 62.975 秒、4,532 帧，各 7 项操作通过；WASM 线性内存均为 231,997,440 字节，预热后增长为 0，统计历史为 14 帧。报告为 `web-default-interaction-{chrome,edge}-results.json`。这只证明成功启动后的约一分钟运行，不证明冷启动可靠，也不沿用旧包十分钟的结果。
 - 普通页面启动回归有未通过项：Chrome DPR 1、1.5 的启动/竖屏/恢复及实际移动通过，DPR 2 首次启动在第 3 帧设备丢失，该轮汇总保持 `pass=false`。Edge DPR 1/1.5/2 的三次启动、九个窗口状态及实际移动全部通过，单独报告为 `web-default-startup-fog-edge-results.json`。Chrome DPR 2 诊断对照中正常设置一次失败、一次成功；关闭雾、只关闭雾深度测试各两次成功，样本不足以证明雾管线就是根因，不改变发布配置。
@@ -150,6 +150,19 @@
 - 转储中还能找到原天空 `FCubeDownsamplePS` 的入口，但这不足以确认触发着色器。该 WGSL 的 20 个独立管线变体通过；从成功的 Dawn 着色器日志提取 53 份真实 HLSL，再用隔离复制的同一 Google DXC 独立编译，53 份全部成功。未替换安装浏览器或引擎中的 DLL，也未以浏览器启动参数绕过发布包中的校验。
 - 持续订阅控制台的完整探针失败较多，简化探针及普通页面也有成功；Chrome DPR 2 普通页面的失败说明问题不只发生在效果探针。另有一次启动在配置加载中报 WASM 内存越界，原因同样未定位。历史失败保留在 `web-default-fog-first-start-instance-failure.json`、`web-default-fog-second-start-instance-failure.json`、`web-default-fog-dxc-instance-failure.json`、`web-default-startup-fog-dpr2-failure-results.json`；转储及模块判断为 `results/fog-crashes/chrome.exe_261022_013151.dmp`、`web-default-fog-gpu-crash-module.json`。后续成功不代表这些启动问题已修复。
 - 效果探针新增设备丢失记录、`--browser=Chrome|Edge` 和 `--console=page` 诊断选项。默认保留原 CDP 控制台订阅；页面模式仅保存最近 24 条日志并照常转发 console。页面模式也曾复现启动失败，不能作为修复；真实 GPU 调用、页面异常、GPU 校验和设备丢失判定均保留。参考引擎提交为 `ba9aae129`。下一步优先缩小编译器断言的输入与触发条件，暂不扩大体积雾范围。
+
+## 2026-10-22：分离启动编译器故障与主机执行条件
+
+- 本轮只增加诊断及报告能力，没有改变 UE 运行代码、雾/云算法、发布配置或独立包；沿用上一轮通过哈希核验的普通构建、Cook、Stage 和打包产物。没有重新编译引擎，也没有修改安装引擎或浏览器 DLL。
+- 新增 `probe-web-pipeline-compile.cjs`，记录默认关卡实际创建的设备请求、WGSL 和布局，再在不加载 UE 的空白页面重建 30 条实际管线。最初同步回放 3 次中 2 次设备丢失；逐条等待异步编译的 5 次中也有 1 次失败，不能将问题归结为 UE 帧循环或管线并发。单独重放云管线 12 次、LUT 管线 30 次均通过，不能凭失败位置认定某个着色器必然错误。
+- 回放可独立获取 Dawn HLSL 转储，新增提取器读取 DXIL 中实际的 shader profile。确认浏览器使用 `vs_6_8` / `ps_6_8` / `cs_6_8`；上一轮逐份 HLSL 测试使用的 6.0 只能作为历史对照，不能充当实际后端参数的完整验证。原先误标为 VS 的一份计算着色器改为依据 DXIL 类型提取。
+- 新增 `diagnostics/dxc-batch.cpp` 和 `probe-dxc-host.ps1`，通过同一份 Google DXC 的 `IDxcCompiler3` 重放 53 份实际 HLSL，不需要 UE、浏览器或 GPU。每次新建编译器实例也曾失败，不能视为实例复用已定位。脚本记录 DLL、输入、可执行文件和来源哈希、CPU 拓扑及退出状态，整批超时只结束自己创建的子进程；一秒超时负例已验证。
+- Windows 拓扑确认本机 i9-14900KF 的逻辑核心 0–15 为效率等级 1、16–31 为等级 0。实际 SM 6.8 输入只允许前一组运行时，4.47 秒后以 `0xC000001D` 退出，日志为 `Function.cpp:719` 的 `UNREACHABLE`；报告为 `web-default-dxc-host-sm68-pcores-results.json`。相同输入限制到后一组时，100 轮、5,300 次编译完成，耗时 113.06 秒。这是运行条件差异，不等于已经证明 CPU 损坏。
+- 默认调度也有通过反例：独立编译的 5,300 次 SM 6.0 测试通过；SM 6.8 两个独立进程各 30 轮、1,590 次同时测试也通过，执行日志显示任务多次落在后一组核心。普通 Chrome 单独运行的 100 次完整管线回放全部通过，报告为 `web-default-pipeline-sync-default-stress-results.json`；更早与独立编译同时运行的 20 次回放有 1 次失败。不能用后续通过覆盖之前失败，也不能将同时运行与故障直接认定为因果。
+- 一次默认调度的 SM 6.8 长循环在第 55 轮第 45 份输入处停止前进，进程仍持续占用单线程 CPU；保存 `results/fog-crashes/dxc-sm68-default-hang.dmp` 后手动结束。转储线程在 `dxcompiler.dll + 0xb46045`；该次退出码 `-1` 来自手动结束，不是编译器原始异常码，也不记作成功或自动超时。
+- 受限核心组下，Chrome DPR 2 普通关卡连续 5 次启动、各至少 180 帧及原生 Pawn 移动通过。两浏览器的高度雾六组参数控制、云开关、三维纹理各 mip 抽样回读、HDR、FXAA、Bloom、LUT 和曝光对照再次通过，报告为 `web-default-postprocess-cpu-affinity-results.json`，其中 `hostCondition` 明确标记 `0xffff0000`，截图也使用独立后缀。受限条件只能用于诊断，不能替代默认浏览器稳定性验收；本轮为效果探针增加 `--report=`、独立截图后缀和 `hostCondition`，避免不同条件相互覆盖。
+- 最后一次普通 Chrome 全效果对照也通过，最终 1,699 帧，页面错误、GPU 校验错误和设备丢失均为 0；正常/暗场/恢复曝光约 1.1546 / 11.5682 / 1.1545，高度雾恢复后继续绘制 60 帧。当前 `web-default-postprocess-results.json` 只包含这次默认调度的 Chrome 结果，两浏览器受限条件报告另存；单次成功不表示已修复冷启动，普通页面高 DPI 回归中的失败记录仍保留。
+- 复现说明见 `tests/web-platform/diagnostics/README.md`。目前没有可宣称完成的启动修复；证据指向需要重点核对的主机 P 核执行条件，仍需另一台机器对照，区分主机稳定性、编译器内部缺陷及其交互。暂不通过关闭高度雾、云、抗锯齿或校验来改变验收条件。
 
 ## 默认关卡的复现入口
 

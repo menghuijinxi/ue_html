@@ -9,6 +9,9 @@ const requireExposure = process.argv.includes('--exposure');
 const requireClouds = process.argv.includes('--clouds');
 const requireFog = process.argv.includes('--fog');
 const consoleCapture = process.argv.includes('--console=page') ? 'page' : 'cdp';
+const reportSuffix = process.argv.find(argument => argument.startsWith('--report='))?.slice(9) || '';
+assert(/^[a-z0-9-]*$/.test(reportSuffix));
+const artifactSuffix = reportSuffix ? '-' + reportSuffix : '';
 const requestedBrowser = process.argv.find(argument => argument.startsWith('--browser='))?.slice(10);
 const browsers = [
   ['Chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe'],
@@ -19,7 +22,8 @@ const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/,
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, exposureRequired: requireExposure,
-  cloudsRequired: requireClouds, fogRequired: requireFog, consoleCapture, browserRuns: [],
+  cloudsRequired: requireClouds, fogRequired: requireFog, consoleCapture,
+  hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default scheduling', browserRuns: [],
   sources: [__filename, path.join(__dirname, 'capture-web-canvas.cjs')].map(audit)};
 
 function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
@@ -308,7 +312,7 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
           assert((await page.evaluate(() => globalThis.__webCanvasWaitIdle())).pass);
         };
         const capture = async label => {
-          const file = path.join(directory, `web-default-cloud-${label}-${name.toLowerCase()}.png`);
+          const file = path.join(directory, `web-default-cloud-${label}-${name.toLowerCase()}${artifactSuffix}.png`);
           await page.locator('canvas').screenshot({path: file});
           return {file: audit(file), pixels: PNG.sync.read(fs.readFileSync(file))};
         };
@@ -381,7 +385,7 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
           }
           assert(stable >= 3, 'Fog comparisons must wait for automatic exposure to converge');
           assert((await page.evaluate(() => globalThis.__webCanvasWaitIdle())).pass);
-          const file = path.join(directory, `web-default-fog-${label}-${name.toLowerCase()}.png`);
+          const file = path.join(directory, `web-default-fog-${label}-${name.toLowerCase()}${artifactSuffix}.png`);
           const image = await page.locator('canvas').screenshot({path: file});
           return {file: audit(file), pixels: PNG.sync.read(image), exposure: previous,
             component: await page.evaluate(() => globalThis.__webDefaultFog)};
@@ -491,7 +495,7 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
           'Restoring the original light must restore the measured exposure');
         assert.equal((await page.evaluate(() => globalThis.__webCanvas.gpuErrors)).length, 0);
       }
-      const screenshot = path.join(directory, `web-default-postprocess-${name.toLowerCase()}.png`);
+      const screenshot = path.join(directory, `web-default-postprocess-${name.toLowerCase()}${artifactSuffix}.png`);
       await page.locator('canvas').screenshot({path: screenshot});
       run.screenshot = audit(screenshot);
       run.finalFrames = await page.evaluate(() => globalThis.__webEngineFrames);
@@ -507,7 +511,8 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
     report.failure = error.stack;
   } finally {
     if (browser) await browser.close();
-    fs.writeFileSync(path.join(directory, 'web-default-postprocess-results.json'), JSON.stringify(report, null, 2));
+    fs.writeFileSync(path.join(directory, `web-default-postprocess${reportSuffix ? '-' + reportSuffix : ''}-results.json`),
+      JSON.stringify(report, null, 2));
     console.log(JSON.stringify({pass: report.pass, failure: report.failure,
       runs: report.browserRuns.map(run => ({browser: run.browser, pass: run.pass, frames: run.frames,
         finalFrames: run.finalFrames, failure: run.failure, errors: run.errors, gpuErrors: run.gpuErrors,
