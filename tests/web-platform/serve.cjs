@@ -19,6 +19,7 @@ const server = http.createServer((request, response) => {
     if (error || !stat.isFile()) { response.writeHead(404).end(); return; }
     response.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
     response.setHeader('Content-Length', stat.size);
+    if (request.method === 'HEAD') { response.end(); return; }
     fs.createReadStream(file).pipe(response);
   });
 });

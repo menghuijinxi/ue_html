@@ -425,7 +425,29 @@ node .\tests\web-platform\serve.cjs
 
 局域网 HTTP 地址不是安全上下文，直接访问时 WebGPU、`crypto.subtle` 和跨源隔离不可用。仅用于局域网开发测试时，可在测试设备的 Chrome 打开 `chrome://flags/#unsafely-treat-insecure-origin-as-secure`，在 **Insecure origins treated as secure** 中填入完整来源 `http://10.1.1.200:8765`，选择 **Enabled** 后重启浏览器。Edge 使用对应的 `edge://flags/#unsafely-treat-insecure-origin-as-secure`。配置只填写来源，不包含页面路径；正常分发应使用受设备信任的 HTTPS。此方式来自 [Chrome WebGPU 故障排查文档](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips)；测试设备还需支持当前包使用的 WebGPU 和 wasm64。
 
-独立包会在加载引擎前检查安全上下文、WebGPU、跨源隔离和 Web Crypto；条件不满足时显示具体原因和当前来源的配置步骤，不下载引擎与大资源包。局域网回归命令为 `node tests/web-platform/probe-web-lan.cjs --origin=http://10.1.1.200:8765`，需先设置下方的 `NODE_PATH`。它检查本机/局域网资源响应头、双浏览器未信任来源的明确提示，以及信任后真实渲染和 Pawn 移动；不会修改用户浏览器配置。报告写入 `results/web-lan-results.json`，本机对网卡地址的验证不能替代其他设备的实际连通测试。
+独立包会在加载引擎前检查安全上下文、WebGPU、跨源隔离、Web Crypto、BigInt 数组和最小 memory64 模块；条件不满足时显示具体原因，不下载引擎与大资源包。最小 memory64 检查通过不等于完整 UE WASM 编译或手机内存验收通过。局域网回归命令为 `node tests/web-platform/probe-web-lan.cjs --origin=http://10.1.1.200:8765`，需先设置下方的 `NODE_PATH`。它检查本机/局域网资源响应头、双浏览器未信任来源的明确提示，以及信任后真实渲染和 Pawn 移动；不会修改用户浏览器配置。报告写入 `results/web-lan-results.json`，本机对网卡地址的验证不能替代其他设备的实际连通测试。
+
+### 手机启动诊断
+
+手机先打开 `http://10.1.1.200:8765/build/ue-default-template/index.html?diagnostics=1`。当前报告版本为 2：检查六个文件的 HEAD 响应，实际 GET 引擎 JS 并记录正文长度、SHA-256、最终地址、重定向及耗时，再执行六种小纹理和一个空计算管线检查。JS 下载限制为 1 MiB、12 秒；不会执行该 JS 或下载 WASM、关卡资源包。此模式通过仅代表上述基础检查通过。
+
+轻量模式通过后，使用 `?debug=1` 启动真实引擎并记录实际 GPU 适配器、设备请求、错误和最后 80 条 UE 日志。普通页面发生错误也会自动展开报告。使用“复制报告”或“下载报告”导出 JSON；请求尚未完成时 `pending` 大于零，应等其归零。正常运行仍使用原 URL。
+
+| 报告结果 | 定位方向 |
+| --- | --- |
+| `memory64=false` | 当前包是 wasm64；仅有 WebGPU 不够，尚无可替换的 wasm32 包 |
+| `engine-script-loading` 失败、HEAD 200 | 只证明响应头可达，不能证明 JS 正文下载或脚本加载成功 |
+| JS GET 的 `error` / `timedOut` | 检查实际 HTTP 状态、传输错误和耗时；12 秒是诊断请求的超时，不是浏览器原始脚本的超时 |
+| JS GET 的 `looksLikeHTML=true` | 请求返回了 HTML，检查登录页、代理及错误路由 |
+| JS GET 完整、脚本仍失败 | 比较 `engineScript` 原始请求记录及 `security-policy` 错误；可能需要浏览器远程控制台，尚不能凭 GET 成功认定具体拦截原因 |
+| `gpu-device` / `gpu-validation` / `gpu-device-lost` | 查看实际要求的 features、limits 及原始错误；基础纹理探针不覆盖全部 UE 管线 |
+| `CompileError`、`RuntimeError` 或 `content-loading` | 此时再定位完整 WASM 编译、运行或资源挂载；不要与脚本下载失败混为一谈 |
+
+2026-10-22 收到的真机报告显示基础能力全部为 true，但 UE JS 资源加载失败、UE 日志为空、渲染帧为零；原报告只有 HEAD 200，不能据此判断云、雾不兼容，也没有证据判定为手机内存不足。原始请求从页面开始到报错约 12 分 21 秒；新版增加请求耗时、正文检查及页面前后台切换记录以继续区分原因。手机修复尚未验收。
+
+诊断回归：设置下方 `NODE_PATH` 后运行 `node tests/web-platform/probe-web-default-diagnostics.cjs --runtime --report=current`。Chrome、Edge 共 40 项故障注入及导出检查通过，包括 HEAD 200 / GET 失败、脚本安全策略拦截、HTML 正文及重定向；两浏览器各完成轻量真实资源检查和真实引擎至少 120 帧运行。截图使用 360×626 的桌面浏览器窗口，不能当作 Android 真机验证。报告为 `results/web-default-diagnostics-current-results.json`。
+
+需要完整控制台时，可用数据线连接 Android 手机并启用 USB 调试，在电脑 Chrome 的 `chrome://inspect/#devices` 检查手机 Chrome 页面，保存 Console、Network 中实际失败的请求。当前工作区未连接可用 ADB 设备，未执行真机远程调试。
 
 自动化使用本机已经具备的 Playwright 和 pngjs；它们位于 Codex 的共享依赖目录：
 

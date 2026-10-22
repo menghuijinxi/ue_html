@@ -7,17 +7,258 @@
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
 body { display: grid; place-items: center; }
 canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-ratio: 16 / 9; outline: none; }
-#failure { position: fixed; inset: 16px; margin: 0; overflow: auto; color: #fff; font: 14px monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+[hidden] { display: none !important; }
+#diagnostics { position: fixed; inset: 8px; z-index: 10; display: flex; flex-direction: column; min-width: 0; background: #151515; color: #eee; font: 13px/1.5 monospace; }
+#diagnostics header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px; border-bottom: 1px solid #555; }
+#diagnostics strong { margin-right: auto; }
+#diagnostics button { padding: 6px 10px; border: 1px solid #777; border-radius: 4px; background: #303030; color: #fff; font: inherit; cursor: pointer; }
+#failure, #diagnostic-report { margin: 0; padding: 12px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+#failure { flex: none; max-height: 30%; color: #ffb4ab; border-bottom: 1px solid #555; }
+#diagnostic-report { flex: 1; min-height: 0; }
+#diagnostic-status { padding: 0 12px; }
 </style>
 <canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="UE 默认关卡"></canvas>
-<pre id="failure" hidden></pre>
+<aside id="diagnostics" aria-label="启动诊断" hidden>
+  <header>
+    <strong>启动诊断</strong>
+    <button id="copy-diagnostics" type="button">复制报告</button>
+    <button id="download-diagnostics" type="button">下载报告</button>
+    <button id="reload-diagnostics" type="button">重新加载</button>
+    <button id="close-diagnostics" type="button">关闭</button>
+  </header>
+  <pre id="failure" hidden></pre>
+  <div id="diagnostic-status" role="status"></div>
+  <pre id="diagnostic-report"></pre>
+</aside>
 <script>
 globalThis.__webEngineLog = [];
-function failed(reason) {
-  globalThis.__webEngineFailure = String(reason);
+const startupOptions = new URLSearchParams(location.search);
+const startupOnly = startupOptions.get('diagnostics') === '1';
+const startupDebug = startupOnly || startupOptions.get('debug') === '1';
+const startupDiagnostics = globalThis.__webStartupDiagnostics = {
+  version: 2, startedAt: new Date().toISOString(), url: location.href,
+  userAgent: navigator.userAgent, platform: navigator.platform,
+  hardwareConcurrency: navigator.hardwareConcurrency, deviceMemoryGiB: navigator.deviceMemory,
+  screen: {width: innerWidth, height: innerHeight, dpr: devicePixelRatio},
+  mode: startupOnly ? 'diagnostics-only' : startupDebug ? 'debug' : 'normal',
+  architecture: 'wasm64', stage: 'preflight', settled: false, pending: 0,
+  capabilities: {}, resources: [], errors: [],
+  visibility: [{time: new Date().toISOString(), state: document.visibilityState}],
+  boundary: '基础能力、小纹理和空计算管线检查不等于 UE 完整运行或手机性能验收。'
+};
+let startupRenderPending = false;
+function startupSnapshot() {
+  return {...startupDiagnostics, failure: globalThis.__webEngineFailure || null,
+    frames: globalThis.__webEngineFrames || 0, ready: globalThis.__webEngineReady || null,
+    engineRuntime: globalThis.__webEngineRuntime || null, engineLog: globalThis.__webEngineLog.slice(-80)};
+}
+document.addEventListener('visibilitychange', () => {
+  startupDiagnostics.visibility.push({time: new Date().toISOString(), state: document.visibilityState});
+  if (startupDiagnostics.visibility.length > 16) startupDiagnostics.visibility.shift();
+  startupRender();
+});
+function startupRender() {
+  if (document.getElementById('diagnostics').hidden || startupRenderPending) return;
+  startupRenderPending = true;
+  setTimeout(() => {
+    startupRenderPending = false;
+    document.getElementById('diagnostic-report').textContent = JSON.stringify(startupSnapshot(), null, 2);
+  }, 100);
+}
+function startupStage(stage) {
+  if (!globalThis.__webEngineFailure) startupDiagnostics.stage = stage;
+  startupRender();
+}
+function failed(reason, details = {}) {
+  const message = reason?.message || String(reason ?? '未知启动错误');
+  const error = {time: new Date().toISOString(), stage: startupDiagnostics.stage, message,
+    name: reason?.name, stack: reason?.stack, ...details};
+  startupDiagnostics.errors.push(error);
+  if (startupDiagnostics.errors.length > 24) startupDiagnostics.errors.shift();
+  // Preserve the first cause; resource/callback errors can otherwise hide the useful exception.
+  if (!globalThis.__webEngineFailure) globalThis.__webEngineFailure = message;
+  startupDiagnostics.stage = 'failed';
+  startupDiagnostics.settled = true;
   const element = document.getElementById('failure');
-  element.textContent = String(reason);
+  element.textContent = globalThis.__webEngineFailure;
   element.hidden = false;
+  document.getElementById('diagnostics').hidden = false;
+  startupRender();
+}
+document.getElementById('close-diagnostics').onclick = () => {
+  document.getElementById('diagnostics').hidden = true;
+};
+document.getElementById('reload-diagnostics').onclick = () => location.reload();
+document.getElementById('copy-diagnostics').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(startupSnapshot(), null, 2));
+    document.getElementById('diagnostic-status').textContent = '报告已复制';
+  } catch (_) {
+    document.getElementById('diagnostic-status').textContent = '复制失败，可下载报告或长按下方文字复制。';
+  }
+};
+document.getElementById('download-diagnostics').onclick = () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(startupSnapshot(), null, 2)],
+    {type: 'application/json'}));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'ue-startup-diagnostics-' + new Date().toISOString().replace(/[:.]/g, '-') + '.json';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+if (startupDebug) document.getElementById('diagnostics').hidden = false;
+function startupTimings(url) {
+  return performance.getEntriesByName(url).filter(entry => entry.entryType === 'resource').slice(-8)
+    .map(entry => Object.fromEntries(['initiatorType', 'startTime', 'duration', 'fetchStart',
+      'requestStart', 'responseStart', 'responseEnd', 'responseStatus', 'transferSize',
+      'encodedBodySize', 'decodedBodySize', 'nextHopProtocol'].map(key => [key, entry[key]])));
+}
+function startupScriptResult(outcome) {
+  const item = startupDiagnostics.engineScript;
+  if (!item) return;
+  item.outcome = outcome;
+  item.durationMs = Math.round(performance.now() - item.startTime);
+  item.timings = startupTimings(item.url).filter(entry => entry.initiatorType === 'script');
+}
+async function startupResource(url, method = 'HEAD') {
+  ++startupDiagnostics.pending;
+  const started = performance.now();
+  const item = {url: new URL(url, location.href).href, method, startedAt: new Date().toISOString()};
+  startupDiagnostics.resources.push(item);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const response = await fetch(url, {method, cache: 'no-store', signal: controller.signal});
+    Object.assign(item, {status: response.status, contentType: response.headers.get('content-type'),
+      bytes: response.headers.get('content-length'),
+      contentEncoding: response.headers.get('content-encoding'),
+      responseUrl: response.url, redirected: response.redirected, responseType: response.type,
+      coop: response.headers.get('cross-origin-opener-policy'),
+      coep: response.headers.get('cross-origin-embedder-policy')});
+    if (method === 'GET') {
+      // Probe only the small JS file, with a hard cap even if a proxy sends an unexpected body.
+      const limit = 1024 * 1024;
+      const reader = response.body.getReader();
+      const chunks = [];
+      item.receivedBytes = 0;
+      item.bodyComplete = false;
+      try {
+        if (Number(item.bytes) > limit && !item.contentEncoding)
+          throw new Error(`脚本诊断正文超过 ${limit} 字节上限。`);
+        while (true) {
+          const {done, value} = await reader.read();
+          if (done) break;
+          item.receivedBytes += value.byteLength;
+          if (item.receivedBytes > limit) throw new Error(`脚本诊断正文超过 ${limit} 字节上限。`);
+          chunks.push(value);
+        }
+        item.bodyComplete = true;
+      } catch (error) {
+        controller.abort();
+        throw error;
+      } finally { reader.releaseLock(); }
+      const bytes = new Uint8Array(item.receivedBytes);
+      let offset = 0;
+      for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+      item.sha256 = await digest(bytes);
+      item.looksLikeHTML = /^\s*(?:<!doctype\s+html|<html|<head|<body)/i.test(
+        new TextDecoder().decode(bytes.subarray(0, 256)));
+      if (item.bytes !== null && (!item.contentEncoding || item.contentEncoding === 'identity')) {
+        item.lengthMatches = Number(item.bytes) === item.receivedBytes;
+        if (!item.lengthMatches) throw new Error('脚本正文长度与 Content-Length 不一致。');
+      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
+      if (item.looksLikeHTML || !/(?:java|ecma)script/i.test(item.contentType || ''))
+        throw new Error('脚本 GET 没有返回 JavaScript 正文，请检查重定向、代理或登录页面。');
+    }
+  } catch (error) {
+    item.error = error.message;
+    item.errorName = error.name;
+    item.timedOut = controller.signal.aborted && error.name === 'AbortError';
+  }
+  finally {
+    clearTimeout(timeout);
+    item.durationMs = Math.round(performance.now() - started);
+    item.timings = startupTimings(item.url).filter(entry => entry.startTime >= started - 1);
+    --startupDiagnostics.pending;
+    startupRender();
+  }
+  return item;
+}
+function startupLimits(limits) {
+  const result = {};
+  for (const key in limits) if (typeof limits[key] === 'number') result[key] = limits[key];
+  return result;
+}
+function startupAdapter(adapter) {
+  const info = adapter.info || {};
+  startupDiagnostics.gpu = {...startupDiagnostics.gpu, adapterFound: true,
+    info: Object.fromEntries(['vendor', 'architecture', 'device', 'description']
+      .map(key => [key, info[key] || ''])),
+    features: Array.from(adapter.features).sort(), limits: startupLimits(adapter.limits)};
+}
+function startupObserveGPU() {
+  const requestAdapter = navigator.gpu.requestAdapter;
+  navigator.gpu.requestAdapter = async function(options) {
+    startupStage('gpu-adapter');
+    try {
+      const adapter = await requestAdapter.call(this, options);
+      if (adapter) startupAdapter(adapter);
+      else failed('WebGPU 未返回可用的 GPU 适配器（requestAdapter returned null）。', {kind: 'gpu-adapter'});
+      return adapter;
+    } catch (error) { failed(error, {kind: 'gpu-adapter'}); throw error; }
+  };
+  const requestDevice = GPUAdapter.prototype.requestDevice;
+  GPUAdapter.prototype.requestDevice = async function(descriptor = {}) {
+    startupStage('gpu-device');
+    startupDiagnostics.gpu = {...startupDiagnostics.gpu,
+      requiredFeatures: Array.from(descriptor.requiredFeatures || []),
+      requiredLimits: descriptor.requiredLimits || {}};
+    try {
+      const device = await requestDevice.call(this, descriptor);
+      startupDiagnostics.gpu.deviceCreated = true;
+      startupDiagnostics.gpu.deviceLimits = startupLimits(device.limits);
+      device.addEventListener('uncapturederror', event =>
+        failed(event.error, {kind: 'gpu-validation'}));
+      device.lost.then(info => {
+        if (info.reason !== 'destroyed')
+          failed('WebGPU device lost: ' + info.message, {kind: 'gpu-device-lost', reason: info.reason});
+      });
+      return device;
+    } catch (error) { failed(error, {kind: 'gpu-device'}); throw error; }
+  };
+}
+async function startupProbeGPU() {
+  const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
+  if (!adapter) throw new Error('WebGPU 未返回可用的 GPU 适配器（requestAdapter returned null）。');
+  startupAdapter(adapter);
+  const device = await adapter.requestDevice();
+  startupDiagnostics.gpu.deviceCreated = true;
+  startupDiagnostics.gpu.deviceLimits = startupLimits(device.limits);
+  const checks = startupDiagnostics.gpu.checks = [];
+  try {
+    for (const [format, dimension, usage] of [
+      ['rgba16float', '2d', GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING],
+      ['r16float', '3d', GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.COPY_SRC],
+      ['rg16float', '3d', GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.COPY_SRC],
+      ['rgba16float', '3d', GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING],
+      ['depth32float', '2d', GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING],
+      ['depth24plus-stencil8', '2d', GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING]
+    ]) {
+      device.pushErrorScope('validation');
+      let texture;
+      let failure;
+      try { texture = device.createTexture({size: [4, 4, dimension === '3d' ? 4 : 1], format, dimension, usage}); }
+      catch (error) { failure = error.message; }
+      const error = await device.popErrorScope();
+      texture?.destroy();
+      checks.push({format, dimension, pass: !failure && !error, error: failure || error?.message});
+    }
+    const module = device.createShaderModule({code: '@compute @workgroup_size(1) fn main() {}'});
+    await device.createComputePipelineAsync({layout: 'auto', compute: {module, entryPoint: 'main'}});
+    checks.push({name: 'minimal-compute-pipeline', pass: true});
+    if (checks.some(check => !check.pass)) throw new Error('基础 WebGPU 纹理检查失败，具体格式见 gpu.checks。');
+  } finally { device.destroy(); }
 }
 function record(text) {
   text = String(text);
@@ -29,18 +270,30 @@ function record(text) {
     ['P3_ENGINE_WORLD ', '__webEngineWorld'],
     ['P3_RENDER_SCENE ', '__webRenderScene']
   ]) {
-    if (text.startsWith(prefix)) globalThis[key] = JSON.parse(text.slice(prefix.length));
+    if (text.startsWith(prefix)) {
+      globalThis[key] = JSON.parse(text.slice(prefix.length));
+      if (key === '__webEngineReady') startupStage('running');
+    }
   }
   if (/^P3_ENGINE_(?:PREINIT|INIT)_FAILED /.test(text)) failed(text);
+  startupRender();
 }
 async function digest(bytes) {
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
     value => value.toString(16).padStart(2, '0')).join('');
 }
 async function fetchFile(url, json = false) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
-  return json ? response.json() : new Uint8Array(await response.arrayBuffer());
+  const item = {url: new URL(url, location.href).href, method: 'GET'};
+  startupDiagnostics.resources.push(item);
+  try {
+    const response = await fetch(url);
+    item.status = response.status;
+    item.contentType = response.headers.get('content-type');
+    item.bytes = response.headers.get('content-length');
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
+    return json ? await response.json() : new Uint8Array(await response.arrayBuffer());
+  } catch (error) { item.error = error.message; throw error; }
+  finally { startupRender(); }
 }
 function writeFile(path, bytes) {
   FS.mkdirTree(path.slice(0, path.lastIndexOf('/')));
@@ -52,7 +305,9 @@ var Module = {
   print: record,
   printErr: record,
   onAbort: failed,
+  onRuntimeInitialized: () => startupStage('engine-starting'),
   preRun: [() => {
+    startupStage('content-loading');
     addRunDependency('default-template-files');
     (async () => {
       const [configs, manifest] = await Promise.all([
@@ -99,11 +354,49 @@ Module.canvas.addEventListener('click', () => {
     if (pending && pending.catch) pending.catch(() => {});
   } catch (_) {}
 });
-addEventListener('error', event => failed(event.message || 'Engine script failed'), true);
-addEventListener('unhandledrejection', event => failed(event.reason));
+addEventListener('error', event => {
+  const target = event.target;
+  if (target?.tagName === 'SCRIPT' && target.src) {
+    startupScriptResult('error');
+    failed('引擎脚本资源加载失败：' + target.src, {kind: 'script-resource', url: target.src});
+    startupResource(target.src);
+    startupResource(target.src, 'GET');
+  } else if (event.message || event.error) {
+    failed(event.error || event.message, {kind: 'javascript',
+      filename: event.filename, line: event.lineno, column: event.colno});
+  } else {
+    failed('脚本执行失败，浏览器未提供详细错误。', {kind: 'unknown-script-event'});
+  }
+}, true);
+addEventListener('securitypolicyviolation', event => {
+  if (event.disposition === 'enforce')
+    failed('浏览器安全策略阻止资源：' + event.blockedURI, {kind: 'security-policy',
+      directive: event.effectiveDirective, blockedURI: event.blockedURI});
+});
+addEventListener('unhandledrejection', event => failed(event.reason, {kind: 'promise-rejection'}));
 </script>
 <script>
-if (!globalThis.isSecureContext) {
+(async () => {
+const capabilities = startupDiagnostics.capabilities = {
+  secureContext: globalThis.isSecureContext,
+  webgpu: !!navigator.gpu,
+  crossOriginIsolated: !!globalThis.crossOriginIsolated,
+  sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
+  webCrypto: !!globalThis.crypto?.subtle,
+  webAssembly: typeof WebAssembly !== 'undefined',
+  bigint: typeof BigInt === 'function' && typeof BigInt64Array === 'function' &&
+    typeof BigUint64Array === 'function',
+  memory64: false
+};
+if (capabilities.webAssembly) {
+  try {
+    capabilities.memory64 = WebAssembly.validate(new Uint8Array([
+      0, 97, 115, 109, 1, 0, 0, 0, 5, 3, 1, 4, 0
+    ]));
+  } catch (error) { capabilities.memory64Error = error.message; }
+}
+startupRender();
+if (!capabilities.secureContext) {
   failed(`当前地址 ${location.origin} 不是安全上下文，浏览器已禁用 WebGPU 和资源校验接口。
 局域网开发测试：
 1. Chrome 打开 chrome://flags/#unsafely-treat-insecure-origin-as-secure
@@ -111,16 +404,44 @@ if (!globalThis.isSecureContext) {
 2. 在 Insecure origins treated as secure 中填写 ${location.origin}
 3. 选择 Enabled，重启浏览器后重新打开本页。
 也可以使用受此设备信任的 HTTPS 地址。`);
-} else if (!navigator.gpu) {
+} else if (!capabilities.webgpu) {
   failed('此浏览器未提供 WebGPU。请检查浏览器版本、硬件加速及设备的 WebGPU 支持。');
-} else if (!globalThis.crossOriginIsolated || typeof SharedArrayBuffer === 'undefined') {
+} else if (!capabilities.crossOriginIsolated || !capabilities.sharedArrayBuffer) {
   failed('页面未启用跨源隔离。请使用提供 COOP: same-origin 和 COEP: require-corp 响应头的服务。');
-} else if (!globalThis.crypto?.subtle) {
+} else if (!capabilities.webCrypto) {
   failed('此浏览器未提供 Web Crypto，无法校验关卡资源。请使用受信任的 HTTPS 或可信本机来源。');
+} else if (!capabilities.webAssembly || !capabilities.bigint) {
+  failed('当前引擎包需要 WebAssembly 和 BigInt / BigInt64Array / BigUint64Array，浏览器未提供完整支持。');
+} else if (!capabilities.memory64) {
+  failed('当前引擎包使用 wasm64（WebAssembly memory64），此浏览器未通过 memory64 检查。WebGPU 可用不代表支持 wasm64。');
+} else if (startupOnly) {
+  startupStage('diagnostics-resources');
+  const resources = await Promise.all(['index.html', 'UEWebEngine.js', 'UEWebEngine.wasm',
+    'content.bin', 'content-files.json', 'config-files.json'].map(url => startupResource(url))
+    .concat(startupResource('UEWebEngine.js', 'GET')));
+  startupStage('diagnostics-gpu');
+  await startupProbeGPU();
+  if (resources.some(item => item.error || item.status >= 400))
+    throw new Error('启动资源检查失败，具体 HTTP 状态或网络错误见 resources。');
+  startupStage('diagnostics-complete');
+  startupDiagnostics.settled = true;
+  startupRender();
 } else {
+  if (startupDebug) startupObserveGPU();
+  startupStage('engine-script-loading');
   const engine = document.createElement('script');
   engine.src = 'UEWebEngine.js';
+  startupDiagnostics.engineScript = {url: engine.src, startedAt: new Date().toISOString(),
+    startTime: performance.now(), outcome: 'loading'};
+  engine.onload = () => {
+    startupScriptResult('loaded');
+    if (!globalThis.__webEngineReady) startupStage('wasm-initializing');
+    startupDiagnostics.settled = true;
+    startupRender();
+  };
   document.body.appendChild(engine);
 }
+startupRender();
+})().catch(error => failed(error, {kind: 'preflight'}));
 </script>
 </html>
