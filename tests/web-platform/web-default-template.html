@@ -8,6 +8,24 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
 body { display: grid; place-items: center; }
 canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-ratio: 16 / 9; outline: none; touch-action: none; user-select: none; -webkit-user-select: none; }
 [hidden] { display: none !important; }
+#loading { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; box-sizing: border-box; padding: 24px; overflow: auto; background: #141718; color: #f1f5f3; font: 15px/1.6 system-ui, sans-serif; }
+#loading-content { width: min(100%, 420px); min-width: 0; }
+#loading h1 { margin: 0 0 32px; font-size: 28px; font-weight: 600; }
+#loading h2 { margin: 0; font-size: 18px; font-weight: 500; }
+#loading-current { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+#loading-percent { flex: none; font-size: 24px; font-variant-numeric: tabular-nums; }
+#loading-progress { display: block; width: 100%; height: 6px; margin: 16px 0 12px; border: 0; border-radius: 3px; overflow: hidden; accent-color: #69d5ae; background: #353d3c; }
+#loading-progress::-webkit-progress-bar { background: #353d3c; }
+#loading-progress::-webkit-progress-value { background: #69d5ae; }
+#loading-progress::-moz-progress-bar { background: #69d5ae; }
+#loading-detail { min-height: 24px; margin: 0; color: #b6c6c0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+#loading-elapsed { margin: 8px 0 24px; color: #93a59e; font-size: 13px; font-variant-numeric: tabular-nums; }
+#loading-error { max-height: 32vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: #ffb4ab; }
+#loading-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+#loading-actions button { min-height: 40px; padding: 8px 14px; border: 1px solid #52635d; border-radius: 4px; background: transparent; color: #dce8e3; font: inherit; cursor: pointer; }
+#loading-actions button:focus-visible { outline: 2px solid #69d5ae; outline-offset: 3px; }
+#loading-retry { background: #69d5ae !important; border-color: #69d5ae !important; color: #10261d !important; }
+@media (max-height: 420px) { #loading { padding: 16px 24px; } #loading h1 { margin-bottom: 16px; font-size: 24px; } #loading-elapsed { margin-bottom: 12px; } }
 #diagnostics { position: fixed; inset: 8px; z-index: 10; display: flex; flex-direction: column; min-width: 0; background: #151515; color: #eee; font: 13px/1.5 monospace; }
 #diagnostics header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px; border-bottom: 1px solid #555; }
 #diagnostics strong { margin-right: auto; }
@@ -17,7 +35,24 @@ canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-rat
 #diagnostic-report { flex: 1; min-height: 0; }
 #diagnostic-status { padding: 0 12px; }
 </style>
-<canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="UE 默认关卡"></canvas>
+<canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="UE 默认关卡" aria-busy="true"></canvas>
+<section id="loading" aria-label="关卡加载">
+  <div id="loading-content">
+    <h1>UE 默认关卡</h1>
+    <div id="loading-current">
+      <h2 id="loading-stage" role="status">检查运行环境</h2>
+      <span id="loading-percent"></span>
+    </div>
+    <progress id="loading-progress" aria-label="当前资源下载进度"></progress>
+    <p id="loading-detail">正在准备启动</p>
+    <p id="loading-elapsed">已等待 0 秒</p>
+    <p id="loading-error" role="alert" hidden></p>
+    <div id="loading-actions">
+      <button id="loading-retry" type="button" hidden>重新加载</button>
+      <button id="loading-diagnostics" type="button">查看详情</button>
+    </div>
+  </div>
+</section>
 <aside id="diagnostics" aria-label="启动诊断" hidden>
   <header>
     <strong>启动诊断</strong>
@@ -48,6 +83,81 @@ const startupDiagnostics = globalThis.__webStartupDiagnostics = {
   visibility: [{time: new Date().toISOString(), state: document.visibilityState}],
   boundary: '基础能力、小纹理和空计算管线检查不等于 UE 完整运行或手机性能验收。'
 };
+const loading = document.getElementById('loading');
+loading.hidden = startupOnly;
+let loadingComplete = false;
+function loadingBytes(bytes) {
+  const mib = bytes / (1024 * 1024);
+  return mib.toFixed(mib < 1 ? 2 : 1) + ' MiB';
+}
+function loadingRender() {
+  if (startupOnly) return;
+  const failure = globalThis.__webEngineFailure;
+  if (!failure && globalThis.__webEngineReady && globalThis.__webEngineFrames >= 2) {
+    loadingComplete = true;
+    loading.hidden = true;
+    document.getElementById('canvas').setAttribute('aria-busy', 'false');
+    return;
+  }
+  if (loadingComplete && !failure) return;
+  loading.hidden = false;
+  const stage = startupDiagnostics.stage;
+  const stages = {
+    preflight: ['检查运行环境', '正在准备启动'],
+    'engine-script-loading': ['加载引擎脚本', '正在连接并加载启动脚本'],
+    'wasm-initializing': ['准备引擎', '正在初始化 WebAssembly'],
+    'wasm-downloading': ['下载引擎', '正在连接引擎资源'],
+    'wasm-compiling': ['编译引擎', '引擎下载完成，正在准备 WebAssembly'],
+    'wasm-instantiation-failed': ['准备引擎', '正在尝试兼容加载方式'],
+    'wasm-ready': ['准备场景资源', '引擎已就绪，正在加载关卡'],
+    'content-loading': ['下载场景资源', '正在读取资源清单'],
+    'content-verifying': ['校验场景资源', '场景下载完成，正在校验完整性'],
+    'content-mounting': ['准备场景文件', '正在校验并装载关卡文件'],
+    'engine-starting': ['启动关卡', '正在初始化场景和渲染管线'],
+    'gpu-adapter': ['准备图形设备', '正在选择 WebGPU 适配器'],
+    'gpu-device': ['准备图形设备', '正在创建 WebGPU 设备'],
+    running: ['准备首帧画面', '关卡已启动，正在等待画面']
+  };
+  let [title, detail] = stages[stage] || ['准备关卡', '正在加载'];
+  const file = stage === 'wasm-downloading' ? 'UEWebEngine.wasm'
+    : stage === 'content-loading' ? 'content.bin' : null;
+  const transfer = file && startupDiagnostics.resources.findLast(item =>
+    item.url.endsWith('/' + file) && item.method === 'GET');
+  const progress = document.getElementById('loading-progress');
+  let percent = '';
+  progress.removeAttribute('value');
+  if (transfer) {
+    const total = Number(transfer.bytes);
+    const received = transfer.receivedBytes || 0;
+    // Content-Length describes encoded bytes; streamed chunks can already be decompressed.
+    const knownTotal = total > 0 && (!transfer.contentEncoding || transfer.contentEncoding === 'identity');
+    if (knownTotal) {
+      progress.max = total;
+      progress.value = Math.min(received, total);
+      percent = Math.min(100, Math.floor(received / total * 100)) + '%';
+    }
+    detail = (file.endsWith('.wasm') ? '引擎' : '场景') + ' · ' + loadingBytes(received) +
+      (knownTotal ? ' / ' + loadingBytes(total) : ' 已下载');
+    if (transfer.bodyComplete) detail += ' · 下载完成';
+  } else if (stage === 'content-mounting' && startupDiagnostics.content) {
+    const {completed, total} = startupDiagnostics.content;
+    detail = `已校验并装载 ${completed} / ${total} 个文件`;
+  }
+  if (failure) {
+    title = '加载失败';
+    detail = '可重新加载，或查看详细诊断';
+    percent = '';
+  }
+  document.getElementById('loading-stage').textContent = title;
+  document.getElementById('loading-detail').textContent = detail;
+  document.getElementById('loading-percent').textContent = percent;
+  document.getElementById('loading-elapsed').textContent =
+    `已等待 ${Math.floor((performance.now() - startupStarted) / 1000)} 秒`;
+  progress.hidden = !!failure;
+  document.getElementById('loading-error').hidden = !failure;
+  document.getElementById('loading-error').textContent = failure || '';
+  document.getElementById('loading-retry').hidden = !failure;
+}
 let startupRenderPending = false;
 function startupSnapshot() {
   return {...startupDiagnostics, elapsedMs: Math.round(performance.now() - startupStarted),
@@ -61,11 +171,13 @@ document.addEventListener('visibilitychange', () => {
   startupRender();
 });
 function startupRender() {
-  if (document.getElementById('diagnostics').hidden || startupRenderPending) return;
+  if (startupRenderPending) return;
   startupRenderPending = true;
   setTimeout(() => {
     startupRenderPending = false;
-    document.getElementById('diagnostic-report').textContent = JSON.stringify(startupSnapshot(), null, 2);
+    loadingRender();
+    if (!document.getElementById('diagnostics').hidden)
+      document.getElementById('diagnostic-report').textContent = JSON.stringify(startupSnapshot(), null, 2);
   }, 100);
 }
 function startupStage(stage) {
@@ -85,9 +197,14 @@ function failed(reason, details = {}) {
   const element = document.getElementById('failure');
   element.textContent = globalThis.__webEngineFailure;
   element.hidden = false;
-  document.getElementById('diagnostics').hidden = false;
+  if (startupDebug) document.getElementById('diagnostics').hidden = false;
   startupRender();
 }
+document.getElementById('loading-retry').onclick = () => location.reload();
+document.getElementById('loading-diagnostics').onclick = () => {
+  document.getElementById('diagnostics').hidden = false;
+  startupRender();
+};
 document.getElementById('close-diagnostics').onclick = () => {
   document.getElementById('diagnostics').hidden = true;
 };
@@ -117,9 +234,11 @@ document.getElementById('download-diagnostics').onclick = () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 if (startupDebug) document.getElementById('diagnostics').hidden = false;
-if (startupDebug) setInterval(() => {
-  if (!startupDiagnostics.settled || startupDiagnostics.pending) startupRender();
-}, 1000);
+const loadingTimer = setInterval(() => {
+  if (!startupOnly && !loadingComplete && !globalThis.__webEngineFailure) startupRender();
+  else if (!startupDiagnostics.settled || startupDiagnostics.pending) startupRender();
+  else clearInterval(loadingTimer);
+}, 250);
 function startupTimings(url) {
   return performance.getEntriesByName(url).filter(entry => entry.entryType === 'resource').slice(-8)
     .map(entry => Object.fromEntries(['initiatorType', 'startTime', 'duration', 'fetchStart',
@@ -411,7 +530,7 @@ async function digest(bytes) {
     value => value.toString(16).padStart(2, '0')).join('');
 }
 async function fetchFile(url, json = false) {
-  if (startupDebug && !startupOnly) {
+  if (!startupOnly) {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
     return json ? await response.json() : new Uint8Array(await response.arrayBuffer());
@@ -438,6 +557,12 @@ var Module = {
   print: record,
   printErr: record,
   onAbort: failed,
+  setStatus: status => {
+    if (status === 'Running...') {
+      startupStage('engine-starting');
+      loadingRender();
+    }
+  },
   onRuntimeInitialized: () => startupStage('engine-starting'),
   preRun: [() => {
     startupStage('content-loading');
@@ -450,8 +575,11 @@ var Module = {
           manifest.shaderPlatform !== 'SP_WEBGPU_ES31' || manifest.pack.url !== 'content.bin')
         throw new Error('Invalid default-template manifest');
       const bytes = await fetchFile(manifest.pack.url);
+      startupStage('content-verifying');
       if (bytes.length !== manifest.pack.size || await digest(bytes) !== manifest.pack.sha256)
         throw new Error('Default-template pack hash mismatch');
+      startupDiagnostics.content = {completed: 0, total: manifest.files.length + configs.length};
+      startupStage('content-mounting');
       globalThis.__webEngineContentFiles = [];
       for (const file of manifest.files) {
         if (!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/|GlobalShaderCache-SP_WEBGPU_ES31\.bin$)/.test(file.path) ||
@@ -463,6 +591,8 @@ var Module = {
         if (await digest(data) !== file.sha256) throw new Error(`Content hash mismatch: ${file.path}`);
         writeFile(file.path, data);
         globalThis.__webEngineContentFiles.push({path: file.path, sha256: file.sha256, size: file.size});
+        ++startupDiagnostics.content.completed;
+        startupRender();
       }
       globalThis.__webEngineConfigFiles = [];
       for (const file of configs) {
@@ -473,6 +603,8 @@ var Module = {
         if (await digest(data) !== file.sha256) throw new Error(`Config hash mismatch: ${file.path}`);
         writeFile(file.path, data);
         globalThis.__webEngineConfigFiles.push({path: file.path, sha256: file.sha256});
+        ++startupDiagnostics.content.completed;
+        startupRender();
       }
       removeRunDependency('default-template-files');
     })().catch(failed);
@@ -607,10 +739,8 @@ if (!capabilities.secureContext) {
   document.getElementById('start-engine').disabled = false;
   startupRender();
 } else {
-  if (startupDebug) {
-    startupObserveTransfers();
-    startupObserveGPU();
-  }
+  startupObserveTransfers();
+  if (startupDebug) startupObserveGPU();
   startupStage('engine-script-loading');
   const engine = document.createElement('script');
   engine.src = 'UEWebEngine.js';

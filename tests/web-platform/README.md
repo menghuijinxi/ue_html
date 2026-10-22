@@ -425,7 +425,15 @@ node .\tests\web-platform\serve.cjs
 
 局域网 HTTP 地址不是安全上下文，直接访问时 WebGPU、`crypto.subtle` 和跨源隔离不可用。仅用于局域网开发测试时，可在测试设备的 Chrome 打开 `chrome://flags/#unsafely-treat-insecure-origin-as-secure`，在 **Insecure origins treated as secure** 中填入完整来源 `http://10.199.199.245:8765`，选择 **Enabled** 后重启浏览器。Edge 使用对应的 `edge://flags/#unsafely-treat-insecure-origin-as-secure`。配置只填写来源，不包含页面路径；正常分发应使用受设备信任的 HTTPS。此方式来自 [Chrome WebGPU 故障排查文档](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips)；测试设备还需支持当前包使用的 WebGPU 和 wasm64。
 
-独立包会在加载引擎前检查安全上下文、WebGPU、跨源隔离、Web Crypto、BigInt 数组和最小 memory64 模块；条件不满足时显示具体原因，不下载引擎与大资源包。最小 memory64 检查通过不等于完整 UE WASM 编译或手机内存验收通过。局域网回归命令为 `node tests/web-platform/probe-web-lan.cjs --origin=http://10.1.1.200:8765`，需先设置下方的 `NODE_PATH`。它检查本机/局域网资源响应头、双浏览器未信任来源的明确提示，以及信任后真实渲染和 Pawn 移动；不会修改用户浏览器配置。报告写入 `results/web-lan-results.json`，本机对网卡地址的验证不能替代其他设备的实际连通测试。
+独立包会在加载引擎前检查安全上下文、WebGPU、跨源隔离、Web Crypto、BigInt 数组和最小 memory64 模块；条件不满足时显示具体原因，不下载引擎与大资源包。最小 memory64 检查通过不等于完整 UE WASM 编译或手机内存验收通过。局域网回归命令为 `node tests/web-platform/probe-web-lan.cjs --origin=http://10.199.199.245:8765`，需先设置下方的 `NODE_PATH`。它检查本机/局域网资源响应头、双浏览器未信任来源的明确提示，以及信任后真实渲染和 Pawn 移动；不会修改用户浏览器配置。报告写入 `results/web-lan-results.json`，本机对网卡地址的验证不能替代其他设备的实际连通测试。
+
+### 加载界面
+
+普通页面打开即显示加载界面，依次展示环境检查、引擎脚本、WASM 下载/编译、场景下载、资源校验装载、关卡启动与首帧等待。引擎和场景包分别根据实际已读取字节显示当前文件的百分比、MiB 容量及等待秒数；不是整次启动的总进度。没有 Content-Length 或正文被压缩时只显示已读取容量，不估算百分比；脚本加载、编译和启动阶段使用不定进度条。
+
+普通模式和调试模式共用原请求的流式观察，不额外下载或复制第二份完整 WASM。只有 UE ready 且帧计数达到 2 后才隐藏界面，完成下载本身不会放行。普通页面失败时在加载界面显示首个原因、“重新加载”和“查看详情”；调试模式保持自动展开报告。`?diagnostics=1` 仍直接显示轻量诊断面板。
+
+设置下方 `NODE_PATH` 后运行 `node tests/web-platform/probe-web-startup-transfers.cjs`，可检查真实分段响应的下载进度、脚本等待、无长度响应、首帧门槛、故障和横竖屏/桌面布局。该夹具使用小资源，完整 UE 场景及触屏回归分别运行 `probe-web-default-scene.cjs --packaged`、`probe-web-default-touch.cjs`；桌面浏览器模拟不代替手机实测。
 
 ### 触屏视角
 
@@ -439,7 +447,7 @@ node .\tests\web-platform\serve.cjs
 
 轻量模式通过后点击“启动引擎”，或直接使用 `?debug=1`。调试模式记录实际 GPU 适配器、设备请求、错误和最后 80 条 UE 日志，并观察真实 WASM、内容包及清单请求：`receivedBytes` 为流式消费者已读取的字节数，`bytes` 为响应头中的长度，另有 `bodyComplete`、`lastProgressAt`、状态、重定向和耗时。转发流保留背压，不复制第二份完整 WASM，也不添加额外的引擎下载请求。`wasm` 数组分别记录原生流式实例化和 ArrayBuffer 回退的结果、耗时及原始异常；流式失败但回退成功时保留该记录，不把它直接判定为启动失败。
 
-普通页面发生错误也会自动展开报告。使用“复制报告”或“下载报告”导出 JSON；`settled=true` 表示轻量检查完成、UE ready 或启动失败，脚本加载完成本身不再算作启动完成。正常完成后 `pending` 为零；下载停滞时可直接导出尚有 `pending` 的报告，结合 `elapsedMs` 和 `lastProgressAt` 定位。正常运行仍使用原 URL，普通页面不安装下载或 WebAssembly 包装器。
+普通页面可从加载界面的“查看详情”打开报告。使用“复制报告”或“下载报告”导出 JSON；`settled=true` 表示轻量检查完成、UE ready 或启动失败，脚本加载完成本身不再算作启动完成。正常完成后 `pending` 为零；下载停滞时可直接导出尚有 `pending` 的报告，结合 `elapsedMs` 和 `lastProgressAt` 定位。正常运行仍使用原 URL，普通页面也记录实际下载和 WebAssembly 结果，完整 GPU 调用观察仍仅在调试模式启用。
 
 | 报告结果 | 定位方向 |
 | --- | --- |
@@ -459,7 +467,7 @@ node .\tests\web-platform\serve.cjs
 
 诊断回归：设置下方 `NODE_PATH` 后运行 `node tests/web-platform/probe-web-default-diagnostics.cjs --runtime --report=current`。Chrome、Edge 共 40 项故障注入及导出检查通过，包括 HEAD 200 / GET 失败、脚本安全策略拦截、HTML 正文及重定向；两浏览器各完成轻量真实资源检查、点击启动和直接调试启动，各次实际引擎均至少运行 120 帧，WASM 与内容包完整实收长度检查通过。截图使用 360×626 的桌面浏览器窗口，不能当作 Android 真机验证。报告为 `results/web-default-diagnostics-current-results.json`。
 
-`node tests/web-platform/probe-web-startup-transfers.cjs` 使用本地 HTTP 服务发送分段 WASM 和内容包，双浏览器共 14 项检查覆盖中途进度、网络中断、404、编译错误、MIME 回退、取消读取及普通加载不安装包装器。先在旧页复现 12 项诊断失败，修复后全部通过。报告为 `results/web-startup-transfers-current-results.json`，仅证明诊断记录本身，不作为完整 UE 或手机运行证明。
+`node tests/web-platform/probe-web-startup-transfers.cjs` 使用本地 HTTP 服务发送分段 WASM 和内容包，双浏览器共 24 项检查覆盖普通/调试下载进度、脚本等待、未知长度、横竖屏及桌面布局、首帧前保留界面、网络中断、404、编译错误、MIME 回退和取消读取。报告为 `results/web-startup-transfers-current-results.json`，仅证明加载界面及诊断记录本身，不作为完整 UE 或手机运行证明。
 
 需要完整控制台时，可用数据线连接 Android 手机并启用 USB 调试，在电脑 Chrome 的 `chrome://inspect/#devices` 检查手机 Chrome 页面，保存 Console、Network 中实际失败的请求。当前工作区未连接可用 ADB 设备，未执行真机远程调试。
 

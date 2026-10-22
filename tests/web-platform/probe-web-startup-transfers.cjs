@@ -40,7 +40,12 @@ const cases = [
   {name: 'wasm-transfer-interrupted', drop: true},
   {name: 'wasm-http-404', status: 404},
   {name: 'wasm-body-cancelled', cancel: true},
-  {name: 'normal-loader-unchanged', normal: true}
+  {name: 'normal-stream-progress', normal: true, hold: true},
+  {name: 'desktop-stream-progress', normal: true, hold: true, viewport: {width: 1280, height: 720}},
+  {name: 'landscape-stream-progress', normal: true, hold: true, viewport: {width: 844, height: 390}},
+  {name: 'unknown-length-progress', normal: true, hold: true, unknownLength: true},
+  {name: 'script-wait', normal: true, holdScript: true},
+  {name: 'normal-http-error', normal: true, status: 404}
 ];
 const report = {date: new Date().toISOString(), pass: false, fixtureOnly: true,
   sources: [__filename, source].map(audit), runs: []};
@@ -55,17 +60,17 @@ const server = http.createServer((request, response) => {
     response.end(fs.readFileSync(source));
   } else if (url.pathname === '/UEWebEngine.js') {
     response.setHeader('Content-Type', 'text/javascript');
-    response.end(script);
+    if (active.test.holdScript) active.release = () => { active.release = null; response.end(script); };
+    else response.end(script);
   } else if (url.pathname === '/UEWebEngine.wasm' || url.pathname === '/content.bin') {
     const binary = url.pathname.endsWith('.wasm');
     active.requests.push(url.pathname);
     const bytes = binary ? active.test.invalid ? Buffer.alloc(32, 255) : wasm : Buffer.alloc(16384, 7);
-    response.writeHead(binary ? active.test.status || 200 : 200, {
-      'Content-Type': binary ? active.test.mime || 'application/wasm' : 'application/octet-stream',
-      'Content-Length': bytes.length
-    });
+    response.setHeader('Content-Type', binary ? active.test.mime || 'application/wasm' : 'application/octet-stream');
+    if (!active.test.unknownLength) response.setHeader('Content-Length', bytes.length);
+    response.writeHead(binary ? active.test.status || 200 : 200);
     if (active.test.hold || binary && active.test.drop) {
-      const length = binary ? 8 : 1;
+      const length = active.test.normal ? Math.floor(bytes.length * 0.37) : binary ? 8 : 1;
       response.write(bytes.subarray(0, length));
       if (active.test.drop) setTimeout(() => response.destroy(), 100);
       else active.release = () => { active.release = null; response.end(bytes.subarray(length)); };
@@ -85,7 +90,8 @@ const resource = (state, name) => state.resources.find(item =>
       browser = await chromium.launch({headless: true, executablePath});
       for (const test of cases) {
         active = {test, requests: []};
-        const context = await browser.newContext({viewport: {width: 360, height: 626}});
+        const viewport = test.viewport || {width: 360, height: 626};
+        const context = await browser.newContext({viewport, isMobile: viewport.width < 1000, hasTouch: true});
         const page = await context.newPage();
         const run = {browser: name, version: browser.version(), name: test.name, pass: false};
         report.runs.push(run);
@@ -96,11 +102,23 @@ const resource = (state, name) => state.resources.find(item =>
             globalThis.__fixtureOriginalStreaming = WebAssembly.instantiateStreaming;
             globalThis.__fixtureOriginalInstantiate = WebAssembly.instantiate;
           }, !!test.cancel);
-          await page.goto(root + '/index.html' + (test.normal ? '' : '?debug=1'));
+          await page.goto(root + '/index.html' + (test.normal ? '' : '?debug=1'),
+            {waitUntil: 'domcontentloaded'});
+          if (test.holdScript) {
+            await page.waitForFunction(() => document.getElementById('loading-stage').textContent === '加载引擎脚本');
+            assert(await page.locator('#loading').isVisible());
+            assert.equal(await page.locator('#loading-progress').getAttribute('value'), null);
+            await page.waitForFunction(() => !document.getElementById('loading-elapsed').textContent.includes(' 0 秒'));
+            run.scriptWait = await page.locator('#loading-content').innerText();
+            active.release();
+          }
           if (test.hold) {
-            for (const [file, length, stage] of [
-              ['UEWebEngine.wasm', 8, 'wasm-downloading'], ['content.bin', 1, 'content-loading']
+            if (await page.locator('#close-diagnostics').isVisible()) await page.locator('#close-diagnostics').click();
+            for (const [file, total, stage, title] of [
+              ['UEWebEngine.wasm', wasm.length, 'wasm-downloading', '下载引擎'],
+              ['content.bin', 16384, 'content-loading', '下载场景资源']
             ]) {
+              const length = test.normal ? Math.floor(total * 0.37) : file.endsWith('.wasm') ? 8 : 1;
               await page.waitForFunction(({file, length}) =>
                 globalThis.__webStartupDiagnostics.resources.some(item =>
                   item.url.endsWith('/' + file) && item.receivedBytes >= length),
@@ -112,6 +130,25 @@ const resource = (state, name) => state.resources.find(item =>
               assert(snapshot.pending > 0 && !snapshot.settled);
               assert.equal(snapshot.stage, stage);
               assert(snapshot.elapsedMs >= 0 && transfer.lastProgressAt);
+              await page.waitForFunction(title =>
+                document.getElementById('loading-stage').textContent === title, title);
+              assert(await page.locator('#loading').isVisible());
+              assert.match(await page.locator('#loading-detail').innerText(), /MiB/);
+              assert.equal(await page.locator('#loading-percent').innerText(),
+                test.unknownLength ? '' : Math.floor(length / total * 100) + '%');
+              assert.equal(await page.locator('#loading-progress').getAttribute('value'),
+                test.unknownLength ? null : String(length));
+              const layout = await page.locator('#loading-content').evaluate(element => ({
+                left: element.getBoundingClientRect().left, right: element.getBoundingClientRect().right,
+                width: document.documentElement.clientWidth,
+                overflow: element.scrollWidth > element.clientWidth
+              }));
+              assert(layout.left >= 0 && layout.right <= layout.width && !layout.overflow);
+              if (test.normal && !test.unknownLength && file.endsWith('.wasm')) {
+                run.screenshot = path.join(__dirname, 'results', `web-loading-${name.toLowerCase()}-${viewport.width}.png`);
+                await page.screenshot({path: run.screenshot});
+                run.screenshotAudit = audit(run.screenshot);
+              }
               (run.progress ||= []).push(snapshot);
               assert(active.release);
               active.release();
@@ -119,17 +156,15 @@ const resource = (state, name) => state.resources.find(item =>
           }
           await page.waitForFunction(() => globalThis.__fixtureDone, null, {timeout: 10000});
           run.state = await page.evaluate(() => ({...startupSnapshot(),
-            loaderUnchanged: fetch === globalThis.__fixtureOriginalFetch &&
-              WebAssembly.instantiateStreaming === globalThis.__fixtureOriginalStreaming &&
-              WebAssembly.instantiate === globalThis.__fixtureOriginalInstantiate}));
+            observingTransfers: fetch !== globalThis.__fixtureOriginalFetch &&
+              WebAssembly.instantiateStreaming !== globalThis.__fixtureOriginalStreaming &&
+              WebAssembly.instantiate !== globalThis.__fixtureOriginalInstantiate}));
           run.requests = [...active.requests];
           const state = run.state;
           assert.equal(state.pending, 0);
           assert(state.settled);
-          if (test.normal) {
-            assert(state.loaderUnchanged);
-            assert(!state.wasm && !resource(state, 'UEWebEngine.wasm'));
-          } else {
+          assert(state.observingTransfers);
+          {
             const transfer = resource(state, 'UEWebEngine.wasm');
             assert(transfer && transfer.durationMs >= 0);
             assert.equal(state.version, 3);
@@ -156,18 +191,32 @@ const resource = (state, name) => state.resources.find(item =>
                   item.outcome === 'complete'));
               } else {
                 assert.equal(transfer.receivedBytes, wasm.length);
-                assert(transfer.bodyComplete && transfer.lengthMatches);
+                assert(transfer.bodyComplete);
+                if (!test.unknownLength) assert(transfer.lengthMatches);
               }
               const content = resource(state, 'content.bin');
               assert.equal(content.receivedBytes, 16384);
-              assert(content.bodyComplete && content.lengthMatches);
+              assert(content.bodyComplete);
+              if (!test.unknownLength) assert(content.lengthMatches);
             }
           }
           if (test.invalid || test.drop || test.status) {
             assert(state.failure && state.stage === 'failed');
+            if (await page.locator('#close-diagnostics').isVisible()) await page.locator('#close-diagnostics').click();
+            await page.waitForFunction(() => document.getElementById('loading-stage').textContent === '加载失败');
+            assert(await page.locator('#loading-retry').isVisible());
+            assert.equal(await page.locator('#loading-error').innerText(), state.failure);
+            await page.locator('#loading-diagnostics').click();
+            assert(await page.locator('#diagnostics').isVisible());
           } else {
             assert.equal(state.failure, null);
             assert.equal(state.stage, 'running');
+            if (await page.locator('#close-diagnostics').isVisible()) await page.locator('#close-diagnostics').click();
+            await page.waitForFunction(() => document.getElementById('loading-stage').textContent === '准备首帧画面');
+            assert(await page.locator('#loading').isVisible(), 'ready without frames must keep loading visible');
+            await page.evaluate(() => { globalThis.__webEngineFrames = 2; });
+            await page.waitForFunction(() => document.getElementById('loading').hidden);
+            assert.equal(await page.locator('#canvas').getAttribute('aria-busy'), 'false');
           }
           assert.equal(active.requests.filter(url => url.endsWith('.wasm')).length,
             test.mime || test.invalid || test.drop || test.status ? 2 : 1);
