@@ -6,6 +6,23 @@
 
 启动故障现已在不加载 UE 的实际管线回放及独立 DXC 中复现。受限核心条件下完整效果对照可以通过，默认调度也有长循环通过的反例，尚不能据此认定硬件损坏或编译器并发缺陷；诊断复现见 [DXC 主机对照](H:/ue_html/tests/web-platform/diagnostics/README.md)。限制核心仅用于测试，不改变发布包或正常页面。
 
+## 天空性能对照
+
+`probe-web-default-performance.cjs` 在当前独立包上，通过原有组件测试接口分别关闭云、高度雾及两者，再恢复原始状态。默认视角和实际鼠标输入转到约 70 度的抬头视角各测四种组合，两轮反转顺序；位置、太阳、天空大气及画质设置保持一致。每个组合先预热十帧，再记录指定时长内 UE 完成 Tick 的间隔。这里的 FPS 是引擎帧率，不是显示器实际扫描帧率。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --report=chrome-dpr2-ordinary
+node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=1 --gpu-timing --report=chrome-dpr1-verified-gpu
+node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --gpu-timing --report=chrome-dpr2-verified-gpu
+```
+
+`--gpu-timing` 只给测试设备增加 `timestamp-query`，在每个组合另抽样五帧，记录真实渲染/计算通道的 GPU 时间；不在 FPS 采样期间逐帧读回。通过 Cook 作业中的入口映射识别原始云和雾着色器，按真实绘制命令断言云通道及高度雾排列跟随组件开关。关闭高度雾后 `FMobileFogPS` 仍使用不含高度雾的排列计算大气透视，不应要求整条通道消失。GPU 通道时间之和不包括 CPU 提交、通道间空隙和显示等待；高度雾与 BasePass 共享通道，不能把该通道整体算作高度雾耗时。浏览器时间戳精度有限，接近零的短通道不用于比较微小差异。
+
+测试使用默认 CPU 调度、不添加 GPU 后端开关，固定 CSS 视口为 1848×1120；画布为 16:9，DPR 1 实际为 1848×1040，DPR 2 为 3696×2079。普通对照不启用 GPU 时间戳。每份报告记录包与探针哈希、浏览器、相机、实际像素尺寸、错误和原始样本，写入 `results/web-default-performance-<report>-results.json`；截图保存在同目录。
+
+2026-10-22 的本机 RTX 3070 测试已复现高 DPI 下约 10 FPS，关闭云恢复到约 120 FPS，只关闭高度雾仍约 10 FPS。当前云使用全分辨率像素步进，`r.VolumetricRenderTarget=0`，没有接入云的低分辨率时域重建；性能结果和后续优化边界见默认关卡进度。该探针只用于诊断，不修改发布包，也不表示性能问题已修复；此前一分钟的默认视角交互测试不能代替高 DPI 天空性能验收。
+
 以下为历史检查点，不能作为当前独立包的验收结果。
 
 **2026-10-20 第四十八轮：RenderCurve/Nanite 默认资源阻塞已越过。** 三个文件共新增 16 行 Web 分支，曲线扩展在 Web 禁用、默认参数清零，Nanite 材质/ownership 默认参数清零；注册、已有 Nanite 能力检查和其他平台正文保留。没有增加毛发、Nanite 或缓冲类型支持。重编原有材质提供者解决链接缺符号后，最终 28 单元/415 项诊断链接通过；完整正常 Web Engine UBT 仍待验收。
