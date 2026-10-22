@@ -429,9 +429,11 @@ node .\tests\web-platform\serve.cjs
 
 ### 手机启动诊断
 
-手机先打开 `http://10.1.1.200:8765/build/ue-default-template/index.html?diagnostics=1`。当前报告版本为 2：检查六个文件的 HEAD 响应，实际 GET 引擎 JS 并记录正文长度、SHA-256、最终地址、重定向及耗时，再执行六种小纹理和一个空计算管线检查。JS 下载限制为 1 MiB、12 秒；不会执行该 JS 或下载 WASM、关卡资源包。此模式通过仅代表上述基础检查通过。
+手机先打开 `http://10.1.1.200:8765/build/ue-default-template/index.html?diagnostics=1`。当前报告版本为 3：检查六个文件的 HEAD 响应，实际 GET 引擎 JS 并记录正文长度、SHA-256、最终地址、重定向及耗时，再执行六种小纹理和一个空计算管线检查。JS 下载限制为 1 MiB、12 秒；不会执行该 JS 或下载 WASM、关卡资源包。此模式通过仅代表上述基础检查通过。
 
-轻量模式通过后，使用 `?debug=1` 启动真实引擎并记录实际 GPU 适配器、设备请求、错误和最后 80 条 UE 日志。普通页面发生错误也会自动展开报告。使用“复制报告”或“下载报告”导出 JSON；请求尚未完成时 `pending` 大于零，应等其归零。正常运行仍使用原 URL。
+轻量模式通过后点击“启动引擎”，或直接使用 `?debug=1`。调试模式记录实际 GPU 适配器、设备请求、错误和最后 80 条 UE 日志，并观察真实 WASM、内容包及清单请求：`receivedBytes` 为流式消费者已读取的字节数，`bytes` 为响应头中的长度，另有 `bodyComplete`、`lastProgressAt`、状态、重定向和耗时。转发流保留背压，不复制第二份完整 WASM，也不添加额外的引擎下载请求。`wasm` 数组分别记录原生流式实例化和 ArrayBuffer 回退的结果、耗时及原始异常；流式失败但回退成功时保留该记录，不把它直接判定为启动失败。
+
+普通页面发生错误也会自动展开报告。使用“复制报告”或“下载报告”导出 JSON；`settled=true` 表示轻量检查完成、UE ready 或启动失败，脚本加载完成本身不再算作启动完成。正常完成后 `pending` 为零；下载停滞时可直接导出尚有 `pending` 的报告，结合 `elapsedMs` 和 `lastProgressAt` 定位。正常运行仍使用原 URL，普通页面不安装下载或 WebAssembly 包装器。
 
 | 报告结果 | 定位方向 |
 | --- | --- |
@@ -440,12 +442,18 @@ node .\tests\web-platform\serve.cjs
 | JS GET 的 `error` / `timedOut` | 检查实际 HTTP 状态、传输错误和耗时；12 秒是诊断请求的超时，不是浏览器原始脚本的超时 |
 | JS GET 的 `looksLikeHTML=true` | 请求返回了 HTML，检查登录页、代理及错误路由 |
 | JS GET 完整、脚本仍失败 | 比较 `engineScript` 原始请求记录及 `security-policy` 错误；可能需要浏览器远程控制台，尚不能凭 GET 成功认定具体拦截原因 |
+| `wasm-downloading`，`receivedBytes` 尚在增加 | 实际 WASM 仍在消费下载流；流式编译可能同时进行，不能直接判断为编译卡死 |
+| `wasm-compiling`，WASM 的 `bodyComplete=true` | 正文已读完，查看 `wasm` 中当前实例化是否完成或报错 |
+| `wasm` 中先有错误、后有 `complete` | 浏览器已完成回退；以最终启动结果及 UE 日志判断，不只取第一条流式错误 |
+| `content-loading` | 查看内容包和清单的进度、HTTP 状态，以及最终挂载或哈希校验错误 |
 | `gpu-device` / `gpu-validation` / `gpu-device-lost` | 查看实际要求的 features、limits 及原始错误；基础纹理探针不覆盖全部 UE 管线 |
 | `CompileError`、`RuntimeError` 或 `content-loading` | 此时再定位完整 WASM 编译、运行或资源挂载；不要与脚本下载失败混为一谈 |
 
-2026-10-22 收到的真机报告显示基础能力全部为 true，但 UE JS 资源加载失败、UE 日志为空、渲染帧为零；原报告只有 HEAD 200，不能据此判断云、雾不兼容，也没有证据判定为手机内存不足。原始请求从页面开始到报错约 12 分 21 秒；新版增加请求耗时、正文检查及页面前后台切换记录以继续区分原因。手机修复尚未验收。
+2026-10-22 首份真机报告显示基础能力全部为 true，但 UE JS 资源加载失败、UE 日志为空、渲染帧为零；原报告只有 HEAD 200，不能据此判断云、雾不兼容，也没有证据判定为手机内存不足。原始请求从页面开始到报错约 12 分 21 秒。随后版本 2 的真机轻量报告完整读取 347637 字节 JS，SHA-256 与本地构建一致，耗时 9559 毫秒，六种纹理及空管线均通过；该次未执行引擎脚本，仍需版本 3 的实际调试启动报告。手机修复尚未验收。
 
-诊断回归：设置下方 `NODE_PATH` 后运行 `node tests/web-platform/probe-web-default-diagnostics.cjs --runtime --report=current`。Chrome、Edge 共 40 项故障注入及导出检查通过，包括 HEAD 200 / GET 失败、脚本安全策略拦截、HTML 正文及重定向；两浏览器各完成轻量真实资源检查和真实引擎至少 120 帧运行。截图使用 360×626 的桌面浏览器窗口，不能当作 Android 真机验证。报告为 `results/web-default-diagnostics-current-results.json`。
+诊断回归：设置下方 `NODE_PATH` 后运行 `node tests/web-platform/probe-web-default-diagnostics.cjs --runtime --report=current`。Chrome、Edge 共 40 项故障注入及导出检查通过，包括 HEAD 200 / GET 失败、脚本安全策略拦截、HTML 正文及重定向；两浏览器各完成轻量真实资源检查、点击启动和直接调试启动，各次实际引擎均至少运行 120 帧，WASM 与内容包完整实收长度检查通过。截图使用 360×626 的桌面浏览器窗口，不能当作 Android 真机验证。报告为 `results/web-default-diagnostics-current-results.json`。
+
+`node tests/web-platform/probe-web-startup-transfers.cjs` 使用本地 HTTP 服务发送分段 WASM 和内容包，双浏览器共 14 项检查覆盖中途进度、网络中断、404、编译错误、MIME 回退、取消读取及普通加载不安装包装器。先在旧页复现 12 项诊断失败，修复后全部通过。报告为 `results/web-startup-transfers-current-results.json`，仅证明诊断记录本身，不作为完整 UE 或手机运行证明。
 
 需要完整控制台时，可用数据线连接 Android 手机并启用 USB 调试，在电脑 Chrome 的 `chrome://inspect/#devices` 检查手机 Chrome 页面，保存 Console、Network 中实际失败的请求。当前工作区未连接可用 ADB 设备，未执行真机远程调试。
 

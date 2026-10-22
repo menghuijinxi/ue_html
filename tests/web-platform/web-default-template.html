@@ -21,6 +21,7 @@ canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-rat
 <aside id="diagnostics" aria-label="启动诊断" hidden>
   <header>
     <strong>启动诊断</strong>
+    <button id="start-engine" type="button" hidden disabled>启动引擎</button>
     <button id="copy-diagnostics" type="button">复制报告</button>
     <button id="download-diagnostics" type="button">下载报告</button>
     <button id="reload-diagnostics" type="button">重新加载</button>
@@ -32,11 +33,12 @@ canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-rat
 </aside>
 <script>
 globalThis.__webEngineLog = [];
+const startupStarted = performance.now();
 const startupOptions = new URLSearchParams(location.search);
 const startupOnly = startupOptions.get('diagnostics') === '1';
 const startupDebug = startupOnly || startupOptions.get('debug') === '1';
 const startupDiagnostics = globalThis.__webStartupDiagnostics = {
-  version: 2, startedAt: new Date().toISOString(), url: location.href,
+  version: 3, startedAt: new Date().toISOString(), url: location.href,
   userAgent: navigator.userAgent, platform: navigator.platform,
   hardwareConcurrency: navigator.hardwareConcurrency, deviceMemoryGiB: navigator.deviceMemory,
   screen: {width: innerWidth, height: innerHeight, dpr: devicePixelRatio},
@@ -48,7 +50,8 @@ const startupDiagnostics = globalThis.__webStartupDiagnostics = {
 };
 let startupRenderPending = false;
 function startupSnapshot() {
-  return {...startupDiagnostics, failure: globalThis.__webEngineFailure || null,
+  return {...startupDiagnostics, elapsedMs: Math.round(performance.now() - startupStarted),
+    failure: globalThis.__webEngineFailure || null,
     frames: globalThis.__webEngineFrames || 0, ready: globalThis.__webEngineReady || null,
     engineRuntime: globalThis.__webEngineRuntime || null, engineLog: globalThis.__webEngineLog.slice(-80)};
 }
@@ -89,6 +92,13 @@ document.getElementById('close-diagnostics').onclick = () => {
   document.getElementById('diagnostics').hidden = true;
 };
 document.getElementById('reload-diagnostics').onclick = () => location.reload();
+document.getElementById('start-engine').hidden = !startupOnly;
+document.getElementById('start-engine').onclick = () => {
+  const url = new URL(location.href);
+  url.searchParams.delete('diagnostics');
+  url.searchParams.set('debug', '1');
+  location.assign(url.href);
+};
 document.getElementById('copy-diagnostics').onclick = async () => {
   try {
     await navigator.clipboard.writeText(JSON.stringify(startupSnapshot(), null, 2));
@@ -107,6 +117,9 @@ document.getElementById('download-diagnostics').onclick = () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 if (startupDebug) document.getElementById('diagnostics').hidden = false;
+if (startupDebug) setInterval(() => {
+  if (!startupDiagnostics.settled || startupDiagnostics.pending) startupRender();
+}, 1000);
 function startupTimings(url) {
   return performance.getEntriesByName(url).filter(entry => entry.entryType === 'resource').slice(-8)
     .map(entry => Object.fromEntries(['initiatorType', 'startTime', 'duration', 'fetchStart',
@@ -184,6 +197,118 @@ async function startupResource(url, method = 'HEAD') {
     startupRender();
   }
   return item;
+}
+function startupObserveTransfers() {
+  const originalFetch = globalThis.fetch;
+  const files = new Map(['UEWebEngine.wasm', 'content.bin', 'content-files.json', 'config-files.json']
+    .map(file => [new URL(file, location.href).href, file]));
+  const responses = new WeakMap();
+  startupDiagnostics.wasm = [];
+  globalThis.fetch = async function(input, options) {
+    const url = new URL(input instanceof Request ? input.url : input, location.href).href;
+    const method = (options?.method || (input instanceof Request ? input.method : 'GET')).toUpperCase();
+    const file = files.get(url);
+    if (!file || method !== 'GET') return originalFetch.call(this, input, options);
+    const started = performance.now();
+    const item = {url, method, startedAt: new Date().toISOString(), outcome: 'requesting',
+      receivedBytes: 0, bodyComplete: false};
+    startupDiagnostics.resources.push(item);
+    ++startupDiagnostics.pending;
+    startupStage(file.endsWith('.wasm') ? 'wasm-downloading' : 'content-loading');
+    let finished = false;
+    function finish(outcome, error) {
+      if (finished) return;
+      finished = true;
+      item.outcome = outcome;
+      item.durationMs = Math.round(performance.now() - started);
+      item.timings = startupTimings(url);
+      if (error) { item.error = error.message || String(error); item.errorName = error.name; }
+      if (outcome === 'complete') {
+        item.bodyComplete = true;
+        if (item.bytes !== null && (!item.contentEncoding || item.contentEncoding === 'identity'))
+          item.lengthMatches = Number(item.bytes) === item.receivedBytes;
+        if (file.endsWith('.wasm') && startupDiagnostics.wasm.some(attempt => attempt.outcome === 'pending'))
+          startupStage('wasm-compiling');
+      }
+      --startupDiagnostics.pending;
+      startupRender();
+    }
+    try {
+      const response = await originalFetch.call(this, input, options);
+      Object.assign(item, {status: response.status, contentType: response.headers.get('content-type'),
+        bytes: response.headers.get('content-length'), contentEncoding: response.headers.get('content-encoding'),
+        responseUrl: response.url, redirected: response.redirected, responseType: response.type,
+        headersMs: Math.round(performance.now() - started)});
+      if (!response.ok) { finish('error', new Error(`HTTP ${response.status}: ${url}`)); return response; }
+      if (!response.body) { finish('complete'); return response; }
+      item.outcome = 'downloading';
+      const reader = response.body.getReader();
+      const cancel = reason => {
+        if (finished) return Promise.resolve();
+        item.cancelReason = reason?.message || String(reason ?? '');
+        finish('cancelled');
+        return reader.cancel(reason).finally(() => reader.releaseLock());
+      };
+      // Forward each chunk once with backpressure; do not clone or buffer a second Wasm copy.
+      const body = new ReadableStream({
+        async pull(controller) {
+          try {
+            const {done, value} = await reader.read();
+            if (done) {
+              finish('complete');
+              reader.releaseLock();
+              controller.close();
+            } else {
+              item.receivedBytes += value.byteLength;
+              item.lastProgressAt = new Date().toISOString();
+              controller.enqueue(value);
+              startupRender();
+            }
+          } catch (error) {
+            finish('error', error);
+            reader.releaseLock();
+            controller.error(error);
+          }
+        },
+        cancel
+      }, {highWaterMark: 0});
+      const observed = new Response(body, {status: response.status,
+        statusText: response.statusText, headers: response.headers});
+      responses.set(observed, cancel);
+      return observed;
+    } catch (error) { finish('error', error); throw error; }
+    finally { startupRender(); }
+  };
+  for (const method of ['instantiateStreaming', 'instantiate']) {
+    const original = WebAssembly[method];
+    if (!original) continue;
+    WebAssembly[method] = async function(source, ...args) {
+      const started = performance.now();
+      const attempt = {method, startedAt: new Date().toISOString(), outcome: 'pending'};
+      startupDiagnostics.wasm.push(attempt);
+      startupStage(method === 'instantiateStreaming' ? 'wasm-downloading' : 'wasm-compiling');
+      let response;
+      try {
+        if (method === 'instantiateStreaming') {
+          source = Promise.resolve(source).then(value => { response = value; return value; });
+        }
+        const result = await original.call(this, source, ...args);
+        attempt.outcome = 'complete';
+        startupStage('wasm-ready');
+        return result;
+      } catch (error) {
+        Object.assign(attempt, {outcome: 'error', error: error.message || String(error),
+          errorName: error.name, stack: error.stack});
+        // Streaming may reject the MIME before consuming the body; release that discarded request.
+        await responses.get(response)?.(error).catch(() => {});
+        startupStage('wasm-instantiation-failed');
+        throw error;
+      } finally {
+        attempt.durationMs = Math.round(performance.now() - started);
+        startupRender();
+      }
+    };
+  }
 }
 function startupLimits(limits) {
   const result = {};
@@ -272,7 +397,10 @@ function record(text) {
   ]) {
     if (text.startsWith(prefix)) {
       globalThis[key] = JSON.parse(text.slice(prefix.length));
-      if (key === '__webEngineReady') startupStage('running');
+      if (key === '__webEngineReady') {
+        startupStage('running');
+        startupDiagnostics.settled = true;
+      }
     }
   }
   if (/^P3_ENGINE_(?:PREINIT|INIT)_FAILED /.test(text)) failed(text);
@@ -283,6 +411,11 @@ async function digest(bytes) {
     value => value.toString(16).padStart(2, '0')).join('');
 }
 async function fetchFile(url, json = false) {
+  if (startupDebug && !startupOnly) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
+    return json ? await response.json() : new Uint8Array(await response.arrayBuffer());
+  }
   const item = {url: new URL(url, location.href).href, method: 'GET'};
   startupDiagnostics.resources.push(item);
   try {
@@ -425,9 +558,13 @@ if (!capabilities.secureContext) {
     throw new Error('启动资源检查失败，具体 HTTP 状态或网络错误见 resources。');
   startupStage('diagnostics-complete');
   startupDiagnostics.settled = true;
+  document.getElementById('start-engine').disabled = false;
   startupRender();
 } else {
-  if (startupDebug) startupObserveGPU();
+  if (startupDebug) {
+    startupObserveTransfers();
+    startupObserveGPU();
+  }
   startupStage('engine-script-loading');
   const engine = document.createElement('script');
   engine.src = 'UEWebEngine.js';
@@ -435,8 +572,7 @@ if (!capabilities.secureContext) {
     startTime: performance.now(), outcome: 'loading'};
   engine.onload = () => {
     startupScriptResult('loaded');
-    if (!globalThis.__webEngineReady) startupStage('wasm-initializing');
-    startupDiagnostics.settled = true;
+    if (startupDiagnostics.stage === 'engine-script-loading') startupStage('wasm-initializing');
     startupRender();
   };
   document.body.appendChild(engine);

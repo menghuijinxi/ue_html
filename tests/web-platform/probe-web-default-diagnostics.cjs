@@ -92,6 +92,8 @@ const cases = [
       assert(state.diagnostics.resources.some(item => /UEWebEngine\.wasm$/.test(item.url) && item.status === 200));
       assert(scriptBody(state)?.bodyComplete && !scriptBody(state).error);
       assert(!state.scriptRequested && !state.largeDownload);
+      assert(state.startButtonVisible && !state.startButtonDisabled);
+      assert(state.panelScrollWidth <= state.panelBounds.width + 1);
     }},
   {name: 'script-body-is-html', only: true,
     getResponse: {contentType: 'text/html', body: '<!doctype html><title>Login required</title>'},
@@ -184,6 +186,7 @@ let browser;
           await page.goto(root + 'index.html?' + (test.only ? 'diagnostics=1' : 'debug=1'));
           await page.waitForFunction(() =>
             globalThis.__webStartupDiagnostics?.settled && !globalThis.__webStartupDiagnostics.pending ||
+            globalThis.__diagnosticScriptLoaded ||
             !globalThis.__webStartupDiagnostics && (globalThis.__webEngineFailure || globalThis.__diagnosticScriptLoaded),
           null, {timeout: 10000});
           // Include errors dispatched after the initial synchronous script exception.
@@ -192,7 +195,9 @@ let browser;
             const panel = document.getElementById('diagnostics');
             return {failure: globalThis.__webEngineFailure || null, diagnostics: globalThis.__webStartupDiagnostics,
               panelVisible: panel ? !panel.hidden : false, panelBounds: panel?.getBoundingClientRect().toJSON(),
-              panelScrollWidth: panel?.scrollWidth};
+              panelScrollWidth: panel?.scrollWidth,
+              startButtonVisible: !document.getElementById('start-engine')?.hidden,
+              startButtonDisabled: document.getElementById('start-engine')?.disabled};
           });
           run.state.scriptRequested = requests.some(item => item.resourceType === 'script' && item.url === script);
           run.state.largeDownload = requests.some(item => item.method !== 'HEAD' &&
@@ -249,11 +254,33 @@ let browser;
               const item = scriptBody({diagnostics: run.state});
               assert.equal(item.sha256, audit(path.join(__dirname, 'build/ue-default-template/UEWebEngine.js')).sha256);
               assert(item.bodyComplete && item.receivedBytes > 300000);
+              const screenshot = path.join(directory, `web-startup-lightweight-${name.toLowerCase()}-${suffix}.png`);
+              await page.screenshot({path: screenshot});
+              run.lightweightScreenshot = audit(screenshot);
+              await page.locator('#start-engine').click();
+              await page.waitForURL(root + 'index.html?debug=1');
+              await page.waitForFunction(() => globalThis.__webEngineFailure ||
+                globalThis.__webEngineFrames >= 120, null, {timeout: 120000});
+              run.startedEngine = await page.evaluate(() => startupSnapshot());
+              assert.equal(run.startedEngine.failure, null);
+              assert(run.startedEngine.frames >= 120 && run.startedEngine.ready);
+              assert.equal(run.startedEngine.mode, 'debug');
+              assert.equal(run.errors.length, 0);
             } else {
               assert.equal(run.state.stage, 'running');
               assert(run.state.frames >= 120 && run.state.ready);
               assert(run.state.gpu.deviceLimits.maxTextureDimension3D > 0);
               assert(run.state.engineLog.length > 0);
+            }
+            const started = run.startedEngine || (query === 'debug=1' ? run.state : null);
+            assert(started && started.version === 3 && started.settled && started.pending === 0);
+            assert.equal(started.errors.length, 0);
+            assert(started.wasm.some(item => item.method === 'instantiateStreaming' &&
+              item.outcome === 'complete'));
+            for (const name of ['UEWebEngine.wasm', 'content.bin']) {
+              const item = started.resources.find(item => item.url === root + name && item.method === 'GET');
+              assert(item?.bodyComplete && item.lengthMatches && !item.error);
+              assert.equal(item.receivedBytes, fs.statSync(path.join(__dirname, 'build/ue-default-template', name)).size);
             }
             run.pass = true;
           } catch (error) { run.failure = error.stack || String(error); }
