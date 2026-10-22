@@ -421,15 +421,21 @@ Set-Location H:\ue_html
 node .\tests\web-platform\serve.cjs
 ```
 
-当前物理网卡地址为 `10.1.1.200`，同一局域网设备可访问 `http://10.1.1.200:8765/build/ue-default-template/index.html`。IP 变化时以启动日志中的物理网卡地址为准；`HOST`、`PORT` 环境变量可覆盖监听地址和端口，例如设置 `$env:HOST='127.0.0.1'` 可恢复仅本机访问。
+当前 WLAN 地址为 `10.199.199.245`，同一局域网设备可访问 `http://10.199.199.245:8765/build/ue-default-template/index.html`。原地址 `10.1.1.200` 已不在当前网卡上；网络变化后以 `Get-NetIPAddress -AddressFamily IPv4` 为准，服务启动日志只反映启动时的地址。`HOST`、`PORT` 环境变量可覆盖监听地址和端口，例如设置 `$env:HOST='127.0.0.1'` 可恢复仅本机访问。
 
-局域网 HTTP 地址不是安全上下文，直接访问时 WebGPU、`crypto.subtle` 和跨源隔离不可用。仅用于局域网开发测试时，可在测试设备的 Chrome 打开 `chrome://flags/#unsafely-treat-insecure-origin-as-secure`，在 **Insecure origins treated as secure** 中填入完整来源 `http://10.1.1.200:8765`，选择 **Enabled** 后重启浏览器。Edge 使用对应的 `edge://flags/#unsafely-treat-insecure-origin-as-secure`。配置只填写来源，不包含页面路径；正常分发应使用受设备信任的 HTTPS。此方式来自 [Chrome WebGPU 故障排查文档](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips)；测试设备还需支持当前包使用的 WebGPU 和 wasm64。
+局域网 HTTP 地址不是安全上下文，直接访问时 WebGPU、`crypto.subtle` 和跨源隔离不可用。仅用于局域网开发测试时，可在测试设备的 Chrome 打开 `chrome://flags/#unsafely-treat-insecure-origin-as-secure`，在 **Insecure origins treated as secure** 中填入完整来源 `http://10.199.199.245:8765`，选择 **Enabled** 后重启浏览器。Edge 使用对应的 `edge://flags/#unsafely-treat-insecure-origin-as-secure`。配置只填写来源，不包含页面路径；正常分发应使用受设备信任的 HTTPS。此方式来自 [Chrome WebGPU 故障排查文档](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips)；测试设备还需支持当前包使用的 WebGPU 和 wasm64。
 
 独立包会在加载引擎前检查安全上下文、WebGPU、跨源隔离、Web Crypto、BigInt 数组和最小 memory64 模块；条件不满足时显示具体原因，不下载引擎与大资源包。最小 memory64 检查通过不等于完整 UE WASM 编译或手机内存验收通过。局域网回归命令为 `node tests/web-platform/probe-web-lan.cjs --origin=http://10.1.1.200:8765`，需先设置下方的 `NODE_PATH`。它检查本机/局域网资源响应头、双浏览器未信任来源的明确提示，以及信任后真实渲染和 Pawn 移动；不会修改用户浏览器配置。报告写入 `results/web-lan-results.json`，本机对网卡地址的验证不能替代其他设备的实际连通测试。
 
+### 触屏视角
+
+默认关卡独立页面支持在画布上单指拖动旋转视角，横竖屏均可使用。触屏输入复用 UE 已有的右键拖动通路；手指抬起、触摸取消、失去焦点或页面进入后台时释放拖动，下一次触摸重新建立起点。第二根手指不接管当前视角；画布内禁用浏览器滚动、缩放及文本选择，诊断面板仍可滚动和操作。
+
+本次仅提供触屏旋转，未添加移动摇杆或双指缩放。用户已确认先前启动失败来自网络问题，手机现在可以渲染；这个确认不等于手机长时间运行或性能验收通过。触控回归使用 `node tests/web-platform/probe-web-default-touch.cjs`，通过浏览器原生触控模拟检查真实 UE 摄像机和渲染截图，报告为 `results/web-default-touch-current-results.json`；桌面触控模拟与手机实测分别记录。
+
 ### 手机启动诊断
 
-手机先打开 `http://10.1.1.200:8765/build/ue-default-template/index.html?diagnostics=1`。当前报告版本为 3：检查六个文件的 HEAD 响应，实际 GET 引擎 JS 并记录正文长度、SHA-256、最终地址、重定向及耗时，再执行六种小纹理和一个空计算管线检查。JS 下载限制为 1 MiB、12 秒；不会执行该 JS 或下载 WASM、关卡资源包。此模式通过仅代表上述基础检查通过。
+手机先打开 `http://10.199.199.245:8765/build/ue-default-template/index.html?diagnostics=1`。当前报告版本为 3：检查六个文件的 HEAD 响应，实际 GET 引擎 JS 并记录正文长度、SHA-256、最终地址、重定向及耗时，再执行六种小纹理和一个空计算管线检查。JS 下载限制为 1 MiB、12 秒；不会执行该 JS 或下载 WASM、关卡资源包。此模式通过仅代表上述基础检查通过。
 
 轻量模式通过后点击“启动引擎”，或直接使用 `?debug=1`。调试模式记录实际 GPU 适配器、设备请求、错误和最后 80 条 UE 日志，并观察真实 WASM、内容包及清单请求：`receivedBytes` 为流式消费者已读取的字节数，`bytes` 为响应头中的长度，另有 `bodyComplete`、`lastProgressAt`、状态、重定向和耗时。转发流保留背压，不复制第二份完整 WASM，也不添加额外的引擎下载请求。`wasm` 数组分别记录原生流式实例化和 ArrayBuffer 回退的结果、耗时及原始异常；流式失败但回退成功时保留该记录，不把它直接判定为启动失败。
 
@@ -449,7 +455,7 @@ node .\tests\web-platform\serve.cjs
 | `gpu-device` / `gpu-validation` / `gpu-device-lost` | 查看实际要求的 features、limits 及原始错误；基础纹理探针不覆盖全部 UE 管线 |
 | `CompileError`、`RuntimeError` 或 `content-loading` | 此时再定位完整 WASM 编译、运行或资源挂载；不要与脚本下载失败混为一谈 |
 
-2026-10-22 首份真机报告显示基础能力全部为 true，但 UE JS 资源加载失败、UE 日志为空、渲染帧为零；原报告只有 HEAD 200，不能据此判断云、雾不兼容，也没有证据判定为手机内存不足。原始请求从页面开始到报错约 12 分 21 秒。随后版本 2 的真机轻量报告完整读取 347637 字节 JS，SHA-256 与本地构建一致，耗时 9559 毫秒，六种纹理及空管线均通过；该次未执行引擎脚本，仍需版本 3 的实际调试启动报告。手机修复尚未验收。
+2026-10-22 首份真机报告显示基础能力全部为 true，但 UE JS 资源加载失败、UE 日志为空、渲染帧为零；原报告只有 HEAD 200，不能据此判断云、雾不兼容，也没有证据判定为手机内存不足。原始请求从页面开始到报错约 12 分 21 秒。随后版本 2 的真机轻量报告完整读取 347637 字节 JS，SHA-256 与本地构建一致，耗时 9559 毫秒，六种纹理及空管线均通过。版本 3 的实际启动报告一次记录 JS 已加载、WASM 正文约 89.47%，另一次 JS 原始响应只记录 37380 字节后失败，尚未实例化 WASM。用户随后确认是网络问题，手机已能渲染；未据此修改渲染、浏览器能力或引擎内存设置，真机性能和持续稳定性仍未验收。
 
 诊断回归：设置下方 `NODE_PATH` 后运行 `node tests/web-platform/probe-web-default-diagnostics.cjs --runtime --report=current`。Chrome、Edge 共 40 项故障注入及导出检查通过，包括 HEAD 200 / GET 失败、脚本安全策略拦截、HTML 正文及重定向；两浏览器各完成轻量真实资源检查、点击启动和直接调试启动，各次实际引擎均至少运行 120 帧，WASM 与内容包完整实收长度检查通过。截图使用 360×626 的桌面浏览器窗口，不能当作 Android 真机验证。报告为 `results/web-default-diagnostics-current-results.json`。
 

@@ -6,7 +6,7 @@
 <style>
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
 body { display: grid; place-items: center; }
-canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-ratio: 16 / 9; outline: none; }
+canvas { display: block; width: min(100vw, 177.7778vh); height: auto; aspect-ratio: 16 / 9; outline: none; touch-action: none; user-select: none; -webkit-user-select: none; }
 [hidden] { display: none !important; }
 #diagnostics { position: fixed; inset: 8px; z-index: 10; display: flex; flex-direction: column; min-width: 0; background: #151515; color: #eee; font: 13px/1.5 monospace; }
 #diagnostics header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px; border-bottom: 1px solid #555; }
@@ -478,7 +478,53 @@ var Module = {
     })().catch(failed);
   }]
 };
-Module.canvas.addEventListener('click', () => {
+// Feed single-finger deltas through the existing UE right-drag input path, in CSS pixels like a mouse.
+let lookTouch = null;
+function touchMouse(type, x, y, dx = 0, dy = 0) {
+  Module.canvas.dispatchEvent(new MouseEvent(type, {bubbles: true, cancelable: true, view: window,
+    button: 2, buttons: type === 'mouseup' ? 0 : 2, clientX: x, clientY: y,
+    movementX: dx, movementY: dy}));
+}
+function releaseLookTouch() {
+  if (!lookTouch) return;
+  const touch = lookTouch;
+  lookTouch = null;
+  touchMouse('mouseup', touch.x, touch.y);
+  if (Module.canvas.hasPointerCapture(touch.id)) Module.canvas.releasePointerCapture(touch.id);
+}
+Module.canvas.addEventListener('pointerdown', event => {
+  if (event.pointerType !== 'touch') return;
+  event.preventDefault();
+  if (!globalThis.__webEngineReady || !event.isPrimary || lookTouch) return;
+  Module.canvas.focus({preventScroll: true});
+  lookTouch = {id: event.pointerId, x: event.clientX, y: event.clientY};
+  Module.canvas.setPointerCapture(event.pointerId);
+  touchMouse('mousedown', event.clientX, event.clientY);
+}, {passive: false});
+Module.canvas.addEventListener('pointermove', event => {
+  if (event.pointerType !== 'touch' || lookTouch?.id !== event.pointerId) return;
+  event.preventDefault();
+  const dx = event.clientX - lookTouch.x, dy = event.clientY - lookTouch.y;
+  lookTouch.x = event.clientX;
+  lookTouch.y = event.clientY;
+  touchMouse('mousemove', event.clientX, event.clientY, dx, dy);
+}, {passive: false});
+for (const type of ['pointerup', 'pointercancel', 'lostpointercapture'])
+  Module.canvas.addEventListener(type, event => {
+    if (lookTouch?.id === event.pointerId) releaseLookTouch();
+  });
+function cancelLookTouch() {
+  if (!lookTouch) return;
+  releaseLookTouch();
+  Module.canvas.blur();
+}
+addEventListener('blur', cancelLookTouch);
+Module.canvas.addEventListener('blur', releaseLookTouch);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) cancelLookTouch();
+});
+Module.canvas.addEventListener('click', event => {
+  if (event.pointerType === 'touch' || event.sourceCapabilities?.firesTouchEvents) return;
   if (!globalThis.__webEngineReady) return;
   Module.canvas.focus({preventScroll: true});
   if (document.pointerLockElement === Module.canvas || !Module.canvas.requestPointerLock) return;

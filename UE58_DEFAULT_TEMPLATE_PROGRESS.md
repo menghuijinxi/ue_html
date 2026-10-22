@@ -238,6 +238,16 @@
 - 当前独立包普通页面的原图、方向光/天空关闭与恢复、竖屏与窗口恢复，以及内容包/配置哈希破坏检查均在 Chrome、Edge 重新通过，报告为 `web-default-scene-results.json`。360×626 诊断面板的自动布局检查及截图检查通过；仍是桌面浏览器小窗口，不作为手机真机证明。本轮没有重跑长时间稳定性或性能验收。
 - 当前无 ADB 真机连接，尚未收到手机实际调试启动报告；手机脚本加载故障、完整 WASM 编译和场景性能均未宣称修复。本轮只修改外围启动诊断、回归与文档，未改参考引擎或安装目录。原有桌面 DXC 冷启动偶发故障也不在本轮修复范围。
 
+## 2026-10-22：默认关卡增加单指触屏旋转
+
+- 用户确认之前启动失败来自网络问题，手机现在可以渲染，并要求先补触屏旋转视角。本轮按此继续，不再针对已澄清的网络报告推测渲染兼容故障；手机帧率、画质和长时间稳定性仍未验收。
+- 独立启动页使用 Pointer Events 跟踪首根手指，按 CSS 像素计算增量，映射为已有右键按下/相对鼠标移动/释放事件，经原有 Web ApplicationCore 和 UE 摄像机输入处理。不直接修改摄像机，也不重建或替换 JS/WASM。画布内设置 `touch-action: none` 并禁用文本选择；触控点击不请求鼠标锁定，诊断面板继续保留自身滚动和按钮。
+- 手指抬起、触摸取消、指针捕获丢失、焦点丢失及切到后台时释放拖动；重新落指从当前位置建立起点。焦点丢失时同时清除活动画布焦点，保证下次触摸能重新激活 UE。第二根手指不接管视角，不引入移动摇杆或双指缩放。
+- 新增 `probe-web-default-touch.cjs`，用真实完整独立包和 Chromium 原生触控模拟验证实际 UE 摄像机。改动前 Chrome、Edge 的横竖屏四组均复现拖动后摄像机不动；改动后 DPR 3、360×626 和 844×390 四组共 32 项检查通过，覆盖双轴旋转、抬手停止、重触/轻点不跳变、第二指、取消、焦点释放和恢复，以及无滚动/缩放/指针锁定。每次检查实际位置未平移，四张渲染截图非黑比例至少 99%，无页面或 GPU 校验错误。报告为 `web-default-touch-current-results.json`，历史失败保留为 `web-default-touch-before-results.json`。
+- 初轮自动化发现窗口失焦后再次触摸无法恢复，补齐画布失焦后通过；截图尺寸断言另修正为先核对画布实际 DPR 像素尺寸，再允许截图 CSS 裁剪取整。摄像机旋转与无错误阈值未放宽。最终四组图片尺寸和画布尺寸均检查通过，横竖屏截图已人工查看。
+- 独立包仍为六文件，共 291349553 字节；仅 HTML 改变，沿用已审计的 JS、WASM 和 Cook 资源。Chrome 正常鼠标锁定模式和 Edge 拒绝锁定后的右键拖动各七项原有键鼠交互检查通过，40 项启动诊断/导出/面板布局回归通过。相关报告为 `web-default-interaction-chrome-results.json`、`web-default-interaction-edge-drag-results.json` 和 `web-default-diagnostics-current-results.json`；本轮未追加持续运行时间。
+- 当前变更已由原服务提供，刷新普通页即可使用；调试页需要先关闭诊断面板以触摸画布。最终检查发现网卡已切换为 WLAN `10.199.199.245`，原 `10.1.1.200` 已不存在；新地址返回 HTTP 200 并包含触控逻辑，服务保持原进程监听 `0.0.0.0:8765`。已更新当前入口说明；未改系统网络或浏览器来源配置。自动化使用桌面浏览器触控模拟，新增触屏功能仍待手机试用；没有修改参考引擎和安装目录。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。随后构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
@@ -260,6 +270,6 @@ node tests/web-platform/probe-web-default-interaction.cjs --browser=Chrome --poi
 ```
 
 - 独立目录：`tests/web-platform/build/ue-default-template`，含 `index.html`、JS、WASM、配置、资源清单和资源包。需通过 HTTP 服务运行。
-- 当前工作区已有服务，默认监听 `0.0.0.0:8765`：本机入口 `http://127.0.0.1:8765/build/ue-default-template/index.html`，当前局域网入口 `http://10.1.1.200:8765/build/ue-default-template/index.html`。服务不运行时可在独立终端执行 `node tests/web-platform/serve.cjs`；可用 `HOST`、`PORT` 覆盖绑定。局域网 HTTP 运行 WebGPU 需在测试浏览器单独信任该来源，具体步骤见 `tests/web-platform/README.md`；直接公开分发需受信任 HTTPS。
+- 当前工作区已有服务，默认监听 `0.0.0.0:8765`：本机入口 `http://127.0.0.1:8765/build/ue-default-template/index.html`，当前局域网入口 `http://10.199.199.245:8765/build/ue-default-template/index.html`。服务不运行时可在独立终端执行 `node tests/web-platform/serve.cjs`；可用 `HOST`、`PORT` 覆盖绑定。局域网 HTTP 运行 WebGPU 需在测试浏览器单独信任该来源，具体步骤见 `tests/web-platform/README.md`；直接公开分发需受信任 HTTPS。
 - 构建、Cook、Stage、独立目录和浏览器验收报告分别为 `results/web-engine-full-build-results.json`、`web-engine-webgpu-es31-default-cook-results.json`、`web-engine-webgpu-es31-default-stage-results.json`、`web-default-template-package-results.json`、`web-default-scene-results.json`。
 - 仍是开发验证流程，使用工作区隔离的 5.8.0 原生 Cook 主机和 5.8.3 Web 源码覆盖；尚未接入编辑器一键 Web 打包，也不代表桌面渲染功能已全部移植。
