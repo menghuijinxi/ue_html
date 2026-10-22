@@ -220,6 +220,8 @@ try {
         $taskReport.nativeRenderCoreBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-rendercore-build-results.json')
         $taskReport.nativeRendererBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-renderer-build-results.json')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VolumetricCloudRendering.cpp')
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VolumetricRenderTarget.cpp')
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ScreenPass.cpp')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/MobileFogRendering.cpp')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/Materials/MaterialExpressions.cpp')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/Shader.cpp')

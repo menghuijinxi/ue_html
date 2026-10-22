@@ -2,7 +2,7 @@
 
 更新日期：2026-10-22。当前默认关卡的构建、打包、画面及回归结果见 [默认关卡进度](H:/ue_html/UE58_DEFAULT_TEMPLATE_PROGRESS.md)。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，工具链和早期移植记录见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。
 
-当前已用普通 UBT 构建的 wasm64 Engine 打包并运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光、原材质体积云和指数高度雾。Chrome/Edge 曾通过高度雾参数对照、原生云绘制与三维纹理回读，约一分钟交互通过；冷启动回归曾在 Chrome 遇到浏览器 DXC 断言后设备丢失，整体稳定性验收尚未通过，具体证据见默认关卡进度。当前采用 ES3.1 移动渲染，体积雾、云影等效果仍未接入。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
+当前已用普通 UBT 构建的 wasm64 Engine 打包并运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光、原材质体积云和指数高度雾。云已接入原生低分辨率步进、历史重建和深度合成；Chrome/Edge 完整效果与窗口缩放回归通过。冷启动回归曾在 Chrome 遇到浏览器 DXC 断言后设备丢失，整体稳定性验收尚未通过，具体证据见默认关卡进度。当前采用 ES3.1 移动渲染，体积雾、云影等效果仍未接入。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
 
 启动故障现已在不加载 UE 的实际管线回放及独立 DXC 中复现。受限核心条件下完整效果对照可以通过，默认调度也有长循环通过的反例，尚不能据此认定硬件损坏或编译器并发缺陷；诊断复现见 [DXC 主机对照](H:/ue_html/tests/web-platform/diagnostics/README.md)。限制核心仅用于测试，不改变发布包或正常页面。
 
@@ -21,7 +21,20 @@ node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --
 
 测试使用默认 CPU 调度、不添加 GPU 后端开关，固定 CSS 视口为 1848×1120；画布为 16:9，DPR 1 实际为 1848×1040，DPR 2 为 3696×2079。普通对照不启用 GPU 时间戳。每份报告记录包与探针哈希、浏览器、相机、实际像素尺寸、错误和原始样本，写入 `results/web-default-performance-<report>-results.json`；截图保存在同目录。
 
-2026-10-22 的本机 RTX 3070 测试已复现高 DPI 下约 10 FPS，关闭云恢复到约 120 FPS，只关闭高度雾仍约 10 FPS。当前云使用全分辨率像素步进，`r.VolumetricRenderTarget=0`，没有接入云的低分辨率时域重建；性能结果和后续优化边界见默认关卡进度。该探针只用于诊断，不修改发布包，也不表示性能问题已修复；此前一分钟的默认视角交互测试不能代替高 DPI 天空性能验收。
+2026-10-22 的本机 RTX 3070 测试复现旧路径高 DPI 下约 10～13 FPS。新包使用原生模式 0 的低分辨率云和历史重建；3696×2079 下云链路由约 72～90 毫秒降至 7.3～9.4 毫秒。普通设备请求默认视角约 75～79 FPS，抬头约 95～100 FPS，场景及 FXAA 保持原分辨率。GPU 时间戳会话与普通请求分别记录；详细波动、测试条件和兼容边界见默认关卡进度。
+
+新路径的回归与同一二进制内的原路径对照：
+
+```powershell
+node tests/web-platform/probe-web-default-performance.cjs --seconds=2 --dpr=2 --gpu-timing --require-cloud-reconstruction --max-cloud-ms=20 --report=cloud-reconstruction-dpr2-validated
+node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --gpu-timing --full-resolution-clouds --report=cloud-full-resolution-dpr2-validated
+node tests/web-platform/probe-web-default-performance.cjs --seconds=4 --dpr=2 --report=cloud-reconstruction-dpr2-ordinary
+node tests/web-platform/probe-web-cloud-reconstruction-quality.cjs
+```
+
+重建检查不仅核验设置和纹理创建，还要求原生半分辨率深度、云历史重建及合成着色器实际绘制，且云步进目标保持四分之一宽高。云链路统计包含深度降采样、步进、重建和合成；`--max-cloud-ms` 必须配合 GPU 时间戳使用。该探针只改变测试会话，不修改发布包；此前一分钟的默认视角交互测试不能代替高 DPI 天空性能验收。
+
+画面对照探针冻结材质时间，按“原路径→重建→原路径”截图，保留真实曝光时间步长。天空平均 RGB 差异要求小于 3/255、明显变化像素小于 10%，地面及恢复对照平均差异各小于 1/255；实际差异和截图见 `results/web-cloud-reconstruction-quality-results.json`。这不等于逐像素无损或快速转动残影验收。
 
 以下为历史检查点，不能作为当前独立包的验收结果。
 

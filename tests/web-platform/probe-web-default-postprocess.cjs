@@ -188,7 +188,8 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
     }
     if (requireClouds) {
       for (const [name, value] of Object.entries({
-        'r.VolumetricCloud.Support': '1', 'r.VolumetricCloud': '1', 'r.VolumetricRenderTarget': '0',
+        'r.VolumetricCloud.Support': '1', 'r.VolumetricCloud': '1', 'r.VolumetricRenderTarget': '1',
+        'r.VolumetricRenderTarget.Mode': '0', 'r.VolumetricRenderTarget.UpsamplingMode': '4',
         'r.VolumetricCloud.DisableCompute': '1', 'r.VolumetricCloud.ShadowMap': '0',
         'r.VolumetricCloud.SkyAO': '0', 'r.VolumetricCloud.Shadow.SampleAtmosphericLightShadowmap': '0',
         'r.VolumetricCloud.HighQualityAerialPerspective': '0'

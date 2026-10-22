@@ -193,6 +193,18 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
     return 1;
 }
 
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultCloudTracingTestMode(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 1)
+        return 0;
+    IConsoleVariable* Variable = IConsoleManager::Get().FindConsoleVariable(TEXT("r.VolumetricRenderTarget"));
+    if (!Variable)
+        return 0;
+    Variable->Set(Mode == 0 ? 1 : 0, ECVF_SetByCode);
+    return 1;
+}
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultFogTestMode(int Mode)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);

@@ -62,6 +62,12 @@ const overrides = new Map([
           '#else', declaration, '#endif'].join('\n')};
       }),
   ]],
+  ['Private/VolumetricRenderTarget.usf', [{
+    before: '#if SUBSTRATE_GBUFFER_FORMAT==1',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && SHADING_PATH_MOBILE',
+      '\t// Mobile forward uses the same conservative depth handling as desktop forward.',
+      '\tconst bool bIsWaterPixel = true;', '#elif SUBSTRATE_GBUFFER_FORMAT==1'].join('\n'),
+  }]],
   ['Private/ReflectionEnvironmentShaders.usf',
     ['OutTextureMipColor', 'OutCubeFaces'].map(name => {
       const declaration = `RWTexture2DArray<float4> ${name};`;

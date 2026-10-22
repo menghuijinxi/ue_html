@@ -177,6 +177,25 @@
 - 最终代码的普通设备请求再测 DPR 2 共 16 组，通过且错误、设备丢失为零：默认视角全开 10.6～10.8 FPS、只关雾 10.6～10.8 FPS；抬头全开 11.9～12.4 FPS、只关雾 12.3 FPS。两种视角只关云或全关均为 119～120 FPS。报告为 `results/web-default-performance-chrome-dpr2-final-ordinary-results.json`，与最终探针哈希一致。本轮最终三份报告合计 48 组，仅验证本机桌面 Chrome 的短时性能归因，不代表其他设备或长期稳定性。
 - 优化方向：优先移植云的低分辨率步进、深度感知合成，再处理历史重建与转动残影；保留原始云材质及场景，不全局降低地面和 FXAA 分辨率。现有 `VolumetricRenderTarget.cpp` 只对 SM5 以上开放相关排列及视图入口，因此不能仅改一个配置就声称接入。当前本轮只完成诊断，没有宣称云性能已修复，也没有修复上一节的冷启动编译器异常。
 
+## 2026-10-22：云低分辨率重建及高 DPI 性能验证
+
+- 复用 UE 原生 `VolumetricRenderTarget` 模式 0：以场景四分之一宽高步进，在半分辨率重建历史，再以双边深度感知方式合成。云步进像素数量为全分辨率的约 1/16；这不等于保证整个云链路加速 16 倍。场景、地面和 FXAA 保持原分辨率，原始云材质、三维纹理和光线采样数不变。
+- 移动渲染入口接入原生视图初始化、棋盘式半分辨率深度、云步进、历史重建及合成；隐藏云后重置历史。Web 只开放默认路径需要的五个全局着色器排列：深度一个、历史有无两个、合成高度雾开关两个。未开放云计算、MinMax 深度、局部雾、水下合成或 MSAA。
+- 移动端不生成桌面 PartialDepth，因此 Web 云合成单独创建带默认资源的场景纹理参数，仅替换实际场景深度。新包含顺序暴露了 Web 能力函数与引擎全局函数的同名查找冲突，已将粒子判断限定为 `UE::WebGPU::SupportsGPUParticles`，不改变该判断的行为。
+- 默认关卡配置启用 `r.VolumetricRenderTarget=1`、`Mode=0`、`UpsamplingMode=4`；保留 `DisableCompute=1` 以及原有其他效果设置。原生与 Web 构建覆盖、Cook 来源审计和设置清单同步加入重建、深度源码及配置。
+- 扩展性能探针：`--require-cloud-reconstruction` 要求实际执行深度、四分之一宽高步进、重建及合成；`--max-cloud-ms=20` 约束包含上述阶段的云链路平均 GPU 耗时。`--full-resolution-clouds` 通过受限测试接口，在同一个二进制内切回原全分辨率路径作对照。性能测试仍使用正常推进的材质时间。
+- 修改前的独立包在新增重建检查中失败，未创建低分辨率云目标；报告为 `results/web-default-performance-before-cloud-reconstruction-results.json`。首帧接入另外暴露两处 RHI 问题：没有清除绑定的半分辨率深度被强行读取清除值，及 RGBA16F 云深度被名称规则误判为不可过滤的硬件深度。现在只在 UE 明确要求清除时读取绑定值，NoAction 使用合法的确定清除值，并将云深度按可过滤颜色纹理绑定。失败记录保留在 `cloud-reconstruction-dpr2`、`cloud-reconstruction-dpr2-final` 报告，成功结果使用 `-validated` 后缀。
+- 云合成着色器在移动端没有 `GetScreenSpaceData`，Web 移动分支复用桌面前向渲染的保守深度处理，不读取 GBuffer。该分支通过独立着色器快照的逐项差异审计，不修改安装目录。
+- 最终原生 RenderCore、Renderer 及正常 Web UBT 编译/完整链接通过，安装输入哈希未变。强制关闭 ShaderMap/作业 DDC 的 Cook 完成，全局排列为 971，新增五个排列全部转换为 WGSL；Stage 为 383 文件、119,523,805 字节，独立包为六文件、301,503,516 字节。RHI 修改后重建原生插件，全局 recorded/bypass 各 63 项、视口各 36 项及静态/直接材质探针全部通过，包括原有深度 0.75、模板清值 37 和遮挡验证。
+- RTX 3070、Chrome 155、默认 CPU 调度、3696×2079 画布下，同一新二进制切回全分辨率路径复现：默认视角云 GPU 平均 85.38～89.60 毫秒，抬头 72.43～75.10 毫秒，约 10.6～12.6 引擎 FPS。重建路径的完整云链路分别为 9.27～9.36、7.27～7.59 毫秒，含深度、步进、重建及合成；实际目标为 924×520 步进、1848×1040 重建，场景仍为完整分辨率。两份 GPU 报告共 32 组、160 帧抽样通过，错误及设备丢失均为零：`web-default-performance-cloud-{full-resolution,reconstruction}-dpr2-validated-results.json`。
+- GPU 时间戳测试中，重建路径的短时 FPS 曾在 40～96 间波动，关云控制也有瞬态低帧，不将其混入普通设备结果或隐去。随后不申请时间戳、每组采样四秒的普通请求共 16 组通过：完整效果下默认视角 75.21～78.51 FPS，抬头 95.15～99.83 FPS，关云约 115.7～119.2 FPS；报告为 `web-default-performance-cloud-reconstruction-dpr2-ordinary-results.json`。材质时间正常推进，精确 GPU 耗时会随云形变化；结果不是完全冻结场景的缩放效率。
+- 新增 `probe-web-cloud-reconstruction-quality.cjs`，在固定材质时间、同一相机下按“全分辨率→重建→全分辨率”对照，曝光仍按真实帧时长更新。1100×620 画布的天空区域平均 RGB 差异为 1.55/255，差异大于每通道平均 10 的像素约 0.72%；地面差异 0.47/255，恢复原路径的全图差异 0.60/255，均通过既定阈值且无 GPU 错误。该检查是静态画面对照，不代表逐像素无损或快速转动残影的定量验收。
+- Chrome/Edge 完整效果回归通过：HDR、FXAA、Bloom、LUT、曝光明暗恢复、原始云开关、两张三维纹理各 mip 抽样回读和高度雾六组参数。曝光正常/暗场/恢复约 1.153 / 11.55 / 1.153；云恢复后天空平均差异约 0.65/255、0.002/255。报告为 `web-default-postprocess-cloud-reconstruction-results.json`。双浏览器默认关卡的太阳/天空开关、恢复、竖屏、窗口恢复及资源/配置哈希负例也通过，见 `web-default-scene-results.json`。
+- DPR 1、1848×1040 下另测 16 组、80 帧 GPU 抽样通过：完整效果默认视角 120.0 FPS、云链路 2.84～2.92 毫秒，抬头 119.5 FPS、3.17～3.39 毫秒，错误及设备丢失均为零。报告为 `web-default-performance-cloud-reconstruction-dpr1-validated-results.json`。
+- Chrome 连续交互 61.4 秒、7,762 帧通过，原生 Pawn 移动、转向、升降、失焦释放和恢复均正常，测试后段线性内存增长为 0。Edge 七项交互检查也通过；Edge 本次未重复一分钟持续测试。报告分别为 `web-default-interaction-chrome-results.json`、`web-default-interaction-edge-results.json`。
+- 提交前核对最终构建、Cook、Stage、独立包、原生 RHI、性能、画面及交互共 16 份成功报告：1,286 个来源/产物/截图审计条目、1,006 个不同文件的 SHA-256 均与当前文件一致；修改的 CJS、PowerShell 语法检查及两个仓库的 `git diff --check` 均通过。
+- 目前只承诺默认关卡所用的模式 0；云计算、MinMax 深度、云影、SkyAO、体积雾、水下云合成及 MSAA 仍未接入，场景继续使用 FXAA。此前独立 DXC 冷启动异常没有在本轮得到根治，本轮通过的浏览器会话不替代跨设备、长时间稳定性验收。
+
 ## 默认关卡的复现入口
 
 以下命令从工作区根目录执行。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。随后构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
@@ -184,7 +203,7 @@
 ```powershell
 & ./tests/web-platform/build-native-rendercore.ps1 -Module RenderCore
 & ./tests/web-platform/build-native-rendercore.ps1 -Module Renderer
-& ./tests/web-platform/build-web-engine.ps1 -MaxParallelActions 8 -SkipHostPreparation
+& ./tests/web-platform/build-web-engine.ps1 -MaxParallelActions 4
 & ./tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-ES31 -Scene DefaultTemplate -StopOnShaderError -ValidateShaderJobCache
 node tests/web-platform/stage-web-engine.cjs --default-template
 node tests/web-platform/package-web-default-template.cjs

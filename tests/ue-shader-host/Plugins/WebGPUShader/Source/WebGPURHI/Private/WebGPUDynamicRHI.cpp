@@ -1926,8 +1926,10 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         const uint32 Frequency = Shader->Metadata->GetIntegerField(TEXT("frequency"));
         Entry.visibility = Frequency == SF_Vertex ? WGPUShaderStage_Vertex :
             Frequency == SF_Pixel ? WGPUShaderStage_Fragment : WGPUShaderStage_Compute;
-        const bool Depth = Name.Contains(TEXT("SceneDepth")) || Name.Contains(TEXT("ShadowDepth")) ||
-            Name.Contains(TEXT("DepthTexture"));
+        // Cloud depth is encoded in filterable RGBA16F color targets, not a depth attachment.
+        const bool Depth = !Name.Contains(TEXT("VolumetricDepthTexture")) &&
+            (Name.Contains(TEXT("SceneDepth")) || Name.Contains(TEXT("ShadowDepth")) ||
+                Name.Contains(TEXT("DepthTexture")));
         // ACES tables use integer-coordinate loads from core, unfilterable R32Float textures.
         const bool ACESLookup = Name.Contains(TEXT("ACESReachTable")) ||
             Name.Contains(TEXT("ACESGamutTable")) || Name.Contains(TEXT("ACESGammaTable"));
@@ -2309,7 +2311,8 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
         Attachment.view = Texture->AttachmentView(Color.MipIndex, FMath::Max(Color.ArraySlice, 0));
         Attachment.loadOp = Load(Color.Action);
         Attachment.storeOp = Store(Color.Action);
-        const auto Clear = Texture->GetClearColor();
+        const auto Clear = GetLoadAction(Color.Action) == ERenderTargetLoadAction::EClear
+            ? Texture->GetClearColor() : FLinearColor::Transparent;
         Attachment.clearValue = {Clear.R, Clear.G, Clear.B, Clear.A};
         Colors.Add(Attachment);
     }
@@ -2339,9 +2342,13 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
             Depth.depthLoadOp = WGPULoadOp_Undefined;
             Depth.depthStoreOp = WGPUStoreOp_Undefined;
         }
-        float ClearDepth;
-        uint32 ClearStencil;
-        Texture->GetDepthStencilClearValue(ClearDepth, ClearStencil);
+        float ClearDepth = 0.0f;
+        uint32 ClearStencil = 0;
+        // WebGPU maps UE's don't-care load to a deterministic clear, without requiring a bound clear value.
+        if (GetLoadAction(GetDepthActions(Info.DepthStencilRenderTarget.Action)) == ERenderTargetLoadAction::EClear ||
+            (Info.DepthStencilRenderTarget.ExclusiveDepthStencil.IsStencilWrite() &&
+                GetLoadAction(GetStencilActions(Info.DepthStencilRenderTarget.Action)) == ERenderTargetLoadAction::EClear))
+            Texture->GetDepthStencilClearValue(ClearDepth, ClearStencil);
         Depth.depthClearValue = ClearDepth;
         Depth.stencilReadOnly = !Info.DepthStencilRenderTarget.ExclusiveDepthStencil.IsStencilWrite();
         if (!Depth.stencilReadOnly)

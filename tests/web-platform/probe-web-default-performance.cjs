@@ -8,14 +8,20 @@ const name = option('browser') || 'Chrome';
 const dpr = Number(option('dpr') || 1);
 const seconds = Number(option('seconds') || 4);
 const gpuTiming = process.argv.includes('--gpu-timing');
+const requireReconstruction = process.argv.includes('--require-cloud-reconstruction');
+const fullResolutionClouds = process.argv.includes('--full-resolution-clouds');
+const maxCloudMilliseconds = Number(option('max-cloud-ms') || 0);
 const suffix = option('report') || `${name.toLowerCase()}-dpr${dpr}${gpuTiming ? '-gpu' : ''}`;
 assert(['Chrome', 'Edge'].includes(name) && dpr > 0 && dpr <= 2 && seconds >= 1 &&
-  seconds <= 30 && /^[a-z0-9.-]+$/.test(suffix));
+  seconds <= 30 && /^[a-z0-9.-]+$/.test(suffix) &&
+  !(requireReconstruction && fullResolutionClouds) && Number.isFinite(maxCloudMilliseconds) &&
+  maxCloudMilliseconds >= 0 && (!(requireReconstruction || maxCloudMilliseconds) || gpuTiming));
 const directory = path.join(__dirname, 'results');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, browser: name, dpr, seconds, gpuTiming,
+  requireReconstruction, fullResolutionClouds, maxCloudMilliseconds,
   viewport: {width: 1848, height: 1120}, headless: true, scheduling: 'default',
   sources: [__filename].map(audit), errors: [], measurements: []};
 const shaderEntries = new Map();
@@ -23,7 +29,7 @@ let browser;
 let page;
 
 function observe({gpuTiming}) {
-  const state = globalThis.__webPerformance = {errors: [], deviceLosses: [], frameTimes: null};
+  const state = globalThis.__webPerformance = {errors: [], deviceLosses: [], frameTimes: null, textures: []};
   let device;
   let frame = 0;
   let capture;
@@ -33,6 +39,23 @@ function observe({gpuTiming}) {
   const pipelines = new WeakMap();
   const passes = new WeakMap();
   const bound = new WeakMap();
+  const views = new WeakMap();
+  const createView = GPUTexture.prototype.createView;
+  GPUTexture.prototype.createView = function(...args) {
+    const view = createView.apply(this, args);
+    views.set(view, {label: this.label, width: this.width, height: this.height, format: this.format});
+    return view;
+  };
+  const createTexture = GPUDevice.prototype.createTexture;
+  GPUDevice.prototype.createTexture = function(descriptor) {
+    const texture = createTexture.call(this, descriptor);
+    if (/VolumetricRenderTarget/.test(texture.label)) {
+      const item = {label: texture.label, width: texture.width, height: texture.height, format: texture.format};
+      if (!state.textures.some(previous => JSON.stringify(previous) === JSON.stringify(item)))
+        state.textures.push(item);
+    }
+    return texture;
+  };
   const requestDevice = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(descriptor = {}) {
     state.adapter = Object.fromEntries(['vendor', 'architecture', 'device', 'description']
@@ -72,7 +95,8 @@ function observe({gpuTiming}) {
         if (descriptor.timestampWrites || capture.passes.length >= 256)
           throw new Error('Cannot safely instrument this pass for timestamp measurements.');
         const index = capture.passes.length * 2;
-        record = {label: descriptor.label || '', entries: [], index};
+        record = {label: descriptor.label || '', entries: [], index,
+          targets: [...(descriptor.colorAttachments || [])].map(item => views.get(item?.view) || null)};
         capture.passes.push(record);
         descriptor = {...descriptor, timestampWrites: {querySet,
           beginningOfPassWriteIndex: index, endOfPassWriteIndex: index + 1}};
@@ -186,6 +210,22 @@ async function measure(view, clouds, fog, round) {
       assert.equal(gpu.passes.some(pass => pass.entries.some(entry =>
         shaderEntries.get(entry)?.heightFog)), fog,
       'The height fog permutation must follow the component; aerial perspective stays enabled.');
+      if (requireReconstruction) {
+        assert.equal(gpu.passes.some(pass => pass.shaderNames.includes('FDownsampleDepthPS')),
+          clouds, 'Cloud tracing must use the native half-resolution scene depth.');
+        assert.equal(gpu.passes.some(pass => pass.shaderNames.includes('FReconstructVolumetricRenderTargetPS')),
+          clouds, 'Cloud history reconstruction must actually draw.');
+        assert.equal(gpu.passes.some(pass => pass.shaderNames.includes('FComposeVolumetricRTOverScenePS')),
+          clouds, 'The reconstructed cloud must actually composite over the scene.');
+        for (const pass of gpu.passes.filter(pass => pass.shaderNames.some(name =>
+          name.startsWith('FCloudRenderViewPS')))) {
+          // Pooled textures can retain an earlier creation label when reused.
+          assert(pass.targets[0]?.format === 'rgba16float' &&
+            pass.targets[0].width <= Math.ceil(sample.canvas.width / 4) + 2 &&
+            pass.targets[0].height <= Math.ceil(sample.canvas.height / 4) + 2,
+          'Trace only quarter width/height; retain the full-resolution scene.');
+        }
+      }
       result.gpuSamples.push(gpu);
     }
     result.gpuPassMilliseconds = distribution(result.gpuSamples.map(item =>
@@ -193,6 +233,12 @@ async function measure(view, clouds, fog, round) {
     result.cloudGpuMilliseconds = distribution(result.gpuSamples.map(item =>
       item.passes.filter(pass => pass.shaderNames.some(name => name.startsWith('FCloudRenderViewPS')))
         .reduce((sum, pass) => sum + pass.milliseconds, 0)));
+    result.cloudPipelineGpuMilliseconds = distribution(result.gpuSamples.map(item =>
+      item.passes.filter(pass => pass.shaderNames.some(name => /^(FCloudRenderViewPS|FDownsampleDepthPS|FReconstructVolumetricRenderTargetPS|FComposeVolumetricRTOverScenePS)/.test(name)))
+        .reduce((sum, pass) => sum + pass.milliseconds, 0)));
+    if (clouds && maxCloudMilliseconds)
+      assert(result.cloudPipelineGpuMilliseconds.mean <= maxCloudMilliseconds,
+        `Cloud pipeline GPU cost ${result.cloudPipelineGpuMilliseconds.mean}ms exceeds ${maxCloudMilliseconds}ms`);
   }
   report.measurements.push(result);
   console.log(JSON.stringify({phase: 'measurement', view, clouds, fog, round,
@@ -249,7 +295,7 @@ async function lookUp() {
           const output = path.join(conversions, job.name, 'output.wgsl');
           if (!job.isDirectory() || !fs.existsSync(input) || !fs.existsSync(output)) continue;
           const detail = read(input);
-          if (/^(FCloudRenderViewPS|FMobileFogPS)/.test(detail.shaderName)) {
+          if (/^(FCloudRenderViewPS|FMobileFogPS|FDownsampleDepthPS|FReconstructVolumetricRenderTargetPS|FComposeVolumetricRTOverScenePS)/.test(detail.shaderName)) {
             const permutation = detail.shaderName === 'FMobileFogPS' ?
               Number(detail.shader.match(/^Global\/FMobileFogPS\/(\d+):/)[1]) : null;
             // FSupportHeightFog is the first (least significant) permutation dimension.
@@ -276,8 +322,15 @@ async function lookUp() {
     await page.addInitScript(observe, {gpuTiming});
     await page.goto('http://127.0.0.1:8765/build/ue-default-template/index.html', {waitUntil: 'commit'});
     await frames(120);
+    if (fullResolutionClouds) {
+      assert.equal(await page.evaluate(() => Module._WebDefaultCloudTracingTestMode(1)), 1);
+      await frames(30);
+    }
     report.observer = await page.evaluate(() => ({...globalThis.__webPerformance, frameTimes: null}));
     if (gpuTiming) assert(report.observer.timestampSupported);
+    if (requireReconstruction)
+      assert(report.observer.textures.some(item => item.label === 'VolumetricRenderTarget.Tracing'),
+        'The packaged engine must create the low-resolution cloud tracing target.');
     for (const view of ['default', 'sky']) {
       if (view === 'sky') await lookUp();
       for (let round = 0; round < 2; ++round) {
