@@ -28,6 +28,12 @@
       "PlatformAllowList": ["Win64"]
     },
     {
+      "Name": "TextureFormatWebCloud",
+      "Type": "DeveloperTool",
+      "LoadingPhase": "None",
+      "PlatformAllowList": ["Win64"]
+    },
+    {
       "Name": "WebGPURHI",
       "Type": "Runtime",
       "LoadingPhase": "None",

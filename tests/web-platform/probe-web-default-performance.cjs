@@ -11,24 +11,39 @@ const gpuTiming = process.argv.includes('--gpu-timing');
 const requireReconstruction = process.argv.includes('--require-cloud-reconstruction');
 const fullResolutionClouds = process.argv.includes('--full-resolution-clouds');
 const maxCloudMilliseconds = Number(option('max-cloud-ms') || 0);
+const requestedViews = (option('views') || 'default,sky').split(',');
+const cameraViews = {default: [-15, 120], horizon: [0, 120], cloudbank: [20, 120],
+  cloudback: [20, 300], cloudleft: [20, 30], cloudright: [20, 210],
+  cloudmid: [40, 120], sky: [70, 120], ground: [-80, 120]};
+const cloudBudget = Number(option('cloud-budget') || 0);
+const budgetSweep = process.argv.includes('--budget-sweep');
+const budgetProfiles = (option('budget-profiles') || '0,1,2,3,4,5,6').split(',').map(Number);
+const compactCloudTextures = option('compact-cloud-textures') ||
+  (process.argv.includes('--compact-cloud-textures') ? 'all' : '');
+const diagnosticRuntime = process.argv.includes('--diagnostic-runtime');
+const expectedTracingDivisor = Number(option('tracing-divisor') || 8);
 const suffix = option('report') || `${name.toLowerCase()}-dpr${dpr}${gpuTiming ? '-gpu' : ''}`;
 assert(['Chrome', 'Edge'].includes(name) && dpr > 0 && dpr <= 2 && seconds >= 1 &&
   seconds <= 30 && /^[a-z0-9.-]+$/.test(suffix) &&
   !(requireReconstruction && fullResolutionClouds) && Number.isFinite(maxCloudMilliseconds) &&
-  maxCloudMilliseconds >= 0 && (!(requireReconstruction || maxCloudMilliseconds) || gpuTiming));
+  maxCloudMilliseconds >= 0 && (!(requireReconstruction || maxCloudMilliseconds) || gpuTiming) &&
+  requestedViews.length && requestedViews.every(view => Object.hasOwn(cameraViews, view)) &&
+  Number.isInteger(cloudBudget) && cloudBudget >= 0 && cloudBudget <= 10 &&
+  budgetProfiles.every(value => Number.isInteger(value) && value >= 0 && value <= 10) &&
+  ['', 'all', 'density'].includes(compactCloudTextures) && [4, 8].includes(expectedTracingDivisor));
 const directory = path.join(__dirname, 'results');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, browser: name, dpr, seconds, gpuTiming,
-  requireReconstruction, fullResolutionClouds, maxCloudMilliseconds,
+  requireReconstruction, fullResolutionClouds, maxCloudMilliseconds, requestedViews, cloudBudget, budgetSweep, budgetProfiles, compactCloudTextures, diagnosticRuntime, expectedTracingDivisor,
   viewport: {width: 1848, height: 1120}, headless: true, scheduling: 'default',
-  sources: [__filename].map(audit), errors: [], measurements: []};
+  sources: [__filename, path.join(__dirname, 'aim-web-default-camera.cjs')].map(audit), errors: [], measurements: []};
 const shaderEntries = new Map();
 let browser;
 let page;
 
-function observe({gpuTiming}) {
+function observe({gpuTiming, compactCloudTextures}) {
   const state = globalThis.__webPerformance = {errors: [], deviceLosses: [], frameTimes: null, textures: []};
   let device;
   let frame = 0;
@@ -47,14 +62,41 @@ function observe({gpuTiming}) {
     return view;
   };
   const createTexture = GPUDevice.prototype.createTexture;
+  const compactTextures = new WeakMap();
   GPUDevice.prototype.createTexture = function(descriptor) {
+    const channels = descriptor.label === 'VT_PerlinWorley_Balanced' ? 2 :
+      descriptor.label === 'VT_Lightning' && compactCloudTextures === 'all' ? 1 : 0;
+    const compact = compactCloudTextures && channels && descriptor.dimension === '3d' &&
+      descriptor.format === 'rgba16float';
+    if (compact) descriptor = {...descriptor, format: channels === 1 ? 'r16float' : 'rg16float'};
     const texture = createTexture.call(this, descriptor);
+    if (compact) compactTextures.set(texture, channels);
     if (/VolumetricRenderTarget/.test(texture.label)) {
       const item = {label: texture.label, width: texture.width, height: texture.height, format: texture.format};
       if (!state.textures.some(previous => JSON.stringify(previous) === JSON.stringify(item)))
         state.textures.push(item);
     }
     return texture;
+  };
+  const writeTexture = GPUQueue.prototype.writeTexture;
+  GPUQueue.prototype.writeTexture = function(destination, data, layout, size) {
+    const channels = compactTextures.get(destination.texture);
+    if (!channels) return writeTexture.call(this, destination, data, layout, size);
+    const [width, height, depth] = Array.isArray(size) ? size :
+      [size.width, size.height || 1, size.depthOrArrayLayers || 1];
+    const bytes = ArrayBuffer.isView(data) ?
+      new Uint8Array(data.buffer, data.byteOffset, data.byteLength) : new Uint8Array(data);
+    const output = new Uint8Array(width * height * depth * channels * 2);
+    const pitch = layout.bytesPerRow || width * 8;
+    const rows = layout.rowsPerImage || height;
+    for (let z = 0; z < depth; ++z) for (let y = 0; y < height; ++y)
+    for (let x = 0; x < width; ++x) {
+      const source = (layout.offset || 0) + (z * rows + y) * pitch + x * 8;
+      output.set(bytes.subarray(source, source + channels * 2),
+        ((z * height + y) * width + x) * channels * 2);
+    }
+    return writeTexture.call(this, destination, output,
+      {bytesPerRow: width * channels * 2, rowsPerImage: height}, size);
   };
   const requestDevice = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(descriptor = {}) {
@@ -188,6 +230,7 @@ async function measure(view, clouds, fog, round) {
     state.frameTimes = null;
     const canvas = document.querySelector('canvas');
     return {times, camera: globalThis.__webDefaultCamera, fog: globalThis.__webDefaultFog,
+      cloudBudget: globalThis.__webDefaultCloudBudget,
       frame: globalThis.__webEngineFrames, canvas: {width: canvas.width, height: canvas.height},
       failure: globalThis.__webEngineFailure, errors: state.errors, deviceLosses: state.deviceLosses};
   }, seconds * 1000);
@@ -195,7 +238,7 @@ async function measure(view, clouds, fog, round) {
     !report.errors.length && sample.times.length > 3, JSON.stringify(sample));
   const intervals = sample.times.slice(1).map((time, i) => time - sample.times[i]);
   const result = {view, clouds, fog, round, camera: sample.camera, canvas: sample.canvas,
-    heightFog: sample.fog, engineFrameMilliseconds: distribution(intervals),
+    heightFog: sample.fog, cloudBudget: sample.cloudBudget, engineFrameMilliseconds: distribution(intervals),
     engineFps: (sample.times.length - 1) * 1000 / (sample.times.at(-1) - sample.times[0])};
   if (gpuTiming) {
     result.gpuSamples = [];
@@ -219,11 +262,13 @@ async function measure(view, clouds, fog, round) {
           clouds, 'The reconstructed cloud must actually composite over the scene.');
         for (const pass of gpu.passes.filter(pass => pass.shaderNames.some(name =>
           name.startsWith('FCloudRenderViewPS')))) {
+          const divisor = sample.cloudBudget?.tracingDownsample ?
+            sample.cloudBudget.tracingDownsample * 2 : expectedTracingDivisor;
           // Pooled textures can retain an earlier creation label when reused.
           assert(pass.targets[0]?.format === 'rgba16float' &&
-            pass.targets[0].width <= Math.ceil(sample.canvas.width / 4) + 2 &&
-            pass.targets[0].height <= Math.ceil(sample.canvas.height / 4) + 2,
-          'Trace only quarter width/height; retain the full-resolution scene.');
+            Math.abs(pass.targets[0].width - Math.ceil(sample.canvas.width / divisor)) <= 1 &&
+            Math.abs(pass.targets[0].height - Math.ceil(sample.canvas.height / divisor)) <= 1,
+          `Trace at 1/${divisor} width/height; retain the full-resolution scene.`);
         }
       }
       result.gpuSamples.push(gpu);
@@ -245,45 +290,22 @@ async function measure(view, clouds, fog, round) {
     engineFps: result.engineFps, gpuPassMilliseconds: result.gpuPassMilliseconds}));
 }
 
-async function lookUp() {
-  await mode(false, true);
-  const bounds = await page.locator('canvas').boundingBox();
-  const x = bounds.x + bounds.width / 2;
-  const y = bounds.y + bounds.height / 2;
-  await page.mouse.click(x, y);
-  await frames(10);
-  assert.equal(await page.evaluate(() => document.pointerLockElement?.id), 'canvas');
-  // Measure the real input scale before rotating; no camera or game code is replaced.
-  await page.mouse.move(x, y);
-  await frames(3);
-  const before = await page.evaluate(() => globalThis.__webDefaultCamera);
-  await page.mouse.move(x, y - 20, {steps: 4});
-  await frames(6);
-  const after = await page.evaluate(() => globalThis.__webDefaultCamera);
-  const pitchDelta = ((after.pitch - before.pitch + 540) % 360) - 180;
-  const scale = pitchDelta / -20;
-  assert(Math.abs(scale) > 0.01 && Math.abs(scale) < 5, JSON.stringify({before, after}));
-  let mouseY = y - 20;
-  let camera = after;
-  for (let attempt = 0; attempt < 8; ++attempt) {
-    const pitch = ((camera.pitch + 540) % 360) - 180;
-    if (Math.abs(70 - pitch) < 2) break;
-    mouseY += (70 - pitch) / scale;
-    await page.mouse.move(x, mouseY, {steps: 20});
-    await frames(15);
-    camera = await page.evaluate(() => globalThis.__webDefaultCamera);
-  }
-  assert(Math.abs(camera.pitch - 70) < 2, JSON.stringify(camera));
-  assert(Math.hypot(...['x', 'y', 'z'].map(key => camera[key] - before[key])) < 1);
-}
-
 (async () => {
   try {
     const packageFile = path.join(directory, 'web-default-template-package-results.json');
     const packaged = read(packageFile);
     assert(packaged.pass && packaged.products.every(valid) && packaged.sourceFiles.every(valid) &&
-      valid(packaged.buildReport) && valid(packaged.stageReport));
+      (diagnosticRuntime || valid(packaged.buildReport)) && valid(packaged.stageReport));
     report.packageReport = audit(packageFile);
+    let runtime;
+    if (diagnosticRuntime) {
+      const file = path.join(directory, 'web-engine-full-build-results.json');
+      runtime = read(file);
+      assert(runtime.pass && runtime.fullLinkAttempted && runtime.sourceFiles.every(valid) &&
+        runtime.products.every(valid) && valid(runtime.log));
+      report.diagnosticBuildReport = audit(file);
+      report.boundary = 'Browser-only runtime override using verified normal UBT outputs; not a newly cooked or released package.';
+    }
     if (gpuTiming) {
       // Cook DDC reuse can retain entry hashes from an earlier conversion directory.
       const cooks = path.join(__dirname, 'build/web-engine-webgpu-es31-default-cook');
@@ -319,9 +341,27 @@ async function lookUp() {
         report.errors.push(message.text());
     });
     page.setDefaultTimeout(120000);
-    await page.addInitScript(observe, {gpuTiming});
+    if (runtime) {
+      for (const name of ['UEWebEngine.js', 'UEWebEngine.wasm']) {
+        const product = runtime.products.find(item => path.basename(item.file) === name);
+        assert(valid(product));
+        const relative = `build/diagnostic-cloud-runtime/${report.diagnosticBuildReport.sha256.slice(0, 16)}/${name}`;
+        const file = path.join(__dirname, relative);
+        fs.mkdirSync(path.dirname(file), {recursive: true});
+        fs.copyFileSync(product.file, file);
+        assert.equal(audit(file).sha256, product.sha256);
+        (report.diagnosticProducts ||= []).push(audit(file));
+        await page.route('**/build/ue-default-template/' + name,
+          route => route.continue({url: 'http://127.0.0.1:8765/' + relative}));
+      }
+    }
+    await page.addInitScript(observe, {gpuTiming, compactCloudTextures});
     await page.goto('http://127.0.0.1:8765/build/ue-default-template/index.html', {waitUntil: 'commit'});
     await frames(120);
+    if (cloudBudget) {
+      assert.equal(await page.evaluate(mode => Module._WebDefaultCloudBudgetTestMode(mode), cloudBudget), 1);
+      await frames(30);
+    }
     if (fullResolutionClouds) {
       assert.equal(await page.evaluate(() => Module._WebDefaultCloudTracingTestMode(1)), 1);
       await frames(30);
@@ -331,12 +371,25 @@ async function lookUp() {
     if (requireReconstruction)
       assert(report.observer.textures.some(item => item.label === 'VolumetricRenderTarget.Tracing'),
         'The packaged engine must create the low-resolution cloud tracing target.');
-    for (const view of ['default', 'sky']) {
-      if (view === 'sky') await lookUp();
-      for (let round = 0; round < 2; ++round) {
-        const controls = [[true, true], [false, true], [true, false], [false, false]];
-        if (round) controls.reverse();
-        for (const [clouds, fog] of controls) await measure(view, clouds, fog, round);
+    for (const view of requestedViews) {
+      const [pitch, yaw] = cameraViews[view];
+      const camera = await page.evaluate(() => globalThis.__webDefaultCamera);
+      if (Math.abs(camera.pitch - pitch) > 1 ||
+          Math.abs(((yaw - camera.yaw + 540) % 360) - 180) > 1)
+        await require('./aim-web-default-camera.cjs')(page, frames, pitch, yaw);
+      if (budgetSweep) {
+        for (const profile of budgetProfiles) {
+          assert.equal(await page.evaluate(mode => Module._WebDefaultCloudBudgetTestMode(mode), profile), 1);
+          await measure(view, true, true, profile);
+        }
+        assert.equal(await page.evaluate(() => Module._WebDefaultCloudBudgetTestMode(0)), 1);
+        await measure(view, false, true, 0);
+      } else {
+        for (let round = 0; round < 2; ++round) {
+          const controls = [[true, true], [false, true], [true, false], [false, false]];
+          if (round) controls.reverse();
+          for (const [clouds, fog] of controls) await measure(view, clouds, fog, round);
+        }
       }
       await mode(true, true);
       const file = path.join(directory, `web-default-performance-${suffix}-${view}.png`);

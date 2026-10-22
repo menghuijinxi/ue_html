@@ -205,6 +205,55 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultCloudTracingTestMode(int Mode)
     return 1;
 }
 
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultCloudBudgetTestMode(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (!DefaultTemplate || !GEngine || Mode < 0 || Mode > 10)
+        return 0;
+    const TCHAR* Names[] = {TEXT("r.VolumetricCloud.ViewRaySampleMaxCount"),
+        TEXT("r.VolumetricCloud.Shadow.ViewRaySampleMaxCount"),
+        TEXT("r.VolumetricCloud.StepSizeOnZeroConservativeDensity"),
+        TEXT("r.VolumetricRenderTarget.WebTracingDownsampleFactor")};
+    static TArray<float> Original;
+    IConsoleVariable* Variables[4];
+    for (int32 Index = 0; Index < 4; ++Index)
+    {
+        Variables[Index] = IConsoleManager::Get().FindConsoleVariable(Names[Index]);
+        if (!Variables[Index])
+            return 0;
+    }
+    if (Original.IsEmpty())
+        for (const auto* Variable : Variables)
+            Original.Add(Variable->GetFloat());
+    for (int32 Index = 0; Index < 4; ++Index)
+        Variables[Index]->Set(Original[Index], ECVF_SetByCode);
+    if (Mode == 2 || Mode == 3 || Mode == 6 || Mode == 9)
+        Variables[0]->Set(48.0f, ECVF_SetByCode);
+    if (Mode == 5 || Mode == 10)
+        Variables[0]->Set(32.0f, ECVF_SetByCode);
+    if (Mode == 1 || Mode == 3 || Mode == 5 || Mode == 9 || Mode == 10)
+        Variables[1]->Set(2.0f, ECVF_SetByCode);
+    if (Mode == 6)
+        Variables[1]->Set(4.0f, ECVF_SetByCode);
+    if (Mode == 4)
+        Variables[2]->Set(2.0f, ECVF_SetByCode);
+    if (Mode == 7 || Mode == 8)
+    {
+        Variables[0]->Set(768.0f, ECVF_SetByCode);
+        Variables[1]->Set(80.0f, ECVF_SetByCode);
+        Variables[2]->Set(1.0f, ECVF_SetByCode);
+        Variables[3]->Set(2.0f, ECVF_SetByCode);
+    }
+    if (Mode >= 8)
+        Variables[3]->Set(4.0f, ECVF_SetByCode);
+    EM_ASM({
+        globalThis.__webDefaultCloudBudget = ({mode: $0, viewSamplesMax: $1,
+            shadowSamplesMax: $2, emptyStep: $3, tracingDownsample: $4});
+    }, Mode, Variables[0]->GetFloat(), Variables[1]->GetFloat(), Variables[2]->GetFloat(),
+        Variables[3]->GetFloat());
+    return 1;
+}
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultFogTestMode(int Mode)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);

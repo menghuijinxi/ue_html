@@ -8,33 +8,36 @@
 
 ## 天空性能对照
 
-`probe-web-default-performance.cjs` 在当前独立包上，通过原有组件测试接口分别关闭云、高度雾及两者，再恢复原始状态。默认视角和实际鼠标输入转到约 70 度的抬头视角各测四种组合，两轮反转顺序；位置、太阳、天空大气及画质设置保持一致。每个组合先预热十帧，再记录指定时长内 UE 完成 Tick 的间隔。这里的 FPS 是引擎帧率，不是显示器实际扫描帧率。
+`probe-web-default-performance.cjs` 在当前独立包上，通过原有组件测试接口分别关闭云、高度雾及两者，再恢复原始状态。`--views=` 可选择默认视角、地平线、20 度仰角的四个密集云朝向、40 度仰角、头顶和地面。各视角用实际鼠标输入定位，每种组合测两轮并反转顺序；位置、太阳、天空大气及画质设置保持一致。每个组合先预热十帧，再记录指定时长内 UE 完成 Tick 的间隔。这里的 FPS 是引擎帧率，不是显示器实际扫描帧率。
 
 ```powershell
 $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
-node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --report=chrome-dpr2-ordinary
-node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=1 --gpu-timing --report=chrome-dpr1-verified-gpu
-node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --gpu-timing --report=chrome-dpr2-verified-gpu
+node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --views=default,horizon,cloudbank,cloudleft,cloudback,cloudright --report=cloud-dense-rg16-ordinary
+node tests/web-platform/probe-web-default-performance.cjs --seconds=2 --dpr=2 --views=default,horizon,cloudbank,cloudleft,cloudback,cloudright,cloudmid,sky,ground --gpu-timing --require-cloud-reconstruction --max-cloud-ms=2.5 --report=cloud-dense-rg16-packaged
+node tests/web-platform/probe-web-default-performance.cjs --browser=Edge --seconds=2 --dpr=2 --views=cloudbank,cloudback --gpu-timing --require-cloud-reconstruction --max-cloud-ms=2.5 --report=cloud-dense-rg16-edge
 ```
 
 `--gpu-timing` 只给测试设备增加 `timestamp-query`，在每个组合另抽样五帧，记录真实渲染/计算通道的 GPU 时间；不在 FPS 采样期间逐帧读回。通过 Cook 作业中的入口映射识别原始云和雾着色器，按真实绘制命令断言云通道及高度雾排列跟随组件开关。关闭高度雾后 `FMobileFogPS` 仍使用不含高度雾的排列计算大气透视，不应要求整条通道消失。GPU 通道时间之和不包括 CPU 提交、通道间空隙和显示等待；高度雾与 BasePass 共享通道，不能把该通道整体算作高度雾耗时。浏览器时间戳精度有限，接近零的短通道不用于比较微小差异。
 
 测试使用默认 CPU 调度、不添加 GPU 后端开关，固定 CSS 视口为 1848×1120；画布为 16:9，DPR 1 实际为 1848×1040，DPR 2 为 3696×2079。普通对照不启用 GPU 时间戳。每份报告记录包与探针哈希、浏览器、相机、实际像素尺寸、错误和原始样本，写入 `results/web-default-performance-<report>-results.json`；截图保存在同目录。
 
-2026-10-22 的本机 RTX 3070 测试复现旧路径高 DPI 下约 10～13 FPS。新包使用原生模式 0 的低分辨率云和历史重建；3696×2079 下云链路由约 72～90 毫秒降至 7.3～9.4 毫秒。普通设备请求默认视角约 75～79 FPS，抬头约 95～100 FPS，场景及 FXAA 保持原分辨率。GPU 时间戳会话与普通请求分别记录；详细波动、测试条件和兼容边界见默认关卡进度。
+2026-10-22 最初接入模式 0 后，默认及头顶视角的云链路为 7.3～9.4 毫秒；但新增 20 度密集云视角仍复现约 16～17 毫秒，先前两个视角不足以验收。当前进一步采用默认云 PerlinWorley 的 RG16F、Lightning 的 R16F Cook，以及场景八分之一宽高步进、半分辨率历史重建，主光线最多 48 次、阴影最多 4 次。通道优化仅对显式默认关卡 Cook 的两个指定资产启用，其他体纹理不丢弃通道；场景及 FXAA 分辨率保留。最新正式包的性能、画质和兼容边界见默认关卡进度。
+
+本轮首次正式包的严格 2.5 毫秒预算检查失败；随后九视角观测中，四个密集云方向的云链路组均值为 1.86～2.24 毫秒。测试期间其他编辑器占用 GPU，普通页面 FPS 有明显波动，这些数值不能作为稳定帧率或每帧耗时上限的承诺。失败报告与不设耗时门槛的完整观测报告分别保留为 `cloud-dense-rg16-packaged`、`cloud-dense-rg16-loaded`。
 
 新路径的回归与同一二进制内的原路径对照：
 
 ```powershell
-node tests/web-platform/probe-web-default-performance.cjs --seconds=2 --dpr=2 --gpu-timing --require-cloud-reconstruction --max-cloud-ms=20 --report=cloud-reconstruction-dpr2-validated
-node tests/web-platform/probe-web-default-performance.cjs --seconds=3 --dpr=2 --gpu-timing --full-resolution-clouds --report=cloud-full-resolution-dpr2-validated
-node tests/web-platform/probe-web-default-performance.cjs --seconds=4 --dpr=2 --report=cloud-reconstruction-dpr2-ordinary
-node tests/web-platform/probe-web-cloud-reconstruction-quality.cjs
+node tests/web-platform/probe-web-cloud-reconstruction-quality.cjs --cloud-budget=0 --views=default,cloudbank,cloudback,horizon,sky --motion --report=cloud-dense-rg16-packaged
+node tests/web-platform/probe-web-cloud-reconstruction-quality.cjs --browser=Edge --cloud-budget=0 --views=default,cloudbank,cloudback --motion --report=cloud-dense-rg16-edge
+node tests/web-platform/probe-web-default-postprocess.cjs --clouds --exposure --fog --report=cloud-dense-rg16
 ```
 
-重建检查不仅核验设置和纹理创建，还要求原生半分辨率深度、云历史重建及合成着色器实际绘制，且云步进目标保持四分之一宽高。云链路统计包含深度降采样、步进、重建和合成；`--max-cloud-ms` 必须配合 GPU 时间戳使用。该探针只改变测试会话，不修改发布包；此前一分钟的默认视角交互测试不能代替高 DPI 天空性能验收。
+重建检查不仅核验设置和纹理创建，还要求原生半分辨率深度、云历史重建及合成着色器实际绘制，且云步进目标保持八分之一宽高。云链路统计包含深度降采样、步进、重建和合成；`--max-cloud-ms` 必须配合 GPU 时间戳使用。`--tracing-divisor=4` 可检查原四分之一宽高目标；默认是 8。该探针只改变测试会话，不修改发布包；默认视角交互测试不能代替高 DPI 密集云性能验收。
 
-画面对照探针冻结材质时间，按“原路径→重建→原路径”截图，保留真实曝光时间步长。天空平均 RGB 差异要求小于 3/255、明显变化像素小于 10%，地面及恢复对照平均差异各小于 1/255；实际差异和截图见 `results/web-cloud-reconstruction-quality-results.json`。这不等于逐像素无损或快速转动残影验收。
+画面对照探针冻结材质时间，保留真实曝光时间步长。`--cloud-budget=0` 按“四分之一宽高参考→发布设置→恢复参考”截图；参考路径也使用当前 RG16F/R16F 资产，不冒充旧 RGBA16F 包。天空平均 RGB 差异要求小于 3/255、明显变化像素小于 10%，默认视角地面及恢复对照平均差异各小于 1/255。`--motion` 保持云可见，用真实鼠标转向，再与同位置参考路径稳定图像比较；它检查转向完成后的图像，不是运动中每一帧的残影验收。不指定 `--cloud-budget` 时保留最早的全分辨率参考对照。
+
+`--budget-sweep --budget-profiles=7,8,9,10` 可隔离步进分辨率和采样预算，7 为四分之一宽高原预算、8 为八分之一宽高原预算；9/10 另降低主光线和阴影采样。`--compact-cloud-textures=density|all` 可在旧 RGBA16F 资产的测试会话内逐字节提取 PerlinWorley 的 RG 和 Lightning 的 R 通道，`--diagnostic-runtime` 用普通 UBT 的已审计 JS/WASM 覆盖测试加载，帮助在完整 Cook 前验证原因；这些选项均不修改发布配置或资源。诊断运行时通过正常 HTTP 加载，避免大文件经 CDP 响应正文超出容量。最终验收不启用这些覆盖选项。
 
 以下为历史检查点，不能作为当前独立包的验收结果。
 

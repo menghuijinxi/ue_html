@@ -433,6 +433,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
             TEXT("r.SupportSkyAtmosphere"), TEXT("r.SupportSkyAtmosphereAffectsHeightFog"), TEXT("r.SupportLocalFogVolumes"),
             TEXT("r.VolumetricCloud.Support"), TEXT("r.VolumetricCloud"), TEXT("r.VolumetricRenderTarget"),
             TEXT("r.VolumetricRenderTarget.Mode"), TEXT("r.VolumetricRenderTarget.UpsamplingMode"),
+            TEXT("r.VolumetricRenderTarget.WebTracingDownsampleFactor"),
+            TEXT("r.VolumetricCloud.ViewRaySampleMaxCount"), TEXT("r.VolumetricCloud.Shadow.ViewRaySampleMaxCount"),
             TEXT("r.VolumetricCloud.DisableCompute"), TEXT("r.VolumetricCloud.ShadowMap"),
             TEXT("r.VolumetricCloud.SkyAO"), TEXT("r.VolumetricCloud.Shadow.SampleAtmosphericLightShadowmap"),
             TEXT("r.VolumetricCloud.HighQualityAerialPerspective"),

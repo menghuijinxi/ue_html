@@ -872,7 +872,8 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     const bool Volume = In.Dimension == ETextureDimension::Texture3D;
     const bool Cube = In.Dimension == ETextureDimension::TextureCube;
     const bool Color = Volume ? In.Format == PF_R8G8B8A8 || In.Format == PF_B8G8R8A8 ||
-                                    In.Format == PF_R8G8B8A8_UINT || In.Format == PF_FloatRGBA
+                                    In.Format == PF_R8G8B8A8_UINT || In.Format == PF_FloatRGBA ||
+                                    In.Format == PF_R16F || In.Format == PF_G16R16F
                               : IsSampled2DTextureFormat(In.Format);
     const uint32 Limit = Volume ? Limits.maxTextureDimension3D : Limits.maxTextureDimension2D;
     if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube) ||
@@ -1248,7 +1249,8 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
         return false;
     }
     const bool SupportedFormat = Volume ? Target.Format == PF_R8G8B8A8 || Target.Format == PF_B8G8R8A8 ||
-                                             Target.Format == PF_R8G8B8A8_UINT || Target.Format == PF_FloatRGBA
+                                             Target.Format == PF_R8G8B8A8_UINT || Target.Format == PF_FloatRGBA ||
+                                             Target.Format == PF_R16F || Target.Format == PF_G16R16F
                                        : IsSampled2DTextureFormat(Target.Format) || DepthStencil;
     if (!SupportedFormat ||
         (View.Format != PF_Unknown && View.Format != Target.Format && !(DepthStencil && View.Format == PF_X24_G8)) ||

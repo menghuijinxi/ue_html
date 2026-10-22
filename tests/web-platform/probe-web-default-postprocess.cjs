@@ -26,8 +26,9 @@ const report = {date: new Date().toISOString(), pass: false, exposureRequired: r
   hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default scheduling', browserRuns: [],
   sources: [__filename, path.join(__dirname, 'capture-web-canvas.cjs')].map(audit)};
 
-function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
-  const state = {textures: [], draws: {}, dispatches: {}, fogPipelines: [], deviceLosses: [], log: []};
+function capturePostprocess({exposureBindings, fogEntries, cloudEntries, consoleCapture}) {
+  const state = {textures: [], draws: {}, dispatches: {}, fogPipelines: [], cloudTextureBindings: [],
+    deviceLosses: [], log: []};
   for (const method of consoleCapture === 'page' ? ['log', 'warn', 'error'] : []) {
     const original = console[method];
     console[method] = function(...args) {
@@ -42,21 +43,29 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
   const bound = new WeakMap();
   const bindGroups = new WeakMap();
   const boundGroups = new WeakMap();
+  const textureViews = new WeakMap();
+  const createView = GPUTexture.prototype.createView;
+  GPUTexture.prototype.createView = function(...args) {
+    const view = createView.apply(this, args);
+    textureViews.set(view, {label: this.label, format: this.format, dimension: this.dimension});
+    return view;
+  };
   const volumeUploads = new Map();
   const writeTexture = GPUQueue.prototype.writeTexture;
   GPUQueue.prototype.writeTexture = function(destination, data, layout, size) {
     const texture = destination.texture;
-    if (texture.dimension === '3d' && texture.format === 'rgba16float' && /^VT_/.test(texture.label)) {
+    if (texture.dimension === '3d' && ['r16float', 'rg16float', 'rgba16float'].includes(texture.format) && /^VT_/.test(texture.label)) {
+      const texelBytes = {r16float: 2, rg16float: 4, rgba16float: 8}[texture.format];
       const bytes = ArrayBuffer.isView(data) ?
         new Uint8Array(data.buffer, data.byteOffset, data.byteLength) : new Uint8Array(data);
       const [width, height, depth] = Array.isArray(size) ? size :
         [size.width, size.height || 1, size.depthOrArrayLayers || 1];
-      const pitch = layout.bytesPerRow || width * 8;
+      const pitch = layout.bytesPerRow || width * texelBytes;
       const rows = layout.rowsPerImage || height;
       const samples = [[0, 0, 0], [width >> 1, height >> 1, depth >> 1],
         [width - 1, height - 1, depth - 1]].map(([x, y, z]) => {
-        const offset = (layout.offset || 0) + (z * rows + y) * pitch + x * 8;
-        return {origin: {x, y, z}, expected: Array.from(bytes.subarray(offset, offset + 8))};
+        const offset = (layout.offset || 0) + (z * rows + y) * pitch + x * texelBytes;
+        return {origin: {x, y, z}, expected: Array.from(bytes.subarray(offset, offset + texelBytes))};
       });
       if (!volumeUploads.has(texture)) volumeUploads.set(texture, new Map());
       volumeUploads.get(texture).set(destination.mipLevel || 0, samples);
@@ -71,12 +80,14 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
     bindGroups.set(group, {device: this, entries: descriptor.entries});
     return group;
   };
-  const setBindGroup = GPUComputePassEncoder.prototype.setBindGroup;
-  GPUComputePassEncoder.prototype.setBindGroup = function(index, group, ...args) {
-    if (!boundGroups.has(this)) boundGroups.set(this, new Map());
-    boundGroups.get(this).set(index, bindGroups.get(group));
-    return setBindGroup.call(this, index, group, ...args);
-  };
+  for (const encoder of [GPUComputePassEncoder.prototype, GPURenderPassEncoder.prototype]) {
+    const setBindGroup = encoder.setBindGroup;
+    encoder.setBindGroup = function(index, group, ...args) {
+      if (!boundGroups.has(this)) boundGroups.set(this, new Map());
+      boundGroups.get(this).set(index, bindGroups.get(group));
+      return setBindGroup.call(this, index, group, ...args);
+    };
+  }
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(descriptor) {
     if (!observedDevices.has(this)) {
@@ -118,6 +129,15 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
       encoder[command] = function(...args) {
         const entry = bound.get(this);
         if (entry) state[field][entry] = (state[field][entry] || 0) + 1;
+        if (cloudEntries.includes(entry)) for (const [index, group] of boundGroups.get(this) || []) {
+          for (const binding of group?.entries || []) {
+            const texture = textureViews.get(binding.resource);
+            if (texture?.dimension !== '3d') continue;
+            const item = {entry, group: index, binding: binding.binding, ...texture};
+            if (!state.cloudTextureBindings.some(previous => JSON.stringify(previous) === JSON.stringify(item)))
+              state.cloudTextureBindings.push(item);
+          }
+        }
         const binding = exposureBindings[entry];
         if (field === 'dispatches' && binding) {
           const group = boundGroups.get(this)?.get(binding.group);
@@ -145,12 +165,13 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
         volumeDevice.queue.submit([encoder.finish()]);
         await readback.mapAsync(GPUMapMode.READ);
         const bytes = new Uint8Array(readback.getMappedRange());
+        const texelBytes = {r16float: 2, rg16float: 4, rgba16float: 8}[texture.format];
         const checks = entries.map((entry, index) => ({...entry,
-          actual: Array.from(bytes.subarray(index * 256, index * 256 + 8))}));
+          actual: Array.from(bytes.subarray(index * 256, index * 256 + texelBytes))}));
         results.push({texture: texture.label, mips: texture.mipLevelCount,
           checkedMips: mips.size, checks,
           pass: mips.size === texture.mipLevelCount && checks.every(check =>
-            check.expected.length === 8 && check.expected.every((value, i) => value === check.actual[i]))});
+            check.expected.length === texelBytes && check.expected.every((value, i) => value === check.actual[i]))});
         readback.unmap();
       } finally { readback.destroy(); }
     }
@@ -190,6 +211,8 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
       for (const [name, value] of Object.entries({
         'r.VolumetricCloud.Support': '1', 'r.VolumetricCloud': '1', 'r.VolumetricRenderTarget': '1',
         'r.VolumetricRenderTarget.Mode': '0', 'r.VolumetricRenderTarget.UpsamplingMode': '4',
+        'r.VolumetricRenderTarget.WebTracingDownsampleFactor': '4',
+        'r.VolumetricCloud.ViewRaySampleMaxCount': '48', 'r.VolumetricCloud.Shadow.ViewRaySampleMaxCount': '4',
         'r.VolumetricCloud.DisableCompute': '1', 'r.VolumetricCloud.ShadowMap': '0',
         'r.VolumetricCloud.SkyAO': '0', 'r.VolumetricCloud.Shadow.SampleAtmosphericLightShadowmap': '0',
         'r.VolumetricCloud.HighQualityAerialPerspective': '0'
@@ -244,7 +267,8 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
       });
       await page.addInitScript(require('./capture-web-canvas.cjs'));
       await page.addInitScript(capturePostprocess, {exposureBindings, consoleCapture,
-        fogEntries: [...shaders].filter(([, shader]) => shader.name === 'FMobileFogPS').map(([entry]) => entry)});
+        fogEntries: [...shaders].filter(([, shader]) => shader.name === 'FMobileFogPS').map(([entry]) => entry),
+        cloudEntries: [...shaders].filter(([, shader]) => /^FCloudRenderViewPS/.test(shader.name)).map(([entry]) => entry)});
       if (requireFog) {
         await page.route('**/ue-default-template/index.html', async route => {
           const response = await route.fetch();
@@ -292,9 +316,37 @@ function capturePostprocess({exposureBindings, fogEntries, consoleCapture}) {
       if (requireClouds) {
         run.clouds = {shaders: executed.filter(shader => /^FCloudRenderViewPS/.test(shader.name || '')),
           volumes: result.state.textures.filter(texture => texture.dimension === '3d' &&
-            texture.format === 'rgba16float' && /VT_/.test(texture.label))};
+            ['r16float', 'rg16float', 'rgba16float'].includes(texture.format) && /VT_/.test(texture.label))};
         assert(run.clouds.shaders.length, 'The original UE volume cloud material must actually draw');
         assert(run.clouds.volumes.length, 'The cooked UE cloud noise must be uploaded as a real linear volume');
+        assert(run.clouds.volumes.some(texture => texture.label === 'VT_PerlinWorley_Balanced' &&
+          texture.format === 'rg16float'), 'Default cloud density must retain both red and green in RG16F');
+        assert(run.clouds.volumes.some(texture => texture.label === 'VT_Lightning' &&
+          texture.format === 'r16float'), 'Default cloud lightning reads only red and must use R16F');
+        run.clouds.bindings = result.state.cloudTextureBindings;
+        assert(run.clouds.bindings.some(texture => texture.label === 'VT_PerlinWorley_Balanced') &&
+          run.clouds.bindings.some(texture => texture.label === 'VT_Lightning'),
+        'The actual cloud draw must bind both cooked volumes, not fallback textures.');
+        run.clouds.channelChecks = run.clouds.shaders.flatMap(shader => {
+          const wgsl = fs.readFileSync(shader.output.file, 'utf8');
+          const metadata = read(shader.input.file).metadata;
+          return metadata.spirvBindings.filter(binding => /^Material_VolumeTexture_\d+$/.test(binding.name))
+            .map(binding => {
+              const texture = run.clouds.bindings.find(texture => texture.entry === shader.entry &&
+                texture.group === binding.group && texture.binding === binding.binding);
+              assert(texture, 'Resolve each sampled volume through its actual draw binding');
+              const reads = [...wgsl.matchAll(new RegExp(
+                `textureSampleLevel\\(${binding.name},[^\\r\\n]+\\)\\.([xyzwrgba]+)`, 'g'))];
+              const allowed = texture.format === 'r16float' ? 'xr' :
+                texture.format === 'rg16float' ? 'xyrg' : 'xyzwrgba';
+              assert(reads.length >= 2 && reads.every(match => [...match[1]].every(c => allowed.includes(c))),
+                'Cook must preserve every channel read from the actual bound cloud texture.');
+              if (texture.label === 'VT_PerlinWorley_Balanced')
+                assert(reads.some(match => /[yg]/.test(match[1])), 'Default PerlinWorley also reads green');
+              return {shader: shader.name, name: binding.name, texture: texture.label,
+                format: texture.format, channels: [...new Set(reads.map(match => match[1]))], pass: true};
+            });
+        });
         assert(run.clouds.shaders.some(shader => /Material_\w+\s*:\s*texture_3d/.test(
           fs.readFileSync(shader.output.file, 'utf8'))), 'The cloud material must actually sample its volume noise');
         run.clouds.volumeReadbacks = await page.evaluate(() => globalThis.__webReadCloudVolumeMips());

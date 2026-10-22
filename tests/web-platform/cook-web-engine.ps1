@@ -138,6 +138,7 @@ try {
                 '-ini:Engine:[SystemSettings]:r.ShaderCompiler.JobCacheDDC=0')
         }
         if ($taskES31) { $taskArguments += '-WebGPUES31Cook' }
+        if ($Scene -eq 'DefaultTemplate') { $taskArguments += '-WebDefaultCloudDensityCook' }
         $env:WEBGPU_TINT_DIR = Join-Path $taskRoot '.tools/dawn-v20261009.190412/bin'
         $env:WEBGPU_INTERMEDIATE_DIR = Join-Path $taskOutput 'ShaderConversion'
     } else {
@@ -169,6 +170,7 @@ try {
     $taskReport.hostProducts = @(
         (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Binaries/Win64/UnrealEditor-WebCookTargetPlatform.dll'),
         (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Binaries/Win64/UnrealEditor-WebCookTargetPlatformSettings.dll'),
+        (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Binaries/Win64/UnrealEditor-TextureFormatWebCloud.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-BuildSettings.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-RenderCore.dll'),
@@ -203,7 +205,8 @@ try {
         (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderHostTargetPlatform/Private/WebGPUShaderHostTargetPlatform.cpp'),
         (Join-Path $taskRoot 'reference-engine/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini'),
         $PSCommandPath
-    ) + @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebCookTargetPlatform') -File -Recurse |
+    ) + @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/TextureFormatWebCloud') -File -Recurse |
+        ForEach-Object { $_.FullName }) + @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebCookTargetPlatform') -File -Recurse |
         ForEach-Object { $_.FullName }) + @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebCookTargetPlatformSettings') -File -Recurse |
         ForEach-Object { $_.FullName }) | ForEach-Object { Get-TaskAudit $_ }
     $taskReport.sourceFiles += @('Public/WebMinimalMapCommandlet.h', 'Private/WebMinimalMapCommandlet.cpp') |

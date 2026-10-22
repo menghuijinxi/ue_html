@@ -42,7 +42,20 @@ public:
         for (FName& Format : Layers)
         {
             const FString Name = Format.ToString();
-            if (Texture->IsA<UVolumeTexture>() || Name == TEXT("BC6H") || Name == TEXT("BC6H_SF16"))
+            if (Texture->IsA<UVolumeTexture>() &&
+                FParse::Param(FCommandLine::Get(), TEXT("WebDefaultCloudDensityCook")) &&
+                Texture->GetPathName() == TEXT("/Engine/EngineSky/VolumetricClouds/VT_PerlinWorley_Balanced.VT_PerlinWorley_Balanced"))
+            {
+                // The executed default material reads red and green; preserve both at half precision.
+                Format = TEXT("WebCloudRG16F");
+            }
+            else if (Texture->IsA<UVolumeTexture>() &&
+                FParse::Param(FCommandLine::Get(), TEXT("WebDefaultCloudDensityCook")) &&
+                Texture->GetPathName() == TEXT("/Engine/EngineSky/VolumetricClouds/VT_Lightning.VT_Lightning"))
+            {
+                Format = TEXT("R16F");
+            }
+            else if (Texture->IsA<UVolumeTexture>() || Name == TEXT("BC6H") || Name == TEXT("BC6H_SF16"))
                 Format = TEXT("RGBA16F");
             else if (Name.StartsWith(TEXT("DXT")) || Name.StartsWith(TEXT("BC")) || Name == TEXT("AutoDXT"))
                 Format = TEXT("BGRA8");
@@ -51,6 +64,7 @@ public:
     virtual void GetTextureFormatModuleHints(TArray<FName>& Modules) const override
     {
         Modules.AddUnique(TEXT("TextureFormatUncompressed"));
+        Modules.AddUnique(TEXT("TextureFormatWebCloud"));
     }
     virtual FName GetWaveFormat(const USoundWave*) const override { return NAME_None; }
     virtual void GetAllWaveFormats(TArray<FName>&) const override {}
