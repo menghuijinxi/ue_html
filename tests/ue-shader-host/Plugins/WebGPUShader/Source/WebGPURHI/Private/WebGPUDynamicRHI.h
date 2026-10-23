@@ -376,7 +376,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     WGPUDevice Device = nullptr;
     WGPUQueue Queue = nullptr;
     WGPULimits Limits = WGPU_LIMITS_INIT;
-    TOptional<FPixelFormatInfo> PreviousDepthFormat, PreviousStencilFormat, PreviousShadowFormat;
+    TOptional<FPixelFormatInfo> PreviousDepthFormat, PreviousStencilFormat, PreviousShadowFormat, PreviousPackedHDRFormat;
     WGPUCommandEncoder Encoder = nullptr;
     WGPURenderPassEncoder Pass = nullptr;
     TRefCountPtr<FWebGPUGraphicsPipeline> GraphicsPipeline;
@@ -396,6 +396,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint32 BufferLocksCreated = 0, BufferLocksReleased = 0, BufferUploads = 0, BufferReadLocks = 0;
     uint64 BufferUploadBytes = 0;
     TMap<FRHIBuffer *, FWebGPUBufferLock> BufferLocks;
+    TMap<FString, FSamplerStateRHIRef> GlobalSamplers;
     uint32 BreadcrumbsBegun = 0, BreadcrumbsEnded = 0, BreadcrumbMarkersEmitted = 0;
     TArray<FRHIBreadcrumbNode *> BreadcrumbStack;
     TMap<const FRHITransition *, TSharedPtr<FWebGPUTransitionData>> Transitions;

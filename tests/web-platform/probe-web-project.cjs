@@ -20,6 +20,7 @@ const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file)
 const report = {date: new Date().toISOString(), pass: false, projectId: id, runs: [],
   warmupFrames, physicalPhoneTested: false, performanceAccepted: false, vramBudgetVerified: false,
   lightingControlsRequired: option('lighting') === '1', localLightsRequired: option('local-lights') === '1',
+  surfaceControlsRequired: option('surfaces') === '1',
   requestedView: view || null,
   sources: [__filename, path.join(__dirname, 'web-default-template.html')].map(audit)};
 let browser;
@@ -77,7 +78,7 @@ function instrumentation() {
     const block = compressed ? 4 : 1;
     const bytes = compressed ? (/^bc[14]-/.test(descriptor.format) ? 8 : 16) : ({
       r8unorm: 1, r8uint: 1, rg8unorm: 2, r16float: 2, r16uint: 2,
-      rg16float: 4, r32float: 4, r32uint: 4, rgba16float: 8,
+      rg16float: 4, r32float: 4, r32uint: 4, rgba16float: 8, rg11b10ufloat: 4,
       rgba8uint: 4, rgba8unorm: 4, 'rgba8unorm-srgb': 4, bgra8unorm: 4, 'bgra8unorm-srgb': 4,
       depth32float: 4, 'depth24plus-stencil8': 4
     }[descriptor.format]);
@@ -183,6 +184,16 @@ function pixelDifference(first, second) {
         });
         try {
           await page.addInitScript(instrumentation);
+          if (option('surfaces') === '1') {
+            await page.route(`http://127.0.0.1:8765/build/${id}/index.html`, async route => {
+              const response = await route.fetch();
+              const html = await response.text();
+              const original = `arguments: ['-webgpu', '-WebProjectMap=${packaged.map}'],`;
+              assert(html.includes(original), 'Project entry arguments changed');
+              await route.fulfill({response, body: html.replace(original,
+                `arguments: ['-webgpu', '-WebProjectMap=${packaged.map}', '-WebVisualTestClock'],`)});
+            });
+          }
           await page.goto(`http://127.0.0.1:8765/build/${id}/index.html`, {waitUntil: 'commit'});
           await page.waitForFunction(frames => globalThis.__webEngineFailure ||
             globalThis.__projectProbe?.deviceLosses.length || globalThis.__webEngineFrames >= frames,
@@ -199,8 +210,14 @@ function pixelDifference(first, second) {
           if (view) {
             assert(await page.evaluate(view => Module._WebProjectViewTest(...view), view));
             const frame = await page.evaluate(() => globalThis.__webEngineFrames);
-            await page.waitForFunction(frame => globalThis.__webEngineFrames >= frame + 4, frame, {timeout: 60000});
+            const settleFrames = option('surfaces') === '1' ? 40 : 4;
+            await page.waitForFunction(({frame, settleFrames}) =>
+              globalThis.__webEngineFrames >= frame + settleFrames, {frame, settleFrames}, {timeout: 60000});
             await page.evaluate(() => globalThis.__projectIdle());
+          }
+          if (option('surfaces') === '1') {
+            run.visualTestClock = await page.evaluate(() => globalThis.__webVisualTestClock);
+            assert(run.visualTestClock?.renderTimeFrozen, 'Surface comparisons require frozen material time');
           }
           const before = await page.evaluate(() => ({...globalThis.__projectProbe,
             heap: globalThis.__webEngineRuntime?.heapBytes || null}));
@@ -286,6 +303,37 @@ function pixelDifference(first, second) {
             Object.assign(run.gpu, diagnostics);
             assert(!diagnostics.failure && !diagnostics.errors.length &&
               !diagnostics.deviceLosses.length && !run.errors.length, 'Lighting controls produced GPU or page errors');
+          }
+          if (option('surfaces') === '1') {
+            assert(sample.textureFormats.rg11b10ufloat?.count >= 1, 'No packed HDR reflection captures uploaded');
+            run.surfaces = {};
+            for (const [mode, label] of [[3, 'ao-off'], [0, 'ao-restored'], [4, 'reflection-off'],
+              [0, 'reflection-restored'], [5, 'shadows-off'], [0, 'restored']]) {
+              assert(await page.evaluate(mode => Module._WebProjectLightingTestMode(mode), mode));
+              const frame = await page.evaluate(() => globalThis.__webEngineFrames);
+              await page.waitForFunction(frame => globalThis.__webEngineFrames >= frame + 24, frame, {timeout: 60000});
+              await page.evaluate(() => globalThis.__projectIdle());
+              const file = screenshot.replace(/\.png$/, '-surface-' + label + '.png');
+              await page.screenshot({path: file});
+              run.surfaces[label] = {screenshot: audit(file), pixels: pixels(file),
+                settings: await page.evaluate(() => globalThis.__webProjectLighting),
+                difference: pixelDifference(screenshot, file)};
+            }
+            const restored = run.surfaces.restored.difference;
+            for (const label of ['ao-restored', 'reflection-restored', 'restored'])
+              assert(run.surfaces[label].difference.rms < 3,
+                label + ' did not restore the original scene');
+            for (const label of ['ao-off', 'reflection-off', 'shadows-off']) {
+              const change = run.surfaces[label].difference;
+              assert(change.rms > 0.5 && change.changedFraction > 0.001 && change.rms > restored.rms * 2,
+                label + ' must exceed restored-frame drift: ' + JSON.stringify({change, restored}));
+            }
+            const diagnostics = await page.evaluate(() => ({
+              errors: globalThis.__projectProbe.errors, deviceLosses: globalThis.__projectProbe.deviceLosses,
+              failure: globalThis.__webEngineFailure || null}));
+            Object.assign(run.gpu, diagnostics);
+            assert(!diagnostics.failure && !diagnostics.errors.length && !diagnostics.deviceLosses.length &&
+              !run.errors.length, 'Surface controls produced GPU or page errors');
           }
           run.contentCompatibilityPass = run.contentErrors.length === 0;
           run.pass = true;

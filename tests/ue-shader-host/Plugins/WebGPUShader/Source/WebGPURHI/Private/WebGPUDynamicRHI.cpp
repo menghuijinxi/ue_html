@@ -61,7 +61,8 @@ bool SupportsSRGB(EPixelFormat Value)
 bool IsSampled2DTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_G8 || Value == PF_R8 ||
-           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT ||
+           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_FloatR11G11B10 ||
+           Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT ||
            IsUnsignedTextureFormat(Value) || IsBCTextureFormat(Value);
 }
 WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
@@ -79,6 +80,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_RG8Unorm;
     case PF_FloatRGBA:
         return WGPUTextureFormat_RGBA16Float;
+    case PF_FloatR11G11B10:
+        return WGPUTextureFormat_RG11B10Ufloat;
     case PF_R16F:
         return WGPUTextureFormat_R16Float;
     case PF_G16R16F:
@@ -440,6 +443,8 @@ void FWebGPUDynamicRHI::Init()
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     check(Instance && Adapter && Device && Errors.IsEmpty());
     AdapterName = TEXT("Browser WebGPU");
+    // Browsers may withhold the PCI vendor ID; distinguish that from an unqueried adapter.
+    GRHIVendorId = uint32(EGpuVendorId::Unknown);
 #else
     WGPUInstanceDescriptor InstanceDesc = WGPU_INSTANCE_DESCRIPTOR_INIT;
     Instance = wgpuCreateInstance(&InstanceDesc);
@@ -499,6 +504,13 @@ void FWebGPUDynamicRHI::Init()
     PreviousDepthFormat = GPixelFormats[PF_DepthStencil];
     PreviousStencilFormat = GPixelFormats[PF_X24_G8];
     PreviousShadowFormat = GPixelFormats[PF_ShadowDepth];
+    PreviousPackedHDRFormat = GPixelFormats[PF_FloatR11G11B10];
+    auto& PackedHDRFormat = GPixelFormats[PF_FloatR11G11B10];
+    PackedHDRFormat.Supported = true;
+    PackedHDRFormat.PlatformFormat = WGPUTextureFormat_RG11B10Ufloat;
+    PackedHDRFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::TextureCube |
+        EPixelFormatCapabilities::TextureLoad | EPixelFormatCapabilities::TextureSample |
+        EPixelFormatCapabilities::TextureFilterable;
     auto& DepthFormat = GPixelFormats[PF_DepthStencil];
     DepthFormat.Supported = true;
     DepthFormat.PlatformFormat = WGPUTextureFormat_Depth24PlusStencil8;
@@ -514,6 +526,15 @@ void FWebGPUDynamicRHI::Init()
     ShadowFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::DepthStencil |
         EPixelFormatCapabilities::TextureLoad | EPixelFormatCapabilities::TextureSample;
     Queue = wgpuDeviceGetQueue(Device);
+    const TCHAR* Filters[] = {TEXT("Point"), TEXT("Bilinear"), TEXT("Trilinear")};
+    for (uint32 Filter = 0; Filter < UE_ARRAY_COUNT(Filters); ++Filter)
+    for (uint32 Wrap = 0; Wrap < 2; ++Wrap)
+    {
+        const auto Address = Wrap ? AM_Wrap : AM_Clamp;
+        GlobalSamplers.Add(FString::Printf(TEXT("VulkanGlobal%s%sSampler"), Filters[Filter],
+            Wrap ? TEXT("Wrapped") : TEXT("Clamped")),
+            RHICreateSamplerState(FSamplerStateInitializerRHI(ESamplerFilter(Filter), Address, Address, Address)));
+    }
     if (StartupProbeMode || GlobalProbeMode)
     {
         GRHIMaxDispatchThreadGroupsPerDimension = FIntVector(Limits.maxComputeWorkgroupsPerDimension);
@@ -568,6 +589,7 @@ void FWebGPUDynamicRHI::Shutdown()
     check(!Pass && !Encoder && !ContextOpen && Transitions.IsEmpty() && BreadcrumbStack.IsEmpty() &&
           BufferLocks.IsEmpty());
     ReleaseBindings();
+    GlobalSamplers.Empty();
     if (Queue)
     {
         wgpuQueueRelease(Queue);
@@ -593,9 +615,11 @@ void FWebGPUDynamicRHI::Shutdown()
         GPixelFormats[PF_DepthStencil] = PreviousDepthFormat.GetValue();
         GPixelFormats[PF_X24_G8] = PreviousStencilFormat.GetValue();
         GPixelFormats[PF_ShadowDepth] = PreviousShadowFormat.GetValue();
+        GPixelFormats[PF_FloatR11G11B10] = PreviousPackedHDRFormat.GetValue();
         PreviousDepthFormat.Reset();
         PreviousStencilFormat.Reset();
         PreviousShadowFormat.Reset();
+        PreviousPackedHDRFormat.Reset();
     }
 }
 void FWebGPUDynamicRHI::PostInit()
@@ -910,6 +934,14 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     const bool Volume = In.Dimension == ETextureDimension::Texture3D;
     const bool Cube = In.Dimension == ETextureDimension::TextureCube;
     const bool Array = In.Dimension == ETextureDimension::Texture2DArray;
+    if (In.Format == PF_FloatR11G11B10 &&
+        (!EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
+         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable | ETextureCreateFlags::UAV |
+             ETextureCreateFlags::DepthStencilTargetable | ETextureCreateFlags::SRGB)))
+    {
+        Error = TEXT("R11G11B10 supports only linear sampled textures");
+        return false;
+    }
     if (Array && (In.Format != PF_R16F || In.NumMips != 1 ||
         In.InitAction != ERHITextureInitAction::Default ||
         !EnumHasAllFlags(In.Flags, ETextureCreateFlags::ShaderResource | ETextureCreateFlags::RenderTargetable) ||
@@ -999,7 +1031,8 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
         In.Dimension == ETextureDimension::Texture2DArray ? uint32(In.ArraySize) : uint32(In.Depth)};
     Desc.format = Format(In.Format, EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB));
     Desc.mipLevelCount = In.NumMips;
-    Desc.usage = Volume || IsBCTextureFormat(In.Format) ? WGPUTextureUsage_None : WGPUTextureUsage_RenderAttachment;
+    Desc.usage = Volume || IsBCTextureFormat(In.Format) || In.Format == PF_FloatR11G11B10 ?
+        WGPUTextureUsage_None : WGPUTextureUsage_RenderAttachment;
     if (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV))
         Desc.usage |= WGPUTextureUsage_StorageBinding;
     if (In.Format != PF_DepthStencil && In.Format != PF_ShadowDepth)
@@ -1642,6 +1675,12 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
     FromTable = false;
     const FString Name = Binding.GetStringField(TEXT("name"));
     const uint32 Descriptor = Binding.GetIntegerField(TEXT("descriptorType"));
+    if (Descriptor == 0)
+        if (const auto* Sampler = GlobalSamplers.Find(Name))
+        {
+            Resource = Sampler->GetReference();
+            return true;
+        }
     for (const auto &Item : Shader.Metadata->GetArrayField(TEXT("ueParameterMap")))
     {
         const auto Parameter = Item->AsObject();
@@ -1996,10 +2035,12 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         const uint32 Frequency = Shader->Metadata->GetIntegerField(TEXT("frequency"));
         Entry.visibility = Frequency == SF_Vertex ? WGPUShaderStage_Vertex :
             Frequency == SF_Pixel ? WGPUShaderStage_Fragment : WGPUShaderStage_Compute;
-        // Cloud depth is encoded in filterable RGBA16F color targets, not a depth attachment.
+        // HZB starts from the depth attachment and uses a point sampler at every mip.
+        // Cloud depth is encoded in filterable RGBA16F color targets.
         const bool Depth = !Name.Contains(TEXT("VolumetricDepthTexture")) &&
             (Name.Contains(TEXT("SceneDepth")) || Name.Contains(TEXT("ShadowDepth")) ||
-                Name.Contains(TEXT("DepthTexture")));
+                Name.Contains(TEXT("DepthTexture")) || Name == TEXT("ParentTextureMip") ||
+                Name == TEXT("ParentTextureMipSampler"));
         // ACES tables use integer-coordinate loads from core, unfilterable R32Float textures.
         const bool ACESLookup = Name.Contains(TEXT("ACESReachTable")) ||
             Name.Contains(TEXT("ACESGamutTable")) || Name.Contains(TEXT("ACESGammaTable"));

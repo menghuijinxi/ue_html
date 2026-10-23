@@ -22,6 +22,11 @@ public:
     virtual bool UsesRayTracing() const override { return false; }
     virtual bool UsesDistanceFields() const override { return false; }
 
+    virtual void GetReflectionCaptureFormats(TArray<FName>& Formats) const override
+    {
+        Formats.Add(bES31 ? FName(TEXT("EncodedHDR")) : FName(TEXT("FullHDR")));
+    }
+
     virtual void GetAllPossibleShaderFormats(TArray<FName>& Formats) const override
     {
         if (bWebGPU)

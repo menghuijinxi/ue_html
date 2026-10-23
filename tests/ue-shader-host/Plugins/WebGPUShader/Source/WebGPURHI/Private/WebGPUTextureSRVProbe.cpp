@@ -11,6 +11,7 @@
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "Algo/AllOf.h"
+#include "Math/PackedVector.h"
 
 namespace
 {
@@ -299,6 +300,69 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
             FWebGPUTexture* ResolvedAtlas;
             Record(TEXT("ies-array-srv-resolves-all-layers"),
                 RHI.ResolveSampledTexture(Resource, ResolvedAtlas, Handle, ERHIAccess::SRVGraphicsPixel, Error));
+        }
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureReflectionProbe")))
+        {
+            const TCHAR* Filters[] = {TEXT("Point"), TEXT("Bilinear"), TEXT("Trilinear")};
+            for (uint32 Filter = 0; Filter < UE_ARRAY_COUNT(Filters); ++Filter)
+            for (uint32 Wrap = 0; Wrap < 2; ++Wrap)
+            {
+                FJsonObject Binding;
+                const FString Name = FString::Printf(TEXT("VulkanGlobal%s%sSampler"), Filters[Filter],
+                    Wrap ? TEXT("Wrapped") : TEXT("Clamped"));
+                Binding.SetStringField(TEXT("name"), Name);
+                Binding.SetNumberField(TEXT("descriptorType"), 0);
+                FRHIResource* Resource = nullptr;
+                bool FromTable = false;
+                const bool SamplerResolved = RHI.ResolveBinding(RHI.ShaderData(PS), Binding, Resource, FromTable, Error);
+                auto* Global = SamplerResolved ? static_cast<FWebGPUSampler*>(Resource) : nullptr;
+                const auto Address = Wrap ? AM_Wrap : AM_Clamp;
+                Record(TEXT("reflection-global-sampler-") + Name, Global && !FromTable &&
+                    Global->Initializer.Filter == ESamplerFilter(Filter) &&
+                    Global->Initializer.AddressU == Address && Global->Initializer.AddressV == Address &&
+                    Global->Initializer.AddressW == Address && RHI.ResolveSampler(Global));
+            }
+            auto Desc = FRHITextureCreateDesc::CreateCube(TEXT("ReflectionPackedCube"), 8, PF_FloatR11G11B10)
+                .SetNumMips(4).SetFlags(ETextureCreateFlags::ShaderResource)
+                .SetInitialState(ERHIAccess::SRVGraphicsPixel).SetInitActionInitializer();
+            Record(TEXT("reflection-packed-cube-create-valid"), RHI.ValidateTextureInitialization(Desc, Error));
+            auto Invalid = Desc;
+            Invalid.Flags |= ETextureCreateFlags::RenderTargetable;
+            Record(TEXT("reflection-packed-reject-render-target"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Invalid = Desc;
+            Invalid.Flags |= ETextureCreateFlags::SRGB;
+            Record(TEXT("reflection-packed-reject-srgb"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            const FLinearColor Linear[] = {FLinearColor(1, 0, 0), FLinearColor(0, 0.5f, 0),
+                FLinearColor(0, 0, 0.25f), FLinearColor(1, 0.5f, 0.25f)};
+            const FColor Expected[] = {FColor(255, 0, 0), FColor(0, 128, 0),
+                FColor(0, 0, 64), FColor(255, 128, 64)};
+            auto Init = Cmd.CreateTextureInitializer(Desc);
+            for (int32 Face = 0; Face < 6; ++Face)
+            for (int32 Mip = 0; Mip < 4; ++Mip)
+            {
+                const auto Data = Init.GetTextureCubeSubresource(Face, Mip);
+                const FFloat3Packed Value(Linear[(Face + Mip) % 4]);
+                for (uint64 Offset = 0; Offset < Data.Size; Offset += sizeof(Value))
+                    FMemory::Memcpy(static_cast<uint8*>(Data.Data) + Offset, &Value, sizeof(Value));
+            }
+            auto Cube = Init.Finalize();
+            for (int32 Face = 0; Face < 6; ++Face)
+            for (int32 Mip = 0; Mip < 4; ++Mip)
+            {
+                auto View = Cmd.CreateShaderResourceView(Cube, FRHIViewDesc::CreateTextureSRV()
+                    .SetDimension(ETextureDimension::Texture2D).SetMipRange(Mip, 1).SetArrayRange(Face, 1));
+                Draw(View);
+                TArray<FColor> Colors;
+                Cmd.ReadSurfaceData(Destination, FIntRect(0, 0, 16, 16), Colors, RawReadback());
+                const FColor Want = Expected[(Face + Mip) % 4];
+                Record(FString::Printf(TEXT("reflection-packed-face%d-mip%d"), Face, Mip),
+                    Colors.Num() == 256 && Algo::AllOf(Colors, [&](FColor Value) {
+                        return FMath::Abs(int32(Value.R) - Want.R) <= 1 &&
+                            FMath::Abs(int32(Value.G) - Want.G) <= 1 &&
+                            FMath::Abs(int32(Value.B) - Want.B) <= 1 && Value.A == 255;
+                    }));
+                Checked += Colors.Num() * 4;
+            }
         }
         if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureBCProbe")))
         {

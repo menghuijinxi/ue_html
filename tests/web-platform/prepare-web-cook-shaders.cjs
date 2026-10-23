@@ -8,6 +8,15 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/MobileBasePassPixelShader.usf', [{
+    before: '\t\thalf GatheredAmbientOcclusion = ScreenSpaceShadowMaskSample.a;',
+    after: [
+      '\t\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t\t\thalf GatheredAmbientOcclusion = Texture2DSample(MobileBasePass.AmbientOcclusionTexture, MobileBasePass.AmbientOcclusionSampler, BufferUV).r;',
+      '\t\t#else', '\t\t\thalf GatheredAmbientOcclusion = ScreenSpaceShadowMaskSample.a;',
+      '\t\t#endif',
+    ].join('\n'),
+  }]],
   ['Private/LightGridInjection.usf', [{
     before: '#include "WaveOpUtil.ush"',
     after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',

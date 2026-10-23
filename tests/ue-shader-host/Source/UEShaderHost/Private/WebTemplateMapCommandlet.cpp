@@ -7,6 +7,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/VolumetricCloudComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
+#include "Components/ReflectionCaptureComponent.h"
+#include "Components/SceneCaptureComponent2D.h"
 #include "Dom/JsonObject.h"
 #include "Engine/Level.h"
 #include "Engine/StaticMesh.h"
@@ -14,6 +16,10 @@
 #include "Engine/VolumeTexture.h"
 #include "Engine/World.h"
 #include "Engine/PostProcessVolume.h"
+#include "Engine/MapBuildDataRegistry.h"
+#include "Engine/SceneCapture2D.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "ImageUtils.h"
 #include "SceneInterface.h"
 #include "RenderingThread.h"
 #include "Serialization/MemoryWriter.h"
@@ -55,7 +61,10 @@ int32 UWebTemplateMapCommandlet::Main(const FString& Params)
         }
     };
     FString SkyCaptureOutput;
-    if (FParse::Value(*Params, TEXT("SkyCaptureOutput="), SkyCaptureOutput))
+    FString RenderOutput;
+    FParse::Value(*Params, TEXT("SkyCaptureOutput="), SkyCaptureOutput);
+    FParse::Value(*Params, TEXT("RenderOutput="), RenderOutput);
+    if (!SkyCaptureOutput.IsEmpty() || !RenderOutput.IsEmpty())
     {
         World->WorldType = EWorldType::Editor;
         World->InitWorld(UWorld::InitializationValues().AllowAudioPlayback(false)
@@ -64,6 +73,9 @@ int32 UWebTemplateMapCommandlet::Main(const FString& Params)
         World->UpdateWorldComponents(true, false);
         FAssetCompilingManager::Get().FinishAllCompilation();
         FlushRenderingCommands();
+    }
+    if (!SkyCaptureOutput.IsEmpty())
+    {
         TArray<USkyLightComponent*> Skies;
         for (AActor* Actor : World->PersistentLevel->Actors)
             if (Actor)
@@ -103,6 +115,53 @@ int32 UWebTemplateMapCommandlet::Main(const FString& Params)
         }
         if (Writer.IsError() || !FFileHelper::SaveArrayToFile(Bytes, *SkyCaptureOutput))
             return 1;
+    }
+    if (!RenderOutput.IsEmpty())
+    {
+        FString View;
+        TArray<FString> Parts;
+        FParse::Value(*Params, TEXT("RenderView="), View, false);
+        View.ParseIntoArray(Parts, TEXT(","));
+        if (Parts.Num() != 5)
+        {
+            UE_LOG(LogTemp, Error, TEXT("WEB_NATIVE_VIEW: expected x,y,z,pitch,yaw, received %s"), *View);
+            return 1;
+        }
+        USkyLightComponent::UpdateSkyCaptureContents(World);
+        UReflectionCaptureComponent::UpdateReflectionCaptureContents(World);
+        FlushRenderingCommands();
+        auto* CaptureActor = World->SpawnActor<ASceneCapture2D>();
+        auto* Capture = CaptureActor->GetCaptureComponent2D();
+        auto* Target = NewObject<UTextureRenderTarget2D>(CaptureActor);
+        Target->RenderTargetFormat = RTF_RGBA8;
+        Target->InitAutoFormat(1280, 720);
+        Capture->TextureTarget = Target;
+        Capture->CaptureSource = SCS_FinalColorLDR;
+        Capture->bCaptureEveryFrame = false;
+        Capture->bCaptureOnMovement = false;
+        Capture->bAlwaysPersistRenderingState = true;
+        Capture->FOVAngle = 90;
+        CaptureActor->SetActorLocationAndRotation(
+            FVector(FCString::Atod(*Parts[0]), FCString::Atod(*Parts[1]), FCString::Atod(*Parts[2])),
+            FRotator(FCString::Atod(*Parts[3]), FCString::Atod(*Parts[4]), 0));
+        for (int32 Frame = 0; Frame < 32; ++Frame)
+        {
+            World->SendAllEndOfFrameUpdates();
+            Capture->CaptureScene();
+            FlushRenderingCommands();
+        }
+        TArray<FColor> Pixels;
+        FReadSurfaceDataFlags ReadFlags(RCM_UNorm);
+        ReadFlags.SetLinearToGamma(false);
+        if (!Target->GameThread_GetRenderTargetResource()->ReadPixels(Pixels, ReadFlags) ||
+            Pixels.Num() != 1280 * 720)
+            return 1;
+        TArray<uint8> PNG;
+        FImageUtils::CompressImageArray(1280, 720, Pixels, PNG);
+        if (!FFileHelper::SaveArrayToFile(PNG, *RenderOutput))
+            return 1;
+        UE_LOG(LogTemp, Display, TEXT("WEB_NATIVE_VIEW: saved=%s view=%s size=1280x720"), *RenderOutput, *View);
+        CaptureActor->Destroy();
     }
     TSharedRef<FJsonObject> Result = MakeShared<FJsonObject>();
     Result->SetStringField(TEXT("map"), Map);
@@ -158,6 +217,17 @@ int32 UWebTemplateMapCommandlet::Main(const FString& Params)
                 Entry->SetStringField(TEXT("cubemap"), GetPathNameSafe(Sky->Cubemap));
                 Entry->SetBoolField(TEXT("realtimeCapture"), Sky->bRealTimeCapture);
                 Entry->SetNumberField(TEXT("mobility"), int32(Sky->Mobility));
+            }
+            if (auto* Reflection = Cast<UReflectionCaptureComponent>(Component))
+            {
+                Entry->SetNumberField(TEXT("brightness"), Reflection->Brightness);
+                if (const auto* Data = Reflection->GetMapBuildData())
+                {
+                    Entry->SetNumberField(TEXT("captureSize"), Data->CubemapSize);
+                    Entry->SetNumberField(TEXT("averageBrightness"), Data->AverageBrightness);
+                    Entry->SetNumberField(TEXT("fullHDRBytes"), Data->FullHDRCapturedData.Num());
+                    Entry->SetNumberField(TEXT("encodedHDRBytes"), Data->EncodedHDRCapturedData.Num());
+                }
             }
             if (UVolumetricCloudComponent* Cloud = Cast<UVolumetricCloudComponent>(Component))
             {

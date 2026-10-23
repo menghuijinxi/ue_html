@@ -1,5 +1,34 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：室内 PBR 链路排查与修复
+
+用户指出新版室内虽能看清，却像自发光，质感远差于编辑器。默认示例关卡主要展示开阔空间里的方向光和天空光，不足以覆盖封闭室内所需的天空遮挡、间接光、局部反射和密集灯光阴影。别墅原项目启用了 Lumen GI / 反射及虚拟阴影，Web 目前采用 ES3.1 前向路径；原始天空光的球谐照明没有房间尺度的可见性信息，直接照亮室内表面，是仍然偏平的重要原因。不能把加载了 Lit 材质或截图非黑当作编辑器画质一致。
+
+本轮恢复关卡已有的 31 个烘焙反射捕获（13 个盒形、18 个球形）。Web 移动 Cook 现在请求 `EncodedHDR`；此前平台默认只请求 `FullHDR`，与移动运行时保留的格式不一致。RHI 增加线性 `rg11b10ufloat` 二维 / 立方体纹理上传和采样，保留六面与完整 mip，不要求可选的压缩 HDR 渲染目标能力。场景颜色仍按实际 RenderTarget 能力选择 RGBA16F。另修复初次加载时反射代理早于纹理分配创建的问题：上传后刷新组件渲染状态，避免资源存在但初始代理仍绑定旧资源。
+
+项目启用一层半分辨率 SSAO 及移动聚光灯阴影。移动 AO 通道实际要求 `r.AmbientOcclusionLevels > 0`，所以仅设置功能开关、保留默认 `-1` 不会执行该通道。深度金字塔选择 UE 现有逐级栅格路径，避开当前 Web RHI 不支持的 R16F storage image 和 subgroup 计算分支。补齐六种 UE Vulkan 标准全局采样器，正确声明深度金字塔源纹理的非过滤绑定。Web 前向材质直接采样生成的 AO 纹理；原前向代码读取阴影遮罩 alpha，与此路径生成的独立 AO 纹理没有连通。这些更改均限制在 Web 或项目配置内，没有改动原场景的灯光强度和曝光。
+
+新增 `-WebTextureReflectionProbe`，在原生记录 / 直通两种模式验证 RG11B10 六面四级 mip、非法 RT / sRGB 创建拒绝和六种全局采样器绑定。与既有 BC / IES / TextureSRV 检查合计 238 项。浏览器 `--surfaces=1` 冻结材质时间，保持曝光使用真实帧间隔；固定视点充分预热后分别关闭 AO、反射和阴影，每步恢复并比较逐像素 RMS，要求效果变化超过恢复误差。开关实际值、原始值、截图哈希和 GPU 错误均记录到报告中。
+
+新增原生 `-RenderOutput=... -RenderView=x,y,z,pitch,yaw` 参考截图。这里使用编辑器世界的 SceneCapture2D，匹配相机几何但没有运行原地图 BeginPlay，也不是编辑器主视口；材质动态参数和曝光 / GI 仍可能不同，不能作为逐像素一致性证明。清单确认 31 个捕获均有 128 分辨率、524,280 字节编码 HDR 数据。原生图与初始网页图保留用于核查差异。
+
+本轮验收入口为 `verify-web-project-surfaces.cjs`，关联当前源码、普通 UBT 构建、原生模块、Cook、包、压缩 mip 清单、双浏览器开关截图及默认关卡回归。`nativeVisualParityVerified`、`performanceAccepted` 和 `vramBudgetVerified` 始终独立记录；SSAO 不是房间尺度 GI，烘焙反射捕获也不等于 Lumen 动态反射。原有 `M_GlassBlur` 的移动 SceneColor 兼容问题仍需处理。
+
+独立引擎仓库对应提交为 `cbe50407f`（修复 Web 室内 AO 采样与反射捕获初始绑定）。普通 UBT Web 构建、原生 RenderCore / Renderer 模块构建及两个关卡的 Cook / 打包均通过，安装引擎的审计输入未修改。新增测试保留了修改前的失败证据：AO 开关原先没有有效差异，反射恢复也存在约 4.69 的固定偏差；修复后关闭 AO / 反射的 RMS 约为 6.6 / 11.6，恢复误差约 1.1。关闭阴影的 RMS 约 61.7，明显超过恢复误差。两浏览器均上传 31 个 RG11B10 捕获，无 GPU 校验错误或设备丢失。
+
+逐图核查后，反射和接触遮蔽有所改善，但整间房仍过于均匀明亮，与原生参考差距明显。这一轮只完成基础链路修复，不能宣称用户指出的室内整体偏平已经解决；后续重点应是房间尺度的天空可见性及间接光，而不是继续整体调曝光。默认室外示例关卡通过也不代表复杂室内光照通过。
+
+最终汇总审计通过 9,103 个条目、8,953 个不同文件，全部核对当前文件哈希。默认关卡在 Chrome / Edge 的灯光对照、窗口恢复及损坏包 / 配置拦截回归通过。旧 RenderCore 报告记录了已被后续 Renderer 构建替换的 UBT；本轮重新构建 RenderCore 并重做两个关卡的 Cook、打包与浏览器验证，没有跳过不一致检查。
+
+当前独立目录 6 文件共 582,004,473 字节。纹理清单仍为 667 张、607 张多 mip、60 张单 mip，相比未压缩基线保留每张纹理的宽高、面数和 mip 数，压缩估算仍为 210,559,592 字节。双浏览器累计纹理创建描述估算均为 696,130,268 字节，包含新增阴影和 AO 目标及反射资源，不能当作实际驻留显存。1280x720 固定餐桌视角短时为 Chrome 4.73 / Edge 4.36 FPS，性能及 8 GB 显存预算均未验收。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-project.cjs --project=triplex-house-villa --smoke=1 --warmup-frames=10 --seconds=6 --surfaces=1 --report=pbr-final --view=-175,-80,160,-5,50
+node tests/web-platform/audit-cooked-textures.cjs --cook-report=tests/web-platform/results/web-project-triplex-house-villa-cook-results.json --output=tests/web-platform/results/triplex-textures-pbr-final.json
+node tests/web-platform/verify-web-project-surfaces.cjs
+```
+
 ## 2026-10-23：修复室内照明
 
 用户指出别墅网页几乎全黑。本轮对照关卡清单确认：原地图有强度 7 的指定 HDRI SkyLight、103 个聚光灯、4 个点光源和9个矩形灯；先前兼容性包在 Cook 时关闭了 SkyLight，配置也禁用了本地灯。这些设置直接影响画面，原有“非空白”检查却把窗外少量亮像素算作通过。

@@ -202,7 +202,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
 extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectLightingTestMode(int Mode)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
-    if (ProjectMap.IsEmpty() || !GEngine || Mode < 0 || Mode > 2)
+    if (ProjectMap.IsEmpty() || !GEngine || Mode < 0 || Mode > 5)
         return 0;
     UWorld* World = nullptr;
     for (const FWorldContext& Context : GEngine->GetWorldContexts())
@@ -210,6 +210,26 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectLightingTestMode(int Mode)
             World = Context.World();
     if (!World)
         return 0;
+    const TCHAR* Variables[] = {TEXT("r.AmbientOcclusionLevels"), TEXT("r.ReflectionCapture.Runtime"),
+        TEXT("r.ShadowQuality")};
+    static TArray<int32> OriginalSettings;
+    if (OriginalSettings.IsEmpty())
+        for (const TCHAR* Name : Variables)
+            OriginalSettings.Add(IConsoleManager::Get().FindConsoleVariable(Name)->GetInt());
+    for (int32 Index = 0; Index < 3; ++Index)
+    {
+        auto* Variable = IConsoleManager::Get().FindConsoleVariable(Variables[Index]);
+        const int32 Value = Mode == Index + 3 ? (Index == 1 ? 1 : 0) : OriginalSettings[Index];
+        if (Variable->GetInt() != Value)
+            Variable->Set(Value, ECVF_SetByCode);
+    }
+    EM_ASM({
+        globalThis.__webProjectLighting = ({mode: $0, aoLevels: $1, reflectionMode: $2,
+            shadowQuality: $3, original: {aoLevels: $4, reflectionMode: $5, shadowQuality: $6}});
+    }, Mode, IConsoleManager::Get().FindConsoleVariable(Variables[0])->GetInt(),
+        IConsoleManager::Get().FindConsoleVariable(Variables[1])->GetInt(),
+        IConsoleManager::Get().FindConsoleVariable(Variables[2])->GetInt(),
+        OriginalSettings[0], OriginalSettings[1], OriginalSettings[2]);
     static TMap<TWeakObjectPtr<ULightComponentBase>, bool> Visibility;
     for (TActorIterator<AActor> It(World); It; ++It)
         for (UActorComponent* Component : (*It)->GetComponents())
