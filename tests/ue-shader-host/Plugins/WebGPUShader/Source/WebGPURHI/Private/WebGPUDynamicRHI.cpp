@@ -2114,10 +2114,13 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         const uint32 Frequency = Shader->Metadata->GetIntegerField(TEXT("frequency"));
         Entry.visibility = Frequency == SF_Vertex ? WGPUShaderStage_Vertex :
             Frequency == SF_Pixel ? WGPUShaderStage_Fragment : WGPUShaderStage_Compute;
+        // Mobile CSM uses manual PCF with a point sampler over the depth atlas.
         // HZB starts from the depth attachment and uses a point sampler at every mip.
         // Cloud depth is encoded in filterable RGBA16F color targets.
         const bool Depth = !Name.Contains(TEXT("VolumetricDepthTexture")) &&
             (Name.Contains(TEXT("SceneDepth")) || Name.Contains(TEXT("ShadowDepth")) ||
+                Name.Contains(TEXT("DirectionalLightShadowTexture")) ||
+                Name.Contains(TEXT("DirectionalLightShadowSampler")) ||
                 Name.Contains(TEXT("DepthTexture")) || Name == TEXT("ParentTextureMip") ||
                 Name == TEXT("ParentTextureMipSampler"));
         // ACES tables use integer-coordinate loads from core, unfilterable R32Float textures.

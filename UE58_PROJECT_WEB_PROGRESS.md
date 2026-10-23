@@ -1,5 +1,26 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：修复转向后阴影绑定引发的运行崩溃
+
+用户提供的 `ue-startup-diagnostics-2026-10-23T03-36-51-061Z.json` 记录了第 926 帧的 `FViewInfo::UpdatePreExposure()` 崩溃。在曝光断言之前，WebGPU 已反复拒绝 `MobileCSMAndSpotLightShadowmap`：真实深度纹理支持 `UnfilterableFloat|Depth`，管线布局却要求可过滤的 `Float`。原地出生点 45 秒未复现；新增高 DPI 多视点探针后，在出生点把 yaw 从约 90 度转至 180 度即可稳定复现，第 24 帧出现相同绑定错误，第 27 帧触发 `FinalPreExposure > 0.0f` 和 `unreachable`。这是可见性变化触发的移动 CSM 材质变体，之前固定餐桌视点的短测没有覆盖。
+
+反射中的实际名称为 `MobileDirectionalLight_DirectionalLightShadowTexture` 和 `MobileDirectionalLight_DirectionalLightShadowSampler`，原有深度名称分类只覆盖 `SceneDepth`、`ShadowDepth`、`DepthTexture` 等形式，漏掉了这两个条目。现在把移动方向光阴影纹理声明为 `unfilterable-float`，其手动 PCF 采样器声明为 `non-filtering`。只修正 RHI 布局分类，没有改曝光计算、灯光参数、纹理规格或绑定缓存。无效命令提交消失后，原曝光断言也不再发生；没有通过关闭阴影或吞掉断言规避崩溃。
+
+新增 `probe-web-project-stability.cjs`，使用用户的 1854x909、DPR 1.5 视口，保留正常游戏时间，循环切换出生点朝向、餐桌正反视角和楼上视点。探针记录第一条 GPU 错误、设备丢失、引擎断言、帧数、堆容量和实际绑定布局，并要求确实执行先前出错的 binding 6 / sampler 10。修改前的两个失败记录保留在 `results`，其中完整布局复现记录同时包含阴影校验错误和曝光崩溃。
+
+修改后 Edge 运行约 189 秒至 5,194 帧，Chrome 约 190 秒至 5,320 帧，均无 GPU 校验错误、设备丢失、页面异常或曝光断言。实际画布为 2424x1364；两者采样到的 WASM 堆容量均保持 577,437,696 字节，这只是堆容量，不是 GPU 驻留显存。原生 global / static-material / direct-material / viewport 的 267 项检查及 BC / IES / 反射纹理的 238 项检查通过。
+
+普通 UBT Web 构建、原生 RHI 模块构建和两个独立目录的重新打包通过。`verify-web-project-stability.cjs` 汇总用户诊断、历史失败复现、当前源码 / 构建 / Cook / 包哈希、原生检查、双浏览器多视点记录及画面 / 默认关卡回归。历史失败的源码和包引用仅作为历史证据，不冒充当前产物。
+
+本轮解决的是这份诊断对应的阴影绑定崩溃。三分钟测试不能证明无限期稳定，纹理流送仍未实现，长期 GPU 显存预算及室内 PBR 与编辑器的一致性仍未验收。`reference-engine` 无新增修改，安装引擎源码保持原样。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-project-stability.cjs --browser=Edge --seconds=180 --report=crash-shadow-fixed
+node tests/web-platform/probe-web-project-stability.cjs --browser=Chrome --seconds=180 --report=crash-shadow-fixed
+node tests/web-platform/verify-web-project-stability.cjs
+```
+
 ## 2026-10-23：纠正排查重点并修复每帧绑定与常量分配开销
 
 用户指出上一轮几乎没有画质提升，AO 不是主要矛盾，并怀疑低帧率源于缺少流送及显存压力。这个反馈成立：不能用通道开关产生像素差异替代室内画质验收。本轮优先测 CPU、实际 GPU 进程显存及分辨率 / 灯光对照，没有继续扩展 AO。
