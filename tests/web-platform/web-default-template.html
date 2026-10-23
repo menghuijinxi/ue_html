@@ -73,6 +73,9 @@ const startupOptions = new URLSearchParams(location.search);
 const startupOnly = startupOptions.get('diagnostics') === '1';
 const startupDebug = startupOnly || startupOptions.get('debug') === '1';
 const requiredTextureFeatures = [];
+const localRuntimeAssets = {};
+const versionedAsset = name => name + (localRuntimeAssets.versions?.[name] ?
+  '?v=' + localRuntimeAssets.versions[name] : '');
 const startupDiagnostics = globalThis.__webStartupDiagnostics = {
   version: 3, startedAt: new Date().toISOString(), url: location.href,
   userAgent: navigator.userAgent, platform: navigator.platform,
@@ -107,11 +110,11 @@ function loadingRender() {
     preflight: ['检查运行环境', '正在准备启动'],
     'engine-script-loading': ['加载引擎脚本', '正在连接并加载启动脚本'],
     'wasm-initializing': ['准备引擎', '正在初始化 WebAssembly'],
-    'wasm-downloading': ['下载引擎', '正在连接引擎资源'],
+    'wasm-downloading': ['加载引擎', '正在读取引擎资源'],
     'wasm-compiling': ['编译引擎', '引擎下载完成，正在准备 WebAssembly'],
     'wasm-instantiation-failed': ['准备引擎', '正在尝试兼容加载方式'],
     'wasm-ready': ['准备场景资源', '引擎已就绪，正在加载关卡'],
-    'content-loading': ['下载场景资源', '正在读取资源清单'],
+    'content-loading': ['加载场景资源', '正在读取资源清单'],
     'content-verifying': ['校验场景资源', '场景下载完成，正在校验完整性'],
     'content-mounting': ['准备场景文件', '正在校验并装载关卡文件'],
     'engine-starting': ['启动关卡', '正在初始化场景和渲染管线'],
@@ -122,8 +125,10 @@ function loadingRender() {
   let [title, detail] = stages[stage] || ['准备关卡', '正在加载'];
   const file = stage === 'wasm-downloading' ? 'UEWebEngine.wasm'
     : stage === 'content-loading' ? 'content.bin' : null;
-  const transfer = file && startupDiagnostics.resources.findLast(item =>
-    item.url.endsWith('/' + file) && item.method === 'GET');
+  const localTransfer = startupDiagnostics.localContent;
+  const transfer = file && (localTransfer?.url === file ?
+    {...localTransfer, bytes: localTransfer.totalBytes} : startupDiagnostics.resources.findLast(item =>
+      new URL(item.url).pathname.endsWith('/' + file) && item.method === 'GET'));
   const progress = document.getElementById('loading-progress');
   let percent = '';
   progress.removeAttribute('value');
@@ -327,7 +332,9 @@ function startupObserveTransfers() {
   globalThis.fetch = async function(input, options) {
     const url = new URL(input instanceof Request ? input.url : input, location.href).href;
     const method = (options?.method || (input instanceof Request ? input.method : 'GET')).toUpperCase();
-    const file = files.get(url);
+    const plainUrl = new URL(url);
+    plainUrl.search = '';
+    const file = files.get(plainUrl.href);
     if (!file || method !== 'GET') return originalFetch.call(this, input, options);
     const started = performance.now();
     const item = {url, method, startedAt: new Date().toISOString(), outcome: 'requesting',
@@ -556,6 +563,8 @@ function writeFile(path, bytes) {
 }
 var Module = {
   arguments: ['-webgpu', '-WebDefaultTemplate'],
+  locateFile: name => name === 'UEWebEngine.wasm' && localRuntimeAssets.wasm ?
+    name + '?v=' + localRuntimeAssets.wasm.sha256 : name,
   canvas: document.getElementById('canvas'),
   print: record,
   printErr: record,
@@ -577,6 +586,17 @@ var Module = {
       if (manifest.mode !== 'WebGPU-ES31' || manifest.architecture !== 'wasm64' ||
           manifest.shaderPlatform !== 'SP_WEBGPU_ES31' || manifest.pack.url !== 'content.bin')
         throw new Error('Invalid default-template manifest');
+      if (manifest.localIoVersion === 1 && globalThis.__webContentIO) {
+        const io = globalThis.__webContentIO;
+        io.onmount = (completed, total) => {
+          startupDiagnostics.content = {completed, total};
+          startupRender();
+        };
+        startupStage('content-mounting');
+        await io.mount(manifest, FS);
+        globalThis.__webEngineContentFiles = manifest.files.map(file =>
+          ({path: file.path, sha256: file.sha256, size: file.size}));
+      } else {
       const bytes = await fetchFile(manifest.pack.url);
       startupStage('content-verifying');
       if (bytes.length !== manifest.pack.size || await digest(bytes) !== manifest.pack.sha256)
@@ -596,6 +616,7 @@ var Module = {
         globalThis.__webEngineContentFiles.push({path: file.path, sha256: file.sha256, size: file.size});
         ++startupDiagnostics.content.completed;
         startupRender();
+      }
       }
       globalThis.__webEngineConfigFiles = [];
       for (const file of configs) {
@@ -751,10 +772,38 @@ if (!capabilities.secureContext) {
         '。请使用支持该压缩格式的设备。');
   }
   startupObserveTransfers();
+  if (localRuntimeAssets.wasm) {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = versionedAsset('web-content-io.js');
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Local content IO script failed to load'));
+      document.body.appendChild(script);
+    });
+    const io = globalThis.__webContentIO = new WebLocalContentIO(versionedAsset('web-content-worker.js'));
+    io.copy = (destination, bytes) => HEAPU8.set(bytes, Number(destination));
+    io.complete = (id, success) => Module._WebLocalReadCompleted(id, success ? 1 : 0);
+    io.onprogress = progress => {
+      startupDiagnostics.localContent = {...progress, ...io.stats};
+      startupStage(progress.url.endsWith('.wasm') ? 'wasm-downloading' : 'content-loading');
+      startupRender();
+    };
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async function(input, options) {
+      const url = new URL(input instanceof Request ? input.url : input, location.href);
+      if (url.pathname.endsWith('/UEWebEngine.wasm') &&
+          (options?.method || (input instanceof Request ? input.method : 'GET')) === 'GET') {
+        const file = await io.asset(localRuntimeAssets.wasm);
+        return new Response(file, {headers: {'Content-Type': 'application/wasm',
+          'Content-Length': String(file.size), 'X-Web-Content-Source': 'local-disk'}});
+      }
+      return originalFetch.call(this, input, options);
+    };
+  }
   if (startupDebug) startupObserveGPU();
   startupStage('engine-script-loading');
   const engine = document.createElement('script');
-  engine.src = 'UEWebEngine.js';
+  engine.src = versionedAsset('UEWebEngine.js');
   startupDiagnostics.engineScript = {url: engine.src, startedAt: new Date().toISOString(),
     startTime: performance.now(), outcome: 'loading'};
   engine.onload = () => {

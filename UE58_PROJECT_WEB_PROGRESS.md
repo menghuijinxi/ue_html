@@ -1,5 +1,33 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：接入本地磁盘 mip 读取和持久缓存
+
+按用户收窄后的范围实现本地 IO：首次完整下载 `content.bin` 到浏览器 OPFS，之后 mip 从本地文件读取，不为每张贴图发网络请求，也没有引入 HTTP Range 服务。内容和 WASM 各自按 SHA256 标识版本，下载时逐块校验，完整写入后才提交完成标记；文件不变时重开浏览器直接复用，内容变化才取新版本。当前缓存用于同源地址，切换域名、端口、清理站点数据或浏览器回收存储后需要重新下载。
+
+此前 `serve.cjs` 对全部文件返回 `Cache-Control: no-store`，确实使普通浏览器缓存无法复用。现在无版本 URL 使用 ETag / 条件请求，未变返回 304；带内容哈希的 URL 使用 immutable 缓存，过期版本返回 409，避免把新字节误存到旧版本。大体积内容包和 WASM 另外存入 OPFS，复用不依赖浏览器是否保留大文件 HTTP 缓存。
+
+621 个 `.ubulk` 只在 MEMFS 保留文件元数据，正文留在本地磁盘；worker 使用 256 KiB 块、16 MiB LRU、最多四个并发操作。读取产生的临时结果及 UE 目标内存另外占用内存，16 MiB 不是应用总内存上限。启动所需的 `.uasset` / `.uexp`、配置、最低 mip、几何和引擎分配仍保留；没有声称已实现全部资源的 CPU 内存流送。
+
+Web 平台的异步文件句柄把读取和取消接到现有 UE `IAsyncReadRequest`，通过事件循环通知单线程 `FIoDispatcher`，不在主线程自旋等待磁盘。取消后丢弃晚到的结果，避免写入已经释放的 WASM 目标。真实关卡首次验证发现 UE 路径带有 `/../../../`，现复用 MEMFS 自身的路径解析后匹配本地文件。安装引擎保持原样。
+
+Chrome、Edge 均完成首次下载、关闭浏览器后复用同一配置重开、断网降预算到 64 MiB、清空读盘缓存后恢复 256 MiB。首次只下载两个大文件，重开两个大文件均零网络请求、零下载字节；恢复 mip 时磁盘读取增加 523 次，下载字节不变，所有 `.ubulk` 的 MEMFS 正文合计为零。独立测试另验证跨块读取、缓存淘汰、取消后不写目标、文件变更后下载一次及本地坏块拒绝。默认关卡旧负例只接受旧的哈希报错文案，新路径提前以 409 拒绝，已保留该失败记录并更新断言。
+
+实际 `.ubulk` 为 142,905,344 字节，约 136.29 MiB；剩余启动文件为 256,296,333 字节。两个独立包各八个文件。普通 UBT Web 完整构建、默认关卡双浏览器及损坏版本 / 配置拦截、别墅反射 / 阴影开关与恢复通过；画面回归汇总核对 9,764 个条目、9,609 个不同文件。未改变灯光、材质和压缩规格，也未解决与编辑器的画质差异。引擎仓库提交为 `efea15213`。
+
+稳定性仍有未解决项：Chrome 三分钟多视点完成 4,855 帧增量，无页面 / GPU 错误。Edge 首次长测第 1,560 帧抛出 `createBindGroup` 的 `entries` 无法转为序列异常；相同源码和包复跑三分钟通过，但原因尚未定位，不能以复跑通过声称已修复。失败保留在 `web-project-triplex-house-villa-local-io-stability-edge-sequence-failure-results.json`，本地 IO 汇总也引用该记录，验收仅覆盖已验证的流送及缓存行为。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/verify-web-http-cache.cjs
+node tests/web-platform/probe-web-local-io.cjs --browser=Chrome
+node tests/web-platform/probe-web-local-io.cjs --browser=Edge
+node tests/web-platform/probe-web-project-local-io.cjs --browser=Chrome
+node tests/web-platform/probe-web-project-local-io.cjs --browser=Edge
+node tests/web-platform/probe-web-project-stability.cjs --browser=Chrome --seconds=180 --report=local-io-stability
+node tests/web-platform/probe-web-project-stability.cjs --browser=Edge --seconds=180 --report=local-io-stability-repeat
+node tests/web-platform/verify-web-project-local-io.cjs
+```
+
 ## 2026-10-23：接通压缩纹理 mip 流送
 
 本轮按用户要求优先补齐纹理流送。Web Cook 平台和 RHI 现在都声明支持 UE 纹理流送，默认池预算为 256 MiB、临时预算为 32 MiB；继续使用原 BC / BC6H 资源和 mip 链。清单仍为 667 张纹理、607 张多 mip、60 张单 mip，估算全量压缩数据为 210,559,592 字节，没有通过进一步缩图替代流送。运行时 613 张 UTexture2D 纳入流送管理，其最大 mip 合计 6,121 级。

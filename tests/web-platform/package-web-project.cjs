@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
+const {metadata} = require('./content-file-metadata.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const directory = path.join(__dirname, 'results');
@@ -11,7 +12,8 @@ const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.read
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
 const report = {date: new Date().toISOString(), pass: false, id, output, architecture: 'wasm64',
-  sourceFiles: [__filename, template].map(audit), fullNormalUBTBuildVerified: false,
+  sourceFiles: [__filename, template, path.join(__dirname, 'content-file-metadata.cjs'),
+    path.join(__dirname, 'web-content-io.js'), path.join(__dirname, 'web-content-worker.js')].map(audit), fullNormalUBTBuildVerified: false,
   completeUEScene: false};
 try {
   const buildFile = path.join(directory, 'web-engine-full-build-results.json');
@@ -34,6 +36,14 @@ try {
   assert.equal(stage.textureCompression, report.textureCompression);
   fs.mkdirSync(output, {recursive: true});
   let html = fs.readFileSync(template, 'utf8');
+  const wasm = build.products.find(item => path.basename(item.file) === 'UEWebEngine.wasm');
+  const versions = Object.fromEntries(['UEWebEngine.js', 'web-content-io.js', 'web-content-worker.js'].map(name => {
+    const file = name === 'UEWebEngine.js' ? build.products.find(item => path.basename(item.file) === name).file :
+      path.join(__dirname, name);
+    return [name, audit(file).sha256];
+  }));
+  html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
+    JSON.stringify({versions, wasm: metadata(wasm.file, 'UEWebEngine.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
   html = html.replace(original, `arguments: ['-webgpu', '-WebProjectMap=${stage.map}'],`)
@@ -45,7 +55,8 @@ try {
   }
   fs.writeFileSync(path.join(output, 'index.html'), html);
   const copies = [[stage.pack.file, 'content.bin'], [stage.manifest.file, 'content-files.json'],
-    [stage.configBundle.file, 'config-files.json']];
+    [stage.configBundle.file, 'config-files.json'],
+    ...['web-content-io.js', 'web-content-worker.js'].map(name => [path.join(__dirname, name), name])];
   for (const name of ['UEWebEngine.js', 'UEWebEngine.wasm']) {
     const product = build.products.find(item => path.basename(item.file) === name);
     assert(product && valid(product));

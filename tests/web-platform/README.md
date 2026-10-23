@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-23：独立包现使用本地磁盘 mip 读取。首次完整下载内容包和 WASM 到 OPFS，以内容哈希复用；随后 `.ubulk` 按需从本地读取，使用 16 MiB 块缓存，不发逐贴图网络请求。启动资产及引擎内存仍驻留，缓存上限不代表总内存上限。服务器已支持 ETag / 304 和版本 URL 的 immutable 缓存。复现与边界见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)，当前验收入口是 `verify-web-project-local-io.cjs`。
+
 更新日期：2026-10-22。当前默认关卡的构建、打包、画面及回归结果见 [默认关卡进度](H:/ue_html/UE58_DEFAULT_TEMPLATE_PROGRESS.md)。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，工具链和早期移植记录见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。
 
 外部内容项目的准备、Cook、网页目录、BC GPU 纹理压缩及当前显存/性能边界见 [别墅项目进度](H:/ue_html/UE58_PROJECT_WEB_PROGRESS.md)。当前桌面 BC 包需要 `texture-compression-bc`，不支持时在大文件下载前明确提示；ASTC/ETC2 与实际手机验收待做。

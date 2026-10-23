@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
+const {metadata} = require('./content-file-metadata.cjs');
 const directory = path.join(__dirname, 'results');
 const output = path.join(__dirname, 'build/ue-default-template');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
@@ -10,7 +11,8 @@ const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file)
 const report = {date: new Date().toISOString(), pass: false, output,
   map: '/Engine/Maps/Templates/Template_Default', architecture: 'wasm64',
   fullNormalUBTBuildVerified: false, completeUEScene: false,
-  sourceFiles: [__filename, path.join(__dirname, 'web-default-template.html')].map(audit)};
+  sourceFiles: [__filename, path.join(__dirname, 'web-default-template.html'),
+    ...['content-file-metadata.cjs', 'web-content-io.js', 'web-content-worker.js'].map(name => path.join(__dirname, name))].map(audit)};
 try {
   const buildFile = path.join(directory, 'web-engine-full-build-results.json');
   const build = read(buildFile);
@@ -28,22 +30,29 @@ try {
   report.stageReport = audit(stageFile);
   fs.mkdirSync(output, {recursive: true});
   const copies = [
-    [path.join(__dirname, 'web-default-template.html'), 'index.html'],
     [stage.pack.file, 'content.bin'],
     [stage.manifest.file, 'content-files.json'],
     [stage.configBundle.file, 'config-files.json']
   ];
+  for (const name of ['web-content-io.js', 'web-content-worker.js']) copies.push([path.join(__dirname, name), name]);
   for (const name of ['UEWebEngine.js', 'UEWebEngine.wasm']) {
     const product = build.products.find(item => path.basename(item.file) === name);
     assert(product && valid(product), `Missing runtime: ${name}`);
     copies.push([product.file, name]);
   }
-  report.products = copies.map(([source, name]) => {
+  let html = fs.readFileSync(path.join(__dirname, 'web-default-template.html'), 'utf8');
+  const versions = Object.fromEntries(['UEWebEngine.js', 'web-content-io.js', 'web-content-worker.js'].map(name =>
+    [name, audit(copies.find(([, target]) => target === name)[0]).sha256]));
+  html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
+    JSON.stringify({versions, wasm: metadata(copies.find(([, target]) => target === 'UEWebEngine.wasm')[0],
+      'UEWebEngine.wasm')}) + ';');
+  fs.writeFileSync(path.join(output, 'index.html'), html);
+  report.products = [audit(path.join(output, 'index.html')), ...copies.map(([source, name]) => {
     const destination = path.join(output, name);
     fs.copyFileSync(source, destination);
     assert.equal(audit(source).sha256, audit(destination).sha256);
     return audit(destination);
-  });
+  })];
   report.totalBytes = report.products.reduce((total, item) => total + fs.statSync(item.file).size, 0);
   report.fullNormalUBTBuildVerified = true;
   report.pass = true;

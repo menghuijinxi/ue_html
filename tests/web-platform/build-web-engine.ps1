@@ -121,6 +121,10 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
+    foreach ($taskStreamingSource in @('RenderAssetUpdate.cpp', 'Texture2DUpdate.cpp', 'Texture2DStreamIn_IO.cpp')) {
+        $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Engine/Private/Streaming/$taskStreamingSource"
+        $taskFiles += Join-Path $taskHost "Source/Runtime/Engine/Private/Streaming/$taskStreamingSource"
+    }
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/Shader/Preshader2.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/Shader/Preshader2.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/SparseVolumeTexture/SparseVolumeTextureData.cpp'

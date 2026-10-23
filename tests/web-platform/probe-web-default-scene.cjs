@@ -248,7 +248,8 @@ async function settle(page) {
             failure: globalThis.__webEngineFailure, frames: globalThis.__webEngineFrames || 0,
             ready: globalThis.__webEngineReady || null
           }));
-          const expected = kind === 'pack-hash' ? /pack hash mismatch/ : /Config hash mismatch/;
+          const expected = kind === 'pack-hash' ?
+            /pack hash mismatch|Local content download: HTTP 409 \(content\.bin\)/ : /Config hash mismatch/;
           report.negativeControls.push({kind, ...state,
             pass: expected.test(state.failure) && state.frames === 0 && !state.ready});
           await control.close();

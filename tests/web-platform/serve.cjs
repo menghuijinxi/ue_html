@@ -2,26 +2,58 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
+const crypto = require('node:crypto');
 
 const root = __dirname;
 const host = process.env.HOST || '0.0.0.0';
 const types = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript',
   '.wasm': 'application/wasm', '.json': 'application/json'};
-const server = http.createServer((request, response) => {
-  const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
+const validators = new Map();
+async function digest(file, stat) {
+  const version = `${stat.size}:${stat.mtimeMs}:${stat.ctimeMs}`;
+  const previous = validators.get(file);
+  if (previous?.version === version) return previous.hash;
+  const hash = crypto.createHash('sha256');
+  for await (const bytes of fs.createReadStream(file)) hash.update(bytes);
+  const value = hash.digest('hex');
+  validators.set(file, {version, hash: value});
+  return value;
+}
+const server = http.createServer(async (request, response) => {
+  let url, pathname;
+  try {
+    url = new URL(request.url, 'http://localhost');
+    pathname = decodeURIComponent(url.pathname);
+  } catch { response.writeHead(400).end(); return; }
   if (pathname === '/favicon.ico') { response.writeHead(204).end(); return; }
   const file = path.resolve(root, '.' + (pathname === '/' ? '/index.html' : pathname));
   if (!file.startsWith(root + path.sep)) { response.writeHead(403).end(); return; }
   response.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   response.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-  response.setHeader('Cache-Control', 'no-store');
-  fs.stat(file, (error, stat) => {
-    if (error || !stat.isFile()) { response.writeHead(404).end(); return; }
+  response.setHeader('Cache-Control', 'no-cache');
+  if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405).end(); return; }
+  try {
+    const stat = await fs.promises.stat(file);
+    if (!stat.isFile()) { response.writeHead(404).end(); return; }
+    const hash = await digest(file, stat), etag = `"${hash}"`;
+    const version = url.searchParams.get('v');
+    if (version && version !== hash) { response.writeHead(409).end('Asset version changed; reload the page.'); return; }
+    response.setHeader('ETag', etag);
+    response.setHeader('Last-Modified', stat.mtime.toUTCString());
+    response.setHeader('Cache-Control', version ? 'public, max-age=31536000, immutable' : 'no-cache');
+    if (request.headers['if-none-match']?.split(',').some(value =>
+      value.trim().replace(/^W\//, '') === etag || value.trim() === '*')) {
+      response.writeHead(304).end();
+      return;
+    }
     response.setHeader('Content-Type', types[path.extname(file)] || 'application/octet-stream');
     response.setHeader('Content-Length', stat.size);
     if (request.method === 'HEAD') { response.end(); return; }
-    fs.createReadStream(file).pipe(response);
-  });
+    const stream = fs.createReadStream(file);
+    stream.on('error', () => response.destroy());
+    response.on('close', () => stream.destroy());
+    stream.pipe(response);
+  } catch { if (!response.headersSent) response.writeHead(404).end(); else response.destroy(); }
 });
 server.listen(Number(process.env.PORT || 8765), host, () => {
   const port = server.address().port;

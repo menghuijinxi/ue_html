@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
+const {metadata} = require('./content-file-metadata.cjs');
 const root = path.resolve(__dirname, '../..');
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
 const audit = file => ({file, sha256: sha(fs.readFileSync(file))});
@@ -39,7 +40,7 @@ try {
   }
   assert(cook.products?.length && cook.products.every(valid), 'Cooked files must match the Cook report');
   report.cookReport = audit(cookFile);
-  report.sourceFiles = [audit(__filename)];
+  report.sourceFiles = [audit(__filename), audit(path.join(__dirname, 'content-file-metadata.cjs'))];
   const staged = path.join(__dirname, `build/${prefix}`);
   fs.mkdirSync(staged, {recursive: true});
   const chunks = [];
@@ -101,7 +102,7 @@ try {
   fs.writeFileSync(manifestFile, JSON.stringify({
     mode: report.mode, architecture: report.architecture, shaderFormat: webgpu ? format : null,
     shaderPlatform: webgpu ? platform : null,
-    pack: {url: 'content.bin', size: offset, sha256: audit(packFile).sha256}, files: entries
+    localIoVersion: 1, pack: metadata(packFile, 'content.bin'), files: entries
   }));
   report.pack = audit(packFile);
   report.manifest = audit(manifestFile);
