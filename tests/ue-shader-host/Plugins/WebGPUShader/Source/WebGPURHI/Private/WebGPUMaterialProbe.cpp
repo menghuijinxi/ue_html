@@ -352,6 +352,16 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
                 }
                 Cmd.BeginRenderPass(FRHIRenderPassInfo(4, Raw, ERenderTargetActions::Clear_Store), TEXT("MaterialMRT"));
                 Draw(Cmd, Case.Value, View, Primitive, Uniform);
+                if (Case.Key == TEXT("default-index16"))
+                {
+                    const auto Before = MakeShared<uint32>(0);
+                    Cmd.EnqueueLambda([&RHI, Before](FRHICommandListBase&) { *Before = RHI.UniformUploads; });
+                    Draw(Cmd, Case.Value, View, Primitive, Uniform);
+                    Cmd.EnqueueLambda([&, Before, Material](FRHICommandListBase&) {
+                        Record(Material + TEXT("-unchanged-uniform-reuses-gpu-snapshot"),
+                            RHI.UniformUploads == *Before);
+                    });
+                }
                 Cmd.EndRenderPass();
             }
             RHI.SubmitCurrent();

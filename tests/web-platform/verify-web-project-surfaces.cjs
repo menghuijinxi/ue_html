@@ -3,6 +3,11 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const directory = path.join(__dirname, 'results');
+const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
+const suffix = option('report') || 'pbr-final';
+const textureProbe = option('texture-probe') || 'pbr-native-texture';
+const output = option('output') || 'triplex-house-villa-surfaces-audit-results';
+assert([suffix, textureProbe, output].every(value => /^[a-z0-9-]+$/.test(value)));
 const text = file => {
   const bytes = fs.readFileSync(file);
   return bytes.toString(bytes[0] === 0xff && bytes[1] === 0xfe ? 'utf16le' : 'utf8').replace(/^\uFEFF/, '');
@@ -38,7 +43,7 @@ try {
   const shaders = read(path.join(directory, 'web-cook-shader-sources.json'));
   for (const shader of shaders.files)
     visit({file: path.join(shaders.output, shader.relative), sha256: shader.sha256});
-  const runtime = evidence('web-project-triplex-house-villa-pbr-final-results.json');
+  const runtime = evidence(`web-project-triplex-house-villa-${suffix}-results.json`);
   assert(runtime.surfaceControlsRequired && runtime.requestedView.join(',') === '-175,-80,160,-5,50');
   assert(runtime.runs.length === 2 && new Set(runtime.runs.map(run => run.browser)).size === 2);
   report.browsers = runtime.runs.map(run => {
@@ -62,7 +67,7 @@ try {
       differences: Object.fromEntries(Object.entries(run.surfaces).map(([key, value]) => [key, value.difference])),
       contentErrors: run.contentErrors, textureDescriptorBytesCreated: run.gpu.textureDescriptorBytesCreated};
   });
-  const nativeTextureFile = path.join(__dirname, 'build/pbr-native-texture/texture-srv-results.json');
+  const nativeTextureFile = path.join(__dirname, `build/${textureProbe}/texture-srv-results.json`);
   const nativeTexture = read(nativeTextureFile);
   assert(nativeTexture.pass && nativeTexture.modes.length === 2);
   for (const mode of nativeTexture.modes) {
@@ -70,7 +75,7 @@ try {
     assert(mode.checks.filter(check => /reflection/.test(check.name)).length >= 33);
   }
   report.nativeTextureChecks = nativeTexture.modes.reduce((sum, mode) => sum + mode.checks.length, 0);
-  report.nativeTexture = [nativeTextureFile, path.join(directory, 'pbr-native-texture.log'),
+  report.nativeTexture = [nativeTextureFile, path.join(directory, `${textureProbe}.log`),
     path.resolve(__dirname, '../ue-shader-host/Plugins/WebGPUShader/Binaries/Win64/UnrealEditor-WebGPURHI.dll')].map(audit);
   const textures = evidence('triplex-textures-pbr-final.json');
   const baseline = read(path.join(directory, 'triplex-textures-uncompressed.json'));
@@ -107,7 +112,7 @@ try {
   report.pass = true;
 } catch (error) { report.failure = error.stack; process.exitCode = 1; }
 report.uniqueFiles = checked.size;
-const file = path.join(directory, 'triplex-house-villa-surfaces-audit-results.json');
+const file = path.join(directory, `${output}.json`);
 fs.writeFileSync(file, JSON.stringify(report, null, 2));
 console.log(JSON.stringify({pass: report.pass, checked: report.checked, uniqueFiles: report.uniqueFiles,
   file, failure: report.failure}, null, 2));

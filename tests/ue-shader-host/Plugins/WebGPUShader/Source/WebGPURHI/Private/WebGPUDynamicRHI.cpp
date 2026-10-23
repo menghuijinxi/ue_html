@@ -776,9 +776,22 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     WGPUShaderModuleDescriptor ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
     ModuleDesc.nextInChain = &WGSL.chain;
     Data.Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
+    Data.Frequency = Frequency;
     for (const auto &Item : Metadata->GetArrayField(TEXT("spirvBindings")))
-        if (Item->AsObject()->GetStringField(TEXT("name")) == TEXT("$Globals"))
-            Data.Globals.SetNumZeroed(Item->AsObject()->GetIntegerField(TEXT("paddedSize")));
+    {
+        const auto Binding = Item->AsObject();
+        FWebGPUShaderBinding Entry;
+        Entry.Metadata = Binding.Get();
+        Entry.Name = Binding->GetStringField(TEXT("name"));
+        Entry.Descriptor = Binding->GetIntegerField(TEXT("descriptorType"));
+        Entry.Group = Binding->GetIntegerField(TEXT("group"));
+        Entry.Index = Binding->GetIntegerField(TEXT("binding"));
+        Entry.PaddedSize = Entry.Descriptor == 6 || Entry.Name == TEXT("$Globals") ?
+            Binding->GetIntegerField(TEXT("paddedSize")) : 0;
+        Data.Bindings.Add(MoveTemp(Entry));
+        if (Data.Bindings.Last().Name == TEXT("$Globals"))
+            Data.Globals.SetNumZeroed(Data.Bindings.Last().PaddedSize);
+    }
     return Data.Module != nullptr;
 }
 FWebGPUShaderData &FWebGPUDynamicRHI::ShaderData(FRHIShader *Shader)
@@ -1673,6 +1686,54 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
 {
     Resource = nullptr;
     FromTable = false;
+    if (const auto* Route = Shader.BindingRoutes.Find(&Binding))
+    {
+        FRHIUniformBuffer* Uniform = nullptr;
+        if (Route->Kind != FWebGPUBindingRoute::EKind::Direct &&
+            !ResolveUniform(Shader, Route->Slot, Uniform, Error))
+            return false;
+        if (Route->Kind == FWebGPUBindingRoute::EKind::Uniform)
+        {
+            Resource = Uniform;
+            return true;
+        }
+        if (Route->Kind == FWebGPUBindingRoute::EKind::Direct)
+        {
+            const auto* Found = Shader.Resources.Find(Route->Index);
+            if (!Found || !Found->IsValid())
+            {
+                Error = TEXT("Direct shader resource is not bound");
+                return false;
+            }
+            Resource = Found->GetReference();
+        }
+        else
+        {
+            const auto& Layout = Uniform->GetLayout();
+            if (!Layout.Resources.IsValidIndex(Route->Index) ||
+                Layout.Resources[Route->Index].MemberType != Route->MemberType ||
+                !Uniform->GetResourceTable().IsValidIndex(Route->Index))
+            {
+                Error = TEXT("Resource table member index/type mismatch");
+                return false;
+            }
+            Resource = Uniform->GetResourceTable()[Route->Index].GetReference();
+            FromTable = true;
+        }
+        if (Resource && Resource->GetType() == RRT_TextureReference)
+            Resource = static_cast<FRHITextureReference*>(Resource)->GetReferencedTexture();
+        if (FromTable && (!Resource || Resource->GetType() != Route->ResourceType))
+        {
+            Error = TEXT("Resource table member is null or has wrong RHI type");
+            return false;
+        }
+        return true;
+    }
+    const auto CacheRoute = [&](FWebGPUBindingRoute Route) {
+        // Synthetic validation bindings may be mutable and are deliberately never cached.
+        if (Shader.Bindings.ContainsByPredicate([&](const auto& Entry) { return Entry.Metadata == &Binding; }))
+            Shader.BindingRoutes.Add(&Binding, Route);
+    };
     const FString Name = Binding.GetStringField(TEXT("name"));
     const uint32 Descriptor = Binding.GetIntegerField(TEXT("descriptorType"));
     if (Descriptor == 0)
@@ -1700,6 +1761,7 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
             if (!ResolveUniform(Shader, Index, Uniform, Error))
                 return false;
             Resource = Uniform;
+            CacheRoute({FWebGPUBindingRoute::EKind::Uniform, Index});
             return true;
         }
         // Vulkan classifies read-only storage as UAV; preserve its slot and use the reflected access for RHI binding.
@@ -1717,6 +1779,7 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
         Resource = Found->GetReference();
         if (Resource->GetType() == RRT_TextureReference)
             Resource = static_cast<FRHITextureReference *>(Resource)->GetReferencedTexture();
+        CacheRoute({FWebGPUBindingRoute::EKind::Direct, 0, (ResourceType << 16) | Index});
         return true;
     }
     TArray<const TArray<uint32>*> Streams;
@@ -1814,6 +1877,8 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
                 return false;
             }
             FromTable = true;
+            CacheRoute({FWebGPUBindingRoute::EKind::Table, Slot, ResourceIndex,
+                Layout.Resources[ResourceIndex].MemberType, ExpectedType});
             return true;
         }
     }
@@ -1871,6 +1936,13 @@ void FWebGPUDynamicRHI::Parameters(FWebGPUShaderData &Shader, TConstArrayView<ui
     {
         check(Value.BufferIndex == 0 && Value.BaseIndex + Value.ByteSize <= Shader.Globals.Num() &&
               Value.ByteOffset + Value.ByteSize <= Bytes.Num());
+        if (Shader.GlobalsBuffer &&
+            FMemory::Memcmp(Shader.Globals.GetData() + Value.BaseIndex, Bytes.GetData() + Value.ByteOffset,
+                Value.ByteSize) != 0)
+        {
+            wgpuBufferRelease(Shader.GlobalsBuffer);
+            Shader.GlobalsBuffer = nullptr;
+        }
         FMemory::Memcpy(Shader.Globals.GetData() + Value.BaseIndex, Bytes.GetData() + Value.ByteOffset, Value.ByteSize);
     }
     for (const auto &Resource : Resources)
@@ -1894,26 +1966,30 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                                                       TConstArrayView<FWebGPUShaderData *> Shaders)
 {
     TMap<uint32, TArray<WGPUBindGroupEntry>> Groups;
-    TArray<WGPUBuffer> TemporaryBuffers;
     uint32 Maximum = 0;
     bool HasBindings = false;
     for (FWebGPUShaderData *Shader : Shaders)
     {
-        for (const auto &Item : Shader->Metadata->GetArrayField(TEXT("spirvBindings")))
+        for (const auto &Reflected : Shader->Bindings)
         {
-            const auto Binding = Item->AsObject();
-            const FString Name = Binding->GetStringField(TEXT("name"));
+            const auto* Binding = Reflected.Metadata;
+            const auto& Name = Reflected.Name;
             WGPUBindGroupEntry Entry = WGPU_BIND_GROUP_ENTRY_INIT;
-            Entry.binding = Binding->GetIntegerField(TEXT("binding"));
-            const uint32 Group = Binding->GetIntegerField(TEXT("group"));
-            const int32 Descriptor = Binding->GetIntegerField(TEXT("descriptorType"));
+            Entry.binding = Reflected.Index;
+            const uint32 Group = Reflected.Group;
+            const uint32 Descriptor = Reflected.Descriptor;
             HasBindings = true;
             Maximum = FMath::Max(Maximum, Group);
             if (Name == TEXT("$Globals"))
             {
-                Entry.buffer = CreateBuffer(Shader->Globals.Num(), WGPUBufferUsage_Uniform, Shader->Globals.GetData());
+                if (!Shader->GlobalsBuffer)
+                {
+                    Shader->GlobalsBuffer = CreateBuffer(Shader->Globals.Num(), WGPUBufferUsage_Uniform,
+                        Shader->Globals.GetData());
+                    ++UniformUploads;
+                }
+                Entry.buffer = Shader->GlobalsBuffer;
                 Entry.size = Shader->Globals.Num();
-                TemporaryBuffers.Add(Entry.buffer);
             }
             else
             {
@@ -1924,17 +2000,22 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 ResourceTableBindings += FromTable ? 1 : 0;
                 if (Descriptor == 6)
                 {
-                    const auto *Uniform = static_cast<FWebGPUUniform *>(Resource);
-                    Entry.size = Binding->GetIntegerField(TEXT("paddedSize"));
+                    auto *Uniform = static_cast<FWebGPUUniform *>(Resource);
+                    Entry.size = Reflected.PaddedSize;
                     check(Entry.size <= uint64(Uniform->Bytes.Num()));
-                    Entry.buffer = CreateBuffer(Entry.size, WGPUBufferUsage_Uniform, Uniform->Bytes.GetData());
-                    TemporaryBuffers.Add(Entry.buffer);
+                    auto& Buffer = Uniform->ConstantBuffers.FindOrAdd(uint32(Entry.size));
+                    if (!Buffer)
+                    {
+                        Buffer = CreateBuffer(Entry.size, WGPUBufferUsage_Uniform, Uniform->Bytes.GetData());
+                        ++UniformUploads;
+                    }
+                    Entry.buffer = Buffer;
                 }
                 else if (Descriptor == 2)
                 {
                     FWebGPUTexture *Texture;
                     const ERHIAccess Access = Compute ? ERHIAccess::SRVCompute
-                                              : Shader->Metadata->GetIntegerField(TEXT("frequency")) == SF_Vertex
+                                              : Shader->Frequency == SF_Vertex
                                                   ? ERHIAccess::SRVGraphicsNonPixel
                                                   : ERHIAccess::SRVGraphicsPixel;
                     checkf(ValidateTextureBinding(Resource, *Binding, Access, Error), TEXT("%s"), *Error);
@@ -1964,7 +2045,7 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                     if (Resource->GetType() == RRT_ShaderResourceView)
                     {
                         const auto Access = Compute ? ERHIAccess::SRVCompute
-                                            : Shader->Metadata->GetIntegerField(TEXT("frequency")) == SF_Vertex
+                                            : Shader->Frequency == SF_Vertex
                                                 ? ERHIAccess::SRVGraphicsNonPixel
                                                 : ERHIAccess::SRVGraphicsPixel;
                         checkf(ValidateStorageSRVBinding(Resource, *Binding, Access, Error), TEXT("%s"), *Error);
@@ -2014,8 +2095,6 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         wgpuBindGroupLayoutRelease(Layout);
         ++BoundGroups;
     }
-    for (auto Buffer : TemporaryBuffers)
-        wgpuBufferRelease(Buffer);
     return Result;
 }
 static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,

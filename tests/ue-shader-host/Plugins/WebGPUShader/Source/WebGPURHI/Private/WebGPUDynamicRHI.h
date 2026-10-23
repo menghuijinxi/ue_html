@@ -5,6 +5,22 @@
 #include <webgpu/webgpu.h>
 #include <atomic>
 
+struct FWebGPUBindingRoute
+{
+    enum class EKind { Uniform, Direct, Table };
+    EKind Kind;
+    uint32 Slot = 0, Index = 0;
+    EUniformBufferBaseType MemberType = UBMT_INVALID;
+    ERHIResourceType ResourceType = RRT_None;
+};
+
+struct FWebGPUShaderBinding
+{
+    const FJsonObject* Metadata = nullptr;
+    FString Name;
+    uint32 Descriptor = 0, Group = 0, Index = 0, PaddedSize = 0;
+};
+
 struct FWebGPUShaderData
 {
     WGPUShaderModule Module = nullptr;
@@ -13,8 +29,14 @@ struct FWebGPUShaderData
     TMap<uint32, TRefCountPtr<FRHIResource>> Resources;
     TArray<uint8> Globals;
     FShaderResourceTable ResourceTable;
+    TArray<FWebGPUShaderBinding> Bindings;
+    mutable TMap<const FJsonObject*, FWebGPUBindingRoute> BindingRoutes;
+    WGPUBuffer GlobalsBuffer = nullptr;
+    EShaderFrequency Frequency = SF_NumFrequencies;
     ~FWebGPUShaderData()
     {
+        if (GlobalsBuffer)
+            wgpuBufferRelease(GlobalsBuffer);
         if (Module)
             wgpuShaderModuleRelease(Module);
     }
@@ -246,11 +268,22 @@ class FWebGPUUniform final : public FRHIUniformBuffer
 {
   public:
     TArray<uint8> Bytes;
+    TMap<uint32, WGPUBuffer> ConstantBuffers;
     explicit FWebGPUUniform(const FRHIUniformBufferLayout *Layout) : FRHIUniformBuffer(Layout)
     {
     }
+    void ReleaseConstants()
+    {
+        for (const auto& Buffer : ConstantBuffers)
+            wgpuBufferRelease(Buffer.Value);
+        ConstantBuffers.Empty();
+    }
+    ~FWebGPUUniform() override { ReleaseConstants(); }
     void SetContents(TArray<uint8> InBytes, TArray<TRefCountPtr<FRHIResource>> InResources)
     {
+        // Encoded draws retain the previous immutable GPU snapshot when constants change.
+        if (Bytes != InBytes)
+            ReleaseConstants();
         Bytes = MoveTemp(InBytes);
         ResourceTable = MoveTemp(InResources);
     }
@@ -386,6 +419,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<FString> Errors;
     FString AdapterName;
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;
+    uint32 UniformUploads = 0;
     uint32 OwnerThread = 0;
     uint32 ResourceTableBindings = 0;
     uint32 TransitionsCreated = 0, TransitionsBegun = 0, TransitionsEnded = 0, TransitionsReleased = 0;

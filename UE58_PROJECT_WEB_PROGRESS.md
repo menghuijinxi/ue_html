@@ -1,5 +1,28 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：纠正排查重点并修复每帧绑定与常量分配开销
+
+用户指出上一轮几乎没有画质提升，AO 不是主要矛盾，并怀疑低帧率源于缺少流送及显存压力。这个反馈成立：不能用通道开关产生像素差异替代室内画质验收。本轮优先测 CPU、实际 GPU 进程显存及分辨率 / 灯光对照，没有继续扩展 AO。
+
+代码确认 `GRHISupportsTextureStreaming = false`，纹理流送仍未实现。旧版运行时 NVIDIA 整卡占用约 7.8 GB / 8 GB；WDDM 中本次隔离 Chrome GPU 进程专用显存为 6,674,530,304 字节，约 6.22 GiB。旧版每帧创建约 8,610 个 buffer、3,413 个绑定组；每帧 buffer 描述大小只有约 7.44 MiB，实际分配和驱动开销远大于描述字节。先前约 696 MB 的累计纹理描述估算不能代表实际显存，更不能据此排除显存压力。这里只确认压力，未采集换页事件，不能断言换页就是低帧率主因。
+
+同一视点 720p 旧版约 4.34 FPS，降至 360p 仍仅约 4.81 FPS。CPU 火焰图显示 `ResolveBinding` 每次绘制反复遍历 JSON 参数和资源表，大量时间消耗在字符串查找及内存分配；完整回调约 245 ms。绑定阶段还为每个 draw 的每个 uniform 重新创建 buffer。两处均是后端实装问题，不能归因于场景复杂或直接通过降低纹理规格规避。
+
+现在着色器加载时解析固定绑定字段，首个成功绑定后缓存经过校验的槽位路径；每次绘制仍读取当前资源和静态 uniform，保留布局、类型和访问状态检查。只缓存实际不可变的反射条目，测试传入的可变 JSON 不缓存。uniform 按当前常量内容及反射大小复用 GPU buffer；常量变化时生成新快照，让已编码的旧 draw 保留原值。资源表或纹理引用改变仍即时生效。`$Globals` 同样只在数据变化时失效。没有修改灯光、曝光、贴图、Cook 配置或着色器材质计算。
+
+同一诊断脚本复测为 30.39 FPS、回调约 31.99 ms，每帧约 131 个 buffer、约 0.14 MiB 上传描述；测试 Chrome GPU 进程专用显存降至 2,041,159,680 字节，约 1.90 GiB。多阶段重复视点、关灯及恢复期间继续记录进程显存。新版测试开始时其他应用已占用更多显存，因此不能直接拿两次整卡数字相减；必须比较隔离浏览器的 GPU 进程。常规双浏览器 1280x720 固定视点短测为 Chrome 32.38 / Edge 31.41 FPS。新旧固定时间截图 RMS 约 1.11，视觉保持一致，属于性能修复。
+
+原生 global / static-material / direct-material / viewport 共 267 项检查通过，其中新增重复实际 draw 不再上传相同 uniform 的检查；同一 uniform 在两次 draw 间更新、纹理引用切换、空 uniform 及资源生命周期检查仍通过。BC / IES / 六面 HDR 及 mip 纹理检查 238 项通过。新版双浏览器 AO / 反射 / 阴影关闭与恢复、默认关卡及损坏包拦截回归通过。`verify-web-project-submission.cjs` 关联当前源码、构建、包、原生读回和浏览器截图，另外审核历史 CPU 基线、每帧分配、进程显存下降及画面未改变；旧版历史包哈希按历史证据保留，不冒充当前包。
+
+画质仍未修复：关闭天空光后，皮革、木材和金属的局部高光、法线及反射差异更明显，说明 PBR 计算并非全部失效；当前强天空漫反射没有室内遮挡，掩盖了这些差异。这个观察不能证明所有材质通道均正确。后续画质工作应围绕实际材质输入、环境漫反射及房间尺度天空可见性，而不是继续增加 AO 或整体调整曝光。流送、长期显存预算、完整分辨率资源和手机仍未验收。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/profile-web-project.cjs --report=submission-cached
+node tests/web-platform/probe-web-project.cjs --project=triplex-house-villa --smoke=1 --warmup-frames=10 --seconds=6 --surfaces=1 --report=submission-final --view=-175,-80,160,-5,50
+node tests/web-platform/verify-web-project-submission.cjs
+```
+
 ## 2026-10-23：室内 PBR 链路排查与修复
 
 用户指出新版室内虽能看清，却像自发光，质感远差于编辑器。默认示例关卡主要展示开阔空间里的方向光和天空光，不足以覆盖封闭室内所需的天空遮挡、间接光、局部反射和密集灯光阴影。别墅原项目启用了 Lumen GI / 反射及虚拟阴影，Web 目前采用 ES3.1 前向路径；原始天空光的球谐照明没有房间尺度的可见性信息，直接照亮室内表面，是仍然偏平的重要原因。不能把加载了 Lit 材质或截图非黑当作编辑器画质一致。
