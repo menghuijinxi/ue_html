@@ -136,6 +136,7 @@ WGPUVertexFormat VertexFormat(EVertexElementType Type)
     case VET_Half2: return WGPUVertexFormat_Float16x2;
     case VET_Half4: return WGPUVertexFormat_Float16x4;
     case VET_Short4N: return WGPUVertexFormat_Snorm16x4;
+    case VET_UShort2: return WGPUVertexFormat_Uint16x2;
     default:
         checkf(false, TEXT("WebGPU vertex element type unsupported: %u"), uint32(Type));
         return WGPUVertexFormat_Float32;

@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-23：修复第 308 帧 `SlateElementIndexBuffer` 的 RDG 收尾状态断言，并补齐 Slate 的 `VET_UShort2 → Uint16x2` 顶点格式。新增 `probe-web-slate-transitions.ps1` 九项原生回归；`probe-web-project-stability.cjs --slate-menu` 先真实按 Esc，再加载项目原有换材质控件，覆盖持续绘制、移除/重建和缩放，汇总入口 `verify-web-slate-menu.cjs`。切图 `InvalidURL`、控件外观及先前绑定组崩溃仍未验收；详情见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)。
+
 2026-10-23：用户第 991 帧绑定组句柄断言仍未定位，不能视作已修复。新增有界句柄诊断和 wasm64 生命周期故障注入测试；普通模式只报告失效地址，`?debug=1` 额外记录最近 256 次创建/释放事件，诊断报告同时保存流送、遮挡统计和浏览器完整版本。入口 `build-web-bindgroup-lifetime.ps1`、`probe-web-bindgroup-lifetime.cjs`、`verify-web-handle-diagnostics.cjs`；汇总明确保留 `originalCrashFixed=false` 及极端预算/缩放测试中的进程退出和超时。详情见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)。
 
 2026-10-23：接入异步硬件遮挡查询，并恢复 Web 的 UE 遮挡剔除。移动渲染共缓冲三帧，批量回读，不阻塞浏览器主线程。房间方向绘制减少约 21%，近墙方向减少约 48%；原有视锥剔除继续工作，HZB / GPUScene 尚未启用。复现与性能边界见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)，本轮验收入口为 `verify-web-occlusion.cjs`。

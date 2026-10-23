@@ -57,6 +57,16 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
     }
     return false;
 }
+
+bool SupportedTransitionAccess(FRHIViewableResource* Resource, ERHIAccess Access)
+{
+    // RDG parks geometry buffers in its default SRVMask epilogue state even
+    // without an SRV. Actual shader bindings still require ValidateBufferSRV.
+    if (Resource && Resource->GetType() == RRT_Buffer && Access == ERHIAccess::SRVMask &&
+        EnumHasAnyFlags(static_cast<FRHIBuffer*>(Resource)->GetUsage(), BUF_VertexBuffer | BUF_IndexBuffer))
+        return true;
+    return SupportedAccess(Resource, Access);
+}
 } // namespace
 
 FWebGPUResourceState &FWebGPUDynamicRHI::ResourceState(FRHIViewableResource *Resource, uint32 Plane,
@@ -187,8 +197,8 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
             Error = TEXT("AllowDuringRenderPass is limited to RDG buffer upload transitions outside an active pass");
             return false;
         }
-        if (!Resource || (!Upload && !SupportedAccess(Resource, Entry.AccessAfter)) ||
-            (Entry.AccessBefore != ERHIAccess::Unknown && !SupportedAccess(Resource, Entry.AccessBefore)))
+        if (!Resource || (!Upload && !SupportedTransitionAccess(Resource, Entry.AccessAfter)) ||
+            (Entry.AccessBefore != ERHIAccess::Unknown && !SupportedTransitionAccess(Resource, Entry.AccessBefore)))
         {
             Error = FString::Printf(TEXT("Unsupported transition resource=%s before=0x%x after=0x%x"),
                 Resource ? *Resource->GetName().ToString() : TEXT("null"),

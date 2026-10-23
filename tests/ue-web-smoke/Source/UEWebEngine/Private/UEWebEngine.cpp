@@ -34,6 +34,7 @@
 #include "Engine/Texture2D.h"
 #include "RHIStats.h"
 #include "UObject/UObjectIterator.h"
+#include "Blueprint/UserWidget.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
 
@@ -318,6 +319,36 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, doubl
     Camera->SetActorLocationAndRotation(FVector(X, Y, Z), FRotator(Pitch, Yaw, 0));
     Controller->SetViewTarget(Camera.Get());
     return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectWidgetTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (ProjectMap.IsEmpty() || !GEngine || (Enabled != 0 && Enabled != 1))
+        return 0;
+    static TWeakObjectPtr<UUserWidget> Widget;
+    if (!Enabled)
+    {
+        if (Widget.IsValid())
+            Widget->RemoveFromParent();
+        Widget.Reset();
+        return 1;
+    }
+    if (Widget.IsValid())
+        return Widget->IsInViewport();
+    UWorld* World = nullptr;
+    for (const FWorldContext& Context : GEngine->GetWorldContexts())
+        if (Context.WorldType == EWorldType::Game)
+            World = Context.World();
+    auto* Class = LoadClass<UUserWidget>(nullptr,
+        TEXT("/Game/BigTriplexHouseVilla/Blueprint/Widgets/W_Sofa1.W_Sofa1_C"));
+    if (!World || !Class)
+        return 0;
+    Widget = CreateWidget<UUserWidget>(World, Class);
+    if (!Widget.IsValid())
+        return 0;
+    Widget->AddToViewport();
+    return Widget->IsInViewport();
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultCloudTracingTestMode(int Mode)

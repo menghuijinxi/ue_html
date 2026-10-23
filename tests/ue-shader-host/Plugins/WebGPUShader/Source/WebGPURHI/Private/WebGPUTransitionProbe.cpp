@@ -225,6 +225,77 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
     CheckImage(TEXT("copy-preserves-earlier-render"), Copy, FColor(64, 128, 191, 255), false);
     CheckImage(TEXT("return-to-rtv-reuses-target"), Source, FColor(255, 64, 0, 255), false);
     {
+        FBufferRHIRef SlateBuffers[2];
+        FBufferRHIRef PixelSizeBuffer;
+        const uint16 PixelSizes[] = {0, 65535, 32768, 1, 1, 32768, 65535, 0};
+        auto SlateElements = Elements;
+        SlateElements.Add(FVertexElement(1, 0, VET_UShort2, 5, 4));
+        auto SlatePipeline = Screen;
+        SlatePipeline.BoundShaderState.VertexDeclarationRHI = RHI.RHICreateVertexDeclaration(SlateElements);
+        auto SlatePSO = RHI.RHICreateGraphicsPipelineState(SlatePipeline);
+        RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        {
+            FCommandList Cmd(&RHI);
+            PixelSizeBuffer = Buffer(RHI, Cmd,
+                FRHIBufferCreateDesc::CreateVertex(TEXT("SlatePixelSizes"), sizeof(PixelSizes)), PixelSizes, sizeof(PixelSizes));
+            SlateBuffers[0] = Buffer(RHI, Cmd,
+                FRHIBufferCreateDesc::CreateVertex(TEXT("SlateElementsVertexBuffer"), sizeof(Vertices))
+                    .AddUsage(BUF_Volatile).SetInitialState(ERHIAccess::VertexOrIndexBuffer), Vertices, sizeof(Vertices));
+            SlateBuffers[1] = Buffer(RHI, Cmd,
+                FRHIBufferCreateDesc::CreateIndex(TEXT("SlateElementIndexBuffer"), sizeof(Indices), 2)
+                    .AddUsage(BUF_Volatile).SetInitialState(ERHIAccess::VertexOrIndexBuffer), Indices, sizeof(Indices));
+            for (uint32 Index = 0; Index < UE_ARRAY_COUNT(SlateBuffers); ++Index)
+            {
+                auto* Resource = SlateBuffers[Index].GetReference();
+                const FRHITransitionInfo Epilogue(Resource, ERHIAccess::VertexOrIndexBuffer, ERHIAccess::SRVMask);
+                const FRHITransitionCreateInfo Info(ERHIPipeline::Graphics, ERHIPipeline::Graphics,
+                    ERHITransitionCreateFlags::None, MakeArrayView(&Epilogue, 1));
+                FString Error;
+                const bool Supported = RHI.ValidateTransitionCreate(Info, Error);
+                const FString Prefix = Index == 0 ? TEXT("slate-vertex-") : TEXT("slate-index-");
+                Record(Prefix + TEXT("rdg-epilogue"), Supported);
+                FRHIViewDesc View;
+                View.Common.ViewType = FRHIViewDesc::EViewType::BufferSRV;
+                View.Buffer.SRV.BufferType = FRHIViewDesc::EBufferType::Typed;
+                View.Buffer.SRV.Format = PF_R32_UINT;
+                Record(Prefix + TEXT("reject-uncreated-srv"), !RHI.ValidateBufferSRV(Resource, View, Error));
+                const FRHITransitionInfo Unsupported(Resource, ERHIAccess::VertexOrIndexBuffer, ERHIAccess::UAVCompute);
+                const FRHITransitionCreateInfo UnsupportedInfo(ERHIPipeline::Graphics, ERHIPipeline::Graphics,
+                    ERHITransitionCreateFlags::None, MakeArrayView(&Unsupported, 1));
+                Record(Prefix + TEXT("reject-uav-transition"), !RHI.ValidateTransitionCreate(UnsupportedInfo, Error));
+                if (Supported)
+                {
+                    Cmd.TransitionLocal(RHI, Epilogue);
+                    Cmd.TransitionLocal(RHI, FRHITransitionInfo(Resource, ERHIAccess::SRVMask,
+                        ERHIAccess::VertexOrIndexBuffer));
+                    Cmd.EnqueueLambda([&, Resource, Prefix](FRHICommandListBase&) {
+                        Record(Prefix + TEXT("restores-draw-access"), CheckAccess(Resource, ERHIAccess::VertexOrIndexBuffer));
+                    });
+                }
+            }
+            Cmd.BeginRenderPass(FRHIRenderPassInfo(Other, ERenderTargetActions::Clear_Store), TEXT("SlateBufferReuse"));
+            BindPipeline(RHI, Cmd, SlatePipeline, SlatePSO);
+            Cmd.SetViewport(0, 0, 0, 16, 16, 1);
+            Cmd.SetStreamSource(0, SlateBuffers[0], 0);
+            Cmd.SetStreamSource(1, PixelSizeBuffer, 0);
+            const FRHIShaderParameterResource VertexResources[] = {{Uniform, 0}};
+            const FRHIShaderParameterResource PixelResources[] = {{Copy, 0}, {Sampler, 1}};
+            Cmd.SetShaderParameters(VS, {}, {}, VertexResources, {});
+            Cmd.SetShaderParameters(PS, {}, {}, PixelResources, {});
+            Cmd.DrawIndexedPrimitive(SlateBuffers[1], 0, 0, 4, 0, 2, 1);
+            Cmd.EndRenderPass();
+        }
+        RHI.SubmitCurrent();
+        TArray<FColor> Colors;
+        RHI.RHIReadSurfaceData(Other, FIntRect(0, 0, 16, 16), Colors, RawReadback());
+        bool OK = Colors.Num() == 256;
+        for (const auto& Color : Colors)
+            OK &= FMath::Abs(int32(Color.R) - 64) <= 1 && FMath::Abs(int32(Color.G) - 128) <= 1 &&
+                FMath::Abs(int32(Color.B) - 191) <= 1 && Color.A == 255;
+        Checked += Colors.Num() * 4;
+        Record(TEXT("slate-rdg-buffer-reuse-pixels"), OK);
+    }
+    {
         auto DepthVS =
             RHI.RHICreateVertexShader(FRHICreateShaderDesc(Packet(Directory, TEXT("FClearReplacementVS_Depth"))));
         auto WriteState = RHI.RHICreateDepthStencilState(FDepthStencilStateInitializerRHI(true, CF_Greater));

@@ -10,7 +10,7 @@ const name = option('browser') || 'Edge';
 const seconds = Number(option('seconds') || 120);
 const dpr = Number(option('dpr') || 1.5);
 const width = Number(option('width') || 1854), height = Number(option('height') || 909);
-const mode = option('mode') || 'tour';
+const mode = option('mode') || (process.argv.includes('--slate-menu') ? 'spawn' : 'tour');
 const resize = process.argv.includes('--resize');
 const collectGarbage = process.argv.includes('--gc');
 const headful = process.argv.includes('--headful');
@@ -20,8 +20,10 @@ const stepFrames = Number(option('step-frames') || 60);
 const debugPort = option('debug-port');
 const requireHandles = process.argv.includes('--require-handles');
 const debugHandles = process.argv.includes('--debug-handles');
+const slateMenu = process.argv.includes('--slate-menu');
 assert(/^[a-z0-9-]+$/.test(id) && /^[a-z0-9-]+$/.test(suffix));
 assert(['Chrome', 'Edge'].includes(name) && ['tour', 'spawn', 'orbit'].includes(mode));
+assert(!slateMenu || mode === 'spawn', 'The project menu changes levels and invalidates the tour camera');
 assert(seconds >= 1 && seconds <= 1800 && dpr >= 1 && dpr <= 3);
 assert(Number.isInteger(width) && Number.isInteger(height) && width > 0 && height > 0);
 assert(Number.isInteger(stepFrames) && stepFrames >= 1 && stepFrames <= 600);
@@ -30,15 +32,15 @@ assert(!debugPort || (Number.isInteger(Number(debugPort)) && Number(debugPort) >
 const directory = path.join(__dirname, 'results');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const report = {date: new Date().toISOString(), pass: false, project: id, browser: name,
-  seconds, mode, resize, collectGarbage, headful, minimal, streamChurn, stepFrames, requireHandles, debugHandles,
+  seconds, mode, resize, collectGarbage, headful, minimal, streamChurn, stepFrames, requireHandles, debugHandles, slateMenu,
   viewport: {width, height, dpr},
   samples: [], errors: [], engineErrors: [], source: audit(__filename)};
 let browser, page;
 let watchdog;
 
-function instrument(minimal) {
+function instrument({minimal, slateMenu}) {
   const state = globalThis.__stability = {errors: [], deviceLosses: [], shadowTextures: [], shadowLayouts: [],
-    shadowShaderDeclarations: [], draws: 0, submissions: 0};
+    shadowShaderDeclarations: [], draws: 0, submissions: 0, slatePipelines: 0, slateDraws: 0};
   const views = new WeakMap(), layouts = new WeakMap(), pipelineLayouts = new WeakMap(), pipelines = new WeakMap();
   const requestDevice = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(...args) {
@@ -52,6 +54,31 @@ function instrument(minimal) {
     globalThis.__stabilityIdle = () => device.queue.onSubmittedWorkDone();
     return device;
   };
+  if (slateMenu) {
+    const slatePipelines = new WeakSet(), passes = new WeakMap();
+    const create = GPUDevice.prototype.createRenderPipeline;
+    GPUDevice.prototype.createRenderPipeline = function(descriptor) {
+      const pipeline = create.call(this, descriptor);
+      const attributes = descriptor.vertex.buffers?.flatMap(buffer => buffer.attributes) || [];
+      if (attributes.some(item => item.shaderLocation === 5 && item.format === 'uint16x2') &&
+          attributes.some(item => item.shaderLocation === 0 && item.format === 'float32x4') &&
+          attributes.some(item => item.shaderLocation === 2 && item.format === 'float32x2')) {
+        slatePipelines.add(pipeline);
+        ++state.slatePipelines;
+      }
+      return pipeline;
+    };
+    const setPipeline = GPURenderPassEncoder.prototype.setPipeline;
+    GPURenderPassEncoder.prototype.setPipeline = function(pipeline) {
+      passes.set(this, slatePipelines.has(pipeline));
+      return setPipeline.call(this, pipeline);
+    };
+    const draw = GPURenderPassEncoder.prototype.drawIndexed;
+    GPURenderPassEncoder.prototype.drawIndexed = function(...args) {
+      if (passes.get(this)) ++state.slateDraws;
+      return draw.apply(this, args);
+    };
+  }
   if (minimal) return;
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(descriptor) {
@@ -181,7 +208,7 @@ async function frames(count) {
       if (/GPU validation:|Ensure condition failed|Assertion failed|Fatal error:/.test(text) &&
           report.engineErrors.length < 40) report.engineErrors.push(text);
     });
-    await page.addInitScript(instrument, minimal);
+    await page.addInitScript(instrument, {minimal, slateMenu});
     report.started = Date.now();
     await page.goto(`http://127.0.0.1:8765/build/${id}/index.html${debugHandles ? '?debug=1' : ''}`,
       {waitUntil: 'commit'});
@@ -189,6 +216,25 @@ async function frames(count) {
     report.initial = await sample('spawn');
     watchdog.refresh();
     console.log(JSON.stringify({browser: name, phase: 'spawn', frame: report.initial.frame}));
+    if (slateMenu) {
+      if (await page.locator('#close-diagnostics').isVisible())
+        await page.locator('#close-diagnostics').click();
+      await page.locator('canvas').focus();
+      await page.keyboard.press('Escape');
+      await frames(15);
+      report.menu = await sample('slate-menu-open');
+      assert(report.menu.gpu.slatePipelines > 0 && report.menu.gpu.slateDraws > 0,
+        'The menu must reach actual Slate pipeline creation and indexed drawing');
+      await page.reload({waitUntil: 'commit'});
+      await frames(60);
+      if (await page.locator('#close-diagnostics').isVisible())
+        await page.locator('#close-diagnostics').click();
+      assert(await page.evaluate(() => Module._WebProjectWidgetTest(1)),
+        'The cooked project material widget must be created and attached');
+      await frames(15);
+      report.widget = await sample('slate-material-widget');
+      assert(report.widget.gpu.slateDraws > 0, 'The persistent project widget must actually draw');
+    }
     const started = Date.now();
     // Exercise changing visibility and directional shadow cascades without freezing time or disabling lighting.
     const spawn = report.initial.camera;
@@ -214,6 +260,14 @@ async function frames(count) {
         report.operation.phase = 'resize';
         await page.setViewportSize(step % 2 ? {width, height} :
           {width: Math.floor(width * 0.7), height: Math.floor(height * 0.7)});
+      }
+      if (slateMenu && step % 3 === 1) {
+        report.operation.phase = 'close-widget';
+        assert(await page.evaluate(() => Module._WebProjectWidgetTest(0)));
+        await frames(15);
+        await sample('slate-widget-closed');
+        report.operation.phase = 'open-widget';
+        assert(await page.evaluate(() => Module._WebProjectWidgetTest(1)));
       }
       if (debuggerSession) await debuggerSession.send('HeapProfiler.collectGarbage');
       if (streamChurn) {

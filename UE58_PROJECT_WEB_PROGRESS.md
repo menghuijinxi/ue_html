@@ -1,5 +1,28 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：修复 Slate 状态断言和顶点格式缺口
+
+用户的 `ue-startup-diagnostics-2026-10-23T09-43-03-799Z.json` 在第 308 帧退出，日志明确记录 `SlateElementIndexBuffer before=0x8 after=0x70`。旧独立包启动后按 Esc 可稳定复现同一 `RHICreateTransition` 断言。原始报告保存在 `results/user-slate-transition-crash-20261023.json`；这次句柄诊断没有报失效，属于已定位的另一条故障路径，不能与前一节的第 991 帧绑定组问题混为一谈。
+
+根因是 RHI 把 RDG 的逻辑收尾状态当成实际资源绑定能力校验。Slate 创建的纯索引缓冲区没有 ShaderResource 标志，但 RDG 会统一将缓冲区收尾到默认 `SRVMask`。现在只允许顶点/索引缓冲区在 transition 中进入、离开这个精确状态，真实 SRV 创建、着色器绑定和资源使用仍保留能力校验；不增加 Storage usage，不关闭断言。越过该点后，真实 Slate 管线又暴露缺少 `VET_UShort2` 映射，现补为 `Uint16x2`。
+
+新增原生回归覆盖 Slate 顶点/索引缓冲区的收尾与恢复、无 SRV/UAV 能力的拒绝、16 位无符号顶点属性管线，以及恢复绘制后的 GPU 像素回读，共九项 Slate 检查；完整原生综合探针的 129 项通过。既有材质/viewport、纹理/mip 流送及七项遮挡回归另行重跑。原生测试先记录旧实现中仅 `slate-index-rdg-epilogue` 失败，再验证修复后全部通过。
+
+浏览器测试先执行真实 Esc 输入，确认能越过旧断言并实际提交 Slate 绘制，再重新加载场景，通过显式测试入口 `WebProjectWidgetTest` 加载项目已有 `W_Sofa1`，持续绘制、移除、重建并缩放窗口。测试入口只有被调用时才创建控件，不修改项目资产或正常启动行为。Chrome/Edge 各执行一分钟，使用 2552x1308 / DPR 1.5；完整正常 UBT、两个独立包和默认光照/天空关卡另行验证。`verify-web-slate-menu.cjs` 同时核验故障前后证据、源码/产品哈希与这些回归报告，明确区分本次断言修复和既有未解决故障。
+
+**尚未验收的边界：** Esc/Z 后切图另有 `InvalidURL`，引擎会回退重载当前关卡；这轮未修复地图旅行。`W_Sofa1` 已持续提交 Slate draw，但截图中控件仍未正确显示，不能把本轮结果当作 UMG 外观或交互验收。此前的绑定组句柄断言、序列转换异常和极端预算/缩放下的进程退出、超时仍未解决。原有巡游测试只移动相机，未触达界面路径；本轮把真实按键和项目控件绘制加入了独立回归。
+
+更新后的日常地址仍为 `http://127.0.0.1:8765/build/triplex-house-villa/index.html`。内容资产哈希未变，本地内容缓存继续复用；新 WASM 按新哈希保存。
+
+```powershell
+& tests/web-platform/probe-web-slate-transitions.ps1
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-project-stability.cjs --browser=Edge --seconds=60 --width=2552 --height=1308 --dpr=1.5 --slate-menu --resize --minimal --require-handles --report=slate-menu-final
+node tests/web-platform/probe-web-project-stability.cjs --browser=Chrome --seconds=60 --width=2552 --height=1308 --dpr=1.5 --slate-menu --resize --minimal --require-handles --debug-handles --report=slate-menu-final
+node tests/web-platform/probe-web-default-scene.cjs --packaged
+node tests/web-platform/verify-web-slate-menu.cjs
+```
+
 ## 2026-10-23：保留绑定组崩溃证据，补充句柄诊断
 
 用户的 `ue-startup-diagnostics-2026-10-23T08-23-05-328Z.json` 属于当前遮挡查询版本，在第 991 帧的 `SetDrawBindings -> wgpuRenderPassEncoderSetBindGroup -> WebGPU.getJsObject` 断言退出。缺少的是绑定组对应的 JS 对象；报告没有实际句柄地址、创建/释放顺序，也没有设备丢失或 GPU 校验错误，不能据此认定显存耗尽。用户文件原样保存在 `results/user-bindgroup-crash-20261023.json`。
