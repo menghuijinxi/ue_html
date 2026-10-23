@@ -12,6 +12,7 @@
 #include "Misc/Parse.h"
 #include "Algo/AllOf.h"
 #include "Math/PackedVector.h"
+#include "RHIStats.h"
 
 namespace
 {
@@ -435,6 +436,86 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
             Cmd.ReadSurfaceData(Destination, FIntRect(0, 0, 16, 16), Colors, RawReadback());
             Record(TEXT("bc1-srgb-direct-sampling"), Colors.Num() == 256 &&
                 Algo::AllOf(Colors, [](FColor Value) { return Value == FColor::Red; }));
+        }
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureStreamingProbe")))
+        {
+            // Exercise UE's actual reallocation path, including simultaneous IO destination locks.
+            const uint16 Endpoints[] = {0xf800, 0x07e0, 0x001f, 0xffff};
+            const FColor Solid[] = {FColor::Red, FColor::Green, FColor::Blue, FColor::White};
+            for (const auto Format : {PF_R8G8B8A8, PF_DXT1})
+            {
+                const FString Prefix = Format == PF_DXT1 ? TEXT("stream-bc1-") : TEXT("stream-rgba8-");
+                const auto Fill = [&](void* Data, uint64 Size, uint32 Mip) {
+                    FMemory::Memzero(Data, Size);
+                    for (uint64 Offset = 0; Offset < Size; Offset += Format == PF_DXT1 ? 8 : 4)
+                    {
+                        const auto Color = Solid[Mip % 4];
+                        const uint8 Pixel[] = {Color.R, Color.G, Color.B, Color.A};
+                        FMemory::Memcpy(static_cast<uint8*>(Data) + Offset,
+                            Format == PF_DXT1 ? static_cast<const void*>(&Endpoints[Mip % 4]) : Pixel,
+                            Format == PF_DXT1 ? 2 : 4);
+                    }
+                };
+                auto Desc = FRHITextureCreateDesc::Create2D(TEXT("StreamingMipProbe"), 64, 64, Format)
+                    .SetNumMips(7).SetFlags(ETextureCreateFlags::ShaderResource | ETextureCreateFlags::Streamable)
+                    .SetInitialState(ERHIAccess::SRVMask).SetInitActionInitializer();
+                auto Init = Cmd.CreateTextureInitializer(Desc);
+                for (uint32 Mip = 0; Mip < 7; ++Mip)
+                {
+                    auto Data = Init.GetTexture2DSubresource(Mip);
+                    Fill(Data.Data, Data.Size, Mip);
+                }
+                auto Full = Init.Finalize();
+                const auto CheckMips = [&](FRHITexture* Texture, uint32 FirstMip, const FString& Stage) {
+                    for (uint32 Mip = 0; Mip < Texture->GetNumMips(); ++Mip)
+                    {
+                        auto View = Cmd.CreateShaderResourceView(Texture, FRHIViewDesc::CreateTextureSRV()
+                            .SetDimension(ETextureDimension::Texture2D).SetMipRange(Mip, 1));
+                        Draw(View);
+                        TArray<FColor> Colors;
+                        Cmd.ReadSurfaceData(Destination, FIntRect(0, 0, 16, 16), Colors, RawReadback());
+                        Record(Prefix + Stage + FString::Printf(TEXT("-mip%u"), Mip),
+                            Colors.Num() == 256 && Algo::AllOf(Colors,
+                                [&](FColor Color) { return Color == Solid[(FirstMip + Mip) % 4]; }));
+                        Checked += Colors.Num() * 4;
+                    }
+                };
+                CheckMips(Full, 0, TEXT("initial"));
+                FThreadSafeCounter OutStatus(1);
+                auto Small = Cmd.AsyncReallocateTexture2D(Full, 5, 16, 16, &OutStatus);
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+                Record(Prefix + TEXT("stream-out-completed"), OutStatus.GetValue() == 0);
+                CheckMips(Small, 2, TEXT("out"));
+                FThreadSafeCounter InStatus(1);
+                auto Large = Cmd.AsyncReallocateTexture2D(Small, 7, 64, 64, &InStatus);
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+                Record(Prefix + TEXT("stream-in-reallocated"), InStatus.GetValue() == 0);
+                auto Lock0 = FRHILockTextureArgs::Lock2D(Large, 0, RLM_WriteOnly, false);
+                auto Lock1 = FRHILockTextureArgs::Lock2D(Large, 1, RLM_WriteOnly, false);
+                auto Data0 = Cmd.LockTexture(Lock0);
+                auto Data1 = Cmd.LockTexture(Lock1);
+                Fill(Data0.Data, Data0.ByteCount, 0);
+                Fill(Data1.Data, Data1.ByteCount, 1);
+                Record(Prefix + TEXT("reject-sampling-during-multi-mip-io"),
+                    !RHI.ValidateAccess(Large, ERHIAccess::SRVGraphicsPixel, Error));
+                Cmd.UnlockTexture(Lock1);
+                Cmd.UnlockTexture(Lock0);
+                CheckMips(Large, 0, TEXT("in"));
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThreadFlushResources);
+                FTextureMemoryStats Before, During;
+                RHI.RHIGetTextureMemoryStats(Before);
+                FThreadSafeCounter CancelStatus(1);
+                auto Cancelled = Cmd.AsyncReallocateTexture2D(Large, 5, 16, 16, &CancelStatus);
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+                RHI.RHIGetTextureMemoryStats(During);
+                Record(Prefix + TEXT("allocation-accounted"), During.StreamingMemorySize ==
+                    Before.StreamingMemorySize + Align(Cancelled->GetDesc().CalcMemorySizeEstimate(), uint64(1024)));
+                Cancelled.SafeRelease();
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThreadFlushResources);
+                RHI.RHIGetTextureMemoryStats(During);
+                Record(Prefix + TEXT("cancelled-allocation-released"), During.StreamingMemorySize == Before.StreamingMemorySize);
+                CheckMips(Large, 0, TEXT("after-cancel"));
+            }
         }
         RHI.ShaderData(PS).Resources.Reset();
     }

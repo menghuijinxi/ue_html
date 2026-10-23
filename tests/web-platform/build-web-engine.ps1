@@ -119,6 +119,8 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Public/Math/UnrealMathFPU.h'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/Shader/Preshader2.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/Shader/Preshader2.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/SparseVolumeTexture/SparseVolumeTextureData.cpp'

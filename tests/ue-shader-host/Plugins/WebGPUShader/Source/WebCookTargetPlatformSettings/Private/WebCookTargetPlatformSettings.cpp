@@ -16,8 +16,9 @@ public:
 
     virtual bool SupportsFeature(ETargetPlatformFeatures Feature) const override
     {
-        return bWebGPU && Feature == (bES31 ? ETargetPlatformFeatures::MobileRendering :
-            ETargetPlatformFeatures::DeferredRendering);
+        return bWebGPU && (Feature == ETargetPlatformFeatures::TextureStreaming ||
+            Feature == (bES31 ? ETargetPlatformFeatures::MobileRendering :
+                ETargetPlatformFeatures::DeferredRendering));
     }
     virtual bool UsesRayTracing() const override { return false; }
     virtual bool UsesDistanceFields() const override { return false; }

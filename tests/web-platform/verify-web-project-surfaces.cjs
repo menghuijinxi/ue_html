@@ -7,7 +7,8 @@ const option = name => process.argv.find(value => value.startsWith(`--${name}=`)
 const suffix = option('report') || 'pbr-final';
 const textureProbe = option('texture-probe') || 'pbr-native-texture';
 const output = option('output') || 'triplex-house-villa-surfaces-audit-results';
-assert([suffix, textureProbe, output].every(value => /^[a-z0-9-]+$/.test(value)));
+const textureInventory = option('texture-inventory') || 'triplex-textures-pbr-final';
+assert([suffix, textureProbe, output, textureInventory].every(value => /^[a-z0-9-]+$/.test(value)));
 const text = file => {
   const bytes = fs.readFileSync(file);
   return bytes.toString(bytes[0] === 0xff && bytes[1] === 0xfe ? 'utf16le' : 'utf8').replace(/^\uFEFF/, '');
@@ -71,13 +72,15 @@ try {
   const nativeTexture = read(nativeTextureFile);
   assert(nativeTexture.pass && nativeTexture.modes.length === 2);
   for (const mode of nativeTexture.modes) {
-    assert(mode.checks.length === 119 && mode.checks.every(check => check.pass) && !mode.errors.length);
+    assert([119, 181].includes(mode.checks.length) && mode.checks.every(check => check.pass) && !mode.errors.length);
+    assert.equal(mode.checks.filter(check => /^stream-(rgba8|bc1)-/.test(check.name)).length,
+      mode.checks.length === 181 ? 62 : 0);
     assert(mode.checks.filter(check => /reflection/.test(check.name)).length >= 33);
   }
   report.nativeTextureChecks = nativeTexture.modes.reduce((sum, mode) => sum + mode.checks.length, 0);
   report.nativeTexture = [nativeTextureFile, path.join(directory, `${textureProbe}.log`),
     path.resolve(__dirname, '../ue-shader-host/Plugins/WebGPUShader/Binaries/Win64/UnrealEditor-WebGPURHI.dll')].map(audit);
-  const textures = evidence('triplex-textures-pbr-final.json');
+  const textures = evidence(`${textureInventory}.json`);
   const baseline = read(path.join(directory, 'triplex-textures-uncompressed.json'));
   assert.equal(textures.count, baseline.count);
   const original = new Map(baseline.textures.map(item => [item.file, item]));

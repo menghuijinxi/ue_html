@@ -115,6 +115,7 @@ async function sample(label) {
   const value = await page.evaluate(() => ({
     frame: globalThis.__webEngineFrames || 0, failure: globalThis.__webEngineFailure || null,
     camera: globalThis.__webDefaultCamera || null, runtime: globalThis.__webEngineRuntime || null,
+    streaming: globalThis.__webTextureStreaming || null,
     gpu: globalThis.__stability,
     canvas: {width: Module.canvas.width, height: Module.canvas.height}
   }));
@@ -156,7 +157,7 @@ async function frames(count) {
     await page.addInitScript(instrument);
     report.started = Date.now();
     await page.goto(`http://127.0.0.1:8765/build/${id}/index.html`, {waitUntil: 'commit'});
-    await frames(20);
+    await frames(60);
     report.initial = await sample('spawn');
     const started = Date.now();
     // Exercise changing visibility and directional shadow cascades without freezing time or disabling lighting.

@@ -7,7 +7,8 @@ public class WebGPURHI : ModuleRules
     {
         PCHUsage = PCHUsageMode.NoPCHs;
         bUseUnity = false;
-        PrivateDependencyModuleNames.AddRange(new string[] { "Core", "RHI", "RenderCore", "Json" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "Core", "RHI", "RHICore", "RenderCore", "Json" });
+        PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHICore/Internal"));
         string Dawn = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../../../../.tools/dawn-v20261009.190412"));
         string DawnHost = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../../../../.tools/ue58-dawn-host"));
         PrivateIncludePaths.Add(Path.Combine(Dawn, "include"));

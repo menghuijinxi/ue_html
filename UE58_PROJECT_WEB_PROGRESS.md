@@ -1,5 +1,38 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：接通压缩纹理 mip 流送
+
+本轮按用户要求优先补齐纹理流送。Web Cook 平台和 RHI 现在都声明支持 UE 纹理流送，默认池预算为 256 MiB、临时预算为 32 MiB；继续使用原 BC / BC6H 资源和 mip 链。清单仍为 667 张纹理、607 张多 mip、60 张单 mip，估算全量压缩数据为 210,559,592 字节，没有通过进一步缩图替代流送。运行时 613 张 UTexture2D 纳入流送管理，其最大 mip 合计 6,121 级。
+
+RHI 接入 RHICore 纹理分配 / 释放统计和内存查询，让 UE 根据实际存活资源估算预算。多个 mip / face 可同时锁定，解锁时分别上传对应子资源；访问和状态转换仍检查 CPU 锁。UE 5.8 已有的 `AsyncReallocateTexture2D` 路径负责重新分配并复制公共 mip，新 mip 从 Cook 的 `.ubulk` 上传，不另造一套距离判断器。未启用当前后端不支持的异步纹理创建。
+
+初次接通后出现 309 张纹理更新长期 pending、驻留数据一直约 2.15 MiB 的问题。根因是 `FIoDispatcher` 构造时直接查询 `FGenericPlatformProcess::SupportsMultithreading()`，绕过 Web 的单线程覆盖，把请求交给不存在的工作线程。现在仅在 `PLATFORM_WEB` 下查询实际 `FPlatformProcess`，使用已有的同步 IO 分发；其他平台保留原逻辑。构建报告同时审计参考源码和构建覆盖中的 `IoDispatcher.cpp`，临时排查日志已移除。未修改 `H:/UE_5.8` 安装目录。
+
+新增原生 `-WebTextureStreamingProbe`，实际执行 RGBA8 / BC1 的七级 mip 初始化、缩小 / 放大分配、公共 mip 复制、同时锁定两个 mip、尾部 1x1 采样及取消分配后的内存回收。记录 / 直通两种模式共 362 项纹理检查通过，既有 global / static-material / direct-material / viewport 的 267 项检查也通过。普通 UBT Web 构建、两个关卡的 Cook / 独立打包均完成。
+
+浏览器探针核对真实驻留状态、pending 数、GPU 上传 / 复制和包哈希。Chrome 八轮、Edge 两轮 256 / 64 MiB 预算切换均通过：餐桌视点可流送驻留数据从 81,870,928 字节降至 2,256,976 字节，恢复预算后为 62,546,000 字节；每次恢复均有公共 mip 复制和新数据上传，pending 清零，重复分配没有累计增长。恢复后不必立即回到首次缓存量，UE 同时考虑可见需求、预算和缓存。
+
+Chrome 八轮测试还隔离采集了新增 GPU 进程的 WDDM 专用显存。第三至第八轮恢复时从约 1,831.58 MiB 到 1,839.60 MiB；最后多个视点约 2,061.42 MiB。驱动会缓存分配，不能把纹理估算字节当作实际进程显存，或声称切换低预算后物理显存立即同步释放。
+
+默认关卡的双浏览器灯光 / 窗口恢复 / 损坏包拦截回归，以及别墅的反射 / 阴影开关与恢复回归通过。`verify-web-project-surfaces.cjs` 复核 9,746 个条目、9,596 个不同文件；压缩规格、反射捕获、当前构建 / Cook / 包和截图哈希一致。这些对照用于防止流送破坏已有渲染链路，不代表室内画质已与编辑器一致。
+
+开启流送后，高 DPI 1854x909、DPR 1.5 的实际画布仍为 2424x1364。Chrome / Edge 各三分钟真实时间多视点运行分别到 4,853 / 4,979 帧，均无页面异常、GPU 校验错误、设备丢失或曝光断言；先前出错的移动 CSM 绑定也确实被执行。最终 `verify-web-project-streaming.cjs` 汇总通过，核对 4,678 个不同文件、621 个 `.ubulk`、当前包哈希、原生检查、八轮显存趋势、双浏览器流送和长测。历史 IO 挂起记录仅作为失败证据，不冒充当前源码产物。独立引擎仓库提交为 `c2eccd1e9`（接通 Web 纹理池并修复单线程 mip 读取挂起）。
+
+预算边界：256 MiB 纹理池包含固定的非流送采样纹理；本场景约 151 MiB 的固定部分及最小 mip 尾不能靠流送卸载，所以 64 MiB 只作为驱逐压力测试，不能声称满足该总预算。渲染目标、几何、着色器和驱动缓存另外占用显存。当前实现从预加载的 MEMFS 内容包读取 mip，尚未实现 HTTP Range 下载，也未限制 CPU 内容包内存。室内 PBR、编辑器画质一致性和手机仍独立待验收。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+& tests/web-platform/probe-web-texture-streaming.ps1
+node tests/web-platform/probe-web-project-streaming.cjs --browser=Chrome --report=streaming-final --memory --cycles=8
+node tests/web-platform/probe-web-project-streaming.cjs --browser=Edge --report=streaming-final
+node tests/web-platform/probe-web-project-stability.cjs --browser=Chrome --seconds=180 --report=streaming-stability
+node tests/web-platform/probe-web-project-stability.cjs --browser=Edge --seconds=180 --report=streaming-stability
+node tests/web-platform/probe-web-default-scene.cjs --packaged
+node tests/web-platform/probe-web-project.cjs --project=triplex-house-villa --smoke=1 --warmup-frames=120 --seconds=6 --surfaces=1 --report=streaming-surfaces --view=-175,-80,160,-5,50
+node tests/web-platform/verify-web-project-surfaces.cjs --report=streaming-surfaces --texture-probe=streaming-native-texture --texture-inventory=triplex-textures-streaming --output=triplex-house-villa-streaming-surfaces-audit-results
+node tests/web-platform/verify-web-project-streaming.cjs
+```
+
 ## 2026-10-23：修复转向后阴影绑定引发的运行崩溃
 
 用户提供的 `ue-startup-diagnostics-2026-10-23T03-36-51-061Z.json` 记录了第 926 帧的 `FViewInfo::UpdatePreExposure()` 崩溃。在曝光断言之前，WebGPU 已反复拒绝 `MobileCSMAndSpotLightShadowmap`：真实深度纹理支持 `UnfilterableFloat|Depth`，管线布局却要求可过滤的 `Float`。原地出生点 45 秒未复现；新增高 DPI 多视点探针后，在出生点把 yaw 从约 90 度转至 180 度即可稳定复现，第 24 帧出现相同绑定错误，第 27 帧触发 `FinalPreExposure > 0.0f` 和 `unreachable`。这是可见性变化触发的移动 CSM 材质变体，之前固定餐桌视点的短测没有覆盖。

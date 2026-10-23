@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WebGPUUnsupportedRHI.h"
+#include "RHICoreStats.h"
 #include "Dom/JsonObject.h"
 #include <webgpu/webgpu.h>
 #include <atomic>
@@ -126,9 +127,7 @@ class FWebGPUTexture final : public FRHITexture
     FWebGPUResourceState StencilState;
     TArray<FWebGPUResourceState> SubresourceStates;
     TArray<uint8> InitialBytes;
-    TArray<uint8> LockedBytes;
-    uint32 LockedMip = MAX_uint32;
-    uint32 LockedFace = 0;
+    TMap<uint32, TArray<uint8>> MipLocks;
     TMap<uint32, WGPUTextureView> AttachmentViews;
     bool SurfaceFrameActive = true;
     uint32 LayerCount() const { return GetDesc().IsTextureCube() ? 6u : uint32(GetDesc().ArraySize); }
@@ -136,6 +135,7 @@ class FWebGPUTexture final : public FRHITexture
         : FRHITexture(Desc), Handle(InHandle),
           State(Desc.InitialState), StencilState(Desc.InitialState)
     {
+        UE::RHICore::UpdateGlobalTextureStats(Desc, Desc.CalcMemorySizeEstimate(), false, true);
         SubresourceStates.Init(FWebGPUResourceState(Desc.InitialState),
             Desc.NumMips * LayerCount() - 1);
         WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
@@ -184,13 +184,14 @@ class FWebGPUTexture final : public FRHITexture
     }
     ~FWebGPUTexture() override
     {
-        check(LockedMip == MAX_uint32);
+        check(MipLocks.IsEmpty());
         if (DepthSampleView)
             wgpuTextureViewRelease(DepthSampleView);
         for (const auto& Entry : AttachmentViews)
             wgpuTextureViewRelease(Entry.Value);
         wgpuTextureViewRelease(View);
         wgpuTextureRelease(Handle);
+        UE::RHICore::UpdateGlobalTextureStats(GetDesc(), GetDesc().CalcMemorySizeEstimate(), false, false);
     }
 };
 
@@ -537,6 +538,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     FRHIBufferInitializer RHICreateBufferInitializer(FRHICommandListBase &, const FRHIBufferCreateDesc &) override;
     FRHICalcTextureSizeResult RHICalcTexturePlatformSize(const FRHITextureDesc &, uint32) override;
     uint32 RHIComputeMemorySize(FRHITexture *) override;
+    void RHIGetTextureMemoryStats(FTextureMemoryStats &) override;
     FRHILockTextureResult RHILockTexture(FRHICommandListImmediate &, const FRHILockTextureArgs &) override;
     void RHIUnlockTexture(FRHICommandListImmediate &, const FRHILockTextureArgs &) override;
     FRHITextureInitializer RHICreateTextureInitializer(FRHICommandListBase &, const FRHITextureCreateDesc &) override;

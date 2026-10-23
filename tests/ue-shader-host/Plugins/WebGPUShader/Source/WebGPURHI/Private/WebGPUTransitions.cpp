@@ -99,7 +99,11 @@ bool FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource *Resource, ERHIAcces
         Error = TEXT("Resource use while a CPU buffer lock is active");
         return false;
     }
-    if (Resource->GetType() == RRT_Texture && static_cast<FWebGPUTexture *>(Resource)->LockedMip != MAX_uint32)
+    if (Resource->GetType() == RRT_Texture &&
+        ((Mip == MAX_uint32 || Slice == MAX_uint32)
+            ? !static_cast<FWebGPUTexture *>(Resource)->MipLocks.IsEmpty()
+            : static_cast<FWebGPUTexture *>(Resource)->MipLocks.Contains(
+                Mip * static_cast<FWebGPUTexture *>(Resource)->LayerCount() + Slice)))
     {
         Error = TEXT("Resource use while a CPU texture lock is active");
         return false;
@@ -254,7 +258,7 @@ bool FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<const FRHITransition 
                 return false;
             }
             if (Resource->GetType() == RRT_Texture &&
-                static_cast<FWebGPUTexture *>(Resource)->LockedMip != MAX_uint32)
+                !static_cast<FWebGPUTexture *>(Resource)->MipLocks.IsEmpty())
             {
                 Error = TEXT("Transition while a CPU texture lock is active");
                 return false;

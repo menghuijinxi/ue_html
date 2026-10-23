@@ -6,6 +6,7 @@
 #include "RHITextureUtils.h"
 #include "RHITextureReference.h"
 #include "RHIUtilities.h"
+#include "RHIStats.h"
 
 #include "HAL/PlatformProcess.h"
 #include "HAL/IConsoleManager.h"
@@ -351,7 +352,10 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsAsyncPipelinePrecompile = false;
     GRHISupportsPSOPrecaching = false;
     GRHISupportsPipelineFileCache = false;
-    GRHISupportsTextureStreaming = false;
+    GRHISupportsTextureStreaming = true;
+    GRHISupportsAsyncTextureCreation = false;
+    const auto* Pool = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streaming.PoolSize"));
+    GTexturePoolSize = int64(Pool && Pool->GetInt() >= 0 ? Pool->GetInt() : 256) * 1024 * 1024;
     // Slate also presents empty render graphs, which need an explicit final transition.
     GRHIGlobals.NeedsExtraTransitions = true;
     GRHITransitionPrivateData_SizeInBytes = sizeof(FWebGPUTransitionPrivateData);
@@ -905,6 +909,12 @@ uint32 FWebGPUDynamicRHI::RHIComputeMemorySize(FRHITexture *Texture)
     check(Bytes <= MAX_uint32);
     return uint32(Bytes);
 }
+void FWebGPUDynamicRHI::RHIGetTextureMemoryStats(FTextureMemoryStats& OutStats)
+{
+    // WebGPU does not expose adapter VRAM capacity or physical allocation sizes.
+    OutStats = FTextureMemoryStats();
+    UE::RHICore::FillBaselineTextureMemoryStats(OutStats);
+}
 FRHILockTextureResult FWebGPUDynamicRHI::RHILockTexture(FRHICommandListImmediate &,
                                                         const FRHILockTextureArgs &Args)
 {
@@ -915,32 +925,34 @@ FRHILockTextureResult FWebGPUDynamicRHI::RHILockTexture(FRHICommandListImmediate
           IsSampled2DTextureFormat(Texture->GetFormat()) &&
           Args.LockMode == RLM_WriteOnly && !Args.ArrayIndex &&
           uint32(Args.FaceIndex) < (Texture->GetDesc().IsTextureCube() ? 6u : 1u) && !Args.bLockWithinMiptail &&
-          Args.MipIndex < Texture->GetNumMips() && Texture->LockedMip == MAX_uint32);
-    RequireAccess(Texture, ERHIAccess::CopyDest, true);
+          Args.MipIndex < Texture->GetNumMips());
+    const uint32 Key = Args.MipIndex * Texture->LayerCount() + Args.FaceIndex;
+    check(!Texture->MipLocks.Contains(Key));
+    RequireAccess(Texture, ERHIAccess::CopyDest, true, 0, Args.MipIndex, Args.FaceIndex);
     if (ContextOpen)
         SubmitCurrent();
     uint64 Stride;
     const uint64 Size = UE::RHITextureUtils::CalculateTextureMipSize(Texture->GetDesc(), Args.MipIndex, Stride);
     check(Size <= MAX_int32 && Stride <= MAX_uint32);
-    Texture->LockedBytes.SetNumZeroed(Size);
-    Texture->LockedMip = Args.MipIndex;
-    Texture->LockedFace = Args.FaceIndex;
-    return {Texture->LockedBytes.GetData(), Size, uint32(Stride)};
+    auto& Bytes = Texture->MipLocks.Add(Key);
+    Bytes.SetNumZeroed(Size);
+    return {Bytes.GetData(), Size, uint32(Stride)};
 }
 void FWebGPUDynamicRHI::RHIUnlockTexture(FRHICommandListImmediate &, const FRHILockTextureArgs &Args)
 {
     RequireOwner();
     auto *Texture = static_cast<FWebGPUTexture *>(Args.Texture);
-    check(Texture && Texture->LockedMip == Args.MipIndex && !Args.ArrayIndex &&
-          Texture->LockedFace == Args.FaceIndex &&
-          !Args.bLockWithinMiptail && !Texture->LockedBytes.IsEmpty());
+    check(Texture && !Args.ArrayIndex && !Args.bLockWithinMiptail &&
+          Args.MipIndex < Texture->GetNumMips() && uint32(Args.FaceIndex) < Texture->LayerCount());
+    TArray<uint8> Bytes;
+    const bool Unlocked = Texture->MipLocks.RemoveAndCopyValue(
+        Args.MipIndex * Texture->LayerCount() + Args.FaceIndex, Bytes);
+    check(Unlocked && !Bytes.IsEmpty());
     // Queue writes follow previously submitted draws and copy their CPU data before returning.
-    Texture->LockedMip = MAX_uint32;
-    RequireAccess(Texture, ERHIAccess::CopyDest, true);
+    RequireAccess(Texture, ERHIAccess::CopyDest, true, 0, Args.MipIndex, Args.FaceIndex);
     if (ContextOpen)
         SubmitCurrent();
-    WriteTextureMip(*this, Texture, Args.MipIndex, Texture->LockedBytes.GetData(), Texture->LockedBytes.Num(), Args.FaceIndex);
-    Texture->LockedBytes.Reset();
+    WriteTextureMip(*this, Texture, Args.MipIndex, Bytes.GetData(), Bytes.Num(), Args.FaceIndex);
 }
 bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDesc &In, FString &Error) const
 {

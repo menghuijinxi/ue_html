@@ -31,6 +31,9 @@
 #include "Components/LightComponent.h"
 #include "Camera/CameraActor.h"
 #include "Stats/StatsData.h"
+#include "Engine/Texture2D.h"
+#include "RHIStats.h"
+#include "UObject/UObjectIterator.h"
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
 
@@ -134,6 +137,37 @@ void EngineFrame(void*)
     }
     ++Frames;
     EM_ASM({ globalThis.__webEngineFrames = $0; }, Frames);
+    if (Frames % 30 == 0)
+    {
+        FTextureMemoryStats Memory;
+        RHIGetTextureMemoryStats(Memory);
+        int32 Streamable = 0, Pending = 0, ResidentMips = 0, RequestedMips = 0, MaximumMips = 0;
+        uint64 ResidentBytes = 0, FullBytes = 0;
+        for (TObjectIterator<UTexture2D> It; It; ++It)
+        {
+            if (!It->IsStreamable())
+                continue;
+            const auto& State = It->GetStreamableResourceState();
+            ++Streamable;
+            Pending += It->HasPendingInitOrStreaming() ? 1 : 0;
+            ResidentMips += State.NumResidentLODs;
+            RequestedMips += State.NumRequestedLODs;
+            MaximumMips += State.MaxNumLODs;
+            ResidentBytes += It->CalcTextureMemorySize(State.NumResidentLODs);
+            FullBytes += It->CalcTextureMemorySize(State.MaxNumLODs);
+        }
+        EM_ASM({
+            globalThis.__webTextureStreaming = ({
+                frame: $0, supported: !!$1, poolBytes: $2, poolAllocatedBytes: $3,
+                nonPoolAllocatedBytes: $4, streamable: $5, pending: $6,
+                residentMips: $7, requestedMips: $8, maximumMips: $9,
+                residentBytes: $10, fullBytes: $11
+            });
+        }, Frames, GRHISupportsTextureStreaming, double(Memory.TexturePoolSize),
+            double(Memory.StreamingMemorySize), double(Memory.NonStreamingMemorySize),
+            Streamable, Pending, ResidentMips, RequestedMips, MaximumMips,
+            double(ResidentBytes), double(FullBytes));
+    }
     if (VisualTestClock)
     {
         const auto* Frozen = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"));
@@ -164,6 +198,18 @@ void EngineFrame(void*)
     }
 #endif
 }
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebTextureStreamingTestBudget(int MiB)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (!UseWebGPU || MiB < 32 || MiB > 1024)
+        return 0;
+    auto* Pool = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streaming.PoolSize"));
+    if (!Pool)
+        return 0;
+    Pool->Set(MiB, ECVF_SetByCode);
+    return 1;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
