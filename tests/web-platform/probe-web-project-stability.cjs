@@ -11,17 +11,32 @@ const seconds = Number(option('seconds') || 120);
 const dpr = Number(option('dpr') || 1.5);
 const width = Number(option('width') || 1854), height = Number(option('height') || 909);
 const mode = option('mode') || 'tour';
+const resize = process.argv.includes('--resize');
+const collectGarbage = process.argv.includes('--gc');
+const headful = process.argv.includes('--headful');
+const minimal = process.argv.includes('--minimal');
+const streamChurn = process.argv.includes('--stream-churn');
+const stepFrames = Number(option('step-frames') || 60);
+const debugPort = option('debug-port');
+const requireHandles = process.argv.includes('--require-handles');
+const debugHandles = process.argv.includes('--debug-handles');
 assert(/^[a-z0-9-]+$/.test(id) && /^[a-z0-9-]+$/.test(suffix));
-assert(['Chrome', 'Edge'].includes(name) && ['tour', 'spawn'].includes(mode));
+assert(['Chrome', 'Edge'].includes(name) && ['tour', 'spawn', 'orbit'].includes(mode));
 assert(seconds >= 1 && seconds <= 1800 && dpr >= 1 && dpr <= 3);
 assert(Number.isInteger(width) && Number.isInteger(height) && width > 0 && height > 0);
+assert(Number.isInteger(stepFrames) && stepFrames >= 1 && stepFrames <= 600);
+assert(!debugPort || (Number.isInteger(Number(debugPort)) && Number(debugPort) >= 1024 &&
+  Number(debugPort) <= 65535));
 const directory = path.join(__dirname, 'results');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const report = {date: new Date().toISOString(), pass: false, project: id, browser: name,
-  seconds, mode, viewport: {width, height, dpr}, samples: [], errors: [], engineErrors: [], source: audit(__filename)};
+  seconds, mode, resize, collectGarbage, headful, minimal, streamChurn, stepFrames, requireHandles, debugHandles,
+  viewport: {width, height, dpr},
+  samples: [], errors: [], engineErrors: [], source: audit(__filename)};
 let browser, page;
+let watchdog;
 
-function instrument() {
+function instrument(minimal) {
   const state = globalThis.__stability = {errors: [], deviceLosses: [], shadowTextures: [], shadowLayouts: [],
     shadowShaderDeclarations: [], draws: 0, submissions: 0};
   const views = new WeakMap(), layouts = new WeakMap(), pipelineLayouts = new WeakMap(), pipelines = new WeakMap();
@@ -37,6 +52,7 @@ function instrument() {
     globalThis.__stabilityIdle = () => device.queue.onSubmittedWorkDone();
     return device;
   };
+  if (minimal) return;
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(descriptor) {
     if (/MobileCSMAndSpotLightShadowmap/.test(descriptor.label))
@@ -117,6 +133,7 @@ async function sample(label) {
     camera: globalThis.__webDefaultCamera || null, runtime: globalThis.__webEngineRuntime || null,
     streaming: globalThis.__webTextureStreaming || null,
     occlusion: globalThis.__webOcclusionRHI || null,
+    handles: globalThis.__webGPUHandleDiagnostics || null,
     gpu: globalThis.__stability,
     canvas: {width: Module.canvas.width, height: Module.canvas.height}
   }));
@@ -124,6 +141,9 @@ async function sample(label) {
   assert(!value.failure && !value.gpu.errors.length && !value.gpu.deviceLosses.length &&
     !report.errors.length && !report.engineErrors.length,
   value.failure || value.gpu.errors[0]?.message || report.errors[0] || report.engineErrors[0] || 'Device lost');
+  if (requireHandles) assert(value.handles?.version === 1 && !value.handles.failure,
+    'The packaged runtime must include bounded handle diagnostics');
+  if (debugHandles) assert(value.handles?.enabled && value.handles.capacity === 256);
   return value;
 }
 
@@ -136,16 +156,22 @@ async function frames(count) {
 
 (async () => {
   try {
+    watchdog = setTimeout(() => {
+      report.watchdog = 'No test progress for 120 seconds';
+      browser?.close().catch(() => {});
+    }, 120000);
     const packageFile = path.join(directory, `web-project-${id}-package-results.json`);
     const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8').replace(/^\uFEFF/, ''));
     assert(packaged.pass && packaged.products.every(item =>
       fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256));
     report.packageReport = audit(packageFile);
-    browser = await chromium.launch({headless: true, executablePath: name === 'Chrome' ?
+    browser = await chromium.launch({headless: !headful, executablePath: name === 'Chrome' ?
       'C:/Program Files/Google/Chrome/Application/chrome.exe' :
-      'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'});
+      'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+      args: debugPort ? [`--remote-debugging-port=${Number(debugPort)}`] : []});
     report.version = browser.version();
     page = await browser.newPage({viewport: {width, height}, deviceScaleFactor: dpr});
+    const debuggerSession = collectGarbage ? await page.context().newCDPSession(page) : null;
     page.on('pageerror', error => report.errors.push(error.stack || error.message));
     const log = [];
     page.on('console', message => {
@@ -155,11 +181,14 @@ async function frames(count) {
       if (/GPU validation:|Ensure condition failed|Assertion failed|Fatal error:/.test(text) &&
           report.engineErrors.length < 40) report.engineErrors.push(text);
     });
-    await page.addInitScript(instrument);
+    await page.addInitScript(instrument, minimal);
     report.started = Date.now();
-    await page.goto(`http://127.0.0.1:8765/build/${id}/index.html`, {waitUntil: 'commit'});
+    await page.goto(`http://127.0.0.1:8765/build/${id}/index.html${debugHandles ? '?debug=1' : ''}`,
+      {waitUntil: 'commit'});
     await frames(60);
     report.initial = await sample('spawn');
+    watchdog.refresh();
+    console.log(JSON.stringify({browser: name, phase: 'spawn', frame: report.initial.frame}));
     const started = Date.now();
     // Exercise changing visibility and directional shadow cascades without freezing time or disabling lighting.
     const spawn = report.initial.camera;
@@ -170,18 +199,40 @@ async function frames(count) {
     ];
     let step = 0;
     while (Date.now() - started < seconds * 1000) {
+      report.operation = {step, phase: 'view', frame: report.samples.at(-1)?.frame};
       if (mode === 'tour') {
         const view = views[step % views.length];
         assert(await page.evaluate(view => Module._WebProjectViewTest(...view), view));
       }
-      await frames(60);
+      if (mode === 'orbit') {
+        const angle = step * 2.399963229728653;
+        const view = [120 + 500 * Math.cos(angle), -150 + 430 * Math.sin(angle),
+          150 + (step % 4) * 130, (step % 5 - 2) * 15, (step * 47) % 360];
+        assert(await page.evaluate(view => Module._WebProjectViewTest(...view), view));
+      }
+      if (resize && step % 3 === 0) {
+        report.operation.phase = 'resize';
+        await page.setViewportSize(step % 2 ? {width, height} :
+          {width: Math.floor(width * 0.7), height: Math.floor(height * 0.7)});
+      }
+      if (debuggerSession) await debuggerSession.send('HeapProfiler.collectGarbage');
+      if (streamChurn) {
+        report.operation.phase = 'budget';
+        assert(await page.evaluate(budget => Module._WebTextureStreamingTestBudget(budget), step % 2 ? 256 : 32));
+        report.operation.phase = 'clear-memory';
+        await page.evaluate(() => __webContentIO.call('clear-memory'));
+      }
+      report.operation.phase = 'frames';
+      await frames(stepFrames);
+      report.operation.phase = 'sample';
       await sample(`${mode}-${++step}`);
+      watchdog.refresh();
       if (step % 10 === 0) console.log(JSON.stringify({browser: name, step, frame: report.samples.at(-1).frame}));
     }
     await page.evaluate(() => globalThis.__stabilityIdle());
     report.final = await sample('final');
     assert(report.final.frame > report.initial.frame + 60, 'Engine stopped advancing');
-    if (mode === 'tour') {
+    if (mode === 'tour' && !minimal) {
       assert(report.final.gpu.shadowShaderDeclarations.length, 'Mobile CSM shader was not exercised');
       const shadows = report.final.gpu.shadowLayouts.flat();
       assert(shadows.some(item => item.binding === 6 &&
@@ -201,6 +252,7 @@ async function frames(count) {
       await sample('failed').catch(() => {});
     }
   } finally {
+    clearTimeout(watchdog);
     if (browser) await browser.close();
     delete report.started;
     const file = path.join(directory, `web-project-${id}-${suffix}-${name.toLowerCase()}-results.json`);

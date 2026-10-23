@@ -1,5 +1,31 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：保留绑定组崩溃证据，补充句柄诊断
+
+用户的 `ue-startup-diagnostics-2026-10-23T08-23-05-328Z.json` 属于当前遮挡查询版本，在第 991 帧的 `SetDrawBindings -> wgpuRenderPassEncoderSetBindGroup -> WebGPU.getJsObject` 断言退出。缺少的是绑定组对应的 JS 对象；报告没有实际句柄地址、创建/释放顺序，也没有设备丢失或 GPU 校验错误，不能据此认定显存耗尽。用户文件原样保存在 `results/user-bindgroup-crash-20261023.json`。
+
+**原始崩溃尚未定位、尚未修复。** 大窗口 2552x1308 / DPR 1.5 的原包巡游、缩放、不同房间视点、强制 JS 回收及多轮 mip 预算测试未复现同一断言；不能用复跑通过覆盖用户故障。旧的 Edge `createBindGroup` 序列转换异常也继续作为未解决记录保留。
+
+本轮可审查改动是 Web 端诊断能力。引擎自己的 Emdawn port 覆盖在句柄缺失时报告具体地址、帧号、堆容量与调用栈；`?debug=1` 模式额外保留最近 256 次创建/释放事件，包含对象类型。环形存储有固定上限，普通模式不保留操作历史；大量句柄操作的完整跟踪会增加 CPU 成本，因此没有默认启用。导出的启动报告加入 `gpuHandles`、纹理流送、遮挡统计和浏览器完整构建版本。没有吞掉断言、返回空绑定组或禁用现有渲染功能。
+
+引擎仓库提交为 `6306a5ce5`，未推送。安装引擎保持原样。
+
+新增 wasm64 独立测试复用 RHI 的创建四组、释放布局、绑定后释放的顺序。Chrome/Edge 各执行原版/诊断版正常路径、故意提前释放、超过 32 位的无效地址，以及普通模式正常/失效路径，共 16 组。每次正常路径完成 2,048,000 次绑定组创建/绑定/释放；故障注入用于验证诊断能区分已释放和未创建地址，不代表复现或修好了用户崩溃。完整 Web 运行时构建、两个独立包和默认带光照/天空场景回归另行检查。
+
+极端测试另有失败：每一两帧切换 32/256 MiB 预算、瞬移并缩放时，出现浏览器渲染进程退出；15 帧切换测试出现超时，调试复跑中也有持续低帧和等待 `clear-memory` 超时。当前未证明这些故障与第 991 帧句柄断言同源，均不计为修复通过。报告保留 `bindgroup-fast-churn-before`、`handle-diagnostics` 和 `handle-churn-debug`，汇总 `web-handle-diagnostics-results.json` 明确记录 `originalCrashFixed=false`。
+
+日常地址保持 `http://127.0.0.1:8765/build/triplex-house-villa/index.html`。需要完整创建/释放历史时使用 `http://127.0.0.1:8765/build/triplex-house-villa/index.html?debug=1`，复现后导出的报告才包含对应环形记录。内容缓存仍按同源与内容哈希复用。
+
+```powershell
+& tests/web-platform/build-web-bindgroup-lifetime.ps1
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-bindgroup-lifetime.cjs
+node tests/web-platform/probe-web-project-stability.cjs --browser=Edge --seconds=60 --width=2552 --height=1308 --dpr=1.5 --resize --require-handles --report=handle-diagnostics-final
+node tests/web-platform/probe-web-project-stability.cjs --browser=Chrome --seconds=60 --width=2552 --height=1308 --dpr=1.5 --resize --require-handles --debug-handles --report=handle-diagnostics-final
+node tests/web-platform/probe-web-default-scene.cjs --packaged
+node tests/web-platform/verify-web-handle-diagnostics.cjs
+```
+
 ## 2026-10-23：启用异步硬件遮挡剔除
 
 用户反馈复杂室内方向很慢、面对墙面时很快。本轮复现发现 UE 原有视锥剔除正常，但 `SceneVisibility.cpp` 在 Web 下直接禁止遮挡查询，RHI 也没有实现查询创建、提交和结果读取。相同室内视点把画布缩为四分之一像素，帧率变化很小；CPU 分析中的绑定组创建和绘制提交占用明显，不能仅凭视角差异判断为纹理显存耗尽。

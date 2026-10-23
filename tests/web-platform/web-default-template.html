@@ -87,6 +87,11 @@ const startupDiagnostics = globalThis.__webStartupDiagnostics = {
   visibility: [{time: new Date().toISOString(), state: document.visibilityState}],
   boundary: '基础能力、小纹理和空计算管线检查不等于 UE 完整运行或手机性能验收。'
 };
+if (navigator.userAgentData?.getHighEntropyValues) {
+  navigator.userAgentData.getHighEntropyValues(['fullVersionList', 'architecture', 'bitness'])
+    .then(value => { startupDiagnostics.browserBuild = value; })
+    .catch(() => {});
+}
 const loading = document.getElementById('loading');
 loading.hidden = startupOnly;
 let loadingComplete = false;
@@ -169,7 +174,11 @@ function startupSnapshot() {
   return {...startupDiagnostics, elapsedMs: Math.round(performance.now() - startupStarted),
     failure: globalThis.__webEngineFailure || null,
     frames: globalThis.__webEngineFrames || 0, ready: globalThis.__webEngineReady || null,
-    engineRuntime: globalThis.__webEngineRuntime || null, engineLog: globalThis.__webEngineLog.slice(-80)};
+    engineRuntime: globalThis.__webEngineRuntime || null,
+    gpuHandles: globalThis.__webGPUHandleDiagnostics || null,
+    textureStreaming: globalThis.__webTextureStreaming || null,
+    occlusion: globalThis.__webOcclusionRHI || null,
+    engineLog: globalThis.__webEngineLog.slice(-80)};
 }
 document.addEventListener('visibilitychange', () => {
   startupDiagnostics.visibility.push({time: new Date().toISOString(), state: document.visibilityState});
