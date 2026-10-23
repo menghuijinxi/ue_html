@@ -116,6 +116,7 @@ async function sample(label) {
     frame: globalThis.__webEngineFrames || 0, failure: globalThis.__webEngineFailure || null,
     camera: globalThis.__webDefaultCamera || null, runtime: globalThis.__webEngineRuntime || null,
     streaming: globalThis.__webTextureStreaming || null,
+    occlusion: globalThis.__webOcclusionRHI || null,
     gpu: globalThis.__stability,
     canvas: {width: Module.canvas.width, height: Module.canvas.height}
   }));

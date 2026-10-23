@@ -2,6 +2,8 @@
 #include "WebGPUProbeUtils.h"
 #include "ShaderParameterMetadata.h"
 #include "ShaderParameterMacros.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 
 namespace
 {
@@ -235,6 +237,9 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
         ReadPipeline.DepthStencilState = ReadState;
         auto WritePSO = RHI.RHICreateGraphicsPipelineState(WritePipeline);
         auto ReadPSO = RHI.RHICreateGraphicsPipelineState(ReadPipeline);
+        const bool TestOcclusion = FParse::Param(FCommandLine::Get(), TEXT("WebOcclusionProbe"));
+        auto HiddenQuery = TestOcclusion ? RHI.RHICreateRenderQuery(RQT_Occlusion) : FRenderQueryRHIRef();
+        auto VisibleQuery = TestOcclusion ? RHI.RHICreateRenderQuery(RQT_Occlusion) : FRenderQueryRHIRef();
         FTextureRHIRef Color, DepthTexture;
         RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
         {
@@ -261,9 +266,10 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
             Cmd.TransitionLocal(RHI, FRHITransitionInfo(DepthTexture, ERHIAccess::DSVWrite, ERHIAccess::DSVRead));
             const auto DepthLoad = MakeDepthStencilTargetActions(ERenderTargetActions::Load_Store,
                                                                  ERenderTargetActions::DontLoad_DontStore);
-            Cmd.BeginRenderPass(FRHIRenderPassInfo(Color, ERenderTargetActions::Load_Store, DepthTexture, DepthLoad,
-                                                   FExclusiveDepthStencil::DepthRead_StencilNop),
-                                TEXT("TransitionDepthRead"));
+            FRHIRenderPassInfo ReadPass(Color, ERenderTargetActions::Load_Store, DepthTexture, DepthLoad,
+                FExclusiveDepthStencil::DepthRead_StencilNop);
+            ReadPass.NumOcclusionQueries = TestOcclusion ? 2 : 0;
+            Cmd.BeginRenderPass(ReadPass, TEXT("TransitionDepthRead"));
             Cmd.EnqueueLambda([&](FRHICommandListBase &) {
                 FString Error;
                 Record(TEXT("reject-depth-write-in-read-only-pass"), !RHI.ValidatePipelineDepth(WritePipeline, Error));
@@ -272,7 +278,17 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
             Cmd.SetViewport(0, 0, 0, 64, 64, 1);
             ValueParameter(Cmd, DepthVS.GetReference(), 0.5f);
             ValueParameter(Cmd, ClearPS.GetReference(), FVector4f(1, 0, 0, 1));
+            if (TestOcclusion) Cmd.BeginRenderQuery(HiddenQuery);
             Cmd.DrawPrimitive(0, 2, 1);
+            if (TestOcclusion)
+            {
+                Cmd.EndRenderQuery(HiddenQuery);
+                ValueParameter(Cmd, DepthVS.GetReference(), 0.9f);
+                ValueParameter(Cmd, ClearPS.GetReference(), FVector4f(0, 1, 0, 1));
+                Cmd.BeginRenderQuery(VisibleQuery);
+                Cmd.DrawPrimitive(0, 2, 1);
+                Cmd.EndRenderQuery(VisibleQuery);
+            }
             Cmd.EndRenderPass();
             FRHITransitionInfo Planes[] = {
                 FRHITransitionInfo(DepthTexture, ERHIAccess::DSVRead, ERHIAccess::DSVWrite),
@@ -305,7 +321,55 @@ TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const F
                     RHI.ResourceState(DepthTexture, 1).Access == ERHIAccess::DSVRead);
             });
         }
+        if (TestOcclusion)
+        {
+            uint64 Samples = MAX_uint64;
+            Record(TEXT("occlusion-unsubmitted-is-unavailable"),
+                !RHI.RHIGetRenderQueryResult(HiddenQuery, Samples, false, 0) && Samples == MAX_uint64);
+        }
         RHI.SubmitCurrent();
+        if (TestOcclusion)
+        {
+            uint64 Hidden = MAX_uint64, Visible = 0;
+            Record(TEXT("occlusion-depth-rejects-hidden"),
+                RHI.RHIGetRenderQueryResult(HiddenQuery, Hidden, true, 0) && Hidden == 0);
+            Record(TEXT("occlusion-depth-passes-visible"),
+                RHI.RHIGetRenderQueryResult(VisibleQuery, Visible, true, 0) && Visible > 0);
+            uint64 Again = 0;
+            Record(TEXT("occlusion-result-can-be-read-again"),
+                RHI.RHIGetRenderQueryResult(VisibleQuery, Again, false, 0) && Again == Visible);
+            RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+            {
+                FCommandList Cmd(&RHI);
+                const auto DepthLoad = MakeDepthStencilTargetActions(ERenderTargetActions::Load_Store,
+                    ERenderTargetActions::DontLoad_DontStore);
+                FRHIRenderPassInfo ReusePass(Color, ERenderTargetActions::Load_Store, DepthTexture, DepthLoad,
+                    FExclusiveDepthStencil::DepthRead_StencilNop);
+                ReusePass.NumOcclusionQueries = 2;
+                Cmd.BeginRenderPass(ReusePass, TEXT("TransitionOcclusionReuse"));
+                BindPipeline(RHI, Cmd, ReadPipeline, ReadPSO);
+                Cmd.SetViewport(0, 0, 0, 64, 64, 1);
+                ValueParameter(Cmd, DepthVS.GetReference(), 0.9f);
+                ValueParameter(Cmd, ClearPS.GetReference(), FVector4f(0, 1, 0, 1));
+                Cmd.BeginRenderQuery(HiddenQuery);
+                Cmd.DrawPrimitive(0, 2, 1);
+                Cmd.EndRenderQuery(HiddenQuery);
+                ValueParameter(Cmd, DepthVS.GetReference(), 0.5f);
+                ValueParameter(Cmd, ClearPS.GetReference(), FVector4f(1, 0, 0, 1));
+                Cmd.BeginRenderQuery(VisibleQuery);
+                Cmd.DrawPrimitive(0, 2, 1);
+                Cmd.EndRenderQuery(VisibleQuery);
+                Cmd.EndRenderPass();
+            }
+            Again = MAX_uint64;
+            Record(TEXT("occlusion-reuse-does-not-return-stale-result"),
+                !RHI.RHIGetRenderQueryResult(HiddenQuery, Again, false, 0) && Again == MAX_uint64);
+            RHI.SubmitCurrent();
+            Record(TEXT("occlusion-reused-hidden-query-now-visible"),
+                RHI.RHIGetRenderQueryResult(HiddenQuery, Again, true, 0) && Again > 0);
+            Record(TEXT("occlusion-reused-visible-query-now-hidden"),
+                RHI.RHIGetRenderQueryResult(VisibleQuery, Again, true, 0) && Again == 0);
+        }
         CheckImage(TEXT("depth-write-to-read-only-preserves-occlusion"), Color, FColor::Green, false);
     }
     RHI.RHIGetCommandContext(ERHIPipeline::Graphics);

@@ -212,6 +212,20 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebTextureStreamingTestBudget(int MiB)
     return 1;
 }
 
+extern "C" EMSCRIPTEN_KEEPALIVE int WebOcclusionTestMode(int Enabled, int BufferedFrames)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* Variable = IConsoleManager::Get().FindConsoleVariable(TEXT("r.AllowOcclusionQueries"));
+    auto* Buffering = IConsoleManager::Get().FindConsoleVariable(TEXT("r.NumBufferedOcclusionQueries"));
+    if (!UseWebGPU || !Variable || !Buffering || (Enabled != 0 && Enabled != 1) ||
+        BufferedFrames < 0 || BufferedFrames > 4)
+        return 0;
+    Variable->Set(Enabled, ECVF_SetByCode);
+    if (BufferedFrames)
+        Buffering->Set(BufferedFrames, ECVF_SetByCode);
+    return 1;
+}
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);

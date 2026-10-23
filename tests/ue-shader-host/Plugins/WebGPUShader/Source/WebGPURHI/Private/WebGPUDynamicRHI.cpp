@@ -17,6 +17,9 @@
 #include "Serialization/JsonSerializer.h"
 #include "ShaderParameterStruct.h"
 #include "Stats/StatsData.h"
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+#include <emscripten.h>
+#endif
 
 namespace
 {
@@ -354,6 +357,7 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsPipelineFileCache = false;
     GRHISupportsTextureStreaming = true;
     GRHISupportsAsyncTextureCreation = false;
+    GRHISupportsExactOcclusionQueries = false;
     const auto* Pool = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streaming.PoolSize"));
     GTexturePoolSize = int64(Pool && Pool->GetInt() >= 0 ? Pool->GetInt() : 256) * 1024 * 1024;
     // Slate also presents empty render graphs, which need an explicit final transition.
@@ -660,6 +664,15 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     }
 #endif
     ++EndFrames;
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+    if (EndFrames % 30 == 0)
+        EM_ASM({
+            globalThis.__webOcclusionRHI = {};
+            globalThis.__webOcclusionRHI.ready = $0;
+            globalThis.__webOcclusionRHI.pending = $1;
+            globalThis.__webOcclusionRHI.zero = $2;
+        }, OcclusionResultsReady, OcclusionResultsPending, OcclusionResultsZero);
+#endif
 }
 FWebGPUDynamicRHI::~FWebGPUDynamicRHI()
 {
@@ -2498,7 +2511,7 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
     RequireOwner();
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
-    check(ContextOpen && Encoder && !Pass && !Info.MultiViewCount && !Info.NumOcclusionQueries);
+    check(ContextOpen && Encoder && !Pass && !Info.MultiViewCount && !OcclusionBatch);
     Attachments.Reset();
     AttachmentSubresources.Reset();
     PassDepthReadOnly = false;
@@ -2525,6 +2538,16 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
     WGPURenderPassDescriptor Desc = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
     Desc.colorAttachmentCount = Colors.Num();
     Desc.colorAttachments = Colors.GetData();
+    if (Info.NumOcclusionQueries)
+    {
+        OcclusionBatch = MakeShared<FWebGPUOcclusionBatch, ESPMode::ThreadSafe>();
+        OcclusionBatch->Capacity = Info.NumOcclusionQueries;
+        WGPUQuerySetDescriptor Queries = WGPU_QUERY_SET_DESCRIPTOR_INIT;
+        Queries.type = WGPUQueryType_Occlusion;
+        Queries.count = Info.NumOcclusionQueries;
+        OcclusionBatch->Queries = wgpuDeviceCreateQuerySet(Device, &Queries);
+        Desc.occlusionQuerySet = OcclusionBatch->Queries;
+    }
     if (Info.DepthStencilRenderTarget.DepthStencilTarget)
     {
         auto *Texture = static_cast<FWebGPUTexture *>(Info.DepthStencilRenderTarget.DepthStencilTarget);
@@ -2570,13 +2593,74 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
 }
 void FWebGPUDynamicRHI::RHIEndRenderPass()
 {
-    check(Pass);
+    check(Pass && !ActiveOcclusionQuery);
     wgpuRenderPassEncoderEnd(Pass);
     wgpuRenderPassEncoderRelease(Pass);
     Pass = nullptr;
+    if (OcclusionBatch && OcclusionBatch->Count)
+    {
+        const uint32 Bytes = OcclusionBatch->Count * sizeof(uint64);
+        OcclusionBatch->Resolve = CreateBuffer(Bytes, WGPUBufferUsage_QueryResolve | WGPUBufferUsage_CopySrc);
+        auto Readback = MakeShared<FWebGPUReadbackState, ESPMode::ThreadSafe>();
+        Readback->Size = Bytes;
+        Readback->Handle = CreateBuffer(Bytes, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+        OcclusionBatch->Readback = Readback;
+        wgpuCommandEncoderResolveQuerySet(Encoder, OcclusionBatch->Queries, 0, OcclusionBatch->Count,
+            OcclusionBatch->Resolve, 0);
+        wgpuCommandEncoderCopyBufferToBuffer(Encoder, OcclusionBatch->Resolve, 0, Readback->Handle, 0, Bytes);
+        PendingReadbacks.Add(Readback);
+    }
+    OcclusionBatch.Reset();
     Attachments.Reset();
     AttachmentSubresources.Reset();
     PassDepthReadOnly = false;
+}
+FRenderQueryRHIRef FWebGPUDynamicRHI::RHICreateRenderQuery(ERenderQueryType Type)
+{
+    check(Type == RQT_Occlusion);
+    return new FWebGPURenderQuery();
+}
+void FWebGPUDynamicRHI::RHIBeginRenderQuery(FRHIRenderQuery* Query)
+{
+    RequireOwner();
+    check(Pass && OcclusionBatch && !ActiveOcclusionQuery && Query &&
+        OcclusionBatch->Count < OcclusionBatch->Capacity);
+    ActiveOcclusionQuery = static_cast<FWebGPURenderQuery*>(Query);
+    ActiveOcclusionQuery->Batch = OcclusionBatch;
+    ActiveOcclusionQuery->Index = OcclusionBatch->Count++;
+    wgpuRenderPassEncoderBeginOcclusionQuery(Pass, ActiveOcclusionQuery->Index);
+}
+void FWebGPUDynamicRHI::RHIEndRenderQuery(FRHIRenderQuery* Query)
+{
+    RequireOwner();
+    check(Pass && Query == ActiveOcclusionQuery.GetReference());
+    wgpuRenderPassEncoderEndOcclusionQuery(Pass);
+    ActiveOcclusionQuery.SafeRelease();
+}
+bool FWebGPUDynamicRHI::RHIGetRenderQueryResult(FRHIRenderQuery* Query, uint64& Result, bool WaitForResult, uint32)
+{
+    RequireOwner();
+    const auto* Value = static_cast<FWebGPURenderQuery*>(Query);
+    const auto Batch = Value->Batch;
+    if (!Batch || !Batch->Readback)
+    {
+        ++OcclusionResultsPending;
+        return false;
+    }
+#if !defined(PLATFORM_WEB) || !PLATFORM_WEB
+    if (WaitForResult && !Batch->Readback->Ready.load())
+        Wait([&] { return Batch->Readback->Ready.load(); });
+#endif
+    // A browser cannot block its event loop. UE treats unavailable results as visible.
+    if (!Batch->Readback->Ready.load())
+    {
+        ++OcclusionResultsPending;
+        return false;
+    }
+    FMemory::Memcpy(&Result, Batch->Readback->Bytes.GetData() + Value->Index * sizeof(uint64), sizeof(Result));
+    ++OcclusionResultsReady;
+    OcclusionResultsZero += Result == 0;
+    return true;
 }
 void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *State, uint32 StencilRef, bool)
 {

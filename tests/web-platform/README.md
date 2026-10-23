@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-23：接入异步硬件遮挡查询，并恢复 Web 的 UE 遮挡剔除。移动渲染共缓冲三帧，批量回读，不阻塞浏览器主线程。房间方向绘制减少约 21%，近墙方向减少约 48%；原有视锥剔除继续工作，HZB / GPUScene 尚未启用。复现与性能边界见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)，本轮验收入口为 `verify-web-occlusion.cjs`。
+
 2026-10-23：独立包现使用本地磁盘 mip 读取。首次完整下载内容包和 WASM 到 OPFS，以内容哈希复用；随后 `.ubulk` 按需从本地读取，使用 16 MiB 块缓存，不发逐贴图网络请求。启动资产及引擎内存仍驻留，缓存上限不代表总内存上限。服务器已支持 ETag / 304 和版本 URL 的 immutable 缓存。复现与边界见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)，当前验收入口是 `verify-web-project-local-io.cjs`。
 
 更新日期：2026-10-22。当前默认关卡的构建、打包、画面及回归结果见 [默认关卡进度](H:/ue_html/UE58_DEFAULT_TEMPLATE_PROGRESS.md)。P0 结果见 [测试报告](H:/ue_html/UE58_P0_TEST_RESULTS.md)，工具链和早期移植记录见 [P3 报告](H:/ue_html/UE58_P3_WEB_RUNTIME_TEST_RESULTS.md)。

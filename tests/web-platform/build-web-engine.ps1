@@ -147,6 +147,8 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/RenderCore/Private/ShaderLibrary/ShaderCodeArchive.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SceneCulling/SceneCullingRenderer.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneCulling/SceneCullingRenderer.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneVisibility.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     foreach ($taskShaderOverlay in @('RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',

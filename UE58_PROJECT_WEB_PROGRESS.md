@@ -1,5 +1,42 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-23：启用异步硬件遮挡剔除
+
+用户反馈复杂室内方向很慢、面对墙面时很快。本轮复现发现 UE 原有视锥剔除正常，但 `SceneVisibility.cpp` 在 Web 下直接禁止遮挡查询，RHI 也没有实现查询创建、提交和结果读取。相同室内视点把画布缩为四分之一像素，帧率变化很小；CPU 分析中的绑定组创建和绘制提交占用明显，不能仅凭视角差异判断为纹理显存耗尽。
+
+现复用 UE 的包围盒查询、分组与历史管理，通过 WebGPU occlusion query 实际测试深度可见性；每个查询 pass 批量 resolve / copy，再异步 map 回读。浏览器主线程不等待 GPU，未完成结果按可见处理。WebGPU 的非零结果只表示可见，不假设它是精确像素数，因此关闭精确样本数能力。保留现有视锥剔除，未启用 HZB、GPUScene 或间接绘制。
+
+第一次非阻塞接入虽然能回读零结果，正常连续帧中大部分结果却尚未就绪，绘制反而增加。`visibility-metrics-results.json` 保留该失败边界：房间约 2221 次 indexed draw 增至 2497 次，查询待完成计数远高于可读计数。Web 现设置 `r.NumBufferedOcclusionQueries=2`，加上移动渲染本身的一帧，共缓冲三帧，允许浏览器完成异步回调；原生平台默认值不变。测试也发现冻结渲染时间会令 UE 每帧重置遮挡历史，因此性能验收保留正常游戏时间，不能用冻结时钟的画面对照冒充遮挡剔除验收。
+
+最终独立包的同视点开关对照显示，房间 indexed draw 约从 2221 降至 1750，减少约 21%；反向近墙视角约从 1481 降至 765，减少约 48%。数字包括深度、阴影及查询自身绘制，不等于物体数量。房间中约 1100 次阴影绘制仍保留，大量可见物体的绑定组创建仍需后续优化。浏览器采样存在预热和运行负载差异，FPS 不能跨不同运行直接比较；当前脚本预热 600 帧，反转开关顺序重复采样，并把绘制次数、查询结果、CPU 回调和 GPU pass 时间分开保存。GPU 时间戳是近似测量，不包含所有复制和呈现开销。
+
+最终关闭 CPU 分析器的六阶段对照如下。两组房间采样交换开关顺序，开启阶段的测量窗口内查询未就绪计数增量均为零。不同系统负载下早期试验得到过更高的绝对 FPS，以下仅引用最终源码和包的同轮结果，不把不同运行拼接成性能收益。
+
+| 测试视点 | Chrome 关闭 / 开启 FPS | Edge 关闭 / 开启 FPS | 总绘制减少 |
+| --- | ---: | ---: | ---: |
+| 复杂房间 | 16.0 / 19.7 | 15.9 / 19.2 | 约 21% |
+| 反向近墙 | 19.8 / 32.9 | 19.0 / 32.0 | 约 48% |
+| 复杂房间，逆序重复 | 16.0 / 19.7 | 15.7 / 19.2 | 约 21% |
+
+普通 UBT Web 完整构建及两个关卡的 Cook、Stage、独立打包通过。原生新增七项遮挡检查覆盖提交前不可读、被深度挡住、可见、重复读取以及查询复用后不返回旧结果；既有材质 / viewport 的 267 项和纹理 / mip 流送的 362 项检查通过。浏览器像素对照要求开关剔除后的 RMS 小于 3、明显变化像素少于 1%，并同时记录正常时间漂移。最终双浏览器长测、本地流送及默认关卡验收记录由 `verify-web-occlusion.cjs` 汇总。
+
+最终汇总通过并核对 5140 个不同文件。Chrome / Edge 各三分钟多视点循环分别完成 3799 / 6068 帧增量，无页面异常、GPU 校验错误或设备丢失；期间少量尚未完成的查询继续按可见处理。两浏览器各完成冷下载、关闭浏览器后缓存复用、断网 64 MiB 驱逐、恢复 256 MiB 预算，重开后两个大文件均零下载，mip 恢复仍从本地磁盘读取。默认关卡双浏览器的光照 / 天空对照、窗口恢复及损坏包 / 配置拦截通过。长测与功能回归的帧数只用于存活检查，不用于跨浏览器 FPS 比较。
+
+引擎仓库提交为 `35550774b`。这轮没有改灯光、材质、AO、反射和 BC 资源规格，也未声称已解决与编辑器的画质差异。三帧历史存在异步遮挡的一般延迟；快速转向、长期运行和 8 GB 总显存仍需要按实际负载持续验证，三分钟无错误不等于无限期稳定。
+
+```powershell
+& tests/web-platform/probe-web-occlusion.ps1
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/profile-web-visibility.cjs --report=visibility-final-chrome --browser=Chrome --occlusion --no-cpu-profile
+node tests/web-platform/profile-web-visibility.cjs --report=visibility-final-edge --browser=Edge --occlusion --no-cpu-profile
+node tests/web-platform/probe-web-project-stability.cjs --browser=Chrome --seconds=180 --report=occlusion-stability
+node tests/web-platform/probe-web-project-stability.cjs --browser=Edge --seconds=180 --report=occlusion-stability
+node tests/web-platform/probe-web-project-local-io.cjs --browser=Chrome
+node tests/web-platform/probe-web-project-local-io.cjs --browser=Edge
+node tests/web-platform/probe-web-default-scene.cjs --packaged
+node tests/web-platform/verify-web-occlusion.cjs
+```
+
 ## 2026-10-23：接入本地磁盘 mip 读取和持久缓存
 
 按用户收窄后的范围实现本地 IO：首次完整下载 `content.bin` 到浏览器 OPFS，之后 mip 从本地文件读取，不为每张贴图发网络请求，也没有引入 HTTP Range 服务。内容和 WASM 各自按 SHA256 标识版本，下载时逐块校验，完整写入后才提交完成标记；文件不变时重开浏览器直接复用，内容变化才取新版本。当前缓存用于同源地址，切换域名、端口、清理站点数据或浏览器回收存储后需要重新下载。

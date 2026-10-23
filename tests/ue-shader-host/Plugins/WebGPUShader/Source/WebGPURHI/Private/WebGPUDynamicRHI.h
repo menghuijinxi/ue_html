@@ -346,6 +346,27 @@ struct FWebGPUReadbackState
 };
 using FWebGPUReadbackRef = TSharedPtr<FWebGPUReadbackState, ESPMode::ThreadSafe>;
 
+struct FWebGPUOcclusionBatch
+{
+    WGPUQuerySet Queries = nullptr;
+    WGPUBuffer Resolve = nullptr;
+    FWebGPUReadbackRef Readback;
+    uint32 Count = 0, Capacity = 0;
+    ~FWebGPUOcclusionBatch()
+    {
+        if (Queries) wgpuQuerySetRelease(Queries);
+        if (Resolve) wgpuBufferRelease(Resolve);
+    }
+};
+using FWebGPUOcclusionRef = TSharedPtr<FWebGPUOcclusionBatch, ESPMode::ThreadSafe>;
+
+class FWebGPURenderQuery final : public FRHIRenderQuery
+{
+  public:
+    FWebGPUOcclusionRef Batch;
+    uint32 Index = 0;
+};
+
 struct FWebGPUFenceState
 {
     std::atomic<bool> Complete{false};
@@ -439,6 +460,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool PassDepthReadOnly = false;
     bool GlobalProbeMode = false;
     bool StartupProbeMode = false;
+    FWebGPUOcclusionRef OcclusionBatch;
+    TRefCountPtr<FWebGPURenderQuery> ActiveOcclusionQuery;
+    uint32 OcclusionResultsReady = 0, OcclusionResultsPending = 0, OcclusionResultsZero = 0;
 
     explicit FWebGPUDynamicRHI(bool InStartupProbe = false);
     void ConfigureStartup();
@@ -563,6 +587,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RHISetComputePipelineState(FRHIComputePipelineState *) override;
     void RHIBeginRenderPass(const FRHIRenderPassInfo &, const TCHAR *) override;
     void RHIEndRenderPass() override;
+    FRenderQueryRHIRef RHICreateRenderQuery(ERenderQueryType) override;
+    bool RHIGetRenderQueryResult(FRHIRenderQuery*, uint64&, bool, uint32) override;
+    void RHIBeginRenderQuery(FRHIRenderQuery*) override;
+    void RHIEndRenderQuery(FRHIRenderQuery*) override;
     void RHISetStreamSource(uint32, FRHIBuffer *, uint32) override;
     void RHISetViewport(float, float, float, float, float, float) override;
     void RHISetScissorRect(bool, uint32, uint32, uint32, uint32) override;
