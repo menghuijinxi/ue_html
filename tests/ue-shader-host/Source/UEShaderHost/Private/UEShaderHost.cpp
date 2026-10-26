@@ -1,3 +1,13 @@
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, UEShaderHost, "UEShaderHost");
+void StartWebNativeComparison();
+
+class FUEShaderHostModule : public FDefaultGameModuleImpl
+{
+    virtual void StartupModule() override
+    {
+        StartWebNativeComparison();
+    }
+};
+
+IMPLEMENT_PRIMARY_GAME_MODULE(FUEShaderHostModule, UEShaderHost, "UEShaderHost");

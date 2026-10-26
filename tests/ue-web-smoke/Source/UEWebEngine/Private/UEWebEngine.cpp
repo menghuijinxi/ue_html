@@ -315,7 +315,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, doubl
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     APlayerController* Controller = TemplateController.Get();
-    if (ProjectMap.IsEmpty() || !Controller || !FMath::IsFinite(X) || !FMath::IsFinite(Y) ||
+    if ((!DefaultTemplate && ProjectMap.IsEmpty()) || !Controller || !FMath::IsFinite(X) || !FMath::IsFinite(Y) ||
         !FMath::IsFinite(Z) || !FMath::IsFinite(Pitch) || !FMath::IsFinite(Yaw))
         return 0;
     static TWeakObjectPtr<ACameraActor> Camera;
@@ -326,6 +326,44 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, doubl
     Camera->SetActorLocationAndRotation(FVector(X, Y, Z), FRotator(Pitch, Yaw, 0));
     Controller->SetViewTarget(Camera.Get());
     return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultShadowControl(int Parameter, double Value)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* Controller = TemplateController.Get();
+    if (!DefaultTemplate || !Controller || !FMath::IsFinite(Value))
+        return 0;
+    if (Parameter == 3 && (Value == 0 || Value == 1))
+        return WebDefaultSamples::MeshDensity(int(Value));
+    if (Parameter == 4 && Value == 0)
+    {
+        const auto& View = Controller->PlayerCameraManager->GetCameraCacheView();
+        EM_ASM({
+            globalThis.__webDefaultShadowCamera = ({x: $0, y: $1, z: $2,
+                pitch: $3, yaw: $4, fov: $5, aspectRatio: $6, constrain: !!$7});
+        }, View.Location.X, View.Location.Y, View.Location.Z, double(View.Rotation.Pitch),
+            double(View.Rotation.Yaw), double(Controller->PlayerCameraManager->GetFOVAngle()),
+            double(View.AspectRatio), int(View.bConstrainAspectRatio));
+        return 1;
+    }
+    for (TActorIterator<AActor> It(Controller->GetWorld()); It; ++It)
+        if (auto* Sun = It->FindComponentByClass<UDirectionalLightComponent>())
+        {
+            if (Parameter == 0 && (Value == 0 || Value == 1))
+                Sun->SetCastShadows(Value != 0);
+            else if (Parameter == 1 && Value >= 0 && Value <= 2)
+                Sun->SetShadowBias(Value);
+            else if (Parameter == 2 && Value >= 0 && Value <= 2)
+                Sun->SetShadowSlopeBias(Value);
+            else
+                return 0;
+            EM_ASM({
+                globalThis.__webDefaultShadowControl = ({cast: !!$0, bias: $1, slope: $2});
+            }, int(Sun->CastShadows), double(Sun->ShadowBias), double(Sun->ShadowSlopeBias));
+            return 1;
+        }
+    return 0;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebMaterialLabControl(int Group, int Lighting)

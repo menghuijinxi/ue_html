@@ -58,7 +58,8 @@ static void Create(UWorld* World, APlayerController* Controller)
     const FRotator Heading(0, Rotation.Yaw, 0);
     const FVector Forward = Heading.Vector();
     const FVector Right = FRotationMatrix(Heading).GetUnitAxis(EAxis::Y);
-    UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr,
+        TEXT("/Game/DefaultTemplateSamples/SM_TestSphere.SM_TestSphere"));
     check(Sphere);
     const float Radius = 120;
     for (int32 Row = 0; Row < 2; ++Row)
@@ -97,6 +98,23 @@ static void Create(UWorld* World, APlayerController* Controller)
     }, Spheres.Num(), Preserved, Eye.X, Eye.Y, Eye.Z, Rotation.Pitch, Rotation.Yaw,
         double(Controller->PlayerCameraManager->GetFOVAngle()), FloorOrigin.X, FloorOrigin.Y,
         FloorOrigin.Z, double(FloorZ));
+}
+
+static int MeshDensity(int Dense)
+{
+    if (Spheres.Num() != 8 || (Dense != 0 && Dense != 1))
+        return 0;
+    auto* Mesh = LoadObject<UStaticMesh>(nullptr, Dense ?
+        TEXT("/Game/DefaultTemplateSamples/SM_TestSphere.SM_TestSphere") :
+        TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    if (!Mesh)
+        return 0;
+    for (const auto& Sphere : Spheres)
+        if (!Sphere.IsValid())
+            return 0;
+    for (const auto& Sphere : Spheres)
+        Sphere->GetStaticMeshComponent()->SetStaticMesh(Mesh);
+    return 1;
 }
 
 static int Visibility(int Visible)

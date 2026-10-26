@@ -2,6 +2,9 @@
 
 #include "AssetCompilingManager.h"
 #include "Dom/JsonObject.h"
+#include "DynamicMeshToMeshDescription.h"
+#include "Engine/StaticMesh.h"
+#include "Generators/SphereGenerator.h"
 #include "HAL/FileManager.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialExpressionConstant.h"
@@ -11,6 +14,8 @@
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
 #include "Serialization/JsonSerializer.h"
+#include "StaticMeshAttributes.h"
+#include "StaticMeshResources.h"
 #include "UObject/Package.h"
 #include "UObject/SavePackage.h"
 
@@ -26,6 +31,36 @@ int32 UWebDefaultSamplesCommandlet::Main(const FString& Params)
 {
     FString Output;
     if (!FParse::Value(*Params, TEXT("Output="), Output))
+        return 1;
+    // Dense geometry avoids the coarse shadow terminator of Engine/BasicShapes/Sphere.
+    UE::Geometry::FSphereGenerator Generator;
+    Generator.Radius = 50;
+    Generator.NumTheta = 128;
+    Generator.NumPhi = 65;
+    Generator.Generate();
+    UE::Geometry::FDynamicMesh3 DynamicMesh(&Generator);
+    FMeshDescription Description;
+    FStaticMeshAttributes(Description).Register();
+    FDynamicMeshToMeshDescription().Convert(&DynamicMesh, Description);
+    UPackage* SpherePackage = CreatePackage(TEXT("/Game/DefaultTemplateSamples/SM_TestSphere"));
+    SpherePackage->MarkAsFullyLoaded();
+    auto* Sphere = NewObject<UStaticMesh>(SpherePackage, TEXT("SM_TestSphere"), RF_Public | RF_Standalone);
+    Sphere->GetStaticMaterials().Add(FStaticMaterial());
+    Sphere->SetNumSourceModels(1);
+    auto& Build = Sphere->GetSourceModel(0).BuildSettings;
+    Build.bRecomputeNormals = false;
+    Build.bRecomputeTangents = true;
+    Build.bGenerateLightmapUVs = false;
+    UStaticMesh::FBuildMeshDescriptionsParams BuildParams;
+    BuildParams.bFastBuild = false;
+    if (!Sphere->BuildFromMeshDescriptions({&Description}, BuildParams))
+        return 1;
+    const FString SphereFilename = FPackageName::LongPackageNameToFilename(
+        SpherePackage->GetName(), FPackageName::GetAssetPackageExtension());
+    IFileManager::Get().MakeDirectory(*FPaths::GetPath(SphereFilename), true);
+    FSavePackageArgs SphereSave;
+    SphereSave.TopLevelFlags = RF_Public | RF_Standalone;
+    if (!UPackage::SavePackage(SpherePackage, Sphere, *SphereFilename, SphereSave))
         return 1;
     const float Roughness[] = {0.05f, 0.25f, 0.6f, 1.0f};
     TArray<TSharedPtr<FJsonValue>> Samples;
@@ -73,8 +108,11 @@ int32 UWebDefaultSamplesCommandlet::Main(const FString& Params)
     FAssetCompilingManager::Get().FinishAllCompilation();
     auto Manifest = MakeShared<FJsonObject>();
     Manifest->SetArrayField(TEXT("samples"), Samples);
-    // Generate material packages only; never load, duplicate or save the source world.
-    Manifest->SetBoolField(TEXT("materialsOnly"), true);
+    // Generate additive assets only; never load, duplicate or save the source world.
+    Manifest->SetBoolField(TEXT("worldUnmodified"), true);
+    Manifest->SetStringField(TEXT("meshPackage"), SpherePackage->GetName());
+    Manifest->SetStringField(TEXT("mesh"), Sphere->GetPathName());
+    Manifest->SetNumberField(TEXT("meshTriangles"), Sphere->GetRenderData()->LODResources[0].GetNumTriangles());
     FString JSON;
     FJsonSerializer::Serialize(Manifest, TJsonWriterFactory<>::Create(&JSON));
     return FFileHelper::SaveStringToFile(JSON, *Output) ? 0 : 1;

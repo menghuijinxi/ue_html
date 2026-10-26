@@ -8,6 +8,30 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/ShadowProjectionPixelShader.usf', [{
+    before: '\tfloat LightSpacePixelDepthForOpaque = min(ShadowZ, 0.99999f);',
+    after: [
+      '\tfloat LightSpacePixelDepthForOpaque = min(ShadowZ, 0.99999f);',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && SHADING_PATH_MOBILE && !MODULATED_SHADOWS',
+      '\t// Account for receiver-plane depth variation across the mobile PCF footprint.',
+      '\tfloat3 ReceiverDx = ddx(float3(ShadowPosition.xy, ShadowZ));',
+      '\tfloat3 ReceiverDy = ddy(float3(ShadowPosition.xy, ShadowZ));',
+      '\tfloat Det = ReceiverDx.x * ReceiverDy.y - ReceiverDx.y * ReceiverDy.x;',
+      '\tfloat SafeDet = abs(Det) > 1.0e-12f ? Det : (Det >= 0 ? 1.0e-12f : -1.0e-12f);',
+      '\tfloat2 DepthGradient = float2(ReceiverDy.y * ReceiverDx.z - ReceiverDx.y * ReceiverDy.z,',
+      '\t\tReceiverDx.x * ReceiverDy.z - ReceiverDy.x * ReceiverDx.z) / SafeDet;',
+      '#if MOBILE_SHADOW_QUALITY == 3',
+      '\tconst float FilterRadius = 2.5f;',
+      '#elif MOBILE_SHADOW_QUALITY == 2',
+      '\tconst float FilterRadius = 1.5f;',
+      '#else',
+      '\tconst float FilterRadius = 0.5f;',
+      '#endif',
+      '\tif (LightPositionOrDirection.w == 0)',
+      '\t\tLightSpacePixelDepthForOpaque -= min(dot(abs(DepthGradient), ShadowBufferSize.zw) * FilterRadius, 0.001f);',
+      '#endif',
+    ].join('\n'),
+  }]],
   ['Private/MobileBasePassPixelShader.usf', [{
     before: '\t\thalf GatheredAmbientOcclusion = ScreenSpaceShadowMaskSample.a;',
     after: [

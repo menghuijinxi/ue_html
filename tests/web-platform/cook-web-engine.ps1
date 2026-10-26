@@ -105,9 +105,11 @@ try {
             '-nop4' '-nosplash' '-nosound' "-abslog=$taskSampleLog" *> "$taskSampleLog.console.txt"
         if ($LASTEXITCODE -ne 0) { throw "Default sample material generation failed: $taskSampleLog" }
         $taskSamples = Get-Content -LiteralPath $taskSampleLayout -Raw | ConvertFrom-Json
-        if (-not $taskSamples.materialsOnly -or $taskSamples.samples.Count -ne 8) {
-            throw 'Default template requires eight additive sample materials.'
+        if (-not $taskSamples.worldUnmodified -or $taskSamples.samples.Count -ne 8 -or
+            $taskSamples.meshTriangles -lt 16000) {
+            throw 'Default template requires eight additive sample materials and a dense test sphere.'
         }
+        $taskReport.defaultSampleMesh = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/DefaultTemplateSamples/SM_TestSphere.uasset')
         $taskReport.defaultSamples = Get-TaskAudit $taskSampleLayout
         $taskReport.defaultSamplesLog = Get-TaskAudit $taskSampleLog
         if ((Get-TaskAudit $taskReport.templateMap.file).sha256 -ne $taskReport.templateMap.sha256) {
@@ -164,6 +166,7 @@ try {
     }
     if ($Scene -eq 'DefaultTemplate') {
         $taskPackages += '/Engine/BasicShapes/Sphere'
+        $taskPackages += $taskSamples.meshPackage
         $taskPackages += @($taskSamples.samples | ForEach-Object { $_.package })
     }
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
