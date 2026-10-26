@@ -40,12 +40,16 @@ class WebLocalContentIO {
     catch { return undefined; }
   }
   async mount(manifest, filesystem) {
+    if (!['SP_WEBGPU_ES31', 'SP_WEBGPU_SM5'].includes(manifest.shaderPlatform))
+      throw new Error(`Invalid content shader platform: ${manifest.shaderPlatform}`);
+    const shaderCachePath = `/Engine/GlobalShaderCache-${manifest.shaderPlatform}.bin`;
     this.manifest = manifest;
     await this.asset(manifest.pack);
     this.filesystem = filesystem;
     const files = manifest.files;
     for (const file of files) {
-      if (!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/|GlobalShaderCache-SP_WEBGPU_ES31\.bin$)/.test(file.path) ||
+      if ((!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/)/.test(file.path) &&
+          file.path !== shaderCachePath) ||
           /(?:^|\/)\.\.(?:\/|$)/.test(file.path) || !Number.isSafeInteger(file.offset) ||
           !Number.isSafeInteger(file.size) || file.offset < 0 || file.size < 0 ||
           file.offset + file.size > manifest.pack.size) throw new Error(`Invalid content entry: ${file.path}`);

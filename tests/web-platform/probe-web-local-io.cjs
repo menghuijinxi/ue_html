@@ -49,6 +49,46 @@ let browser;
     assert.equal(cold.downloadedBytes, info.size);
     assert(cold.evictions > 0 && cold.memoryBytes <= 16 * 1024 * 1024);
     assert(cold.peakMemoryBytes <= cold.memoryLimit && cold.peakActiveReads <= 4);
+    const mountChecks = await page.evaluate(async info => {
+      const platforms = ['SP_WEBGPU_ES31', 'SP_WEBGPU_SM5'];
+      const checks = [];
+      for (const shaderPlatform of platforms) {
+        const mounted = new Map();
+        const filesystem = {
+          mkdirTree() {},
+          open(path) { mounted.set(path, new Uint8Array(64)); return path; },
+          write(path, bytes, offset, length, position) {
+            mounted.get(path).set(bytes.subarray(offset, offset + length), position);
+          },
+          close() {}
+        };
+        const cachePath = `/Engine/GlobalShaderCache-${shaderPlatform}.bin`;
+        const manifest = {shaderPlatform, pack: info, files: [{path: cachePath, offset: 0, size: 64}]};
+        await io.mount(manifest, filesystem);
+        if (!mounted.get(cachePath)?.every((value, index) => value === ((index * 37) & 255)))
+          throw new Error(`Shader cache mount differs: ${shaderPlatform}`);
+        let rejected = 0;
+        for (const file of [
+          {path: `/Engine/GlobalShaderCache-${platforms.find(value => value !== shaderPlatform)}.bin`, offset: 0, size: 64},
+          {path: '/Engine/Content/../escape.bin', offset: 0, size: 64},
+          {path: '/Engine/Content/outside.bin', offset: info.size, size: 64}
+        ]) {
+          try { await io.mount({...manifest, files: [file]}, filesystem); }
+          catch (error) {
+            if (!/Invalid content entry/.test(error.message)) throw error;
+            ++rejected;
+          }
+        }
+        if (rejected !== 3) throw new Error(`Invalid mount accepted: ${shaderPlatform}`);
+        checks.push({shaderPlatform, shaderCacheMounted: true, invalidEntriesRejected: rejected});
+      }
+      try { await io.mount({shaderPlatform: 'SP_UNKNOWN', pack: info, files: []}, {}); }
+      catch (error) {
+        if (/Invalid content shader platform/.test(error.message)) return checks;
+        throw error;
+      }
+      throw new Error('Unknown shader platform was accepted');
+    }, info);
     await page.evaluate(async () => {
       io.worker.terminate();
       globalThis.io = new WebLocalContentIO('/web-content-worker.js');
@@ -102,7 +142,8 @@ let browser;
       try { await local.read(0, 64); return false; } catch (error) { return /corrupt/.test(error.message); }
     }, info);
     assert(corrupt, 'Corrupt local blocks were accepted');
-    report.browsers.push({browser: name, cold, warm, updated, corruptRejected: corrupt, networkPackRequests: requests.length});
+    report.browsers.push({browser: name, cold, mountChecks, warm, updated, corruptRejected: corrupt,
+      networkPackRequests: requests.length});
     report.pass = true;
   } catch (error) { report.failure = error.stack; process.exitCode = 1; }
   finally {
