@@ -39,3 +39,13 @@ node tests/web-platform/probe-web-default-scene.cjs --packaged
 结果在 `tests/web-platform/results/web-default-samples-results.json`、`web-default-samples-baseline.json` 和 `default-samples-<browser>-visible/hidden/restored.png`。原关卡回归报告仍为 `web-default-scene-results.json`。
 
 此处用于在用户认可的原光照条件下比较材质。未增加烘焙、Lumen、光照反弹或新的反射算法；后续以此实时光照基准继续定位效果问题。
+
+## 阴影分辨率调整
+
+随后按用户要求，仅将共享默认关卡渲染配置中的 `r.Shadow.MaxCSMResolution` 显式设为 4096。原地图、级联数量、阴影距离和偏移保持原值。重新 Cook、Stage、Package 后，原地址直接使用 4096 配置。
+
+前述配置完全一致和旧画面对照对应添加球时的 2048 版本。此次用户明确授权改变阴影配置，执行 `probe-web-default-samples.cjs --no-baseline` 保留历史基准并跳过旧配置/旧截图比较，逐球像素、隐藏恢复、原 Actor 参数保护和双浏览器错误检查仍执行。
+
+4096 版本重新 Cook、Stage、Package 通过。Chrome / Edge 的真实 GPU 检查均记录到 Depth32Float 的 8192×8192 图集，四个不同位置的 4096×4096 视口均有深度 draw；每次浏览器运行记录 16 个阴影 pass，页面和 GPU 错误为零。图集为四级 2×2 排布，纹素存储为 256 MiB。逐球/隐藏恢复检查分别运行 911 / 915 帧并通过。GPU 尺寸检查结果位于 `tests/web-platform/results/web-default-shadow-4096-results.json`。
+
+4096 下的原关卡完整回归分别运行 1097 / 1095 帧，光照开关与恢复、竖屏/桌面缩放及内容/配置损坏拦截均通过。当前构建、Cook、Stage、Package 及两项浏览器回归共 838 项来源/产物/证据指纹通过核验，服务返回 HTTP 200。

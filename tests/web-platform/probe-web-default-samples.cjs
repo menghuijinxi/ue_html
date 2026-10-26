@@ -42,7 +42,8 @@ async function settle(page) {
     report.packageReport = audit(packageFile);
     const config = packaged.products.find(item => path.basename(item.file) === 'config-files.json');
     report.configHash = config.sha256;
-    const baseline = !baselineOnly && fs.existsSync(baselineFile) ? read(baselineFile) : null;
+    const baseline = !baselineOnly && !process.argv.includes('--no-baseline') &&
+      fs.existsSync(baselineFile) ? read(baselineFile) : null;
     if (baseline) {
       assert(baseline.pass && baseline.runs[0].images.original && valid(baseline.runs[0].images.original));
       assert.equal(report.configHash, baseline.configHash, 'All original runtime config files must remain byte-identical');
