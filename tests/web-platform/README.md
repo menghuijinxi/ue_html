@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-26：新增基于默认关卡的独立材质测试场，16 个实际 Lit 材质球分组检查粗糙度、金属、高光、透明度，并提供接地/悬空阴影参照、单组近景、固定曝光和光照对照。入口 `build-web-material-lab.ps1`、`probe-web-material-lab.cjs`；浏览器地址为 `http://127.0.0.1:8765/build/material-lab/index.html`。参数、验证及画质边界见 [材质测试场](../../UE58_MATERIAL_LAB.md)。
+
 2026-10-23：修复第 308 帧 `SlateElementIndexBuffer` 的 RDG 收尾状态断言，并补齐 Slate 的 `VET_UShort2 → Uint16x2` 顶点格式。新增 `probe-web-slate-transitions.ps1` 九项原生回归；`probe-web-project-stability.cjs --slate-menu` 先真实按 Esc，再加载项目原有换材质控件，覆盖持续绘制、移除/重建和缩放，汇总入口 `verify-web-slate-menu.cjs`。切图 `InvalidURL`、控件外观及先前绑定组崩溃仍未验收；详情见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)。
 
 2026-10-23：用户第 991 帧绑定组句柄断言仍未定位，不能视作已修复。新增有界句柄诊断和 wasm64 生命周期故障注入测试；普通模式只报告失效地址，`?debug=1` 额外记录最近 256 次创建/释放事件，诊断报告同时保存流送、遮挡统计和浏览器完整版本。入口 `build-web-bindgroup-lifetime.ps1`、`probe-web-bindgroup-lifetime.cjs`、`verify-web-handle-diagnostics.cjs`；汇总明确保留 `originalCrashFixed=false` 及极端预算/缩放测试中的进程退出和超时。详情见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)。

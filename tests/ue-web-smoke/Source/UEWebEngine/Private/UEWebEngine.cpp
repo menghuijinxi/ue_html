@@ -321,6 +321,60 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, doubl
     return 1;
 }
 
+extern "C" EMSCRIPTEN_KEEPALIVE int WebMaterialLabControl(int Group, int Lighting)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    APlayerController* Controller = TemplateController.Get();
+    if (ProjectMap != TEXT("/Game/WebMaterialLab") || !Controller ||
+        Group < 0 || Group > 5 || Lighting < 0 || Lighting > 4)
+        return 0;
+    struct FLightSettings
+    {
+        bool Visible;
+        bool Shadows;
+        float Specular;
+        float Diffuse;
+    };
+    static TMap<TWeakObjectPtr<ULightComponentBase>, FLightSettings> Originals;
+    int32 Samples = 0;
+    for (TActorIterator<AActor> It(Controller->GetWorld()); It; ++It)
+    {
+        AActor* Actor = *It;
+        const FString Name = Actor->GetName();
+        if (Name.StartsWith(TEXT("Lab_Sphere_M_Lab_")))
+        {
+            const bool Visible = Group == 0 ||
+                (Group <= 4 && Name.StartsWith(FString::Printf(TEXT("Lab_Sphere_M_Lab_%d_"), Group - 1)));
+            Actor->SetActorHiddenInGame(!Visible);
+            Samples += Visible ? 1 : 0;
+        }
+        if (Name.StartsWith(TEXT("Lab_Transparency_Backdrop_")))
+            Actor->SetActorHiddenInGame(Group != 0 && Group != 4);
+        if (Name.StartsWith(TEXT("Lab_Shadow_")))
+            Actor->SetActorHiddenInGame(Group != 0 && Group != 5);
+        if (auto* Light = Actor->FindComponentByClass<ULightComponentBase>())
+        {
+            auto* Sun = Cast<UDirectionalLightComponent>(Light);
+            const bool Sky = Light->IsA<USkyLightComponent>();
+            const FLightSettings Original = Originals.FindOrAdd(Light,
+                {Light->GetVisibleFlag(), bool(Light->CastShadows),
+                    Sun ? Sun->SpecularScale : 1.0f, Sun ? Sun->DiffuseScale : 1.0f});
+            Light->SetVisibility(Original.Visible && !(Sky && Lighting == 2));
+            Light->SetCastShadows(Original.Shadows && Lighting != 4);
+            if (Sun)
+            {
+                // Keep the atmosphere's sun active while isolating direct surface lighting.
+                Sun->SetDiffuseScale(Lighting == 1 ? 0.0f : Original.Diffuse);
+                Sun->SetSpecularScale(Lighting == 1 || Lighting == 3 ? 0.0f : Original.Specular);
+            }
+        }
+    }
+    EM_ASM({
+        globalThis.__webMaterialLab = ({group: $0, lighting: $1, visibleSamples: $2});
+    }, Group, Lighting, Samples);
+    return 1;
+}
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectWidgetTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);

@@ -7,6 +7,7 @@ param(
     [string]$Profile,
     [ValidateSet('Uncompressed', 'BC')][string]$TextureCompression = 'Uncompressed',
     [switch]$CompressHDRCubemaps,
+    [switch]$TemplateEnvironment,
     [ValidatePattern('^[a-z0-9]+(?:-[a-z0-9]+)*$')][string]$ReportId,
     [switch]$DisableProjectSkyLight,
     [switch]$StopOnShaderError,
@@ -30,6 +31,9 @@ if ($Scene -eq 'Project') {
 if ($DisableProjectSkyLight -and $Scene -ne 'Project') { throw 'SkyLight exclusion requires Project Cook.' }
 if ($TextureCompression -eq 'BC' -and -not $taskWebGPU) { throw 'BC compression requires WebGPU Cook.' }
 if ($CompressHDRCubemaps -and $TextureCompression -ne 'BC') { throw 'HDR cube compression requires BC Cook.' }
+if ($TemplateEnvironment -and ($Scene -ne 'Project' -or -not $taskES31)) {
+    throw 'TemplateEnvironment requires a WebGPU-ES31 Project Cook.'
+}
 $taskFormat = if ($taskES31) { 'SF_WEBGPU_ES31' } else { 'SF_WEBGPU_SM5' }
 $taskShaderPlatformName = if ($taskES31) { 'SP_WEBGPU_ES31' } else { 'SP_WEBGPU_SM5' }
 if ($taskWebGPU) { $taskHost = Join-Path $taskRoot '.tools/ue58-web-cook-host/Engine' }
@@ -66,6 +70,7 @@ $taskReport = [ordered]@{
     disabledSkyLight = [bool]$DisableProjectSkyLight
     textureCompression = $TextureCompression
     compressHDRCubemaps = [bool]$CompressHDRCubemaps
+    templateEnvironment = [bool]$TemplateEnvironment
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
     validateShaderJobCache = [bool]$ValidateShaderJobCache
@@ -139,7 +144,7 @@ try {
         '/Engine/EngineResources/WhiteSquareTexture',
         $taskMap
     )
-    if ($Scene -eq 'DefaultTemplate') {
+    if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment) {
         $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x8'
     }
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
@@ -177,7 +182,7 @@ try {
                 '-ini:Engine:[SystemSettings]:r.ShaderCompiler.JobCacheDDC=0')
         }
         if ($taskES31) { $taskArguments += '-WebGPUES31Cook' }
-        if ($Scene -eq 'DefaultTemplate') { $taskArguments += '-WebDefaultCloudDensityCook' }
+        if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment) { $taskArguments += '-WebDefaultCloudDensityCook' }
         $env:WEBGPU_TINT_DIR = Join-Path $taskRoot '.tools/dawn-v20261009.190412/bin'
         $env:WEBGPU_INTERMEDIATE_DIR = Join-Path $taskOutput 'ShaderConversion'
     } else {
