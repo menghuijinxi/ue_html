@@ -375,6 +375,92 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebMaterialLabControl(int Group, int Lightin
     return 1;
 }
 
+extern "C" EMSCRIPTEN_KEEPALIVE int WebMaterialLabShadowTest(int Parameter, double Value)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    APlayerController* Controller = TemplateController.Get();
+    if (ProjectMap != TEXT("/Game/WebMaterialLab") || !Controller || !FMath::IsFinite(Value))
+        return 0;
+    auto* Resolution = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Shadow.MaxCSMResolution"));
+    if (!Resolution)
+        return 0;
+    for (TActorIterator<AActor> It(Controller->GetWorld()); It; ++It)
+    {
+        auto* Sun = It->FindComponentByClass<UDirectionalLightComponent>();
+        if (!Sun)
+            continue;
+        struct FShadowSettings
+        {
+            int32 Resolution;
+            int32 Cascades;
+            float Distance;
+            float StationaryDistance;
+            float Distribution;
+            float Bias;
+            float SlopeBias;
+        };
+        static const FShadowSettings Original = {Resolution->GetInt(), Sun->DynamicShadowCascades,
+            Sun->DynamicShadowDistanceMovableLight, Sun->DynamicShadowDistanceStationaryLight,
+            Sun->CascadeDistributionExponent,
+            Sun->ShadowBias, Sun->ShadowSlopeBias};
+        switch (Parameter)
+        {
+        case 0:
+            if (Value != 0)
+                return 0;
+            Resolution->Set(Original.Resolution, ECVF_SetByCode);
+            Sun->SetDynamicShadowCascades(Original.Cascades);
+            Sun->SetDynamicShadowDistanceMovableLight(Original.Distance);
+            Sun->SetDynamicShadowDistanceStationaryLight(Original.StationaryDistance);
+            Sun->SetCascadeDistributionExponent(Original.Distribution);
+            Sun->SetShadowBias(Original.Bias);
+            Sun->SetShadowSlopeBias(Original.SlopeBias);
+            break;
+        case 1:
+            if (Value < 1000 || Value > 20000)
+                return 0;
+            Sun->SetDynamicShadowDistanceMovableLight(Value);
+            Sun->SetDynamicShadowDistanceStationaryLight(Value);
+            break;
+        case 2:
+            if (Value != 512 && Value != 1024 && Value != 2048 && Value != 4096)
+                return 0;
+            Resolution->Set(int32(Value), ECVF_SetByCode);
+            break;
+        case 3:
+            if (Value < 1 || Value > 4 || Value != FMath::FloorToDouble(Value))
+                return 0;
+            Sun->SetDynamicShadowCascades(int32(Value));
+            break;
+        case 4:
+            if (Value < 1 || Value > 4)
+                return 0;
+            Sun->SetCascadeDistributionExponent(Value);
+            break;
+        case 5:
+        case 6:
+            if (Value < 0 || Value > 2)
+                return 0;
+            if (Parameter == 5)
+                Sun->SetShadowBias(Value);
+            else
+                Sun->SetShadowSlopeBias(Value);
+            break;
+        default:
+            return 0;
+        }
+        IConsoleManager::Get().CallAllConsoleVariableSinks();
+        EM_ASM({
+            globalThis.__webMaterialShadow = ({resolution: $0, cascades: $1, distance: $2,
+                distribution: $3, bias: $4, slopeBias: $5, mobility: $6, stationaryDistance: $7});
+        }, Resolution->GetInt(), Sun->DynamicShadowCascades, Sun->DynamicShadowDistanceMovableLight,
+            Sun->CascadeDistributionExponent, Sun->ShadowBias, Sun->ShadowSlopeBias,
+            int32(Sun->Mobility), Sun->DynamicShadowDistanceStationaryLight);
+        return 1;
+    }
+    return 0;
+}
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectWidgetTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);

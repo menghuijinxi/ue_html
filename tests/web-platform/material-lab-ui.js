@@ -33,6 +33,11 @@
       <option value="2">关闭天空光及环境反射</option>
       <option value="3">关闭太阳高光</option><option value="4">关闭阴影</option>
     </select>
+    <label>阴影<select id="lab-shadow" aria-label="每级阴影分辨率">
+      <option value="1024">1024 · 16 MiB</option>
+      <option value="2048" selected>2048 · 64 MiB</option>
+      <option value="4096">4096 · 256 MiB</option>
+    </select></label>
     <span>EV100 0 · Bloom 0</span><span id="lab-frame"></span></div>
     <div id="lab-readout"></div>`;
   document.body.append(panel);
@@ -54,6 +59,7 @@
   };
   const view = panel.querySelector('#lab-view');
   const lighting = panel.querySelector('#lab-light');
+  const shadow = panel.querySelector('#lab-shadow');
   const groups = {overview: 0, roughness: 1, metal: 2, specular: 3, opacity: 4, shadows: 5};
   function updateControl() {
     if (!Module._WebMaterialLabControl(groups[view.value], Number(lighting.value)))
@@ -63,7 +69,7 @@
     updateControl();
     if (!Module._WebProjectViewTest(...views[view.value])) throw new Error('Material lab view unavailable');
     const readout = panel.querySelector('#lab-readout');
-    readout.replaceChildren(...descriptions[view.value].map(text => {
+    readout.replaceChildren(...[...descriptions[view.value], 'CSM 4 级 · 30 m'].map(text => {
       const span = document.createElement('span');
       span.textContent = text;
       return span;
@@ -72,6 +78,11 @@
   }
   view.addEventListener('change', updateView);
   lighting.addEventListener('change', updateControl);
+  function updateShadow() {
+    if (!Module._WebMaterialLabShadowTest(2, Number(shadow.value)))
+      throw new Error('Material lab shadow control unavailable');
+  }
+  shadow.addEventListener('change', updateShadow);
   let started = false, lastFrame = 0, lastTime = performance.now();
   const timer = setInterval(() => {
     if (globalThis.__webEngineFailure) { clearInterval(timer); return; }
@@ -79,6 +90,7 @@
     if (!started) {
       started = true;
       panel.hidden = false;
+      updateShadow();
       updateView();
       lastFrame = globalThis.__webEngineFrames;
       lastTime = performance.now();

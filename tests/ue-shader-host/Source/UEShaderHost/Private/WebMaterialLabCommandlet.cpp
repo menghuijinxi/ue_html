@@ -130,8 +130,9 @@ int32 UWebMaterialLabCommandlet::Main(const FString& Params)
             Start->SetActorLocationAndRotation(Eye, Rotation);
         if (auto* Light = Actor->FindComponentByClass<UDirectionalLightComponent>())
         {
-            Light->DynamicShadowDistanceMovableLight = 6000;
+            Light->DynamicShadowDistanceMovableLight = 3000;
             Light->DynamicShadowCascades = 4;
+            Light->ShadowBias = 1.0f;
         }
         if (auto* Static = Cast<AStaticMeshActor>(Actor);
             Static && Static->GetStaticMeshComponent()->GetStaticMesh() &&
@@ -199,6 +200,9 @@ int32 UWebMaterialLabCommandlet::Main(const FString& Params)
     Manifest->SetStringField(TEXT("map"), TEXT("/Game/WebMaterialLab"));
     Manifest->SetStringField(TEXT("sourceMap"), Template);
     Manifest->SetNumberField(TEXT("exposureEV100"), 0);
+    Manifest->SetNumberField(TEXT("shadowDistanceCm"), 3000);
+    Manifest->SetNumberField(TEXT("shadowCascades"), 4);
+    Manifest->SetNumberField(TEXT("shadowBias"), 1);
     Manifest->SetArrayField(TEXT("samples"), Samples);
     Manifest->SetStringField(TEXT("camera"), FString::Printf(TEXT("%g,%g,%g,%g,%g"),
         Eye.X, Eye.Y, Eye.Z, Rotation.Pitch, Rotation.Yaw));

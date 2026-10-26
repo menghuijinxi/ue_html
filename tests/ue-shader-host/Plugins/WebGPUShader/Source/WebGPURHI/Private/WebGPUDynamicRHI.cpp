@@ -560,6 +560,8 @@ void FWebGPUDynamicRHI::Init()
 #endif
         GRHIAdapterName = AdapterName;
         GMaxTextureDimensions = Limits.maxTextureDimension2D;
+        GMaxShadowDepthBufferSizeX = Limits.maxTextureDimension2D;
+        GMaxShadowDepthBufferSizeY = Limits.maxTextureDimension2D;
         GMaxCubeTextureDimensions = Limits.maxTextureDimension2D;
         GMaxTextureArrayLayers = Limits.maxTextureArrayLayers;
         GMaxTextureMipCount = FMath::Min<uint32>(MAX_TEXTURE_MIP_COUNT,
