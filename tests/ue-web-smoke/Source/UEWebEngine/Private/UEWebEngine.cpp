@@ -24,6 +24,7 @@
 #include <emscripten/heap.h>
 #include <cstdio>
 #include "WebRenderScene.h"
+#include "WebDefaultSamples.h"
 #include "Components/SkyAtmosphereComponent.h"
 #include "Components/VolumetricCloudComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
@@ -225,6 +226,12 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebOcclusionTestMode(int Enabled, int Buffer
     if (BufferedFrames)
         Buffering->Set(BufferedFrames, ECVF_SetByCode);
     return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSamplesVisibility(int Visible)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    return DefaultTemplate ? WebDefaultSamples::Visibility(Visible) : 0;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSceneTestMode(int Mode)
@@ -633,7 +640,10 @@ int32 StartEngine()
         return 1;
     }
     if (UseWebGPU && DefaultTemplate)
+    {
         TemplateController = SetWebTemplateCamera(World);
+        WebDefaultSamples::Create(World, TemplateController.Get());
+    }
     else if (UseWebGPU && !ProjectMap.IsEmpty())
     {
         TemplateController = World->GetFirstPlayerController();

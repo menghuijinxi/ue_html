@@ -98,6 +98,21 @@ try {
         $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
     } elseif ($Scene -eq 'DefaultTemplate') {
         $taskReport.templateMap = Get-TaskAudit (Join-Path $Engine 'Engine/Content/Maps/Templates/Template_Default.umap')
+        $taskSampleLayout = Join-Path $taskOutput 'default-samples-layout.json'
+        $taskSampleLog = Join-Path $taskResults "web-default-samples-$taskStamp.log"
+        & (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject `
+            '-run=WebDefaultSamples' "-Output=$taskSampleLayout" '-nullrhi' '-unattended' `
+            '-nop4' '-nosplash' '-nosound' "-abslog=$taskSampleLog" *> "$taskSampleLog.console.txt"
+        if ($LASTEXITCODE -ne 0) { throw "Default sample material generation failed: $taskSampleLog" }
+        $taskSamples = Get-Content -LiteralPath $taskSampleLayout -Raw | ConvertFrom-Json
+        if (-not $taskSamples.materialsOnly -or $taskSamples.samples.Count -ne 8) {
+            throw 'Default template requires eight additive sample materials.'
+        }
+        $taskReport.defaultSamples = Get-TaskAudit $taskSampleLayout
+        $taskReport.defaultSamplesLog = Get-TaskAudit $taskSampleLog
+        if ((Get-TaskAudit $taskReport.templateMap.file).sha256 -ne $taskReport.templateMap.sha256) {
+            throw 'The installed default world must remain unchanged.'
+        }
     } else {
         $taskMapFile = Join-Path (Split-Path -Parent $taskProject) ("Content/" + $taskMap.Substring(6) + '.umap')
         $taskReport.projectMap = Get-TaskAudit $taskMapFile
@@ -146,6 +161,10 @@ try {
     )
     if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment) {
         $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x8'
+    }
+    if ($Scene -eq 'DefaultTemplate') {
+        $taskPackages += '/Engine/BasicShapes/Sphere'
+        $taskPackages += @($taskSamples.samples | ForEach-Object { $_.package })
     }
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
     $taskArguments = @($taskProject, '-run=Cook', '-TargetPlatform=Web',
@@ -277,6 +296,14 @@ try {
     $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1')
     if ($taskReport.minimalMap) { $taskReport.sourceFiles += $taskReport.minimalMap }
     if ($taskReport.templateMap) { $taskReport.sourceFiles += $taskReport.templateMap }
+    if ($taskReport.defaultSamples) {
+        $taskReport.sourceFiles += $taskReport.defaultSamples
+        $taskReport.sourceFiles += @('Public/WebDefaultSamplesCommandlet.h', 'Private/WebDefaultSamplesCommandlet.cpp') |
+            ForEach-Object { Get-TaskAudit (Join-Path $taskRoot "tests/ue-shader-host/Source/UEShaderHost/$_") }
+        $taskReport.sourceFiles += @($taskSamples.samples | ForEach-Object {
+            Get-TaskAudit (Join-Path (Split-Path -Parent $taskProject) ("Content/" + $_.package.Substring(6) + '.uasset'))
+        })
+    }
     if ($taskReport.projectMap) {
         $taskReport.sourceFiles += $taskReport.projectMap
         $taskReport.sourceFiles += Get-TaskAudit $taskProject
