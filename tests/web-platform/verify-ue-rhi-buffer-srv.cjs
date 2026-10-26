@@ -20,6 +20,8 @@ const required = [
   'reject-writable-storage-shader', 'reject-srv-access-mismatch', 'reject-srv-during-split-transition',
   'srv-valid-after-transition-end', 'whole-view-copy-and-guards', 'read-only-source-preserved',
   'subrange-copy-and-guards', 'view-observes-copy-update', 'commands-obey-recording-mode',
+  'raw-byte-address-view-valid', 'reject-unaligned-raw-range', 'reject-out-of-bounds-raw-range',
+  'raw-storage-layout-matches', 'raw-view-copy-and-guards',
   'srv-survives-caller-release', 'shader-binding-retains-buffer-view', 'updated-read-only-source-preserved',
   'compute-pso-reused', 'transitions-released', 'gpu-validation-clean', 'host-rhi-restored',
 ];
@@ -65,6 +67,8 @@ try {
   snapshot('read-only-source-preserved', original);
   for (let index = 0; index < 67; ++index) expected[97 + index] = original[64 + 3 + index];
   snapshot('subrange-copy-and-guards', expected);
+  expected.splice(0, expected.length, ...original);
+  snapshot('raw-view-copy-and-guards', expected);
   for (let index = 0; index < 35; ++index) expected[199 + index] = updated[64 + 10 + index];
   snapshot('view-observes-copy-update', expected);
   for (let index = 0; index < 200; ++index) expected[3 + index] = updated[5 + index];
@@ -74,13 +78,13 @@ try {
     assert(mode.pass && mode.errors.length === 0);
     assert.deepEqual(mode.checks.map(check => check.name).sort(), [...required].sort());
     assert(mode.checks.every(check => check.pass));
-    assert.equal(mode.checkedValues, 1536);
-    assert.equal(mode.dispatches, 4);
+    assert.equal(mode.checkedValues, 1792);
+    assert.equal(mode.dispatches, 5);
     assert.equal(mode.computePipelinesCreated, 1);
-    assert.equal(mode.boundGroups, 4);
+    assert.equal(mode.boundGroups, 5);
     assert.equal(mode.transitionsReleased, 4);
     assert.equal(mode.finalizedCommandLists, mode.submittedCommandLists);
-    assert.equal(mode.submittedCommandLists, mode.mode === 'recorded' ? 17 : 24);
+    assert.equal(mode.submittedCommandLists, mode.mode === 'recorded' ? 19 : 27);
     return copies.map(({name, values}) => {
       const file = path.join(output, `${mode.mode}-${name}.bin`);
       const bytes = fs.readFileSync(file);

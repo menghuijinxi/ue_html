@@ -41,6 +41,16 @@ WGPUStringView Text(const ANSICHAR *Value)
 {
     return {Value, size_t(FCStringAnsi::Strlen(Value))};
 }
+WGPULimits RenderingLimits(WGPUAdapter Adapter)
+{
+    WGPULimits Supported = WGPU_LIMITS_INIT;
+    check(wgpuAdapterGetLimits(Adapter, &Supported) == WGPUStatus_Success);
+    WGPULimits Required = WGPU_LIMITS_INIT;
+    Required.maxColorAttachmentBytesPerSample = FMath::Min(64u, Supported.maxColorAttachmentBytesPerSample);
+    Required.maxSampledTexturesPerShaderStage = FMath::Min(32u, Supported.maxSampledTexturesPerShaderStage);
+    Required.maxStorageBuffersPerShaderStage = FMath::Min(16u, Supported.maxStorageBuffersPerShaderStage);
+    return Required;
+}
 FString String(WGPUStringView Value)
 {
     return Value.data
@@ -50,7 +60,8 @@ FString String(WGPUStringView Value)
 }
 bool IsUnsignedTextureFormat(EPixelFormat Value)
 {
-    return Value == PF_R8G8B8A8_UINT || Value == PF_R32_UINT || Value == PF_R16_UINT;
+    return Value == PF_R8G8B8A8_UINT || Value == PF_R32_UINT || Value == PF_R16_UINT ||
+        Value == PF_R32G32B32A32_UINT;
 }
 bool IsBCTextureFormat(EPixelFormat Value)
 {
@@ -65,9 +76,57 @@ bool SupportsSRGB(EPixelFormat Value)
 bool IsSampled2DTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_G8 || Value == PF_R8 ||
-           Value == PF_R8G8 || Value == PF_FloatRGBA || Value == PF_FloatR11G11B10 ||
+           Value == PF_R8G8 || Value == PF_G16R16 || Value == PF_A16B16G16R16 ||
+           Value == PF_A2B10G10R10 || Value == PF_FloatRGBA || Value == PF_A32B32G32R32F ||
+           Value == PF_FloatRGB || Value == PF_FloatR11G11B10 ||
            Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT ||
            IsUnsignedTextureFormat(Value) || IsBCTextureFormat(Value);
+}
+uint32 StorageImageFormat(EPixelFormat Value)
+{
+    // SPIR-V image formats must match the WGSL storage texture and the RHI view.
+    switch (Value)
+    {
+    case PF_A32B32G32R32F: return 1;
+    case PF_FloatRGBA: return 2;
+    case PF_R32_FLOAT: return 3;
+    case PF_R8G8B8A8: return 4;
+    case PF_G16R16F: return 7;
+    case PF_R16F: return 9;
+    case PF_A16B16G16R16: return 10;
+    case PF_G16R16: return 12;
+    case PF_R8G8: return 13;
+    case PF_G8:
+    case PF_R8: return 15;
+    case PF_R8G8B8A8_UINT: return 32;
+    case PF_R32G32B32A32_UINT: return 30;
+    case PF_R32_UINT: return 33;
+    case PF_R16_UINT: return 38;
+    default: return 0;
+    }
+}
+WGPUTextureFormat StorageFormat(uint32 ImageFormat)
+{
+    switch (ImageFormat)
+    {
+    case 1: return WGPUTextureFormat_RGBA32Float;
+    case 2: return WGPUTextureFormat_RGBA16Float;
+    case 3: return WGPUTextureFormat_R32Float;
+    case 4: return WGPUTextureFormat_RGBA8Unorm;
+    case 7: return WGPUTextureFormat_RG16Float;
+    case 9: return WGPUTextureFormat_R16Float;
+    case 10: return WGPUTextureFormat_RGBA16Unorm;
+    case 12: return WGPUTextureFormat_RG16Unorm;
+    case 13: return WGPUTextureFormat_RG8Unorm;
+    case 15: return WGPUTextureFormat_R8Unorm;
+    case 32: return WGPUTextureFormat_RGBA8Uint;
+    case 30: return WGPUTextureFormat_RGBA32Uint;
+    case 33: return WGPUTextureFormat_R32Uint;
+    case 38: return WGPUTextureFormat_R16Uint;
+    default:
+        checkf(false, TEXT("WebGPU storage image format unsupported: %u"), ImageFormat);
+        return WGPUTextureFormat_Undefined;
+    }
 }
 WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
 {
@@ -82,8 +141,17 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_R8Unorm;
     case PF_R8G8:
         return WGPUTextureFormat_RG8Unorm;
+    case PF_G16R16:
+        return WGPUTextureFormat_RG16Unorm;
+    case PF_A16B16G16R16:
+        return WGPUTextureFormat_RGBA16Unorm;
+    case PF_A2B10G10R10:
+        return WGPUTextureFormat_RGB10A2Unorm;
     case PF_FloatRGBA:
         return WGPUTextureFormat_RGBA16Float;
+    case PF_A32B32G32R32F:
+        return WGPUTextureFormat_RGBA32Float;
+    case PF_FloatRGB:
     case PF_FloatR11G11B10:
         return WGPUTextureFormat_RG11B10Ufloat;
     case PF_R16F:
@@ -94,6 +162,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_R32Float;
     case PF_R8G8B8A8_UINT:
         return WGPUTextureFormat_RGBA8Uint;
+    case PF_R32G32B32A32_UINT:
+        return WGPUTextureFormat_RGBA32Uint;
     case PF_R32_UINT:
         return WGPUTextureFormat_R32Uint;
     case PF_R16_UINT:
@@ -290,14 +360,16 @@ struct FTextureInitializer : FRHITextureInitializer
               [Texture = TRefCountPtr<FWebGPUTexture>(Texture), &RHI](FRHICommandListBase &) mutable -> FTextureRHIRef {
                   if (!Texture->InitialBytes.IsEmpty())
                   {
+                      for (uint32 Array = 0; Array < Texture->GetDesc().ArraySize; ++Array)
                       for (uint32 Face = 0; Face < (Texture->GetDesc().IsTextureCube() ? 6u : 1u); ++Face)
                       for (uint32 Mip = 0; Mip < Texture->GetNumMips(); ++Mip)
                       {
                           uint64 Stride, Size;
                           const uint64 Offset = UE::RHITextureUtils::CalculateSubresourceOffset(
-                              Texture->GetDesc(), Face, 0, Mip, Stride, Size);
+                              Texture->GetDesc(), Face, Array, Mip, Stride, Size);
                           check(Offset + Size <= uint64(Texture->InitialBytes.Num()));
-                          WriteTextureMip(RHI, Texture, Mip, Texture->InitialBytes.GetData() + Offset, Size, Face);
+                          WriteTextureMip(RHI, Texture, Mip, Texture->InitialBytes.GetData() + Offset, Size,
+                              Face + Array * (Texture->GetDesc().IsTextureCube() ? 6u : 1u));
                       }
                       Texture->InitialBytes.Reset();
                       if (RHI.StartupProbeMode)
@@ -309,12 +381,13 @@ struct FTextureInitializer : FRHITextureInitializer
                   return FTextureRHIRef(Texture.GetReference());
               },
               [Texture, Writable](FSubresourceIndex Index) -> FRHITextureSubresourceInitializer {
-                  check(Writable && uint32(Index.MipIndex) < uint32(Texture->GetNumMips()) && Index.ArrayIndex == 0 &&
+                  check(Writable && uint32(Index.MipIndex) < uint32(Texture->GetNumMips()) &&
+                        uint32(Index.ArrayIndex) < Texture->GetDesc().ArraySize &&
                         uint32(Index.FaceIndex) < (Texture->GetDesc().IsTextureCube() ? 6u : 1u) &&
                         !Texture->InitialBytes.IsEmpty());
                   uint64 Stride, Size;
                   const uint64 Offset = UE::RHITextureUtils::CalculateSubresourceOffset(
-                      Texture->GetDesc(), Index.FaceIndex, 0, Index.MipIndex, Stride, Size);
+                      Texture->GetDesc(), Index.FaceIndex, Index.ArrayIndex, Index.MipIndex, Stride, Size);
                   check(Offset + Size <= uint64(Texture->InitialBytes.Num()));
                   return {Texture->InitialBytes.GetData() + Offset, Size, Stride};
               })
@@ -335,8 +408,10 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     StartupProbeMode = true;
     GlobalProbeMode = true;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
-    GMaxRHIFeatureLevel = ERHIFeatureLevel::ES3_1;
-    GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_ES31"));
+    const bool Mobile = FParse::Param(FCommandLine::Get(), TEXT("es31"));
+    GMaxRHIFeatureLevel = Mobile ? ERHIFeatureLevel::ES3_1 : ERHIFeatureLevel::SM5;
+    GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(
+        Mobile ? TEXT("SP_WEBGPU_ES31") : TEXT("SP_WEBGPU_SM5"));
     GSupportsTexture3D = true;
     GRHIGlobals.UseTexture3DBulkData = true;
     GRHIGlobals.SupportsTexture3DAnisotropicFiltering = false;
@@ -417,12 +492,18 @@ void FWebGPUDynamicRHI::BeginBrowserDevice(void (*Completion)(bool))
             return;
         }
         WGPUDeviceDescriptor DeviceDesc = WGPU_DEVICE_DESCRIPTOR_INIT;
-        const WGPUFeatureName BC = WGPUFeatureName_TextureCompressionBC;
-        if (wgpuAdapterHasFeature(Adapter, BC))
+        TArray<WGPUFeatureName> Features;
+        for (WGPUFeatureName Feature : {WGPUFeatureName_TextureCompressionBC,
+                 WGPUFeatureName_TextureFormatsTier1, WGPUFeatureName_TextureFormatsTier2, WGPUFeatureName_RG11B10UfloatRenderable,
+                 WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable})
         {
-            DeviceDesc.requiredFeatureCount = 1;
-            DeviceDesc.requiredFeatures = &BC;
+            if (wgpuAdapterHasFeature(Adapter, Feature))
+                Features.Add(Feature);
         }
+        DeviceDesc.requiredFeatureCount = Features.Num();
+        DeviceDesc.requiredFeatures = Features.GetData();
+        const WGPULimits Required = RenderingLimits(Adapter);
+        DeviceDesc.requiredLimits = &Required;
         DeviceDesc.uncapturedErrorCallbackInfo.userdata1 = &RHI;
         DeviceDesc.uncapturedErrorCallbackInfo.callback = [](WGPUDevice const*, WGPUErrorType,
                                                             WGPUStringView Message, void* Self, void*) {
@@ -482,12 +563,18 @@ void FWebGPUDynamicRHI::Init()
     wgpuAdapterInfoFreeMembers(Info);
     bool DeviceDone = false;
     WGPUDeviceDescriptor Desc = WGPU_DEVICE_DESCRIPTOR_INIT;
-    const WGPUFeatureName BC = WGPUFeatureName_TextureCompressionBC;
-    if (wgpuAdapterHasFeature(Adapter, BC))
+    TArray<WGPUFeatureName> Features;
+    for (WGPUFeatureName Feature : {WGPUFeatureName_TextureCompressionBC,
+             WGPUFeatureName_TextureFormatsTier1, WGPUFeatureName_TextureFormatsTier2, WGPUFeatureName_RG11B10UfloatRenderable,
+             WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable})
     {
-        Desc.requiredFeatureCount = 1;
-        Desc.requiredFeatures = &BC;
+        if (wgpuAdapterHasFeature(Adapter, Feature))
+            Features.Add(Feature);
     }
+    Desc.requiredFeatureCount = Features.Num();
+    Desc.requiredFeatures = Features.GetData();
+    const WGPULimits Required = RenderingLimits(Adapter);
+    Desc.requiredLimits = &Required;
     Desc.uncapturedErrorCallbackInfo.userdata1 = this;
     Desc.uncapturedErrorCallbackInfo.callback = [](WGPUDevice const *, WGPUErrorType, WGPUStringView Message,
                                                    void *Self, void *) {
@@ -514,12 +601,19 @@ void FWebGPUDynamicRHI::Init()
     PreviousStencilFormat = GPixelFormats[PF_X24_G8];
     PreviousShadowFormat = GPixelFormats[PF_ShadowDepth];
     PreviousPackedHDRFormat = GPixelFormats[PF_FloatR11G11B10];
+    PreviousFloatRGBFormat = GPixelFormats[PF_FloatRGB];
     auto& PackedHDRFormat = GPixelFormats[PF_FloatR11G11B10];
     PackedHDRFormat.Supported = true;
     PackedHDRFormat.PlatformFormat = WGPUTextureFormat_RG11B10Ufloat;
     PackedHDRFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::TextureCube |
         EPixelFormatCapabilities::TextureLoad | EPixelFormatCapabilities::TextureSample |
         EPixelFormatCapabilities::TextureFilterable;
+    if (wgpuDeviceHasFeature(Device, WGPUFeatureName_RG11B10UfloatRenderable))
+        PackedHDRFormat.Capabilities |= EPixelFormatCapabilities::RenderTarget;
+    auto& FloatRGBFormat = GPixelFormats[PF_FloatRGB];
+    FloatRGBFormat.Supported = PackedHDRFormat.Supported;
+    FloatRGBFormat.PlatformFormat = PackedHDRFormat.PlatformFormat;
+    FloatRGBFormat.Capabilities = PackedHDRFormat.Capabilities;
     auto& DepthFormat = GPixelFormats[PF_DepthStencil];
     DepthFormat.Supported = true;
     DepthFormat.PlatformFormat = WGPUTextureFormat_Depth24PlusStencil8;
@@ -581,6 +675,11 @@ void FWebGPUDynamicRHI::Init()
                                     {TEXT("GBlackUintTexture"), GBlackUintTexture}};
             for (const auto &Entry : OptionalDefaults)
             {
+                // Desktop material and reflection passes retain their native fallback bindings.
+                if (GMaxRHIFeatureLevel >= ERHIFeatureLevel::SM5 &&
+                    (Entry.Resource == GBlackCubeArrayTexture || Entry.Resource == GBlackArrayTexture ||
+                     Entry.Resource == GBlackUintTexture))
+                    continue;
                 check(Entry.Resource && Entry.Resource->IsInitialized() && !Entry.Resource->TextureRHI &&
                       !Entry.Resource->SamplerStateRHI);
                 Entry.Resource->ReleaseResource();
@@ -627,10 +726,12 @@ void FWebGPUDynamicRHI::Shutdown()
         GPixelFormats[PF_X24_G8] = PreviousStencilFormat.GetValue();
         GPixelFormats[PF_ShadowDepth] = PreviousShadowFormat.GetValue();
         GPixelFormats[PF_FloatR11G11B10] = PreviousPackedHDRFormat.GetValue();
+        GPixelFormats[PF_FloatRGB] = PreviousFloatRGBFormat.GetValue();
         PreviousDepthFormat.Reset();
         PreviousStencilFormat.Reset();
         PreviousShadowFormat.Reset();
         PreviousPackedHDRFormat.Reset();
+        PreviousFloatRGBFormat.Reset();
     }
 }
 void FWebGPUDynamicRHI::PostInit()
@@ -973,22 +1074,24 @@ void FWebGPUDynamicRHI::RHIUnlockTexture(FRHICommandListImmediate &, const FRHIL
 bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDesc &In, FString &Error) const
 {
     const bool Volume = In.Dimension == ETextureDimension::Texture3D;
-    const bool Cube = In.Dimension == ETextureDimension::TextureCube;
+    const bool Cube = In.IsTextureCube();
+    const bool CubeArray = In.Dimension == ETextureDimension::TextureCubeArray;
     const bool Array = In.Dimension == ETextureDimension::Texture2DArray;
-    if (In.Format == PF_FloatR11G11B10 &&
+    if ((In.Format == PF_FloatRGB || In.Format == PF_FloatR11G11B10) &&
         (!EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
-         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable | ETextureCreateFlags::UAV |
-             ETextureCreateFlags::DepthStencilTargetable | ETextureCreateFlags::SRGB)))
+         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV |
+             ETextureCreateFlags::DepthStencilTargetable | ETextureCreateFlags::SRGB) ||
+         (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable) &&
+             !wgpuDeviceHasFeature(Device, WGPUFeatureName_RG11B10UfloatRenderable))))
     {
         Error = TEXT("R11G11B10 supports only linear sampled textures");
         return false;
     }
-    if (Array && (In.Format != PF_R16F || In.NumMips != 1 ||
-        In.InitAction != ERHITextureInitAction::Default ||
-        !EnumHasAllFlags(In.Flags, ETextureCreateFlags::ShaderResource | ETextureCreateFlags::RenderTargetable) ||
-        EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV | ETextureCreateFlags::SRGB)))
+    if (Array && (!IsSampled2DTextureFormat(In.Format) || IsBCTextureFormat(In.Format) ||
+        !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
+        EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)))
     {
-        Error = TEXT("2D arrays currently support only raster-populated single-mip linear R16F atlases");
+        Error = TEXT("2D arrays require a supported linear sampled color format");
         return false;
     }
     if (IsBCTextureFormat(In.Format) &&
@@ -1001,6 +1104,12 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         Error = TEXT("BC textures require texture-compression-bc, block-aligned sampled 2D/cube data and no render/storage usage");
         return false;
     }
+    if ((In.Format == PF_G16R16 || In.Format == PF_A16B16G16R16) &&
+        !wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1))
+    {
+        Error = TEXT("Desktop UNORM16 render targets require texture-formats-tier1");
+        return false;
+    }
     const bool Color = Volume ? In.Format == PF_R8G8B8A8 || In.Format == PF_B8G8R8A8 ||
                                     In.Format == PF_R8G8B8A8_UINT || In.Format == PF_FloatRGBA ||
                                     In.Format == PF_R16F || In.Format == PF_G16R16F
@@ -1008,7 +1117,8 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     const uint32 Limit = Volume ? Limits.maxTextureDimension3D : Limits.maxTextureDimension2D;
     if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube && !Array) ||
         (Cube && (In.Extent.X != In.Extent.Y || !Color)) ||
-        (Array ? !In.ArraySize || In.ArraySize > Limits.maxTextureArrayLayers : In.ArraySize != 1) || !In.Depth ||
+        ((Array || CubeArray) ? !In.ArraySize ||
+            uint32(In.ArraySize) * (Cube ? 6u : 1u) > Limits.maxTextureArrayLayers : In.ArraySize != 1) || !In.Depth ||
         (!Volume && In.Depth != 1) || !In.NumMips ||
         In.NumSamples != 1 || In.Extent.X <= 0 || In.Extent.Y <= 0 ||
         uint32(In.Extent.X) > Limit || uint32(In.Extent.Y) > Limit || (Volume && In.Depth > Limit) ||
@@ -1023,7 +1133,10 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
                         ETextureCreateFlags::RenderTargetable))) ||
         In.NumMips > FMath::FloorLog2(FMath::Max(uint32(FMath::Max(In.Extent.X, In.Extent.Y)), uint32(In.Depth))) + 1 ||
         (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV) &&
-         (In.Format != PF_R8G8B8A8 && In.Format != PF_FloatRGBA)) ||
+         (!StorageImageFormat(In.Format) ||
+          ((In.Format == PF_R16F || In.Format == PF_G16R16F || In.Format == PF_R16_UINT ||
+            In.Format == PF_R8 || In.Format == PF_G8 || In.Format == PF_R8G8) &&
+           !wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1)))) ||
         (In.InitAction != ERHITextureInitAction::Default && In.InitAction != ERHITextureInitAction::Initializer &&
          In.InitAction != ERHITextureInitAction::BulkData) ||
         (In.InitAction != ERHITextureInitAction::Default && !Color))
@@ -1068,11 +1181,13 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     WGPUTextureDescriptor Desc = WGPU_TEXTURE_DESCRIPTOR_INIT;
     Desc.label = {Label.Get(), size_t(Label.Length())};
     Desc.dimension = Volume ? WGPUTextureDimension_3D : WGPUTextureDimension_2D;
-    Desc.size = {uint32(In.Extent.X), uint32(In.Extent.Y), In.IsTextureCube() ? 6u :
+    Desc.size = {uint32(In.Extent.X), uint32(In.Extent.Y), In.IsTextureCube() ? 6u * In.ArraySize :
         In.Dimension == ETextureDimension::Texture2DArray ? uint32(In.ArraySize) : uint32(In.Depth)};
     Desc.format = Format(In.Format, EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB));
     Desc.mipLevelCount = In.NumMips;
-    Desc.usage = Volume || IsBCTextureFormat(In.Format) || In.Format == PF_FloatR11G11B10 ?
+    Desc.usage = Volume || IsBCTextureFormat(In.Format) ||
+        ((In.Format == PF_FloatRGB || In.Format == PF_FloatR11G11B10) &&
+            !wgpuDeviceHasFeature(Device, WGPUFeatureName_RG11B10UfloatRenderable)) ?
         WGPUTextureUsage_None : WGPUTextureUsage_RenderAttachment;
     if (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV))
         Desc.usage |= WGPUTextureUsage_StorageBinding;
@@ -1157,13 +1272,15 @@ FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICom
                                : Format(Info.Format);
     View.dimension = Info.Dimension == FRHIViewDesc::EDimension::Texture3D ? WGPUTextureViewDimension_3D :
         Info.Dimension == FRHIViewDesc::EDimension::TextureCube ? WGPUTextureViewDimension_Cube :
+        Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? WGPUTextureViewDimension_CubeArray :
         Info.Dimension == FRHIViewDesc::EDimension::Texture2DArray ? WGPUTextureViewDimension_2DArray :
         WGPUTextureViewDimension_2D;
     View.baseMipLevel = Info.MipRange.First;
     View.mipLevelCount = Info.MipRange.Num;
     View.baseArrayLayer = Info.ArrayRange.First;
     View.arrayLayerCount = Info.ArrayRange.Num;
-    if (Info.Dimension == FRHIViewDesc::EDimension::TextureCube)
+    if (Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
+        Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray)
     {
         View.baseArrayLayer *= 6;
         View.arrayLayerCount *= 6;
@@ -1258,20 +1375,22 @@ FUnorderedAccessViewRHIRef FWebGPUDynamicRHI::RHICreateUnorderedAccessView(FRHIC
         auto* Texture = static_cast<FWebGPUTexture*>(Resource);
         const auto Info = Desc.Texture.UAV.GetViewInfo(Texture);
         check(EnumHasAnyFlags(Texture->GetFlags(), ETextureCreateFlags::UAV) &&
-              (Info.Format == PF_FloatRGBA || Info.Format == PF_R8G8B8A8) &&
+              StorageImageFormat(Info.Format) &&
               Info.Format == Texture->GetFormat() && Info.Plane == ERHITexturePlane::Primary &&
               Info.MipLevel < Texture->GetNumMips());
         WGPUTextureViewDescriptor View = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
         View.format = Format(Info.Format);
         View.dimension = Info.Dimension == FRHIViewDesc::EDimension::Texture3D ? WGPUTextureViewDimension_3D :
             Info.Dimension == FRHIViewDesc::EDimension::Texture2DArray ||
-            Info.Dimension == FRHIViewDesc::EDimension::TextureCube ? WGPUTextureViewDimension_2DArray :
+            Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
+            Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? WGPUTextureViewDimension_2DArray :
             WGPUTextureViewDimension_2D;
         View.baseMipLevel = Info.MipLevel;
         View.mipLevelCount = 1;
         View.baseArrayLayer = Info.ArrayRange.First;
         View.arrayLayerCount = Info.ArrayRange.Num;
-        if (Info.Dimension == FRHIViewDesc::EDimension::TextureCube)
+        if (Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
+            Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray)
         {
             View.baseArrayLayer *= 6;
             View.arrayLayerCount *= 6;
@@ -1369,16 +1488,18 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
         return false;
     }
     const bool Volume = Target.Dimension == ETextureDimension::Texture3D;
-    const bool Cube = Target.Dimension == ETextureDimension::TextureCube;
+    const bool Cube = Target.IsTextureCube();
+    const bool CubeArray = Target.Dimension == ETextureDimension::TextureCubeArray;
     const bool Array = Target.Dimension == ETextureDimension::Texture2DArray;
     const bool DepthStencil = Target.Format == PF_DepthStencil || Target.Format == PF_ShadowDepth;
     const bool DepthPlane = View.Plane == ERHITexturePlane::Primary || View.Plane == ERHITexturePlane::Depth ||
         (Target.Format == PF_DepthStencil && View.Plane == ERHITexturePlane::Stencil);
     if ((Target.Dimension != ETextureDimension::Texture2D && !Volume && !Cube && !Array) ||
-        (!Array && Target.ArraySize != 1) ||
+        (!Array && !CubeArray && Target.ArraySize != 1) ||
         (!Volume && Target.Depth != 1) || Target.NumSamples != 1 ||
         (Volume ? View.Dimension != FRHIViewDesc::EDimension::Texture3D :
          Cube ? View.Dimension != FRHIViewDesc::EDimension::TextureCube &&
+                    View.Dimension != FRHIViewDesc::EDimension::TextureCubeArray &&
                     View.Dimension != FRHIViewDesc::EDimension::Texture2DArray &&
                     View.Dimension != FRHIViewDesc::EDimension::Texture2D :
          Array ? View.Dimension != FRHIViewDesc::EDimension::Texture2DArray &&
@@ -1404,9 +1525,11 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
     }
     // Reject invalid ranges before GetViewInfo, which asserts on malformed descriptors.
     const uint32 Mips = View.MipRange.Num ? View.MipRange.Num : Target.NumMips;
-    const uint32 Layers = View.Dimension == FRHIViewDesc::EDimension::TextureCube ? 1 : Texture->LayerCount();
+    const bool CubeView = View.Dimension == FRHIViewDesc::EDimension::TextureCube ||
+        View.Dimension == FRHIViewDesc::EDimension::TextureCubeArray;
+    const uint32 Layers = CubeView ? Target.ArraySize : Texture->LayerCount();
     const uint32 Arrays = View.ArrayRange.Num ? View.ArrayRange.Num :
-        Cube && View.Dimension == FRHIViewDesc::EDimension::Texture2DArray ? 6 : Target.ArraySize;
+        Cube && View.Dimension == FRHIViewDesc::EDimension::Texture2DArray ? Texture->LayerCount() : Target.ArraySize;
     if ((!View.MipRange.Num && View.MipRange.First) || (!View.ArrayRange.Num && View.ArrayRange.First) ||
         uint32(View.MipRange.First) + Mips > Target.NumMips ||
         uint32(View.ArrayRange.First) + Arrays > Layers)
@@ -1427,13 +1550,16 @@ bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FJs
     bool Arrayed, Multisampled;
     const auto ViewDimension = Resource->GetType() == RRT_ShaderResourceView ?
         static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Texture.SRV.Dimension :
+        Texture->GetDesc().Dimension == ETextureDimension::TextureCubeArray ? FRHIViewDesc::EDimension::TextureCubeArray :
         Texture->GetDesc().IsTextureCube() ? FRHIViewDesc::EDimension::TextureCube :
         Texture->GetDesc().Dimension == ETextureDimension::Texture2DArray ? FRHIViewDesc::EDimension::Texture2DArray :
         Texture->GetDesc().Dimension == ETextureDimension::Texture3D ? FRHIViewDesc::EDimension::Texture3D :
         FRHIViewDesc::EDimension::Texture2D;
-    const bool ArrayView = ViewDimension == FRHIViewDesc::EDimension::Texture2DArray;
+    const bool ArrayView = ViewDimension == FRHIViewDesc::EDimension::Texture2DArray ||
+        ViewDimension == FRHIViewDesc::EDimension::TextureCubeArray;
     const uint32 Expected = ViewDimension == FRHIViewDesc::EDimension::Texture3D ? 2 :
-        ViewDimension == FRHIViewDesc::EDimension::TextureCube ? 3 : 1;
+        ViewDimension == FRHIViewDesc::EDimension::TextureCube ||
+        ViewDimension == FRHIViewDesc::EDimension::TextureCubeArray ? 3 : 1;
     if (!Binding.TryGetNumberField(TEXT("textureDimension"), Dimension) || Dimension != Expected ||
         !Binding.TryGetBoolField(TEXT("textureArrayed"), Arrayed) || Arrayed != ArrayView ||
         !Binding.TryGetBoolField(TEXT("textureMultisampled"), Multisampled) || Multisampled)
@@ -1471,6 +1597,22 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
     const auto &View = Desc.Buffer.SRV;
     if (View.BufferType == FRHIViewDesc::EBufferType::Structured)
         return ValidateStructuredView(Buffer, View, BUF_ShaderResource, Error);
+    if (View.BufferType == FRHIViewDesc::EBufferType::Raw)
+    {
+        const uint64 Size = Buffer->GetSize();
+        const uint64 Bytes = View.NumElements ? uint64(View.NumElements) * sizeof(uint32) : Size;
+        if (View.Format != PF_Unknown || View.Stride || View.bAtomicCounter || View.bAppendBuffer ||
+            !EnumHasAllFlags(Buffer->GetUsage(), BUF_ByteAddressBuffer | BUF_ShaderResource) ||
+            EnumHasAnyFlags(Buffer->GetUsage(), BUF_AccelerationStructure) ||
+            !Size || Size % sizeof(uint32) || !Bytes || Bytes > Limits.maxStorageBufferBindingSize ||
+            View.OffsetInBytes >= Size || View.OffsetInBytes % Limits.minStorageBufferOffsetAlignment ||
+            (View.OffsetInBytes && !View.NumElements) || uint64(View.OffsetInBytes) + Bytes > Size)
+        {
+            Error = TEXT("Raw SRV requires a ByteAddress ShaderResource buffer, aligned uint32 range and no format/stride/counter");
+            return false;
+        }
+        return true;
+    }
     if (View.BufferType != FRHIViewDesc::EBufferType::Typed ||
         (View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F) ||
         View.Stride || View.bAtomicCounter || View.bAppendBuffer ||
@@ -1589,7 +1731,8 @@ bool FWebGPUDynamicRHI::ResolveSampledTexture(FRHIResource *Resource, FWebGPUTex
     if (Resource->GetType() == RRT_ShaderResourceView)
     {
         const auto Info = static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Texture.SRV.GetViewInfo(Texture);
-        const uint32 Faces = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ? 6 : 1;
+        const uint32 Faces = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
+            Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? 6 : 1;
         for (uint32 Slice = Info.ArrayRange.First * Faces; Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
         for (uint32 Mip = Info.MipRange.First; Mip < uint32(Info.MipRange.First) + Info.MipRange.Num; ++Mip)
             if (!ValidateAccess(Texture, Access, Error, false, Plane, Mip, Slice))
@@ -2060,9 +2203,10 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                     check(View->GetResource()->GetType() == RRT_Texture);
                     auto* Texture = static_cast<FRHITexture*>(View->GetResource());
                     const auto Info = View->GetDesc().Texture.UAV.GetViewInfo(Texture);
-                    const uint32 Faces = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ? 6 : 1;
+                    const uint32 Faces = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
+                        Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? 6 : 1;
                     check(Binding->GetIntegerField(TEXT("storageImageFormat")) ==
-                        (Info.Format == PF_FloatRGBA ? 2 : 4));
+                        StorageImageFormat(Info.Format));
                     for (uint32 Slice = Info.ArrayRange.First * Faces; Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
                         RequireAccess(Texture, Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics,
                             false, 0, Info.MipLevel, Slice);
@@ -2157,7 +2301,7 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         switch (Binding->GetIntegerField(TEXT("descriptorType")))
         {
         case 0:
-            Entry.sampler.type = Depth || Name.Contains(TEXT("Point")) ?
+            Entry.sampler.type = Depth || Name.Contains(TEXT("Point")) || Name == TEXT("WaterDepthSampler") ?
                 WGPUSamplerBindingType_NonFiltering : WGPUSamplerBindingType_Filtering;
             break;
         case 2:
@@ -2165,17 +2309,18 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         {
             const uint32 Dimension = Binding->GetIntegerField(TEXT("textureDimension"));
             const bool Array = Binding->GetBoolField(TEXT("textureArrayed"));
-            const auto ViewDimension = Dimension == 3 ? WGPUTextureViewDimension_Cube :
+            const auto ViewDimension = Dimension == 3 ? (Array ? WGPUTextureViewDimension_CubeArray : WGPUTextureViewDimension_Cube) :
                 Dimension == 2 ? WGPUTextureViewDimension_3D :
                 Array ? WGPUTextureViewDimension_2DArray : WGPUTextureViewDimension_2D;
             if (Binding->GetIntegerField(TEXT("descriptorType")) == 3)
             {
-                Entry.storageTexture.access = WGPUStorageTextureAccess_WriteOnly;
+                FString Access;
+                Binding->TryGetStringField(TEXT("storageTextureAccess"), Access);
+                Entry.storageTexture.access = Access == TEXT("read_write") ? WGPUStorageTextureAccess_ReadWrite :
+                    Access == TEXT("read") ? WGPUStorageTextureAccess_ReadOnly : WGPUStorageTextureAccess_WriteOnly;
                 Entry.storageTexture.viewDimension = ViewDimension;
                 const uint32 ImageFormat = Binding->GetIntegerField(TEXT("storageImageFormat"));
-                check(ImageFormat == 2 || ImageFormat == 4);
-                Entry.storageTexture.format = ImageFormat == 2 ?
-                    WGPUTextureFormat_RGBA16Float : WGPUTextureFormat_RGBA8Unorm;
+                Entry.storageTexture.format = StorageFormat(ImageFormat);
             }
             else
             {
@@ -2298,19 +2443,40 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
         Rasterizer.CullMode == CM_CCW ? WGPUCullMode_Front : WGPUCullMode_None;
     TArray<WGPUColorTargetState> Targets;
     TArray<WGPUBlendState> Blends;
+    uint32 OutputMask = 0;
+    if (Pixel)
+    {
+        const auto Reflection = Pixel->Data.Metadata->GetObjectField(TEXT("reflection"));
+        for (const auto& Entry : Reflection->GetArrayField(TEXT("entry_points")))
+        {
+            if (Entry->AsObject()->GetStringField(TEXT("name")) != Pixel->Data.Entry)
+                continue;
+            for (const auto& Output : Entry->AsObject()->GetArrayField(TEXT("output_variables")))
+            {
+                double Location;
+                if (Output->AsObject()->TryGetNumberField(TEXT("location"), Location) && Location < 32)
+                    OutputMask |= 1u << uint32(Location);
+            }
+        }
+    }
     Blends.SetNum(In.RenderTargetsEnabled);
     for (uint32 Index = 0; Index < In.RenderTargetsEnabled; ++Index)
     {
         auto Target = WGPU_COLOR_TARGET_STATE_INIT;
-        Target.format = Format(EPixelFormat(In.RenderTargetFormats[Index]));
+        Target.format = Format(EPixelFormat(In.RenderTargetFormats[Index]),
+            EnumHasAnyFlags(In.RenderTargetFlags[Index], ETextureCreateFlags::SRGB));
         const auto &State = Blend.RenderTargets[Blend.bUseIndependentRenderTargetBlendStates ? Index : 0];
         auto &NativeBlend = Blends[Index];
         NativeBlend.color = {BlendOperation(State.ColorBlendOp), BlendFactor(State.ColorSrcBlend),
                              BlendFactor(State.ColorDestBlend)};
         NativeBlend.alpha = {BlendOperation(State.AlphaBlendOp), BlendFactor(State.AlphaSrcBlend),
                              BlendFactor(State.AlphaDestBlend)};
-        Target.blend = Pixel ? &NativeBlend : nullptr;
-        Target.writeMask = Pixel ? State.ColorWriteMask : WGPUColorWriteMask_None;
+        const bool Overwrite = State.ColorBlendOp == BO_Add && State.ColorSrcBlend == BF_One &&
+            State.ColorDestBlend == BF_Zero && State.AlphaBlendOp == BO_Add &&
+            State.AlphaSrcBlend == BF_One && State.AlphaDestBlend == BF_Zero;
+        const bool HasOutput = (OutputMask & (1u << Index)) != 0;
+        Target.blend = HasOutput && !Overwrite ? &NativeBlend : nullptr;
+        Target.writeMask = HasOutput ? State.ColorWriteMask : WGPUColorWriteMask_None;
         Targets.Add(Target);
     }
     WGPUShaderModule DepthOnlyFragment = nullptr;
@@ -2818,8 +2984,43 @@ void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUi
     RequireOwner();
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
-    check(Encoder && !Pass && View && Values == FUintVector4(0));
+    check(Encoder && !Pass && View);
     auto* Resource = View->GetResource();
+    if (Resource && Resource->GetType() == RRT_Texture)
+    {
+        auto* Texture = static_cast<FWebGPUTexture*>(Resource);
+        const auto Info = View->GetDesc().Texture.UAV.GetViewInfo(Texture);
+        check(IsUnsignedTextureFormat(Info.Format) &&
+            Texture->GetDesc().Dimension != ETextureDimension::Texture3D);
+        const uint32 Faces = Texture->GetDesc().IsTextureCube() ? 6 : 1;
+        for (uint32 Slice = Info.ArrayRange.First * Faces;
+             Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
+        {
+            RequireAccess(Texture, ERHIAccess::UAVCompute, false, 0, Info.MipLevel, Slice);
+            WGPUTextureViewDescriptor Desc = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
+            Desc.format = Format(Info.Format);
+            Desc.dimension = WGPUTextureViewDimension_2D;
+            Desc.baseMipLevel = Info.MipLevel;
+            Desc.mipLevelCount = 1;
+            Desc.baseArrayLayer = Slice;
+            Desc.arrayLayerCount = 1;
+            Desc.usage = WGPUTextureUsage_RenderAttachment;
+            auto Attachment = WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;
+            Attachment.view = wgpuTextureCreateView(Texture->Handle, &Desc);
+            Attachment.loadOp = WGPULoadOp_Clear;
+            Attachment.storeOp = WGPUStoreOp_Store;
+            Attachment.clearValue = {double(Values.X), double(Values.Y), double(Values.Z), double(Values.W)};
+            auto Clear = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
+            Clear.colorAttachmentCount = 1;
+            Clear.colorAttachments = &Attachment;
+            auto ClearPass = wgpuCommandEncoderBeginRenderPass(Encoder, &Clear);
+            wgpuRenderPassEncoderEnd(ClearPass);
+            wgpuRenderPassEncoderRelease(ClearPass);
+            wgpuTextureViewRelease(Attachment.view);
+        }
+        return;
+    }
+    check(Values == FUintVector4(0));
     FString Error;
     checkf(Resource && Resource->GetType() == RRT_Buffer &&
         ValidateUAV(static_cast<FRHIBuffer*>(Resource), View->GetDesc(), Error), TEXT("%s"), *Error);

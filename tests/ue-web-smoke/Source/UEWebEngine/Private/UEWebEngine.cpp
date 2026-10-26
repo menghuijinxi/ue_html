@@ -47,6 +47,7 @@ int32 Frames = 0;
 bool UseWebGPU = false;
 bool RenderScene = false;
 bool DefaultTemplate = false;
+bool DesktopRenderer = false;
 bool VisualTestClock = false;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
@@ -645,7 +646,8 @@ int32 StartEngine()
     std::printf("P3_ENGINE_LAYOUT {\"maxFieldAlignment\":%u,\"flags\":%u,\"pointerBytes\":%u}\n",
         Layout.MaxFieldAlignment, Layout.Flags, uint32(sizeof(void*)));
     const FString CommandLine = FString(StartupMap()) + (UseWebGPU ?
-        TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -es31 -windowed -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout") :
+        FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
+        TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout") :
         TEXT(" -nullrhi -sm5 -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout"));
     const int32 PreInitResult = GEngineLoop.PreInit(*CommandLine);
     if (PreInitResult != 0)
@@ -710,7 +712,8 @@ int32 StartEngine()
     if (!UseWebGPU)
         VerifyFileCache();
     const auto* SkinningScene = IConsoleManager::Get().FindConsoleVariable(TEXT("r.GPUSkin.UseSceneExtension"));
-    const EShaderPlatform WebPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_ES31"));
+    const EShaderPlatform WebPlatform = UseWebGPU ? GMaxRHIShaderPlatform :
+        FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_ES31"));
     check(WebPlatform != SP_NumPlatforms);
     std::printf("P3_ENGINE_READY {\"nullRHI\":%s,\"webGPUSceneEnabled\":%s,\"skinningSceneEnabled\":%s,"
         "\"mobileGPUSceneSetting\":%d,\"skinningSceneSetting\":%d,"
@@ -737,6 +740,7 @@ int main(int argc, char** argv)
         UseWebGPU |= FCStringAnsi::Strcmp(argv[Index], "-webgpu") == 0;
         RenderScene |= FCStringAnsi::Strcmp(argv[Index], "-WebRenderScene") == 0;
         DefaultTemplate |= FCStringAnsi::Strcmp(argv[Index], "-WebDefaultTemplate") == 0;
+        DesktopRenderer |= FCStringAnsi::Strcmp(argv[Index], "-WebDesktop") == 0;
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
         constexpr const ANSICHAR* MapOption = "-WebProjectMap=";
         if (FCStringAnsi::Strncmp(argv[Index], MapOption, FCStringAnsi::Strlen(MapOption)) == 0)

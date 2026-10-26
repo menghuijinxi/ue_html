@@ -76,6 +76,46 @@ static TSharedRef<FJsonObject> ReflectBlock(const SpvReflectBlockVariable &Block
     return Json;
 }
 
+static void RemoveUnusedGatherCapability(TArray<uint32>& Spirv)
+{
+    int32 CapabilityOffset = INDEX_NONE;
+    for (int32 Offset = 5; Offset < Spirv.Num();)
+    {
+        const uint32 Words = Spirv[Offset] >> 16;
+        const uint32 Opcode = Spirv[Offset] & 0xffff;
+        if (!Words || Words > uint32(Spirv.Num() - Offset))
+            return;
+        if (Opcode >= SpvOpImageSparseSampleImplicitLod && Opcode <= SpvOpImageSparseDrefGather)
+            return;
+        int32 ImageOperands = INDEX_NONE;
+        if (Opcode == SpvOpImageSampleImplicitLod || Opcode == SpvOpImageSampleExplicitLod
+            || Opcode == SpvOpImageSampleProjImplicitLod || Opcode == SpvOpImageSampleProjExplicitLod
+            || Opcode == SpvOpImageFetch || Opcode == SpvOpImageRead)
+            ImageOperands = 5;
+        else if (Opcode == SpvOpImageSampleDrefImplicitLod || Opcode == SpvOpImageSampleDrefExplicitLod
+            || Opcode == SpvOpImageSampleProjDrefImplicitLod || Opcode == SpvOpImageSampleProjDrefExplicitLod)
+            ImageOperands = 6;
+        else if (Opcode == SpvOpImageGather || Opcode == SpvOpImageDrefGather)
+        {
+            ImageOperands = 6;
+            if (Words > 6 && (Spirv[Offset + 6] & SpvImageOperandsConstOffsetMask))
+                return;
+        }
+        else if (Opcode == SpvOpImageWrite)
+            ImageOperands = 4;
+        if (ImageOperands != INDEX_NONE && Words > uint32(ImageOperands)
+            && (Spirv[Offset + ImageOperands] & (SpvImageOperandsOffsetMask | SpvImageOperandsConstOffsetsMask)))
+            return;
+        if (Opcode == SpvOpCapability && Words == 2 && Spirv[Offset + 1] == SpvCapabilityImageGatherExtended)
+            CapabilityOffset = Offset;
+        Offset += Words;
+    }
+    // DXC retains this declaration after eliminating extended gathers. Keep it whenever any
+    // instruction could still require extended offsets; never rewrite an image operation.
+    if (CapabilityOffset != INDEX_NONE)
+        Spirv.RemoveAt(CapabilityOffset, 2, EAllowShrinking::No);
+}
+
 static bool ValidateResourceOnlyUniform(const FJsonObject &Metadata, const FJsonObject &Parameter)
 {
     const int32 Slot = Parameter.GetIntegerField(TEXT("bufferIndex"));
@@ -281,7 +321,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261021-v18-FullCloudDensity-StructuredView-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261026-v23-StorageAccess-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -295,7 +335,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DefaultTemplateSkyStructuredView16_Tint20261009.190412_Uncompressed1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling22_Tint20261009.190412_Uncompressed1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -307,6 +347,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Loose Web archives use the engine's uncompressed entry format; no browser Oodle decoder is required.
         Input.CompressionFormat = NAME_None;
         Input.Environment.SetDefine(TEXT("COMPILER_WEBGPU"), 1);
+        Input.Environment.SetDefine(TEXT("EARLYDEPTHSTENCIL"), TEXT(""));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -325,6 +366,18 @@ class FWebGPUShaderFormat final : public IShaderFormat
             if (Match.FindNext())
             {
                 Source.InsertAt(Match.GetMatchBeginning(), TEXT("Structured"));
+                Output.EditSource() = FAnsiString(Source);
+            }
+            if (Input.ShaderFormat == UE::WebGPUShader::SM5Format)
+            {
+                // Web storage arrays preserve 32-bit typed-buffer indexing without texel-buffer objects.
+                const FRegexPattern TypedBuffer(TEXT("\\b(RW)?Buffer\\s*<\\s*((?:float|uint|int)[1-4]?)\\s*>"));
+                FRegexMatcher BufferMatch(TypedBuffer, Source);
+                TArray<int32> Insertions;
+                while (BufferMatch.FindNext())
+                    Insertions.Add(BufferMatch.GetMatchBeginning() + BufferMatch.GetCaptureGroup(1).Len());
+                for (int32 Index = Insertions.Num() - 1; Index >= 0; --Index)
+                    Source.InsertAt(Insertions[Index], TEXT("Structured"));
                 Output.EditSource() = FAnsiString(Source);
             }
         }
@@ -425,6 +478,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Inventory->SetObjectField(TEXT("materialPolicy"), MaterialPolicy);
         TSharedRef<FJsonObject> Settings = MakeShared<FJsonObject>();
         const TCHAR* SettingNames[] = {
+            TEXT("r.ForwardShading"), TEXT("r.DBuffer"), TEXT("r.AntiAliasingMethod"),
+            TEXT("r.DynamicGlobalIlluminationMethod"), TEXT("r.ReflectionMethod"), TEXT("r.Shadow.Virtual.Enable"),
             TEXT("r.Mobile.ShadingPath"), TEXT("r.MobileHDR"), TEXT("r.Mobile.AntiAliasing"),
             TEXT("r.Mobile.DBuffer"), TEXT("r.Mobile.EarlyZPass"), TEXT("r.Substrate"),
             TEXT("r.Mobile.SupportsGen4TAA"), TEXT("r.Mobile.AllowFramebufferFetch"),
@@ -575,7 +630,12 @@ class FWebGPUShaderFormat final : public IShaderFormat
                 Json->SetBoolField(TEXT("textureArrayed"), Binding->image.arrayed != 0);
                 Json->SetBoolField(TEXT("textureMultisampled"), Binding->image.ms != 0);
                 if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
+                {
                     Json->SetNumberField(TEXT("storageImageFormat"), Binding->image.image_format);
+                    Json->SetStringField(TEXT("storageTextureAccess"),
+                        Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_READABLE ? TEXT("write") :
+                        Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_WRITABLE ? TEXT("read") : TEXT("read_write"));
+                }
                 const auto *Type = Binding->type_description;
                 if (!Type || Type->traits.numeric.scalar.width != 32 ||
                     !(Type->type_flags & (SPV_REFLECT_TYPE_FLAG_FLOAT | SPV_REFLECT_TYPE_FLAG_INT)))
@@ -677,13 +737,14 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Metadata->SetObjectField(TEXT("resourceTable"), TableJson);
 
         CrossCompiler::FShaderConductorContext Context;
-        const ANSICHAR *Passes[] = {"--strip-reflect"};
+        const ANSICHAR *Passes[] = {"--strip-reflect", "--trim-capabilities"};
         if (!Context.OptimizeSpirv(Spirv, Passes, UE_ARRAY_COUNT(Passes)))
         {
             Context.FlushErrors(NativeOutput.Errors);
             Error = TEXT("Reflection extension stripping failed");
             return false;
         }
+        RemoveUnusedGatherCapability(Spirv);
         FString Tools = FPlatformMisc::GetEnvironmentVariable(TEXT("WEBGPU_TINT_DIR"));
         if (Tools.IsEmpty() || !FPaths::FileExists(Tools / TEXT("tint.exe")) ||
             !FPaths::FileExists(Tools / TEXT("tint_info.exe")))
@@ -704,9 +765,13 @@ class FWebGPUShaderFormat final : public IShaderFormat
                                      *SpirvPath);
         int32 ExitCode = -1;
         FString StandardOut, StandardError, Wgsl;
+        // Native HLSL permits implicit derivatives in material-dependent branches.
+        // Preserve that policy explicitly in WGSL instead of dropping mip selection.
+        const FString DerivativeOptions = Input.ShaderFormat == FName(TEXT("SF_WEBGPU_SM5"))
+            ? TEXT(" --allow-non-uniform-derivatives true") : TEXT("");
         const bool Executed = FPlatformProcess::ExecProcess(
             *(Tools / TEXT("tint.exe")),
-            *FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\""), *SpirvPath, *WgslPath), &ExitCode, &StandardOut,
+            *FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\"%s"), *SpirvPath, *WgslPath, *DerivativeOptions), &ExitCode, &StandardOut,
             &StandardError);
         if (!Executed || ExitCode != 0 || !FFileHelper::LoadFileToString(Wgsl, *WgslPath))
         {

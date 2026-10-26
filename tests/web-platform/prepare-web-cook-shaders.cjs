@@ -8,6 +8,73 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/TemporalAA.usf', [{
+    before: '\t\tOutputPayload.CocRadius = isnan(OutputPayload.CocRadius) ? 0.0 : OutputPayload.CocRadius;',
+    after: [
+      '\t\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t\t\t// Preserve the NaN guard without an unsupported WGSL floating-point classification.',
+      '\t\t\tbool InvalidCoc = (asuint(OutputPayload.CocRadius) & 0x7FFFFFFFu) > 0x7F800000u;',
+      '\t\t\tOutputPayload.CocRadius = InvalidCoc ? 0.0 : OutputPayload.CocRadius;',
+      '\t\t#else',
+      '\t\t\tOutputPayload.CocRadius = isnan(OutputPayload.CocRadius) ? 0.0 : OutputPayload.CocRadius;',
+      '\t\t#endif',
+    ].join('\n'),
+  }]],
+  ['Private/HeightFogPixelShader.usf', [{
+    before: '\tfloat LightShaftMask = Texture2DSample(OcclusionTexture, OcclusionSampler, OcclusionTexCoord).x;',
+    after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\tfloat LightShaftMask = Texture2DSampleLevel(OcclusionTexture, OcclusionSampler, OcclusionTexCoord, 0).x;',
+      '#else', '\tfloat LightShaftMask = Texture2DSample(OcclusionTexture, OcclusionSampler, OcclusionTexCoord).x;',
+      '#endif',
+    ].join('\n'),
+  }]],
+  ['Private/ReflectionEnvironmentPixelShader.usf',
+    [
+      '\tfloat4 ReflectionInput = Texture2DSample(ReflectionTexture, ReflectionTextureSampler, BufferUV);',
+      '\t\tReflectionInput = Texture2DSample(ReflectionTexture, ReflectionTextureSampler, BufferUV);',
+      '\t\t\tSSRReflection = Texture2DSample(ReflectionTexture, ReflectionTextureSampler, BufferUV);',
+    ].map(before => ({before, after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      before.replace('Texture2DSample(', 'Texture2DSampleLevel(').replace('BufferUV);', 'BufferUV, 0);'),
+      '#else', before, '#endif',
+    ].join('\n')}))],
+  ['Private/LightGridCommon.ush', [{
+    before: '#define LIGHT_GRID_USES_16BIT_BUFFERS (PLATFORM_SUPPORTS_BUFFER_LOAD_TYPE_CONVERSION && !SHADING_PATH_MOBILE)',
+    after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '#define LIGHT_GRID_USES_16BIT_BUFFERS 0', '#else',
+      '#define LIGHT_GRID_USES_16BIT_BUFFERS (PLATFORM_SUPPORTS_BUFFER_LOAD_TYPE_CONVERSION && !SHADING_PATH_MOBILE)',
+      '#endif',
+    ].join('\n'),
+  }]],
+  ['Private/ShadingModels.ush', [{
+    before: 'FDirectLighting IntegrateBxDF( FGBufferData GBuffer, half3 N, half3 V, FAreaLight AreaLight, FShadowTerms Shadow )\n{',
+    after: [
+      'FDirectLighting IntegrateBxDF( FGBufferData GBuffer, half3 N, half3 V, FAreaLight AreaLight, FShadowTerms Shadow )',
+      '{', '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t// Tint\'s SPIR-V reader cannot import the shared return blocks generated for this switch.',
+      '\t[branch] if (GBuffer.ShadingModelID == SHADINGMODELID_DEFAULT_LIT',
+      '\t\t|| GBuffer.ShadingModelID == SHADINGMODELID_SINGLELAYERWATER',
+      '\t\t|| GBuffer.ShadingModelID == SHADINGMODELID_THIN_TRANSLUCENT)',
+      '\t\treturn DefaultLitBxDF( GBuffer, N, V, AreaLight, Shadow );',
+      ...[
+        ['SUBSURFACE', 'Subsurface'], ['PREINTEGRATED_SKIN', 'PreintegratedSkin'],
+        ['CLEAR_COAT', 'ClearCoat'], ['SUBSURFACE_PROFILE', 'SubsurfaceProfile'],
+        ['TWOSIDED_FOLIAGE', 'TwoSided'], ['HAIR', 'Hair'], ['CLOTH', 'Cloth'], ['EYE', 'Eye'],
+      ].flatMap(([id, fn]) => [
+        `\t[branch] if (GBuffer.ShadingModelID == SHADINGMODELID_${id})`,
+        `\t\treturn ${fn}BxDF( GBuffer, N, V, AreaLight, Shadow );`,
+      ]),
+      '#if SUBSTRATE_ENABLED',
+      '\t[branch] if (GBuffer.ShadingModelID == SHADINGMODELID_SUBSTRATE_TOON)',
+      '\t\treturn ToonBxDF( GBuffer, N, V, AreaLight, Shadow );',
+      '#endif', '\treturn (FDirectLighting)0;', '#else',
+    ].join('\n'),
+  }, {
+    before: '\t\t\treturn (FDirectLighting)0;\n\t}\n}',
+    after: '\t\t\treturn (FDirectLighting)0;\n\t}\n#endif\n}',
+  }]],
   ['Private/ShadowProjectionPixelShader.usf', [{
     before: '\tfloat LightSpacePixelDepthForOpaque = min(ShadowZ, 0.99999f);',
     after: [
@@ -86,6 +153,20 @@ const overrides = new Map([
     ].join('\n')}]];
   }),
   ['Private/SkyAtmosphere.usf', [
+    ...[
+      'RWTexture2D<float4> TransmittanceLutUAV;',
+      'RWTexture2D<float4> MultiScatteredLuminanceLutUAV;',
+    ].map(declaration => ({
+      before: `#if SHADING_PATH_MOBILE\n${declaration}`,
+      after: `#if SHADING_PATH_MOBILE || (defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n${declaration}`,
+    })),
+    ...[
+      'TransmittanceLutUAV[int2(PixPos)] = float4(transmittance, 0.0f);',
+      'MultiScatteredLuminanceLutUAV[int2(PixPos)] = float4(L * Atmosphere.MultiScatteringFactor, 0.0f);',
+    ].map(assignment => ({
+      before: `#if SHADING_PATH_MOBILE\n\t${assignment}`,
+      after: `#if SHADING_PATH_MOBILE || (defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\t${assignment}`,
+    })),
     ...['TransmittanceLutUAV', 'MultiScatteredLuminanceLutUAV', 'SkyViewLutUAV',
       'CameraAerialPerspectiveVolumeUAV', 'CameraAerialPerspectiveVolumeMieOnlyUAV',
       'CameraAerialPerspectiveVolumeRayOnlyUAV'].map(name => {
@@ -248,7 +329,7 @@ const overrides = new Map([
   ['Public/Platform.ush', [{
     before: '#endif // #ifndef DISPATCH_INDIRECT_UINT_COUNT',
     after: ['#endif // #ifndef DISPATCH_INDIRECT_UINT_COUNT', '',
-      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && FEATURE_LEVEL < FEATURE_LEVEL_SM5',
       'void WriteDispatchIndirectArgs(RWStructuredBuffer<uint> RWIndirectDispatchArgsBuffer, in uint InIndex, in uint InIndirectArgX, in uint InIndirectArgY, in uint InIndirectArgZ)',
       '{',
       '\tRWIndirectDispatchArgsBuffer[DISPATCH_INDIRECT_UINT_COUNT * InIndex + 0] = InIndirectArgX;',

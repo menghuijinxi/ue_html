@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-27：默认关卡桌面 SM5 延迟渲染首版已发布到 `http://127.0.0.1:8765/build/ue-default-template/index.html`，候选目录为 `build/ue-default-template-desktop`。普通构建、完整 Cook、3158 个模块的双浏览器编译、资源 GPU 回读、实际 GBuffer/桌面光照通道及原生同配置同视角对照均通过；全图平均 RGB 通道误差约 1.3/255。实际发布地址在 Chrome/Edge 分别完成一分钟运行、缩放和交互。仍保留一次 Edge 冷启动设备错误，启动稳定性未解决；未接入 Lumen/完整多次反弹 GI。命令、证据和边界见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)，汇总入口为 `verify-web-default-desktop-delivery.cjs`。ES3.1 历史验证不作为桌面效果达标依据。
+
 2026-10-26：新增基于默认关卡的独立材质测试场，16 个实际 Lit 材质球分组检查粗糙度、金属、高光、透明度，并提供接地/悬空阴影参照、单组近景、固定曝光和光照对照。入口 `build-web-material-lab.ps1`、`probe-web-material-lab.cjs`；浏览器地址为 `http://127.0.0.1:8765/build/material-lab/index.html`。参数、验证及画质边界见 [材质测试场](../../UE58_MATERIAL_LAB.md)。
 
 2026-10-23：修复第 308 帧 `SlateElementIndexBuffer` 的 RDG 收尾状态断言，并补齐 Slate 的 `VET_UShort2 → Uint16x2` 顶点格式。新增 `probe-web-slate-transitions.ps1` 九项原生回归；`probe-web-project-stability.cjs --slate-menu` 先真实按 Esc，再加载项目原有换材质控件，覆盖持续绘制、移除/重建和缩放，汇总入口 `verify-web-slate-menu.cjs`。切图 `InvalidURL`、控件外观及先前绑定组崩溃仍未验收；详情见 [项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)。
@@ -16,7 +18,7 @@
 
 2026-10-23 已恢复别墅指定 HDRI SkyLight 与移动前向局部灯，接入 IES 栅格图集；保留原光源强度、曝光和 BC mip 链。Chrome/Edge 室内亮度及开关灯恢复对照、缺失天空光数据拦截、默认关卡回归和严格来源汇总均通过。当前约 5 FPS，仍有冷启动崩溃记录，尚未完成编辑器画质一致、长期稳定性或 8 GB 总显存验收。
 
-当前已用普通 UBT 构建的 wasm64 Engine 打包并运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光、原材质体积云和指数高度雾。云已接入原生低分辨率步进、历史重建和深度合成；Chrome/Edge 完整效果与窗口缩放回归通过。冷启动回归曾在 Chrome 遇到浏览器 DXC 断言后设备丢失，整体稳定性验收尚未通过，具体证据见默认关卡进度。当前采用 ES3.1 移动渲染，体积雾、云影等效果仍未接入。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
+以下保留 ES3.1 路径的历史结果，当前默认发布包已切换桌面 SM5：普通 UBT 构建的 wasm64 Engine 已打包运行原始默认关卡，支持原生 Pawn 交互、移动 Lit、天空大气、HDR、FXAA、Bloom、自动曝光、原材质体积云和指数高度雾。云接入原生低分辨率步进、历史重建和深度合成；Chrome/Edge 完整效果与窗口缩放回归通过。冷启动回归曾在 Chrome 遇到浏览器 DXC 断言后设备丢失，整体稳定性验收尚未通过，具体证据见默认关卡进度。体积雾、云影等效果未接入。没有使用像素流或收费 Web SDK，保留引擎 UMG/Slate 依赖。
 
 启动故障现已在不加载 UE 的实际管线回放及独立 DXC 中复现。受限核心条件下完整效果对照可以通过，默认调度也有长循环通过的反例，尚不能据此认定硬件损坏或编译器并发缺陷；诊断复现见 [DXC 主机对照](H:/ue_html/tests/web-platform/diagnostics/README.md)。限制核心仅用于测试，不改变发布包或正常页面。
 

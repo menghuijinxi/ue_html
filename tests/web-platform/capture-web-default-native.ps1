@@ -6,7 +6,9 @@ $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskInput = Join-Path $PSScriptRoot "results/default-shadow-native-$Mode.json"
 $taskLog = Join-Path $PSScriptRoot "results/default-shadow-native-$Mode.log"
-if (-not (Test-Path -LiteralPath $taskInput)) { throw 'Run probe-web-default-shadow-artifacts.cjs first.' }
+if (-not (Test-Path -LiteralPath $taskInput)) {
+    throw 'Run probe-web-default-desktop.cjs for desktop, or probe-web-default-shadow-artifacts.cjs for mobile first.'
+}
 $taskArguments = @(
     "$taskRoot/tests/ue-shader-host/UEShaderHost.uproject",
     '/Engine/Maps/Templates/Template_Default',
@@ -18,7 +20,8 @@ $taskArguments = @(
 )
 $taskArguments += @('-d3d12', '-sm5')
 if ($Mode -eq 'mobile') { $taskArguments += '-WebNativeMobilePreview' }
-$taskSettings = Get-Content (Join-Path $PSScriptRoot 'cook-profiles/DefaultTemplateEngine.ini') |
+$taskProfile = if ($Mode -eq 'desktop') { 'DefaultTemplateDesktopEngine.ini' } else { 'DefaultTemplateEngine.ini' }
+$taskSettings = Get-Content (Join-Path $PSScriptRoot "cook-profiles/$taskProfile") |
     Where-Object { $_ -match '^[a-zA-Z][a-zA-Z0-9.]*=' }
 $taskArguments += @($taskSettings | ForEach-Object { "-ini:Engine:[SystemSettings]:$_" })
 $taskStarted = Get-Date

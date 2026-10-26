@@ -178,7 +178,8 @@ foreach ($taskPart in Get-ChildItem -LiteralPath $taskOriginalEngineModule) {
 }
 foreach ($taskEngineSource in @('Private/Shader/Preshader2.cpp', 'Private/SparseVolumeTexture/SparseVolumeTextureData.cpp',
     'Private/VolumeTexture.cpp', 'Private/Rendering/Texture3DResource.cpp', 'Private/Materials/MaterialExpressions.cpp',
-    'Private/UnrealEngine.cpp', 'Private/SceneTexturesConfig.cpp',
+    'Private/UnrealEngine.cpp', 'Private/SceneTexturesConfig.cpp', 'Private/PhysicsField/PhysicsFieldComponent.cpp',
+    'Private/Rendering/SubsurfaceProfile.cpp',
     'Private/Materials/MeshMaterialShader.cpp',
     'Private/SparseVolumeTexture/SparseVolumeTextureUpload.cpp',
     'Private/GPUSort.cpp', 'Private/GPUBitonicSort.cpp', 'Private/GPUSortManager.cpp',
@@ -252,7 +253,8 @@ foreach ($taskPart in Get-ChildItem -LiteralPath $taskOriginalRendererModule) {
 $taskSceneCulling = 'Private/SceneCulling/SceneCullingRenderer.cpp'
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/$taskSceneCulling") -Destination (Join-Path $taskRendererModule $taskSceneCulling) -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp') -Destination (Join-Path $taskRendererModule 'Private/FXRenderingUtils.cpp') -Force
-foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/MobileFogRendering.cpp', 'Private/ShaderPrint.cpp',
+foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/IndirectLightRendering.cpp',
+    'Private/DistortionRendering.cpp', 'Private/MobileFogRendering.cpp', 'Private/ShaderPrint.cpp',
     'Private/SystemTextures.cpp', 'Private/MobileBasePassRendering.cpp', 'Private/ReflectionEnvironmentCapture.cpp',
     'Private/HairStrands/RenderCurveSceneExtension.cpp',
     'Private/Nanite/NaniteMaterialsSceneExtension.cpp', 'Private/Nanite/NaniteOwnershipVisibilitySceneExtension.cpp',
@@ -261,6 +263,8 @@ foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/Mo
     'Private/OIT/OIT.cpp',
     'Private/PostProcess/SubpixelMorphologicalAA.cpp', 'Private/PostProcess/PostProcessing.cpp',
     'Private/PostProcess/PostProcessMobile.cpp', 'Private/PostProcess/PostProcessCombineLUTs.cpp',
+    'Private/PostProcess/PostProcessHistogram.cpp', 'Private/PostProcess/PostProcessWeightedSampleSum.cpp',
+    'Private/PostProcess/PostProcessUpscale.cpp',
     'Private/SkyAtmosphereRendering.cpp', 'Private/SkyPassRendering.cpp', 'Private/VolumetricCloudRendering.cpp',
     'Private/VolumetricRenderTarget.cpp', 'Private/ScreenPass.cpp',
     'Private/VisualizeLightShape.cpp', 'Private/PostProcess/PostProcessVisualizeHDR.cpp',

@@ -239,6 +239,72 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                        static_cast<FRHIShaderResourceView *>(Bound->GetReference())->GetTexture()->GetRefCount() >= 1);
         }
         Record(TEXT("graphics-pso-reused-for-srv-and-texture"), RHI.GraphicsPipelinesCreated == 1 && RHI.Draws == 6);
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebDesktopTextureProbe")))
+        {
+            auto Desc = FRHITextureCreateDesc::Create2DArray(TEXT("DesktopArrayProbe"), 4, 4, 2, PF_R32_UINT)
+                .SetFlags(ETextureCreateFlags::ShaderResource | ETextureCreateFlags::UAV)
+                .SetNumMips(3).SetInitialState(ERHIAccess::UAVCompute).SetInitActionInitializer();
+            auto Init = Cmd.CreateTextureInitializer(Desc);
+            for (int32 Layer = 0; Layer < 2; ++Layer)
+            for (int32 Mip = 0; Mip < 3; ++Mip)
+            {
+                auto Subresource = Init.GetTexture2DArraySubresource(Layer, Mip);
+                auto* Values = static_cast<uint32*>(Subresource.Data);
+                for (uint64 Index = 0; Index < Subresource.Size / sizeof(uint32); ++Index)
+                    Values[Index] = 0x11223344u + Layer * 0x10000u + Mip;
+            }
+            auto Array = Init.Finalize();
+            const auto ReadArray = [&](bool Cleared) {
+                Cmd.Transition(FRHITransitionInfo(Array, ERHIAccess::UAVCompute, ERHIAccess::CopySrc));
+                Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+                TArray<uint8> Packed;
+                bool Match = true;
+                for (uint32 Mip = 0; Mip < 3; ++Mip)
+                {
+                    const uint32 Size = 4u >> Mip, LayerBytes = 256u * Size;
+                    auto Readback = RHI.CreateBuffer(LayerBytes * 2, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+                    auto Encoder = wgpuDeviceCreateCommandEncoder(RHI.Device, nullptr);
+                    auto Src = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+                    Src.texture = static_cast<FWebGPUTexture*>(Array.GetReference())->Handle;
+                    Src.mipLevel = Mip;
+                    auto Dst = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+                    Dst.buffer = Readback;
+                    Dst.layout.bytesPerRow = 256;
+                    Dst.layout.rowsPerImage = Size;
+                    const WGPUExtent3D Extent{Size, Size, 2};
+                    wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Src, &Dst, &Extent);
+                    auto Commands = wgpuCommandEncoderFinish(Encoder, nullptr);
+                    wgpuQueueSubmit(RHI.Queue, 1, &Commands);
+                    const auto Bytes = RHI.MapBuffer(Readback, LayerBytes * 2);
+                    Match &= Bytes.Num() == LayerBytes * 2;
+                    for (uint32 Layer = 0; Bytes.Num() == LayerBytes * 2 && Layer < 2; ++Layer)
+                    for (uint32 Y = 0; Y < Size; ++Y)
+                    for (uint32 X = 0; X < Size; ++X)
+                    {
+                        uint32 Value;
+                        FMemory::Memcpy(&Value, Bytes.GetData() + Layer * LayerBytes + Y * 256 + X * 4, 4);
+                        const uint32 Expected = Cleared && Layer == 1 && Mip == 1 ?
+                            0xA1B2C3D4u : 0x11223344u + Layer * 0x10000u + Mip;
+                        Match &= Value == Expected;
+                        Packed.Append(reinterpret_cast<const uint8*>(&Value), sizeof(Value));
+                        ++Checked;
+                    }
+                    wgpuCommandBufferRelease(Commands);
+                    wgpuCommandEncoderRelease(Encoder);
+                    wgpuBufferRelease(Readback);
+                }
+                const FString Name = Cleared ? TEXT("desktop-array-clear-range-isolation") :
+                    TEXT("desktop-array-initializer-all-mips-and-layers");
+                Record(Name, Match && Packed.Num() == 42 * sizeof(uint32));
+                check(FFileHelper::SaveArrayToFile(Packed, *(Output / (Mode + TEXT("-") + Name + TEXT(".bin")))));
+                Cmd.Transition(FRHITransitionInfo(Array, ERHIAccess::CopySrc, ERHIAccess::UAVCompute));
+            };
+            ReadArray(false);
+            auto UAV = Cmd.CreateUnorderedAccessView(Array, FRHIViewDesc::CreateTextureUAV()
+                .SetDimensionFromTexture(Array).SetMipLevel(1).SetArrayRange(1, 1));
+            Cmd.ClearUAVUint(UAV, FUintVector4(0xA1B2C3D4u));
+            ReadArray(true);
+        }
         if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureIESProbe")))
         {
             auto Desc = FRHITextureCreateDesc::Create2DArray(TEXT("IESArrayProbe"), 4, 4, 2, PF_R16F)

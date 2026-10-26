@@ -130,7 +130,7 @@ class FWebGPUTexture final : public FRHITexture
     TMap<uint32, TArray<uint8>> MipLocks;
     TMap<uint32, WGPUTextureView> AttachmentViews;
     bool SurfaceFrameActive = true;
-    uint32 LayerCount() const { return GetDesc().IsTextureCube() ? 6u : uint32(GetDesc().ArraySize); }
+    uint32 LayerCount() const { return uint32(GetDesc().ArraySize) * (GetDesc().IsTextureCube() ? 6u : 1u); }
     FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle)
         : FRHITexture(Desc), Handle(InHandle),
           State(Desc.InitialState), StencilState(Desc.InitialState)
@@ -139,10 +139,11 @@ class FWebGPUTexture final : public FRHITexture
         SubresourceStates.Init(FWebGPUResourceState(Desc.InitialState),
             Desc.NumMips * LayerCount() - 1);
         WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
-        if (Desc.Dimension == ETextureDimension::TextureCube)
+        if (Desc.IsTextureCube())
         {
-            Sample.dimension = WGPUTextureViewDimension_Cube;
-            Sample.arrayLayerCount = 6;
+            Sample.dimension = Desc.Dimension == ETextureDimension::TextureCubeArray
+                ? WGPUTextureViewDimension_CubeArray : WGPUTextureViewDimension_Cube;
+            Sample.arrayLayerCount = LayerCount();
             Sample.usage = WGPUTextureUsage_TextureBinding;
             View = wgpuTextureCreateView(Handle, &Sample);
         }
@@ -431,7 +432,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     WGPUDevice Device = nullptr;
     WGPUQueue Queue = nullptr;
     WGPULimits Limits = WGPU_LIMITS_INIT;
-    TOptional<FPixelFormatInfo> PreviousDepthFormat, PreviousStencilFormat, PreviousShadowFormat, PreviousPackedHDRFormat;
+    TOptional<FPixelFormatInfo> PreviousDepthFormat, PreviousStencilFormat, PreviousShadowFormat, PreviousPackedHDRFormat,
+        PreviousFloatRGBFormat;
     WGPUCommandEncoder Encoder = nullptr;
     WGPURenderPassEncoder Pass = nullptr;
     TRefCountPtr<FWebGPUGraphicsPipeline> GraphicsPipeline;

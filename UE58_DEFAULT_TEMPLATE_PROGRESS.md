@@ -259,9 +259,47 @@
 - 最终独立包在两浏览器的原图、方向光/天空关闭与恢复、竖屏/窗口恢复检查通过，无页面或 GPU 错误；内容包和配置哈希破坏均在开始渲染前拦截。完整画面证据为 `web-default-scene-results.json`，加载、诊断和触屏分别见 `web-startup-transfers-current-results.json`、`web-default-diagnostics-current-results.json`、`web-default-touch-current-results.json`。
 - 当前服务继续监听 `0.0.0.0:8765`，普通入口刷新后即可显示加载界面。桌面模拟及短时回归不代表手机真机或长期性能验收，本轮没有重新测试真机。
 
-## 默认关卡的复现入口
+## 2026-10-27：默认关卡桌面 SM5 首版已发布
 
-以下命令从工作区根目录执行。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。随后构建普通 UBT 目标、Cook 原图、Stage、生成独立目录、验收独立目录。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
+- 首版目标仍是 `/Engine/Maps/Templates/Template_Default`。新增独立 SM5 延迟渲染 Cook、Stage 和候选包，启动参数与资源清单共同区分桌面和 ES3.1，防止仅改页面标签或混用着色器档案。原地图、灯光和材质资源不修改，八个测试球继续以运行时附加方式创建。
+- Web RHI 增加桌面 GBuffer/速度缓冲所需格式、立方体数组、数组各层 mip 初始化、整数纹理局部清零和设备限额申请。修正 GBuffer sRGB 目标、没有像素输出的附件写掩码和不透明覆盖的混合状态；存储纹理布局使用实际反射的格式及读写权限。桌面包启动前检查 Tier1、Tier2、RG11B10 可渲染和 Float32 可过滤能力。
+- 着色器转换 v23 增加桌面 32 位类型缓冲映射、保留纹理隐式 mip 选择的导数诊断策略，以及仅删除已无对应指令的扩展 gather 能力声明。天空大气存储纹理使用实际可写的 RGBA16F；曝光使用非原子直方图和匹配的 RGBA32F 存储目标。Subsurface Profile 默认查找表使用可过滤的半浮点编码。
+- 保留 UE 桌面 BRDF、直接光和天空反射代码，Web 分支只处理 Tint 导入限制。TAA 的 NaN 检测改用等价的位检测；全局排列筛选正确识别布尔维度，按平台能力排除未实现的 MSAA 扭曲和双源混合变体。未实现的可选桌面通道仍通过 Web 局部能力限制处理。
+- Bloom 使用 UE 原有手工边界权重处理黑色边界，空间放大沿用着色器现有的视口内采样约束；两处仅为 Web 选择 Clamp sampler，没有在 RHI 全局把 Border 改为 Clamp。
+- 原生 RenderCore、Renderer、RHI 和普通 UBT WASM 编译链接通过，安装引擎来源哈希保持不变。无着色器 DDC 的完整 SM5 Cook 通过：202 包、零错误、15 个警告；3160 条转换作业记录中有 3158 份成功模块产物。Chrome、Edge 分别验证全部 3158 个模块，零编译错误；实际关卡另行验证管线和绘制，模块数不作为场景成功的替代。
+- Stage 为 425 个文件、223013548 字节，候选独立包为八个文件、405286077 字节。`probe-web-desktop-resources.cjs` 在 Native Dawn/D3D12 的记录/直通模式各校验 6228 个纹理值、1792 个缓冲值，包含数组所有层和 mip、只清除指定层/mip 且相邻内容不变、Raw Buffer SRV 范围和生命周期的真实 GPU 回读。未在本轮运行旧 IES 负例组合；其中“数组不接受 CPU 初始化或多 mip”的旧断言已不适用于扩展后的能力，后续应更新，不能把本轮定向回归写成全部旧探针通过。
+- 候选包在 Chrome、Edge 分别通过八球、原图、同视角截图、390×844 竖屏、窗口恢复、实际 Pawn 移动/转向和失焦释放；均完成一分钟持续运行，最终约 4070 帧，预热后线性内存增长为零、统计历史保持 14 帧，页面和 GPU 校验错误为零。观察到真实 GBuffer、`FDeferredLightPS`、`FReflectionEnvironmentSkyLightingPS`、`FTonemapPS` 和计算派发。
+- 使用安装版 UE 只读启动原生 D3D12 SM5，采用相同地图、首版渲染配置、测试球材质/位置及相机，生成 `results/default-shadow-native-desktop-baseline.png`。`verify-web-default-desktop-comparison.cjs` 的四个区域对照均通过：Chrome/Edge 全图平均 RGB 通道绝对误差分别约 1.288/1.278（满量程 255），材质区约 1.127/1.126，地面约 0.765/0.764，天空约 2.051/2.022。这是同配置 SM5 对照，不是与开启 Lumen 的编辑器默认全效果等价。
+- 已发布到 `http://127.0.0.1:8765/build/ue-default-template/index.html`；旧 ES3.1 发布包保留在 `build/ue-default-template-before-desktop-ece9934f7aaa`。发布器要求候选双浏览器、资源回读、原生对照和文件哈希全部通过，最后复制 HTML。实际发布地址复验通过：Chrome 4073 帧、Edge 4067 帧，均含一分钟持续运行、缩放及交互，预热后线性内存增长为零、无页面/GPU 校验错误。
+- 冷启动稳定性尚未解决：发布后首次 Edge 检查在第 5 帧报 `A valid external Instance reference no longer exists.`，未出现先行 GPU 参数校验错误；原始失败保留为 `results/web-default-desktop-published-edge-cold-start-failure.json`。随后单独启动 Edge 通过，不足以证明双浏览器压力或实例生命周期就是原因，也不能覆盖既有 DXC/设备丢失问题。正常页面未限制 CPU 核心、未关闭云规避故障；本次一分钟测试不等于长期稳定性验收。
+- 首版配置关闭 Lumen、VSM、光追和 Substrate，使用 SM5 桌面延迟渲染、4096 CSM、动态天空及天空环境光/反射，保留本地 IO 和纹理流送。当前不宣称具有完整实时多次反弹 GI，不等同于移植 UE 的全部 SM6 功能，也未完成别墅桌面路径或 8 GB 总显存验收。手机版及按能力自动选择构建留待后续独立实现。
+
+桌面版本的复现命令（浏览器验收顺序执行）：
+
+```powershell
+& ./tests/web-platform/build-native-rendercore.ps1 -Module RenderCore
+& ./tests/web-platform/build-native-rendercore.ps1 -Module Renderer
+& ./tests/web-platform/build-web-engine.ps1 -MaxParallelActions 4
+& ./tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-SM5 -Scene DefaultTemplate -StopOnShaderError -ValidateShaderJobCache
+node tests/web-platform/stage-web-engine.cjs --default-template --desktop
+node tests/web-platform/package-web-default-template.cjs --desktop
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-desktop-resources.cjs
+node tests/web-platform/probe-web-default-desktop.cjs
+node tests/web-platform/probe-web-default-desktop.cjs --edge
+& ./tests/web-platform/capture-web-default-native.ps1 -Mode desktop
+node tests/web-platform/verify-web-default-desktop-comparison.cjs
+node tests/web-platform/publish-web-default-desktop.cjs
+node tests/web-platform/probe-web-default-desktop.cjs --published
+node tests/web-platform/probe-web-default-desktop.cjs --published --edge
+node tests/web-platform/verify-web-default-desktop-delivery.cjs
+```
+
+`probe-web-desktop-resources.cjs` 需要最新普通原生 RHI 插件构建及既有 Worker 测试着色器；其报告记录 DLL、源码、构建日志和 GPU 回读哈希。全部转换模块检查另用 `probe-web-desktop-shader-modules.cjs --input=<本次 Cook 的 ShaderConversion 目录>`，再加 `--edge` 检查另一个浏览器。最终验收报告为 `results/web-default-desktop-delivery-results.json`，同时核验构建、Cook、Stage、包、模块、资源、原生截图、候选和发布实测的来源；`startupStabilityVerified=false` 明确保留冷启动边界。
+
+## 移动路径的历史复现入口
+
+以下命令从工作区根目录执行，是 ES3.1 历史流程；默认发布地址现已为桌面 SM5。运行旧流程的打包命令会覆盖当前默认目录，应先保留桌面包，或在完成后重新发布已经验收的桌面候选包。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。
 
 ```powershell
 & ./tests/web-platform/build-native-rendercore.ps1 -Module RenderCore

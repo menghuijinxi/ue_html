@@ -24,8 +24,30 @@ const previousCookFile = path.join(__dirname, es31 ?
   'results/web-engine-webgpu-es31-default-cook-results.json' : 'results/web-engine-webgpu-cook-results.json');
 const previousCook = fs.existsSync(previousCookFile) ?
   JSON.parse(fs.readFileSync(previousCookFile, 'utf8').replace(/^\uFEFF/, '')) : null;
-const recordedHostProduct = file => previousCook?.hostProducts?.some(item =>
-  path.resolve(item.file) === path.resolve(file) && valid(item));
+function recordedHostProduct(file) {
+  if (previousCook?.hostProducts?.some(item =>
+    path.resolve(item.file) === path.resolve(file) && valid(item))) return true;
+  // A failed preparation can replace the latest report before all DLLs are copied.
+  // Cook output directories retain the successful preparation snapshots.
+  const outputs = path.join(__dirname, 'build');
+  for (const group of fs.readdirSync(outputs, {withFileTypes: true})) {
+    if (!group.isDirectory() || !/^web-engine-webgpu(?:-es31|-sm5)?(?:-default)?-cook$/.test(group.name)) continue;
+    const directory = path.join(outputs, group.name);
+    for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
+      if (!entry.isDirectory() || !/^\d{8}-\d{6}$/.test(entry.name)) continue;
+      const snapshot = path.join(directory, entry.name, 'host-preparation-report.json');
+      if (!fs.existsSync(snapshot)) continue;
+      const prepared = JSON.parse(fs.readFileSync(snapshot, 'utf8').replace(/^\uFEFF/, ''));
+      if (!prepared.pass || path.resolve(prepared.host) !== host) continue;
+      const product = prepared.products?.find(item =>
+        path.resolve(item.file) === path.resolve(file) && valid(item));
+      if (!product) continue;
+      (report.reusedHostProducts ||= []).push({snapshot: audit(snapshot), product});
+      return true;
+    }
+  }
+  return false;
+}
 
 try {
   fs.mkdirSync(build, {recursive: true});

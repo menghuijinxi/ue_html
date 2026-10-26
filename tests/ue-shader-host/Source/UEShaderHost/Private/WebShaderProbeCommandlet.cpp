@@ -131,6 +131,56 @@ UWebShaderProbeCommandlet::UWebShaderProbeCommandlet()
 
 int32 UWebShaderProbeCommandlet::Main(const FString &Params)
 {
+    if (FParse::Param(*Params, TEXT("DesktopShaderProbe")))
+    {
+        FString TypeName, OutputDirectory;
+        int32 Permutation = 0;
+        if (!FParse::Value(*Params, TEXT("ShaderType="), TypeName) ||
+            !FParse::Value(*Params, TEXT("Output="), OutputDirectory))
+            return 1;
+        FParse::Value(*Params, TEXT("Permutation="), Permutation);
+        const EShaderPlatform Platform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
+        const IShaderFormat* Format = GetTargetPlatformManagerRef().FindShaderFormat(UE::WebGPUShader::SM5Format);
+        if (Platform == SP_NumPlatforms || !Format)
+            return 1;
+        for (TLinkedList<FShaderType*>::TIterator It(FShaderType::GetTypeList()); It; ++It)
+        {
+            const FShaderType* Type = *It;
+            if (TypeName != Type->GetName())
+                continue;
+            const FGlobalShaderType* GlobalType = Type->GetGlobalShaderType();
+            if (!GlobalType || !GlobalType->ShouldCompilePermutation(Platform, Permutation, EShaderPermutationFlags::None))
+                return 1;
+            FShaderCompileJob Job;
+            Job.Key = FShaderCompileJobKey(Type, Platform, nullptr, Permutation);
+            GlobalType->SetupCompileEnvironment(Platform, Permutation, EShaderPermutationFlags::None, Job.Input.Environment);
+            GlobalBeginCompileShader(TEXT("WebDesktopShaderProbe"), nullptr, Type, nullptr, Permutation,
+                Type->GetShaderFilename(), Type->GetFunctionName(), FShaderTarget(Type->GetFrequency(), Platform),
+                Job.Input, false);
+            Job.Input.ShaderFormat = UE::WebGPUShader::SM5Format;
+            Format->ModifyShaderCompilerInput(Job.Input);
+            const bool Preprocessed = Format->PreprocessShader(Job.Input, Job.Input.Environment, Job.PreprocessOutput);
+            if (Preprocessed)
+                Format->CompilePreprocessedShader(Job.Input, Job.PreprocessOutput, Job.Output);
+            TSharedRef<FJsonObject> Report = MakeShared<FJsonObject>();
+            Report->SetStringField(TEXT("shaderType"), TypeName);
+            Report->SetNumberField(TEXT("permutation"), Permutation);
+            Report->SetBoolField(TEXT("pass"), Preprocessed && Job.Output.bSucceeded);
+            TArray<TSharedPtr<FJsonValue>> Errors;
+            for (const FShaderCompilerError& Error : Job.Output.Errors)
+                Errors.Add(MakeShared<FJsonValueString>(Error.GetErrorString()));
+            Report->SetArrayField(TEXT("errors"), Errors);
+            FString Json;
+            FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
+            IFileManager::Get().MakeDirectory(*OutputDirectory, true);
+            FFileHelper::SaveStringToFile(Json, *(OutputDirectory / TEXT("desktop-shader-results.json")),
+                FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
+            UE_LOG(LogTemp, Display, TEXT("WEB_DESKTOP_SHADER %s permutation=%d pass=%d"),
+                *TypeName, Permutation, Preprocessed && Job.Output.bSucceeded);
+            return Preprocessed && Job.Output.bSucceeded ? 0 : 1;
+        }
+        return 1;
+    }
     if (FParse::Param(*Params, TEXT("MaterialPolicyProbe")))
     {
         FString OutputFile;

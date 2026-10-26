@@ -19,7 +19,7 @@ $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-platform-host/Engine'
 $taskWebGPU = $Mode -ne 'NullRHI-only'
 $taskES31 = $Mode -eq 'WebGPU-ES31'
-if ($Scene -eq 'DefaultTemplate' -and -not $taskES31) { throw 'DefaultTemplate requires WebGPU-ES31.' }
+if ($Scene -eq 'DefaultTemplate' -and -not $taskWebGPU) { throw 'DefaultTemplate requires WebGPU Cook.' }
 $taskMap = if ($Scene -eq 'DefaultTemplate') { '/Engine/Maps/Templates/Template_Default' } else { '/Game/WebMinimal' }
 if ($Scene -eq 'Project') {
     if (-not $taskES31 -or -not $Project -or -not $Map -or -not $Profile -or -not $ReportId) {
@@ -47,7 +47,9 @@ $taskResults = Join-Path $PSScriptRoot 'results'
 $taskStamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $taskPrefix = if ($taskWebGPU) { 'web-engine-webgpu-cook' } else { 'web-engine-cook' }
 if ($taskES31) { $taskPrefix = 'web-engine-webgpu-es31-cook' }
-if ($Scene -eq 'DefaultTemplate') { $taskPrefix = 'web-engine-webgpu-es31-default-cook' }
+if ($Scene -eq 'DefaultTemplate') {
+    $taskPrefix = if ($taskES31) { 'web-engine-webgpu-es31-default-cook' } else { 'web-engine-webgpu-sm5-default-cook' }
+}
 if ($Scene -eq 'Project') { $taskPrefix = "web-project-$ReportId-cook" }
 $taskOutput = Join-Path $PSScriptRoot "build/$taskPrefix/$taskStamp"
 $taskLog = Join-Path $taskResults "$taskPrefix-$taskStamp.log"
@@ -165,6 +167,10 @@ try {
         $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x8'
     }
     if ($Scene -eq 'DefaultTemplate') {
+        if (-not $taskES31) {
+            $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x64'
+            $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_vec2_128x128x64'
+        }
         $taskPackages += '/Engine/BasicShapes/Sphere'
         $taskPackages += $taskSamples.meshPackage
         $taskPackages += @($taskSamples.samples | ForEach-Object { $_.package })
@@ -191,7 +197,10 @@ try {
             '-ini:Engine:[SystemSettings]:r.ShaderDevelopmentMode=0')
         # Some native compiler helpers read the host CVar instead of the target-platform CVar.
         $taskMinimalConfig = Join-Path $taskRoot 'tests/ue-shader-host/Config/Web/WebEngine.ini'
-        if ($Scene -eq 'DefaultTemplate') { $taskMinimalConfig = Join-Path $PSScriptRoot 'cook-profiles/DefaultTemplateEngine.ini' }
+        if ($Scene -eq 'DefaultTemplate') {
+            $taskProfileName = if ($taskES31) { 'DefaultTemplateEngine.ini' } else { 'DefaultTemplateDesktopEngine.ini' }
+            $taskMinimalConfig = Join-Path $PSScriptRoot "cook-profiles/$taskProfileName"
+        }
         if ($Scene -eq 'Project') { $taskMinimalConfig = [IO.Path]::GetFullPath($Profile) }
         $taskMinimalSettings = @(Get-Content -LiteralPath $taskMinimalConfig | Where-Object { $_ -match '^[a-zA-Z][a-zA-Z0-9.]*=' })
         if (-not $taskMinimalSettings.Count) { throw 'Minimal Web renderer settings are missing.' }

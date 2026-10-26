@@ -72,8 +72,12 @@ const startupStarted = performance.now();
 const startupOptions = new URLSearchParams(location.search);
 const startupOnly = startupOptions.get('diagnostics') === '1';
 const startupDebug = startupOnly || startupOptions.get('debug') === '1';
-const requiredTextureFeatures = [];
 const localRuntimeAssets = {};
+const desktopRenderer = localRuntimeAssets.renderer === 'desktop';
+const requiredTextureFeatures = desktopRenderer ?
+  ['texture-formats-tier1', 'texture-formats-tier2', 'rg11b10ufloat-renderable', 'float32-filterable'] : [];
+const expectedContentMode = desktopRenderer ? 'WebGPU-SM5' : 'WebGPU-ES31';
+const expectedShaderPlatform = desktopRenderer ? 'SP_WEBGPU_SM5' : 'SP_WEBGPU_ES31';
 const versionedAsset = name => name + (localRuntimeAssets.versions?.[name] ?
   '?v=' + localRuntimeAssets.versions[name] : '');
 const startupDiagnostics = globalThis.__webStartupDiagnostics = {
@@ -592,8 +596,8 @@ var Module = {
       const [configs, manifest] = await Promise.all([
         fetchFile('config-files.json', true), fetchFile('content-files.json', true)
       ]);
-      if (manifest.mode !== 'WebGPU-ES31' || manifest.architecture !== 'wasm64' ||
-          manifest.shaderPlatform !== 'SP_WEBGPU_ES31' || manifest.pack.url !== 'content.bin')
+      if (manifest.mode !== expectedContentMode || manifest.architecture !== 'wasm64' ||
+          manifest.shaderPlatform !== expectedShaderPlatform || manifest.pack.url !== 'content.bin')
         throw new Error('Invalid default-template manifest');
       if (manifest.localIoVersion === 1 && globalThis.__webContentIO) {
         const io = globalThis.__webContentIO;
@@ -614,7 +618,8 @@ var Module = {
       startupStage('content-mounting');
       globalThis.__webEngineContentFiles = [];
       for (const file of manifest.files) {
-        if (!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/|GlobalShaderCache-SP_WEBGPU_ES31\.bin$)/.test(file.path) ||
+        if ((!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/)/.test(file.path) &&
+            file.path !== '/Engine/GlobalShaderCache-' + expectedShaderPlatform + '.bin') ||
             /(?:^|\/)\.\.(?:\/|$)/.test(file.path) ||
             !Number.isSafeInteger(file.offset) || !Number.isSafeInteger(file.size) ||
             file.offset < 0 || file.size < 0 || file.offset + file.size > bytes.length)
@@ -643,6 +648,7 @@ var Module = {
     })().catch(failed);
   }]
 };
+if (desktopRenderer) Module.arguments.push('-WebDesktop');
 // Feed single-finger deltas through the existing UE right-drag input path, in CSS pixels like a mouse.
 let lookTouch = null;
 function touchMouse(type, x, y, dx = 0, dy = 0) {

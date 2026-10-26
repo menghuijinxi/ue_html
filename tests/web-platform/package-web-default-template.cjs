@@ -4,11 +4,13 @@ const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const {metadata} = require('./content-file-metadata.cjs');
 const directory = path.join(__dirname, 'results');
-const output = path.join(__dirname, 'build/ue-default-template');
+const desktop = process.argv.includes('--desktop');
+const output = path.join(__dirname, desktop ? 'build/ue-default-template-desktop' : 'build/ue-default-template');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, output,
+  renderer: desktop ? 'desktop-deferred' : 'mobile-forward',
   map: '/Engine/Maps/Templates/Template_Default', architecture: 'wasm64',
   fullNormalUBTBuildVerified: false, completeUEScene: false,
   sourceFiles: [__filename, path.join(__dirname, 'web-default-template.html'),
@@ -19,7 +21,8 @@ try {
   assert(build.pass && build.buildSucceeded && build.exitCode === 0 && build.fullLinkAttempted,
     'A successful normal UBT build is required');
   assert(build.sourceFiles.every(valid) && build.products.every(valid) && valid(build.log));
-  const stageFile = path.join(directory, 'web-engine-webgpu-es31-default-stage-results.json');
+  const stageFile = path.join(directory, desktop ?
+    'web-engine-webgpu-sm5-default-stage-results.json' : 'web-engine-webgpu-es31-default-stage-results.json');
   const stage = read(stageFile);
   assert(stage.pass && stage.map === report.map && stage.sourceFiles.every(valid) &&
     [stage.cookReport, stage.pack, stage.manifest, stage.configBundle].every(valid));
@@ -44,7 +47,8 @@ try {
   const versions = Object.fromEntries(['UEWebEngine.js', 'web-content-io.js', 'web-content-worker.js'].map(name =>
     [name, audit(copies.find(([, target]) => target === name)[0]).sha256]));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
-    JSON.stringify({versions, wasm: metadata(copies.find(([, target]) => target === 'UEWebEngine.wasm')[0],
+    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile',
+      wasm: metadata(copies.find(([, target]) => target === 'UEWebEngine.wasm')[0],
       'UEWebEngine.wasm')}) + ';');
   fs.writeFileSync(path.join(output, 'index.html'), html);
   report.products = [audit(path.join(output, 'index.html')), ...copies.map(([source, name]) => {
@@ -60,7 +64,8 @@ try {
   report.failure = error.stack;
   process.exitCode = 1;
 } finally {
-  fs.writeFileSync(path.join(directory, 'web-default-template-package-results.json'), JSON.stringify(report, null, 2));
+  fs.writeFileSync(path.join(directory, desktop ? 'web-default-template-desktop-package-results.json' :
+    'web-default-template-package-results.json'), JSON.stringify(report, null, 2));
   console.log(JSON.stringify({pass: report.pass, output, files: report.products?.length,
     bytes: report.totalBytes, failure: report.failure}, null, 2));
 }

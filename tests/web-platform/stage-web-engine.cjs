@@ -10,9 +10,13 @@ const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file)
 const projectId = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 if (projectId) assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(projectId));
 const defaultTemplate = process.argv.includes('--default-template');
-const es31 = !!projectId || defaultTemplate || process.argv.includes('--es31');
-const webgpu = es31 || process.argv.includes('--webgpu');
-const prefix = projectId ? 'web-project-' + projectId : defaultTemplate ? 'web-engine-webgpu-es31-default' :
+const desktop = process.argv.includes('--desktop');
+assert(!desktop || (defaultTemplate && !projectId && !process.argv.includes('--es31')),
+  '--desktop currently requires --default-template and cannot be combined with --es31');
+const es31 = !!projectId || (defaultTemplate && !desktop) || process.argv.includes('--es31');
+const webgpu = desktop || es31 || process.argv.includes('--webgpu');
+const prefix = projectId ? 'web-project-' + projectId : defaultTemplate ?
+  (desktop ? 'web-engine-webgpu-sm5-default' : 'web-engine-webgpu-es31-default') :
   es31 ? 'web-engine-webgpu-es31' : webgpu ? 'web-engine-webgpu' : 'web-engine';
 const format = es31 ? 'SF_WEBGPU_ES31' : 'SF_WEBGPU_SM5';
 const platform = es31 ? 'SP_WEBGPU_ES31' : 'SP_WEBGPU_SM5';
@@ -83,6 +87,10 @@ try {
     assert(entries.some(item =>
       item.path === '/Engine/Content/EngineMaterials/FastBlueNoise_scalar_128x128x8.uasset'),
     'SkyAtmosphere requires the mobile scalar blue-noise texture');
+  if (desktop)
+    for (const name of ['FastBlueNoise_scalar_128x128x64', 'FastBlueNoise_vec2_128x128x64'])
+      assert(entries.some(item => item.path === `/Engine/Content/EngineMaterials/${name}.uasset`),
+        `Desktop rendering requires ${name}`);
   for (const name of ['WorldGridMaterial', 'DefaultLightFunctionMaterial',
     'DefaultDeferredDecalMaterial', 'DefaultPostProcessMaterial']) {
     assert(entries.some(item => item.path === `/Engine/Content/EngineMaterials/${name}.uasset`),

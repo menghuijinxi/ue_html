@@ -201,6 +201,28 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
         for (uint32 Index = 0; Index < 67; ++Index)
             Expected[97 + Index] = SourceValues[64 + 3 + Index];
         CheckBuffer(TEXT("subrange-copy-and-guards"), Destination, Expected);
+        auto Raw = Buffer(RHI, Cmd,
+            FRHIBufferCreateDesc::CreateByteAddress(TEXT("RawSource"), 1024, 4)
+                .AddUsage(BUF_ShaderResource).SetInitialState(ERHIAccess::SRVCompute),
+            SourceValues.GetData(), 1024);
+        auto RawDesc = Description();
+        RawDesc.Buffer.SRV.BufferType = FRHIViewDesc::EBufferType::Raw;
+        RawDesc.Buffer.SRV.Format = PF_Unknown;
+        Record(TEXT("raw-byte-address-view-valid"), RHI.ValidateBufferSRV(Raw, RawDesc, Error));
+        auto BadRaw = RawDesc;
+        BadRaw.Buffer.SRV.OffsetInBytes = 4;
+        BadRaw.Buffer.SRV.NumElements = 1;
+        Record(TEXT("reject-unaligned-raw-range"), !RHI.ValidateBufferSRV(Raw, BadRaw, Error));
+        BadRaw = RawDesc;
+        BadRaw.Buffer.SRV.NumElements = 257;
+        Record(TEXT("reject-out-of-bounds-raw-range"), !RHI.ValidateBufferSRV(Raw, BadRaw, Error));
+        auto RawView = Cmd.CreateShaderResourceView(Raw,
+            FRHIViewDesc::CreateBufferSRV().SetTypeFromBuffer(Raw));
+        Record(TEXT("raw-storage-layout-matches"),
+            RHI.ValidateStorageSRVBinding(RawView, *Binding, ERHIAccess::SRVCompute, Error));
+        Dispatch(RawView, 0, 0, 256);
+        Expected = SourceValues;
+        CheckBuffer(TEXT("raw-view-copy-and-guards"), Destination, Expected);
         for (uint32 Index = 0; Index < 256; ++Index)
             SourceValues[Index] = Pattern(Index, true);
         auto Updated = Buffer(RHI, Cmd,
@@ -215,7 +237,7 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
             Expected[199 + Index] = SourceValues[64 + 10 + Index];
         CheckBuffer(TEXT("view-observes-copy-update"), Destination, Expected);
         Dispatch(Whole, 5, 3, 200);
-        Record(TEXT("commands-obey-recording-mode"), RHI.Dispatches == (Bypass ? 4u : 3u));
+        Record(TEXT("commands-obey-recording-mode"), RHI.Dispatches == (Bypass ? 5u : 4u));
         Whole.SafeRelease();
         Range.SafeRelease();
         Source.SafeRelease();
@@ -230,7 +252,7 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                    static_cast<FRHIShaderResourceView *>(Bound->GetReference())->GetBuffer()->GetRefCount() >= 1);
         auto *BoundSource = static_cast<FRHIShaderResourceView *>(Bound->GetReference())->GetBuffer();
         CheckBuffer(TEXT("updated-read-only-source-preserved"), BoundSource, SourceValues);
-        Record(TEXT("compute-pso-reused"), RHI.ComputePipelinesCreated == 1 && RHI.Dispatches == 4);
+        Record(TEXT("compute-pso-reused"), RHI.ComputePipelinesCreated == 1 && RHI.Dispatches == 5);
         Data.Resources.Reset();
     }
     Scope.PrepareShutdown();

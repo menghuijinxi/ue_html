@@ -72,7 +72,8 @@ try {
   }
   const rendererOverlays = renderer ? ['Private/VolumetricCloudRendering.cpp',
     'Private/MobileFogRendering.cpp', 'Private/VolumetricRenderTarget.cpp', 'Private/ScreenPass.cpp',
-    'Private/LightGridInjection.cpp', 'Private/IESTextureManager.cpp'] : [];
+    'Private/LightGridInjection.cpp', 'Private/IESTextureManager.cpp',
+    'Private/PostProcess/PostProcessHistogram.cpp', 'Private/SkyAtmosphereRendering.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);
     const destination = path.join(host, 'Source/Runtime/Renderer', name);
@@ -133,8 +134,9 @@ try {
       'Source/Runtime/Renderer/Private/IESTextureManager.cpp'] : []),
   ].map(name => audit(path.join(stock, name)));
   report.sourceFiles = [audit(__filename),
-    ...overlays.map(name => audit(path.join(root, 'reference-engine/Engine/Source/Runtime/RenderCore', name))),
-    ...overlays.map(name => audit(path.join(host, 'Source/Runtime/RenderCore', name))),
+    ...overlays.filter(name => !renderer || name.startsWith('Public/')).flatMap(name => [
+      audit(path.join(root, 'reference-engine/Engine/Source/Runtime/RenderCore', name)),
+      audit(path.join(host, 'Source/Runtime/RenderCore', name))]),
     ...rendererOverlays.flatMap(name => [
       audit(path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name)),
       audit(path.join(host, 'Source/Runtime/Renderer', name))])];
