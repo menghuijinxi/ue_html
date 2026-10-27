@@ -204,7 +204,13 @@ try {
             $taskMinimalConfig = Join-Path $PSScriptRoot "cook-profiles/$taskProfileName"
         }
         if ($Scene -eq 'Project') { $taskMinimalConfig = [IO.Path]::GetFullPath($Profile) }
-        $taskMinimalSettings = @(Get-Content -LiteralPath $taskMinimalConfig | Where-Object { $_ -match '^[a-zA-Z][a-zA-Z0-9.]*=' })
+        $taskProfileSection = ''
+        $taskMinimalSettings = @(foreach ($taskProfileLine in Get-Content -LiteralPath $taskMinimalConfig) {
+            if ($taskProfileLine -match '^\[([^\]]+)\]$') { $taskProfileSection = $Matches[1] }
+            elseif ($taskProfileSection -eq 'SystemSettings' -and $taskProfileLine -match '^[a-zA-Z][a-zA-Z0-9.]*=') {
+                $taskProfileLine
+            }
+        })
         if (-not $taskMinimalSettings.Count) { throw 'Minimal Web renderer settings are missing.' }
         $taskArguments += @($taskMinimalSettings | ForEach-Object { "-ini:Engine:[SystemSettings]:$_" })
         $taskReport.minimalRendererConfig = Get-TaskAudit $taskMinimalConfig

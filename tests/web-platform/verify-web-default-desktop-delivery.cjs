@@ -24,6 +24,7 @@ try {
     'web-engine-webgpu-sm5-default-stage', 'web-default-template-desktop-package',
     'web-desktop-shader-modules', 'web-desktop-shader-modules-edge', 'web-desktop-resources',
     'web-desktop-interpolants', 'web-default-diagnostics-interpolant-fix',
+    'web-image-quality-desktop-quality-chrome', 'web-image-quality-desktop-quality-edge',
     'web-default-startup-desktop-candidate', 'web-default-startup-desktop-published',
     'default-shadow-native-desktop', 'web-default-desktop', 'web-default-desktop-edge',
     'web-default-desktop-comparison', 'web-default-desktop-publish',
@@ -39,6 +40,15 @@ try {
   const packaged = reports['web-default-template-desktop-package'];
   assert(packaged.fullNormalUBTBuildVerified && packaged.renderer === report.renderer);
   const release = reports['web-default-desktop-publish'];
+  for (const browser of ['chrome', 'edge']) {
+    const quality = reports[`web-image-quality-desktop-quality-${browser}`];
+    assert(quality.nativeResolution && quality.temporalAAVerified && quality.cloudOcclusionVerified &&
+      quality.resolution.canvas.width === 3840 && quality.resolution.canvas.height === 2160 &&
+      quality.products.every(item => packaged.products.some(product =>
+        product.file === item.file && product.sha256 === item.sha256)));
+    assert(release.imageQualityReports.some(item => item.sha256 === audit(path.join(directory,
+      `web-image-quality-desktop-quality-${browser}-results.json`)).sha256));
+  }
   assert.equal(release.packageReport.sha256, audit(path.join(directory,
     'web-default-template-desktop-package-results.json')).sha256);
   assert.equal(release.products.length, packaged.products.length);
@@ -86,7 +96,7 @@ try {
   }
   report.completeUEScene = true;
   report.pass = true;
-  report.boundary = 'Desktop SM5 default-map delivery, same-profile native comparison and one-minute browser tests passed. Intermittent cold-start device failure remains unresolved. This does not establish long-term stability, complete SM6/Lumen, villa desktop rendering, mobile support or an 8 GB total VRAM budget.';
+  report.boundary = 'Desktop SM5 default-map delivery, native 4K SceneColor/viewport, executed main TAA, sampled matte-sphere cloud occlusion, same-profile native comparison and one-minute browser tests passed. Cloud checks do not cover all motion histories or silhouettes. Intermittent cold-start device failure remains unresolved. This does not establish long-term stability, complete SM6/Lumen, villa desktop rendering, mobile support or an 8 GB total VRAM budget.';
 } catch (error) {
   report.failure = error.stack;
   process.exitCode = 1;

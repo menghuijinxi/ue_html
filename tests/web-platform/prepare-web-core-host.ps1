@@ -264,7 +264,7 @@ foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/In
     'Private/PostProcess/SubpixelMorphologicalAA.cpp', 'Private/PostProcess/PostProcessing.cpp',
     'Private/PostProcess/PostProcessMobile.cpp', 'Private/PostProcess/PostProcessCombineLUTs.cpp',
     'Private/PostProcess/PostProcessHistogram.cpp', 'Private/PostProcess/PostProcessWeightedSampleSum.cpp',
-    'Private/PostProcess/PostProcessUpscale.cpp',
+    'Private/PostProcess/PostProcessUpscale.cpp', 'Private/PostProcess/TemporalAA.cpp',
     'Private/SkyAtmosphereRendering.cpp', 'Private/SkyPassRendering.cpp', 'Private/VolumetricCloudRendering.cpp',
     'Private/VolumetricRenderTarget.cpp', 'Private/ScreenPass.cpp',
     'Private/VisualizeLightShape.cpp', 'Private/PostProcess/PostProcessVisualizeHDR.cpp',

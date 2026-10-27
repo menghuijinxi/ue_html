@@ -164,7 +164,7 @@ try {
         'Renderer/Private/PostProcess/PostProcessMobile.cpp',
         'Renderer/Private/PostProcess/PostProcessCombineLUTs.cpp',
         'Renderer/Private/PostProcess/PostProcessHistogram.cpp', 'Renderer/Private/PostProcess/PostProcessWeightedSampleSum.cpp',
-        'Renderer/Private/PostProcess/PostProcessUpscale.cpp',
+        'Renderer/Private/PostProcess/PostProcessUpscale.cpp', 'Renderer/Private/PostProcess/TemporalAA.cpp',
         'Renderer/Private/SkyAtmosphereRendering.cpp', 'Renderer/Private/SkyPassRendering.cpp',
         'Renderer/Private/VolumetricCloudRendering.cpp', 'Renderer/Private/VolumetricRenderTarget.cpp',
         'Renderer/Private/ScreenPass.cpp', 'Engine/Private/VolumeTexture.cpp',

@@ -323,6 +323,31 @@ node tests/web-platform/probe-web-default-startup.cjs --desktop --runs=1 --repor
 
 故障和诊断对照分别保留为 `results/web-desktop-edge156-startup-before-fix.json`、`web-default-startup-desktop-edge156-dpr15-before-fix-results.json`、`web-desktop-edge156-startup-limit-control.json`，属于旧包历史证据。正式定向报告为 `web-desktop-interpolants-results.json`、`web-default-diagnostics-interpolant-fix-results.json`、`web-default-startup-desktop-candidate-results.json`、`web-default-startup-desktop-published-results.json`；最终产物来源以 `web-default-desktop-delivery-results.json` 为准。
 
+## 2026-10-27：真实 4K、桌面 TAA 与云的前景遮挡修正
+
+- 用户报告 SM5 切换后高 DPI 模糊、球体及底板边缘锯齿，以及转向时云块覆盖球体。本轮只更新默认关卡及共享引擎修正，未重新打包别墅，也未修改安装引擎。
+- 旧包在物理画布 3840×2160 时，实际 SceneColor、GBuffer 和绘制视口均为 1920×1080。原因是桌面自动 Screen Percentage 策略，而非只有 HTML canvas 的 DPI 尺寸。默认桌面配置现设 `r.ScreenPercentage=100`、手动桌面分辨率策略、关闭动态分辨率和 TAA 放大，并设置 `[/Script/Engine.UserInterfaceSettings] bAllowHighDPIInGameMode=True`。未改灯光、曝光、材质或 4096 阴影分辨率。
+- 默认桌面 AA 从 FXAA 切到 UE TAA。最初在旧运行时强制启用 TAA，实际复现存储纹理格式断言：HLSL 默认声明为 RGBA32F，而运行时分配 RGBA16F。Web 着色器为三个 TAA 输出显式标注 RGBA16F，运行时统一主历史和融合半分辨率输出的格式，保留其他平台原逻辑。RHI 格式检查增加着色器、绑定、纹理名称和双方格式的具体错误信息，不放宽校验。
+- 云的像素合成路径在无 MinMaxDepth 的双边上采样分支补充前景深度拒绝：四个云前沿均在不透明表面之后时丢弃云像素，不影响水体特殊路径。本地旧包只复现过轮廓附近的小块残留，未稳定重现用户截图中的宽条覆盖，因此这是针对已发现深度缺口的修正，不能宣称所有运动历史问题都已消除。未用关闭云或提高云采样预算规避。
+- 新增 `probe-web-default-image-quality.cjs`，在 DPR 1.5/2 下固定物理画布为 3840×2160，核验真实 SceneColor/GBuffer 纹理与绘制视口，识别并计数主 `FTemporalAACS` GPU 派发，避免把 LightShaft TAA 或资源池复用后的纹理标签当作主 TAA 证据。正常页面的无 GPU 拦截启动探针另检查实际视口尺寸和 AA 方法；`__webRenderView` 在可见性/TAA 抖动初始化前采样，仅用尺寸和方法验收。
+- 云定向检查在三个近景转向后第二帧截图，保留云步进、天空光捕获及反射，只跳过最终云合成绘制生成参照。两颗哑光球分别检查中央 90% 半径和 90%～99% 外圈，共十二个区域；Chrome/Edge 中央平均通道差约 0.51～0.60/255，明显变化像素为零，外圈明显变化比例最高约 0.0614%，低于 1% 门槛。旧桌面备份配合对应旧 Cook 的着色器映射，云合成实际跳过 268 次，三次近景的第三颗球外圈明显变化约 2.79%～3.83%，同一断言失败；报告为 `web-image-quality-cloud-edge-before-fix-results.json`。先前只加载新 Cook 映射的旧包测试没有跳过旧云入口，属于无效对照，已用正确映射重测。测试固定材质时间并暂关自动曝光和 Bloom 以隔离云合成；这些覆盖不写入发布配置。此检查不覆盖最外 1% 轮廓、全部运动速度/历史或透明/水面场景。
+- 普通 UBT 构建/链接和完整 SM5 Cook 通过；当前 Stage 为 425 文件、223013006 字节，独立包为八文件、405288540 字节。Chrome、Edge 各验证 3158 个着色器模块；原生 RHI 纹理/缓冲 GPU 回读及 Bloom 插值限额正反例通过。普通候选页双浏览器、DPR 1/1.5/2、横屏/竖屏/恢复共 18 个窗口状态及实际 Pawn 移动通过，未启用测试时钟或曝光覆盖。
+- 候选包双浏览器分别完成一分钟运行、交互及缩放检查，Chrome/Edge 分别运行到 6833/6672 帧，无页面/GPU 校验错误。同地图、配置、材质和相机的安装版 UE D3D12 SM5 截图对照通过，全图平均通道误差约 1.397/1.369（满量程 255），材质区域约 1.368/1.338。
+- 发布器和最终交付审计增加真实 4K、主 TAA 派发和云遮挡报告门槛，检查源码、产物及截图哈希。更新原地址前保留旧桌面八文件包于 `build/ue-default-template-before-publish-443db2a10cfd`。实际原地址为 `http://127.0.0.1:8765/build/ue-default-template/index.html`；恢复原生 4K 后场景像素量是旧 1080p 内部渲染的四倍，不能沿用旧帧率作为性能承诺。
+- 原发布地址复验通过：双浏览器六次普通启动及十八个 DPI/窗口状态全部通过；Chrome/Edge 分别运行 60.259/60.445 秒、6063/5909 帧，预热后线性内存增长为零，页面/GPU 校验错误为零。最终 `web-default-desktop-delivery-results.json` 通过并核验 7391 项文件来源；既有偶发冷启动设备错误和长期稳定性边界仍保留。
+- 对应参考引擎提交为 `573a493b3`；工作区提交保存默认配置、构建覆盖、错误诊断和发布/回归流程。两个仓库均只提交本地，不推送远程。
+
+新增定向复现命令（在正常构建、Cook、Stage、Package 及模块检查后运行）：
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+$conversion = 'H:/ue_html/tests/web-platform/build/web-engine-webgpu-sm5-default-cook/20261027-125928/ShaderConversion'
+node tests/web-platform/probe-web-default-image-quality.cjs --folder=ue-default-template-desktop --expect-taa --cloud-check --report=desktop-quality-chrome --settings=r.EyeAdaptationQuality=0,r.BloomQuality=0 --conversion=$conversion
+node tests/web-platform/probe-web-default-image-quality.cjs --folder=ue-default-template-desktop --expect-taa --cloud-check --edge --scale=2 --report=desktop-quality-edge --settings=r.EyeAdaptationQuality=0,r.BloomQuality=0 --conversion=$conversion
+```
+
+`--settings` 仅修改该测试会话的配置响应；不指定时使用实际包配置。`--continuous` 可连续扫过 24 个俯仰角并保存第二帧图像供检查。正式发布仍必须先通过原有无 GPU 拦截的 DPI 启动和双浏览器一分钟运行检查，发布后再复验原地址，最后执行 `verify-web-default-desktop-delivery.cjs`；云修正不等于全部运动伪影或长期稳定性验收。
+
 ## 移动路径的历史复现入口
 
 以下命令从工作区根目录执行，是 ES3.1 历史流程；默认发布地址现已为桌面 SM5。运行旧流程的打包命令会覆盖当前默认目录，应先保留桌面包，或在完成后重新发布已经验收的桌面候选包。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。

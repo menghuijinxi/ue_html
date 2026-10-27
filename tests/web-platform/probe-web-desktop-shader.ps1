@@ -17,7 +17,7 @@ try {
     $env:WEBGPU_TINT_DIR = Join-Path $taskRoot '.tools/dawn-v20261009.190412/bin'
     $env:WEBGPU_INTERMEDIATE_DIR = Join-Path $taskOutput 'ShaderConversion'
     $taskSettings = @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'cook-profiles/DefaultTemplateDesktopEngine.ini') |
-        Where-Object { $_ -match '^[a-zA-Z][a-zA-Z0-9.]*=' } |
+        Where-Object { $_ -match '^(r\.|landscape\.)[a-zA-Z0-9.]*=' } |
         ForEach-Object { "-ini:Engine:[SystemSettings]:$_" })
     $taskArguments = @(
         (Join-Path $taskRoot 'tests/ue-shader-host/UEShaderHost.uproject'),

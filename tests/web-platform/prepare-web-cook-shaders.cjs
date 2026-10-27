@@ -8,7 +8,14 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
-  ['Private/TemporalAA.usf', [{
+  ['Private/TemporalAA.usf', [...['OutComputeTex_0', 'OutComputeTexDownsampled', 'OutComputeTex_1'].map(name => {
+    const indent = name === 'OutComputeTex_1' ? '\t' : '';
+    const declaration = `${indent}RWTexture2D<float4> ${name};`;
+    return {before: declaration, after: [
+      `${indent}#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU`,
+      `${indent}[[vk::image_format("rgba16f")]] [[vk::ext_decorate(25)]]`,
+      `${indent}#endif`, declaration].join('\n')};
+  }), {
     before: '\t\tOutputPayload.CocRadius = isnan(OutputPayload.CocRadius) ? 0.0 : OutputPayload.CocRadius;',
     after: [
       '\t\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
@@ -188,6 +195,17 @@ const overrides = new Map([
     after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && SHADING_PATH_MOBILE',
       '\t// Mobile forward uses the same conservative depth handling as desktop forward.',
       '\tconst bool bIsWaterPixel = true;', '#elif SUBSTRATE_GBUFFER_FORMAT==1'].join('\n'),
+  }, {
+    before: '\t// ==> This path is when compute shader is disable and so no minmax depth texture is available. It is also used by VRT.Mode=1 for upsampling based on front depth only.',
+    after: [
+      '\t// ==> This path is when compute shader is disable and so no minmax depth texture is available. It is also used by VRT.Mode=1 for upsampling based on front depth only.',
+      '', '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t// Reprojected sky samples must not blend over newly visible opaque geometry.',
+      '\tconst bool bAllCloudSamplesBehindSurface = all(float4(VolumeFrontDepth0.x, VolumeFrontDepth1.x,',
+      '\t\tVolumeFrontDepth2.x, VolumeFrontDepth3.x) > (PixelDistanceFromViewKm + 0.00001f));',
+      '\tif (!bIsWaterPixel && bAllCloudSamplesBehindSurface)', '\t{',
+      '\t\tclip(-1.0f);', '\t\treturn;', '\t}', '#endif',
+    ].join('\n'),
   }]],
   ['Private/ReflectionEnvironmentShaders.usf',
     ['OutTextureMipColor', 'OutCubeFaces'].map(name => {

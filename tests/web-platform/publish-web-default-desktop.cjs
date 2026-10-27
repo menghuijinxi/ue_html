@@ -43,6 +43,24 @@ try {
         run.views.every(view => !view.failure && view.ready.featureLevel === 3 &&
           view.ready.shaderPlatform === 47 && (!view.screenshot || valid(view.screenshot)))));
   report.highDPIStartupReport = audit(startupFile);
+  report.imageQualityReports = [];
+  for (const name of ['chrome', 'edge']) {
+    const file = path.join(results, `web-image-quality-desktop-quality-${name}-results.json`);
+    const quality = read(file);
+    assert(quality.pass && quality.folder === 'ue-default-template-desktop' &&
+      quality.nativeResolution && quality.temporalAAVerified && quality.cloudOcclusionVerified &&
+      quality.settings === 'r.EyeAdaptationQuality=0,r.BloomQuality=0' &&
+      quality.sourceFiles.every(valid) && quality.products.every(valid) &&
+      valid(quality.shaderModulesReport) && valid(quality.fullResolutionImage) &&
+      quality.resolution.canvas.width === 3840 && quality.resolution.canvas.height === 2160 &&
+      quality.gpu.errors.length === 0 && quality.errors.length === 0);
+    assert.equal(quality.browser.toLowerCase(), name);
+    assert(quality.products.every(item => packaged.products.some(product =>
+      product.file === item.file && product.sha256 === item.sha256)));
+    assert(quality.views.every(view => valid(view.moved) && (!view.settled || valid(view.settled))));
+    assert(quality.cloudOcclusion.every(view => valid(view.reference)));
+    report.imageQualityReports.push(audit(file));
+  }
   report.browserReports = [];
   for (const suffix of ['', '-edge']) {
     const file = path.join(results, `web-default-desktop${suffix}-results.json`);
@@ -63,9 +81,10 @@ try {
   });
   const original = path.join(output, 'index.html');
   if (fs.existsSync(original) &&
-    !fs.readFileSync(original, 'utf8').includes('"renderer":"desktop"')) {
+    names.some(name => fs.existsSync(path.join(output, name)) &&
+      audit(path.join(output, name)).sha256 !== audit(path.join(candidate, name)).sha256)) {
     const backup = path.join(__dirname, 'build',
-      `ue-default-template-before-desktop-${audit(original).sha256.slice(0, 12)}`);
+      `ue-default-template-before-publish-${audit(original).sha256.slice(0, 12)}`);
     fs.mkdirSync(backup, {recursive: true});
     assert.equal(fs.realpathSync(backup), backup);
     report.previousBuild = [];

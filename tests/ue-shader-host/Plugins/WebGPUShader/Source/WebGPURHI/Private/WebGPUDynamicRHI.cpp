@@ -2218,8 +2218,12 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                     const auto Info = View->GetDesc().Texture.UAV.GetViewInfo(Texture);
                     const uint32 Faces = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
                         Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? 6 : 1;
-                    check(Binding->GetIntegerField(TEXT("storageImageFormat")) ==
-                        StorageImageFormat(Info.Format));
+                    checkf(Binding->GetIntegerField(TEXT("storageImageFormat")) ==
+                        StorageImageFormat(Info.Format),
+                        TEXT("WebGPU storage format mismatch: shader=%s binding=%s texture=%s shaderFormat=%d textureFormat=%d"),
+                        *Shader->Entry, *Binding->GetStringField(TEXT("name")), *Texture->GetName().ToString(),
+                        int32(Binding->GetIntegerField(TEXT("storageImageFormat"))),
+                        int32(StorageImageFormat(Info.Format)));
                     for (uint32 Slice = Info.ArrayRange.First * Faces; Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
                         RequireAccess(Texture, Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics,
                             false, 0, Info.MipLevel, Slice);

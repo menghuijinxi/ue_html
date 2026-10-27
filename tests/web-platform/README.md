@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-27 默认关卡图像回归修正：物理 4K 画布之前只有 1080p 内部场景，现固定原生 Screen Percentage 并启用高 DPI 游戏模式；默认桌面 AA 改为 TAA，补齐 TAA 存储输出的 RGBA16F 声明/分配，修正云像素合成分支的前景深度拒绝。新增 `probe-web-default-image-quality.cjs` 检查真实 4K SceneColor/绘制视口、主 TAA GPU 派发和三组近景云遮挡，已纳入发布门槛；普通高 DPI 启动检查继续使用完整效果。同配置原生 SM5 对照全图误差约 1.4/255。云测试不覆盖所有运动历史或轮廓。命令、定向证据和边界见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)。
+
 2026-10-27 别墅桌面包已更新原地址：外部项目 Cook/Stage/Package 新增 SM5 路径，保留原灯光、HDRI、BC mip 和本地流送。新增 `TriplexHouseVillaDesktopEngine.ini`、`publish-web-project-desktop.cjs`；反射默认纹理、指定天空数据、CubeArray 上传及透明速度通道的双通道整数纹理已补齐。双浏览器完成四组室内、18 个普通页面启动/缩放状态、各一分钟巡游及发布地址回归，旧包已备份。命令、当前验证和画质边界见 [别墅项目进度](../../UE58_PROJECT_WEB_PROGRESS.md)。未接入 Lumen，不将默认关卡对照结果当作别墅画质验收。
 
 2026-10-27 高 DPI 启动修复：桌面 Bloom 高分辨率变体需要 17 个插值变量，原设备只启用了默认限额 16，导致管线失败并最终触发曝光断言。RHI 现显式协商硬件支持的限额，保留原画质；普通页面保留首个 GPU 校验错误，低能力设备在大文件下载前拒绝。新增真实 Bloom 管线的 16/28 限额对照，以及 Chrome/Edge、DPR 1/1.5/2 的普通页面启动/缩放检查，后者已成为发布条件。复现和故障证据见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)。

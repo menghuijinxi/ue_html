@@ -80,6 +80,7 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
               ready: globalThis.__webEngineReady,
               world: globalThis.__webEngineWorld,
               runtime: globalThis.__webEngineRuntime, camera: globalThis.__webDefaultCamera,
+              renderView: globalThis.__webRenderView || null,
               visualTestClock: globalThis.__webVisualTestClock || null,
               canvas: {
                 width: document.querySelector('canvas').width, height: document.querySelector('canvas').height,
@@ -95,6 +96,12 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
               assert.equal(state.ready.featureLevel, 3);
               assert.equal(state.ready.shaderPlatform, 47);
               if (projectId) assert.equal(state.world.package, packaged.map);
+              else {
+                assert(state.renderView, 'The renderer must report the actual view size and AA method');
+                assert.equal(state.renderView.width, state.renderView.outputWidth);
+                assert.equal(state.renderView.height, state.renderView.outputHeight);
+                assert.equal(state.renderView.antiAliasing, 2, 'Desktop default must execute TAA');
+              }
             }
             assert.equal(state.visualTestClock, null, 'The normal page must keep real-time material animation');
             assert.deepEqual(run.errors, []);
