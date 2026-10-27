@@ -462,6 +462,13 @@ function startupAdapter(adapter) {
       .map(key => [key, info[key] || ''])),
     features: Array.from(adapter.features).sort(), limits: startupLimits(adapter.limits)};
 }
+function startupValidateGPU(adapter) {
+  for (const feature of requiredTextureFeatures)
+    if (!adapter.features.has(feature)) throw new Error('此资源包需要 GPU 能力：' + feature);
+  if (desktopRenderer && adapter.limits.maxInterStageShaderVariables < 17)
+    throw new Error('桌面资源包需要至少 17 个着色器插值变量，当前 GPU 上限为 ' +
+      adapter.limits.maxInterStageShaderVariables + '。');
+}
 function startupObserveGPU() {
   const requestAdapter = navigator.gpu.requestAdapter;
   navigator.gpu.requestAdapter = async function(options) {
@@ -497,8 +504,7 @@ async function startupProbeGPU() {
   const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
   if (!adapter) throw new Error('WebGPU 未返回可用的 GPU 适配器（requestAdapter returned null）。');
   startupAdapter(adapter);
-  for (const feature of requiredTextureFeatures)
-    if (!adapter.features.has(feature)) throw new Error('此资源包需要 GPU 纹理压缩能力：' + feature);
+  startupValidateGPU(adapter);
   const device = await adapter.requestDevice({requiredFeatures: requiredTextureFeatures});
   startupDiagnostics.gpu.deviceCreated = true;
   startupDiagnostics.gpu.deviceLimits = startupLimits(device.limits);
@@ -530,6 +536,12 @@ async function startupProbeGPU() {
 function record(text) {
   text = String(text);
   console.log(text);
+  if (!startupDiagnostics.firstGPUError && text.includes('GPU validation:'))
+    startupDiagnostics.firstGPUError = {time: new Date().toISOString(),
+      frames: globalThis.__webEngineFrames || 0, message: text.slice(0, 16384), context: []};
+  const firstGPUError = startupDiagnostics.firstGPUError;
+  if (firstGPUError && firstGPUError.context.length < 16)
+    firstGPUError.context.push(text.slice(0, 16384));
   globalThis.__webEngineLog.push(text);
   if (globalThis.__webEngineLog.length > 200) globalThis.__webEngineLog.shift();
   for (const [prefix, key] of [
@@ -782,9 +794,7 @@ if (!capabilities.secureContext) {
     const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
     if (!adapter) throw new Error('WebGPU 未返回可用的 GPU 适配器。');
     startupAdapter(adapter);
-    for (const feature of requiredTextureFeatures)
-      if (!adapter.features.has(feature)) throw new Error('此资源包需要 GPU 纹理压缩能力：' + feature +
-        '。请使用支持该压缩格式的设备。');
+    startupValidateGPU(adapter);
   }
   startupObserveTransfers();
   if (localRuntimeAssets.wasm) {

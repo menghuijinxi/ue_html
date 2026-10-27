@@ -63,6 +63,18 @@ const cases = [
   {name: 'first-cause-preserved', response: {body:
     "setTimeout(() => dispatchEvent(new Event('error')), 20); throw new Error('TEST_FIRST_CAUSE');"},
     check: state => assert.match(state.failure, /TEST_FIRST_CAUSE/)},
+  {name: 'first-gpu-error-preserved', response: {body:
+    "Module.print('LogRHI: Error: GPU validation: TEST_INTERPOLANT_LIMIT');" +
+    "Module.print(' - Vertex output count 17 exceeds the maximum 16.');" +
+    "for (let i=0;i<300;i++) Module.print('TEST_CASCADING_ERROR '+i);" +
+    "throw new Error('TEST_SECONDARY_EXPOSURE_ASSERT');"},
+    check: state => {
+      const first = state.diagnostics.firstGPUError;
+      assert.match(first.message, /TEST_INTERPOLANT_LIMIT/);
+      assert(first.context.some(line => line.includes('17 exceeds the maximum 16')));
+      assert.equal(first.context.length, 16);
+      assert.match(state.failure, /TEST_SECONDARY_EXPOSURE_ASSERT/);
+    }},
   {name: 'wasm64-unavailable', init: () => {
     const validate = WebAssembly.validate;
     WebAssembly.validate = bytes => bytes[8] === 5 && bytes[11] === 4 ? false : validate(bytes);
@@ -82,6 +94,18 @@ const cases = [
   }, check: state => {
     assert.match(state.failure, /WebGPU/);
     assert(!state.scriptRequested);
+  }},
+  {name: 'desktop-interpolant-limit-unavailable', desktop: true, init: () => {
+    const request = navigator.gpu.requestAdapter;
+    navigator.gpu.requestAdapter = async function(options) {
+      const adapter = await request.call(this, options);
+      return {info: adapter.info, features: adapter.features, limits: new Proxy(adapter.limits, {
+        get: (target, key) => key === 'maxInterStageShaderVariables' ? 16 : Reflect.get(target, key, target)
+      })};
+    };
+  }, check: state => {
+    assert.match(state.failure, /17.*16/);
+    assert(!state.scriptRequested && !state.largeDownload);
   }},
   {name: 'diagnostics-only', only: true,
     check: state => {
@@ -169,7 +193,9 @@ let browser;
           url: request.url(), method: request.method(), resourceType: request.resourceType()}));
         if (test.init) await page.addInitScript(test.init);
         await page.route(root + 'index.html*', route => route.fulfill({
-          contentType: 'text/html; charset=utf-8', body: fs.readFileSync(source, 'utf8'),
+          contentType: 'text/html; charset=utf-8', body: test.desktop ?
+            fs.readFileSync(source, 'utf8').replace('const localRuntimeAssets = {};',
+              'const localRuntimeAssets = {renderer: "desktop"};') : fs.readFileSync(source, 'utf8'),
           headers: {'Cross-Origin-Opener-Policy': 'same-origin', 'Cross-Origin-Embedder-Policy': 'require-corp',
             ...(test.csp ? {'Content-Security-Policy': test.csp} : {})}
         }));

@@ -49,6 +49,8 @@ WGPULimits RenderingLimits(WGPUAdapter Adapter)
     Required.maxColorAttachmentBytesPerSample = FMath::Min(64u, Supported.maxColorAttachmentBytesPerSample);
     Required.maxSampledTexturesPerShaderStage = FMath::Min(32u, Supported.maxSampledTexturesPerShaderStage);
     Required.maxStorageBuffersPerShaderStage = FMath::Min(16u, Supported.maxStorageBuffersPerShaderStage);
+    // Desktop Bloom can emit 17 interpolants; the default device limit is only 16.
+    Required.maxInterStageShaderVariables = FMath::Min(28u, Supported.maxInterStageShaderVariables);
     return Required;
 }
 FString String(WGPUStringView Value)

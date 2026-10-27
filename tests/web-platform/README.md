@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-27 高 DPI 启动修复：桌面 Bloom 高分辨率变体需要 17 个插值变量，原设备只启用了默认限额 16，导致管线失败并最终触发曝光断言。RHI 现显式协商硬件支持的限额，保留原画质；普通页面保留首个 GPU 校验错误，低能力设备在大文件下载前拒绝。新增真实 Bloom 管线的 16/28 限额对照，以及 Chrome/Edge、DPR 1/1.5/2 的普通页面启动/缩放检查，后者已成为发布条件。复现和故障证据见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)。
+
 2026-10-27：默认关卡桌面 SM5 延迟渲染首版已发布到 `http://127.0.0.1:8765/build/ue-default-template/index.html`，候选目录为 `build/ue-default-template-desktop`。普通构建、完整 Cook、3158 个模块的双浏览器编译、资源 GPU 回读、实际 GBuffer/桌面光照通道及原生同配置同视角对照均通过；全图平均 RGB 通道误差约 1.3/255。实际发布地址在 Chrome/Edge 分别完成一分钟运行、缩放和交互。仍保留一次 Edge 冷启动设备错误，启动稳定性未解决；未接入 Lumen/完整多次反弹 GI。命令、证据和边界见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)，汇总入口为 `verify-web-default-desktop-delivery.cjs`。ES3.1 历史验证不作为桌面效果达标依据。
 
 2026-10-26：新增基于默认关卡的独立材质测试场，16 个实际 Lit 材质球分组检查粗糙度、金属、高光、透明度，并提供接地/悬空阴影参照、单组近景、固定曝光和光照对照。入口 `build-web-material-lab.ps1`、`probe-web-material-lab.cjs`；浏览器地址为 `http://127.0.0.1:8765/build/material-lab/index.html`。参数、验证及画质边界见 [材质测试场](../../UE58_MATERIAL_LAB.md)。

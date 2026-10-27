@@ -287,15 +287,41 @@ $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dep
 node tests/web-platform/probe-web-desktop-resources.cjs
 node tests/web-platform/probe-web-default-desktop.cjs
 node tests/web-platform/probe-web-default-desktop.cjs --edge
+node tests/web-platform/probe-web-default-startup.cjs --desktop --candidate --runs=1 --report=desktop-candidate
 & ./tests/web-platform/capture-web-default-native.ps1 -Mode desktop
 node tests/web-platform/verify-web-default-desktop-comparison.cjs
 node tests/web-platform/publish-web-default-desktop.cjs
+node tests/web-platform/probe-web-default-startup.cjs --desktop --runs=1 --report=desktop-published
 node tests/web-platform/probe-web-default-desktop.cjs --published
 node tests/web-platform/probe-web-default-desktop.cjs --published --edge
 node tests/web-platform/verify-web-default-desktop-delivery.cjs
 ```
 
 `probe-web-desktop-resources.cjs` 需要最新普通原生 RHI 插件构建及既有 Worker 测试着色器；其报告记录 DLL、源码、构建日志和 GPU 回读哈希。全部转换模块检查另用 `probe-web-desktop-shader-modules.cjs --input=<本次 Cook 的 ShaderConversion 目录>`，再加 `--edge` 检查另一个浏览器。最终验收报告为 `results/web-default-desktop-delivery-results.json`，同时核验构建、Cook、Stage、包、模块、资源、原生截图、候选和发布实测的来源；`startupStabilityVerified=false` 明确保留冷启动边界。
+
+## 2026-10-27：修复高 DPI 桌面关卡启动崩溃
+
+- 用户报告 `ue-startup-diagnostics-2026-10-27T01-38-37-133Z.json`：Edge 156.0.4314.42、1896×938、DPR 1.5，资源完整但第 7 帧在 `FViewInfo::UpdatePreExposure()` 终止。原始报告的末尾日志只剩失效管线和绑定组，最早错误已被覆盖。
+- 普通页面完整控制台复现于第 6 帧；首错为 Bloom 的 `FFilterVS/32`（入口 `main_00000acc_8b6cc48b`）输出 17 个用户插值变量、最高 location 16，但设备只启用了默认限额 16。硬件实际支持 28，RHI 没有申请该项。DPR 1 的旧包通过，DPR 1.5 的旧包失败，高分辨率才选择了该变体；不能据此把问题归咎于 Edge 升级。曝光断言是无效 GPU 提交后的次生错误。
+- 诊断对照只增加 `maxInterStageShaderVariables` 申请到硬件支持范围，不修改包或着色器，Edge 156 在相同 1896×938 / DPR 1.5 下完成 241 帧且零 GPU 错误。正式修复在 RHI 申请 `min(28, Supported.maxInterStageShaderVariables)`；没有删除 Bloom、关闭自动曝光或降低分辨率。
+- 网页在下载大资源前检查至少 17 个插值变量的硬件能力，并在普通模式记录首个 GPU 校验错误及随后最多 16 条日志。报告不再只依赖不断滚动的末尾日志；每条上下文有长度上限，避免错误风暴无限积累。
+- 新增 `probe-web-desktop-interpolants.cjs`，读取本次完整 Cook 的真实 Bloom 顶点着色器，直接创建渲染管线。Chrome 155.0.8059.86 / Edge 156.0.4314.42 均验证：只启用 16 时拒绝，申请 28 时通过；两种情况下 ShaderModule 本身均无编译错误。这证明旧模块验证不足以检出设备限额错误。
+- 普通启动脚本增加桌面候选/发布入口，使用用户的 1896×938 视口、DPR 1/1.5/2，检查启动、390×844 竖屏、恢复横屏及实际 UE Pawn 移动。没有 GPU API 拦截、测试时钟或曝光覆盖。发布器新增强制条件：两个浏览器、三个 DPI、三个窗口状态必须全部通过，且报告来源和候选包哈希一致。
+- 正常 UBT WASM 编译链接和原生 RHI 构建通过；没有修改着色器、Cook 资源或渲染配置，复用哈希核验一致的 SM5 Cook/Stage。新包八个文件、405286618 字节。原生纹理/缓冲回读通过，44 项页面诊断回归通过，包含低插值限额提前拒绝和首个 GPU 错误不被后续 300 条日志覆盖。
+- 候选包双浏览器各一分钟实际通道、交互和缩放检查通过，Chrome / Edge 分别运行到 7660 / 7532 帧，预热后线性内存增长为零。原生同配置同视角对照继续通过，全图平均通道误差约 1.280 / 1.276（满量程 255）。候选普通页面的六次启动、18 个 DPI/窗口状态通过，截图已保存。
+- 原发布地址再次完成六次普通启动、18 个 DPI/窗口状态和实际移动检查；Edge DPR 1.5 截图确认天空、地面和八个材质球正常显示。实际通道探针在 Chrome / Edge 分别运行 60.082 / 61.453 秒、7386 / 7775 帧，零页面/GPU 错误，预热后线性内存增长为零。最终交付审计通过，共核验 18 份报告、7350 项文件哈希。
+- 修复已发布到原默认关卡地址。高 DPI 限额错误与此前偶发外部 Instance 失效不同；后者仍未定位，本轮修复不能写成所有冷启动/长期稳定性问题都已解决。画质、Lumen、SM6、手机版和 8 GB 总显存边界保持上一版说明。
+
+本次定向回归入口：
+
+```powershell
+node tests/web-platform/probe-web-desktop-interpolants.cjs
+node tests/web-platform/probe-web-default-diagnostics.cjs --report=interpolant-fix
+node tests/web-platform/probe-web-default-startup.cjs --desktop --candidate --runs=1 --report=desktop-candidate
+node tests/web-platform/probe-web-default-startup.cjs --desktop --runs=1 --report=desktop-published
+```
+
+故障和诊断对照分别保留为 `results/web-desktop-edge156-startup-before-fix.json`、`web-default-startup-desktop-edge156-dpr15-before-fix-results.json`、`web-desktop-edge156-startup-limit-control.json`，属于旧包历史证据。正式定向报告为 `web-desktop-interpolants-results.json`、`web-default-diagnostics-interpolant-fix-results.json`、`web-default-startup-desktop-candidate-results.json`、`web-default-startup-desktop-published-results.json`；最终产物来源以 `web-default-desktop-delivery-results.json` 为准。
 
 ## 移动路径的历史复现入口
 

@@ -30,6 +30,19 @@ try {
     valid(resources.nativeBuildLog) && resources.runs.every(run => valid(run.runtime) &&
       valid(run.log) && run.shaderPackets.every(valid) && run.readbacks.every(valid)));
   report.resourcesReport = audit(resourcesFile);
+  const startupFile = path.join(results, 'web-default-startup-desktop-candidate-results.json');
+  const startup = read(startupFile);
+  assert(startup.pass && startup.desktop && startup.candidate && !startup.gpuHooks &&
+    !startup.startupOnly && valid(startup.source) &&
+    startup.package.sha256 === report.packageReport.sha256 &&
+    startup.products.every(valid));
+  for (const browser of ['Chrome', 'Edge'])
+    for (const scale of [1, 1.5, 2])
+      assert(startup.browserRuns.some(run => run.browser === browser && run.scale === scale &&
+        run.pass && run.errors.length === 0 && run.views.length === 3 &&
+        run.views.every(view => !view.failure && view.ready.featureLevel === 3 &&
+          view.ready.shaderPlatform === 47 && (!view.screenshot || valid(view.screenshot)))));
+  report.highDPIStartupReport = audit(startupFile);
   report.browserReports = [];
   for (const suffix of ['', '-edge']) {
     const file = path.join(results, `web-default-desktop${suffix}-results.json`);

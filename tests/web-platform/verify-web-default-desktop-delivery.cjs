@@ -23,6 +23,8 @@ try {
     'web-engine-full-build', 'web-engine-webgpu-sm5-default-cook',
     'web-engine-webgpu-sm5-default-stage', 'web-default-template-desktop-package',
     'web-desktop-shader-modules', 'web-desktop-shader-modules-edge', 'web-desktop-resources',
+    'web-desktop-interpolants', 'web-default-diagnostics-interpolant-fix',
+    'web-default-startup-desktop-candidate', 'web-default-startup-desktop-published',
     'default-shadow-native-desktop', 'web-default-desktop', 'web-default-desktop-edge',
     'web-default-desktop-comparison', 'web-default-desktop-publish',
     'web-default-desktop-published', 'web-default-desktop-published-edge'
@@ -40,6 +42,18 @@ try {
   assert.equal(release.packageReport.sha256, audit(path.join(directory,
     'web-default-template-desktop-package-results.json')).sha256);
   assert.equal(release.products.length, packaged.products.length);
+  for (const name of ['desktop-candidate', 'desktop-published']) {
+    const startup = reports[`web-default-startup-${name}`];
+    assert(startup.desktop && !startup.gpuHooks && !startup.startupOnly &&
+      startup.package.sha256 === release.packageReport.sha256);
+    if (name === 'desktop-published')
+      assert.equal(startup.publishReport.sha256,
+        audit(path.join(directory, 'web-default-desktop-publish-results.json')).sha256);
+    for (const browser of ['Chrome', 'Edge'])
+      for (const scale of [1, 1.5, 2])
+        assert(startup.browserRuns.some(run => run.browser === browser && run.scale === scale &&
+          run.pass && run.errors.length === 0 && run.views.length === 3));
+  }
   for (const product of release.products) {
     const candidate = packaged.products.find(item => path.basename(item.file) === path.basename(product.file));
     assert(candidate && candidate.sha256 === product.sha256);
