@@ -25,6 +25,8 @@ try {
     'web-desktop-shader-modules', 'web-desktop-shader-modules-edge', 'web-desktop-resources',
     'web-desktop-interpolants', 'web-default-diagnostics-interpolant-fix',
     'web-image-quality-desktop-quality-chrome', 'web-image-quality-desktop-quality-edge',
+    'web-cloud-background-desktop-chrome', 'web-cloud-background-desktop-edge',
+    'web-cloud-background-published-chrome', 'web-cloud-background-published-edge',
     'web-default-startup-desktop-candidate', 'web-default-startup-desktop-published',
     'default-shadow-native-desktop', 'web-default-desktop', 'web-default-desktop-edge',
     'web-default-desktop-comparison', 'web-default-desktop-publish',
@@ -48,6 +50,17 @@ try {
         product.file === item.file && product.sha256 === item.sha256)));
     assert(release.imageQualityReports.some(item => item.sha256 === audit(path.join(directory,
       `web-image-quality-desktop-quality-${browser}-results.json`)).sha256));
+    const clouds = reports[`web-cloud-background-desktop-${browser}`];
+    assert(clouds.cloudBackgroundVerified && clouds.fixedVisualClock && !clouds.shaderOverrides &&
+      clouds.products.every(item => packaged.products.some(product =>
+        product.file === item.file && product.sha256 === item.sha256)));
+    assert(release.cloudBackgroundReports.some(item => item.sha256 === audit(path.join(directory,
+      `web-cloud-background-desktop-${browser}-results.json`)).sha256));
+    const publishedClouds = reports[`web-cloud-background-published-${browser}`];
+    assert(publishedClouds.folder === 'ue-default-template' &&
+      publishedClouds.cloudBackgroundVerified &&
+      publishedClouds.products.every(item => release.products.some(product =>
+        product.file === item.file && product.sha256 === item.sha256)));
   }
   assert.equal(release.packageReport.sha256, audit(path.join(directory,
     'web-default-template-desktop-package-results.json')).sha256);
@@ -96,7 +109,7 @@ try {
   }
   report.completeUEScene = true;
   report.pass = true;
-  report.boundary = 'Desktop SM5 default-map delivery, native 4K SceneColor/viewport, executed main TAA, sampled matte-sphere cloud occlusion, same-profile native comparison and one-minute browser tests passed. Cloud checks do not cover all motion histories or silhouettes. Intermittent cold-start device failure remains unresolved. This does not establish long-term stability, complete SM6/Lumen, villa desktop rendering, mobile support or an 8 GB total VRAM budget.';
+  report.boundary = 'Desktop SM5 default-map delivery, native 4K SceneColor/viewport, executed main TAA, sampled matte-sphere cloud occlusion, near-ground close-up sky preservation, same-profile native comparison and one-minute browser tests passed. Cloud checks cover three near-ground upward views and sampled motion histories. Intermittent cold-start device failure remains unresolved. This does not establish long-term stability, complete SM6/Lumen, villa desktop rendering, mobile support or an 8 GB total VRAM budget.';
 } catch (error) {
   report.failure = error.stack;
   process.exitCode = 1;

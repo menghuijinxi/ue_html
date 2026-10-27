@@ -348,6 +348,28 @@ node tests/web-platform/probe-web-default-image-quality.cjs --folder=ue-default-
 
 `--settings` 仅修改该测试会话的配置响应；不指定时使用实际包配置。`--continuous` 可连续扫过 24 个俯仰角并保存第二帧图像供检查。正式发布仍必须先通过原有无 GPU 拦截的 DPI 启动和双浏览器一分钟运行检查，发布后再复验原地址，最后执行 `verify-web-default-desktop-delivery.cjs`；云修正不等于全部运动伪影或长期稳定性验收。
 
+## 2026-10-27：贴地近景仰视时云层横向缺失
+
+- 用户明确复现条件为相机贴近地面、离球很近并向上看。此前远处平视或俯视的检查没有覆盖这个条件；本轮固定三个相机 `(830,-170,15,20,120)`、`(650,-400,10,15,110)`、`(600,-600,20,12,110)`，分别为位置 XYZ、俯仰和偏航。地面顶面 Z=-0.5，球半径 120，单位 cm。
+- 正确视角下原发布包稳定复现：球顶附近出现水平截断，右侧天空云层缺失。绘制最终重建云纹理仍有缺口；将既有合成深度拒绝改为诊断色只标记球和地面，排除该拒绝误删天空。临时仅修正追踪深度读取边界后，缺口消失；临时代码未进入正式产物。
+- 原因在 `CreateCloudPassUniformBuffer`：计算场景深度采样边界时使用了云追踪降采样倍率。Web Mode 0 的追踪倍率为 4，而被采样深度纹理始终为半分辨率，应使用 2。错误边界将右侧、下侧的坐标钳制到深度纹理内部一条球体轮廓，导致大面积天空被当作近处不透明物体。修复从追踪到全分辨率/深度的两个坐标比例计算深度缩放，兼容半分辨率及全分辨率深度模式，保留活动视图边界。
+- 新增 `probe-web-cloud-background.cjs`：锁定材质时间，隔离曝光/Bloom，在每个低机位转向后第 2、10、70 帧截图，并与同机位隐藏球体的天空比较。排除球体邻域，同时断言参照中有足够云像素、真实画布尺寸正确、机位贴地且球体足够大。没有替换着色器；测试曝光覆盖不写入发布配置。
+- 旧正式包在相同脚本下失败，最靠近球体的机位平均通道差约 7.16/255，明显变化区域约 11.79%；保存为 `results/web-cloud-background-before-results.json` 及对应 PNG。候选包和原发布地址分别执行 Chrome、Edge 回归；发布器强制检查这组天空保持结果以及原有球体前景遮挡结果，避免只验证其中一端。
+- 正式 WASM 及隔离原生 Renderer 构建通过；完整 SM5 Cook 为零错误，Stage 425 文件、223013006 字节，候选包八文件、405288545 字节。Chrome/Edge 各验证 3158 个着色器模块，纹理/缓冲 GPU 回读通过。候选云背景回归通过：Chrome 第一近景平均差约 1.72/255、明显变化约 0.81%；Edge 物理 4K 相同视角约 1.69/255、0.79%。三个机位的第二帧、短期和稳定历史均通过，截图确认水平缺口消失。既有真实 4K、主 TAA 及球体遮挡检查也在两浏览器通过。
+- 原地址已更新并保留旧八文件包于 `build/ue-default-template-before-publish-64b5902a4f4e`。发布地址双浏览器的三个贴地仰视机位全部通过，Edge 为真实 3840×2160；六次普通启动、18 个 DPI/窗口状态也通过。参考引擎本地提交 `08a432b10`，未推送远程。
+- 发布后 Chrome/Edge 分别完成 60.194/60.494 秒、7678/7503 帧，零页面/GPU 错误，预热后线性内存增长为零。`web-default-desktop-delivery-results.json` 最终通过，共核验 24 份报告、7489 项文件哈希。既有偶发冷启动 Instance 失效仍保留为未解决边界，本轮不将一分钟通过扩展为长期稳定性承诺。
+- 本轮不启用多线程，不更改关卡光照、材质、阴影分辨率或云追踪预算，不修改安装引擎。别墅包需要单独构建验收，不能将默认关卡的结果当作别墅验证。
+
+定向命令（完整构建、Cook、Stage、Package 后）：
+
+```powershell
+node tests/web-platform/probe-web-cloud-background.cjs --folder=ue-default-template-desktop --report=cloud-background-desktop-chrome
+node tests/web-platform/probe-web-cloud-background.cjs --folder=ue-default-template-desktop --edge --scale=2 --report=cloud-background-desktop-edge
+# 通过既有启动、画质、桌面对照门槛后发布，再检查原地址
+node tests/web-platform/probe-web-cloud-background.cjs --report=cloud-background-published-chrome
+node tests/web-platform/probe-web-cloud-background.cjs --edge --scale=2 --report=cloud-background-published-edge
+```
+
 ## 移动路径的历史复现入口
 
 以下命令从工作区根目录执行，是 ES3.1 历史流程；默认发布地址现已为桌面 SM5。运行旧流程的打包命令会覆盖当前默认目录，应先保留桌面包，或在完成后重新发布已经验收的桌面候选包。首次接入云或更新相应源码后，先重建隔离的原生 RenderCore、Renderer；已有来源和产物哈希一致的成功报告时可复用。`package-web-default-template.cjs` 要求普通 UBT 构建成功，不能用诊断链接冒充。

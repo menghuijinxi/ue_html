@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-27 云缺口回归：`probe-web-cloud-background.cjs` 使用距地面 10～20 cm、靠近材质球的三个仰视机位，在转向后第 2、10、70 帧与同机位隐藏球体的天空比较，冻结材质时间并保留实际云着色器。它专门检查球体上方和间隙的横向缺云，与现有“不覆盖不透明物体”检查分别验收；Chrome / Edge 候选结果纳入发布门槛，发布后复验原地址。`--folder=ue-default-template-desktop --report=cloud-background-desktop-chrome` 测候选；Edge 增加 `--edge --scale=2 --report=cloud-background-desktop-edge`，物理画布为 4K。源码原因和结果见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)。
+
 2026-10-27 多线程调研：正式 UE 仍使用非共享 WASM 内存及 `-onethread -norhithread`，本地 IO 已在独立 Worker；wasm64 pthread 原子计数和 Worker WebGPU 样例在 Chrome/Edge 实测通过。新增 `probe-web-threading.cjs` 对原发布页测量同步 CPU 回调和真实 GPU 通道，默认关卡覆盖 1080p/4K，别墅完成 1080p 定向测试。推荐分阶段接入 UE Core 线程、引擎 Worker 和渲染线程，并保留单一 GPU 对象所有者；本轮未启用正式 UE 多线程。证据、耗时口径及 4K 别墅未完成诊断见 [多线程调研](../../UE58_WEB_THREADING_RESEARCH.md)。
 
 2026-10-27 默认关卡图像回归修正：物理 4K 画布之前只有 1080p 内部场景，现固定原生 Screen Percentage 并启用高 DPI 游戏模式；默认桌面 AA 改为 TAA，补齐 TAA 存储输出的 RGBA16F 声明/分配，修正云像素合成分支的前景深度拒绝。新增 `probe-web-default-image-quality.cjs` 检查真实 4K SceneColor/绘制视口、主 TAA GPU 派发和三组近景云遮挡，已纳入发布门槛；普通高 DPI 启动检查继续使用完整效果。同配置原生 SM5 对照全图误差约 1.4/255。云测试不覆盖所有运动历史或轮廓。命令、定向证据和边界见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)。

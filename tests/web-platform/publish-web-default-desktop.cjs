@@ -44,6 +44,7 @@ try {
           view.ready.shaderPlatform === 47 && (!view.screenshot || valid(view.screenshot)))));
   report.highDPIStartupReport = audit(startupFile);
   report.imageQualityReports = [];
+  report.cloudBackgroundReports = [];
   for (const name of ['chrome', 'edge']) {
     const file = path.join(results, `web-image-quality-desktop-quality-${name}-results.json`);
     const quality = read(file);
@@ -60,6 +61,23 @@ try {
     assert(quality.views.every(view => valid(view.moved) && (!view.settled || valid(view.settled))));
     assert(quality.cloudOcclusion.every(view => valid(view.reference)));
     report.imageQualityReports.push(audit(file));
+    const cloudFile = path.join(results, `web-cloud-background-desktop-${name}-results.json`);
+    const clouds = read(cloudFile);
+    assert(clouds.pass && clouds.folder === 'ue-default-template-desktop' &&
+      clouds.browser.toLowerCase() === name && clouds.fixedVisualClock &&
+      !clouds.shaderOverrides && clouds.cloudBackgroundVerified &&
+      clouds.resolution.width === 1920 * clouds.scale &&
+      clouds.resolution.height === 1080 * clouds.scale &&
+      clouds.sourceFiles.every(valid) && clouds.products.every(valid) &&
+      clouds.errors.length === 0 && clouds.gpuErrors.length === 0 &&
+      clouds.views.length === 3 && clouds.views.every(view =>
+        view.camera.z <= 20 && view.camera.pitch >= 12 && valid(view.reference) &&
+        view.samples.length === 3 && view.samples.every(sample => valid(sample.image) &&
+          sample.count > 1000 && sample.cloudPixels > 1000 &&
+          sample.mean < 3 && sample.changedFraction < 0.03)));
+    assert(clouds.products.every(item => packaged.products.some(product =>
+      product.file === item.file && product.sha256 === item.sha256)));
+    report.cloudBackgroundReports.push(audit(cloudFile));
   }
   report.browserReports = [];
   for (const suffix of ['', '-edge']) {
