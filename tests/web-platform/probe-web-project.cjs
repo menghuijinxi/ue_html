@@ -6,6 +6,9 @@ const {chromium} = require('playwright');
 const {PNG} = require('pngjs');
 const option = name => process.argv.find(value => value.startsWith('--' + name + '='))?.slice(name.length + 3);
 const id = option('project');
+const desktop = process.argv.includes('--desktop');
+const published = process.argv.includes('--published');
+assert(!published || desktop, '--published requires --desktop');
 const suffix = option('report') || 'current';
 const seconds = Number(option('seconds') || 5);
 const warmupFrames = Number(option('warmup-frames') || 120);
@@ -18,6 +21,7 @@ const directory = path.join(__dirname, 'results');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, projectId: id, runs: [],
+  desktop, published,
   warmupFrames, physicalPhoneTested: false, performanceAccepted: false, vramBudgetVerified: false,
   lightingControlsRequired: option('lighting') === '1', localLightsRequired: option('local-lights') === '1',
   surfaceControlsRequired: option('surfaces') === '1',
@@ -27,7 +31,8 @@ let browser;
 function instrumentation() {
   const state = globalThis.__projectProbe = {errors: [], deviceLosses: [], frames: null,
     submissions: 0, draws: 0, textures: 0, buffers: 0, bufferBytes: 0, pipelines: 0,
-    textureFormats: {}, textureDescriptorBytesCreated: 0, textureUncompressedEquivalentBytesCreated: 0};
+    textureFormats: {}, renderTargets: {}, textureDescriptorBytesCreated: 0,
+    textureUncompressedEquivalentBytesCreated: 0};
   let lastFrame = 0;
   const raf = requestAnimationFrame;
   globalThis.requestAnimationFrame = callback => raf.call(globalThis, time => {
@@ -74,11 +79,13 @@ function instrumentation() {
   GPUDevice.prototype.createTexture = function(descriptor) {
     const texture = createTexture.call(this, descriptor);
     ++state.textures;
+    if (/^(GBuffer|ShadowDepth)/.test(descriptor.label || ''))
+      state.renderTargets[descriptor.label] = descriptor.format;
     const compressed = /^bc/.test(descriptor.format);
     const block = compressed ? 4 : 1;
     const bytes = compressed ? (/^bc[14]-/.test(descriptor.format) ? 8 : 16) : ({
       r8unorm: 1, r8uint: 1, rg8unorm: 2, r16float: 2, r16uint: 2,
-      rg16float: 4, r32float: 4, r32uint: 4, rgba16float: 8, rg11b10ufloat: 4,
+      rg16float: 4, r32float: 4, r32uint: 4, rg32uint: 8, rgba16float: 8, rg11b10ufloat: 4,
       rgba8uint: 4, rgba8unorm: 4, 'rgba8unorm-srgb': 4, bgra8unorm: 4, 'bgra8unorm-srgb': 4,
       depth32float: 4, 'depth24plus-stencil8': 4
     }[descriptor.format]);
@@ -153,15 +160,26 @@ function pixelDifference(first, second) {
 }
 (async () => {
   try {
-    const packageFile = path.join(directory, `web-project-${id}-package-results.json`);
+    const packageFile = path.join(directory, `web-project-${id}${desktop ? '-desktop' : ''}-package-results.json`);
     const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
     assert(packaged.pass && packaged.products.every(valid) && packaged.sourceFiles.every(valid));
+    assert.equal(packaged.renderer || 'mobile-forward', desktop ? 'desktop-deferred' : 'mobile-forward');
     report.packageReport = audit(packageFile);
+    if (published) {
+      const releaseFile = path.join(directory, `web-project-${id}-desktop-publish-results.json`);
+      const release = JSON.parse(fs.readFileSync(releaseFile, 'utf8'));
+      assert(release.pass && release.products.every(valid) &&
+        release.packageReport.sha256 === report.packageReport.sha256);
+      report.publishReport = audit(releaseFile);
+    }
     const browsers = [['Chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe'],
       ['Edge', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe']];
     for (const [name, executablePath] of browsers.filter(([name]) => !option('browser') || option('browser') === name)) {
       browser = await chromium.launch({headless: true, executablePath});
-      const profiles = option('smoke') === '1' ? [{name: 'desktop-720p', width: 1280, height: 720, dpr: 1}] : [
+      const profiles = option('smoke') === '1' ? [{name: 'desktop-720p', width: 1280, height: 720, dpr: 1}] : desktop ? [
+        {name: 'desktop-720p', width: 1280, height: 720, dpr: 1},
+        {name: 'desktop-high-dpi', width: 1896, height: 938, dpr: 1.5}
+      ] : [
         {name: 'desktop-720p', width: 1280, height: 720, dpr: 1},
         {name: 'desktop-high-dpi', width: 1280, height: 720, dpr: 2},
         {name: 'mobile-portrait', width: 360, height: 626, dpr: 3, mobile: true}
@@ -185,7 +203,7 @@ function pixelDifference(first, second) {
         try {
           await page.addInitScript(instrumentation);
           if (option('surfaces') === '1') {
-            await page.route(`http://127.0.0.1:8765/build/${id}/index.html`, async route => {
+            await page.route(`http://127.0.0.1:8765/build/${id}${desktop && !published ? '-desktop' : ''}/index.html`, async route => {
               const response = await route.fetch();
               const html = await response.text();
               const original = `arguments: ['-webgpu', '-WebProjectMap=${packaged.map}'],`;
@@ -194,7 +212,8 @@ function pixelDifference(first, second) {
                 `arguments: ['-webgpu', '-WebProjectMap=${packaged.map}', '-WebVisualTestClock'],`)});
             });
           }
-          await page.goto(`http://127.0.0.1:8765/build/${id}/index.html`, {waitUntil: 'commit'});
+          await page.goto(`http://127.0.0.1:8765/build/${id}${desktop && !published ? '-desktop' : ''}/index.html`,
+            {waitUntil: 'commit'});
           await page.waitForFunction(frames => globalThis.__webEngineFailure ||
             globalThis.__projectProbe?.deviceLosses.length || globalThis.__webEngineFrames >= frames,
           warmupFrames, {timeout: 240000});
@@ -203,6 +222,9 @@ function pixelDifference(first, second) {
           assert(!run.startup.failure && run.startup.frames >= warmupFrames, run.startup.failure || 'No engine frames');
           run.world = await page.evaluate(() => globalThis.__webEngineWorld);
           run.scene = await page.evaluate(() => globalThis.__webRenderScene);
+          run.ready = await page.evaluate(() => globalThis.__webEngineReady);
+          assert.equal(run.ready.shaderPlatform, desktop ? 47 : 46);
+          assert.equal(run.ready.featureLevel, desktop ? 3 : 1);
           run.compatibilityOverrides = run.log.filter(line => line.startsWith('P3_PROJECT_COMPATIBILITY '));
           assert(run.world?.package === packaged.map && run.world.begunPlay && run.scene?.meshes > 0);
           await page.waitForFunction(() => document.getElementById('loading').hidden);
@@ -229,9 +251,16 @@ function pixelDifference(first, second) {
             const frames = state.frames;
             state.frames = null;
             const canvas = document.querySelector('canvas');
+            if (globalThis.__webContentIO) await __webContentIO.call('stats');
             return {...state, frames, canvas: {width: canvas.width, height: canvas.height},
               heapBytes: globalThis.__webEngineRuntime?.heapBytes || null,
               jsHeapBytes: performance.memory?.usedJSHeapSize || null,
+              streaming: globalThis.__webTextureStreaming || null,
+              localIO: globalThis.__webContentIO ? {
+                stats: __webContentIO.stats, bulkFiles: __webContentIO.files.size,
+                bulkMemfsBytes: [...__webContentIO.files.keys()].reduce((sum, file) =>
+                  sum + FS.lookupPath(file).node.contents.byteLength, 0)
+              } : null,
               camera: globalThis.__webDefaultCamera, failure: globalThis.__webEngineFailure || null};
           }, seconds * 1000);
           // Save the independent samples before merging the instrumented counters.
@@ -255,16 +284,28 @@ function pixelDifference(first, second) {
             draws: sample.draws, submissions: sample.submissions, textures: sample.textures,
             buffers: sample.buffers, bufferBytesAllocated: sample.bufferBytes, pipelines: sample.pipelines,
             deviceFeatures: sample.deviceFeatures, textureFormats: sample.textureFormats,
+            renderTargets: sample.renderTargets,
             textureDescriptorBytesCreated: sample.textureDescriptorBytesCreated,
             textureUncompressedEquivalentBytesCreated: sample.textureUncompressedEquivalentBytesCreated,
             memoryBoundary: 'Cumulative texture descriptor estimates; excludes driver alignment, buffers and residency. Not measured VRAM.'};
           run.camera = sample.camera;
+          run.streaming = sample.streaming;
+          run.localIO = sample.localIO;
+          if (desktop) {
+            assert(sample.streaming?.poolBytes > 0 && sample.localIO?.bulkFiles > 0,
+              'Desktop projects must retain mip streaming and local bulk IO');
+            assert.equal(sample.localIO.bulkMemfsBytes, 0);
+            assert(sample.localIO.stats.memoryBytes <= sample.localIO.stats.memoryLimit);
+          }
           if (packaged.textureCompression === 'BC') {
             assert(sample.deviceFeatures.includes('texture-compression-bc'));
             assert(Object.keys(sample.textureFormats).some(format => /^bc/.test(format)), 'No compressed GPU textures');
             run.textureCompressionVerified = true;
           }
           assert(!sample.failure && !sample.errors.length && !sample.deviceLosses.length && !run.errors.length);
+          if (desktop)
+            assert(['GBufferA', 'GBufferB', 'GBufferC'].every(name => sample.renderTargets[name]),
+              'Desktop rendering must create the actual deferred GBuffer targets');
           const screenshot = path.join(directory, `web-project-${id}-${name.toLowerCase()}-${profile.name}-${suffix}.png`);
           await page.screenshot({path: screenshot});
           run.screenshot = audit(screenshot);

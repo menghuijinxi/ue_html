@@ -304,6 +304,107 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                 .SetDimensionFromTexture(Array).SetMipLevel(1).SetArrayRange(1, 1));
             Cmd.ClearUAVUint(UAV, FUintVector4(0xA1B2C3D4u));
             ReadArray(true);
+
+            auto CubeDesc = FRHITextureCreateDesc::CreateCubeArray(TEXT("DesktopCubeLockProbe"), 4, 2, PF_R32_UINT)
+                .SetFlags(ETextureCreateFlags::ShaderResource).SetNumMips(3)
+                .SetInitialState(ERHIAccess::CopyDest);
+            auto Cubes = Cmd.CreateTextureInitializer(CubeDesc).Finalize();
+            for (uint32 Mip = 0; Mip < 3; ++Mip)
+            for (uint32 Face = 0; Face < 6; ++Face)
+            {
+                const auto First = FRHILockTextureArgs::LockCubeFace(Cubes, Face, 0, Mip, RLM_WriteOnly, false);
+                const auto Second = FRHILockTextureArgs::LockCubeFace(Cubes, Face, 1, Mip, RLM_WriteOnly, false);
+                const auto A = Cmd.LockTexture(First);
+                const auto B = Cmd.LockTexture(Second);
+                for (uint64 Index = 0; Index < A.ByteCount / sizeof(uint32); ++Index)
+                {
+                    static_cast<uint32*>(A.Data)[Index] = 0x55660000u + Face * 0x100u + Mip;
+                    static_cast<uint32*>(B.Data)[Index] = 0x55660000u + (Face + 6u) * 0x100u + Mip;
+                }
+                Cmd.UnlockTextureCubeFace(Cubes, Face, 1, Mip, false);
+                Cmd.UnlockTextureCubeFace(Cubes, Face, 0, Mip, false);
+            }
+            Cmd.Transition(FRHITransitionInfo(Cubes, ERHIAccess::CopyDest, ERHIAccess::CopySrc));
+            Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+            TArray<uint8> CubePixels;
+            bool CubeMatch = true;
+            for (uint32 Mip = 0; Mip < 3; ++Mip)
+            {
+                const uint32 Size = 4u >> Mip, LayerBytes = 256u * Size;
+                auto Readback = RHI.CreateBuffer(LayerBytes * 12, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+                auto Encoder = wgpuDeviceCreateCommandEncoder(RHI.Device, nullptr);
+                auto Src = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+                Src.texture = static_cast<FWebGPUTexture*>(Cubes.GetReference())->Handle;
+                Src.mipLevel = Mip;
+                auto Dst = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+                Dst.buffer = Readback;
+                Dst.layout.bytesPerRow = 256;
+                Dst.layout.rowsPerImage = Size;
+                const WGPUExtent3D Extent{Size, Size, 12};
+                wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Src, &Dst, &Extent);
+                auto Commands = wgpuCommandEncoderFinish(Encoder, nullptr);
+                wgpuQueueSubmit(RHI.Queue, 1, &Commands);
+                const auto Bytes = RHI.MapBuffer(Readback, LayerBytes * 12);
+                CubeMatch &= Bytes.Num() == LayerBytes * 12;
+                for (uint32 Layer = 0; Bytes.Num() == LayerBytes * 12 && Layer < 12; ++Layer)
+                for (uint32 Y = 0; Y < Size; ++Y)
+                for (uint32 X = 0; X < Size; ++X)
+                {
+                    uint32 Value;
+                    FMemory::Memcpy(&Value, Bytes.GetData() + Layer * LayerBytes + Y * 256 + X * 4, 4);
+                    CubeMatch &= Value == 0x55660000u + Layer * 0x100u + Mip;
+                    CubePixels.Append(reinterpret_cast<const uint8*>(&Value), sizeof(Value));
+                    ++Checked;
+                }
+                wgpuCommandBufferRelease(Commands);
+                wgpuCommandEncoderRelease(Encoder);
+                wgpuBufferRelease(Readback);
+            }
+            Record(TEXT("desktop-cube-array-lock-face-mip-isolation"), CubeMatch && CubePixels.Num() == 252 * sizeof(uint32));
+            check(FFileHelper::SaveArrayToFile(CubePixels, *(Output / (Mode +
+                TEXT("-desktop-cube-array-lock-face-mip-isolation.bin")))));
+
+            auto VelocityDesc = FRHITextureCreateDesc::Create2D(TEXT("VelocityClippedDepthProbe"), 3, 2, PF_R32G32_UINT)
+                .SetFlags(ETextureCreateFlags::ShaderResource | ETextureCreateFlags::UAV)
+                .SetInitialState(ERHIAccess::UAVCompute);
+            Record(TEXT("desktop-rg32uint-creation-valid"), RHI.ValidateTextureInitialization(VelocityDesc, Error));
+            auto Velocity = Cmd.CreateTextureInitializer(VelocityDesc).Finalize();
+            auto VelocityUAV = Cmd.CreateUnorderedAccessView(Velocity,
+                FRHIViewDesc::CreateTextureUAV().SetDimensionFromTexture(Velocity));
+            Cmd.ClearUAVUint(VelocityUAV, FUintVector4(0x12345678u, 0xFEDCBA98u, 0, 0));
+            Cmd.Transition(FRHITransitionInfo(Velocity, ERHIAccess::UAVCompute, ERHIAccess::CopySrc));
+            Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+            auto Readback = RHI.CreateBuffer(512, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+            auto Encoder = wgpuDeviceCreateCommandEncoder(RHI.Device, nullptr);
+            auto Src = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+            Src.texture = static_cast<FWebGPUTexture*>(Velocity.GetReference())->Handle;
+            auto Dst = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+            Dst.buffer = Readback;
+            Dst.layout.bytesPerRow = 256;
+            Dst.layout.rowsPerImage = 2;
+            const WGPUExtent3D Extent{3, 2, 1};
+            wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Src, &Dst, &Extent);
+            auto Commands = wgpuCommandEncoderFinish(Encoder, nullptr);
+            wgpuQueueSubmit(RHI.Queue, 1, &Commands);
+            const auto Bytes = RHI.MapBuffer(Readback, 512);
+            TArray<uint8> VelocityPixels;
+            bool VelocityMatch = Bytes.Num() == 512;
+            for (uint32 Y = 0; Bytes.Num() == 512 && Y < 2; ++Y)
+            for (uint32 X = 0; X < 3; ++X)
+            for (uint32 Channel = 0; Channel < 2; ++Channel)
+            {
+                uint32 Value;
+                FMemory::Memcpy(&Value, Bytes.GetData() + Y * 256 + X * 8 + Channel * 4, 4);
+                VelocityMatch &= Value == (Channel ? 0xFEDCBA98u : 0x12345678u);
+                VelocityPixels.Append(reinterpret_cast<const uint8*>(&Value), sizeof(Value));
+                ++Checked;
+            }
+            Record(TEXT("desktop-rg32uint-clear-preserves-channels"), VelocityMatch);
+            check(FFileHelper::SaveArrayToFile(VelocityPixels, *(Output / (Mode +
+                TEXT("-desktop-rg32uint-clear-preserves-channels.bin")))));
+            wgpuCommandBufferRelease(Commands);
+            wgpuCommandEncoderRelease(Encoder);
+            wgpuBufferRelease(Readback);
         }
         if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureIESProbe")))
         {
@@ -315,10 +416,10 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
             Record(TEXT("ies-array-create-valid"), RHI.ValidateTextureInitialization(Desc, Error));
             auto Invalid = Desc;
             Invalid.SetInitActionInitializer();
-            Record(TEXT("ies-array-reject-cpu-initializer"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Record(TEXT("ies-array-cpu-initializer-valid"), RHI.ValidateTextureInitialization(Invalid, Error));
             Invalid = Desc;
             Invalid.NumMips = 2;
-            Record(TEXT("ies-array-reject-multiple-mips"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Record(TEXT("ies-array-multiple-mips-valid"), RHI.ValidateTextureInitialization(Invalid, Error));
             auto Atlas = Cmd.CreateTextureInitializer(Desc).Finalize();
             auto View = Cmd.CreateShaderResourceView(Atlas, FRHIViewDesc::CreateTextureSRV().SetDimensionFromTexture(Atlas));
             auto BadView = View->GetDesc();
@@ -395,7 +496,9 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
             Record(TEXT("reflection-packed-cube-create-valid"), RHI.ValidateTextureInitialization(Desc, Error));
             auto Invalid = Desc;
             Invalid.Flags |= ETextureCreateFlags::RenderTargetable;
-            Record(TEXT("reflection-packed-reject-render-target"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Record(TEXT("reflection-packed-render-target-feature"),
+                RHI.ValidateTextureInitialization(Invalid, Error) ==
+                bool(wgpuDeviceHasFeature(RHI.Device, WGPUFeatureName_RG11B10UfloatRenderable)));
             Invalid = Desc;
             Invalid.Flags |= ETextureCreateFlags::SRGB;
             Record(TEXT("reflection-packed-reject-srgb"), !RHI.ValidateTextureInitialization(Invalid, Error));

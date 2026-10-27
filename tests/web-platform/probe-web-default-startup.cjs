@@ -13,6 +13,9 @@ assert(scales.every(scale => Number.isFinite(scale) && scale > 0));
 const startupOnly = process.argv.includes('--startup-only');
 const desktop = process.argv.includes('--desktop');
 const candidate = process.argv.includes('--candidate');
+const projectId = option('project');
+assert(!projectId || (desktop && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(projectId)),
+  '--project requires a desktop project id');
 assert(!candidate || desktop, '--candidate requires --desktop');
 const landscape = desktop ? {width: 1896, height: 938} : {width: 1848, height: 1120};
 const reportSuffix = option('report') || '';
@@ -21,13 +24,13 @@ const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.read
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, startupOnly,
-  desktop, candidate, landscape, scales,
+  desktop, candidate, projectId: projectId || null, landscape, scales,
   browserRuns: [], source: audit(__filename)};
 
 (async () => {
   let browser;
   try {
-    const packageFile = path.join(directory, desktop ?
+    const packageFile = path.join(directory, projectId ? `web-project-${projectId}-desktop-package-results.json` : desktop ?
       'web-default-template-desktop-package-results.json' : 'web-default-template-package-results.json');
     const packaged = read(packageFile);
     assert(packaged.pass && packaged.products.every(valid) && packaged.sourceFiles.every(valid) &&
@@ -36,7 +39,8 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
     report.products = packaged.products;
     if (desktop && !candidate) {
       assert.equal(packaged.renderer, 'desktop-deferred');
-      const releaseFile = path.join(directory, 'web-default-desktop-publish-results.json');
+      const releaseFile = path.join(directory, projectId ? `web-project-${projectId}-desktop-publish-results.json` :
+        'web-default-desktop-publish-results.json');
       const release = read(releaseFile);
       assert(release.pass && release.products.every(valid) &&
         release.packageReport.sha256 === report.package.sha256);
@@ -63,7 +67,7 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
               run.errors.push(text);
           });
           const started = Date.now();
-          await page.goto(`http://127.0.0.1:8765/build/ue-default-template${candidate ? '-desktop' : ''}/index.html`,
+          await page.goto(`http://127.0.0.1:8765/build/${projectId || 'ue-default-template'}${candidate ? '-desktop' : ''}/index.html`,
             {waitUntil: 'commit'});
           for (const viewport of startupOnly ? [null] :
             [null, {width: 390, height: 844}, landscape]) {
@@ -74,6 +78,7 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
             const state = await page.evaluate(() => ({
               failure: globalThis.__webEngineFailure || null, frames: globalThis.__webEngineFrames,
               ready: globalThis.__webEngineReady,
+              world: globalThis.__webEngineWorld,
               runtime: globalThis.__webEngineRuntime, camera: globalThis.__webDefaultCamera,
               visualTestClock: globalThis.__webVisualTestClock || null,
               canvas: {
@@ -89,6 +94,7 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
             if (desktop) {
               assert.equal(state.ready.featureLevel, 3);
               assert.equal(state.ready.shaderPlatform, 47);
+              if (projectId) assert.equal(state.world.package, packaged.map);
             }
             assert.equal(state.visualTestClock, null, 'The normal page must keep real-time material animation');
             assert.deepEqual(run.errors, []);

@@ -94,10 +94,9 @@ class FWebTargetPlatformModule final : public ITargetPlatformModule
 public:
     virtual void StartupModule() override
     {
-        if (FParse::Param(FCommandLine::Get(), TEXT("WebGPUES31Cook")))
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebGPUCook")))
         {
-            // The installed Cook host cannot use the source-branch compiler override.
-            // Select the same existing cloud branch in memory; never save the source asset.
+            // Normalize linear IES assets for both rendering paths without saving source assets.
             LoadedHandle = FCoreUObjectDelegates::OnAssetLoaded.AddRaw(this, &FWebTargetPlatformModule::PrepareCloud);
             for (TObjectIterator<UMaterial> It; It; ++It)
                 PrepareCloud(*It);
@@ -177,6 +176,9 @@ private:
             Profile->SRGB = false;
             UE_LOG(LogTemp, Display, TEXT("WEB_TEXTURE_COOK: linear IES profile %s"), *Profile->GetPathName());
         }
+        // Only the mobile Cook needs the source-branch cloud material override.
+        if (!FParse::Param(FCommandLine::Get(), TEXT("WebGPUES31Cook")))
+            return;
         UMaterial* Material = Cast<UMaterial>(Object);
         if (!Material || Material->MaterialDomain != MD_Volume || !Material->GetUsageByFlag(MATUSAGE_VolumetricCloud) ||
             PreparedClouds.Contains(Material))

@@ -45,7 +45,7 @@ try {
     for (const mode of runtime.modes) {
       assert(mode.pass && mode.errors.length === 0 && mode.checks.every(check => check.pass));
       assert.equal(mode.finalizedCommandLists, mode.submittedCommandLists);
-      assert.equal(mode.checkedValues, kind === 'texture' ? 6228 : 1792);
+      assert.equal(mode.checkedValues, kind === 'texture' ? 6492 : 1792);
       if (kind === 'texture') {
         for (const cleared of [false, true]) {
           const name = cleared ? 'desktop-array-clear-range-isolation' : 'desktop-array-initializer-all-mips-and-layers';
@@ -61,6 +61,23 @@ try {
                   0xa1b2c3d4 : 0x11223344 + layer * 0x10000 + mip);
           run.readbacks.push(audit(file));
         }
+        assert(mode.checks.some(check => check.name === 'desktop-cube-array-lock-face-mip-isolation' && check.pass));
+        const file = path.join(output, `${mode.mode}-desktop-cube-array-lock-face-mip-isolation.bin`);
+        const bytes = fs.readFileSync(file);
+        assert.equal(bytes.length, 252 * 4);
+        let index = 0;
+        for (let mip = 0; mip < 3; ++mip)
+          for (let layer = 0; layer < 12; ++layer)
+            for (let pixel = 0; pixel < (4 >> mip) ** 2; ++pixel)
+              assert.equal(bytes.readUInt32LE(index++ * 4), 0x55660000 + layer * 0x100 + mip);
+        run.readbacks.push(audit(file));
+        assert(mode.checks.some(check => check.name === 'desktop-rg32uint-clear-preserves-channels' && check.pass));
+        const velocityFile = path.join(output, `${mode.mode}-desktop-rg32uint-clear-preserves-channels.bin`);
+        const velocityBytes = fs.readFileSync(velocityFile);
+        assert.equal(velocityBytes.length, 12 * 4);
+        for (let word = 0; word < 12; ++word)
+          assert.equal(velocityBytes.readUInt32LE(word * 4), word % 2 ? 0xfedcba98 : 0x12345678);
+        run.readbacks.push(audit(velocityFile));
       } else {
         assert.equal(mode.dispatches, 5);
         assert(mode.checks.some(check => check.name === 'raw-view-copy-and-guards' && check.pass));

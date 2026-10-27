@@ -5,19 +5,22 @@ const assert = require('node:assert/strict');
 const {metadata} = require('./content-file-metadata.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
+const desktop = process.argv.includes('--desktop');
+const prefix = `web-project-${id}${desktop ? '-desktop' : ''}`;
 const directory = path.join(__dirname, 'results');
-const output = path.join(__dirname, 'build', id);
+const output = path.join(__dirname, 'build', id + (desktop ? '-desktop' : ''));
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
 const report = {date: new Date().toISOString(), pass: false, id, output, architecture: 'wasm64',
+  renderer: desktop ? 'desktop-deferred' : 'mobile-forward',
   sourceFiles: [__filename, template, path.join(__dirname, 'content-file-metadata.cjs'),
     path.join(__dirname, 'web-content-io.js'), path.join(__dirname, 'web-content-worker.js')].map(audit), fullNormalUBTBuildVerified: false,
   completeUEScene: false};
 try {
   const buildFile = path.join(directory, 'web-engine-full-build-results.json');
-  const stageFile = path.join(directory, `web-project-${id}-stage-results.json`);
+  const stageFile = path.join(directory, `${prefix}-stage-results.json`);
   const prepareFile = path.join(directory, `web-project-${id}-prepare-results.json`);
   const build = read(buildFile), stage = read(stageFile), prepared = read(prepareFile);
   assert(build.pass && build.buildSucceeded && build.fullLinkAttempted &&
@@ -25,6 +28,8 @@ try {
   assert(stage.pass && stage.scene === 'Project' && stage.projectId === id &&
     stage.sourceFiles.every(valid) && [stage.cookReport, stage.pack, stage.manifest, stage.configBundle].every(valid));
   const cook = read(stage.cookReport.file);
+  assert.equal(cook.mode, desktop ? 'WebGPU-SM5' : 'WebGPU-ES31');
+  assert.equal(stage.mode, cook.mode);
   assert(cook.pass && cook.sourceFiles.every(valid) && cook.products.every(valid) && cook.hostProducts.every(valid));
   assert(prepared.pass && prepared.originalProjectUnmodified && prepared.sourceFiles.every(valid));
   report.buildReport = audit(buildFile);
@@ -43,15 +48,19 @@ try {
     return [name, audit(file).sha256];
   }));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
-    JSON.stringify({versions, wasm: metadata(wasm.file, 'UEWebEngine.wasm')}) + ';');
+    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile',
+      wasm: metadata(wasm.file, 'UEWebEngine.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
   html = html.replace(original, `arguments: ['-webgpu', '-WebProjectMap=${stage.map}'],`)
     .replaceAll('UE 默认关卡', stage.projectName);
   if (report.textureCompression === 'BC') {
-    const marker = 'const requiredTextureFeatures = [];';
+    const marker = 'const requiredTextureFeatures = desktopRenderer ?';
     assert(html.includes(marker));
-    html = html.replace(marker, "const requiredTextureFeatures = ['texture-compression-bc'];");
+    const end = "['texture-formats-tier1', 'texture-formats-tier2', 'rg11b10ufloat-renderable', 'float32-filterable'] : [];";
+    assert(html.includes(end));
+    html = html.replace(end,
+      "['texture-compression-bc', 'texture-formats-tier1', 'texture-formats-tier2', 'rg11b10ufloat-renderable', 'float32-filterable'] : ['texture-compression-bc'];");
   }
   fs.writeFileSync(path.join(output, 'index.html'), html);
   const copies = [[stage.pack.file, 'content.bin'], [stage.manifest.file, 'content-files.json'],
@@ -79,7 +88,7 @@ try {
   report.failure = error.stack;
   process.exitCode = 1;
 } finally {
-  fs.writeFileSync(path.join(directory, `web-project-${id}-package-results.json`), JSON.stringify(report, null, 2));
+  fs.writeFileSync(path.join(directory, `${prefix}-package-results.json`), JSON.stringify(report, null, 2));
   console.log(JSON.stringify({pass: report.pass, output, files: report.products?.length,
     bytes: report.totalBytes, failure: report.failure}, null, 2));
 }

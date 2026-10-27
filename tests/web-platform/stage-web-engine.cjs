@@ -11,11 +11,11 @@ const projectId = process.argv.find(value => value.startsWith('--project='))?.sl
 if (projectId) assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(projectId));
 const defaultTemplate = process.argv.includes('--default-template');
 const desktop = process.argv.includes('--desktop');
-assert(!desktop || (defaultTemplate && !projectId && !process.argv.includes('--es31')),
-  '--desktop currently requires --default-template and cannot be combined with --es31');
-const es31 = !!projectId || (defaultTemplate && !desktop) || process.argv.includes('--es31');
+assert(!desktop || ((defaultTemplate || projectId) && !process.argv.includes('--es31')),
+  '--desktop requires --default-template or --project and cannot be combined with --es31');
+const es31 = !desktop && (!!projectId || defaultTemplate || process.argv.includes('--es31'));
 const webgpu = desktop || es31 || process.argv.includes('--webgpu');
-const prefix = projectId ? 'web-project-' + projectId : defaultTemplate ?
+const prefix = projectId ? 'web-project-' + projectId + (desktop ? '-desktop' : '') : defaultTemplate ?
   (desktop ? 'web-engine-webgpu-sm5-default' : 'web-engine-webgpu-es31-default') :
   es31 ? 'web-engine-webgpu-es31' : webgpu ? 'web-engine-webgpu' : 'web-engine';
 const format = es31 ? 'SF_WEBGPU_ES31' : 'SF_WEBGPU_SM5';

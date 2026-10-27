@@ -22,8 +22,8 @@ $taskES31 = $Mode -eq 'WebGPU-ES31'
 if ($Scene -eq 'DefaultTemplate' -and -not $taskWebGPU) { throw 'DefaultTemplate requires WebGPU Cook.' }
 $taskMap = if ($Scene -eq 'DefaultTemplate') { '/Engine/Maps/Templates/Template_Default' } else { '/Game/WebMinimal' }
 if ($Scene -eq 'Project') {
-    if (-not $taskES31 -or -not $Project -or -not $Map -or -not $Profile -or -not $ReportId) {
-        throw 'Project Cook requires WebGPU-ES31, Project, Map, Profile and ReportId.'
+    if (-not $taskWebGPU -or -not $Project -or -not $Map -or -not $Profile -or -not $ReportId) {
+        throw 'Project Cook requires WebGPU, Project, Map, Profile and ReportId.'
     }
     if ($Map -notmatch '^/Game/[a-zA-Z0-9_/]+$') { throw 'Project Map must be an absolute /Game package name.' }
     $taskMap = $Map
@@ -31,8 +31,8 @@ if ($Scene -eq 'Project') {
 if ($DisableProjectSkyLight -and $Scene -ne 'Project') { throw 'SkyLight exclusion requires Project Cook.' }
 if ($TextureCompression -eq 'BC' -and -not $taskWebGPU) { throw 'BC compression requires WebGPU Cook.' }
 if ($CompressHDRCubemaps -and $TextureCompression -ne 'BC') { throw 'HDR cube compression requires BC Cook.' }
-if ($TemplateEnvironment -and ($Scene -ne 'Project' -or -not $taskES31)) {
-    throw 'TemplateEnvironment requires a WebGPU-ES31 Project Cook.'
+if ($TemplateEnvironment -and ($Scene -ne 'Project' -or -not $taskWebGPU)) {
+    throw 'TemplateEnvironment requires a WebGPU Project Cook.'
 }
 $taskFormat = if ($taskES31) { 'SF_WEBGPU_ES31' } else { 'SF_WEBGPU_SM5' }
 $taskShaderPlatformName = if ($taskES31) { 'SP_WEBGPU_ES31' } else { 'SP_WEBGPU_SM5' }
@@ -50,7 +50,9 @@ if ($taskES31) { $taskPrefix = 'web-engine-webgpu-es31-cook' }
 if ($Scene -eq 'DefaultTemplate') {
     $taskPrefix = if ($taskES31) { 'web-engine-webgpu-es31-default-cook' } else { 'web-engine-webgpu-sm5-default-cook' }
 }
-if ($Scene -eq 'Project') { $taskPrefix = "web-project-$ReportId-cook" }
+if ($Scene -eq 'Project') {
+    $taskPrefix = if ($taskES31) { "web-project-$ReportId-cook" } else { "web-project-$ReportId-desktop-cook" }
+}
 $taskOutput = Join-Path $PSScriptRoot "build/$taskPrefix/$taskStamp"
 $taskLog = Join-Path $taskResults "$taskPrefix-$taskStamp.log"
 $taskProcess = Get-Process -Id $PID
@@ -163,14 +165,14 @@ try {
         '/Engine/EngineResources/WhiteSquareTexture',
         $taskMap
     )
-    if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment) {
+    if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment -or ($taskWebGPU -and -not $taskES31)) {
         $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x8'
     }
+    if ($taskWebGPU -and -not $taskES31) {
+        $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x64'
+        $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_vec2_128x128x64'
+    }
     if ($Scene -eq 'DefaultTemplate') {
-        if (-not $taskES31) {
-            $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_scalar_128x128x64'
-            $taskPackages += '/Engine/EngineMaterials/FastBlueNoise_vec2_128x128x64'
-        }
         $taskPackages += '/Engine/BasicShapes/Sphere'
         $taskPackages += $taskSamples.meshPackage
         $taskPackages += @($taskSamples.samples | ForEach-Object { $_.package })

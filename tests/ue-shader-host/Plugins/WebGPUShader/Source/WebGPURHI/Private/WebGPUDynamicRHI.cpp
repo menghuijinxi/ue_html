@@ -63,7 +63,7 @@ FString String(WGPUStringView Value)
 bool IsUnsignedTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8_UINT || Value == PF_R32_UINT || Value == PF_R16_UINT ||
-        Value == PF_R32G32B32A32_UINT;
+        Value == PF_R32G32_UINT || Value == PF_R32G32B32A32_UINT;
 }
 bool IsBCTextureFormat(EPixelFormat Value)
 {
@@ -103,6 +103,7 @@ uint32 StorageImageFormat(EPixelFormat Value)
     case PF_R8G8B8A8_UINT: return 32;
     case PF_R32G32B32A32_UINT: return 30;
     case PF_R32_UINT: return 33;
+    case PF_R32G32_UINT: return 35;
     case PF_R16_UINT: return 38;
     default: return 0;
     }
@@ -124,6 +125,7 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat)
     case 32: return WGPUTextureFormat_RGBA8Uint;
     case 30: return WGPUTextureFormat_RGBA32Uint;
     case 33: return WGPUTextureFormat_R32Uint;
+    case 35: return WGPUTextureFormat_RG32Uint;
     case 38: return WGPUTextureFormat_R16Uint;
     default:
         checkf(false, TEXT("WebGPU storage image format unsupported: %u"), ImageFormat);
@@ -166,6 +168,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
         return WGPUTextureFormat_RGBA8Uint;
     case PF_R32G32B32A32_UINT:
         return WGPUTextureFormat_RGBA32Uint;
+    case PF_R32G32_UINT:
+        return WGPUTextureFormat_RG32Uint;
     case PF_R32_UINT:
         return WGPUTextureFormat_R32Uint;
     case PF_R16_UINT:
@@ -352,6 +356,18 @@ void WriteTextureMip(FWebGPUDynamicRHI &RHI, FWebGPUTexture *Texture, uint32 Mip
     if (RHI.StartupProbeMode)
         UE_LOG(LogRHI, Display, TEXT("P3_TEXTURE_UPLOAD name=%s mip=%u extent=%ux%ux%u bytes=%llu"),
                *Texture->GetName().ToString(), Mip, Extent.width, Extent.height, Extent.depthOrArrayLayers, Size);
+}
+uint32 TextureLockLayer(const FRHILockTextureArgs& Args)
+{
+    check(Args.Texture);
+    const auto& Desc = Args.Texture->GetDesc();
+    const bool Cube = Desc.IsTextureCube();
+    check((Desc.Dimension == ETextureDimension::Texture2D ||
+           Desc.Dimension == ETextureDimension::Texture2DArray || Cube) &&
+          IsSampled2DTextureFormat(Desc.Format) &&
+          Args.ArrayIndex < Desc.ArraySize && Args.FaceIndex < (Cube ? 6u : 1u) &&
+          !Args.bLockWithinMiptail && Args.MipIndex < Desc.NumMips);
+    return Args.ArrayIndex * (Cube ? 6u : 1u) + Args.FaceIndex;
 }
 struct FTextureInitializer : FRHITextureInitializer
 {
@@ -1039,15 +1055,11 @@ FRHILockTextureResult FWebGPUDynamicRHI::RHILockTexture(FRHICommandListImmediate
 {
     RequireOwner();
     auto *Texture = static_cast<FWebGPUTexture *>(Args.Texture);
-    check(Texture && (Texture->GetDesc().Dimension == ETextureDimension::Texture2D ||
-                      Texture->GetDesc().Dimension == ETextureDimension::TextureCube) &&
-          IsSampled2DTextureFormat(Texture->GetFormat()) &&
-          Args.LockMode == RLM_WriteOnly && !Args.ArrayIndex &&
-          uint32(Args.FaceIndex) < (Texture->GetDesc().IsTextureCube() ? 6u : 1u) && !Args.bLockWithinMiptail &&
-          Args.MipIndex < Texture->GetNumMips());
-    const uint32 Key = Args.MipIndex * Texture->LayerCount() + Args.FaceIndex;
+    check(Args.LockMode == RLM_WriteOnly);
+    const uint32 Layer = TextureLockLayer(Args);
+    const uint32 Key = Args.MipIndex * Texture->LayerCount() + Layer;
     check(!Texture->MipLocks.Contains(Key));
-    RequireAccess(Texture, ERHIAccess::CopyDest, true, 0, Args.MipIndex, Args.FaceIndex);
+    RequireAccess(Texture, ERHIAccess::CopyDest, true, 0, Args.MipIndex, Layer);
     if (ContextOpen)
         SubmitCurrent();
     uint64 Stride;
@@ -1061,17 +1073,16 @@ void FWebGPUDynamicRHI::RHIUnlockTexture(FRHICommandListImmediate &, const FRHIL
 {
     RequireOwner();
     auto *Texture = static_cast<FWebGPUTexture *>(Args.Texture);
-    check(Texture && !Args.ArrayIndex && !Args.bLockWithinMiptail &&
-          Args.MipIndex < Texture->GetNumMips() && uint32(Args.FaceIndex) < Texture->LayerCount());
+    const uint32 Layer = TextureLockLayer(Args);
     TArray<uint8> Bytes;
     const bool Unlocked = Texture->MipLocks.RemoveAndCopyValue(
-        Args.MipIndex * Texture->LayerCount() + Args.FaceIndex, Bytes);
+        Args.MipIndex * Texture->LayerCount() + Layer, Bytes);
     check(Unlocked && !Bytes.IsEmpty());
     // Queue writes follow previously submitted draws and copy their CPU data before returning.
-    RequireAccess(Texture, ERHIAccess::CopyDest, true, 0, Args.MipIndex, Args.FaceIndex);
+    RequireAccess(Texture, ERHIAccess::CopyDest, true, 0, Args.MipIndex, Layer);
     if (ContextOpen)
         SubmitCurrent();
-    WriteTextureMip(*this, Texture, Args.MipIndex, Bytes.GetData(), Bytes.Num(), Args.FaceIndex);
+    WriteTextureMip(*this, Texture, Args.MipIndex, Bytes.GetData(), Bytes.Num(), Layer);
 }
 bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDesc &In, FString &Error) const
 {

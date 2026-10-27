@@ -1,5 +1,45 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-27：别墅切换桌面 SM5 延迟渲染
+
+应用户要求，用修改后的引擎重新 Cook、编译并打包 `/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla`。候选目录为 `tests/web-platform/build/triplex-house-villa-desktop`，通过浏览器检查后发布到原地址 `http://127.0.0.1:8765/build/triplex-house-villa/index.html`。原工程 `H:/TriplexHouseVilla` 和安装引擎不作源码或资产修改。以下 ES3.1 记录保留为历史结果。
+
+项目 Cook、Stage、Package 现支持独立 `--desktop` 路径及报告，不覆盖移动 Cook。新配置使用 `SF_WEBGPU_SM5`、桌面延迟渲染、4096 CSM、原关卡光源和指定 HDRI SkyLight；保留 BC/BC6H 压缩、256 MiB mip 池和 OPFS 本地流送。沿用准备项目已有的 512 纹理组上限，不在本轮扩大纹理预算。667 张纹理中 607 张具有 mip 链，GPU 格式估算总量 210,559,592 字节，不等同整个场景显存。
+
+首次启动依次暴露并修正三个桌面兼容缺口：IES 浮点纹理在 Cook 内按线性数据处理，移动云材质改写仍仅用于 ES3.1；恢复 SM5 反射通道需要的黑色 Cube/CubeArray 默认纹理；指定 HDRI 已导出的亮度与 SH 在桌面路径复用，避免再次同步读回 GPU，同时继续执行桌面 cubemap mip 和高光过滤。这是现有天空图像的预处理数据，不是新增场景 lightmap 烘焙。
+
+原生反射探针还需要 `LockTextureCubeFace` 写入 CubeArray。RHI 现按 `ArrayIndex * 6 + FaceIndex` 定位，锁记录、状态检查和队列上传统一使用物理层。新增两组立方体、六面、三级 mip 的并行锁定及 GPU 回读隔离测试，覆盖录制和 bypass 模式，每模式核验 252 个新增像素值；桌面纹理和缓冲区回归通过。另重跑 181 项/模式的纹理、压缩、IES、反射及 mip 流送回归，更新与既有桌面能力不符的三个旧拒绝断言，全部通过。修复期间曾把锁模式校验误用于解锁描述，普通贴图启动当场失败，现仅在锁入口检查模式，回归使用引擎真实解锁包装。
+
+巡游在第 62 帧发现 `VelocityClippedDepth.UAVDummy` 使用的 `PF_R32G32_UINT` 尚未映射；固定室内视角与仅缩放测试没有触达该通道。现补齐 `rg32uint` 的无符号采样类型、纹理格式和 SPIR-V storage image 格式，新增双通道大整数清除及 GPU 回读测试，不关闭透明材质或速度通道。桌面纹理回归每模式现核验 6492 个值，独立故障报告为 `web-project-triplex-house-villa-desktop-rg32ui-before-fix-results.json`。
+
+完整正常 UBT 构建和 SM5 Cook 成功，最终包为 8 个文件、702,262,514 字节，其中内容包 519,087,085 字节。Chrome/Edge 在 1280x720 / DPR 1、1896x938 / DPR 1.5 四组室内测试均通过，实际报告 `shaderPlatform=47`、`featureLevel=3`，创建 GBufferA/B/C 并上传 BC 纹理；无 GPU、页面或内容加载错误。每组均保留 621 个本地 bulk 文件，MEMFS bulk 数据为零，块缓存不超过 16 MiB。单轮八秒室内采样约 31～33 FPS，只记录当前机器观测，不作跨版本性能结论。双浏览器各一分钟多视角巡游/缩放均通过，分别从第 61 帧推进至 1079/1649 帧。最终包的普通页面另在两浏览器 DPR 1/1.5/2 下验证六次启动、18 个窗口状态及真实 Pawn 移动，不使用 GPU API 钩子，全部通过。
+
+引擎源码提交为 `18f4907e2`，未推送。发布脚本要求同一候选包通过四组室内检查、双浏览器 DPR 1/1.5/2 的 18 个普通页面启动/缩放状态，以及各一分钟巡游，校验报告和产品哈希后备份旧包、最后更新 HTML。
+
+原别墅地址已更新为本次桌面包，旧版八个文件按原 HTML 哈希保存在 `build/triplex-house-villa-before-desktop-9da40a9bdc28`，发布证据为 `web-project-triplex-house-villa-desktop-publish-results.json`；默认关卡原发布目录的八个产品哈希未变。发布地址 HTTP 200，Chrome/Edge 均再次通过启动、室内绘制、GBuffer、BC 和本地流送检查，记录于 `web-project-triplex-house-villa-desktop-published-results.json`。新包沿用内容哈希缓存和本地读取方式，SM5 Cook 内容与旧 ES3.1 内容不同，需要首次缓存新版本。
+
+本轮故障证据保留为 `web-project-triplex-house-villa-desktop-{ies,cube,sky-readback,cube-array,unlock}-before-fix-results.json`，纹理旧断言失败保留为 `triplex-desktop-streaming-outdated-expectations-results.json`。最终入口为 `web-project-triplex-house-villa-desktop-cook-results.json`、`web-engine-full-build-results.json`、`web-desktop-resources-results.json`、`web-texture-streaming-native-results.json` 和 `web-project-triplex-house-villa-desktop-candidate-results.json`。
+
+**未完成边界：** 未接入 Lumen、完整实时多次反弹 GI、虚拟阴影和体积雾；这次没有完成别墅的 UE 桌面同视角画质验收，不能把默认关卡既有对照结果套用到别墅。长期稳定性、历史间歇性崩溃、地图旅行和 UMG 外观问题也不由本轮短测宣告解决。默认关卡原发布目录保持原样。
+
+```powershell
+& tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-SM5 -Scene Project `
+  -Project H:/ue_html/tests/web-platform/build/projects/triplex-house-villa/TriplexHouseVilla.uproject `
+  -Map /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla `
+  -Profile H:/ue_html/tests/web-platform/cook-profiles/TriplexHouseVillaDesktopEngine.ini `
+  -ReportId triplex-house-villa -TextureCompression BC -CompressHDRCubemaps -StopOnShaderError
+& tests/web-platform/build-web-engine.ps1 -MaxParallelActions 4
+node tests/web-platform/stage-web-engine.cjs --project=triplex-house-villa --desktop
+node tests/web-platform/package-web-project.cjs --project=triplex-house-villa --desktop
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-project.cjs --project=triplex-house-villa --desktop --warmup-frames=30 --seconds=8 --report=desktop-candidate --view=-175,-80,160,-5,50
+node tests/web-platform/probe-web-default-startup.cjs --desktop --project=triplex-house-villa --candidate --runs=1 --report=triplex-house-villa-desktop-candidate
+node tests/web-platform/probe-web-project-stability.cjs --project=triplex-house-villa --desktop --browser=Chrome --seconds=60 --resize --minimal --require-handles --report=desktop-stability
+node tests/web-platform/probe-web-project-stability.cjs --project=triplex-house-villa --desktop --browser=Edge --seconds=60 --resize --minimal --require-handles --report=desktop-stability
+node tests/web-platform/publish-web-project-desktop.cjs --project=triplex-house-villa
+node tests/web-platform/probe-web-project.cjs --project=triplex-house-villa --desktop --published --smoke=1 --warmup-frames=30 --seconds=5 --report=desktop-published --view=-175,-80,160,-5,50
+```
+
 ## 2026-10-23：修复 Slate 状态断言和顶点格式缺口
 
 用户的 `ue-startup-diagnostics-2026-10-23T09-43-03-799Z.json` 在第 308 帧退出，日志明确记录 `SlateElementIndexBuffer before=0x8 after=0x70`。旧独立包启动后按 Esc 可稳定复现同一 `RHICreateTransition` 断言。原始报告保存在 `results/user-slate-transition-crash-20261023.json`；这次句柄诊断没有报失效，属于已定位的另一条故障路径，不能与前一节的第 991 帧绑定组问题混为一谈。

@@ -5,6 +5,9 @@ const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const id = option('project') || 'triplex-house-villa';
+const desktop = process.argv.includes('--desktop');
+const published = process.argv.includes('--published');
+assert(!published || desktop, '--published requires --desktop');
 const suffix = option('report') || 'stability';
 const name = option('browser') || 'Edge';
 const seconds = Number(option('seconds') || 120);
@@ -32,6 +35,7 @@ assert(!debugPort || (Number.isInteger(Number(debugPort)) && Number(debugPort) >
 const directory = path.join(__dirname, 'results');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const report = {date: new Date().toISOString(), pass: false, project: id, browser: name,
+  desktop, published,
   seconds, mode, resize, collectGarbage, headful, minimal, streamChurn, stepFrames, requireHandles, debugHandles, slateMenu,
   viewport: {width, height, dpr},
   samples: [], errors: [], engineErrors: [], source: audit(__filename)};
@@ -157,6 +161,7 @@ function instrument({minimal, slateMenu}) {
 async function sample(label) {
   const value = await page.evaluate(() => ({
     frame: globalThis.__webEngineFrames || 0, failure: globalThis.__webEngineFailure || null,
+    ready: globalThis.__webEngineReady || null,
     camera: globalThis.__webDefaultCamera || null, runtime: globalThis.__webEngineRuntime || null,
     streaming: globalThis.__webTextureStreaming || null,
     occlusion: globalThis.__webOcclusionRHI || null,
@@ -171,6 +176,7 @@ async function sample(label) {
   if (requireHandles) assert(value.handles?.version === 1 && !value.handles.failure,
     'The packaged runtime must include bounded handle diagnostics');
   if (debugHandles) assert(value.handles?.enabled && value.handles.capacity === 256);
+  if (desktop) assert(value.ready?.shaderPlatform === 47 && value.ready.featureLevel === 3);
   return value;
 }
 
@@ -187,7 +193,7 @@ async function frames(count) {
       report.watchdog = 'No test progress for 120 seconds';
       browser?.close().catch(() => {});
     }, 120000);
-    const packageFile = path.join(directory, `web-project-${id}-package-results.json`);
+    const packageFile = path.join(directory, `web-project-${id}${desktop ? '-desktop' : ''}-package-results.json`);
     const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8').replace(/^\uFEFF/, ''));
     assert(packaged.pass && packaged.products.every(item =>
       fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256));
@@ -210,7 +216,7 @@ async function frames(count) {
     });
     await page.addInitScript(instrument, {minimal, slateMenu});
     report.started = Date.now();
-    await page.goto(`http://127.0.0.1:8765/build/${id}/index.html${debugHandles ? '?debug=1' : ''}`,
+    await page.goto(`http://127.0.0.1:8765/build/${id}${desktop && !published ? '-desktop' : ''}/index.html${debugHandles ? '?debug=1' : ''}`,
       {waitUntil: 'commit'});
     await frames(60);
     report.initial = await sample('spawn');
@@ -286,7 +292,7 @@ async function frames(count) {
     await page.evaluate(() => globalThis.__stabilityIdle());
     report.final = await sample('final');
     assert(report.final.frame > report.initial.frame + 60, 'Engine stopped advancing');
-    if (mode === 'tour' && !minimal) {
+    if (mode === 'tour' && !minimal && !desktop) {
       assert(report.final.gpu.shadowShaderDeclarations.length, 'Mobile CSM shader was not exercised');
       const shadows = report.final.gpu.shadowLayouts.flat();
       assert(shadows.some(item => item.binding === 6 &&
