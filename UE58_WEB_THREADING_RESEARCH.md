@@ -6,18 +6,20 @@
 
 可以支持真正的 WASM 共享内存多线程。现有 wasm64 pthread 样例已在本机 Chrome 156.0.8078.48、Edge 156.0.4314.42 运行通过，包括两个线程的原子计数，以及 Worker 内 WebGPU 绘制、计算、回读、画布缩放和横竖屏像素校验。
 
-正式 UE 页面目前仍是单线程引擎，另有本地 IO Worker。本轮增加可复现的能力及性能探针，没有把普通 UE 运行时改成多线程；样例通过不能作为 UE 线程移植完成的依据。
+正式 UE 页面目前仍是单线程引擎，另有本地 IO Worker。已完成下文第一阶段的独立 UE Core 线程候选：真实 runnable、Tasks、TaskGraph 并行及退出在 Chrome/Edge 验证通过。完整关卡尚未迁入 Worker，现阶段不宣称关卡帧率提升。
 
 多线程对当前别墅值得投入，但不能承诺等比例加速。默认关卡的 4K GPU 像素工作也需要单独优化。
 
-## 实际单线程证据
+## 正式包的单线程证据
+
+此表描述当前正式关卡包。源码已增加由 `UE_WEB_THREADS=1` 显式启用的独立候选路径，普通 Target 保持单线程。
 
 | 层级 | 当前实现 | 意义 |
 | --- | --- | --- |
 | 构建 | 普通 UBT WebToolChain 编译/链接未启用 `-pthread`，正式链接响应也未包含它 | WASM 线性内存不是共享内存 |
-| Core | `FWebPlatformProcess::SupportsMultithreading()` 固定返回 false | UE 不启动正常多线程调度 |
-| 核心数 | Web 未覆盖 `FGenericPlatformMisc::NumberOfCores()` 的默认值 1 | 不能按浏览器逻辑核心数创建合理任务池 |
-| 线程创建 | GenericPlatformProcess 在 Web 排除了 `FRunnableThreadPThread` 创建分支 | 仅改能力返回值仍不能创建 UE 工作线程 |
+| Core | 普通编译未定义 `__EMSCRIPTEN_PTHREADS__`，能力返回 false | UE 不启动正常多线程调度 |
+| 核心数 | 普通编译返回 1；线程候选限定在 2～4 | 避免按本机全部逻辑核心创建任务池 |
+| 线程创建 | 普通编译仍不创建 runnable；候选新增 Web pthread 实现 | 线程支持与实际编译内存模型绑定 |
 | 事件 | Core 在不支持多线程时创建 `FSingleThreadEvent` | 需要验证真实事件等待、唤醒和退出 |
 | 引擎入口 | `StartEngine()` 固定追加 `-onethread -norhithread` | 游戏、渲染准备及 RHI 调用按串行路径运行 |
 | RHI | 关闭 RHIThread、并行 RHI 执行及多线程资源创建，`RequireOwner()` 检查单一线程 | 不能直接打开 UE 的所有渲染并行开关 |
@@ -70,6 +72,48 @@ UE 会同步等待线程初始化、事件和任务完成，浏览器 UI 线程�
 别墅 4K 的首次诊断在第一组 1080p 之后未完成，十分钟后终止了该测试及其浏览器子进程，没有获得有效 4K 数据；具体卡住的操作未隔离，不能据此认定线程、显存或渲染器是根因。探针随后补充 CPU/GPU 采样超时保护，1080p 两轮定向测量通过。
 
 ## 推荐接入顺序
+
+### 第一阶段已实现：UE Core 线程候选
+
+新增 `UEWebThreads` 独立 Target、模块、构建脚本及浏览器验证页。构建在编译和链接均启用 `-pthread`，并使用 `PROXY_TO_PTHREAD` 让程序入口运行在 Worker；浏览器主线程禁止阻塞等待。`UE_WEB_THREADS` 与编译器真实 pthread 宏不一致时直接编译失败。
+
+Web runnable 复用 UE pthread 生命周期，默认工作线程栈 2 MiB，不请求浏览器不支持的 OS 优先级。核心数限定为 2～4，IO 工作线程建议数为 1。候选预建 8 个浏览器 Worker，线程池耗尽直接报错；这些是可复用的 pthread 容器，不表示存在 8 个活跃 UE CPU 任务线程。测试用三个调度线程，并限制超额订阅比例为 1。完整 Engine 后续需要根据常驻线程清单重新核定池容量。
+
+`BLAKE3` 和 `libPNG` 构建脚本增加 `-Threads`，生成独立的 `wasm64-thread` 库和报告。UBT 按 Target 的线程定义选择，普通库、普通对象与线程版相互隔离。
+
+本机 Chrome 156.0.8078.48、Edge 156.0.4314.42 各连续三轮通过 17 项真实 Core 检查：
+
+- runnable 创建、事件超时/手动重置/自动重置、唤醒、锁竞争、不同线程 ID、线程 join、协作停止。
+- 编译器 TLS 与 UE TLS slot 隔离，并发 UE 分配/重分配及内容校验。
+- 在线程持有分配内容时，将共享内存从 64 MiB 扩到 128 MiB，随后在原线程继续分配并验证数据；浏览器 HEAP 视图同步更新。
+- 两个 `UE::Tasks` 同时停在同步门上，证明运行在两个不同工作线程，且均不是游戏线程。另测批量任务、前置依赖、TaskGraph 后台派发。
+- TaskGraph 关闭并重启后再次完成全部任务，最后在引擎 Worker 清理 C++ 全局对象，浏览器收到正常退出码 0。
+
+六轮完整运行中的 UI 定时器最大间隔约 12ms（定时周期 10ms），包含引擎 Worker 阻塞等待。另测页面中断关闭后重新启动，以及缺少 COOP/COEP 时明确拒绝启动。单线程 Core 在 Node 和两浏览器保持非共享内存，原六组 Core 检查全部通过。正式默认关卡启动回归在两浏览器各运行至 181 帧。
+
+构建报告核对 652 个链接对象：每个对象都在独立 `UEWebThreads` 目录、使用 `-pthread`、包含线程版 UBT 定义，并记录对象、源文件、响应文件、定义文件的哈希；60 个平台覆盖文件与构建主机逐项一致。线程依赖另验证 BLAKE3 的 210 个向量组合及 libPNG 的 8 项检查。
+
+退出测试发现并修复了线程归属问题：`PROXY_TO_PTHREAD` 最终会在浏览器主线程调用全局析构，而 UE Scheduler 析构要求在游戏线程。新增 `FPlatformProcess::TearDownThreadedRuntime()`，在任务调度器关闭后、程序退出前，由引擎 Worker 排空固定 SDK musl 的 `__funcs_on_exit` 列表。它是终端清理步骤，调用后不得继续使用 UE；依赖 Emscripten 6.0.9 的实现，升级 SDK 时必须重新验收。未修改或跳过 UE Scheduler 的线程断言。
+
+当前只验收 Core 候选，不包含 ApplicationCore/Engine 主循环、DOM 输入、资源装载、OPFS 回调或 WebGPU 所有权迁移；正式关卡包没有切换到多线程。下一阶段按下述第二阶段实施，保持单一 GPU 对象所有者。
+
+复现（已有隔离构建主机及 8765 本地服务）：
+
+```powershell
+./tests/web-platform/build-web-threads.ps1 -MaxParallelActions 4
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/verify-web-threads.cjs
+node tests/web-platform/probe-web-default-startup.cjs --desktop --runs=1 --scale=1 --startup-only --report=threads-core-regression
+```
+
+`verify-web-threads.cjs` 同时检查已经构建的 `UEWebSmoke` 单线程产物。线程构建脚本首次运行会准备隔离主机，后续可加 `-SkipHostPreparation`；修改参考 Core 通用源码时必须重新准备。浏览器页为 `http://127.0.0.1:8765/web-threads.html`。
+
+新增证据位于 `tests/web-platform/results/`：
+
+- `web-threads-build-results.json`、`web-threads-results.json`
+- `web-blake3-thread-build-results.json`、`web-libpng-thread-build-results.json`
+- `web-threads-single-thread-regression.log`
+- `web-default-startup-threads-core-regression-results.json`
 
 ### 第一阶段：独立线程候选与 UE Core
 

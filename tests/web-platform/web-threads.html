@@ -1,0 +1,54 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>UE Core Threads</title>
+<pre id="output"></pre>
+<script>
+const samples = [], checks = [];
+let previous = performance.now();
+let running = false;
+const runtimeSamples = [];
+const heartbeat = setInterval(() => {
+  const now = performance.now();
+  samples.push(now - previous);
+  if (running) runtimeSamples.push(now - previous);
+  previous = now;
+}, 10);
+const show = text => {
+  document.querySelector('#output').textContent += text + '\n';
+  if (text.startsWith('UE_WEB_THREAD_CHECK ')) {
+    checks.push(JSON.parse(text.slice('UE_WEB_THREAD_CHECK '.length)));
+    running = true;
+  }
+  if (text.startsWith('UE_WEB_THREAD_RESULT ')) {
+    clearInterval(heartbeat);
+    globalThis.__webThreadsResult = {
+      ...JSON.parse(text.slice('UE_WEB_THREAD_RESULT '.length)),
+      checks, heartbeats: samples.length, maxHeartbeatMs: Math.max(0, ...samples),
+      runtimeHeartbeats: runtimeSamples.length, maxRuntimeHeartbeatMs: Math.max(0, ...runtimeSamples),
+      currentMemoryBytes: wasmMemory.buffer.byteLength,
+      currentHeapViewBytes: HEAPU8.byteLength,
+      isolated: crossOriginIsolated
+    };
+  }
+};
+var Module = {
+  print: show,
+  printErr: text => { show(text); console.error(text); },
+  onAbort: reason => { globalThis.__webThreadsFailure = String(reason); },
+  onExit: code => { globalThis.__webThreadsExitCode = code; },
+  onRuntimeInitialized: () => {
+    globalThis.__webThreadsMemory = {
+      shared: HEAPU8.buffer instanceof SharedArrayBuffer,
+      initialBytes: HEAPU8.byteLength
+    };
+  }
+};
+if (!crossOriginIsolated || typeof SharedArrayBuffer === 'undefined') {
+  globalThis.__webThreadsFailure = 'Cross-origin isolation and SharedArrayBuffer are required.';
+  clearInterval(heartbeat);
+} else {
+  const script = document.createElement('script');
+  script.src = 'build/web-threads/UEWebThreads.js';
+  document.head.append(script);
+}
+</script>
