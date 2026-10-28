@@ -25,7 +25,7 @@ const distribution = values => {
 const report = {date: new Date().toISOString(), pass: false, id, smoke, seconds, heights,
   source: audit(__filename), runs: [], comparisons: [], headless: true,
   boundary: 'Same Cook, config, source revision, camera, output and internal pixel size; normal game time. ' +
-    'The scene retains its existing screen-percentage heuristic; output size is not native render size. ' +
+    'Scene resolution follows its packaged profile; actual internal and output sizes are recorded separately. ' +
     'RAF CPU callback time includes WASM and JS submission, not separate Game/Draw CPU timers. ' +
     'GPU pass sums omit copies and gaps; headless frame rates are local observations, not display FPS. ' +
     'Game and Render/RHI are not separated in this candidate.'};

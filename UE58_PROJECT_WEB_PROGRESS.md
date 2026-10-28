@@ -1,5 +1,23 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-28：别墅改为跟随画布原生分辨率
+
+按用户要求，别墅桌面配置新增 `r.ScreenPercentage=100`、`r.ScreenPercentage.Default.Desktop.Mode=0`、`r.DynamicRes.OperationMode=0`，并启用 `bAllowHighDPIInGameMode=True`。内部渲染尺寸现在跟随画布实际像素尺寸，包含浏览器 DPR，不再使用 UE 的按显示分辨率自动降采样。FXAA、光照、材质、阴影及纹理预算参数没有改动。
+
+已重新 Cook、Stage 并更新 `build/triplex-house-villa-threads/` 与 `build/triplex-house-villa-desktop/` 两个测试包。引擎 JS/WASM 未变；4213 个内容文件中只有全局 ShaderCache 的字节哈希因重新 Cook 改变，其余资产相同。内容包大小仍为 519,086,543 字节，但整体哈希已更新，首次需要缓存新内容。旧缩放版本分别保留在 `build/triplex-house-villa-threads-before-native-90844b5693f1/` 和 `build/triplex-house-villa-desktop-before-native-3584e717deac/`，原日常 `build/triplex-house-villa/` 没有切换。
+
+启动探针新增 `--threads`、`--native` 及窗口尺寸选项，直接检查 UE 内部 View、输出 View 与 CSS×DPR 的画布尺寸一致；保留真实游戏时间、正常输入和绘制，不注入 GPU API 钩子。旧包首先复现画布 3840×2160、内部 1920×1080 的不一致，证据为 `web-default-startup-villa-native-before-results.json`。
+
+验证采用 Chrome/Edge、单线程/多线程、DPR 1/1.5/2，每组执行初始窗口、缩小窗口、恢复窗口及真实 Pawn 移动。1920×1080 CSS 窗口对应实际内部尺寸分别为 1920×1080、2880×1620、3840×2160。通过报告分别为 `web-default-startup-villa-native-threads-results.json` 和 `web-default-startup-villa-native-single-results.json`。
+
+下节约 47% 的帧率提升数据属于旧降采样配置的历史测量，不能作为这两个原生分辨率更新包的性能数据。本轮完成的是分辨率及缩放验收，没有重新得出多线程性能结论。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-default-startup.cjs --desktop --candidate --threads --project=triplex-house-villa --native --runs=1 --width=1920 --height=1080 --report=villa-native-threads
+node tests/web-platform/probe-web-default-startup.cjs --desktop --candidate --project=triplex-house-villa --native --runs=1 --width=1920 --height=1080 --report=villa-native-single
+```
+
 ## 2026-10-28：别墅多线程候选及同源性能对照
 
 已将复杂别墅打包为独立 `UEWebEngineThreads` 候选，地址为 `http://127.0.0.1:8765/build/triplex-house-villa-threads/index.html`；同源单线程对照为 `http://127.0.0.1:8765/build/triplex-house-villa-desktop/index.html`。原日常地址 `build/triplex-house-villa/` 本轮没有覆盖。

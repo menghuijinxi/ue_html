@@ -13,24 +13,32 @@ assert(scales.every(scale => Number.isFinite(scale) && scale > 0));
 const startupOnly = process.argv.includes('--startup-only');
 const desktop = process.argv.includes('--desktop');
 const candidate = process.argv.includes('--candidate');
+const threads = process.argv.includes('--threads');
+const native = process.argv.includes('--native');
+assert(!threads || desktop && candidate, '--threads requires --desktop --candidate');
+assert(!native || desktop, '--native requires --desktop');
 const projectId = option('project');
 assert(!projectId || (desktop && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(projectId)),
   '--project requires a desktop project id');
 assert(!candidate || desktop, '--candidate requires --desktop');
-const landscape = desktop ? {width: 1896, height: 938} : {width: 1848, height: 1120};
+const landscape = {width: Number(option('width') || (desktop ? 1896 : 1848)),
+  height: Number(option('height') || (desktop ? 938 : 1120))};
+assert(Object.values(landscape).every(value => Number.isInteger(value) && value > 0 && value <= 7680));
 const reportSuffix = option('report') || '';
 assert(/^[a-z0-9-]*$/.test(reportSuffix));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, startupOnly,
-  desktop, candidate, projectId: projectId || null, landscape, scales,
+  desktop, candidate, threads, native, projectId: projectId || null, landscape, scales,
   browserRuns: [], source: audit(__filename)};
 
 (async () => {
   let browser;
   try {
-    const packageFile = path.join(directory, projectId ? `web-project-${projectId}-desktop-package-results.json` : desktop ?
+    const packageFile = path.join(directory, threads ?
+      (projectId ? `web-project-${projectId}-threads-package-results.json` :
+        'web-default-template-threads-package-results.json') : projectId ? `web-project-${projectId}-desktop-package-results.json` : desktop ?
       'web-default-template-desktop-package-results.json' : 'web-default-template-package-results.json');
     const packaged = read(packageFile);
     assert(packaged.pass && packaged.products.every(valid) && packaged.sourceFiles.every(valid) &&
@@ -67,7 +75,7 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
               run.errors.push(text);
           });
           const started = Date.now();
-          await page.goto(`http://127.0.0.1:8765/build/${projectId || 'ue-default-template'}${candidate ? '-desktop' : ''}/index.html`,
+          await page.goto(`http://127.0.0.1:8765/build/${projectId || 'ue-default-template'}${threads ? '-threads' : candidate ? '-desktop' : ''}/index.html`,
             {waitUntil: 'commit'});
           for (const viewport of startupOnly ? [null] :
             [null, {width: 390, height: 844}, landscape]) {
@@ -102,10 +110,18 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
                 assert.equal(state.renderView.height, state.renderView.outputHeight);
                 assert.equal(state.renderView.antiAliasing, 2, 'Desktop default must execute TAA');
               }
+              if (native) {
+                assert.equal(state.renderView.width, state.canvas.width, 'Internal width must match the canvas');
+                assert.equal(state.renderView.height, state.canvas.height, 'Internal height must match the canvas');
+                assert.equal(state.renderView.outputWidth, state.canvas.width);
+                assert.equal(state.renderView.outputHeight, state.canvas.height);
+              }
             }
             assert.equal(state.visualTestClock, null, 'The normal page must keep real-time material animation');
             assert.deepEqual(run.errors, []);
-            assert(state.runtime && state.camera && state.runtime.statsHistoryFrames < 64);
+            assert(state.runtime && state.camera);
+            if (threads) assert(state.runtime.engineWorker && state.runtime.sharedMemory);
+            else assert(state.runtime.statsHistoryFrames < 64);
             assert.equal(state.canvas.width, Math.round(state.canvas.cssWidth * scale));
             assert.equal(state.canvas.height, Math.round(state.canvas.cssHeight * scale));
             const bytes = await page.locator('canvas').screenshot();
