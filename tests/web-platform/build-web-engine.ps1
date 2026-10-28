@@ -190,6 +190,8 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/GeometryCacheVertexFactory.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/InstancedStaticMesh.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/InstancedStaticMesh.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/Components/ActorComponent.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/Components/ActorComponent.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/Particles/ParticleVertexFactory.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/Particles/ParticleVertexFactory.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/PrimitiveUniformShaderParameters.cpp'

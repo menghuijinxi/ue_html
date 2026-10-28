@@ -1,5 +1,46 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-28：别墅多线程候选及同源性能对照
+
+已将复杂别墅打包为独立 `UEWebEngineThreads` 候选，地址为 `http://127.0.0.1:8765/build/triplex-house-villa-threads/index.html`；同源单线程对照为 `http://127.0.0.1:8765/build/triplex-house-villa-desktop/index.html`。原日常地址 `build/triplex-house-villa/` 本轮没有覆盖。
+
+`package-web-project.cjs --desktop --threads` 复用桌面 Cook/Stage，检查独立线程构建的对象、定义、平台覆盖和产品哈希，打包 Engine Worker 与页面桥接文件。本次重新 Cook 原别墅 SM5 配置，保留 BC/BC6H、256 MiB mip 池、4096 CSM、原光源和材质参数；两个包的 `content.bin`、清单和配置逐项同哈希，内容包为 519,086,543 字节。线程包共 10 个文件、702,207,846 字节；同源单线程包共 8 个文件、701,451,062 字节。
+
+首次复杂场景启动复现了 `SceneUpdateCommandQueue.h:178` 的重复场景命令断言。诊断发现 `BP_WaterFall_532` 的移除已执行，较早排队的添加才到达：没有独立 Render 线程时，CPU 线程提交的添加进入游戏线程队列，随后游戏线程立即移除，顺序发生反转。Web 的组件批量注册现在仅在没有独立 Render 线程时回到游戏线程顺序执行，保留其余 CPU 任务、本地 IO 并行及原有断言。`ActorComponent.cpp` 加入隔离构建覆盖和来源审计。Chrome/Edge 各三次独立冷启动及两个视角检查通过；临时诊断日志已移除，没有修改安装引擎。
+
+性能探针为 `probe-web-project-threads.cjs`。每个浏览器依次执行单线程、多线程、多线程、单线程；每个视角预热 90 帧、采样 5 秒，使用正常游戏时间以保留遮挡历史。两视角分别为室内 `(-175,-80,160,-5,50)` 与反向近景 `(-175,-80,160,-5,230)`，后者画面是厨房近景，脚本历史标签为 `wall`。两版均使用 FXAA，实际内部尺寸和输出尺寸逐组一致。
+
+别墅沿用原有 screen-percentage 自动模式：1920×1080 输出内部为 1400×788；3840×2160 输出内部为 1920×1080。以下是输出尺寸，并非原生 4K 渲染。本轮没有通过降低任一版画质取得性能差异。
+
+| 视角及输出尺寸 | Chrome 单 / 多 FPS | Edge 单 / 多 FPS | 多线程变化 |
+| --- | ---: | ---: | ---: |
+| 复杂室内，1080p | 32.7 / 29.4 | 31.6 / 28.5 | -10.1% / -9.8% |
+| 反向近景，1080p | 33.4 / 30.1 | 32.3 / 29.4 | -10.0% / -9.2% |
+| 复杂室内，4K 输出 | 21.2 / 31.1 | 20.3 / 30.0 | +46.8% / +47.6% |
+| 反向近景，4K 输出 | 34.1 / 30.7 | 33.1 / 30.0 | -10.0% / -9.2% |
+
+复杂室内 4K 输出的帧间隔 p95：Chrome 51.8→40.6ms，Edge 54.4→42.1ms；其他三组反而变差，完整分布保留在报告。页面 10ms 定时器的 p95 间隔从约 64～102ms 降至约 11ms。GPU 通道合计仍约 5～10ms，没有与帧率同比降低。当前 Game 与 Render/RHI 仍在同一个 Engine Worker，不能把全部收益归因于 CPU 任务并行；也不能声称各视角都会提速。headless、API 采样及桌面其他负载会影响绝对帧率，这不是用户全屏显示 FPS 或 UE 独立 Game/Draw 计时。
+
+线程版共享 WASM 堆为 577,437,696 字节，约 550.7 MiB；621 个 bulk 仍通过本地 IO 流送，读取缓存上限 16 MiB。热启动命中两项持久缓存、下载次数为零。截图检查了真实室内和反向近景，CPU 任务在线程 ID 不同的工作线程运行。
+
+第一次性能运行受到用户同时使用电脑、显存耗尽的干扰，含严重低帧及 GPU 采样超时，保存在 `web-project-triplex-house-villa-threads-benchmark-vram-contended-results.json`，不用于收益计算。清空干扰后的运行完成 Chrome 四轮，但 Edge 最后一轮单线程基线在第 417 帧后发生一次 `memory access out of bounds`。该完整失败报告保存在 `web-project-triplex-house-villa-threads-benchmark-single-edge-oob-results.json`；表中 Chrome 数据来自其中四轮完整且无错误的 Chrome 记录，并另核对两版内部尺寸和 AA 一致。随后 Edge 独立重测四轮通过，见 `web-project-triplex-house-villa-threads-benchmark-edge-results.json`。这次单线程越界尚未定位，不能因复跑通过宣告已修复，也不与显存干扰或已修复的场景命令断言混为一谈。
+
+故障前后证据另见 `web-project-triplex-house-villa-threads-scene-command-before-fix-results.json`、`web-project-triplex-house-villa-threads-order-diagnostic-1-results.json` 和 `web-project-triplex-house-villa-threads-order-fixed-{1,2,3}-results.json`。完整引擎构建与两个包的来源哈希均已核对；长期稳定性、独立 Render/RHI、原生 4K 别墅渲染及 UE 桌面画质对照仍未由本轮验收。
+
+修复后的同一线程引擎也重新打包默认关卡，`web-engine-threads-results.json` 的 Chrome/Edge 回归通过：包含真实 CPU 线程、输入、缩放至实际 4K、断网本地读取/CRC/取消、热启动零下载，以及贴地近球向上看的画面对照。本地服务的两版别墅入口均为 HTTP 200，COOP/COEP 保持线程所需设置。
+
+复用本次桌面 Cook/Stage 的构建与测试：
+
+```powershell
+./tests/web-platform/build-web-engine.ps1 -Threads -MaxParallelActions 4 -StandaloneCompiles
+./tests/web-platform/build-web-engine.ps1 -MaxParallelActions 4 -SkipHostPreparation -StandaloneCompiles
+node tests/web-platform/package-web-project.cjs --project=triplex-house-villa --desktop --threads
+node tests/web-platform/package-web-project.cjs --project=triplex-house-villa --desktop
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-project-threads.cjs --smoke
+node tests/web-platform/probe-web-project-threads.cjs --seconds=5
+```
+
 ## 2026-10-27：别墅切换桌面 SM5 延迟渲染
 
 应用户要求，用修改后的引擎重新 Cook、编译并打包 `/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla`。候选目录为 `tests/web-platform/build/triplex-house-villa-desktop`，通过浏览器检查后发布到原地址 `http://127.0.0.1:8765/build/triplex-house-villa/index.html`。原工程 `H:/TriplexHouseVilla` 和安装引擎不作源码或资产修改。以下 ES3.1 记录保留为历史结果。

@@ -6,25 +6,39 @@ const {metadata} = require('./content-file-metadata.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
-const prefix = `web-project-${id}${desktop ? '-desktop' : ''}`;
+const threads = process.argv.includes('--threads');
+assert(!threads || desktop, 'Threaded engine requires the desktop renderer');
+const runtime = threads ? 'UEWebEngineThreads' : 'UEWebEngine';
+const suffix = threads ? '-threads' : desktop ? '-desktop' : '';
+const prefix = `web-project-${id}${suffix}`;
+const stagePrefix = `web-project-${id}${desktop ? '-desktop' : ''}`;
 const directory = path.join(__dirname, 'results');
-const output = path.join(__dirname, 'build', id + (desktop ? '-desktop' : ''));
+const output = path.join(__dirname, 'build', id + suffix);
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
 const report = {date: new Date().toISOString(), pass: false, id, output, architecture: 'wasm64',
-  renderer: desktop ? 'desktop-deferred' : 'mobile-forward',
+  renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads,
   sourceFiles: [__filename, template, path.join(__dirname, 'content-file-metadata.cjs'),
-    path.join(__dirname, 'web-content-io.js'), path.join(__dirname, 'web-content-worker.js')].map(audit), fullNormalUBTBuildVerified: false,
+    ...['web-content-io.js', 'web-content-worker.js',
+      ...(threads ? ['web-engine-host.js', 'web-engine-worker.js'] : [])].map(name =>
+      path.join(__dirname, name))].map(audit), fullNormalUBTBuildVerified: false,
   completeUEScene: false};
 try {
-  const buildFile = path.join(directory, 'web-engine-full-build-results.json');
-  const stageFile = path.join(directory, `${prefix}-stage-results.json`);
+  const buildFile = path.join(directory, `web-engine-full${threads ? '-thread' : ''}-build-results.json`);
+  const stageFile = path.join(directory, `${stagePrefix}-stage-results.json`);
   const prepareFile = path.join(directory, `web-project-${id}-prepare-results.json`);
   const build = read(buildFile), stage = read(stageFile), prepared = read(prepareFile);
-  assert(build.pass && build.buildSucceeded && build.fullLinkAttempted &&
+  assert(build.pass && build.buildSucceeded && build.exitCode === 0 &&
+    (build.fullLinkAttempted || threads && build.fullLinkVerified) &&
     build.sourceFiles.every(valid) && build.products.every(valid) && valid(build.log));
+  if (threads) {
+    assert(build.threads && build.objects.length > 300 && valid(build.linkResponse));
+    assert(build.objects.every(item => [item.object, item.response, item.definitions, item.source].every(valid)));
+    assert(build.platformCopies.every(item => valid(item.source) && valid(item.copied) &&
+      item.source.sha256 === item.copied.sha256));
+  }
   assert(stage.pass && stage.scene === 'Project' && stage.projectId === id &&
     stage.sourceFiles.every(valid) && [stage.cookReport, stage.pack, stage.manifest, stage.configBundle].every(valid));
   const cook = read(stage.cookReport.file);
@@ -41,15 +55,16 @@ try {
   assert.equal(stage.textureCompression, report.textureCompression);
   fs.mkdirSync(output, {recursive: true});
   let html = fs.readFileSync(template, 'utf8');
-  const wasm = build.products.find(item => path.basename(item.file) === 'UEWebEngine.wasm');
-  const versions = Object.fromEntries(['UEWebEngine.js', 'web-content-io.js', 'web-content-worker.js'].map(name => {
-    const file = name === 'UEWebEngine.js' ? build.products.find(item => path.basename(item.file) === name).file :
+  const wasm = build.products.find(item => path.basename(item.file) === runtime + '.wasm');
+  const versions = Object.fromEntries([runtime + '.js', runtime + '.wasm', 'web-content-io.js', 'web-content-worker.js',
+    ...(threads ? ['web-engine-host.js', 'web-engine-worker.js'] : [])].map(name => {
+    const file = name.startsWith(runtime + '.') ? build.products.find(item => path.basename(item.file) === name).file :
       path.join(__dirname, name);
     return [name, audit(file).sha256];
   }));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
-    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile',
-      wasm: metadata(wasm.file, 'UEWebEngine.wasm')}) + ';');
+    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, runtime: runtime + '.js',
+      wasm: metadata(wasm.file, runtime + '.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
   html = html.replace(original, `arguments: ['-webgpu', '-WebProjectMap=${stage.map}'],`)
@@ -65,8 +80,10 @@ try {
   fs.writeFileSync(path.join(output, 'index.html'), html);
   const copies = [[stage.pack.file, 'content.bin'], [stage.manifest.file, 'content-files.json'],
     [stage.configBundle.file, 'config-files.json'],
-    ...['web-content-io.js', 'web-content-worker.js'].map(name => [path.join(__dirname, name), name])];
-  for (const name of ['UEWebEngine.js', 'UEWebEngine.wasm']) {
+    ...['web-content-io.js', 'web-content-worker.js',
+      ...(threads ? ['web-engine-host.js', 'web-engine-worker.js'] : [])].map(name =>
+      [path.join(__dirname, name), name])];
+  for (const name of [runtime + '.js', runtime + '.wasm']) {
     const product = build.products.find(item => path.basename(item.file) === name);
     assert(product && valid(product));
     copies.push([product.file, name]);

@@ -163,7 +163,44 @@ flowchart LR
     E -->|单一对象所有者| GPU
 ```
 
-以上归属迁移和 IO 同步均已落实。此阶段主要目标是页面响应、CPU 任务并行和可控的运行结构；只把同一串行循环搬到 Worker 不等于提高帧率。尚未启用独立 Render/RHI 线程，也尚未构建或验收多线程别墅包。
+以上归属迁移和 IO 同步均已落实。此阶段主要目标是页面响应、CPU 任务并行和可控的运行结构；只把同一串行循环搬到 Worker 不等于提高帧率。尚未启用独立 Render/RHI 线程。别墅候选的新增验收如下。
+
+### 第二阶段补充：复杂别墅的实际收益
+
+2026-10-28 打包独立 `triplex-house-villa-threads`，并重新构建同源 `triplex-house-villa-desktop` 作为单线程基线。两版共享本次原配置 SM5 Cook/Stage，内容、清单、配置均为同哈希，保留原 BC/BC6H、mip 流送、光源和材质参数。原日常别墅 URL 未切换。
+
+复杂场景首先暴露了组件注册的顺序要求：并行批量注册在 CPU 线程提交 Render 添加命令，无独立 Render 线程时命令会排队回游戏线程；随后游戏线程执行蓝图构造导致的立即移除，较早的添加反而后到，触发 `CommandSlots.Find(SceneInfo) == nullptr` 断言。已通过临时诊断复现 `BP_WaterFall_532` 的 delete 先于 add。Web 的 `FRegisterComponentContext::Process` 现仅在 `!GIsThreadedRendering` 时顺序注册，其他平台及未来独立 Render 模式不变，CPU 任务和 IO 并行保留。修复后 Chrome/Edge 各三次新 profile 冷启动通过；原断言保留，诊断代码已清理。
+
+新增探针 `tests/web-platform/probe-web-project-threads.cjs`，以单、多、多、单顺序测量两个固定视角，每组正常时钟预热 90 帧、采样 5 秒；同时记录内部/输出尺寸、AA、RAF CPU 回调、帧间隔 p95、UI 10ms 定时器、GPU pass 时间、共享内存、IO 和截图。每个浏览器使用独立持久 profile，保留原始样本及源码/包/构建报告哈希。
+
+两版均沿用 FXAA 和场景原有分辨率自动模式：1080p 输出实际内部 1400×788，4K 输出实际内部 1920×1080。探针逐组确认两版尺寸和 AA 一致；这些不是原生 4K 性能数据。
+
+| 浏览器 / 视角 / 输出 | 单 / 多 FPS | 单 / 多帧间隔 p95 |
+| --- | ---: | ---: |
+| Chrome / 室内 / 1080p | 32.7 / 29.4 | 35.5 / 40.7ms |
+| Chrome / 反向近景 / 1080p | 33.4 / 30.1 | 34.9 / 41.2ms |
+| Chrome / 室内 / 4K | 21.2 / 31.1 | 51.8 / 40.6ms |
+| Chrome / 反向近景 / 4K | 34.1 / 30.7 | 34.2 / 42.3ms |
+| Edge / 室内 / 1080p | 31.6 / 28.5 | 36.6 / 44.3ms |
+| Edge / 反向近景 / 1080p | 32.3 / 29.4 | 36.1 / 40.6ms |
+| Edge / 室内 / 4K | 20.3 / 30.0 | 54.4 / 42.1ms |
+| Edge / 反向近景 / 4K | 33.1 / 30.0 | 35.5 / 41.1ms |
+
+两浏览器 4K 输出室内 FPS 提升约 47%，同步 RAF CPU 回调约从 45～47ms 降到 30～31ms；其他三组 FPS 下降约 9%～10%。UI 定时器 p95 约从 64～102ms 降到 11ms。GPU pass 合计仍约 5～10ms，未随 FPS 同比例减少。只能确认当前机器、当前两种运行结构的差异，不能单独归因于任务池，也不能推断开启独立 Render/RHI 后的收益。页面响应改善不代表所有视角帧率改善。
+
+热启动本地缓存命中两项、下载为零；共享堆约 550.7 MiB，621 个 bulk 使用本地 IO，读取缓存仍限制 16 MiB。帧率数字来自 headless 和测试 API 包装，不能替代交互全屏帧率或长期稳定性验收。
+
+性能运行有两类保留的失败：第一轮与用户其他桌面任务争用显存，严重低帧并超时，不纳入结果；重测中 Edge 最后一轮单线程基线曾发生一次未定位的内存越界。Chrome 四轮均已完整通过，数据来自保留故障报告内的 Chrome 部分；Edge 随后独立重跑四轮通过。复跑通过不宣告那次越界已修复。
+
+证据位于 `tests/web-platform/results/`：
+
+- `web-project-triplex-house-villa-threads-package-results.json`、`web-project-triplex-house-villa-desktop-package-results.json`
+- `web-project-triplex-house-villa-threads-order-fixed-{1,2,3}-results.json`
+- `web-project-triplex-house-villa-threads-benchmark-single-edge-oob-results.json`：Chrome 完整四轮及 Edge 故障，不是整体通过报告。
+- `web-project-triplex-house-villa-threads-benchmark-edge-results.json`：Edge 独立四轮通过。
+- `web-project-triplex-house-villa-threads-benchmark-vram-contended-results.json`：显存争用下的失败，不纳入结论。
+
+访问 `http://127.0.0.1:8765/build/triplex-house-villa-threads/index.html`；同源基线为 `http://127.0.0.1:8765/build/triplex-house-villa-desktop/index.html`。复现运行 `node tests/web-platform/probe-web-project-threads.cjs --seconds=5`，只检查启动与两视角可加 `--smoke`，只测单个浏览器可加 `--browser=Chrome` 或 `--browser=Edge`。
 
 ### 第三阶段：游戏与渲染线程分离
 
