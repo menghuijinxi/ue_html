@@ -37,6 +37,7 @@
 #include "Components/SkyLightComponent.h"
 #include "Components/LightComponent.h"
 #include "Camera/CameraActor.h"
+#include "GameFramework/FloatingPawnMovement.h"
 #include "Stats/StatsData.h"
 #include "Engine/Texture2D.h"
 #include "RHIStats.h"
@@ -55,8 +56,11 @@ bool RenderScene = false;
 bool DefaultTemplate = false;
 bool DesktopRenderer = false;
 bool VisualTestClock = false;
+bool MaterialMotionTest = false;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
+TWeakObjectPtr<AStaticMeshActor> MaterialMotionSample;
+FVector MaterialMotionOrigin;
 #if UE_WEB_ENGINE_WORKER
 UE::Tasks::FTask ThreadIOProbe;
 std::atomic<int32> ThreadIOResult{0};
@@ -143,6 +147,12 @@ void EngineFrame(void*)
         return;
     }
     const double TickStart = emscripten_get_now();
+    if (AStaticMeshActor* Sample = MaterialMotionSample.Get())
+    {
+        Sample->SetActorLocation(MaterialMotionOrigin + FVector(10 * FMath::Sin(Frames * 0.1), 0, 0));
+        EM_ASM({ globalThis.__webMaterialMotionTest = ({frame: $0, x: $1}); },
+            Frames, Sample->GetActorLocation().X);
+    }
     GEngineLoop.Tick();
     if (IsEngineExitRequested())
     {
@@ -391,6 +401,27 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, doubl
     if ((!DefaultTemplate && ProjectMap.IsEmpty()) || !Controller || !FMath::IsFinite(X) || !FMath::IsFinite(Y) ||
         !FMath::IsFinite(Z) || !FMath::IsFinite(Pitch) || !FMath::IsFinite(Yaw))
         return 0;
+    if (ProjectMap == TEXT("/Game/WebVillaMaterialLab"))
+    {
+        APawn* Pawn = Controller->GetPawn();
+        if (!Pawn)
+            return 0;
+        const FRotator Rotation(Pitch, Yaw, 0);
+        Pawn->SetActorLocationAndRotation(FVector(X, Y, Z), Rotation, false, nullptr, ETeleportType::TeleportPhysics);
+        Pawn->SetActorHiddenInGame(true);
+        Pawn->SetActorEnableCollision(false);
+        if (auto* Movement = Cast<UFloatingPawnMovement>(Pawn->GetMovementComponent()))
+        {
+            Movement->StopMovementImmediately();
+            Movement->MaxSpeed = 200;
+            Movement->Acceleration = Movement->Deceleration = 800;
+        }
+        Controller->SetControlRotation(Rotation);
+        Controller->PlayerCameraManager->SetFOV(90);
+        Controller->SetViewTarget(Pawn);
+        Controller->SetInputMode(FInputModeGameOnly().SetConsumeCaptureMouseDown(false));
+        return 1;
+    }
     static TWeakObjectPtr<ACameraActor> Camera;
     if (!Camera.IsValid())
         Camera = Controller->GetWorld()->SpawnActor<ACameraActor>();
@@ -780,6 +811,15 @@ int32 StartEngine()
     else if (UseWebGPU && !ProjectMap.IsEmpty())
     {
         TemplateController = World->GetFirstPlayerController();
+        if (ProjectMap == TEXT("/Game/WebVillaMaterialLab") && MaterialMotionTest)
+            for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
+                if (It->GetStaticMeshComponent()->GetStaticMesh() &&
+                    It->GetStaticMeshComponent()->GetStaticMesh()->GetName() == TEXT("SM_Home_pCube23"))
+                {
+                    MaterialMotionSample = *It;
+                    MaterialMotionOrigin = It->GetActorLocation();
+                    break;
+                }
         int32 Meshes = 0, LitMeshes = 0, Actors = 0;
         for (TActorIterator<AActor> It(World); It; ++It)
         {
@@ -835,6 +875,7 @@ int main(int argc, char** argv)
         DefaultTemplate |= FCStringAnsi::Strcmp(argv[Index], "-WebDefaultTemplate") == 0;
         DesktopRenderer |= FCStringAnsi::Strcmp(argv[Index], "-WebDesktop") == 0;
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
+        MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         constexpr const ANSICHAR* MapOption = "-WebProjectMap=";
         if (FCStringAnsi::Strncmp(argv[Index], MapOption, FCStringAnsi::Strlen(MapOption)) == 0)
         {

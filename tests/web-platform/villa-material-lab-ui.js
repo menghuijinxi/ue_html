@@ -35,6 +35,7 @@
         await __webEngineRPC('WebProjectViewTest', ...camera) : Module._WebProjectViewTest(...camera);
       if (result !== 1) throw new Error('Material comparison camera unavailable');
       globalThis.__villaMaterialLabView = {id: select.value, detail: detail.checked, camera};
+      Module.canvas.focus({preventScroll: true});
     } catch (error) {
       panel.title = error.message;
       console.error(error);

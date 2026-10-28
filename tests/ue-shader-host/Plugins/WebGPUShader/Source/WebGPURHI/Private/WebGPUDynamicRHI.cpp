@@ -2316,10 +2316,13 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         // ACES tables use integer-coordinate loads from core, unfilterable R32Float textures.
         const bool ACESLookup = Name.Contains(TEXT("ACESReachTable")) ||
             Name.Contains(TEXT("ACESGamutTable")) || Name.Contains(TEXT("ACESGammaTable"));
+        // TAA point-samples UNORM16 velocity; it must also accept unfilterable browser formats.
+        const bool TAAVelocity = Name == TEXT("GBufferVelocityTexture") ||
+            Name == TEXT("GBufferVelocityTextureSampler");
         switch (Binding->GetIntegerField(TEXT("descriptorType")))
         {
         case 0:
-            Entry.sampler.type = Depth || Name.Contains(TEXT("Point")) || Name == TEXT("WaterDepthSampler") ?
+            Entry.sampler.type = Depth || TAAVelocity || Name.Contains(TEXT("Point")) || Name == TEXT("WaterDepthSampler") ?
                 WGPUSamplerBindingType_NonFiltering : WGPUSamplerBindingType_Filtering;
             break;
         case 2:
@@ -2345,7 +2348,7 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
                 const FString Type = Binding->GetStringField(TEXT("textureSampleType"));
                 Entry.texture.sampleType = Type == TEXT("uint") ? WGPUTextureSampleType_Uint :
                     Type == TEXT("sint") ? WGPUTextureSampleType_Sint :
-                    Depth || ACESLookup ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
+                    Depth || ACESLookup || TAAVelocity ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
                 Entry.texture.viewDimension = ViewDimension;
                 Entry.texture.multisampled = Binding->GetBoolField(TEXT("textureMultisampled"));
             }
