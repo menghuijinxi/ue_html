@@ -22,6 +22,12 @@
 #include "UObject/Package.h"
 #include <emscripten.h>
 #include <emscripten/heap.h>
+#if UE_WEB_ENGINE_WORKER
+#include <emscripten/threading.h>
+#include "Tasks/Task.h"
+#include "Misc/Crc.h"
+#include "HAL/Event.h"
+#endif
 #include <cstdio>
 #include "WebRenderScene.h"
 #include "WebDefaultSamples.h"
@@ -51,6 +57,11 @@ bool DesktopRenderer = false;
 bool VisualTestClock = false;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
+#if UE_WEB_ENGINE_WORKER
+UE::Tasks::FTask ThreadIOProbe;
+std::atomic<int32> ThreadIOResult{0};
+std::atomic<uint32> ThreadIOCRC{0}, ThreadIOWorker{0}, ThreadIOCallback{0};
+#endif
 
 const TCHAR* StartupMap()
 {
@@ -131,6 +142,7 @@ void EngineFrame(void*)
         emscripten_cancel_main_loop();
         return;
     }
+    const double TickStart = emscripten_get_now();
     GEngineLoop.Tick();
     if (IsEngineExitRequested())
     {
@@ -139,7 +151,13 @@ void EngineFrame(void*)
         return;
     }
     ++Frames;
-    EM_ASM({ globalThis.__webEngineFrames = $0; }, Frames);
+    EM_ASM({
+        globalThis.__webEngineFrames = $0;
+#if UE_WEB_ENGINE_WORKER
+        (globalThis.__webThreadFrameTimes ||= []).push($1);
+        if (globalThis.__webThreadFrameTimes.length > 360) globalThis.__webThreadFrameTimes.shift();
+#endif
+    }, Frames, emscripten_get_now() - TickStart);
     if (Frames % 30 == 0)
     {
         FTextureMemoryStats Memory;
@@ -200,8 +218,62 @@ void EngineFrame(void*)
             double(Stats.CurrentEndOfPipeFrame), double(emscripten_get_heap_size()));
     }
 #endif
+#if UE_WEB_ENGINE_WORKER
+    if (Frames % 30 == 0)
+    {
+        EM_ASM({
+            globalThis.__webEngineRuntime = ({heapBytes: $0,
+                sharedMemory: HEAPU8.buffer instanceof SharedArrayBuffer, engineWorker: true,
+                gameThread: $1, renderThread: false, rhiThread: false});
+            globalThis.__webThreadIOProbe = ({result: $2, crc: $3 >>> 0, worker: $4, callback: $5});
+        }, double(emscripten_get_heap_size()), FPlatformTLS::GetCurrentThreadId(),
+            ThreadIOResult.load(), ThreadIOCRC.load(), ThreadIOWorker.load(), ThreadIOCallback.load());
+    }
+#endif
 }
 }
+
+#if UE_WEB_ENGINE_WORKER
+extern "C" EMSCRIPTEN_KEEPALIVE int WebThreadTestControl(int Mode)
+{
+    check(IsInGameThread() && emscripten_is_main_runtime_thread());
+    if (Mode == 1)
+    {
+        std::atomic<uint32> Worker{0};
+        FEventRef Started;
+        auto Task = UE::Tasks::Launch(UE_SOURCE_LOCATION, [&Worker, &Started] {
+            Worker.store(FPlatformTLS::GetCurrentThreadId());
+            Started->Trigger();
+            FPlatformProcess::SleepNoStats(0.5f);
+        });
+        Started->Wait();
+        Task.Wait();
+        return Worker.load();
+    }
+    if ((Mode != 2 && Mode != 3) || !ThreadIOProbe.IsCompleted()) return 0;
+    ThreadIOResult.store(0);
+    ThreadIOCRC.store(0);
+    ThreadIOWorker.store(0);
+    ThreadIOCallback.store(0);
+    ThreadIOProbe = UE::Tasks::Launch(UE_SOURCE_LOCATION, [Mode] {
+        ThreadIOWorker.store(FPlatformTLS::GetCurrentThreadId());
+        TUniquePtr<IAsyncReadFileHandle> Handle(FPlatformFileManager::Get().GetPlatformFile().OpenAsyncRead(
+            TEXT("/Engine/Content/EditorMaterials/ParticleSystems/PSysThumbnail_NoImage.ubulk")));
+        if (!Handle) { ThreadIOResult.store(-1); return; }
+        FAsyncFileCallBack Callback = [](bool, IAsyncReadRequest*) {
+            ThreadIOCallback.store(FPlatformTLS::GetCurrentThreadId());
+        };
+        TUniquePtr<IAsyncReadRequest> Request(Handle->ReadRequest(17, 32768, AIOP_Normal, &Callback));
+        if (Mode == 3) Request->Cancel();
+        Request->WaitCompletion();
+        uint8* Bytes = Request->GetReadResults();
+        if (Bytes) ThreadIOCRC.store(FCrc::MemCrc32(Bytes, 32768));
+        FMemory::Free(Bytes);
+        ThreadIOResult.store(Mode == 3 ? (Bytes ? -3 : 3) : (Bytes ? 2 : -2));
+    });
+    return 1;
+}
+#endif
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebTextureStreamingTestBudget(int MiB)
 {
@@ -645,10 +717,16 @@ int32 StartEngine()
     Layout.InitializeForCurrent();
     std::printf("P3_ENGINE_LAYOUT {\"maxFieldAlignment\":%u,\"flags\":%u,\"pointerBytes\":%u}\n",
         Layout.MaxFieldAlignment, Layout.Flags, uint32(sizeof(void*)));
-    const FString CommandLine = FString(StartupMap()) + (UseWebGPU ?
+    const FString ThreadArguments =
+#if UE_WEB_ENGINE_WORKER
+        TEXT(" -oversubscriptionratio=1 -TaskGraphUseDynamicThreadCreation=0 -norhithread -nosound");
+#else
+        TEXT(" -onethread -norhithread -nosound");
+#endif
+    const FString CommandLine = FString(StartupMap()) + ThreadArguments + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
-        TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout") :
-        TEXT(" -nullrhi -sm5 -onethread -norhithread -nosound -NoSplash -NoLoadingScreen -unattended -stdout"));
+        TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -NoSplash -NoLoadingScreen -unattended -stdout") :
+        TEXT(" -nullrhi -sm5 -NoSplash -NoLoadingScreen -unattended -stdout"));
     const int32 PreInitResult = GEngineLoop.PreInit(*CommandLine);
     if (PreInitResult != 0)
     {
@@ -661,6 +739,21 @@ int32 StartEngine()
         std::printf("P3_ENGINE_INIT_FAILED %d\n", InitResult);
         return InitResult;
     }
+#if UE_WEB_ENGINE_WORKER
+    check(emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread());
+    std::atomic<uint32> WorkerId{0};
+    FEventRef Started;
+    auto Task = UE::Tasks::Launch(UE_SOURCE_LOCATION, [&WorkerId, &Started] {
+        WorkerId.store(FPlatformTLS::GetCurrentThreadId(), std::memory_order_release);
+        Started->Trigger();
+    });
+    Started->Wait();
+    Task.Wait();
+    check(WorkerId.load() && WorkerId.load() != GGameThreadId);
+    std::printf("P3_ENGINE_THREADS {\"sharedMemory\":true,\"engineWorker\":true,"
+        "\"gameThread\":%u,\"taskThread\":%u,\"cores\":%d,\"renderThread\":false,\"rhiThread\":false}\n",
+        GGameThreadId, WorkerId.load(), FPlatformMisc::NumberOfCores());
+#endif
     if (VisualTestClock)
     {
         auto* Frozen = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"));

@@ -1,12 +1,12 @@
 # Web 桌面运行时多线程调研
 
-日期：2026-10-27。
+日期：2026-10-28。
 
 ## 结论与当前状态
 
 可以支持真正的 WASM 共享内存多线程。现有 wasm64 pthread 样例已在本机 Chrome 156.0.8078.48、Edge 156.0.4314.42 运行通过，包括两个线程的原子计数，以及 Worker 内 WebGPU 绘制、计算、回读、画布缩放和横竖屏像素校验。
 
-正式 UE 页面目前仍是单线程引擎，另有本地 IO Worker。已完成下文第一阶段的独立 UE Core 线程候选：真实 runnable、Tasks、TaskGraph 并行及退出在 Chrome/Edge 验证通过。完整关卡尚未迁入 Worker，现阶段不宣称关卡帧率提升。
+正式 UE 页面目前仍是单线程引擎，另有本地 IO Worker。独立 UE Core 线程候选和第二阶段完整默认关卡候选均已在 Chrome/Edge 验证通过：引擎驻留 Worker、共享内存 CPU 任务、本地流送、输入和 4K 尺寸可用。候选地址为 `http://127.0.0.1:8765/build/ue-default-template-threads/index.html`，原正式地址保持不变。尚未完成同条件性能收益测量，不宣称关卡帧率提升。
 
 多线程对当前别墅值得投入，但不能承诺等比例加速。默认关卡的 4K GPU 像素工作也需要单独优化。
 
@@ -95,7 +95,7 @@ Web runnable 复用 UE pthread 生命周期，默认工作线程栈 2 MiB，不�
 
 退出测试发现并修复了线程归属问题：`PROXY_TO_PTHREAD` 最终会在浏览器主线程调用全局析构，而 UE Scheduler 析构要求在游戏线程。新增 `FPlatformProcess::TearDownThreadedRuntime()`，在任务调度器关闭后、程序退出前，由引擎 Worker 排空固定 SDK musl 的 `__funcs_on_exit` 列表。它是终端清理步骤，调用后不得继续使用 UE；依赖 Emscripten 6.0.9 的实现，升级 SDK 时必须重新验收。未修改或跳过 UE Scheduler 的线程断言。
 
-当前只验收 Core 候选，不包含 ApplicationCore/Engine 主循环、DOM 输入、资源装载、OPFS 回调或 WebGPU 所有权迁移；正式关卡包没有切换到多线程。下一阶段按下述第二阶段实施，保持单一 GPU 对象所有者。
+此处的第一阶段检查只覆盖 Core；ApplicationCore/Engine 主循环、DOM 输入、资源装载、OPFS 回调和 WebGPU 所有权迁移由下述第二阶段候选验收。2026-10-28 在更新平台覆盖后重新构建 Core，Chrome/Edge 各三轮 17 项检查及单线程回归再次全部通过，UI 定时器最大间隔 11.8ms。正式关卡包没有切换到多线程。
 
 复现（已有隔离构建主机及 8765 本地服务）：
 
@@ -115,13 +115,40 @@ node tests/web-platform/probe-web-default-startup.cjs --desktop --runs=1 --scale
 - `web-threads-single-thread-regression.log`
 - `web-default-startup-threads-core-regression-results.json`
 
-### 第一阶段：独立线程候选与 UE Core
+### 第二阶段已实现：完整引擎驻留 Worker
 
-创建与现有正式包分开的线程候选，先完整编译 Core 和所需库的共享内存版本。将多线程能力绑定到真实线程构建宏，补齐有界核心数、真实 runnable 创建、事件及线程退出；从 2～4 个 CPU 工作线程起步，避免按 32 个逻辑核心直接创建所有 UE 常驻线程。
+2026-10-28 实现独立 `UEWebEngineThreads` 候选。整个 Emscripten 主运行时直接在名为 `UE Engine` 的 Worker 实例化，因此 FS、OPFS 请求控制、本地读取完成和 WebGPU JS 对象都属于同一运行环境。此目标不使用 `PROXY_TO_PTHREAD`；第一阶段 Core 探针保留原来的 UI 代理方式。线程对象、第三方库、输出及包目录与单线程版隔离。
 
-先验收真实 `FRunnableThread`、TLS 隔离、锁竞争、事件超时/唤醒、线程 join、并发 UE 分配器和内存增长，再验证 UE TaskGraph/Tasks 的并行执行及关闭。已有 ABI 原子计数只能证明底层能力，不能代替这些检查。
+浏览器页面转移 OffscreenCanvas，并通过消息传递键鼠、触屏模拟、焦点、指针锁和 CSS/DPR。输入有确认、有界队列和鼠标移动合并，避免慢帧造成消息无限积压。画布实际尺寸由渲染器设置，页面只发送期望尺寸。诊断状态每 100ms 回传，测试接口改用 Promise RPC，页面不实例化 Engine WASM，也不直接调用 Worker 的 C++ 导出函数。
 
-### 第二阶段：完整引擎驻留 Worker
+候选移除 `-onethread` 并固定超额订阅比例为 1、关闭动态创建 TaskGraph 工作线程。Web 平台明确禁用独立 Render 线程，RHI 并行能力仍按实际实现关闭。预建 pthread 容器上限为 16，实测 12 个容器占用、4 个空闲；这不等于 12 个 CPU 任务同时执行。初始共享内存为 128 MiB，默认关卡运行后为 334102528 字节，约 318.6 MiB。此阶段没有修改光照、材质、Cook 或渲染分辨率参数。
+
+本地流送仍复用 `web-content-io.js` / OPFS 内容哈希缓存。跨 CPU 线程提交的请求启动、取消和文件信息查询代理回主运行时，完成也在该环境处理；请求表和编号使用锁保护，CPU 工作线程允许等待完成，引擎所有者仍禁止阻塞等待未完成的磁盘 Promise。`Cancel` 保持异步语义，晚到的数据不会复制进已取消请求的目标。
+
+候选构建和运行验证命令：
+
+```powershell
+./tests/web-platform/build-web-engine.ps1 -Threads -MaxParallelActions 4 -StandaloneCompiles
+node tests/web-platform/package-web-default-template.cjs --desktop --threads
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/verify-web-engine-threads.cjs
+```
+
+`-StandaloneCompiles` 按 UBT 导出的依赖和参数执行独立编译，再返回正常 UBT 完成链接/收据；编译器进程崩溃至多重试两次，记录各次日志，普通编译错误不重试。没有降低优化等级或移除 UE 断言。已有隔离构建主机且未改动通用源码时可加 `-SkipHostPreparation`。
+
+Chrome 156.0.8078.48、Edge 156.0.4314.42 已通过完整验收，证据见 `tests/web-platform/results/web-engine-threads-results.json`：
+
+- 默认关卡实际运行 SM5（feature level 3、shader platform 47），加载 2473 个着色器。游戏线程 ID 为 1，探针任务在不同 CPU 线程执行，页面没有 Engine HEAP。
+- 引擎所有者同步等待半秒时，页面 10ms 定时器分别执行 52/51 次，最大间隔分别为 16.405/16.895ms。
+- 断网后 CPU 线程读取本地 bulk 的偏移 17、长度 32768 字节，CRC 为 3780708069；取消后再读仍通过，完成回调归属引擎所有者。
+- 键盘移动、失焦松键、鼠标右键拖动、指针锁定及触屏拖动均通过；失焦测试等待移动组件减速后检查静止。
+- 800×450、1920×1080、1280×720 缩放通过；CSS 1920×1080、DPR 2 时，实际画布和 UE View 均为 3840×2160，抗锯齿模式保持 2。使用原生 CDP 画布截图，避免截图工具临时修改 DPR 干扰画面。
+- 热刷新命中两个持久缓存对象、下载次数为 0；bulk 在 MEMFS 中占用为 0，读取缓存限制为 16 MiB。热刷新后分别运行至 726/724 帧，没有断言或 GPU 验证错误。这不是长期压力测试。
+- 固定时钟、同视角与原单线程网页对照。相机位于 `(650,-400,10)`，pitch 15、yaw 110，贴近地面和球体向上看。Chrome/Edge 的 RGB 平均绝对差分别为 1.275/0.034（满量程 255），显著变化像素比例分别为 0.783%/0，均通过阈值。此项用于检查线程迁移的画面回归，不代替与 UE 桌面端的效果验收。
+
+迁移中修复了实际触发的线程归属问题：网格 pass setup 仍需在 GPU 所有者执行；关闭声称支持独立 RHI 线程下并行渲染任务的能力标志；没有独立 Render 线程时禁止纹理流送管理器在后台任务中完成 GPU 更新。CPU 任务和磁盘读取保持并行，UE 的资源归属断言保留。
+
+启动阶段 Slate 曾持有跨浏览器事件循环的过期交换链纹理，现按 Worker 事件轮次重新获取。View 诊断也改为代理回引擎所有者，防止 CPU Worker 中的 `globalThis` 记录被误当作主运行时状态。
 
 ```mermaid
 flowchart LR
@@ -136,11 +163,7 @@ flowchart LR
     E -->|单一对象所有者| GPU
 ```
 
-先保持一个 GPU 所有者，将 CPU 任务交给池执行。迁移工作包括 OffscreenCanvas、DOM 输入转发、缩放、指针锁定、焦点、FS 装载、进度/诊断状态和本地 IO 回调。当前 `EM_ASM` 的 `globalThis` 状态、直接调用 `Module._Web...` 的测试接口，以及 IO 请求表均假定一个执行环境，需要明确归属。
-
-`WebPlatformFile.cpp` 的 `LocalReads`/请求编号和回调没有跨线程同步，不能允许任何工作线程直接触碰它们。任务产生的 IO 请求需要路由至所属线程，完成通知也需在正确线程分发。内存增长后外部 JS 的 HEAP 视图更新应纳入回归。
-
-此阶段主要目标是页面响应、CPU 任务并行和可控的运行结构；只把同一串行循环搬到 Worker 不等于提高帧率。
+以上归属迁移和 IO 同步均已落实。此阶段主要目标是页面响应、CPU 任务并行和可控的运行结构；只把同一串行循环搬到 Worker 不等于提高帧率。尚未启用独立 Render/RHI 线程，也尚未构建或验收多线程别墅包。
 
 ### 第三阶段：游戏与渲染线程分离
 

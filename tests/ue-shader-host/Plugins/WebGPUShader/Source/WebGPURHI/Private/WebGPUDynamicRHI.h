@@ -213,6 +213,7 @@ class FWebGPUViewport final : public FRHIViewport
     WGPUSurfaceConfiguration Configuration = WGPU_SURFACE_CONFIGURATION_INIT;
     void *Window = nullptr;
     uint32 OwnerThread = 0;
+    uint32 BrowserSurfaceEpoch = 0;
     EPixelFormat Format = PF_Unknown;
     explicit FWebGPUViewport(void *InWindow) : Window(InWindow)
     {

@@ -179,6 +179,10 @@ function startupSnapshot() {
     failure: globalThis.__webEngineFailure || null,
     frames: globalThis.__webEngineFrames || 0, ready: globalThis.__webEngineReady || null,
     engineRuntime: globalThis.__webEngineRuntime || null,
+    engineThreads: globalThis.__webEngineThreads || null,
+    threadPool: globalThis.__webThreadPool || null,
+    engineSurface: globalThis.__webEngineSurface || null,
+    localContentRuntime: globalThis.__webLocalContentStats || null,
     gpuHandles: globalThis.__webGPUHandleDiagnostics || null,
     textureStreaming: globalThis.__webTextureStreaming || null,
     occlusion: globalThis.__webOcclusionRHI || null,
@@ -778,9 +782,11 @@ if (!capabilities.secureContext) {
   failed('当前引擎包使用 wasm64（WebAssembly memory64），此浏览器未通过 memory64 检查。WebGPU 可用不代表支持 wasm64。');
 } else if (startupOnly) {
   startupStage('diagnostics-resources');
-  const resources = await Promise.all(['index.html', 'UEWebEngine.js', 'UEWebEngine.wasm',
+  const runtimeName = localRuntimeAssets.runtime || 'UEWebEngine.js';
+  const wasmName = localRuntimeAssets.wasm?.url || 'UEWebEngine.wasm';
+  const resources = await Promise.all(['index.html', runtimeName, wasmName,
     'content.bin', 'content-files.json', 'config-files.json'].map(url => startupResource(url))
-    .concat(startupResource('UEWebEngine.js', 'GET')));
+    .concat(startupResource(runtimeName, 'GET')));
   startupStage('diagnostics-gpu');
   await startupProbeGPU();
   if (resources.some(item => item.error || item.status >= 400))
@@ -797,6 +803,18 @@ if (!capabilities.secureContext) {
     startupValidateGPU(adapter);
   }
   startupObserveTransfers();
+  if (localRuntimeAssets.threads) {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = versionedAsset('web-engine-host.js');
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Engine host script failed to load'));
+      document.body.appendChild(script);
+    });
+    startWebEngineWorker({assets: localRuntimeAssets, module: Module, record, failed,
+      stage: startupStage, diagnostics: startupDiagnostics, render: startupRender});
+    return;
+  }
   if (localRuntimeAssets.wasm) {
     await new Promise((resolve, reject) => {
       const script = document.createElement('script');

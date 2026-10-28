@@ -1,7 +1,9 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
     [ValidateRange(1, 16)][int]$MaxParallelActions = 1,
-    [switch]$SkipHostPreparation
+    [switch]$SkipHostPreparation,
+    [switch]$Threads,
+    [switch]$StandaloneCompiles
 )
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -9,8 +11,10 @@ $taskHost = Join-Path $taskRoot '.tools/ue58-web-build-host/Engine'
 $taskUbt = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll'
 $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/dotnet.exe'
 if (-not (Test-Path -LiteralPath $taskUbt)) { throw 'Run build-web-ubt.ps1 to prepare the isolated Web UBT first.' }
-& (Join-Path $PSScriptRoot 'build-web-blake3.ps1')
-& (Join-Path $PSScriptRoot 'build-web-libpng.ps1')
+$taskTarget = if ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
+$taskVariant = if ($Threads) { '-thread' } else { '' }
+& (Join-Path $PSScriptRoot 'build-web-blake3.ps1') -Threads:$Threads
+& (Join-Path $PSScriptRoot 'build-web-libpng.ps1') -Threads:$Threads
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
 $taskPlatforms = Join-Path $taskHost 'Platforms'
 $taskWeb = Join-Path $taskPlatforms 'Web'
@@ -26,13 +30,13 @@ New-Item -ItemType Directory -Path $taskConfigDirectory -Force | Out-Null
 if ((Get-Item -LiteralPath $taskConfigDirectory).LinkType) { throw 'Build-host UBT configuration must be local.' }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'WebEngine.BuildConfiguration.xml') -Destination (Join-Path $taskConfigDirectory 'BuildConfiguration.xml') -Force
 # Newly discovered platform rule subclasses do not always invalidate an existing target makefile.
-$taskMakefile = [IO.Path]::GetFullPath((Join-Path $taskRoot 'tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngine/Development/Makefile.bin'))
+$taskMakefile = [IO.Path]::GetFullPath((Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/Makefile.bin"))
 if (-not $taskMakefile.StartsWith("$taskRoot\", [StringComparison]::OrdinalIgnoreCase)) { throw 'Unexpected target makefile path.' }
 Remove-Item -LiteralPath $taskMakefile -Force -ErrorAction SilentlyContinue
 $taskResults = Join-Path $PSScriptRoot 'results'
 New-Item -ItemType Directory -Path $taskResults -Force | Out-Null
-$taskLog = Join-Path $taskResults ("web-engine-full-{0}.log" -f (Get-Date -Format 'yyyyMMdd-HHmmss'))
-$taskReportFile = Join-Path $taskResults 'web-engine-full-build-results.json'
+$taskLog = Join-Path $taskResults ("web-engine-full$taskVariant-{0}.log" -f (Get-Date -Format 'yyyyMMdd-HHmmss'))
+$taskReportFile = Join-Path $taskResults "web-engine-full$taskVariant-build-results.json"
 $taskSdkBefore = $env:WEB_EMSDK_ROOT
 $taskConfigBefore = $env:EM_CONFIG
 $taskProcess = Get-Process -Id $PID
@@ -40,6 +44,9 @@ $taskAffinityBefore = $taskProcess.ProcessorAffinity
 $taskReport = [ordered]@{
     date = (Get-Date -Format o)
     architecture = 'wasm64'
+    target = $taskTarget
+    threads = [bool]$Threads
+    standaloneCompiles = [bool]$StandaloneCompiles
     maxParallelActions = $MaxParallelActions
     pass = $false
     buildSucceeded = $false
@@ -58,9 +65,21 @@ try {
     $env:WEB_EMSDK_ROOT = Join-Path $taskRoot '.tools/emsdk'
     # Emscripten keys its shared cache by the literal LLVM_ROOT expanded from this path.
     $env:EM_CONFIG = (Join-Path $env:WEB_EMSDK_ROOT '.emscripten').Replace('\', '/')
-    $taskArguments = @($taskUbt, 'UEWebEngine', 'Web', 'Development',
+    $taskArguments = @($taskUbt, $taskTarget, 'Web', 'Development',
         "-Project=$(Join-Path $taskRoot 'tests/ue-web-smoke/UEWebSmoke.uproject')",
         '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
+    if ($StandaloneCompiles) {
+        $taskActions = "$taskLog.actions.json"
+        & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" *> "$taskLog.export.log"
+        if ($LASTEXITCODE -ne 0) { throw "UBT action export failed: $taskLog.export.log" }
+        $taskGraph = Get-Content -LiteralPath $taskActions -Raw | ConvertFrom-Json
+        if (@($taskGraph.Actions | Where-Object Type -EQ 'Compile').Count -gt 0) {
+            & node (Join-Path $PSScriptRoot 'compile-web-actions.cjs') $taskActions $MaxParallelActions
+            if ($LASTEXITCODE -ne 0) { throw "Standalone Web compilation failed: $taskActions.results.json" }
+            $taskReport.compileExecution = Get-TaskAudit "$taskActions.results.json"
+        }
+        $taskReport.exportedActions = Get-TaskAudit $taskActions
+    }
     Write-Output "Building the full Engine Target. Log: $taskLog"
     & $taskDotnet @taskArguments *> $taskLog
     $taskExit = $LASTEXITCODE
@@ -69,17 +88,53 @@ try {
     $taskReport.buildSucceeded = $taskExit -eq 0 -and $taskText.Contains('Result: Succeeded')
     $taskReport.products = @()
     if ($taskReport.buildSucceeded) {
-        $taskReport.products = @('UEWebEngine.js', 'UEWebEngine.wasm', 'UEWebEngine.target') | ForEach-Object {
+        $taskReport.products = @("$taskTarget.js", "$taskTarget.wasm", "$taskTarget.target") | ForEach-Object {
             Get-TaskAudit (Join-Path $taskRoot "tests/ue-web-smoke/Binaries/Web/$_")
         }
     }
     $taskReport.pass = $taskReport.buildSucceeded
     $taskReport.fullLinkAttempted = $taskText -match '\] Web [Ll]ink '
     if ($taskReport.fullLinkAttempted) {
-        $taskLinkResponse = Join-Path $taskRoot 'tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngine/Development/UEWebEngine.js.rsp'
+        $taskLinkResponse = Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/$taskTarget.js.rsp"
         $taskLinkResponseCopy = "$taskLog.link.rsp"
         Copy-Item -LiteralPath $taskLinkResponse -Destination $taskLinkResponseCopy -Force
         $taskReport.linkResponse = Get-TaskAudit $taskLinkResponseCopy
+    }
+    if ($Threads -and $taskReport.buildSucceeded) {
+        $taskThreadResponse = Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/$taskTarget.js.rsp"
+        $taskLinkText = Get-Content -LiteralPath $taskThreadResponse -Raw
+        if (-not $taskLinkText.Contains('-pthread') -or $taskLinkText.Contains('PROXY_TO_PTHREAD') -or
+            -not $taskLinkText.Contains('wasm64-thread/libBLAKE3.a') -or
+            -not $taskLinkText.Contains('wasm64-thread/libpng.a')) {
+            throw 'Engine Worker must use independent pthread objects and dependencies without UI proxying.'
+        }
+        $taskReport.objects = @([regex]::Matches($taskLinkText, '(?m)^"([^"\r\n]+\.o)"\r?$') | ForEach-Object {
+            $taskObject = $_.Groups[1].Value
+            $taskCompile = Get-Content -LiteralPath "$taskObject.rsp" -Raw
+            $taskDefinitions = [regex]::Match($taskCompile, '(?m)^-include "([^"]+/Definitions[^"]*\.h)"').Groups[1].Value
+            $taskDefines = Get-Content -LiteralPath $taskDefinitions -Raw
+            if (-not $taskCompile.Contains('-pthread') -or
+                $taskDefines -notmatch '(?m)^#define UE_WEB_THREADS 1\r?$' -or
+                $taskDefines -notmatch '(?m)^#define UE_WEB_ENGINE_WORKER 1\r?$' -or
+                -not $taskObject.Replace('\', '/').Contains("/$taskTarget/")) {
+                throw "Mixed thread memory model: $taskObject"
+            }
+            $taskSource = [regex]::Match($taskCompile, '(?m)^-c\r?\n"([^"]+)"').Groups[1].Value
+            @{ object = Get-TaskAudit $taskObject; response = Get-TaskAudit "$taskObject.rsp";
+                definitions = Get-TaskAudit $taskDefinitions; source = Get-TaskAudit $taskSource }
+        })
+        $taskOverlaySources = @((Join-Path $taskRoot 'reference-engine/Engine/Platforms/Web/Config'),
+            (Join-Path $taskRoot 'reference-engine/Engine/Platforms/Web/Source'))
+        $taskReport.platformCopies = @(Get-ChildItem -LiteralPath $taskOverlaySources -Recurse -File |
+            Where-Object { $_.Extension -notin @('.a', '.o') } | ForEach-Object {
+                $taskRelative = [IO.Path]::GetRelativePath((Join-Path $taskRoot 'reference-engine/Engine/Platforms/Web'), $_.FullName)
+                $taskOriginal = Get-TaskAudit $_.FullName
+                $taskCopied = Get-TaskAudit (Join-Path $taskWeb $taskRelative)
+                if ($taskOriginal.sha256 -ne $taskCopied.sha256) { throw "Stale platform overlay: $taskRelative" }
+                @{ source = $taskOriginal; copied = $taskCopied }
+            })
+        $taskReport.linkResponse = Get-TaskAudit $taskThreadResponse
+        $taskReport.fullLinkVerified = $taskReport.objects.Count -gt 300
     }
     $taskReport.compilerErrors = @([regex]::Matches($taskText, '(?m)^.*(?:fatal )?error:.*$') | ForEach-Object { $_.Value.Trim() } | Select-Object -Unique)
     $taskReport.actionsStarted = @([regex]::Matches($taskText, '(?m)^\[\d+/\d+\].*$') | ForEach-Object { $_.Value.Trim() })
@@ -92,12 +147,13 @@ try {
         $taskReport.failedProcesses = @(Select-String -LiteralPath $taskVerboseCopy -Pattern 'Exited with error code' | ForEach-Object { $_.Line.Trim() })
     }
     $taskReport.ubt = Get-TaskAudit $taskUbt
-    $taskFiles = @($PSCommandPath, (Join-Path $PSScriptRoot 'WebEngine.BuildConfiguration.xml'),
+    $taskFiles = @($PSCommandPath, (Join-Path $PSScriptRoot 'compile-web-actions.cjs'),
+        (Join-Path $PSScriptRoot 'WebEngine.BuildConfiguration.xml'),
         (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1'))
-    $taskBlakeBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'results/web-blake3-build-results.json') | ConvertFrom-Json
+    $taskBlakeBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "results/web-blake3$taskVariant-build-results.json") | ConvertFrom-Json
     if (-not $taskBlakeBuild.pass) { throw 'Portable BLAKE3 archive must build successfully' }
     $taskFiles += @($taskBlakeBuild.sourceFiles | ForEach-Object { $_.file })
-    $taskPngBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'results/web-libpng-build-results.json') | ConvertFrom-Json
+    $taskPngBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "results/web-libpng$taskVariant-build-results.json") | ConvertFrom-Json
     if (-not $taskPngBuild.pass) { throw 'Portable libPNG archive must build successfully' }
     $taskFiles += @($taskPngBuild.sourceFiles | ForEach-Object { $_.file })
     foreach ($taskOnlineOverlay in @('ICMP/Private/UDPPing.cpp', 'BuildPatchServices/Private/Installer/Verifier.cpp')) {
@@ -121,7 +177,8 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
-    foreach ($taskStreamingSource in @('RenderAssetUpdate.cpp', 'Texture2DUpdate.cpp', 'Texture2DStreamIn_IO.cpp')) {
+    foreach ($taskStreamingSource in @('RenderAssetUpdate.cpp', 'Texture2DUpdate.cpp', 'Texture2DStreamIn_IO.cpp',
+        'StreamingManagerTexture.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Engine/Private/Streaming/$taskStreamingSource"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Engine/Private/Streaming/$taskStreamingSource"
     }

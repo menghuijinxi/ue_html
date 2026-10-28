@@ -444,6 +444,7 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsRHIThread = false;
     GRHISupportsRHIOnTaskThread = false;
     GRHISupportsParallelRHIExecute = false;
+    GSupportsParallelRenderingTasksWithSeparateRHIThread = false;
     GRHISupportsMultithreadedResources = false;
     GRHISupportsMultithreadedShaderCreation = false;
     GRHISupportsAsyncPipelinePrecompile = false;

@@ -138,6 +138,24 @@ FTextureRHIRef FWebGPUDynamicRHI::RHIGetViewportBackBuffer(FRHIViewport *InViewp
 {
     RequireOwner();
     auto &Viewport = *static_cast<FWebGPUViewport *>(InViewport);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    // Canvas textures expire when the browser regains control, including after startup.
+    const uint32 Epoch = uint32(EM_ASM_INT({
+        if (!globalThis.__webSurfaceEpochQueued) {
+            globalThis.__webSurfaceEpochQueued = true;
+            queueMicrotask(() => {
+                globalThis.__webSurfaceEpochQueued = false;
+                globalThis.__webSurfaceEpoch = ((globalThis.__webSurfaceEpoch || 0) + 1) >>> 0;
+            });
+        }
+        return globalThis.__webSurfaceEpoch || 0;
+    }));
+    if (Viewport.BrowserSurfaceEpoch != Epoch)
+    {
+        Viewport.InvalidateFrame();
+        Viewport.BrowserSurfaceEpoch = Epoch;
+    }
+#endif
     if (!Viewport.BackBuffer)
     {
         WGPUSurfaceTexture SurfaceTexture = WGPU_SURFACE_TEXTURE_INIT;

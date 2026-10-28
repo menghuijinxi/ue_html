@@ -182,6 +182,7 @@ foreach ($taskEngineSource in @('Private/Shader/Preshader2.cpp', 'Private/Sparse
     'Private/Rendering/SubsurfaceProfile.cpp',
     'Private/Materials/MeshMaterialShader.cpp',
     'Private/SparseVolumeTexture/SparseVolumeTextureUpload.cpp',
+    'Private/Streaming/StreamingManagerTexture.cpp',
     'Private/GPUSort.cpp', 'Private/GPUBitonicSort.cpp', 'Private/GPUSortManager.cpp',
     'Public/FXSystem.h', 'Private/Particles/ParticleGpuSimulation.cpp', 'Private/Particles/ParticleCurveTexture.cpp',
     'Private/VectorFieldVisualization.cpp',
