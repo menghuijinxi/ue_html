@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-28 别墅材质隔离关卡：`build-web-villa-material-lab.ps1` 将原橱柜门、砖墙、柜体、餐桌、水槽和锅放入 `Template_Default` 副本，保持原材质及默认光照，打包为 `build/villa-material-lab-threads/index.html`。顶部可直接切换模型近景；浏览器七视角和桌面同配置七视角截图已完成。构建、使用方式和对照边界见 [别墅材质对照](../../UE58_VILLA_MATERIAL_LAB.md)。
+
 2026-10-27 云缺口回归：`probe-web-cloud-background.cjs` 使用距地面 10～20 cm、靠近材质球的三个仰视机位，在转向后第 2、10、70 帧与同机位隐藏球体的天空比较，冻结材质时间并保留实际云着色器。它专门检查球体上方和间隙的横向缺云，与现有“不覆盖不透明物体”检查分别验收；Chrome / Edge 候选结果纳入发布门槛，发布后复验原地址。`--folder=ue-default-template-desktop --report=cloud-background-desktop-chrome` 测候选；Edge 增加 `--edge --scale=2 --report=cloud-background-desktop-edge`，物理画布为 4K。源码原因和结果见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)。
 
 2026-10-27 多线程调研：正式 UE 仍使用非共享 WASM 内存及 `-onethread -norhithread`，本地 IO 已在独立 Worker；wasm64 pthread 原子计数和 Worker WebGPU 样例在 Chrome/Edge 实测通过。新增 `probe-web-threading.cjs` 对原发布页测量同步 CPU 回调和真实 GPU 通道，默认关卡覆盖 1080p/4K，别墅完成 1080p 定向测试。推荐分阶段接入 UE Core 线程、引擎 Worker 和渲染线程，并保留单一 GPU 对象所有者；本轮未启用正式 UE 多线程。证据、耗时口径及 4K 别墅未完成诊断见 [多线程调研](../../UE58_WEB_THREADING_RESEARCH.md)。
