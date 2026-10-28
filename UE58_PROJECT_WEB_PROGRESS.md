@@ -1,5 +1,39 @@
 # 外部项目 Web 打包进度
 
+## 2026-10-28：别墅恢复素材纹理尺寸并打包独立多线程版本
+
+新入口为 `http://127.0.0.1:8765/build/triplex-house-villa-fullres-threads/index.html`。通过 `prepare-web-project.cjs --texture-size=0` 从原工程创建独立 `triplex-house-villa-fullres` 项目，不再向 Web DeviceProfile 写入 `MaxLODSize=512`。准备报告确认原工程未修改；原有 512 版本继续保留，安装引擎和引擎源码本轮没有改动。
+
+Cook 平台头逐张对比确认，667 张项目纹理中的 585 张恢复了更高尺寸，最高为 4096。新清单包含 393 张 2048×2048、122 张 1024×1024、71 张 4096×4096；多 mip 纹理仍为 607 张，单 mip 60 张。BC1/BC3、BC5 和 BC6H 格式继续保留，包含 mip 与立方体面的格式大小估算由 210,559,592 增至 2,725,831,272 字节。这是完整素材链的估算，不是运行时驻留显存。
+
+新增 `TriplexHouseVillaFullresDesktopEngine.ini`，与原桌面配置仅有纹理池由 256 MiB 改为 1024 MiB 的有效设置差异，为高分辨率 mip 留出空间。保留本地 IO 按需流送、BC 压缩、16 MiB 读取缓存、原生画布渲染、4096 CSM、原材质和光照。取消 Cook 尺寸上限不代表禁用按视距和预算选择 mip，也不要求所有素材同时常驻显存。
+
+新 Stage 为 4213 个文件、3,035,016,428 字节，独立网页目录 10 个文件、3,218,778,633 字节。完整引擎 JS/WASM 沿用已验证的线程构建，只重新 Cook、Stage 和打包场景。首次 Stage 实际触发 Node 单次写入长度超过 2,147,483,647 的错误；现按块写包，并在打包和浏览器探针中复用分块文件 SHA-256 校验，避免一次读写整个 3 GB 文件。新包整体哈希另与 PowerShell `Get-FileHash` 交叉核对。
+
+大包还暴露了旧磁盘清理时机的问题：引擎 WASM 先打开时，旧 1 GiB 缓存目标会删除尚未打开的 3 GB 场景包，导致热启动再次下载。Chrome 先保留一次失败复现，记录为缓存命中 1 次、删除 1 次、再次下载 3,035,016,428 字节。现在在完整资源挂载后的 `clear-memory` 阶段清理未使用版本，保护当前会话打开的全部资源及其他会话持有租约的文件；1 GiB 是缓存清理目标，正在使用的整套资源可以超过它。最终候选的 Chrome/Edge 冷热启动四轮均通过，首次分别下载引擎和内容两项，热启动命中两项持久缓存、下载次数和字节数均为零。
+
+四轮共八个室内/反向近景检查均等待 mip 流送收敛后截图，实际记录到 2048 和 4096 的 BC1/BC5 GPU 纹理创建。流送池实报 1,073,741,824 字节，两个视角的流送纹理驻留估算约 256～269 MiB，621 个 bulk 文件继续走本地 IO，读取缓存峰值不超过 16 MiB，共享 WASM 堆保持 577,437,696 字节。无 GPU 校验错误、设备丢失或页面错误。上述数字分别是预算、纹理格式估算和堆容量，不是整卡显存测量。
+
+普通页面另用 Chrome/Edge 的新建持久浏览器配置完成两次启动、六个窗口状态及真实 Pawn 移动，不注入 GPU API 钩子。DPR 2、1920×1080 CSS 窗口的实际内部与输出均为 3840×2160，缩小为 780×439 后恢复 3840×2160。隐身上下文最初因 3 GB 包超过其存储配额而在渲染前失败，记录保留为 `web-default-startup-villa-fullres-incognito-quota-results.json`；新增 `--persistent` 以使用正常磁盘配置，保留原有画面、分辨率、错误及输入断言。此包应使用普通浏览器窗口，隐身模式的大包支持未通过。
+
+本地 IO 的 Chrome/Edge 回归通过，覆盖离线跨块读取、取消回调、内容变化后重新下载、损坏数据拒绝及 SM5/ES3.1 ShaderCache 路径校验。最终来源与产物哈希、八张室内截图和两张 4K 截图均复核一致，旧单线程与多线程包的全部产品哈希未变。本轮没有重新作帧率收益、长时间稳定性或 UE 桌面画质一致性结论。
+
+主要报告为 `web-project-triplex-house-villa-fullres-{prepare,desktop-cook,desktop-stage,threads-package}-results.json`、`triplex-fullres-textures.json`、`web-project-triplex-house-villa-fullres-threads-smoke-results.json`、`web-default-startup-villa-fullres-native-results.json` 和 `web-local-io-{chrome,edge}-results.json`。缓存修复前的失败保留为 `web-project-triplex-house-villa-fullres-threads-smoke-chrome-results.json`，不作为当前包的通过证据。
+
+```powershell
+node tests/web-platform/prepare-web-project.cjs --project=H:/TriplexHouseVilla/TriplexHouseVilla.uproject --id=triplex-house-villa-fullres --texture-size=0 --input-profile=tests/web-platform/cook-profiles/TriplexHouseVillaInput.ini
+./tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-SM5 -Scene Project `
+  -Project H:/ue_html/tests/web-platform/build/projects/triplex-house-villa-fullres/TriplexHouseVilla.uproject `
+  -Map /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla `
+  -Profile H:/ue_html/tests/web-platform/cook-profiles/TriplexHouseVillaFullresDesktopEngine.ini `
+  -ReportId triplex-house-villa-fullres -TextureCompression BC -CompressHDRCubemaps -StopOnShaderError -SkipBuild
+node tests/web-platform/stage-web-engine.cjs --project=triplex-house-villa-fullres --desktop
+node tests/web-platform/package-web-project.cjs --project=triplex-house-villa-fullres --desktop --threads
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-project-threads.cjs --project=triplex-house-villa-fullres --smoke --warm
+node tests/web-platform/probe-web-default-startup.cjs --desktop --candidate --threads --project=triplex-house-villa-fullres --native --persistent --runs=1 --scale=2 --width=1920 --height=1080 --report=villa-fullres-native
+```
+
 ## 2026-10-28：别墅改为跟随画布原生分辨率
 
 按用户要求，别墅桌面配置新增 `r.ScreenPercentage=100`、`r.ScreenPercentage.Default.Desktop.Mode=0`、`r.DynamicRes.OperationMode=0`，并启用 `bAllowHighDPIInGameMode=True`。内部渲染尺寸现在跟随画布实际像素尺寸，包含浏览器 DPR，不再使用 UE 的按显示分辨率自动降采样。FXAA、光照、材质、阴影及纹理预算参数没有改动。

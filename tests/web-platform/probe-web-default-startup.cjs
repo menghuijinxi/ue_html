@@ -1,9 +1,9 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {PNG} = require('pngjs');
+const {audit} = require('./content-file-metadata.cjs');
 const directory = path.join(__dirname, 'results');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const repetitions = Number(option('runs') || 3);
@@ -11,6 +11,7 @@ assert(Number.isInteger(repetitions) && repetitions > 0);
 const scales = option('scale') ? [Number(option('scale'))] : [1, 1.5, 2];
 assert(scales.every(scale => Number.isFinite(scale) && scale > 0));
 const startupOnly = process.argv.includes('--startup-only');
+const persistent = process.argv.includes('--persistent');
 const desktop = process.argv.includes('--desktop');
 const candidate = process.argv.includes('--candidate');
 const threads = process.argv.includes('--threads');
@@ -26,15 +27,14 @@ const landscape = {width: Number(option('width') || (desktop ? 1896 : 1848)),
 assert(Object.values(landscape).every(value => Number.isInteger(value) && value > 0 && value <= 7680));
 const reportSuffix = option('report') || '';
 assert(/^[a-z0-9-]*$/.test(reportSuffix));
-const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
-const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, startupOnly,
+const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, startupOnly, persistent,
   desktop, candidate, threads, native, projectId: projectId || null, landscape, scales,
   browserRuns: [], source: audit(__filename)};
 
 (async () => {
-  let browser;
+  let browser, activeContext;
   try {
     const packageFile = path.join(directory, threads ?
       (projectId ? `web-project-${projectId}-threads-package-results.json` :
@@ -59,12 +59,17 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
       ['Edge', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe']
     ]) {
       if (option('browser') && option('browser') !== name) continue;
-      browser = await chromium.launch({executablePath, headless: true});
+      if (!persistent) browser = await chromium.launch({executablePath, headless: true});
       for (let index = 0; index < repetitions; ++index) {
         for (const scale of scales) {
-          const context = await browser.newContext({viewport: landscape, deviceScaleFactor: scale});
+          const profile = persistent ? fs.mkdtempSync(path.join(directory, 'native-startup-' + name.toLowerCase() + '-')) : null;
+          const context = activeContext = persistent ?
+            await chromium.launchPersistentContext(profile,
+              {executablePath, headless: true, viewport: landscape, deviceScaleFactor: scale}) :
+            await browser.newContext({viewport: landscape, deviceScaleFactor: scale});
           const page = await context.newPage();
-          const run = {browser: name, version: browser.version(), index, scale, pass: false, errors: [], log: [], views: []};
+          const run = {browser: name, version: context.browser().version(), profile,
+            index, scale, pass: false, errors: [], log: [], views: []};
           report.browserRuns.push(run);
           page.on('pageerror', error => run.errors.push(error.stack || error.message));
           page.on('console', message => {
@@ -159,15 +164,17 @@ const report = {date: new Date().toISOString(), pass: false, gpuHooks: false, st
           run.pass = true;
           console.log(JSON.stringify({browser: name, index, scale, pass: true, frames: run.views.at(-1).frames}));
           await context.close();
+          activeContext = null;
         }
       }
-      await browser.close();
+      if (browser) await browser.close();
       browser = null;
     }
     report.pass = report.browserRuns.length > 0 && report.browserRuns.every(run => run.pass);
   } catch (error) {
     report.failure = error.stack;
   } finally {
+    if (activeContext) await activeContext.close();
     if (browser) await browser.close();
     fs.writeFileSync(path.join(directory, `web-default-startup${reportSuffix ? '-' + reportSuffix : ''}-results.json`),
       JSON.stringify(report, null, 2));

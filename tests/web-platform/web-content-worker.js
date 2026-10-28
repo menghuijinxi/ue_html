@@ -65,7 +65,7 @@ async function download(info) {
   } finally { reader.releaseLock(); }
 }
 
-async function trimDisk(current) {
+async function trimDisk() {
   const items = [];
   for await (const [name, handle] of directory.entries()) {
     if (!/^[a-f0-9]{64}\.json$/.test(name)) continue;
@@ -74,7 +74,7 @@ async function trimDisk(current) {
   let bytes = items.reduce((sum, item) => sum + item.size, 0);
   for (const item of items.sort((a, b) => a.used - b.used)) {
     if (bytes <= diskLimit) break;
-    if (item.sha256 === current) continue;
+    if (assets.has(item.sha256)) continue;
     await navigator.locks.request(lockName(item.sha256), {ifAvailable: true}, async lock => {
       if (!lock) return;
       await directory.removeEntry(markerName(item.sha256));
@@ -105,7 +105,6 @@ async function asset(info) {
       await new Promise(() => {});
     }).catch(failed);
     const file = await opened;
-    await trimDisk(info.sha256);
     return {info, file};
   })());
   return assets.get(info.sha256);
@@ -153,6 +152,8 @@ async function execute(message) {
   if (message.type === 'clear-memory') {
     blocks.clear();
     stats.memoryBytes = 0;
+    // Mount has opened the whole bundle; trimming earlier can evict its large content pack during WASM startup.
+    await trimDisk();
     return null;
   }
   if (message.type === 'stats') return null;

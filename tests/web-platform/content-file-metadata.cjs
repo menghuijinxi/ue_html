@@ -18,4 +18,16 @@ function metadata(file, url) {
   } finally { fs.closeSync(descriptor); }
   return {url, size, sha256: hash.digest('hex'), blockSize, blocks};
 }
-module.exports = {metadata};
+function audit(file) {
+  const descriptor = fs.openSync(file, 'r');
+  const hash = crypto.createHash('sha256'), buffer = Buffer.alloc(blockSize);
+  try {
+    for (;;) {
+      const length = fs.readSync(descriptor, buffer, 0, buffer.length, null);
+      if (!length) break;
+      hash.update(buffer.subarray(0, length));
+    }
+  } finally { fs.closeSync(descriptor); }
+  return {file, sha256: hash.digest('hex')};
+}
+module.exports = {metadata, audit};

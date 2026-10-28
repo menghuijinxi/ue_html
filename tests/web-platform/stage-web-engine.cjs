@@ -2,10 +2,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
-const {metadata} = require('./content-file-metadata.cjs');
+const {metadata, audit} = require('./content-file-metadata.cjs');
 const root = path.resolve(__dirname, '../..');
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
-const audit = file => ({file, sha256: sha(fs.readFileSync(file))});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const projectId = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 if (projectId) assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(projectId));
@@ -105,7 +104,17 @@ try {
       'The project material archive must use the browser Program name');
   }
   const packFile = path.join(staged, 'content.bin');
-  fs.writeFileSync(packFile, Buffer.concat(chunks, offset));
+  const descriptor = fs.openSync(packFile, 'w');
+  try {
+    for (const chunk of chunks) {
+      let written = 0;
+      while (written < chunk.length) {
+        const length = fs.writeSync(descriptor, chunk, written, Math.min(1024 * 1024, chunk.length - written));
+        assert(length > 0, 'Content pack write must make progress');
+        written += length;
+      }
+    }
+  } finally { fs.closeSync(descriptor); }
   const manifestFile = path.join(staged, 'content-files.json');
   fs.writeFileSync(manifestFile, JSON.stringify({
     mode: report.mode, architecture: report.architecture, shaderFormat: webgpu ? format : null,

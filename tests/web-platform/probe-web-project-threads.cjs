@@ -1,12 +1,14 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {PNG} = require('pngjs');
+const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const id = option('project') || 'triplex-house-villa';
 const smoke = process.argv.includes('--smoke');
+const warm = process.argv.includes('--warm');
+assert(!warm || smoke, '--warm requires --smoke');
 const seconds = Number(option('seconds') || 4);
 const heights = (option('resolutions') || '1080,2160').split(',').map(Number);
 assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) && seconds >= 2 && seconds <= 15);
@@ -14,7 +16,6 @@ assert(heights.length && heights.every(height => [720, 1080, 2160].includes(heig
 assert(!option('browser') || ['Chrome', 'Edge'].includes(option('browser')));
 const directory = path.join(__dirname, 'results');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
-const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const distribution = values => {
   assert(values.length);
@@ -22,7 +23,7 @@ const distribution = values => {
   return {count: sorted.length, mean: values.reduce((a, b) => a + b, 0) / values.length,
     median: sorted[Math.floor(sorted.length / 2)], p95: sorted[Math.floor((sorted.length - 1) * 0.95)]};
 };
-const report = {date: new Date().toISOString(), pass: false, id, smoke, seconds, heights,
+const report = {date: new Date().toISOString(), pass: false, id, smoke, warm, seconds, heights,
   source: audit(__filename), runs: [], comparisons: [], headless: true,
   boundary: 'Same Cook, config, source revision, camera, output and internal pixel size; normal game time. ' +
     'Scene resolution follows its packaged profile; actual internal and output sizes are recorded separately. ' +
@@ -35,7 +36,7 @@ const renderSettings = view => ({width: view.width, height: view.height,
 
 function observe() {
   const state = globalThis.__threadBenchmark = {cpu: [], intervals: [], ui: [], measuring: false,
-    errors: [], losses: [], adapter: null};
+    errors: [], losses: [], adapter: null, compressedTextureSizes: {}};
   let device, query, resolveBuffer, readback, capture, frame = 0, previousFrame;
   const raf = globalThis.requestAnimationFrame.bind(globalThis);
   globalThis.requestAnimationFrame = callback => raf(time => {
@@ -79,6 +80,16 @@ function observe() {
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ});
     }
     return device;
+  };
+  const createTexture = GPUDevice.prototype.createTexture;
+  GPUDevice.prototype.createTexture = function(descriptor) {
+    const texture = createTexture.call(this, descriptor);
+    if (descriptor.format.startsWith('bc')) {
+      const size = descriptor.size;
+      const key = `${descriptor.format}:${size.width || size[0]}x${size.height || size[1]}`;
+      state.compressedTextureSizes[key] = (state.compressedTextureSizes[key] || 0) + 1;
+    }
+    return texture;
   };
   for (const name of ['beginRenderPass', 'beginComputePass']) {
     const begin = GPUCommandEncoder.prototype[name];
@@ -165,7 +176,7 @@ async function scene(owner) {
     heapBytes: HEAPU8.buffer.byteLength, shared: HEAPU8.buffer instanceof SharedArrayBuffer,
     local: globalThis.__webContentIO?.stats, bulkFiles: globalThis.__webContentIO?.files.size,
     gpu: {errors: __threadBenchmark.errors, losses: __threadBenchmark.losses,
-      adapter: __threadBenchmark.adapter}
+      adapter: __threadBenchmark.adapter, compressedTextureSizes: __threadBenchmark.compressedTextureSizes}
   }));
 }
 async function bounded(promise, label) {
@@ -216,7 +227,7 @@ async function bounded(promise, label) {
         const response = await route.fetch();
         await route.fulfill({response, body: `(${observe.toString()})();\n` + await response.text()});
       });
-      for (const [index, threaded] of (smoke ? [true] : [false, true, true, false]).entries()) {
+      for (const [index, threaded] of (smoke ? warm ? [true, true] : [true] : [false, true, true, false]).entries()) {
         const run = {browser: name, version: context.browser().version(), index, threaded,
           pass: false, errors: [], log: [], measurements: []};
         report.runs.push(run);
@@ -239,6 +250,11 @@ async function bounded(promise, label) {
         assert.equal(ready.featureLevel, 3);
         assert.equal(ready.shaderPlatform, 47);
         assert.equal(run.startup.shared, threaded);
+        if (warm && index > 0) {
+          assert.equal(run.startup.local.downloads, 0, 'Warm startup must reuse the engine and content cache');
+          assert.equal(run.startup.local.downloadedBytes, 0);
+          assert(run.startup.local.persistentHits >= 2);
+        }
         if (threaded) assert(run.startup.ready.engineWorker &&
           run.startup.ready.gameThread !== run.startup.ready.taskThread);
         const views = [
@@ -250,6 +266,19 @@ async function bounded(promise, label) {
           for (const [label, camera] of views) {
             assert.equal(await owner.evaluate(values => Module._WebProjectViewTest(...values), camera), 1);
             await advance(page, smoke ? 30 : 90);
+            if (smoke) {
+              let previous, stable = 0;
+              for (let attempt = 0; attempt < 24; ++attempt) {
+                const current = (await scene(owner)).streaming;
+                if (current && !current.pending && current.residentMips === current.requestedMips &&
+                    current.residentBytes === previous?.residentBytes) ++stable;
+                else stable = 0;
+                if (stable >= 2) break;
+                previous = current;
+                await advance(page, 30);
+              }
+              assert(stable >= 2, 'Scene mip streaming must settle before its visual check');
+            }
             const before = await scene(owner);
             assert.deepEqual(before.surface, {width: height * 16 / 9, height});
             assert.equal(before.view.outputWidth, before.surface.width);
@@ -287,7 +316,8 @@ async function bounded(promise, label) {
             assert.deepEqual(measurement.after.gpu.errors, []);
             assert.deepEqual(measurement.after.gpu.losses, []);
             if (index < 2 || smoke)
-              measurement.image = await screenshot(page, `${name.toLowerCase()}-${threaded ? 'thread' : 'single'}-${height}-${label}`);
+              measurement.image = await screenshot(page,
+                `${warm && index > 0 ? 'warm-' : ''}${name.toLowerCase()}-${threaded ? 'thread' : 'single'}-${height}-${label}`);
             console.log(JSON.stringify({browser: name, index, threaded, label, height,
               fps: measurement.fps, callbackMs: measurement.callbackMs?.mean,
               gpuMs: measurement.gpuPassMs?.mean}));
