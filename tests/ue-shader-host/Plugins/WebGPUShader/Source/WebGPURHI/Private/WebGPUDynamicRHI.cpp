@@ -2358,6 +2358,8 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         // TAA point-samples UNORM16 velocity; it must also accept unfilterable browser formats.
         const bool TAAVelocity = Name == TEXT("GBufferVelocityTexture") ||
             Name == TEXT("GBufferVelocityTextureSampler");
+        // DFAO preserves bilinear UNORM16 sampling with explicit texel loads.
+        const bool UnfilterableVelocity = TAAVelocity || Name == TEXT("VelocityTexture");
         switch (Binding->GetIntegerField(TEXT("descriptorType")))
         {
         case 0:
@@ -2387,7 +2389,7 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
                 const FString Type = Binding->GetStringField(TEXT("textureSampleType"));
                 Entry.texture.sampleType = Type == TEXT("uint") ? WGPUTextureSampleType_Uint :
                     Type == TEXT("sint") ? WGPUTextureSampleType_Sint :
-                    Depth || ACESLookup || TAAVelocity ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
+                    Depth || ACESLookup || UnfilterableVelocity ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
                 Entry.texture.viewDimension = ViewDimension;
                 Entry.texture.multisampled = Binding->GetBoolField(TEXT("textureMultisampled"));
             }

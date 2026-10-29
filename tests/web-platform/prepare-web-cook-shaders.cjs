@@ -17,6 +17,27 @@ const overrides = new Map([
   }, {
     before: 'in float4 UVAndScreenPos : TEXCOORD0',
     after: 'in DFAO_SCREEN_INTERPOLATION float4 UVAndScreenPos : TEXCOORD0', count: 4,
+  }, {
+    before: '\tfloat4 EncodedVelocity = Texture2DSampleLevel(VelocityTexture, VelocityTextureSampler, FullResTexel, 0);',
+    after: [
+      '\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t// WebGPU UNORM16 velocity is unfilterable. Preserve the bilinear clamp sample with texel loads.',
+      '\tuint VelocityWidth, VelocityHeight;',
+      '\tVelocityTexture.GetDimensions(VelocityWidth, VelocityHeight);',
+      '\tfloat2 VelocityTexel = FullResTexel * float2(VelocityWidth, VelocityHeight) - .5f;',
+      '\tint2 VelocityCorner = int2(floor(VelocityTexel));',
+      '\tint2 VelocityMax = int2(VelocityWidth, VelocityHeight) - 1;',
+      '\tfloat2 VelocityWeight = frac(VelocityTexel);',
+      '\tfloat4 Velocity00 = VelocityTexture.Load(int3(clamp(VelocityCorner, int2(0, 0), VelocityMax), 0));',
+      '\tfloat4 Velocity10 = VelocityTexture.Load(int3(clamp(VelocityCorner + int2(1, 0), int2(0, 0), VelocityMax), 0));',
+      '\tfloat4 Velocity01 = VelocityTexture.Load(int3(clamp(VelocityCorner + int2(0, 1), int2(0, 0), VelocityMax), 0));',
+      '\tfloat4 Velocity11 = VelocityTexture.Load(int3(clamp(VelocityCorner + int2(1, 1), int2(0, 0), VelocityMax), 0));',
+      '\tfloat4 EncodedVelocity = lerp(lerp(Velocity00, Velocity10, VelocityWeight.x),',
+      '\t\tlerp(Velocity01, Velocity11, VelocityWeight.x), VelocityWeight.y);',
+      '\t#else',
+      '\tfloat4 EncodedVelocity = Texture2DSampleLevel(VelocityTexture, VelocityTextureSampler, FullResTexel, 0);',
+      '\t#endif',
+    ].join('\n'),
   }]],
   ['Private/DistanceFieldScreenGridLighting.usf', [{
     before: '#include "Substrate/Substrate.ush"\n',

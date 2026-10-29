@@ -10,6 +10,11 @@ const directory = path.join(__dirname, 'results');
 const folder = process.argv.find(value => value.startsWith('--folder='))?.slice(9) ||
   'ue-default-template-distance-fields-threads';
 const channel = process.argv.includes('--edge') ? 'msedge' : 'chrome';
+const visualClock = process.argv.includes('--visual-clock');
+const startupOnly = process.argv.includes('--startup-only');
+const requireVelocity = process.argv.includes('--require-velocity');
+assert(!startupOnly || !visualClock, 'Startup regression must use the normal render clock');
+assert(!requireVelocity || startupOnly, '--require-velocity requires --startup-only');
 const packageFile = path.join(directory, folder.startsWith('ue-default-template') ?
   `web-default-template${folder.slice('ue-default-template'.length)}-package-results.json` :
   `web-project-${folder}-package-results.json`);
@@ -21,7 +26,8 @@ const tag = process.argv.find(value => value.startsWith('--tag='))?.slice(6) || 
 assert(/^[a-z0-9-]+$/.test(tag));
 assert(!camera || camera.length === 5 && camera.every(Number.isFinite));
 assert(width >= 320 && width <= 3840 && height >= 240 && height <= 2160);
-const report = {date: new Date().toISOString(), pass: false, folder, channel, errors: [], logs: [], images: [],
+const report = {date: new Date().toISOString(), pass: false, folder, channel, visualClock, startupOnly, requireVelocity,
+  errors: [], logs: [], images: [],
   source: audit(__filename), boundary: 'Browser candidate. GPU pass sums omit copies and gaps; adapter memory includes other apps. Image differences are not a quality score or proof of native parity.'};
 let context, page;
 const state = () => page.evaluate(() => ({failure: globalThis.__webEngineFailure,
@@ -30,6 +36,7 @@ const state = () => page.evaluate(() => ({failure: globalThis.__webEngineFailure
   exposure: globalThis.__webDistanceFieldsExposure,
   view: globalThis.__webRenderView, threads: globalThis.__webEngineThreads,
   io: globalThis.__webLocalContentStats, surface: globalThis.__webEngineSurface,
+  visualClock: globalThis.__webVisualTestClock || null,
   memory: globalThis.__webTextureStreaming, camera: globalThis.__webDefaultCamera}));
 async function advance(count) {
   const before = await state();
@@ -78,8 +85,9 @@ async function capture(name) {
     await page.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       await route.fulfill({response, body: `
-        globalThis.__webDistanceFieldsGPU = {textures: {}, compute: {}, raster: {}, errors: [], losses: []};
-        const dfPipelines = new WeakMap(), dfPasses = new WeakMap();
+        globalThis.__webDistanceFieldsGPU = {textures: {}, compute: {}, raster: {}, errors: [], losses: [],
+          historyBindings: 0, historyVelocityBindings: 0};
+        const dfPipelines = new WeakMap(), dfPasses = new WeakMap(), dfViews = new WeakMap();
         let dfDeviceHandle, dfQuery, dfResolve, dfReadback, dfCapture, dfFrame = 0;
         const dfDevice = GPUAdapter.prototype.requestDevice;
         GPUAdapter.prototype.requestDevice = async function(descriptor) {
@@ -165,16 +173,31 @@ async function capture(name) {
         }
         const dfTexture = GPUDevice.prototype.createTexture;
         GPUDevice.prototype.createTexture = function(descriptor) {
-          if (/DistanceField|GlobalDistance|BentNormal/.test(descriptor.label || ''))
+          if (/DistanceField|GlobalDistance|BentNormal|SceneVelocity/.test(descriptor.label || ''))
             __webDistanceFieldsGPU.textures[descriptor.label] = {
               size: descriptor.size, format: descriptor.format, dimension: descriptor.dimension,
               mipLevelCount: descriptor.mipLevelCount
             };
           return dfTexture.call(this, descriptor);
         };
+        const dfView = GPUTexture.prototype.createView;
+        GPUTexture.prototype.createView = function(...args) {
+          const view = dfView.apply(this, args);
+          dfViews.set(view, this.label);
+          return view;
+        };
+        const dfBindGroup = GPUDevice.prototype.createBindGroup;
+        GPUDevice.prototype.createBindGroup = function(descriptor) {
+          const labels = descriptor.entries.map(entry => dfViews.get(entry.resource));
+          if (labels.includes('DistanceFieldAOHistory')) {
+            ++__webDistanceFieldsGPU.historyBindings;
+            if (labels.includes('SceneVelocity')) ++__webDistanceFieldsGPU.historyVelocityBindings;
+          }
+          return dfBindGroup.call(this, descriptor);
+        };
       ` + await response.text()});
     });
-    await page.route('**/index.html', async route => {
+    if (visualClock) await page.route('**/index.html', async route => {
       const response = await route.fetch();
       const source = await response.text();
       assert(source.includes("arguments: ['-webgpu',"));
@@ -183,7 +206,9 @@ async function capture(name) {
     });
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
     report.startup = await advance(90);
+    if (!visualClock) assert.equal(report.startup.visualClock, null, 'Normal startup must not freeze rendering');
     assert(report.startup.fields?.meshes > 0, 'Cooked mesh distance fields must be loaded');
+    assert.equal(report.startup.fields.ao, 1, 'The shipped page must start with DFAO enabled');
     const owner = page.workers().find(worker => worker.url().includes('/web-engine-worker.js'));
     assert(owner);
     if (camera) {
@@ -199,7 +224,7 @@ async function capture(name) {
     }
     const pixels = [];
     report.states = {};
-    for (const [name, enabled] of [['off', 0], ['on', 1], ['restore', 0]]) {
+    for (const [name, enabled] of startupOnly ? [] : [['off', 0], ['on', 1], ['restore', 0]]) {
       assert.equal(await page.evaluate(value => __webEngineRPC('WebDistanceFieldTest', value), enabled), 1);
       report.states[name] = await advance(240);
       assert.equal(report.states[name].fields.ao, enabled);
@@ -221,11 +246,25 @@ async function capture(name) {
       }
       return {mean: total / (a.width * a.height * 3), fraction: changed / (a.width * a.height)};
     };
-    report.contribution = difference(pixels[0], pixels[1]);
-    report.restore = difference(pixels[0], pixels[2]);
-    assert(report.contribution.mean > report.restore.mean * 2 && report.contribution.mean > 0.1,
-      'DFAO contribution must exceed the restore residual');
-    assert(report.restore.mean < 2, 'Restored state must remain visually close');
+    if (!startupOnly) {
+      report.contribution = difference(pixels[0], pixels[1]);
+      report.restore = difference(pixels[0], pixels[2]);
+      if (visualClock) {
+        assert(report.contribution.mean > report.restore.mean * 2 && report.contribution.mean > 0.1,
+          'DFAO contribution must exceed the restore residual');
+        assert(report.restore.mean < 2, 'Restored state must remain visually close');
+      }
+    } else {
+      report.running = await advance(240);
+      assert(report.running.gpu.historyBindings > 100,
+        'Normal startup must execute DFAO history reprojection');
+      if (requireVelocity) {
+        assert(report.running.gpu.textures.SceneVelocity, 'This regression must exercise the real velocity buffer');
+        assert(report.running.gpu.historyVelocityBindings > 100,
+          'DFAO must repeatedly bind the real velocity buffer with its history texture');
+      }
+      await capture('startup');
+    }
     if (camera) {
       await page.evaluate(() => __webEngineRPC('WebDistanceFieldTest', 1));
       report.motion = [];
@@ -243,6 +282,20 @@ async function capture(name) {
       assert.equal(await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), camera), 1);
       await advance(240);
       await capture('motion-return');
+    }
+    if (startupOnly) {
+      report.resizes = [];
+      for (const viewport of [{width: 960, height: 540}, {width, height}]) {
+        await page.setViewportSize(viewport);
+        const value = await advance(90);
+        assert.deepEqual(value.surface, viewport);
+        assert.equal(value.view.width, viewport.width);
+        assert.equal(value.view.height, viewport.height);
+        assert.equal(value.fields.ao, 1);
+        assert.equal(value.visualClock, null);
+        report.resizes.push(value);
+      }
+      await capture('resize-return');
     }
     report.final = await advance(60);
     assert.deepEqual(report.final.surface, {width, height});
