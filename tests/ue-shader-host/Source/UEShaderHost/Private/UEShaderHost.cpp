@@ -1,12 +1,14 @@
 #include "Modules/ModuleManager.h"
 
 void StartWebNativeComparison();
+void StartWebDistanceFieldComparison();
 
 class FUEShaderHostModule : public FDefaultGameModuleImpl
 {
     virtual void StartupModule() override
     {
         StartWebNativeComparison();
+        StartWebDistanceFieldComparison();
     }
 };
 

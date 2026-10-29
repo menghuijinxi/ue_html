@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-10-29 距离场收益调研：安装版原生 D3D12 / SM5 完成别墅三机位、两种曝光、五种开关共 30 项对照，并分别检查启动时关闭资源和 GPU 分配快照。固定曝光下 DFAO 明显恢复楼板、墙角和柜体周围的天空光遮蔽；本场景没有启用距离场阴影的灯光。新增 `capture-villa-distance-fields.ps1`、CSV 分析及图像核验工具，生成可切换机位和曝光的对照页。资源、耗时口径及 Web 分阶段接入计划见 [距离场调研](../../UE58_DISTANCE_FIELD_RESEARCH.md)。本轮未修改 Web 发布包，未追查冰箱颜色变化。
+
 2026-10-28 别墅材质隔离关卡：`build-web-villa-material-lab.ps1` 将原橱柜门、砖墙、柜体、餐桌、水槽和锅放入 `Template_Default` 副本，保持原材质及默认光照，打包为 `build/villa-material-lab-threads/index.html`。顶部可直接切换模型近景；后续修复预设相机脱离 Pawn 导致无法自由移动，以及真实运动触发的 TAA 速度缓冲采样类型错误。Edge 150% 下真实运动/绑定、窗口切换、七视角及键鼠回归通过，Chrome DPR 2 对照通过。构建、使用方式和对照边界见 [别墅材质对照](../../UE58_VILLA_MATERIAL_LAB.md)。
 
 2026-10-27 云缺口回归：`probe-web-cloud-background.cjs` 使用距地面 10～20 cm、靠近材质球的三个仰视机位，在转向后第 2、10、70 帧与同机位隐藏球体的天空比较，冻结材质时间并保留实际云着色器。它专门检查球体上方和间隙的横向缺云，与现有“不覆盖不透明物体”检查分别验收；Chrome / Edge 候选结果纳入发布门槛，发布后复验原地址。`--folder=ue-default-template-desktop --report=cloud-background-desktop-chrome` 测候选；Edge 增加 `--edge --scale=2 --report=cloud-background-desktop-edge`，物理画布为 4K。源码原因和结果见 [默认关卡进度](../../UE58_DEFAULT_TEMPLATE_PROGRESS.md)。
