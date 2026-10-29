@@ -8,6 +8,7 @@ param(
     [ValidateSet('Uncompressed', 'BC')][string]$TextureCompression = 'Uncompressed',
     [switch]$CompressHDRCubemaps,
     [switch]$TemplateEnvironment,
+    [switch]$DistanceFields,
     [ValidatePattern('^[a-z0-9]+(?:-[a-z0-9]+)*$')][string]$ReportId,
     [switch]$DisableProjectSkyLight,
     [switch]$StopOnShaderError,
@@ -19,6 +20,7 @@ $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-platform-host/Engine'
 $taskWebGPU = $Mode -ne 'NullRHI-only'
 $taskES31 = $Mode -eq 'WebGPU-ES31'
+if ($DistanceFields -and $Mode -ne 'WebGPU-SM5') { throw 'Distance fields require desktop SM5 Cook.' }
 if ($Scene -eq 'DefaultTemplate' -and -not $taskWebGPU) { throw 'DefaultTemplate requires WebGPU Cook.' }
 $taskMap = if ($Scene -eq 'DefaultTemplate') { '/Engine/Maps/Templates/Template_Default' } else { '/Game/WebMinimal' }
 if ($Scene -eq 'Project') {
@@ -75,6 +77,7 @@ $taskReport = [ordered]@{
     textureCompression = $TextureCompression
     compressHDRCubemaps = [bool]$CompressHDRCubemaps
     templateEnvironment = [bool]$TemplateEnvironment
+    distanceFields = [bool]$DistanceFields
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
     validateShaderJobCache = [bool]$ValidateShaderJobCache
@@ -212,6 +215,18 @@ try {
             }
         })
         if (-not $taskMinimalSettings.Count) { throw 'Minimal Web renderer settings are missing.' }
+        if ($DistanceFields) {
+            $taskMinimalSettings = @($taskMinimalSettings | Where-Object { $_ -notmatch '^r.GenerateMeshDistanceFields=' })
+            $taskMinimalSettings += @('r.GenerateMeshDistanceFields=1', 'r.DistanceFields.SupportEvenIfHardwareRayTracingSupported=1')
+            $taskArguments += '-WebDistanceFieldsCook'
+            $taskReport.baseRendererConfig = Get-TaskAudit $taskMinimalConfig
+            $taskEffectiveConfig = Join-Path $taskOutput 'DistanceFieldsEngine.ini'
+            $taskConfigText = Get-Content -LiteralPath $taskMinimalConfig -Raw
+            $taskConfigText = [regex]::Replace($taskConfigText, '(?m)^r.GenerateMeshDistanceFields=.*\r?\n?', '')
+            $taskConfigText = $taskConfigText.Replace('[SystemSettings]', "[SystemSettings]`nr.GenerateMeshDistanceFields=1`nr.DistanceFields.SupportEvenIfHardwareRayTracingSupported=1")
+            [IO.File]::WriteAllText($taskEffectiveConfig, $taskConfigText, [Text.UTF8Encoding]::new($false))
+            $taskMinimalConfig = $taskEffectiveConfig
+        }
         $taskArguments += @($taskMinimalSettings | ForEach-Object { "-ini:Engine:[SystemSettings]:$_" })
         $taskReport.minimalRendererConfig = Get-TaskAudit $taskMinimalConfig
         if ($StopOnShaderError) { $taskArguments += '-WebGPUStopOnShaderError' }

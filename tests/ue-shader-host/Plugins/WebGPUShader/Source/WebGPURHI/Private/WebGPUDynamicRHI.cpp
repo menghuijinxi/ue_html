@@ -451,6 +451,7 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsPSOPrecaching = false;
     GRHISupportsPipelineFileCache = false;
     GRHISupportsTextureStreaming = true;
+    GRHIRequiresRenderTargetForPixelShaderUAVs = true;
     GRHISupportsAsyncTextureCreation = false;
     GRHISupportsExactOcclusionQueries = false;
     const auto* Pool = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streaming.PoolSize"));
@@ -719,6 +720,9 @@ void FWebGPUDynamicRHI::Shutdown()
           BufferLocks.IsEmpty());
     ReleaseBindings();
     GlobalSamplers.Empty();
+    for (const auto& Entry : ClearPipelines)
+        wgpuComputePipelineRelease(Entry.Value);
+    ClearPipelines.Empty();
     if (Queue)
     {
         wgpuQueueRelease(Queue);
@@ -1014,6 +1018,8 @@ FRHIBufferInitializer FWebGPUDynamicRHI::RHICreateBufferInitializer(FRHICommandL
         Usage |= WGPUBufferUsage_Vertex;
     if (EnumHasAnyFlags(Desc.Usage, EBufferUsageFlags::IndexBuffer))
         Usage |= WGPUBufferUsage_Index;
+    if (EnumHasAnyFlags(Desc.Usage, BUF_DrawIndirect))
+        Usage |= WGPUBufferUsage_Indirect;
     if (EnumHasAnyFlags(Desc.Usage, EBufferUsageFlags::UnorderedAccess | EBufferUsageFlags::ShaderResource))
         Usage |= WGPUBufferUsage_Storage;
     check(Desc.InitAction == ERHIBufferInitAction::Initializer || Desc.InitAction == ERHIBufferInitAction::Zeroed ||
@@ -1126,7 +1132,9 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     }
     const bool Color = Volume ? In.Format == PF_R8G8B8A8 || In.Format == PF_B8G8R8A8 ||
                                     In.Format == PF_R8G8B8A8_UINT || In.Format == PF_FloatRGBA ||
-                                    In.Format == PF_R16F || In.Format == PF_G16R16F
+                                    In.Format == PF_R16F || In.Format == PF_G16R16F ||
+                                    In.Format == PF_R8 || In.Format == PF_G8 ||
+                                    In.Format == PF_R32_UINT || In.Format == PF_R32_FLOAT
                               : IsSampled2DTextureFormat(In.Format);
     const uint32 Limit = Volume ? Limits.maxTextureDimension3D : Limits.maxTextureDimension2D;
     if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube && !Array) ||
@@ -1438,9 +1446,26 @@ bool FWebGPUDynamicRHI::ValidateUAV(FRHIBuffer *Buffer, const FRHIViewDesc &Desc
         return false;
     }
     const auto &View = Desc.Buffer.UAV;
+    if (View.BufferType == FRHIViewDesc::EBufferType::Raw)
+    {
+        const uint64 Size = Buffer->GetSize();
+        const uint64 Bytes = View.NumElements ? uint64(View.NumElements) * sizeof(uint32) : Size;
+        if (View.Format != PF_Unknown || View.Stride || View.bAtomicCounter || View.bAppendBuffer ||
+            !EnumHasAllFlags(Buffer->GetUsage(), BUF_ByteAddressBuffer | BUF_UnorderedAccess) ||
+            EnumHasAnyFlags(Buffer->GetUsage(), BUF_AccelerationStructure) ||
+            !Size || Size % sizeof(uint32) || !Bytes || Bytes > Limits.maxStorageBufferBindingSize ||
+            View.OffsetInBytes >= Size || View.OffsetInBytes % Limits.minStorageBufferOffsetAlignment ||
+            (View.OffsetInBytes && !View.NumElements) || uint64(View.OffsetInBytes) + Bytes > Size)
+        {
+            Error = TEXT("Raw UAV requires a ByteAddress UnorderedAccess buffer, aligned uint32 range and no format/stride/counter");
+            return false;
+        }
+        return true;
+    }
     if (View.BufferType == FRHIViewDesc::EBufferType::Typed)
     {
-        if ((View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F) ||
+        if ((View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
+                View.Format != PF_R32_FLOAT && View.Format != PF_R32_SINT) ||
             View.Stride || View.bAtomicCounter || View.bAppendBuffer ||
             EnumHasAnyFlags(Buffer->GetUsage(), BUF_StructuredBuffer | BUF_AccelerationStructure) ||
             !EnumHasAnyFlags(Buffer->GetUsage(), BUF_UnorderedAccess))
@@ -1526,7 +1551,9 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
     }
     const bool SupportedFormat = Volume ? Target.Format == PF_R8G8B8A8 || Target.Format == PF_B8G8R8A8 ||
                                              Target.Format == PF_R8G8B8A8_UINT || Target.Format == PF_FloatRGBA ||
-                                             Target.Format == PF_R16F || Target.Format == PF_G16R16F
+                                             Target.Format == PF_R16F || Target.Format == PF_G16R16F ||
+                                             Target.Format == PF_R8 || Target.Format == PF_G8 ||
+                                             Target.Format == PF_R32_UINT || Target.Format == PF_R32_FLOAT
                                        : IsSampled2DTextureFormat(Target.Format) || DepthStencil;
     if (!SupportedFormat ||
         (View.Format != PF_Unknown && View.Format != Target.Format && !(DepthStencil && View.Format == PF_X24_G8)) ||
@@ -1595,7 +1622,8 @@ bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FJs
 }
 uint64 FWebGPUDynamicRHI::RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat InFormat)
 {
-    return InFormat == PF_R32_UINT || InFormat == PF_R32G32B32A32_UINT || InFormat == PF_A32B32G32R32F
+    return InFormat == PF_R32_UINT || InFormat == PF_R32G32B32A32_UINT || InFormat == PF_A32B32G32R32F ||
+                   InFormat == PF_R32_FLOAT || InFormat == PF_R32_SINT || InFormat == PF_G8
                ? Limits.minStorageBufferOffsetAlignment
                : GPixelFormats[InFormat].BlockBytes;
 }
@@ -1628,7 +1656,8 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
         return true;
     }
     if (View.BufferType != FRHIViewDesc::EBufferType::Typed ||
-        (View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F) ||
+        (View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
+            View.Format != PF_R32_FLOAT && View.Format != PF_R32_SINT && View.Format != PF_G8) ||
         View.Stride || View.bAtomicCounter || View.bAppendBuffer ||
         EnumHasAnyFlags(Buffer->GetUsage(), BUF_StructuredBuffer | BUF_AccelerationStructure) ||
         !EnumHasAnyFlags(Buffer->GetUsage(), BUF_ShaderResource))
@@ -1639,7 +1668,8 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
     const uint64 Size = Buffer->GetSize();
     const uint32 Stride = GPixelFormats[View.Format].BlockBytes;
     const uint64 Bytes = View.NumElements ? uint64(View.NumElements) * Stride : Size;
-    if (!Size || Size % Stride || !Bytes || Bytes > Limits.maxStorageBufferBindingSize || View.OffsetInBytes >= Size ||
+    if (!Size || Size % Stride || !Bytes || (View.Format == PF_G8 && Bytes % 4) ||
+        Bytes > Limits.maxStorageBufferBindingSize || View.OffsetInBytes >= Size ||
         View.OffsetInBytes % Limits.minStorageBufferOffsetAlignment || (View.OffsetInBytes && !View.NumElements) ||
         uint64(View.OffsetInBytes) + Bytes > Size)
     {
@@ -1673,6 +1703,15 @@ bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const 
     {
         Error = TEXT("Buffer SRV element format/stride does not match reflected storage layout");
         return false;
+    }
+    if (Typed && Desc.Format == PF_G8)
+    {
+        FString Packing;
+        if (!Binding.TryGetStringField(TEXT("storagePacking"), Packing) || Packing != TEXT("unorm8x4"))
+        {
+            Error = TEXT("G8 buffer SRV requires explicit packed UNORM8 shader decoding");
+            return false;
+        }
     }
     return ValidateAccess(View->GetBuffer(), Access, Error);
 }
@@ -2408,6 +2447,8 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
     Desc.layout = CreateWebPipelineLayout(Device, ShaderStages);
     Desc.vertex.module = VS.Module;
     const FTCHARToUTF8 VertexEntry(*VS.Entry), PixelEntry(Pixel ? *Pixel->Data.Entry : TEXT(""));
+    const FTCHARToUTF8 PipelineLabel(*(VS.Entry + TEXT(" / ") + (Pixel ? Pixel->Data.Entry : TEXT("depth-only"))));
+    Desc.label = Text(PipelineLabel.Get());
     Desc.vertex.entryPoint = Text(VertexEntry.Get());
     TArray<TArray<WGPUVertexAttribute>> Attributes;
     TArray<WGPUVertexBufferLayout> Layouts;
@@ -2940,7 +2981,40 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer *Index, int32 Base, u
     wgpuRenderPassEncoderDrawIndexed(Pass, Primitives * 3, Instances, StartIndex, Base, FirstInstance);
     ++Draws;
 }
-void FWebGPUDynamicRHI::RHIDispatchComputeShader(uint32 X, uint32 Y, uint32 Z)
+bool FWebGPUDynamicRHI::ValidateIndirectArguments(FRHIBuffer* Buffer, uint32 Offset, uint32 Bytes,
+                                                  FString& Error) const
+{
+    if (!Buffer || !EnumHasAnyFlags(Buffer->GetUsage(), BUF_DrawIndirect) || Offset % 4 ||
+        uint64(Offset) + Bytes > Buffer->GetSize())
+    {
+        Error = TEXT("Indirect arguments require DrawIndirect usage and an aligned in-bounds argument range");
+        return false;
+    }
+    return ValidateAccess(Buffer, ERHIAccess::IndirectArgs, Error);
+}
+void FWebGPUDynamicRHI::RHIDrawPrimitiveIndirect(FRHIBuffer* Arguments, uint32 Offset)
+{
+    FString Error;
+    checkf(ValidateIndirectArguments(Arguments, Offset, 16, Error), TEXT("%s"), *Error);
+    SetDrawBindings();
+    wgpuRenderPassEncoderDrawIndirect(Pass, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
+    ++Draws;
+}
+void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIBuffer* Arguments, uint32 Offset)
+{
+    FString Error;
+    checkf(ValidateIndirectArguments(Arguments, Offset, 20, Error), TEXT("%s"), *Error);
+    check(GraphicsPipeline && GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList);
+    auto* Buffer = static_cast<FWebGPUBuffer*>(Index);
+    check(Buffer && (Buffer->GetStride() == 2 || Buffer->GetStride() == 4));
+    RequireAccess(Buffer, ERHIAccess::VertexOrIndexBuffer);
+    SetDrawBindings();
+    wgpuRenderPassEncoderSetIndexBuffer(Pass, Buffer->Handle,
+        Buffer->GetStride() == 2 ? WGPUIndexFormat_Uint16 : WGPUIndexFormat_Uint32, 0, Buffer->GetSize());
+    wgpuRenderPassEncoderDrawIndexedIndirect(Pass, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
+    ++Draws;
+}
+WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
 {
     check(Encoder && !Pass && ComputePipeline);
     auto Compute = wgpuCommandEncoderBeginComputePass(Encoder, nullptr);
@@ -2952,7 +3026,22 @@ void FWebGPUDynamicRHI::RHIDispatchComputeShader(uint32 X, uint32 Y, uint32 Z)
         wgpuComputePassEncoderSetBindGroup(Compute, Index, Groups[Index], 0, nullptr);
         wgpuBindGroupRelease(Groups[Index]);
     }
+    return Compute;
+}
+void FWebGPUDynamicRHI::RHIDispatchComputeShader(uint32 X, uint32 Y, uint32 Z)
+{
+    auto Compute = BeginComputePass();
     wgpuComputePassEncoderDispatchWorkgroups(Compute, X, Y, Z);
+    wgpuComputePassEncoderEnd(Compute);
+    wgpuComputePassEncoderRelease(Compute);
+    ++Dispatches;
+}
+void FWebGPUDynamicRHI::RHIDispatchIndirectComputeShader(FRHIBuffer* Arguments, uint32 Offset)
+{
+    FString Error;
+    checkf(ValidateIndirectArguments(Arguments, Offset, 12, Error), TEXT("%s"), *Error);
+    auto Compute = BeginComputePass();
+    wgpuComputePassEncoderDispatchWorkgroupsIndirect(Compute, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
     wgpuComputePassEncoderEnd(Compute);
     wgpuComputePassEncoderRelease(Compute);
     ++Dispatches;
@@ -3007,6 +3096,13 @@ void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUi
         RHIGetCommandContext(ERHIPipeline::Graphics);
     check(Encoder && !Pass && View);
     auto* Resource = View->GetResource();
+    if ((Resource && Resource->GetType() == RRT_Texture &&
+         static_cast<FRHITexture*>(Resource)->GetDesc().Dimension == ETextureDimension::Texture3D) ||
+        (Resource && Resource->GetType() == RRT_Buffer && Values != FUintVector4(0)))
+    {
+        ClearStorageUAV(View, Values, false);
+        return;
+    }
     if (Resource && Resource->GetType() == RRT_Texture)
     {
         auto* Texture = static_cast<FWebGPUTexture*>(Resource);
@@ -3050,6 +3146,120 @@ void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUi
     const auto Info = View->GetDesc().Buffer.UAV.GetViewInfo(Buffer);
     wgpuCommandEncoderClearBuffer(Encoder, Buffer->Handle, Info.OffsetInBytes,
         uint64(Info.NumElements) * Info.StrideInBytes);
+}
+void FWebGPUDynamicRHI::RHIClearUAVFloat(FRHIUnorderedAccessView* View, const FVector4f& Values)
+{
+    FUintVector4 Bits;
+    FMemory::Memcpy(&Bits, &Values, sizeof(Bits));
+    ClearStorageUAV(View, Bits, true);
+}
+void FWebGPUDynamicRHI::ClearStorageUAV(FRHIUnorderedAccessView* View, const FUintVector4& Values, bool Float)
+{
+    RequireOwner();
+    if (GlobalProbeMode && !ContextOpen)
+        RHIGetCommandContext(ERHIPipeline::Graphics);
+    check(Encoder && !Pass && View && View->GetResource());
+    auto* Resource = View->GetResource();
+    const bool Texture = Resource->GetType() == RRT_Texture;
+    FString Key, Declaration, Body;
+    FUintVector4 Extent(0);
+    WGPUBindGroupEntry Entries[2] = {};
+    Entries[0].binding = 0;
+    if (Texture)
+    {
+        auto* Target = static_cast<FWebGPUTexture*>(Resource);
+        const auto Info = View->GetDesc().Texture.UAV.GetViewInfo(Target);
+        const bool Volume = Target->GetDesc().Dimension == ETextureDimension::Texture3D;
+        check(Volume || Info.Dimension == FRHIViewDesc::EDimension::Texture2D);
+        check(Float != IsUnsignedTextureFormat(Info.Format));
+        RequireAccess(Target, ERHIAccess::UAVCompute, false, 0, Info.MipLevel);
+        Extent = FUintVector4(FMath::Max(1u, Target->GetSizeX() >> Info.MipLevel),
+            FMath::Max(1u, Target->GetSizeY() >> Info.MipLevel),
+            Volume ? FMath::Max(1u, uint32(Target->GetSizeXYZ().Z) >> Info.MipLevel) : 1, 0);
+        const char* FormatName = Info.Format == PF_R32_UINT ? "r32uint" :
+            Info.Format == PF_R32_FLOAT ? "r32float" :
+            Info.Format == PF_G8 || Info.Format == PF_R8 ? "r8unorm" :
+            Info.Format == PF_R8G8B8A8 ? "rgba8unorm" :
+            Info.Format == PF_R8G8B8A8_UINT ? "rgba8uint" :
+            Info.Format == PF_FloatRGBA ? "rgba16float" :
+            Info.Format == PF_R16F ? "r16float" : nullptr;
+        checkf(FormatName, TEXT("Storage clear format is not implemented: %d"), int32(Info.Format));
+        Key = FString::Printf(TEXT("texture-%s-%s-%d"), ANSI_TO_TCHAR(FormatName),
+            Volume ? TEXT("3d") : TEXT("2d"), int32(Float));
+        Declaration = FString::Printf(TEXT("@group(0) @binding(0) var destination: texture_storage_%s<%s, write>;"),
+            Volume ? TEXT("3d") : TEXT("2d"), ANSI_TO_TCHAR(FormatName));
+        Body = FString::Printf(TEXT("if (all(id < params.extent.xyz)) { textureStore(destination, %s, %s); }"),
+            Volume ? TEXT("vec3<i32>(id)") : TEXT("vec2<i32>(id.xy)"),
+            Float ? TEXT("bitcast<vec4<f32>>(params.value)") : TEXT("params.value"));
+        Entries[0].textureView = static_cast<FWebGPUTextureUAV*>(View)->Handle;
+    }
+    else
+    {
+        auto* Target = static_cast<FWebGPUBuffer*>(Resource);
+        FString Error;
+        checkf(ValidateUAV(Target, View->GetDesc(), Error), TEXT("%s"), *Error);
+        RequireAccess(Target, ERHIAccess::UAVCompute);
+        const auto Info = View->GetDesc().Buffer.UAV.GetViewInfo(Target);
+        check(Info.StrideInBytes == 4 || Info.StrideInBytes == 8 || Info.StrideInBytes == 16);
+        Extent.X = Info.NumElements * (Info.StrideInBytes / 4);
+        Extent.Y = Info.StrideInBytes / 4;
+        Extent.Z = FMath::Min(FMath::DivideAndRoundUp(Extent.X, 256u),
+            Limits.maxComputeWorkgroupsPerDimension) * 256;
+        Key = TEXT("buffer");
+        Declaration = TEXT("@group(0) @binding(0) var<storage, read_write> destination: array<u32>;");
+        Body = TEXT("let index = id.x + id.y * params.extent.z; if (index < params.extent.x) { "
+            "destination[index] = params.value[index % params.extent.y]; }");
+        Entries[0].buffer = Target->Handle;
+        Entries[0].offset = Info.OffsetInBytes;
+        Entries[0].size = uint64(Info.NumElements) * Info.StrideInBytes;
+    }
+    auto* Found = ClearPipelines.Find(Key);
+    if (!Found)
+    {
+        const FString Source = Declaration +
+            TEXT("\nstruct Params { value: vec4<u32>, extent: vec4<u32> }; "
+                "@group(0) @binding(1) var<uniform> params: Params;\n") +
+            (Texture ? TEXT("@compute @workgroup_size(8, 4, 4) ") :
+                TEXT("@compute @workgroup_size(256, 1, 1) ")) +
+            TEXT("fn main(@builtin(global_invocation_id) id: vec3<u32>) { ") +
+            Body + TEXT(" }");
+        FTCHARToUTF8 UTF8(*Source);
+        WGPUShaderSourceWGSL WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+        WGSL.code = {UTF8.Get(), size_t(UTF8.Length())};
+        WGPUShaderModuleDescriptor ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+        ModuleDesc.nextInChain = &WGSL.chain;
+        auto Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
+        WGPUComputePipelineDescriptor PipelineDesc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
+        PipelineDesc.compute.module = Module;
+        PipelineDesc.compute.entryPoint = {"main", WGPU_STRLEN};
+        auto Pipeline = wgpuDeviceCreateComputePipeline(Device, &PipelineDesc);
+        wgpuShaderModuleRelease(Module);
+        Found = &ClearPipelines.Add(Key, Pipeline);
+    }
+    const FUintVector4 Params[] = {Values, Extent};
+    auto Uniform = CreateBuffer(sizeof(Params), WGPUBufferUsage_Uniform, Params);
+    Entries[1].binding = 1;
+    Entries[1].buffer = Uniform;
+    Entries[1].size = sizeof(Params);
+    auto Layout = wgpuComputePipelineGetBindGroupLayout(*Found, 0);
+    WGPUBindGroupDescriptor GroupDesc = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
+    GroupDesc.layout = Layout;
+    GroupDesc.entryCount = UE_ARRAY_COUNT(Entries);
+    GroupDesc.entries = Entries;
+    auto Group = wgpuDeviceCreateBindGroup(Device, &GroupDesc);
+    auto Compute = wgpuCommandEncoderBeginComputePass(Encoder, nullptr);
+    wgpuComputePassEncoderSetPipeline(Compute, *Found);
+    wgpuComputePassEncoderSetBindGroup(Compute, 0, Group, 0, nullptr);
+    wgpuComputePassEncoderDispatchWorkgroups(Compute,
+        Texture ? FMath::DivideAndRoundUp(Extent.X, 8u) : Extent.Z / 256,
+        Texture ? FMath::DivideAndRoundUp(Extent.Y, 4u) : FMath::DivideAndRoundUp(Extent.X, Extent.Z),
+        Texture ? FMath::DivideAndRoundUp(Extent.Z, 4u) : 1);
+    wgpuComputePassEncoderEnd(Compute);
+    wgpuComputePassEncoderRelease(Compute);
+    wgpuBindGroupRelease(Group);
+    wgpuBindGroupLayoutRelease(Layout);
+    wgpuBufferRelease(Uniform);
+    ++Dispatches;
 }
 void FWebGPUDynamicRHI::RHICopyBufferRegion(FRHIBuffer *Dest, uint64 DstOffset, FRHIBuffer *Src, uint64 SrcOffset,
                                             uint64 Size)

@@ -335,7 +335,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling22_Tint20261009.190412_Uncompressed1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling24_Tint20261009.190412_Uncompressed1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -681,6 +681,25 @@ class FWebGPUShaderFormat final : public IShaderFormat
                         Type->traits.array.dims_count == 1 && Type->traits.array.dims[0] == 0 &&
                         Type->traits.array.stride == 16 && Element.offset == 0 && Element.member_count == 0)
                         Json->SetNumberField(TEXT("storageElementFormat"), PF_A32B32G32R32F);
+                    if (Type && !(Type->type_flags & (SPV_REFLECT_TYPE_FLAG_VECTOR |
+                            SPV_REFLECT_TYPE_FLAG_MATRIX | SPV_REFLECT_TYPE_FLAG_STRUCT)) &&
+                        Type->traits.numeric.scalar.width == 32 && Type->traits.array.dims_count == 1 &&
+                        Type->traits.array.dims[0] == 0 && Type->traits.array.stride == 4 &&
+                        Element.offset == 0 && Element.member_count == 0)
+                    {
+                        if (Type->type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT)
+                            Json->SetNumberField(TEXT("storageElementFormat"), PF_R32_FLOAT);
+                        else if ((Type->type_flags & SPV_REFLECT_TYPE_FLAG_INT) &&
+                            Type->traits.numeric.scalar.signedness)
+                            Json->SetNumberField(TEXT("storageElementFormat"), PF_R32_SINT);
+                    }
+                }
+                if (ReadOnly && FString(UTF8_TO_TCHAR(Binding->name)) == TEXT("BrickUploadData") &&
+                    Input.VirtualSourceFilePath == TEXT("/Engine/Private/DistanceFieldStreaming.usf") &&
+                    Json->GetIntegerField(TEXT("storageElementFormat")) == PF_R32_UINT)
+                {
+                    Json->SetNumberField(TEXT("storageElementFormat"), PF_G8);
+                    Json->SetStringField(TEXT("storagePacking"), TEXT("unorm8x4"));
                 }
             }
             Bindings.Add(MakeShared<FJsonValueObject>(Json));

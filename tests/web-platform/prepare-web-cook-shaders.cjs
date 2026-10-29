@@ -8,6 +8,71 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/DistanceFieldLightingPost.usf', [{
+    before: '#include "ScreenPass.ush"\n',
+    after: ['#include "ScreenPass.ush"', '',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '#define DFAO_SCREEN_INTERPOLATION noperspective', '#else',
+      '#define DFAO_SCREEN_INTERPOLATION', '#endif', ''].join('\n'),
+  }, {
+    before: 'in float4 UVAndScreenPos : TEXCOORD0',
+    after: 'in DFAO_SCREEN_INTERPOLATION float4 UVAndScreenPos : TEXCOORD0', count: 4,
+  }]],
+  ['Private/DistanceFieldScreenGridLighting.usf', [{
+    before: '#include "Substrate/Substrate.ush"\n',
+    after: ['#include "Substrate/Substrate.ush"', '',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '#define DFAO_SCREEN_INTERPOLATION noperspective', '#else',
+      '#define DFAO_SCREEN_INTERPOLATION', '#endif', ''].join('\n'),
+  }, {
+    before: 'in float4 UVAndScreenPos : TEXCOORD0, ',
+    after: 'in DFAO_SCREEN_INTERPOLATION float4 UVAndScreenPos : TEXCOORD0,',
+  }, ...['RWDistanceFieldNormal', 'RWDistanceFieldBentNormal'].map(name => ({
+    before: `RWTexture2D<float4> ${name};`,
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '[[vk::image_format("rgba16f")]] [[vk::ext_decorate(25)]]', '#endif',
+      `RWTexture2D<float4> ${name};`].join('\n'),
+  }))]],
+  ['Private/DistanceFieldStreaming.usf', [{
+    before: 'Buffer<float> BrickUploadData;',
+    after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      'StructuredBuffer<uint> BrickUploadData;',
+      'float LoadDistanceFieldUpload(uint Index)',
+      '{',
+      '\treturn float((BrickUploadData[Index >> 2] >> ((Index & 3u) * 8u)) & 255u) / 255.0f;',
+      '}',
+      '#else',
+      'Buffer<float> BrickUploadData;',
+      'float LoadDistanceFieldUpload(uint Index)',
+      '{',
+      '\treturn BrickUploadData[Index];',
+      '}',
+      '#endif',
+    ].join('\n'),
+  }, {
+    before: '= BrickUploadData[UploadDataReadIndex];',
+    after: '= LoadDistanceFieldUpload(UploadDataReadIndex);',
+  }, {
+    before: 'RWTexture3D<UNORM float> RWDistanceFieldBrickAtlas;',
+    after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '[[vk::image_format("r8")]] [[vk::ext_decorate(25)]]', '#endif',
+      'RWTexture3D<UNORM float> RWDistanceFieldBrickAtlas;',
+    ].join('\n'),
+  }]],
+  ...['GlobalDistanceFieldCompositeObjects', 'GlobalDistanceFieldHeightfields'].map(name =>
+    [`Private/DistanceField/${name}.usf`, ['RWPageAtlasTexture', 'RWCoverageAtlasTexture'].map(variable => ({
+      before: `RWTexture3D<UNORM float> ${variable};`,
+      after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '[[vk::image_format("r8")]]',
+        '#endif', `RWTexture3D<UNORM float> ${variable};`].join('\n'),
+    }))]),
+  ['Private/DistanceField/GlobalDistanceFieldMip.usf', [{
+    before: 'RWTexture3D<float> RWMipTexture;',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '[[vk::image_format("r8")]] [[vk::ext_decorate(25)]]', '#endif',
+      'RWTexture3D<float> RWMipTexture;'].join('\n'),
+  }]],
   ['Private/TemporalAA.usf', [...['OutComputeTex_0', 'OutComputeTexDownsampled', 'OutComputeTex_1'].map(name => {
     const indent = name === 'OutComputeTex_1' ? '\t' : '';
     const declaration = `${indent}RWTexture2D<float4> ${name};`;

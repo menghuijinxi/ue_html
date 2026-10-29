@@ -16,6 +16,7 @@
 #include "WebGPUTexture3DProbe.h"
 #include "WebGPUTextureUintProbe.h"
 #include "WebGPUSkyResourceProbe.h"
+#include "WebGPUDistanceFieldProbe.h"
 
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
@@ -640,6 +641,8 @@ class FWebGPURHIModule final : public IWebGPURHIProbeModule
     }
     bool RunProbe(const FString &Shaders, const FString &Materials, const FString &Output) override
     {
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebDistanceFieldRHIProbe")))
+            return RunWebGPUDistanceFieldProbe(*this, Shaders, Output);
         if (FParse::Param(FCommandLine::Get(), TEXT("WebSkyResourceProbe")))
         {
             IFileManager::Get().MakeDirectory(*Output, true);

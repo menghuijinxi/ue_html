@@ -37,9 +37,12 @@
 #include "Components/SkyLightComponent.h"
 #include "Components/LightComponent.h"
 #include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Stats/StatsData.h"
 #include "Engine/Texture2D.h"
+#include "StaticMeshResources.h"
+#include "DistanceFieldAtlas.h"
 #include "RHIStats.h"
 #include "UObject/UObjectIterator.h"
 #include "Blueprint/UserWidget.h"
@@ -198,6 +201,25 @@ void EngineFrame(void*)
             double(Memory.StreamingMemorySize), double(Memory.NonStreamingMemorySize),
             Streamable, Pending, ResidentMips, RequestedMips, MaximumMips,
             double(ResidentBytes), double(FullBytes));
+        const auto* GenerateDF = IConsoleManager::Get().FindConsoleVariable(TEXT("r.GenerateMeshDistanceFields"));
+        if (GenerateDF && GenerateDF->GetInt())
+        {
+            int32 ValidMeshes = 0;
+            uint64 ResidentDF = 0, BulkDF = 0;
+            for (TObjectIterator<UStaticMesh> It; It; ++It)
+                if (const auto* Data = It->GetRenderData(); Data && !Data->LODResources.IsEmpty())
+                    if (const auto* Field = Data->LODResources[0].DistanceFieldData; Field && Field->IsValid())
+                    {
+                        ++ValidMeshes;
+                        ResidentDF += Field->GetResourceSizeBytes();
+                        BulkDF += Field->StreamableMips.GetBulkDataSize();
+                    }
+            const auto* AO = IConsoleManager::Get().FindConsoleVariable(TEXT("r.DistanceFieldAO"));
+            EM_ASM({
+                globalThis.__webDistanceFields = ({frame: $0, meshes: $1,
+                    cpuResidentBytes: $2, bulkBytes: $3, ao: $4});
+            }, Frames, ValidMeshes, double(ResidentDF), double(BulkDF), AO ? AO->GetInt() : -1);
+        }
     }
     if (VisualTestClock)
     {
@@ -429,6 +451,40 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, doubl
         return 0;
     Camera->SetActorLocationAndRotation(FVector(X, Y, Z), FRotator(Pitch, Yaw, 0));
     Controller->SetViewTarget(Camera.Get());
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDistanceFieldTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* AO = IConsoleManager::Get().FindConsoleVariable(TEXT("r.DistanceFieldAO"));
+    const auto* Generate = IConsoleManager::Get().FindConsoleVariable(TEXT("r.GenerateMeshDistanceFields"));
+    if (!AO || !Generate || !Generate->GetInt() || (Enabled != 0 && Enabled != 1))
+        return 0;
+    AO->Set(Enabled, ECVF_SetByCode);
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebDistanceFieldTestExposure(double EV100)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    const auto* Generate = IConsoleManager::Get().FindConsoleVariable(TEXT("r.GenerateMeshDistanceFields"));
+    auto* Controller = TemplateController.Get();
+    auto* Camera = Controller ? Cast<ACameraActor>(Controller->GetViewTarget()) : nullptr;
+    if (!Generate || !Generate->GetInt() || !Camera || !FMath::IsFinite(EV100) || FMath::Abs(EV100) > 20)
+        return 0;
+    auto* Component = Camera->GetCameraComponent();
+    auto& Settings = Component->PostProcessSettings;
+    Component->PostProcessBlendWeight = 1;
+    Settings.bOverride_AutoExposureMethod = true;
+    Settings.AutoExposureMethod = EAutoExposureMethod::AEM_Manual;
+    Settings.bOverride_AutoExposureApplyPhysicalCameraExposure = true;
+    Settings.AutoExposureApplyPhysicalCameraExposure = false;
+    Settings.bOverride_AutoExposureBias = true;
+    Settings.AutoExposureBias = -EV100;
+    Settings.bOverride_AutoExposureBiasCurve = true;
+    Settings.AutoExposureBiasCurve = nullptr;
+    EM_ASM({ globalThis.__webDistanceFieldsExposure = ({ev100: $0, manual: true}); }, EV100);
     return 1;
 }
 

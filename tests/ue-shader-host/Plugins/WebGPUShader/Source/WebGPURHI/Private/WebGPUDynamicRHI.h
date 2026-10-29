@@ -598,9 +598,14 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RHISetViewport(float, float, float, float, float, float) override;
     void RHISetScissorRect(bool, uint32, uint32, uint32, uint32) override;
     void RHIDrawPrimitive(uint32, uint32, uint32) override;
+    void RHIDrawPrimitiveIndirect(FRHIBuffer*, uint32) override;
     void RHIDrawIndexedPrimitive(FRHIBuffer *, int32, uint32, uint32, uint32, uint32, uint32) override;
+    void RHIDrawIndexedPrimitiveIndirect(FRHIBuffer*, FRHIBuffer*, uint32) override;
     void RHIDispatchComputeShader(uint32, uint32, uint32) override;
+    void RHIDispatchIndirectComputeShader(FRHIBuffer*, uint32) override;
+    bool ValidateIndirectArguments(FRHIBuffer*, uint32 Offset, uint32 Bytes, FString& Error) const;
     void RHIClearUAVUint(FRHIUnorderedAccessView*, const FUintVector4&) override;
+    void RHIClearUAVFloat(FRHIUnorderedAccessView*, const FVector4f&) override;
     void RHICopyTexture(FRHITexture *, FRHITexture *, const FRHICopyTextureInfo &) override;
     void RHICopyBufferRegion(FRHIBuffer *, uint64, FRHIBuffer *, uint64, uint64) override;
     void RHIReadSurfaceData(FRHITexture *, FIntRect, TArray<FColor> &, FReadSurfaceDataFlags) override;
@@ -629,6 +634,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<TRefCountPtr<FWebGPUBuffer>> VertexBuffers;
     TArray<uint32> VertexOffsets;
     void SetDrawBindings();
+    WGPUComputePassEncoder BeginComputePass();
+    void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
+    TMap<FString, WGPUComputePipeline> ClearPipelines;
     TArray<TRefCountPtr<FRHIUniformBuffer>> StaticUniformBuffers;
     TArray<FWebGPUReadbackRef> PendingReadbacks;
     TArray<FWebGPUFenceRef> PendingFences;

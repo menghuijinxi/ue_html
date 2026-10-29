@@ -6,9 +6,11 @@ const id = process.argv.find(value => value.startsWith('--project='))?.slice(10)
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
 const threads = process.argv.includes('--threads');
+const distanceFields = process.argv.includes('--distance-fields');
+assert(!distanceFields || desktop, 'Distance fields require the desktop renderer');
 assert(!threads || desktop, 'Threaded engine requires the desktop renderer');
 const runtime = threads ? 'UEWebEngineThreads' : 'UEWebEngine';
-const suffix = threads ? '-threads' : desktop ? '-desktop' : '';
+const suffix = (distanceFields ? '-distance-fields' : '') + (threads ? '-threads' : desktop ? '-desktop' : '');
 const prefix = `web-project-${id}${suffix}`;
 const stagePrefix = `web-project-${id}${desktop ? '-desktop' : ''}`;
 const directory = path.join(__dirname, 'results');
@@ -17,7 +19,7 @@ const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/,
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
 const report = {date: new Date().toISOString(), pass: false, id, output, architecture: 'wasm64',
-  renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads,
+  renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads, distanceFields,
   sourceFiles: [__filename, template, path.join(__dirname, 'content-file-metadata.cjs'),
     ...['web-content-io.js', 'web-content-worker.js',
       ...(threads ? ['web-engine-host.js', 'web-engine-worker.js'] : [])].map(name =>
@@ -41,6 +43,8 @@ try {
     stage.sourceFiles.every(valid) && [stage.cookReport, stage.pack, stage.manifest, stage.configBundle].every(valid));
   const cook = read(stage.cookReport.file);
   assert.equal(cook.mode, desktop ? 'WebGPU-SM5' : 'WebGPU-ES31');
+  assert.equal(cook.distanceFields === true, distanceFields);
+  assert.equal(stage.distanceFields === true, distanceFields);
   assert.equal(stage.mode, cook.mode);
   assert(cook.pass && cook.sourceFiles.every(valid) && cook.products.every(valid) && cook.hostProducts.every(valid));
   assert(prepared.pass && prepared.originalProjectUnmodified && prepared.sourceFiles.every(valid));
@@ -61,7 +65,7 @@ try {
     return [name, audit(file).sha256];
   }));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
-    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, runtime: runtime + '.js',
+    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, distanceFields, runtime: runtime + '.js',
       wasm: metadata(wasm.file, runtime + '.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));

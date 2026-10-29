@@ -8,12 +8,12 @@ const rpcNames = new Set([
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
-  'WebDefaultFogTestMode', 'WebThreadTestControl'
+  'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure'
 ]);
 function snapshot() {
   const state = {};
   for (const key of Object.keys(globalThis)) {
-    if (!/^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread)/.test(key))
+    if (!/^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread|DistanceFields)/.test(key))
       continue;
     state[key] = globalThis[key];
   }

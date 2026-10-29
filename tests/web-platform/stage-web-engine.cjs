@@ -33,6 +33,7 @@ try {
   report.scene = cook.scene || 'Minimal';
   report.map = cook.map || '/Game/WebMinimal';
   report.textureCompression = cook.textureCompression || 'Uncompressed';
+  report.distanceFields = cook.distanceFields === true;
   assert(valid(cook.log) && cook.sourceFiles?.length && cook.sourceFiles.every(valid));
   assert(cook.hostProducts?.length >= (webgpu ? 4 : 3) && cook.hostProducts.every(valid));
   if (webgpu) {
@@ -130,9 +131,21 @@ try {
     const renderer = cook.minimalRendererConfig;
     assert(valid(renderer), 'The runtime configuration must match this Cook');
     const configPath = '/Engine/Platforms/Web/Config/WebEngine.ini';
-    const configs = base.filter(item => item.path !== configPath);
+    const ddpiPath = '/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini';
+    const configs = base.filter(item => item.path !== configPath &&
+      (!report.distanceFields || item.path !== ddpiPath));
     configs.push({path: configPath, sha256: renderer.sha256,
       data: fs.readFileSync(renderer.file).toString('base64')});
+    if (report.distanceFields) {
+      assert(desktop, 'Distance fields require the desktop renderer');
+      const ddpi = cook.hostProducts.find(item => path.basename(item.file) === 'DataDrivenPlatformInfo.ini');
+      assert(valid(ddpi), 'Distance-field runtime must use the Cook shader-platform capabilities');
+      const data = fs.readFileSync(ddpi.file);
+      const section = data.toString('utf8').split('[ShaderPlatform SP_WEBGPU_SM5]')[1]?.split('[')[0];
+      assert(section?.includes('bSupportsDistanceFields=true'));
+      assert(/(?:^|\n)r.GenerateMeshDistanceFields=1\r?(?:\n|$)/.test(fs.readFileSync(renderer.file, 'utf8')));
+      configs.push({path: ddpiPath, sha256: ddpi.sha256, data: data.toString('base64')});
+    }
     if (projectId) {
       const projectDirectory = path.dirname(cook.project);
       for (const name of ['DefaultEngine.ini', 'DefaultGame.ini', 'DefaultInput.ini', 'DefaultDeviceProfiles.ini']) {

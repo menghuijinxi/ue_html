@@ -47,6 +47,7 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
         const auto Usage = static_cast<FRHIBuffer *>(Resource)->GetUsage();
         const ERHIAccess Allowed =
             ERHIAccess::CopySrc | ERHIAccess::CopyDest |
+            (EnumHasAnyFlags(Usage, BUF_DrawIndirect) ? ERHIAccess::IndirectArgs : ERHIAccess::Unknown) |
             (EnumHasAnyFlags(Usage, BUF_VertexBuffer | BUF_IndexBuffer) ? ERHIAccess::VertexOrIndexBuffer
                                                                         : ERHIAccess::Unknown) |
             (EnumHasAnyFlags(Usage, BUF_ShaderResource | BUF_StructuredBuffer | BUF_VertexBuffer)

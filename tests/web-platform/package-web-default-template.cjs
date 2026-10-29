@@ -6,15 +6,17 @@ const {metadata} = require('./content-file-metadata.cjs');
 const directory = path.join(__dirname, 'results');
 const desktop = process.argv.includes('--desktop');
 const threads = process.argv.includes('--threads');
+const distanceFields = process.argv.includes('--distance-fields');
+assert(!distanceFields || desktop, 'Distance fields require the desktop renderer');
 assert(!threads || desktop, 'Threaded engine requires the desktop renderer');
 const runtime = threads ? 'UEWebEngineThreads' : 'UEWebEngine';
-const suffix = threads ? '-threads' : desktop ? '-desktop' : '';
+const suffix = (distanceFields ? '-distance-fields' : '') + (threads ? '-threads' : desktop ? '-desktop' : '');
 const output = path.join(__dirname, 'build/ue-default-template' + suffix);
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, output,
-  renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads,
+  renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads, distanceFields,
   map: '/Engine/Maps/Templates/Template_Default', architecture: 'wasm64',
   fullNormalUBTBuildVerified: false, completeUEScene: false,
   sourceFiles: [__filename, path.join(__dirname, 'web-default-template.html'),
@@ -39,6 +41,7 @@ try {
   assert(stage.pass && stage.map === report.map && stage.sourceFiles.every(valid) &&
     [stage.cookReport, stage.pack, stage.manifest, stage.configBundle].every(valid));
   const cook = read(stage.cookReport.file);
+  assert.equal(cook.distanceFields === true, distanceFields, 'Select the matching distance-field candidate');
   assert(cook.pass && cook.sourceFiles.every(valid) && cook.products.every(valid) &&
     cook.hostProducts.every(valid));
   report.buildReport = audit(buildFile);
@@ -62,7 +65,7 @@ try {
     ...(threads ? ['web-engine-host.js', 'web-engine-worker.js'] : [])].map(name =>
     [name, audit(copies.find(([, target]) => target === name)[0]).sha256]));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
-    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, runtime: runtime + '.js',
+    JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, distanceFields, runtime: runtime + '.js',
       wasm: metadata(copies.find(([, target]) => target === runtime + '.wasm')[0],
       runtime + '.wasm')}) + ';');
   fs.writeFileSync(path.join(output, 'index.html'), html);

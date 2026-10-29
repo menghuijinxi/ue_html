@@ -17,11 +17,15 @@ public:
     virtual bool SupportsFeature(ETargetPlatformFeatures Feature) const override
     {
         return bWebGPU && (Feature == ETargetPlatformFeatures::TextureStreaming ||
+            (Feature == ETargetPlatformFeatures::DistanceFieldAO && UsesDistanceFields()) ||
             Feature == (bES31 ? ETargetPlatformFeatures::MobileRendering :
                 ETargetPlatformFeatures::DeferredRendering));
     }
     virtual bool UsesRayTracing() const override { return false; }
-    virtual bool UsesDistanceFields() const override { return false; }
+    virtual bool UsesDistanceFields() const override
+    {
+        return bWebGPU && !bES31 && FParse::Param(FCommandLine::Get(), TEXT("WebDistanceFieldsCook"));
+    }
 
     virtual void GetReflectionCaptureFormats(TArray<FName>& Formats) const override
     {

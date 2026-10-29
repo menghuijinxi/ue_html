@@ -255,7 +255,8 @@ foreach ($taskPart in Get-ChildItem -LiteralPath $taskOriginalRendererModule) {
 $taskSceneCulling = 'Private/SceneCulling/SceneCullingRenderer.cpp'
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/$taskSceneCulling") -Destination (Join-Path $taskRendererModule $taskSceneCulling) -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp') -Destination (Join-Path $taskRendererModule 'Private/FXRenderingUtils.cpp') -Force
-foreach ($taskRendererOverlay in @('Private/LightGridInjection.cpp', 'Private/IndirectLightRendering.cpp',
+foreach ($taskRendererOverlay in @('Private/DistanceFieldAmbientOcclusion.cpp', 'Private/GlobalDistanceField.cpp', 'Private/GlobalDistanceFieldHeightfields.h',
+    'Private/LightGridInjection.cpp', 'Private/IndirectLightRendering.cpp',
     'Private/DistortionRendering.cpp', 'Private/MobileFogRendering.cpp', 'Private/ShaderPrint.cpp',
     'Private/SystemTextures.cpp', 'Private/MobileBasePassRendering.cpp', 'Private/ReflectionEnvironmentCapture.cpp',
     'Private/HairStrands/RenderCurveSceneExtension.cpp',

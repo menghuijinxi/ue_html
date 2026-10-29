@@ -7,8 +7,9 @@ const {decode} = require('./web-shader-code.js');
 
 const root = path.resolve(__dirname, '../..');
 const integer = process.argv.includes('--uint');
-const source = path.join(__dirname, integer ? 'build/ue-texture-uint-shader' : 'build/ue-texture-shader');
-const output = path.join(__dirname, integer ? 'build/ue-texture-uint-worker' : 'build/ue-texture-worker');
+const base = path.join(__dirname, process.argv.includes('--distance-fields') ? 'build/distance-field-probes' : 'build');
+const source = path.join(base, integer ? 'ue-texture-uint-shader' : 'ue-texture-shader');
+const output = path.join(base, integer ? 'ue-texture-uint-worker' : 'ue-texture-worker');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const host = read(path.join(source, integer ? 'texture-uint-shader-results.json' : 'texture-shader-results.json'));
@@ -69,7 +70,8 @@ const shaderPackets = names.map(name => {
   });
   const wgsl = path.join(source, `${name}.wgsl`);
   cp.execFileSync(path.join(root, '.tools/dawn-v20261009.190412/bin/tint.exe'),
-    [path.join(source, `${name}.spv`), '--format', 'wgsl', '-o', wgsl]);
+    [path.join(source, `${name}.spv`), '--format', 'wgsl', '-o', wgsl,
+      ...(packet.metadata.format === 'SF_WEBGPU_SM5' ? ['--allow-non-uniform-derivatives', 'true'] : [])]);
   assert.equal(packet.wgsl, fs.readFileSync(wgsl, 'utf8'));
   const outputFile = path.join(output, compiled.packet);
   fs.copyFileSync(file, outputFile);

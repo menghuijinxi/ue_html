@@ -71,6 +71,7 @@ try {
     fs.copyFileSync(source, destination);
   }
   const rendererOverlays = renderer ? ['Private/VolumetricCloudRendering.cpp',
+    'Private/DistanceFieldAmbientOcclusion.cpp', 'Private/GlobalDistanceField.cpp', 'Private/GlobalDistanceFieldHeightfields.h',
     'Private/MobileFogRendering.cpp', 'Private/VolumetricRenderTarget.cpp', 'Private/ScreenPass.cpp',
     'Private/LightGridInjection.cpp', 'Private/IESTextureManager.cpp',
     'Private/PostProcess/PostProcessHistogram.cpp', 'Private/SkyAtmosphereRendering.cpp'] : [];
@@ -126,6 +127,9 @@ try {
     'Source/Runtime/RenderCore/Private/VertexFactory.cpp',
     'Build/Build.version',
     ...(renderer ? ['Binaries/Win64/UnrealEditor-Renderer.dll',
+      'Source/Runtime/Renderer/Private/GlobalDistanceField.cpp',
+      'Source/Runtime/Renderer/Private/GlobalDistanceFieldHeightfields.h',
+      'Source/Runtime/Renderer/Private/DistanceFieldAmbientOcclusion.cpp',
       'Source/Runtime/Renderer/Private/VolumetricCloudRendering.cpp',
       'Source/Runtime/Renderer/Private/MobileFogRendering.cpp',
       'Source/Runtime/Renderer/Private/VolumetricRenderTarget.cpp',
