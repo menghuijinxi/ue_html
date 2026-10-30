@@ -59,6 +59,18 @@ if (rendererSettingsFile) {
   report.boundary += ' Diagnostic runtime renderer configuration is active; this run does not validate the shipped defaults.';
 }
 let context, page;
+const liveFile = path.join(directory, `distance-field-${channel}-${tag}-live.log`);
+fs.writeFileSync(liveFile, '');
+const trace = text => fs.appendFileSync(liveFile, `${new Date().toISOString()} ${text}\n`);
+const deadline = setTimeout(() => {
+  report.failure = 'Browser regression exceeded the five-minute deadline; inspect the live log';
+  report.pass = false;
+  fs.writeFileSync(path.join(directory, `web-distance-field-${folder}-${channel}-${tag}-results.json`),
+    JSON.stringify(report, null, 2));
+  console.error(report.failure);
+  context?.close().catch(() => {}).finally(() => process.exit(1));
+  setTimeout(() => process.exit(1), 5000);
+}, 300000);
 const state = () => page.evaluate(() => ({failure: globalThis.__webEngineFailure,
   frames: globalThis.__webEngineFrames || 0, ready: globalThis.__webEngineReady,
   fields: globalThis.__webDistanceFields, gpu: globalThis.__webDistanceFieldsGPU,
@@ -69,10 +81,13 @@ const state = () => page.evaluate(() => ({failure: globalThis.__webEngineFailure
   visualClock: globalThis.__webVisualTestClock || null,
   memory: globalThis.__webTextureStreaming, camera: globalThis.__webDefaultCamera}));
 async function advance(count) {
+  trace(`advance ${count}: reading state`);
   const before = await state();
+  trace(`advance ${count}: frame ${before.frames}`);
   await page.waitForFunction(target => globalThis.__webEngineFailure ||
     (globalThis.__webEngineFrames || 0) >= target, before.frames + count, {timeout: 90000});
   const value = await state();
+  trace(`advance ${count}: reached ${value.frames}`);
   assert(!value.failure, value.failure);
   return value;
 }
@@ -105,9 +120,10 @@ async function capture(name) {
       viewport: {width, height},
       args: ['--enable-unsafe-webgpu', '--disable-background-timer-throttling', '--disable-renderer-backgrounding']});
     page = context.pages()[0] || await context.newPage();
-    page.on('pageerror', error => report.errors.push(error.message));
+    page.on('pageerror', error => {report.errors.push(error.message); trace(error.stack || error.message);});
     page.on('console', message => {
       const text = message.text();
+      trace(text);
       report.logs.push(text);
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(text))
         report.errors.push(text);
@@ -135,10 +151,12 @@ async function capture(name) {
       const response = await route.fetch();
       await route.fulfill({response, body: `
         globalThis.__webDistanceFieldsGPU = {textures: {}, compute: {}, raster: {}, errors: [], losses: [],
-          historyBindings: 0, historyVelocityBindings: 0, ssrDraws: 0, ssaoDraws: 0};
+          historyBindings: 0, historyVelocityBindings: 0, ssrDraws: 0, ssaoDraws: 0,
+          cubeShadowDraws: 0, cubeShadowCopies: {}};
         const dfPipelines = new WeakMap(), dfPasses = new WeakMap(), dfViews = new WeakMap();
         const dfSSRModules = new WeakSet(), dfSSREntries = new Set();
         const dfSSAOModules = new WeakSet(), dfSSAOEntries = new Set();
+        const dfCubeShadowModules = new WeakSet(), dfCubeShadowEntries = new Set();
         {
           globalThis.__dfShaderSources = {};
           globalThis.__dfShaderOverrides = [];
@@ -160,6 +178,7 @@ async function capture(name) {
             const module = dfModule.call(this, descriptor);
             if (descriptor.code.includes('SSRParams')) dfSSRModules.add(module);
             if (descriptor.code.includes('ScreenSpaceAOParams')) dfSSAOModules.add(module);
+            if (descriptor.code.includes('PointLightDepthBias')) dfCubeShadowModules.add(module);
             return module;
           };
         }
@@ -229,6 +248,8 @@ async function capture(name) {
               dfSSREntries.add(descriptor.fragment.entryPoint);
             if (descriptor.fragment && dfSSAOModules.has(descriptor.fragment.module))
               dfSSAOEntries.add(descriptor.fragment.entryPoint);
+            if (descriptor.fragment && dfCubeShadowModules.has(descriptor.fragment.module))
+              dfCubeShadowEntries.add(descriptor.fragment.entryPoint);
             return pipeline;
           };
         }
@@ -248,18 +269,28 @@ async function capture(name) {
               if (entry) counts[entry] = (counts[entry] || 0) + 1;
               if (category === 'raster' && dfSSREntries.has(entry)) ++__webDistanceFieldsGPU.ssrDraws;
               if (category === 'raster' && dfSSAOEntries.has(entry)) ++__webDistanceFieldsGPU.ssaoDraws;
+              if (category === 'raster' && dfCubeShadowEntries.has(entry)) ++__webDistanceFieldsGPU.cubeShadowDraws;
               return original.apply(this, args);
             };
           }
         }
         const dfTexture = GPUDevice.prototype.createTexture;
         GPUDevice.prototype.createTexture = function(descriptor) {
-          if (/DistanceField|GlobalDistance|BentNormal|SceneVelocity|SSR|ScreenSpaceReflections|ScreenSpaceAO|GGX\\.LTC|Sheen\\.LTC/.test(descriptor.label || ''))
+          if (/DistanceField|GlobalDistance|BentNormal|SceneVelocity|SSR|ScreenSpaceReflections|ScreenSpaceAO|GGX\\.LTC|Sheen\\.LTC|CubeShadow|WebCubeShadow/.test(descriptor.label || ''))
             __webDistanceFieldsGPU.textures[descriptor.label] = {
               size: descriptor.size, format: descriptor.format, dimension: descriptor.dimension,
               mipLevelCount: descriptor.mipLevelCount
             };
           return dfTexture.call(this, descriptor);
+        };
+        const dfCopyTexture = GPUCommandEncoder.prototype.copyTextureToTexture;
+        GPUCommandEncoder.prototype.copyTextureToTexture = function(source, destination, size) {
+          if (source.texture.label === 'WebCubeShadowFace' && destination.texture.label === 'CubeShadowDepthZ') {
+            const face = destination.origin?.z ?? destination.origin?.[2] ?? 0;
+            const counts = __webDistanceFieldsGPU.cubeShadowCopies;
+            counts[face] = (counts[face] || 0) + 1;
+          }
+          return dfCopyTexture.call(this, source, destination, size);
         };
         const dfView = GPUTexture.prototype.createView;
         GPUTexture.prototype.createView = function(...args) {
@@ -287,6 +318,7 @@ async function capture(name) {
         `arguments: [${args.map(value => JSON.stringify(value)).join(',')},`)});
     });
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
+    trace('navigation committed');
     report.startup = await advance(90);
     if (rendererSettingsFile) {
       assert(report.rendererSettings.runtimeConfig, 'Diagnostic renderer configuration must be fetched');
@@ -307,6 +339,7 @@ async function capture(name) {
       for (const entry of cases) {
         assert(/^[a-z0-9-]+$/.test(entry.name));
         if (entry.camera) {
+          trace(`case ${entry.name}: setting camera`);
           assert.equal(entry.camera.length, 5);
           assert.equal(await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), entry.camera), 1);
           await advance(30);
@@ -317,6 +350,7 @@ async function capture(name) {
           assert.equal(await page.evaluate(values => __webEngineRPC('WebLightingQualityTest', ...values), control), 1);
         const valueBeforeSSR = (await state()).gpu.ssrDraws;
         const valueBeforeSSAO = (await state()).gpu.ssaoDraws;
+        const valueBeforeCubeShadow = (await state()).gpu.cubeShadowDraws;
         await advance(entry.frames || 180);
         assert.equal(await page.evaluate(() => __webEngineRPC('WebLightingQualityTest', -1, 0)), 1);
         await advance(2);
@@ -329,6 +363,12 @@ async function capture(name) {
         }
         if (entry.requireSSAO)
           assert(current.gpu.ssaoDraws > valueBeforeSSAO, 'SSAO must draw during this case');
+        if (entry.requireCubeShadows) {
+          assert(current.gpu.cubeShadowDraws > valueBeforeCubeShadow,
+            'Point/rect cubemap shadows must project during this case');
+          for (let face = 0; face < 6; ++face)
+            assert(current.gpu.cubeShadowCopies[face] > 0, `Cubemap shadow face ${face} must be rendered and copied`);
+        }
         if (entry.requireLTC)
           for (const [name, format, size] of [['GGX.LTCMat', 'rgba16float', 64],
             ['GGX.LTCAmp', 'rg16float', 64], ['Sheen.LTC', 'rgba16float', 32]]) {
@@ -358,6 +398,7 @@ async function capture(name) {
         }
         report.cases.push({entry, state: current, regions,
           ssrDraws: current.gpu.ssrDraws - valueBeforeSSR,
+          cubeShadowDraws: current.gpu.cubeShadowDraws - valueBeforeCubeShadow,
           ssaoDraws: current.gpu.ssaoDraws - valueBeforeSSAO});
         console.log(JSON.stringify({case: entry.name, lighting: current.lighting, regions}));
         for (const [name, limits] of Object.entries(entry.regionLimits || {})) {
@@ -491,6 +532,8 @@ async function capture(name) {
       }
     }
     await context?.close();
+    clearTimeout(deadline);
+    report.liveLog = audit(liveFile);
     const file = path.join(directory, `web-distance-field-${folder}-${channel}-${tag}-results.json`);
     fs.writeFileSync(file, JSON.stringify(report, null, 2));
     console.log(JSON.stringify({pass: report.pass, report: file, final: report.final,

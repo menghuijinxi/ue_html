@@ -646,7 +646,7 @@ void FWebGPUDynamicRHI::Init()
     auto& ShadowFormat = GPixelFormats[PF_ShadowDepth];
     ShadowFormat.Supported = true;
     ShadowFormat.PlatformFormat = WGPUTextureFormat_Depth32Float;
-    ShadowFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::DepthStencil |
+    ShadowFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::TextureCube | EPixelFormatCapabilities::DepthStencil |
         EPixelFormatCapabilities::TextureLoad | EPixelFormatCapabilities::TextureSample;
     Queue = wgpuDeviceGetQueue(Device);
     const TCHAR* Filters[] = {TEXT("Point"), TEXT("Bilinear"), TEXT("Trilinear")};
@@ -981,8 +981,9 @@ WGPUSampler FWebGPUDynamicRHI::ResolveSampler(FWebGPUSampler *Sampler)
     if (Sampler->Handle)
         return Sampler->Handle;
     const auto &In = Sampler->Initializer;
-    checkf(In.Filter <= SF_AnisotropicLinear && In.MipBias == 0 && In.SamplerComparisonFunction == SCF_Never,
-           TEXT("WebGPU sampler requires a regular filter without mip bias or comparison"));
+    checkf(In.Filter <= SF_AnisotropicLinear && In.MipBias == 0 &&
+               (In.SamplerComparisonFunction == SCF_Never || In.SamplerComparisonFunction == SCF_Less),
+           TEXT("WebGPU sampler requires a supported filter without mip bias"));
     const auto Address = [](ESamplerAddressMode Mode) {
         check(Mode == AM_Wrap || Mode == AM_Clamp || Mode == AM_Mirror);
         return Mode == AM_Wrap     ? WGPUAddressMode_Repeat
@@ -1000,6 +1001,8 @@ WGPUSampler FWebGPUDynamicRHI::ResolveSampler(FWebGPUSampler *Sampler)
     Desc.maxAnisotropy = Anisotropic ? FMath::Clamp(ComputeAnisotropyRT(In.MaxAnisotropy), 1, 16) : 1;
     Desc.lodMinClamp = In.MinMipLevel;
     Desc.lodMaxClamp = In.MaxMipLevel;
+    if (In.SamplerComparisonFunction == SCF_Less)
+        Desc.compare = WGPUCompareFunction_Less;
     Sampler->Handle = wgpuDeviceCreateSampler(Device, &Desc);
     check(Sampler->Handle);
     return Sampler->Handle;
@@ -1138,7 +1141,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
                               : IsSampled2DTextureFormat(In.Format);
     const uint32 Limit = Volume ? Limits.maxTextureDimension3D : Limits.maxTextureDimension2D;
     if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube && !Array) ||
-        (Cube && (In.Extent.X != In.Extent.Y || !Color)) ||
+        (Cube && (In.Extent.X != In.Extent.Y || (!Color && (CubeArray || In.Format != PF_ShadowDepth)))) ||
         ((Array || CubeArray) ? !In.ArraySize ||
             uint32(In.ArraySize) * (Cube ? 6u : 1u) > Limits.maxTextureArrayLayers : In.ArraySize != 1) || !In.Depth ||
         (!Volume && In.Depth != 1) || !In.NumMips ||
@@ -1217,6 +1220,8 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
         Desc.usage |= WGPUTextureUsage_CopySrc | WGPUTextureUsage_CopyDst | WGPUTextureUsage_TextureBinding;
     else if (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource))
         Desc.usage |= WGPUTextureUsage_TextureBinding;
+    if (In.Format == PF_ShadowDepth)
+        Desc.usage |= WGPUTextureUsage_CopySrc | WGPUTextureUsage_CopyDst;
     auto *Texture = new FWebGPUTexture(In, wgpuDeviceCreateTexture(Device, &Desc));
     const bool Writable = In.InitAction == ERHITextureInitAction::Initializer;
     if (Writable || In.InitAction == ERHITextureInitAction::BulkData)
@@ -2337,6 +2342,17 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         const auto Binding = Item->AsObject();
         const FString Name = Binding->GetStringField(TEXT("name"));
         const uint32 Group = Binding->GetIntegerField(TEXT("group"));
+        const auto& ReflectedBindings = Shader->Metadata->GetObjectField(TEXT("reflection"))
+            ->GetArrayField(TEXT("entry_points"))[0]->AsObject()->GetArrayField(TEXT("bindings"));
+        const auto* Reflected = ReflectedBindings.FindByPredicate([&](const auto& Value) {
+            const auto WebBinding = Value->AsObject();
+            return WebBinding->GetIntegerField(TEXT("group")) == int32(Group) &&
+                WebBinding->GetIntegerField(TEXT("binding")) == Binding->GetIntegerField(TEXT("binding"));
+        });
+        check(Reflected);
+        const FString ResourceType = (*Reflected)->AsObject()->GetStringField(TEXT("resource_type"));
+        bool ComparisonSampler = false;
+        Binding->TryGetBoolField(TEXT("samplerComparison"), ComparisonSampler);
         GroupCount = FMath::Max(GroupCount, Group + 1);
         auto Entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
         Entry.binding = Binding->GetIntegerField(TEXT("binding"));
@@ -2363,7 +2379,8 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         switch (Binding->GetIntegerField(TEXT("descriptorType")))
         {
         case 0:
-            Entry.sampler.type = Depth || TAAVelocity || Name.Contains(TEXT("Point")) || Name == TEXT("WaterDepthSampler") ?
+            Entry.sampler.type = ComparisonSampler ? WGPUSamplerBindingType_Comparison :
+                Depth || TAAVelocity || Name.Contains(TEXT("Point")) || Name == TEXT("WaterDepthSampler") ?
                 WGPUSamplerBindingType_NonFiltering : WGPUSamplerBindingType_Filtering;
             break;
         case 2:
@@ -2387,7 +2404,8 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
             else
             {
                 const FString Type = Binding->GetStringField(TEXT("textureSampleType"));
-                Entry.texture.sampleType = Type == TEXT("uint") ? WGPUTextureSampleType_Uint :
+                Entry.texture.sampleType = ResourceType == TEXT("DepthTexture") ? WGPUTextureSampleType_Depth :
+                    Type == TEXT("uint") ? WGPUTextureSampleType_Uint :
                     Type == TEXT("sint") ? WGPUTextureSampleType_Sint :
                     Depth || ACESLookup || UnfilterableVelocity ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
                 Entry.texture.viewDimension = ViewDimension;

@@ -227,13 +227,20 @@ bool UE::WebGPUShader::ValidateBindings(const TSharedRef<FJsonObject> &Metadata,
         const int32 Type = Native->GetIntegerField(TEXT("descriptorType"));
         const FString WebType = Web->GetStringField(TEXT("resource_type"));
         const bool Compatible =
-            (Type == 0 && WebType == TEXT("Sampler")) || (Type == 2 && WebType == TEXT("SampledTexture")) ||
+            (Type == 0 && (WebType == TEXT("Sampler") || WebType == TEXT("ComparisonSampler"))) ||
+            (Type == 2 && (WebType == TEXT("SampledTexture") || WebType == TEXT("DepthTexture"))) ||
             (Type == 3 && (WebType == TEXT("ReadWriteStorageTexture") || WebType == TEXT("WriteOnlyStorageTexture"))) ||
             (Type == 6 && WebType == TEXT("UniformBuffer")) ||
             (Type == 7 && (WebType == TEXT("StorageBuffer") || WebType == TEXT("ReadOnlyStorageBuffer")));
         if (!Compatible)
             return Fail(TEXT("descriptor type changed"));
-        if (Type == 2)
+        if (Type == 2 && WebType == TEXT("DepthTexture"))
+        {
+            // DXC uses OpTypeImage Depth=2 (unknown); Tint resolves Dref uses.
+            if (Native->GetIntegerField(TEXT("textureDepth")) == 0)
+                return Fail(TEXT("comparison texture must retain its SPIR-V depth type"));
+        }
+        if (Type == 2 && WebType != TEXT("DepthTexture"))
         {
             const FString SampleType = Native->GetStringField(TEXT("textureSampleType"));
             const FString WebSampleType = Web->GetStringField(TEXT("sampled_kind"));
@@ -629,6 +636,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
                 Json->SetNumberField(TEXT("textureDimension"), Binding->image.dim);
                 Json->SetBoolField(TEXT("textureArrayed"), Binding->image.arrayed != 0);
                 Json->SetBoolField(TEXT("textureMultisampled"), Binding->image.ms != 0);
+                Json->SetNumberField(TEXT("textureDepth"), Binding->image.depth);
                 if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
                 {
                     Json->SetNumberField(TEXT("storageImageFormat"), Binding->image.image_format);
@@ -809,6 +817,26 @@ class FWebGPUShaderFormat final : public IShaderFormat
             return false;
         }
         Metadata->SetObjectField(TEXT("reflection"), WebReflection);
+        // tint_info omits sampler_type. Read comparison declarations from Tint's
+        // canonical WGSL, keyed by descriptor location rather than resource name.
+        FRegexMatcher ComparisonSampler(FRegexPattern(
+            TEXT("@group\\(([0-9]+)u?\\)\\s+@binding\\(([0-9]+)u?\\)\\s+var\\s+[A-Za-z_][A-Za-z0-9_]*\\s*:\\s*sampler_comparison\\s*;")), Wgsl);
+        TSet<uint64> ComparisonBindings;
+        while (ComparisonSampler.FindNext())
+        {
+            ComparisonBindings.Add((uint64(FCString::Atoi(*ComparisonSampler.GetCaptureGroup(1))) << 32) |
+                uint32(FCString::Atoi(*ComparisonSampler.GetCaptureGroup(2))));
+        }
+        for (const auto& Value : Metadata->GetArrayField(TEXT("spirvBindings")))
+        {
+            const auto Binding = Value->AsObject();
+            if (Binding->GetIntegerField(TEXT("descriptorType")) == 0)
+            {
+                const uint64 Location = (uint64(Binding->GetIntegerField(TEXT("group"))) << 32) |
+                    uint32(Binding->GetIntegerField(TEXT("binding")));
+                Binding->SetBoolField(TEXT("samplerComparison"), ComparisonBindings.Contains(Location));
+            }
+        }
         if (!UE::WebGPUShader::ValidateBindings(Metadata, WebReflection, Error))
             return false;
         Metadata->SetBoolField(TEXT("bindingContractVerified"), true);

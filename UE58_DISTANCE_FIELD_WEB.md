@@ -107,7 +107,7 @@ Cook 必须显式传入 `-DistanceFields`，打包必须显式传入 `--distance
 
 ## 入口
 
-别墅当前配置、已恢复的历史项、代码特性排除及缝隙阴影单项对照，完整清单见 `UE58_VILLA_RENDERING_OVERRIDES.md`。接触阴影配置现为 1，但其画面贡献尚未恢复；点光源和矩形灯立方体阴影仍被 Web 分支跳过。
+别墅当前配置、已恢复的历史项、代码特性排除及缝隙阴影单项对照，完整清单见 `UE58_VILLA_RENDERING_OVERRIDES.md`。点光源和矩形灯立方体阴影已通过 Web SM5 六遍深度绘制恢复，详见 `UE58_WEB_CUBE_SHADOWS.md`。门把手和花盆投影的开关对照、三机位回归均通过；接触阴影配置现为 1，但其最终贡献、AO 合成与墙脚完整桌面对齐仍待单独验收。
 
 服务根目录为 `tests/web-platform`，端口 8765：
 

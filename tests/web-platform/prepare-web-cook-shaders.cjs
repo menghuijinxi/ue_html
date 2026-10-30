@@ -8,6 +8,38 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/ShadowProjectionCommon.ush', [{
+    before: '\t\tfloat3 SideVector = normalize(cross(NormalizedLightVector, float3(0, 0, 1)));',
+    after: [
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t\t// Keep the PCF basis finite when looking along the cube\'s vertical axis.',
+      '\t\tfloat3 SideVector = normalize(cross(NormalizedLightVector,',
+      '\t\t\tabs(NormalizedLightVector.z) < 0.999f ? float3(0, 0, 1) : float3(0, 1, 0)));',
+      '#else', '\t\tfloat3 SideVector = normalize(cross(NormalizedLightVector, float3(0, 0, 1)));',
+      '#endif',
+    ].join('\n'),
+  }]],
+  ['Private/ShadowDepthCommon.ush', [{
+    before: '#if SUPPORT_SHADOW_DEPTH_POINT\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
+    after: '#if SUPPORT_SHADOW_DEPTH_POINT && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
+  }]],
+  ['Private/ShadowDepthVertexShader.usf', ['VFIntermediates', 'Input'].map((input, index) => ({
+    before: [
+      '\tif (PassStruct.ShadowDepthType == SHADOW_DEPTH_TYPE_ONEPASSPOINT)', '\t{',
+      `\t\tOutParameters.LayerIndex = bUseGpuSceneInstancing ? VertexFactoryGetViewIndex(${input}) : LayerId;`,
+      '\t\tOutPosition = mul(WorldPos, PassStruct.ShadowViewProjectionMatrices[OutParameters.LayerIndex]);',
+      '\t}', '\telse', '\t{', '\t\tOutParameters.LayerIndex = 0;', index ? '\t}\t' : '\t}',
+    ].join('\n'),
+    after: [
+      '\tif (PassStruct.ShadowDepthType == SHADOW_DEPTH_TYPE_ONEPASSPOINT)', '\t{',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t\tOutPosition = mul(WorldPos, PassStruct.ProjectionMatrix);', '#else',
+      `\t\tOutParameters.LayerIndex = bUseGpuSceneInstancing ? VertexFactoryGetViewIndex(${input}) : LayerId;`,
+      '\t\tOutPosition = mul(WorldPos, PassStruct.ShadowViewProjectionMatrices[OutParameters.LayerIndex]);',
+      '#endif', '\t}', '#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)',
+      '\telse', '\t{', '\t\tOutParameters.LayerIndex = 0;', '\t}', '#endif',
+    ].join('\n'),
+  }))],
   ['Private/MaterialTemplate.ush', [{
     before: '#if COMPILER_DXC && (COMPILER_VULKAN || COMPILER_GLSL_ES3_1) && (!RAYHITGROUPSHADER) && (!IS_NANITE_PASS)',
     after: ['// WebGPU keeps D3D front-face semantics when using the Vulkan compiler.',

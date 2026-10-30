@@ -25,6 +25,8 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
         if (Texture->GetFormat() == PF_DepthStencil || Texture->GetFormat() == PF_ShadowDepth)
         {
             const ERHIAccess Allowed = ERHIAccess::DSVRead | ERHIAccess::DSVWrite |
+                (Texture->GetFormat() == PF_ShadowDepth ? ERHIAccess::CopySrc | ERHIAccess::CopyDest
+                                                       : ERHIAccess::Unknown) |
                 (EnumHasAnyFlags(Texture->GetFlags(), ETextureCreateFlags::ShaderResource) ? ERHIAccess::SRVMask
                                                                                         : ERHIAccess::Unknown);
             return !EnumHasAnyFlags(Access, ~Allowed) &&

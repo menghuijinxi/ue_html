@@ -1,0 +1,18 @@
+[
+  {
+    "name": "foyer",
+    "camera": [-730, -255, 155, -20, 110],
+    "ev100": -1,
+    "frames": 180,
+    "requireDFAO": true,
+    "requireSSAO": true,
+    "requireSSR": true,
+    "requireLTC": true,
+    "requireCubeShadows": true,
+    "expect": {"antiAliasing": 2, "reflectionMethod": 2},
+    "regions": {
+      "door-wall": [0.43, 0.25, 0.04, 0.5],
+      "wall-floor": [0.43, 0.88, 0.1, 0.07]
+    }
+  }
+]

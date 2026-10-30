@@ -13,7 +13,7 @@
 - 该入口没有使用 `TriplexHouseVillaDesktopEngine.ini`、移动配置或参考源码中的最小 `WebEngine.ini`。这些旧配置仍有不同值，不能据此判断当前页面。
 - 当前打包报告为 `tests/web-platform/results/web-project-triplex-house-villa-df-distance-fields-threads-package-results.json`。报告及构建产物位于 Git 忽略目录。
 
-本轮只恢复当前别墅配置的 `r.ContactShadows=1`，没有修改资产、后处理体积、灯光组件或安装目录 `H:/UE_5.8`。
+上轮恢复当前别墅配置的 `r.ContactShadows=1`。本轮补齐 Web SM5 点光源/矩形灯的六面阴影生成与原有 PCF 投影，保持 SSR、TAA、AO 和灯光参数不变。实现、最终验证及边界见 [UE58_WEB_CUBE_SHADOWS.md](UE58_WEB_CUBE_SHADOWS.md)。没有修改资产、后处理体积、灯光组件或安装目录 `H:/UE_5.8`。
 
 ## 当前配置完整表
 
@@ -50,7 +50,7 @@
 | `r.VolumetricCloud.Support` | 0 | 关闭体积云 |
 | `r.SupportLocalFogVolumes` | 0 | 关闭局部雾体积 |
 | `r.VolumetricFog` | 0 | 关闭体积雾；普通高度雾不是同一个开关 |
-| `r.ContactShadows` | 1 | **本轮由 0 恢复为 1**；像素差异未随该开关恢复，不能宣称链路已修复 |
+| `r.ContactShadows` | 1 | 上轮由 0 恢复为 1；本轮未单独验证其最终贡献，不能宣称链路已修复 |
 | `r.AllowStaticLighting` | 0 | 关闭静态光照支持，烘焙光照/相关阴影不能作为已对齐项 |
 | `r.VirtualTextures` | 0 | 关闭虚拟纹理 |
 | `r.GenerateMeshDistanceFields` | 1 | 基础配置为 0，`-DistanceFields` 的实际 Cook/运行配置覆盖为 1 |
@@ -67,13 +67,13 @@
 
 ### 与当前画面关系较大的项
 
-1. **点光源和矩形灯的立方体阴影被直接跳过。**
-   `RenderCore/Public/WebShaderPlatform.h` 的 `SupportsOnePassPointLightShadows()` 对 Web 返回 false；
-   `Renderer/Private/ShadowSetup.cpp` 在 whole-scene initializer 为 `bOnePassPointLightShadow` 时直接返回。
-   这不是自动转为六遍绘制的优化降级。投影和立方体阴影复制着色器也被排除。
+1. **点光源和矩形灯的立方体阴影已在本轮恢复。**
+   此前 `RenderCore/Public/WebShaderPlatform.h` 与 `Renderer/Private/ShadowSetup.cpp` 直接排除此类阴影，并未自动转为六遍绘制。
+   现在 `SupportsPointLightShadows()` 包含 Web SM5 六遍路径；`SupportsOnePassPointLightShadows()` 仍对 Web 返回 false，表示不使用分层输出。
+   复用 UE 原有灯光矩阵、材质透明裁剪、静态阴影缓存和 PCF 投影，通过独立二维深度面复制生成立方体。
    `Engine/Private/RectLightSceneProxy.cpp` 的桌面矩形灯同样设置该标志。
    本场景有 4 个点光源和 9 个矩形灯，其中 1 个点光源、5 个矩形灯启用了 CastShadows。
-   LTC 恢复了矩形灯的光照/高光查表，不能恢复这里缺失的阴影。
+   LTC 提供光照/高光查表；本轮独立补齐了此前缺失的阴影。门把手与花盆投影已实际恢复，墙脚仍未达到完整桌面对齐。
 2. 胶囊阴影被 `SupportsCapsuleShadows()` 排除。
 3. 运动模糊、半透明光照体积注入、局部雾和体积雾除配置关闭外，相关着色器/运行路径也被局部排除。
 4. Web 的体积云只保留有限像素变体，云阴影/AO 等多个变体不编译；当前别墅配置整体关闭体积云。
@@ -143,7 +143,7 @@ bSupports4ComponentUAVReadWrite=false
 
 `UEWebEngine.cpp` 构造固定启动参数，包含 `-nosound`、`-norhithread`，当前不启用渲染线程。Target 禁用了 FreeType、Recast/导航网格链接和开发工具；Slate/UMG 依赖保留。准备项目会设置 `DisableEnginePluginsByDefault=true`，只启用明确列出的插件。它们不解释本次墙脚阴影，但属于当前移植与原项目运行环境的差异。
 
-## 本轮单项对照
+## 补齐阴影前的单项对照
 
 同机位 1280×720、FOV 90、TAA、SSR、手动 EV100=-1，保持正常渲染时间：
 
@@ -154,7 +154,7 @@ bSupports4ComponentUAVReadWrite=false
 - 网页 `contact-audit-no-ssao-verified`：只覆盖 `r.AmbientOcclusionLevels=0`；全图平均绝对 RGB 差为 0.12559/255，说明原网页 SSAO 对最终像素有贡献。这个全图均值不能证明用户圈出的细缝已正确合成。
 - 原生关 DFAO 后视图大幅变亮，进一步证明 DFAO 是当前场景的主要天空光遮蔽来源之一。
 
-已确认的缺项是接触阴影默认关闭，以及点/矩形灯立方体阴影被排除。当前证据不能把截图全部差异归到 AO，也不能把接触阴影配置恢复称为完整修复。静态光照关闭也是对照差异，但截图有未构建光照警告，不能仅凭配置推断缺失了多少有效烘焙贡献。
+当时确认的缺项是接触阴影默认关闭，以及点/矩形灯立方体阴影被排除。现已恢复接触阴影配置并实现局部灯立方体阴影，仍不能把截图全部差异归到 AO，也不能把接触阴影配置恢复称为完整修复。静态光照关闭也是对照差异，但截图有未构建光照警告，不能仅凭配置推断缺失了多少有效烘焙贡献。
 
 初次 `contact-audit-on` / `contact-audit-no-ssao` 使用 HTML `--engine-args` 注入 `-ini:`，但启动器不转发任意 UE 参数，日志证明值未变化。这两组是**无效开关对照**，不能用于判断画面根因。测试脚本现明确拒绝 `-ini:`，应改用 `--renderer-settings=<JSON>`。这类诊断拦截不会修改发布包，报告标记其不能验收正式默认设置。
 
@@ -179,7 +179,7 @@ bSupports4ComponentUAVReadWrite=false
 | `ssao-audit-negative` | 诊断配置关闭 SSAO 后，绘制计数为 0，按预期在 `SSAO must draw during this case` 失败 |
 | 无效 `-ini:` 参数负例 | 在启动浏览器前拒绝，提示改用 `--renderer-settings` |
 
-正式包两次启动日志均记录 `Set CVar [[r.ContactShadows:1]]`。这些结果验证默认配置恢复和现有路径未回归；**没有验证墙缝阴影已达到桌面效果**。本轮没有改动参考引擎代码。
+该轮正式包两次启动日志均记录 `Set CVar [[r.ContactShadows:1]]`。这些结果验证默认配置恢复和现有路径未回归；**没有验证墙缝阴影已达到桌面效果**。该轮没有改动参考引擎代码；后续立方体阴影实现则同时修改了参考引擎和 RHI。
 
 ## 复测
 
@@ -193,4 +193,4 @@ node tests/web-platform/probe-web-distance-fields.cjs --edge `
   --cases=tests/web-platform/villa-lighting-quality-cases.json --tag=lighting-audit-shipped
 ```
 
-后续应优先补齐当前局部灯阴影路径，并检查接触阴影在已跳过的灯光阴影投影链路中的执行条件；随后在相同设置下逐项验收静态光照与 AO 合成。恢复单个配置值、无 GPU 报错、SSR/TAA 通过，都不能替代这些验收。
+局部灯阴影现已补齐，六面复制和实际投影计数、开关像素对照及三机位回归均通过，详见 `UE58_WEB_CUBE_SHADOWS.md`。下一步应检查接触阴影和 AO 合成，以及静态光照的实际贡献。恢复单个配置值、无 GPU 报错、SSR/TAA 通过，都不能替代这些验收。
