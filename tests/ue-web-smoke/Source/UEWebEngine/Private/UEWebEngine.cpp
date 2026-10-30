@@ -14,6 +14,8 @@
 #include "Serialization/MemoryLayout.h"
 #include "FileCache/FileCache.h"
 #include "Misc/FileHelper.h"
+#include "Misc/PackageName.h"
+#include "Misc/Paths.h"
 #include "HAL/PlatformFileManager.h"
 #include "SkeletalRenderPublic.h"
 #include "WebGPUBrowser.h"
@@ -178,6 +180,24 @@ void EngineFrame(void*)
     }, Frames, emscripten_get_now() - TickStart);
     if (Frames % 30 == 0)
     {
+        const auto Setting = [](const TCHAR* Name) {
+            const auto* Value = IConsoleManager::Get().FindConsoleVariable(Name);
+            return Value ? Value->GetFloat() : -1.0f;
+        };
+        EM_ASM({
+            globalThis.__webProjectSettings = ({
+                antiAliasing: $0, generateDistanceFields: $1, distanceFieldAO: $2,
+                distanceFieldShadows: $3, gi: $4, reflections: $5, virtualShadows: $6,
+                texturePoolMiB: $7, screenPercentage: $8, staticLighting: $9,
+                shadowCacheMiB: $10, dbuffer: $11, ssrQuality: $12, volumetricFog: $13
+            });
+        }, Setting(TEXT("r.AntiAliasingMethod")), Setting(TEXT("r.GenerateMeshDistanceFields")),
+            Setting(TEXT("r.DistanceFieldAO")), Setting(TEXT("r.DistanceFieldShadowing")),
+            Setting(TEXT("r.DynamicGlobalIlluminationMethod")), Setting(TEXT("r.ReflectionMethod")),
+            Setting(TEXT("r.Shadow.Virtual.Enable")), Setting(TEXT("r.Streaming.PoolSize")),
+            Setting(TEXT("r.ScreenPercentage")), Setting(TEXT("r.AllowStaticLighting")),
+            Setting(TEXT("r.Shadow.WholeSceneShadowCacheMb")), Setting(TEXT("r.DBuffer")),
+            Setting(TEXT("r.SSR.Quality")), Setting(TEXT("r.VolumetricFog")));
         FTextureMemoryStats Memory;
         RHIGetTextureMemoryStats(Memory);
         int32 Streamable = 0, Pending = 0, ResidentMips = 0, RequestedMips = 0, MaximumMips = 0;
@@ -941,6 +961,17 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultFogTestMode(int Mode)
 int32 StartEngine()
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
+    FDelayedAutoRegisterHelper(EDelayedRegisterRunPhase::PreObjectSystemReady, [] {
+        TArray<FString> PluginContentPaths;
+        FFileHelper::LoadFileToStringArray(PluginContentPaths,
+            TEXT("/Engine/Programs/UEWebEngine/Config/WebContentMounts.txt"));
+        for (const FString& ContentPath : PluginContentPaths)
+        {
+            check(ContentPath.StartsWith(TEXT("/Engine/Plugins/")) && ContentPath.EndsWith(TEXT("/Content/")));
+            const FString PluginName = FPaths::GetCleanFilename(FPaths::GetPath(ContentPath.LeftChop(1)));
+            (void)FPackageName::RegisterMountPoint(TEXT("/") + PluginName + TEXT("/"), ContentPath);
+        }
+    });
     FWorldDelegates::OnPostWorldInitialization.AddLambda(
         [](UWorld* World, const UWorld::InitializationValues) {
             if (World->GetPackage()->GetName() == StartupMap())
@@ -967,6 +998,7 @@ int32 StartEngine()
         std::printf("P3_ENGINE_PREINIT_FAILED %d\n", PreInitResult);
         return PreInitResult;
     }
+    FModuleManager::LoadModuleChecked<IModuleInterface>(TEXT("EnhancedInput"));
     const int32 InitResult = GEngineLoop.Init();
     if (InitResult != 0)
     {

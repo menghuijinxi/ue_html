@@ -228,24 +228,29 @@ bool UE::WebGPUShader::ValidateBindings(const TSharedRef<FJsonObject> &Metadata,
         const FString WebType = Web->GetStringField(TEXT("resource_type"));
         const bool Compatible =
             (Type == 0 && (WebType == TEXT("Sampler") || WebType == TEXT("ComparisonSampler"))) ||
-            (Type == 2 && (WebType == TEXT("SampledTexture") || WebType == TEXT("DepthTexture"))) ||
+            (Type == 2 && (WebType == TEXT("SampledTexture") || WebType == TEXT("DepthTexture") ||
+                WebType == TEXT("MultisampledTexture") || WebType == TEXT("DepthMultisampledTexture"))) ||
             (Type == 3 && (WebType == TEXT("ReadWriteStorageTexture") || WebType == TEXT("WriteOnlyStorageTexture"))) ||
             (Type == 6 && WebType == TEXT("UniformBuffer")) ||
             (Type == 7 && (WebType == TEXT("StorageBuffer") || WebType == TEXT("ReadOnlyStorageBuffer")));
         if (!Compatible)
             return Fail(TEXT("descriptor type changed"));
-        if (Type == 2 && WebType == TEXT("DepthTexture"))
+        if (Type == 2 && Native->GetBoolField(TEXT("textureMultisampled")) !=
+            (WebType == TEXT("MultisampledTexture") || WebType == TEXT("DepthMultisampledTexture")))
+            return Fail(TEXT("texture sample count changed"));
+        if (Type == 2 && (WebType == TEXT("DepthTexture") || WebType == TEXT("DepthMultisampledTexture")))
         {
             // DXC uses OpTypeImage Depth=2 (unknown); Tint resolves Dref uses.
             if (Native->GetIntegerField(TEXT("textureDepth")) == 0)
                 return Fail(TEXT("comparison texture must retain its SPIR-V depth type"));
         }
-        if (Type == 2 && WebType != TEXT("DepthTexture"))
+        if (Type == 2 && WebType != TEXT("DepthTexture") && WebType != TEXT("DepthMultisampledTexture"))
         {
             const FString SampleType = Native->GetStringField(TEXT("textureSampleType"));
             const FString WebSampleType = Web->GetStringField(TEXT("sampled_kind"));
             if (!((SampleType == TEXT("float") &&
-                   (WebSampleType == TEXT("Float") || WebSampleType == TEXT("unknown-filterable"))) ||
+                   (WebSampleType == TEXT("Float") || WebSampleType == TEXT("unknown-filterable") ||
+                    (Native->GetBoolField(TEXT("textureMultisampled")) && WebSampleType == TEXT("Unfilterable")))) ||
                   (SampleType == TEXT("uint") && WebSampleType == TEXT("Uint")) ||
                   (SampleType == TEXT("sint") && WebSampleType == TEXT("Sint"))))
                 return Fail(TEXT("sampled texture scalar type changed"));
@@ -342,7 +347,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling24_Tint20261009.190412_Uncompressed1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -367,6 +372,22 @@ class FWebGPUShaderFormat final : public IShaderFormat
         {
             // View's installed native metadata declares a texel buffer; Web uses a float4 storage array.
             FString Source(Output.GetSourceView());
+            if (Source.Contains(TEXT("FWaterVertexFactoryInstanceInput")))
+            {
+                // Keep the water mesh's rejected vertices as NaNs, but construct the payload
+                // from instance data at runtime: WGSL rejects non-finite module constants.
+                Source.ReplaceInline(TEXT("InPosition = asfloat(0xFFFFFFFF).xxxx;"),
+                    TEXT("InPosition = asfloat(0x7FC00000u | (InData0 & 0x003FFFFFu)).xxxx;"));
+                Output.EditSource() = FAnsiString(Source);
+            }
+            if (Input.VirtualSourceFilePath == TEXT("/Plugin/Water/Private/WaterQuadTreeDraws.usf"))
+            {
+                // WGSL cannot represent a NaN constant. Keep rejected occlusion boxes clipped
+                // by placing every vertex outside the clip volume with finite coordinates.
+                Source.ReplaceInline(TEXT("OutPosition = asfloat(0xFFFFFFFF).xxxx;"),
+                    TEXT("OutPosition = float4(2.0f, 2.0f, 2.0f, 1.0f);"));
+                Output.EditSource() = FAnsiString(Source);
+            }
             const FRegexPattern Declaration(
                 TEXT("\\bBuffer<float4>\\s+View_MobileDistantSkyLightLutBufferSRV\\s*;"));
             FRegexMatcher Match(Declaration, Source);

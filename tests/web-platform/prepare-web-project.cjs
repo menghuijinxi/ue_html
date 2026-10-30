@@ -7,6 +7,9 @@ const source = path.resolve(argument('project') || 'H:/TriplexHouseVilla/Triplex
 const id = argument('id') || 'triplex-house-villa';
 const textureSize = Number(argument('texture-size') || 0);
 const inputProfile = argument('input-profile');
+const useProjectSettings = process.argv.includes('--project-settings');
+assert(!useProjectSettings || (!textureSize && !inputProfile),
+  'Project settings cannot be combined with texture or input overrides');
 assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 assert([0, 256, 512, 1024, 2048].includes(textureSize));
 const root = path.resolve(__dirname, '../..');
@@ -46,7 +49,7 @@ try {
     {Name: 'UEShaderHost', Type: 'Editor', LoadingPhase: 'Default'}];
   descriptor.Plugins = [...(descriptor.Plugins || []).filter(plugin => plugin.Name !== 'WebGPUShader'),
     {Name: 'WebGPUShader', Enabled: true}];
-  descriptor.DisableEnginePluginsByDefault = true;
+  if (!useProjectSettings) descriptor.DisableEnginePluginsByDefault = true;
   descriptor.AdditionalPluginDirectories = [...(descriptor.AdditionalPluginDirectories || [])
     .map(value => path.resolve(path.dirname(source), value)), path.join(host, 'Plugins')];
   fs.writeFileSync(output, JSON.stringify(descriptor, null, 2) + '\n');
@@ -83,7 +86,9 @@ try {
   if (!fs.existsSync(binaries)) fs.symlinkSync(path.join(host, 'Binaries'), binaries, 'junction');
   assert.equal(fs.realpathSync(binaries), fs.realpathSync(path.join(host, 'Binaries')));
   report.descriptor = audit(output);
-  report.pluginPolicy = 'Engine plugins require explicit enablement, matching the current Web runner.';
+  report.useProjectSettings = useProjectSettings;
+  report.pluginPolicy = useProjectSettings ? 'Preserve project plugin defaults; add the Cook host plugin.' :
+    'Engine plugins require explicit enablement, matching the current Web runner.';
   report.textureMaxLODSize = textureSize || null;
   report.originalProjectUnmodified = report.sourceFiles.every(item => audit(item.file).sha256 === item.sha256);
   assert(report.originalProjectUnmodified);

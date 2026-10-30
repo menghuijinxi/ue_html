@@ -634,7 +634,7 @@ var Module = {
       startupStage('content-mounting');
       globalThis.__webEngineContentFiles = [];
       for (const file of manifest.files) {
-        if ((!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/)/.test(file.path) &&
+        if ((!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/|Plugins\/(?:[^/]+\/)+Content\/)/.test(file.path) &&
             file.path !== '/Engine/GlobalShaderCache-' + expectedShaderPlatform + '.bin') ||
             /(?:^|\/)\.\.(?:\/|$)/.test(file.path) ||
             !Number.isSafeInteger(file.offset) || !Number.isSafeInteger(file.size) ||

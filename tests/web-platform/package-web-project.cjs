@@ -56,6 +56,7 @@ try {
   report.map = stage.map;
   report.project = stage.projectName;
   report.textureCompression = cook.textureCompression || 'Uncompressed';
+  report.useProjectSettings = cook.useProjectSettings === true;
   assert.equal(stage.textureCompression, report.textureCompression);
   fs.mkdirSync(output, {recursive: true});
   let html = fs.readFileSync(template, 'utf8');
@@ -73,7 +74,7 @@ try {
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
   html = html.replace(original, `arguments: ['-webgpu', '-WebProjectMap=${stage.map}'],`)
     .replaceAll('UE 默认关卡', stage.projectName);
-  if (report.textureCompression === 'BC') {
+  if (report.textureCompression === 'BC' || report.textureCompression === 'Project') {
     const marker = 'const requiredTextureFeatures = desktopRenderer ?';
     assert(html.includes(marker));
     const end = "['texture-formats-tier1', 'texture-formats-tier2', 'rg11b10ufloat-renderable', 'float32-filterable'] : [];";
@@ -103,7 +104,8 @@ try {
   report.fullNormalUBTBuildVerified = true;
   report.disabledSkyLight = cook.disabledSkyLight;
   report.compressHDRCubemaps = cook.compressHDRCubemaps || false;
-  report.boundary = 'Project map and gameplay with the explicitly recorded Web renderer profile. ' +
+  report.boundary = (report.useProjectSettings ? 'Project map and gameplay with the original project rendering settings. ' :
+    'Project map and gameplay with the explicitly recorded Web renderer profile. ') +
     'Packaging success does not prove browser compatibility, visual parity, performance or phone support.';
   report.pass = true;
 } catch (error) {

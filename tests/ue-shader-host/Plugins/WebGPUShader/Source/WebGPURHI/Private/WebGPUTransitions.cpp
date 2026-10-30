@@ -178,13 +178,15 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
     if (EnumHasAnyFlags(Info.Flags, ~(ERHITransitionCreateFlags::NoFence | ERHITransitionCreateFlags::NoSplit |
                                     ERHITransitionCreateFlags::AllowDecayPipelines |
                                     ERHITransitionCreateFlags::AllowDuringRenderPass)) ||
-        !Info.AliasingInfos.IsEmpty() || Info.TransitionInfos.IsEmpty())
+        !Info.AliasingInfos.IsEmpty())
     {
         Error = FString::Printf(TEXT("Unsupported transition: flags=0x%x aliasing=%d resources=%d"),
             uint32(Info.Flags), Info.AliasingInfos.Num(), Info.TransitionInfos.Num());
         return false;
     }
     TSet<const FWebGPUResourceState *> Seen;
+    // Empty same-queue barriers still participate in Begin/End lifetime tracking.
+    // WebGPU submission order supplies their ordering without a resource barrier.
     for (const auto &Entry : Info.TransitionInfos)
     {
         if (Entry.Type != FRHITransitionInfo::EType::Buffer && Entry.Type != FRHITransitionInfo::EType::Texture &&

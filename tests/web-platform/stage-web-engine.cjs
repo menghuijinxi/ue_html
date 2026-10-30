@@ -35,6 +35,7 @@ try {
   report.map = cook.map || '/Game/WebMinimal';
   report.textureCompression = cook.textureCompression || 'Uncompressed';
   report.distanceFields = cook.distanceFields === true;
+  report.useProjectSettings = cook.useProjectSettings === true;
   assert(valid(cook.log) && cook.sourceFiles?.length && cook.sourceFiles.every(valid));
   assert(cook.hostProducts?.length >= (webgpu ? 4 : 3) && cook.hostProducts.every(valid));
   if (webgpu) {
@@ -51,6 +52,7 @@ try {
   fs.mkdirSync(staged, {recursive: true});
   const chunks = [];
   const entries = [];
+  const pluginContentRoots = new Map();
   report.omittedMetadata = [];
   let offset = 0;
   for (const product of [...cook.products].sort((a, b) => a.file.localeCompare(b.file))) {
@@ -69,7 +71,14 @@ try {
       relative = relative.replace(projectPrefix + 'ShaderArchive-' + cookProject + '-',
         projectPrefix + 'ShaderArchive-UEWebEngine-');
       if (relative.startsWith(projectPrefix)) relative = runtimeRoot + relative.slice(projectPrefix.length);
+      const plugin = /^(Engine\/Plugins\/(?:[^/]+\/)*([^/]+)\/Content\/)/.exec(relative);
+      if (plugin) {
+        assert(!pluginContentRoots.has(plugin[2]) || pluginContentRoots.get(plugin[2]) === '/' + plugin[1],
+          `Ambiguous plugin content mount: ${plugin[2]}`);
+        pluginContentRoots.set(plugin[2], '/' + plugin[1]);
+      }
       assert(relative.startsWith('Engine/Content/') || relative.startsWith('Engine/Programs/UEWebEngine/Content/') ||
+        plugin ||
         relative === `Engine/GlobalShaderCache-${platform}.bin`, `Unexpected WebGPU Cook root: ${relative}`);
     } else {
       relative = relative.replace(/^UEShaderHost\/Content\//, 'Engine/Programs/UEWebEngine/Content/');
@@ -137,6 +146,12 @@ try {
     const ddpiPath = '/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini';
     const configs = base.filter(item => item.path !== configPath &&
       (!report.distanceFields || item.path !== ddpiPath));
+    if (pluginContentRoots.size) {
+      const data = Buffer.from([...pluginContentRoots.values()].sort().join('\n') + '\n');
+      configs.push({path: '/Engine/Programs/UEWebEngine/Config/WebContentMounts.txt',
+        sha256: sha(data), data: data.toString('base64')});
+      report.pluginContentRoots = Object.fromEntries(pluginContentRoots);
+    }
     configs.push({path: configPath, sha256: renderer.sha256,
       data: fs.readFileSync(renderer.file).toString('base64')});
     if (report.distanceFields) {
@@ -146,16 +161,21 @@ try {
       const data = fs.readFileSync(ddpi.file);
       const section = data.toString('utf8').split('[ShaderPlatform SP_WEBGPU_SM5]')[1]?.split('[')[0];
       assert(section?.includes('bSupportsDistanceFields=true'));
-      assert(/(?:^|\n)r.GenerateMeshDistanceFields=1\r?(?:\n|$)/.test(fs.readFileSync(renderer.file, 'utf8')));
+      if (!report.useProjectSettings)
+        assert(/(?:^|\n)r.GenerateMeshDistanceFields=1\r?(?:\n|$)/.test(fs.readFileSync(renderer.file, 'utf8')));
       configs.push({path: ddpiPath, sha256: ddpi.sha256, data: data.toString('base64')});
     }
     if (projectId) {
       const projectDirectory = path.dirname(cook.project);
-      for (const name of ['DefaultEngine.ini', 'DefaultGame.ini', 'DefaultInput.ini', 'DefaultDeviceProfiles.ini']) {
+      const projectConfigs = report.useProjectSettings ?
+        fs.readdirSync(path.join(projectDirectory, 'Config'), {recursive: true})
+          .filter(name => name.endsWith('.ini') && fs.statSync(path.join(projectDirectory, 'Config', name)).isFile()) :
+        ['DefaultEngine.ini', 'DefaultGame.ini', 'DefaultInput.ini', 'DefaultDeviceProfiles.ini'];
+      for (const name of projectConfigs) {
         const file = path.join(projectDirectory, 'Config', name);
         if (!fs.existsSync(file)) continue;
         const data = fs.readFileSync(file);
-        configs.push({path: '/Engine/Programs/UEWebEngine/Config/' + name,
+        configs.push({path: '/Engine/Programs/UEWebEngine/Config/' + name.replaceAll('\\', '/'),
           sha256: sha(data), data: data.toString('base64')});
       }
       report.projectId = projectId;

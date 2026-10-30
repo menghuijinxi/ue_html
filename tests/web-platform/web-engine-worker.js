@@ -14,7 +14,7 @@ const rpcNames = new Set([
 function snapshot() {
   const state = {};
   for (const key of Object.keys(globalThis)) {
-    if (!/^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread|DistanceFields|Visibility)/.test(key))
+    if (!/^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread|DistanceFields|Visibility|ProjectSettings)/.test(key))
       continue;
     state[key] = globalThis[key];
   }

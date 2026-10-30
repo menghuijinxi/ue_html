@@ -94,6 +94,8 @@ uint32 StorageImageFormat(EPixelFormat Value)
     case PF_R32_FLOAT: return 3;
     case PF_R8G8B8A8: return 4;
     case PF_G16R16F: return 7;
+    case PF_FloatRGB:
+    case PF_FloatR11G11B10: return 8;
     case PF_R16F: return 9;
     case PF_A16B16G16R16: return 10;
     case PF_G16R16: return 12;
@@ -117,6 +119,7 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat)
     case 3: return WGPUTextureFormat_R32Float;
     case 4: return WGPUTextureFormat_RGBA8Unorm;
     case 7: return WGPUTextureFormat_RG16Float;
+    case 8: return WGPUTextureFormat_RG11B10Ufloat;
     case 9: return WGPUTextureFormat_R16Float;
     case 10: return WGPUTextureFormat_RGBA16Unorm;
     case 12: return WGPUTextureFormat_RG16Unorm;
@@ -191,7 +194,7 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
     case PF_DepthStencil:
         return WGPUTextureFormat_Depth24PlusStencil8;
     case PF_ShadowDepth:
-        return WGPUTextureFormat_Depth32Float;
+        return WGPUTextureFormat_Depth16Unorm;
     default:
         checkf(false, TEXT("WebGPURHI pixel format unsupported: %d"), Value);
         return WGPUTextureFormat_Undefined;
@@ -431,6 +434,9 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(
         Mobile ? TEXT("SP_WEBGPU_ES31") : TEXT("SP_WEBGPU_SM5"));
     GSupportsTexture3D = true;
+    // Compute access to 3D textures is supported; layered raster output is not.
+    // This must match DDPI's lack of geometry shaders and vertex shader layers.
+    GSupportsVolumeTextureRendering = false;
     GRHIGlobals.UseTexture3DBulkData = true;
     GRHIGlobals.SupportsTexture3DAnisotropicFiltering = false;
 #else
@@ -626,10 +632,14 @@ void FWebGPUDynamicRHI::Init()
     PackedHDRFormat.Supported = true;
     PackedHDRFormat.PlatformFormat = WGPUTextureFormat_RG11B10Ufloat;
     PackedHDRFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::TextureCube |
+        EPixelFormatCapabilities::Texture3D |
         EPixelFormatCapabilities::TextureLoad | EPixelFormatCapabilities::TextureSample |
         EPixelFormatCapabilities::TextureFilterable;
     if (wgpuDeviceHasFeature(Device, WGPUFeatureName_RG11B10UfloatRenderable))
         PackedHDRFormat.Capabilities |= EPixelFormatCapabilities::RenderTarget;
+    if (wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1))
+        PackedHDRFormat.Capabilities |= EPixelFormatCapabilities::TextureStore |
+            EPixelFormatCapabilities::UAV | EPixelFormatCapabilities::TypedUAVLoad | EPixelFormatCapabilities::TypedUAVStore;
     auto& FloatRGBFormat = GPixelFormats[PF_FloatRGB];
     FloatRGBFormat.Supported = PackedHDRFormat.Supported;
     FloatRGBFormat.PlatformFormat = PackedHDRFormat.PlatformFormat;
@@ -645,7 +655,9 @@ void FWebGPUDynamicRHI::Init()
     StencilFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::TextureLoad;
     auto& ShadowFormat = GPixelFormats[PF_ShadowDepth];
     ShadowFormat.Supported = true;
-    ShadowFormat.PlatformFormat = WGPUTextureFormat_Depth32Float;
+    // Match the native D3D12 shadow format and its memory accounting.
+    ShadowFormat.PlatformFormat = WGPUTextureFormat_Depth16Unorm;
+    ShadowFormat.BlockBytes = 2;
     ShadowFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::TextureCube | EPixelFormatCapabilities::DepthStencil |
         EPixelFormatCapabilities::TextureLoad | EPixelFormatCapabilities::TextureSample;
     Queue = wgpuDeviceGetQueue(Device);
@@ -719,9 +731,13 @@ void FWebGPUDynamicRHI::Shutdown()
     check(!Pass && !Encoder && !ContextOpen && Transitions.IsEmpty() && BreadcrumbStack.IsEmpty() &&
           BufferLocks.IsEmpty());
     BindGroupCache.Empty();
+    ReleaseFrameBindings();
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
     FrameUniformBuffer = nullptr;
     ReleaseBindings();
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+    EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
+#endif
     GlobalSamplers.Empty();
     for (const auto& Entry : ClearPipelines)
         wgpuComputePipelineRelease(Entry.Value);
@@ -782,13 +798,19 @@ void FWebGPUDynamicRHI::ReleaseBindings()
 void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 {
     RequireOwner();
-    check(!ContextOpen && !Pass && !Args.bProfileNextFrame);
+    check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame);
     // Keep snapshots only within this frame so streaming textures and transient uniforms can retire.
     BindGroupCache.Empty();
     BindGroupCacheEntries = 0;
+    ReleaseFrameBindings();
+    ReleaseBindings();
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
     FrameUniformBuffer = nullptr;
     FrameUniformOffset = 0;
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+    // All encoders have been submitted. Retire allocations even if JS has not run GC.
+    EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
+#endif
 #if STATS
     // WebGPU has no GPU-profiler EOP worker; retire the CPU statistics at submission.
     if (Args.StatsFrame.IsSet())
@@ -968,6 +990,7 @@ FWebGPUShaderData &FWebGPUDynamicRHI::ShaderData(FRHIShader *Shader)
     {                                                                                                                  \
         RequireOwner();                                                                                                \
         TRefCountPtr<FWebGPU##Stage##Shader> Shader = new FWebGPU##Stage##Shader();                                    \
+        Shader->Data.Owner = Shader.GetReference();                                                                    \
         FString Error;                                                                                                 \
         checkf(LoadShader(Desc, SF_##Stage, Shader->Data, Error), TEXT("%s"), *Error);                                 \
         Shader->SetHash(FShaderHash(FXxHash64::HashBuffer(Desc.Code.GetData(), Desc.Code.Num())));                     \
@@ -1112,12 +1135,13 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     const bool Array = In.Dimension == ETextureDimension::Texture2DArray;
     if ((In.Format == PF_FloatRGB || In.Format == PF_FloatR11G11B10) &&
         (!EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
-         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV |
-             ETextureCreateFlags::DepthStencilTargetable | ETextureCreateFlags::SRGB) ||
+         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::DepthStencilTargetable | ETextureCreateFlags::SRGB) ||
+         (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV) &&
+             !wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1)) ||
          (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable) &&
              !wgpuDeviceHasFeature(Device, WGPUFeatureName_RG11B10UfloatRenderable))))
     {
-        Error = TEXT("R11G11B10 supports only linear sampled textures");
+        Error = TEXT("R11G11B10 requires linear textures and the corresponding render/storage features");
         return false;
     }
     if (Array && (!IsSampled2DTextureFormat(In.Format) || IsBCTextureFormat(In.Format) ||
@@ -1145,6 +1169,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     }
     const bool Color = Volume ? In.Format == PF_R8G8B8A8 || In.Format == PF_B8G8R8A8 ||
                                     In.Format == PF_R8G8B8A8_UINT || In.Format == PF_FloatRGBA ||
+                                    In.Format == PF_FloatRGB || In.Format == PF_FloatR11G11B10 ||
                                     In.Format == PF_R16F || In.Format == PF_G16R16F ||
                                     In.Format == PF_R8 || In.Format == PF_G8 ||
                                     In.Format == PF_R32_UINT || In.Format == PF_R32_FLOAT
@@ -1159,7 +1184,8 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         uint32(In.Extent.X) > Limit || uint32(In.Extent.Y) > Limit || (Volume && In.Depth > Limit) ||
         (!Color && (Volume || (In.Format != PF_DepthStencil && In.Format != PF_ShadowDepth))) ||
         (Volume && (!EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
-                    EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable))) ||
+                    (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable) &&
+                     !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV)))) ||
         (Volume && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)) ||
         (!SupportsSRGB(In.Format) && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)) ||
         (!Color && (In.NumMips != 1 ||
@@ -2141,6 +2167,44 @@ FBlendStateRHIRef FWebGPUDynamicRHI::RHICreateBlendState(const FBlendStateInitia
 {
     return new TWebGPUState<FRHIBlendState, FBlendStateInitializerRHI>(In);
 }
+void FWebGPUDynamicRHI::TrackShaderBindings(FWebGPUShaderData& Shader)
+{
+    if (Shader.BindingFrame != EndFrames)
+    {
+        check(Shader.Owner);
+        Shader.BindingFrame = EndFrames;
+        FrameShaders.Add(Shader.Owner);
+    }
+}
+void FWebGPUDynamicRHI::ReleaseFrameBindings()
+{
+    for (const auto& Shader : FrameShaders)
+    {
+        auto& Data = ShaderData(Shader);
+        Data.Resources.Reset();
+        if (Data.GlobalsBuffer) wgpuBufferRelease(Data.GlobalsBuffer);
+        Data.GlobalsBuffer = nullptr;
+        Data.GlobalsBufferOffset = 0;
+        Data.BindingFrame = MAX_uint32;
+    }
+    FrameShaders.Reset();
+}
+FWebGPUUniform::FConstantSnapshot FWebGPUDynamicRHI::UploadFrameConstants(const void* Data, uint64 Bytes)
+{
+    constexpr uint64 PageBytes = 1024 * 1024;
+    check(Bytes && Bytes <= 64 * 1024);
+    if (!FrameUniformBuffer || Align(FrameUniformOffset, uint64(256)) + Bytes > PageBytes)
+    {
+        if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
+        FrameUniformBuffer = CreateBuffer(PageBytes, WGPUBufferUsage_Uniform);
+        FrameUniformOffset = 0;
+    }
+    FWebGPUUniform::FConstantSnapshot Snapshot{FrameUniformBuffer, Align(FrameUniformOffset, uint64(256))};
+    FrameUniformOffset = Snapshot.Offset + Bytes;
+    wgpuBufferAddRef(Snapshot.Buffer);
+    wgpuQueueWriteBuffer(Queue, Snapshot.Buffer, Snapshot.Offset, Data, Bytes);
+    return Snapshot;
+}
 void FWebGPUDynamicRHI::Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter)
 {
     uint32 Type = 0;
@@ -2172,6 +2236,7 @@ void FWebGPUDynamicRHI::Parameters(FWebGPUShaderData &Shader, TConstArrayView<ui
 {
     RequireOwner();
     check(Bindless.IsEmpty());
+    TrackShaderBindings(Shader);
     for (const auto &Value : Values)
     {
         check(Value.BufferIndex == 0 && Value.BaseIndex + Value.ByteSize <= Shader.Globals.Num() &&
@@ -2210,6 +2275,7 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     bool HasBindings = false;
     for (FWebGPUShaderData *Shader : Shaders)
     {
+        TrackShaderBindings(*Shader);
         for (const auto &Reflected : Shader->Bindings)
         {
             const auto* Binding = Reflected.Metadata;
@@ -2224,11 +2290,13 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             {
                 if (!Shader->GlobalsBuffer)
                 {
-                    Shader->GlobalsBuffer = CreateBuffer(Shader->Globals.Num(), WGPUBufferUsage_Uniform,
-                        Shader->Globals.GetData());
+                    const auto Snapshot = UploadFrameConstants(Shader->Globals.GetData(), Shader->Globals.Num());
+                    Shader->GlobalsBuffer = Snapshot.Buffer;
+                    Shader->GlobalsBufferOffset = Snapshot.Offset;
                     ++UniformUploads;
                 }
                 Entry.buffer = Shader->GlobalsBuffer;
+                Entry.offset = Shader->GlobalsBufferOffset;
                 Entry.size = Shader->Globals.Num();
             }
             else
@@ -2248,20 +2316,7 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                     {
                         if (Uniform->SingleFrame && Entry.size <= 64 * 1024)
                         {
-                            constexpr uint64 PageBytes = 1024 * 1024;
-                            const uint64 Offset = Align(FrameUniformOffset, uint64(256));
-                            if (!FrameUniformBuffer || Offset + Entry.size > PageBytes)
-                            {
-                                if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
-                                FrameUniformBuffer = CreateBuffer(PageBytes, WGPUBufferUsage_Uniform);
-                                FrameUniformOffset = 0;
-                            }
-                            Snapshot.Buffer = FrameUniformBuffer;
-                            Snapshot.Offset = Align(FrameUniformOffset, uint64(256));
-                            FrameUniformOffset = Snapshot.Offset + Entry.size;
-                            wgpuBufferAddRef(Snapshot.Buffer);
-                            // Each immutable snapshot gets a unique aligned range, even across submissions.
-                            wgpuQueueWriteBuffer(Queue, Snapshot.Buffer, Snapshot.Offset, Uniform->Bytes.GetData(), Entry.size);
+                            Snapshot = UploadFrameConstants(Uniform->Bytes.GetData(), Entry.size);
                         }
                         else
                             Snapshot.Buffer = CreateBuffer(Entry.size, WGPUBufferUsage_Uniform, Uniform->Bytes.GetData());

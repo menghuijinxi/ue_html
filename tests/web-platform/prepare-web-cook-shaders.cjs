@@ -7,7 +7,52 @@ const root = path.resolve(__dirname, '../..');
 const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
+const storageDeclaration = (before, format) => ({before, after: [
+  '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+  `[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`,
+  '#endif', before,
+].join('\n')});
 const overrides = new Map([
+  ['Private/MotionBlur/MotionBlurVelocityFlatten.ush', [{
+    before: '\tif (any(isnan(VelocityPolar)))',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\tif (any((asuint(VelocityPolar) & 0x7FFFFFFFu) > 0x7F800000u))',
+      '#else', '\tif (any(isnan(VelocityPolar)))', '#endif'].join('\n'),
+  }]],
+  ['Private/TranslucentLightInjectionShaders.usf',
+    ['RWAmbient0', 'RWDirectional0', 'RWAmbient1', 'RWDirectional1'].map(name =>
+      storageDeclaration(`RWTexture3D<float4> ${name};`, 'rgba16f'))],
+  ['Private/MotionBlur/MotionBlurVelocityFlatten.usf', [
+    storageDeclaration('RWTexture2D<float3>\tOutVelocityFlatTexture;', 'r11g11b10f'),
+    storageDeclaration('RWTexture2DArray<float4>\tOutVelocityTileArray;', 'rgba16f'),
+    storageDeclaration('RWTexture2D<float4>\tDebugOutput;', 'rgba16f'),
+  ]],
+  ['Private/MotionBlur/MotionBlurTileGather.usf', [
+    storageDeclaration('RWTexture2DArray<float4>\tOutVelocityTileArray;', 'rgba16f'),
+  ]],
+  ['Private/MotionBlur/MotionBlurFilterTileClassify.usf', [
+    storageDeclaration('RWTexture2D<float4> DebugOutput;', 'rgba16f'),
+  ]],
+  ['Private/MotionBlur/MotionBlurApply.usf', [
+    ...['SceneColorOutputMip0', 'SceneColorOutputMip1', 'SceneColorOutputMip2'].map((name, index) => {
+      const before = `RWTexture2D<mb_half4> ${name};`;
+      return {before, after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        ...(index ? [] : ['#if DIM_ALPHA_CHANNEL', '[[vk::image_format("rgba16f")]]', '#else']),
+        '[[vk::image_format("r11g11b10f")]]', ...(index ? [] : ['#endif']),
+        '[[vk::ext_decorate(25)]]', '#endif', before].join('\n')};
+    }), storageDeclaration('RWTexture2D<float4> DebugOutput;', 'rgba16f'),
+  ]],
+  ['Private/VolumetricLightmapStreaming.usf', [
+    ['RWTexture3D<uint4> IndirectionTexture;', 'rgba8ui'],
+    ['RWTexture3D<float3> OutAmbientVector;', 'r11g11b10f'],
+    ['RWTexture3D<UNORM float4> OutSHCoefficients;', 'rgba8'],
+    ['RWTexture3D<UNORM float4> OutSkyBentNormal;', 'rgba8'],
+    ['RWTexture3D<UNORM float> OutDirectionalLightShadowing;', 'r8'],
+  ].map(([before, format]) => ({before, after: [
+    '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+    `[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`,
+    '#endif', before,
+  ].join('\n')}))],
   ['Private/ShadowProjectionCommon.ush', [{
     before: '\t\tfloat3 SideVector = normalize(cross(NormalizedLightVector, float3(0, 0, 1)));',
     after: [

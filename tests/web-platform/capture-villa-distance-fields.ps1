@@ -8,6 +8,8 @@ param(
     [double]$FixedEV100 = -1,
     [string]$View = 'all',
     [string]$CasesFile,
+    [string]$Project,
+    [switch]$UseProjectSettings,
     [switch]$NoDistanceFieldResources,
     [string]$Report = 'baseline'
 )
@@ -15,6 +17,7 @@ $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskResults = Join-Path $PSScriptRoot 'results'
 $taskProject = Join-Path $PSScriptRoot 'build/projects/villa-distance-fields/TriplexHouseVilla.uproject'
+if ($Project) { $taskProject = [IO.Path]::GetFullPath($Project) }
 if ($Report -notmatch '^[a-z0-9-]+$') { throw 'Invalid report name.' }
 if ($Mode -eq 'prepare') {
     & 'C:/Program Files/nodejs/node.exe' (Join-Path $PSScriptRoot 'prepare-web-project.cjs') `
@@ -47,8 +50,9 @@ if ($NoDistanceFieldResources) {
     $taskModes = @(@{name = 'off'; ao = 0; shadows = 0},
         @{name = 'restore'; ao = 0; shadows = 0})
 }
+if ($UseProjectSettings) { $taskModes = @(@{name = 'project'; ao = 1; shadows = 1}) }
 $taskCases = @()
-foreach ($taskFixed in @($true, $false)) {
+foreach ($taskFixed in $(if ($UseProjectSettings) { @($false) } else { @($true, $false) })) {
     foreach ($taskView in $taskViews) {
         foreach ($taskMode in $taskModes) {
             $taskCase = @{}
@@ -69,7 +73,8 @@ if ($CasesFile) {
     if ($taskCases.Count -eq 0) { throw 'Empty comparison cases.' }
 }
 @{map = '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla'; output = $taskOutput;
-    width = $Width; height = $Height; warmup = $Warmup; samples = $Samples; cases = $taskCases} |
+    width = $Width; height = $Height; warmup = $Warmup; samples = $Samples; cases = $taskCases;
+    preserveProjectSettings = [bool]$UseProjectSettings} |
     ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $taskInput -Encoding utf8
 $taskArguments = @(
     $taskProject, '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla',
@@ -93,6 +98,13 @@ $taskArguments = @(
     '-ini:EditorPerProjectUserSettings:[/Script/UnrealEd.EditorPerformanceSettings]:bThrottleCPUWhenNotForeground=False'
 )
 $taskStarted = Get-Date
+if ($UseProjectSettings) {
+    if ($NoDistanceFieldResources) { throw 'Project settings cannot be combined with distance-field overrides.' }
+    $taskArguments = @($taskProject, '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla',
+        "-WebDistanceFieldComparison=$taskInput", "-abslog=$taskOutput.log",
+        '-RenderOffscreen', '-NoSplash', '-NoSound', '-NoLoadingScreen', '-unattended', '-nop4',
+        '-windowed', "-ResX=$Width", "-ResY=$Height", '-ForceRes', '-d3d12')
+}
 $taskProcess = Start-Process -FilePath (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor.exe') `
     -ArgumentList $taskArguments -WindowStyle Hidden -PassThru
 Write-Output "Distance-field comparison PID: $($taskProcess.Id); log: $taskOutput.log"

@@ -165,7 +165,8 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
         Report->SetNumberField(TEXT("featureLevel"), int32(World->GetFeatureLevel()));
         Report->SetStringField(TEXT("adapter"), GRHIGlobals.GpuInfo.AdapterName);
         auto Variables = MakeShared<FJsonObject>();
-        for (const TCHAR* Name : {TEXT("r.GenerateMeshDistanceFields"), TEXT("r.AOQuality"),
+        for (const TCHAR* Name : {TEXT("r.GenerateMeshDistanceFields"), TEXT("r.DistanceFieldAO"),
+            TEXT("r.DistanceFieldShadowing"), TEXT("r.AOQuality"), TEXT("r.ScreenPercentage"),
             TEXT("r.AOGlobalDistanceField"), TEXT("r.AOObjectDistanceField"),
             TEXT("r.AOSpecularOcclusionMode"), TEXT("r.DistanceFields.SupportEvenIfHardwareRayTracingSupported"),
             TEXT("r.RayTracing"), TEXT("r.Shadow.Virtual.Enable"), TEXT("r.AntiAliasingMethod"),
@@ -185,6 +186,8 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
         if (!World || World->GetPackage()->GetName() != Settings->GetStringField(TEXT("map")))
             return true;
         const FString Output = Settings->GetStringField(TEXT("output"));
+        bool PreserveProjectSettings = false;
+        Settings->TryGetBoolField(TEXT("preserveProjectSettings"), PreserveProjectSettings);
         if (!Initialized)
         {
             GetMutableDefault<ULevelEditorViewportSettings>()->AspectRatioAxisConstraint =
@@ -192,12 +195,14 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
             Client->SetRealtime(true);
             Client->SetGameView(true);
             Client->EngineShowFlags.SetSelectionOutline(false);
-            Client->EngineShowFlags.SetEyeAdaptation(true);
+            if (!PreserveProjectSettings)
+                Client->EngineShowFlags.SetEyeAdaptation(true);
             static_cast<FSceneViewport*>(Client->Viewport)->SetFixedViewportSize(
                 Settings->GetIntegerField(TEXT("width")), Settings->GetIntegerField(TEXT("height")));
             bool Frozen = false;
             Settings->TryGetBoolField(TEXT("visualClock"), Frozen);
-            SetComparisonCVar(TEXT("r.RenderTimeFrozen"), Frozen ? 1 : 0);
+            if (!PreserveProjectSettings)
+                SetComparisonCVar(TEXT("r.RenderTimeFrozen"), Frozen ? 1 : 0);
             FAssetCompilingManager::Get().FinishAllCompilation();
             Inventory(World);
             Initialized = true;
@@ -229,14 +234,17 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
                 return false;
             }
             const auto& Entry = Cases[Case]->AsObject();
-            SetComparisonCVar(TEXT("r.DistanceFieldAO"), Entry->GetIntegerField(TEXT("ao")));
-            SetComparisonCVar(TEXT("r.DistanceFieldShadowing"), Entry->GetIntegerField(TEXT("shadows")));
-            const TSharedPtr<FJsonObject>* Variables = nullptr;
-            if (Entry->TryGetObjectField(TEXT("variables"), Variables))
-                for (const auto& Pair : (*Variables)->Values)
-                    SetComparisonCVar(*Pair.Key, int32(Pair.Value->AsNumber()));
-            Client->ExposureSettings.bFixed = Entry->GetBoolField(TEXT("fixedExposure"));
-            Client->ExposureSettings.FixedEV100 = Entry->GetNumberField(TEXT("ev100"));
+            if (!PreserveProjectSettings)
+            {
+                SetComparisonCVar(TEXT("r.DistanceFieldAO"), Entry->GetIntegerField(TEXT("ao")));
+                SetComparisonCVar(TEXT("r.DistanceFieldShadowing"), Entry->GetIntegerField(TEXT("shadows")));
+                const TSharedPtr<FJsonObject>* Variables = nullptr;
+                if (Entry->TryGetObjectField(TEXT("variables"), Variables))
+                    for (const auto& Pair : (*Variables)->Values)
+                        SetComparisonCVar(*Pair.Key, int32(Pair.Value->AsNumber()));
+                Client->ExposureSettings.bFixed = Entry->GetBoolField(TEXT("fixedExposure"));
+                Client->ExposureSettings.FixedEV100 = Entry->GetNumberField(TEXT("ev100"));
+            }
             Client->SetViewLocation(FVector(Entry->GetNumberField(TEXT("x")),
                 Entry->GetNumberField(TEXT("y")), Entry->GetNumberField(TEXT("z"))));
             Client->SetViewRotation(FRotator(Entry->GetNumberField(TEXT("pitch")),
@@ -257,7 +265,9 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
         if (Frame == Warmup / 2 && Case == 0)
         {
             GEngine->Exec(World, TEXT("r.AOListMemory"));
-            SetComparisonCVar(TEXT("r.DistanceFields.LogAtlasStats"), 1);
+            if (!PreserveProjectSettings)
+                SetComparisonCVar(TEXT("r.DistanceFields.LogAtlasStats"), 1);
+            GEngine->Exec(World, TEXT("rhi.DumpResourceMemory all"));
         }
         if (Frame <= Warmup || FAssetCompilingManager::Get().GetNumRemainingAssets() > 0)
             return true;

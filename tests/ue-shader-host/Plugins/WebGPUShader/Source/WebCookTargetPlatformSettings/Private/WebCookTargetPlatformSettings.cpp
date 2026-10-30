@@ -4,6 +4,7 @@
 #include "Misc/Parse.h"
 #include "Modules/ModuleManager.h"
 #include "StaticMeshResources.h"
+#include "HAL/IConsoleManager.h"
 #include "WebCookProperties.h"
 
 class FWebCookSettings final : public TTargetPlatformSettingsBase<FWebCookProperties>
@@ -24,7 +25,9 @@ public:
     virtual bool UsesRayTracing() const override { return false; }
     virtual bool UsesDistanceFields() const override
     {
-        return bWebGPU && !bES31 && FParse::Param(FCommandLine::Get(), TEXT("WebDistanceFieldsCook"));
+        const auto* Generate = IConsoleManager::Get().FindConsoleVariable(TEXT("r.GenerateMeshDistanceFields"));
+        return bWebGPU && !bES31 && (FParse::Param(FCommandLine::Get(), TEXT("WebDistanceFieldsCook")) ||
+            (FParse::Param(FCommandLine::Get(), TEXT("WebProjectSettingsCook")) && Generate && Generate->GetInt() != 0));
     }
 
     virtual void GetReflectionCaptureFormats(TArray<FName>& Formats) const override

@@ -16,6 +16,8 @@ $taskVariant = if ($Threads) { '-thread' } else { '' }
 & (Join-Path $PSScriptRoot 'build-web-blake3.ps1') -Threads:$Threads
 & (Join-Path $PSScriptRoot 'build-web-libpng.ps1') -Threads:$Threads
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
+& node (Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs') $Engine
+if ($LASTEXITCODE -ne 0) { throw 'Enhanced Input runtime module preparation failed.' }
 $taskPlatforms = Join-Path $taskHost 'Platforms'
 $taskWeb = Join-Path $taskPlatforms 'Web'
 foreach ($taskDirectory in @($taskPlatforms, $taskWeb)) {
@@ -154,6 +156,12 @@ try {
         (Join-Path $PSScriptRoot 'WebEngine.BuildConfiguration.xml'),
         (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1'))
     $taskFiles += Join-Path $PSScriptRoot 'prepare-web-skinning.cjs'
+    $taskFiles += Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs'
+    $taskInputHost = Get-Content -LiteralPath (Join-Path $taskResults 'web-enhanced-input-host.json') -Raw | ConvertFrom-Json
+    foreach ($taskInputCopy in $taskInputHost.copies) {
+        $taskFiles += $taskInputCopy.source.file
+        $taskFiles += $taskInputCopy.copied.file
+    }
     $taskFiles += Join-Path $Engine 'Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
     $taskFiles += Join-Path $Engine 'Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.h'
     $taskFiles += Join-Path $Engine 'Engine/Shaders/Shared/SkinningDefinitions.h'

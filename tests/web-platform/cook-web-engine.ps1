@@ -5,6 +5,7 @@ param(
     [string]$Project,
     [string]$Map,
     [string]$Profile,
+    [switch]$UseProjectSettings,
     [ValidateSet('Uncompressed', 'BC')][string]$TextureCompression = 'Uncompressed',
     [switch]$CompressHDRCubemaps,
     [switch]$TemplateEnvironment,
@@ -25,11 +26,16 @@ if ($DistanceFields -and $Mode -ne 'WebGPU-SM5') { throw 'Distance fields requir
 if ($Scene -eq 'DefaultTemplate' -and -not $taskWebGPU) { throw 'DefaultTemplate requires WebGPU Cook.' }
 $taskMap = if ($Scene -eq 'DefaultTemplate') { '/Engine/Maps/Templates/Template_Default' } else { '/Game/WebMinimal' }
 if ($Scene -eq 'Project') {
-    if (-not $taskWebGPU -or -not $Project -or -not $Map -or -not $Profile -or -not $ReportId) {
-        throw 'Project Cook requires WebGPU, Project, Map, Profile and ReportId.'
+    if (-not $taskWebGPU -or -not $Project -or -not $Map -or (-not $Profile -and -not $UseProjectSettings) -or -not $ReportId) {
+        throw 'Project Cook requires WebGPU, Project, Map, ReportId and either Profile or UseProjectSettings.'
     }
     if ($Map -notmatch '^/Game/[a-zA-Z0-9_/]+$') { throw 'Project Map must be an absolute /Game package name.' }
     $taskMap = $Map
+}
+if ($UseProjectSettings -and ($Scene -ne 'Project' -or $Profile -or $DistanceFields -or
+    $DisableProjectSkyLight -or $TemplateEnvironment -or $CompressHDRCubemaps -or
+    $PSBoundParameters.ContainsKey('TextureCompression'))) {
+    throw 'UseProjectSettings must preserve the project without renderer, texture or environment overrides.'
 }
 if ($DisableProjectSkyLight -and $Scene -ne 'Project') { throw 'SkyLight exclusion requires Project Cook.' }
 if ($TextureCompression -eq 'BC' -and -not $taskWebGPU) { throw 'BC compression requires WebGPU Cook.' }
@@ -79,6 +85,7 @@ $taskReport = [ordered]@{
     compressHDRCubemaps = [bool]$CompressHDRCubemaps
     templateEnvironment = [bool]$TemplateEnvironment
     distanceFields = [bool]$DistanceFields
+    useProjectSettings = [bool]$UseProjectSettings
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
     validateShaderJobCache = [bool]$ValidateShaderJobCache
@@ -91,7 +98,7 @@ $taskReport = [ordered]@{
 }
 New-Item -ItemType Directory -Path $taskResults, $taskOutput -Force | Out-Null
 try {
-    $taskProcess.ProcessorAffinity = [IntPtr]3
+    if (-not $UseProjectSettings) { $taskProcess.ProcessorAffinity = [IntPtr]3 }
     if (-not $SkipBuild) {
         $taskBuildLog = Join-Path $taskResults "web-cook-module-build-$taskStamp.log"
         $taskModuleProject = Join-Path $taskRoot 'tests/ue-shader-host/UEShaderHost.uproject'
@@ -160,6 +167,19 @@ try {
         if (-not $taskLayout -or $taskLayout -match '^\s*\[ShaderPlatform') { throw 'Invalid NullRHI platform layout.' }
         $taskLayout | Set-Content -LiteralPath $taskHostDDPI -Encoding utf8
     }
+    if ($UseProjectSettings) {
+        $taskProjectPlatformConfig = Join-Path $taskOutput 'ProjectWebEngine.ini'
+        [IO.File]::WriteAllText($taskProjectPlatformConfig, "; Project rendering settings are inherited without Web profile overrides.`n", [Text.UTF8Encoding]::new($false))
+        Copy-Item -LiteralPath $taskProjectPlatformConfig -Destination (Join-Path $taskWeb 'Config/WebEngine.ini') -Force
+        $taskReport.minimalRendererConfig = Get-TaskAudit $taskProjectPlatformConfig
+        $taskReport.textureCompression = 'Project'
+        $taskArgumentsPolicy = Join-Path $taskOutput 'project-settings.json'
+        & node (Join-Path $PSScriptRoot 'inspect-project-settings.cjs') $taskProject $taskArgumentsPolicy
+        if ($LASTEXITCODE -ne 0) { throw 'Project configuration inspection failed.' }
+        $taskPolicy = Get-Content -LiteralPath $taskArgumentsPolicy -Raw | ConvertFrom-Json
+        $taskReport.projectSettings = Get-TaskAudit $taskArgumentsPolicy
+        $taskReport.distanceFields = [bool]$taskPolicy.distanceFields
+    }
     $taskPackages = @(
         '/Engine/EngineMaterials/WorldGridMaterial',
         '/Engine/EngineMaterials/DefaultLightFunctionMaterial',
@@ -187,7 +207,8 @@ try {
         "-OutputDir=$taskOutput", "-PACKAGE=$($taskPackages -join '+')",
         '-SkipZenStore', '-NoDefaultMaps', '-NoGameAlwaysCook',
         '-CookProcessCount=1', '-unattended', '-nop4', '-nosplash', '-nosound',
-        '-nullrhi', '-sm5', '-processaffinity=2', '-UTF8Output', "-abslog=$taskLog")
+        '-nullrhi', '-sm5', '-UTF8Output', "-abslog=$taskLog")
+    if (-not $UseProjectSettings) { $taskArguments += '-processaffinity=2' }
     if ($Scene -ne 'Project') { $taskArguments += '-SkipSoftReferences' }
     if ($DisableProjectSkyLight) { $taskArguments += '-WebProjectDisableSkyLightCook' }
     if ($TextureCompression -eq 'BC') { $taskArguments += '-WebTextureCompressionBC' }
@@ -202,6 +223,9 @@ try {
             '-ini:Game:[/Script/UnrealEd.ProjectPackagingSettings]:bSharedMaterialNativeLibraries=False',
             '-ini:Engine:[SystemSettings]:r.ShaderDevelopmentMode=0')
         # Some native compiler helpers read the host CVar instead of the target-platform CVar.
+        if ($UseProjectSettings) {
+            $taskArguments += '-WebProjectSettingsCook'
+        } else {
         $taskMinimalConfig = Join-Path $taskRoot 'tests/ue-shader-host/Config/Web/WebEngine.ini'
         if ($Scene -eq 'DefaultTemplate') {
             $taskProfileName = if ($taskES31) { 'DefaultTemplateEngine.ini' } else { 'DefaultTemplateDesktopEngine.ini' }
@@ -230,6 +254,7 @@ try {
         }
         $taskArguments += @($taskMinimalSettings | ForEach-Object { "-ini:Engine:[SystemSettings]:$_" })
         $taskReport.minimalRendererConfig = Get-TaskAudit $taskMinimalConfig
+        }
         if ($StopOnShaderError) { $taskArguments += '-WebGPUStopOnShaderError' }
         if ($ValidateShaderJobCache) {
             $taskArguments += @('-noshaderddc',
@@ -248,10 +273,11 @@ try {
         New-Item -ItemType Directory -Path (Split-Path -Parent $taskSkyFile) -Force | Out-Null
         $taskSkyLog = Join-Path $taskResults "$taskPrefix-$taskStamp-skylight.log"
         $taskSkyInventory = Join-Path $taskOutput 'skylight-map.json'
-        & (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject '-run=WebTemplateMap' `
-            "-Map=$taskMap" "-Output=$taskSkyInventory" "-SkyCaptureOutput=$taskSkyFile" `
-            '-AllowCommandletRendering' '-d3d12' '-unattended' '-nop4' '-nosplash' '-nosound' `
-            '-ini:Engine:[SystemSettings]:r.RayTracing=0' "-abslog=$taskSkyLog" *> "$taskSkyLog.console.txt"
+        $taskSkyArguments = @($taskProject, '-run=WebTemplateMap', "-Map=$taskMap",
+            "-Output=$taskSkyInventory", "-SkyCaptureOutput=$taskSkyFile", '-AllowCommandletRendering',
+            '-d3d12', '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskSkyLog")
+        if (-not $UseProjectSettings) { $taskSkyArguments += '-ini:Engine:[SystemSettings]:r.RayTracing=0' }
+        & (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') @taskSkyArguments *> "$taskSkyLog.console.txt"
         if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $taskSkyFile)) {
             throw "Native SkyLight preparation failed: $taskSkyLog"
         }
@@ -330,6 +356,10 @@ try {
         'Public/WebTemplateMapCommandlet.h', 'Private/WebTemplateMapCommandlet.cpp') |
         ForEach-Object { Get-TaskAudit (Join-Path $taskRoot "tests/ue-shader-host/Source/UEShaderHost/$_") }
     $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1')
+    if ($UseProjectSettings) {
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'inspect-project-settings.cjs')
+        $taskReport.sourceFiles += $taskReport.projectSettings
+    }
     if ($taskReport.minimalMap) { $taskReport.sourceFiles += $taskReport.minimalMap }
     if ($taskReport.templateMap) { $taskReport.sourceFiles += $taskReport.templateMap }
     if ($taskReport.defaultSamples) {

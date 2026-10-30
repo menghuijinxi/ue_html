@@ -45,7 +45,8 @@ public:
     {
         TArray<FName>& Layers = Formats.AddDefaulted_GetRef();
         GetDefaultTextureFormatNamePerLayer(Layers, TargetPlatformSettings, this, Texture, false, 4, false);
-        const bool BC = FParse::Param(FCommandLine::Get(), TEXT("WebTextureCompressionBC"));
+        const bool BC = FParse::Param(FCommandLine::Get(), TEXT("WebTextureCompressionBC")) ||
+            FParse::Param(FCommandLine::Get(), TEXT("WebProjectSettingsCook"));
         for (FName& Format : Layers)
         {
             const FString Name = Format.ToString();
@@ -78,7 +79,8 @@ public:
     {
         Modules.AddUnique(TEXT("TextureFormatUncompressed"));
         Modules.AddUnique(TEXT("TextureFormatWebCloud"));
-        if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureCompressionBC")))
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTextureCompressionBC")) ||
+            FParse::Param(FCommandLine::Get(), TEXT("WebProjectSettingsCook")))
         {
             Modules.AddUnique(TEXT("TextureFormatDXT"));
             Modules.AddUnique(TEXT("TextureFormatIntelISPCTexComp"));

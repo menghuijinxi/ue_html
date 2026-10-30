@@ -20,5 +20,7 @@ assert(fs.realpathSync(output).toLowerCase().startsWith(root.toLowerCase() + pat
   fs.statSync(output).nlink === 1,
   'Skinning output must stay inside the isolated build host');
 // Keep the installed implementation paired with its private and shared shader headers.
+// Copy-Item can preserve the installed source's read-only attribute on a repeated preparation.
+fs.chmodSync(output, 0o666);
 fs.writeFileSync(output, installed.replace(functionPattern, () => webFunction));
 console.log('Prepared installed-version skinning implementation with the target Web default parameters.');

@@ -45,6 +45,8 @@ struct FWebGPUBindGroupCacheEntry
 
 struct FWebGPUShaderData
 {
+    FRHIShader* Owner = nullptr;
+    uint32 BindingFrame = MAX_uint32;
     WGPUShaderModule Module = nullptr;
     FString Entry;
     TSharedPtr<FJsonObject> Metadata;
@@ -54,6 +56,7 @@ struct FWebGPUShaderData
     TArray<FWebGPUShaderBinding> Bindings;
     mutable TMap<const FJsonObject*, FWebGPUBindingRoute> BindingRoutes;
     WGPUBuffer GlobalsBuffer = nullptr;
+    uint64 GlobalsBufferOffset = 0;
     EShaderFrequency Frequency = SF_NumFrequencies;
     ~FWebGPUShaderData()
     {
@@ -472,6 +475,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TMap<uint32, TArray<TUniquePtr<FWebGPUBindGroupCacheEntry>>> BindGroupCache;
     WGPUBuffer FrameUniformBuffer = nullptr;
     uint64 FrameUniformOffset = 0;
+    TArray<TRefCountPtr<FRHIShader>> FrameShaders;
     uint32 OwnerThread = 0;
     uint32 ResourceTableBindings = 0;
     uint32 TransitionsCreated = 0, TransitionsBegun = 0, TransitionsEnded = 0, TransitionsReleased = 0;
@@ -557,6 +561,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool ResolveBinding(const FWebGPUShaderData &Shader, const FJsonObject &Binding, FRHIResource *&Resource,
                         bool &FromTable, FString &Error) const;
     FWebGPUShaderData &ShaderData(FRHIShader *Shader);
+    void TrackShaderBindings(FWebGPUShaderData& Shader);
+    void ReleaseFrameBindings();
+    FWebGPUUniform::FConstantSnapshot UploadFrameConstants(const void* Data, uint64 Bytes);
     void Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter);
     void Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8>, TConstArrayView<FRHIShaderParameter>,
                     TConstArrayView<FRHIShaderParameterResource>, TConstArrayView<FRHIShaderParameterResource>);

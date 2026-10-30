@@ -48,7 +48,7 @@ class WebLocalContentIO {
     this.filesystem = filesystem;
     const files = manifest.files;
     for (const file of files) {
-      if ((!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/)/.test(file.path) &&
+      if ((!/^\/Engine\/(?:Content\/|Programs\/UEWebEngine\/Content\/|Plugins\/(?:[^/]+\/)+Content\/)/.test(file.path) &&
           file.path !== shaderCachePath) ||
           /(?:^|\/)\.\.(?:\/|$)/.test(file.path) || !Number.isSafeInteger(file.offset) ||
           !Number.isSafeInteger(file.size) || file.offset < 0 || file.size < 0 ||
