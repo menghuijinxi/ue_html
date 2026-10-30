@@ -3,6 +3,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
+const {loadEngineConfig} = require('./web-engine-config.cjs');
 const root = path.resolve(__dirname, '../..');
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const audit = file => ({file, sha256: sha(file)});
@@ -47,24 +48,12 @@ report.contentNegativeChecks = [];
       report.stagedFiles.push(audit(copied));
     }
     report.buildReport = audit(buildFile);
-    report.sourceFiles = ['web-engine.html', 'verify-web-engine.cjs'].map(name => audit(path.join(__dirname, name)));
-    report.configFiles = [
-      ['reference-engine/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini',
-        '/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini'],
-      ['reference-engine/Engine/Platforms/Web/Config/WebEngine.ini',
-        '/Engine/Platforms/Web/Config/WebEngine.ini'],
-      ['.tools/ue58-web-build-host/Engine/Config/Windows/DataDrivenPlatformInfo.ini',
-        '/Engine/Config/Windows/DataDrivenPlatformInfo.ini'],
-      ['.tools/ue58-web-build-host/Engine/Config/Base.ini', '/Engine/Config/Base.ini'],
-      ['.tools/ue58-web-build-host/Engine/Config/BaseEngine.ini', '/Engine/Config/BaseEngine.ini'],
-      ...['BaseGame.ini', 'BaseInput.ini', 'BaseDeviceProfiles.ini', 'BaseScalability.ini',
-        'BaseGameUserSettings.ini'].map(name =>
-        [`.tools/ue58-web-build-host/Engine/Config/${name}`, `/Engine/Config/${name}`])
-    ].map(([source, virtualPath]) => ({...audit(path.join(root, source)), virtualPath}));
+    report.sourceFiles = ['web-engine.html', 'verify-web-engine.cjs', 'web-engine-config.cjs',
+      'content-file-metadata.cjs'].map(name => audit(path.join(__dirname, name)));
+    const {configFiles, bundle} = loadEngineConfig(root);
+    report.configFiles = configFiles;
     const bundleFile = path.join(staged, 'config-files.json');
-    fs.writeFileSync(bundleFile, JSON.stringify(report.configFiles.map(item => ({
-      path: item.virtualPath, sha256: item.sha256, data: fs.readFileSync(item.file).toString('base64')
-    }))));
+    fs.writeFileSync(bundleFile, JSON.stringify(bundle));
     report.configBundle = audit(bundleFile);
     const expectedConfigFiles = report.configFiles.map(item => ({path: item.virtualPath, sha256: item.sha256}));
     const stageFile = path.join(__dirname, 'results/web-engine-stage-results.json');

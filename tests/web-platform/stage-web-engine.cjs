@@ -3,6 +3,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const {metadata, audit} = require('./content-file-metadata.cjs');
+const {loadEngineConfig} = require('./web-engine-config.cjs');
 const root = path.resolve(__dirname, '../..');
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
@@ -44,7 +45,8 @@ try {
   }
   assert(cook.products?.length && cook.products.every(valid), 'Cooked files must match the Cook report');
   report.cookReport = audit(cookFile);
-  report.sourceFiles = [audit(__filename), audit(path.join(__dirname, 'content-file-metadata.cjs'))];
+  report.sourceFiles = [__filename, path.join(__dirname, 'content-file-metadata.cjs'),
+    path.join(__dirname, 'web-engine-config.cjs')].map(audit);
   const staged = path.join(__dirname, `build/${prefix}`);
   fs.mkdirSync(staged, {recursive: true});
   const chunks = [];
@@ -127,7 +129,8 @@ try {
   report.files = entries;
   report.totalBytes = offset;
   if (defaultTemplate || projectId) {
-    const base = JSON.parse(fs.readFileSync(path.join(__dirname, 'build/web-engine/config-files.json'), 'utf8'));
+    const {configFiles, bundle: base} = loadEngineConfig(root);
+    report.configFiles = configFiles;
     const renderer = cook.minimalRendererConfig;
     assert(valid(renderer), 'The runtime configuration must match this Cook');
     const configPath = '/Engine/Platforms/Web/Config/WebEngine.ini';

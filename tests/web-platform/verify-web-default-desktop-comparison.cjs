@@ -8,6 +8,7 @@ const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/,
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && audit(item.file).sha256 === item.sha256;
 const report = {date: new Date().toISOString(), pass: false, sourceFiles: [audit(__filename)], comparisons: []};
+const browserSuffixes = process.argv.includes('--edge') ? ['-edge'] : ['', '-edge'];
 try {
   const nativeFile = path.join(directory, 'default-shadow-native-desktop-results.json');
   const native = read(nativeFile);
@@ -21,7 +22,7 @@ try {
   report.nativeReport = audit(nativeFile);
   report.nativeInput = audit(native.input);
   report.nativeLog = audit(native.log);
-  for (const suffix of ['', '-edge']) {
+  for (const suffix of browserSuffixes) {
     const file = path.join(directory, `web-default-desktop${suffix}-results.json`);
     const browser = read(file);
     assert(browser.pass && browser.completeUEScene && browser.runs.length === 1);

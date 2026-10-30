@@ -167,7 +167,7 @@ const report = {date: new Date().toISOString(), pass: false, renderer: 'desktop-
       for (const key of ['x', 'y', 'z', 'pitch', 'yaw', 'fov'])
         assert(Math.abs(run.comparisonCamera[key] - reference[key]) < 0.001);
       await shot('native-camera');
-      if (name === 'Chrome' && !published) {
+      if (!published) {
         fs.writeFileSync(fixtureFile, JSON.stringify({
           output: path.join(directory, 'default-shadow-native-desktop'), samples: run.samples.samples,
           views: [{...reference, name: 'baseline', dense: true, bias: 0.5, slope: 0.5, cast: true}]

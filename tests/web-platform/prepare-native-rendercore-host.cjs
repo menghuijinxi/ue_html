@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
+const {linkOrCopy} = require('./link-or-copy.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const stock = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
@@ -104,7 +105,7 @@ try {
       link(source, destination);
     } else if (!fs.existsSync(destination)) {
       if (/^UnrealEditor-RenderCore\./i.test(entry.name) || !/\.(dll|exe)$/i.test(entry.name)) fs.copyFileSync(source, destination);
-      else fs.linkSync(source, destination);
+      else linkOrCopy(source, destination);
     }
   }
   assert.equal(fs.statSync(path.join(host, 'Binaries/Win64/UnrealEditor-RenderCore.dll')).nlink, 1);
@@ -141,14 +142,14 @@ try {
       'Source/Runtime/Renderer/Private/ShadowSetup.cpp',
       'Source/Runtime/Renderer/Private/IESTextureManager.cpp'] : []),
   ].map(name => audit(path.join(stock, name)));
-  report.sourceFiles = [audit(__filename),
+  report.sourceFiles = [audit(__filename), audit(path.join(__dirname, 'link-or-copy.cjs')),
     ...overlays.filter(name => !renderer || name.startsWith('Public/')).flatMap(name => [
       audit(path.join(root, 'reference-engine/Engine/Source/Runtime/RenderCore', name)),
       audit(path.join(host, 'Source/Runtime/RenderCore', name))]),
     ...rendererOverlays.flatMap(name => [
       audit(path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name)),
       audit(path.join(host, 'Source/Runtime/Renderer', name))])];
-  report.boundary = `Isolated native ${moduleName} build host using installed source, generated headers and copied import libraries. Writable module sources and outputs are independent copies. Other native DLL hardlinks are read-only dependencies.`;
+  report.boundary = `Isolated native ${moduleName} build host using installed source, generated headers and copied import libraries. Writable module sources and outputs are independent copies. Other native DLLs use hardlinks or cross-volume copies as read-only dependencies.`;
   report.pass = true;
 } catch (error) {
   report.failure = error.stack;

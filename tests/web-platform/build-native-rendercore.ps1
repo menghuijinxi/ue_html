@@ -1,6 +1,7 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
-    [ValidateSet('RenderCore', 'Renderer')][string]$Module = 'RenderCore'
+    [ValidateSet('RenderCore', 'Renderer')][string]$Module = 'RenderCore',
+    [ValidateRange(1, 16)][int]$MaxParallelActions = 1
 )
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -15,11 +16,13 @@ $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
 $taskFlag = "UE_WEB_NATIVE_$($Module.ToUpperInvariant())"
 $taskSavedFlag = [Environment]::GetEnvironmentVariable($taskFlag)
+$taskSavedEngineRoot = $env:UE_ENGINE_ROOT
 $taskReport = [ordered]@{
     date = Get-Date -Format o
     pass = $false
     nativeModuleOnly = $true
     fullSourceEngineBuild = $false
+    maxParallelActions = $MaxParallelActions
     nativeModuleLoadVerified = $false
     completeUEScene = $false
 }
@@ -27,8 +30,12 @@ function Get-TaskAudit([string]$File) {
     return @{ file = [IO.Path]::GetFullPath($File); sha256 = (Get-FileHash -LiteralPath $File -Algorithm SHA256).Hash.ToLowerInvariant() }
 }
 try {
-    $taskProcess.ProcessorAffinity = [IntPtr]3
+    $taskWorkerThreads = [Math]::Min([Environment]::ProcessorCount, [Math]::Max(2, $MaxParallelActions * 2))
+    $taskProcess.ProcessorAffinity = [IntPtr]($taskAffinity.ToInt64() -band ([long][Math]::Pow(2, $taskWorkerThreads) - 1))
+    $env:UE_ENGINE_ROOT = Join-Path $Engine 'Engine'
     [Environment]::SetEnvironmentVariable($taskFlag, '1')
+    & node (Join-Path $PSScriptRoot 'prepare-native-ubt.cjs') $env:UE_ENGINE_ROOT
+    if ($LASTEXITCODE -ne 0) { throw 'Native UBT source preparation failed' }
     $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-native-rendercore-host.cjs'))
     if ($Module -eq 'Renderer') { $taskPrepareArguments += '--renderer' }
     & node @taskPrepareArguments *> "$taskLog.prepare"
@@ -37,7 +44,7 @@ try {
     $taskPrepared = Get-Content -LiteralPath $taskPreparedFile -Raw | ConvertFrom-Json
     $taskReport.hostPreparation = Get-TaskAudit $taskPreparedFile
     $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/dotnet.exe'
-    & $taskDotnet build (Join-Path $PSScriptRoot 'native-ubt/UnrealBuildTool.Native.csproj') -c Release --no-restore *> "$taskLog.ubt-build"
+    & $taskDotnet build (Join-Path $PSScriptRoot 'native-ubt/UnrealBuildTool.Native.csproj') -c Release "-p:UEEngineRoot=$env:UE_ENGINE_ROOT" *> "$taskLog.ubt-build"
     if ($LASTEXITCODE -ne 0) { throw "Native UBT build failed: $taskLog.ubt-build" }
     $taskUBT = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll'
     # A plugin-only build can cache a target without the native RenderCore outputs.
@@ -45,7 +52,7 @@ try {
     if (Test-Path -LiteralPath $taskMakefile) { Remove-Item -LiteralPath $taskMakefile }
     $taskArguments = @($taskUBT, 'UEShaderHostEditor', 'Win64', 'Development',
         "-Project=$taskProject", "-Module=$Module", '-NoUBA', '-NoUbaLocal',
-        '-MaxParallelActions=1', '-NoHotReloadFromIDE')
+        "-MaxParallelActions=$MaxParallelActions", '-NoHotReloadFromIDE')
     & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" "-Log=$taskLog.actions-ubt" *> "$taskLog.actions"
     if ($LASTEXITCODE -ne 0) { throw "Native action export failed: $taskLog.actions" }
     $taskExport = Get-Content -LiteralPath $taskActions -Raw | ConvertFrom-Json
@@ -73,14 +80,16 @@ try {
     $taskReport.installedInputs = $taskPrepared.installedInputs
     $taskReport.sourceFiles = @($taskPrepared.sourceFiles) + @(
         $PSCommandPath,
-        (Join-Path $PSScriptRoot 'native-ubt/UEBuildTarget.cs'),
+        (Join-Path $Engine 'Engine/Source/Programs/UnrealBuildTool/Configuration/UEBuildTarget.cs'),
+        (Join-Path $PSScriptRoot 'prepare-native-ubt.cjs'),
+        (Join-Path $PSScriptRoot 'native-ubt/build/UEBuildTarget.cs'),
         (Join-Path $PSScriptRoot 'native-ubt/UnrealBuildTool.Native.csproj')
     ) | ForEach-Object { if ($_ -is [string]) { Get-TaskAudit $_ } else { $_ } }
     $taskReport.products = @("UnrealEditor-$Module.dll", "UnrealEditor-$Module.pdb") |
         ForEach-Object { Get-TaskAudit (Join-Path $taskHost "Binaries/Win64/$_") }
     $taskReport.ubt = Get-TaskAudit $taskUBT
     $taskReport.log = Get-TaskAudit $taskLog
-    $taskReport.boundary = "Isolated native $Module module build using installed 5.8.0 source with audited target Web overlays. Other native modules remain precompiled dependencies. Module loading, Cook completion, WASM loading and rendering require separate verification."
+    $taskReport.boundary = "Isolated native $Module module build using installed 5.8 source with audited target Web overlays. Other native modules remain precompiled dependencies. Module loading, Cook completion, WASM loading and rendering require separate verification."
     $taskReport.pass = $true
 } catch {
     $taskReport.failure = $_.ToString()
@@ -88,6 +97,7 @@ try {
 } finally {
     $taskReport | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $taskReportFile -Encoding utf8
     [Environment]::SetEnvironmentVariable($taskFlag, $taskSavedFlag)
+    $env:UE_ENGINE_ROOT = $taskSavedEngineRoot
     $taskProcess.ProcessorAffinity = $taskAffinity
 }
 Write-Output ([pscustomobject]$taskReport | Select-Object pass, actionCount, installedInputsUnmodified, log | ConvertTo-Json)

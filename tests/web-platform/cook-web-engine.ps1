@@ -17,6 +17,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+$taskInstalledVersion = Get-Content -LiteralPath (Join-Path $Engine 'Engine/Build/Build.version') -Raw | ConvertFrom-Json
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-platform-host/Engine'
 $taskWebGPU = $Mode -ne 'NullRHI-only'
 $taskES31 = $Mode -eq 'WebGPU-ES31'
@@ -84,7 +85,7 @@ $taskReport = [ordered]@{
     jobCacheDDCDisabled = [bool]($taskWebGPU -and $ValidateShaderJobCache)
     shaderMapDDCDisabled = [bool]($taskWebGPU -and $ValidateShaderJobCache)
     completeUEScene = $false
-    sourceEngineVersion = '5.8.0-installed-host'
+    sourceEngineVersion = "$($taskInstalledVersion.MajorVersion).$($taskInstalledVersion.MinorVersion).$($taskInstalledVersion.PatchVersion)-installed-host"
     targetEngineVersion = '5.8.3-source-branch'
     output = $taskOutput
 }

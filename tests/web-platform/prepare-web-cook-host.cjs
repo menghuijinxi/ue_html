@@ -3,6 +3,7 @@ const path = require('node:path');
 const cp = require('node:child_process');
 const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
+const {linkOrCopy} = require('./link-or-copy.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
@@ -122,7 +123,7 @@ try {
       fs.unlinkSync(destination);
     }
     if (fs.existsSync(destination)) continue;
-    if (entry.isFile()) fs.linkSync(source, destination);
+    if (entry.isFile()) linkOrCopy(source, destination);
     else if (entry.isDirectory()) fs.symlinkSync(source, destination, 'junction');
   }
   for (const name of ['Config', 'Content', 'Source', 'Build', 'Plugins', 'Binaries/ThirdParty']) {
@@ -190,10 +191,10 @@ try {
   assert.equal(sha(preserved), sha(stockDLL));
   assert.equal(sha(hostDDPI), sha(ddpi));
   report.platformMap = rebuilt;
-  report.sourceFiles = [__filename, ddpi, generated, compileResponse,
+  report.sourceFiles = [__filename, path.join(__dirname, 'link-or-copy.cjs'), ddpi, generated, compileResponse,
     path.join(build, 'UnrealEditor-Definitions.h'), path.join(build, 'UnrealEditor-Forward.def')].map(audit);
   report.products = [replacement, preserved, hostDDPI, destinationDLL, rendererDestination, path.join(binaries, 'UnrealEditor-Cmd.exe')].map(audit);
-  report.boundary = `Isolated installed 5.8.0 native Cook host with ${report.profile} assigned to Web. ` +
+  report.boundary = `Isolated installed 5.8 native Cook host with ${report.profile} assigned to Web. ` +
     (es31 ? 'ES3.1 Cook profile matching the Web browser feature level. ' :
       'Uses the target 5.8.3 Web DDPI. ') +
     'The platform-name map, RenderCore shared Web shader predicates and Renderer cloud shader gates are rebuilt; other BuildSettings exports forward to a separate stock DLL. Other native modules remain installed binaries. No Cook or shader success is implied.';

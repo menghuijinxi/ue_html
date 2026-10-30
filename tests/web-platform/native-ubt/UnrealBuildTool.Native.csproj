@@ -15,7 +15,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="UEBuildTarget.cs" />
+    <Compile Include="build/UEBuildTarget.cs" />
     <Compile Include="$(UEEngineRoot)/Source/Programs/UnrealBuildTool/**/*.cs"
              Exclude="$(UEEngineRoot)/Source/Programs/UnrealBuildTool/obj/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/bin/**;$(UEEngineRoot)/Source/Programs/UnrealBuildTool/Configuration/UEBuildTarget.cs" />
     <Compile Include="$(UEEngineRoot)/Platforms/*/Source/Programs/UnrealBuildTool/**/*.cs" />
