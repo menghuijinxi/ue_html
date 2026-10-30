@@ -107,6 +107,8 @@ Cook 必须显式传入 `-DistanceFields`，打包必须显式传入 `--distance
 
 ## 入口
 
+别墅当前配置、已恢复的历史项、代码特性排除及缝隙阴影单项对照，完整清单见 `UE58_VILLA_RENDERING_OVERRIDES.md`。接触阴影配置现为 1，但其画面贡献尚未恢复；点光源和矩形灯立方体阴影仍被 Web 分支跳过。
+
 服务根目录为 `tests/web-platform`，端口 8765：
 
 - `/build/ue-default-template-distance-fields-threads/index.html`
@@ -150,4 +152,4 @@ node tests/web-platform/probe-web-distance-fields.cjs --edge --folder=triplex-ho
 
 测试使用 H 盘独立持久化浏览器配置；大型关卡不适用临时隐身配置的较小配额。报告、PNG 和二进制回读在忽略的 `tests/web-platform/results` / `build` 中。`probe-distance-field-rhi.ps1` 需要预先准备距离场 probe 的 float/uint worker 着色器和 `prepare-distance-field-probe.cjs --conversion=<实际Cook的ShaderConversion目录列表>`；缓存命中的 Cook 不一定重新导出所有着色器，可用分号连接多个实际 Cook 输出目录。
 
-`--shader-capture` 可记录浏览器实际创建的 WGSL；`--shader-overrides=<JSON>` 与 `--engine-args=<JSON>` 仅用于可追溯的隔离诊断，报告会记录输入哈希和覆盖边界。使用着色器替换的运行不能验收正式 Cook 着色器。原生 `capture-villa-distance-fields.ps1 -CasesFile <JSON>` 接受自定义机位及每例整数 CVar，结果记录在对应报告中。过渡用材质图遍历、硬编码着色器绑定抓取和独立全局场夹具已移出正式测试脚本。
+`--shader-capture` 可记录浏览器实际创建的 WGSL；`--shader-overrides=<JSON>` 与 `--renderer-settings=<JSON>` 仅用于可追溯的隔离诊断，报告会记录输入哈希和覆盖边界，后者还校验配置请求及引擎 Set CVar 日志。使用这些覆盖的运行不能验收正式默认产物。`--engine-args=<JSON>` 只适用于启动器明确解析的开关；任意 UE 参数并不转发，`-ini:` 会被测试脚本拒绝。原生 `capture-villa-distance-fields.ps1 -CasesFile <JSON>` 接受自定义机位及每例整数 CVar，结果记录在对应报告中。过渡用材质图遍历、硬编码着色器绑定抓取和独立全局场夹具已移出正式测试脚本。

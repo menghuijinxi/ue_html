@@ -5,6 +5,7 @@
     "ev100": -1,
     "frames": 180,
     "requireDFAO": true,
+    "requireSSAO": true,
     "expect": {"antiAliasing": 2, "reflectionMethod": 2},
     "regions": {"cardboard": [0.338, 0.478, 0.027, 0.032]},
     "regionLimits": {"cardboard": {"minMean": 45}}
@@ -15,6 +16,7 @@
     "ev100": -1,
     "frames": 180,
     "requireDFAO": true,
+    "requireSSAO": true,
     "regions": {"carpet": [0.35, 0.59, 0.1, 0.04]},
     "regionLimits": {"carpet": {"minMean": 90, "maxBlackFraction": 0.3}}
   },
@@ -24,6 +26,7 @@
     "ev100": -1,
     "frames": 180,
     "requireDFAO": true,
+    "requireSSAO": true,
     "requireSSR": true,
     "requireLTC": true,
     "expect": {"reflectionMethod": 2},

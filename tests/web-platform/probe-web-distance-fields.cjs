@@ -1,6 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const {chromium} = require('playwright');
 const {PNG} = require('pngjs');
 const {audit} = require('./content-file-metadata.cjs');
@@ -18,7 +19,15 @@ const shaderOverridesFile = process.argv.find(value => value.startsWith('--shade
 const shaderOverrides = shaderOverridesFile ? JSON.parse(fs.readFileSync(shaderOverridesFile, 'utf8')) : [];
 const engineArgsFile = process.argv.find(value => value.startsWith('--engine-args='))?.slice(14);
 const engineArgs = engineArgsFile ? JSON.parse(fs.readFileSync(engineArgsFile, 'utf8')) : [];
+const rendererSettingsFile = process.argv.find(value => value.startsWith('--renderer-settings='))?.slice(20);
+const rendererSettings = rendererSettingsFile ?
+  JSON.parse(fs.readFileSync(rendererSettingsFile, 'utf8')) : {};
+assert(rendererSettings && !Array.isArray(rendererSettings) && typeof rendererSettings === 'object');
+assert(Object.entries(rendererSettings).every(([name, value]) =>
+  /^(?:r|landscape)\.[A-Za-z0-9.]+$/.test(name) && Number.isFinite(value)));
 assert(Array.isArray(engineArgs) && engineArgs.every(value => typeof value === 'string'));
+assert(!engineArgs.some(value => /^-ini:/i.test(value)),
+  'The browser launcher does not forward -ini overrides; use --renderer-settings instead');
 assert(Array.isArray(shaderOverrides) && shaderOverrides.every(value =>
   typeof value.contains === 'string' && typeof value.pattern === 'string' && typeof value.replacement === 'string'));
 if (shaderOverridesFile)
@@ -45,6 +54,10 @@ if (shaderOverridesFile) {
   report.boundary += ' Diagnostic shader replacements are active; this run does not validate the shipped shaders.';
 }
 if (engineArgsFile) report.engineArguments = {source: audit(engineArgsFile), arguments: engineArgs};
+if (rendererSettingsFile) {
+  report.rendererSettings = {source: audit(rendererSettingsFile), values: rendererSettings};
+  report.boundary += ' Diagnostic runtime renderer configuration is active; this run does not validate the shipped defaults.';
+}
 let context, page;
 const state = () => page.evaluate(() => ({failure: globalThis.__webEngineFailure,
   frames: globalThis.__webEngineFrames || 0, ready: globalThis.__webEngineReady,
@@ -99,13 +112,33 @@ async function capture(name) {
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(text))
         report.errors.push(text);
     });
+    if (rendererSettingsFile) await context.route('**/config-files.json', async route => {
+      const response = await route.fetch();
+      const configs = await response.json();
+      const config = configs.find(item => item.path === '/Engine/Platforms/Web/Config/WebEngine.ini');
+      assert(config, 'Renderer configuration must exist');
+      let text = Buffer.from(config.data, 'base64').toString('utf8');
+      assert(text.includes('[SystemSettings]'));
+      report.rendererSettings.originalConfig = config.sha256;
+      for (const name of Object.keys(rendererSettings)) {
+        const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        text = text.replace(new RegExp(`^${escaped}=.*\\r?\\n?`, 'gm'), '');
+      }
+      text = text.replace('[SystemSettings]', '[SystemSettings]\n' +
+        Object.entries(rendererSettings).map(([name, value]) => `${name}=${value}`).join('\n'));
+      config.data = Buffer.from(text).toString('base64');
+      config.sha256 = crypto.createHash('sha256').update(text).digest('hex');
+      report.rendererSettings.runtimeConfig = config.sha256;
+      await route.fulfill({response, body: JSON.stringify(configs)});
+    });
     await page.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       await route.fulfill({response, body: `
         globalThis.__webDistanceFieldsGPU = {textures: {}, compute: {}, raster: {}, errors: [], losses: [],
-          historyBindings: 0, historyVelocityBindings: 0, ssrDraws: 0};
+          historyBindings: 0, historyVelocityBindings: 0, ssrDraws: 0, ssaoDraws: 0};
         const dfPipelines = new WeakMap(), dfPasses = new WeakMap(), dfViews = new WeakMap();
         const dfSSRModules = new WeakSet(), dfSSREntries = new Set();
+        const dfSSAOModules = new WeakSet(), dfSSAOEntries = new Set();
         {
           globalThis.__dfShaderSources = {};
           globalThis.__dfShaderOverrides = [];
@@ -126,6 +159,7 @@ async function capture(name) {
             if (${shaderCapture} && entry) __dfShaderSources[entry] = descriptor.code;
             const module = dfModule.call(this, descriptor);
             if (descriptor.code.includes('SSRParams')) dfSSRModules.add(module);
+            if (descriptor.code.includes('ScreenSpaceAOParams')) dfSSAOModules.add(module);
             return module;
           };
         }
@@ -193,6 +227,8 @@ async function capture(name) {
             dfPipelines.set(pipeline, descriptor[stage]?.entryPoint || descriptor.label || 'unknown');
             if (descriptor.fragment && dfSSRModules.has(descriptor.fragment.module))
               dfSSREntries.add(descriptor.fragment.entryPoint);
+            if (descriptor.fragment && dfSSAOModules.has(descriptor.fragment.module))
+              dfSSAOEntries.add(descriptor.fragment.entryPoint);
             return pipeline;
           };
         }
@@ -211,13 +247,14 @@ async function capture(name) {
               const counts = __webDistanceFieldsGPU[category];
               if (entry) counts[entry] = (counts[entry] || 0) + 1;
               if (category === 'raster' && dfSSREntries.has(entry)) ++__webDistanceFieldsGPU.ssrDraws;
+              if (category === 'raster' && dfSSAOEntries.has(entry)) ++__webDistanceFieldsGPU.ssaoDraws;
               return original.apply(this, args);
             };
           }
         }
         const dfTexture = GPUDevice.prototype.createTexture;
         GPUDevice.prototype.createTexture = function(descriptor) {
-          if (/DistanceField|GlobalDistance|BentNormal|SceneVelocity|SSR|ScreenSpaceReflections|GGX\\.LTC|Sheen\\.LTC/.test(descriptor.label || ''))
+          if (/DistanceField|GlobalDistance|BentNormal|SceneVelocity|SSR|ScreenSpaceReflections|ScreenSpaceAO|GGX\\.LTC|Sheen\\.LTC/.test(descriptor.label || ''))
             __webDistanceFieldsGPU.textures[descriptor.label] = {
               size: descriptor.size, format: descriptor.format, dimension: descriptor.dimension,
               mipLevelCount: descriptor.mipLevelCount
@@ -251,6 +288,12 @@ async function capture(name) {
     });
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
     report.startup = await advance(90);
+    if (rendererSettingsFile) {
+      assert(report.rendererSettings.runtimeConfig, 'Diagnostic renderer configuration must be fetched');
+      for (const [name, value] of Object.entries(rendererSettings))
+        assert(report.logs.some(text => text.includes(`Set CVar [[${name}:${value}]]`)),
+          `Diagnostic renderer setting must reach the engine: ${name}=${value}`);
+    }
     if (!visualClock) assert.equal(report.startup.visualClock, null, 'Normal startup must not freeze rendering');
     assert(report.startup.fields?.meshes > 0, 'Cooked mesh distance fields must be loaded');
     assert.equal(report.startup.fields.ao, 1, 'The shipped page must start with DFAO enabled');
@@ -273,6 +316,7 @@ async function capture(name) {
         for (const control of entry.controls || [])
           assert.equal(await page.evaluate(values => __webEngineRPC('WebLightingQualityTest', ...values), control), 1);
         const valueBeforeSSR = (await state()).gpu.ssrDraws;
+        const valueBeforeSSAO = (await state()).gpu.ssaoDraws;
         await advance(entry.frames || 180);
         assert.equal(await page.evaluate(() => __webEngineRPC('WebLightingQualityTest', -1, 0)), 1);
         await advance(2);
@@ -283,6 +327,8 @@ async function capture(name) {
           assert(current.gpu.ssrDraws > valueBeforeSSR, 'SSR must draw during this case');
           assert(current.gpu.textures.ScreenSpaceReflections, 'SSR color output must exist');
         }
+        if (entry.requireSSAO)
+          assert(current.gpu.ssaoDraws > valueBeforeSSAO, 'SSAO must draw during this case');
         if (entry.requireLTC)
           for (const [name, format, size] of [['GGX.LTCMat', 'rgba16float', 64],
             ['GGX.LTCAmp', 'rg16float', 64], ['Sheen.LTC', 'rgba16float', 32]]) {
@@ -310,7 +356,9 @@ async function capture(name) {
             }
           regions[name] = {mean: sum / count, blackFraction: black / count};
         }
-        report.cases.push({entry, state: current, regions, ssrDraws: current.gpu.ssrDraws - valueBeforeSSR});
+        report.cases.push({entry, state: current, regions,
+          ssrDraws: current.gpu.ssrDraws - valueBeforeSSR,
+          ssaoDraws: current.gpu.ssaoDraws - valueBeforeSSAO});
         console.log(JSON.stringify({case: entry.name, lighting: current.lighting, regions}));
         for (const [name, limits] of Object.entries(entry.regionLimits || {})) {
           const measured = regions[name];
