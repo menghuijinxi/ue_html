@@ -103,6 +103,8 @@ Cook 必须显式传入 `-DistanceFields`，打包必须显式传入 `--distance
 
 并行启动两浏览器时，Chrome 曾在初始化阶段丢失设备，原始报告保留为 `web-distance-field-triplex-house-villa-df-distance-fields-threads-chrome-quality-concurrent-loss-results.json`；串行复验通过，原因尚未确定，不能把本轮结果当作并行多实例稳定性验收。
 
+2026-10-30 用户另外报告 Edge `STATUS_ACCESS_VIOLATION`。12:17 的本机转储已定位到 renderer 内 WebGPU `createBindGroup()` 的 Blink 参数转换路径；四轮可见窗口启动、刷新和缩放未重现，尚无可验证修复。详见 `UE58_BROWSER_CRASH_DIAGNOSIS.md`，不能将上面的画质回归通过作为该崩溃已解决的依据。
+
 ## 入口
 
 服务根目录为 `tests/web-platform`，端口 8765：
