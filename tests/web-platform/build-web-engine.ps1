@@ -153,6 +153,16 @@ try {
     $taskFiles = @($PSCommandPath, (Join-Path $PSScriptRoot 'compile-web-actions.cjs'),
         (Join-Path $PSScriptRoot 'WebEngine.BuildConfiguration.xml'),
         (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1'))
+    $taskFiles += Join-Path $PSScriptRoot 'prepare-web-skinning.cjs'
+    $taskFiles += Join-Path $Engine 'Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
+    $taskFiles += Join-Path $Engine 'Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.h'
+    $taskFiles += Join-Path $Engine 'Engine/Shaders/Shared/SkinningDefinitions.h'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
+    foreach ($taskDepthOverlay in @('GenerateConservativeDepthBuffer.cpp', 'GenerateConservativeDepthBuffer.h', 'VolumetricFog.cpp')) {
+        $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskDepthOverlay"
+        $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskDepthOverlay"
+    }
     $taskBlakeBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "results/web-blake3$taskVariant-build-results.json") | ConvertFrom-Json
     if (-not $taskBlakeBuild.pass) { throw 'Portable BLAKE3 archive must build successfully' }
     $taskFiles += @($taskBlakeBuild.sourceFiles | ForEach-Object { $_.file })

@@ -261,7 +261,7 @@ foreach ($taskRendererOverlay in @('Private/DistanceFieldAmbientOcclusion.cpp', 
     'Private/SystemTextures.cpp', 'Private/MobileBasePassRendering.cpp', 'Private/ReflectionEnvironmentCapture.cpp',
     'Private/HairStrands/RenderCurveSceneExtension.cpp',
     'Private/Nanite/NaniteMaterialsSceneExtension.cpp', 'Private/Nanite/NaniteOwnershipVisibilitySceneExtension.cpp',
-    'Private/Skinning/SkinningSceneExtension.cpp', 'Private/GPUScene.cpp', 'Private/ViewData.cpp',
+    'Private/GPUScene.cpp', 'Private/ViewData.cpp',
     'Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp',
     'Private/OIT/OIT.cpp',
     'Private/PostProcess/SubpixelMorphologicalAA.cpp', 'Private/PostProcess/PostProcessing.cpp',
@@ -281,10 +281,13 @@ foreach ($taskRendererOverlay in @('Private/DistanceFieldAmbientOcclusion.cpp', 
     'Private/SceneTextureReductions.cpp', 'Private/CapsuleShadowRendering.cpp', 'Private/CapsuleShadowRendering.h',
     'Private/DepthCopy.cpp', 'Private/DepthCopy.h', 'Private/SceneRendering.cpp', 'Private/SceneTextures.cpp',
     'Private/PostProcess/PostProcessTonemap.cpp', 'Public/HdrCustomResolveShaders.h',
-    'Private/LocalFogVolumeRendering.cpp', 'Private/VolumetricFog.cpp', 'Private/GenerateConservativeDepthBuffer.cpp',
+    'Private/LocalFogVolumeRendering.cpp', 'Private/VolumetricFog.cpp',
+    'Private/GenerateConservativeDepthBuffer.cpp', 'Private/GenerateConservativeDepthBuffer.h',
     'Private/VolumetricFogLightFunction.cpp', 'Private/VolumetricFogVoxelization.cpp')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/$taskRendererOverlay") -Destination (Join-Path $taskRendererModule $taskRendererOverlay) -Force
 }
+& node (Join-Path $PSScriptRoot 'prepare-web-skinning.cjs') (Join-Path $Engine 'Engine')
+if ($LASTEXITCODE -ne 0) { throw 'Web skinning source preparation failed' }
 $taskLandscapeModule = Join-Path $taskRuntime 'Landscape'
 $taskOriginalLandscapeModule = [IO.Path]::GetFullPath((Join-Path $taskOriginalSource 'Runtime/Landscape'))
 if (Test-Path -LiteralPath $taskLandscapeModule) {

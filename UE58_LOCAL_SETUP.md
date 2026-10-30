@@ -20,6 +20,8 @@
 - 默认关卡 Stage 直接生成基础配置，不再依赖先运行一次 NullRHI 浏览器验证；与基础验证共享配置读取代码。
 - Edge 可以生成桌面同视角对照输入；画面对照可用 `--edge` 单独检查本机浏览器。
 - Cook 报告读取实际安装版版本号。
+- Web 构建的蒙皮实现沿用安装版源码，只从目标分支提取默认参数处理，避免与安装版私有头文件及共享 Shader 结构混用；体积雾的深度缓冲实现同步复制配套声明，并记录这些输入的来源哈希。
+- 引擎仓库提交 `ffd7a662b` 修复 Emdawn 端口脚本的目录联接路径解析，使工具依赖从外围项目的 `.tools` 目录加载。
 
 ## 后续增量构建
 
@@ -35,7 +37,7 @@ $env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dep
 & tests/web-platform/build-native-rendercore.ps1 -Engine D:/UE_5.8 -Module RenderCore -MaxParallelActions 4
 & tests/web-platform/build-native-rendercore.ps1 -Engine D:/UE_5.8 -Module Renderer -MaxParallelActions 4
 
-& tests/web-platform/build-web-engine.ps1 -Engine D:/UE_5.8 -MaxParallelActions 8 -SkipHostPreparation
+& tests/web-platform/build-web-engine.ps1 -Engine D:/UE_5.8 -MaxParallelActions 12 -SkipHostPreparation
 & tests/web-platform/cook-web-engine.ps1 -Engine D:/UE_5.8 -Mode WebGPU-SM5 -Scene DefaultTemplate -StopOnShaderError -ValidateShaderJobCache -SkipBuild
 node tests/web-platform/stage-web-engine.cjs --default-template --desktop
 node tests/web-platform/package-web-default-template.cjs --desktop
@@ -53,10 +55,32 @@ node tests/web-platform/serve.cjs
 node tests/web-platform/probe-web-default-desktop.cjs --edge
 & tests/web-platform/capture-web-default-native.ps1 -Engine D:/UE_5.8 -Mode desktop
 node tests/web-platform/verify-web-default-desktop-comparison.cjs --edge
+node tests/web-platform/probe-web-default-startup.cjs --desktop --candidate --browser=Edge --runs=1 --scale=1.5 --report=local-edge
 ```
 
 完整交付审计和正式发布另见 `UE58_DEFAULT_TEMPLATE_PROGRESS.md`；单浏览器本地运行不替代其中要求的双浏览器发布检查。
 
-## 已完成的资源验证
+## 本次运行结果
 
-2026-10-30 的默认关卡 Cook 与 Stage 均通过，地图为 `/Engine/Maps/Templates/Template_Default`，桌面 SM5，wasm64，共 425 个文件、225,003,973 字节。Edge 对本次 Cook 的 3,202 个 WGSL 模块检查通过，零模块编译错误。场景完整运行与同视角像素对照以最终运行报告为准。
+2026-10-30 已完成完整 UBT 编译链接、默认关卡 Cook、Stage 和打包。地图为 `/Engine/Maps/Templates/Template_Default`，桌面 SM5，wasm64；Cook 共 425 个文件、225,003,973 字节，最终网页包为 9 个文件、406,549,840 字节。
+
+- Edge 对本次 Cook 的 3,202 个 WGSL 模块检查通过，零模块编译错误。
+- Edge 156.0.4314.50 完整场景探针通过，`completeUEScene=true`，结束时运行到 3,685 帧；一分钟连续运行约 60.339 秒，预热后线性内存增长为零，页面/GPU 错误均为零。
+- 实际前进、鼠标转向、失焦释放按键、横竖屏切换、恢复尺寸和重载均通过；失焦后的相机漂移为零。
+- 普通页面在 DPR 1.5 下直接启动、横竖屏切换及移动检查通过，没有修改 GPU API，也没有冻结测试时钟。
+- 同地图、配置、材质及相机的安装版 UE D3D12 SM5 截图对照通过，平均通道误差（满量程 255）：全图 1.370，材质 1.339，地面 0.962，天空 1.807。
+
+主要报告位于 `tests/web-platform/results/`：
+
+| 报告 | 结果 |
+| --- | --- |
+| `web-engine-full-build-results.json` | 完整普通 UBT 构建及链接通过 |
+| `web-engine-webgpu-sm5-default-cook-results.json` | 默认关卡 Cook 通过 |
+| `web-engine-webgpu-sm5-default-stage-results.json` | 资源和配置 Stage 通过 |
+| `web-default-template-desktop-package-results.json` | 桌面候选包通过 |
+| `web-desktop-shader-modules-edge-results.json` | 全部转换模块通过 |
+| `web-default-desktop-edge-results.json` | 完整场景、实际通道、交互及一分钟运行通过 |
+| `web-default-startup-local-edge-results.json` | 普通页面启动及三个窗口状态通过 |
+| `web-default-desktop-comparison-results.json` | 与原生 SM5 同视角画面对照通过 |
+
+网页截图：`tests/web-platform/results/default-desktop-edge-samples.png`。本次交付为本机 Edge 运行验证，未执行双浏览器正式发布流程，也不将一分钟检查扩展为长期稳定性结论。
