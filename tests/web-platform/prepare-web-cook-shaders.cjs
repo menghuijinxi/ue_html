@@ -8,6 +8,11 @@ const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const stock = path.join(engine, 'Shaders');
 const output = path.join(root, '.tools/ue58-web-cook-shaders');
 const overrides = new Map([
+  ['Private/MaterialTemplate.ush', [{
+    before: '#if COMPILER_DXC && (COMPILER_VULKAN || COMPILER_GLSL_ES3_1) && (!RAYHITGROUPSHADER) && (!IS_NANITE_PASS)',
+    after: ['// WebGPU keeps D3D front-face semantics when using the Vulkan compiler.',
+      '#if COMPILER_DXC && (COMPILER_VULKAN || COMPILER_GLSL_ES3_1) && (!RAYHITGROUPSHADER) && (!IS_NANITE_PASS) && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)'].join('\n'),
+  }]],
   ['Private/DistanceFieldLightingPost.usf', [{
     before: '#include "ScreenPass.ush"\n',
     after: ['#include "ScreenPass.ush"', '',

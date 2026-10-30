@@ -8,7 +8,8 @@ const rpcNames = new Set([
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
-  'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure'
+  'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
+  'WebLightingQualityTest'
 ]);
 function snapshot() {
   const state = {};

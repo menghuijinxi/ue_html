@@ -18,6 +18,7 @@
 #include "Misc/CoreDelegates.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Parse.h"
+#include "Materials/MaterialInterface.h"
 #include "ProfilingDebugging/CsvProfiler.h"
 #include "RHIStats.h"
 #include "SceneView.h"
@@ -72,6 +73,7 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
     {
         TArray<TSharedPtr<FJsonValue>> Lights;
         TArray<TSharedPtr<FJsonValue>> Meshes;
+        TArray<TSharedPtr<FJsonValue>> Instances;
         TSet<UStaticMesh*> Seen;
         int32 Components = 0;
         int32 ValidComponents = 0;
@@ -109,6 +111,20 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
                 const auto* Data = Mesh->GetRenderData()->LODResources[0].DistanceFieldData;
                 ++Components;
                 ValidComponents += Data && Data->IsValid();
+                auto Instance = MakeShared<FJsonObject>();
+                Instance->SetStringField(TEXT("component"), Component->GetPathName());
+                Instance->SetStringField(TEXT("mesh"), Mesh->GetPathName());
+                const FVector Center = Component->Bounds.Origin;
+                const FVector Extent = Component->Bounds.BoxExtent;
+                Instance->SetArrayField(TEXT("center"), NumberArray({Center.X, Center.Y, Center.Z}));
+                Instance->SetArrayField(TEXT("extent"), NumberArray({Extent.X, Extent.Y, Extent.Z}));
+                TArray<TSharedPtr<FJsonValue>> Materials;
+                for (auto* Material : Component->GetMaterials())
+                {
+                    Materials.Add(MakeShared<FJsonValueString>(Material ? Material->GetPathName() : TEXT("")));
+                }
+                Instance->SetArrayField(TEXT("materials"), Materials);
+                Instances.Add(MakeShared<FJsonValueObject>(Instance));
                 if (Seen.Contains(Mesh))
                     continue;
                 Seen.Add(Mesh);
@@ -126,6 +142,7 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
         }
         Report->SetArrayField(TEXT("lights"), Lights);
         Report->SetArrayField(TEXT("meshes"), Meshes);
+        Report->SetArrayField(TEXT("instances"), Instances);
         Report->SetNumberField(TEXT("meshComponents"), Components);
         Report->SetNumberField(TEXT("componentsWithDistanceFields"), ValidComponents);
         Report->SetNumberField(TEXT("featureLevel"), int32(World->GetFeatureLevel()));
@@ -161,7 +178,9 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
             Client->EngineShowFlags.SetEyeAdaptation(true);
             static_cast<FSceneViewport*>(Client->Viewport)->SetFixedViewportSize(
                 Settings->GetIntegerField(TEXT("width")), Settings->GetIntegerField(TEXT("height")));
-            SetComparisonCVar(TEXT("r.RenderTimeFrozen"), 1);
+            bool Frozen = false;
+            Settings->TryGetBoolField(TEXT("visualClock"), Frozen);
+            SetComparisonCVar(TEXT("r.RenderTimeFrozen"), Frozen ? 1 : 0);
             FAssetCompilingManager::Get().FinishAllCompilation();
             Inventory(World);
             Initialized = true;
@@ -195,6 +214,10 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
             const auto& Entry = Cases[Case]->AsObject();
             SetComparisonCVar(TEXT("r.DistanceFieldAO"), Entry->GetIntegerField(TEXT("ao")));
             SetComparisonCVar(TEXT("r.DistanceFieldShadowing"), Entry->GetIntegerField(TEXT("shadows")));
+            const TSharedPtr<FJsonObject>* Variables = nullptr;
+            if (Entry->TryGetObjectField(TEXT("variables"), Variables))
+                for (const auto& Pair : (*Variables)->Values)
+                    SetComparisonCVar(*Pair.Key, int32(Pair.Value->AsNumber()));
             Client->ExposureSettings.bFixed = Entry->GetBoolField(TEXT("fixedExposure"));
             Client->ExposureSettings.FixedEV100 = Entry->GetNumberField(TEXT("ev100"));
             Client->SetViewLocation(FVector(Entry->GetNumberField(TEXT("x")),

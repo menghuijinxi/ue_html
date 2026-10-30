@@ -13,6 +13,16 @@ const channel = process.argv.includes('--edge') ? 'msedge' : 'chrome';
 const visualClock = process.argv.includes('--visual-clock');
 const startupOnly = process.argv.includes('--startup-only');
 const requireVelocity = process.argv.includes('--require-velocity');
+const shaderCapture = process.argv.includes('--shader-capture');
+const shaderOverridesFile = process.argv.find(value => value.startsWith('--shader-overrides='))?.slice(19);
+const shaderOverrides = shaderOverridesFile ? JSON.parse(fs.readFileSync(shaderOverridesFile, 'utf8')) : [];
+const engineArgsFile = process.argv.find(value => value.startsWith('--engine-args='))?.slice(14);
+const engineArgs = engineArgsFile ? JSON.parse(fs.readFileSync(engineArgsFile, 'utf8')) : [];
+assert(Array.isArray(engineArgs) && engineArgs.every(value => typeof value === 'string'));
+assert(Array.isArray(shaderOverrides) && shaderOverrides.every(value =>
+  typeof value.contains === 'string' && typeof value.pattern === 'string' && typeof value.replacement === 'string'));
+if (shaderOverridesFile)
+  console.log('Diagnostic shader overrides are active; this run cannot validate the shipped shaders.');
 assert(!startupOnly || !visualClock, 'Startup regression must use the normal render clock');
 assert(!requireVelocity || startupOnly, '--require-velocity requires --startup-only');
 const packageFile = path.join(directory, folder.startsWith('ue-default-template') ?
@@ -20,6 +30,7 @@ const packageFile = path.join(directory, folder.startsWith('ue-default-template'
   `web-project-${folder}-package-results.json`);
 const camera = process.argv.find(value => value.startsWith('--camera='))?.slice(9).split(',').map(Number);
 const fixedEV = process.argv.find(value => value.startsWith('--fixed-ev='))?.slice(11);
+const casesFile = process.argv.find(value => value.startsWith('--cases='))?.slice(8);
 const width = Number(process.argv.find(value => value.startsWith('--width='))?.slice(8) || 1280);
 const height = Number(process.argv.find(value => value.startsWith('--height='))?.slice(9) || 720);
 const tag = process.argv.find(value => value.startsWith('--tag='))?.slice(6) || `${width}x${height}`;
@@ -29,11 +40,17 @@ assert(width >= 320 && width <= 3840 && height >= 240 && height <= 2160);
 const report = {date: new Date().toISOString(), pass: false, folder, channel, visualClock, startupOnly, requireVelocity,
   errors: [], logs: [], images: [],
   source: audit(__filename), boundary: 'Browser candidate. GPU pass sums omit copies and gaps; adapter memory includes other apps. Image differences are not a quality score or proof of native parity.'};
+if (shaderOverridesFile) {
+  report.shaderOverrides = audit(shaderOverridesFile);
+  report.boundary += ' Diagnostic shader replacements are active; this run does not validate the shipped shaders.';
+}
+if (engineArgsFile) report.engineArguments = {source: audit(engineArgsFile), arguments: engineArgs};
 let context, page;
 const state = () => page.evaluate(() => ({failure: globalThis.__webEngineFailure,
   frames: globalThis.__webEngineFrames || 0, ready: globalThis.__webEngineReady,
   fields: globalThis.__webDistanceFields, gpu: globalThis.__webDistanceFieldsGPU,
   exposure: globalThis.__webDistanceFieldsExposure,
+  lighting: globalThis.__webDistanceFieldsLighting,
   view: globalThis.__webRenderView, threads: globalThis.__webEngineThreads,
   io: globalThis.__webLocalContentStats, surface: globalThis.__webEngineSurface,
   visualClock: globalThis.__webVisualTestClock || null,
@@ -86,8 +103,32 @@ async function capture(name) {
       const response = await route.fetch();
       await route.fulfill({response, body: `
         globalThis.__webDistanceFieldsGPU = {textures: {}, compute: {}, raster: {}, errors: [], losses: [],
-          historyBindings: 0, historyVelocityBindings: 0};
+          historyBindings: 0, historyVelocityBindings: 0, ssrDraws: 0};
         const dfPipelines = new WeakMap(), dfPasses = new WeakMap(), dfViews = new WeakMap();
+        const dfSSRModules = new WeakSet(), dfSSREntries = new Set();
+        {
+          globalThis.__dfShaderSources = {};
+          globalThis.__dfShaderOverrides = [];
+          const dfOverrides = ${JSON.stringify(shaderOverrides)};
+          const dfModule = GPUDevice.prototype.createShaderModule;
+          GPUDevice.prototype.createShaderModule = function(descriptor) {
+            let code = descriptor.code;
+            for (const override of dfOverrides) {
+              if (!code.includes(override.contains)) continue;
+              const expression = new RegExp(override.pattern, 'g');
+              const count = [...code.matchAll(expression)].length;
+              if (!count) throw new Error('Diagnostic shader override did not match: ' + override.contains);
+              code = code.replace(expression, override.replacement);
+              __dfShaderOverrides.push({contains: override.contains, count});
+            }
+            descriptor = {...descriptor, code};
+            const entry = descriptor.code.match(/fn (main\\w*)\\(/)?.[1];
+            if (${shaderCapture} && entry) __dfShaderSources[entry] = descriptor.code;
+            const module = dfModule.call(this, descriptor);
+            if (descriptor.code.includes('SSRParams')) dfSSRModules.add(module);
+            return module;
+          };
+        }
         let dfDeviceHandle, dfQuery, dfResolve, dfReadback, dfCapture, dfFrame = 0;
         const dfDevice = GPUAdapter.prototype.requestDevice;
         GPUAdapter.prototype.requestDevice = async function(descriptor) {
@@ -150,6 +191,8 @@ async function capture(name) {
           GPUDevice.prototype[method] = function(descriptor) {
             const pipeline = original.call(this, descriptor);
             dfPipelines.set(pipeline, descriptor[stage]?.entryPoint || descriptor.label || 'unknown');
+            if (descriptor.fragment && dfSSRModules.has(descriptor.fragment.module))
+              dfSSREntries.add(descriptor.fragment.entryPoint);
             return pipeline;
           };
         }
@@ -167,13 +210,14 @@ async function capture(name) {
               const entry = dfPasses.get(this);
               const counts = __webDistanceFieldsGPU[category];
               if (entry) counts[entry] = (counts[entry] || 0) + 1;
+              if (category === 'raster' && dfSSREntries.has(entry)) ++__webDistanceFieldsGPU.ssrDraws;
               return original.apply(this, args);
             };
           }
         }
         const dfTexture = GPUDevice.prototype.createTexture;
         GPUDevice.prototype.createTexture = function(descriptor) {
-          if (/DistanceField|GlobalDistance|BentNormal|SceneVelocity/.test(descriptor.label || ''))
+          if (/DistanceField|GlobalDistance|BentNormal|SceneVelocity|SSR|ScreenSpaceReflections|GGX\\.LTC|Sheen\\.LTC/.test(descriptor.label || ''))
             __webDistanceFieldsGPU.textures[descriptor.label] = {
               size: descriptor.size, format: descriptor.format, dimension: descriptor.dimension,
               mipLevelCount: descriptor.mipLevelCount
@@ -197,12 +241,13 @@ async function capture(name) {
         };
       ` + await response.text()});
     });
-    if (visualClock) await page.route('**/index.html', async route => {
+    if (visualClock || engineArgs.length) await page.route('**/index.html', async route => {
       const response = await route.fetch();
       const source = await response.text();
       assert(source.includes("arguments: ['-webgpu',"));
+      const args = [...(visualClock ? ['-WebVisualTestClock'] : []), ...engineArgs, '-webgpu'];
       await route.fulfill({response, body: source.replace("arguments: ['-webgpu',",
-        "arguments: ['-WebVisualTestClock', '-webgpu',")});
+        `arguments: [${args.map(value => JSON.stringify(value)).join(',')},`)});
     });
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
     report.startup = await advance(90);
@@ -211,6 +256,83 @@ async function capture(name) {
     assert.equal(report.startup.fields.ao, 1, 'The shipped page must start with DFAO enabled');
     const owner = page.workers().find(worker => worker.url().includes('/web-engine-worker.js'));
     assert(owner);
+    if (casesFile) {
+      assert(!visualClock && !startupOnly && !camera, 'Quality cases use the normal clock and their own cameras');
+      const cases = JSON.parse(fs.readFileSync(casesFile, 'utf8').replace(/^\uFEFF/, ''));
+      report.casesSource = audit(casesFile);
+      report.cases = [];
+      for (const entry of cases) {
+        assert(/^[a-z0-9-]+$/.test(entry.name));
+        if (entry.camera) {
+          assert.equal(entry.camera.length, 5);
+          assert.equal(await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), entry.camera), 1);
+          await advance(30);
+          if (entry.ev100 !== undefined)
+            assert.equal(await page.evaluate(value => __webEngineRPC('WebDistanceFieldTestExposure', value), entry.ev100), 1);
+        }
+        for (const control of entry.controls || [])
+          assert.equal(await page.evaluate(values => __webEngineRPC('WebLightingQualityTest', ...values), control), 1);
+        const valueBeforeSSR = (await state()).gpu.ssrDraws;
+        await advance(entry.frames || 180);
+        assert.equal(await page.evaluate(() => __webEngineRPC('WebLightingQualityTest', -1, 0)), 1);
+        await advance(2);
+        const current = await state();
+        if (entry.requireDFAO)
+          assert.equal(current.fields.ao, 1, 'Quality regression must keep DFAO enabled');
+        if (entry.requireSSR) {
+          assert(current.gpu.ssrDraws > valueBeforeSSR, 'SSR must draw during this case');
+          assert(current.gpu.textures.ScreenSpaceReflections, 'SSR color output must exist');
+        }
+        if (entry.requireLTC)
+          for (const [name, format, size] of [['GGX.LTCMat', 'rgba16float', 64],
+            ['GGX.LTCAmp', 'rg16float', 64], ['Sheen.LTC', 'rgba16float', 32]]) {
+            const texture = current.gpu.textures[name];
+            assert.equal(texture?.format, format, `${name}: lookup texture format`);
+            assert.equal(texture.size.width, size, `${name}: lookup texture width`);
+            assert.equal(texture.size.height, size, `${name}: lookup texture height`);
+          }
+        for (const [key, expected] of Object.entries(entry.expect || {}))
+          assert.equal(current.lighting[key], expected, `${entry.name}: ${key}`);
+        const png = await capture(entry.name);
+        const regions = {};
+        for (const [name, rect] of Object.entries(entry.regions || {})) {
+          assert(rect.length === 4 && rect.every(Number.isFinite) &&
+            rect[0] >= 0 && rect[1] >= 0 && rect[2] > 0 && rect[3] > 0 &&
+            rect[0] + rect[2] <= 1 && rect[1] + rect[3] <= 1, `Invalid region: ${name}`);
+          let sum = 0, count = 0, black = 0;
+          const [x, y, w, h] = rect.map((v, i) => Math.round(v * (i % 2 ? png.height : png.width)));
+          for (let py = y; py < y + h; ++py)
+            for (let px = x; px < x + w; ++px) {
+              const offset = (py * png.width + px) * 4;
+              const luminance = (png.data[offset] + png.data[offset + 1] + png.data[offset + 2]) / 3;
+              sum += luminance; ++count;
+              if (luminance < 12) ++black;
+            }
+          regions[name] = {mean: sum / count, blackFraction: black / count};
+        }
+        report.cases.push({entry, state: current, regions, ssrDraws: current.gpu.ssrDraws - valueBeforeSSR});
+        console.log(JSON.stringify({case: entry.name, lighting: current.lighting, regions}));
+        for (const [name, limits] of Object.entries(entry.regionLimits || {})) {
+          const measured = regions[name];
+          assert(measured, `Missing measured region: ${name}`);
+          if (limits.minMean !== undefined)
+            assert(measured.mean >= limits.minMean, `${entry.name}/${name}: ${measured.mean} < ${limits.minMean}`);
+          if (limits.maxBlackFraction !== undefined)
+            assert(measured.blackFraction <= limits.maxBlackFraction,
+              `${entry.name}/${name}: black fraction ${measured.blackFraction} > ${limits.maxBlackFraction}`);
+        }
+      }
+      report.final = await advance(60);
+      if (shaderOverrides.length) {
+        report.appliedShaderOverrides = await owner.evaluate(() => globalThis.__dfShaderOverrides);
+        assert(report.appliedShaderOverrides.length > 0, 'Diagnostic overrides must execute');
+      }
+      assert.deepEqual(report.final.gpu?.errors, []);
+      assert.deepEqual(report.final.gpu?.losses, []);
+      assert.deepEqual(report.errors, []);
+      report.pass = true;
+      return;
+    }
     if (camera) {
       assert.equal(await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), camera), 1);
       await advance(30);
@@ -309,6 +431,17 @@ async function capture(name) {
     report.failure = error.stack;
     if (page) report.final = await state().catch(() => null);
   } finally {
+    if (shaderCapture && page) {
+      const owner = page.workers().find(worker => worker.url().includes('/web-engine-worker.js'));
+      if (owner) {
+        const sources = await owner.evaluate(() => globalThis.__dfShaderSources).catch(() => null);
+        if (sources) {
+          const file = path.join(directory, `distance-field-${channel}-${tag}-shaders.json`);
+          fs.writeFileSync(file, JSON.stringify(sources));
+          report.shaders = audit(file);
+        }
+      }
+    }
     await context?.close();
     const file = path.join(directory, `web-distance-field-${folder}-${channel}-${tag}-results.json`);
     fs.writeFileSync(file, JSON.stringify(report, null, 2));

@@ -19,6 +19,9 @@
 #include "WebGPUBrowser.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
+#include "Engine/GameViewportClient.h"
+#include "Engine/LocalPlayer.h"
+#include "SceneView.h"
 #include "UObject/Package.h"
 #include <emscripten.h>
 #include <emscripten/heap.h>
@@ -485,6 +488,49 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDistanceFieldTestExposure(double EV100)
     Settings.bOverride_AutoExposureBiasCurve = true;
     Settings.AutoExposureBiasCurve = nullptr;
     EM_ASM({ globalThis.__webDistanceFieldsExposure = ({ev100: $0, manual: true}); }, EV100);
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Value)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* Controller = TemplateController.Get();
+    if (!UseWebGPU || !Controller || !GEngine->GameViewport)
+        return 0;
+    const TCHAR* Names[] = {TEXT("r.AntiAliasingMethod"), TEXT("r.ReflectionMethod"),
+        TEXT("r.AOObjectDistanceField"), TEXT("r.AOGlobalDistanceField"),
+        TEXT("r.AOSpecularOcclusionMode"), TEXT("r.AOUseHistory"),
+        TEXT("r.SSR.Quality"), TEXT("r.DistanceFieldAO"), TEXT("r.ShadowQuality")};
+    if (Parameter >= 0 && Parameter < UE_ARRAY_COUNT(Names))
+    {
+        auto* Variable = IConsoleManager::Get().FindConsoleVariable(Names[Parameter]);
+        if (!Variable || Value < 0 || Value > 5)
+            return 0;
+        Variable->Set(Value, ECVF_SetByCode);
+    }
+    else if (Parameter == 9 && (Value == 0 || Value == 1))
+        ApplyViewMode(Value ? VMI_Unlit : VMI_Lit, true, GEngine->GameViewport->EngineShowFlags);
+    else if (Parameter != -1)
+        return 0;
+    auto* LocalPlayer = Controller->GetLocalPlayer();
+    auto* Viewport = GEngine->GameViewport->Viewport;
+    if (!LocalPlayer || !Viewport)
+        return 0;
+    FSceneViewFamilyContext Family(FSceneViewFamily::ConstructionValues(
+        Viewport, Controller->GetWorld()->Scene, GEngine->GameViewport->EngineShowFlags).SetRealtimeUpdate(true));
+    FVector Location;
+    FRotator Rotation;
+    if (const auto* View = LocalPlayer->CalcSceneView(&Family, Location, Rotation, Viewport))
+        EM_ASM({
+            globalThis.__webDistanceFieldsLighting = ({reflectionMethod: $0, giMethod: $1,
+                ssrIntensity: $2, ssrQuality: $3, ssrMaxRoughness: $4, antiAliasing: $5,
+                ssrShowFlag: !!$6, frame: $7});
+        }, int32(View->FinalPostProcessSettings.ReflectionMethod),
+            int32(View->FinalPostProcessSettings.DynamicGlobalIlluminationMethod),
+            View->FinalPostProcessSettings.ScreenSpaceReflectionIntensity,
+            View->FinalPostProcessSettings.ScreenSpaceReflectionQuality,
+            View->FinalPostProcessSettings.ScreenSpaceReflectionMaxRoughness,
+            int32(View->AntiAliasingMethod), int32(Family.EngineShowFlags.ScreenSpaceReflections), Frames);
     return 1;
 }
 

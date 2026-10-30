@@ -1,0 +1,33 @@
+[
+  {
+    "name": "garage",
+    "camera": [610, -225, 170, -4, 20],
+    "ev100": -1,
+    "frames": 180,
+    "requireDFAO": true,
+    "expect": {"antiAliasing": 2, "reflectionMethod": 2},
+    "regions": {"cardboard": [0.338, 0.478, 0.027, 0.032]},
+    "regionLimits": {"cardboard": {"minMean": 45}}
+  },
+  {
+    "name": "living",
+    "camera": [100, -60, 150, -24, 50],
+    "ev100": -1,
+    "frames": 180,
+    "requireDFAO": true,
+    "regions": {"carpet": [0.35, 0.59, 0.1, 0.04]},
+    "regionLimits": {"carpet": {"minMean": 90, "maxBlackFraction": 0.3}}
+  },
+  {
+    "name": "foyer",
+    "camera": [-730, -255, 155, 0, 110],
+    "ev100": -1,
+    "frames": 180,
+    "requireDFAO": true,
+    "requireSSR": true,
+    "requireLTC": true,
+    "expect": {"reflectionMethod": 2},
+    "regions": {"rect-light-highlight": [0.67, 0.33, 0.06, 0.18]},
+    "regionLimits": {"rect-light-highlight": {"minMean": 180}}
+  }
+]

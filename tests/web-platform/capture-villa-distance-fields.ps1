@@ -7,6 +7,7 @@ param(
     [int]$Samples = 240,
     [double]$FixedEV100 = -1,
     [string]$View = 'all',
+    [string]$CasesFile,
     [switch]$NoDistanceFieldResources,
     [string]$Report = 'baseline'
 )
@@ -63,6 +64,10 @@ foreach ($taskFixed in @($true, $false)) {
 }
 $taskOutput = Join-Path $taskResults "villa-distance-fields-$Report"
 $taskInput = "$taskOutput-input.json"
+if ($CasesFile) {
+    $taskCases = @(Get-Content -LiteralPath $CasesFile -Raw | ConvertFrom-Json)
+    if ($taskCases.Count -eq 0) { throw 'Empty comparison cases.' }
+}
 @{map = '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla'; output = $taskOutput;
     width = $Width; height = $Height; warmup = $Warmup; samples = $Samples; cases = $taskCases} |
     ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $taskInput -Encoding utf8

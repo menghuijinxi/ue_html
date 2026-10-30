@@ -1,8 +1,8 @@
 # 桌面 WebGPU 距离场候选版
 
-日期：2026-10-29。原生收益与实施依据见 [UE58_DISTANCE_FIELD_RESEARCH.md](UE58_DISTANCE_FIELD_RESEARCH.md)。
+日期：2026-10-30。原生收益与实施依据见 [UE58_DISTANCE_FIELD_RESEARCH.md](UE58_DISTANCE_FIELD_RESEARCH.md)。
 
-对应独立参考引擎提交：`5beee8ed1`；正常启动采样修复：`dd11b7507`。
+对应独立参考引擎提交：`5beee8ed1`；正常启动采样修复：`dd11b7507`；双面法线与桌面 LTC 修复：`2825faf2f`。
 
 ## 本轮实现
 
@@ -71,6 +71,38 @@ Cook 必须显式传入 `-DistanceFields`，打包必须显式传入 `--distance
 
 本次验证启动兼容性和距离场链路持续运行，不代表已完成距离场块状伪影、冰箱颜色或长期稳定性的画质验收。
 
+## 双面材质与反射修复
+
+本轮针对车库纸箱发黑、客厅地毯及虎纹布发黑、门厅高光缺失，使用相同场景、相机、90 度 FOV 和手动 EV100=-1，对照原生 D3D12 SM5 与浏览器。两端均使用正常渲染时间；诊断用的着色器替换未进入发布包。
+
+纸箱和布料的根因是双面法线方向错误。WebGPU 经 Vulkan 编译器生成着色器，继承了 `GetFloatFacingSign` 的 Vulkan 翻转补偿；WebGPURHI 实际使用的前面约定与 D3D 相同，因而重复翻转。错误法线使天空光方向错误，也使 DFAO 向物体内部追踪。仅关闭 DFAO 能改善纸箱，但不能修复布料。纹理 GPU 回读、直接输出材质原有 BaseColor、只修正 facing sign 的对照均排除了贴图丢失、POM 坐标和像素深度偏移作为这次发黑的根因。
+
+`MaterialTemplate.ush` 现在仅对 `COMPILER_WEBGPU` 排除上述 Vulkan 补偿。Cook 覆盖脚本逐字校验这个局部分支，安装引擎未修改；原生、Nanite、光追及其他 Vulkan 路径保持原有行为。
+
+反射缺失包含两处独立原因：
+
+- 别墅配置此前是 `r.ReflectionMethod=0`，现在设为 2，执行 UE 原有 SSR。测试按实际创建的 SSR 着色器统计绘制，并检查最终后处理设置。
+- 早期 Web 最小平台曾跳过矩形灯和布料 BSDF 的 LTC 初始化。现在桌面 SM5 恢复原有 CPU 查找表上传及绑定：`GGX.LTCMat` 为 64×64 RGBA16F、`GGX.LTCAmp` 为 64×64 RG16F、`Sheen.LTC` 为 32×32 RGBA16F。ES3.1 保留原分支，本轮未验收移动矩形灯。原生关闭 SSR 后，木门上的亮块依旧存在，证明这部分来自矩形灯高光，不能仅靠开启 SSR 恢复。
+
+别墅同时由 FXAA 改为 TAA，保持 100% 内部分辨率和原有 DFAO 设置，让细碎边缘参与时域积累。没有降低 AO 强度、关闭全局距离场、替换材质或修改资产距离场分辨率。原生同机位也有粗块遮蔽；本轮修复错误法线造成的异常自遮挡，并改善抗锯齿差异，不能据此宣称所有 DFAO 粗块已消除或完整桌面画质已经对齐。
+
+新增 `villa-lighting-quality-cases.json` 固定车库、客厅、门厅三处机位，检查实际像素区域、DFAO 开启、TAA、SSR 绘制和 LTC 纹理。旧包首先在纸箱区域失败：平均 RGB 约 23，低于阈值 45。最终包在 Chrome / Edge 的 1280×720 正常时钟回归均通过：
+
+| 区域 | 修复前 | 修复后 Chrome / Edge |
+| --- | ---: | ---: |
+| 纸箱平均 RGB | 23 | 67.64 / 67.68 |
+| 地毯平均 RGB | 约 8 | 231.48 / 231.47 |
+| 地毯近黑像素比例 | 约 99% | 0 / 0 |
+| 门厅矩形灯高光平均 RGB | 无对应高光 | 213.63 / 213.63 |
+
+这里的亮度与阈值用于阻止发黑和高光丢失回归，不是画质评分。两个最终回归均无 GPU 验证错误或设备丢失。报告为 `web-distance-field-triplex-house-villa-df-distance-fields-threads-{chrome,msedge}-quality-final-results.json`。原生对照为 `villa-distance-fields-quality-native-final-capture.json` 及对应 PNG。
+
+额外负例在最终 TAA/SSR 包中，仅于测试拦截器反向注入旧 facing 错误，相同最终用例再次在纸箱阈值失败（23.06 < 45），没有 GPU 报错。这证明图像断言能捕获法线回归，也证明 TAA 未把错误法线掩盖掉。报告后缀为 `msedge-quality-facing-negative-results.json`，它是明确标记的诊断替换运行，不是发布包失败。
+
+默认关卡的新包在 Edge 1280×720 正常运行 647 帧，通过缩放恢复；别墅的新包在 Edge 3840×2160 正常运行 1305 帧，记录 921 次真实速度纹理/DFAO 历史绑定，通过移动、瞬移和 960×540 → 3840×2160 缩放恢复。两项均无 GPU 验证错误或设备丢失，报告后缀分别为 `msedge-lighting-final-default-results.json` 和 `msedge-lighting-final-4k-results.json`。
+
+并行启动两浏览器时，Chrome 曾在初始化阶段丢失设备，原始报告保留为 `web-distance-field-triplex-house-villa-df-distance-fields-threads-chrome-quality-concurrent-loss-results.json`；串行复验通过，原因尚未确定，不能把本轮结果当作并行多实例稳定性验收。
+
 ## 入口
 
 服务根目录为 `tests/web-platform`，端口 8765：
@@ -79,6 +111,8 @@ Cook 必须显式传入 `-DistanceFields`，打包必须显式传入 `--distance
 - `/build/triplex-house-villa-df-distance-fields-threads/index.html`
 
 运行时诊断增加 `__webDistanceFields`。`WebDistanceFieldTest(0/1)` 和 `WebDistanceFieldTestExposure(EV100)` 仅用于测试，后者要求已通过 `WebProjectViewTest` 创建测试相机；正常进入关卡不会覆盖原曝光。
+
+`WebLightingQualityTest` 也仅对已创建的测试相机开放：参数 0～8 分别控制 AA、反射方法、对象距离场、全局距离场、镜面遮蔽、AO 历史、SSR 质量、DFAO、阴影质量；9 切换 Lit/Unlit；-1 只采集最终视图设置。材质诊断应使用 GPU 采样或实际 BaseColor 对照，单独切换 Unlit 不能证明 POM 与布料着色正确。
 
 ## 复现
 
@@ -106,6 +140,12 @@ node tests/web-platform/probe-web-distance-fields.cjs --folder=triplex-house-vil
   --startup-only --require-velocity --camera=-20,200,130,12,-35 --width=3840 --height=2160
 node tests/web-platform/probe-web-distance-fields.cjs --folder=triplex-house-villa-df-distance-fields-threads `
   --visual-clock --camera=-20,200,130,12,-35 --fixed-ev=-1 --width=1920 --height=1080
+node tests/web-platform/probe-web-distance-fields.cjs --folder=triplex-house-villa-df-distance-fields-threads `
+  --cases=tests/web-platform/villa-lighting-quality-cases.json --tag=quality-final
+node tests/web-platform/probe-web-distance-fields.cjs --edge --folder=triplex-house-villa-df-distance-fields-threads `
+  --cases=tests/web-platform/villa-lighting-quality-cases.json --tag=quality-final
 ```
 
 测试使用 H 盘独立持久化浏览器配置；大型关卡不适用临时隐身配置的较小配额。报告、PNG 和二进制回读在忽略的 `tests/web-platform/results` / `build` 中。`probe-distance-field-rhi.ps1` 需要预先准备距离场 probe 的 float/uint worker 着色器和 `prepare-distance-field-probe.cjs --conversion=<实际Cook的ShaderConversion目录列表>`；缓存命中的 Cook 不一定重新导出所有着色器，可用分号连接多个实际 Cook 输出目录。
+
+`--shader-capture` 可记录浏览器实际创建的 WGSL；`--shader-overrides=<JSON>` 与 `--engine-args=<JSON>` 仅用于可追溯的隔离诊断，报告会记录输入哈希和覆盖边界。使用着色器替换的运行不能验收正式 Cook 着色器。原生 `capture-villa-distance-fields.ps1 -CasesFile <JSON>` 接受自定义机位及每例整数 CVar，结果记录在对应报告中。过渡用材质图遍历、硬编码着色器绑定抓取和独立全局场夹具已移出正式测试脚本。
