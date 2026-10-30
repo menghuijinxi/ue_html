@@ -146,6 +146,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   }, {once: true});
   const offscreen = canvas.transferControlToOffscreen();
   worker.postMessage({type: 'start', assets, canvas: offscreen, browser: browser(),
-    arguments: module.arguments, debug: diagnostics.mode !== 'normal'}, [offscreen]);
+    arguments: module.arguments, debug: diagnostics.mode !== 'normal',
+    verification: new URLSearchParams(location.search).get('verify') === 'full' ? 'full' : 'sampled'}, [offscreen]);
   diagnostics.engineWorker = {url: 'web-engine-worker.js', offscreenCanvas: true};
 };

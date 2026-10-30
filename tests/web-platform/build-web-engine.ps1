@@ -88,6 +88,9 @@ try {
     $taskReport.buildSucceeded = $taskExit -eq 0 -and $taskText.Contains('Result: Succeeded')
     $taskReport.products = @()
     if ($taskReport.buildSucceeded) {
+        & node (Join-Path $PSScriptRoot 'validate-web-wasm.cjs') (Join-Path $taskRoot "tests/ue-web-smoke/Binaries/Web/$taskTarget.wasm")
+        $taskReport.wasmValidated = $LASTEXITCODE -eq 0
+        if (-not $taskReport.wasmValidated) { throw 'Linked WASM failed structural validation.' }
         $taskReport.products = @("$taskTarget.js", "$taskTarget.wasm", "$taskTarget.target") | ForEach-Object {
             Get-TaskAudit (Join-Path $taskRoot "tests/ue-web-smoke/Binaries/Web/$_")
         }
@@ -208,6 +211,8 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneCulling/SceneCullingRenderer.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneVisibility.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ShadowSetup.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/ShadowSetup.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     foreach ($taskShaderOverlay in @('RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',
@@ -246,6 +251,7 @@ try {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Slate/Private/Framework/Application/$taskSlateUiSource"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Slate/Private/Framework/Application/$taskSlateUiSource"
     }
+    $taskFiles += Join-Path $PSScriptRoot 'validate-web-wasm.cjs'
     $taskReport.sourceFiles = @($taskFiles | ForEach-Object { Get-TaskAudit $_ })
     $taskReport.boundary = 'Full normal UBT Engine Target attempt, using target 5.8.3 Core/TraceLog/ApplicationCore/CoreUObject/Launch/ChaosCore and selected target files in local installed-source Engine, MovieSceneTracks, RenderCore, Renderer, SignalProcessing, SlateCore, Slate, ICMP and BuildPatchServices copies with installed 5.8.0 dependencies. BLAKE3 1.3.1 and libPNG 1.6.44 portable archives use target third-party sources. The source audit lists each target overlay. Web excludes Slate font SDF generation, nonlinear attribute easing, native UDP probes and threaded patch verification but retains font data serialization, linear easing, synchronous patch verification and forced UMG/Slate dependencies. A successful compile/link still does not verify browser initialization, Engine ticking, WebGPU rendering, Cook or a scene. Action counts are not feature completion percentages.'
 } catch {

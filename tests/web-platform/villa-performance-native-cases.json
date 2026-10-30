@@ -1,0 +1,5 @@
+[
+  {"name":"room","x":-175,"y":-80,"z":160,"pitch":-5,"yaw":50,"fov":90,"ao":1,"shadows":1,"fixedExposure":false,"ev100":-1,"variables":{"r.AntiAliasingMethod":2,"r.ReflectionMethod":2,"r.SSR.Quality":3,"r.ContactShadows":1,"r.Streaming.PoolSize":1024,"r.NumBufferedOcclusionQueries":2}},
+  {"name":"wall","x":-175,"y":-80,"z":160,"pitch":-5,"yaw":230,"fov":90,"ao":1,"shadows":1,"fixedExposure":false,"ev100":-1,"variables":{"r.AntiAliasingMethod":2,"r.ReflectionMethod":2}},
+  {"name":"room-restored","x":-175,"y":-80,"z":160,"pitch":-5,"yaw":50,"fov":90,"ao":1,"shadows":1,"fixedExposure":false,"ev100":-1,"variables":{"r.AntiAliasingMethod":2,"r.ReflectionMethod":2}}
+]

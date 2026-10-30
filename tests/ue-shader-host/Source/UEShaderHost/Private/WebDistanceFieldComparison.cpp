@@ -60,6 +60,8 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
     TArray<TSharedPtr<FJsonValue>> Runs;
     TArray<double> GPUTime;
     TArray<double> FrameTime;
+    TArray<double> WallTime;
+    double PreviousWallTime = 0;
     FRHIGPUFrameTimeHistory::FState GPUHistory;
     TSharedFuture<FString> CSV;
     TSharedPtr<FJsonObject> Current;
@@ -118,6 +120,11 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
                 const FVector Extent = Component->Bounds.BoxExtent;
                 Instance->SetArrayField(TEXT("center"), NumberArray({Center.X, Center.Y, Center.Z}));
                 Instance->SetArrayField(TEXT("extent"), NumberArray({Extent.X, Extent.Y, Extent.Z}));
+                Instance->SetNumberField(TEXT("minDrawDistance"), Component->MinDrawDistance);
+                Instance->SetNumberField(TEXT("desiredMaxDrawDistance"), Component->LDMaxDrawDistance);
+                Instance->SetNumberField(TEXT("cachedMaxDrawDistance"), Component->CachedMaxDrawDistance);
+                Instance->SetNumberField(TEXT("forcedLODModel"), Component->ForcedLodModel);
+                Instance->SetBoolField(TEXT("neverDistanceCull"), Component->bNeverDistanceCull);
                 TArray<TSharedPtr<FJsonValue>> Materials;
                 for (auto* Material : Component->GetMaterials())
                 {
@@ -131,6 +138,16 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
                 auto Item = MakeShared<FJsonObject>();
                 Item->SetStringField(TEXT("path"), Mesh->GetPathName());
                 Item->SetBoolField(TEXT("valid"), Data && Data->IsValid());
+                TArray<TSharedPtr<FJsonValue>> LODs;
+                const auto* RenderData = Mesh->GetRenderData();
+                for (int32 LODIndex = 0; LODIndex < RenderData->LODResources.Num(); ++LODIndex)
+                {
+                    auto LOD = MakeShared<FJsonObject>();
+                    LOD->SetNumberField(TEXT("triangles"), RenderData->LODResources[LODIndex].GetNumTriangles());
+                    LOD->SetNumberField(TEXT("screenSize"), RenderData->ScreenSize[LODIndex].GetValue());
+                    LODs.Add(MakeShared<FJsonValueObject>(LOD));
+                }
+                Item->SetArrayField(TEXT("lods"), LODs);
                 if (Data)
                 {
                     Item->SetNumberField(TEXT("cpuResidentBytes"), double(Data->GetResourceSizeBytes()));
@@ -229,6 +246,8 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
             Current->SetObjectField(TEXT("case"), Entry);
             GPUTime.Reset();
             FrameTime.Reset();
+            WallTime.Reset();
+            PreviousWallTime = 0;
             UE_LOG(LogTemp, Display, TEXT("WEB_DF_COMPARE: begin=%s ao=%d shadows=%d fixed=%d"),
                 *Entry->GetStringField(TEXT("name")), Entry->GetIntegerField(TEXT("ao")),
                 Entry->GetIntegerField(TEXT("shadows")), int32(Client->ExposureSettings.bFixed));
@@ -246,12 +265,18 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
         {
             GPUTime.Reset();
             FrameTime.Reset();
+            WallTime.Reset();
+            PreviousWallTime = FPlatformTime::Seconds();
             FCsvProfiler::Get()->BeginCapture(-1, FPaths::GetPath(Output),
                 FPaths::GetCleanFilename(Output) + TEXT("-") +
                 Current->GetObjectField(TEXT("case"))->GetStringField(TEXT("name")) + TEXT(".csv"));
             Capturing = true;
         }
         FrameTime.Add(Delta * 1000.0);
+        const double WallNow = FPlatformTime::Seconds();
+        if (FrameTime.Num() > 1)
+            WallTime.Add((WallNow - PreviousWallTime) * 1000.0);
+        PreviousWallTime = WallNow;
         if (FrameTime.Num() < Settings->GetIntegerField(TEXT("samples")))
             return true;
         Capturing = false;
@@ -259,6 +284,7 @@ struct FDistanceFieldComparison : TSharedFromThis<FDistanceFieldComparison>
         FlushRenderingCommands();
         Current->SetArrayField(TEXT("gpuMs"), NumberArray(GPUTime));
         Current->SetArrayField(TEXT("frameMs"), NumberArray(FrameTime));
+        Current->SetArrayField(TEXT("wallFrameMs"), NumberArray(WallTime));
         FTextureMemoryStats Memory;
         RHIGetTextureMemoryStats(Memory);
         Current->SetNumberField(TEXT("streamingTextureBytes"), double(Memory.StreamingMemorySize));

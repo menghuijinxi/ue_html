@@ -9,12 +9,12 @@ const rpcNames = new Set([
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
   'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
-  'WebLightingQualityTest'
+  'WebLightingQualityTest', 'WebVisibilityTest'
 ]);
 function snapshot() {
   const state = {};
   for (const key of Object.keys(globalThis)) {
-    if (!/^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread|DistanceFields)/.test(key))
+    if (!/^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread|DistanceFields|Visibility)/.test(key))
       continue;
     state[key] = globalThis[key];
   }
@@ -72,7 +72,8 @@ async function start(message) {
     return device;
   };
   importScripts(versioned('web-content-io.js'));
-  const io = globalThis.__webContentIO = new WebLocalContentIO(versioned('web-content-worker.js'));
+  const io = globalThis.__webContentIO = new WebLocalContentIO(versioned('web-content-worker.js'),
+    {verification: message.verification});
   io.copy = (destination, bytes) => HEAPU8.set(bytes, Number(destination));
   io.complete = (id, success) => Module._WebLocalReadCompleted(id, success ? 1 : 0);
   io.onprogress = progress => send('progress', {progress: {...progress, ...io.stats}});

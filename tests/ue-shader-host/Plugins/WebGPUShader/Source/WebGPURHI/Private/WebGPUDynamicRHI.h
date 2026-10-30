@@ -22,6 +22,27 @@ struct FWebGPUShaderBinding
     uint32 Descriptor = 0, Group = 0, Index = 0, PaddedSize = 0;
 };
 
+struct FWebGPUBindGroupCacheEntry
+{
+    WGPURenderPipeline Render = nullptr;
+    WGPUComputePipeline Compute = nullptr;
+    uint32 Group = 0;
+    WGPUBindGroup Handle = nullptr;
+    TArray<WGPUBindGroupEntry> Entries;
+    ~FWebGPUBindGroupCacheEntry()
+    {
+        if (Handle) wgpuBindGroupRelease(Handle);
+        for (const auto& Entry : Entries)
+        {
+            if (Entry.buffer) wgpuBufferRelease(Entry.buffer);
+            if (Entry.textureView) wgpuTextureViewRelease(Entry.textureView);
+            if (Entry.sampler) wgpuSamplerRelease(Entry.sampler);
+        }
+        if (Render) wgpuRenderPipelineRelease(Render);
+        if (Compute) wgpuComputePipelineRelease(Compute);
+    }
+};
+
 struct FWebGPUShaderData
 {
     WGPUShaderModule Module = nullptr;
@@ -270,15 +291,17 @@ class FWebGPUSampler final : public FRHISamplerState
 class FWebGPUUniform final : public FRHIUniformBuffer
 {
   public:
+    struct FConstantSnapshot { WGPUBuffer Buffer = nullptr; uint64 Offset = 0; };
     TArray<uint8> Bytes;
-    TMap<uint32, WGPUBuffer> ConstantBuffers;
+    TMap<uint32, FConstantSnapshot> ConstantBuffers;
+    bool SingleFrame = false;
     explicit FWebGPUUniform(const FRHIUniformBufferLayout *Layout) : FRHIUniformBuffer(Layout)
     {
     }
     void ReleaseConstants()
     {
         for (const auto& Buffer : ConstantBuffers)
-            wgpuBufferRelease(Buffer.Value);
+            wgpuBufferRelease(Buffer.Value.Buffer);
         ConstantBuffers.Empty();
     }
     ~FWebGPUUniform() override { ReleaseConstants(); }
@@ -445,6 +468,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     FString AdapterName;
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;
     uint32 UniformUploads = 0;
+    uint32 BindGroupCacheHits = 0, BindGroupCacheEntries = 0;
+    TMap<uint32, TArray<TUniquePtr<FWebGPUBindGroupCacheEntry>>> BindGroupCache;
+    WGPUBuffer FrameUniformBuffer = nullptr;
+    uint64 FrameUniformOffset = 0;
     uint32 OwnerThread = 0;
     uint32 ResourceTableBindings = 0;
     uint32 TransitionsCreated = 0, TransitionsBegun = 0, TransitionsEnded = 0, TransitionsReleased = 0;

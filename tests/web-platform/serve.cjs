@@ -13,6 +13,16 @@ async function digest(file, stat) {
   const version = `${stat.size}:${stat.mtimeMs}:${stat.ctimeMs}`;
   const previous = validators.get(file);
   if (previous?.version === version) return previous.hash;
+  if (stat.size > 1024 * 1024 && process.env.VERIFY_ASSETS !== '1') {
+    try {
+      const versions = JSON.parse(await fs.promises.readFile(path.join(path.dirname(file), 'asset-versions.json'), 'utf8'));
+      const published = versions[path.basename(file)];
+      if (published?.size === stat.size && published.mtimeMs === stat.mtimeMs && /^[a-f0-9]{64}$/.test(published.sha256)) {
+        validators.set(file, {version, hash: published.sha256});
+        return published.sha256;
+      }
+    } catch {}
+  }
   const hash = crypto.createHash('sha256');
   for await (const bytes of fs.createReadStream(file)) hash.update(bytes);
   const value = hash.digest('hex');

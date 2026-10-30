@@ -33,7 +33,7 @@ let browser;
     const requests = [];
     page.on('request', request => { if (request.url().includes(fixtureUrl)) requests.push(request.url()); });
     const cold = await page.evaluate(async info => {
-      const io = globalThis.io = new WebLocalContentIO('/web-content-worker.js');
+      const io = globalThis.io = new WebLocalContentIO('/web-content-worker.js', {verification: 'full'});
       await io.asset(info);
       io.manifest = {pack: info};
       for (let offset = 0; offset < info.size; offset += info.blockSize) {
@@ -137,8 +137,9 @@ let browser;
       const writer = await (await directory.getFileHandle(info.sha256 + '.bin')).createWritable({keepExistingData: true});
       await writer.write({type: 'write', position: 0, data: new Uint8Array([255])});
       await writer.close();
-      const local = globalThis.io = new WebLocalContentIO('/web-content-worker.js');
+      const local = globalThis.io = new WebLocalContentIO('/web-content-worker.js', {verification: 'full'});
       local.manifest = {pack: info};
+      await local.asset(info);
       try { await local.read(0, 64); return false; } catch (error) { return /corrupt/.test(error.message); }
     }, info);
     assert(corrupt, 'Corrupt local blocks were accepted');

@@ -2,6 +2,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const {metadata, audit} = require('./content-file-metadata.cjs');
+const {writeVersions} = require('./asset-versions.cjs');
+const {validateCook} = require('./cached-cook-validation.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
@@ -21,7 +23,7 @@ const template = path.join(__dirname, 'web-default-template.html');
 const report = {date: new Date().toISOString(), pass: false, id, output, architecture: 'wasm64',
   renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads, distanceFields,
   sourceFiles: [__filename, template, path.join(__dirname, 'content-file-metadata.cjs'),
-    ...['web-content-io.js', 'web-content-worker.js',
+    ...['asset-versions.cjs', 'cached-cook-validation.cjs', 'web-content-io.js', 'web-content-worker.js',
       ...(threads ? ['web-engine-host.js', 'web-engine-worker.js'] : [])].map(name =>
       path.join(__dirname, name))].map(audit), fullNormalUBTBuildVerified: false,
   completeUEScene: false};
@@ -46,7 +48,7 @@ try {
   assert.equal(cook.distanceFields === true, distanceFields);
   assert.equal(stage.distanceFields === true, distanceFields);
   assert.equal(stage.mode, cook.mode);
-  assert(cook.pass && cook.sourceFiles.every(valid) && cook.products.every(valid) && cook.hostProducts.every(valid));
+  validateCook(cook, process.argv.includes('--reuse-cook'), report);
   assert(prepared.pass && prepared.originalProjectUnmodified && prepared.sourceFiles.every(valid));
   report.buildReport = audit(buildFile);
   report.stageReport = audit(stageFile);
@@ -96,6 +98,7 @@ try {
     assert.equal(audit(source).sha256, audit(destination).sha256);
   }
   report.products = ['index.html', ...copies.map(([, name]) => name)].map(name => audit(path.join(output, name)));
+  report.products.push(writeVersions(output, report.products));
   report.totalBytes = report.products.reduce((total, item) => total + fs.statSync(item.file).size, 0);
   report.fullNormalUBTBuildVerified = true;
   report.disabledSkyLight = cook.disabledSkyLight;

@@ -3,12 +3,19 @@ const memoryLimit = 16 * 1024 * 1024;
 const diskLimit = 1024 * 1024 * 1024;
 const stats = {memoryLimit, memoryBytes: 0, peakMemoryBytes: 0, memoryHits: 0,
   diskReads: 0, diskReadBytes: 0, downloadedBytes: 0, downloads: 0,
-  persistentHits: 0, evictions: 0, diskEvictions: 0, activeReads: 0, peakActiveReads: 0};
+  persistentHits: 0, evictions: 0, diskEvictions: 0, activeReads: 0, peakActiveReads: 0,
+  verification: 'sampled', hashedBytes: 0, hashMs: 0, downloadMs: 0, diskReadMs: 0};
 const assets = new Map(), blocks = new Map(), pendingBlocks = new Map();
 const queue = [];
-let directory, baseUrl, active = 0;
-const hash = async bytes => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
-  value => value.toString(16).padStart(2, '0')).join('');
+let directory, baseUrl, active = 0, fullVerification = false;
+const hash = async bytes => {
+  const started = performance.now();
+  const value = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
+    value => value.toString(16).padStart(2, '0')).join('');
+  stats.hashedBytes += bytes.byteLength;
+  stats.hashMs += performance.now() - started;
+  return value;
+};
 const markerName = value => value + '.json';
 const lockName = value => 'ue-web-local-' + value;
 
@@ -17,18 +24,20 @@ async function exists(info) {
     const marker = JSON.parse(await (await directory.getFileHandle(markerName(info.sha256))).getFile()
       .then(file => file.text()));
     const file = await (await directory.getFileHandle(info.sha256 + '.bin')).getFile();
-    return marker.sha256 === info.sha256 && marker.size === info.size && file.size === info.size;
+    return marker.sha256 === info.sha256 && marker.size === info.size && file.size === info.size &&
+      (!fullVerification || marker.verification === 'full');
   } catch { return false; }
 }
 
 async function download(info) {
+  const started = performance.now();
   const response = await fetch(new URL(info.url + '?v=' + info.sha256, baseUrl));
   if (!response.ok) throw new Error(`Local content download: HTTP ${response.status} (${info.url})`);
   const handle = await directory.getFileHandle(info.sha256 + '.bin', {create: true});
   const writer = await handle.createWritable();
   const reader = response.body.getReader();
-  let offset = 0, index = 0, used = 0, received = 0;
-  let buffer = new Uint8Array(Math.min(info.blockSize, info.size));
+  let offset = 0, used = 0, received = 0, previousProgress = 0;
+  let buffer = new Uint8Array(Math.min(4 * 1024 * 1024, info.size));
   try {
     for (;;) {
       const {done, value} = await reader.read();
@@ -42,22 +51,33 @@ async function download(info) {
         used += length;
         position += length;
         if (used === buffer.length) {
-          if (await hash(buffer) !== info.blocks[index++]) throw new Error(`Content hash mismatch: ${info.url}`);
+          for (let start = 0; start < buffer.length; start += info.blockSize) {
+            const index = (offset + start) / info.blockSize;
+            // First/last and one block per 16 MiB catch common failures without hashing gigabytes.
+            if (fullVerification || index === 0 || index === info.blocks.length - 1 || index % 64 === 0)
+              if (await hash(buffer.subarray(start, Math.min(start + info.blockSize, buffer.length))) !== info.blocks[index])
+                throw new Error(`Content hash mismatch: ${info.url}`);
+          }
           await writer.write(buffer);
           offset += buffer.length;
           used = 0;
-          buffer = new Uint8Array(Math.min(info.blockSize, info.size - offset));
+          buffer = new Uint8Array(Math.min(4 * 1024 * 1024, info.size - offset));
         }
       }
-      postMessage({progress: {url: info.url, receivedBytes: received, fileBytes: offset,
-        totalBytes: info.size}, stats});
+      if (performance.now() - previousProgress >= 100 || received === info.size) {
+        previousProgress = performance.now();
+        postMessage({progress: {url: info.url, receivedBytes: received, fileBytes: offset,
+          totalBytes: info.size}, stats});
+      }
     }
-    if (used || offset !== info.size || index !== info.blocks.length) throw new Error('Incomplete local content');
+    if (used || offset !== info.size) throw new Error('Incomplete local content');
     await writer.close();
     const marker = await (await directory.getFileHandle(markerName(info.sha256), {create: true})).createWritable();
-    await marker.write(JSON.stringify({sha256: info.sha256, size: info.size, used: Date.now()}));
+    await marker.write(JSON.stringify({sha256: info.sha256, size: info.size, used: Date.now(),
+      verification: stats.verification}));
     await marker.close();
     ++stats.downloads;
+    stats.downloadMs += performance.now() - started;
   } catch (error) {
     await reader.cancel().catch(() => {});
     await writer.abort().catch(() => {});
@@ -121,8 +141,10 @@ async function block(value, index) {
   }
   if (!pendingBlocks.has(key)) pendingBlocks.set(key, (async () => {
     const offset = index * info.blockSize;
-    const bytes = new Uint8Array(await file.slice(offset, Math.min(info.size, offset + info.blockSize)).arrayBuffer());
-    if (await hash(bytes) !== info.blocks[index]) {
+    const started = performance.now(), length = Math.min(info.blockSize, info.size - offset);
+    const bytes = new Uint8Array(await file.slice(offset, offset + length).arrayBuffer());
+    stats.diskReadMs += performance.now() - started;
+    if (bytes.length !== length || fullVerification && await hash(bytes) !== info.blocks[index]) {
       await directory.removeEntry(markerName(info.sha256)).catch(() => {});
       throw new Error('Local content is corrupt; reload to rebuild the disk cache');
     }
@@ -145,6 +167,8 @@ async function block(value, index) {
 async function execute(message) {
   if (message.type === 'init') {
     baseUrl = message.baseUrl;
+    fullVerification = message.verification === 'full';
+    stats.verification = fullVerification ? 'full' : 'sampled';
     directory = await (await navigator.storage.getDirectory()).getDirectoryHandle('ue-web-local-v1', {create: true});
     return null;
   }
@@ -158,9 +182,20 @@ async function execute(message) {
   }
   if (message.type === 'stats') return null;
   if (message.type !== 'read') throw new Error('Unknown local IO request');
-  const value = await asset(message.info), {offset, size} = message;
+  const registered = assets.get(message.sha256);
+  if (!registered) throw new Error('Local IO asset is not registered');
+  const value = await registered, {offset, size} = message;
   if (!Number.isSafeInteger(offset) || !Number.isSafeInteger(size) || offset < 0 || size < 0 ||
       offset + size > value.info.size || size > 32 * 1024 * 1024) throw new Error('Invalid local IO range');
+  if (!fullVerification && size >= value.info.blockSize) {
+    const started = performance.now();
+    const result = await value.file.slice(offset, offset + size).arrayBuffer();
+    stats.diskReadMs += performance.now() - started;
+    if (result.byteLength !== size) throw new Error('Incomplete local IO read');
+    ++stats.diskReads;
+    stats.diskReadBytes += size;
+    return result;
+  }
   const result = new Uint8Array(size);
   for (let copied = 0; copied < size;) {
     const position = offset + copied, index = Math.floor(position / value.info.blockSize);

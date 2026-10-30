@@ -7,6 +7,9 @@ public class WebGPURHI : ModuleRules
     {
         PCHUsage = PCHUsageMode.NoPCHs;
         bUseUnity = false;
+        if (Target.Platform == UnrealTargetPlatform.Win64 &&
+            System.Environment.GetEnvironmentVariable("WEBGPU_NATIVE_PROBE_NO_OPTIMIZE") == "1")
+            OptimizeCode = CodeOptimization.Never;
         PrivateDependencyModuleNames.AddRange(new string[] { "Core", "RHI", "RHICore", "RenderCore", "Json" });
         PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHICore/Internal"));
         string Dawn = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../../../../.tools/dawn-v20261009.190412"));

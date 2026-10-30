@@ -87,7 +87,7 @@ $taskArguments = @(
     '-ini:Engine:[SystemSettings]:r.ScreenPercentage=100',
     '-ini:Engine:[SystemSettings]:r.ScreenPercentage.Default.Desktop.Mode=0',
     '-ini:Engine:[SystemSettings]:r.DynamicRes.OperationMode=0',
-    '-ini:Engine:[SystemSettings]:r.Streaming.PoolSize=512',
+    '-ini:Engine:[SystemSettings]:r.Streaming.PoolSize=1024',
     '-ini:Engine:[SystemSettings]:r.VSync=0',
     '-ini:Engine:[SystemSettings]:t.MaxFPS=0',
     '-ini:EditorPerProjectUserSettings:[/Script/UnrealEd.EditorPerformanceSettings]:bThrottleCPUWhenNotForeground=False'
@@ -99,7 +99,10 @@ Write-Output "Distance-field comparison PID: $($taskProcess.Id); log: $taskOutpu
 $taskMemory = @()
 while (-not $taskProcess.HasExited) {
     $taskMemory += @{utc = (Get-Date).ToUniversalTime().ToString('o'); values = @(
-        & nvidia-smi --query-gpu=memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits)}
+        & nvidia-smi --query-gpu=memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits);
+        process = @(Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory |
+            Where-Object { $_.Name -like "pid_$($taskProcess.Id)_*" } |
+            Select-Object Name,DedicatedUsage,SharedUsage,TotalCommitted)}
     if (((Get-Date) - $taskStarted).TotalSeconds -gt 900) {
         Stop-Process -Id $taskProcess.Id
         throw "Distance-field comparison timed out: $taskOutput.log"
@@ -107,7 +110,7 @@ while (-not $taskProcess.HasExited) {
     $taskProcess.WaitForExit(2000) | Out-Null
 }
 @{started = $taskStarted.ToUniversalTime().ToString('o'); exitCode = $taskProcess.ExitCode;
-    gpu = $taskMemory; note = 'Whole-adapter usage includes other applications.'} |
+    gpu = $taskMemory; note = 'values is whole-adapter usage; process is this native editor only.'} |
     ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskOutput-system.json" -Encoding utf8
 if ($taskProcess.ExitCode -ne 0) { throw "Distance-field comparison failed: $taskOutput.log" }
 if (-not (Test-Path -LiteralPath "$taskOutput-capture.json") -or

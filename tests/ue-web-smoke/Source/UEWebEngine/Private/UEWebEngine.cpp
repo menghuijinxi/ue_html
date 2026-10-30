@@ -39,6 +39,8 @@
 #include "Components/ExponentialHeightFogComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/LightComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -336,6 +338,98 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebOcclusionTestMode(int Enabled, int Buffer
     return 1;
 }
 
+extern "C" EMSCRIPTEN_KEEPALIVE int WebVisibilityTest(int Parameter, int Value)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* Controller = TemplateController.Get();
+    if (!UseWebGPU || !Controller)
+        return 0;
+    static TWeakObjectPtr<UStaticMeshComponent> Isolated;
+    static TMap<TWeakObjectPtr<UStaticMeshComponent>, bool> Visibility;
+    static float OriginalCullDistance = 0;
+    if (Parameter == 1)
+    {
+        if (Value < -1 || Value > 8) return 0;
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.ForceLOD"))->Set(Value, ECVF_SetByCode);
+    }
+    else if (Parameter == 2)
+    {
+        if (Value < 1 || Value > 1000) return 0;
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.ViewDistanceScale"))->Set(float(Value) / 100, ECVF_SetByCode);
+    }
+    else if (Parameter == 3 && Value == 1 && Visibility.IsEmpty())
+    {
+        for (TActorIterator<AActor> It(Controller->GetWorld()); It; ++It)
+        {
+            TInlineComponentArray<UStaticMeshComponent*> Components(*It);
+            for (auto* Component : Components)
+            {
+                Visibility.Add(Component, Component->IsVisible());
+                if (UStaticMesh* Mesh = Component->GetStaticMesh();
+                    Mesh && Mesh->GetName() == TEXT("SM_LaudryStuffShelf5") && !Isolated.IsValid())
+                    Isolated = Component;
+            }
+        }
+        if (!Isolated.IsValid()) { Visibility.Empty(); return 0; }
+        OriginalCullDistance = Isolated->LDMaxDrawDistance;
+        for (const auto& Pair : Visibility)
+            if (auto* Component = Pair.Key.Get())
+                Component->SetVisibility(Component == Isolated.Get());
+    }
+    else if (Parameter == 3 && Value == 0)
+    {
+        if (Isolated.IsValid()) Isolated->SetCullDistance(OriginalCullDistance);
+        for (const auto& Pair : Visibility)
+            if (auto* Component = Pair.Key.Get())
+                Component->SetVisibility(Pair.Value);
+        Visibility.Empty();
+        Isolated.Reset();
+    }
+    else if (Parameter == 4 && Isolated.IsValid() && Value >= 0 && Value <= 100000)
+        Isolated->SetCullDistance(Value);
+    else if (Parameter != 0)
+        return 0;
+    EM_ASM({
+        globalThis.__webVisibilityAudit = ({components: 0, distanceConfigured: 0, forcedComponents: 0,
+            forceLOD: $0, distanceScale: $1, meshes: [], isolated: null});
+    }, IConsoleManager::Get().FindConsoleVariable(TEXT("r.ForceLOD"))->GetInt(),
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.ViewDistanceScale"))->GetFloat());
+    TSet<UStaticMesh*> Seen;
+    for (TActorIterator<AActor> It(Controller->GetWorld()); It; ++It)
+    {
+        TInlineComponentArray<UStaticMeshComponent*> Components(*It);
+        for (const auto* Component : Components)
+        {
+            UStaticMesh* Mesh = Component->GetStaticMesh();
+            if (!Mesh || !Mesh->GetRenderData()) continue;
+            EM_ASM({
+                ++__webVisibilityAudit.components;
+                __webVisibilityAudit.distanceConfigured += $0 > 0 ? 1 : 0;
+                __webVisibilityAudit.forcedComponents += $1 > 0 ? 1 : 0;
+            }, Component->CachedMaxDrawDistance, Component->ForcedLodModel);
+            if (Component == Isolated.Get())
+            {
+                const FVector Center = Component->Bounds.Origin;
+                EM_ASM({
+                    __webVisibilityAudit.isolated = ({center: [$0, $1, $2], radius: $3, cullDistance: $4});
+                }, Center.X, Center.Y, Center.Z, Component->Bounds.SphereRadius, Component->CachedMaxDrawDistance);
+            }
+            if (Seen.Contains(Mesh)) continue;
+            Seen.Add(Mesh);
+            EM_ASM({
+                __webVisibilityAudit.meshes.push({path: UTF8ToString(Number($0)), lods: []});
+            }, TCHAR_TO_UTF8(*Mesh->GetPathName()));
+            const auto* Data = Mesh->GetRenderData();
+            for (int32 Index = 0; Index < Data->LODResources.Num(); ++Index)
+                EM_ASM({
+                    __webVisibilityAudit.meshes[__webVisibilityAudit.meshes.length - 1].lods.push(
+                        {triangles: $0, screenSize: $1});
+                }, Data->LODResources[Index].GetNumTriangles(), Data->ScreenSize[Index].GetValue());
+        }
+    }
+    return 1;
+}
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultSamplesVisibility(int Visible)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
@@ -510,6 +604,12 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
     }
     else if (Parameter == 9 && (Value == 0 || Value == 1))
         ApplyViewMode(Value ? VMI_Unlit : VMI_Lit, true, GEngine->GameViewport->EngineShowFlags);
+    else if (Parameter == 10 && (Value == 0 || Value == 1))
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Shadow.CacheWholeSceneShadows"))->Set(Value, ECVF_SetByCode);
+    else if (Parameter == 11 && Value >= 0 && Value <= 256)
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Web.ShadowCacheProbe"))->Set(Value, ECVF_SetByCode);
+    else if (Parameter == 12 && Value >= 1 && Value <= 1024)
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Shadow.WholeSceneShadowCacheMb"))->Set(Value, ECVF_SetByCode);
     else if (Parameter != -1)
         return 0;
     auto* LocalPlayer = Controller->GetLocalPlayer();
@@ -524,13 +624,14 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
         EM_ASM({
             globalThis.__webDistanceFieldsLighting = ({reflectionMethod: $0, giMethod: $1,
                 ssrIntensity: $2, ssrQuality: $3, ssrMaxRoughness: $4, antiAliasing: $5,
-                ssrShowFlag: !!$6, frame: $7});
+                ssrShowFlag: !!$6, frame: $7, shadowCacheEnabled: !!$8});
         }, int32(View->FinalPostProcessSettings.ReflectionMethod),
             int32(View->FinalPostProcessSettings.DynamicGlobalIlluminationMethod),
             View->FinalPostProcessSettings.ScreenSpaceReflectionIntensity,
             View->FinalPostProcessSettings.ScreenSpaceReflectionQuality,
             View->FinalPostProcessSettings.ScreenSpaceReflectionMaxRoughness,
-            int32(View->AntiAliasingMethod), int32(Family.EngineShowFlags.ScreenSpaceReflections), Frames);
+            int32(View->AntiAliasingMethod), int32(Family.EngineShowFlags.ScreenSpaceReflections), Frames,
+            IConsoleManager::Get().FindConsoleVariable(TEXT("r.Shadow.CacheWholeSceneShadows"))->GetInt());
     return 1;
 }
 

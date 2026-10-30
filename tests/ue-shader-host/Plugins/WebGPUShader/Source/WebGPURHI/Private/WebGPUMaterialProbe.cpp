@@ -354,12 +354,16 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
                 Draw(Cmd, Case.Value, View, Primitive, Uniform);
                 if (Case.Key == TEXT("default-index16"))
                 {
-                    const auto Before = MakeShared<uint32>(0);
-                    Cmd.EnqueueLambda([&RHI, Before](FRHICommandListBase&) { *Before = RHI.UniformUploads; });
+                    const auto Before = MakeShared<TArray<uint32>>();
+                    Cmd.EnqueueLambda([&RHI, Before](FRHICommandListBase&) {
+                        *Before = {RHI.UniformUploads, RHI.BoundGroups, RHI.BindGroupCacheHits};
+                    });
                     Draw(Cmd, Case.Value, View, Primitive, Uniform);
                     Cmd.EnqueueLambda([&, Before, Material](FRHICommandListBase&) {
                         Record(Material + TEXT("-unchanged-uniform-reuses-gpu-snapshot"),
-                            RHI.UniformUploads == *Before);
+                            RHI.UniformUploads == (*Before)[0]);
+                        Record(Material + TEXT("-unchanged-bindings-reuse-bind-group"),
+                            RHI.BoundGroups == (*Before)[1] && RHI.BindGroupCacheHits > (*Before)[2]);
                     });
                 }
                 Cmd.EndRenderPass();

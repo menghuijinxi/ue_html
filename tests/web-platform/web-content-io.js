@@ -1,6 +1,6 @@
 'use strict';
 class WebLocalContentIO {
-  constructor(workerUrl) {
+  constructor(workerUrl, {verification = 'sampled'} = {}) {
     this.worker = new Worker(workerUrl);
     this.pending = new Map();
     this.requests = new Map();
@@ -21,7 +21,7 @@ class WebLocalContentIO {
       for (const job of this.pending.values()) job.reject(new Error(event.message));
       this.pending.clear();
     };
-    this.ready = this.call('init', {baseUrl: location.href});
+    this.ready = this.call('init', {baseUrl: location.href, verification});
   }
   call(type, args = {}) {
     return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ class WebLocalContentIO {
   async asset(info) { await this.ready; return this.call('asset', {info}); }
   async read(offset, size) {
     await this.ready;
-    return new Uint8Array(await this.call('read', {info: this.manifest.pack, offset, size}));
+    return new Uint8Array(await this.call('read', {sha256: this.manifest.pack.sha256, offset, size}));
   }
   findFile(path) {
     try { return this.files.get(this.filesystem.lookupPath(path).path); }
@@ -71,8 +71,9 @@ class WebLocalContentIO {
         const file = startup[next++];
         const stream = filesystem.open(file.path, 'w');
         try {
-          for (let offset = 0; offset < file.size; offset += manifest.pack.blockSize) {
-            const bytes = await this.read(file.offset + offset, Math.min(manifest.pack.blockSize, file.size - offset));
+          const chunkSize = 4 * 1024 * 1024;
+          for (let offset = 0; offset < file.size; offset += chunkSize) {
+            const bytes = await this.read(file.offset + offset, Math.min(chunkSize, file.size - offset));
             filesystem.write(stream, bytes, 0, bytes.length, offset);
           }
         } finally { filesystem.close(stream); }

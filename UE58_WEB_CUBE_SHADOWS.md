@@ -58,3 +58,7 @@ node tests/web-platform/probe-web-distance-fields.cjs --edge --folder=triplex-ho
 这些数值证明局部灯阴影对最终像素有贡献，不是桌面一致性评分。门把手与花盆附近投影已恢复；墙脚仍有差别，且桌面参考的纹理驻留不同，尚不能宣称 AO、接触阴影和纹理细节全部对齐。本轮未增加新的完整 GPU 帧时间测量，六遍开销没有作为性能达标项验收。此前记录的浏览器 `STATUS_ACCESS_VIOLATION` 也未据此宣布修复。
 
 额外的 Windows/Dawn 独立探针模块没有完成链接：MSVC 14.50 在 `WebGPUDynamicRHI.cpp` 报内部错误，14.44 在距离场/模式探针中也报内部错误或编译器访问冲突。日志保留在 `results/cube-shadow-native-rhi-build*.log`。这与实际 WASM 浏览器构建、原生 Cook 模块和浏览器 GPU 验证分别记录；没有把独立探针失败标为通过。
+
+## 性能追踪补充
+
+后续实测发现，六面缓存复制虽已实现，缓存创建入口仍漏接 Web 六遍能力，而且默认 150 MiB 预算存在压力。性能修正补上入口、允许 Web 普通静态深度复用，并将 Web 默认预算设为 256 MiB。缓存开关对照验证实际绘制与像素，详见 [性能记录](UE58_WEB_PERFORMANCE.md)。此前关于缓存降低重复绘制的说明不能替代这次运行验证。

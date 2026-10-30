@@ -718,6 +718,9 @@ void FWebGPUDynamicRHI::Shutdown()
     RequireOwner();
     check(!Pass && !Encoder && !ContextOpen && Transitions.IsEmpty() && BreadcrumbStack.IsEmpty() &&
           BufferLocks.IsEmpty());
+    BindGroupCache.Empty();
+    if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
+    FrameUniformBuffer = nullptr;
     ReleaseBindings();
     GlobalSamplers.Empty();
     for (const auto& Entry : ClearPipelines)
@@ -780,6 +783,12 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 {
     RequireOwner();
     check(!ContextOpen && !Pass && !Args.bProfileNextFrame);
+    // Keep snapshots only within this frame so streaming textures and transient uniforms can retire.
+    BindGroupCache.Empty();
+    BindGroupCacheEntries = 0;
+    if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
+    FrameUniformBuffer = nullptr;
+    FrameUniformOffset = 0;
 #if STATS
     // WebGPU has no GPU-profiler EOP worker; retire the CPU statistics at submission.
     if (Args.StatsFrame.IsSet())
@@ -798,7 +807,8 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             globalThis.__webOcclusionRHI.ready = $0;
             globalThis.__webOcclusionRHI.pending = $1;
             globalThis.__webOcclusionRHI.zero = $2;
-        }, OcclusionResultsReady, OcclusionResultsPending, OcclusionResultsZero);
+            globalThis.__webOcclusionRHI.bindGroupCacheHits = $3;
+        }, OcclusionResultsReady, OcclusionResultsPending, OcclusionResultsZero, BindGroupCacheHits);
 #endif
 }
 FWebGPUDynamicRHI::~FWebGPUDynamicRHI()
@@ -970,7 +980,7 @@ WEBGPU_CREATE_SHADER(Compute)
 
 FSamplerStateRHIRef FWebGPUDynamicRHI::RHICreateSamplerState(const FSamplerStateInitializerRHI &In)
 {
-    if (StartupProbeMode)
+    if (StartupProbeMode && EndFrames == 0)
         UE_LOG(LogRHI, Display, TEXT("P2_STARTUP sampler descriptor retained filter=%u comparison=%u"),
                uint32(In.Filter), uint32(In.SamplerComparisonFunction));
     return new FWebGPUSampler(In);
@@ -1359,11 +1369,12 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
         Cmd.EnqueueLambda(MoveTemp(Upload));
 }
 FUniformBufferRHIRef FWebGPUDynamicRHI::RHICreateUniformBuffer(const void *Bytes, const FRHIUniformBufferLayout *Layout,
-                                                               EUniformBufferUsage, EUniformBufferValidation)
+                                                               EUniformBufferUsage Usage, EUniformBufferValidation)
 {
     RequireOwner();
     check(Layout && !EnumHasAnyFlags(Layout->Flags, ERHIUniformBufferFlags::UniformView));
     auto *Result = new FWebGPUUniform(Layout);
+    Result->SingleFrame = Usage != UniformBuffer_MultiFrame;
     TArray<uint8> Constants;
     TArray<TRefCountPtr<FRHIResource>> Resources;
     if (Bytes)
@@ -2232,13 +2243,32 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                     auto *Uniform = static_cast<FWebGPUUniform *>(Resource);
                     Entry.size = Reflected.PaddedSize;
                     check(Entry.size <= uint64(Uniform->Bytes.Num()));
-                    auto& Buffer = Uniform->ConstantBuffers.FindOrAdd(uint32(Entry.size));
-                    if (!Buffer)
+                    auto& Snapshot = Uniform->ConstantBuffers.FindOrAdd(uint32(Entry.size));
+                    if (!Snapshot.Buffer)
                     {
-                        Buffer = CreateBuffer(Entry.size, WGPUBufferUsage_Uniform, Uniform->Bytes.GetData());
+                        if (Uniform->SingleFrame && Entry.size <= 64 * 1024)
+                        {
+                            constexpr uint64 PageBytes = 1024 * 1024;
+                            const uint64 Offset = Align(FrameUniformOffset, uint64(256));
+                            if (!FrameUniformBuffer || Offset + Entry.size > PageBytes)
+                            {
+                                if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
+                                FrameUniformBuffer = CreateBuffer(PageBytes, WGPUBufferUsage_Uniform);
+                                FrameUniformOffset = 0;
+                            }
+                            Snapshot.Buffer = FrameUniformBuffer;
+                            Snapshot.Offset = Align(FrameUniformOffset, uint64(256));
+                            FrameUniformOffset = Snapshot.Offset + Entry.size;
+                            wgpuBufferAddRef(Snapshot.Buffer);
+                            // Each immutable snapshot gets a unique aligned range, even across submissions.
+                            wgpuQueueWriteBuffer(Queue, Snapshot.Buffer, Snapshot.Offset, Uniform->Bytes.GetData(), Entry.size);
+                        }
+                        else
+                            Snapshot.Buffer = CreateBuffer(Entry.size, WGPUBufferUsage_Uniform, Uniform->Bytes.GetData());
                         ++UniformUploads;
                     }
-                    Entry.buffer = Buffer;
+                    Entry.buffer = Snapshot.Buffer;
+                    Entry.offset = Snapshot.Offset;
                 }
                 else if (Descriptor == 2)
                 {
@@ -2315,11 +2345,53 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     TArray<WGPUBindGroup> Result;
     for (uint32 Group = 0; HasBindings && Group <= Maximum; ++Group)
     {
+        const auto* Entries = Groups.Find(Group);
+        uint32 Hash = HashCombineFast(GetTypeHash(reinterpret_cast<UPTRINT>(Render)),
+            GetTypeHash(reinterpret_cast<UPTRINT>(Compute)));
+        Hash = HashCombineFast(Hash, Group);
+        if (Entries)
+            for (const auto& Entry : *Entries)
+            {
+                Hash = HashCombineFast(Hash, Entry.binding);
+                Hash = HashCombineFast(Hash, GetTypeHash(reinterpret_cast<UPTRINT>(Entry.buffer)));
+                Hash = HashCombineFast(Hash, GetTypeHash(Entry.offset));
+                Hash = HashCombineFast(Hash, GetTypeHash(Entry.size));
+                Hash = HashCombineFast(Hash, GetTypeHash(reinterpret_cast<UPTRINT>(Entry.textureView)));
+                Hash = HashCombineFast(Hash, GetTypeHash(reinterpret_cast<UPTRINT>(Entry.sampler)));
+            }
+        const auto Matches = [&](const FWebGPUBindGroupCacheEntry& Cached) {
+            if (Cached.Render != Render || Cached.Compute != Compute || Cached.Group != Group ||
+                Cached.Entries.Num() != (Entries ? Entries->Num() : 0))
+                return false;
+            for (int32 Index = 0; Index < Cached.Entries.Num(); ++Index)
+            {
+                const auto& A = Cached.Entries[Index];
+                const auto& B = (*Entries)[Index];
+                if (A.binding != B.binding || A.buffer != B.buffer || A.offset != B.offset ||
+                    A.size != B.size || A.textureView != B.textureView || A.sampler != B.sampler)
+                    return false;
+            }
+            return true;
+        };
+        WGPUBindGroup CachedHandle = nullptr;
+        if (const auto* Bucket = BindGroupCache.Find(Hash))
+            for (const auto& Cached : *Bucket)
+                if (Matches(*Cached))
+                {
+                    CachedHandle = Cached->Handle;
+                    break;
+                }
+        if (CachedHandle)
+        {
+            wgpuBindGroupAddRef(CachedHandle);
+            Result.Add(CachedHandle);
+            ++BindGroupCacheHits;
+            continue;
+        }
         WGPUBindGroupLayout Layout = Render ? wgpuRenderPipelineGetBindGroupLayout(Render, Group)
                                             : wgpuComputePipelineGetBindGroupLayout(Compute, Group);
         WGPUBindGroupDescriptor Desc = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
         Desc.layout = Layout;
-        const auto *Entries = Groups.Find(Group);
         if (Entries)
         {
             Desc.entryCount = Entries->Num();
@@ -2328,6 +2400,27 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         Result.Add(wgpuDeviceCreateBindGroup(Device, &Desc));
         wgpuBindGroupLayoutRelease(Layout);
         ++BoundGroups;
+        if (BindGroupCacheEntries < 8192)
+        {
+            auto Cached = MakeUnique<FWebGPUBindGroupCacheEntry>();
+            Cached->Render = Render;
+            Cached->Compute = Compute;
+            Cached->Group = Group;
+            Cached->Handle = Result.Last();
+            wgpuBindGroupAddRef(Cached->Handle);
+            if (Render) wgpuRenderPipelineAddRef(Render);
+            if (Compute) wgpuComputePipelineAddRef(Compute);
+            if (Entries) Cached->Entries = *Entries;
+            // Retain opaque handles as well as the group; released JS handles can otherwise be reused.
+            for (const auto& Entry : Cached->Entries)
+            {
+                if (Entry.buffer) wgpuBufferAddRef(Entry.buffer);
+                if (Entry.textureView) wgpuTextureViewAddRef(Entry.textureView);
+                if (Entry.sampler) wgpuSamplerAddRef(Entry.sampler);
+            }
+            BindGroupCache.FindOrAdd(Hash).Add(MoveTemp(Cached));
+            ++BindGroupCacheEntries;
+        }
     }
     return Result;
 }

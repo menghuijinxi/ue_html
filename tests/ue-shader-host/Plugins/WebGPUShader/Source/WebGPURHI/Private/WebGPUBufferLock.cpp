@@ -46,7 +46,7 @@ void *FWebGPUDynamicRHI::LockBuffer_BottomOfPipe(FRHICommandListBase &, FRHIBuff
                                                  EResourceLockMode Mode)
 {
     RequireOwner();
-    if (StartupProbeMode && Buffer)
+    if (StartupProbeMode && EndFrames == 0 && Buffer)
         UE_LOG(LogRHI, Display, TEXT("P2_STARTUP BufferLock requested name=%s offset=%u size=%u mode=%u"),
                *Buffer->GetName().ToString(), Offset, Size, uint32(Mode));
     FString Error;
@@ -91,7 +91,7 @@ void FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase &, FRHIBuf
         BufferUploadBytes += Lock.Bytes.Num();
     }
     ++BufferLocksReleased;
-    if (StartupProbeMode)
+    if (StartupProbeMode && EndFrames == 0)
         UE_LOG(LogRHI, Display, TEXT("P2_STARTUP BufferLock released name=%s offset=%u size=%d mode=%u"),
                *Buffer->GetName().ToString(), Lock.Offset, Lock.Bytes.Num(), uint32(Lock.Mode));
 }

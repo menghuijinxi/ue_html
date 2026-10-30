@@ -823,7 +823,8 @@ if (!capabilities.secureContext) {
       script.onerror = () => reject(new Error('Local content IO script failed to load'));
       document.body.appendChild(script);
     });
-    const io = globalThis.__webContentIO = new WebLocalContentIO(versionedAsset('web-content-worker.js'));
+    const io = globalThis.__webContentIO = new WebLocalContentIO(versionedAsset('web-content-worker.js'),
+      {verification: startupOptions.get('verify') === 'full' ? 'full' : 'sampled'});
     io.copy = (destination, bytes) => HEAPU8.set(bytes, Number(destination));
     io.complete = (id, success) => Module._WebLocalReadCompleted(id, success ? 1 : 0);
     io.onprogress = progress => {

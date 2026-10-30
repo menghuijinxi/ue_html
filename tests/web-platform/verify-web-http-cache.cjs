@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const {once} = require('node:events');
+const {writeVersions} = require('./asset-versions.cjs');
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 
 (async () => {
@@ -48,11 +49,28 @@ const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.read
     assert.equal(updated.status, 200);
     assert.notEqual(updated.headers.get('etag'), first.headers.get('etag'));
     assert.equal(await updated.text(), 'changed-version');
+    const largeDirectory = fs.mkdtempSync(path.join(__dirname, 'build/http-cache-'));
+    const largeFile = path.join(largeDirectory, 'content.bin');
+    fs.writeFileSync(largeFile, Buffer.alloc(2 * 1024 * 1024, 1));
+    const published = audit(largeFile);
+    writeVersions(largeDirectory, [published]);
+    const largeUrl = origin + '/' + path.relative(__dirname, largeFile).replaceAll('\\', '/');
+    const publishedResponse = await fetch(largeUrl + '?v=' + published.sha256, {method: 'HEAD'});
+    assert.equal(publishedResponse.status, 200);
+    assert.equal(publishedResponse.headers.get('etag'), `"${published.sha256}"`);
+    fs.writeFileSync(largeFile, Buffer.alloc(2 * 1024 * 1024, 2));
+    const changedTime = new Date(Date.now() + 2000);
+    fs.utimesSync(largeFile, changedTime, changedTime);
+    const stalePublished = await fetch(largeUrl + '?v=' + published.sha256, {method: 'HEAD'});
+    assert.equal(stalePublished.status, 409, 'Changed mtime must invalidate the published hash');
+    const rehashed = await fetch(largeUrl, {method: 'HEAD'});
+    assert.equal(rehashed.headers.get('etag'), `"${audit(largeFile).sha256}"`);
     const report = {pass: true, date: new Date().toISOString(),
-      sourceFiles: [__filename, path.join(__dirname, 'serve.cjs')].map(audit),
+      sourceFiles: [__filename, path.join(__dirname, 'serve.cjs'), path.join(__dirname, 'asset-versions.cjs')].map(audit),
       etag: initial.headers.get('etag'), bytes: body.byteLength,
       cacheControl: initial.headers.get('cache-control'), immutable: true, unchangedStatus: unchanged.status,
-      staleVersionStatus: stale.status, changedFileStatus: updated.status};
+      staleVersionStatus: stale.status, changedFileStatus: updated.status,
+      publishedHashStatus: publishedResponse.status, stalePublishedHashStatus: stalePublished.status};
     fs.writeFileSync(path.join(__dirname, 'results/web-http-cache-results.json'), JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report));
   } finally {
