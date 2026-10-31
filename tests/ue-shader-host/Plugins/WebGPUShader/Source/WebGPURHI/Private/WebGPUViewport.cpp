@@ -8,6 +8,7 @@
 
 FWebGPUViewport::~FWebGPUViewport()
 {
+    WebGPUOnOwner([&] {
     check(OwnerThread == FPlatformTLS::GetCurrentThreadId());
     InvalidateFrame();
     if (Surface)
@@ -15,6 +16,7 @@ FWebGPUViewport::~FWebGPUViewport()
         wgpuSurfaceUnconfigure(Surface);
         wgpuSurfaceRelease(Surface);
     }
+    });
 }
 
 void FWebGPUViewport::InvalidateFrame()
@@ -47,6 +49,7 @@ bool FWebGPUDynamicRHI::ValidateViewport(void *Window, uint32 Width, uint32 Heig
 FViewportRHIRef FWebGPUDynamicRHI::RHICreateViewport(void *Window, uint32 Width, uint32 Height, bool Fullscreen,
                                                      EPixelFormat Format)
 {
+    WEBGPU_ON_OWNER(RHICreateViewport(Window, Width, Height, Fullscreen, Format));
     RequireOwner();
     FString Error;
     if (StartupProbeMode)
@@ -99,6 +102,9 @@ FViewportRHIRef FWebGPUDynamicRHI::RHICreateViewport(void *Window, uint32 Width,
     Configuration.device = Device;
     Configuration.format = NativeFormat;
     Configuration.usage = WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopySrc;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    Configuration.usage |= WGPUTextureUsage_CopyDst;
+#endif
     Configuration.presentMode = WGPUPresentMode_Fifo;
     Configuration.alphaMode = Capabilities.alphaModes[0];
     Configuration.width = Width;
@@ -116,11 +122,13 @@ FViewportRHIRef FWebGPUDynamicRHI::RHICreateViewport(void *Window, uint32 Width,
 void FWebGPUDynamicRHI::RHIResizeViewport(FRHIViewport *InViewport, uint32 Width, uint32 Height, bool Fullscreen,
                                           EPixelFormat Format)
 {
+    WEBGPU_ON_OWNER(RHIResizeViewport(InViewport, Width, Height, Fullscreen, Format));
     RequireOwner();
     auto &Viewport = *static_cast<FWebGPUViewport *>(InViewport);
     FString Error;
     checkf(ValidateViewport(Viewport.Window, Width, Height, Fullscreen, Format, Error), TEXT("%s"), *Error);
-    check(!Pass && !Viewport.BackBuffer);
+    check(!Pass);
+    Viewport.InvalidateFrame();
     check(Format == PF_Unknown || Format == Viewport.Format);
     if (ContextOpen)
         SubmitCurrent();
@@ -136,25 +144,31 @@ void FWebGPUDynamicRHI::RHIResizeViewport(FRHIViewport *InViewport, uint32 Width
 
 FTextureRHIRef FWebGPUDynamicRHI::RHIGetViewportBackBuffer(FRHIViewport *InViewport)
 {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    // UE flushes rendering before viewport resize. Between resizes this ref is
+    // stable, allowing RT to record the next frame while RHI encodes the prior one.
+    auto& StableViewport = *static_cast<FWebGPUViewport*>(InViewport);
+    if (StableViewport.BackBuffer) return StableViewport.BackBuffer.GetReference();
+#endif
+    WEBGPU_ON_OWNER(RHIGetViewportBackBuffer(InViewport));
     RequireOwner();
     auto &Viewport = *static_cast<FWebGPUViewport *>(InViewport);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
-    // Canvas textures expire when the browser regains control, including after startup.
-    const uint32 Epoch = uint32(EM_ASM_INT({
-        if (!globalThis.__webSurfaceEpochQueued) {
-            globalThis.__webSurfaceEpochQueued = true;
-            queueMicrotask(() => {
-                globalThis.__webSurfaceEpochQueued = false;
-                globalThis.__webSurfaceEpoch = ((globalThis.__webSurfaceEpoch || 0) + 1) >>> 0;
-            });
-        }
-        return globalThis.__webSurfaceEpoch || 0;
-    }));
-    if (Viewport.BrowserSurfaceEpoch != Epoch)
+    // A canvas texture expires at the end of a JS task. Keep the UE backbuffer
+    // independent of that lifetime; acquire/copy/present together on the RHI Worker.
+    if (!Viewport.BackBuffer)
     {
-        Viewport.InvalidateFrame();
-        Viewport.BrowserSurfaceEpoch = Epoch;
+        auto Native = WGPU_TEXTURE_DESCRIPTOR_INIT;
+        Native.size = {Viewport.Configuration.width, Viewport.Configuration.height, 1};
+        Native.format = Viewport.Configuration.format;
+        Native.usage = WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopySrc;
+        const auto Desc = FRHITextureCreateDesc::Create2D(TEXT("WebGPUBackBuffer"), Native.size.width,
+                Native.size.height, Viewport.Format)
+            .SetFlags(ETextureCreateFlags::RenderTargetable | ETextureCreateFlags::Presentable)
+            .SetClearValue(FClearValueBinding(FLinearColor(0, 0, 0, 1))).SetInitialState(ERHIAccess::Present);
+        Viewport.BackBuffer = new FWebGPUTexture(Desc, wgpuDeviceCreateTexture(Device, &Native));
     }
+    return Viewport.BackBuffer.GetReference();
 #endif
     if (!Viewport.BackBuffer)
     {
@@ -178,6 +192,11 @@ FTextureRHIRef FWebGPUDynamicRHI::RHIGetViewportBackBuffer(FRHIViewport *InViewp
 void FWebGPUDynamicRHI::RHIEndDrawingViewport(FRHICommandListImmediate &Cmd, FRHIViewport *InViewport,
                                               const FRHIPresentArgs &Args)
 {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    Cmd.EnqueueLambda([this, Viewport = TRefCountPtr<FWebGPUViewport>(static_cast<FWebGPUViewport*>(InViewport)), Args]
+        (FRHICommandListBase&) { PresentBrowserViewport(*Viewport, Args); });
+    return;
+#endif
     RequireOwner();
     auto &Viewport = *static_cast<FWebGPUViewport *>(InViewport);
 #if !defined(PLATFORM_WEB) || !PLATFORM_WEB
@@ -218,4 +237,30 @@ void FWebGPUDynamicRHI::RHIEndDrawingViewport(FRHICommandListImmediate &Cmd, FRH
                FramesAcquired, FramesPresented, FramesSkipped, Submitted,
                Viewport.BackBuffer ? TEXT("false") : TEXT("true"));
 #endif
+}
+
+void FWebGPUDynamicRHI::PresentBrowserViewport(FWebGPUViewport& Viewport, const FRHIPresentArgs& Args)
+{
+    RequireOwner();
+    check(!Pass && Viewport.BackBuffer);
+    if (ContextOpen) SubmitCurrent();
+    RequireAccess(Viewport.BackBuffer, ERHIAccess::Present);
+    if (!Args.bPresent) { ++FramesSkipped; return; }
+    auto Surface = WGPU_SURFACE_TEXTURE_INIT;
+    wgpuSurfaceGetCurrentTexture(Viewport.Surface, &Surface);
+    check(Surface.texture);
+    auto Copy = wgpuDeviceCreateCommandEncoder(Device, nullptr);
+    auto Source = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+    auto Destination = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+    Source.texture = Viewport.BackBuffer->Handle;
+    Destination.texture = Surface.texture;
+    const WGPUExtent3D Extent{Viewport.Configuration.width, Viewport.Configuration.height, 1};
+    wgpuCommandEncoderCopyTextureToTexture(Copy, &Source, &Destination, &Extent);
+    auto Commands = wgpuCommandEncoderFinish(Copy, nullptr);
+    wgpuQueueSubmit(Queue, 1, &Commands);
+    wgpuCommandBufferRelease(Commands);
+    wgpuCommandEncoderRelease(Copy);
+    wgpuTextureRelease(Surface.texture);
+    ++FramesAcquired;
+    ++FramesPresented;
 }

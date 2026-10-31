@@ -42,9 +42,9 @@ bool FWebGPUDynamicRHI::ValidateBufferUnlock(FRHIBuffer *Buffer, FString &Error)
     return true;
 }
 
-void *FWebGPUDynamicRHI::LockBuffer_BottomOfPipe(FRHICommandListBase &, FRHIBuffer *Buffer, uint32 Offset, uint32 Size,
-                                                 EResourceLockMode Mode)
+void *FWebGPUDynamicRHI::LockBuffer_BottomOfPipe(FRHICommandListBase & WebArg0, FRHIBuffer *Buffer, uint32 Offset, uint32 Size, EResourceLockMode Mode)
 {
+    WEBGPU_COMMAND_ON_OWNER(LockBuffer_BottomOfPipe(WebArg0, Buffer, Offset, Size, Mode));
     RequireOwner();
     if (StartupProbeMode && EndFrames == 0 && Buffer)
         UE_LOG(LogRHI, Display, TEXT("P2_STARTUP BufferLock requested name=%s offset=%u size=%u mode=%u"),
@@ -71,8 +71,9 @@ void *FWebGPUDynamicRHI::LockBuffer_BottomOfPipe(FRHICommandListBase &, FRHIBuff
     return Stored.Bytes.GetData();
 }
 
-void FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase &, FRHIBuffer *Buffer)
+void FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase & WebArg0, FRHIBuffer *Buffer)
 {
+    WEBGPU_COMMAND_ON_OWNER(UnlockBuffer_BottomOfPipe(WebArg0, Buffer));
     RequireOwner();
     FString Error;
     checkf(ValidateBufferUnlock(Buffer, Error), TEXT("WebGPU BufferUnlock unsupported: %s"), *Error);

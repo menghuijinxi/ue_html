@@ -1,5 +1,7 @@
 # 别墅 CPU 提交瓶颈调查与修复
 
+本文是 `4b8cb6d` 任务线程版本的历史结果。后续已实现独立 Game / Render / RHI 线程并进一步复用常量页，当前实现和测试见 [独立渲染线程报告](UE58_VILLA_RENDER_THREADS.md)。
+
 本机：i9-12900K、RTX 4090、Edge 156。场景与资源为 `TriplexHouseVilla` 原项目设置包，未降低渲染质量、距离场、贴图、阴影、LOD 或绘制距离。
 
 ## 多线程实际状态

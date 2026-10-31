@@ -1,5 +1,5 @@
 'use strict';
-// This is the main Emscripten runtime, not a pthread. It owns FS, IO and all GPU handles.
+// The main runtime owns FS, IO, GPU objects and RHI translation. GT/RT are pthreads.
 let initialized = false;
 const send = (type, values = {}) => postMessage({type, ...values});
 const fail = error => send('failure', {message: error?.stack || error?.message || String(error)});
@@ -11,6 +11,24 @@ const rpcNames = new Set([
   'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
   'WebLightingQualityTest', 'WebVisibilityTest'
 ]);
+// Emscripten's Worker setImmediate fallback sends a token to its parent. This
+// runtime has a custom page host, so schedule locally and yield without a UI hop.
+if (!globalThis.setImmediate) {
+  const channel = new MessageChannel(), callbacks = new Map();
+  let sequence = 0;
+  channel.port1.onmessage = event => {
+    const callback = callbacks.get(event.data);
+    callbacks.delete(event.data);
+    callback?.();
+  };
+  globalThis.setImmediate = callback => {
+    const id = ++sequence;
+    callbacks.set(id, callback);
+    channel.port2.postMessage(id);
+    return id;
+  };
+  globalThis.clearImmediate = id => callbacks.delete(id);
+}
 function snapshot() {
   const state = {};
   for (const key of Object.keys(globalThis)) {
@@ -41,16 +59,15 @@ addEventListener('message', event => {
     globalThis.__webBrowserState = message.state;
     globalThis.devicePixelRatio = message.state.dpr;
   } else if (message.type === 'inputs') {
-    if (globalThis.__webInputBound)
-      for (const values of message.events) Module._WebBrowserInput(...values);
-    send('input-ack');
+    if (globalThis.__webInputBound && globalThis.__webGameThreadWorker)
+      globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
+    else send('input-ack');
   } else if (message.type === 'rpc') {
     try {
       if (!rpcNames.has(message.name) || !globalThis.__webInputBound)
         throw new Error('Unavailable engine RPC: ' + message.name);
-      const result = Module['_' + message.name](...message.args);
-      snapshot();
-      send('rpc', {id: message.id, result});
+      if (!globalThis.__webGameThreadWorker) throw new Error('Game thread unavailable');
+      globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
     } catch (error) { send('rpc', {id: message.id, error: error.message}); }
   }
 });

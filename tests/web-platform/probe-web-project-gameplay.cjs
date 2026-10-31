@@ -11,11 +11,12 @@ const runs = Number(option('runs') || 3), seconds = Number(option('seconds') || 
 assert(runs >= 1 && runs <= 10 && seconds >= 10 && seconds <= 600);
 const width = Number(option('width') || 1533), height = Number(option('height') || 812);
 const dpr = Number(option('dpr') || 1.21);
+const requireRenderThreads = process.argv.includes('--require-render-threads');
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const output = path.join(__dirname, 'results', `project-gameplay-${tag}`);
 const report = {date: new Date().toISOString(), folder, width, height, dpr, requestedRuns: runs, seconds,
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-  runs: [], settingsOverrides: [], pass: false};
+  runs: [], settingsOverrides: [], requireRenderThreads, pass: false};
 const log = fs.createWriteStream(output + '.log');
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
@@ -37,12 +38,31 @@ let context;
       });
       const start = Date.now();
       await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
-      await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 2, null, {timeout: 900000});
+      const startupTimer = setInterval(async () => {
+        try {
+          const state = await page.evaluate(() => ({stage: globalThis.__webStartupDiagnostics?.stage,
+            content: globalThis.__webStartupDiagnostics?.content,
+            localContent: globalThis.__webStartupDiagnostics?.localContent,
+            frame: globalThis.__webEngineFrames || 0, failure: globalThis.__webEngineFailure}));
+          const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
+          if (owner) state.worker = await owner.evaluate(() => ({stages: globalThis.__webThreadStages,
+            threads: globalThis.__webEngineThreads, pool: typeof PThread === 'undefined' ? null :
+              {active: Object.keys(PThread.pthreads).length, unused: PThread.unusedWorkers.length}}));
+          (result.startupSamples ||= []).push({elapsedMilliseconds: Date.now() - start, ...state});
+          save();
+          console.log(JSON.stringify({run, startup: result.startupSamples.at(-1)}));
+        } catch {}
+      }, 10000);
+      try {
+        await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 2,
+          null, {timeout: 900000});
+      } finally { clearInterval(startupTimer); }
       const snapshot = async label => {
         const state = await page.evaluate(() => ({frame: globalThis.__webEngineFrames,
           failure: globalThis.__webEngineFailure, camera: globalThis.__webDefaultCamera,
           view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings,
           retirement: globalThis.__webGPUHandleDiagnostics,
+          threads: globalThis.__webEngineThreads, stages: globalThis.__webThreadStages,
           diagnostics: typeof startupSnapshot === 'function' ? startupSnapshot() : null}));
         if (state.diagnostics) {
           result.diagnostics = state.diagnostics;
@@ -93,6 +113,19 @@ let context;
       assert(result.defaultPositionSRV, 'The repaired default position SRV must be created');
       assert(result.maxTravelCm > 50, 'Real player movement must be exercised');
       assert(result.maxTurnDegrees > 10, 'Real player rotation must be exercised');
+      if (requireRenderThreads) {
+        const last = result.samples.at(-1), threads = last.threads;
+        assert(threads?.renderThread && threads?.rhiThread, 'Rendering and RHI threads must both be enabled');
+        assert.equal(new Set([threads.gameThread, threads.renderThreadId, threads.rhiThreadId]).size, 3,
+          'Game, render commands and RHI execution must run on three distinct physical threads');
+        assert(last.view.parallelRendering && last.view.threadId !== threads.gameThread &&
+          last.view.threadId !== threads.rhiThreadId, 'View preparation must execute as render work outside Game/RHI');
+        assert.equal(last.stages.renderCommandThreadId, threads.renderThreadId,
+          'Scene rendering commands must execute on the render thread');
+        assert.equal(last.stages?.rhiThreadId, threads.rhiThreadId, 'Frame submission must execute on the RHI thread');
+        assert(last.stages.rhiFrames > 60 && last.stages.submitted > 60 && last.stages.presented > 60,
+          'RHI frames, command submissions and presentation must continue advancing');
+      }
       await page.locator('canvas').screenshot({path: output + `-${run}.png`, timeout: 60000});
       result.pass = true;
       console.log(JSON.stringify({run, pass: true, firstFrame: result.samples[0].frame,

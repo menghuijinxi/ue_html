@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WebGPUUnsupportedRHI.h"
+#include "WebGPUOwner.h"
 #include "RHICoreStats.h"
 #include "Dom/JsonObject.h"
 #include <webgpu/webgpu.h>
@@ -35,15 +36,15 @@ struct FWebGPUBindGroupCacheEntry
     TArray<WGPUBindGroupEntry> Entries;
     ~FWebGPUBindGroupCacheEntry()
     {
-        if (Handle) wgpuBindGroupRelease(Handle);
+        if (Handle) WebGPUOnOwner([&] { wgpuBindGroupRelease(Handle); });
         for (const auto& Entry : Entries)
         {
-            if (Entry.buffer) wgpuBufferRelease(Entry.buffer);
-            if (Entry.textureView) wgpuTextureViewRelease(Entry.textureView);
-            if (Entry.sampler) wgpuSamplerRelease(Entry.sampler);
+            if (Entry.buffer) WebGPUOnOwner([&] { wgpuBufferRelease(Entry.buffer); });
+            if (Entry.textureView) WebGPUOnOwner([&] { wgpuTextureViewRelease(Entry.textureView); });
+            if (Entry.sampler) WebGPUOnOwner([&] { wgpuSamplerRelease(Entry.sampler); });
         }
-        if (Render) wgpuRenderPipelineRelease(Render);
-        if (Compute) wgpuComputePipelineRelease(Compute);
+        if (Render) WebGPUOnOwner([&] { wgpuRenderPipelineRelease(Render); });
+        if (Compute) WebGPUOnOwner([&] { wgpuComputePipelineRelease(Compute); });
     }
 };
 
@@ -71,9 +72,9 @@ struct FWebGPUShaderData
     ~FWebGPUShaderData()
     {
         if (GlobalsBuffer)
-            wgpuBufferRelease(GlobalsBuffer);
+            WebGPUOnOwner([&] { wgpuBufferRelease(GlobalsBuffer); });
         if (Module)
-            wgpuShaderModuleRelease(Module);
+            WebGPUOnOwner([&] { wgpuShaderModuleRelease(Module); });
     }
 };
 
@@ -139,7 +140,7 @@ class FWebGPUBuffer final : public FRHIBuffer
     ~FWebGPUBuffer() override
     {
         check(!Locked);
-        wgpuBufferRelease(Handle);
+        WebGPUOnOwner([&] { wgpuBufferRelease(Handle); });
     }
 };
 
@@ -221,11 +222,11 @@ class FWebGPUTexture final : public FRHITexture
     {
         check(MipLocks.IsEmpty());
         if (DepthSampleView)
-            wgpuTextureViewRelease(DepthSampleView);
+            WebGPUOnOwner([&] { wgpuTextureViewRelease(DepthSampleView); });
         for (const auto& Entry : AttachmentViews)
-            wgpuTextureViewRelease(Entry.Value);
-        wgpuTextureViewRelease(View);
-        wgpuTextureRelease(Handle);
+            WebGPUOnOwner([&] { wgpuTextureViewRelease(Entry.Value); });
+        WebGPUOnOwner([&] { wgpuTextureViewRelease(View); });
+        WebGPUOnOwner([&] { wgpuTextureRelease(Handle); });
         UE::RHICore::UpdateGlobalTextureStats(GetDesc(), GetDesc().CalcMemorySizeEstimate(), false, false);
     }
 };
@@ -236,7 +237,7 @@ class FWebGPUTextureUAV final : public FRHIUnorderedAccessView
     WGPUTextureView Handle;
     FWebGPUTextureUAV(FRHITexture* Texture, const FRHIViewDesc& Desc, WGPUTextureView InHandle)
         : FRHIUnorderedAccessView(Texture, Desc), Handle(InHandle) {}
-    ~FWebGPUTextureUAV() override { wgpuTextureViewRelease(Handle); }
+    ~FWebGPUTextureUAV() override { WebGPUOnOwner([&] { wgpuTextureViewRelease(Handle); }); }
 };
 
 class FWebGPUViewport final : public FRHIViewport
@@ -274,7 +275,7 @@ class FWebGPUTextureSRV final : public FRHIShaderResourceView
     }
     ~FWebGPUTextureSRV() override
     {
-        wgpuTextureViewRelease(Handle);
+        WebGPUOnOwner([&] { wgpuTextureViewRelease(Handle); });
     }
 };
 
@@ -297,14 +298,14 @@ class FWebGPUSampler final : public FRHISamplerState
     ~FWebGPUSampler() override
     {
         if (Handle)
-            wgpuSamplerRelease(Handle);
+            WebGPUOnOwner([&] { wgpuSamplerRelease(Handle); });
     }
 };
 
 class FWebGPUUniform final : public FRHIUniformBuffer
 {
   public:
-    struct FConstantSnapshot { WGPUBuffer Buffer = nullptr; uint64 Offset = 0; };
+    struct FConstantSnapshot { WGPUBuffer Buffer = nullptr; uint64 Offset = 0; uint32 Frame = MAX_uint32; };
     TArray<uint8> Bytes;
     TMap<uint32, FConstantSnapshot> ConstantBuffers;
     bool SingleFrame = false;
@@ -314,7 +315,7 @@ class FWebGPUUniform final : public FRHIUniformBuffer
     void ReleaseConstants()
     {
         for (const auto& Buffer : ConstantBuffers)
-            wgpuBufferRelease(Buffer.Value.Buffer);
+            WebGPUOnOwner([&] { wgpuBufferRelease(Buffer.Value.Buffer); });
         ConstantBuffers.Empty();
     }
     ~FWebGPUUniform() override { ReleaseConstants(); }
@@ -349,9 +350,9 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
     }
     ~FWebGPUGraphicsPipeline() override
     {
-        for (auto Layout : GroupLayouts) if (Layout) wgpuBindGroupLayoutRelease(Layout);
+        for (auto Layout : GroupLayouts) if (Layout) WebGPUOnOwner([&] { wgpuBindGroupLayoutRelease(Layout); });
         if (Handle)
-            wgpuRenderPipelineRelease(Handle);
+            WebGPUOnOwner([&] { wgpuRenderPipelineRelease(Handle); });
     }
     FRHIGraphicsShader *GetShader(EShaderFrequency Frequency) const override
     {
@@ -375,8 +376,8 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     }
     ~FWebGPUComputePipeline() override
     {
-        for (auto Layout : GroupLayouts) if (Layout) wgpuBindGroupLayoutRelease(Layout);
-        wgpuComputePipelineRelease(Handle);
+        for (auto Layout : GroupLayouts) if (Layout) WebGPUOnOwner([&] { wgpuBindGroupLayoutRelease(Layout); });
+        WebGPUOnOwner([&] { wgpuComputePipelineRelease(Handle); });
     }
 };
 
@@ -386,20 +387,28 @@ struct FWebGPUReadbackState
     uint32 Size = 0;
     TArray<uint8> Bytes;
     std::atomic<bool> Ready{false};
-    ~FWebGPUReadbackState() { if (Handle) wgpuBufferRelease(Handle); }
+    TFunction<void(const TArray<uint8>&)> OnReady;
+    ~FWebGPUReadbackState() { if (Handle) WebGPUOnOwner([&] { wgpuBufferRelease(Handle); }); }
 };
 using FWebGPUReadbackRef = TSharedPtr<FWebGPUReadbackState, ESPMode::ThreadSafe>;
+
+struct FWebGPUOcclusionResultSlot
+{
+    TRefCountPtr<FRHIRenderQuery> Query;
+    uint64 Generation;
+};
 
 struct FWebGPUOcclusionBatch
 {
     WGPUQuerySet Queries = nullptr;
     WGPUBuffer Resolve = nullptr;
     FWebGPUReadbackRef Readback;
+    TArray<FWebGPUOcclusionResultSlot> Results;
     uint32 Count = 0, Capacity = 0;
     ~FWebGPUOcclusionBatch()
     {
-        if (Queries) wgpuQuerySetRelease(Queries);
-        if (Resolve) wgpuBufferRelease(Resolve);
+        if (Queries) WebGPUOnOwner([&] { wgpuQuerySetRelease(Queries); });
+        if (Resolve) WebGPUOnOwner([&] { wgpuBufferRelease(Resolve); });
     }
 };
 using FWebGPUOcclusionRef = TSharedPtr<FWebGPUOcclusionBatch, ESPMode::ThreadSafe>;
@@ -409,6 +418,9 @@ class FWebGPURenderQuery final : public FRHIRenderQuery
   public:
     FWebGPUOcclusionRef Batch;
     uint32 Index = 0;
+    std::atomic<bool> ResultReady{false};
+    std::atomic<uint64> ResultValue{0};
+    uint64 Generation = 0; // RHI owns reuse and completion publication.
 };
 
 struct FWebGPUFenceState
@@ -463,7 +475,7 @@ class FWebGPUCommandList final : public IRHIPlatformCommandList
     }
     ~FWebGPUCommandList()
     {
-        wgpuCommandBufferRelease(Handle);
+        WebGPUOnOwner([&] { wgpuCommandBufferRelease(Handle); });
     }
 };
 
@@ -491,6 +503,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TMap<uint32, TArray<TUniquePtr<FWebGPUBindGroupCacheEntry>>> BindGroupCache;
     WGPUBuffer FrameUniformBuffer = nullptr;
     uint64 FrameUniformOffset = 0;
+    TArray<WGPUBuffer> FrameUniformPages;
+    uint32 FrameUniformPage = 0;
     TArray<TRefCountPtr<FRHIShader>> FrameShaders;
     uint32 OwnerThread = 0;
     uint32 ResourceTableBindings = 0;
@@ -513,7 +527,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool EmitDebugMarkers = true;
     FWebGPUOcclusionRef OcclusionBatch;
     TRefCountPtr<FWebGPURenderQuery> ActiveOcclusionQuery;
-    uint32 OcclusionResultsReady = 0, OcclusionResultsPending = 0, OcclusionResultsZero = 0;
+    std::atomic<uint32> OcclusionResultsReady{0}, OcclusionResultsPending{0}, OcclusionResultsZero{0};
 
     explicit FWebGPUDynamicRHI(bool InStartupProbe = false);
     void ConfigureStartup();
@@ -596,6 +610,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     FViewportRHIRef RHICreateViewport(void *, uint32, uint32, bool, EPixelFormat) override;
     void RHIResizeViewport(FRHIViewport *, uint32, uint32, bool, EPixelFormat) override;
     FTextureRHIRef RHIGetViewportBackBuffer(FRHIViewport *) override;
+    void PresentBrowserViewport(FWebGPUViewport&, const FRHIPresentArgs&);
     void RHIEndDrawingViewport(FRHICommandListImmediate &, FRHIViewport *, const FRHIPresentArgs &) override;
 #if WITH_RHI_BREADCRUMBS
     void RHIBeginBreadcrumbGPU(FRHIBreadcrumbNode *) override;

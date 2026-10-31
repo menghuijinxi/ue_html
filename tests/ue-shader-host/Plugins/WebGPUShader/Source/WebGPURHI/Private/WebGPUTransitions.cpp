@@ -305,9 +305,17 @@ bool FWebGPUDynamicRHI::ValidateTransitionRelease(const FRHITransition *Transiti
 }
 void FWebGPUDynamicRHI::RHICreateTransition(FRHITransition *Transition, const FRHITransitionCreateInfo &Info)
 {
+#if !defined(UE_WEB_ENGINE_WORKER) || !UE_WEB_ENGINE_WORKER
+    WEBGPU_ON_OWNER(RHICreateTransition(Transition, Info));
     RequireOwner();
+    check(Transition && !Transitions.Contains(Transition));
+#else
+    // Prepare immutable barrier descriptors on RT. The active-state map belongs
+    // to RHI and is populated when the recorded Begin command actually executes.
+    check(GlobalProbeMode && Transition);
+#endif
     FString Error;
-    checkf(Transition && !Transitions.Contains(Transition) && ValidateTransitionCreate(Info, Error), TEXT("%s"),
+    checkf(ValidateTransitionCreate(Info, Error), TEXT("%s"),
            *Error);
     auto Data = MakeShared<FWebGPUTransitionData>();
     for (const auto& Source : Info.TransitionInfos)
@@ -345,6 +353,9 @@ void FWebGPUDynamicRHI::RHICreateTransition(FRHITransition *Transition, const FR
     }
     for (const auto &Entry : Data->Infos)
         Data->References.Add(Entry.Resource);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    new (Transition->GetPrivateData<FWebGPUTransitionPrivateData>()) FWebGPUTransitionPrivateData{MoveTemp(Data)};
+#else
     Transitions.Add(Transition, MoveTemp(Data));
     if (GlobalProbeMode)
     {
@@ -353,12 +364,24 @@ void FWebGPUDynamicRHI::RHICreateTransition(FRHITransition *Transition, const FR
             FWebGPUTransitionPrivateData{Transitions.FindChecked(Transition)};
     }
     ++TransitionsCreated;
+#endif
 }
 void FWebGPUDynamicRHI::RHIBeginTransitions(TArrayView<const FRHITransition *> Batch)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIBeginTransitions(Batch));
     RequireOwner();
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    for (const auto* Transition : Batch)
+    {
+        check(Transition && !Transitions.Contains(Transition));
+        const auto& Data = Transition->GetPrivateData<FWebGPUTransitionPrivateData>()->Data;
+        check(Data.IsValid());
+        Transitions.Add(Transition, Data);
+        ++TransitionsCreated;
+    }
+#endif
     FString Error;
     checkf(ValidateTransitionBatch(Batch, true, Error), TEXT("%s"), *Error);
     for (const auto *Transition : Batch)
@@ -372,6 +395,7 @@ void FWebGPUDynamicRHI::RHIBeginTransitions(TArrayView<const FRHITransition *> B
 }
 void FWebGPUDynamicRHI::RHIEndTransitions(TArrayView<const FRHITransition *> Batch)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIEndTransitions(Batch));
     RequireOwner();
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
@@ -392,6 +416,7 @@ void FWebGPUDynamicRHI::RHIEndTransitions(TArrayView<const FRHITransition *> Bat
 }
 void FWebGPUDynamicRHI::RHIReleaseTransition(FRHITransition *Transition)
 {
+    WEBGPU_ON_OWNER(RHIReleaseTransition(Transition));
     RequireOwner();
     FString Error;
     checkf(ValidateTransitionRelease(Transition, Error), TEXT("%s"), *Error);

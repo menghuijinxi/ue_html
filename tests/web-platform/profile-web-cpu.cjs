@@ -73,6 +73,7 @@ function summarize(profile) {
     await command('Profiler.enable');
     await command('Profiler.setSamplingInterval', {interval: 500});
     const state = () => owner.evaluate(() => ({frame: __webEngineFrames, times: globalThis.__webThreadFrameTimes,
+      presented: globalThis.__webThreadStages?.presented, stages: globalThis.__webThreadStages,
       threads: globalThis.__webEngineThreads, pool: typeof PThread !== 'undefined' ? {active: Object.keys(PThread.pthreads).length,
         available: PThread.unusedWorkers.length} : null, camera: globalThis.__webDefaultCamera, view: globalThis.__webRenderView,
       settings: globalThis.__webProjectSettings, runtime: globalThis.__webEngineRuntime, calls: globalThis.__cpuGPUCalls,
@@ -88,10 +89,13 @@ function summarize(profile) {
       const {profile} = await command('Profiler.stop');
       const after = await state(), durationMs = Date.now() - start;
       fs.writeFileSync(output + `-${index}.cpuprofile`, JSON.stringify(profile));
-      const sample = {before, after, durationMs, fps: (after.frame - before.frame) / durationMs * 1000,
+      const frames = before.presented === undefined ? after.frame - before.frame : after.presented - before.presented;
+      const sample = {before, after, durationMs, fps: frames / durationMs * 1000,
+        frameSource: before.presented === undefined ? 'engine-loop' : 'rhi-present',
+        profileThread: after.threads?.rhiThread ? 'rhi-worker' : 'game-and-rhi-worker',
         logs: report.logCount - logCount, profile: summarize(profile),
         callsPerFrame: Object.fromEntries(Object.entries(after.calls).map(([key, value]) =>
-          [key, (value - (before.calls[key] || 0)) / (after.frame - before.frame)])),
+          [key, (value - (before.calls[key] || 0)) / frames])),
         memory: processMemory({profile: path.join(__dirname, 'build/browser-profiles', 'cpu-villa')})};
       report.samples.push(sample);
       fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));

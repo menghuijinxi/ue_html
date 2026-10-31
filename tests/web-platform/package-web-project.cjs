@@ -16,7 +16,9 @@ const suffix = (distanceFields ? '-distance-fields' : '') + (threads ? '-threads
 const prefix = `web-project-${id}${suffix}`;
 const stagePrefix = `web-project-${id}${desktop ? '-desktop' : ''}`;
 const directory = path.join(__dirname, 'results');
-const output = path.join(__dirname, 'build', id + suffix);
+const outputFolder = process.argv.find(value => value.startsWith('--output-folder='))?.slice(16) || id + suffix;
+assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outputFolder));
+const output = path.join(__dirname, 'build', outputFolder);
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');

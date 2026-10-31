@@ -166,6 +166,8 @@ try {
     $taskFiles += Join-Path $Engine 'Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.h'
     $taskFiles += Join-Path $Engine 'Engine/Shaders/Shared/SkinningDefinitions.h'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/Async/TaskGraph.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/Async/TaskGraph.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
     foreach ($taskDepthOverlay in @('GenerateConservativeDepthBuffer.cpp', 'GenerateConservativeDepthBuffer.h', 'VolumetricFog.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskDepthOverlay"
@@ -185,7 +187,7 @@ try {
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-web-smoke/Source') -File -Recurse | ForEach-Object { $_.FullName })
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private') -File |
         Where-Object { $_.Name -in @('WebGPUDynamicRHI.cpp', 'WebGPUDynamicRHI.h', 'WebGPUUnsupportedRHI.h',
-            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp') } |
+            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h') } |
         ForEach-Object { $_.FullName })
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot '.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg') -File -Recurse |
         Where-Object { $_.Extension -in @('.py', '.cpp', '.h', '.js') } | ForEach-Object { $_.FullName })
@@ -233,7 +235,7 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/ShadowSetup.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
-    foreach ($taskShaderOverlay in @('RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',
+    foreach ($taskShaderOverlay in @('RenderCore/Private/RenderingThread.cpp', 'RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',
         'RenderCore/Public/WebShaderPlatform.h', 'Engine/Private/SkeletalRenderGPUSkin.cpp',
         'Engine/Private/PhysicsField/PhysicsFieldComponent.cpp',
         'Engine/Private/Rendering/SubsurfaceProfile.cpp',

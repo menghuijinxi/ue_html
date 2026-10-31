@@ -26,13 +26,19 @@ const profile = path.join(__dirname, 'build/browser-profiles',
   option('profile') || (channel === 'msedge' ? 'performance-villa' : `performance-villa-${channel}`));
 const report = {date: new Date().toISOString(), tag, folder, channel, width, height, seconds, phases: [],
   errors: [], logs: [], stages: [], pass: false,
-  boundary: 'Normal game clock, full internal resolution and packaged quality. CPU callback includes WASM and API submission; GPU timestamps exclude copies/gaps. Descriptor bytes are estimates, distinct from WDDM process dedicated usage. Occlusion off phases are diagnostic only.'};
+  boundary: 'Normal game clock, full internal resolution and packaged quality. FPS uses completed RHI presents when available. CPU sample source distinguishes the old combined callback from game ticks including waits; RHI work is reported separately. GPU timestamps exclude copies/gaps. Descriptor bytes are estimates, distinct from WDDM process dedicated usage. Occlusion off phases are diagnostic only.'};
 let context, page, owner;
 
 function observe() {
   const state = globalThis.__villaPerformance = {measuring: false, cpu: [], intervals: [], counts: {},
     errors: [], textures: [], buffers: {created: 0, bytes: 0}, passes: [], logCount: 0, frameDraws: {}, trace: []};
-  let frame = 0, previous, device, query, resolveBuffer, readback, capture;
+  let frame = 0, presented, previous, device, query, resolveBuffer, readback, capture;
+  const ticks = [];
+  Object.defineProperty(ticks, 'push', {value: function(value) {
+    if (state.measuring) (state.gameCPU ||= []).push(value);
+    return Array.prototype.push.call(this, value);
+  }});
+  globalThis.__webThreadFrameTimes = ticks;
   const views = new WeakMap(), passInfo = new WeakMap();
   const count = name => { if (state.measuring) state.counts[name] = (state.counts[name] || 0) + 1; };
   const raf = globalThis.requestAnimationFrame.bind(globalThis);
@@ -118,9 +124,7 @@ function observe() {
       return pass;
     };
   }
-  Object.defineProperty(globalThis, '__webEngineFrames', {configurable: true, enumerable: true,
-    get: () => frame, set(value) {
-      frame = value;
+  function finishFrame() {
       state.trace.push({frame, draws: state.frameDraws, camera: globalThis.__webDefaultCamera});
       if (state.trace.length > 120) state.trace.shift();
       state.frameDraws = {};
@@ -138,15 +142,33 @@ function observe() {
         readback.unmap();
         completed.resolve(entries);
       }, completed.reject);
+  }
+  Object.defineProperty(globalThis, '__webEngineFrames', {configurable: true, enumerable: true,
+    get: () => frame, set(value) {
+      frame = value;
+      if (!globalThis.__webEngineThreads?.rhiThread) finishFrame();
+    }});
+  Object.defineProperty(globalThis, '__webRHIFrames', {configurable: true, enumerable: true,
+    get: () => presented, set(value) {
+      const changed = value > (presented || 0);
+      presented = value;
+      if (changed) finishFrame();
     }});
   globalThis.__villaSample = async milliseconds => {
     await device.queue.onSubmittedWorkDone();
-    state.cpu = []; state.intervals = []; state.counts = {}; state.draws = {}; state.vertices = 0; state.passVertices = {}; state.indexCounts = {};
+    state.cpu = []; state.gameCPU = []; state.intervals = []; state.counts = {}; state.draws = {}; state.vertices = 0; state.passVertices = {}; state.indexCounts = {};
     previous = undefined; state.measuring = true;
-    const first = frame, start = performance.now();
+    const first = frame, firstPresent = presented, firstRhiWork = globalThis.__webThreadStages?.rhiWorkMilliseconds,
+      firstResourceProxies = globalThis.__webThreadStages?.resourceProxyCalls,
+      start = performance.now();
     await new Promise(resolve => setTimeout(resolve, milliseconds));
     state.measuring = false;
-    return {elapsedMs: performance.now() - start, frames: frame - first, cpu: state.cpu,
+    return {elapsedMs: performance.now() - start, frames: firstPresent === undefined ? frame - first : presented - firstPresent,
+      gameFrames: frame - first, frameSource: firstPresent === undefined ? 'engine-loop' : 'rhi-present',
+      cpuSource: state.cpu.length ? 'engine-worker-callback' : 'game-thread-tick-including-waits',
+      cpu: state.cpu.length ? state.cpu : state.gameCPU,
+      rhiWorkMilliseconds: firstRhiWork === undefined ? undefined : globalThis.__webThreadStages.rhiWorkMilliseconds - firstRhiWork,
+      resourceProxyCalls: firstResourceProxies === undefined ? undefined : globalThis.__webThreadStages.resourceProxyCalls - firstResourceProxies,
       intervals: state.intervals, counts: state.counts, draws: state.draws, vertices: state.vertices,
       passVertices: state.passVertices, indexCounts: state.indexCounts};
   };
@@ -165,6 +187,7 @@ function memory() {
   return text ? JSON.parse(text) : [];
 }
 const state = () => owner.evaluate(() => ({frame: __webEngineFrames,
+  threads: globalThis.__webEngineThreads, threadStages: globalThis.__webThreadStages,
   view: globalThis.__webRenderView, camera: globalThis.__webDefaultCamera, streaming: globalThis.__webTextureStreaming,
   occlusion: globalThis.__webOcclusionRHI, io: globalThis.__webContentIO?.stats,
   lighting: globalThis.__webDistanceFieldsLighting, runtime: globalThis.__webEngineRuntime,
@@ -189,12 +212,15 @@ async function measure(label, view, occlusion = 1) {
   const phase = {label, view, occlusion, before, after: await state(), sample, gpu, memory: memory(),
     fps: sample.frames / sample.elapsedMs * 1000,
     cpuMs: sample.cpu.reduce((a, b) => a + b, 0) / sample.cpu.length,
+    rhiWorkerMs: sample.rhiWorkMilliseconds === undefined ? undefined : sample.rhiWorkMilliseconds / sample.frames,
+    resourceProxiesPerFrame: sample.resourceProxyCalls === undefined ? undefined : sample.resourceProxyCalls / sample.frames,
     perFrame: Object.fromEntries(Object.entries(sample.counts).map(([key, value]) => [key, value / sample.frames])),
     drawsPerFrame: Object.fromEntries(Object.entries(sample.draws).map(([key, value]) => [key, value / sample.frames]))};
   report.phases.push(phase);
   await page.locator('canvas').screenshot({path: path.join(directory, `villa-performance-${tag}-${label}.png`), timeout: 30000});
   fs.writeFileSync(path.join(directory, `villa-performance-${tag}.json`), JSON.stringify(report, null, 2));
-  console.log(JSON.stringify({label, fps: phase.fps, cpuMs: phase.cpuMs, perFrame: phase.perFrame,
+  console.log(JSON.stringify({label, fps: phase.fps, cpuMs: phase.cpuMs, rhiWorkerMs: phase.rhiWorkerMs,
+    resourceProxiesPerFrame: phase.resourceProxiesPerFrame, perFrame: phase.perFrame,
     gpuMs: gpu.map(entries => entries.reduce((sum, entry) => sum + entry.milliseconds, 0)), memory: phase.memory}));
 }
 (async () => {

@@ -29,6 +29,8 @@
 #include <emscripten/heap.h>
 #if UE_WEB_ENGINE_WORKER
 #include <emscripten/threading.h>
+#include <emscripten/proxying.h>
+#include "RenderingThread.h"
 #include "Tasks/Task.h"
 #include "Misc/Crc.h"
 #include "HAL/Event.h"
@@ -75,6 +77,7 @@ FVector MaterialMotionOrigin;
 UE::Tasks::FTask ThreadIOProbe;
 std::atomic<int32> ThreadIOResult{0};
 std::atomic<uint32> ThreadIOCRC{0}, ThreadIOWorker{0}, ThreadIOCallback{0};
+std::atomic<uint32> RenderWitness{0}, RHIWitness{0};
 #endif
 
 const TCHAR* StartupMap()
@@ -160,7 +163,7 @@ void EngineFrame(void*)
     if (AStaticMeshActor* Sample = MaterialMotionSample.Get())
     {
         Sample->SetActorLocation(MaterialMotionOrigin + FVector(10 * FMath::Sin(Frames * 0.1), 0, 0));
-        EM_ASM({ globalThis.__webMaterialMotionTest = ({frame: $0, x: $1}); },
+        MAIN_THREAD_ASYNC_EM_ASM({ globalThis.__webMaterialMotionTest = ({frame: $0, x: $1}); },
             Frames, Sample->GetActorLocation().X);
     }
     GEngineLoop.Tick();
@@ -171,7 +174,7 @@ void EngineFrame(void*)
         return;
     }
     ++Frames;
-    EM_ASM({
+    MAIN_THREAD_ASYNC_EM_ASM({
         globalThis.__webEngineFrames = $0;
 #if UE_WEB_ENGINE_WORKER
         (globalThis.__webThreadFrameTimes ||= []).push($1);
@@ -184,7 +187,7 @@ void EngineFrame(void*)
             const auto* Value = IConsoleManager::Get().FindConsoleVariable(Name);
             return Value ? Value->GetFloat() : -1.0f;
         };
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webProjectSettings = ({
                 antiAliasing: $0, generateDistanceFields: $1, distanceFieldAO: $2,
                 distanceFieldShadows: $3, gi: $4, reflections: $5, virtualShadows: $6,
@@ -215,7 +218,7 @@ void EngineFrame(void*)
             ResidentBytes += It->CalcTextureMemorySize(State.NumResidentLODs);
             FullBytes += It->CalcTextureMemorySize(State.MaxNumLODs);
         }
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webTextureStreaming = ({
                 frame: $0, supported: !!$1, poolBytes: $2, poolAllocatedBytes: $3,
                 nonPoolAllocatedBytes: $4, streamable: $5, pending: $6,
@@ -240,7 +243,7 @@ void EngineFrame(void*)
                         BulkDF += Field->StreamableMips.GetBulkDataSize();
                     }
             const auto* AO = IConsoleManager::Get().FindConsoleVariable(TEXT("r.DistanceFieldAO"));
-            EM_ASM({
+            MAIN_THREAD_ASYNC_EM_ASM({
                 globalThis.__webDistanceFields = ({frame: $0, meshes: $1,
                     cpuResidentBytes: $2, bulkBytes: $3, ao: $4});
             }, Frames, ValidMeshes, double(ResidentDF), double(BulkDF), AO ? AO->GetInt() : -1);
@@ -249,7 +252,7 @@ void EngineFrame(void*)
     if (VisualTestClock)
     {
         const auto* Frozen = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"));
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webVisualTestClock = ({renderTimeFrozen: !!$0, deltaSeconds: $1});
         }, Frozen && Frozen->GetInt() != 0, FApp::GetDeltaTime());
     }
@@ -258,7 +261,7 @@ void EngineFrame(void*)
         FVector Location;
         FRotator Rotation;
         Controller->GetPlayerViewPoint(Location, Rotation);
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webDefaultCamera = ({x: $0, y: $1, z: $2, pitch: $3, yaw: $4});
         }, Location.X, Location.Y, Location.Z, Rotation.Pitch, Rotation.Yaw);
     }
@@ -266,7 +269,7 @@ void EngineFrame(void*)
     if (Frames % 60 == 0 && !FPlatformProcess::SupportsMultithreading())
     {
         const FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webEngineRuntime = ({
                 statsHistoryFrames: $0, gameFrame: $1, renderFrame: $2,
                 endOfPipeFrame: $3, heapBytes: $4
@@ -278,22 +281,40 @@ void EngineFrame(void*)
 #if UE_WEB_ENGINE_WORKER
     if (Frames % 30 == 0)
     {
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webEngineRuntime = ({heapBytes: $0,
                 sharedMemory: HEAPU8.buffer instanceof SharedArrayBuffer, engineWorker: true,
-                gameThread: $1, renderThread: false, rhiThread: false});
+                gameThread: $1, renderThread: !!$6, rhiThread: !!$7});
             globalThis.__webThreadIOProbe = ({result: $2, crc: $3 >>> 0, worker: $4, callback: $5});
         }, double(emscripten_get_heap_size()), FPlatformTLS::GetCurrentThreadId(),
-            ThreadIOResult.load(), ThreadIOCRC.load(), ThreadIOWorker.load(), ThreadIOCallback.load());
+            ThreadIOResult.load(), ThreadIOCRC.load(), ThreadIOWorker.load(), ThreadIOCallback.load(),
+            GIsThreadedRendering, IsRunningRHIInSeparateThread());
     }
 #endif
 }
 }
 
 #if UE_WEB_ENGINE_WORKER
+extern "C" EMSCRIPTEN_KEEPALIVE int WebInvokeGameCommand()
+{
+    if (EM_ASM_INT({ return globalThis.__webPendingGameCommand.type === 'inputs'; }))
+    {
+        FTaskTagScope Scope(ETaskTag::EGameThread);
+        return EM_ASM_INT({
+            for (const values of globalThis.__webPendingGameCommand.events) Module._WebBrowserInput(...values);
+            return 0;
+        });
+    }
+    return EM_ASM_INT({
+        const message = globalThis.__webPendingGameCommand;
+        return Module['_' + message.name](...message.args);
+    });
+}
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebThreadTestControl(int Mode)
 {
-    check(IsInGameThread() && emscripten_is_main_runtime_thread());
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    check(IsInGameThread());
     if (Mode == 1)
     {
         std::atomic<uint32> Worker{0};
@@ -409,7 +430,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebVisibilityTest(int Parameter, int Value)
         Isolated->SetCullDistance(Value);
     else if (Parameter != 0)
         return 0;
-    EM_ASM({
+    MAIN_THREAD_ASYNC_EM_ASM({
         globalThis.__webVisibilityAudit = ({components: 0, distanceConfigured: 0, forcedComponents: 0,
             forceLOD: $0, distanceScale: $1, meshes: [], isolated: null});
     }, IConsoleManager::Get().FindConsoleVariable(TEXT("r.ForceLOD"))->GetInt(),
@@ -422,7 +443,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebVisibilityTest(int Parameter, int Value)
         {
             UStaticMesh* Mesh = Component->GetStaticMesh();
             if (!Mesh || !Mesh->GetRenderData()) continue;
-            EM_ASM({
+            MAIN_THREAD_ASYNC_EM_ASM({
                 ++__webVisibilityAudit.components;
                 __webVisibilityAudit.distanceConfigured += $0 > 0 ? 1 : 0;
                 __webVisibilityAudit.forcedComponents += $1 > 0 ? 1 : 0;
@@ -430,18 +451,19 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebVisibilityTest(int Parameter, int Value)
             if (Component == Isolated.Get())
             {
                 const FVector Center = Component->Bounds.Origin;
-                EM_ASM({
+                MAIN_THREAD_ASYNC_EM_ASM({
                     __webVisibilityAudit.isolated = ({center: [$0, $1, $2], radius: $3, cullDistance: $4});
                 }, Center.X, Center.Y, Center.Z, Component->Bounds.SphereRadius, Component->CachedMaxDrawDistance);
             }
             if (Seen.Contains(Mesh)) continue;
             Seen.Add(Mesh);
-            EM_ASM({
+            // Consume the temporary UTF-8 path before its conversion object dies.
+            MAIN_THREAD_EM_ASM({
                 __webVisibilityAudit.meshes.push({path: UTF8ToString(Number($0)), lods: []});
             }, TCHAR_TO_UTF8(*Mesh->GetPathName()));
             const auto* Data = Mesh->GetRenderData();
             for (int32 Index = 0; Index < Data->LODResources.Num(); ++Index)
-                EM_ASM({
+                MAIN_THREAD_ASYNC_EM_ASM({
                     __webVisibilityAudit.meshes[__webVisibilityAudit.meshes.length - 1].lods.push(
                         {triangles: $0, screenSize: $1});
                 }, Data->LODResources[Index].GetNumTriangles(), Data->ScreenSize[Index].GetValue());
@@ -513,7 +535,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectLightingTestMode(int Mode)
         if (Variable->GetInt() != Value)
             Variable->Set(Value, ECVF_SetByCode);
     }
-    EM_ASM({
+    MAIN_THREAD_ASYNC_EM_ASM({
         globalThis.__webProjectLighting = ({mode: $0, aoLevels: $1, reflectionMode: $2,
             shadowQuality: $3, original: {aoLevels: $4, reflectionMode: $5, shadowQuality: $6}});
     }, Mode, IConsoleManager::Get().FindConsoleVariable(Variables[0])->GetInt(),
@@ -601,7 +623,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDistanceFieldTestExposure(double EV100)
     Settings.AutoExposureBias = -EV100;
     Settings.bOverride_AutoExposureBiasCurve = true;
     Settings.AutoExposureBiasCurve = nullptr;
-    EM_ASM({ globalThis.__webDistanceFieldsExposure = ({ev100: $0, manual: true}); }, EV100);
+    MAIN_THREAD_ASYNC_EM_ASM({ globalThis.__webDistanceFieldsExposure = ({ev100: $0, manual: true}); }, EV100);
     return 1;
 }
 
@@ -641,7 +663,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
     FVector Location;
     FRotator Rotation;
     if (const auto* View = LocalPlayer->CalcSceneView(&Family, Location, Rotation, Viewport))
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webDistanceFieldsLighting = ({reflectionMethod: $0, giMethod: $1,
                 ssrIntensity: $2, ssrQuality: $3, ssrMaxRoughness: $4, antiAliasing: $5,
                 ssrShowFlag: !!$6, frame: $7, shadowCacheEnabled: !!$8});
@@ -666,7 +688,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultShadowControl(int Parameter, doubl
     if (Parameter == 4 && Value == 0)
     {
         const auto& View = Controller->PlayerCameraManager->GetCameraCacheView();
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webDefaultShadowCamera = ({x: $0, y: $1, z: $2,
                 pitch: $3, yaw: $4, fov: $5, aspectRatio: $6, constrain: !!$7});
         }, View.Location.X, View.Location.Y, View.Location.Z, double(View.Rotation.Pitch),
@@ -685,7 +707,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultShadowControl(int Parameter, doubl
                 Sun->SetShadowSlopeBias(Value);
             else
                 return 0;
-            EM_ASM({
+            MAIN_THREAD_ASYNC_EM_ASM({
                 globalThis.__webDefaultShadowControl = ({cast: !!$0, bias: $1, slope: $2});
             }, int(Sun->CastShadows), double(Sun->ShadowBias), double(Sun->ShadowSlopeBias));
             return 1;
@@ -741,7 +763,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebMaterialLabControl(int Group, int Lightin
             }
         }
     }
-    EM_ASM({
+    MAIN_THREAD_ASYNC_EM_ASM({
         globalThis.__webMaterialLab = ({group: $0, lighting: $1, visibleSamples: $2});
     }, Group, Lighting, Samples);
     return 1;
@@ -822,7 +844,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebMaterialLabShadowTest(int Parameter, doub
             return 0;
         }
         IConsoleManager::Get().CallAllConsoleVariableSinks();
-        EM_ASM({
+        MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webMaterialShadow = ({resolution: $0, cascades: $1, distance: $2,
                 distribution: $3, bias: $4, slopeBias: $5, mobility: $6, stationaryDistance: $7});
         }, Resolution->GetInt(), Sun->DynamicShadowCascades, Sun->DynamicShadowDistanceMovableLight,
@@ -916,7 +938,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultCloudBudgetTestMode(int Mode)
     }
     if (Mode >= 8)
         Variables[3]->Set(4.0f, ECVF_SetByCode);
-    EM_ASM({
+    MAIN_THREAD_ASYNC_EM_ASM({
         globalThis.__webDefaultCloudBudget = ({mode: $0, viewSamplesMax: $1,
             shadowSamplesMax: $2, emptyStep: $3, tracingDownsample: $4});
     }, Mode, Variables[0]->GetFloat(), Variables[1]->GetFloat(), Variables[2]->GetFloat(),
@@ -948,7 +970,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultFogTestMode(int Mode)
             Fog->SetStartDistance(Mode == 3 ? 50000.0f : Original.Z);
             Fog->SetVisibility(Mode != 1);
             ++Count;
-            EM_ASM({
+            MAIN_THREAD_ASYNC_EM_ASM({
                 globalThis.__webDefaultFog = ({density: $0, heightFalloff: $1, startDistance: $2,
                     visible: !!$3, volumetric: !!$4, height: $5});
             }, double(Fog->FogDensity), double(Fog->FogHeightFalloff), double(Fog->StartDistance),
@@ -984,7 +1006,7 @@ int32 StartEngine()
         Layout.MaxFieldAlignment, Layout.Flags, uint32(sizeof(void*)));
     const FString ThreadArguments =
 #if UE_WEB_ENGINE_WORKER
-        TEXT(" -oversubscriptionratio=1 -TaskGraphUseDynamicThreadCreation=0 -norhithread -nosound");
+        TEXT(" -oversubscriptionratio=1 -TaskGraphUseDynamicThreadCreation=0 -nosound");
 #else
         TEXT(" -onethread -norhithread -nosound");
 #endif
@@ -1006,7 +1028,7 @@ int32 StartEngine()
         return InitResult;
     }
 #if UE_WEB_ENGINE_WORKER
-    check(emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread());
+    check(!emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread());
     std::atomic<uint32> WorkerId{0};
     FEventRef Started;
     auto Task = UE::Tasks::Launch(UE_SOURCE_LOCATION, [&WorkerId, &Started] {
@@ -1016,9 +1038,18 @@ int32 StartEngine()
     Started->Wait();
     Task.Wait();
     check(WorkerId.load() && WorkerId.load() != GGameThreadId);
+    ENQUEUE_RENDER_COMMAND(WebThreadWitness)([](FRHICommandListImmediate& Cmd) {
+        RenderWitness.store(FPlatformTLS::GetCurrentThreadId());
+        Cmd.EnqueueLambda([](FRHICommandListBase&) { RHIWitness.store(FPlatformTLS::GetCurrentThreadId()); });
+        Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+    });
+    FlushRenderingCommands();
+    check(RenderWitness.load() && RHIWitness.load() && RenderWitness.load() != RHIWitness.load() &&
+        RenderWitness.load() != GGameThreadId && RHIWitness.load() != GGameThreadId);
     std::printf("P3_ENGINE_THREADS {\"sharedMemory\":true,\"engineWorker\":true,"
-        "\"gameThread\":%u,\"taskThread\":%u,\"cores\":%d,\"renderThread\":false,\"rhiThread\":false}\n",
-        GGameThreadId, WorkerId.load(), FPlatformMisc::NumberOfCores());
+        "\"gameThread\":%u,\"taskThread\":%u,\"cores\":%d,\"renderThread\":true,\"rhiThread\":true,"
+        "\"renderThreadId\":%u,\"rhiThreadId\":%u}\n",
+        GGameThreadId, WorkerId.load(), FPlatformMisc::NumberOfCores(), RenderWitness.load(), RHIWitness.load());
 #endif
     if (VisualTestClock)
     {
@@ -1128,13 +1159,50 @@ int main(int argc, char** argv)
     if (!UseWebGPU)
         return StartEngine();
     WebGPUPrepareBrowserDevice([](bool Ready) {
-        EM_ASM({ globalThis.__webEngineGPUDeviceReady = !!$0; }, Ready);
+        MAIN_THREAD_ASYNC_EM_ASM({ globalThis.__webEngineGPUDeviceReady = !!$0; }, Ready);
         if (!Ready)
         {
             std::printf("P3_ENGINE_PREINIT_FAILED browser WebGPU device\n");
             return;
         }
+#if UE_WEB_ENGINE_WORKER
+        FTaskTagScope::SetTagNone();
+        pthread_t GameThread;
+        pthread_attr_t Attributes;
+        pthread_attr_init(&Attributes);
+        pthread_attr_setstacksize(&Attributes, 4 * 1024 * 1024);
+        verify(pthread_create(&GameThread, &Attributes, [](void*) -> void* {
+            GGameThreadId = FPlatformTLS::GetCurrentThreadId();
+            FTaskTagScope::SetTagNone();
+            MAIN_THREAD_ASYNC_EM_ASM({
+                globalThis.__webGameThreadWorker = PThread.pthreads[Number($0)];
+                globalThis.__webGameThreadWorker.addEventListener('message', event => {
+                    if (event.data.type === 'web-game-raf-request') {
+                        const id = event.data.id;
+                        requestAnimationFrame(timestamp => globalThis.__webGameThreadWorker.postMessage(
+                            {type: 'web-game-raf', id, timestamp}));
+                        return;
+                    }
+                    if (event.data.type === 'web-game-result') {
+                        const message = event.data.message;
+                        if (message.type === 'inputs') postMessage({type: 'input-ack'});
+                        else postMessage({type: 'rpc', id: message.id, result: event.data.result, error: event.data.error});
+                    }
+                });
+            }, pthread_self());
+            StartEngine();
+            emscripten_exit_with_live_runtime();
+            return nullptr;
+        }, nullptr) == 0);
+        pthread_attr_destroy(&Attributes);
+#else
         StartEngine();
+#endif
     });
+#if UE_WEB_ENGINE_WORKER
+    // GT owns its own main loop; keep the GPU/IO runtime alive independently
+    // after the asynchronous device callback has handed startup to that pthread.
+    emscripten_exit_with_live_runtime();
+#endif
     return 0;
 }

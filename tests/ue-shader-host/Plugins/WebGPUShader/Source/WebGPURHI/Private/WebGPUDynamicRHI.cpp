@@ -430,7 +430,7 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     StartupProbeMode = true;
     GlobalProbeMode = true;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
-    EmitDebugMarkers = EM_ASM_INT({ return globalThis.__webStartupDiagnostics?.mode !== 'normal'; }) != 0;
+    EmitDebugMarkers = MAIN_THREAD_EM_ASM_INT({ return globalThis.__webStartupDiagnostics?.mode !== 'normal'; }) != 0;
     const bool Mobile = FParse::Param(FCommandLine::Get(), TEXT("es31"));
     GMaxRHIFeatureLevel = Mobile ? ERHIFeatureLevel::ES3_1 : ERHIFeatureLevel::SM5;
     GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(
@@ -449,7 +449,11 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     for (uint32 Index = 0; Index < ERHIFeatureLevel::Num; ++Index)
         GShaderPlatformForFeatureLevel[Index] = SP_NumPlatforms;
     GShaderPlatformForFeatureLevel[GMaxRHIFeatureLevel] = GMaxRHIShaderPlatform;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    GRHISupportsRHIThread = true;
+#else
     GRHISupportsRHIThread = false;
+#endif
     GRHISupportsRHIOnTaskThread = false;
     GRHISupportsParallelRHIExecute = false;
     GSupportsParallelRenderingTasksWithSeparateRHIThread = false;
@@ -557,7 +561,9 @@ void FWebGPUDynamicRHI::BeginBrowserDevice(void (*Completion)(bool))
 #endif
 void FWebGPUDynamicRHI::Init()
 {
+#if !defined(UE_WEB_ENGINE_WORKER) || !UE_WEB_ENGINE_WORKER
     OwnerThread = FPlatformTLS::GetCurrentThreadId();
+#endif
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     check(Instance && Adapter && Device && Errors.IsEmpty());
     AdapterName = TEXT("Browser WebGPU");
@@ -729,6 +735,7 @@ void FWebGPUDynamicRHI::Init()
 }
 void FWebGPUDynamicRHI::Shutdown()
 {
+    WEBGPU_ON_OWNER(Shutdown());
     RequireOwner();
     check(!Pass && !Encoder && !ContextOpen && Transitions.IsEmpty() && BreadcrumbStack.IsEmpty() &&
           BufferLocks.IsEmpty());
@@ -736,6 +743,8 @@ void FWebGPUDynamicRHI::Shutdown()
     ReleaseFrameBindings();
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
     FrameUniformBuffer = nullptr;
+    for (auto Page : FrameUniformPages) wgpuBufferRelease(Page);
+    FrameUniformPages.Empty();
     ReleaseBindings();
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
@@ -780,6 +789,7 @@ void FWebGPUDynamicRHI::Shutdown()
 }
 void FWebGPUDynamicRHI::PostInit()
 {
+    WEBGPU_ON_OWNER(PostInit());
     RequireOwner();
     check(Device && PixelFormatBlockBytes.Num() == PF_MAX && PixelFormatBlockBytes[PF_R8G8B8A8] == 4 &&
           PixelFormatBlockBytes[PF_B8G8R8A8] == 4);
@@ -799,6 +809,7 @@ void FWebGPUDynamicRHI::ReleaseBindings()
 }
 void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIEndFrame(Args));
     RequireOwner();
     check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame);
     // Reuse unchanged material bindings across frames. Drop every group not used this frame:
@@ -815,6 +826,7 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
     FrameUniformBuffer = nullptr;
     FrameUniformOffset = 0;
+    FrameUniformPage = 0;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     // All encoders have been submitted. Retire allocations even if JS has not run GC.
     EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
@@ -831,6 +843,15 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #endif
     ++EndFrames;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
+    EM_ASM({
+        Object.assign(globalThis.__webThreadStages ||= {},
+            {rhiThreadId: $0, rhiFrames: $1, submitted: $2, presented: $3});
+        globalThis.__webRHIFrames = $3;
+    }, FPlatformTLS::GetCurrentThreadId(), EndFrames, Submitted, FramesPresented);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    EM_ASM({ globalThis.__webThreadStages.resourceProxyCalls = $0; },
+        double(WebGPUResourceProxyCount.load(std::memory_order_relaxed)));
+#endif
     if (EndFrames % 30 == 0)
         EM_ASM({
             globalThis.__webOcclusionRHI = {};
@@ -840,7 +861,7 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             globalThis.__webOcclusionRHI.bindGroupCacheHits = $3;
             globalThis.__webOcclusionRHI.bindGroupsCreated = $4;
             globalThis.__webOcclusionRHI.cachedBindGroups = $5;
-        }, OcclusionResultsReady, OcclusionResultsPending, OcclusionResultsZero, BindGroupCacheHits,
+        }, OcclusionResultsReady.load(), OcclusionResultsPending.load(), OcclusionResultsZero.load(), BindGroupCacheHits,
             BoundGroups, BindGroupCacheEntries);
 #endif
 }
@@ -1008,6 +1029,7 @@ FWebGPUShaderData &FWebGPUDynamicRHI::ShaderData(FRHIShader *Shader)
 #define WEBGPU_CREATE_SHADER(Stage)                                                                                    \
     F##Stage##ShaderRHIRef FWebGPUDynamicRHI::RHICreate##Stage##Shader(const FRHICreateShaderDesc &Desc)               \
     {                                                                                                                  \
+        WEBGPU_ON_OWNER(RHICreate##Stage##Shader(Desc));                                                                 \
         RequireOwner();                                                                                                \
         TRefCountPtr<FWebGPU##Stage##Shader> Shader = new FWebGPU##Stage##Shader();                                    \
         Shader->Data.Owner = Shader.GetReference();                                                                    \
@@ -1023,6 +1045,7 @@ WEBGPU_CREATE_SHADER(Compute)
 
 FSamplerStateRHIRef FWebGPUDynamicRHI::RHICreateSamplerState(const FSamplerStateInitializerRHI &In)
 {
+    WEBGPU_ON_OWNER(RHICreateSamplerState(In));
     if (StartupProbeMode && EndFrames == 0)
         UE_LOG(LogRHI, Display, TEXT("P2_STARTUP sampler descriptor retained filter=%u comparison=%u"),
                uint32(In.Filter), uint32(In.SamplerComparisonFunction));
@@ -1062,13 +1085,14 @@ WGPUSampler FWebGPUDynamicRHI::ResolveSampler(FWebGPUSampler *Sampler)
 }
 FVertexDeclarationRHIRef FWebGPUDynamicRHI::RHICreateVertexDeclaration(const FVertexDeclarationElementList &Elements)
 {
+    WEBGPU_ON_OWNER(RHICreateVertexDeclaration(Elements));
     RequireOwner();
     ++VertexDeclarationsCreated;
     return new FWebGPUVertexDeclaration(Elements);
 }
-FRHIBufferInitializer FWebGPUDynamicRHI::RHICreateBufferInitializer(FRHICommandListBase &Cmd,
-                                                                    const FRHIBufferCreateDesc &Desc)
+FRHIBufferInitializer FWebGPUDynamicRHI::RHICreateBufferInitializer(FRHICommandListBase &Cmd, const FRHIBufferCreateDesc &Desc)
 {
+    WEBGPU_ON_OWNER(RHICreateBufferInitializer(Cmd, Desc));
     WGPUBufferUsage Usage = WGPUBufferUsage_CopySrc;
     if (EnumHasAnyFlags(Desc.Usage, EBufferUsageFlags::VertexBuffer))
         Usage |= WGPUBufferUsage_Vertex;
@@ -1092,8 +1116,7 @@ FRHIBufferInitializer FWebGPUDynamicRHI::RHICreateBufferInitializer(FRHICommandL
     }
     return FBufferInitializer(Cmd, Buffer, *this, Desc.InitAction == ERHIBufferInitAction::Initializer);
 }
-FRHICalcTextureSizeResult FWebGPUDynamicRHI::RHICalcTexturePlatformSize(const FRHITextureDesc &Desc,
-                                                                        uint32 FirstMipIndex)
+FRHICalcTextureSizeResult FWebGPUDynamicRHI::RHICalcTexturePlatformSize(const FRHITextureDesc &Desc, uint32 FirstMipIndex)
 {
     check(Desc.NumMips && FirstMipIndex < Desc.NumMips);
     // WebGPU owns allocation and exposes no heap alignment or driver allocation-size query.
@@ -1113,9 +1136,15 @@ void FWebGPUDynamicRHI::RHIGetTextureMemoryStats(FTextureMemoryStats& OutStats)
     OutStats = FTextureMemoryStats();
     UE::RHICore::FillBaselineTextureMemoryStats(OutStats);
 }
-FRHILockTextureResult FWebGPUDynamicRHI::RHILockTexture(FRHICommandListImmediate &,
-                                                        const FRHILockTextureArgs &Args)
+FRHILockTextureResult FWebGPUDynamicRHI::RHILockTexture(FRHICommandListImmediate & WebArg0, const FRHILockTextureArgs &Args)
 {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    // CPU write locks cannot interrupt an in-flight encoder/pass on RHI.
+    // Drain recorded uses before exposing the subresource's writable staging data.
+    if (!emscripten_is_main_runtime_thread())
+        WebArg0.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+#endif
+    WEBGPU_ON_OWNER(RHILockTexture(WebArg0, Args));
     RequireOwner();
     auto *Texture = static_cast<FWebGPUTexture *>(Args.Texture);
     check(Args.LockMode == RLM_WriteOnly);
@@ -1132,8 +1161,13 @@ FRHILockTextureResult FWebGPUDynamicRHI::RHILockTexture(FRHICommandListImmediate
     Bytes.SetNumZeroed(Size);
     return {Bytes.GetData(), Size, uint32(Stride)};
 }
-void FWebGPUDynamicRHI::RHIUnlockTexture(FRHICommandListImmediate &, const FRHILockTextureArgs &Args)
+void FWebGPUDynamicRHI::RHIUnlockTexture(FRHICommandListImmediate & WebArg0, const FRHILockTextureArgs &Args)
 {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    if (!emscripten_is_main_runtime_thread())
+        WebArg0.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
+#endif
+    WEBGPU_ON_OWNER(RHIUnlockTexture(WebArg0, Args));
     RequireOwner();
     auto *Texture = static_cast<FWebGPUTexture *>(Args.Texture);
     const uint32 Layer = TextureLockLayer(Args);
@@ -1236,9 +1270,9 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     }
     return true;
 }
-FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHICommandListBase &Cmd,
-                                                                      const FRHITextureCreateDesc &Requested)
+FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHICommandListBase &Cmd, const FRHITextureCreateDesc &Requested)
 {
+    WEBGPU_ON_OWNER(RHICreateTextureInitializer(Cmd, Requested));
     RequireOwner();
     FRHITextureCreateDesc In = Requested;
     // FTextureCubeResource uses the legacy implicit sampling capability for asset cubes.
@@ -1292,10 +1326,9 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     }
     return FTextureInitializer(Cmd, Texture, *this, Writable);
 }
-FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICommandListBase &,
-                                                                         FRHIViewableResource *Resource,
-                                                                         const FRHIViewDesc &Desc)
+FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICommandListBase & WebArg0, FRHIViewableResource *Resource, const FRHIViewDesc &Desc)
 {
+    WEBGPU_ON_OWNER(RHICreateShaderResourceView(WebArg0, Resource, Desc));
     RequireOwner();
     FString Error;
     if (Desc.Common.ViewType == FRHIViewDesc::EViewType::BufferSRV)
@@ -1396,9 +1429,9 @@ FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICom
                uint32(Info.Format));
     return new FWebGPUTextureSRV(Texture, Desc, Handle);
 }
-void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture *Texture, uint32 Mip,
-                                           const FUpdateTextureRegion2D &Region, uint32 Pitch, const uint8 *Bytes)
+void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture *Texture, uint32 Mip, const FUpdateTextureRegion2D &Region, uint32 Pitch, const uint8 *Bytes)
 {
+    WEBGPU_ON_OWNER(RHIUpdateTexture2D(Cmd, Texture, Mip, Region, Pitch, Bytes));
     RequireOwner();
     check(Texture->GetDesc().Dimension == ETextureDimension::Texture2D && Mip == 0 &&
           (Texture->GetFormat() == PF_R8G8B8A8 || Texture->GetFormat() == PF_R32_FLOAT) &&
@@ -1432,10 +1465,10 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
     else
         Cmd.EnqueueLambda(MoveTemp(Upload));
 }
-FUniformBufferRHIRef FWebGPUDynamicRHI::RHICreateUniformBuffer(const void *Bytes, const FRHIUniformBufferLayout *Layout,
-                                                               EUniformBufferUsage Usage, EUniformBufferValidation)
+FUniformBufferRHIRef FWebGPUDynamicRHI::RHICreateUniformBuffer(const void *Bytes, const FRHIUniformBufferLayout *Layout, EUniformBufferUsage Usage, EUniformBufferValidation WebArg3)
 {
-    RequireOwner();
+    // Initial contents are immutable until command-list ordered updates execute.
+    // Creating the CPU descriptor must not fence RT against the RHI Worker.
     check(Layout && !EnumHasAnyFlags(Layout->Flags, ERHIUniformBufferFlags::UniformView));
     auto *Result = new FWebGPUUniform(Layout);
     Result->SingleFrame = Usage != UniformBuffer_MultiFrame;
@@ -1450,7 +1483,8 @@ FUniformBufferRHIRef FWebGPUDynamicRHI::RHICreateUniformBuffer(const void *Bytes
 }
 void FWebGPUDynamicRHI::RHIUpdateUniformBuffer(FRHICommandListBase &Cmd, FRHIUniformBuffer *Uniform, const void *Bytes)
 {
-    RequireOwner();
+    if (Cmd.Bypass()) { WEBGPU_COMMAND_ON_OWNER(RHIUpdateUniformBuffer(Cmd, Uniform, Bytes)); }
+    // Snapshot on the recording thread; publish on RHI in the recorded order.
     auto *Buffer = static_cast<FWebGPUUniform *>(Uniform);
     TArray<uint8> Snapshot;
     TArray<TRefCountPtr<FRHIResource>> Resources;
@@ -1465,10 +1499,9 @@ void FWebGPUDynamicRHI::RHIUpdateUniformBuffer(FRHICommandListBase &Cmd, FRHIUni
         });
     }
 }
-FUnorderedAccessViewRHIRef FWebGPUDynamicRHI::RHICreateUnorderedAccessView(FRHICommandListBase &,
-                                                                           FRHIViewableResource *Resource,
-                                                                           const FRHIViewDesc &Desc)
+FUnorderedAccessViewRHIRef FWebGPUDynamicRHI::RHICreateUnorderedAccessView(FRHICommandListBase & WebArg0, FRHIViewableResource *Resource, const FRHIViewDesc &Desc)
 {
+    WEBGPU_ON_OWNER(RHICreateUnorderedAccessView(WebArg0, Resource, Desc));
     RequireOwner();
     FString Error;
     if (Resource && Resource->GetType() == RRT_Texture &&
@@ -1710,6 +1743,7 @@ bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FWe
 }
 uint64 FWebGPUDynamicRHI::RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat InFormat)
 {
+    WEBGPU_ON_OWNER(RHIGetMinimumAlignmentForBufferBackedSRV(InFormat));
     return InFormat == PF_R32_UINT || InFormat == PF_R32G32B32A32_UINT || InFormat == PF_A32B32G32R32F ||
                    InFormat == PF_R32_FLOAT || InFormat == PF_R32_SINT || InFormat == PF_G8
                ? Limits.minStorageBufferOffsetAlignment
@@ -1929,6 +1963,7 @@ bool FWebGPUDynamicRHI::ValidateStaticUniform(FUniformBufferStaticSlot Slot, FRH
 }
 void FWebGPUDynamicRHI::RHISetStaticUniformBuffers(const FUniformBufferStaticBindings &Bindings)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetStaticUniformBuffers(Bindings));
     RequireOwner();
     checkf(!Bindings.GetShaderBindingLayout(), TEXT("WebGPU static uniforms require registered static slots"));
     TArray<TRefCountPtr<FRHIUniformBuffer>> Updated;
@@ -1949,6 +1984,7 @@ void FWebGPUDynamicRHI::RHISetStaticUniformBuffers(const FUniformBufferStaticBin
 }
 void FWebGPUDynamicRHI::RHISetStaticUniformBuffer(FUniformBufferStaticSlot Slot, FRHIUniformBuffer *Uniform)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetStaticUniformBuffer(Slot, Uniform));
     RequireOwner();
     FString Error;
     checkf(ValidateStaticUniform(Slot, Uniform, Error), TEXT("%s"), *Error);
@@ -2199,6 +2235,7 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
 }
 FRasterizerStateRHIRef FWebGPUDynamicRHI::RHICreateRasterizerState(const FRasterizerStateInitializerRHI &In)
 {
+    WEBGPU_ON_OWNER(RHICreateRasterizerState(In));
     // A state object only stores the descriptor; unsupported draws are rejected at PSO creation.
     if (StartupProbeMode)
         UE_LOG(LogRHI, Display, TEXT("P2_STARTUP rasterizer descriptor retained fill=%u cull=%u msaa=%u"),
@@ -2242,10 +2279,24 @@ FWebGPUUniform::FConstantSnapshot FWebGPUDynamicRHI::UploadFrameConstants(const 
     if (!FrameUniformBuffer || Align(FrameUniformOffset, uint64(256)) + Bytes > PageBytes)
     {
         if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
-        FrameUniformBuffer = CreateBuffer(PageBytes, WGPUBufferUsage_Uniform);
+        // RHIEndFrame runs after every encoder has been submitted. Queue writes in the
+        // next frame therefore follow all previous readers, without a GPU wait. Stable
+        // page handles let dynamic-uniform bind groups survive across frames. Retain at
+        // most 16 MiB; unusually large frames use transient overflow pages.
+        constexpr uint32 RetainedPages = 16;
+        if (FrameUniformPage < RetainedPages)
+        {
+            if (FrameUniformPage == uint32(FrameUniformPages.Num()))
+                FrameUniformPages.Add(CreateBuffer(PageBytes, WGPUBufferUsage_Uniform));
+            FrameUniformBuffer = FrameUniformPages[FrameUniformPage];
+            wgpuBufferAddRef(FrameUniformBuffer);
+        }
+        else
+            FrameUniformBuffer = CreateBuffer(PageBytes, WGPUBufferUsage_Uniform);
+        ++FrameUniformPage;
         FrameUniformOffset = 0;
     }
-    FWebGPUUniform::FConstantSnapshot Snapshot{FrameUniformBuffer, Align(FrameUniformOffset, uint64(256))};
+    FWebGPUUniform::FConstantSnapshot Snapshot{FrameUniformBuffer, Align(FrameUniformOffset, uint64(256)), EndFrames};
     FrameUniformOffset = Snapshot.Offset + Bytes;
     wgpuBufferAddRef(Snapshot.Buffer);
     wgpuQueueWriteBuffer(Queue, Snapshot.Buffer, Snapshot.Offset, Data, Bytes);
@@ -2299,18 +2350,14 @@ void FWebGPUDynamicRHI::Parameters(FWebGPUShaderData &Shader, TConstArrayView<ui
     for (const auto &Resource : Resources)
         Bind(Shader, Resource);
 }
-void FWebGPUDynamicRHI::RHISetShaderParameters(FRHIGraphicsShader *Shader, TConstArrayView<uint8> Bytes,
-                                               TConstArrayView<FRHIShaderParameter> Values,
-                                               TConstArrayView<FRHIShaderParameterResource> Resources,
-                                               TConstArrayView<FRHIShaderParameterResource> Bindless)
+void FWebGPUDynamicRHI::RHISetShaderParameters(FRHIGraphicsShader *Shader, TConstArrayView<uint8> Bytes, TConstArrayView<FRHIShaderParameter> Values, TConstArrayView<FRHIShaderParameterResource> Resources, TConstArrayView<FRHIShaderParameterResource> Bindless)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetShaderParameters(Shader, Bytes, Values, Resources, Bindless));
     Parameters(ShaderData(Shader), Bytes, Values, Resources, Bindless);
 }
-void FWebGPUDynamicRHI::RHISetShaderParameters(FRHIComputeShader *Shader, TConstArrayView<uint8> Bytes,
-                                               TConstArrayView<FRHIShaderParameter> Values,
-                                               TConstArrayView<FRHIShaderParameterResource> Resources,
-                                               TConstArrayView<FRHIShaderParameterResource> Bindless)
+void FWebGPUDynamicRHI::RHISetShaderParameters(FRHIComputeShader *Shader, TConstArrayView<uint8> Bytes, TConstArrayView<FRHIShaderParameter> Values, TConstArrayView<FRHIShaderParameterResource> Resources, TConstArrayView<FRHIShaderParameterResource> Bindless)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetShaderParameters(Shader, Bytes, Values, Resources, Bindless));
     Parameters(ShaderData(Shader), Bytes, Values, Resources, Bindless);
 }
 TArray<FWebGPUResolvedGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render, WGPUComputePipeline Compute,
@@ -2360,6 +2407,14 @@ TArray<FWebGPUResolvedGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline 
                     Entry.size = Reflected.PaddedSize;
                     check(Entry.size <= uint64(Uniform->Bytes.Num()));
                     auto& Snapshot = Uniform->ConstantBuffers.FindOrAdd(uint32(Entry.size));
+                    // A SingleFrame buffer may remain referenced by a cached UE command.
+                    // Its CPU bytes remain valid; refresh its page allocation before use
+                    // in a later frame, since that page can now contain other uniforms.
+                    if (Snapshot.Buffer && Snapshot.Frame != MAX_uint32 && Snapshot.Frame != EndFrames)
+                    {
+                        wgpuBufferRelease(Snapshot.Buffer);
+                        Snapshot = {};
+                    }
                     if (!Snapshot.Buffer)
                     {
                         if (Uniform->SingleFrame && Entry.size <= 64 * 1024)
@@ -2671,9 +2726,9 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         wgpuBindGroupLayoutRelease(Layout);
     return Result;
 }
-FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
-    const FGraphicsPipelineStateInitializer &In)
+FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In)
 {
+    WEBGPU_ON_OWNER(RHICreateGraphicsPipelineState(In));
     RequireOwner();
     ++GraphicsPipelinesCreated;
     check(In.NumSamples == 1 && !In.BoundShaderState.GetGeometryShader() &&
@@ -2833,6 +2888,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
 }
 FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(const FComputePipelineStateInitializer &In)
 {
+    WEBGPU_ON_OWNER(RHICreateComputePipelineState(In));
     RequireOwner();
     check(In.SpecializationConstants.IsEmpty());
     const auto &Shader = static_cast<FWebGPUComputeShader *>(In.ComputeShader)->Data;
@@ -2853,6 +2909,7 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
 }
 IRHICommandContext *FWebGPUDynamicRHI::RHIGetDefaultContext()
 {
+    WEBGPU_ON_OWNER(RHIGetDefaultContext());
     RequireOwner();
     if (!ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
@@ -2860,6 +2917,7 @@ IRHICommandContext *FWebGPUDynamicRHI::RHIGetDefaultContext()
 }
 IRHIComputeContext *FWebGPUDynamicRHI::RHIGetCommandContext(ERHIPipeline Pipeline)
 {
+    WEBGPU_ON_OWNER(RHIGetCommandContext(Pipeline));
     RequireOwner();
     check(Pipeline == ERHIPipeline::Graphics && !ContextOpen && !Encoder);
     Encoder = wgpuDeviceCreateCommandEncoder(Device, nullptr);
@@ -2868,6 +2926,7 @@ IRHIComputeContext *FWebGPUDynamicRHI::RHIGetCommandContext(ERHIPipeline Pipelin
 }
 FDynamicRHI::FRHIFinalizeContextsResult FWebGPUDynamicRHI::RHIFinalizeContexts(FRHIFinalizeContextsArgs &&Args)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIFinalizeContexts(MoveTemp(Args)));
     RequireOwner();
     if (!Args.Contexts[ERHIPipeline::Graphics])
     {
@@ -2891,6 +2950,7 @@ FDynamicRHI::FRHIFinalizeContextsResult FWebGPUDynamicRHI::RHIFinalizeContexts(F
 }
 void FWebGPUDynamicRHI::RHISubmitCommandLists(FRHISubmitCommandListsArgs &&Args)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISubmitCommandLists(MoveTemp(Args)));
     RequireOwner();
     FString Error;
     checkf(ValidateSubmissionOrder(Args.CommandLists, Error), TEXT("%s"), *Error);
@@ -2911,6 +2971,7 @@ void FWebGPUDynamicRHI::RHISubmitCommandLists(FRHISubmitCommandListsArgs &&Args)
                     Readback->Bytes.Append(static_cast<const uint8*>(
                         wgpuBufferGetConstMappedRange(Readback->Handle, 0, Readback->Size)), Readback->Size);
                     wgpuBufferUnmap(Readback->Handle);
+                    if (Readback->OnReady) Readback->OnReady(Readback->Bytes);
                     Readback->Ready.store(true);
                 }
             };
@@ -2939,9 +3000,9 @@ FStagingBufferRHIRef FWebGPUDynamicRHI::RHICreateStagingBuffer()
 {
     return new FWebGPUStagingBuffer();
 }
-void FWebGPUDynamicRHI::RHICopyToStagingBuffer(FRHIBuffer* Source, FRHIStagingBuffer* Destination,
-                                              uint32 Offset, uint32 Size)
+void FWebGPUDynamicRHI::RHICopyToStagingBuffer(FRHIBuffer* Source, FRHIStagingBuffer* Destination, uint32 Offset, uint32 Size)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHICopyToStagingBuffer(Source, Destination, Offset, Size));
     RequireOwner();
     check(Encoder && !Pass && Size && Offset % 4 == 0 && Size % 4 == 0 &&
           uint64(Offset) + Size <= Source->GetSize());
@@ -2956,20 +3017,22 @@ void FWebGPUDynamicRHI::RHICopyToStagingBuffer(FRHIBuffer* Source, FRHIStagingBu
 }
 void FWebGPUDynamicRHI::RHIWriteGPUFence(FRHIGPUFence* Fence)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIWriteGPUFence(Fence));
     RequireOwner();
     check(Encoder && !Pass && Fence);
     const auto& State = static_cast<FWebGPUFence*>(Fence)->State;
     State->Readbacks = PendingReadbacks;
     PendingFences.Add(State);
 }
-void* FWebGPUDynamicRHI::RHILockStagingBuffer(FRHIStagingBuffer* Buffer, FRHIGPUFence* Fence,
-                                            uint32 Offset, uint32 Size)
+void* FWebGPUDynamicRHI::RHILockStagingBuffer(FRHIStagingBuffer* Buffer, FRHIGPUFence* Fence, uint32 Offset, uint32 Size)
 {
+    WEBGPU_ON_OWNER(RHILockStagingBuffer(Buffer, Fence, Offset, Size));
     RequireOwner();
     return !Fence || Fence->Poll() ? Buffer->Lock(Offset, Size) : nullptr;
 }
 void FWebGPUDynamicRHI::RHIUnlockStagingBuffer(FRHIStagingBuffer* Buffer)
 {
+    WEBGPU_ON_OWNER(RHIUnlockStagingBuffer(Buffer));
     RequireOwner();
     check(Buffer);
     Buffer->Unlock();
@@ -2983,8 +3046,9 @@ void FWebGPUDynamicRHI::SubmitCurrent()
     SubmitArgs.CommandLists.Add(Result.CommandLists[ERHIPipeline::Graphics]);
     RHISubmitCommandLists(MoveTemp(SubmitArgs));
 }
-void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const TCHAR *)
+void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const TCHAR * WebArg1)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIBeginRenderPass(Info, WebArg1));
     RequireOwner();
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
@@ -3070,6 +3134,7 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
 }
 void FWebGPUDynamicRHI::RHIEndRenderPass()
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIEndRenderPass());
     check(Pass && !ActiveOcclusionQuery);
     wgpuRenderPassEncoderEnd(Pass);
     wgpuRenderPassEncoderRelease(Pass);
@@ -3082,6 +3147,19 @@ void FWebGPUDynamicRHI::RHIEndRenderPass()
         Readback->Size = Bytes;
         Readback->Handle = CreateBuffer(Bytes, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
         OcclusionBatch->Readback = Readback;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+        Readback->OnReady = [Results = MoveTemp(OcclusionBatch->Results)](const TArray<uint8>& Data) {
+            for (int32 Index = 0; Index < Results.Num(); ++Index)
+            {
+                auto* Query = static_cast<FWebGPURenderQuery*>(Results[Index].Query.GetReference());
+                if (Query->Generation != Results[Index].Generation) continue;
+                uint64 Value;
+                FMemory::Memcpy(&Value, Data.GetData() + Index * sizeof(Value), sizeof(Value));
+                Query->ResultValue.store(Value, std::memory_order_relaxed);
+                Query->ResultReady.store(true, std::memory_order_release);
+            }
+        };
+#endif
         wgpuCommandEncoderResolveQuerySet(Encoder, OcclusionBatch->Queries, 0, OcclusionBatch->Count,
             OcclusionBatch->Resolve, 0);
         wgpuCommandEncoderCopyBufferToBuffer(Encoder, OcclusionBatch->Resolve, 0, Readback->Handle, 0, Bytes);
@@ -3099,23 +3177,40 @@ FRenderQueryRHIRef FWebGPUDynamicRHI::RHICreateRenderQuery(ERenderQueryType Type
 }
 void FWebGPUDynamicRHI::RHIBeginRenderQuery(FRHIRenderQuery* Query)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIBeginRenderQuery(Query));
     RequireOwner();
     check(Pass && OcclusionBatch && !ActiveOcclusionQuery && Query &&
         OcclusionBatch->Count < OcclusionBatch->Capacity);
     ActiveOcclusionQuery = static_cast<FWebGPURenderQuery*>(Query);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    ActiveOcclusionQuery->ResultReady.store(false, std::memory_order_release);
+    OcclusionBatch->Results.Add({Query, ++ActiveOcclusionQuery->Generation});
+#else
     ActiveOcclusionQuery->Batch = OcclusionBatch;
+#endif
     ActiveOcclusionQuery->Index = OcclusionBatch->Count++;
     wgpuRenderPassEncoderBeginOcclusionQuery(Pass, ActiveOcclusionQuery->Index);
 }
 void FWebGPUDynamicRHI::RHIEndRenderQuery(FRHIRenderQuery* Query)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIEndRenderQuery(Query));
     RequireOwner();
     check(Pass && Query == ActiveOcclusionQuery.GetReference());
     wgpuRenderPassEncoderEndOcclusionQuery(Pass);
     ActiveOcclusionQuery.SafeRelease();
 }
-bool FWebGPUDynamicRHI::RHIGetRenderQueryResult(FRHIRenderQuery* Query, uint64& Result, bool WaitForResult, uint32)
+bool FWebGPUDynamicRHI::RHIGetRenderQueryResult(FRHIRenderQuery* Query, uint64& Result, bool WaitForResult, uint32 WebArg3)
 {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    const auto* Value = static_cast<FWebGPURenderQuery*>(Query);
+    if (!Value->ResultReady.load(std::memory_order_acquire))
+    {
+        ++OcclusionResultsPending;
+        return false;
+    }
+    Result = Value->ResultValue.load(std::memory_order_relaxed);
+#else
+    WEBGPU_ON_OWNER(RHIGetRenderQueryResult(Query, Result, WaitForResult, WebArg3));
     RequireOwner();
     const auto* Value = static_cast<FWebGPURenderQuery*>(Query);
     const auto Batch = Value->Batch;
@@ -3135,12 +3230,14 @@ bool FWebGPUDynamicRHI::RHIGetRenderQueryResult(FRHIRenderQuery* Query, uint64& 
         return false;
     }
     FMemory::Memcpy(&Result, Batch->Readback->Bytes.GetData() + Value->Index * sizeof(uint64), sizeof(Result));
+#endif
     ++OcclusionResultsReady;
     OcclusionResultsZero += Result == 0;
     return true;
 }
-void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *State, uint32 StencilRef, bool)
+void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *State, uint32 StencilRef, bool WebArg2)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetGraphicsPipelineState(State, StencilRef, WebArg2));
     check(Pass && StencilRef <= 255);
     GraphicsPipeline = static_cast<FWebGPUGraphicsPipeline *>(State);
     FString Error;
@@ -3149,15 +3246,16 @@ void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *S
     wgpuRenderPassEncoderSetStencilReference(Pass, StencilRef);
 }
 #if PLATFORM_USE_FALLBACK_PSO
-void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In, uint32 Stencil,
-                                                    bool Apply)
+void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In, uint32 Stencil, bool Apply)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetGraphicsPipelineState(In, Stencil, Apply));
     auto State = RHICreateGraphicsPipelineState(In);
     RHISetGraphicsPipelineState(State, Stencil, Apply);
 }
 #endif
 void FWebGPUDynamicRHI::RHISetComputePipelineState(FRHIComputePipelineState *State)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetComputePipelineState(State));
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
     check(!Pass);
@@ -3165,6 +3263,7 @@ void FWebGPUDynamicRHI::RHISetComputePipelineState(FRHIComputePipelineState *Sta
 }
 void FWebGPUDynamicRHI::RHISetStreamSource(uint32 Stream, FRHIBuffer *Buffer, uint32 Offset)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetStreamSource(Stream, Buffer, Offset));
     check(Stream < Limits.maxVertexBuffers);
     if (VertexBuffers.Num() <= int32(Stream))
     {
@@ -3176,11 +3275,13 @@ void FWebGPUDynamicRHI::RHISetStreamSource(uint32 Stream, FRHIBuffer *Buffer, ui
 }
 void FWebGPUDynamicRHI::RHISetViewport(float X0, float Y0, float Z0, float X1, float Y1, float Z1)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetViewport(X0, Y0, Z0, X1, Y1, Z1));
     check(Pass);
     wgpuRenderPassEncoderSetViewport(Pass, X0, Y0, X1 - X0, Y1 - Y0, Z0, Z1);
 }
 void FWebGPUDynamicRHI::RHISetScissorRect(bool Enable, uint32 X0, uint32 Y0, uint32 X1, uint32 Y1)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHISetScissorRect(Enable, X0, Y0, X1, Y1));
     check(Pass && !Attachments.IsEmpty());
     wgpuRenderPassEncoderSetScissorRect(Pass, Enable ? X0 : 0, Enable ? Y0 : 0,
                                         Enable ? X1 - X0 : Attachments[0]->GetSizeX(),
@@ -3209,14 +3310,15 @@ void FWebGPUDynamicRHI::SetDrawBindings()
 }
 void FWebGPUDynamicRHI::RHIDrawPrimitive(uint32 Base, uint32 Primitives, uint32 Instances)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIDrawPrimitive(Base, Primitives, Instances));
     SetDrawBindings();
     wgpuRenderPassEncoderDraw(Pass, VertexCount(GraphicsPipeline->Initializer.PrimitiveType, Primitives), Instances,
                               Base, 0);
     ++Draws;
 }
-void FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer *Index, int32 Base, uint32 FirstInstance, uint32,
-                                                uint32 StartIndex, uint32 Primitives, uint32 Instances)
+void FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer *Index, int32 Base, uint32 FirstInstance, uint32 WebArg3, uint32 StartIndex, uint32 Primitives, uint32 Instances)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIDrawIndexedPrimitive(Index, Base, FirstInstance, WebArg3, StartIndex, Primitives, Instances));
     auto *Buffer = static_cast<FWebGPUBuffer *>(Index);
     check(Buffer->GetStride() == 2 || Buffer->GetStride() == 4);
     RequireAccess(Buffer, ERHIAccess::VertexOrIndexBuffer);
@@ -3241,6 +3343,7 @@ bool FWebGPUDynamicRHI::ValidateIndirectArguments(FRHIBuffer* Buffer, uint32 Off
 }
 void FWebGPUDynamicRHI::RHIDrawPrimitiveIndirect(FRHIBuffer* Arguments, uint32 Offset)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIDrawPrimitiveIndirect(Arguments, Offset));
     FString Error;
     checkf(ValidateIndirectArguments(Arguments, Offset, 16, Error), TEXT("%s"), *Error);
     SetDrawBindings();
@@ -3249,6 +3352,7 @@ void FWebGPUDynamicRHI::RHIDrawPrimitiveIndirect(FRHIBuffer* Arguments, uint32 O
 }
 void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIBuffer* Arguments, uint32 Offset)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIDrawIndexedPrimitiveIndirect(Index, Arguments, Offset));
     FString Error;
     checkf(ValidateIndirectArguments(Arguments, Offset, 20, Error), TEXT("%s"), *Error);
     check(GraphicsPipeline && GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList);
@@ -3278,6 +3382,7 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
 }
 void FWebGPUDynamicRHI::RHIDispatchComputeShader(uint32 X, uint32 Y, uint32 Z)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIDispatchComputeShader(X, Y, Z));
     auto Compute = BeginComputePass();
     wgpuComputePassEncoderDispatchWorkgroups(Compute, X, Y, Z);
     wgpuComputePassEncoderEnd(Compute);
@@ -3286,6 +3391,7 @@ void FWebGPUDynamicRHI::RHIDispatchComputeShader(uint32 X, uint32 Y, uint32 Z)
 }
 void FWebGPUDynamicRHI::RHIDispatchIndirectComputeShader(FRHIBuffer* Arguments, uint32 Offset)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIDispatchIndirectComputeShader(Arguments, Offset));
     FString Error;
     checkf(ValidateIndirectArguments(Arguments, Offset, 12, Error), TEXT("%s"), *Error);
     auto Compute = BeginComputePass();
@@ -3296,6 +3402,7 @@ void FWebGPUDynamicRHI::RHIDispatchIndirectComputeShader(FRHIBuffer* Arguments, 
 }
 void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destination, const FRHICopyTextureInfo &Info)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHICopyTexture(Source, Destination, Info));
     check((Source->GetDesc().Dimension == ETextureDimension::Texture2D || Source->GetDesc().IsTextureCube()) &&
           (Destination->GetDesc().Dimension == ETextureDimension::Texture2D || Destination->GetDesc().IsTextureCube()) &&
           Encoder && !Pass && Source->GetFormat() == Destination->GetFormat() &&
@@ -3339,6 +3446,7 @@ void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destina
 }
 void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUintVector4& Values)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIClearUAVUint(View, Values));
     RequireOwner();
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
@@ -3397,6 +3505,7 @@ void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUi
 }
 void FWebGPUDynamicRHI::RHIClearUAVFloat(FRHIUnorderedAccessView* View, const FVector4f& Values)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHIClearUAVFloat(View, Values));
     FUintVector4 Bits;
     FMemory::Memcpy(&Bits, &Values, sizeof(Bits));
     ClearStorageUAV(View, Bits, true);
@@ -3509,9 +3618,9 @@ void FWebGPUDynamicRHI::ClearStorageUAV(FRHIUnorderedAccessView* View, const FUi
     wgpuBufferRelease(Uniform);
     ++Dispatches;
 }
-void FWebGPUDynamicRHI::RHICopyBufferRegion(FRHIBuffer *Dest, uint64 DstOffset, FRHIBuffer *Src, uint64 SrcOffset,
-                                            uint64 Size)
+void FWebGPUDynamicRHI::RHICopyBufferRegion(FRHIBuffer *Dest, uint64 DstOffset, FRHIBuffer *Src, uint64 SrcOffset, uint64 Size)
 {
+    WEBGPU_COMMAND_ON_OWNER(RHICopyBufferRegion(Dest, DstOffset, Src, SrcOffset, Size));
     check(Encoder && !Pass && DstOffset % 4 == 0 && SrcOffset % 4 == 0 && Size % 4 == 0 &&
           DstOffset + Size <= Dest->GetSize() && SrcOffset + Size <= Src->GetSize());
     check(Dest != Src);
@@ -3545,6 +3654,7 @@ TArray<uint8> FWebGPUDynamicRHI::MapBuffer(WGPUBuffer Buffer, uint64 Bytes)
 }
 void FWebGPUDynamicRHI::RHITick(float DeltaTime)
 {
+    WEBGPU_ON_OWNER(RHITick(DeltaTime));
     RequireOwner();
 #if !defined(PLATFORM_WEB) || !PLATFORM_WEB
     wgpuInstanceProcessEvents(Instance);
@@ -3554,6 +3664,7 @@ void FWebGPUDynamicRHI::RHITick(float DeltaTime)
 
 void FWebGPUDynamicRHI::RHIBlockUntilGPUIdle()
 {
+    WEBGPU_ON_OWNER(RHIBlockUntilGPUIdle());
     RequireOwner();
     check(!ContextOpen);
     auto State = MakeShared<FWebGPUCompletion, ESPMode::ThreadSafe>();
@@ -3583,9 +3694,9 @@ TArray<uint8> FWebGPUDynamicRHI::ReadBuffer(FRHIBuffer *Source, uint64 Bytes)
     wgpuBufferRelease(Buffer);
     return Result;
 }
-void FWebGPUDynamicRHI::RHIReadSurfaceData(FRHITexture *Texture, FIntRect Rect, TArray<FColor> &Colors,
-                                           FReadSurfaceDataFlags Flags)
+void FWebGPUDynamicRHI::RHIReadSurfaceData(FRHITexture *Texture, FIntRect Rect, TArray<FColor> &Colors, FReadSurfaceDataFlags Flags)
 {
+    WEBGPU_ON_OWNER(RHIReadSurfaceData(Texture, Rect, Colors, Flags));
     RequireOwner();
     if (GlobalProbeMode && ContextOpen)
         SubmitCurrent();

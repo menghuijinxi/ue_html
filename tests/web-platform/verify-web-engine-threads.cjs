@@ -11,6 +11,7 @@ const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.read
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const url = 'http://127.0.0.1:8765/build/ue-default-template-threads/index.html';
+const requireRenderThreads = process.argv.includes('--require-render-threads');
 const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), runs: []};
 let context;
 const state = page => page.evaluate(() => ({
@@ -160,7 +161,12 @@ async function visualParity(context, name) {
       assert.equal(run.startup.ready.shaderPlatform, 47);
       assert(run.startup.threads.sharedMemory && run.startup.threads.engineWorker &&
         run.startup.threads.gameThread !== run.startup.threads.taskThread);
-      assert(!run.startup.threads.renderThread && !run.startup.threads.rhiThread);
+      if (requireRenderThreads) {
+        assert(run.startup.threads.renderThread && run.startup.threads.rhiThread);
+        assert.equal(new Set([run.startup.threads.gameThread, run.startup.threads.renderThreadId,
+          run.startup.threads.rhiThreadId]).size, 3);
+        assert(run.startup.view.parallelRendering);
+      }
       assert(!run.startup.uiHasHeap, 'The browser UI must not own an Engine WASM instance');
       assert.equal(run.startup.local.bulkMemfsBytes, 0);
       assert(run.startup.local.memoryBytes <= run.startup.local.memoryLimit);
@@ -182,7 +188,8 @@ async function visualParity(context, name) {
         const completed = await state(page);
         assert.equal(completed.io.result, mode);
         assert.notEqual(completed.io.worker, completed.threads.gameThread);
-        assert.equal(completed.io.callback, completed.threads.gameThread);
+        assert.equal(completed.io.callback, completed.threads.rhiThread ?
+          completed.threads.rhiThreadId : completed.threads.gameThread);
         if (mode === 2) assert.equal(completed.io.crc, report.expectedIOCRC);
         (run.localIO ||= []).push(completed.io);
       }
