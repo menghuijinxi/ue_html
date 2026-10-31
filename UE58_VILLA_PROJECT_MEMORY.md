@@ -2,6 +2,8 @@
 
 源项目：`G:/UE_HTML/TriplexHouseVilla/TriplexHouseVilla.uproject`。地图：`/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla`。
 
+后续从启动早期实际操作发现的角色速度通道崩溃，修复与回归结果见 [别墅移动崩溃修复](UE58_VILLA_MOVEMENT_CRASH.md)。本报告中的固定视角测试不能替代该操作回归。
+
 引擎修复本地提交：`05dae2bb5`（html 分支）。未推送远程。
 
 ## 设置与构建

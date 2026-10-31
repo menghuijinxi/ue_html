@@ -1285,6 +1285,24 @@ FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICom
                    TEXT("P2_STARTUP BufferSRV requested name=%s format=%u bufferType=%u stride=%u count=%u offset=%u"),
                    *Resource->GetName().ToString(), uint32(Desc.Buffer.SRV.Format), uint32(Desc.Buffer.SRV.BufferType),
                    Desc.Buffer.SRV.Stride, Desc.Buffer.SRV.NumElements, Desc.Buffer.SRV.OffsetInBytes);
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+        if (Resource && Resource == GNullVertexBuffer.VertexBufferRHI)
+        {
+            // Passthrough skinning binds this zero SRV before it has previous-frame positions,
+            // even with manual vertex fetch disabled. It must be a real binding, not nullptr.
+            // Web storage buffers have no typed views: expose the three zero position scalars
+            // as float32, matching GPUSkinPassThroughVFLooseParameters.PreviousPositionBuffer.
+            const auto& View = Desc.Buffer.SRV;
+            check(View.BufferType == FRHIViewDesc::EBufferType::Typed && View.Format == PF_R8G8B8A8 &&
+                !View.Stride && !View.NumElements && !View.OffsetInBytes && !View.bAtomicCounter &&
+                !View.bAppendBuffer && static_cast<FRHIBuffer*>(Resource)->GetSize() == 12);
+            auto PositionDesc = Desc;
+            PositionDesc.Buffer.SRV.Format = PF_R32_FLOAT;
+            checkf(ValidateBufferSRV(Resource, PositionDesc, Error), TEXT("WebGPU default position SRV: %s"), *Error);
+            UE_LOG(LogRHI, Display, TEXT("P3_DEFAULT_POSITION_SRV bytes=12 format=float32 zero=1"));
+            return new FWebGPUBufferSRV(static_cast<FWebGPUBuffer*>(Resource), PositionDesc);
+        }
+#endif
         if (StartupProbeMode && FParse::Param(FCommandLine::Get(), TEXT("WebMinimalStartup")) && Resource &&
             (Resource == GNullColorVertexBuffer.VertexBufferRHI || Resource == GNullVertexBuffer.VertexBufferRHI))
         {
