@@ -7,8 +7,12 @@ const option = name => process.argv.find(arg => arg.startsWith(`--${name}=`))?.s
 const tag = option('tag'), folder = option('folder') || 'triplex-project-distance-fields-threads';
 assert(/^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(folder));
 const seconds = Number(option('seconds') || 15);
+const width = Number(option('width') || 1280), height = Number(option('height') || 720);
+const dpr = Number(option('dpr') || 1), warmup = Number(option('warmup') || 90);
 const output = path.join(__dirname, 'results', `cpu-${tag}`);
-const report = {date: new Date().toISOString(), tag, folder, seconds, settingsOverrides: [], samples: [], errors: [], pass: false};
+const report = {date: new Date().toISOString(), tag, folder, seconds, width, height, dpr,
+  cameraMode: process.argv.includes('--spawn') ? 'original-spawn' : 'fixed-room-wall',
+  settingsOverrides: [], samples: [], errors: [], pass: false};
 let context;
 function countGPUCalls() {
   const counts = globalThis.__cpuGPUCalls = {};
@@ -37,7 +41,7 @@ function summarize(profile) {
 (async () => {
   try {
     context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', 'cpu-villa'),
-      {channel: 'msedge', headless: !process.argv.includes('--visible'), viewport: {width: 1280, height: 720}, deviceScaleFactor: 1});
+      {channel: 'msedge', headless: !process.argv.includes('--visible'), viewport: {width, height}, deviceScaleFactor: dpr});
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       await route.fulfill({response, body: `(${countGPUCalls.toString()})();\n` + await response.text()});
@@ -50,7 +54,7 @@ function summarize(profile) {
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(text)) report.errors.push(text);
     });
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
-    await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 90, null, {timeout: 900000});
+    await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 30, null, {timeout: 900000});
     assert(!await page.evaluate(() => globalThis.__webEngineFailure));
     const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
     assert(owner);
@@ -82,7 +86,11 @@ function summarize(profile) {
     for (let index = 0; index < views.length; ++index) {
       if (views[index]) await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), views[index]);
       const first = (await state()).frame;
-      await page.waitForFunction(frame => globalThis.__webEngineFailure || globalThis.__webEngineFrames > frame + 90, first, {timeout: 180000});
+      await page.waitForFunction(target => globalThis.__webEngineFailure || globalThis.__webEngineFrames > target,
+        first + warmup, {timeout: 180000});
+      const baselineStart = performance.now(), baseline = await state();
+      await page.waitForTimeout(5000);
+      const baselineAfter = await state(), baselineMs = performance.now() - baselineStart;
       const before = await state(), logCount = report.logCount, start = Date.now();
       await command('Profiler.start');
       await page.waitForTimeout(seconds * 1000);
@@ -91,6 +99,8 @@ function summarize(profile) {
       fs.writeFileSync(output + `-${index}.cpuprofile`, JSON.stringify(profile));
       const frames = before.presented === undefined ? after.frame - before.frame : after.presented - before.presented;
       const sample = {before, after, durationMs, fps: frames / durationMs * 1000,
+        baseline: {fps: ((baselineAfter.presented ?? baselineAfter.frame) -
+          (baseline.presented ?? baseline.frame)) / baselineMs * 1000, durationMs: baselineMs},
         frameSource: before.presented === undefined ? 'engine-loop' : 'rhi-present',
         profileThread: after.threads?.rhiThread ? 'rhi-worker' : 'game-and-rhi-worker',
         logs: report.logCount - logCount, profile: summarize(profile),
@@ -98,6 +108,7 @@ function summarize(profile) {
           [key, (value - (before.calls[key] || 0)) / frames])),
         memory: processMemory({profile: path.join(__dirname, 'build/browser-profiles', 'cpu-villa')})};
       report.samples.push(sample);
+      await page.locator('canvas').screenshot({path: output + `-${index}.png`, timeout: 60000});
       fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
       console.log(JSON.stringify({index, fps: sample.fps, logs: sample.logs, threads: after.threads, pool: after.pool,
         self: sample.profile.self.slice(0, 14), total: sample.profile.total.slice(0, 14)}));
