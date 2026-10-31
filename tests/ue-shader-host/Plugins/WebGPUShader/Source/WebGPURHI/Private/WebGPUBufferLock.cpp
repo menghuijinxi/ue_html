@@ -66,6 +66,7 @@ void *FWebGPUDynamicRHI::LockBuffer_BottomOfPipe(FRHICommandListBase & WebArg0, 
     else
         Lock.Bytes.SetNumUninitialized(Size);
     Lock.Buffer->Locked = true;
+    ++BindingStateSerial;
     auto &Stored = BufferLocks.Add(Buffer, MoveTemp(Lock));
     ++BufferLocksCreated;
     return Stored.Bytes.GetData();
@@ -80,6 +81,7 @@ void FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase & WebArg0,
     auto Lock = MoveTemp(BufferLocks.FindChecked(Buffer));
     BufferLocks.Remove(Buffer);
     Lock.Buffer->Locked = false;
+    ++BindingStateSerial;
     if (!ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
     if (Lock.Mode == RLM_WriteOnly)

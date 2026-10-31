@@ -12,11 +12,12 @@ assert(runs >= 1 && runs <= 10 && seconds >= 10 && seconds <= 600);
 const width = Number(option('width') || 1533), height = Number(option('height') || 812);
 const dpr = Number(option('dpr') || 1.21);
 const requireRenderThreads = process.argv.includes('--require-render-threads');
+const validateBindingCache = process.argv.includes('--validate-binding-cache');
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const output = path.join(__dirname, 'results', `project-gameplay-${tag}`);
 const report = {date: new Date().toISOString(), folder, width, height, dpr, requestedRuns: runs, seconds,
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-  runs: [], settingsOverrides: [], requireRenderThreads, pass: false};
+  runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, pass: false};
 const log = fs.createWriteStream(output + '.log');
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
@@ -57,11 +58,14 @@ let context;
         await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 2,
           null, {timeout: 900000});
       } finally { clearInterval(startupTimer); }
+      if (validateBindingCache)
+        assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingCacheTest', 1)), 1);
       const snapshot = async label => {
         const state = await page.evaluate(() => ({frame: globalThis.__webEngineFrames,
           failure: globalThis.__webEngineFailure, camera: globalThis.__webDefaultCamera,
           view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings,
           retirement: globalThis.__webGPUHandleDiagnostics,
+          bindings: globalThis.__webOcclusionRHI,
           threads: globalThis.__webEngineThreads, stages: globalThis.__webThreadStages,
           diagnostics: typeof startupSnapshot === 'function' ? startupSnapshot() : null}));
         if (state.diagnostics) {
@@ -113,6 +117,11 @@ let context;
       assert(result.defaultPositionSRV, 'The repaired default position SRV must be created');
       assert(result.maxTravelCm > 50, 'Real player movement must be exercised');
       assert(result.maxTurnDegrees > 10, 'Real player rotation must be exercised');
+      if (validateBindingCache) {
+        assert(result.samples.at(-1).bindings?.bindingEntriesValidated > 1000,
+          'Recomputed descriptors must match prepared cache entries during real scene movement');
+        assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingCacheTest', 0)), 1);
+      }
       if (requireRenderThreads) {
         const last = result.samples.at(-1), threads = last.threads;
         assert(threads?.renderThread && threads?.rhiThread, 'Rendering and RHI threads must both be enabled');

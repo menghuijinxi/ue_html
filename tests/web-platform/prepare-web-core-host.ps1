@@ -115,7 +115,7 @@ if (Test-Path -LiteralPath $taskExperimental) {
 }
 New-Item -ItemType Directory -Path $taskExperimental -Force | Out-Null
 foreach ($taskModule in Get-ChildItem -LiteralPath $taskOriginalExperimental -Directory) {
-    if ($taskModule.Name -in @('ChaosCore', 'GeometryCollectionEngine')) { continue }
+    if ($taskModule.Name -in @('Chaos', 'ChaosCore', 'GeometryCollectionEngine')) { continue }
     $taskDestination = Join-Path $taskExperimental $taskModule.Name
     if (-not (Test-Path -LiteralPath $taskDestination)) {
         New-Item -ItemType Junction -Path $taskDestination -Target $taskModule.FullName | Out-Null
@@ -140,6 +140,25 @@ foreach ($taskModuleName in @('Core', 'TraceLog', 'ApplicationCore', 'CoreUObjec
         Copy-Item -LiteralPath $taskPart.FullName -Destination $taskModulePath -Recurse -Force
     }
 }
+$taskChaosModule = Join-Path $taskExperimental 'Chaos'
+$taskOriginalChaosModule = [IO.Path]::GetFullPath((Join-Path $taskOriginalExperimental 'Chaos'))
+if (Test-Path -LiteralPath $taskChaosModule) {
+    $taskChaosItem = Get-Item -LiteralPath $taskChaosModule
+    if ($taskChaosItem.LinkType) {
+        if ($taskChaosItem.LinkType -ne 'Junction' -or
+            [IO.Path]::GetFullPath($taskChaosItem.Target) -ne $taskOriginalChaosModule -or
+            -not [IO.Path]::GetFullPath($taskChaosModule).StartsWith("$taskRoot\", [StringComparison]::OrdinalIgnoreCase)) {
+            throw 'Unexpected build-host Chaos link; refusing to replace it'
+        }
+        Remove-Item -LiteralPath $taskChaosModule
+    }
+}
+New-Item -ItemType Directory -Path $taskChaosModule -Force | Out-Null
+foreach ($taskPart in Get-ChildItem -LiteralPath $taskOriginalChaosModule) {
+    Copy-Item -LiteralPath $taskPart.FullName -Destination $taskChaosModule -Recurse -Force
+}
+$taskChaosTrace = 'Private/ChaosVisualDebugger/ChaosVisualDebuggerTrace.cpp'
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Experimental/Chaos/$taskChaosTrace") -Destination (Join-Path $taskChaosModule $taskChaosTrace) -Force
 $taskGeometryModule = Join-Path $taskExperimental 'GeometryCollectionEngine'
 $taskOriginalGeometryModule = [IO.Path]::GetFullPath((Join-Path $taskOriginalExperimental 'GeometryCollectionEngine'))
 if (Test-Path -LiteralPath $taskGeometryModule) {

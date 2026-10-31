@@ -9,7 +9,7 @@ const rpcNames = new Set([
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
   'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
-  'WebLightingQualityTest', 'WebVisibilityTest'
+  'WebLightingQualityTest', 'WebVisibilityTest', 'WebTraceStart', 'WebTraceStop', 'WebTraceExport', 'WebBindingCacheTest'
 ]);
 // Emscripten's Worker setImmediate fallback sends a token to its parent. This
 // runtime has a custom page host, so schedule locally and yield without a UI hop.

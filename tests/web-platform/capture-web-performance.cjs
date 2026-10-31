@@ -10,11 +10,13 @@ const tag = option('tag') || 'spawn', folder = option('folder') || 'triplex-proj
 assert(/^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(folder));
 const width = Number(option('width') || 1863), height = Number(option('height') || 1030);
 const dpr = Number(option('dpr') || 1), seconds = Number(option('seconds') || 6);
+const warmupSeconds = Number(option('warmup-seconds') || 0);
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 assert(seconds >= 3 && seconds <= 30);
+assert(warmupSeconds >= 0 && warmupSeconds <= 120);
 const output = path.join(__dirname, 'results', `performance-capture-${tag}`);
 fs.mkdirSync(path.dirname(output), {recursive: true});
-const report = {date: new Date().toISOString(), tag, folder, width, height, dpr, seconds,
+const report = {date: new Date().toISOString(), tag, folder, width, height, dpr, seconds, warmupSeconds,
   gpuCaptureBoundary: 'present-to-present',
   settingsOverrides: [], errors: [], profiles: [], pass: false,
   boundaries: ['CPU profiles are statistical stack samples, not exact scope timers.',
@@ -103,6 +105,7 @@ async function attach(target) {
     report.cameraMode = option('camera') === 'room' ? 'fixed-room' : 'original-spawn';
     const initial = await state();
     await page.waitForFunction(target => globalThis.__webEngineFrames >= target, initial.gameFrames + 60, {timeout: 180000});
+    if (warmupSeconds) await page.waitForTimeout(warmupSeconds * 1000);
     report.before = await state();
     const baselineStart = performance.now();
     report.baselineSamples = [];
@@ -122,6 +125,8 @@ async function attach(target) {
     report.afterBaseline = previousState;
     report.baseline = {milliseconds: previousTime - baselineStart, frames: report.afterBaseline.frames - report.before.frames};
     report.baseline.fps = report.baseline.frames / report.baseline.milliseconds * 1000;
+    report.baseline.rhiWorkMsPerFrame = (report.afterBaseline.stages.rhiWorkMilliseconds -
+      report.before.stages.rhiWorkMilliseconds) / report.baseline.frames;
     console.log(JSON.stringify({baseline: report.baseline, camera: report.before.camera,
       view: report.before.view, adapter: report.before.adapter}));
     await page.locator('canvas').screenshot({path: output + '-scene.png', timeout: 60000});

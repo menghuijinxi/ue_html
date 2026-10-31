@@ -7,6 +7,12 @@ const file = process.argv[2], parallel = Number(process.argv[3] || 8);
 assert(file && Number.isInteger(parallel) && parallel >= 1 && parallel <= 16);
 const graph = JSON.parse(fs.readFileSync(file, 'utf8'));
 const root = path.resolve(__dirname, '../..');
+// Emscripten keys the shared cache by the literal expanded LLVM_ROOT path.
+// Match build-web-engine.ps1 even when this helper is called independently;
+// a backslash variant would clear the SDK cache while another action uses it.
+const sdkRoot = path.join(root, '.tools/emsdk').replaceAll('\\', '/');
+const environment = {...process.env, ...graph.Environment,
+  WEB_EMSDK_ROOT: sdkRoot, EM_CONFIG: sdkRoot + '/.emscripten'};
 const actions = graph.Actions.filter(action => action.Type === 'Compile');
 assert(actions.length && actions.every(action => !action.PrerequisiteActions.length));
 let next = 0, completed = 0, failed = false;
@@ -27,7 +33,7 @@ async function run() {
       const output = fs.openSync(attemptLog, 'w');
       result = await new Promise(resolve => {
         const child = cp.spawn(action.CommandPath, [args[1], '@' + args[2]], {
-          cwd: action.WorkingDirectory, env: {...process.env, ...graph.Environment},
+          cwd: action.WorkingDirectory, env: environment,
           windowsHide: true, stdio: ['ignore', output, output]
         });
         child.on('error', error => resolve({error: error.message, code: -1}));

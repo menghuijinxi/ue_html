@@ -370,6 +370,7 @@ void FWebGPUDynamicRHI::RHIBeginTransitions(TArrayView<const FRHITransition *> B
 {
     WEBGPU_COMMAND_ON_OWNER(RHIBeginTransitions(Batch));
     RequireOwner();
+    ++BindingStateSerial;
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
@@ -397,6 +398,7 @@ void FWebGPUDynamicRHI::RHIEndTransitions(TArrayView<const FRHITransition *> Bat
 {
     WEBGPU_COMMAND_ON_OWNER(RHIEndTransitions(Batch));
     RequireOwner();
+    ++BindingStateSerial;
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
     FString Error;

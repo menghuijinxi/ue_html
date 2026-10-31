@@ -3,17 +3,19 @@
 #include "WebGPUUnsupportedRHI.h"
 #include "WebGPUOwner.h"
 #include "RHICoreStats.h"
+#include "Misc/ScopeLock.h"
 #include "Dom/JsonObject.h"
 #include <webgpu/webgpu.h>
 #include <atomic>
 
 struct FWebGPUBindingRoute
 {
-    enum class EKind { Uniform, Direct, Table };
+    enum class EKind { Uniform, Direct, Table, GlobalSampler };
     EKind Kind;
     uint32 Slot = 0, Index = 0;
     EUniformBufferBaseType MemberType = UBMT_INVALID;
     ERHIResourceType ResourceType = RRT_None;
+    TRefCountPtr<FRHIResource> GlobalResource;
 };
 
 struct FWebGPUShaderBinding
@@ -24,6 +26,11 @@ struct FWebGPUShaderBinding
     double TextureDimension = -1;
     bool TextureArrayed = false, TextureMultisampled = false, TextureContractValid = false;
     FString TextureSampleType;
+    // Prepared descriptors are reusable only while their source and access
+    // state are unchanged. The bind-group cache below owns GPU handle refs.
+    TRefCountPtr<FRHIResource> PreparedResource;
+    WGPUBindGroupEntry PreparedEntry = WGPU_BIND_GROUP_ENTRY_INIT;
+    uint64 PreparedSerial = 0, PreparedVersion = 0;
 };
 
 struct FWebGPUBindGroupCacheEntry
@@ -51,8 +58,12 @@ struct FWebGPUBindGroupCacheEntry
 struct FWebGPUResolvedGroup
 {
     WGPUBindGroup Handle = nullptr;
+    // Cached groups are borrowed until EndFrame; an uncached new handle is
+    // transferred to graphics state or released after encoding compute state.
+    bool OwnedHandle = false;
     TArray<uint32, TInlineAllocator<12>> DynamicOffsets;
 };
+using FWebGPUResolvedGroups = TArray<FWebGPUResolvedGroup, TInlineAllocator<4>>;
 
 struct FWebGPUShaderData
 {
@@ -66,8 +77,10 @@ struct FWebGPUShaderData
     FShaderResourceTable ResourceTable;
     TArray<FWebGPUShaderBinding> Bindings;
     mutable TMap<const FJsonObject*, FWebGPUBindingRoute> BindingRoutes;
+    mutable TArray<const FRHIUniformBufferLayout*> UniformSlotLayouts;
     WGPUBuffer GlobalsBuffer = nullptr;
     uint64 GlobalsBufferOffset = 0;
+    uint64 GlobalsVersion = 1;
     EShaderFrequency Frequency = SF_NumFrequencies;
     ~FWebGPUShaderData()
     {
@@ -140,7 +153,7 @@ class FWebGPUBuffer final : public FRHIBuffer
     ~FWebGPUBuffer() override
     {
         check(!Locked);
-        WebGPUOnOwner([&] { wgpuBufferRelease(Handle); });
+        if (Handle) WebGPUOnOwner([&] { wgpuBufferRelease(Handle); });
     }
 };
 
@@ -309,6 +322,7 @@ class FWebGPUUniform final : public FRHIUniformBuffer
     TArray<uint8> Bytes;
     TMap<uint32, FConstantSnapshot> ConstantBuffers;
     bool SingleFrame = false;
+    uint64 ContentsVersion = 1;
     explicit FWebGPUUniform(const FRHIUniformBufferLayout *Layout) : FRHIUniformBuffer(Layout)
     {
     }
@@ -321,6 +335,7 @@ class FWebGPUUniform final : public FRHIUniformBuffer
     ~FWebGPUUniform() override { ReleaseConstants(); }
     void SetContents(TArray<uint8> InBytes, TArray<TRefCountPtr<FRHIResource>> InResources)
     {
+        if (Bytes != InBytes || ResourceTable != InResources) ++ContentsVersion;
         // Encoded draws retain the previous immutable GPU snapshot when constants change.
         if (Bytes != InBytes)
             ReleaseConstants();
@@ -344,6 +359,8 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
     WGPURenderPipeline Handle = nullptr;
     TArray<WGPUBindGroupLayout> GroupLayouts;
     TSet<uint64> DynamicBindings;
+    uint32 PreviousGroupsFrame = MAX_uint32;
+    TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     FGraphicsPipelineStateInitializer Initializer;
     explicit FWebGPUGraphicsPipeline(const FGraphicsPipelineStateInitializer &In) : Initializer(In)
     {
@@ -370,6 +387,8 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     WGPUComputePipeline Handle;
     TArray<WGPUBindGroupLayout> GroupLayouts;
     TSet<uint64> DynamicBindings;
+    uint32 PreviousGroupsFrame = MAX_uint32;
+    TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     FWebGPUComputePipeline(FRHIComputeShader *Shader, WGPUComputePipeline In)
         : FRHIComputePipelineState(Shader), Handle(In)
     {
@@ -449,18 +468,39 @@ class FWebGPUFence final : public FRHIGPUFence
 
 class FWebGPUStagingBuffer final : public FRHIStagingBuffer
 {
+    mutable FCriticalSection StateCS;
+    FWebGPUReadbackRef State, LockedState;
   public:
-    FWebGPUReadbackRef State;
+    void SetState(FWebGPUReadbackRef InState)
+    {
+        FScopeLock Lock(&StateCS);
+        check(!bIsLocked);
+        State = MoveTemp(InState);
+    }
     void* Lock(uint32 Offset, uint32 Size) override
     {
-        if (!State || !State->Ready.load())
+        FScopeLock Guard(&StateCS);
+        if (!State || !State->Ready.load(std::memory_order_acquire))
             return nullptr;
         check(!bIsLocked && uint64(Offset) + Size <= uint64(State->Bytes.Num()));
+        // Publish immutable CPU bytes through Ready and retain them through Unlock.
+        // No WebGPU object access, owner proxy or RHI execution lock is needed.
+        LockedState = State;
         bIsLocked = true;
-        return State->Bytes.GetData() + Offset;
+        return LockedState->Bytes.GetData() + Offset;
     }
-    void Unlock() override { check(bIsLocked); bIsLocked = false; }
-    uint64 GetGPUSizeBytes() const override { return State ? State->Size : 0; }
+    void Unlock() override
+    {
+        FScopeLock Guard(&StateCS);
+        check(bIsLocked);
+        bIsLocked = false;
+        LockedState.Reset();
+    }
+    uint64 GetGPUSizeBytes() const override
+    {
+        FScopeLock Guard(&StateCS);
+        return State ? State->Size : 0;
+    }
 };
 
 class FWebGPUCommandList final : public IRHIPlatformCommandList
@@ -500,6 +540,11 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;
     uint32 UniformUploads = 0;
     uint32 BindGroupCacheHits = 0, BindGroupCacheEntries = 0;
+    uint32 BindGroupFastHits = 0;
+    TArray<TArray<WGPUBindGroupEntry>> BindingScratchGroups;
+    TArray<TArray<TPair<uint32, uint32>>> BindingScratchDynamicOffsets;
+    uint64 BindingStateSerial = 1;
+    uint32 BindingEntriesPrepared = 0, BindingEntriesReused = 0, BindingEntriesValidated = 0;
     TMap<uint32, TArray<TUniquePtr<FWebGPUBindGroupCacheEntry>>> BindGroupCache;
     WGPUBuffer FrameUniformBuffer = nullptr;
     uint64 FrameUniformOffset = 0;
@@ -600,7 +645,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter);
     void Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8>, TConstArrayView<FRHIShaderParameter>,
                     TConstArrayView<FRHIShaderParameterResource>, TConstArrayView<FRHIShaderParameterResource>);
-    TArray<FWebGPUResolvedGroup> CreateGroups(WGPURenderPipeline Render, WGPUComputePipeline Compute,
+    FWebGPUResolvedGroups CreateGroups(WGPURenderPipeline Render, WGPUComputePipeline Compute,
                                        TConstArrayView<FWebGPUShaderData *> Shaders);
     TArray<uint8> ReadBuffer(FRHIBuffer *Source, uint64 Bytes);
     TArray<uint8> MapBuffer(WGPUBuffer Buffer, uint64 Bytes);
@@ -687,6 +732,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RHIWriteGPUFence(FRHIGPUFence*) override;
     void* RHILockStagingBuffer(FRHIStagingBuffer*, FRHIGPUFence*, uint32 Offset, uint32 Size) override;
     void RHIUnlockStagingBuffer(FRHIStagingBuffer*) override;
+    void* LockStagingBuffer_RenderThread(FRHICommandListImmediate&, FRHIStagingBuffer*, FRHIGPUFence*, uint32, uint32) override;
+    void UnlockStagingBuffer_RenderThread(FRHICommandListImmediate&, FRHIStagingBuffer*) override;
     void RHICreateTransition(FRHITransition *, const FRHITransitionCreateInfo &) override;
     void RHIReleaseTransition(FRHITransition *) override;
     void RHIBeginTransitions(TArrayView<const FRHITransition *>) override;
@@ -701,6 +748,14 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
   private:
     TArray<TRefCountPtr<FWebGPUBuffer>> VertexBuffers;
     TArray<uint32> VertexOffsets;
+    // Like the native RHI state caches, remember what this encoder already has.
+    // UE's mesh-command cache updates logical state; only changes reach WebGPU.
+    TArray<TRefCountPtr<FWebGPUBuffer>> BoundVertexBuffers;
+    TArray<uint32> BoundVertexOffsets;
+    TRefCountPtr<FWebGPUBuffer> BoundIndexBuffer;
+    TArray<FWebGPUResolvedGroup> BoundGraphicsGroups;
+    void ResetEncoderBindings();
+    void SetIndexBinding(FWebGPUBuffer*);
     void SetDrawBindings();
     WGPUComputePassEncoder BeginComputePass();
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);

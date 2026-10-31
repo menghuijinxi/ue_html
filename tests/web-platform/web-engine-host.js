@@ -49,6 +49,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     } else if (message.type === 'input-ack') {
       inputInFlight = false;
       flushInput();
+    } else if (message.type === 'trace') {
+      globalThis.__webTraceBlob = new Blob([message.bytes], {type: 'application/octet-stream'});
     }
   };
   globalThis.__webEngineRPC = (name, ...args) => new Promise((resolve, reject) => {
@@ -61,6 +63,66 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     pending.set(id, {resolve, reject, timer});
     worker.postMessage({type: 'rpc', id, name, args});
   });
+  // Diagnostic target only. TraceLog supplies the original .utrace stream;
+  // this bridge transfers the bytes and offers a normal browser download.
+  let traceBusy = false;
+  globalThis.__webCaptureUETrace = async (seconds = 8) => {
+    if (!assets.trace) throw Error('This package does not include UE Trace');
+    if (traceBusy) throw Error('A UE trace capture is already running');
+    if (!Number.isFinite(seconds) || seconds < 1 || seconds > 30) throw Error('Trace duration must be 1–30 seconds');
+    traceBusy = true;
+    let started = false;
+    try {
+    globalThis.__webTraceBlob = null;
+    if (await globalThis.__webEngineRPC('WebTraceStart') !== 1) throw Error('UE Trace could not start');
+    started = true;
+    await new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    if (await globalThis.__webEngineRPC('WebTraceStop') !== 1) throw Error('UE Trace could not stop');
+    started = false;
+    for (let attempt = 0; attempt < 100; ++attempt) {
+      const size = await globalThis.__webEngineRPC('WebTraceExport');
+      if (size < 0) throw Error('UE Trace export failed: ' + size);
+      if (size > 0) {
+        for (let delivery = 0; delivery < 100 && !globalThis.__webTraceBlob; ++delivery)
+          await new Promise(resolve => setTimeout(resolve, 10));
+        if (globalThis.__webTraceBlob?.size !== size) throw Error('UE Trace transfer is incomplete');
+        return size;
+      }
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    throw Error('UE Trace writer did not close');
+    } finally {
+      if (started) await globalThis.__webEngineRPC('WebTraceStop').catch(error => record(String(error)));
+      traceBusy = false;
+    }
+  };
+  globalThis.__webDownloadUETrace = () => {
+    if (!globalThis.__webTraceBlob) throw Error('Capture a UE trace first');
+    const url = URL.createObjectURL(globalThis.__webTraceBlob), link = document.createElement('a');
+    link.href = url; link.download = 'ue-web-' + new Date().toISOString().replaceAll(':', '-') + '.utrace';
+    link.click(); setTimeout(() => URL.revokeObjectURL(url), 10000);
+  };
+  if (assets.trace) {
+    const button = document.createElement('button');
+    button.id = 'capture-ue-trace'; button.type = 'button';
+    button.textContent = '录制 8 秒性能';
+    Object.assign(button.style, {position: 'fixed', right: '12px', top: '12px', zIndex: 4,
+      padding: '8px 12px', color: '#fff', background: '#253b35', border: '1px solid #69d5ae',
+      borderRadius: '4px', cursor: 'pointer'});
+    // The window listens for mouseup to release canvas drags. A control click
+    // must not inject its screen coordinates into the player's mouse input.
+    button.addEventListener('mouseup', event => event.stopPropagation());
+    button.onclick = async () => {
+      button.disabled = true; button.textContent = '正在录制…';
+      try {
+        await globalThis.__webCaptureUETrace(8);
+        globalThis.__webDownloadUETrace();
+        button.textContent = '已下载 · 再录制 8 秒';
+      } catch (error) { button.textContent = '录制失败 · 重试'; record(String(error)); }
+      finally { button.disabled = false; canvas.focus({preventScroll: true}); }
+    };
+    document.body.append(button);
+  }
   const browser = () => {
     const rect = canvas.getBoundingClientRect();
     return {width: rect.width, height: rect.height, dpr: devicePixelRatio};

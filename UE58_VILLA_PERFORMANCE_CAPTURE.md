@@ -1,5 +1,7 @@
 # TriplexHouseVilla 默认视角性能捕获（2026-10-31）
 
+后续已完成 RHI 适配优化及 UE 原生 Trace 接入，最新实现、对照测试和 Insights 验证见 [UE58_VILLA_RHI_REUSE_INSIGHTS.md](UE58_VILLA_RHI_REUSE_INSIGHTS.md)。下文保留本轮优化前的诊断结果。
+
 本轮完成诊断工具和实测，供下一步决定优化方向。没有修改项目、画质开关、正式运行时或引擎代码，也没有逐提交进行 CPU 优化 A/B。原有 Game / Draw / RHI 的独立 Worker 已在调用栈中确认，但存在明显的串行等待和 RHI 提交开销。
 
 ## 直接查看

@@ -3,6 +3,7 @@ param(
     [ValidateRange(1, 16)][int]$MaxParallelActions = 1,
     [switch]$SkipHostPreparation,
     [switch]$Threads,
+    [switch]$Trace,
     [switch]$StandaloneCompiles
 )
 $ErrorActionPreference = 'Stop'
@@ -11,8 +12,10 @@ $taskHost = Join-Path $taskRoot '.tools/ue58-web-build-host/Engine'
 $taskUbt = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll'
 $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/dotnet.exe'
 if (-not (Test-Path -LiteralPath $taskUbt)) { throw 'Run build-web-ubt.ps1 to prepare the isolated Web UBT first.' }
-$taskTarget = if ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
-$taskVariant = if ($Threads) { '-thread' } else { '' }
+if ($Trace -and -not $Threads) { throw 'The Trace diagnostic target requires -Threads.' }
+$taskTarget = if ($Trace) { 'UEWebEngineThreadsTrace' } elseif ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
+$taskVariant = if ($Trace) { '-thread-trace' } elseif ($Threads) { '-thread' } else { '' }
+$taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 & (Join-Path $PSScriptRoot 'build-web-blake3.ps1') -Threads:$Threads
 & (Join-Path $PSScriptRoot 'build-web-libpng.ps1') -Threads:$Threads
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
@@ -48,6 +51,7 @@ $taskReport = [ordered]@{
     architecture = 'wasm64'
     target = $taskTarget
     threads = [bool]$Threads
+    trace = [bool]$Trace
     standaloneCompiles = [bool]$StandaloneCompiles
     maxParallelActions = $MaxParallelActions
     pass = $false
@@ -168,15 +172,21 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/Async/TaskGraph.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/Async/TaskGraph.cpp'
+    foreach ($taskTraceSource in @('Public/Trace/Detail/Atomic.h', 'Private/Trace/Detail/Web/WebTrace.cpp')) {
+        $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/TraceLog/$taskTraceSource"
+        $taskFiles += Join-Path $taskHost "Source/Runtime/TraceLog/$taskTraceSource"
+    }
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Experimental/Chaos/Private/ChaosVisualDebugger/ChaosVisualDebuggerTrace.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Experimental/Chaos/Private/ChaosVisualDebugger/ChaosVisualDebuggerTrace.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
     foreach ($taskDepthOverlay in @('GenerateConservativeDepthBuffer.cpp', 'GenerateConservativeDepthBuffer.h', 'VolumetricFog.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskDepthOverlay"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskDepthOverlay"
     }
-    $taskBlakeBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "results/web-blake3$taskVariant-build-results.json") | ConvertFrom-Json
+    $taskBlakeBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "results/web-blake3$taskLibraryVariant-build-results.json") | ConvertFrom-Json
     if (-not $taskBlakeBuild.pass) { throw 'Portable BLAKE3 archive must build successfully' }
     $taskFiles += @($taskBlakeBuild.sourceFiles | ForEach-Object { $_.file })
-    $taskPngBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "results/web-libpng$taskVariant-build-results.json") | ConvertFrom-Json
+    $taskPngBuild = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot "results/web-libpng$taskLibraryVariant-build-results.json") | ConvertFrom-Json
     if (-not $taskPngBuild.pass) { throw 'Portable libPNG archive must build successfully' }
     $taskFiles += @($taskPngBuild.sourceFiles | ForEach-Object { $_.file })
     foreach ($taskOnlineOverlay in @('ICMP/Private/UDPPing.cpp', 'BuildPatchServices/Private/Installer/Verifier.cpp')) {
