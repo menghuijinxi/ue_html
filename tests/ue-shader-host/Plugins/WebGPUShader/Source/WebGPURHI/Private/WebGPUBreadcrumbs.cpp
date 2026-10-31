@@ -8,7 +8,7 @@ void FWebGPUDynamicRHI::RHIBeginBreadcrumbGPU(FRHIBreadcrumbNode *Node)
     check(Node);
     BreadcrumbStack.Add(Node);
     ++BreadcrumbsBegun;
-    if (ShouldEmitBreadcrumbs())
+    if (EmitDebugMarkers && ShouldEmitBreadcrumbs())
     {
         if (GlobalProbeMode && !ContextOpen)
             RHIGetCommandContext(ERHIPipeline::Graphics);

@@ -1,5 +1,7 @@
 # Web 桌面路径性能记录
 
+2026-10-31 按别墅原项目设置进行的 CPU 调查、同机前后对照及最新验证，见 [别墅 CPU 性能记录](UE58_VILLA_CPU_PERFORMANCE.md)。以下保留此前设备与运行配置下的历史结果，两轮绝对帧率不宜直接比较。
+
 日期：2026-10-30。场景：BigTriplexHouseVilla。设备：i9-14900KF、RTX 3070 8 GB。
 
 参考引擎本地提交：`1d8eba0ad`。最终线程 WASM SHA-256：`10e926f3118861dc1eddef5bb1751d3fc2f89b62cbe72e223edc63857da1ca3b`；场景资源包仍为 `990dd62f3f588a0880b40e6f2b761601c60bafce95c9732ebd08e3064de5fc46`。

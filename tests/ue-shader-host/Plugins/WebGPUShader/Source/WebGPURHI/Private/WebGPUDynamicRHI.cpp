@@ -51,6 +51,7 @@ WGPULimits RenderingLimits(WGPUAdapter Adapter)
     Required.maxStorageBuffersPerShaderStage = FMath::Min(16u, Supported.maxStorageBuffersPerShaderStage);
     // Desktop Bloom can emit 17 interpolants; the default device limit is only 16.
     Required.maxInterStageShaderVariables = FMath::Min(28u, Supported.maxInterStageShaderVariables);
+    Required.maxDynamicUniformBuffersPerPipelineLayout = Supported.maxDynamicUniformBuffersPerPipelineLayout;
     return Required;
 }
 FString String(WGPUStringView Value)
@@ -429,6 +430,7 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     StartupProbeMode = true;
     GlobalProbeMode = true;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
+    EmitDebugMarkers = EM_ASM_INT({ return globalThis.__webStartupDiagnostics?.mode !== 'normal'; }) != 0;
     const bool Mobile = FParse::Param(FCommandLine::Get(), TEXT("es31"));
     GMaxRHIFeatureLevel = Mobile ? ERHIFeatureLevel::ES3_1 : ERHIFeatureLevel::SM5;
     GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(
@@ -799,9 +801,15 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 {
     RequireOwner();
     check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame);
-    // Keep snapshots only within this frame so streaming textures and transient uniforms can retire.
-    BindGroupCache.Empty();
-    BindGroupCacheEntries = 0;
+    // Reuse unchanged material bindings across frames. Drop every group not used this frame:
+    // obsolete streaming views and previous uniform pages survive at most one additional frame.
+    for (auto Bucket = BindGroupCache.CreateIterator(); Bucket; ++Bucket)
+    {
+        BindGroupCacheEntries -= Bucket.Value().RemoveAll([this](const auto& Entry) {
+            return Entry->LastUsedFrame != EndFrames;
+        });
+        if (Bucket.Value().IsEmpty()) Bucket.RemoveCurrent();
+    }
     ReleaseFrameBindings();
     ReleaseBindings();
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
@@ -830,7 +838,10 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             globalThis.__webOcclusionRHI.pending = $1;
             globalThis.__webOcclusionRHI.zero = $2;
             globalThis.__webOcclusionRHI.bindGroupCacheHits = $3;
-        }, OcclusionResultsReady, OcclusionResultsPending, OcclusionResultsZero, BindGroupCacheHits);
+            globalThis.__webOcclusionRHI.bindGroupsCreated = $4;
+            globalThis.__webOcclusionRHI.cachedBindGroups = $5;
+        }, OcclusionResultsReady, OcclusionResultsPending, OcclusionResultsZero, BindGroupCacheHits,
+            BoundGroups, BindGroupCacheEntries);
 #endif
 }
 FWebGPUDynamicRHI::~FWebGPUDynamicRHI()
@@ -964,6 +975,15 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         Entry.Index = Binding->GetIntegerField(TEXT("binding"));
         Entry.PaddedSize = Entry.Descriptor == 6 || Entry.Name == TEXT("$Globals") ?
             Binding->GetIntegerField(TEXT("paddedSize")) : 0;
+        if (Entry.Descriptor == 2)
+        {
+            double Dimension;
+            Entry.TextureContractValid = Binding->TryGetNumberField(TEXT("textureDimension"), Dimension) &&
+                Binding->TryGetBoolField(TEXT("textureArrayed"), Entry.TextureArrayed) &&
+                Binding->TryGetBoolField(TEXT("textureMultisampled"), Entry.TextureMultisampled) &&
+                Binding->TryGetStringField(TEXT("textureSampleType"), Entry.TextureSampleType);
+            if (Entry.TextureContractValid) Entry.TextureDimension = Dimension;
+        }
         Data.Bindings.Add(MoveTemp(Entry));
         if (Data.Bindings.Last().Name == TEXT("$Globals"))
             Data.Globals.SetNumZeroed(Data.Bindings.Last().PaddedSize);
@@ -1643,12 +1663,22 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
 bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FJsonObject &Binding, ERHIAccess Access,
                                                FString &Error) const
 {
-    FWebGPUTexture *Texture;
+    FWebGPUShaderBinding Reflected;
+    double Dimension;
+    Reflected.TextureContractValid = Binding.TryGetNumberField(TEXT("textureDimension"), Dimension) &&
+        Binding.TryGetBoolField(TEXT("textureArrayed"), Reflected.TextureArrayed) &&
+        Binding.TryGetBoolField(TEXT("textureMultisampled"), Reflected.TextureMultisampled) &&
+        Binding.TryGetStringField(TEXT("textureSampleType"), Reflected.TextureSampleType);
+    if (Reflected.TextureContractValid) Reflected.TextureDimension = Dimension;
+    FWebGPUTexture* Texture;
     WGPUTextureView View;
+    return ValidateTextureBinding(Resource, Reflected, Access, Error, Texture, View);
+}
+bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FWebGPUShaderBinding &Binding,
+    ERHIAccess Access, FString &Error, FWebGPUTexture *&Texture, WGPUTextureView &View) const
+{
     if (!ResolveSampledTexture(Resource, Texture, View, Access, Error))
         return false;
-    double Dimension;
-    bool Arrayed, Multisampled;
     const auto ViewDimension = Resource->GetType() == RRT_ShaderResourceView ?
         static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Texture.SRV.Dimension :
         Texture->GetDesc().Dimension == ETextureDimension::TextureCubeArray ? FRHIViewDesc::EDimension::TextureCubeArray :
@@ -1661,19 +1691,17 @@ bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FJs
     const uint32 Expected = ViewDimension == FRHIViewDesc::EDimension::Texture3D ? 2 :
         ViewDimension == FRHIViewDesc::EDimension::TextureCube ||
         ViewDimension == FRHIViewDesc::EDimension::TextureCubeArray ? 3 : 1;
-    if (!Binding.TryGetNumberField(TEXT("textureDimension"), Dimension) || Dimension != Expected ||
-        !Binding.TryGetBoolField(TEXT("textureArrayed"), Arrayed) || Arrayed != ArrayView ||
-        !Binding.TryGetBoolField(TEXT("textureMultisampled"), Multisampled) || Multisampled)
+    if (!Binding.TextureContractValid || Binding.TextureDimension != Expected ||
+        Binding.TextureArrayed != ArrayView || Binding.TextureMultisampled)
     {
         Error = TEXT("Sampled texture and reflected shader dimensions do not match");
         return false;
     }
-    FString SampleType;
     const bool Stencil = Resource->GetType() == RRT_ShaderResourceView &&
         static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Texture.SRV.GetViewInfo(Texture).Plane ==
             ERHITexturePlane::Stencil;
     const TCHAR *ExpectedSampleType = Stencil || IsUnsignedTextureFormat(Texture->GetFormat()) ? TEXT("uint") : TEXT("float");
-    if (!Binding.TryGetStringField(TEXT("textureSampleType"), SampleType) || SampleType != ExpectedSampleType)
+    if (Binding.TextureSampleType != ExpectedSampleType)
     {
         Error = TEXT("Sampled texture format and reflected shader scalar type do not match");
         return false;
@@ -2285,10 +2313,12 @@ void FWebGPUDynamicRHI::RHISetShaderParameters(FRHIComputeShader *Shader, TConst
 {
     Parameters(ShaderData(Shader), Bytes, Values, Resources, Bindless);
 }
-TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render, WGPUComputePipeline Compute,
+TArray<FWebGPUResolvedGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render, WGPUComputePipeline Compute,
                                                       TConstArrayView<FWebGPUShaderData *> Shaders)
 {
     TMap<uint32, TArray<WGPUBindGroupEntry>> Groups;
+    TMap<uint32, TArray<TPair<uint32, uint32>>> DynamicOffsets;
+    const auto& DynamicBindings = Render ? GraphicsPipeline->DynamicBindings : ComputePipeline->DynamicBindings;
     uint32 Maximum = 0;
     bool HasBindings = false;
     for (FWebGPUShaderData *Shader : Shaders)
@@ -2350,9 +2380,8 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                                               : Shader->Frequency == SF_Vertex
                                                   ? ERHIAccess::SRVGraphicsNonPixel
                                                   : ERHIAccess::SRVGraphicsPixel;
-                    checkf(ValidateTextureBinding(Resource, *Binding, Access, Error), TEXT("%s"), *Error);
-                    checkf(ResolveSampledTexture(Resource, Texture, Entry.textureView, Access, Error), TEXT("%s"),
-                           *Error);
+                    checkf(ValidateTextureBinding(Resource, Reflected, Access, Error, Texture, Entry.textureView),
+                        TEXT("%s"), *Error);
                     ++AccessChecks; // ResolveSampledTexture validated the exact SRV mip and face range.
                 }
                 else if (Descriptor == 0)
@@ -2410,14 +2439,26 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 else
                     Unsupported(TEXT("Shader descriptor type"));
             }
+            if (DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding))
+            {
+                check(Entry.buffer && Entry.offset <= MAX_uint32 && Entry.offset % Limits.minUniformBufferOffsetAlignment == 0);
+                DynamicOffsets.FindOrAdd(Group).Emplace(Entry.binding, uint32(Entry.offset));
+                Entry.offset = 0;
+            }
             check(!Groups.FindOrAdd(Group).ContainsByPredicate(
                 [&](const auto &Other) { return Other.binding == Entry.binding; }));
             Groups.FindOrAdd(Group).Add(Entry);
         }
     }
-    TArray<WGPUBindGroup> Result;
+    TArray<FWebGPUResolvedGroup> Result;
     for (uint32 Group = 0; HasBindings && Group <= Maximum; ++Group)
     {
+        auto& Resolved = Result.AddDefaulted_GetRef();
+        if (auto* Offsets = DynamicOffsets.Find(Group))
+        {
+            Offsets->Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
+            for (const auto& Offset : *Offsets) Resolved.DynamicOffsets.Add(Offset.Value);
+        }
         const auto* Entries = Groups.Find(Group);
         uint32 Hash = HashCombineFast(GetTypeHash(reinterpret_cast<UPTRINT>(Render)),
             GetTypeHash(reinterpret_cast<UPTRINT>(Compute)));
@@ -2451,18 +2492,23 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             for (const auto& Cached : *Bucket)
                 if (Matches(*Cached))
                 {
+                    Cached->LastUsedFrame = EndFrames;
                     CachedHandle = Cached->Handle;
                     break;
                 }
         if (CachedHandle)
         {
             wgpuBindGroupAddRef(CachedHandle);
-            Result.Add(CachedHandle);
+            Resolved.Handle = CachedHandle;
             ++BindGroupCacheHits;
             continue;
         }
-        WGPUBindGroupLayout Layout = Render ? wgpuRenderPipelineGetBindGroupLayout(Render, Group)
-                                            : wgpuComputePipelineGetBindGroupLayout(Compute, Group);
+        auto& Layouts = Render ? GraphicsPipeline->GroupLayouts : ComputePipeline->GroupLayouts;
+        check(Render ? GraphicsPipeline->Handle == Render : ComputePipeline->Handle == Compute);
+        if (!Layouts.IsValidIndex(Group)) Layouts.SetNumZeroed(Group + 1);
+        auto& Layout = Layouts[Group];
+        if (!Layout) Layout = Render ? wgpuRenderPipelineGetBindGroupLayout(Render, Group)
+                                    : wgpuComputePipelineGetBindGroupLayout(Compute, Group);
         WGPUBindGroupDescriptor Desc = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
         Desc.layout = Layout;
         if (Entries)
@@ -2470,8 +2516,7 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             Desc.entryCount = Entries->Num();
             Desc.entries = Entries->GetData();
         }
-        Result.Add(wgpuDeviceCreateBindGroup(Device, &Desc));
-        wgpuBindGroupLayoutRelease(Layout);
+        Resolved.Handle = wgpuDeviceCreateBindGroup(Device, &Desc);
         ++BoundGroups;
         if (BindGroupCacheEntries < 8192)
         {
@@ -2479,7 +2524,8 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             Cached->Render = Render;
             Cached->Compute = Compute;
             Cached->Group = Group;
-            Cached->Handle = Result.Last();
+            Cached->LastUsedFrame = EndFrames;
+            Cached->Handle = Resolved.Handle;
             wgpuBindGroupAddRef(Cached->Handle);
             if (Render) wgpuRenderPipelineAddRef(Render);
             if (Compute) wgpuComputePipelineAddRef(Compute);
@@ -2498,8 +2544,16 @@ TArray<WGPUBindGroup> FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     return Result;
 }
 static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
-    TConstArrayView<const FWebGPUShaderData*> Shaders)
+    TConstArrayView<const FWebGPUShaderData*> Shaders, uint32 DynamicLimit, TSet<uint64>& DynamicBindings)
 {
+    // Dynamic offsets remove per-draw offsets from the immutable bind-group key. Respect the
+    // actual adapter limit and prioritize globals/primitive constants; remaining uniforms stay static.
+    for (bool Priority : {true, false})
+        for (const auto* Shader : Shaders)
+            for (const auto& Binding : Shader->Bindings)
+                if (Binding.Descriptor == 6 && DynamicBindings.Num() < int32(DynamicLimit) &&
+                    (Binding.Name == TEXT("$Globals") || Binding.Name == TEXT("Primitive")) == Priority)
+                    DynamicBindings.Add((uint64(Binding.Group) << 32) | Binding.Index);
     TMap<uint32, TArray<WGPUBindGroupLayoutEntry>> Groups;
     uint32 GroupCount = 0;
     for (const auto* Shader : Shaders)
@@ -2582,6 +2636,7 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         case 6:
             Entry.buffer.type = WGPUBufferBindingType_Uniform;
             Entry.buffer.minBindingSize = Binding->GetIntegerField(TEXT("paddedSize"));
+            Entry.buffer.hasDynamicOffset = DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding);
             break;
         case 7:
             Entry.buffer.type = Binding->GetBoolField(TEXT("readOnlyStorage")) ?
@@ -2630,7 +2685,8 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(
     TArray<const FWebGPUShaderData*> ShaderStages{&VS};
     if (Pixel)
         ShaderStages.Add(&Pixel->Data);
-    Desc.layout = CreateWebPipelineLayout(Device, ShaderStages);
+    Desc.layout = CreateWebPipelineLayout(Device, ShaderStages, Limits.maxDynamicUniformBuffersPerPipelineLayout,
+        Result->DynamicBindings);
     Desc.vertex.module = VS.Module;
     const FTCHARToUTF8 VertexEntry(*VS.Entry), PixelEntry(Pixel ? *Pixel->Data.Entry : TEXT(""));
     const FTCHARToUTF8 PipelineLabel(*(VS.Entry + TEXT(" / ") + (Pixel ? Pixel->Data.Entry : TEXT("depth-only"))));
@@ -2782,14 +2838,18 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     const auto &Shader = static_cast<FWebGPUComputeShader *>(In.ComputeShader)->Data;
     WGPUComputePipelineDescriptor Desc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
     const FWebGPUShaderData* ShaderStages[] = {&Shader};
-    Desc.layout = CreateWebPipelineLayout(Device, ShaderStages);
+    TSet<uint64> DynamicBindings;
+    Desc.layout = CreateWebPipelineLayout(Device, ShaderStages, Limits.maxDynamicUniformBuffersPerPipelineLayout,
+        DynamicBindings);
     Desc.compute.module = Shader.Module;
     const FTCHARToUTF8 Entry(*Shader.Entry);
     Desc.compute.entryPoint = Text(Entry.Get());
     ++ComputePipelinesCreated;
     auto Handle = wgpuDeviceCreateComputePipeline(Device, &Desc);
     wgpuPipelineLayoutRelease(Desc.layout);
-    return new FWebGPUComputePipeline(In.ComputeShader, Handle);
+    auto* Result = new FWebGPUComputePipeline(In.ComputeShader, Handle);
+    Result->DynamicBindings = MoveTemp(DynamicBindings);
+    return Result;
 }
 IRHICommandContext *FWebGPUDynamicRHI::RHIGetDefaultContext()
 {
@@ -3142,8 +3202,9 @@ void FWebGPUDynamicRHI::SetDrawBindings()
     const auto Groups = CreateGroups(GraphicsPipeline->Handle, nullptr, MakeArrayView(Shaders, Pixel ? 2 : 1));
     for (int32 Index = 0; Index < Groups.Num(); ++Index)
     {
-        wgpuRenderPassEncoderSetBindGroup(Pass, Index, Groups[Index], 0, nullptr);
-        wgpuBindGroupRelease(Groups[Index]);
+        const auto& Group = Groups[Index];
+        wgpuRenderPassEncoderSetBindGroup(Pass, Index, Group.Handle, Group.DynamicOffsets.Num(), Group.DynamicOffsets.GetData());
+        wgpuBindGroupRelease(Group.Handle);
     }
 }
 void FWebGPUDynamicRHI::RHIDrawPrimitive(uint32 Base, uint32 Primitives, uint32 Instances)
@@ -3209,8 +3270,9 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
     const auto Groups = CreateGroups(nullptr, ComputePipeline->Handle, Shaders);
     for (int32 Index = 0; Index < Groups.Num(); ++Index)
     {
-        wgpuComputePassEncoderSetBindGroup(Compute, Index, Groups[Index], 0, nullptr);
-        wgpuBindGroupRelease(Groups[Index]);
+        const auto& Group = Groups[Index];
+        wgpuComputePassEncoderSetBindGroup(Compute, Index, Group.Handle, Group.DynamicOffsets.Num(), Group.DynamicOffsets.GetData());
+        wgpuBindGroupRelease(Group.Handle);
     }
     return Compute;
 }

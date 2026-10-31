@@ -20,6 +20,9 @@ struct FWebGPUShaderBinding
     const FJsonObject* Metadata = nullptr;
     FString Name;
     uint32 Descriptor = 0, Group = 0, Index = 0, PaddedSize = 0;
+    double TextureDimension = -1;
+    bool TextureArrayed = false, TextureMultisampled = false, TextureContractValid = false;
+    FString TextureSampleType;
 };
 
 struct FWebGPUBindGroupCacheEntry
@@ -27,6 +30,7 @@ struct FWebGPUBindGroupCacheEntry
     WGPURenderPipeline Render = nullptr;
     WGPUComputePipeline Compute = nullptr;
     uint32 Group = 0;
+    uint32 LastUsedFrame = 0;
     WGPUBindGroup Handle = nullptr;
     TArray<WGPUBindGroupEntry> Entries;
     ~FWebGPUBindGroupCacheEntry()
@@ -41,6 +45,12 @@ struct FWebGPUBindGroupCacheEntry
         if (Render) wgpuRenderPipelineRelease(Render);
         if (Compute) wgpuComputePipelineRelease(Compute);
     }
+};
+
+struct FWebGPUResolvedGroup
+{
+    WGPUBindGroup Handle = nullptr;
+    TArray<uint32, TInlineAllocator<12>> DynamicOffsets;
 };
 
 struct FWebGPUShaderData
@@ -331,12 +341,15 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
 {
   public:
     WGPURenderPipeline Handle = nullptr;
+    TArray<WGPUBindGroupLayout> GroupLayouts;
+    TSet<uint64> DynamicBindings;
     FGraphicsPipelineStateInitializer Initializer;
     explicit FWebGPUGraphicsPipeline(const FGraphicsPipelineStateInitializer &In) : Initializer(In)
     {
     }
     ~FWebGPUGraphicsPipeline() override
     {
+        for (auto Layout : GroupLayouts) if (Layout) wgpuBindGroupLayoutRelease(Layout);
         if (Handle)
             wgpuRenderPipelineRelease(Handle);
     }
@@ -354,12 +367,15 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
 {
   public:
     WGPUComputePipeline Handle;
+    TArray<WGPUBindGroupLayout> GroupLayouts;
+    TSet<uint64> DynamicBindings;
     FWebGPUComputePipeline(FRHIComputeShader *Shader, WGPUComputePipeline In)
         : FRHIComputePipelineState(Shader), Handle(In)
     {
     }
     ~FWebGPUComputePipeline() override
     {
+        for (auto Layout : GroupLayouts) if (Layout) wgpuBindGroupLayoutRelease(Layout);
         wgpuComputePipelineRelease(Handle);
     }
 };
@@ -494,6 +510,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool PassDepthReadOnly = false;
     bool GlobalProbeMode = false;
     bool StartupProbeMode = false;
+    bool EmitDebugMarkers = true;
     FWebGPUOcclusionRef OcclusionBatch;
     TRefCountPtr<FWebGPURenderQuery> ActiveOcclusionQuery;
     uint32 OcclusionResultsReady = 0, OcclusionResultsPending = 0, OcclusionResultsZero = 0;
@@ -525,6 +542,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool ValidateTextureInitialization(const FRHITextureCreateDesc &Desc, FString &Error) const;
     bool ValidateTextureBinding(FRHIResource *Resource, const FJsonObject &Binding, ERHIAccess Access,
                                 FString &Error) const;
+    bool ValidateTextureBinding(FRHIResource *Resource, const FWebGPUShaderBinding &Binding, ERHIAccess Access,
+                                FString &Error, FWebGPUTexture *&Texture, WGPUTextureView &View) const;
     bool ValidateBufferSRV(FRHIViewableResource *Resource, const FRHIViewDesc &Desc, FString &Error) const;
     bool ValidateStorageSRVBinding(FRHIResource *Resource, const FJsonObject &Binding, ERHIAccess Access,
                                    FString &Error) const;
@@ -567,7 +586,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter);
     void Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8>, TConstArrayView<FRHIShaderParameter>,
                     TConstArrayView<FRHIShaderParameterResource>, TConstArrayView<FRHIShaderParameterResource>);
-    TArray<WGPUBindGroup> CreateGroups(WGPURenderPipeline Render, WGPUComputePipeline Compute,
+    TArray<FWebGPUResolvedGroup> CreateGroups(WGPURenderPipeline Render, WGPUComputePipeline Compute,
                                        TConstArrayView<FWebGPUShaderData *> Shaders);
     TArray<uint8> ReadBuffer(FRHIBuffer *Source, uint64 Bytes);
     TArray<uint8> MapBuffer(WGPUBuffer Buffer, uint64 Bytes);

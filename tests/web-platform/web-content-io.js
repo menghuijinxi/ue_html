@@ -5,6 +5,7 @@ class WebLocalContentIO {
     this.pending = new Map();
     this.requests = new Map();
     this.files = new Map();
+    this.bulkNodes = [];
     this.sequence = 0;
     this.stats = {};
     this.worker.onmessage = event => {
@@ -58,6 +59,8 @@ class WebLocalContentIO {
         this.files.set(file.path, file);
         filesystem.writeFile(file.path, new Uint8Array());
         const node = filesystem.lookupPath(file.path).node;
+        // Keep the node for diagnostics; resolving thousands of paths every 100 ms stalls the engine Worker.
+        this.bulkNodes.push(node);
         node.usedBytes = file.size;
         node.stream_ops = {...node.stream_ops, read: () => {
           throw new Error(`Synchronous read of streamed bulk data: ${file.path}`);

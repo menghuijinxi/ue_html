@@ -15,6 +15,11 @@ const loaderOnly = process.argv.includes('--loader-only');
 const checkVisibility = process.argv.includes('--visibility');
 const visibilityOnly = process.argv.includes('--visibility-only');
 const phases = option('phases')?.split(',');
+const projectSettings = process.argv.includes('--project-settings');
+assert(!projectSettings || !checkVisibility && !visibilityOnly &&
+  !process.argv.includes('--shadow-cache-check') && !option('shadow-cache-mb') &&
+  phases?.every(phase => ['room-on', 'wall-on', 'room-restored'].includes(phase)),
+  'Project settings measurements require explicit camera-only phases');
 assert(/^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(folder));
 const directory = path.join(__dirname, 'results');
 const profile = path.join(__dirname, 'build/browser-profiles',
@@ -174,7 +179,8 @@ async function settle(count = 60) {
 async function measure(label, view, occlusion = 1) {
   if (visibilityOnly || phases && !phases.includes(label)) return;
   assert.equal(await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), view), 1);
-  assert.equal(await page.evaluate(value => __webEngineRPC('WebOcclusionTestMode', value, 2), occlusion), 1);
+  if (!projectSettings)
+    assert.equal(await page.evaluate(value => __webEngineRPC('WebOcclusionTestMode', value, 2), occlusion), 1);
   await settle(80);
   const before = await state();
   const sample = await owner.evaluate(ms => __villaSample(ms), seconds * 1000);
@@ -243,7 +249,8 @@ async function measure(label, view, occlusion = 1) {
       report.pass = true;
       return;
     }
-    assert.equal(await page.evaluate(() => __webEngineRPC('WebLightingQualityTest', -1, 0)), 1);
+    if (projectSettings) report.settingsOverrides = [];
+    if (!projectSettings) assert.equal(await page.evaluate(() => __webEngineRPC('WebLightingQualityTest', -1, 0)), 1);
     if (option('shadow-cache-mb'))
       assert.equal(await page.evaluate(value => __webEngineRPC('WebLightingQualityTest', 12, value),
         Number(option('shadow-cache-mb'))), 1);

@@ -23,7 +23,7 @@ function snapshot() {
   const io = globalThis.__webContentIO;
   state.__webLocalContentStats = {...io?.stats, activeRequests: io?.requests.size,
     bulkFiles: io?.files.size, bulkMemfsBytes: io?.filesystem ?
-      [...io.files.keys()].reduce((total, file) => total + io.filesystem.lookupPath(file).node.contents.byteLength, 0) : 0};
+      io.bulkNodes.reduce((total, node) => total + node.contents.byteLength, 0) : 0};
   if (typeof PThread !== 'undefined') state.__webThreadPool = {
     active: Object.keys(PThread.pthreads).length, available: PThread.unusedWorkers.length
   };
