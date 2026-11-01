@@ -17,7 +17,8 @@ const output = path.join(__dirname, 'results', tag);
 const report = {date:new Date().toISOString(),pass:false,folder,modes,warmup,seconds,errors:[],runs:[],
   sources:[__filename,require.resolve('./web-performance-capture-observer.cjs'),require.resolve('./web-resource-ledger.cjs')].map(audit),qualityOverrides:[],
   experimentalOverrides:{1:{'r.HZBOcclusion':2},2:{'r.InstanceCulling.OcclusionCull':1}},
-  boundary:'One browser, same runtime/Cook/camera/quality, repeated mode order; background game remains running. API instrumentation is separate from FPS samples.'};
+  environmentLabel:option('environment-label')||'unspecified',
+  boundary:'One browser, same runtime/Cook/camera/quality, repeated mode order. Background load is recorded separately; API instrumentation is separate from FPS samples.'};
 let context;
 const log = fs.createWriteStream(output+'.log');
 const save = () => fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));

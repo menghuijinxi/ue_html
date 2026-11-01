@@ -1,5 +1,7 @@
 # WebGPU 并行绘制命令录制
 
+2026-11-01 再次确认游戏关闭后重新测量：四轮 **52.09→50.94 FPS（−2.22%）**。三个任务线程再次确认实际执行，仍无吞吐收益，默认继续关闭。新性能图及全部对照见 [统一复测记录](UE58_WEBGPU_IDLE_RETEST.md)。以下保留原始验证与历史数据。
+
 本轮复用 UE 的 `FParallelMeshDrawCommandPass` / `FDrawVisibleMeshCommandsAnyThreadTask`，让任务线程录制独立的 `FRHICommandList`。任务录制成功，但本关卡四轮对照 **52.85 → 51.83 FPS（−1.94%）**，未获得帧率收益，因此最终保留为默认关闭的实验入口。
 
 最终显式启用页面：[并行录制实验包](http://127.0.0.1:8765/build/villa-parallel-recording-opt-in/index.html)。原始四轮测试使用 `villa-parallel-recording-candidate` 对照上轮资源表版本 `villa-resource-tables-candidate`，保留这两个目录及原始 WASM，便于核对测试产物 SHA。

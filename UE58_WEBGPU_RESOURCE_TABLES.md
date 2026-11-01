@@ -1,5 +1,7 @@
 # WebGPU 资源表增量更新与 UE 公共实现接入
 
+2026-11-01 游戏关闭后重新测量：四轮 **51.44→51.51 FPS（+0.15%）**，整体持平；新增 CPU/API/GPU 性能图。资源解析采样有所减少，但 API 提交量基本不变。详见 [统一复测记录](UE58_WEBGPU_IDLE_RETEST.md)。以下保留原始验证与历史数据。
+
 本次把 Web 绘制中的资源表更新接到 UE 的 `SetUniformBufferResourcesFromTables()`，静态 UB 绑定接到 `ApplyStaticUniformBuffers()`。候选页面：[TriplexHouseVilla](http://127.0.0.1:8765/build/villa-resource-tables-candidate/index.html)。对照包为上一轮 GPUScene 候选 `villa-gpuscene-candidate`。
 
 引擎配套提交：`b7d7f66a1`（开放 RHI/Internal 包含路径）。本轮机器可读汇总：[完整验证记录](G:/UE_HTML/ue_html/tests/web-platform/results/resource-tables-v3-validation-summary.json)。
