@@ -9,6 +9,8 @@ const root = path.resolve(__dirname, '../..');
 const engine = process.env.UE_ENGINE_ROOT || 'H:/UE_5.8/Engine';
 const baseline = path.join(root, '.tools/ue58-web-platform-host');
 const es31 = process.argv.includes('--es31');
+const manualVertexFetch = process.argv.includes('--manual-vertex-fetch');
+assert(!manualVertexFetch || !es31, 'Manual vertex fetch experiment requires SM5');
 const host = path.join(root, es31 ? '.tools/ue58-web-es31-cook-host' : '.tools/ue58-web-cook-host');
 const build = path.join(host, 'map-build');
 const binaries = path.join(host, 'Engine/Binaries/Win64');
@@ -19,6 +21,7 @@ const audit = file => ({file, sha256: sha(file)});
 const unix = value => value.replaceAll('\\', '/');
 const reportFile = path.join(__dirname, es31 ? 'results/web-es31-cook-host-results.json' : 'results/web-cook-host-results.json');
 const report = {date: new Date().toISOString(), pass: false, host,
+  manualVertexFetch,
   profile: es31 ? 'WebGPU-ES31' : 'WebGPU-SM5', fullSourceEngineBuild: false};
 const valid = item => item?.file && fs.existsSync(item.file) && sha(item.file) === item.sha256;
 const previousCookFile = path.join(__dirname, es31 ?
@@ -144,7 +147,8 @@ try {
   const config = path.join(platforms, 'Web/Config');
   fs.mkdirSync(config, {recursive: true});
   assert(!fs.lstatSync(path.dirname(config)).isSymbolicLink() && !fs.lstatSync(config).isSymbolicLink());
-  const ddpi = es31 ? path.join(__dirname, 'cook-profiles/WebGPU-ES31.ini') :
+  const manualConfig = manualVertexFetch ? require('./web-manual-fetch-config.cjs')(root) : null;
+  const ddpi = manualConfig ? manualConfig.file : es31 ? path.join(__dirname, 'cook-profiles/WebGPU-ES31.ini') :
     path.join(root, 'reference-engine/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini');
   const hostDDPI = path.join(config, 'DataDrivenPlatformInfo.ini');
   fs.copyFileSync(ddpi, hostDDPI);
@@ -193,6 +197,10 @@ try {
   report.platformMap = rebuilt;
   report.sourceFiles = [__filename, path.join(__dirname, 'link-or-copy.cjs'), ddpi, generated, compileResponse,
     path.join(build, 'UnrealEditor-Definitions.h'), path.join(build, 'UnrealEditor-Forward.def')].map(audit);
+  if (manualConfig) {
+    report.manualConfig = manualConfig;
+    report.sourceFiles.push(...manualConfig.sources);
+  }
   report.products = [replacement, preserved, hostDDPI, destinationDLL, rendererDestination, path.join(binaries, 'UnrealEditor-Cmd.exe')].map(audit);
   report.boundary = `Isolated installed 5.8 native Cook host with ${report.profile} assigned to Web. ` +
     (es31 ? 'ES3.1 Cook profile matching the Web browser feature level. ' :

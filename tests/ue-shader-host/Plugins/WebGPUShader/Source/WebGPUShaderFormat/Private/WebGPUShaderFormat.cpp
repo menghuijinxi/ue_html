@@ -1,4 +1,5 @@
 #include "WebGPUShaderCode.h"
+#include "WebGPUVertexFetch.h"
 
 #include "Dom/JsonObject.h"
 #include "GlobalShader.h"
@@ -333,7 +334,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261026-v23-StorageAccess-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261101-v25-ManualVertexFetchBounds-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -398,6 +399,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
             }
             if (Input.ShaderFormat == UE::WebGPUShader::SM5Format)
             {
+                UE::WebGPUShader::LowerVertexFetch(Source);
                 // Web storage arrays preserve 32-bit typed-buffer indexing without texel-buffer objects.
                 const FRegexPattern TypedBuffer(TEXT("\\b(RW)?Buffer\\s*<\\s*((?:float|uint|int)[1-4]?)\\s*>"));
                 FRegexMatcher BufferMatch(TypedBuffer, Source);
@@ -426,6 +428,9 @@ class FWebGPUShaderFormat final : public IShaderFormat
         FShaderCompilerInput NativeInput = Input;
         NativeInput.ShaderFormat = NativeFormat(Input.ShaderFormat);
         Native->CompilePreprocessedShader(NativeInput, Preprocessed, Output);
+        // This descriptor is supplied by the RHI from the bound SRV formats;
+        // it is not a new engine/material shader parameter.
+        Output.ParameterMap.RemoveParameterAllocation(TEXT("WebVertexFetchFormats"));
         if (!Output.bSucceeded)
         {
             FString Errors;
@@ -498,6 +503,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Inventory->SetBoolField(TEXT("mobile"), IsMobilePlatform(Platform));
         Inventory->SetBoolField(TEXT("supportsGeometryShaders"), RHISupportsGeometryShaders(Platform));
         Inventory->SetBoolField(TEXT("gpuSceneEnabled"), UseGPUScene(Platform));
+        Inventory->SetBoolField(TEXT("manualVertexFetchEnabled"), RHISupportsManualVertexFetch(Platform));
         TSharedRef<FJsonObject> MaterialPolicy = MakeShared<FJsonObject>();
         MaterialPolicy->SetBoolField(TEXT("dbuffer"), IsUsingDBuffers(Platform));
         MaterialPolicy->SetBoolField(TEXT("substrateBlendable"), Substrate::IsSubstrateBlendableGBufferEnabled(Platform));
@@ -651,6 +657,13 @@ class FWebGPUShaderFormat final : public IShaderFormat
             Json->SetNumberField(TEXT("group"), Binding->set);
             Json->SetNumberField(TEXT("binding"), Binding->binding);
             Json->SetNumberField(TEXT("descriptorType"), Binding->descriptor_type);
+            const int32 VertexFetchSlot = MakeArrayView(UE::WebGPUShader::VertexFetchNames).IndexOfByPredicate(
+                [Binding](const TCHAR* Name) { return FString(UTF8_TO_TCHAR(Binding->name)) == Name; });
+            if (VertexFetchSlot != INDEX_NONE)
+            {
+                Json->SetNumberField(TEXT("vertexFetchFormatSlot"), VertexFetchSlot);
+                Json->SetStringField(TEXT("storagePacking"), TEXT("vertex-fetch"));
+            }
             if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLED_IMAGE ||
                 Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
             {
@@ -710,6 +723,12 @@ class FWebGPUShaderFormat final : public IShaderFormat
                         Type->traits.array.dims_count == 1 && Type->traits.array.dims[0] == 0 &&
                         Type->traits.array.stride == 16 && Element.offset == 0 && Element.member_count == 0)
                         Json->SetNumberField(TEXT("storageElementFormat"), PF_A32B32G32R32F);
+                    if (Type && (Type->type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT) &&
+                        (Type->type_flags & SPV_REFLECT_TYPE_FLAG_VECTOR) &&
+                        Type->traits.numeric.scalar.width == 32 && Type->traits.numeric.vector.component_count == 2 &&
+                        Type->traits.array.dims_count == 1 && Type->traits.array.dims[0] == 0 &&
+                        Type->traits.array.stride == 8 && Element.offset == 0 && Element.member_count == 0)
+                        Json->SetNumberField(TEXT("storageElementFormat"), PF_G32R32F);
                     if (Type && !(Type->type_flags & (SPV_REFLECT_TYPE_FLAG_VECTOR |
                             SPV_REFLECT_TYPE_FLAG_MATRIX | SPV_REFLECT_TYPE_FLAG_STRUCT)) &&
                         Type->traits.numeric.scalar.width == 32 && Type->traits.array.dims_count == 1 &&

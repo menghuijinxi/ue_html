@@ -23,6 +23,7 @@ struct FWebGPUShaderBinding
     const FJsonObject* Metadata = nullptr;
     FString Name;
     uint32 Descriptor = 0, Group = 0, Index = 0, PaddedSize = 0;
+    int32 VertexFetchFormatSlot = INDEX_NONE;
     double TextureDimension = -1;
     bool TextureArrayed = false, TextureMultisampled = false, TextureContractValid = false;
     FString TextureSampleType;
@@ -86,6 +87,7 @@ struct FWebGPUShaderData
     uint64 UniformBindingVersion = 1, ResolvedUniformBindingVersion = 0;
     uint64 UniformUpdateSerial = 0, StaticUniformSerial = 0;
     TArray<FWebGPUShaderBinding> Bindings;
+    bool HasVertexFetchFormats = false;
     mutable TMap<const FJsonObject*, FWebGPUBindingRoute> BindingRoutes;
     mutable TArray<const FRHIUniformBufferLayout*> UniformSlotLayouts;
     WGPUBuffer GlobalsBuffer = nullptr;
@@ -620,6 +622,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint32 ResourceTableBindings = 0;
     uint64 UniformUpdateSerial = 1, StaticUniformSerial = 1;
     uint32 ResourceTableCommits = 0, ResourceTableBuffers = 0, BindingRouteResolutions = 0;
+    TMap<uint32, WGPUBuffer> VertexFetchFormatBuffers;
+    uint32 ManualVertexFetchDraws = 0;
     uint32 TransitionsCreated = 0, TransitionsBegun = 0, TransitionsEnded = 0, TransitionsReleased = 0;
     uint32 AccessChecks = 0;
     uint32 GraphicsPipelinesCreated = 0, ComputePipelinesCreated = 0, VertexDeclarationsCreated = 0, EndFrames = 0;

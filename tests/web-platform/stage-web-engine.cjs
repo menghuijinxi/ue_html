@@ -144,8 +144,11 @@ try {
     assert(valid(renderer), 'The runtime configuration must match this Cook');
     const configPath = '/Engine/Platforms/Web/Config/WebEngine.ini';
     const ddpiPath = '/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini';
+    // A fully cached Cook may not invoke the compiler or emit a shader inventory.
+    const manualVertexFetch = cook.manualVertexFetch === true || cook.shaderInventory?.detail?.manualVertexFetchEnabled === true;
+    const useCookDDPI = report.distanceFields || manualVertexFetch;
     const configs = base.filter(item => item.path !== configPath &&
-      (!report.distanceFields || item.path !== ddpiPath));
+      (!useCookDDPI || item.path !== ddpiPath));
     if (pluginContentRoots.size) {
       const data = Buffer.from([...pluginContentRoots.values()].sort().join('\n') + '\n');
       configs.push({path: '/Engine/Programs/UEWebEngine/Config/WebContentMounts.txt',
@@ -154,14 +157,16 @@ try {
     }
     configs.push({path: configPath, sha256: renderer.sha256,
       data: fs.readFileSync(renderer.file).toString('base64')});
-    if (report.distanceFields) {
-      assert(desktop, 'Distance fields require the desktop renderer');
+    if (useCookDDPI) {
+      assert(desktop, 'Distance fields and manual vertex fetch require the desktop renderer');
       const ddpi = cook.hostProducts.find(item => path.basename(item.file) === 'DataDrivenPlatformInfo.ini');
       assert(valid(ddpi), 'Distance-field runtime must use the Cook shader-platform capabilities');
       const data = fs.readFileSync(ddpi.file);
       const section = data.toString('utf8').split('[ShaderPlatform SP_WEBGPU_SM5]')[1]?.split('[')[0];
-      assert(section?.includes('bSupportsDistanceFields=true'));
-      if (!report.useProjectSettings)
+      if (report.distanceFields) assert(section?.includes('bSupportsDistanceFields=true'));
+      if (manualVertexFetch)
+        assert(section?.includes('bSupportsManualVertexFetch=true'));
+      if (report.distanceFields && !report.useProjectSettings)
         assert(/(?:^|\n)r.GenerateMeshDistanceFields=1\r?(?:\n|$)/.test(fs.readFileSync(renderer.file, 'utf8')));
       configs.push({path: ddpiPath, sha256: ddpi.sha256, data: data.toString('base64')});
     }

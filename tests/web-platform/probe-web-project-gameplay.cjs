@@ -16,6 +16,7 @@ const validateBindingCache = process.argv.includes('--validate-binding-cache');
 const requireGPUScene = process.argv.includes('--require-gpuscene');
 const requireResourceTables = process.argv.includes('--require-resource-tables');
 const requireParallelRecording = process.argv.includes('--require-parallel-recording');
+const requireManualVertexFetch = process.argv.includes('--require-manual-vertex-fetch');
 const debugPort = Number(option('debug-port') || 0);
 assert(debugPort === 0 || (debugPort >= 1024 && debugPort <= 65535));
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
@@ -23,7 +24,7 @@ const output = path.join(__dirname, 'results', `project-gameplay-${tag}`);
 const report = {date: new Date().toISOString(), folder, width, height, dpr, requestedRuns: runs, seconds,
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
   runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, requireGPUScene, requireResourceTables,
-  requireParallelRecording, pass: false};
+  requireParallelRecording, requireManualVertexFetch, pass: false};
 const log = fs.createWriteStream(output + '.log');
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
@@ -155,6 +156,12 @@ let context;
         assert(bindings?.resourceTableCommits > 0 && bindings.resourceTableBuffers >= bindings.resourceTableCommits,
           'UE resource table updates must be exercised during real scene movement');
         assert(bindings.bindingRouteResolutions > 0, 'Binding source plans must be initialized');
+      }
+      if (requireManualVertexFetch) {
+        const bindings = result.samples.at(-1).bindings;
+        assert.equal(bindings?.manualVertexFetchEnabled, true);
+        assert(bindings.manualVertexFetchDraws > 1000 && bindings.vertexFetchFormatBuffers > 0,
+          'Real scene draws must use the packed manual vertex fetch shaders');
       }
       if (requireParallelRecording) {
         const {threads, stages} = result.samples.at(-1);

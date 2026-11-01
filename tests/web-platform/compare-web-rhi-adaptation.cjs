@@ -10,11 +10,13 @@ const candidate = option('candidate') || 'villa-rhi-adaptation-candidate';
 const tagPrefix = option('tag') || 'adaptation';
 const warmupSeconds = Number(option('warmup-seconds') || 20);
 const gpuSceneRecook = process.argv.includes('--allow-gpuscene-recook');
+const manualFetchRecook = process.argv.includes('--allow-manual-fetch-recook');
+assert(!(gpuSceneRecook && manualFetchRecook));
 assert(warmupSeconds >= 0 && warmupSeconds <= 120);
 assert([baseline, candidate, tagPrefix].every(value => /^[a-z0-9-]+$/.test(value)));
 const root = path.join(__dirname, 'build');
 const report = {date: new Date().toISOString(), settingsOverrides: [], warmupSeconds,
-  gpuSceneRecook,
+  gpuSceneRecook, manualFetchRecook,
   headless: process.argv.includes('--headless'),
   width: 1863, height: 1030, dpr: 1.25, order: ['baseline', 'candidate', 'candidate', 'baseline'],
   packages: {}, runs: [], pass: false};
@@ -24,17 +26,18 @@ for (const [name, folder] of Object.entries({baseline, candidate})) {
   report.packages[name] = {folder, files: Object.fromEntries(['content.bin', 'config-files.json',
     'UEWebEngineThreads.wasm'].map(file => [file, audit(path.join(root, folder, file))]))};
 }
-if (gpuSceneRecook) {
+if (gpuSceneRecook || manualFetchRecook) {
   // GPUScene changes material/global shader permutations, so the Cook payload must change.
   // Require matching project inputs and permit exactly the two SM5 capability changes.
   const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
   const cooks = {};
   for (const name of ['baseline', 'candidate']) {
     const file = option(name + '-cook');
-    assert(file, '--allow-gpuscene-recook requires --baseline-cook and --candidate-cook reports');
+    assert(file, 'Recook comparisons require --baseline-cook and --candidate-cook reports');
     const cook = read(file);
     assert(cook.pass && cook.useProjectSettings && cook.scene === 'Project' && cook.mode === 'WebGPU-SM5');
-    assert.equal(cook.shaderInventory.detail.gpuSceneEnabled, name === 'candidate');
+    assert.equal(cook.shaderInventory.detail.gpuSceneEnabled, manualFetchRecook || name === 'candidate');
+    if (manualFetchRecook) assert.equal(cook.shaderInventory.detail.manualVertexFetchEnabled === true, name === 'candidate');
     assert.equal(audit(cook.projectSettings.file).sha256, cook.projectSettings.sha256);
     cooks[name] = {cook, settings: read(cook.projectSettings.file), report: audit(file)};
   }
@@ -51,13 +54,15 @@ if (gpuSceneRecook) {
   const before = Buffer.from(configs.baseline.find(item => item.path === ddpi).data, 'base64').toString('utf8').replaceAll('\r\n', '\n');
   const after = Buffer.from(configs.candidate.find(item => item.path === ddpi).data, 'base64').toString('utf8').replaceAll('\r\n', '\n');
   const enable = text => text.replace(/(\[ShaderPlatform SP_WEBGPU_SM5\][\s\S]*?)(?=\[ShaderPlatform|$)/,
-    section => section.replace('bSupportsGPUScene=false', 'bSupportsGPUScene=true')
-      .replace('bSupportsVertexShaderSRVs=false', 'bSupportsVertexShaderSRVs=true'));
+    section => manualFetchRecook ? section.replace('bSupportsManualVertexFetch=false', 'bSupportsManualVertexFetch=true') :
+      section.replace('bSupportsGPUScene=false', 'bSupportsGPUScene=true')
+        .replace('bSupportsVertexShaderSRVs=false', 'bSupportsVertexShaderSRVs=true'));
   assert.notEqual(before, after);
   assert.equal(enable(before), after);
   report.cookEvidence = Object.fromEntries(Object.entries(cooks).map(([name, value]) => [name,
     {report: value.report, projectSettings: value.cook.projectSettings,
-      gpuSceneEnabled: value.cook.shaderInventory.detail.gpuSceneEnabled}]));
+      gpuSceneEnabled: value.cook.shaderInventory.detail.gpuSceneEnabled,
+      manualVertexFetchEnabled: value.cook.shaderInventory.detail.manualVertexFetchEnabled === true}]));
 } else {
   for (const file of ['content.bin', 'config-files.json'])
     assert.equal(report.packages.baseline.files[file].sha256, report.packages.candidate.files[file].sha256);
@@ -81,6 +86,10 @@ if (gpuSceneRecook) {
       assert(value.pass && value.cameraMode === 'original-spawn' && !value.errors.length);
       assert(value.externalInputIgnored && value.initialCamera);
       if (gpuSceneRecook) assert.equal(value.engineReady?.activeGPUSceneEnabled, name === 'candidate');
+      if (manualFetchRecook && name === 'candidate') {
+        assert.equal(value.afterBaseline.occlusion.manualVertexFetchEnabled, true);
+        assert(value.afterBaseline.occlusion.manualVertexFetchDraws > value.before.occlusion.manualVertexFetchDraws);
+      }
       if (report.runs.length) assert.deepEqual(value.initialCamera, report.runs[0].camera);
       if (report.runs.length) assert.deepEqual(value.before.settings, report.runs[0].settings);
       const view = value.before.view;
@@ -92,7 +101,7 @@ if (gpuSceneRecook) {
       assert(counterFrames > 0);
       for (const key of ['bindGroupsCreated', 'bindingEntriesPrepared', 'bindingEntriesReused',
         'uniformSnapshots', 'uniformWriteCalls', 'bindGroupCacheHits', 'draws', 'indirectDraws', 'dispatches',
-        'resourceTableCommits', 'resourceTableBuffers', 'bindingRouteResolutions']) {
+        'resourceTableCommits', 'resourceTableBuffers', 'bindingRouteResolutions', 'manualVertexFetchDraws']) {
         if (value.afterBaseline.occlusion[key] === undefined) continue;
         perFrame[key] = (value.afterBaseline.occlusion[key] - value.before.occlusion[key]) / counterFrames;
       }

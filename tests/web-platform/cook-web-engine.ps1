@@ -6,6 +6,7 @@ param(
     [string]$Map,
     [string]$Profile,
     [switch]$UseProjectSettings,
+    [switch]$ManualVertexFetch,
     [ValidateSet('Uncompressed', 'BC')][string]$TextureCompression = 'Uncompressed',
     [switch]$CompressHDRCubemaps,
     [switch]$TemplateEnvironment,
@@ -45,11 +46,13 @@ if ($TemplateEnvironment -and ($Scene -ne 'Project' -or -not $taskWebGPU)) {
 }
 $taskFormat = if ($taskES31) { 'SF_WEBGPU_ES31' } else { 'SF_WEBGPU_SM5' }
 $taskShaderPlatformName = if ($taskES31) { 'SP_WEBGPU_ES31' } else { 'SP_WEBGPU_SM5' }
+if ($ManualVertexFetch -and $Mode -ne 'WebGPU-SM5') { throw 'ManualVertexFetch requires WebGPU-SM5.' }
 if ($taskWebGPU) { $taskHost = Join-Path $taskRoot '.tools/ue58-web-cook-host/Engine' }
 if ($taskES31) { $taskHost = Join-Path $taskRoot '.tools/ue58-web-es31-cook-host/Engine' }
 $taskHostDDPI = Join-Path $taskHost 'Platforms/Web/Config/DataDrivenPlatformInfo.ini'
 $taskDDPI = Join-Path $taskRoot 'reference-engine/Engine/Platforms/Web/Config/DataDrivenPlatformInfo.ini'
 if ($taskES31) { $taskDDPI = Join-Path $PSScriptRoot 'cook-profiles/WebGPU-ES31.ini' }
+if ($ManualVertexFetch) { $taskDDPI = Join-Path $taskRoot '.tools/web-manual-vertex-fetch/DataDrivenPlatformInfo.ini' }
 $taskProject = Join-Path $taskRoot 'tests/ue-shader-host/UEShaderHost.uproject'
 if ($Scene -eq 'Project') { $taskProject = [IO.Path]::GetFullPath($Project) }
 $taskResults = Join-Path $PSScriptRoot 'results'
@@ -86,6 +89,7 @@ $taskReport = [ordered]@{
     templateEnvironment = [bool]$TemplateEnvironment
     distanceFields = [bool]$DistanceFields
     useProjectSettings = [bool]$UseProjectSettings
+    manualVertexFetch = [bool]$ManualVertexFetch
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
     validateShaderJobCache = [bool]$ValidateShaderJobCache
@@ -138,6 +142,7 @@ try {
         $taskPrepareLog = Join-Path $taskResults "web-cook-host-$taskStamp.log"
         $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-web-cook-host.cjs'))
         if ($taskES31) { $taskPrepareArguments += '--es31' }
+        if ($ManualVertexFetch) { $taskPrepareArguments += '--manual-vertex-fetch' }
         & node @taskPrepareArguments *> $taskPrepareLog
         if ($LASTEXITCODE -ne 0) { throw "Web Cook host preparation failed: $taskPrepareLog" }
         $taskPrepareReport = if ($taskES31) { 'web-es31-cook-host-results.json' } else { 'web-cook-host-results.json' }
@@ -378,6 +383,7 @@ try {
     }
     if ($taskReport.minimalRendererConfig) { $taskReport.sourceFiles += $taskReport.minimalRendererConfig }
     if ($taskWebGPU) {
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'web-manual-fetch-config.cjs')
         $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat') -File -Recurse |
             ForEach-Object { Get-TaskAudit $_.FullName })
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-cook-host.cjs')

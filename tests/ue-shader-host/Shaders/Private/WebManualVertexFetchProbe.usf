@@ -1,0 +1,15 @@
+#include "/Engine/Public/Platform.ush"
+
+Buffer<float2> LocalVF_VertexFetch_TexCoordBuffer;
+Buffer<float4> LocalVF_VertexFetch_PackedTangentsBuffer;
+Buffer<float4> LocalVF_VertexFetch_ColorComponentsBuffer;
+RWStructuredBuffer<float4> Results;
+
+[numthreads(1, 1, 1)]
+void MainCS(uint3 Id : SV_DispatchThreadID)
+{
+    uint i = Id.x;
+    Results[3 * i] = float4(LocalVF_VertexFetch_TexCoordBuffer[i], 0, 1);
+    Results[3 * i + 1] = LocalVF_VertexFetch_PackedTangentsBuffer[i];
+    Results[3 * i + 2] = LocalVF_VertexFetch_ColorComponentsBuffer[i];
+}

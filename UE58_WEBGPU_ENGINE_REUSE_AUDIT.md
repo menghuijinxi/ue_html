@@ -58,13 +58,15 @@ GRHISupportsMultithreadedShaderCreation = false;
 
 当前 [RHIGetCommandContext():3088](G:/UE_HTML/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp:3088) 返回同一个 `this`，检查 owner 和唯一 Encoder；渲染 pass、绑定及可变状态都放在该对象上。因此并行 RHI 需要独立 context 状态、句柄访问及提交顺序设计。不能把相同对象交给多个 Worker 后直接宣称启用并行。
 
-## 3. 手动顶点读取：GPUScene 接通后仍有独立缺口
+## 3. 手动顶点读取：已验证，当前回退 12.6%，默认关闭
 
-实际 Cook 包的 SM5 能力为：GPUScene=true、vertex shader SRV=true，但 manual vertex fetch=false、typed buffer SRV=false。后两项与 GPUScene 的结构化数据读取不是同一项能力。
+默认 SM5 能力为 GPUScene=true、vertex shader SRV=true、manual vertex fetch=false、typed buffer SRV=false。使用显式 `-ManualVertexFetch` Cook 的实验包可开启手动读取，通用 typed buffer 能力仍保持 false。两者与 GPUScene 的结构化数据读取不是同一项能力。
 
 [LocalVertexFactory.cpp:601](G:/UE_HTML/UnrealEngine-1/Engine/Source/Runtime/Engine/Private/LocalVertexFactory.cpp:601) 已实现非编辑器构建在支持 manual fetch 时省去切线/法线、颜色、UV 等固定输入的路径；位置流仍保留，颜色还受具体数据条件影响。应接回该 vertex factory 逻辑，而不是另写一套网格提交。
 
-候选包仍有约 **8008.5 次 setVertexBuffer/帧**，虽然已少于旧包的 11197.4 次，仍值得针对这条路径评估。接入需要补齐实际网格格式的读取与解码，包括打包切线、归一化颜色、半精度 UV，以及 stride、边界和默认资源；不能只提供少量 R32 类型就打开完整能力。还需检查每阶段 storage buffer 限额，重新 Cook 材质排列，并对比减少 CPU 绑定是否抵得过新增 shader 读取成本。只能预期减少部分流绑定，不能据调用次数承诺帧率。
+本轮为该 vertex factory 补齐了打包切线、归一化颜色、半精度 UV、范围及默认资源处理，保留压缩数据；恢复 UE 原有 position / tangent / UV SRV 创建。8 组 GPU 回读格式测试及两轮 45 秒场景行走已通过，234 个实际顶点 shader 使用该路径，最多使用 8 个 storage buffer。详见 [手动顶点读取验证](G:/UE_HTML/ue_html/UE58_WEBGPU_MANUAL_VERTEX_FETCH.md)。
+
+后台游戏运行时的四轮 ABBA：22.15→19.35 FPS（-12.6%）。setVertexBuffer 约 8010→6272/帧，但 setBindGroup 约 1404→2240/帧，CPU 栈采样显示资源组准备开销增加。因此默认继续关闭，实验入口保留，后续先处理新增 SRV 的资源组切换代价。
 
 ## 4. PSO 预缓存：主要解决卡顿
 

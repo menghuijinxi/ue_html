@@ -764,6 +764,8 @@ void FWebGPUDynamicRHI::Shutdown()
     check(!Pass && !Encoder && !ContextOpen && Transitions.IsEmpty() && BreadcrumbStack.IsEmpty() &&
           BufferLocks.IsEmpty());
     BindGroupCache.Empty();
+    for (const auto& Buffer : VertexFetchFormatBuffers) wgpuBufferRelease(Buffer.Value);
+    VertexFetchFormatBuffers.Empty();
     DrawBundleCache.Empty();
     ReleaseFrameBindings();
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
@@ -924,7 +926,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             globalThis.__webOcclusionRHI.resourceTableCommits = $0;
             globalThis.__webOcclusionRHI.resourceTableBuffers = $1;
             globalThis.__webOcclusionRHI.bindingRouteResolutions = $2;
-        }, ResourceTableCommits, ResourceTableBuffers, BindingRouteResolutions);
+            globalThis.__webOcclusionRHI.manualVertexFetchEnabled = !!$3;
+            globalThis.__webOcclusionRHI.manualVertexFetchDraws = $4;
+            globalThis.__webOcclusionRHI.vertexFetchFormatBuffers = $5;
+        }, ResourceTableCommits, ResourceTableBuffers, BindingRouteResolutions,
+            RHISupportsManualVertexFetch(GMaxRHIShaderPlatform), ManualVertexFetchDraws, VertexFetchFormatBuffers.Num());
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI,
                 {draws: $0, indirectDraws: $1, dispatches: $2, sampleFrame: $3});
@@ -1062,6 +1068,10 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         Entry.Descriptor = Binding->GetIntegerField(TEXT("descriptorType"));
         Entry.Group = Binding->GetIntegerField(TEXT("group"));
         Entry.Index = Binding->GetIntegerField(TEXT("binding"));
+        double VertexFetchSlot;
+        if (Binding->TryGetNumberField(TEXT("vertexFetchFormatSlot"), VertexFetchSlot))
+            Entry.VertexFetchFormatSlot = int32(VertexFetchSlot);
+        Data.HasVertexFetchFormats |= Entry.Name == TEXT("WebVertexFetchFormats");
         Entry.PaddedSize = Entry.Descriptor == 6 || Entry.Name == TEXT("$Globals") ?
             Binding->GetIntegerField(TEXT("paddedSize")) : 0;
         if (Entry.Descriptor == 2)
@@ -1428,7 +1438,7 @@ FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICom
             return new FWebGPUBufferSRV(static_cast<FWebGPUBuffer*>(Resource), PositionDesc);
         }
 #endif
-        if (StartupProbeMode && FParse::Param(FCommandLine::Get(), TEXT("WebMinimalStartup")) && Resource &&
+        if (!RHISupportsManualVertexFetch(GMaxRHIShaderPlatform) && StartupProbeMode && FParse::Param(FCommandLine::Get(), TEXT("WebMinimalStartup")) && Resource &&
             (Resource == GNullColorVertexBuffer.VertexBufferRHI || Resource == GNullVertexBuffer.VertexBufferRHI))
         {
             // Installed-host adaptation of the Web-only default SRV guard; keep the actual vertex buffers.
@@ -1856,12 +1866,14 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
     }
     if (View.BufferType != FRHIViewDesc::EBufferType::Typed ||
         (View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
-            View.Format != PF_R32_FLOAT && View.Format != PF_R32_SINT && View.Format != PF_G8) ||
+            View.Format != PF_R32_FLOAT && View.Format != PF_R32_SINT && View.Format != PF_G8 &&
+            View.Format != PF_G16R16F && View.Format != PF_G32R32F && View.Format != PF_R8G8B8A8 &&
+            View.Format != PF_R8G8B8A8_SNORM && View.Format != PF_R16G16B16A16_SNORM) ||
         View.Stride || View.bAtomicCounter || View.bAppendBuffer ||
         EnumHasAnyFlags(Buffer->GetUsage(), BUF_StructuredBuffer | BUF_AccelerationStructure) ||
         !EnumHasAnyFlags(Buffer->GetUsage(), BUF_ShaderResource))
     {
-        Error = TEXT("Only non-structured ShaderResource buffers with Typed uint32/uint4/float4 SRVs are implemented");
+        Error = TEXT("Unsupported typed buffer SRV format or usage");
         return false;
     }
     const uint64 Size = Buffer->GetSize();
@@ -1897,6 +1909,21 @@ bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const 
     double Element;
     const auto &Desc = View->GetDesc().Buffer.SRV;
     const bool Typed = Desc.BufferType == FRHIViewDesc::EBufferType::Typed;
+    FString Packing;
+    if (Typed && Binding.TryGetStringField(TEXT("storagePacking"), Packing) && Packing == TEXT("vertex-fetch"))
+    {
+        const int32 Slot = Binding.GetIntegerField(TEXT("vertexFetchFormatSlot"));
+        const bool ValidFormat = Slot == 0 ? (Desc.Format == PF_G16R16F || Desc.Format == PF_G32R32F) :
+            (Desc.Format == PF_R8G8B8A8_SNORM || Desc.Format == PF_R16G16B16A16_SNORM ||
+                Desc.Format == PF_R8G8B8A8 || Desc.Format == PF_A32B32G32R32F ||
+                (Desc.Format == PF_R32_FLOAT && View->GetBuffer() == GNullVertexBuffer.VertexBufferRHI));
+        if (!ValidFormat || Slot < 0 || Slot > 3)
+        {
+            Error = TEXT("Vertex fetch SRV has an incompatible element format");
+            return false;
+        }
+        return ValidateAccess(View->GetBuffer(), Access, Error);
+    }
     if (!Binding.TryGetNumberField(Typed ? TEXT("storageElementFormat") : TEXT("storageElementStride"), Element) ||
         Element != (Typed ? uint32(Desc.Format) : Desc.GetViewInfo(View->GetBuffer()).StrideInBytes))
     {
@@ -1905,7 +1932,6 @@ bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const 
     }
     if (Typed && Desc.Format == PF_G8)
     {
-        FString Packing;
         if (!Binding.TryGetStringField(TEXT("storagePacking"), Packing) || Packing != TEXT("unorm8x4"))
         {
             Error = TEXT("G8 buffer SRV requires explicit packed UNORM8 shader decoding");
@@ -2625,6 +2651,34 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     {
         TrackShaderBindings(*Shader);
         CommitShaderResources(*Shader);
+        uint32 VertexFetchCodes[4] = {}, VertexFetchKey = 0;
+        if (Shader->HasVertexFetchFormats)
+        {
+            for (auto& VertexBinding : Shader->Bindings)
+            {
+                if (VertexBinding.VertexFetchFormatSlot == INDEX_NONE) continue;
+                auto* Resource = ResolveDrawBinding(*Shader, VertexBinding);
+                check(Resource && Resource->GetType() == RRT_ShaderResourceView);
+                const auto Format = static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Buffer.SRV.Format;
+                uint32 Code = 0;
+                switch (Format)
+                {
+                case PF_G16R16F: Code = 1; break;
+                case PF_G32R32F: Code = 2; break;
+                case PF_R8G8B8A8_SNORM: Code = 3; break;
+                case PF_R16G16B16A16_SNORM: Code = 4; break;
+                case PF_R8G8B8A8: Code = 5; break;
+                case PF_A32B32G32R32F: Code = 6; break;
+                case PF_R32_FLOAT:
+                    check(static_cast<FRHIShaderResourceView*>(Resource)->GetBuffer() == GNullVertexBuffer.VertexBufferRHI);
+                    Code = 7; break; // The stock all-zero passthrough fallback (three floats).
+                default: checkf(false, TEXT("Unsupported vertex fetch format %d"), int32(Format));
+                }
+                check(VertexBinding.VertexFetchFormatSlot >= 0 && VertexBinding.VertexFetchFormatSlot < 4);
+                VertexFetchCodes[VertexBinding.VertexFetchFormatSlot] = Code;
+                VertexFetchKey |= Code << (VertexBinding.VertexFetchFormatSlot * 3);
+            }
+        }
         for (auto &Reflected : Shader->Bindings)
         {
             const auto* Binding = Reflected.Metadata;
@@ -2643,8 +2697,9 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             Maximum = FMath::Max(Maximum, Group);
             FRHIResource* Resource = nullptr;
             bool FromTable = false;
-            uint64 Version = Shader->GlobalsVersion;
-            if (Name != TEXT("$Globals"))
+            const bool VertexFormats = Name == TEXT("WebVertexFetchFormats");
+            uint64 Version = VertexFormats ? VertexFetchKey : Shader->GlobalsVersion;
+            if (Name != TEXT("$Globals") && !VertexFormats)
             {
                 FString Error;
                 Resource = ResolveDrawBinding(*Shader, Reflected);
@@ -2665,7 +2720,15 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             }
             else
             {
-                if (Name == TEXT("$Globals"))
+                if (VertexFormats)
+                {
+                    auto& Buffer = VertexFetchFormatBuffers.FindOrAdd(VertexFetchKey);
+                    if (!Buffer) Buffer = CreateBuffer(sizeof(VertexFetchCodes), WGPUBufferUsage_Uniform, VertexFetchCodes);
+                    Entry.buffer = Buffer;
+                    Entry.size = sizeof(VertexFetchCodes);
+                    check(Reflected.PaddedSize == sizeof(VertexFetchCodes));
+                }
+                else if (Name == TEXT("$Globals"))
                 {
                     if (!Shader->GlobalsBuffer)
                     {
@@ -3825,6 +3888,7 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
             }
         }
     auto &VS = ShaderData(GraphicsPipeline->GetShader(SF_Vertex));
+    if (VS.HasVertexFetchFormats) ++ManualVertexFetchDraws;
     auto *Pixel = GraphicsPipeline->GetShader(SF_Pixel);
     FWebGPUShaderData *Shaders[] = {&VS, Pixel ? &ShaderData(Pixel) : nullptr};
     FWebGPUResolvedGroups LocalGroups;

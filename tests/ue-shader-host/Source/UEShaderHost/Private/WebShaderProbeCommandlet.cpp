@@ -30,6 +30,8 @@
 #include "VertexFactory.h"
 #include "VulkanShaderResources.h"
 
+int32 RunWebManualVertexFetchProbe(const FString& Params);
+
 static TSharedRef<FJsonObject> ReflectMember(const SpvReflectBlockVariable &Member)
 {
     TSharedRef<FJsonObject> Json = MakeShared<FJsonObject>();
@@ -131,6 +133,8 @@ UWebShaderProbeCommandlet::UWebShaderProbeCommandlet()
 
 int32 UWebShaderProbeCommandlet::Main(const FString &Params)
 {
+    if (FParse::Param(*Params, TEXT("WebManualVertexFetchProbe")))
+        return RunWebManualVertexFetchProbe(Params);
     if (FParse::Param(*Params, TEXT("DesktopShaderProbe")))
     {
         FString TypeName, OutputDirectory;
