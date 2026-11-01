@@ -2,6 +2,8 @@
 
 项目设置与 Cook 内容保持原样。本轮从 WebGPU/Dawn 官方资料出发检查后端，不通过降低分辨率、阴影、距离场或材质质量获得性能收益。
 
+后续已补充四套大型引擎的实际源码及已合并 PR 对照，包含当前 GPUScene 路径缺失、绑定生命周期与 Bundle 命中前开销，见 [大型 WebGPU 实现源码对照](UE58_WEBGPU_IMPLEMENTATION_COMPARISON.md)。
+
 ## 调研结论与代码对应
 
 1. [WebGPU PipelineLayout 规范](https://gpuweb.github.io/gpuweb/#gpupipelinelayout) 明确说明，同一显式 PipelineLayout 可用于多个管线，减少切换时内部资源重绑定。原实现为每个 PSO 新建布局，绑定组缓存也包含 PSO 身份，阻止相同布局与资源跨 PSO 复用。现在按排序后的全部布局字段驻留 BindGroupLayout，再按布局列表复用 PipelineLayout；绑定组键改为布局及资源，不再保留管线引用。哈希命中仍完整比较；GPU 对象引用、帧末淘汰及动态偏移保持。
