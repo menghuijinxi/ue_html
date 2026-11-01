@@ -103,6 +103,12 @@ async function attach(target) {
     assert(!await page.evaluate(() => globalThis.__webEngineFailure));
     const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
     assert(owner);
+    if (option('binding-group-mode') !== undefined) {
+      const mode = Number(option('binding-group-mode'));
+      assert(mode === 0 || mode === 1);
+      assert.equal(await page.evaluate(mode => __webEngineRPC('WebBindingGroupTest', mode), mode), 1);
+      report.backendOverrides = {'r.WebGPU.BindingGroupCache': mode};
+    }
     const state = () => owner.evaluate(() => ({frames: __webRHIFrames, gameFrames: __webEngineFrames,
       stages: globalThis.__webThreadStages, threads: globalThis.__webEngineThreads,
       camera: globalThis.__webDefaultCamera, view: globalThis.__webRenderView,
@@ -141,6 +147,11 @@ async function attach(target) {
       previousState = value; previousTime = time;
     }
     report.afterBaseline = previousState;
+    if (option('binding-group-mode') === '1') {
+      assert(report.afterBaseline.occlusion.groupCacheEnabled);
+      assert(report.afterBaseline.occlusion.groupPreparationHits > report.before.occlusion.groupPreparationHits,
+        'Whole-group preparation must actually be skipped');
+    }
     if (process.argv.includes('--require-render-bundles')) {
       assert(report.afterBaseline.occlusion.drawBundleHits > report.before.occlusion.drawBundleHits,
         'Render bundle cache must be used during measurement');

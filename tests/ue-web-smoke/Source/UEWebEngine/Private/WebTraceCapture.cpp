@@ -11,6 +11,20 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebBindingCacheTest(int Enabled)
     return 1;
 }
 
+extern "C" EMSCRIPTEN_KEEPALIVE int WebBindingGroupTest(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    // Mode 0/1 controls only this backend optimization; mode 2 requests logs.
+    const TCHAR* Name = Mode == 2 ? TEXT("r.Web.ShadowSubmissionProbe") : TEXT("r.WebGPU.BindingGroupCache");
+    auto* Variable = IConsoleManager::Get().FindConsoleVariable(Name);
+    if (!Variable || Mode < 0 || Mode > 2) return 0;
+    Variable->Set(Mode == 2 ? 240 : Mode, ECVF_SetByCode);
+    if (Mode == 2)
+        if (auto* Local = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Web.ShadowCacheProbe")))
+            Local->Set(240, ECVF_SetByCode);
+    return 1;
+}
+
 #if UE_TRACE_ENABLED
 #include "ProfilingDebugging/TraceAuxiliary.h"
 #include "ProfilingDebugging/MiscTrace.h"

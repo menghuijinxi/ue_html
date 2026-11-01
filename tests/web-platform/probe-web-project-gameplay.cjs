@@ -75,6 +75,8 @@ let context;
       assert(!result.errors.length, result.errors.join('\n'));
       if (validateBindingCache)
         assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingCacheTest', 1)), 1);
+      if (process.argv.includes('--shadow-submission-probe'))
+        assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingGroupTest', 2)), 1);
       const snapshot = async label => {
         const state = await page.evaluate(() => ({frame: globalThis.__webEngineFrames,
           failure: globalThis.__webEngineFailure, camera: globalThis.__webDefaultCamera,
@@ -147,6 +149,9 @@ let context;
       assert(result.maxTravelCm > 50, 'Real player movement must be exercised');
       assert(result.maxTurnDegrees > 10, 'Real player rotation must be exercised');
       if (validateBindingCache) {
+        if (process.argv.includes('--require-binding-groups'))
+          assert(result.samples.at(-1).bindings?.groupPreparationValidated > 1000,
+            'Whole-group snapshots must match the fully rebuilt binding path');
         assert(result.samples.at(-1).bindings?.bindingEntriesValidated > 1000,
           'Recomputed descriptors must match prepared cache entries during real scene movement');
         assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingCacheTest', 0)), 1);

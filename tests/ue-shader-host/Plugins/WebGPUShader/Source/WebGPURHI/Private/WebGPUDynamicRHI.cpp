@@ -29,6 +29,9 @@ namespace
 static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
     TEXT("r.WebGPU.ValidateBindingCache"), 0,
     TEXT("Rebuild cached shader descriptors and check the results for missed invalidation."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUBindingGroupCache(
+    TEXT("r.WebGPU.BindingGroupCache"), 1,
+    TEXT("Reuse prepared binding groups when resource, uniform and access generations match."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
@@ -932,6 +935,13 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, ResourceTableCommits, ResourceTableBuffers, BindingRouteResolutions,
             RHISupportsManualVertexFetch(GMaxRHIShaderPlatform), ManualVertexFetchDraws, VertexFetchFormatBuffers.Num());
         EM_ASM({
+            Object.assign(globalThis.__webOcclusionRHI, {groupPreparationHits:$0, groupPreparationValidated:$1,
+                groupFrameMisses:$2, groupAccessMisses:$3, groupVersionMisses:$4, groupTextureMisses:$5,
+                groupCacheEnabled:!!$6});
+        }, GroupPreparationHits, GroupPreparationValidated, GroupPreparationFrameMisses,
+            GroupPreparationAccessMisses, GroupPreparationVersionMisses, GroupPreparationTextureMisses,
+            CVarWebGPUBindingGroupCache.GetValueOnAnyThread());
+        EM_ASM({
             globalThis.__webOptimizationRHI = ({sampleFrame: $0, graphicsPipelines: $1, computePipelines: $2,
                 graphicsPipelineCreateMs: $3, computePipelineCreateMs: $4,
                 textureReadbacks: $5, textureReadbacksReady: $6, textureReadbackMaps: $7, textureReadbackNotReady: $8,
@@ -1075,6 +1085,9 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         Entry.Name = Binding->GetStringField(TEXT("name"));
         Entry.Descriptor = Binding->GetIntegerField(TEXT("descriptorType"));
         Entry.Group = Binding->GetIntegerField(TEXT("group"));
+        check(Entry.Group < 32);
+        if (Data.GroupVersions.Num() <= int32(Entry.Group)) Data.GroupVersions.SetNumZeroed(Entry.Group + 1);
+        if (Entry.Name == TEXT("$Globals")) Data.GlobalsGroupMask |= 1u << Entry.Group;
         Entry.Index = Binding->GetIntegerField(TEXT("binding"));
         double VertexFetchSlot;
         if (Binding->TryGetNumberField(TEXT("vertexFetchFormatSlot"), VertexFetchSlot))
@@ -2438,6 +2451,8 @@ void FWebGPUDynamicRHI::CommitShaderResources(FWebGPUShaderData& Shader)
             const uint64 Version = static_cast<FWebGPUUniform*>(Uniform)->ContentsVersion;
             if (Shader.BoundUniformBuffers[Slot] != Uniform || Shader.BoundUniformVersions[Slot] != Version)
             {
+                if (const auto* Mask = Shader.ResourceGroupMasks.Find((1u << 16) | uint32(Slot)))
+                    Shader.InvalidateGroups(*Mask);
                 Shader.DirtyUniformBuffers |= 1u << Slot;
                 Shader.BoundUniformBuffers[Slot] = Uniform;
                 Shader.BoundUniformVersions[Slot] = Version;
@@ -2487,6 +2502,11 @@ FRHIResource* FWebGPUDynamicRHI::ResolveDrawBinding(FWebGPUShaderData& Shader, F
         checkf(ResolveBinding(Shader, *Binding.Metadata, Resource, FromTable, Error), TEXT("%s"), *Error);
         Binding.Route = Shader.BindingRoutes.FindChecked(Binding.Metadata);
         Binding.RouteInitialized = true;
+        const auto& Route = Binding.Route;
+        if (Route.Kind == FWebGPUBindingRoute::EKind::Uniform || Route.Kind == FWebGPUBindingRoute::EKind::Table)
+            Shader.ResourceGroupMasks.FindOrAdd((1u << 16) | Route.Slot) |= 1u << Binding.Group;
+        else if (Route.Kind == FWebGPUBindingRoute::EKind::Direct)
+            Shader.ResourceGroupMasks.FindOrAdd(Route.Index) |= 1u << Binding.Group;
         ++BindingRouteResolutions;
     }
     const auto& Route = Binding.Route;
@@ -2508,6 +2528,8 @@ FRHIResource* FWebGPUDynamicRHI::ResolveDrawBinding(FWebGPUShaderData& Shader, F
         break;
     }
     check(Resource);
+    Binding.SourceTextureReference = Resource->GetType() == RRT_TextureReference
+        ? static_cast<FRHITextureReference*>(Resource) : nullptr;
     if (Resource->GetType() == RRT_TextureReference)
         Resource = static_cast<FRHITextureReference*>(Resource)->GetReferencedTexture();
     check(Resource);
@@ -2522,6 +2544,7 @@ void FWebGPUDynamicRHI::ReleaseFrameBindings()
         {
             Binding.PreparedResource.SafeRelease();
             Binding.PreparedSerial = 0;
+            Binding.SourceTextureReference = nullptr;
         }
         Data.Resources.Reset();
         Data.BoundUniformBuffers.Reset();
@@ -2605,10 +2628,13 @@ void FWebGPUDynamicRHI::Bind(FWebGPUShaderData &Shader, const FRHIShaderParamete
         break;
     }
     const uint32 Key = (Type << 16) | Parameter.Index;
+    const auto* Previous = Shader.Resources.Find(Key);
+    const bool Changed = !Previous || Previous->GetReference() != Parameter.Resource;
+    if (Changed)
+        if (const auto* Mask = Shader.ResourceGroupMasks.Find(Key)) Shader.InvalidateGroups(*Mask);
     if (Type == 1)
     {
-        const auto* Previous = Shader.Resources.Find(Key);
-        if (!Previous || Previous->GetReference() != Parameter.Resource)
+        if (Changed)
             ++Shader.UniformBindingVersion;
     }
     Shader.Resources.Add(Key, Parameter.Resource);
@@ -2625,13 +2651,13 @@ void FWebGPUDynamicRHI::Parameters(FWebGPUShaderData &Shader, TConstArrayView<ui
     {
         check(Value.BufferIndex == 0 && Value.BaseIndex + Value.ByteSize <= Shader.Globals.Num() &&
               Value.ByteOffset + Value.ByteSize <= Bytes.Num());
-        if (Shader.GlobalsBuffer &&
-            FMemory::Memcmp(Shader.Globals.GetData() + Value.BaseIndex, Bytes.GetData() + Value.ByteOffset,
+        if (FMemory::Memcmp(Shader.Globals.GetData() + Value.BaseIndex, Bytes.GetData() + Value.ByteOffset,
                 Value.ByteSize) != 0)
         {
-            wgpuBufferRelease(Shader.GlobalsBuffer);
+            if (Shader.GlobalsBuffer) wgpuBufferRelease(Shader.GlobalsBuffer);
             Shader.GlobalsBuffer = nullptr;
             ++Shader.GlobalsVersion;
+            Shader.InvalidateGroups(Shader.GlobalsGroupMask);
         }
         FMemory::Memcpy(Shader.Globals.GetData() + Value.BaseIndex, Bytes.GetData() + Value.ByteOffset, Value.ByteSize);
     }
@@ -2661,15 +2687,52 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     const auto& DynamicBindings = Render ? GraphicsPipeline->DynamicBindings : ComputePipeline->DynamicBindings;
     auto& PreviousGroups = Render ? GraphicsPipeline->PreviousGroups : ComputePipeline->PreviousGroups;
     auto& PreviousFrame = Render ? GraphicsPipeline->PreviousGroupsFrame : ComputePipeline->PreviousGroupsFrame;
+    auto& PreparedGroups = Render ? GraphicsPipeline->PreparedGroups : ComputePipeline->PreparedGroups;
+    const auto& Layouts = Render ? GraphicsPipeline->GroupLayouts : ComputePipeline->GroupLayouts;
+    check(Shaders.Num() <= 2 && Layouts.Num() <= 32);
+    Groups.SetNum(Layouts.Num());
+    DynamicOffsets.SetNum(Layouts.Num());
+    PreparedGroups.SetNum(Layouts.Num());
     // Cache entries may be evicted at EndFrame. Never read an old frame's pointers.
     if (PreviousFrame != EndFrames) { PreviousGroups.Reset(); PreviousFrame = EndFrames; }
-    uint32 Maximum = 0;
-    bool HasBindings = false;
+    uint32 Maximum = Layouts.Num() ? Layouts.Num() - 1 : 0;
+    bool HasBindings = !Layouts.IsEmpty();
     const bool ValidatePrepared = CVarWebGPUValidateBindingCache.GetValueOnAnyThread() != 0;
+    const bool CacheGroups = CVarWebGPUBindingGroupCache.GetValueOnAnyThread() != 0 &&
+        !Shaders.ContainsByPredicate([](const auto* Shader) { return Shader->HasVertexFetchFormats; });
+    const auto ShaderVersion = [&](int32 ShaderIndex, uint32 Group) -> uint64 {
+        return Shaders[ShaderIndex]->GroupVersions.IsValidIndex(Group) ? Shaders[ShaderIndex]->GroupVersions[Group] : 0;
+    };
     for (FWebGPUShaderData *Shader : Shaders)
     {
         TrackShaderBindings(*Shader);
         CommitShaderResources(*Shader);
+    }
+    uint32 ReusedGroups = 0, ValidateGroups = 0;
+    for (int32 Group = 0; CacheGroups && Group < PreparedGroups.Num(); ++Group)
+    {
+        auto& Cached = PreparedGroups[Group];
+        bool Reuse = Cached.Frame == EndFrames && Cached.Entry;
+        if (!Reuse) ++GroupPreparationFrameMisses;
+        else if (Cached.AccessSerial != BindingStateSerial) { Reuse = false; ++GroupPreparationAccessMisses; }
+        else
+        {
+            for (int32 Index = 0; Index < Shaders.Num(); ++Index)
+                if (Cached.ShaderVersions[Index] != ShaderVersion(Index, Group)) { Reuse = false; break; }
+            if (!Reuse) ++GroupPreparationVersionMisses;
+            else for (const auto& Reference : Cached.TextureReferences)
+                if (Reference.Key->GetReferencedTexture() != Reference.Value)
+                { Reuse = false; ++GroupPreparationTextureMisses; break; }
+        }
+        if (Reuse)
+        {
+            if (ValidatePrepared) ValidateGroups |= 1u << Group;
+            else ReusedGroups |= 1u << Group;
+        }
+        if (!(ReusedGroups & (1u << Group))) Cached.TextureReferences.Reset();
+    }
+    for (FWebGPUShaderData *Shader : Shaders)
+    {
         uint32 VertexFetchCodes[4] = {}, VertexFetchKey = 0;
         if (Shader->HasVertexFetchFormats)
         {
@@ -2700,6 +2763,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         }
         for (auto &Reflected : Shader->Bindings)
         {
+            if (ReusedGroups & (1u << Reflected.Group)) continue;
             const auto* Binding = Reflected.Metadata;
             const auto& Name = Reflected.Name;
             WGPUBindGroupEntry Entry = WGPU_BIND_GROUP_ENTRY_INIT;
@@ -2722,6 +2786,9 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             {
                 FString Error;
                 Resource = ResolveDrawBinding(*Shader, Reflected);
+                if (CacheGroups && Reflected.SourceTextureReference)
+                    PreparedGroups[Group].TextureReferences.Emplace(Reflected.SourceTextureReference,
+                        static_cast<FRHITexture*>(Resource));
                 if (ValidatePrepared)
                 {
                     FRHIResource* Expected = nullptr;
@@ -2886,6 +2953,16 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     for (uint32 Group = 0; HasBindings && Group <= Maximum; ++Group)
     {
         auto& Resolved = Result.AddDefaulted_GetRef();
+        auto& Snapshot = PreparedGroups[Group];
+        if (ReusedGroups & (1u << Group))
+        {
+            Snapshot.Entry->LastUsedFrame = EndFrames;
+            Resolved.Handle = Snapshot.Entry->Handle;
+            Resolved.DynamicOffsets = Snapshot.DynamicOffsets;
+            ++GroupPreparationHits;
+            ++BindGroupCacheHits;
+            continue;
+        }
         auto& Offsets = DynamicOffsets[Group];
         if (!Offsets.IsEmpty())
         {
@@ -2893,9 +2970,22 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             for (const auto& Offset : Offsets) Resolved.DynamicOffsets.Add(Offset.Value);
         }
         const auto* Entries = &Groups[Group];
-        const auto& Layouts = Render ? GraphicsPipeline->GroupLayouts : ComputePipeline->GroupLayouts;
         check(Layouts.IsValidIndex(Group));
         const auto Layout = Layouts[Group];
+        const auto SaveSnapshot = [&] {
+            if (!CacheGroups) return;
+            if (ValidateGroups & (1u << Group))
+            {
+                checkf(Snapshot.Entry == PreviousGroups[Group] && Snapshot.DynamicOffsets == Resolved.DynamicOffsets,
+                    TEXT("WebGPU whole-group invalidation missed: group=%u"), Group);
+                ++GroupPreparationValidated;
+            }
+            Snapshot.Frame = EndFrames;
+            Snapshot.Entry = PreviousGroups[Group];
+            Snapshot.AccessSerial = BindingStateSerial;
+            Snapshot.DynamicOffsets = Resolved.DynamicOffsets;
+            for (int32 Index = 0; Index < Shaders.Num(); ++Index) Snapshot.ShaderVersions[Index] = ShaderVersion(Index, Group);
+        };
         const auto Matches = [&](const FWebGPUBindGroupCacheEntry& Cached) {
             if (Cached.Layout != Layout ||
                 Cached.Entries.Num() != (Entries ? Entries->Num() : 0))
@@ -2941,6 +3031,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             Found->LastUsedFrame = EndFrames;
             Resolved.Handle = Found->Handle;
             ++BindGroupCacheHits;
+            SaveSnapshot();
             continue;
         }
         WGPUBindGroupDescriptor Desc = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
@@ -2972,6 +3063,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             ++BindGroupCacheEntries;
         }
         else Resolved.OwnedHandle = true;
+        SaveSnapshot();
     }
     return Result;
 }

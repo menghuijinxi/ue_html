@@ -8,6 +8,8 @@
 #include <webgpu/webgpu.h>
 #include <atomic>
 
+class FRHITextureReference;
+
 struct FWebGPUBindingRoute
 {
     enum class EKind { Uniform, Direct, Table, GlobalSampler };
@@ -34,6 +36,7 @@ struct FWebGPUShaderBinding
     uint64 PreparedSerial = 0, PreparedVersion = 0;
     FWebGPUBindingRoute Route{FWebGPUBindingRoute::EKind::Direct};
     bool RouteInitialized = false;
+    FRHITextureReference* SourceTextureReference = nullptr;
 };
 
 struct FWebGPUBindGroupCacheEntry
@@ -65,6 +68,18 @@ struct FWebGPUResolvedGroup
 };
 using FWebGPUResolvedGroups = TArray<FWebGPUResolvedGroup, TInlineAllocator<4>>;
 
+struct FWebGPUGroupSnapshot
+{
+    // Borrowed from the bounded bind-group cache, valid only in Frame. Shader
+    // resource versions must match before dereferencing any borrowed texture ref.
+    FWebGPUBindGroupCacheEntry* Entry = nullptr;
+    uint32 Frame = MAX_uint32;
+    uint64 AccessSerial = 0;
+    uint64 ShaderVersions[2] = {};
+    TArray<uint32, TInlineAllocator<12>> DynamicOffsets;
+    TArray<TPair<FRHITextureReference*, FRHITexture*>, TInlineAllocator<4>> TextureReferences;
+};
+
 struct FWebGPUShaderData
 {
     FRHIShader* Owner = nullptr;
@@ -87,6 +102,14 @@ struct FWebGPUShaderData
     uint64 UniformBindingVersion = 1, ResolvedUniformBindingVersion = 0;
     uint64 UniformUpdateSerial = 0, StaticUniformSerial = 0;
     TArray<FWebGPUShaderBinding> Bindings;
+    TArray<uint64, TInlineAllocator<4>> GroupVersions;
+    TMap<uint32, uint32> ResourceGroupMasks;
+    uint32 GlobalsGroupMask = 0;
+    void InvalidateGroups(uint32 Mask)
+    {
+        for (int32 Group = 0; Group < GroupVersions.Num(); ++Group)
+            if (Mask & (1u << Group)) ++GroupVersions[Group];
+    }
     bool HasVertexFetchFormats = false;
     mutable TMap<const FJsonObject*, FWebGPUBindingRoute> BindingRoutes;
     mutable TArray<const FRHIUniformBufferLayout*> UniformSlotLayouts;
@@ -405,6 +428,7 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
     TSet<uint64> DynamicBindings;
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
+    TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
     FGraphicsPipelineStateInitializer Initializer;
     explicit FWebGPUGraphicsPipeline(const FGraphicsPipelineStateInitializer &In) : Initializer(In)
     {
@@ -433,6 +457,7 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     TSet<uint64> DynamicBindings;
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
+    TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
     FWebGPUComputePipeline(FRHIComputeShader *Shader, WGPUComputePipeline In)
         : FRHIComputePipelineState(Shader), Handle(In)
     {
@@ -579,6 +604,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<TArray<TPair<uint32, uint32>>> BindingScratchDynamicOffsets;
     uint64 BindingStateSerial = 1;
     uint32 BindingEntriesPrepared = 0, BindingEntriesReused = 0, BindingEntriesValidated = 0;
+    uint32 GroupPreparationHits = 0, GroupPreparationValidated = 0;
+    uint32 GroupPreparationFrameMisses = 0, GroupPreparationAccessMisses = 0,
+        GroupPreparationVersionMisses = 0, GroupPreparationTextureMisses = 0;
     TMap<uint32, TArray<TUniquePtr<FWebGPUBindGroupCacheEntry>>> BindGroupCache;
     // Explicit layouts are interned for the device lifetime, like native root signatures.
     // Keys contain semantic fields, never C struct padding or shader/pipeline identity.

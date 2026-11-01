@@ -76,6 +76,7 @@ if (gpuSceneRecook || manualFetchRecook) {
           '--folder=' + report.packages[name].folder, '--tag=' + tag, '--width=1863', '--height=1030',
           '--dpr=1.25', '--baseline-only', '--baseline-seconds=15', '--warmup-seconds=' + warmupSeconds,
           ...(report.headless ? ['--headless'] : []),
+          ...(process.argv.includes('--binding-group-abba') ? ['--binding-group-mode=' + (name === 'candidate' ? 1 : 0)] : []),
           ...(name === 'candidate' && process.argv.includes('--require-candidate-bundles') ? ['--require-render-bundles'] : [])],
           {stdio: 'inherit', windowsHide: true});
         child.on('error', reject); child.on('close', resolve);
@@ -101,7 +102,9 @@ if (gpuSceneRecook || manualFetchRecook) {
       assert(counterFrames > 0);
       for (const key of ['bindGroupsCreated', 'bindingEntriesPrepared', 'bindingEntriesReused',
         'uniformSnapshots', 'uniformWriteCalls', 'bindGroupCacheHits', 'draws', 'indirectDraws', 'dispatches',
-        'resourceTableCommits', 'resourceTableBuffers', 'bindingRouteResolutions', 'manualVertexFetchDraws']) {
+        'resourceTableCommits', 'resourceTableBuffers', 'bindingRouteResolutions', 'manualVertexFetchDraws',
+        'groupPreparationHits', 'groupPreparationValidated', 'groupFrameMisses', 'groupAccessMisses',
+        'groupVersionMisses', 'groupTextureMisses']) {
         if (value.afterBaseline.occlusion[key] === undefined) continue;
         perFrame[key] = (value.afterBaseline.occlusion[key] - value.before.occlusion[key]) / counterFrames;
       }

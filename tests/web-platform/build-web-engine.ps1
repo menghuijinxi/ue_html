@@ -19,6 +19,12 @@ $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 & (Join-Path $PSScriptRoot 'build-web-blake3.ps1') -Threads:$Threads
 & (Join-Path $PSScriptRoot 'build-web-libpng.ps1') -Threads:$Threads
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
+# Keep the shadow diagnostic overlay current even in incremental runtime builds.
+# Renderer is a local copy; never write through an installed-engine junction.
+$taskShadowOverlay = 'Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
+$taskRendererCopy = Join-Path $taskHost 'Source/Runtime/Renderer'
+if ((Get-Item -LiteralPath $taskRendererCopy).LinkType) { throw 'Renderer overlay must be a local build-host copy.' }
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShadowOverlay") -Destination (Join-Path $taskHost $taskShadowOverlay) -Force
 & node (Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'Enhanced Input runtime module preparation failed.' }
 $taskPlatforms = Join-Path $taskHost 'Platforms'
@@ -243,6 +249,8 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneVisibility.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ShadowSetup.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/ShadowSetup.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     foreach ($taskShaderOverlay in @('RenderCore/Private/RenderingThread.cpp', 'RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',
