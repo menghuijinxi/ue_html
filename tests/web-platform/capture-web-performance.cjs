@@ -91,6 +91,8 @@ async function attach(target) {
     page.on('crash', () => report.errors.push('Renderer crashed'));
     page.on('console', message => {
       const value = message.text(); log.write(value + '\n');
+      const ready = value.match(/P3_ENGINE_READY (\{[^\n]+\})/);
+      if (ready) report.engineReady = JSON.parse(ready[1]);
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(value)) report.errors.push(value);
     });
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});

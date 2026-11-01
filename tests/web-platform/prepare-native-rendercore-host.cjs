@@ -76,7 +76,8 @@ try {
     'Private/MobileFogRendering.cpp', 'Private/VolumetricRenderTarget.cpp', 'Private/ScreenPass.cpp',
     'Private/LightGridInjection.cpp', 'Private/IESTextureManager.cpp',
     'Private/ShadowDepthRendering.cpp', 'Private/ShadowRendering.cpp', 'Private/ShadowSetup.cpp',
-    'Private/PostProcess/PostProcessHistogram.cpp', 'Private/SkyAtmosphereRendering.cpp'] : [];
+    'Private/PostProcess/PostProcessHistogram.cpp', 'Private/SkyAtmosphereRendering.cpp',
+    'Private/InstanceCulling/InstanceCullingContext.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);
     const destination = path.join(host, 'Source/Runtime/Renderer', name);

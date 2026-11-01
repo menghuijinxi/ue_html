@@ -13,6 +13,73 @@ const storageDeclaration = (before, format) => ({before, after: [
   '#endif', before,
 ].join('\n')});
 const overrides = new Map([
+  ['Private/InstanceCulling/BuildInstanceDrawCommands.usf', [{
+    before: '#define USE_HZB_SHARED_SAMPLERS 0',
+    after: ['#define USE_HZB_SHARED_SAMPLERS 0', '',
+      '// WebGPU exposes fewer storage bindings than desktop RHIs. Keep the stock',
+      '// culling algorithm and pack its small, read-only CPU metadata into one SRV.',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '#define WEB_PACKED_INSTANCE_CULLING_METADATA 1', '#endif'].join('\n'),
+  }, {
+    before: 'StructuredBuffer<uint> ViewIds;',
+    after: '#if !WEB_PACKED_INSTANCE_CULLING_METADATA\nStructuredBuffer<uint> ViewIds;\n#endif',
+  }, {
+    before: '\tcheckStructuredBufferAccessSlow(ViewIds, ViewIdIndex);',
+    after: '#if !WEB_PACKED_INSTANCE_CULLING_METADATA\n\tcheckStructuredBufferAccessSlow(ViewIds, ViewIdIndex);\n#endif',
+  }, {
+    before: '\tuint ViewDataIndex = ViewIds[ViewIdIndex];',
+    after: ['#if WEB_PACKED_INSTANCE_CULLING_METADATA',
+      '\tuint ViewDataIndex = WebInstanceCullingMetadata.Load(WebInstanceCullingMetadata.Load(0) + ViewIdIndex * 4u);',
+      '#else', '\tuint ViewDataIndex = ViewIds[ViewIdIndex];', '#endif'].join('\n'),
+  }]],
+  ['Private/InstanceCulling/InstanceCullingCommon.ush', [{
+    before: '#if ENABLE_BATCH_MODE\nStructuredBuffer<FContextBatchInfoPacked> BatchInfos;\nStructuredBuffer<uint> BatchInds;',
+    after: ['#if WEB_PACKED_INSTANCE_CULLING_METADATA',
+      '// Header: ViewIds, BatchInfos and BatchInds byte offsets, followed by ViewIds count.',
+      'ByteAddressBuffer WebInstanceCullingMetadata;', '#endif', '', '#if ENABLE_BATCH_MODE',
+      '#if !WEB_PACKED_INSTANCE_CULLING_METADATA', 'StructuredBuffer<FContextBatchInfoPacked> BatchInfos;',
+      'StructuredBuffer<uint> BatchInds;', '#endif'].join('\n'),
+  }, {
+    before: '\tFContextBatchInfoPacked ContextBatchInfoPacked = BatchInfos[BatchInds[GroupIndex]];',
+    after: ['#if WEB_PACKED_INSTANCE_CULLING_METADATA',
+      '\tuint BatchIndex = WebInstanceCullingMetadata.Load(WebInstanceCullingMetadata.Load(8) + GroupIndex * 4u);',
+      '\tuint BatchOffset = WebInstanceCullingMetadata.Load(4) + BatchIndex * 40u;',
+      '\tuint4 Words0 = WebInstanceCullingMetadata.Load4(BatchOffset);',
+      '\tuint4 Words1 = WebInstanceCullingMetadata.Load4(BatchOffset + 16u);',
+      '\tuint2 Words2 = WebInstanceCullingMetadata.Load2(BatchOffset + 32u);',
+      '\tFContextBatchInfoPacked ContextBatchInfoPacked;',
+      ...['IndirectArgOffset', 'InstanceDataWriteOffset', 'PayloadOffset', 'CompactionDataOffset',
+        'ViewIdsOffset', 'NumViewIds_Flags', 'DynamicInstanceIdOffset', 'DynamicInstanceIdMax',
+        'ItemDataOffset0', 'ItemDataOffset1'].map((name, index) =>
+        `\tContextBatchInfoPacked.${name} = Words${Math.floor(index / 4)}.${'xyzw'[index % 4]};`),
+      '#else', '\tFContextBatchInfoPacked ContextBatchInfoPacked = BatchInfos[BatchInds[GroupIndex]];', '#endif'].join('\n'),
+  }]],
+  ['Private/InstanceCulling/InstanceCullingLoadBalancer.ush', [{
+    before: '\tuint CurrentValue = ItemIndex[ElementIndex];\n\tGroupMemoryBarrierWithGroupSync();',
+    after: ['\tuint CurrentValue = ItemIndex[ElementIndex];',
+      '#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)',
+      '\tGroupMemoryBarrierWithGroupSync();', '#endif',
+      '\t// PrefixMaxStep\'s first barrier already waits for all initial reads before',
+      '\t// any ItemIndex write. Avoid Tint merging barrier/load/barrier into a',
+      '\t// workgroupUniformLoad with the per-thread ElementIndex on WebGPU.'].join('\n'),
+  }]],
+  ['Private/InstanceCulling/InstanceCullingOcclusionQuery.usf', [{
+    before: '#if DIM_MULTI_VIEW\n\tconst uint OldVisibilityMask = RWVisibilityMask[InstanceId];\n\tOutVisibilityMask = OldVisibilityMask | ViewMask;',
+    after: '#if DIM_MULTI_VIEW && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\tconst uint OldVisibilityMask = RWVisibilityMask[InstanceId];\n\tOutVisibilityMask = OldVisibilityMask | ViewMask;',
+  }, {
+    before: '\tRWVisibilityMask[InstanceId] = VisibilityMask;',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t// WebGPU forbids vertex-stage writable storage. Merge previous views in',
+      '\t// the fragment stage, where this visibility buffer is already writable.',
+      '\tRWVisibilityMask[InstanceId] = RWVisibilityMask[InstanceId] | VisibilityMask;',
+      '#else', '\tRWVisibilityMask[InstanceId] = VisibilityMask;', '#endif'].join('\n'),
+  }, {
+    before: '\t\tOutPosition = asfloat(0xFFFFFFFF);',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t\t// Clip every vertex of an invalid debug instance without a NaN constant.',
+      '\t\tOutPosition = float4(2.0f, 2.0f, 2.0f, 1.0f);',
+      '#else', '\t\tOutPosition = asfloat(0xFFFFFFFF);', '#endif'].join('\n'),
+  }]],
   ['Private/MotionBlur/MotionBlurVelocityFlatten.ush', [{
     before: '\tif (any(isnan(VelocityPolar)))',
     after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',

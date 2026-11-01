@@ -225,6 +225,7 @@ WGPUVertexFormat VertexFormat(EVertexElementType Type)
     case VET_Half4: return WGPUVertexFormat_Float16x4;
     case VET_Short4N: return WGPUVertexFormat_Snorm16x4;
     case VET_UShort2: return WGPUVertexFormat_Uint16x2;
+    case VET_UInt: return WGPUVertexFormat_Uint32; // GPUScene primitive/instance ID stream (D3D: R32_UINT).
     default:
         checkf(false, TEXT("WebGPU vertex element type unsupported: %u"), uint32(Type));
         return WGPUVertexFormat_Float32;
@@ -885,6 +886,7 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         double(WebGPUResourceProxyCount.load(std::memory_order_relaxed)));
 #endif
     if (EndFrames % 30 == 0)
+    {
         EM_ASM({
             globalThis.__webOcclusionRHI = {};
             globalThis.__webOcclusionRHI.ready = $0;
@@ -907,6 +909,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             BoundGroups, BindGroupCacheEntries, BindingEntriesPrepared, BindingEntriesReused, BindingEntriesValidated,
             BindGroupFastHits, UniformUploads, UniformWriteCalls, PipelineLayoutCache.Num(),
             DrawBundleHits, DrawBundlesCreated, DrawBundleReadyEntries);
+        EM_ASM({
+            Object.assign(globalThis.__webOcclusionRHI,
+                {draws: $0, indirectDraws: $1, dispatches: $2, sampleFrame: $3});
+        }, Draws, IndirectDraws, Dispatches, EndFrames);
+    }
 #endif
 }
 FWebGPUDynamicRHI::~FWebGPUDynamicRHI()
@@ -1407,8 +1414,9 @@ FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICom
             (Resource == GNullColorVertexBuffer.VertexBufferRHI || Resource == GNullVertexBuffer.VertexBufferRHI))
         {
             // Installed-host adaptation of the Web-only default SRV guard; keep the actual vertex buffers.
-            check(!RHISupportsManualVertexFetch(GMaxRHIShaderPlatform) &&
-                  !FDataDrivenShaderPlatformInfo::GetSupportsVertexShaderSRVs(GMaxRHIShaderPlatform));
+            // GPUScene reads structured buffers in the vertex shader without using
+            // manual vertex fetch. These legacy typed vertex views are still unused.
+            check(!RHISupportsManualVertexFetch(GMaxRHIShaderPlatform));
             const auto &View = Desc.Buffer.SRV;
             auto *Buffer = static_cast<FRHIBuffer *>(Resource);
             const bool Color = Resource == GNullColorVertexBuffer.VertexBufferRHI;
@@ -3646,8 +3654,11 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
         BoundVertexBuffers.SetNum(VertexBuffers.Num());
         BoundVertexOffsets.SetNum(VertexBuffers.Num());
     }
+    // UE retains stream state across PSO changes. Only streams declared by this
+    // pipeline are consumed; an old stream may now be used as a compute SRV.
+    const uint32 Streams = GraphicsPipeline->VertexStreamMask;
     for (int32 Stream = 0; Stream < VertexBuffers.Num(); ++Stream)
-        if (VertexBuffers[Stream])
+        if ((Streams & (1u << Stream)) && VertexBuffers[Stream])
         {
             RequireAccess(VertexBuffers[Stream], ERHIAccess::VertexOrIndexBuffer);
             if (BoundVertexBuffers[Stream] != VertexBuffers[Stream] || BoundVertexOffsets[Stream] != VertexOffsets[Stream])
@@ -3726,6 +3737,7 @@ void FWebGPUDynamicRHI::RHIDrawPrimitiveIndirect(FRHIBuffer* Arguments, uint32 O
     SetDrawBindings();
     wgpuRenderPassEncoderDrawIndirect(Pass, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
     ++Draws;
+    ++IndirectDraws;
 }
 void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIBuffer* Arguments, uint32 Offset)
 {
@@ -3739,6 +3751,7 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIB
     SetIndexBinding(Buffer);
     wgpuRenderPassEncoderDrawIndexedIndirect(Pass, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
     ++Draws;
+    ++IndirectDraws;
 }
 WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
 {

@@ -32,7 +32,7 @@ function recordedHostProduct(file) {
   // Cook output directories retain the successful preparation snapshots.
   const outputs = path.join(__dirname, 'build');
   for (const group of fs.readdirSync(outputs, {withFileTypes: true})) {
-    if (!group.isDirectory() || !/^web-engine-webgpu(?:-es31|-sm5)?(?:-default)?-cook$/.test(group.name)) continue;
+    if (!group.isDirectory() || !/^(?:web-engine-webgpu(?:-es31|-sm5)?(?:-default)?|web-project-[a-z0-9-]+)-cook$/.test(group.name)) continue;
     const directory = path.join(outputs, group.name);
     for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
       if (!entry.isDirectory() || !/^\d{8}-\d{6}$/.test(entry.name)) continue;

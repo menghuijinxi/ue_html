@@ -536,6 +536,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<FString> Errors;
     FString AdapterName;
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;
+    uint32 IndirectDraws = 0;
     uint32 UniformUploads = 0;
     uint32 BindGroupCacheHits = 0, BindGroupCacheEntries = 0;
     uint32 BindGroupFastHits = 0;
