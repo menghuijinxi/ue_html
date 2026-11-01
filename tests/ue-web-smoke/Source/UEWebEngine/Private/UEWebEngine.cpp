@@ -69,6 +69,7 @@ bool DefaultTemplate = false;
 bool DesktopRenderer = false;
 bool VisualTestClock = false;
 bool MaterialMotionTest = false;
+bool ParallelDrawRecording = false;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
 TWeakObjectPtr<AStaticMeshActor> MaterialMotionSample;
@@ -1010,7 +1011,8 @@ int32 StartEngine()
 #else
         TEXT(" -onethread -norhithread -nosound");
 #endif
-    const FString CommandLine = FString(StartupMap()) + ThreadArguments + (UseWebGPU ?
+    const FString CommandLine = FString(StartupMap()) + ThreadArguments +
+        (ParallelDrawRecording ? TEXT(" -WebParallelDrawRecording") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
         TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -NoSplash -NoLoadingScreen -unattended -stdout") :
         TEXT(" -nullrhi -sm5 -NoSplash -NoLoadingScreen -unattended -stdout"));
@@ -1142,6 +1144,7 @@ int main(int argc, char** argv)
         DesktopRenderer |= FCStringAnsi::Strcmp(argv[Index], "-WebDesktop") == 0;
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
+        ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
         constexpr const ANSICHAR* MapOption = "-WebProjectMap=";
         if (FCStringAnsi::Strncmp(argv[Index], MapOption, FCStringAnsi::Strlen(MapOption)) == 0)
         {

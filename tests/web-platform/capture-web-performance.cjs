@@ -19,7 +19,7 @@ fs.mkdirSync(path.dirname(output), {recursive: true});
 const report = {date: new Date().toISOString(), tag, folder, width, height, dpr, seconds, warmupSeconds,
   headless: process.argv.includes('--headless'),
   gpuCaptureBoundary: 'present-to-present',
-  settingsOverrides: [], errors: [], profiles: [], pass: false,
+  settingsOverrides: [], errors: [], profiles: [], parallelDrawThreads: [], pass: false,
   boundaries: ['CPU profiles are statistical stack samples, not exact scope timers.',
     'Game tick diagnostics include waits and asynchronous delivery; they are not Draw time.',
     'Pass CPU duration includes C++ command encoding between WebGPU begin/end.',
@@ -93,6 +93,8 @@ async function attach(target) {
       const value = message.text(); log.write(value + '\n');
       const ready = value.match(/P3_ENGINE_READY (\{[^\n]+\})/);
       if (ready) report.engineReady = JSON.parse(ready[1]);
+      const parallel = value.match(/P3_WEB_PARALLEL_DRAW_THREAD (\{[^\n]+\})/);
+      if (parallel) report.parallelDrawThreads.push(JSON.parse(parallel[1]));
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(value)) report.errors.push(value);
     });
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});

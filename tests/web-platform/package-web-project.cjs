@@ -8,6 +8,8 @@ const id = process.argv.find(value => value.startsWith('--project='))?.slice(10)
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
 const threads = process.argv.includes('--threads');
+const parallelRecording = process.argv.includes('--parallel-recording');
+assert(!parallelRecording || threads, 'Parallel command recording requires the threaded runtime');
 const trace = process.argv.includes('--trace');
 assert(!trace || threads, '--trace requires --threads');
 const distanceFields = process.argv.includes('--distance-fields');
@@ -16,17 +18,18 @@ assert(!threads || desktop, 'Threaded engine requires the desktop renderer');
 const runtime = trace ? 'UEWebEngineThreadsTrace' : threads ? 'UEWebEngineThreads' : 'UEWebEngine';
 const suffix = (distanceFields ? '-distance-fields' : '') + (threads ? '-threads' : desktop ? '-desktop' : '') +
   (trace ? '-trace' : '');
-const prefix = `web-project-${id}${suffix}`;
+const prefix = `web-project-${id}${suffix}${parallelRecording ? '-parallel-recording' : ''}`;
 const stagePrefix = `web-project-${id}${desktop ? '-desktop' : ''}`;
 const directory = path.join(__dirname, 'results');
-const outputFolder = process.argv.find(value => value.startsWith('--output-folder='))?.slice(16) || id + suffix;
+const outputFolder = process.argv.find(value => value.startsWith('--output-folder='))?.slice(16) ||
+  id + suffix + (parallelRecording ? '-parallel-recording' : '');
 assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outputFolder));
 const output = path.join(__dirname, 'build', outputFolder);
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
 const report = {date: new Date().toISOString(), pass: false, id, output, architecture: 'wasm64',
-  renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads, trace, distanceFields,
+  renderer: desktop ? 'desktop-deferred' : 'mobile-forward', threads, trace, distanceFields, parallelRecording,
   sourceFiles: [__filename, template, path.join(__dirname, 'content-file-metadata.cjs'),
     ...['asset-versions.cjs', 'cached-cook-validation.cjs', 'web-content-io.js', 'web-content-worker.js',
       ...(threads ? ['web-engine-host.js', 'web-engine-worker.js'] : [])].map(name =>
@@ -78,7 +81,9 @@ try {
       wasm: metadata(wasm.file, runtime + '.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
-  html = html.replace(original, `arguments: ['-webgpu', '-WebProjectMap=${stage.map}'],`)
+  report.engineArguments = ['-webgpu', '-WebProjectMap=' + stage.map,
+    ...(parallelRecording ? ['-WebParallelDrawRecording'] : [])];
+  html = html.replace(original, `arguments: ${JSON.stringify(report.engineArguments)},`)
     .replaceAll('UE 默认关卡', stage.projectName);
   if (report.textureCompression === 'BC' || report.textureCompression === 'Project') {
     const marker = 'const requiredTextureFeatures = desktopRenderer ?';

@@ -469,12 +469,18 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GShaderPlatformForFeatureLevel[GMaxRHIFeatureLevel] = GMaxRHIShaderPlatform;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     GRHISupportsRHIThread = true;
+    // Parallel tasks record independent FRHICommandLists. The executor still
+    // translates them serially on the GPU owner (ParallelRHIExecute is false).
+    // Keep shader creation on RT's existing InitResources prerequisite below.
+    // Opt in until scene measurements demonstrate a benefit over serial recording.
+    GSupportsParallelRenderingTasksWithSeparateRHIThread =
+        FParse::Param(FCommandLine::Get(), TEXT("WebParallelDrawRecording"));
 #else
     GRHISupportsRHIThread = false;
+    GSupportsParallelRenderingTasksWithSeparateRHIThread = false;
 #endif
     GRHISupportsRHIOnTaskThread = false;
     GRHISupportsParallelRHIExecute = false;
-    GSupportsParallelRenderingTasksWithSeparateRHIThread = false;
     GRHISupportsMultithreadedResources = false;
     GRHISupportsMultithreadedShaderCreation = false;
     GRHISupportsAsyncPipelinePrecompile = false;
@@ -880,9 +886,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     EM_ASM({
         Object.assign(globalThis.__webThreadStages ||= {},
-            {rhiThreadId: $0, rhiFrames: $1, submitted: $2, presented: $3});
+            {rhiThreadId: $0, rhiFrames: $1, submitted: $2, presented: $3,
+                parallelCommandRecording: !!$4, parallelRHITranslation: !!$5});
         globalThis.__webRHIFrames = $3;
-    }, FPlatformTLS::GetCurrentThreadId(), EndFrames, Submitted, FramesPresented);
+    }, FPlatformTLS::GetCurrentThreadId(), EndFrames, Submitted, FramesPresented,
+        GRHICommandList.UseParallelAlgorithms(), GRHISupportsParallelRHIExecute);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     EM_ASM({ globalThis.__webThreadStages.resourceProxyCalls = $0; },
         double(WebGPUResourceProxyCount.load(std::memory_order_relaxed)));

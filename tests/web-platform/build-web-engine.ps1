@@ -253,6 +253,7 @@ try {
         'Renderer/Private/IndirectLightRendering.cpp', 'Renderer/Private/DistortionRendering.cpp',
         'Renderer/Private/SystemTextures.cpp', 'Renderer/Private/SceneTextureReductions.cpp',
         'Renderer/Private/SceneRendering.cpp', 'Renderer/Private/GPUScene.cpp', 'Renderer/Private/GlobalDistanceField.cpp',
+        'Renderer/Private/MeshDrawCommands.cpp',
         'Renderer/Private/InstanceCulling/InstanceCullingContext.cpp',
         'Renderer/Private/GlobalDistanceFieldHeightfields.h', 'Renderer/Private/DistanceFieldAmbientOcclusion.cpp',
         'Renderer/Private/MobileBasePassRendering.cpp', 'Renderer/Private/MobileShadingRenderer.cpp',

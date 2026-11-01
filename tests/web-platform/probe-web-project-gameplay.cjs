@@ -15,20 +15,22 @@ const requireRenderThreads = process.argv.includes('--require-render-threads');
 const validateBindingCache = process.argv.includes('--validate-binding-cache');
 const requireGPUScene = process.argv.includes('--require-gpuscene');
 const requireResourceTables = process.argv.includes('--require-resource-tables');
+const requireParallelRecording = process.argv.includes('--require-parallel-recording');
 const debugPort = Number(option('debug-port') || 0);
 assert(debugPort === 0 || (debugPort >= 1024 && debugPort <= 65535));
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const output = path.join(__dirname, 'results', `project-gameplay-${tag}`);
 const report = {date: new Date().toISOString(), folder, width, height, dpr, requestedRuns: runs, seconds,
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-  runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, requireGPUScene, requireResourceTables, pass: false};
+  runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, requireGPUScene, requireResourceTables,
+  requireParallelRecording, pass: false};
 const log = fs.createWriteStream(output + '.log');
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
 (async () => {
   try {
     for (let run = 0; run < runs; ++run) {
-      const result = {run, errors: [], samples: [], defaultPositionSRV: false, pass: false};
+      const result = {run, errors: [], samples: [], parallelDrawThreads: [], defaultPositionSRV: false, pass: false};
       report.runs.push(result);
       context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', `gameplay-${tag}-${run}`),
         {channel: 'msedge', headless: !process.argv.includes('--visible'), viewport: {width, height}, deviceScaleFactor: dpr,
@@ -41,6 +43,8 @@ let context;
         log.write(`[${run}] ${text}\n`);
         const ready = text.match(/P3_ENGINE_READY (\{[^\n]+\})/);
         if (ready) result.engineReady = JSON.parse(ready[1]);
+        const parallel = text.match(/P3_WEB_PARALLEL_DRAW_THREAD (\{[^\n]+\})/);
+        if (parallel) result.parallelDrawThreads.push(JSON.parse(parallel[1]));
         if (text.includes('P3_DEFAULT_POSITION_SRV bytes=12 format=float32 zero=1')) result.defaultPositionSRV = true;
         if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(text)) result.errors.push(text);
       });
@@ -151,6 +155,16 @@ let context;
         assert(bindings?.resourceTableCommits > 0 && bindings.resourceTableBuffers >= bindings.resourceTableCommits,
           'UE resource table updates must be exercised during real scene movement');
         assert(bindings.bindingRouteResolutions > 0, 'Binding source plans must be initialized');
+      }
+      if (requireParallelRecording) {
+        const {threads, stages} = result.samples.at(-1);
+        assert.equal(stages?.parallelCommandRecording, true, 'UE parallel command recording must be active');
+        assert.equal(stages?.parallelRHITranslation, false, 'RHI translation must remain serial on the GPU owner');
+        const named = [threads.gameThread, threads.renderThreadId, threads.rhiThreadId];
+        const workers = result.parallelDrawThreads.filter(t => !t.renderThread && !t.rhiThread &&
+          !named.includes(t.threadId) && t.taskCount > 1 && t.sampleNumDraws > 0);
+        assert(new Set(workers.map(t => t.threadId)).size >= 2,
+          'Real UE draw recording must execute on at least two physical task workers');
       }
       if (process.argv.includes('--require-render-bundles')) {
         assert(result.samples.at(-1).bindings?.drawBundleHits > 1000,
