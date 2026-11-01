@@ -118,4 +118,4 @@ GPUScene 接入后减少了约 48.7% 的绘制调用、82.0% 的 setBindGroup。
 
 原始工程 `G:/UE_HTML/TriplexHouseVilla` 与安装版 `D:/UE_5.8` 未改动。Cook、覆盖源码、DLL 和输出包都在工作区隔离目录中。Cook 失败重试的恢复检查已覆盖 `web-project-*-cook` 快照，仍要求主机路径及产品 SHA 匹配。
 
-GPUScene 能消除部分逐对象绑定并为自动实例化提供基础；能否明显减少别墅关卡的 draw，取决于网格和材质状态是否可合并，需要实测。
+本候选已实测减少别墅关卡的绘制和绑定调用。剩余引擎机制的接入差距、源码依据及建议顺序见 [UE 引擎机制复用审查](UE58_WEBGPU_ENGINE_REUSE_AUDIT.md)。
