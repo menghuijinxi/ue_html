@@ -149,7 +149,7 @@ bool CheckMemberOffsets(const FWebGPUShaderData &Shader)
             continue;
         const uint32 Slot = UniformName == TEXT("View") ? 0 : 1;
         const auto *Metadata =
-            FindUniformBufferStructByLayoutHash(Shader.ResourceTable.ResourceTableLayoutHashes[Slot]);
+            FindUniformBufferStructByLayoutHash(Shader.GetResourceTable().ResourceTableLayoutHashes[Slot]);
         if (!Metadata)
             return false;
         for (const auto &Field : Binding->GetArrayField(TEXT("members")))
@@ -356,7 +356,7 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
                 {
                     const auto Before = MakeShared<TArray<uint32>>();
                     Cmd.EnqueueLambda([&RHI, Before](FRHICommandListBase&) {
-                        *Before = {RHI.UniformUploads, RHI.BoundGroups, RHI.BindGroupCacheHits};
+                        *Before = {RHI.UniformUploads, RHI.BoundGroups, RHI.BindGroupCacheHits, RHI.ResourceTableCommits};
                     });
                     Draw(Cmd, Case.Value, View, Primitive, Uniform);
                     Cmd.EnqueueLambda([&, Before, Material](FRHICommandListBase&) {
@@ -364,6 +364,8 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
                             RHI.UniformUploads == (*Before)[0]);
                         Record(Material + TEXT("-unchanged-bindings-reuse-bind-group"),
                             RHI.BoundGroups == (*Before)[1] && RHI.BindGroupCacheHits > (*Before)[2]);
+                        Record(Material + TEXT("-unchanged-bindings-skip-resource-table-update"),
+                            RHI.ResourceTableCommits == (*Before)[3]);
                     });
                 }
                 Cmd.EndRenderPass();
@@ -414,7 +416,8 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
                 RHI.RHIUpdateUniformBuffer(Cmd, Primitive, RightPrimitive.GetData());
                 if (Textured)
                     RHI.RHIUpdateTextureReference(Cmd, TextureReference, Images[1]);
-                RHI.RHIUpdateUniformBuffer(Cmd, Uniform, RightMaterial.GetData());
+                if (!Textured)
+                    RHI.RHIUpdateUniformBuffer(Cmd, Uniform, RightMaterial.GetData());
                 Draw(Cmd, Right, View, Primitive, Uniform);
                 Cmd.EndRenderPass();
             }
@@ -441,7 +444,7 @@ TSharedRef<FJsonObject> RunWebGPUMaterialProbe(FWebGPUDynamicRHI &RHI, const FSt
                     FWebGPUShaderData Invalid;
                     Invalid.Metadata = Shader.Metadata;
                     Invalid.Resources = Shader.Resources;
-                    Invalid.ResourceTable = Shader.ResourceTable;
+                    Invalid.ResourceTable = Shader.GetResourceTable();
                     Change(Invalid);
                     Record(Name, !RHI.ResolveBinding(Invalid, Binding, Resource, FromTable, Error) && !Error.IsEmpty());
                 };

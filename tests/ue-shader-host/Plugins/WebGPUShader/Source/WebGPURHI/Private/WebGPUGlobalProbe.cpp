@@ -333,7 +333,7 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                    RHI->VertexDeclarationsCreated == 1);
         const float Rectangle[] = {1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1};
         const auto *Metadata =
-            FindUniformBufferStructByLayoutHash(RHI->ShaderData(VS).ResourceTable.ResourceTableLayoutHashes[0]);
+            FindUniformBufferStructByLayoutHash(RHI->ShaderData(VS).GetResourceTable().ResourceTableLayoutHashes[0]);
         check(Metadata);
         auto Uniform = RHICreateUniformBuffer(Rectangle, &Metadata->GetLayout(), UniformBuffer_MultiFrame,
                                               EUniformBufferValidation::None);

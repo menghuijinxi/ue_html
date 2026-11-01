@@ -91,7 +91,8 @@ if (gpuSceneRecook) {
         value.afterBaseline.occlusion.sampleFrame - value.before.occlusion.sampleFrame;
       assert(counterFrames > 0);
       for (const key of ['bindGroupsCreated', 'bindingEntriesPrepared', 'bindingEntriesReused',
-        'uniformSnapshots', 'uniformWriteCalls', 'bindGroupCacheHits', 'draws', 'indirectDraws', 'dispatches']) {
+        'uniformSnapshots', 'uniformWriteCalls', 'bindGroupCacheHits', 'draws', 'indirectDraws', 'dispatches',
+        'resourceTableCommits', 'resourceTableBuffers', 'bindingRouteResolutions']) {
         if (value.afterBaseline.occlusion[key] === undefined) continue;
         perFrame[key] = (value.afterBaseline.occlusion[key] - value.before.occlusion[key]) / counterFrames;
       }

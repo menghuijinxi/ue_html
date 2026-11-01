@@ -7,6 +7,8 @@
 #include "RHITextureReference.h"
 #include "RHIUtilities.h"
 #include "RHIStats.h"
+#include "RHIUniformBufferUtilities.h"
+#include "RHICoreShader.h"
 
 #include "HAL/PlatformProcess.h"
 #include "HAL/IConsoleManager.h"
@@ -909,6 +911,12 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             BoundGroups, BindGroupCacheEntries, BindingEntriesPrepared, BindingEntriesReused, BindingEntriesValidated,
             BindGroupFastHits, UniformUploads, UniformWriteCalls, PipelineLayoutCache.Num(),
             DrawBundleHits, DrawBundlesCreated, DrawBundleReadyEntries);
+        // This toolchain supports at most 16 EM_ASM arguments per call.
+        EM_ASM({
+            globalThis.__webOcclusionRHI.resourceTableCommits = $0;
+            globalThis.__webOcclusionRHI.resourceTableBuffers = $1;
+            globalThis.__webOcclusionRHI.bindingRouteResolutions = $2;
+        }, ResourceTableCommits, ResourceTableBuffers, BindingRouteResolutions);
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI,
                 {draws: $0, indirectDraws: $1, dispatches: $2, sampleFrame: $3});
@@ -1087,6 +1095,8 @@ FWebGPUShaderData &FWebGPUDynamicRHI::ShaderData(FRHIShader *Shader)
         Shader->Data.Owner = Shader.GetReference();                                                                    \
         FString Error;                                                                                                 \
         checkf(LoadShader(Desc, SF_##Stage, Shader->Data, Error), TEXT("%s"), *Error);                                 \
+        Shader->InitResourceTable();                                                                                  \
+        UE::RHICore::InitStaticUniformBufferSlots(Shader.GetReference());                                               \
         Shader->SetHash(FShaderHash(FXxHash64::HashBuffer(Desc.Code.GetData(), Desc.Code.Num())));                     \
         return F##Stage##ShaderRHIRef(Shader.GetReference());                                                          \
     }
@@ -1545,12 +1555,16 @@ void FWebGPUDynamicRHI::RHIUpdateUniformBuffer(FRHICommandListBase &Cmd, FRHIUni
     TArray<TRefCountPtr<FRHIResource>> Resources;
     UniformSnapshot(Bytes, Buffer->GetLayout(), Snapshot, Resources);
     if (Cmd.Bypass())
+    {
         Buffer->SetContents(MoveTemp(Snapshot), MoveTemp(Resources));
+        ++UniformUpdateSerial;
+    }
     else
     {
-        Cmd.EnqueueLambda([Buffer = TRefCountPtr<FWebGPUUniform>(Buffer), Snapshot = MoveTemp(Snapshot),
+        Cmd.EnqueueLambda([this, Buffer = TRefCountPtr<FWebGPUUniform>(Buffer), Snapshot = MoveTemp(Snapshot),
                            Resources = MoveTemp(Resources)](FRHICommandListBase &) mutable {
             Buffer->SetContents(MoveTemp(Snapshot), MoveTemp(Resources));
+            ++UniformUpdateSerial;
         });
     }
 }
@@ -1992,7 +2006,7 @@ bool FWebGPUDynamicRHI::ValidateUniform(const FWebGPUShaderData &Shader, uint32 
         Error = TEXT("Uniform buffer is not bound");
         return false;
     }
-    const auto &Hashes = Shader.ResourceTable.ResourceTableLayoutHashes;
+    const auto &Hashes = Shader.GetResourceTable().ResourceTableLayoutHashes;
     if (!Hashes.IsValidIndex(Slot) || !Hashes[Slot] || Uniform->GetLayout().GetHash() != Hashes[Slot])
     {
         Error = TEXT("Uniform buffer layout hash mismatch");
@@ -2032,6 +2046,10 @@ void FWebGPUDynamicRHI::RHISetStaticUniformBuffers(const FUniformBufferStaticBin
         Updated[Slot] = Uniform;
     }
     StaticUniformBuffers = MoveTemp(Updated);
+    StaticUniformPointers.SetNumZeroed(StaticUniformBuffers.Num());
+    for (int32 Slot = 0; Slot < StaticUniformBuffers.Num(); ++Slot)
+        StaticUniformPointers[Slot] = StaticUniformBuffers[Slot];
+    ++StaticUniformSerial;
     ++StaticUniformBatches;
     if (StartupProbeMode && StaticUniformBatches <= 4)
         UE_LOG(LogRHI, Display, TEXT("P3_STATIC_UNIFORMS batch=%u count=%d slots=%d"), StaticUniformBatches,
@@ -2046,13 +2064,16 @@ void FWebGPUDynamicRHI::RHISetStaticUniformBuffer(FUniformBufferStaticSlot Slot,
     if (!StaticUniformBuffers.IsValidIndex(Slot))
         StaticUniformBuffers.SetNum(Slot + 1);
     StaticUniformBuffers[Slot] = Uniform;
+    StaticUniformPointers.SetNumZeroed(StaticUniformBuffers.Num());
+    StaticUniformPointers[Slot] = Uniform;
+    ++StaticUniformSerial;
     ++StaticUniformUpdates;
 }
 bool FWebGPUDynamicRHI::ResolveUniform(const FWebGPUShaderData &Shader, uint32 Slot, FRHIUniformBuffer *&Uniform,
                                        FString &Error) const
 {
     Uniform = nullptr;
-    const auto &Hashes = Shader.ResourceTable.ResourceTableLayoutHashes;
+    const auto &Hashes = Shader.GetResourceTable().ResourceTableLayoutHashes;
     if (!Hashes.IsValidIndex(Slot) || !Hashes[Slot])
     {
         Error = TEXT("Shader uniform layout hash is missing");
@@ -2201,14 +2222,14 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
     }
     TArray<const TArray<uint32>*> Streams;
     if (Descriptor == 2)
-        Streams = {&Shader.ResourceTable.TextureMap, &Shader.ResourceTable.ShaderResourceViewMap};
+        Streams = {&Shader.GetResourceTable().TextureMap, &Shader.GetResourceTable().ShaderResourceViewMap};
     else if (Descriptor == 0)
-        Streams.Add(&Shader.ResourceTable.SamplerMap);
+        Streams.Add(&Shader.GetResourceTable().SamplerMap);
     else if (Descriptor == 3)
-        Streams.Add(&Shader.ResourceTable.UnorderedAccessViewMap);
+        Streams.Add(&Shader.GetResourceTable().UnorderedAccessViewMap);
     else if (Descriptor == 7)
-        Streams.Add(Binding.GetBoolField(TEXT("readOnlyStorage")) ? &Shader.ResourceTable.ShaderResourceViewMap :
-            &Shader.ResourceTable.UnorderedAccessViewMap);
+        Streams.Add(Binding.GetBoolField(TEXT("readOnlyStorage")) ? &Shader.GetResourceTable().ShaderResourceViewMap :
+            &Shader.GetResourceTable().UnorderedAccessViewMap);
     if (Streams.IsEmpty())
     {
         Error = TEXT("Resource table descriptor is unsupported: ") + Name;
@@ -2221,7 +2242,7 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
         if (Parameter->GetIntegerField(TEXT("type")) != 1)
             continue;
         const uint32 Slot = Parameter->GetIntegerField(TEXT("bufferIndex"));
-        if (Slot >= 32 || !(Shader.ResourceTable.ResourceTableBits & (1u << Slot)))
+        if (Slot >= 32 || !(Shader.GetResourceTable().ResourceTableBits & (1u << Slot)))
             continue;
         if (Stream->IsEmpty())
             continue;
@@ -2250,12 +2271,12 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
                     return Member->GetStringField(TEXT("name")) == Name &&
                            Member->GetStringField(TEXT("uniformBuffer")) == Parameter->GetStringField(TEXT("name")) &&
                            Member->GetIntegerField(TEXT("resourceIndex")) == ResourceIndex &&
-                           (Stream == &Shader.ResourceTable.TextureMap ?
+                           (Stream == &Shader.GetResourceTable().TextureMap ?
                                 Member->GetIntegerField(TEXT("type")) == UBMT_TEXTURE ||
                                 Member->GetIntegerField(TEXT("type")) == UBMT_RDG_TEXTURE :
-                            Stream == &Shader.ResourceTable.SamplerMap ?
+                            Stream == &Shader.GetResourceTable().SamplerMap ?
                                 Member->GetIntegerField(TEXT("type")) == UBMT_SAMPLER :
-                            Stream == &Shader.ResourceTable.ShaderResourceViewMap ?
+                            Stream == &Shader.GetResourceTable().ShaderResourceViewMap ?
                                 Member->GetIntegerField(TEXT("type")) == UBMT_SRV ||
                                 Member->GetIntegerField(TEXT("type")) == UBMT_RDG_TEXTURE_SRV ||
                                 Member->GetIntegerField(TEXT("type")) == UBMT_RDG_TEXTURE_NON_PIXEL_SRV ||
@@ -2284,9 +2305,9 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
             Resource = Uniform->GetResourceTable()[ResourceIndex].GetReference();
             if (Resource && Resource->GetType() == RRT_TextureReference)
                 Resource = static_cast<FRHITextureReference *>(Resource)->GetReferencedTexture();
-            const ERHIResourceType ExpectedType = Stream == &Shader.ResourceTable.TextureMap ? RRT_Texture :
-                Stream == &Shader.ResourceTable.SamplerMap ? RRT_SamplerState :
-                Stream == &Shader.ResourceTable.ShaderResourceViewMap ? RRT_ShaderResourceView : RRT_UnorderedAccessView;
+            const ERHIResourceType ExpectedType = Stream == &Shader.GetResourceTable().TextureMap ? RRT_Texture :
+                Stream == &Shader.GetResourceTable().SamplerMap ? RRT_SamplerState :
+                Stream == &Shader.GetResourceTable().ShaderResourceViewMap ? RRT_ShaderResourceView : RRT_UnorderedAccessView;
             if (!Resource || Resource->GetType() != ExpectedType)
             {
                 Error = FString::Printf(TEXT("Resource table member is null or has wrong RHI type: %s descriptor=%u actual=%u"),
@@ -2328,6 +2349,117 @@ void FWebGPUDynamicRHI::TrackShaderBindings(FWebGPUShaderData& Shader)
         FrameShaders.Add(Shader.Owner);
     }
 }
+void FWebGPUDynamicRHI::CommitShaderResources(FWebGPUShaderData& Shader)
+{
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebGPU_CommitShaderResources);
+    check(Shader.Owner);
+    if (Shader.ResolvedUniformBindingVersion != Shader.UniformBindingVersion ||
+        Shader.UniformUpdateSerial != UniformUpdateSerial || Shader.StaticUniformSerial != StaticUniformSerial)
+    {
+        const auto& Table = Shader.Owner->GetShaderResourceTable();
+        const auto& Hashes = Table.ResourceTableLayoutHashes;
+        check(Hashes.Num() <= 32);
+        TArray<FRHIUniformBuffer*, TInlineAllocator<32>> Effective;
+        Effective.SetNumZeroed(Hashes.Num());
+        for (int32 Slot = 0; Slot < Hashes.Num(); ++Slot)
+        {
+            if (!Hashes[Slot]) continue;
+            const auto* Direct = Shader.Resources.Find((1u << 16) | uint32(Slot));
+            if (Direct) Effective[Slot] = static_cast<FRHIUniformBuffer*>(Direct->GetReference());
+        }
+        StaticUniformPointers.SetNumZeroed(FUniformBufferStaticSlotRegistry::Get().GetSlotCount());
+        UE::RHICore::ApplyStaticUniformBuffers(Shader.Owner, StaticUniformPointers,
+            [&](int32 Slot, FRHIUniformBuffer* Uniform) {
+                checkf(!Effective[Slot], TEXT("Uniform buffer is bound through both static and shader slots"));
+                Effective[Slot] = Uniform;
+                ++StaticUniformResolutions;
+            });
+        Shader.BoundUniformBuffers.SetNum(Hashes.Num());
+        Shader.BoundUniformVersions.SetNumZeroed(Hashes.Num());
+        for (int32 Slot = 0; Slot < Hashes.Num(); ++Slot)
+        {
+            if (!Hashes[Slot]) continue;
+            FString Error;
+            auto* Uniform = Effective[Slot];
+            checkf(ValidateUniform(Shader, Slot, Uniform, Error), TEXT("%s"), *Error);
+            const uint64 Version = static_cast<FWebGPUUniform*>(Uniform)->ContentsVersion;
+            if (Shader.BoundUniformBuffers[Slot] != Uniform || Shader.BoundUniformVersions[Slot] != Version)
+            {
+                Shader.DirtyUniformBuffers |= 1u << Slot;
+                Shader.BoundUniformBuffers[Slot] = Uniform;
+                Shader.BoundUniformVersions[Slot] = Version;
+            }
+        }
+        Shader.ResolvedUniformBindingVersion = Shader.UniformBindingVersion;
+        Shader.UniformUpdateSerial = UniformUpdateSerial;
+        Shader.StaticUniformSerial = StaticUniformSerial;
+    }
+    if (!(Shader.DirtyUniformBuffers & Shader.Owner->GetShaderResourceTable().ResourceTableBits))
+    {
+        Shader.DirtyUniformBuffers = 0;
+        return;
+    }
+    struct FBinder
+    {
+        FWebGPUShaderData& Shader;
+        void SetTexture(FRHITexture* Resource, uint8 Index) { Set(Resource, RRT_Texture, Index); }
+        void SetSRV(FRHIShaderResourceView* Resource, uint8 Index) { Set(Resource, RRT_ShaderResourceView, Index); }
+        void SetSampler(FRHISamplerState* Resource, uint8 Index) { Set(Resource, RRT_SamplerState, Index); }
+        void SetUAV(FRHIUnorderedAccessView* Resource, uint8 Index) { Set(Resource, RRT_UnorderedAccessView, Index); }
+        void SetResourceCollection(FRHIResourceCollection* Resource, uint8 Index) { Set(Resource, RRT_ResourceCollection, Index); }
+        void Set(FRHIResource* Resource, ERHIResourceType Type, uint8 Index)
+        {
+            // Preserve TextureReference identity here. Streaming can replace its
+            // target without updating or rebinding the containing uniform buffer.
+            Shader.TableResources.Add((uint32(Type) << 16) | Index, Resource);
+        }
+    };
+    ResourceTableBuffers += FMath::CountBits(Shader.DirtyUniformBuffers &
+        Shader.Owner->GetShaderResourceTable().ResourceTableBits);
+    ++ResourceTableCommits;
+    UE::RHI::Private::SetUniformBufferResourcesFromTables(FBinder{Shader}, *Shader.Owner,
+        Shader.DirtyUniformBuffers, Shader.BoundUniformBuffers
+#if ENABLE_RHI_VALIDATION
+        , nullptr
+#endif
+    );
+}
+FRHIResource* FWebGPUDynamicRHI::ResolveDrawBinding(FWebGPUShaderData& Shader, FWebGPUShaderBinding& Binding)
+{
+    if (!Binding.RouteInitialized)
+    {
+        FRHIResource* Resource = nullptr;
+        bool FromTable = false;
+        FString Error;
+        checkf(ResolveBinding(Shader, *Binding.Metadata, Resource, FromTable, Error), TEXT("%s"), *Error);
+        Binding.Route = Shader.BindingRoutes.FindChecked(Binding.Metadata);
+        Binding.RouteInitialized = true;
+        ++BindingRouteResolutions;
+    }
+    const auto& Route = Binding.Route;
+    FRHIResource* Resource = nullptr;
+    switch (Route.Kind)
+    {
+    case FWebGPUBindingRoute::EKind::Uniform:
+        Resource = Shader.BoundUniformBuffers[Route.Slot];
+        break;
+    case FWebGPUBindingRoute::EKind::Direct:
+        Resource = Shader.Resources.FindChecked(Route.Index);
+        break;
+    case FWebGPUBindingRoute::EKind::Table:
+        Resource = Shader.TableResources.FindChecked((uint32(Route.ResourceType) << 16) | Binding.Index);
+        ++ResourceTableBindings;
+        break;
+    case FWebGPUBindingRoute::EKind::GlobalSampler:
+        Resource = Route.GlobalResource;
+        break;
+    }
+    check(Resource);
+    if (Resource->GetType() == RRT_TextureReference)
+        Resource = static_cast<FRHITextureReference*>(Resource)->GetReferencedTexture();
+    check(Resource);
+    return Resource;
+}
 void FWebGPUDynamicRHI::ReleaseFrameBindings()
 {
     for (const auto& Shader : FrameShaders)
@@ -2339,6 +2471,10 @@ void FWebGPUDynamicRHI::ReleaseFrameBindings()
             Binding.PreparedSerial = 0;
         }
         Data.Resources.Reset();
+        Data.BoundUniformBuffers.Reset();
+        Data.BoundUniformVersions.Reset();
+        Data.TableResources.Reset();
+        Data.ResolvedUniformBindingVersion = 0;
         if (Data.GlobalsBuffer) wgpuBufferRelease(Data.GlobalsBuffer);
         Data.GlobalsBuffer = nullptr;
         Data.GlobalsBufferOffset = 0;
@@ -2415,7 +2551,14 @@ void FWebGPUDynamicRHI::Bind(FWebGPUShaderData &Shader, const FRHIShaderParamete
         Unsupported(TEXT("Shader parameter resource type"));
         break;
     }
-    Shader.Resources.Add((Type << 16) | Parameter.Index, Parameter.Resource);
+    const uint32 Key = (Type << 16) | Parameter.Index;
+    if (Type == 1)
+    {
+        const auto* Previous = Shader.Resources.Find(Key);
+        if (!Previous || Previous->GetReference() != Parameter.Resource)
+            ++Shader.UniformBindingVersion;
+    }
+    Shader.Resources.Add(Key, Parameter.Resource);
 }
 void FWebGPUDynamicRHI::Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8> Bytes,
                                    TConstArrayView<FRHIShaderParameter> Values,
@@ -2473,6 +2616,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     for (FWebGPUShaderData *Shader : Shaders)
     {
         TrackShaderBindings(*Shader);
+        CommitShaderResources(*Shader);
         for (auto &Reflected : Shader->Bindings)
         {
             const auto* Binding = Reflected.Metadata;
@@ -2495,10 +2639,13 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             if (Name != TEXT("$Globals"))
             {
                 FString Error;
-                // Resolve the current source even on a cache hit: texture
-                // references can change without rebinding their uniform.
-                checkf(ResolveBinding(*Shader, *Binding, Resource, FromTable, Error), TEXT("%s"), *Error);
-                ResourceTableBindings += FromTable ? 1 : 0;
+                Resource = ResolveDrawBinding(*Shader, Reflected);
+                if (ValidatePrepared)
+                {
+                    FRHIResource* Expected = nullptr;
+                    checkf(ResolveBinding(*Shader, *Binding, Expected, FromTable, Error), TEXT("%s"), *Error);
+                    checkf(Resource == Expected, TEXT("WebGPU resource table invalidation missed: %s"), *Name);
+                }
                 Version = Descriptor == 6 ? static_cast<FWebGPUUniform*>(Resource)->ContentsVersion : 0;
             }
             const bool Reuse = Reflected.PreparedSerial == BindingStateSerial &&
@@ -3313,7 +3460,7 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
             Texture->GetDepthStencilClearValue(ClearDepth, ClearStencil);
         Depth.depthClearValue = ClearDepth;
         Depth.stencilReadOnly = !Info.DepthStencilRenderTarget.ExclusiveDepthStencil.IsStencilWrite();
-        PassStencilReadOnly = Depth.stencilReadOnly;
+        PassStencilReadOnly = Depth.stencilReadOnly != 0;
         PassBundleDepth = Format(Texture->GetFormat());
         if (!Depth.stencilReadOnly)
         {

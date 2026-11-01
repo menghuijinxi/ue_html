@@ -14,13 +14,14 @@ const dpr = Number(option('dpr') || 1.21);
 const requireRenderThreads = process.argv.includes('--require-render-threads');
 const validateBindingCache = process.argv.includes('--validate-binding-cache');
 const requireGPUScene = process.argv.includes('--require-gpuscene');
+const requireResourceTables = process.argv.includes('--require-resource-tables');
 const debugPort = Number(option('debug-port') || 0);
 assert(debugPort === 0 || (debugPort >= 1024 && debugPort <= 65535));
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const output = path.join(__dirname, 'results', `project-gameplay-${tag}`);
 const report = {date: new Date().toISOString(), folder, width, height, dpr, requestedRuns: runs, seconds,
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-  runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, requireGPUScene, pass: false};
+  runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, requireGPUScene, requireResourceTables, pass: false};
 const log = fs.createWriteStream(output + '.log');
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
@@ -144,6 +145,12 @@ let context;
         assert(result.samples.at(-1).bindings?.bindingEntriesValidated > 1000,
           'Recomputed descriptors must match prepared cache entries during real scene movement');
         assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingCacheTest', 0)), 1);
+      }
+      if (requireResourceTables) {
+        const bindings = result.samples.at(-1).bindings;
+        assert(bindings?.resourceTableCommits > 0 && bindings.resourceTableBuffers >= bindings.resourceTableCommits,
+          'UE resource table updates must be exercised during real scene movement');
+        assert(bindings.bindingRouteResolutions > 0, 'Binding source plans must be initialized');
       }
       if (process.argv.includes('--require-render-bundles')) {
         assert(result.samples.at(-1).bindings?.drawBundleHits > 1000,

@@ -107,14 +107,17 @@ async function attach(target) {
       settings: globalThis.__webProjectSettings, streaming: globalThis.__webTextureStreaming,
       occlusion: globalThis.__webOcclusionRHI, adapter: __webPerformanceCapture.adapter,
       io: globalThis.__webContentIO?.stats, runtime: globalThis.__webEngineRuntime,
-      gpuErrors: __webPerformanceCapture.errors}));
+      failure: globalThis.__webEngineFailure, gpuErrors: __webPerformanceCapture.errors}));
     if (option('camera') === 'room')
       assert.equal(await page.evaluate(() => __webEngineRPC('WebProjectViewTest', -175, -80, 160, -5, 50)), 1);
     report.cameraMode = option('camera') === 'room' ? 'fixed-room' : 'original-spawn';
     const initial = await state();
-    await page.waitForFunction(target => globalThis.__webEngineFrames >= target, initial.gameFrames + 60, {timeout: 180000});
+    await page.waitForFunction(target => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= target,
+      initial.gameFrames + 60, {timeout: 180000});
+    assert(!await page.evaluate(() => globalThis.__webEngineFailure));
     if (warmupSeconds) await page.waitForTimeout(warmupSeconds * 1000);
     report.before = await state();
+    assert(!report.before.failure, report.before.failure);
     const cameraKey = value => ['x', 'y', 'z', 'pitch', 'yaw'].map(key => value.camera[key]);
     report.initialCamera = cameraKey(initial);
     assert.deepEqual(cameraKey(report.before), report.initialCamera, 'Camera moved during warmup');
@@ -126,6 +129,7 @@ async function attach(target) {
     for (let second = 0; second < baselineSeconds; ++second) {
       await page.waitForTimeout(1000);
       const value = await state(), time = performance.now();
+      assert(!value.failure, value.failure);
       assert.deepEqual(cameraKey(value), report.initialCamera, 'Camera moved during measurement');
       report.baselineSamples.push({elapsedMs: time - baselineStart,
         frames: value.frames - previousState.frames, milliseconds: time - previousTime,

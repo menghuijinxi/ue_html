@@ -1,5 +1,7 @@
 # WebGPU 后端的 UE 引擎机制复用审查（2026-11-01）
 
+后续进展：第 1 项已接入 UE 公共资源表及静态 uniform helper，并完成网页行走、绑定一致性校验和四轮对照；本组正常模式实测 **52.91 → 53.24 FPS（+0.62%）**，收益有限。实现和性能图见 [资源表接入记录](UE58_WEBGPU_RESOURCE_TABLES.md)。以下保留接入前审查基线。
+
 GPUScene 接入后的下一轮，优先复用 **UE 共用资源表更新逻辑**，然后补齐 **并行绘制命令构建的前提**，再评估 **LocalVertexFactory 手动顶点读取**。三者分别对应当前绑定解析热点、CPU 工作并行度和大量顶点流绑定；目前只有 GPUScene 整体候选的帧率收益得到实测，不能给这些候选预报提升百分比。
 
 审查基线：外围仓库 `a811df5`，引擎 `979705eea`，运行包 `villa-gpuscene-candidate`。核对了实际包内的 Web SM5 配置、现有 CPU/API 捕获，以及参考引擎与构建主机对应源码的 SHA。复核记录为 `tests/web-platform/results/web-engine-reuse-audit.json`。本轮为源码及既有捕获审查，没有新的帧率对照。

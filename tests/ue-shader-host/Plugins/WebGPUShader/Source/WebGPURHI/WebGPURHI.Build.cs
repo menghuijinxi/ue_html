@@ -12,6 +12,7 @@ public class WebGPURHI : ModuleRules
             OptimizeCode = CodeOptimization.Never;
         PrivateDependencyModuleNames.AddRange(new string[] { "Core", "RHI", "RHICore", "RenderCore", "Json" });
         PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHICore/Internal"));
+        PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHI/Internal"));
         string Dawn = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../../../../.tools/dawn-v20261009.190412"));
         string DawnHost = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../../../../.tools/ue58-dawn-host"));
         PrivateIncludePaths.Add(Path.Combine(Dawn, "include"));

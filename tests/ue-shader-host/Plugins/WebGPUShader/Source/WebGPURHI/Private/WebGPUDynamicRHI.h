@@ -31,6 +31,8 @@ struct FWebGPUShaderBinding
     TRefCountPtr<FRHIResource> PreparedResource;
     WGPUBindGroupEntry PreparedEntry = WGPU_BIND_GROUP_ENTRY_INIT;
     uint64 PreparedSerial = 0, PreparedVersion = 0;
+    FWebGPUBindingRoute Route{FWebGPUBindingRoute::EKind::Direct};
+    bool RouteInitialized = false;
 };
 
 struct FWebGPUBindGroupCacheEntry
@@ -72,6 +74,17 @@ struct FWebGPUShaderData
     TMap<uint32, TRefCountPtr<FRHIResource>> Resources;
     TArray<uint8> Globals;
     FShaderResourceTable ResourceTable;
+    const FShaderResourceTable& GetResourceTable() const
+    {
+        // Standalone rejection probes have no FRHIShader owner.
+        return Owner ? Owner->GetShaderResourceTable() : ResourceTable;
+    }
+    TArray<TRefCountPtr<FRHIUniformBuffer>> BoundUniformBuffers;
+    TArray<uint64> BoundUniformVersions;
+    TMap<uint32, TRefCountPtr<FRHIResource>> TableResources;
+    uint32 DirtyUniformBuffers = 0;
+    uint64 UniformBindingVersion = 1, ResolvedUniformBindingVersion = 0;
+    uint64 UniformUpdateSerial = 0, StaticUniformSerial = 0;
     TArray<FWebGPUShaderBinding> Bindings;
     mutable TMap<const FJsonObject*, FWebGPUBindingRoute> BindingRoutes;
     mutable TArray<const FRHIUniformBufferLayout*> UniformSlotLayouts;
@@ -92,6 +105,23 @@ template <typename Base> class TWebGPUShader final : public Base
 {
   public:
     FWebGPUShaderData Data;
+    void InitResourceTable()
+    {
+        this->ShaderResourceTable = MoveTemp(Data.ResourceTable);
+        auto& Table = this->ShaderResourceTable;
+        // UE's enumerator indexes every resource map at each dirty UB slot.
+        // The Web packet omits maps with no resources of that type.
+        const auto InitEmptyMap = [&](TArray<uint32>& Map) {
+            if (Map.IsEmpty()) Map.SetNumZeroed(Table.ResourceTableLayoutHashes.Num());
+        };
+        InitEmptyMap(Table.TextureMap);
+        InitEmptyMap(Table.ShaderResourceViewMap);
+        InitEmptyMap(Table.SamplerMap);
+        InitEmptyMap(Table.UnorderedAccessViewMap);
+#if PLATFORM_SUPPORTS_BINDLESS_RENDERING
+        InitEmptyMap(Table.ResourceCollectionMap);
+#endif
+    }
 };
 using FWebGPUVertexShader = TWebGPUShader<FRHIVertexShader>;
 using FWebGPUPixelShader = TWebGPUShader<FRHIPixelShader>;
@@ -588,6 +618,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<TRefCountPtr<FRHIShader>> FrameShaders;
     uint32 OwnerThread = 0;
     uint32 ResourceTableBindings = 0;
+    uint64 UniformUpdateSerial = 1, StaticUniformSerial = 1;
+    uint32 ResourceTableCommits = 0, ResourceTableBuffers = 0, BindingRouteResolutions = 0;
     uint32 TransitionsCreated = 0, TransitionsBegun = 0, TransitionsEnded = 0, TransitionsReleased = 0;
     uint32 AccessChecks = 0;
     uint32 GraphicsPipelinesCreated = 0, ComputePipelinesCreated = 0, VertexDeclarationsCreated = 0, EndFrames = 0;
@@ -675,6 +707,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
                         bool &FromTable, FString &Error) const;
     FWebGPUShaderData &ShaderData(FRHIShader *Shader);
     void TrackShaderBindings(FWebGPUShaderData& Shader);
+    void CommitShaderResources(FWebGPUShaderData& Shader);
+    FRHIResource* ResolveDrawBinding(FWebGPUShaderData& Shader, FWebGPUShaderBinding& Binding);
     void ReleaseFrameBindings();
     FWebGPUUniform::FConstantSnapshot UploadFrameConstants(const void* Data, uint64 Bytes);
     void FlushFrameConstants();
@@ -799,6 +833,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
     TMap<FString, WGPUComputePipeline> ClearPipelines;
     TArray<TRefCountPtr<FRHIUniformBuffer>> StaticUniformBuffers;
+    TArray<FRHIUniformBuffer*> StaticUniformPointers;
     TArray<FWebGPUReadbackRef> PendingReadbacks;
     TArray<FWebGPUFenceRef> PendingFences;
 };
