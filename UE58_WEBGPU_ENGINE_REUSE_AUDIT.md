@@ -1,5 +1,7 @@
 # WebGPU 后端的 UE 引擎机制复用审查（2026-11-01）
 
+第 4–6 项已做实际测试：实例 HZB 四轮 21.46→19.75 FPS，存在基线漂移，无启用依据；传统 HZB 数据回读通过但尚未消费对应帧结果；PSO 收集触发 shader 创建线程检查；RDG 已确认池复用并新增逐资源逻辑账本，未实现 native transient allocator。具体证据、默认决策和限制见 [HZB / PSO / RDG 测试记录](UE58_WEBGPU_HZB_PSO_RDG_TESTS.md)。以下第 4–6 节保留测试前审查基线。
+
 后续进展：第 1 项已接入 UE 公共资源表及静态 uniform helper，并完成网页行走、绑定一致性校验和四轮对照；本组正常模式实测 **52.91 → 53.24 FPS（+0.62%）**，收益有限。实现和性能图见 [资源表接入记录](UE58_WEBGPU_RESOURCE_TABLES.md)。以下保留接入前审查基线。
 
 第 2 项已验证 mesh pass 的并行命令录制：三个任务线程实际执行，Render 线程相关提交栈采样下降；本关卡四轮为 **52.85 → 51.83 FPS（−1.94%）**，RHI 和 render pass 数量未改善，最终保留为默认关闭的实验入口。范围及性能图见 [并行录制记录](UE58_WEBGPU_PARALLEL_RECORDING.md)；RDG 全面并行及并行 RHI 翻译仍未接入。

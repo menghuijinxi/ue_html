@@ -9,7 +9,7 @@ const rpcNames = new Set([
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
   'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
-  'WebLightingQualityTest', 'WebVisibilityTest', 'WebTraceStart', 'WebTraceStop', 'WebTraceExport', 'WebBindingCacheTest'
+  'WebLightingQualityTest', 'WebVisibilityTest', 'WebOptimizationTest', 'WebTextureReadbackTest', 'WebTraceStart', 'WebTraceStop', 'WebTraceExport', 'WebBindingCacheTest'
 ]);
 // Emscripten's Worker setImmediate fallback sends a token to its parent. This
 // runtime has a custom page host, so schedule locally and yield without a UI hop.
@@ -39,7 +39,7 @@ const diagnosticStateKeys = [
   '__webThreadFrameTimes', '__webThreadIOProbe', '__webThreadStages',
   '__webThreadsExitCode', '__webThreadsFailure', '__webThreadsMemory', '__webThreadsResult',
   '__webDistanceFields', '__webDistanceFieldsExposure', '__webDistanceFieldsGPU',
-  '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings'
+  '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings', '__webOptimizationRHI', '__webOptimizationState'
 ];
 function snapshot() {
   const state = {};

@@ -53,6 +53,8 @@
 #include "StaticMeshResources.h"
 #include "DistanceFieldAtlas.h"
 #include "RHIStats.h"
+#include "RHIGPUReadback.h"
+#include "RenderTargetPool.h"
 #include "UObject/UObjectIterator.h"
 #include "Blueprint/UserWidget.h"
 
@@ -70,6 +72,7 @@ bool DesktopRenderer = false;
 bool VisualTestClock = false;
 bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
+bool PSOPrecacheTest = false;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
 TWeakObjectPtr<AStaticMeshActor> MaterialMotionSample;
@@ -470,6 +473,76 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebVisibilityTest(int Parameter, int Value)
                 }, Data->LODResources[Index].GetNumTriangles(), Data->ScreenSize[Index].GetValue());
         }
     }
+    return 1;
+}
+
+// Explicit experiment controls. They never write project config or change quality.
+extern "C" EMSCRIPTEN_KEEPALIVE int WebTextureReadbackTest(int Step)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (!UseWebGPU || (Step != 1 && Step != 2)) return 0;
+    ENQUEUE_RENDER_COMMAND(WebTextureReadbackProbe)([Step](FRHICommandListImmediate& Cmd) {
+        static FTextureRHIRef Source;
+        static TUniquePtr<FRHIGPUTextureReadback> Readback;
+        if (Step == 1)
+        {
+            check(!Readback);
+            Source = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("WebReadbackPattern"), 3, 2, PF_R8G8B8A8)
+                .SetFlags(ETextureCreateFlags::ShaderResource).SetInitialState(ERHIAccess::CopyDest));
+            uint8 Pattern[24];
+            for (uint32 Index = 0; Index < 24; ++Index) Pattern[Index] = uint8(Index * 7 + 3);
+            Cmd.UpdateTexture2D(Source, 0, FUpdateTextureRegion2D(0, 0, 0, 0, 3, 2), 12, Pattern);
+            Cmd.Transition(FRHITransitionInfo(Source, ERHIAccess::CopyDest, ERHIAccess::CopySrc));
+            Readback = MakeUnique<FRHIGPUTextureReadback>(TEXT("WebTextureReadbackProbe"));
+            Readback->EnqueueCopy(Cmd, Source, FResolveRect());
+            MAIN_THREAD_ASYNC_EM_ASM({ globalThis.__webTextureReadbackTest = ({pending: true}); });
+        }
+        else if (Readback && Readback->IsReady())
+        {
+            int32 RowPitch = 0, Height = 0;
+            const auto* Bytes = static_cast<const uint8*>(Readback->Lock(RowPitch, &Height));
+            bool Valid = Bytes && RowPitch >= 3 && Height == 2;
+            if (Valid)
+                for (uint32 Index = 0; Index < 24; ++Index)
+                    Valid &= Bytes[(Index / 12) * RowPitch * 4 + Index % 12] == uint8(Index * 7 + 3);
+            if (Bytes) Readback->Unlock();
+            MAIN_THREAD_ASYNC_EM_ASM({
+                globalThis.__webTextureReadbackTest = ({pending: false, pass: !!$0, rowPitchPixels: $1, height: $2});
+            }, Valid, RowPitch, Height);
+            Readback.Reset();
+            Source.SafeRelease();
+        }
+    });
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebOptimizationTest(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    if (!UseWebGPU || Mode < 0 || Mode > 3) return 0;
+    auto* HZB = IConsoleManager::Get().FindConsoleVariable(TEXT("r.HZBOcclusion"));
+    auto* Instances = IConsoleManager::Get().FindConsoleVariable(TEXT("r.InstanceCulling.OcclusionCull"));
+    if (!HZB || !Instances) return 0;
+    static const int32 OriginalHZB = HZB->GetInt(), OriginalInstances = Instances->GetInt();
+    if (Mode)
+    {
+        HZB->Set(Mode == 1 ? 2 : OriginalHZB, ECVF_SetByCode);
+        Instances->Set(Mode == 2 ? 1 : OriginalInstances, ECVF_SetByCode);
+    }
+    const int32 HZBValue = HZB->GetInt(), InstanceValue = Instances->GetInt();
+    ENQUEUE_RENDER_COMMAND(WebOptimizationSnapshot)([HZBValue, InstanceValue](FRHICommandListImmediate&) {
+        uint32 Count = 0, PoolKB = 0, UsedKB = 0;
+        GRenderTargetPool.GetStats(Count, PoolKB, UsedKB);
+        const auto* Transient = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RDG.TransientAllocator"));
+        MAIN_THREAD_ASYNC_EM_ASM({
+            globalThis.__webOptimizationState = ({hzbOcclusion: $0, instanceOcclusion: $1,
+                renderTargetCount: $2, renderTargetPoolBytes: $3, renderTargetUsedBytes: $4,
+                rdgTransientCvar: $5, nativeTransientAllocator: false});
+        }, HZBValue, InstanceValue, Count, double(PoolKB) * 1024, double(UsedKB) * 1024,
+            Transient ? Transient->GetInt() : -1);
+        GRenderTargetPool.DumpMemoryUsage(*GLog);
+        IConsoleManager::Get().ProcessUserConsoleInput(TEXT("r.DumpBufferPoolMemory"), *GLog, nullptr);
+    });
     return 1;
 }
 
@@ -1012,7 +1085,8 @@ int32 StartEngine()
         TEXT(" -onethread -norhithread -nosound");
 #endif
     const FString CommandLine = FString(StartupMap()) + ThreadArguments +
-        (ParallelDrawRecording ? TEXT(" -WebParallelDrawRecording") : TEXT("")) + (UseWebGPU ?
+        (ParallelDrawRecording ? TEXT(" -WebParallelDrawRecording") : TEXT("")) +
+        (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
         TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -NoSplash -NoLoadingScreen -unattended -stdout") :
         TEXT(" -nullrhi -sm5 -NoSplash -NoLoadingScreen -unattended -stdout"));
@@ -1145,6 +1219,7 @@ int main(int argc, char** argv)
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
+        PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
         constexpr const ANSICHAR* MapOption = "-WebProjectMap=";
         if (FCStringAnsi::Strncmp(argv[Index], MapOption, FCStringAnsi::Strlen(MapOption)) == 0)
         {

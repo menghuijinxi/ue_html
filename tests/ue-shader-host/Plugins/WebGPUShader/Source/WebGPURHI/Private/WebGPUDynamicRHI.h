@@ -194,11 +194,22 @@ struct FWebGPUBufferLock
     EResourceLockMode Mode = RLM_WriteOnly;
 };
 
+struct FWebGPUReadbackState
+{
+    WGPUBuffer Handle = nullptr;
+    uint32 Size = 0, RowPitch = 0, Height = 0;
+    TArray<uint8> Bytes;
+    std::atomic<bool> Ready{false};
+    TFunction<void(const TArray<uint8>&)> OnReady;
+    ~FWebGPUReadbackState() { if (Handle) WebGPUOnOwner([&] { wgpuBufferRelease(Handle); }); }
+};
+using FWebGPUReadbackRef = TSharedPtr<FWebGPUReadbackState, ESPMode::ThreadSafe>;
+
 class FWebGPUTexture final : public FRHITexture
 {
   public:
     WGPUTexture Handle;
-    WGPUTextureView View;
+    WGPUTextureView View = nullptr;
     WGPUTextureView DepthSampleView = nullptr;
     FWebGPUResourceState State;
     FWebGPUResourceState StencilState;
@@ -206,6 +217,8 @@ class FWebGPUTexture final : public FRHITexture
     TArray<uint8> InitialBytes;
     TMap<uint32, TArray<uint8>> MipLocks;
     TMap<uint32, WGPUTextureView> AttachmentViews;
+    mutable FCriticalSection ReadbackCS;
+    FWebGPUReadbackRef Readback, LockedReadback;
     bool SurfaceFrameActive = true;
     uint32 LayerCount() const { return uint32(GetDesc().ArraySize) * (GetDesc().IsTextureCube() ? 6u : 1u); }
     FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle)
@@ -215,6 +228,7 @@ class FWebGPUTexture final : public FRHITexture
         UE::RHICore::UpdateGlobalTextureStats(Desc, Desc.CalcMemorySizeEstimate(), false, true);
         SubresourceStates.Init(FWebGPUResourceState(Desc.InitialState),
             Desc.NumMips * LayerCount() - 1);
+        if (!Handle) return; // CPUReadback uses a mapped buffer, not a GPU texture.
         WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
         if (Desc.IsTextureCube())
         {
@@ -267,8 +281,8 @@ class FWebGPUTexture final : public FRHITexture
             WebGPUOnOwner([&] { wgpuTextureViewRelease(DepthSampleView); });
         for (const auto& Entry : AttachmentViews)
             WebGPUOnOwner([&] { wgpuTextureViewRelease(Entry.Value); });
-        WebGPUOnOwner([&] { wgpuTextureViewRelease(View); });
-        WebGPUOnOwner([&] { wgpuTextureRelease(Handle); });
+        if (View) WebGPUOnOwner([&] { wgpuTextureViewRelease(View); });
+        if (Handle) WebGPUOnOwner([&] { wgpuTextureRelease(Handle); });
         UE::RHICore::UpdateGlobalTextureStats(GetDesc(), GetDesc().CalcMemorySizeEstimate(), false, false);
     }
 };
@@ -429,17 +443,6 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
         WebGPUOnOwner([&] { wgpuComputePipelineRelease(Handle); });
     }
 };
-
-struct FWebGPUReadbackState
-{
-    WGPUBuffer Handle = nullptr;
-    uint32 Size = 0;
-    TArray<uint8> Bytes;
-    std::atomic<bool> Ready{false};
-    TFunction<void(const TArray<uint8>&)> OnReady;
-    ~FWebGPUReadbackState() { if (Handle) WebGPUOnOwner([&] { wgpuBufferRelease(Handle); }); }
-};
-using FWebGPUReadbackRef = TSharedPtr<FWebGPUReadbackState, ESPMode::ThreadSafe>;
 
 struct FWebGPUOcclusionResultSlot
 {
@@ -624,6 +627,11 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint32 ResourceTableCommits = 0, ResourceTableBuffers = 0, BindingRouteResolutions = 0;
     TMap<uint32, WGPUBuffer> VertexFetchFormatBuffers;
     uint32 ManualVertexFetchDraws = 0;
+    TSharedRef<std::atomic<uint32>, ESPMode::ThreadSafe> TextureReadbacksReady = MakeShared<std::atomic<uint32>, ESPMode::ThreadSafe>(0);
+    std::atomic<uint32> TextureReadbacksPending{0};
+    std::atomic<uint32> TextureReadbackMaps{0}, TextureReadbackNotReady{0};
+    double GraphicsPipelineCreateMs = 0, ComputePipelineCreateMs = 0;
+    uint32 PrecachedGraphicsPipelines = 0;
     uint32 TransitionsCreated = 0, TransitionsBegun = 0, TransitionsEnded = 0, TransitionsReleased = 0;
     uint32 AccessChecks = 0;
     uint32 GraphicsPipelinesCreated = 0, ComputePipelinesCreated = 0, VertexDeclarationsCreated = 0, EndFrames = 0;
@@ -798,6 +806,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RHICopyTexture(FRHITexture *, FRHITexture *, const FRHICopyTextureInfo &) override;
     void RHICopyBufferRegion(FRHIBuffer *, uint64, FRHIBuffer *, uint64, uint64) override;
     void RHIReadSurfaceData(FRHITexture *, FIntRect, TArray<FColor> &, FReadSurfaceDataFlags) override;
+    void RHIMapStagingSurface(FRHITexture*, FRHIGPUFence*, void*&, int32&, int32&, uint32) override;
+    void RHIUnmapStagingSurface(FRHITexture*, uint32) override;
+    void RHIMapStagingSurface_RenderThread(FRHICommandListImmediate&, FRHITexture*, uint32, FRHIGPUFence*, void*&, int32&, int32&) override;
+    void RHIUnmapStagingSurface_RenderThread(FRHICommandListImmediate&, FRHITexture*, uint32) override;
     IRHICommandContext *RHIGetDefaultContext() override;
     IRHIComputeContext *RHIGetCommandContext(ERHIPipeline) override;
     FRHIFinalizeContextsResult RHIFinalizeContexts(FRHIFinalizeContextsArgs &&) override;

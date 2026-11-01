@@ -484,7 +484,7 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsMultithreadedResources = false;
     GRHISupportsMultithreadedShaderCreation = false;
     GRHISupportsAsyncPipelinePrecompile = false;
-    GRHISupportsPSOPrecaching = false;
+    GRHISupportsPSOPrecaching = FParse::Param(FCommandLine::Get(), TEXT("WebPSOPrecacheTest"));
     GRHISupportsPipelineFileCache = false;
     GRHISupportsTextureStreaming = true;
     GRHIRequiresRenderTargetForPixelShaderUAVs = true;
@@ -932,6 +932,14 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, ResourceTableCommits, ResourceTableBuffers, BindingRouteResolutions,
             RHISupportsManualVertexFetch(GMaxRHIShaderPlatform), ManualVertexFetchDraws, VertexFetchFormatBuffers.Num());
         EM_ASM({
+            globalThis.__webOptimizationRHI = ({sampleFrame: $0, graphicsPipelines: $1, computePipelines: $2,
+                graphicsPipelineCreateMs: $3, computePipelineCreateMs: $4,
+                textureReadbacks: $5, textureReadbacksReady: $6, textureReadbackMaps: $7, textureReadbackNotReady: $8,
+                psoPrecaching: !!$9, precachedGraphicsPipelines: $10});
+        }, EndFrames, GraphicsPipelinesCreated, ComputePipelinesCreated, GraphicsPipelineCreateMs, ComputePipelineCreateMs,
+            TextureReadbacksPending.load(), TextureReadbacksReady->load(), TextureReadbackMaps.load(), TextureReadbackNotReady.load(),
+            GRHISupportsPSOPrecaching, PrecachedGraphicsPipelines);
+        EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI,
                 {draws: $0, indirectDraws: $1, dispatches: $2, sampleFrame: $3});
         }, Draws, IndirectDraws, Dispatches, EndFrames);
@@ -1357,6 +1365,15 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     WEBGPU_ON_OWNER(RHICreateTextureInitializer(Cmd, Requested));
     RequireOwner();
     FRHITextureCreateDesc In = Requested;
+    if (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::CPUReadback))
+    {
+        check(In.Dimension == ETextureDimension::Texture2D && In.NumMips == 1 && In.NumSamples == 1 &&
+            In.ArraySize == 1 && In.Depth == 1 && In.Extent.X > 0 && In.Extent.Y > 0 &&
+            (In.Format == PF_B8G8R8A8 || In.Format == PF_R8G8B8A8 || In.Format == PF_R32_UINT ||
+             In.Format == PF_R32_FLOAT || In.Format == PF_A32B32G32R32F) &&
+            In.InitAction == ERHITextureInitAction::Default);
+        return FTextureInitializer(Cmd, new FWebGPUTexture(In, nullptr), *this, false);
+    }
     // FTextureCubeResource uses the legacy implicit sampling capability for asset cubes.
     if (In.IsTextureCube() &&
         !EnumHasAnyFlags(In.Flags, ~(ETextureCreateFlags::SRGB | ETextureCreateFlags::OfflineProcessed)))
@@ -1516,17 +1533,19 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
 {
     WEBGPU_ON_OWNER(RHIUpdateTexture2D(Cmd, Texture, Mip, Region, Pitch, Bytes));
     RequireOwner();
+    const uint32 PixelBytes = GPixelFormats[Texture->GetFormat()].BlockBytes;
     check(Texture->GetDesc().Dimension == ETextureDimension::Texture2D && Mip == 0 &&
-          (Texture->GetFormat() == PF_R8G8B8A8 || Texture->GetFormat() == PF_R32_FLOAT) &&
+          (Texture->GetFormat() == PF_R8G8B8A8 || Texture->GetFormat() == PF_R32_FLOAT ||
+           Texture->GetFormat() == PF_A32B32G32R32F) &&
           Region.Width && Region.Height &&
           Region.DestX + Region.Width <= Texture->GetSizeX() && Region.DestY + Region.Height <= Texture->GetSizeY() &&
-          Pitch >= (Region.SrcX + Region.Width) * 4);
-    const uint32 UploadPitch = Align(Region.Width * 4, 256u);
+          Pitch >= (Region.SrcX + Region.Width) * PixelBytes);
+    const uint32 UploadPitch = Align(Region.Width * PixelBytes, 256u);
     TArray<uint8> Snapshot;
     Snapshot.SetNumZeroed(UploadPitch * Region.Height);
     for (uint32 Row = 0; Row < Region.Height; ++Row)
-        FMemory::Memcpy(Snapshot.GetData() + Row * UploadPitch, Bytes + (Region.SrcY + Row) * Pitch + Region.SrcX * 4,
-                        Region.Width * 4);
+        FMemory::Memcpy(Snapshot.GetData() + Row * UploadPitch, Bytes + (Region.SrcY + Row) * Pitch + Region.SrcX * PixelBytes,
+                        Region.Width * PixelBytes);
     auto Upload = [this, Texture = TRefCountPtr<FWebGPUTexture>(static_cast<FWebGPUTexture *>(Texture)), Region,
                    UploadPitch, Snapshot = MoveTemp(Snapshot)](FRHICommandListBase &) {
         check(Encoder && !Pass);
@@ -3118,6 +3137,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     WEBGPU_ON_OWNER(RHICreateGraphicsPipelineState(In));
     RequireOwner();
     ++GraphicsPipelinesCreated;
+    if (In.bPSOPrecache) ++PrecachedGraphicsPipelines;
     check(In.NumSamples == 1 && !In.BoundShaderState.GetGeometryShader() &&
           (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip));
     auto *Result = new FWebGPUGraphicsPipeline(In);
@@ -3267,7 +3287,9 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             Depth.stencilWriteMask = 0;
         Desc.depthStencil = &Depth;
     }
+    const double CreateStart = FPlatformTime::Seconds();
     Result->Handle = wgpuDeviceCreateRenderPipeline(Device, &Desc);
+    GraphicsPipelineCreateMs += (FPlatformTime::Seconds() - CreateStart) * 1000;
     if (DepthOnlyFragment)
         wgpuShaderModuleRelease(DepthOnlyFragment);
     wgpuPipelineLayoutRelease(Desc.layout);
@@ -3288,7 +3310,9 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     const FTCHARToUTF8 Entry(*Shader.Entry);
     Desc.compute.entryPoint = Text(Entry.Get());
     ++ComputePipelinesCreated;
+    const double CreateStart = FPlatformTime::Seconds();
     auto Handle = wgpuDeviceCreateComputePipeline(Device, &Desc);
+    ComputePipelineCreateMs += (FPlatformTime::Seconds() - CreateStart) * 1000;
     wgpuPipelineLayoutRelease(Desc.layout);
     auto* Result = new FWebGPUComputePipeline(In.ComputeShader, Handle);
     Result->DynamicBindings = MoveTemp(DynamicBindings);
@@ -4010,6 +4034,49 @@ void FWebGPUDynamicRHI::RHIDispatchIndirectComputeShader(FRHIBuffer* Arguments, 
 void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destination, const FRHICopyTextureInfo &Info)
 {
     WEBGPU_COMMAND_ON_OWNER(RHICopyTexture(Source, Destination, Info));
+    if (EnumHasAnyFlags(Destination->GetDesc().Flags, ETextureCreateFlags::CPUReadback))
+    {
+        auto* Target = static_cast<FWebGPUTexture*>(Destination);
+        check(Encoder && !Pass && Source != Destination && !Target->Handle &&
+            Source->GetFormat() == Destination->GetFormat() && Info.NumMips == 1 && Info.NumSlices == 1 &&
+            Info.DestMipIndex == 0 && Info.DestSliceIndex == 0 && Info.DestPosition == FIntVector::ZeroValue &&
+            Info.SourcePosition.X >= 0 && Info.SourcePosition.Y >= 0 && Info.SourcePosition.Z == 0 &&
+            Info.SourceMipIndex < Source->GetNumMips() && Info.Size.Z <= 1 &&
+            (Source->GetDesc().Dimension == ETextureDimension::Texture2D || Source->GetDesc().IsTextureCube()) &&
+            Info.SourceSliceIndex < (Source->GetDesc().IsTextureCube() ? 6u : uint32(Source->GetDesc().ArraySize)));
+        const auto& Pixel = GPixelFormats[Source->GetFormat()];
+        check(Pixel.BlockSizeX == 1 && Pixel.BlockSizeY == 1);
+        const uint32 SourceWidth = FMath::Max(1u, Source->GetSizeX() >> Info.SourceMipIndex);
+        const uint32 SourceHeight = FMath::Max(1u, Source->GetSizeY() >> Info.SourceMipIndex);
+        const uint32 Width = Info.Size.X > 0 ? uint32(Info.Size.X) : SourceWidth;
+        const uint32 Height = Info.Size.Y > 0 ? uint32(Info.Size.Y) : SourceHeight;
+        check(Width <= Target->GetSizeX() && Height <= Target->GetSizeY() && Width && Height &&
+            uint64(Info.SourcePosition.X) + Width <= SourceWidth && uint64(Info.SourcePosition.Y) + Height <= SourceHeight);
+        RequireAccess(Source, ERHIAccess::CopySrc, false, 0, Info.SourceMipIndex, Info.SourceSliceIndex);
+        RequireAccess(Destination, ERHIAccess::CopyDest);
+        auto State = MakeShared<FWebGPUReadbackState, ESPMode::ThreadSafe>();
+        const uint32 PitchBytes = Align(Width * uint32(Pixel.BlockBytes), 256u);
+        State->RowPitch = PitchBytes / Pixel.BlockBytes;
+        State->Height = Height;
+        State->Size = PitchBytes * Height;
+        State->Handle = CreateBuffer(State->Size, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+        // The browser may complete the map after the RHI has been destroyed.
+        State->OnReady = [Counter = TextureReadbacksReady](const TArray<uint8>&) { ++*Counter; };
+        { FScopeLock Lock(&Target->ReadbackCS); Target->Readback = State; }
+        WGPUTexelCopyTextureInfo Src = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+        Src.texture = static_cast<FWebGPUTexture*>(Source)->Handle;
+        Src.mipLevel = Info.SourceMipIndex;
+        Src.origin = {uint32(Info.SourcePosition.X), uint32(Info.SourcePosition.Y), Info.SourceSliceIndex};
+        WGPUTexelCopyBufferInfo Dst = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+        Dst.buffer = State->Handle;
+        Dst.layout.bytesPerRow = PitchBytes;
+        Dst.layout.rowsPerImage = Height;
+        const WGPUExtent3D Size{Width, Height, 1};
+        wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Src, &Dst, &Size);
+        PendingReadbacks.Add(State);
+        ++TextureReadbacksPending;
+        return;
+    }
     check((Source->GetDesc().Dimension == ETextureDimension::Texture2D || Source->GetDesc().IsTextureCube()) &&
           (Destination->GetDesc().Dimension == ETextureDimension::Texture2D || Destination->GetDesc().IsTextureCube()) &&
           Encoder && !Pass && Source->GetFormat() == Destination->GetFormat() &&
@@ -4050,6 +4117,45 @@ void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destina
     }
     wgpuCommandEncoderCopyTextureToTexture(Encoder, &Src, &Dst, &Size);
     }
+}
+void FWebGPUDynamicRHI::RHIMapStagingSurface(FRHITexture* Texture, FRHIGPUFence* Fence,
+    void*& Data, int32& Width, int32& Height, uint32 GPUIndex)
+{
+    Data = nullptr; Width = Height = 0;
+    check(GPUIndex == 0 && EnumHasAnyFlags(Texture->GetDesc().Flags, ETextureCreateFlags::CPUReadback));
+    auto* Target = static_cast<FWebGPUTexture*>(Texture);
+    FScopeLock Lock(&Target->ReadbackCS);
+    check(!Target->LockedReadback);
+    if ((Fence && (Fence->NumPendingWriteCommands.GetValue() || !Fence->Poll())) ||
+        !Target->Readback || !Target->Readback->Ready.load(std::memory_order_acquire))
+    {
+        ++TextureReadbackNotReady;
+        return; // UE's HZB tester treats unavailable results as visible.
+    }
+    Target->LockedReadback = Target->Readback;
+    Data = Target->LockedReadback->Bytes.GetData();
+    Width = Target->LockedReadback->RowPitch;
+    Height = Target->LockedReadback->Height;
+    ++TextureReadbackMaps;
+}
+void FWebGPUDynamicRHI::RHIUnmapStagingSurface(FRHITexture* Texture, uint32 GPUIndex)
+{
+    check(GPUIndex == 0);
+    auto* Target = static_cast<FWebGPUTexture*>(Texture);
+    FScopeLock Lock(&Target->ReadbackCS);
+    check(Target->LockedReadback);
+    Target->LockedReadback.Reset();
+}
+void FWebGPUDynamicRHI::RHIMapStagingSurface_RenderThread(FRHICommandListImmediate& Cmd, FRHITexture* Texture,
+    uint32 GPUIndex, FRHIGPUFence* Fence, void*& Data, int32& Width, int32& Height)
+{
+    // Preserve UE's command-submission flush. The final map still never waits
+    // for a browser GPU callback or returns bytes from a different copy.
+    FDynamicRHI::RHIMapStagingSurface_RenderThread(Cmd, Texture, GPUIndex, Fence, Data, Width, Height);
+}
+void FWebGPUDynamicRHI::RHIUnmapStagingSurface_RenderThread(FRHICommandListImmediate&, FRHITexture* Texture, uint32 GPUIndex)
+{
+    RHIUnmapStagingSurface(Texture, GPUIndex == INDEX_NONE ? 0 : GPUIndex);
 }
 void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUintVector4& Values)
 {

@@ -22,6 +22,8 @@ bool SupportedAccess(FRHIViewableResource *Resource, ERHIAccess Access)
         const auto *Texture = static_cast<FRHITexture *>(Resource);
         if (!static_cast<const FWebGPUTexture *>(Texture)->SurfaceFrameActive)
             return false;
+        if (EnumHasAnyFlags(Texture->GetFlags(), ETextureCreateFlags::CPUReadback))
+            return Access == ERHIAccess::CopyDest || Access == ERHIAccess::CPURead;
         if (Texture->GetFormat() == PF_DepthStencil || Texture->GetFormat() == PF_ShadowDepth)
         {
             const ERHIAccess Allowed = ERHIAccess::DSVRead | ERHIAccess::DSVWrite |
