@@ -27,6 +27,9 @@ namespace
 static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
     TEXT("r.WebGPU.ValidateBindingCache"), 0,
     TEXT("Rebuild cached shader descriptors and check the results for missed invalidation."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
+    TEXT("r.WebGPU.RenderBundles"), 0,
+    TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
 
 struct FWebGPUCompletion
 {
@@ -752,11 +755,13 @@ void FWebGPUDynamicRHI::Shutdown()
     check(!Pass && !Encoder && !ContextOpen && Transitions.IsEmpty() && BreadcrumbStack.IsEmpty() &&
           BufferLocks.IsEmpty());
     BindGroupCache.Empty();
+    DrawBundleCache.Empty();
     ReleaseFrameBindings();
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
     FrameUniformBuffer = nullptr;
     for (auto Page : FrameUniformPages) wgpuBufferRelease(Page);
     FrameUniformPages.Empty();
+    FrameUniformUploadBytes.Empty();
     ReleaseBindings();
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
@@ -765,6 +770,11 @@ void FWebGPUDynamicRHI::Shutdown()
     for (const auto& Entry : ClearPipelines)
         wgpuComputePipelineRelease(Entry.Value);
     ClearPipelines.Empty();
+    for (const auto& Layout : PipelineLayoutCache) wgpuPipelineLayoutRelease(Layout.Handle);
+    PipelineLayoutCache.Empty();
+    for (const auto& Bucket : GroupLayoutCache)
+        for (const auto& Layout : Bucket.Value) wgpuBindGroupLayoutRelease(Layout.Handle);
+    GroupLayoutCache.Empty();
     if (Queue)
     {
         wgpuQueueRelease(Queue);
@@ -823,7 +833,17 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 {
     WEBGPU_COMMAND_ON_OWNER(RHIEndFrame(Args));
     RequireOwner();
-    check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame);
+    check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame && !FrameUniformDirtyEnd);
+    check(PendingDrawBundles.IsEmpty());
+    for (auto Bucket = DrawBundleCache.CreateIterator(); Bucket; ++Bucket)
+    {
+        DrawBundleEntries -= Bucket.Value().RemoveAll([this](const auto& Entry) {
+            if (Entry->LastUsedFrame == EndFrames) return false;
+            if (Entry->Handle) --DrawBundleReadyEntries;
+            return true;
+        });
+        if (Bucket.Value().IsEmpty()) Bucket.RemoveCurrent();
+    }
     // Reuse unchanged material bindings across frames. Drop every group not used this frame:
     // obsolete streaming views and previous uniform pages survive at most one additional frame.
     for (auto Bucket = BindGroupCache.CreateIterator(); Bucket; ++Bucket)
@@ -877,9 +897,16 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             globalThis.__webOcclusionRHI.bindingEntriesReused = $7;
             globalThis.__webOcclusionRHI.bindingEntriesValidated = $8;
             globalThis.__webOcclusionRHI.bindGroupFastHits = $9;
+            globalThis.__webOcclusionRHI.uniformSnapshots = $10;
+            globalThis.__webOcclusionRHI.uniformWriteCalls = $11;
+            globalThis.__webOcclusionRHI.pipelineLayouts = $12;
+            globalThis.__webOcclusionRHI.drawBundleHits = $13;
+            globalThis.__webOcclusionRHI.drawBundlesCreated = $14;
+            globalThis.__webOcclusionRHI.cachedDrawBundles = $15;
         }, OcclusionResultsReady.load(), OcclusionResultsPending.load(), OcclusionResultsZero.load(), BindGroupCacheHits,
             BoundGroups, BindGroupCacheEntries, BindingEntriesPrepared, BindingEntriesReused, BindingEntriesValidated,
-            BindGroupFastHits);
+            BindGroupFastHits, UniformUploads, UniformWriteCalls, PipelineLayoutCache.Num(),
+            DrawBundleHits, DrawBundlesCreated, DrawBundleReadyEntries);
 #endif
 }
 FWebGPUDynamicRHI::~FWebGPUDynamicRHI()
@@ -2318,6 +2345,7 @@ FWebGPUUniform::FConstantSnapshot FWebGPUDynamicRHI::UploadFrameConstants(const 
     check(Bytes && Bytes <= 64 * 1024);
     if (!FrameUniformBuffer || Align(FrameUniformOffset, uint64(256)) + Bytes > PageBytes)
     {
+        FlushFrameConstants();
         if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
         // RHIEndFrame runs after every encoder has been submitted. Queue writes in the
         // next frame therefore follow all previous readers, without a GPU wait. Stable
@@ -2339,8 +2367,23 @@ FWebGPUUniform::FConstantSnapshot FWebGPUDynamicRHI::UploadFrameConstants(const 
     FWebGPUUniform::FConstantSnapshot Snapshot{FrameUniformBuffer, Align(FrameUniformOffset, uint64(256)), EndFrames};
     FrameUniformOffset = Snapshot.Offset + Bytes;
     wgpuBufferAddRef(Snapshot.Buffer);
-    wgpuQueueWriteBuffer(Queue, Snapshot.Buffer, Snapshot.Offset, Data, Bytes);
+    if (FrameUniformUploadBytes.IsEmpty()) FrameUniformUploadBytes.SetNumZeroed(PageBytes);
+    if (!FrameUniformDirtyEnd) FrameUniformDirtyBegin = Snapshot.Offset;
+    FrameUniformDirtyEnd = FrameUniformOffset;
+    FMemory::Memcpy(FrameUniformUploadBytes.GetData() + Snapshot.Offset, Data, Bytes);
     return Snapshot;
+}
+void FWebGPUDynamicRHI::FlushFrameConstants()
+{
+    if (!FrameUniformDirtyEnd) return;
+    check(FrameUniformBuffer && FrameUniformDirtyBegin % 4 == 0 && FrameUniformDirtyEnd % 4 == 0);
+    // Encoded draws use immutable, disjoint offsets. Upload their dirty range once before
+    // submission (or page rollover), in queue order after all prior readers. Never map a
+    // uniform buffer or wait for GPU completion; WebGPU copies this CPU source at the call.
+    wgpuQueueWriteBuffer(Queue, FrameUniformBuffer, FrameUniformDirtyBegin,
+        FrameUniformUploadBytes.GetData() + FrameUniformDirtyBegin, FrameUniformDirtyEnd - FrameUniformDirtyBegin);
+    ++UniformWriteCalls;
+    FrameUniformDirtyBegin = FrameUniformDirtyEnd = 0;
 }
 void FWebGPUDynamicRHI::Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter)
 {
@@ -2605,8 +2648,11 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             for (const auto& Offset : Offsets) Resolved.DynamicOffsets.Add(Offset.Value);
         }
         const auto* Entries = &Groups[Group];
+        const auto& Layouts = Render ? GraphicsPipeline->GroupLayouts : ComputePipeline->GroupLayouts;
+        check(Layouts.IsValidIndex(Group));
+        const auto Layout = Layouts[Group];
         const auto Matches = [&](const FWebGPUBindGroupCacheEntry& Cached) {
-            if (Cached.Render != Render || Cached.Compute != Compute || Cached.Group != Group ||
+            if (Cached.Layout != Layout ||
                 Cached.Entries.Num() != (Entries ? Entries->Num() : 0))
                 return false;
             for (int32 Index = 0; Index < Cached.Entries.Num(); ++Index)
@@ -2626,9 +2672,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         else
         {
             Found = nullptr;
-            Hash = HashCombineFast(GetTypeHash(reinterpret_cast<UPTRINT>(Render)),
-                GetTypeHash(reinterpret_cast<UPTRINT>(Compute)));
-            Hash = HashCombineFast(Hash, Group);
+            Hash = GetTypeHash(reinterpret_cast<UPTRINT>(Layout));
             for (const auto& Entry : *Entries)
             {
                 Hash = HashCombineFast(Hash, Entry.binding);
@@ -2654,12 +2698,6 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             ++BindGroupCacheHits;
             continue;
         }
-        auto& Layouts = Render ? GraphicsPipeline->GroupLayouts : ComputePipeline->GroupLayouts;
-        check(Render ? GraphicsPipeline->Handle == Render : ComputePipeline->Handle == Compute);
-        if (!Layouts.IsValidIndex(Group)) Layouts.SetNumZeroed(Group + 1);
-        auto& Layout = Layouts[Group];
-        if (!Layout) Layout = Render ? wgpuRenderPipelineGetBindGroupLayout(Render, Group)
-                                    : wgpuComputePipelineGetBindGroupLayout(Compute, Group);
         WGPUBindGroupDescriptor Desc = WGPU_BIND_GROUP_DESCRIPTOR_INIT;
         Desc.layout = Layout;
         if (Entries)
@@ -2672,13 +2710,10 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         if (BindGroupCacheEntries < 8192)
         {
             auto Cached = MakeUnique<FWebGPUBindGroupCacheEntry>();
-            Cached->Render = Render;
-            Cached->Compute = Compute;
-            Cached->Group = Group;
+            Cached->Layout = Layout;
             Cached->LastUsedFrame = EndFrames;
             Cached->Handle = Resolved.Handle;
-            if (Render) wgpuRenderPipelineAddRef(Render);
-            if (Compute) wgpuComputePipelineAddRef(Compute);
+            wgpuBindGroupLayoutAddRef(Layout);
             if (Entries) Cached->Entries.Append(Entries->GetData(), Entries->Num());
             // Retain opaque handles as well as the group; released JS handles can otherwise be reused.
             for (const auto& Entry : Cached->Entries)
@@ -2695,9 +2730,11 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     }
     return Result;
 }
-static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
-    TConstArrayView<const FWebGPUShaderData*> Shaders, uint32 DynamicLimit, TSet<uint64>& DynamicBindings)
+WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
+    TConstArrayView<const FWebGPUShaderData*> Shaders, TSet<uint64>& DynamicBindings,
+    TArray<WGPUBindGroupLayout>& Layouts)
 {
+    const uint32 DynamicLimit = Limits.maxDynamicUniformBuffersPerPipelineLayout;
     // Dynamic offsets remove per-draw offsets from the immutable bind-group key. Respect the
     // actual adapter limit and prioritize globals/primitive constants; remaining uniforms stay static.
     for (bool Priority : {true, false})
@@ -2804,23 +2841,50 @@ static WGPUPipelineLayout CreateWebPipelineLayout(WGPUDevice Device,
         else
             Entries.Add(Entry);
     }
-    TArray<WGPUBindGroupLayout> Layouts;
     for (uint32 Group = 0; Group < GroupCount; ++Group)
     {
         auto Desc = WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;
-        if (const auto* Entries = Groups.Find(Group))
+        TArray<uint64> Key;
+        uint32 Hash = 0;
+        if (auto* Entries = Groups.Find(Group))
         {
+            Entries->Sort([](const auto& A, const auto& B) { return A.binding < B.binding; });
             Desc.entryCount = Entries->Num();
             Desc.entries = Entries->GetData();
+            for (const auto& E : *Entries)
+            {
+                check(!E.nextInChain && !E.buffer.nextInChain && !E.sampler.nextInChain &&
+                    !E.texture.nextInChain && !E.storageTexture.nextInChain);
+                Key.Append({E.binding, E.visibility, E.bindingArraySize, uint64(E.buffer.type), E.buffer.hasDynamicOffset,
+                    E.buffer.minBindingSize, uint64(E.sampler.type), uint64(E.texture.sampleType),
+                    uint64(E.texture.viewDimension), E.texture.multisampled, uint64(E.storageTexture.access),
+                    uint64(E.storageTexture.format), uint64(E.storageTexture.viewDimension)});
+            }
         }
-        Layouts.Add(wgpuDeviceCreateBindGroupLayout(Device, &Desc));
+        for (uint64 Field : Key) Hash = HashCombineFast(Hash, GetTypeHash(Field));
+        auto& Bucket = GroupLayoutCache.FindOrAdd(Hash);
+        const auto* Cached = Bucket.FindByPredicate([&](const auto& L) { return L.Key == Key; });
+        WGPUBindGroupLayout Layout;
+        if (Cached) Layout = Cached->Handle;
+        else
+        {
+            Layout = wgpuDeviceCreateBindGroupLayout(Device, &Desc);
+            Bucket.Add({MoveTemp(Key), Layout});
+        }
+        wgpuBindGroupLayoutAddRef(Layout); // Each RHI pipeline owns its layout references.
+        Layouts.Add(Layout);
+    }
+    if (const auto* Cached = PipelineLayoutCache.FindByPredicate([&](const auto& L) { return L.Groups == Layouts; }))
+    {
+        wgpuPipelineLayoutAddRef(Cached->Handle);
+        return Cached->Handle;
     }
     auto Desc = WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;
     Desc.bindGroupLayoutCount = Layouts.Num();
     Desc.bindGroupLayouts = Layouts.GetData();
     auto Result = wgpuDeviceCreatePipelineLayout(Device, &Desc);
-    for (auto Layout : Layouts)
-        wgpuBindGroupLayoutRelease(Layout);
+    PipelineLayoutCache.Add({Layouts, Result});
+    wgpuPipelineLayoutAddRef(Result); // Caller releases its temporary reference after pipeline creation.
     return Result;
 }
 FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In)
@@ -2837,8 +2901,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     TArray<const FWebGPUShaderData*> ShaderStages{&VS};
     if (Pixel)
         ShaderStages.Add(&Pixel->Data);
-    Desc.layout = CreateWebPipelineLayout(Device, ShaderStages, Limits.maxDynamicUniformBuffersPerPipelineLayout,
-        Result->DynamicBindings);
+    Desc.layout = CreatePipelineLayout(ShaderStages, Result->DynamicBindings, Result->GroupLayouts);
     Desc.vertex.module = VS.Module;
     const FTCHARToUTF8 VertexEntry(*VS.Entry), PixelEntry(Pixel ? *Pixel->Data.Entry : TEXT(""));
     const FTCHARToUTF8 PipelineLabel(*(VS.Entry + TEXT(" / ") + (Pixel ? Pixel->Data.Entry : TEXT("depth-only"))));
@@ -2852,6 +2915,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         for (const auto &Element : Declaration->Elements)
         {
             check(Element.StreamIndex < Limits.maxVertexBuffers);
+            Result->VertexStreamMask |= 1u << Element.StreamIndex;
             while (Layouts.Num() <= Element.StreamIndex)
             {
                 Layouts.Add(WGPU_VERTEX_BUFFER_LAYOUT_INIT);
@@ -2992,8 +3056,8 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     WGPUComputePipelineDescriptor Desc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
     const FWebGPUShaderData* ShaderStages[] = {&Shader};
     TSet<uint64> DynamicBindings;
-    Desc.layout = CreateWebPipelineLayout(Device, ShaderStages, Limits.maxDynamicUniformBuffersPerPipelineLayout,
-        DynamicBindings);
+    TArray<WGPUBindGroupLayout> GroupLayouts;
+    Desc.layout = CreatePipelineLayout(ShaderStages, DynamicBindings, GroupLayouts);
     Desc.compute.module = Shader.Module;
     const FTCHARToUTF8 Entry(*Shader.Entry);
     Desc.compute.entryPoint = Text(Entry.Get());
@@ -3002,6 +3066,7 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     wgpuPipelineLayoutRelease(Desc.layout);
     auto* Result = new FWebGPUComputePipeline(In.ComputeShader, Handle);
     Result->DynamicBindings = MoveTemp(DynamicBindings);
+    Result->GroupLayouts = MoveTemp(GroupLayouts);
     return Result;
 }
 IRHICommandContext *FWebGPUDynamicRHI::RHIGetDefaultContext()
@@ -3051,6 +3116,7 @@ void FWebGPUDynamicRHI::RHISubmitCommandLists(FRHISubmitCommandListsArgs &&Args)
     RequireOwner();
     FString Error;
     checkf(ValidateSubmissionOrder(Args.CommandLists, Error), TEXT("%s"), *Error);
+    FlushFrameConstants();
     for (auto *Base : Args.CommandLists)
     {
         auto *List = static_cast<FWebGPUCommandList *>(Base);
@@ -3164,6 +3230,15 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
     Attachments.Reset();
     AttachmentSubresources.Reset();
     PassDepthReadOnly = false;
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+    UseRenderBundles = CVarWebGPURenderBundles.GetValueOnAnyThread() != 0;
+#else
+    UseRenderBundles = false;
+#endif
+    PassStencilReference = MAX_uint32;
+    PassBundleColors.Reset();
+    PassBundleDepth = WGPUTextureFormat_Undefined;
+    PassStencilReadOnly = false;
     TArray<WGPURenderPassColorAttachment> Colors;
     for (const auto &Color : Info.ColorRenderTargets)
     {
@@ -3182,6 +3257,8 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
             ? Texture->GetClearColor() : FLinearColor::Transparent;
         Attachment.clearValue = {Clear.R, Clear.G, Clear.B, Clear.A};
         Colors.Add(Attachment);
+        if (UseRenderBundles)
+            PassBundleColors.Add(Format(Texture->GetFormat(), EnumHasAnyFlags(Texture->GetDesc().Flags, ETextureCreateFlags::SRGB)));
     }
     WGPURenderPassDepthStencilAttachment Depth = WGPU_RENDER_PASS_DEPTH_STENCIL_ATTACHMENT_INIT;
     WGPURenderPassDescriptor Desc = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
@@ -3228,6 +3305,8 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
             Texture->GetDepthStencilClearValue(ClearDepth, ClearStencil);
         Depth.depthClearValue = ClearDepth;
         Depth.stencilReadOnly = !Info.DepthStencilRenderTarget.ExclusiveDepthStencil.IsStencilWrite();
+        PassStencilReadOnly = Depth.stencilReadOnly;
+        PassBundleDepth = Format(Texture->GetFormat());
         if (!Depth.stencilReadOnly)
         {
             Depth.stencilLoadOp = Load(GetStencilActions(Info.DepthStencilRenderTarget.Action));
@@ -3239,11 +3318,19 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
         Desc.depthStencilAttachment = &Depth;
     }
     Pass = wgpuCommandEncoderBeginRenderPass(Encoder, &Desc);
+    PassBundleKey.Reset();
+    if (UseRenderBundles)
+    {
+        PassBundleKey.Add(PassBundleColors.Num());
+        for (auto Color : PassBundleColors) PassBundleKey.Add(uint64(Color));
+        PassBundleKey.Append({uint64(PassBundleDepth), PassDepthReadOnly, PassStencilReadOnly});
+    }
 }
 void FWebGPUDynamicRHI::RHIEndRenderPass()
 {
     WEBGPU_COMMAND_ON_OWNER(RHIEndRenderPass());
     check(Pass && !ActiveOcclusionQuery);
+    FlushDrawBundles();
     wgpuRenderPassEncoderEnd(Pass);
     wgpuRenderPassEncoderRelease(Pass);
     Pass = nullptr;
@@ -3298,6 +3385,7 @@ void FWebGPUDynamicRHI::RHIBeginRenderQuery(FRHIRenderQuery* Query)
     ActiveOcclusionQuery->Batch = OcclusionBatch;
 #endif
     ActiveOcclusionQuery->Index = OcclusionBatch->Count++;
+    FlushDrawBundles();
     wgpuRenderPassEncoderBeginOcclusionQuery(Pass, ActiveOcclusionQuery->Index);
 }
 void FWebGPUDynamicRHI::RHIEndRenderQuery(FRHIRenderQuery* Query)
@@ -3305,6 +3393,7 @@ void FWebGPUDynamicRHI::RHIEndRenderQuery(FRHIRenderQuery* Query)
     WEBGPU_COMMAND_ON_OWNER(RHIEndRenderQuery(Query));
     RequireOwner();
     check(Pass && Query == ActiveOcclusionQuery.GetReference());
+    FlushDrawBundles();
     wgpuRenderPassEncoderEndOcclusionQuery(Pass);
     ActiveOcclusionQuery.SafeRelease();
 }
@@ -3351,8 +3440,13 @@ void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *S
     GraphicsPipeline = static_cast<FWebGPUGraphicsPipeline *>(State);
     FString Error;
     checkf(ValidatePipelineDepth(GraphicsPipeline->Initializer, Error), TEXT("%s"), *Error);
-    wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
-    wgpuRenderPassEncoderSetStencilReference(Pass, StencilRef);
+    if (!UseRenderBundles) wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
+    if (PassStencilReference != StencilRef)
+    {
+        FlushDrawBundles();
+        wgpuRenderPassEncoderSetStencilReference(Pass, StencilRef);
+        PassStencilReference = StencilRef;
+    }
 }
 #if PLATFORM_USE_FALLBACK_PSO
 void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In, uint32 Stencil, bool Apply)
@@ -3386,18 +3480,21 @@ void FWebGPUDynamicRHI::RHISetViewport(float X0, float Y0, float Z0, float X1, f
 {
     WEBGPU_COMMAND_ON_OWNER(RHISetViewport(X0, Y0, Z0, X1, Y1, Z1));
     check(Pass);
+    FlushDrawBundles();
     wgpuRenderPassEncoderSetViewport(Pass, X0, Y0, X1 - X0, Y1 - Y0, Z0, Z1);
 }
 void FWebGPUDynamicRHI::RHISetScissorRect(bool Enable, uint32 X0, uint32 Y0, uint32 X1, uint32 Y1)
 {
     WEBGPU_COMMAND_ON_OWNER(RHISetScissorRect(Enable, X0, Y0, X1, Y1));
     check(Pass && !Attachments.IsEmpty());
+    FlushDrawBundles();
     wgpuRenderPassEncoderSetScissorRect(Pass, Enable ? X0 : 0, Enable ? Y0 : 0,
                                         Enable ? X1 - X0 : Attachments[0]->GetSizeX(),
                                         Enable ? Y1 - Y0 : Attachments[0]->GetSizeY());
 }
 void FWebGPUDynamicRHI::ResetEncoderBindings()
 {
+    check(PendingDrawBundles.IsEmpty());
     // Like D3D12 DirtyStateForNewCommandList: a new pass has different
     // attachment hazards and encoder state, even if shader resources match.
     ++BindingStateSerial;
@@ -3418,10 +3515,132 @@ void FWebGPUDynamicRHI::SetIndexBinding(FWebGPUBuffer* Buffer)
         BoundIndexBuffer = Buffer;
     }
 }
-void FWebGPUDynamicRHI::SetDrawBindings()
+void FWebGPUDynamicRHI::FlushDrawBundles()
+{
+    if (PendingDrawBundles.IsEmpty()) return;
+    check(Pass);
+    TArray<WGPURenderBundle, TInlineAllocator<64>> Handles;
+    for (const auto& Bundle : PendingDrawBundles) Handles.Add(Bundle.Handle);
+    wgpuRenderPassEncoderExecuteBundles(Pass, Handles.Num(), Handles.GetData());
+    for (const auto& Bundle : PendingDrawBundles)
+        if (Bundle.Owned) wgpuRenderBundleRelease(Bundle.Handle);
+    PendingDrawBundles.Reset();
+    // executeBundles clears pipeline, vertex/index and bind-group encoder state.
+    ResetEncoderBindings();
+}
+void FWebGPUDynamicRHI::DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint32 FirstInstance,
+    uint32 StartIndex, uint32 Primitives, uint32 Instances)
+{
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebGPU_DrawIndexedBundle);
+    check(Pass && GraphicsPipeline);
+    RequireAccess(Index, ERHIAccess::VertexOrIndexBuffer);
+    auto& VS = ShaderData(GraphicsPipeline->GetShader(SF_Vertex));
+    auto* Pixel = GraphicsPipeline->GetShader(SF_Pixel);
+    FWebGPUShaderData* Shaders[] = {&VS, Pixel ? &ShaderData(Pixel) : nullptr};
+    auto Groups = CreateGroups(GraphicsPipeline->Handle, nullptr, MakeArrayView(Shaders, Pixel ? 2 : 1));
+    auto& Key = DrawBundleKey;
+    Key.Reset();
+    Key.Append(PassBundleKey);
+    Key.Append({uint64(reinterpret_cast<UPTRINT>(GraphicsPipeline->Handle)),
+        uint64(reinterpret_cast<UPTRINT>(Index->Handle)), uint64(uint32(Base)), FirstInstance, StartIndex, Primitives, Instances});
+    const uint32 Streams = GraphicsPipeline->VertexStreamMask;
+    Key.Add(Streams);
+    for (uint32 Stream = 0; Stream < Limits.maxVertexBuffers; ++Stream)
+        if (Streams & (1u << Stream))
+        {
+            check(VertexBuffers.IsValidIndex(Stream) && VertexBuffers[Stream]);
+            RequireAccess(VertexBuffers[Stream], ERHIAccess::VertexOrIndexBuffer);
+            Key.Append({uint64(reinterpret_cast<UPTRINT>(VertexBuffers[Stream]->Handle)), VertexOffsets[Stream]});
+        }
+    Key.Add(Groups.Num());
+    for (const auto& Group : Groups)
+    {
+        Key.Append({uint64(reinterpret_cast<UPTRINT>(Group.Handle)), uint64(Group.DynamicOffsets.Num())});
+        for (uint32 Offset : Group.DynamicOffsets) Key.Add(Offset);
+    }
+    uint32 Hash = 0;
+    for (uint64 Field : Key) Hash = HashCombineFast(Hash, GetTypeHash(Field));
+    FDrawBundle* Found = nullptr;
+    if (const auto* Bucket = DrawBundleCache.Find(Hash))
+        for (const auto& Bundle : *Bucket)
+            if (Bundle->Key == Key) { Found = Bundle.Get(); break; }
+    if (Found)
+    {
+        if (Found->LastUsedFrame != EndFrames) ++Found->StableFrames;
+        Found->LastUsedFrame = EndFrames;
+    }
+    else if (DrawBundleEntries < 16384)
+    {
+        auto Candidate = MakeUnique<FDrawBundle>();
+        Candidate->Key = Key;
+        Candidate->LastUsedFrame = EndFrames;
+        Found = Candidate.Get();
+        DrawBundleCache.FindOrAdd(Hash).Add(MoveTemp(Candidate));
+        ++DrawBundleEntries;
+    }
+    if (!Found || (!Found->Handle && Found->StableFrames < 3))
+    {
+        // One-off dynamic descriptors must not cause a new browser/driver bundle every frame.
+        // Observe the complete key for three frames before paying the recording cost.
+        SetDrawBindings(&Groups);
+        SetIndexBinding(Index);
+        wgpuRenderPassEncoderDrawIndexed(Pass, Primitives * 3, Instances, StartIndex, Base, FirstInstance);
+        return;
+    }
+    if (Found->Handle)
+    {
+        Found->LastUsedFrame = EndFrames;
+        PendingDrawBundles.Add({Found->Handle, false});
+        ++DrawBundleHits;
+    }
+    else
+    {
+        auto Desc = WGPU_RENDER_BUNDLE_ENCODER_DESCRIPTOR_INIT;
+        Desc.colorFormatCount = PassBundleColors.Num();
+        Desc.colorFormats = PassBundleColors.GetData();
+        Desc.depthStencilFormat = PassBundleDepth;
+        Desc.depthReadOnly = PassDepthReadOnly;
+        Desc.stencilReadOnly = PassStencilReadOnly;
+        Desc.sampleCount = 1;
+        auto BundleEncoder = wgpuDeviceCreateRenderBundleEncoder(Device, &Desc);
+        wgpuRenderBundleEncoderSetPipeline(BundleEncoder, GraphicsPipeline->Handle);
+        for (int32 Stream = 0; Stream < VertexBuffers.Num(); ++Stream)
+            if ((Streams & (1u << Stream)) && VertexBuffers[Stream])
+                wgpuRenderBundleEncoderSetVertexBuffer(BundleEncoder, Stream, VertexBuffers[Stream]->Handle,
+                    VertexOffsets[Stream], VertexBuffers[Stream]->GetSize() - VertexOffsets[Stream]);
+        wgpuRenderBundleEncoderSetIndexBuffer(BundleEncoder, Index->Handle,
+            Index->GetStride() == 2 ? WGPUIndexFormat_Uint16 : WGPUIndexFormat_Uint32, 0, Index->GetSize());
+        for (int32 Group = 0; Group < Groups.Num(); ++Group)
+            wgpuRenderBundleEncoderSetBindGroup(BundleEncoder, Group, Groups[Group].Handle,
+                Groups[Group].DynamicOffsets.Num(), Groups[Group].DynamicOffsets.GetData());
+        wgpuRenderBundleEncoderDrawIndexed(BundleEncoder, Primitives * 3, Instances, StartIndex, Base, FirstInstance);
+        auto Handle = wgpuRenderBundleEncoderFinish(BundleEncoder, nullptr);
+        wgpuRenderBundleEncoderRelease(BundleEncoder);
+        ++DrawBundlesCreated;
+        {
+            auto* Bundle = Found;
+            Bundle->Handle = Handle;
+            Bundle->Pipeline = GraphicsPipeline;
+            Bundle->Buffers.Add(Index);
+            for (int32 Stream = 0; Stream < VertexBuffers.Num(); ++Stream)
+                if ((Streams & (1u << Stream)) && VertexBuffers[Stream]) Bundle->Buffers.Add(VertexBuffers[Stream]);
+            // Keep opaque group handles alive so a released ID cannot alias a cached key.
+            for (const auto& Group : Groups) { wgpuBindGroupAddRef(Group.Handle); Bundle->Groups.Add(Group.Handle); }
+            ++DrawBundleReadyEntries;
+            PendingDrawBundles.Add({Handle, false});
+        }
+    }
+    for (const auto& Group : Groups) if (Group.OwnedHandle) wgpuBindGroupRelease(Group.Handle);
+}
+void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
 {
     TRACE_CPUPROFILER_EVENT_SCOPE(WebGPU_SetDrawBindings);
     check(Pass && GraphicsPipeline);
+    if (UseRenderBundles)
+    {
+        FlushDrawBundles();
+        wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
+    }
     if (BoundVertexBuffers.Num() < VertexBuffers.Num())
     {
         BoundVertexBuffers.SetNum(VertexBuffers.Num());
@@ -3442,7 +3661,10 @@ void FWebGPUDynamicRHI::SetDrawBindings()
     auto &VS = ShaderData(GraphicsPipeline->GetShader(SF_Vertex));
     auto *Pixel = GraphicsPipeline->GetShader(SF_Pixel);
     FWebGPUShaderData *Shaders[] = {&VS, Pixel ? &ShaderData(Pixel) : nullptr};
-    auto Groups = CreateGroups(GraphicsPipeline->Handle, nullptr, MakeArrayView(Shaders, Pixel ? 2 : 1));
+    FWebGPUResolvedGroups LocalGroups;
+    if (!PreparedGroups)
+        LocalGroups = CreateGroups(GraphicsPipeline->Handle, nullptr, MakeArrayView(Shaders, Pixel ? 2 : 1));
+    auto& Groups = PreparedGroups ? *PreparedGroups : LocalGroups;
     if (BoundGraphicsGroups.Num() < Groups.Num()) BoundGraphicsGroups.SetNum(Groups.Num());
     for (int32 Index = 0; Index < Groups.Num(); ++Index)
     {
@@ -3474,6 +3696,12 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer *Index, int32 Base, u
     auto *Buffer = static_cast<FWebGPUBuffer *>(Index);
     check(Buffer->GetStride() == 2 || Buffer->GetStride() == 4);
     check(GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList);
+    if (UseRenderBundles)
+    {
+        DrawIndexedBundle(Buffer, Base, FirstInstance, StartIndex, Primitives, Instances);
+        ++Draws;
+        return;
+    }
     SetDrawBindings();
     SetIndexBinding(Buffer);
     wgpuRenderPassEncoderDrawIndexed(Pass, Primitives * 3, Instances, StartIndex, Base, FirstInstance);

@@ -17,6 +17,7 @@ void FWebGPUDynamicRHI::RHIBeginBreadcrumbGPU(FRHIBreadcrumbNode *Node)
         WGPUStringView Text{Label.Get(), size_t(Label.Length())};
         if (Pass)
         {
+            FlushDrawBundles();
             wgpuRenderPassEncoderInsertDebugMarker(Pass, Text);
             ++BreadcrumbMarkersEmitted;
         }

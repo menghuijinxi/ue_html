@@ -6,7 +6,7 @@ module.exports = function installPerformanceCapture() {
     gpuFrames: [], errors: [], adapter: {}, calls: {}, apiMs: {}};
   let device, query, resolveBuffer, readback, pendingGPU, requestedGPU, gpuBusy = false;
   let presented = 0, previousPresent, frameCalls = {}, frameAPIMs = {};
-  const views = new WeakMap(), passes = new WeakMap();
+  const views = new WeakMap(), passes = new WeakMap(), bundles = new WeakMap(), bundleEncoders = new WeakMap();
   const now = () => performance.timeOrigin + performance.now();
   const add = (object, name, value = 1) => { object[name] = (object[name] || 0) + value; };
   const request = GPUAdapter.prototype.requestDevice;
@@ -33,10 +33,10 @@ module.exports = function installPerformanceCapture() {
     return value;
   };
   for (const [prototype, names] of [
-    [GPUDevice.prototype, ['createBuffer', 'createBindGroup', 'createRenderPipeline', 'createComputePipeline']],
+    [GPUDevice.prototype, ['createBuffer', 'createBindGroup', 'createRenderPipeline', 'createComputePipeline', 'createRenderBundleEncoder']],
     [GPUQueue.prototype, ['writeBuffer', 'writeTexture', 'submit']],
     [GPURenderPassEncoder.prototype, ['draw', 'drawIndexed', 'drawIndirect', 'drawIndexedIndirect',
-      'setBindGroup', 'setVertexBuffer', 'setIndexBuffer', 'setPipeline', 'beginOcclusionQuery']],
+      'setBindGroup', 'setVertexBuffer', 'setIndexBuffer', 'setPipeline', 'beginOcclusionQuery', 'executeBundles']],
     [GPUComputePassEncoder.prototype, ['dispatchWorkgroups', 'dispatchWorkgroupsIndirect', 'setBindGroup', 'setPipeline']]
   ]) for (const name of names) {
     const original = prototype[name];
@@ -45,6 +45,14 @@ module.exports = function installPerformanceCapture() {
       const pass = passes.get(this);
       if (pass) {
         add(pass.calls, name);
+        if (name === 'executeBundles') for (const bundle of args[0]) {
+          const recorded = bundles.get(bundle);
+          if (recorded) {
+            for (const [call, count] of Object.entries(recorded.calls)) add(pass.calls, call, count);
+            add(pass, 'triangles', recorded.triangles);
+            if (recorded.pipeline) pass.pipeline = recorded.pipeline;
+          }
+        }
         if (name === 'setPipeline' && args[0].label) pass.pipeline = args[0].label;
         if (name === 'draw' || name === 'drawIndexed') add(pass, 'triangles', args[0] * args[1] / 3);
       }
@@ -58,6 +66,30 @@ module.exports = function installPerformanceCapture() {
       }
     };
   }
+  for (const name of ['setPipeline', 'setBindGroup', 'setVertexBuffer', 'setIndexBuffer', 'drawIndexed']) {
+    const original = GPURenderBundleEncoder.prototype[name];
+    GPURenderBundleEncoder.prototype[name] = function(...args) {
+      let recorded = bundleEncoders.get(this);
+      if (!recorded) { recorded = {calls: {}, triangles: 0}; bundleEncoders.set(this, recorded); }
+      add(recorded.calls, name);
+      if (name === 'setPipeline') recorded.pipeline = args[0].label;
+      if (name === 'drawIndexed') recorded.triangles += args[0] * args[1] / 3;
+      if (!capture.active) return original.apply(this, args);
+      const start = performance.now();
+      try { return original.apply(this, args); }
+      finally {
+        const duration = performance.now() - start, key = 'bundle.' + name;
+        add(capture.calls, key); add(capture.apiMs, key, duration);
+        add(frameCalls, key); add(frameAPIMs, key, duration);
+      }
+    };
+  }
+  const finishBundle = GPURenderBundleEncoder.prototype.finish;
+  GPURenderBundleEncoder.prototype.finish = function(...args) {
+    const result = finishBundle.apply(this, args);
+    bundles.set(result, bundleEncoders.get(this) || {calls: {}, triangles: 0});
+    return result;
+  };
   for (const [kind, prototype, begin] of [
     ['render', GPURenderPassEncoder.prototype, 'beginRenderPass'],
     ['compute', GPUComputePassEncoder.prototype, 'beginComputePass']

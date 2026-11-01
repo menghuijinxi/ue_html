@@ -29,13 +29,22 @@ if (!globalThis.setImmediate) {
   };
   globalThis.clearImmediate = id => callbacks.delete(id);
 }
+// Only diagnostic values cross to the page. Enumerating globalThis also visits the
+// engine's many exported symbols on the RHI owner every 100 ms.
+const diagnosticStateKeys = [
+  '__webEngineFrames', '__webEngineRuntime', '__webEngineGPUDeviceReady',
+  '__webDefaultCamera', '__webDefaultCloudBudget', '__webDefaultFog', '__webDefaultSamples',
+  '__webDefaultShadowCamera', '__webDefaultShadowControl', '__webRenderView',
+  '__webTextureStreaming', '__webOcclusionRHI', '__webVisualTestClock', '__webGPUHandleDiagnostics',
+  '__webThreadFrameTimes', '__webThreadIOProbe', '__webThreadStages',
+  '__webThreadsExitCode', '__webThreadsFailure', '__webThreadsMemory', '__webThreadsResult',
+  '__webDistanceFields', '__webDistanceFieldsExposure', '__webDistanceFieldsGPU',
+  '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings'
+];
 function snapshot() {
   const state = {};
-  for (const key of Object.keys(globalThis)) {
-    if (!/^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread|DistanceFields|Visibility|ProjectSettings)/.test(key))
-      continue;
-    state[key] = globalThis[key];
-  }
+  for (const key of diagnosticStateKeys)
+    if (globalThis[key] !== undefined) state[key] = globalThis[key];
   state.__webEngineThreads = globalThis.__webEngineThreads;
   state.__webEngineSurface = {width: Module.canvas.width, height: Module.canvas.height};
   const io = globalThis.__webContentIO;

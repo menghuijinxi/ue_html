@@ -13,6 +13,7 @@ assert(warmupSeconds >= 0 && warmupSeconds <= 120);
 assert([baseline, candidate, tagPrefix].every(value => /^[a-z0-9-]+$/.test(value)));
 const root = path.join(__dirname, 'build');
 const report = {date: new Date().toISOString(), settingsOverrides: [], warmupSeconds,
+  headless: process.argv.includes('--headless'),
   width: 1863, height: 1030, dpr: 1.25, order: ['baseline', 'candidate', 'candidate', 'baseline'],
   packages: {}, runs: [], pass: false};
 const output = path.join(__dirname, 'results', tagPrefix + '-abba.json');
@@ -30,7 +31,9 @@ for (const file of ['content.bin', 'config-files.json'])
       const code = await new Promise((resolve, reject) => {
         const child = cp.spawn(process.execPath, [path.join(__dirname, 'capture-web-performance.cjs'),
           '--folder=' + report.packages[name].folder, '--tag=' + tag, '--width=1863', '--height=1030',
-          '--dpr=1.25', '--baseline-only', '--baseline-seconds=15', '--warmup-seconds=' + warmupSeconds],
+          '--dpr=1.25', '--baseline-only', '--baseline-seconds=15', '--warmup-seconds=' + warmupSeconds,
+          ...(report.headless ? ['--headless'] : []),
+          ...(name === 'candidate' && process.argv.includes('--require-candidate-bundles') ? ['--require-render-bundles'] : [])],
           {stdio: 'inherit', windowsHide: true});
         child.on('error', reject); child.on('close', resolve);
       });
@@ -38,10 +41,13 @@ for (const file of ['content.bin', 'config-files.json'])
       const file = path.join(__dirname, 'results', 'performance-capture-' + tag + '.json');
       const value = JSON.parse(fs.readFileSync(file));
       assert(value.pass && value.cameraMode === 'original-spawn' && !value.errors.length);
+      assert(value.externalInputIgnored && value.initialCamera);
+      if (report.runs.length) assert.deepEqual(value.initialCamera, report.runs[0].camera);
       const view = value.before.view;
       const dimensions = [view.width, view.height, view.outputWidth, view.outputHeight, view.antiAliasing];
       if (report.runs.length) assert.deepEqual(dimensions, report.runs[0].dimensions);
-      report.runs.push({name, file, dimensions, baseline: value.baseline, samples: value.baselineSamples});
+      report.runs.push({name, file, dimensions, camera: value.initialCamera,
+        baseline: value.baseline, samples: value.baselineSamples});
       save();
     }
     report.fps = Object.fromEntries(['baseline', 'candidate'].map(name => {

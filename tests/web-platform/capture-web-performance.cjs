@@ -17,6 +17,7 @@ assert(warmupSeconds >= 0 && warmupSeconds <= 120);
 const output = path.join(__dirname, 'results', `performance-capture-${tag}`);
 fs.mkdirSync(path.dirname(output), {recursive: true});
 const report = {date: new Date().toISOString(), tag, folder, width, height, dpr, seconds, warmupSeconds,
+  headless: process.argv.includes('--headless'),
   gpuCaptureBoundary: 'present-to-present',
   settingsOverrides: [], errors: [], profiles: [], pass: false,
   boundaries: ['CPU profiles are statistical stack samples, not exact scope timers.',
@@ -81,6 +82,11 @@ async function attach(target) {
       await route.fulfill({response, body: `(${installObserver.toString()})();\n` + await response.text()});
     });
     const page = context.pages()[0];
+    // Performance runs must not receive keyboard/mouse input from the desktop user.
+    const inputCDP = await context.newCDPSession(page);
+    await inputCDP.send('Input.setIgnoreInputEvents', {ignore: true});
+    await inputCDP.send('Emulation.setFocusEmulationEnabled', {enabled: true});
+    report.externalInputIgnored = true;
     page.on('pageerror', error => report.errors.push(error.message));
     page.on('crash', () => report.errors.push('Renderer crashed'));
     page.on('console', message => {
@@ -107,6 +113,9 @@ async function attach(target) {
     await page.waitForFunction(target => globalThis.__webEngineFrames >= target, initial.gameFrames + 60, {timeout: 180000});
     if (warmupSeconds) await page.waitForTimeout(warmupSeconds * 1000);
     report.before = await state();
+    const cameraKey = value => ['x', 'y', 'z', 'pitch', 'yaw'].map(key => value.camera[key]);
+    report.initialCamera = cameraKey(initial);
+    assert.deepEqual(cameraKey(report.before), report.initialCamera, 'Camera moved during warmup');
     const baselineStart = performance.now();
     report.baselineSamples = [];
     const baselineSeconds = Number(option('baseline-seconds') || 10);
@@ -115,6 +124,7 @@ async function attach(target) {
     for (let second = 0; second < baselineSeconds; ++second) {
       await page.waitForTimeout(1000);
       const value = await state(), time = performance.now();
+      assert.deepEqual(cameraKey(value), report.initialCamera, 'Camera moved during measurement');
       report.baselineSamples.push({elapsedMs: time - baselineStart,
         frames: value.frames - previousState.frames, milliseconds: time - previousTime,
         fps: (value.frames - previousState.frames) / (time - previousTime) * 1000,
@@ -123,6 +133,11 @@ async function attach(target) {
       previousState = value; previousTime = time;
     }
     report.afterBaseline = previousState;
+    if (process.argv.includes('--require-render-bundles')) {
+      assert(report.afterBaseline.occlusion.drawBundleHits > report.before.occlusion.drawBundleHits,
+        'Render bundle cache must be used during measurement');
+      assert(report.afterBaseline.occlusion.cachedDrawBundles > 0);
+    }
     report.baseline = {milliseconds: previousTime - baselineStart, frames: report.afterBaseline.frames - report.before.frames};
     report.baseline.fps = report.baseline.frames / report.baseline.milliseconds * 1000;
     report.baseline.rhiWorkMsPerFrame = (report.afterBaseline.stages.rhiWorkMilliseconds -

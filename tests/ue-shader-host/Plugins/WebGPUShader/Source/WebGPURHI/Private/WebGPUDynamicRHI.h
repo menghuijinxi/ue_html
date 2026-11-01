@@ -35,9 +35,7 @@ struct FWebGPUShaderBinding
 
 struct FWebGPUBindGroupCacheEntry
 {
-    WGPURenderPipeline Render = nullptr;
-    WGPUComputePipeline Compute = nullptr;
-    uint32 Group = 0;
+    WGPUBindGroupLayout Layout = nullptr;
     uint32 LastUsedFrame = 0;
     WGPUBindGroup Handle = nullptr;
     TArray<WGPUBindGroupEntry> Entries;
@@ -50,8 +48,7 @@ struct FWebGPUBindGroupCacheEntry
             if (Entry.textureView) WebGPUOnOwner([&] { wgpuTextureViewRelease(Entry.textureView); });
             if (Entry.sampler) WebGPUOnOwner([&] { wgpuSamplerRelease(Entry.sampler); });
         }
-        if (Render) WebGPUOnOwner([&] { wgpuRenderPipelineRelease(Render); });
-        if (Compute) WebGPUOnOwner([&] { wgpuComputePipelineRelease(Compute); });
+        if (Layout) WebGPUOnOwner([&] { wgpuBindGroupLayoutRelease(Layout); });
     }
 };
 
@@ -357,6 +354,7 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
 {
   public:
     WGPURenderPipeline Handle = nullptr;
+    uint32 VertexStreamMask = 0;
     TArray<WGPUBindGroupLayout> GroupLayouts;
     TSet<uint64> DynamicBindings;
     uint32 PreviousGroupsFrame = MAX_uint32;
@@ -546,8 +544,44 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint64 BindingStateSerial = 1;
     uint32 BindingEntriesPrepared = 0, BindingEntriesReused = 0, BindingEntriesValidated = 0;
     TMap<uint32, TArray<TUniquePtr<FWebGPUBindGroupCacheEntry>>> BindGroupCache;
+    // Explicit layouts are interned for the device lifetime, like native root signatures.
+    // Keys contain semantic fields, never C struct padding or shader/pipeline identity.
+    struct FGroupLayout { TArray<uint64> Key; WGPUBindGroupLayout Handle; };
+    struct FPipelineLayout { TArray<WGPUBindGroupLayout> Groups; WGPUPipelineLayout Handle; };
+    TMap<uint32, TArray<FGroupLayout>> GroupLayoutCache;
+    TArray<FPipelineLayout> PipelineLayoutCache;
+    struct FDrawBundle
+    {
+        TArray<uint64> Key;
+        WGPURenderBundle Handle = nullptr;
+        uint32 LastUsedFrame = 0;
+        uint32 StableFrames = 1;
+        TRefCountPtr<FWebGPUGraphicsPipeline> Pipeline;
+        TArray<TRefCountPtr<FWebGPUBuffer>> Buffers;
+        TArray<WGPUBindGroup> Groups;
+        ~FDrawBundle()
+        {
+            if (Handle) WebGPUOnOwner([&] { wgpuRenderBundleRelease(Handle); });
+            for (auto Group : Groups) WebGPUOnOwner([&] { wgpuBindGroupRelease(Group); });
+        }
+    };
+    TMap<uint32, TArray<TUniquePtr<FDrawBundle>>> DrawBundleCache;
+    TArray<uint64> DrawBundleKey, PassBundleKey;
+    TArray<WGPUTextureFormat> PassBundleColors;
+    WGPUTextureFormat PassBundleDepth = WGPUTextureFormat_Undefined;
+    bool PassStencilReadOnly = false, UseRenderBundles = false;
+    uint32 PassStencilReference = MAX_uint32;
+    struct FPendingBundle { WGPURenderBundle Handle; bool Owned; };
+    TArray<FPendingBundle> PendingDrawBundles;
+    uint32 DrawBundleEntries = 0, DrawBundleReadyEntries = 0, DrawBundleHits = 0, DrawBundlesCreated = 0;
+    void FlushDrawBundles();
+    void DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint32 FirstInstance,
+        uint32 StartIndex, uint32 Primitives, uint32 Instances);
     WGPUBuffer FrameUniformBuffer = nullptr;
     uint64 FrameUniformOffset = 0;
+    TArray<uint8> FrameUniformUploadBytes;
+    uint64 FrameUniformDirtyBegin = 0, FrameUniformDirtyEnd = 0;
+    uint32 UniformWriteCalls = 0;
     TArray<WGPUBuffer> FrameUniformPages;
     uint32 FrameUniformPage = 0;
     TArray<TRefCountPtr<FRHIShader>> FrameShaders;
@@ -642,6 +676,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void TrackShaderBindings(FWebGPUShaderData& Shader);
     void ReleaseFrameBindings();
     FWebGPUUniform::FConstantSnapshot UploadFrameConstants(const void* Data, uint64 Bytes);
+    void FlushFrameConstants();
+    WGPUPipelineLayout CreatePipelineLayout(TConstArrayView<const FWebGPUShaderData*> Shaders,
+        TSet<uint64>& DynamicBindings, TArray<WGPUBindGroupLayout>& Layouts);
     void Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter);
     void Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8>, TConstArrayView<FRHIShaderParameter>,
                     TConstArrayView<FRHIShaderParameterResource>, TConstArrayView<FRHIShaderParameterResource>);
@@ -756,7 +793,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<FWebGPUResolvedGroup> BoundGraphicsGroups;
     void ResetEncoderBindings();
     void SetIndexBinding(FWebGPUBuffer*);
-    void SetDrawBindings();
+    void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr);
     WGPUComputePassEncoder BeginComputePass();
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
     TMap<FString, WGPUComputePipeline> ClearPipelines;

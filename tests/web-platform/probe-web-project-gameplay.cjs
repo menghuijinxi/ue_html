@@ -110,6 +110,19 @@ let context;
         if (step % 10 === 9) console.log(JSON.stringify({run, step: step + 1, frame: state.frame, camera: state.camera}));
       }
       if (held) await page.keyboard.up(held);
+      if (process.argv.includes('--validate-state-snapshot')) {
+        const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
+        result.workerSnapshot = await owner.evaluate(() => {
+          // Check the real runtime contract once, outside any performance measurement.
+          const keys = Object.keys(globalThis).filter(key =>
+            /^__web(?:EngineFrames|EngineRuntime|EngineGPUDeviceReady|Default|RenderView|TextureStreaming|OcclusionRHI|VisualTestClock|GPUHandleDiagnostics|Thread|DistanceFields|Visibility|ProjectSettings)/.test(key));
+          return {publishedKeys: keys, missing: keys.filter(key =>
+            !diagnosticStateKeys.includes(key) && key !== '__webEngineThreads' && key !== '__webThreadPool')};
+        });
+        assert.deepEqual(result.workerSnapshot.missing, [], 'Every published diagnostic must reach the page');
+        const pageKeys = await page.evaluate(keys => keys.filter(key => !(key in globalThis)), result.workerSnapshot.publishedKeys);
+        assert.deepEqual(pageKeys, [], 'Worker diagnostic state must be delivered to the page');
+      }
       const cameras = result.samples.map(sample => sample.camera).filter(Boolean);
       const spawn = cameras[0];
       result.maxTravelCm = Math.max(...cameras.map(camera => Math.hypot(camera.x - spawn.x, camera.y - spawn.y, camera.z - spawn.z)));
@@ -121,6 +134,10 @@ let context;
         assert(result.samples.at(-1).bindings?.bindingEntriesValidated > 1000,
           'Recomputed descriptors must match prepared cache entries during real scene movement');
         assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingCacheTest', 0)), 1);
+      }
+      if (process.argv.includes('--require-render-bundles')) {
+        assert(result.samples.at(-1).bindings?.drawBundleHits > 1000,
+          'Indexed draws must exercise the render bundle cache during real movement');
       }
       if (requireRenderThreads) {
         const last = result.samples.at(-1), threads = last.threads;
