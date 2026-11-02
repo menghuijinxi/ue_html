@@ -46,14 +46,21 @@ for (const name of [...runtimeNames, ...helpers]) assets.versions[name] = audit(
 assets.wasm = metadata(path.join(output, 'UEWebEngineThreads.wasm'), 'UEWebEngineThreads.wasm');
 html = html.replace(match[0], 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
 const psoPrecache = process.argv.includes('--pso-precache');
-if (psoPrecache) {
+const precacheConcurrency = option('pso-concurrency') === undefined ? null : Number(option('pso-concurrency'));
+assert(precacheConcurrency === null || (Number.isInteger(precacheConcurrency) && precacheConcurrency >= 1 && precacheConcurrency <= 8));
+if (psoPrecache || precacheConcurrency !== null) {
   const args = html.match(/arguments: (\[[^\n]+\]),/);
   assert(args);
   // Historical hand-authored pages use single-quoted argument literals.
   // Accept only plain argument strings; do not evaluate page source as code.
   assert(/^\[\s*(?:['"][a-zA-Z0-9_./=:-]+['"]\s*,?\s*)*\]$/.test(args[1]));
   const values = [...args[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(match=>match[1]);
-  values.push('-WebPSOPrecacheTest');
+  if (psoPrecache && !values.includes('-WebPSOPrecacheTest')) values.push('-WebPSOPrecacheTest');
+  if (precacheConcurrency !== null) {
+    assert(values.includes('-WebPSOPrecacheTest'), 'Concurrency variant requires PSO precaching');
+    assert(!values.some(value => value.startsWith('-WebPSOPrecacheConcurrency=')));
+    values.push('-WebPSOPrecacheConcurrency=' + precacheConcurrency);
+  }
   html = html.replace(args[0], 'arguments: ' + JSON.stringify(values) + ',');
 }
 fs.writeFileSync(htmlFile, html);
@@ -63,7 +70,7 @@ const products = fs.readdirSync(output).filter(f => f !== 'asset-versions.json')
 products.push(writeVersions(output, products));
 const buildSnapshot = path.join(results, outputFolder + '-build.json');
 fs.copyFileSync(buildFile, buildSnapshot);
-const report = {date: new Date().toISOString(), pass: true, baseline, output, psoPrecache,
+const report = {date: new Date().toISOString(), pass: true, baseline, output, psoPrecache, precacheConcurrency,
   sources: [__filename, ...helpers.map(f => path.join(__dirname, f))].map(audit),
   build: audit(buildSnapshot), baselineEvidence: audit(evidenceFile), baselineCookPayload: proof.files,
   projectQualityOverrides: [], products,
