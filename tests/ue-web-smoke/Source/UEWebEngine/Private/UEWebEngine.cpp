@@ -735,6 +735,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.ScreenPercentage"))->Set(Value, ECVF_SetByCode);
     else if (Parameter == 14 && (Value == 0 || Value == 1))
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.TSR.History.R11G11B10"))->Set(Value, ECVF_SetByCode);
+    else if (Parameter == 15 && (Value == 0 || Value == 1))
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.TranslucencyLightingVolume"))->Set(Value, ECVF_SetByCode);
     else if (Parameter != -1)
         return 0;
     auto* LocalPlayer = Controller->GetLocalPlayer();

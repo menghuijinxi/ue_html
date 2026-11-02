@@ -29,6 +29,8 @@ if ((Get-Item -LiteralPath $taskRendererCopy).LinkType) { throw 'Renderer overla
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShadowOverlay") -Destination (Join-Path $taskHost $taskShadowOverlay) -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/TemporalSuperResolution.cpp') -Destination (Join-Path $taskRendererCopy 'Private/PostProcess/TemporalSuperResolution.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentRendering.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentLighting.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentLighting.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SystemTextures.cpp') -Destination (Join-Path $taskRendererCopy 'Private/SystemTextures.cpp') -Force
 & node (Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'Enhanced Input runtime module preparation failed.' }
 $taskPlatforms = Join-Path $taskHost 'Platforms'

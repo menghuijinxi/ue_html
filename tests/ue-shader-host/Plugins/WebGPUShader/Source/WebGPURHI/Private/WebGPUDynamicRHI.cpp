@@ -204,7 +204,7 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = fals
         return WGPUTextureFormat_Undefined;
     }
 }
-bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits)
+bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits, bool SupportsExtendedStorageAccess)
 {
     uint32 Samplers = 0, Textures = 0, StorageTextures = 0, Uniforms = 0, StorageBuffers = 0;
     for (const auto& Binding : Shader.Bindings)
@@ -217,10 +217,10 @@ bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits
             if (Format == WGPUTextureFormat_Undefined) return false;
             FString Access;
             Binding.Metadata->TryGetStringField(TEXT("storageTextureAccess"), Access);
-            // Core WebGPU read-write storage access is restricted to r32
-            // formats. UE's unused global permutations also request RG32.
+            // TLV accumulates RGBA16F in place when the device exposes tier 2.
             if (Access == TEXT("read_write") && Format != WGPUTextureFormat_R32Float &&
-                Format != WGPUTextureFormat_R32Uint && Format != WGPUTextureFormat_R32Sint) return false;
+                Format != WGPUTextureFormat_R32Uint && Format != WGPUTextureFormat_R32Sint &&
+                !(SupportsExtendedStorageAccess && Format == WGPUTextureFormat_RGBA16Float)) return false;
         }
         if (Binding.Group >= Limits.maxBindGroups || Binding.Index >= Limits.maxBindingsPerBindGroup) return false;
         Samplers += Binding.Descriptor == 0;
@@ -3219,8 +3219,9 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
             Frequency == SF_Pixel ? WGPUShaderStage_Fragment : WGPUShaderStage_Compute;
         // Mobile CSM uses manual PCF with a point sampler over the depth atlas.
         // HZB starts from the depth attachment and uses a point sampler at every mip.
-        // Cloud depth is encoded in filterable RGBA16F color targets.
+        // Cloud depth and precomputed shadow depth use filterable color textures.
         const bool Depth = !Name.Contains(TEXT("VolumetricDepthTexture")) &&
+            !Name.Contains(TEXT("StaticShadowDepthTexture")) &&
             (Name.Contains(TEXT("SceneDepth")) || Name.Contains(TEXT("ShadowDepth")) ||
                 Name.Contains(TEXT("DirectionalLightShadowTexture")) ||
                 Name.Contains(TEXT("DirectionalLightShadowSampler")) ||
@@ -3374,9 +3375,10 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             Rasterizer.FillMode == FM_Solid && Rasterizer.CullMode <= CM_CCW && Rasterizer.DepthBias == 0 &&
             Rasterizer.SlopeScaleDepthBias == 0 && Rasterizer.DepthClipMode == ERasterizerDepthClipMode::DepthClip &&
             !Blend.bUseAlphaToCoverage && In.RenderTargetsEnabled <= Limits.maxColorAttachments;
-        Supported &= CanPrecacheShader(static_cast<FWebGPUVertexShader*>(In.BoundShaderState.GetVertexShader())->Data, Limits);
+        const bool ExtendedStorageAccess = wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2);
+        Supported &= CanPrecacheShader(static_cast<FWebGPUVertexShader*>(In.BoundShaderState.GetVertexShader())->Data, Limits, ExtendedStorageAccess);
         if (auto* Pixel = In.BoundShaderState.GetPixelShader())
-            Supported &= CanPrecacheShader(static_cast<FWebGPUPixelShader*>(Pixel)->Data, Limits);
+            Supported &= CanPrecacheShader(static_cast<FWebGPUPixelShader*>(Pixel)->Data, Limits, ExtendedStorageAccess);
         if (In.BoundShaderState.VertexDeclarationRHI)
         {
             const auto* Declaration = static_cast<FWebGPUVertexDeclaration*>(In.BoundShaderState.VertexDeclarationRHI);
@@ -3601,7 +3603,8 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     WEBGPU_ON_OWNER(RHICreateComputePipelineState(In));
     RequireOwner();
     if (In.bPSOPrecache && (!In.SpecializationConstants.IsEmpty() ||
-        !CanPrecacheShader(static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data, Limits)))
+        !CanPrecacheShader(static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data, Limits,
+            wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2))))
     {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         ++UnsupportedPrecacheRequests;
