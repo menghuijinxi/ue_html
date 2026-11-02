@@ -465,7 +465,7 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     ~FWebGPUComputePipeline() override
     {
         for (auto Layout : GroupLayouts) if (Layout) WebGPUOnOwner([&] { wgpuBindGroupLayoutRelease(Layout); });
-        WebGPUOnOwner([&] { wgpuComputePipelineRelease(Handle); });
+        if (Handle) WebGPUOnOwner([&] { wgpuComputePipelineRelease(Handle); });
     }
 };
 

@@ -22,8 +22,13 @@ assert(build.pass && build.threads && build.buildSucceeded && build.exitCode ===
 assert(build.objects.every(x => [x.object, x.response, x.definitions, x.source].every(valid)));
 assert(!fs.existsSync(output), 'Use a fresh experiment folder to preserve prior evidence');
 fs.mkdirSync(output, {recursive: true});
-for (const f of fs.readdirSync(base)) if (fs.statSync(path.join(base, f)).isFile())
-  fs.copyFileSync(path.join(base, f), path.join(output, f));
+for (const f of fs.readdirSync(base)) if (fs.statSync(path.join(base, f)).isFile()) {
+  const source=path.join(base,f),destination=path.join(output,f);
+  if(['content.bin','content-files.json','config-files.json'].includes(f)) {
+    // Immutable Cook payloads are shared; never link the runtime/helpers we replace.
+    try {fs.linkSync(source,destination);} catch {fs.copyFileSync(source,destination);}
+  } else fs.copyFileSync(source,destination);
+}
 const runtimeNames = ['UEWebEngineThreads.js', 'UEWebEngineThreads.wasm'];
 for (const name of runtimeNames) fs.copyFileSync(build.products.find(x => path.basename(x.file) === name).file, path.join(output, name));
 const helpers = ['web-engine-host.js', 'web-engine-worker.js', 'web-content-io.js', 'web-content-worker.js'];
@@ -41,7 +46,10 @@ const psoPrecache = process.argv.includes('--pso-precache');
 if (psoPrecache) {
   const args = html.match(/arguments: (\[[^\n]+\]),/);
   assert(args);
-  const values = JSON.parse(args[1]);
+  // Historical hand-authored pages use single-quoted argument literals.
+  // Accept only plain argument strings; do not evaluate page source as code.
+  assert(/^\[\s*(?:['"][a-zA-Z0-9_./=:-]+['"]\s*,?\s*)*\]$/.test(args[1]));
+  const values = [...args[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(match=>match[1]);
   values.push('-WebPSOPrecacheTest');
   html = html.replace(args[0], 'arguments: ' + JSON.stringify(values) + ',');
 }

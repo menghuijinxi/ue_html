@@ -11,6 +11,7 @@
 #include "RHICoreShader.h"
 
 #include "HAL/PlatformProcess.h"
+#include "HAL/Event.h"
 #include "HAL/IConsoleManager.h"
 #include "HAL/PlatformTLS.h"
 #include "Misc/FileHelper.h"
@@ -42,6 +43,54 @@ struct FWebGPUCompletion
     bool Success = false;
 };
 using FWebGPUCompletionRef = TSharedPtr<FWebGPUCompletion, ESPMode::ThreadSafe>;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+// Keep UE's precache task incomplete while its pthread waits. The GPU owner
+// returns to its event loop so the WebGPU Promise can deliver this callback.
+template <typename HandleType> struct TWebGPUPrecacheRequest
+{
+    FEvent* Event = FPlatformProcess::GetSynchEventFromPool(true);
+    HandleType Handle = nullptr;
+    FString Error;
+    ~TWebGPUPrecacheRequest() { FPlatformProcess::ReturnSynchEventToPool(Event); }
+    void Complete(HandleType Pipeline, WGPUStringView Message)
+    {
+        Handle = Pipeline;
+        if (!Pipeline && Message.data)
+            Error = FString(FUTF8ToTCHAR(Message.data, Message.length == WGPU_STRLEN ?
+                FCStringAnsi::Strlen(Message.data) : int32(Message.length)));
+        Event->Trigger(); // Do not touch the request after waking its waiter.
+    }
+    void Wait()
+    {
+        check(!emscripten_is_main_runtime_thread());
+        Event->Wait();
+    }
+};
+using FWebGPUGraphicsPrecacheRequest = TWebGPUPrecacheRequest<WGPURenderPipeline>;
+using FWebGPUComputePrecacheRequest = TWebGPUPrecacheRequest<WGPUComputePipeline>;
+thread_local FWebGPUGraphicsPrecacheRequest* GraphicsPrecacheRequest = nullptr;
+thread_local FWebGPUComputePrecacheRequest* ComputePrecacheRequest = nullptr;
+uint32 AsyncPrecacheRequested = 0, AsyncPrecacheCompleted = 0, AsyncPrecacheFailed = 0;
+uint32 UnsupportedPrecacheRequests = 0;
+template <typename Function> void SubmitWebGPUPrecache(Function&& Start)
+{
+    // A system-queue proxy can run reentrantly while emdawnwebgpu holds its
+    // EventManager mutex (e.g. inside an allocator wait). Schedule the actual
+    // API call on the next JS task instead of executing it in that proxy.
+    struct FSubmission { Function& Invoke; FEvent* Submitted; };
+    FSubmission Submission{Start, FPlatformProcess::GetSynchEventFromPool(true)};
+    verify(emscripten_proxy_async(emscripten_proxy_get_system_queue(), emscripten_main_runtime_thread_id(),
+        [](void* Data) {
+            emscripten_async_call([](void* Data) {
+                auto* Submission = static_cast<FSubmission*>(Data);
+                Submission->Invoke();
+                Submission->Submitted->Trigger();
+            }, Data, 0);
+        }, &Submission));
+    Submission.Submitted->Wait();
+    FPlatformProcess::ReturnSynchEventToPool(Submission.Submitted);
+}
+#endif
 void UniformSnapshot(const void *Contents, const FRHIUniformBufferLayout &Layout, TArray<uint8> &Bytes,
                      TArray<TRefCountPtr<FRHIResource>> &Resources)
 {
@@ -124,7 +173,7 @@ uint32 StorageImageFormat(EPixelFormat Value)
     default: return 0;
     }
 }
-WGPUTextureFormat StorageFormat(uint32 ImageFormat)
+WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = false)
 {
     switch (ImageFormat)
     {
@@ -145,11 +194,41 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat)
     case 35: return WGPUTextureFormat_RG32Uint;
     case 38: return WGPUTextureFormat_R16Uint;
     default:
+        if (AllowUnsupported) return WGPUTextureFormat_Undefined;
         checkf(false, TEXT("WebGPU storage image format unsupported: %u"), ImageFormat);
         return WGPUTextureFormat_Undefined;
     }
 }
-WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
+bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits)
+{
+    uint32 Samplers = 0, Textures = 0, StorageTextures = 0, Uniforms = 0, StorageBuffers = 0;
+    for (const auto& Binding : Shader.Bindings)
+    {
+        if (Binding.Descriptor != 0 && Binding.Descriptor != 2 && Binding.Descriptor != 3 &&
+            Binding.Descriptor != 6 && Binding.Descriptor != 7) return false;
+        if (Binding.Descriptor == 3)
+        {
+            const auto Format = StorageFormat(Binding.Metadata->GetIntegerField(TEXT("storageImageFormat")), true);
+            if (Format == WGPUTextureFormat_Undefined) return false;
+            FString Access;
+            Binding.Metadata->TryGetStringField(TEXT("storageTextureAccess"), Access);
+            // Core WebGPU read-write storage access is restricted to r32
+            // formats. UE's unused global permutations also request RG32.
+            if (Access == TEXT("read_write") && Format != WGPUTextureFormat_R32Float &&
+                Format != WGPUTextureFormat_R32Uint && Format != WGPUTextureFormat_R32Sint) return false;
+        }
+        if (Binding.Group >= Limits.maxBindGroups || Binding.Index >= Limits.maxBindingsPerBindGroup) return false;
+        Samplers += Binding.Descriptor == 0;
+        Textures += Binding.Descriptor == 2;
+        StorageTextures += Binding.Descriptor == 3;
+        Uniforms += Binding.Descriptor == 6;
+        StorageBuffers += Binding.Descriptor == 7;
+    }
+    return Samplers <= Limits.maxSamplersPerShaderStage && Textures <= Limits.maxSampledTexturesPerShaderStage &&
+        StorageTextures <= Limits.maxStorageTexturesPerShaderStage && Uniforms <= Limits.maxUniformBuffersPerShaderStage &&
+        StorageBuffers <= Limits.maxStorageBuffersPerShaderStage;
+}
+WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false, bool AllowUnsupported = false)
 {
     switch (Value)
     {
@@ -210,11 +289,13 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false)
     case PF_ShadowDepth:
         return WGPUTextureFormat_Depth16Unorm;
     default:
+        if (AllowUnsupported) return WGPUTextureFormat_Undefined;
         checkf(false, TEXT("WebGPURHI pixel format unsupported: %d"), Value);
         return WGPUTextureFormat_Undefined;
     }
 }
-WGPUVertexFormat VertexFormat(EVertexElementType Type)
+constexpr WGPUVertexFormat UnsupportedVertexFormat = static_cast<WGPUVertexFormat>(0);
+WGPUVertexFormat VertexFormat(EVertexElementType Type, bool AllowUnsupported = false)
 {
     switch (Type)
     {
@@ -232,6 +313,7 @@ WGPUVertexFormat VertexFormat(EVertexElementType Type)
     case VET_UShort2: return WGPUVertexFormat_Uint16x2;
     case VET_UInt: return WGPUVertexFormat_Uint32; // GPUScene primitive/instance ID stream (D3D: R32_UINT).
     default:
+        if (AllowUnsupported) return UnsupportedVertexFormat;
         checkf(false, TEXT("WebGPU vertex element type unsupported: %u"), uint32(Type));
         return WGPUVertexFormat_Float32;
     }
@@ -485,9 +567,22 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsRHIOnTaskThread = false;
     GRHISupportsParallelRHIExecute = false;
     GRHISupportsMultithreadedResources = false;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    // Shader factories proxy their whole operation to the GPU owner; UE's
+    // material/global precache collectors can safely call them from tasks.
+    GRHISupportsMultithreadedShaderCreation = true;
+#else
     GRHISupportsMultithreadedShaderCreation = false;
+#endif
     GRHISupportsAsyncPipelinePrecompile = false;
     GRHISupportsPSOPrecaching = FParse::Param(FCommandLine::Get(), TEXT("WebPSOPrecacheTest"));
+    if (GRHISupportsPSOPrecaching)
+    {
+        // Compilation runs in the browser. Two UE request waiters suffice;
+        // leave room in the fixed Wasm pthread pool for engine threads.
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolSize"))->Set(2, ECVF_SetByCode);
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolPercentOfHardwareThreads"))->Set(0, ECVF_SetByCode);
+    }
     GRHISupportsPipelineFileCache = false;
     GRHISupportsTextureStreaming = true;
     GRHIRequiresRenderTargetForPixelShaderUAVs = true;
@@ -949,6 +1044,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, EndFrames, GraphicsPipelinesCreated, ComputePipelinesCreated, GraphicsPipelineCreateMs, ComputePipelineCreateMs,
             TextureReadbacksPending.load(), TextureReadbacksReady->load(), TextureReadbackMaps.load(), TextureReadbackNotReady.load(),
             GRHISupportsPSOPrecaching, PrecachedGraphicsPipelines);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+        EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
+            {asyncPrecacheRequested:$0, asyncPrecacheCompleted:$1, asyncPrecacheFailed:$2, unsupportedPrecacheRequests:$3});
+        }, AsyncPrecacheRequested, AsyncPrecacheCompleted, AsyncPrecacheFailed, UnsupportedPrecacheRequests);
+#endif
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI,
                 {draws: $0, indirectDraws: $1, dispatches: $2, sampleFrame: $3});
@@ -3226,8 +3326,66 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
 }
 FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In)
 {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    if (In.bPSOPrecache && GRHISupportsPSOPrecaching && !emscripten_is_main_runtime_thread())
+    {
+        FWebGPUGraphicsPrecacheRequest Request;
+        FGraphicsPipelineStateRHIRef Result;
+        SubmitWebGPUPrecache([&] {
+            TGuardValue<FWebGPUGraphicsPrecacheRequest*> Guard(GraphicsPrecacheRequest, &Request);
+            Result = RHICreateGraphicsPipelineState(In);
+        });
+        Request.Wait();
+        // UE permits speculative precache requests to fail. A rejected request
+        // must not become a usable RHI state or abort the running application.
+        if (!Request.Handle) return nullptr;
+        static_cast<FWebGPUGraphicsPipeline*>(Result.GetReference())->Handle = Request.Handle;
+        return Result;
+    }
+#endif
     WEBGPU_ON_OWNER(RHICreateGraphicsPipelineState(In));
     RequireOwner();
+    if (In.bPSOPrecache)
+    {
+        // UE collectors also propose states that this backend cannot draw.
+        // Reject those requests like a failed native precompile, before the
+        // runtime-only assertions below. Always wake the compile task.
+        FBlendStateInitializerRHI Blend;
+        FDepthStencilStateInitializerRHI DepthState;
+        FRasterizerStateInitializerRHI Rasterizer;
+        bool Supported = In.NumSamples == 1 && !In.BoundShaderState.GetGeometryShader() &&
+            (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip) &&
+            In.BlendState && In.RasterizerState && In.DepthStencilState &&
+            In.BlendState->GetInitializer(Blend) && In.DepthStencilState->GetInitializer(DepthState) &&
+            In.RasterizerState->GetInitializer(Rasterizer) &&
+            Rasterizer.FillMode == FM_Solid && Rasterizer.CullMode <= CM_CCW && Rasterizer.DepthBias == 0 &&
+            Rasterizer.SlopeScaleDepthBias == 0 && Rasterizer.DepthClipMode == ERasterizerDepthClipMode::DepthClip &&
+            !Blend.bUseAlphaToCoverage && In.RenderTargetsEnabled <= Limits.maxColorAttachments;
+        Supported &= CanPrecacheShader(static_cast<FWebGPUVertexShader*>(In.BoundShaderState.GetVertexShader())->Data, Limits);
+        if (auto* Pixel = In.BoundShaderState.GetPixelShader())
+            Supported &= CanPrecacheShader(static_cast<FWebGPUPixelShader*>(Pixel)->Data, Limits);
+        if (In.BoundShaderState.VertexDeclarationRHI)
+        {
+            const auto* Declaration = static_cast<FWebGPUVertexDeclaration*>(In.BoundShaderState.VertexDeclarationRHI);
+            for (const FVertexElement& Element : Declaration->Elements)
+                Supported &= Element.StreamIndex < Limits.maxVertexBuffers &&
+                    VertexFormat(EVertexElementType(Element.Type), true) != UnsupportedVertexFormat;
+        }
+        for (uint32 Index = 0; Index < In.RenderTargetsEnabled; ++Index)
+            Supported &= In.RenderTargetFormats[Index] == PF_Unknown ||
+                Format(EPixelFormat(In.RenderTargetFormats[Index]), false, true) != WGPUTextureFormat_Undefined;
+        Supported &= In.DepthStencilTargetFormat == PF_Unknown ||
+            Format(In.DepthStencilTargetFormat, false, true) != WGPUTextureFormat_Undefined;
+        if (!Supported)
+        {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+            ++UnsupportedPrecacheRequests;
+            if (GraphicsPrecacheRequest)
+                GraphicsPrecacheRequest->Complete(nullptr, Text("Unsupported speculative raster state"));
+#endif
+            return nullptr;
+        }
+    }
     ++GraphicsPipelinesCreated;
     if (In.bPSOPrecache) ++PrecachedGraphicsPipelines;
     check(In.NumSamples == 1 && !In.BoundShaderState.GetGeometryShader() &&
@@ -3321,8 +3479,11 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     for (uint32 Index = 0; Index < In.RenderTargetsEnabled; ++Index)
     {
         auto Target = WGPU_COLOR_TARGET_STATE_INIT;
-        Target.format = Format(EPixelFormat(In.RenderTargetFormats[Index]),
-            EnumHasAnyFlags(In.RenderTargetFlags[Index], ETextureCreateFlags::SRGB));
+        // UE uses PF_Unknown for unused MRT slots, including precache states.
+        // emdawnwebgpu translates an Undefined target to a null WebGPU slot.
+        Target.format = In.RenderTargetFormats[Index] == PF_Unknown ? WGPUTextureFormat_Undefined :
+            Format(EPixelFormat(In.RenderTargetFormats[Index]),
+                EnumHasAnyFlags(In.RenderTargetFlags[Index], ETextureCreateFlags::SRGB));
         const auto &State = Blend.RenderTargets[Blend.bUseIndependentRenderTargetBlendStates ? Index : 0];
         auto &NativeBlend = Blends[Index];
         NativeBlend.color = {BlendOperation(State.ColorBlendOp), BlendFactor(State.ColorSrcBlend),
@@ -3380,7 +3541,27 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         Desc.depthStencil = &Depth;
     }
     const double CreateStart = FPlatformTime::Seconds();
-    Result->Handle = wgpuDeviceCreateRenderPipeline(Device, &Desc);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    // A synchronous owner proxy can run reentrantly during this creation.
+    // Runtime draws must not inherit the surrounding precache callback.
+    if (In.bPSOPrecache && GraphicsPrecacheRequest)
+    {
+        ++AsyncPrecacheRequested;
+        auto Callback = WGPU_CREATE_RENDER_PIPELINE_ASYNC_CALLBACK_INFO_INIT;
+        Callback.mode = WGPUCallbackMode_AllowSpontaneous;
+        Callback.userdata1 = GraphicsPrecacheRequest;
+        Callback.callback = [](WGPUCreatePipelineAsyncStatus Status, WGPURenderPipeline Pipeline,
+            WGPUStringView Message, void* Userdata, void*) {
+            const bool Success = Status == WGPUCreatePipelineAsyncStatus_Success;
+            ++AsyncPrecacheCompleted;
+            if (!Success) { ++AsyncPrecacheFailed; if (Pipeline) wgpuRenderPipelineRelease(Pipeline); }
+            static_cast<FWebGPUGraphicsPrecacheRequest*>(Userdata)->Complete(Success ? Pipeline : nullptr, Message);
+        };
+        wgpuDeviceCreateRenderPipelineAsync(Device, &Desc, Callback);
+    }
+    else
+#endif
+        Result->Handle = wgpuDeviceCreateRenderPipeline(Device, &Desc);
     GraphicsPipelineCreateMs += (FPlatformTime::Seconds() - CreateStart) * 1000;
     if (DepthOnlyFragment)
         wgpuShaderModuleRelease(DepthOnlyFragment);
@@ -3389,8 +3570,33 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
 }
 FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(const FComputePipelineStateInitializer &In)
 {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    if (In.bPSOPrecache && GRHISupportsPSOPrecaching && !emscripten_is_main_runtime_thread())
+    {
+        FWebGPUComputePrecacheRequest Request;
+        FComputePipelineStateRHIRef Result;
+        SubmitWebGPUPrecache([&] {
+            TGuardValue<FWebGPUComputePrecacheRequest*> Guard(ComputePrecacheRequest, &Request);
+            Result = RHICreateComputePipelineState(In);
+        });
+        Request.Wait();
+        if (!Request.Handle) return nullptr;
+        static_cast<FWebGPUComputePipeline*>(Result.GetReference())->Handle = Request.Handle;
+        return Result;
+    }
+#endif
     WEBGPU_ON_OWNER(RHICreateComputePipelineState(In));
     RequireOwner();
+    if (In.bPSOPrecache && (!In.SpecializationConstants.IsEmpty() ||
+        !CanPrecacheShader(static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data, Limits)))
+    {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+        ++UnsupportedPrecacheRequests;
+        if (ComputePrecacheRequest)
+            ComputePrecacheRequest->Complete(nullptr, Text("Unsupported speculative compute state"));
+#endif
+        return nullptr;
+    }
     check(In.SpecializationConstants.IsEmpty());
     const auto &Shader = static_cast<FWebGPUComputeShader *>(In.ComputeShader)->Data;
     WGPUComputePipelineDescriptor Desc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
@@ -3403,7 +3609,26 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     Desc.compute.entryPoint = Text(Entry.Get());
     ++ComputePipelinesCreated;
     const double CreateStart = FPlatformTime::Seconds();
-    auto Handle = wgpuDeviceCreateComputePipeline(Device, &Desc);
+    WGPUComputePipeline Handle = nullptr;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    if (In.bPSOPrecache && ComputePrecacheRequest)
+    {
+        ++AsyncPrecacheRequested;
+        auto Callback = WGPU_CREATE_COMPUTE_PIPELINE_ASYNC_CALLBACK_INFO_INIT;
+        Callback.mode = WGPUCallbackMode_AllowSpontaneous;
+        Callback.userdata1 = ComputePrecacheRequest;
+        Callback.callback = [](WGPUCreatePipelineAsyncStatus Status, WGPUComputePipeline Pipeline,
+            WGPUStringView Message, void* Userdata, void*) {
+            const bool Success = Status == WGPUCreatePipelineAsyncStatus_Success;
+            ++AsyncPrecacheCompleted;
+            if (!Success) { ++AsyncPrecacheFailed; if (Pipeline) wgpuComputePipelineRelease(Pipeline); }
+            static_cast<FWebGPUComputePrecacheRequest*>(Userdata)->Complete(Success ? Pipeline : nullptr, Message);
+        };
+        wgpuDeviceCreateComputePipelineAsync(Device, &Desc, Callback);
+    }
+    else
+#endif
+        Handle = wgpuDeviceCreateComputePipeline(Device, &Desc);
     ComputePipelineCreateMs += (FPlatformTime::Seconds() - CreateStart) * 1000;
     wgpuPipelineLayoutRelease(Desc.layout);
     auto* Result = new FWebGPUComputePipeline(In.ComputeShader, Handle);
@@ -3780,6 +4005,8 @@ void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *S
     WEBGPU_COMMAND_ON_OWNER(RHISetGraphicsPipelineState(State, StencilRef, WebArg2));
     check(Pass && StencilRef <= 255);
     GraphicsPipeline = static_cast<FWebGPUGraphicsPipeline *>(State);
+    checkf(GraphicsPipeline->Handle, TEXT("WebGPU draw received an incomplete pipeline (precache=%u)"),
+        GraphicsPipeline->Initializer.bPSOPrecache);
     FString Error;
     checkf(ValidatePipelineDepth(GraphicsPipeline->Initializer, Error), TEXT("%s"), *Error);
     if (!UseRenderBundles) wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);

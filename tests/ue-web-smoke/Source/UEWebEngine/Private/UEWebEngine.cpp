@@ -53,6 +53,7 @@
 #include "StaticMeshResources.h"
 #include "DistanceFieldAtlas.h"
 #include "RHIStats.h"
+#include "PipelineStateCache.h"
 #include "RHIGPUReadback.h"
 #include "RenderTargetPool.h"
 #include "UObject/UObjectIterator.h"
@@ -187,6 +188,10 @@ void EngineFrame(void*)
     }, Frames, emscripten_get_now() - TickStart);
     if (Frames % 30 == 0)
     {
+        MAIN_THREAD_ASYNC_EM_ASM({
+            globalThis.__webPSOPrecache = ({enabled:!!$0, active:$1, filePrecompileTasks:$2});
+        }, PipelineStateCache::IsPSOPrecachingEnabled(), PipelineStateCache::NumActivePrecacheRequests(),
+            PipelineStateCache::GetNumActivePipelinePrecompileTasks());
         const auto Setting = [](const TCHAR* Name) {
             const auto* Value = IConsoleManager::Get().FindConsoleVariable(Name);
             return Value ? Value->GetFloat() : -1.0f;

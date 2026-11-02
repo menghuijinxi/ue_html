@@ -40,7 +40,8 @@ const diagnosticStateKeys = [
   '__webThreadFrameTimes', '__webThreadIOProbe', '__webThreadStages',
   '__webThreadsExitCode', '__webThreadsFailure', '__webThreadsMemory', '__webThreadsResult',
   '__webDistanceFields', '__webDistanceFieldsExposure', '__webDistanceFieldsGPU',
-  '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings', '__webOptimizationRHI', '__webOptimizationState'
+  '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings', '__webOptimizationRHI', '__webOptimizationState',
+  '__webPSOPrecache'
 ];
 function snapshot() {
   const state = {};

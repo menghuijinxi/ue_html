@@ -2,7 +2,8 @@
 // Low overhead diagnostic: rare object creation calls plus one record per frame.
 // No per-draw wrappers, timestamp queries, GPU fences, or project setting changes.
 module.exports = function installStutterObserver() {
-  const state = globalThis.__webStutters = {active:false, frames:[], events:[], counts:{}, errors:[]};
+  const state = globalThis.__webStutters = {active:false, frames:[], events:[], counts:{}, errors:[],
+    asyncPipelines:{completed:0,failed:0,reasons:[]}};
   const requestAdapter = GPU.prototype.requestAdapter;
   GPU.prototype.requestAdapter = async function(...args) {
     const adapter = await requestAdapter.apply(this,args);
@@ -16,7 +17,14 @@ module.exports = function installStutterObserver() {
     if (!original) continue;
     GPUDevice.prototype[name] = function(...args) {
       const start = performance.now();
-      try { return original.apply(this,args); }
+      try {
+        const result = original.apply(this,args);
+        if(name.endsWith('PipelineAsync')) result.then(()=>state.asyncPipelines.completed++,error=>{
+          state.asyncPipelines.failed++;
+          if(state.asyncPipelines.reasons.length<12) state.asyncPipelines.reasons.push({label:args[0]?.label,message:error.message});
+        });
+        return result;
+      }
       finally {
         const end = performance.now();
         state.counts[name]=(state.counts[name]||0)+1;
