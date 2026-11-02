@@ -1,7 +1,9 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
     [ValidateSet('RenderCore', 'Renderer')][string]$Module = 'RenderCore',
-    [ValidateRange(1, 16)][int]$MaxParallelActions = 1
+    [ValidateRange(1, 16)][int]$MaxParallelActions = 1,
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$CompilerVersion,
+    [switch]$DisableHostOptimization
 )
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -16,6 +18,7 @@ $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
 $taskFlag = "UE_WEB_NATIVE_$($Module.ToUpperInvariant())"
 $taskSavedFlag = [Environment]::GetEnvironmentVariable($taskFlag)
+$taskSavedOptimization = $env:UE_WEB_NATIVE_NO_OPTIMIZE
 $taskSavedEngineRoot = $env:UE_ENGINE_ROOT
 $taskReport = [ordered]@{
     date = Get-Date -Format o
@@ -23,6 +26,8 @@ $taskReport = [ordered]@{
     nativeModuleOnly = $true
     fullSourceEngineBuild = $false
     maxParallelActions = $MaxParallelActions
+    compilerVersion = $CompilerVersion
+    disableHostOptimization = [bool]$DisableHostOptimization
     nativeModuleLoadVerified = $false
     completeUEScene = $false
 }
@@ -34,6 +39,7 @@ try {
     $taskProcess.ProcessorAffinity = [IntPtr]($taskAffinity.ToInt64() -band ([long][Math]::Pow(2, $taskWorkerThreads) - 1))
     $env:UE_ENGINE_ROOT = Join-Path $Engine 'Engine'
     [Environment]::SetEnvironmentVariable($taskFlag, '1')
+    $env:UE_WEB_NATIVE_NO_OPTIMIZE = if ($DisableHostOptimization) { '1' } else { '0' }
     & node (Join-Path $PSScriptRoot 'prepare-native-ubt.cjs') $env:UE_ENGINE_ROOT
     if ($LASTEXITCODE -ne 0) { throw 'Native UBT source preparation failed' }
     $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-native-rendercore-host.cjs'))
@@ -53,6 +59,7 @@ try {
     $taskArguments = @($taskUBT, 'UEShaderHostEditor', 'Win64', 'Development',
         "-Project=$taskProject", "-Module=$Module", '-NoUBA', '-NoUbaLocal',
         "-MaxParallelActions=$MaxParallelActions", '-NoHotReloadFromIDE')
+    if ($CompilerVersion) { $taskArguments += "-CompilerVersion=$CompilerVersion" }
     & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" "-Log=$taskLog.actions-ubt" *> "$taskLog.actions"
     if ($LASTEXITCODE -ne 0) { throw "Native action export failed: $taskLog.actions" }
     $taskExport = Get-Content -LiteralPath $taskActions -Raw | ConvertFrom-Json
@@ -97,6 +104,7 @@ try {
 } finally {
     $taskReport | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $taskReportFile -Encoding utf8
     [Environment]::SetEnvironmentVariable($taskFlag, $taskSavedFlag)
+    $env:UE_WEB_NATIVE_NO_OPTIMIZE = $taskSavedOptimization
     $env:UE_ENGINE_ROOT = $taskSavedEngineRoot
     $taskProcess.ProcessorAffinity = $taskAffinity
 }

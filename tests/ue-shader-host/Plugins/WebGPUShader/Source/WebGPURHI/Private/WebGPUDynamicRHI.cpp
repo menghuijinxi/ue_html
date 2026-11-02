@@ -111,6 +111,8 @@ WGPULimits RenderingLimits(WGPUAdapter Adapter)
     Required.maxColorAttachmentBytesPerSample = FMath::Min(64u, Supported.maxColorAttachmentBytesPerSample);
     Required.maxSampledTexturesPerShaderStage = FMath::Min(32u, Supported.maxSampledTexturesPerShaderStage);
     Required.maxStorageBuffersPerShaderStage = FMath::Min(16u, Supported.maxStorageBuffersPerShaderStage);
+    // TSR RejectShading writes up to seven storage textures in one dispatch.
+    Required.maxStorageTexturesPerShaderStage = FMath::Min(8u, Supported.maxStorageTexturesPerShaderStage);
     // Desktop Bloom can emit 17 interpolants; the default device limit is only 16.
     Required.maxInterStageShaderVariables = FMath::Min(28u, Supported.maxInterStageShaderVariables);
     Required.maxDynamicUniformBuffersPerPipelineLayout = Supported.maxDynamicUniformBuffersPerPipelineLayout;
@@ -144,7 +146,7 @@ bool IsSampled2DTextureFormat(EPixelFormat Value)
            Value == PF_R8G8 || Value == PF_G16R16 || Value == PF_A16B16G16R16 ||
            Value == PF_A2B10G10R10 || Value == PF_FloatRGBA || Value == PF_A32B32G32R32F ||
            Value == PF_FloatRGB || Value == PF_FloatR11G11B10 ||
-           Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT ||
+           Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT || Value == PF_G32R32F ||
            IsUnsignedTextureFormat(Value) || IsBCTextureFormat(Value);
 }
 uint32 StorageImageFormat(EPixelFormat Value)
@@ -155,6 +157,7 @@ uint32 StorageImageFormat(EPixelFormat Value)
     case PF_A32B32G32R32F: return 1;
     case PF_FloatRGBA: return 2;
     case PF_R32_FLOAT: return 3;
+    case PF_G32R32F: return 6;
     case PF_R8G8B8A8: return 4;
     case PF_G16R16F: return 7;
     case PF_FloatRGB:
@@ -180,6 +183,7 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = fals
     case 1: return WGPUTextureFormat_RGBA32Float;
     case 2: return WGPUTextureFormat_RGBA16Float;
     case 3: return WGPUTextureFormat_R32Float;
+    case 6: return WGPUTextureFormat_RG32Float;
     case 4: return WGPUTextureFormat_RGBA8Unorm;
     case 7: return WGPUTextureFormat_RG16Float;
     case 8: return WGPUTextureFormat_RG11B10Ufloat;
@@ -260,6 +264,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false, bool AllowUnsupp
         return WGPUTextureFormat_RG16Float;
     case PF_R32_FLOAT:
         return WGPUTextureFormat_R32Float;
+    case PF_G32R32F:
+        return WGPUTextureFormat_RG32Float;
     case PF_R8G8B8A8_UINT:
         return WGPUTextureFormat_RGBA8Uint;
     case PF_R32G32B32A32_UINT:
@@ -3217,9 +3223,10 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
         // ACES tables use integer-coordinate loads from core, unfilterable R32Float textures.
         const bool ACESLookup = Name.Contains(TEXT("ACESReachTable")) ||
             Name.Contains(TEXT("ACESGamutTable")) || Name.Contains(TEXT("ACESGammaTable"));
-        // TAA point-samples UNORM16 velocity; it must also accept unfilterable browser formats.
+        // TAA and TSR load UNORM16 velocity, which is unfilterable in the browser.
         const bool TAAVelocity = Name == TEXT("GBufferVelocityTexture") ||
-            Name == TEXT("GBufferVelocityTextureSampler");
+            Name == TEXT("GBufferVelocityTextureSampler") || Name == TEXT("SceneVelocityTexture") ||
+            Name == TEXT("SceneVelocityTextureSampler");
         // DFAO preserves bilinear UNORM16 sampling with explicit texel loads.
         const bool UnfilterableVelocity = TAAVelocity || Name == TEXT("VelocityTexture");
         switch (Binding->GetIntegerField(TEXT("descriptorType")))

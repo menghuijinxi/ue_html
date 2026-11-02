@@ -15,7 +15,6 @@ const host = path.join(root, es31 ? '.tools/ue58-web-es31-cook-host' : '.tools/u
 const build = path.join(host, 'map-build');
 const binaries = path.join(host, 'Engine/Binaries/Win64');
 const oldBuild = path.join(baseline, 'map-build');
-const compiler = 'C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64';
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const audit = file => ({file, sha256: sha(file)});
 const unix = value => value.replaceAll('\\', '/');
@@ -175,6 +174,14 @@ try {
     .replaceAll(unix(oldBuild), unix(build));
   const compileResponse = path.join(build, 'UnrealEditor-Compile.rsp');
   fs.writeFileSync(compileResponse, response);
+  const sharedResponse = path.join(root,
+    'tests/ue-shader-host/Plugins/WebGPUShader/Intermediate/Build/Win64/x64/UnrealEditor/Development/WebGPUShaderFormat/WebGPUShaderFormat.Shared.rsp');
+  const toolchain = fs.readFileSync(sharedResponse, 'utf8')
+    .match(/\/(?:external:)?I\s*"([^"\r\n]+\/VC\/Tools\/MSVC\/\d+\.\d+\.\d+)\/include"/i);
+  assert(toolchain, 'The shader plugin response must identify its MSVC toolchain');
+  const compiler = path.join(toolchain[1], 'bin/Hostx64/x64');
+  assert(fs.existsSync(path.join(compiler, 'cl.exe')) && fs.existsSync(path.join(compiler, 'link.exe')));
+  report.compiler = compiler;
   const run = (name, args) => cp.execFileSync(path.join(compiler, name), args,
     {cwd: path.join(engine, 'Source'), stdio: 'inherit'});
   run('cl.exe', ['/Brepro', `@${compileResponse}`]);
@@ -195,7 +202,7 @@ try {
   assert.equal(sha(preserved), sha(stockDLL));
   assert.equal(sha(hostDDPI), sha(ddpi));
   report.platformMap = rebuilt;
-  report.sourceFiles = [__filename, path.join(__dirname, 'link-or-copy.cjs'), ddpi, generated, compileResponse,
+  report.sourceFiles = [__filename, path.join(__dirname, 'link-or-copy.cjs'), ddpi, generated, compileResponse, sharedResponse,
     path.join(build, 'UnrealEditor-Definitions.h'), path.join(build, 'UnrealEditor-Forward.def')].map(audit);
   if (manualConfig) {
     report.manualConfig = manualConfig;

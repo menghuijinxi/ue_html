@@ -17,6 +17,10 @@ const patch = `
 			{
 				RulesObject.bUsePrecompiled = false;
 				RulesObject.bUseUnity = true;
+				if (Environment.GetEnvironmentVariable("UE_WEB_NATIVE_NO_OPTIMIZE") == "1")
+				{
+					RulesObject.OptimizeCode = ModuleRules.CodeOptimization.Never;
+				}
 				RulesObject.PrivateDefinitions.Add("PLATFORM_WEB=0");
 			}
 `;
