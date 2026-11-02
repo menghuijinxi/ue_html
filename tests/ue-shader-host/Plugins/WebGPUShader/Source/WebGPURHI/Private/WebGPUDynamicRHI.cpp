@@ -1096,6 +1096,7 @@ WGPUBuffer FWebGPUDynamicRHI::CreateBuffer(uint64 Size, WGPUBufferUsage Usage, c
 bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency,
                                    FWebGPUShaderData &Data, FString &Error)
 {
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_Load);
     const auto Fail = [&](const TCHAR *Reason) {
         Error = Reason;
         return false;
@@ -1135,9 +1136,12 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         }
     }
     const ANSICHAR *Utf8 = reinterpret_cast<const ANSICHAR *>(Desc.Code.GetData() + 28);
-    const FString Json(FUTF8ToTCHAR(Utf8, Header[5]));
-    if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Data.Metadata) || !Data.Metadata)
-        return Fail(TEXT("Web shader metadata invalid"));
+    {
+        TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataJSON);
+        const FString Json(FUTF8ToTCHAR(Utf8, Header[5]));
+        if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Data.Metadata) || !Data.Metadata)
+            return Fail(TEXT("Web shader metadata invalid"));
+    }
     const auto &Metadata = Data.Metadata;
     double PlatformValue, HashValue, Version, MetadataFrequency;
     FString PlatformName, FormatName;
@@ -1195,7 +1199,10 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     WGSL.code = {Code.Get(), size_t(Code.Length())};
     WGPUShaderModuleDescriptor ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
     ModuleDesc.nextInChain = &WGSL.chain;
-    Data.Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
+    {
+        TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_CreateModule);
+        Data.Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
+    }
     Data.Frequency = Frequency;
     for (const auto &Item : Metadata->GetArrayField(TEXT("spirvBindings")))
     {
@@ -3366,6 +3373,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
 #endif
     WEBGPU_ON_OWNER(RHICreateGraphicsPipelineState(In));
     RequireOwner();
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebPSO_CreateGraphicsOwner);
     if (In.bPSOPrecache)
     {
         // UE collectors also propose states that this backend cannot draw.
@@ -3608,6 +3616,7 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
 #endif
     WEBGPU_ON_OWNER(RHICreateComputePipelineState(In));
     RequireOwner();
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebPSO_CreateComputeOwner);
     if (In.bPSOPrecache && (!In.SpecializationConstants.IsEmpty() ||
         !CanPrecacheShader(static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data, Limits)))
     {

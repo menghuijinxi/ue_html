@@ -43,6 +43,17 @@ const helpers = ['web-engine-host.js', 'web-engine-worker.js', 'web-content-io.j
 for (const name of helpers) fs.copyFileSync(path.join(__dirname, name), path.join(output, name));
 const htmlFile = path.join(output, 'index.html');
 let html = fs.readFileSync(htmlFile, 'utf8');
+const startupProfile = process.argv.includes('--startup-profile');
+const startupProfileSource = path.join(__dirname, 'web-startup-profile.js');
+if (startupProfile) {
+  const recorder = fs.readFileSync(startupProfileSource, 'utf8');
+  assert(!recorder.includes('</script>'));
+  const worker = path.join(output, 'web-engine-worker.js');
+  fs.writeFileSync(worker, recorder + '\n' + fs.readFileSync(worker, 'utf8'));
+  assert(html.includes('<meta charset="utf-8">') && html.includes('function startupStage(stage) {'));
+  html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<script>globalThis.__webStartupProfileManual = true;\n' + recorder + '\n</script>');
+  html = html.replace('function startupStage(stage) {', 'function startupStage(stage) {\n globalThis.__webStartupProfile?.mark("page.stage." + stage);');
+}
 const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/);
 assert(match);
 const assets = JSON.parse(match[1]);
@@ -78,8 +89,8 @@ const products = fs.readdirSync(output).filter(f => f !== 'asset-versions.json')
 products.push(writeVersions(output, products));
 const buildSnapshot = path.join(results, outputFolder + '-build.json');
 fs.copyFileSync(buildFile, buildSnapshot);
-const report = {date: new Date().toISOString(), pass: true, baseline, output, trace, psoPrecache, precacheConcurrency,
-  sources: [__filename, ...helpers.map(f => path.join(__dirname, f))].map(audit),
+const report = {date: new Date().toISOString(), pass: true, baseline, output, trace, psoPrecache, precacheConcurrency, startupProfile,
+  sources: [__filename, ...helpers.map(f => path.join(__dirname, f)), ...(startupProfile ? [startupProfileSource] : [])].map(audit),
   build: audit(buildSnapshot), baselineEvidence: audit(evidenceFile), baselineCookPayload: proof.files,
   projectQualityOverrides: [], products,
   boundary: 'Runtime-only variant. Reuses the audited baseline Cook content/config byte for byte; the baseline reports retain Cook provenance. This variant does not rerun Cook.'};

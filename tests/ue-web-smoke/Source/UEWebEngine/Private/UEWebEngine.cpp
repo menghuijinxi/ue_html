@@ -58,6 +58,11 @@
 #include "RenderTargetPool.h"
 #include "UObject/UObjectIterator.h"
 #include "Blueprint/UserWidget.h"
+#include "ProfilingDebugging/CpuProfilerTrace.h"
+
+#if UE_TRACE_ENABLED
+extern "C" int WebTraceStartupBegin();
+#endif
 
 static_assert(WITH_ENGINE && !ENABLE_LOW_LEVEL_MEM_TRACKER);
 
@@ -74,6 +79,7 @@ bool VisualTestClock = false;
 bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
 bool PSOPrecacheTest = false;
+bool StartupTrace = false;
 int32 PSOPrecacheConcurrency = 0;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
@@ -85,6 +91,14 @@ std::atomic<int32> ThreadIOResult{0};
 std::atomic<uint32> ThreadIOCRC{0}, ThreadIOWorker{0}, ThreadIOCallback{0};
 std::atomic<uint32> RenderWitness{0}, RHIWitness{0};
 #endif
+
+// Timestamp on the calling pthread before posting to the RHI owner. Recording
+// message arrival instead would attribute a blocked owner event loop to LoadMap.
+void StartupMark(const char* Name)
+{
+    const double At = EM_ASM_DOUBLE({ return performance.timeOrigin + performance.now(); });
+    MAIN_THREAD_ASYNC_EM_ASM({ globalThis.__webStartupProfile?.markAt(UTF8ToString(Number($0)), $1); }, Name, At);
+}
 
 const TCHAR* StartupMap()
 {
@@ -166,6 +180,7 @@ void EngineFrame(void*)
         return;
     }
     const double TickStart = emscripten_get_now();
+    if (Frames == 0) StartupMark("native.firstTick.begin");
     if (AStaticMeshActor* Sample = MaterialMotionSample.Get())
     {
         Sample->SetActorLocation(MaterialMotionOrigin + FVector(10 * FMath::Sin(Frames * 0.1), 0, 0));
@@ -173,6 +188,7 @@ void EngineFrame(void*)
             Frames, Sample->GetActorLocation().X);
     }
     GEngineLoop.Tick();
+    if (Frames == 0) StartupMark("native.firstTick.end");
     if (IsEngineExitRequested())
     {
         std::printf("P3_ENGINE_INIT_FAILED engine exit requested after Tick\n");
@@ -1067,6 +1083,14 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebDefaultFogTestMode(int Mode)
 int32 StartEngine()
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
+    StartupMark("native.StartEngine.begin");
+#if UE_TRACE_ENABLED
+    if (StartupTrace)
+        FCoreDelegates::OnOutputDevicesInit.AddLambda([] {
+            check(WebTraceStartupBegin() == 1);
+            StartupMark("native.startupTrace.begin");
+        });
+#endif
     FDelayedAutoRegisterHelper(EDelayedRegisterRunPhase::PreObjectSystemReady, [] {
         TArray<FString> PluginContentPaths;
         FFileHelper::LoadFileToStringArray(PluginContentPaths,
@@ -1101,20 +1125,33 @@ int32 StartEngine()
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
         TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -NoSplash -NoLoadingScreen -unattended -stdout") :
         TEXT(" -nullrhi -sm5 -NoSplash -NoLoadingScreen -unattended -stdout"));
-    const int32 PreInitResult = GEngineLoop.PreInit(*CommandLine);
+    StartupMark("native.PreInit.begin");
+    int32 PreInitResult;
+    {
+        TRACE_CPUPROFILER_EVENT_SCOPE(WebStartup_PreInit);
+        PreInitResult = GEngineLoop.PreInit(*CommandLine);
+    }
+    StartupMark("native.PreInit.end");
     if (PreInitResult != 0)
     {
         std::printf("P3_ENGINE_PREINIT_FAILED %d\n", PreInitResult);
         return PreInitResult;
     }
     FModuleManager::LoadModuleChecked<IModuleInterface>(TEXT("EnhancedInput"));
-    const int32 InitResult = GEngineLoop.Init();
+    StartupMark("native.Init.begin");
+    int32 InitResult;
+    {
+        TRACE_CPUPROFILER_EVENT_SCOPE(WebStartup_Init);
+        InitResult = GEngineLoop.Init();
+    }
+    StartupMark("native.Init.end");
     if (InitResult != 0)
     {
         std::printf("P3_ENGINE_INIT_FAILED %d\n", InitResult);
         return InitResult;
     }
 #if UE_WEB_ENGINE_WORKER
+    StartupMark("native.threadWitness.begin");
     check(!emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread());
     std::atomic<uint32> WorkerId{0};
     FEventRef Started;
@@ -1131,6 +1168,7 @@ int32 StartEngine()
         Cmd.ImmediateFlush(EImmediateFlushType::FlushRHIThread);
     });
     FlushRenderingCommands();
+    StartupMark("native.threadWitness.end");
     check(RenderWitness.load() && RHIWitness.load() && RenderWitness.load() != RHIWitness.load() &&
         RenderWitness.load() != GGameThreadId && RHIWitness.load() != GGameThreadId);
     std::printf("P3_ENGINE_THREADS {\"sharedMemory\":true,\"engineWorker\":true,"
@@ -1209,6 +1247,7 @@ int32 StartEngine()
         MobileGPUScene ? MobileGPUScene->GetInt() : -1, SkinningScene ? SkinningScene->GetInt() : -1,
         uint32(GMaxRHIShaderPlatform), uint32(GMaxRHIFeatureLevel), FShaderCodeLibrary::GetShaderCount(),
         UseGPUScene(GMaxRHIShaderPlatform) ? "true" : "false");
+    StartupMark("native.ready");
     emscripten_set_main_loop_arg(EngineFrame, nullptr, 0, false);
     return 0;
 }
@@ -1231,6 +1270,7 @@ int main(int argc, char** argv)
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
+        StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;
         constexpr const ANSICHAR* PrecacheConcurrencyOption = "-WebPSOPrecacheConcurrency=";
         if (FCStringAnsi::Strncmp(argv[Index], PrecacheConcurrencyOption, FCStringAnsi::Strlen(PrecacheConcurrencyOption)) == 0)
         {

@@ -71,6 +71,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebTraceStart()
     TRACE_BOOKMARK(TEXT("WebCaptureStart"));
     return CaptureStarted ? 1 : 0;
 }
+extern "C" int WebTraceStartupBegin()
+{
+    // Called by UE's output-device-init delegate after TraceAuxiliary initialized,
+    // before shader libraries, engine init and LoadMap. Reuse UE's trace transport.
+    if (CaptureStarted || !CaptureClosed.load(std::memory_order_acquire)) return 0;
+    MAIN_THREAD_EM_ASM({ Module._WebTraceRegisterOwner(); });
+    { FScopeLock Lock(&CaptureCS); CaptureBytes.Reset(); }
+    CaptureOverflow.store(false);
+    CaptureClosed.store(false);
+    FTraceAuxiliary::FOptions Options;
+    Options.bExcludeTail = false;
+    CaptureStarted = FTraceAuxiliary::Relay(1, WriteCapture, CloseCapture,
+        TEXT("cpu,frame,bookmark,task,rhicommands,loadtime"), &Options);
+    return CaptureStarted ? 1 : 0;
+}
 extern "C" EMSCRIPTEN_KEEPALIVE int WebTraceStop()
 {
     if (!CaptureStarted) return 0;

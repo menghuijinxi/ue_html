@@ -1,0 +1,3194 @@
+{
+  "date": "2026-11-02T16:12:35.987Z",
+  "pass": true,
+  "scope": "Startup instrumentation and diagnosis; no performance optimization claimed",
+  "qualityOverrides": [],
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 0,
+    "reflections": 0,
+    "virtualShadows": 0,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Edg/156.0.4314.58",
+    "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "jsVersion": "15.6.12.10"
+  },
+  "sourceFiles": [
+    {
+      "file": "capture-web-startup-phases.cjs",
+      "sha256": "8838d912bd7c78faccac974d01d94f1c0942a523dceb1f61903d86a5aa3f5de0"
+    },
+    {
+      "file": "analyze-web-startup-phases.cjs",
+      "sha256": "b781667a810f866a790c9ffa784dfe5b56e40b44037156c39a74bceaa80570a2"
+    },
+    {
+      "file": "analyze-web-startup-native.cjs",
+      "sha256": "9875fcba4ec0f2016dc3654efad462f8da5e76330e19723f0e50d6c547b00dec"
+    },
+    {
+      "file": "web-startup-profile.js",
+      "sha256": "c97edcff2ed82d055f7480e1598bb612b99c3bc4a3db991f0409a8a3a2733a19"
+    },
+    {
+      "file": "package-web-runtime-experiment.cjs",
+      "sha256": "c9a6ea8c5bf874830081e763e4e3a474b07e3476f81caa87ad01661a499089f2"
+    },
+    {
+      "file": "../ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "7b7f4020b0001df63a85df1a5fdf8167fb254a144eb450d9bb965eecb23d4272"
+    },
+    {
+      "file": "../ue-web-smoke/Source/UEWebEngine/Private/WebTraceCapture.cpp",
+      "sha256": "24a4c4294d542a43f4b53a616342f62d8804b20b41ef434b9704144e0148d36c"
+    },
+    {
+      "file": "../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "4eef0d18a9b02ddd9c2f78839570f1236a0bff79f8ddea36f2a28a97062086ff"
+    }
+  ],
+  "packages": [
+    {
+      "file": "results/villa-startup-profile-v24-package.json",
+      "sha256": "e04d9b4b9f615d82f6053a87730a96fc5d0c8487bf9f2a6c90f92beaa7b33a88"
+    },
+    {
+      "file": "results/villa-startup-trace-v22-package.json",
+      "sha256": "b0f3b2493a4492b0adccb1f83fd2cba0869dfe5d7b3a82eb10b2c9e0d972e7d2"
+    }
+  ],
+  "builds": [
+    {
+      "file": "results/villa-startup-profile-v24-build.json",
+      "sha256": "80b7c90cf02bcfd0ac4c55be7adda5807fe5a2dfd02c224f51fbcb99b244e543"
+    },
+    {
+      "file": "results/villa-startup-trace-v22-build.json",
+      "sha256": "8ebea721cd93d7742faebf22b40b9ecb0d4262a1202701d5d6ea37ce1f0aece2"
+    }
+  ],
+  "rawFiles": [
+    {
+      "file": "results/villa-startup-phases-v4.json",
+      "sha256": "532b8a5181c2ce70aa6b1aec7c135aba6bd6c266817547f6a3c525e45e042d38"
+    },
+    {
+      "file": "results/villa-startup-phases-v4-0-scene.png",
+      "sha256": "3a166a65154d30655353686d257430df84c902316ccff3a964ed93f312e31dbb"
+    },
+    {
+      "file": "results/villa-startup-phases-v4-1-scene.png",
+      "sha256": "2e654ce74bebf719cf5111555a609ec1376e665827d48e378df6daaf1dd1d1a9"
+    },
+    {
+      "file": "results/villa-startup-phases-v4-2-scene.png",
+      "sha256": "4d06182f00663590ae1649b3e6d7f4d3f5a973d2182b9954c94348723581bd63"
+    },
+    {
+      "file": "results/villa-startup-phases-cpu-v3.json",
+      "sha256": "1e9f05cb55d87c3b109f77274383b10e9ceaf8db423505f46f96ff567d7a6234"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-phases-cpu-v3-0-owner.cpuprofile",
+      "sha256": "343d40cb8796cc2b331895d657f29c6b597bdc519a21cfc192ae4cdc6ed81560"
+    },
+    {
+      "file": "results/villa-startup-phases-cpu-v3-0-scene.png",
+      "sha256": "1987bfe0d445c5782f2468e8605a5b7b7acfcf315ec7c8bb5423ed4b3d47f7b6"
+    },
+    {
+      "file": "results/villa-startup-phases-trace-v2.json",
+      "sha256": "f141f46a2e49d83a3a0606a08c2460031edfd57a66668cdb07b74d2651829887"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-phases-trace-v2-0.utrace",
+      "sha256": "d8577442e670ed84ed6f2b80fa7d9a0b5e2e5d4064f33d65b7ed2dec7fe7713b"
+    },
+    {
+      "file": "results/villa-startup-phases-trace-v2-0-scene.png",
+      "sha256": "e47bf79f14b1b5b4f304bad0a45803ade224224468788d07bd726d40f939aeeb"
+    },
+    {
+      "file": "results/villa-startup-phases-manual-warm-v1.json",
+      "sha256": "e870fb27d00136d13290da1614cacd1a8d8b7c51f1c7ea4abc6cbd9653ff082c"
+    },
+    {
+      "file": "results/villa-startup-phases-manual-warm-v1-0-scene.png",
+      "sha256": "ab8d4bc06772513b2a602fca2fd9db79341b79fb817f64d4580fb4aad25b8ece"
+    },
+    {
+      "file": "results/villa-startup-phases-manual-warm-v1-1-scene.png",
+      "sha256": "c8475f83083c69bf7cd18f0d8174fe2a3a91c0ab44914f6cd75989d19987fc36"
+    },
+    {
+      "file": "results/villa-startup-phases-trace-v2-0.events.csv",
+      "sha256": "7781c4f853a17300baa243036587f909c834178f61bde4ed39d649d4c81ee45d"
+    },
+    {
+      "file": "results/villa-startup-phases-trace-v2-0.timers.csv",
+      "sha256": "17e5909491b261b5f210699a4ebb4507feca3ed1a6e91a03fa2ce86e2279cc22"
+    },
+    {
+      "file": "results/villa-startup-phases-trace-v2-0.threads.csv",
+      "sha256": "fd296b091354d66f1c604b225ff63cd4203d133c8008331b6945d3082904f072"
+    },
+    {
+      "file": "results/villa-startup-phases-trace-v2-0.statistics.csv",
+      "sha256": "9bc048baf4164f94777e9664e482f7ce03b45aac3948d1bcb6b7fbdd11dc7315"
+    }
+  ],
+  "analysisFiles": [
+    {
+      "file": "results/villa-startup-phases-v4-analysis.json",
+      "sha256": "4a8d708461306b863848960c221c2600327ca02cef70929d7be2f42ac8f4e802"
+    },
+    {
+      "file": "results/villa-startup-phases-cpu-v3-analysis.json",
+      "sha256": "e312bce615f361071f6074d602dd644244447e52721e102a71b6c4acf3322d49"
+    },
+    {
+      "file": "results/villa-startup-phases-trace-v2-analysis.json",
+      "sha256": "79584943fd4715f82def39fc2627b0c09959e2127616304c4f97636362037857"
+    },
+    {
+      "file": "results/villa-startup-phases-manual-warm-v1-analysis.json",
+      "sha256": "f1677bc8bf9a049ca29c0988884f1ddc81c6a56bf9347a4e5d33036523f23076"
+    }
+  ],
+  "nativeAnalysisFile": {
+    "file": "results/villa-startup-phases-trace-v2-0-native-analysis.json",
+    "sha256": "29ab99e831562cb2e868812a86c862e6784f2902dd571e936430096a5675e6ed"
+  },
+  "captures": [
+    {
+      "name": "villa-startup-phases-v4",
+      "pass": true,
+      "cpuProfile": false,
+      "ueTrace": false,
+      "runs": [
+        {
+          "index": 0,
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2201,
+            "diskReads": 2186,
+            "diskReadBytes": 1272748161,
+            "downloadedBytes": 3521228938,
+            "downloads": 2,
+            "persistentHits": 0,
+            "evictions": 1639,
+            "diskEvictions": 2,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 55685258,
+            "hashMs": 38.994999973103404,
+            "downloadMs": 11852.890000000596,
+            "diskReadMs": 6744.834999969229
+          },
+          "milestones": {
+            "recorder.loaded": 172.245,
+            "page.stage.engine-script-loading": 177.775,
+            "wasm.preRun.begin": 1041.62,
+            "wasm.runtimeInitialized": 14806.825,
+            "page.stage.engine-starting": 14806.88,
+            "gpu.firstCanvasTexture": 19936.58,
+            "gpu.firstCanvasCompleted": 19998.24,
+            "log.P3_ENGINE_WORLD": 26017.595,
+            "log.P3_ENGINE_THREADS": 26017.465,
+            "log.P3_RENDER_SCENE": 26018.94,
+            "log.P3_ENGINE_READY": 26019.12,
+            "page.stage.running": 26019.215,
+            "__webEngineFrames.1": 26090.3,
+            "__webEngineFrames.2": 27115.78,
+            "__webRHIFrames.2": 27235.78,
+            "__webRHIFrames.30": 28311.435,
+            "__webEngineFrames.30": 28311.985,
+            "page.psoReady": 28401.63,
+            "page.loadingHidden": 28472.69,
+            "page.visibleTwoRAF": 28479.245,
+            "__webEngineFrames.60": 29013,
+            "__webRHIFrames.60": 29023.655,
+            "recorder.frozen": 29660.77
+          },
+          "phases": [
+            {
+              "name": "page to engine script",
+              "startMs": 0,
+              "endMs": 177.775,
+              "durationMs": 177.775
+            },
+            {
+              "name": "WASM instantiate (includes asset wait)",
+              "startMs": 195.665,
+              "endMs": 1039.89,
+              "durationMs": 844.225
+            },
+            {
+              "name": "content mount (includes pack verification)",
+              "startMs": 1103.465,
+              "endMs": 14698.23,
+              "durationMs": 13594.765
+            },
+            {
+              "name": "runtime ready to engine ready",
+              "startMs": 14806.825,
+              "endMs": 26019.12,
+              "durationMs": 11212.295
+            },
+            {
+              "name": "engine ready to PSO-ready message",
+              "startMs": 26019.12,
+              "endMs": 28401.63,
+              "durationMs": 2382.51
+            },
+            {
+              "name": "navigation to visible scene (two RAF after loader hidden)",
+              "startMs": 0,
+              "endMs": 28479.245,
+              "durationMs": 28479.245
+            }
+          ],
+          "pipelines": [
+            {
+              "name": "createRenderPipelineAsync",
+              "count": 482,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 15971.305,
+              "lastEndMs": 26692.245,
+              "requestLatencySumMs": 19954.462,
+              "synchronousCallSumMs": 17.708,
+              "activeUnionMs": 2991.725
+            },
+            {
+              "name": "createRenderPipeline",
+              "count": 108,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 19985.795,
+              "lastEndMs": 27248.465,
+              "requestLatencySumMs": 1.366,
+              "synchronousCallSumMs": 1.366,
+              "activeUnionMs": 1.366
+            },
+            {
+              "name": "createComputePipelineAsync",
+              "count": 626,
+              "failed": 8,
+              "pending": 0,
+              "firstStartMs": 20794.795,
+              "lastEndMs": 25738.67,
+              "requestLatencySumMs": 35627.133,
+              "synchronousCallSumMs": 13.179,
+              "activeUnionMs": 4683.415
+            },
+            {
+              "name": "createComputePipeline",
+              "count": 19,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 25933.895,
+              "lastEndMs": 27271.835,
+              "requestLatencySumMs": 0.119,
+              "synchronousCallSumMs": 0.119,
+              "activeUnionMs": 0.119
+            }
+          ],
+          "asyncPipelineSpanMs": 10720.94,
+          "moduleCount": 1695,
+          "moduleChars": 31060103,
+          "moduleJSCallSumMs": 100.764,
+          "longestOwnerLag": {
+            "start": 1793634119734.845,
+            "end": 1793634122877.065,
+            "delayMs": 3122.219970703125,
+            "startMs": 16572.825,
+            "endMs": 19715.045
+          },
+          "asyncPipelinesDuringOwnerLag": {
+            "requests": 8,
+            "activeUnionMs": 16.425
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "dropped": 0
+        },
+        {
+          "index": 1,
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2176,
+            "diskReads": 2174,
+            "diskReadBytes": 1267505281,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 1630,
+            "diskEvictions": 0,
+            "activeReads": 4,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 6229.464999947697
+          },
+          "milestones": {
+            "recorder.loaded": 155.725,
+            "page.stage.engine-script-loading": 162.1,
+            "wasm.preRun.begin": 414.805,
+            "wasm.runtimeInitialized": 2768.885,
+            "page.stage.engine-starting": 2768.955,
+            "gpu.firstCanvasTexture": 7922.51,
+            "gpu.firstCanvasCompleted": 8001.47,
+            "log.P3_ENGINE_WORLD": 13957,
+            "log.P3_ENGINE_THREADS": 13956.895,
+            "log.P3_RENDER_SCENE": 13958.45,
+            "log.P3_ENGINE_READY": 13958.605,
+            "page.stage.running": 13958.685,
+            "__webEngineFrames.1": 14027.895,
+            "__webEngineFrames.2": 15041.12,
+            "__webRHIFrames.2": 15166.48,
+            "__webEngineFrames.30": 16252.58,
+            "__webRHIFrames.30": 16263.705,
+            "page.psoReady": 16316.675,
+            "page.loadingHidden": 16428.355,
+            "page.visibleTwoRAF": 16434.31,
+            "__webEngineFrames.60": 16944.485,
+            "__webRHIFrames.60": 16955.565,
+            "recorder.frozen": 17536.465
+          },
+          "phases": [
+            {
+              "name": "page to engine script",
+              "startMs": 0,
+              "endMs": 162.1,
+              "durationMs": 162.1
+            },
+            {
+              "name": "WASM instantiate (includes asset wait)",
+              "startMs": 180.13,
+              "endMs": 412.2,
+              "durationMs": 232.07
+            },
+            {
+              "name": "content mount (includes pack verification)",
+              "startMs": 507.15,
+              "endMs": 2657.6,
+              "durationMs": 2150.45
+            },
+            {
+              "name": "runtime ready to engine ready",
+              "startMs": 2768.885,
+              "endMs": 13958.605,
+              "durationMs": 11189.72
+            },
+            {
+              "name": "engine ready to PSO-ready message",
+              "startMs": 13958.605,
+              "endMs": 16316.675,
+              "durationMs": 2358.07
+            },
+            {
+              "name": "navigation to visible scene (two RAF after loader hidden)",
+              "startMs": 0,
+              "endMs": 16434.31,
+              "durationMs": 16434.31
+            }
+          ],
+          "pipelines": [
+            {
+              "name": "createRenderPipelineAsync",
+              "count": 482,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 3930.535,
+              "lastEndMs": 14717.6,
+              "requestLatencySumMs": 20353.052,
+              "synchronousCallSumMs": 17.012,
+              "activeUnionMs": 3118.585
+            },
+            {
+              "name": "createRenderPipeline",
+              "count": 108,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 7976.48,
+              "lastEndMs": 15198.725,
+              "requestLatencySumMs": 1.335,
+              "synchronousCallSumMs": 1.335,
+              "activeUnionMs": 1.335
+            },
+            {
+              "name": "createComputePipelineAsync",
+              "count": 626,
+              "failed": 8,
+              "pending": 0,
+              "firstStartMs": 8793.055,
+              "lastEndMs": 13638.855,
+              "requestLatencySumMs": 34727.287,
+              "synchronousCallSumMs": 12.476,
+              "activeUnionMs": 4641.03
+            },
+            {
+              "name": "createComputePipeline",
+              "count": 19,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 13870.865,
+              "lastEndMs": 15212.9,
+              "requestLatencySumMs": 0.115,
+              "synchronousCallSumMs": 0.115,
+              "activeUnionMs": 0.115
+            }
+          ],
+          "asyncPipelineSpanMs": 10787.065,
+          "moduleCount": 1694,
+          "moduleChars": 31059119,
+          "moduleJSCallSumMs": 101.693,
+          "longestOwnerLag": {
+            "start": 1793634139250.345,
+            "end": 1793634142411.335,
+            "delayMs": 3140.989990234375,
+            "startMs": 4536.37,
+            "endMs": 7697.36
+          },
+          "asyncPipelinesDuringOwnerLag": {
+            "requests": 8,
+            "activeUnionMs": 16.825
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "dropped": 0
+        },
+        {
+          "index": 2,
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2171,
+            "diskReads": 2193,
+            "diskReadBytes": 1271699585,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 1643,
+            "diskEvictions": 0,
+            "activeReads": 4,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 5938.325000016019
+          },
+          "milestones": {
+            "recorder.loaded": 148.08,
+            "page.stage.engine-script-loading": 154.085,
+            "wasm.preRun.begin": 408.405,
+            "wasm.runtimeInitialized": 2673.405,
+            "page.stage.engine-starting": 2673.47,
+            "gpu.firstCanvasTexture": 7844.035,
+            "gpu.firstCanvasCompleted": 7909.72,
+            "log.P3_ENGINE_WORLD": 13954.26,
+            "log.P3_ENGINE_THREADS": 13954.15,
+            "log.P3_RENDER_SCENE": 13955.99,
+            "log.P3_ENGINE_READY": 13956.17,
+            "page.stage.running": 13956.265,
+            "__webEngineFrames.1": 14024.47,
+            "__webEngineFrames.2": 15029.59,
+            "__webRHIFrames.2": 15154.245,
+            "__webEngineFrames.30": 16121.325,
+            "__webRHIFrames.30": 16132.925,
+            "page.psoReady": 16191.755,
+            "page.loadingHidden": 16282.645,
+            "page.visibleTwoRAF": 16286.165,
+            "__webEngineFrames.60": 16823.855,
+            "__webRHIFrames.60": 16836.16,
+            "recorder.frozen": 17446.675
+          },
+          "phases": [
+            {
+              "name": "page to engine script",
+              "startMs": 0,
+              "endMs": 154.085,
+              "durationMs": 154.085
+            },
+            {
+              "name": "WASM instantiate (includes asset wait)",
+              "startMs": 172.885,
+              "endMs": 406.405,
+              "durationMs": 233.52
+            },
+            {
+              "name": "content mount (includes pack verification)",
+              "startMs": 493.425,
+              "endMs": 2565.35,
+              "durationMs": 2071.925
+            },
+            {
+              "name": "runtime ready to engine ready",
+              "startMs": 2673.405,
+              "endMs": 13956.17,
+              "durationMs": 11282.765
+            },
+            {
+              "name": "engine ready to PSO-ready message",
+              "startMs": 13956.17,
+              "endMs": 16191.755,
+              "durationMs": 2235.585
+            },
+            {
+              "name": "navigation to visible scene (two RAF after loader hidden)",
+              "startMs": 0,
+              "endMs": 16286.165,
+              "durationMs": 16286.165
+            }
+          ],
+          "pipelines": [
+            {
+              "name": "createRenderPipelineAsync",
+              "count": 482,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 3861.96,
+              "lastEndMs": 14597.065,
+              "requestLatencySumMs": 18978.208,
+              "synchronousCallSumMs": 17.606,
+              "activeUnionMs": 2737.85
+            },
+            {
+              "name": "createRenderPipeline",
+              "count": 108,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 7885.97,
+              "lastEndMs": 15195.035,
+              "requestLatencySumMs": 1.246,
+              "synchronousCallSumMs": 1.246,
+              "activeUnionMs": 1.246
+            },
+            {
+              "name": "createComputePipelineAsync",
+              "count": 626,
+              "failed": 8,
+              "pending": 0,
+              "firstStartMs": 8702.235,
+              "lastEndMs": 13600.215,
+              "requestLatencySumMs": 35001.615,
+              "synchronousCallSumMs": 12.796,
+              "activeUnionMs": 4553.38
+            },
+            {
+              "name": "createComputePipeline",
+              "count": 19,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 13875.245,
+              "lastEndMs": 15237.16,
+              "requestLatencySumMs": 0.124,
+              "synchronousCallSumMs": 0.124,
+              "activeUnionMs": 0.124
+            }
+          ],
+          "asyncPipelineSpanMs": 10735.105,
+          "moduleCount": 1695,
+          "moduleChars": 31060103,
+          "moduleJSCallSumMs": 99.826,
+          "longestOwnerLag": {
+            "start": 1793634158636.695,
+            "end": 1793634161809.245,
+            "delayMs": 3152.550048828125,
+            "startMs": 4448.16,
+            "endMs": 7620.71
+          },
+          "asyncPipelinesDuringOwnerLag": {
+            "requests": 8,
+            "activeUnionMs": 13.195
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "dropped": 0
+        }
+      ]
+    },
+    {
+      "name": "villa-startup-phases-cpu-v3",
+      "pass": true,
+      "cpuProfile": true,
+      "ueTrace": false,
+      "runs": [
+        {
+          "index": 0,
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2174,
+            "diskReads": 2206,
+            "diskReadBytes": 1290049665,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 1649,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 5077.290000069886
+          },
+          "milestones": {
+            "recorder.loaded": 191.895,
+            "page.stage.engine-script-loading": 199.57,
+            "wasm.preRun.begin": 557.11,
+            "wasm.runtimeInitialized": 2968.39,
+            "page.stage.engine-starting": 2968.46,
+            "gpu.firstCanvasTexture": 8247.135,
+            "gpu.firstCanvasCompleted": 8301.205,
+            "log.P3_ENGINE_WORLD": 14312.16,
+            "log.P3_ENGINE_THREADS": 14312.03,
+            "log.P3_RENDER_SCENE": 14314.11,
+            "log.P3_ENGINE_READY": 14314.305,
+            "page.stage.running": 14314.41,
+            "__webEngineFrames.1": 14384.64,
+            "__webEngineFrames.2": 15431.86,
+            "__webRHIFrames.2": 15553.44,
+            "gpu.firstGameFrameSubmitted": 15553.46,
+            "gpu.firstGameFrameCompleted": 16148.195,
+            "__webRHIFrames.30": 16646.44,
+            "__webEngineFrames.30": 16649.13,
+            "page.psoReady": 16737.135,
+            "page.loadingHidden": 16754.63,
+            "page.visibleTwoRAF": 16759.63,
+            "__webEngineFrames.60": 17369.115,
+            "__webRHIFrames.60": 17386.31,
+            "recorder.frozen": 17980.98
+          },
+          "phases": [
+            {
+              "name": "page to engine script",
+              "startMs": 0,
+              "endMs": 199.57,
+              "durationMs": 199.57
+            },
+            {
+              "name": "WASM instantiate (includes asset wait)",
+              "startMs": 217.23,
+              "endMs": 554.905,
+              "durationMs": 337.675
+            },
+            {
+              "name": "content mount (includes pack verification)",
+              "startMs": 635.97,
+              "endMs": 2842.7,
+              "durationMs": 2206.73
+            },
+            {
+              "name": "runtime ready to engine ready",
+              "startMs": 2968.39,
+              "endMs": 14314.305,
+              "durationMs": 11345.915
+            },
+            {
+              "name": "engine ready to first game frame submitted",
+              "startMs": 14314.305,
+              "endMs": 15553.46,
+              "durationMs": 1239.155
+            },
+            {
+              "name": "game frame submit to GPU queue completed",
+              "startMs": 15553.46,
+              "endMs": 16148.195,
+              "durationMs": 594.735
+            },
+            {
+              "name": "engine ready to PSO-ready message",
+              "startMs": 14314.305,
+              "endMs": 16737.135,
+              "durationMs": 2422.83
+            },
+            {
+              "name": "navigation to visible scene (two RAF after loader hidden)",
+              "startMs": 0,
+              "endMs": 16759.63,
+              "durationMs": 16759.63
+            }
+          ],
+          "pipelines": [
+            {
+              "name": "createRenderPipelineAsync",
+              "count": 482,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 4231.73,
+              "lastEndMs": 14991.7,
+              "requestLatencySumMs": 18677.906,
+              "synchronousCallSumMs": 16.406,
+              "activeUnionMs": 2880.08
+            },
+            {
+              "name": "createRenderPipeline",
+              "count": 108,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 8273.105,
+              "lastEndMs": 15599.365,
+              "requestLatencySumMs": 1.344,
+              "synchronousCallSumMs": 1.344,
+              "activeUnionMs": 1.344
+            },
+            {
+              "name": "createComputePipelineAsync",
+              "count": 626,
+              "failed": 8,
+              "pending": 0,
+              "firstStartMs": 9121.36,
+              "lastEndMs": 14137.775,
+              "requestLatencySumMs": 36403.426,
+              "synchronousCallSumMs": 12.619,
+              "activeUnionMs": 4780.665
+            },
+            {
+              "name": "createComputePipeline",
+              "count": 19,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 14232.625,
+              "lastEndMs": 15625.99,
+              "requestLatencySumMs": 0.101,
+              "synchronousCallSumMs": 0.101,
+              "activeUnionMs": 0.101
+            }
+          ],
+          "asyncPipelineSpanMs": 10759.97,
+          "moduleCount": 1695,
+          "moduleChars": 31060103,
+          "moduleJSCallSumMs": 103.043,
+          "longestOwnerLag": {
+            "start": 1793634968934.955,
+            "end": 1793634972134.39,
+            "delayMs": 3179.434814453125,
+            "startMs": 4813.11,
+            "endMs": 8012.545
+          },
+          "asyncPipelinesDuringOwnerLag": {
+            "requests": 8,
+            "activeUnionMs": 11.985
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "dropped": 0,
+          "cpuClockOffsetMs": 1793617516207.46,
+          "ownerLagCPU": {
+            "durationMs": 3199.435,
+            "self": [
+              {
+                "milliseconds": 244.528,
+                "functionName": "FSetElementId TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::Emplace<TPairInitializer<UE::TSharedString<char16_t>&&, TSharedPtr<FJsonValue, (ESPMode)1> const&>>(TPairInitializer<UE::TSharedString<char16_t>&&, TSharedPtr<FJsonValue, (ESPMode)1> const&>&&, bool*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4907231
+              },
+              {
+                "milliseconds": 213.108,
+                "functionName": "TJsonReader<char16_t>::NextToken(EJsonToken&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5149303
+              },
+              {
+                "milliseconds": 162.51,
+                "functionName": "TJsonReader<char16_t>::ParseStringToken()",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5154176
+              },
+              {
+                "milliseconds": 113.09,
+                "functionName": "TJsonReader<char16_t>::Serialize(void*, long long)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5152612
+              },
+              {
+                "milliseconds": 90.393,
+                "functionName": "bool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Deserialize<char16_t>(TJsonReader<char16_t>&, FJsonSerializerPolicy_JsonObject::FStackState&, TJsonSerializer<FJsonSerializerPolicy_JsonObject>::EFlags)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5141113
+              },
+              {
+                "milliseconds": 83.174,
+                "functionName": "FBufferReaderBase::Serialize(void*, long long)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 3750128
+              },
+              {
+                "milliseconds": 75.358,
+                "functionName": "TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::Rehash()",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4968799
+              },
+              {
+                "milliseconds": 66.01,
+                "functionName": "UE::JSON::Private::FJsonStringSet::Place(TStringView<char16_t>)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4904018
+              },
+              {
+                "milliseconds": 48.277,
+                "functionName": "createShaderModule",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 47.803,
+                "functionName": "TJsonReader<char16_t>::ParseNumberToken(char16_t)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5152883
+              },
+              {
+                "milliseconds": 36.672,
+                "functionName": "TJsonReader<char16_t>::ReadNext(EJsonNotation&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5144302
+              },
+              {
+                "milliseconds": 35.245,
+                "functionName": "UE::Core::Private::GetConvertedLength(char8_t const*, char16_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1705940
+              },
+              {
+                "milliseconds": 34.401,
+                "functionName": "UE::JSON::Private::FJsonObjectSharedStringStorage::SetField(TStringView<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1> const&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4906734
+              },
+              {
+                "milliseconds": 34.022,
+                "functionName": "TStringConversion<UE::Core::Private::FTCHARToUTF8_Convert, 128>::TStringConversion<char16_t>(T const*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1026914
+              },
+              {
+                "milliseconds": 33.762,
+                "functionName": "int TCompactSet<UE::TSharedString<char16_t>, UE::JSON::Private::FJsonStringSet::FCaseSensitiveStringKeyFuncs, FDefaultCompactSetAllocator>::FindIndexByHash<UE::TSharedString<char16_t>>(unsigned int, UE::TSharedString<char16_t> const&) const",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4904361
+              },
+              {
+                "milliseconds": 30.691,
+                "functionName": "FString::ConstructFromPtrSize(char16_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1416931
+              },
+              {
+                "milliseconds": 29.204,
+                "functionName": "findStringEnd",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 1465,
+                "columnNumber": 26
+              },
+              {
+                "milliseconds": 29.117,
+                "functionName": "TJsonReader<char16_t>::NextToken(EJsonToken&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5149303
+              },
+              {
+                "milliseconds": 27.351,
+                "functionName": "FString::AppendChar(char16_t)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1418425
+              },
+              {
+                "milliseconds": 26.649,
+                "functionName": "__pthread_mutex_timedlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108616753
+              },
+              {
+                "milliseconds": 26.099,
+                "functionName": "createShaderModule",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 25.429,
+                "functionName": "FString::AssignRange(char16_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1417615
+              },
+              {
+                "milliseconds": 24.7,
+                "functionName": "__pthread_mutex_unlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108617578
+              },
+              {
+                "milliseconds": 24.554,
+                "functionName": "emscripten_builtin_malloc",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108656957
+              },
+              {
+                "milliseconds": 24.508,
+                "functionName": "bool UE::Core::Private::WriteCodepointToBuffer<char8_t*>(unsigned int, char8_t*&, int&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1707595
+              },
+              {
+                "milliseconds": 24.374,
+                "functionName": "__pthread_mutex_unlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108617578
+              },
+              {
+                "milliseconds": 24.094,
+                "functionName": "decfloat",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108634043
+              },
+              {
+                "milliseconds": 23.124,
+                "functionName": "__pthread_mutex_unlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108617578
+              },
+              {
+                "milliseconds": 22.77,
+                "functionName": "__pthread_mutex_unlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108617578
+              },
+              {
+                "milliseconds": 22.67,
+                "functionName": "__pthread_mutex_timedlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108616753
+              },
+              {
+                "milliseconds": 21.077,
+                "functionName": "void FJsonSerializerPolicy_JsonObject::ReadNumber<char16_t>(TJsonReader<char16_t>&, TSharedPtr<FJsonValue, (ESPMode)1>&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5146833
+              },
+              {
+                "milliseconds": 20.895,
+                "functionName": "__pthread_mutex_timedlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108616753
+              },
+              {
+                "milliseconds": 20.713,
+                "functionName": "__pthread_mutex_timedlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108616753
+              },
+              {
+                "milliseconds": 20.56,
+                "functionName": "FString::ConstructFromPtrSize(char16_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1416931
+              },
+              {
+                "milliseconds": 19.619,
+                "functionName": "FMemory::Free(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2038645
+              },
+              {
+                "milliseconds": 18.778,
+                "functionName": "UE::Core::Private::Convert(char16_t*, int, char8_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1708962
+              },
+              {
+                "milliseconds": 18.452,
+                "functionName": "__pthread_mutex_timedlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108616753
+              },
+              {
+                "milliseconds": 18.429,
+                "functionName": "emscripten_builtin_malloc",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108656957
+              },
+              {
+                "milliseconds": 17.621,
+                "functionName": "__pthread_mutex_unlock",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108617578
+              },
+              {
+                "milliseconds": 17.045,
+                "functionName": "FMemory::Realloc(void*, unsigned long, unsigned int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2102740
+              }
+            ],
+            "inclusive": [
+              {
+                "milliseconds": 3199.435,
+                "functionName": "(root)",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 3163.384,
+                "functionName": "em_task_queue_execute",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108606071
+              },
+              {
+                "milliseconds": 3163.384,
+                "functionName": "em_task_queue_execute",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108606071
+              },
+              {
+                "milliseconds": 3163.384,
+                "functionName": "_emscripten_check_mailbox",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108641178
+              },
+              {
+                "milliseconds": 3163.384,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 791,
+                "columnNumber": 9
+              },
+              {
+                "milliseconds": 3163.384,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5530,
+                "columnNumber": 19
+              },
+              {
+                "milliseconds": 3163.384,
+                "functionName": "callUserCallback",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5491,
+                "columnNumber": 23
+              },
+              {
+                "milliseconds": 3163.384,
+                "functionName": "checkMailbox",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5522,
+                "columnNumber": 19
+              },
+              {
+                "milliseconds": 3104.799,
+                "functionName": "FWebGPUDynamicRHI::RHICreateComputeShader(FRHICreateShaderDesc const&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 9784245
+              },
+              {
+                "milliseconds": 3104.799,
+                "functionName": "decltype(fp()) WebGPUOnOwner<FWebGPUDynamicRHI::RHICreateComputeShader(FRHICreateShaderDesc const&)::$_0>(FWebGPUDynamicRHI::RHICreateComputeShader(FRHICreateShaderDesc const&)::$_0&&)::'lambda'(void*)::__invoke(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 9785773
+              },
+              {
+                "milliseconds": 3095.543,
+                "functionName": "FWebGPUDynamicRHI::LoadShader(FRHICreateShaderDesc const&, EShaderFrequency, FWebGPUShaderData&, FString&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 9770170
+              },
+              {
+                "milliseconds": 2714.92,
+                "functionName": "bool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Deserialize<char16_t>(TJsonReader<char16_t>&, TSharedPtr<FJsonObject, (ESPMode)1>&, TJsonSerializer<FJsonSerializerPolicy_JsonObject>::EFlags)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4941753
+              },
+              {
+                "milliseconds": 2708.687,
+                "functionName": "bool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Deserialize<char16_t>(TJsonReader<char16_t>&, FJsonSerializerPolicy_JsonObject::FStackState&, TJsonSerializer<FJsonSerializerPolicy_JsonObject>::EFlags)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5141113
+              },
+              {
+                "milliseconds": 1380.449,
+                "functionName": "TJsonReader<char16_t>::ReadNext(EJsonNotation&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5144302
+              },
+              {
+                "milliseconds": 1183.742,
+                "functionName": "TJsonReader<char16_t>::ReadNextObjectValue(EJsonToken&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5148129
+              },
+              {
+                "milliseconds": 1171.315,
+                "functionName": "TJsonReader<char16_t>::NextToken(EJsonToken&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5149303
+              },
+              {
+                "milliseconds": 708.028,
+                "functionName": "UE::JSON::Private::FJsonObjectSharedStringStorage::SetField(TStringView<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1> const&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4906734
+              },
+              {
+                "milliseconds": 496.502,
+                "functionName": "TJsonReader<char16_t>::ParseStringToken()",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5154176
+              },
+              {
+                "milliseconds": 377.323,
+                "functionName": "FSetElementId TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::Emplace<TPairInitializer<UE::TSharedString<char16_t>&&, TSharedPtr<FJsonValue, (ESPMode)1> const&>>(TPairInitializer<UE::TSharedString<char16_t>&&, TSharedPtr<FJsonValue, (ESPMode)1> const&>&&, bool*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4907231
+              },
+              {
+                "milliseconds": 367.532,
+                "functionName": "TJsonReader<char16_t>::ParseNumberToken(char16_t)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5152883
+              },
+              {
+                "milliseconds": 294.769,
+                "functionName": "UE::JSON::Private::FJsonStringSet::Place(TStringView<char16_t>)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4904018
+              },
+              {
+                "milliseconds": 150.733,
+                "functionName": "wgpuDeviceCreateShaderModule",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108535524
+              },
+              {
+                "milliseconds": 150.733,
+                "functionName": "decltype(fp()) WebGPUOnOwner<decltype(&wgpuDeviceCreateShaderModule(fp...)) WebGPUForward<&wgpuDeviceCreateShaderModule, WGPUDeviceImpl*, WGPUShaderModuleDescriptor*>(WGPUDeviceImpl*, WGPUShaderModuleDescriptor*)::'lambda'()>(decltype(&wgpuDeviceCreateShaderModule(fp...)) WebGPUForward<&wgpuDeviceCreateShaderModule, WGPUDeviceImpl*, WGPUShaderModuleDescriptor*>(WGPUDeviceImpl*, WGPUShaderModuleDescriptor*)::'lambda'()&&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 9776357
+              },
+              {
+                "milliseconds": 138.322,
+                "functionName": "FString::ConstructFromPtrSize(char16_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1416931
+              },
+              {
+                "milliseconds": 113.09,
+                "functionName": "TJsonReader<char16_t>::Serialize(void*, long long)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5152612
+              },
+              {
+                "milliseconds": 107.631,
+                "functionName": "FMemory::Realloc(void*, unsigned long, unsigned int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2102740
+              },
+              {
+                "milliseconds": 105.434,
+                "functionName": "void FJsonSerializerPolicy_JsonObject::ReadNumber<char16_t>(TJsonReader<char16_t>&, TSharedPtr<FJsonValue, (ESPMode)1>&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5146833
+              },
+              {
+                "milliseconds": 99.985,
+                "functionName": "wasm-to-js",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 98.478,
+                "functionName": "_emwgpuDeviceCreateShaderModule",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 6647,
+                "columnNumber": 40
+              },
+              {
+                "milliseconds": 97.172,
+                "functionName": "FMemory::Free(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2038645
+              },
+              {
+                "milliseconds": 93.775,
+                "functionName": "TStringConversion<UE::Core::Private::FTCHARToUTF8_Convert, 128>::TStringConversion<char16_t>(T const*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1026914
+              },
+              {
+                "milliseconds": 92.377,
+                "functionName": "TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::Rehash()",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4968799
+              },
+              {
+                "milliseconds": 89.583,
+                "functionName": "FMemory::Free(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2038645
+              },
+              {
+                "milliseconds": 89.544,
+                "functionName": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1398825
+              },
+              {
+                "milliseconds": 88.506,
+                "functionName": "FMemory::Realloc(void*, unsigned long, unsigned int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2102740
+              },
+              {
+                "milliseconds": 86.67,
+                "functionName": "FString::AppendChar(char16_t)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1418425
+              },
+              {
+                "milliseconds": 85.847,
+                "functionName": "FMemory::Free(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2038645
+              },
+              {
+                "milliseconds": 83.174,
+                "functionName": "FBufferReaderBase::Serialize(void*, long long)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 3750128
+              },
+              {
+                "milliseconds": 82.58,
+                "functionName": "FMemory::Free(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 2038645
+              },
+              {
+                "milliseconds": 68.688,
+                "functionName": "dlposix_memalign",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108669416
+              }
+            ]
+          },
+          "ownerStartupCPU": {
+            "durationMs": 14116.856,
+            "self": [
+              {
+                "milliseconds": 5412.491,
+                "functionName": "(idle)",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 541.278,
+                "functionName": "expandFileStorage",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 2818,
+                "columnNumber": 19
+              },
+              {
+                "milliseconds": 244.528,
+                "functionName": "FSetElementId TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::Emplace<TPairInitializer<UE::TSharedString<char16_t>&&, TSharedPtr<FJsonValue, (ESPMode)1> const&>>(TPairInitializer<UE::TSharedString<char16_t>&&, TSharedPtr<FJsonValue, (ESPMode)1> const&>&&, bool*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4907231
+              },
+              {
+                "milliseconds": 213.108,
+                "functionName": "TJsonReader<char16_t>::NextToken(EJsonToken&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5149303
+              },
+              {
+                "milliseconds": 212.755,
+                "functionName": "emscripten_futex_wake",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108587371
+              },
+              {
+                "milliseconds": 203.853,
+                "functionName": "__emscripten_thread_mailbox_await",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5505,
+                "columnNumber": 42
+              },
+              {
+                "milliseconds": 162.51,
+                "functionName": "TJsonReader<char16_t>::ParseStringToken()",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5154176
+              },
+              {
+                "milliseconds": 138.994,
+                "functionName": "(garbage collector)",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 137.583,
+                "functionName": "write",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 2946,
+                "columnNumber": 9
+              },
+              {
+                "milliseconds": 124.174,
+                "functionName": "(program)",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 113.09,
+                "functionName": "TJsonReader<char16_t>::Serialize(void*, long long)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5152612
+              },
+              {
+                "milliseconds": 98.221,
+                "functionName": "postMessage",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 90.393,
+                "functionName": "bool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Deserialize<char16_t>(TJsonReader<char16_t>&, FJsonSerializerPolicy_JsonObject::FStackState&, TJsonSerializer<FJsonSerializerPolicy_JsonObject>::EFlags)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5141113
+              },
+              {
+                "milliseconds": 83.475,
+                "functionName": "js-to-wasm",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 83.174,
+                "functionName": "FBufferReaderBase::Serialize(void*, long long)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 3750128
+              },
+              {
+                "milliseconds": 75.358,
+                "functionName": "TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::Rehash()",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4968799
+              },
+              {
+                "milliseconds": 66.172,
+                "functionName": "ErrnoError",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 3270,
+                "columnNumber": 15
+              },
+              {
+                "milliseconds": 66.01,
+                "functionName": "UE::JSON::Private::FJsonStringSet::Place(TStringView<char16_t>)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4904018
+              },
+              {
+                "milliseconds": 64.47,
+                "functionName": "postMessage",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 64.16,
+                "functionName": "writeTexture",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 58.24,
+                "functionName": "read",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 2938,
+                "columnNumber": 8
+              },
+              {
+                "milliseconds": 54.094,
+                "functionName": "__emscripten_receive_on_main_thread_js",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5564,
+                "columnNumber": 47
+              },
+              {
+                "milliseconds": 48.277,
+                "functionName": "createShaderModule",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 47.803,
+                "functionName": "TJsonReader<char16_t>::ParseNumberToken(char16_t)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5152883
+              },
+              {
+                "milliseconds": 43.416,
+                "functionName": "lookupPath",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 3395,
+                "columnNumber": 12
+              },
+              {
+                "milliseconds": 43.097,
+                "functionName": "emscripten_futex_wake",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108587371
+              },
+              {
+                "milliseconds": 36.672,
+                "functionName": "TJsonReader<char16_t>::ReadNext(EJsonNotation&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5144302
+              },
+              {
+                "milliseconds": 35.729,
+                "functionName": "submit",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 35.245,
+                "functionName": "UE::Core::Private::GetConvertedLength(char8_t const*, char16_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1705940
+              },
+              {
+                "milliseconds": 35.014,
+                "functionName": "UTF8ArrayToString",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 1485,
+                "columnNumber": 30
+              },
+              {
+                "milliseconds": 34.401,
+                "functionName": "UE::JSON::Private::FJsonObjectSharedStringStorage::SetField(TStringView<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1> const&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4906734
+              },
+              {
+                "milliseconds": 34.022,
+                "functionName": "TStringConversion<UE::Core::Private::FTCHARToUTF8_Convert, 128>::TStringConversion<char16_t>(T const*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1026914
+              },
+              {
+                "milliseconds": 33.762,
+                "functionName": "int TCompactSet<UE::TSharedString<char16_t>, UE::JSON::Private::FJsonStringSet::FCaseSensitiveStringKeyFuncs, FDefaultCompactSetAllocator>::FindIndexByHash<UE::TSharedString<char16_t>>(unsigned int, UE::TSharedString<char16_t> const&) const",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4904361
+              },
+              {
+                "milliseconds": 33.067,
+                "functionName": "submit",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 32.611,
+                "functionName": "UTF8ArrayToString",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 1485,
+                "columnNumber": 30
+              },
+              {
+                "milliseconds": 32.391,
+                "functionName": "channel.port1.onmessage",
+                "scriptId": "3",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/web-engine-worker.js?v=9ee0af5bcf3fb84b48223886ade10f354b068d20e595d3369562b5b31664a871",
+                "lineNumber": 177,
+                "columnNumber": 28
+              },
+              {
+                "milliseconds": 31.079,
+                "functionName": "_emscripten_get_now",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5793,
+                "columnNumber": 26
+              },
+              {
+                "milliseconds": 30.691,
+                "functionName": "FString::ConstructFromPtrSize(char16_t const*, int)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1416931
+              },
+              {
+                "milliseconds": 29.882,
+                "functionName": "submit",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 29.204,
+                "functionName": "findStringEnd",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 1465,
+                "columnNumber": 26
+              }
+            ],
+            "inclusive": [
+              {
+                "milliseconds": 14116.856,
+                "functionName": "(root)",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 5784.503,
+                "functionName": "checkMailbox",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5522,
+                "columnNumber": 19
+              },
+              {
+                "milliseconds": 5742.795,
+                "functionName": "callUserCallback",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5491,
+                "columnNumber": 23
+              },
+              {
+                "milliseconds": 5741.135,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5530,
+                "columnNumber": 19
+              },
+              {
+                "milliseconds": 5504.744,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 791,
+                "columnNumber": 9
+              },
+              {
+                "milliseconds": 5412.491,
+                "functionName": "(idle)",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 5306.641,
+                "functionName": "_emscripten_check_mailbox",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108641178
+              },
+              {
+                "milliseconds": 3477.593,
+                "functionName": "em_task_queue_execute",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108606071
+              },
+              {
+                "milliseconds": 3471.365,
+                "functionName": "em_task_queue_execute",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108606071
+              },
+              {
+                "milliseconds": 3104.799,
+                "functionName": "FWebGPUDynamicRHI::RHICreateComputeShader(FRHICreateShaderDesc const&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 9784245
+              },
+              {
+                "milliseconds": 3104.799,
+                "functionName": "decltype(fp()) WebGPUOnOwner<FWebGPUDynamicRHI::RHICreateComputeShader(FRHICreateShaderDesc const&)::$_0>(FWebGPUDynamicRHI::RHICreateComputeShader(FRHICreateShaderDesc const&)::$_0&&)::'lambda'(void*)::__invoke(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 9785773
+              },
+              {
+                "milliseconds": 3095.543,
+                "functionName": "FWebGPUDynamicRHI::LoadShader(FRHICreateShaderDesc const&, EShaderFrequency, FWebGPUShaderData&, FString&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 9770170
+              },
+              {
+                "milliseconds": 2714.92,
+                "functionName": "bool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Deserialize<char16_t>(TJsonReader<char16_t>&, TSharedPtr<FJsonObject, (ESPMode)1>&, TJsonSerializer<FJsonSerializerPolicy_JsonObject>::EFlags)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4941753
+              },
+              {
+                "milliseconds": 2708.687,
+                "functionName": "bool TJsonSerializer<FJsonSerializerPolicy_JsonObject>::Deserialize<char16_t>(TJsonReader<char16_t>&, FJsonSerializerPolicy_JsonObject::FStackState&, TJsonSerializer<FJsonSerializerPolicy_JsonObject>::EFlags)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5141113
+              },
+              {
+                "milliseconds": 1814.093,
+                "functionName": "receive_notification",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108607077
+              },
+              {
+                "milliseconds": 1804.658,
+                "functionName": "em_task_queue_execute",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108606071
+              },
+              {
+                "milliseconds": 1380.449,
+                "functionName": "TJsonReader<char16_t>::ReadNext(EJsonNotation&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5144302
+              },
+              {
+                "milliseconds": 1183.742,
+                "functionName": "TJsonReader<char16_t>::ReadNextObjectValue(EJsonToken&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5148129
+              },
+              {
+                "milliseconds": 1171.315,
+                "functionName": "TJsonReader<char16_t>::NextToken(EJsonToken&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 5149303
+              },
+              {
+                "milliseconds": 794.497,
+                "functionName": "channel.port1.onmessage",
+                "scriptId": "3",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/web-engine-worker.js?v=9ee0af5bcf3fb84b48223886ade10f354b068d20e595d3369562b5b31664a871",
+                "lineNumber": 177,
+                "columnNumber": 28
+              },
+              {
+                "milliseconds": 777.639,
+                "functionName": "",
+                "scriptId": "4",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/web-content-io.js?v=d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+                "lineNumber": 71,
+                "columnNumber": 46
+              },
+              {
+                "milliseconds": 762.106,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 6295,
+                "columnNumber": 24
+              },
+              {
+                "milliseconds": 762.106,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 6273,
+                "columnNumber": 49
+              },
+              {
+                "milliseconds": 759.333,
+                "functionName": "callUserCallback",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5491,
+                "columnNumber": 23
+              },
+              {
+                "milliseconds": 754.532,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 6297,
+                "columnNumber": 28
+              },
+              {
+                "milliseconds": 754.532,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 6297,
+                "columnNumber": 21
+              },
+              {
+                "milliseconds": 724.619,
+                "functionName": "run_js_func",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 108610307
+              },
+              {
+                "milliseconds": 716.927,
+                "functionName": "wasm-to-js",
+                "scriptId": "-1",
+                "url": "",
+                "lineNumber": 0,
+                "columnNumber": 0
+              },
+              {
+                "milliseconds": 708.028,
+                "functionName": "UE::JSON::Private::FJsonObjectSharedStringStorage::SetField(TStringView<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1> const&)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 4906734
+              },
+              {
+                "milliseconds": 691.827,
+                "functionName": "__emscripten_receive_on_main_thread_js",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5564,
+                "columnNumber": 47
+              },
+              {
+                "milliseconds": 682.015,
+                "functionName": "write",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 4395,
+                "columnNumber": 7
+              },
+              {
+                "milliseconds": 678.861,
+                "functionName": "write",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 2946,
+                "columnNumber": 9
+              },
+              {
+                "milliseconds": 633.779,
+                "functionName": "js-to-wasm:l:",
+                "scriptId": "0",
+                "url": "",
+                "lineNumber": -1,
+                "columnNumber": -1
+              },
+              {
+                "milliseconds": 630.542,
+                "functionName": "WebWakeRHIThread::$_0::operator()(void*) const::'lambda'(void*)::__invoke(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1228796
+              },
+              {
+                "milliseconds": 628.977,
+                "functionName": "FRHIThread::WebPump(void*)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 11456766
+              },
+              {
+                "milliseconds": 541.814,
+                "functionName": "FTaskGraphCompatibilityImplementation::ProcessThreadUntilIdle(ENamedThreads::Type)",
+                "scriptId": "6",
+                "url": "wasm://wasm/UEWebEngineThreads.wasm-2b6e5986",
+                "lineNumber": 0,
+                "columnNumber": 1243190
+              },
+              {
+                "milliseconds": 541.278,
+                "functionName": "expandFileStorage",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 2818,
+                "columnNumber": 19
+              },
+              {
+                "milliseconds": 538.977,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 5915,
+                "columnNumber": 20
+              },
+              {
+                "milliseconds": 537.391,
+                "functionName": "",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 6135,
+                "columnNumber": 23
+              },
+              {
+                "milliseconds": 537.391,
+                "functionName": "wrapper",
+                "scriptId": "5",
+                "url": "http://127.0.0.1:8765/build/villa-pso-concurrency-v18-default/UEWebEngineThreads.js?v=e97a899591a47e7c1ea65f78c7f68ce8fdd97aa93d19a01666a56ccf4004a001",
+                "lineNumber": 6135,
+                "columnNumber": 16
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "villa-startup-phases-trace-v2",
+      "pass": true,
+      "cpuProfile": false,
+      "ueTrace": true,
+      "runs": [
+        {
+          "index": 0,
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2149,
+            "diskReads": 2163,
+            "diskReadBytes": 1258854529,
+            "downloadedBytes": 185154612,
+            "downloads": 1,
+            "persistentHits": 1,
+            "evictions": 1626,
+            "diskEvictions": 1,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 3226676,
+            "hashMs": 2.4199999906122684,
+            "downloadMs": 771.964999999851,
+            "diskReadMs": 4849.4849999807775
+          },
+          "milestones": {
+            "recorder.loaded": 181.415,
+            "page.stage.engine-script-loading": 188.035,
+            "wasm.preRun.begin": 1179.63,
+            "wasm.runtimeInitialized": 3466.455,
+            "page.stage.engine-starting": 3466.525,
+            "native.StartEngine.begin": 3521.955,
+            "native.PreInit.begin": 3522.485,
+            "native.startupTrace.begin": 3611.275,
+            "native.PreInit.end": 5857.11,
+            "native.Init.begin": 5857.4,
+            "gpu.firstCanvasTexture": 8632.705,
+            "gpu.firstCanvasCompleted": 8692.595,
+            "log.P3_ENGINE_WORLD": 14884.205,
+            "native.Init.end": 13441.24,
+            "native.threadWitness.begin": 13441.265,
+            "native.threadWitness.end": 14884.025,
+            "log.P3_ENGINE_THREADS": 14884.1,
+            "log.P3_RENDER_SCENE": 14885.495,
+            "log.P3_ENGINE_READY": 14885.67,
+            "native.ready": 14885.73,
+            "page.stage.running": 14885.775,
+            "native.firstTick.begin": 14886.795,
+            "native.firstTick.end": 14954.34,
+            "__webEngineFrames.1": 14954.44,
+            "__webEngineFrames.2": 15999.055,
+            "__webRHIFrames.2": 16191.37,
+            "gpu.firstGameFrameSubmitted": 16191.39,
+            "gpu.firstGameFrameCompleted": 16718.38,
+            "__webRHIFrames.30": 17478.395,
+            "__webEngineFrames.30": 17482.905,
+            "page.psoReady": 17516.8,
+            "page.loadingHidden": 17522.31,
+            "page.visibleTwoRAF": 17527.885,
+            "__webEngineFrames.60": 18541.43,
+            "__webRHIFrames.60": 18573.88,
+            "recorder.frozen": 19156.945
+          },
+          "phases": [
+            {
+              "name": "page to engine script",
+              "startMs": 0,
+              "endMs": 188.035,
+              "durationMs": 188.035
+            },
+            {
+              "name": "WASM instantiate (includes asset wait)",
+              "startMs": 206.86,
+              "endMs": 1177.015,
+              "durationMs": 970.155
+            },
+            {
+              "name": "content mount (includes pack verification)",
+              "startMs": 1248.295,
+              "endMs": 3354.34,
+              "durationMs": 2106.045
+            },
+            {
+              "name": "runtime ready to engine ready",
+              "startMs": 3466.455,
+              "endMs": 14885.67,
+              "durationMs": 11419.215
+            },
+            {
+              "name": "native.PreInit",
+              "startMs": 3522.485,
+              "endMs": 5857.11,
+              "durationMs": 2334.625
+            },
+            {
+              "name": "native.Init",
+              "startMs": 5857.4,
+              "endMs": 13441.24,
+              "durationMs": 7583.84
+            },
+            {
+              "name": "native.threadWitness",
+              "startMs": 13441.265,
+              "endMs": 14884.025,
+              "durationMs": 1442.76
+            },
+            {
+              "name": "native.firstTick",
+              "startMs": 14886.795,
+              "endMs": 14954.34,
+              "durationMs": 67.545
+            },
+            {
+              "name": "engine ready to first game frame submitted",
+              "startMs": 14885.67,
+              "endMs": 16191.39,
+              "durationMs": 1305.72
+            },
+            {
+              "name": "game frame submit to GPU queue completed",
+              "startMs": 16191.39,
+              "endMs": 16718.38,
+              "durationMs": 526.99
+            },
+            {
+              "name": "engine ready to PSO-ready message",
+              "startMs": 14885.67,
+              "endMs": 17516.8,
+              "durationMs": 2631.13
+            },
+            {
+              "name": "navigation to visible scene (two RAF after loader hidden)",
+              "startMs": 0,
+              "endMs": 17527.885,
+              "durationMs": 17527.885
+            }
+          ],
+          "pipelines": [
+            {
+              "name": "createRenderPipelineAsync",
+              "count": 482,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 4699.06,
+              "lastEndMs": 15552.33,
+              "requestLatencySumMs": 19302.049,
+              "synchronousCallSumMs": 17.557,
+              "activeUnionMs": 2943.11
+            },
+            {
+              "name": "createRenderPipeline",
+              "count": 108,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 8677.86,
+              "lastEndMs": 16230,
+              "requestLatencySumMs": 1.344,
+              "synchronousCallSumMs": 1.344,
+              "activeUnionMs": 1.344
+            },
+            {
+              "name": "createComputePipelineAsync",
+              "count": 626,
+              "failed": 8,
+              "pending": 0,
+              "firstStartMs": 9525.285,
+              "lastEndMs": 14499.695,
+              "requestLatencySumMs": 35878.492,
+              "synchronousCallSumMs": 12.493,
+              "activeUnionMs": 4783.39
+            },
+            {
+              "name": "createComputePipeline",
+              "count": 19,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 14796.15,
+              "lastEndMs": 16274.825,
+              "requestLatencySumMs": 0.104,
+              "synchronousCallSumMs": 0.104,
+              "activeUnionMs": 0.104
+            }
+          ],
+          "asyncPipelineSpanMs": 10853.27,
+          "moduleCount": 1695,
+          "moduleChars": 31060103,
+          "moduleJSCallSumMs": 102.81,
+          "longestOwnerLag": {
+            "start": 1793635154123.5999,
+            "end": 1793635157301.2449,
+            "delayMs": 3157.64501953125,
+            "startMs": 5222.82,
+            "endMs": 8400.465
+          },
+          "asyncPipelinesDuringOwnerLag": {
+            "requests": 8,
+            "activeUnionMs": 12.65
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "dropped": 0
+        }
+      ]
+    },
+    {
+      "name": "villa-startup-phases-manual-warm-v1",
+      "pass": true,
+      "cpuProfile": false,
+      "ueTrace": false,
+      "runs": [
+        {
+          "index": 0,
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2187,
+            "diskReads": 2134,
+            "diskReadBytes": 1240242305,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 1607,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 7481.599999945611
+          },
+          "milestones": {
+            "recorder.loaded": 148.595,
+            "page.stage.engine-script-loading": 151.7,
+            "wasm.preRun.begin": 418.625,
+            "wasm.runtimeInitialized": 3362.83,
+            "page.stage.engine-starting": 3362.91,
+            "native.StartEngine.begin": 3415.51,
+            "native.PreInit.begin": 3416.015,
+            "native.PreInit.end": 5721.595,
+            "native.Init.begin": 5721.87,
+            "gpu.firstCanvasTexture": 8457.61,
+            "gpu.firstCanvasCompleted": 8530.67,
+            "log.P3_ENGINE_WORLD": 14504.78,
+            "native.Init.end": 12881.745,
+            "native.threadWitness.begin": 12881.76,
+            "native.threadWitness.end": 14504.62,
+            "log.P3_ENGINE_THREADS": 14504.67,
+            "log.P3_RENDER_SCENE": 14506.13,
+            "log.P3_ENGINE_READY": 14506.305,
+            "native.ready": 14506.34,
+            "page.stage.running": 14506.39,
+            "native.firstTick.begin": 14507.465,
+            "native.firstTick.end": 14577.6,
+            "__webEngineFrames.1": 14577.74,
+            "__webEngineFrames.2": 15785.215,
+            "__webRHIFrames.2": 15905.01,
+            "gpu.firstGameFrameSubmitted": 15905.035,
+            "gpu.firstGameFrameCompleted": 16391.655,
+            "__webEngineFrames.30": 16969.305,
+            "__webRHIFrames.30": 16983.82,
+            "page.psoReady": 17078.345,
+            "page.loadingHidden": 17082.565,
+            "page.visibleTwoRAF": 17086.665,
+            "recorder.frozen": 17654.71
+          },
+          "phases": [
+            {
+              "name": "page to engine script",
+              "startMs": 0,
+              "endMs": 151.7,
+              "durationMs": 151.7
+            },
+            {
+              "name": "WASM instantiate (includes asset wait)",
+              "startMs": 167.345,
+              "endMs": 416.835,
+              "durationMs": 249.49
+            },
+            {
+              "name": "content mount (includes pack verification)",
+              "startMs": 478.525,
+              "endMs": 3250.065,
+              "durationMs": 2771.54
+            },
+            {
+              "name": "runtime ready to engine ready",
+              "startMs": 3362.83,
+              "endMs": 14506.305,
+              "durationMs": 11143.475
+            },
+            {
+              "name": "native.PreInit",
+              "startMs": 3416.015,
+              "endMs": 5721.595,
+              "durationMs": 2305.58
+            },
+            {
+              "name": "native.Init",
+              "startMs": 5721.87,
+              "endMs": 12881.745,
+              "durationMs": 7159.875
+            },
+            {
+              "name": "native.threadWitness",
+              "startMs": 12881.76,
+              "endMs": 14504.62,
+              "durationMs": 1622.86
+            },
+            {
+              "name": "native.firstTick",
+              "startMs": 14507.465,
+              "endMs": 14577.6,
+              "durationMs": 70.135
+            },
+            {
+              "name": "engine ready to first game frame submitted",
+              "startMs": 14506.305,
+              "endMs": 15905.035,
+              "durationMs": 1398.73
+            },
+            {
+              "name": "game frame submit to GPU queue completed",
+              "startMs": 15905.035,
+              "endMs": 16391.655,
+              "durationMs": 486.62
+            },
+            {
+              "name": "engine ready to PSO-ready message",
+              "startMs": 14506.305,
+              "endMs": 17078.345,
+              "durationMs": 2572.04
+            },
+            {
+              "name": "navigation to visible scene (two RAF after loader hidden)",
+              "startMs": 0,
+              "endMs": 17086.665,
+              "durationMs": 17086.665
+            }
+          ],
+          "pipelines": [
+            {
+              "name": "createRenderPipelineAsync",
+              "count": 482,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 4559.815,
+              "lastEndMs": 15663.73,
+              "requestLatencySumMs": 20849.698,
+              "synchronousCallSumMs": 17.347,
+              "activeUnionMs": 3196.2
+            },
+            {
+              "name": "createRenderPipeline",
+              "count": 108,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 8513.915,
+              "lastEndMs": 15917.515,
+              "requestLatencySumMs": 1.376,
+              "synchronousCallSumMs": 1.376,
+              "activeUnionMs": 1.376
+            },
+            {
+              "name": "createComputePipelineAsync",
+              "count": 626,
+              "failed": 8,
+              "pending": 0,
+              "firstStartMs": 9402.74,
+              "lastEndMs": 15702.01,
+              "requestLatencySumMs": 39910.35,
+              "synchronousCallSumMs": 12.047,
+              "activeUnionMs": 6033.805
+            },
+            {
+              "name": "createComputePipeline",
+              "count": 22,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 14414.285,
+              "lastEndMs": 15946.825,
+              "requestLatencySumMs": 0.155,
+              "synchronousCallSumMs": 0.155,
+              "activeUnionMs": 0.155
+            }
+          ],
+          "asyncPipelineSpanMs": 11142.195,
+          "moduleCount": 1695,
+          "moduleChars": 31060103,
+          "moduleJSCallSumMs": 100.65,
+          "longestOwnerLag": {
+            "start": 1793635577485.83,
+            "end": 1793635580627.9802,
+            "delayMs": 3122.150146484375,
+            "startMs": 5089.03,
+            "endMs": 8231.18
+          },
+          "asyncPipelinesDuringOwnerLag": {
+            "requests": 8,
+            "activeUnionMs": 14.93
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "dropped": 0
+        },
+        {
+          "index": 1,
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2170,
+            "diskReads": 2183,
+            "diskReadBytes": 1271961729,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 1637,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 7361.590000148863
+          },
+          "milestones": {
+            "recorder.loaded": 210.84,
+            "page.stage.engine-script-loading": 213.61,
+            "wasm.preRun.begin": 515.31,
+            "wasm.runtimeInitialized": 3314.69,
+            "page.stage.engine-starting": 3314.77,
+            "native.StartEngine.begin": 3368.765,
+            "native.PreInit.begin": 3369.27,
+            "native.PreInit.end": 5667.46,
+            "native.Init.begin": 5667.745,
+            "gpu.firstCanvasTexture": 8399.385,
+            "gpu.firstCanvasCompleted": 8479.63,
+            "log.P3_ENGINE_WORLD": 14555.91,
+            "native.Init.end": 13052.05,
+            "native.threadWitness.begin": 13052.07,
+            "native.threadWitness.end": 14555.745,
+            "log.P3_ENGINE_THREADS": 14555.805,
+            "log.P3_RENDER_SCENE": 14557.355,
+            "log.P3_ENGINE_READY": 14557.615,
+            "native.ready": 14557.65,
+            "page.stage.running": 14557.69,
+            "native.firstTick.begin": 14558.47,
+            "native.firstTick.end": 14629.895,
+            "__webEngineFrames.1": 14629.995,
+            "__webEngineFrames.2": 15671.655,
+            "__webRHIFrames.2": 15789.37,
+            "gpu.firstGameFrameSubmitted": 15789.39,
+            "gpu.firstGameFrameCompleted": 16393.91,
+            "__webRHIFrames.30": 16889.535,
+            "__webEngineFrames.30": 16892.6,
+            "page.psoReady": 16932.415,
+            "page.loadingHidden": 16959.01,
+            "page.visibleTwoRAF": 16963.07,
+            "recorder.frozen": 17549.345
+          },
+          "phases": [
+            {
+              "name": "page to engine script",
+              "startMs": 0,
+              "endMs": 213.61,
+              "durationMs": 213.61
+            },
+            {
+              "name": "WASM instantiate (includes asset wait)",
+              "startMs": 227.635,
+              "endMs": 513.965,
+              "durationMs": 286.33
+            },
+            {
+              "name": "content mount (includes pack verification)",
+              "startMs": 572.175,
+              "endMs": 3204.83,
+              "durationMs": 2632.655
+            },
+            {
+              "name": "runtime ready to engine ready",
+              "startMs": 3314.69,
+              "endMs": 14557.615,
+              "durationMs": 11242.925
+            },
+            {
+              "name": "native.PreInit",
+              "startMs": 3369.27,
+              "endMs": 5667.46,
+              "durationMs": 2298.19
+            },
+            {
+              "name": "native.Init",
+              "startMs": 5667.745,
+              "endMs": 13052.05,
+              "durationMs": 7384.305
+            },
+            {
+              "name": "native.threadWitness",
+              "startMs": 13052.07,
+              "endMs": 14555.745,
+              "durationMs": 1503.675
+            },
+            {
+              "name": "native.firstTick",
+              "startMs": 14558.47,
+              "endMs": 14629.895,
+              "durationMs": 71.425
+            },
+            {
+              "name": "engine ready to first game frame submitted",
+              "startMs": 14557.615,
+              "endMs": 15789.39,
+              "durationMs": 1231.775
+            },
+            {
+              "name": "game frame submit to GPU queue completed",
+              "startMs": 15789.39,
+              "endMs": 16393.91,
+              "durationMs": 604.52
+            },
+            {
+              "name": "engine ready to PSO-ready message",
+              "startMs": 14557.615,
+              "endMs": 16932.415,
+              "durationMs": 2374.8
+            },
+            {
+              "name": "navigation to visible scene (two RAF after loader hidden)",
+              "startMs": 0,
+              "endMs": 16963.07,
+              "durationMs": 16963.07
+            }
+          ],
+          "pipelines": [
+            {
+              "name": "createRenderPipelineAsync",
+              "count": 482,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 4476.44,
+              "lastEndMs": 15396.695,
+              "requestLatencySumMs": 19744.642,
+              "synchronousCallSumMs": 16.51,
+              "activeUnionMs": 3055.37
+            },
+            {
+              "name": "createRenderPipeline",
+              "count": 109,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 8452.235,
+              "lastEndMs": 15802.38,
+              "requestLatencySumMs": 1.435,
+              "synchronousCallSumMs": 1.435,
+              "activeUnionMs": 1.435
+            },
+            {
+              "name": "createComputePipelineAsync",
+              "count": 626,
+              "failed": 8,
+              "pending": 0,
+              "firstStartMs": 9332.175,
+              "lastEndMs": 15363.3,
+              "requestLatencySumMs": 39550.504,
+              "synchronousCallSumMs": 12.732,
+              "activeUnionMs": 5772.195
+            },
+            {
+              "name": "createComputePipeline",
+              "count": 21,
+              "failed": 0,
+              "pending": 0,
+              "firstStartMs": 14471.57,
+              "lastEndMs": 15821.925,
+              "requestLatencySumMs": 0.16,
+              "synchronousCallSumMs": 0.16,
+              "activeUnionMs": 0.16
+            }
+          ],
+          "asyncPipelineSpanMs": 10920.255,
+          "moduleCount": 1695,
+          "moduleChars": 31060103,
+          "moduleJSCallSumMs": 102.477,
+          "longestOwnerLag": {
+            "start": 1793635597966.73,
+            "end": 1793635601092.2798,
+            "delayMs": 3105.5498046875,
+            "startMs": 5052.14,
+            "endMs": 8177.69
+          },
+          "asyncPipelinesDuringOwnerLag": {
+            "requests": 8,
+            "activeUnionMs": 15.5
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "dropped": 0
+        }
+      ]
+    }
+  ],
+  "native": {
+    "phases": [
+      {
+        "name": "WebStartup_PreInit",
+        "startMs": 3522.519775390625,
+        "endMs": 5857.06494140625,
+        "durationMs": 2334.545
+      },
+      {
+        "name": "WebStartup_Init",
+        "startMs": 5857.39990234375,
+        "endMs": 13441.21484375,
+        "durationMs": 7583.8150000000005
+      }
+    ],
+    "shaderLag": [
+      {
+        "name": "WebShader_Load",
+        "count": 1475,
+        "milliseconds": 3121.368000000004
+      },
+      {
+        "name": "WebShader_MetadataJSON",
+        "count": 1475,
+        "milliseconds": 2762.363999999997
+      },
+      {
+        "name": "WebShader_CreateModule",
+        "count": 1475,
+        "milliseconds": 189.2280000000048
+      }
+    ],
+    "totals": [
+      {
+        "thread": "3",
+        "name": "MainThreadWaitingOnAsyncLoadingThread",
+        "count": 447,
+        "inclusiveMs": 6354.942000000007,
+        "exclusiveMs": 6354.942000000007,
+        "maxMs": 27.91
+      },
+      {
+        "thread": "2",
+        "name": "WebShader_MetadataJSON",
+        "count": 1685,
+        "inclusiveMs": 3289.469999999995,
+        "exclusiveMs": 3289.469999999995,
+        "maxMs": 12.934
+      },
+      {
+        "thread": "3",
+        "name": "FMaterialShaderMapLayoutCache_CreateLayout",
+        "count": 35,
+        "inclusiveMs": 871.9399999999998,
+        "exclusiveMs": 871.9399999999998,
+        "maxMs": 34.105000000000004
+      },
+      {
+        "thread": "2",
+        "name": "WebPSO_CreateComputeOwner",
+        "count": 1340,
+        "inclusiveMs": 236.95299999999716,
+        "exclusiveMs": 236.95299999999716,
+        "maxMs": 1.935
+      },
+      {
+        "thread": "2",
+        "name": "WebShader_CreateModule",
+        "count": 1685,
+        "inclusiveMs": 219.7639999999993,
+        "exclusiveMs": 219.7639999999993,
+        "maxMs": 2.4949999999999997
+      },
+      {
+        "thread": "2",
+        "name": "WebShader_Load",
+        "count": 1685,
+        "inclusiveMs": 3700.7230000000063,
+        "exclusiveMs": 191.48899999999938,
+        "maxMs": 13.584000000000001
+      },
+      {
+        "thread": "2",
+        "name": "WebPSO_CreateGraphicsOwner",
+        "count": 738,
+        "inclusiveMs": 343.5599999999991,
+        "exclusiveMs": 171.38600000000022,
+        "maxMs": 166.689
+      }
+    ],
+    "longGameScopes": [
+      {
+        "name": "WebStartup_PreInit",
+        "startMs": 3522.519775390625,
+        "endMs": 5857.06494140625,
+        "durationMs": 2334.545,
+        "exclusiveMs": 2.7449999999997754
+      },
+      {
+        "name": "FEngineLoop::PreInitPreStartupScreen",
+        "startMs": 3524.83984375,
+        "endMs": 4177.544921875,
+        "durationMs": 652.7049999999999,
+        "exclusiveMs": 92.09800000000021
+      },
+      {
+        "name": "FEngineLoop::PreInitPostStartupScreen",
+        "startMs": 4177.9599609375,
+        "endMs": 5857.054931640625,
+        "durationMs": 1679.095,
+        "exclusiveMs": 17.11000000000006
+      },
+      {
+        "name": "ProcessNewlyLoadedUObjects",
+        "startMs": 4198.46484375,
+        "endMs": 5170.308837890625,
+        "durationMs": 971.844,
+        "exclusiveMs": 0.12400000000001299
+      },
+      {
+        "name": "UObjectLoadAllCompiledInDefaultProperties",
+        "startMs": 4276.23486328125,
+        "endMs": 5170.2099609375,
+        "durationMs": 893.9749999999999,
+        "exclusiveMs": 0.024999999999941735
+      },
+      {
+        "name": "Engine Classes",
+        "startMs": 4355.929931640625,
+        "endMs": 4893.054931640625,
+        "durationMs": 537.125,
+        "exclusiveMs": 56.31799999999767
+      },
+      {
+        "name": "PrecacheComputePipelineStatesForGlobalShaders",
+        "startMs": 5208.324951171875,
+        "endMs": 5856.885009765625,
+        "durationMs": 648.5600000000001,
+        "exclusiveMs": 102.1180000000003
+      },
+      {
+        "name": "WebStartup_Init",
+        "startMs": 5857.39990234375,
+        "endMs": 13441.21484375,
+        "durationMs": 7583.8150000000005,
+        "exclusiveMs": 0.14500000000072788
+      },
+      {
+        "name": "FEngineLoop::Init",
+        "startMs": 5857.52978515625,
+        "endMs": 13441.199951171875,
+        "durationMs": 7583.67,
+        "exclusiveMs": 0.5140000000004488
+      },
+      {
+        "name": "GEngine->Init",
+        "startMs": 5857.81884765625,
+        "endMs": 8687.46484375,
+        "durationMs": 2829.6459999999997,
+        "exclusiveMs": 0.10500000000002174
+      },
+      {
+        "name": "UGameEngine::Init",
+        "startMs": 5857.923828125,
+        "endMs": 8687.46484375,
+        "durationMs": 2829.5409999999997,
+        "exclusiveMs": 0.7410000000000333
+      },
+      {
+        "name": "UEngine::Init",
+        "startMs": 5858.614990234375,
+        "endMs": 8545.27490234375,
+        "durationMs": 2686.66,
+        "exclusiveMs": 5.818000000003419
+      },
+      {
+        "name": "UEngine::InitializeObjectReferences",
+        "startMs": 5862.93994140625,
+        "endMs": 8542.724853515625,
+        "durationMs": 2679.785,
+        "exclusiveMs": 1.688999999999924
+      },
+      {
+        "name": "LoadObject",
+        "startMs": 5862.98486328125,
+        "endMs": 8405.328857421875,
+        "durationMs": 2542.344,
+        "exclusiveMs": 0
+      },
+      {
+        "name": "StaticLoadObjectInternal",
+        "startMs": 5862.98486328125,
+        "endMs": 8405.328857421875,
+        "durationMs": 2542.344,
+        "exclusiveMs": 0.03399999999986747
+      },
+      {
+        "name": "LoadPackageInternal",
+        "startMs": 5863.014892578125,
+        "endMs": 8405.324951171875,
+        "durationMs": 2542.31,
+        "exclusiveMs": 0.015000000000320313
+      },
+      {
+        "name": "FlushAsyncLoading",
+        "startMs": 5863.044921875,
+        "endMs": 8405.31494140625,
+        "durationMs": 2542.27,
+        "exclusiveMs": 1.8950000000005343
+      },
+      {
+        "name": "GEngine->Start()",
+        "startMs": 8697.44384765625,
+        "endMs": 13438.179931640625,
+        "durationMs": 4740.736,
+        "exclusiveMs": 0.02700000000022129
+      },
+      {
+        "name": "UGameEngine::Start",
+        "startMs": 8697.46484375,
+        "endMs": 13438.173828125,
+        "durationMs": 4740.709,
+        "exclusiveMs": 0.23499999999998522
+      },
+      {
+        "name": "UGameInstance::StartGameInstance",
+        "startMs": 8697.699951171875,
+        "endMs": 13438.173828125,
+        "durationMs": 4740.474,
+        "exclusiveMs": 24.319999999996263
+      },
+      {
+        "name": "LoadPackageInternal",
+        "startMs": 8743.264892578125,
+        "endMs": 13225.58984375,
+        "durationMs": 4482.325000000001,
+        "exclusiveMs": 0.01600000000046009
+      },
+      {
+        "name": "FlushAsyncLoading",
+        "startMs": 8743.289794921875,
+        "endMs": 13225.578857421875,
+        "durationMs": 4482.289,
+        "exclusiveMs": 8.997000000010562
+      },
+      {
+        "name": "FlushRenderingCommands",
+        "startMs": 13441.44384765625,
+        "endMs": 14884,
+        "durationMs": 1442.556,
+        "exclusiveMs": 0.04099999999995774
+      },
+      {
+        "name": "Sync_RenderingThread",
+        "startMs": 13441.449951171875,
+        "endMs": 14883.96484375,
+        "durationMs": 1442.515,
+        "exclusiveMs": 0.008999999999947472
+      },
+      {
+        "name": "GameThreadWaitForTask",
+        "startMs": 13441.46484375,
+        "endMs": 14883.85986328125,
+        "durationMs": 1442.395,
+        "exclusiveMs": 1442.395
+      },
+      {
+        "name": "FEngineLoop::Tick",
+        "startMs": 14954.81494140625,
+        "endMs": 15998.96484375,
+        "durationMs": 1044.1499999999999,
+        "exclusiveMs": 0.003999999999892978
+      },
+      {
+        "name": "Frame",
+        "startMs": 14954.81884765625,
+        "endMs": 15998.96484375,
+        "durationMs": 1044.146,
+        "exclusiveMs": 0.015999999999932228
+      },
+      {
+        "name": "Sync_RenderingThread",
+        "startMs": 15031.135009765625,
+        "endMs": 15998.909912109375,
+        "durationMs": 967.7750000000001,
+        "exclusiveMs": 0.004999999999987245
+      },
+      {
+        "name": "GameThreadWaitForTask",
+        "startMs": 15031.144775390625,
+        "endMs": 15998.89990234375,
+        "durationMs": 967.755,
+        "exclusiveMs": 967.755
+      }
+    ]
+  },
+  "knownAsyncRejections": [
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634977591.61,
+      "callEnd": 1793634977591.635,
+      "end": 1793634977592.735,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    },
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634978179.8,
+      "callEnd": 1793634978179.81,
+      "end": 1793634978180.27,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    },
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634978180.865,
+      "callEnd": 1793634978180.88,
+      "end": 1793634978181.41,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    },
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634978185.29,
+      "callEnd": 1793634978185.335,
+      "end": 1793634978185.69,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    },
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634978186.09,
+      "callEnd": 1793634978186.11,
+      "end": 1793634978186.4949,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    },
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634978186.765,
+      "callEnd": 1793634978186.785,
+      "end": 1793634978187.17,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    },
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634978186.945,
+      "callEnd": 1793634978186.96,
+      "end": 1793634978187.315,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    },
+    {
+      "name": "createComputePipelineAsync",
+      "start": 1793634978187.635,
+      "callEnd": 1793634978187.66,
+      "end": 1793634978188.715,
+      "success": false,
+      "error": "Entry-point uses workgroup_size(512, 1, 1) that exceeds the maximum allowed (256, 256, 64). This adapter supports higher maxComputeWorkgroupSizeX of 1024, maxComputeWorkgroupSizeY of 1024, and maxComputeWorkgroupSizeZ of 64, which can be specified in requiredLimits when calling requestDevice(). Limits differ by hardware, so always check the adapter limits prior to requesting a higher limit.\n - While initializing [ComputePipeline (unlabeled)]\n"
+    }
+  ],
+  "manualPage": "http://127.0.0.1:8765/build/villa-startup-profile-v24/index.html",
+  "boundaries": [
+    "User reports 26 seconds. Dedicated profile captures here do not reproduce that number; manual page exports the actual user run.",
+    "Original v18 round 0 redownloaded content after cache eviction; exclude from retained-cache timings.",
+    "Capture passed means complete valid diagnostics; eight caught workgroup-limit rejections remain separately recorded.",
+    "Trace and sampling overhead are not treated as startup optimization. Early canvas completion is not the scene frame.",
+    "Concurrent async request sums are not wall startup time. CPU scopes include waits."
+  ],
+  "browserTraceCapture": {
+    "report": {
+      "file": "results/villa-startup-phases-cpu-v2.json",
+      "sha256": "28aa567d4cec0a4013e0b0e216671b921e32b41f20613ce19a6b9b91a735e478"
+    },
+    "trace": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-phases-cpu-v2-0-browser-trace.json",
+      "sha256": "281cff3f33553d22ca42575d27a8dfa86a36bb1a7544ee20982e85887875a95c"
+    }
+  }
+}
