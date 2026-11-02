@@ -11,12 +11,17 @@ const tagPrefix = option('tag') || 'adaptation';
 const warmupSeconds = Number(option('warmup-seconds') || 20);
 const gpuSceneRecook = process.argv.includes('--allow-gpuscene-recook');
 const manualFetchRecook = process.argv.includes('--allow-manual-fetch-recook');
+const localLightsComparison = process.argv.includes('--local-lights-abba');
 assert(!(gpuSceneRecook && manualFetchRecook));
+if (localLightsComparison) {
+  assert.equal(baseline, candidate, 'Local lights must be compared within the same package');
+  assert(!gpuSceneRecook && !manualFetchRecook && !process.argv.includes('--binding-group-abba'));
+}
 assert(warmupSeconds >= 0 && warmupSeconds <= 120);
 assert([baseline, candidate, tagPrefix].every(value => /^[a-z0-9-]+$/.test(value)));
 const root = path.join(__dirname, 'build');
 const report = {date: new Date().toISOString(), settingsOverrides: [], warmupSeconds,
-  gpuSceneRecook, manualFetchRecook,
+  gpuSceneRecook, manualFetchRecook, localLightsComparison,
   headless: process.argv.includes('--headless'),
   width: 1863, height: 1030, dpr: 1.25, order: ['baseline', 'candidate', 'candidate', 'baseline'],
   packages: {}, runs: [], pass: false};
@@ -77,6 +82,7 @@ if (gpuSceneRecook || manualFetchRecook) {
           '--dpr=1.25', '--baseline-only', '--baseline-seconds=15', '--warmup-seconds=' + warmupSeconds,
           ...(report.headless ? ['--headless'] : []),
           ...(process.argv.includes('--binding-group-abba') ? ['--binding-group-mode=' + (name === 'candidate' ? 1 : 0)] : []),
+          ...(localLightsComparison ? ['--local-lights=' + (name === 'candidate' ? 'off' : 'on')] : []),
           ...(name === 'candidate' && process.argv.includes('--require-candidate-bundles') ? ['--require-render-bundles'] : [])],
           {stdio: 'inherit', windowsHide: true});
         child.on('error', reject); child.on('close', resolve);
@@ -86,6 +92,10 @@ if (gpuSceneRecook || manualFetchRecook) {
       const value = JSON.parse(fs.readFileSync(file));
       assert(value.pass && value.cameraMode === 'original-spawn' && !value.errors.length);
       assert(value.externalInputIgnored && value.initialCamera);
+      if (localLightsComparison) {
+        assert.equal(value.before.lighting.mode, name === 'candidate' ? 2 : 0);
+        assert.equal(value.restoredLighting.mode, 0, 'Restore original light visibility after each measurement');
+      }
       if (gpuSceneRecook) assert.equal(value.engineReady?.activeGPUSceneEnabled, name === 'candidate');
       if (manualFetchRecook && name === 'candidate') {
         assert.equal(value.afterBaseline.occlusion.manualVertexFetchEnabled, true);
@@ -109,7 +119,9 @@ if (gpuSceneRecook || manualFetchRecook) {
         perFrame[key] = (value.afterBaseline.occlusion[key] - value.before.occlusion[key]) / counterFrames;
       }
       report.runs.push({name, file, dimensions, camera: value.initialCamera,
-        settings: value.before.settings, engineReady: value.engineReady, perFrame, counterFrames,
+        settings: value.before.settings, lighting: value.before.lighting,
+        diagnosticOverrides: value.diagnosticOverrides, restoredLighting: value.restoredLighting,
+        engineReady: value.engineReady, perFrame, counterFrames,
         counterFramesEstimated: value.afterBaseline.occlusion.sampleFrame === undefined,
         baseline: value.baseline, samples: value.baselineSamples});
       save();

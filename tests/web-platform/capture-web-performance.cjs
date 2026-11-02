@@ -11,6 +11,8 @@ assert(/^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(folder));
 const width = Number(option('width') || 1863), height = Number(option('height') || 1030);
 const dpr = Number(option('dpr') || 1), seconds = Number(option('seconds') || 6);
 const warmupSeconds = Number(option('warmup-seconds') || 0);
+const localLights = option('local-lights');
+assert(localLights === undefined || localLights === 'on' || localLights === 'off');
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 assert(seconds >= 3 && seconds <= 30);
 assert(warmupSeconds >= 0 && warmupSeconds <= 120);
@@ -26,7 +28,7 @@ const report = {date: new Date().toISOString(), tag, folder, width, height, dpr,
     'GPU timestamps use their own clock. They must not be aligned to CPU time without calibration.',
     'GPU pass sum excludes copies and gaps. Profiling overhead is measured separately.',
     'Original spawn camera unless --camera=room is explicitly selected. No quality cvars change.']};
-let context, browserCDP, log;
+let context, browserCDP, log, restoreLocalLights;
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 const timeout = (promise, ms = 15000) => new Promise((resolve, reject) => {
   const timer = setTimeout(() => reject(Error(`CDP timeout after ${ms} ms`)), ms);
@@ -109,10 +111,32 @@ async function attach(target) {
       assert.equal(await page.evaluate(mode => __webEngineRPC('WebBindingGroupTest', mode), mode), 1);
       report.backendOverrides = {'r.WebGPU.BindingGroupCache': mode};
     }
+    if (localLights !== undefined) {
+      const mode = localLights === 'off' ? 2 : 0;
+      const setLighting = value => page.evaluate(mode => __webEngineRPC('WebProjectLightingTestMode', mode), value);
+      const waitLighting = async expected => {
+        const deadline = Date.now() + 30000;
+        while (Date.now() < deadline) {
+          if (await owner.evaluate(mode => globalThis.__webProjectLighting?.mode === mode, expected)) return;
+          await page.waitForTimeout(100);
+        }
+        throw Error('Local light diagnostic did not publish mode ' + expected);
+      };
+      restoreLocalLights = async () => {
+        assert.equal(await setLighting(0), 1);
+        await waitLighting(0);
+        report.restoredLighting = await owner.evaluate(() => globalThis.__webProjectLighting);
+      };
+      assert.equal(await setLighting(mode), 1);
+      await waitLighting(mode);
+      report.diagnosticOverrides = {localLightComponents: localLights === 'off' ? 'hidden' : 'original-visibility',
+        interface: 'WebProjectLightingTestMode', mode};
+    }
     const state = () => owner.evaluate(() => ({frames: __webRHIFrames, gameFrames: __webEngineFrames,
       stages: globalThis.__webThreadStages, threads: globalThis.__webEngineThreads,
       camera: globalThis.__webDefaultCamera, view: globalThis.__webRenderView,
-      settings: globalThis.__webProjectSettings, streaming: globalThis.__webTextureStreaming,
+      settings: globalThis.__webProjectSettings, lighting: globalThis.__webProjectLighting,
+      streaming: globalThis.__webTextureStreaming,
       occlusion: globalThis.__webOcclusionRHI, adapter: __webPerformanceCapture.adapter,
       io: globalThis.__webContentIO?.stats, runtime: globalThis.__webEngineRuntime,
       failure: globalThis.__webEngineFailure, gpuErrors: __webPerformanceCapture.errors}));
@@ -147,6 +171,12 @@ async function attach(target) {
       previousState = value; previousTime = time;
     }
     report.afterBaseline = previousState;
+    if (localLights !== undefined) {
+      assert.equal(report.before.lighting.mode, localLights === 'off' ? 2 : 0);
+      assert.deepEqual(report.afterBaseline.lighting, report.before.lighting);
+      for (const key of ['aoLevels', 'reflectionMode', 'shadowQuality'])
+        assert.equal(report.before.lighting[key], report.before.lighting.original[key], 'Only local light visibility may change');
+    }
     if (option('binding-group-mode') === '1') {
       assert(report.afterBaseline.occlusion.groupCacheEnabled);
       assert(report.afterBaseline.occlusion.groupPreparationHits > report.before.occlusion.groupPreparationHits,
@@ -247,6 +277,11 @@ async function attach(target) {
       profiles: report.profiles.map(p => ({role: p.summary.role, samples: p.summary.sampleCount, file: p.file})),
       instrumented: report.instrumentedMeasurement, gpu: report.gpuFrames.map(f => f.totalPassMs), output}));
   } catch (error) { report.failure = error.stack; process.exitCode = 1; }
-  finally { save(); await context?.close(); log?.end();
+  finally {
+    if (restoreLocalLights) {
+      try { await restoreLocalLights(); }
+      catch (error) { report.pass = false; report.restoreFailure = String(error); process.exitCode = 1; }
+    }
+    save(); await context?.close(); log?.end();
     console.log(JSON.stringify({pass: report.pass, failure: report.failure, output})); }
 })();
