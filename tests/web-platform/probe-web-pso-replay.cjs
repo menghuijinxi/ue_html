@@ -20,7 +20,8 @@ const browserRounds = Number(option('browsers') || 2);
 assert(Number.isInteger(browserRounds) && browserRounds > 0 && browserRounds <= 3);
 const concurrency = Number(option('concurrency') || 2);
 assert(Number.isInteger(concurrency) && concurrency > 0 && concurrency <= 64);
-async function replay({capture, concurrency}) {
+const retainPipelines = process.argv.includes('--retain-pipelines');
+async function replay({capture, concurrency, retainPipelines}) {
   const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
   const device = await adapter.requestDevice(capture.deviceDescriptor);
   const errors = [];
@@ -45,6 +46,7 @@ async function replay({capture, concurrency}) {
   const descriptors = capture.pipelines.map(p => ({method: p.method, descriptor: restore(p.descriptor)}));
   const preparationMs = performance.now() - start;
   const rounds = [];
+  const retained = retainPipelines ? new Array(descriptors.length) : null;
   for (let round = 0; round < 2; ++round) {
     const start = performance.now(), times = [];
     let index = 0, failed = 0, pending = 0, peakPending = 0;
@@ -53,7 +55,10 @@ async function replay({capture, concurrency}) {
         const current = index++, item = descriptors[current], at = performance.now();
         peakPending = Math.max(peakPending, ++pending);
         let error;
-        try { await device[item.method](item.descriptor); }
+        try {
+          const pipeline = await device[item.method](item.descriptor);
+          if (retained) retained[current] = pipeline;
+        }
         catch (e) {++failed; error = e.message;}
         --pending;
         times.push({index: current, ms: performance.now() - at, error});
@@ -68,13 +73,13 @@ async function replay({capture, concurrency}) {
   }
   await device.queue.onSubmittedWorkDone();
   device.destroy();
-  return {preparationMs, rounds, errors, adapter: {...adapter.info.toJSON?.(),
+  return {preparationMs, rounds, errors, retainedPipelines: retained?.filter(Boolean).length || 0, adapter: {...adapter.info.toJSON?.(),
     vendor: adapter.info.vendor, architecture: adapter.info.architecture, device: adapter.info.device}};
 }
 (async () => {
   const report = {date: new Date().toISOString(), input, pass: false, runs: [], errors: [],
     disableDiskCache: process.argv.includes('--no-disk-cache'),
-    concurrency, usedOnly, sourcePipelineCount, replayPipelineCount: captured.pipelines.length,
+    concurrency, retainPipelines, usedOnly, sourcePipelineCount, replayPipelineCount: captured.pipelines.length,
     boundary: 'Same captured WebGPU shader sources, pipeline states and device limits. Idle document with configurable request concurrency, no UE render loop.'};
   const output = path.join(__dirname, 'results', tag + '.json');
   const save = () => fs.writeFileSync(output, JSON.stringify(report, null, 2));
@@ -97,7 +102,7 @@ async function replay({capture, concurrency}) {
         }
         const hist = async () => (await cdp.send('Browser.getHistograms', {})).histograms.filter(h => /dawn|webgpu/i.test(h.name));
         await page.goto('http://127.0.0.1:8765/pso-replay-diagnostic.html'); await page.bringToFront();
-        const result = await page.evaluate(replay, {capture: captured, concurrency});
+        const result = await page.evaluate(replay, {capture: captured, concurrency, retainPipelines});
         if (tracing) {
           const done = new Promise(resolve => cdp.once('Tracing.tracingComplete', resolve));
           await cdp.send('Tracing.end'); await done;
@@ -120,6 +125,7 @@ async function replay({capture, concurrency}) {
           await histPage.close();
         }
         assert.deepEqual(result.errors, []);
+        if (retainPipelines) assert.equal(result.retainedPipelines, captured.pipelines.filter(p => p.success).length);
         for (const round of result.rounds) {
           assert.equal(round.requests, captured.pipelines.length);
           assert.deepEqual(round.times.filter(p => p.error).map(p => p.index).sort((a,b) => a-b),
