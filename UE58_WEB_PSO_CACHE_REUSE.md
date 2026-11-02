@@ -28,6 +28,8 @@
 
 ## 正式构建与性能测试
 
+刷新等待的进一步调查见 [WebGPU 刷新后的 PSO 等待调查](UE58_WEB_PSO_RELOAD_DIAGNOSTICS.md)。后续跟踪已确认 Dawn 缓存读取存在命中，不能把本页记录的整体准备时间都解释为从头编译；独立页面重建同批管线仍有约 18 秒成本。
+
 使用合入 TSR 更新后的源码重新编译 Web 运行时、原生 Cook 所需 Renderer / RenderCore，再对 `G:/UE_HTML/TriplexHouseVilla` 完整 Cook。没有使用其他机器的打包产物。
 
 - Web 编译、417 个对象完整链接通过；构建报告 `tests/web-platform/results/web-engine-full-thread-build-results.json`。
