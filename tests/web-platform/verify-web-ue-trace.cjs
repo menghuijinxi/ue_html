@@ -4,6 +4,7 @@ const path = require('node:path');
 const readline = require('node:readline');
 const assert = require('node:assert/strict');
 const trace = path.resolve(process.argv[2]), prefix = trace.replace(/\.utrace$/, '');
+const native = process.argv.includes('--backend=native');
 assert(prefix !== trace);
 function csv(file) {
   const rows = [], fields = []; let field = '', quoted = false;
@@ -26,7 +27,7 @@ function csv(file) {
   const report = {trace, threadCount: threads.length, timerCount: timers.length, threads,
     eventCount: 0, openEndedEvents: 0, firstEventSeconds: Infinity, lastEventSeconds: -Infinity, pass: false};
   const requiredThreads = ['GameThread', 'RenderThread', 'RHIThread'];
-  const requiredTimers = ['WebGPU_CreateGroups', 'WebGPU_SetDrawBindings'];
+  const requiredTimers = native ? [] : ['WebGPU_CreateGroups', 'WebGPU_SetDrawBindings'];
   const seenThreads = new Set(), seenTimers = new Set();
   const lines = readline.createInterface({input: fs.createReadStream(prefix + '.events.csv'), crlfDelay: Infinity});
   let header = true;
@@ -59,7 +60,9 @@ function csv(file) {
   assert(report.openEndedEvents < 1000, 'Too many events lack a closing boundary');
   const statistics = csv(prefix + '.statistics.csv');
   report.topExclusiveTimers = statistics.sort((a, b) => Number(b.Excl) - Number(a.Excl)).slice(0, 25);
-  report.backendTimers = statistics.filter(item => item.Name.startsWith('WebGPU_'));
+  report.backend = native ? 'native' : 'web';
+  report.backendTimers = statistics.filter(item => native ? item.Name.includes('D3D12') : item.Name.startsWith('WebGPU_'));
+  if (native) assert(report.backendTimers.length >= 3, 'Missing native D3D12 timing scopes');
   report.pass = true;
   fs.writeFileSync(prefix + '.analysis.json', JSON.stringify(report, null, 2));
   console.log(JSON.stringify({pass: true, trace, threads: report.threadCount, timers: report.timerCount,

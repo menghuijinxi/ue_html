@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$Trace,
-    [string]$Engine = 'D:/UE_5.8'
+    [string]$Engine = 'D:/UE_5.8',
+    [ValidateSet('web', 'native')][string]$Backend = 'web'
 )
 $ErrorActionPreference = 'Stop'
 $taskTrace = (Resolve-Path -LiteralPath $Trace).Path.Replace('\', '/')
@@ -25,5 +26,5 @@ if ($taskProcess.ExitCode -ne 0) { throw "Insights exited with code $($taskProce
 foreach ($taskSuffix in @('threads', 'timers', 'events', 'statistics')) {
     if (-not (Test-Path -LiteralPath "$taskPrefix.$taskSuffix.csv")) { throw "Missing Insights export: $taskSuffix" }
 }
-& node (Join-Path $PSScriptRoot 'verify-web-ue-trace.cjs') $taskTrace
+& node (Join-Path $PSScriptRoot 'verify-web-ue-trace.cjs') $taskTrace "--backend=$Backend"
 if ($LASTEXITCODE -ne 0) { throw 'Native Insights event validation failed.' }
