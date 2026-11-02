@@ -74,6 +74,7 @@ bool VisualTestClock = false;
 bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
 bool PSOPrecacheTest = false;
+int32 PSOPrecacheConcurrency = 0;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
 TWeakObjectPtr<AStaticMeshActor> MaterialMotionSample;
@@ -1097,6 +1098,7 @@ int32 StartEngine()
 #endif
     const FString CommandLine = FString(StartupMap()) + ThreadArguments +
         (ParallelDrawRecording ? TEXT(" -WebParallelDrawRecording") : TEXT("")) +
+        (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
         TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -NoSplash -NoLoadingScreen -unattended -stdout") :
@@ -1231,6 +1233,16 @@ int main(int argc, char** argv)
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
+        constexpr const ANSICHAR* PrecacheConcurrencyOption = "-WebPSOPrecacheConcurrency=";
+        if (FCStringAnsi::Strncmp(argv[Index], PrecacheConcurrencyOption, FCStringAnsi::Strlen(PrecacheConcurrencyOption)) == 0)
+        {
+            PSOPrecacheConcurrency = FCStringAnsi::Atoi(argv[Index] + FCStringAnsi::Strlen(PrecacheConcurrencyOption));
+            if (PSOPrecacheConcurrency < 1 || PSOPrecacheConcurrency > 8)
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED PSO concurrency must be between 1 and 8\n");
+                return 1;
+            }
+        }
         constexpr const ANSICHAR* MapOption = "-WebProjectMap=";
         if (FCStringAnsi::Strncmp(argv[Index], MapOption, FCStringAnsi::Strlen(MapOption)) == 0)
         {

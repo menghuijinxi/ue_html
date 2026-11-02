@@ -23,11 +23,13 @@
 #include "ProfilingDebugging/CpuProfilerTrace.h"
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
 #include <emscripten.h>
+#include <emscripten/threading.h>
 #endif
 
 namespace
 {
 uint32 PrecachedGraphicsUsed = 0, PrecachedGraphicsBinds = 0;
+int32 PrecacheRequestConcurrency = 0;
 static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
     TEXT("r.WebGPU.ValidateBindingCache"), 0,
     TEXT("Rebuild cached shader descriptors and check the results for missed invalidation."), ECVF_RenderThreadSafe);
@@ -585,9 +587,15 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsPSOPrecaching = FParse::Param(FCommandLine::Get(), TEXT("WebPSOPrecacheTest"));
     if (GRHISupportsPSOPrecaching)
     {
-        // Compilation runs in the browser. Two UE request waiters suffice;
-        // leave room in the fixed Wasm pthread pool for engine threads.
-        IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolSize"))->Set(2, ECVF_SetByCode);
+        // UE waiters block while Dawn builds pipelines on its own workers.
+        // Match the bounded request pool to the target's reserved pthread capacity.
+        int32 Concurrency = 2;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+        Concurrency = FMath::Clamp(emscripten_num_logical_cores() / 2, 2, 8);
+#endif
+        FParse::Value(FCommandLine::Get(), TEXT("WebPSOPrecacheConcurrency="), Concurrency);
+        PrecacheRequestConcurrency = FMath::Clamp(Concurrency, 1, 8);
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolSize"))->Set(PrecacheRequestConcurrency, ECVF_SetByCode);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolPercentOfHardwareThreads"))->Set(0, ECVF_SetByCode);
         // Keep completed RHI objects in UE's existing bounded cache. A successful
         // browser async compile alone does not guarantee cheap synchronous recreation.
@@ -1057,9 +1065,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
             {asyncPrecacheRequested:$0, asyncPrecacheCompleted:$1, asyncPrecacheFailed:$2, unsupportedPrecacheRequests:$3,
-             precachedGraphicsUsed:$4, precachedGraphicsBinds:$5});
+             precachedGraphicsUsed:$4, precachedGraphicsBinds:$5, precacheConcurrency:$6});
         }, AsyncPrecacheRequested, AsyncPrecacheCompleted, AsyncPrecacheFailed, UnsupportedPrecacheRequests,
-            PrecachedGraphicsUsed, PrecachedGraphicsBinds);
+            PrecachedGraphicsUsed, PrecachedGraphicsBinds, PrecacheRequestConcurrency);
 #endif
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI,

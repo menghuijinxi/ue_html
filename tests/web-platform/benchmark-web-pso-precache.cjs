@@ -10,10 +10,11 @@ const option = name => process.argv.find(x=>x.startsWith('--'+name+'='))?.slice(
 const off=option('off'),on=option('on'),tag=option('tag')||'pso-precache-abba';
 const order=process.argv.includes('--on-first')?[on,off,off,on]:[off,on,on,off];
 const freshBrowser=process.argv.includes('--fresh-browser');
+const bothEnabled=process.argv.includes('--both-enabled');
 const expectedAA=option('aa');
 assert([off,on,tag].every(x=>x&&/^[a-z0-9-]+$/.test(x)));
 const output=path.join(__dirname,'results',tag);
-const report={date:new Date().toISOString(),off,on,order,freshBrowser,runs:[],errors:[],qualityOverrides:[],pass:false,
+const report={date:new Date().toISOString(),off,on,order,freshBrowser,bothEnabled,runs:[],errors:[],qualityOverrides:[],pass:false,
   boundary:'Headed Edge with focus emulation; browser/driver caches preserved. Measures first use in each new scene, not a clean driver cache.'};
 const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
 function summary(data){
@@ -60,7 +61,7 @@ function summary(data){
      await cdp.send('Input.setIgnoreInputEvents',{ignore:true});
      report.browser=await cdp.send('Browser.getVersion');
      const log=fs.createWriteStream(output+'-'+index+'.log');
-     const run={index,folder,enabled:folder===on,phases:[],errors:[],pass:false};report.runs.push(run);save();
+     const run={index,folder,enabled:bothEnabled||folder===on,variant:folder===on?'on':'off',phases:[],errors:[],pass:false};report.runs.push(run);save();
      page.on('pageerror',e=>run.errors.push(e.message));page.on('crash',()=>run.errors.push('Renderer crashed'));
      page.on('console',m=>{const t=m.text();log.write(t+'\n');if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(t))run.errors.push(t)});
      const start=Date.now();
@@ -129,9 +130,9 @@ function summary(data){
    }
    assert(report.runs.every(r=>r.pass));report.pass=true;
    report.standingFpsRatio={};
-   for(const enabled of [false,true]){
-     const fps=report.runs.filter(r=>r.enabled===enabled).map(r=>r.phases[0].summary.fps);
-     report.standingFpsRatio[enabled]=Math.max(...fps)/Math.min(...fps);
+   for(const variant of ['off','on']){
+     const fps=report.runs.filter(r=>r.variant===variant).map(r=>r.phases[0].summary.fps);
+     report.standingFpsRatio[variant]=Math.max(...fps)/Math.min(...fps);
    }
    report.performanceComparable=Object.values(report.standingFpsRatio).every(ratio=>ratio<1.15);
  }catch(e){report.errors.push(e.stack||String(e));throw e;}

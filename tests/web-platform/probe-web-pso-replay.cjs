@@ -9,14 +9,23 @@ const input = option('input');
 const tag = option('tag') || 'pso-replay';
 assert(input && /^[a-z0-9-]+$/.test(tag));
 const captured = JSON.parse(fs.readFileSync(input));
+const sourcePipelineCount = captured.pipelines.length;
+const usedOnly = process.argv.includes('--used-only');
+if (usedOnly) {
+  assert(captured.pipelines.some(p => p.binds > 0), 'Capture pipeline use first');
+  captured.pipelines = captured.pipelines.filter(p => p.binds > 0);
+}
 const tracing = process.argv.includes('--trace');
 const browserRounds = Number(option('browsers') || 2);
 assert(Number.isInteger(browserRounds) && browserRounds > 0 && browserRounds <= 3);
-async function replay(capture) {
+const concurrency = Number(option('concurrency') || 2);
+assert(Number.isInteger(concurrency) && concurrency > 0 && concurrency <= 64);
+async function replay({capture, concurrency}) {
   const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
   const device = await adapter.requestDevice(capture.deviceDescriptor);
   const errors = [];
   device.addEventListener('uncapturederror', e => errors.push(e.error.message));
+  device.lost.then(info => {if (info.reason !== 'destroyed') errors.push('Device lost: ' + info.message);});
   const start = performance.now();
   const modules = capture.modules.map(m => device.createShaderModule({code: m.code}));
   const layouts = new Map();
@@ -38,30 +47,35 @@ async function replay(capture) {
   const rounds = [];
   for (let round = 0; round < 2; ++round) {
     const start = performance.now(), times = [];
-    let index = 0, failed = 0;
+    let index = 0, failed = 0, pending = 0, peakPending = 0;
     const work = async () => {
       while (index < descriptors.length) {
         const current = index++, item = descriptors[current], at = performance.now();
+        peakPending = Math.max(peakPending, ++pending);
+        let error;
         try { await device[item.method](item.descriptor); }
-        catch (e) {++failed;}
-        times.push({index: current, ms: performance.now() - at});
+        catch (e) {++failed; error = e.message;}
+        --pending;
+        times.push({index: current, ms: performance.now() - at, error});
       }
     };
-    await Promise.all([work(), work()]); // Match UE's two-request concurrency.
+    await Promise.all(Array.from({length: concurrency}, work));
     const values = times.map(t => t.ms).sort((a, b) => a - b);
-    rounds.push({round, wallMs: performance.now() - start, failed, requests: times.length,
+    rounds.push({round, wallMs: performance.now() - start, failed, requests: times.length, peakPending,
       meanMs: values.reduce((a, b) => a + b, 0) / values.length,
       medianMs: values[Math.floor(values.length * .5)], p95Ms: values[Math.floor(values.length * .95)],
       maximumMs: values.at(-1), times});
   }
   await device.queue.onSubmittedWorkDone();
   device.destroy();
-  return {preparationMs, rounds, errors};
+  return {preparationMs, rounds, errors, adapter: {...adapter.info.toJSON?.(),
+    vendor: adapter.info.vendor, architecture: adapter.info.architecture, device: adapter.info.device}};
 }
 (async () => {
   const report = {date: new Date().toISOString(), input, pass: false, runs: [], errors: [],
     disableDiskCache: process.argv.includes('--no-disk-cache'),
-    boundary: 'Same captured WebGPU shader sources, pipeline states and device limits. Idle document with two concurrent requests, no UE render loop.'};
+    concurrency, usedOnly, sourcePipelineCount, replayPipelineCount: captured.pipelines.length,
+    boundary: 'Same captured WebGPU shader sources, pipeline states and device limits. Idle document with configurable request concurrency, no UE render loop.'};
   const output = path.join(__dirname, 'results', tag + '.json');
   const save = () => fs.writeFileSync(output, JSON.stringify(report, null, 2));
   // Reopen the browser twice, retaining the existing profile and its disk cache.
@@ -75,6 +89,7 @@ async function replay(capture) {
           headers: {'Cross-Origin-Opener-Policy': 'same-origin', 'Cross-Origin-Embedder-Policy': 'require-corp'},
           body: '<!doctype html><title>PSO cache diagnostic</title><p>PSO cache diagnostic</p>'}));
         const page = await context.newPage(), cdp = await context.newCDPSession(page);
+        report.browser = await cdp.send('Browser.getVersion');
         const trace = [];
         if (tracing) {
           cdp.on('Tracing.dataCollected', event => trace.push(...event.value));
@@ -82,7 +97,7 @@ async function replay(capture) {
         }
         const hist = async () => (await cdp.send('Browser.getHistograms', {})).histograms.filter(h => /dawn|webgpu/i.test(h.name));
         await page.goto('http://127.0.0.1:8765/pso-replay-diagnostic.html'); await page.bringToFront();
-        const result = await page.evaluate(replay, captured);
+        const result = await page.evaluate(replay, {capture: captured, concurrency});
         if (tracing) {
           const done = new Promise(resolve => cdp.once('Tracing.tracingComplete', resolve));
           await cdp.send('Tracing.end'); await done;
@@ -105,8 +120,12 @@ async function replay(capture) {
           await histPage.close();
         }
         assert.deepEqual(result.errors, []);
-        for (const round of result.rounds) assert.equal(round.failed, captured.pipelines.filter(p => !p.success).length);
-        save(); console.log(JSON.stringify({browserIndex, preparationMs: result.preparationMs,
+        for (const round of result.rounds) {
+          assert.equal(round.requests, captured.pipelines.length);
+          assert.deepEqual(round.times.filter(p => p.error).map(p => p.index).sort((a,b) => a-b),
+            captured.pipelines.flatMap((p,i) => p.success ? [] : [i]));
+        }
+        save(); console.log(JSON.stringify({browserIndex, concurrency, preparationMs: result.preparationMs,
           rounds: result.rounds.map(({times, ...rest}) => rest), histogramNames: result.histograms.map(h => h.name)}));
       } finally {await context.close();}
     }

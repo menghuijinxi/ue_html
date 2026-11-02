@@ -10,12 +10,24 @@ const option = name => process.argv.find(x => x.startsWith('--' + name + '='))?.
 const folder = option('folder') || 'villa-pso-reuse-v17-tsr-on';
 const tag = option('tag') || 'pso-reload';
 const rounds = Number(option('rounds') || 3);
+const concurrency = option('concurrency') === undefined ? null : Number(option('concurrency'));
+const captureUse = process.argv.includes('--capture-use');
+assert(concurrency === null || (Number.isInteger(concurrency) && concurrency > 0 && concurrency <= 8));
 assert([folder, tag].every(x => /^[a-z0-9-]+$/.test(x)));
 assert(Number.isInteger(rounds) && rounds > 0 && rounds <= 5);
 const output = path.join(__dirname, 'results', tag + '.json');
-function observe() {
+function observe(captureUse) {
   const state = globalThis.__psoReload = {modules: [], pipelines: [], errors: [], pending: 0, peakPending: 0};
   const objects = new WeakMap();
+  const pipelineRecords = new WeakMap();
+  if (captureUse) for (const type of [GPURenderPassEncoder, GPURenderBundleEncoder, GPUComputePassEncoder]) {
+    const original = type.prototype.setPipeline;
+    type.prototype.setPipeline = function(pipeline) {
+      const item = pipelineRecords.get(pipeline);
+      if (item) ++item.binds;
+      return original.call(this, pipeline);
+    };
+  }
   const clone = value => {
     if (value === null || typeof value !== 'object') return value;
     if (objects.has(value)) return objects.get(value);
@@ -41,12 +53,14 @@ function observe() {
   for (const method of ['createRenderPipelineAsync', 'createComputePipelineAsync']) {
     const original = GPUDevice.prototype[method];
     GPUDevice.prototype[method] = function(d) {
-      const item = {method, start: performance.now(), descriptor: clone(d)};
+      const item = {method, start: performance.now(), descriptor: clone(d), binds: 0};
       state.pipelines.push(item);
       state.peakPending = Math.max(state.peakPending, ++state.pending);
       const result = original.call(this, d);
       item.callMs = performance.now() - item.start;
-      result.then(() => { item.end = performance.now(); item.success = true; --state.pending; }, error => {
+      result.then(pipeline => { item.end = performance.now(); item.success = true; --state.pending;
+        if (captureUse) pipelineRecords.set(pipeline, item);
+      }, error => {
         item.end = performance.now(); item.success = false; item.error = error.message; --state.pending;
       });
       return result;
@@ -90,17 +104,27 @@ function summarize(capture) {
     maximumCompletionMs: sorted.at(-1), synchronousCallMs: items.reduce((a, p) => a + p.callMs, 0)};
 }
 (async () => {
-  const report = {date: new Date().toISOString(), folder, pass: false, runs: [], errors: [], qualityOverrides: [],
+  const report = {date: new Date().toISOString(), folder, concurrency, captureUse, pass: false, runs: [], errors: [], qualityOverrides: [],
     boundary: 'Same package and persistent profile, sequential reloads. Promise latency includes browser scheduling, not just compiler CPU time.'};
   const save = () => fs.writeFileSync(output, JSON.stringify(report, null, 2));
   const context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles/stutters'), {
     channel: 'msedge', headless: false, viewport: {width: 1863, height: 1030}, deviceScaleFactor: 1.25});
   try {
+    if (concurrency !== null) await context.route('**/index.html', async route => {
+      const response = await route.fetch(), html = await response.text();
+      const args = html.match(/arguments: (\[[^\n]+\]),/); assert(args);
+      const values = JSON.parse(args[1]).filter(value => !value.startsWith('-WebPSOPrecacheConcurrency='));
+      assert(values.includes('-WebPSOPrecacheTest'));
+      values.push('-WebPSOPrecacheConcurrency=' + concurrency);
+      await route.fulfill({response, body: html.replace(args[0], 'arguments: ' + JSON.stringify(values) + ',')});
+    });
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
-      await route.fulfill({response, body: `(${observe.toString()})();\n` + await response.text()});
+      await route.fulfill({response, body: `(${observe.toString()})(${captureUse});\n` + await response.text()});
     });
     const page = await context.newPage(), cdp = await context.newCDPSession(page);
+    page.on('pageerror', error => report.errors.push(error.message));
+    page.on('crash', () => report.errors.push('Renderer crashed'));
     await cdp.send('Emulation.setFocusEmulationEnabled', {enabled: true});
     await cdp.send('Input.setIgnoreInputEvents', {ignore: true});
     report.browser = await cdp.send('Browser.getVersion');
@@ -116,15 +140,24 @@ function summarize(capture) {
       const deadline = Date.now() + 180000;
       for (;;) {
         const sample = await page.evaluate(() => ({frames: globalThis.__webEngineFrames, ready: globalThis.__webPSOPrecacheReady,
-          pso: globalThis.__webPSOPrecache, rhi: globalThis.__webOptimizationRHI, failure: globalThis.__webEngineFailure}));
+          pso: globalThis.__webPSOPrecache, rhi: globalThis.__webOptimizationRHI,
+          pool: globalThis.__webThreadPool, failure: globalThis.__webEngineFailure}));
         run.samples.push({elapsedMs: Date.now() - start, ...sample});
         assert(!sample.failure, JSON.stringify(sample.failure));
         if (sample.ready && sample.frames >= 30) break;
         assert(Date.now() < deadline, 'Startup timed out');
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(250);
       }
       run.readyMs = Date.now() - start;
       const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
+      if (captureUse) {
+        await page.waitForTimeout(10000);
+        const camera = await owner.evaluate(() => __webDefaultCamera);
+        for (const yaw of [camera.yaw, camera.yaw + 90, camera.yaw + 180, camera.yaw + 270, camera.yaw]) {
+          assert.equal(await page.evaluate(p => __webEngineRPC('WebProjectViewTest', p.x, p.y, p.z, p.pitch, p.yaw), {...camera, yaw}), 1);
+          await page.waitForTimeout(5000);
+        }
+      }
       const raw = await owner.evaluate(() => __psoReload);
       if (index === 0) {
         report.replayInputs = path.join(__dirname, 'results', tag + '-inputs.json');
@@ -132,11 +165,15 @@ function summarize(capture) {
       }
       run.capture = normalize(raw);
       run.summary = summarize(run.capture);
+      if (captureUse) run.usage = Object.fromEntries(['createRenderPipelineAsync', 'createComputePipelineAsync'].map(method =>
+        [method, {requested: raw.pipelines.filter(p => p.method === method).length,
+          used: raw.pipelines.filter(p => p.method === method && p.binds > 0).length}]));
       run.state = await owner.evaluate(() => ({rhi: __webOptimizationRHI, pso: __webPSOPrecache,
         settings: __webProjectSettings, view: __webRenderView, io: __webContentIO?.stats}));
       run.histograms = await histograms();
       assert.deepEqual(run.capture.errors, []);
       assert.equal(run.capture.pending, 0);
+      if (concurrency !== null) assert.equal(run.state.rhi.precacheConcurrency, concurrency);
       if (index) {
         assert.deepEqual([...new Set(run.capture.modules.map(m => m.sha256))].sort(), [...new Set(report.runs[0].capture.modules.map(m => m.sha256))].sort());
         assert.deepEqual(run.capture.pipelines.map(p => p.sha256).sort(), report.runs[0].capture.pipelines.map(p => p.sha256).sort());
@@ -145,6 +182,7 @@ function summarize(capture) {
       save(); console.log(JSON.stringify({index, readyMs: run.readyMs, ...run.summary,
         cacheHistograms: run.histograms.filter(h => /CacheHit|CacheMiss/.test(h.name)).map(h => ({name:h.name, count:h.count, sum:h.sum}))}));
     }
+    assert.deepEqual(report.errors, []);
     report.pass = true;
   } catch (error) {report.errors.push(error.stack || String(error)); throw error;}
   finally {save(); await context.close();}
