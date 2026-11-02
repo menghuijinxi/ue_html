@@ -4024,6 +4024,7 @@ bool FWebGPUDynamicRHI::RHIGetRenderQueryResult(FRHIRenderQuery* Query, uint64& 
 void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *State, uint32 StencilRef, bool WebArg2)
 {
     WEBGPU_COMMAND_ON_OWNER(RHISetGraphicsPipelineState(State, StencilRef, WebArg2));
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebPSO_BindGraphicsOwner);
     check(Pass && StencilRef <= 255);
     GraphicsPipeline = static_cast<FWebGPUGraphicsPipeline *>(State);
     if (GraphicsPipeline->Initializer.bPSOPrecache)
@@ -4054,6 +4055,7 @@ void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(const FGraphicsPipelineState
 void FWebGPUDynamicRHI::RHISetComputePipelineState(FRHIComputePipelineState *State)
 {
     WEBGPU_COMMAND_ON_OWNER(RHISetComputePipelineState(State));
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebPSO_BindComputeOwner);
     if (GlobalProbeMode && !ContextOpen)
         RHIGetCommandContext(ERHIPipeline::Graphics);
     check(!Pass);

@@ -16,23 +16,28 @@ const evidenceFile = option('evidence');
 assert(evidenceFile, 'Require a verified package or ABBA report identifying the exact baseline');
 const evidence = read(evidenceFile);
 const proof = evidence.packages ? Object.values(evidence.packages).find(x => x.folder === baseline) :
-  evidence.output && path.resolve(evidence.output) === base && evidence.fullNormalUBTBuildVerified &&
+  evidence.output && path.resolve(evidence.output) === base && (evidence.fullNormalUBTBuildVerified ||
+    (valid(evidence.build) && evidence.baselineCookPayload?.every(valid))) &&
   evidence.products?.every(valid) ? {files: evidence.products} : null;
 assert(evidence.pass && proof && Object.values(proof.files).every(valid));
-const buildFile = path.join(results, 'web-engine-full-thread-build-results.json'), build = read(buildFile);
+const trace = process.argv.includes('--trace');
+const buildFile = path.join(results, `web-engine-full-thread${trace ? '-trace' : ''}-build-results.json`), build = read(buildFile);
 assert(build.pass && build.threads && build.buildSucceeded && build.exitCode === 0 &&
   (build.fullLinkAttempted || build.fullLinkVerified) && build.sourceFiles.every(valid) && build.products.every(valid));
+assert(Boolean(build.trace) === trace);
 assert(build.objects.every(x => [x.object, x.response, x.definitions, x.source].every(valid)));
 assert(!fs.existsSync(output), 'Use a fresh experiment folder to preserve prior evidence');
 fs.mkdirSync(output, {recursive: true});
 for (const f of fs.readdirSync(base)) if (fs.statSync(path.join(base, f)).isFile()) {
+  if (/^UEWebEngine.*\.(wasm|js)$/.test(f)) continue;
   const source=path.join(base,f),destination=path.join(output,f);
   if(['content.bin','content-files.json','config-files.json'].includes(f)) {
     // Immutable Cook payloads are shared; never link the runtime/helpers we replace.
     try {fs.linkSync(source,destination);} catch {fs.copyFileSync(source,destination);}
   } else fs.copyFileSync(source,destination);
 }
-const runtimeNames = ['UEWebEngineThreads.js', 'UEWebEngineThreads.wasm'];
+const runtime = trace ? 'UEWebEngineThreadsTrace' : 'UEWebEngineThreads';
+const runtimeNames = [runtime + '.js', runtime + '.wasm'];
 for (const name of runtimeNames) fs.copyFileSync(build.products.find(x => path.basename(x.file) === name).file, path.join(output, name));
 const helpers = ['web-engine-host.js', 'web-engine-worker.js', 'web-content-io.js', 'web-content-worker.js'];
 for (const name of helpers) fs.copyFileSync(path.join(__dirname, name), path.join(output, name));
@@ -42,8 +47,11 @@ const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/);
 assert(match);
 const assets = JSON.parse(match[1]);
 assert(assets.threads && assets.distanceFields && assets.renderer === 'desktop');
+for (const name of Object.keys(assets.versions)) if (/^UEWebEngine.*\.(wasm|js)$/.test(name)) delete assets.versions[name];
+assets.trace = trace;
+assets.runtime = runtimeNames[0];
 for (const name of [...runtimeNames, ...helpers]) assets.versions[name] = audit(path.join(output, name)).sha256;
-assets.wasm = metadata(path.join(output, 'UEWebEngineThreads.wasm'), 'UEWebEngineThreads.wasm');
+assets.wasm = metadata(path.join(output, runtimeNames[1]), runtimeNames[1]);
 html = html.replace(match[0], 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
 const psoPrecache = process.argv.includes('--pso-precache');
 const precacheConcurrency = option('pso-concurrency') === undefined ? null : Number(option('pso-concurrency'));
@@ -70,7 +78,7 @@ const products = fs.readdirSync(output).filter(f => f !== 'asset-versions.json')
 products.push(writeVersions(output, products));
 const buildSnapshot = path.join(results, outputFolder + '-build.json');
 fs.copyFileSync(buildFile, buildSnapshot);
-const report = {date: new Date().toISOString(), pass: true, baseline, output, psoPrecache, precacheConcurrency,
+const report = {date: new Date().toISOString(), pass: true, baseline, output, trace, psoPrecache, precacheConcurrency,
   sources: [__filename, ...helpers.map(f => path.join(__dirname, f))].map(audit),
   build: audit(buildSnapshot), baselineEvidence: audit(evidenceFile), baselineCookPayload: proof.files,
   projectQualityOverrides: [], products,

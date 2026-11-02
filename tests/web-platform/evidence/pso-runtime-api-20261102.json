@@ -1,0 +1,1205 @@
+{
+  "date": "2026-11-02T12:13:01.737Z",
+  "pass": true,
+  "engineCommit": "d175ae4ae",
+  "boundary": "Measured default static view; CPU scopes overlap across threads; no full walking-route or global-driver-cold claim. All independent primary timings have browser tracing off.",
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 0,
+    "reflections": 0,
+    "virtualShadows": 0,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1
+  },
+  "view": {
+    "frame": 91,
+    "width": 1484,
+    "height": 835,
+    "outputWidth": 2290,
+    "outputHeight": 1288,
+    "antiAliasing": 4,
+    "jitterX": 0,
+    "jitterY": 0,
+    "x": 0,
+    "y": 0,
+    "outputX": 0,
+    "outputY": 0,
+    "threadId": 3,
+    "parallelRendering": true
+  },
+  "baseline": {
+    "frames": 481,
+    "milliseconds": 10006.5206,
+    "fps": 48.068656351939154
+  },
+  "standalone": {
+    "date": "2026-11-02T12:03:50.523Z",
+    "pass": true,
+    "inputs": [
+      "tests/web-platform/results/pso-api-v3.json",
+      "tests/web-platform/results/pso-api-v3-disk-off.json"
+    ],
+    "webRestartPipelineCreationMs": {
+      "count": 5,
+      "values": [
+        66.30999999959022,
+        66.4499999997206,
+        66.95000000018626,
+        67,
+        83.5
+      ],
+      "mean": 70.04199999989942,
+      "median": 66.95000000018626,
+      "min": 66.30999999959022,
+      "max": 83.5
+    },
+    "webReloadPipelineCreationMs": {
+      "count": 3,
+      "values": [
+        66.30999999959022,
+        66.4499999997206,
+        83.5
+      ],
+      "mean": 72.08666666643694,
+      "median": 66.4499999997206,
+      "min": 66.30999999959022,
+      "max": 83.5
+    },
+    "webReopenPipelineCreationMs": {
+      "count": 2,
+      "values": [
+        66.95000000018626,
+        67
+      ],
+      "mean": 66.97500000009313,
+      "median": 67,
+      "min": 66.95000000018626,
+      "max": 67
+    },
+    "nativeLibraryLoadPipelineMs": {
+      "count": 2,
+      "values": [
+        26.437,
+        26.9009
+      ],
+      "mean": 26.668950000000002,
+      "median": 26.9009,
+      "min": 26.437,
+      "max": 26.9009
+    },
+    "nativeLibraryLoadIncludingReadAndInitMs": {
+      "count": 2,
+      "values": [
+        26.9124,
+        27.3754
+      ],
+      "mean": 27.143900000000002,
+      "median": 27.3754,
+      "min": 26.9124,
+      "max": 27.3754
+    },
+    "nativeCachedBlobIncludingReadMs": {
+      "count": 2,
+      "values": [
+        41.6313,
+        43.3162
+      ],
+      "mean": 42.47375,
+      "median": 43.3162,
+      "min": 41.6313,
+      "max": 43.3162
+    },
+    "webDiskDisabledRestartPipelineMs": {
+      "count": 5,
+      "values": [
+        605.2349999998696,
+        607.9700000002049,
+        610.9250000002794,
+        614.5249999999069,
+        628.1099999998696
+      ],
+      "mean": 613.3530000000261,
+      "median": 610.9250000002794,
+      "min": 605.2349999998696,
+      "max": 628.1099999998696
+    },
+    "runtime": [
+      {
+        "backend": "WebGPU",
+        "kind": "graphics",
+        "mode": 0,
+        "bindOnlyCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.018000000016763808,
+            0.018000000016763808,
+            0.018000000016763808
+          ],
+          "mean": 0.018000000016763808,
+          "median": 0.018000000016763808,
+          "min": 0.018000000016763808,
+          "max": 0.018000000016763808
+        },
+        "encodeCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.01500000013038516,
+            0.02000000001862645,
+            0.02000000001862645
+          ],
+          "mean": 0.018333333389212687,
+          "median": 0.02000000001862645,
+          "min": 0.01500000013038516,
+          "max": 0.02000000001862645
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 3,
+          "values": [
+            2.2700000000186265,
+            2.294999999925494,
+            2.5899999998509884
+          ],
+          "mean": 2.384999999931703,
+          "median": 2.294999999925494,
+          "min": 2.2700000000186265,
+          "max": 2.5899999998509884
+        }
+      },
+      {
+        "backend": "WebGPU",
+        "kind": "graphics",
+        "mode": 1,
+        "bindOnlyCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.018000000016763808,
+            0.018000000016763808,
+            0.018000000016763808
+          ],
+          "mean": 0.018000000016763808,
+          "median": 0.018000000016763808,
+          "min": 0.018000000016763808,
+          "max": 0.018000000016763808
+        },
+        "encodeCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.03500000014901161,
+            0.03500000014901161,
+            0.03500000014901161
+          ],
+          "mean": 0.03500000014901161,
+          "median": 0.03500000014901161,
+          "min": 0.03500000014901161,
+          "max": 0.03500000014901161
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 3,
+          "values": [
+            2.359999999869615,
+            2.4100000001490116,
+            2.6299999998882413
+          ],
+          "mean": 2.4666666666356227,
+          "median": 2.4100000001490116,
+          "min": 2.359999999869615,
+          "max": 2.6299999998882413
+        }
+      },
+      {
+        "backend": "WebGPU",
+        "kind": "graphics",
+        "mode": 2,
+        "bindOnlyCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.018499999959021806,
+            0.018500000005587935,
+            0.018500000005587935
+          ],
+          "mean": 0.018499999990065893,
+          "median": 0.018500000005587935,
+          "min": 0.018499999959021806,
+          "max": 0.018500000005587935
+        },
+        "encodeCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.03500000014901161,
+            0.03500000014901161,
+            0.03500000014901161
+          ],
+          "mean": 0.03500000014901161,
+          "median": 0.03500000014901161,
+          "min": 0.03500000014901161,
+          "max": 0.03500000014901161
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 3,
+          "values": [
+            2.5200000000186265,
+            2.569999999832362,
+            2.5750000001862645
+          ],
+          "mean": 2.555000000012418,
+          "median": 2.569999999832362,
+          "min": 2.5200000000186265,
+          "max": 2.5750000001862645
+        }
+      },
+      {
+        "backend": "WebGPU",
+        "kind": "compute",
+        "mode": 0,
+        "bindOnlyCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.02050000000745058,
+            0.02050000000745058,
+            0.02099999999627471
+          ],
+          "mean": 0.020666666670391954,
+          "median": 0.02050000000745058,
+          "min": 0.02050000000745058,
+          "max": 0.02099999999627471
+        },
+        "encodeCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.01500000013038516,
+            0.01500000013038516,
+            0.01500000013038516
+          ],
+          "mean": 0.01500000013038516,
+          "median": 0.01500000013038516,
+          "min": 0.01500000013038516,
+          "max": 0.01500000013038516
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 3,
+          "values": [
+            2.845000000204891,
+            2.860000000335276,
+            2.875
+          ],
+          "mean": 2.860000000180056,
+          "median": 2.860000000335276,
+          "min": 2.845000000204891,
+          "max": 2.875
+        }
+      },
+      {
+        "backend": "WebGPU",
+        "kind": "compute",
+        "mode": 1,
+        "bindOnlyCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.02050000000745058,
+            0.02050000000745058,
+            0.02050000000745058
+          ],
+          "mean": 0.02050000000745058,
+          "median": 0.02050000000745058,
+          "min": 0.02050000000745058,
+          "max": 0.02050000000745058
+        },
+        "encodeCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.03500000014901161,
+            0.03500000014901161,
+            0.03500000014901161
+          ],
+          "mean": 0.03500000014901161,
+          "median": 0.03500000014901161,
+          "min": 0.03500000014901161,
+          "max": 0.03500000014901161
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 3,
+          "values": [
+            2.9399999999441206,
+            3.0649999999441206,
+            3.0900000003166497
+          ],
+          "mean": 3.0316666667349637,
+          "median": 3.0649999999441206,
+          "min": 2.9399999999441206,
+          "max": 3.0900000003166497
+        }
+      },
+      {
+        "backend": "WebGPU",
+        "kind": "compute",
+        "mode": 2,
+        "bindOnlyCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.02050000000745058,
+            0.02050000000745058,
+            0.02050000000745058
+          ],
+          "mean": 0.02050000000745058,
+          "median": 0.02050000000745058,
+          "min": 0.02050000000745058,
+          "max": 0.02050000000745058
+        },
+        "encodeCpuMsPer1000": {
+          "count": 3,
+          "values": [
+            0.03000000026077032,
+            0.03000000026077032,
+            0.034999999683350325
+          ],
+          "mean": 0.031666666734963655,
+          "median": 0.03000000026077032,
+          "min": 0.03000000026077032,
+          "max": 0.034999999683350325
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 3,
+          "values": [
+            3.0500000002793968,
+            3.080000000074506,
+            3.095000000204891
+          ],
+          "mean": 3.0750000001862645,
+          "median": 3.080000000074506,
+          "min": 3.0500000002793968,
+          "max": 3.095000000204891
+        }
+      },
+      {
+        "backend": "D3D12",
+        "kind": "graphics",
+        "mode": 0,
+        "bindOnlyCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.02591,
+            0.026029999999999998
+          ],
+          "mean": 0.02597,
+          "median": 0.026029999999999998,
+          "min": 0.02591,
+          "max": 0.026029999999999998
+        },
+        "encodeCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.0081,
+            0.0081
+          ],
+          "mean": 0.0081,
+          "median": 0.0081,
+          "min": 0.0081,
+          "max": 0.0081
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 2,
+          "values": [
+            0.0452,
+            0.0463
+          ],
+          "mean": 0.04575,
+          "median": 0.0463,
+          "min": 0.0452,
+          "max": 0.0463
+        }
+      },
+      {
+        "backend": "D3D12",
+        "kind": "graphics",
+        "mode": 1,
+        "bindOnlyCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.02572,
+            0.02586
+          ],
+          "mean": 0.02579,
+          "median": 0.02586,
+          "min": 0.02572,
+          "max": 0.02586
+        },
+        "encodeCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.0338,
+            0.0341
+          ],
+          "mean": 0.033949999999999994,
+          "median": 0.0341,
+          "min": 0.0338,
+          "max": 0.0341
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 2,
+          "values": [
+            0.0462,
+            0.0557
+          ],
+          "mean": 0.050949999999999995,
+          "median": 0.0557,
+          "min": 0.0462,
+          "max": 0.0557
+        }
+      },
+      {
+        "backend": "D3D12",
+        "kind": "graphics",
+        "mode": 2,
+        "bindOnlyCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.049159999999999995,
+            0.04972
+          ],
+          "mean": 0.04944,
+          "median": 0.04972,
+          "min": 0.049159999999999995,
+          "max": 0.04972
+        },
+        "encodeCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.0803,
+            0.0805
+          ],
+          "mean": 0.0804,
+          "median": 0.0805,
+          "min": 0.0803,
+          "max": 0.0805
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 2,
+          "values": [
+            0.1657,
+            0.1734
+          ],
+          "mean": 0.16954999999999998,
+          "median": 0.1734,
+          "min": 0.1657,
+          "max": 0.1734
+        }
+      },
+      {
+        "backend": "D3D12",
+        "kind": "compute",
+        "mode": 0,
+        "bindOnlyCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.01738,
+            0.017580000000000002
+          ],
+          "mean": 0.017480000000000002,
+          "median": 0.017580000000000002,
+          "min": 0.01738,
+          "max": 0.017580000000000002
+        },
+        "encodeCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.2936,
+            0.2941
+          ],
+          "mean": 0.29385,
+          "median": 0.2941,
+          "min": 0.2936,
+          "max": 0.2941
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 2,
+          "values": [
+            1.6713,
+            1.6748
+          ],
+          "mean": 1.67305,
+          "median": 1.6748,
+          "min": 1.6713,
+          "max": 1.6748
+        }
+      },
+      {
+        "backend": "D3D12",
+        "kind": "compute",
+        "mode": 1,
+        "bindOnlyCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.017410000000000002,
+            0.01743
+          ],
+          "mean": 0.01742,
+          "median": 0.01743,
+          "min": 0.017410000000000002,
+          "max": 0.01743
+        },
+        "encodeCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.3255,
+            0.3273
+          ],
+          "mean": 0.3264,
+          "median": 0.3273,
+          "min": 0.3255,
+          "max": 0.3273
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 2,
+          "values": [
+            1.7095,
+            1.7178
+          ],
+          "mean": 1.71365,
+          "median": 1.7178,
+          "min": 1.7095,
+          "max": 1.7178
+        }
+      },
+      {
+        "backend": "D3D12",
+        "kind": "compute",
+        "mode": 2,
+        "bindOnlyCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.05743,
+            0.05797
+          ],
+          "mean": 0.0577,
+          "median": 0.05797,
+          "min": 0.05743,
+          "max": 0.05797
+        },
+        "encodeCpuMsPer1000": {
+          "count": 2,
+          "values": [
+            0.4084,
+            0.4165
+          ],
+          "mean": 0.41245,
+          "median": 0.4165,
+          "min": 0.4084,
+          "max": 0.4165
+        },
+        "finishSubmitAndWaitMs": {
+          "count": 2,
+          "values": [
+            2.0073,
+            2.0254
+          ],
+          "mean": 2.01635,
+          "median": 2.0254,
+          "min": 2.0073,
+          "max": 2.0254
+        }
+      }
+    ],
+    "restartMeanRatioWebToDX12": 2.580395595323421,
+    "restartMeanRatioWebToDX12Blob": 1.6490655993384011,
+    "diskDisabledToEnabledMeanRatio": 8.756931555365451,
+    "traceDiagnostics": [
+      {
+        "noDiskCache": false,
+        "browserRound": 0,
+        "file": "tests/web-platform/results/pso-api-v3-b0-trace.json",
+        "genericCacheHits": 898,
+        "workerTasks": 128,
+        "workerWallSumMs": 19.97
+      },
+      {
+        "noDiskCache": false,
+        "browserRound": 1,
+        "file": "tests/web-platform/results/pso-api-v3-b1-trace.json",
+        "genericCacheHits": 898,
+        "workerTasks": 128,
+        "workerWallSumMs": 19.913
+      },
+      {
+        "noDiskCache": false,
+        "browserRound": 2,
+        "file": "tests/web-platform/results/pso-api-v3-b2-trace.json",
+        "genericCacheHits": 898,
+        "workerTasks": 128,
+        "workerWallSumMs": 21.311
+      },
+      {
+        "noDiskCache": true,
+        "browserRound": 0,
+        "file": "tests/web-platform/results/pso-api-v3-disk-off-b0-trace.json",
+        "genericCacheHits": 898,
+        "workerTasks": 128,
+        "workerWallSumMs": 21.021
+      },
+      {
+        "noDiskCache": true,
+        "browserRound": 1,
+        "file": "tests/web-platform/results/pso-api-v3-disk-off-b1-trace.json",
+        "genericCacheHits": 898,
+        "workerTasks": 128,
+        "workerWallSumMs": 20.98
+      },
+      {
+        "noDiskCache": true,
+        "browserRound": 2,
+        "file": "tests/web-platform/results/pso-api-v3-disk-off-b2-trace.json",
+        "genericCacheHits": 898,
+        "workerTasks": 128,
+        "workerWallSumMs": 21.09
+      }
+    ]
+  },
+  "runtime": [
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-0.utrace",
+      "frames": 242,
+      "groups": {
+        "WebPSO_BindComputeOwner": {
+          "calls": 15303,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 15303,
+            "sum": 4855,
+            "mean": 0.3172580539763445,
+            "median": 0,
+            "p95": 5,
+            "max": 10
+          },
+          "perFrameMs": {
+            "count": 242,
+            "sum": 4.854999999999997,
+            "mean": 0.020061983471074366,
+            "median": 0.015,
+            "p95": 0.05499999999999999,
+            "max": 0.075
+          }
+        },
+        "WebPSO_BindGraphicsOwner": {
+          "calls": 140171,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 140171,
+            "sum": 118745,
+            "mean": 0.8471438457312853,
+            "median": 0,
+            "p95": 5,
+            "max": 64.99999999999999
+          },
+          "perFrameMs": {
+            "count": 242,
+            "sum": 118.74499999999999,
+            "mean": 0.49068181818181816,
+            "median": 0.40000000000000024,
+            "p95": 1.0949999999999986,
+            "max": 1.3599999999999934
+          }
+        },
+        "WebPSO_CacheLookupCompute": {
+          "calls": 15303,
+          "threads": [
+            "Foreground Worker #0",
+            "Background Worker #0",
+            "Background Worker #1"
+          ],
+          "callUs": {
+            "count": 15303,
+            "sum": 6222,
+            "mean": 0.40658694373652227,
+            "median": 0,
+            "p95": 5,
+            "max": 26
+          },
+          "perFrameMs": {
+            "count": 242,
+            "sum": 6.222000000000003,
+            "mean": 0.025710743801652905,
+            "median": 0.02,
+            "p95": 0.069,
+            "max": 0.09600000000000002
+          }
+        },
+        "WebPSO_CacheLookupGraphics": {
+          "calls": 140171,
+          "threads": [
+            "Foreground Worker #0",
+            "Background Worker #0",
+            "Background Worker #1"
+          ],
+          "callUs": {
+            "count": 140171,
+            "sum": 62448,
+            "mean": 0.4455129805737278,
+            "median": 0,
+            "p95": 5,
+            "max": 155
+          },
+          "perFrameMs": {
+            "count": 242,
+            "sum": 62.44800000000006,
+            "mean": 0.25804958677685974,
+            "median": 0.23400000000000012,
+            "p95": 0.5880000000000004,
+            "max": 0.6940000000000005
+          }
+        },
+        "WebPSO_ResolveCompute": {
+          "calls": 15303,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 15303,
+            "sum": 4525,
+            "mean": 0.29569365483892046,
+            "median": 0,
+            "p95": 5,
+            "max": 15.000000000000002
+          },
+          "perFrameMs": {
+            "count": 242,
+            "sum": 4.524999999999999,
+            "mean": 0.01869834710743801,
+            "median": 0.01,
+            "p95": 0.05499999999999999,
+            "max": 0.08
+          }
+        },
+        "WebPSO_ResolveGraphics": {
+          "calls": 140171,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 140171,
+            "sum": 31985,
+            "mean": 0.22818557333542602,
+            "median": 0,
+            "p95": 0,
+            "max": 40
+          },
+          "perFrameMs": {
+            "count": 242,
+            "sum": 31.985000000000035,
+            "mean": 0.13216942148760344,
+            "median": 0.14000000000000004,
+            "p95": 0.31000000000000016,
+            "max": 0.3650000000000002
+          }
+        }
+      },
+      "allPerFrameMs": {
+        "count": 242,
+        "sum": 228.77999999999992,
+        "mean": 0.945371900826446,
+        "median": 0.7840000000000004,
+        "p95": 2.032999999999999,
+        "max": 2.285999999999994
+      },
+      "gameFrameIntervalMs": {
+        "count": 242,
+        "sum": 7971.2750000000015,
+        "mean": 32.93915289256199,
+        "median": 33.539000000001096,
+        "p95": 64.59900000000118,
+        "max": 74.72999999999885
+      },
+      "actualJSAPI": {
+        "delta": {
+          "graphicsCreated": 0,
+          "computeCreated": 0,
+          "graphicsBinds": 151128,
+          "computeBinds": 17289,
+          "bundleBinds": 0,
+          "graphicsBindsMs": 35.30000000540167,
+          "computeBindsMs": 8.464999991469085,
+          "bundleBindsMs": 0
+        },
+        "framesIncludingTraceExport": 260,
+        "calls": 168417,
+        "meanCallUs": 0.2598609403852981,
+        "cpuMsPerPresentedFrame": 0.16832692306488753
+      },
+      "captureFps": 30.356572858279268
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-1.utrace",
+      "frames": 243,
+      "groups": {
+        "WebPSO_BindComputeOwner": {
+          "calls": 15431,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 15431,
+            "sum": 4790,
+            "mean": 0.31041410148402565,
+            "median": 0,
+            "p95": 5,
+            "max": 15.000000000000002
+          },
+          "perFrameMs": {
+            "count": 243,
+            "sum": 4.789999999999996,
+            "mean": 0.019711934156378584,
+            "median": 0.015,
+            "p95": 0.05499999999999999,
+            "max": 0.09000000000000001
+          }
+        },
+        "WebPSO_BindGraphicsOwner": {
+          "calls": 141488,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 141488,
+            "sum": 117865,
+            "mean": 0.8330388442836142,
+            "median": 0,
+            "p95": 5,
+            "max": 120.00000000000001
+          },
+          "perFrameMs": {
+            "count": 243,
+            "sum": 117.86499999999997,
+            "mean": 0.48504115226337435,
+            "median": 0.4850000000000003,
+            "p95": 1.0649999999999993,
+            "max": 1.1849999999999967
+          }
+        },
+        "WebPSO_CacheLookupCompute": {
+          "calls": 15431,
+          "threads": [
+            "Foreground Worker #0",
+            "Background Worker #0",
+            "Background Worker #1"
+          ],
+          "callUs": {
+            "count": 15431,
+            "sum": 6043,
+            "mean": 0.3916142829369451,
+            "median": 0,
+            "p95": 5,
+            "max": 95
+          },
+          "perFrameMs": {
+            "count": 243,
+            "sum": 6.043000000000002,
+            "mean": 0.024868312757201656,
+            "median": 0.016,
+            "p95": 0.06999999999999999,
+            "max": 0.12300000000000003
+          }
+        },
+        "WebPSO_CacheLookupGraphics": {
+          "calls": 141488,
+          "threads": [
+            "Foreground Worker #0",
+            "Background Worker #0",
+            "Background Worker #1"
+          ],
+          "callUs": {
+            "count": 141488,
+            "sum": 62839,
+            "mean": 0.44412953748727807,
+            "median": 0,
+            "p95": 5,
+            "max": 170
+          },
+          "perFrameMs": {
+            "count": 243,
+            "sum": 62.83900000000002,
+            "mean": 0.2585967078189301,
+            "median": 0.2640000000000002,
+            "p95": 0.5820000000000004,
+            "max": 0.7210000000000004
+          }
+        },
+        "WebPSO_ResolveCompute": {
+          "calls": 15431,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 15431,
+            "sum": 4385,
+            "mean": 0.2841682327781738,
+            "median": 0,
+            "p95": 5,
+            "max": 25
+          },
+          "perFrameMs": {
+            "count": 243,
+            "sum": 4.385000000000001,
+            "mean": 0.018045267489711938,
+            "median": 0.01,
+            "p95": 0.05499999999999999,
+            "max": 0.08
+          }
+        },
+        "WebPSO_ResolveGraphics": {
+          "calls": 141488,
+          "threads": [
+            "RHIThread"
+          ],
+          "callUs": {
+            "count": 141488,
+            "sum": 32300,
+            "mean": 0.22828791134230464,
+            "median": 0,
+            "p95": 0,
+            "max": 110
+          },
+          "perFrameMs": {
+            "count": 243,
+            "sum": 32.300000000000026,
+            "mean": 0.13292181069958858,
+            "median": 0.14000000000000004,
+            "p95": 0.3200000000000002,
+            "max": 0.3700000000000002
+          }
+        }
+      },
+      "allPerFrameMs": {
+        "count": 243,
+        "sum": 228.2220000000001,
+        "mean": 0.9391851851851856,
+        "median": 1.0770000000000008,
+        "p95": 2.0259999999999985,
+        "max": 2.247
+      },
+      "gameFrameIntervalMs": {
+        "count": 243,
+        "sum": 7950.705000000002,
+        "mean": 32.71895061728396,
+        "median": 27.7499999999975,
+        "p95": 63.41499999999911,
+        "max": 90.96900000000119
+      },
+      "actualJSAPI": {
+        "delta": {
+          "graphicsCreated": 0,
+          "computeCreated": 0,
+          "graphicsBinds": 147478,
+          "computeBinds": 16826,
+          "bundleBinds": 0,
+          "graphicsBindsMs": 33.339999998919666,
+          "computeBindsMs": 7.68499998934567,
+          "bundleBindsMs": 0
+        },
+        "framesIncludingTraceExport": 252,
+        "calls": 164304,
+        "meanCallUs": 0.24968959969486645,
+        "cpuMsPerPresentedFrame": 0.1627976190010529
+      },
+      "captureFps": 30.459900622640244
+    }
+  ],
+  "sources": [
+    {
+      "file": "tests/web-platform/pso-api-benchmark.cpp",
+      "bytes": 19563,
+      "sha256": "26060b4fb2ad5fbabacc02c01370968cf38bf318cdd164409111242fdfed0cc3"
+    },
+    {
+      "file": "tests/web-platform/benchmark-pso-apis.cjs",
+      "bytes": 15439,
+      "sha256": "c31ffd876d3ddd055648db664003272847d0b58f893c54b37cce60908fc65183"
+    },
+    {
+      "file": "tests/web-platform/build-pso-api-benchmark.ps1",
+      "bytes": 1285,
+      "sha256": "6628a15a6ac0c40eb3540638d7aa592bcfa69ed2bcc6be5ab4a1673d1ec695af"
+    },
+    {
+      "file": "tests/web-platform/analyze-pso-apis.cjs",
+      "bytes": 4081,
+      "sha256": "ab75bb232822691acfc9a527431b8d66daf8f4033a749556fbe81b42b4807937"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-pso-runtime.cjs",
+      "bytes": 4644,
+      "sha256": "4d56974bb27ef9e538cf934d5c1f9b1ce0c2f0bc2b3da38b2b4746a438f01f2a"
+    },
+    {
+      "file": "tests/web-platform/capture-web-ue-trace.cjs",
+      "bytes": 6295,
+      "sha256": "0a09ae8d6a3ed02336606469365b0067e2b43caec726930d98994d402b21ce02"
+    },
+    {
+      "file": "tests/web-platform/export-web-ue-trace.ps1",
+      "bytes": 2010,
+      "sha256": "6c1ab7ef31d451804fe6456d9717a658f1630df09c432df8dd08a72fe39db5ad"
+    },
+    {
+      "file": "tests/web-platform/package-web-runtime-experiment.cjs",
+      "bytes": 6375,
+      "sha256": "273253205cc266a513e43d51cdd37624d198672333c814559d20449a95bee1bd"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "bytes": 257202,
+      "sha256": "e9e6df588726a7baf4e69e7cc6c23c84e256aed41ede3f47b6f46a0f3102c765"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RHI/Private/PipelineStateCache.cpp",
+      "bytes": 201722,
+      "sha256": "37a0360774d0c7dd6fc48acfd0db1dc842fde8157b4cb77e53ea05188aa2cfd4"
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "tests/web-platform/results/pso-api-v3.json",
+      "bytes": 200621,
+      "sha256": "3edff8539bfd1fc067f58c738decbf7752be65e24dc515691fbc116f84e9b670"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-disk-off.json",
+      "bytes": 149295,
+      "sha256": "8d289e2f572bd7b347487c39d631b80d17b218aac5454dd15a1676661f96c64a"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-comparison.json",
+      "bytes": 14715,
+      "sha256": "50ace4f1190a18deb32ead873dc2496f01466ac1dcaa2586ab719d65f994626f"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20.json",
+      "bytes": 11763,
+      "sha256": "e49e14f8854ec9d8c4cf4ca6d6d71c056a15fe4185b94ecc841a15ba513609ed"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-analysis.json",
+      "bytes": 11083,
+      "sha256": "444cce58c0e255893f720da0ee8608dcdfd1e3d273cec8a553fbb2d73c174735"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-package.json",
+      "bytes": 6566,
+      "sha256": "8c5f551a7f0a9f7d2733e80ed4c0f3cf9fa8a8dae3f5948b56583aac8f5875a1"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-build.json",
+      "bytes": 603434,
+      "sha256": "48a3dd7c8c71b905c0c07d9e946885965cf9e2b56c22be6c7e4f67a72c78a0a8"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-scene.png",
+      "bytes": 3148412,
+      "sha256": "d46946d1092854642ad64be8ce65362ecc6076eb4b22973a8341c72c26011d9f"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-0.utrace",
+      "bytes": 13943652,
+      "sha256": "0faba70797cab8ce286af5eeb15326eb3f6beabc0af6b75fd5f3889128683565"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-0.events.csv",
+      "bytes": 239913421,
+      "sha256": "02b87d2dcc8e0478171857fe3cca8b5445b7a049a7cc1306aa19a44e15fb6a77"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-0.statistics.csv",
+      "bytes": 62226,
+      "sha256": "eb17192ec43cf350f572d096bff88a7e4d70cc9e171e2ab747d19f6d958db694"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-0.timers.csv",
+      "bytes": 64485,
+      "sha256": "5962259f7a22be8876771b81aae7c74c014f060c68db4f43befd49ea6226eedc"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-0.threads.csv",
+      "bytes": 997,
+      "sha256": "30a243f8cfe6a1f60909647ce61462d203c55105dca56b457c4939c41d828f80"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-0.analysis.json",
+      "bytes": 14580,
+      "sha256": "c4e37e3e25864d5660bc7ad02b8c3c435fb9c40bef641b16673a341dcd94734f"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-1.utrace",
+      "bytes": 14035541,
+      "sha256": "4bc54c7353017daf97919ea01adbccd74bac1e3c7a8269b104026c5da669dded"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-1.events.csv",
+      "bytes": 241362007,
+      "sha256": "af396066f2108ce98cef13372c03f6d9a64737129b38babf2452870bff594a8e"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-1.statistics.csv",
+      "bytes": 62449,
+      "sha256": "3ce87b5e78e485caccc5041f33913c8fcd4b8c790f7375b8b66964779f8ccabe"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-1.timers.csv",
+      "bytes": 64898,
+      "sha256": "2789af8a2e1f34b3422e93b1018f54cc9ac4dbfc38ca10a044aef8a9dfda56e4"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-1.threads.csv",
+      "bytes": 997,
+      "sha256": "30a243f8cfe6a1f60909647ce61462d203c55105dca56b457c4939c41d828f80"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-runtime-trace-v20-1.analysis.json",
+      "bytes": 14563,
+      "sha256": "9355ff469d8556e2634a0ed34659414a1685f651d2a1eb20287439f3043554ac"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-dx12-new-library.json",
+      "bytes": 2518,
+      "sha256": "fd666a23e883bb53f86e4c217e6505e7cc6964901075741dd98a15230e6248c5"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-dx12-library-reopen-1.json",
+      "bytes": 2527,
+      "sha256": "4072d77798329fd4c81f17991f00d62805dcea464f10f62db5580e93ce16b90c"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-dx12-implicit-cache.json",
+      "bytes": 2519,
+      "sha256": "6b6e8ebccaaf0ba7496a0a7711e4f3069a415d1b89d272f324ec637eeaca2168"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-dx12-library-reopen-2.json",
+      "bytes": 2524,
+      "sha256": "f5baa37c2c6dd5dab236a1b90e19b3ef1cc00da80cccd6c10c673302c8e5e796"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-dx12-new-blobs.json",
+      "bytes": 2515,
+      "sha256": "e4dd0f6a6a7b5688bac359052e402f128257cf4eac79059cc05b75a73dbb0365"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-dx12-blobs-reopen-1.json",
+      "bytes": 2523,
+      "sha256": "fc5cffacdef61020e4a7200ff35fb44b9088cea49c861dcc3a08902d2e6008b3"
+    },
+    {
+      "file": "tests/web-platform/results/pso-api-v3-dx12-blobs-reopen-2.json",
+      "bytes": 2525,
+      "sha256": "6db2c726fbdae5c5ec07e8b34d184b71b29ae9e70e57db5ddfa7b5c2f28d49bf"
+    }
+  ]
+}

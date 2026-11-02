@@ -1,17 +1,19 @@
 param(
     [Parameter(Mandatory=$true)][string]$Trace,
     [string]$Engine = 'D:/UE_5.8',
-    [ValidateSet('web', 'native')][string]$Backend = 'web'
+    [ValidateSet('web', 'native')][string]$Backend = 'web',
+    [switch]$PsoOnly
 )
 $ErrorActionPreference = 'Stop'
 $taskTrace = (Resolve-Path -LiteralPath $Trace).Path.Replace('\', '/')
 $taskPrefix = $taskTrace -replace '\.utrace$', ''
 if ($taskPrefix -eq $taskTrace) { throw 'Expected a saved .utrace file.' }
 $taskCommands = "$taskPrefix.export.rsp"
+$taskTimerFilter = if ($PsoOnly) { ' -timers="WebPSO_*,WebGPU_*,FEngineLoop::Tick,*RenderThread*"' } else { '' }
 @(
     "TimingInsights.ExportThreads `"$taskPrefix.threads.csv`""
     "TimingInsights.ExportTimers `"$taskPrefix.timers.csv`""
-    "TimingInsights.ExportTimingEvents `"$taskPrefix.events.csv`" -columns=`"ThreadId,ThreadName,TimerId,TimerName,StartTime,EndTime,Duration,Depth`""
+    "TimingInsights.ExportTimingEvents `"$taskPrefix.events.csv`"$taskTimerFilter -columns=`"ThreadId,ThreadName,TimerId,TimerName,StartTime,EndTime,Duration,Depth`""
     "TimingInsights.ExportTimerStatistics `"$taskPrefix.statistics.csv`""
 ) | Set-Content -LiteralPath $taskCommands -Encoding utf8
 $taskArguments = @("-OpenTraceFile=`"$taskTrace`"", '-AutoQuit', '-NoUI',
