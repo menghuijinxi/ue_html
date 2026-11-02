@@ -22,6 +22,8 @@ assert(debugPort === 0 || (debugPort >= 1024 && debugPort <= 65535));
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const output = path.join(__dirname, 'results', `project-gameplay-${tag}`);
 const report = {date: new Date().toISOString(), folder, width, height, dpr, requestedRuns: runs, seconds,
+  headful: process.argv.includes('--visible'),
+  hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default scheduling',
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
   runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, requireGPUScene, requireResourceTables,
   requireParallelRecording, requireManualVertexFetch, pass: false};

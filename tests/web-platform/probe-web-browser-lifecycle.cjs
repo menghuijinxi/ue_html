@@ -10,30 +10,39 @@ const channel = process.argv.includes('--chrome') ? 'chrome' : 'msedge';
 const runs = Number(option('runs') || 4);
 const tag = option('tag') || 'baseline';
 const extraArgs = option('browser-args') ? JSON.parse(option('browser-args')) : [];
+const width = Number(option('width') || 1638), height = Number(option('height') || 810);
+const dpr = Number(option('dpr') || 1.25);
 assert(/^[a-z0-9-]+$/.test(folder) && /^[a-z0-9-]+$/.test(tag));
 assert(Number.isInteger(runs) && runs > 0 && runs <= 20);
 assert(Array.isArray(extraArgs) && extraArgs.every(value => typeof value === 'string'));
+assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const results = path.join(__dirname, 'results');
 const report = {date: new Date().toISOString(), pass: false, folder, channel, runs, extraArgs,
+  width, height, dpr, headful: process.argv.includes('--headful'), settingsOverrides: [],
+  hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default scheduling',
   source: audit(__filename), samples: [], crashes: [], errors: [], logs: [],
   boundary: 'Own browser profile; normal engine clock and unmodified shaders. Passing repeated starts is not proof that the reported intermittent crash is fixed.'};
 let context, page;
 const snapshot = () => page.evaluate(() => ({frames: globalThis.__webEngineFrames || 0,
   failure: globalThis.__webEngineFailure, ready: globalThis.__webEngineReady,
   surface: globalThis.__webEngineSurface, runtime: globalThis.__webEngineRuntime,
-  memory: globalThis.__webTextureStreaming, io: globalThis.__webLocalContentStats}));
+  memory: globalThis.__webTextureStreaming, io: globalThis.__webLocalContentStats,
+  view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings,
+  threads: globalThis.__webEngineThreads}));
 (async () => {
   try {
-    const packageFile = path.join(results, folder.startsWith('ue-default-template') ?
+    const packageFile = option('package-report') ? path.resolve(option('package-report')) :
+      path.join(results, folder.startsWith('ue-default-template') ?
       `web-default-template${folder.slice('ue-default-template'.length)}-package-results.json` :
       `web-project-${folder}-package-results.json`);
     const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8').replace(/^\uFEFF/, ''));
     assert(packaged.pass);
+    assert.equal(path.resolve(packaged.output), path.join(__dirname, 'build', folder));
     for (const item of packaged.products) assert.equal(audit(item.file).sha256, item.sha256);
     report.package = audit(packageFile);
-    context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles/lifecycle-' + channel),
-      {channel, headless: !process.argv.includes('--headful'), viewport: {width: 1638, height: 810},
-        deviceScaleFactor: 1.25, args: extraArgs});
+    context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', `lifecycle-${channel}-${tag}`),
+      {channel, headless: !report.headful, viewport: {width, height},
+        deviceScaleFactor: dpr, args: extraArgs});
     page = context.pages()[0] || await context.newPage();
     const session = await context.newCDPSession(page);
     report.browser = await session.send('Browser.getVersion');
@@ -63,7 +72,7 @@ const snapshot = () => page.evaluate(() => ({frames: globalThis.__webEngineFrame
       assert.deepEqual(report.errors, []);
       console.log(JSON.stringify({run, frames: value.frames, surface: value.surface}));
       report.operation.phase = 'resize';
-      await page.setViewportSize(run % 2 ? {width: 1638, height: 810} : {width: 1280, height: 720});
+      await page.setViewportSize(run % 2 ? {width, height} : {width: 1280, height: 720});
       await page.waitForFunction(target => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= target,
         value.frames + 90, {timeout: 90000});
       const resized = await snapshot();
