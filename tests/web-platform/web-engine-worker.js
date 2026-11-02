@@ -1,6 +1,7 @@
 'use strict';
 // The main runtime owns FS, IO, GPU objects and RHI translation. GT/RT are pthreads.
 let initialized = false;
+let frameCounter, lastPresented = 0, presentTimes = [], pipelineEvents = [];
 const send = (type, values = {}) => postMessage({type, ...values});
 const fail = error => send('failure', {message: error?.stack || error?.message || String(error)});
 const rpcNames = new Set([
@@ -46,6 +47,8 @@ function snapshot() {
   for (const key of diagnosticStateKeys)
     if (globalThis[key] !== undefined) state[key] = globalThis[key];
   state.__webEngineThreads = globalThis.__webEngineThreads;
+  if (frameCounter) state.__webFramePacing = {timeOrigin: performance.timeOrigin, at: performance.now(),
+    times: presentTimes.splice(0), events:pipelineEvents.splice(0)};
   state.__webEngineSurface = {width: Module.canvas.width, height: Module.canvas.height};
   const io = globalThis.__webContentIO;
   state.__webLocalContentStats = {...io?.stats, activeRequests: io?.requests.size,
@@ -84,6 +87,39 @@ async function start(message) {
   if (!crossOriginIsolated || typeof SharedArrayBuffer === 'undefined' || !navigator.gpu)
     throw new Error('Engine Worker requires isolated shared memory and WebGPU');
   const assets = message.assets;
+  if (message.frameCounter) {
+    frameCounter = new Uint32Array(message.frameCounter);
+    // Pipeline creation is rare; retain its timestamps for user-triggered stutter
+    // exports without wrapping per-draw calls or waiting for GPU completion.
+    for (const name of ['createRenderPipeline','createComputePipeline','createShaderModule',
+      'createRenderPipelineAsync','createComputePipelineAsync']) {
+      const original = GPUDevice.prototype[name];
+      if (!original) continue;
+      GPUDevice.prototype[name] = function(...args) {
+        const start = performance.now();
+        try {return original.apply(this,args);}
+        finally {
+          pipelineEvents.push({name,start,end:performance.now(),label:args[0]?.label});
+          if(pipelineEvents.length>2048)pipelineEvents.splice(0,pipelineEvents.length-2048);
+        }
+      };
+    }
+    // Observe completed viewport presents; preserve preinstalled diagnostic accessors.
+    const previous = Object.getOwnPropertyDescriptor(globalThis, '__webRHIFrames');
+    let value = previous?.get ? previous.get.call(globalThis) : previous?.value || 0;
+    Object.defineProperty(globalThis, '__webRHIFrames', {configurable:true, enumerable:true,
+      get: () => previous?.get ? previous.get.call(globalThis) : value,
+      set(next) {
+        if (previous?.set) previous.set.call(globalThis, next);
+        value = next;
+        if (!Number.isInteger(next) || next <= lastPresented) return;
+        lastPresented = next;
+        Atomics.store(frameCounter, 0, next);
+        presentTimes.push(performance.now());
+        if (presentTimes.length > 4096) presentTimes.splice(0, presentTimes.length - 4096);
+      }
+    });
+  }
   const versioned = name => name + '?v=' + assets.versions[name];
   globalThis.__webBrowserState = message.browser;
   globalThis.devicePixelRatio = message.browser.dpr;

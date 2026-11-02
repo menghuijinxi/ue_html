@@ -1,16 +1,152 @@
 'use strict';
+// Store intervals rather than averaging instantaneous FPS, so stalls remain visible.
+class WebFrameSamples {
+  constructor() { this.reset(); }
+  reset() { this.first = this.last = null; this.samples = []; this.head = 0; }
+  add(time) {
+    if (!Number.isFinite(time)) return;
+    if (this.last === null) { this.first = this.last = time; return; }
+    if (time <= this.last) return;
+    this.samples.push({time, ms: time - this.last}); this.last = time; this.prune(time);
+  }
+  prune(now) {
+    while (this.head < this.samples.length && this.samples[this.head].time <= now - 30000) ++this.head;
+    if (this.head > 256 && this.head * 2 > this.samples.length) {
+      this.samples = this.samples.slice(this.head); this.head = 0;
+    }
+  }
+  read(now, windowMs = 5000) {
+    this.prune(now);
+    const samples = this.samples.slice(this.head).filter(sample => sample.time > now - windowMs);
+    const elapsed = this.first === null ? 0 : Math.min(1000, now - this.first);
+    const recent = samples.filter(sample => sample.time > now - elapsed).length;
+    const worst = samples.length >= 100 ? samples.map(sample => sample.ms).sort((a,b) => b-a)
+      .slice(0, Math.ceil(samples.length * .01)) : [];
+    return {fps: elapsed > 0 ? recent * 1000 / elapsed : null,
+      low: worst.length ? 1000 * worst.length / worst.reduce((sum, ms) => sum + ms, 0) : null,
+      frameMs: this.last === null ? null : Math.max(samples.at(-1)?.ms || 0, now - this.last),
+      samples: samples.length, seconds: this.first === null ? 0 : Math.min(windowMs / 1000, (now - this.first) / 1000),
+      p99Ms: samples.length >= 100 ? samples.map(sample => sample.ms).sort((a,b) => a-b)[Math.ceil(samples.length*.99)-1] : null,
+      maxMs: samples.length ? Math.max(...samples.map(sample => sample.ms)) : null,
+      over50ms: samples.filter(sample => sample.ms > 50).length};
+  }
+}
+
+function createWebPerformanceHUD(counter, canvas) {
+  const visual = new WebFrameSamples(), submitted = new WebFrameSamples(), refresh = new WebFrameSamples();
+  let contexts = [], events = [];
+  const element = document.createElement('aside');
+  element.id = 'web-performance-hud'; element.setAttribute('aria-label', '实时帧率');
+  Object.assign(element.style, {position:'fixed', top:'12px', left:'12px', zIndex:3,
+    padding:'10px 12px', borderRadius:'6px', background:'rgba(8,14,18,.82)', color:'#e6f0ec',
+    font:'13px/1.65 Consolas, monospace', fontVariantNumeric:'tabular-nums', pointerEvents:'none',
+    minWidth:'212px', boxShadow:'0 1px 8px #0006'});
+  element.innerHTML = '<div style="display:flex;justify-content:space-between;gap:20px"><strong>实时性能</strong>' +
+    '<span><button type="button" data-action="reset">重置</button> <button type="button" data-action="export" title="导出最近30秒逐帧与PSO创建记录">导出</button></span></div>' +
+    '<div title="最近1秒引擎完成提交的帧数。浏览器没有提供显示器实际呈现时间。">FPS <b data-stat="fps">—</b></div>' +
+    '<div title="最近5秒最慢1%提交间隔的平均值换算为FPS；不足100个间隔时等待采样。">1% Low <b data-stat="low">采样中</b> <small>近5秒</small></div>' +
+    '<div>帧间隔 <b data-stat="ms">—</b> ms</div>' +
+    '<div style="color:#a7c0b6;font-size:11px">P99 <span data-stat="p99">—</span> ms · 最长 <span data-stat="max">—</span> ms</div>' +
+    '<svg viewBox="0 0 216 48" width="216" height="48" style="display:block;margin-top:4px" aria-label="近5秒帧间隔曲线"><path d="M0 32H216" stroke="#617d70" stroke-dasharray="3 3"/><polyline data-stat="graph" fill="none" stroke="#8fe2b6" stroke-width="1.5"/></svg>' +
+    '<div style="color:#a7c0b6;font-size:11px">页面观察 <span data-stat="submit">—</span> FPS · 刷新 <span data-stat="refresh">—</span> Hz</div>' +
+    '<div data-stat="state" style="color:#a7c0b6;font-size:11px">等待场景画面</div>';
+  document.body.append(element);
+  const fields = Object.fromEntries([...element.querySelectorAll('[data-stat]')].map(node => [node.dataset.stat, node]));
+  let lastCounter = 0, raf, stopped = false, visibleSince = performance.now(), lastUpdate = -Infinity, submittedAt = null;
+  const reset = () => {
+    visual.reset(); submitted.reset(); refresh.reset();
+    contexts = []; events = [];
+    lastCounter = Atomics.load(counter, 0); visibleSince = performance.now(); lastUpdate = -Infinity; submittedAt = null;
+  };
+  for (const button of element.querySelectorAll('button')) {
+    Object.assign(button.style,{pointerEvents:'auto',background:'none',border:0,color:'#b4d2c5',cursor:'pointer',font:'inherit',padding:0});
+    for (const name of ['mousedown', 'mouseup', 'keydown', 'keyup']) button.addEventListener(name, event => event.stopPropagation());
+  }
+  element.querySelector('[data-action="reset"]').onclick = () => { reset(); canvas.focus({preventScroll:true}); };
+  element.querySelector('[data-action="export"]').onclick = () => {
+    const now = performance.now(); submitted.prune(now);
+    const data = {version:1,date:new Date().toISOString(),timeOrigin:performance.timeOrigin,
+      source:'rhi-owner-submission-intervals',lowWindowMs:5000,
+      lowDefinition:'1000 / mean(slowest ceil(N*0.01) submission intervals)',
+      boundary:'Submission intervals are not physical display timings. Async creation events measure API invocation only. Context counters are sampled every 100 ms.',
+      summary:submitted.read(now),frames:submitted.samples.slice(submitted.head),
+      pipelineEvents:events.filter(e=>e.end>now-30000),contexts:contexts.filter(c=>c.time>now-30000)};
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    const link = document.createElement('a'); link.href = url;
+    link.download = 'ue-frame-pacing-'+data.date.replace(/[:.]/g,'-')+'.json'; link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    canvas.focus({preventScroll:true});
+  };
+  const format = value => value === null ? '—' : value.toFixed(1);
+  function update(now) {
+    if (stopped) return;
+    if (!document.hidden) {
+      refresh.add(now);
+      const current = Atomics.load(counter, 0);
+      if (current !== lastCounter) { visual.add(now); lastCounter = current; }
+      if (now - lastUpdate >= 250) {
+        // Worker batches arrive asynchronously. End its 1-second window at the
+        // sampled worker time, rather than treating delivery latency as lost frames.
+        const v = visual.read(now), s = submitted.read(submittedAt !== null && now - submittedAt < 500 ? submittedAt : now), r = refresh.read(now);
+        fields.fps.textContent = format(s.fps); fields.low.textContent = s.low === null ? '采样中' : format(s.low);
+        fields.ms.textContent = format(s.frameMs); fields.submit.textContent = format(v.fps);
+        fields.p99.textContent = format(s.p99Ms); fields.max.textContent = format(s.maxMs);
+        const graphTime = submittedAt ?? now;
+        const graphSamples = submitted.samples.slice(submitted.head).filter(sample => sample.time > graphTime - 5000);
+        fields.graph.setAttribute('points', graphSamples.map(sample =>
+          `${((sample.time-graphTime+5000)/5000*216).toFixed(1)},${(48-Math.min(150,sample.ms)/150*48).toFixed(1)}`).join(' '));
+        fields.refresh.textContent = format(r.fps);
+        fields.state.textContent = submitted.first !== null ? `近5秒 >50ms：${s.over50ms} 帧 · 提交间隔统计` : '等待场景画面';
+        globalThis.__webLivePerformance = {visual:v, submitted:s, refresh:r, visible:true,
+          frame:current, source:'rhi-owner-submission-intervals', windowMs:5000, time:now};
+        lastUpdate = now;
+      }
+    }
+    raf = requestAnimationFrame(update);
+  }
+  const visibility = () => {
+    reset();
+    if (document.hidden) {
+      fields.state.textContent = '页面已隐藏 · 暂停统计';
+      for (const name of ['fps','low','ms','submit','refresh','p99','max']) fields[name].textContent = '—';
+      fields.graph.setAttribute('points','');
+      globalThis.__webLivePerformance = {visible:false};
+    }
+  };
+  document.addEventListener('visibilitychange', visibility); raf = requestAnimationFrame(update);
+  return {
+    ingest(pacing, state) {
+      if (!pacing || document.hidden) return;
+      const offset = pacing.timeOrigin - performance.timeOrigin;
+      for (const time of pacing.times) if (time + offset >= visibleSince) submitted.add(time + offset);
+      submittedAt = pacing.at + offset;
+      for(const event of pacing.events || []) if(event.end+offset>=visibleSince)
+        events.push({...event,start:event.start+offset,end:event.end+offset});
+      events = events.filter(event=>event.end>submittedAt-30000);
+      if(state)contexts.push({time:submittedAt,frame:state.__webEngineFrames,
+        stages:state.__webThreadStages,io:state.__webLocalContentStats,
+        streaming:state.__webTextureStreaming,pso:state.__webOptimizationRHI});
+      contexts = contexts.filter(context=>context.time>submittedAt-30000);
+    },
+    dispose() { stopped = true; cancelAnimationFrame(raf); document.removeEventListener('visibilitychange', visibility); element.remove(); }
+  };
+}
+
 globalThis.startWebEngineWorker = function({assets, module, record, failed, stage, diagnostics, render}) {
   const canvas = module.canvas;
   if (!canvas.transferControlToOffscreen || typeof Worker === 'undefined')
     throw new Error('此线程包需要 OffscreenCanvas 和 Worker 支持。');
   const worker = new Worker('web-engine-worker.js?v=' + assets.versions['web-engine-worker.js'],
     {name: 'UE Engine'});
+  const frameCounter = new Uint32Array(new SharedArrayBuffer(4));
+  const performanceHUD = createWebPerformanceHUD(frameCounter, canvas);
   let sequence = 0, stopped = false;
   let inputInFlight = false, inputScheduled = false;
   const inputQueue = [];
   const pending = new Map();
   const reportFailure = error => {
     stopped = true;
+    performanceHUD.dispose();
     worker.terminate();
     for (const request of pending.values()) {
       clearTimeout(request.timer);
@@ -35,6 +171,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
       render();
     } else if (message.type === 'state') {
       Object.assign(globalThis, message.state);
+      performanceHUD.ingest(message.state.__webFramePacing, message.state);
       render();
     } else if (message.type === 'dom') {
       if (message.command === 'focus') canvas.focus({preventScroll: true});
@@ -197,6 +334,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   document.addEventListener('pointerlockchange', () => input(20, Number(document.pointerLockElement === canvas)));
   addEventListener('pagehide', () => {
     stopped = true;
+    performanceHUD.dispose();
     observer.disconnect();
     clearInterval(dpiTimer);
     worker.terminate();
@@ -208,7 +346,10 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   }, {once: true});
   const offscreen = canvas.transferControlToOffscreen();
   worker.postMessage({type: 'start', assets, canvas: offscreen, browser: browser(),
+    frameCounter: frameCounter.buffer,
     arguments: module.arguments, debug: diagnostics.mode !== 'normal',
     verification: new URLSearchParams(location.search).get('verify') === 'full' ? 'full' : 'sampled'}, [offscreen]);
   diagnostics.engineWorker = {url: 'web-engine-worker.js', offscreenCanvas: true};
 };
+
+if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples};
