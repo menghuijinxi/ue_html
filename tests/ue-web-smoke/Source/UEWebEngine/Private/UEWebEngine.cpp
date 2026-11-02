@@ -726,6 +726,10 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Web.ShadowCacheProbe"))->Set(Value, ECVF_SetByCode);
     else if (Parameter == 12 && Value >= 1 && Value <= 1024)
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Shadow.WholeSceneShadowCacheMb"))->Set(Value, ECVF_SetByCode);
+    else if (Parameter == 13 && Value >= 0 && Value <= 100)
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.ScreenPercentage"))->Set(Value, ECVF_SetByCode);
+    else if (Parameter == 14 && (Value == 0 || Value == 1))
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.TSR.History.R11G11B10"))->Set(Value, ECVF_SetByCode);
     else if (Parameter != -1)
         return 0;
     auto* LocalPlayer = Controller->GetLocalPlayer();

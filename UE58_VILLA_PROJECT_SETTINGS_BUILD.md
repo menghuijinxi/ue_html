@@ -58,7 +58,7 @@ Cook 着色器清单记录到的设置：
 - `project-gameplay-project-settings-build-20261102.json` 通过 1 轮 20 秒真实按键移动、转向及缩放检查，由第 3 帧到第 1020 帧，最大位移约 150 cm、最大转向约 31.5 度。设置覆盖列表为空，GPU 错误为 0，Game / Render / RHI 线程身份检查通过。只说明短时回归通过，不代表随机崩溃已解决。
 - 运行值：GI=0、反射方式=0、距离场生成/AO/阴影开关=1、静态光照=1、DBuffer=1、体积雾=1、纹理池=1000 MiB、默认屏幕比例 CVar=0（由自动策略决定）；实际内部和输出分辨率均为 1280x720。支持开关开启不证明场景中的每个对应效果都被使用。
 
-抗锯齿配置仍为 4（TSR），实际视图为 2（TAA）。`Engine/Private/SceneUtils.cpp` 的 `GetDefaultAntiAliasingMethod()` 在 `SupportsTSR()` 为 false 时自动回退到 TAA；当前 Web 没有声明 Gen5 Temporal AA 能力。这是引擎平台兼容回退，没有改写原配置，也没有声称 TSR 已在 Web 实现。
+本记录对应的初版包中，抗锯齿配置为 4（TSR），实际视图为 2（TAA）。`Engine/Private/SceneUtils.cpp` 的 `GetDefaultAntiAliasingMethod()` 在 `SupportsTSR()` 为 false 时自动回退到 TAA；当时 Web 没有声明 Gen5 Temporal AA 能力。后续已经补齐 WebGPU TSR 并重新按原项目设置打包，实际 AA=4 与 TSR 计算派发已通过浏览器验证，详见 [WebGPU TSR 兼容](UE58_WEBGPU_TSR.md)。本页下方旧入口保留为初版 TAA 对照包。
 
 本地入口：`http://127.0.0.1:8765/build/triplex-project-distance-fields-threads/index.html`。
 启动截图：`tests/web-platform/results/villa-performance-project-settings-build-20261102-startup.png`。

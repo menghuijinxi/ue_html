@@ -13,6 +13,7 @@ const storageDeclaration = (before, format) => ({before, after: [
   '#endif', before,
 ].join('\n')});
 const overrides = new Map([
+  ...require('./web-tsr-shader-overrides.cjs'),
   ['Private/InstanceCulling/BuildInstanceDrawCommands.usf', [{
     before: '#define USE_HZB_SHARED_SAMPLERS 0',
     after: ['#define USE_HZB_SHARED_SAMPLERS 0', '',
@@ -85,7 +86,15 @@ const overrides = new Map([
     after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
       '\tif (any((asuint(VelocityPolar) & 0x7FFFFFFFu) > 0x7F800000u))',
       '#else', '\tif (any(isnan(VelocityPolar)))', '#endif'].join('\n'),
-  }]],
+  }, {
+    before: '#if FEATURE_LEVEL >= FEATURE_LEVEL_SM6 || PLATFORM_SUPPORTS_SM6_0_WAVE_OPERATIONS',
+    after: '#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU) && (FEATURE_LEVEL >= FEATURE_LEVEL_SM6 || PLATFORM_SUPPORTS_SM6_0_WAVE_OPERATIONS)',
+  }, ...[4, 2].map(size => ({
+    before: `\tVelocityFlattenStep(GroupIndex, /* GroupSize = */  ${size}, /* inout */ VelocityPolarRange);${size === 4 ? '\t' : ''}`,
+    after: [`\tVelocityFlattenStep(GroupIndex, /* GroupSize = */  ${size}, /* inout */ VelocityPolarRange);${size === 4 ? '\t' : ''}`,
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '\tGroupMemoryBarrierWithGroupSync();', '#endif'].join('\n'),
+  })),
+  ]],
   ['Private/TranslucentLightInjectionShaders.usf',
     ['RWAmbient0', 'RWDirectional0', 'RWAmbient1', 'RWDirectional1'].map(name =>
       storageDeclaration(`RWTexture3D<float4> ${name};`, 'rgba16f'))],
@@ -640,7 +649,7 @@ function prepare() {
   }
   copy();
   const report = {date: new Date().toISOString(), pass: true, output,
-    sourceFiles: [__filename, ...overrideFiles].map(audit),
+    sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'), ...overrideFiles].map(audit),
     files, installedEngineUnmodified: audit(path.join(stock, 'Private/PostProcessTonemap.usf')),
     installedInputs: [...overrides.keys()].map(relative => audit(path.join(stock, relative))),
     boundary: 'Independent native Cook shader snapshot. Audited overrides contain WebGPU decal ordering, finite math, structured buffers, explicit atmosphere/sky-capture storage image formats and indirect arguments. Other files are installed-source copies, not a complete 5.8.3 shader snapshot.'};
