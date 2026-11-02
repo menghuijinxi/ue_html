@@ -84,3 +84,24 @@ node tests/web-platform/probe-web-default-startup.cjs --desktop --candidate --br
 | `web-default-desktop-comparison-results.json` | 与原生 SM5 同视角画面对照通过 |
 
 网页截图：`tests/web-platform/results/default-desktop-edge-samples.png`。本次交付为本机 Edge 运行验证，未执行双浏览器正式发布流程，也不将一分钟检查扩展为长期稳定性结论。
+
+## 2026-11-02 引擎仓库拉取修复
+
+`H:/ue_html/reference-engine` 的 `html` 分支拉取时报 `Not possible to fast-forward, aborting.`，最初显示本地领先 35 个提交、落后 1 个提交。远程连接正常；原因是浅克隆的 `.git/shallow` 同时包含本地旧基线和远端最新提交 `ac7696be5`，远端提交的父级历史缺失，导致 Git 无法识别共同祖先。
+
+本次先补齐最近的提交历史，再执行仅允许快进的拉取：
+
+```powershell
+git -C H:/ue_html/reference-engine fetch --deepen=64 --filter=blob:none --no-tags origin html
+git -C H:/ue_html/reference-engine pull --ff-only --no-recurse-submodules
+```
+
+补齐后确认本地实际仅落后 9 个提交，原本地 HEAD `1d8eba0ad95a09621cdcb70801a2364f3e3ee70b` 是远端提交的祖先；已直接快进到 `ac7696be560bde921eba6b26f3a42bf5f108481a`（2026-11-02 00:46:34 +08:00，添加 Web 阴影提交诊断并复用引擎实例合并统计）。
+
+验证结果：
+
+- 再次执行同样的快进拉取返回 `Already up to date.`。
+- `git rev-list --left-right --count HEAD...origin/html` 返回 `0 0`；`git ls-remote --heads origin html` 与本地 HEAD 一致。
+- 原本地 HEAD 仍是更新后 HEAD 的祖先，引擎工作区和暂存区均干净。
+
+本轮仅验证源码仓库更新，未重新编译、Cook 或运行浏览器验收，未推送远程。浅克隆和 `blob:none` 配置继续保留；如果后续再次因历史截断找不到共同祖先，应继续加深历史并确认祖先关系后再拉取。
