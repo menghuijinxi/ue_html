@@ -56,16 +56,33 @@ for (const run of capture.runs) {
   const pipelineTypes = [...new Set(run.owner.pipelines.map(x => x.name))];
   const pipelines = pipelineTypes.map(name => {
     const ps = run.owner.pipelines.filter(x => x.name === name);
+    const successLatencies = ps.filter(x => x.success && x.end).map(x => x.end - x.start).sort((a, b) => a - b);
+    const percentile = fraction => round(successLatencies[Math.min(successLatencies.length - 1, Math.floor(successLatencies.length * fraction))]);
     return {name, count: ps.length, failed: ps.filter(x => x.success === false).length, pending: ps.filter(x => !x.end).length,
       firstStartMs: round(Math.min(...ps.map(x => x.start)) - origin), lastEndMs: round(Math.max(...ps.map(x => x.end || x.callEnd)) - origin),
       requestLatencySumMs: round(sum(ps.map(x => (x.end || x.callEnd) - x.start))),
       synchronousCallSumMs: round(sum(ps.map(x => x.callEnd - x.start))),
+      successfulRequestLatencyMs: {count: successLatencies.length, mean: round(sum(successLatencies) / successLatencies.length),
+        p50: percentile(.5), p95: percentile(.95), max: round(successLatencies.at(-1))},
       activeUnionMs: round(union(ps.filter(x => x.end).map(x => [x.start, x.end])))};
   });
   const psoAsync = run.owner.pipelines.filter(p => p.name.endsWith('Async'));
+  const lastAsync = Math.max(...psoAsync.filter(p => p.end).map(p => p.end));
+  const progressAt = name => {
+    const at = mark(name); if (!Number.isFinite(at)) return null;
+    const completed = psoAsync.filter(p => p.end <= at).length, notRequested = psoAsync.filter(p => p.start > at).length;
+    return {atMs: round(at - origin), total: psoAsync.length, completed,
+      failed: psoAsync.filter(p => p.end <= at && p.success === false).length,
+      pending: psoAsync.length - completed - notRequested, notRequested};
+  };
   const longestLag = [...run.owner.lags].sort((a, b) => b.delayMs - a.delayMs)[0];
   const analyzed = {index: run.index, io: run.state.io, milestones: milestone, phases, pipelines,
     asyncPipelineSpanMs: round(Math.max(...psoAsync.map(x => x.end || x.callEnd)) - Math.min(...psoAsync.map(x => x.start))),
+    asyncPipelineProgress: {atEngineReady: progressAt('log.P3_ENGINE_READY'),
+      atFirstGameGPUCompleted: progressAt('gpu.firstGameFrameCompleted'), atGameFrame30: progressAt('__webEngineFrames.30'),
+      lastCompletionMs: round(lastAsync - origin), engineReadyToLastCompletionMs: round(lastAsync - mark('log.P3_ENGINE_READY')),
+      firstGameGPUCompletedToLastCompletionMs: round(lastAsync - mark('gpu.firstGameFrameCompleted')),
+      lastCompletionToPSOReadyMs: round(mark('page.psoReady') - lastAsync)},
     moduleCount: run.owner.modules.length, moduleChars: sum(run.owner.modules.map(x => x.chars)),
     moduleJSCallSumMs: round(sum(run.owner.modules.map(x => x.end - x.start))),
     longestOwnerLag: {...longestLag, startMs: round(longestLag.start - origin), endMs: round(longestLag.end - origin)},
