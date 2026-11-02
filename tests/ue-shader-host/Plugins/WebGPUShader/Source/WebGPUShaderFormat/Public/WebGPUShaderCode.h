@@ -7,7 +7,7 @@ class FJsonObject;
 namespace UE::WebGPUShader
 {
 inline constexpr uint32 Magic = 0x53475057; // WPGS in little endian.
-inline constexpr uint32 Schema = 1;
+inline constexpr uint32 Schema = 2;
 inline constexpr uint32 HeaderBytes = 28;
 inline const FName ES31Format(TEXT("SF_WEBGPU_ES31"));
 inline const FName SM5Format(TEXT("SF_WEBGPU_SM5"));

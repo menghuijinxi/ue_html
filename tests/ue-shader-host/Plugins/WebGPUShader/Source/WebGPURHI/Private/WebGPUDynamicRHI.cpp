@@ -1,4 +1,5 @@
 #include "WebGPUDynamicRHI.h"
+#include "../../WebGPUShaderFormat/Public/WebGPUShaderMetadata.h"
 #include "DataDrivenShaderPlatformInfo.h"
 #include "GlobalRenderResources.h"
 #include "RenderResource.h"
@@ -1105,7 +1106,7 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         return Fail(TEXT("Web shader header truncated"));
     uint32 Header[7];
     FMemory::Memcpy(Header, Desc.Code.GetData(), sizeof(Header));
-    if (Header[0] != 0x53475057 || Header[1] != 1 || Header[2] != 28 ||
+    if (Header[0] != 0x53475057 || (Header[1] != 1 && Header[1] != 2) || Header[2] != 28 ||
         Header[3] != uint32(Frequency))
         return Fail(TEXT("Web shader header/frequency invalid"));
     const uint64 PayloadSize = uint64(28) + Header[5] + Header[6];
@@ -1136,6 +1137,13 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         }
     }
     const ANSICHAR *Utf8 = reinterpret_cast<const ANSICHAR *>(Desc.Code.GetData() + 28);
+    if (Header[1] == 2)
+    {
+        TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataBinary);
+        if (!UE::WebGPUShader::DecodeMetadata(Desc.Code.Slice(28, Header[5]), Data.Metadata))
+            return Fail(TEXT("Web shader binary metadata invalid"));
+    }
+    else
     {
         TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataJSON);
         const FString Json(FUTF8ToTCHAR(Utf8, Header[5]));

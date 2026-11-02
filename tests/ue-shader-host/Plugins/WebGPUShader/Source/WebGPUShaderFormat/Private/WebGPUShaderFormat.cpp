@@ -1,4 +1,5 @@
 #include "WebGPUShaderCode.h"
+#include "WebGPUShaderMetadata.h"
 #include "WebGPUVertexFetch.h"
 
 #include "Dom/JsonObject.h"
@@ -39,7 +40,7 @@ bool Decode(TConstArrayView<uint8> Bytes, FPayload &Payload, FString &Error)
     }
     uint32 Header[7];
     FMemory::Memcpy(Header, Bytes.GetData(), sizeof(Header));
-    if (Header[0] != Magic || Header[1] != Schema || Header[2] != HeaderBytes ||
+    if (Header[0] != Magic || (Header[1] != 1 && Header[1] != Schema) || Header[2] != HeaderBytes ||
         static_cast<uint64>(HeaderBytes) + Header[5] + Header[6] != static_cast<uint64>(Bytes.Num()))
     {
         Error = TEXT("Web shader magic, schema or lengths invalid");
@@ -48,7 +49,19 @@ bool Decode(TConstArrayView<uint8> Bytes, FPayload &Payload, FString &Error)
     Payload.Frequency = Header[3];
     Payload.FormatVersion = Header[4];
     const UTF8CHAR *Utf8 = reinterpret_cast<const UTF8CHAR *>(Bytes.GetData() + HeaderBytes);
-    Payload.MetadataJson = FString(FUTF8ToTCHAR(Utf8, Header[5]));
+    if (Header[1] == 1)
+        Payload.MetadataJson = FString(FUTF8ToTCHAR(Utf8, Header[5]));
+    else
+    {
+        TSharedPtr<FJsonObject> Metadata;
+        if (!DecodeMetadata(Bytes.Slice(HeaderBytes, Header[5]), Metadata))
+        {
+            Error = TEXT("Web shader binary metadata invalid");
+            return false;
+        }
+        // Text is only produced for the native diagnostic API, never by RHI load.
+        FJsonSerializer::Serialize(Metadata.ToSharedRef(), TJsonWriterFactory<>::Create(&Payload.MetadataJson));
+    }
     Payload.Wgsl = FString(FUTF8ToTCHAR(Utf8 + Header[5], Header[6]));
     return true;
 }
@@ -334,7 +347,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261101-v25-ManualVertexFetchBounds-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261103-v26-CompactBinaryMetadata-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -880,19 +893,23 @@ class FWebGPUShaderFormat final : public IShaderFormat
         if (!UE::WebGPUShader::ValidateBindings(Metadata, WebReflection, Error))
             return false;
         Metadata->SetBoolField(TEXT("bindingContractVerified"), true);
-        FString MetadataJson;
-        FJsonSerializer::Serialize(Metadata, TJsonWriterFactory<>::Create(&MetadataJson));
-        const FTCHARToUTF8 MetadataUtf8(*MetadataJson), WgslUtf8(*Wgsl);
+        TArray<uint8> MetadataBytes;
+        if (!UE::WebGPUShader::EncodeMetadata(Metadata, MetadataBytes))
+        {
+            Error = TEXT("Unable to serialize Web shader binary metadata");
+            return false;
+        }
+        const FTCHARToUTF8 WgslUtf8(*Wgsl);
         FMemoryWriter Writer(Payload, true);
         uint32 Fields[] = {UE::WebGPUShader::Magic,
                            UE::WebGPUShader::Schema,
                            UE::WebGPUShader::HeaderBytes,
                            static_cast<uint32>(Input.Target.GetFrequency()),
                            GetVersion(Input.ShaderFormat),
-                           static_cast<uint32>(MetadataUtf8.Length()),
+                           static_cast<uint32>(MetadataBytes.Num()),
                            static_cast<uint32>(WgslUtf8.Length())};
         Writer.Serialize(Fields, sizeof(Fields));
-        Writer.Serialize(const_cast<ANSICHAR *>(MetadataUtf8.Get()), MetadataUtf8.Length());
+        Writer.Serialize(MetadataBytes.GetData(), MetadataBytes.Num());
         Writer.Serialize(const_cast<ANSICHAR *>(WgslUtf8.Get()), WgslUtf8.Length());
         return !Writer.IsError();
     }

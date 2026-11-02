@@ -1,0 +1,915 @@
+{
+  "pass": true,
+  "date": "2026-11-02T17:47:48.669Z",
+  "sources": [
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderMetadata.h",
+      "sha256": "6134ceb2664fd1a2a71383ae91c2943c47a3fb111d1c808dfe2fc2a3fb8b645a"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderCode.h",
+      "sha256": "c75a33870be0c39ecc6d7910e8334c7b71bdcfe80098e7a79b00e019788a4a18"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Private/WebGPUShaderFormat.cpp",
+      "sha256": "4444b61e96ba87fbb43ca790caa1f05c7bb126753c2b24854a14395fb7e98da3"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "123d7def7252c6482d5dc7092afca8d9e5e5ac9e20529e30074761f0ce6da231"
+    },
+    {
+      "file": "tests/ue-shader-host/Source/UEShaderHost/Private/WebShaderMetadataProbe.cpp",
+      "sha256": "2bcc2db87e57c081a503f03608187b3d6d882d18607e926173b527938a714568"
+    },
+    {
+      "file": "tests/ue-shader-host/Source/UEShaderHost/Private/WebShaderProbeCommandlet.cpp",
+      "sha256": "ead3436b60a67b12c0274ba77241f84def5d0836216a075567444d34e0cf29b0"
+    },
+    {
+      "file": "tests/web-platform/build-web-engine.ps1",
+      "sha256": "87e23af02a333ebe38fcaa8eaed576bb7f1b1b43c1379b13cf2f0e154d455110"
+    },
+    {
+      "file": "tests/web-platform/web-shader-code.js",
+      "sha256": "4d5b5e2e72ea707ac613e0ccaae9e18e043fa29417b23706f00e6ee9c207f3a4"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-startup-native.cjs",
+      "sha256": "d505268f70f79441e7f61e808a19474172f6d76f0f0a9053eb64f31c49f4f98c"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-shader-metadata.cjs",
+      "sha256": "88f8c26fdbf95c644e99a188f78036180af4f95fad932d332df368efaf1c618d"
+    },
+    {
+      "file": "tests/web-platform/verify-web-shader-metadata.cjs",
+      "sha256": "abf4e1da1f7ebbe0a336535a0b0b4f5958498e9b457a93c0ceb4bec3b01da7a8"
+    },
+    {
+      "file": "tests/web-platform/verify-web-shader-metadata-inventory.cjs",
+      "sha256": "6224266c12f84895d770ac66b1c3c6f3050414e9412e28688fa941ef85331c0c"
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "tests/web-platform/results/villa-shader-metadata-inventory-verification-v28.json",
+      "sha256": "4618e24641dcf2157665194467134993312d3d5512e3f5b12b81c17a87d1ca34"
+    },
+    {
+      "file": "tests/web-platform/results/web-project-triplex-binary-prepare-results.json",
+      "sha256": "a7457592bd995f8dc4d8eb2d541285df3568368aa32da1070e7fd19063d9541b"
+    },
+    {
+      "file": "tests/web-platform/results/web-project-triplex-binary-desktop-cook-results.json",
+      "sha256": "1db241ded9b4a7b03c957dd54260be987c5cf44172dab73063f7c875cfdbf35b"
+    },
+    {
+      "file": "tests/web-platform/results/villa-shader-metadata-probe-v28/metadata-probe.json",
+      "sha256": "61376ea57e21592c5ff9c1739c9f5d2b207e3f3f76ff210679bebe4f7e4d71c0"
+    },
+    {
+      "file": "tests/web-platform/results/villa-shader-metadata-js-verification-v28.json",
+      "sha256": "e650d3693b7695b08bfd21de01ae18acf28ebe36d38e71bee29076864fa33695"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-a1-v28.json",
+      "sha256": "71d961b78a0bb0544e97b89327e8b8b68ab9f89475ae99d83bcfd2017e3f3e7f"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-a1-v28-0-native-analysis.json",
+      "sha256": "2c4872625535333327005fd925a2d3cdf31a89b13a42e63a53a1a51c08e3da1f"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-abba-a1-v28-0.utrace",
+      "sha256": "c95da0ce4c1d99ea8ca8735c7be6ed2b12564b15d6a2f06759fcd225f5707efc"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-a1-v28-analysis.json",
+      "sha256": "fe137530d9e732451ed56c86d97d17c4037ec9f2c6206e2a79dfbbef0f5ed4cb"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-b1-v28.json",
+      "sha256": "44967bbd69e3f712714e0e144b85146be4e4b1e2d106d9b8c2c3a77e15ca1607"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-b1-v28-0-native-analysis.json",
+      "sha256": "3cffa5a96734a264373fad354aaa17e04a89cc7eddc1abb2f880ef5659db0758"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-abba-b1-v28-0.utrace",
+      "sha256": "722b23bb399da7da4518c3ae2111df1476dff1042d96304362baaeb7be7fdeae"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-b1-v28-analysis.json",
+      "sha256": "9974aa8e5291826cb328dee7408bcaf9b8934a76757528eef5258631bdcdfb8c"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-b2-v28.json",
+      "sha256": "609105ac8548bc3d384006c3ab2708aa0f64bc15aff12b5ebb4cbfdd243d2f9c"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-b2-v28-0-native-analysis.json",
+      "sha256": "44b6561d44de153fe32c50e78cbd4d0f9b07e78bde2a39fe93dec74b844919ff"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-abba-b2-v28-0.utrace",
+      "sha256": "0c92b921adbe730ccc649304fb81f837cc0c38968f104755ab771fe86e7dc190"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-b2-v28-analysis.json",
+      "sha256": "f56d4465e0afe393c765b35cc08e7d0999d1942049a1d3b2b38b74c28e96556d"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-a2-v28.json",
+      "sha256": "0906ae22ce4f3c11faca7f44a156f3afb70cff94e46f04ec618aa15e14944f90"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-a2-v28-0-native-analysis.json",
+      "sha256": "2a3f0d91006c815bea6d50201cc32986d25f73d5626b7928828c2c164bb85eb3"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-abba-a2-v28-0.utrace",
+      "sha256": "5b10f948d1069f82303bd9a560656651e52ce68f6b27fef17b12cf4d2faa9c4d"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-abba-a2-v28-analysis.json",
+      "sha256": "27759ea810557fe36352468a16bee5ffd3eabbe2ab1f4ed4eeebb8a5bc65024e"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-normal-a-v28.json",
+      "sha256": "17c643e10a6fba16ee118310e89bf38838819693b29efee4ad4525c35f6552a5"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-normal-a-v28-analysis.json",
+      "sha256": "2a1bf5a3bfeb7af064d95bd4b65781c9143e470bf68b240a6cca074063d47b20"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-normal-a-v28-0-manual-export.json",
+      "sha256": "cb4e3fd9e8a6b39914c003240764f6757f939d69aea4471d0e7f4fcde2ab3e57"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-normal-a-v28-1-manual-export.json",
+      "sha256": "057080a33d4c6d93a6b81617ae4587b4f01e3582cca0e2bb6d48126c2bacbfa9"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-normal-b-v28.json",
+      "sha256": "b4031c5fb3de6d5db76aeab1b20bb80b8c4781e7a5b6c122d6b9718eb52fc1fa"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-normal-b-v28-analysis.json",
+      "sha256": "daded4e0582d0d2135152f00a10d67084a75f9352fbcbef3cc6732e673007e16"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-normal-b-v28-0-manual-export.json",
+      "sha256": "df6cdeee10e1b1694aaf2cc6271af0a4d02c942f097210c81e4c3ea751fd4588"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-reflection-normal-b-v28-1-manual-export.json",
+      "sha256": "06c596900b159c10d6e9426436bae37b776c51edaf5a4ed2606cc16936fcb94b"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-binary-v28-package.json",
+      "sha256": "4fb23f0ba0d299d02e773c9410243b6b784dae01266bec8572b594cc90594d1e"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-binary-trace-v28-package.json",
+      "sha256": "32d2f704b1a585e7e8667c51ebf37b706b6fa63f9ab1d8b456ba21b8cd1c17d7"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-binary-v28-build.json",
+      "sha256": "c670247f11e767c9e8f45932ba04f66a5c5fbd51ef465575ceff3036fe6f5556"
+    },
+    {
+      "file": "tests/web-platform/results/villa-reflection-binary-trace-v28-build.json",
+      "sha256": "4895a108db218f78002aa9bba23ca1e4bab09c5c387d196e9b3b3a4da0c4a2fd"
+    }
+  ],
+  "originalProjectUnmodified": true,
+  "projectQualityOverrides": [],
+  "shaderInventory": [
+    {
+      "path": "/Engine/Programs/UEWebEngine/Content/ShaderArchive-Global-SF_WEBGPU_SM5-SP_WEBGPU_SM5.ushaderbytecode",
+      "shaders": 3112,
+      "jsonBytes": 124217475,
+      "binaryBytes": 74153015,
+      "wgslInventorySha256": "e44e68046bfee2a983691c932dea1358134e33d497901614c59e59a506efea34",
+      "semanticInventorySha256": "a570c0a8bb98e0c4812bba6b2f808f264b347fedde5ce72cb93e93a055cae037"
+    },
+    {
+      "path": "/Engine/Programs/UEWebEngine/Content/ShaderArchive-UEWebEngine-SF_WEBGPU_SM5-SP_WEBGPU_SM5.ushaderbytecode",
+      "shaders": 740,
+      "jsonBytes": 52336437,
+      "binaryBytes": 30836745,
+      "wgslInventorySha256": "f03b2e08db92310655aae2a6d0764d2a3dc30766ad4056be979bfd37a57a7ed4",
+      "semanticInventorySha256": "658a8e6d4e4404e0ca9264d4272e9401fea5b51b3c2479064900d60b59a34765"
+    }
+  ],
+  "nativeProbe": {
+    "pass": true,
+    "shaderMetadataRoundtrips": 3852,
+    "edgeCaseRoundtrips": 1,
+    "malformedInputsRejected": 5,
+    "jsonBytes": 176553912,
+    "binaryBytes": 104989760,
+    "nativeJsonParseMs": 3591.524362564087,
+    "nativeBinaryDecodeMs": 2164.1258783638477
+  },
+  "jsProbe": {
+    "pass": true,
+    "count": 3852,
+    "malformedInputsRejected": 5,
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-shader-metadata.cjs",
+        "sha256": "abf4e1da1f7ebbe0a336535a0b0b4f5958498e9b457a93c0ceb4bec3b01da7a8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-shader-code.js",
+        "sha256": "4d5b5e2e72ea707ac613e0ccaae9e18e043fa29417b23706f00e6ee9c207f3a4"
+      },
+      {
+        "file": "tests/web-platform/results/villa-shader-metadata-corpus-v28.bin",
+        "sha256": "1d035430bcb376ddbdfbc0b5480f7765e221caaf23c2eadd2328b3f82e6b1e27"
+      },
+      {
+        "file": "tests/web-platform/results/villa-shader-metadata-probe-v28/metadata.cbstream",
+        "sha256": "151acef012ade4c500ee27eb2b02b19c57198485f9522222273ba76098c92ee1"
+      }
+    ],
+    "boundary": "UE native writer/reader also checks semantic equality against FJsonSerializer. This independently checks the diagnostic JavaScript reader against every original JSON object."
+  },
+  "runtimePairs": [
+    {
+      "a": "villa-shader-binary-legacy-v28",
+      "b": "villa-reflection-binary-v28",
+      "runtime": {
+        "file": "tests/web-platform/build/villa-shader-binary-legacy-v28/UEWebEngineThreads.wasm",
+        "sha256": "acee6515fd9a8048979299070e345e536e79cbf0ca2d72b9c9e2d1088abe879d"
+      },
+      "config": {
+        "file": "tests/web-platform/build/villa-shader-binary-legacy-v28/config-files.json",
+        "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+      }
+    },
+    {
+      "a": "villa-shader-binary-legacy-trace-v28",
+      "b": "villa-reflection-binary-trace-v28",
+      "runtime": {
+        "file": "tests/web-platform/build/villa-shader-binary-legacy-trace-v28/UEWebEngineThreadsTrace.wasm",
+        "sha256": "82f148473c5c96b6342c686bafc49768254f321cc6674d2b786c096bfe20affe"
+      },
+      "config": {
+        "file": "tests/web-platform/build/villa-shader-binary-legacy-trace-v28/config-files.json",
+        "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+      }
+    }
+  ],
+  "traceABBA": [
+    {
+      "name": "a1",
+      "format": "JSON",
+      "metadata": {
+        "thread": "2",
+        "name": "WebShader_MetadataJSON",
+        "count": 1682,
+        "inclusiveMs": 3598.051000000004,
+        "exclusiveMs": 3598.051000000004,
+        "maxMs": 23.240000000000002
+      },
+      "fixedShaderBatch": {
+        "name": "WebShader_MetadataJSON",
+        "count": 1475,
+        "milliseconds": 2911.5549999999844
+      },
+      "initMs": 8194.15,
+      "downloadedBytes": 3524224920,
+      "health": {
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 76,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2290,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "errors": [],
+        "pso": {
+          "sampleFrame": 60,
+          "graphicsPipelines": 591,
+          "computePipelines": 645,
+          "graphicsPipelineCreateMs": 41.50271415710449,
+          "computePipelineCreateMs": 32.438039779663086,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 482,
+          "asyncPrecacheRequested": 1108,
+          "asyncPrecacheCompleted": 1108,
+          "asyncPrecacheFailed": 8,
+          "unsupportedPrecacheRequests": 846,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 14034,
+          "precacheConcurrency": 8
+        }
+      }
+    },
+    {
+      "name": "b1",
+      "format": "UE Compact Binary",
+      "metadata": {
+        "thread": "2",
+        "name": "WebShader_MetadataBinary",
+        "count": 1681,
+        "inclusiveMs": 1862.5079999999994,
+        "exclusiveMs": 1862.5079999999994,
+        "maxMs": 7.9399999999999995
+      },
+      "fixedShaderBatch": {
+        "name": "WebShader_MetadataBinary",
+        "count": 1475,
+        "milliseconds": 1530.5279999999912
+      },
+      "initMs": 7148.469999999999,
+      "downloadedBytes": 3267502209,
+      "health": {
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 73,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2290,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "errors": [],
+        "pso": {
+          "sampleFrame": 60,
+          "graphicsPipelines": 590,
+          "computePipelines": 653,
+          "graphicsPipelineCreateMs": 42.25945472717285,
+          "computePipelineCreateMs": 34.659385681152344,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 482,
+          "asyncPrecacheRequested": 1108,
+          "asyncPrecacheCompleted": 1108,
+          "asyncPrecacheFailed": 8,
+          "unsupportedPrecacheRequests": 846,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 14092,
+          "precacheConcurrency": 8
+        }
+      }
+    },
+    {
+      "name": "b2",
+      "format": "UE Compact Binary",
+      "metadata": {
+        "thread": "2",
+        "name": "WebShader_MetadataBinary",
+        "count": 1686,
+        "inclusiveMs": 1795.6150000000007,
+        "exclusiveMs": 1795.6150000000007,
+        "maxMs": 6.779999999999999
+      },
+      "fixedShaderBatch": {
+        "name": "WebShader_MetadataBinary",
+        "count": 1475,
+        "milliseconds": 1485.2120000000032
+      },
+      "initMs": 6715.6,
+      "downloadedBytes": 0,
+      "health": {
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 75,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2290,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "errors": [],
+        "pso": {
+          "sampleFrame": 60,
+          "graphicsPipelines": 591,
+          "computePipelines": 642,
+          "graphicsPipelineCreateMs": 39.563655853271484,
+          "computePipelineCreateMs": 33.7369441986084,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 482,
+          "asyncPrecacheRequested": 1108,
+          "asyncPrecacheCompleted": 1108,
+          "asyncPrecacheFailed": 8,
+          "unsupportedPrecacheRequests": 846,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 14009,
+          "precacheConcurrency": 8
+        }
+      }
+    },
+    {
+      "name": "a2",
+      "format": "JSON",
+      "metadata": {
+        "thread": "2",
+        "name": "WebShader_MetadataJSON",
+        "count": 1685,
+        "inclusiveMs": 3545.9730000000022,
+        "exclusiveMs": 3545.9730000000022,
+        "maxMs": 15.584999999999999
+      },
+      "fixedShaderBatch": {
+        "name": "WebShader_MetadataJSON",
+        "count": 1475,
+        "milliseconds": 2872.1360000000145
+      },
+      "initMs": 8432.395,
+      "downloadedBytes": 3339065897,
+      "health": {
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 74,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2290,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "errors": [],
+        "pso": {
+          "sampleFrame": 60,
+          "graphicsPipelines": 591,
+          "computePipelines": 645,
+          "graphicsPipelineCreateMs": 38.840532302856445,
+          "computePipelineCreateMs": 32.40346908569336,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 482,
+          "asyncPrecacheRequested": 1108,
+          "asyncPrecacheCompleted": 1108,
+          "asyncPrecacheFailed": 8,
+          "unsupportedPrecacheRequests": 846,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 13963,
+          "precacheConcurrency": 8
+        }
+      }
+    }
+  ],
+  "normal": [
+    {
+      "format": "JSON",
+      "capture": {
+        "file": "tests/web-platform/results/villa-reflection-normal-a-v28.json",
+        "sha256": "17c643e10a6fba16ee118310e89bf38838819693b29efee4ad4525c35f6552a5"
+      },
+      "selectedRun": 1,
+      "phases": [
+        {
+          "name": "page to engine script",
+          "startMs": 0,
+          "endMs": 189.11,
+          "durationMs": 189.11
+        },
+        {
+          "name": "WASM instantiate (includes asset wait)",
+          "startMs": 204.99,
+          "endMs": 431.785,
+          "durationMs": 226.795
+        },
+        {
+          "name": "content mount (includes pack verification)",
+          "startMs": 486.4,
+          "endMs": 3157.7,
+          "durationMs": 2671.3
+        },
+        {
+          "name": "runtime ready to engine ready",
+          "startMs": 3275.92,
+          "endMs": 14675.01,
+          "durationMs": 11399.09
+        },
+        {
+          "name": "native.PreInit",
+          "startMs": 3341.36,
+          "endMs": 5683.045,
+          "durationMs": 2341.685
+        },
+        {
+          "name": "native.Init",
+          "startMs": 5683.32,
+          "endMs": 13247.55,
+          "durationMs": 7564.23
+        },
+        {
+          "name": "native.threadWitness",
+          "startMs": 13247.565,
+          "endMs": 14673.215,
+          "durationMs": 1425.65
+        },
+        {
+          "name": "native.firstTick",
+          "startMs": 14680.32,
+          "endMs": 14748.495,
+          "durationMs": 68.175
+        },
+        {
+          "name": "engine ready to first game frame submitted",
+          "startMs": 14675.01,
+          "endMs": 15874.665,
+          "durationMs": 1199.655
+        },
+        {
+          "name": "game frame submit to GPU queue completed",
+          "startMs": 15874.665,
+          "endMs": 16452.07,
+          "durationMs": 577.405
+        },
+        {
+          "name": "engine ready to PSO-ready message",
+          "startMs": 14675.01,
+          "endMs": 17320.315,
+          "durationMs": 2645.305
+        },
+        {
+          "name": "navigation to visible scene (two RAF after loader hidden)",
+          "startMs": 0,
+          "endMs": 17326.985,
+          "durationMs": 17326.985
+        }
+      ],
+      "visibleMs": 17326.985,
+      "io": {
+        "memoryLimit": 16777216,
+        "memoryBytes": 16777216,
+        "peakMemoryBytes": 16777216,
+        "memoryHits": 2174,
+        "diskReads": 2130,
+        "diskReadBytes": 1241290881,
+        "downloadedBytes": 0,
+        "downloads": 0,
+        "persistentHits": 2,
+        "evictions": 1604,
+        "diskEvictions": 0,
+        "activeReads": 1,
+        "peakActiveReads": 4,
+        "verification": "sampled",
+        "hashedBytes": 0,
+        "hashMs": 0,
+        "downloadMs": 0,
+        "diskReadMs": 8235.294999912381
+      },
+      "health": {
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 82,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2290,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "errors": [],
+        "pso": {
+          "sampleFrame": 60,
+          "graphicsPipelines": 591,
+          "computePipelines": 642,
+          "graphicsPipelineCreateMs": 34.61813926696777,
+          "computePipelineCreateMs": 31.57949447631836,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 482,
+          "asyncPrecacheRequested": 1108,
+          "asyncPrecacheCompleted": 1108,
+          "asyncPrecacheFailed": 8,
+          "unsupportedPrecacheRequests": 846,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 14107,
+          "precacheConcurrency": 8
+        }
+      },
+      "note": "Warm asset sample only. First rounds retained in capture; B first round redownloaded the new content pack."
+    },
+    {
+      "format": "UE Compact Binary",
+      "capture": {
+        "file": "tests/web-platform/results/villa-reflection-normal-b-v28.json",
+        "sha256": "b4031c5fb3de6d5db76aeab1b20bb80b8c4781e7a5b6c122d6b9718eb52fc1fa"
+      },
+      "selectedRun": 1,
+      "phases": [
+        {
+          "name": "page to engine script",
+          "startMs": 0,
+          "endMs": 193.545,
+          "durationMs": 193.545
+        },
+        {
+          "name": "WASM instantiate (includes asset wait)",
+          "startMs": 210.745,
+          "endMs": 445.385,
+          "durationMs": 234.64
+        },
+        {
+          "name": "content mount (includes pack verification)",
+          "startMs": 502.96,
+          "endMs": 2516.045,
+          "durationMs": 2013.085
+        },
+        {
+          "name": "runtime ready to engine ready",
+          "startMs": 2627.015,
+          "endMs": 12279.755,
+          "durationMs": 9652.74
+        },
+        {
+          "name": "native.PreInit",
+          "startMs": 2681.255,
+          "endMs": 4682.25,
+          "durationMs": 2000.995
+        },
+        {
+          "name": "native.Init",
+          "startMs": 4682.53,
+          "endMs": 10774.975,
+          "durationMs": 6092.445
+        },
+        {
+          "name": "native.threadWitness",
+          "startMs": 10774.99,
+          "endMs": 12277.415,
+          "durationMs": 1502.425
+        },
+        {
+          "name": "native.firstTick",
+          "startMs": 12280.805,
+          "endMs": 12353.215,
+          "durationMs": 72.41
+        },
+        {
+          "name": "engine ready to first game frame submitted",
+          "startMs": 12279.755,
+          "endMs": 13736.7,
+          "durationMs": 1456.945
+        },
+        {
+          "name": "game frame submit to GPU queue completed",
+          "startMs": 13736.7,
+          "endMs": 14220.435,
+          "durationMs": 483.735
+        },
+        {
+          "name": "engine ready to PSO-ready message",
+          "startMs": 12279.755,
+          "endMs": 14812.57,
+          "durationMs": 2532.815
+        },
+        {
+          "name": "navigation to visible scene (two RAF after loader hidden)",
+          "startMs": 0,
+          "endMs": 14846.605,
+          "durationMs": 14846.605
+        }
+      ],
+      "visibleMs": 14846.605,
+      "io": {
+        "memoryLimit": 16777216,
+        "memoryBytes": 16777216,
+        "peakMemoryBytes": 16777216,
+        "memoryHits": 2161,
+        "diskReads": 2147,
+        "diskReadBytes": 1187565272,
+        "downloadedBytes": 0,
+        "downloads": 0,
+        "persistentHits": 2,
+        "evictions": 1629,
+        "diskEvictions": 0,
+        "activeReads": 2,
+        "peakActiveReads": 4,
+        "verification": "sampled",
+        "hashedBytes": 0,
+        "hashMs": 0,
+        "downloadMs": 0,
+        "diskReadMs": 6445.294999964535
+      },
+      "health": {
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 84,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2290,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "errors": [],
+        "pso": {
+          "sampleFrame": 60,
+          "graphicsPipelines": 590,
+          "computePipelines": 649,
+          "graphicsPipelineCreateMs": 39.43300247192383,
+          "computePipelineCreateMs": 32.65953063964844,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 482,
+          "asyncPrecacheRequested": 1108,
+          "asyncPrecacheCompleted": 1108,
+          "asyncPrecacheFailed": 8,
+          "unsupportedPrecacheRequests": 846,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 14179,
+          "precacheConcurrency": 8
+        }
+      },
+      "note": "Warm asset sample only. First rounds retained in capture; B first round redownloaded the new content pack."
+    }
+  ],
+  "summary": {
+    "metadataJSONMeanMs": 3572.0120000000034,
+    "metadataBinaryMeanMs": 1829.0615,
+    "metadataReductionPercent": 48.79464290713473,
+    "warmVisibleSavedMs": 2480.380000000001
+  },
+  "boundaries": [
+    "Normal visible milestone is two RAF after loading overlay hides; not capture elapsedMs or display scanout.",
+    "Same runtime/config and identical WGSL/reflection semantics; Cook hashes change with metadata encoding.",
+    "ABBA total navigation times include cold content downloads and are not an encoding-only comparison.",
+    "Native trace total shader counts vary by late lazy loads. The major stall batch has exactly 1475 shaders in all four runs.",
+    "Eight existing compute PSO workgroup-limit rejections remain; no new uncaught GPU errors.",
+    "Whole-library native/JS parity is 3852 shaders. Ordinary screenshot captures verify initial view, not long traversal or steady FPS.",
+    "User previous 28.071s sample has a larger independent PSO tail; these warm local results do not promise the same total for that browser state."
+  ],
+  "normalViewConfigurationVerified": {
+    "width": 1484,
+    "height": 835,
+    "outputWidth": 2290,
+    "outputHeight": 1288,
+    "antiAliasing": 4,
+    "jitterX": 0,
+    "jitterY": 0,
+    "x": 0,
+    "y": 0,
+    "outputX": 0,
+    "outputY": 0,
+    "parallelRendering": true
+  }
+}
