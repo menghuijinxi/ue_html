@@ -10,6 +10,7 @@ const option = name => process.argv.find(x=>x.startsWith('--'+name+'='))?.slice(
 const off=option('off'),on=option('on'),tag=option('tag')||'pso-precache-abba';
 const order=process.argv.includes('--on-first')?[on,off,off,on]:[off,on,on,off];
 const freshBrowser=process.argv.includes('--fresh-browser');
+const expectedAA=option('aa');
 assert([off,on,tag].every(x=>x&&/^[a-z0-9-]+$/.test(x)));
 const output=path.join(__dirname,'results',tag);
 const report={date:new Date().toISOString(),off,on,order,freshBrowser,runs:[],errors:[],qualityOverrides:[],pass:false,
@@ -81,9 +82,11 @@ function summary(data){
        const deadline=Date.now()+180000;
        for(;;){
          const sample=await page.evaluate(()=>({frames:globalThis.__webEngineFrames,pso:globalThis.__webPSOPrecache,
-           rhi:globalThis.__webOptimizationRHI,failure:globalThis.__webEngineFailure}));
+           rhi:globalThis.__webOptimizationRHI,failure:globalThis.__webEngineFailure,
+           loadingHidden:document.getElementById('loading').hidden,precacheReady:globalThis.__webPSOPrecacheReady}));
          run.startupSamples.push({elapsedMs:Date.now()-start,...sample});save();
          assert(!sample.failure,sample.failure);
+         if(run.enabled&&sample.pso?.active>0)assert.equal(sample.loadingHidden,false,'Precache must finish before showing the scene');
          if(sample.pso&&sample.pso.active===0&&sample.rhi&&sample.rhi.asyncPrecacheRequested===sample.rhi.asyncPrecacheCompleted)break;
          assert(Date.now()<deadline,'PSO queue did not finish: '+JSON.stringify(sample));
          await page.waitForTimeout(5000);
@@ -91,6 +94,7 @@ function summary(data){
        run.precacheReadyMs=Date.now()-start;
        await page.waitForTimeout(15000);
        run.ready=await state();save();
+       assert(await page.evaluate(()=>document.getElementById('loading').hidden),'Loading overlay must finish');
        assert.equal(run.ready.pso.enabled,run.enabled);
        assert.equal(run.ready.rhi.psoPrecaching,run.enabled);
        async function capture(name,action){
@@ -118,6 +122,7 @@ function summary(data){
      }
    }
    const reference=report.runs[0].ready;
+   if(expectedAA!==undefined)assert.equal(reference.view.antiAliasing,Number(expectedAA),'Actual anti-aliasing method');
    for(const run of report.runs){
      assert.deepEqual(run.ready.settings,reference.settings);assert.deepEqual(run.ready.camera,reference.camera);
      for(const key of ['width','height','outputWidth','outputHeight'])assert.equal(run.ready.view[key],reference.view[key]);

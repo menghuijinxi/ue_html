@@ -72,6 +72,8 @@ let context;
       } finally { clearInterval(startupTimer); }
       const startupFailure = await page.evaluate(() => globalThis.__webEngineFailure);
       assert(!startupFailure, JSON.stringify(startupFailure));
+      await page.waitForFunction(() => globalThis.__webEngineFailure ||
+        !globalThis.__webPSOPrecacheExpected || globalThis.__webPSOPrecacheReady, null, {timeout: 180000});
       assert(!result.errors.length, result.errors.join('\n'));
       if (validateBindingCache)
         assert.equal(await page.evaluate(() => __webEngineRPC('WebBindingCacheTest', 1)), 1);

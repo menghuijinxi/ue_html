@@ -272,6 +272,7 @@ foreach ($taskPart in Get-ChildItem -LiteralPath $taskOriginalRendererModule) {
     Copy-Item -LiteralPath $taskPart.FullName -Destination $taskRendererModule -Recurse -Force
 }
 $taskSceneCulling = 'Private/SceneCulling/SceneCullingRenderer.cpp'
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp') -Destination (Join-Path $taskRendererModule 'Private/TranslucentRendering.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/$taskSceneCulling") -Destination (Join-Path $taskRendererModule $taskSceneCulling) -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp') -Destination (Join-Path $taskRendererModule 'Private/FXRenderingUtils.cpp') -Force
 foreach ($taskRendererOverlay in @('Private/DistanceFieldAmbientOcclusion.cpp', 'Private/GlobalDistanceField.cpp', 'Private/GlobalDistanceFieldHeightfields.h',

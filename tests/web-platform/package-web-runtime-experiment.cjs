@@ -13,8 +13,11 @@ const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file)
 const results = path.join(__dirname, 'results'), base = path.join(__dirname, 'build', baseline);
 const output = path.join(__dirname, 'build', outputFolder);
 const evidenceFile = option('evidence');
-assert(evidenceFile, 'Require a historical ABBA report identifying the exact baseline package');
-const evidence = read(evidenceFile), proof = Object.values(evidence.packages).find(x => x.folder === baseline);
+assert(evidenceFile, 'Require a verified package or ABBA report identifying the exact baseline');
+const evidence = read(evidenceFile);
+const proof = evidence.packages ? Object.values(evidence.packages).find(x => x.folder === baseline) :
+  evidence.output && path.resolve(evidence.output) === base && evidence.fullNormalUBTBuildVerified &&
+  evidence.products?.every(valid) ? {files: evidence.products} : null;
 assert(evidence.pass && proof && Object.values(proof.files).every(valid));
 const buildFile = path.join(results, 'web-engine-full-thread-build-results.json'), build = read(buildFile);
 assert(build.pass && build.threads && build.buildSucceeded && build.exitCode === 0 &&
@@ -62,8 +65,8 @@ const buildSnapshot = path.join(results, outputFolder + '-build.json');
 fs.copyFileSync(buildFile, buildSnapshot);
 const report = {date: new Date().toISOString(), pass: true, baseline, output, psoPrecache,
   sources: [__filename, ...helpers.map(f => path.join(__dirname, f))].map(audit),
-  build: audit(buildSnapshot), historicalEvidence: audit(evidenceFile), historicalCookPayload: proof.files,
+  build: audit(buildSnapshot), baselineEvidence: audit(evidenceFile), baselineCookPayload: proof.files,
   projectQualityOverrides: [], products,
-  boundary: 'Runtime-only experiment. Reuses historical measured Cook content/config byte for byte; does not claim a fresh Cook or current shader compiler audit.'};
+  boundary: 'Runtime-only variant. Reuses the audited baseline Cook content/config byte for byte; the baseline reports retain Cook provenance. This variant does not rerun Cook.'};
 fs.writeFileSync(path.join(results, outputFolder + '-package.json'), JSON.stringify(report, null, 2));
 console.log(JSON.stringify({pass: true, output, files: products.length}));

@@ -106,7 +106,8 @@ function loadingBytes(bytes) {
 function loadingRender() {
   if (startupOnly) return;
   const failure = globalThis.__webEngineFailure;
-  if (!failure && globalThis.__webEngineReady && globalThis.__webEngineFrames >= 2) {
+  const psoWaiting = globalThis.__webPSOPrecacheExpected && !globalThis.__webPSOPrecacheReady;
+  if (!failure && !psoWaiting && globalThis.__webEngineReady && globalThis.__webEngineFrames >= 2) {
     loadingComplete = true;
     loading.hidden = true;
     document.getElementById('canvas').setAttribute('aria-busy', 'false');
@@ -132,6 +133,11 @@ function loadingRender() {
     running: ['准备首帧画面', '关卡已启动，正在等待画面']
   };
   let [title, detail] = stages[stage] || ['准备关卡', '正在加载'];
+  if (psoWaiting && globalThis.__webEngineFrames >= 2) {
+    title = '准备图形管线';
+    const active = globalThis.__webPSOPrecache?.active;
+    detail = Number.isFinite(active) && active > 0 ? `正在预编译，还剩 ${active} 个任务` : '正在完成图形预编译';
+  }
   const file = stage === 'wasm-downloading' ? 'UEWebEngine.wasm'
     : stage === 'content-loading' ? 'content.bin' : null;
   const localTransfer = startupDiagnostics.localContent;
@@ -186,6 +192,8 @@ function startupSnapshot() {
     gpuHandles: globalThis.__webGPUHandleDiagnostics || null,
     textureStreaming: globalThis.__webTextureStreaming || null,
     occlusion: globalThis.__webOcclusionRHI || null,
+    psoPrecache: globalThis.__webPSOPrecache || null,
+    psoPrecacheReady: globalThis.__webPSOPrecacheReady ?? null,
     engineLog: globalThis.__webEngineLog.slice(-80)};
 }
 document.addEventListener('visibilitychange', () => {

@@ -8,8 +8,23 @@ const option=name=>process.argv.find(x=>x.startsWith('--'+name+'='))?.slice(name
 const folder=option('folder'),tag=option('tag')||'pso-coverage';
 assert([folder,tag].every(x=>x&&/^[a-z0-9-]+$/.test(x)));
 function instrument(){
- const layouts=new WeakMap(),groups=new WeakMap();
- globalThis.__psoCoverage={phase:'startup',pipelines:[]};
+ const layouts=new WeakMap(),groups=new WeakMap(),pipelines=new WeakMap();
+ globalThis.__psoCoverage={phase:'startup',pipelines:[],errors:[]};
+ const requestDevice=GPUAdapter.prototype.requestDevice;
+ GPUAdapter.prototype.requestDevice=async function(...args){
+   const device=await requestDevice.apply(this,args);
+   device.addEventListener('uncapturederror',e=>__psoCoverage.errors.push(e.error.message));
+   device.lost.then(info=>{if(info.reason!=='destroyed')__psoCoverage.errors.push(info.message)});
+   return device;
+ };
+ for(const type of [GPURenderPassEncoder,GPURenderBundleEncoder]){
+   const original=type.prototype.setPipeline;
+   type.prototype.setPipeline=function(pipeline){
+     const item=pipelines.get(pipeline);
+     if(item){item.binds=(item.binds||0)+1;item.lastUsePhase=__psoCoverage.phase;}
+     return original.call(this,pipeline);
+   };
+ }
  for(const [name,map,transform] of [
    ['createBindGroupLayout',groups,d=>d],
    ['createPipelineLayout',layouts,d=>({...d,bindGroupLayouts:d.bindGroupLayouts.map(x=>groups.get(x))})]]){
@@ -25,7 +40,8 @@ function instrument(){
        fragment:d.fragment&&{...d.fragment,module:undefined}}))};
      state.pipelines.push(item);
      const result=original.call(this,d);
-     if(name.endsWith('Async'))result.then(()=>item.success=true,e=>{item.success=false;item.error=e.message;});
+     if(name.endsWith('Async'))result.then(p=>{item.success=true;pipelines.set(p,item)},e=>{item.success=false;item.error=e.message;});
+     else pipelines.set(result,item);
      return result;
    };
  }
@@ -57,6 +73,11 @@ function instrument(){
      await page.waitForTimeout(5000);
    }
    report.capture=await owner.evaluate(()=>__psoCoverage);
+   report.final=await owner.evaluate(()=>({rhi:__webOptimizationRHI,pso:__webPSOPrecache}));
+   assert.deepEqual(report.capture.errors,[]);
+   report.reuse={asyncPipelinesBound:report.capture.pipelines.filter(x=>x.method.endsWith('Async')&&x.binds>0).length,
+     asyncPipelinesBoundDuringTour:report.capture.pipelines.filter(x=>x.method.endsWith('Async')&&x.lastUsePhase==='tour').length};
+   assert(report.reuse.asyncPipelinesBound>0,'Successful async PSOs must actually reach a render pass');
    report.coverage=report.capture.pipelines.filter(x=>x.phase==='tour').map(item=>{
      const candidates=report.capture.pipelines.filter(x=>x.method.endsWith('Async')&&
        x.descriptor.label===item.descriptor.label&&x.success);
@@ -68,5 +89,5 @@ function instrument(){
  }catch(e){report.errors.push(e.stack||String(e));throw e;}
  finally{fs.writeFileSync(output,JSON.stringify(report,null,2));await context.close();}
  console.log(JSON.stringify({pass:report.pass,startup:report.capture?.pipelines.filter(x=>x.phase==='startup').length,
-   tour:report.capture?.pipelines.filter(x=>x.phase==='tour').length}));
+   tour:report.capture?.pipelines.filter(x=>x.phase==='tour').length,reuse:report.reuse}));
 })().catch(e=>{console.error(e);process.exitCode=1});

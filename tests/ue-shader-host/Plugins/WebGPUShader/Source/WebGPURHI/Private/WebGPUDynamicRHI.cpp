@@ -27,6 +27,7 @@
 
 namespace
 {
+uint32 PrecachedGraphicsUsed = 0, PrecachedGraphicsBinds = 0;
 static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
     TEXT("r.WebGPU.ValidateBindingCache"), 0,
     TEXT("Rebuild cached shader descriptors and check the results for missed invalidation."), ECVF_RenderThreadSafe);
@@ -588,6 +589,9 @@ void FWebGPUDynamicRHI::ConfigureStartup()
         // leave room in the fixed Wasm pthread pool for engine threads.
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolSize"))->Set(2, ECVF_SetByCode);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolPercentOfHardwareThreads"))->Set(0, ECVF_SetByCode);
+        // Keep completed RHI objects in UE's existing bounded cache. A successful
+        // browser async compile alone does not guarantee cheap synchronous recreation.
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.PSOPrecache.KeepInMemoryUntilUsed"))->Set(1, ECVF_SetByCode);
     }
     GRHISupportsPipelineFileCache = false;
     GRHISupportsTextureStreaming = true;
@@ -1052,8 +1056,10 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             GRHISupportsPSOPrecaching, PrecachedGraphicsPipelines);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
-            {asyncPrecacheRequested:$0, asyncPrecacheCompleted:$1, asyncPrecacheFailed:$2, unsupportedPrecacheRequests:$3});
-        }, AsyncPrecacheRequested, AsyncPrecacheCompleted, AsyncPrecacheFailed, UnsupportedPrecacheRequests);
+            {asyncPrecacheRequested:$0, asyncPrecacheCompleted:$1, asyncPrecacheFailed:$2, unsupportedPrecacheRequests:$3,
+             precachedGraphicsUsed:$4, precachedGraphicsBinds:$5});
+        }, AsyncPrecacheRequested, AsyncPrecacheCompleted, AsyncPrecacheFailed, UnsupportedPrecacheRequests,
+            PrecachedGraphicsUsed, PrecachedGraphicsBinds);
 #endif
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI,
@@ -4012,6 +4018,11 @@ void FWebGPUDynamicRHI::RHISetGraphicsPipelineState(FRHIGraphicsPipelineState *S
     WEBGPU_COMMAND_ON_OWNER(RHISetGraphicsPipelineState(State, StencilRef, WebArg2));
     check(Pass && StencilRef <= 255);
     GraphicsPipeline = static_cast<FWebGPUGraphicsPipeline *>(State);
+    if (GraphicsPipeline->Initializer.bPSOPrecache)
+    {
+        ++PrecachedGraphicsBinds;
+        if (!GraphicsPipeline->PrecacheUsed) { GraphicsPipeline->PrecacheUsed = true; ++PrecachedGraphicsUsed; }
+    }
     checkf(GraphicsPipeline->Handle, TEXT("WebGPU draw received an incomplete pipeline (precache=%u)"),
         GraphicsPipeline->Initializer.bPSOPrecache);
     FString Error;

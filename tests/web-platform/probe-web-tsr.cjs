@@ -43,15 +43,21 @@ function observe(entries) {
     device.lost.then(info => { if (info.reason !== 'destroyed') state.errors.push(info.message); });
     return device;
   };
-  const createPipeline = GPUDevice.prototype.createComputePipeline;
-  GPUDevice.prototype.createComputePipeline = function(descriptor) {
-    const pipeline = createPipeline.call(this, descriptor), name = entries[descriptor.compute.entryPoint];
-    if (name) {
-      pipelines.set(pipeline, name);
-      state.pipelines[name] = (state.pipelines[name] || 0) + 1;
-    }
-    return pipeline;
-  };
+  for (const method of ['createComputePipeline', 'createComputePipelineAsync']) {
+    const createPipeline = GPUDevice.prototype[method];
+    GPUDevice.prototype[method] = function(descriptor) {
+      const result = createPipeline.call(this, descriptor), name = entries[descriptor.compute.entryPoint];
+      const track = pipeline => {
+        if (name) {
+          pipelines.set(pipeline, name);
+          state.pipelines[name] = (state.pipelines[name] || 0) + 1;
+        }
+      };
+      if (method.endsWith('Async')) result.then(track, () => {});
+      else track(result);
+      return result;
+    };
+  }
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(descriptor) {
     if (/TSR/.test(descriptor.label || ''))
@@ -100,6 +106,8 @@ function observe(entries) {
       failure: globalThis.__webEngineFailure,
       diagnostics: typeof startupSnapshot === 'function' ? startupSnapshot() : globalThis.__webStartupDiagnostics}));
     assert(!report.startup.failure, JSON.stringify(report.startup.failure));
+    await page.waitForFunction(() => !globalThis.__webPSOPrecacheExpected || globalThis.__webPSOPrecacheReady,
+      null, {timeout: 180000});
     const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
     assert(owner, 'Threaded engine worker must exist');
     const snapshot = async label => {
@@ -151,6 +159,7 @@ function observe(entries) {
     await page.setViewportSize({width: 1280, height: 720});
     await settle(40);
     await snapshot('restored');
+    if (!process.argv.includes('--project-settings-only')) {
     report.diagnosticOverrides = [
       {parameter: 'r.AntiAliasingMethod', value: 2},
       {parameter: 'r.AntiAliasingMethod', value: 4},
@@ -174,6 +183,7 @@ function observe(entries) {
     const fullPrecision = await snapshot('rgba16f-history');
     assert(fullPrecision.probe.textures.some(texture => /History.Color/.test(texture.label) && texture.format === 'rgba16float'),
       'Alternate full-precision history format must be exercised');
+    }
     const image = await page.locator('canvas').screenshot({timeout: 60000});
     fs.writeFileSync(output + '.png', image);
     const png = PNG.sync.read(image), colors = new Set();

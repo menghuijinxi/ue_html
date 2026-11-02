@@ -414,9 +414,20 @@ class FWebGPUVertexDeclaration final : public FRHIVertexDeclaration
 {
   public:
     FVertexDeclarationElementList Elements;
+    uint32 PrecacheHash = 0;
     explicit FWebGPUVertexDeclaration(const FVertexDeclarationElementList &InElements) : Elements(InElements)
     {
+        // Unlike DX12, WebGPU includes arrayStride in the pipeline descriptor.
+        // Hash fields explicitly so padding cannot change precache identity.
+        for (const FVertexElement& Element : Elements)
+        {
+            for (uint32 Value : {uint32(Element.StreamIndex), uint32(Element.Offset), uint32(Element.Type),
+                                uint32(Element.AttributeIndex), uint32(Element.Stride), uint32(Element.bUseInstanceIndex)})
+                PrecacheHash = HashCombineFast(PrecacheHash, Value);
+        }
     }
+    bool GetInitializer(FVertexDeclarationElementList& Out) override { Out = Elements; return true; }
+    uint32 GetPrecachePSOHash() const override { return PrecacheHash; }
 };
 
 class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
@@ -429,8 +440,20 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
+    // Cached PSOs can outlive the material/task that supplied these raw pointers.
+    FVertexDeclarationRHIRef VertexDeclaration;
+    FVertexShaderRHIRef VertexShader;
+    FPixelShaderRHIRef PixelShader;
+    FBlendStateRHIRef BlendState;
+    FRasterizerStateRHIRef RasterizerState;
+    FDepthStencilStateRHIRef DepthStencilState;
     FGraphicsPipelineStateInitializer Initializer;
-    explicit FWebGPUGraphicsPipeline(const FGraphicsPipelineStateInitializer &In) : Initializer(In)
+    bool PrecacheUsed = false;
+    explicit FWebGPUGraphicsPipeline(const FGraphicsPipelineStateInitializer &In)
+        : VertexDeclaration(In.BoundShaderState.VertexDeclarationRHI),
+          VertexShader(In.BoundShaderState.GetVertexShader()), PixelShader(In.BoundShaderState.GetPixelShader()),
+          BlendState(In.BlendState), RasterizerState(In.RasterizerState), DepthStencilState(In.DepthStencilState),
+          Initializer(In)
     {
     }
     ~FWebGPUGraphicsPipeline() override

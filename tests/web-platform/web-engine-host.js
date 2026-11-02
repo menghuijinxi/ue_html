@@ -115,6 +115,7 @@ function createWebPerformanceHUD(counter, canvas) {
   };
   document.addEventListener('visibilitychange', visibility); raf = requestAnimationFrame(update);
   return {
+    reset,
     ingest(pacing, state) {
       if (!pacing || document.hidden) return;
       const offset = pacing.timeOrigin - performance.timeOrigin;
@@ -134,6 +135,8 @@ function createWebPerformanceHUD(counter, canvas) {
 
 globalThis.startWebEngineWorker = function({assets, module, record, failed, stage, diagnostics, render}) {
   const canvas = module.canvas;
+  globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
+  globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
   if (!canvas.transferControlToOffscreen || typeof Worker === 'undefined')
     throw new Error('此线程包需要 OffscreenCanvas 和 Worker 支持。');
   const worker = new Worker('web-engine-worker.js?v=' + assets.versions['web-engine-worker.js'],
@@ -171,6 +174,13 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
       render();
     } else if (message.type === 'state') {
       Object.assign(globalThis, message.state);
+      const pso = message.state.__webPSOPrecache, rhi = message.state.__webOptimizationRHI;
+      if (!globalThis.__webPSOPrecacheReady && message.state.__webEngineFrames >= 30 &&
+          pso?.enabled && pso.active === 0 && rhi &&
+          rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted) {
+        globalThis.__webPSOPrecacheReady = true;
+        performanceHUD.reset();
+      }
       performanceHUD.ingest(message.state.__webFramePacing, message.state);
       render();
     } else if (message.type === 'dom') {
@@ -285,6 +295,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   }
   const input = (type, code = 0, character = 0, x = 0, y = 0, dx = 0, dy = 0, wheel = 0, flags = 0) => {
     if (stopped) return;
+    if (!globalThis.__webPSOPrecacheReady && type < 12) return;
     const previous = inputQueue.at(-1);
     if (type === 8 && previous?.[0] === 8 && inputQueue.at(-2)?.[0] === 8) {
       previous[3] = x; previous[4] = y;
