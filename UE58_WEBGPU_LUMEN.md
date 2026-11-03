@@ -21,7 +21,7 @@ Web SM5 平台现在允许编译 Lumen，但实际准入仍取决于目标项目
 
 关闭状态构建会剥离未使用资源，因此**改变项目级 GI/反射方法后必须重新 Cook、打包并重启**。已按 Lumen 构建的包可以继续使用原有运行时质量和效果开关；不能通过控制台把不含 Lumen 资源的旧包临时变成 Lumen 包。Web 运行时锁定首次读取的项目准入状态，避免运行中改变方法误入已剥离路径。
 
-没有添加强制启用 Lumen、强制 RGBA16F、降低探针质量等构建覆盖，配置检查报告保持 `rendererOverrides: []`。原别墅项目 GI/反射均为 0，本轮没有修改其项目设置，也没有替换已发布的别墅包。
+没有添加强制启用 Lumen、强制 RGBA16F、降低探针质量等构建覆盖，配置检查报告保持 `rendererOverrides: []`。初步接入时，原别墅项目 GI/反射均为 0；下方另记用户开启 Lumen 后的实际打包尝试。没有替换已发布的别墅包。
 
 Web RHI 不提供硬件光追，使用 UE 原有的无硬件能力时软件追踪回退。`r.Lumen.HardwareRayTracing` 的存在不代表浏览器获得了硬件光追能力。运行时 Lumen 所需的 R16_UINT TypedUAVLoad 只在设备确实提供纹理格式 Tier 2 时声明，不能伪造设备能力。
 
@@ -72,6 +72,30 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 下一阶段需要按每项实际 RDG 像素格式及原有格式排列补齐存储纹理声明，再验证完整排列、绑定限额、Surface Cache 捕获和场景动态更新。不能统一写死 RGBA16F 来掩盖项目默认格式差异。存在于源码中的硬件光追辅助 Shader 即使转换成功，也不代表 Web 实现了硬件光追。
 
 完整验收仍应使用独立测试项目：普通网格、显式 Lumen 项目设置、屏幕外彩色反弹、移动物体和灯光变化，与同设置原生软件 Lumen 对照；之后再测默认关卡及别墅。
+
+## 目标别墅打包尝试
+
+2026-11-03，用户已将 `H:/TriplexHouseVilla` 的 GI 和反射方法设为 1，Generate Mesh Distance Fields 开启、VSM 关闭，项目还启用了 RayTracing、硬件 Lumen LightingMode=2 和半透明前层反射。这些设置原样保留，没有为 Web 改成关闭或降低质量；Web 没有硬件光追能力，仍只能尝试软件距离场路径，不能承诺与原生硬件 Hit Lighting 等价。
+
+创建独立的 `triplex-project-lumen` 测试项目，源输入 1633 项最终哈希复核全部不变；DefaultEngine.ini、DefaultGame.ini、DefaultInput.ini 三份配置与原项目逐字节一致。
+
+- 首次使用 `-UseProjectSettings` 正式 Cook，原生天空光采集成功。全局 Shader 编译阶段进程异常退出，退出码 `0xc0000409`，未写出 Shader 转换错误；这次退出本身不能证明是 Lumen Shader 格式导致。
+- 同设置的同步编译诊断复跑继续生成 Shader，随后直接使用该目标项目做定向编译，复现下表 4 个明确错误。确认无法完成打包后，停止了仍在编译其他全局排列的诊断 Cook，没有将其记为自然失败或成功。
+- 打包入口现在先检查该项目的 5 类真实 Lumen Shader。重新运行相同打包命令，约十秒内在 `lumen-shader-preflight` 阶段按预期失败，保存 4 项格式错误，在天空光采集及完整 Cook 前退出；未进入 Stage / Package，也没有生成可运行的 Lumen 页面。
+
+| Shader | 目标项目检查 |
+| --- | --- |
+| FScreenProbeTraceMeshSDFsCS | `StorageImageWriteWithoutFormat` |
+| FScreenProbeIntegrateCS | 同上 |
+| FLumenCardCombineLightingCS | 同上 |
+| FReflectionTraceMeshSDFsCS | 同上 |
+| FLumenSceneUpdateCS | 通过，作为已接通路径的对照 |
+
+预检只在项目实际选择 Lumen 时执行，不覆盖项目的关闭边界。通过这几个首个允许排列也不代表完整 Cook 或浏览器验收成功。
+
+首次报告备份：`tests/web-platform/results/lumen-first-cook-attempt-20261103.json`。正式入口复跑报告：`tests/web-platform/results/web-project-triplex-project-lumen-desktop-cook-results.json`；对应 `build/web-project-triplex-project-lumen-desktop-cook/20261103-104452/LumenPreflight/lumen-shader-results.json`。可追溯摘要：`tests/web-platform/evidence/lumen-villa-package-attempt-20261103.json`。
+
+本轮同时发现：只设置 PowerShell 父进程亲和性不足以证明 UE 子进程受限。调试器复跑中的 UE 进程曾实际显示全核掩码，随后才直接限制并核对其为 `0xffff0000`。新的预检启动器直接设置 UE 子进程；此前仅记录父进程掩码的报告不能解释为全程核验了子进程调度条件。这不改变已保存的 Shader 成败及 GPU 回读结果，也没有解决首轮异常退出的根因。
 
 ## 性能与显存边界
 

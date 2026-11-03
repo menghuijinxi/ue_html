@@ -1,0 +1,114 @@
+{
+  "date": "2026-11-03T02:47:38.824Z",
+  "packageSucceeded": false,
+  "browserTestPerformed": false,
+  "project": "H:\\TriplexHouseVilla\\TriplexHouseVilla.uproject",
+  "preparedProject": "H:\\ue_html\\tests\\web-platform\\build\\projects\\triplex-project-lumen\\TriplexHouseVilla.uproject",
+  "settings": {
+    "r.AllowGlobalClipPlane": "True",
+    "r.ReflectionMethod": "1",
+    "r.GenerateMeshDistanceFields": "True",
+    "r.DynamicGlobalIlluminationMethod": "1",
+    "r.Shadow.Virtual.Enable": "0",
+    "r.SkinCache.CompileShaders": "1",
+    "r.RayTracing": "True",
+    "r.Lumen.HardwareRayTracing.LightingMode": "2",
+    "r.Lumen.TranslucencyReflections.FrontLayer.EnableForProject": "True",
+    "r.DefaultFeature.AutoExposure.ExtendDefaultLuminanceRange": "False"
+  },
+  "rendererOverrides": [],
+  "originalInputsVerifiedUnchanged": 1633,
+  "projectConfigsVerifiedIdentical": 3,
+  "firstCook": {
+    "pass": false,
+    "exitCode": -1073740791,
+    "skyLightCapture": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\web-project-triplex-project-lumen-desktop-cook\\20261103-103345\\TriplexHouseVilla\\Content\\WebSkyCaptures.bin",
+      "sha256": "0f2bf861eb50b0b3e5be8bc96b16ae3c319caaf0ebc4a687e92fa9b3ff0c8a3c"
+    },
+    "boundary": "Native process exited before recording a shader conversion error; cause unconfirmed."
+  },
+  "diagnosticRetry": {
+    "log": {
+      "file": "tests/web-platform/results/lumen-cook-sync-20261103.log",
+      "sha256": "593d308424681411638902062d0f0b05c6c033ed30fceac5de7cf7108b9e0cbc"
+    },
+    "terminatedAfterTargetShaderFailureConfirmed": true,
+    "boundary": "Diagnostic retry was stopped, not a completed Cook. Parent-only affinity was insufficient; UE child was subsequently restricted directly."
+  },
+  "finalAttempt": {
+    "pass": false,
+    "stage": "lumen-shader-preflight",
+    "preflightExitCode": 1,
+    "shaders": [
+      {
+        "shaderType": "FScreenProbeTraceMeshSDFsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeIntegrateCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenCardCombineLightingCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenSceneLighting.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenSceneUpdateCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScene.usf",
+        "permutation": 0,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FReflectionTraceMeshSDFsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      }
+    ],
+    "skyLightCaptureStarted": false,
+    "stageAndPackageStarted": false
+  },
+  "sourceReports": [
+    {
+      "file": "tests/web-platform/results/lumen-first-cook-attempt-20261103.json",
+      "sha256": "1c12ccd63cd22f3d07f1f0055242159f7141823d41f6049d0aa4cbae1b1eee2b"
+    },
+    {
+      "file": "tests/web-platform/results/web-project-triplex-project-lumen-desktop-cook-results.json",
+      "sha256": "60cc3adb659133cc5e379c0ed87b0dd1c9320585c16e6c3c2e8b49428d23fa3b"
+    },
+    {
+      "file": "tests/web-platform/results/web-project-triplex-project-lumen-prepare-results.json",
+      "sha256": "53fb35559a3362118617c35368d4e38a0f70349c7889aa7991f84780094e58c7"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\web-project-triplex-project-lumen-desktop-cook\\20261103-104452\\project-settings.json",
+      "sha256": "e52ac46651297cb119e0699167c9942a6651c0f1f5348a75a8c22207f6af24c8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\web-project-triplex-project-lumen-desktop-cook\\20261103-104452\\LumenPreflight\\lumen-shader-results.json",
+      "sha256": "d568fe1981b5ec91ef9ff9fc16254a0b9b6b437b7041023ac9329bffdd6f787d"
+    }
+  ],
+  "boundary": "Target-project Lumen formats remain unsupported. No runnable Lumen package, GI pixels, scene FPS or peak VRAM acceptance. Existing published TLV package was not replaced."
+}

@@ -77,6 +77,7 @@ function Get-TaskAudit([string]$File) {
 $taskReport = [ordered]@{
     date = Get-Date -Format o
     pass = $false
+    stage = 'preparing'
     mode = $Mode
     scene = $Scene
     map = $taskMap
@@ -275,7 +276,36 @@ try {
     } else {
         $taskArguments += @('-WebNullRHICook', '-ForceDisableSaveGlobalShaders')
     }
+    if ($UseProjectSettings -and $taskReport.lumen.enabled) {
+        $taskReport.stage = 'lumen-shader-preflight'
+        $taskPreflightDirectory = Join-Path $taskOutput 'LumenPreflight'
+        New-Item -ItemType Directory -Path $taskPreflightDirectory -Force | Out-Null
+        $taskPreflightArguments = @($taskProject, '-run=WebShaderProbe', '-LumenShaderProbe',
+            '-ShaderTypes=FScreenProbeTraceMeshSDFsCS,FScreenProbeIntegrateCS,FLumenCardCombineLightingCS,FReflectionTraceMeshSDFsCS,FLumenSceneUpdateCS',
+            "-Output=$taskPreflightDirectory", '-WebGPUCook', '-WebProjectSettingsCook',
+            '-TargetPlatform=Web', '-ddpi:Web:bIsEnabled=false', '-nullrhi', '-sm5',
+            '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskPreflightDirectory/probe.log")
+        $taskPreflight = Start-Process -FilePath (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') `
+            -ArgumentList ($taskPreflightArguments | ForEach-Object { '"' + $_ + '"' }) `
+            -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskPreflightDirectory/console.log" `
+            -RedirectStandardError "$taskPreflightDirectory/stderr.log"
+        $taskPreflight.ProcessorAffinity = $taskProcess.ProcessorAffinity
+        $taskPreflight.WaitForExit()
+        $taskPreflightResult = Join-Path $taskPreflightDirectory 'lumen-shader-results.json'
+        $taskReport.lumenShaderPreflight = @{
+            exitCode = $taskPreflight.ExitCode
+            arguments = $taskPreflightArguments
+            boundary = 'First eligible permutations of five real Lumen shaders using the target project. Passing does not replace full Cook or browser acceptance.'
+        }
+        if (Test-Path -LiteralPath $taskPreflightResult) {
+            $taskReport.lumenShaderPreflight.report = Get-TaskAudit $taskPreflightResult
+        }
+        if ($taskPreflight.ExitCode -ne 0) {
+            throw "Experimental Web Lumen shader preflight failed: $taskPreflightDirectory. Project rendering settings were preserved."
+        }
+    }
     if ($Scene -eq 'Project' -and -not $DisableProjectSkyLight) {
+        $taskReport.stage = 'skylight-capture'
         $taskSkyFile = Join-Path $taskOutput "$($taskReport.projectName)/Content/WebSkyCaptures.bin"
         New-Item -ItemType Directory -Path (Split-Path -Parent $taskSkyFile) -Force | Out-Null
         $taskSkyLog = Join-Path $taskResults "$taskPrefix-$taskStamp-skylight.log"
@@ -292,6 +322,7 @@ try {
         $taskReport.skyLightInventory = Get-TaskAudit $taskSkyInventory
         $taskReport.skyLightLog = Get-TaskAudit $taskSkyLog
     }
+    $taskReport.stage = 'cook'
     $taskReport.arguments = $taskArguments
     & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') @taskArguments *> "$taskLog.console.txt"
     $taskReport.exitCode = $LASTEXITCODE
@@ -313,6 +344,7 @@ try {
     $taskReport.totalBytes = ($taskAssets | Measure-Object -Property Length -Sum).Sum
     if ($taskReport.skyLightCapture) { $taskReport.totalBytes += (Get-Item -LiteralPath $taskReport.skyLightCapture.file).Length }
     $taskReport.pass = $true
+    $taskReport.stage = 'complete'
 } catch {
     $taskReport.failure = $_.ToString()
     throw
