@@ -576,6 +576,8 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     StartupProbeMode = true;
     GlobalProbeMode = true;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
+    UEWebGPUStream::Enabled = !FParse::Param(FCommandLine::Get(), TEXT("WebGPUImmediateCalls"));
+    UE_LOG(LogRHI, Display, TEXT("WebGPU command stream: %s"), UEWebGPUStream::Enabled ? TEXT("enabled") : TEXT("disabled (A/B test)"));
     EmitDebugMarkers = MAIN_THREAD_EM_ASM_INT({ return globalThis.__webStartupDiagnostics?.mode !== 'normal'; }) != 0;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     ProfilePSOStartup = MAIN_THREAD_EM_ASM_INT({ return !!globalThis.__webStartupProfile; }) != 0;

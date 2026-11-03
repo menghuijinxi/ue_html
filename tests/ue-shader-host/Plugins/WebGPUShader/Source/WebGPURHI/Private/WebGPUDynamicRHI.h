@@ -6,6 +6,9 @@
 #include "Misc/ScopeLock.h"
 #include "Dom/JsonObject.h"
 #include <webgpu/webgpu.h>
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+#include "WebGPUCommandStream.h"
+#endif
 #include <atomic>
 
 class FRHITextureReference;

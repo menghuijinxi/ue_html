@@ -228,7 +228,7 @@ try {
     $taskFiles += Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderMetadata.h'
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private') -File |
         Where-Object { $_.Name -in @('WebGPUDynamicRHI.cpp', 'WebGPUDynamicRHI.h', 'WebGPUUnsupportedRHI.h',
-            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h') } |
+            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h', 'WebGPUCommandStream.h') } |
         ForEach-Object { $_.FullName })
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot '.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg') -File -Recurse |
         Where-Object { $_.Extension -in @('.py', '.cpp', '.h', '.js') } | ForEach-Object { $_.FullName })

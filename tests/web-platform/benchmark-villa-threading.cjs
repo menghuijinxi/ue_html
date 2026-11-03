@@ -7,8 +7,10 @@ const folder = option('folder'), tag = option('tag');
 assert([folder, tag].every(v => v && /^[a-z0-9-]+$/.test(v)));
 const seconds = Number(option('seconds') || 20), warmup = Number(option('warmup') || 15);
 const coreLimits = option('cores')?.split(',').map(Number);
+const bridges = option('bridge')?.split(',');
+assert(!bridges || (!coreLimits && !option('modes') && bridges.every(v=>['immediate','stream'].includes(v))));
 assert(!coreLimits || (coreLimits.length && coreLimits.every(n => [4,6,8].includes(n)) && !option('modes')));
-const modes = coreLimits ? coreLimits.map(() => 'full') :
+const modes = bridges ? bridges.map(()=>'full') : coreLimits ? coreLimits.map(() => 'full') :
   (option('modes') || 'full,render-serial,single,single,render-serial,full').split(',');
 assert(modes.every(v => ['full', 'render-serial', 'single'].includes(v)) && seconds >= 5 && seconds <= 60);
 assert(Number.isFinite(warmup) && warmup >= 0 && warmup <= 120);
@@ -16,10 +18,10 @@ const output = path.join(__dirname, 'results', tag), base = path.join(__dirname,
 const viewKey = view => ['width','height','outputWidth','outputHeight','antiAliasing','x','y','outputX','outputY'].map(k => view[k]);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 const report = {date: new Date().toISOString(), folder, seconds, warmup, runs: [], pass: false,
-  coreLimits,
+  coreLimits, bridges,
   source: audit(__filename), qualityOverrides: [], psoPrecache: false,
   packageFiles: ['index.html', 'UEWebEngineThreads.js', 'UEWebEngineThreads.wasm', 'config-files.json', 'content-files.json'].map(n => audit(path.join(base, n))),
-  boundary: 'Same pthread WASM and Cook for every run; only startup threading/core-limit flags vary. Core tests retain full threading and map 4/6/8 reported cores to 3/5/7 UE task workers. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation or CPU sampling.'};
+  boundary: 'Same pthread WASM and Cook for every run; only startup threading/core-limit or WebGPUImmediateCalls flags vary. Bridge tests retain full threading and the default core count. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation or CPU sampling.'};
 function install() {
   const state = globalThis.__threadingCapture = {active: false, times: []};
   let count = 0;
@@ -79,6 +81,7 @@ async function profileBlockedWorker(file, all = false) {
       assert(!args.some(v => /^-(corelimit|WebThreadingTest)=/.test(v)), 'Use a package without baked-in threading overrides');
       args.push('-WebThreadingTest=' + mode);
       if (run.coreLimit) args.push('-corelimit=' + run.coreLimit);
+      if (run.bridge==='immediate') args.push('-WebGPUImmediateCalls');
       html = html.replace(match[0], 'arguments: ' + JSON.stringify(args) + ',');
       await route.fulfill({response, body: html});
     });
@@ -87,10 +90,11 @@ async function profileBlockedWorker(file, all = false) {
       await route.fulfill({response, body: '(' + install.toString() + ')();\n' + await response.text()});
     });
     page.on('console', m => {const text = m.text(); log?.write(text + '\n');
+      if(run && text.includes('WebGPU command stream:'))run.bridgeConfirmed=text.includes('enabled')?'stream':'immediate';
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|P3_ENGINE_PREINIT_FAILED|P3_ENGINE_INIT_FAILED|thread pool is exhausted|Failed to create thread|pthread_create.*failed/i.test(text)) run?.errors.push(text);});
     page.on('pageerror', e => run?.errors.push(e.message));
     for (let index = 0; index < modes.length; ++index) {
-      mode = modes[index]; run = {mode, coreLimit:coreLimits?.[index] || null, index: index+1, started:new Date().toISOString(), errors: []}; report.runs.push(run);
+      mode = modes[index]; run = {mode, bridge:bridges?.[index] || null, coreLimit:coreLimits?.[index] || null, index: index+1, started:new Date().toISOString(), errors: []}; report.runs.push(run);
       log = fs.createWriteStream(output + '-' + run.index + '-' + mode + '.log');
       console.log('Web start', run.index, mode, run.coreLimit || 'default cores');
       await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
@@ -113,6 +117,7 @@ async function profileBlockedWorker(file, all = false) {
       await page.waitForTimeout(warmup*1000);
       run.before = await state();
       const threads = run.before.threads; assert(threads);
+      if(run.bridge)assert.equal(run.bridgeConfirmed,run.bridge,'WebGPU bridge startup mode mismatch');
       assert.equal(threads.renderThread, mode === 'full'); assert.equal(threads.rhiThread, mode === 'full');
       assert.equal(threads.threadingTest, mode === 'full' ? 0 : mode === 'render-serial' ? 1 : 2);
       if (mode === 'single') assert.equal(threads.taskWorkers, 0);
@@ -152,7 +157,7 @@ async function profileBlockedWorker(file, all = false) {
       await page.waitForTimeout(1500);
     }
     report.summary = {};
-    const group = r => coreLimits ? String(r.coreLimit) : r.mode;
+    const group = r => bridges ? r.bridge : coreLimits ? String(r.coreLimit) : r.mode;
     for (const key of new Set(report.runs.map(group))) {
       const runs = report.runs.filter(r=>group(r)===key), frames = runs.reduce((s,r)=>s+r.measurement.frames,0);
       const ms = runs.reduce((s,r)=>s+r.measurement.end-r.measurement.start,0);

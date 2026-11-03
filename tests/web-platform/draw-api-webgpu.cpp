@@ -1,6 +1,12 @@
 // One C API workload compiled both as native Dawn/D3D12 and standalone wasm64.
 #include "draw-api-common.h"
 #include <webgpu/webgpu.h>
+#ifdef DRAW_FAST_CALLS
+#include "../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUFastCalls.h"
+#endif
+#ifdef DRAW_COMMAND_STREAM
+#include "../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUCommandStream.h"
+#endif
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 EM_ASYNC_JS(void, waitCallback, (bool* done), {
@@ -84,12 +90,60 @@ struct GPU {
  double gpuMilliseconds(){auto p=(const uint64_t*)map(readback,16);double v=double(p[1]-p[0])/1e6;wgpuBufferUnmap(readback);return v;}
  void verify(unsigned mode,unsigned n){auto e=wgpuDeviceCreateCommandEncoder(device,nullptr);WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=target;WGPUTexelCopyBufferInfo dst=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;dst.buffer=pixels;dst.layout.bytesPerRow=256;dst.layout.rowsPerImage=64;WGPUExtent3D size{64,64,1};wgpuCommandEncoderCopyTextureToBuffer(e,&src,&dst,&size);auto c=wgpuCommandEncoderFinish(e,nullptr);wgpuQueueSubmit(queue,1,&c);wgpuCommandBufferRelease(c);wgpuCommandEncoderRelease(e);auto p=(const uint8_t*)map(pixels,64*256);verifyPixel(p,mode,n);require(p[4]==0&&p[7]==0,"outside-scissor pixel modified");wgpuBufferUnmap(pixels);}
  void checkErrors(){if(!errors.empty())require(false,errors.front().c_str());}
+#ifdef DRAW_COMMAND_STREAM
+ void verifyStream(){
+  // Exercise deferred lifetime, immediate dynamic-offset copying, object-table
+  // overflow, indirect draws, and ordered viewport/scissor boundaries on GPU.
+  WGPUBindGroupLayoutEntry entry=WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;entry.binding=0;entry.visibility=WGPUShaderStage_Fragment;entry.buffer.type=WGPUBufferBindingType_Uniform;entry.buffer.hasDynamicOffset=true;entry.buffer.minBindingSize=16;
+  WGPUBindGroupLayoutDescriptor ld=WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;ld.entryCount=1;ld.entries=&entry;auto layout=wgpuDeviceCreateBindGroupLayout(device,&ld);
+  WGPUPipelineLayoutDescriptor pd=WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;pd.bindGroupLayoutCount=1;pd.bindGroupLayouts=&layout;auto pl=wgpuDeviceCreatePipelineLayout(device,&pd);
+  WGPUShaderSourceWGSL source=WGPU_SHADER_SOURCE_WGSL_INIT;source.code=text(wgsl);WGPUShaderModuleDescriptor sd=WGPU_SHADER_MODULE_DESCRIPTOR_INIT;sd.nextInChain=&source.chain;auto module=wgpuDeviceCreateShaderModule(device,&sd);
+  WGPUVertexAttribute attr=WGPU_VERTEX_ATTRIBUTE_INIT;attr.format=WGPUVertexFormat_Float32x2;attr.shaderLocation=0;
+  WGPUVertexBufferLayout vb=WGPU_VERTEX_BUFFER_LAYOUT_INIT;vb.arrayStride=8;vb.attributeCount=1;vb.attributes=&attr;
+  WGPUColorTargetState color=WGPU_COLOR_TARGET_STATE_INIT;color.format=WGPUTextureFormat_RGBA8Unorm;
+  WGPUFragmentState frag=WGPU_FRAGMENT_STATE_INIT;frag.module=module;frag.entryPoint=text("fs0");frag.targetCount=1;frag.targets=&color;
+  WGPURenderPipelineDescriptor d=WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;d.layout=pl;d.vertex.module=module;d.vertex.entryPoint=text("vs");d.vertex.bufferCount=1;d.vertex.buffers=&vb;d.fragment=&frag;
+  auto pipeline=wgpuDeviceCreateRenderPipeline(device,&d);
+  auto vd=vertexData();auto ix=indexData();auto vertex=buffer(vd.size()*4,WGPUBufferUsage_Vertex,vd.data());auto index=buffer(ix.size()*2,WGPUBufferUsage_Index,ix.data());
+  uint32_t args[]={3,1,0,0,0};auto indirect=buffer(sizeof(args),WGPUBufferUsage_Indirect,args);
+  begin(0,false);wgpuRenderPassEncoderSetPipeline(pass,pipeline);wgpuRenderPipelineRelease(pipeline);
+  wgpuRenderPassEncoderSetVertexBuffer(pass,0,vertex,0,WGPU_WHOLE_SIZE);wgpuBufferRelease(vertex);
+  wgpuRenderPassEncoderSetIndexBuffer(pass,index,WGPUIndexFormat_Uint16,0,WGPU_WHOLE_SIZE);wgpuBufferRelease(index);
+  for(unsigned k=0;k<401;k++){
+   WGPUBindGroupEntry be=WGPU_BIND_GROUP_ENTRY_INIT;be.binding=0;be.buffer=uniforms;be.size=16;
+   WGPUBindGroupDescriptor bd=WGPU_BIND_GROUP_DESCRIPTOR_INIT;bd.layout=layout;bd.entryCount=1;bd.entries=&be;auto group=wgpuDeviceCreateBindGroup(device,&bd);
+   uint32_t offset=0;wgpuRenderPassEncoderSetBindGroup(pass,0,group,1,&offset);offset=256;wgpuBindGroupRelease(group);
+  }
+  wgpuRenderPassEncoderDrawIndexed(pass,3,1,0,0,0);
+  wgpuRenderPassEncoderSetScissorRect(pass,1,0,1,1);
+  WGPUBindGroupEntry be=WGPU_BIND_GROUP_ENTRY_INIT;be.binding=0;be.buffer=uniforms;be.size=16;
+  WGPUBindGroupDescriptor bd=WGPU_BIND_GROUP_DESCRIPTOR_INIT;bd.layout=layout;bd.entryCount=1;bd.entries=&be;auto group=wgpuDeviceCreateBindGroup(device,&bd);
+  uint32_t offset=256;wgpuRenderPassEncoderSetBindGroup(pass,0,group,1,&offset);offset=0;wgpuBindGroupRelease(group);
+  wgpuRenderPassEncoderDrawIndexedIndirect(pass,indirect,0);wgpuBufferRelease(indirect);
+  // The engine also emits pipeline/VB/group/IB; cover that fused decode path.
+  wgpuRenderPassEncoderSetScissorRect(pass,2,0,1,1);
+  wgpuRenderPassEncoderSetPipeline(pass,pipelines[0]);wgpuRenderPassEncoderSetVertexBuffer(pass,0,vertices,0,24);
+  wgpuRenderPassEncoderSetBindGroup(pass,0,groups[2],0,nullptr);wgpuRenderPassEncoderSetIndexBuffer(pass,indices,WGPUIndexFormat_Uint16,0,6);
+  wgpuRenderPassEncoderDrawIndexed(pass,3,1,0,0,0);
+  wgpuRenderPassEncoderSetScissorRect(pass,3,0,1,1);wgpuRenderPassEncoderSetBindGroup(pass,0,groups[3],0,nullptr);wgpuRenderPassEncoderDraw(pass,3,1,0,0);
+  wgpuRenderPassEncoderSetScissorRect(pass,4,0,1,1);wgpuRenderPassEncoderSetBindGroup(pass,0,groups[4],0,nullptr);
+  auto nonIndexed=buffer(sizeof(args),WGPUBufferUsage_Indirect,args);wgpuRenderPassEncoderDrawIndirect(pass,nonIndexed,0);wgpuBufferRelease(nonIndexed);
+  end();submit();wait();
+  auto e=wgpuDeviceCreateCommandEncoder(device,nullptr);WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=target;WGPUTexelCopyBufferInfo dst=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;dst.buffer=pixels;dst.layout.bytesPerRow=256;dst.layout.rowsPerImage=64;WGPUExtent3D size{64,64,1};wgpuCommandEncoderCopyTextureToBuffer(e,&src,&dst,&size);auto c=wgpuCommandEncoderFinish(e,nullptr);wgpuQueueSubmit(queue,1,&c);wgpuCommandBufferRelease(c);wgpuCommandEncoderRelease(e);
+  auto p=(const uint8_t*)map(pixels,64*256);verifyPixel(p,0,1);for(unsigned k=1;k<=4;k++){const unsigned expected[]={(k*3+17)%256,(k*5+31)%256,(k*7+47)%256,255};for(unsigned channel=0;channel<4;channel++)require(std::abs(int(p[k*4+channel])-int(expected[channel]))<=1,"stream dynamic offset, lifetime or decode mismatch");}require(p[20]==0&&p[23]==0,"stream scissor ordering mismatch");wgpuBufferUnmap(pixels);
+  wgpuShaderModuleRelease(module);wgpuPipelineLayoutRelease(pl);wgpuBindGroupLayoutRelease(layout);checkErrors();
+ }
+#endif
 };
 int main(int argc,char**argv){
 #ifndef __EMSCRIPTEN__
  try{
 #endif
- GPU g;auto r=benchmark(g);
+ GPU g;
+#ifdef DRAW_COMMAND_STREAM
+ g.verifyStream();
+#endif
+ auto r=benchmark(g);
 #ifdef __EMSCRIPTEN__
  EM_ASM({postMessage({result:JSON.parse(UTF8ToString($0))});},r.c_str());emscripten_exit_with_live_runtime();
 #else

@@ -8,7 +8,7 @@ for(let i=0;i<targets.length;i++){
   const nodes=new Map(p.nodes.map(n=>[n.id,n])),parent=new Map(),self=new Map(),total=new Map();
   for(const n of p.nodes)for(const child of n.children||[])parent.set(child,n.id);
   let duration=0;
-  const categories={idle:0,mutexWait:0,conditionWait:0,allocationPath:0,proxyPath:0,bindings:0,vertexBindingBridge:0,waitForRHIFlush:0};
+  const categories={idle:0,mutexWait:0,conditionWait:0,allocationPath:0,allocationMutexWait:0,groupPreparation:0,resourceCommit:0,dynamicCommandReplay:0,proxyPath:0,bindings:0,vertexBindingBridge:0,waitForRHIFlush:0};
   for(let k=0;k<p.samples.length;k++){
     const id=p.samples[k],us=p.timeDeltas[k];duration+=us;self.set(id,(self.get(id)||0)+us);
     for(let c=id;c!==undefined;c=parent.get(c))total.set(c,(total.get(c)||0)+us);
@@ -18,6 +18,10 @@ for(let i=0;i<targets.length;i++){
     if(/_do_futex_wait/.test(stack[0])&&/mutex.*lock/.test(text))categories.mutexWait+=us;
     if(/_do_futex_wait/.test(stack[0])&&!/mutex.*lock/.test(text))categories.conditionWait+=us;
     if(/FMemory::(Malloc|Realloc|Free)|emscripten_builtin_(malloc|free)/.test(text))categories.allocationPath+=us;
+    if(/_do_futex_wait/.test(stack[0])&&/mutex.*lock/.test(text)&&/FMemory::(Malloc|Realloc|Free)|emscripten_builtin_(malloc|free)/.test(text))categories.allocationMutexWait+=us;
+    if(/FWebGPUDynamicRHI::CreateGroups/.test(text))categories.groupPreparation+=us;
+    if(/FWebGPUDynamicRHI::CommitShaderResources/.test(text))categories.resourceCommit+=us;
+    if(/_ueWGPUReplay/.test(text))categories.dynamicCommandReplay+=us;
     if(/proxy_sync|proxyToMainThread/.test(text))categories.proxyPath+=us;
     if(/SetDrawBindings/.test(text))categories.bindings+=us;
     if(/SetVertexBuffer|setVertexBuffer/.test(text))categories.vertexBindingBridge+=us;
