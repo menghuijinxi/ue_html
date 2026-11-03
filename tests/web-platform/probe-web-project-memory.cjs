@@ -13,15 +13,18 @@ const startupSeconds = Number(option('startup-seconds') || 900);
 assert(startupSeconds >= 30 && startupSeconds <= 900);
 const debugPort = Number(option('debug-port') || 0);
 assert(Number.isInteger(debugPort) && (debugPort === 0 || debugPort >= 1024 && debugPort <= 65535));
+const memoryInterval = Number(option('memory-interval') || 0);
+assert(Number.isInteger(memoryInterval) && (memoryInterval === 0 || memoryInterval >= 1000 && memoryInterval <= 60000));
 const profileRoot = option('profile-root');
 assert(!profileRoot || path.isAbsolute(profileRoot), '--profile-root must be an absolute directory');
 const profile = path.join(profileRoot || path.join(__dirname, 'build/browser-profiles'), 'memory-' + tag);
 const output = path.join(__dirname, 'results', 'project-memory-' + tag);
 const consoleLog = fs.createWriteStream(output + '.log');
 const report = {date: new Date().toISOString(), folder, tag, seconds, samples: [], errors: [],
+  processMemoryIntervalMilliseconds: memoryInterval, processMemory: [],
   settingsOverrides: [],
   pass: false, width: 1280, height: 720};
-let context, page, startupTimer, rejectStartup;
+let context, page, startupTimer, processMemoryTimer, rejectStartup;
 const startupFailure = new Promise((_, reject) => { rejectStartup = reject; });
 startupFailure.catch(() => {});
 const recordError = message => {
@@ -51,6 +54,12 @@ const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, nul
       if (report.logs.length > 50) report.logs.shift();
     });
     const start = Date.now();
+    if (memoryInterval) processMemoryTimer = setInterval(() => {
+      try {
+        report.processMemory.push({elapsedMilliseconds: Date.now() - start, ...memory({profile})});
+        save();
+      } catch (error) { recordError(`Process GPU memory observer: ${error.message}`); }
+    }, memoryInterval);
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
     startupTimer = setInterval(async () => {
       try {
@@ -106,6 +115,7 @@ const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, nul
   } catch (error) { report.failure = error.stack; process.exitCode = 1; }
   finally {
     clearInterval(startupTimer);
+    clearInterval(processMemoryTimer);
     save();
     await context?.close();
     consoleLog.end();

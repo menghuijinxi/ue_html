@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
 assert.equal(process.argv.length, 7, 'Expected probe directory, GPU report, RHI report, output and optional cook conversion directory (- to omit)');
@@ -21,7 +22,7 @@ assert(rhi.pass && !rhi.errors.length && rhi.depthAtlasCases.length === 8 &&
 const checkJobs = source => {
   const sources = [], frontLayer = [];
   let loadOnly = 0, filtered = 0;
-  for (const name of fs.readdirSync(source)) {
+  for (const name of fs.readdirSync(source).sort()) {
     const inputFile = path.join(source, name, 'input.json');
     const wgslFile = path.join(source, name, 'output.wgsl');
     if (!fs.existsSync(inputFile) || !fs.existsSync(wgslFile)) continue;
@@ -52,6 +53,13 @@ assert(shaderAccess.loadOnly > 0 && shaderAccess.filtered > 0);
 const cookedAccess = cookedDirectory === '-' ? undefined : checkJobs(cookedDirectory);
 if (cookedAccess) assert(cookedAccess.loadOnly > 0 && cookedAccess.filtered > 0 &&
   cookedAccess.frontLayer.some(item => item.loadOnly));
+if (cookedAccess) {
+  cookedAccess.sourceDirectory = cookedDirectory;
+  cookedAccess.sourceFileCount = cookedAccess.sources.length;
+  cookedAccess.sourceManifestSha256 = crypto.createHash('sha256')
+    .update(JSON.stringify(cookedAccess.sources)).digest('hex');
+  delete cookedAccess.sources;
+}
 const report = {date: new Date().toISOString(), pass: true, completeLumenScene: false,
   rendererOverrides: [], modules: gpu.modules.length, pipelines: gpu.pipelines.length,
   executionCases: gpu.execution.length, policies: probe.policies.length,

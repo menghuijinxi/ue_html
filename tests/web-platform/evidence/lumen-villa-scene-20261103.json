@@ -1,0 +1,236 @@
+{
+  "date": "2026-11-03T12:28:10.781Z",
+  "pass": true,
+  "fullVillaRunPassed": true,
+  "fullFeatureCompatibility": false,
+  "visualParityAccepted": false,
+  "rendererOverrides": [],
+  "width": 1280,
+  "height": 720,
+  "browserStartupMilliseconds": 28814,
+  "observedFrames": 4599,
+  "browserViews": [
+    {
+      "label": "room",
+      "frame": 1555,
+      "camera": {
+        "x": -175,
+        "y": -80,
+        "z": 160,
+        "pitch": -5.0000000000000036,
+        "yaw": 50.00000000000001
+      },
+      "meanFrameMilliseconds": 19.33636666668579,
+      "meanFPS": 51.716023865169994,
+      "frameIntervals": 600,
+      "textureMiB": 2509.358840942383,
+      "bufferMiB": 209.08909225463867,
+      "liveResources": 4020,
+      "processDedicatedMiB": 3179.21484375
+    },
+    {
+      "label": "wall",
+      "frame": 3018,
+      "camera": {
+        "x": -175,
+        "y": -80,
+        "z": 160,
+        "pitch": -5.000000000000006,
+        "yaw": -130.00000000000003
+      },
+      "meanFrameMilliseconds": 20.52645833335196,
+      "meanFPS": 48.71761040116561,
+      "frameIntervals": 600,
+      "textureMiB": 2512.132278442383,
+      "bufferMiB": 209.77599716186523,
+      "liveResources": 4035,
+      "processDedicatedMiB": 3222.51953125
+    },
+    {
+      "label": "room-return",
+      "frame": 4599,
+      "camera": {
+        "x": -175,
+        "y": -80,
+        "z": 160,
+        "pitch": -5.0000000000000036,
+        "yaw": 50.00000000000001
+      },
+      "meanFrameMilliseconds": 19.22465833334252,
+      "meanFPS": 52.016529119044876,
+      "frameIntervals": 600,
+      "textureMiB": 2506.726028442383,
+      "bufferMiB": 209.15302658081055,
+      "liveResources": 4026,
+      "processDedicatedMiB": 3215.05859375
+    }
+  ],
+  "nativeViews": [
+    {
+      "name": "interior-auto-project",
+      "camera": {
+        "fov": 90,
+        "z": 160,
+        "ev100": -1,
+        "shadows": 1,
+        "fixedExposure": false,
+        "pitch": -5,
+        "yaw": 50,
+        "y": -80,
+        "x": -175,
+        "name": "interior-auto-project",
+        "ao": 1
+      },
+      "meanGPUms": 20.795324022346367,
+      "meanWallMilliseconds": 21.38091061867815,
+      "meanFPS": 46.77069269100306,
+      "frameIntervals": 179
+    },
+    {
+      "name": "kitchen-auto-project",
+      "camera": {
+        "fov": 90,
+        "z": 160,
+        "ev100": -1,
+        "shadows": 1,
+        "fixedExposure": false,
+        "pitch": -5,
+        "yaw": 230,
+        "y": -80,
+        "x": -175,
+        "name": "kitchen-auto-project",
+        "ao": 1
+      },
+      "meanGPUms": 21.29569832402235,
+      "meanWallMilliseconds": 21.874659762369188,
+      "meanFPS": 45.71499675255715,
+      "frameIntervals": 179
+    },
+    {
+      "name": "living-auto-project",
+      "camera": {
+        "fov": 90,
+        "z": 130,
+        "ev100": -1,
+        "shadows": 1,
+        "fixedExposure": false,
+        "pitch": 12,
+        "yaw": -35,
+        "y": 200,
+        "x": -20,
+        "name": "living-auto-project",
+        "ao": 1
+      },
+      "meanGPUms": 26.002189944134077,
+      "meanWallMilliseconds": 26.575989376066783,
+      "meanFPS": 37.62795002095229,
+      "frameIntervals": 179
+    }
+  ],
+  "adapter": "NVIDIA GeForce RTX 3070",
+  "sampling": {
+    "browser": "Last 600 engine submission intervals per view, GPU allocation observer enabled; not physical display timings.",
+    "native": "300 warmup frames, then 180 samples per view; wall time and GPU queries.",
+    "processMemory": "WDDM dedicated memory for isolated browser process tree and native editor, sampled every 2 seconds."
+  },
+  "processMemory": {
+    "browserSampleCount": 60,
+    "nativeSampleCount": 25,
+    "browserPeakMiB": 3225.609375,
+    "nativePeakMiB": 3086.40234375,
+    "differenceMiB": 139.20703125,
+    "differencePercent": 4.510333253598509,
+    "roomReturnLogicalDeltaMiB": -2.568878173828125,
+    "roomReturnResourceDelta": 6
+  },
+  "tracingBoundary": {
+    "browser": "Software distance fields, WebGPU desktop SM5 path.",
+    "native": "Native SM6; project r.RayTracing=1 and hardware tracing capabilities differ.",
+    "performanceParity": "The FPS values are observations, not proof of equal image quality or a renderer speed ranking."
+  },
+  "remaining": [
+    "Hardware ray tracing is not implemented in this Web target.",
+    "Hair, heightfield and other trace permutations can exceed storage-buffer limits.",
+    "Automatic PSO precaching remains gated by WebPSOPrecacheTest and was disabled in this run.",
+    "Long-duration traversal, all materials and exact visual parity remain unverified.",
+    "Two-second memory sampling can miss brief driver allocation peaks; resource-pool release on runtime Lumen disable is unmeasured."
+  ],
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-20261103-memory-peak.json",
+      "sha256": "1562371dbcfb399f130dea71b484a059cd526bca18b452da751250c1a0d9709e"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-unrestricted-20261103-capture.json",
+      "sha256": "cda7b6ff79181a2455576390e9036cb6fe11b84354187f0809068711a5da15d4"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-unrestricted-20261103-system.json",
+      "sha256": "a069355ebd4acea418846c107f5482fb04982cfcc74a6febe953bbf17aee958c"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-project-lumen-desktop-cook-results.json",
+      "sha256": "4838fdaf65a5c438d45bb84ff14afe2dd2c6df87098be5d34873aa8f055491cc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-project-lumen-desktop-stage-results.json",
+      "sha256": "41ee8405c95a7dfebe002eb08e910364389e8c2ea2def10d592e4484ede90d5a"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-project-lumen-distance-fields-threads-package-results.json",
+      "sha256": "c050dd1243883ce1f855b120fded23028ad7e54e1cd5bd26b3580726ddaaf76f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-sampling-cooked-modules-gpu.json",
+      "sha256": "d85f0752dc2ead129f04048b0662b35919fb5847ef568d1763d9350ecc375c68"
+    }
+  ],
+  "images": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-20261103-memory-peak-0.png",
+      "sha256": "ecf27468aa6e8418a66e64d337ef78e9bed528177e4adf30fe08237035ab1acc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-20261103-memory-peak-1.png",
+      "sha256": "179d957e89959eaeefd92a55a94c127a1086c8f22727f50f53787ae32c121159"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-20261103-memory-peak-2.png",
+      "sha256": "3fd8263a2c93a3d633328909630c8600e57d95f08e30d6b3d24f065a95a20e55"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-unrestricted-20261103-interior-auto-project.png",
+      "sha256": "18a76d5db80085042eeb0d92e0eae094e1c0b8fbd961f488ce63cd26d9400aa8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-unrestricted-20261103-kitchen-auto-project.png",
+      "sha256": "c0ad752505213144b9cdc6801d1e891cea0372bec0ba7a6c3ceed3ed99c2a09b"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-unrestricted-20261103-living-auto-project.png",
+      "sha256": "f389a65684fc920e56f7b7825cc0acd813a446eab0490f650eeb8334375f56bc"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-lumen-scene.cjs",
+      "sha256": "88f26c7778795c9d12cabf412834c902410b13c8c798c65427840deba996aaee"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-project-memory.cjs",
+      "sha256": "6cfbc039040576962d71e5ceedb9bf725e8e9a1182ca413544d2cb6af61d6692"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-gpu-memory-observer.cjs",
+      "sha256": "17edc22abcfbed99d82a3b7660fe72815d3943f697c54ddeef512aaccda05b32"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\gpu-process-memory.cjs",
+      "sha256": "040f49af99cd367526f727dab3758e788236ac0d44063016eb0c1b9e067ee654"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\capture-villa-distance-fields.ps1",
+      "sha256": "ae754e1d2e4be654cdec75657cd96f651eb9c71ae2ec3aabb3bcd931d2a8b685"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # WebGPU 软件 Lumen 初步兼容
 
-更新：2026-11-03。状态：**实验接入，存储格式初筛已通过，完整场景仍待验收**。依据 `UE58_NANITE_LUMEN_WEBGPU_FEASIBILITY.md`，优先普通网格、软件距离场追踪和原有 Screen Probe Gather；没有加入硬件光追或 Nanite。
+更新：2026-11-03。状态：**完整别墅已按项目设置打包，浏览器两轮 90 秒运行通过；仍为软件 Lumen 初步兼容，画质逐项验收未完成**。依据 `UE58_NANITE_LUMEN_WEBGPU_FEASIBILITY.md`，优先普通网格、软件距离场追踪和原有 Screen Probe Gather；没有加入硬件光追或 Nanite。最新场景结果见下文“完整别墅浏览器运行”，此前尝试保留为排查记录。
 
 对应独立引擎提交：`3bba192188f966b4808074518c4ca732229663c4`。
 后续材质采样分支修复：`7a31024c7f`。
@@ -13,7 +13,7 @@ Web SM5 平台现在允许编译 Lumen，但实际准入仍取决于目标项目
 | 项目设置 | Web 行为 |
 | --- | --- |
 | 动态全局光照选择 Lumen：`r.DynamicGlobalIlluminationMethod=1` | 准入实验 Lumen，保留对应 Shader 与 Mesh Cards |
-| 反射选择 Lumen：`r.ReflectionMethod=1` | 同样准入；不代表本轮已经完成反射通道 |
+| 反射选择 Lumen：`r.ReflectionMethod=1` | 同样准入；已完成别墅实际运行，不代表所有反射排列均已兼容 |
 | GI 与反射均选择非 Lumen 方法 | 不准入 Lumen Shader 或 Cards 保留路径 |
 | `r.Lumen.Supported=0` | 即使方法选择 Lumen，也关闭项目准入 |
 | Web 平台配置覆盖上述值 | 按目标 Web 配置判断，而不是照搬 Cook 主机的 Windows 值 |
@@ -57,7 +57,7 @@ Web RHI 不提供硬件光追，使用 UE 原有的无硬件能力时软件追�
 | 原生 RenderCore、Renderer 与测试宿主构建 | 通过；安装目录输入审计未变 |
 | 多线程 Wasm64 编译、链接与 Wasm 校验 | 通过；Web Renderer 编译仍为 `-O2` |
 
-原生 Cook 模块继续使用既有的 MSVC 编译器故障规避选项，不能据此推断 Web Renderer 关闭优化。完整源码原生引擎、完整 Lumen Cook、真实场景 GI 像素和开关前后资源回收尚未验收。
+以上为初始阶段记录。原生 Cook 模块曾使用既有的 MSVC 编译器故障规避选项，不能据此推断 Web Renderer 关闭优化；后续原生 Renderer、RenderCore 与线程 WASM 已使用优化构建。完整 Cook 和场景运行结果见后文；完整源码原生引擎构建、真实 GI 逐项像素对照与开关前后资源回收仍未验收。
 
 首次结果位于忽略的 `tests/web-platform/build/lumen-probe/20261103-101212/`。最新格式与访问修复结果位于 `build/lumen-probe/20261103-123222/`，浏览器复核为 `results/web-lumen-storage-gpu-access.json`，原生 RHI 回读为 `build/lumen-storage-rhi/lumen-storage-rhi.json`。首次可追溯摘要保存在 `tests/web-platform/evidence/lumen-initial-20261103.json`。
 
@@ -76,7 +76,7 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 
 首次 36 个初筛失败项均报告 `StorageImageWriteWithoutFormat`，分布于软件 SDF 追踪、Screen Probe 积分/过滤、Surface Cache 光照、Radiosity、Radiance Cache 和反射等通道。这些首个允许排列已通过存储格式专用管线修复。完整 Cook 还发现了共享 StochasticLighting 的同类问题，现已将该目录的 Compute Shader 纳入同一路径。
 
-接下来仍须验证完整排列、绑定限额、Surface Cache 捕获和场景动态更新。不能统一写死 RGBA16F 来掩盖项目默认格式差异。存在于源码中的硬件光追辅助 Shader 即使转换成功，也不代表 Web 实现了硬件光追。
+接下来仍须验证其他排列和绑定限额边界，以及屏幕外反弹、移动物体与灯光变化。别墅的 Surface Cache 捕获已进入稳定场景运行，但不能用它替代这些专项检查。不能统一写死 RGBA16F 来掩盖项目默认格式差异。存在于源码中的硬件光追辅助 Shader 即使转换成功，也不代表 Web 实现了硬件光追。
 
 完整验收仍应使用独立测试项目：普通网格、显式 Lumen 项目设置、屏幕外彩色反弹、移动物体和灯光变化，与同设置原生软件 Lumen 对照；之后再测默认关卡及别墅。
 
@@ -246,7 +246,29 @@ Surface Cache 的 `SourceDepthAtlas`、`DepthAtlas` 与 `LumenCardScene_DepthAtl
 
 浏览器随后在 `FrontLayerTranslucency.GBufferA` 暴露同类布局问题。Web ShaderFormat 对 Lumen / shared stochastic-lighting 计算 Shader 分析 SPIR-V 的实际访问；仅当纹理确实用于 ImageFetch 且无过滤采样或未知用途时记录 `sampledTextureLoadOnly`，RHI 据此选择不可过滤布局。未知用途保留原可过滤声明，不更改 Shader 取值、采样器或项目配置，不增加纹理或拷贝。对应编译作业缓存版本递增，重新 Cook 使实际排列携带该元数据。
 
-`build/lumen-probe/20261103-193519/` 的 8 项项目开关检查、161 个 Shader 模块、145 条浏览器计算管线及 6 项 Cards/探针头执行均通过。148 个 load-only 绑定在最终 WGSL 中均有 `textureLoad` 且无过滤采样，100 个实际含 Sample/Gather 的绑定保留原声明。优化原生插件与 `-O2` 线程 WASM 编译通过。可重复检查入口为 `summarize-web-lumen-sampling.cjs`，证据为 `tests/web-platform/evidence/lumen-sampling-20261103.json`；`20261103-193721` 完整别墅项目设置 Cook 和浏览器验收继续进行。这些检查不代表已经稳定出帧或完成性能、显存测量。
+`build/lumen-probe/20261103-193519/` 的 8 项项目开关检查、161 个 Shader 模块、145 条浏览器计算管线及 6 项 Cards/探针头执行均通过。148 个 load-only 绑定在最终 WGSL 中均有 `textureLoad` 且无过滤采样，100 个实际含 Sample/Gather 的绑定保留原声明。优化原生插件与 `-O2` 线程 WASM 编译通过。可重复检查入口为 `summarize-web-lumen-sampling.cjs`，证据为 `tests/web-platform/evidence/lumen-sampling-20261103.json`；该证据另纳入完整 Cook 的实际纹理访问及 102 个前层半透明绑定。场景运行和性能测量另见下节。
+
+## 完整别墅浏览器运行
+
+`20261103-193721` 使用 `-UseProjectSettings` 完成 Cook，源项目和打包副本的有效渲染设置一致，未添加画质覆盖。Stage 为 5157 文件、3412716088 字节，线程 Package 为 3598131681 字节，位于 `tests/web-platform/build/triplex-project-lumen-distance-fields-threads/`。该轮实际产生的 1682 个 Shader 模块均通过浏览器编译检查：`results/lumen-sampling-cooked-modules-gpu.json`。这不表示 1682 条完整管线全部执行。
+
+同一包在 Edge 中完成两轮独立浏览器配置目录的测试，每轮进入稳定帧后观察 90 秒，依次固定房间、厨房方向和返回房间。第一轮到 4691 帧，第二轮到 4599 帧；没有 GPU 校验错误、页面异常或崩溃，三张截图均正常出图。实际配置为 GI=1、反射=1、TSR=4、DF AO/阴影开启，分辨率 1280×720，距离场网格 591 项。Web 运行时和第二轮原生基线均未限制 CPU 亲和性，也没有与 Cook 同时运行。前者使用优化线程 WASM，后者使用优化 Renderer/RenderCore 隔离宿主。
+
+| 同视角测试 | 网页稳定段平均提交帧率 | 桌面平均帧率 / GPU 时间 |
+| --- | --- | --- |
+| 房间，位置 (-175,-80,160)，朝向 (-5,50) | 51.72 FPS | 46.77 FPS / 20.80 ms |
+| 厨房方向，同位置，朝向 (-5,230) | 48.72 FPS | 45.71 FPS / 21.30 ms |
+| 返回房间 | 52.02 FPS | 同上房间基线 |
+
+网页统计各视角最近 600 个引擎提交间隔，不是显示器实际呈现时间；桌面每视角预热 300 帧、采样 180 帧，按 wall time 统计。网页为 WebGPU 桌面 SM5 软件距离场路径，桌面为 SM6，项目保留 `r.RayTracing=1` 和硬件 Lumen 设置。因此这些数值只描述各自运行，**不能证明等画质性能持平或网页更快**。第二轮新浏览器配置目录从导航至 60 帧约 28.8 秒；本机已存在 Cook、系统文件和驱动缓存，这不是冷启动保证。
+
+第二轮增加可选 `--memory-interval=2000`，与桌面使用相同的每 2 秒 WDDM 进程显存采样口径。网页测试进程树 60 次采样最高 3225.61 MiB（3.15 GiB），桌面编辑器进程 25 次采样最高 3086.40 MiB（3.01 GiB），差 139.21 MiB、4.51%。两端追踪能力、驱动开销和采样窗口不同，不能把该差值全部归因于某一个兼容补丁；2 秒采样也可能漏过短暂峰值。
+
+网页返回房间后的纹理与缓冲逻辑字节总量比首次房间采样低 2.57 MiB，活跃句柄增加 6 个；进程显存由厨房快照 3222.52 MiB 回落至 3215.06 MiB。本次未观察到随这三次视角切换持续增长，但没有据此证明长时间巡游无泄漏。主要逻辑分配包括两张 8192² Radiosity 光照图各 256 MiB，以及项目 2048² 六面 RGBA16F HDR 图约 192 MiB；单项分配字节不等于进程真实占用或补丁增量。
+
+本轮只接受“完整别墅能稳定运行”的初步结果。窗帘、窗边与局部反射的细节仍有可见差异，尚未逐项定位；没有接受像素或等画质一致性。毛发、地形及其他追踪排列的存储缓冲超限边界仍在。PSO 自动预缓存仍由既有 `WebPSOPrecacheTest` 测试参数控制，本次默认未启用；这项旧限制没有因 Lumen 场景跑通而消失。
+
+可重复摘要入口：`summarize-web-lumen-scene.cjs`。验收摘要为 `tests/web-platform/evidence/lumen-villa-scene-20261103.json`，含配置、FPS、显存、报告及截图哈希；原始报告为 `results/project-memory-lumen-20261103-load-only.json`、`results/project-memory-lumen-20261103-memory-peak.json` 和 `results/villa-distance-fields-lumen-unrestricted-20261103-capture.json`。
 
 ## 性能与显存边界
 
@@ -255,10 +277,10 @@ Surface Cache 的 `SourceDepthAtlas`、`DepthAtlas` 与 `LumenCardScene_DepthAtl
 - 自适应头 buffer：`ceil(宽/下采样因子) × ceil(高/下采样因子) × 4` 字节，另增加一次清零和一次拷贝 Dispatch。下采样因子为 16 时，1280×720 约 14.1 KiB，1920×1080 约 31.9 KiB。
 - BRDF SH buffer 从 half16 改 float32：额外 `探针图集宽 × 探针图集高 × 9 × 2` 字节，图集包含自适应区域；会增加对应读写带宽。
 - Cards 添加队列保持原始字节布局，没有因标量化再复制一份队列。
-- 无附件 UAV 光栅路径增加一个可复用 R8 附件，逻辑大小为最大所需宽 × 高字节；没有图像拷贝、没有颜色写出，Pass 内容丢弃。驱动对齐、清除/Pass 边界耗时与完整场景峰值须实测，不能由小尺寸回读测试推算。
+- 无附件 UAV 光栅路径增加一个可复用 R8 附件，逻辑大小为最大所需宽 × 高字节；没有图像拷贝、没有颜色写出，Pass 内容丢弃。驱动对齐和该 Pass 独立耗时仍须专项测量，不能由小尺寸回读测试推算。
 - 同时使用两种降采样时，StochasticLighting 额外执行一次 2×1 计算 Dispatch 和对应材质读取，复用原有输出纹理；实际耗时仍待完整场景测量。
-- 存储格式专用管线不增加纹理尺寸、格式字节数或拷贝 Pass；每个动态格式 Shader 保留一份 WGSL 源码，实际遇到的格式组合各保留一条管线。绑定格式未知时暂不进行该管线的推测预缓存，第一次使用会增加管线编译成本，后续同格式组合复用；CPU/驱动内存及首次卡顿仍待真实场景测量。
-- Radiosity 历史副本增加 `图集宽 × 高 × 原格式字节数` 的临时资源和每次积分前的一次整图拷贝。默认 4096×4096 R11G11B10 为 64 MiB，拷贝读写合计 128 MiB；项目改用其他图集尺寸或格式时按实际值计算。资源池可能保留该内存，不能将 RDG 生命周期结束当作显存立即归还。完整场景的耗时和峰值尚待实测。
+- 存储格式专用管线不增加纹理尺寸、格式字节数或拷贝 Pass；每个动态格式 Shader 保留一份 WGSL 源码，实际遇到的格式组合各保留一条管线。绑定格式未知时暂不进行该管线的推测预缓存，第一次使用会增加管线编译成本，后续同格式组合复用；CPU/驱动内存及首次卡顿的独立归因仍待测量。
+- Radiosity 历史副本增加 `图集宽 × 高 × 原格式字节数` 的临时资源和每次积分前的一次整图拷贝。默认 4096×4096 R11G11B10 为 64 MiB，拷贝读写合计 128 MiB；项目改用其他图集尺寸或格式时按实际值计算。资源池可能保留该内存，不能将 RDG 生命周期结束当作显存立即归还。该拷贝 Pass 的独立耗时与峰值增量尚待测量。
 - Surface Cache 的默认压缩模式 1 需要 UAV 格式别名或 framebuffer 压缩能力；Web RHI 尚未提供这两项能力，UE 自动选择未压缩图集。这不改变项目 CVar，也没有手动关掉 Lumen 效果，但会增加显存。在相同 4096² 图集下，Albedo/Normal/Emissive 使用 RGBA8/RG8/R11G11B10，共 160 MiB；支持该压缩路径的桌面端使用 BC7/BC5/BC6H，共 48 MiB，三者差额为 112 MiB。Depth 在两端均为 R16 UNORM、32 MiB。此处是按源码格式计算的资源差额，不能替代进程显存实测。
 
-以上未计对齐、驱动和资源池开销。**尚无完整 Lumen 场景帧率、GPU 各通道耗时或峰值显存实测，不能给出与桌面端的性能结论。** 关闭项目准入后不会进入这些新增 Lumen pass；尚未实测运行中关闭效果后的资源池即时归还情况。
+以上源码估算未计对齐、驱动和资源池开销。完整别墅现已有上节的提交帧率和进程显存采样，但 Web GPU 各通道时间、每项兼容改动的独立成本、等画质性能与短暂分配峰值仍未验收。关闭项目准入后不会进入这些新增 Lumen pass；尚未实测运行中关闭效果后的资源池即时归还情况。
