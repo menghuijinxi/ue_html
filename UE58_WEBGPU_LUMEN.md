@@ -149,6 +149,12 @@ Web 的 Radiosity 积分现在从独立的同格式历史图集读取，向原�
 
 2026-11-03 重启恢复后，以每批 32 个模块、共 5 个设备完成 158 个模块和 142 条计算管线创建。7 项实际 RHI 格式回读、6 项 Cards/探针头 GPU 执行、8 个 Radiosity 真实格式管线和 9 项项目设置检查通过；原生插件及优化线程 WASM 编译、链接和结构检查通过。摘要：`tests/web-platform/evidence/lumen-compute-limits-20261103.json`。完整别墅 Cook 另行继续，上述结果不代表已经生成可运行场景。
 
+### Radiance Cache 探针偏移
+
+后续完整 Cook 在 `FComputeProbeWorldOffsetsCS/1` 触发 Tint 的 `vector_element_pointer.cc` 内部错误。该 GBuffer 偏移排列对 `groupshared uint4` 的四个分量执行原子加法；Web 分支改为四个 `uint` 数组槽位，保留采样条件、量化、原子累加、同步及平均公式，桌面分支不变。共享数据仍为 16 字节，没有增加全局缓冲区或纹理。
+
+两个允许排列均通过转换、浏览器模块和计算管线创建，结果为 `build/lumen-probe/20261103-141651/` 和 `results/lumen-probe-world-offsets-pipelines-gpu.json`。这是编译兼容验证，尚未进行实际场景探针偏移结果回读或性能验收。完整别墅 Cook 随后恢复；Shader 修改通过内容哈希使相关缓存失效，没有修改项目设置或全部 Shader 的格式缓存键。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

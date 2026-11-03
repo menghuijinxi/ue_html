@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-03",
+  "shader": "FComputeProbeWorldOffsetsCS",
+  "permutations": [0, 1],
+  "conversionPassed": 2,
+  "browserModulesPassed": 2,
+  "browserPipelinesPassed": 2,
+  "rendererOverrides": [],
+  "completeLumenScene": false,
+  "sharedMemoryBytesBefore": 16,
+  "sharedMemoryBytesAfter": 16,
+  "sourceReports": [
+    {
+      "file": "H:/ue_html/tests/web-platform/build/lumen-probe/20261103-141651/lumen-shader-results.json",
+      "sha256": "3e136ee75fb7debe5e21ca27e31fb87b498dc1b0e29f7f56b39be73bc1244f00"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/results/lumen-probe-world-offsets-pipelines-gpu.json",
+      "sha256": "9e035083f083cb716a9c07ffbb540c716e8e0b2cf1ec3c1ec2b6c4f5882866ec"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:/ue_html/reference-engine/Engine/Shaders/Private/Lumen/LumenRadianceCache.usf",
+      "sha256": "bdd82d06ae2840224754a3fcf84870c9189d2d2368de7ca5d38a9b3d56217183"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/web-lumen-shader-overrides.cjs",
+      "sha256": "e0ca05be360944b4e86ea27148f76c836f9a181c05dd871ac15938ebbc96a0ff"
+    }
+  ],
+  "boundary": "Actual UE shader conversion and browser compute pipeline creation only. No scene probe relocation readback, full Cook/package, GI pixels, FPS or peak VRAM acceptance."
+}

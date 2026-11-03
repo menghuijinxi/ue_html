@@ -5,6 +5,24 @@ const branch = (before, lines) => ({before,
 const storage = (before, format) => ({before,
   after: web([`[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`]) + '\n' + before});
 module.exports = new Map([
+  ['Private/Lumen/LumenRadianceCache.usf', [
+    branch('groupshared uint4 SharedIdealProbeOffset;', [
+      '// Scalar slots keep atomic addresses out of vector components in the SPIR-V reader.',
+      'groupshared uint WebSharedIdealProbeOffset[4];']),
+    branch('\t\tSharedIdealProbeOffset = 0;', [
+      ...[0, 1, 2, 3].map(index => `\t\tWebSharedIdealProbeOffset[${index}] = 0;`)]),
+    branch('\t\t\t\t\t\tInterlockedAdd(SharedIdealProbeOffset.w, 1);', [
+      '\t\t\t\t\t\tInterlockedAdd(WebSharedIdealProbeOffset[3], 1);']),
+    branch(['x', 'y', 'z'].map(axis =>
+      `\t\t\t\t\t\tInterlockedAdd(SharedIdealProbeOffset.${axis}, QuantizedIdealProbeOffset.${axis});`).join('\n'), [
+      ...['x', 'y', 'z'].map((axis, index) =>
+        `\t\t\t\t\t\tInterlockedAdd(WebSharedIdealProbeOffset[${index}], QuantizedIdealProbeOffset.${axis});`)]),
+    branch('\t\tfloat NumSamples = SharedIdealProbeOffset.w;', [
+      '\t\tfloat NumSamples = WebSharedIdealProbeOffset[3];']),
+    branch('\t\t\tfloat3 AccumulatedIdealProbePosition = (SharedIdealProbeOffset.xyz / NumSamples - QuantizeScaleAndBias.y) / QuantizeScaleAndBias.x;', [
+      '\t\t\tuint3 IdealProbeOffsetSum = uint3(WebSharedIdealProbeOffset[0], WebSharedIdealProbeOffset[1], WebSharedIdealProbeOffset[2]);',
+      '\t\t\tfloat3 AccumulatedIdealProbePosition = (IdealProbeOffsetSum / NumSamples - QuantizeScaleAndBias.y) / QuantizeScaleAndBias.x;']),
+  ]],
   ['Private/Lumen/Radiosity/LumenRadiosity.usf', [
     {before: 'RWTexture2D<float3> RWRadiosityAtlas;',
       after: 'RWTexture2D<float3> RWRadiosityAtlas;\n' +
