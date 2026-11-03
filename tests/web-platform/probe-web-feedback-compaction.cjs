@@ -20,6 +20,10 @@ const report = {date: new Date().toISOString(), pass: false, completeLumenScene:
   let browser;
   try {
     assert.equal(jobs.length, 6, 'Expected both permutations of all three feedback shaders');
+    for (const job of jobs.filter(job => job.name === 'FCompactFeedbackHashTableCS'))
+      assert.equal(job.metadata.spirvBindings.find(binding =>
+        binding.name === 'RWCompactedFeedbackBuffer')?.storageElementStride, 8,
+      'Compacted feedback must match the actual UE uint2 UAV stride');
     browser = await chromium.launch({headless: true,
       executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'});
     const page = await browser.newPage();

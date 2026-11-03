@@ -136,6 +136,8 @@ assert(jobs.length, 'No converted UE shaders');
     const scene = jobs.find(job => job.name === 'FLumenSceneUpdateCS');
     const copy = jobs.find(job => job.name === 'FWebLumenCopyAdaptiveProbeHeaderCS');
     assert(scene && copy, 'Actual scene-update and adaptive-header UE shaders are required');
+    assert.equal(scene.metadata.spirvBindings.find(binding => binding.name === 'RWSceneAddOps')?.storageElementStride,
+      8, 'Scene add operations must match the actual UE uint2 UAV stride');
     report.execution = await page.evaluate(async ({scene, copy}) => {
       const device = lumenProbeDevice;
       const check = (value, message) => { if (!value) throw Error(message); };

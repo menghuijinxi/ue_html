@@ -1,15 +1,15 @@
 {
-  "date": "2026-11-03T06:06:02.369Z",
+  "date": "2026-11-03T06:55:27.768Z",
   "stage": "software-lumen-storage-formats",
   "completeLumenScene": false,
   "rendererOverrides": [],
   "shaders": {
     "selection": "First allowed permutation per Lumen/shared stochastic-lighting shader type",
-    "total": 158,
-    "passed": 158
+    "total": 161,
+    "passed": 161
   },
   "browserGPU": {
-    "modules": 158,
+    "modules": 161,
     "runtimeStorageBindings": 89,
     "device": {
       "features": [
@@ -19,7 +19,16 @@
         "subgroups"
       ],
       "adapter": {},
-      "requiredLimits": {}
+      "requiredLimits": {
+        "maxStorageBuffersPerShaderStage": 16,
+        "maxStorageTexturesPerShaderStage": 8,
+        "maxSampledTexturesPerShaderStage": 32,
+        "maxSamplersPerShaderStage": 16,
+        "maxComputeInvocationsPerWorkgroup": 1024,
+        "maxComputeWorkgroupSizeX": 1024,
+        "maxComputeWorkgroupSizeY": 1024,
+        "maxComputeWorkgroupStorageSize": 32768
+      }
     },
     "execution": [
       {
@@ -154,12 +163,12 @@
   "memoryBoundary": "No texture widening, extra texture allocation or copy pass from runtime format specialization. WGSL source and per-format pipelines add CPU/driver memory; full-scene FPS/VRAM remain unmeasured.",
   "sourceReports": [
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-133514\\lumen-shader-results.json",
-      "sha256": "0cf274a499eb9d358126f6ada1862019d17968c553462b5b325830aba43c0b90"
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-145316\\lumen-shader-results.json",
+      "sha256": "282a337a150009dc05db10a590829fcd8fb1f7a2af1fb07c2bdd46ed4e42931b"
     },
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-lumen-storage-gpu-access.json",
-      "sha256": "8085ea70290136b73828d591a479b7ffd96f3a4d9691e3c2fba16b139fe91bc0"
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-structured-all-gpu.json",
+      "sha256": "51964367b5d9c0b56cffec68bfada930c8392ebf9bf5118d5f0d536e6eaa1377"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi\\lumen-storage-rhi.json",

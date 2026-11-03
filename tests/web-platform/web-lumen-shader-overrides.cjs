@@ -23,13 +23,12 @@ module.exports = new Map([
     {before: '\treturn false;\n}\n\n/**\n * Takes a list of feedback elements',
       after: '\treturn false;\n#endif\n}\n\n/**\n * Takes a list of feedback elements'},
     branch('RWStructuredBuffer<uint2> RWCompactedFeedbackBuffer;', [
-      '// Keep the uint2 byte layout while giving the header counter a scalar atomic address.',
-      'RWStructuredBuffer<uint> RWCompactedFeedbackBuffer;']),
-    branch('\t\t\tInterlockedAdd(RWCompactedFeedbackBuffer[0].x, 1, WriteOffset);', [
-      '\t\t\tInterlockedAdd(RWCompactedFeedbackBuffer[0], 1, WriteOffset);']),
+      '// Preserve the uint2 stride while giving atomics scalar structure members.',
+      'struct FWebCompactedFeedback', '{', '\tuint x;', '\tuint y;', '};',
+      'RWStructuredBuffer<FWebCompactedFeedback> RWCompactedFeedbackBuffer;']),
     branch('\t\t\t\t\tRWCompactedFeedbackBuffer[WriteOffset] = PackedFeedback;', [
-      '\t\t\t\t\tRWCompactedFeedbackBuffer[2 * WriteOffset] = PackedFeedback.x;',
-      '\t\t\t\t\tRWCompactedFeedbackBuffer[2 * WriteOffset + 1] = PackedFeedback.y;']),
+      '\t\t\t\t\tRWCompactedFeedbackBuffer[WriteOffset].x = PackedFeedback.x;',
+      '\t\t\t\t\tRWCompactedFeedbackBuffer[WriteOffset].y = PackedFeedback.y;']),
   ]],
   ['Private/Lumen/LumenRadianceCache.usf', [
     branch('groupshared uint4 SharedIdealProbeOffset;', [
@@ -100,13 +99,12 @@ module.exports = new Map([
   ]],
   ['Private/Lumen/LumenScene.usf', [
     branch('RWStructuredBuffer<uint2> RWSceneAddOps;', [
-      '// Preserve the uint2 readback layout, avoiding atomics on vector components.',
-      'RWStructuredBuffer<uint> RWSceneAddOps;']),
-    branch('\t\t\t\t\tInterlockedAdd(RWSceneAddOps[0].x, 1, ElementIndex);', [
-      '\t\t\t\t\tInterlockedAdd(RWSceneAddOps[0], 1, ElementIndex);']),
+      '// Preserve the uint2 stride while giving atomics scalar structure members.',
+      'struct FWebSceneAddOp', '{', '\tuint x;', '\tuint y;', '};',
+      'RWStructuredBuffer<FWebSceneAddOp> RWSceneAddOps;']),
     branch('\t\t\t\t\t\tRWSceneAddOps[ElementIndex + 1] = uint2(PrimitiveGroupIndex, asuint(DistanceSquared));', [
-      '\t\t\t\t\t\tRWSceneAddOps[2 * (ElementIndex + 1)] = PrimitiveGroupIndex;',
-      '\t\t\t\t\t\tRWSceneAddOps[2 * (ElementIndex + 1) + 1] = asuint(DistanceSquared);']),
+      '\t\t\t\t\t\tRWSceneAddOps[ElementIndex + 1].x = PrimitiveGroupIndex;',
+      '\t\t\t\t\t\tRWSceneAddOps[ElementIndex + 1].y = asuint(DistanceSquared);']),
   ]],
   ['Private/Lumen/LumenScreenProbeGatherScreenData.usf', [
     storage('RWTexture2D<UNORM float> RWScreenProbeDisocclusion;', 'r8'),

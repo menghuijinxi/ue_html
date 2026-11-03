@@ -157,7 +157,7 @@ Web 的 Radiosity 积分现在从独立的同格式历史图集读取，向原�
 
 ### Surface Cache 反馈压缩
 
-完整 Cook 在共享的 `FCompactFeedbackHashTableCS/0` 再次遇到向量分量原子地址错误。Web 将输出 `RWStructuredBuffer<uint2>` 按相同字节布局标量寻址，首个 uint 仍为计数，后续每两个 uint 仍是一条反馈。定向检查整条反馈链路后，还发现哈希插入函数的多个提前返回触发 Tint 循环结果作用域错误；Web 分支改为单一出口，保留最多 32 次线性探测、CAS、去重和计数行为。桌面分支和缓冲区分配尺寸不变，没有新增纹理或全局缓冲区。
+完整 Cook 在共享的 `FCompactFeedbackHashTableCS/0` 再次遇到向量分量原子地址错误。Web 将输出 `RWStructuredBuffer<uint2>` 改为两个标量字段的结构体，首个 uint 仍为计数，后续每两个 uint 仍是一条反馈。定向检查整条反馈链路后，还发现哈希插入函数的多个提前返回触发 Tint 循环结果作用域错误；Web 分支改为单一出口，保留最多 32 次线性探测、CAS、去重和计数行为。桌面分支和缓冲区分配尺寸不变，没有新增纹理或全局缓冲区。
 
 诊断入口已纳入 `GPUFeedbackCompaction.usf`；三类 Shader 的 6 个排列均通过转换及浏览器计算管线创建。另用实际 UE Shader 执行间接参数生成、哈希插入和压缩，在步长 1/2、0/1/65/257 条输入、重复元素及输出容量不足场景下共回读 10 项，核验条目唯一性、出现次数、载荷、uint2 布局及越界保护区。结果：`build/lumen-probe/20261103-142611/`、`results/lumen-feedback-compaction-gpu.json`；摘要：`tests/web-platform/evidence/lumen-feedback-20261103.json`。这还不能证明真实 Surface Cache 页面请求和更新效果正确。
 
@@ -165,6 +165,14 @@ Web 的 Radiosity 积分现在从独立的同格式历史图集读取，向原�
 & tests/web-platform/probe-web-lumen.ps1 -Mode Shaders -ShaderTypes 'FBuildFeedbackHashTableIndirectArgsCS,FBuildFeedbackHashTableCS,FCompactFeedbackHashTableCS' -AllPermutations
 node tests/web-platform/probe-web-feedback-compaction.cjs <ShaderConversion目录>
 ```
+
+### 结构化缓冲区步长
+
+运行时绑定核对发现，之前 Cards 添加队列和压缩反馈使用 `uint` 数组虽然维持了字节内容，反射步长却从 8 变成 4，与原 UE 的 uint2 UAV 不符，严格 RHI 校验会拒绝。最终改为包含两个独立 uint 字段的结构体；原子操作作用于标量字段，反射步长保持 8，未放宽 RHI 校验，也未修改原缓冲区大小或读回布局。
+
+更新后的 161 个首个允许排列和 145 条计算管线、6 项 Cards/探针头 GPU 执行及 10 项反馈 GPU 回读通过。GPU 检查显式断言两个输出绑定的反射步长为 8。结果位于 `build/lumen-probe/20261103-145316/`、`build/lumen-probe/20261103-145359/` 和 `results/lumen-structured-all-gpu.json`；完整场景中的绑定仍须通过浏览器验证。
+
+此前一次完整别墅 Cook 已正常退出，生成 5159 项产物；该次使用的是旧步长 Shader，只用于保留已完成的材质缓存。结构体修正后的 `20261103-145542` Cook 已正常退出，Stage 输出 5157 个文件、3412437085 字节；后续 Package 和浏览器验收使用该次新产物。
 
 ## 性能与显存边界
 
