@@ -18,6 +18,11 @@ int32 RunWebLumenShaderProbe(const FString& Params)
     FParse::Value(*Params, TEXT("ShaderTypes="), Names, false);
     TArray<FString> Requested;
     Names.ParseIntoArray(Requested, TEXT(","), true);
+    int32 SelectedPermutation = INDEX_NONE;
+    const bool SelectPermutation = FParse::Value(*Params, TEXT("Permutation="), SelectedPermutation);
+    if (SelectPermutation && (SelectedPermutation < 0 || Requested.IsEmpty() ||
+        FParse::Param(*Params, TEXT("AllPermutations"))))
+        return 1;
     const EShaderPlatform Platform =
         FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
     const IShaderFormat* Format =
@@ -38,10 +43,19 @@ int32 RunWebLumenShaderProbe(const FString& Params)
             (!Requested.IsEmpty() && !Requested.Contains(Type->GetName())))
             continue;
         Found.Add(Type->GetName());
-        for (int32 Permutation = 0; Permutation < Type->GetPermutationCount(); ++Permutation)
+        if (SelectPermutation && SelectedPermutation >= Type->GetPermutationCount())
+        {
+            Pass = false;
+            continue;
+        }
+        for (int32 Permutation = SelectPermutation ? SelectedPermutation : 0;
+            Permutation < (SelectPermutation ? SelectedPermutation + 1 : Type->GetPermutationCount()); ++Permutation)
         {
             if (!Global->ShouldCompilePermutation(Platform, Permutation, EShaderPermutationFlags::None))
+            {
+                if (SelectPermutation) Pass = false;
                 continue;
+            }
             FShaderCompileJob Job;
             Job.Key = FShaderCompileJobKey(Type, Platform, nullptr, Permutation);
             Global->SetupCompileEnvironment(Platform, Permutation, EShaderPermutationFlags::None, Job.Input.Environment);
@@ -79,6 +93,7 @@ int32 RunWebLumenShaderProbe(const FString& Params)
     TSharedRef<FJsonObject> Report = MakeShared<FJsonObject>();
     Report->SetBoolField(TEXT("pass"), Pass);
     Report->SetBoolField(TEXT("allPermutations"), AllPermutations);
+    if (SelectPermutation) Report->SetNumberField(TEXT("selectedPermutation"), SelectedPermutation);
     Report->SetBoolField(TEXT("completeLumenScene"), false);
     Report->SetArrayField(TEXT("cases"), Cases);
     FString Json;

@@ -1,9 +1,13 @@
 param(
     [ValidateSet('Policy', 'Shaders', 'All')][string]$Mode = 'All',
     [string]$ShaderTypes,
+    [ValidateRange(-1, 2147483647)][int]$Permutation = -1,
     [switch]$AllPermutations
 )
 $ErrorActionPreference = 'Stop'
+if ($Permutation -ge 0 -and (-not $ShaderTypes -or $AllPermutations -or $Mode -eq 'Policy')) {
+    throw 'Permutation requires explicit ShaderTypes and cannot be combined with Policy or AllPermutations.'
+}
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-cook-host/Engine'
 $taskStamp = Get-Date -Format 'yyyyMMdd-HHmmss'
@@ -58,6 +62,7 @@ try {
             '-nullrhi', '-sm5', '-unattended', '-nop4', '-nosplash', '-nosound',
             "-abslog=$taskOutput/shaders.log")
         if ($ShaderTypes) { $taskArguments += "-ShaderTypes=$ShaderTypes" }
+        if ($Permutation -ge 0) { $taskArguments += "-Permutation=$Permutation" }
         if ($AllPermutations) { $taskArguments += '-AllPermutations' }
         $taskCode = Invoke-TaskProbe $taskArguments "$taskOutput/shaders.console"
         $taskReport.shaders = Get-Content (Join-Path $taskOutput 'lumen-shader-results.json') -Raw | ConvertFrom-Json

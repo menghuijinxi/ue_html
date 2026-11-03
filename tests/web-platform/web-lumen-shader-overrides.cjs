@@ -5,6 +5,24 @@ const branch = (before, lines) => ({before,
 const storage = (before, format) => ({before,
   after: web([`[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`]) + '\n' + before});
 module.exports = new Map([
+  ['Private/ShadingModelsSampling.ush', [
+    {before: 'FBxDFSample SampleBxDF(const uint TermMask, FGBufferData GBuffer, float3 V, float4 E)\n{',
+      after: ['FBxDFSample SampleBxDF(const uint TermMask, FGBufferData GBuffer, float3 V, float4 E)', '{',
+        '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '\t// Preserve material sampling without empty switch labels that lower to SPIR-V fallthrough.',
+        '\tconst uint ShadingModelID = GBuffer.ShadingModelID;',
+        '\tif (ShadingModelID == SHADINGMODELID_HAIR)',
+        '\t\treturn SampleHairBxDF(TermMask, GBuffer, V, E);',
+        '\tif (ShadingModelID == SHADINGMODELID_DEFAULT_LIT ||',
+        ...['SINGLELAYERWATER', 'SUBSURFACE', 'SUBSURFACE_PROFILE', 'PREINTEGRATED_SKIN',
+          'CLEAR_COAT', 'TWOSIDED_FOLIAGE', 'CLOTH'].map(name =>
+          `\t\tShadingModelID == SHADINGMODELID_${name} ||`),
+        '\t\tShadingModelID == SHADINGMODELID_EYE)',
+        '\t\treturn SampleDefaultLitBxDF(TermMask, GBuffer, V, E);',
+        '\treturn (FBxDFSample)0;', '#else'].join('\n')},
+    {before: '\n}\n\nbool SupportsSampleBxDF(uint ShadingModelID)',
+      after: '\n#endif\n}\n\nbool SupportsSampleBxDF(uint ShadingModelID)'},
+  ]],
   ['Private/Lumen/LumenScene.usf', [
     branch('RWStructuredBuffer<uint2> RWSceneAddOps;', [
       '// Preserve the uint2 readback layout, avoiding atomics on vector components.',
