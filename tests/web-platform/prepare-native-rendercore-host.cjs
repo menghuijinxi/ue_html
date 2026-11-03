@@ -81,6 +81,7 @@ try {
     'Private/TranslucentLighting.cpp',
     'Private/Lumen/LumenScreenProbeGather.cpp',
     'Private/Lumen/LumenScreenProbeImportanceSampling.cpp',
+    'Private/Lumen/LumenRadiosity.cpp',
     'Private/InstanceCulling/InstanceCullingContext.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);

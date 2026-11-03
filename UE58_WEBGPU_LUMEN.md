@@ -127,6 +127,18 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 node tests/web-platform/probe-web-lumen-gpu.cjs --input=tests/web-platform/build/lumen-probe/20261103-130356/ShaderConversion --modules-only --pipelines
 ```
 
+### Radiosity 时间累积
+
+完整 Cook 的 `FLumenRadiosityIntegrateCS/4` 发现存储纹理实际读取被误判为只写。原因是 SPIR-V 资源来源分析在向 `TMap` 增加条目时传入了同一容器内的值引用，扩容可能使引用失效；现在先复制来源 ID，再增加条目，并更新受影响的 Shader 缓存键。
+
+修正后原始排列可以转换，但按真实 R11G11B10/R8 格式创建浏览器管线仍失败：当前设备启用 texture-formats-tier1/tier2 后，R8 支持 read_write，R11G11B10 仍不支持。这不是通过占位 RGBA32F 管线就能验证的能力。
+
+Web 的 Radiosity 积分现在从独立的同格式历史图集读取，向原图集只写；计数图集继续使用 R8 的实际读写能力。只在项目准入、Radiosity 和时间累积均开启并实际执行积分时创建历史副本，保留原有累积系数、精度与 CVar 开关。桌面仍使用原来的原地读写路径。RHI 不再将 R11G11B10 误报为支持 TypedUAVLoad。
+
+8 个 Radiosity 允许排列均通过转换及真实 R11G11B10/R8 格式的浏览器管线创建；排列 0–3 不绑定历史读取，4–7 绑定独立历史 SRV，光照 UAV 均为只写。结果在 `build/lumen-probe/20261103-133429/` 和 `results/lumen-radiosity-fixed-format-gpu.json`。旧原地读写排列仍被浏览器按预期拒绝，记录为 `results/lumen-radiosity-original-format-gpu.json`。
+
+回归检查：158 类 Shader 的首个允许排列、浏览器模块编译、6 项 Cards/探针头 GPU 执行及 7 项实际 RHI 格式回读均通过。原生 Renderer 优化构建和线程版 WASM 编译、链接及结构校验通过。上述结果仍不等于完整场景 GI、性能或显存验收。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：
@@ -135,5 +147,6 @@ node tests/web-platform/probe-web-lumen-gpu.cjs --input=tests/web-platform/build
 - BRDF SH buffer 从 half16 改 float32：额外 `探针图集宽 × 探针图集高 × 9 × 2` 字节，图集包含自适应区域；会增加对应读写带宽。
 - Cards 添加队列保持原始字节布局，没有因标量化再复制一份队列。
 - 存储格式专用管线不增加纹理尺寸、格式字节数或拷贝 Pass；每个动态格式 Shader 保留一份 WGSL 源码，实际遇到的格式组合各保留一条管线。绑定格式未知时暂不进行该管线的推测预缓存，第一次使用会增加管线编译成本，后续同格式组合复用；CPU/驱动内存及首次卡顿仍待真实场景测量。
+- Radiosity 历史副本增加 `图集宽 × 高 × 原格式字节数` 的临时资源和每次积分前的一次整图拷贝。默认 4096×4096 R11G11B10 为 64 MiB，拷贝读写合计 128 MiB；项目改用其他图集尺寸或格式时按实际值计算。资源池可能保留该内存，不能将 RDG 生命周期结束当作显存立即归还。完整场景的耗时和峰值尚待实测。
 
 以上未计对齐、驱动和资源池开销。**尚无完整 Lumen 场景帧率、GPU 各通道耗时或峰值显存实测，不能给出与桌面端的性能结论。** 关闭项目准入后不会进入这些新增 Lumen pass；尚未实测运行中关闭效果后的资源池即时归还情况。

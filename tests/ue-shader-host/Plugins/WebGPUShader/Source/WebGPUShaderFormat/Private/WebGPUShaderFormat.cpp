@@ -149,7 +149,10 @@ static TSet<uint32> FindStorageImageReads(const TArray<uint32>& Spirv,
     for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
         if ((Spirv[Offset] & 0xffff) == SpvOpLoad && (Spirv[Offset] >> 16) >= 4)
             if (const auto* Root = Origins.Find(Spirv[Offset + 3]))
-                Origins.Add(Spirv[Offset + 2], *Root);
+            {
+                const uint32 Origin = *Root;
+                Origins.Add(Spirv[Offset + 2], Origin);
+            }
     TSet<uint32> Reads;
     bool InFunctions = false;
     for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
@@ -448,7 +451,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage4");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage5");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -464,7 +467,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Metadata fields are additive. Invalidate only the affected jobs while
         // AppendToKeyString invalidates complete shader maps containing them.
         if (NeedsRuntimeStorageFormats(Input))
-            Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(3));
+            Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(4));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -780,6 +783,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
                 Json->SetNumberField(TEXT("textureDepth"), Binding->image.depth);
                 if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
                 {
+                    if (RuntimeStorageFormats)
+                        Json->SetBoolField(TEXT("storageImageReadDetected"), ImageReads.Contains(Binding->spirv_id));
                     Json->SetNumberField(TEXT("storageImageFormat"),
                         RuntimeStorageFormats && (Binding->type_description->type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT) ?
                         SpvImageFormatRgba32f : Binding->image.image_format);

@@ -1,0 +1,129 @@
+{
+  "date": "2026-11-03T05:39:30.410Z",
+  "completeLumenScene": false,
+  "rendererOverrides": [],
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-133429\\lumen-shader-results.json",
+      "sha256": "588e9645c40ee84df476e7b7767c6709982965f3c78e0449821ba83c9c16b4e5"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-radiosity-fixed-format-gpu.json",
+      "sha256": "e9f0db114460fff11b22bfe5b254c934f90f0d1e5df06883b627e7537ef34fa9"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-radiosity-original-format-gpu.json",
+      "sha256": "7be51b953d8f4bb5720ca86c909db1f214b971cca3a1159718b0f7431ab31818"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\native-renderer-build-results.json",
+      "sha256": "6df0362f6ae091d92dca36fefcefa4011a20f5fa4a239e802994285c3d1084a3"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "f7041bd03a71f0079674d032cd93ff926112a8fd8571a1809417513d913256fc"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Lumen\\LumenRadiosity.cpp",
+      "sha256": "cd7845b6bfa9a83c970cf5c7ee0762fcab6b54a60690b34dea3360a114cfce43"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Lumen\\Radiosity\\LumenRadiosity.usf",
+      "sha256": "645e865e1f07996db07cff3e3364f37a840d8a36a4f51660fddbb5770e11574d"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+      "sha256": "f3b56cf312270e8d2261438ee9480e61d20b702a073bb99d1e68fa72acba94ee"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "27d2ff7c48496bb3d43df825fcbd070b9bef790536b277a289a75d8a84a545a1"
+    }
+  ],
+  "bindings": [
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/0:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": false,
+      "lightAccess": "write",
+      "countAccess": "write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\14405DF545DAEB5A790C4EAA11148245\\input.json",
+        "sha256": "0e3452a040234143f01615877a770d74d513060a617396db875fd745e94ecf60"
+      }
+    },
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/3:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": false,
+      "lightAccess": "write",
+      "countAccess": "write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\1A1C7D424E6DD51FCDE1BA85429F8744\\input.json",
+        "sha256": "aaf0211862ed5c2b1c524de074c1b7a7fb114e72debb2737acf50609f27a8bf2"
+      }
+    },
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/7:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": true,
+      "lightAccess": "write",
+      "countAccess": "read_write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\202F8C77425C178941ABEAB0233ABF58\\input.json",
+        "sha256": "4b18a6aa6e52b32b97d166a89f33d363a300efc542a6ac604c0ee97173e38126"
+      }
+    },
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/2:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": false,
+      "lightAccess": "write",
+      "countAccess": "write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\7D1080CB454ED0C3650233A6D341C7A4\\input.json",
+        "sha256": "166e31cccc025641cc2f7832a072a549e747bf38f49eb0e03b6661a13e0513ee"
+      }
+    },
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/1:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": false,
+      "lightAccess": "write",
+      "countAccess": "write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\8BF995BD4E013BF8176A6ABF51A845C7\\input.json",
+        "sha256": "c912030717081800661cd9cadd3c03d9708c1452cb2b33759149c3b17ffa3442"
+      }
+    },
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/4:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": true,
+      "lightAccess": "write",
+      "countAccess": "read_write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\9F75B9184B5B9DA2158ADBAF668E8D67\\input.json",
+        "sha256": "5b06144607dbd0a13f4a8170b06c92a89570225bd9849e757db8b4f6357f7ee8"
+      }
+    },
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/5:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": true,
+      "lightAccess": "write",
+      "countAccess": "read_write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\AD489A014FC18C16095855A3EBF3F2AA\\input.json",
+        "sha256": "16793e77c7deb03ec00c74b6376254925d5a057fa7d34ac3fa50e7f6d39dd79f"
+      }
+    },
+    {
+      "shader": "WebLumenShaderProbe/FLumenRadiosityIntegrateCS/6:/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf|LumenRadiosityIntegrateCS",
+      "history": true,
+      "lightAccess": "write",
+      "countAccess": "read_write",
+      "source": {
+        "file": "tests\\web-platform\\build\\lumen-probe\\20261103-133429\\ShaderConversion\\B69F4E1046206D9DC85F4E8E24B6A02F\\input.json",
+        "sha256": "aec6f679f6e81d2920ea76f498a3d5a7026c7457461172bdb246267204fbb3f9"
+      }
+    }
+  ],
+  "extraMemory": "One same-format history atlas and one copy per Web temporal radiosity integration; 4096x4096 packed HDR = 64 MiB before pool/driver overhead.",
+  "boundary": "Eight real-format compute pipelines validated; full Cook, actual GI pixels and performance/VRAM acceptance remain separate."
+}

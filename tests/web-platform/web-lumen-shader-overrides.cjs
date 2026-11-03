@@ -5,6 +5,13 @@ const branch = (before, lines) => ({before,
 const storage = (before, format) => ({before,
   after: web([`[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`]) + '\n' + before});
 module.exports = new Map([
+  ['Private/Lumen/Radiosity/LumenRadiosity.usf', [
+    {before: 'RWTexture2D<float3> RWRadiosityAtlas;',
+      after: 'RWTexture2D<float3> RWRadiosityAtlas;\n' +
+        web(['Texture2D<float3> WebRadiosityHistoryAtlas;'])},
+    branch('\t\tfloat3 HistoryRadiosity = RWRadiosityAtlas[RadiosityTexel.AtlasCoord];', [
+      '\t\tfloat3 HistoryRadiosity = WebRadiosityHistoryAtlas.Load(int3(RadiosityTexel.AtlasCoord, 0));']),
+  ]],
   ['Private/Lumen/LumenSceneDirectLightingCulling.usf', [
     branch('\t\t\twhile (NumPackedLightSamples < MAX_LIGHT_SAMPLES)', [
       '\t\t\t// Keep every reduction barrier in a statically uniform loop.',

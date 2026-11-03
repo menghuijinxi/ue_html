@@ -2,6 +2,7 @@ param(
     [string]$Engine = 'H:/UE_5.8',
     [ValidateSet('RenderCore', 'Renderer')][string]$Module = 'RenderCore',
     [ValidateRange(1, 16)][int]$MaxParallelActions = 1,
+    [ValidateRange(0, [long]::MaxValue)][long]$HostProcessorAffinity = 0,
     [ValidatePattern('^\d+\.\d+\.\d+$')][string]$CompilerVersion,
     [switch]$DisableHostOptimization
 )
@@ -26,6 +27,7 @@ $taskReport = [ordered]@{
     nativeModuleOnly = $true
     fullSourceEngineBuild = $false
     maxParallelActions = $MaxParallelActions
+    hostProcessorAffinity = $HostProcessorAffinity
     compilerVersion = $CompilerVersion
     disableHostOptimization = [bool]$DisableHostOptimization
     nativeModuleLoadVerified = $false
@@ -36,7 +38,8 @@ function Get-TaskAudit([string]$File) {
 }
 try {
     $taskWorkerThreads = [Math]::Min([Environment]::ProcessorCount, [Math]::Max(2, $MaxParallelActions * 2))
-    $taskProcess.ProcessorAffinity = [IntPtr]($taskAffinity.ToInt64() -band ([long][Math]::Pow(2, $taskWorkerThreads) - 1))
+    $taskProcess.ProcessorAffinity = [IntPtr]$(if ($HostProcessorAffinity) { $HostProcessorAffinity }
+        else { $taskAffinity.ToInt64() -band ([long][Math]::Pow(2, $taskWorkerThreads) - 1) })
     $env:UE_ENGINE_ROOT = Join-Path $Engine 'Engine'
     [Environment]::SetEnvironmentVariable($taskFlag, '1')
     $env:UE_WEB_NATIVE_NO_OPTIMIZE = if ($DisableHostOptimization) { '1' } else { '0' }

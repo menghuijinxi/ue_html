@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-03T05:07:18.118Z",
+  "date": "2026-11-03T05:39:30.357Z",
   "stage": "software-lumen-storage-formats",
   "completeLumenScene": false,
   "rendererOverrides": [],
@@ -138,11 +138,11 @@
     "wasmValidated": true,
     "products": [
       {
-        "sha256": "ee9445a0ed05deaf70ddc6988f2c72248e7907c6ce8e070c8e6101fb226f542e",
+        "sha256": "6e4b146e108515f3e947aaef99324af55f18fe05c4d36495883075cc25ad25f9",
         "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js"
       },
       {
-        "sha256": "aa355f8af52d54bbf714cea0ae39ee823dade7938fe51710f4e89032d35f12b0",
+        "sha256": "d319e733ba08a96d617afdbaef18f900dee3aa841a3881ab372e348de301e6b0",
         "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
       },
       {
@@ -154,12 +154,12 @@
   "memoryBoundary": "No texture widening, extra texture allocation or copy pass from runtime format specialization. WGSL source and per-format pipelines add CPU/driver memory; full-scene FPS/VRAM remain unmeasured.",
   "sourceReports": [
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-123222\\lumen-shader-results.json",
-      "sha256": "01df408ce54db5d1ec552e1988ab7ab3e53055d1a4f0711e4be7a897d1a12821"
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-133514\\lumen-shader-results.json",
+      "sha256": "0cf274a499eb9d358126f6ada1862019d17968c553462b5b325830aba43c0b90"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\web-lumen-storage-gpu-access.json",
-      "sha256": "439524e724b4f1899287badaec2f13af2542c243bb240ed2147fd92c1ce04b87"
+      "sha256": "b34c31188ef7a5ae9ffe8064f9fcae7cda43e31a2ae6ae8c34e6e304a6b081c9"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi\\lumen-storage-rhi.json",
@@ -167,7 +167,7 @@
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
-      "sha256": "ff294ecdb9caaf36e62f51f4f507fee1b670f627627dadbcdb3ec2b9c6144618"
+      "sha256": "f7041bd03a71f0079674d032cd93ff926112a8fd8571a1809417513d913256fc"
     }
   ],
   "boundary": "Full Cook/package/browser scene acceptance is recorded separately; this report does not claim it."

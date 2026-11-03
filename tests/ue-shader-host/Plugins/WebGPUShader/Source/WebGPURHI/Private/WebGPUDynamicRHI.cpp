@@ -858,7 +858,7 @@ void FWebGPUDynamicRHI::Init()
         PackedHDRFormat.Capabilities |= EPixelFormatCapabilities::RenderTarget;
     if (wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1))
         PackedHDRFormat.Capabilities |= EPixelFormatCapabilities::TextureStore |
-            EPixelFormatCapabilities::UAV | EPixelFormatCapabilities::TypedUAVLoad | EPixelFormatCapabilities::TypedUAVStore;
+            EPixelFormatCapabilities::UAV | EPixelFormatCapabilities::TypedUAVStore;
     auto& FloatRGBFormat = GPixelFormats[PF_FloatRGB];
     FloatRGBFormat.Supported = PackedHDRFormat.Supported;
     FloatRGBFormat.PlatformFormat = PackedHDRFormat.PlatformFormat;

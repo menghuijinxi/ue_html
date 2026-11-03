@@ -10,8 +10,14 @@ const directory = path.resolve(argument('input'));
 const output = path.resolve(argument('output') || path.join(__dirname, 'results/web-lumen-gpu.json'));
 const modulesOnly = process.argv.includes('--modules-only');
 const pipelines = process.argv.includes('--pipelines');
+const storageFormats = Object.fromEntries((argument('storage-formats') || '').split(',').filter(Boolean).map(item => {
+  const pair = item.split(':');
+  assert(pair.length === 2 && pair.every(value => /^[A-Za-z0-9_]+$/.test(value)),
+    'storage-formats must contain bindingName:format pairs');
+  return pair;
+}));
 const report = {date: new Date().toISOString(), pass: false, modulesOnly, modules: [], execution: [],
-  pipelines: [],
+  pipelines: [], storageFormats,
   hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default CPU scheduling',
   completeLumenScene: false, sourceFiles: [audit(__filename)]};
 const jobs = fs.readdirSync(directory).flatMap(name => {
@@ -68,12 +74,20 @@ assert(jobs.length, 'No converted UE shaders');
       device.addEventListener('uncapturederror', event => lumenProbeErrors.push(event.error.message));
       return {features, adapter: adapter.info, requiredLimits};
     }, pipelines);
+    const specializedBindings = new Set();
     for (const job of jobs) {
+      let code = job.code;
+      for (const binding of job.metadata.spirvBindings.filter(item =>
+        item.runtimeStorageFormat && storageFormats[item.name]).sort((a, b) => b.storageFormatOffset - a.storageFormatOffset)) {
+        code = code.slice(0, binding.storageFormatOffset) + storageFormats[binding.name] +
+          code.slice(binding.storageFormatOffset + binding.storageFormatLength);
+        specializedBindings.add(binding.name);
+      }
       const errors = await page.evaluate(async code => {
         const module = lumenProbeDevice.createShaderModule({code});
         const info = await module.getCompilationInfo();
         return info.messages.filter(message => message.type === 'error').map(message => message.message);
-      }, job.code);
+      }, code);
       report.modules.push({name: job.name, errors, sourceFiles: job.sourceFiles});
       if (pipelines && !errors.length && job.metadata.frequency === 5) {
         const pipelineErrors = await page.evaluate(async ({code, entryPoint}) => {
@@ -86,10 +100,12 @@ assert(jobs.length, 'No converted UE shaders');
           const validation = await lumenProbeDevice.popErrorScope();
           if (validation) errors.push(validation.message);
           return errors;
-        }, {code: job.code, entryPoint: job.metadata.webEntry});
+        }, {code, entryPoint: job.metadata.webEntry});
         report.pipelines.push({name: job.name, errors: pipelineErrors});
       }
     }
+    for (const name of Object.keys(storageFormats))
+      assert(specializedBindings.has(name), `No runtime storage binding matched ${name}`);
     assert(report.modules.every(item => !item.errors.length), 'Browser rejected a converted Lumen shader');
     assert(report.pipelines.every(item => !item.errors.length), 'Browser rejected a converted compute pipeline');
     if (modulesOnly) {
@@ -248,7 +264,8 @@ assert(jobs.length, 'No converted UE shaders');
     report.failure = error.stack;
   } finally {
     if (browser) await browser.close();
-    report.boundary = (modulesOnly ? 'Real UE WGSL module validation only. ' :
+    report.boundary = (modulesOnly ? 'Real UE WGSL module validation' +
+      (pipelines ? ' and compute pipeline creation. ' : ' only. ') :
       'Real UE WGSL module validation and GPU execution of scene Cards queues/adaptive-header copy. ') +
       'No full Cook, Surface Cache, GI pixels, scene performance or peak VRAM acceptance.';
     fs.writeFileSync(output, JSON.stringify(report, null, 2));
