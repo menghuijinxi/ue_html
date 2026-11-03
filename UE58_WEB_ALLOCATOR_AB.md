@@ -110,7 +110,7 @@ v46 独立计数窗口约 5.008 秒 / 212 个 RHI 完成帧，包含第三方在
 
 Game 约 21.64% 的采样位于同步主线程代理路径，`GetDPIScaleFactor` 包含子调用约 16.59%，`RefreshWindowSize` 约 4.45%。源码 `WebApplication.cpp` 的 `BrowserScale/BrowserSize` 在 Worker 模式使用 `MAIN_THREAD_EM_ASM_DOUBLE`，读取 owner Worker 的 `__webBrowserState`；这里的 Emscripten main runtime thread 是引擎 owner Worker，不能误称所有请求都访问 DOM 或浏览器页面 UI 线程。Game pthread 等待 owner 应答，是后续减少同步跨线程查询的具体线索；当前未单独做修改或 A/B，不能承诺帧率或 Low 收益。
 
-当前调查优先级是 Web RHI 的绑定准备/状态检查、平台属性同步查询，以及与 Low 帧时间对齐的线程/浏览器跟踪。最终 Wasm/JS 链接优化后的画面异常仍需解决。这个短 CPU 栈不能覆盖浏览器 GPU 进程、Dawn 后台与真实 GPU 时间，也没有证明 1% Low 是上述任一热点造成。
+后续已对平台属性同步查询和 Web RHI 绑定准备分别实施修改、画面校验及 ABBA，见 [Web 窗口同步查询与绑定准备优化](UE58_WEB_WINDOW_BINDINGS_AB.md)。本节保留修改前 v45 的采样归因。与 Low 帧时间对齐的线程/浏览器跟踪、最终 Wasm/JS 链接优化后的画面异常仍需继续调查；这个短 CPU 栈不能覆盖浏览器 GPU 进程、Dawn 后台与真实 GPU 时间，也没有证明 1% Low 是上述任一热点造成。
 
 复现分析：`node tests/web-platform/analyze-web-frame-costs.cjs tests/web-platform/results/villa-mimalloc-no-proxy-v45-cpu-profile-1-workers tests/web-platform/results/new-frame-costs.json`。输出已保存为 [mimalloc-v45-frame-costs-20261103.json](tests/web-platform/evidence/mimalloc-v45-frame-costs-20261103.json)，包含原始采样及分析源码哈希。所有百分比均以各线程自己的采样时段为分母；这些线程窗口不同，不能合并为一帧的成本。
 

@@ -1,0 +1,2563 @@
+{
+  "date": "2026-11-03T11:51:56.837Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-window-bindings.cjs",
+    "sha256": "4bebd50805dbd27a1763a747c59241b3c1c5756b64e1a8cf9cd1289f02ccd371"
+  },
+  "window": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-abba.json",
+      "sha256": "b3c27f64bbed46c37df68934c94d9515fbdd1fe6b5c18774100aa4c5cb54d3f6"
+    },
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\benchmark-villa-threading.cjs",
+      "sha256": "5add6ab932b0ecd728f63cf8159e97b93047b1c1abd3160377d1d2920defa1a6"
+    },
+    "summary": {
+      "villa-mimalloc-no-proxy-v45": {
+        "fps": 77.02319227532222,
+        "frameMs": {
+          "count": 3081,
+          "mean": 12.98352645245205,
+          "p50": 13.185000002384186,
+          "p95": 15.265000000596046,
+          "p99": 17.269999995827675,
+          "low1Fps": 37.36537916771525,
+          "over33ms": 6
+        }
+      },
+      "villa-browser-metrics-v47": {
+        "fps": 78.3362333565142,
+        "frameMs": {
+          "count": 3133,
+          "mean": 12.766525694224692,
+          "p50": 13.025000005960464,
+          "p95": 15.07999999821186,
+          "p99": 16.650000005960464,
+          "low1Fps": 36.14267320144481,
+          "over33ms": 10
+        }
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-mimalloc-no-proxy-v45",
+        "started": "2026-11-03T11:38:36.188Z",
+        "fps": 76.70468670633737,
+        "low1": 36.256514842755614,
+        "rhiWorkMs": 9.151812407403504,
+        "workload": {
+          "sampleFrames": 1530,
+          "drawsPerFrame": 2979.3444444444444,
+          "indirectDrawsPerFrame": 67.2235294117647,
+          "dispatchesPerFrame": 66.38823529411765
+        },
+        "countersPerSampleFrame": {
+          "groupPreparationHits": 3085.8013071895425,
+          "resourceTableCommits": 544.5398692810458,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4214.3901960784315
+        },
+        "view": {
+          "frame": 1204,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 4,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 78,
+              "low": 36.919101019889766,
+              "frameMs": 11.135000000002037,
+              "samples": 388,
+              "seconds": 5,
+              "p99Ms": 19.43999999999869,
+              "maxMs": 41.66500000000087,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 79,
+              "low": 37.08511032840816,
+              "frameMs": 10.784999996423721,
+              "samples": 388,
+              "seconds": 5,
+              "p99Ms": 16.239999994635582,
+              "maxMs": 41.42499999701977,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 340,
+              "low": 145.02644599897033,
+              "frameMs": 5.555000000000291,
+              "samples": 1697,
+              "seconds": 5,
+              "p99Ms": 5.580000000001746,
+              "maxMs": 27.764999999999418,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1200,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 26063.825
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 75,
+              "low": 36.925917378258376,
+              "frameMs": 11.105000000003201,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 19.450000000004366,
+              "maxMs": 36.099999999998545,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 76,
+              "low": 28.81429189026146,
+              "frameMs": 9.864999994635582,
+              "samples": 388,
+              "seconds": 5,
+              "p99Ms": 26.95499999821186,
+              "maxMs": 43.36499999463558,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 329,
+              "low": 111.14016736401737,
+              "frameMs": 2.7850000000034925,
+              "samples": 1684,
+              "seconds": 5,
+              "p99Ms": 5.580000000001746,
+              "maxMs": 30.5199999999968,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2727,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 45985.735
+          }
+        }
+      },
+      {
+        "folder": "villa-browser-metrics-v47",
+        "started": "2026-11-03T11:39:24.631Z",
+        "fps": 78.75534571896327,
+        "low1": 36.67159441281707,
+        "rhiWorkMs": 9.196726803852217,
+        "workload": {
+          "sampleFrames": 1590,
+          "drawsPerFrame": 3020.6974842767295,
+          "indirectDrawsPerFrame": 72.5811320754717,
+          "dispatchesPerFrame": 66.42012578616352
+        },
+        "countersPerSampleFrame": {
+          "groupPreparationHits": 3130.2534591194967,
+          "resourceTableCommits": 550.9477987421384,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4319.955974842767
+        },
+        "view": {
+          "frame": 1221,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "browserMetrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 1
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 77,
+              "low": 27.16929869247777,
+              "frameMs": 13.864999999997963,
+              "samples": 393,
+              "seconds": 5,
+              "p99Ms": 25.014999999999418,
+              "maxMs": 50,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 77,
+              "low": 27.523567054628884,
+              "frameMs": 12.824999988079071,
+              "samples": 393,
+              "seconds": 5,
+              "p99Ms": 24.78999999165535,
+              "maxMs": 48.82500000298023,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 328,
+              "low": 107.06975279482957,
+              "frameMs": 2.7950000000018917,
+              "samples": 1669,
+              "seconds": 5,
+              "p99Ms": 5.5900000000001455,
+              "maxMs": 36.10499999999956,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1213,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30281.595
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 77,
+              "low": 27.164685908317843,
+              "frameMs": 11.095000000001164,
+              "samples": 395,
+              "seconds": 5,
+              "p99Ms": 22.220000000001164,
+              "maxMs": 50.04000000000087,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 79,
+              "low": 28.582657470995922,
+              "frameMs": 12.875,
+              "samples": 397,
+              "seconds": 5,
+              "p99Ms": 21.38000001013279,
+              "maxMs": 48.560000002384186,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 316,
+              "low": 86.18941391199265,
+              "frameMs": 5.580000000001746,
+              "samples": 1641,
+              "seconds": 5,
+              "p99Ms": 5.5900000000037835,
+              "maxMs": 38.87000000000262,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2781,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50197.995
+          }
+        }
+      },
+      {
+        "folder": "villa-browser-metrics-v47",
+        "started": "2026-11-03T11:40:17.338Z",
+        "fps": 77.9170605626541,
+        "low1": 35.67844798490438,
+        "rhiWorkMs": 9.282623979814394,
+        "workload": {
+          "sampleFrames": 1560,
+          "drawsPerFrame": 3007.728846153846,
+          "indirectDrawsPerFrame": 70.92307692307692,
+          "dispatchesPerFrame": 66.41025641025641
+        },
+        "countersPerSampleFrame": {
+          "groupPreparationHits": 3116.3141025641025,
+          "resourceTableCommits": 548.9474358974359,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4287.000641025641
+        },
+        "view": {
+          "frame": 1222,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "browserMetrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 1
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 74,
+              "low": 27.696994876056284,
+              "frameMs": 38.85000000000218,
+              "samples": 380,
+              "seconds": 5,
+              "p99Ms": 27.80999999999767,
+              "maxMs": 41.67499999999927,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 76,
+              "low": 32.58124949202525,
+              "frameMs": 18.484999999403954,
+              "samples": 382,
+              "seconds": 5,
+              "p99Ms": 18.484999999403954,
+              "maxMs": 43.099999994039536,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 328,
+              "low": 107.2047926848465,
+              "frameMs": 8.319999999999709,
+              "samples": 1669,
+              "seconds": 5,
+              "p99Ms": 5.580000000001746,
+              "maxMs": 30.540000000000873,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1206,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29915.4
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 79,
+              "low": 31.98081151309475,
+              "frameMs": 13.884999999994761,
+              "samples": 383,
+              "seconds": 5,
+              "p99Ms": 16.714999999996508,
+              "maxMs": 47.224999999998545,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 80,
+              "low": 30.820202640143044,
+              "frameMs": 11.134999990463257,
+              "samples": 384,
+              "seconds": 5,
+              "p99Ms": 16.405000001192093,
+              "maxMs": 48.57999999821186,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 338,
+              "low": 117.47633197428821,
+              "frameMs": 2.7599999999947613,
+              "samples": 1664,
+              "seconds": 5,
+              "p99Ms": 5.575000000004366,
+              "maxMs": 38.88500000000204,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2777,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50073.45
+          }
+        }
+      },
+      {
+        "folder": "villa-mimalloc-no-proxy-v45",
+        "started": "2026-11-03T11:41:09.764Z",
+        "fps": 77.34164572834176,
+        "low1": 39.80545086057973,
+        "rhiWorkMs": 9.097044012035202,
+        "workload": {
+          "sampleFrames": 1560,
+          "drawsPerFrame": 2971.577564102564,
+          "indirectDrawsPerFrame": 66.18461538461538,
+          "dispatchesPerFrame": 66.38205128205128
+        },
+        "countersPerSampleFrame": {
+          "groupPreparationHits": 3077.3846153846152,
+          "resourceTableCommits": 543.3570512820513,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4194.949358974359
+        },
+        "view": {
+          "frame": 1215,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 73,
+              "low": 30.004125567264975,
+              "frameMs": 13.899999999997817,
+              "samples": 384,
+              "seconds": 5,
+              "p99Ms": 22.25,
+              "maxMs": 41.67000000000189,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 75,
+              "low": 33.47420394025175,
+              "frameMs": 13.825000002980232,
+              "samples": 385,
+              "seconds": 5,
+              "p99Ms": 24.854999989271164,
+              "maxMs": 35.945000007748604,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 323,
+              "low": 100.15317544479484,
+              "frameMs": 2.7850000000034925,
+              "samples": 1682,
+              "seconds": 5,
+              "p99Ms": 5.585000000002765,
+              "maxMs": 33.31999999999971,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1205,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30550.955
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 78,
+              "low": 35.98416696653359,
+              "frameMs": 13.885000000002037,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 16.700000000004366,
+              "maxMs": 47.11499999999796,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 78,
+              "low": 36.31246879357916,
+              "frameMs": 12.209999993443489,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 16.135000005364418,
+              "maxMs": 34.78000000119209,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 338,
+              "low": 127.0031003697932,
+              "frameMs": 2.7949999999982538,
+              "samples": 1678,
+              "seconds": 5,
+              "p99Ms": 5.584999999999127,
+              "maxMs": 24.974999999998545,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2763,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50706.22
+          }
+        }
+      }
+    ]
+  },
+  "binding": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-binding-skips-v48-abba.json",
+      "sha256": "c9756677ea6e210bf29cff8f7f069796b34085bee49550bec368ab31f76622bb"
+    },
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\benchmark-villa-threading.cjs",
+      "sha256": "5add6ab932b0ecd728f63cf8159e97b93047b1c1abd3160377d1d2920defa1a6"
+    },
+    "summary": {
+      "villa-browser-metrics-v47": {
+        "fps": 78.56627542626975,
+        "frameMs": {
+          "count": 3142,
+          "mean": 12.727455442390724,
+          "p50": 13.004999995231628,
+          "p95": 15.064999997615814,
+          "p99": 16.799999997019768,
+          "low1Fps": 35.584418472336694,
+          "over33ms": 10
+        }
+      },
+      "villa-binding-skips-v48": {
+        "fps": 78.05462774213488,
+        "frameMs": {
+          "count": 3121,
+          "mean": 12.809009932714448,
+          "p50": 13.070000007748604,
+          "p95": 15.225000008940697,
+          "p99": 17.314999997615814,
+          "low1Fps": 35.54923569039691,
+          "over33ms": 9
+        }
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-browser-metrics-v47",
+        "started": "2026-11-03T11:42:15.339Z",
+        "fps": 78.32528837150946,
+        "low1": 35.35208466796343,
+        "rhiWorkMs": 9.31809491691273,
+        "workload": {
+          "sampleFrames": 1560,
+          "drawsPerFrame": 3020.0628205128205,
+          "indirectDrawsPerFrame": 73.07692307692308,
+          "dispatchesPerFrame": 66.42307692307692
+        },
+        "countersPerSampleFrame": {
+          "groupPreparationHits": 3129.3307692307694,
+          "resourceTableCommits": 550.7282051282051,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4316.420512820513
+        },
+        "view": {
+          "frame": 1233,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "browserMetrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 1
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 75,
+              "low": 30.01313074470048,
+              "frameMs": 13.915000000000873,
+              "samples": 384,
+              "seconds": 5,
+              "p99Ms": 30.524999999997817,
+              "maxMs": 36.095000000001164,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 75,
+              "low": 30.52969012114526,
+              "frameMs": 13.340000003576279,
+              "samples": 384,
+              "seconds": 5,
+              "p99Ms": 26.895000010728836,
+              "maxMs": 35.605000004172325,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 333,
+              "low": 100.17383105978132,
+              "frameMs": 2.774999999997817,
+              "samples": 1674,
+              "seconds": 5,
+              "p99Ms": 5.575000000000728,
+              "maxMs": 27.775000000001455,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1219,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 26868.26
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 74,
+              "low": 35.10773686751065,
+              "frameMs": 13.910000000003492,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 16.710000000006403,
+              "maxMs": 41.63500000000204,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 74,
+              "low": 34.63503333335955,
+              "frameMs": 10.394999995827675,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 18.605000004172325,
+              "maxMs": 39.769999995827675,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 323,
+              "low": 122.13521086285368,
+              "frameMs": 2.764999999999418,
+              "samples": 1680,
+              "seconds": 5,
+              "p99Ms": 5.580000000001746,
+              "maxMs": 30.544999999998254,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2799,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 47031.865
+          }
+        }
+      },
+      {
+        "folder": "villa-binding-skips-v48",
+        "started": "2026-11-03T11:43:04.936Z",
+        "fps": 76.9656156112165,
+        "low1": 36.238859380628966,
+        "rhiWorkMs": 9.526070371850745,
+        "workload": {
+          "sampleFrames": 1530,
+          "drawsPerFrame": 3024.190196078431,
+          "indirectDrawsPerFrame": 73.70196078431373,
+          "dispatchesPerFrame": 66.42679738562092
+        },
+        "countersPerSampleFrame": {
+          "unchangedResourceBindings": 323.1124183006536,
+          "skippedBindingShaderScans": 3145.62091503268,
+          "groupPreparationHits": 3133.62091503268,
+          "resourceTableCommits": 551.3320261437908,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4326.360130718955
+        },
+        "view": {
+          "frame": 1209,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "browserMetrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 1
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 77,
+              "low": 32.71716015049937,
+              "frameMs": 13.875,
+              "samples": 377,
+              "seconds": 5,
+              "p99Ms": 19.44499999999971,
+              "maxMs": 55.534999999999854,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 77,
+              "low": 35.81020590295133,
+              "frameMs": 11.470000013709068,
+              "samples": 377,
+              "seconds": 5,
+              "p99Ms": 17.895000010728836,
+              "maxMs": 49.60999999940395,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 335,
+              "low": 135.57699976074318,
+              "frameMs": 2.7999999999992724,
+              "samples": 1682,
+              "seconds": 5,
+              "p99Ms": 5.579999999998108,
+              "maxMs": 22.209999999999127,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1197,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30356.55
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 79,
+              "low": 35.09387611861855,
+              "frameMs": 11.125,
+              "samples": 378,
+              "seconds": 5,
+              "p99Ms": 16.705000000001746,
+              "maxMs": 52.775000000001455,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 78,
+              "low": 34.72222222132395,
+              "frameMs": 10.95499999821186,
+              "samples": 378,
+              "seconds": 5,
+              "p99Ms": 17.609999999403954,
+              "maxMs": 52.07500000298023,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 340,
+              "low": 145.19366272368143,
+              "frameMs": 2.7949999999982538,
+              "samples": 1696,
+              "seconds": 5,
+              "p99Ms": 5.57499999999709,
+              "maxMs": 24.985000000000582,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2748,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50514.595
+          }
+        }
+      },
+      {
+        "folder": "villa-binding-skips-v48",
+        "started": "2026-11-03T11:43:57.785Z",
+        "fps": 79.14404441061801,
+        "low1": 34.92954056643225,
+        "rhiWorkMs": 9.146645034481587,
+        "workload": {
+          "sampleFrames": 1590,
+          "drawsPerFrame": 3015.301886792453,
+          "indirectDrawsPerFrame": 71.94716981132075,
+          "dispatchesPerFrame": 66.41635220125787
+        },
+        "countersPerSampleFrame": {
+          "unchangedResourceBindings": 322.58364779874216,
+          "skippedBindingShaderScans": 3136.435220125786,
+          "groupPreparationHits": 3124.435220125786,
+          "resourceTableCommits": 550.0937106918238,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4305.911949685535
+        },
+        "view": {
+          "frame": 1229,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "browserMetrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 1
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 76,
+              "low": 28.23263692828832,
+              "frameMs": 13.900000000001455,
+              "samples": 395,
+              "seconds": 5,
+              "p99Ms": 24.9900000000016,
+              "maxMs": 52.79500000000189,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 76,
+              "low": 27.540622416258277,
+              "frameMs": 9.990000009536743,
+              "samples": 395,
+              "seconds": 5,
+              "p99Ms": 27.270000010728836,
+              "maxMs": 51.83499999344349,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 325,
+              "low": 115.22299037548218,
+              "frameMs": 2.7999999999992724,
+              "samples": 1681,
+              "seconds": 5,
+              "p99Ms": 5.584999999999127,
+              "maxMs": 24.99499999999898,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1228,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29585.38
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 76,
+              "low": 30.474797342596375,
+              "frameMs": 11.110000000000582,
+              "samples": 401,
+              "seconds": 5,
+              "p99Ms": 16.69999999999709,
+              "maxMs": 52.825000000004366,
+              "over50ms": 2
+            },
+            "submitted": {
+              "fps": 76,
+              "low": 27.271177771773665,
+              "frameMs": 14.00500001013279,
+              "samples": 400,
+              "seconds": 5,
+              "p99Ms": 16.109999999403954,
+              "maxMs": 52.95000000298023,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 328,
+              "low": 138.5888395222669,
+              "frameMs": 5.555000000000291,
+              "samples": 1673,
+              "seconds": 5,
+              "p99Ms": 5.580000000001746,
+              "maxMs": 24.9800000000032,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2803,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49490.655
+          }
+        }
+      },
+      {
+        "folder": "villa-browser-metrics-v47",
+        "started": "2026-11-03T11:44:49.687Z",
+        "fps": 78.80720768622874,
+        "low1": 35.88168015876218,
+        "rhiWorkMs": 9.223646050249389,
+        "workload": {
+          "sampleFrames": 1560,
+          "drawsPerFrame": 3019.0602564102564,
+          "indirectDrawsPerFrame": 72.32307692307693,
+          "dispatchesPerFrame": 66.41858974358975
+        },
+        "countersPerSampleFrame": {
+          "groupPreparationHits": 3128.5807692307694,
+          "resourceTableCommits": 550.7038461538461,
+          "bindingRouteResolutions": 0,
+          "bindingEntriesReused": 4315.921153846154
+        },
+        "view": {
+          "frame": 1239,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "browserMetrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 1
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 78,
+              "low": 32.729206725851945,
+              "frameMs": 13.8849999999984,
+              "samples": 396,
+              "seconds": 5,
+              "p99Ms": 27.764999999999418,
+              "maxMs": 36.11000000000058,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 78,
+              "low": 36.337209297997,
+              "frameMs": 10.890000000596046,
+              "samples": 397,
+              "seconds": 5,
+              "p99Ms": 27.075000002980232,
+              "maxMs": 28.020000010728836,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 325,
+              "low": 98.6307728011157,
+              "frameMs": 2.774999999997817,
+              "samples": 1659,
+              "seconds": 5,
+              "p99Ms": 5.5900000000001455,
+              "maxMs": 25.00500000000102,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1220,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30358.23
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 77,
+              "low": 35.116983451119665,
+              "frameMs": 11.090000000003783,
+              "samples": 400,
+              "seconds": 5,
+              "p99Ms": 16.685000000004948,
+              "maxMs": 50.01000000000204,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 78,
+              "low": 36.854470904156514,
+              "frameMs": 10.700000002980232,
+              "samples": 400,
+              "seconds": 5,
+              "p99Ms": 15.730000004172325,
+              "maxMs": 49.150000005960464,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 330,
+              "low": 141.7552637065056,
+              "frameMs": 5.580000000001746,
+              "samples": 1684,
+              "seconds": 5,
+              "p99Ms": 5.584999999999127,
+              "maxMs": 22.214999999996508,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2809,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50516.3
+          }
+        }
+      }
+    ]
+  },
+  "builds": {
+    "v47": {
+      "package": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-package.json",
+        "sha256": "1894f8014b83f62200a582ad0a16d1cc9f68a7947248b77ee62e5a988b37b398"
+      },
+      "build": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-build.json",
+        "sha256": "e975e70162b433160fe2d00d6c196add554c2934c69d3539dddf710729fd7c32"
+      },
+      "compile": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v47-browser-metrics-compile-audit.json",
+        "sha256": "36b9ac3953cf0e0cda4c3c43793f7419d9ada967e570303e5118942d6d28938e"
+      },
+      "compileCounts": {
+        "-O2": 416,
+        "-O1": 1
+      },
+      "link": {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "ede7b22a210bd2f971007f0e1dba8db3fdc31428fcd6702d8716eafcd00fbcc8"
+        },
+        "optimization": [],
+        "assertions": "1",
+        "debug": "-g2",
+        "lto": false,
+        "switches": [
+          "-o",
+          "-m64",
+          "-sENVIRONMENT=web,worker,node",
+          "-sALLOW_MEMORY_GROWTH=1",
+          "-sASSERTIONS=1",
+          "-pthread",
+          "-sPTHREAD_POOL_SIZE=16",
+          "-sPTHREAD_POOL_SIZE_STRICT=2",
+          "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+          "--use-port=zlib",
+          "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 -sMALLOC=mimalloc -Wl,--whole-archive,\"G:/UE_HTML/ue_html/.tools/web-mimalloc-ue/libmimalloc-ue-mt.a\",--no-whole-archive --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+        ]
+      }
+    },
+    "v48": {
+      "package": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-binding-skips-v48-package.json",
+        "sha256": "4e62b8a8d1a7e61194057f664c044b83e48e0748bf29036c7a825cfa4e72bb4f"
+      },
+      "build": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-binding-skips-v48-build.json",
+        "sha256": "8952aa020ca7de48d7100682693e38c2f6042819401aad1f4ce704277a77d51e"
+      },
+      "compile": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v48-binding-skips-compile-audit.json",
+        "sha256": "eb6270e176d6f118d48c2075a2fbb4213e46053e016daedc2eb0e78445d1320b"
+      },
+      "compileCounts": {
+        "-O2": 416,
+        "-O1": 1
+      },
+      "link": {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "ede7b22a210bd2f971007f0e1dba8db3fdc31428fcd6702d8716eafcd00fbcc8"
+        },
+        "optimization": [],
+        "assertions": "1",
+        "debug": "-g2",
+        "lto": false,
+        "switches": [
+          "-o",
+          "-m64",
+          "-sENVIRONMENT=web,worker,node",
+          "-sALLOW_MEMORY_GROWTH=1",
+          "-sASSERTIONS=1",
+          "-pthread",
+          "-sPTHREAD_POOL_SIZE=16",
+          "-sPTHREAD_POOL_SIZE_STRICT=2",
+          "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+          "--use-port=zlib",
+          "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 -sMALLOC=mimalloc -Wl,--whole-archive,\"G:/UE_HTML/ue_html/.tools/web-mimalloc-ue/libmimalloc-ue-mt.a\",--no-whole-archive --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+        ]
+      }
+    },
+    "changedObjects": {
+      "v47VersusV45": [
+        {
+          "module": "ApplicationCore",
+          "source": "G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/ApplicationCore/Module.ApplicationCore.cpp"
+        }
+      ],
+      "v48VersusV47": [
+        {
+          "module": "WebGPURHI",
+          "source": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserBreadcrumbs.cpp"
+        },
+        {
+          "module": "WebGPURHI",
+          "source": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserBufferLock.cpp"
+        },
+        {
+          "module": "WebGPURHI",
+          "source": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserDynamicRHI.cpp"
+        },
+        {
+          "module": "WebGPURHI",
+          "source": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserTransitions.cpp"
+        },
+        {
+          "module": "WebGPURHI",
+          "source": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserViewport.cpp"
+        },
+        {
+          "module": "WebGPURHI",
+          "source": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/WebGPUBrowserModule.cpp"
+        }
+      ]
+    },
+    "implementationSources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\ApplicationCore\\Private\\Web\\WebApplication.cpp",
+        "sha256": "efb646a2a5101714d4a91ef6eff49c6296b76aeb7ddf39686b7abe39cc172131"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebApplication\\Private\\UEWebApplication.cpp",
+        "sha256": "aec6fe855984c1d4b472b68d1b6ea191d09ec40354201a6f21a55558bb09f268"
+      },
+      {
+        "captured": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+          "sha256": "c82cef2c0a66ca068f6fa374fb4fc4d052c4a41ec24ccceee173a6015adc713f"
+        },
+        "archived": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v48-candidate-WebGPUDynamicRHI.cpp",
+          "sha256": "c82cef2c0a66ca068f6fa374fb4fc4d052c4a41ec24ccceee173a6015adc713f"
+        }
+      },
+      {
+        "captured": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+          "sha256": "d3f7ac3f0caf94d6869f4c6036715c1c21f8b182e900159a8d7c6c13b22249e9"
+        },
+        "archived": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v48-candidate-WebGPUDynamicRHI.h",
+          "sha256": "d3f7ac3f0caf94d6869f4c6036715c1c21f8b182e900159a8d7c6c13b22249e9"
+        }
+      }
+    ],
+    "restored": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v47-default-restored-compile-audit.json",
+      "sha256": "7a93ad968381fe741a9ee02a8ab464b7262e012b40c0559f29da9b65aa11ff3d"
+    },
+    "experimentalBindingPatch": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\experiments\\web-binding-skips-v48.patch",
+      "sha256": "e1371078e3db8eff0668829da168107f215127a93d0c0f0ed9b3e8a660a43caa"
+    },
+    "bindingPatchApplies": true,
+    "currentRuntimeMatches": "villa-browser-metrics-v47",
+    "defaultAllocator": "Build script remains dlmalloc by default; all compared packages and the restored current runtime explicitly use mimalloc."
+  },
+  "views": {
+    "villa-browser-metrics-v47-views-v4": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-views-v4.json",
+        "sha256": "46c0b2a186ca2c9fa456fc0ebdc32933145e94ddc0368d9461811ea69f22fa51"
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-views-v4.png",
+        "sha256": "80c093d7fd082134da10c8db7ccf2a977e9dac366f123743caa5e2eb452c23bb"
+      },
+      "views": 6,
+      "windowMetrics": [
+        {
+          "width": 1000,
+          "height": 650,
+          "dpr": 1,
+          "expected": {
+            "width": 999.9999389648438,
+            "height": 562.4999389648438,
+            "dpr": 0.9999999760941023
+          },
+          "metrics": {
+            "width": 999.9999389648438,
+            "height": 562.4999389648438,
+            "dpr": 0.9999999760941023,
+            "updates": 4
+          },
+          "view": {
+            "frame": 1701,
+            "width": 1000,
+            "height": 562,
+            "outputWidth": 1000,
+            "outputHeight": 562,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "frames": 1700
+        },
+        {
+          "width": 1000,
+          "height": 650,
+          "dpr": 1.5,
+          "expected": {
+            "width": 999.9999389648438,
+            "height": 562.4999389648438,
+            "dpr": 1.4999999280803422
+          },
+          "metrics": {
+            "width": 999.9999389648438,
+            "height": 562.4999389648438,
+            "dpr": 1.4999999280803422,
+            "updates": 5
+          },
+          "view": {
+            "frame": 1770,
+            "width": 1317,
+            "height": 741,
+            "outputWidth": 1500,
+            "outputHeight": 844,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "frames": 1768
+        },
+        {
+          "width": 1200,
+          "height": 720,
+          "dpr": 1.5,
+          "expected": {
+            "width": 1199.9998779296875,
+            "height": 674.9999389648438,
+            "dpr": 1.4999999280803422
+          },
+          "metrics": {
+            "width": 1199.9998779296875,
+            "height": 674.9999389648438,
+            "dpr": 1.4999999280803422,
+            "updates": 7
+          },
+          "view": {
+            "frame": 1856,
+            "width": 1375,
+            "height": 773,
+            "outputWidth": 1800,
+            "outputHeight": 1012,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "frames": 1853
+        },
+        {
+          "width": 2289,
+          "height": 1287,
+          "dpr": 1,
+          "expected": {
+            "width": 2289.062255859375,
+            "height": 1287.59033203125,
+            "dpr": 0.9999999760941023
+          },
+          "metrics": {
+            "width": 2289.062255859375,
+            "height": 1287.59033203125,
+            "dpr": 0.9999999760941023,
+            "updates": 9
+          },
+          "view": {
+            "frame": 1940,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "frames": 1936
+        }
+      ],
+      "imageAccepted": true
+    },
+    "villa-binding-skips-v48-views": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-binding-skips-v48-views.json",
+        "sha256": "c80a6551d8dd7e176dfb6d30c92865f6fd507facf47da5e40dc111afa2eb6192"
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-binding-skips-v48-views.png",
+        "sha256": "a3a22a20ee36f3da9b38478169d83f6974b59d87b81ceb28ad44dc97f032b221"
+      },
+      "views": 6,
+      "imageAccepted": true
+    }
+  },
+  "gameplay": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-gameplay-binding-skips-v48-validate.json",
+      "sha256": "810d84cf32b200e6702884a5ac304be5e44aa643c10da6251d07a079e36bc818"
+    },
+    "validation": [
+      {
+        "maxTravelCm": 160.54803730303553,
+        "maxTurnDegrees": 42.27213478088379,
+        "frames": 1241,
+        "bindings": {
+          "ready": 506259,
+          "pending": 318023,
+          "zero": 486487,
+          "bindGroupCacheHits": 7742214,
+          "bindGroupsCreated": 63127,
+          "cachedBindGroups": 424,
+          "bindingEntriesPrepared": 41105379,
+          "bindingEntriesReused": 34983,
+          "bindingEntriesValidated": 34452585,
+          "bindGroupFastHits": 6157703,
+          "uniformSnapshots": 699542,
+          "uniformWriteCalls": 2474,
+          "pipelineLayouts": 126,
+          "drawBundleHits": 0,
+          "drawBundlesCreated": 0,
+          "cachedDrawBundles": 0,
+          "resourceTableCommits": 847409,
+          "resourceTableBuffers": 914570,
+          "bindingRouteResolutions": 1156,
+          "manualVertexFetchEnabled": false,
+          "manualVertexFetchDraws": 0,
+          "vertexFetchFormatBuffers": 0,
+          "unchangedResourceBindings": 474231,
+          "skippedBindingShaderScans": 53738,
+          "groupPreparationHits": 41249,
+          "groupPreparationValidated": 5388206,
+          "groupFrameMisses": 268415,
+          "groupAccessMisses": 943247,
+          "groupVersionMisses": 1164224,
+          "groupTextureMisses": 0,
+          "groupCacheEnabled": true,
+          "draws": 5082611,
+          "indirectDraws": 131852,
+          "dispatches": 83459,
+          "sampleFrame": 1230
+        }
+      }
+    ]
+  },
+  "sampling": {
+    "baseline": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\mimalloc-v45-frame-costs-20261103.json",
+      "sha256": "ef53fa90c1370c3ad56fc80b35d0d50c264d6e3a3e3bfe9c2783880f97c5b7d7"
+    },
+    "after": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\window-bindings-v48-frame-costs-20261103.json",
+      "sha256": "737bcca9ca20c0da0d07285c15959cd8d4729fa619a44aae6b7c278a3729dd22"
+    },
+    "stackAnalysis": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-binding-skips-v48-cpu-profile-1-workers-analysis.json",
+      "sha256": "bacbaddae69266279118729ed1852dfafe1c0f575c2e8b4ed1626fdd002f714b"
+    },
+    "gameWaits": [
+      {
+        "id": 2,
+        "name": "(idle)",
+        "ms": 4726.17,
+        "percent": 77.62994417283883,
+        "stack": [
+          "(idle)",
+          "(root)"
+        ]
+      },
+      {
+        "id": 47,
+        "name": "_do_futex_wait",
+        "ms": 399.855,
+        "percent": 6.567838509243313,
+        "stack": [
+          "_do_futex_wait",
+          "__pthread_cond_timedwait",
+          "emscripten_proxy_sync_with_ctx",
+          "emscripten_proxy_sync",
+          "FWebGPUDynamicRHI::RHITick(float)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 40,
+        "name": "_do_futex_wait",
+        "ms": 301.325,
+        "percent": 4.949429015012296,
+        "stack": [
+          "_do_futex_wait",
+          "__pthread_cond_timedwait",
+          "FPThreadEvent::Wait(unsigned int, bool)",
+          "FRenderCommandFence::Wait(bool) const",
+          "TArray<FFrameEndSync::FRenderThreadFence, TSizedInlineAllocator<2u, 32, TSizedDefaultAllocator<32>>>::RemoveAt(int, EAllowShrinking)",
+          "FFrameEndSync::Sync(FFrameEndSync::EFlushMode)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 83,
+        "name": "_do_futex_wait",
+        "ms": 89.397,
+        "percent": 1.468394941193244,
+        "stack": [
+          "_do_futex_wait",
+          "__pthread_cond_timedwait",
+          "FPThreadEvent::Wait(unsigned int, bool)",
+          "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+          "FTaskGraphCompatibilityImplementation::WaitOnNamedThreadForTasks(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, ENamedThreads::Type)",
+          "FTaskGraphCompatibilityImplementation::ProcessUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, TFunction<FTaskGraphInterface::EProcessTasksOperation (int)> const&)",
+          "FTickTaskSequencer::ReleaseTickGroup(ETickingGroup, bool, TArray<FTickFunction*, TSizedDefaultAllocator<32>>&)",
+          "FTickTaskManager::RunTickGroup(ETickingGroup, bool)",
+          "UWorld::Tick(ELevelTick, float)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 607,
+        "name": "mi_arenas_try_find_free",
+        "ms": 3.08,
+        "percent": 0.05059069564834604,
+        "stack": [
+          "mi_arenas_try_find_free",
+          "mi_arenas_try_alloc",
+          "mi_arenas_page_alloc_fresh",
+          "_mi_arenas_page_alloc",
+          "_mi_malloc_generic",
+          "mi_theap_malloc_zero_aligned_at_overalloc",
+          "mi_theap_malloc_zero_aligned_at_generic",
+          "FMallocAnsi::Malloc(unsigned long, unsigned int)",
+          "operator new(unsigned long)",
+          "TChunkedArray<FStatMessage, 65536u, TSizedDefaultAllocator<32>>::Add(int)",
+          "void FThreadStats::AddMessage<long long>(FName, EStatOperation::Type, long long, bool)",
+          "StaticTick(float, bool, float)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 524,
+        "name": "_mi_page_malloc_zero",
+        "ms": 1.653,
+        "percent": 0.027151435034648053,
+        "stack": [
+          "_mi_page_malloc_zero",
+          "FMallocAnsi::Malloc(unsigned long, unsigned int)",
+          "operator new(unsigned long)",
+          "FObjectCacheContextScope::FObjectCacheContextScope()",
+          "FAssetCompilingManager::ProcessAsyncTasks(bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 559,
+        "name": "mi_theap_malloc_zero_aligned_at_overalloc",
+        "ms": 1.545,
+        "percent": 0.02537747557684891,
+        "stack": [
+          "mi_theap_malloc_zero_aligned_at_overalloc",
+          "mi_theap_malloc_zero_aligned_at_generic",
+          "FMallocAnsi::Malloc(unsigned long, unsigned int)",
+          "operator new(unsigned long)",
+          "FSlateWindowElementList::QueueDeferredPainting(FSlateWindowElementList::FDeferredPaint const&)",
+          "SPopup::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SOverlay::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SPanel::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SPanel::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SCompoundWidget::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SGameLayerManager::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SCompoundWidget::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SViewport::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SPanel::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SOverlay::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SCompoundWidget::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWindow::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+          "non-virtual thunk to SWindow::PaintSlowPath(FSlateInvalidationContext const&)",
+          "FSlateInvalidationRoot::PaintInvalidationRoot(FSlateInvalidationContext const&)",
+          "SWindow::PaintWindow(double, float, FSlateWindowElementList&, FWidgetStyle const&, bool)",
+          "FSlateApplication::DrawWindowAndChildren(TSharedRef<SWindow, (ESPMode)1> const&, FDrawWindowArgs&)",
+          "FSlateApplication::PrivateDrawWindows(TSharedPtr<SWindow, (ESPMode)1>)",
+          "FSlateApplication::TickAndDrawWidgets(float)",
+          "FSlateApplication::Tick(ESlateTickType)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 734,
+        "name": "_mi_malloc_generic",
+        "ms": 1.539,
+        "percent": 0.025278922273637844,
+        "stack": [
+          "_mi_malloc_generic",
+          "mi_theap_malloc_zero_aligned_at_overalloc",
+          "mi_theap_malloc_zero_aligned_at_generic",
+          "FMallocAnsi::Malloc(unsigned long, unsigned int)",
+          "operator new(unsigned long, std::align_val_t)",
+          "UNavigationObjectRepository::RegisterNavRelevantObjectInternal(INavRelevantInterface const&, UObject const&, UNavigationObjectRepository::ENotifyOnSuccess)",
+          "UNavigationSystemV1::UpdateNavRelevantObjectInNavOctreeStatic(INavRelevantInterface const&, UObject const&, UNavigationSystemV1*, TFunctionRef<void (UNavigationSystemV1&, TSharedRef<FNavigationElement const, (ESPMode)1> const&)>)",
+          "UNavigationSystemV1::UpdateComponentInNavOctree(UActorComponent&)",
+          "USceneComponent::UpdateNavigationData()",
+          "USceneComponent::PropagateTransformUpdate(bool, EUpdateTransformFlags, ETeleportType)",
+          "USceneComponent::UpdateComponentToWorldWithParent(USceneComponent*, FName, EUpdateTransformFlags, UE::Math::TQuat<double> const&, ETeleportType)",
+          "USceneComponent::InternalSetWorldLocationAndRotation(UE::Math::TVector<double>, UE::Math::TQuat<double> const&, bool, ETeleportType)",
+          "UPrimitiveComponent::MoveComponentImpl(UE::Math::TVector<double> const&, UE::Math::TQuat<double> const&, bool, FHitResult*, EMoveComponentFlags, ETeleportType)",
+          "USceneComponent::SetRelativeLocationAndRotation(UE::Math::TVector<double>, UE::Math::TQuat<double> const&, bool, FHitResult*, ETeleportType)",
+          "AActor::execK2_AddActorLocalRotation(UObject*, FFrame&, void*)",
+          "UObject::CallFunction(FFrame&, void*, UFunction*)",
+          "UObject::ProcessContextOpcode(FFrame&, void*, bool)",
+          "UObject::execContext(UObject*, FFrame&, void*)",
+          "ProcessLocalScriptFunction(UObject*, FFrame&, void*)",
+          "void ProcessScriptFunction<void (*)(UObject*, FFrame&, void*)>(UObject*, UFunction*, FFrame&, void*, void (*)(UObject*, FFrame&, void*))",
+          "ProcessLocalFunction(UObject*, UFunction*, FFrame&, void*)",
+          "UObject::execLocalFinalFunction(UObject*, FFrame&, void*)",
+          "ProcessLocalScriptFunction(UObject*, FFrame&, void*)",
+          "UObject::ProcessInternal(UObject*, FFrame&, void*)",
+          "UObject::ProcessEvent(UFunction*, void*)",
+          "AActor::ProcessEvent(UFunction*, void*)",
+          "FActorTickFunction::ExecuteTick(float, ELevelTick, ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&)",
+          "FTickFunctionTask::DoTask(ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&)",
+          "TGraphTask<FTickFunctionTask>::ExecuteTask()",
+          "UE::Tasks::Private::FTaskBase::TryExecuteTask()",
+          "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+          "FTaskGraphCompatibilityImplementation::ProcessThreadUntilIdle(ENamedThreads::Type)",
+          "FTaskGraphCompatibilityImplementation::ProcessUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, TFunction<FTaskGraphInterface::EProcessTasksOperation (int)> const&)",
+          "FTickTaskSequencer::ReleaseTickGroup(ETickingGroup, bool, TArray<FTickFunction*, TSizedDefaultAllocator<32>>&)",
+          "FTickTaskManager::RunTickGroup(ETickingGroup, bool)",
+          "UWorld::Tick(ELevelTick, float)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 723,
+        "name": "_do_futex_wait",
+        "ms": 1.538,
+        "percent": 0.025262496723102667,
+        "stack": [
+          "_do_futex_wait",
+          "emscripten_futex_wait",
+          "__timedwait_cp",
+          "__timedwait",
+          "__pthread_mutex_timedlock",
+          "__pthread_cond_timedwait",
+          "emscripten_proxy_sync_with_ctx",
+          "emscripten_proxy_sync",
+          "FWebGPUDynamicRHI::RHITick(float)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 486,
+        "name": "FMemory::Free(void*)",
+        "ms": 1.521,
+        "percent": 0.024983262364004652,
+        "stack": [
+          "FMemory::Free(void*)",
+          "FCbWriter::~FCbWriter()",
+          "FCbObject UE::Logging::Private::SerializeBasicLogMessage<char>(UE::Logging::Private::TStaticBasicLogRecord<char> const&, void*)",
+          "void UE::Logging::Private::BasicLogV<char>(UE::Logging::Private::TStaticBasicLogRecord<T> const&, FLogCategoryBase const&, ELogVerbosity::Type, void*)",
+          "void UE::Logging::Private::BasicLog<(ELogVerbosity::Type)3, char>(UE::Logging::Private::TStaticBasicLogRecord<char> const&, FLogCategoryBase const*, ...)",
+          "FGenericPlatformMemory::GetStats()",
+          "PlatformMemoryHelpers::GetFrameMemoryStats()",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 539,
+        "name": "_mi_page_malloc_zero",
+        "ms": 1.511,
+        "percent": 0.024819006858652883,
+        "stack": [
+          "_mi_page_malloc_zero",
+          "FMallocAnsi::Malloc(unsigned long, unsigned int)",
+          "UWorld::SendAllEndOfFrameUpdatesInternal(UWorld::EEndOfFrameUpdateLocation)",
+          "UWorld::SendAllEndOfFrameUpdates()",
+          "FRendererModule::BeginRenderingViewFamilies(FCanvas*, TArrayView<FSceneViewFamily* const, int>)",
+          "FRendererModule::BeginRenderingViewFamily(FCanvas*, FSceneViewFamily*)",
+          "UGameViewportClient::Draw(FViewport*, FCanvas*)",
+          "non-virtual thunk to UGameViewportClient::Draw(FViewport*, FCanvas*)",
+          "FViewport::Draw(bool)",
+          "UEngine::RedrawViewports(bool)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 510,
+        "name": "_mi_page_malloc_zero",
+        "ms": 1.508,
+        "percent": 0.02476973020704735,
+        "stack": [
+          "_mi_page_malloc_zero",
+          "mi_posix_memalign",
+          "FMemory::Realloc(void*, unsigned long, unsigned int)",
+          "FString::PrintfImpl(char16_t const*, ...)",
+          "FSlateApplication::Tick(ESlateTickType)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 321,
+        "name": "FScopedSampleMallocChurn::FScopedSampleMallocChurn()",
+        "ms": 1.507,
+        "percent": 0.024753304656512175,
+        "stack": [
+          "FScopedSampleMallocChurn::FScopedSampleMallocChurn()",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 103,
+        "name": "emscripten_futex_wake",
+        "ms": 1.505,
+        "percent": 0.02472045355544182,
+        "stack": [
+          "emscripten_futex_wake",
+          "__wake",
+          "unlock",
+          "FPThreadEvent::Trigger()",
+          "FSafeRecyclableEvent::Trigger()",
+          "FQueuedThread::DoWork(IQueuedWork*)",
+          "FQueuedThreadPoolBase::AddQueuedWork(IQueuedWork*, EQueuedWorkPriority)",
+          "FAsyncTaskBase::Start(bool, FQueuedThreadPool*, EQueuedWorkPriority, EQueuedWorkFlags, long long, char16_t const*)",
+          "FRenderAssetStreamingManager::UpdateResourceStreaming(float, bool)",
+          "FStreamingManagerCollection::UpdateResourceStreaming(float, bool)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 661,
+        "name": "FLockFreePointerFIFOBase<FBaseGraphTask, 64, 1ull>::Push(FBaseGraphTask*)",
+        "ms": 1.5,
+        "percent": 0.024638325802765933,
+        "stack": [
+          "FLockFreePointerFIFOBase<FBaseGraphTask, 64, 1ull>::Push(FBaseGraphTask*)",
+          "FStallingTaskQueue<FBaseGraphTask, 64, 2>::Push(FBaseGraphTask*, unsigned int)",
+          "FNamedTaskThread::EnqueueFromThisThread(int, FBaseGraphTask*)",
+          "UE::Tasks::Private::FTaskBase::Schedule(bool&)",
+          "UE::Tasks::Private::FTaskBase::TryUnlock(bool&)",
+          "FTickTaskSequencer::DispatchTickGroup(ENamedThreads::Type, ETickingGroup)",
+          "FTickTaskSequencer::ReleaseTickGroup(ETickingGroup, bool, TArray<FTickFunction*, TSizedDefaultAllocator<32>>&)",
+          "FTickTaskManager::RunTickGroup(ETickingGroup, bool)",
+          "UWorld::Tick(ELevelTick, float)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 24,
+        "name": "FTaskGraphCompatibilityImplementation::ProcessThreadUntilIdle(ENamedThreads::Type)",
+        "ms": 1.492,
+        "percent": 0.024506921398484514,
+        "stack": [
+          "FTaskGraphCompatibilityImplementation::ProcessThreadUntilIdle(ENamedThreads::Type)",
+          "FTaskGraphCompatibilityImplementation::ProcessUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, TFunction<FTaskGraphInterface::EProcessTasksOperation (int)> const&)",
+          "FTickTaskSequencer::ReleaseTickGroup(ETickingGroup, bool, TArray<FTickFunction*, TSizedDefaultAllocator<32>>&)",
+          "FTickTaskManager::RunTickGroup(ETickingGroup, bool)",
+          "UWorld::Tick(ELevelTick, float)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 225,
+        "name": "_mi_page_malloc_zero",
+        "ms": 1.49,
+        "percent": 0.02447407029741416,
+        "stack": [
+          "_mi_page_malloc_zero",
+          "FMemory::Realloc(void*, unsigned long, unsigned int)",
+          "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+          "FTaskGraphCompatibilityImplementation::ProcessUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, TFunction<FTaskGraphInterface::EProcessTasksOperation (int)> const&)",
+          "FTickTaskSequencer::ReleaseTickGroup(ETickingGroup, bool, TArray<FTickFunction*, TSizedDefaultAllocator<32>>&)",
+          "FTickTaskManager::RunTickGroup(ETickingGroup, bool)",
+          "UWorld::Tick(ELevelTick, float)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      },
+      {
+        "id": 519,
+        "name": "FLockFreeLinkPolicy::FreeLockFreeLink(unsigned int)",
+        "ms": 1.474,
+        "percent": 0.024211261488851322,
+        "stack": [
+          "FLockFreeLinkPolicy::FreeLockFreeLink(unsigned int)",
+          "FRenderThreadCommandPipe::EnqueueAndLaunch(TUniqueFunction<void (FRHICommandListImmediate&)>&&, FRenderCommandTag const&)",
+          "FUniformExpressionCacheAsyncUpdateScope::~FUniformExpressionCacheAsyncUpdateScope()",
+          "FRendererModule::BeginRenderingViewFamilies(FCanvas*, TArrayView<FSceneViewFamily* const, int>)",
+          "FRendererModule::BeginRenderingViewFamily(FCanvas*, FSceneViewFamily*)",
+          "UGameViewportClient::Draw(FViewport*, FCanvas*)",
+          "non-virtual thunk to UGameViewportClient::Draw(FViewport*, FCanvas*)",
+          "FViewport::Draw(bool)",
+          "UEngine::RedrawViewports(bool)",
+          "UGameEngine::Tick(float, bool)",
+          "FEngineLoop::Tick()",
+          "(anonymous namespace)::EngineFrame(void*)",
+          "js-to-wasm:l:",
+          "callUserCallback",
+          "runIter",
+          "MainLoop_runner",
+          "",
+          "(root)"
+        ]
+      }
+    ],
+    "baselineThreads": [
+      {
+        "role": "RHI",
+        "exclusive": {
+          "wasmLeaf": {
+            "ms": 3238.665,
+            "percent": 46.01733408885916
+          },
+          "webgpuApiLeaf": {
+            "ms": 1012.818,
+            "percent": 14.390862987437773
+          },
+          "scriptLeaf": {
+            "ms": 708.463,
+            "percent": 10.066363319638008
+          },
+          "visibleLanguageBoundary": {
+            "ms": 81.709,
+            "percent": 1.1609815621765738
+          },
+          "idle": {
+            "ms": 1801.762,
+            "percent": 25.600759542160446
+          },
+          "otherLeaf": {
+            "ms": 168.082,
+            "percent": 2.388232666337403
+          },
+          "garbageCollector": {
+            "ms": 26.425,
+            "percent": 0.37546583339064193
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 2141.494,
+            "percent": 30.427921642802623
+          },
+          "groups": {
+            "ms": 1401.196,
+            "percent": 19.90922323116874
+          },
+          "commandReplay": {
+            "ms": 675.302,
+            "percent": 9.595187444479366
+          },
+          "syncProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        }
+      },
+      {
+        "role": "Render",
+        "exclusive": {
+          "futexWait": {
+            "ms": 4482.236,
+            "percent": 69.62484715028482
+          },
+          "wasmLeaf": {
+            "ms": 1891.358,
+            "percent": 29.379423942975873
+          },
+          "scriptLeaf": {
+            "ms": 47.36,
+            "percent": 0.7356669218304188
+          },
+          "garbageCollector": {
+            "ms": 1.559,
+            "percent": 0.02421673841076062
+          },
+          "otherLeaf": {
+            "ms": 7.574,
+            "percent": 0.11765078686536301
+          },
+          "visibleLanguageBoundary": {
+            "ms": 7.609,
+            "percent": 0.11819445963276301
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "groups": {
+            "ms": 0,
+            "percent": 0
+          },
+          "commandReplay": {
+            "ms": 0,
+            "percent": 0
+          },
+          "syncProxy": {
+            "ms": 4.542,
+            "percent": 0.07055319170088181
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 711.932,
+            "percent": 11.058801161160762
+          }
+        }
+      },
+      {
+        "role": "Game",
+        "exclusive": {
+          "idle": {
+            "ms": 3896.242,
+            "percent": 65.25036177705088
+          },
+          "scriptLeaf": {
+            "ms": 38.807,
+            "percent": 0.6499007991500563
+          },
+          "wasmLeaf": {
+            "ms": 502.857,
+            "percent": 8.421345792207587
+          },
+          "futexWait": {
+            "ms": 1516.514,
+            "percent": 25.39705879151309
+          },
+          "visibleLanguageBoundary": {
+            "ms": 10.554,
+            "percent": 0.17674782988197216
+          },
+          "otherLeaf": {
+            "ms": 4.693,
+            "percent": 0.07859366739019286
+          },
+          "garbageCollector": {
+            "ms": 1.552,
+            "percent": 0.025991342806217628
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "groups": {
+            "ms": 0,
+            "percent": 0
+          },
+          "commandReplay": {
+            "ms": 0,
+            "percent": 0
+          },
+          "syncProxy": {
+            "ms": 1291.945,
+            "percent": 21.636201921249246
+          },
+          "dpiQuery": {
+            "ms": 990.757,
+            "percent": 16.592206716919947
+          },
+          "windowSizeQuery": {
+            "ms": 265.921,
+            "percent": 4.453378782456312
+          },
+          "rhiFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        }
+      }
+    ],
+    "afterThreads": [
+      {
+        "role": "RHI",
+        "exclusive": {
+          "idle": {
+            "ms": 1749.326,
+            "percent": 24.96450819807822
+          },
+          "scriptLeaf": {
+            "ms": 786.472,
+            "percent": 11.22368654645216
+          },
+          "visibleLanguageBoundary": {
+            "ms": 71.609,
+            "percent": 1.0219269979158734
+          },
+          "wasmLeaf": {
+            "ms": 3114.83,
+            "percent": 44.45151965420966
+          },
+          "webgpuApiLeaf": {
+            "ms": 1073.124,
+            "percent": 15.314477058909826
+          },
+          "otherLeaf": {
+            "ms": 188.498,
+            "percent": 2.690041688239555
+          },
+          "garbageCollector": {
+            "ms": 23.393,
+            "percent": 0.3338398561946966
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 1961.475,
+            "percent": 27.992071642349952
+          },
+          "groups": {
+            "ms": 1425.949,
+            "percent": 20.349617795963383
+          },
+          "commandReplay": {
+            "ms": 764.603,
+            "percent": 10.911595586971897
+          },
+          "syncProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        }
+      },
+      {
+        "role": "Render",
+        "exclusive": {
+          "futexWait": {
+            "ms": 4409.079,
+            "percent": 67.52690843184469
+          },
+          "wasmLeaf": {
+            "ms": 2073.865,
+            "percent": 31.762119017374737
+          },
+          "visibleLanguageBoundary": {
+            "ms": 10.769,
+            "percent": 0.16493178663900904
+          },
+          "scriptLeaf": {
+            "ms": 34.149,
+            "percent": 0.523006368459051
+          },
+          "otherLeaf": {
+            "ms": 1.504,
+            "percent": 0.02303439568252109
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "groups": {
+            "ms": 0,
+            "percent": 0
+          },
+          "commandReplay": {
+            "ms": 0,
+            "percent": 0
+          },
+          "syncProxy": {
+            "ms": 7.713,
+            "percent": 0.11812785498622684
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 747.916,
+            "percent": 11.454649655111997
+          }
+        }
+      },
+      {
+        "role": "Game",
+        "exclusive": {
+          "idle": {
+            "ms": 4726.17,
+            "percent": 77.62994417283883
+          },
+          "scriptLeaf": {
+            "ms": 42.803,
+            "percent": 0.7030628395571934
+          },
+          "wasmLeaf": {
+            "ms": 504.005,
+            "percent": 8.278559597482028
+          },
+          "futexWait": {
+            "ms": 792.115,
+            "percent": 13.010924962171957
+          },
+          "visibleLanguageBoundary": {
+            "ms": 9.254,
+            "percent": 0.15200204465253062
+          },
+          "otherLeaf": {
+            "ms": 13.729,
+            "percent": 0.22550638329744896
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "groups": {
+            "ms": 0,
+            "percent": 0
+          },
+          "commandReplay": {
+            "ms": 0,
+            "percent": 0
+          },
+          "syncProxy": {
+            "ms": 405.981,
+            "percent": 6.668461431821811
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        }
+      }
+    ],
+    "boundary": "Existing short Worker stack capture, not a new normal FPS measurement. Inclusive paths overlap. Exclusive categories count sampled leaf residence only, not exact instruction costs. Wasm leaf residence includes platform/backend code; JS/API residence includes browser frontend work, not just ABI overhead. Wasm-to-JS leaf samples miss inlined conversion and do not measure total crossing overhead. Browser GPU process and GPU time are outside this capture. Thread windows differ; do not add percentages or scale them into exact per-frame savings. No low-frame cause established by this capture."
+  },
+  "environment": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-window-bindings-v47-v48-environment.jsonl",
+      "sha256": "672ed9687fe15910d8409c431c16ba64e5dc8b28130f0706cfb7e968a89f574f"
+    },
+    "measurementSamples": 32,
+    "blockersDuringMeasurements": [],
+    "backgroundCPU": {
+      "TGitCache": 0.9970909075100667,
+      "oopz": 0.19941818150201335,
+      "Aac3572MbHal_x86": 0,
+      "RuntimeBroker": 0,
+      "cloudmusic": 0.19941818150201335,
+      "SDKDNS": 0,
+      "ChatGPT": 0.39818404185869927,
+      "Weixin": 0.19917605248958214,
+      "node": 0.19909202092934963,
+      "StartMenuExperienceHost": 0,
+      "SogouImeBroker": 0,
+      "steamwebhelper": 0
+    },
+    "boundary": "User background applications retained. Timed experiments are serial, without builds, packaging or profilers. No exclusive CPU/GPU ownership claimed."
+  },
+  "testCorrections": [
+    {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-views.json",
+        "sha256": "8f4dcd8be03b0bab7122282dc637809bac6ce285be00bcac146cdf19cdde31df"
+      },
+      "error": "page.waitForFunction: Timeout 30000ms exceeded.\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-villa-command-stream.cjs:50:15",
+      "boundary": "Test expectation corrected for canvas aspect ratio and actual browser floating-point DPR; engine source unchanged between these checks and the passing v4."
+    },
+    {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-views-v2.json",
+        "sha256": "fcdf1dd3d213860bce7eb4c1a11634391546f4b8791913d8068c4d312110dde5"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: Browser changes must reach the native snapshot\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-villa-command-stream.cjs:57:4",
+      "boundary": "Test expectation corrected for canvas aspect ratio and actual browser floating-point DPR; engine source unchanged between these checks and the passing v4."
+    },
+    {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-browser-metrics-v47-metrics-v3.json",
+        "sha256": "dd9a698136105d6d549803d788325eed3b1a24f8984aa1c0a580141d8fd8fea5"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: Browser changes must reach the native snapshot: {\"metrics\":{\"width\":999.9999389648438,\"height\":562.4999389648438,\"dpr\":0.9999999760941023,\"updates\":4},\"expected\":{\"width\":999.9999389648438,\"height\":562.4999389648438,\"dpr\":0.9999999760941023}}\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-villa-command-stream.cjs:58:4",
+      "boundary": "Test expectation corrected for canvas aspect ratio and actual browser floating-point DPR; engine source unchanged between these checks and the passing v4."
+    }
+  ],
+  "boundary": "ABBA fixed spawn is not a traversal or a long-term stability test. FPS uses completed RHI viewport presents; 1% Low is inverse mean of the slowest 1% intervals. Cached binding validation recomputes descriptors in a separate gameplay run and is disabled in normal FPS. CPU stack percentages are per-thread sampled residence and are not additive frame costs. Cook, quality, scalar compilation and final-link policy are preserved. No claim of eliminating all WebGPU interaction overhead or diagnosing all low-frame causes."
+}

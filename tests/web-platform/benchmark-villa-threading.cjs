@@ -144,7 +144,8 @@ async function profileBlockedWorker(file, all = false) {
       const state = () => owner.evaluate(() => ({frames: globalThis.__webRHIFrames, gameFrames: globalThis.__webEngineFrames,
         threads: globalThis.__webEngineThreads, stages: globalThis.__webThreadStages,
         view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera,
-        occlusion: globalThis.__webOcclusionRHI, memory: globalThis.__webTextureStreaming, io: globalThis.__webContentIO?.stats}));
+        occlusion: globalThis.__webOcclusionRHI, memory: globalThis.__webTextureStreaming, io: globalThis.__webContentIO?.stats,
+        browserMetrics:globalThis.__webBrowserMetrics}));
       await page.waitForTimeout(warmup*1000);
       run.before = await state();
       run.pageBefore=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),live:globalThis.__webLivePerformance}));

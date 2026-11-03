@@ -34,7 +34,7 @@ async function captureOwner(){
  report.before=await state();const camera=report.before.camera;assert(camera);
  // Sweep both visibility and streaming demand; returning to spawn also tests
  // that the stream does not retain stale pipeline/binding state across passes.
- for(const [dx,dy,dz,yaw] of [[0,0,0,90],[150,0,0,180],[0,150,50,270],[-150,0,0,360],[0,-150,50,45],[0,0,0,0]]){
+ for(const [dx,dy,dz,yaw] of process.argv.includes('--skip-view-sweep')?[]:[[0,0,0,90],[150,0,0,180],[0,150,50,270],[-150,0,0,360],[0,-150,50,45],[0,0,0,0]]){
   const target=[camera.x+dx,camera.y+dy,camera.z+dz,camera.pitch,camera.yaw+yaw];
   assert.equal(await page.evaluate(args=>__webEngineRPC('WebProjectViewTest',...args),target),1);
   const start=(await state()).frames;await page.waitForTimeout(2500);const after=await state();assert(after.frames>start+20,'Rendering stopped after camera move');
@@ -42,6 +42,25 @@ async function captureOwner(){
  }
  report.after=await state();assert.equal(report.errors.length,0,report.errors.join('\n'));
  await page.locator('canvas').screenshot({path:output+'.png'});
+ if(process.argv.includes('--window-metrics')){
+  report.windowMetrics=[];
+  for(const [width,height,dpr]of [[1000,650,1],[1000,650,1.5],[1200,720,1.5],[2289,1287,1]]){
+   const before=(await state()).frames;
+   await input.send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:dpr,mobile:false});
+   // The page preserves the canvas's 16:9 aspect ratio. Test its actual CSS
+   // rectangle rather than assuming it fills a viewport with another ratio.
+   const expected=await page.evaluate(()=>{const r=document.querySelector('canvas').getBoundingClientRect();return {width:r.width,height:r.height,dpr:devicePixelRatio};});
+   await page.waitForFunction(expected=>{
+    const d=globalThis.__webRenderView;return d&&Math.abs(d.outputWidth-expected.width*expected.dpr)<=2&&Math.abs(d.outputHeight-expected.height*expected.dpr)<=2;
+   },expected,{timeout:30000});
+   const metrics=await owner.evaluate(()=>globalThis.__webBrowserMetrics);
+   report.windowMetrics.push({width,height,dpr,expected,metrics});
+   assert(metrics&&Math.abs(metrics.width-expected.width)<.05&&Math.abs(metrics.height-expected.height)<.05&&metrics.dpr===expected.dpr&&Math.abs(expected.dpr-dpr)<1e-4,'Browser changes must reach the native snapshot: '+JSON.stringify({metrics,expected}));
+   await page.waitForTimeout(1000);const after=await state();assert(after.frames>before+10);
+   assert.deepEqual(after.settings,report.before.settings);
+   Object.assign(report.windowMetrics.at(-1),{view:after.view,frames:after.frames});
+  }
+ }
  report.page=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),
   performance:globalThis.__webLivePerformance,userAgent:navigator.userAgent}));
  if(process.argv.includes('--profile-owner'))await captureOwner();

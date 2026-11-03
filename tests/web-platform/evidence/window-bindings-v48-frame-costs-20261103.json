@@ -1,0 +1,752 @@
+{
+  "date": "2026-11-03T11:48:13.804Z",
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-web-frame-costs.cjs",
+    "sha256": "f91f7dc3599589735576deb5bb9b9a9d445bbdf0507b0915f115d8e8f350c084"
+  },
+  "targets": {
+    "file": "tests/web-platform/results/villa-binding-skips-v48-cpu-profile-1-workers-targets.json",
+    "sha256": "65f711d163cc0fa89c91297ef83f466d73f10ea7cb0a69c56c6f52f8c6d2eb9b"
+  },
+  "threads": [
+    {
+      "role": "RHI",
+      "profile": {
+        "file": "tests/web-platform/results/villa-binding-skips-v48-cpu-profile-1-workers-4.cpuprofile",
+        "sha256": "f7f1a655b4a325fc8c196a2042e86554806a6d4951d6c242781aac85f3c5685e"
+      },
+      "durationMs": 7007.252,
+      "exclusive": {
+        "idle": {
+          "ms": 1749.326,
+          "percent": 24.96450819807822
+        },
+        "scriptLeaf": {
+          "ms": 786.472,
+          "percent": 11.22368654645216
+        },
+        "visibleLanguageBoundary": {
+          "ms": 71.609,
+          "percent": 1.0219269979158734
+        },
+        "wasmLeaf": {
+          "ms": 3114.83,
+          "percent": 44.45151965420966
+        },
+        "webgpuApiLeaf": {
+          "ms": 1073.124,
+          "percent": 15.314477058909826
+        },
+        "otherLeaf": {
+          "ms": 188.498,
+          "percent": 2.690041688239555
+        },
+        "garbageCollector": {
+          "ms": 23.393,
+          "percent": 0.3338398561946966
+        }
+      },
+      "inclusive": {
+        "drawBindings": {
+          "ms": 1961.475,
+          "percent": 27.992071642349952
+        },
+        "groups": {
+          "ms": 1425.949,
+          "percent": 20.349617795963383
+        },
+        "commandReplay": {
+          "ms": 764.603,
+          "percent": 10.911595586971897
+        },
+        "syncProxy": {
+          "ms": 0,
+          "percent": 0
+        },
+        "dpiQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "windowSizeQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "rhiFlush": {
+          "ms": 0,
+          "percent": 0
+        }
+      },
+      "topLeafs": [
+        {
+          "name": "(idle)",
+          "url": "",
+          "ms": 1749.326,
+          "percent": 24.96450819807822
+        },
+        {
+          "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 559.399,
+          "percent": 7.983143748790539
+        },
+        {
+          "name": "setVertexBuffer",
+          "url": "",
+          "ms": 305.626,
+          "percent": 4.36156713073827
+        },
+        {
+          "name": "FWebGPUDynamicRHI::SetDrawBindings(TArray<FWebGPUResolvedGroup, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>>*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 167.901,
+          "percent": 2.3961033512138568
+        },
+        {
+          "name": "beginRenderPass",
+          "url": "",
+          "ms": 157.695,
+          "percent": 2.2504542436892523
+        },
+        {
+          "name": "unsigned int UEWebGPUStream::Stream::object<WGPUBufferImpl>(WGPUBufferImpl*, UEWebGPUStream::Kind)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 131.095,
+          "percent": 1.8708475162588702
+        },
+        {
+          "name": "",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 125.412,
+          "percent": 1.7897458233270331
+        },
+        {
+          "name": "WebGPU.getJsObject",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 125.001,
+          "percent": 1.7838804712603458
+        },
+        {
+          "name": "int TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::FindIndexByHash<TStringView<char16_t>>(unsigned int, TStringView<char16_t> const&) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 123.899,
+          "percent": 1.76815390683823
+        },
+        {
+          "name": "setIndexBuffer",
+          "url": "",
+          "ms": 104.069,
+          "percent": 1.4851613728177608
+        },
+        {
+          "name": "FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource*, ERHIAccess, FString&, bool, unsigned int, unsigned int, unsigned int) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 103.658,
+          "percent": 1.4792960207510732
+        },
+        {
+          "name": "createBindGroup",
+          "url": "",
+          "ms": 97.237,
+          "percent": 1.3876623817724836
+        },
+        {
+          "name": "setBindGroup",
+          "url": "",
+          "ms": 93.658,
+          "percent": 1.336586724724614
+        },
+        {
+          "name": "_ueWGPUReplay",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 92.473,
+          "percent": 1.3196756731454784
+        },
+        {
+          "name": "writeBuffer",
+          "url": "",
+          "ms": 88.938,
+          "percent": 1.2692279370001252
+        },
+        {
+          "name": "FRHICommandListBase::Execute()",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 88.691,
+          "percent": 1.2657030173882715
+        },
+        {
+          "name": "jsObjectInsert",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 88.012,
+          "percent": 1.256013056188075
+        },
+        {
+          "name": "FWebGPUDynamicRHI::CommitShaderResources(FWebGPUShaderData&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 82.806,
+          "percent": 1.1817185966767
+        },
+        {
+          "name": "growMemViews",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 77.127,
+          "percent": 1.1006739874632738
+        },
+        {
+          "name": "unsigned long long std::__2::__cxx_atomic_fetch_sub[abi:nqn220108]<unsigned long long>(std::__2::__cxx_atomic_base_impl<unsigned long long>*, unsigned long long, std::__2::memory_order)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 73.483,
+          "percent": 1.048670719991232
+        },
+        {
+          "name": "FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<FRHITransition const*, int>, bool, FString&) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 67.44,
+          "percent": 0.9624314924024425
+        },
+        {
+          "name": "FWebGPUDynamicRHI::RHISetStreamSource(unsigned int, FRHIBuffer*, unsigned int)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 66.8,
+          "percent": 0.9532980974567491
+        },
+        {
+          "name": "wasm-to-js",
+          "url": "",
+          "ms": 64.013,
+          "percent": 0.9135250166541748
+        },
+        {
+          "name": "submit",
+          "url": "",
+          "ms": 61.491,
+          "percent": 0.8775337321963018
+        },
+        {
+          "name": "FMemory::Free(void*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 61.035,
+          "percent": 0.8710261882974952
+        },
+        {
+          "name": "(program)",
+          "url": "",
+          "ms": 56.367,
+          "percent": 0.804409488912344
+        },
+        {
+          "name": "FWebGPUDynamicRHI::Bind(FWebGPUShaderData&, FRHIShaderParameterResource const&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 55.916,
+          "percent": 0.7979732996615507
+        },
+        {
+          "name": "FWebGPUDynamicRHI::ResolveDrawBinding(FWebGPUShaderData&, FWebGPUShaderBinding&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 50.787,
+          "percent": 0.7247777017295797
+        },
+        {
+          "name": "postMessage",
+          "url": "",
+          "ms": 45.863,
+          "percent": 0.6545076443661509
+        },
+        {
+          "name": "createBuffer",
+          "url": "",
+          "ms": 44.06,
+          "percent": 0.6287771582925803
+        }
+      ]
+    },
+    {
+      "role": "Render",
+      "profile": {
+        "file": "tests/web-platform/results/villa-binding-skips-v48-cpu-profile-1-workers-17.cpuprofile",
+        "sha256": "00a95381627b2afa766f5398115c21d529423736fcc6de7dc920c4648ca90caf"
+      },
+      "durationMs": 6529.366,
+      "exclusive": {
+        "futexWait": {
+          "ms": 4409.079,
+          "percent": 67.52690843184469
+        },
+        "wasmLeaf": {
+          "ms": 2073.865,
+          "percent": 31.762119017374737
+        },
+        "visibleLanguageBoundary": {
+          "ms": 10.769,
+          "percent": 0.16493178663900904
+        },
+        "scriptLeaf": {
+          "ms": 34.149,
+          "percent": 0.523006368459051
+        },
+        "otherLeaf": {
+          "ms": 1.504,
+          "percent": 0.02303439568252109
+        }
+      },
+      "inclusive": {
+        "drawBindings": {
+          "ms": 0,
+          "percent": 0
+        },
+        "groups": {
+          "ms": 0,
+          "percent": 0
+        },
+        "commandReplay": {
+          "ms": 0,
+          "percent": 0
+        },
+        "syncProxy": {
+          "ms": 7.713,
+          "percent": 0.11812785498622684
+        },
+        "dpiQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "windowSizeQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "rhiFlush": {
+          "ms": 747.916,
+          "percent": 11.454649655111997
+        }
+      },
+      "topLeafs": [
+        {
+          "name": "_do_futex_wait",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4409.079,
+          "percent": 67.52690843184469
+        },
+        {
+          "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 76.514,
+          "percent": 1.171844249502938
+        },
+        {
+          "name": "FProjectedShadowInfo::FinalizeAddSubjectPrimitive(FDynamicShadowsTaskData&, FAddSubjectPrimitiveOp const&, TArrayView<FViewInfo, int>, FFinalizeAddSubjectPrimitiveContext&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 62.153,
+          "percent": 0.9518994646647162
+        },
+        {
+          "name": "__private_cond_signal",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 46.274,
+          "percent": 0.7087058682267161
+        },
+        {
+          "name": "void FRDGParameterStruct::Enumerate<FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2>(FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 40.88,
+          "percent": 0.6260944783919297
+        },
+        {
+          "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 40.679,
+          "percent": 0.6230160784370182
+        },
+        {
+          "name": "FRDGBuilder::SetupPassInternals(FRDGPass*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 37.913,
+          "percent": 0.5806536193559988
+        },
+        {
+          "name": "_mi_page_malloc_zero",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 34.569,
+          "percent": 0.5294388459767764
+        },
+        {
+          "name": "FRelevancePacket::ComputeRelevance(FDynamicPrimitiveIndexList&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 33.145,
+          "percent": 0.5076296841071553
+        },
+        {
+          "name": "FMemory::Realloc(void*, unsigned long, unsigned int)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 30.272,
+          "percent": 0.4636284748013819
+        },
+        {
+          "name": "mi_theap_malloc_zero_aligned_at_overalloc",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 30.053,
+          "percent": 0.460274397238568
+        },
+        {
+          "name": "_emscripten_get_now",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 27.981,
+          "percent": 0.4285408414844565
+        },
+        {
+          "name": "FMemory::Free(void*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 27.147,
+          "percent": 0.41576777898497347
+        },
+        {
+          "name": "(anonymous namespace)::TSafeDestIterator<char16_t>::Write(char16_t, int)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 24.542,
+          "percent": 0.37587110295241527
+        },
+        {
+          "name": "(anonymous namespace)::UniformSnapshot(void const*, FRHIUniformBufferLayout const&, TArray<unsigned char, TSizedDefaultAllocator<32>>&, TArray<TRefCountPtr<FRHIResource>, TSizedDefaultAllocator<32>>&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 24.395,
+          "percent": 0.37361973582121144
+        },
+        {
+          "name": "FDeferredShadingSceneRenderer::Render(FRDGBuilder&, FSceneRenderUpdateInputs const*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 24.301,
+          "percent": 0.37218008609105385
+        },
+        {
+          "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 19.806,
+          "percent": 0.30333726122873184
+        },
+        {
+          "name": "FProjectedShadowInfo::SetupMeshDrawCommandsForShadowDepth(FSceneRenderer&, FInstanceCullingManager&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 18.079,
+          "percent": 0.2768875262927518
+        },
+        {
+          "name": "bool FGPUOcclusionPacket::OcclusionCullPrimitive<false, FGPUOcclusionPacket::FProcessVisitor>(FGPUOcclusionPacket::FProcessVisitor&, FOcclusionCullResult&, int)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 16.597,
+          "percent": 0.25419006990877824
+        },
+        {
+          "name": "ExecuteCommand_NoMarker(FRHICommandList*, TVariant<TUniqueFunction<void ()>, TUniqueFunction<void (FRHICommandList&)>, TUniqueFunction<void (FRHICommandListImmediate&)>> const&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 16.433,
+          "percent": 0.2516783405923332
+        },
+        {
+          "name": "mi_page_thread_collect_to_local",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 16.146,
+          "percent": 0.24728281428855423
+        },
+        {
+          "name": "FRDGBuilder::Compile()",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 15.331,
+          "percent": 0.23480074481963487
+        },
+        {
+          "name": "FPrimitiveSceneInfo::UpdateComponentLastRenderTime(float, bool)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 15.254,
+          "percent": 0.23362145727471856
+        },
+        {
+          "name": "FRDGBuilder::Execute()",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 14.743,
+          "percent": 0.22579527629481944
+        },
+        {
+          "name": "SetupCommonViewUniformBufferParameters(FViewUniformShaderParameters&, UE::Math::TIntPoint<int> const&, int, UE::Math::TIntRect<int> const&, FViewMatrices const&, FViewMatrices const&, FSetupViewUniformParametersInputs const&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 13.735,
+          "percent": 0.21035733025227868
+        },
+        {
+          "name": "FRDGUserValidation::ValidateAddPass(FRDGPass const*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 13.717,
+          "percent": 0.2100816526443762
+        },
+        {
+          "name": "FString::PathAppend(char16_t const*, int)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 13.388,
+          "percent": 0.20504287858882472
+        },
+        {
+          "name": "FCSMSceneExtension::GetCachedWholeSceneShadowMapsSize() const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 12.258,
+          "percent": 0.18773645098161137
+        },
+        {
+          "name": "_mi_malloc_generic",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 12.167,
+          "percent": 0.18634274751943758
+        },
+        {
+          "name": "TLinearAllocatorBase<FSceneRenderingBlockAllocationTag, (ELinearAllocatorThreadPolicy)0>::Malloc(unsigned long, unsigned int)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 12.069,
+          "percent": 0.184841836098635
+        }
+      ]
+    },
+    {
+      "role": "Game",
+      "profile": {
+        "file": "tests/web-platform/results/villa-binding-skips-v48-cpu-profile-1-workers-29.cpuprofile",
+        "sha256": "2d41877364901a353e594704de2591aa765e95728269f94577d36b6b731b8e62"
+      },
+      "durationMs": 6088.076,
+      "exclusive": {
+        "idle": {
+          "ms": 4726.17,
+          "percent": 77.62994417283883
+        },
+        "scriptLeaf": {
+          "ms": 42.803,
+          "percent": 0.7030628395571934
+        },
+        "wasmLeaf": {
+          "ms": 504.005,
+          "percent": 8.278559597482028
+        },
+        "futexWait": {
+          "ms": 792.115,
+          "percent": 13.010924962171957
+        },
+        "visibleLanguageBoundary": {
+          "ms": 9.254,
+          "percent": 0.15200204465253062
+        },
+        "otherLeaf": {
+          "ms": 13.729,
+          "percent": 0.22550638329744896
+        }
+      },
+      "inclusive": {
+        "drawBindings": {
+          "ms": 0,
+          "percent": 0
+        },
+        "groups": {
+          "ms": 0,
+          "percent": 0
+        },
+        "commandReplay": {
+          "ms": 0,
+          "percent": 0
+        },
+        "syncProxy": {
+          "ms": 405.981,
+          "percent": 6.668461431821811
+        },
+        "dpiQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "windowSizeQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "rhiFlush": {
+          "ms": 0,
+          "percent": 0
+        }
+      },
+      "topLeafs": [
+        {
+          "name": "(idle)",
+          "url": "",
+          "ms": 4726.17,
+          "percent": 77.62994417283883
+        },
+        {
+          "name": "_do_futex_wait",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 792.115,
+          "percent": 13.010924962171957
+        },
+        {
+          "name": "_emscripten_get_now",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 25.577,
+          "percent": 0.42011630603822947
+        },
+        {
+          "name": "__private_cond_signal",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 10.715,
+          "percent": 0.17599977398442462
+        },
+        {
+          "name": "wasm-to-js",
+          "url": "",
+          "ms": 9.254,
+          "percent": 0.15200204465253062
+        },
+        {
+          "name": "FEngineLoop::Tick()",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 7.816,
+          "percent": 0.12838210298294567
+        },
+        {
+          "name": "now",
+          "url": "",
+          "ms": 7.584,
+          "percent": 0.12457137525878455
+        },
+        {
+          "name": "FCycleCounter::Start(TStatId, EStatFlags, bool, UE::FSourceLocation)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 6.184,
+          "percent": 0.10157560450953634
+        },
+        {
+          "name": "_mi_page_malloc_zero",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 6.162,
+          "percent": 0.10121424239776244
+        },
+        {
+          "name": "UWorld::Tick(ELevelTick, float)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.678,
+          "percent": 0.07683872540355935
+        },
+        {
+          "name": "FTickFunctionTask::DoTask(ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.654,
+          "percent": 0.07644451219071509
+        },
+        {
+          "name": "FSceneRenderer::FSceneRenderer(FSceneViewFamily const*, FHitProxyConsumer*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.638,
+          "percent": 0.07618170338215226
+        },
+        {
+          "name": "UGameViewportClient::Draw(FViewport*, FCanvas*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.612,
+          "percent": 0.07575463906823765
+        },
+        {
+          "name": "postMessage",
+          "url": "",
+          "ms": 4.597,
+          "percent": 0.07550825581020999
+        },
+        {
+          "name": "UNavigationSystemV1::UpdateActorAndComponentsInNavOctree(AActor&, bool)::$_0::operator()(AActor&) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.586,
+          "percent": 0.07532757475432304
+        },
+        {
+          "name": "void FChildren::ForEachWidget<SWidget::Prepass_ChildLoop(float, FChildren*)::$_0&>(SWidget::Prepass_ChildLoop(float, FChildren*)::$_0&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.581,
+          "percent": 0.07524544700164715
+        },
+        {
+          "name": "UGameEngine::Tick(float, bool)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.548,
+          "percent": 0.0747034038339863
+        },
+        {
+          "name": "UEngine::ConditionalCollectGarbage()",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.533,
+          "percent": 0.07445702057595864
+        },
+        {
+          "name": "UNavigationObjectRepository::GetMutableNavigationElementForUObject(UObject const*) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.5,
+          "percent": 0.0739149774082978
+        },
+        {
+          "name": "operator new(unsigned long)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 4.233,
+          "percent": 0.06952935541540546
+        },
+        {
+          "name": "UCharacterMovementComponent::SetBase(FMovementBaseInterfaceData*, FName, bool)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.192,
+          "percent": 0.0524303573082859
+        },
+        {
+          "name": "SWidget::Prepass_Internal(float)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.189,
+          "percent": 0.052381080656680366
+        },
+        {
+          "name": "void TMulticastDelegateBase<FDefaultDelegateUserPolicy>::Broadcast<IBaseDelegateInstance<void (TMultiMap<FCoreDelegates::EOnScreenMessageSeverity, FText, FDefaultSetAllocator, TDefaultMapHashableKeyFuncs<FCoreDelegates::EOnScreenMessageSeverity, FText, true>>&), FDefaultDelegateUserPolicy>, TMultiMap<FCoreDelegates::EOnScreenMessageSeverity, FText, FDefaultSetAllocator, TDefaultMapHashableKeyFuncs<FCoreDelegates::EOnScreenMessageSeverity, FText, true>>&>(TMultiMap<FCoreDelegates::EOnScreenMessageSeverity, FText, FDefaultSetAllocator, TDefaultMapHashableKeyFuncs<FCoreDelegates::EOnScreenMessageSeverity, FText, true>>&) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.163,
+          "percent": 0.05195401634276576
+        },
+        {
+          "name": "FRenderCommandPipeRegistry::StopRecording(TBitArray<TSizedInlineAllocator<1u, 32, TLinearArrayAllocatorBase<FDefaultBlockAllocationTag, (ELinearAllocatorThreadPolicy)0>>> const&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.119,
+          "percent": 0.05123129211921796
+        },
+        {
+          "name": "UObject::execLocalVariable(UObject*, FFrame&, void*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.112,
+          "percent": 0.05111631326547172
+        },
+        {
+          "name": "ULocalPlayer::GetViewPoint(FMinimalViewInfo&) const",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.098,
+          "percent": 0.05088635555797924
+        },
+        {
+          "name": "AActor::execK2_AddActorLocalRotation(UObject*, FFrame&, void*)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.095,
+          "percent": 0.050837078906373706
+        },
+        {
+          "name": "TSet<UActorComponent*, DefaultKeyFuncs<UActorComponent*, false>, FDefaultSetAllocator> const& ObjectPtrDecay<TSet<TObjectPtr<UActorComponent>, DefaultKeyFuncs<TObjectPtr<UActorComponent>, false>, FDefaultSetAllocator>, UE::Core::Private::TObjectPtrDecayTypeOf<TSet<TObjectPtr<UActorComponent>, DefaultKeyFuncs<TObjectPtr<UActorComponent>, false>, FDefaultSetAllocator>>, TSet<UActorComponent*, DefaultKeyFuncs<UActorComponent*, false>, FDefaultSetAllocator>>(TSet<TObjectPtr<UActorComponent>, DefaultKeyFuncs<TObjectPtr<UActorComponent>, false>, FDefaultSetAllocator> const&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.088,
+          "percent": 0.050722100052627464
+        },
+        {
+          "name": "FActorComponentTickFunction::ExecuteTick(float, ELevelTick, ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&)",
+          "url": "wasm://wasm/UEWebEngineThreads.wasm-2b790b62",
+          "ms": 3.084,
+          "percent": 0.050656397850486756
+        },
+        {
+          "name": "",
+          "url": "http://127.0.0.1:8765/build/villa-binding-skips-v48/UEWebEngineThreads.js?v=143af1e0ab693db8c55c9314853d1e260d04fb24295355a62d037aec8315f194",
+          "ms": 3.081,
+          "percent": 0.05060712119888122
+        }
+      ]
+    }
+  ],
+  "boundary": "Existing short Worker stack capture, not a new normal FPS measurement. Inclusive paths overlap. Exclusive categories count sampled leaf residence only, not exact instruction costs. Wasm leaf residence includes platform/backend code; JS/API residence includes browser frontend work, not just ABI overhead. Wasm-to-JS leaf samples miss inlined conversion and do not measure total crossing overhead. Browser GPU process and GPU time are outside this capture. Thread windows differ; do not add percentages or scale them into exact per-frame savings. No low-frame cause established by this capture."
+}

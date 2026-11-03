@@ -1,0 +1,84 @@
+diff --git a/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp b/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp
+index 6a72f88..937ac1e 100644
+--- a/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp
++++ b/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp
+@@ -1087,8 +1087,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
+             globalThis.__webOcclusionRHI.manualVertexFetchEnabled = !!$3;
+             globalThis.__webOcclusionRHI.manualVertexFetchDraws = $4;
+             globalThis.__webOcclusionRHI.vertexFetchFormatBuffers = $5;
++            globalThis.__webOcclusionRHI.unchangedResourceBindings = $6;
++            globalThis.__webOcclusionRHI.skippedBindingShaderScans = $7;
+         }, ResourceTableCommits, ResourceTableBuffers, BindingRouteResolutions,
+-            RHISupportsManualVertexFetch(GMaxRHIShaderPlatform), ManualVertexFetchDraws, VertexFetchFormatBuffers.Num());
++            RHISupportsManualVertexFetch(GMaxRHIShaderPlatform), ManualVertexFetchDraws, VertexFetchFormatBuffers.Num(),
++            UnchangedResourceBindings, SkippedBindingShaderScans);
+         EM_ASM({
+             Object.assign(globalThis.__webOcclusionRHI, {groupPreparationHits:$0, groupPreparationValidated:$1,
+                 groupFrameMisses:$2, groupAccessMisses:$3, groupVersionMisses:$4, groupTextureMisses:$5,
+@@ -1262,6 +1265,7 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
+         Entry.Descriptor = Binding->GetIntegerField(TEXT("descriptorType"));
+         Entry.Group = Binding->GetIntegerField(TEXT("group"));
+         check(Entry.Group < 32);
++        Data.BindingGroupMask |= 1u << Entry.Group;
+         if (Data.GroupVersions.Num() <= int32(Entry.Group)) Data.GroupVersions.SetNumZeroed(Entry.Group + 1);
+         if (Entry.Name == TEXT("$Globals")) Data.GlobalsGroupMask |= 1u << Entry.Group;
+         Entry.Index = Binding->GetIntegerField(TEXT("binding"));
+@@ -2806,6 +2810,10 @@ void FWebGPUDynamicRHI::Bind(FWebGPUShaderData &Shader, const FRHIShaderParamete
+     const uint32 Key = (Type << 16) | Parameter.Index;
+     const auto* Previous = Shader.Resources.Find(Key);
+     const bool Changed = !Previous || Previous->GetReference() != Parameter.Resource;
++    // Rebinding the same RHI object does not change its identity. Uniform
++    // contents and static bindings have independent serials checked at commit;
++    // TextureReference target changes are checked again before group reuse.
++    if (!Changed) { ++UnchangedResourceBindings; return; }
+     if (Changed)
+         if (const auto* Mask = Shader.ResourceGroupMasks.Find(Key)) Shader.InvalidateGroups(*Mask);
+     if (Type == 1)
+@@ -2858,8 +2866,6 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
+     // including materials whose descriptor count exceeds inline capacity.
+     auto& Groups = BindingScratchGroups;
+     auto& DynamicOffsets = BindingScratchDynamicOffsets;
+-    for (auto& Entries : Groups) Entries.Reset();
+-    for (auto& Offsets : DynamicOffsets) Offsets.Reset();
+     const auto& DynamicBindings = Render ? GraphicsPipeline->DynamicBindings : ComputePipeline->DynamicBindings;
+     auto& PreviousGroups = Render ? GraphicsPipeline->PreviousGroups : ComputePipeline->PreviousGroups;
+     auto& PreviousFrame = Render ? GraphicsPipeline->PreviousGroupsFrame : ComputePipeline->PreviousGroupsFrame;
+@@ -2907,8 +2913,18 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
+         }
+         if (!(ReusedGroups & (1u << Group))) Cached.TextureReferences.Reset();
+     }
++    // Scratch entries are consumed only for groups requiring a rebuild. A hit
++    // uses the cached entry below, including its immutable dynamic offsets.
++    for (int32 Group = 0; Group < Groups.Num(); ++Group)
++        if (!(ReusedGroups & (1u << Group))) { Groups[Group].Reset(); DynamicOffsets[Group].Reset(); }
+     for (FWebGPUShaderData *Shader : Shaders)
+     {
++        // The group checks above already validated frame, access, resource
++        // versions and streaming references. Validation mode leaves the reuse
++        // mask empty and still recomputes every descriptor. Manual fetch keeps
++        // its existing format-dependent path (whole-group caching is disabled).
++        if (!(Shader->BindingGroupMask & ~ReusedGroups) && !Shader->HasVertexFetchFormats)
++        { ++SkippedBindingShaderScans; continue; }
+         uint32 VertexFetchCodes[4] = {}, VertexFetchKey = 0;
+         if (Shader->HasVertexFetchFormats)
+         {
+diff --git a/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.h b/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.h
+index 40f77df..cb2ee69 100644
+--- a/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.h
++++ b/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.h
+@@ -108,6 +108,7 @@ struct FWebGPUShaderData
+     TArray<FWebGPUShaderBinding> Bindings;
+     TArray<uint64, TInlineAllocator<4>> GroupVersions;
+     TMap<uint32, uint32> ResourceGroupMasks;
++    uint32 BindingGroupMask = 0;
+     uint32 GlobalsGroupMask = 0;
+     void InvalidateGroups(uint32 Mask)
+     {
+@@ -680,6 +681,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
+     uint32 ResourceTableBindings = 0;
+     uint64 UniformUpdateSerial = 1, StaticUniformSerial = 1;
+     uint32 ResourceTableCommits = 0, ResourceTableBuffers = 0, BindingRouteResolutions = 0;
++    uint32 UnchangedResourceBindings = 0, SkippedBindingShaderScans = 0;
+     TMap<uint32, WGPUBuffer> VertexFetchFormatBuffers;
+     uint32 ManualVertexFetchDraws = 0;
+     TSharedRef<std::atomic<uint32>, ESPMode::ThreadSafe> TextureReadbacksReady = MakeShared<std::atomic<uint32>, ESPMode::ThreadSafe>(0);
