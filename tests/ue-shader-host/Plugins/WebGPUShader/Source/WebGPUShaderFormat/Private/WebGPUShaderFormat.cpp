@@ -104,6 +104,12 @@ static bool UsesSingleVectorSkyUniform(const FShaderCompilerInput& Input)
          Input.VirtualSourceFilePath == TEXT("/Engine/Private/Lumen/LumenReflectionTracing.usf"));
 }
 
+static bool UsesTranslucencyVolumeMarks(const FShaderCompilerInput& Input)
+{
+    return Input.Target.GetFrequency() == SF_Pixel &&
+        Input.VirtualSourceFilePath == TEXT("/Engine/Private/Lumen/LumenTranslucencyRadianceCacheMarkShaders.usf");
+}
+
 static bool LowerSingleVectorSkyUniform(TArray<uint32>& Spirv, uint32 Variable, FString& Error)
 {
     TMap<uint32, uint32> Constants;
@@ -546,7 +552,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6_SkyUniform2");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6_SkyUniform2_VolumeMarks1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -565,6 +571,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
             Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(5));
         if (UsesSingleVectorSkyUniform(Input))
             Input.Environment.SetCompileArgument(TEXT("WebLumenSkyUniformVersion"), int32(1));
+        if (UsesTranslucencyVolumeMarks(Input))
+            Input.Environment.SetCompileArgument(TEXT("WebLumenVolumeMarkVersion"), int32(1));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -577,6 +585,19 @@ class FWebGPUShaderFormat final : public IShaderFormat
         {
             // View's installed native metadata declares a texel buffer; Web uses a float4 storage array.
             FString Source(Output.GetSourceView());
+            if (UsesTranslucencyVolumeMarks(Input))
+            {
+                // These generated uniform resources are R8_UINT in both active
+                // and placeholder paths. The radiance indirection remains R32.
+                const FRegexPattern Marks(TEXT("\\bRWTexture3D\\s*<\\s*uint\\s*>\\s+"
+                    "LumenTranslucencyRadianceCacheMarkPass_(?:Inner|Outer)VolumeMarkTexture\\s*;"));
+                FRegexMatcher Match(Marks, Source);
+                TArray<int32> Insertions;
+                while (Match.FindNext()) Insertions.Add(Match.GetMatchBeginning());
+                for (int32 Index = Insertions.Num() - 1; Index >= 0; --Index)
+                    Source.InsertAt(Insertions[Index], TEXT("[[vk::image_format(\"r8ui\")]] [[vk::ext_decorate(25)]] "));
+                Output.EditSource() = FAnsiString(Source);
+            }
             if (Source.Contains(TEXT("FWaterVertexFactoryInstanceInput")))
             {
                 // Keep the water mesh's rejected vertices as NaNs, but construct the payload

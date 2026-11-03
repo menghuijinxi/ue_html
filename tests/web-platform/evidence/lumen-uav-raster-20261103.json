@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-03T11:00:39.587Z",
+  "date": "2026-11-03T11:14:32.234Z",
   "pass": true,
   "completeLumenScene": false,
   "rendererOverrides": [],
@@ -26,6 +26,7 @@
       "width": 9,
       "height": 7,
       "pixelAtomicsAndR8Storage": true,
+      "pixelVolumeR8UInt": true,
       "extentAttachmentBytes": 63,
       "pass": true
     },
@@ -33,6 +34,7 @@
       "width": 13,
       "height": 11,
       "pixelAtomicsAndR8Storage": true,
+      "pixelVolumeR8UInt": true,
       "extentAttachmentBytes": 143,
       "pass": true
     },
@@ -40,10 +42,27 @@
       "width": 5,
       "height": 3,
       "pixelAtomicsAndR8Storage": true,
+      "pixelVolumeR8UInt": true,
       "extentAttachmentBytes": 143,
       "pass": true
     }
   ],
+  "volumeMarks": {
+    "materialShaders": 31,
+    "markBindings": 62,
+    "format": "r8uint",
+    "pixelVolumeReadback": true
+  },
+  "uint16Textures": {
+    "modules": 22,
+    "pipelines": 22,
+    "bindings": {
+      "RWDepthProbeAtlasTexture": 12,
+      "RWStructuredImportanceSampledRayInfosForTracing": 6,
+      "RWRayTraceDistance": 4
+    },
+    "format": "r16uint"
+  },
   "sourceReports": [
     {
       "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-185155\\lumen-shader-results.json",
@@ -54,18 +73,26 @@
       "sha256": "e03cedf2aa5f69ca04300b772ea47cd3270e2749b0729b0c82e462b341cd6d83"
     },
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-uav-raster-v2\\lumen-storage-rhi.json",
-      "sha256": "6ccf032969dee17908cabe6afe9dd7cb1a29270d60c424439fd34ae561dad908"
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-volume-marks-v2\\lumen-storage-rhi.json",
+      "sha256": "c742b15c7dc37c06486dc7efc75cc2b02c04c928a6600474dc79ddd12961106a"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
-      "sha256": "663c9a4e287f2940674d0f70d19c0404a0455d9c3800bacf9844cb84f3a07ef5"
+      "sha256": "ab57fdb4b1649c4418560e86518507bb87719f8d60caacaf504fed0b281a7004"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-volume-marks-cooked-modules-gpu.json",
+      "sha256": "cf0ac77957e5118b92dd3d8982ec9389e720668de423aa9908f9857da190be0c"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-r16-typed-pipelines-gpu.json",
+      "sha256": "d299961fbbc1225d3ce4484731b00050c94f4b024f57e8749639399618a2e4de"
     }
   ],
   "sourceFiles": [
     {
       "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-uav-raster.cjs",
-      "sha256": "3c1c1b75156634c70053000c7595018d973052ea1c5f7a3a19664567e52f5c67"
+      "sha256": "63426fcf3fad26a9720cbfcdcbf3d4538c3ebbe50b2f4869de7b618df878139a"
     },
     {
       "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Lumen\\LumenSceneLighting.usf",
@@ -73,7 +100,7 @@
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\web-lumen-shader-overrides.cjs",
-      "sha256": "5ca30c6ec114c5a5df241e44bc2078b9391407048293a29d179935c5b3cc98e9"
+      "sha256": "adbd1640d67c89ea3340f88d83b17a86831e0d5a89158aeeb13daca900e70df5"
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
@@ -85,13 +112,29 @@
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUAVRasterProbe.h",
-      "sha256": "508d5c0b4f1e608f0490f6995eacfe3f38927b5369368acd7fd9706bb2f19616"
+      "sha256": "eb13b341b10b114fba5337cd4abbf9140bec3672750603306319017cc6897241"
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPULumenStorageProbe.h",
       "sha256": "9b8025788b84bf6220ee7c57832a6bbe55a861191e4f4b530c33ae1689207589"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "190728058bf6b2e060202376189ef583a9a6b9f54240bf180feb22b0749ad210"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Lumen\\LumenRadianceCache.usf",
+      "sha256": "ec7d16fa826b2794d06d063bed04f415da600abb5a6c2dec70101ba7b343be6d"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Lumen\\LumenScreenProbeImportanceSampling.usf",
+      "sha256": "1e98a7028914c24d469be9d662e45ba34b8c467de3b46cc7a4de5f486eefefe5"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Lumen\\LumenReflections.usf",
+      "sha256": "0de473dcb85a39c0b6f0fb635451c8b5ccf278930a404ab2534f2a4bc21a7c6a"
     }
   ],
-  "memoryBoundary": "One reusable single-sample R8 extent attachment grows to maximum UAV-only raster extent. Logical storage is width * height bytes; no image copy, color writes disabled, contents discarded. Radiosity frame-count texture remains R8. Driver allocation, pass cost and full scene performance remain unmeasured.",
+  "memoryBoundary": "One reusable single-sample R8 extent attachment grows to maximum UAV-only raster extent. Logical storage is width * height bytes; no image copy, color writes disabled, contents discarded. Radiosity frame-count texture remains R8 and volume marks remain R8_UINT, including placeholders. Driver allocation, pass cost and full scene performance remain unmeasured.",
   "boundary": "Real RHI indexed indirect raster atomics, R8 pixel storage writes and readback at three extents; four real UE pixel shader modules. Full villa browser acceptance remains separate."
 }

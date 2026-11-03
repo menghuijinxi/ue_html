@@ -228,6 +228,18 @@ Web RHI 对无附件、无深度/模板测试且仅写 UAV 的光栅管线接受
 
 结果：`build/lumen-probe/20261103-185155/`、`results/lumen-radiosity-copy-modules-gpu.json`、`build/lumen-storage-rhi-uav-raster-v2/lumen-storage-rhi.json`；可重复摘要入口为 `summarize-web-uav-raster.cjs`，证据为 `tests/web-platform/evidence/lumen-uav-raster-20261103.json`。优化原生插件及 `-O2` 线程 WASM 构建通过，`20261103-185732` 别墅按项目设置 Cook 通过。完整浏览器首帧及性能验收继续单独进行。
 
+### 半透明标记和 16 位整数图集
+
+浏览器越过上述两处断言后，在半透明标记 Pass 的 Inner/Outer volume UAV 上发现下一处不匹配：生成的 Uniform Buffer HLSL 使用 `RWTexture3D<uint>`，Vulkan 默认推导成 R32_UINT，而 Renderer 的实际纹理与占位纹理均为 R8_UINT。Web ShaderFormat 仅在该像素 Shader 源文件中，为生成的两个完整资源名注入 R8_UINT、只写属性；Radiance Probe Indirection 保留 R32_UINT，不扩大实际纹理或改变项目设置。缓存键只对相应作业增加版本参数。
+
+`20261103-190503` 完整 Cook 通过，实际重新转换的 31 个材质标记 Shader、共 62 个 volume UAV 均为 R8_UINT write；本轮共 37 个 Shader 模块通过浏览器编译。实际 RHI 回读增加像素着色器写入 4×4×4 R8_UINT volume，覆盖三种光栅尺寸下的写入值和未写区域，连同先前回归全部通过，未发生 GPU 校验错误。结果为 `results/lumen-volume-marks-cooked-modules-gpu.json` 和 `build/lumen-storage-rhi-volume-marks-v2/lumen-storage-rhi.json`。
+
+随后浏览器在 `RWDepthProbeAtlasTexture` 发现 R32_UINT 声明与真实 R16_UINT 纹理不匹配。对照 Renderer 一并补齐 Radiance Cache 深度探针图集、Screen Probe 的重要性采样射线信息及 Reflection 的射线距离三项 R16_UINT 只写声明，均限于 Web。三类 Shader 的 22 个允许排列通过转换、浏览器模块及实际格式计算管线创建，绑定数分别为 12、6、4；没有扩大图集。结果为 `build/lumen-probe/20261103-191049/` 和 `results/lumen-r16-typed-pipelines-gpu.json`，同一 `summarize-web-uav-raster.cjs` 摘要记录以上证据。管线创建不等同于这些 UE Shader 的实际像素结果验收。
+
+H 盘剩余空间不足以继续保留每轮 Cook 和浏览器内容缓存，因此 Cook 增加可选的绝对 `OutputRoot`，浏览器诊断增加 `--profile-root`；默认位置不变，后续新临时产物使用 `D:/ue-html-build-cache`，历史产物、日志继续保留。一次同时进行的 Shader 探针占用了隔离宿主 DLL，导致 `20261103-191049` Cook 准备失败；串行重试的 `20261103-191128` 已完成项目设置 Cook，后续继续 Stage、Package 和完整浏览器验证。
+
+该轮 Stage 和 Package 已通过。浏览器越过上述格式断言并进入第 1 帧，但 Surface Cache 深度采样的布局将 `Lumen.CardCaptureDepthStencilAtlas` 误标成可过滤 Float，被 WebGPU 验证拒绝；尚未达到稳定出帧、画面或性能验收。报告为 `results/project-memory-lumen-20261103-r16.json`，后续继续修复该绑定路径。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

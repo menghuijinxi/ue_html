@@ -15,20 +15,20 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         TArray<TSharedPtr<FJsonValue>> Bindings, Reflected;
         if (Pixel)
         {
-            for (uint32 Index = 0; Index < 2; ++Index)
+            for (uint32 Index = 0; Index < 3; ++Index)
             {
                 auto Binding = MakeShared<FJsonObject>();
-                Binding->SetStringField(TEXT("name"), Index ? TEXT("Mask") : TEXT("Result"));
+                Binding->SetStringField(TEXT("name"), Index == 2 ? TEXT("VolumeMark") : Index ? TEXT("Mask") : TEXT("Result"));
                 Binding->SetNumberField(TEXT("group"), 0);
                 Binding->SetNumberField(TEXT("binding"), Index);
                 Binding->SetNumberField(TEXT("descriptorType"), Index ? 3 : 7);
                 Binding->SetBoolField(TEXT("readOnlyStorage"), false);
                 Binding->SetNumberField(TEXT("storageElementStride"), 4);
                 Binding->SetNumberField(TEXT("storageElementFormat"), PF_R32_UINT);
-                Binding->SetNumberField(TEXT("textureDimension"), 1);
+                Binding->SetNumberField(TEXT("textureDimension"), Index == 2 ? 2 : 1);
                 Binding->SetBoolField(TEXT("textureArrayed"), false);
-                Binding->SetNumberField(TEXT("storageImageFormat"), 15); // SPIR-V R8 UNORM.
-                Binding->SetStringField(TEXT("textureSampleType"), TEXT("float"));
+                Binding->SetNumberField(TEXT("storageImageFormat"), Index == 2 ? 39 : 15);
+                Binding->SetStringField(TEXT("textureSampleType"), Index == 2 ? TEXT("uint") : TEXT("float"));
                 Binding->SetStringField(TEXT("storageTextureAccess"), TEXT("write"));
                 Bindings.Add(MakeShared<FJsonValueObject>(Binding));
                 FWebGPUShaderBinding Entry;
@@ -70,9 +70,11 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
     Init(PS->Data, PS, SF_Pixel,
         "@group(0) @binding(0) var<storage,read_write> Result: array<atomic<u32>>;\n"
         "@group(0) @binding(1) var Mask: texture_storage_2d<r8unorm,write>;\n"
+        "@group(0) @binding(2) var VolumeMark: texture_storage_3d<r8uint,write>;\n"
         "@fragment fn main(@builtin(position) p: vec4f) {\n"
         "atomicAdd(&Result[u32(p.y)*32u+u32(p.x)],1u);\n"
-        "textureStore(Mask,vec2i(p.xy),vec4f(0.5)); }\n", true);
+        "textureStore(Mask,vec2i(p.xy),vec4f(0.5));\n"
+        "textureStore(VolumeMark,vec3i(i32(p.x)%4,i32(p.y)%4,(i32(p.x)/4)%4),vec4u(255)); }\n", true);
     VS->InitResourceTable();
     PS->InitResourceTable();
     auto Blend = RHI.RHICreateBlendState(FBlendStateInitializerRHI(FBlendStateInitializerRHI::FRenderTarget()));
@@ -109,8 +111,13 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
             .SetFlags(ETextureCreateFlags::UAV).SetInitialState(ERHIAccess::UAVGraphics));
         auto MaskUAV = Cmd.CreateUnorderedAccessView(Mask, FRHIViewDesc::CreateTextureUAV()
             .SetDimension(ETextureDimension::Texture2D));
+        auto Volume = Cmd.CreateTexture(FRHITextureCreateDesc::Create3D(TEXT("UAVRasterVolumeMark"), 4, 4, 4, PF_R8_UINT)
+            .SetFlags(ETextureCreateFlags::UAV | ETextureCreateFlags::ShaderResource).SetInitialState(ERHIAccess::UAVGraphics));
+        auto VolumeUAV = Cmd.CreateUnorderedAccessView(Volume, FRHIViewDesc::CreateTextureUAV()
+            .SetDimension(ETextureDimension::Texture3D));
         PS->Data.Resources.Add(0, UAV.GetReference());
         PS->Data.Resources.Add(1, MaskUAV.GetReference());
+        PS->Data.Resources.Add(2, VolumeUAV.GetReference());
         PS->Data.InvalidateGroups(1);
         if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
         FRHIRenderPassInfo Info;
@@ -150,10 +157,31 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
             for (int32 Y = 0; Y < Extent.Y; ++Y)
                 for (int32 X = 0; X < Extent.X; ++X)
                     OK &= FMath::Abs(int32(MaskBytes[Y * 256 + X]) - 128) <= 1;
+        Cmd.Transition(FRHITransitionInfo(Volume, ERHIAccess::UAVGraphics, ERHIAccess::CopySrc));
+        if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        auto VolumeReadback = RHI.CreateBuffer(256 * 4 * 4, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+        Source.texture = static_cast<FWebGPUTexture*>(Volume.GetReference())->Handle;
+        Destination.buffer = VolumeReadback;
+        Destination.layout.rowsPerImage = 4;
+        const WGPUExtent3D VolumeSize{4, 4, 4};
+        wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &VolumeSize);
+        RHI.SubmitCurrent();
+        const auto VolumeBytes = RHI.MapBuffer(VolumeReadback, 256 * 4 * 4);
+        wgpuBufferRelease(VolumeReadback);
+        OK &= VolumeBytes.Num() == 256 * 4 * 4;
+        if (VolumeBytes.Num() == 256 * 4 * 4)
+            for (int32 Z = 0; Z < 4; ++Z)
+                for (int32 Y = 0; Y < 4; ++Y)
+                    for (int32 X = 0; X < 4; ++X)
+                    {
+                        const uint8 Expected = (X + Z * 4) < Extent.X && Y < Extent.Y ? 255 : 0;
+                        OK &= VolumeBytes[Z * 256 * 4 + Y * 256 + X] == Expected;
+                    }
         auto Case = MakeShared<FJsonObject>();
         Case->SetNumberField(TEXT("width"), Extent.X);
         Case->SetNumberField(TEXT("height"), Extent.Y);
         Case->SetBoolField(TEXT("pixelAtomicsAndR8Storage"), true);
+        Case->SetBoolField(TEXT("pixelVolumeR8UInt"), true);
         Case->SetNumberField(TEXT("extentAttachmentBytes"),
             RHI.RasterExtentAttachment->GetDesc().CalcMemorySizeEstimate());
         Case->SetBoolField(TEXT("pass"), OK);

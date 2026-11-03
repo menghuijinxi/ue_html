@@ -13,7 +13,9 @@ const startupSeconds = Number(option('startup-seconds') || 900);
 assert(startupSeconds >= 30 && startupSeconds <= 900);
 const debugPort = Number(option('debug-port') || 0);
 assert(Number.isInteger(debugPort) && (debugPort === 0 || debugPort >= 1024 && debugPort <= 65535));
-const profile = path.join(__dirname, 'build/browser-profiles', 'memory-' + tag);
+const profileRoot = option('profile-root');
+assert(!profileRoot || path.isAbsolute(profileRoot), '--profile-root must be an absolute directory');
+const profile = path.join(profileRoot || path.join(__dirname, 'build/browser-profiles'), 'memory-' + tag);
 const output = path.join(__dirname, 'results', 'project-memory-' + tag);
 const consoleLog = fs.createWriteStream(output + '.log');
 const report = {date: new Date().toISOString(), folder, tag, seconds, samples: [], errors: [],

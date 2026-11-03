@@ -31,6 +31,7 @@ module.exports = new Map([
       '\t\t\t\t\tRWCompactedFeedbackBuffer[WriteOffset].y = PackedFeedback.y;']),
   ]],
   ['Private/Lumen/LumenRadianceCache.usf', [
+    storage('RWTexture2D<uint> RWDepthProbeAtlasTexture;', 'r16ui'),
     branch('groupshared uint4 SharedIdealProbeOffset;', [
       '// Scalar slots keep atomic addresses out of vector components in the SPIR-V reader.',
       'groupshared uint WebSharedIdealProbeOffset[4];']),
@@ -57,6 +58,12 @@ module.exports = new Map([
   ]],
   ['Private/Lumen/LumenSceneLighting.usf', [
     storage('RWTexture2D<UNORM float> RWRadiosityNumFramesAccumulatedAtlas;', 'r8'),
+  ]],
+  ['Private/Lumen/LumenScreenProbeImportanceSampling.usf', [
+    storage('RWTexture2D<uint> RWStructuredImportanceSampledRayInfosForTracing;', 'r16ui'),
+  ]],
+  ['Private/Lumen/LumenReflections.usf', [
+    storage('RWTexture2DArray<uint> RWRayTraceDistance;', 'r16ui'),
   ]],
   ['Private/Lumen/LumenSceneDirectLightingCulling.usf', [
     branch('\t\t\twhile (NumPackedLightSamples < MAX_LIGHT_SAMPLES)', [

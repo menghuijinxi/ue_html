@@ -16,6 +16,7 @@ param(
     [switch]$StopOnShaderError,
     [switch]$ValidateShaderJobCache,
     [ValidateRange(0, 4294967295)][long]$HostProcessorAffinity = 0,
+    [string]$OutputRoot,
     [switch]$SkipBuild
 )
 $ErrorActionPreference = 'Stop'
@@ -66,7 +67,15 @@ if ($Scene -eq 'DefaultTemplate') {
 if ($Scene -eq 'Project') {
     $taskPrefix = if ($taskES31) { "web-project-$ReportId-cook" } else { "web-project-$ReportId-desktop-cook" }
 }
-$taskOutput = Join-Path $PSScriptRoot "build/$taskPrefix/$taskStamp"
+$taskBuildRoot = if ($OutputRoot) {
+    if (-not [IO.Path]::IsPathRooted($OutputRoot)) { throw 'OutputRoot must be an absolute build directory.' }
+    [IO.Path]::GetFullPath($OutputRoot)
+} else { Join-Path $PSScriptRoot 'build' }
+if ($taskBuildRoot.StartsWith([IO.Path]::GetFullPath($Engine).TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar,
+        [StringComparison]::OrdinalIgnoreCase)) {
+    throw 'Cook output must not modify the installed engine directory.'
+}
+$taskOutput = Join-Path $taskBuildRoot "$taskPrefix/$taskStamp"
 $taskLog = Join-Path $taskResults "$taskPrefix-$taskStamp.log"
 $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
