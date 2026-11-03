@@ -1661,7 +1661,7 @@
     "CPU samples include idle and waits. Categories overlap and are not additive.",
     "Native full returns 777003 after completed CSV and normal exit logs. Shutdown stability unresolved.",
     "Native full repeated FPS varies about 6.4%. Fixed view results are not whole-scene guarantees.",
-    "Web currently caps reported cores at 4 and starts 3 UE task workers. The 16 pthread slots are not 16 UE task workers. No core-count A/B in this run."
+    "This run caps reported cores at 4 and starts 3 UE task workers. The toolchain base pool size 16 is overridden by the threaded Target to 28; generated JS has pthreadPoolSize=28. Pool slots are not active UE task workers. No core-count A/B in this run."
   ],
   "pass": true,
   "referenceEngineCommit": "e94c92291"

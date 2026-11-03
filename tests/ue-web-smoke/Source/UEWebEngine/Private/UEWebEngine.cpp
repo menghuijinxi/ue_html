@@ -84,6 +84,7 @@ bool StartupTrace = false;
 // the GPU owner, optionally keeping UE task workers alive.
 int32 ThreadingTest = 0; // 0=normal, 1=serial rendering, 2=no UE worker threads
 bool ThreadingBenchmark = false;
+int32 CoreLimitTest = 0;
 int32 PSOPrecacheConcurrency = 0;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
@@ -1125,6 +1126,7 @@ int32 StartEngine()
         TEXT(" -onethread -norhithread -nosound");
 #endif
     const FString CommandLine = FString(StartupMap()) + ThreadArguments +
+        (CoreLimitTest ? FString::Printf(TEXT(" -corelimit=%d"), CoreLimitTest) : FString()) +
         (ThreadingBenchmark ? TEXT(" -ini:Engine:[SystemSettings]:r.pso.EnableAsyncCacheConsolidation=0") : TEXT("")) +
         (ThreadingTest == 1 ? TEXT(" -norenderthread -norhithread") :
          ThreadingTest == 2 ? TEXT(" -onethread -nothreading -norhithread") : TEXT("")) +
@@ -1295,6 +1297,16 @@ int main(int argc, char** argv)
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=full") == 0) ThreadingBenchmark = true;
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=render-serial") == 0) { ThreadingTest = 1; ThreadingBenchmark = true; }
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=single") == 0) { ThreadingTest = 2; ThreadingBenchmark = true; }
+        constexpr const ANSICHAR* CoreLimitOption = "-corelimit=";
+        if (FCStringAnsi::Strncmp(argv[Index], CoreLimitOption, FCStringAnsi::Strlen(CoreLimitOption)) == 0)
+        {
+            CoreLimitTest = FCStringAnsi::Atoi(argv[Index] + FCStringAnsi::Strlen(CoreLimitOption));
+            if (CoreLimitTest != 4 && CoreLimitTest != 6 && CoreLimitTest != 8)
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED core-limit test must be 4, 6 or 8\n");
+                return 1;
+            }
+        }
         constexpr const ANSICHAR* PrecacheConcurrencyOption = "-WebPSOPrecacheConcurrency=";
         if (FCStringAnsi::Strncmp(argv[Index], PrecacheConcurrencyOption, FCStringAnsi::Strlen(PrecacheConcurrencyOption)) == 0)
         {

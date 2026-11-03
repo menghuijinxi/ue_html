@@ -4,6 +4,8 @@
 
 引擎诊断与两项单线程修复已提交本地参考引擎 `e94c92291`，未推送远端。
 
+后续的 4 / 6 / 8 核实验已完成：53.39 / 51.05 / 48.69 FPS，保留默认 4 核，方法与竞争采样见 [核心数对照](UE58_VILLA_CORE_LIMIT_AB.md)。下文保留原先完整多线程 / 单线程的测量结果。
+
 ## 结果与判断
 
 | 路径 | 引擎单线程 | 合并 Game / Draw / RHI、保留任务线程 | 现有多线程 | 多线程相对单线程 |
@@ -15,7 +17,7 @@
 
 Web 的 full 使用现有独立线程，但启动状态仍为 `parallelCommandRecording=false`、`parallelRHITranslation=false`；它不表示 WebGPU 编码已经可以在多个线程同时完成。历史上 D3D12 并行翻译约 8% 的对照只关了部分并行环节，不能代替这里的完整单线程测试。
 
-本机为 i9-12900K，16 物理核心 / 24 逻辑处理器、RTX 4090。当前 `FWebPlatformMisc::NumberOfCores()` 将核心数限制为 2～4，实际 full / render-serial 均只启动 3 个任务工作线程；Emscripten 预建 16 个 pthread 槽位不等于有 16 个 UE 任务工作线程。这个限制来自移植代码，不能解释为 WebGPU 或浏览器只允许 4 核。本轮测量现有默认值，没有改线程数量；后续应把 4 / 6 / 8 核上限作为独立实验，按实际池容量和竞争情况验证，而非直接解除上限。桌面与 Web 的 full 并不是相同任务线程数量。
+本机为 i9-12900K，16 物理核心 / 24 逻辑处理器、RTX 4090。本轮 `FWebPlatformMisc::NumberOfCores()` 将核心数限制为 2～4，实际 full / render-serial 均只启动 3 个任务工作线程。工具链基础参数为 16 个 pthread 槽位，正式线程 Target 最终覆盖为 28 个（生成 JS 的 `pthreadPoolSize=28`）；预建槽位不等于实际 UE 任务工作线程。这个限制来自移植代码，不能解释为 WebGPU 或浏览器只允许 4 核。本轮测量当时的默认值，没有改线程数量；后续应把 4 / 6 / 8 核上限作为独立实验，按实际池容量和竞争情况验证，而非直接解除上限。桌面与 Web 的 full 并不是相同任务线程数量。
 
 逐次 FPS：Web full 为 52.51 / 52.34，render-serial 为 41.66 / 41.38，single 为 40.28 / 39.96；D3D12 full 为 212.94 / 199.31，single 为 71.66 / 72.31。合并样本后的 1% low 分别为 Web full 27.50、render-serial 26.47、single 25.68 FPS，D3D12 full 162.08、single 58.86 FPS。桌面两次 full 约有 6.4% 波动，不能把小比例差异当作确定收益。
 
