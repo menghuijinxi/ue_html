@@ -11,6 +11,7 @@ param(
     [string]$Project,
     [switch]$UseProjectSettings,
     [switch]$NoDistanceFieldResources,
+    [ValidateRange(0, 4294967295)][long]$HostProcessorAffinity = 0,
     [string]$Report = 'baseline'
 )
 $ErrorActionPreference = 'Stop'
@@ -109,19 +110,28 @@ $taskProcess = Start-Process -FilePath (Join-Path $Engine 'Engine/Binaries/Win64
     -ArgumentList $taskArguments -WindowStyle Hidden -PassThru
 Write-Output "Distance-field comparison PID: $($taskProcess.Id); log: $taskOutput.log"
 $taskMemory = @()
+$taskNextMemorySample = Get-Date
 while (-not $taskProcess.HasExited) {
-    $taskMemory += @{utc = (Get-Date).ToUniversalTime().ToString('o'); values = @(
-        & nvidia-smi --query-gpu=memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits);
-        process = @(Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory |
-            Where-Object { $_.Name -like "pid_$($taskProcess.Id)_*" } |
-            Select-Object Name,DedicatedUsage,SharedUsage,TotalCommitted)}
+    if ($HostProcessorAffinity) {
+        try { $taskProcess.ProcessorAffinity = [IntPtr]$HostProcessorAffinity }
+        catch { if (-not $taskProcess.HasExited) { throw } }
+    }
+    if ((Get-Date) -ge $taskNextMemorySample) {
+        $taskMemory += @{utc = (Get-Date).ToUniversalTime().ToString('o'); values = @(
+            & nvidia-smi --query-gpu=memory.used,memory.total,utilization.gpu --format=csv,noheader,nounits);
+            process = @(Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUProcessMemory |
+                Where-Object { $_.Name -like "pid_$($taskProcess.Id)_*" } |
+                Select-Object Name,DedicatedUsage,SharedUsage,TotalCommitted)}
+        $taskNextMemorySample = (Get-Date).AddSeconds(2)
+    }
     if (((Get-Date) - $taskStarted).TotalSeconds -gt 900) {
         Stop-Process -Id $taskProcess.Id
         throw "Distance-field comparison timed out: $taskOutput.log"
     }
-    $taskProcess.WaitForExit(2000) | Out-Null
+    $taskProcess.WaitForExit(250) | Out-Null
 }
 @{started = $taskStarted.ToUniversalTime().ToString('o'); exitCode = $taskProcess.ExitCode;
+    hostProcessorAffinity = $HostProcessorAffinity;
     gpu = $taskMemory; note = 'values is whole-adapter usage; process is this native editor only.'} |
     ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskOutput-system.json" -Encoding utf8
 if ($taskProcess.ExitCode -ne 0) { throw "Distance-field comparison failed: $taskOutput.log" }

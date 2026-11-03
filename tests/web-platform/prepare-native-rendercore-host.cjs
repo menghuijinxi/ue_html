@@ -82,6 +82,7 @@ try {
     'Private/Lumen/LumenScreenProbeGather.cpp',
     'Private/Lumen/LumenScreenProbeImportanceSampling.cpp',
     'Private/Lumen/LumenRadiosity.cpp',
+    'Private/StochasticLighting/StochasticLighting.cpp',
     'Private/InstanceCulling/InstanceCullingContext.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);
@@ -147,6 +148,7 @@ try {
       'Source/Runtime/Renderer/Private/ShadowRendering.cpp',
       'Source/Runtime/Renderer/Private/ShadowSetup.cpp',
       'Source/Runtime/Renderer/Private/IESTextureManager.cpp'] : []),
+    ...(renderer ? ['Source/Runtime/Renderer/Private/StochasticLighting/StochasticLighting.cpp'] : []),
   ].map(name => audit(path.join(stock, name)));
   report.sourceFiles = [audit(__filename), audit(path.join(__dirname, 'link-or-copy.cjs')),
     ...overlays.filter(name => !renderer || name.startsWith('Public/')).flatMap(name => [

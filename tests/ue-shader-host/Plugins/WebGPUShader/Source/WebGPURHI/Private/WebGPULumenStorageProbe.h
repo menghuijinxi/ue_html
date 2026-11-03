@@ -15,6 +15,23 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         auto& RHI = *Scope.RHI;
         GRHICommandList.Submit({}, ERHISubmitFlags::FlushRHIThread | ERHISubmitFlags::SubmitToGPU |
             ERHISubmitFlags::EnableBypass);
+        const auto ReadTexture = [&](FRHITexture* Texture) {
+            Cmd.Transition(FRHITransitionInfo(Texture, ERHIAccess::UAVCompute, ERHIAccess::CopySrc));
+            auto Buffer = RHI.CreateBuffer(256, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+            if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+            auto Source = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+            Source.texture = static_cast<FWebGPUTexture*>(Texture)->Handle;
+            auto Destination = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+            Destination.buffer = Buffer;
+            Destination.layout.bytesPerRow = 256;
+            Destination.layout.rowsPerImage = 1;
+            const WGPUExtent3D Extent{1, 1, 1};
+            wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &Extent);
+            RHI.SubmitCurrent();
+            auto Result = RHI.MapBuffer(Buffer, 256);
+            wgpuBufferRelease(Buffer);
+            return Result;
+        };
         TArray<TSharedPtr<FJsonValue>> Cases;
         TArray<TSharedPtr<FJsonValue>> VolumeCases;
         bool Pass = true;
@@ -82,7 +99,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Shader->InitResourceTable();
             auto Pipeline = RHI.RHICreateComputePipelineState(FComputePipelineStateInitializer(Shader));
             for (const auto Format : {PF_FloatR11G11B10, PF_FloatRGBA, PF_A32B32G32R32F,
-                PF_FloatR11G11B10, PF_R16F, PF_R8G8, PF_R8, PF_G16})
+                PF_FloatR11G11B10, PF_R16F, PF_R8G8, PF_R8, PF_G16, PF_A2B10G10R10})
             {
                 auto Lighting = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("LumenStorageLighting"), 1, 1, Format)
                     .SetFlags(ETextureCreateFlags::UAV | ETextureCreateFlags::ShaderResource).SetInitialState(ERHIAccess::UAVCompute));
@@ -109,23 +126,6 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 if (OK) FMemory::Memcpy(Actual, Bytes.GetData(), sizeof(Actual));
                 for (int32 Component = 0; Component < 4; ++Component)
                     OK &= Actual[0][Component] == 123 && Actual[1][Component] == 456;
-                const auto ReadTexture = [&](FRHITexture* Texture) {
-                    Cmd.Transition(FRHITransitionInfo(Texture, ERHIAccess::UAVCompute, ERHIAccess::CopySrc));
-                    auto Buffer = RHI.CreateBuffer(256, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
-                    if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
-                    auto Source = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
-                    Source.texture = static_cast<FWebGPUTexture*>(Texture)->Handle;
-                    auto Destination = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
-                    Destination.buffer = Buffer;
-                    Destination.layout.bytesPerRow = 256;
-                    Destination.layout.rowsPerImage = 1;
-                    const WGPUExtent3D Extent{1, 1, 1};
-                    wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &Extent);
-                    RHI.SubmitCurrent();
-                    auto Result = RHI.MapBuffer(Buffer, 256);
-                    wgpuBufferRelease(Buffer);
-                    return Result;
-                };
                 const auto LightingBytes = ReadTexture(Lighting), MaskBytes = ReadTexture(Mask);
                 TArray<uint8> Expected;
                 const auto Append = [&](const auto& Value) {
@@ -143,6 +143,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 else if (Format == PF_A32B32G32R32F)
                     for (float Value : {0.25f, 0.5f, 1.0f, 0.75f}) Append(Value);
                 else if (Format == PF_G16) Append(uint16(16384));
+                else if (Format == PF_A2B10G10R10) Append(256u | (512u << 10) | (1023u << 20) | (2u << 30));
                 else
                 {
                     Expected.Add(64);
@@ -156,6 +157,14 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                         uint16 ActualUNorm = 0;
                         FMemory::Memcpy(&ActualUNorm, LightingBytes.GetData(), sizeof(ActualUNorm));
                         LightingMatches = FMath::Abs(int32(ActualUNorm) - 16384) <= 1;
+                    }
+                    else if (Format == PF_A2B10G10R10)
+                    {
+                        uint32 ActualPacked = 0;
+                        FMemory::Memcpy(&ActualPacked, LightingBytes.GetData(), sizeof(ActualPacked));
+                        LightingMatches = FMath::Abs(int32(ActualPacked & 1023) - 256) <= 1 &&
+                            FMath::Abs(int32((ActualPacked >> 10) & 1023) - 512) <= 1 &&
+                            ((ActualPacked >> 20) & 1023) == 1023 && (ActualPacked >> 30) == 2;
                     }
                     else
                     {
@@ -186,8 +195,80 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 Cases.Add(MakeShared<FJsonValueObject>(Case));
                 Pass &= OK;
             }
-            Pass &= RHI.ComputePipelinesCreated == 7 &&
-                static_cast<FWebGPUComputePipeline*>(Pipeline.GetReference())->FormatVariants.Num() == 7;
+            Pass &= RHI.ComputePipelinesCreated == 8 &&
+                static_cast<FWebGPUComputePipeline*>(Pipeline.GetReference())->FormatVariants.Num() == 8;
+            Data.Resources.Reset();
+        }
+        {
+            TRefCountPtr<FWebGPUComputeShader> Shader = new FWebGPUComputeShader;
+            auto& Data = Shader->Data;
+            Data.Owner = Shader;
+            Data.Frequency = SF_Compute;
+            Data.Entry = TEXT("main");
+            const char* Source =
+                "@group(0) @binding(0) var Output: texture_storage_2d<rg16uint, write>;"
+                "@compute @workgroup_size(1) fn main() {"
+                "textureStore(Output, vec2i(0), vec4u(1, 32768, 0, 0)); }";
+            auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+            WGSL.code = {Source, WGPU_STRLEN};
+            auto ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+            ModuleDesc.nextInChain = &WGSL.chain;
+            Data.Module = wgpuDeviceCreateShaderModule(RHI.Device, &ModuleDesc);
+            Data.Metadata = MakeShared<FJsonObject>();
+            Data.Metadata->SetNumberField(TEXT("frequency"), SF_Compute);
+            auto Binding = MakeShared<FJsonObject>();
+            Binding->SetStringField(TEXT("name"), TEXT("Output"));
+            Binding->SetNumberField(TEXT("group"), 0);
+            Binding->SetNumberField(TEXT("binding"), 0);
+            Binding->SetNumberField(TEXT("descriptorType"), 3);
+            Binding->SetNumberField(TEXT("storageImageFormat"), 36);
+            Binding->SetStringField(TEXT("storageTextureAccess"), TEXT("write"));
+            Binding->SetNumberField(TEXT("textureDimension"), 1);
+            Binding->SetBoolField(TEXT("textureArrayed"), false);
+            FWebGPUShaderBinding Entry;
+            Entry.Metadata = &Binding.Get();
+            Entry.Name = TEXT("Output");
+            Entry.Descriptor = 3;
+            Entry.RouteInitialized = true;
+            Data.Bindings.Add(Entry);
+            Data.GroupVersions.Init(1, 1);
+            Data.Metadata->SetArrayField(TEXT("spirvBindings"), {MakeShared<FJsonValueObject>(Binding)});
+            auto ReflectedBinding = MakeShared<FJsonObject>();
+            ReflectedBinding->SetNumberField(TEXT("group"), 0);
+            ReflectedBinding->SetNumberField(TEXT("binding"), 0);
+            ReflectedBinding->SetStringField(TEXT("resource_type"), TEXT("ReadWriteStorageTexture"));
+            auto ReflectedEntry = MakeShared<FJsonObject>();
+            ReflectedEntry->SetArrayField(TEXT("bindings"), {MakeShared<FJsonValueObject>(ReflectedBinding)});
+            auto Reflection = MakeShared<FJsonObject>();
+            Reflection->SetArrayField(TEXT("entry_points"), {MakeShared<FJsonValueObject>(ReflectedEntry)});
+            Data.Metadata->SetObjectField(TEXT("reflection"), Reflection);
+            Shader->InitResourceTable();
+            auto Texture = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("LumenUIntHistory"), 1, 1, PF_R16G16_UINT)
+                .SetFlags(ETextureCreateFlags::UAV | ETextureCreateFlags::ShaderResource).SetInitialState(ERHIAccess::UAVCompute));
+            auto UAV = Cmd.CreateUnorderedAccessView(Texture, FRHIViewDesc::CreateTextureUAV()
+                .SetDimension(ETextureDimension::Texture2D));
+            Data.Resources.Add(0, UAV.GetReference());
+            auto Pipeline = RHI.RHICreateComputePipelineState(FComputePipelineStateInitializer(Shader));
+            RHI.RHISetComputePipelineState(Pipeline);
+            RHI.RHIDispatchComputeShader(1, 1, 1);
+            const auto Bytes = ReadTexture(Texture);
+            const uint16 Expected[] = {1, 32768};
+            bool OK = Bytes.Num() >= sizeof(Expected) &&
+                FMemory::Memcmp(Bytes.GetData(), Expected, sizeof(Expected)) == 0;
+            Cmd.Transition(FRHITransitionInfo(Texture, ERHIAccess::CopySrc, ERHIAccess::UAVCompute));
+            RHI.RHIClearUAVUint(UAV, FUintVector4(0));
+            const auto Cleared = ReadTexture(Texture);
+            bool ClearOK = Cleared.Num() >= sizeof(Expected);
+            for (uint32 Index = 0; Index < sizeof(Expected) && ClearOK; ++Index)
+                ClearOK &= Cleared[Index] == 0;
+            OK &= ClearOK && RHI.ComputePipelinesCreated == 9;
+            auto Case = MakeShared<FJsonObject>();
+            Case->SetNumberField(TEXT("format"), PF_R16G16_UINT);
+            Case->SetBoolField(TEXT("pass"), OK);
+            Case->SetBoolField(TEXT("clearPass"), ClearOK);
+            Case->SetStringField(TEXT("actualBytes"), BytesToHex(Bytes.GetData(), FMath::Min(Bytes.Num(), 4)));
+            Cases.Add(MakeShared<FJsonValueObject>(Case));
+            Pass &= OK;
             Data.Resources.Reset();
         }
         {

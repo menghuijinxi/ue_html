@@ -604,6 +604,38 @@ const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const audit = file => ({file, sha256: sha(fs.readFileSync(file))});
 const normalize = bytes => bytes.toString('utf8').replace(/\r\n/g, '\n').replace(/[ \t\n]*$/, '\n');
 
+overrides.set('Private/StochasticLighting/StochasticLightingTileClassification.usf',
+  [...['RWTexture2D<uint> RWClosureTexture;', 'RWTexture2DArray<uint> RWLumenTileBitmask;',
+    'RWTexture2D<uint> RWMegaLightsTileBitmask;', 'RWTexture2D<uint2> RWEncodedHistoryScreenCoord;',
+    'RWTexture2DArray<uint> RWLumenPackedPixelData;', 'RWTexture2D<uint> RWMegaLightsPackedPixelData;']
+    .map(before => ({before, after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      `[[vk::image_format("${before.includes('uint2') ? 'rg16ui' : 'r8ui'}")]]`,
+      '#endif', before].join('\n')})),
+    {before: 'void DownsampleDepthAndNormal(',
+      after: ['void OutputDownsampledDepthAndNormalData(', '\tuint2 ScreenCoord,',
+        '\tFLumenMaterialData Material,', '\tconst uint2 DownsampleFactor,',
+        '\tRWTexture2D<float> RWDownsampledDepth,', '\tRWTexture2D<UNORM float3> RWDownsampledNormal)',
+        '{', '\tuint2 DownsampledScreenCoord = ScreenCoord / DownsampleFactor;',
+        '\tuint2 Jitter = GetDownsampleJitter(DownsampledScreenCoord, DownsampleFactor);',
+        '\tif (all(Jitter == ScreenCoord % DownsampleFactor) && OutputDownsampledDepthAndNormal > 0)',
+        '\t{', '\t\tRWDownsampledDepth[DownsampledScreenCoord] = Material.IsValid() ? Material.SceneDepth : -1.0f;',
+        '\t\tRWDownsampledNormal[DownsampledScreenCoord] = EncodeNormal(Material.WorldNormalForPositionBias);',
+        '\t}', '}', '', 'void DownsampleDepthAndNormal('].join('\n')},
+    {before: ['\tconst uint2 DownsampleFactor,', '\tRWTexture2D<float> RWDownsampledDepth,',
+      '\tRWTexture2D<UNORM float3> RWDownsampledNormal)', '{', '\tconst uint TileBorder = 1;'].join('\n'),
+      after: '\tconst uint2 DownsampleFactor)\n{\n\tconst uint TileBorder = 1;'},
+    {before: ['\t\tif (OutputDownsampledDepthAndNormal > 0)', '\t\t{',
+      '\t\t\tRWDownsampledDepth[DownsampledScreenCoord] = Material.IsValid() ? Material.SceneDepth : -1.0f;',
+      '\t\t\tRWDownsampledNormal[DownsampledScreenCoord] = EncodeNormal(Material.WorldNormalForPositionBias);',
+      '\t\t}', ''].join('\n') + '\n', after: ''},
+    ...['2', '1'].map(y => ({
+      before: `\t\tDownsampleDepthAndNormal(GroupId, GroupThreadId, Coord.SvPosition, Material, uint2(2, ${y}), RWDownsampledSceneDepth2x${y}, RWDownsampledWorldNormal2x${y});`,
+      after: [...(y === '1' ? ['\t\t#if !COMPILER_WEBGPU || STOCHASTIC_SAMPLE_OFFSET != (STOCHASTIC_SAMPLE_OFFSET_2x1 | STOCHASTIC_SAMPLE_OFFSET_2x2)'] : []),
+        `\t\tOutputDownsampledDepthAndNormalData(Coord.SvPosition, Material, uint2(2, ${y}), RWDownsampledSceneDepth2x${y}, RWDownsampledWorldNormal2x${y});`,
+        ...(y === '1' ? ['\t\t#endif'] : []),
+        `\t\tDownsampleDepthAndNormal(GroupId, GroupThreadId, Coord.SvPosition, Material, uint2(2, ${y}));`].join('\n'),
+    }))]);
+
 function prepare() {
   const overrideFiles = [];
   for (const [relative, replacements] of overrides) {

@@ -170,7 +170,7 @@ FString String(WGPUStringView Value)
 bool IsUnsignedTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8_UINT || Value == PF_R8_UINT || Value == PF_R32_UINT || Value == PF_R16_UINT ||
-        Value == PF_R32G32_UINT || Value == PF_R32G32B32A32_UINT;
+        Value == PF_R16G16_UINT || Value == PF_R32G32_UINT || Value == PF_R32G32B32A32_UINT;
 }
 bool IsBCTextureFormat(EPixelFormat Value)
 {
@@ -206,6 +206,7 @@ uint32 StorageImageFormat(EPixelFormat Value)
     case PF_FloatR11G11B10: return 8;
     case PF_R16F: return 9;
     case PF_A16B16G16R16: return 10;
+    case PF_A2B10G10R10: return 11;
     case PF_G16R16: return 12;
     case PF_R8G8: return 13;
     case PF_G16: return 14;
@@ -215,6 +216,7 @@ uint32 StorageImageFormat(EPixelFormat Value)
     case PF_R32G32B32A32_UINT: return 30;
     case PF_R32_UINT: return 33;
     case PF_R32G32_UINT: return 35;
+    case PF_R16G16_UINT: return 36;
     case PF_R16_UINT: return 38;
     case PF_R8_UINT: return 39;
     default: return 0;
@@ -233,6 +235,7 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = fals
     case 8: return WGPUTextureFormat_RG11B10Ufloat;
     case 9: return WGPUTextureFormat_R16Float;
     case 10: return WGPUTextureFormat_RGBA16Unorm;
+    case 11: return WGPUTextureFormat_RGB10A2Unorm;
     case 12: return WGPUTextureFormat_RG16Unorm;
     case 13: return WGPUTextureFormat_RG8Unorm;
     case 14: return WGPUTextureFormat_R16Unorm;
@@ -241,6 +244,7 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = fals
     case 30: return WGPUTextureFormat_RGBA32Uint;
     case 33: return WGPUTextureFormat_R32Uint;
     case 35: return WGPUTextureFormat_RG32Uint;
+    case 36: return WGPUTextureFormat_RG16Uint;
     case 38: return WGPUTextureFormat_R16Uint;
     case 39: return WGPUTextureFormat_R8Uint;
     default:
@@ -262,6 +266,7 @@ const TCHAR* StorageFormatName(uint32 ImageFormat)
     case 8: return TEXT("rg11b10ufloat");
     case 9: return TEXT("r16float");
     case 10: return TEXT("rgba16unorm");
+    case 11: return TEXT("rgb10a2unorm");
     case 12: return TEXT("rg16unorm");
     case 13: return TEXT("rg8unorm");
     case 14: return TEXT("r16unorm");
@@ -270,6 +275,7 @@ const TCHAR* StorageFormatName(uint32 ImageFormat)
     case 32: return TEXT("rgba8uint");
     case 33: return TEXT("r32uint");
     case 35: return TEXT("rg32uint");
+    case 36: return TEXT("rg16uint");
     case 38: return TEXT("r16uint");
     case 39: return TEXT("r8uint");
     default: checkNoEntry(); return TEXT("");
@@ -349,6 +355,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false, bool AllowUnsupp
         return WGPUTextureFormat_RGBA32Uint;
     case PF_R32G32_UINT:
         return WGPUTextureFormat_RG32Uint;
+    case PF_R16G16_UINT:
+        return WGPUTextureFormat_RG16Uint;
     case PF_R32_UINT:
         return WGPUTextureFormat_R32Uint;
     case PF_R16_UINT:
@@ -1594,7 +1602,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
          (!StorageImageFormat(In.Format) ||
           ((In.Format == PF_R16F || In.Format == PF_G16R16F || In.Format == PF_R16_UINT ||
             In.Format == PF_R8 || In.Format == PF_G8 || In.Format == PF_R8G8 || In.Format == PF_G16 ||
-            In.Format == PF_R8_UINT) &&
+            In.Format == PF_R8_UINT || In.Format == PF_R16G16_UINT || In.Format == PF_A2B10G10R10) &&
            !wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1)))) ||
         (In.InitAction != ERHITextureInitAction::Default && In.InitAction != ERHITextureInitAction::Initializer &&
          In.InitAction != ERHITextureInitAction::BulkData) ||

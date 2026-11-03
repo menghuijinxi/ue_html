@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-03T06:55:27.768Z",
+  "date": "2026-11-03T09:41:27.442Z",
   "stage": "software-lumen-storage-formats",
   "completeLumenScene": false,
   "rendererOverrides": [],
@@ -74,7 +74,7 @@
     ]
   },
   "nativeRHI": {
-    "pipelines": 6,
+    "pipelines": 9,
     "cases": [
       {
         "format": 26,
@@ -83,7 +83,8 @@
         "expectedBytes": "40031C78",
         "mask": 127,
         "bufferFirst": 123,
-        "bufferSecond": 456
+        "bufferSecond": 456,
+        "clearPass": true
       },
       {
         "format": 10,
@@ -92,7 +93,8 @@
         "expectedBytes": "00340038003C003A",
         "mask": 127,
         "bufferFirst": 123,
-        "bufferSecond": 456
+        "bufferSecond": 456,
+        "clearPass": true
       },
       {
         "format": 1,
@@ -101,7 +103,8 @@
         "expectedBytes": "0000803E0000003F0000803F0000403F",
         "mask": 127,
         "bufferFirst": 123,
-        "bufferSecond": 456
+        "bufferSecond": 456,
+        "clearPass": true
       },
       {
         "format": 26,
@@ -110,7 +113,8 @@
         "expectedBytes": "40031C78",
         "mask": 127,
         "bufferFirst": 123,
-        "bufferSecond": 456
+        "bufferSecond": 456,
+        "clearPass": true
       },
       {
         "format": 21,
@@ -119,7 +123,8 @@
         "expectedBytes": "0034",
         "mask": 127,
         "bufferFirst": 123,
-        "bufferSecond": 456
+        "bufferSecond": 456,
+        "clearPass": true
       },
       {
         "format": 40,
@@ -128,7 +133,8 @@
         "expectedBytes": "4080",
         "mask": 127,
         "bufferFirst": 123,
-        "bufferSecond": 456
+        "bufferSecond": 456,
+        "clearPass": true
       },
       {
         "format": 71,
@@ -137,7 +143,41 @@
         "expectedBytes": "40",
         "mask": 127,
         "bufferFirst": 123,
-        "bufferSecond": 456
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 4,
+        "pass": true,
+        "actualBytes": "0040",
+        "expectedBytes": "0040",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 18,
+        "pass": true,
+        "actualBytes": "00FDF7BF",
+        "expectedBytes": "0001F8BF",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 49,
+        "pass": true,
+        "clearPass": true,
+        "actualBytes": "01000080"
+      }
+    ],
+    "volumeCases": [
+      {
+        "format": 57,
+        "checkedTexels": 64,
+        "pass": true
       }
     ],
     "boundary": "Actual RHI with fixed shader/metadata fixture; float bytes exact, UNORM tolerance one quantization unit"
@@ -147,16 +187,16 @@
     "wasmValidated": true,
     "products": [
       {
-        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js",
-        "sha256": "6e4b146e108515f3e947aaef99324af55f18fe05c4d36495883075cc25ad25f9"
+        "sha256": "67fc9508ab4fe3d577f72e68f6ab702ec2fd6a1d32629d20ef25322a7871ba03",
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js"
       },
       {
-        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm",
-        "sha256": "c3bab2654cb9590bedffc997906b26fae9558973f3a47e695a0106cf5bd0a73c"
+        "sha256": "43b94198e3e3af0ccb270c196d48761d471371385bf4b8ace4dd4a95bd72f871",
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
       },
       {
-        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target",
-        "sha256": "8c44bbd404aab40b01e03d43b249a3fe0d83b6d7d4e50b35808f00164e19b0c5"
+        "sha256": "8c44bbd404aab40b01e03d43b249a3fe0d83b6d7d4e50b35808f00164e19b0c5",
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target"
       }
     ]
   },
@@ -171,12 +211,12 @@
       "sha256": "51964367b5d9c0b56cffec68bfada930c8392ebf9bf5118d5f0d536e6eaa1377"
     },
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi\\lumen-storage-rhi.json",
-      "sha256": "c649f02a5d0eea12f5f34f6aa45c8e74fa154f721e8ec9e072040d8fd2735475"
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-rg16-fixed\\lumen-storage-rhi.json",
+      "sha256": "f5cc9d646ff4edf629315cb3974e72f4acd45a44548bbf59fda8f1e08d4e72ae"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
-      "sha256": "22dc5100414e8bacc474e2d9649826be4320afe0479754c9d47c4a697869fa9e"
+      "sha256": "44387562054e3ef9186c94392349ba3d29c263ed9c8cf57a224f8d3516ec4a32"
     }
   ],
   "boundary": "Full Cook/package/browser scene acceptance is recorded separately; this report does not claim it."

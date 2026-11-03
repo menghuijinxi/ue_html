@@ -38,6 +38,7 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenScreenProbeGather.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenScreenProbeGather.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenScreenProbeImportanceSampling.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenScreenProbeImportanceSampling.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenRadiosity.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenRadiosity.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/StochasticLighting/StochasticLighting.cpp') -Destination (Join-Path $taskRendererCopy 'Private/StochasticLighting/StochasticLighting.cpp') -Force
 $taskRenderUtils = Join-Path $taskHost 'Source/Runtime/RenderCore/Private/RenderUtils.cpp'
 if ((Get-Item -LiteralPath (Split-Path $taskRenderUtils)).LinkType -or
     (Get-Item -LiteralPath (Join-Path $taskHost 'Source/Runtime/RenderCore')).LinkType) {
@@ -300,6 +301,7 @@ try {
         'Renderer/Private/Lumen/LumenScreenProbeGather.cpp',
         'Renderer/Private/Lumen/LumenScreenProbeImportanceSampling.cpp',
         'Renderer/Private/Lumen/LumenRadiosity.cpp',
+        'Renderer/Private/StochasticLighting/StochasticLighting.cpp',
         'Renderer/Private/MeshDrawCommands.cpp',
         'Renderer/Private/InstanceCulling/InstanceCullingContext.cpp',
         'Renderer/Private/GlobalDistanceFieldHeightfields.h', 'Renderer/Private/DistanceFieldAmbientOcclusion.cpp',

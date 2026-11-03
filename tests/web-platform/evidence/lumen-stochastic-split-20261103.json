@@ -1,0 +1,408 @@
+{
+  "date": "2026-11-03T09:41:27.106Z",
+  "pass": true,
+  "completeLumenScene": false,
+  "modules": 44,
+  "pipelines": 44,
+  "maxStorageTextures": 7,
+  "rendererOverrides": [],
+  "extraSceneTextureBytes": 0,
+  "cases": [
+    {
+      "permutation": 0,
+      "storageTextures": []
+    },
+    {
+      "permutation": 1,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture"
+      ]
+    },
+    {
+      "permutation": 2,
+      "storageTextures": [
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 3,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 4,
+      "storageTextures": [
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 5,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 6,
+      "storageTextures": [
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 7,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 8,
+      "storageTextures": [
+        "RWLumenTileBitmask"
+      ]
+    },
+    {
+      "permutation": 9,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask"
+      ]
+    },
+    {
+      "permutation": 10,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 11,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 12,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 13,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 14,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 15,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 72,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData"
+      ]
+    },
+    {
+      "permutation": 73,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData"
+      ]
+    },
+    {
+      "permutation": 74,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 75,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 76,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 77,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 78,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 79,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 328,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData"
+      ]
+    },
+    {
+      "permutation": 329,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData"
+      ]
+    },
+    {
+      "permutation": 330,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 331,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 332,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 333,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 334,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 335,
+      "storageTextures": [
+        "RWDepthTexture",
+        "RWNormalTexture",
+        "RWLumenTileBitmask",
+        "RWEncodedHistoryScreenCoord",
+        "RWLumenPackedPixelData",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 512,
+      "storageTextures": []
+    },
+    {
+      "permutation": 514,
+      "storageTextures": [
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 516,
+      "storageTextures": [
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 520,
+      "storageTextures": [
+        "RWLumenTileBitmask"
+      ]
+    },
+    {
+      "permutation": 522,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 524,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 3584,
+      "storageTextures": []
+    },
+    {
+      "permutation": 3586,
+      "storageTextures": [
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 3588,
+      "storageTextures": [
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    },
+    {
+      "permutation": 3592,
+      "storageTextures": [
+        "RWLumenTileBitmask"
+      ]
+    },
+    {
+      "permutation": 3594,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x1",
+        "RWDownsampledWorldNormal2x1"
+      ]
+    },
+    {
+      "permutation": 3596,
+      "storageTextures": [
+        "RWLumenTileBitmask",
+        "RWDownsampledSceneDepth2x2",
+        "RWDownsampledWorldNormal2x2"
+      ]
+    }
+  ],
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-storage-split-v2-gpu.json",
+      "sha256": "0f1950e8f192bebebad29881ad2bd7ed50fbac82ebf62ae2d06cf17db086e973"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-stochastic-split.cjs",
+      "sha256": "83bc16837dec984e27366317499b61f75334ccfd4a3c5578726e864fa5cd67f3"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\StochasticLighting\\StochasticLighting.cpp",
+      "sha256": "5b1bbaf524a2f7fd62d2186bef3a69079695bff6bb61b8127be6ac7f403b1b16"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\StochasticLighting\\StochasticLightingTileClassification.usf",
+      "sha256": "2445646556c40d26f69da91e38f975e3b6c9ad02508df179799305bd4e6f7d30"
+    }
+  ],
+  "boundary": "Actual converted shader bindings and browser compute pipeline creation. Split output pixels, full-scene FPS and peak VRAM require separate execution checks."
+}

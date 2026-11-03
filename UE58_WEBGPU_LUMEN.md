@@ -186,6 +186,18 @@ node tests/web-platform/probe-web-feedback-compaction.cjs <ShaderConversion目�
 
 最小浏览器复现 `probe-web-log-proxy.cjs` 验证后台线程持锁期间执行主 Worker 日志：旧 stdio 路径停在日志入口，直接日志路径正常返回。该测试使用独立小型 WASM，不等同于完整场景验收。测试使用的 SDK 根路径与主构建统一，防止斜杠写法不同触发共享缓存失效。正式场景观察脚本没有 RDG、日志等级或画质覆盖。
 
+越过日志死锁后，正常启动又暴露 StochasticLighting 的 `PF_A2B10G10R10` 历史法线图和 `PF_R16G16_UINT` 历史坐标图缺少 UAV 映射。现在分别使用 `rgb10a2unorm` 和 `rg16uint`，保持每 texel 4 字节，按真实 Tier 1 能力准入。整数 Shader 输出增加 Web 专用的 `r8ui` / `rg16ui` 声明，与原有纹理分配一致。原生 RHI 的 10 项存储格式写入、GPU 清零及回读、9 条专用管线与三维整数纹理回读均已通过：`build/lumen-storage-rhi-rg16-fixed/lumen-storage-rhi.json`。
+
+### 光照预处理绑定上限
+
+实际 Cook 的 `FStochasticLightingTileClassificationMarkCS/79` 和 `/335` 同时绑定 9 张存储纹理，超过当前设备每个计算阶段的 8 张上限。请求更高限制无法解决该设备的限制。
+
+Web 在同时启用 2×1、2×2 降采样时，主 Pass 继续计算两种共享缓存、分类和重投影，只将 2×1 的全局深度、法线输出移到已有的独立 2×1 排列。附加 Pass 使用相同帧索引、材质来源、采样抖动和输出纹理；不增加场景纹理。只启用一种降采样、桌面平台或不要求降采样输出时不增加这个 Pass。
+
+不能只使用恒为假的分支禁用输出：转换结果仍会保留对应纹理声明，计入设备上限。最终将纹理写出与共享缓存填充拆开，在 Web 同时降采样排列中预处理排除 2×1 写出调用。44 个允许排列的转换和浏览器计算管线全部通过，最多 7 个存储纹理；原先 `/79`、`/335` 均为 7 个，独立 `/2` 仅绑定原有的两个 2×1 输出。摘要与重复检查入口为 `tests/web-platform/evidence/lumen-stochastic-split-20261103.json`、`summarize-web-stochastic-split.cjs`。此处验证绑定与管线，不代表已完成场景像素和性能验收。
+
+`20261103-174544` 完整别墅 Cook、Stage 与线程版 Package 已通过，Stage 为 5157 文件、3412426624 字节。该 Cook 实际转换的 38 个计算管线通过浏览器创建检查：`results/lumen-storage-split-cooked-gpu.json`。隔离原生 RenderCore、Renderer 均重新以优化模式编译，线程 WASM 保持 `-O2`；原安装目录输入哈希检查通过。完整浏览器场景继续单独验收。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：
@@ -193,6 +205,7 @@ node tests/web-platform/probe-web-feedback-compaction.cjs <ShaderConversion目�
 - 自适应头 buffer：`ceil(宽/下采样因子) × ceil(高/下采样因子) × 4` 字节，另增加一次清零和一次拷贝 Dispatch。下采样因子为 16 时，1280×720 约 14.1 KiB，1920×1080 约 31.9 KiB。
 - BRDF SH buffer 从 half16 改 float32：额外 `探针图集宽 × 探针图集高 × 9 × 2` 字节，图集包含自适应区域；会增加对应读写带宽。
 - Cards 添加队列保持原始字节布局，没有因标量化再复制一份队列。
+- 同时使用两种降采样时，StochasticLighting 额外执行一次 2×1 计算 Dispatch 和对应材质读取，复用原有输出纹理；实际耗时仍待完整场景测量。
 - 存储格式专用管线不增加纹理尺寸、格式字节数或拷贝 Pass；每个动态格式 Shader 保留一份 WGSL 源码，实际遇到的格式组合各保留一条管线。绑定格式未知时暂不进行该管线的推测预缓存，第一次使用会增加管线编译成本，后续同格式组合复用；CPU/驱动内存及首次卡顿仍待真实场景测量。
 - Radiosity 历史副本增加 `图集宽 × 高 × 原格式字节数` 的临时资源和每次积分前的一次整图拷贝。默认 4096×4096 R11G11B10 为 64 MiB，拷贝读写合计 128 MiB；项目改用其他图集尺寸或格式时按实际值计算。资源池可能保留该内存，不能将 RDG 生命周期结束当作显存立即归还。完整场景的耗时和峰值尚待实测。
 - Surface Cache 的默认压缩模式 1 需要 UAV 格式别名或 framebuffer 压缩能力；Web RHI 尚未提供这两项能力，UE 自动选择未压缩图集。这不改变项目 CVar，也没有手动关掉 Lumen 效果，但会增加显存。在相同 4096² 图集下，Albedo/Normal/Emissive 使用 RGBA8/RG8/R11G11B10，共 160 MiB；支持该压缩路径的桌面端使用 BC7/BC5/BC6H，共 48 MiB，三者差额为 112 MiB。Depth 在两端均为 R16 UNORM、32 MiB。此处是按源码格式计算的资源差额，不能替代进程显存实测。
