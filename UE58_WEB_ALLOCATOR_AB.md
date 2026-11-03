@@ -87,6 +87,33 @@ v46 独立计数窗口约 5.008 秒 / 212 个 RHI 完成帧，包含第三方在
 
 原版 RHI 分配热点涉及 `TArray` 扩容、RHI transition 临时数据、`FWebGPUUniform` 析构/内存释放及块大小查询；Render 涉及 `FRDGBuilder::SetupPassInternals` 等。后续可以针对短生命周期分配减少重建/扩容，但需逐点验证生命周期与跨线程释放，不能直接把临时对象改成共享缓存。
 
+## mimalloc 后剩余差距的归因
+
+用户继续测试 v45，未遇到早期 Stats 断言；这是额外的正面运行反馈，仍不能据此确认间歇失败根因已解决。本节重新分析上轮已保存的 v45 Worker profile，没有启动新性能测试或修改运行时。
+
+**Wasm/JS 交互仍有开销，但现有证据不支持将剩余差距全部归于跨语言调用。** RHI 中 `SetDrawBindings` 包含子调用约 30.43%，`CreateGroups` 约 19.91%，JS 命令回放约 9.60%；这些路径相互包含，不能相加。其中 `CreateGroups` 相同函数名的自身采样合计约 7.70%，不是 19.91% 都消耗在函数自身或纯 Wasm 计算。实现位于项目 WebGPU RHI，涉及资源解析、版本/状态检查、已准备绑定复用、临时描述符、JS 对象/API 调用；不是 D3D12 RHI 原样运行，也不能因名称是 C++ 就全部归给 UE 公共代码。
+
+按采样叶子划分 RHI 时段，各分类互斥：
+
+| 采样叶子 | RHI 采样时长占比 | 解释 |
+|---|---:|---|
+| Wasm 函数 | 46.02% | 包含引擎、Web 后端和平台基础逻辑，不能视为普通 UE 计算独占 |
+| 按名称识别的浏览器 WebGPU API | 14.39% | 如 setVertexBuffer/createBindGroup/writeBuffer，包含前端实现成本 |
+| JS 脚本 | 10.07% | 包含包装、对象表、回放及运行时，不是纯 ABI 成本 |
+| 显式跨语言边界 | 1.16% | 只包含叶子恰好落在边界帧的样本，会漏掉内联转换，不能当成交互总开销 |
+| idle | 25.60% | owner Worker 无任务时段，不代表 GPU 利用率 |
+| 其他/GC | 2.76% | 未可靠细分的叶子及 GC |
+
+`WebGPU.getJsObject` 自身约 1.83%、`growMemViews` 约 1.01%、`bigintToI53Checked` 约 0.48%，说明此前减少桥接调用并未将其消除。另一方面，`CreateGroups`、访问状态校验和 C++ 命令资源表本身仍有计算，不能指望只优化 BigInt 转换就消除其余全部成本。此前独立动态绘制命令流的完整前端已到约 0.605 ms，纯 JS 约 0.550 ms；该模型不覆盖真实场景所有资源绑定与浏览器后台，不能用 0.055 ms 直接代表实景差距。
+
+线程等待也需分别判断：Render 约 69.62% 的叶子落在 futex 等待，其中约 52.11% 是任务队列等工作，约 10.96% 明确位于 `EndFlushResourcesRHI` 的 RHI 完成等待；不能把所有等待都当成锁竞争。RHI 未采到同步代理主线程等待，不支持“每个 draw 都同步代理到页面主线程”的解释。
+
+Game 约 21.64% 的采样位于同步主线程代理路径，`GetDPIScaleFactor` 包含子调用约 16.59%，`RefreshWindowSize` 约 4.45%。源码 `WebApplication.cpp` 的 `BrowserScale/BrowserSize` 在 Worker 模式使用 `MAIN_THREAD_EM_ASM_DOUBLE`，读取 owner Worker 的 `__webBrowserState`；这里的 Emscripten main runtime thread 是引擎 owner Worker，不能误称所有请求都访问 DOM 或浏览器页面 UI 线程。Game pthread 等待 owner 应答，是后续减少同步跨线程查询的具体线索；当前未单独做修改或 A/B，不能承诺帧率或 Low 收益。
+
+当前调查优先级是 Web RHI 的绑定准备/状态检查、平台属性同步查询，以及与 Low 帧时间对齐的线程/浏览器跟踪。最终 Wasm/JS 链接优化后的画面异常仍需解决。这个短 CPU 栈不能覆盖浏览器 GPU 进程、Dawn 后台与真实 GPU 时间，也没有证明 1% Low 是上述任一热点造成。
+
+复现分析：`node tests/web-platform/analyze-web-frame-costs.cjs tests/web-platform/results/villa-mimalloc-no-proxy-v45-cpu-profile-1-workers tests/web-platform/results/new-frame-costs.json`。输出已保存为 [mimalloc-v45-frame-costs-20261103.json](tests/web-platform/evidence/mimalloc-v45-frame-costs-20261103.json)，包含原始采样及分析源码哈希。所有百分比均以各线程自己的采样时段为分母；这些线程窗口不同，不能合并为一帧的成本。
+
 ## 诊断与复现
 
 `analyze-web-allocator.cjs` 从原始所有 Worker CPU profile 中分类调用路径和等待。`web-allocation-probe.cpp` 是显式启用的独立链接诊断：在 libc 边界记录每个 pthread 的调用数、申请字节和包含耗时。使用每线程独立记录，没有共享计数锁；只在启动后的一小段采样中开启。该计时有插桩和时钟开销，且不包含进入 libc 前的 UE 代理锁等待；不能拿来报告正常 FPS。
