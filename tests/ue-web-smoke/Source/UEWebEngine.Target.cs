@@ -29,7 +29,16 @@ public class UEWebEngineTarget : UEWebApplicationTarget
         // Isolate the O2 Wasm optimization from export/JS name minification.
         if (target.Arguments?.HasOption("-WebKeepLinkNames") ?? false)
             AdditionalLinkerArguments += " -g3";
+        // Allocator-only experiment: reuse the same UE objects and Cook.
         string Workspace = Path.GetFullPath(Path.Combine(ProjectFile.Directory.FullName, "../.."));
+        if (target.Arguments?.HasOption("-WebAllocationProbe") ?? false)
+            AdditionalLinkerArguments += " -Wl,--whole-archive,\"" +
+                Path.Combine(Workspace, ".tools/web-allocation-probe/probe.a").Replace('\\', '/') +
+                "\",--no-whole-archive,--wrap=malloc,--wrap=calloc,--wrap=realloc,--wrap=free,--wrap=posix_memalign,--wrap=malloc_usable_size";
+        if (target.Arguments?.HasOption("-WebMimalloc") ?? false)
+            AdditionalLinkerArguments += " -sMALLOC=mimalloc -Wl,--whole-archive,\"" +
+                Path.Combine(Workspace, ".tools/web-mimalloc-ue/libmimalloc-ue-mt.a").Replace('\\', '/') +
+                "\",--no-whole-archive";
         AdditionalLinkerArguments += " --use-port=\"" +
             Path.Combine(Workspace, "reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py")
                 .Replace('\\', '/') + "\"";

@@ -26,6 +26,7 @@ const packageNames=f=>{
 const viewKey = view => ['width','height','outputWidth','outputHeight','antiAliasing','x','y','outputX','outputY'].map(k => view[k]);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 const report = {date: new Date().toISOString(), folder, seconds, warmup, runs: [], pass: false,
+  allocationProbe:process.argv.includes('--allocation-probe'),performanceAccepted:!process.argv.includes('--allocation-probe'),
   coreLimits, bridges, transports, folders,
   source: audit(__filename), qualityOverrides: [], psoPrecache: false,
   packageFiles: packageNames(folder).map(n => audit(path.join(base, n))),
@@ -66,14 +67,31 @@ async function profileBlockedWorker(file, all = false) {
   });
   for(const target of targets){
     const {sessionId}=await cdp.send('Target.attachToTarget',{targetId:target.targetId,flatten:false});
-    await command(sessionId,'Profiler.enable'); await command(sessionId,'Profiler.start'); sessions.push({target,sessionId});
+    // A blocked pthread may not service JS evaluation. Thread identity is
+    // optional metadata; never block CPU capture waiting for it.
+    const thread=process.argv.includes('--allocation-probe')?await Promise.race([
+      command(sessionId,'Runtime.evaluate',{expression:'typeof _pthread_self==="function"?String(_pthread_self()):null',returnByValue:true}),
+      new Promise(resolve=>setTimeout(()=>resolve({}),250))]):{};
+    await command(sessionId,'Profiler.enable'); await command(sessionId,'Profiler.start'); sessions.push({target,sessionId,pthread:thread.result?.value});
   }
+  const allocationProbe=process.argv.includes('--allocation-probe');
+  const owner=sessions.find(x=>x.target.url.includes('web-engine-worker.js'));
   await new Promise(resolve=>setTimeout(resolve,all?5000:1500));
   for(let i=0;i<sessions.length;i++){
     const {target,sessionId}=sessions[i],{profile}=await command(sessionId,'Profiler.stop');
     fs.writeFileSync(all?file.replace('.cpuprofile','-'+i+'.cpuprofile'):file,JSON.stringify(profile));
   }
   if(all)fs.writeFileSync(file.replace('.cpuprofile','-targets.json'),JSON.stringify(sessions,null,2));
+  if(allocationProbe){
+    assert(all&&owner);const enabled=await command(owner.sessionId,'Runtime.evaluate',{expression:'Module._WebAllocationProbeEnable(1);globalThis.__allocationProbeStart={at:performance.now(),frames:__webRHIFrames};true',returnByValue:true});assert(!enabled.exceptionDetails);
+    await new Promise(resolve=>setTimeout(resolve,5000));
+    await command(owner.sessionId,'Runtime.evaluate',{expression:'Module._WebAllocationProbeEnable(0);globalThis.__allocationProbeEnd={at:performance.now(),frames:__webRHIFrames};true'});
+    await new Promise(resolve=>setTimeout(resolve,200));
+    // Custom MEMORY64 exports return a BigInt pointer. UTF8ToString needs a
+    // checked numeric heap offset; SDK signature conversion covers libc only.
+    const snapshot=await command(owner.sessionId,'Runtime.evaluate',{expression:'(()=>{const ptr=Number(Module._WebAllocationProbeSnapshot());if(!Number.isSafeInteger(ptr))throw Error("Invalid probe pointer");return {start:__allocationProbeStart,end:__allocationProbeEnd,data:JSON.parse(UTF8ToString(ptr))};})()',returnByValue:true});assert(!snapshot.exceptionDetails&&snapshot.result.value.data.threads.length);
+    fs.writeFileSync(file.replace('.cpuprofile','-allocations.json'),JSON.stringify({source:audit(path.join(__dirname,'web-allocation-probe.cpp')), ...snapshot.result.value,operations:['malloc','calloc','realloc','free','posix_memalign','malloc_usable_size'],boundary:'Diagnostic-only libc boundary calls, includes third-party allocations. Nested calls not counted twice. Requested bytes are traffic, not live heap size. Timing includes clock/instrumentation overhead, excludes UE proxy lock acquired before libc. Collected after CPU profilers stop; not used for normal FPS.'},null,2));
+  }
   await cdp.detach();
 }
 (async () => {

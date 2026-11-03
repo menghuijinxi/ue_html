@@ -118,3 +118,5 @@ node tests/web-platform/diagnose-final-link-rendering.cjs --tag=final-link-rende
 正式性能测量、构建和其他 GPU 测试按顺序执行。用户后台程序保留，监控记录环境干扰；不通过终止用户程序取得收益。源文件、二进制哈希、像素检查和完整三轮原始值在结果中保留。
 
 汇总及哈希：`tests/web-platform/evidence/rhi-simd-isolation-20261103.json`，由 `summarize-rhi-simd.cjs` 验证生成；完整原始值留于 `tests/web-platform/results/`。本轮交付是隔离构建选项、可复现基准及诊断证据，没有把模型收益冒充正式 UE 优化。
+
+后续分配器实景验证见 [Web 分配器与代理锁对照](UE58_WEB_ALLOCATOR_AB.md)。该轮补齐平台线程安全声明，并将 mimalloc 作为独立实验；最新默认构建和稳定性边界以该文档为准。

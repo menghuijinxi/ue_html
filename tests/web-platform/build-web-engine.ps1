@@ -5,6 +5,8 @@ param(
     [switch]$Threads,
     [switch]$Trace,
     [switch]$Simd,
+    [switch]$Mimalloc,
+    [switch]$AllocationProbe,
     [switch]$StandaloneCompiles,
     [ValidateRange(0, 2)][int]$LinkOptimization = 0,
     [switch]$KeepLinkNames,
@@ -18,6 +20,13 @@ $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/
 if (-not (Test-Path -LiteralPath $taskUbt)) { throw 'Run build-web-ubt.ps1 to prepare the isolated Web UBT first.' }
 if ($Trace -and -not $Threads) { throw 'The Trace diagnostic target requires -Threads.' }
 if ($Simd -and (-not $Threads -or $Trace)) { throw 'SIMD comparison requires Threads without Trace.' }
+if ($Mimalloc -and (-not $Threads -or $Trace -or $Simd)) { throw 'Allocator comparison requires Threads without Trace or SIMD.' }
+if ($AllocationProbe -and (-not $Threads -or $Trace -or $Simd)) { throw 'Allocation probe requires Threads without Trace or SIMD.' }
+if ($AllocationProbe) { & (Join-Path $PSScriptRoot 'build-web-allocation-probe.ps1') }
+if ($Mimalloc) {
+    & (Join-Path $taskRoot '.tools/emsdk/python/3.13.3_64bit/python.exe') (Join-Path $PSScriptRoot 'build-web-mimalloc.py')
+    if ($LASTEXITCODE -ne 0) { throw 'UE-compatible mimalloc preparation failed.' }
+}
 $taskTarget = if ($Simd) { 'UEWebEngineThreadsSIMD' } elseif ($Trace) { 'UEWebEngineThreadsTrace' } elseif ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
 $taskVariant = if ($Simd) { '-thread-simd' } elseif ($Trace) { '-thread-trace' } elseif ($Threads) { '-thread' } else { '' }
 $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
@@ -86,6 +95,8 @@ $taskReport = [ordered]@{
     threads = [bool]$Threads
     trace = [bool]$Trace
     simd = [bool]$Simd
+    allocator = $(if ($Mimalloc) { 'mimalloc' } else { 'default-dlmalloc' })
+    allocationProbe = [bool]$AllocationProbe
     standaloneCompiles = [bool]$StandaloneCompiles
     linkOptimization = $(if ($LinkOptimization -eq 0) { 'default-O0' } else { "O$LinkOptimization" })
     keepLinkNames = [bool]$KeepLinkNames
@@ -113,6 +124,8 @@ try {
         '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
     if ($LinkOptimization -gt 0) { $taskArguments += "-WebLinkOptimization=$LinkOptimization" }
     if ($KeepLinkNames) { $taskArguments += '-WebKeepLinkNames' }
+    if ($Mimalloc) { $taskArguments += '-WebMimalloc' }
+    if ($AllocationProbe) { $taskArguments += '-WebAllocationProbe' }
     if ($StandaloneCompiles) {
         $taskActions = "$taskLog.actions.json"
         & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" *> "$taskLog.export.log"
@@ -162,6 +175,8 @@ try {
         $taskThreadResponse = Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/$taskTarget.js.rsp"
         $taskLinkText = Get-Content -LiteralPath $taskThreadResponse -Raw
         if ($taskLinkText.Contains('-msimd128') -ne [bool]$Simd) { throw 'Unexpected final SIMD flag.' }
+        if ($taskLinkText.Contains('-sMALLOC=mimalloc') -ne [bool]$Mimalloc) { throw 'Unexpected allocator flag.' }
+        if ($taskLinkText.Contains('--wrap=posix_memalign') -ne [bool]$AllocationProbe) { throw 'Unexpected allocator probe flag.' }
         $taskLinkOptimizationFlags = @([regex]::Matches($taskLinkText, '(?<!\S)-O[0-3sz](?=\s|$)') | ForEach-Object { $_.Value })
         if (($LinkOptimization -eq 0 -and $taskLinkOptimizationFlags.Count -ne 0) -or
             ($LinkOptimization -gt 0 -and ($taskLinkOptimizationFlags.Count -ne 1 -or
@@ -214,6 +229,17 @@ try {
     $taskFiles = @($PSCommandPath, (Join-Path $PSScriptRoot 'compile-web-actions.cjs'),
         (Join-Path $PSScriptRoot 'WebEngine.BuildConfiguration.xml'),
         (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1'))
+    $taskFiles += Join-Path $taskRoot 'tests/ue-web-smoke/Source/UEWebEngine.Target.cs'
+    if ($Mimalloc) {
+        $taskFiles += Join-Path $PSScriptRoot 'build-web-mimalloc.py'
+        $taskFiles += Join-Path $taskRoot '.tools/web-mimalloc-ue/build.json'
+        $taskFiles += Join-Path $taskRoot '.tools/web-mimalloc-ue/libmimalloc-ue-mt.a'
+    }
+    if ($AllocationProbe) {
+        $taskFiles += Join-Path $PSScriptRoot 'build-web-allocation-probe.ps1'
+        $taskFiles += Join-Path $PSScriptRoot 'web-allocation-probe.cpp'
+        $taskFiles += Join-Path $taskRoot '.tools/web-allocation-probe/probe.a'
+    }
     $taskFiles += Join-Path $PSScriptRoot 'prepare-web-skinning.cjs'
     $taskFiles += Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs'
     $taskInputHost = Get-Content -LiteralPath (Join-Path $taskResults 'web-enhanced-input-host.json') -Raw | ConvertFrom-Json

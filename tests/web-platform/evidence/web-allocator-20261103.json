@@ -1,0 +1,2982 @@
+{
+  "date": "2026-11-03T10:46:48.450Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-web-allocator.cjs",
+    "sha256": "42158be091927752111af2eafdf9504f888c9b2f8f80a9560f642f7e5930fa2e"
+  },
+  "proxy": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocator-no-proxy-v44-abba.json",
+      "sha256": "226e4760bc2bef9d747c59539d754580fa29cbdaeea63d5bddb10f2a48625a5f"
+    },
+    "capturedSource": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocator-v44-v45-capture-source.cjs",
+      "sha256": "043ba55bcabf7b573dd5aa4bd435672eae8c20ffe5c69ee2ea7e714ddff0893a"
+    },
+    "sourceBoundary": "Only the allocation-probe snapshot pointer conversion changed after capture. Normal FPS branches unchanged; archived source hash verified.",
+    "summary": {
+      "villa-bridge-extras-v38": {
+        "fps": 53.364725916192455,
+        "frameMs": {
+          "count": 2134,
+          "mean": 18.736771321460086,
+          "p50": 20.060000002384186,
+          "p95": 28.09000000357628,
+          "p99": 34.79499998688698,
+          "low1Fps": 24.045029783753144,
+          "over33ms": 29
+        }
+      },
+      "villa-allocator-no-proxy-v44": {
+        "fps": 57.35594346589107,
+        "frameMs": {
+          "count": 2294,
+          "mean": 17.43167175239548,
+          "p50": 18.40999999642372,
+          "p95": 25.96000000834465,
+          "p99": 31.82999999821186,
+          "low1Fps": 24.306216049653614,
+          "over33ms": 15
+        }
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-bridge-extras-v38",
+        "started": "2026-11-03T10:33:27.299Z",
+        "fps": 56.378702944984376,
+        "low1": 31.163165138178847,
+        "rhiWorkMs": 13.43621239594534,
+        "workload": {
+          "sampleFrames": 1140,
+          "drawsPerFrame": 3155.7982456140353,
+          "indirectDrawsPerFrame": 89.83157894736843,
+          "dispatchesPerFrame": 66.52280701754385
+        },
+        "view": {
+          "frame": 915,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 5,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 57,
+              "low": 28.17430503380832,
+              "frameMs": 20.040000000000873,
+              "samples": 278,
+              "seconds": 5,
+              "p99Ms": 29.830000000001746,
+              "maxMs": 42.45000000000073,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 57,
+              "low": 27.806098804184135,
+              "frameMs": 22.719999998807907,
+              "samples": 278,
+              "seconds": 5,
+              "p99Ms": 34.7250000089407,
+              "maxMs": 37.57999999821186,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 259,
+              "low": 111.8375774260171,
+              "frameMs": 4.485000000000582,
+              "samples": 1295,
+              "seconds": 5,
+              "p99Ms": 6.209999999999127,
+              "maxMs": 31.375,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 904,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 25558.375
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 56,
+              "low": 35.29204164461023,
+              "frameMs": 19.864999999997963,
+              "samples": 282,
+              "seconds": 5,
+              "p99Ms": 28.040000000000873,
+              "maxMs": 28.75999999999476,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 56,
+              "low": 36.92989475007093,
+              "frameMs": 24,
+              "samples": 283,
+              "seconds": 5,
+              "p99Ms": 26.049999997019768,
+              "maxMs": 28.655000001192093,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 258,
+              "low": 168.17826896508302,
+              "frameMs": 3.3399999999965075,
+              "samples": 1307,
+              "seconds": 5,
+              "p99Ms": 4.559999999997672,
+              "maxMs": 7.75,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2040,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 45713.7
+          }
+        }
+      },
+      {
+        "folder": "villa-allocator-no-proxy-v44",
+        "started": "2026-11-03T10:34:15.534Z",
+        "fps": 57.29654232597742,
+        "low1": 24.901173466968093,
+        "rhiWorkMs": 13.04288168211241,
+        "workload": {
+          "sampleFrames": 1140,
+          "drawsPerFrame": 3185.7833333333333,
+          "indirectDrawsPerFrame": 93.07368421052631,
+          "dispatchesPerFrame": 66.5421052631579
+        },
+        "view": {
+          "frame": 853,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 50,
+              "low": 26.504108136761506,
+              "frameMs": 23.110000000000582,
+              "samples": 268,
+              "seconds": 5,
+              "p99Ms": 34.55000000000291,
+              "maxMs": 41.80499999999665,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 52,
+              "low": 26.704646611201948,
+              "frameMs": 17.569999992847443,
+              "samples": 269,
+              "seconds": 5,
+              "p99Ms": 34.87999999523163,
+              "maxMs": 40.875,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 255,
+              "low": 135.24057217163102,
+              "frameMs": 4,
+              "samples": 1299,
+              "seconds": 5,
+              "p99Ms": 4.5349999999998545,
+              "maxMs": 26.530000000002474,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 840,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 31393.015
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 61,
+              "low": 27.01729106628221,
+              "frameMs": 21.459999999999127,
+              "samples": 300,
+              "seconds": 5,
+              "p99Ms": 30.69499999999971,
+              "maxMs": 42.05500000000029,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 61,
+              "low": 26.322716508060175,
+              "frameMs": 16.899999991059303,
+              "samples": 300,
+              "seconds": 5,
+              "p99Ms": 30.480000004172325,
+              "maxMs": 45.57999999821186,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 264,
+              "low": 151.39226818060365,
+              "frameMs": 4,
+              "samples": 1302,
+              "seconds": 5,
+              "p99Ms": 4.595000000001164,
+              "maxMs": 11.50499999999738,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1995,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 51542.84
+          }
+        }
+      },
+      {
+        "folder": "villa-allocator-no-proxy-v44",
+        "started": "2026-11-03T10:35:09.529Z",
+        "fps": 57.41536418152157,
+        "low1": 24.24952763847486,
+        "rhiWorkMs": 13.012699504018972,
+        "workload": {
+          "sampleFrames": 1140,
+          "drawsPerFrame": 3188.2570175438595,
+          "indirectDrawsPerFrame": 92.77894736842106,
+          "dispatchesPerFrame": 66.54035087719298
+        },
+        "view": {
+          "frame": 919,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 60,
+              "low": 24.261048886013732,
+              "frameMs": 14.825000000000728,
+              "samples": 294,
+              "seconds": 5,
+              "p99Ms": 33.034999999999854,
+              "maxMs": 57.36999999999898,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 61,
+              "low": 24.51280794107532,
+              "frameMs": 11.11999998986721,
+              "samples": 295,
+              "seconds": 5,
+              "p99Ms": 32.04000000655651,
+              "maxMs": 55.54999999701977,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 266,
+              "low": 135.74441266302617,
+              "frameMs": 3.470000000001164,
+              "samples": 1309,
+              "seconds": 5,
+              "p99Ms": 4.530000000002474,
+              "maxMs": 16.49499999999898,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 913,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30019.035
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 53,
+              "low": 22.37219881427327,
+              "frameMs": 11,
+              "samples": 275,
+              "seconds": 5,
+              "p99Ms": 36.95999999999913,
+              "maxMs": 60.080000000001746,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 53,
+              "low": 22.420686821671307,
+              "frameMs": 27.33499999344349,
+              "samples": 275,
+              "seconds": 5,
+              "p99Ms": 36.375,
+              "maxMs": 61.03999999165535,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 261,
+              "low": 141.23581336695054,
+              "frameMs": 4.004999999997381,
+              "samples": 1316,
+              "seconds": 5,
+              "p99Ms": 4.5350000000034925,
+              "maxMs": 18.014999999999418,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2056,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49933.24
+          }
+        }
+      },
+      {
+        "folder": "villa-bridge-extras-v38",
+        "started": "2026-11-03T10:36:01.982Z",
+        "fps": 50.35245469467856,
+        "low1": 21.440196470487827,
+        "rhiWorkMs": 15.13879308624873,
+        "workload": {
+          "sampleFrames": 990,
+          "drawsPerFrame": 3184.9151515151516,
+          "indirectDrawsPerFrame": 93.12727272727273,
+          "dispatchesPerFrame": 66.54242424242425
+        },
+        "view": {
+          "frame": 822,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 5,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 46,
+              "low": 24.45585717779443,
+              "frameMs": 14.540000000000873,
+              "samples": 256,
+              "seconds": 5,
+              "p99Ms": 38.659999999999854,
+              "maxMs": 44.1150000000016,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 46,
+              "low": 25.44205571668735,
+              "frameMs": 24.609999999403954,
+              "samples": 255,
+              "seconds": 5,
+              "p99Ms": 36.95000000298023,
+              "maxMs": 42.980000004172325,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 261,
+              "low": 120.13558158492796,
+              "frameMs": 3.5099999999983993,
+              "samples": 1312,
+              "seconds": 5,
+              "p99Ms": 4.5349999999998545,
+              "maxMs": 27.549999999999272,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 820,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 31071.14
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 51,
+              "low": 26.83003174887209,
+              "frameMs": 21.955000000001746,
+              "samples": 264,
+              "seconds": 5,
+              "p99Ms": 30.55500000000029,
+              "maxMs": 45.625,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 51,
+              "low": 26.04731929739637,
+              "frameMs": 21.070000007748604,
+              "samples": 264,
+              "seconds": 5,
+              "p99Ms": 34.650000005960464,
+              "maxMs": 45.50499999523163,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 262,
+              "low": 139.89507869100618,
+              "frameMs": 7.029999999998836,
+              "samples": 1311,
+              "seconds": 5,
+              "p99Ms": 4.529999999998836,
+              "maxMs": 26.5199999999968,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1822,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50981.115
+          }
+        }
+      }
+    ]
+  },
+  "mimalloc": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-no-proxy-v45-abba.json",
+      "sha256": "7993ce11a3a227c2c0e7efe496793710f8affcec86761f529cf76048eb87630e"
+    },
+    "capturedSource": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocator-v44-v45-capture-source.cjs",
+      "sha256": "043ba55bcabf7b573dd5aa4bd435672eae8c20ffe5c69ee2ea7e714ddff0893a"
+    },
+    "sourceBoundary": "Only the allocation-probe snapshot pointer conversion changed after capture. Normal FPS branches unchanged; archived source hash verified.",
+    "summary": {
+      "villa-allocator-no-proxy-v44": {
+        "fps": 57.07780379098608,
+        "frameMs": {
+          "count": 2283,
+          "mean": 17.519491896627244,
+          "p50": 18.37000000476837,
+          "p95": 26.49499998986721,
+          "p99": 31.385000005364418,
+          "low1Fps": 26.037981491182062,
+          "over33ms": 12
+        }
+      },
+      "villa-mimalloc-no-proxy-v45": {
+        "fps": 66.80516721598276,
+        "frameMs": {
+          "count": 2671,
+          "mean": 14.969223137402391,
+          "p50": 14.549999997019768,
+          "p95": 20.390000000596046,
+          "p99": 24.939999997615814,
+          "low1Fps": 26.147208787107257,
+          "over33ms": 15
+        }
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-allocator-no-proxy-v44",
+        "started": "2026-11-03T10:37:12.272Z",
+        "fps": 62.01237399206369,
+        "low1": 31.810118064708636,
+        "rhiWorkMs": 11.94427226648323,
+        "workload": {
+          "sampleFrames": 1230,
+          "drawsPerFrame": 3141.2487804878047,
+          "indirectDrawsPerFrame": 87.6390243902439,
+          "dispatchesPerFrame": 66.50975609756098
+        },
+        "view": {
+          "frame": 992,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 14,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 61,
+              "low": 32.299741602068096,
+              "frameMs": 11.525000000001455,
+              "samples": 310,
+              "seconds": 5,
+              "p99Ms": 24.55999999999767,
+              "maxMs": 41.095000000001164,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 62,
+              "low": 35.25937678810691,
+              "frameMs": 11.599999994039536,
+              "samples": 311,
+              "seconds": 5,
+              "p99Ms": 23.070000007748604,
+              "maxMs": 42.650000005960464,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 260,
+              "low": 111.37288498607978,
+              "frameMs": 3.4949999999989814,
+              "samples": 1286,
+              "seconds": 5,
+              "p99Ms": 4.655000000002474,
+              "maxMs": 30.044999999998254,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 979,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 25921.05
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 62,
+              "low": 29.637313377543094,
+              "frameMs": 11.595000000001164,
+              "samples": 311,
+              "seconds": 5,
+              "p99Ms": 24.56999999999971,
+              "maxMs": 54.33499999999913,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 62,
+              "low": 32.18797779137603,
+              "frameMs": 20.04000000655651,
+              "samples": 312,
+              "seconds": 5,
+              "p99Ms": 22.67000000178814,
+              "maxMs": 51.354999989271164,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 260,
+              "low": 110.79860223301634,
+              "frameMs": 4.489999999997963,
+              "samples": 1277,
+              "seconds": 5,
+              "p99Ms": 4.540000000000873,
+              "maxMs": 31.044999999998254,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2229,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 46083.395
+          }
+        }
+      },
+      {
+        "folder": "villa-mimalloc-no-proxy-v45",
+        "started": "2026-11-03T10:38:00.881Z",
+        "fps": 68.99687789127131,
+        "low1": 26.148429694079194,
+        "rhiWorkMs": 10.155481532000113,
+        "workload": {
+          "sampleFrames": 1380,
+          "drawsPerFrame": 3029.128260869565,
+          "indirectDrawsPerFrame": 74.19130434782609,
+          "dispatchesPerFrame": 66.42971014492754
+        },
+        "view": {
+          "frame": 1043,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 68,
+              "low": 32.37424628707951,
+              "frameMs": 12.565000000002328,
+              "samples": 331,
+              "seconds": 5,
+              "p99Ms": 24.18499999999767,
+              "maxMs": 46.75,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 68,
+              "low": 34.74484256243214,
+              "frameMs": 17.259999990463257,
+              "samples": 331,
+              "seconds": 5,
+              "p99Ms": 22.565000012516975,
+              "maxMs": 46.25499999523163,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 258,
+              "low": 119.94279651243028,
+              "frameMs": 4.06000000000131,
+              "samples": 1279,
+              "seconds": 5,
+              "p99Ms": 4.5349999999998545,
+              "maxMs": 24.090000000000146,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1040,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 32005.81
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 59,
+              "low": 30.112545639327184,
+              "frameMs": 23.06500000000233,
+              "samples": 346,
+              "seconds": 5,
+              "p99Ms": 23.06500000000233,
+              "maxMs": 54.12999999999738,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 61,
+              "low": 39.98200810159713,
+              "frameMs": 37.50499999523163,
+              "samples": 348,
+              "seconds": 5,
+              "p99Ms": 22.814999997615814,
+              "maxMs": 27.569999992847443,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 257,
+              "low": 142.26196524743966,
+              "frameMs": 3.5099999999947613,
+              "samples": 1311,
+              "seconds": 5,
+              "p99Ms": 4.525000000001455,
+              "maxMs": 27.56500000000233,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2412,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 51895.505
+          }
+        }
+      },
+      {
+        "folder": "villa-mimalloc-no-proxy-v45",
+        "started": "2026-11-03T10:38:55.341Z",
+        "fps": 64.61455891443927,
+        "low1": 26.159047008493467,
+        "rhiWorkMs": 11.061936501652717,
+        "workload": {
+          "sampleFrames": 1290,
+          "drawsPerFrame": 3045.8976744186048,
+          "indirectDrawsPerFrame": 76.62325581395349,
+          "dispatchesPerFrame": 66.44418604651163
+        },
+        "view": {
+          "frame": 1092,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 72,
+              "low": 35.622050048981194,
+              "frameMs": 15.525000000001455,
+              "samples": 356,
+              "seconds": 5,
+              "p99Ms": 22.539999999997235,
+              "maxMs": 40.18000000000029,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 72,
+              "low": 35.4987575459271,
+              "frameMs": 19.395000010728836,
+              "samples": 357,
+              "seconds": 5,
+              "p99Ms": 23.03499999642372,
+              "maxMs": 40.48999999463558,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 267,
+              "low": 140.26650636207592,
+              "frameMs": 3.5,
+              "samples": 1316,
+              "seconds": 5,
+              "p99Ms": 4.525000000001455,
+              "maxMs": 26.520000000000437,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1074,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30338.22
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 67,
+              "low": 31.127193494417195,
+              "frameMs": 15.529999999998836,
+              "samples": 338,
+              "seconds": 5,
+              "p99Ms": 23.044999999998254,
+              "maxMs": 40.18999999999505,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 68,
+              "low": 31.428010216311044,
+              "frameMs": 10.42000000178814,
+              "samples": 339,
+              "seconds": 5,
+              "p99Ms": 22.885000005364418,
+              "maxMs": 41.125,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 252,
+              "low": 138.3199446720534,
+              "frameMs": 3.5050000000046566,
+              "samples": 1293,
+              "seconds": 5,
+              "p99Ms": 4.529999999998836,
+              "maxMs": 17.330000000001746,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2377,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50499.22
+          }
+        }
+      },
+      {
+        "folder": "villa-allocator-no-proxy-v44",
+        "started": "2026-11-03T10:39:48.334Z",
+        "fps": 52.14540376226712,
+        "low1": 24.36620186248867,
+        "rhiWorkMs": 14.61736338348681,
+        "workload": {
+          "sampleFrames": 1050,
+          "drawsPerFrame": 3236.998095238095,
+          "indirectDrawsPerFrame": 98.48,
+          "dispatchesPerFrame": 66.57428571428571
+        },
+        "view": {
+          "frame": 824,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 52,
+              "low": 25.43019411714896,
+              "frameMs": 23.529999999998836,
+              "samples": 250,
+              "seconds": 5,
+              "p99Ms": 35.544999999998254,
+              "maxMs": 44.63000000000102,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 53,
+              "low": 25.465812148867403,
+              "frameMs": 11.469999998807907,
+              "samples": 250,
+              "seconds": 5,
+              "p99Ms": 36.26000000536442,
+              "maxMs": 45.264999985694885,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 258,
+              "low": 142.62205156334915,
+              "frameMs": 3.5050000000010186,
+              "samples": 1289,
+              "seconds": 5,
+              "p99Ms": 4.540000000000873,
+              "maxMs": 10.68999999999869,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 817,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 31698.89
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 54,
+              "low": 27.782922763473895,
+              "frameMs": 15.529999999998836,
+              "samples": 249,
+              "seconds": 5,
+              "p99Ms": 33.31000000000495,
+              "maxMs": 41.13500000000204,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 54,
+              "low": 27.58240242332138,
+              "frameMs": 18.700000002980232,
+              "samples": 249,
+              "seconds": 5,
+              "p99Ms": 32.79000000655651,
+              "maxMs": 42.75500001013279,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 265,
+              "low": 143.141966157149,
+              "frameMs": 3.5,
+              "samples": 1307,
+              "seconds": 5,
+              "p99Ms": 4.540000000000873,
+              "maxMs": 23.05500000000029,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1855,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 51614.505
+          }
+        }
+      }
+    ]
+  },
+  "contract": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\allocator-contract-v43-final-v2.json",
+      "sha256": "02541e7aa8f2defd7d4b3e506bb03766dba5db3c17275d3b154b76748fae073c"
+    },
+    "preparation": [
+      {
+        "allocator": "dlmalloc",
+        "workers": 1,
+        "mode": "rebuild-stack",
+        "runMediansMs": [
+          0.564992,
+          0.664832
+        ],
+        "meanOfRunMediansMs": 0.614912
+      },
+      {
+        "allocator": "dlmalloc",
+        "workers": 1,
+        "mode": "rebuild-allocation",
+        "runMediansMs": [
+          0.660224,
+          0.654848
+        ],
+        "meanOfRunMediansMs": 0.657536
+      },
+      {
+        "allocator": "dlmalloc",
+        "workers": 2,
+        "mode": "rebuild-stack",
+        "runMediansMs": [
+          0.294912,
+          0.344576
+        ],
+        "meanOfRunMediansMs": 0.31974400000000003
+      },
+      {
+        "allocator": "dlmalloc",
+        "workers": 2,
+        "mode": "rebuild-allocation",
+        "runMediansMs": [
+          0.630272,
+          0.57984
+        ],
+        "meanOfRunMediansMs": 0.605056
+      },
+      {
+        "allocator": "dlmalloc",
+        "workers": 4,
+        "mode": "rebuild-stack",
+        "runMediansMs": [
+          0.179712,
+          0.185088
+        ],
+        "meanOfRunMediansMs": 0.1824
+      },
+      {
+        "allocator": "dlmalloc",
+        "workers": 4,
+        "mode": "rebuild-allocation",
+        "runMediansMs": [
+          1.4103,
+          1.3399
+        ],
+        "meanOfRunMediansMs": 1.3751000000000002
+      },
+      {
+        "allocator": "mimalloc",
+        "workers": 1,
+        "mode": "rebuild-stack",
+        "runMediansMs": [
+          0.574976,
+          0.565248
+        ],
+        "meanOfRunMediansMs": 0.570112
+      },
+      {
+        "allocator": "mimalloc",
+        "workers": 1,
+        "mode": "rebuild-allocation",
+        "runMediansMs": [
+          0.665344,
+          0.639744
+        ],
+        "meanOfRunMediansMs": 0.652544
+      },
+      {
+        "allocator": "mimalloc",
+        "workers": 2,
+        "mode": "rebuild-stack",
+        "runMediansMs": [
+          0.295168,
+          0.290304
+        ],
+        "meanOfRunMediansMs": 0.292736
+      },
+      {
+        "allocator": "mimalloc",
+        "workers": 2,
+        "mode": "rebuild-allocation",
+        "runMediansMs": [
+          0.339968,
+          0.330496
+        ],
+        "meanOfRunMediansMs": 0.335232
+      },
+      {
+        "allocator": "mimalloc",
+        "workers": 4,
+        "mode": "rebuild-stack",
+        "runMediansMs": [
+          0.160256,
+          0.160256
+        ],
+        "meanOfRunMediansMs": 0.160256
+      },
+      {
+        "allocator": "mimalloc",
+        "workers": 4,
+        "mode": "rebuild-allocation",
+        "runMediansMs": [
+          0.185088,
+          0.199936
+        ],
+        "meanOfRunMediansMs": 0.19251200000000002
+      }
+    ],
+    "boundary": "Stock SDK allocator contract and same synthetic CPU preparation only. No UE or GPU. Alternating allocator order; identical source/options except allocator selection. Unlike the UE candidate, stock mimalloc owns global C++ new/delete here. No real UE frame gain inferred."
+  },
+  "builds": {
+    "objectChecks": {
+      "mimallocWithProxyVersusBaseline": 417,
+      "mimallocWithoutProxyVersusDlmalloc": 417,
+      "restoredVersusNoProxy": 417
+    },
+    "audits": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v43-mimalloc-proxy-compile-audit.json",
+        "sha256": "b0b49907adc96ebe01098aaa7ac0b2ed77bad950c5b5185123f87955db0cbe17"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v44-no-proxy-compile-audit.json",
+        "sha256": "2278f2e208402bb5772661593fddba2aab95cc683e1e1cd7a639bc632b71e8c2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v45-mimalloc-no-proxy-compile-audit.json",
+        "sha256": "eb50194e4764e09bc0a1106a1f2cf0719fdadfc4586c397ce2cd079a1f2e6f58"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v46-allocation-probe-compile-audit.json",
+        "sha256": "f7b5c91d0b7fd806af2d1af89d8ff3b97bec0e56cd3c171bdff389e789cf7e85"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v44-default-restored-compile-audit.json",
+        "sha256": "55a73e5b207ac532d423153920a7d019808f54467a1b9cf8193c9a1198b87e90"
+      }
+    ],
+    "restoredProducts": [
+      {
+        "sha256": "6650c36bc29553485462964192ec1dde233266bb1b582c222edb98ce734c17f7",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js"
+      },
+      {
+        "sha256": "48bd7ae0d3e04140ac03f4eaf653bb820efe1ee6c23ea6f16ab977feae564434",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
+      },
+      {
+        "sha256": "6605440813a6c78805b6cd6917c7a994f4462006d9d965185de004ece714a270",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target"
+      }
+    ],
+    "default": "dlmalloc, no UE thread-safety proxy, no diagnostic wrappers"
+  },
+  "views": {
+    "villa-mimalloc-proxy-v43-views-v3": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-proxy-v43-views-v3.json",
+        "sha256": "e9b81c1c9cfc21450a6f94ae62551e37d2052ed8b61b9692a0b0e725c77c4448"
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-proxy-v43-views-v3.png",
+        "sha256": "34b3266c455fc3f06f22c91298063e11094d46c73f2a633a9c1cd4f8c5569db0"
+      },
+      "views": 6,
+      "imageAccepted": true
+    },
+    "villa-allocator-no-proxy-v44-views": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocator-no-proxy-v44-views.json",
+        "sha256": "65212e836c42f482e7a709ac1da9fcf4e727a946b3875605a57d3b35282c4d10"
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocator-no-proxy-v44-views.png",
+        "sha256": "f018af0a17edcf559f3c4a5ab31b8560874d9f26616b1c8692935d26126ab443"
+      },
+      "views": 6,
+      "imageAccepted": true
+    },
+    "villa-mimalloc-no-proxy-v45-views": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-no-proxy-v45-views.json",
+        "sha256": "101340499c0d5e5d1179dd3e92dba3be0bab9bd4f3bd98fd6d20abaf2a670adf"
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-no-proxy-v45-views.png",
+        "sha256": "ff6970223eafaf8024d9fe1e90a07537c98e90db097bcaf16e64e802c1b257e3"
+      },
+      "views": 6,
+      "imageAccepted": true
+    }
+  },
+  "intermittentFailure": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-proxy-v43-views-v2.json",
+      "sha256": "52d9db09dd3829bf046c885b2d1ef569637ab6c5fdb904d7aa77e965e19d3a09"
+    },
+    "log": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-proxy-v43-views-v2.log",
+      "sha256": "7f8a3383e097bbda0d4d183ce8c09a977a44d503786e0eff0c57a48bf2e3c753"
+    },
+    "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!await page.evaluate(()=>globalThis.__webEngineFailure))\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-villa-command-stream.cjs:31:2",
+    "rootCauseConfirmed": false,
+    "mimallocDefaultAccepted": false
+  },
+  "sampling": {
+    "baseline": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocation-baseline-v43-profile-v2-1-workers-allocator-analysis.json",
+      "sha256": "338cc9fa35acb507adc4c6ac448d6dcbba7e5498aeda73dbb86330d00427f4b2"
+    },
+    "after": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocation-probe-v46-profile-1-workers-allocator-analysis.json",
+      "sha256": "d092818036d6e2ab0154306e90ef713e39d7b028f43190ab15eb6c9776abe36b"
+    },
+    "mimalloc": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-mimalloc-no-proxy-v45-cpu-profile-1-workers-allocator-analysis.json",
+      "sha256": "13294b3fa30910deda514180d9f1c740c05f703295b7592e7931a51b1cd1f854"
+    },
+    "baselineThreads": [
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-allocation-baseline-v43-profile-v2-1-workers-2.cpuprofile",
+          "sha256": "859ed28a7afe0bd32c98ca1125d37ae845fcfa0887e6352f1047bbeabd822f38"
+        },
+        "role": "RHI",
+        "durationMs": 7003.537,
+        "categories": {
+          "allocation": {
+            "ms": 961.146,
+            "percent": 13.723722741808889
+          },
+          "allocatorProxy": {
+            "ms": 211.314,
+            "percent": 3.0172468568381947
+          },
+          "allocatorProxyWait": {
+            "ms": 145.688,
+            "percent": 2.0802060444601067
+          },
+          "underlyingAllocatorWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allMutexWait": {
+            "ms": 706.787,
+            "percent": 10.091857871244201
+          },
+          "idle": {
+            "ms": 1437.9,
+            "percent": 20.53105452287894
+          }
+        },
+        "sites": [
+          {
+            "caller": "operator delete(void*, unsigned long)",
+            "ms": 185.24,
+            "percent": 2.644949259210025
+          },
+          {
+            "caller": "SharedPointerInternals::TIntrusiveReferenceController<FWebGPUTransitionData, (ESPMode)1>::DestroyObject()",
+            "ms": 108.947,
+            "percent": 1.5555996919842074
+          },
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+            "ms": 106.441,
+            "percent": 1.5198177720771662
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<FRHITransition const*, int>, bool, FString&) const",
+            "ms": 94.991,
+            "percent": 1.3563289520709323
+          },
+          {
+            "caller": "FWebGPUUniform::~FWebGPUUniform()",
+            "ms": 56.232,
+            "percent": 0.8029085874751571
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::RHISetStaticUniformBuffers(FUniformBufferStaticBindings const&)",
+            "ms": 44.598,
+            "percent": 0.6367925235491724
+          },
+          {
+            "caller": "int TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::FindIndexByHash<TStringView<char16_t>>(unsigned int, TStringView<char16_t> const&) const",
+            "ms": 43.75,
+            "percent": 0.6246843559190163
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::RHIBeginRenderPass(FRHIRenderPassInfo const&, char16_t const*)",
+            "ms": 38.204,
+            "percent": 0.5454957973378308
+          },
+          {
+            "caller": "TArray<TRefCountPtr<FRHIUniformBuffer>, TSizedDefaultAllocator<32>>::SetNum(int, EAllowShrinking)",
+            "ms": 36.639,
+            "percent": 0.523149945520385
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow1_DoAlloc_Tiny<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned short, TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 32.627,
+            "percent": 0.4658646052701656
+          },
+          {
+            "caller": "FSetElementId TSet<TTuple<unsigned int, FWebGPUUniform::FConstantSnapshot>, TDefaultMapHashableKeyFuncs<unsigned int, FWebGPUUniform::FConstantSnapshot, false>, FDefaultSetAllocator>::EmplaceByHash<TKeyInitializer<unsigned int&&>>(unsigned int, TKeyInitializer<unsigned int&&>&&, bool*)",
+            "ms": 30.417,
+            "percent": 0.4343091212340279
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocTo<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 22.688,
+            "percent": 0.323950598104929
+          },
+          {
+            "caller": "FRHIUniformBuffer::~FRHIUniformBuffer()",
+            "ms": 19.696,
+            "percent": 0.28122932740985024
+          },
+          {
+            "caller": "FRHICommandListBase::~FRHICommandListBase()",
+            "ms": 16.919,
+            "percent": 0.241577934121002
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase&, FRHIBuffer*)",
+            "ms": 16.438,
+            "percent": 0.2347099758307838
+          }
+        ]
+      },
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-allocation-baseline-v43-profile-v2-1-workers-17.cpuprofile",
+          "sha256": "1a34d7523cea96bd4d625e59bfaaad97b1fedffa5c0d06ac8d60d3c567143d99"
+        },
+        "role": "Render",
+        "durationMs": 6458.153,
+        "categories": {
+          "allocation": {
+            "ms": 1192.583,
+            "percent": 18.46631691754593
+          },
+          "allocatorProxy": {
+            "ms": 6.153,
+            "percent": 0.09527491838610823
+          },
+          "allocatorProxyWait": {
+            "ms": 3.158,
+            "percent": 0.04889942991440432
+          },
+          "underlyingAllocatorWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allMutexWait": {
+            "ms": 575.592,
+            "percent": 8.912641122005006
+          },
+          "idle": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "sites": [
+          {
+            "caller": "FRDGBuilder::SetupPassInternals(FRDGPass*)",
+            "ms": 569.308,
+            "percent": 8.815337759882741
+          },
+          {
+            "caller": "FSceneRenderer::FinishGatherShadowPrimitives(FDynamicShadowsTaskData*)",
+            "ms": 91.113,
+            "percent": 1.410821329256213
+          },
+          {
+            "caller": "FProjectedShadowInfo::RenderDepth(FRDGBuilder&, FSceneRenderer const*, FRDGTexture*, bool, bool)",
+            "ms": 88.115,
+            "percent": 1.3643993878745209
+          },
+          {
+            "caller": "FString::FString(char16_t const*)",
+            "ms": 72.853,
+            "percent": 1.128077950460449
+          },
+          {
+            "caller": "FInstanceCullingContext::CreateDeferredContext(FRDGBuilder&, FGPUScene const&, FInstanceCullingManager&)",
+            "ms": 43.623,
+            "percent": 0.6754717641406142
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocTo<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 33.561,
+            "percent": 0.5196687040396843
+          },
+          {
+            "caller": "FSceneRenderer::GetLightNameForDrawEvent(FLightSceneProxy const*, FString&)",
+            "ms": 22.511,
+            "percent": 0.34856715224925766
+          },
+          {
+            "caller": "FString::ConcatFF(FString&&, FString&&)",
+            "ms": 16.117,
+            "percent": 0.24956051676075186
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow1_DoAlloc_Tiny<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned short, TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 15.472,
+            "percent": 0.23957314111325637
+          },
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+            "ms": 15.335,
+            "percent": 0.23745179155712165
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocForCopy<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 15.176,
+            "percent": 0.23498978732773906
+          },
+          {
+            "caller": "internal_memalign",
+            "ms": 13.672,
+            "percent": 0.21170139512024566
+          },
+          {
+            "caller": "void UE::Core::Private::AppendCharacters<char16_t>(TArray<char16_t, TSizedDefaultAllocator<32>>&, char16_t const*, int)",
+            "ms": 13.449,
+            "percent": 0.20824839547777824
+          },
+          {
+            "caller": "FRHICommandListExecutor::Submit(TArrayView<FRHICommandListBase* const, int>, ERHISubmitFlags)",
+            "ms": 11.803,
+            "percent": 0.1827612321975029
+          },
+          {
+            "caller": "FRHIResource::GatherResourcesToDelete(TArray<FRHIResource*, TSizedDefaultAllocator<32>>&, bool)",
+            "ms": 11.66,
+            "percent": 0.1805469768213915
+          }
+        ]
+      },
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-allocation-baseline-v43-profile-v2-1-workers-29.cpuprofile",
+          "sha256": "55d68e327ea701807e86578e31f6e27ec6fc204da73da6c14509dd302b5a754c"
+        },
+        "role": "Game",
+        "durationMs": 6035.174,
+        "categories": {
+          "allocation": {
+            "ms": 108.111,
+            "percent": 1.7913485178720614
+          },
+          "allocatorProxy": {
+            "ms": 11.421,
+            "percent": 0.18924060847292887
+          },
+          "allocatorProxyWait": {
+            "ms": 3.099,
+            "percent": 0.05134897519110468
+          },
+          "underlyingAllocatorWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allMutexWait": {
+            "ms": 62.3,
+            "percent": 1.0322817535998132
+          },
+          "idle": {
+            "ms": 4928.214,
+            "percent": 81.65819245642297
+          }
+        },
+        "sites": [
+          {
+            "caller": "TDelegateBase<FNotThreadSafeDelegateMode>::~TDelegateBase()",
+            "ms": 13.78,
+            "percent": 0.22832813105305663
+          },
+          {
+            "caller": "operator delete(void*, unsigned long)",
+            "ms": 8.808,
+            "percent": 0.14594442513173606
+          },
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long)",
+            "ms": 7.641,
+            "percent": 0.12660778297361436
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow1_DoAlloc_Tiny<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned short, TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 7.2,
+            "percent": 0.11930061999869432
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocForCopy<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 6.005,
+            "percent": 0.09950003098502215
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocShrink<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 4.587,
+            "percent": 0.0760044366575015
+          },
+          {
+            "caller": "FSceneRenderer::FSceneRenderer(FSceneViewFamily const*, FHitProxyConsumer*)",
+            "ms": 4.569,
+            "percent": 0.07570618510750478
+          },
+          {
+            "caller": "internal_memalign",
+            "ms": 3.263,
+            "percent": 0.05406637820218605
+          },
+          {
+            "caller": "SViewport::OnPaint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+            "ms": 3.127,
+            "percent": 0.051812922046655156
+          },
+          {
+            "caller": "operator new(unsigned long)",
+            "ms": 3.123,
+            "percent": 0.05174664392443366
+          },
+          {
+            "caller": "FCanvas::Construct()",
+            "ms": 3.11,
+            "percent": 0.0515312400272138
+          },
+          {
+            "caller": "FTaskGraphCompatibilityImplementation::ProcessUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, TFunction<FTaskGraphInterface::EProcessTasksOperation (int)> const&)",
+            "ms": 3.09,
+            "percent": 0.051199849416106315
+          },
+          {
+            "caller": "FWeakWidgetPath::ToWidgetPath(FWidgetPath&, FWeakWidgetPath::EInterruptedPathHandling::Type, FPointerEvent const*, EVisibility) const",
+            "ms": 3.054,
+            "percent": 0.05060334631611284
+          },
+          {
+            "caller": "FSetElementId TSet<TTuple<FName, unsigned long>, TDefaultMapHashableKeyFuncs<FName, unsigned long, false>, FDefaultSetAllocator>::EmplaceByHash<TKeyInitializer<FName&&>>(unsigned int, TKeyInitializer<FName&&>&&, bool*)",
+            "ms": 3.03,
+            "percent": 0.05020567758278386
+          },
+          {
+            "caller": "FCbObject UE::Logging::Private::SerializeBasicLogMessage<char>(UE::Logging::Private::TStaticBasicLogRecord<char> const&, void*)",
+            "ms": 3.014,
+            "percent": 0.04994056509389787
+          }
+        ]
+      }
+    ],
+    "afterThreads": [
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-allocation-probe-v46-profile-1-workers-4.cpuprofile",
+          "sha256": "52e1548ba6b4e0abf67b875ff9d3ec33c63f82308f773faf12960cede0f3f564"
+        },
+        "role": "RHI",
+        "durationMs": 10707.213,
+        "categories": {
+          "allocation": {
+            "ms": 1399.638,
+            "percent": 13.0719170338724
+          },
+          "allocatorProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocatorProxyWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "underlyingAllocatorWait": {
+            "ms": 403.309,
+            "percent": 3.7667038098522934
+          },
+          "allMutexWait": {
+            "ms": 403.309,
+            "percent": 3.7667038098522934
+          },
+          "idle": {
+            "ms": 2451.188,
+            "percent": 22.892866705836525
+          }
+        },
+        "sites": [
+          {
+            "caller": "__wrap_free",
+            "ms": 285.843,
+            "percent": 2.669630276338016
+          },
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+            "ms": 198.098,
+            "percent": 1.850135978428747
+          },
+          {
+            "caller": "internal_memalign",
+            "ms": 136.735,
+            "percent": 1.2770363305558599
+          },
+          {
+            "caller": "operator new(unsigned long)",
+            "ms": 111.412,
+            "percent": 1.040532209455439
+          },
+          {
+            "caller": "FWebGPUUniform::~FWebGPUUniform()",
+            "ms": 82.088,
+            "percent": 0.7666607547641016
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<FRHITransition const*, int>, bool, FString&) const",
+            "ms": 68.137,
+            "percent": 0.6363654108683557
+          },
+          {
+            "caller": "SharedPointerInternals::TIntrusiveReferenceController<FWebGPUTransitionData, (ESPMode)1>::DestroyObject()",
+            "ms": 67.949,
+            "percent": 0.6346095851460133
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow1_DoAlloc_Tiny<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned short, TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 67.309,
+            "percent": 0.6286323060912303
+          },
+          {
+            "caller": "TArray<TRefCountPtr<FRHIUniformBuffer>, TSizedDefaultAllocator<32>>::SetNum(int, EAllowShrinking)",
+            "ms": 52.754,
+            "percent": 0.4926959050875331
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocTo<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 47.524,
+            "percent": 0.44385032781172845
+          },
+          {
+            "caller": "FSetElementId TSet<TTuple<unsigned int, FWebGPUUniform::FConstantSnapshot>, TDefaultMapHashableKeyFuncs<unsigned int, FWebGPUUniform::FConstantSnapshot, false>, FDefaultSetAllocator>::EmplaceByHash<TKeyInitializer<unsigned int&&>>(unsigned int, TKeyInitializer<unsigned int&&>&&, bool*)",
+            "ms": 46.099,
+            "percent": 0.43054154241631315
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::RHISetStaticUniformBuffers(FUniformBufferStaticBindings const&)",
+            "ms": 39.586,
+            "percent": 0.3697133885353733
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::RHIBeginRenderPass(FRHIRenderPassInfo const&, char16_t const*)",
+            "ms": 39.226,
+            "percent": 0.3663511690670579
+          },
+          {
+            "caller": "FRHIUniformBuffer::~FRHIUniformBuffer()",
+            "ms": 24.879,
+            "percent": 0.23235738375616513
+          },
+          {
+            "caller": "FDynamicRHI::RHIUnlockBuffer(FRHICommandListBase&, FRHIBuffer*)::$_0::operator()(FRHICommandListBase&) const",
+            "ms": 14.992,
+            "percent": 0.14001776185829123
+          }
+        ]
+      },
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-allocation-probe-v46-profile-1-workers-17.cpuprofile",
+          "sha256": "64b67ebc25dadddf571f5cf28bbf2a76d5f93017c08c30738a999962257303e1"
+        },
+        "role": "Render",
+        "durationMs": 9310.45,
+        "categories": {
+          "allocation": {
+            "ms": 1434.282,
+            "percent": 15.405077090795826
+          },
+          "allocatorProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocatorProxyWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "underlyingAllocatorWait": {
+            "ms": 377.08,
+            "percent": 4.050072767696513
+          },
+          "allMutexWait": {
+            "ms": 383.366,
+            "percent": 4.117588301317337
+          },
+          "idle": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "sites": [
+          {
+            "caller": "FRDGBuilder::SetupPassInternals(FRDGPass*)",
+            "ms": 630.187,
+            "percent": 6.768598725088476
+          },
+          {
+            "caller": "FString::FString(char16_t const*)",
+            "ms": 87.374,
+            "percent": 0.9384508804622762
+          },
+          {
+            "caller": "FInstanceCullingContext::CreateDeferredContext(FRDGBuilder&, FGPUScene const&, FInstanceCullingManager&)",
+            "ms": 56.661,
+            "percent": 0.6085742364762176
+          },
+          {
+            "caller": "internal_memalign",
+            "ms": 44.071,
+            "percent": 0.4733498380851624
+          },
+          {
+            "caller": "void UE::Core::Private::AppendCharacters<char16_t>(TArray<char16_t, TSizedDefaultAllocator<32>>&, char16_t const*, int)",
+            "ms": 42.157,
+            "percent": 0.45279229253151027
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocTo<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 38.072,
+            "percent": 0.4089168622354451
+          },
+          {
+            "caller": "FRHICommandListExecutor::Submit(TArrayView<FRHICommandListBase* const, int>, ERHISubmitFlags)",
+            "ms": 32.111,
+            "percent": 0.3448920299233657
+          },
+          {
+            "caller": "FRHIResource::GatherResourcesToDelete(TArray<FRHIResource*, TSizedDefaultAllocator<32>>&, bool)",
+            "ms": 31.992,
+            "percent": 0.3436138962133946
+          },
+          {
+            "caller": "FProjectedShadowInfo::RenderDepth(FRDGBuilder&, FSceneRenderer const*, FRDGTexture*, bool, bool)",
+            "ms": 31.701,
+            "percent": 0.3404883759646419
+          },
+          {
+            "caller": "FRDGPass::FRDGPass(FRDGEventName&&, FRDGParameterStruct, ERDGPassFlags, ERDGPassTaskMode)",
+            "ms": 28.374,
+            "percent": 0.30475433518250994
+          },
+          {
+            "caller": "operator new(unsigned long)",
+            "ms": 27.633,
+            "percent": 0.2967955361985726
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocForCopy<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 23.744,
+            "percent": 0.25502526730716557
+          },
+          {
+            "caller": "FString::ConcatFF(FString&&, FString const&)",
+            "ms": 22.383,
+            "percent": 0.24040728428808492
+          },
+          {
+            "caller": "FString::ConstructFromPtrSize(char const*, int)",
+            "ms": 20.988,
+            "percent": 0.22542412020901248
+          },
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+            "ms": 20.286,
+            "percent": 0.21788420538212439
+          }
+        ]
+      },
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-allocation-probe-v46-profile-1-workers-29.cpuprofile",
+          "sha256": "c7644554df4490b2872ae60cffebedbc2b65b0e90aead5133d8d7e13feab0c88"
+        },
+        "role": "Game",
+        "durationMs": 6038.865,
+        "categories": {
+          "allocation": {
+            "ms": 100.467,
+            "percent": 1.6636735545504
+          },
+          "allocatorProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocatorProxyWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "underlyingAllocatorWait": {
+            "ms": 43.249,
+            "percent": 0.7161776260936451
+          },
+          "allMutexWait": {
+            "ms": 44.825,
+            "percent": 0.7422752454310536
+          },
+          "idle": {
+            "ms": 4845.59,
+            "percent": 80.2400782266204
+          }
+        },
+        "sites": [
+          {
+            "caller": "__wrap_free",
+            "ms": 12.208,
+            "percent": 0.20215719344611943
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow1_DoAlloc_Tiny<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned short, TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 10.143,
+            "percent": 0.16796202597673568
+          },
+          {
+            "caller": "TDelegateBase<FNotThreadSafeDelegateMode>::~TDelegateBase()",
+            "ms": 8.828,
+            "percent": 0.14618641085700707
+          },
+          {
+            "caller": "operator new(unsigned long)",
+            "ms": 7.711,
+            "percent": 0.1276895575575874
+          },
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long)",
+            "ms": 7.64,
+            "percent": 0.12651383993515336
+          },
+          {
+            "caller": "FString::PrintfImpl(char16_t const*, ...)",
+            "ms": 6.188,
+            "percent": 0.10246958658622109
+          },
+          {
+            "caller": "operator new(unsigned long, std::align_val_t)",
+            "ms": 4.629,
+            "percent": 0.07665347710207134
+          },
+          {
+            "caller": "internal_memalign",
+            "ms": 3.088,
+            "percent": 0.0511354368743133
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocTo<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 3.049,
+            "percent": 0.05048962015213124
+          },
+          {
+            "caller": "dlposix_memalign",
+            "ms": 3.038,
+            "percent": 0.050307466717669634
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocForCopy<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 3.033,
+            "percent": 0.05022466970200526
+          },
+          {
+            "caller": "FCanvas::Construct()",
+            "ms": 3.006,
+            "percent": 0.04977756581741767
+          },
+          {
+            "caller": "FSlateUser::QueryCursor()",
+            "ms": 2.586,
+            "percent": 0.042822616501610816
+          },
+          {
+            "caller": "ULocalPlayer::GetViewPoint(FMinimalViewInfo&) const",
+            "ms": 1.58,
+            "percent": 0.026163856949940095
+          },
+          {
+            "caller": "FRenderCommandPipeRegistry::StopRecording(TBitArray<TSizedInlineAllocator<1u, 32, TLinearArrayAllocatorBase<FDefaultBlockAllocationTag, (ELinearAllocatorThreadPolicy)0>>> const&)",
+            "ms": 1.564,
+            "percent": 0.02589890649981412
+          }
+        ]
+      }
+    ],
+    "mimallocThreads": [
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-mimalloc-no-proxy-v45-cpu-profile-1-workers-0.cpuprofile",
+          "sha256": "26a42f4ca1d0f1ffb8f75ca008677a58e3b81a37ed20f11493ea00f761e15029"
+        },
+        "role": "RHI",
+        "durationMs": 7037.924,
+        "categories": {
+          "allocation": {
+            "ms": 200.049,
+            "percent": 2.842443311408307
+          },
+          "allocatorProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocatorProxyWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "underlyingAllocatorWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allMutexWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "idle": {
+            "ms": 1801.762,
+            "percent": 25.600759542160446
+          }
+        },
+        "sites": [
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+            "ms": 32.99,
+            "percent": 0.4687461814023567
+          },
+          {
+            "caller": "int TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::FindIndexByHash<TStringView<char16_t>>(unsigned int, TStringView<char16_t> const&) const",
+            "ms": 18.279,
+            "percent": 0.25972147468486445
+          },
+          {
+            "caller": "SharedPointerInternals::TIntrusiveReferenceController<FWebGPUReadbackState, (ESPMode)1>::DestroyObject()",
+            "ms": 18.166,
+            "percent": 0.2581158875827588
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow1_DoAlloc_Tiny<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned short, TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 16.546,
+            "percent": 0.23509773620743846
+          },
+          {
+            "caller": "FWebGPUUniform::~FWebGPUUniform()",
+            "ms": 15.471,
+            "percent": 0.21982334563430922
+          },
+          {
+            "caller": "SharedPointerInternals::TIntrusiveReferenceController<FWebGPUTransitionData, (ESPMode)1>::DestroyObject()",
+            "ms": 13.416,
+            "percent": 0.19062439435265285
+          },
+          {
+            "caller": "operator new(unsigned long)",
+            "ms": 13.382,
+            "percent": 0.19014129734847945
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<FRHITransition const*, int>, bool, FString&) const",
+            "ms": 12.33,
+            "percent": 0.1751937076899381
+          },
+          {
+            "caller": "TArray<TRefCountPtr<FRHIUniformBuffer>, TSizedDefaultAllocator<32>>::SetNum(int, EAllowShrinking)",
+            "ms": 9.185,
+            "percent": 0.13050723480389956
+          },
+          {
+            "caller": "FRHIUniformBuffer::~FRHIUniformBuffer()",
+            "ms": 6.11,
+            "percent": 0.08681537339704151
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 6.028,
+            "percent": 0.08565025709285863
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::RHIBeginRenderPass(FRHIRenderPassInfo const&, char16_t const*)",
+            "ms": 4.519,
+            "percent": 0.06420927534881024
+          },
+          {
+            "caller": "operator delete(void*, unsigned long)",
+            "ms": 3.1,
+            "percent": 0.044047079792279654
+          },
+          {
+            "caller": "FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase&, FRHIBuffer*)",
+            "ms": 3.08,
+            "percent": 0.04376290508394237
+          },
+          {
+            "caller": "FSetElementId TSet<TTuple<unsigned int, FWebGPUUniform::FConstantSnapshot>, TDefaultMapHashableKeyFuncs<unsigned int, FWebGPUUniform::FConstantSnapshot, false>, FDefaultSetAllocator>::EmplaceByHash<TKeyInitializer<unsigned int&&>>(unsigned int, TKeyInitializer<unsigned int&&>&&, bool*)",
+            "ms": 3.04,
+            "percent": 0.043194555667267785
+          }
+        ]
+      },
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-mimalloc-no-proxy-v45-cpu-profile-1-workers-17.cpuprofile",
+          "sha256": "046f69cef4b6ea0a41105402537ad1838f47f79cb1b81ef4d24af8096d462228"
+        },
+        "role": "Render",
+        "durationMs": 6437.696,
+        "categories": {
+          "allocation": {
+            "ms": 196.751,
+            "percent": 3.056233161677718
+          },
+          "allocatorProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocatorProxyWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "underlyingAllocatorWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allMutexWait": {
+            "ms": 9.338,
+            "percent": 0.1450518943423237
+          },
+          "idle": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "sites": [
+          {
+            "caller": "FRDGBuilder::SetupPassInternals(FRDGPass*)",
+            "ms": 93.254,
+            "percent": 1.448561721460597
+          },
+          {
+            "caller": "FString::FString(char16_t const*)",
+            "ms": 10.497,
+            "percent": 0.16305522969708416
+          },
+          {
+            "caller": "FRHICommandListExecutor::Submit(TArrayView<FRHICommandListBase* const, int>, ERHISubmitFlags)",
+            "ms": 9.137,
+            "percent": 0.14192965930668364
+          },
+          {
+            "caller": "TSizedHeapAllocator<32, FMemory>::ForAnyElementType::ResizeAllocation(int, int, unsigned long, unsigned int)",
+            "ms": 7.784,
+            "percent": 0.12091282346976309
+          },
+          {
+            "caller": "FDrawCommandRelevancePacket::AddCommandsForMesh(int, FPrimitiveSceneInfo const*, FStaticMeshBatchRelevance const&, FStaticMeshBatch const&, EMeshDrawCommandCullingPayloadFlags, FScene const&, bool, EMeshPass::Type)",
+            "ms": 7.608,
+            "percent": 0.11817892612512303
+          },
+          {
+            "caller": "FRDGPass::FRDGPass(FRDGEventName&&, FRDGParameterStruct, ERDGPassFlags, ERDGPassTaskMode)",
+            "ms": 6.138,
+            "percent": 0.09534466989432244
+          },
+          {
+            "caller": "FMemStackBase::AllocateNewChunk(int)",
+            "ms": 6.084,
+            "percent": 0.09450586048176242
+          },
+          {
+            "caller": "FSceneRenderer::FinishGatherShadowPrimitives(FDynamicShadowsTaskData*)",
+            "ms": 5.962,
+            "percent": 0.09261077254968236
+          },
+          {
+            "caller": "FInstanceCullingContext::CreateDeferredContext(FRDGBuilder&, FGPUScene const&, FInstanceCullingManager&)",
+            "ms": 4.583,
+            "percent": 0.07119006551412183
+          },
+          {
+            "caller": "void UE::Core::Private::AppendCharacters<char16_t>(TArray<char16_t, TSizedDefaultAllocator<32>>&, char16_t const*, int)",
+            "ms": 4.465,
+            "percent": 0.06935711161260177
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocForCopy<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 3.208,
+            "percent": 0.04983149250912128
+          },
+          {
+            "caller": "FString::ConstructFromPtrSize(char const*, int)",
+            "ms": 3.078,
+            "percent": 0.04781213651592123
+          },
+          {
+            "caller": "posix_memalign",
+            "ms": 3.033,
+            "percent": 0.0471131286721212
+          },
+          {
+            "caller": "FProjectedShadowInfo::RenderDepth(FRDGBuilder&, FSceneRenderer const*, FRDGTexture*, bool, bool)",
+            "ms": 3.031,
+            "percent": 0.0470820616568412
+          },
+          {
+            "caller": "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 3.024,
+            "percent": 0.046973327103361204
+          }
+        ]
+      },
+      {
+        "file": {
+          "file": "tests/web-platform/results/villa-mimalloc-no-proxy-v45-cpu-profile-1-workers-29.cpuprofile",
+          "sha256": "4566606fb6dbee17cbacc154a8e83a4d39d90fee1bba65d8dffa715e469730c2"
+        },
+        "role": "Game",
+        "durationMs": 5971.219,
+        "categories": {
+          "allocation": {
+            "ms": 12.118,
+            "percent": 0.20294013667895955
+          },
+          "allocatorProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocatorProxyWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "underlyingAllocatorWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allMutexWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "idle": {
+            "ms": 3896.242,
+            "percent": 65.25036177705088
+          }
+        },
+        "sites": [
+          {
+            "caller": "operator new(unsigned long)",
+            "ms": 3.066,
+            "percent": 0.05134629964166446
+          },
+          {
+            "caller": "FTSTicker::Tick(float)",
+            "ms": 1.622,
+            "percent": 0.02716363275237435
+          },
+          {
+            "caller": "operator delete(void*, unsigned long)",
+            "ms": 1.529,
+            "percent": 0.02560616182390899
+          },
+          {
+            "caller": "UE::RenderCommandPipe::FCommandList::Enqueue(TVariant<TUniqueFunction<void ()>, TUniqueFunction<void (FRHICommandList&)>, TUniqueFunction<void (FRHICommandListImmediate&)>>&&, FRenderCommandTag const&)",
+            "ms": 1.517,
+            "percent": 0.025405197833139267
+          },
+          {
+            "caller": "FSceneRenderer::FSceneRenderer(FSceneViewFamily const*, FHitProxyConsumer*)",
+            "ms": 1.51,
+            "percent": 0.025287968838523592
+          },
+          {
+            "caller": "void UE::Core::Private::ReallocForCopy<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "ms": 1.505,
+            "percent": 0.025204233842369538
+          },
+          {
+            "caller": "FRenderThreadCommandPipe::EnqueueAndLaunch(TUniqueFunction<void (FRHICommandListImmediate&)>&&, FRenderCommandTag const&)",
+            "ms": 1.369,
+            "percent": 0.022926641946979333
+          }
+        ]
+      }
+    ]
+  },
+  "allocationProbe": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocation-probe-v46-profile-1-workers-allocations.json",
+      "sha256": "f1f8c99941348abac80e9da5cf83be5f670cd11a0d5a72407c91ae308d1b353e"
+    },
+    "frames": 212,
+    "seconds": 5.007864999994635,
+    "threads": [
+      {
+        "pthread": "53599104",
+        "role": "unresolved",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 72,
+            "requestedBytes": 10080,
+            "inclusiveNs": 30024,
+            "callsPerFrame": 0.33962264150943394,
+            "requestedBytesPerFrame": 47.54716981132076,
+            "inclusiveMsPerFrame": 0.00014162264150943395
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 307714,
+            "requestedBytes": 0,
+            "inclusiveNs": 172915443,
+            "callsPerFrame": 1451.4811320754718,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.8156388820754717
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 363038,
+            "requestedBytes": 125661286,
+            "inclusiveNs": 376040878,
+            "callsPerFrame": 1712.4433962264152,
+            "requestedBytesPerFrame": 592741.9150943396,
+            "inclusiveMsPerFrame": 1.7737777264150945
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 335322,
+            "requestedBytes": 0,
+            "inclusiveNs": 76531406,
+            "callsPerFrame": 1581.7075471698113,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.3609971981132076
+          }
+        ]
+      },
+      {
+        "pthread": "48977288",
+        "role": "unresolved",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 264,
+            "requestedBytes": 36960,
+            "inclusiveNs": 254359,
+            "callsPerFrame": 1.2452830188679245,
+            "requestedBytesPerFrame": 174.33962264150944,
+            "inclusiveMsPerFrame": 0.0011998066037735848
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 305764,
+            "requestedBytes": 0,
+            "inclusiveNs": 167071655,
+            "callsPerFrame": 1442.2830188679245,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.7880738443396226
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 388677,
+            "requestedBytes": 193195001,
+            "inclusiveNs": 382106403,
+            "callsPerFrame": 1833.382075471698,
+            "requestedBytesPerFrame": 911297.1745283019,
+            "inclusiveMsPerFrame": 1.8023886933962263
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 346613,
+            "requestedBytes": 0,
+            "inclusiveNs": 76388544,
+            "callsPerFrame": 1634.9669811320755,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.36032332075471696
+          }
+        ]
+      },
+      {
+        "pthread": "51484576",
+        "role": "unresolved",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 82,
+            "requestedBytes": 11480,
+            "inclusiveNs": 50040,
+            "callsPerFrame": 0.3867924528301887,
+            "requestedBytesPerFrame": 54.15094339622642,
+            "inclusiveMsPerFrame": 0.0002360377358490566
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 294273,
+            "requestedBytes": 0,
+            "inclusiveNs": 168755006,
+            "callsPerFrame": 1388.0801886792453,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.7960141792452831
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 362262,
+            "requestedBytes": 127499783,
+            "inclusiveNs": 377001717,
+            "callsPerFrame": 1708.7830188679245,
+            "requestedBytesPerFrame": 601414.070754717,
+            "inclusiveMsPerFrame": 1.7783099858490565
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 322170,
+            "requestedBytes": 0,
+            "inclusiveNs": 72541148,
+            "callsPerFrame": 1519.6698113207547,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.34217522641509435
+          }
+        ]
+      },
+      {
+        "pthread": "258521016",
+        "role": "unresolved",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 430,
+            "requestedBytes": 19496,
+            "inclusiveNs": 185026,
+            "callsPerFrame": 2.0283018867924527,
+            "requestedBytesPerFrame": 91.9622641509434,
+            "inclusiveMsPerFrame": 0.0008727641509433962
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 1061634,
+            "requestedBytes": 0,
+            "inclusiveNs": 338711785,
+            "callsPerFrame": 5007.707547169812,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 1.597697099056604
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 1216663,
+            "requestedBytes": 454806320,
+            "inclusiveNs": 565365012,
+            "callsPerFrame": 5738.976415094339,
+            "requestedBytesPerFrame": 2145312.830188679,
+            "inclusiveMsPerFrame": 2.6668160943396226
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 1506668,
+            "requestedBytes": 0,
+            "inclusiveNs": 302952598,
+            "callsPerFrame": 7106.924528301887,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 1.4290216886792453
+          }
+        ]
+      },
+      {
+        "pthread": "28441480",
+        "role": "RHI",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 1154360,
+            "requestedBytes": 0,
+            "inclusiveNs": 420802444,
+            "callsPerFrame": 5445.094339622641,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 1.9849171886792452
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 784076,
+            "requestedBytes": 272020398,
+            "inclusiveNs": 370797285,
+            "callsPerFrame": 3698.4716981132074,
+            "requestedBytesPerFrame": 1283115.0849056605,
+            "inclusiveMsPerFrame": 1.7490437971698112
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 1187761,
+            "requestedBytes": 0,
+            "inclusiveNs": 248586047,
+            "callsPerFrame": 5602.646226415094,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 1.1725756933962264
+          }
+        ]
+      },
+      {
+        "pthread": "41386096",
+        "role": "Game",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 918,
+            "requestedBytes": 54152,
+            "inclusiveNs": 779940,
+            "callsPerFrame": 4.330188679245283,
+            "requestedBytesPerFrame": 255.43396226415095,
+            "inclusiveMsPerFrame": 0.0036789622641509433
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 44905,
+            "requestedBytes": 0,
+            "inclusiveNs": 24620969,
+            "callsPerFrame": 211.81603773584905,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.11613664622641509
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 55876,
+            "requestedBytes": 29891478,
+            "inclusiveNs": 47281107,
+            "callsPerFrame": 263.5660377358491,
+            "requestedBytesPerFrame": 140997.53773584907,
+            "inclusiveMsPerFrame": 0.2230240896226415
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 45455,
+            "requestedBytes": 0,
+            "inclusiveNs": 10205013,
+            "callsPerFrame": 214.41037735849056,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.048136853773584905
+          }
+        ]
+      },
+      {
+        "pthread": "69554304",
+        "role": "unresolved",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 871,
+            "requestedBytes": 0,
+            "inclusiveNs": 1087279,
+            "callsPerFrame": 4.1084905660377355,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.005128674528301887
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 4,
+            "requestedBytes": 714,
+            "inclusiveNs": 14890,
+            "callsPerFrame": 0.018867924528301886,
+            "requestedBytesPerFrame": 3.3679245283018866,
+            "inclusiveMsPerFrame": 0.00007023584905660377
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 871,
+            "requestedBytes": 0,
+            "inclusiveNs": 268997,
+            "callsPerFrame": 4.1084905660377355,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.0012688537735849057
+          }
+        ]
+      },
+      {
+        "pthread": "260631592",
+        "role": "unresolved",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 167,
+            "requestedBytes": 229952,
+            "inclusiveNs": 309521,
+            "callsPerFrame": 0.7877358490566038,
+            "requestedBytesPerFrame": 1084.6792452830189,
+            "inclusiveMsPerFrame": 0.001460004716981132
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          }
+        ]
+      },
+      {
+        "pthread": "55948208",
+        "role": "unresolved",
+        "operations": [
+          {
+            "name": "malloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "calloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "realloc",
+            "calls": 0,
+            "requestedBytes": 0,
+            "inclusiveNs": 0,
+            "callsPerFrame": 0,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0
+          },
+          {
+            "name": "free",
+            "calls": 120,
+            "requestedBytes": 0,
+            "inclusiveNs": 125712,
+            "callsPerFrame": 0.5660377358490566,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.0005929811320754717
+          },
+          {
+            "name": "posix_memalign",
+            "calls": 240,
+            "requestedBytes": 2855280,
+            "inclusiveNs": 470639,
+            "callsPerFrame": 1.1320754716981132,
+            "requestedBytesPerFrame": 13468.301886792453,
+            "inclusiveMsPerFrame": 0.0022199952830188677
+          },
+          {
+            "name": "malloc_usable_size",
+            "calls": 120,
+            "requestedBytes": 0,
+            "inclusiveNs": 39789,
+            "callsPerFrame": 0.5660377358490566,
+            "requestedBytesPerFrame": 0,
+            "inclusiveMsPerFrame": 0.00018768396226415094
+          }
+        ]
+      }
+    ],
+    "performanceAccepted": false,
+    "boundary": "Diagnostic-only libc boundary calls, includes third-party allocations. Nested calls not counted twice. Requested bytes are traffic, not live heap size. Timing includes clock/instrumentation overhead, excludes UE proxy lock acquired before libc. Collected after CPU profilers stop; not used for normal FPS."
+  },
+  "environment": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-allocator-v43-environment.jsonl",
+      "sha256": "35fe45ece8c2a082f47768301f9502b4df4a2b022caa7e90f74d45bc46413b64"
+    },
+    "measurementSamples": 33,
+    "blockersDuringMeasurements": [],
+    "backgroundCPU": {
+      "TGitCache": 0.9970526127713866,
+      "oopz": 0.19955629057902335,
+      "Aac3572MbHal_x86": 0,
+      "python": 0,
+      "RuntimeBroker": 0,
+      "pwsh": 0,
+      "ChatGPT": 0.19941352084691882,
+      "BackgroundDownload": 0.9954578254880805,
+      "cloudmusic": 0.1990806495420279
+    },
+    "boundary": "User applications retained, including TGitCache and voice software. No claim of exclusive CPU/GPU ownership. Formal runs exclude builds, packaging and profilers."
+  },
+  "boundary": "Synthetic allocation speedup is not the game speedup. CPU profile residence includes waits and misses inlined names. Per-thread percentages are not additive frame costs. Instrumented libc timings include clock overhead and exclude outer UE proxy acquisition. Short scene checks cannot prove long-term allocator stability."
+}

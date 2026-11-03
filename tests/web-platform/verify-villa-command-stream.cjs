@@ -46,5 +46,14 @@ async function captureOwner(){
   performance:globalThis.__webLivePerformance,userAgent:navigator.userAgent}));
  if(process.argv.includes('--profile-owner'))await captureOwner();
  assert.equal(report.errors.length,0);report.pass=true;log.end();
-}catch(error){report.error=error.stack;process.exitCode=1;console.error(error.stack);}
+}catch(error){report.error=error.stack;process.exitCode=1;console.error(error.stack);
+ // Preserve heap size and progress when a candidate fails during startup.
+ try{const owner=pageOwner();report.failureState=await Promise.race([owner.evaluate(()=>({
+  frames:globalThis.__webRHIFrames,threads:globalThis.__webEngineThreads,
+  heapBytes:typeof HEAPU8!=='undefined'?HEAPU8.length:null,memory:globalThis.__webTextureStreaming
+ })),new Promise(resolve=>setTimeout(()=>resolve({unavailable:'Worker did not respond after failure'}),1500))]);}
+ catch(capture){report.failureState={unavailable:capture.message};}
+}
 finally{await context?.close();fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));console.log(JSON.stringify({pass:report.pass,views:report.views.length,errors:report.errors}));}})();
+
+function pageOwner(){const owner=context?.pages()[0]?.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);return owner;}
