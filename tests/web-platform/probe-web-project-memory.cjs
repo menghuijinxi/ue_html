@@ -9,42 +9,70 @@ const folder = option('folder'), tag = option('tag');
 assert(/^[a-z0-9-]+$/.test(folder) && /^[a-z0-9-]+$/.test(tag));
 const seconds = Number(option('seconds') || 90);
 assert(seconds >= 10 && seconds <= 600);
+const startupSeconds = Number(option('startup-seconds') || 900);
+assert(startupSeconds >= 30 && startupSeconds <= 900);
+const debugPort = Number(option('debug-port') || 0);
+assert(Number.isInteger(debugPort) && (debugPort === 0 || debugPort >= 1024 && debugPort <= 65535));
 const profile = path.join(__dirname, 'build/browser-profiles', 'memory-' + tag);
 const output = path.join(__dirname, 'results', 'project-memory-' + tag);
 const consoleLog = fs.createWriteStream(output + '.log');
 const report = {date: new Date().toISOString(), folder, tag, seconds, samples: [], errors: [],
-  settingsOverrides: [], pass: false, width: 1280, height: 720};
-let context, page;
+  settingsOverrides: [],
+  pass: false, width: 1280, height: 720};
+let context, page, startupTimer, rejectStartup;
+const startupFailure = new Promise((_, reject) => { rejectStartup = reject; });
+startupFailure.catch(() => {});
+const recordError = message => {
+  report.errors.push(message);
+  rejectStartup?.(new Error(message));
+};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 (async () => {
   try {
     context = await chromium.launchPersistentContext(profile, {channel: 'msedge',
-      headless: !process.argv.includes('--visible'), viewport: {width: 1280, height: 720}, deviceScaleFactor: 1});
+      headless: !process.argv.includes('--visible'), viewport: {width: 1280, height: 720}, deviceScaleFactor: 1,
+      args: debugPort ? [`--remote-debugging-port=${debugPort}`] : []});
     await context.addInitScript(observe);
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       await route.fulfill({response, body: `(${observe.toString()})();\n` + await response.text()});
     });
     page = context.pages()[0];
-    page.on('pageerror', error => report.errors.push(error.message));
-    page.on('crash', () => report.errors.push('Renderer crashed'));
+    page.on('pageerror', error => recordError(error.message));
+    page.on('crash', () => recordError('Renderer crashed'));
     page.on('console', message => {
       const value = message.text();
       consoleLog.write(value + '\n');
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(value))
-        report.errors.push(value);
+        recordError(value);
       (report.logs ||= []).push(value);
       if (report.logs.length > 50) report.logs.shift();
     });
     const start = Date.now();
     await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
-    await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 60,
-      null, {timeout: 900000});
+    startupTimer = setInterval(async () => {
+      try {
+        report.startupState = await page.evaluate(() => ({
+          frames: globalThis.__webEngineFrames, stages: globalThis.__webThreadStages,
+          precache: globalThis.__webPSOPrecache, rhi: globalThis.__webOptimizationRHI,
+          failure: globalThis.__webEngineFailure}));
+        save();
+        console.log(JSON.stringify({startupMilliseconds: Date.now() - start, ...report.startupState}));
+      } catch {}
+    }, 15000);
+    await Promise.race([startupFailure,
+      page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 60,
+        null, {timeout: startupSeconds * 1000})]);
+    rejectStartup = undefined;
+    clearInterval(startupTimer);
     assert(!await page.evaluate(() => globalThis.__webEngineFailure),
       await page.evaluate(() => String(globalThis.__webEngineFailure)));
     report.startupMilliseconds = Date.now() - start;
     const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js')) || page;
     const snapshot = async label => {
+      const lighting = await page.evaluate(() => typeof __webEngineRPC === 'function' ?
+        __webEngineRPC('WebLightingQualityTest', -1, 0) : Module._WebLightingQualityTest(-1, 0));
+      assert.equal(lighting, 1, 'Final view lighting diagnostics unavailable');
       const state = await owner.evaluate(() => ({memory: __webGPUMemorySnapshot(),
         frame: __webEngineFrames, camera: globalThis.__webDefaultCamera,
         view: globalThis.__webRenderView, streaming: globalThis.__webTextureStreaming,
@@ -75,6 +103,7 @@ const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, nul
     report.pass = true;
   } catch (error) { report.failure = error.stack; process.exitCode = 1; }
   finally {
+    clearInterval(startupTimer);
     save();
     await context?.close();
     consoleLog.end();

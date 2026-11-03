@@ -21,9 +21,9 @@ module.exports = function observeGPUResourceMemory() {
     const compressed = descriptor.format.startsWith('bc');
     const block = compressed ? 4 : 1;
     const bytes = compressed ? (/^bc[14]-/.test(descriptor.format) ? 8 : 16) : ({
-      r8unorm: 1, r8uint: 1, rg8unorm: 2, r16float: 2, r16uint: 2,
-      rg16float: 4, rg16uint: 4, r32float: 4, r32uint: 4, rg32uint: 8,
-      rgba16float: 8, rgba32float: 16, rg11b10ufloat: 4,
+      r8unorm: 1, r8uint: 1, rg8unorm: 2, r16float: 2, r16uint: 2, r16unorm: 2,
+      rg16float: 4, rg16uint: 4, rg16unorm: 4, r32float: 4, r32uint: 4, rg32uint: 8,
+      rgba16float: 8, rgba16unorm: 8, rgba32float: 16, rg11b10ufloat: 4, rgb10a2unorm: 4,
       rgba8uint: 4, rgba8unorm: 4, 'rgba8unorm-srgb': 4,
       bgra8unorm: 4, 'bgra8unorm-srgb': 4, depth32float: 4,
       'depth24plus-stencil8': 8, depth16unorm: 2

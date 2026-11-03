@@ -21,6 +21,10 @@ $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
 & node (Join-Path $PSScriptRoot 'prepare-web-rhi-host.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'RHI cache overlay preparation failed.' }
+$taskMiscOverlay = 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformMisc.cpp'
+$taskCoreCopy = Join-Path $taskHost 'Source/Runtime/Core'
+if ((Get-Item -LiteralPath $taskCoreCopy).LinkType) { throw 'Core overlay must be a local build-host copy.' }
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskMiscOverlay") -Destination (Join-Path $taskHost $taskMiscOverlay) -Force
 # Keep the shadow diagnostic overlay current even in incremental runtime builds.
 # Renderer is a local copy; never write through an installed-engine junction.
 $taskShadowOverlay = 'Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
@@ -244,6 +248,8 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Public/Math/UnrealMathFPU.h'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
+    $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskMiscOverlay"
+    $taskFiles += Join-Path $taskHost $taskMiscOverlay
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
     foreach ($taskStreamingSource in @('RenderAssetUpdate.cpp', 'Texture2DUpdate.cpp', 'Texture2DStreamIn_IO.cpp',
