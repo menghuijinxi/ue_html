@@ -55,6 +55,9 @@ module.exports = new Map([
     branch('\t\tfloat3 HistoryRadiosity = RWRadiosityAtlas[RadiosityTexel.AtlasCoord];', [
       '\t\tfloat3 HistoryRadiosity = WebRadiosityHistoryAtlas.Load(int3(RadiosityTexel.AtlasCoord, 0));']),
   ]],
+  ['Private/Lumen/LumenSceneLighting.usf', [
+    storage('RWTexture2D<UNORM float> RWRadiosityNumFramesAccumulatedAtlas;', 'r8'),
+  ]],
   ['Private/Lumen/LumenSceneDirectLightingCulling.usf', [
     branch('\t\t\twhile (NumPackedLightSamples < MAX_LIGHT_SAMPLES)', [
       '\t\t\t// Keep every reduction barrier in a statically uniform loop.',

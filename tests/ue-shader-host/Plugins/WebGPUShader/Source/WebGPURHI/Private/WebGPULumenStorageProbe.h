@@ -2,6 +2,7 @@
 
 #include "WebGPUGlobalScope.h"
 #include "WebGPUProbeUtils.h"
+#include "WebGPUUAVRasterProbe.h"
 #include "RenderingThread.h"
 #include "Serialization/JsonSerializer.h"
 #include "Math/Float16.h"
@@ -533,6 +534,8 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Pass &= OK;
             Data.Resources.Reset();
         }
+        TArray<TSharedPtr<FJsonValue>> RasterCases;
+        Pass &= RunWebGPUUAVRasterCases(RHI, Cmd, RasterCases);
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
@@ -541,6 +544,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("volumeCases"), VolumeCases);
         Report->SetArrayField(TEXT("bufferCases"), BufferCases);
         Report->SetArrayField(TEXT("uniformCases"), UniformCases);
+        Report->SetArrayField(TEXT("rasterCases"), RasterCases);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);

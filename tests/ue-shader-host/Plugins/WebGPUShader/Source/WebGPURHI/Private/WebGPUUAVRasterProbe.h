@@ -1,0 +1,165 @@
+#pragma once
+
+#include "WebGPUProbeUtils.h"
+
+inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmediate& Cmd,
+    TArray<TSharedPtr<FJsonValue>>& Cases)
+{
+    const auto Init = [&](FWebGPUShaderData& Data, FRHIShader* Owner, EShaderFrequency Frequency,
+        const char* Code, bool Pixel) {
+        Data.Owner = Owner;
+        Data.Frequency = Frequency;
+        Data.Entry = TEXT("main");
+        Data.Metadata = MakeShared<FJsonObject>();
+        Data.Metadata->SetNumberField(TEXT("frequency"), Frequency);
+        TArray<TSharedPtr<FJsonValue>> Bindings, Reflected;
+        if (Pixel)
+        {
+            for (uint32 Index = 0; Index < 2; ++Index)
+            {
+                auto Binding = MakeShared<FJsonObject>();
+                Binding->SetStringField(TEXT("name"), Index ? TEXT("Mask") : TEXT("Result"));
+                Binding->SetNumberField(TEXT("group"), 0);
+                Binding->SetNumberField(TEXT("binding"), Index);
+                Binding->SetNumberField(TEXT("descriptorType"), Index ? 3 : 7);
+                Binding->SetBoolField(TEXT("readOnlyStorage"), false);
+                Binding->SetNumberField(TEXT("storageElementStride"), 4);
+                Binding->SetNumberField(TEXT("storageElementFormat"), PF_R32_UINT);
+                Binding->SetNumberField(TEXT("textureDimension"), 1);
+                Binding->SetBoolField(TEXT("textureArrayed"), false);
+                Binding->SetNumberField(TEXT("storageImageFormat"), 15); // SPIR-V R8 UNORM.
+                Binding->SetStringField(TEXT("textureSampleType"), TEXT("float"));
+                Binding->SetStringField(TEXT("storageTextureAccess"), TEXT("write"));
+                Bindings.Add(MakeShared<FJsonValueObject>(Binding));
+                FWebGPUShaderBinding Entry;
+                Entry.Metadata = &Binding.Get();
+                Entry.Name = Binding->GetStringField(TEXT("name"));
+                Entry.Descriptor = Index ? 3 : 7;
+                Entry.Index = Index;
+                Entry.RouteInitialized = true;
+                Entry.Route.Index = Index;
+                Data.Bindings.Add(Entry);
+                auto WebBinding = MakeShared<FJsonObject>();
+                WebBinding->SetNumberField(TEXT("group"), 0);
+                WebBinding->SetNumberField(TEXT("binding"), Index);
+                WebBinding->SetStringField(TEXT("resource_type"), Index ? TEXT("WriteOnlyStorageTexture") : TEXT("StorageBuffer"));
+                Reflected.Add(MakeShared<FJsonValueObject>(WebBinding));
+            }
+            Data.GroupVersions.Init(1, 1);
+        }
+        Data.Metadata->SetArrayField(TEXT("spirvBindings"), Bindings);
+        auto Entry = MakeShared<FJsonObject>();
+        Entry->SetStringField(TEXT("name"), Data.Entry);
+        Entry->SetArrayField(TEXT("bindings"), Reflected);
+        Entry->SetArrayField(TEXT("output_variables"), {});
+        auto Reflection = MakeShared<FJsonObject>();
+        Reflection->SetArrayField(TEXT("entry_points"), {MakeShared<FJsonValueObject>(Entry)});
+        Data.Metadata->SetObjectField(TEXT("reflection"), Reflection);
+        auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+        WGSL.code = {Code, strlen(Code)};
+        auto Desc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+        Desc.nextInChain = &WGSL.chain;
+        Data.Module = wgpuDeviceCreateShaderModule(RHI.Device, &Desc);
+    };
+    TRefCountPtr<FWebGPUVertexShader> VS = new FWebGPUVertexShader;
+    TRefCountPtr<FWebGPUPixelShader> PS = new FWebGPUPixelShader;
+    Init(VS->Data, VS, SF_Vertex,
+        "@vertex fn main(@builtin(vertex_index) id: u32) -> @builtin(position) vec4f {\n"
+        "let p = array<vec2f,3>(vec2f(-1,-1),vec2f(3,-1),vec2f(-1,3));\n"
+        "return vec4f(p[id],0,1); }\n", false);
+    Init(PS->Data, PS, SF_Pixel,
+        "@group(0) @binding(0) var<storage,read_write> Result: array<atomic<u32>>;\n"
+        "@group(0) @binding(1) var Mask: texture_storage_2d<r8unorm,write>;\n"
+        "@fragment fn main(@builtin(position) p: vec4f) {\n"
+        "atomicAdd(&Result[u32(p.y)*32u+u32(p.x)],1u);\n"
+        "textureStore(Mask,vec2i(p.xy),vec4f(0.5)); }\n", true);
+    VS->InitResourceTable();
+    PS->InitResourceTable();
+    auto Blend = RHI.RHICreateBlendState(FBlendStateInitializerRHI(FBlendStateInitializerRHI::FRenderTarget()));
+    FRasterizerStateInitializerRHI RasterInitializer;
+    RasterInitializer.FillMode = FM_Solid;
+    RasterInitializer.CullMode = CM_None;
+    auto Raster = RHI.RHICreateRasterizerState(RasterInitializer);
+    auto Depth = RHI.RHICreateDepthStencilState(FDepthStencilStateInitializerRHI(false, CF_Always));
+    FGraphicsPipelineStateInitializer Initializer;
+    Initializer.BoundShaderState.VertexShaderRHI = VS;
+    Initializer.BoundShaderState.PixelShaderRHI = PS;
+    Initializer.BlendState = Blend;
+    Initializer.RasterizerState = Raster;
+    Initializer.DepthStencilState = Depth;
+    Initializer.PrimitiveType = PT_TriangleList;
+    Initializer.NumSamples = 0;
+    auto Pipeline = RHI.RHICreateGraphicsPipelineState(Initializer);
+    const uint16 Indices[3]{0, 1, 2};
+    const uint32 Arguments[5]{3, 1, 0, 0, 0};
+    auto Index = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::CreateIndex(TEXT("UAVRasterIndices"), 6, 2)
+        .SetInitialState(ERHIAccess::VertexOrIndexBuffer), Indices, sizeof(Indices));
+    auto Indirect = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(TEXT("UAVRasterArguments"), 20, 4,
+        BUF_DrawIndirect).SetInitialState(ERHIAccess::IndirectArgs), Arguments, sizeof(Arguments));
+    bool Pass = true;
+    for (const FIntPoint Extent : {FIntPoint(9, 7), FIntPoint(13, 11), FIntPoint(5, 3)})
+    {
+        uint32 Zero[32 * 16]{};
+        auto Result = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(TEXT("UAVRasterResult"),
+            sizeof(Zero), 4, BUF_UnorderedAccess | BUF_ShaderResource)
+            .SetInitialState(ERHIAccess::UAVGraphics), Zero, sizeof(Zero));
+        auto UAV = Cmd.CreateUnorderedAccessView(Result, FRHIViewDesc::CreateBufferUAV()
+            .SetType(FRHIViewDesc::EBufferType::Typed).SetFormat(PF_R32_UINT));
+        auto Mask = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("UAVRasterMask"), 32, 16, PF_R8)
+            .SetFlags(ETextureCreateFlags::UAV).SetInitialState(ERHIAccess::UAVGraphics));
+        auto MaskUAV = Cmd.CreateUnorderedAccessView(Mask, FRHIViewDesc::CreateTextureUAV()
+            .SetDimension(ETextureDimension::Texture2D));
+        PS->Data.Resources.Add(0, UAV.GetReference());
+        PS->Data.Resources.Add(1, MaskUAV.GetReference());
+        PS->Data.InvalidateGroups(1);
+        if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        FRHIRenderPassInfo Info;
+        Info.ResolveRect = FResolveRect(0, 0, Extent.X, Extent.Y);
+        RHI.RHIBeginRenderPass(Info, TEXT("UAVRasterProbe"));
+        RHI.RHISetViewport(0, 0, 0, Extent.X, Extent.Y, 1);
+        RHI.RHISetScissorRect(false, 0, 0, 0, 0);
+        RHI.RHISetGraphicsPipelineState(Pipeline, 0, false);
+        RHI.RHIDrawIndexedPrimitiveIndirect(Index, Indirect, 0);
+        RHI.RHIEndRenderPass();
+        Cmd.Transition(FRHITransitionInfo(Result, ERHIAccess::UAVGraphics, ERHIAccess::CopySrc));
+        const auto Bytes = RHI.ReadBuffer(Result, sizeof(Zero));
+        bool OK = Bytes.Num() == sizeof(Zero);
+        if (OK)
+        {
+            FMemory::Memcpy(Zero, Bytes.GetData(), sizeof(Zero));
+            for (uint32 Y = 0; Y < 16; ++Y)
+                for (uint32 X = 0; X < 32; ++X)
+                    OK &= Zero[Y * 32 + X] == uint32(X < uint32(Extent.X) && Y < uint32(Extent.Y));
+        }
+        Cmd.Transition(FRHITransitionInfo(Mask, ERHIAccess::UAVGraphics, ERHIAccess::CopySrc));
+        if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        auto Readback = RHI.CreateBuffer(256 * 16, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+        auto Source = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+        Source.texture = static_cast<FWebGPUTexture*>(Mask.GetReference())->Handle;
+        auto Destination = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+        Destination.buffer = Readback;
+        Destination.layout.bytesPerRow = 256;
+        Destination.layout.rowsPerImage = 16;
+        const WGPUExtent3D Size{32, 16, 1};
+        wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &Size);
+        RHI.SubmitCurrent();
+        const auto MaskBytes = RHI.MapBuffer(Readback, 256 * 16);
+        wgpuBufferRelease(Readback);
+        OK &= MaskBytes.Num() == 256 * 16;
+        if (MaskBytes.Num() == 256 * 16)
+            for (int32 Y = 0; Y < Extent.Y; ++Y)
+                for (int32 X = 0; X < Extent.X; ++X)
+                    OK &= FMath::Abs(int32(MaskBytes[Y * 256 + X]) - 128) <= 1;
+        auto Case = MakeShared<FJsonObject>();
+        Case->SetNumberField(TEXT("width"), Extent.X);
+        Case->SetNumberField(TEXT("height"), Extent.Y);
+        Case->SetBoolField(TEXT("pixelAtomicsAndR8Storage"), true);
+        Case->SetNumberField(TEXT("extentAttachmentBytes"),
+            RHI.RasterExtentAttachment->GetDesc().CalcMemorySizeEstimate());
+        Case->SetBoolField(TEXT("pass"), OK);
+        Cases.Add(MakeShared<FJsonValueObject>(Case));
+        Pass &= OK;
+        PS->Data.Resources.Reset();
+    }
+    return Pass;
+}

@@ -990,6 +990,7 @@ void FWebGPUDynamicRHI::Shutdown()
     FrameUniformPages.Empty();
     FrameUniformUploadBytes.Empty();
     ReleaseBindings();
+    RasterExtentAttachment.SafeRelease();
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
 #endif
@@ -3528,7 +3529,9 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         FBlendStateInitializerRHI Blend;
         FDepthStencilStateInitializerRHI DepthState;
         FRasterizerStateInitializerRHI Rasterizer;
-        bool Supported = In.NumSamples == 1 && !In.BoundShaderState.GetGeometryShader() &&
+        const bool Attachmentless = In.RenderTargetsEnabled == 0 && In.DepthStencilTargetFormat == PF_Unknown;
+        bool Supported = (In.NumSamples == 1 || (Attachmentless && In.NumSamples == 0)) &&
+            !In.BoundShaderState.GetGeometryShader() &&
             (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip) &&
             In.BlendState && In.RasterizerState && In.DepthStencilState &&
             In.BlendState->GetInitializer(Blend) && In.DepthStencilState->GetInitializer(DepthState) &&
@@ -3564,11 +3567,15 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     }
     ++GraphicsPipelinesCreated;
     if (In.bPSOPrecache) ++PrecachedGraphicsPipelines;
-    check(In.NumSamples == 1 && !In.BoundShaderState.GetGeometryShader() &&
-          (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip));
-    auto *Result = new FWebGPUGraphicsPipeline(In);
     auto &VS = static_cast<FWebGPUVertexShader *>(In.BoundShaderState.GetVertexShader())->Data;
     auto *Pixel = static_cast<FWebGPUPixelShader *>(In.BoundShaderState.GetPixelShader());
+    const bool Attachmentless = In.RenderTargetsEnabled == 0 && In.DepthStencilTargetFormat == PF_Unknown;
+    checkf((In.NumSamples == 1 || (Attachmentless && In.NumSamples == 0)) && !In.BoundShaderState.GetGeometryShader() &&
+          (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip),
+          TEXT("Web raster pipeline samples=%u geometry=%u primitive=%u vertex=%s pixel=%s"),
+          uint32(In.NumSamples), In.BoundShaderState.GetGeometryShader() ? 1u : 0u, uint32(In.PrimitiveType),
+          *VS.Entry, Pixel ? *Pixel->Data.Entry : TEXT("depth-only"));
+    auto *Result = new FWebGPUGraphicsPipeline(In);
     WGPURenderPipelineDescriptor Desc = WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;
     TArray<const FWebGPUShaderData*> ShaderStages{&VS};
     if (Pixel)
@@ -3620,7 +3627,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     FRasterizerStateInitializerRHI Rasterizer;
     check(In.BlendState->GetInitializer(Blend) && In.DepthStencilState->GetInitializer(DepthState) &&
           In.RasterizerState->GetInitializer(Rasterizer));
-    // NumSamples is fixed to one above; UE's rasterizer MSAA permission does not enable multisampling.
+    // Attachmentless UE passes report zero samples; the extent attachment uses one sample.
     checkf(Rasterizer.FillMode == FM_Solid && Rasterizer.CullMode <= CM_CCW && Rasterizer.DepthBias == 0 &&
           Rasterizer.SlopeScaleDepthBias == 0 &&
           Rasterizer.DepthClipMode == ERasterizerDepthClipMode::DepthClip && !Blend.bUseAlphaToCoverage &&
@@ -3672,6 +3679,16 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         const bool HasOutput = (OutputMask & (1u << Index)) != 0;
         Target.blend = HasOutput && !Overwrite ? &NativeBlend : nullptr;
         Target.writeMask = HasOutput ? State.ColorWriteMask : WGPUColorWriteMask_None;
+        Targets.Add(Target);
+    }
+    if (Attachmentless)
+    {
+        checkf(OutputMask == 0 && !DepthState.bEnableDepthWrite && DepthState.DepthTest == CF_Always &&
+            !DepthState.bEnableFrontFaceStencil && !DepthState.bEnableBackFaceStencil,
+            TEXT("Attachmentless raster passes require UAV-only pixel output and disabled depth/stencil"));
+        auto Target = WGPU_COLOR_TARGET_STATE_INIT;
+        Target.format = WGPUTextureFormat_R8Unorm;
+        Target.writeMask = WGPUColorWriteMask_None;
         Targets.Add(Target);
     }
     WGPUShaderModule DepthOnlyFragment = nullptr;
@@ -4013,8 +4030,6 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
     }
     WGPURenderPassDepthStencilAttachment Depth = WGPU_RENDER_PASS_DEPTH_STENCIL_ATTACHMENT_INIT;
     WGPURenderPassDescriptor Desc = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
-    Desc.colorAttachmentCount = Colors.Num();
-    Desc.colorAttachments = Colors.GetData();
     if (Info.NumOcclusionQueries)
     {
         OcclusionBatch = MakeShared<FWebGPUOcclusionBatch, ESPMode::ThreadSafe>();
@@ -4068,6 +4083,42 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
             check(GetLoadAction(GetStencilActions(Info.DepthStencilRenderTarget.Action)) != ERenderTargetLoadAction::EClear);
         Desc.depthStencilAttachment = &Depth;
     }
+    if (Colors.IsEmpty() && !Desc.depthStencilAttachment)
+    {
+        // WebGPU derives raster extent from attachments. UE supplies ResolveRect
+        // for UAV-only rasterization, such as Lumen's mesh SDF scatter.
+        checkf(Info.ResolveRect.X1 == 0 && Info.ResolveRect.Y1 == 0 &&
+            Info.ResolveRect.X2 > 0 && Info.ResolveRect.Y2 > 0,
+            TEXT("Attachmentless raster pass %s requires a positive ResolveRect extent"), WebArg1);
+        const uint32 Width = FMath::Max(uint32(Info.ResolveRect.X2),
+            RasterExtentAttachment ? RasterExtentAttachment->GetSizeX() : 0u);
+        const uint32 Height = FMath::Max(uint32(Info.ResolveRect.Y2),
+            RasterExtentAttachment ? RasterExtentAttachment->GetSizeY() : 0u);
+        if (!RasterExtentAttachment || Width != RasterExtentAttachment->GetSizeX() ||
+            Height != RasterExtentAttachment->GetSizeY())
+        {
+            check(Width <= Limits.maxTextureDimension2D && Height <= Limits.maxTextureDimension2D);
+            auto TextureDesc = WGPU_TEXTURE_DESCRIPTOR_INIT;
+            TextureDesc.label = Text("WebGPU.UAVRasterExtent");
+            TextureDesc.size = {Width, Height, 1};
+            TextureDesc.format = WGPUTextureFormat_R8Unorm;
+            TextureDesc.usage = WGPUTextureUsage_RenderAttachment;
+            RasterExtentAttachment = new FWebGPUTexture(
+                FRHITextureCreateDesc::Create2D(TEXT("WebGPU.UAVRasterExtent"), Width, Height, PF_R8)
+                    .SetFlags(ETextureCreateFlags::RenderTargetable).SetInitialState(ERHIAccess::RTV),
+                wgpuDeviceCreateTexture(Device, &TextureDesc));
+        }
+        Attachments.Add(RasterExtentAttachment);
+        AttachmentSubresources.Emplace(0, 0);
+        auto Attachment = WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;
+        Attachment.view = RasterExtentAttachment->View;
+        Attachment.loadOp = WGPULoadOp_Clear;
+        Attachment.storeOp = WGPUStoreOp_Discard;
+        Colors.Add(Attachment);
+        if (UseRenderBundles) PassBundleColors.Add(WGPUTextureFormat_R8Unorm);
+    }
+    Desc.colorAttachmentCount = Colors.Num();
+    Desc.colorAttachments = Colors.GetData();
     Pass = wgpuCommandEncoderBeginRenderPass(Encoder, &Desc);
     PassBundleKey.Reset();
     if (UseRenderBundles)

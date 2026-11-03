@@ -620,6 +620,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TRefCountPtr<FWebGPUComputePipeline> ComputePipeline;
     TArray<TRefCountPtr<FWebGPUTexture>> Attachments;
     TArray<FIntPoint> AttachmentSubresources;
+    TRefCountPtr<FWebGPUTexture> RasterExtentAttachment;
     TArray<FString> Errors;
     FString AdapterName;
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;

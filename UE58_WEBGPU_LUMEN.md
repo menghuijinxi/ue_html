@@ -218,6 +218,16 @@ Web 在同时启用 2×1、2×2 降采样时，主 Pass 继续计算两种共享
 
 `20261103-183124` 重跑在原生天空光采集时出现 `0x80000003`，未进入 Web Cook，原因尚未确定。启动脚本原先只对预检和 Cook 子进程反复设置亲和性，天空光采集仍为直接调用；现将该步骤也通过同一等待器启动和核验，记录退出码及指定亲和性，不改变项目或天空光设置。`20261103-183410` 重跑已完成天空光采集并进入正式 Cook。这不能证明原生异常的根因已修复。
 
+### 无附件光栅与 Radiosity 像素写入
+
+`20261103-183410` 已完成 Cook、Stage 和 Package，但浏览器首帧暴露两处独立断言。`FLumenTranslucencyRadianceCacheMarkVS/PS` 使用不绑定颜色、深度附件的光栅 Pass，UE 此时给出的采样数为 0；`FCopyCardCaptureLightingToAtlasPS/1` 则将实际 R8 的 Radiosity 帧数 UAV 编译成了 R32 float。均未通过关闭对应效果绕过。
+
+Web RHI 对无附件、无深度/模板测试且仅写 UAV 的光栅管线接受 UE 的零采样标记，实际仍创建单采样 WebGPU 管线。Pass 根据原 `ResolveRect` 提供一个 R8 范围附件，禁止颜色写入并丢弃内容；同一附件按最大所需尺寸复用，计入 RHI 纹理统计，关闭 RHI 时释放。该路径同时服务半透明辐射缓存标记与网格 SDF 的 UAV 光栅剔除。保留原 Shader、视口、间接绘制、原子写入与开关。
+
+`LumenSceneLighting.usf` 的 Web 分支为 `RWRadiosityNumFramesAccumulatedAtlas` 明确声明 R8、只写，桌面分支不变。4 个 `FCopyCardCaptureLightingToAtlasPS` 允许排列均通过转换和浏览器模块检查，排列 1、3 的 UAV 为 R8 write，0、2 不绑定该 UAV。真实 RHI 用索引间接绘制测试 9×7、13×11、5×3 三种尺寸，回读像素原子计数、未写区域及 R8 值，均通过；逻辑附件字节数依次为 63、143、143，验证扩大后复用。原有 10 项存储格式写入/清零、64 texel 三维整数、768 个 uint2 值及 8 个天空光 float 回读保持通过，无 GPU 校验错误。
+
+结果：`build/lumen-probe/20261103-185155/`、`results/lumen-radiosity-copy-modules-gpu.json`、`build/lumen-storage-rhi-uav-raster-v2/lumen-storage-rhi.json`；可重复摘要入口为 `summarize-web-uav-raster.cjs`，证据为 `tests/web-platform/evidence/lumen-uav-raster-20261103.json`。优化原生插件及 `-O2` 线程 WASM 构建通过，`20261103-185732` 别墅按项目设置 Cook 通过。完整浏览器首帧及性能验收继续单独进行。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：
@@ -225,6 +235,7 @@ Web 在同时启用 2×1、2×2 降采样时，主 Pass 继续计算两种共享
 - 自适应头 buffer：`ceil(宽/下采样因子) × ceil(高/下采样因子) × 4` 字节，另增加一次清零和一次拷贝 Dispatch。下采样因子为 16 时，1280×720 约 14.1 KiB，1920×1080 约 31.9 KiB。
 - BRDF SH buffer 从 half16 改 float32：额外 `探针图集宽 × 探针图集高 × 9 × 2` 字节，图集包含自适应区域；会增加对应读写带宽。
 - Cards 添加队列保持原始字节布局，没有因标量化再复制一份队列。
+- 无附件 UAV 光栅路径增加一个可复用 R8 附件，逻辑大小为最大所需宽 × 高字节；没有图像拷贝、没有颜色写出，Pass 内容丢弃。驱动对齐、清除/Pass 边界耗时与完整场景峰值须实测，不能由小尺寸回读测试推算。
 - 同时使用两种降采样时，StochasticLighting 额外执行一次 2×1 计算 Dispatch 和对应材质读取，复用原有输出纹理；实际耗时仍待完整场景测量。
 - 存储格式专用管线不增加纹理尺寸、格式字节数或拷贝 Pass；每个动态格式 Shader 保留一份 WGSL 源码，实际遇到的格式组合各保留一条管线。绑定格式未知时暂不进行该管线的推测预缓存，第一次使用会增加管线编译成本，后续同格式组合复用；CPU/驱动内存及首次卡顿仍待真实场景测量。
 - Radiosity 历史副本增加 `图集宽 × 高 × 原格式字节数` 的临时资源和每次积分前的一次整图拷贝。默认 4096×4096 R11G11B10 为 64 MiB，拷贝读写合计 128 MiB；项目改用其他图集尺寸或格式时按实际值计算。资源池可能保留该内存，不能将 RDG 生命周期结束当作显存立即归还。完整场景的耗时和峰值尚待实测。
