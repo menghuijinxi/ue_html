@@ -79,6 +79,7 @@ bool VisualTestClock = false;
 bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
 bool ImmediateWebGPUCalls = false;
+bool ScalarWebGPUStates = false, LegacyWebGPUDescriptors = false;
 bool PSOPrecacheTest = false;
 bool StartupTrace = false;
 // Diagnostic only: retain the same WASM/Cook while collapsing rendering onto
@@ -1133,6 +1134,8 @@ int32 StartEngine()
          ThreadingTest == 2 ? TEXT(" -onethread -nothreading -norhithread") : TEXT("")) +
         (ParallelDrawRecording ? TEXT(" -WebParallelDrawRecording") : TEXT("")) +
         (ImmediateWebGPUCalls ? TEXT(" -WebGPUImmediateCalls") : TEXT("")) +
+        (ScalarWebGPUStates ? TEXT(" -WebGPUScalarPassCalls") : TEXT("")) +
+        (LegacyWebGPUDescriptors ? TEXT(" -WebGPULegacyDescriptors") : TEXT("")) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
@@ -1295,6 +1298,8 @@ int main(int argc, char** argv)
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
         ImmediateWebGPUCalls |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUImmediateCalls") == 0;
+        ScalarWebGPUStates |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUScalarPassCalls") == 0;
+        LegacyWebGPUDescriptors |= FCStringAnsi::Strcmp(argv[Index], "-WebGPULegacyDescriptors") == 0;
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
         StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=full") == 0) ThreadingBenchmark = true;

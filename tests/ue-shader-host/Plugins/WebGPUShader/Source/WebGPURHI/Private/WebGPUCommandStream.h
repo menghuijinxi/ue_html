@@ -12,6 +12,7 @@ namespace UEWebGPUStream {
 // boundary; all WebGPU calls, order, validation and GPU work are preserved.
 // A chunk retains each referenced C API object until synchronous JS replay.
 inline bool Enabled=true; // Set once at startup on the WebGPU owner.
+inline bool StateCommands=true;
 constexpr uint64_t MaxExact=9007199254740991ULL;
 enum class Kind { Pipeline, Group, Buffer };
 struct Lease {uintptr_t pointer;Kind kind;};
@@ -93,17 +94,32 @@ inline void drawIndexedIndirect(WGPURenderPassEncoder p,WGPUBuffer b,uint64_t of
  if(!p||!Enabled||offset>MaxExact){flush();wgpuRenderPassEncoderDrawIndexedIndirect(p,b,offset);return;}
  auto& s=stream();s.reserveFor(p);auto id=s.object(b,Kind::Buffer);s.write(8,id,offset);
 }
+inline void RenderPassEncoderSetScissorRect(WGPURenderPassEncoder p,uint32_t x,uint32_t y,uint32_t w,uint32_t h){
+ if(!p||!Enabled||!StateCommands){flush();wgpuRenderPassEncoderSetScissorRect(p,x,y,w,h);return;}
+ auto& s=stream();s.reserveFor(p,5);s.write(11,x,y,w,h);
+}
+inline void RenderPassEncoderSetViewport(WGPURenderPassEncoder p,float x,float y,float w,float h,float nearDepth,float farDepth){
+ if(!p||!Enabled||!StateCommands){flush();wgpuRenderPassEncoderSetViewport(p,x,y,w,h,nearDepth,farDepth);return;}
+ auto& s=stream();s.reserveFor(p,7);s.write(12,x,y,w,h,nearDepth,farDepth);
+}
+inline void RenderPassEncoderSetStencilReference(WGPURenderPassEncoder p,uint32_t reference){
+ if(!p||!Enabled||!StateCommands){flush();wgpuRenderPassEncoderSetStencilReference(p,reference);return;}
+ auto& s=stream();s.reserveFor(p,2);s.write(13,reference);
+}
+inline void RenderPassEncoderBeginOcclusionQuery(WGPURenderPassEncoder p,uint32_t index){
+ if(!p||!Enabled||!StateCommands){flush();wgpuRenderPassEncoderBeginOcclusionQuery(p,index);return;}
+ auto& s=stream();s.reserveFor(p,2);s.write(14,index);
+}
+inline void RenderPassEncoderEndOcclusionQuery(WGPURenderPassEncoder p){
+ if(!p||!Enabled||!StateCommands){flush();wgpuRenderPassEncoderEndOcclusionQuery(p);return;}
+ auto& s=stream();s.reserveFor(p,1);s.write(15);
+}
 // These operations delimit ordering and encoder state. Replay pending calls
 // before forwarding the boundary through the unchanged Emdawn C API.
 #define UE_WGPU_BOUNDARY(name) template<class... A>inline auto name(A...args){flush();return wgpu##name(args...);}
 UE_WGPU_BOUNDARY(RenderPassEncoderEnd)
 UE_WGPU_BOUNDARY(RenderPassEncoderRelease)
-UE_WGPU_BOUNDARY(RenderPassEncoderSetScissorRect)
-UE_WGPU_BOUNDARY(RenderPassEncoderSetViewport)
-UE_WGPU_BOUNDARY(RenderPassEncoderSetStencilReference)
 UE_WGPU_BOUNDARY(RenderPassEncoderSetBlendConstant)
-UE_WGPU_BOUNDARY(RenderPassEncoderBeginOcclusionQuery)
-UE_WGPU_BOUNDARY(RenderPassEncoderEndOcclusionQuery)
 UE_WGPU_BOUNDARY(RenderPassEncoderExecuteBundles)
 UE_WGPU_BOUNDARY(RenderPassEncoderInsertDebugMarker)
 UE_WGPU_BOUNDARY(RenderPassEncoderPushDebugGroup)

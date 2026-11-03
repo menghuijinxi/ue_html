@@ -41,6 +41,8 @@ async function captureOwner(){
  }
  report.after=await state();assert.equal(report.errors.length,0,report.errors.join('\n'));
  await page.locator('canvas').screenshot({path:output+'.png'});
+ report.page=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),
+  performance:globalThis.__webLivePerformance,userAgent:navigator.userAgent}));
  if(process.argv.includes('--profile-owner'))await captureOwner();
  assert.equal(report.errors.length,0);report.pass=true;log.end();
 }catch(error){report.error=error.stack;process.exitCode=1;console.error(error.stack);}

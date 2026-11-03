@@ -30,14 +30,25 @@ function install(variant){
 }
 function instrument(){
  const records=[],passes=new WeakMap(),originalBegin=GPUCommandEncoder.prototype.beginRenderPass;
+ const descriptors={hash:2166136261,calls:0},resources=new WeakMap();let nextResource=1;
+ const identity=object=>{if(!object)return null;if(!resources.has(object))resources.set(object,nextResource++);return resources.get(object);};
+ const originalGroup=GPUDevice.prototype.createBindGroup;
+ GPUDevice.prototype.createBindGroup=function(desc){
+  const entries=desc.entries.map(e=>({binding:e.binding,resource:e.resource.buffer?{buffer:identity(e.resource.buffer),offset:e.resource.offset??0,size:e.resource.size??null}:{object:identity(e.resource)}}));
+  const text=JSON.stringify({label:desc.label??'',layout:identity(desc.layout),entries});for(let i=0;i<text.length;i++)descriptors.hash=Math.imul(descriptors.hash^text.charCodeAt(i),16777619)>>>0;descriptors.calls++;
+  return originalGroup.call(this,desc);
+ };
  GPUCommandEncoder.prototype.beginRenderPass=function(...args){const pass=originalBegin.apply(this,args);const record={hash:2166136261,calls:0,objects:new WeakMap(),next:1};passes.set(pass,record);records.push(record);return pass;};
- for(const name of ['setPipeline','setBindGroup','setVertexBuffer','setIndexBuffer','drawIndexed','draw','drawIndirect','drawIndexedIndirect','setViewport','setScissorRect','executeBundles','end']){
+ for(const name of ['setPipeline','setBindGroup','setVertexBuffer','setIndexBuffer','drawIndexed','draw','drawIndirect','drawIndexedIndirect','setViewport','setScissorRect','setStencilReference','beginOcclusionQuery','endOcclusionQuery','executeBundles','end']){
   const original=GPURenderPassEncoder.prototype[name];
   GPURenderPassEncoder.prototype[name]=function(...args){
    const record=passes.get(this);if(record){
-    const values=args.map(value=>{
+    // setBindGroup's typed-array overload names a slice in scratch memory.
+    // Compare the copied offsets, not the transport buffer's address/index.
+    const logical=name==='setBindGroup'?[args[0],args[1],args[2]?Array.prototype.slice.call(args[2],args[3]??0,(args[3]??0)+(args[4]??args[2].length)):[]]:args;
+    const values=logical.map(value=>{
      if(value&&typeof value==='object'){
-      if(Array.isArray(value))return value.map(v=>{if(!record.objects.has(v))record.objects.set(v,record.next++);return record.objects.get(v);});
+      if(Array.isArray(value))return value.map(v=>{if(!v||typeof v!=='object')return v;if(!record.objects.has(v))record.objects.set(v,record.next++);return record.objects.get(v);});
       if(!record.objects.has(value))record.objects.set(value,record.next++);return 'object'+record.objects.get(value);
      }return value;
     });
@@ -46,14 +57,14 @@ function instrument(){
   };
  }
  const send=globalThis.postMessage.bind(globalThis);globalThis.postMessage=(message,...args)=>{
-  if(message.result)message.result.apiRecords=records.map(({hash,calls})=>({hash,calls}));send(message,...args);
+  if(message.result){message.result.apiRecords=records.map(({hash,calls})=>({hash,calls}));message.result.groupDescriptors=descriptors;}send(message,...args);
  };
 }
 function totals(run){for(const c of run.cases){const values=c.setup.samplesMs.map((v,i)=>v+c.drawLoop.samplesMs[i]+c.finish.samplesMs[i]+c.submit.samplesMs[i]).sort((a,b)=>a-b);c.totalFrontend={medianMs:values[values.length>>1],meanMs:values.reduce((a,b)=>a+b,0)/values.length};}}
 const hash=file=>({file:path.relative(__dirname,file),sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const report={date:new Date().toISOString(),tag,rounds,variants,pass:false,runs:[],
  validateCalls,
- sources:['draw-api-webgpu.cpp','draw-api-common.h','draw-api-worker.js','benchmark-draw-bridge.cjs','build/draw-api/draw-wasm.js','build/draw-api/draw-wasm.wasm','build/draw-api/build-config.json','../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUCommandStream.h','../../reference-engine/Engine/Platforms/Web/Build/WebGPUCommandStream.js'].map(f=>hash(path.join(__dirname,f))),
+ sources:['draw-api-webgpu.cpp','draw-api-common.h','draw-api-worker.js','benchmark-draw-bridge.cjs','build/draw-api/draw-wasm.js','build/draw-api/draw-wasm.wasm','build/draw-api/build-config.json','../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUCommandStream.h','../../reference-engine/Engine/Platforms/Web/Build/WebGPUCommandStream.js','../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUPackedDescriptors.h','../../reference-engine/Engine/Platforms/Web/Build/WebGPUPackedDescriptors.js'].map(f=>hash(path.join(__dirname,f))),
  baselineSources:baselineBuild?['draw-wasm.js','draw-wasm.wasm','build-config.json'].map(f=>hash(path.join(__dirname,'build/draw-api',baselineBuild,f))):null,
  boundary:'Same indexed workload. baseline uses the saved original build; other WASM variants use the current build. number-* drops range checks and is diagnostic only. No UE. No CPU profiler. validateCalls adds per-call instrumentation and its timings must not be used for performance claims.'};
 (async()=>{try{
@@ -64,6 +75,10 @@ const report={date:new Date().toISOString(),tag,rounds,variants,pass:false,runs:
    await context.route('**/draw-api-*-worker.js',async route=>{
     const r=await route.fetch();let source=await r.text();
     if(variant==='baseline'){assert(baselineBuild);source=source.replaceAll('build/draw-api/','build/draw-api/'+baselineBuild+'/');}
+    if(['legacy-groups','legacy-states','legacy-both'].includes(variant)){
+     const args=variant==='legacy-both'?['--legacy-groups','--legacy-states']:['--'+variant];
+     source=source.replace('importScripts(',`Module.arguments=${JSON.stringify(args)};\nimportScripts(`);
+    }
     if(variant!=='js')source=source.replace("importScripts(",`Module.onRuntimeInitialized=()=>(${install.toString()})(${JSON.stringify(variant)});\nimportScripts(`);
     if(validateCalls)source='('+instrument.toString()+')();\n'+source;
     await route.fulfill({response:r,body:source});
@@ -74,8 +89,14 @@ const report={date:new Date().toISOString(),tag,rounds,variants,pass:false,runs:
    assert(run.pass&&run.cases.length===12&&run.cases.every(c=>c.outputVerified));
    totals(run);
    if(validateCalls){
-    const count=run.cases.length*(run.warmupFrames+run.measuredFrames+10);run.apiRecords=run.apiRecords.slice(-count);assert.equal(run.apiRecords.length,count);
-    if(report.runs.length)assert.deepEqual(run.apiRecords,report.runs[0].apiRecords,'Native WebGPU method sequence or arguments changed');
+    const count=run.cases.length*(run.warmupFrames+run.measuredFrames+10);run.preflightApiRecords=run.apiRecords.slice(0,-count);run.apiRecords=run.apiRecords.slice(-count);assert.equal(run.apiRecords.length,count);
+    if(report.runs.length){
+     assert.deepEqual(run.apiRecords,report.runs[0].apiRecords,'Native WebGPU method sequence or arguments changed');
+     if(variants.every(v=>!['baseline','js'].includes(v))){
+      assert.deepEqual(run.preflightApiRecords,report.runs[0].preflightApiRecords,'Preflight state/query calls changed');
+      assert.deepEqual(run.groupDescriptors,report.runs[0].groupDescriptors,'Bind group descriptors changed');
+     }
+    }
    }
    run.round=round;run.variant=variant;report.runs.push(run);report.browser=context.browser().version();
    fs.writeFileSync(output,JSON.stringify(report,null,2));

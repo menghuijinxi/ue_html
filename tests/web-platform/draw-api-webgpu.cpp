@@ -7,6 +7,9 @@
 #ifdef DRAW_COMMAND_STREAM
 #include "../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUCommandStream.h"
 #endif
+#ifdef DRAW_PACKED_GROUPS
+#include "../ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUPackedDescriptors.h"
+#endif
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 EM_ASYNC_JS(void, waitCallback, (bool* done), {
@@ -28,7 +31,7 @@ void complete(void* done){*(bool*)done=true;
 struct GPU {
  WGPUInstance instance;WGPUAdapter adapter=nullptr;WGPUDevice device=nullptr;WGPUQueue queue;
  WGPURenderPipeline pipelines[2];WGPUBindGroup groups[64];WGPUBuffer vertices,indices,uniforms;
- WGPUTexture target;WGPUTextureView view;WGPUQuerySet queries;WGPUBuffer resolve,readback,pixels;
+ WGPUTexture target;WGPUTextureView view;WGPUQuerySet queries,occlusion;WGPUBuffer resolve,readback,pixels,occlusionResolve,occlusionReadback;
  WGPUCommandEncoder encoder;WGPURenderPassEncoder pass;WGPUCommandBuffer commands=nullptr;WGPURenderBundle bundle=nullptr;
  bool timed=false;std::string adapterName;std::vector<std::string> errors;
 #ifdef __EMSCRIPTEN__
@@ -78,6 +81,7 @@ struct GPU {
   WGPUColorTargetState color=WGPU_COLOR_TARGET_STATE_INIT;color.format=WGPUTextureFormat_RGBA8Unorm;
   for(unsigned k=0;k<2;k++){WGPUFragmentState frag=WGPU_FRAGMENT_STATE_INIT;frag.module=module;frag.entryPoint=text(k?"fs1":"fs0");frag.targetCount=1;frag.targets=&color;WGPURenderPipelineDescriptor d=WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;d.layout=pl;d.vertex.module=module;d.vertex.entryPoint=text("vs");d.vertex.bufferCount=1;d.vertex.buffers=&vb;d.fragment=&frag;d.primitive.cullMode=WGPUCullMode_None;pipelines[k]=wgpuDeviceCreateRenderPipeline(device,&d);}
   WGPUQuerySetDescriptor qd=WGPU_QUERY_SET_DESCRIPTOR_INIT;qd.type=WGPUQueryType_Timestamp;qd.count=2;queries=wgpuDeviceCreateQuerySet(device,&qd);resolve=buffer(256,WGPUBufferUsage_QueryResolve|WGPUBufferUsage_CopySrc);readback=buffer(256,WGPUBufferUsage_MapRead|WGPUBufferUsage_CopyDst);pixels=buffer(64*256,WGPUBufferUsage_MapRead|WGPUBufferUsage_CopyDst);
+  qd.type=WGPUQueryType_Occlusion;occlusion=wgpuDeviceCreateQuerySet(device,&qd);occlusionResolve=buffer(256,WGPUBufferUsage_QueryResolve|WGPUBufferUsage_CopySrc);occlusionReadback=buffer(256,WGPUBufferUsage_MapRead|WGPUBufferUsage_CopyDst);
   wgpuShaderModuleRelease(module);wgpuPipelineLayoutRelease(pl);wgpuBindGroupLayoutRelease(layout);checkErrors();wait();
  }
  double prepare(unsigned mode,unsigned n){if(bundle){wgpuRenderBundleRelease(bundle);bundle=nullptr;}if(mode!=2)return 0;auto t=Clock::now();WGPUTextureFormat format=WGPUTextureFormat_RGBA8Unorm;WGPURenderBundleEncoderDescriptor d=WGPU_RENDER_BUNDLE_ENCODER_DESCRIPTOR_INIT;d.colorFormatCount=1;d.colorFormats=&format;auto b=wgpuDeviceCreateRenderBundleEncoder(device,&d);wgpuRenderBundleEncoderSetPipeline(b,pipelines[0]);wgpuRenderBundleEncoderSetBindGroup(b,0,groups[0],0,nullptr);wgpuRenderBundleEncoderSetVertexBuffer(b,0,vertices,0,24);wgpuRenderBundleEncoderSetIndexBuffer(b,indices,WGPUIndexFormat_Uint16,0,6);for(unsigned j=0;j<n;j++){unsigned k=j%64;wgpuRenderBundleEncoderSetPipeline(b,pipelines[j&1]);wgpuRenderBundleEncoderSetBindGroup(b,0,groups[k],0,nullptr);wgpuRenderBundleEncoderSetVertexBuffer(b,0,vertices,k*256,24);wgpuRenderBundleEncoderSetIndexBuffer(b,indices,WGPUIndexFormat_Uint16,k*256,6);wgpuRenderBundleEncoderDrawIndexed(b,3,1,0,0,0);}bundle=wgpuRenderBundleEncoderFinish(b,nullptr);wgpuRenderBundleEncoderRelease(b);return elapsed(t);}
@@ -106,7 +110,10 @@ struct GPU {
   auto pipeline=wgpuDeviceCreateRenderPipeline(device,&d);
   auto vd=vertexData();auto ix=indexData();auto vertex=buffer(vd.size()*4,WGPUBufferUsage_Vertex,vd.data());auto index=buffer(ix.size()*2,WGPUBufferUsage_Index,ix.data());
   uint32_t args[]={3,1,0,0,0};auto indirect=buffer(sizeof(args),WGPUBufferUsage_Indirect,args);
-  begin(0,false);wgpuRenderPassEncoderSetPipeline(pass,pipeline);wgpuRenderPipelineRelease(pipeline);
+  encoder=wgpuDeviceCreateCommandEncoder(device,nullptr);WGPURenderPassColorAttachment ca=WGPU_RENDER_PASS_COLOR_ATTACHMENT_INIT;ca.view=view;ca.loadOp=WGPULoadOp_Clear;ca.storeOp=WGPUStoreOp_Store;
+  WGPURenderPassDescriptor passDesc=WGPU_RENDER_PASS_DESCRIPTOR_INIT;passDesc.colorAttachmentCount=1;passDesc.colorAttachments=&ca;passDesc.occlusionQuerySet=occlusion;pass=wgpuCommandEncoderBeginRenderPass(encoder,&passDesc);timed=false;
+  wgpuRenderPassEncoderSetViewport(pass,0,0,64,64,0,1);wgpuRenderPassEncoderSetScissorRect(pass,0,0,1,1);
+  wgpuRenderPassEncoderSetPipeline(pass,pipeline);wgpuRenderPipelineRelease(pipeline);
   wgpuRenderPassEncoderSetVertexBuffer(pass,0,vertex,0,WGPU_WHOLE_SIZE);wgpuBufferRelease(vertex);
   wgpuRenderPassEncoderSetIndexBuffer(pass,index,WGPUIndexFormat_Uint16,0,WGPU_WHOLE_SIZE);wgpuBufferRelease(index);
   for(unsigned k=0;k<401;k++){
@@ -114,12 +121,15 @@ struct GPU {
    WGPUBindGroupDescriptor bd=WGPU_BIND_GROUP_DESCRIPTOR_INIT;bd.layout=layout;bd.entryCount=1;bd.entries=&be;auto group=wgpuDeviceCreateBindGroup(device,&bd);
    uint32_t offset=0;wgpuRenderPassEncoderSetBindGroup(pass,0,group,1,&offset);offset=256;wgpuBindGroupRelease(group);
   }
-  wgpuRenderPassEncoderDrawIndexed(pass,3,1,0,0,0);
+  wgpuRenderPassEncoderSetStencilReference(pass,7);
+  wgpuRenderPassEncoderBeginOcclusionQuery(pass,0);wgpuRenderPassEncoderDrawIndexed(pass,3,1,0,0,0);wgpuRenderPassEncoderEndOcclusionQuery(pass);
   wgpuRenderPassEncoderSetScissorRect(pass,1,0,1,1);
   WGPUBindGroupEntry be=WGPU_BIND_GROUP_ENTRY_INIT;be.binding=0;be.buffer=uniforms;be.size=16;
   WGPUBindGroupDescriptor bd=WGPU_BIND_GROUP_DESCRIPTOR_INIT;bd.layout=layout;bd.entryCount=1;bd.entries=&be;auto group=wgpuDeviceCreateBindGroup(device,&bd);
   uint32_t offset=256;wgpuRenderPassEncoderSetBindGroup(pass,0,group,1,&offset);offset=0;wgpuBindGroupRelease(group);
-  wgpuRenderPassEncoderDrawIndexedIndirect(pass,indirect,0);wgpuBufferRelease(indirect);
+  wgpuRenderPassEncoderSetScissorRect(pass,1,0,0,1);
+  wgpuRenderPassEncoderBeginOcclusionQuery(pass,1);wgpuRenderPassEncoderDrawIndexedIndirect(pass,indirect,0);wgpuRenderPassEncoderEndOcclusionQuery(pass);
+  wgpuRenderPassEncoderSetScissorRect(pass,1,0,1,1);wgpuRenderPassEncoderDrawIndexedIndirect(pass,indirect,0);wgpuBufferRelease(indirect);
   // The engine also emits pipeline/VB/group/IB; cover that fused decode path.
   wgpuRenderPassEncoderSetScissorRect(pass,2,0,1,1);
   wgpuRenderPassEncoderSetPipeline(pass,pipelines[0]);wgpuRenderPassEncoderSetVertexBuffer(pass,0,vertices,0,24);
@@ -129,9 +139,49 @@ struct GPU {
   wgpuRenderPassEncoderSetScissorRect(pass,4,0,1,1);wgpuRenderPassEncoderSetBindGroup(pass,0,groups[4],0,nullptr);
   auto nonIndexed=buffer(sizeof(args),WGPUBufferUsage_Indirect,args);wgpuRenderPassEncoderDrawIndirect(pass,nonIndexed,0);wgpuBufferRelease(nonIndexed);
   end();submit();wait();
+  auto queryEncoder=wgpuDeviceCreateCommandEncoder(device,nullptr);wgpuCommandEncoderResolveQuerySet(queryEncoder,occlusion,0,2,occlusionResolve,0);wgpuCommandEncoderCopyBufferToBuffer(queryEncoder,occlusionResolve,0,occlusionReadback,0,16);auto queryCommands=wgpuCommandEncoderFinish(queryEncoder,nullptr);wgpuQueueSubmit(queue,1,&queryCommands);wgpuCommandBufferRelease(queryCommands);wgpuCommandEncoderRelease(queryEncoder);
+  auto queryValues=(const uint64_t*)map(occlusionReadback,16);require(queryValues[0]>0&&queryValues[1]==0,"stream occlusion query ordering mismatch");wgpuBufferUnmap(occlusionReadback);
   auto e=wgpuDeviceCreateCommandEncoder(device,nullptr);WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=target;WGPUTexelCopyBufferInfo dst=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;dst.buffer=pixels;dst.layout.bytesPerRow=256;dst.layout.rowsPerImage=64;WGPUExtent3D size{64,64,1};wgpuCommandEncoderCopyTextureToBuffer(e,&src,&dst,&size);auto c=wgpuCommandEncoderFinish(e,nullptr);wgpuQueueSubmit(queue,1,&c);wgpuCommandBufferRelease(c);wgpuCommandEncoderRelease(e);
   auto p=(const uint8_t*)map(pixels,64*256);verifyPixel(p,0,1);for(unsigned k=1;k<=4;k++){const unsigned expected[]={(k*3+17)%256,(k*5+31)%256,(k*7+47)%256,255};for(unsigned channel=0;channel<4;channel++)require(std::abs(int(p[k*4+channel])-int(expected[channel]))<=1,"stream dynamic offset, lifetime or decode mismatch");}require(p[20]==0&&p[23]==0,"stream scissor ordering mismatch");wgpuBufferUnmap(pixels);
   wgpuShaderModuleRelease(module);wgpuPipelineLayoutRelease(pl);wgpuBindGroupLayoutRelease(layout);checkErrors();
+ }
+#endif
+#ifdef DRAW_PACKED_GROUPS
+ void verifyPackedGroups(){
+  WGPUBindGroupLayoutEntry le[3];for(unsigned i=0;i<3;i++){le[i]=WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;le[i].binding=i;le[i].visibility=WGPUShaderStage_Fragment;}
+  le[0].buffer.type=WGPUBufferBindingType_Uniform;le[0].buffer.minBindingSize=16;
+  le[1].texture.sampleType=WGPUTextureSampleType_Float;le[1].texture.viewDimension=WGPUTextureViewDimension_2D;
+  le[2].sampler.type=WGPUSamplerBindingType_Filtering;
+  WGPUBindGroupLayoutDescriptor ld=WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;ld.entryCount=3;ld.entries=le;auto layout=wgpuDeviceCreateBindGroupLayout(device,&ld);
+  WGPUPipelineLayoutDescriptor pd=WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;pd.bindGroupLayoutCount=1;pd.bindGroupLayouts=&layout;auto pl=wgpuDeviceCreatePipelineLayout(device,&pd);
+  std::string code="@group(0) @binding(1) var tx:texture_2d<f32>; @group(0) @binding(2) var sm:sampler;\n"+std::string(wgsl);
+  const std::string original="return color.value;";code.replace(code.find(original),original.size(),"return color.value * textureSampleLevel(tx,sm,vec2f(0.5),0.0);");
+  WGPUShaderSourceWGSL source=WGPU_SHADER_SOURCE_WGSL_INIT;source.code=text(code.c_str());WGPUShaderModuleDescriptor sd=WGPU_SHADER_MODULE_DESCRIPTOR_INIT;sd.nextInChain=&source.chain;auto shader=wgpuDeviceCreateShaderModule(device,&sd);
+  WGPUVertexAttribute attr=WGPU_VERTEX_ATTRIBUTE_INIT;attr.format=WGPUVertexFormat_Float32x2;attr.shaderLocation=0;WGPUVertexBufferLayout vb=WGPU_VERTEX_BUFFER_LAYOUT_INIT;vb.arrayStride=8;vb.attributeCount=1;vb.attributes=&attr;
+  WGPUColorTargetState color=WGPU_COLOR_TARGET_STATE_INIT;color.format=WGPUTextureFormat_RGBA8Unorm;
+  WGPUFragmentState frag=WGPU_FRAGMENT_STATE_INIT;frag.module=shader;frag.entryPoint=text("fs0");frag.targetCount=1;frag.targets=&color;
+  WGPURenderPipelineDescriptor pipelineDesc=WGPU_RENDER_PIPELINE_DESCRIPTOR_INIT;pipelineDesc.layout=pl;pipelineDesc.vertex.module=shader;pipelineDesc.vertex.entryPoint=text("vs");pipelineDesc.vertex.bufferCount=1;pipelineDesc.vertex.buffers=&vb;pipelineDesc.fragment=&frag;auto pipeline=wgpuDeviceCreateRenderPipeline(device,&pipelineDesc);
+  WGPUTextureDescriptor td=WGPU_TEXTURE_DESCRIPTOR_INIT;td.size={1,1,1};td.format=WGPUTextureFormat_RGBA8Unorm;td.usage=WGPUTextureUsage_TextureBinding|WGPUTextureUsage_CopyDst;auto texture=wgpuDeviceCreateTexture(device,&td);auto textureView=wgpuTextureCreateView(texture,nullptr);
+  WGPUTexelCopyTextureInfo destination=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;destination.texture=texture;WGPUTexelCopyBufferLayout dataLayout=WGPU_TEXEL_COPY_BUFFER_LAYOUT_INIT;dataLayout.bytesPerRow=4;dataLayout.rowsPerImage=1;WGPUExtent3D extent{1,1,1};const uint8_t texel[]={255,128,64,255};wgpuQueueWriteTexture(queue,&destination,texel,4,&dataLayout,&extent);
+  WGPUSamplerDescriptor samplerDesc=WGPU_SAMPLER_DESCRIPTOR_INIT;auto sampler=wgpuDeviceCreateSampler(device,&samplerDesc);const float constants[]={20.f/255,36.f/255,54.f/255,1};auto uniform=buffer(16,WGPUBufferUsage_Uniform,constants);
+  WGPUBindGroupEntry entries[3];for(unsigned i=0;i<3;i++){entries[i]=WGPU_BIND_GROUP_ENTRY_INIT;entries[i].binding=i;}entries[0].buffer=uniform;entries[0].size=WGPU_WHOLE_SIZE;entries[1].textureView=textureView;entries[2].sampler=sampler;
+  WGPUBindGroupDescriptor desc=WGPU_BIND_GROUP_DESCRIPTOR_INIT;desc.layout=layout;desc.entryCount=3;desc.entries=entries;auto packed=wgpuDeviceCreateBindGroup(device,&desc);desc.label=text("label-preserved-fallback");auto labeled=wgpuDeviceCreateBindGroup(device,&desc);
+  begin(0,false);wgpuRenderPassEncoderSetPipeline(pass,pipeline);wgpuRenderPassEncoderSetBindGroup(pass,0,packed,0,nullptr);wgpuRenderPassEncoderDrawIndexed(pass,3,1,0,0,0);wgpuRenderPassEncoderSetScissorRect(pass,1,0,1,1);wgpuRenderPassEncoderSetBindGroup(pass,0,labeled,0,nullptr);wgpuRenderPassEncoderDrawIndexed(pass,3,1,0,0,0);end();submit();wait();
+  auto e=wgpuDeviceCreateCommandEncoder(device,nullptr);WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=target;WGPUTexelCopyBufferInfo dst=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;dst.buffer=pixels;dst.layout.bytesPerRow=256;dst.layout.rowsPerImage=64;WGPUExtent3D size{64,64,1};wgpuCommandEncoderCopyTextureToBuffer(e,&src,&dst,&size);auto c=wgpuCommandEncoderFinish(e,nullptr);wgpuQueueSubmit(queue,1,&c);wgpuCommandBufferRelease(c);wgpuCommandEncoderRelease(e);
+  auto bytes=(const uint8_t*)map(pixels,64*256);const int expected[]={20,18,14,255};for(unsigned pixel=0;pixel<2;pixel++)for(unsigned channel=0;channel<4;channel++)require(std::abs(int(bytes[pixel*4+channel])-expected[channel])<=1,"packed buffer/texture/sampler or label fallback mismatch");wgpuBufferUnmap(pixels);
+  wgpuBindGroupRelease(packed);wgpuBindGroupRelease(labeled);wgpuBufferRelease(uniform);wgpuSamplerRelease(sampler);wgpuTextureViewRelease(textureView);wgpuTextureRelease(texture);wgpuRenderPipelineRelease(pipeline);wgpuShaderModuleRelease(shader);wgpuPipelineLayoutRelease(pl);wgpuBindGroupLayoutRelease(layout);checkErrors();
+ }
+ std::string benchmarkGroups(){
+  std::ostringstream out;out<<"[";bool first=true;
+  for(unsigned n:{0u,1u,8u,16u,32u}){
+   std::vector<WGPUBindGroupLayoutEntry> layoutEntries(n);std::vector<WGPUBindGroupEntry> entries(n);
+   for(unsigned i=0;i<n;i++){auto& le=layoutEntries[i];le=WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;le.binding=i;le.visibility=WGPUShaderStage_None;le.buffer.type=WGPUBufferBindingType_Uniform;le.buffer.minBindingSize=16;
+    entries[i]=WGPU_BIND_GROUP_ENTRY_INIT;entries[i].binding=i;entries[i].buffer=uniforms;entries[i].offset=(i%64)*256;entries[i].size=16;}
+   WGPUBindGroupLayoutDescriptor ld=WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;ld.entryCount=n;ld.entries=layoutEntries.data();auto layout=wgpuDeviceCreateBindGroupLayout(device,&ld);
+   WGPUBindGroupDescriptor bd=WGPU_BIND_GROUP_DESCRIPTOR_INIT;bd.layout=layout;bd.entryCount=n;bd.entries=entries.data();std::vector<double> values;
+   for(unsigned batch=0;batch<46;batch++){std::array<WGPUBindGroup,80> groups;auto start=Clock::now();for(auto& group:groups)group=wgpuDeviceCreateBindGroup(device,&bd);double ms=elapsed(start);for(auto group:groups)wgpuBindGroupRelease(group);if(batch>=10)values.push_back(ms);wait();}
+   if(!first)out<<',';first=false;out<<"{\"entries\":"<<n<<",\"groupsPerSample\":80,\"creation\":";stats(out,values);out<<"}";wgpuBindGroupLayoutRelease(layout);
+  }out<<"]";checkErrors();return out.str();
  }
 #endif
 };
@@ -140,10 +190,18 @@ int main(int argc,char**argv){
  try{
 #endif
  GPU g;
+#ifdef DRAW_PACKED_GROUPS
+ UEWebGPUPacked::Enabled=EM_ASM_INT({return !Module.arguments?.includes('--legacy-groups');});
+ g.verifyPackedGroups();
+#endif
 #ifdef DRAW_COMMAND_STREAM
+ UEWebGPUStream::StateCommands=EM_ASM_INT({return !Module.arguments?.includes('--legacy-states');});
  g.verifyStream();
 #endif
  auto r=benchmark(g);
+#ifdef DRAW_PACKED_GROUPS
+ auto groupResult=g.benchmarkGroups();r.pop_back();r+=",\"bindGroupCreation\":"+groupResult+"}";
+#endif
 #ifdef __EMSCRIPTEN__
  EM_ASM({postMessage({result:JSON.parse(UTF8ToString($0))});},r.c_str());emscripten_exit_with_live_runtime();
 #else

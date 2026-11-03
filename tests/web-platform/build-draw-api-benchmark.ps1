@@ -3,6 +3,8 @@ param(
  [ValidateSet('jspi','asyncify')][string]$WasmSuspension='jspi',
  [switch]$FastCalls,
  [switch]$CommandStream,
+ [switch]$PackedGroups,
+ [switch]$SharedMemory,
  [switch]$ProfilingNames
 )
 $ErrorActionPreference='Stop'
@@ -21,8 +23,10 @@ try{
  $taskSuspendArgs=@(if($WasmSuspension -eq 'jspi'){'-sJSPI=1'}else{'-sASYNCIFY=1';'-sASYNCIFY_STACK_SIZE=131072'})
  $taskFastArgs=@(if($FastCalls){'-DDRAW_FAST_CALLS=1';'--js-library';"$taskRoot/reference-engine/Engine/Platforms/Web/Build/WebGPUFastCalls.js"})
  if($CommandStream){$taskFastArgs=@('-DDRAW_COMMAND_STREAM=1','--js-library',"$taskRoot/reference-engine/Engine/Platforms/Web/Build/WebGPUCommandStream.js")}
+ if($PackedGroups){$taskFastArgs+=@('-DDRAW_PACKED_GROUPS=1','--js-library',"$taskRoot/reference-engine/Engine/Platforms/Web/Build/WebGPUPackedDescriptors.js")}
+ if($SharedMemory){$taskFastArgs+=@('-pthread','-sPTHREAD_POOL_SIZE=0')}
  if($ProfilingNames){$taskFastArgs+=@('--profiling-funcs')}
  & "$taskRoot/.tools/emsdk/python/3.13.3_64bit/python.exe" "$taskRoot/.tools/emsdk/upstream/emscripten/em++.py" (Join-Path $PSScriptRoot 'draw-api-webgpu.cpp') -o "$taskBuild/draw-wasm.js" -O3 -m64 @taskSuspendArgs @taskFastArgs -sALLOW_MEMORY_GROWTH=1 -sENVIRONMENT=worker -sASSERTIONS=0 -fno-exceptions "--use-port=$taskRoot/.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg/emdawnwebgpu.port.py"
  if($LASTEXITCODE -ne 0){throw 'Draw benchmark wasm64 build failed'}
- @{date=[DateTime]::UtcNow.ToString('o');fastCalls=[bool]$FastCalls;commandStream=[bool]$CommandStream;wasmSuspension=$WasmSuspension;wasmOptimization='O3';wasmAssertions=0;wasmExceptions='disabled';nativeConfiguration='Release';dawnVersion='v20261009.190412';emdawnVersion='v20261009.190412'} | ConvertTo-Json | Set-Content "$taskBuild/build-config.json" -Encoding utf8
+ @{date=[DateTime]::UtcNow.ToString('o');fastCalls=[bool]$FastCalls;commandStream=[bool]$CommandStream;packedGroups=[bool]$PackedGroups;sharedMemory=[bool]$SharedMemory;wasmSuspension=$WasmSuspension;wasmOptimization='O3';wasmAssertions=0;wasmExceptions='disabled';nativeConfiguration='Release';dawnVersion='v20261009.190412';emdawnVersion='v20261009.190412'} | ConvertTo-Json | Set-Content "$taskBuild/build-config.json" -Encoding utf8
 }finally{$env:EM_CONFIG=$taskEMBefore}

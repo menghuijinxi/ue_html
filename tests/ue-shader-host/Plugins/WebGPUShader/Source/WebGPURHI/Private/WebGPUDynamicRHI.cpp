@@ -577,6 +577,9 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GlobalProbeMode = true;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     UEWebGPUStream::Enabled = !FParse::Param(FCommandLine::Get(), TEXT("WebGPUImmediateCalls"));
+    UEWebGPUStream::StateCommands = !FParse::Param(FCommandLine::Get(), TEXT("WebGPUScalarPassCalls"));
+    UEWebGPUPacked::Enabled = !FParse::Param(FCommandLine::Get(), TEXT("WebGPULegacyDescriptors"));
+    UE_LOG(LogRHI, Display, TEXT("WebGPU bridge extras: states=%d groups=%d"), int(UEWebGPUStream::StateCommands), int(UEWebGPUPacked::Enabled));
     UE_LOG(LogRHI, Display, TEXT("WebGPU command stream: %s"), UEWebGPUStream::Enabled ? TEXT("enabled") : TEXT("disabled (A/B test)"));
     EmitDebugMarkers = MAIN_THREAD_EM_ASM_INT({ return globalThis.__webStartupDiagnostics?.mode !== 'normal'; }) != 0;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER

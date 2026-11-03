@@ -8,6 +8,7 @@
 #include <webgpu/webgpu.h>
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
 #include "WebGPUCommandStream.h"
+#include "WebGPUPackedDescriptors.h"
 #endif
 #include <atomic>
 
