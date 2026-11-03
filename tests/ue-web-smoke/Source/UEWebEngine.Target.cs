@@ -26,6 +26,9 @@ public class UEWebEngineTarget : UEWebApplicationTarget
             throw new BuildException("WebLinkOptimization must be 0, 1 or 2.");
         if (WebLinkOptimization > 0)
             AdditionalLinkerArguments += " -O" + WebLinkOptimization;
+        // Isolate the O2 Wasm optimization from export/JS name minification.
+        if (target.Arguments?.HasOption("-WebKeepLinkNames") ?? false)
+            AdditionalLinkerArguments += " -g3";
         string Workspace = Path.GetFullPath(Path.Combine(ProjectFile.Directory.FullName, "../.."));
         AdditionalLinkerArguments += " --use-port=\"" +
             Path.Combine(Workspace, "reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py")

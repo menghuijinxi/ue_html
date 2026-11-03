@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><title>RHI 独立对照</title>
+<p>绑定准备、线程竞争与绘制调用对照。结果由测试脚本保存。</p>
+<script>
+window.runIsolation=variant=>new Promise((resolve,reject)=>{
+ const worker=new Worker(variant==='js'?'rhi-isolation-js-worker.js':'rhi-isolation-worker.js?variant='+variant);
+ worker.onerror=e=>{worker.terminate();reject(Error(e.message));};
+ worker.onmessage=({data})=>{if(data.error){worker.terminate();reject(Error(data.error));}if(data.result){worker.terminate();resolve(data.result);}};
+});
+</script>

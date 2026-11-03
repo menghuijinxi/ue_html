@@ -5,8 +5,9 @@ const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.
 const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3);
 const folder=option('folder'),tag=option('tag');assert([folder,tag].every(v=>v&&/^[a-z0-9-]+$/.test(v)));
 const output=path.join(__dirname,'results',tag);assert(!fs.existsSync(output+'.json'));
+const runtime=fs.readdirSync(path.join(__dirname,'build',folder)).filter(n=>/^UEWebEngineThreads\w*\.wasm$/.test(n));assert.equal(runtime.length,1);
 const report={date:new Date().toISOString(),folder,pass:false,errors:[],views:[],source:audit(__filename),
- packageFiles:['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm','config-files.json','content-files.json'].map(n=>audit(path.join(__dirname,'build',folder,n))),
+ packageFiles:['index.html',runtime[0].replace(/\.wasm$/,'.js'),runtime[0],'config-files.json','content-files.json'].map(n=>audit(path.join(__dirname,'build',folder,n))),
  boundary:'Correctness only. Default package, full threading, project quality settings. Camera is moved by the existing UE view diagnostic RPC; no FPS claim or CPU profiler.'};
 let context;
 async function captureOwner(){

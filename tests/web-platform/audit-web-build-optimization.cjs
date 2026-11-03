@@ -19,7 +19,7 @@ const link=fs.readFileSync(build.linkResponse.file,'utf8');
 const result={date:new Date().toISOString(),pass:true,source:audit(__filename),build:audit(input),objects:units,
  compileCounts:counts,simdUnits:units.filter(u=>u.simd).length,ltoUnits:units.filter(u=>u.lto).length,
  link:{source:build.linkResponse,optimization:[...link.matchAll(/(?:^|\s)(-O[0-3sz])(?=\s|$)/gm)].map(m=>m[1]),
-  assertions:link.match(/-sASSERTIONS=(\d)/)?.[1],debug:link.match(/(?:^|\s)(-g\d?)(?=\s|$)/)?.[1],
+  assertions:link.match(/-sASSERTIONS=(\d)/)?.[1],debug:[...link.matchAll(/(?:^|\s)(-g\d?)(?=\s|$)/g)].at(-1)?.[1],
   lto:/(?:^|\s)-flto(?:[=\s]|$)/.test(link),switches:link.split(/\r?\n/).filter(l=>l.startsWith('-'))},
  products:build.products,boundary:'Audits actual response files and object hashes from this successful build. No FPS is inferred from optimization flags. Final-link optimization is distinct from LLVM LTO.'};
 fs.writeFileSync(output,JSON.stringify(result,null,2));

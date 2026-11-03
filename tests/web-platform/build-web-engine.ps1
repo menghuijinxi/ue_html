@@ -4,8 +4,10 @@ param(
     [switch]$SkipHostPreparation,
     [switch]$Threads,
     [switch]$Trace,
+    [switch]$Simd,
     [switch]$StandaloneCompiles,
     [ValidateRange(0, 2)][int]$LinkOptimization = 0,
+    [switch]$KeepLinkNames,
     [string]$RendererRevision = ''
 )
 $ErrorActionPreference = 'Stop'
@@ -15,8 +17,9 @@ $taskUbt = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.
 $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/dotnet.exe'
 if (-not (Test-Path -LiteralPath $taskUbt)) { throw 'Run build-web-ubt.ps1 to prepare the isolated Web UBT first.' }
 if ($Trace -and -not $Threads) { throw 'The Trace diagnostic target requires -Threads.' }
-$taskTarget = if ($Trace) { 'UEWebEngineThreadsTrace' } elseif ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
-$taskVariant = if ($Trace) { '-thread-trace' } elseif ($Threads) { '-thread' } else { '' }
+if ($Simd -and (-not $Threads -or $Trace)) { throw 'SIMD comparison requires Threads without Trace.' }
+$taskTarget = if ($Simd) { 'UEWebEngineThreadsSIMD' } elseif ($Trace) { 'UEWebEngineThreadsTrace' } elseif ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
+$taskVariant = if ($Simd) { '-thread-simd' } elseif ($Trace) { '-thread-trace' } elseif ($Threads) { '-thread' } else { '' }
 $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 & (Join-Path $PSScriptRoot 'build-web-blake3.ps1') -Threads:$Threads
 & (Join-Path $PSScriptRoot 'build-web-libpng.ps1') -Threads:$Threads
@@ -82,8 +85,10 @@ $taskReport = [ordered]@{
     target = $taskTarget
     threads = [bool]$Threads
     trace = [bool]$Trace
+    simd = [bool]$Simd
     standaloneCompiles = [bool]$StandaloneCompiles
     linkOptimization = $(if ($LinkOptimization -eq 0) { 'default-O0' } else { "O$LinkOptimization" })
+    keepLinkNames = [bool]$KeepLinkNames
     maxParallelActions = $MaxParallelActions
     rendererRevision = $taskRendererSnapshot
     pass = $false
@@ -107,6 +112,7 @@ try {
         "-Project=$(Join-Path $taskRoot 'tests/ue-web-smoke/UEWebSmoke.uproject')",
         '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
     if ($LinkOptimization -gt 0) { $taskArguments += "-WebLinkOptimization=$LinkOptimization" }
+    if ($KeepLinkNames) { $taskArguments += '-WebKeepLinkNames' }
     if ($StandaloneCompiles) {
         $taskActions = "$taskLog.actions.json"
         & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" *> "$taskLog.export.log"
@@ -127,6 +133,16 @@ try {
     $taskReport.buildSucceeded = $taskExit -eq 0 -and $taskText.Contains('Result: Succeeded')
     $taskReport.products = @()
     if ($taskReport.buildSucceeded) {
+        if ($KeepLinkNames) {
+            $taskDwarfWasm = Join-Path $taskRoot "tests/ue-web-smoke/Binaries/Web/$taskTarget.wasm"
+            $taskStrippedWasm = "$taskDwarfWasm.without-dwarf"
+            Remove-Item -LiteralPath $taskStrippedWasm -Force -ErrorAction SilentlyContinue
+            $taskStripReport = "$taskLog.strip-dwarf.json"
+            & node (Join-Path $PSScriptRoot 'strip-wasm-dwarf.cjs') $taskDwarfWasm $taskStrippedWasm $taskStripReport
+            if ($LASTEXITCODE -ne 0) { throw 'DWARF-only stripping failed.' }
+            Move-Item -LiteralPath $taskStrippedWasm -Destination $taskDwarfWasm -Force
+            $taskReport.dwarfStrip = Get-TaskAudit $taskStripReport
+        }
         & node (Join-Path $PSScriptRoot 'validate-web-wasm.cjs') (Join-Path $taskRoot "tests/ue-web-smoke/Binaries/Web/$taskTarget.wasm")
         $taskReport.wasmValidated = $LASTEXITCODE -eq 0
         if (-not $taskReport.wasmValidated) { throw 'Linked WASM failed structural validation.' }
@@ -145,6 +161,7 @@ try {
     if ($Threads -and $taskReport.buildSucceeded) {
         $taskThreadResponse = Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/$taskTarget.js.rsp"
         $taskLinkText = Get-Content -LiteralPath $taskThreadResponse -Raw
+        if ($taskLinkText.Contains('-msimd128') -ne [bool]$Simd) { throw 'Unexpected final SIMD flag.' }
         $taskLinkOptimizationFlags = @([regex]::Matches($taskLinkText, '(?<!\S)-O[0-3sz](?=\s|$)') | ForEach-Object { $_.Value })
         if (($LinkOptimization -eq 0 -and $taskLinkOptimizationFlags.Count -ne 0) -or
             ($LinkOptimization -gt 0 -and ($taskLinkOptimizationFlags.Count -ne 1 -or
@@ -157,6 +174,7 @@ try {
         $taskReport.objects = @([regex]::Matches($taskLinkText, '(?m)^"([^"\r\n]+\.o)"\r?$') | ForEach-Object {
             $taskObject = $_.Groups[1].Value
             $taskCompile = Get-Content -LiteralPath "$taskObject.rsp" -Raw
+            if ($taskCompile.Contains('-msimd128') -ne [bool]$Simd) { throw "Mixed SIMD compile flags: $taskObject" }
             $taskDefinitions = [regex]::Match($taskCompile, '(?m)^-include "([^"]+/Definitions[^"]*\.h)"').Groups[1].Value
             $taskDefines = Get-Content -LiteralPath $taskDefinitions -Raw
             if (-not $taskCompile.Contains('-pthread') -or

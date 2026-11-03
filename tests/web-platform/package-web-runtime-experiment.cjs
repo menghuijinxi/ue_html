@@ -21,10 +21,12 @@ const proof = evidence.packages ? Object.values(evidence.packages).find(x => x.f
   evidence.products?.every(valid) ? {files: evidence.products} : null;
 assert(evidence.pass && proof && Object.values(proof.files).every(valid));
 const trace = process.argv.includes('--trace');
-const buildFile = path.join(results, `web-engine-full-thread${trace ? '-trace' : ''}-build-results.json`), build = read(buildFile);
+const simd = process.argv.includes('--simd');assert(!(simd&&trace));
+const buildFile = path.join(results, `web-engine-full-thread${simd ? '-simd' : trace ? '-trace' : ''}-build-results.json`), build = read(buildFile);
 assert(build.pass && build.threads && build.buildSucceeded && build.exitCode === 0 &&
   (build.fullLinkAttempted || build.fullLinkVerified) && build.sourceFiles.every(valid) && build.products.every(valid));
 assert(Boolean(build.trace) === trace);
+assert(Boolean(build.simd) === simd);
 assert(build.objects.every(x => [x.object, x.response, x.definitions, x.source].every(valid)));
 assert(!fs.existsSync(output), 'Use a fresh experiment folder to preserve prior evidence');
 fs.mkdirSync(output, {recursive: true});
@@ -36,7 +38,7 @@ for (const f of fs.readdirSync(base)) if (fs.statSync(path.join(base, f)).isFile
     try {fs.linkSync(source,destination);} catch {fs.copyFileSync(source,destination);}
   } else fs.copyFileSync(source,destination);
 }
-const runtime = trace ? 'UEWebEngineThreadsTrace' : 'UEWebEngineThreads';
+const runtime = simd ? 'UEWebEngineThreadsSIMD' : trace ? 'UEWebEngineThreadsTrace' : 'UEWebEngineThreads';
 const runtimeNames = [runtime + '.js', runtime + '.wasm'];
 for (const name of runtimeNames) fs.copyFileSync(build.products.find(x => path.basename(x.file) === name).file, path.join(output, name));
 const helpers = ['web-engine-host.js', 'web-engine-worker.js', 'web-content-io.js', 'web-content-worker.js'];

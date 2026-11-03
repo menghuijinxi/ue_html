@@ -19,13 +19,17 @@ const modes = folders ? folders.map(()=>'full') : transports ? transports.map(()
 assert(modes.every(v => ['full', 'render-serial', 'single'].includes(v)) && seconds >= 5 && seconds <= 60);
 assert(Number.isFinite(warmup) && warmup >= 0 && warmup <= 120);
 const output = path.join(__dirname, 'results', tag), base = path.join(__dirname, 'build', folder);
+const packageNames=f=>{
+ const directory=path.join(__dirname,'build',f),runtime=fs.readdirSync(directory).filter(n=>/^UEWebEngineThreads\w*\.wasm$/.test(n));
+ assert.equal(runtime.length,1);return ['index.html',runtime[0].replace(/\.wasm$/,'.js'),runtime[0],'config-files.json','content-files.json'];
+};
 const viewKey = view => ['width','height','outputWidth','outputHeight','antiAliasing','x','y','outputX','outputY'].map(k => view[k]);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 const report = {date: new Date().toISOString(), folder, seconds, warmup, runs: [], pass: false,
   coreLimits, bridges, transports, folders,
   source: audit(__filename), qualityOverrides: [], psoPrecache: false,
-  packageFiles: ['index.html', 'UEWebEngineThreads.js', 'UEWebEngineThreads.wasm', 'config-files.json', 'content-files.json'].map(n => audit(path.join(base, n))),
-  packages:Object.fromEntries([...new Set(folders||[folder])].map(f=>[f,{folder:f,files:Object.fromEntries(['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm','config-files.json','content-files.json'].map(n=>[n,audit(path.join(__dirname,'build',f,n))]))}])),
+  packageFiles: packageNames(folder).map(n => audit(path.join(base, n))),
+  packages:Object.fromEntries([...new Set(folders||[folder])].map(f=>[f,{folder:f,files:Object.fromEntries(packageNames(f).map(n=>[n,audit(path.join(__dirname,'build',f,n))]))}])),
   boundary: 'Thread/bridge/transport tests use the same pthread WASM and Cook, varying only the named startup flags. Folder comparisons use separately audited runtimes and identical content/config hashes. Full threading and default cores for bridge/transport/folder tests. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation. Optional CPU sampling starts after the measured interval and screenshot.'};
 for(const p of Object.values(report.packages))for(const n of ['config-files.json','content-files.json'])assert.equal(p.files[n].sha256,report.packages[folder].files[n].sha256,'Cook or project config changed');
 function install() {
