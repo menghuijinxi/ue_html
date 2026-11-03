@@ -174,6 +174,18 @@ node tests/web-platform/probe-web-feedback-compaction.cjs <ShaderConversion目�
 
 此前一次完整别墅 Cook 已正常退出，生成 5159 项产物；该次使用的是旧步长 Shader，只用于保留已完成的材质缓存。结构体修正后的 `20261103-145542` Cook 已正常退出，Stage 输出 5157 个文件、3412437085 字节；后续 Package 和浏览器验收使用该次新产物。
 
+### 浏览器首帧资源与日志
+
+该 Cook 已完成线程版 Package，实际浏览器启动仍未完成。首帧首先暴露 Surface Cache 深度图集的 `PF_G16` 未映射；Web RHI 补充对应的 `r16unorm` 采样、渲染及存储格式，按设备的 texture-formats-tier1 能力准入，保持每 texel 两字节。新增原生 GPU 回读已通过，连同原有格式共 8 项、7 条实际格式管线，没有 GPU 校验错误。结果为 `build/lumen-storage-rhi-r16/lumen-storage-rhi.json`。
+
+再次启动越过该格式后，发现还需 `PF_R8_UINT` 的 4×4×4 三维默认纹理。RHI 增加 `r8uint` 的整数类型、格式、三维创建及 SRV 映射；不通过改成 R32_UINT 扩大纹理，也不关闭使用它的效果。新增实际 RHI 测试验证全部 64 个 texel 的上传及 GPU 拷贝回读，同时核验直接绑定和 SRV 的 uint 类型兼容、拒绝 float 类型。连同上述 8 个格式用例全部通过，没有 GPU 校验错误，结果为 `build/lumen-storage-rhi-formats/lumen-storage-rhi.json`。该路径的完整浏览器验收继续进行。
+
+另外核对开关回退路径发现，关闭 `r.Lumen.ScreenProbeGather` 会清零 R11G11B10 输出；原 Web Compute 清零只列出了部分格式，无法处理它。清零现在复用统一的存储格式名称映射，补全已有纹理格式的清零能力，不增加场景纹理或修改清零值。上述 8 项测试均增加写入非零值后的实际 GPU 清零与回读，全部通过；8 位整数体积纹理另行回读。可追溯摘要：`tests/web-platform/evidence/lumen-rhi-formats-20261103.json`。
+
+首帧还存在独立的日志死锁：UE 的 Generic `LocalPrint` 使用 libc 标准输出；pthread 在持有标准输出锁时同步转发写入主 Worker，主 Worker 处理 RHI 回调并再次写日志，会等待同一把锁。暂时降低 RHI 日志量能暴露后续格式断言，但不构成正式修复。Web 的 `LocalPrint` 现改为在调用线程直接使用 Emscripten 日志回调，保留原有日志接收和内容，桌面分支不变。
+
+最小浏览器复现 `probe-web-log-proxy.cjs` 验证后台线程持锁期间执行主 Worker 日志：旧 stdio 路径停在日志入口，直接日志路径正常返回。该测试使用独立小型 WASM，不等同于完整场景验收。测试使用的 SDK 根路径与主构建统一，防止斜杠写法不同触发共享缓存失效。正式场景观察脚本没有 RDG、日志等级或画质覆盖。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：
@@ -183,5 +195,6 @@ node tests/web-platform/probe-web-feedback-compaction.cjs <ShaderConversion目�
 - Cards 添加队列保持原始字节布局，没有因标量化再复制一份队列。
 - 存储格式专用管线不增加纹理尺寸、格式字节数或拷贝 Pass；每个动态格式 Shader 保留一份 WGSL 源码，实际遇到的格式组合各保留一条管线。绑定格式未知时暂不进行该管线的推测预缓存，第一次使用会增加管线编译成本，后续同格式组合复用；CPU/驱动内存及首次卡顿仍待真实场景测量。
 - Radiosity 历史副本增加 `图集宽 × 高 × 原格式字节数` 的临时资源和每次积分前的一次整图拷贝。默认 4096×4096 R11G11B10 为 64 MiB，拷贝读写合计 128 MiB；项目改用其他图集尺寸或格式时按实际值计算。资源池可能保留该内存，不能将 RDG 生命周期结束当作显存立即归还。完整场景的耗时和峰值尚待实测。
+- Surface Cache 的默认压缩模式 1 需要 UAV 格式别名或 framebuffer 压缩能力；Web RHI 尚未提供这两项能力，UE 自动选择未压缩图集。这不改变项目 CVar，也没有手动关掉 Lumen 效果，但会增加显存。在相同 4096² 图集下，Albedo/Normal/Emissive 使用 RGBA8/RG8/R11G11B10，共 160 MiB；支持该压缩路径的桌面端使用 BC7/BC5/BC6H，共 48 MiB，三者差额为 112 MiB。Depth 在两端均为 R16 UNORM、32 MiB。此处是按源码格式计算的资源差额，不能替代进程显存实测。
 
 以上未计对齐、驱动和资源池开销。**尚无完整 Lumen 场景帧率、GPU 各通道耗时或峰值显存实测，不能给出与桌面端的性能结论。** 关闭项目准入后不会进入这些新增 Lumen pass；尚未实测运行中关闭效果后的资源池即时归还情况。

@@ -169,7 +169,7 @@ FString String(WGPUStringView Value)
 }
 bool IsUnsignedTextureFormat(EPixelFormat Value)
 {
-    return Value == PF_R8G8B8A8_UINT || Value == PF_R32_UINT || Value == PF_R16_UINT ||
+    return Value == PF_R8G8B8A8_UINT || Value == PF_R8_UINT || Value == PF_R32_UINT || Value == PF_R16_UINT ||
         Value == PF_R32G32_UINT || Value == PF_R32G32B32A32_UINT;
 }
 bool IsBCTextureFormat(EPixelFormat Value)
@@ -185,7 +185,7 @@ bool SupportsSRGB(EPixelFormat Value)
 bool IsSampled2DTextureFormat(EPixelFormat Value)
 {
     return Value == PF_R8G8B8A8 || Value == PF_B8G8R8A8 || Value == PF_G8 || Value == PF_R8 ||
-           Value == PF_R8G8 || Value == PF_G16R16 || Value == PF_A16B16G16R16 ||
+           Value == PF_R8G8 || Value == PF_G16 || Value == PF_G16R16 || Value == PF_A16B16G16R16 ||
            Value == PF_A2B10G10R10 || Value == PF_FloatRGBA || Value == PF_A32B32G32R32F ||
            Value == PF_FloatRGB || Value == PF_FloatR11G11B10 ||
            Value == PF_R16F || Value == PF_G16R16F || Value == PF_R32_FLOAT || Value == PF_G32R32F ||
@@ -208,6 +208,7 @@ uint32 StorageImageFormat(EPixelFormat Value)
     case PF_A16B16G16R16: return 10;
     case PF_G16R16: return 12;
     case PF_R8G8: return 13;
+    case PF_G16: return 14;
     case PF_G8:
     case PF_R8: return 15;
     case PF_R8G8B8A8_UINT: return 32;
@@ -215,6 +216,7 @@ uint32 StorageImageFormat(EPixelFormat Value)
     case PF_R32_UINT: return 33;
     case PF_R32G32_UINT: return 35;
     case PF_R16_UINT: return 38;
+    case PF_R8_UINT: return 39;
     default: return 0;
     }
 }
@@ -233,12 +235,14 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = fals
     case 10: return WGPUTextureFormat_RGBA16Unorm;
     case 12: return WGPUTextureFormat_RG16Unorm;
     case 13: return WGPUTextureFormat_RG8Unorm;
+    case 14: return WGPUTextureFormat_R16Unorm;
     case 15: return WGPUTextureFormat_R8Unorm;
     case 32: return WGPUTextureFormat_RGBA8Uint;
     case 30: return WGPUTextureFormat_RGBA32Uint;
     case 33: return WGPUTextureFormat_R32Uint;
     case 35: return WGPUTextureFormat_RG32Uint;
     case 38: return WGPUTextureFormat_R16Uint;
+    case 39: return WGPUTextureFormat_R8Uint;
     default:
         if (AllowUnsupported) return WGPUTextureFormat_Undefined;
         checkf(false, TEXT("WebGPU storage image format unsupported: %u"), ImageFormat);
@@ -260,7 +264,14 @@ const TCHAR* StorageFormatName(uint32 ImageFormat)
     case 10: return TEXT("rgba16unorm");
     case 12: return TEXT("rg16unorm");
     case 13: return TEXT("rg8unorm");
+    case 14: return TEXT("r16unorm");
     case 15: return TEXT("r8unorm");
+    case 30: return TEXT("rgba32uint");
+    case 32: return TEXT("rgba8uint");
+    case 33: return TEXT("r32uint");
+    case 35: return TEXT("rg32uint");
+    case 38: return TEXT("r16uint");
+    case 39: return TEXT("r8uint");
     default: checkNoEntry(); return TEXT("");
     }
 }
@@ -309,6 +320,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false, bool AllowUnsupp
         return WGPUTextureFormat_R8Unorm;
     case PF_R8G8:
         return WGPUTextureFormat_RG8Unorm;
+    case PF_G16:
+        return WGPUTextureFormat_R16Unorm;
     case PF_G16R16:
         return WGPUTextureFormat_RG16Unorm;
     case PF_A16B16G16R16:
@@ -340,6 +353,8 @@ WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false, bool AllowUnsupp
         return WGPUTextureFormat_R32Uint;
     case PF_R16_UINT:
         return WGPUTextureFormat_R16Uint;
+    case PF_R8_UINT:
+        return WGPUTextureFormat_R8Uint;
     case PF_DXT1:
         return SRGB ? WGPUTextureFormat_BC1RGBAUnormSrgb : WGPUTextureFormat_BC1RGBAUnorm;
     case PF_DXT3:
@@ -1543,7 +1558,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         Error = TEXT("BC textures require texture-compression-bc, block-aligned sampled 2D/cube data and no render/storage usage");
         return false;
     }
-    if ((In.Format == PF_G16R16 || In.Format == PF_A16B16G16R16) &&
+    if ((In.Format == PF_G16 || In.Format == PF_G16R16 || In.Format == PF_A16B16G16R16) &&
         !wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1))
     {
         Error = TEXT("Desktop UNORM16 render targets require texture-formats-tier1");
@@ -1554,7 +1569,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
                                     In.Format == PF_FloatRGB || In.Format == PF_FloatR11G11B10 ||
                                     In.Format == PF_R16F || In.Format == PF_G16R16F ||
                                     In.Format == PF_R8 || In.Format == PF_G8 ||
-                                    In.Format == PF_R32_UINT || In.Format == PF_R32_FLOAT
+                                    In.Format == PF_R8_UINT || In.Format == PF_R32_UINT || In.Format == PF_R32_FLOAT
                               : IsSampled2DTextureFormat(In.Format);
     const uint32 Limit = Volume ? Limits.maxTextureDimension3D : Limits.maxTextureDimension2D;
     if ((In.Dimension != ETextureDimension::Texture2D && !Volume && !Cube && !Array) ||
@@ -1578,7 +1593,8 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV) &&
          (!StorageImageFormat(In.Format) ||
           ((In.Format == PF_R16F || In.Format == PF_G16R16F || In.Format == PF_R16_UINT ||
-            In.Format == PF_R8 || In.Format == PF_G8 || In.Format == PF_R8G8) &&
+            In.Format == PF_R8 || In.Format == PF_G8 || In.Format == PF_R8G8 || In.Format == PF_G16 ||
+            In.Format == PF_R8_UINT) &&
            !wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1)))) ||
         (In.InitAction != ERHITextureInitAction::Default && In.InitAction != ERHITextureInitAction::Initializer &&
          In.InitAction != ERHITextureInitAction::BulkData) ||
@@ -2010,7 +2026,7 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
                                              Target.Format == PF_R8G8B8A8_UINT || Target.Format == PF_FloatRGBA ||
                                              Target.Format == PF_R16F || Target.Format == PF_G16R16F ||
                                              Target.Format == PF_R8 || Target.Format == PF_G8 ||
-                                             Target.Format == PF_R32_UINT || Target.Format == PF_R32_FLOAT
+                                             Target.Format == PF_R8_UINT || Target.Format == PF_R32_UINT || Target.Format == PF_R32_FLOAT
                                        : IsSampled2DTextureFormat(Target.Format) || DepthStencil;
     if (!SupportedFormat ||
         (View.Format != PF_Unknown && View.Format != Target.Format && !(DepthStencil && View.Format == PF_X24_G8)) ||
@@ -4773,18 +4789,11 @@ void FWebGPUDynamicRHI::ClearStorageUAV(FRHIUnorderedAccessView* View, const FUi
         Extent = FUintVector4(FMath::Max(1u, Target->GetSizeX() >> Info.MipLevel),
             FMath::Max(1u, Target->GetSizeY() >> Info.MipLevel),
             Volume ? FMath::Max(1u, uint32(Target->GetSizeXYZ().Z) >> Info.MipLevel) : 1, 0);
-        const char* FormatName = Info.Format == PF_R32_UINT ? "r32uint" :
-            Info.Format == PF_R32_FLOAT ? "r32float" :
-            Info.Format == PF_G8 || Info.Format == PF_R8 ? "r8unorm" :
-            Info.Format == PF_R8G8B8A8 ? "rgba8unorm" :
-            Info.Format == PF_R8G8B8A8_UINT ? "rgba8uint" :
-            Info.Format == PF_FloatRGBA ? "rgba16float" :
-            Info.Format == PF_R16F ? "r16float" : nullptr;
-        checkf(FormatName, TEXT("Storage clear format is not implemented: %d"), int32(Info.Format));
-        Key = FString::Printf(TEXT("texture-%s-%s-%d"), ANSI_TO_TCHAR(FormatName),
+        const TCHAR* FormatName = StorageFormatName(StorageImageFormat(Info.Format));
+        Key = FString::Printf(TEXT("texture-%s-%s-%d"), FormatName,
             Volume ? TEXT("3d") : TEXT("2d"), int32(Float));
         Declaration = FString::Printf(TEXT("@group(0) @binding(0) var destination: texture_storage_%s<%s, write>;"),
-            Volume ? TEXT("3d") : TEXT("2d"), ANSI_TO_TCHAR(FormatName));
+            Volume ? TEXT("3d") : TEXT("2d"), FormatName);
         Body = FString::Printf(TEXT("if (all(id < params.extent.xyz)) { textureStore(destination, %s, %s); }"),
             Volume ? TEXT("vec3<i32>(id)") : TEXT("vec2<i32>(id.xy)"),
             Float ? TEXT("bitcast<vec4<f32>>(params.value)") : TEXT("params.value"));

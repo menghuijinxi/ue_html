@@ -16,6 +16,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         GRHICommandList.Submit({}, ERHISubmitFlags::FlushRHIThread | ERHISubmitFlags::SubmitToGPU |
             ERHISubmitFlags::EnableBypass);
         TArray<TSharedPtr<FJsonValue>> Cases;
+        TArray<TSharedPtr<FJsonValue>> VolumeCases;
         bool Pass = true;
         {
             TRefCountPtr<FWebGPUComputeShader> Shader = new FWebGPUComputeShader;
@@ -81,7 +82,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Shader->InitResourceTable();
             auto Pipeline = RHI.RHICreateComputePipelineState(FComputePipelineStateInitializer(Shader));
             for (const auto Format : {PF_FloatR11G11B10, PF_FloatRGBA, PF_A32B32G32R32F,
-                PF_FloatR11G11B10, PF_R16F, PF_R8G8, PF_R8})
+                PF_FloatR11G11B10, PF_R16F, PF_R8G8, PF_R8, PF_G16})
             {
                 auto Lighting = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("LumenStorageLighting"), 1, 1, Format)
                     .SetFlags(ETextureCreateFlags::UAV | ETextureCreateFlags::ShaderResource).SetInitialState(ERHIAccess::UAVCompute));
@@ -141,6 +142,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 }
                 else if (Format == PF_A32B32G32R32F)
                     for (float Value : {0.25f, 0.5f, 1.0f, 0.75f}) Append(Value);
+                else if (Format == PF_G16) Append(uint16(16384));
                 else
                 {
                     Expected.Add(64);
@@ -149,12 +151,28 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 bool LightingMatches = LightingBytes.Num() >= Expected.Num();
                 if (LightingMatches)
                 {
-                    const int32 Tolerance = Format == PF_R8 || Format == PF_R8G8 ? 1 : 0;
-                    for (int32 Byte = 0; Byte < Expected.Num(); ++Byte)
-                        LightingMatches &= FMath::Abs(int32(LightingBytes[Byte]) - int32(Expected[Byte])) <= Tolerance;
+                    if (Format == PF_G16)
+                    {
+                        uint16 ActualUNorm = 0;
+                        FMemory::Memcpy(&ActualUNorm, LightingBytes.GetData(), sizeof(ActualUNorm));
+                        LightingMatches = FMath::Abs(int32(ActualUNorm) - 16384) <= 1;
+                    }
+                    else
+                    {
+                        const int32 Tolerance = Format == PF_R8 || Format == PF_R8G8 ? 1 : 0;
+                        for (int32 Byte = 0; Byte < Expected.Num(); ++Byte)
+                            LightingMatches &= FMath::Abs(int32(LightingBytes[Byte]) - int32(Expected[Byte])) <= Tolerance;
+                    }
                 }
                 // UNORM conversions may round half a quantization step in either direction.
                 OK &= LightingMatches && MaskBytes.Num() > 0 && FMath::Abs(int32(MaskBytes[0]) - 128) <= 1;
+                Cmd.Transition(FRHITransitionInfo(Lighting, ERHIAccess::CopySrc, ERHIAccess::UAVCompute));
+                RHI.RHIClearUAVFloat(LightingUAV, FVector4f(0, 0, 0, 0));
+                const auto ClearedBytes = ReadTexture(Lighting);
+                bool ClearMatches = ClearedBytes.Num() >= Expected.Num();
+                for (int32 Byte = 0; Byte < Expected.Num() && ClearMatches; ++Byte)
+                    ClearMatches &= ClearedBytes[Byte] == 0;
+                OK &= ClearMatches;
                 auto Case = MakeShared<FJsonObject>();
                 Case->SetNumberField(TEXT("format"), Format);
                 Case->SetBoolField(TEXT("pass"), OK);
@@ -164,18 +182,67 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 Case->SetNumberField(TEXT("mask"), MaskBytes.Num() ? MaskBytes[0] : -1);
                 Case->SetNumberField(TEXT("bufferFirst"), Actual[0].X);
                 Case->SetNumberField(TEXT("bufferSecond"), Actual[1].X);
+                Case->SetBoolField(TEXT("clearPass"), ClearMatches);
                 Cases.Add(MakeShared<FJsonValueObject>(Case));
                 Pass &= OK;
             }
-            Pass &= RHI.ComputePipelinesCreated == 6 &&
-                static_cast<FWebGPUComputePipeline*>(Pipeline.GetReference())->FormatVariants.Num() == 6;
+            Pass &= RHI.ComputePipelinesCreated == 7 &&
+                static_cast<FWebGPUComputePipeline*>(Pipeline.GetReference())->FormatVariants.Num() == 7;
             Data.Resources.Reset();
+        }
+        {
+            uint8 Expected[64];
+            for (uint32 Index = 0; Index < 64; ++Index) Expected[Index] = uint8(Index * 73 + 17);
+            auto Desc = FRHITextureCreateDesc::Create3D(TEXT("LumenUIntVolume"), 4, 4, 4, PF_R8_UINT)
+                .SetFlags(ETextureCreateFlags::ShaderResource).SetInitialState(ERHIAccess::SRVCompute)
+                .SetInitActionInitializer();
+            auto Initializer = Cmd.CreateTextureInitializer(Desc);
+            auto Subresource = Initializer.GetTexture3DSubresource(0);
+            bool OK = Subresource.Size == sizeof(Expected) && Subresource.Stride == 4;
+            Subresource.WriteData(Expected, sizeof(Expected));
+            auto Texture = Initializer.Finalize();
+            auto SRV = Cmd.CreateShaderResourceView(Texture,
+                FRHIViewDesc::CreateTextureSRV().SetDimension(ETextureDimension::Texture3D));
+            FJsonObject Binding;
+            Binding.SetNumberField(TEXT("textureDimension"), 2);
+            Binding.SetBoolField(TEXT("textureArrayed"), false);
+            Binding.SetBoolField(TEXT("textureMultisampled"), false);
+            Binding.SetStringField(TEXT("textureSampleType"), TEXT("uint"));
+            FString Error;
+            OK &= RHI.ValidateTextureBinding(Texture, Binding, ERHIAccess::SRVCompute, Error) &&
+                RHI.ValidateTextureBinding(SRV, Binding, ERHIAccess::SRVCompute, Error);
+            Binding.SetStringField(TEXT("textureSampleType"), TEXT("float"));
+            OK &= !RHI.ValidateTextureBinding(SRV, Binding, ERHIAccess::SRVCompute, Error);
+            Cmd.Transition(FRHITransitionInfo(Texture, ERHIAccess::SRVCompute, ERHIAccess::CopySrc));
+            auto Buffer = RHI.CreateBuffer(4096, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+            if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+            auto Source = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+            Source.texture = static_cast<FWebGPUTexture*>(Texture.GetReference())->Handle;
+            auto Destination = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+            Destination.buffer = Buffer;
+            Destination.layout.bytesPerRow = 256;
+            Destination.layout.rowsPerImage = 4;
+            const WGPUExtent3D Extent{4, 4, 4};
+            wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &Extent);
+            RHI.SubmitCurrent();
+            const auto Bytes = RHI.MapBuffer(Buffer, 4096);
+            wgpuBufferRelease(Buffer);
+            OK &= Bytes.Num() == 4096;
+            for (uint32 Index = 0; Index < 64 && OK; ++Index)
+                OK &= Bytes[(Index / 4) * 256 + Index % 4] == Expected[Index];
+            auto Case = MakeShared<FJsonObject>();
+            Case->SetNumberField(TEXT("format"), PF_R8_UINT);
+            Case->SetNumberField(TEXT("checkedTexels"), 64);
+            Case->SetBoolField(TEXT("pass"), OK);
+            VolumeCases.Add(MakeShared<FJsonValueObject>(Case));
+            Pass &= OK;
         }
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
         Report->SetNumberField(TEXT("pipelines"), RHI.ComputePipelinesCreated);
         Report->SetArrayField(TEXT("cases"), Cases);
+        Report->SetArrayField(TEXT("volumeCases"), VolumeCases);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);

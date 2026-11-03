@@ -1,0 +1,128 @@
+{
+  "date": "2026-11-03T08:28:29.550Z",
+  "stage": "lumen-rhi-runtime-formats",
+  "pass": true,
+  "completeLumenScene": false,
+  "rendererOverrides": [],
+  "nativeRHI": {
+    "pass": true,
+    "pipelines": 7,
+    "cases": [
+      {
+        "format": 26,
+        "pass": true,
+        "actualBytes": "40031C78",
+        "expectedBytes": "40031C78",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 10,
+        "pass": true,
+        "actualBytes": "00340038003C003A",
+        "expectedBytes": "00340038003C003A",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 1,
+        "pass": true,
+        "actualBytes": "0000803E0000003F0000803F0000403F",
+        "expectedBytes": "0000803E0000003F0000803F0000403F",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 26,
+        "pass": true,
+        "actualBytes": "40031C78",
+        "expectedBytes": "40031C78",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 21,
+        "pass": true,
+        "actualBytes": "0034",
+        "expectedBytes": "0034",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 40,
+        "pass": true,
+        "actualBytes": "407F",
+        "expectedBytes": "4080",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 71,
+        "pass": true,
+        "actualBytes": "40",
+        "expectedBytes": "40",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      },
+      {
+        "format": 4,
+        "pass": true,
+        "actualBytes": "0040",
+        "expectedBytes": "0040",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456,
+        "clearPass": true
+      }
+    ],
+    "volumeCases": [
+      {
+        "format": 57,
+        "checkedTexels": 64,
+        "pass": true
+      }
+    ],
+    "errors": []
+  },
+  "inputs": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-formats\\lumen-storage-rhi.json",
+      "sha256": "f89b4e71c2c3220d310d947564740881e121ae13eaa4e412e1b3320a963cf8a7"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-formats-clear-native-build.console",
+      "sha256": "acac6de9868b591b937407614e1bf42b28151a35b3f0bb62ba794d73b1dc71af"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-formats-clear-native-probe.log",
+      "sha256": "35779cfcf64f8c418770822edc4bff79ef45417132cdab6f2afb70119224d065"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+      "sha256": "96d9f72a47f01d8a8b1e9d9667e3f56a6cc4f0cfc59c72c9371ec2bd45160f26"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPULumenStorageProbe.h",
+      "sha256": "86aeb7dc1ea12b3cc595992be2a9920b6fed4021dfae0669205d907603306560"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Binaries\\Win64\\UnrealEditor-WebGPURHI.dll",
+      "sha256": "122f1787a656f1e98f16d1847d4cc29dccb114146a5f9aa90dbf31fe39016afc"
+    }
+  ],
+  "boundary": "Actual native Web RHI format specialization, clear/readback and 64 R8_UINT volume texel copy readbacks. Fixed shader fixture; no full browser Lumen scene, FPS or physical VRAM acceptance."
+}
