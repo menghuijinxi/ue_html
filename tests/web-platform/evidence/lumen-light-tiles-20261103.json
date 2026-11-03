@@ -1,0 +1,144 @@
+{
+  "date": "2026-11-03T05:08:15.598Z",
+  "engineCommit": "d0952c9207",
+  "pass": true,
+  "shader": [
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 24,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 25,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 26,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 27,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 28,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 29,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 30,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 31,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 32,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 33,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 34,
+      "pass": true
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "permutation": 35,
+      "pass": true
+    }
+  ],
+  "browserPipelines": [
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    },
+    {
+      "name": "FBuildLightTilesCS",
+      "errors": []
+    }
+  ],
+  "device": {
+    "features": [
+      "texture-formats-tier1",
+      "texture-formats-tier2",
+      "rg11b10ufloat-renderable",
+      "subgroups"
+    ],
+    "adapter": {},
+    "requiredLimits": {
+      "maxStorageBuffersPerShaderStage": 16,
+      "maxStorageTexturesPerShaderStage": 8,
+      "maxSampledTexturesPerShaderStage": 48,
+      "maxSamplersPerShaderStage": 16,
+      "maxComputeWorkgroupStorageSize": 32768
+    }
+  },
+  "reports": [
+    {
+      "file": "tests/web-platform/build/lumen-probe/20261103-130356/lumen-shader-results.json",
+      "sha256": "4846986e81339c381be20bc24fc1163a1ac8e1fae642cbf9f2460957e94b46b1"
+    },
+    {
+      "file": "tests/web-platform/results/lumen-light-tiles-pipelines-gpu.json",
+      "sha256": "b2cfe874ddff727ff534afc5d6af579d99f9dff5ad57eba9fbe13c4c5922186e"
+    }
+  ],
+  "boundary": "Conversion and browser compute pipeline creation only. Full light-tile dispatch, complete scene and performance/VRAM not yet accepted. Fixed loop may add empty reductions for sparse lights."
+}

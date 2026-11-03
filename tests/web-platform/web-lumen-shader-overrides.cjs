@@ -5,6 +5,30 @@ const branch = (before, lines) => ({before,
 const storage = (before, format) => ({before,
   after: web([`[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`]) + '\n' + before});
 module.exports = new Map([
+  ['Private/Lumen/LumenSceneDirectLightingCulling.usf', [
+    branch('\t\t\twhile (NumPackedLightSamples < MAX_LIGHT_SAMPLES)', [
+      '\t\t\t// Keep every reduction barrier in a statically uniform loop.',
+      '\t\t\tfor (uint WebLightSampleIteration = 0; WebLightSampleIteration < MAX_LIGHT_SAMPLES; ++WebLightSampleIteration)']),
+    {before: '\t\t\t\tif (SelectedPackedSample == 0)\n\t\t\t\t{\n\t\t\t\t\tbreak;\n\t\t\t\t}',
+      after: ['#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)',
+        '\t\t\t\tif (SelectedPackedSample == 0)', '\t\t\t\t{', '\t\t\t\t\tbreak;',
+        '\t\t\t\t}', '#endif'].join('\n')},
+    {before: '\t\t\t\tMergedLightSampleAccumulator.PackedSamples[NumPackedLightSamples] = SelectedPackedSample;\n\t\t\t\t++NumPackedLightSamples;',
+      after: '\t\t\t\tMergedLightSampleAccumulator.PackedSamples[NumPackedLightSamples] = SelectedPackedSample;\n' +
+        branch('\t\t\t\t++NumPackedLightSamples;', [
+          '\t\t\t\tNumPackedLightSamples += SelectedPackedSample != 0 ? 1 : 0;']).after},
+    {before: '\t\tValue = SharedScratchMemory[0];\n\t}\n\n\treturn Value;\n}\n\nuint GroupReadThreadFirst',
+      after: ['\t\tValue = SharedScratchMemory[0];',
+        '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '\t\t// Publish a uniform shared result before another iteration can reuse scratch.',
+        '\t\tGroupMemoryBarrierWithGroupSync();', '#endif',
+        '\t}', '', '\treturn Value;', '}', '', 'uint GroupReadThreadFirst'].join('\n')},
+    {before: '\t\tValue = SharedScratchMemory[0];\n\t}\n\n\treturn Value;\n}\n\n/**',
+      after: ['\t\tValue = SharedScratchMemory[0];',
+        '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '\t\tGroupMemoryBarrierWithGroupSync();', '#endif',
+        '\t}', '', '\treturn Value;', '}', '', '/**'].join('\n')},
+  ]],
   ['Private/ShadingModelsSampling.ush', [
     {before: 'FBxDFSample SampleBxDF(const uint TermMask, FGBufferData GBuffer, float3 V, float4 E)\n{',
       after: ['FBxDFSample SampleBxDF(const uint TermMask, FGBufferData GBuffer, float3 V, float4 E)', '{',

@@ -4,6 +4,7 @@
 
 对应独立引擎提交：`3bba192188f966b4808074518c4ca732229663c4`。
 后续材质采样分支修复：`7a31024c7f`。
+灯光 Tile 归约控制流修复：`d0952c9207`。
 
 ## 项目设置与退出边界
 
@@ -113,6 +114,17 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 
 ```powershell
 & tests/web-platform/probe-web-lumen.ps1 -Mode Shaders -ShaderTypes FScreenProbeIntegrateCS -Permutation 3
+```
+
+### 灯光 Tile 归约
+
+后续完整 Cook 已越过全部积分排列，在 `FBuildLightTilesCS/30` 遇到共享归约值控制循环提前退出造成的 uniformity 错误。Web 分支使用固定 `MAX_LIGHT_SAMPLES` 轮归约，只累计非零值，并在共享临时区读取后同步；最多保留的灯光数、排序及打包布局不变，桌面分支不变。少灯光 Tile 会比原提前退出路径多做空归约，尚无场景 GPU 时间实测。
+
+该类 12 个允许排列均通过转换、浏览器模块和计算管线创建。结果位于 `build/lumen-probe/20261103-130356/` 和 `results/lumen-light-tiles-pipelines-gpu.json`；管线创建不代表灯光筛选已经完成实际场景执行验收。
+
+```powershell
+& tests/web-platform/probe-web-lumen.ps1 -Mode Shaders -ShaderTypes FBuildLightTilesCS -AllPermutations
+node tests/web-platform/probe-web-lumen-gpu.cjs --input=tests/web-platform/build/lumen-probe/20261103-130356/ShaderConversion --modules-only --pipelines
 ```
 
 ## 性能与显存边界
