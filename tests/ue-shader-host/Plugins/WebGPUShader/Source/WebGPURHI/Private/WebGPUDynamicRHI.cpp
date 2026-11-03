@@ -306,8 +306,9 @@ bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits
         Samplers += Binding.Descriptor == 0;
         Textures += Binding.Descriptor == 2;
         StorageTextures += Binding.Descriptor == 3;
-        Uniforms += Binding.Descriptor == 6;
-        StorageBuffers += Binding.Descriptor == 7;
+        const bool SkyUniform = UE::WebGPUShader::IsSingleVectorUniform(*Binding.Metadata);
+        Uniforms += Binding.Descriptor == 6 || SkyUniform;
+        StorageBuffers += Binding.Descriptor == 7 && !SkyUniform;
     }
     return Samplers <= Limits.maxSamplersPerShaderStage && Textures <= Limits.maxSampledTexturesPerShaderStage &&
         StorageTextures <= Limits.maxStorageTexturesPerShaderStage && Uniforms <= Limits.maxUniformBuffersPerShaderStage &&
@@ -1451,6 +1452,10 @@ FRHIBufferInitializer FWebGPUDynamicRHI::RHICreateBufferInitializer(FRHICommandL
         Usage |= WGPUBufferUsage_Indirect;
     if (EnumHasAnyFlags(Desc.Usage, EBufferUsageFlags::UnorderedAccess | EBufferUsageFlags::ShaderResource))
         Usage |= WGPUBufferUsage_Storage;
+    // SkyAtmosphere and its black fallback each expose one float4. Its Lumen
+    // read can share the same GPU allocation through a constant-buffer binding.
+    if (Desc.Size == 16 && EnumHasAnyFlags(Desc.Usage, EBufferUsageFlags::ShaderResource))
+        Usage |= WGPUBufferUsage_Uniform;
     check(Desc.InitAction == ERHIBufferInitAction::Initializer || Desc.InitAction == ERHIBufferInitAction::Zeroed ||
           Desc.InitAction == ERHIBufferInitAction::ResourceArray || Desc.InitAction == ERHIBufferInitAction::Default);
     FWebGPUBuffer *Buffer = new FWebGPUBuffer(Desc, nullptr);
@@ -3164,6 +3169,10 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                             Entry.buffer = Buffer->Handle;
                             Entry.offset = Description.OffsetInBytes;
                             Entry.size = Description.SizeInBytes;
+                            if (UE::WebGPUShader::IsSingleVectorUniform(*Binding))
+                            {
+                                check(Buffer->GetSize() == 16 && Entry.offset == 0 && Entry.size == 16);
+                            }
                         }
                         else
                         {
@@ -3428,8 +3437,10 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
             Entry.buffer.hasDynamicOffset = DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding);
             break;
         case 7:
-            Entry.buffer.type = Binding->GetBoolField(TEXT("readOnlyStorage")) ?
+            Entry.buffer.type = UE::WebGPUShader::IsSingleVectorUniform(*Binding) ? WGPUBufferBindingType_Uniform :
+                Binding->GetBoolField(TEXT("readOnlyStorage")) ?
                 WGPUBufferBindingType_ReadOnlyStorage : WGPUBufferBindingType_Storage;
+            if (UE::WebGPUShader::IsSingleVectorUniform(*Binding)) Entry.buffer.minBindingSize = 16;
             break;
         default:
             checkNoEntry();

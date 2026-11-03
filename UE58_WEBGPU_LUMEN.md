@@ -204,6 +204,16 @@ Web 在同时启用 2×1、2×2 降采样时，主 Pass 继续计算两种共享
 
 真实 RHI 回读核验 768 个值，覆盖带保留区的子范围向量读写、非零清除和清零，并验证类型不匹配、未对齐视图仍被拒绝。10 项纹理写入/清零、三维整数纹理和此项缓冲测试全部通过，结果为 `build/lumen-storage-rhi-uint2-v2/lumen-storage-rhi.json`。新转换的 161 个模块、145 条浏览器计算管线和 6 项 Cards/探针头执行通过，实际队列 Shader 的元数据均为格式 68、步长 8：`results/lumen-uint2-all-gpu.json`。真实别墅场景继续验收，不能由此推断 GI 画面或帧率已达标。
 
+### 软件追踪的存储缓冲绑定限额
+
+`20261103-175848` Cook 生成的 `FScreenProbeTraceMeshSDFsCS/10` 在浏览器定向创建计算管线时失败：17 个存储缓冲超过设备的 16 个上限。该 Cook 随后主动中止，报告为失败，没有将其打包成功。更高的毛发、地形或其他距离场偏移组合也存在超限，不能用首个允许排列的通过替代这些检查。
+
+针对普通网格追踪，Web 的 `LumenScreenProbeTracing.usf` 编译将 `View_DistantSkyLightLutBufferSRV` 的单个 float4 改为常量缓冲绑定。转换先核验只读、float4 步长和 SPIR-V 中的常量零索引，再克隆固定长度 1 的数组及 Block 类型；其他共用原运行时数组类型的缓冲保持原类型。RHI 继续从原 SRV 路由读取原 GPU 分配，16 字节 ShaderResource 缓冲增加 Uniform usage，没有新增拷贝或分配，不修改天空光内容或项目效果。
+
+64 个允许排列均通过转换和浏览器模块检查；无毛发、无地形、偏移结构 0 的 `/8`、`/9`、`/10`、`/11` 均为 16 个存储缓冲，四条实际浏览器计算管线通过。其余 36 个排列仍超过 16 个限制，未宣称管线兼容，也未通过改项目配置绕过。真实 RHI 使用相同资源进行初值读取和 GPU 写入后常量绑定再读取，共 8 个 float 精确回读通过；其余格式测试保持通过，共 11 条管线。首次误用安装宿主的探针因缺少独立 WebGPUHost.dll 退出，改用已有隔离宿主后通过，没有向安装目录添加文件。
+
+结果：`build/lumen-probe/20261103-182216/`、`results/lumen-sky-uniform-all-modules-gpu.json`、`results/lumen-sky-uniform-perm8-gpu.json` 至 `perm11`、`build/lumen-storage-rhi-sky-uniform-v2/lumen-storage-rhi.json`。可重复摘要入口为 `summarize-web-lumen-sky-uniform.cjs`，摘要保存于 `tests/web-platform/evidence/lumen-sky-uniform-20261103.json`。线程版 WASM 仍使用 `-O2`，编译、链接和结构校验通过。新完整别墅 Cook 继续使用 `-UseProjectSettings`，浏览器首帧及性能仍待检查。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

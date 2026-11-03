@@ -1,0 +1,485 @@
+{
+  "date": "2026-11-03T10:26:30.069Z",
+  "pass": true,
+  "completeLumenScene": false,
+  "rendererOverrides": [],
+  "modules": 64,
+  "meshOnlyPipelines": [
+    8,
+    9,
+    10,
+    11
+  ],
+  "cases": [
+    {
+      "permutation": 0,
+      "storageBuffers": 3
+    },
+    {
+      "permutation": 1,
+      "storageBuffers": 3
+    },
+    {
+      "permutation": 2,
+      "storageBuffers": 3
+    },
+    {
+      "permutation": 3,
+      "storageBuffers": 3
+    },
+    {
+      "permutation": 4,
+      "storageBuffers": 5
+    },
+    {
+      "permutation": 5,
+      "storageBuffers": 5
+    },
+    {
+      "permutation": 6,
+      "storageBuffers": 5
+    },
+    {
+      "permutation": 7,
+      "storageBuffers": 5
+    },
+    {
+      "permutation": 8,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 9,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 10,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 11,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 12,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 13,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 14,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 15,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 16,
+      "storageBuffers": 10
+    },
+    {
+      "permutation": 17,
+      "storageBuffers": 10
+    },
+    {
+      "permutation": 18,
+      "storageBuffers": 10
+    },
+    {
+      "permutation": 19,
+      "storageBuffers": 10
+    },
+    {
+      "permutation": 20,
+      "storageBuffers": 12
+    },
+    {
+      "permutation": 21,
+      "storageBuffers": 12
+    },
+    {
+      "permutation": 22,
+      "storageBuffers": 12
+    },
+    {
+      "permutation": 23,
+      "storageBuffers": 12
+    },
+    {
+      "permutation": 24,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 25,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 26,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 27,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 28,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 29,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 30,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 31,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 40,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 41,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 42,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 43,
+      "storageBuffers": 16
+    },
+    {
+      "permutation": 44,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 45,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 46,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 47,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 56,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 57,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 58,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 59,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 60,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 61,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 62,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 63,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 72,
+      "storageBuffers": 15
+    },
+    {
+      "permutation": 73,
+      "storageBuffers": 15
+    },
+    {
+      "permutation": 74,
+      "storageBuffers": 15
+    },
+    {
+      "permutation": 75,
+      "storageBuffers": 15
+    },
+    {
+      "permutation": 76,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 77,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 78,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 79,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 88,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 89,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 90,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 91,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 92,
+      "storageBuffers": 21
+    },
+    {
+      "permutation": 93,
+      "storageBuffers": 21
+    },
+    {
+      "permutation": 94,
+      "storageBuffers": 21
+    },
+    {
+      "permutation": 95,
+      "storageBuffers": 21
+    }
+  ],
+  "stillOverStorageBufferLimit": [
+    {
+      "permutation": 12,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 13,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 14,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 15,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 24,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 25,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 26,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 27,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 28,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 29,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 30,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 31,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 44,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 45,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 46,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 47,
+      "storageBuffers": 18
+    },
+    {
+      "permutation": 56,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 57,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 58,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 59,
+      "storageBuffers": 20
+    },
+    {
+      "permutation": 60,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 61,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 62,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 63,
+      "storageBuffers": 22
+    },
+    {
+      "permutation": 76,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 77,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 78,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 79,
+      "storageBuffers": 17
+    },
+    {
+      "permutation": 88,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 89,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 90,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 91,
+      "storageBuffers": 19
+    },
+    {
+      "permutation": 92,
+      "storageBuffers": 21
+    },
+    {
+      "permutation": 93,
+      "storageBuffers": 21
+    },
+    {
+      "permutation": 94,
+      "storageBuffers": 21
+    },
+    {
+      "permutation": 95,
+      "storageBuffers": 21
+    }
+  ],
+  "nativeRHI": {
+    "pipelines": 11,
+    "uniformCases": [
+      {
+        "checkedValues": 8,
+        "gpuWriteThenUniformRead": true,
+        "pass": true
+      }
+    ]
+  },
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-182216\\lumen-shader-results.json",
+      "sha256": "4b7b07bd7f56c19ae29ea60503343663326707d7b4a8a138babd17235fdf4448"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-sky-uniform-all-modules-gpu.json",
+      "sha256": "2f926ac2204d780cd48c1a31166eeca7a09af122023e396249e00011d778ccf8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-sky-uniform-v2\\lumen-storage-rhi.json",
+      "sha256": "ffef91049f2e51135004e37fd67db3b1c359be34ff9eb33bc508728877198854"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-sky-uniform-perm8-gpu.json",
+      "sha256": "cb52b86348e7ffa3ff0618c923a705675bc3a82bf78de6321c70ae63efa485d3"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-sky-uniform-perm9-gpu.json",
+      "sha256": "88031da87cf0dd1c42edba169e155153a68f1af56e0ef6034a7de314fe2fab18"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-sky-uniform-perm10-gpu.json",
+      "sha256": "acc301435afb5aaf008108befd66039ef168a9e086cd10dca56033fc004e1dea"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-sky-uniform-perm11-gpu.json",
+      "sha256": "436ba0b68e96cac173c6d9e7c6b6850ada5450461bf5ce4b900224dfd11f92cf"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "53009f52e84ebda3f2847a5680886b2c9c3600ae90507a203b342cf7b7496b2f"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-lumen-sky-uniform.cjs",
+      "sha256": "58278ff6156a83a1a113b28c14d3452fa7f91b23b1eded070b0da11535f09206"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "15eb4940124f992d07ba5c7815ea8e55e22c911e8d10275065908acb10abb8e8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",
+      "sha256": "c36dab69196e899198fee9dfb0ca4cdf5ce5bb13e49faf92e20e0b048ce03ffc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+      "sha256": "685fcd64b04911f109d86b2d050e774e750f3a75d7b9d1d72b1dcec720847b74"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPULumenStorageProbe.h",
+      "sha256": "76d25f8712c28ee473f880d37f8cb1b3425bf04cd2e62cb371944e62cf896f9c"
+    }
+  ],
+  "memoryBoundary": "Source reuses the existing 16-byte GPU buffer with Uniform usage; no added allocation or copy pass. Driver memory and scene performance remain unmeasured.",
+  "boundary": "WGSL modules, four mesh-only compute pipelines and fixed-fixture real RHI reads. Hair/heightfield/other offset combinations can still exceed limits; full scene pending."
+}

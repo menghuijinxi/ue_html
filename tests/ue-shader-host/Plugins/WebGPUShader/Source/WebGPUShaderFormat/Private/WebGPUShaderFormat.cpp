@@ -97,6 +97,98 @@ static bool NeedsRuntimeStorageFormats(const FShaderCompilerInput& Input)
          Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/StochasticLighting/")));
 }
 
+static bool UsesSingleVectorSkyUniform(const FShaderCompilerInput& Input)
+{
+    return NeedsRuntimeStorageFormats(Input) &&
+        Input.VirtualSourceFilePath == TEXT("/Engine/Private/Lumen/LumenScreenProbeTracing.usf");
+}
+
+static bool LowerSingleVectorSkyUniform(TArray<uint32>& Spirv, uint32 Variable, FString& Error)
+{
+    TMap<uint32, uint32> Constants;
+    TSet<uint32> IntegerTypes;
+    uint32 One = 0, ArrayElement = 0, Accesses = 0;
+    int32 VariableOffset = INDEX_NONE;
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+    {
+        const uint32 Op = Spirv[Offset] & 0xffff, Words = Spirv[Offset] >> 16;
+        if (Op == SpvOpTypeInt && Words == 4 && Spirv[Offset + 2] == 32)
+            IntegerTypes.Add(Spirv[Offset + 1]);
+        if (Op == SpvOpConstant && Words == 4 && IntegerTypes.Contains(Spirv[Offset + 1]))
+        {
+            Constants.Add(Spirv[Offset + 2], Spirv[Offset + 3]);
+            if (Spirv[Offset + 3] == 1) One = Spirv[Offset + 2];
+        }
+        if (Op == SpvOpVariable && Words == 4 && Spirv[Offset + 2] == Variable)
+            VariableOffset = Offset;
+    }
+    const auto Fail = [&] {
+        Error = TEXT("Sky LUT uniform requires a single float4, read only at constant index zero");
+        return false;
+    };
+    if (!One || VariableOffset == INDEX_NONE || Spirv[VariableOffset + 3] != SpvStorageClassUniform)
+        return Fail();
+    // DXC's legacy storage buffers use Uniform + BufferBlock. Clone the block,
+    // leaving every other buffer sharing its runtime-array type unchanged.
+    uint32 Pointer = Spirv[VariableOffset + 1], Block = 0, Array = 0;
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) == SpvOpTypePointer && Spirv[Offset + 1] == Pointer)
+            Block = Spirv[Offset + 3];
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) == SpvOpTypeStruct && Spirv[Offset + 1] == Block &&
+            (Spirv[Offset] >> 16) == 3)
+            Array = Spirv[Offset + 2];
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) == SpvOpTypeRuntimeArray && Spirv[Offset + 1] == Array)
+            ArrayElement = Spirv[Offset + 2];
+    if (!ArrayElement) return Fail();
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+    {
+        const uint32 Op = Spirv[Offset] & 0xffff, Words = Spirv[Offset] >> 16;
+        if ((Op == SpvOpAccessChain || Op == SpvOpInBoundsAccessChain) &&
+            Words >= 4 && Spirv[Offset + 3] == Variable)
+        {
+            if (Words != 6) return Fail();
+            for (uint32 Index = 4; Index < 6; ++Index)
+            {
+                const auto* Value = Constants.Find(Spirv[Offset + Index]);
+                if (!Value || *Value != 0) return Fail();
+            }
+            ++Accesses;
+        }
+        if ((Op == SpvOpLoad || Op == SpvOpCopyObject) && Words >= 4 && Spirv[Offset + 3] == Variable)
+            return Fail();
+        if (Op == SpvOpFunctionCall)
+            for (uint32 Index = 4; Index < Words; ++Index)
+                if (Spirv[Offset + Index] == Variable) return Fail();
+    }
+    if (!Accesses) return Fail();
+    const uint32 NewArray = Spirv[3]++, NewBlock = Spirv[3]++, NewPointer = Spirv[3]++;
+    TArray<uint32> Annotations{
+        (4u << 16) | SpvOpDecorate, NewArray, SpvDecorationArrayStride, 16,
+        (3u << 16) | SpvOpDecorate, NewBlock, SpvDecorationBlock,
+        (5u << 16) | SpvOpMemberDecorate, NewBlock, 0, SpvDecorationOffset, 0};
+    TArray<uint32> Types{
+        (4u << 16) | SpvOpTypeArray, NewArray, ArrayElement, One,
+        (3u << 16) | SpvOpTypeStruct, NewBlock, NewArray,
+        (4u << 16) | SpvOpTypePointer, NewPointer, SpvStorageClassUniform, NewBlock,
+        (4u << 16) | SpvOpVariable, NewPointer, Variable, SpvStorageClassUniform};
+    Spirv.RemoveAt(VariableOffset, 4, EAllowShrinking::No);
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) == SpvOpFunction)
+        {
+            Spirv.Insert(Types.GetData(), Types.Num(), Offset);
+            break;
+        }
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) == SpvOpTypeVoid)
+        {
+            Spirv.Insert(Annotations.GetData(), Annotations.Num(), Offset);
+            break;
+        }
+    return true;
+}
+
 static void RemoveUnusedGatherCapability(TArray<uint32>& Spirv)
 {
     int32 CapabilityOffset = INDEX_NONE;
@@ -330,13 +422,15 @@ bool UE::WebGPUShader::ValidateBindings(const TSharedRef<FJsonObject> &Metadata,
         const auto Web = (*Found)->AsObject();
         const int32 Type = Native->GetIntegerField(TEXT("descriptorType"));
         const FString WebType = Web->GetStringField(TEXT("resource_type"));
+        const bool SkyUniform = IsSingleVectorUniform(*Native);
         const bool Compatible =
             (Type == 0 && (WebType == TEXT("Sampler") || WebType == TEXT("ComparisonSampler"))) ||
             (Type == 2 && (WebType == TEXT("SampledTexture") || WebType == TEXT("DepthTexture") ||
                 WebType == TEXT("MultisampledTexture") || WebType == TEXT("DepthMultisampledTexture"))) ||
             (Type == 3 && (WebType == TEXT("ReadWriteStorageTexture") || WebType == TEXT("WriteOnlyStorageTexture"))) ||
             (Type == 6 && WebType == TEXT("UniformBuffer")) ||
-            (Type == 7 && (WebType == TEXT("StorageBuffer") || WebType == TEXT("ReadOnlyStorageBuffer")));
+            (Type == 7 && (SkyUniform ? WebType == TEXT("UniformBuffer") && Web->GetNumberField(TEXT("size")) == 16 :
+                WebType == TEXT("StorageBuffer") || WebType == TEXT("ReadOnlyStorageBuffer")));
         if (!Compatible)
             return Fail(TEXT("descriptor type changed"));
         if (Type == 2 && Native->GetBoolField(TEXT("textureMultisampled")) !=
@@ -451,7 +545,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6_SkyUniform1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -468,6 +562,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // AppendToKeyString invalidates complete shader maps containing them.
         if (NeedsRuntimeStorageFormats(Input))
             Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(5));
+        if (UsesSingleVectorSkyUniform(Input))
+            Input.Environment.SetCompileArgument(TEXT("WebLumenSkyUniformVersion"), int32(1));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -875,6 +971,14 @@ class FWebGPUShaderFormat final : public IShaderFormat
                 {
                     Json->SetNumberField(TEXT("storageElementFormat"), PF_G8);
                     Json->SetStringField(TEXT("storagePacking"), TEXT("unorm8x4"));
+                }
+                if (UsesSingleVectorSkyUniform(Input) &&
+                    FString(UTF8_TO_TCHAR(Binding->name)) == TEXT("View_DistantSkyLightLutBufferSRV"))
+                {
+                    Json->SetNumberField(TEXT("storageUniformBytes"), 16);
+                    if (!UE::WebGPUShader::IsSingleVectorUniform(*Json) ||
+                        !LowerSingleVectorSkyUniform(Spirv, Binding->spirv_id, Error))
+                        return false;
                 }
             }
             Bindings.Add(MakeShared<FJsonValueObject>(Json));

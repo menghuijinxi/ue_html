@@ -1,12 +1,23 @@
 #pragma once
 
 #include "Dom/JsonObject.h"
+#include "PixelFormat.h"
 #include "Serialization/CompactBinary.h"
 #include "Serialization/CompactBinaryValidation.h"
 #include "Serialization/CompactBinaryWriter.h"
 
 namespace UE::WebGPUShader
 {
+inline bool IsSingleVectorUniform(const FJsonObject& Binding)
+{
+    double Bytes = 0;
+    return Binding.TryGetNumberField(TEXT("storageUniformBytes"), Bytes) && Bytes == 16 &&
+        Binding.GetStringField(TEXT("name")) == TEXT("View_DistantSkyLightLutBufferSRV") &&
+        Binding.GetIntegerField(TEXT("descriptorType")) == 7 && Binding.GetBoolField(TEXT("readOnlyStorage")) &&
+        Binding.GetIntegerField(TEXT("storageElementStride")) == 16 &&
+        Binding.GetIntegerField(TEXT("storageElementFormat")) == PF_A32B32G32R32F;
+}
+
 // Cook stores UE Compact Binary. The existing binding code consumes an owning
 // DOM, built directly from typed fields without JSON text or tokenization.
 inline bool WriteMetadataValue(FCbWriter& Writer, const FJsonValue& Value, int32 Depth)

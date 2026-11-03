@@ -35,6 +35,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         TArray<TSharedPtr<FJsonValue>> Cases;
         TArray<TSharedPtr<FJsonValue>> VolumeCases;
         TArray<TSharedPtr<FJsonValue>> BufferCases;
+        TArray<TSharedPtr<FJsonValue>> UniformCases;
         bool Pass = true;
         {
             TRefCountPtr<FWebGPUComputeShader> Shader = new FWebGPUComputeShader;
@@ -436,6 +437,102 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Pass &= OK;
             Data.Resources.Reset();
         }
+        {
+            TRefCountPtr<FWebGPUComputeShader> Shader = new FWebGPUComputeShader;
+            auto& Data = Shader->Data;
+            Data.Owner = Shader;
+            Data.Frequency = SF_Compute;
+            Data.Entry = TEXT("main");
+            const char* Source =
+                "@group(0) @binding(0) var<uniform> Sky: vec4f;"
+                "@group(0) @binding(1) var<storage, read_write> Output: array<vec4f>;"
+                "@compute @workgroup_size(1) fn main() { Output[0] = Sky * vec4f(2, 3, 4, 5); }";
+            auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+            WGSL.code = {Source, WGPU_STRLEN};
+            auto ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+            ModuleDesc.nextInChain = &WGSL.chain;
+            Data.Module = wgpuDeviceCreateShaderModule(RHI.Device, &ModuleDesc);
+            Data.Metadata = MakeShared<FJsonObject>();
+            Data.Metadata->SetNumberField(TEXT("frequency"), SF_Compute);
+            TArray<TSharedPtr<FJsonValue>> Bindings, Reflected;
+            for (uint32 Index = 0; Index < 2; ++Index)
+            {
+                auto Binding = MakeShared<FJsonObject>();
+                Binding->SetStringField(TEXT("name"), Index ? TEXT("Output") : TEXT("View_DistantSkyLightLutBufferSRV"));
+                Binding->SetNumberField(TEXT("group"), 0);
+                Binding->SetNumberField(TEXT("binding"), Index);
+                Binding->SetNumberField(TEXT("descriptorType"), 7);
+                Binding->SetBoolField(TEXT("readOnlyStorage"), Index == 0);
+                Binding->SetNumberField(TEXT("storageElementStride"), 16);
+                Binding->SetNumberField(TEXT("storageElementFormat"), PF_A32B32G32R32F);
+                if (!Index) Binding->SetNumberField(TEXT("storageUniformBytes"), 16);
+                Bindings.Add(MakeShared<FJsonValueObject>(Binding));
+                FWebGPUShaderBinding Entry;
+                Entry.Metadata = &Binding.Get();
+                Entry.Name = Binding->GetStringField(TEXT("name"));
+                Entry.Descriptor = 7;
+                Entry.Index = Index;
+                Entry.RouteInitialized = true;
+                Entry.Route.Index = Index;
+                Data.Bindings.Add(Entry);
+                auto WebBinding = MakeShared<FJsonObject>();
+                WebBinding->SetNumberField(TEXT("group"), 0);
+                WebBinding->SetNumberField(TEXT("binding"), Index);
+                WebBinding->SetStringField(TEXT("resource_type"), Index ? TEXT("StorageBuffer") : TEXT("UniformBuffer"));
+                Reflected.Add(MakeShared<FJsonValueObject>(WebBinding));
+            }
+            Data.GroupVersions.Init(1, 1);
+            Data.Metadata->SetArrayField(TEXT("spirvBindings"), Bindings);
+            auto ReflectedEntry = MakeShared<FJsonObject>();
+            ReflectedEntry->SetArrayField(TEXT("bindings"), Reflected);
+            auto Reflection = MakeShared<FJsonObject>();
+            Reflection->SetArrayField(TEXT("entry_points"), {MakeShared<FJsonValueObject>(ReflectedEntry)});
+            Data.Metadata->SetObjectField(TEXT("reflection"), Reflection);
+            Shader->InitResourceTable();
+            const float Initial[4]{0.25f, 0.5f, 1.0f, 0.75f};
+            auto SkyBuffer = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(
+                TEXT("SkyAtmosphere.DistantSkyLightLutBuffer"), 16, 16, BUF_ShaderResource | BUF_UnorderedAccess | BUF_StructuredBuffer)
+                .SetInitialState(ERHIAccess::SRVCompute), Initial, sizeof(Initial));
+            auto ResultBuffer = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(
+                TEXT("SkyUniformResult"), 16, 16, BUF_ShaderResource | BUF_UnorderedAccess)
+                .SetInitialState(ERHIAccess::UAVCompute), Initial, sizeof(Initial));
+            auto SRV = Cmd.CreateShaderResourceView(SkyBuffer, FRHIViewDesc::CreateBufferSRV()
+                .SetType(FRHIViewDesc::EBufferType::Structured));
+            auto SkyUAV = Cmd.CreateUnorderedAccessView(SkyBuffer, FRHIViewDesc::CreateBufferUAV()
+                .SetType(FRHIViewDesc::EBufferType::Structured));
+            auto UAV = Cmd.CreateUnorderedAccessView(ResultBuffer, FRHIViewDesc::CreateBufferUAV()
+                .SetType(FRHIViewDesc::EBufferType::Typed).SetFormat(PF_A32B32G32R32F));
+            Data.Resources.Add(0, SRV.GetReference());
+            Data.Resources.Add(1, UAV.GetReference());
+            auto Pipeline = RHI.RHICreateComputePipelineState(FComputePipelineStateInitializer(Shader));
+            bool OK = true;
+            for (uint32 Round = 0; Round < 2; ++Round)
+            {
+                if (Round)
+                {
+                    Cmd.Transition(FRHITransitionInfo(ResultBuffer, ERHIAccess::CopySrc, ERHIAccess::UAVCompute));
+                    Cmd.Transition(FRHITransitionInfo(SkyBuffer, ERHIAccess::SRVCompute, ERHIAccess::UAVCompute));
+                    RHI.RHIClearUAVFloat(SkyUAV, FVector4f(3, 5, 7, 9));
+                    Cmd.Transition(FRHITransitionInfo(SkyBuffer, ERHIAccess::UAVCompute, ERHIAccess::SRVCompute));
+                }
+                RHI.RHISetComputePipelineState(Pipeline);
+                RHI.RHIDispatchComputeShader(1, 1, 1);
+                Cmd.Transition(FRHITransitionInfo(ResultBuffer, ERHIAccess::UAVCompute, ERHIAccess::CopySrc));
+                const auto Bytes = RHI.ReadBuffer(ResultBuffer, 16);
+                const float Updated[4]{3, 5, 7, 9};
+                float Expected[4];
+                for (uint32 Index = 0; Index < 4; ++Index)
+                    Expected[Index] = (Round ? Updated[Index] : Initial[Index]) * float(Index + 2);
+                OK &= Bytes.Num() == 16 && FMemory::Memcmp(Bytes.GetData(), Expected, 16) == 0;
+            }
+            auto Case = MakeShared<FJsonObject>();
+            Case->SetNumberField(TEXT("checkedValues"), 8);
+            Case->SetBoolField(TEXT("gpuWriteThenUniformRead"), true);
+            Case->SetBoolField(TEXT("pass"), OK);
+            UniformCases.Add(MakeShared<FJsonValueObject>(Case));
+            Pass &= OK;
+            Data.Resources.Reset();
+        }
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
@@ -443,6 +540,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("cases"), Cases);
         Report->SetArrayField(TEXT("volumeCases"), VolumeCases);
         Report->SetArrayField(TEXT("bufferCases"), BufferCases);
+        Report->SetArrayField(TEXT("uniformCases"), UniformCases);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);
