@@ -198,6 +198,12 @@ Web 在同时启用 2×1、2×2 降采样时，主 Pass 继续计算两种共享
 
 `20261103-174544` 完整别墅 Cook、Stage 与线程版 Package 已通过，Stage 为 5157 文件、3412426624 字节。该 Cook 实际转换的 38 个计算管线通过浏览器创建检查：`results/lumen-storage-split-cooked-gpu.json`。隔离原生 RenderCore、Renderer 均重新以优化模式编译，线程 WASM 保持 `-O2`；原安装目录输入哈希检查通过。完整浏览器场景继续单独验收。
 
+### 探针 Tile 队列视图
+
+上述 Package 在真实场景创建 Radiance Cache 探针队列时，发现 `PF_R32G32_UINT` 类型缓冲视图尚未实现。Web RHI 补充 `uint2` 的 SRV、UAV 和存储对齐准入，继续严格匹配反射类型、8 字节元素、绑定范围和访问状态。Lumen/shared stochastic-lighting Shader 元数据补充该格式标记，并递增对应编译缓存键；其他 StructuredBuffer 保留原有结构体步长校验。原队列大小不变，无额外场景缓冲区或纹理。
+
+真实 RHI 回读核验 768 个值，覆盖带保留区的子范围向量读写、非零清除和清零，并验证类型不匹配、未对齐视图仍被拒绝。10 项纹理写入/清零、三维整数纹理和此项缓冲测试全部通过，结果为 `build/lumen-storage-rhi-uint2-v2/lumen-storage-rhi.json`。新转换的 161 个模块、145 条浏览器计算管线和 6 项 Cards/探针头执行通过，实际队列 Shader 的元数据均为格式 68、步长 8：`results/lumen-uint2-all-gpu.json`。真实别墅场景继续验收，不能由此推断 GI 画面或帧率已达标。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

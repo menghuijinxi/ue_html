@@ -451,7 +451,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage5");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -467,7 +467,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Metadata fields are additive. Invalidate only the affected jobs while
         // AppendToKeyString invalidates complete shader maps containing them.
         if (NeedsRuntimeStorageFormats(Input))
-            Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(4));
+            Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(5));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -836,6 +836,9 @@ class FWebGPUShaderFormat final : public IShaderFormat
                     {
                         if (!(Type->type_flags & SPV_REFLECT_TYPE_FLAG_VECTOR) && Type->traits.array.stride == 4)
                             Json->SetNumberField(TEXT("storageElementFormat"), PF_R32_UINT);
+                        else if (RuntimeStorageFormats && (Type->type_flags & SPV_REFLECT_TYPE_FLAG_VECTOR) &&
+                                 Type->traits.numeric.vector.component_count == 2 && Type->traits.array.stride == 8)
+                            Json->SetNumberField(TEXT("storageElementFormat"), PF_R32G32_UINT);
                         else if ((Type->type_flags & SPV_REFLECT_TYPE_FLAG_VECTOR) &&
                                  Type->traits.numeric.vector.component_count == 4 && Type->traits.array.stride == 16)
                             Json->SetNumberField(TEXT("storageElementFormat"), PF_R32G32B32A32_UINT);

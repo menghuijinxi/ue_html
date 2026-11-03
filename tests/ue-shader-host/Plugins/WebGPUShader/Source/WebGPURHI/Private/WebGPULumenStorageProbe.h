@@ -34,6 +34,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         };
         TArray<TSharedPtr<FJsonValue>> Cases;
         TArray<TSharedPtr<FJsonValue>> VolumeCases;
+        TArray<TSharedPtr<FJsonValue>> BufferCases;
         bool Pass = true;
         {
             TRefCountPtr<FWebGPUComputeShader> Shader = new FWebGPUComputeShader;
@@ -318,12 +319,130 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             VolumeCases.Add(MakeShared<FJsonValueObject>(Case));
             Pass &= OK;
         }
+        {
+            TRefCountPtr<FWebGPUComputeShader> Shader = new FWebGPUComputeShader;
+            auto& Data = Shader->Data;
+            Data.Owner = Shader;
+            Data.Frequency = SF_Compute;
+            Data.Entry = TEXT("main");
+            const char* Source =
+                "@group(0) @binding(0) var<storage, read> Input: array<vec2u>;"
+                "@group(0) @binding(1) var<storage, read_write> Output: array<vec2u>;"
+                "@compute @workgroup_size(64) fn main(@builtin(global_invocation_id) id: vec3u) {"
+                "if (id.x < 64u) { Output[id.x] = Input[id.x].yx ^ vec2u(0x80000000u, 0x12345678u); } }";
+            auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+            WGSL.code = {Source, WGPU_STRLEN};
+            auto ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+            ModuleDesc.nextInChain = &WGSL.chain;
+            Data.Module = wgpuDeviceCreateShaderModule(RHI.Device, &ModuleDesc);
+            Data.Metadata = MakeShared<FJsonObject>();
+            Data.Metadata->SetNumberField(TEXT("frequency"), SF_Compute);
+            TArray<TSharedPtr<FJsonValue>> Bindings, Reflected;
+            for (uint32 Index = 0; Index < 2; ++Index)
+            {
+                auto Binding = MakeShared<FJsonObject>();
+                Binding->SetStringField(TEXT("name"), Index ? TEXT("Output") : TEXT("Input"));
+                Binding->SetNumberField(TEXT("group"), 0);
+                Binding->SetNumberField(TEXT("binding"), Index);
+                Binding->SetNumberField(TEXT("descriptorType"), 7);
+                Binding->SetBoolField(TEXT("readOnlyStorage"), Index == 0);
+                Binding->SetNumberField(TEXT("storageElementStride"), 8);
+                Binding->SetNumberField(TEXT("storageElementFormat"), PF_R32G32_UINT);
+                Bindings.Add(MakeShared<FJsonValueObject>(Binding));
+                FWebGPUShaderBinding Entry;
+                Entry.Metadata = &Binding.Get();
+                Entry.Name = Binding->GetStringField(TEXT("name"));
+                Entry.Descriptor = 7;
+                Entry.Index = Index;
+                Entry.RouteInitialized = true;
+                Entry.Route.Index = Index;
+                Data.Bindings.Add(Entry);
+                auto WebBinding = MakeShared<FJsonObject>();
+                WebBinding->SetNumberField(TEXT("group"), 0);
+                WebBinding->SetNumberField(TEXT("binding"), Index);
+                WebBinding->SetStringField(TEXT("resource_type"), Index ? TEXT("StorageBuffer") : TEXT("ReadOnlyStorageBuffer"));
+                Reflected.Add(MakeShared<FJsonValueObject>(WebBinding));
+            }
+            Data.GroupVersions.Init(1, 1);
+            Data.Metadata->SetArrayField(TEXT("spirvBindings"), Bindings);
+            auto ReflectedEntry = MakeShared<FJsonObject>();
+            ReflectedEntry->SetArrayField(TEXT("bindings"), Reflected);
+            auto Reflection = MakeShared<FJsonObject>();
+            Reflection->SetArrayField(TEXT("entry_points"), {MakeShared<FJsonValueObject>(ReflectedEntry)});
+            Data.Metadata->SetObjectField(TEXT("reflection"), Reflection);
+            Shader->InitResourceTable();
+            uint32 Input[256], Expected[256];
+            for (uint32 Index = 0; Index < 256; ++Index)
+            {
+                Input[Index] = Index * 2654435761u;
+                Expected[Index] = 0xcafebabeu;
+            }
+            auto InputBuffer = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(
+                TEXT("LumenUInt2Source"), sizeof(Input), 8, BUF_ShaderResource)
+                .SetInitialState(ERHIAccess::SRVCompute), Input, sizeof(Input));
+            auto OutputBuffer = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(
+                TEXT("LumenUInt2Output"), sizeof(Expected), 8, BUF_UnorderedAccess | BUF_ShaderResource)
+                .SetInitialState(ERHIAccess::UAVCompute), Expected, sizeof(Expected));
+            auto SRV = Cmd.CreateShaderResourceView(InputBuffer, FRHIViewDesc::CreateBufferSRV()
+                .SetType(FRHIViewDesc::EBufferType::Typed).SetFormat(PF_R32G32_UINT)
+                .SetOffsetInBytes(256).SetNumElements(64));
+            auto UAV = Cmd.CreateUnorderedAccessView(OutputBuffer, FRHIViewDesc::CreateBufferUAV()
+                .SetType(FRHIViewDesc::EBufferType::Typed).SetFormat(PF_R32G32_UINT)
+                .SetOffsetInBytes(256).SetNumElements(64));
+            FString Error;
+            auto WrongUAV = *Bindings[1]->AsObject(), WrongSRV = *Bindings[0]->AsObject();
+            WrongUAV.SetNumberField(TEXT("storageElementFormat"), PF_R32_UINT);
+            WrongSRV.SetNumberField(TEXT("storageElementFormat"), PF_R32_UINT);
+            bool OK = !RHI.ValidateStorageUAVBinding(UAV, WrongUAV, ERHIAccess::UAVCompute, Error) &&
+                !RHI.ValidateStorageSRVBinding(SRV, WrongSRV, ERHIAccess::SRVCompute, Error);
+            auto Unaligned = UAV->GetDesc();
+            Unaligned.Buffer.UAV.OffsetInBytes = 8;
+            OK &= !RHI.ValidateUAV(OutputBuffer, Unaligned, Error);
+            const auto Info = UAV->GetDesc().Buffer.UAV.GetViewInfo(OutputBuffer);
+            OK &= Info.StrideInBytes == 8 && Info.NumElements == 64 && Info.OffsetInBytes == 256;
+            Data.Resources.Add(0, SRV.GetReference());
+            Data.Resources.Add(1, UAV.GetReference());
+            auto Pipeline = RHI.RHICreateComputePipelineState(FComputePipelineStateInitializer(Shader));
+            RHI.RHISetComputePipelineState(Pipeline);
+            RHI.RHIDispatchComputeShader(1, 1, 1);
+            for (uint32 Index = 64; Index < 192; Index += 2)
+            {
+                Expected[Index] = Input[Index + 1] ^ 0x80000000u;
+                Expected[Index + 1] = Input[Index] ^ 0x12345678u;
+            }
+            const auto Check = [&] {
+                Cmd.Transition(FRHITransitionInfo(OutputBuffer, ERHIAccess::UAVCompute, ERHIAccess::CopySrc));
+                const auto Bytes = RHI.ReadBuffer(OutputBuffer, sizeof(Expected));
+                return Bytes.Num() == sizeof(Expected) &&
+                    FMemory::Memcmp(Bytes.GetData(), Expected, sizeof(Expected)) == 0;
+            };
+            OK &= Check();
+            for (const uint32 Value : {11u, 0u})
+            {
+                Cmd.Transition(FRHITransitionInfo(OutputBuffer, ERHIAccess::CopySrc, ERHIAccess::UAVCompute));
+                RHI.RHIClearUAVUint(UAV, Value ? FUintVector4(11, 22, 33, 44) : FUintVector4(0));
+                for (uint32 Index = 64; Index < 192; Index += 2)
+                {
+                    Expected[Index] = Value;
+                    Expected[Index + 1] = Value ? 22u : 0u;
+                }
+                OK &= Check();
+            }
+            auto Case = MakeShared<FJsonObject>();
+            Case->SetNumberField(TEXT("format"), PF_R32G32_UINT);
+            Case->SetNumberField(TEXT("checkedValues"), 256 * 3);
+            Case->SetBoolField(TEXT("pass"), OK);
+            BufferCases.Add(MakeShared<FJsonValueObject>(Case));
+            Pass &= OK;
+            Data.Resources.Reset();
+        }
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
         Report->SetNumberField(TEXT("pipelines"), RHI.ComputePipelinesCreated);
         Report->SetArrayField(TEXT("cases"), Cases);
         Report->SetArrayField(TEXT("volumeCases"), VolumeCases);
+        Report->SetArrayField(TEXT("bufferCases"), BufferCases);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);

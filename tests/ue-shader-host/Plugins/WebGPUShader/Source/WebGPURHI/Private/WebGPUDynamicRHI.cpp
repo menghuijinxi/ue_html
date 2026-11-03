@@ -1909,7 +1909,9 @@ FUnorderedAccessViewRHIRef FWebGPUDynamicRHI::RHICreateUnorderedAccessView(FRHIC
     checkf(Resource && Resource->GetType() == RRT_Buffer &&
                Desc.Common.ViewType == FRHIViewDesc::EViewType::BufferUAV &&
                ValidateUAV(static_cast<FRHIBuffer *>(Resource), Desc, Error),
-           TEXT("%s"), *Error);
+           TEXT("%s; resource=%s format=%u type=%u"), *Error,
+           Resource ? *Resource->GetName().ToString() : TEXT("null"),
+           uint32(Desc.Buffer.UAV.Format), uint32(Desc.Buffer.UAV.BufferType));
     if (StartupProbeMode)
     {
         const auto Info = Desc.Buffer.UAV.GetViewInfo(static_cast<FRHIBuffer *>(Resource));
@@ -1945,13 +1947,14 @@ bool FWebGPUDynamicRHI::ValidateUAV(FRHIBuffer *Buffer, const FRHIViewDesc &Desc
     }
     if (View.BufferType == FRHIViewDesc::EBufferType::Typed)
     {
-        if ((View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
+        if ((View.Format != PF_R32_UINT && View.Format != PF_R32G32_UINT &&
+                View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
                 View.Format != PF_R32_FLOAT && View.Format != PF_R32_SINT) ||
             View.Stride || View.bAtomicCounter || View.bAppendBuffer ||
             EnumHasAnyFlags(Buffer->GetUsage(), BUF_StructuredBuffer | BUF_AccelerationStructure) ||
             !EnumHasAnyFlags(Buffer->GetUsage(), BUF_UnorderedAccess))
         {
-            Error = TEXT("Typed UAV requires a non-structured UnorderedAccess buffer and uint32/uint4/float4 format");
+            Error = TEXT("Typed UAV requires a non-structured UnorderedAccess buffer and a supported 32-bit scalar/vector format");
             return false;
         }
         const uint64 Size = Buffer->GetSize();
@@ -2112,7 +2115,8 @@ bool FWebGPUDynamicRHI::ValidateTextureBinding(FRHIResource *Resource, const FWe
 uint64 FWebGPUDynamicRHI::RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat InFormat)
 {
     WEBGPU_ON_OWNER(RHIGetMinimumAlignmentForBufferBackedSRV(InFormat));
-    return InFormat == PF_R32_UINT || InFormat == PF_R32G32B32A32_UINT || InFormat == PF_A32B32G32R32F ||
+    return InFormat == PF_R32_UINT || InFormat == PF_R32G32_UINT ||
+                   InFormat == PF_R32G32B32A32_UINT || InFormat == PF_A32B32G32R32F ||
                    InFormat == PF_R32_FLOAT || InFormat == PF_R32_SINT || InFormat == PF_G8
                ? Limits.minStorageBufferOffsetAlignment
                : GPixelFormats[InFormat].BlockBytes;
@@ -2146,7 +2150,8 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
         return true;
     }
     if (View.BufferType != FRHIViewDesc::EBufferType::Typed ||
-        (View.Format != PF_R32_UINT && View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
+        (View.Format != PF_R32_UINT && View.Format != PF_R32G32_UINT &&
+            View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
             View.Format != PF_R32_FLOAT && View.Format != PF_R32_SINT && View.Format != PF_G8 &&
             View.Format != PF_G16R16F && View.Format != PF_G32R32F && View.Format != PF_R8G8B8A8 &&
             View.Format != PF_R8G8B8A8_SNORM && View.Format != PF_R16G16B16A16_SNORM) ||

@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-03T09:41:27.442Z",
+  "date": "2026-11-03T10:00:01.004Z",
   "stage": "software-lumen-storage-formats",
   "completeLumenScene": false,
   "rendererOverrides": [],
@@ -74,7 +74,7 @@
     ]
   },
   "nativeRHI": {
-    "pipelines": 9,
+    "pipelines": 10,
     "cases": [
       {
         "format": 26,
@@ -180,6 +180,13 @@
         "pass": true
       }
     ],
+    "bufferCases": [
+      {
+        "format": 68,
+        "checkedValues": 768,
+        "pass": true
+      }
+    ],
     "boundary": "Actual RHI with fixed shader/metadata fixture; float bytes exact, UNORM tolerance one quantization unit"
   },
   "wasm": {
@@ -187,11 +194,11 @@
     "wasmValidated": true,
     "products": [
       {
-        "sha256": "67fc9508ab4fe3d577f72e68f6ab702ec2fd6a1d32629d20ef25322a7871ba03",
+        "sha256": "9654b3b99719f3486ddc68f1fd6ea6832545ab7566bdaa3f25ca7ff6f3dcfa76",
         "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js"
       },
       {
-        "sha256": "43b94198e3e3af0ccb270c196d48761d471371385bf4b8ace4dd4a95bd72f871",
+        "sha256": "96c211a12e9d4d4693a9b24e2e49f9fb5f83071aad3d1efed3d9166fa0313865",
         "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
       },
       {
@@ -203,20 +210,20 @@
   "memoryBoundary": "No texture widening, extra texture allocation or copy pass from runtime format specialization. WGSL source and per-format pipelines add CPU/driver memory; full-scene FPS/VRAM remain unmeasured.",
   "sourceReports": [
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-145316\\lumen-shader-results.json",
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-175617\\lumen-shader-results.json",
       "sha256": "282a337a150009dc05db10a590829fcd8fb1f7a2af1fb07c2bdd46ed4e42931b"
     },
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-structured-all-gpu.json",
-      "sha256": "51964367b5d9c0b56cffec68bfada930c8392ebf9bf5118d5f0d536e6eaa1377"
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-uint2-all-gpu.json",
+      "sha256": "e40b4c9f9b0a00a6db3e39f12d4c232ad558819bbfb0197f866a13c8c13539d8"
     },
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-rg16-fixed\\lumen-storage-rhi.json",
-      "sha256": "f5cc9d646ff4edf629315cb3974e72f4acd45a44548bbf59fda8f1e08d4e72ae"
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-uint2-v2\\lumen-storage-rhi.json",
+      "sha256": "4ec1d47d65b4982fcceaa65e49f5b5e31cc0bc7b38c208705d50256b83e897be"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
-      "sha256": "44387562054e3ef9186c94392349ba3d29c263ed9c8cf57a224f8d3516ec4a32"
+      "sha256": "02c020ee9adb59624e3ccd2953db2a5d3c80f86b7e35e01a3ec0cc1d5a20f10b"
     }
   ],
   "boundary": "Full Cook/package/browser scene acceptance is recorded separately; this report does not claim it."
