@@ -87,8 +87,17 @@ function Get-TaskAudit([string]$File) {
 }
 try {
     $taskWorkerThreads = [Math]::Min([Environment]::ProcessorCount, [Math]::Max(2, $MaxParallelActions * 2))
-    $taskWorkerMask = [long]([Math]::Pow(2, [Math]::Min(32, $taskWorkerThreads)) - 1)
-    $taskProcess.ProcessorAffinity = [IntPtr]($taskAffinityBefore.ToInt64() -band $taskWorkerMask)
+    $taskWorkerMask = 0L
+    $taskSelectedWorkers = 0
+    for ($taskCPUIndex = 0; $taskCPUIndex -lt 63 -and $taskSelectedWorkers -lt $taskWorkerThreads; $taskCPUIndex++) {
+        $taskCPUMask = 1L -shl $taskCPUIndex
+        if (($taskAffinityBefore.ToInt64() -band $taskCPUMask) -ne 0) {
+            $taskWorkerMask = $taskWorkerMask -bor $taskCPUMask
+            $taskSelectedWorkers++
+        }
+    }
+    if ($taskWorkerMask -eq 0) { throw 'No allowed CPU cores available for the Web build.' }
+    $taskProcess.ProcessorAffinity = [IntPtr]$taskWorkerMask
     $env:WEB_EMSDK_ROOT = Join-Path $taskRoot '.tools/emsdk'
     # Emscripten keys its shared cache by the literal LLVM_ROOT expanded from this path.
     $env:EM_CONFIG = (Join-Path $env:WEB_EMSDK_ROOT '.emscripten').Replace('\', '/')
