@@ -5,6 +5,32 @@ const branch = (before, lines) => ({before,
 const storage = (before, format) => ({before,
   after: web([`[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`]) + '\n' + before});
 module.exports = new Map([
+  ['Private/GPUFeedbackCompaction.usf', [
+    {before: 'bool HashTableAdd(uint Key, inout uint Index)\n{',
+      after: ['bool HashTableAdd(uint Key, inout uint Index)', '{',
+        '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '\tbool Added = false;', '\tbool SearchComplete = false;',
+        '\tfor (uint LinearProbingStep = 0; LinearProbingStep < 32 && !SearchComplete; ++LinearProbingStep)',
+        '\t{', '\t\tIndex = (Key + LinearProbingStep) & HashTableIndexWrapMask;',
+        '\t\tuint StoredKey = RWHashTableKeys[Index];',
+        '\t\tif (StoredKey == Key)', '\t\t{', '\t\t\tSearchComplete = true;', '\t\t}',
+        '\t\telse if (StoredKey == 0)', '\t\t{', '\t\t\tuint PrevKey;',
+        '\t\t\tInterlockedCompareExchange(RWHashTableKeys[Index], 0, Key, PrevKey);',
+        '\t\t\tif (PrevKey == 0)', '\t\t\t{', '\t\t\t\tRWHashTableKeys[Index] = Key;',
+        '\t\t\t\tAdded = true;', '\t\t\t\tSearchComplete = true;', '\t\t\t}',
+        '\t\t\telse', '\t\t\t{', '\t\t\t\tSearchComplete = PrevKey == Key;',
+        '\t\t\t}', '\t\t}', '\t}', '\treturn Added;', '#else'].join('\n')},
+    {before: '\treturn false;\n}\n\n/**\n * Takes a list of feedback elements',
+      after: '\treturn false;\n#endif\n}\n\n/**\n * Takes a list of feedback elements'},
+    branch('RWStructuredBuffer<uint2> RWCompactedFeedbackBuffer;', [
+      '// Keep the uint2 byte layout while giving the header counter a scalar atomic address.',
+      'RWStructuredBuffer<uint> RWCompactedFeedbackBuffer;']),
+    branch('\t\t\tInterlockedAdd(RWCompactedFeedbackBuffer[0].x, 1, WriteOffset);', [
+      '\t\t\tInterlockedAdd(RWCompactedFeedbackBuffer[0], 1, WriteOffset);']),
+    branch('\t\t\t\t\tRWCompactedFeedbackBuffer[WriteOffset] = PackedFeedback;', [
+      '\t\t\t\t\tRWCompactedFeedbackBuffer[2 * WriteOffset] = PackedFeedback.x;',
+      '\t\t\t\t\tRWCompactedFeedbackBuffer[2 * WriteOffset + 1] = PackedFeedback.y;']),
+  ]],
   ['Private/Lumen/LumenRadianceCache.usf', [
     branch('groupshared uint4 SharedIdealProbeOffset;', [
       '// Scalar slots keep atomic addresses out of vector components in the SPIR-V reader.',

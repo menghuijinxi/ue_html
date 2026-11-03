@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-03",
+  "completeLumenScene": false,
+  "rendererOverrides": [],
+  "shaderTypes": [
+    "FBuildFeedbackHashTableIndirectArgsCS",
+    "FBuildFeedbackHashTableCS",
+    "FCompactFeedbackHashTableCS"
+  ],
+  "conversionPassed": 6,
+  "browserPipelinesPassed": 6,
+  "gpuReadbackCasesPassed": 10,
+  "inputStrides": [1, 2],
+  "inputCounts": [0, 1, 65, 257],
+  "checks": [
+    "Actual UE shaders and generated indirect dispatch arguments",
+    "Unique feedback IDs and duplicate occurrence counts",
+    "Payload and original uint2 output byte layout",
+    "Unused capacity and overflow guard words"
+  ],
+  "extraGlobalBufferBytes": 0,
+  "extraTextureBytes": 0,
+  "sourceReports": [
+    {
+      "file": "H:/ue_html/tests/web-platform/build/lumen-probe/20261103-142611/lumen-shader-results.json",
+      "sha256": "b936e4a7d3ccb7f36ba61b72c3a4663f4309f48fe03fbccf370ee9c179a6b997"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/results/lumen-feedback-pipelines-gpu.json",
+      "sha256": "dd61483872566e2d5fc38bc7a7fccdfb425ca800ad0609373e77b042593274d1"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/results/lumen-feedback-compaction-gpu.json",
+      "sha256": "fda8440bed42015ce9b528cb751bbc2fb69b4a4d8cf4c24662289083f0aa3e11"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:/ue_html/reference-engine/Engine/Shaders/Private/GPUFeedbackCompaction.usf",
+      "sha256": "4e123e81756cf1256e47601f4c508dc9c57e78b5a786178186dc3754880a9f77"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/probe-web-feedback-compaction.cjs",
+      "sha256": "f7daaacb63a03ea63b1ed54e3ac4f5b6d88cb836cbcddd307b58d15b591790f0"
+    }
+  ],
+  "boundary": "Feedback GPU execution fixtures only; actual Surface Cache updates, full scene pixels, FPS and peak VRAM remain unverified."
+}

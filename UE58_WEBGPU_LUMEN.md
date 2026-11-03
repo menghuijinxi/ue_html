@@ -155,6 +155,17 @@ Web 的 Radiosity 积分现在从独立的同格式历史图集读取，向原�
 
 两个允许排列均通过转换、浏览器模块和计算管线创建，结果为 `build/lumen-probe/20261103-141651/` 和 `results/lumen-probe-world-offsets-pipelines-gpu.json`。这是编译兼容验证，尚未进行实际场景探针偏移结果回读或性能验收。完整别墅 Cook 随后恢复；Shader 修改通过内容哈希使相关缓存失效，没有修改项目设置或全部 Shader 的格式缓存键。
 
+### Surface Cache 反馈压缩
+
+完整 Cook 在共享的 `FCompactFeedbackHashTableCS/0` 再次遇到向量分量原子地址错误。Web 将输出 `RWStructuredBuffer<uint2>` 按相同字节布局标量寻址，首个 uint 仍为计数，后续每两个 uint 仍是一条反馈。定向检查整条反馈链路后，还发现哈希插入函数的多个提前返回触发 Tint 循环结果作用域错误；Web 分支改为单一出口，保留最多 32 次线性探测、CAS、去重和计数行为。桌面分支和缓冲区分配尺寸不变，没有新增纹理或全局缓冲区。
+
+诊断入口已纳入 `GPUFeedbackCompaction.usf`；三类 Shader 的 6 个排列均通过转换及浏览器计算管线创建。另用实际 UE Shader 执行间接参数生成、哈希插入和压缩，在步长 1/2、0/1/65/257 条输入、重复元素及输出容量不足场景下共回读 10 项，核验条目唯一性、出现次数、载荷、uint2 布局及越界保护区。结果：`build/lumen-probe/20261103-142611/`、`results/lumen-feedback-compaction-gpu.json`；摘要：`tests/web-platform/evidence/lumen-feedback-20261103.json`。这还不能证明真实 Surface Cache 页面请求和更新效果正确。
+
+```powershell
+& tests/web-platform/probe-web-lumen.ps1 -Mode Shaders -ShaderTypes 'FBuildFeedbackHashTableIndirectArgsCS,FBuildFeedbackHashTableCS,FCompactFeedbackHashTableCS' -AllPermutations
+node tests/web-platform/probe-web-feedback-compaction.cjs <ShaderConversion目录>
+```
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：
