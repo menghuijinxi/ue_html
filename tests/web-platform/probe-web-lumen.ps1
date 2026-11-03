@@ -15,6 +15,20 @@ $taskTint = $env:WEBGPU_TINT_DIR
 $taskIntermediate = $env:WEBGPU_INTERMEDIATE_DIR
 $taskReport = [ordered]@{ date = Get-Date -Format o; pass = $false; mode = $Mode
     cpuAffinity = 4294901760; completeLumenScene = $false; output = $taskOutput; policies = @() }
+function Invoke-TaskProbe([string[]]$Arguments, [string]$Log) {
+    $taskChild = Start-Process -FilePath (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') `
+        -ArgumentList ($Arguments | ForEach-Object { '"' + $_ + '"' }) -PassThru -WindowStyle Hidden `
+        -RedirectStandardOutput $Log -RedirectStandardError "$Log.stderr"
+    $taskChild.ProcessorAffinity = [IntPtr]4294901760
+    $taskChild.Refresh()
+    if ($taskChild.ProcessorAffinity.ToInt64() -ne 4294901760) { throw 'Shader probe affinity was not applied' }
+    while (-not $taskChild.WaitForExit(250)) {
+        # UE reapplies its own process affinity during initialization.
+        try { $taskChild.ProcessorAffinity = [IntPtr]4294901760 }
+        catch { if (-not $taskChild.HasExited) { throw } }
+    }
+    return $taskChild.ExitCode
+}
 try {
     # Isolate the previously reproduced host DXC crash; this is not a renderer setting.
     $taskSelf.ProcessorAffinity = [IntPtr]4294901760
@@ -31,8 +45,8 @@ try {
                 '-WebProjectSettingsCook', '-TargetPlatform=Web', '-ddpi:Web:bIsEnabled=false',
                 '-nullrhi', '-sm5', '-unattended', '-nop4', '-nosplash',
                 '-nosound', "-abslog=$taskFile.log")
-            & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') @taskArguments *> "$taskFile.console"
-            if ($LASTEXITCODE -ne 0) { throw "Lumen policy probe failed: $taskFile" }
+            $taskCode = Invoke-TaskProbe $taskArguments "$taskFile.console"
+            if ($taskCode -ne 0) { throw "Lumen policy probe failed: $taskFile" }
             $taskReport.policies += Get-Content -LiteralPath $taskFile -Raw | ConvertFrom-Json
         }
     }
@@ -45,8 +59,7 @@ try {
             "-abslog=$taskOutput/shaders.log")
         if ($ShaderTypes) { $taskArguments += "-ShaderTypes=$ShaderTypes" }
         if ($AllPermutations) { $taskArguments += '-AllPermutations' }
-        & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') @taskArguments *> "$taskOutput/shaders.console"
-        $taskCode = $LASTEXITCODE
+        $taskCode = Invoke-TaskProbe $taskArguments "$taskOutput/shaders.console"
         $taskReport.shaders = Get-Content (Join-Path $taskOutput 'lumen-shader-results.json') -Raw | ConvertFrom-Json
         if ($taskCode -ne 0) { throw "Lumen shader conversion has failures: $taskOutput/lumen-shader-results.json" }
     }

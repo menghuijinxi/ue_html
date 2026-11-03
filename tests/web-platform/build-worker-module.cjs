@@ -10,7 +10,10 @@ const generated = path.join(plugin, 'Intermediate/Build/Win64/x64/UnrealEditor/D
 const output = path.join(root, '.tools/ue58-web-shader-worker');
 const objects = path.join(output, 'module-build');
 const binaries = path.join(output, 'Engine/Binaries/Win64');
-const compiler = 'C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64';
+const toolchain = fs.readFileSync(path.join(generated, 'WebGPUShaderFormat.Shared.rsp'), 'utf8')
+  .match(/\/(?:external:)?I\s*"([^"\r\n]+\/VC\/Tools\/MSVC\/\d+\.\d+\.\d+)\/include"/i);
+if (!toolchain) throw Error('The shader response must identify its MSVC toolchain');
+const compiler = path.join(toolchain[1], 'bin/Hostx64/x64');
 const unix = value => value.replaceAll('\\', '/');
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 fs.mkdirSync(objects, {recursive: true});

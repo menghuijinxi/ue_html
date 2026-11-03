@@ -240,8 +240,29 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = fals
         return WGPUTextureFormat_Undefined;
     }
 }
+const TCHAR* StorageFormatName(uint32 ImageFormat)
+{
+    switch (ImageFormat)
+    {
+    case 1: return TEXT("rgba32float");
+    case 2: return TEXT("rgba16float");
+    case 3: return TEXT("r32float");
+    case 4: return TEXT("rgba8unorm");
+    case 6: return TEXT("rg32float");
+    case 7: return TEXT("rg16float");
+    case 8: return TEXT("rg11b10ufloat");
+    case 9: return TEXT("r16float");
+    case 10: return TEXT("rgba16unorm");
+    case 12: return TEXT("rg16unorm");
+    case 13: return TEXT("rg8unorm");
+    case 15: return TEXT("r8unorm");
+    default: checkNoEntry(); return TEXT("");
+    }
+}
 bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits, bool SupportsExtendedStorageAccess)
 {
+    // The concrete UAV formats become available when resources are bound.
+    if (!Shader.StorageFormatSource.IsEmpty()) return false;
     uint32 Samplers = 0, Textures = 0, StorageTextures = 0, Uniforms = 0, StorageBuffers = 0;
     for (const auto& Binding : Shader.Bindings)
     {
@@ -1278,6 +1299,19 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         double VertexFetchSlot;
         if (Binding->TryGetNumberField(TEXT("vertexFetchFormatSlot"), VertexFetchSlot))
             Entry.VertexFetchFormatSlot = int32(VertexFetchSlot);
+        bool RuntimeFormat = false;
+        if (Binding->TryGetBoolField(TEXT("runtimeStorageFormat"), RuntimeFormat) && RuntimeFormat)
+        {
+            if (Frequency != SF_Compute || Entry.Descriptor != 3)
+                return Fail(TEXT("Runtime storage formats require a compute texture UAV"));
+            Entry.StorageFormatOffset = Binding->GetIntegerField(TEXT("storageFormatOffset"));
+            Entry.StorageFormatLength = Binding->GetIntegerField(TEXT("storageFormatLength"));
+            if (Entry.StorageFormatOffset < 0 || Entry.StorageFormatLength != 11 ||
+                int64(Entry.StorageFormatOffset) + Entry.StorageFormatLength > Source.Len() ||
+                Source.Mid(Entry.StorageFormatOffset, Entry.StorageFormatLength) != TEXT("rgba32float"))
+                return Fail(TEXT("Runtime storage format location is invalid"));
+            Data.StorageFormatSource = Source;
+        }
         Data.HasVertexFetchFormats |= Entry.Name == TEXT("WebVertexFetchFormats");
         Entry.PaddedSize = Entry.Descriptor == 6 || Entry.Name == TEXT("$Globals") ?
             Binding->GetIntegerField(TEXT("paddedSize")) : 0;
@@ -3065,11 +3099,15 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                         const auto Info = View->GetDesc().Texture.UAV.GetViewInfo(Texture);
                         const uint32 Faces = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
                             Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? 6 : 1;
-                        checkf(Binding->GetIntegerField(TEXT("storageImageFormat")) ==
+                        const uint32* SpecializedFormat = !Render ? ComputePipeline->StorageFormats.Find(
+                            (uint64(Reflected.Group) << 32) | Reflected.Index) : nullptr;
+                        const uint32 ExpectedFormat = SpecializedFormat ? *SpecializedFormat :
+                            Binding->GetIntegerField(TEXT("storageImageFormat"));
+                        checkf(ExpectedFormat ==
                             StorageImageFormat(Info.Format),
                             TEXT("WebGPU storage format mismatch: shader=%s binding=%s texture=%s shaderFormat=%d textureFormat=%d"),
                             *Shader->Entry, *Binding->GetStringField(TEXT("name")), *Texture->GetName().ToString(),
-                            int32(Binding->GetIntegerField(TEXT("storageImageFormat"))),
+                            int32(ExpectedFormat),
                             int32(StorageImageFormat(Info.Format)));
                         for (uint32 Slice = Info.ArrayRange.First * Faces; Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
                             RequireAccess(Texture, Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics,
@@ -3255,7 +3293,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
 }
 WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
     TConstArrayView<const FWebGPUShaderData*> Shaders, TSet<uint64>& DynamicBindings,
-    TArray<WGPUBindGroupLayout>& Layouts)
+    TArray<WGPUBindGroupLayout>& Layouts, const TMap<uint64, uint32>* StorageFormats)
 {
     const uint32 DynamicLimit = Limits.maxDynamicUniformBuffersPerPipelineLayout;
     // Dynamic offsets remove per-draw offsets from the immutable bind-group key. Respect the
@@ -3332,7 +3370,10 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
                 Entry.storageTexture.access = Access == TEXT("read_write") ? WGPUStorageTextureAccess_ReadWrite :
                     Access == TEXT("read") ? WGPUStorageTextureAccess_ReadOnly : WGPUStorageTextureAccess_WriteOnly;
                 Entry.storageTexture.viewDimension = ViewDimension;
-                const uint32 ImageFormat = Binding->GetIntegerField(TEXT("storageImageFormat"));
+                const uint32* SpecializedFormat = StorageFormats ? StorageFormats->Find(
+                    (uint64(Group) << 32) | Entry.binding) : nullptr;
+                const uint32 ImageFormat = SpecializedFormat ? *SpecializedFormat :
+                    Binding->GetIntegerField(TEXT("storageImageFormat"));
                 Entry.storageTexture.format = StorageFormat(ImageFormat);
             }
             else
@@ -3693,6 +3734,8 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     }
     check(In.SpecializationConstants.IsEmpty());
     const auto &Shader = static_cast<FWebGPUComputeShader *>(In.ComputeShader)->Data;
+    if (!Shader.StorageFormatSource.IsEmpty())
+        return new FWebGPUComputePipeline(In.ComputeShader, nullptr);
     WGPUComputePipelineDescriptor Desc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
     const FWebGPUShaderData* ShaderStages[] = {&Shader};
     TSet<uint64> DynamicBindings;
@@ -4418,9 +4461,66 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIB
     ++Draws;
     ++IndirectDraws;
 }
+TRefCountPtr<FWebGPUComputePipeline> FWebGPUDynamicRHI::ResolveComputePipeline(FWebGPUComputePipeline& Pipeline)
+{
+    if (Pipeline.Handle) return &Pipeline;
+    auto& Shader = ShaderData(Pipeline.GetComputeShader());
+    check(!Shader.StorageFormatSource.IsEmpty());
+    TrackShaderBindings(Shader);
+    CommitShaderResources(Shader);
+    TMap<uint64, uint32> Formats;
+    TArray<TPair<int32, uint32>, TInlineAllocator<8>> Replacements;
+    FString Key;
+    for (auto& Binding : Shader.Bindings)
+    {
+        if (Binding.StorageFormatOffset == INDEX_NONE) continue;
+        auto* Resource = ResolveDrawBinding(Shader, Binding);
+        check(Resource && Resource->GetType() == RRT_UnorderedAccessView);
+        const auto* View = static_cast<FRHIUnorderedAccessView*>(Resource);
+        check(View->GetResource()->GetType() == RRT_Texture);
+        auto* Texture = static_cast<FRHITexture*>(View->GetResource());
+        const uint32 ImageFormat = StorageImageFormat(View->GetDesc().Texture.UAV.GetViewInfo(Texture).Format);
+        checkf(ImageFormat && ImageFormat < 30, TEXT("Lumen storage format must retain its floating point scalar type: %s"),
+            *Binding.Name);
+        Formats.Add((uint64(Binding.Group) << 32) | Binding.Index, ImageFormat);
+        Replacements.Emplace(Binding.StorageFormatOffset, ImageFormat);
+        Key.Appendf(TEXT("%02x"), ImageFormat);
+    }
+    if (const auto* Existing = Pipeline.FormatVariants.Find(Key)) return *Existing;
+    FString Source = Shader.StorageFormatSource;
+    Replacements.Sort([](const auto& A, const auto& B) { return A.Key > B.Key; });
+    for (const auto& Replacement : Replacements)
+    {
+        Source.RemoveAt(Replacement.Key, 11, EAllowShrinking::No);
+        Source.InsertAt(Replacement.Key, StorageFormatName(Replacement.Value));
+    }
+    const FTCHARToUTF8 Code(*Source);
+    auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+    WGSL.code = {Code.Get(), size_t(Code.Length())};
+    auto ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+    ModuleDesc.nextInChain = &WGSL.chain;
+    const auto Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
+    TRefCountPtr<FWebGPUComputePipeline> Result = new FWebGPUComputePipeline(Pipeline.GetComputeShader(), nullptr);
+    Result->StorageFormats = MoveTemp(Formats);
+    const FWebGPUShaderData* Stages[] = {&Shader};
+    auto Desc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
+    Desc.layout = CreatePipelineLayout(Stages, Result->DynamicBindings, Result->GroupLayouts, &Result->StorageFormats);
+    Desc.compute.module = Module;
+    const FTCHARToUTF8 Entry(*Shader.Entry);
+    Desc.compute.entryPoint = Text(Entry.Get());
+    const double Start = FPlatformTime::Seconds();
+    Result->Handle = wgpuDeviceCreateComputePipeline(Device, &Desc);
+    ComputePipelineCreateMs += (FPlatformTime::Seconds() - Start) * 1000;
+    ++ComputePipelinesCreated;
+    wgpuPipelineLayoutRelease(Desc.layout);
+    wgpuShaderModuleRelease(Module);
+    Pipeline.FormatVariants.Add(MoveTemp(Key), Result);
+    return Result;
+}
 WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
 {
     check(Encoder && !Pass && ComputePipeline);
+    TGuardValue<TRefCountPtr<FWebGPUComputePipeline>> Variant(ComputePipeline, ResolveComputePipeline(*ComputePipeline));
     auto Compute = wgpuCommandEncoderBeginComputePass(Encoder, nullptr);
     wgpuComputePassEncoderSetPipeline(Compute, ComputePipeline->Handle);
     FWebGPUShaderData *Shaders[] = {&ShaderData(ComputePipeline->GetComputeShader())};

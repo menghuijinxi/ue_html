@@ -90,6 +90,13 @@ static TSharedRef<FJsonObject> ReflectBlock(const SpvReflectBlockVariable &Block
     return Json;
 }
 
+static bool NeedsRuntimeStorageFormats(const FShaderCompilerInput& Input)
+{
+    return Input.Target.GetFrequency() == SF_Compute &&
+        (Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/Lumen/")) ||
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/StochasticLighting/")));
+}
+
 static void RemoveUnusedGatherCapability(TArray<uint32>& Spirv)
 {
     int32 CapabilityOffset = INDEX_NONE;
@@ -128,6 +135,86 @@ static void RemoveUnusedGatherCapability(TArray<uint32>& Spirv)
     // instruction could still require extended offsets; never rewrite an image operation.
     if (CapabilityOffset != INDEX_NONE)
         Spirv.RemoveAt(CapabilityOffset, 2, EAllowShrinking::No);
+}
+
+static TSet<uint32> FindStorageImageReads(const TArray<uint32>& Spirv,
+    TConstArrayView<SpvReflectDescriptorBinding*> Bindings)
+{
+    TMap<uint32, uint32> Origins;
+    for (const auto* Binding : Bindings)
+        if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
+            Origins.Add(Binding->spirv_id, Binding->spirv_id);
+    // DXC normally loads an image directly from its descriptor variable.
+    // Anything that escapes this simple proven path remains read/write.
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) == SpvOpLoad && (Spirv[Offset] >> 16) >= 4)
+            if (const auto* Root = Origins.Find(Spirv[Offset + 3]))
+                Origins.Add(Spirv[Offset + 2], *Root);
+    TSet<uint32> Reads;
+    bool InFunctions = false;
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+    {
+        const uint32 Opcode = Spirv[Offset] & 0xffff, Words = Spirv[Offset] >> 16;
+        InFunctions |= Opcode == SpvOpFunction;
+        if (!InFunctions || Opcode == SpvOpLoad || Opcode == SpvOpLine) continue;
+        for (uint32 Operand = 1; Operand < Words; ++Operand)
+        {
+            // The extended instruction number is a literal, not a resource ID.
+            if (Opcode == SpvOpExtInst && Operand == 4) continue;
+            const auto* Root = Origins.Find(Spirv[Offset + Operand]);
+            if (!Root) continue;
+            if ((Opcode == SpvOpImageWrite && Operand == 1) ||
+                ((Opcode == SpvOpImageQuerySize || Opcode == SpvOpImageQuerySizeLod ||
+                  Opcode == SpvOpImageQueryLevels || Opcode == SpvOpImageQuerySamples) && Operand == 3))
+                continue;
+            Reads.Add(*Root);
+        }
+    }
+    return Reads;
+}
+
+static void PrepareLumenStorageFormats(TArray<uint32>& Spirv, const TSet<uint32>& WriteOnly)
+{
+    TSet<uint32> FloatTypes;
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+    {
+        if ((Spirv[Offset] & 0xffff) == SpvOpTypeFloat)
+            FloatTypes.Add(Spirv[Offset + 1]);
+    }
+    bool HasUnformattedImage = false;
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+    {
+        if ((Spirv[Offset] & 0xffff) == SpvOpTypeImage && (Spirv[Offset] >> 16) >= 9 &&
+            Spirv[Offset + 7] == 2)
+        {
+            // WGSL needs a concrete type. The RHI specializes this placeholder to
+            // each bound UAV's format before creating the actual compute pipeline.
+            if (FloatTypes.Contains(Spirv[Offset + 2]))
+                Spirv[Offset + 8] = SpvImageFormatRgba32f;
+            HasUnformattedImage |= Spirv[Offset + 8] == SpvImageFormatUnknown;
+        }
+    }
+    if (!HasUnformattedImage)
+    {
+        for (int32 Offset = 5; Offset < Spirv.Num();)
+        {
+            const uint32 Words = Spirv[Offset] >> 16;
+            if ((Spirv[Offset] & 0xffff) == SpvOpCapability && Words == 2 &&
+                (Spirv[Offset + 1] == SpvCapabilityStorageImageReadWithoutFormat ||
+                 Spirv[Offset + 1] == SpvCapabilityStorageImageWriteWithoutFormat))
+                Spirv.RemoveAt(Offset, Words, EAllowShrinking::No);
+            else Offset += Words;
+        }
+    }
+    TArray<uint32> Decorations;
+    for (uint32 Variable : WriteOnly)
+        Decorations.Append({(3u << 16) | SpvOpDecorate, Variable, SpvDecorationNonReadable});
+    for (int32 Offset = 5; !Decorations.IsEmpty() && Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) >= SpvOpTypeVoid && (Spirv[Offset] & 0xffff) <= SpvOpTypeForwardPointer)
+        {
+            Spirv.Insert(Decorations.GetData(), Decorations.Num(), Offset);
+            break;
+        }
 }
 
 static bool ValidateResourceOnlyUniform(const FJsonObject &Metadata, const FJsonObject &Parameter)
@@ -361,7 +448,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage4");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -374,6 +461,10 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Input.CompressionFormat = NAME_None;
         Input.Environment.SetDefine(TEXT("COMPILER_WEBGPU"), 1);
         Input.Environment.SetDefine(TEXT("EARLYDEPTHSTENCIL"), TEXT(""));
+        // Metadata fields are additive. Invalidate only the affected jobs while
+        // AppendToKeyString invalidates complete shader maps containing them.
+        if (NeedsRuntimeStorageFormats(Input))
+            Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(3));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -638,6 +729,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         TArray<uint32> Spirv;
         Spirv.SetNumUninitialized(SpirvSize / 4);
         Reader.Serialize(Spirv.GetData(), SpirvSize);
+        const bool RuntimeStorageFormats = NeedsRuntimeStorageFormats(Input);
         spv_reflect::ShaderModule Reflection(SpirvSize, Spirv.GetData());
         if (Reflection.GetResult() != SPV_REFLECT_RESULT_SUCCESS)
         {
@@ -662,6 +754,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         TArray<SpvReflectDescriptorBinding *> NativeBindings;
         NativeBindings.SetNumUninitialized(Count);
         Reflection.EnumerateDescriptorBindings(&Count, NativeBindings.GetData());
+        const TSet<uint32> ImageReads = RuntimeStorageFormats ? FindStorageImageReads(Spirv, NativeBindings) : TSet<uint32>();
+        TSet<uint32> WriteOnlyImages;
         TArray<TSharedPtr<FJsonValue>> Bindings, Parameters, Resources;
         for (const SpvReflectDescriptorBinding *Binding : NativeBindings)
         {
@@ -686,10 +780,19 @@ class FWebGPUShaderFormat final : public IShaderFormat
                 Json->SetNumberField(TEXT("textureDepth"), Binding->image.depth);
                 if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
                 {
-                    Json->SetNumberField(TEXT("storageImageFormat"), Binding->image.image_format);
+                    Json->SetNumberField(TEXT("storageImageFormat"),
+                        RuntimeStorageFormats && (Binding->type_description->type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT) ?
+                        SpvImageFormatRgba32f : Binding->image.image_format);
                     Json->SetStringField(TEXT("storageTextureAccess"),
                         Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_READABLE ? TEXT("write") :
                         Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_WRITABLE ? TEXT("read") : TEXT("read_write"));
+                    if (RuntimeStorageFormats && !ImageReads.Contains(Binding->spirv_id) &&
+                        !(Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_WRITABLE))
+                    {
+                        Json->SetStringField(TEXT("storageTextureAccess"), TEXT("write"));
+                        if (!(Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_READABLE))
+                            WriteOnlyImages.Add(Binding->spirv_id);
+                    }
                 }
                 const auto *Type = Binding->type_description;
                 if (!Type || Type->traits.numeric.scalar.width != 32 ||
@@ -702,6 +805,9 @@ class FWebGPUShaderFormat final : public IShaderFormat
                                      (Type->type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT) ? TEXT("float")
                                      : Type->traits.numeric.scalar.signedness         ? TEXT("sint")
                                                                                       : TEXT("uint"));
+                if (RuntimeStorageFormats && Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE &&
+                    (Type->type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT))
+                    Json->SetBoolField(TEXT("runtimeStorageFormat"), true);
             }
             if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER)
             {
@@ -817,6 +923,17 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Metadata->SetObjectField(TEXT("resourceTable"), TableJson);
 
         CrossCompiler::FShaderConductorContext Context;
+        if (RuntimeStorageFormats)
+        {
+            PrepareLumenStorageFormats(Spirv, WriteOnlyImages);
+            const ANSICHAR* FormatPasses[] = {"--remove-duplicates"};
+            if (!Context.OptimizeSpirv(Spirv, FormatPasses, UE_ARRAY_COUNT(FormatPasses)))
+            {
+                Context.FlushErrors(NativeOutput.Errors);
+                Error = TEXT("Lumen storage image type deduplication failed");
+                return false;
+            }
+        }
         const ANSICHAR *Passes[] = {"--strip-reflect", "--trim-capabilities"};
         if (!Context.OptimizeSpirv(Spirv, Passes, UE_ARRAY_COUNT(Passes)))
         {
@@ -839,6 +956,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         InputDiagnostic->SetStringField(TEXT("description"), Input.DebugDescription);
         InputDiagnostic->SetObjectField(TEXT("metadata"), Metadata);
         FString InputJson;
+        InputJson.Reset();
         FJsonSerializer::Serialize(InputDiagnostic, TJsonWriterFactory<>::Create(&InputJson));
         FFileHelper::SaveStringToFile(InputJson, *(DiagnosticDirectory / TEXT("input.json")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
         FFileHelper::SaveArrayToFile(MakeArrayView(reinterpret_cast<const uint8 *>(Spirv.GetData()), Spirv.Num() * 4),
@@ -870,6 +988,38 @@ class FWebGPUShaderFormat final : public IShaderFormat
             return false;
         }
         Metadata->SetObjectField(TEXT("reflection"), WebReflection);
+        FRegexMatcher StorageDeclarations(FRegexPattern(
+            TEXT("@group\\(([0-9]+)u?\\)\\s+@binding\\(([0-9]+)u?\\)\\s+var\\s+[A-Za-z_][A-Za-z0-9_]*\\s*:\\s*texture_storage_[a-z0-9_]+\\s*<\\s*(rgba32float)\\s*,")), Wgsl);
+        while (StorageDeclarations.FindNext())
+        {
+            const int32 Group = FCString::Atoi(*StorageDeclarations.GetCaptureGroup(1));
+            const int32 Index = FCString::Atoi(*StorageDeclarations.GetCaptureGroup(2));
+            for (const auto& Value : Bindings)
+            {
+                const auto Binding = Value->AsObject();
+                bool Dynamic = false;
+                if (Binding->GetIntegerField(TEXT("group")) == Group &&
+                    Binding->GetIntegerField(TEXT("binding")) == Index &&
+                    Binding->TryGetBoolField(TEXT("runtimeStorageFormat"), Dynamic) && Dynamic)
+                {
+                    Binding->SetNumberField(TEXT("storageFormatOffset"), StorageDeclarations.GetCaptureGroupBeginning(3));
+                    Binding->SetNumberField(TEXT("storageFormatLength"), StorageDeclarations.GetCaptureGroupEnding(3) -
+                        StorageDeclarations.GetCaptureGroupBeginning(3));
+                }
+            }
+        }
+        for (const auto& Value : Bindings)
+        {
+            const auto Binding = Value->AsObject();
+            bool Dynamic = false;
+            if (Binding->TryGetBoolField(TEXT("runtimeStorageFormat"), Dynamic) && Dynamic &&
+                !Binding->HasField(TEXT("storageFormatOffset")))
+            {
+                Error = TEXT("Unable to locate runtime storage texture declaration: ") +
+                    Binding->GetStringField(TEXT("name"));
+                return false;
+            }
+        }
         // tint_info omits sampler_type. Read comparison declarations from Tint's
         // canonical WGSL, keyed by descriptor location rather than resource name.
         FRegexMatcher ComparisonSampler(FRegexPattern(
@@ -893,6 +1043,9 @@ class FWebGPUShaderFormat final : public IShaderFormat
         if (!UE::WebGPUShader::ValidateBindings(Metadata, WebReflection, Error))
             return false;
         Metadata->SetBoolField(TEXT("bindingContractVerified"), true);
+        InputJson.Reset();
+        FJsonSerializer::Serialize(InputDiagnostic, TJsonWriterFactory<>::Create(&InputJson));
+        FFileHelper::SaveStringToFile(InputJson, *(DiagnosticDirectory / TEXT("input.json")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
         TArray<uint8> MetadataBytes;
         if (!UE::WebGPUShader::EncodeMetadata(Metadata, MetadataBytes))
         {

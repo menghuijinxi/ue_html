@@ -15,6 +15,7 @@ param(
     [switch]$DisableProjectSkyLight,
     [switch]$StopOnShaderError,
     [switch]$ValidateShaderJobCache,
+    [ValidateRange(0, 4294967295)][long]$HostProcessorAffinity = 0,
     [switch]$SkipBuild
 )
 $ErrorActionPreference = 'Stop'
@@ -95,12 +96,22 @@ $taskReport = [ordered]@{
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
     validateShaderJobCache = [bool]$ValidateShaderJobCache
+    hostProcessorAffinity = $HostProcessorAffinity
     jobCacheDDCDisabled = [bool]($taskWebGPU -and $ValidateShaderJobCache)
     shaderMapDDCDisabled = [bool]($taskWebGPU -and $ValidateShaderJobCache)
     completeUEScene = $false
     sourceEngineVersion = "$($taskInstalledVersion.MajorVersion).$($taskInstalledVersion.MinorVersion).$($taskInstalledVersion.PatchVersion)-installed-host"
     targetEngineVersion = '5.8.3-source-branch'
     output = $taskOutput
+}
+function Wait-TaskCookProcess([Diagnostics.Process]$Child) {
+    while (-not $Child.WaitForExit(250)) {
+        if ($HostProcessorAffinity) {
+            try { $Child.ProcessorAffinity = [IntPtr]$HostProcessorAffinity }
+            catch { if (-not $Child.HasExited) { throw } }
+        }
+    }
+    return $Child.ExitCode
 }
 New-Item -ItemType Directory -Path $taskResults, $taskOutput -Force | Out-Null
 try {
@@ -281,7 +292,7 @@ try {
         $taskPreflightDirectory = Join-Path $taskOutput 'LumenPreflight'
         New-Item -ItemType Directory -Path $taskPreflightDirectory -Force | Out-Null
         $taskPreflightArguments = @($taskProject, '-run=WebShaderProbe', '-LumenShaderProbe',
-            '-ShaderTypes=FScreenProbeTraceMeshSDFsCS,FScreenProbeIntegrateCS,FLumenCardCombineLightingCS,FReflectionTraceMeshSDFsCS,FLumenSceneUpdateCS',
+            '-ShaderTypes=FScreenProbeTraceMeshSDFsCS,FScreenProbeIntegrateCS,FLumenCardCombineLightingCS,FReflectionTraceMeshSDFsCS,FLumenSceneUpdateCS,FStochasticLightingTileClassificationMarkCS',
             "-Output=$taskPreflightDirectory", '-WebGPUCook', '-WebProjectSettingsCook',
             '-TargetPlatform=Web', '-ddpi:Web:bIsEnabled=false', '-nullrhi', '-sm5',
             '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskPreflightDirectory/probe.log")
@@ -289,18 +300,17 @@ try {
             -ArgumentList ($taskPreflightArguments | ForEach-Object { '"' + $_ + '"' }) `
             -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskPreflightDirectory/console.log" `
             -RedirectStandardError "$taskPreflightDirectory/stderr.log"
-        $taskPreflight.ProcessorAffinity = $taskProcess.ProcessorAffinity
-        $taskPreflight.WaitForExit()
+        $taskPreflightCode = Wait-TaskCookProcess $taskPreflight
         $taskPreflightResult = Join-Path $taskPreflightDirectory 'lumen-shader-results.json'
         $taskReport.lumenShaderPreflight = @{
-            exitCode = $taskPreflight.ExitCode
+            exitCode = $taskPreflightCode
             arguments = $taskPreflightArguments
-            boundary = 'First eligible permutations of five real Lumen shaders using the target project. Passing does not replace full Cook or browser acceptance.'
+            boundary = 'First eligible permutations of six real Lumen/shared stochastic-lighting shaders using the target project. Passing does not replace full Cook or browser acceptance.'
         }
         if (Test-Path -LiteralPath $taskPreflightResult) {
             $taskReport.lumenShaderPreflight.report = Get-TaskAudit $taskPreflightResult
         }
-        if ($taskPreflight.ExitCode -ne 0) {
+        if ($taskPreflightCode -ne 0) {
             throw "Experimental Web Lumen shader preflight failed: $taskPreflightDirectory. Project rendering settings were preserved."
         }
     }
@@ -324,10 +334,13 @@ try {
     }
     $taskReport.stage = 'cook'
     $taskReport.arguments = $taskArguments
-    & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') @taskArguments *> "$taskLog.console.txt"
-    $taskReport.exitCode = $LASTEXITCODE
+    $taskCookChild = Start-Process -FilePath (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') `
+        -ArgumentList ($taskArguments | ForEach-Object { '"' + $_ + '"' }) `
+        -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskLog.console.txt" `
+        -RedirectStandardError "$taskLog.stderr.txt"
+    $taskReport.exitCode = Wait-TaskCookProcess $taskCookChild
     if (Test-Path -LiteralPath $taskLog) { $taskReport.log = Get-TaskAudit $taskLog }
-    if ($LASTEXITCODE -ne 0) { throw "Web Cook failed: $taskLog" }
+    if ($taskReport.exitCode -ne 0) { throw "Web Cook failed: $taskLog" }
     $taskAssets = @(Get-ChildItem -LiteralPath $taskOutput -File -Recurse |
         Where-Object { ($_.Extension -in @('.uasset', '.umap', '.uexp', '.ubulk') -or
             ($taskWebGPU -and ($_.Extension -eq '.ushaderbytecode' -or $_.Name -eq "GlobalShaderCache-$taskShaderPlatformName.bin"))) -and

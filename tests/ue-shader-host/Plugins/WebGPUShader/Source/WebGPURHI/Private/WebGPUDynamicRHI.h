@@ -29,6 +29,7 @@ struct FWebGPUShaderBinding
     double TextureDimension = -1;
     bool TextureArrayed = false, TextureMultisampled = false, TextureContractValid = false;
     FString TextureSampleType;
+    int32 StorageFormatOffset = INDEX_NONE, StorageFormatLength = 0;
     // Prepared descriptors are reusable only while their source and access
     // state are unchanged. The bind-group cache below owns GPU handle refs.
     TRefCountPtr<FRHIResource> PreparedResource;
@@ -86,6 +87,7 @@ struct FWebGPUShaderData
     uint32 BindingFrame = MAX_uint32;
     WGPUShaderModule Module = nullptr;
     FString Entry;
+    FString StorageFormatSource;
     TSharedPtr<FJsonObject> Metadata;
     TMap<uint32, TRefCountPtr<FRHIResource>> Resources;
     TArray<uint8> Globals;
@@ -478,6 +480,8 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     WGPUComputePipeline Handle;
     TArray<WGPUBindGroupLayout> GroupLayouts;
     TSet<uint64> DynamicBindings;
+    TMap<uint64, uint32> StorageFormats;
+    TMap<FString, TRefCountPtr<FWebGPUComputePipeline>> FormatVariants;
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
@@ -776,7 +780,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     FWebGPUUniform::FConstantSnapshot UploadFrameConstants(const void* Data, uint64 Bytes);
     void FlushFrameConstants();
     WGPUPipelineLayout CreatePipelineLayout(TConstArrayView<const FWebGPUShaderData*> Shaders,
-        TSet<uint64>& DynamicBindings, TArray<WGPUBindGroupLayout>& Layouts);
+        TSet<uint64>& DynamicBindings, TArray<WGPUBindGroupLayout>& Layouts,
+        const TMap<uint64, uint32>* StorageFormats = nullptr);
+    TRefCountPtr<FWebGPUComputePipeline> ResolveComputePipeline(FWebGPUComputePipeline& Pipeline);
     void Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter);
     void Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8>, TConstArrayView<FRHIShaderParameter>,
                     TConstArrayView<FRHIShaderParameterResource>, TConstArrayView<FRHIShaderParameterResource>);

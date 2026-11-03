@@ -24,6 +24,25 @@ assert(jobs.length, 'No converted UE shaders');
 (async () => {
   let browser;
   try {
+    for (const [shader, name] of [
+      ['FScreenProbeTraceScreenTexturesCS', 'RWTraceRadiance'],
+      ['FReflectionTraceVoxelsCS', 'RWTraceRadiance'],
+      ['FLumenSceneDenoiserTemporalCS', 'RWNumFramesAccumulated'],
+      ['FLumenRadiosityDistanceFieldTracingCS', 'RWTraceRadianceAtlas'],
+    ]) {
+      const job = jobs.find(item => item.name === shader);
+      const binding = job?.metadata.spirvBindings.find(item => item.name === name);
+      assert.equal(binding?.storageTextureAccess, 'write',
+        `${shader}/${name}: SPIR-V instruction literals must not imply an image read`);
+    }
+    report.runtimeStorageBindings = 0;
+    for (const job of jobs)
+      for (const binding of job.metadata.spirvBindings.filter(item => item.runtimeStorageFormat)) {
+        assert.equal(job.code.slice(binding.storageFormatOffset,
+          binding.storageFormatOffset + binding.storageFormatLength), 'rgba32float',
+        `${job.name}/${binding.name}: runtime format position differs from emitted WGSL`);
+        ++report.runtimeStorageBindings;
+      }
     browser = await chromium.launch({headless: true,
       executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'});
     const page = await browser.newPage();

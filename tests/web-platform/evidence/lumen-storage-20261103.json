@@ -1,0 +1,173 @@
+{
+  "date": "2026-11-03T04:39:34.879Z",
+  "stage": "software-lumen-storage-formats",
+  "completeLumenScene": false,
+  "rendererOverrides": [],
+  "shaders": {
+    "selection": "First allowed permutation per Lumen/shared stochastic-lighting shader type",
+    "total": 158,
+    "passed": 158
+  },
+  "browserGPU": {
+    "modules": 158,
+    "runtimeStorageBindings": 89,
+    "device": {
+      "features": [
+        "texture-formats-tier1",
+        "texture-formats-tier2",
+        "rg11b10ufloat-renderable",
+        "subgroups"
+      ],
+      "adapter": {}
+    },
+    "execution": [
+      {
+        "shader": "FLumenSceneUpdateCS",
+        "capacity": 258,
+        "primitiveCount": 257,
+        "additions": 65,
+        "removals": 64,
+        "pairsAndOverflowGuardsVerified": true
+      },
+      {
+        "shader": "FLumenSceneUpdateCS",
+        "capacity": 3,
+        "primitiveCount": 257,
+        "additions": 65,
+        "removals": 64,
+        "pairsAndOverflowGuardsVerified": true
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 1,
+        "height": 1,
+        "verifiedTexels": 1
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 13,
+        "height": 9,
+        "verifiedTexels": 117
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 65,
+        "height": 37,
+        "verifiedTexels": 2405
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 127,
+        "height": 68,
+        "verifiedTexels": 8636
+      }
+    ]
+  },
+  "nativeRHI": {
+    "pipelines": 6,
+    "cases": [
+      {
+        "format": 26,
+        "pass": true,
+        "actualBytes": "40031C78",
+        "expectedBytes": "40031C78",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456
+      },
+      {
+        "format": 10,
+        "pass": true,
+        "actualBytes": "00340038003C003A",
+        "expectedBytes": "00340038003C003A",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456
+      },
+      {
+        "format": 1,
+        "pass": true,
+        "actualBytes": "0000803E0000003F0000803F0000403F",
+        "expectedBytes": "0000803E0000003F0000803F0000403F",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456
+      },
+      {
+        "format": 26,
+        "pass": true,
+        "actualBytes": "40031C78",
+        "expectedBytes": "40031C78",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456
+      },
+      {
+        "format": 21,
+        "pass": true,
+        "actualBytes": "0034",
+        "expectedBytes": "0034",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456
+      },
+      {
+        "format": 40,
+        "pass": true,
+        "actualBytes": "407F",
+        "expectedBytes": "4080",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456
+      },
+      {
+        "format": 71,
+        "pass": true,
+        "actualBytes": "40",
+        "expectedBytes": "40",
+        "mask": 127,
+        "bufferFirst": 123,
+        "bufferSecond": 456
+      }
+    ],
+    "boundary": "Actual RHI with fixed shader/metadata fixture; float bytes exact, UNORM tolerance one quantization unit"
+  },
+  "wasm": {
+    "pass": true,
+    "wasmValidated": true,
+    "products": [
+      {
+        "sha256": "ee9445a0ed05deaf70ddc6988f2c72248e7907c6ce8e070c8e6101fb226f542e",
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js"
+      },
+      {
+        "sha256": "aa355f8af52d54bbf714cea0ae39ee823dade7938fe51710f4e89032d35f12b0",
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
+      },
+      {
+        "sha256": "8c44bbd404aab40b01e03d43b249a3fe0d83b6d7d4e50b35808f00164e19b0c5",
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target"
+      }
+    ]
+  },
+  "memoryBoundary": "No texture widening, extra texture allocation or copy pass from runtime format specialization. WGSL source and per-format pipelines add CPU/driver memory; full-scene FPS/VRAM remain unmeasured.",
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-123222\\lumen-shader-results.json",
+      "sha256": "01df408ce54db5d1ec552e1988ab7ab3e53055d1a4f0711e4be7a897d1a12821"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-lumen-storage-gpu-access.json",
+      "sha256": "352e0c279e2c9b7013924d002c1cbc896863adb4ac04710a672756312748c905"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi\\lumen-storage-rhi.json",
+      "sha256": "c649f02a5d0eea12f5f34f6aa45c8e74fa154f721e8ec9e072040d8fd2735475"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "ff294ecdb9caaf36e62f51f4f507fee1b670f627627dadbcdb3ec2b9c6144618"
+    }
+  ],
+  "boundary": "Full Cook/package/browser scene acceptance is recorded separately; this report does not claim it."
+}

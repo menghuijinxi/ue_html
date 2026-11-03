@@ -1,6 +1,6 @@
 # WebGPU 软件 Lumen 初步兼容
 
-更新：2026-11-03。状态：**实验接入，尚未完成完整 Lumen 场景**。依据 `UE58_NANITE_LUMEN_WEBGPU_FEASIBILITY.md`，优先普通网格、软件距离场追踪和原有 Screen Probe Gather；没有加入硬件光追或 Nanite。
+更新：2026-11-03。状态：**实验接入，存储格式初筛已通过，完整场景仍待验收**。依据 `UE58_NANITE_LUMEN_WEBGPU_FEASIBILITY.md`，优先普通网格、软件距离场追踪和原有 Screen Probe Gather；没有加入硬件光追或 Nanite。
 
 对应独立引擎提交：`3bba192188f966b4808074518c4ca732229663c4`。
 
@@ -33,6 +33,8 @@ Web RHI 不提供硬件光追，使用 UE 原有的无硬件能力时软件追�
 4. 为部分探针输出补全与原有纹理匹配的存储格式；调整共享原子计数的发布与屏障，使 WGSL 能证明组内归约循环一致。
 5. Web 探针 BRDF SH 临时 buffer 使用 float32，匹配现有 WGSL buffer 转换；原生平台仍用 half16。
 6. 将上述源码纳入独立 Cook Shader 快照、原生模块覆盖和 Wasm 构建，加入可重复的配置、真实 UE Shader 编译及浏览器 GPU 回读探针。
+7. Lumen 与其共享的 StochasticLighting Compute Shader 使用运行时存储格式专用管线：Cook 保留格式位置及实际访问方式，RHI 在绑定 UAV 后使用其真实格式编译管线，并按格式组合缓存。Shader 中的 RGBA32F 只是转换占位类型，不改变实际纹理分配。
+8. 从原始 SPIR-V 证明只写的纹理输出增加 NonReadable 声明，避免把 R11G11B10、RG8 等只写输出错误声明成不受支持的读写纹理。不能证明只写的资源仍保留读写限制；没有删除真正的纹理读取。
 
 原生分支保留原算法。没有为通过编译而整体关闭 Wave、探针自适应、Lumen 反射或其他项目效果。
 
@@ -44,17 +46,18 @@ Web RHI 不提供硬件光追，使用 UE 原有的无硬件能力时软件追�
 | --- | --- |
 | 实际 UE 准入探针 | 8 组通过：关闭、GI、反射、总开关关闭、屏幕空间方法、Web 覆盖开启/关闭、再次关闭；同时核验 Shader 准入与 Cook Cards/DF 声明 |
 | 配置预检回归 | 9 项通过，包含缺失 DF、Forward、VSM 拒绝、其他平台隔离、跨 INI section 的 CVar 优先级 |
-| 真实 UE Lumen 全局 Shader 初筛 | 157 类各取第一个允许排列：121 通过，36 失败；新增拷贝 Shader 计入总数 |
+| 真实 UE 全局 Shader 初筛 | 157 类 Lumen 与 1 类共享 StochasticLighting 各取第一个允许排列，158 项全部通过；新增拷贝 Shader 计入总数；不代表所有排列均已覆盖 |
 | 本轮修复路径的允许排列 | 场景队列、自适应 Mark/Spawn、ScreenData、头拷贝共 11 个允许排列全部通过，不代表其余 Lumen 排列全覆盖 |
-| 浏览器 WGSL 检查 | 上述 121 个成功输出均通过 Edge WebGPU 模块编译检查；不是 121 条完整渲染管线执行验收 |
+| 浏览器 WGSL 检查 | 上述 158 个输出均通过 Edge WebGPU 模块编译检查；另核验 89 项动态格式位置与 4 类只写输出；不是 158 条完整渲染管线执行验收 |
 | 场景队列 GPU 执行 | 257 个原语，65 次添加、64 次移除；容量 258 和容量 3 两组均验证计数、配对、去重、头部填充及溢出哨兵 |
 | 探针头拷贝 GPU 执行 | 1×1、13×9、65×37、127×68 全部逐 texel 回读通过 |
+| 原生 Web RHI 存储格式 GPU 执行 | R11G11B10、RGBA16F、RGBA32F、R16F、RG8、R8 与混合 R8 输出共 7 组通过；重复 R11G11B10 复用管线，共创建 6 条；浮点格式逐字节核对，UNORM 允许 1 个量化单位舍入差 |
 | 原生 RenderCore、Renderer 与测试宿主构建 | 通过；安装目录输入审计未变 |
 | 多线程 Wasm64 编译、链接与 Wasm 校验 | 通过；Web Renderer 编译仍为 `-O2` |
 
 原生 Cook 模块继续使用既有的 MSVC 编译器故障规避选项，不能据此推断 Web Renderer 关闭优化。完整源码原生引擎、完整 Lumen Cook、真实场景 GI 像素和开关前后资源回收尚未验收。
 
-原始结果位于忽略的 `tests/web-platform/build/lumen-probe/20261103-101212/` 及 `tests/web-platform/results/`。可追溯摘要保存在 `tests/web-platform/evidence/lumen-initial-20261103.json`。
+首次结果位于忽略的 `tests/web-platform/build/lumen-probe/20261103-101212/`。最新格式与访问修复结果位于 `build/lumen-probe/20261103-123222/`，浏览器复核为 `results/web-lumen-storage-gpu-access.json`，原生 RHI 回读为 `build/lumen-storage-rhi/lumen-storage-rhi.json`。首次可追溯摘要保存在 `tests/web-platform/evidence/lumen-initial-20261103.json`。
 
 复现命令，在工作区 PowerShell 运行：
 
@@ -63,13 +66,15 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 & tests/web-platform/probe-web-lumen.ps1 -Mode All
 ```
 
-第二条目前应报告失败并保存逐 Shader 错误；这是如实记录未完成通道，不能把它改成忽略错误的成功。
+第二条检查各类 Shader 的首个允许排列，并保存逐项成败；它不能代替目标项目的完整 Cook 和浏览器运行。
+
+原生存储格式回读复现入口为隔离宿主的 `-run=WebShaderProbe -WebRHIProbe -WebLumenStorageRHIProbe -Output=<结果目录> -nullrhi -norhithread -unattended`。该探针使用实际 Web RHI 纹理、绑定、Dispatch、拷贝和回读，Shader 元数据由固定测试样例构造；真实 UE Shader 的转换与格式位置另由上述 158 项检查覆盖。
 
 ## 剩余阻塞与下一步
 
-36 个初筛失败项均报告 `StorageImageWriteWithoutFormat`，分布于软件 SDF 追踪、Screen Probe 积分/过滤、Surface Cache 光照、Radiosity、Radiance Cache 和反射等通道。不能因为场景更新和数据拷贝成功就宣称完整 Lumen 可运行。
+首次 36 个初筛失败项均报告 `StorageImageWriteWithoutFormat`，分布于软件 SDF 追踪、Screen Probe 积分/过滤、Surface Cache 光照、Radiosity、Radiance Cache 和反射等通道。这些首个允许排列已通过存储格式专用管线修复。完整 Cook 还发现了共享 StochasticLighting 的同类问题，现已将该目录的 Compute Shader 纳入同一路径。
 
-下一阶段需要按每项实际 RDG 像素格式及原有格式排列补齐存储纹理声明，再验证完整排列、绑定限额、Surface Cache 捕获和场景动态更新。不能统一写死 RGBA16F 来掩盖项目默认格式差异。存在于源码中的硬件光追辅助 Shader 即使转换成功，也不代表 Web 实现了硬件光追。
+接下来仍须验证完整排列、绑定限额、Surface Cache 捕获和场景动态更新。不能统一写死 RGBA16F 来掩盖项目默认格式差异。存在于源码中的硬件光追辅助 Shader 即使转换成功，也不代表 Web 实现了硬件光追。
 
 完整验收仍应使用独立测试项目：普通网格、显式 Lumen 项目设置、屏幕外彩色反弹、移动物体和灯光变化，与同设置原生软件 Lumen 对照；之后再测默认关卡及别墅。
 
@@ -104,5 +109,6 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 - 自适应头 buffer：`ceil(宽/下采样因子) × ceil(高/下采样因子) × 4` 字节，另增加一次清零和一次拷贝 Dispatch。下采样因子为 16 时，1280×720 约 14.1 KiB，1920×1080 约 31.9 KiB。
 - BRDF SH buffer 从 half16 改 float32：额外 `探针图集宽 × 探针图集高 × 9 × 2` 字节，图集包含自适应区域；会增加对应读写带宽。
 - Cards 添加队列保持原始字节布局，没有因标量化再复制一份队列。
+- 存储格式专用管线不增加纹理尺寸、格式字节数或拷贝 Pass；每个动态格式 Shader 保留一份 WGSL 源码，实际遇到的格式组合各保留一条管线。绑定格式未知时暂不进行该管线的推测预缓存，第一次使用会增加管线编译成本，后续同格式组合复用；CPU/驱动内存及首次卡顿仍待真实场景测量。
 
 以上未计对齐、驱动和资源池开销。**尚无完整 Lumen 场景帧率、GPU 各通道耗时或峰值显存实测，不能给出与桌面端的性能结论。** 关闭项目准入后不会进入这些新增 Lumen pass；尚未实测运行中关闭效果后的资源池即时归还情况。

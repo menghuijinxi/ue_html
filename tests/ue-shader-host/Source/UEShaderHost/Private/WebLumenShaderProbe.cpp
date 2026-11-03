@@ -32,7 +32,9 @@ int32 RunWebLumenShaderProbe(const FString& Params)
     {
         const FShaderType* Type = *It;
         const FGlobalShaderType* Global = Type->GetGlobalShaderType();
-        if (!Global || !FString(Type->GetShaderFilename()).StartsWith(TEXT("/Engine/Private/Lumen/")) ||
+        const FString Source(Type->GetShaderFilename());
+        if (!Global || (!Source.StartsWith(TEXT("/Engine/Private/Lumen/")) &&
+            !Source.StartsWith(TEXT("/Engine/Private/StochasticLighting/"))) ||
             (!Requested.IsEmpty() && !Requested.Contains(Type->GetName())))
             continue;
         Found.Add(Type->GetName());

@@ -12,6 +12,7 @@
 #include "WebGPUBufferUAVProbe.h"
 #include "WebGPUUint4Probe.h"
 #include "WebGPUFloat4Probe.h"
+#include "WebGPULumenStorageProbe.h"
 #include "WebGPUBufferLockProbe.h"
 #include "WebGPUTexture3DProbe.h"
 #include "WebGPUTextureUintProbe.h"
@@ -641,6 +642,8 @@ class FWebGPURHIModule final : public IWebGPURHIProbeModule
     }
     bool RunProbe(const FString &Shaders, const FString &Materials, const FString &Output) override
     {
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebLumenStorageRHIProbe")))
+            return RunWebGPULumenStorageProbe(*this, Output);
         if (FParse::Param(FCommandLine::Get(), TEXT("WebDistanceFieldRHIProbe")))
             return RunWebGPUDistanceFieldProbe(*this, Shaders, Output);
         if (FParse::Param(FCommandLine::Get(), TEXT("WebSkyResourceProbe")))
