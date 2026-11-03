@@ -139,6 +139,8 @@ Web 的 Radiosity 积分现在从独立的同格式历史图集读取，向原�
 
 回归检查：158 类 Shader 的首个允许排列、浏览器模块编译、6 项 Cards/探针头 GPU 执行及 7 项实际 RHI 格式回读均通过。原生 Renderer 优化构建和线程版 WASM 编译、链接及结构校验通过。上述结果仍不等于完整场景 GI、性能或显存验收。
 
+另有独立 WebGPU 历史拷贝/时间混合测试：64² 和 4096² R11G11B10 图集各运行 12 帧，回读图集两角的颜色与 R8 帧计数，逐帧参照上帧实际量化结果核验，容差为当前通道一个量化单位。4096² 副本在当前设备 10 次暖机后采样的 GPU 时间均值约 0.35 ms；计时包含空 Pass 边界，64² 时间低于当前计时分辨率。这是精简测试程序，不是完整 UE Radiosity Shader，不能推算场景 FPS。入口：`probe-web-radiosity-history.cjs`，报告：`results/lumen-radiosity-history-gpu.json`。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

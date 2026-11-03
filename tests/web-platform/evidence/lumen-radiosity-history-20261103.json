@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-03T05:45:25.256Z",
+  "pass": true,
+  "completeLumenScene": false,
+  "adapter": {
+    "vendor": "nvidia",
+    "architecture": "ampere",
+    "device": "",
+    "description": ""
+  },
+  "features": [
+    "texture-formats-tier1",
+    "texture-formats-tier2",
+    "timestamp-query"
+  ],
+  "cases": [
+    {
+      "size": 64,
+      "frames": 12,
+      "historyBytes": 16384,
+      "meanCopyMilliseconds": 0,
+      "meanFixtureIntegrateMilliseconds": 0,
+      "samples": 10
+    },
+    {
+      "size": 4096,
+      "frames": 12,
+      "historyBytes": 67108864,
+      "meanCopyMilliseconds": 0.3473408,
+      "meanFixtureIntegrateMilliseconds": 0.3538944,
+      "samples": 10
+    }
+  ],
+  "sourceReport": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-radiosity-history-gpu.json",
+    "sha256": "702b9911e7827ac469c8ed91ba50e8216a1b59a54e3830af29f1f66edfd90206"
+  },
+  "sourceFiles": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-radiosity-history.cjs",
+      "sha256": "2afe81fe8f1dff9d41f02a92c037a433c1957a5a9c7716b95862d9f5c791c0ba"
+    }
+  ],
+  "boundary": "Standalone WebGPU copy/temporal-blend fixture with packed-HDR readback and R8 counters; not the full UE Radiosity shader. GPU timestamps include empty-pass boundaries. Zero timestamps can mean timer quantization. Fixture integration time and descriptor bytes do not establish scene FPS or peak VRAM."
+}
