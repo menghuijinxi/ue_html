@@ -80,6 +80,10 @@ bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
 bool PSOPrecacheTest = false;
 bool StartupTrace = false;
+// Diagnostic only: retain the same WASM/Cook while collapsing rendering onto
+// the GPU owner, optionally keeping UE task workers alive.
+int32 ThreadingTest = 0; // 0=normal, 1=serial rendering, 2=no UE worker threads
+bool ThreadingBenchmark = false;
 int32 PSOPrecacheConcurrency = 0;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
@@ -1121,6 +1125,9 @@ int32 StartEngine()
         TEXT(" -onethread -norhithread -nosound");
 #endif
     const FString CommandLine = FString(StartupMap()) + ThreadArguments +
+        (ThreadingBenchmark ? TEXT(" -ini:Engine:[SystemSettings]:r.pso.EnableAsyncCacheConsolidation=0") : TEXT("")) +
+        (ThreadingTest == 1 ? TEXT(" -norenderthread -norhithread") :
+         ThreadingTest == 2 ? TEXT(" -onethread -nothreading -norhithread") : TEXT("")) +
         (ParallelDrawRecording ? TEXT(" -WebParallelDrawRecording") : TEXT("")) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
@@ -1154,16 +1161,17 @@ int32 StartEngine()
     }
 #if UE_WEB_ENGINE_WORKER
     StartupMark("native.threadWitness.begin");
-    check(!emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread());
+    check(!emscripten_is_main_browser_thread());
     std::atomic<uint32> WorkerId{0};
     FEventRef Started;
     auto Task = UE::Tasks::Launch(UE_SOURCE_LOCATION, [&WorkerId, &Started] {
         WorkerId.store(FPlatformTLS::GetCurrentThreadId(), std::memory_order_release);
         Started->Trigger();
     });
-    Started->Wait();
+    if (FPlatformProcess::SupportsMultithreading()) Started->Wait();
     Task.Wait();
-    check(WorkerId.load() && WorkerId.load() != GGameThreadId);
+    check(WorkerId.load());
+    check(!FPlatformProcess::SupportsMultithreading() || WorkerId.load() != GGameThreadId);
     ENQUEUE_RENDER_COMMAND(WebThreadWitness)([](FRHICommandListImmediate& Cmd) {
         RenderWitness.store(FPlatformTLS::GetCurrentThreadId());
         Cmd.EnqueueLambda([](FRHICommandListBase&) { RHIWitness.store(FPlatformTLS::GetCurrentThreadId()); });
@@ -1171,12 +1179,23 @@ int32 StartEngine()
     });
     FlushRenderingCommands();
     StartupMark("native.threadWitness.end");
-    check(RenderWitness.load() && RHIWitness.load() && RenderWitness.load() != RHIWitness.load() &&
-        RenderWitness.load() != GGameThreadId && RHIWitness.load() != GGameThreadId);
+    check(RenderWitness.load() && RHIWitness.load());
+    if (ThreadingTest)
+    {
+        check(!GIsThreadedRendering && !IsRunningRHIInSeparateThread() &&
+            RenderWitness.load() == GGameThreadId && RHIWitness.load() == GGameThreadId);
+    }
+    else
+    {
+        check(RenderWitness.load() != RHIWitness.load() && RenderWitness.load() != GGameThreadId &&
+            RHIWitness.load() != GGameThreadId);
+    }
     std::printf("P3_ENGINE_THREADS {\"sharedMemory\":true,\"engineWorker\":true,"
-        "\"gameThread\":%u,\"taskThread\":%u,\"cores\":%d,\"renderThread\":true,\"rhiThread\":true,"
-        "\"renderThreadId\":%u,\"rhiThreadId\":%u}\n",
-        GGameThreadId, WorkerId.load(), FPlatformMisc::NumberOfCores(), RenderWitness.load(), RHIWitness.load());
+        "\"gameThread\":%u,\"taskThread\":%u,\"cores\":%d,\"renderThread\":%s,\"rhiThread\":%s,"
+        "\"renderThreadId\":%u,\"rhiThreadId\":%u,\"taskWorkers\":%d,\"threadingTest\":%d}\n",
+        GGameThreadId, WorkerId.load(), FPlatformMisc::NumberOfCores(), GIsThreadedRendering ? "true" : "false",
+        IsRunningRHIInSeparateThread() ? "true" : "false", RenderWitness.load(), RHIWitness.load(),
+        FTaskGraphInterface::Get().GetNumWorkerThreads(), ThreadingTest);
 #endif
     if (VisualTestClock)
     {
@@ -1273,6 +1292,9 @@ int main(int argc, char** argv)
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
         StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;
+        if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=full") == 0) ThreadingBenchmark = true;
+        if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=render-serial") == 0) { ThreadingTest = 1; ThreadingBenchmark = true; }
+        if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=single") == 0) { ThreadingTest = 2; ThreadingBenchmark = true; }
         constexpr const ANSICHAR* PrecacheConcurrencyOption = "-WebPSOPrecacheConcurrency=";
         if (FCStringAnsi::Strncmp(argv[Index], PrecacheConcurrencyOption, FCStringAnsi::Strlen(PrecacheConcurrencyOption)) == 0)
         {
@@ -1307,6 +1329,11 @@ int main(int argc, char** argv)
             return;
         }
 #if UE_WEB_ENGINE_WORKER
+        if (ThreadingTest)
+        {
+            StartEngine();
+            return;
+        }
         FTaskTagScope::SetTagNone();
         pthread_t GameThread;
         pthread_attr_t Attributes;

@@ -4,7 +4,8 @@ param(
     [switch]$SkipHostPreparation,
     [switch]$Threads,
     [switch]$Trace,
-    [switch]$StandaloneCompiles
+    [switch]$StandaloneCompiles,
+    [string]$RendererRevision = ''
 )
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -21,6 +22,16 @@ $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
 & node (Join-Path $PSScriptRoot 'prepare-web-rhi-host.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'RHI cache overlay preparation failed.' }
+$taskShaderArchiveRelative = 'Source/Runtime/RenderCore/Private/ShaderLibrary/ShaderCodeArchive.cpp'
+$taskShaderArchiveDestination = Join-Path $taskHost $taskShaderArchiveRelative
+if ((Get-Item -LiteralPath $taskShaderArchiveDestination).LinkType) { throw 'Shader archive overlay must be local.' }
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShaderArchiveRelative") -Destination $taskShaderArchiveDestination -Force
+$taskBulkStreamingRelative = 'Source/Runtime/CoreUObject/Private/Serialization/BulkDataStreaming.cpp'
+$taskBulkStreamingDestination = Join-Path $taskHost $taskBulkStreamingRelative
+if ((Get-Item -LiteralPath $taskBulkStreamingDestination).LinkType -or (Get-Item -LiteralPath (Split-Path (Split-Path (Split-Path $taskBulkStreamingDestination)))).LinkType) {
+    throw 'Bulk streaming overlay must be local.'
+}
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskBulkStreamingRelative") -Destination $taskBulkStreamingDestination -Force
 # Keep the shadow diagnostic overlay current even in incremental runtime builds.
 # Renderer is a local copy; never write through an installed-engine junction.
 $taskShadowOverlay = 'Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
@@ -31,6 +42,12 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentRendering.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentLighting.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentLighting.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SystemTextures.cpp') -Destination (Join-Path $taskRendererCopy 'Private/SystemTextures.cpp') -Force
+if ($RendererRevision) {
+    $taskRendererSnapshotText = & node (Join-Path $PSScriptRoot 'materialize-web-renderer-revision.cjs') $RendererRevision
+    if ($LASTEXITCODE -ne 0) { throw 'Failed to select the renderer revision matching the Cook' }
+    $taskRendererSnapshot = $taskRendererSnapshotText | ConvertFrom-Json
+    Write-Output $taskRendererSnapshotText
+}
 & node (Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'Enhanced Input runtime module preparation failed.' }
 $taskPlatforms = Join-Path $taskHost 'Platforms'
@@ -66,6 +83,7 @@ $taskReport = [ordered]@{
     trace = [bool]$Trace
     standaloneCompiles = [bool]$StandaloneCompiles
     maxParallelActions = $MaxParallelActions
+    rendererRevision = $taskRendererSnapshot
     pass = $false
     buildSucceeded = $false
     fullBuildAttempted = $true
@@ -304,6 +322,16 @@ try {
         $taskFiles += Join-Path $taskHost "Source/Runtime/Slate/Private/Framework/Application/$taskSlateUiSource"
     }
     $taskFiles += Join-Path $PSScriptRoot 'validate-web-wasm.cjs'
+    if ($RendererRevision) {
+        $taskFiles += Join-Path $PSScriptRoot 'materialize-web-renderer-revision.cjs'
+        foreach ($taskPinnedFile in $taskRendererSnapshot.paths) {
+            $taskFiles += Join-Path $taskRendererSnapshot.snapshot $taskPinnedFile
+        }
+    }
+    $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskShaderArchiveRelative"
+    $taskFiles += $taskShaderArchiveDestination
+    $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskBulkStreamingRelative"
+    $taskFiles += $taskBulkStreamingDestination
     $taskReport.sourceFiles = @($taskFiles | ForEach-Object { Get-TaskAudit $_ })
     $taskReport.boundary = 'Full normal UBT Engine Target attempt, using target 5.8.3 Core/TraceLog/ApplicationCore/CoreUObject/Launch/ChaosCore and selected target files in local installed-source Engine, MovieSceneTracks, RenderCore, Renderer, SignalProcessing, SlateCore, Slate, ICMP and BuildPatchServices copies with installed 5.8.0 dependencies. BLAKE3 1.3.1 and libPNG 1.6.44 portable archives use target third-party sources. The source audit lists each target overlay. Web excludes Slate font SDF generation, nonlinear attribute easing, native UDP probes and threaded patch verification but retains font data serialization, linear easing, synchronous patch verification and forced UMG/Slate dependencies. A successful compile/link still does not verify browser initialization, Engine ticking, WebGPU rendering, Cook or a scene. Action counts are not feature completion percentages.'
 } catch {

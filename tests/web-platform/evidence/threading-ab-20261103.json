@@ -1,0 +1,1668 @@
+{
+  "date": "2026-11-03T11:04:11.537868+08:00",
+  "scope": "Threading diagnostics and fixed-default-view measurements. No claimed normal-runtime FPS improvement.",
+  "sources": [
+    {
+      "file": "tests/ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "970cf5c9eca5cf1cf6bfdc259c0694d8bd1062d31795ff1de4e6e917730a64df",
+      "bytes": 65193
+    },
+    {
+      "file": "tests/web-platform/benchmark-villa-threading.cjs",
+      "sha256": "321c1af69356f6d8439f4b687fed1f42297d008b96fbea8cd22a32279d5a723f",
+      "bytes": 10154
+    },
+    {
+      "file": "tests/web-platform/capture-villa-threading-native.ps1",
+      "sha256": "363bc7bcf8b0e4d8629c9c9071e44f50008cc12a2a512bec52dd11d64f53e0c9",
+      "bytes": 5888
+    },
+    {
+      "file": "tests/web-platform/analyze-villa-threading-native.py",
+      "sha256": "a40d677d83b41553a3484c4698b894e1916fda9fce4d280128969afc066527b4",
+      "bytes": 2526
+    },
+    {
+      "file": "tests/web-platform/analyze-villa-threading-cpu.cjs",
+      "sha256": "212f4516aa25e89faff00947a2506a4e4b561a88e6d30545bc8c034dde0bc766",
+      "bytes": 3080
+    },
+    {
+      "file": "tests/web-platform/build-web-engine.ps1",
+      "sha256": "2e9c5cae6354e0907ae9dc5c8c97cd268900f547c4674531772e0c6dac963c19",
+      "bytes": 29669
+    },
+    {
+      "file": "tests/web-platform/materialize-web-renderer-revision.cjs",
+      "sha256": "ba4a1078078d86297d595e9007ac1ed4a951f8dd3bfeecdb4bf33ae5f9bbe9bb",
+      "bytes": 1476
+    },
+    {
+      "file": "tests/web-platform/package-web-runtime-experiment.cjs",
+      "sha256": "606da7dff6a97792a26eee39c9ce88cee8e2c55e79d104db6d13435b3b61cecb",
+      "bytes": 7630
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "6f8d1c7144a8787564d89ae29476685062d157c555fa526133aa63ec79aca4c3",
+      "bytes": 11232
+    },
+    {
+      "file": "reference-engine/Engine/Platforms/Web/Source/Runtime/Core/Public/Web/WebPlatformProcess.h",
+      "sha256": "74e8aceac8b27e6238f217699105b6aa143724686168258ede24c1bb3336e6a0",
+      "bytes": 1134
+    },
+    {
+      "file": "reference-engine/Engine/Platforms/Web/Source/Runtime/Core/Public/Web/WebPlatformMisc.h",
+      "sha256": "c0e39c8574a16bdba9b8bd65c815cec3d99a0eb07ea755628054bf45e1447462",
+      "bytes": 1611
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RenderCore/Private/ShaderLibrary/ShaderCodeArchive.cpp",
+      "sha256": "3c566cea97200f18fe6f87b33cabfe0e7fdc711e6d27cce6d228b92297477120",
+      "bytes": 130912
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/CoreUObject/Private/Serialization/BulkDataStreaming.cpp",
+      "sha256": "995e5ebec637327aa7fc9a0fc298b7286795697d4e9fa95f2052c3f0616648f5",
+      "bytes": 27333
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba.json",
+      "sha256": "52db33d1ae44f5d377e0c16bcd28c09feb3db1564a42ab88d2e79c16af88595b",
+      "bytes": 357552
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba.json",
+      "sha256": "e392ec0b6af2f4b793ef032f95ae8ae860101c48363c2df99c277caf28b94184",
+      "bytes": 9876
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-analysis.json",
+      "sha256": "17ead6c3ab82386bdc5ccc29b7f2ded5b2e2f2bd45ce03a9f65fb890550d9d27",
+      "bytes": 17063
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu.json",
+      "sha256": "dee3c96804fd3354716cc26afb9a45f948ac79d8463688f47eef77bc834a5850",
+      "bytes": 40878
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-analysis.json",
+      "sha256": "13bd877b5f7e88eb04f047eb7b65a8ff8fde371a9fd1cf19d45fe6b183e19897",
+      "bytes": 587832
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-targets.json",
+      "sha256": "0fa1d03098cfa5262ca3e47f4fc169943f333f825c6ad9d2c209432a9970daac",
+      "bytes": 18021
+    },
+    {
+      "file": "tests/web-platform/results/villa-threading-v33-build.json",
+      "sha256": "84b546efb59630702a2d586e86a7d423308c30b7604f54e63e316aadfbfe58f9",
+      "bytes": 597674
+    },
+    {
+      "file": "tests/web-platform/results/villa-threading-v33-package.json",
+      "sha256": "7b907402275d6cee3d66b08120b12c3076a45b7a7d35a6b12d69f1ad1295973f",
+      "bytes": 6519
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-controls2.json",
+      "sha256": "8b5bbadbfe4a467d9d089fabec3722904acba2ac02b8ce02c7acec0d670db30c",
+      "bytes": 912
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-controls2.cjs",
+      "sha256": "ceb297951fef097f8103570cf31d2bc4ad55e0d579188376f12c435a9df7ec74",
+      "bytes": 2076
+    },
+    {
+      "file": "tests/web-platform/results/threading-20261103-environment.jsonl",
+      "sha256": "324d1359b735d8f5a04ed18e5c47cb64ae55fa7fc2925f24f9cd6dd760360ca6",
+      "bytes": 266277
+    },
+    {
+      "file": "tests/web-platform/results/threading-20261103-visual-check.jpg",
+      "sha256": "532677647f8304dfcc5e67ae59e600f515fac901b371d87b9a6e78db89720542",
+      "bytes": 194947
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-1-full.log",
+      "sha256": "0f31abe670545c00a88f24cd46acc98735aee4efa892dfa6fec3f73afef4b375",
+      "bytes": 1961691
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-1-full.png",
+      "sha256": "b3b0d5cc21caa920e6810efb4cb227c97d5e12a1d5f2dfd8a43923fb9f6c8180",
+      "bytes": 3073647
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-2-render-serial.log",
+      "sha256": "abd62c96c02eea8a2884dbf94ea7874990cf2d04697b25e9a8833c3e37257b5e",
+      "bytes": 2103257
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-2-render-serial.png",
+      "sha256": "fede1fa9d57b44e2aae104a05876fef3a243fde86f662957371bf1aa9f5e150e",
+      "bytes": 3078119
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-3-single.log",
+      "sha256": "eaf5d7a82e2c8450fe38f122042eb0cffba4a8859616eb99389a22e2ae8738e1",
+      "bytes": 2141909
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-3-single.png",
+      "sha256": "3239a4eb2e97b579ef867bc3d09c30fd406d40c2db1957e8ffb1923735c16a50",
+      "bytes": 3074549
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-4-single.log",
+      "sha256": "939b6bafa4ca9be366b602ef4978f3bfb02b01d6840ad50799eda4b4b2402b17",
+      "bytes": 2141634
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-4-single.png",
+      "sha256": "7f4126071f38f25179dc62dcaf1af338e94c97cdb4bad0eb3aaad207265da10e",
+      "bytes": 3075445
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-5-render-serial.log",
+      "sha256": "26b262d644b232c15850e3557cbc06491f29437876394bfdafc1aac333b01115",
+      "bytes": 2088797
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-5-render-serial.png",
+      "sha256": "eb3bc7a3e62df46696dac5006538643eb4b2380437ce133e34d9024dabe0ba1d",
+      "bytes": 3071271
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-6-full.log",
+      "sha256": "c219f104920706da89e92b2279ab9dd02f2a4f245cfe1861eaa7c5abd2e16969",
+      "bytes": 1960773
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-abba-6-full.png",
+      "sha256": "be0245c347138850b776e7af508a9e186f052fb7a33fd85b67df2d7da7f3923e",
+      "bytes": 3078132
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-1-full.csv",
+      "sha256": "a941248a2e47a8e91ea77072585814c805543aa3f1d05a93358358ddf85a6c6b",
+      "bytes": 8655386
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-1-full.log",
+      "sha256": "d519f18b53209c67f44d6b7e064dff1881ec249baad6cc78fad0b1d080bbb36a",
+      "bytes": 101590
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-1-full.png",
+      "sha256": "8c8a685b7d7034bd79c42a900348771cc384bbffad3bebcfa74ac95ffb6ff73c",
+      "bytes": 4212326
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-1-full-launch.json",
+      "sha256": "bc3fa94c8009ab2878bd6eabee6fdc8e0a1be03daf007a5291917234b8e3b804",
+      "bytes": 1351
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-2-single.csv",
+      "sha256": "30e6ea99c5fcbfab35084d2a0c3cd2935ed33b276b10d37ae332175a469d373b",
+      "bytes": 7385611
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-2-single.log",
+      "sha256": "23f0015fb11fef9d98bb8648994b2bcb26e6bc83218f304719f0ba2d3548a90b",
+      "bytes": 110285
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-2-single.png",
+      "sha256": "406f1f17766e694638398692b4e4851ec3e542e74965fdbe39995a4bd5d1bd19",
+      "bytes": 4216299
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-2-single-launch.json",
+      "sha256": "a696fe8f8eca8fb16f000ee6cd82785e6c1ff702c9b24c2fa4bcfb8f540b4d7b",
+      "bytes": 1418
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-3-single.csv",
+      "sha256": "c6f80f3bdd379884f68e3edad3ecc937d0bf96996536de1d533973c180a08d0c",
+      "bytes": 7386567
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-3-single.log",
+      "sha256": "940f0613dc85cc2a009370400b2664f1c3fe7f36fb3857a94ad6a0ee27247051",
+      "bytes": 110284
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-3-single.png",
+      "sha256": "775e7ef50ab731c0c995929e707080838d8429a9ca21fb73d68f065f53385b8a",
+      "bytes": 4216174
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-3-single-launch.json",
+      "sha256": "eb87cfb66d174d9c9a059177f4b23071ec1e62311c3a36447be302a17f84c80d",
+      "bytes": 1417
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-4-full.csv",
+      "sha256": "412e40eab24050b3414191ac9d1a2adbfdc9f041ed7ee96afd88c9d5e0d59f15",
+      "bytes": 8655045
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-4-full.log",
+      "sha256": "90d6fc050b751331ced6d4ffc0888cdd5c76a698bc50960e6b95413d3cc07957",
+      "bytes": 103510
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-4-full.png",
+      "sha256": "90ad99645cb0cf71dfffa9ec29860f4872b4fa698e8c7da621e690a5a038c495",
+      "bytes": 4213533
+    },
+    {
+      "file": "tests/web-platform/results/threading-native-20261103-abba-4-full-launch.json",
+      "sha256": "da2d06adaee2eadfcd8dbe22f09836f6a58fe1464a40941c9509aee0b8e7a7a5",
+      "bytes": 1351
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-0.cpuprofile",
+      "sha256": "4217fcbda4d220e1b76f47a5d121b3e429288693d7e2c6b279c17198b597a513",
+      "bytes": 33358
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-1.cpuprofile",
+      "sha256": "c61440695dadd14b320cb82ffeba52442e6ee48f5504749b0ebbf4936ca2c463",
+      "bytes": 33155
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-2.cpuprofile",
+      "sha256": "dfdfbc5b25ea6338b6e88727a37396f640b7dc074928de445eb274063d4fa923",
+      "bytes": 552086
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-3.cpuprofile",
+      "sha256": "73a60b89d942da6882e522f283f229b9b459da17883b165f7f6cd95651c34d19",
+      "bytes": 33007
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-4.cpuprofile",
+      "sha256": "31319fd56c9e14c863976a75d2e123cd0120375cef1b74736f1200020624b6f7",
+      "bytes": 32630
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-5.cpuprofile",
+      "sha256": "85a2f7a06bb1037b6b2202ac76cd778653ac65e7548735155eea589751b6c394",
+      "bytes": 32462
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-6.cpuprofile",
+      "sha256": "0588cac4a46cc72e408f901c2d9723b405cd9382b29ad5228da23b6c96a40c6e",
+      "bytes": 32203
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-7.cpuprofile",
+      "sha256": "12537165e3ca7e3371047c89f6ce2a82e399cbc971ab75c1fcec73d2bcb9bc79",
+      "bytes": 32042
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-8.cpuprofile",
+      "sha256": "f3417a93291d247362d34789e28ef990a488564a20dce820d6a8958ff1a3be67",
+      "bytes": 31853
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-9.cpuprofile",
+      "sha256": "1d67d5e6cc14fc5da2ec23917f2acfe2925340c2c0ec97503a0797ae8778ca31",
+      "bytes": 31678
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-10.cpuprofile",
+      "sha256": "23862ee19813f70ee3ba6cf8f1292a27c03ac4cade68a4fc021b4048675da94f",
+      "bytes": 31496
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-11.cpuprofile",
+      "sha256": "cc2f4f655b382aa08af32f4a5f087a170a51759766b01dd8a58f7c6a8fe97ed6",
+      "bytes": 31321
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-12.cpuprofile",
+      "sha256": "0198f6bd49a1755a5584745c3bfe4b739a532e51b049f45e3ecff47fe4826737",
+      "bytes": 31111
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-13.cpuprofile",
+      "sha256": "3b6577d6cf108f225b9419191e8219fa4a77cf9f0492b10fbc9d3d4c0396bc29",
+      "bytes": 30950
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-14.cpuprofile",
+      "sha256": "a7f8954d01de79c0ce0402df3e5e502fef2701a26c5e2b376cb7766f3f35f126",
+      "bytes": 30740
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-15.cpuprofile",
+      "sha256": "7369dea8dbcfc09d2e934efc5538d69d7c405e9b8044f3e31a3a79e60a52549c",
+      "bytes": 37620
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-16.cpuprofile",
+      "sha256": "510c6b5befc1ba6f8f3c7f14a1c39f01de17514096a4dccbfb61ffdb81083fc5",
+      "bytes": 51668
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-17.cpuprofile",
+      "sha256": "11cc003384e3edddb9a768dcf6967977a10437008540089dc7e363dd84cf6fe3",
+      "bytes": 876017
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-18.cpuprofile",
+      "sha256": "f6f086101d0cda63bd813ce5a8ebe745562bf7ccac2b2a2f472af766711ee00b",
+      "bytes": 39985
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-19.cpuprofile",
+      "sha256": "d08eb4c2bb8cc5c0e42270b388ccd183f718b7aafc08074d3430de6b66eae228",
+      "bytes": 36349
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-20.cpuprofile",
+      "sha256": "e964d9e2f9a690179c3eb84b592e83508e61e5006d1ff79d1ec65c9994300866",
+      "bytes": 35930
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-21.cpuprofile",
+      "sha256": "6e94418f61a2185cd88b615a350e49e11233bff55b8caebb2618786af7889843",
+      "bytes": 35729
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-22.cpuprofile",
+      "sha256": "cb2bc848fa84dc1208611a7e687e77ac48a483e65f5707c1f41e0387cef452f2",
+      "bytes": 46217
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-23.cpuprofile",
+      "sha256": "6cc7d2b235328d53279ad2abbfda9c7676b145ea4c7ac9d97d371f0569612b6d",
+      "bytes": 51200
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-24.cpuprofile",
+      "sha256": "acf3cf0a06d24131cc66b45e155bbce1a0b5a3f7e4b93443f81546d237541328",
+      "bytes": 42074
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-25.cpuprofile",
+      "sha256": "fea3e8bde31d9546d10f84789cd55025b976110b57c695b8e09d814252d937d2",
+      "bytes": 34624
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-26.cpuprofile",
+      "sha256": "b5141b6d344f796d8109a101cfced43387ec1e680ce001405a1e3c0fb744c422",
+      "bytes": 423924
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-27.cpuprofile",
+      "sha256": "f51d62cba86b92c2a8e7a052b1d2f621d037d09ef812f8a63c72036e75a15417",
+      "bytes": 426539
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-28.cpuprofile",
+      "sha256": "337762906f2f511b9660a3c25938b5464f5e6a7e930a15d5ec93af91a4eac11e",
+      "bytes": 487042
+    },
+    {
+      "file": "tests/web-platform/results/threading-web-20261103-cpu-1-workers-29.cpuprofile",
+      "sha256": "d3b19b7a0ad80601dce16b63f98d1140a1b2b227c6751448ef4580f7700f41e7",
+      "bytes": 320041
+    },
+    {
+      "file": "tests/web-platform/results/threading-20261103-hardware.json",
+      "sha256": "d3ae41d7358e0c46eca87f72bef5a1e3f6189772c8e636544f0bd4b50cd0e1d9",
+      "bytes": 116
+    }
+  ],
+  "checks": {
+    "webCameraFixed": true,
+    "webSettingsFixed": true,
+    "physicalThreadIDsMatchModes": true,
+    "webNoValidationOrFatalErrors": true,
+    "nativeCameraFixed": true,
+    "nativeConfigUnchanged": true,
+    "rpcAndInput": {
+      "runs": [
+        {
+          "mode": "full",
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "before": 90,
+          "rpc": 1,
+          "after": 113
+        },
+        {
+          "mode": "render-serial",
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "before": 90,
+          "rpc": 1,
+          "after": 111
+        },
+        {
+          "mode": "single",
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "before": 91,
+          "rpc": 1,
+          "after": 112
+        }
+      ],
+      "pass": true
+    },
+    "visualComparison": "Web full/single and native full/single screenshots inspected; same default view and scene effects."
+  },
+  "web": {
+    "package": "villa-threading-v33",
+    "samePthreadWasmAndCook": true,
+    "summary": {
+      "full": {
+        "fps": 52.42663642788746,
+        "frameMs": {
+          "count": 2097,
+          "mean": 19.069332379586623,
+          "p50": 18.439999997615814,
+          "p95": 25.13000000268221,
+          "p99": 30.515000000596046,
+          "low1Fps": 27.500409232548563,
+          "over33ms": 15
+        }
+      },
+      "render-serial": {
+        "fps": 41.52014701429116,
+        "frameMs": {
+          "count": 1660,
+          "mean": 24.087957831328534,
+          "p50": 24.615000002086163,
+          "p95": 27.38000000268221,
+          "p99": 29.435000002384186,
+          "low1Fps": 26.47274086355192,
+          "over33ms": 9
+        }
+      },
+      "single": {
+        "fps": 40.123302957292694,
+        "frameMs": {
+          "count": 1604,
+          "mean": 24.925377182044702,
+          "p50": 23.859999999403954,
+          "p95": 29.479999996721745,
+          "p99": 32.36500000208616,
+          "low1Fps": 25.675879776699958,
+          "over33ms": 11
+        }
+      }
+    },
+    "runs": [
+      {
+        "mode": "full",
+        "index": 1,
+        "fps": 52.51077445147145,
+        "frameMs": {
+          "count": 1050,
+          "mean": 19.038019047613655,
+          "p50": 18.554999999701977,
+          "p95": 25.29500000178814,
+          "p99": 27.36999999731779,
+          "low1Fps": 28.440307671981078,
+          "over33ms": 5
+        },
+        "resourceProxyCallsPerFrame": 1.0038058991436727,
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "rhiWorkMs": 14.764237471924408,
+        "counterSampleFrames": 1050,
+        "drawsPerSampleFrame": 3159.4933333333333,
+        "indirectDrawsPerSampleFrame": 90.8,
+        "dispatchesPerSampleFrame": 66.52857142857142
+      },
+      {
+        "mode": "render-serial",
+        "index": 2,
+        "fps": 41.66446021543127,
+        "frameMs": {
+          "count": 833,
+          "mean": 24.003307322932393,
+          "p50": 24.439999997615814,
+          "p95": 27.565000005066395,
+          "p99": 29.49500000476837,
+          "low1Fps": 27.75550484260993,
+          "over33ms": 3
+        },
+        "resourceProxyCallsPerFrame": 0,
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 1,
+          "taskThread": 2,
+          "cores": 4,
+          "renderThread": false,
+          "rhiThread": false,
+          "renderThreadId": 1,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 1
+        },
+        "rhiWorkMs": null,
+        "counterSampleFrames": 840,
+        "drawsPerSampleFrame": 3118.6690476190474,
+        "indirectDrawsPerSampleFrame": 85.6,
+        "dispatchesPerSampleFrame": 66.49761904761905
+      },
+      {
+        "mode": "single",
+        "index": 3,
+        "fps": 40.28471195180708,
+        "frameMs": {
+          "count": 805,
+          "mean": 24.824416149069805,
+          "p50": 23.80000000447035,
+          "p95": 29.390000000596046,
+          "p99": 32.11999999731779,
+          "low1Fps": 25.31111579920335,
+          "over33ms": 6
+        },
+        "resourceProxyCallsPerFrame": 0,
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 1,
+          "taskThread": 1,
+          "cores": 4,
+          "renderThread": false,
+          "rhiThread": false,
+          "renderThreadId": 1,
+          "rhiThreadId": 1,
+          "taskWorkers": 0,
+          "threadingTest": 2
+        },
+        "rhiWorkMs": null,
+        "counterSampleFrames": 810,
+        "drawsPerSampleFrame": 2858.806172839506,
+        "indirectDrawsPerSampleFrame": 53.43703703703704,
+        "dispatchesPerSampleFrame": 66.30617283950617
+      },
+      {
+        "mode": "single",
+        "index": 4,
+        "fps": 39.96198616066764,
+        "frameMs": {
+          "count": 799,
+          "mean": 25.027096370461212,
+          "p50": 23.935000002384186,
+          "p95": 29.515000000596046,
+          "p99": 32.36500000208616,
+          "low1Fps": 26.09901313055848,
+          "over33ms": 5
+        },
+        "resourceProxyCallsPerFrame": 0,
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 1,
+          "taskThread": 1,
+          "cores": 4,
+          "renderThread": false,
+          "rhiThread": false,
+          "renderThreadId": 1,
+          "rhiThreadId": 1,
+          "taskWorkers": 0,
+          "threadingTest": 2
+        },
+        "rhiWorkMs": null,
+        "counterSampleFrames": 810,
+        "drawsPerSampleFrame": 2868.872839506173,
+        "indirectDrawsPerSampleFrame": 54.681481481481484,
+        "dispatchesPerSampleFrame": 66.31358024691357
+      },
+      {
+        "mode": "render-serial",
+        "index": 5,
+        "fps": 41.37579515982533,
+        "frameMs": {
+          "count": 827,
+          "mean": 24.173222490934318,
+          "p50": 24.75,
+          "p95": 27.115000002086163,
+          "p99": 29.009999997913837,
+          "low1Fps": 25.953428015395207,
+          "over33ms": 6
+        },
+        "resourceProxyCallsPerFrame": 0,
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 1,
+          "taskThread": 2,
+          "cores": 4,
+          "renderThread": false,
+          "rhiThread": false,
+          "renderThreadId": 1,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 1
+        },
+        "rhiWorkMs": null,
+        "counterSampleFrames": 840,
+        "drawsPerSampleFrame": 3228.8285714285716,
+        "indirectDrawsPerSampleFrame": 99.2,
+        "dispatchesPerSampleFrame": 66.57857142857142
+      },
+      {
+        "mode": "full",
+        "index": 6,
+        "fps": 52.34252790435867,
+        "frameMs": {
+          "count": 1047,
+          "mean": 19.10073543457384,
+          "p50": 18.399999998509884,
+          "p95": 25.064999997615814,
+          "p99": 31.489999994635582,
+          "low1Fps": 27.418771888118023,
+          "over33ms": 10
+        },
+        "resourceProxyCallsPerFrame": 1,
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "rhiWorkMs": 14.818454289254342,
+        "counterSampleFrames": 1050,
+        "drawsPerSampleFrame": 3162.4295238095237,
+        "indirectDrawsPerSampleFrame": 91.28,
+        "dispatchesPerSampleFrame": 66.53142857142858
+      }
+    ],
+    "settings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "view": {
+      "frame": 854,
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 3,
+      "parallelRendering": true
+    },
+    "camera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "qualityOverrides": [],
+    "psoPrecache": false,
+    "packageFiles": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-threading-v33\\index.html",
+        "sha256": "c54b2afb53180f26504636032126c0b359263c02008708e8f3eeb1f9482d84b9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-threading-v33\\UEWebEngineThreads.js",
+        "sha256": "a046991d7a4361a5ca3a63bd4daccfd2cb9f793d1e06c080145cb45bf310b5c6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-threading-v33\\UEWebEngineThreads.wasm",
+        "sha256": "b9c4f130bd3e8b10bf60abfda9cf9432ed3778f24e336edb53b1446d596a053b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-threading-v33\\config-files.json",
+        "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-threading-v33\\content-files.json",
+        "sha256": "24eeaa97c9a5d8bb98eb2d31b02c56e1f47d4908fe1bae96f2ece1135ee1d4fe"
+      }
+    ]
+  },
+  "native": {
+    "summary": {
+      "full": {
+        "fps": 205.89789545669908,
+        "frameMs": {
+          "count": 4800,
+          "mean": 4.856776208333334,
+          "p50": 4.77965,
+          "p95": 5.5878,
+          "p99": 5.9753,
+          "low1Fps": 162.07625079814113,
+          "over33ms": 0
+        }
+      },
+      "single": {
+        "fps": 71.98614169591062,
+        "frameMs": {
+          "count": 4800,
+          "mean": 13.8915626875,
+          "p50": 13.78405,
+          "p95": 15.2329,
+          "p99": 16.074,
+          "low1Fps": 58.85878697925914,
+          "over33ms": 0
+        }
+      }
+    },
+    "runs": [
+      {
+        "mode": "full",
+        "index": 1,
+        "fps": 212.9411411787256,
+        "metrics": {
+          "FrameTime": {
+            "count": 2400,
+            "mean": 4.696133375,
+            "p50": 4.65165,
+            "p95": 5.2791,
+            "p99": 5.5932,
+            "low1Fps": 172.68212027741382,
+            "over33ms": 0
+          },
+          "GameThreadTime": {
+            "count": 2400,
+            "mean": 1.4064126666666668,
+            "p50": 1.39235,
+            "p95": 1.5759,
+            "p99": 1.6978
+          },
+          "RenderThreadTime": {
+            "count": 2400,
+            "mean": 4.695294791666667,
+            "p50": 4.651350000000001,
+            "p95": 5.2662,
+            "p99": 5.5978
+          },
+          "RHIThreadTime": {
+            "count": 2400,
+            "mean": 1.5014343333333333,
+            "p50": 1.4886,
+            "p95": 1.7663,
+            "p99": 1.902
+          },
+          "GPUTime": {
+            "count": 2400,
+            "mean": 4.237815458333333,
+            "p50": 4.20385,
+            "p95": 4.5107,
+            "p99": 4.6954
+          },
+          "RHI/DrawCalls": {
+            "count": 2400,
+            "mean": 2523.548333333333,
+            "p50": 2523.0,
+            "p95": 2529.0,
+            "p99": 2531.0
+          }
+        },
+        "exitCode": 777003,
+        "lateExitFailure": true
+      },
+      {
+        "mode": "single",
+        "index": 2,
+        "fps": 71.66037910538131,
+        "metrics": {
+          "FrameTime": {
+            "count": 2400,
+            "mean": 13.954712666666667,
+            "p50": 13.82565,
+            "p95": 15.3594,
+            "p99": 16.2823,
+            "low1Fps": 57.704070445129204,
+            "over33ms": 0
+          },
+          "GameThreadTime": {
+            "count": 2400,
+            "mean": 13.954798791666667,
+            "p50": 13.83885,
+            "p95": 15.3437,
+            "p99": 16.1728
+          },
+          "RenderThreadTime": {
+            "count": 2400,
+            "mean": 13.952662541666667,
+            "p50": 13.8262,
+            "p95": 15.3655,
+            "p99": 16.2729
+          },
+          "GPUTime": {
+            "count": 2400,
+            "mean": 4.304759125,
+            "p50": 4.32355,
+            "p95": 5.2165,
+            "p99": 5.5662
+          },
+          "RHI/DrawCalls": {
+            "count": 2400,
+            "mean": 2523.5845833333333,
+            "p50": 2523.0,
+            "p95": 2530.0,
+            "p99": 2531.0
+          }
+        },
+        "exitCode": 0,
+        "lateExitFailure": false
+      },
+      {
+        "mode": "single",
+        "index": 3,
+        "fps": 72.31487959549949,
+        "metrics": {
+          "FrameTime": {
+            "count": 2400,
+            "mean": 13.828412708333333,
+            "p50": 13.75045,
+            "p95": 15.0854,
+            "p99": 15.7464,
+            "low1Fps": 60.580390430519586,
+            "over33ms": 0
+          },
+          "GameThreadTime": {
+            "count": 2400,
+            "mean": 13.82837075,
+            "p50": 13.74025,
+            "p95": 15.0766,
+            "p99": 15.7763
+          },
+          "RenderThreadTime": {
+            "count": 2400,
+            "mean": 13.826423666666667,
+            "p50": 13.748750000000001,
+            "p95": 15.0843,
+            "p99": 15.7656
+          },
+          "GPUTime": {
+            "count": 2400,
+            "mean": 4.355580708333333,
+            "p50": 4.365550000000001,
+            "p95": 5.2359,
+            "p99": 5.511
+          },
+          "RHI/DrawCalls": {
+            "count": 2400,
+            "mean": 2523.5825,
+            "p50": 2523.0,
+            "p95": 2530.0,
+            "p99": 2531.0
+          }
+        },
+        "exitCode": 0,
+        "lateExitFailure": false
+      },
+      {
+        "mode": "full",
+        "index": 4,
+        "fps": 199.30565729025173,
+        "metrics": {
+          "FrameTime": {
+            "count": 2400,
+            "mean": 5.017419041666667,
+            "p50": 4.9496,
+            "p95": 5.7379,
+            "p99": 6.1063,
+            "low1Fps": 158.55472086771712,
+            "over33ms": 0
+          },
+          "GameThreadTime": {
+            "count": 2400,
+            "mean": 1.415665375,
+            "p50": 1.38685,
+            "p95": 1.6688,
+            "p99": 1.8583
+          },
+          "RenderThreadTime": {
+            "count": 2400,
+            "mean": 5.016616125,
+            "p50": 4.9464500000000005,
+            "p95": 5.7342,
+            "p99": 6.0831
+          },
+          "RHIThreadTime": {
+            "count": 2400,
+            "mean": 1.513013375,
+            "p50": 1.4944,
+            "p95": 1.7736,
+            "p99": 1.8974
+          },
+          "GPUTime": {
+            "count": 2400,
+            "mean": 4.38510575,
+            "p50": 4.2594,
+            "p95": 4.8721,
+            "p99": 5.194
+          },
+          "RHI/DrawCalls": {
+            "count": 2400,
+            "mean": 2523.5816666666665,
+            "p50": 2523.0,
+            "p95": 2530.0,
+            "p99": 2531.0
+          }
+        },
+        "exitCode": 777003,
+        "lateExitFailure": true
+      }
+    ],
+    "runner": "D3D12 cooked Win64 Development, RenderOffscreen, 2289x1287; not editor or Shipping.",
+    "failedRenderSerial": "TextureReferenceRHI invalid ensure and scene registration assertion at startup; excluded, not an FPS sample."
+  },
+  "gains": {
+    "webFullVsSinglePercent": 30.6638102144543,
+    "webFullVsRenderSerialPercent": 26.26794507698227,
+    "webRenderSerialVsSinglePercent": 3.4813785357732607,
+    "nativeFullVsSinglePercent": 186.02435219610567
+  },
+  "cpuSampling": {
+    "boundary": "Statistical wall-clock stack sampling. Inclusive values overlap; idle, futex and CPU compute are distinct. FPS from these captures is not the normal benchmark.",
+    "normalFpsBeforeSampling": 52.974731053270226,
+    "threads": [
+      {
+        "role": "RHI",
+        "durationMs": 7104.538,
+        "categories": {
+          "idle": {
+            "ms": 1450.718,
+            "percent": 20.419596601496114
+          },
+          "mutexWait": {
+            "ms": 470.138,
+            "percent": 6.617432407286723
+          },
+          "conditionWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocationPath": {
+            "ms": 630.934,
+            "percent": 8.880718211374194
+          },
+          "proxyPath": {
+            "ms": 0,
+            "percent": 0
+          },
+          "bindings": {
+            "ms": 2372.782,
+            "percent": 33.39811821683549
+          },
+          "vertexBindingBridge": {
+            "ms": 688.895,
+            "percent": 9.696548881855513
+          },
+          "waitForRHIFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "topSelf": [
+          {
+            "id": 99,
+            "name": "(idle)",
+            "ms": 1450.718,
+            "percent": 20.419596601496114
+          },
+          {
+            "id": 142,
+            "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+            "ms": 356.102,
+            "percent": 5.01231747933504
+          },
+          {
+            "id": 304,
+            "name": "setVertexBuffer",
+            "ms": 244.856,
+            "percent": 3.4464732259859825
+          },
+          {
+            "id": 189,
+            "name": "bigintToI53Checked",
+            "ms": 211.677,
+            "percent": 2.9794618594481443
+          },
+          {
+            "id": 393,
+            "name": "beginRenderPass",
+            "ms": 134.432,
+            "percent": 1.89219904235856
+          },
+          {
+            "id": 137,
+            "name": "FWebGPUDynamicRHI::SetDrawBindings(TArray<FWebGPUResolvedGroup, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>>*)",
+            "ms": 122.642,
+            "percent": 1.726248772263587
+          },
+          {
+            "id": 146,
+            "name": "WebGPU.getJsObject",
+            "ms": 103.557,
+            "percent": 1.4576176522667623
+          },
+          {
+            "id": 18,
+            "name": "TRefCountPtr<FWebGPUBuffer>::operator=(FWebGPUBuffer*)",
+            "ms": 97.109,
+            "percent": 1.3668587598518018
+          }
+        ],
+        "waits": [
+          {
+            "id": 99,
+            "name": "(idle)",
+            "ms": 1450.718,
+            "percent": 20.419596601496114,
+            "stack": [
+              "(idle)",
+              "(root)"
+            ]
+          },
+          {
+            "id": 196,
+            "name": "_do_futex_wait",
+            "ms": 30.157,
+            "percent": 0.42447517347363056,
+            "stack": [
+              "_do_futex_wait",
+              "__timedwait_cp",
+              "__timedwait",
+              "__pthread_mutex_timedlock",
+              "int TSet<TTuple<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>>, TDefaultMapHashableKeyFuncs<UE::TSharedString<char16_t>, TSharedPtr<FJsonValue, (ESPMode)1>, false>, FDefaultSetAllocator>::FindIndexByHash<TStringView<char16_t>>(unsigned int, TStringView<char16_t> const&) const",
+              "FJsonObject::TryGetField(TStringView<char16_t>) const",
+              "FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource*, FJsonObject const&, ERHIAccess, FString&) const",
+              "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+              "FWebGPUDynamicRHI::SetDrawBindings(TArray<FWebGPUResolvedGroup, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>>*)",
+              "FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer*, int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)",
+              "FRHICommandDrawIndexedPrimitive::Execute(FRHICommandListBase&)",
+              "FRHICommand<FRHICommandDrawIndexedPrimitive, FRHICommandDrawIndexedPrimitiveString1641>::ExecuteAndDestruct(FRHICommandListBase&)",
+              "FRHICommandListBase::Execute()",
+              "FRHICommandListExecutor::FTranslateState::Translate_ExecuteCommandList(FRHICommandListBase*)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FRHICommandListExecutor::FSubmitState::Dispatch_ProcessCommandList(FRHICommandListBase*)::$_0, void, FRHICommandListExecutor::FTaskPipe::ITask&>::Call(void*, FRHICommandListExecutor::FTaskPipe::ITask&)",
+              "FRHICommandListExecutor::FTaskPipe::Execute(FRHICommandListExecutor::FTaskPipe::FTask*, TRefCountPtr<FBaseGraphTask> const&) const",
+              "TGraphTask<TFunctionGraphTaskImpl<void (ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&), (ESubsequentsMode::Type)0>>::ExecuteTask()",
+              "UE::Tasks::Private::FTaskBase::TryExecuteTask()",
+              "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+              "FTaskGraphCompatibilityImplementation::ProcessThreadUntilIdle(ENamedThreads::Type)",
+              "FRHIThread::WebPump(void*)",
+              "WebWakeRHIThread::$_0::operator()(void*) const::'lambda'(void*)::__invoke(void*)",
+              "js-to-wasm:l:",
+              "",
+              "",
+              "callUserCallback",
+              "",
+              "",
+              "channel.port1.onmessage",
+              "(root)"
+            ]
+          },
+          {
+            "id": 278,
+            "name": "_do_futex_wait",
+            "ms": 24.405,
+            "percent": 0.34351283644341124,
+            "stack": [
+              "_do_futex_wait",
+              "__timedwait_cp",
+              "__timedwait",
+              "__pthread_mutex_timedlock",
+              "FMemory::Free(void*)",
+              "SharedPointerInternals::TIntrusiveReferenceController<FWebGPUTransitionData, (ESPMode)1>::DestroyObject()",
+              "FWebGPUDynamicRHI::RHIReleaseTransition(FRHITransition*)",
+              "FRHICommandEndTransitions::Execute(FRHICommandListBase&)",
+              "FRHICommand<FRHICommandEndTransitions, FRHICommandEndTransitionsString2132>::ExecuteAndDestruct(FRHICommandListBase&)",
+              "FRHICommandListBase::Execute()",
+              "FRHICommandListExecutor::FTranslateState::Translate_ExecuteCommandList(FRHICommandListBase*)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FRHICommandListExecutor::FSubmitState::Dispatch_ProcessCommandList(FRHICommandListBase*)::$_0, void, FRHICommandListExecutor::FTaskPipe::ITask&>::Call(void*, FRHICommandListExecutor::FTaskPipe::ITask&)",
+              "FRHICommandListExecutor::FTaskPipe::Execute(FRHICommandListExecutor::FTaskPipe::FTask*, TRefCountPtr<FBaseGraphTask> const&) const",
+              "TGraphTask<TFunctionGraphTaskImpl<void (ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&), (ESubsequentsMode::Type)0>>::ExecuteTask()",
+              "UE::Tasks::Private::FTaskBase::TryExecuteTask()",
+              "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+              "FTaskGraphCompatibilityImplementation::ProcessThreadUntilIdle(ENamedThreads::Type)",
+              "FRHIThread::WebPump(void*)",
+              "WebWakeRHIThread::$_0::operator()(void*) const::'lambda'(void*)::__invoke(void*)",
+              "js-to-wasm:l:",
+              "",
+              "",
+              "callUserCallback",
+              "",
+              "",
+              "channel.port1.onmessage",
+              "(root)"
+            ]
+          },
+          {
+            "id": 865,
+            "name": "_do_futex_wait",
+            "ms": 23.445,
+            "percent": 0.33000034625756103,
+            "stack": [
+              "_do_futex_wait",
+              "__timedwait_cp",
+              "__timedwait",
+              "__pthread_mutex_timedlock",
+              "FMemory::Realloc(void*, unsigned long, unsigned int)",
+              "TArray<TRefCountPtr<FRHIUniformBuffer>, TSizedDefaultAllocator<32>>::SetNum(int, EAllowShrinking)",
+              "FWebGPUDynamicRHI::RHISetStaticUniformBuffers(FUniformBufferStaticBindings const&)",
+              "FRHICommandSetStaticUniformBuffers::Execute(FRHICommandListBase&)",
+              "FRHICommand<FRHICommandSetStaticUniformBuffers, FRHICommandSetStaticUniformBuffersString2222>::ExecuteAndDestruct(FRHICommandListBase&)",
+              "FRHICommandListBase::Execute()",
+              "FRHICommandListExecutor::FTranslateState::Translate_ExecuteCommandList(FRHICommandListBase*)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FRHICommandListExecutor::FSubmitState::Dispatch_ProcessCommandList(FRHICommandListBase*)::$_0, void, FRHICommandListExecutor::FTaskPipe::ITask&>::Call(void*, FRHICommandListExecutor::FTaskPipe::ITask&)",
+              "FRHICommandListExecutor::FTaskPipe::Execute(FRHICommandListExecutor::FTaskPipe::FTask*, TRefCountPtr<FBaseGraphTask> const&) const",
+              "TGraphTask<TFunctionGraphTaskImpl<void (ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&), (ESubsequentsMode::Type)0>>::ExecuteTask()",
+              "UE::Tasks::Private::FTaskBase::TryExecuteTask()",
+              "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+              "FTaskGraphCompatibilityImplementation::ProcessThreadUntilIdle(ENamedThreads::Type)",
+              "FRHIThread::WebPump(void*)",
+              "WebWakeRHIThread::$_0::operator()(void*) const::'lambda'(void*)::__invoke(void*)",
+              "js-to-wasm:l:",
+              "",
+              "",
+              "callUserCallback",
+              "",
+              "",
+              "channel.port1.onmessage",
+              "(root)"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "Render",
+        "durationMs": 6471.853,
+        "categories": {
+          "idle": {
+            "ms": 0,
+            "percent": 0
+          },
+          "mutexWait": {
+            "ms": 435.784,
+            "percent": 6.733527476597506
+          },
+          "conditionWait": {
+            "ms": 3896.475,
+            "percent": 60.206481822130385
+          },
+          "allocationPath": {
+            "ms": 996.402,
+            "percent": 15.39593065540889
+          },
+          "proxyPath": {
+            "ms": 1.491,
+            "percent": 0.023038224137661965
+          },
+          "bindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "vertexBindingBridge": {
+            "ms": 0,
+            "percent": 0
+          },
+          "waitForRHIFlush": {
+            "ms": 990.354,
+            "percent": 15.302479830737811
+          }
+        },
+        "topSelf": [
+          {
+            "id": 15,
+            "name": "_do_futex_wait",
+            "ms": 2633.919,
+            "percent": 40.69806591713378
+          },
+          {
+            "id": 92,
+            "name": "_do_futex_wait",
+            "ms": 990.354,
+            "percent": 15.302479830737811
+          },
+          {
+            "id": 39,
+            "name": "_do_futex_wait",
+            "ms": 126.122,
+            "percent": 1.9487772667271646
+          },
+          {
+            "id": 270,
+            "name": "FProjectedShadowInfo::FinalizeAddSubjectPrimitive(FDynamicShadowsTaskData&, FAddSubjectPrimitiveOp const&, TArrayView<FViewInfo, int>, FFinalizeAddSubjectPrimitiveContext&)",
+            "ms": 63.438,
+            "percent": 0.9802138583802815
+          },
+          {
+            "id": 126,
+            "name": "_do_futex_wait",
+            "ms": 60.047,
+            "percent": 0.9278177362804748
+          },
+          {
+            "id": 469,
+            "name": "_do_futex_wait",
+            "ms": 40.187,
+            "percent": 0.6209504449498466
+          },
+          {
+            "id": 60,
+            "name": "FRelevancePacket::ComputeRelevance(FDynamicPrimitiveIndexList&)",
+            "ms": 29.749,
+            "percent": 0.45966742446096964
+          },
+          {
+            "id": 305,
+            "name": "_do_futex_wait",
+            "ms": 29.245,
+            "percent": 0.45187985573837974
+          }
+        ],
+        "waits": [
+          {
+            "id": 15,
+            "name": "_do_futex_wait",
+            "ms": 2633.919,
+            "percent": 40.69806591713378,
+            "stack": [
+              "_do_futex_wait",
+              "__pthread_cond_timedwait",
+              "FPThreadEvent::Wait(unsigned int, bool)",
+              "FSafeRecyclableEvent::Wait(unsigned int, bool)",
+              "FNamedTaskThread::ProcessTasksUntilQuit(int)",
+              "FTaskGraphCompatibilityImplementation::ProcessThreadUntilRequestReturn(ENamedThreads::Type)",
+              "RenderingThreadMain(FEvent*)",
+              "FRenderingThread::Run()",
+              "FRunnableThreadPThread::Run()",
+              "FRunnableThreadPThread::_ThreadProc(void*)",
+              "js-to-wasm:l:l",
+              "",
+              "invokeEntryPoint",
+              "handleMessage",
+              "(root)"
+            ]
+          },
+          {
+            "id": 92,
+            "name": "_do_futex_wait",
+            "ms": 990.354,
+            "percent": 15.302479830737811,
+            "stack": [
+              "_do_futex_wait",
+              "__pthread_cond_timedwait",
+              "FPThreadEvent::Wait(unsigned int, bool)",
+              "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+              "FTaskGraphCompatibilityImplementation::WaitOnNamedThreadForTasks(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, ENamedThreads::Type)",
+              "FTaskGraphCompatibilityImplementation::WaitUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type)",
+              "FTaskGraphInterface::WaitUntilTaskCompletes(TRefCountPtr<FBaseGraphTask> const&, ENamedThreads::Type)",
+              "FRHICommandListExecutor::Submit(TArrayView<FRHICommandListBase* const, int>, ERHISubmitFlags)",
+              "FRHICommandListImmediate::ImmediateFlush(EImmediateFlushType::Type, ERHISubmitFlags)",
+              "FRDGBuilder::EndFlushResourcesRHI()",
+              "FRDGBuilder::Execute()",
+              "UE::Core::Private::Function::TFunctionRefCaller<FSceneRenderProcessor::Execute()::$_3, void, FRHICommandListImmediate&>::Call(void*, FRHICommandListImmediate&)",
+              "ExecuteCommand_NoMarker(FRHICommandList*, TVariant<TUniqueFunction<void ()>, TUniqueFunction<void (FRHICommandList&)>, TUniqueFunction<void (FRHICommandListImmediate&)>> const&)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FRenderThreadCommandPipe::EnqueueAndLaunch(TUniqueFunction<void (FRHICommandListImmediate&)>&&, FRenderCommandTag const&)::$_0, void>::Call(void*)",
+              "TGraphTask<TFunctionGraphTaskImpl<void (), (ESubsequentsMode::Type)1>>::ExecuteTask()",
+              "UE::Tasks::Private::FTaskBase::TryExecuteTask()",
+              "FNamedTaskThread::ProcessTasksUntilQuit(int)",
+              "FTaskGraphCompatibilityImplementation::ProcessThreadUntilRequestReturn(ENamedThreads::Type)",
+              "RenderingThreadMain(FEvent*)",
+              "FRenderingThread::Run()",
+              "FRunnableThreadPThread::Run()",
+              "FRunnableThreadPThread::_ThreadProc(void*)",
+              "js-to-wasm:l:l",
+              "",
+              "invokeEntryPoint",
+              "handleMessage",
+              "(root)"
+            ]
+          },
+          {
+            "id": 39,
+            "name": "_do_futex_wait",
+            "ms": 126.122,
+            "percent": 1.9487772667271646,
+            "stack": [
+              "_do_futex_wait",
+              "__pthread_cond_timedwait",
+              "FPThreadEvent::Wait(unsigned int, bool)",
+              "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+              "FTaskGraphCompatibilityImplementation::WaitOnNamedThreadForTasks(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, ENamedThreads::Type)",
+              "FTaskGraphCompatibilityImplementation::WaitUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type)",
+              "FTaskGraphInterface::WaitUntilTaskCompletes(TRefCountPtr<FBaseGraphTask> const&, ENamedThreads::Type)",
+              "FSceneRenderer::FinishGatherShadowPrimitives(FDynamicShadowsTaskData*)",
+              "FSceneRenderer::FinishInitDynamicShadows(FRDGBuilder&, FDynamicShadowsTaskData*)",
+              "FDeferredShadingSceneRenderer::Render(FRDGBuilder&, FSceneRenderUpdateInputs const*)",
+              "FRendererModule::BeginRenderingViewFamilies(FCanvas*, TArrayView<FSceneViewFamily* const, int>)::$_3::__invoke(FRDGBuilder&, FSceneRenderFunctionInputs const&)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FSceneRenderProcessor::Execute()::$_3, void, FRHICommandListImmediate&>::Call(void*, FRHICommandListImmediate&)",
+              "ExecuteCommand_NoMarker(FRHICommandList*, TVariant<TUniqueFunction<void ()>, TUniqueFunction<void (FRHICommandList&)>, TUniqueFunction<void (FRHICommandListImmediate&)>> const&)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FRenderThreadCommandPipe::EnqueueAndLaunch(TUniqueFunction<void (FRHICommandListImmediate&)>&&, FRenderCommandTag const&)::$_0, void>::Call(void*)",
+              "TGraphTask<TFunctionGraphTaskImpl<void (), (ESubsequentsMode::Type)1>>::ExecuteTask()",
+              "UE::Tasks::Private::FTaskBase::TryExecuteTask()",
+              "FNamedTaskThread::ProcessTasksUntilQuit(int)",
+              "FTaskGraphCompatibilityImplementation::ProcessThreadUntilRequestReturn(ENamedThreads::Type)",
+              "RenderingThreadMain(FEvent*)",
+              "FRenderingThread::Run()",
+              "FRunnableThreadPThread::Run()",
+              "FRunnableThreadPThread::_ThreadProc(void*)",
+              "js-to-wasm:l:l",
+              "",
+              "invokeEntryPoint",
+              "handleMessage",
+              "(root)"
+            ]
+          },
+          {
+            "id": 126,
+            "name": "_do_futex_wait",
+            "ms": 60.047,
+            "percent": 0.9278177362804748,
+            "stack": [
+              "_do_futex_wait",
+              "__pthread_cond_timedwait",
+              "FPThreadEvent::Wait(unsigned int, bool)",
+              "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+              "FTaskGraphCompatibilityImplementation::WaitOnNamedThreadForTasks(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, ENamedThreads::Type)",
+              "FTaskGraphCompatibilityImplementation::WaitUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type)",
+              "FTaskGraphInterface::WaitUntilTaskCompletes(TRefCountPtr<FBaseGraphTask> const&, ENamedThreads::Type)",
+              "FRHICommandListExecutor::WaitOnRHIThreadFence(TRefCountPtr<FBaseGraphTask>&)",
+              "FSceneRenderer::WaitOcclusionTests(FRHICommandListImmediate&)",
+              "FVisibilityTaskData::ProcessRenderThreadTasks()",
+              "FDeferredShadingSceneRenderer::BeginInitViews(FRDGBuilder&, FSceneTexturesConfig const&, FInstanceCullingManager&, FRDGExternalAccessQueue&, FDeferredShadingSceneRenderer::FInitViewTaskDatas&)",
+              "FDeferredShadingSceneRenderer::Render(FRDGBuilder&, FSceneRenderUpdateInputs const*)",
+              "FRendererModule::BeginRenderingViewFamilies(FCanvas*, TArrayView<FSceneViewFamily* const, int>)::$_3::__invoke(FRDGBuilder&, FSceneRenderFunctionInputs const&)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FSceneRenderProcessor::Execute()::$_3, void, FRHICommandListImmediate&>::Call(void*, FRHICommandListImmediate&)",
+              "ExecuteCommand_NoMarker(FRHICommandList*, TVariant<TUniqueFunction<void ()>, TUniqueFunction<void (FRHICommandList&)>, TUniqueFunction<void (FRHICommandListImmediate&)>> const&)",
+              "UE::Core::Private::Function::TFunctionRefCaller<FRenderThreadCommandPipe::EnqueueAndLaunch(TUniqueFunction<void (FRHICommandListImmediate&)>&&, FRenderCommandTag const&)::$_0, void>::Call(void*)",
+              "TGraphTask<TFunctionGraphTaskImpl<void (), (ESubsequentsMode::Type)1>>::ExecuteTask()",
+              "UE::Tasks::Private::FTaskBase::TryExecuteTask()",
+              "FNamedTaskThread::ProcessTasksUntilQuit(int)",
+              "FTaskGraphCompatibilityImplementation::ProcessThreadUntilRequestReturn(ENamedThreads::Type)",
+              "RenderingThreadMain(FEvent*)",
+              "FRenderingThread::Run()",
+              "FRunnableThreadPThread::Run()",
+              "FRunnableThreadPThread::_ThreadProc(void*)",
+              "js-to-wasm:l:l",
+              "",
+              "invokeEntryPoint",
+              "handleMessage",
+              "(root)"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "Game",
+        "durationMs": 5993.662,
+        "categories": {
+          "idle": {
+            "ms": 4923.939,
+            "percent": 82.15243035059368
+          },
+          "mutexWait": {
+            "ms": 54.229,
+            "percent": 0.9047724079202331
+          },
+          "conditionWait": {
+            "ms": 525.047,
+            "percent": 8.760036852261607
+          },
+          "allocationPath": {
+            "ms": 74.955,
+            "percent": 1.2505710198539723
+          },
+          "proxyPath": {
+            "ms": 192.831,
+            "percent": 3.2172484868182423
+          },
+          "bindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "vertexBindingBridge": {
+            "ms": 0,
+            "percent": 0
+          },
+          "waitForRHIFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "topSelf": [
+          {
+            "id": 2,
+            "name": "(idle)",
+            "ms": 4923.939,
+            "percent": 82.15243035059368
+          },
+          {
+            "id": 36,
+            "name": "_do_futex_wait",
+            "ms": 297.131,
+            "percent": 4.957420021349219
+          },
+          {
+            "id": 20,
+            "name": "_do_futex_wait",
+            "ms": 59.484,
+            "percent": 0.9924483562803508
+          },
+          {
+            "id": 922,
+            "name": "_do_futex_wait",
+            "ms": 39.358,
+            "percent": 0.6566603188501454
+          },
+          {
+            "id": 437,
+            "name": "_do_futex_wait",
+            "ms": 21.235,
+            "percent": 0.35429091597090395
+          },
+          {
+            "id": 30,
+            "name": "_do_futex_wait",
+            "ms": 11.64,
+            "percent": 0.19420514536855765
+          },
+          {
+            "id": 958,
+            "name": "_do_futex_wait",
+            "ms": 10.813,
+            "percent": 0.1804072368445201
+          },
+          {
+            "id": 493,
+            "name": "_do_futex_wait",
+            "ms": 10.684,
+            "percent": 0.17825496332626029
+          }
+        ],
+        "waits": [
+          {
+            "id": 2,
+            "name": "(idle)",
+            "ms": 4923.939,
+            "percent": 82.15243035059368,
+            "stack": [
+              "(idle)",
+              "(root)"
+            ]
+          },
+          {
+            "id": 36,
+            "name": "_do_futex_wait",
+            "ms": 297.131,
+            "percent": 4.957420021349219,
+            "stack": [
+              "_do_futex_wait",
+              "__pthread_cond_timedwait",
+              "FPThreadEvent::Wait(unsigned int, bool)",
+              "FRenderCommandFence::Wait(bool) const",
+              "TArray<FFrameEndSync::FRenderThreadFence, TSizedInlineAllocator<2u, 32, TSizedDefaultAllocator<32>>>::RemoveAt(int, EAllowShrinking)",
+              "FFrameEndSync::Sync(FFrameEndSync::EFlushMode)",
+              "FEngineLoop::Tick()",
+              "(anonymous namespace)::EngineFrame(void*)",
+              "js-to-wasm:l:",
+              "callUserCallback",
+              "runIter",
+              "MainLoop_runner",
+              "",
+              "(root)"
+            ]
+          },
+          {
+            "id": 20,
+            "name": "_do_futex_wait",
+            "ms": 59.484,
+            "percent": 0.9924483562803508,
+            "stack": [
+              "_do_futex_wait",
+              "__pthread_cond_timedwait",
+              "FPThreadEvent::Wait(unsigned int, bool)",
+              "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+              "FTaskGraphCompatibilityImplementation::WaitOnNamedThreadForTasks(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, ENamedThreads::Type)",
+              "FTaskGraphCompatibilityImplementation::ProcessUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, TFunction<FTaskGraphInterface::EProcessTasksOperation (int)> const&)",
+              "FTickTaskSequencer::ReleaseTickGroup(ETickingGroup, bool, TArray<FTickFunction*, TSizedDefaultAllocator<32>>&)",
+              "FTickTaskManager::RunTickGroup(ETickingGroup, bool)",
+              "UWorld::Tick(ELevelTick, float)",
+              "UGameEngine::Tick(float, bool)",
+              "FEngineLoop::Tick()",
+              "(anonymous namespace)::EngineFrame(void*)",
+              "js-to-wasm:l:",
+              "callUserCallback",
+              "runIter",
+              "MainLoop_runner",
+              "",
+              "(root)"
+            ]
+          },
+          {
+            "id": 922,
+            "name": "_do_futex_wait",
+            "ms": 39.358,
+            "percent": 0.6566603188501454,
+            "stack": [
+              "_do_futex_wait",
+              "__pthread_cond_timedwait",
+              "js-to-wasm:ilili:d",
+              "",
+              "",
+              "proxyToMainThread",
+              "runMainThreadEmAsm",
+              "_emscripten_asm_const_int_sync_on_main_thread",
+              "_emscripten_asm_const_double_sync_on_main_thread",
+              "wasm-to-js",
+              "FWebApplication::RefreshWindowSize()",
+              "FWebApplication::PumpMessages(float)",
+              "FWebPlatformApplicationMisc::PumpMessages(bool)",
+              "FEngineLoop::Tick()",
+              "(anonymous namespace)::EngineFrame(void*)",
+              "js-to-wasm:l:",
+              "callUserCallback",
+              "runIter",
+              "MainLoop_runner",
+              "",
+              "(root)"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "environment": {
+    "webMeasurementSamples": 24,
+    "detectedBlockers": [],
+    "note": "Ordinary background apps remained; no exclusive-system performance claim.",
+    "processor": {
+      "Name": "12th Gen Intel(R) Core(TM) i9-12900K",
+      "NumberOfCores": 16,
+      "NumberOfLogicalProcessors": 24
+    },
+    "webCoreCap": 4,
+    "webTaskWorkers": 3
+  },
+  "rendererRevision": {
+    "commit": "d175ae4ae322c3c4873c5a4466d1ffbcc21cd95a",
+    "snapshot": "G:\\UE_HTML\\ue_html\\.tools\\web-renderer-revisions\\d175ae4ae322c3c4873c5a4466d1ffbcc21cd95a",
+    "paths": [
+      "RenderCore/Public/WebShaderPlatform.h",
+      "Renderer/Private/TranslucentLighting.cpp",
+      "Renderer/Private/SystemTextures.cpp"
+    ]
+  },
+  "limitations": [
+    "UE single-thread mode uses the same pthread binary; not a separate non-pthread build.",
+    "Visibility/readback timing changes actual draw work across Web modes; not a fixed-command microbenchmark.",
+    "Web/native Shader Model, Cook and presentation differ; absolute FPS gap is not a controlled API-cost measurement.",
+    "CPU samples include idle and waits. Categories overlap and are not additive.",
+    "Native full returns 777003 after completed CSV and normal exit logs. Shutdown stability unresolved.",
+    "Native full repeated FPS varies about 6.4%. Fixed view results are not whole-scene guarantees.",
+    "Web currently caps reported cores at 4 and starts 3 UE task workers. The 16 pthread slots are not 16 UE task workers. No core-count A/B in this run."
+  ],
+  "pass": true,
+  "referenceEngineCommit": "e94c92291"
+}

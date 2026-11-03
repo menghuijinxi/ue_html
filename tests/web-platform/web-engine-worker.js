@@ -74,13 +74,23 @@ addEventListener('message', event => {
   } else if (message.type === 'inputs') {
     if (globalThis.__webInputBound && globalThis.__webGameThreadWorker)
       globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
+    else if (globalThis.__webInputBound) {
+      globalThis.__webPendingGameCommand = message;
+      try { Module._WebInvokeGameCommand(); send('input-ack'); }
+      finally { globalThis.__webPendingGameCommand = null; }
+    }
     else send('input-ack');
   } else if (message.type === 'rpc') {
     try {
       if (!rpcNames.has(message.name) || !globalThis.__webInputBound)
         throw new Error('Unavailable engine RPC: ' + message.name);
-      if (!globalThis.__webGameThreadWorker) throw new Error('Game thread unavailable');
-      globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
+      if (globalThis.__webGameThreadWorker)
+        globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
+      else {
+        globalThis.__webPendingGameCommand = message;
+        try { send('rpc', {id: message.id, result: Module._WebInvokeGameCommand()}); }
+        finally { globalThis.__webPendingGameCommand = null; }
+      }
     } catch (error) { send('rpc', {id: message.id, error: error.message}); }
   }
 });
