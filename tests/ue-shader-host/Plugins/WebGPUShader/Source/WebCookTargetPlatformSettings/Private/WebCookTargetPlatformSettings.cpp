@@ -5,6 +5,8 @@
 #include "Modules/ModuleManager.h"
 #include "StaticMeshResources.h"
 #include "HAL/IConsoleManager.h"
+#include "RenderUtils.h"
+#include "ShaderPlatformCachedIniValue.h"
 #include "WebCookProperties.h"
 
 class FWebCookSettings final : public TTargetPlatformSettingsBase<FWebCookProperties>
@@ -19,15 +21,17 @@ public:
     {
         return bWebGPU && (Feature == ETargetPlatformFeatures::TextureStreaming ||
             (Feature == ETargetPlatformFeatures::DistanceFieldAO && UsesDistanceFields()) ||
+            (Feature == ETargetPlatformFeatures::LumenGI && UsesDistanceFields() && SupportsLumen()) ||
             Feature == (bES31 ? ETargetPlatformFeatures::MobileRendering :
                 ETargetPlatformFeatures::DeferredRendering));
     }
     virtual bool UsesRayTracing() const override { return false; }
     virtual bool UsesDistanceFields() const override
     {
-        const auto* Generate = IConsoleManager::Get().FindConsoleVariable(TEXT("r.GenerateMeshDistanceFields"));
+        static FTargetPlatformCachedIniValue<int32> Generate(TEXT("r.GenerateMeshDistanceFields"));
         return bWebGPU && !bES31 && (FParse::Param(FCommandLine::Get(), TEXT("WebDistanceFieldsCook")) ||
-            (FParse::Param(FCommandLine::Get(), TEXT("WebProjectSettingsCook")) && Generate && Generate->GetInt() != 0));
+            (FParse::Param(FCommandLine::Get(), TEXT("WebProjectSettingsCook")) &&
+                Generate.Get(FName(TEXT("Web"))) != 0));
     }
 
     virtual void GetReflectionCaptureFormats(TArray<FName>& Formats) const override
@@ -64,6 +68,15 @@ public:
     }
 
 private:
+    bool SupportsLumen() const
+    {
+        if (!bWebGPU || bES31)
+            return false;
+        const EShaderPlatform Platform =
+            FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
+        return Platform != SP_NumPlatforms && DoesPlatformSupportLumenGI(Platform);
+    }
+
     bool bWebGPU;
     bool bES31;
     const UTextureLODSettings* TextureLODSettings = nullptr;

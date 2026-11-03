@@ -256,7 +256,8 @@ bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits
             // TLV accumulates RGBA16F in place when the device exposes tier 2.
             if (Access == TEXT("read_write") && Format != WGPUTextureFormat_R32Float &&
                 Format != WGPUTextureFormat_R32Uint && Format != WGPUTextureFormat_R32Sint &&
-                !(SupportsExtendedStorageAccess && Format == WGPUTextureFormat_RGBA16Float)) return false;
+                !(SupportsExtendedStorageAccess &&
+                    (Format == WGPUTextureFormat_RGBA16Float || Format == WGPUTextureFormat_R16Uint))) return false;
         }
         if (Binding.Group >= Limits.maxBindGroups || Binding.Index >= Limits.maxBindingsPerBindGroup) return false;
         Samplers += Binding.Descriptor == 0;
@@ -813,6 +814,18 @@ void FWebGPUDynamicRHI::Init()
     PreviousShadowFormat = GPixelFormats[PF_ShadowDepth];
     PreviousPackedHDRFormat = GPixelFormats[PF_FloatR11G11B10];
     PreviousFloatRGBFormat = GPixelFormats[PF_FloatRGB];
+    PreviousR16UIntFormat = GPixelFormats[PF_R16_UINT];
+    auto& R16UIntFormat = GPixelFormats[PF_R16_UINT];
+    R16UIntFormat.Supported = true;
+    R16UIntFormat.PlatformFormat = WGPUTextureFormat_R16Uint;
+    R16UIntFormat.Capabilities = EPixelFormatCapabilities::Texture2D | EPixelFormatCapabilities::Texture3D |
+        EPixelFormatCapabilities::TextureCube | EPixelFormatCapabilities::TextureLoad |
+        EPixelFormatCapabilities::TextureSample;
+    if (wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1))
+        R16UIntFormat.Capabilities |= EPixelFormatCapabilities::TextureStore | EPixelFormatCapabilities::UAV |
+            EPixelFormatCapabilities::TypedUAVStore;
+    if (wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2))
+        R16UIntFormat.Capabilities |= EPixelFormatCapabilities::TypedUAVLoad;
     auto& PackedHDRFormat = GPixelFormats[PF_FloatR11G11B10];
     PackedHDRFormat.Supported = true;
     PackedHDRFormat.PlatformFormat = WGPUTextureFormat_RG11B10Ufloat;
@@ -966,11 +979,13 @@ void FWebGPUDynamicRHI::Shutdown()
         GPixelFormats[PF_ShadowDepth] = PreviousShadowFormat.GetValue();
         GPixelFormats[PF_FloatR11G11B10] = PreviousPackedHDRFormat.GetValue();
         GPixelFormats[PF_FloatRGB] = PreviousFloatRGBFormat.GetValue();
+        GPixelFormats[PF_R16_UINT] = PreviousR16UIntFormat.GetValue();
         PreviousDepthFormat.Reset();
         PreviousStencilFormat.Reset();
         PreviousShadowFormat.Reset();
         PreviousPackedHDRFormat.Reset();
         PreviousFloatRGBFormat.Reset();
+        PreviousR16UIntFormat.Reset();
     }
 }
 void FWebGPUDynamicRHI::PostInit()
@@ -3435,7 +3450,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             Rasterizer.FillMode == FM_Solid && Rasterizer.CullMode <= CM_CCW && Rasterizer.DepthBias == 0 &&
             Rasterizer.SlopeScaleDepthBias == 0 && Rasterizer.DepthClipMode == ERasterizerDepthClipMode::DepthClip &&
             !Blend.bUseAlphaToCoverage && In.RenderTargetsEnabled <= Limits.maxColorAttachments;
-        const bool ExtendedStorageAccess = wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2);
+        const bool ExtendedStorageAccess = wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2) != 0;
         Supported &= CanPrecacheShader(static_cast<FWebGPUVertexShader*>(In.BoundShaderState.GetVertexShader())->Data, Limits, ExtendedStorageAccess);
         if (auto* Pixel = In.BoundShaderState.GetPixelShader())
             Supported &= CanPrecacheShader(static_cast<FWebGPUPixelShader*>(Pixel)->Data, Limits, ExtendedStorageAccess);
@@ -3667,7 +3682,7 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     TRACE_CPUPROFILER_EVENT_SCOPE(WebPSO_CreateComputeOwner);
     if (In.bPSOPrecache && (!In.SpecializationConstants.IsEmpty() ||
         !CanPrecacheShader(static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data, Limits,
-            wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2))))
+            wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2) != 0)))
     {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         ++UnsupportedPrecacheRequests;

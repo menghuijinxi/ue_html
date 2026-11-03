@@ -32,6 +32,7 @@
 
 int32 RunWebManualVertexFetchProbe(const FString& Params);
 int32 RunWebShaderMetadataProbe(const FString& Params);
+int32 RunWebLumenShaderProbe(const FString& Params);
 
 static TSharedRef<FJsonObject> ReflectMember(const SpvReflectBlockVariable &Member)
 {
@@ -138,6 +139,51 @@ int32 UWebShaderProbeCommandlet::Main(const FString &Params)
         return RunWebShaderMetadataProbe(Params);
     if (FParse::Param(*Params, TEXT("WebManualVertexFetchProbe")))
         return RunWebManualVertexFetchProbe(Params);
+    if (FParse::Param(*Params, TEXT("LumenShaderProbe")))
+        return RunWebLumenShaderProbe(Params);
+    if (FParse::Param(*Params, TEXT("LumenPolicyProbe")))
+    {
+        FString OutputFile;
+        int32 Expected = 0;
+        if (!FParse::Value(*Params, TEXT("Output="), OutputFile) ||
+            !FParse::Value(*Params, TEXT("ExpectedLumen="), Expected))
+            return 1;
+        const EShaderPlatform Platform =
+            FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
+        if (Platform == SP_NumPlatforms)
+            return 1;
+        const bool Allowed = DoesPlatformSupportLumenGI(Platform);
+        bool Pass = Allowed == (Expected != 0) &&
+            DoesPlatformSupportLumenGI(Platform, true) == Allowed;
+        TSharedRef<FJsonObject> Report = MakeShared<FJsonObject>();
+        Report->SetBoolField(TEXT("projectSupportsLumen"), DoesProjectSupportLumenGI(Platform));
+        Report->SetBoolField(TEXT("platformAllowsLumen"), Allowed);
+        Report->SetBoolField(TEXT("diagnosticSkipAllowsLumen"), DoesPlatformSupportLumenGI(Platform, true));
+        TArray<TSharedPtr<FJsonValue>> Targets;
+        for (ITargetPlatformSettings* Settings : GetTargetPlatformManagerRef().GetTargetPlatformSettings())
+        {
+            if (Settings->IniPlatformName() != TEXT("Web"))
+                continue;
+            const bool Cards = Settings->SupportsFeature(ETargetPlatformFeatures::LumenGI);
+            TSharedRef<FJsonObject> Target = MakeShared<FJsonObject>();
+            Target->SetBoolField(TEXT("preserveCards"), Cards);
+            Target->SetBoolField(TEXT("distanceFields"), Settings->UsesDistanceFields());
+            Targets.Add(MakeShared<FJsonValueObject>(Target));
+            Pass &= Cards == (Expected != 0);
+        }
+        Pass &= Targets.Num() == 1;
+        Report->SetArrayField(TEXT("cookTargets"), Targets);
+        const FShaderType* Type = FindShaderTypeByName(FHashedName(TEXT("FScreenProbeAdaptivePlacementMarkCS")));
+        const bool ShaderAllowed = Type && Type->GetGlobalShaderType() &&
+            Type->GetGlobalShaderType()->ShouldCompilePermutation(Platform, 0, EShaderPermutationFlags::None);
+        Report->SetBoolField(TEXT("screenProbeShaderAllowed"), ShaderAllowed);
+        Pass &= Type != nullptr && ShaderAllowed == (Expected != 0);
+        Report->SetBoolField(TEXT("pass"), Pass);
+        FString Json;
+        FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
+        return FFileHelper::SaveStringToFile(Json, *OutputFile,
+            FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM) && Pass ? 0 : 1;
+    }
     if (FParse::Param(*Params, TEXT("DesktopShaderProbe")))
     {
         FString TypeName, OutputDirectory;

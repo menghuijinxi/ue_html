@@ -15,6 +15,7 @@ const storageDeclaration = (before, format) => ({before, after: [
 const overrides = new Map([
   ...require('./web-tsr-shader-overrides.cjs'),
   ...require('./web-translucency-shader-overrides.cjs'),
+  ...require('./web-lumen-shader-overrides.cjs'),
   ['Private/InstanceCulling/BuildInstanceDrawCommands.usf', [{
     before: '#define USE_HZB_SHARED_SAMPLERS 0',
     after: ['#define USE_HZB_SHARED_SAMPLERS 0', '',
@@ -646,7 +647,7 @@ function prepare() {
     }
   }
   copy();
-  for (const relative of ['Private/WebTranslucencyVolume.ush']) {
+  for (const relative of ['Private/WebTranslucencyVolume.ush', 'Private/Lumen/WebLumenAdaptiveProbe.usf']) {
     assert(!fs.existsSync(path.join(stock, relative)), 'Web-only shaders must not overwrite installed inputs');
     const source = path.join(root, 'reference-engine/Engine/Shaders', relative);
     const destination = path.join(output, relative);
@@ -660,7 +661,8 @@ function prepare() {
   }
   const report = {date: new Date().toISOString(), pass: true, output,
     sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'),
-      require.resolve('./web-translucency-shader-overrides.cjs'), ...overrideFiles].map(audit),
+      require.resolve('./web-translucency-shader-overrides.cjs'),
+      require.resolve('./web-lumen-shader-overrides.cjs'), ...overrideFiles].map(audit),
     files, installedEngineUnmodified: audit(path.join(stock, 'Private/PostProcessTonemap.usf')),
     installedInputs: [...overrides.keys()].map(relative => audit(path.join(stock, relative))),
     boundary: 'Independent native Cook shader snapshot. Audited overrides contain WebGPU decal ordering, finite math, structured buffers, explicit atmosphere/sky-capture storage image formats and indirect arguments. Other files are installed-source copies, not a complete 5.8.3 shader snapshot.'};

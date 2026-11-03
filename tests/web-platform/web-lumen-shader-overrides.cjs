@@ -1,0 +1,48 @@
+'use strict';
+const web = lines => ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', ...lines, '#endif'].join('\n');
+const branch = (before, lines) => ({before,
+  after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', ...lines, '#else', before, '#endif'].join('\n')});
+const storage = (before, format) => ({before,
+  after: web([`[[vk::image_format("${format}")]] [[vk::ext_decorate(25)]]`]) + '\n' + before});
+module.exports = new Map([
+  ['Private/Lumen/LumenScene.usf', [
+    branch('RWStructuredBuffer<uint2> RWSceneAddOps;', [
+      '// Preserve the uint2 readback layout, avoiding atomics on vector components.',
+      'RWStructuredBuffer<uint> RWSceneAddOps;']),
+    branch('\t\t\t\t\tInterlockedAdd(RWSceneAddOps[0].x, 1, ElementIndex);', [
+      '\t\t\t\t\tInterlockedAdd(RWSceneAddOps[0], 1, ElementIndex);']),
+    branch('\t\t\t\t\t\tRWSceneAddOps[ElementIndex + 1] = uint2(PrimitiveGroupIndex, asuint(DistanceSquared));', [
+      '\t\t\t\t\t\tRWSceneAddOps[2 * (ElementIndex + 1)] = PrimitiveGroupIndex;',
+      '\t\t\t\t\t\tRWSceneAddOps[2 * (ElementIndex + 1) + 1] = asuint(DistanceSquared);']),
+  ]],
+  ['Private/Lumen/LumenScreenProbeGatherScreenData.usf', [
+    storage('RWTexture2D<UNORM float> RWScreenProbeDisocclusion;', 'r8'),
+    storage('RWTexture2D<float> RWBRDFProbabilityDensityFunction;', 'r16f'),
+    {before: 'groupshared uint SharedNumElements;', after:
+      'groupshared uint SharedNumElements;\n' + web(['groupshared uint WebSharedNumElementsAtomic;'])},
+    {before: '\t\t\t\tSharedNumElements = 0;', after:
+      '\t\t\t\tSharedNumElements = 0;\n' + web(['\t\t\t\tWebSharedNumElementsAtomic = 0;'])},
+    branch('\t\t\t\tInterlockedAdd(SharedNumElements, 1, Index);', [
+      '\t\t\t\tInterlockedAdd(WebSharedNumElementsAtomic, 1, Index);']),
+    {before: '\t\t\tuint NumElementsToAccumulate = RoundUpToPowerOfTwo(SharedNumElements);',
+      after: web(['\t\t\t// Publish once so loop barriers depend on a uniform shared value.',
+        '\t\t\tif (ThreadIndex == 0)', '\t\t\t{',
+        '\t\t\t\tSharedNumElements = WebSharedNumElementsAtomic;', '\t\t\t}',
+        '\t\t\tGroupMemoryBarrierWithGroupSync();',
+        '\t\t\tconst uint WebUniformNumElements = SharedNumElements;',
+        '\t\t\tGroupMemoryBarrierWithGroupSync();',
+        '\t\t\tuint NumElementsToAccumulate = RoundUpToPowerOfTwo(WebUniformNumElements);'])
+        .replace(/\n#endif$/, '\n#else\n\t\t\tuint NumElementsToAccumulate = RoundUpToPowerOfTwo(SharedNumElements);\n#endif')},
+  ]],
+  ['Private/Lumen/LumenScreenProbeGather.usf', [
+    storage('RWTexture2D<uint> RWScreenProbeWorldSpeed;', 'r16ui'),
+    storage('RWTexture2D<UNORM float2> RWScreenProbeWorldNormal;', 'rg8'),
+    {before: 'RWTexture2D<uint> RWScreenTileAdaptiveProbeHeader;', after:
+      web(['RWStructuredBuffer<uint> RWWebAdaptiveProbeHeader;', 'uint WebAdaptiveProbeHeaderWidth;']) +
+      '\nRWTexture2D<uint> RWScreenTileAdaptiveProbeHeader;'},
+    storage('RWTexture2D<uint> RWScreenTileAdaptiveProbeIndices;', 'r16ui'),
+    storage('RWTexture2D<uint> RWAdaptiveProbePlacementMask;', 'r16ui'),
+    branch('\t\tInterlockedAdd(RWScreenTileAdaptiveProbeHeader[ScreenTileCoord], 1, TileProbeIndex);', [
+      '\t\tInterlockedAdd(RWWebAdaptiveProbeHeader[ScreenTileCoord.y * WebAdaptiveProbeHeaderWidth + ScreenTileCoord.x], 1, TileProbeIndex);']),
+  ]],
+]);

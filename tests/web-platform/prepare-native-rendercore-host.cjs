@@ -79,6 +79,8 @@ try {
     'Private/PostProcess/PostProcessHistogram.cpp', 'Private/SkyAtmosphereRendering.cpp',
     'Private/PostProcess/TemporalSuperResolution.cpp',
     'Private/TranslucentLighting.cpp',
+    'Private/Lumen/LumenScreenProbeGather.cpp',
+    'Private/Lumen/LumenScreenProbeImportanceSampling.cpp',
     'Private/InstanceCulling/InstanceCullingContext.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);

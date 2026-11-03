@@ -89,6 +89,7 @@ $taskReport = [ordered]@{
     templateEnvironment = [bool]$TemplateEnvironment
     distanceFields = [bool]$DistanceFields
     useProjectSettings = [bool]$UseProjectSettings
+    lumen = $null
     manualVertexFetch = [bool]$ManualVertexFetch
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))
     stopOnShaderError = [bool]$StopOnShaderError
@@ -184,6 +185,7 @@ try {
         $taskPolicy = Get-Content -LiteralPath $taskArgumentsPolicy -Raw | ConvertFrom-Json
         $taskReport.projectSettings = Get-TaskAudit $taskArgumentsPolicy
         $taskReport.distanceFields = [bool]$taskPolicy.distanceFields
+        $taskReport.lumen = $taskPolicy.lumen
     }
     $taskPackages = @(
         '/Engine/EngineMaterials/WorldGridMaterial',

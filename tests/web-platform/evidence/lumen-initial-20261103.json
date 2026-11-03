@@ -1,0 +1,675 @@
+{
+  "date": "2026-11-03T02:22:03.996Z",
+  "stage": "initial-software-lumen-compatibility",
+  "completeLumenScene": false,
+  "fullProbePassed": false,
+  "hostCondition": "E-core affinity 0xffff0000; isolated diagnostic browser",
+  "projectRendererOverrides": [],
+  "settingsValidation": {
+    "pass": true,
+    "checks": 9
+  },
+  "policies": [
+    {
+      "name": "off",
+      "projectSupportsLumen": false,
+      "platformAllowsLumen": false,
+      "diagnosticSkipAllowsLumen": false,
+      "cookTargets": [
+        {
+          "preserveCards": false,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": false,
+      "pass": true
+    },
+    {
+      "name": "gi",
+      "projectSupportsLumen": true,
+      "platformAllowsLumen": true,
+      "diagnosticSkipAllowsLumen": true,
+      "cookTargets": [
+        {
+          "preserveCards": true,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": true,
+      "pass": true
+    },
+    {
+      "name": "reflections",
+      "projectSupportsLumen": true,
+      "platformAllowsLumen": true,
+      "diagnosticSkipAllowsLumen": true,
+      "cookTargets": [
+        {
+          "preserveCards": true,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": true,
+      "pass": true
+    },
+    {
+      "name": "master-off",
+      "projectSupportsLumen": false,
+      "platformAllowsLumen": false,
+      "diagnosticSkipAllowsLumen": false,
+      "cookTargets": [
+        {
+          "preserveCards": false,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": false,
+      "pass": true
+    },
+    {
+      "name": "screen-space",
+      "projectSupportsLumen": false,
+      "platformAllowsLumen": false,
+      "diagnosticSkipAllowsLumen": false,
+      "cookTargets": [
+        {
+          "preserveCards": false,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": false,
+      "pass": true
+    },
+    {
+      "name": "web-override-on",
+      "projectSupportsLumen": true,
+      "platformAllowsLumen": true,
+      "diagnosticSkipAllowsLumen": true,
+      "cookTargets": [
+        {
+          "preserveCards": true,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": true,
+      "pass": true
+    },
+    {
+      "name": "web-override-off",
+      "projectSupportsLumen": false,
+      "platformAllowsLumen": false,
+      "diagnosticSkipAllowsLumen": false,
+      "cookTargets": [
+        {
+          "preserveCards": false,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": false,
+      "pass": true
+    },
+    {
+      "name": "off-again",
+      "projectSupportsLumen": false,
+      "platformAllowsLumen": false,
+      "diagnosticSkipAllowsLumen": false,
+      "cookTargets": [
+        {
+          "preserveCards": false,
+          "distanceFields": true
+        }
+      ],
+      "screenProbeShaderAllowed": false,
+      "pass": true
+    }
+  ],
+  "shaders": {
+    "selection": "First allowed permutation per registered Lumen global shader type",
+    "total": 157,
+    "passed": 121,
+    "failed": 36,
+    "failures": [
+      {
+        "shaderType": "FTranslucencyVolumeSpatialSeparableFilterCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenTranslucencyVolumeLighting.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FTranslucencyVolumeTraceVoxelsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenTranslucencyVolumeLighting.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeTraceVoxelsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeTraceMeshSDFsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeTraceScreenTexturesCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FClearTracesCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeTemporalReprojectionCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGatherTemporal.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeIntegrateCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeIntegrateClearUnusedTileDataCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeGenerateMipLevelCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeFiltering.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeFixupBordersCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeFiltering.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeConvertToIrradianceCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeFiltering.usf",
+        "permutation": 4,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeFilterGatherTracesCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeFiltering.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeTemporallyAccumulateTraceRadianceCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeFiltering.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FScreenProbeCompositeTracesWithScatterCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeFiltering.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenCardCombineLightingCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenSceneLighting.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenSceneDenoiserTemporalCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenSceneDirectLightingStochastic.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenSceneShadeLightSamplesCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenSceneDirectLightingStochastic.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenCardBatchDirectLightingCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenSceneDirectLighting.usf",
+        "permutation": 4,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FReflectionTraceVoxelsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FReflectionTraceMeshSDFsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FReflectionTraceScreenTexturesCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FReflectionClearTracesCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenReflectionDenoiserSpatialCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionDenoiserSpatial.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenReflectionDenoiserClearCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionDenoiserClear.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenReflectionResolveCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenReflectionResolve.usf",
+        "permutation": 1,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenRadiosityIntegrateCS",
+        "shaderFile": "/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenRadiositySpatialFilterProbeRadiance",
+        "shaderFile": "/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FLumenRadiosityDistanceFieldTracingCS",
+        "shaderFile": "/Engine/Private/Lumen/Radiosity/LumenRadiosity.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FSplatRadianceCacheIntoAtlasCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenRadianceCacheHardwareRayTracing.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FFixupBordersAndGenerateMipsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenRadianceCache.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FCalculateProbeIrradianceCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenRadianceCache.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FFilterProbeRadianceWithGatherCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenRadianceCache.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FRadianceCacheTraceFromProbesCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenRadianceCache.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FInterpolateIrradianceProbesToPixelsCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenIrradianceFieldGather.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      },
+      {
+        "shaderType": "FDownsampleDepthAndNormalCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenIrradianceFieldGather.usf",
+        "permutation": 0,
+        "pass": false,
+        "errors": [
+          "WebGPU conversion: Failed to parse SPIR-V: SPIR-V capability 'StorageImageWriteWithoutFormat' is not supported\r\n"
+        ]
+      }
+    ]
+  },
+  "targetedPermutations": {
+    "pass": true,
+    "allPermutations": true,
+    "completeLumenScene": false,
+    "cases": [
+      {
+        "shaderType": "FScreenProbeGatherScreenDataCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGatherScreenData.usf",
+        "permutation": 0,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeGatherScreenDataCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGatherScreenData.usf",
+        "permutation": 1,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeGatherScreenDataCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGatherScreenData.usf",
+        "permutation": 3,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "shaderFile": "/Engine/Private/Lumen/WebLumenAdaptiveProbe.usf",
+        "permutation": 0,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeAdaptivePlacementSpawnCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 0,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeAdaptivePlacementSpawnCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 1,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeAdaptivePlacementSpawnCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 2,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeAdaptivePlacementMarkCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 0,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeAdaptivePlacementMarkCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 1,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FScreenProbeAdaptivePlacementMarkCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScreenProbeGather.usf",
+        "permutation": 2,
+        "pass": true,
+        "errors": []
+      },
+      {
+        "shaderType": "FLumenSceneUpdateCS",
+        "shaderFile": "/Engine/Private/Lumen/LumenScene.usf",
+        "permutation": 0,
+        "pass": true,
+        "errors": []
+      }
+    ]
+  },
+  "browserGPU": {
+    "pass": true,
+    "moduleCount": 121,
+    "device": {
+      "features": [
+        "texture-formats-tier1",
+        "texture-formats-tier2",
+        "rg11b10ufloat-renderable",
+        "subgroups"
+      ],
+      "adapter": {}
+    },
+    "execution": [
+      {
+        "shader": "FLumenSceneUpdateCS",
+        "capacity": 258,
+        "primitiveCount": 257,
+        "additions": 65,
+        "removals": 64,
+        "pairsAndOverflowGuardsVerified": true
+      },
+      {
+        "shader": "FLumenSceneUpdateCS",
+        "capacity": 3,
+        "primitiveCount": 257,
+        "additions": 65,
+        "removals": 64,
+        "pairsAndOverflowGuardsVerified": true
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 1,
+        "height": 1,
+        "verifiedTexels": 1
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 13,
+        "height": 9,
+        "verifiedTexels": 117
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 65,
+        "height": 37,
+        "verifiedTexels": 2405
+      },
+      {
+        "shader": "FWebLumenCopyAdaptiveProbeHeaderCS",
+        "width": 127,
+        "height": 68,
+        "verifiedTexels": 8636
+      }
+    ],
+    "boundary": "Real UE WGSL module validation and GPU execution of scene Cards queues/adaptive-header copy. No full Cook, Surface Cache, GI pixels, scene performance or peak VRAM acceptance."
+  },
+  "builds": {
+    "native-rendercore": {
+      "pass": true,
+      "installedInputsUnmodified": true,
+      "disableHostOptimization": true,
+      "products": [
+        {
+          "sha256": "5895371b4f6d75b63e3727a63c3a66674e98c13af1912b8901c487851655384a",
+          "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-RenderCore.dll"
+        },
+        {
+          "sha256": "b858991026db09ec409260a5fd2c4a68a1794cb5e7caff0733d5e4ec06f29c0d",
+          "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-RenderCore.pdb"
+        }
+      ],
+      "sourceReport": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\native-rendercore-build-results.json",
+        "sha256": "551e5da17b4c2f90d0a28607804aefa45cab0059ee64cf1818d48c1cc51913d4"
+      }
+    },
+    "native-renderer": {
+      "pass": true,
+      "installedInputsUnmodified": true,
+      "disableHostOptimization": true,
+      "products": [
+        {
+          "sha256": "966613b187856f68ff878b9993b36afe251c204d5343b0b2b5d804da5a316030",
+          "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-Renderer.dll"
+        },
+        {
+          "sha256": "ac9427112d1ffadd84f7545baebbb9c76d62bddcc7f284a657b405fb84134be6",
+          "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-Renderer.pdb"
+        }
+      ],
+      "sourceReport": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\native-renderer-build-results.json",
+        "sha256": "15aaae6905bc3021c5611baa99f654fd626eef3975c09c3e6438b7c4e2a38ad0"
+      }
+    },
+    "web-engine-full-thread": {
+      "pass": true,
+      "wasmValidated": true,
+      "products": [
+        {
+          "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js",
+          "sha256": "a8c9f91c88b11f626524d3b5839afeed170758dfdd5441c2bf7476135a8445b5"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm",
+          "sha256": "55907fb16fb0c9cd7ac5b396b7c2402c9c3add2bbb5e8dc8f2a2c69098fba6c0"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target",
+          "sha256": "8c44bbd404aab40b01e03d43b249a3fe0d83b6d7d4e50b35808f00164e19b0c5"
+        }
+      ],
+      "sourceReport": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+        "sha256": "acf05c353b1d6f0226a814ea43162b176d8b1153fac20cb5bbd07306d19da4ac"
+      }
+    }
+  },
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-101212\\probe-results.json",
+      "sha256": "efc9a395d45ea548fbdf98bdbb163bf8e08463d87d860e65eb2ad845c5ec18b1"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-101808\\probe-results.json",
+      "sha256": "8f64ac86c195a78e18085bb081c4982f4155e9611e2874451ae6e5437b790bce"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-lumen-gpu-initial.json",
+      "sha256": "ca505cc27e74cae1d5c690ad5c534bc7efec61eca87fb15b2f47283d287061df"
+    }
+  ],
+  "boundary": "No full Lumen Cook, Surface Cache/GI scene, runtime resource release, scene FPS or peak VRAM acceptance."
+}

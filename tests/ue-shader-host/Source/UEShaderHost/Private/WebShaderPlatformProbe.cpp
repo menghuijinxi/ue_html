@@ -31,10 +31,10 @@ EShaderPlatform ResolveProbeShaderPlatform(const FString &Params, const FString 
                       FDataDrivenShaderPlatformInfo::GetSupportsUniformBufferObjects(Platform) &&
                       !FDataDrivenShaderPlatformInfo::GetSupportsTypedBufferSRVs(Platform) &&
                       !FDataDrivenShaderPlatformInfo::GetSupportsManualVertexFetch(Platform) &&
-                      !FDataDrivenShaderPlatformInfo::GetSupportsGPUScene(Platform) &&
+                      FDataDrivenShaderPlatformInfo::GetSupportsGPUScene(Platform) == !Mobile &&
                       !FDataDrivenShaderPlatformInfo::GetSupportsRayTracing(Platform) &&
                       !FDataDrivenShaderPlatformInfo::GetSupportsNanite(Platform) &&
-                      !FDataDrivenShaderPlatformInfo::GetSupportsLumenGI(Platform) &&
+                      FDataDrivenShaderPlatformInfo::GetSupportsLumenGI(Platform) == !Mobile &&
                       !FDataDrivenShaderPlatformInfo::GetSupportsBindless(Platform) &&
                       !FDataDrivenShaderPlatformInfo::GetIsPreviewPlatform(Platform);
     TSharedRef<FJsonObject> Json = MakeShared<FJsonObject>();

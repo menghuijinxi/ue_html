@@ -1,0 +1,10 @@
+[
+  {"name": "off", "gi": 0, "reflections": 0, "supported": 1, "distanceFields": 1, "forward": 0, "expected": false},
+  {"name": "gi", "gi": 1, "reflections": 0, "supported": 1, "distanceFields": 1, "forward": 0, "expected": true},
+  {"name": "reflections", "gi": 0, "reflections": 1, "supported": 1, "distanceFields": 1, "forward": 0, "expected": true},
+  {"name": "master-off", "gi": 1, "reflections": 1, "supported": 0, "distanceFields": 1, "forward": 0, "expected": false},
+  {"name": "screen-space", "gi": 2, "reflections": 2, "supported": 1, "distanceFields": 1, "forward": 0, "expected": false},
+  {"name": "web-override-on", "gi": 0, "reflections": 0, "supported": 1, "distanceFields": 0, "forward": 0, "web": {"r.DynamicGlobalIlluminationMethod": 1, "r.GenerateMeshDistanceFields": 1}, "expected": true},
+  {"name": "web-override-off", "gi": 1, "reflections": 0, "supported": 1, "distanceFields": 1, "forward": 0, "web": {"r.DynamicGlobalIlluminationMethod": 0}, "expected": false},
+  {"name": "off-again", "gi": 0, "reflections": 0, "supported": 1, "distanceFields": 1, "forward": 0, "expected": false}
+]

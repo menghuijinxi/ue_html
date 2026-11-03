@@ -31,6 +31,14 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentRendering.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentLighting.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentLighting.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SystemTextures.cpp') -Destination (Join-Path $taskRendererCopy 'Private/SystemTextures.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenScreenProbeGather.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenScreenProbeGather.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenScreenProbeImportanceSampling.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenScreenProbeImportanceSampling.cpp') -Force
+$taskRenderUtils = Join-Path $taskHost 'Source/Runtime/RenderCore/Private/RenderUtils.cpp'
+if ((Get-Item -LiteralPath (Split-Path $taskRenderUtils)).LinkType -or
+    (Get-Item -LiteralPath (Join-Path $taskHost 'Source/Runtime/RenderCore')).LinkType) {
+    throw 'RenderCore overlay must be a local build-host copy.'
+}
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp') -Destination $taskRenderUtils -Force
 & node (Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'Enhanced Input runtime module preparation failed.' }
 $taskPlatforms = Join-Path $taskHost 'Platforms'
@@ -273,6 +281,8 @@ try {
         'Renderer/Private/IndirectLightRendering.cpp', 'Renderer/Private/DistortionRendering.cpp',
         'Renderer/Private/SystemTextures.cpp', 'Renderer/Private/SceneTextureReductions.cpp',
         'Renderer/Private/SceneRendering.cpp', 'Renderer/Private/GPUScene.cpp', 'Renderer/Private/GlobalDistanceField.cpp',
+        'Renderer/Private/Lumen/LumenScreenProbeGather.cpp',
+        'Renderer/Private/Lumen/LumenScreenProbeImportanceSampling.cpp',
         'Renderer/Private/MeshDrawCommands.cpp',
         'Renderer/Private/InstanceCulling/InstanceCullingContext.cpp',
         'Renderer/Private/GlobalDistanceFieldHeightfields.h', 'Renderer/Private/DistanceFieldAmbientOcclusion.cpp',
