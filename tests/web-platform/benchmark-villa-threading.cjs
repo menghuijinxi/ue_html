@@ -11,10 +11,12 @@ const seconds = Number(option('seconds') || 20), warmup = Number(option('warmup'
 const coreLimits = option('cores')?.split(',').map(Number);
 const bridges = option('bridge')?.split(',');
 const transports = option('transport')?.split(',');
+const rhi = option('rhi')?.split(',');
+assert(!rhi||(!folders&&!transports&&!bridges&&!coreLimits&&!option('modes')&&rhi.every(v=>['control','tick','metadata','storage','all'].includes(v))));
 assert(!transports||(!bridges&&!coreLimits&&!option('modes')&&transports.every(v=>['baseline','states','groups','all'].includes(v))));
 assert(!bridges || (!coreLimits && !option('modes') && bridges.every(v=>['immediate','stream'].includes(v))));
 assert(!coreLimits || (coreLimits.length && coreLimits.every(n => [4,6,8].includes(n)) && !option('modes')));
-const modes = folders ? folders.map(()=>'full') : transports ? transports.map(()=>'full') : bridges ? bridges.map(()=>'full') : coreLimits ? coreLimits.map(() => 'full') :
+const modes = rhi ? rhi.map(()=>'full') : folders ? folders.map(()=>'full') : transports ? transports.map(()=>'full') : bridges ? bridges.map(()=>'full') : coreLimits ? coreLimits.map(() => 'full') :
   (option('modes') || 'full,render-serial,single,single,render-serial,full').split(',');
 assert(modes.every(v => ['full', 'render-serial', 'single'].includes(v)) && seconds >= 5 && seconds <= 60);
 assert(Number.isFinite(warmup) && warmup >= 0 && warmup <= 120);
@@ -25,10 +27,11 @@ const packageNames=f=>{
 };
 const viewKey = view => ['width','height','outputWidth','outputHeight','antiAliasing','x','y','outputX','outputY'].map(k => view[k]);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
+fs.copyFileSync(__filename, output+'-source.cjs');
 const report = {date: new Date().toISOString(), folder, seconds, warmup, runs: [], pass: false,
   allocationProbe:process.argv.includes('--allocation-probe'),performanceAccepted:!process.argv.includes('--allocation-probe'),
-  coreLimits, bridges, transports, folders,
-  source: audit(__filename), qualityOverrides: [], psoPrecache: false,
+  coreLimits, bridges, transports, folders, rhi,
+  source: audit(__filename), capturedSource:audit(output+'-source.cjs'), qualityOverrides: [], psoPrecache: false,
   packageFiles: packageNames(folder).map(n => audit(path.join(base, n))),
   packages:Object.fromEntries([...new Set(folders||[folder])].map(f=>[f,{folder:f,files:Object.fromEntries(packageNames(f).map(n=>[n,audit(path.join(__dirname,'build',f,n))]))}])),
   boundary: 'Thread/bridge/transport tests use the same pthread WASM and Cook, varying only the named startup flags. Folder comparisons use separately audited runtimes and identical content/config hashes. Full threading and default cores for bridge/transport/folder tests. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation. Optional CPU sampling starts after the measured interval and screenshot.'};
@@ -108,6 +111,7 @@ async function profileBlockedWorker(file, all = false) {
       const args = JSON.parse(match[1]); assert(!args.some(v => /PSOPrecache|VisualTestClock/.test(v)));
       assert(!args.some(v => /^-(corelimit|WebThreadingTest)=/.test(v)), 'Use a package without baked-in threading overrides');
       args.push('-WebThreadingTest=' + mode);
+      if(run.rhiExperiment) {assert(!args.some(v=>v.startsWith('-WebRHIExperiment=')));args.push('-WebRHIExperiment='+run.rhiExperiment);}
       if (run.coreLimit) args.push('-corelimit=' + run.coreLimit);
       if (run.bridge==='immediate') args.push('-WebGPUImmediateCalls');
       if (run.transport==='baseline'||run.transport==='groups') args.push('-WebGPUScalarPassCalls');
@@ -120,12 +124,13 @@ async function profileBlockedWorker(file, all = false) {
       await route.fulfill({response, body: '(' + install.toString() + ')();\n' + await response.text()});
     });
     page.on('console', m => {const text = m.text(); log?.write(text + '\n');
+      if(run && text.includes('WebGPU RHI experiment:'))run.rhiExperimentConfirmed=text.match(/WebGPU RHI experiment: (\w+)/)?.[1];
       if(run && text.includes('WebGPU command stream:'))run.bridgeConfirmed=text.includes('enabled')?'stream':'immediate';
       if(run && text.includes('WebGPU bridge extras:'))run.transportConfirmed=text.match(/states=(\d) groups=(\d)/)?.slice(1).map(Number);
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|P3_ENGINE_PREINIT_FAILED|P3_ENGINE_INIT_FAILED|thread pool is exhausted|Failed to create thread|pthread_create.*failed/i.test(text)) run?.errors.push(text);});
     page.on('pageerror', e => run?.errors.push(e.message));
     for (let index = 0; index < modes.length; ++index) {
-      mode = modes[index]; run = {mode, folder:folders?.[index]||folder, transport:transports?.[index] || null, bridge:bridges?.[index] || null, coreLimit:coreLimits?.[index] || null, index: index+1, started:new Date().toISOString(), errors: []}; report.runs.push(run);
+      mode = modes[index]; run = {mode, rhiExperiment:rhi?.[index]||null, folder:folders?.[index]||folder, transport:transports?.[index] || null, bridge:bridges?.[index] || null, coreLimit:coreLimits?.[index] || null, index: index+1, started:new Date().toISOString(), errors: []}; report.runs.push(run);
       log = fs.createWriteStream(output + '-' + run.index + '-' + mode + '.log');
       console.log('Web start', run.index, mode, run.coreLimit || 'default cores');
       await page.goto(`http://127.0.0.1:8765/build/${run.folder}/index.html`, {waitUntil: 'commit'});
@@ -150,6 +155,12 @@ async function profileBlockedWorker(file, all = false) {
       run.before = await state();
       run.pageBefore=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),live:globalThis.__webLivePerformance}));
       const threads = run.before.threads; assert(threads);
+      if(run.rhiExperiment){
+        assert.equal(run.rhiExperimentConfirmed,run.rhiExperiment);
+        const experiment=run.before.occlusion;
+        assert.deepEqual([experiment.skipNoopRHITick,experiment.nativeStorageContracts,experiment.revalidateStorageDescriptors],
+          [run.rhiExperiment==='tick'||run.rhiExperiment==='all',run.rhiExperiment==='metadata'||run.rhiExperiment==='all',run.rhiExperiment==='storage'||run.rhiExperiment==='all']);
+      }
       if(run.bridge)assert.equal(run.bridgeConfirmed,run.bridge,'WebGPU bridge startup mode mismatch');
       if(run.transport)assert.deepEqual(run.transportConfirmed,[Number(['states','all'].includes(run.transport)),Number(['groups','all'].includes(run.transport))],'Bridge extras startup mode mismatch');
       assert.equal(threads.renderThread, mode === 'full'); assert.equal(threads.rhiThread, mode === 'full');
@@ -186,13 +197,13 @@ async function profileBlockedWorker(file, all = false) {
       if(process.argv.includes('--profile-workers')) await profileBlockedWorker(output+'-'+run.index+'-workers.cpuprofile',true);
       log.end(); log = null;
       fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
-      console.log(JSON.stringify({mode, coreLimit:run.coreLimit, fps:run.fps, low1:run.frameMs.low1Fps, threads, workload:run.workload, view:run.before.view}));
+      console.log(JSON.stringify({mode, rhiExperiment:run.rhiExperiment, coreLimit:run.coreLimit, fps:run.fps, low1:run.frameMs.low1Fps, threads, workload:run.workload, view:run.before.view}));
       // Stop the old engine before the next mode; no two test engines coexist.
       await page.goto('about:blank');
       await page.waitForTimeout(1500);
     }
     report.summary = {};
-    const group = r => folders ? r.folder : transports ? r.transport : bridges ? r.bridge : coreLimits ? String(r.coreLimit) : r.mode;
+    const group = r => rhi ? r.rhiExperiment : folders ? r.folder : transports ? r.transport : bridges ? r.bridge : coreLimits ? String(r.coreLimit) : r.mode;
     for (const key of new Set(report.runs.map(group))) {
       const runs = report.runs.filter(r=>group(r)===key), frames = runs.reduce((s,r)=>s+r.measurement.frames,0);
       const ms = runs.reduce((s,r)=>s+r.measurement.end-r.measurement.start,0);

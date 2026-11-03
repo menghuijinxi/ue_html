@@ -80,6 +80,7 @@ bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
 bool ImmediateWebGPUCalls = false;
 bool ScalarWebGPUStates = false, LegacyWebGPUDescriptors = false;
+FString RHIExperiment;
 bool PSOPrecacheTest = false;
 bool StartupTrace = false;
 // Diagnostic only: retain the same WASM/Cook while collapsing rendering onto
@@ -1136,6 +1137,7 @@ int32 StartEngine()
         (ImmediateWebGPUCalls ? TEXT(" -WebGPUImmediateCalls") : TEXT("")) +
         (ScalarWebGPUStates ? TEXT(" -WebGPUScalarPassCalls") : TEXT("")) +
         (LegacyWebGPUDescriptors ? TEXT(" -WebGPULegacyDescriptors") : TEXT("")) +
+        (RHIExperiment.IsEmpty() ? FString() : TEXT(" -WebRHIExperiment=") + RHIExperiment) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
@@ -1300,6 +1302,17 @@ int main(int argc, char** argv)
         ImmediateWebGPUCalls |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUImmediateCalls") == 0;
         ScalarWebGPUStates |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUScalarPassCalls") == 0;
         LegacyWebGPUDescriptors |= FCStringAnsi::Strcmp(argv[Index], "-WebGPULegacyDescriptors") == 0;
+        constexpr const ANSICHAR* RHIExperimentOption = "-WebRHIExperiment=";
+        if (FCStringAnsi::Strncmp(argv[Index], RHIExperimentOption, FCStringAnsi::Strlen(RHIExperimentOption)) == 0)
+        {
+            RHIExperiment = UTF8_TO_TCHAR(argv[Index] + FCStringAnsi::Strlen(RHIExperimentOption));
+            if (RHIExperiment != TEXT("control") && RHIExperiment != TEXT("tick") && RHIExperiment != TEXT("metadata") &&
+                RHIExperiment != TEXT("storage") && RHIExperiment != TEXT("all"))
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED invalid RHI experiment\n");
+                return 1;
+            }
+        }
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
         StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=full") == 0) ThreadingBenchmark = true;

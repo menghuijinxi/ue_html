@@ -1,0 +1,164 @@
+{
+  "date": "2026-11-03T16:27:17.313Z",
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-rhi-hotspots.cjs",
+    "sha256": "7a38eda764020dced2b7250b638593f79587a10435a4cd1e08ec9b68155b5c18"
+  },
+  "targets": {
+    "file": "tests/web-platform/results/villa-rhi-hotspots-v52-reboot-profile-all-1-workers-targets.json",
+    "sha256": "0e7bdd21c436c50d36c211193ef2ba0737c232fcf450921547e12c6e23712a9e"
+  },
+  "threads": [
+    {
+      "role": "RHI",
+      "profile": {
+        "file": "tests/web-platform/results/villa-rhi-hotspots-v52-reboot-profile-all-1-workers-1.cpuprofile",
+        "sha256": "8b7ec1cf3bbf2834cc69034a05ae0635d200990784bd1bba8502b2b2a1568655"
+      },
+      "durationMs": 7116.138,
+      "inclusive": {
+        "tick": {
+          "ms": 0,
+          "percent": 0
+        },
+        "proxy": {
+          "ms": 0,
+          "percent": 0
+        },
+        "groups": {
+          "ms": 1353.875,
+          "percent": 19.025418000606507
+        },
+        "drawBindings": {
+          "ms": 2058.34,
+          "percent": 28.924959015690817
+        },
+        "jsonStorage": {
+          "ms": 0,
+          "percent": 0
+        },
+        "nativeStorage": {
+          "ms": 10.573,
+          "percent": 0.14857778193733737
+        },
+        "bufferShape": {
+          "ms": 3.009,
+          "percent": 0.042284171554851806
+        },
+        "jsonLookup": {
+          "ms": 10.764,
+          "percent": 0.1512618220725905
+        },
+        "access": {
+          "ms": 184.321,
+          "percent": 2.5901830459161976
+        },
+        "commandReplay": {
+          "ms": 748.07,
+          "percent": 10.512303162192751
+        }
+      }
+    },
+    {
+      "role": "Render",
+      "profile": {
+        "file": "tests/web-platform/results/villa-rhi-hotspots-v52-reboot-profile-all-1-workers-17.cpuprofile",
+        "sha256": "ba8ac6ad5d8b140755f8acbd68a64d3108a0b2abd11c7509322aa66b85fa47d0"
+      },
+      "durationMs": 6532.293,
+      "inclusive": {
+        "tick": {
+          "ms": 0,
+          "percent": 0
+        },
+        "proxy": {
+          "ms": 3.132,
+          "percent": 0.04794641024216152
+        },
+        "groups": {
+          "ms": 0,
+          "percent": 0
+        },
+        "drawBindings": {
+          "ms": 0,
+          "percent": 0
+        },
+        "jsonStorage": {
+          "ms": 0,
+          "percent": 0
+        },
+        "nativeStorage": {
+          "ms": 0,
+          "percent": 0
+        },
+        "bufferShape": {
+          "ms": 0,
+          "percent": 0
+        },
+        "jsonLookup": {
+          "ms": 0,
+          "percent": 0
+        },
+        "access": {
+          "ms": 0,
+          "percent": 0
+        },
+        "commandReplay": {
+          "ms": 0,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "role": "Game",
+      "profile": {
+        "file": "tests/web-platform/results/villa-rhi-hotspots-v52-reboot-profile-all-1-workers-29.cpuprofile",
+        "sha256": "d3e66401a504db5b200489fa6ec275eb905cade366b455b6b2688a8bb6ceb9d9"
+      },
+      "durationMs": 6047.024,
+      "inclusive": {
+        "tick": {
+          "ms": 0,
+          "percent": 0
+        },
+        "proxy": {
+          "ms": 0,
+          "percent": 0
+        },
+        "groups": {
+          "ms": 0,
+          "percent": 0
+        },
+        "drawBindings": {
+          "ms": 0,
+          "percent": 0
+        },
+        "jsonStorage": {
+          "ms": 0,
+          "percent": 0
+        },
+        "nativeStorage": {
+          "ms": 0,
+          "percent": 0
+        },
+        "bufferShape": {
+          "ms": 0,
+          "percent": 0
+        },
+        "jsonLookup": {
+          "ms": 0,
+          "percent": 0
+        },
+        "access": {
+          "ms": 0,
+          "percent": 0
+        },
+        "commandReplay": {
+          "ms": 0,
+          "percent": 0
+        }
+      }
+    }
+  ],
+  "boundary": "Separate short sampled Worker stacks. Inclusive metrics overlap; percentages use each thread capture duration and cannot be added or converted to exact saved frame milliseconds. This capture excludes browser GPU process and GPU execution. Normal FPS is measured separately."
+}

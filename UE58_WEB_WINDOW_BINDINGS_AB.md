@@ -1,5 +1,7 @@
 # Web 窗口同步查询与绑定准备优化
 
+2026-11-04 后续：空 RHITick 同步、原生存储绑定元数据及跨 Pass 描述符复用已单独验证，组合包更新为 v52，见 [三项热点对照](UE58_WEB_RHI_HOTSPOTS_AB.md)。下文保留 v47/v48 当轮结果。
+
 2026-11-03。以 mimalloc、移除 UE 额外分配锁后的 v45 为基线。场景仍是 TriplexHouseVilla 的既有 Cook，没有改项目渲染设置，也没有启用最终 Wasm/JS 优化、SIMD 或 PSO 预热。
 
 ## 修改原因与实现

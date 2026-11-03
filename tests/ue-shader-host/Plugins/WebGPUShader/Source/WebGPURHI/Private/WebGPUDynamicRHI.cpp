@@ -573,6 +573,14 @@ FWebGPUDynamicRHI::FWebGPUDynamicRHI(bool InStartupProbe) : StartupProbeMode(InS
 
 void FWebGPUDynamicRHI::ConfigureStartup()
 {
+    FString Experiment = TEXT("all");
+    FParse::Value(FCommandLine::Get(), TEXT("WebRHIExperiment="), Experiment);
+    check(Experiment == TEXT("control") || Experiment == TEXT("tick") || Experiment == TEXT("metadata") ||
+        Experiment == TEXT("storage") || Experiment == TEXT("all"));
+    SkipNoopRHITick = Experiment == TEXT("tick") || Experiment == TEXT("all");
+    NativeStorageContracts = Experiment == TEXT("metadata") || Experiment == TEXT("all");
+    RevalidateStorageDescriptors = Experiment == TEXT("storage") || Experiment == TEXT("all");
+    UE_LOG(LogRHI, Display, TEXT("WebGPU RHI experiment: %s"), *Experiment);
     StartupProbeMode = true;
     GlobalProbeMode = true;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
@@ -1090,6 +1098,12 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, ResourceTableCommits, ResourceTableBuffers, BindingRouteResolutions,
             RHISupportsManualVertexFetch(GMaxRHIShaderPlatform), ManualVertexFetchDraws, VertexFetchFormatBuffers.Num());
         EM_ASM({
+            Object.assign(globalThis.__webOcclusionRHI, {skipNoopRHITick:!!$0, nativeStorageContracts:!!$1,
+                revalidateStorageDescriptors:!!$2, noopRHITicksSkipped:$3,
+                storageDescriptorRevalidations:$4, nativeStorageContractUses:$5, storageContractRejectionChecks:$6});
+        }, SkipNoopRHITick, NativeStorageContracts, RevalidateStorageDescriptors,
+            NoopRHITicksSkipped.load(), StorageDescriptorRevalidations, NativeStorageContractUses, StorageContractRejectionChecks);
+        EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI, {groupPreparationHits:$0, groupPreparationValidated:$1,
                 groupFrameMisses:$2, groupAccessMisses:$3, groupVersionMisses:$4, groupTextureMisses:$5,
                 groupCacheEnabled:!!$6});
@@ -1265,6 +1279,18 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         if (Data.GroupVersions.Num() <= int32(Entry.Group)) Data.GroupVersions.SetNumZeroed(Entry.Group + 1);
         if (Entry.Name == TEXT("$Globals")) Data.GlobalsGroupMask |= 1u << Entry.Group;
         Entry.Index = Binding->GetIntegerField(TEXT("binding"));
+        if (Entry.Descriptor == 7)
+        {
+            auto& Contract = Entry.StorageContract;
+            Contract.ReadOnlyValid = Binding->TryGetBoolField(TEXT("readOnlyStorage"), Contract.ReadOnly);
+            Contract.FormatValid = Binding->TryGetNumberField(TEXT("storageElementFormat"), Contract.Format);
+            Contract.StrideValid = Binding->TryGetNumberField(TEXT("storageElementStride"), Contract.Stride);
+            Contract.SlotValid = Binding->TryGetNumberField(TEXT("vertexFetchFormatSlot"), Contract.Slot);
+            FString Packing;
+            Binding->TryGetStringField(TEXT("storagePacking"), Packing);
+            Contract.Packing = Packing == TEXT("vertex-fetch") ? FWebGPUStorageContract::EPacking::VertexFetch :
+                Packing == TEXT("unorm8x4") ? FWebGPUStorageContract::EPacking::UNorm8x4 : FWebGPUStorageContract::EPacking::Other;
+        }
         double VertexFetchSlot;
         if (Binding->TryGetNumberField(TEXT("vertexFetchFormatSlot"), VertexFetchSlot))
             Entry.VertexFetchFormatSlot = int32(VertexFetchSlot);
@@ -2188,6 +2214,94 @@ bool FWebGPUDynamicRHI::ValidateStorageUAVBinding(FRHIResource *Resource, const 
     }
     return ValidateAccess(static_cast<FRHIBuffer *>(View->GetResource()), Access, Error);
 }
+// The JSON overloads above are the unchanged A/B reference and rejection-probe
+// interface. Native contracts keep the same resource and access validation.
+bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const FWebGPUStorageContract &Binding, ERHIAccess Access,
+                                                  FString &Error) const
+{
+    if (!Resource || Resource->GetType() != RRT_ShaderResourceView)
+    {
+        Error = TEXT("Read-only storage binding requires a buffer SRV");
+        return false;
+    }
+    auto *View = static_cast<FRHIShaderResourceView *>(Resource);
+    if (!ValidateBufferSRV(View->GetResource(), View->GetDesc(), Error))
+        return false;
+    if (!Binding.ReadOnlyValid || !Binding.ReadOnly)
+    {
+        Error = TEXT("SRV requires a reflected read-only storage binding");
+        return false;
+    }
+    const auto &Desc = View->GetDesc().Buffer.SRV;
+    const bool Typed = Desc.BufferType == FRHIViewDesc::EBufferType::Typed;
+    if (Typed && Binding.Packing == FWebGPUStorageContract::EPacking::VertexFetch)
+    {
+        check(Binding.SlotValid);
+        const int32 Slot = int32(Binding.Slot);
+        const bool ValidFormat = Slot == 0 ? (Desc.Format == PF_G16R16F || Desc.Format == PF_G32R32F) :
+            (Desc.Format == PF_R8G8B8A8_SNORM || Desc.Format == PF_R16G16B16A16_SNORM ||
+                Desc.Format == PF_R8G8B8A8 || Desc.Format == PF_A32B32G32R32F ||
+                (Desc.Format == PF_R32_FLOAT && View->GetBuffer() == GNullVertexBuffer.VertexBufferRHI));
+        if (!ValidFormat || Slot < 0 || Slot > 3)
+        {
+            Error = TEXT("Vertex fetch SRV has an incompatible element format");
+            return false;
+        }
+        return ValidateAccess(View->GetBuffer(), Access, Error);
+    }
+    if (!(Typed ? Binding.FormatValid : Binding.StrideValid) ||
+        (Typed ? Binding.Format : Binding.Stride) != (Typed ? uint32(Desc.Format) : Desc.GetViewInfo(View->GetBuffer()).StrideInBytes))
+    {
+        Error = TEXT("Buffer SRV element format/stride does not match reflected storage layout");
+        return false;
+    }
+    if (Typed && Desc.Format == PF_G8)
+    {
+        if (Binding.Packing != FWebGPUStorageContract::EPacking::UNorm8x4)
+        {
+            Error = TEXT("G8 buffer SRV requires explicit packed UNORM8 shader decoding");
+            return false;
+        }
+    }
+    return ValidateAccess(View->GetBuffer(), Access, Error);
+}
+bool FWebGPUDynamicRHI::ValidateStorageUAVBinding(FRHIResource *Resource, const FWebGPUStorageContract &Binding, ERHIAccess Access,
+                                                  FString &Error) const
+{
+    if (!Resource || Resource->GetType() != RRT_UnorderedAccessView)
+    {
+        Error = TEXT("Writable storage binding requires a buffer UAV");
+        return false;
+    }
+    auto *View = static_cast<FRHIUnorderedAccessView *>(Resource);
+    if (View->GetResource()->GetType() != RRT_Buffer ||
+        !ValidateUAV(static_cast<FRHIBuffer *>(View->GetResource()), View->GetDesc(), Error))
+        return false;
+    if (!Binding.ReadOnlyValid || Binding.ReadOnly)
+    {
+        Error = TEXT("UAV requires a reflected writable storage binding");
+        return false;
+    }
+    if (View->GetDesc().Buffer.UAV.BufferType == FRHIViewDesc::EBufferType::Typed)
+    {
+        if (!Binding.FormatValid ||
+            Binding.Format != uint32(View->GetDesc().Buffer.UAV.Format))
+        {
+            Error = TEXT("Typed UAV requires a reflected storage array matching its element format");
+            return false;
+        }
+    }
+    else
+    {
+        const auto Info = View->GetDesc().Buffer.UAV.GetViewInfo(static_cast<FRHIBuffer *>(View->GetResource()));
+        if (!Binding.StrideValid || Binding.Stride != Info.StrideInBytes)
+        {
+            Error = TEXT("Structured UAV stride does not match reflected storage layout");
+            return false;
+        }
+    }
+    return ValidateAccess(static_cast<FRHIBuffer *>(View->GetResource()), Access, Error);
+}
 bool FWebGPUDynamicRHI::ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                               ERHIAccess Access, FString &Error) const
 {
@@ -2973,8 +3087,60 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 }
                 Version = Descriptor == 6 ? static_cast<FWebGPUUniform*>(Resource)->ContentsVersion : 0;
             }
-            const bool Reuse = Reflected.PreparedSerial == BindingStateSerial &&
+            if (ValidatePrepared && Descriptor == 7 && !Reflected.StorageContractChecked)
+            {
+                const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
+                const bool Typed = ReadOnly ? static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Buffer.SRV.BufferType == FRHIViewDesc::EBufferType::Typed :
+                    static_cast<FRHIUnorderedAccessView*>(Resource)->GetDesc().Buffer.UAV.BufferType == FRHIViewDesc::EBufferType::Typed;
+                const ERHIAccess Access = ReadOnly ? (Compute ? ERHIAccess::SRVCompute :
+                    Shader->Frequency == SF_Vertex ? ERHIAccess::SRVGraphicsNonPixel : ERHIAccess::SRVGraphicsPixel) :
+                    (Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics);
+                // Diagnostic-only negative cases, against the unchanged JSON
+                // validator on real views. Never mutate the shader's metadata.
+                for (int32 Case = 0; Case < 4; ++Case)
+                {
+                    FJsonObject Json = *Binding;
+                    auto Contract = Reflected.StorageContract;
+                    if (Case == 0) { Json.RemoveField(TEXT("readOnlyStorage")); Contract.ReadOnlyValid = false; }
+                    else if (Case == 1) { Contract.ReadOnly = !Contract.ReadOnly; Json.SetBoolField(TEXT("readOnlyStorage"), Contract.ReadOnly); }
+                    else if (Typed && Contract.Packing == FWebGPUStorageContract::EPacking::VertexFetch)
+                    { Contract.Slot = Case == 2 ? -1 : 9; Json.SetNumberField(TEXT("vertexFetchFormatSlot"), Contract.Slot); }
+                    else
+                    {
+                        const TCHAR* Field = Typed ? TEXT("storageElementFormat") : TEXT("storageElementStride");
+                        if (Case == 2)
+                        { Json.RemoveField(Field); (Typed ? Contract.FormatValid : Contract.StrideValid) = false; }
+                        else { double& Value = Typed ? Contract.Format : Contract.Stride; ++Value; Json.SetNumberField(Field, Value); }
+                    }
+                    FString JSONError, NativeError;
+                    const bool JSONValid = ReadOnly ? ValidateStorageSRVBinding(Resource, Json, Access, JSONError) :
+                        ValidateStorageUAVBinding(Resource, Json, Access, JSONError);
+                    const bool NativeValid = ReadOnly ? ValidateStorageSRVBinding(Resource, Contract, Access, NativeError) :
+                        ValidateStorageUAVBinding(Resource, Contract, Access, NativeError);
+                    checkf(!JSONValid && !NativeValid && JSONError == NativeError, TEXT("Native storage contract rejection differs: case=%d"), Case);
+                    ++StorageContractRejectionChecks;
+                }
+                Reflected.StorageContractChecked = true;
+            }
+            bool Reuse = Reflected.PreparedSerial == BindingStateSerial &&
                 Reflected.PreparedResource == Resource && Reflected.PreparedVersion == Version;
+            // A storage view's range, format, resource and shader contract are
+            // immutable. A new encoder changes access/attachment state, not this
+            // descriptor. Revalidate current buffer access before borrowing it.
+            if (!Reuse && RevalidateStorageDescriptors && Descriptor == 7 &&
+                Reflected.PreparedResource == Resource && Reflected.PreparedEntry.buffer)
+            {
+                const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
+                auto* Buffer = ReadOnly ? static_cast<FRHIShaderResourceView*>(Resource)->GetBuffer() :
+                    static_cast<FRHIBuffer*>(static_cast<FRHIUnorderedAccessView*>(Resource)->GetResource());
+                const ERHIAccess Access = ReadOnly ? (Compute ? ERHIAccess::SRVCompute :
+                    Shader->Frequency == SF_Vertex ? ERHIAccess::SRVGraphicsNonPixel : ERHIAccess::SRVGraphicsPixel) :
+                    (Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics);
+                RequireAccess(Buffer, Access);
+                ++StorageDescriptorRevalidations;
+                Reflected.PreparedSerial = BindingStateSerial;
+                Reuse = true;
+            }
             if (Reuse && !ValidatePrepared)
             {
                 Entry = Reflected.PreparedEntry;
@@ -3074,7 +3240,17 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                                                 : Shader->Frequency == SF_Vertex
                                                     ? ERHIAccess::SRVGraphicsNonPixel
                                                     : ERHIAccess::SRVGraphicsPixel;
-                            checkf(ValidateStorageSRVBinding(Resource, *Binding, Access, Error), TEXT("%s"), *Error);
+                            const bool Valid = NativeStorageContracts && !ValidatePrepared ?
+                                ValidateStorageSRVBinding(Resource, Reflected.StorageContract, Access, Error) :
+                                ValidateStorageSRVBinding(Resource, *Binding, Access, Error);
+                            if (NativeStorageContracts) ++NativeStorageContractUses;
+                            if (NativeStorageContracts && ValidatePrepared)
+                            {
+                                FString NativeError;
+                                checkf(Valid == ValidateStorageSRVBinding(Resource, Reflected.StorageContract, Access, NativeError) &&
+                                    Error == NativeError, TEXT("Native SRV contract differs from JSON reference"));
+                            }
+                            checkf(Valid, TEXT("%s"), *Error);
                             auto *View = static_cast<FRHIShaderResourceView *>(Resource);
                             const auto Description = View->GetDesc().Buffer.SRV.GetViewInfo(View->GetBuffer());
                             auto *Buffer = static_cast<FWebGPUBuffer *>(View->GetBuffer());
@@ -3086,7 +3262,17 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                         else
                         {
                             const auto Access = Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics;
-                            checkf(ValidateStorageUAVBinding(Resource, *Binding, Access, Error), TEXT("%s"), *Error);
+                            const bool Valid = NativeStorageContracts && !ValidatePrepared ?
+                                ValidateStorageUAVBinding(Resource, Reflected.StorageContract, Access, Error) :
+                                ValidateStorageUAVBinding(Resource, *Binding, Access, Error);
+                            if (NativeStorageContracts) ++NativeStorageContractUses;
+                            if (NativeStorageContracts && ValidatePrepared)
+                            {
+                                FString NativeError;
+                                checkf(Valid == ValidateStorageUAVBinding(Resource, Reflected.StorageContract, Access, NativeError) &&
+                                    Error == NativeError, TEXT("Native UAV contract differs from JSON reference"));
+                            }
+                            checkf(Valid, TEXT("%s"), *Error);
                             auto *View = static_cast<FRHIUnorderedAccessView *>(Resource);
                             auto *Buffer = static_cast<FWebGPUBuffer *>(View->GetResource());
                             RequireAccess(Buffer, Access);
@@ -4779,6 +4965,11 @@ TArray<uint8> FWebGPUDynamicRHI::MapBuffer(WGPUBuffer Buffer, uint64 Bytes)
 }
 void FWebGPUDynamicRHI::RHITick(float DeltaTime)
 {
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+    // The browser delivers callbacks through its event loop. This tick has no
+    // browser work and is not a command-list ordering fence.
+    if (SkipNoopRHITick) { ++NoopRHITicksSkipped; return; }
+#endif
     WEBGPU_ON_OWNER(RHITick(DeltaTime));
     RequireOwner();
 #if !defined(PLATFORM_WEB) || !PLATFORM_WEB
