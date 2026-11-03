@@ -7,10 +7,18 @@ const folder = option('folder') || 'villa-pso-concurrency-v18-default', tag = op
 const rounds = Number(option('rounds') || 3), startupTrace = process.argv.includes('--ue-trace'), browserTrace = process.argv.includes('--browser-trace');
 const cpuProfile = process.argv.includes('--cpu-profile');
 const manual = process.argv.includes('--manual');
+const psoCorpus = process.argv.includes('--pso-corpus');
+const profileName = option('profile') || 'stutters', settleCacheMs = Number(option('settle-cache-ms') || 0);
+const gpuCacheKB = option('gpu-cache-kb') === undefined ? null : Number(option('gpu-cache-kb'));
+assert(/^[a-z0-9-]+$/.test(profileName) && settleCacheMs >= 0 && settleCacheMs <= 30000);
+assert(gpuCacheKB === null || (Number.isInteger(gpuCacheKB) && gpuCacheKB >= 1024));
+const browserArgs = [...(gpuCacheKB === null ? [] : ['--gpu-disk-cache-size-kb=' + gpuCacheKB]),
+  ...(process.argv.includes('--in-process-gpu') ? ['--in-process-gpu'] : [])];
 assert([folder, tag].every(x => x && /^[a-z0-9-]+$/.test(x)) && Number.isInteger(rounds) && rounds > 0 && rounds <= 5);
 const output = path.join(__dirname, 'results', tag), recorder = fs.readFileSync(path.join(__dirname, 'web-startup-profile.js'), 'utf8');
 assert(!fs.existsSync(output + '.json'), 'Preserve existing captures; use a new tag');
-const report = {date: new Date().toISOString(), folder, startupTrace, browserTrace, cpuProfile, manual, rounds, runs: [], errors: [], pass: false,
+const report = {date: new Date().toISOString(), folder, startupTrace, browserTrace, cpuProfile, manual, psoCorpus, rounds, runs: [], errors: [], pass: false,
+  profileName, settleCacheMs, browserArgs,
   qualityOverrides: [], boundary: 'Original package, retained browser/content caches. Opt-in API timing and marks. First canvas submit/completion and loading-hidden are different milestones.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 async function profileOwner(cdp, target) {
@@ -43,10 +51,14 @@ async function profileOwner(cdp, target) {
     assets.wasm.url, 'web-engine-worker.js', 'web-engine-host.js'].map(n => audit(path.join(directory, n)));
   report.sources = [__filename, path.join(__dirname, 'web-startup-profile.js')].map(audit);
   for (let index = 0; index < rounds; index++) {
-    const context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles/stutters'), {
-      channel: 'msedge', headless: false, viewport: {width: 1863, height: 1030}, deviceScaleFactor: 1.25});
+    const context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', profileName), {
+      channel: 'msedge', headless: false, viewport: {width: 1863, height: 1030}, deviceScaleFactor: 1.25, args: browserArgs});
     const run = {index, errors: [], samples: []}; report.runs.push(run); save();
     try {
+      if (manual && psoCorpus) await context.route('**/web-engine-worker.js?*', async route => {
+        const response = await route.fetch();
+        await route.fulfill({response, body: 'globalThis.__webStartupPSOCorpus = true;\n' + await response.text()});
+      });
       if (!manual) {
         await context.addInitScript({content: recorder});
         await context.route('**/index.html', async route => {
@@ -62,7 +74,7 @@ async function profileOwner(cdp, target) {
       });
       await context.route('**/web-engine-worker.js?*', async route => {
         const response = await route.fetch();
-        await route.fulfill({response, body: recorder + '\n' + await response.text()});
+        await route.fulfill({response, body: (psoCorpus ? 'globalThis.__webStartupPSOCorpus = true;\n' : '') + recorder + '\n' + await response.text()});
       });
       }
       const page = context.pages()[0], cdp = await context.newCDPSession(page);
@@ -124,6 +136,10 @@ async function profileOwner(cdp, target) {
           run.cpuProfile = output + `-${index}-owner.cpuprofile`;
           fs.writeFileSync(run.cpuProfile, JSON.stringify(await (await ownerProfiler).stop()));
         }
+        if (psoCorpus) {
+          run.psoCorpus = output + `-${index}-pso-corpus.json`;
+          fs.writeFileSync(run.psoCorpus, await owner.evaluate(() => JSON.stringify(__webStartupProfile.exportPSOCorpus())));
+        }
         if (startupTrace) {
           assert.equal(await page.evaluate(() => __webEngineRPC('WebTraceStop')), 1);
           for (let attempt = 0; attempt < 100; attempt++) {
@@ -148,7 +164,8 @@ async function profileOwner(cdp, target) {
         }
         await page.locator('canvas').screenshot({path: output + `-${index}-scene.png`, timeout: 60000});
         save(); console.log(JSON.stringify({index, elapsedMs: run.elapsedMs, pipelines: run.owner.pipelines.length, modules: run.owner.modules.length,
-          marks: run.owner.marks, io: run.state.io}));
+          marks: run.owner.marks.filter(m => m.name !== 'native.pso.complete'), nativePSOCompletions: run.owner.marks.filter(m => m.name === 'native.pso.complete').length, io: run.state.io}));
+        if (settleCacheMs) await page.waitForTimeout(settleCacheMs);
       } finally {page.off('console', logConsole); log.end(); if (browserCDP) await browserCDP.detach();}
     } finally {save(); await context.close();}
   }

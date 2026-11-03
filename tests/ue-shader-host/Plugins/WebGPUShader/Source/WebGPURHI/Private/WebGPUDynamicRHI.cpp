@@ -48,9 +48,39 @@ struct FWebGPUCompletion
 };
 using FWebGPUCompletionRef = TSharedPtr<FWebGPUCompletion, ESPMode::ThreadSafe>;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+bool ProfilePSOStartup = false;
+std::atomic<uint32> PSOProfileSequence{0};
+double PSOProfileTime()
+{
+    return ProfilePSOStartup ? EM_ASM_DOUBLE({ return performance.timeOrigin + performance.now(); }) : 0;
+}
+struct FWebGPUPrecacheTiming
+{
+    uint32 Id = ProfilePSOStartup ? ++PSOProfileSequence : 0;
+    double QueuedAt = PSOProfileTime(), ProxyAt = 0, OwnerAt = 0, APIAt = 0, APIReturnedAt = 0;
+    void BeginAPI()
+    {
+        if (!Id) return;
+        APIAt = PSOProfileTime();
+        EM_ASM({ if (globalThis.__webStartupProfile) globalThis.__webStartupProfile.activeNativePSO = $0; }, Id);
+    }
+    void EndAPI()
+    {
+        if (!Id) return;
+        APIReturnedAt = PSOProfileTime();
+        EM_ASM({ if (globalThis.__webStartupProfile) delete globalThis.__webStartupProfile.activeNativePSO; });
+    }
+    void Completed(bool Success)
+    {
+        if (!Id) return;
+        EM_ASM({ globalThis.__webStartupProfile?.mark('native.pso.complete', {
+            id: $0, queuedAt: $1, proxyAt: $2, ownerAt: $3, apiAt: $4, apiReturnedAt: $5, success: !!$6
+        }); }, Id, QueuedAt, ProxyAt, OwnerAt, APIAt, APIReturnedAt, int32(Success));
+    }
+};
 // Keep UE's precache task incomplete while its pthread waits. The GPU owner
 // returns to its event loop so the WebGPU Promise can deliver this callback.
-template <typename HandleType> struct TWebGPUPrecacheRequest
+template <typename HandleType> struct TWebGPUPrecacheRequest : FWebGPUPrecacheTiming
 {
     FEvent* Event = FPlatformProcess::GetSynchEventFromPool(true);
     HandleType Handle = nullptr;
@@ -62,6 +92,7 @@ template <typename HandleType> struct TWebGPUPrecacheRequest
         if (!Pipeline && Message.data)
             Error = FString(FUTF8ToTCHAR(Message.data, Message.length == WGPU_STRLEN ?
                 FCStringAnsi::Strlen(Message.data) : int32(Message.length)));
+        Completed(Pipeline != nullptr);
         Event->Trigger(); // Do not touch the request after waking its waiter.
     }
     void Wait()
@@ -76,17 +107,19 @@ thread_local FWebGPUGraphicsPrecacheRequest* GraphicsPrecacheRequest = nullptr;
 thread_local FWebGPUComputePrecacheRequest* ComputePrecacheRequest = nullptr;
 uint32 AsyncPrecacheRequested = 0, AsyncPrecacheCompleted = 0, AsyncPrecacheFailed = 0;
 uint32 UnsupportedPrecacheRequests = 0;
-template <typename Function> void SubmitWebGPUPrecache(Function&& Start)
+template <typename Function> void SubmitWebGPUPrecache(Function&& Start, FWebGPUPrecacheTiming& Timing)
 {
     // A system-queue proxy can run reentrantly while emdawnwebgpu holds its
     // EventManager mutex (e.g. inside an allocator wait). Schedule the actual
     // API call on the next JS task instead of executing it in that proxy.
-    struct FSubmission { Function& Invoke; FEvent* Submitted; };
-    FSubmission Submission{Start, FPlatformProcess::GetSynchEventFromPool(true)};
+    struct FSubmission { Function& Invoke; FEvent* Submitted; FWebGPUPrecacheTiming& Timing; };
+    FSubmission Submission{Start, FPlatformProcess::GetSynchEventFromPool(true), Timing};
     verify(emscripten_proxy_async(emscripten_proxy_get_system_queue(), emscripten_main_runtime_thread_id(),
         [](void* Data) {
+            static_cast<FSubmission*>(Data)->Timing.ProxyAt = PSOProfileTime();
             emscripten_async_call([](void* Data) {
                 auto* Submission = static_cast<FSubmission*>(Data);
+                Submission->Timing.OwnerAt = PSOProfileTime();
                 Submission->Invoke();
                 Submission->Submitted->Trigger();
             }, Data, 0);
@@ -544,6 +577,9 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GlobalProbeMode = true;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     EmitDebugMarkers = MAIN_THREAD_EM_ASM_INT({ return globalThis.__webStartupDiagnostics?.mode !== 'normal'; }) != 0;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    ProfilePSOStartup = MAIN_THREAD_EM_ASM_INT({ return !!globalThis.__webStartupProfile; }) != 0;
+#endif
     const bool Mobile = FParse::Param(FCommandLine::Get(), TEXT("es31"));
     GMaxRHIFeatureLevel = Mobile ? ERHIFeatureLevel::ES3_1 : ERHIFeatureLevel::SM5;
     GMaxRHIShaderPlatform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(
@@ -3370,7 +3406,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         SubmitWebGPUPrecache([&] {
             TGuardValue<FWebGPUGraphicsPrecacheRequest*> Guard(GraphicsPrecacheRequest, &Request);
             Result = RHICreateGraphicsPipelineState(In);
-        });
+        }, Request);
         Request.Wait();
         // UE permits speculative precache requests to fail. A rejected request
         // must not become a usable RHI state or abort the running application.
@@ -3594,7 +3630,9 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             if (!Success) { ++AsyncPrecacheFailed; if (Pipeline) wgpuRenderPipelineRelease(Pipeline); }
             static_cast<FWebGPUGraphicsPrecacheRequest*>(Userdata)->Complete(Success ? Pipeline : nullptr, Message);
         };
+        GraphicsPrecacheRequest->BeginAPI();
         wgpuDeviceCreateRenderPipelineAsync(Device, &Desc, Callback);
+        GraphicsPrecacheRequest->EndAPI();
     }
     else
 #endif
@@ -3615,7 +3653,7 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
         SubmitWebGPUPrecache([&] {
             TGuardValue<FWebGPUComputePrecacheRequest*> Guard(ComputePrecacheRequest, &Request);
             Result = RHICreateComputePipelineState(In);
-        });
+        }, Request);
         Request.Wait();
         if (!Request.Handle) return nullptr;
         static_cast<FWebGPUComputePipeline*>(Result.GetReference())->Handle = Request.Handle;
@@ -3662,7 +3700,9 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
             if (!Success) { ++AsyncPrecacheFailed; if (Pipeline) wgpuComputePipelineRelease(Pipeline); }
             static_cast<FWebGPUComputePrecacheRequest*>(Userdata)->Complete(Success ? Pipeline : nullptr, Message);
         };
+        ComputePrecacheRequest->BeginAPI();
         wgpuDeviceCreateComputePipelineAsync(Device, &Desc, Callback);
+        ComputePrecacheRequest->EndAPI();
     }
     else
 #endif

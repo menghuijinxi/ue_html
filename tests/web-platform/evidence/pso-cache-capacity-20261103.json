@@ -1,0 +1,592 @@
+{
+  "date": "2026-11-03T00:48:46.218Z",
+  "pass": true,
+  "sources": [
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "db9d0bef8733a379317debe23be58be4f74f8008f5c9af194b722de180265648"
+    },
+    {
+      "file": "tests/web-platform/web-startup-profile.js",
+      "sha256": "9415e7ad97befdec8215c8b67044cd4e810ac15e82b1b76b1b8ea85cd02b8e04"
+    },
+    {
+      "file": "tests/web-platform/capture-web-startup-phases.cjs",
+      "sha256": "1a8aef38dd57d2027434b52d18d2aff0d74e80a2578cb4ee2b79240656ab43ad"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-pso-identity.cjs",
+      "sha256": "c682c436ae778956b782a93dec1a1cf4c225373b0df30aa26451d0d867add4c7"
+    },
+    {
+      "file": "tests/web-platform/benchmark-web-pso-corpus.cjs",
+      "sha256": "234967fdbceecc2e84c55244720c4c6534be404106add3e7e560efa09ead6b20"
+    },
+    {
+      "file": "tests/web-platform/web-pso-replay-worker.js",
+      "sha256": "c6f039467f9e523e7246c8f390baca93bb766bd684371516b972bc2971fc859b"
+    },
+    {
+      "file": "tests/web-platform/web-pso-replay.html",
+      "sha256": "bf1f6dffbbeec1c1ec09b6b98808d98afbc9189388fa8e0c9d7c099e1e7b43c6"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-pso-cache.cjs",
+      "sha256": "73fdc19fe6bb4379869d995aa9be15ceeba6da10c1fba3fa81ac15d65af9ed3d"
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "tests/web-platform/results/villa-pso-identity-initial-v29.json",
+      "sha256": "8021057ecceb2d5b4a9c35c5f1c247e045c2a460f6a896b6b4b7174e8fab835d"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-identity-initial-v29-1-pso-corpus.json",
+      "sha256": "96a17ab1fdd6d7da51b71e85fc4e9004f9840f185b117976e5f73846e8f61383"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-identity-initial-v29-identity-analysis.json",
+      "sha256": "c8bfb09e067105c68bc1fbaa4be96b587709e5c33813e1f9a1380242d347a219"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-queue-v29-package.json",
+      "sha256": "9db30070db2b6cefaad29c874b235c5b3225bd82cc81b2920d18fa1a936f777e"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-queue-v29-build.json",
+      "sha256": "8eba140241c7679e1e201eda6b970a4d93f474ef4537abd76dd4dd787f1c6a30"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-queue-capture-v29.json",
+      "sha256": "a958383168c7f0b9f9d6ee690a89a7428e5ea1a9df299c16a82af42d0831c88d"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-queue-capture-v29-identity-analysis.json",
+      "sha256": "d8d2361539711ee2562851677ab1e7e0ea402860d934ca7c8a31e217eff5240b"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-queue-capture-v29-analysis.json",
+      "sha256": "aa44d7e4e50ca9646f91c4c7b04cfec1b897d94d96faef6b0fb6be409442134b"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-replay-memory-v29-cache-analysis.json",
+      "sha256": "ceafdb512a4ad5b6bb4bfc05821457c67f890be3c6a372ffffa97f6f27cecfaf"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-game-cache256-v29.json",
+      "sha256": "b6cda11468046b01755c3c48220e0777d0c1ff37d6645cc14013ccde03d54ce2"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-game-cache256-v29-analysis.json",
+      "sha256": "7a41ee19e363dd776933b3a1bbce4ac5ef96d652a58cdceb0ae6899f9efac66e"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-game-inprocess-default-v29.json",
+      "sha256": "d854d3bcc67cf0a70c47a4cae944662e35e26f7bd221e06108411e742d1764db"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-game-inprocess-default-v29-analysis.json",
+      "sha256": "7dc53442c13fca07271251399b84997e9bf1ddad49ecd5bb25c12fa5e8a9b7be"
+    }
+  ],
+  "sameCookConfigAndSettings": true,
+  "projectQualityOverrides": [],
+  "cacheComparisons": [
+    {
+      "input": {
+        "file": "tests/web-platform/results/villa-pso-replay-memory-v29.json",
+        "sha256": "30f6ccc41514acd553f5ba0d7c3b435f0cd0489b0a333228d119a5de54879b0d"
+      },
+      "browserArgs": [],
+      "profile": "pso-real-full-v29",
+      "runs": [
+        {
+          "index": 0,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 68.71000000089407,
+          "moduleReadyMs": 547.9149999991059,
+          "layoutApiMs": 9.634999997913837,
+          "pipelineWallMs": 5410.995000004768,
+          "preparationAndPipelinesMs": 5968.545000001788,
+          "successful": 1100,
+          "failed": 8,
+          "errors": [],
+          "memoryDump": {
+            "dumpGuid": "0x1",
+            "success": true
+          },
+          "trace": {
+            "input": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-pso-replay-memory-v29-0-browser-trace.json",
+              "sha256": "24acd096f4dc13160749657f7c4741f7eec4e958d57b194573742e1c4c454b07"
+            },
+            "memoryCaches": [
+              {
+                "pid": 7216,
+                "name": "gpu/shader_cache/webgpu_cache_0x1",
+                "bytes": 6287382,
+                "entries": 405
+              }
+            ],
+            "workerTasks": 1080,
+            "cumulativeWorkerMs": 42588.186,
+            "maxParallelWorkers": 8,
+            "genericCacheHitScopes": 1344,
+            "loadedWebGPUBlobs": 2385,
+            "storedWebGPUBlobs": 1771
+          }
+        }
+      ]
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/villa-pso-replay-inprocess-default-v29.json",
+        "sha256": "ab91fac7f5ce50af0895e2ebf6dd9350160090339ea975999ff1628a2038dac2"
+      },
+      "browserArgs": [
+        "--in-process-gpu"
+      ],
+      "profile": "pso-real-full-cache256-v29",
+      "runs": [
+        {
+          "index": 0,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 67.64999999850988,
+          "moduleReadyMs": 536.7600000053644,
+          "layoutApiMs": 9.924999997019768,
+          "pipelineWallMs": 6792.365000002086,
+          "preparationAndPipelinesMs": 7339.05000000447,
+          "successful": 1100,
+          "failed": 8,
+          "errors": [],
+          "memoryDump": {
+            "dumpGuid": "0x1",
+            "success": true
+          },
+          "trace": {
+            "input": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-pso-replay-inprocess-default-v29-0-browser-trace.json",
+              "sha256": "41d68a2531816b893d1ab36f4a45d3aa331b9741c8533a28f861eab7c263a1b4"
+            },
+            "memoryCaches": [
+              {
+                "pid": 29064,
+                "name": "gpu/shader_cache/webgpu_cache_0x1",
+                "bytes": 6240492,
+                "entries": 404
+              }
+            ],
+            "workerTasks": 1088,
+            "cumulativeWorkerMs": 53576.084,
+            "maxParallelWorkers": 8,
+            "genericCacheHitScopes": 1449,
+            "loadedWebGPUBlobs": 2388,
+            "storedWebGPUBlobs": 1737
+          }
+        }
+      ]
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/villa-pso-replay-inprocess256-confirm-v29.json",
+        "sha256": "e87c7a20bee20e72de20664496b6f8c9328ff8292307d08b6666a6f0f5b8205d"
+      },
+      "browserArgs": [
+        "--gpu-disk-cache-size-kb=262144",
+        "--in-process-gpu"
+      ],
+      "profile": "pso-real-full-cache256-v29",
+      "runs": [
+        {
+          "index": 0,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 68.3449999988079,
+          "moduleReadyMs": 536.6050000041723,
+          "layoutApiMs": 9.619999997317791,
+          "pipelineWallMs": 163.7550000026822,
+          "preparationAndPipelinesMs": 709.9800000041723,
+          "successful": 1100,
+          "failed": 8,
+          "errors": [],
+          "memoryDump": {
+            "dumpGuid": "0x1",
+            "success": true
+          },
+          "trace": {
+            "input": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-pso-replay-inprocess256-confirm-v29-0-browser-trace.json",
+              "sha256": "a0ef3be040b38dd252a37a0fcfa2b25a93323dcbb8211d21ba386f9f0ac3d217"
+            },
+            "memoryCaches": [
+              {
+                "pid": 12020,
+                "name": "gpu/shader_cache/webgpu_cache_0x1",
+                "bytes": 37475641,
+                "entries": 2600
+              }
+            ],
+            "workerTasks": 1085,
+            "cumulativeWorkerMs": 968.629,
+            "maxParallelWorkers": 8,
+            "genericCacheHitScopes": 3461,
+            "loadedWebGPUBlobs": 2417,
+            "storedWebGPUBlobs": 73
+          }
+        },
+        {
+          "index": 1,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 69.85999999940395,
+          "moduleReadyMs": 641.2149999961257,
+          "layoutApiMs": 9.67000000178814,
+          "pipelineWallMs": 154.1849999949336,
+          "preparationAndPipelinesMs": 805.0749999955297,
+          "successful": 1100,
+          "failed": 8,
+          "errors": [],
+          "memoryDump": {
+            "dumpGuid": "0x1",
+            "success": true
+          },
+          "trace": {
+            "input": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-pso-replay-inprocess256-confirm-v29-1-browser-trace.json",
+              "sha256": "3fea94a0cd3d865ec6e0f00d81e37819bfe228957739733f44c385eefd747a2e"
+            },
+            "memoryCaches": [
+              {
+                "pid": 11308,
+                "name": "gpu/shader_cache/webgpu_cache_0x1",
+                "bytes": 37475641,
+                "entries": 2600
+              }
+            ],
+            "workerTasks": 1086,
+            "cumulativeWorkerMs": 906.639,
+            "maxParallelWorkers": 8,
+            "genericCacheHitScopes": 3301,
+            "loadedWebGPUBlobs": 2440,
+            "storedWebGPUBlobs": 86
+          }
+        }
+      ]
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/villa-pso-replay-full-fresh-v29.json",
+        "sha256": "126feb617e7d97b9776f18402d65a7be9afaf4b8dbad5bfeed424807d54bf632"
+      },
+      "browserArgs": [],
+      "profile": "pso-real-full-v29",
+      "runs": [
+        {
+          "index": 0,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 68.35999999940395,
+          "moduleReadyMs": 2073.734999999404,
+          "layoutApiMs": 9.800000004470348,
+          "pipelineWallMs": 5756.114999994636,
+          "preparationAndPipelinesMs": 7839.655000001192,
+          "successful": 1100,
+          "failed": 8,
+          "errors": []
+        },
+        {
+          "index": 1,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 69.39500000327826,
+          "moduleReadyMs": 636.1000000014901,
+          "layoutApiMs": 10.839999996125698,
+          "pipelineWallMs": 5753.164999999106,
+          "preparationAndPipelinesMs": 6400.109999999404,
+          "successful": 1100,
+          "failed": 8,
+          "errors": []
+        },
+        {
+          "index": 2,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 68.04500000178814,
+          "moduleReadyMs": 548.2199999988079,
+          "layoutApiMs": 10.32999999821186,
+          "pipelineWallMs": 5774.25,
+          "preparationAndPipelinesMs": 6332.79999999702,
+          "successful": 1100,
+          "failed": 8,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/villa-pso-replay-full-cache256-fresh-v29.json",
+        "sha256": "b6433acac938561c43223f86c7a6fa42f9333721764a255fa5fddf1cc84ce541"
+      },
+      "browserArgs": [
+        "--gpu-disk-cache-size-kb=262144"
+      ],
+      "profile": "pso-real-full-cache256-v29",
+      "runs": [
+        {
+          "index": 0,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 67.39500000327826,
+          "moduleReadyMs": 2066.85000000149,
+          "layoutApiMs": 10.365000002086163,
+          "pipelineWallMs": 5878.44999999553,
+          "preparationAndPipelinesMs": 7955.664999999106,
+          "successful": 1100,
+          "failed": 8,
+          "errors": []
+        },
+        {
+          "index": 1,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 69.03999999910593,
+          "moduleReadyMs": 615.0200000032783,
+          "layoutApiMs": 12.214999996125698,
+          "pipelineWallMs": 5756.234999999404,
+          "preparationAndPipelinesMs": 6383.47500000149,
+          "successful": 1100,
+          "failed": 8,
+          "errors": []
+        },
+        {
+          "index": 2,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 793,
+          "moduleChars": 17920431,
+          "moduleApiMs": 70.10500000417233,
+          "moduleReadyMs": 562.5300000011921,
+          "layoutApiMs": 9.990000002086163,
+          "pipelineWallMs": 5754.97500000149,
+          "preparationAndPipelinesMs": 6327.495000004768,
+          "successful": 1100,
+          "failed": 8,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/villa-pso-replay-subset-fresh-v29.json",
+        "sha256": "375fd4268f4dfd4faf7f22eb97502fc9282c998577d591f4449e593c44613684"
+      },
+      "browserArgs": [],
+      "profile": "pso-real-subset-v29",
+      "runs": [
+        {
+          "index": 0,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 32,
+          "moduleChars": 368236,
+          "moduleApiMs": 1.7150000035762787,
+          "moduleReadyMs": 40.935000002384186,
+          "layoutApiMs": 6.129999995231628,
+          "pipelineWallMs": 204.23499999940395,
+          "preparationAndPipelinesMs": 251.29999999701977,
+          "successful": 128,
+          "failed": 0,
+          "errors": []
+        },
+        {
+          "index": 1,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 32,
+          "moduleChars": 368236,
+          "moduleApiMs": 1.6599999964237213,
+          "moduleReadyMs": 11.669999994337559,
+          "layoutApiMs": 6.095000006258488,
+          "pipelineWallMs": 20.679999999701977,
+          "preparationAndPipelinesMs": 38.44500000029802,
+          "successful": 128,
+          "failed": 0,
+          "errors": []
+        },
+        {
+          "index": 2,
+          "adapter": {
+            "vendor": "nvidia",
+            "architecture": "lovelace",
+            "device": "",
+            "description": ""
+          },
+          "concurrency": 8,
+          "modules": 32,
+          "moduleChars": 368236,
+          "moduleApiMs": 1.5600000023841858,
+          "moduleReadyMs": 16.225000001490116,
+          "layoutApiMs": 6.6400000005960464,
+          "pipelineWallMs": 22.32999999821186,
+          "preparationAndPipelinesMs": 45.19500000029802,
+          "successful": 128,
+          "failed": 0,
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "gameComparisons": [
+    {
+      "folder": "villa-pso-queue-v29",
+      "browserArgs": [],
+      "runs": [
+        {
+          "index": 0,
+          "downloadedBytes": 182171034,
+          "visibleMs": 16314.78,
+          "asyncSpanMs": 9702.015,
+          "readyToLastPSOMs": 775.195
+        },
+        {
+          "index": 1,
+          "downloadedBytes": 0,
+          "visibleMs": 16244.4,
+          "asyncSpanMs": 11391.41,
+          "readyToLastPSOMs": 3149.62
+        }
+      ]
+    },
+    {
+      "folder": "villa-pso-queue-v29",
+      "browserArgs": [
+        "--gpu-disk-cache-size-kb=262144",
+        "--in-process-gpu"
+      ],
+      "runs": [
+        {
+          "index": 0,
+          "downloadedBytes": 0,
+          "visibleMs": 13410.24,
+          "asyncSpanMs": 6457.105,
+          "readyToLastPSOMs": 62.32
+        },
+        {
+          "index": 1,
+          "downloadedBytes": 0,
+          "visibleMs": 11743.88,
+          "asyncSpanMs": 6230.345,
+          "readyToLastPSOMs": 54.045
+        }
+      ]
+    },
+    {
+      "folder": "villa-pso-queue-v29",
+      "browserArgs": [
+        "--in-process-gpu"
+      ],
+      "runs": [
+        {
+          "index": 0,
+          "downloadedBytes": 0,
+          "visibleMs": 22367.985,
+          "asyncSpanMs": 18237.88,
+          "readyToLastPSOMs": 11247.145
+        },
+        {
+          "index": 1,
+          "downloadedBytes": 0,
+          "visibleMs": 23317.2,
+          "asyncSpanMs": 18856.27,
+          "readyToLastPSOMs": 11238.095
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "Fresh browser process and GPUDevice for independent replay rounds; retained disk and driver caches, first cache-fill rounds distinguished.",
+    "Cache enlargement takes effect in an in-process-GPU diagnostic. No browser flags were embedded in the game package. Normal web deployment still has the default browser cache limit.",
+    "Generic cache hits include multiple blob kinds. No exact final-PSO disk-hit rate is claimed.",
+    "Measured startup and cache behavior; not a steady-state FPS or 1% low acceptance test. Eight speculative workgroup-limit rejections predate this change."
+  ]
+}
