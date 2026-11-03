@@ -100,7 +100,8 @@ static bool NeedsRuntimeStorageFormats(const FShaderCompilerInput& Input)
 static bool UsesSingleVectorSkyUniform(const FShaderCompilerInput& Input)
 {
     return NeedsRuntimeStorageFormats(Input) &&
-        Input.VirtualSourceFilePath == TEXT("/Engine/Private/Lumen/LumenScreenProbeTracing.usf");
+        (Input.VirtualSourceFilePath == TEXT("/Engine/Private/Lumen/LumenScreenProbeTracing.usf") ||
+         Input.VirtualSourceFilePath == TEXT("/Engine/Private/Lumen/LumenReflectionTracing.usf"));
 }
 
 static bool LowerSingleVectorSkyUniform(TArray<uint32>& Spirv, uint32 Variable, FString& Error)
@@ -545,7 +546,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6_SkyUniform1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6_SkyUniform2");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override

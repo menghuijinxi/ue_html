@@ -324,8 +324,13 @@ try {
             "-Output=$taskSkyInventory", "-SkyCaptureOutput=$taskSkyFile", '-AllowCommandletRendering',
             '-d3d12', '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskSkyLog")
         if (-not $UseProjectSettings) { $taskSkyArguments += '-ini:Engine:[SystemSettings]:r.RayTracing=0' }
-        & (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') @taskSkyArguments *> "$taskSkyLog.console.txt"
-        if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $taskSkyFile)) {
+        $taskSkyChild = Start-Process -FilePath (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') `
+            -ArgumentList ($taskSkyArguments | ForEach-Object { '"' + $_ + '"' }) `
+            -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskSkyLog.console.txt" `
+            -RedirectStandardError "$taskSkyLog.stderr.txt"
+        $taskReport.skyLightExitCode = Wait-TaskCookProcess $taskSkyChild
+        $taskReport.skyLightProcessorAffinity = $HostProcessorAffinity
+        if ($taskReport.skyLightExitCode -ne 0 -or -not (Test-Path -LiteralPath $taskSkyFile)) {
             throw "Native SkyLight preparation failed: $taskSkyLog"
         }
         $taskReport.skyLightCapture = Get-TaskAudit $taskSkyFile

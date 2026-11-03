@@ -214,6 +214,10 @@ Web 在同时启用 2×1、2×2 降采样时，主 Pass 继续计算两种共享
 
 结果：`build/lumen-probe/20261103-182216/`、`results/lumen-sky-uniform-all-modules-gpu.json`、`results/lumen-sky-uniform-perm8-gpu.json` 至 `perm11`、`build/lumen-storage-rhi-sky-uniform-v2/lumen-storage-rhi.json`。可重复摘要入口为 `summarize-web-lumen-sky-uniform.cjs`，摘要保存于 `tests/web-platform/evidence/lumen-sky-uniform-20261103.json`。线程版 WASM 仍使用 `-O2`，编译、链接和结构校验通过。新完整别墅 Cook 继续使用 `-UseProjectSettings`，浏览器首帧及性能仍待检查。
 
+随后在 `20261103-182401` Cook 的 `FReflectionTraceMeshSDFsCS/4` 核验到相同的 17 个存储缓冲问题，因此主动中止该轮 Cook，将同一转换扩展到 `LumenReflectionTracing.usf`。反射追踪 32 个允许排列的转换与浏览器模块均通过，普通网格 `/4`、`/5` 两条计算管线降到 16 个并通过；没有增加 RHI 资源或关闭反射。结果位于 `build/lumen-probe/20261103-182955/` 和 `results/lumen-reflection-sky-uniform-*-gpu.json`，同一摘要纳入这些结果。毛发、地形及其他偏移结构的超限边界仍保留。
+
+`20261103-183124` 重跑在原生天空光采集时出现 `0x80000003`，未进入 Web Cook，原因尚未确定。启动脚本原先只对预检和 Cook 子进程反复设置亲和性，天空光采集仍为直接调用；现将该步骤也通过同一等待器启动和核验，记录退出码及指定亲和性，不改变项目或天空光设置。`20261103-183410` 重跑已完成天空光采集并进入正式 Cook。这不能证明原生异常的根因已修复。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

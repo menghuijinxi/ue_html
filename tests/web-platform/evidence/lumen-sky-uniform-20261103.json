@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-03T10:26:30.069Z",
+  "date": "2026-11-03T10:32:35.309Z",
   "pass": true,
   "completeLumenScene": false,
   "rendererOverrides": [],
@@ -414,6 +414,217 @@
       "storageBuffers": 21
     }
   ],
+  "reflection": {
+    "modules": 32,
+    "meshOnlyPipelines": [
+      4,
+      5
+    ],
+    "cases": [
+      {
+        "permutation": 0,
+        "storageBuffers": 3
+      },
+      {
+        "permutation": 1,
+        "storageBuffers": 3
+      },
+      {
+        "permutation": 2,
+        "storageBuffers": 5
+      },
+      {
+        "permutation": 3,
+        "storageBuffers": 5
+      },
+      {
+        "permutation": 4,
+        "storageBuffers": 16
+      },
+      {
+        "permutation": 5,
+        "storageBuffers": 16
+      },
+      {
+        "permutation": 6,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 7,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 8,
+        "storageBuffers": 13
+      },
+      {
+        "permutation": 9,
+        "storageBuffers": 13
+      },
+      {
+        "permutation": 10,
+        "storageBuffers": 15
+      },
+      {
+        "permutation": 11,
+        "storageBuffers": 15
+      },
+      {
+        "permutation": 12,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 13,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 14,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 15,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 20,
+        "storageBuffers": 16
+      },
+      {
+        "permutation": 21,
+        "storageBuffers": 16
+      },
+      {
+        "permutation": 22,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 23,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 28,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 29,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 30,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 31,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 36,
+        "storageBuffers": 15
+      },
+      {
+        "permutation": 37,
+        "storageBuffers": 15
+      },
+      {
+        "permutation": 38,
+        "storageBuffers": 17
+      },
+      {
+        "permutation": 39,
+        "storageBuffers": 17
+      },
+      {
+        "permutation": 44,
+        "storageBuffers": 19
+      },
+      {
+        "permutation": 45,
+        "storageBuffers": 19
+      },
+      {
+        "permutation": 46,
+        "storageBuffers": 21
+      },
+      {
+        "permutation": 47,
+        "storageBuffers": 21
+      }
+    ],
+    "stillOverStorageBufferLimit": [
+      {
+        "permutation": 6,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 7,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 12,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 13,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 14,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 15,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 22,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 23,
+        "storageBuffers": 18
+      },
+      {
+        "permutation": 28,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 29,
+        "storageBuffers": 20
+      },
+      {
+        "permutation": 30,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 31,
+        "storageBuffers": 22
+      },
+      {
+        "permutation": 38,
+        "storageBuffers": 17
+      },
+      {
+        "permutation": 39,
+        "storageBuffers": 17
+      },
+      {
+        "permutation": 44,
+        "storageBuffers": 19
+      },
+      {
+        "permutation": 45,
+        "storageBuffers": 19
+      },
+      {
+        "permutation": 46,
+        "storageBuffers": 21
+      },
+      {
+        "permutation": 47,
+        "storageBuffers": 21
+      }
+    ]
+  },
   "nativeRHI": {
     "pipelines": 11,
     "uniformCases": [
@@ -454,6 +665,22 @@
       "sha256": "436ba0b68e96cac173c6d9e7c6b6850ada5450461bf5ce4b900224dfd11f92cf"
     },
     {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-182955\\lumen-shader-results.json",
+      "sha256": "a3d3c496af75e142b79c79a5d63cd2582f2482611d092d9c475a5447a03eda93"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-reflection-sky-uniform-all-modules-gpu.json",
+      "sha256": "de7e2d041331bc33fc23de43680e04e8e2d668f789988bebcee265051e825cf4"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-reflection-sky-uniform-perm4-gpu.json",
+      "sha256": "6511913a89125dc14114384d86d50e261eff681e83390401585f3ff40d14e97f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-reflection-sky-uniform-perm5-gpu.json",
+      "sha256": "19247fb45ca9c524bdaf9f25ea7b711c60cf145773562d33f612905621c8fdb8"
+    },
+    {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
       "sha256": "53009f52e84ebda3f2847a5680886b2c9c3600ae90507a203b342cf7b7496b2f"
     }
@@ -461,11 +688,11 @@
   "sourceFiles": [
     {
       "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-lumen-sky-uniform.cjs",
-      "sha256": "58278ff6156a83a1a113b28c14d3452fa7f91b23b1eded070b0da11535f09206"
+      "sha256": "59e6cf9ace294df7cd0e53fa693e097b5196814eaeefa2368da1cdf78f54ff76"
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
-      "sha256": "15eb4940124f992d07ba5c7815ea8e55e22c911e8d10275065908acb10abb8e8"
+      "sha256": "094ab92344d3e481ccd9f33eb4015ad4010dfb336e2c802c7374995884065e38"
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",

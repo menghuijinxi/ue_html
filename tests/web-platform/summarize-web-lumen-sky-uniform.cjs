@@ -3,8 +3,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
-assert.equal(process.argv.length, 6, 'Expected shader report, module report, RHI report and output');
-const [shaderFile, moduleFile, rhiFile, output] = process.argv.slice(2).map(file => path.resolve(file));
+assert([6, 8].includes(process.argv.length), 'Expected shader report, module report, RHI report, output and optional reflection reports');
+const [shaderFile, moduleFile, rhiFile, output, reflectionShaderFile, reflectionModuleFile] =
+  process.argv.slice(2).map(file => path.resolve(file));
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => audit(item.file).sha256 === item.sha256;
 const shaders = read(shaderFile), gpu = read(moduleFile), rhi = read(rhiFile);
@@ -32,6 +33,33 @@ for (const [index, file] of pipelineFiles.entries()) {
     !pipeline.pipelines[0].errors.length && pipeline.pipelines[0].shader.includes(`/${index + 8}:`));
   assert.equal(cases.find(item => item.permutation === index + 8)?.storageBuffers, 16);
 }
+let reflection;
+const reflectionFiles = [];
+if (reflectionShaderFile) {
+  const shader = read(reflectionShaderFile), modules = read(reflectionModuleFile);
+  assert(shader.pass && shader.allPermutations && shader.cases.length === 32 && shader.cases.every(item => item.pass));
+  assert(modules.pass && modules.modules.length === 32 && modules.sourceFiles.every(valid));
+  const reflectionCases = modules.modules.map(item => {
+    assert(!item.errors.length && item.sourceFiles.every(valid));
+    const input = read(item.sourceFiles.find(file => path.basename(file.file) === 'input.json').file);
+    const bindings = input.metadata.spirvBindings;
+    const sky = bindings.find(binding => binding.name === 'View_DistantSkyLightLutBufferSRV');
+    assert(sky?.storageUniformBytes === 16);
+    return {permutation: Number(input.shader.match(/\/(\d+):/)[1]),
+      storageBuffers: bindings.filter(binding => binding.descriptorType === 7 && !binding.storageUniformBytes).length};
+  }).sort((a, b) => a.permutation - b.permutation);
+  reflectionFiles.push(reflectionShaderFile, reflectionModuleFile);
+  for (const permutation of [4, 5]) {
+    const file = path.join(path.dirname(moduleFile), `lumen-reflection-sky-uniform-perm${permutation}-gpu.json`);
+    const pipeline = read(file);
+    assert(pipeline.pass && pipeline.sourceFiles.every(valid) && pipeline.pipelines.length === 1 &&
+      !pipeline.pipelines[0].errors.length && pipeline.pipelines[0].shader.includes(`/${permutation}:`));
+    assert.equal(reflectionCases.find(item => item.permutation === permutation)?.storageBuffers, 16);
+    reflectionFiles.push(file);
+  }
+  reflection = {modules: 32, meshOnlyPipelines: [4, 5], cases: reflectionCases,
+    stillOverStorageBufferLimit: reflectionCases.filter(item => item.storageBuffers > 16)};
+}
 assert(rhi.pass && !rhi.errors.length && rhi.pipelines === 11 &&
   rhi.cases.length === 10 && rhi.cases.every(item => item.pass && item.clearPass) &&
   rhi.volumeCases.every(item => item.pass) && rhi.bufferCases.every(item => item.pass));
@@ -44,8 +72,9 @@ const report = {
   date: new Date().toISOString(), pass: true, completeLumenScene: false, rendererOverrides: [],
   modules: 64, meshOnlyPipelines: [8, 9, 10, 11], cases,
   stillOverStorageBufferLimit: cases.filter(item => item.storageBuffers > 16),
+  reflection,
   nativeRHI: {pipelines: rhi.pipelines, uniformCases: rhi.uniformCases},
-  sourceReports: [shaderFile, moduleFile, rhiFile, ...pipelineFiles, buildFile].map(audit),
+  sourceReports: [shaderFile, moduleFile, rhiFile, ...pipelineFiles, ...reflectionFiles, buildFile].map(audit),
   sourceFiles: [__filename,
     '../ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Private/WebGPUShaderFormat.cpp',
     '../ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderMetadata.h',
@@ -58,4 +87,5 @@ const report = {
 fs.mkdirSync(path.dirname(output), {recursive: true});
 fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass: true, output, modules: 64, pipelines: 4,
+  reflectionModules: reflection?.modules, reflectionPipelines: reflection?.meshOnlyPipelines.length,
   stillOverLimit: report.stillOverStorageBufferLimit.length}));
