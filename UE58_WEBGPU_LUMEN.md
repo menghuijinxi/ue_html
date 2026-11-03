@@ -141,6 +141,14 @@ Web 的 Radiosity 积分现在从独立的同格式历史图集读取，向原�
 
 另有独立 WebGPU 历史拷贝/时间混合测试：64² 和 4096² R11G11B10 图集各运行 12 帧，回读图集两角的颜色与 R8 帧计数，逐帧参照上帧实际量化结果核验，容差为当前通道一个量化单位。4096² 副本在当前设备 10 次暖机后采样的 GPU 时间均值约 0.35 ms；计时包含空 Pass 边界，64² 时间低于当前计时分辨率。这是精简测试程序，不是完整 UE Radiosity Shader，不能推算场景 FPS。入口：`probe-web-radiosity-history.cjs`，报告：`results/lumen-radiosity-history-gpu.json`。
 
+### 计算工作组上限
+
+浏览器管线检查发现 `FScreenProbeCompositeTracesWithScatterCS`、`FBuildProbeVisualizeBufferCS`、`FSortProbeTraceTilesCS` 和 `FReflectionCompactTracesCS` 需要 512 或 1024 个工作组线程，超过 WebGPU 默认设备的 256 上限。原生和浏览器 RHI 创建设备时现在共同申请最多 1024 个线程、X/Y 方向最多 1024 和 32 KiB 工作组共享内存，各项均不超过适配器实际支持值。没有修改 Shader 工作组布局或项目画质设置；低于所需上限的设备仍不保证能够运行这些排列。
+
+诊断脚本按同一组计算上限申请设备，支持 `--job=<转换目录名>` 定向复现和 `--pipeline-batch=<数量>` 分批释放设备，遇到首个模块或管线错误立即停止。此前数百条管线共用设备时出现一次 D3D12 `E_OUTOFMEMORY`，失败的 `FVisualizeLumenSceneCS/10` 单独重测通过；这不能作为场景显存溢出的结论。
+
+2026-11-03 重启恢复后，以每批 32 个模块、共 5 个设备完成 158 个模块和 142 条计算管线创建。7 项实际 RHI 格式回读、6 项 Cards/探针头 GPU 执行、8 个 Radiosity 真实格式管线和 9 项项目设置检查通过；原生插件及优化线程 WASM 编译、链接和结构检查通过。摘要：`tests/web-platform/evidence/lumen-compute-limits-20261103.json`。完整别墅 Cook 另行继续，上述结果不代表已经生成可运行场景。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

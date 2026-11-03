@@ -150,6 +150,11 @@ WGPULimits RenderingLimits(WGPUAdapter Adapter)
     Required.maxStorageBuffersPerShaderStage = FMath::Min(16u, Supported.maxStorageBuffersPerShaderStage);
     // TSR RejectShading writes up to seven storage textures in one dispatch.
     Required.maxStorageTexturesPerShaderStage = FMath::Min(8u, Supported.maxStorageTexturesPerShaderStage);
+    // Lumen trace compaction and probe scattering use up to 1024 invocations.
+    Required.maxComputeInvocationsPerWorkgroup = FMath::Min(1024u, Supported.maxComputeInvocationsPerWorkgroup);
+    Required.maxComputeWorkgroupSizeX = FMath::Min(1024u, Supported.maxComputeWorkgroupSizeX);
+    Required.maxComputeWorkgroupSizeY = FMath::Min(1024u, Supported.maxComputeWorkgroupSizeY);
+    Required.maxComputeWorkgroupStorageSize = FMath::Min(32768u, Supported.maxComputeWorkgroupStorageSize);
     // Desktop Bloom can emit 17 interpolants; the default device limit is only 16.
     Required.maxInterStageShaderVariables = FMath::Min(28u, Supported.maxInterStageShaderVariables);
     Required.maxDynamicUniformBuffersPerPipelineLayout = Supported.maxDynamicUniformBuffersPerPipelineLayout;

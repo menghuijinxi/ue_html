@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-03",
+  "completeLumenScene": false,
+  "rendererOverrides": [],
+  "deviceLimits": {
+    "maxComputeInvocationsPerWorkgroup": 1024,
+    "maxComputeWorkgroupSizeX": 1024,
+    "maxComputeWorkgroupSizeY": 1024,
+    "maxComputeWorkgroupStorageSize": 32768,
+    "clampedToAdapterSupport": true
+  },
+  "browser": {
+    "modules": 158,
+    "pipelines": 142,
+    "batchSize": 32,
+    "devices": 5,
+    "pass": true
+  },
+  "nativeRHI": {
+    "cases": 7,
+    "pipelines": 6,
+    "pass": true
+  },
+  "sourceReports": [
+    {
+      "file": "H:/ue_html/tests/web-platform/results/lumen-compute-limits-pipelines-gpu.json",
+      "sha256": "7b89231a6b9aff4802cd702e780e32cb7c5b1972babeb3829490acdb9ffde62c"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/results/web-engine-full-thread-build-results.json",
+      "sha256": "22dc5100414e8bacc474e2d9649826be4320afe0479754c9d47c4a697869fa9e"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/build/lumen-storage-rhi/lumen-storage-rhi.json",
+      "sha256": "c649f02a5d0eea12f5f34f6aa45c8e74fa154f721e8ec9e072040d8fd2735475"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "91d7c25cec1f160b86afd1f9685574f58d8bd7e07937b03148e6aab9625f4379"
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/probe-web-lumen-gpu.cjs",
+      "sha256": "bc2241e75e634f127356bf25f028a41760c15998999ad4de62c79c892219e679"
+    }
+  ],
+  "memoryBoundary": "Requesting limits does not allocate scene textures. Batch pipeline creation is a diagnostic workload, not a scene VRAM measurement.",
+  "boundary": "Full villa Cook, package, browser GI pixels, FPS and peak VRAM remain unverified. Adapters below the required workgroup limits are not emulated."
+}

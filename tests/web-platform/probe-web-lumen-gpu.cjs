@@ -10,6 +10,10 @@ const directory = path.resolve(argument('input'));
 const output = path.resolve(argument('output') || path.join(__dirname, 'results/web-lumen-gpu.json'));
 const modulesOnly = process.argv.includes('--modules-only');
 const pipelines = process.argv.includes('--pipelines');
+const pipelineBatchSize = Number(argument('pipeline-batch') || 64);
+assert(Number.isInteger(pipelineBatchSize) && pipelineBatchSize > 0 && pipelineBatchSize <= 1024);
+const selectedJob = argument('job');
+assert(!selectedJob || /^[A-Za-z0-9_-]+$/.test(selectedJob), 'Invalid conversion job name');
 const storageFormats = Object.fromEntries((argument('storage-formats') || '').split(',').filter(Boolean).map(item => {
   const pair = item.split(':');
   assert(pair.length === 2 && pair.every(value => /^[A-Za-z0-9_]+$/.test(value)),
@@ -17,15 +21,16 @@ const storageFormats = Object.fromEntries((argument('storage-formats') || '').sp
   return pair;
 }));
 const report = {date: new Date().toISOString(), pass: false, modulesOnly, modules: [], execution: [],
-  pipelines: [], storageFormats,
+  pipelines: [], storageFormats, pipelineBatchSize, devices: 0,
   hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default CPU scheduling',
   completeLumenScene: false, sourceFiles: [audit(__filename)]};
 const jobs = fs.readdirSync(directory).flatMap(name => {
+  if (selectedJob && name !== selectedJob) return [];
   const file = path.join(directory, name, 'output.wgsl');
   if (!fs.existsSync(file) || fs.existsSync(path.join(directory, name, 'failure.json'))) return [];
   const inputFile = path.join(directory, name, 'input.json');
   const input = JSON.parse(fs.readFileSync(inputFile, 'utf8'));
-  return [{name: input.shaderName, metadata: input.metadata,
+  return [{name: input.shaderName, shader: input.shader, job: name, metadata: input.metadata,
     code: fs.readFileSync(file, 'utf8'), sourceFiles: [audit(file), audit(inputFile)]}];
 });
 assert(jobs.length, 'No converted UE shaders');
@@ -59,23 +64,36 @@ assert(jobs.length, 'No converted UE shaders');
     await page.route('http://127.0.0.1:8765/lumen-shader-validation', route =>
       route.fulfill({contentType: 'text/html', body: '<!doctype html><title>Lumen shader probe</title>'}));
     await page.goto('http://127.0.0.1:8765/lumen-shader-validation');
-    report.device = await page.evaluate(async pipelines => {
+    const initializeDevice = () => page.evaluate(async pipelines => {
       const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
       const features = ['texture-formats-tier1', 'texture-formats-tier2',
         'rg11b10ufloat-renderable', 'subgroups'].filter(name => adapter.features.has(name));
-      const requiredLimits = pipelines ? Object.fromEntries([
-        'maxStorageBuffersPerShaderStage', 'maxStorageTexturesPerShaderStage',
-        'maxSampledTexturesPerShaderStage', 'maxSamplersPerShaderStage',
-        'maxComputeWorkgroupStorageSize',
-      ].map(name => [name, adapter.limits[name]])) : {};
+      const requiredLimits = pipelines ? Object.fromEntries(Object.entries({
+        maxStorageBuffersPerShaderStage: 16, maxStorageTexturesPerShaderStage: 8,
+        maxSampledTexturesPerShaderStage: 32, maxSamplersPerShaderStage: 16,
+        maxComputeInvocationsPerWorkgroup: 1024, maxComputeWorkgroupSizeX: 1024,
+        maxComputeWorkgroupSizeY: 1024, maxComputeWorkgroupStorageSize: 32768,
+      }).map(([name, value]) => [name, Math.min(value, adapter.limits[name])])) : {};
       const device = await adapter.requestDevice({requiredFeatures: features, requiredLimits});
       globalThis.lumenProbeDevice = device;
       globalThis.lumenProbeErrors = [];
       device.addEventListener('uncapturederror', event => lumenProbeErrors.push(event.error.message));
       return {features, adapter: adapter.info, requiredLimits};
     }, pipelines);
+    report.device = await initializeDevice();
+    ++report.devices;
     const specializedBindings = new Set();
     for (const job of jobs) {
+      if (pipelines && report.modules.length && report.modules.length % pipelineBatchSize === 0) {
+        const deviceErrors = await page.evaluate(async () => {
+          await lumenProbeDevice.queue.onSubmittedWorkDone();
+          lumenProbeDevice.destroy();
+          return lumenProbeErrors;
+        });
+        assert(!deviceErrors.length, deviceErrors.join('\n'));
+        await initializeDevice();
+        ++report.devices;
+      }
       let code = job.code;
       for (const binding of job.metadata.spirvBindings.filter(item =>
         item.runtimeStorageFormat && storageFormats[item.name]).sort((a, b) => b.storageFormatOffset - a.storageFormatOffset)) {
@@ -88,7 +106,8 @@ assert(jobs.length, 'No converted UE shaders');
         const info = await module.getCompilationInfo();
         return info.messages.filter(message => message.type === 'error').map(message => message.message);
       }, code);
-      report.modules.push({name: job.name, errors, sourceFiles: job.sourceFiles});
+      report.modules.push({name: job.name, shader: job.shader, job: job.job, errors, sourceFiles: job.sourceFiles});
+      assert(!errors.length, `${job.shader || job.name} (${job.job}): ${errors.join('\n')}`);
       if (pipelines && !errors.length && job.metadata.frequency === 5) {
         const pipelineErrors = await page.evaluate(async ({code, entryPoint}) => {
           lumenProbeDevice.pushErrorScope('validation');
@@ -101,7 +120,9 @@ assert(jobs.length, 'No converted UE shaders');
           if (validation) errors.push(validation.message);
           return errors;
         }, {code, entryPoint: job.metadata.webEntry});
-        report.pipelines.push({name: job.name, errors: pipelineErrors});
+        report.pipelines.push({name: job.name, shader: job.shader, job: job.job, errors: pipelineErrors});
+        assert(!pipelineErrors.length,
+          `${job.shader || job.name} (${job.job}): ${pipelineErrors.join('\n')}`);
       }
     }
     for (const name of Object.keys(storageFormats))
