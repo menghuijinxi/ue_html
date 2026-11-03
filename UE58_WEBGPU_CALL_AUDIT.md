@@ -78,9 +78,11 @@ GPU 预检查增加 buffer + texture + sampler 的真实绘制、whole-size、�
 
 独立正常测试为 2 路径 × 3 轮 × 12 组合，共 72 个组合输出检查通过。另一次四种组合的校验，每种包含 984 个性能负载 pass、2 个 GPU 预检查 pass，以及 18868 个 bind-group 描述符，逻辑参数和方法顺序一致。首版校验将 dynamic offsets 的暂存内存起点当作参数差异，已改为比较传给浏览器的偏移值切片；失败报告保留为 `bridge-extras-equivalence.json`，通过报告为 `bridge-extras-equivalence-v2.json`。
 
-v37 关闭两项实验后的独立 RHI 栈采样中，CreateGroups 仍占约 23.12%，SetDrawBindings 约 28.27%，分配路径约 10.96%，互斥等待约 7.79%，命令回放约 8.99%。这些是包含子调用的墙钟采样，存在重叠，不能相加。重点仍应放在 C++ 资源解析、绑定准备和分配器竞争；继续给低频 API 添加专用接口，预期收益有限。
+v37 关闭两项实验后的独立 RHI 栈采样中，CreateGroups 仍占约 23.12%，SetDrawBindings 约 28.27%，分配路径约 10.96%，互斥等待约 7.79%，命令回放约 8.99%。这些是包含子调用的墙钟采样，存在重叠，不能相加。C++ 资源解析、绑定准备和分配器竞争是后续调查方向；本次小幅收益不能排除其余 WebGPU 调用、浏览器后台及驱动成本。
 
 最终 v38 默认页面的另一次采样也相近：CreateGroups 23.92%、SetDrawBindings 28.39%、分配路径 12.46%、互斥等待 6.76%、命令回放 9.03%。包含调用的占比不是各函数可独立消除的成本；优化变快后相对占比也可能不降。
+
+补充归因边界：`FWebGPUDynamicRHI::CreateGroups` 和 `SetDrawBindings` 属于自定义 WebGPU RHI，并非 UE 的 D3D12 后端。`CreateGroups` 在这次采样中的自身占比仅约 5.59%，23.92% 包含它调用的分配、JS 和等待。采样仅覆盖 owner Worker，没有覆盖浏览器 GPU 进程、IPC 和驱动，不能将余下差距统称为 UE 公共 C++ 逻辑。实际编译及最终链接优化另见 [构建优化审计](UE58_WEB_BUILD_OPTIMIZATION_AUDIT.md)。
 
 源码中已有 entry、whole-group、bind-group 缓存及动态偏移复用，并非每个 draw 都创建新绑定组。仍可继续测量的是缓存失效后重复遍历、逐条唯一性检查、组键比较/哈希，以及临时结果数组的分配。需按命中/未命中分别采样，不能仅从 `CreateGroups` 函数名断定缓存未启用。
 

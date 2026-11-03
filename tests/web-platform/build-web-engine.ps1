@@ -5,6 +5,7 @@ param(
     [switch]$Threads,
     [switch]$Trace,
     [switch]$StandaloneCompiles,
+    [ValidateRange(0, 2)][int]$LinkOptimization = 0,
     [string]$RendererRevision = ''
 )
 $ErrorActionPreference = 'Stop'
@@ -82,6 +83,7 @@ $taskReport = [ordered]@{
     threads = [bool]$Threads
     trace = [bool]$Trace
     standaloneCompiles = [bool]$StandaloneCompiles
+    linkOptimization = $(if ($LinkOptimization -eq 0) { 'default-O0' } else { "O$LinkOptimization" })
     maxParallelActions = $MaxParallelActions
     rendererRevision = $taskRendererSnapshot
     pass = $false
@@ -104,6 +106,7 @@ try {
     $taskArguments = @($taskUbt, $taskTarget, 'Web', 'Development',
         "-Project=$(Join-Path $taskRoot 'tests/ue-web-smoke/UEWebSmoke.uproject')",
         '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
+    if ($LinkOptimization -gt 0) { $taskArguments += "-WebLinkOptimization=$LinkOptimization" }
     if ($StandaloneCompiles) {
         $taskActions = "$taskLog.actions.json"
         & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" *> "$taskLog.export.log"
@@ -142,6 +145,10 @@ try {
     if ($Threads -and $taskReport.buildSucceeded) {
         $taskThreadResponse = Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/$taskTarget.js.rsp"
         $taskLinkText = Get-Content -LiteralPath $taskThreadResponse -Raw
+        $taskLinkOptimizationFlags = @([regex]::Matches($taskLinkText, '(?<!\S)-O[0-3sz](?=\s|$)') | ForEach-Object { $_.Value })
+        if (($LinkOptimization -eq 0 -and $taskLinkOptimizationFlags.Count -ne 0) -or
+            ($LinkOptimization -gt 0 -and ($taskLinkOptimizationFlags.Count -ne 1 -or
+                $taskLinkOptimizationFlags[0] -ne "-O$LinkOptimization"))) { throw 'Unexpected final link optimization level.' }
         if (-not $taskLinkText.Contains('-pthread') -or $taskLinkText.Contains('PROXY_TO_PTHREAD') -or
             -not $taskLinkText.Contains('wasm64-thread/libBLAKE3.a') -or
             -not $taskLinkText.Contains('wasm64-thread/libpng.a')) {

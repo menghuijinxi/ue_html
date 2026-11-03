@@ -3,8 +3,10 @@ const fs = require('node:fs'), path = require('node:path'), assert = require('no
 const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const option = n => process.argv.find(v => v.startsWith('--' + n + '='))?.slice(n.length + 3);
-const folder = option('folder'), tag = option('tag');
+const folders=option('folders')?.split(',');
+const folder = option('folder')||folders?.[0], tag = option('tag');
 assert([folder, tag].every(v => v && /^[a-z0-9-]+$/.test(v)));
+assert(!folders||(!option('folder')&&!option('modes')&&!option('cores')&&!option('bridge')&&!option('transport')&&folders.length>=2&&folders.every(f=>/^[a-z0-9-]+$/.test(f))));
 const seconds = Number(option('seconds') || 20), warmup = Number(option('warmup') || 15);
 const coreLimits = option('cores')?.split(',').map(Number);
 const bridges = option('bridge')?.split(',');
@@ -12,7 +14,7 @@ const transports = option('transport')?.split(',');
 assert(!transports||(!bridges&&!coreLimits&&!option('modes')&&transports.every(v=>['baseline','states','groups','all'].includes(v))));
 assert(!bridges || (!coreLimits && !option('modes') && bridges.every(v=>['immediate','stream'].includes(v))));
 assert(!coreLimits || (coreLimits.length && coreLimits.every(n => [4,6,8].includes(n)) && !option('modes')));
-const modes = transports ? transports.map(()=>'full') : bridges ? bridges.map(()=>'full') : coreLimits ? coreLimits.map(() => 'full') :
+const modes = folders ? folders.map(()=>'full') : transports ? transports.map(()=>'full') : bridges ? bridges.map(()=>'full') : coreLimits ? coreLimits.map(() => 'full') :
   (option('modes') || 'full,render-serial,single,single,render-serial,full').split(',');
 assert(modes.every(v => ['full', 'render-serial', 'single'].includes(v)) && seconds >= 5 && seconds <= 60);
 assert(Number.isFinite(warmup) && warmup >= 0 && warmup <= 120);
@@ -20,10 +22,12 @@ const output = path.join(__dirname, 'results', tag), base = path.join(__dirname,
 const viewKey = view => ['width','height','outputWidth','outputHeight','antiAliasing','x','y','outputX','outputY'].map(k => view[k]);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 const report = {date: new Date().toISOString(), folder, seconds, warmup, runs: [], pass: false,
-  coreLimits, bridges, transports,
+  coreLimits, bridges, transports, folders,
   source: audit(__filename), qualityOverrides: [], psoPrecache: false,
   packageFiles: ['index.html', 'UEWebEngineThreads.js', 'UEWebEngineThreads.wasm', 'config-files.json', 'content-files.json'].map(n => audit(path.join(base, n))),
-  boundary: 'Same pthread WASM and Cook for every run; only startup threading/core-limit, WebGPUImmediateCalls, WebGPUScalarPassCalls or WebGPULegacyDescriptors flags vary. Bridge/transport tests retain full threading and the default core count. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation. Optional CPU sampling starts after the measured interval and screenshot.'};
+  packages:Object.fromEntries([...new Set(folders||[folder])].map(f=>[f,{folder:f,files:Object.fromEntries(['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm','config-files.json','content-files.json'].map(n=>[n,audit(path.join(__dirname,'build',f,n))]))}])),
+  boundary: 'Thread/bridge/transport tests use the same pthread WASM and Cook, varying only the named startup flags. Folder comparisons use separately audited runtimes and identical content/config hashes. Full threading and default cores for bridge/transport/folder tests. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation. Optional CPU sampling starts after the measured interval and screenshot.'};
+for(const p of Object.values(report.packages))for(const n of ['config-files.json','content-files.json'])assert.equal(p.files[n].sha256,report.packages[folder].files[n].sha256,'Cook or project config changed');
 function install() {
   const state = globalThis.__threadingCapture = {active: false, times: []};
   let count = 0;
@@ -99,10 +103,10 @@ async function profileBlockedWorker(file, all = false) {
       if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|P3_ENGINE_PREINIT_FAILED|P3_ENGINE_INIT_FAILED|thread pool is exhausted|Failed to create thread|pthread_create.*failed/i.test(text)) run?.errors.push(text);});
     page.on('pageerror', e => run?.errors.push(e.message));
     for (let index = 0; index < modes.length; ++index) {
-      mode = modes[index]; run = {mode, transport:transports?.[index] || null, bridge:bridges?.[index] || null, coreLimit:coreLimits?.[index] || null, index: index+1, started:new Date().toISOString(), errors: []}; report.runs.push(run);
+      mode = modes[index]; run = {mode, folder:folders?.[index]||folder, transport:transports?.[index] || null, bridge:bridges?.[index] || null, coreLimit:coreLimits?.[index] || null, index: index+1, started:new Date().toISOString(), errors: []}; report.runs.push(run);
       log = fs.createWriteStream(output + '-' + run.index + '-' + mode + '.log');
       console.log('Web start', run.index, mode, run.coreLimit || 'default cores');
-      await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
+      await page.goto(`http://127.0.0.1:8765/build/${run.folder}/index.html`, {waitUntil: 'commit'});
       try {
         await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 90, null,
           {timeout:Number(option('startup-timeout') || 120000)});
@@ -121,6 +125,7 @@ async function profileBlockedWorker(file, all = false) {
         occlusion: globalThis.__webOcclusionRHI, memory: globalThis.__webTextureStreaming, io: globalThis.__webContentIO?.stats}));
       await page.waitForTimeout(warmup*1000);
       run.before = await state();
+      run.pageBefore=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),live:globalThis.__webLivePerformance}));
       const threads = run.before.threads; assert(threads);
       if(run.bridge)assert.equal(run.bridgeConfirmed,run.bridge,'WebGPU bridge startup mode mismatch');
       if(run.transport)assert.deepEqual(run.transportConfirmed,[Number(['states','all'].includes(run.transport)),Number(['groups','all'].includes(run.transport))],'Bridge extras startup mode mismatch');
@@ -139,6 +144,7 @@ async function profileBlockedWorker(file, all = false) {
       run.measurement = await owner.evaluate(() => {const s = __threadingCapture; s.active = false;
         return {timeOrigin:performance.timeOrigin, start:s.start, end:performance.now(), frames:__webRHIFrames-s.startFrame, times:s.times};});
       run.after = await state();
+      run.pageAfter=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),live:globalThis.__webLivePerformance}));
       assert.deepEqual(run.after.camera, run.before.camera, 'Camera moved');
       assert.deepEqual(viewKey(run.after.view), viewKey(run.before.view), 'Resolution or AA changed');
       assert.deepEqual(run.after.settings, run.before.settings, 'Renderer settings changed');
@@ -163,7 +169,7 @@ async function profileBlockedWorker(file, all = false) {
       await page.waitForTimeout(1500);
     }
     report.summary = {};
-    const group = r => transports ? r.transport : bridges ? r.bridge : coreLimits ? String(r.coreLimit) : r.mode;
+    const group = r => folders ? r.folder : transports ? r.transport : bridges ? r.bridge : coreLimits ? String(r.coreLimit) : r.mode;
     for (const key of new Set(report.runs.map(group))) {
       const runs = report.runs.filter(r=>group(r)===key), frames = runs.reduce((s,r)=>s+r.measurement.frames,0);
       const ms = runs.reduce((s,r)=>s+r.measurement.end-r.measurement.start,0);
