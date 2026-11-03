@@ -1,0 +1,2386 @@
+{
+  "date": "2026-11-03T06:00:22.159Z",
+  "input": "results\\draw-api-final.json",
+  "rawSha256": "fb008b4dcc318e1095ce272336dafd935568b53b1da67302ff2553e79fbe17ab",
+  "pass": true,
+  "rounds": 3,
+  "build": {
+    "emdawnVersion": "v20261009.190412",
+    "dawnVersion": "v20261009.190412",
+    "wasmExceptions": "disabled",
+    "nativeConfiguration": "Release",
+    "date": "2026-11-03T06:00:15.8167135Z",
+    "wasmOptimization": "O3",
+    "wasmSuspension": "jspi",
+    "wasmAssertions": 0
+  },
+  "environment": {
+    "cpu": "12th Gen Intel(R) Core(TM) i9-12900K",
+    "logicalCores": 24,
+    "os": "Windows 11 Pro",
+    "node": "v24.15.0"
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Edg/156.0.4314.58",
+    "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "jsVersion": "15.6.12.10"
+  },
+  "browserCommand": {
+    "unavailable": "cdpSession.send: Protocol error (Browser.getBrowserCommandLine): Command line not returned because --enable-automation not set.",
+    "additionalArguments": []
+  },
+  "gpuDevices": [
+    {
+      "vendorId": 4318,
+      "deviceId": 9860,
+      "subSysId": 330111342,
+      "revision": 161,
+      "vendorString": "",
+      "deviceString": "NVIDIA GeForce RTX 4090",
+      "driverVendor": "NVIDIA",
+      "driverVersion": "32.0.16.2101"
+    },
+    {
+      "vendorId": 4318,
+      "deviceId": 9860,
+      "subSysId": 330111342,
+      "revision": 161,
+      "vendorString": "",
+      "deviceString": "NVIDIA GeForce RTX 4090",
+      "driverVendor": "",
+      "driverVersion": "32.0.16.2101"
+    },
+    {
+      "vendorId": 4318,
+      "deviceId": 9860,
+      "subSysId": 330111342,
+      "revision": 161,
+      "vendorString": "",
+      "deviceString": "NVIDIA GeForce RTX 4090",
+      "driverVendor": "",
+      "driverVersion": "32.0.16.2101"
+    },
+    {
+      "vendorId": 5140,
+      "deviceId": 140,
+      "subSysId": 0,
+      "revision": 0,
+      "vendorString": "",
+      "deviceString": "Microsoft Basic Render Driver",
+      "driverVendor": "",
+      "driverVersion": "10.0.26100.9711"
+    }
+  ],
+  "workload": {
+    "counts": [
+      1000,
+      3200,
+      10000
+    ],
+    "modes": [
+      "draw-only",
+      "rotate-pipeline-bindgroup-vertex-index",
+      "prebuilt-rotating-bundle",
+      "single-instanced-draw"
+    ],
+    "verticesPerDraw": 3,
+    "target": "64x64 RGBA8, 1x1 scissor, clear=0, no depth/blend/culling",
+    "warmupFrames": 12,
+    "measuredFrames": 60,
+    "inFlight": 3,
+    "gpuSamples": 10,
+    "pipelinesCreatedDuringMeasurement": 0,
+    "resourceCreationDuringMeasurement": 0,
+    "scheduling": "one CPU recording thread per backend; no UE; no canvas, presentation or animation-frame cap",
+    "timestamps": "extra GPU-only samples after CPU samples; GPU timestamp ranges include the render pass clear",
+    "limits": "Dawn version differs from browser; DX12 HLSL and WebGPU WGSL compile separately; production WebGPU validation remains enabled"
+  },
+  "files": [
+    {
+      "file": "draw-api-common.h",
+      "sha256": "e91b1de17f887624135eede43bdf7d69595d957cd61daeab70739ad94ad09b07"
+    },
+    {
+      "file": "draw-api-d3d12.cpp",
+      "sha256": "68978ec9bae642ca478ead59c3ef5c4fb06d2de923e835cce60e81c980859b76"
+    },
+    {
+      "file": "draw-api-webgpu.cpp",
+      "sha256": "48ae07272bdb89c63bd5e265e9bb28c44811edb1160f0e522d515e9de23c8126"
+    },
+    {
+      "file": "draw-api-worker.js",
+      "sha256": "45e9b73561b225bda968632fdd102d0f50f6cbe1897ea24d896d782f990ad01e"
+    },
+    {
+      "file": "draw-api-wasm-worker.js",
+      "sha256": "ce589533f5a70780a757c24792b4ec76e799b5b163e765c6e19ad274120f182a"
+    },
+    {
+      "file": "draw-api-benchmark.html",
+      "sha256": "56b89c9d5e4174f1eda2f0ee3622c36cba88fb6568e0345bad8a89e8d4b26161"
+    },
+    {
+      "file": "benchmark-draw-apis.cjs",
+      "sha256": "fe5b802c071d5aa76870ae033931f9e1a67f1f129e8c95a532f994fc33e8b563"
+    },
+    {
+      "file": "build-draw-api-benchmark.ps1",
+      "sha256": "c8ad504c7a9884ce975e06478e581d2a6bed6e66c69afeb1ecfcdd8f26a9b631"
+    },
+    {
+      "file": "draw-api\\CMakeLists.txt",
+      "sha256": "4ee1d73e77488eb8c1a42d384e54f147f75ca71d73b9315f8fc20851a759d9be"
+    },
+    {
+      "file": "build\\draw-api\\Release\\draw_d3d12.exe",
+      "sha256": "61215f77646658b60d5f7c2e797367150b263d0812dda52a62c48c9872310b4a"
+    },
+    {
+      "file": "build\\draw-api\\Release\\draw_dawn.exe",
+      "sha256": "a149ee304c4f6ca91b87204750e573174cce9ba0d2c5fdda5432e3de9741fdef"
+    },
+    {
+      "file": "build\\draw-api\\draw-wasm.js",
+      "sha256": "1345eff0801fa955d9654d63c7c23bbb935b351dce86f033cd722260debde67d"
+    },
+    {
+      "file": "build\\draw-api\\draw-wasm.wasm",
+      "sha256": "545b102de20e05dbdacf3ab0b7b6cf8cf84c4b745e0210207f7501ee8b1c761f"
+    },
+    {
+      "file": "build\\draw-api\\build-config.json",
+      "sha256": "4482a0b1c4970a3e0012d960471e0a8c89c6bb18b5d5e1b0a04366e46ecf7111"
+    }
+  ],
+  "verification": {
+    "cases": 144,
+    "allPixelsVerified": true,
+    "browserIsolated": true,
+    "d3d12DebugLayer": {
+      "pass": true,
+      "cases": 12,
+      "separateFromTimings": true,
+      "logSha256": "05317739c1ac01ed1fe7cee9f9bb09d77044098cf3b9f59afca79bbdd8be07c3"
+    }
+  },
+  "environmentSamples": [
+    {
+      "utc": "2026-11-03T06:00:22.2376014Z",
+      "sampleSeconds": 0.081003,
+      "blockers": [],
+      "topCPU": [],
+      "edgeProcesses": 8
+    },
+    {
+      "utc": "2026-11-03T06:00:27.3184143Z",
+      "sampleSeconds": 5.0808129,
+      "blockers": [],
+      "topCPU": [
+        {
+          "name": "TGitCache",
+          "pid": 31176,
+          "cpuCores": 0.39363779760518247
+        },
+        {
+          "name": "oopz",
+          "pid": 6364,
+          "cpuCores": 0.19681889880259124
+        },
+        {
+          "name": "Aac3572MbHal_x86",
+          "pid": 23156,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 2744,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 6180,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 12348,
+          "cpuCores": 0
+        }
+      ],
+      "edgeProcesses": 16
+    },
+    {
+      "utc": "2026-11-03T06:00:32.3638319Z",
+      "sampleSeconds": 5.0454176,
+      "blockers": [],
+      "topCPU": [
+        {
+          "name": "TGitCache",
+          "pid": 31176,
+          "cpuCores": 0.9909982475979787
+        },
+        {
+          "name": "oopz",
+          "pid": 6364,
+          "cpuCores": 0.19819964951959573
+        },
+        {
+          "name": "Aac3572MbHal_x86",
+          "pid": 23156,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 2744,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 6180,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 12348,
+          "cpuCores": 0
+        }
+      ],
+      "edgeProcesses": 10
+    },
+    {
+      "utc": "2026-11-03T06:00:37.4023271Z",
+      "sampleSeconds": 5.0384952,
+      "blockers": [],
+      "topCPU": [
+        {
+          "name": "TGitCache",
+          "pid": 31176,
+          "cpuCores": 0.79388782587309
+        },
+        {
+          "name": "pwsh",
+          "pid": 8536,
+          "cpuCores": 0.1984719564682725
+        },
+        {
+          "name": "oopz",
+          "pid": 6364,
+          "cpuCores": 0.1984719564682725
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 2744,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 6180,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 12348,
+          "cpuCores": 0
+        }
+      ],
+      "edgeProcesses": 15
+    },
+    {
+      "utc": "2026-11-03T06:00:42.4304351Z",
+      "sampleSeconds": 5.028108,
+      "blockers": [],
+      "topCPU": [
+        {
+          "name": "TGitCache",
+          "pid": 31176,
+          "cpuCores": 0.39776393028948465
+        },
+        {
+          "name": "cloudmusic",
+          "pid": 7296,
+          "cpuCores": 0.19888196514474232
+        },
+        {
+          "name": "oopz",
+          "pid": 6364,
+          "cpuCores": 0.19888196514474232
+        },
+        {
+          "name": "cloudmusic",
+          "pid": 17460,
+          "cpuCores": 0.19888196514474232
+        },
+        {
+          "name": "ChatGPT",
+          "pid": 24288,
+          "cpuCores": 0.19888196514474232
+        },
+        {
+          "name": "Aac3572MbHal_x86",
+          "pid": 23156,
+          "cpuCores": 0
+        }
+      ],
+      "edgeProcesses": 8
+    },
+    {
+      "utc": "2026-11-03T06:00:47.4555825Z",
+      "sampleSeconds": 5.0251474,
+      "blockers": [],
+      "topCPU": [
+        {
+          "name": "TGitCache",
+          "pid": 31176,
+          "cpuCores": 0.5969974134490065
+        },
+        {
+          "name": "oopz",
+          "pid": 6364,
+          "cpuCores": 0.1989991378163355
+        },
+        {
+          "name": "Aac3572MbHal_x86",
+          "pid": 23156,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 2744,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 6180,
+          "cpuCores": 0
+        },
+        {
+          "name": "RuntimeBroker",
+          "pid": 12348,
+          "cpuCores": 0
+        }
+      ],
+      "edgeProcesses": 16
+    }
+  ],
+  "cases": [
+    {
+      "backend": "native-d3d12",
+      "draws": 1000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.0069,
+        "cpuFrontendMs": 0.0215,
+        "submitMs": 0.0078,
+        "gpuMs": 0.003072,
+        "batch3WallMsPerFrame": 0.04039,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0068,
+          "cpuFrontendMs": 0.0215,
+          "submitMs": 0.008,
+          "gpuMs": 0.003072,
+          "batch3WallMsPerFrame": 0.04039,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0069,
+          "cpuFrontendMs": 0.0206,
+          "submitMs": 0.0077,
+          "gpuMs": 0.003072,
+          "batch3WallMsPerFrame": 0.0359,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0069,
+          "cpuFrontendMs": 0.0217,
+          "submitMs": 0.0078,
+          "gpuMs": 0.003072,
+          "batch3WallMsPerFrame": 0.04667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 1000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 0.1018,
+        "cpuFrontendMs": 0.1192,
+        "submitMs": 0.0097,
+        "gpuMs": 0.11776,
+        "batch3WallMsPerFrame": 0.186853333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.1019,
+          "cpuFrontendMs": 0.1191,
+          "submitMs": 0.0096,
+          "gpuMs": 0.128,
+          "batch3WallMsPerFrame": 0.206946666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.1018,
+          "cpuFrontendMs": 0.1196,
+          "submitMs": 0.0097,
+          "gpuMs": 0.11776,
+          "batch3WallMsPerFrame": 0.183271666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.1015,
+          "cpuFrontendMs": 0.1192,
+          "submitMs": 0.0099,
+          "gpuMs": 0.116736,
+          "batch3WallMsPerFrame": 0.186853333333,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 1000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.0019,
+        "cpuFrontendMs": 0.020200000000000003,
+        "submitMs": 0.0098,
+        "gpuMs": 0.11776,
+        "batch3WallMsPerFrame": 0.159865,
+        "bundleBuildMs": 1.3205
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0018,
+          "cpuFrontendMs": 0.0199,
+          "submitMs": 0.0098,
+          "gpuMs": 0.128,
+          "batch3WallMsPerFrame": 0.169633333333,
+          "bundleBuildMs": 1.3644
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0019,
+          "cpuFrontendMs": 0.020200000000000003,
+          "submitMs": 0.0097,
+          "gpuMs": 0.11776,
+          "batch3WallMsPerFrame": 0.142866666667,
+          "bundleBuildMs": 1.3205
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0019,
+          "cpuFrontendMs": 0.0204,
+          "submitMs": 0.01,
+          "gpuMs": 0.11776,
+          "batch3WallMsPerFrame": 0.159865,
+          "bundleBuildMs": 1.1668
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 1000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0.0004,
+        "cpuFrontendMs": 0.0135,
+        "submitMs": 0.0074,
+        "gpuMs": 0.002048,
+        "batch3WallMsPerFrame": 0.03193,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.0135,
+          "submitMs": 0.0074,
+          "gpuMs": 0.002048,
+          "batch3WallMsPerFrame": 0.0334583333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.0134,
+          "submitMs": 0.0073,
+          "gpuMs": 0.002048,
+          "batch3WallMsPerFrame": 0.03193,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.0138,
+          "submitMs": 0.0077,
+          "gpuMs": 0.002048,
+          "batch3WallMsPerFrame": 0.029135,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 3200,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.0207,
+        "cpuFrontendMs": 0.0364,
+        "submitMs": 0.0081,
+        "gpuMs": 0.006144,
+        "batch3WallMsPerFrame": 0.058205,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0206,
+          "cpuFrontendMs": 0.0354,
+          "submitMs": 0.0079,
+          "gpuMs": 0.006144,
+          "batch3WallMsPerFrame": 0.054915,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0207,
+          "cpuFrontendMs": 0.0364,
+          "submitMs": 0.0081,
+          "gpuMs": 0.006144,
+          "batch3WallMsPerFrame": 0.0639016666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0212,
+          "cpuFrontendMs": 0.037599999999999995,
+          "submitMs": 0.0087,
+          "gpuMs": 0.006144,
+          "batch3WallMsPerFrame": 0.058205,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 3200,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 0.3198,
+        "cpuFrontendMs": 0.3552,
+        "submitMs": 0.0141,
+        "gpuMs": 0.372736,
+        "batch3WallMsPerFrame": 0.559158333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.321,
+          "cpuFrontendMs": 0.3494,
+          "submitMs": 0.0135,
+          "gpuMs": 0.405504,
+          "batch3WallMsPerFrame": 0.60052,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.3198,
+          "cpuFrontendMs": 0.3557,
+          "submitMs": 0.0144,
+          "gpuMs": 0.371712,
+          "batch3WallMsPerFrame": 0.55186,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.3196,
+          "cpuFrontendMs": 0.3552,
+          "submitMs": 0.0141,
+          "gpuMs": 0.372736,
+          "batch3WallMsPerFrame": 0.559158333333,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 3200,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.0059,
+        "cpuFrontendMs": 0.0314,
+        "submitMs": 0.0139,
+        "gpuMs": 0.372736,
+        "batch3WallMsPerFrame": 0.454333333333,
+        "bundleBuildMs": 1.2943
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.006,
+          "cpuFrontendMs": 0.0314,
+          "submitMs": 0.0139,
+          "gpuMs": 0.405504,
+          "batch3WallMsPerFrame": 0.48914,
+          "bundleBuildMs": 1.3459
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0055,
+          "cpuFrontendMs": 0.03,
+          "submitMs": 0.0136,
+          "gpuMs": 0.372736,
+          "batch3WallMsPerFrame": 0.433366666667,
+          "bundleBuildMs": 1.2089
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0059,
+          "cpuFrontendMs": 0.0317,
+          "submitMs": 0.0141,
+          "gpuMs": 0.371712,
+          "batch3WallMsPerFrame": 0.454333333333,
+          "bundleBuildMs": 1.2943
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 3200,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0.0004,
+        "cpuFrontendMs": 0.0137,
+        "submitMs": 0.0074,
+        "gpuMs": 0.004096,
+        "batch3WallMsPerFrame": 0.0360733333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.016399999999999998,
+          "submitMs": 0.0083,
+          "gpuMs": 0.004096,
+          "batch3WallMsPerFrame": 0.0360733333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.0135,
+          "submitMs": 0.0074,
+          "gpuMs": 0.004096,
+          "batch3WallMsPerFrame": 0.02977,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.0137,
+          "submitMs": 0.0074,
+          "gpuMs": 0.003072,
+          "batch3WallMsPerFrame": 0.03618,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 10000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.0639,
+        "cpuFrontendMs": 0.0805,
+        "submitMs": 0.008,
+        "gpuMs": 0.016384,
+        "batch3WallMsPerFrame": 0.103163333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0639,
+          "cpuFrontendMs": 0.0805,
+          "submitMs": 0.0087,
+          "gpuMs": 0.016384,
+          "batch3WallMsPerFrame": 0.107341666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0633,
+          "cpuFrontendMs": 0.077,
+          "submitMs": 0.0076,
+          "gpuMs": 0.016384,
+          "batch3WallMsPerFrame": 0.0978283333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0646,
+          "cpuFrontendMs": 0.0808,
+          "submitMs": 0.008,
+          "gpuMs": 0.016384,
+          "batch3WallMsPerFrame": 0.103163333333,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 10000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 1.0006,
+        "cpuFrontendMs": 1.0543999999999998,
+        "submitMs": 0.0291,
+        "gpuMs": 1.384448,
+        "batch3WallMsPerFrame": 1.68343,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.9993,
+          "cpuFrontendMs": 1.0514,
+          "submitMs": 0.0267,
+          "gpuMs": 1.384448,
+          "batch3WallMsPerFrame": 1.69704333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 1.0006,
+          "cpuFrontendMs": 1.0568,
+          "submitMs": 0.0301,
+          "gpuMs": 1.166336,
+          "batch3WallMsPerFrame": 1.62052166667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 1.0018,
+          "cpuFrontendMs": 1.0543999999999998,
+          "submitMs": 0.0291,
+          "gpuMs": 1.385472,
+          "batch3WallMsPerFrame": 1.68343,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 10000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.0294,
+        "cpuFrontendMs": 0.0763,
+        "submitMs": 0.0226,
+        "gpuMs": 1.16736,
+        "batch3WallMsPerFrame": 1.34870666667,
+        "bundleBuildMs": 3.3166
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0294,
+          "cpuFrontendMs": 0.0763,
+          "submitMs": 0.0226,
+          "gpuMs": 1.190912,
+          "batch3WallMsPerFrame": 1.34870666667,
+          "bundleBuildMs": 3.2793
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0244,
+          "cpuFrontendMs": 0.0698,
+          "submitMs": 0.0217,
+          "gpuMs": 1.166336,
+          "batch3WallMsPerFrame": 1.2463,
+          "bundleBuildMs": 3.5542
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0348,
+          "cpuFrontendMs": 0.0913,
+          "submitMs": 0.0265,
+          "gpuMs": 1.16736,
+          "batch3WallMsPerFrame": 1.38270333333,
+          "bundleBuildMs": 3.3166
+        }
+      ]
+    },
+    {
+      "backend": "native-d3d12",
+      "draws": 10000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0.0004,
+        "cpuFrontendMs": 0.0137,
+        "submitMs": 0.0075,
+        "gpuMs": 0.007168,
+        "batch3WallMsPerFrame": 0.0301533333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.0137,
+          "submitMs": 0.0075,
+          "gpuMs": 0.007168,
+          "batch3WallMsPerFrame": 0.0291633333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.013600000000000001,
+          "submitMs": 0.0075,
+          "gpuMs": 0.007168,
+          "batch3WallMsPerFrame": 0.0301533333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0005,
+          "cpuFrontendMs": 0.018799999999999997,
+          "submitMs": 0.0094,
+          "gpuMs": 0.007168,
+          "batch3WallMsPerFrame": 0.0519266666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 1000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.0206,
+        "cpuFrontendMs": 0.0825,
+        "submitMs": 0.0585,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.0944516666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0203,
+          "cpuFrontendMs": 0.0811,
+          "submitMs": 0.0575,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0912266666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0206,
+          "cpuFrontendMs": 0.084,
+          "submitMs": 0.0597,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.109345,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0206,
+          "cpuFrontendMs": 0.0825,
+          "submitMs": 0.0585,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0944516666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 1000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 0.2088,
+        "cpuFrontendMs": 0.4909,
+        "submitMs": 0.275,
+        "gpuMs": 0.131072,
+        "batch3WallMsPerFrame": 0.542818333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.2088,
+          "cpuFrontendMs": 0.492,
+          "submitMs": 0.2771,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 0.553046666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.2089,
+          "cpuFrontendMs": 0.4766,
+          "submitMs": 0.2638,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 0.532185,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.208,
+          "cpuFrontendMs": 0.4909,
+          "submitMs": 0.275,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 0.542818333333,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 1000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.0003,
+        "cpuFrontendMs": 0.2555,
+        "submitMs": 0.2494,
+        "gpuMs": 0.131072,
+        "batch3WallMsPerFrame": 0.325033333333,
+        "bundleBuildMs": 0.2238
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0003,
+          "cpuFrontendMs": 0.2631,
+          "submitMs": 0.2551,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 0.325033333333,
+          "bundleBuildMs": 0.2238
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0003,
+          "cpuFrontendMs": 0.2555,
+          "submitMs": 0.2494,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 0.33142,
+          "bundleBuildMs": 0.2234
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.2471,
+          "submitMs": 0.2425,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 0.312868333333,
+          "bundleBuildMs": 0.2779
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 1000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0.0002,
+        "cpuFrontendMs": 0.026199999999999998,
+        "submitMs": 0.0226,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.0466883333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.0275,
+          "submitMs": 0.0237,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0374816666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.0238,
+          "submitMs": 0.0205,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0477733333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.026199999999999998,
+          "submitMs": 0.0226,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0466883333333,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 3200,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.0639,
+        "cpuFrontendMs": 0.21389999999999998,
+        "submitMs": 0.145,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.232031666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0644,
+          "cpuFrontendMs": 0.21389999999999998,
+          "submitMs": 0.145,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.232031666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0639,
+          "cpuFrontendMs": 0.2168,
+          "submitMs": 0.1463,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.237178333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0639,
+          "cpuFrontendMs": 0.21189999999999998,
+          "submitMs": 0.1425,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.231745,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 3200,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 0.655,
+        "cpuFrontendMs": 1.4937,
+        "submitMs": 0.8245,
+        "gpuMs": 0.393216,
+        "batch3WallMsPerFrame": 1.61964,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.655,
+          "cpuFrontendMs": 1.4937,
+          "submitMs": 0.8245,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 1.61964,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.651,
+          "cpuFrontendMs": 1.5168,
+          "submitMs": 0.841,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 1.68830833333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.6551,
+          "cpuFrontendMs": 1.4873,
+          "submitMs": 0.8214,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 1.60514,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 3200,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.0004,
+        "cpuFrontendMs": 0.7432,
+        "submitMs": 0.7333,
+        "gpuMs": 0.393216,
+        "batch3WallMsPerFrame": 0.908336666667,
+        "bundleBuildMs": 0.6804
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0005,
+          "cpuFrontendMs": 0.7614,
+          "submitMs": 0.7514,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 0.9081,
+          "bundleBuildMs": 0.66
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0003,
+          "cpuFrontendMs": 0.7298,
+          "submitMs": 0.7234,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 0.920956666667,
+          "bundleBuildMs": 0.6834
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0004,
+          "cpuFrontendMs": 0.7432,
+          "submitMs": 0.7333,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 0.908336666667,
+          "bundleBuildMs": 0.6804
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 3200,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0.0002,
+        "cpuFrontendMs": 0.0238,
+        "submitMs": 0.0206,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.0379816666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.0238,
+          "submitMs": 0.0206,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0545116666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.0235,
+          "submitMs": 0.0203,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0369966666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.0245,
+          "submitMs": 0.0211,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0379816666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 10000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.1962,
+        "cpuFrontendMs": 0.5978,
+        "submitMs": 0.3923,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.61254,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.1962,
+          "cpuFrontendMs": 0.5978,
+          "submitMs": 0.3923,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.61233,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.1962,
+          "cpuFrontendMs": 0.6054,
+          "submitMs": 0.3992,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.646191666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.1949,
+          "cpuFrontendMs": 0.5951,
+          "submitMs": 0.3915,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.61254,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 10000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 2.0242,
+        "cpuFrontendMs": 4.558400000000001,
+        "submitMs": 2.4922,
+        "gpuMs": 1.245184,
+        "batch3WallMsPerFrame": 4.92730666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 2.0162,
+          "cpuFrontendMs": 4.559699999999999,
+          "submitMs": 2.5167,
+          "gpuMs": 1.245184,
+          "batch3WallMsPerFrame": 4.91137333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 2.0242,
+          "cpuFrontendMs": 4.558400000000001,
+          "submitMs": 2.4922,
+          "gpuMs": 1.31072,
+          "batch3WallMsPerFrame": 4.97552166667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 2.0386,
+          "cpuFrontendMs": 4.5419,
+          "submitMs": 2.4891,
+          "gpuMs": 1.245184,
+          "batch3WallMsPerFrame": 4.92730666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 10000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.0006,
+        "cpuFrontendMs": 2.2397,
+        "submitMs": 2.228,
+        "gpuMs": 1.245184,
+        "batch3WallMsPerFrame": 2.68247166667,
+        "bundleBuildMs": 2.0441
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0006,
+          "cpuFrontendMs": 2.2495000000000003,
+          "submitMs": 2.236,
+          "gpuMs": 1.245184,
+          "batch3WallMsPerFrame": 2.68247166667,
+          "bundleBuildMs": 2.2715
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0006,
+          "cpuFrontendMs": 2.2397,
+          "submitMs": 2.228,
+          "gpuMs": 1.245184,
+          "batch3WallMsPerFrame": 2.70197666667,
+          "bundleBuildMs": 2.0364
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0006,
+          "cpuFrontendMs": 2.2351,
+          "submitMs": 2.2209,
+          "gpuMs": 1.245184,
+          "batch3WallMsPerFrame": 2.65562166667,
+          "bundleBuildMs": 2.0441
+        }
+      ]
+    },
+    {
+      "backend": "native-dawn-d3d12",
+      "draws": 10000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0.0002,
+        "cpuFrontendMs": 0.023200000000000002,
+        "submitMs": 0.02,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.03745,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.023200000000000002,
+          "submitMs": 0.0199,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0364,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.0002,
+          "cpuFrontendMs": 0.023200000000000002,
+          "submitMs": 0.02,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.03745,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.0003,
+          "cpuFrontendMs": 0.044,
+          "submitMs": 0.04,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.0539066666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 1000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.025000005960464478,
+        "cpuFrontendMs": 0.03500001132488251,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 1.1349166666467985,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.025000005960464478,
+          "cpuFrontendMs": 0.034999996423721313,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.1600833331545195,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.025000005960464478,
+          "cpuFrontendMs": 0.03999999165534973,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.1349166666467985,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.025000005960464478,
+          "cpuFrontendMs": 0.03500001132488251,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.0570000000298023,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 1000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 0.1550000011920929,
+        "cpuFrontendMs": 0.17000000178813934,
+        "submitMs": 0.005000010132789612,
+        "gpuMs": 0.131072,
+        "batch3WallMsPerFrame": 1.8417499999205271,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.1550000011920929,
+          "cpuFrontendMs": 0.17000000178813934,
+          "submitMs": 0.005000010132789612,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.8417499999205271,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.1550000011920929,
+          "cpuFrontendMs": 0.17000000178813934,
+          "submitMs": 0.005000010132789612,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.8565833332637947,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.1599999964237213,
+          "cpuFrontendMs": 0.17000000178813934,
+          "submitMs": 0.005000010132789612,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.83125,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 1000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.01000000536441803,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0.131072,
+        "batch3WallMsPerFrame": 1.352916666616996,
+        "bundleBuildMs": 0.3400000035762787
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.01000000536441803,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.366083333392938,
+          "bundleBuildMs": 0.35500000417232513
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.01000000536441803,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.3455833333233993,
+          "bundleBuildMs": 0.3349999934434891
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.01000000536441803,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.352916666616996,
+          "bundleBuildMs": 0.3400000035762787
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 1000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.009999990463256836,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.9119166667262714,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.01000000536441803,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.9167499999205272,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.8935833332439264,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.9119166667262714,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 3200,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.040000006556510925,
+        "cpuFrontendMs": 0.050000011920928955,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 1.2925000001986822,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.040000006556510925,
+          "cpuFrontendMs": 0.050000011920928955,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.2925000001986822,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.040000006556510925,
+          "cpuFrontendMs": 0.050000011920928955,
+          "submitMs": 0.005000010132789612,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.1655833333730699,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.040000006556510925,
+          "cpuFrontendMs": 0.050000011920928955,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.3355833331743876,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 3200,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 0.5300000011920929,
+        "cpuFrontendMs": 0.5450000017881393,
+        "submitMs": 0.005000010132789612,
+        "gpuMs": 0.393216,
+        "batch3WallMsPerFrame": 3.461583333214124,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.5299999862909317,
+          "cpuFrontendMs": 0.5450000017881393,
+          "submitMs": 0.005000010132789612,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 3.470333333313465,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.5300000011920929,
+          "cpuFrontendMs": 0.5550000071525574,
+          "submitMs": 0.005000010132789612,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 3.461583333214124,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.5300000011920929,
+          "cpuFrontendMs": 0.5450000017881393,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 3.4287500001490114,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 3200,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.009999990463256836,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0.393216,
+        "batch3WallMsPerFrame": 1.9145833333333333,
+        "bundleBuildMs": 0.6099999994039536
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 1.9145833333333333,
+          "bundleBuildMs": 0.6499999910593033
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 1.9357499999304613,
+          "bundleBuildMs": 0.6099999994039536
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 1.8673333334426085,
+          "bundleBuildMs": 0.5949999988079071
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 3200,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.009999990463256836,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.9840000001092751,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.005000010132789612,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.94258333320419,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.9840000001092751,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.01000000536441803,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.0221666666368643,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 10000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.125,
+        "cpuFrontendMs": 0.13500000536441803,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 1.9649166668454805,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.125,
+          "cpuFrontendMs": 0.13500000536441803,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.9649166668454805,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.12999999523162842,
+          "cpuFrontendMs": 0.14000000059604645,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.9854999999205272,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.125,
+          "cpuFrontendMs": 0.13500000536441803,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.9445833332836628,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 10000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 1.655000001192093,
+        "cpuFrontendMs": 1.6899999976158142,
+        "submitMs": 0.01000000536441803,
+        "gpuMs": 1.769472,
+        "batch3WallMsPerFrame": 8.74300000021855,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 1.655000001192093,
+          "cpuFrontendMs": 1.6899999976158142,
+          "submitMs": 0.01000000536441803,
+          "gpuMs": 1.507328,
+          "batch3WallMsPerFrame": 8.681333333502213,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 1.655000001192093,
+          "cpuFrontendMs": 1.6850000023841858,
+          "submitMs": 0.01000000536441803,
+          "gpuMs": 2.031616,
+          "batch3WallMsPerFrame": 8.897000000129143,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 1.6599999964237213,
+          "cpuFrontendMs": 1.6949999928474426,
+          "submitMs": 0.01000000536441803,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 8.74300000021855,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 10000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.009999990463256836,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 1.769472,
+        "batch3WallMsPerFrame": 3.7923333334426084,
+        "bundleBuildMs": 1.8700000047683716
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.005000010132789612,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 1.31072,
+          "batch3WallMsPerFrame": 3.7011666665474574,
+          "bundleBuildMs": 1.8700000047683716
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 3.7923333334426084,
+          "bundleBuildMs": 1.8700000047683716
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 3.859083333363136,
+          "bundleBuildMs": 1.895000010728836
+        }
+      ]
+    },
+    {
+      "backend": "browser-js-webgpu",
+      "draws": 10000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.005000010132789612,
+        "submitMs": 0.004999995231628418,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 1.0170833334326743,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.005000010132789612,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.9574166667958101,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.009999990463256836,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.0170833334326743,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.005000010132789612,
+          "submitMs": 0.004999995231628418,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.0719166666269302,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 1000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.055,
+        "cpuFrontendMs": 0.08,
+        "submitMs": 0.01,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 1.23333333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.055,
+          "cpuFrontendMs": 0.08,
+          "submitMs": 0.01,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.27558333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.06,
+          "cpuFrontendMs": 0.085,
+          "submitMs": 0.01,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.18241666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.055,
+          "cpuFrontendMs": 0.07500000000000001,
+          "submitMs": 0.01,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.23333333333,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 1000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 0.72,
+        "cpuFrontendMs": 0.76,
+        "submitMs": 0.01,
+        "gpuMs": 0.131072,
+        "batch3WallMsPerFrame": 1.98641666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.72,
+          "cpuFrontendMs": 0.76,
+          "submitMs": 0.01,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.94083333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.72,
+          "cpuFrontendMs": 0.76,
+          "submitMs": 0.01,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 2.02041666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.715,
+          "cpuFrontendMs": 0.755,
+          "submitMs": 0.01,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.98641666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 1000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.005,
+        "cpuFrontendMs": 0.02,
+        "submitMs": 0.005,
+        "gpuMs": 0.131072,
+        "batch3WallMsPerFrame": 1.3035,
+        "bundleBuildMs": 1.505
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.005,
+          "cpuFrontendMs": 0.02,
+          "submitMs": 0.005,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.3035,
+          "bundleBuildMs": 1.595
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.005,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.28208333333,
+          "bundleBuildMs": 1.305
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.02,
+          "submitMs": 0.005,
+          "gpuMs": 0.131072,
+          "batch3WallMsPerFrame": 1.39566666667,
+          "bundleBuildMs": 1.505
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 1000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.015,
+        "submitMs": 0.005,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.926083333333,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.01,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.926083333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.02491666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.913416666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 3200,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.195,
+        "cpuFrontendMs": 0.215,
+        "submitMs": 0.005,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 1.35991666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.195,
+          "cpuFrontendMs": 0.215,
+          "submitMs": 0.01,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.35991666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.19,
+          "cpuFrontendMs": 0.21000000000000002,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.32641666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.195,
+          "cpuFrontendMs": 0.215,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.42841666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 3200,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 2.365,
+        "cpuFrontendMs": 2.4099999999999993,
+        "submitMs": 0.015,
+        "gpuMs": 0.458752,
+        "batch3WallMsPerFrame": 4.22975,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 2.365,
+          "cpuFrontendMs": 2.4199999999999995,
+          "submitMs": 0.015,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 4.296,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 2.375,
+          "cpuFrontendMs": 2.4099999999999993,
+          "submitMs": 0.015,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 4.14925,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 2.35,
+          "cpuFrontendMs": 2.395,
+          "submitMs": 0.015,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 4.22975,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 3200,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0.005,
+        "cpuFrontendMs": 0.015,
+        "submitMs": 0.005,
+        "gpuMs": 0.458752,
+        "batch3WallMsPerFrame": 1.94233333333,
+        "bundleBuildMs": 2.68
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.005,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 1.89466666667,
+          "bundleBuildMs": 2.68
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.005,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0.393216,
+          "batch3WallMsPerFrame": 1.94233333333,
+          "bundleBuildMs": 2.545
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.005,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0.458752,
+          "batch3WallMsPerFrame": 1.949,
+          "bundleBuildMs": 2.77
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 3200,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.015,
+        "submitMs": 0.005,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.877916666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.877916666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.96825,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.842833333333,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 10000,
+      "mode": 0,
+      "medians": {
+        "drawLoopMs": 0.565,
+        "cpuFrontendMs": 0.5900000000000001,
+        "submitMs": 0.01,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 2.203,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0.575,
+          "cpuFrontendMs": 0.605,
+          "submitMs": 0.01,
+          "gpuMs": 0.065536,
+          "batch3WallMsPerFrame": 2.18816666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0.545,
+          "cpuFrontendMs": 0.5700000000000001,
+          "submitMs": 0.01,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 2.29875,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0.565,
+          "cpuFrontendMs": 0.5900000000000001,
+          "submitMs": 0.01,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 2.203,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 10000,
+      "mode": 1,
+      "medians": {
+        "drawLoopMs": 7.185,
+        "cpuFrontendMs": 7.255,
+        "submitMs": 0.025,
+        "gpuMs": 1.769472,
+        "batch3WallMsPerFrame": 10.7646666667,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 7.315,
+          "cpuFrontendMs": 7.4,
+          "submitMs": 0.025,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 11.0214166667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 7.18,
+          "cpuFrontendMs": 7.244999999999999,
+          "submitMs": 0.02,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 10.5916666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 7.185,
+          "cpuFrontendMs": 7.255,
+          "submitMs": 0.025,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 10.7646666667,
+          "bundleBuildMs": 0
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 10000,
+      "mode": 2,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.015,
+        "submitMs": 0.005,
+        "gpuMs": 1.769472,
+        "batch3WallMsPerFrame": 3.75725,
+        "bundleBuildMs": 8.53
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 3.75725,
+          "bundleBuildMs": 8.61
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 3.81708333333,
+          "bundleBuildMs": 8.53
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 1.769472,
+          "batch3WallMsPerFrame": 3.757,
+          "bundleBuildMs": 8.48
+        }
+      ]
+    },
+    {
+      "backend": "browser-wasm64-webgpu",
+      "draws": 10000,
+      "mode": 3,
+      "medians": {
+        "drawLoopMs": 0,
+        "cpuFrontendMs": 0.015,
+        "submitMs": 0.005,
+        "gpuMs": 0,
+        "batch3WallMsPerFrame": 0.999,
+        "bundleBuildMs": 0
+      },
+      "rounds": [
+        {
+          "round": 0,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 1.06466666667,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 1,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.983583333333,
+          "bundleBuildMs": 0
+        },
+        {
+          "round": 2,
+          "drawLoopMs": 0,
+          "cpuFrontendMs": 0.015,
+          "submitMs": 0.005,
+          "gpuMs": 0,
+          "batch3WallMsPerFrame": 0.999,
+          "bundleBuildMs": 0
+        }
+      ]
+    }
+  ]
+}

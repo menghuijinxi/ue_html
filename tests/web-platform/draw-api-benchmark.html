@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>独立绘制命令测试</title>
+<p>独立 WebGPU 绘制命令测试。结果由测试脚本保存。</p>
+<pre id="status">等待开始</pre>
+<script>
+window.runDrawBenchmark=kind=>new Promise((resolve,reject)=>{
+  const worker=new Worker(kind==='wasm'?'draw-api-wasm-worker.js':'draw-api-worker.js');
+  worker.onerror=e=>{worker.terminate();reject(new Error(e.message));};
+  worker.onmessage=({data})=>{
+    if(data.progress)document.querySelector('#status').textContent=data.progress;
+    if(data.error){worker.terminate();reject(new Error(data.error));}
+    if(data.result){worker.terminate();resolve(data.result);}
+  };
+});
+</script>
