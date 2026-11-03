@@ -14,6 +14,7 @@ const storageDeclaration = (before, format) => ({before, after: [
 ].join('\n')});
 const overrides = new Map([
   ...require('./web-tsr-shader-overrides.cjs'),
+  ...require('./web-translucency-shader-overrides.cjs'),
   ['Private/InstanceCulling/BuildInstanceDrawCommands.usf', [{
     before: '#define USE_HZB_SHARED_SAMPLERS 0',
     after: ['#define USE_HZB_SHARED_SAMPLERS 0', '',
@@ -95,9 +96,6 @@ const overrides = new Map([
       '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '\tGroupMemoryBarrierWithGroupSync();', '#endif'].join('\n'),
   })),
   ]],
-  ['Private/TranslucentLightInjectionShaders.usf',
-    ['RWAmbient0', 'RWDirectional0', 'RWAmbient1', 'RWDirectional1'].map(name =>
-      storageDeclaration(`RWTexture3D<float4> ${name};`, 'rgba16f'))],
   ['Private/MotionBlur/MotionBlurVelocityFlatten.usf', [
     storageDeclaration('RWTexture2D<float3>\tOutVelocityFlatTexture;', 'r11g11b10f'),
     storageDeclaration('RWTexture2DArray<float4>\tOutVelocityTileArray;', 'rgba16f'),
@@ -648,8 +646,21 @@ function prepare() {
     }
   }
   copy();
+  for (const relative of ['Private/WebTranslucencyVolume.ush']) {
+    assert(!fs.existsSync(path.join(stock, relative)), 'Web-only shaders must not overwrite installed inputs');
+    const source = path.join(root, 'reference-engine/Engine/Shaders', relative);
+    const destination = path.join(output, relative);
+    if (fs.existsSync(destination)) {
+      const info = fs.lstatSync(destination);
+      assert(!info.isSymbolicLink() && info.nlink === 1);
+    }
+    fs.copyFileSync(source, destination);
+    files.push({relative, sha256: sha(fs.readFileSync(source)), origin: 'target-webgpu-addition'});
+    overrideFiles.push(source);
+  }
   const report = {date: new Date().toISOString(), pass: true, output,
-    sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'), ...overrideFiles].map(audit),
+    sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'),
+      require.resolve('./web-translucency-shader-overrides.cjs'), ...overrideFiles].map(audit),
     files, installedEngineUnmodified: audit(path.join(stock, 'Private/PostProcessTonemap.usf')),
     installedInputs: [...overrides.keys()].map(relative => audit(path.join(stock, relative))),
     boundary: 'Independent native Cook shader snapshot. Audited overrides contain WebGPU decal ordering, finite math, structured buffers, explicit atmosphere/sky-capture storage image formats and indirect arguments. Other files are installed-source copies, not a complete 5.8.3 shader snapshot.'};

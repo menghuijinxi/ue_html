@@ -105,3 +105,21 @@ git -C H:/ue_html/reference-engine pull --ff-only --no-recurse-submodules
 - 原本地 HEAD 仍是更新后 HEAD 的祖先，引擎工作区和暂存区均干净。
 
 本轮仅验证源码仓库更新，未重新编译、Cook 或运行浏览器验收，未推送远程。浅克隆和 `blob:none` 配置继续保留；如果后续再次因历史截断找不到共同祖先，应继续加深历史并确认祖先关系后再拉取。
+
+### 手动拉取复发原因与后续修复
+
+同日再次手动拉取失败。引擎远程跟踪分支的 reflog 记录实际命令为 `pull --progress -v --no-rebase --depth 1 -- origin`，2026-11-02 09:19:58 和 16:47:30 两次拉取均带 `--depth 1`，重新截断最新提交的父级历史。因此上次仅加深历史只能恢复当次更新，不能避免客户端再次触发问题。
+
+本机 TortoiseGit 为 2.19.1.0。核对其对应源码版本 `REL_2.19.1.0_EXTERNAL` 的 `src/TortoiseProc/PullFetchDlg.cpp`：构造函数将深度默认值设为 1；打开拉取窗口时，只要 `git_repository_is_shallow(repo)` 为真，就自动勾选深度选项，普通仓库则隐藏并禁用此选项。这解释了手动拉取反复带上 `--depth 1` 的原因。
+
+本次先加深历史并确认祖先关系，将引擎从 `061234ef2dbdddf28f8beca61e5ee5ba5949357a` 快进到 `4ffc20ee52bbe24d5643ceb5e8bba5c24f39f4de`（2026-11-02 15:21:30 +08:00，修复 Web 预缓存 PSO 对象复用并补齐透明场景颜色复制收集），随后补齐提交祖先历史，解除浅克隆状态：
+
+```powershell
+git -C H:/ue_html/reference-engine fetch --unshallow --filter=tree:0 --no-tags origin html
+```
+
+本次历史包约 124 MiB。`tree:0` 避免批量下载历史目录树和文件内容；仓库原有 `remote.origin.promisor=true`、`remote.origin.partialclonefilter=blob:none` 及稀疏检出配置保留，未将工作区改成完整文件检出。
+
+验证结果：`git rev-parse --is-shallow-repository` 返回 `false`，`.git/shallow` 已不存在；`git pull --progress -v --no-rebase -- origin` 返回 `Already up to date.`；两端提交计数为 `0 0`，远端实际分支与本地 HEAD 一致，原本地 HEAD 仍在祖先链中，引擎工作区和暂存区均干净。重新打开 TortoiseGit 拉取窗口后，不再满足自动勾选深度选项的条件；后续在引擎目录正常拉取，不要再传入 `--depth 1`。
+
+本轮未直接操作 TortoiseGit 图形界面，已核对对应版本的选项逻辑并运行普通拉取命令；未重新编译、Cook、运行浏览器验收或推送远程。以上解除浅克隆的处理取代上一节保留浅克隆、按需加深的临时方案。
