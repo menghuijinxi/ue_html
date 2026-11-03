@@ -535,7 +535,8 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Data.Resources.Reset();
         }
         TArray<TSharedPtr<FJsonValue>> RasterCases;
-        Pass &= RunWebGPUUAVRasterCases(RHI, Cmd, RasterCases);
+        TArray<TSharedPtr<FJsonValue>> DepthAtlasCases;
+        Pass &= RunWebGPUUAVRasterCases(RHI, Cmd, RasterCases, DepthAtlasCases);
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
@@ -545,6 +546,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("bufferCases"), BufferCases);
         Report->SetArrayField(TEXT("uniformCases"), UniformCases);
         Report->SetArrayField(TEXT("rasterCases"), RasterCases);
+        Report->SetArrayField(TEXT("depthAtlasCases"), DepthAtlasCases);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);

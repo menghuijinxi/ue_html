@@ -3,7 +3,7 @@
 #include "WebGPUProbeUtils.h"
 
 inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmediate& Cmd,
-    TArray<TSharedPtr<FJsonValue>>& Cases)
+    TArray<TSharedPtr<FJsonValue>>& Cases, TArray<TSharedPtr<FJsonValue>>& DepthCases)
 {
     const auto Init = [&](FWebGPUShaderData& Data, FRHIShader* Owner, EShaderFrequency Frequency,
         const char* Code, bool Pixel) {
@@ -188,6 +188,141 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         Cases.Add(MakeShared<FJsonValueObject>(Case));
         Pass &= OK;
         PS->Data.Resources.Reset();
+    }
+    TRefCountPtr<FWebGPUPixelShader> SamplePS = new FWebGPUPixelShader;
+    Init(SamplePS->Data, SamplePS, SF_Pixel,
+        "@group(0) @binding(0) var SourceDepthAtlas: texture_2d<f32>;\n"
+        "@group(0) @binding(1) var GlobalPointClampedSampler: sampler;\n"
+        "@fragment fn main() -> @location(0) vec4f {\n"
+        "let depth=textureSampleLevel(SourceDepthAtlas,GlobalPointClampedSampler,vec2f(0.5),0).x;\n"
+        "return vec4f(depth,depth,depth,1); }\n", false);
+    auto& SampleData = SamplePS->Data;
+    TArray<TSharedPtr<FJsonValue>> SampleBindings, SampleReflected;
+    for (uint32 BindingIndex = 0; BindingIndex < 2; ++BindingIndex)
+    {
+        auto Binding = MakeShared<FJsonObject>();
+        Binding->SetStringField(TEXT("name"), BindingIndex ? TEXT("GlobalPointClampedSampler") : TEXT("SourceDepthAtlas"));
+        Binding->SetNumberField(TEXT("group"), 0);
+        Binding->SetNumberField(TEXT("binding"), BindingIndex);
+        Binding->SetNumberField(TEXT("descriptorType"), BindingIndex ? 0 : 2);
+        Binding->SetNumberField(TEXT("textureDimension"), 1);
+        Binding->SetBoolField(TEXT("textureArrayed"), false);
+        Binding->SetBoolField(TEXT("textureMultisampled"), false);
+        Binding->SetStringField(TEXT("textureSampleType"), TEXT("float"));
+        SampleBindings.Add(MakeShared<FJsonValueObject>(Binding));
+        FWebGPUShaderBinding Entry;
+        Entry.Name = Binding->GetStringField(TEXT("name"));
+        Entry.Metadata = &Binding.Get();
+        Entry.Descriptor = BindingIndex ? 0 : 2;
+        Entry.Index = BindingIndex;
+        Entry.RouteInitialized = true;
+        Entry.Route.Index = BindingIndex;
+        Entry.TextureDimension = 1;
+        Entry.TextureContractValid = true;
+        Entry.TextureSampleType = TEXT("float");
+        SampleData.Bindings.Add(Entry);
+        auto Reflected = MakeShared<FJsonObject>();
+        Reflected->SetNumberField(TEXT("group"), 0);
+        Reflected->SetNumberField(TEXT("binding"), BindingIndex);
+        Reflected->SetStringField(TEXT("resource_type"), BindingIndex ? TEXT("Sampler") : TEXT("SampledTexture"));
+        SampleReflected.Add(MakeShared<FJsonValueObject>(Reflected));
+    }
+    SampleData.GroupVersions.Init(1, 1);
+    SampleData.Metadata->SetArrayField(TEXT("spirvBindings"), SampleBindings);
+    auto SampleEntry = SampleData.Metadata->GetObjectField(TEXT("reflection"))->GetArrayField(TEXT("entry_points"))[0]->AsObject();
+    SampleEntry->SetArrayField(TEXT("bindings"), SampleReflected);
+    auto Output = MakeShared<FJsonObject>();
+    Output->SetNumberField(TEXT("location"), 0);
+    SampleEntry->SetArrayField(TEXT("output_variables"), {MakeShared<FJsonValueObject>(Output)});
+    SamplePS->InitResourceTable();
+    auto SampleInitializer = Initializer;
+    SampleInitializer.BoundShaderState.PixelShaderRHI = SamplePS;
+    SampleInitializer.RenderTargetsEnabled = 1;
+    SampleInitializer.RenderTargetFormats[0] = PF_R8G8B8A8;
+    SampleInitializer.NumSamples = 1;
+    auto Sampler = RHI.RHICreateSamplerState(FSamplerStateInitializerRHI(SF_Point, AM_Clamp, AM_Clamp));
+    for (const TCHAR *BindingName : {TEXT("SourceDepthAtlas"), TEXT("DepthAtlas"), TEXT("LumenCardScene_DepthAtlas"),
+                                     TEXT("LoadOnlyTextureWithoutDepthName")})
+    {
+        const bool LoadOnly = FString(BindingName) == TEXT("LoadOnlyTextureWithoutDepthName");
+        SampleBindings[0]->AsObject()->SetStringField(TEXT("name"), BindingName);
+        SampleBindings[0]->AsObject()->SetBoolField(TEXT("sampledTextureLoadOnly"), LoadOnly);
+        SampleData.Bindings[0].Name = BindingName;
+        if (LoadOnly)
+        {
+            const char *Code = "@group(0) @binding(0) var SourceDepthAtlas: texture_2d<f32>;\n"
+                               "@fragment fn main() -> @location(0) vec4f {\n"
+                               "let depth=textureLoad(SourceDepthAtlas,vec2i(1),0).x;\n"
+                               "return vec4f(depth,depth,depth,1); }\n";
+            auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+            WGSL.code = {Code, strlen(Code)};
+            auto Desc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+            Desc.nextInChain = &WGSL.chain;
+            wgpuShaderModuleRelease(SampleData.Module);
+            SampleData.Module = wgpuDeviceCreateShaderModule(RHI.Device, &Desc);
+        }
+        auto SamplePipeline = RHI.RHICreateGraphicsPipelineState(SampleInitializer);
+        for (const EPixelFormat Format : {PF_DepthStencil, PF_G16})
+        {
+            if (!RHI.ContextOpen)
+                RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+            FTextureRHIRef Source;
+            if (Format == PF_DepthStencil)
+            {
+                Source = Cmd.CreateTexture(
+                    FRHITextureCreateDesc::Create2D(TEXT("DepthAtlasProbe"), 4, 4, Format)
+                        .SetFlags(ETextureCreateFlags::DepthStencilTargetable | ETextureCreateFlags::ShaderResource)
+                        .SetInitialState(ERHIAccess::DSVWrite)
+                        .SetClearValue(FClearValueBinding(0.25f, 0)));
+                RHI.RHIBeginRenderPass(
+                    FRHIRenderPassInfo(Source, EDepthStencilTargetActions::ClearDepthStencil_StoreDepthStencil),
+                    TEXT("DepthAtlasClear"));
+                RHI.RHIEndRenderPass();
+                Cmd.Transition(FRHITransitionInfo(Source, ERHIAccess::DSVWrite, ERHIAccess::SRVGraphicsPixel));
+            }
+            else
+            {
+                auto Upload = Cmd.CreateTextureInitializer(
+                    FRHITextureCreateDesc::Create2D(TEXT("UNorm16AtlasProbe"), 4, 4, Format)
+                        .SetFlags(ETextureCreateFlags::ShaderResource)
+                        .SetInitialState(ERHIAccess::SRVGraphicsPixel)
+                        .SetInitActionInitializer());
+                const auto Row = Upload.GetTexture2DSubresource(0);
+                for (uint32 Offset = 0; Offset < Row.Size; Offset += 2)
+                {
+                    const uint16 Value = 32768;
+                    FMemory::Memcpy(static_cast<uint8 *>(Row.Data) + Offset, &Value, 2);
+                }
+                Source = Upload.Finalize();
+            }
+            auto Target = WebGPUProbe::Target(RHI, Cmd, 4, 4);
+            SampleData.Resources.Add(0, Source.GetReference());
+            SampleData.Resources.Add(1, Sampler.GetReference());
+            SampleData.InvalidateGroups(1);
+            RHI.RHIBeginRenderPass(FRHIRenderPassInfo(Target, ERenderTargetActions::Clear_Store),
+                                   TEXT("DepthAtlasSample"));
+            RHI.RHISetViewport(0, 0, 0, 4, 4, 1);
+            RHI.RHISetGraphicsPipelineState(SamplePipeline, 0, false);
+            RHI.RHIDrawIndexedPrimitiveIndirect(Index, Indirect, 0);
+            RHI.RHIEndRenderPass();
+            Cmd.Transition(FRHITransitionInfo(Target, ERHIAccess::RTV, ERHIAccess::CopySrc));
+            RHI.SubmitCurrent();
+            TArray<FColor> Colors;
+            RHI.RHIReadSurfaceData(Target, FIntRect(0, 0, 4, 4), Colors, WebGPUProbe::RawReadback());
+            bool OK = Colors.Num() == 16;
+            const int32 Expected = Format == PF_DepthStencil ? 64 : 128;
+            for (const auto Color : Colors)
+                OK &= FMath::Abs(int32(Color.R) - Expected) <= 1 && Color.R == Color.G && Color.G == Color.B &&
+                      Color.A == 255;
+            auto Case = MakeShared<FJsonObject>();
+            Case->SetNumberField(TEXT("format"), Format);
+            Case->SetStringField(TEXT("binding"), BindingName);
+            Case->SetNumberField(TEXT("checkedPixels"), Colors.Num());
+            Case->SetBoolField(TEXT("pass"), OK);
+            DepthCases.Add(MakeShared<FJsonValueObject>(Case));
+            Pass &= OK;
+            SampleData.Resources.Reset();
+        }
     }
     return Pass;
 }

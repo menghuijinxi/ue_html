@@ -240,6 +240,14 @@ H 盘剩余空间不足以继续保留每轮 Cook 和浏览器内容缓存，因
 
 该轮 Stage 和 Package 已通过。浏览器越过上述格式断言并进入第 1 帧，但 Surface Cache 深度采样的布局将 `Lumen.CardCaptureDepthStencilAtlas` 误标成可过滤 Float，被 WebGPU 验证拒绝；尚未达到稳定出帧、画面或性能验收。报告为 `results/project-memory-lumen-20261103-r16.json`，后续继续修复该绑定路径。
 
+### 深度图集与只读纹理采样布局
+
+Surface Cache 的 `SourceDepthAtlas`、`DepthAtlas` 与 `LumenCardScene_DepthAtlas` 使用不可过滤浮点布局，保留原 Point 采样。真实 RHI 对三种绑定分别测试深度附件和 R16 UNORM，另以不含 Depth 的普通资源名测试元数据驱动的 `textureLoad`，共 8 项、每项 16 像素回读全部通过；既有 11 条计算管线、格式清零、三维整数、uint2、天空光常量与三种 UAV 光栅尺寸回归保持通过，没有 GPU 校验错误。结果为 `build/lumen-storage-rhi-load-only/lumen-storage-rhi.json`。
+
+浏览器随后在 `FrontLayerTranslucency.GBufferA` 暴露同类布局问题。Web ShaderFormat 对 Lumen / shared stochastic-lighting 计算 Shader 分析 SPIR-V 的实际访问；仅当纹理确实用于 ImageFetch 且无过滤采样或未知用途时记录 `sampledTextureLoadOnly`，RHI 据此选择不可过滤布局。未知用途保留原可过滤声明，不更改 Shader 取值、采样器或项目配置，不增加纹理或拷贝。对应编译作业缓存版本递增，重新 Cook 使实际排列携带该元数据。
+
+`build/lumen-probe/20261103-193519/` 的 8 项项目开关检查、161 个 Shader 模块、145 条浏览器计算管线及 6 项 Cards/探针头执行均通过。148 个 load-only 绑定在最终 WGSL 中均有 `textureLoad` 且无过滤采样，100 个实际含 Sample/Gather 的绑定保留原声明。优化原生插件与 `-O2` 线程 WASM 编译通过。可重复检查入口为 `summarize-web-lumen-sampling.cjs`，证据为 `tests/web-platform/evidence/lumen-sampling-20261103.json`；`20261103-193721` 完整别墅项目设置 Cook 和浏览器验收继续进行。这些检查不代表已经稳定出帧或完成性能、显存测量。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

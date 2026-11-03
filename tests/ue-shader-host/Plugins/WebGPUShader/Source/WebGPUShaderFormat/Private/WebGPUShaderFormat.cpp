@@ -275,6 +275,44 @@ static TSet<uint32> FindStorageImageReads(const TArray<uint32>& Spirv,
     return Reads;
 }
 
+static TSet<uint32> FindLoadOnlySampledImages(const TArray<uint32>& Spirv,
+    TConstArrayView<SpvReflectDescriptorBinding*> Bindings)
+{
+    TMap<uint32, uint32> Origins;
+    for (const auto* Binding : Bindings)
+        if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
+            Origins.Add(Binding->spirv_id, Binding->spirv_id);
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+        if ((Spirv[Offset] & 0xffff) == SpvOpLoad && (Spirv[Offset] >> 16) >= 4)
+            if (const uint32* Root = Origins.Find(Spirv[Offset + 3]))
+            {
+                const uint32 Origin = *Root;
+                Origins.Add(Spirv[Offset + 2], Origin);
+            }
+    TSet<uint32> Fetched, OtherUses;
+    bool InFunctions = false;
+    // Unknown uses stay filterable; only proven textureLoad-only resources opt out.
+    for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
+    {
+        const uint32 Opcode = Spirv[Offset] & 0xffff, Words = Spirv[Offset] >> 16;
+        InFunctions |= Opcode == SpvOpFunction;
+        if (!InFunctions || Opcode == SpvOpLine) continue;
+        for (uint32 Operand = 1; Operand < Words; ++Operand)
+        {
+            if (Opcode == SpvOpExtInst && Operand == 4) continue;
+            const uint32* Root = Origins.Find(Spirv[Offset + Operand]);
+            if (!Root) continue;
+            if (Opcode == SpvOpLoad && (Operand == 2 || Operand == 3)) continue;
+            if (Opcode == SpvOpImageFetch && Operand == 3)
+                Fetched.Add(*Root);
+            else if (Operand != 3 || (Opcode != SpvOpImageQuerySize && Opcode != SpvOpImageQuerySizeLod &&
+                Opcode != SpvOpImageQueryLevels && Opcode != SpvOpImageQuerySamples))
+                OtherUses.Add(*Root);
+        }
+    }
+    return Fetched.Difference(OtherUses);
+}
+
 static void PrepareLumenStorageFormats(TArray<uint32>& Spirv, const TSet<uint32>& WriteOnly)
 {
     TSet<uint32> FloatTypes;
@@ -552,7 +590,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage6_SkyUniform2_VolumeMarks1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -568,7 +606,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Metadata fields are additive. Invalidate only the affected jobs while
         // AppendToKeyString invalidates complete shader maps containing them.
         if (NeedsRuntimeStorageFormats(Input))
-            Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(5));
+            Input.Environment.SetCompileArgument(TEXT("WebLumenStorageFormatVersion"), int32(6));
         if (UsesSingleVectorSkyUniform(Input))
             Input.Environment.SetCompileArgument(TEXT("WebLumenSkyUniformVersion"), int32(1));
         if (UsesTranslucencyVolumeMarks(Input))
@@ -876,6 +914,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         NativeBindings.SetNumUninitialized(Count);
         Reflection.EnumerateDescriptorBindings(&Count, NativeBindings.GetData());
         const TSet<uint32> ImageReads = RuntimeStorageFormats ? FindStorageImageReads(Spirv, NativeBindings) : TSet<uint32>();
+        const TSet<uint32> LoadOnlyImages = RuntimeStorageFormats ? FindLoadOnlySampledImages(Spirv, NativeBindings) : TSet<uint32>();
         TSet<uint32> WriteOnlyImages;
         TArray<TSharedPtr<FJsonValue>> Bindings, Parameters, Resources;
         for (const SpvReflectDescriptorBinding *Binding : NativeBindings)
@@ -899,6 +938,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
                 Json->SetBoolField(TEXT("textureArrayed"), Binding->image.arrayed != 0);
                 Json->SetBoolField(TEXT("textureMultisampled"), Binding->image.ms != 0);
                 Json->SetNumberField(TEXT("textureDepth"), Binding->image.depth);
+                if (LoadOnlyImages.Contains(Binding->spirv_id))
+                    Json->SetBoolField(TEXT("sampledTextureLoadOnly"), true);
                 if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
                 {
                     if (RuntimeStorageFormats)

@@ -1,0 +1,728 @@
+{
+  "date": "2026-11-03T11:40:01.117Z",
+  "pass": true,
+  "completeLumenScene": false,
+  "rendererOverrides": [],
+  "modules": 161,
+  "pipelines": 145,
+  "executionCases": 6,
+  "policies": 8,
+  "depthAtlasCases": [
+    {
+      "format": 11,
+      "binding": "SourceDepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "SourceDepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 11,
+      "binding": "DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 11,
+      "binding": "LumenCardScene_DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "LumenCardScene_DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 11,
+      "binding": "LoadOnlyTextureWithoutDepthName",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "LoadOnlyTextureWithoutDepthName",
+      "checkedPixels": 16,
+      "pass": true
+    }
+  ],
+  "shaderAccess": {
+    "loadOnly": 148,
+    "filtered": 100,
+    "frontLayer": [],
+    "sources": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0837CAD54BBDF31811D06EB17176D2EA\\input.json",
+        "sha256": "64d3a437d525dd3e5e8f523d67d370b2cbb87580d9e12c996d32ec4da5b2e568"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0837CAD54BBDF31811D06EB17176D2EA\\output.wgsl",
+        "sha256": "14604e4f31e1f404b6be63ab32eed8e4ac9e3aab1247c38dfd98226c6f15e004"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0B1B42D94518BEAA60A44F9DBDFD0F51\\input.json",
+        "sha256": "f8d593b899677a91682f93e5d993f44dde8dfc5d345460f74a228667bb69b99e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0B1B42D94518BEAA60A44F9DBDFD0F51\\output.wgsl",
+        "sha256": "ad12c64265a20591748e853a8c8da02b0bb76359f73328dc4dd623711e7925b4"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0CB471174B42C5EE457D56B014FCF0DE\\input.json",
+        "sha256": "e8e438826331da3bc03f3a6a3e8c5ab1bdd3fea8e261e50f380475f9f886646c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0CB471174B42C5EE457D56B014FCF0DE\\output.wgsl",
+        "sha256": "5834503720b3229d036b9837afb66c5d3f5bdcf102b009caa591ab034208f275"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0E7A157D44F8E4BC268E2CAAA09A271D\\input.json",
+        "sha256": "e8100a2f04141aa0192df3ffe1e1ef9cc6e16e679fc00bfbbd88ab40127bee43"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\0E7A157D44F8E4BC268E2CAAA09A271D\\output.wgsl",
+        "sha256": "2519e0a54e24acf3f7dae2fc10e02e7229aa055e636199df487aa64bcbfedd0d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\14B442C144E0BBFD3FEE719A09D53A6F\\input.json",
+        "sha256": "1770e267aa004a83fcd927ece7d200f373578a5ec58e4fda0e1847a90270c5ae"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\14B442C144E0BBFD3FEE719A09D53A6F\\output.wgsl",
+        "sha256": "2995dd11715fe36fa6c0d902a51aa83449a23fae2e4b8d48981f2136c3742901"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\158ADC5F45742492006B21B25633708A\\input.json",
+        "sha256": "662bdd8cf04844860d6f88969faceffb25e181270e48aaf1f552c4d58251c414"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\158ADC5F45742492006B21B25633708A\\output.wgsl",
+        "sha256": "7c5631785cce9edc13ceba8e076cf9c25eb51add063bca9c3cf3a9c544bab5a9"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1794D1394106C22CA39F86BCA81E30F7\\input.json",
+        "sha256": "8367d0f5fec278d603cf05113a25d15fdf6517114392c58b6e7aee07e69b2a71"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1794D1394106C22CA39F86BCA81E30F7\\output.wgsl",
+        "sha256": "f0a11febacf7b6595a0e9f2addbcd09184b02413b198bcd72f9e4ac1507d8e10"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1CBA2670440E51C4FE9D9BAE08D44715\\input.json",
+        "sha256": "47fd9eb6526e2d03aba89a2ee9c2f5c3c2e61a3a41db86a15ab8bfbd1d6b8b1a"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1CBA2670440E51C4FE9D9BAE08D44715\\output.wgsl",
+        "sha256": "366bf140666c79ab9c6e5707abdb19cff94343ac8fe2b9e07a47169ab5b5e6c4"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1CFAB4314040E9E0E9E7638465B890F0\\input.json",
+        "sha256": "be13f1fc11a0ed46d6b3e5c6ff3a63abab1e81748746f72c71ad159f1e5e3d90"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1CFAB4314040E9E0E9E7638465B890F0\\output.wgsl",
+        "sha256": "b543279140f67e6fee02777ad240356caa1baaef46a7d362b29f431a60703d62"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1D4146084820F94DC9E701B600293AFF\\input.json",
+        "sha256": "a4894223b0c0f48169936b7fd82e99182c7160443f4fd7dd44f70f0a925aac82"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1D4146084820F94DC9E701B600293AFF\\output.wgsl",
+        "sha256": "fed895f45adee8a1b2df0ca9aec5cda095277a97373dabe9b93484931948e2b2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1E933F9944356AA0A54E3C99FB4C2986\\input.json",
+        "sha256": "8af5d0648d73de8d8adea512a0cf17ff73a606711ed28b13800c0c18b038ed90"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\1E933F9944356AA0A54E3C99FB4C2986\\output.wgsl",
+        "sha256": "786beb51bda6fb656fc73afd3f7c20eb350caf42eed4cc3d86e7e88bab3a0629"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\27697400488D8BCB66AA96BDD1545E29\\input.json",
+        "sha256": "0b5123134b62476106e1b01c80f1f6cf2876b103450a9588c39225df3da5d88a"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\27697400488D8BCB66AA96BDD1545E29\\output.wgsl",
+        "sha256": "e8e3b6c70d1b98a50b8c0cdcf5bcbc0f7add262efa931d757fa0965b0018d7ac"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\294955024CC0E0616FA828B245B155F1\\input.json",
+        "sha256": "efa7704ef3c65da98b365d2b70130f8461d70bc91cfc22dc6fb1fdec0d8d5702"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\294955024CC0E0616FA828B245B155F1\\output.wgsl",
+        "sha256": "94e30f1756bab2d329df352fa5534977cca6da7b69056c26034a5fec438453f3"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\2B55FBED4BFEC60DECD16EA27540D636\\input.json",
+        "sha256": "965b3c437e5f9fcd675eef46a218e3841da75e8100339f2e1b948352fbff26f3"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\2B55FBED4BFEC60DECD16EA27540D636\\output.wgsl",
+        "sha256": "e7d8f52231d9309de29a58ec71b88affa9455a0bb177a71de817839427724972"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\2DFD009643AE27BA3C0E7D9CEFCD7FC6\\input.json",
+        "sha256": "8a17ac3b6dd0eea1ab3a74ecb81e6aca0ed202688b08c2d214281f13012cfcf4"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\2DFD009643AE27BA3C0E7D9CEFCD7FC6\\output.wgsl",
+        "sha256": "20913866a1b19c9b3b302eac40585a426a950a0aa80cd34cf495f83888ff033d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\33E43642470999A87D8DBF8D1E59EABB\\input.json",
+        "sha256": "2af1cd2b782b21579289d691ee8ceee08f89b3a7a7d550df643bc23e4b64be7c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\33E43642470999A87D8DBF8D1E59EABB\\output.wgsl",
+        "sha256": "c1556db64fae72f4025bc39b30bf05a3c92a14565fec08b8eecde9c754d0d985"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\35C9E47F4084CA552CF8A281C418EADE\\input.json",
+        "sha256": "fd54824a7937077d740fc5891787ef0a20302d215031e64db73c6750fdd9b05c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\35C9E47F4084CA552CF8A281C418EADE\\output.wgsl",
+        "sha256": "4b1ca3155de80f5d8fb6e27a36254a5e8cd950c80c06208a0febfa1169b50200"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\373246774DD9BC19F98CE5AF5D66249D\\input.json",
+        "sha256": "2109edd8b48cbfddd87feb0473ff8375828e43094f27e3d10f708200c014d452"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\373246774DD9BC19F98CE5AF5D66249D\\output.wgsl",
+        "sha256": "decced0d9f54fd765e5985c3c2a35ca45b4f8bf8f76fa23b306741c4b30cc09f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\375392F84DFECB7DD6D67B9EEFC25817\\input.json",
+        "sha256": "4daddb55086f1701682a5b5fa84f96d6a1afe13e41fb7d068d9bb17ec36abb3f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\375392F84DFECB7DD6D67B9EEFC25817\\output.wgsl",
+        "sha256": "207ae1623417651c99fd655b67a9614e759bdc1edf0cb6973b6c9135b29be14e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\3B75AE884788F32F3AE8538E462BD343\\input.json",
+        "sha256": "1966b28665d66a9cf042ec2f7462a5437df097c5a575ca8634dbe687dbe956f8"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\3B75AE884788F32F3AE8538E462BD343\\output.wgsl",
+        "sha256": "cf42dde0b3b4606e5bc86c0d30c869a65bf57c3196a742963d1af5023bf1423f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\41C8AC394FDFE386B9D3D299BC5FF943\\input.json",
+        "sha256": "e381d16e9e9833d0873bdccc640a05ccb86f10730beb63a479dd899907e94d21"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\41C8AC394FDFE386B9D3D299BC5FF943\\output.wgsl",
+        "sha256": "3654d8a5580be2c4030542fe04715f9e59e5b369e1843ce5478720333857db6a"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\428169AB480305C061CD3B99F801CA5C\\input.json",
+        "sha256": "4238593a2b192c7129d85a90f28add728e55906c90396502c3a908cdcb5b2ff9"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\428169AB480305C061CD3B99F801CA5C\\output.wgsl",
+        "sha256": "2573b4f534e9ab41098db84b0607e9984ee39e564125f18922efc40f858b485e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\42E96E5B46E1E8EAE5BFC2A642AC172E\\input.json",
+        "sha256": "596e8c7c89f70bb6d6110f3dcea5f4de92fcdb710a583a9b44a34d538f9f50d8"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\42E96E5B46E1E8EAE5BFC2A642AC172E\\output.wgsl",
+        "sha256": "908b89f06fac3ad76f07dbe3388e2c3d96c9595036db352c22f584e9ad2ce618"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\4306AE4F4F8C9C759163E2A9BF35E516\\input.json",
+        "sha256": "bead1fe2e56d0b209d8ea37713fef8d7e2bb8b564c71ea19df9fdd29c891344c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\4306AE4F4F8C9C759163E2A9BF35E516\\output.wgsl",
+        "sha256": "87364e767f64abdf5aea191ffeb7595c15ed9762acc72e17a7031c4dbe49d59f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\44B78A8C4C669B1407D463ACA08F5B6F\\input.json",
+        "sha256": "aa73e820010f485e7fc655c41bbac0d9d703dd06303b3e9737fca0671a8d2ed4"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\44B78A8C4C669B1407D463ACA08F5B6F\\output.wgsl",
+        "sha256": "2af49b7a5d4fbf921487b128ef1ed09ac34bf1acb2cac05f3ba7888d1a5ca84c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\45312F73495F3B64EFAFB2B41EEF88EB\\input.json",
+        "sha256": "fb43b3c65e0d16ec4e659667e9e5cde29c4321137654783f4ce5537c4e6b6bfe"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\45312F73495F3B64EFAFB2B41EEF88EB\\output.wgsl",
+        "sha256": "031c49f0ba9beb53fba783bb1cd3b38928eed97ab6e6f8d3eca09d82cb4c02b7"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\46EAC71D4CD30FE5DA2F80B7A0C91D7C\\input.json",
+        "sha256": "ea7b2e00b1f7f14b7ed2a42419f06ad1ac81c910463405cdf03bfbc59d19229d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\46EAC71D4CD30FE5DA2F80B7A0C91D7C\\output.wgsl",
+        "sha256": "3bc806c3025c3cad293d2a7479eb306fce7b7a065c40053159dfd936e397ddab"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\49E5F492413FF7951A2B36BA3CA48409\\input.json",
+        "sha256": "f1ca4acaa1d3ef7dbbd45e6e156b55f34842b4f3126eee4e2f54e4e41504deae"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\49E5F492413FF7951A2B36BA3CA48409\\output.wgsl",
+        "sha256": "c2dfd30352924833cf9aba0e552029e585e52b3afb4a35e76e99c235e4b739cd"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\53AE2FBE4BFE4E2D2E20CF903D647A82\\input.json",
+        "sha256": "50e65c080cb5441992ca0dc532c6fb31f7bc0c11bccc66ea94b7f673865b37a5"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\53AE2FBE4BFE4E2D2E20CF903D647A82\\output.wgsl",
+        "sha256": "5963f0872c3e1a13633e02dd4bd37b7346126f4c849d0f6452122fa7fa308daa"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\5492DFC541CFFDC9CD1A9381EC893C8D\\input.json",
+        "sha256": "3675bc945c783628d64e038a848877676a62b654e26e8507db652be0e16f1880"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\5492DFC541CFFDC9CD1A9381EC893C8D\\output.wgsl",
+        "sha256": "8e8035bee6f7109c2aca8ed1c90221fa29c3594b6c3e0c318ad3342058284381"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\5649AA764FAA4ED1DBDD86ADF4A03AFC\\input.json",
+        "sha256": "cb534bfe323aa1d3f418812bcb5bc22ca92cc4059175c51e43b76417072e71a1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\5649AA764FAA4ED1DBDD86ADF4A03AFC\\output.wgsl",
+        "sha256": "2c5c47856cd115e375e87267f7828f4499f523f937b4035a2afb67894a20d611"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\6210307246188D9BF70BC3953F2119A7\\input.json",
+        "sha256": "85269aba3f5e1fecbbbc526becfc80d826765e791cd24ffdd35c160fc039f4ff"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\6210307246188D9BF70BC3953F2119A7\\output.wgsl",
+        "sha256": "66961ab9f892550499401924357f3cf55bc643868ea763dbc826fe220de51768"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\640513D34EC6F2C3DBC7B5966C38E5A5\\input.json",
+        "sha256": "6269d41c6c0df921cd4712934fb8d5b6f4dc0841802b5b4401bef61acda5f3d5"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\640513D34EC6F2C3DBC7B5966C38E5A5\\output.wgsl",
+        "sha256": "059ec574f6949813bed44101eb57843e1b9e14c04ca4bc2a1fcbcf587d8f20e5"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\64FCB97E47838149125407BD237173C4\\input.json",
+        "sha256": "fc60e8182311ce2035fb3abea94e7238a54613032bed9a19f277c062bc8decc3"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\64FCB97E47838149125407BD237173C4\\output.wgsl",
+        "sha256": "bfe925ad760cd04330f0a4d58de855e60d7c14c02a45e39125a8c7355238d7b2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\670FC625456A378B75E9F7BF181869DA\\input.json",
+        "sha256": "9d1fc988caf3140086e40c9b2b72f7af0ef81da3a1ef44cf05f824dc6b67824f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\670FC625456A378B75E9F7BF181869DA\\output.wgsl",
+        "sha256": "ce01f12f12f4f0936f1dbe6ef5740ad4ff2a66911e5f8a8599b011b28ab0313d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\78587A3B476E44577AE5188C3B46DA5C\\input.json",
+        "sha256": "19783a7b6859314bdc2c157b41dfdec6cfe480e81799d439cef5b97543a113d2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\78587A3B476E44577AE5188C3B46DA5C\\output.wgsl",
+        "sha256": "3cf18613ab477f042d0f4566a3d4056a3b847df5e91c1c54033b1b8d0028d7a8"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\7A99BB4B4A1378102B1858B6924F170B\\input.json",
+        "sha256": "97df3df6e79ee4a292681ca189de1584e355a0a021d8c46cf02422856dbab05b"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\7A99BB4B4A1378102B1858B6924F170B\\output.wgsl",
+        "sha256": "5520445ee39fbc7427ac7d9c03d3a90a55462144301c589b1bfb009156a900ba"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\7BFCD80544D233866DF1DBBCA34C05F2\\input.json",
+        "sha256": "dc1e15cf1dad1dd5e328550019f572eb910588fc5cb760a5f47cf3873b816143"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\7BFCD80544D233866DF1DBBCA34C05F2\\output.wgsl",
+        "sha256": "d629c9fe5087920c708a1630c770b70f96373dd1eb9ad962f312b8078fcbd8a5"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\7FA233AF4CBD68BD602CE9A8C2F9F974\\input.json",
+        "sha256": "3efe20297b8f25963dcbfb74332344366d35bc12c9fc90f1dddc1bdd64a5ffc6"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\7FA233AF4CBD68BD602CE9A8C2F9F974\\output.wgsl",
+        "sha256": "a56e17291f5d2e87c8b01aab56f0e0abfd053270de5003d4a8bb2225686a2d78"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\807129084309FA61CEED5CAB601B62EE\\input.json",
+        "sha256": "8b7080670366805627ffa7aedbc61b13fd7670cf4c507b43dd45a95d5771d7f9"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\807129084309FA61CEED5CAB601B62EE\\output.wgsl",
+        "sha256": "77b732738dba8b2e2c8553325ed5cce17aed90de886127148bcde7348ad1bf51"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\833AF6BB4AB88D2BD4E141A120B5D9CA\\input.json",
+        "sha256": "8ff33d19dcfdb64148893cdcbe3ac8580ce13fbada7e2e0e818fd81f151e7830"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\833AF6BB4AB88D2BD4E141A120B5D9CA\\output.wgsl",
+        "sha256": "11a4b04016c927110fd1279b75fec93a4a09e9271b900ee867cd54dd5c17a626"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\86DD4A9C43B91FAD55156EA57ECD49D4\\input.json",
+        "sha256": "a1ebf5895673f1bb8f2d11ce070f226bb5aa810913372cff633442b84451a97b"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\86DD4A9C43B91FAD55156EA57ECD49D4\\output.wgsl",
+        "sha256": "5430db4f0adfa1a354016553849c7858afbffb4fb086dff4efc95206953afa59"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\8F094F114ED01927F9ABEA84CD625629\\input.json",
+        "sha256": "805d894e2ad6594cdfd097081ef424f9eda683c93a0a46ca1dd36d6171d6163e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\8F094F114ED01927F9ABEA84CD625629\\output.wgsl",
+        "sha256": "46e07f3c6762d050699e5884ffea0444a3492210c90604a8a5af2c5cf4712f37"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\8F18B56840093AF7A50E2A8940E623CE\\input.json",
+        "sha256": "1660586d544b5ba75a114a33ed002d9d355036aff95858d0781eab13b0be4114"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\8F18B56840093AF7A50E2A8940E623CE\\output.wgsl",
+        "sha256": "21215ffe8a962ae665049db427611c036d7c60c17b1d428de598b614e3f6185e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\930082E94069A4170D52E9BC27A5EB3A\\input.json",
+        "sha256": "82dbe238f56c68e533025faa90a1703460d166a982b570a276e24108d9bf0652"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\930082E94069A4170D52E9BC27A5EB3A\\output.wgsl",
+        "sha256": "07d0ba1b0fdde39f7cc98b170c310a0e8e52c35cecaffe782378560ea04176bb"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\95BD2725419BB46C5CFEECA08655424D\\input.json",
+        "sha256": "9567797ab9fc0385f6d8f94f21d8c66f0e22c58bc6327713a8e27772b67590c9"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\95BD2725419BB46C5CFEECA08655424D\\output.wgsl",
+        "sha256": "a87264a1f60da1fd12b218adc214a9f7055f7891f80cbc97da614287c3de9d99"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\975181A84B61A17B49D3D3B549238162\\input.json",
+        "sha256": "e0f915c67fb533332cb3fe829d10eff66e855f71e36263d99387b0c27dab28df"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\975181A84B61A17B49D3D3B549238162\\output.wgsl",
+        "sha256": "03305a982be54e3fd3edc3d0fc130cf3bae213ca0dccf87c7af4e3f8f7b17faf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\9E8FFCB74AADE61AE252329B8331004D\\input.json",
+        "sha256": "85cd175a6f1586a356236c5175727ced7f8bf22d46ff5273f48089ae7aa5c7c7"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\9E8FFCB74AADE61AE252329B8331004D\\output.wgsl",
+        "sha256": "b48d2d6d9eb63035388d30a6b439203c20babcbd95f094b7dbafa0a913e26a2c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\A0E045A146D4D8A36E2CFD825DB95682\\input.json",
+        "sha256": "98a19ffec0451ee4ed83833c2712b32e6e7f4e3af8ff3a9b03f3143324271432"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\A0E045A146D4D8A36E2CFD825DB95682\\output.wgsl",
+        "sha256": "54b1953f7f972a95f748ca4ad2a3ce26306e9779bb0e5b086167c7dcc9b25081"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\AB0AF19C411BE5EBB569828C94761861\\input.json",
+        "sha256": "3a5175a9b5fd27e865c42fe009344264f8931d671c9e2359ab82caac54551565"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\AB0AF19C411BE5EBB569828C94761861\\output.wgsl",
+        "sha256": "f756c69e5dac0f14e86f474b8a46e2e929e823d886547d2a689737ef0acd728c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\B0EB5365461F5D15804084BEB7E1A6AD\\input.json",
+        "sha256": "c7dc489794bbd322e86d6b1c9a5e24495c244ee36fc2f85cdeb34273997a428f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\B0EB5365461F5D15804084BEB7E1A6AD\\output.wgsl",
+        "sha256": "76106c0d2006221ea18dbf9dd3b5aa53a612ee6142acaee854e1a27104d5161c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\B174E49B4164A741B0D8D7BBC2D80DFF\\input.json",
+        "sha256": "47508f1c512b539d12b88bff074671788a89fba40888a73bce13ac7bbac56dd2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\B174E49B4164A741B0D8D7BBC2D80DFF\\output.wgsl",
+        "sha256": "d693911e19523df14d74ad09fd485d984ad9f028e3ebc7c5fa6c626ff8e2d4f2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\B8D6718142C85AFCDEF120852E4AD602\\input.json",
+        "sha256": "0fb05f342968b2937826d1404ed8306cf31d42a5de98986654aaad7a82af2cbb"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\B8D6718142C85AFCDEF120852E4AD602\\output.wgsl",
+        "sha256": "5650927145736117361d911626f2f1cd236d5d7cbef9150b702a69801c27ac7d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BA73BE954726DA034F31B782421BF6B8\\input.json",
+        "sha256": "a547f4f9a0beda684ca2a0fe34aaa5a4920d24f50ef1a2b124730fc981be6eb7"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BA73BE954726DA034F31B782421BF6B8\\output.wgsl",
+        "sha256": "f88d3d4fa4c31a182c1fc76f0d339a25331bd630fad2d3def35ca1d29b3b42a5"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BB37A45041DD777AEB6BEDAE42073650\\input.json",
+        "sha256": "44cedf1a5311f5834790a7f40680e043057e4f0b0a818c1957cf6b7fb31c8fa6"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BB37A45041DD777AEB6BEDAE42073650\\output.wgsl",
+        "sha256": "0aeb7ac9ef655ee9ff4834bca1d947d1c9401fae2a1303722b648fd469c198a6"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BC890B9E4458FB4F8603868FBB668E08\\input.json",
+        "sha256": "3af83deab8f06d9766ff82241edbfccf6577fa1dcc6bf1333f425d02886217f1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BC890B9E4458FB4F8603868FBB668E08\\output.wgsl",
+        "sha256": "5e0e38ae31899185a897b90ad051deab0271a30573ad259bec778c9fb5d3bf07"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BCC9D35B4A0887CC798D90BB71E0DD69\\input.json",
+        "sha256": "4f00daec13447f48bdf59e638bbfed84d5b9b8b7cfcacc30f5262dd36f8e698e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BCC9D35B4A0887CC798D90BB71E0DD69\\output.wgsl",
+        "sha256": "e358754147bf8b155eae4a17d6a43c0ac87fbe8d33ff1cbd75f15fbcef7c4732"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BD35C10C410493431B7386B92B62EB56\\input.json",
+        "sha256": "f44209d3a9419c6744227f78f265c7e5d4a0cc3208059c9a008c27dc10899ad2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BD35C10C410493431B7386B92B62EB56\\output.wgsl",
+        "sha256": "3100abbfcd58b81e183ebdad37f9954538ee4fb3798e0e73dee4c9e33bdb626c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BFBA4ACA458A0F9874463E9DB1CC18AD\\input.json",
+        "sha256": "82ef7c5aa16d74ce7c620e301246e4ef659bdede5df70af800f6f7b1031bb4d3"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\BFBA4ACA458A0F9874463E9DB1CC18AD\\output.wgsl",
+        "sha256": "4aea2dd52d99bc8b5aec4b35286559d983f403cdca240299254d0da1c04fd6fd"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\C6D5B1404642441A992B2D8569B586BE\\input.json",
+        "sha256": "24068a3c7bd3b582a90fa82fdf2c6d1d913a58b64fab2057c11a1d4b84a0d600"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\C6D5B1404642441A992B2D8569B586BE\\output.wgsl",
+        "sha256": "2ea40d43ac3ffb22e5a05acb3c3cc7f649626ee7a75f462051bfdbe858687afd"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\CA4D413D4290041E16DE74A006886799\\input.json",
+        "sha256": "2a163fb40b2e54a61b2a3f2436924953faa1c0a45bb1977c889a1bf39ab2a8cf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\CA4D413D4290041E16DE74A006886799\\output.wgsl",
+        "sha256": "bd53d30c4d8fa4cc312f68f3ea99d2b4db33a3dfa56993f7f1639c4cf5f5d33b"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D0E8D5ED419066E947F85D8BA2DEFE9A\\input.json",
+        "sha256": "d3b8ee747d45cad00fbea141e1205a7a0bf4f504f5ea2081de8cf8fd6cb5edfd"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D0E8D5ED419066E947F85D8BA2DEFE9A\\output.wgsl",
+        "sha256": "8fdabc85945279f1109912dc69c327b8e32b8b8e3a1249edfdcd935bc1c3ac83"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D11514094D0387DE789875A6187193B7\\input.json",
+        "sha256": "64863a454cc356a91249ec678e0d781374f95889743e5ac64573537e234b0934"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D11514094D0387DE789875A6187193B7\\output.wgsl",
+        "sha256": "e94d509c1329b2a6d65bcb02f65e5ce553debc91b97f05f3f4f400042a41d42a"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D20D7AFF4C010C0C7CF77D9B3251EB09\\input.json",
+        "sha256": "11e1e092c7f6cfd87109eba17a6e891b85e743266515f7cb79e71688f55a150f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D20D7AFF4C010C0C7CF77D9B3251EB09\\output.wgsl",
+        "sha256": "b53111123c80a4c1900754732180d70a6c46d733965369501db8b22a0b00c628"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D4AD2AA342DCE3826AAAC5B8A983FA5C\\input.json",
+        "sha256": "9dd58398cf652d19f3ba808c08a6d91561a615493044904577ca1cdf6f08eafd"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D4AD2AA342DCE3826AAAC5B8A983FA5C\\output.wgsl",
+        "sha256": "7d587381208a90fc4ff02457ba6d226acb0d7f06edcc7eee2b15e657348425e0"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D5A5A4D74B99BBCCE6F6A6B49AB8E9EE\\input.json",
+        "sha256": "3da420804eb4d66faae556788e1e70c827d4f0ce2fcf48d67fa770e4bb160115"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D5A5A4D74B99BBCCE6F6A6B49AB8E9EE\\output.wgsl",
+        "sha256": "fb4ce4a74cc7c6a130507580dc709b047269228f1703039caa5e7c29690a1136"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D655DA8B46392ECCA0654982E8E1AFA3\\input.json",
+        "sha256": "2e7864ad351cee16807f640458c2840968bcb0eb55084cb4ba02603e01fdc123"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D655DA8B46392ECCA0654982E8E1AFA3\\output.wgsl",
+        "sha256": "82544801f9ecf60fc5ea1a8eb15c6674a14feaa1fc4d723e1fe20e41674eccc8"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D750A99D455378169659C980B21985F7\\input.json",
+        "sha256": "1fe8b216afb8b0327f78f11a62c7145f69458b80af39a00fbb8fca39f967fafa"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D750A99D455378169659C980B21985F7\\output.wgsl",
+        "sha256": "a335057ddee6a6ac7686baab640e85234705fa0d4e6ff4547b841020b02c26c7"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D8A097544B24CBC56307E69EBCB58F6F\\input.json",
+        "sha256": "9bea59cff7fb10ca87c48ca71899e2aba38a2d4904f3d730d14f3c80704b6f47"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\D8A097544B24CBC56307E69EBCB58F6F\\output.wgsl",
+        "sha256": "8e11f27e6b95d3e9a3a5835c4f4f0156c06a3443c449db969007c690fa3b417c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\DA82825C4FFA5690B6B28A8264A7F5D3\\input.json",
+        "sha256": "18e57279870aebdf7d890b77d402c83a9b6f48714530df42cb207cdbf2287452"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\DA82825C4FFA5690B6B28A8264A7F5D3\\output.wgsl",
+        "sha256": "95351c9871ac826561b10b120c0f2173c9f64042425e0319180607256f764823"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\DB78CA61439D97DBA98F6F84229C0183\\input.json",
+        "sha256": "ccb15462af7e7cd7a80982279d4c63ddb912e6dc66dd04aa787e6aa9056faf31"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\DB78CA61439D97DBA98F6F84229C0183\\output.wgsl",
+        "sha256": "7f0c4915a5a986728720f18916a33f7c469dbd041173ba5e4a378369dabb0317"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\DE0BF0CF400F07330C17ACA289B57E00\\input.json",
+        "sha256": "f8a6684c0b826b2199266750b4dbe80d219afb1335bed796fb8192b2db2ef397"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\DE0BF0CF400F07330C17ACA289B57E00\\output.wgsl",
+        "sha256": "1a45ec20c7ca346c3c163abfddb735cb21215d77bef8ac619c319619992554b9"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\E07006D341AA9C0813F693B76948D7A2\\input.json",
+        "sha256": "6de6b9dd1b582448b7480a83bf055e38d2421cb3ec0b577e12f7b004c9ff5d07"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\E07006D341AA9C0813F693B76948D7A2\\output.wgsl",
+        "sha256": "d36fb9b7f67f9c4f4033b1f83c2e2b1d76eb8461d7f4f66c04026636919191ac"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\E520C41D4E483C5C2B04329093410820\\input.json",
+        "sha256": "ec65a229adead86b1cda7ff17808c27a4c854c45163bc1098b52c8ff2bf9d501"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\E520C41D4E483C5C2B04329093410820\\output.wgsl",
+        "sha256": "09402c5c752345c7d4cb55cbefee7a81a4f04079f0cf1d55cf7bc3d90ea1dd8e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\EF8DC7B24C6009DFFF2BA48D9FDCC8F4\\input.json",
+        "sha256": "ca62ab9c794d934030dea35505ee996f23baf9dfdc98380dff1f582d7a6feddd"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\EF8DC7B24C6009DFFF2BA48D9FDCC8F4\\output.wgsl",
+        "sha256": "888738ad31317ddb0265291ff09698038c409a9874f983dda3405f1e54fd2ac7"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F0526D8B4696FC2B13DAB0974957ACD7\\input.json",
+        "sha256": "e6fde509be051f65bec6b7d9f963183c4357cb196c83be909af14b01481d8121"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F0526D8B4696FC2B13DAB0974957ACD7\\output.wgsl",
+        "sha256": "2b9812472567d3afc8efab06b417126f94c298084ad6bbc083b345ae115a761f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F34E20404F54C0986755CA8001610EED\\input.json",
+        "sha256": "92d7855125c17eba98d78302d85c5b1ff4f014704b2865c87c2f9be0dbd5a59a"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F34E20404F54C0986755CA8001610EED\\output.wgsl",
+        "sha256": "2f757910acdb0d449870b7469e3218fff2534d237472b9ecf18312cfc7c536e4"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F606AF964E1063B9A362BE84E38CE143\\input.json",
+        "sha256": "a1232bfc6784674ef61359ddb05c7dde08301a8785957d4ec69e6a1577479d0c"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F606AF964E1063B9A362BE84E38CE143\\output.wgsl",
+        "sha256": "d7770d9c1966f617c1410a58406783791d074c54de4aadc58db857a3dc5b867b"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F6E7BF8B41E134BE5052CA9CF936DB65\\input.json",
+        "sha256": "344ed0be0b74e5e0bc6ca1fae8c1679e739331a3db02aa6371c1f42aca7a71a5"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\ShaderConversion\\F6E7BF8B41E134BE5052CA9CF936DB65\\output.wgsl",
+        "sha256": "faf38c1c7f9015ab2a7f6d8240a8cbcb9ce6ac79ebd845fc13daf79a6de79130"
+      }
+    ]
+  },
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-193519\\probe-results.json",
+      "sha256": "19134703650574058dc7f7e300e5e9b78b66e4d966644b4fa86e703e25a2c5d7"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-load-only-all-gpu.json",
+      "sha256": "e2c1ef924570d9ee621e4530065bac7705959a4d7eedb8c3ad6af28d2ecc6de6"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-load-only\\lumen-storage-rhi.json",
+      "sha256": "0133c046392e172df9805b8533168021638b93cc872c724861c36f5d5083b508"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-lumen-sampling.cjs",
+      "sha256": "3ffae985d440f1e0cd8321fed538ddbd944d15636ecfa6bd7a810624fc624318"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "5fbfa7d5401a4d5ae097bd65a8b7acb356216dd2e0350d30d84208bcc15e6c49"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+      "sha256": "d7de57ee862c7904b47b6a7356ed203dbfe310834eab3654e8c7ad180af92c80"
+    }
+  ],
+  "boundary": "Proven textureLoad-only metadata and real RHI sampling readback; filtered WGSL uses remain unchanged. No texture allocation or image copy added. Full villa visual, performance and peak memory acceptance remain separate."
+}

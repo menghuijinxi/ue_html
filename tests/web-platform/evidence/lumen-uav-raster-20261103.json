@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-03T11:14:32.234Z",
+  "date": "2026-11-03T11:38:05.908Z",
   "pass": true,
   "completeLumenScene": false,
   "rendererOverrides": [],
@@ -63,6 +63,56 @@
     },
     "format": "r16uint"
   },
+  "depthAtlasCases": [
+    {
+      "format": 11,
+      "binding": "SourceDepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "SourceDepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 11,
+      "binding": "DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 11,
+      "binding": "LumenCardScene_DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "LumenCardScene_DepthAtlas",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 11,
+      "binding": "LoadOnlyTextureWithoutDepthName",
+      "checkedPixels": 16,
+      "pass": true
+    },
+    {
+      "format": 4,
+      "binding": "LoadOnlyTextureWithoutDepthName",
+      "checkedPixels": 16,
+      "pass": true
+    }
+  ],
   "sourceReports": [
     {
       "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-probe\\20261103-185155\\lumen-shader-results.json",
@@ -73,12 +123,12 @@
       "sha256": "e03cedf2aa5f69ca04300b772ea47cd3270e2749b0729b0c82e462b341cd6d83"
     },
     {
-      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-volume-marks-v2\\lumen-storage-rhi.json",
-      "sha256": "c742b15c7dc37c06486dc7efc75cc2b02c04c928a6600474dc79ddd12961106a"
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\lumen-storage-rhi-load-only\\lumen-storage-rhi.json",
+      "sha256": "0133c046392e172df9805b8533168021638b93cc872c724861c36f5d5083b508"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
-      "sha256": "ab57fdb4b1649c4418560e86518507bb87719f8d60caacaf504fed0b281a7004"
+      "sha256": "f325ff984db87daa578c586328a8fb7c139b2555093f2959b09aaca985612bf8"
     },
     {
       "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-volume-marks-cooked-modules-gpu.json",
@@ -92,7 +142,7 @@
   "sourceFiles": [
     {
       "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-uav-raster.cjs",
-      "sha256": "63426fcf3fad26a9720cbfcdcbf3d4538c3ebbe50b2f4869de7b618df878139a"
+      "sha256": "f3bef16d1f876e92b2db3602ff6cd36ab07b9ef31a078e3a4bcd75e8c6f3d63b"
     },
     {
       "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Lumen\\LumenSceneLighting.usf",
@@ -104,7 +154,7 @@
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
-      "sha256": "6295008eed0fb6395953b7e64661bd457e7d546a50aa20939b46769aee1bff23"
+      "sha256": "d7de57ee862c7904b47b6a7356ed203dbfe310834eab3654e8c7ad180af92c80"
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
@@ -112,15 +162,15 @@
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUAVRasterProbe.h",
-      "sha256": "eb13b341b10b114fba5337cd4abbf9140bec3672750603306319017cc6897241"
+      "sha256": "4c9dd8c07b3ca6b084e07725fa983fda10f9c41b097955742f16c310eba6852e"
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPULumenStorageProbe.h",
-      "sha256": "9b8025788b84bf6220ee7c57832a6bbe55a861191e4f4b530c33ae1689207589"
+      "sha256": "ddd37c2a7635be61af4eaac4da16a48eb93bb261e10e4c1a51600091623cd32d"
     },
     {
       "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
-      "sha256": "190728058bf6b2e060202376189ef583a9a6b9f54240bf180feb22b0749ad210"
+      "sha256": "5fbfa7d5401a4d5ae097bd65a8b7acb356216dd2e0350d30d84208bcc15e6c49"
     },
     {
       "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Lumen\\LumenRadianceCache.usf",

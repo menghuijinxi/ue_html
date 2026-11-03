@@ -3381,7 +3381,8 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
             (Name.Contains(TEXT("SceneDepth")) || Name.Contains(TEXT("ShadowDepth")) ||
                 Name.Contains(TEXT("DirectionalLightShadowTexture")) ||
                 Name.Contains(TEXT("DirectionalLightShadowSampler")) ||
-                Name.Contains(TEXT("DepthTexture")) || Name == TEXT("ParentTextureMip") ||
+                Name.Contains(TEXT("DepthTexture")) || Name == TEXT("SourceDepthAtlas") ||
+                Name == TEXT("DepthAtlas") || Name == TEXT("LumenCardScene_DepthAtlas") || Name == TEXT("ParentTextureMip") ||
                 Name == TEXT("ParentTextureMipSampler"));
         // ACES tables use integer-coordinate loads from core, unfilterable R32Float textures.
         const bool ACESLookup = Name.Contains(TEXT("ACESReachTable")) ||
@@ -3423,10 +3424,12 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
             else
             {
                 const FString Type = Binding->GetStringField(TEXT("textureSampleType"));
+                bool LoadOnly = false;
+                Binding->TryGetBoolField(TEXT("sampledTextureLoadOnly"), LoadOnly);
                 Entry.texture.sampleType = ResourceType == TEXT("DepthTexture") ? WGPUTextureSampleType_Depth :
                     Type == TEXT("uint") ? WGPUTextureSampleType_Uint :
                     Type == TEXT("sint") ? WGPUTextureSampleType_Sint :
-                    Depth || ACESLookup || UnfilterableVelocity ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
+                    Depth || ACESLookup || UnfilterableVelocity || LoadOnly ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
                 Entry.texture.viewDimension = ViewDimension;
                 Entry.texture.multisampled = Binding->GetBoolField(TEXT("textureMultisampled"));
             }
