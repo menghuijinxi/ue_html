@@ -1,0 +1,15 @@
+[
+  {
+    "name": "bathroom-mirror",
+    "x": -620,
+    "y": 0,
+    "z": 160,
+    "pitch": 0,
+    "yaw": 0,
+    "fov": 90,
+    "ao": 1,
+    "shadows": 1,
+    "fixedExposure": false,
+    "ev100": -1
+  }
+]

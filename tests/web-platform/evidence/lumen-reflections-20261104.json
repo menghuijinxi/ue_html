@@ -1,0 +1,531 @@
+{
+  "date": "2026-11-04T09:31:10.357Z",
+  "diagnosisPassed": true,
+  "desktopReflectionParityAccepted": false,
+  "rendererFixApplied": false,
+  "scope": "One fixed bathroom mirror, 1280x720, warmed TSR and automatic exposure. No general feature or visual-parity certification.",
+  "cause": "The native software distance-field / Surface Cache path reproduces the blurred and incomplete mirror. The project hardware path retains reflected detail. This view demonstrates a tracing capability gap, not an accepted desktop-quality reflection implementation.",
+  "fixture": {
+    "file": "H:\\ue_html\\tests\\web-platform\\lumen-reflection-cases.json",
+    "sha256": "a76dc496840246334b35f8c697887ea5d8dba82b66a406fa47f35308b558c2e3"
+  },
+  "camera": [
+    -620,
+    0,
+    160,
+    0,
+    0
+  ],
+  "limit": {
+    "meanAbsoluteError": 3,
+    "changedPixelFraction": 0.05,
+    "pixelErrorThreshold": 16
+  },
+  "comparisons": {
+    "webToNativeSoftware": [
+      {
+        "name": "mirror",
+        "x": 605,
+        "y": 225,
+        "width": 420,
+        "height": 235,
+        "meanAbsoluteError": 1.9268287740628167,
+        "changedPixelFraction": 0.016403242147923,
+        "pass": true
+      },
+      {
+        "name": "wall",
+        "x": 270,
+        "y": 250,
+        "width": 260,
+        "height": 160,
+        "meanAbsoluteError": 1.2847996794871794,
+        "changedPixelFraction": 0.0016826923076923078,
+        "pass": true
+      },
+      {
+        "name": "sink",
+        "x": 650,
+        "y": 555,
+        "width": 440,
+        "height": 140,
+        "meanAbsoluteError": 0.9369101731601731,
+        "changedPixelFraction": 0.0014123376623376624,
+        "pass": true
+      }
+    ],
+    "webToNativeProject": [
+      {
+        "name": "mirror",
+        "x": 605,
+        "y": 225,
+        "width": 420,
+        "height": 235,
+        "meanAbsoluteError": 12.313637284701114,
+        "changedPixelFraction": 0.19167173252279635,
+        "pass": false
+      },
+      {
+        "name": "wall",
+        "x": 270,
+        "y": 250,
+        "width": 260,
+        "height": 160,
+        "meanAbsoluteError": 2.379551282051282,
+        "changedPixelFraction": 0.0011057692307692307,
+        "pass": true
+      },
+      {
+        "name": "sink",
+        "x": 650,
+        "y": 555,
+        "width": 440,
+        "height": 140,
+        "meanAbsoluteError": 8.176217532467533,
+        "changedPixelFraction": 0.031314935064935066,
+        "pass": false
+      }
+    ],
+    "softwareReflectionsToNativeProject": [
+      {
+        "name": "mirror",
+        "x": 605,
+        "y": 225,
+        "width": 420,
+        "height": 235,
+        "meanAbsoluteError": 20.37109760216143,
+        "changedPixelFraction": 0.486757852077001,
+        "pass": false
+      },
+      {
+        "name": "wall",
+        "x": 270,
+        "y": 250,
+        "width": 260,
+        "height": 160,
+        "meanAbsoluteError": 0.8871794871794871,
+        "changedPixelFraction": 0,
+        "pass": true
+      },
+      {
+        "name": "sink",
+        "x": 650,
+        "y": 555,
+        "width": 440,
+        "height": 140,
+        "meanAbsoluteError": 0.5238636363636363,
+        "changedPixelFraction": 0.00006493506493506494,
+        "pass": true
+      }
+    ],
+    "nativeSoftwareToSoftwareReflections": [
+      {
+        "name": "mirror",
+        "x": 605,
+        "y": 225,
+        "width": 420,
+        "height": 235,
+        "meanAbsoluteError": 23.21260385005066,
+        "changedPixelFraction": 0.49829787234042555,
+        "pass": false
+      },
+      {
+        "name": "wall",
+        "x": 270,
+        "y": 250,
+        "width": 260,
+        "height": 160,
+        "meanAbsoluteError": 1.1629246794871795,
+        "changedPixelFraction": 0,
+        "pass": true
+      },
+      {
+        "name": "sink",
+        "x": 650,
+        "y": 555,
+        "width": 440,
+        "height": 140,
+        "meanAbsoluteError": 7.563452380952381,
+        "changedPixelFraction": 0.01839285714285714,
+        "pass": false
+      }
+    ],
+    "webIndependentRepeat": {
+      "name": "mirror",
+      "x": 605,
+      "y": 225,
+      "width": 420,
+      "height": 235,
+      "meanAbsoluteError": 0.9022492401215806,
+      "changedPixelFraction": 0.00016210739614994934,
+      "pass": true
+    },
+    "webReflectionsDisabled": {
+      "name": "mirror",
+      "x": 605,
+      "y": 225,
+      "width": 420,
+      "height": 235,
+      "meanAbsoluteError": 47.50627152988855,
+      "changedPixelFraction": 0.975724417426545,
+      "pass": false
+    },
+    "webReflectionsRestored": {
+      "name": "mirror",
+      "x": 605,
+      "y": 225,
+      "width": 420,
+      "height": 235,
+      "meanAbsoluteError": 1.8258628841607565,
+      "changedPixelFraction": 0.017315096251266465,
+      "pass": true
+    }
+  },
+  "web": {
+    "report": {
+      "file": "H:/ue_html/tests/web-platform/results/lumen-reflection-20261104-cycle.json",
+      "sha256": "b790e8324406b9bdddc5c7580239ad47dde782125626746a4c2db5b563a9518e"
+    },
+    "cases": [
+      {
+        "name": "baseline",
+        "image": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-reflection-20261104-cycle-baseline.png",
+          "sha256": "c9145915fcce8b1baaa13d6cc2b02fc40680f3ef5ecf6c9e98303f16e190d5b4"
+        },
+        "camera": {
+          "x": -620,
+          "y": 0,
+          "z": 160,
+          "pitch": 0,
+          "yaw": 0
+        },
+        "lighting": {
+          "reflectionMethod": 1,
+          "giMethod": 1,
+          "ssrIntensity": 100,
+          "ssrQuality": 50,
+          "ssrMaxRoughness": 0.6000000238418579,
+          "antiAliasing": 4,
+          "ssrShowFlag": true,
+          "frame": 159,
+          "shadowCacheEnabled": true
+        },
+        "errors": [],
+        "losses": []
+      },
+      {
+        "name": "no-reflections",
+        "image": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-reflection-20261104-cycle-no-reflections.png",
+          "sha256": "bd79a747eb11a2c89c3caee778e637350442fd067cb2ed21e3eac045ccaf5066"
+        },
+        "camera": {
+          "x": -620,
+          "y": 0,
+          "z": 160,
+          "pitch": 0,
+          "yaw": 0
+        },
+        "lighting": {
+          "reflectionMethod": 0,
+          "giMethod": 1,
+          "ssrIntensity": 100,
+          "ssrQuality": 50,
+          "ssrMaxRoughness": 0.6000000238418579,
+          "antiAliasing": 4,
+          "ssrShowFlag": true,
+          "frame": 276,
+          "shadowCacheEnabled": true
+        },
+        "errors": [],
+        "losses": []
+      },
+      {
+        "name": "restored-reflections",
+        "image": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-reflection-20261104-cycle-restored-reflections.png",
+          "sha256": "5990f5c9f51446104dd8891cbb9f20f4d1c8b2ce58d9106ec473164a29df907c"
+        },
+        "camera": {
+          "x": -620,
+          "y": 0,
+          "z": 160,
+          "pitch": 0,
+          "yaw": 0
+        },
+        "lighting": {
+          "reflectionMethod": 1,
+          "giMethod": 1,
+          "ssrIntensity": 100,
+          "ssrQuality": 50,
+          "ssrMaxRoughness": 0.6000000238418579,
+          "antiAliasing": 4,
+          "ssrShowFlag": true,
+          "frame": 390,
+          "shadowCacheEnabled": true
+        },
+        "errors": [],
+        "losses": []
+      }
+    ],
+    "repeat": {
+      "file": "H:/ue_html/tests/web-platform/results/lumen-reflection-20261104-repro1.json",
+      "sha256": "f541aaa9521b06f34b2ac6444258bca05ca0dc0ecc54652de8d202bd8b9c39ff"
+    },
+    "package": "triplex-project-lumen-shadows-fixed-20261104",
+    "products": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\config-files.json",
+        "sha256": "0f53cec50d875d41d670952a5a452fbdb40607db33a10f195cc15c3549ac009f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\content-files.json",
+        "sha256": "6b455315fc246b7be7ff8c24f425bb93a03987e1a47a0938030d7654f43b2bff"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\content.bin",
+        "sha256": "af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\index.html",
+        "sha256": "63879e2427118325493fb918b2755b92dc8450303eea3c31ac534711f7e5e5d1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\UEWebEngineThreads.js",
+        "sha256": "aed674d684e35bfa1be3a083cf4c245fb618008871673f437e0038272eabcbd2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\UEWebEngineThreads.wasm",
+        "sha256": "99470af69d0d60d4313e3057c1ac293689b16b1db141e3efc2b3d9ae350fbdcc"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\web-content-io.js",
+        "sha256": "c55809fef34e77b0ced5a8be0e0b033b5b13f7e8e5c7818c276980b89f6ca8cf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\web-content-worker.js",
+        "sha256": "7493400199961d2085202a25f40226f5a104af7ff86d39bf68d8f0f47c2ebdf1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\web-engine-host.js",
+        "sha256": "2f0691bbeda1e763d6f1ca40fdbaa377e488fa56f9dce36c4d5c91cb81428f74"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\web-engine-worker.js",
+        "sha256": "f0f2de05a18159bc6ab9434dbc2d2e43982676b53373447f497f10277aa11534"
+      }
+    ],
+    "settingsOverrides": {}
+  },
+  "native": [
+    {
+      "tracing": "Project",
+      "image": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-project-bathroom-mirror.png",
+        "sha256": "7812d3cb605a011b034d31eba89b6cbf299a6af7f370a8163e0c1189d4e2c369"
+      },
+      "reports": [
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-project-capture.json",
+          "sha256": "f4fffe94b72ede71862deeaa169ec50e730c2dd518df58369e4f6eeda1e4e8a2"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-project-system.json",
+          "sha256": "149078caf0d91063742ac6a2025318aad009d9e99d926c0b1913f350f69fe322"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-project-input.json",
+          "sha256": "964ae9dd5d41a4db6ab1bb18c6830aa8f9d109891f6404d4f59c38661dd9f99d"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-project.log",
+          "sha256": "d9092681109ee6560c9fd000e2511d68d26507a035a4e38c514eec69c3deca23"
+        }
+      ],
+      "featureLevel": 4,
+      "variables": {
+        "r.GenerateMeshDistanceFields": 1,
+        "r.DistanceFieldAO": 1,
+        "r.DistanceFieldShadowing": 1,
+        "r.AOQuality": 2,
+        "r.ScreenPercentage": 0,
+        "r.AOGlobalDistanceField": 1,
+        "r.AOObjectDistanceField": 1,
+        "r.AOSpecularOcclusionMode": 1,
+        "r.DistanceFields.SupportEvenIfHardwareRayTracingSupported": 1,
+        "r.RayTracing": 1,
+        "r.Shadow.Virtual.Enable": 0,
+        "r.AntiAliasingMethod": 4,
+        "r.Streaming.PoolSize": 1000,
+        "r.DynamicGlobalIlluminationMethod": 1,
+        "r.ReflectionMethod": 1
+      },
+      "arguments": [
+        "H:\\ue_html\\tests\\web-platform\\build\\projects\\triplex-project-lumen\\TriplexHouseVilla.uproject",
+        "/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+        "-WebDistanceFieldComparison=H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-project-input.json",
+        "-abslog=H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-project.log",
+        "-RenderOffscreen",
+        "-NoSplash",
+        "-NoSound",
+        "-NoLoadingScreen",
+        "-unattended",
+        "-nop4",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-ForceRes",
+        "-d3d12"
+      ]
+    },
+    {
+      "tracing": "Software",
+      "image": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-software-bathroom-mirror.png",
+        "sha256": "36bad1055dc85b259ec82ac762bcf8442d72066c4c95f5a4b79d5f9c68d5c84e"
+      },
+      "reports": [
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-software-capture.json",
+          "sha256": "80964710f64da22fc7ab542914c7d3f0021a6931284a7139b32549f762c22194"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-software-system.json",
+          "sha256": "799c05f3601f74ff9d5204cb95ea0db1e3a082dd2f43228b68b2318aa0f85808"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-software-input.json",
+          "sha256": "4957d9b81fbb7fb168f3f171e774a432a1d919005908e116f1ff145c2656de29"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-software.log",
+          "sha256": "479d535cc54952a440fdbd60efa0eb8f1a5e7032eb55551bc6e82a031257ef07"
+        }
+      ],
+      "featureLevel": 4,
+      "variables": {
+        "r.GenerateMeshDistanceFields": 1,
+        "r.DistanceFieldAO": 1,
+        "r.DistanceFieldShadowing": 1,
+        "r.AOQuality": 2,
+        "r.ScreenPercentage": 0,
+        "r.AOGlobalDistanceField": 1,
+        "r.AOObjectDistanceField": 1,
+        "r.AOSpecularOcclusionMode": 1,
+        "r.DistanceFields.SupportEvenIfHardwareRayTracingSupported": 1,
+        "r.RayTracing": 1,
+        "r.Shadow.Virtual.Enable": 0,
+        "r.AntiAliasingMethod": 4,
+        "r.Streaming.PoolSize": 1000,
+        "r.DynamicGlobalIlluminationMethod": 1,
+        "r.ReflectionMethod": 1
+      },
+      "arguments": [
+        "H:\\ue_html\\tests\\web-platform\\build\\projects\\triplex-project-lumen\\TriplexHouseVilla.uproject",
+        "/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+        "-WebDistanceFieldComparison=H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-software-input.json",
+        "-abslog=H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-software.log",
+        "-RenderOffscreen",
+        "-NoSplash",
+        "-NoSound",
+        "-NoLoadingScreen",
+        "-unattended",
+        "-nop4",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-ForceRes",
+        "-d3d12",
+        "-ini:Engine:[SystemSettings]:r.Lumen.HardwareRayTracing=0"
+      ]
+    },
+    {
+      "tracing": "SoftwareReflections",
+      "image": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-reflections-bathroom-mirror.png",
+        "sha256": "49a73b1816bb5c6dad020986e86636821cd2be100490cced4d9c3e4ffae105b6"
+      },
+      "reports": [
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-reflections-capture.json",
+          "sha256": "957c2ef12046ce9712839e58c240bd63f5948db47c6f40c2add2ad928d3914e2"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-reflections-system.json",
+          "sha256": "102d159df447cb2cc777332f703406fff2cbf9ef2c4cc61df51ed3c34b3bced1"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-reflections-input.json",
+          "sha256": "dfe7480b2a4269426dac0ce3dd10ad0caa60fb1b5fec6f6935890883ed13bb7e"
+        },
+        {
+          "file": "H:/ue_html/tests/web-platform/results/villa-distance-fields-lumen-reflection-20261104-reflections.log",
+          "sha256": "d550ce93b64c8593f6ec21cbcbafd55df525fbb5d793b9989667110fb984b420"
+        }
+      ],
+      "featureLevel": 4,
+      "variables": {
+        "r.GenerateMeshDistanceFields": 1,
+        "r.DistanceFieldAO": 1,
+        "r.DistanceFieldShadowing": 1,
+        "r.AOQuality": 2,
+        "r.ScreenPercentage": 0,
+        "r.AOGlobalDistanceField": 1,
+        "r.AOObjectDistanceField": 1,
+        "r.AOSpecularOcclusionMode": 1,
+        "r.DistanceFields.SupportEvenIfHardwareRayTracingSupported": 1,
+        "r.RayTracing": 1,
+        "r.Shadow.Virtual.Enable": 0,
+        "r.AntiAliasingMethod": 4,
+        "r.Streaming.PoolSize": 1000,
+        "r.DynamicGlobalIlluminationMethod": 1,
+        "r.ReflectionMethod": 1
+      },
+      "arguments": [
+        "H:\\ue_html\\tests\\web-platform\\build\\projects\\triplex-project-lumen\\TriplexHouseVilla.uproject",
+        "/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+        "-WebDistanceFieldComparison=H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-reflections-input.json",
+        "-abslog=H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-lumen-reflection-20261104-reflections.log",
+        "-RenderOffscreen",
+        "-NoSplash",
+        "-NoSound",
+        "-NoLoadingScreen",
+        "-unattended",
+        "-nop4",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-ForceRes",
+        "-d3d12",
+        "-ini:Engine:[SystemSettings]:r.Lumen.Reflections.HardwareRayTracing=0"
+      ]
+    }
+  ],
+  "hybridObservation": "Disabling hardware reflections while retaining hardware GI produced a near-black mirror. This hybrid is not a valid native software reference; its missing trace data or lighting is not diagnosed here.",
+  "comparisonImage": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-reflections-20261104-comparison.png",
+    "sha256": "1be4bcc385a9b12ef3910caf1575d48f6dbcc582fab7d774125a3fa941d8ecf7"
+  },
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-lumen-reflections.cjs",
+      "sha256": "d698b5e734d24deec39ff9bd38500ca548a1f6bc6581857e1d63a7dbd52965ec"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\capture-villa-distance-fields.ps1",
+      "sha256": "5d7341eef16a0573309ef0fbf83b988bbc9c5198916ee95809c0d4a8051eace4"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-lumen-shadow-artifacts.cjs",
+      "sha256": "66b1a812cc056303e5448729f5c8e0f1014aae3cc9b3a7cbfd48a008a94d35f3"
+    }
+  ],
+  "remaining": [
+    "The user-reported desktop mirror quality is still unmet; this diagnostic does not fix it.",
+    "The global software switch changes both GI and reflections. SoftwareReflections changes only reflection tracing.",
+    "The near-black hybrid result must not be interpreted as matching the Web software path.",
+    "Native software agreement in this view does not exclude Web rendering defects elsewhere.",
+    "The numeric limits are local comparison tolerances, not a substitute for reflected-object correctness."
+  ]
+}
