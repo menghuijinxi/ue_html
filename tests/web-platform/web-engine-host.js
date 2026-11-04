@@ -189,6 +189,15 @@ function createWebGameFrameClock(maxAhead, fail) {
 }
 
 globalThis.startWebEngineWorker = function({assets, module, record, failed, stage, diagnostics, render}) {
+  const experiment = new URLSearchParams(location.search);
+  const occlusionMode = experiment.get('occlusion');
+  if (occlusionMode !== null) {
+    if (!['control', 'history', 'hzb', 'instances', 'hzb-instances'].includes(occlusionMode)) throw new Error('Invalid occlusion experiment');
+    module.arguments.push('-WebOcclusionMode=' + occlusionMode);
+  }
+  if (experiment.get('clock') === 'local') module.arguments.push('-WebGameLocalClock');
+  if (module.arguments.includes('-WebGameLocalClock') && module.arguments.some(v => v.startsWith('-WebFrameScheduler=')))
+    throw new Error('Choose one frame clock experiment');
   const canvas = module.canvas;
   globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
@@ -215,6 +224,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     failed(error, {kind: 'engine-worker'});
   };
   worker.onerror = event => reportFailure(event.message);
+  if (module.arguments.includes('-WebGameLocalClock')) document.addEventListener('visibilitychange', () =>
+    worker.postMessage({type: 'game-clock-visibility', hidden: document.hidden}));
   const frameSchedulerArg = module.arguments.filter(arg => arg.startsWith('-WebFrameScheduler='));
   if (frameSchedulerArg.length) {
     const maxAhead = Number(frameSchedulerArg[0].split('=')[1]);

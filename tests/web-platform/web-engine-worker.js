@@ -71,7 +71,7 @@ const diagnosticStateKeys = [
   '__webThreadsExitCode', '__webThreadsFailure', '__webThreadsMemory', '__webThreadsResult',
   '__webDistanceFields', '__webDistanceFieldsExposure', '__webDistanceFieldsGPU',
   '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings', '__webOptimizationRHI', '__webOptimizationState',
-  '__webPSOPrecache'
+  '__webPSOPrecache', '__webOcclusionHistory'
 ];
 function snapshot() {
   const state = {};
@@ -99,6 +99,10 @@ addEventListener('error', event => fail(event.error || event.message));
 addEventListener('unhandledrejection', event => fail(event.reason));
 addEventListener('message', event => {
   const message = event.data;
+  if (message.type === 'game-clock-visibility') {
+    globalThis.__webGameThreadWorker?.postMessage({type: 'web-game-local-clock', paused: message.hidden});
+    return;
+  }
   if (message.type === 'start') {
     if (initialized) throw new Error('Engine Worker already initialized');
     initialized = true;
