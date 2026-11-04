@@ -81,6 +81,7 @@ bool ParallelDrawRecording = false;
 bool ImmediateWebGPUCalls = false;
 bool ScalarWebGPUStates = false, LegacyWebGPUDescriptors = false;
 FString RHIExperiment;
+bool ShaderMetadataDOM = false, ShaderMetadataValidate = false;
 bool PSOPrecacheTest = false;
 bool StartupTrace = false;
 // Diagnostic only: retain the same WASM/Cook while collapsing rendering onto
@@ -1137,6 +1138,8 @@ int32 StartEngine()
         (ImmediateWebGPUCalls ? TEXT(" -WebGPUImmediateCalls") : TEXT("")) +
         (ScalarWebGPUStates ? TEXT(" -WebGPUScalarPassCalls") : TEXT("")) +
         (LegacyWebGPUDescriptors ? TEXT(" -WebGPULegacyDescriptors") : TEXT("")) +
+        (ShaderMetadataValidate ? TEXT(" -WebShaderMetadataValidate") : TEXT("")) +
+        (ShaderMetadataDOM ? TEXT(" -WebShaderMetadataDOM") : TEXT("")) +
         (RHIExperiment.IsEmpty() ? FString() : TEXT(" -WebRHIExperiment=") + RHIExperiment) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
@@ -1302,6 +1305,8 @@ int main(int argc, char** argv)
         ImmediateWebGPUCalls |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUImmediateCalls") == 0;
         ScalarWebGPUStates |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUScalarPassCalls") == 0;
         LegacyWebGPUDescriptors |= FCStringAnsi::Strcmp(argv[Index], "-WebGPULegacyDescriptors") == 0;
+        ShaderMetadataValidate |= FCStringAnsi::Strcmp(argv[Index], "-WebShaderMetadataValidate") == 0;
+        ShaderMetadataDOM |= FCStringAnsi::Strcmp(argv[Index], "-WebShaderMetadataDOM") == 0;
         constexpr const ANSICHAR* RHIExperimentOption = "-WebRHIExperiment=";
         if (FCStringAnsi::Strncmp(argv[Index], RHIExperimentOption, FCStringAnsi::Strlen(RHIExperimentOption)) == 0)
         {

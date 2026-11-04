@@ -36,6 +36,16 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
                 Entry.Name = Binding->GetStringField(TEXT("name"));
                 Entry.Descriptor = Index ? 3 : 7;
                 Entry.Index = Index;
+                Entry.Reflected = true;
+                Entry.TextureDimension = Index == 2 ? 2 : 1;
+                Entry.TextureSampleType = Index == 2 ? TEXT("uint") : TEXT("float");
+                Entry.StorageImageFormat = Index == 2 ? 39 : 15;
+                Entry.StorageTextureAccess = TEXT("write");
+                Entry.StorageContract.ReadOnlyValid = true;
+                Entry.StorageContract.FormatValid = true;
+                Entry.StorageContract.Format = PF_R32_UINT;
+                Entry.StorageContract.StrideValid = true;
+                Entry.StorageContract.Stride = 4;
                 Entry.RouteInitialized = true;
                 Entry.Route.Index = Index;
                 Data.Bindings.Add(Entry);
@@ -215,6 +225,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         Entry.Metadata = &Binding.Get();
         Entry.Descriptor = BindingIndex ? 0 : 2;
         Entry.Index = BindingIndex;
+        Entry.Reflected = true;
         Entry.RouteInitialized = true;
         Entry.Route.Index = BindingIndex;
         Entry.TextureDimension = 1;
@@ -234,6 +245,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
     auto Output = MakeShared<FJsonObject>();
     Output->SetNumberField(TEXT("location"), 0);
     SampleEntry->SetArrayField(TEXT("output_variables"), {MakeShared<FJsonValueObject>(Output)});
+    SampleData.RuntimeMetadata.OutputMask = 1;
     SamplePS->InitResourceTable();
     auto SampleInitializer = Initializer;
     SampleInitializer.BoundShaderState.PixelShaderRHI = SamplePS;
@@ -248,6 +260,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         SampleBindings[0]->AsObject()->SetStringField(TEXT("name"), BindingName);
         SampleBindings[0]->AsObject()->SetBoolField(TEXT("sampledTextureLoadOnly"), LoadOnly);
         SampleData.Bindings[0].Name = BindingName;
+        SampleData.Bindings[0].SampledTextureLoadOnly = LoadOnly;
         if (LoadOnly)
         {
             const char *Code = "@group(0) @binding(0) var SourceDepthAtlas: texture_2d<f32>;\n"

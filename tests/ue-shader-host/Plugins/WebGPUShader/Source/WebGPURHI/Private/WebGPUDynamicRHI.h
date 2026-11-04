@@ -5,6 +5,7 @@
 #include "RHICoreStats.h"
 #include "Misc/ScopeLock.h"
 #include "Dom/JsonObject.h"
+#include "../../WebGPUShaderFormat/Public/WebGPUShaderRuntimeMetadata.h"
 #include <webgpu/webgpu.h>
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
 #include "WebGPUCommandStream.h"
@@ -24,25 +25,11 @@ struct FWebGPUBindingRoute
     TRefCountPtr<FRHIResource> GlobalResource;
 };
 
-struct FWebGPUStorageContract
-{
-    enum class EPacking { Other, VertexFetch, UNorm8x4 };
-    bool ReadOnlyValid = false, ReadOnly = false, FormatValid = false, StrideValid = false, SlotValid = false;
-    double Format = 0, Stride = 0, Slot = -1;
-    EPacking Packing = EPacking::Other;
-};
+using FWebGPUStorageContract = UE::WebGPUShader::FStorageContract;
 
-struct FWebGPUShaderBinding
+struct FWebGPUShaderBinding : UE::WebGPUShader::FRuntimeBinding
 {
-    const FJsonObject* Metadata = nullptr;
-    FString Name;
-    uint32 Descriptor = 0, Group = 0, Index = 0, PaddedSize = 0;
-    int32 VertexFetchFormatSlot = INDEX_NONE;
-    double TextureDimension = -1;
-    bool TextureArrayed = false, TextureMultisampled = false, TextureContractValid = false;
-    FString TextureSampleType;
-    int32 StorageFormatOffset = INDEX_NONE, StorageFormatLength = 0;
-    FWebGPUStorageContract StorageContract;
+    const FJsonObject* Metadata = nullptr; // Only legacy/explicit validation loads own a DOM.
     bool StorageContractChecked = false;
     // Prepared descriptors are reusable only while their source and access
     // state are unchanged. The bind-group cache below owns GPU handle refs.
@@ -103,6 +90,7 @@ struct FWebGPUShaderData
     FString Entry;
     FString StorageFormatSource;
     TSharedPtr<FJsonObject> Metadata;
+    UE::WebGPUShader::FRuntimeMetadata RuntimeMetadata;
     TMap<uint32, TRefCountPtr<FRHIResource>> Resources;
     TArray<uint8> Globals;
     FShaderResourceTable ResourceTable;
@@ -646,6 +634,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<TArray<TPair<uint32, uint32>>> BindingScratchDynamicOffsets;
     uint64 BindingStateSerial = 1;
     // Immutable after RHI construction. Startup switches isolate each experiment.
+    bool NativeShaderMetadata = false;
+    uint32 NativeMetadataLoads = 0, DOMMetadataLoads = 0;
+    uint64 NativeMetadataBytes = 0;
+    double MetadataReadSeconds = 0;
     bool SkipNoopRHITick = false, NativeStorageContracts = false, RevalidateStorageDescriptors = false;
     std::atomic<uint32> NoopRHITicksSkipped{0};
     uint32 StorageDescriptorRevalidations = 0, NativeStorageContractUses = 0, StorageContractRejectionChecks = 0;
@@ -793,6 +785,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool ValidateStaticUniform(FUniformBufferStaticSlot Slot, FRHIUniformBuffer *Uniform, FString &Error) const;
     bool ResolveUniform(const FWebGPUShaderData &Shader, uint32 Slot, FRHIUniformBuffer *&Uniform,
                         FString &Error) const;
+    bool ResolveNativeBinding(const FWebGPUShaderData &Shader, FWebGPUShaderBinding &Binding, FRHIResource *&Resource,
+                              bool &FromTable, FString &Error) const;
     bool ResolveBinding(const FWebGPUShaderData &Shader, const FJsonObject &Binding, FRHIResource *&Resource,
                         bool &FromTable, FString &Error) const;
     FWebGPUShaderData &ShaderData(FRHIShader *Shader);

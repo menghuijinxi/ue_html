@@ -81,6 +81,13 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 Entry.Name = Binding->GetStringField(TEXT("name"));
                 Entry.Descriptor = Index < 2 ? 3 : 7;
                 Entry.Index = Index;
+                Entry.Reflected = true;
+                Entry.TextureDimension = 1;
+                Entry.StorageImageFormat = 1;
+                Entry.StorageTextureAccess = TEXT("write");
+                Entry.StorageContract.ReadOnlyValid = true;
+                Entry.StorageContract.StrideValid = true;
+                Entry.StorageContract.Stride = 16;
                 Entry.RouteInitialized = true;
                 Entry.Route.Index = Index;
                 if (Index < 2)
@@ -232,6 +239,10 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Entry.Metadata = &Binding.Get();
             Entry.Name = TEXT("Output");
             Entry.Descriptor = 3;
+            Entry.Reflected = true;
+            Entry.TextureDimension = 1;
+            Entry.StorageImageFormat = 36;
+            Entry.StorageTextureAccess = TEXT("write");
             Entry.RouteInitialized = true;
             Data.Bindings.Add(Entry);
             Data.GroupVersions.Init(1, 1);
@@ -356,6 +367,13 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 Entry.Name = Binding->GetStringField(TEXT("name"));
                 Entry.Descriptor = 7;
                 Entry.Index = Index;
+                Entry.Reflected = true;
+                Entry.StorageContract.ReadOnlyValid = true;
+                Entry.StorageContract.ReadOnly = Index == 0;
+                Entry.StorageContract.FormatValid = true;
+                Entry.StorageContract.Format = PF_R32G32_UINT;
+                Entry.StorageContract.StrideValid = true;
+                Entry.StorageContract.Stride = 8;
                 Entry.RouteInitialized = true;
                 Entry.Route.Index = Index;
                 Data.Bindings.Add(Entry);
@@ -473,6 +491,14 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
                 Entry.Name = Binding->GetStringField(TEXT("name"));
                 Entry.Descriptor = 7;
                 Entry.Index = Index;
+                Entry.Reflected = true;
+                Entry.SingleVectorUniform = Index == 0;
+                Entry.StorageContract.ReadOnlyValid = true;
+                Entry.StorageContract.ReadOnly = Index == 0;
+                Entry.StorageContract.FormatValid = true;
+                Entry.StorageContract.Format = PF_A32B32G32R32F;
+                Entry.StorageContract.StrideValid = true;
+                Entry.StorageContract.Stride = 16;
                 Entry.RouteInitialized = true;
                 Entry.Route.Index = Index;
                 Data.Bindings.Add(Entry);

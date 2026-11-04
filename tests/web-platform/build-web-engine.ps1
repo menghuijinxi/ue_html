@@ -300,6 +300,7 @@ try {
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Platforms/Web') -File -Recurse | ForEach-Object { $_.FullName })
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-web-smoke/Source') -File -Recurse | ForEach-Object { $_.FullName })
     $taskFiles += Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderMetadata.h'
+    $taskFiles += Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderRuntimeMetadata.h'
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private') -File |
         Where-Object { $_.Name -in @('WebGPUDynamicRHI.cpp', 'WebGPUDynamicRHI.h', 'WebGPUUnsupportedRHI.h',
             'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h', 'WebGPUCommandStream.h', 'WebGPUPackedDescriptors.h') } |

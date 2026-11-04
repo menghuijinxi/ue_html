@@ -292,10 +292,9 @@ bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits
             Binding.Descriptor != 6 && Binding.Descriptor != 7) return false;
         if (Binding.Descriptor == 3)
         {
-            const auto Format = StorageFormat(Binding.Metadata->GetIntegerField(TEXT("storageImageFormat")), true);
+            const auto Format = StorageFormat(Binding.StorageImageFormat, true);
             if (Format == WGPUTextureFormat_Undefined) return false;
-            FString Access;
-            Binding.Metadata->TryGetStringField(TEXT("storageTextureAccess"), Access);
+            const auto& Access = Binding.StorageTextureAccess;
             // TLV accumulates RGBA16F in place when the device exposes tier 2.
             if (Access == TEXT("read_write") && Format != WGPUTextureFormat_R32Float &&
                 Format != WGPUTextureFormat_R32Uint && Format != WGPUTextureFormat_R32Sint &&
@@ -306,7 +305,7 @@ bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits
         Samplers += Binding.Descriptor == 0;
         Textures += Binding.Descriptor == 2;
         StorageTextures += Binding.Descriptor == 3;
-        const bool SkyUniform = UE::WebGPUShader::IsSingleVectorUniform(*Binding.Metadata);
+        const bool SkyUniform = Binding.SingleVectorUniform;
         Uniforms += Binding.Descriptor == 6 || SkyUniform;
         StorageBuffers += Binding.Descriptor == 7 && !SkyUniform;
     }
@@ -624,6 +623,8 @@ FWebGPUDynamicRHI::FWebGPUDynamicRHI(bool InStartupProbe) : StartupProbeMode(InS
 
 void FWebGPUDynamicRHI::ConfigureStartup()
 {
+    NativeShaderMetadata = !FParse::Param(FCommandLine::Get(), TEXT("WebShaderMetadataDOM"));
+    UE_LOG(LogRHI, Display, TEXT("WebGPU shader metadata: %s"), NativeShaderMetadata ? TEXT("native") : TEXT("DOM reference"));
     FString Experiment = TEXT("all");
     FParse::Value(FCommandLine::Get(), TEXT("WebRHIExperiment="), Experiment);
     check(Experiment == TEXT("control") || Experiment == TEXT("tick") || Experiment == TEXT("metadata") ||
@@ -1169,6 +1170,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
                 storageDescriptorRevalidations:$4, nativeStorageContractUses:$5, storageContractRejectionChecks:$6});
         }, SkipNoopRHITick, NativeStorageContracts, RevalidateStorageDescriptors,
             NoopRHITicksSkipped.load(), StorageDescriptorRevalidations, NativeStorageContractUses, StorageContractRejectionChecks);
+        EM_ASM({ globalThis.__webShaderMetadata = ({nativeLoads:$0, domLoads:$1, nativeAllocatedBytes:$2,
+            readMs:$3, native:!!$4}); }, NativeMetadataLoads, DOMMetadataLoads, double(NativeMetadataBytes),
+            MetadataReadSeconds * 1000.0, NativeShaderMetadata);
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI, {groupPreparationHits:$0, groupPreparationValidated:$1,
                 groupFrameMisses:$2, groupAccessMisses:$3, groupVersionMisses:$4, groupTextureMisses:$5,
@@ -1258,70 +1262,59 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         }
     }
     const ANSICHAR *Utf8 = reinterpret_cast<const ANSICHAR *>(Desc.Code.GetData() + 28);
-    if (Header[1] == 2)
+    const auto Bytes = Desc.Code.Slice(28, Header[5]);
+    const bool KeepDOM = !NativeShaderMetadata || FParse::Param(FCommandLine::Get(), TEXT("WebShaderMetadataValidate")) || !NativeStorageContracts;
+    const double MetadataStart = FPlatformTime::Seconds();
+    if (Header[1] == 2 && NativeShaderMetadata)
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataBinary);
-        if (!UE::WebGPUShader::DecodeMetadata(Desc.Code.Slice(28, Header[5]), Data.Metadata))
-            return Fail(TEXT("Web shader binary metadata invalid"));
+        TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataNative);
+        if (!UE::WebGPUShader::DecodeRuntimeMetadata(Bytes, Data.RuntimeMetadata))
+            return Fail(TEXT("Web shader native metadata invalid"));
+        ++NativeMetadataLoads;
     }
-    else
+    if (Header[1] == 1 || KeepDOM)
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataJSON);
-        const FString Json(FUTF8ToTCHAR(Utf8, Header[5]));
-        if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Data.Metadata) || !Data.Metadata)
-            return Fail(TEXT("Web shader metadata invalid"));
-    }
-    const auto &Metadata = Data.Metadata;
-    double PlatformValue, HashValue, Version, MetadataFrequency;
-    FString PlatformName, FormatName;
-    bool Verified = false;
-    double Schema;
-    if (!Metadata->TryGetNumberField(TEXT("schema"), Schema) || Schema != Header[1] ||
-        !Metadata->TryGetNumberField(TEXT("shaderPlatformEnum"), PlatformValue) ||
-        !Metadata->TryGetNumberField(TEXT("shaderPlatformPropertiesHash"), HashValue) ||
-        !Metadata->TryGetNumberField(TEXT("formatVersion"), Version) ||
-        !Metadata->TryGetNumberField(TEXT("frequency"), MetadataFrequency) ||
-        !Metadata->TryGetStringField(TEXT("shaderPlatform"), PlatformName) ||
-        !Metadata->TryGetStringField(TEXT("format"), FormatName) ||
-        !Metadata->TryGetBoolField(TEXT("bindingContractVerified"), Verified) || !Verified || Version != Header[4] ||
-        MetadataFrequency != uint32(Frequency))
-        return Fail(TEXT("Web shader metadata/header mismatch"));
-    if ((PlatformValue != 46 && PlatformValue != 47) || HashValue < 0 || HashValue > MAX_uint32 ||
-        HashValue != FMath::FloorToDouble(HashValue))
-        return Fail(TEXT("Web shader platform is not a registered Web platform"));
-    const auto Platform = EShaderPlatform(uint32(PlatformValue));
-    if (!FDataDrivenShaderPlatformInfo::IsValid(Platform) ||
-        FDataDrivenShaderPlatformInfo::GetName(Platform) != FName(*PlatformName) ||
-        FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform) != uint32(HashValue) ||
-        LegacyShaderPlatformToShaderFormat(Platform) != FName(*FormatName))
-        return Fail(TEXT("Web shader DDPI platform/configuration mismatch"));
-    if (!Metadata->TryGetStringField(TEXT("webEntry"), Data.Entry))
-        return Fail(TEXT("Web shader entry missing"));
-    const TSharedPtr<FJsonObject> *TableJson = nullptr;
-    if (!Metadata->TryGetObjectField(TEXT("resourceTable"), TableJson))
-        return Fail(TEXT("Web shader resource table missing"));
-    Data.ResourceTable.ResourceTableBits = uint32((*TableJson)->GetNumberField(TEXT("bits")));
-    const auto ReadNumbers = [&](const TCHAR *Name, TArray<uint32> &Out) {
-        Out.Reset();
-        const TArray<TSharedPtr<FJsonValue>> *Array = nullptr;
-        if (!(*TableJson)->TryGetArrayField(Name, Array))
-            return false;
-        for (const auto &Value : *Array)
+        if (Header[1] == 2)
         {
-            double Number;
-            if (!Value->TryGetNumber(Number) || Number < 0 || Number > MAX_uint32 ||
-                Number != FMath::FloorToDouble(Number))
-                return false;
-            Out.Add(uint32(Number));
+            TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataBinary);
+            if (!UE::WebGPUShader::DecodeMetadata(Bytes, Data.Metadata))
+                return Fail(TEXT("Web shader binary metadata invalid"));
         }
-        return true;
-    };
-    if (!ReadNumbers(TEXT("textures"), Data.ResourceTable.TextureMap) ||
-        !ReadNumbers(TEXT("samplers"), Data.ResourceTable.SamplerMap) ||
-        !ReadNumbers(TEXT("srvs"), Data.ResourceTable.ShaderResourceViewMap) ||
-        !ReadNumbers(TEXT("uavs"), Data.ResourceTable.UnorderedAccessViewMap) ||
-        !ReadNumbers(TEXT("layoutHashes"), Data.ResourceTable.ResourceTableLayoutHashes))
-        return Fail(TEXT("Web shader resource table malformed"));
+        else
+        {
+            TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataJSON);
+            const FString Json(FUTF8ToTCHAR(Utf8, Header[5]));
+            if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), Data.Metadata) || !Data.Metadata)
+                return Fail(TEXT("Web shader metadata invalid"));
+        }
+        ++DOMMetadataLoads;
+        UE::WebGPUShader::FRuntimeMetadata Reference;
+        if (!UE::WebGPUShader::ReadRuntimeMetadata(Data.Metadata, Reference))
+            return Fail(TEXT("Web shader legacy runtime metadata invalid"));
+        if (Header[1] == 2 && NativeShaderMetadata)
+        { if (!(Reference == Data.RuntimeMetadata)) return Fail(TEXT("Native shader metadata differs from JSON reference")); }
+        else Data.RuntimeMetadata = MoveTemp(Reference);
+    }
+    MetadataReadSeconds += FPlatformTime::Seconds() - MetadataStart;
+    NativeMetadataBytes += Data.RuntimeMetadata.GetAllocatedSize();
+    const auto& Metadata = Data.RuntimeMetadata;
+    if (Metadata.Schema != Header[1] || Metadata.Version != Header[4] || Metadata.Frequency != uint32(Frequency))
+        return Fail(TEXT("Web shader metadata/header mismatch"));
+    if (Metadata.Platform != 46 && Metadata.Platform != 47)
+        return Fail(TEXT("Web shader platform is not a registered Web platform"));
+    const auto Platform = EShaderPlatform(Metadata.Platform);
+    if (!FDataDrivenShaderPlatformInfo::IsValid(Platform) ||
+        FDataDrivenShaderPlatformInfo::GetName(Platform) != FName(*Metadata.PlatformName) ||
+        FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform) != Metadata.PropertiesHash ||
+        LegacyShaderPlatformToShaderFormat(Platform) != FName(*Metadata.FormatName))
+        return Fail(TEXT("Web shader DDPI platform/configuration mismatch"));
+    Data.Entry = Metadata.Entry;
+    Data.ResourceTable.ResourceTableBits = Metadata.ResourceBits;
+    Data.ResourceTable.TextureMap = MoveTemp(Data.RuntimeMetadata.Textures);
+    Data.ResourceTable.SamplerMap = MoveTemp(Data.RuntimeMetadata.Samplers);
+    Data.ResourceTable.ShaderResourceViewMap = MoveTemp(Data.RuntimeMetadata.SRVs);
+    Data.ResourceTable.UnorderedAccessViewMap = MoveTemp(Data.RuntimeMetadata.UAVs);
+    Data.ResourceTable.ResourceTableLayoutHashes = MoveTemp(Data.RuntimeMetadata.LayoutHashes);
     const FString Source(FUTF8ToTCHAR(Utf8 + Header[5], Header[6]));
     const FTCHARToUTF8 Code(*Source);
     WGPUShaderSourceWGSL WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
@@ -1333,40 +1326,17 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         Data.Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
     }
     Data.Frequency = Frequency;
-    for (const auto &Item : Metadata->GetArrayField(TEXT("spirvBindings")))
+    for (int32 Index = 0; Index < Data.RuntimeMetadata.Bindings.Num(); ++Index)
     {
-        const auto Binding = Item->AsObject();
         FWebGPUShaderBinding Entry;
-        Entry.Metadata = Binding.Get();
-        Entry.Name = Binding->GetStringField(TEXT("name"));
-        Entry.Descriptor = Binding->GetIntegerField(TEXT("descriptorType"));
-        Entry.Group = Binding->GetIntegerField(TEXT("group"));
-        check(Entry.Group < 32);
+        static_cast<UE::WebGPUShader::FRuntimeBinding&>(Entry) = MoveTemp(Data.RuntimeMetadata.Bindings[Index]);
+        if (Data.Metadata) Entry.Metadata = Data.Metadata->GetArrayField(TEXT("spirvBindings"))[Index]->AsObject().Get();
         if (Data.GroupVersions.Num() <= int32(Entry.Group)) Data.GroupVersions.SetNumZeroed(Entry.Group + 1);
         if (Entry.Name == TEXT("$Globals")) Data.GlobalsGroupMask |= 1u << Entry.Group;
-        Entry.Index = Binding->GetIntegerField(TEXT("binding"));
-        if (Entry.Descriptor == 7)
-        {
-            auto& Contract = Entry.StorageContract;
-            Contract.ReadOnlyValid = Binding->TryGetBoolField(TEXT("readOnlyStorage"), Contract.ReadOnly);
-            Contract.FormatValid = Binding->TryGetNumberField(TEXT("storageElementFormat"), Contract.Format);
-            Contract.StrideValid = Binding->TryGetNumberField(TEXT("storageElementStride"), Contract.Stride);
-            Contract.SlotValid = Binding->TryGetNumberField(TEXT("vertexFetchFormatSlot"), Contract.Slot);
-            FString Packing;
-            Binding->TryGetStringField(TEXT("storagePacking"), Packing);
-            Contract.Packing = Packing == TEXT("vertex-fetch") ? FWebGPUStorageContract::EPacking::VertexFetch :
-                Packing == TEXT("unorm8x4") ? FWebGPUStorageContract::EPacking::UNorm8x4 : FWebGPUStorageContract::EPacking::Other;
-        }
-        double VertexFetchSlot;
-        if (Binding->TryGetNumberField(TEXT("vertexFetchFormatSlot"), VertexFetchSlot))
-            Entry.VertexFetchFormatSlot = int32(VertexFetchSlot);
-        bool RuntimeFormat = false;
-        if (Binding->TryGetBoolField(TEXT("runtimeStorageFormat"), RuntimeFormat) && RuntimeFormat)
+        if (Entry.RuntimeStorageFormat)
         {
             if (Frequency != SF_Compute || Entry.Descriptor != 3)
                 return Fail(TEXT("Runtime storage formats require a compute texture UAV"));
-            Entry.StorageFormatOffset = Binding->GetIntegerField(TEXT("storageFormatOffset"));
-            Entry.StorageFormatLength = Binding->GetIntegerField(TEXT("storageFormatLength"));
             if (Entry.StorageFormatOffset < 0 || Entry.StorageFormatLength != 11 ||
                 int64(Entry.StorageFormatOffset) + Entry.StorageFormatLength > Source.Len() ||
                 Source.Mid(Entry.StorageFormatOffset, Entry.StorageFormatLength) != TEXT("rgba32float"))
@@ -1374,21 +1344,10 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
             Data.StorageFormatSource = Source;
         }
         Data.HasVertexFetchFormats |= Entry.Name == TEXT("WebVertexFetchFormats");
-        Entry.PaddedSize = Entry.Descriptor == 6 || Entry.Name == TEXT("$Globals") ?
-            Binding->GetIntegerField(TEXT("paddedSize")) : 0;
-        if (Entry.Descriptor == 2)
-        {
-            double Dimension;
-            Entry.TextureContractValid = Binding->TryGetNumberField(TEXT("textureDimension"), Dimension) &&
-                Binding->TryGetBoolField(TEXT("textureArrayed"), Entry.TextureArrayed) &&
-                Binding->TryGetBoolField(TEXT("textureMultisampled"), Entry.TextureMultisampled) &&
-                Binding->TryGetStringField(TEXT("textureSampleType"), Entry.TextureSampleType);
-            if (Entry.TextureContractValid) Entry.TextureDimension = Dimension;
-        }
         Data.Bindings.Add(MoveTemp(Entry));
-        if (Data.Bindings.Last().Name == TEXT("$Globals"))
-            Data.Globals.SetNumZeroed(Data.Bindings.Last().PaddedSize);
+        if (Data.Bindings.Last().Name == TEXT("$Globals")) Data.Globals.SetNumZeroed(Data.Bindings.Last().PaddedSize);
     }
+    Data.RuntimeMetadata.Bindings.Empty();
     return Data.Module != nullptr;
 }
 FWebGPUShaderData &FWebGPUDynamicRHI::ShaderData(FRHIShader *Shader)
@@ -2768,6 +2727,162 @@ bool FWebGPUDynamicRHI::ResolveBinding(const FWebGPUShaderData &Shader, const FJ
     Error = TEXT("Resource table binding is missing: ") + Name;
     return false;
 }
+bool FWebGPUDynamicRHI::ResolveNativeBinding(const FWebGPUShaderData &Shader, FWebGPUShaderBinding &Binding,
+                                             FRHIResource *&Resource, bool &FromTable, FString &Error) const
+{
+    Resource = nullptr;
+    FromTable = false;
+    const auto CacheRoute = [&](FWebGPUBindingRoute Route) { Binding.Route = MoveTemp(Route); };
+    const FString& Name = Binding.Name;
+    const uint32 Descriptor = Binding.Descriptor;
+    if (Descriptor == 0)
+        if (const auto* Sampler = GlobalSamplers.Find(Name))
+        {
+            Resource = Sampler->GetReference();
+            FWebGPUBindingRoute Route{FWebGPUBindingRoute::EKind::GlobalSampler};
+            Route.GlobalResource = Resource;
+            CacheRoute(MoveTemp(Route));
+            return true;
+        }
+    for (const auto& Parameter : Shader.RuntimeMetadata.Parameters)
+    {
+        if (Parameter.Name != Name)
+            continue;
+        const uint32 Type = Parameter.Type;
+        if ((Descriptor == 6 && Type != 1) || (Descriptor == 2 && Type != 3) || (Descriptor == 0 && Type != 2) ||
+            (Descriptor == 7 && Type != 3 && Type != 4) || (Descriptor == 3 && Type != 4))
+        {
+            Error = TEXT("Shader descriptor/parameter type mismatch: ") + Name;
+            return false;
+        }
+        const uint32 Index = (Type == 1 ? Parameter.BufferIndex : Parameter.BaseIndex);
+        if (Type == 1)
+        {
+            FRHIUniformBuffer *Uniform = nullptr;
+            if (!ResolveUniform(Shader, Index, Uniform, Error))
+                return false;
+            Resource = Uniform;
+            CacheRoute({FWebGPUBindingRoute::EKind::Uniform, Index});
+            return true;
+        }
+        // Vulkan classifies read-only storage as UAV; preserve its slot and use the reflected access for RHI binding.
+        const uint32 ResourceType =
+            Descriptor == 7 && Binding.StorageContract.ReadOnlyValid && Binding.StorageContract.ReadOnly
+                ? 3u
+                : Type;
+        const auto *Found = Shader.Resources.Find((ResourceType << 16) | Index);
+        if (!Found || !Found->IsValid())
+        {
+            Error = TEXT("Direct shader resource is not bound: ") + Name;
+            return false;
+        }
+        Resource = Found->GetReference();
+        if (Resource->GetType() == RRT_TextureReference)
+            Resource = static_cast<FRHITextureReference *>(Resource)->GetReferencedTexture();
+        CacheRoute({FWebGPUBindingRoute::EKind::Direct, 0, (ResourceType << 16) | Index});
+        return true;
+    }
+    TArray<const TArray<uint32>*> Streams;
+    if (Descriptor == 2)
+        Streams = {&Shader.GetResourceTable().TextureMap, &Shader.GetResourceTable().ShaderResourceViewMap};
+    else if (Descriptor == 0)
+        Streams.Add(&Shader.GetResourceTable().SamplerMap);
+    else if (Descriptor == 3)
+        Streams.Add(&Shader.GetResourceTable().UnorderedAccessViewMap);
+    else if (Descriptor == 7)
+        Streams.Add(Binding.StorageContract.ReadOnly ? &Shader.GetResourceTable().ShaderResourceViewMap :
+            &Shader.GetResourceTable().UnorderedAccessViewMap);
+    if (Streams.IsEmpty())
+    {
+        Error = TEXT("Resource table descriptor is unsupported: ") + Name;
+        return false;
+    }
+    for (const auto* Stream : Streams)
+    for (const auto& Parameter : Shader.RuntimeMetadata.Parameters)
+    {
+        if (Parameter.Type != 1)
+            continue;
+        const uint32 Slot = Parameter.BufferIndex;
+        if (Slot >= 32 || !(Shader.GetResourceTable().ResourceTableBits & (1u << Slot)))
+            continue;
+        if (Stream->IsEmpty())
+            continue;
+        if (!Stream->IsValidIndex(Slot))
+        {
+            Error = TEXT("Resource table slot offset missing");
+            return false;
+        }
+        uint32 Cursor = (*Stream)[Slot];
+        if (!Cursor)
+            continue;
+        if (Cursor <= Slot || !Stream->IsValidIndex(Cursor))
+        {
+            Error = TEXT("Resource table token offset invalid");
+            return false;
+        }
+        while (Stream->IsValidIndex(Cursor) && FRHIResourceTableEntry::GetUniformBufferIndex((*Stream)[Cursor]) == Slot)
+        {
+            const uint32 Token = (*Stream)[Cursor++];
+            if (FRHIResourceTableEntry::GetBindIndex(Token) != Binding.Index)
+                continue;
+            const uint32 ResourceIndex = FRHIResourceTableEntry::GetResourceIndex(Token);
+            const auto Entry =
+                Shader.RuntimeMetadata.Members.FindByPredicate([&](const auto& Member) {
+                    return Member.Name == Name &&
+                           Member.UniformBuffer == Parameter.Name &&
+                           Member.ResourceIndex == ResourceIndex &&
+                           (Stream == &Shader.GetResourceTable().TextureMap ?
+                                Member.Type == UBMT_TEXTURE ||
+                                Member.Type == UBMT_RDG_TEXTURE :
+                            Stream == &Shader.GetResourceTable().SamplerMap ?
+                                Member.Type == UBMT_SAMPLER :
+                            Stream == &Shader.GetResourceTable().ShaderResourceViewMap ?
+                                Member.Type == UBMT_SRV ||
+                                Member.Type == UBMT_RDG_TEXTURE_SRV ||
+                                Member.Type == UBMT_RDG_TEXTURE_NON_PIXEL_SRV ||
+                                Member.Type == UBMT_RDG_BUFFER_SRV :
+                                Member.Type == UBMT_UAV ||
+                                Member.Type == UBMT_RDG_TEXTURE_UAV ||
+                                Member.Type == UBMT_RDG_BUFFER_UAV);
+                });
+            if (!Entry)
+            {
+                Error = TEXT("Resource table token/name/type mismatch");
+                return false;
+            }
+            FRHIUniformBuffer *Uniform = nullptr;
+            if (!ResolveUniform(Shader, Slot, Uniform, Error))
+                return false;
+            const auto &Layout = Uniform->GetLayout();
+            if (!Layout.Resources.IsValidIndex(ResourceIndex) ||
+                uint32(Layout.Resources[ResourceIndex].MemberType) !=
+                    Entry->Type ||
+                !Uniform->GetResourceTable().IsValidIndex(ResourceIndex))
+            {
+                Error = TEXT("Resource table member index/type mismatch");
+                return false;
+            }
+            Resource = Uniform->GetResourceTable()[ResourceIndex].GetReference();
+            if (Resource && Resource->GetType() == RRT_TextureReference)
+                Resource = static_cast<FRHITextureReference *>(Resource)->GetReferencedTexture();
+            const ERHIResourceType ExpectedType = Stream == &Shader.GetResourceTable().TextureMap ? RRT_Texture :
+                Stream == &Shader.GetResourceTable().SamplerMap ? RRT_SamplerState :
+                Stream == &Shader.GetResourceTable().ShaderResourceViewMap ? RRT_ShaderResourceView : RRT_UnorderedAccessView;
+            if (!Resource || Resource->GetType() != ExpectedType)
+            {
+                Error = FString::Printf(TEXT("Resource table member is null or has wrong RHI type: %s descriptor=%u actual=%u"),
+                    *Name, Descriptor, Resource ? uint32(Resource->GetType()) : MAX_uint32);
+                return false;
+            }
+            FromTable = true;
+            CacheRoute({FWebGPUBindingRoute::EKind::Table, Slot, ResourceIndex,
+                Layout.Resources[ResourceIndex].MemberType, ExpectedType});
+            return true;
+        }
+    }
+    Error = TEXT("Resource table binding is missing: ") + Name;
+    return false;
+}
 FRasterizerStateRHIRef FWebGPUDynamicRHI::RHICreateRasterizerState(const FRasterizerStateInitializerRHI &In)
 {
     WEBGPU_ON_OWNER(RHICreateRasterizerState(In));
@@ -2878,8 +2993,7 @@ FRHIResource* FWebGPUDynamicRHI::ResolveDrawBinding(FWebGPUShaderData& Shader, F
         FRHIResource* Resource = nullptr;
         bool FromTable = false;
         FString Error;
-        checkf(ResolveBinding(Shader, *Binding.Metadata, Resource, FromTable, Error), TEXT("%s"), *Error);
-        Binding.Route = Shader.BindingRoutes.FindChecked(Binding.Metadata);
+        checkf(ResolveNativeBinding(Shader, Binding, Resource, FromTable, Error), TEXT("%s"), *Error);
         Binding.RouteInitialized = true;
         const auto& Route = Binding.Route;
         if (Route.Kind == FWebGPUBindingRoute::EKind::Uniform || Route.Kind == FWebGPUBindingRoute::EKind::Table)
@@ -3171,12 +3285,14 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 if (ValidatePrepared)
                 {
                     FRHIResource* Expected = nullptr;
-                    checkf(ResolveBinding(*Shader, *Binding, Expected, FromTable, Error), TEXT("%s"), *Error);
+                    const bool Valid = Binding ? ResolveBinding(*Shader, *Binding, Expected, FromTable, Error) :
+                        ResolveNativeBinding(*Shader, Reflected, Expected, FromTable, Error);
+                    checkf(Valid, TEXT("%s"), *Error);
                     checkf(Resource == Expected, TEXT("WebGPU resource table invalidation missed: %s"), *Name);
                 }
                 Version = Descriptor == 6 ? static_cast<FWebGPUUniform*>(Resource)->ContentsVersion : 0;
             }
-            if (ValidatePrepared && Descriptor == 7 && !Reflected.StorageContractChecked)
+            if (ValidatePrepared && Binding && Descriptor == 7 && !Reflected.StorageContractChecked)
             {
                 const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
                 const bool Typed = ReadOnly ? static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Buffer.SRV.BufferType == FRHIViewDesc::EBufferType::Typed :
@@ -3313,11 +3429,11 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                         const uint32* SpecializedFormat = !Render ? ComputePipeline->StorageFormats.Find(
                             (uint64(Reflected.Group) << 32) | Reflected.Index) : nullptr;
                         const uint32 ExpectedFormat = SpecializedFormat ? *SpecializedFormat :
-                            Binding->GetIntegerField(TEXT("storageImageFormat"));
+                            Reflected.StorageImageFormat;
                         checkf(ExpectedFormat ==
                             StorageImageFormat(Info.Format),
                             TEXT("WebGPU storage format mismatch: shader=%s binding=%s texture=%s shaderFormat=%d textureFormat=%d"),
-                            *Shader->Entry, *Binding->GetStringField(TEXT("name")), *Texture->GetName().ToString(),
+                            *Shader->Entry, *Reflected.Name, *Texture->GetName().ToString(),
                             int32(ExpectedFormat),
                             int32(StorageImageFormat(Info.Format)));
                         for (uint32 Slice = Info.ArrayRange.First * Faces; Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
@@ -3333,11 +3449,11 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                                                 : Shader->Frequency == SF_Vertex
                                                     ? ERHIAccess::SRVGraphicsNonPixel
                                                     : ERHIAccess::SRVGraphicsPixel;
-                            const bool Valid = NativeStorageContracts && !ValidatePrepared ?
+                            const bool Valid = (NativeStorageContracts && !ValidatePrepared) || !Binding ?
                                 ValidateStorageSRVBinding(Resource, Reflected.StorageContract, Access, Error) :
                                 ValidateStorageSRVBinding(Resource, *Binding, Access, Error);
                             if (NativeStorageContracts) ++NativeStorageContractUses;
-                            if (NativeStorageContracts && ValidatePrepared)
+                            if (NativeStorageContracts && ValidatePrepared && Binding)
                             {
                                 FString NativeError;
                                 checkf(Valid == ValidateStorageSRVBinding(Resource, Reflected.StorageContract, Access, NativeError) &&
@@ -3351,7 +3467,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                             Entry.buffer = Buffer->Handle;
                             Entry.offset = Description.OffsetInBytes;
                             Entry.size = Description.SizeInBytes;
-                            if (UE::WebGPUShader::IsSingleVectorUniform(*Binding))
+                            if (Reflected.SingleVectorUniform)
                             {
                                 check(Buffer->GetSize() == 16 && Entry.offset == 0 && Entry.size == 16);
                             }
@@ -3359,11 +3475,11 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                         else
                         {
                             const auto Access = Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics;
-                            const bool Valid = NativeStorageContracts && !ValidatePrepared ?
+                            const bool Valid = (NativeStorageContracts && !ValidatePrepared) || !Binding ?
                                 ValidateStorageUAVBinding(Resource, Reflected.StorageContract, Access, Error) :
                                 ValidateStorageUAVBinding(Resource, *Binding, Access, Error);
                             if (NativeStorageContracts) ++NativeStorageContractUses;
-                            if (NativeStorageContracts && ValidatePrepared)
+                            if (NativeStorageContracts && ValidatePrepared && Binding)
                             {
                                 FString NativeError;
                                 checkf(Valid == ValidateStorageUAVBinding(Resource, Reflected.StorageContract, Access, NativeError) &&
@@ -3542,26 +3658,16 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
     TMap<uint32, TArray<WGPUBindGroupLayoutEntry>> Groups;
     uint32 GroupCount = 0;
     for (const auto* Shader : Shaders)
-    for (const auto& Item : Shader->Metadata->GetArrayField(TEXT("spirvBindings")))
+    for (const auto& Binding : Shader->Bindings)
     {
-        const auto Binding = Item->AsObject();
-        const FString Name = Binding->GetStringField(TEXT("name"));
-        const uint32 Group = Binding->GetIntegerField(TEXT("group"));
-        const auto& ReflectedBindings = Shader->Metadata->GetObjectField(TEXT("reflection"))
-            ->GetArrayField(TEXT("entry_points"))[0]->AsObject()->GetArrayField(TEXT("bindings"));
-        const auto* Reflected = ReflectedBindings.FindByPredicate([&](const auto& Value) {
-            const auto WebBinding = Value->AsObject();
-            return WebBinding->GetIntegerField(TEXT("group")) == int32(Group) &&
-                WebBinding->GetIntegerField(TEXT("binding")) == Binding->GetIntegerField(TEXT("binding"));
-        });
-        check(Reflected);
-        const FString ResourceType = (*Reflected)->AsObject()->GetStringField(TEXT("resource_type"));
-        bool ComparisonSampler = false;
-        Binding->TryGetBoolField(TEXT("samplerComparison"), ComparisonSampler);
+        const auto& Name = Binding.Name;
+        const uint32 Group = Binding.Group;
+        check(Binding.Reflected);
+        const bool ComparisonSampler = Binding.SamplerComparison;
         GroupCount = FMath::Max(GroupCount, Group + 1);
         auto Entry = WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT;
-        Entry.binding = Binding->GetIntegerField(TEXT("binding"));
-        const uint32 Frequency = Shader->Metadata->GetIntegerField(TEXT("frequency"));
+        Entry.binding = Binding.Index;
+        const uint32 Frequency = uint32(Shader->Frequency);
         Entry.visibility = Frequency == SF_Vertex ? WGPUShaderStage_Vertex :
             Frequency == SF_Pixel ? WGPUShaderStage_Fragment : WGPUShaderStage_Compute;
         // Mobile CSM uses manual PCF with a point sampler over the depth atlas.
@@ -3584,7 +3690,7 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
             Name == TEXT("SceneVelocityTextureSampler");
         // DFAO preserves bilinear UNORM16 sampling with explicit texel loads.
         const bool UnfilterableVelocity = TAAVelocity || Name == TEXT("VelocityTexture");
-        switch (Binding->GetIntegerField(TEXT("descriptorType")))
+        switch (Binding.Descriptor)
         {
         case 0:
             Entry.sampler.type = ComparisonSampler ? WGPUSamplerBindingType_Comparison :
@@ -3594,48 +3700,46 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
         case 2:
         case 3:
         {
-            const uint32 Dimension = Binding->GetIntegerField(TEXT("textureDimension"));
-            const bool Array = Binding->GetBoolField(TEXT("textureArrayed"));
+            const uint32 Dimension = Binding.TextureDimension;
+            const bool Array = Binding.TextureArrayed;
             const auto ViewDimension = Dimension == 3 ? (Array ? WGPUTextureViewDimension_CubeArray : WGPUTextureViewDimension_Cube) :
                 Dimension == 2 ? WGPUTextureViewDimension_3D :
                 Array ? WGPUTextureViewDimension_2DArray : WGPUTextureViewDimension_2D;
-            if (Binding->GetIntegerField(TEXT("descriptorType")) == 3)
+            if (Binding.Descriptor == 3)
             {
-                FString Access;
-                Binding->TryGetStringField(TEXT("storageTextureAccess"), Access);
+                const auto& Access = Binding.StorageTextureAccess;
                 Entry.storageTexture.access = Access == TEXT("read_write") ? WGPUStorageTextureAccess_ReadWrite :
                     Access == TEXT("read") ? WGPUStorageTextureAccess_ReadOnly : WGPUStorageTextureAccess_WriteOnly;
                 Entry.storageTexture.viewDimension = ViewDimension;
                 const uint32* SpecializedFormat = StorageFormats ? StorageFormats->Find(
                     (uint64(Group) << 32) | Entry.binding) : nullptr;
                 const uint32 ImageFormat = SpecializedFormat ? *SpecializedFormat :
-                    Binding->GetIntegerField(TEXT("storageImageFormat"));
+                    Binding.StorageImageFormat;
                 Entry.storageTexture.format = StorageFormat(ImageFormat);
             }
             else
             {
-                const FString Type = Binding->GetStringField(TEXT("textureSampleType"));
-                bool LoadOnly = false;
-                Binding->TryGetBoolField(TEXT("sampledTextureLoadOnly"), LoadOnly);
-                Entry.texture.sampleType = ResourceType == TEXT("DepthTexture") ? WGPUTextureSampleType_Depth :
+                const FString Type = Binding.TextureSampleType;
+                Entry.texture.sampleType = Binding.DepthTexture ? WGPUTextureSampleType_Depth :
                     Type == TEXT("uint") ? WGPUTextureSampleType_Uint :
                     Type == TEXT("sint") ? WGPUTextureSampleType_Sint :
-                    Depth || ACESLookup || UnfilterableVelocity || LoadOnly ? WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
+                    Depth || ACESLookup || UnfilterableVelocity || Binding.SampledTextureLoadOnly ?
+                        WGPUTextureSampleType_UnfilterableFloat : WGPUTextureSampleType_Float;
                 Entry.texture.viewDimension = ViewDimension;
-                Entry.texture.multisampled = Binding->GetBoolField(TEXT("textureMultisampled"));
+                Entry.texture.multisampled = Binding.TextureMultisampled;
             }
             break;
         }
         case 6:
             Entry.buffer.type = WGPUBufferBindingType_Uniform;
-            Entry.buffer.minBindingSize = Binding->GetIntegerField(TEXT("paddedSize"));
+            Entry.buffer.minBindingSize = Binding.PaddedSize;
             Entry.buffer.hasDynamicOffset = DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding);
             break;
         case 7:
-            Entry.buffer.type = UE::WebGPUShader::IsSingleVectorUniform(*Binding) ? WGPUBufferBindingType_Uniform :
-                Binding->GetBoolField(TEXT("readOnlyStorage")) ?
+            Entry.buffer.type = Binding.SingleVectorUniform ? WGPUBufferBindingType_Uniform :
+                Binding.StorageContract.ReadOnly ?
                 WGPUBufferBindingType_ReadOnlyStorage : WGPUBufferBindingType_Storage;
-            if (UE::WebGPUShader::IsSingleVectorUniform(*Binding)) Entry.buffer.minBindingSize = 16;
+            if (Binding.SingleVectorUniform) Entry.buffer.minBindingSize = 16;
             break;
         default:
             checkNoEntry();
@@ -3836,22 +3940,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         Rasterizer.CullMode == CM_CCW ? WGPUCullMode_Front : WGPUCullMode_None;
     TArray<WGPUColorTargetState> Targets;
     TArray<WGPUBlendState> Blends;
-    uint32 OutputMask = 0;
-    if (Pixel)
-    {
-        const auto Reflection = Pixel->Data.Metadata->GetObjectField(TEXT("reflection"));
-        for (const auto& Entry : Reflection->GetArrayField(TEXT("entry_points")))
-        {
-            if (Entry->AsObject()->GetStringField(TEXT("name")) != Pixel->Data.Entry)
-                continue;
-            for (const auto& Output : Entry->AsObject()->GetArrayField(TEXT("output_variables")))
-            {
-                double Location;
-                if (Output->AsObject()->TryGetNumberField(TEXT("location"), Location) && Location < 32)
-                    OutputMask |= 1u << uint32(Location);
-            }
-        }
-    }
+    const uint32 OutputMask = Pixel ? Pixel->Data.RuntimeMetadata.OutputMask : 0;
     Blends.SetNum(In.RenderTargetsEnabled);
     for (uint32 Index = 0; Index < In.RenderTargetsEnabled; ++Index)
     {

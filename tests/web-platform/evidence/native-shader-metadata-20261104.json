@@ -1,0 +1,3146 @@
+{
+  "date": "2026-11-04T01:52:07.562Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-native-metadata.cjs",
+    "sha256": "ef6ac52b80843b247c6e0d2b2c2120f3de6cf7a2302c301c4527e51b5ddd1c9a"
+  },
+  "build": {
+    "report": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-build.json",
+      "sha256": "fe76a2c7c03e0b3e94807ba4ceca82af130dbea659bbb12aad2d63129adffaf9"
+    },
+    "compile": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v57-native-metadata-compile-audit.json",
+      "sha256": "5891bd39e5fedf832821214492b71b08b08c73708a0f7459e32309559619f023"
+    },
+    "compileCounts": {
+      "-O2": 416,
+      "-O1": 1
+    },
+    "link": {
+      "source": {
+        "sha256": "ede7b22a210bd2f971007f0e1dba8db3fdc31428fcd6702d8716eafcd00fbcc8",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp"
+      },
+      "optimization": [],
+      "assertions": "1",
+      "debug": "-g2",
+      "lto": false,
+      "switches": [
+        "-o",
+        "-m64",
+        "-sENVIRONMENT=web,worker,node",
+        "-sALLOW_MEMORY_GROWTH=1",
+        "-sASSERTIONS=1",
+        "-pthread",
+        "-sPTHREAD_POOL_SIZE=16",
+        "-sPTHREAD_POOL_SIZE_STRICT=2",
+        "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+        "--use-port=zlib",
+        "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 -sMALLOC=mimalloc -Wl,--whole-archive,\"G:/UE_HTML/ue_html/.tools/web-mimalloc-ue/libmimalloc-ue-mt.a\",--no-whole-archive --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+      ]
+    },
+    "sources": [
+      {
+        "sha256": "f27ae97b4779da0a3549aef76a9c161463c30a6398ae583eba2928b08db0141e",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1"
+      },
+      {
+        "sha256": "b2b2ee0c9ca7b5149548b13bb4b37c6c9ee22d06d6f061ee718dde88a9c69534",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\compile-web-actions.cjs"
+      },
+      {
+        "sha256": "7b657a80f47e26e7ee9f6cf1dd027082b43d87944ef411519b026e6fdbdd194f",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\WebEngine.BuildConfiguration.xml"
+      },
+      {
+        "sha256": "51cbaef8a20f5071d1ba188020454ce2fbadb8143ff5bff91439cc47fff23c73",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-core-host.ps1"
+      },
+      {
+        "sha256": "8ebefce4549f7798599c2296c4df9ee3e6feb749950dbccaec18fcebea6c5048",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine.Target.cs"
+      },
+      {
+        "sha256": "2ffc4528fdf8f546ce88025ecc423ef9e9e3671f7e33011d4d013552be6fd38e",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-mimalloc.py"
+      },
+      {
+        "sha256": "56cf5d1139646033b1c9eb6320c430a3ccaa7f09a66d09a88613124d30e7936c",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\web-mimalloc-ue\\build.json"
+      },
+      {
+        "sha256": "6e2796b92f5da5ae83631078672f38f394b8a0f7c2b184d474e10b22ff207dd7",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\web-mimalloc-ue\\libmimalloc-ue-mt.a"
+      },
+      {
+        "sha256": "428dca18ee251e5ba15b25c1ac5317ec27a71a3dc720c27924ba14ed41247e34",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-skinning.cjs"
+      },
+      {
+        "sha256": "1fee5602972515fbb0e618d4dbb5217a1e6ca11b2a07cc9ffde7d89d87be540a",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-enhanced-input.cjs"
+      },
+      {
+        "sha256": "b8e3cf02c0e2b30dea98ac03fa99536ec9a7c47034abe4260891c43b22777ecb",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\EnhancedInput.Build.cs"
+      },
+      {
+        "sha256": "b8e3cf02c0e2b30dea98ac03fa99536ec9a7c47034abe4260891c43b22777ecb",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\EnhancedInput.Build.cs"
+      },
+      {
+        "sha256": "4847b5e3d33526571b6e0b2b76148dbdea47e0113bcb0dba85b65673d34e0c2b",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedActionKeyMapping.cpp"
+      },
+      {
+        "sha256": "4847b5e3d33526571b6e0b2b76148dbdea47e0113bcb0dba85b65673d34e0c2b",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedActionKeyMapping.cpp"
+      },
+      {
+        "sha256": "94cad905d9835515ab31ccee067bc4005be634d938ed85511b3e355b24e7679e",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputActionDelegateBinding.cpp"
+      },
+      {
+        "sha256": "94cad905d9835515ab31ccee067bc4005be634d938ed85511b3e355b24e7679e",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputActionDelegateBinding.cpp"
+      },
+      {
+        "sha256": "0a560f450539124b8964aeacfd99598bd1c2098142c93914eba62e44d6d872dc",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputComponent.cpp"
+      },
+      {
+        "sha256": "0a560f450539124b8964aeacfd99598bd1c2098142c93914eba62e44d6d872dc",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputComponent.cpp"
+      },
+      {
+        "sha256": "893bb0ebf624a1f091e3fea5c31f1076322d992b5df1cb4a99246283c4700c75",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputDeveloperSettings.cpp"
+      },
+      {
+        "sha256": "893bb0ebf624a1f091e3fea5c31f1076322d992b5df1cb4a99246283c4700c75",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputDeveloperSettings.cpp"
+      },
+      {
+        "sha256": "f2e9d069267c75f266836d4231cf8a1d2df41a3f043ecb2eec9c94f510b6b125",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputLibrary.cpp"
+      },
+      {
+        "sha256": "f2e9d069267c75f266836d4231cf8a1d2df41a3f043ecb2eec9c94f510b6b125",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputLibrary.cpp"
+      },
+      {
+        "sha256": "e0323ff31913eb5b9f2962417ae6eae9a7d64b9fc503855cb3cd4ed3074f532d",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputModule.cpp"
+      },
+      {
+        "sha256": "e0323ff31913eb5b9f2962417ae6eae9a7d64b9fc503855cb3cd4ed3074f532d",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputModule.cpp"
+      },
+      {
+        "sha256": "33d28621e1ba5a60a17a67ef56a1bca1680fbf01407d0defeb615bff28cd1e84",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputPlatformSettings.cpp"
+      },
+      {
+        "sha256": "33d28621e1ba5a60a17a67ef56a1bca1680fbf01407d0defeb615bff28cd1e84",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputPlatformSettings.cpp"
+      },
+      {
+        "sha256": "92707c1e8ef2659c8be717292093057bc352740f5f438845a24e7ccf12a2aa2a",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputSubsystemInterface.cpp"
+      },
+      {
+        "sha256": "92707c1e8ef2659c8be717292093057bc352740f5f438845a24e7ccf12a2aa2a",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputSubsystemInterface.cpp"
+      },
+      {
+        "sha256": "9bbcf92e3f903ea4f0b65b966febd96e0fe83e575287f1f527677ba9555271e1",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputSubsystemInterfaceDebug.cpp"
+      },
+      {
+        "sha256": "9bbcf92e3f903ea4f0b65b966febd96e0fe83e575287f1f527677ba9555271e1",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputSubsystemInterfaceDebug.cpp"
+      },
+      {
+        "sha256": "59fae264c3a57c14c34d1425b0487bd6176e4061d0fe5424f2f50f2399ff60e3",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputSubsystems.cpp"
+      },
+      {
+        "sha256": "59fae264c3a57c14c34d1425b0487bd6176e4061d0fe5424f2f50f2399ff60e3",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputSubsystems.cpp"
+      },
+      {
+        "sha256": "d900c9eb78e226415f6593d139538599621ac46a97e6c1bd7fec3d0203e20727",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedInputWorldProcessor.cpp"
+      },
+      {
+        "sha256": "d900c9eb78e226415f6593d139538599621ac46a97e6c1bd7fec3d0203e20727",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedInputWorldProcessor.cpp"
+      },
+      {
+        "sha256": "d4d84a5ff3f035411496d19a87658beef5d4e5ef7f49d53d53dad92502d319b8",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\EnhancedPlayerInput.cpp"
+      },
+      {
+        "sha256": "d4d84a5ff3f035411496d19a87658beef5d4e5ef7f49d53d53dad92502d319b8",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\EnhancedPlayerInput.cpp"
+      },
+      {
+        "sha256": "6b0be810386ffeb101cd48727a1ac5a8c3373870ea73a45ff30aa2e418edf447",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\InputAction.cpp"
+      },
+      {
+        "sha256": "6b0be810386ffeb101cd48727a1ac5a8c3373870ea73a45ff30aa2e418edf447",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\InputAction.cpp"
+      },
+      {
+        "sha256": "cad8520a30381f0bdcc64fae96b7f7359332dc7bdbfec4ae934f679e2e607868",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\InputDebugKeyDelegateBinding.cpp"
+      },
+      {
+        "sha256": "cad8520a30381f0bdcc64fae96b7f7359332dc7bdbfec4ae934f679e2e607868",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\InputDebugKeyDelegateBinding.cpp"
+      },
+      {
+        "sha256": "94984224f7b138e0efa87154cb53769feafd13ebd9f201d8fc7fed35d0eee3f1",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\InputMappingContext.cpp"
+      },
+      {
+        "sha256": "94984224f7b138e0efa87154cb53769feafd13ebd9f201d8fc7fed35d0eee3f1",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\InputMappingContext.cpp"
+      },
+      {
+        "sha256": "d7a329f37d4a27994b43dcb9a75125c2182453b8e0c67c5dd55ee8e5c88e7427",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\InputModifiers.cpp"
+      },
+      {
+        "sha256": "d7a329f37d4a27994b43dcb9a75125c2182453b8e0c67c5dd55ee8e5c88e7427",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\InputModifiers.cpp"
+      },
+      {
+        "sha256": "6e90dbfc1807b1c4df863c7a97ad900a8973fb5af29d89e990b5598575fe2c89",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\InputTriggers.cpp"
+      },
+      {
+        "sha256": "6e90dbfc1807b1c4df863c7a97ad900a8973fb5af29d89e990b5598575fe2c89",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\InputTriggers.cpp"
+      },
+      {
+        "sha256": "38dfb8f125d02295ba8451209a7e06b7125c32023a15a6c7528914dea5a391e3",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\PlayerMappableInputConfig.cpp"
+      },
+      {
+        "sha256": "38dfb8f125d02295ba8451209a7e06b7125c32023a15a6c7528914dea5a391e3",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\PlayerMappableInputConfig.cpp"
+      },
+      {
+        "sha256": "faed432b6fd599cc6a0e0d4d18c9cba53eb550ab89c710ceff4aa1cce8a32bee",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\PlayerMappableKeySettings.cpp"
+      },
+      {
+        "sha256": "faed432b6fd599cc6a0e0d4d18c9cba53eb550ab89c710ceff4aa1cce8a32bee",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\PlayerMappableKeySettings.cpp"
+      },
+      {
+        "sha256": "355c7fedf029ccd4083f66c2d9d739929a319f09ebe58e381bea6039e5767af5",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Private\\UserSettings\\EnhancedInputUserSettings.cpp"
+      },
+      {
+        "sha256": "355c7fedf029ccd4083f66c2d9d739929a319f09ebe58e381bea6039e5767af5",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Private\\UserSettings\\EnhancedInputUserSettings.cpp"
+      },
+      {
+        "sha256": "3049f224b3dc00dcf81050c1f344384eac4b0b98cfdb7d6b846c19336f006d76",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedActionKeyMapping.h"
+      },
+      {
+        "sha256": "3049f224b3dc00dcf81050c1f344384eac4b0b98cfdb7d6b846c19336f006d76",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedActionKeyMapping.h"
+      },
+      {
+        "sha256": "fe8f3812f4818cf9361d0afe90f02193fe4417007b345d12d7c611587f7050ec",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputActionDelegateBinding.h"
+      },
+      {
+        "sha256": "fe8f3812f4818cf9361d0afe90f02193fe4417007b345d12d7c611587f7050ec",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputActionDelegateBinding.h"
+      },
+      {
+        "sha256": "2f4b3403f0463910283c1fc283207385c96a96abbc19c427a3911e05d3b91868",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputComponent.h"
+      },
+      {
+        "sha256": "2f4b3403f0463910283c1fc283207385c96a96abbc19c427a3911e05d3b91868",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputComponent.h"
+      },
+      {
+        "sha256": "fec6abddae5b4a246375696dae52e7478007f8345e637b81e482dea1344fd5f5",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputDeveloperSettings.h"
+      },
+      {
+        "sha256": "fec6abddae5b4a246375696dae52e7478007f8345e637b81e482dea1344fd5f5",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputDeveloperSettings.h"
+      },
+      {
+        "sha256": "1776d53c63bc4dfd9f0b7a4f0c6514428fb2f84d56f7d6ec644f116ac819eeb6",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputLibrary.h"
+      },
+      {
+        "sha256": "1776d53c63bc4dfd9f0b7a4f0c6514428fb2f84d56f7d6ec644f116ac819eeb6",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputLibrary.h"
+      },
+      {
+        "sha256": "a256c07c01dbf83aefe208166fad6a5c18724264a988a965b8d3a6e3a8e66df0",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputModule.h"
+      },
+      {
+        "sha256": "a256c07c01dbf83aefe208166fad6a5c18724264a988a965b8d3a6e3a8e66df0",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputModule.h"
+      },
+      {
+        "sha256": "10a75199a229279b7c351d3d3f5195d629b441a055cdddf19b34f0e571fcabc5",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputPlatformSettings.h"
+      },
+      {
+        "sha256": "10a75199a229279b7c351d3d3f5195d629b441a055cdddf19b34f0e571fcabc5",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputPlatformSettings.h"
+      },
+      {
+        "sha256": "5205a6c9640cbe18d78ccaefe10a0ff147b749a061a79eea265e85e396b2d6d9",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputSubsystemInterface.h"
+      },
+      {
+        "sha256": "5205a6c9640cbe18d78ccaefe10a0ff147b749a061a79eea265e85e396b2d6d9",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputSubsystemInterface.h"
+      },
+      {
+        "sha256": "0873722f7139e4123ea740eac06683944bc35cd1e4092dfae16116506d6961d7",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputSubsystems.h"
+      },
+      {
+        "sha256": "0873722f7139e4123ea740eac06683944bc35cd1e4092dfae16116506d6961d7",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputSubsystems.h"
+      },
+      {
+        "sha256": "db47e001afc48e269b5d725b9103e56c4785352a5aa169491e9444cd2ed58221",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedInputWorldProcessor.h"
+      },
+      {
+        "sha256": "db47e001afc48e269b5d725b9103e56c4785352a5aa169491e9444cd2ed58221",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedInputWorldProcessor.h"
+      },
+      {
+        "sha256": "c817f8f60ebf9cefd90c373e6851da9d93c6d6e0ff95086d17d939ad2ace8842",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\EnhancedPlayerInput.h"
+      },
+      {
+        "sha256": "c817f8f60ebf9cefd90c373e6851da9d93c6d6e0ff95086d17d939ad2ace8842",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\EnhancedPlayerInput.h"
+      },
+      {
+        "sha256": "5552e9d2f41627abf86cf8ea7905db18682074e20c95e5dc0da72eca7ed52580",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\InputAction.h"
+      },
+      {
+        "sha256": "5552e9d2f41627abf86cf8ea7905db18682074e20c95e5dc0da72eca7ed52580",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\InputAction.h"
+      },
+      {
+        "sha256": "054c6f8c51de5c72c27364a9a886f40da198ca3458ad000ca45ddfd938d3dfdc",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\InputActionValue.h"
+      },
+      {
+        "sha256": "054c6f8c51de5c72c27364a9a886f40da198ca3458ad000ca45ddfd938d3dfdc",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\InputActionValue.h"
+      },
+      {
+        "sha256": "db75fadb9cbada24e3a3aea34aed5f04bdb3a9bd63f61b0089cb009f1ce4d827",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\InputDebugKeyDelegateBinding.h"
+      },
+      {
+        "sha256": "db75fadb9cbada24e3a3aea34aed5f04bdb3a9bd63f61b0089cb009f1ce4d827",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\InputDebugKeyDelegateBinding.h"
+      },
+      {
+        "sha256": "ea92dc4d4179d6a83cb500e5fdcf2fd62dd854de2cdf884f2f476d651266b37d",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\InputMappingContext.h"
+      },
+      {
+        "sha256": "ea92dc4d4179d6a83cb500e5fdcf2fd62dd854de2cdf884f2f476d651266b37d",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\InputMappingContext.h"
+      },
+      {
+        "sha256": "a0db2a9ef4808f6d275cccd3dafe1556c3f475c054560a7cda9a4a91b4146b61",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\InputMappingQuery.h"
+      },
+      {
+        "sha256": "a0db2a9ef4808f6d275cccd3dafe1556c3f475c054560a7cda9a4a91b4146b61",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\InputMappingQuery.h"
+      },
+      {
+        "sha256": "dcb2a904511fe80ba8063ffe3e6383d17b38ddad75d7c6df401965d1fd7619d0",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\InputModifiers.h"
+      },
+      {
+        "sha256": "dcb2a904511fe80ba8063ffe3e6383d17b38ddad75d7c6df401965d1fd7619d0",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\InputModifiers.h"
+      },
+      {
+        "sha256": "5814a4a98f7e79abf84b120e6ec2b9c4944b4d04b91f6c94697d19809832be47",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\InputTriggers.h"
+      },
+      {
+        "sha256": "5814a4a98f7e79abf84b120e6ec2b9c4944b4d04b91f6c94697d19809832be47",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\InputTriggers.h"
+      },
+      {
+        "sha256": "0c54dc0b98d8483a4502de10c495db559617ab584b46ecf04e9661b1fb2b46d5",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\PlayerMappableInputConfig.h"
+      },
+      {
+        "sha256": "0c54dc0b98d8483a4502de10c495db559617ab584b46ecf04e9661b1fb2b46d5",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\PlayerMappableInputConfig.h"
+      },
+      {
+        "sha256": "e9aa389179c179e4e36c88cb7d11285edacdd1166ed61c918a97953128954442",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\PlayerMappableKeySettings.h"
+      },
+      {
+        "sha256": "e9aa389179c179e4e36c88cb7d11285edacdd1166ed61c918a97953128954442",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\PlayerMappableKeySettings.h"
+      },
+      {
+        "sha256": "7e7e7c7c19c599ca8f8b5e53e444429e2bad1765a0c59c64d298a3758c6b7d84",
+        "file": "D:\\UE_5.8\\Engine\\Plugins\\EnhancedInput\\Source\\EnhancedInput\\Public\\UserSettings\\EnhancedInputUserSettings.h"
+      },
+      {
+        "sha256": "7e7e7c7c19c599ca8f8b5e53e444429e2bad1765a0c59c64d298a3758c6b7d84",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\EnhancedInput\\Public\\UserSettings\\EnhancedInputUserSettings.h"
+      },
+      {
+        "sha256": "0836b15f8665d8f6f08e1d63d44bff650b6cda2a38c2df94d531c9b7005b4c85",
+        "file": "D:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\Skinning\\SkinningSceneExtension.cpp"
+      },
+      {
+        "sha256": "680ab11a86e186f55ee3b7ff255c7c1797094e5bdfe8438a414748d2b57bc947",
+        "file": "D:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\Skinning\\SkinningSceneExtension.h"
+      },
+      {
+        "sha256": "e2ce74f6472372627423cef6da9eaf784e99c966b12bfcedb07b1976bf55e755",
+        "file": "D:\\UE_5.8\\Engine\\Shaders\\Shared\\SkinningDefinitions.h"
+      },
+      {
+        "sha256": "30616889d57ef7ba32166df27993eeeb65b77f29fbdd10569404e4b82e715eed",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Skinning\\SkinningSceneExtension.cpp"
+      },
+      {
+        "sha256": "ac3cec66ea795f90e6081b05d2edfb1c7e48a415b1697144da4d8a5490d05a1e",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Core\\Private\\Async\\TaskGraph.cpp"
+      },
+      {
+        "sha256": "ac3cec66ea795f90e6081b05d2edfb1c7e48a415b1697144da4d8a5490d05a1e",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Core\\Private\\Async\\TaskGraph.cpp"
+      },
+      {
+        "sha256": "056fc2f2b49573209b160eb8724fa7bc6f830f588761d7f514cf46ed8eeab6d0",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\TraceLog\\Public\\Trace\\Detail\\Atomic.h"
+      },
+      {
+        "sha256": "056fc2f2b49573209b160eb8724fa7bc6f830f588761d7f514cf46ed8eeab6d0",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\TraceLog\\Public\\Trace\\Detail\\Atomic.h"
+      },
+      {
+        "sha256": "72b1d959ec6035e07931b837b93ced3d425493f9beb87b2efbe7250d6d49eb39",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\TraceLog\\Private\\Trace\\Detail\\Web\\WebTrace.cpp"
+      },
+      {
+        "sha256": "72b1d959ec6035e07931b837b93ced3d425493f9beb87b2efbe7250d6d49eb39",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\TraceLog\\Private\\Trace\\Detail\\Web\\WebTrace.cpp"
+      },
+      {
+        "sha256": "ed4f19349041ea90dad8e10d8f824943cbbc1d04af1ca0018478a81c03e54f24",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\Chaos\\Private\\ChaosVisualDebugger\\ChaosVisualDebuggerTrace.cpp"
+      },
+      {
+        "sha256": "ed4f19349041ea90dad8e10d8f824943cbbc1d04af1ca0018478a81c03e54f24",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Experimental\\Chaos\\Private\\ChaosVisualDebugger\\ChaosVisualDebuggerTrace.cpp"
+      },
+      {
+        "sha256": "2cd425b5ba6065b56885fe28a4715f79f86ceec97833f8fb901fd5c14426f1f8",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\Skinning\\SkinningSceneExtension.cpp"
+      },
+      {
+        "sha256": "4a209e668f5add4b3bb74b536fc87aab0cf4fb47cfdb53345cddd2c130046fcb",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\GenerateConservativeDepthBuffer.cpp"
+      },
+      {
+        "sha256": "4a209e668f5add4b3bb74b536fc87aab0cf4fb47cfdb53345cddd2c130046fcb",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\GenerateConservativeDepthBuffer.cpp"
+      },
+      {
+        "sha256": "48085cd7fc68c98e9205aa310652ed9db8852deac0667a5406418bc1d107f774",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\GenerateConservativeDepthBuffer.h"
+      },
+      {
+        "sha256": "48085cd7fc68c98e9205aa310652ed9db8852deac0667a5406418bc1d107f774",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\GenerateConservativeDepthBuffer.h"
+      },
+      {
+        "sha256": "bd541e449c309aa3d043fa64e9644f8f24ff35be59a67a6d7e0343e2049fc0ac",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricFog.cpp"
+      },
+      {
+        "sha256": "bd541e449c309aa3d043fa64e9644f8f24ff35be59a67a6d7e0343e2049fc0ac",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricFog.cpp"
+      },
+      {
+        "sha256": "0c76836878405948a6e687cbf0474af2fe8e2d0dfa0495e0f9b8e0b32ad31e3b",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-blake3.ps1"
+      },
+      {
+        "sha256": "2f68de9fe81c318e755bf95d5ab5b0e62dd2d06c3bbc6edbfd0d8df1e908ecae",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-blake3.c"
+      },
+      {
+        "sha256": "5fbff226653ff3f78fcec50194e3d6909460df48ad1b7efb0fb9e625aa420f5d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\BLAKE3\\1.3.1\\c\\blake3.c"
+      },
+      {
+        "sha256": "65740a0354d0da3b695bd22a84f0269b218295504e55276e728a3903a7eee4bc",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\BLAKE3\\1.3.1\\c\\blake3_dispatch.c"
+      },
+      {
+        "sha256": "abddd44072ff36b41766ebc42bfac9c19d5c304fa6420e0e418d419dd67a4971",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\BLAKE3\\1.3.1\\c\\blake3_portable.c"
+      },
+      {
+        "sha256": "3101c4cb0564ad9467cd9becb9cb8c1d5e98b78b527c7c80a42c8790c5a8a242",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\BLAKE3\\1.3.1\\c\\blake3.h"
+      },
+      {
+        "sha256": "ade4f49b95ef0bf0ee52154d4ed630e38110e146dc35405cc2d4780ebd2813e9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\BLAKE3\\1.3.1\\c\\blake3_impl.h"
+      },
+      {
+        "sha256": "c62f0280f3a44456e4e853f746631a455c415055982bd1379fa0bffe809599cb",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-libpng.ps1"
+      },
+      {
+        "sha256": "3c65524c2e82b0ddac16c41913e8a2269e7e1134e02074c125f5805129d4b3a1",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-libpng.c"
+      },
+      {
+        "sha256": "431e6cc7e5a826c571e5a4d6d9e78ad050f3aec49d9d928ee38055a316dafd5b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\png.c"
+      },
+      {
+        "sha256": "9977fb968a399c9ad833575f1e404916fc045925619777245106f68e4f2f7d42",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngerror.c"
+      },
+      {
+        "sha256": "b55cbba0353031b3c04bed2f36e79811b2e5091eaee8c4d4e8ac5f1999842b9c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngget.c"
+      },
+      {
+        "sha256": "747a0f1102ee7ccc12f9a915335991df37c774dfed07cda5661452d8ea3c00d3",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngmem.c"
+      },
+      {
+        "sha256": "3dce5060184318b533be70627cc16f80c90968cf4cc3e2f9441dea144ee56b66",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngpread.c"
+      },
+      {
+        "sha256": "1fa4bc3da5fc933b432e54962152108c124c7fad69509a18db0edef7e9682876",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngread.c"
+      },
+      {
+        "sha256": "b5a7226d1c42e1c88149743537b2d522e8fbfecdb933107eae80529c0311c4e1",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngrio.c"
+      },
+      {
+        "sha256": "ea6a14055202450effc75e5727812aa1bf6b4acec6cec095c7bad187908a62e1",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngrtran.c"
+      },
+      {
+        "sha256": "f3ffdd4fa98e3fefe373d7ee3aa15c622858a7bff4050d5817b12671967f52be",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngrutil.c"
+      },
+      {
+        "sha256": "3066de985e0c0d3bd260c18f3896d4c9f5fe98378e6ede6962927aaf527e2474",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngset.c"
+      },
+      {
+        "sha256": "73ac188c82c2ec31450007d35b955e02a92f65660f835f21f25fe38a762ad6b3",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngtrans.c"
+      },
+      {
+        "sha256": "730a2eeec2e899cfb36916e834e03d3f15f6e34652a17bfe88504b462c7160e7",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngwio.c"
+      },
+      {
+        "sha256": "e02254c9b0a1419ede9c061789f1d0dbbdb9268311526b2af635caa4e931aac5",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngwrite.c"
+      },
+      {
+        "sha256": "0929208df8d3ae4b4d3de1f642906d761fc1bf55492b80e49c678e7989ac3925",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngwtran.c"
+      },
+      {
+        "sha256": "1c11d553082af937d52885a4de6ac1866ccc2e8024f134b1f9052246cd03991e",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngwutil.c"
+      },
+      {
+        "sha256": "d3385791b3d95b87ddbf6a325e7df7eb9c2f355735206fd1e8dd4dd35335c239",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\png.h"
+      },
+      {
+        "sha256": "958bb7f27569f5741c644c1cb3ec0645d6dcfa51784d17b48b1f597c7e6943b9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngconf.h"
+      },
+      {
+        "sha256": "c065e1b0df7fde0ccd4f5131424e737acf6ff48a0652e4ee319012dcc199928b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngdebug.h"
+      },
+      {
+        "sha256": "5b579c650df53e3192e566ca2507f4296b96c5c904301290de296f7389d4a516",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pnginfo.h"
+      },
+      {
+        "sha256": "f44a4c1a3ad5959f95415a981f831445bab407072e893e4ad83241794a792e20",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pnglibconf.h"
+      },
+      {
+        "sha256": "de9806f71d8d7983096c895c823cc0ff04ad73d836fcd2d2d1560d9b6c6f5278",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngpriv.h"
+      },
+      {
+        "sha256": "11c07d58ccc9611a21e0830c9afd70b093559e96ca995503c581d3257fa74b31",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\pngstruct.h"
+      },
+      {
+        "sha256": "e6ef0fc3884f2de83bc2e2d8dbb3e3cf48096369e2de1f327c37b7a30c53820c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Online\\ICMP\\Private\\UDPPing.cpp"
+      },
+      {
+        "sha256": "e6ef0fc3884f2de83bc2e2d8dbb3e3cf48096369e2de1f327c37b7a30c53820c",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Online\\ICMP\\Private\\UDPPing.cpp"
+      },
+      {
+        "sha256": "18e3b89ee078975fca525338550706b803a11db56ee9b46b102026a769b1b674",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Online\\BuildPatchServices\\Private\\Installer\\Verifier.cpp"
+      },
+      {
+        "sha256": "18e3b89ee078975fca525338550706b803a11db56ee9b46b102026a769b1b674",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Online\\BuildPatchServices\\Private\\Installer\\Verifier.cpp"
+      },
+      {
+        "sha256": "01d8d0360f02a0c00e236a4eb2a1d8bdf83377acf442eaafad7a136bf14d6bb0",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\.gitignore"
+      },
+      {
+        "sha256": "460e086d55fbd3c62f582336c075010963e167a6bd2c61444347cf614a047280",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\emdawnwebgpu-ue.port.py"
+      },
+      {
+        "sha256": "dafafc199d75409710a5ae2417696c7572d4472b9c2d51ca892cfef0b971ff32",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebGPUCommandStream.js"
+      },
+      {
+        "sha256": "0c25a9912da8fef1da9061e8e5440966c05b470813e276649bae064f506725dc",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebGPUFastCalls.js"
+      },
+      {
+        "sha256": "e005f137ddc0d0d4dffcda0fcbeb2beaec4a9ed4de9516c3f56f1345bc1e9121",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebGPUHandleDiagnostics.js"
+      },
+      {
+        "sha256": "417c1d8b317724bd70398f3b485842dec75bb7fc93513af83da49ed656ded2b8",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebGPUPackedDescriptors.js"
+      },
+      {
+        "sha256": "a182cf2c257698aecf6cee74e0193a07265ba9ab552b9fdeb54f55e94e8508d0",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebGPUStringViewABI.js"
+      },
+      {
+        "sha256": "efd71f7e140cc1d19fb9174fc0809c19774931e6429551061cc3d963e885cefd",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebWorkerCanvas.js"
+      },
+      {
+        "sha256": "159ffba12fe6d7a1af4fbbb7376173a46f7c378eec8b19606d4104f42f84cb2d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\__pycache__\\emdawnwebgpu-ue.port.cpython-313.pyc"
+      },
+      {
+        "sha256": "52b5052e6b32184ac3546523b3b4a95f0b486d0ffe678c3505c379a2ddcab0a6",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Config\\DataDrivenPlatformInfo.ini"
+      },
+      {
+        "sha256": "e9aa26a61ab7e02966c5d1e6019b96942b40a79b09862f977ade8a18cc82756b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Config\\Web_SDK.json"
+      },
+      {
+        "sha256": "86b2c7d450bc6141adc24a6a628a5e22dfd7662da4d98d0f49b833ec9666b1ba",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Config\\WebEngine.ini"
+      },
+      {
+        "sha256": "809578d43fe715adf9e24740bfdde42f987b1e20bab553c08fc0fbd250e41490",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Programs\\UnrealBuildTool\\UEBuildWeb.cs"
+      },
+      {
+        "sha256": "be00554bcbb1d890d57f4e0bed1b690ccf69b960a4e961ee589d29444f5b256d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Programs\\UnrealBuildTool\\WebPlatformSDK.cs"
+      },
+      {
+        "sha256": "ebf8b882b2a8d2ce8f02a55b5e93750608f242d71741f68b2bfaf87e2cdedfc3",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Programs\\UnrealBuildTool\\WebToolChain.cs"
+      },
+      {
+        "sha256": "21238435d9445fbaa337cccf64e59e64c476816d35f98112212e3d6763090a2b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\ApplicationCore\\ApplicationCore_Web.Build.cs"
+      },
+      {
+        "sha256": "efb646a2a5101714d4a91ef6eff49c6296b76aeb7ddf39686b7abe39cc172131",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\ApplicationCore\\Private\\Web\\WebApplication.cpp"
+      },
+      {
+        "sha256": "77acda30eba751c47198de749a5048d96a9d610055d5b069ff7e4a7e5eb537c6",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\ApplicationCore\\Public\\Web\\WebApplication.h"
+      },
+      {
+        "sha256": "a77e4a0647f9111ce2e5de66f7bc382306dbc89051c55ffdb4dfa8382dd1e6cf",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\ApplicationCore\\Public\\Web\\WebPlatformApplicationMisc.h"
+      },
+      {
+        "sha256": "10c191ce0ba378419b605b9e39072ce3d026d30e0765c4ef6a8f69a1aaf448f5",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\ApplicationCore\\Public\\Web\\WebPlatformSplash.h"
+      },
+      {
+        "sha256": "f802235a3b6f2e24fcd961bbb7047acba105ad0896e6020d5e90067366b4eb5d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Core_Web.Build.cs"
+      },
+      {
+        "sha256": "639054d0db2279041c0856a13d3b07482dea47483e25c12530c8e5123eaf4170",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Private\\Web\\WebPlatformCrashContext.cpp"
+      },
+      {
+        "sha256": "c26d5ee6bfaaf855c35b1fb46fb09c55057905fa845ae275a7918a5593d66455",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Private\\Web\\WebPlatformFile.cpp"
+      },
+      {
+        "sha256": "75e4291b248b62ea6845ff13c42d1c4f5a7173ab6d8618e8885616eeab10a121",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Private\\Web\\WebPlatformManualResetEvent.h"
+      },
+      {
+        "sha256": "f13cf08526d9571fa27d2d6c9d76cfd5de56336cb539b1ed2d5d9dc2b9a57775",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Private\\Web\\WebPlatformMemory.cpp"
+      },
+      {
+        "sha256": "eacc2e3a1748aa4c66ba6ae60c7437923ff620377d10e6f7611e77dcc85ff436",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Private\\Web\\WebPlatformMisc.cpp"
+      },
+      {
+        "sha256": "d94b704af5bf22fc9612b978d719c6be327d82c49ed45b80922fded0d5d69f71",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Private\\Web\\WebPlatformProcess.cpp"
+      },
+      {
+        "sha256": "b7cb26a203cbb8bbb45098db0a4abd02b9ab3f7a40247713c1542e4f658f4cf5",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatform.h"
+      },
+      {
+        "sha256": "536285030d678685ad82994b8ae8accdd09eca45397f599482459079f285d13b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformAffinity.h"
+      },
+      {
+        "sha256": "569b6150e5b06f0cfe2b7cd1a0c67bfc4e400813421949c1ade8ca60e48b4cd8",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformAtomics.h"
+      },
+      {
+        "sha256": "9926d28d60f0dd62fcf76f2fa8d03b9be3465d426f04377f5ff73c74ea4dd29a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformCompilerPreSetup.h"
+      },
+      {
+        "sha256": "aecb9819eb04bf5ad6cd2535cfac9b1bed5ef7946e551eff2224759862e16294",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformCompilerSetup.h"
+      },
+      {
+        "sha256": "7897ed0d2c4a5bed50552d0a001b9018fa8348c2246ee864d8625938f496283c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformFile.h"
+      },
+      {
+        "sha256": "d1282c6156d941b38aabd2884e227faf1c997c3f90cd26c5b2eb5192b66571d7",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformMath.h"
+      },
+      {
+        "sha256": "78fbb8d74ad4d2d9f8dbf949962e184e0db574618009ed5fa034d7d4944cc273",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformMemory.h"
+      },
+      {
+        "sha256": "1db69572ff03eca3651333edf1d3285944e9b67c5f7fe6ad559aefd3179b90a6",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformMisc.h"
+      },
+      {
+        "sha256": "674083df6cb66ff3b54fb227bd5651557e140993a8cf4336ba2228593ca03fc4",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformMutex.h"
+      },
+      {
+        "sha256": "fbeec21d55a3584589d152220d45af728b8c045d7f06af33bffe86c774513f7e",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformOutputDevices.h"
+      },
+      {
+        "sha256": "74e8aceac8b27e6238f217699105b6aa143724686168258ede24c1bb3336e6a0",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformProcess.h"
+      },
+      {
+        "sha256": "72ace0635b916f430aa667581528d864190eaca0057d66f4ef5c64d5c4c2484a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformProperties.h"
+      },
+      {
+        "sha256": "cb5fe86db2ccaee59c4c649b7f8c64d01df0efeb0fc52f4d79131b2346c9113f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformStackWalk.h"
+      },
+      {
+        "sha256": "064856064525aa3b38dcca2d091e5c0b11bc356b1d46469ca53cae099ab30822",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformString.h"
+      },
+      {
+        "sha256": "698b19ce50e4fd7ec9ec85dd64d1fabee455b33bbc504d8c8eb4954262b8af05",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformTime.h"
+      },
+      {
+        "sha256": "a113da94904029d11fe58678262e0bbae7e4b7e4c9b3d3dd3f53dc87365643bf",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformTLS.h"
+      },
+      {
+        "sha256": "3b8ba76fa9e9a3978e93e6f09fdcc84cfbfdb05efe05ca87bfd3a1a85638acbf",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebSemaphore.h"
+      },
+      {
+        "sha256": "493a3b7cad605b9fc13ff06cb1f508a1e56059e923fdf8d21e033b11813595f1",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\CoreUObject\\CoreUObject_Web.Build.cs"
+      },
+      {
+        "sha256": "914e93b38682556e814f273bbe57a0cb7f14044b484b08255a64637b0c95c5f3",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Engine\\Engine_Web.Build.cs"
+      },
+      {
+        "sha256": "4293a373ff208d9d1ed85d46bd03beff20b045b34e63764d65ae5de2c6690bdf",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\ImageWrapper\\ImageWrapper_Web.Build.cs"
+      },
+      {
+        "sha256": "0ed295ce43da70fd7dcfc8e5d87f5ace069109446bd2e0b50990ec2e322589fa",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\InputCore\\InputCore_Web.Build.cs"
+      },
+      {
+        "sha256": "b6be0a7dfd534e3119b9e905b889a2bd1639b2e659fba6d15d0aa191c0999c41",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\InputCore\\Private\\Web\\WebPlatformInput.cpp"
+      },
+      {
+        "sha256": "0874cff3f5e1399e6d9774c51bbb2c7874fa584915d1f34076ff3848a6e8e155",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\InputCore\\Public\\Web\\WebPlatformInput.h"
+      },
+      {
+        "sha256": "26f31c268b229a9e0f7bf8020d8ec1648dd9127e969fddac1d355989df207882",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Online\\HTTP\\HTTP_Web.Build.cs"
+      },
+      {
+        "sha256": "17d5fc71b4e45f8fadab3f201e870a3b61424e4acf8a5d5f728b7d7704e66c51",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Online\\HTTP\\Public\\Web\\WebPlatformHttp.h"
+      },
+      {
+        "sha256": "31fb2e27d3421aa43545ddafcfc2945fb86bf4373e99c3bfb935079fc8ddc67a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\RHI\\RHI_Web.Build.cs"
+      },
+      {
+        "sha256": "c372c8e78a683bf07e4556d70a563dbdd91ecf3299b623eb424391225e30b8e7",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\RHI\\Private\\Web\\WebDynamicRHI.cpp"
+      },
+      {
+        "sha256": "5158243d72a6d6e3113e02693c6122651a2f0d5ed6cacd78cd9eac8721659ce7",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Sockets\\Sockets_Web.Build.cs"
+      },
+      {
+        "sha256": "a44840161037a6900408d81ecfd928b21020d48218a53316d039b29dd07ecbbc",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Sockets\\Private\\Web\\SocketSubsystemWeb.cpp"
+      },
+      {
+        "sha256": "52fa30bce52c4523ebe54dff94eac32c6f05f9e0bd18ad2f3ea17cc62d438acb",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\WebGPURHI.Build.cs"
+      },
+      {
+        "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBreadcrumbs.cpp"
+      },
+      {
+        "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBufferLock.cpp"
+      },
+      {
+        "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserDynamicRHI.cpp"
+      },
+      {
+        "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserTransitions.cpp"
+      },
+      {
+        "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserViewport.cpp"
+      },
+      {
+        "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\WebGPUBrowserModule.cpp"
+      },
+      {
+        "sha256": "d02da25931cdc426f0bc2e4d6b7d571af897b0ce87b2c88df8c1a9aef5224d77",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Public\\WebGPUBrowser.h"
+      },
+      {
+        "sha256": "a9af98bff676bc3054d3078270ae23265385dedac694ad33b419a6b272bfa441",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\BLAKE3\\.gitignore"
+      },
+      {
+        "sha256": "98d8e8d9d76ccf8d21fdf2882786a3475d59f474d010ac325f515ebf113c9c78",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\BLAKE3\\BLAKE3_Web.Build.cs"
+      },
+      {
+        "sha256": "bbd5aab2df9ffdce9a1da86d105468df7fba7c3f04efcc093022fd54189035f2",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\BLAKE3\\1.3.1\\lib\\wasm64\\libBLAKE3.a"
+      },
+      {
+        "sha256": "88e8b5885a4167553d0b437654205cd2317fc115e5e4e860bcd48da8029c760e",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\BLAKE3\\1.3.1\\lib\\wasm64-thread\\libBLAKE3.a"
+      },
+      {
+        "sha256": "bf09a5749f9ba82fc85e5226e34d9ebecca6e30038e238790ee2ef210e2a6998",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\libPNG\\.gitignore"
+      },
+      {
+        "sha256": "ece8edcdc4697e20f90c51a7d2a3cf49b10950cb2aa33874a45bd07928a81d47",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\libPNG\\UElibPNG_Web.Build.cs"
+      },
+      {
+        "sha256": "938e30eba7c5ebe506cc8ef0ec4fe574dbbccd8b44235e3a0b3a5201123557d4",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\lib\\wasm64\\libpng.a"
+      },
+      {
+        "sha256": "c24aa49c927efe5a45af20fc6d45237421a3cfc79f1a56937ae544c862002ec8",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\libPNG\\libPNG-1.6.44\\lib\\wasm64-thread\\libpng.a"
+      },
+      {
+        "sha256": "1bc8daa1225d0eff40807025a62a94835fba92a90abf9e02bfdcde47c107c776",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\ThirdParty\\zlib\\zlib_Web.Build.cs"
+      },
+      {
+        "sha256": "c6e6d34a7effef9b3ad6fbd169bbeb77d3ccf2c34054e998e3cc0d074e7ec697",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebApplication.Target.cs"
+      },
+      {
+        "sha256": "8ebefce4549f7798599c2296c4df9ee3e6feb749950dbccaec18fcebea6c5048",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine.Target.cs"
+      },
+      {
+        "sha256": "717cd7b11a277691a45e22b8c91b1f770c24c4e118747dc38ad8a717281134a5",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngineThreads.Target.cs"
+      },
+      {
+        "sha256": "3515aa316d9ccd20889d159da7d5172bce421b7a7ac937c4ab9b1d4a4de6519a",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngineThreadsSIMD.Target.cs"
+      },
+      {
+        "sha256": "a29276903a312962c50ca99bb79230200f48f1c028f08ee176f6844a13c1f394",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngineThreadsTrace.Target.cs"
+      },
+      {
+        "sha256": "b54f006bf24c6b1642829fe9e9b3496832bfee12b87d1ff314bdf5f1f6f1e517",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebSmoke.Target.cs"
+      },
+      {
+        "sha256": "3e63dae56f5efc41d402b7a9fda95b63021c8769fc9bca6200c7d0348d839873",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebThreads.Target.cs"
+      },
+      {
+        "sha256": "2b3811eda252a1a63b9d3722878165db5212cc0ceb5e6b4f0545f10f2e35e441",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebApplication\\UEWebApplication.Build.cs"
+      },
+      {
+        "sha256": "aec6fe855984c1d4b472b68d1b6ea191d09ec40354201a6f21a55558bb09f268",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebApplication\\Private\\UEWebApplication.cpp"
+      },
+      {
+        "sha256": "b8fe0bfd96bcc0db9f7f0c57aad085d1e6f60ccfbbe94003c77da0a84d71155f",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\UEWebEngine.Build.cs"
+      },
+      {
+        "sha256": "62851a07bb4b79e95decb35d8e177126c4e877a86bcd59c97b64f7d861de70c1",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\UEWebEngine.cpp"
+      },
+      {
+        "sha256": "f5f4aba8d1fcb360955ce643a98d5e3182a5ef4aeeeaef35419b8bc8f59c8739",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebDefaultSamples.h"
+      },
+      {
+        "sha256": "22e9712ad03ce0fecce369b407cae0eb3a36c7d6c55c76a914077304dbe045d8",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebRenderScene.h"
+      },
+      {
+        "sha256": "24a4c4294d542a43f4b53a616342f62d8804b20b41ef434b9704144e0148d36c",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebTraceCapture.cpp"
+      },
+      {
+        "sha256": "0fc9616ec1840fcaba95ec1ba61ad5fb36ab1e6d93521a3072bc23b02b37a551",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebSmoke\\UEWebSmoke.Build.cs"
+      },
+      {
+        "sha256": "31b79e0f5ab7935a7a5a599975fd071639643a0ff33373a3eb7a24ce5e82b902",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebSmoke\\Private\\UEWebSmoke.cpp"
+      },
+      {
+        "sha256": "75c380767c38b11459b85ed907eeb5e00b5a5d937953737159c87fdf040f3635",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebThreads\\UEWebThreads.Build.cs"
+      },
+      {
+        "sha256": "c10dc9dc26bd1f78b540e7cf967deb2794d46938b008ed7dae38cbd72c9ba321",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebThreads\\Private\\UEWebThreads.cpp"
+      },
+      {
+        "sha256": "6134ceb2664fd1a2a71383ae91c2943c47a3fb111d1c808dfe2fc2a3fb8b645a",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h"
+      },
+      {
+        "sha256": "74272792b1542b85e6a244d7a2f66d7277d71f5a653ed4c1530f5eca40a7d48c",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderRuntimeMetadata.h"
+      },
+      {
+        "sha256": "d54ca5534ee858089eb65518e536680db429e5f43076733b5667c6fccbe7f35b",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBreadcrumbs.cpp"
+      },
+      {
+        "sha256": "3ceadae42469d91b612ca305af81acd2716a3e13e8f0725ef1abd7c0de10241d",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBufferLock.cpp"
+      },
+      {
+        "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h"
+      },
+      {
+        "sha256": "1dc5e6353ae05e33ba0d53fd0df5fc6e8d33db2fdfadbe5376d72a532bf606eb",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp"
+      },
+      {
+        "sha256": "979cf5811f0d1424f04665f3b3c791dfd75f0337454769bda09b869b4fe65247",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h"
+      },
+      {
+        "sha256": "c600425adb59919d151ae8b76fa08905e2dbfdc63216a6bd182d8692862ce7f2",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUOwner.h"
+      },
+      {
+        "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h"
+      },
+      {
+        "sha256": "da6728ea6804fb9af7889fe4e90b4822d63de793e757d92b6449068eb9303770",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp"
+      },
+      {
+        "sha256": "ca27eb25c934fe2d229ba1cef2c2a5f4bd40bc6b1659bf0aed400f8144e15772",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUnsupportedRHI.h"
+      },
+      {
+        "sha256": "65c184b936665e8d80ba079bb0043797baf6c29042d8082d5525b9a6a3495a21",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUViewport.cpp"
+      },
+      {
+        "sha256": "e7b10f47f448d48b7bbecd5968d970cab16daff8847936c3b0dbb766c9d66719",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\emdawnwebgpu.port.py"
+      },
+      {
+        "sha256": "0d34411aa2a02d6c3f5f58c5b4eac831572a6ce05241ebd0756913688696a738",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\include\\webgpu\\webgpu_glfw.h"
+      },
+      {
+        "sha256": "84523a6069f16faef986f5264b0e5d5543b98df4b65a6795787d8e6c09075177",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\include\\webgpu\\webgpu.h"
+      },
+      {
+        "sha256": "08fa83271b0e3fda8b5cf5604ee696a5b3d480869871469d4b2db57476d4c96a",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\src\\library_webgpu_enum_tables.js"
+      },
+      {
+        "sha256": "462f862078dcd3a36db32e4076f0e582ef0f92e8f5eb19d787f8703bbd408fb7",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\src\\library_webgpu_generated_sig_info.js"
+      },
+      {
+        "sha256": "6627c8dfdb4e2ab0ecb90072e2a6be7b9ff12cbc6c82f5dc1d5ee8f93b0a758b",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\src\\library_webgpu_generated_struct_info.js"
+      },
+      {
+        "sha256": "93763588a764881c41f1d43e24d49fd5d224af785c3ef3151c7a2b1d683d0d6c",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\src\\library_webgpu.js"
+      },
+      {
+        "sha256": "9bc9989085df00cb448c387059ea374cd1361271a6e6b447900c88b822983695",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\src\\webgpu-externs.js"
+      },
+      {
+        "sha256": "88d2bb84b16a006b0619c344bab540688ec094de84b3f5c9ba3e1146ec94dde5",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu\\src\\webgpu.cpp"
+      },
+      {
+        "sha256": "5bac08f448d3601bb94138e35d61d371cf07c86da74caf51a1f0ee703655a3ca",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu_cpp\\include\\dawn\\webgpu_cpp_print.h"
+      },
+      {
+        "sha256": "582e62d371f29391d78a7356c634c6b76e1d58b6257a6f5be51701d15797fce1",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu_cpp\\include\\webgpu\\webgpu_cpp_chained_struct.h"
+      },
+      {
+        "sha256": "f2b3e727ebe76c803fac521babe5478c1dedaa969cc3d647ede2f37fe64193f5",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu_cpp\\include\\webgpu\\webgpu_cpp.h"
+      },
+      {
+        "sha256": "fd436dc17d050e156ac073b6148d90d388e2585de924ae0274b6aed3067c2a96",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\emdawnwebgpu-v20261009.190412\\emdawnwebgpu_pkg\\webgpu_cpp\\include\\webgpu\\webgpu_enum_class_bitmasks.h"
+      },
+      {
+        "sha256": "5725223d99aa838a0cae7c916527f8a759ac7d23204a7b4303642dedee16ebaa",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\GameEngine.cpp"
+      },
+      {
+        "sha256": "903cc9bda463519e20854e26c103576484a494b6494b94f5eaaba73feb847d0a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\TranslucentRendering.cpp"
+      },
+      {
+        "sha256": "903cc9bda463519e20854e26c103576484a494b6494b94f5eaaba73feb847d0a",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\TranslucentRendering.cpp"
+      },
+      {
+        "sha256": "0da48a984a69be4f61633c723e5eb3d48cff8de70110265806b59952e61dbaf5",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-rhi-host.cjs"
+      },
+      {
+        "sha256": "37a0360774d0c7dd6fc48acfd0db1dc842fde8157b4cb77e53ea05188aa2cfd4",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RHI\\Private\\PipelineStateCache.cpp"
+      },
+      {
+        "sha256": "37a0360774d0c7dd6fc48acfd0db1dc842fde8157b4cb77e53ea05188aa2cfd4",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RHI\\Private\\PipelineStateCache.cpp"
+      },
+      {
+        "sha256": "0f85dd88798a60e3009d2cd67b32b35ad8223e996a9a22c8cbb710834e2722fb",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\SceneTexturesConfig.cpp"
+      },
+      {
+        "sha256": "0f85dd88798a60e3009d2cd67b32b35ad8223e996a9a22c8cbb710834e2722fb",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\SceneTexturesConfig.cpp"
+      },
+      {
+        "sha256": "d50f2bcff54258b84e64c61440a6eece72d6c615cb4f20fb0644ac8d06768899",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\ChaosCore.Build.cs"
+      },
+      {
+        "sha256": "2fff6b2503befc8ee074f4db8690f26dd6f87e5a03260e838d7b70bce2530231",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\ChaosCoreModule.cpp"
+      },
+      {
+        "sha256": "2eabd3384801404ac2dfdbe60b712cec66b89f6aafdce8b798f12a6282ea3cf9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Rotation.cpp"
+      },
+      {
+        "sha256": "e325d29e2d5428ccdaf0b1080ce809d26e8d688c00d88dbf2840bf8be6c08c6d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Transform.cpp"
+      },
+      {
+        "sha256": "c3e27bf082933755d8109d0f129faaf2ca2a47a8537e6333e104579e85916cd8",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Chaos\\AABB.cpp"
+      },
+      {
+        "sha256": "f0d9d7fc55e908f3c46988790427908c11c95cfa88105521f969951bae9044d5",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Chaos\\AABB.ispc"
+      },
+      {
+        "sha256": "a99a1c0550d10ba55d002e4277217a649a0a815abdb31873df760ee769a9fdc5",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Chaos\\ChaosCoreLogUtil.cpp"
+      },
+      {
+        "sha256": "e5e6007700e487738f3faf00e46d748cfe7f1b66e69f9df6d1dd24b196a54e6d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Chaos\\CoreCapsule.cpp"
+      },
+      {
+        "sha256": "7a158465c18767b9d8e27b25039085ab8c6c81624a418a1e158178c2d440e36f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Chaos\\Raycasts.cpp"
+      },
+      {
+        "sha256": "52897d27bead232a8bccc267f02ecabd3fef7f51e3b1d9a8974775092899fa2d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Chaos\\Sweeps.cpp"
+      },
+      {
+        "sha256": "d75f9d00245d1c1ce1a78d8cdc69b8622b7767d72a8eb679bbb85fab804239c8",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Private\\Chaos\\SweepsMTD.cpp"
+      },
+      {
+        "sha256": "d5802ef4a4c4bef4b0e1acef610f271dd1641e601c5c2173d152405399876466",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\ChaosCheck.h"
+      },
+      {
+        "sha256": "380a1291875376af14d3ac26da9783b9367239716d327393b2375df20d190267",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\ChaosCoreModule.h"
+      },
+      {
+        "sha256": "0d3727176e95a5c4ab4084eb8153f6220b7e36e8821230e42d0fe649a1dd2d17",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\AABB.h"
+      },
+      {
+        "sha256": "3b6c1eeeac9c6566c55b97efb1497805c526c6ef68a22070ff49c9ddc55702c7",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Array.h"
+      },
+      {
+        "sha256": "66ad794cd88c84ad62c0ee0c1713e48d9f068d61322bfdc533c5a888ae605077",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ArrayCollection.h"
+      },
+      {
+        "sha256": "d2b662fd9dcc2abf0f563ae54c13339523ea8cc35d2d2bdefce7363b61a65818",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ArrayCollectionArray.h"
+      },
+      {
+        "sha256": "724f2415deed853ba130719e881754214d60e0d826eb2be28136df1a0c2d3250",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ArrayCollectionArrayBase.h"
+      },
+      {
+        "sha256": "56d4ec8a6be160b049f4b9905b4ec08c6ba4b975531ed8318d352bfd098ed655",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ArrayFaceND.h"
+      },
+      {
+        "sha256": "1e64d6b0ce24e1b983c8500f00552d0867b855fd88c8ee7e9154dd09d410fd77",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ArrayND.h"
+      },
+      {
+        "sha256": "cede9f1d6a9de4570f84d90dc34577b8bdc5b2553a7d3569992a5b56319ba1b3",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ChaosCoreLogUtil.h"
+      },
+      {
+        "sha256": "00ac23e5341b122c725e11f8e8029060a23b65aa5128dcf02f2c2f820eb3fed4",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Core.h"
+      },
+      {
+        "sha256": "4f4b9545c05df6dae95efac3fe4dc6f9e6870206ba357eadb4996faed5be98fa",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\CoreCapsule.h"
+      },
+      {
+        "sha256": "16f77d9bb62dfbf06f19b72308a1143675616848c511a566cc75e84f41c7e801",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\CorePlane.h"
+      },
+      {
+        "sha256": "34ff6cffed463b65326a53b67430abb5e5ac9a13c82d4268632e701cb8df9d1d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\CoreSegment.h"
+      },
+      {
+        "sha256": "2ce298e406bce805dd3dcf1d58d063200e9645b5b2ae48d231e91ac884f0beae",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\CoreSphere.h"
+      },
+      {
+        "sha256": "95f7edaddafcb4276902cf49519ad994bef908ca9a72bb1e5583eb2b2d865f37",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\HandleArray.h"
+      },
+      {
+        "sha256": "7f1d23a5b0d357264da26d717f62cd9a70b86bde942a8eb504b191a708a64f67",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ImplicitQRSVD.h"
+      },
+      {
+        "sha256": "b1caab5d03b47341b01b5dbccba1b0b81955cad92943e3ca7c7966b278b6cdbb",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Matrix.h"
+      },
+      {
+        "sha256": "ca49f0d958c73f230f0e21a7457a09e2e439f4e7c3881be1fead38730f51abe2",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Matrix33.isph"
+      },
+      {
+        "sha256": "d0dad043d710c5bb4105df6a25e9590dd004ea2a2d40cde0f5dcb9f3c795bec6",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\ObjectPool.h"
+      },
+      {
+        "sha256": "6ffd44a936a7af85bc4169feef2de8829a37c2837db09193a6ff5ce9a23c944a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Pair.h"
+      },
+      {
+        "sha256": "f9d58b4298e17b65d0c69dd25fd78bd03a15592837fd82dd68ee9e543d5719d2",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Range.h"
+      },
+      {
+        "sha256": "2829c1652221041930c3ad8f5d7528224aa7f7003ec9922d7a031a113a5c7b81",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Raycasts.h"
+      },
+      {
+        "sha256": "353ed1ede459e8f53e0da9abcccd80a1af29fa60e82f21dc6ad58586b9fbc8ea",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Real.h"
+      },
+      {
+        "sha256": "beaac15c369c091a45b59b6589da50c67a700b3a16ea23c496d0191c32081159",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Rotation.h"
+      },
+      {
+        "sha256": "ddfbea230321843d304bc6850f41f7d4983a2b834d1c235698f0eeea6a6bcfae",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Simd4.h"
+      },
+      {
+        "sha256": "cbee4e08150b365c072922a6ddaa4db57ed5e0b6198218685182098e562bb585",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\SimdTypes.h"
+      },
+      {
+        "sha256": "0d74637af8e968ad43cd39b4279659efc042f0e3b2fa122cae0c6df0750fd873",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Sweeps.h"
+      },
+      {
+        "sha256": "ab34bf8ac5f819e32d5ceee4d6b8b021a2b4486218720de963c4e9c86a0040c9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\SweepsMTD.h"
+      },
+      {
+        "sha256": "7d419e7d8f8576b382c2fcbcb36264fc8515299343d5e4e4f6498257c5a0fd3f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Transform.h"
+      },
+      {
+        "sha256": "e75053b6c55c3d0768f128293075eac3edc9305ee262ad13859aca897d25fc6e",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector.h"
+      },
+      {
+        "sha256": "87ea6c375db529320ad4b6e7234ab655ffb9d762b17885069c8a587b9881949a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector16Int8.h"
+      },
+      {
+        "sha256": "bf129aa9c1a04bbb6b7a6eaf6682f92e398b00fb54827b7f89598c7766fba7d3",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector16Int8FPU.h"
+      },
+      {
+        "sha256": "7a49063d0884ee488f833b94df77b6c954adac028ae9d9eee198044712cdc829",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector16Int8Neon.h"
+      },
+      {
+        "sha256": "17b600b9a607ba2cbbf5ee81b3bee071294dd72da237bc47ce3446eaee77452d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector16Int8SSE.h"
+      },
+      {
+        "sha256": "2ce552c5e1d93900851a92d2d5166b7b015cda94f5a26a5d604c796fac03909c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector32Int8.h"
+      },
+      {
+        "sha256": "f9287b2e2b2b3b897a82d3170dc36fdae73b0d78ba0f6caa5f604f0c68ad54b4",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector32Int8AVX.h"
+      },
+      {
+        "sha256": "de22baf3b0759c109f2bddddb54af0095521223316553cd07f5e6d207ba431a6",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\Vector32Int8Common.h"
+      },
+      {
+        "sha256": "e1b7784a4c152fd1bf417b743acf29b8e4f938da492ae6a3d70dee1420590ce9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\VectorND.h"
+      },
+      {
+        "sha256": "f4401932bd74c173e40c2f8fa5ec46a8838648164c6f0ce8c77ff9cd7f1a186b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Public\\Chaos\\VectorUtility.h"
+      },
+      {
+        "sha256": "dca57e2dd5436635b435902154907e1039811000bb8a3f51c38a843bb6fe25e7",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Tests\\Chaos\\Vector16Int8Tests.cpp"
+      },
+      {
+        "sha256": "56c80bb74bb6a4cf7659301b73e5f5249d5e495fef5777c2a8af00b28d847271",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Experimental\\ChaosCore\\Tests\\Chaos\\Vector32Int8Tests.cpp"
+      },
+      {
+        "sha256": "f840a2106731b27ac47387545a30d8470cb41299b387ee964b6d54ebff32e92f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Core\\Public\\Math\\UnrealMathFPU.h"
+      },
+      {
+        "sha256": "36a8231b2b8863bf813c7b9e886162d9b4d988ce767a2587e0a942cd1e0bb807",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Core\\Private\\GenericPlatform\\GenericPlatformProcess.cpp"
+      },
+      {
+        "sha256": "36a8231b2b8863bf813c7b9e886162d9b4d988ce767a2587e0a942cd1e0bb807",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Core\\Private\\GenericPlatform\\GenericPlatformProcess.cpp"
+      },
+      {
+        "sha256": "93884ca9677e738ee1ae457db2037f7a687e6a0cf0929d9f4e5b4eb4202bd963",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Core\\Private\\IO\\IoDispatcher.cpp"
+      },
+      {
+        "sha256": "93884ca9677e738ee1ae457db2037f7a687e6a0cf0929d9f4e5b4eb4202bd963",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Core\\Private\\IO\\IoDispatcher.cpp"
+      },
+      {
+        "sha256": "46a939d04ecad5b9ab718d62ef2e17528a778a120072fcd1568d7fe1ab4b221f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\RenderAssetUpdate.cpp"
+      },
+      {
+        "sha256": "46a939d04ecad5b9ab718d62ef2e17528a778a120072fcd1568d7fe1ab4b221f",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\RenderAssetUpdate.cpp"
+      },
+      {
+        "sha256": "7a4b36ab687dc6502a6b72c06559bb26513b39b140de2956b6eefa096d2fef9b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\Texture2DUpdate.cpp"
+      },
+      {
+        "sha256": "7a4b36ab687dc6502a6b72c06559bb26513b39b140de2956b6eefa096d2fef9b",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\Texture2DUpdate.cpp"
+      },
+      {
+        "sha256": "f21344d02a5bb08bae7e545ddbd7401f279d14a6b22756a7374de2af2a791105",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\Texture2DStreamIn_IO.cpp"
+      },
+      {
+        "sha256": "f21344d02a5bb08bae7e545ddbd7401f279d14a6b22756a7374de2af2a791105",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\Texture2DStreamIn_IO.cpp"
+      },
+      {
+        "sha256": "1e6501022d381a69fc2bd1e453a58e95b637eeca67720a3447ff6530d559bc5a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\StreamingManagerTexture.cpp"
+      },
+      {
+        "sha256": "1e6501022d381a69fc2bd1e453a58e95b637eeca67720a3447ff6530d559bc5a",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Streaming\\StreamingManagerTexture.cpp"
+      },
+      {
+        "sha256": "301fe598118c68be44925c37a4161fbc4c850fb5c73290456e0b3acd3e795e96",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Shader\\Preshader2.cpp"
+      },
+      {
+        "sha256": "301fe598118c68be44925c37a4161fbc4c850fb5c73290456e0b3acd3e795e96",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Shader\\Preshader2.cpp"
+      },
+      {
+        "sha256": "a749b2bf63434a6e0a73d1dc95dd99ccf2fd59a4bfa6384e8b1c2d880ea6ba30",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\SparseVolumeTexture\\SparseVolumeTextureData.cpp"
+      },
+      {
+        "sha256": "a749b2bf63434a6e0a73d1dc95dd99ccf2fd59a4bfa6384e8b1c2d880ea6ba30",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\SparseVolumeTexture\\SparseVolumeTextureData.cpp"
+      },
+      {
+        "sha256": "5cf9e857c60a90f9e27b8f515657bde60d56e1d72cbbffceba0990730c9ebf5f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\GeometryCacheVertexFactory.cpp"
+      },
+      {
+        "sha256": "5cf9e857c60a90f9e27b8f515657bde60d56e1d72cbbffceba0990730c9ebf5f",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\GeometryCacheVertexFactory.cpp"
+      },
+      {
+        "sha256": "f32a504eec3cd4bd5682f08d936baa58472c391ba70d3ab8a2bac749943ebae0",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\InstancedStaticMesh.cpp"
+      },
+      {
+        "sha256": "f32a504eec3cd4bd5682f08d936baa58472c391ba70d3ab8a2bac749943ebae0",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\InstancedStaticMesh.cpp"
+      },
+      {
+        "sha256": "9429f66363a0b8c05075f2a97cb1aa05b3ecb3c03914196684552339ec2b1aa2",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\ActorComponent.cpp"
+      },
+      {
+        "sha256": "9429f66363a0b8c05075f2a97cb1aa05b3ecb3c03914196684552339ec2b1aa2",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Components\\ActorComponent.cpp"
+      },
+      {
+        "sha256": "013d21d985a1ab911971ae1ebd12a71d02747e44a5dd81ef464ff9f89989cb18",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Particles\\ParticleVertexFactory.cpp"
+      },
+      {
+        "sha256": "013d21d985a1ab911971ae1ebd12a71d02747e44a5dd81ef464ff9f89989cb18",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Particles\\ParticleVertexFactory.cpp"
+      },
+      {
+        "sha256": "6ff3fc29820c69afe1f3b02ee16d462f716963be4bd436731832da37636bb350",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\PrimitiveUniformShaderParameters.cpp"
+      },
+      {
+        "sha256": "6ff3fc29820c69afe1f3b02ee16d462f716963be4bd436731832da37636bb350",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\PrimitiveUniformShaderParameters.cpp"
+      },
+      {
+        "sha256": "4e1e6f64af57b6e2d0b6352eea27b9e77499c57cb1ee752d2229e819a5e6cf60",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\PositionVertexBuffer.cpp"
+      },
+      {
+        "sha256": "4e1e6f64af57b6e2d0b6352eea27b9e77499c57cb1ee752d2229e819a5e6cf60",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\PositionVertexBuffer.cpp"
+      },
+      {
+        "sha256": "cf8d31d635894f703bbf504a94f727a238e0146a7fb302175f765678d046333e",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\StaticMeshVertexBuffer.cpp"
+      },
+      {
+        "sha256": "cf8d31d635894f703bbf504a94f727a238e0146a7fb302175f765678d046333e",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\StaticMeshVertexBuffer.cpp"
+      },
+      {
+        "sha256": "33f3d7dc8a60a6d47fb19443b5da28a1af334d71758efc4196a816a42d19746c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\MovieSceneTracks\\Private\\Sections\\MovieSceneSkeletalAnimationSection.cpp"
+      },
+      {
+        "sha256": "33f3d7dc8a60a6d47fb19443b5da28a1af334d71758efc4196a816a42d19746c",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\MovieSceneTracks\\Private\\Sections\\MovieSceneSkeletalAnimationSection.cpp"
+      },
+      {
+        "sha256": "3c566cea97200f18fe6f87b33cabfe0e7fdc711e6d27cce6d228b92297477120",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\ShaderLibrary\\ShaderCodeArchive.cpp"
+      },
+      {
+        "sha256": "3c566cea97200f18fe6f87b33cabfe0e7fdc711e6d27cce6d228b92297477120",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RenderCore\\Private\\ShaderLibrary\\ShaderCodeArchive.cpp"
+      },
+      {
+        "sha256": "eac875bc1ef04f360ce9aaf083242eb02b22631105fa329713964519c3fc6d63",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneCulling\\SceneCullingRenderer.cpp"
+      },
+      {
+        "sha256": "eac875bc1ef04f360ce9aaf083242eb02b22631105fa329713964519c3fc6d63",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneCulling\\SceneCullingRenderer.cpp"
+      },
+      {
+        "sha256": "db9f83c9cbdc23161ac5e18993f709c61d32e8e6976e43a72e4eb65677bb5aa1",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneVisibility.cpp"
+      },
+      {
+        "sha256": "db9f83c9cbdc23161ac5e18993f709c61d32e8e6976e43a72e4eb65677bb5aa1",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneVisibility.cpp"
+      },
+      {
+        "sha256": "71e0461310cfa15b9337a5c222d9e098e5d676ef027765b3f5f5386637abd29c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowSetup.cpp"
+      },
+      {
+        "sha256": "71e0461310cfa15b9337a5c222d9e098e5d676ef027765b3f5f5386637abd29c",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowSetup.cpp"
+      },
+      {
+        "sha256": "bf9222453ab4e068ed84054e0b9f6e5c99ecd4bc249893675f0607464f016157",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowDepthRendering.cpp"
+      },
+      {
+        "sha256": "bf9222453ab4e068ed84054e0b9f6e5c99ecd4bc249893675f0607464f016157",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowDepthRendering.cpp"
+      },
+      {
+        "sha256": "91a80b38ab99a54bcdb0e6ca219e5c0377a77d38e4d984b631051b10dd1c1e4c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\FXRenderingUtils.cpp"
+      },
+      {
+        "sha256": "91a80b38ab99a54bcdb0e6ca219e5c0377a77d38e4d984b631051b10dd1c1e4c",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\FXRenderingUtils.cpp"
+      },
+      {
+        "sha256": "b44fd2000412b863fc35f658257fb9b29863423e51e2b63ca9f29c58b5a5a351",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderingThread.cpp"
+      },
+      {
+        "sha256": "b44fd2000412b863fc35f658257fb9b29863423e51e2b63ca9f29c58b5a5a351",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderingThread.cpp"
+      },
+      {
+        "sha256": "eb73c66beed8d67c0dad142962b64f7da6c05dfc8ae6221f1e5e7d151d143916",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\Shader.cpp"
+      },
+      {
+        "sha256": "eb73c66beed8d67c0dad142962b64f7da6c05dfc8ae6221f1e5e7d151d143916",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RenderCore\\Private\\Shader.cpp"
+      },
+      {
+        "sha256": "63fb8d5a268b7158a1c5a4410c62977a1043ac72af26be1c88269418e0ea538f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderUtils.cpp"
+      },
+      {
+        "sha256": "63fb8d5a268b7158a1c5a4410c62977a1043ac72af26be1c88269418e0ea538f",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderUtils.cpp"
+      },
+      {
+        "sha256": "00a6c5e9a5e974a173e0eaad391b674ec9c176ca4da39b119f582db267bb7e48",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Public\\WebShaderPlatform.h"
+      },
+      {
+        "sha256": "f8d3741d97784b2ebaa6d2e31a0f5a765e7cc9b29d30c0fa3423c47de953377e",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RenderCore\\Public\\WebShaderPlatform.h"
+      },
+      {
+        "sha256": "6bf12adb75965b101c79338e9f1ccab541e46dbe35f44199d76984feb5ad319b",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\SkeletalRenderGPUSkin.cpp"
+      },
+      {
+        "sha256": "6bf12adb75965b101c79338e9f1ccab541e46dbe35f44199d76984feb5ad319b",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\SkeletalRenderGPUSkin.cpp"
+      },
+      {
+        "sha256": "bba3f7faf989e9a7cc4644cd35fd6948a6ecf3eda6f20915184b37a655a17099",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\PhysicsField\\PhysicsFieldComponent.cpp"
+      },
+      {
+        "sha256": "bba3f7faf989e9a7cc4644cd35fd6948a6ecf3eda6f20915184b37a655a17099",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\PhysicsField\\PhysicsFieldComponent.cpp"
+      },
+      {
+        "sha256": "a8342cfa2b958390ddac4d0ef68995ceda62fb89d053f517677382bfde423cc8",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\SubsurfaceProfile.cpp"
+      },
+      {
+        "sha256": "a8342cfa2b958390ddac4d0ef68995ceda62fb89d053f517677382bfde423cc8",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\SubsurfaceProfile.cpp"
+      },
+      {
+        "sha256": "af449e67740c3dbb69ba9925f028cfb411f55c6e11658ced973270573f8a7a3d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\LightGridInjection.cpp"
+      },
+      {
+        "sha256": "af449e67740c3dbb69ba9925f028cfb411f55c6e11658ced973270573f8a7a3d",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\LightGridInjection.cpp"
+      },
+      {
+        "sha256": "6b9cdf66036e65e604ef271e56b98c4a4a4631a3526023c784d836d4d333f0f9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\IESTextureManager.cpp"
+      },
+      {
+        "sha256": "6b9cdf66036e65e604ef271e56b98c4a4a4631a3526023c784d836d4d333f0f9",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\IESTextureManager.cpp"
+      },
+      {
+        "sha256": "591f5c84d63c5d1f05106e6b7d8eb68500aa42a5a78113552e9d9c4cc04e6178",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileFogRendering.cpp"
+      },
+      {
+        "sha256": "591f5c84d63c5d1f05106e6b7d8eb68500aa42a5a78113552e9d9c4cc04e6178",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileFogRendering.cpp"
+      },
+      {
+        "sha256": "87103c94c9db635868bc5610332b9693304d37023f5694a31013089ac00c6bed",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\IndirectLightRendering.cpp"
+      },
+      {
+        "sha256": "87103c94c9db635868bc5610332b9693304d37023f5694a31013089ac00c6bed",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\IndirectLightRendering.cpp"
+      },
+      {
+        "sha256": "e715c86a0ca968590b24a4ff7dcd4d072ff8a03af4a6842b3ce3f23cbd35ea56",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\DistortionRendering.cpp"
+      },
+      {
+        "sha256": "e715c86a0ca968590b24a4ff7dcd4d072ff8a03af4a6842b3ce3f23cbd35ea56",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\DistortionRendering.cpp"
+      },
+      {
+        "sha256": "090cb714b40be23a6fb65530d5034f1326fb12d2bbdbf72afe8d500d86a47bb2",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SystemTextures.cpp"
+      },
+      {
+        "sha256": "4bc762435daed718da1b98d4f74eb8bd329b8d9898a48865f595ce3f5a0d6290",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SystemTextures.cpp"
+      },
+      {
+        "sha256": "7355db3be47876d7ba347d7cc9f044daf8e2630099f7703220714680158d9917",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneTextureReductions.cpp"
+      },
+      {
+        "sha256": "7355db3be47876d7ba347d7cc9f044daf8e2630099f7703220714680158d9917",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneTextureReductions.cpp"
+      },
+      {
+        "sha256": "dea633a426893bee185178ebd6aeea99c4a682ab9419189b76f8a95828840720",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneRendering.cpp"
+      },
+      {
+        "sha256": "dea633a426893bee185178ebd6aeea99c4a682ab9419189b76f8a95828840720",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneRendering.cpp"
+      },
+      {
+        "sha256": "f52ce6c832da1794c342d6c7a6a4f0b8aff64cbc4cae246c106f0c2d552074a3",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\GPUScene.cpp"
+      },
+      {
+        "sha256": "f52ce6c832da1794c342d6c7a6a4f0b8aff64cbc4cae246c106f0c2d552074a3",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\GPUScene.cpp"
+      },
+      {
+        "sha256": "ef69d1fa559ba176af6ae49d4655a9c273355040c61895320fd55a2bff321305",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceField.cpp"
+      },
+      {
+        "sha256": "ef69d1fa559ba176af6ae49d4655a9c273355040c61895320fd55a2bff321305",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceField.cpp"
+      },
+      {
+        "sha256": "18e92e5fdf43ab0d356e309b6b64b2d61e1d6c573e968eb75a7b22166c865b03",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\MeshDrawCommands.cpp"
+      },
+      {
+        "sha256": "18e92e5fdf43ab0d356e309b6b64b2d61e1d6c573e968eb75a7b22166c865b03",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\MeshDrawCommands.cpp"
+      },
+      {
+        "sha256": "b0e8a0342527ad641b2177e836079f04831d123da667e91b9ccada0cc2845e11",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\InstanceCulling\\InstanceCullingContext.cpp"
+      },
+      {
+        "sha256": "b0e8a0342527ad641b2177e836079f04831d123da667e91b9ccada0cc2845e11",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\InstanceCulling\\InstanceCullingContext.cpp"
+      },
+      {
+        "sha256": "0f909eedc8864f9fed9c9ac8389d179f126cd1b9ad923d931c60d338a63341fe",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceFieldHeightfields.h"
+      },
+      {
+        "sha256": "0f909eedc8864f9fed9c9ac8389d179f126cd1b9ad923d931c60d338a63341fe",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceFieldHeightfields.h"
+      },
+      {
+        "sha256": "c5ee8a3f6801f3a522a54ab44f8ed4a45b1b803bb2bb53c0d8b97a417b07d921",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\DistanceFieldAmbientOcclusion.cpp"
+      },
+      {
+        "sha256": "c5ee8a3f6801f3a522a54ab44f8ed4a45b1b803bb2bb53c0d8b97a417b07d921",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\DistanceFieldAmbientOcclusion.cpp"
+      },
+      {
+        "sha256": "a1071f76b18aa809d9b57be9e610679a7b5250532ec7ece7d4bcc7494160f909",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileBasePassRendering.cpp"
+      },
+      {
+        "sha256": "a1071f76b18aa809d9b57be9e610679a7b5250532ec7ece7d4bcc7494160f909",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileBasePassRendering.cpp"
+      },
+      {
+        "sha256": "7ce83d5befa1ee532876db378eba8e61a4069050bbcea520f56fe0ee7e3cb97a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileShadingRenderer.cpp"
+      },
+      {
+        "sha256": "7ce83d5befa1ee532876db378eba8e61a4069050bbcea520f56fe0ee7e3cb97a",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileShadingRenderer.cpp"
+      },
+      {
+        "sha256": "8b9977f4b3805d176a9ffeef67b356d26e93d608e6072b0e8f04bb39c56c2efa",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ReflectionEnvironmentCapture.cpp"
+      },
+      {
+        "sha256": "8b9977f4b3805d176a9ffeef67b356d26e93d608e6072b0e8f04bb39c56c2efa",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ReflectionEnvironmentCapture.cpp"
+      },
+      {
+        "sha256": "533ee8f9f54ffd6a997cd09d9a364823129b942c2a3bb79114b7107a8e6ceb89",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessMobile.cpp"
+      },
+      {
+        "sha256": "533ee8f9f54ffd6a997cd09d9a364823129b942c2a3bb79114b7107a8e6ceb89",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessMobile.cpp"
+      },
+      {
+        "sha256": "96ad2a59a81d0a29544fb69c96d1a51221a34f87a80d3861f9d0ff72007e9bd9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessCombineLUTs.cpp"
+      },
+      {
+        "sha256": "96ad2a59a81d0a29544fb69c96d1a51221a34f87a80d3861f9d0ff72007e9bd9",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessCombineLUTs.cpp"
+      },
+      {
+        "sha256": "095f036d31d22953d10dbfdf44547fb3fb7864d3f49217e89f522789ab923ffa",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessHistogram.cpp"
+      },
+      {
+        "sha256": "095f036d31d22953d10dbfdf44547fb3fb7864d3f49217e89f522789ab923ffa",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessHistogram.cpp"
+      },
+      {
+        "sha256": "920f02aff3885d46fd0ae04d1d149a374db9aa504a04f9a099073ab3c22f186d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessWeightedSampleSum.cpp"
+      },
+      {
+        "sha256": "920f02aff3885d46fd0ae04d1d149a374db9aa504a04f9a099073ab3c22f186d",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessWeightedSampleSum.cpp"
+      },
+      {
+        "sha256": "ceb65895de79c3b7e9adf2f5212147066f7f0b743116d8b513e7ac4e5f70ca5a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessUpscale.cpp"
+      },
+      {
+        "sha256": "ceb65895de79c3b7e9adf2f5212147066f7f0b743116d8b513e7ac4e5f70ca5a",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessUpscale.cpp"
+      },
+      {
+        "sha256": "82e4141a2730f6b1b028d1c9199a68cb37a42b7295c3f56ff17d1abbda0d599a",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\TemporalAA.cpp"
+      },
+      {
+        "sha256": "82e4141a2730f6b1b028d1c9199a68cb37a42b7295c3f56ff17d1abbda0d599a",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\TemporalAA.cpp"
+      },
+      {
+        "sha256": "d6fd4a7c1765c8a6b2318ea76af00719244f9dd1935bbb7a1bfe7a9fc204e381",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SkyAtmosphereRendering.cpp"
+      },
+      {
+        "sha256": "d6fd4a7c1765c8a6b2318ea76af00719244f9dd1935bbb7a1bfe7a9fc204e381",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SkyAtmosphereRendering.cpp"
+      },
+      {
+        "sha256": "952352a8fd928554e7ab3c6f586033590f13948573c6347e4538e8505793bcbc",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SkyPassRendering.cpp"
+      },
+      {
+        "sha256": "952352a8fd928554e7ab3c6f586033590f13948573c6347e4538e8505793bcbc",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SkyPassRendering.cpp"
+      },
+      {
+        "sha256": "e3447478d470ed503b7e147e0d3a6e7ce675a13aea148adef32016d119f851d9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricCloudRendering.cpp"
+      },
+      {
+        "sha256": "e3447478d470ed503b7e147e0d3a6e7ce675a13aea148adef32016d119f851d9",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricCloudRendering.cpp"
+      },
+      {
+        "sha256": "057e6a528bfdf46fe1e37568c14b2f7f76145ab88cd4a163c7198bc0cf3d65c6",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricRenderTarget.cpp"
+      },
+      {
+        "sha256": "057e6a528bfdf46fe1e37568c14b2f7f76145ab88cd4a163c7198bc0cf3d65c6",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricRenderTarget.cpp"
+      },
+      {
+        "sha256": "d0c529e8d281825b07b56ad590c621776c96b71655fe887a43056fe53e00be1c",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ScreenPass.cpp"
+      },
+      {
+        "sha256": "d0c529e8d281825b07b56ad590c621776c96b71655fe887a43056fe53e00be1c",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ScreenPass.cpp"
+      },
+      {
+        "sha256": "bb63fe5816098c717d67ce47bb74917ec7e33b684c8ee0f8bdabaebcdc8733ec",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\VolumeTexture.cpp"
+      },
+      {
+        "sha256": "bb63fe5816098c717d67ce47bb74917ec7e33b684c8ee0f8bdabaebcdc8733ec",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\VolumeTexture.cpp"
+      },
+      {
+        "sha256": "659abba2484084ebff1bac0d54322f74bbc593b3a09ffe1851084668dfd7e0f0",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\Texture3DResource.cpp"
+      },
+      {
+        "sha256": "659abba2484084ebff1bac0d54322f74bbc593b3a09ffe1851084668dfd7e0f0",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\Texture3DResource.cpp"
+      },
+      {
+        "sha256": "dafeda03b2279a62399317ef8cd524d4c3f8b3dbcf3862e8c568c57498cc45d0",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Materials\\MaterialExpressions.cpp"
+      },
+      {
+        "sha256": "dafeda03b2279a62399317ef8cd524d4c3f8b3dbcf3862e8c568c57498cc45d0",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Materials\\MaterialExpressions.cpp"
+      },
+      {
+        "sha256": "17d1922af15f4a0de2c44aac0b3a82e26e917e4d5088af50c93f0b93491d0a71",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\SignalProcessing\\Private\\FloatArrayMath.cpp"
+      },
+      {
+        "sha256": "17d1922af15f4a0de2c44aac0b3a82e26e917e4d5088af50c93f0b93491d0a71",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\SignalProcessing\\Private\\FloatArrayMath.cpp"
+      },
+      {
+        "sha256": "cc92366f8a0efbcb6caffa80c4715ada46519c430013772b9075eb82b8174c0f",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\SlateCore\\Private\\Fonts\\PreprocessedFontGeometry.cpp"
+      },
+      {
+        "sha256": "cc92366f8a0efbcb6caffa80c4715ada46519c430013772b9075eb82b8174c0f",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\SlateCore\\Private\\Fonts\\PreprocessedFontGeometry.cpp"
+      },
+      {
+        "sha256": "37e5a31dd3aab771b8747c6931dd46dd0d36cdedb2eff9800d3e10acc5fce49d",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\SlateCore\\Private\\Fonts\\SlateSdfGenerator.cpp"
+      },
+      {
+        "sha256": "37e5a31dd3aab771b8747c6931dd46dd0d36cdedb2eff9800d3e10acc5fce49d",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\SlateCore\\Private\\Fonts\\SlateSdfGenerator.cpp"
+      },
+      {
+        "sha256": "4711f26e24e82a94b95d7fd0e8c46d2f3884816c05c158052637781606ce4f00",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\SlateCore\\Private\\Fonts\\FontCache.cpp"
+      },
+      {
+        "sha256": "4711f26e24e82a94b95d7fd0e8c46d2f3884816c05c158052637781606ce4f00",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\SlateCore\\Private\\Fonts\\FontCache.cpp"
+      },
+      {
+        "sha256": "11908a996c7eb07e78f22ca6ad9841d44c862c6bc8beeca202d18c43d9c9bb44",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Slate\\Private\\Framework\\Animation\\AttributeInterpolator.cpp"
+      },
+      {
+        "sha256": "11908a996c7eb07e78f22ca6ad9841d44c862c6bc8beeca202d18c43d9c9bb44",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Slate\\Private\\Framework\\Animation\\AttributeInterpolator.cpp"
+      },
+      {
+        "sha256": "0e6a8ccf301e8eff20db8538f8fd3b5a1af704ffbfecfcd3e353eb4bb9a4c26e",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Slate\\Public\\Framework\\Text\\Web\\WebPlatformTextField.h"
+      },
+      {
+        "sha256": "0e6a8ccf301e8eff20db8538f8fd3b5a1af704ffbfecfcd3e353eb4bb9a4c26e",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Slate\\Public\\Framework\\Text\\Web\\WebPlatformTextField.h"
+      },
+      {
+        "sha256": "2c13537706881ea9bc2e428c6a7db50923dbe7eb92757d04c9177b147f95ec51",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Slate\\Private\\Framework\\Application\\SlateApplication.cpp"
+      },
+      {
+        "sha256": "2c13537706881ea9bc2e428c6a7db50923dbe7eb92757d04c9177b147f95ec51",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Slate\\Private\\Framework\\Application\\SlateApplication.cpp"
+      },
+      {
+        "sha256": "0b5fb250f323ce097d484d452e06d91dcaf6339cee013a237fe90e58037267a9",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Slate\\Private\\Framework\\Application\\SlateUser.cpp"
+      },
+      {
+        "sha256": "0b5fb250f323ce097d484d452e06d91dcaf6339cee013a237fe90e58037267a9",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Slate\\Private\\Framework\\Application\\SlateUser.cpp"
+      },
+      {
+        "sha256": "8ef002cc72eed7a412f84894c5bce87e85599dd75e4e6c261831903407093cc3",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\validate-web-wasm.cjs"
+      },
+      {
+        "sha256": "ba4a1078078d86297d595e9007ac1ed4a951f8dd3bfeecdb4bf33ae5f9bbe9bb",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\materialize-web-renderer-revision.cjs"
+      },
+      {
+        "sha256": "f8d3741d97784b2ebaa6d2e31a0f5a765e7cc9b29d30c0fa3423c47de953377e",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\web-renderer-revisions\\d175ae4ae322c3c4873c5a4466d1ffbcc21cd95a\\RenderCore\\Public\\WebShaderPlatform.h"
+      },
+      {
+        "sha256": "2ec90d0918e5bce0077d32ec5d36a977ee87c5db4231a43fa6def8bbdd1c9070",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\web-renderer-revisions\\d175ae4ae322c3c4873c5a4466d1ffbcc21cd95a\\Renderer\\Private\\TranslucentLighting.cpp"
+      },
+      {
+        "sha256": "4bc762435daed718da1b98d4f74eb8bd329b8d9898a48865f595ce3f5a0d6290",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\web-renderer-revisions\\d175ae4ae322c3c4873c5a4466d1ffbcc21cd95a\\Renderer\\Private\\SystemTextures.cpp"
+      },
+      {
+        "sha256": "3c566cea97200f18fe6f87b33cabfe0e7fdc711e6d27cce6d228b92297477120",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\ShaderLibrary\\ShaderCodeArchive.cpp"
+      },
+      {
+        "sha256": "3c566cea97200f18fe6f87b33cabfe0e7fdc711e6d27cce6d228b92297477120",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RenderCore\\Private\\ShaderLibrary\\ShaderCodeArchive.cpp"
+      },
+      {
+        "sha256": "995e5ebec637327aa7fc9a0fc298b7286795697d4e9fa95f2052c3f0616648f5",
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\CoreUObject\\Private\\Serialization\\BulkDataStreaming.cpp"
+      },
+      {
+        "sha256": "995e5ebec637327aa7fc9a0fc298b7286795697d4e9fa95f2052c3f0616648f5",
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\CoreUObject\\Private\\Serialization\\BulkDataStreaming.cpp"
+      }
+    ]
+  },
+  "packages": {
+    "villa-native-metadata-v57": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-package.json",
+        "sha256": "40b0f19fbc9c5c3b8d32c063231d53317f39703c20ca40ed13398ae9d58f115a"
+      },
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\config-files.json",
+          "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\content-files.json",
+          "sha256": "24eeaa97c9a5d8bb98eb2d31b02c56e1f47d4908fe1bae96f2ece1135ee1d4fe"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\content.bin",
+          "sha256": "bb707f08ad34fcfc2ca0da99893edf063d733a9a4ddf75efc1cd4d63c800190d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\index.html",
+          "sha256": "d598c16090f57aba0c1ffeb16896d2b03f567a70072d6c88a39b5109c1bfe41b"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\UEWebEngineThreads.js",
+          "sha256": "3be15beb0c2ad89b1f6dcdce7a7a78a2b513af95f6f9ffdea6b47b13851ec53f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\UEWebEngineThreads.wasm",
+          "sha256": "c490b161f4e45acfa35b2707539e9794149512a20189ef6af3cf25067d5c7a1c"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\web-engine-host.js",
+          "sha256": "1ef0c0be004b17f08068342976a30122eee1fb4af17f133b27a072e7ed348fe7"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\web-engine-worker.js",
+          "sha256": "c8dedc67ca87a4711002c98467c48a97fe5c7e5563e34a7316cab24acb5f2b86"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\asset-versions.json",
+          "sha256": "5de8519bb7a5e2cadddfeb933ca13ddcb6fa81415283f1e4b685d5daaca4690a"
+        }
+      ],
+      "psoPrecache": false
+    },
+    "villa-native-metadata-pso-v57": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-pso-v57-package.json",
+        "sha256": "8ff3350fc16020387f2d24731d7c98566d6753619982beb232d3f9fb3334f157"
+      },
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\config-files.json",
+          "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\content-files.json",
+          "sha256": "24eeaa97c9a5d8bb98eb2d31b02c56e1f47d4908fe1bae96f2ece1135ee1d4fe"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\content.bin",
+          "sha256": "bb707f08ad34fcfc2ca0da99893edf063d733a9a4ddf75efc1cd4d63c800190d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\index.html",
+          "sha256": "db517ad41f1b3e03978639f6d9797e473ea6f19e92c28b8c4833f5579f3d4648"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\UEWebEngineThreads.js",
+          "sha256": "3be15beb0c2ad89b1f6dcdce7a7a78a2b513af95f6f9ffdea6b47b13851ec53f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\UEWebEngineThreads.wasm",
+          "sha256": "c490b161f4e45acfa35b2707539e9794149512a20189ef6af3cf25067d5c7a1c"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\web-engine-host.js",
+          "sha256": "1ef0c0be004b17f08068342976a30122eee1fb4af17f133b27a072e7ed348fe7"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\web-engine-worker.js",
+          "sha256": "c8dedc67ca87a4711002c98467c48a97fe5c7e5563e34a7316cab24acb5f2b86"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-pso-v57\\asset-versions.json",
+          "sha256": "b00f93b6da4257090042ed3c85ed0afbbe76b19b9a87ce4d261fc078bee31c28"
+        }
+      ],
+      "psoPrecache": true
+    }
+  },
+  "corpus": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-probe-v56\\metadata-probe.json",
+      "sha256": "c7854aee393fbb1e1178d36557d02dc2fea0ce6931a454b114759366c394b04f"
+    },
+    "data": {
+      "pass": true,
+      "shaderMetadataRoundtrips": 3852,
+      "runtimeMetadataMatches": 3852,
+      "nativeRuntimeReadMs": 358.9250184595585,
+      "nativeRuntimeAllocatedBytes": 58629516,
+      "domMemoryFootprintBytes": 1076845188,
+      "nativeMalformedInputsRejected": 13,
+      "edgeCaseRoundtrips": 1,
+      "malformedInputsRejected": 5,
+      "jsonBytes": 176553912,
+      "binaryBytes": 104989760,
+      "nativeJsonParseMs": 3394.8912881314754,
+      "nativeBinaryDecodeMs": 2031.9403670728207
+    },
+    "buildLog": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\native-metadata-probe-only-build-v2.log",
+      "sha256": "aaad80928ddb746bd78c174c2cabf7c024e14edf787d1d4a933c08dd2b9a5db0"
+    },
+    "artifacts": [
+      {
+        "file": "tests/ue-shader-host/Source/UEShaderHost/Private/WebShaderMetadataProbe.cpp",
+        "sha256": "c24890b1d841d9881450dbdec73f262243d6bbcf21842489ae1f3897f2c2caad"
+      },
+      {
+        "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderRuntimeMetadata.h",
+        "sha256": "74272792b1542b85e6a244d7a2f66d7277d71f5a653ed4c1530f5eca40a7d48c"
+      },
+      {
+        "file": "tests/ue-shader-host/Intermediate/Build/Win64/x64/UnrealEditor/Development/UEShaderHost/WebShaderMetadataProbe.cpp.obj",
+        "sha256": "3e011740453c25b80f865690c03d0a1ae1b57c454fb30c44e71e234c48ac27c1"
+      },
+      {
+        "file": "tests/ue-shader-host/Intermediate/Build/Win64/x64/UnrealEditor/Development/UEShaderHost/WebShaderMetadataProbe.cpp.obj.rsp",
+        "sha256": "9de1948529c09d1fb0c45e7d790f90161b31a853143a6e049391e0c299c4711d"
+      },
+      {
+        "file": "tests/ue-shader-host/Binaries/Win64/UnrealEditor-UEShaderHost.dll",
+        "sha256": "615a29c57120c3e2bb68992d151076af8c10a1f001947aeb1cc88d298cecfdf3"
+      },
+      {
+        "file": "tests/web-platform/results/villa-shader-metadata-corpus-v28.bin",
+        "sha256": "1d035430bcb376ddbdfbc0b5480f7765e221caaf23c2eadd2328b3f82e6b1e27"
+      }
+    ],
+    "boundary": "Native NullRHI commandlet, all 3852 library entries. Object footprint model excludes allocator overhead/fragmentation and GPU memory; not browser RSS. Full native RHI build failed on pre-existing MSVC bool-conversion warnings; only the UEShaderHost module was built for this probe."
+  },
+  "correctness": {
+    "views": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-views.json",
+      "sha256": "93ec4150f2467df3acb1774831a448ab673cfebbb6d1afb4786bfced69321090"
+    },
+    "screenshot": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-views.png",
+      "sha256": "3cdbe73a8b290a60a214e4131e996d408eb5ee3e27de71c27cd7184b5dcccbe0"
+    },
+    "imageAccepted": true,
+    "metadata": {
+      "nativeLoads": 205,
+      "domLoads": 0,
+      "nativeAllocatedBytes": 2430172,
+      "readMs": 17.022132873535156,
+      "native": true
+    },
+    "gameplay": {
+      "reference": {
+        "file": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-gameplay-native-metadata-v57-reference.json",
+          "sha256": "a9fe6c0204aa96ee0961dc89461a451b1e8472bb024c14363172a3799915c21a"
+        },
+        "travelCm": 153.95325895996476,
+        "turnDegrees": 35.395790100097656,
+        "frames": 1251,
+        "metadata": {
+          "nativeLoads": 186,
+          "domLoads": 186,
+          "nativeAllocatedBytes": 2327946,
+          "readMs": 157.92059898376465,
+          "native": true
+        },
+        "bindings": {
+          "ready": 432580,
+          "pending": 286820,
+          "zero": 415451,
+          "bindGroupCacheHits": 7383660,
+          "bindGroupsCreated": 59111,
+          "cachedBindGroups": 402,
+          "bindingEntriesPrepared": 39235192,
+          "bindingEntriesReused": 43808,
+          "bindingEntriesValidated": 33336120,
+          "bindGroupFastHits": 5831173,
+          "uniformSnapshots": 655782,
+          "uniformWriteCalls": 2474,
+          "pipelineLayouts": 126,
+          "drawBundleHits": 0,
+          "drawBundlesCreated": 0,
+          "cachedDrawBundles": 0,
+          "resourceTableCommits": 823849,
+          "resourceTableBuffers": 891664,
+          "bindingRouteResolutions": 1156,
+          "manualVertexFetchEnabled": false,
+          "manualVertexFetchDraws": 0,
+          "vertexFetchFormatBuffers": 0,
+          "skipNoopRHITick": true,
+          "nativeStorageContracts": true,
+          "revalidateStorageDescriptors": true,
+          "noopRHITicksSkipped": 1230,
+          "storageDescriptorRevalidations": 375773,
+          "nativeStorageContractUses": 13169151,
+          "storageContractRejectionChecks": 1200,
+          "groupPreparationHits": 45272,
+          "groupPreparationValidated": 5130068,
+          "groupFrameMisses": 267917,
+          "groupAccessMisses": 865750,
+          "groupVersionMisses": 1133764,
+          "groupTextureMisses": 0,
+          "groupCacheEnabled": true,
+          "draws": 4830063,
+          "indirectDraws": 121478,
+          "dispatches": 83488,
+          "sampleFrame": 1230
+        }
+      },
+      "native-validation": {
+        "file": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-gameplay-native-metadata-v57-native-validation.json",
+          "sha256": "31dee3b8e57d0e49d0d1389fd21b7aecdbf22c0b2ffbdab99c4a9a95b68b60cb"
+        },
+        "travelCm": 160.23218256997538,
+        "turnDegrees": 41.75972509384155,
+        "frames": 557,
+        "metadata": {
+          "nativeLoads": 188,
+          "domLoads": 0,
+          "nativeAllocatedBytes": 2379034,
+          "readMs": 17.157316207885742,
+          "native": true
+        },
+        "bindings": {
+          "ready": 228367,
+          "pending": 126107,
+          "zero": 219398,
+          "bindGroupCacheHits": 3453796,
+          "bindGroupsCreated": 25983,
+          "cachedBindGroups": 327,
+          "bindingEntriesPrepared": 18144481,
+          "bindingEntriesReused": 43805,
+          "bindingEntriesValidated": 15358761,
+          "bindGroupFastHits": 2720896,
+          "uniformSnapshots": 311255,
+          "uniformWriteCalls": 1090,
+          "pipelineLayouts": 126,
+          "drawBundleHits": 0,
+          "drawBundlesCreated": 0,
+          "cachedDrawBundles": 0,
+          "resourceTableCommits": 377747,
+          "resourceTableBuffers": 407458,
+          "bindingRouteResolutions": 1156,
+          "manualVertexFetchEnabled": false,
+          "manualVertexFetchDraws": 0,
+          "vertexFetchFormatBuffers": 0,
+          "skipNoopRHITick": true,
+          "nativeStorageContracts": true,
+          "revalidateStorageDescriptors": true,
+          "noopRHITicksSkipped": 541,
+          "storageDescriptorRevalidations": 177050,
+          "nativeStorageContractUses": 6040239,
+          "storageContractRejectionChecks": 0,
+          "groupPreparationHits": 45275,
+          "groupPreparationValidated": 2376683,
+          "groupFrameMisses": 118291,
+          "groupAccessMisses": 421137,
+          "groupVersionMisses": 518393,
+          "groupTextureMisses": 0,
+          "groupCacheEnabled": true,
+          "draws": 2267035,
+          "indirectDraws": 67606,
+          "dispatches": 36740,
+          "sampleFrame": 540
+        }
+      }
+    }
+  },
+  "startup": {
+    "normal": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-normal-startup.json",
+        "sha256": "073a17a9e210c312eb9bce99dec868d391e758539ab77c971d14505f7fed43c5"
+      },
+      "rows": [
+        {
+          "index": 0,
+          "mode": "native",
+          "cachePreparation": true,
+          "metadata": {
+            "nativeLoads": 169,
+            "domLoads": 0,
+            "nativeAllocatedBytes": 2138302,
+            "readMs": 16.349077224731445,
+            "native": true
+          },
+          "loadedShaders": 169,
+          "metadataMsPerShader": 0.09674010192148784,
+          "initMs": 2791.985107421875,
+          "preInitMs": 1341.31494140625,
+          "visibleTwoRAFMs": 26778.110107421875,
+          "firstGameFrameCompletedMs": 27262.47998046875,
+          "wasmCapacityBytes": 1521025024,
+          "downloadedBytes": 3449870914,
+          "persistentHits": 0,
+          "modules": 179,
+          "pipelines": 261,
+          "rejectedPipelines": 0,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 95,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 1,
+          "mode": "dom",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 0,
+            "domLoads": 166,
+            "nativeAllocatedBytes": 2054496,
+            "readMs": 137.40086555480957,
+            "native": false
+          },
+          "loadedShaders": 166,
+          "metadataMsPerShader": 0.8277160575590938,
+          "initMs": 2687.830078125,
+          "preInitMs": 1337.574951171875,
+          "visibleTwoRAFMs": 8168.610107421875,
+          "firstGameFrameCompletedMs": 8277.4599609375,
+          "wasmCapacityBytes": 1521025024,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 176,
+          "pipelines": 258,
+          "rejectedPipelines": 0,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 89,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 2,
+          "mode": "native",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 164,
+            "domLoads": 0,
+            "nativeAllocatedBytes": 2016652,
+            "readMs": 15.031099319458008,
+            "native": true
+          },
+          "loadedShaders": 164,
+          "metadataMsPerShader": 0.09165304463084151,
+          "initMs": 2746.114990234375,
+          "preInitMs": 1351.35986328125,
+          "visibleTwoRAFMs": 8351.284912109375,
+          "firstGameFrameCompletedMs": 8380.520263671875,
+          "wasmCapacityBytes": 1521025024,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 174,
+          "pipelines": 258,
+          "rejectedPipelines": 0,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 91,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 3,
+          "mode": "native",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 168,
+            "domLoads": 0,
+            "nativeAllocatedBytes": 2113972,
+            "readMs": 15.726566314697266,
+            "native": true
+          },
+          "loadedShaders": 168,
+          "metadataMsPerShader": 0.09361051377795991,
+          "initMs": 2861.739990234375,
+          "preInitMs": 1371.52001953125,
+          "visibleTwoRAFMs": 8276.375,
+          "firstGameFrameCompletedMs": 8418.46484375,
+          "wasmCapacityBytes": 1319567360,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 178,
+          "pipelines": 262,
+          "rejectedPipelines": 0,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 95,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 4,
+          "mode": "dom",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 0,
+            "domLoads": 166,
+            "nativeAllocatedBytes": 2054496,
+            "readMs": 129.46677207946777,
+            "native": false
+          },
+          "loadedShaders": 166,
+          "metadataMsPerShader": 0.7799203137317335,
+          "initMs": 2771.84521484375,
+          "preInitMs": 1334.369873046875,
+          "visibleTwoRAFMs": 8334.330078125,
+          "firstGameFrameCompletedMs": 8366.31005859375,
+          "wasmCapacityBytes": 1521025024,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 176,
+          "pipelines": 258,
+          "rejectedPipelines": 0,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 93,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          }
+        }
+      ],
+      "summary": {
+        "dom": {
+          "loadedShaders": 166,
+          "metadataMsPerShader": 0.8038181856454136,
+          "initMs": 2729.837646484375,
+          "preInitMs": 1335.972412109375,
+          "visibleTwoRAFMs": 8251.470092773438,
+          "firstGameFrameCompletedMs": 8321.885009765625,
+          "wasmCapacityBytes": 1521025024,
+          "metadataReadMs": 133.43381881713867
+        },
+        "native": {
+          "loadedShaders": 166,
+          "metadataMsPerShader": 0.09263177920440072,
+          "initMs": 2803.927490234375,
+          "preInitMs": 1361.43994140625,
+          "visibleTwoRAFMs": 8313.829956054688,
+          "firstGameFrameCompletedMs": 8399.492553710938,
+          "wasmCapacityBytes": 1420296192,
+          "metadataReadMs": 15.378832817077637
+        }
+      }
+    },
+    "pso": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-pso-startup.json",
+        "sha256": "476146334d450a977776af7a6f10777afa7beb072375b3df52de55e641a8d891"
+      },
+      "rows": [
+        {
+          "index": 0,
+          "mode": "native",
+          "cachePreparation": true,
+          "metadata": {
+            "nativeLoads": 1681,
+            "domLoads": 0,
+            "nativeAllocatedBytes": 20550388,
+            "readMs": 125.07963180541992,
+            "native": true
+          },
+          "loadedShaders": 1681,
+          "metadataMsPerShader": 0.07440787138930394,
+          "initMs": 5400.030029296875,
+          "preInitMs": 1699.409912109375,
+          "visibleTwoRAFMs": 33341.469970703125,
+          "firstGameFrameCompletedMs": 30034.054931640625,
+          "wasmCapacityBytes": 1319567360,
+          "downloadedBytes": 3449870914,
+          "persistentHits": 0,
+          "modules": 1691,
+          "pipelines": 1285,
+          "rejectedPipelines": 8,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 184,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 1,
+          "mode": "dom",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 0,
+            "domLoads": 1685,
+            "nativeAllocatedBytes": 20598552,
+            "readMs": 1544.6968078613281,
+            "native": false
+          },
+          "loadedShaders": 1685,
+          "metadataMsPerShader": 0.9167340106001948,
+          "initMs": 6025.914794921875,
+          "preInitMs": 1888.919921875,
+          "visibleTwoRAFMs": 15082.625,
+          "firstGameFrameCompletedMs": 13871.625,
+          "wasmCapacityBytes": 1924071424,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 1695,
+          "pipelines": 1242,
+          "rejectedPipelines": 8,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 104,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 2,
+          "mode": "native",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 1680,
+            "domLoads": 0,
+            "nativeAllocatedBytes": 20546222,
+            "readMs": 122.4212646484375,
+            "native": true
+          },
+          "loadedShaders": 1680,
+          "metadataMsPerShader": 0.07286980038597471,
+          "initMs": 4513.9501953125,
+          "preInitMs": 1626.419921875,
+          "visibleTwoRAFMs": 14557.93505859375,
+          "firstGameFrameCompletedMs": 12593.044921875,
+          "wasmCapacityBytes": 1386741760,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 1690,
+          "pipelines": 1275,
+          "rejectedPipelines": 8,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 130,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 3,
+          "mode": "native",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 1681,
+            "domLoads": 0,
+            "nativeAllocatedBytes": 20548630,
+            "readMs": 124.60041046142578,
+            "native": true
+          },
+          "loadedShaders": 1681,
+          "metadataMsPerShader": 0.07412279028044365,
+          "initMs": 4697.215087890625,
+          "preInitMs": 1663.735107421875,
+          "visibleTwoRAFMs": 14634.64990234375,
+          "firstGameFrameCompletedMs": 12699.485107421875,
+          "wasmCapacityBytes": 1386741760,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 1691,
+          "pipelines": 1274,
+          "rejectedPipelines": 8,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 136,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          }
+        },
+        {
+          "index": 4,
+          "mode": "dom",
+          "cachePreparation": false,
+          "metadata": {
+            "nativeLoads": 0,
+            "domLoads": 1682,
+            "nativeAllocatedBytes": 20544028,
+            "readMs": 1511.1589431762695,
+            "native": false
+          },
+          "loadedShaders": 1682,
+          "metadataMsPerShader": 0.8984298116386858,
+          "initMs": 5956.594970703125,
+          "preInitMs": 1836.89990234375,
+          "visibleTwoRAFMs": 14962.284912109375,
+          "firstGameFrameCompletedMs": 13774.599853515625,
+          "wasmCapacityBytes": 1924071424,
+          "downloadedBytes": 0,
+          "persistentHits": 2,
+          "modules": 1692,
+          "pipelines": 1241,
+          "rejectedPipelines": 8,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 102,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2290,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        }
+      ],
+      "summary": {
+        "dom": {
+          "loadedShaders": 1683.5,
+          "metadataMsPerShader": 0.9075819111194403,
+          "initMs": 5991.2548828125,
+          "preInitMs": 1862.909912109375,
+          "visibleTwoRAFMs": 15022.454956054688,
+          "firstGameFrameCompletedMs": 13823.112426757812,
+          "wasmCapacityBytes": 1924071424,
+          "metadataReadMs": 1527.9278755187988
+        },
+        "native": {
+          "loadedShaders": 1680.5,
+          "metadataMsPerShader": 0.07349629533320917,
+          "initMs": 4605.5826416015625,
+          "preInitMs": 1645.0775146484375,
+          "visibleTwoRAFMs": 14596.29248046875,
+          "firstGameFrameCompletedMs": 12646.265014648438,
+          "wasmCapacityBytes": 1386741760,
+          "metadataReadMs": 123.51083755493164
+        }
+      }
+    }
+  },
+  "fps": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-fps-abba.json",
+      "sha256": "73f742326de1d439dcddcb7667c177199cf1eeab3d0a767b6bf7d8885d6212d5"
+    },
+    "summary": {
+      "villa-rhi-hotspots-v52": {
+        "fps": 80.7456296427955,
+        "frameMs": {
+          "count": 3228,
+          "mean": 12.384457868649399,
+          "p50": 12.75,
+          "p95": 14.56499999947846,
+          "p99": 16.99500000011176,
+          "low1Fps": 37.213498350671614,
+          "over33ms": 5
+        }
+      },
+      "villa-native-metadata-v57": {
+        "fps": 79.96936131686178,
+        "frameMs": {
+          "count": 3199,
+          "mean": 12.50697249140347,
+          "p50": 12.84499999973923,
+          "p95": 14.575000000186265,
+          "p99": 16.919999999925494,
+          "low1Fps": 35.374751271331114,
+          "over33ms": 7
+        }
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "fps": 81.14178439432857,
+        "low1": 39.00961472260083,
+        "rhiWorkMs": 8.907575190104016,
+        "workload": {
+          "sampleFrames": 1620,
+          "drawsPerFrame": 3021.296296296296,
+          "indirectDrawsPerFrame": 73.03703703703704,
+          "dispatchesPerFrame": 66.42283950617283
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1262,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        }
+      },
+      {
+        "folder": "villa-native-metadata-v57",
+        "fps": 80.36512153725029,
+        "low1": 35.70828432202696,
+        "rhiWorkMs": 9.020614979872063,
+        "workload": {
+          "sampleFrames": 1620,
+          "drawsPerFrame": 3010.456790123457,
+          "indirectDrawsPerFrame": 71.7925925925926,
+          "dispatchesPerFrame": 66.41543209876544
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1246,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        }
+      },
+      {
+        "folder": "villa-native-metadata-v57",
+        "fps": 79.57380807876311,
+        "low1": 36.024271352860225,
+        "rhiWorkMs": 9.12687513563368,
+        "workload": {
+          "sampleFrames": 1620,
+          "drawsPerFrame": 3018.6753086419753,
+          "indirectDrawsPerFrame": 73.24444444444444,
+          "dispatchesPerFrame": 66.42407407407407
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1231,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "fps": 80.34943755393847,
+        "low1": 36.32633873231747,
+        "rhiWorkMs": 8.957765379824398,
+        "workload": {
+          "sampleFrames": 1620,
+          "drawsPerFrame": 3004.7475308641974,
+          "indirectDrawsPerFrame": 71.58518518518518,
+          "dispatchesPerFrame": 66.4141975308642
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1255,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        }
+      }
+    ]
+  },
+  "environment": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-native-metadata-v57-environment.jsonl",
+      "sha256": "2a7337cf07c44c3060956264d96a30b2447d96806817ee6c8efe59dc193b5661"
+    },
+    "samples": 36,
+    "blockers": [],
+    "backgroundCPU": {
+      "TGitCache": 0.7945086738498196,
+      "SunloginClient": 0.39925202528574866,
+      "BackgroundDownload": 0.5977574769597369,
+      "node": 0.3986928217929005,
+      "cloudmusic": 0.3991677113717273,
+      "Aac3572MbHal_x86": 0,
+      "ChatGPT": 0.19962601264287433,
+      "pwsh": 0,
+      "python": 0,
+      "OneDrive": 0,
+      "PhoneExperienceHost": 0,
+      "RuntimeBroker": 0
+    }
+  },
+  "earlyValidationFailure": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-gameplay-native-metadata-v55-validate.json",
+      "sha256": "4f04689d1b2c087b3b5dfde554fe46a22245a165c9ebe6ea07a8ba507aee9347"
+    },
+    "includedInPerformance": false,
+    "reason": "Late validation referenced a DOM omitted by native loading. v56/v57 use fresh native validation without a DOM, and explicit startup validation retains the original DOM for the JSON oracle."
+  },
+  "boundary": "Same Cook/config and same Wasm for DOM/native startup ABBA. First run retained as cache preparation and excluded from summary. PSO variant is an explicit bulk-load diagnostic, not the default game. Owner read scope, UE Init and navigation-to-two-RAF visibility are different boundaries. WASM memory capacity is not live allocator use or process RSS. FPS measured separately without startup recorder/profiler. Background user apps retained."
+}
