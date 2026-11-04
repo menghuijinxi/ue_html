@@ -7,10 +7,15 @@ const observer = require('./web-stutter-observer.cjs');
 const option = name => process.argv.find(arg => arg.startsWith('--'+name+'='))?.slice(name.length+3);
 const folder = option('folder') || 'villa-live-fps-v3', tag = option('tag') || 'stutters';
 assert([folder,tag].every(s=>/^[a-z0-9-]+$/.test(s)));
+const width = Number(option('width') || 1863), height = Number(option('height') || 1030);
+const dpr = Number(option('dpr') || 1.25);
+assert([width,height].every(n=>Number.isInteger(n)&&n>=320&&n<=7680));
+assert(Number.isFinite(dpr)&&dpr>=0.5&&dpr<=4);
 const output = path.join(__dirname,'results',tag);
 fs.mkdirSync(path.dirname(output),{recursive:true});
+assert(!fs.existsSync(output+'.json'),'Use a fresh tag');
 const report = {date:new Date().toISOString(),folder,headless:process.argv.includes('--headless'),
-  phases:[],errors:[],qualityOverrides:[],pass:false};
+  width,height,dpr,phases:[],errors:[],qualityOverrides:[],pass:false};
 const save = () => fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
 let context, log;
 function summarize(data) {
@@ -29,7 +34,7 @@ function summarize(data) {
 (async()=>{
   try {
     context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/stutters'),{
-      channel:'msedge',headless:report.headless,viewport:{width:1863,height:1030},deviceScaleFactor:1.25});
+      channel:'msedge',headless:report.headless,viewport:{width,height},deviceScaleFactor:dpr});
     await context.route('**/web-engine-worker.js?*',async route=>{
       const response=await route.fetch();
       await route.fulfill({response,body:`(${observer.toString()})();\n`+await response.text()});
@@ -69,7 +74,11 @@ function summarize(data) {
       return phase;
     }
     await capture('initial-warmup',()=>page.waitForTimeout(20000));
-    await page.evaluate(()=>document.querySelector('#web-performance-hud button').click());
+    report.hudReset=await page.evaluate(()=>{
+      const reset=document.querySelector('#web-performance-hud button');
+      if(reset)reset.click();
+      return !!reset;
+    });
     await capture('standing',()=>page.waitForTimeout(30000));
     await page.screenshot({path:output+'-standing.png'});
     // Repeat the same camera orientations to distinguish first-use compilation
