@@ -62,3 +62,50 @@ node tests/web-platform/probe-web-distance-fields.cjs --edge --folder=triplex-ho
 ## 性能追踪补充
 
 后续实测发现，六面缓存复制虽已实现，缓存创建入口仍漏接 Web 六遍能力，而且默认 150 MiB 预算存在压力。性能修正补上入口、允许 Web 普通静态深度复用，并将 Web 默认预算设为 256 MiB。缓存开关对照验证实际绘制与像素，详见 [性能记录](UE58_WEB_PERFORMANCE.md)。此前关于缓存降低重复绘制的说明不能替代这次运行验证。
+
+## 2026-11-04：门厅大片错误投影
+
+用户反馈的地面大片黑影可在别墅门厅复现。固定机位为 `(-775,-300,180)`，俯仰 `-30`、偏航 `270`、FOV `90`，画布 `1280×720`。原生端使用项目设置和相同机位捕获。问题属于六面局部灯深度提交，不是 Lumen 间接光本身的错误。
+
+### 根因与修复
+
+`ShadowDepthRendering.cpp` 的 Web 六面分支把 `FInstanceCullingDrawParams` 放在栈上，并立即复制给六个 RDG 绘制参数。UE 的延迟实例裁剪随后在 `FInstanceCullingMergedContext::MergeBatches` 回填 `InstanceDataByteOffset` 和 `IndirectArgsByteOffset`，此时原栈变量已失效，六份副本也仍然持有初始零偏移。部分灯光因此读取首个批次的实例或间接绘制参数，将不属于该灯光批次的几何写进阴影缓存。
+
+修复将共享结果分配到 RDG 生命周期内存，六面绘制执行时都读取同一个、已回填的结果。各面的参数仍声明相同的缓冲区和 Scene 依赖，保留 RDG 资源跟踪。阴影缓存、批处理、Lumen GI、Lumen 反射和 TSR 均继续开启。
+
+参考引擎提交：`6823184255`（修复 Web 六面阴影延迟实例裁剪参数失效导致的错误投影）。
+
+单变量排查记录在 `results/lumen-shadow-isolation-20261104-*.json`：
+
+- 关闭反射、WebGPU 绑定组缓存或网格动态合批均不能消除错误。
+- 关闭局部灯立方体阴影会同时移除错误和正常投影，只用于定位。
+- 关闭阴影缓存可去除大片伪影，但还会改变正常投影，不能作为修复。
+- 同会话清空并重建阴影缓存，错误稳定复现，排除启动机位和一次性脏数据。
+- 保留阴影缓存、仅关闭 `r.InstanceCulling.AllowBatchedBuildRenderingCommands` 后投影恢复，作为独立的同步参考。
+
+### 回归结果
+
+新增 `probe-web-lumen-shadow-artifacts.cjs`，校验产品哈希、固定相机、记录六面复制和 GPU 错误，并按同步参考的窗帘、地面区域断言平均绝对 RGB 误差不超过 `2/255`。旧包在同一断言上失败，修复包通过：
+
+| 阶段 | 窗帘误差 /255 | 地面误差 /255 | 结果 |
+| --- | ---: | ---: | --- |
+| 旧运行时，缓存开启 | 25.2673 | 14.4877 | 按预期失败 |
+| 修复运行时，缓存开启 | 0.5517 | 0.5177 | 通过 |
+| 修复运行时，清空后重新缓存 | 0.6738 | 0.5337 | 通过 |
+
+修复包同会话运行 446 帧，三个阶段均无页面异常、GPU 校验错误和设备丢失。六面分别记录到 722 次深度复制；该计数证明路径实际执行，不是性能分数。原生同机位对照保留在 `results/villa-distance-fields-lumen-shadow-20261104-native-desk.png`。汇总脚本 `summarize-web-lumen-shadows.cjs` 验证各报告与图片哈希，生成 [可追溯结果](tests/web-platform/evidence/lumen-shadow-artifacts-20261104.json) 和 `results/lumen-shadow-artifacts-20261104-comparison.png`。
+
+补查俯视地毯机位 `(-750,-300,200,-45,270)`：独立生成同机位同步参考，修复版默认批处理运行 187 帧，窗帘和地面区域误差分别为 `0.5785/255`、`0.5088/255`，六面分别复制 222 次，无 GPU 校验错误或设备丢失。报告为 `results/lumen-shadow-regression-20261104-overhead.json`，该机位的相同区域坐标用于批处理等价性回归，不代表区域内容与主机位相同。
+
+WASM 完整引擎目标增量编译与正常链接通过。新包为 `build/triplex-project-lumen-shadows-fixed-20261104`，保留旧包，`content.bin`、内容清单和配置包逐字节不变，只替换运行时。没有修改安装引擎，也没有重新 Cook 着色器或内容。
+
+复测示例，`--tag` 每次使用新名称：
+
+```powershell
+$env:NODE_PATH='C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-lumen-shadow-artifacts.cjs --tag=lumen-shadow-sync-new --folder=triplex-project-lumen-shadows-fixed-20261104 --baseline-only --affinity-mask=4294901760 --settings='{"r.InstanceCulling.AllowBatchedBuildRenderingCommands":0}'
+node tests/web-platform/probe-web-lumen-shadow-artifacts.cjs --tag=lumen-shadow-check-new --folder=triplex-project-lumen-shadows-fixed-20261104 --cache-cycle --affinity-mask=4294901760 --reference-report=tests/web-platform/results/lumen-shadow-sync-new.json
+& H:/ue_html/tests/web-platform/start-web-preview.ps1 -Folder triplex-project-lumen-shadows-fixed-20261104 -AffinityMask 4294901760
+```
+
+本机测试显式将独立 Edge 浏览器及其 GPU 进程限制在 `0xffff0000`，绕过另行记录的宿主着色器编译器崩溃；不修改项目设置或用户已有浏览器。该亲和性不是本次阴影修复的一部分。本轮只验收复现的门厅投影，不能据此宣称全部材质和光照达到原生一致、长期性能或移动端达标，也没有重新验收默认示例关卡。桌面参考图和像素误差分别用于视觉对照与回归，不混作完整画质评分。

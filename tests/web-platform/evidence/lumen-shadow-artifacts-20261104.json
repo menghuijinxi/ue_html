@@ -1,0 +1,305 @@
+{
+  "date": "2026-11-04T07:33:56.083Z",
+  "pass": true,
+  "cause": "Six-pass cube shadows used stack-local instance culling results and copied batch offsets before deferred MergeBatches filled them. Draws read the first batch instead of their own instance and indirect argument ranges.",
+  "fix": "Allocate the shared culling output in RDG memory and read its finalized offsets at draw execution. Per-face parameters still declare the shared resource dependencies.",
+  "source": {
+    "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-lumen-shadows.cjs",
+    "sha256": "5eb1ff0b56346be13b751d43ba9bc7a42240599accb5f7d04f9fdc1f2c6d74c0"
+  },
+  "package": {
+    "file": "tests/web-platform/results/triplex-project-lumen-shadows-fixed-20261104-package.json",
+    "sha256": "13691e353e563152c739afca9c78e2da7dc28cbd140f09cda2775a4de01f0e5b"
+  },
+  "build": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\triplex-project-lumen-shadows-fixed-20261104-build.json",
+    "sha256": "6b7bf1e6bc805abf95d1e3e980684d3a39f7bee7991992bf4ab60ecdb4adb19b"
+  },
+  "rendererSource": {
+    "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowDepthRendering.cpp",
+    "sha256": "3e1843790f9b08d8c7295e580b580577a726cc258e6e932c784ce36690a3c876"
+  },
+  "camera": [
+    -775,
+    -300,
+    180,
+    -30,
+    270
+  ],
+  "cookPayload": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\content.bin",
+      "sha256": "af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\content-files.json",
+      "sha256": "6b455315fc246b7be7ff8c24f425bb93a03987e1a47a0938030d7654f43b2bff"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-shadows-fixed-20261104\\config-files.json",
+      "sha256": "0f53cec50d875d41d670952a5a452fbdb40607db33a10f195cc15c3549ac009f"
+    }
+  ],
+  "regressionBefore": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-regression-20261104-before2.json",
+      "sha256": "ef1ad43d9cb333483e78232f1bcf8c97d60b465a98d7c51dfe0a01173de30056"
+    },
+    "pass": false,
+    "comparisons": [
+      {
+        "name": "curtains",
+        "x": 530,
+        "y": 0,
+        "width": 310,
+        "height": 210,
+        "meanAbsoluteError": 25.267250384024578,
+        "limit": 2
+      },
+      {
+        "name": "floor",
+        "x": 280,
+        "y": 450,
+        "width": 500,
+        "height": 230,
+        "meanAbsoluteError": 14.487727536231883,
+        "limit": 2
+      }
+    ]
+  },
+  "synchronousReference": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-isolation-20261104-no-batched-build.json",
+      "sha256": "2ccef59557940ef52835242cd1a8deb5eacac96421dedbc189ea199ca8dce98c"
+    },
+    "image": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-isolation-20261104-no-batched-build-baseline.png",
+      "sha256": "7472bcc0cf76dca14e35117829479abf531773f3d12901c1db4395aad748db7d"
+    }
+  },
+  "regressionAfter": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-regression-20261104-final.json",
+      "sha256": "9cca405d22ee54f6a261943d72ba3c873d52d61ca330f8839e79643c9cd302b7"
+    },
+    "pass": true,
+    "settings": {},
+    "cases": [
+      {
+        "name": "baseline",
+        "image": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-regression-20261104-final-baseline.png",
+          "sha256": "98a26385a28a9120e65daf2a214fe8966a36603146921c5bf8c73828f8915a61"
+        },
+        "state": {
+          "frames": 197,
+          "camera": {
+            "x": -775,
+            "y": -300,
+            "z": 180,
+            "pitch": -29.999999999999986,
+            "yaw": -90
+          },
+          "lighting": {
+            "reflectionMethod": 1,
+            "giMethod": 1,
+            "ssrIntensity": 100,
+            "ssrQuality": 50,
+            "ssrMaxRoughness": 0.6000000238418579,
+            "antiAliasing": 4,
+            "ssrShowFlag": true,
+            "frame": 159,
+            "shadowCacheEnabled": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "losses": [],
+          "cubeCopies": {
+            "0": 233,
+            "1": 233,
+            "2": 233,
+            "3": 233,
+            "4": 233,
+            "5": 233
+          }
+        },
+        "comparisons": [
+          {
+            "name": "curtains",
+            "x": 530,
+            "y": 0,
+            "width": 310,
+            "height": 210,
+            "meanAbsoluteError": 0.5517153097798259,
+            "limit": 2
+          },
+          {
+            "name": "floor",
+            "x": 280,
+            "y": 450,
+            "width": 500,
+            "height": 230,
+            "meanAbsoluteError": 0.5177159420289855,
+            "limit": 2
+          }
+        ]
+      },
+      {
+        "name": "uncached",
+        "image": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-regression-20261104-final-uncached.png",
+          "sha256": "ffaa69234c5173a6fd11b7fa35dc0b17169ecdb9b8e757294c37f4ea553f3798"
+        },
+        "state": {
+          "frames": 315,
+          "camera": {
+            "x": -775,
+            "y": -300,
+            "z": 180,
+            "pitch": -29.999999999999986,
+            "yaw": -90
+          },
+          "lighting": {
+            "reflectionMethod": 1,
+            "giMethod": 1,
+            "ssrIntensity": 100,
+            "ssrQuality": 50,
+            "ssrMaxRoughness": 0.6000000238418579,
+            "antiAliasing": 4,
+            "ssrShowFlag": true,
+            "frame": 287,
+            "shadowCacheEnabled": false
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "losses": [],
+          "cubeCopies": {
+            "0": 585,
+            "1": 585,
+            "2": 585,
+            "3": 585,
+            "4": 585,
+            "5": 585
+          }
+        }
+      },
+      {
+        "name": "recached",
+        "image": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-regression-20261104-final-recached.png",
+          "sha256": "383c8d4d49595a375f04c5029e3763ad80f8fe54cbf17035f5c05e34cacb8cea"
+        },
+        "state": {
+          "frames": 446,
+          "camera": {
+            "x": -775,
+            "y": -300,
+            "z": 180,
+            "pitch": -29.999999999999986,
+            "yaw": -90
+          },
+          "lighting": {
+            "reflectionMethod": 1,
+            "giMethod": 1,
+            "ssrIntensity": 100,
+            "ssrQuality": 50,
+            "ssrMaxRoughness": 0.6000000238418579,
+            "antiAliasing": 4,
+            "ssrShowFlag": true,
+            "frame": 410,
+            "shadowCacheEnabled": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "errors": [],
+          "losses": [],
+          "cubeCopies": {
+            "0": 722,
+            "1": 722,
+            "2": 722,
+            "3": 722,
+            "4": 722,
+            "5": 722
+          }
+        },
+        "comparisons": [
+          {
+            "name": "curtains",
+            "x": 530,
+            "y": 0,
+            "width": 310,
+            "height": 210,
+            "meanAbsoluteError": 0.6737685611879161,
+            "limit": 2
+          },
+          {
+            "name": "floor",
+            "x": 280,
+            "y": 450,
+            "width": 500,
+            "height": 230,
+            "meanAbsoluteError": 0.5336782608695653,
+            "limit": 2
+          }
+        ]
+      }
+    ]
+  },
+  "nativeInput": {
+    "file": "tests/web-platform/results/villa-distance-fields-lumen-shadow-20261104-native-input.json",
+    "sha256": "c5eb6fddc8012438003df7ac734444352bcd78bab36d553934ff41b2d66873d8"
+  },
+  "nativeImage": {
+    "file": "tests/web-platform/results/villa-distance-fields-lumen-shadow-20261104-native-desk.png",
+    "sha256": "a2dd679b0291e448fd701067a0549ab57e0127f42afa428e055817d076a8510d"
+  },
+  "comparisonImage": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\lumen-shadow-artifacts-20261104-comparison.png",
+    "sha256": "c9d12e7ae001d4a997aaffca2c5381f1d1ca1acbcd26a44cb662f29d907e3712"
+  },
+  "boundary": "Tests use an isolated Edge GPU process pinned to 0xffff0000 to avoid the separately documented host shader compiler crash. This fixes the reproduced foyer shadow artifact; it is not proof of full native parity, performance, mobile support, or a browser crash repair. Cook and shaders are reused byte for byte; only the runtime changed."
+}
