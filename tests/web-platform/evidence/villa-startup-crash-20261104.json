@@ -1,0 +1,120 @@
+{
+  "recordedAt": "2026-11-04T11:54:25+08:00",
+  "folder": "triplex-project-lumen-optimized-20261104",
+  "status": "Native shader-compiler crashes confirmed; underlying cause unresolved; not a fix verification.",
+  "rendererSettingsChanged": false,
+  "sourceDiagnostics": [
+    {
+      "file": "C:/Users/wap80/Downloads/ue-startup-diagnostics-2026-11-04T03-45-18-921Z.json",
+      "sha256": "57b69ba0d838cbb35f665199e6c0817c1bc6a60ab112f36296210e3b149dcd72",
+      "startedAt": "2026-11-04T03:44:54.906Z",
+      "frame": 1,
+      "surface": {"width": 3488, "height": 1962},
+      "failure": "WebGPU device lost: A valid external Instance reference no longer exists."
+    },
+    {
+      "file": "C:/Users/wap80/Downloads/ue-startup-diagnostics-2026-11-04T03-45-49-164Z.json",
+      "sha256": "d0a15d35f5c6b9fc44a1ed0ca21d009fb210111c7e4ffc7e79f21c2b3b8c502a",
+      "startedAt": "2026-11-04T03:45:29.681Z",
+      "frame": 1,
+      "surface": {"width": 3488, "height": 1962},
+      "failure": "DXC compile failed with E_OUTOFMEMORY (0x8007000E)",
+      "pipeline": "main_00002028_1fc9f5c5 / depth-only",
+      "deviceRemovedReason": "S_OK (0x00000000)"
+    }
+  ],
+  "windowsApplicationErrors": [
+    {
+      "provider": "Application Error",
+      "eventId": 1000,
+      "time": "2026-11-04T11:45:02+08:00",
+      "application": "msedge.exe",
+      "applicationVersion": "156.0.4314.58",
+      "module": "dxcompiler.dll",
+      "moduleVersion": "1.9.2609.0",
+      "exception": "c0000005",
+      "offset": "00000000006e6690"
+    },
+    {
+      "provider": "Application Error",
+      "eventId": 1000,
+      "time": "2026-11-04T11:45:39+08:00",
+      "application": "msedge.exe",
+      "applicationVersion": "156.0.4314.58",
+      "module": "dxcompiler.dll",
+      "moduleVersion": "1.9.2609.0",
+      "exception": "c0000005",
+      "offset": "00000000002a2fdd"
+    }
+  ],
+  "hardwareEvent": {
+    "provider": "Microsoft-Windows-WHEA-Logger",
+    "eventId": 19,
+    "time": "2026-11-04T11:03:21.2393248+08:00",
+    "component": "Processor Core",
+    "source": "Corrected Machine Check",
+    "type": "Internal parity error",
+    "apicId": 8,
+    "mcaBank": 0,
+    "mciStatus": "0x8000004000050005",
+    "processor": "Intel(R) Core(TM) i9-14900KF"
+  },
+  "reproductionViewport": {"width": 2552, "height": 1308, "dpr": 1.5},
+  "reproductions": [
+    {
+      "file": "H:/ue_html/tests/web-platform/results/web-browser-lifecycle-msedge-crash-highres-20261104-results.json",
+      "sha256": "2130231e5c53c408fc671d518a8140c340202280821b51c035289da14a08bf60",
+      "pass": true,
+      "headful": false,
+      "condition": "default scheduling",
+      "frames": [181, 272, 182, 275],
+      "note": "First startup at 3488x1962; reload after resizing starts at 1920x1080; final resize returns to 3488x1962."
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/results/web-browser-lifecycle-msedge-crash-headful-highres-20261104-results.json",
+      "sha256": "aa7acb1734ab04374195b7d0a751eba0ab1d82587f5b9240f54a544d38da873d",
+      "pass": false,
+      "headful": true,
+      "condition": "default scheduling",
+      "failureFrame": 1,
+      "failure": "WebGPU device lost: A valid external Instance reference no longer exists."
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/results/web-browser-lifecycle-msedge-crash-headful-affinity-20261104-results.json",
+      "sha256": "01287d2f7a52faa1bb912f2d6a024d80dfcf3c44b47405ad16983b2d6b36fd72",
+      "pass": true,
+      "headful": true,
+      "condition": "CPU affinity 0xFF0000 for the test process and inherited browser children",
+      "frames": [182, 273, 181, 272],
+      "note": "First startup at 3488x1962; reload after resizing starts at 1920x1080; final resize returns to 3488x1962."
+    },
+    {
+      "file": "H:/ue_html/tests/web-platform/results/web-browser-lifecycle-msedge-crash-headful-default-retry-20261104-results.json",
+      "sha256": "d28bd1e27249fcfff24953ee8be9e05a3980b8267a5543259db8582905b06ec7",
+      "pass": false,
+      "headful": true,
+      "condition": "default scheduling restored in another fresh browser profile",
+      "failureFrame": 1,
+      "failure": "WebGPU device lost: A valid external Instance reference no longer exists."
+    }
+  ],
+  "passingRunResourceSnapshot": {
+    "time": "2026-11-04T11:51:45+08:00",
+    "availableMBytes": 43102,
+    "committedBytes": 31226728448,
+    "commitLimit": 152380194816,
+    "gpuUsedMiB": 6252,
+    "gpuTotalMiB": 8192,
+    "gpuFreeMiB": 1767,
+    "browserAndGpuProcessAffinityObserved": "0xFF0000",
+    "boundary": "A point sample during the passing affinity run, not failure-time or peak memory."
+  },
+  "findings": [
+    "Original failures coincide with native dxcompiler.dll access violations, not merely an unverified low-memory message.",
+    "The supplied adapter-unavailable screenshot corresponds to requestAdapter returning null before UE startup; the browser-internal reason is not proven.",
+    "System stability is a priority hypothesis because of the WHEA processor event and separate compiler exceptions.",
+    "Affinity also changes scheduling and concurrency. The limited A/B/A observations cannot distinguish hardware instability from a compiler concurrency defect.",
+    "No minidump or DXC stack was available in the two archived WER report directories; compiler-internal crash functions were not resolved.",
+    "The existing 720p headless pass does not establish stability for the user's high-resolution headful launch."
+  ]
+}
