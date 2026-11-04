@@ -270,6 +270,34 @@ Surface Cache 的 `SourceDepthAtlas`、`DepthAtlas` 与 `LumenCardScene_DepthAtl
 
 可重复摘要入口：`summarize-web-lumen-scene.cjs`。验收摘要为 `tests/web-platform/evidence/lumen-villa-scene-20261103.json`，含配置、FPS、显存、报告及截图哈希；原始报告为 `results/project-memory-lumen-20261103-load-only.json`、`results/project-memory-lumen-20261103-memory-peak.json` 和 `results/villa-distance-fields-lumen-unrestricted-20261103-capture.json`。
 
+## 2026-11-04 合并优化后重新打包
+
+本轮以外围仓库 `fa450d0`、引擎仓库 `f8843511d3` 重新构建线程运行时，并对别墅重新执行项目设置 Cook、Stage 和 Package。没有使用自定义渲染 Profile 或画质参数。新入口为 `http://127.0.0.1:8765/build/triplex-project-lumen-optimized-20261104/index.html`，旧包保留。
+
+运行时使用最新优化逻辑及 mimalloc，416 个对象中 415 个为 `-O2`，既有 Chaos 单元为 `-O1`；没有新增关闭优化的处理，也没有额外启用最终链接 O2、SIMD 或 LTO。首次普通 UBA 调度被主动停止，改用已有 `-StandaloneCompiles` 入口。六个 Clang 单元发生进程异常，按相同参数各重试一次后全部通过，最终普通 UBT 链接及 WASM 结构检查通过。
+
+原生宿主准备期间，MSVC 14.50、14.44 均曾发生内部错误或访问异常，不能由此判定源码或硬件根因。最终 Renderer 使用 MSVC 14.44、CPU 亲和性 `0xFF0000`、两个并发动作完成全部 40 个动作，优化保持开启；RenderCore 亦使用优化构建，安装输入哈希均未改变。Cook 只单独构建 UEShaderHost 及五个 Cook/Shader 插件模块，没有把原生 Win64 WebGPURHI 全量编译计为通过。网页 WebGPURHI 已由完整 WASM 构建及下述浏览器测试验证。
+
+清理临时文件后，隔离 Cook 宿主的旧 RenderCore/Renderer DLL 缺少对应校验记录，准备步骤按预期拒绝复用。旧 DLL 备份到 `tests/web-platform/build/cook-host-backup-20261104/`，随后由已验证的新构建重新生成宿主；没有放宽校验。一次并行准备还因共享规则 DLL 被占用失败，之后改为串行完成相关 UBT 步骤。失败日志保留在 `results/`。
+
+`20261104-111610` 完成 Lumen Shader 预检、项目天空光采集和正式 Cook。Stage 为 5157 项、3412716088 字节，Package 共 11 个文件、3598340296 字节。与上一版逐项比较，5157 项中只有全局 Shader Map 的二进制哈希变化，大小不变；材质/全局 Shader 代码档案和其他资源一致。运行配置文件哈希仍为 `0f53cec50d875d41d670952a5a452fbdb40607db33a10f195cc15c3549ac009f`。
+
+Edge 新配置目录的正常运行测试在 1280×720 下观察 90 秒，三次视角切换后达到 5737 帧，未出现 GPU 校验错误、页面异常或崩溃。运行时实际报告 GI=1、反射=1、TSR=4、距离场 AO/阴影开启；空 RHI Tick 跳过、原生存储合约和描述符缓存优化均生效，元数据 DOM 加载数持续为 0。
+
+| 视角 | 最近 600 个提交间隔平均 FPS |
+| --- | ---: |
+| 房间 | 61.91 |
+| 厨房方向 | 61.69 |
+| 返回房间 | 60.63 |
+
+导航至 60 帧约 22.429 秒，本机已有系统文件、Cook 和驱动缓存。每两秒采样一次浏览器进程显存，共 54 次，最高 3271.64 MiB，约 3.19 GiB。以上 FPS 是引擎提交间隔统计，本轮没有重新测量旧运行时或桌面端，不能据此宣称性能提升比例或等画质性能持平。
+
+另一个独立配置目录完成 40 秒实际移动、转向、跳跃和窗口尺寸切换，并在普通无 DOM 加载后动态启用绑定校验。移动约 161.17 cm、转向约 43.28 度，达到 1662 帧；52481351 个绑定项和 7957221 个整组准备结果通过比对，末次元数据加载为 317、DOM 加载为 0。Game、Render、RHI 分属不同物理线程，GPUScene 和资源表更新检查通过，无 GPU 校验错误或崩溃。该正确性模式未用于上表性能统计。
+
+内置预览 Chrome 156.0.8078.79 首次打开新包时，在 1877×1056 渲染尺寸、第 7 帧报告一次 `WebGPU device lost: A valid external Instance reference no longer exists.`。关闭该页后，旧包在同一预览环境正常运行；再次独立打开新包亦成功进入带光照的玄关场景，HUD 显示约 56 FPS，页面已保留供人工测试。尚未确定这次设备丢失的原因和复现率，不能排除偶发兼容问题，也不能归因于浏览器版本、分辨率、硬件或某项优化；本轮没有针对此现象修改代码或关闭功能。
+
+可重复汇总入口为 `summarize-web-villa-refresh.cjs`，按顺序传入正常运行报告、操作校验报告、摘要输出路径和可选的人工预览报告。证据为 `tests/web-platform/evidence/lumen-villa-refresh-20261104.json`。原始报告为 `results/project-memory-lumen-optimized-20261104.json`、`results/project-gameplay-lumen-optimized-20261104-native-cache.json`、`results/villa-refresh-preview-20261104.json`，三张视角截图与版本、包体、编译和报告哈希均记录在证据中。此轮只验收这些路径；全部材质、长时间巡游、既有局部反射/窗帘差异及像素一致性仍未验收。
+
 ## 性能与显存边界
 
 本轮可直接计算的增量：

@@ -1,0 +1,360 @@
+{
+  "date": "2026-11-04T03:36:08.593Z",
+  "pass": true,
+  "rootRevision": "fa450d029c9804ccccd4616b78a764a27b2c6c2a",
+  "engineRevision": "f8843511d333e4d893cbe7786d611f6318c7193b",
+  "folder": "triplex-project-lumen-optimized-20261104",
+  "projectSettingsPreserved": true,
+  "rendererOverrides": [],
+  "compileOptimization": {
+    "-O2": 415,
+    "-O1": 1
+  },
+  "allocator": "mimalloc",
+  "finalLinkOptimization": "default-O0",
+  "nativeBuilds": [
+    {
+      "compilerVersion": "",
+      "disableHostOptimization": false,
+      "hostProcessorAffinity": 0
+    },
+    {
+      "compilerVersion": "14.44.35207",
+      "disableHostOptimization": false,
+      "hostProcessorAffinity": 16711680
+    }
+  ],
+  "compilerRetries": [
+    {
+      "source": "Module.Chaos.5.cpp",
+      "attempts": 2,
+      "exitCode": 0
+    },
+    {
+      "source": "Module.Core.1.cpp",
+      "attempts": 2,
+      "exitCode": 0
+    },
+    {
+      "source": "Module.Engine.24.cpp",
+      "attempts": 2,
+      "exitCode": 0
+    },
+    {
+      "source": "Module.Engine.35.cpp",
+      "attempts": 2,
+      "exitCode": 0
+    },
+    {
+      "source": "Module.Engine.45.cpp",
+      "attempts": 2,
+      "exitCode": 0
+    },
+    {
+      "source": "Module.Renderer.6.cpp",
+      "attempts": 2,
+      "exitCode": 0
+    }
+  ],
+  "cook": {
+    "files": 5159,
+    "bytes": 3736968256,
+    "lumen": {
+      "enabled": true,
+      "diffuseGI": true,
+      "reflections": true,
+      "supported": true,
+      "tracing": "software-distance-fields",
+      "experimental": true
+    },
+    "convertedShaders": null
+  },
+  "package": {
+    "files": 11,
+    "bytes": 3598340296,
+    "products": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\index.html",
+        "sha256": "cdfb3fd69a3c1381497dfe563e0e67907803b26b716ee4980a0e83b21c21b1b4"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\content.bin",
+        "sha256": "af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\content-files.json",
+        "sha256": "6b455315fc246b7be7ff8c24f425bb93a03987e1a47a0938030d7654f43b2bff"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\config-files.json",
+        "sha256": "0f53cec50d875d41d670952a5a452fbdb40607db33a10f195cc15c3549ac009f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\web-content-io.js",
+        "sha256": "c55809fef34e77b0ced5a8be0e0b033b5b13f7e8e5c7818c276980b89f6ca8cf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\web-content-worker.js",
+        "sha256": "7493400199961d2085202a25f40226f5a104af7ff86d39bf68d8f0f47c2ebdf1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\web-engine-host.js",
+        "sha256": "2f0691bbeda1e763d6f1ca40fdbaa377e488fa56f9dce36c4d5c91cb81428f74"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\web-engine-worker.js",
+        "sha256": "f0f2de05a18159bc6ab9434dbc2d2e43982676b53373447f497f10277aa11534"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\UEWebEngineThreads.js",
+        "sha256": "0d78cc5c0b6657a388922586601a0d1f6386eefcbc7de8f0500ede29239e4b9d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\UEWebEngineThreads.wasm",
+        "sha256": "47a1b1e98871b4efdc19d5a92d27e521fffeb2c5838b5c05c0604e2218093f8b"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\triplex-project-lumen-optimized-20261104\\asset-versions.json",
+        "sha256": "8d67beb2fccfdd43a5114887e285d5597e063de60292812f888358dddf36730d"
+      }
+    ]
+  },
+  "browser": {
+    "width": 1280,
+    "height": 720,
+    "startupMilliseconds": 22429,
+    "observedSeconds": 90,
+    "observedFrames": 5737,
+    "views": [
+      {
+        "label": "room",
+        "frame": 1947,
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.0000000000000036,
+          "yaw": 50.00000000000001
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "meanSubmissionFPS": 61.910655700921126,
+        "frameIntervals": 600,
+        "textureMiB": 2546.374465942383,
+        "bufferMiB": 209.3159065246582,
+        "dedicatedMiB": 3224.19921875,
+        "metadata": {
+          "nativeLoads": 308,
+          "domLoads": 0,
+          "nativeAllocatedBytes": 4143026,
+          "readMs": 23.537397384643555,
+          "native": true
+        }
+      },
+      {
+        "label": "wall",
+        "frame": 3838,
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.000000000000006,
+          "yaw": -130.00000000000003
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "meanSubmissionFPS": 61.694913511446664,
+        "frameIntervals": 600,
+        "textureMiB": 2545.468215942383,
+        "bufferMiB": 210.13388061523438,
+        "dedicatedMiB": 3266.3984375,
+        "metadata": {
+          "nativeLoads": 316,
+          "domLoads": 0,
+          "nativeAllocatedBytes": 4343386,
+          "readMs": 24.43242073059082,
+          "native": true
+        }
+      },
+      {
+        "label": "room-return",
+        "frame": 5737,
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.0000000000000036,
+          "yaw": 50.00000000000001
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "meanSubmissionFPS": 60.63365197998225,
+        "frameIntervals": 600,
+        "textureMiB": 2540.061965942383,
+        "bufferMiB": 209.37629318237305,
+        "dedicatedMiB": 3258.9921875,
+        "metadata": {
+          "nativeLoads": 316,
+          "domLoads": 0,
+          "nativeAllocatedBytes": 4343386,
+          "readMs": 24.43242073059082,
+          "native": true
+        }
+      }
+    ],
+    "peakDedicatedMiB": 3271.64453125,
+    "memorySampleCount": 54,
+    "settingsOverrides": []
+  },
+  "gameplay": [
+    {
+      "pass": true,
+      "maxTravelCm": 161.1721808203328,
+      "maxTurnDegrees": 43.27882641553879,
+      "finalFrame": 1662,
+      "validatedBindings": 52481351,
+      "validatedGroups": 7957221
+    }
+  ],
+  "manualPreview": {
+    "recordedAt": "2026-11-04T11:35:15+08:00",
+    "method": "Manual in-app browser UI comparison through cua_repl; sequential tabs, no rendering setting changes.",
+    "browser": "Google Chrome 156.0.8078.79, Windows x64, in-app preview",
+    "initialFailure": {
+      "time": "2026-11-04T03:27:08.644Z",
+      "folder": "triplex-project-lumen-optimized-20261104",
+      "frame": 7,
+      "surface": {
+        "width": 1877,
+        "height": 1056
+      },
+      "message": "WebGPU device lost: A valid external Instance reference no longer exists.",
+      "otherErrorsInStartupReport": 0
+    },
+    "oldPackageComparison": {
+      "folder": "triplex-project-lumen-distance-fields-threads",
+      "observation": "Loading overlay dismissed; live HUD showed 45 FPS and scene continued rendering."
+    },
+    "newPackageIndependentRetry": {
+      "folder": "triplex-project-lumen-optimized-20261104",
+      "observation": "Loading overlay dismissed; screenshot showed the lit entrance scene and live HUD at 56 FPS.",
+      "keptOpenForManualTesting": true
+    },
+    "conclusion": "Device loss did not recur on the independent retry. Cause and recurrence rate remain unresolved; this does not establish browser, resolution, hardware or optimization causality."
+  },
+  "boundaries": [
+    "Startup, three fixed views, movement, turns, resize and native binding-cache validation only.",
+    "Submission FPS is not physical display FPS or an equal-quality native performance comparison.",
+    "GPU memory is sampled process dedicated memory; short peaks may be missed.",
+    "Hardware ray tracing, all materials, long traversal and pixel parity are not certified.",
+    "An in-app preview device loss occurred once; its cause remains unresolved despite a successful independent retry."
+  ],
+  "sourceReports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "c863eeb73db2028133df739d1b6edee01607340c1f3e0b9b8278bbb23d48a60c"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\native-rendercore-build-results.json",
+      "sha256": "d8500d18ac9080888a82f58a6a4736da9a847ab666abc6f6c8f8e9dec09b4336"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\native-renderer-build-results.json",
+      "sha256": "5268e40da10d339abe22a4cce5f607230677dc85f66d3e8a39a1813dff3d7f18"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-project-lumen-desktop-cook-results.json",
+      "sha256": "3a2be0d3500e901d6d4b8c2eb17ee055b59d708dc3fb1bd572e6f0c257461e66"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-project-lumen-desktop-stage-results.json",
+      "sha256": "ad9a938041459a125fe9539f5673b433151d9b891beb1df330b44f0bb6313838"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-project-lumen-distance-fields-threads-package-results.json",
+      "sha256": "62407ffb980c6c7681c05b7e0fc1b8a80086ee47de69a9b2178ec797eec6fcb5"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-optimized-20261104.json",
+      "sha256": "80d2e85da1526fa0960dcab1839d631e026f05e48e20cdc50c142955412f7330"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-gameplay-lumen-optimized-20261104-native-cache.json",
+      "sha256": "2b2529473cf5f11652419a59d5e844d5773e1646b4e84cff2eed1b5ebcebe41f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-refresh-preview-20261104.json",
+      "sha256": "b1da391b8dd72b1c1b4c34f9fc1dc96ee442b11170e3c9e6091f70ee95ec42d7"
+    }
+  ],
+  "images": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-optimized-20261104-0.png",
+      "sha256": "c153023e19ad683f80c401b10825f49911737a46e59c2c64c902f829d1fce8ce"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-optimized-20261104-1.png",
+      "sha256": "2e8ce003175662c8bd3ebe34b6e3ca9c4aaaa69ed523103aba9aff349cc488f3"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-optimized-20261104-2.png",
+      "sha256": "7736af26a646114d65aa649c1d3ca967f15dc5a772e641e1491c505901f94be6"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-villa-refresh.cjs",
+      "sha256": "9b78d4cef764ea6080be67ecee9cc79b07a85cd94cb9d428de746ee6caea7ce3"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-project-memory.cjs",
+      "sha256": "f451f5e8c32c2084be8b51a3f3a4b297c07672dde7885f1122bcd61bfdf592cc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-project-gameplay.cjs",
+      "sha256": "a5ca177f765b716d6eb2563b943c04588b61e96fabc3275560bdbdbb00fc9435"
+    }
+  ]
+}

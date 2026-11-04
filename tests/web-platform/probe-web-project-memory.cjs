@@ -89,6 +89,7 @@ const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, nul
         view: globalThis.__webRenderView, streaming: globalThis.__webTextureStreaming,
         occlusion: globalThis.__webOcclusionRHI, lighting: globalThis.__webDistanceFieldsLighting,
         distanceFields: globalThis.__webDistanceFields, settings: globalThis.__webProjectSettings,
+        metadata: globalThis.__webShaderMetadata,
         retirement: globalThis.__webGPUHandleDiagnostics}));
       const sample = {label, elapsedMilliseconds: Date.now() - start, ...state, wddm: memory({profile})};
       report.samples.push(sample);
