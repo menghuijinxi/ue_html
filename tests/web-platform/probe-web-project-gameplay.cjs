@@ -20,11 +20,13 @@ const requireResourceTables = process.argv.includes('--require-resource-tables')
 const requireParallelRecording = process.argv.includes('--require-parallel-recording');
 const requireManualVertexFetch = process.argv.includes('--require-manual-vertex-fetch');
 const debugPort = Number(option('debug-port') || 0);
+const browserArgs = option('browser-args') ? JSON.parse(option('browser-args')) : [];
+assert(Array.isArray(browserArgs) && browserArgs.every(value => typeof value === 'string'));
 assert(debugPort === 0 || (debugPort >= 1024 && debugPort <= 65535));
 assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const output = path.join(__dirname, 'results', `project-gameplay-${tag}`);
 const report = {date: new Date().toISOString(), folder, width, height, dpr, requestedRuns: runs, seconds,
-  headful: process.argv.includes('--visible'),
+  headful: process.argv.includes('--visible'), browserArgs,
   hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default scheduling',
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
   runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, nativeValidation, requireGPUScene, requireResourceTables,
@@ -39,7 +41,7 @@ let context;
       report.runs.push(result);
       context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', `gameplay-${tag}-${run}`),
         {channel: 'msedge', headless: !process.argv.includes('--visible'), viewport: {width, height}, deviceScaleFactor: dpr,
-          args: debugPort ? ['--remote-debugging-port=' + debugPort] : []});
+          args: [...browserArgs, ...(debugPort ? ['--remote-debugging-port=' + debugPort] : [])]});
       const page = context.pages()[0];
       page.on('pageerror', error => result.errors.push(error.message));
       page.on('crash', () => result.errors.push('Renderer crashed'));

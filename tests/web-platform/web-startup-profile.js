@@ -147,15 +147,16 @@
       .push({...reference, descriptor});
     return reference.id;
   }
-  Object.defineProperty(profile, 'exportPSOCorpus', {value: () => {
+  Object.defineProperty(profile, 'exportPSOCorpus', {value: (includeSynchronous = false) => {
     if (!corpus) throw Error('PSO corpus recording was not enabled');
-    const descriptors = profile.pipelineDescriptors.filter(d => profile.pipelines.some(p => p.descriptorId === d.id && p.name.endsWith('Async')));
+    const requests = profile.pipelines.filter(p => includeSynchronous || p.name.endsWith('Async'));
+    const descriptors = profile.pipelineDescriptors.filter(d => requests.some(p => p.descriptorId === d.id));
     const moduleIds = new Set();
     for (const d of descriptors) for (const stage of ['vertex', 'fragment', 'compute']) {
       const id = d.descriptor[stage]?.module?.id; if (id) moduleIds.add(id);
     }
     return {...corpus, modules: corpus.modules.filter(m => moduleIds.has(m.id)), descriptors,
-      requests: profile.pipelines.filter(p => p.name.endsWith('Async'))};
+      requests};
   }});
   GPUAdapter.prototype.requestDevice = async function(...args) {
     const device = await request.apply(this, args);

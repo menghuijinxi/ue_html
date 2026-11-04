@@ -1,12 +1,20 @@
 'use strict';
 // Replay real descriptors exported at the WebGPU boundary, without UE, Wasm,
-// content IO, rendering, synchronous PSO requests or pthread proxy scheduling.
-onmessage = async ({data: {url, concurrency, moduleFence, requestLimit}}) => {
+// content IO, rendering or pthread proxy scheduling.
+onmessage = async ({data: {url, concurrency, moduleFence, requestLimit, asyncPipelines, targetEntry, progress}}) => {
   try {
     const corpus = await (await fetch(url)).json();
     if (corpus.version !== 1 || corpus.devices.length !== 1) throw Error('Expected one captured device');
+    if (targetEntry) {
+      const ids = new Set(corpus.descriptors.filter(d =>
+        ['vertex', 'fragment', 'compute'].some(stage => d.descriptor[stage]?.entryPoint === targetEntry)).map(d => d.id));
+      corpus.requests = corpus.requests.filter(r => ids.has(r.descriptorId));
+      if (!corpus.requests.length) throw Error('No captured pipeline for ' + targetEntry);
+    }
     if (requestLimit) {
       corpus.requests = corpus.requests.slice(0, requestLimit);
+    }
+    if (requestLimit || targetEntry) {
       const ids = new Set(corpus.requests.map(r => r.descriptorId));
       corpus.descriptors = corpus.descriptors.filter(d => ids.has(d.id));
       const modules = new Set();
@@ -17,6 +25,9 @@ onmessage = async ({data: {url, concurrency, moduleFence, requestLimit}}) => {
     const adapter = await navigator.gpu.requestAdapter({powerPreference: 'high-performance'});
     const device = await adapter.requestDevice(corpus.devices[0].descriptor), errors = [];
     device.addEventListener('uncapturederror', e => errors.push(e.error.message));
+    if (progress) device.lost.then(info => {
+      if (info.reason !== 'destroyed') postMessage({error: 'Device lost: ' + info.message});
+    });
     const objects = new Map(), descriptors = new Map(), kept = [];
     function decode(value) {
       if (value === null || typeof value !== 'object') return value;
@@ -41,8 +52,10 @@ onmessage = async ({data: {url, concurrency, moduleFence, requestLimit}}) => {
       while (cursor < corpus.requests.length) {
         const r = corpus.requests[cursor++], start = performance.now();
         const a = {id: r.id, descriptorId: r.descriptorId, method: r.name, start: start - begin}; attempts.push(a);
+        if (asyncPipelines && !a.method.endsWith('Async')) a.method += 'Async';
+        if (progress) postMessage({progress: {id: a.id, method: a.method, descriptorId: a.descriptorId}});
         try {
-          const promise = device[r.name](descriptors.get(r.descriptorId)); a.callMs = performance.now() - start;
+          const promise = device[a.method](descriptors.get(r.descriptorId)); a.callMs = performance.now() - start;
           kept.push(await promise); a.success = true;
         } catch (e) {a.success = false; a.error = e.message;}
         a.end = performance.now() - begin;
@@ -50,6 +63,10 @@ onmessage = async ({data: {url, concurrency, moduleFence, requestLimit}}) => {
     }
     await Promise.all(Array.from({length: concurrency}, lane));
     const end = performance.now();
+    if (progress) {
+      await device.queue.onSubmittedWorkDone();
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
     // Keep returned objects alive until all requests have completed. This is a
     // fresh-device/reload measurement, never a second call on retained objects.
     const result = {adapter: Object.fromEntries(['vendor', 'architecture', 'device', 'description'].map(k => [k, adapter.info[k]])), concurrency, modules: corpus.modules.length,

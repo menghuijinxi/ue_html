@@ -1,0 +1,287 @@
+{
+  "recordedAt": "2026-11-04T06:49:02.866Z",
+  "status": "Temporary isolated-browser workaround verified; default browser root cause unresolved.",
+  "source": {
+    "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-startup-compat.cjs",
+    "sha256": "0d1ba372451ce8688263880d13ecaddb43aa020fcd2e7b21a7efd7f7fce0b2d6"
+  },
+  "launcher": {
+    "file": "H:\\ue_html\\tests\\web-platform\\start-web-preview.ps1",
+    "sha256": "fe237ff271c7b27bab09916564761206d895b84c9ccbbb78b1363973acdb8207"
+  },
+  "folder": "triplex-project-lumen-optimized-20261104",
+  "settingsChanged": false,
+  "pipelineReplay": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\crash-replay-full-async-20261104.json",
+      "sha256": "e18fc22e04682eb7a97fdfaa2c4ee7b175ceb63c69ede21d14bdd842da76ebf1"
+    },
+    "requests": 420,
+    "modules": 302,
+    "failed": 0,
+    "boundary": "Async compilation completed without scene drawing; not a scene stability test."
+  },
+  "controls": [
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-fix-control-isolated-20261104-results.json",
+        "sha256": "73516f4bb871b68be53127e10857519af383502fa9658f889055101092f3d957"
+      },
+      "pass": false,
+      "runs": 2,
+      "failure": "AssertionError [ERR_ASSERTION]: Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/triplex-project-lumen-optimized-20261104/web-engine-worker.js?v=f0f2de05a18159bc6ab9434dbc2d2e43982676b53373447f497f10277aa11534:154:45\n    at H:\\ue_html\\tests\\web-platform\\probe-web-browser-lifecycle.cjs:69:7"
+    },
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-fix-control-return-20261104-results.json",
+        "sha256": "987b6a6b5b9e3d97de23ad1183dbbdf4f96b3195205bbbd304d753cd49d77a1a"
+      },
+      "pass": true,
+      "runs": 2,
+      "failure": null
+    }
+  ],
+  "legacyHlslExperiment": {
+    "argument": "--disable-dawn-features=d3d12_use_hlsl_2021",
+    "lifecycles": [
+      {
+        "report": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-fix-hlsl2018-20261104-results.json",
+          "sha256": "a9b9f46ec15cca0e64a68c54816664659e5500a7bdcb74a814ae25ad6ff521e9"
+        },
+        "runs": 3,
+        "pass": true
+      },
+      {
+        "report": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-fix-hlsl2018-repeat-20261104-results.json",
+          "sha256": "c7046e925fd2f8e36c3b8b11976d29a8fb89bad1e26e7ad54cce1383a1dcba66"
+        },
+        "runs": 4,
+        "pass": true
+      }
+    ],
+    "gameplay": {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\project-gameplay-fix-hlsl2018-gameplay-20261104.json",
+        "sha256": "faf82d27aa22d5af39389f680d5898a2e25499b40f0e0d750f55dda00d9637b4"
+      },
+      "pass": true,
+      "secondsPerRun": 60,
+      "runs": [
+        {
+          "frames": 2369,
+          "travelCm": 152.17660471811448,
+          "turnDegrees": 38.13017463684082,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          }
+        },
+        {
+          "frames": 2346,
+          "travelCm": 162.64211384208292,
+          "turnDegrees": 45.62405785918236,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          }
+        }
+      ]
+    },
+    "conclusion": "Passing experiment only; returned default controls also passed. Not a confirmed repair."
+  },
+  "preview": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\compat-preview-verified-20261104.json",
+      "sha256": "7c620596a30725604425a13497254a396545ffe56f335efbe7a0c29b676104e7"
+    },
+    "launch": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\preview-20261104-144426-34424.json",
+      "sha256": "45c4b91e09e4e4295f818d84a180ed279f5899481213a89958f3484a05437b73"
+    },
+    "affinityChecks": [
+      {
+        "pid": 13372,
+        "type": "browser",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 3528,
+        "type": "crashpad-handler",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 13640,
+        "type": "gpu-process",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 33092,
+        "type": "utility",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 33268,
+        "type": "utility",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 19288,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 34108,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 16864,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 34304,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 13708,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 19916,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 34280,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 5248,
+        "type": "renderer",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 19308,
+        "type": "utility",
+        "affinityMask": "0xffff0000"
+      },
+      {
+        "pid": 33652,
+        "type": "utility",
+        "affinityMask": "0xffff0000"
+      }
+    ],
+    "affinityMask": "0xffff0000",
+    "legacyHlsl": false,
+    "samples": [
+      {
+        "run": 0,
+        "frames": 4371,
+        "surface": {
+          "width": 1865,
+          "height": 1049
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        }
+      },
+      {
+        "run": 1,
+        "frames": 182,
+        "surface": {
+          "width": 1280,
+          "height": 720
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        }
+      },
+      {
+        "run": 2,
+        "frames": 180,
+        "surface": {
+          "width": 2325,
+          "height": 1308
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        }
+      }
+    ],
+    "errors": [],
+    "screenshot": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\compat-preview-verified-20261104.png",
+      "sha256": "e0ecae17788de3d794da08f9c16bba7c4450d47342ea0c6cdfdf5ca7c50914b1"
+    }
+  },
+  "boundary": "Affinity changes cores and timing. It does not identify a hardware fault, certify long-term stability, or fix ordinary browser startup."
+}
