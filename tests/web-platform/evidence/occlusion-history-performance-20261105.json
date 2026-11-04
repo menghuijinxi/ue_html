@@ -1,0 +1,877 @@
+{
+  "date": "2026-11-04T16:05:57.065Z",
+  "pass": true,
+  "experimentCompleted": true,
+  "acceptedForDefault": false,
+  "performanceValidated": true,
+  "implementationBuilt": true,
+  "engineCommit": "76fc69d1e",
+  "manualVisualAcceptance": "pending",
+  "analysisSource": {
+    "file": "tests/web-platform/summarize-web-occlusion-history.cjs",
+    "sha256": "158402608d947acb01313fdfd9c66480d714137d58e30c1b3b9e9d78b340fb02"
+  },
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/occlusion-v66-normal-20261104.json",
+      "sha256": "29da0f91803786f1582282d046252ab0a6798046894d9eedd8d2a6786b3d8325"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-v66-local-20261104.json",
+      "sha256": "65a29f2e362e1c316e39174502ce3f7fc0eed07eb72366a3b471e50820e1a03f"
+    }
+  ],
+  "package": {
+    "file": "tests/web-platform/results/villa-occlusion-history-v66-package.json",
+    "sha256": "98889071c90cf336822278f70c78c856360c4d327c827505d9eb583006dff2b3"
+  },
+  "previousAttempts": [
+    {
+      "file": "tests/web-platform/evidence/occlusion-history-20261104.json",
+      "sha256": "bd41334ef2daedfad94b373e02ed905371087e13b43b4de974155632e6c5a5a4"
+    }
+  ],
+  "build": {
+    "file": "tests/web-platform/results/villa-occlusion-history-v66-build.json",
+    "sha256": "b212ae79a25d7cd6a9b8eb4ff1fe3c303963b5a9ad1236ad4d5c61dfbaf00827"
+  },
+  "executedSources": [
+    {
+      "file": "tests/web-platform/results/occlusion-v66-normal-20261104-source.cjs",
+      "sha256": "6626c04bd5c291f89c04c7700ef17693c91b147cfe732f293c85784aabfc5ccf"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-v66-local-20261104-source.cjs",
+      "sha256": "6626c04bd5c291f89c04c7700ef17693c91b147cfe732f293c85784aabfc5ccf"
+    }
+  ],
+  "packageFiles": [
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/index.html",
+      "sha256": "5e48d231ab4220e8bc4a31d1636155d8f2a9b30adda1ae6cdf4d88779ebf4372"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/UEWebEngineThreads.js",
+      "sha256": "ad23a39214103217c767bf6b75f6bc6d19b183e51a9e80003edd9cc3e4e163c7"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/UEWebEngineThreads.wasm",
+      "sha256": "535871a5e4499015262da4beda215cc36a3f5c1533986fb9ce441a932507b0ba"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/web-engine-host.js",
+      "sha256": "127c809ce6bd85dc2f98ae764febe7bc4efbf0ec7e875a8b724dbaa39a15118b"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/web-engine-worker.js",
+      "sha256": "2e68d9aedfa1dfe8f6b0288932c82cc1ca35f263941a426908aac9abb8461b01"
+    }
+  ],
+  "order": [
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "modes": [
+        "control",
+        "history",
+        "hzb",
+        "instances",
+        "hzb-instances",
+        "hzb-instances",
+        "instances",
+        "hzb",
+        "history",
+        "control"
+      ],
+      "seconds": 20,
+      "warmup": 15
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "modes": [
+        "control-local",
+        "history-local",
+        "hzb-local",
+        "hzb-instances-local",
+        "hzb-instances-local",
+        "hzb-local",
+        "history-local",
+        "control-local"
+      ],
+      "seconds": 20,
+      "warmup": 15
+    }
+  ],
+  "idleGpuBeforeRuns": [
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 1,
+      "mode": "control",
+      "at": "2026-11-04T15:48:42.832Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 3,
+          "memoryUsedMiB": 1251,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 2,
+      "mode": "history",
+      "at": "2026-11-04T15:49:38.017Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 14,
+          "memoryUsedMiB": 1336,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 3,
+      "mode": "hzb",
+      "at": "2026-11-04T15:50:31.038Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 17,
+          "memoryUsedMiB": 1338,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 4,
+      "mode": "instances",
+      "at": "2026-11-04T15:51:25.039Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 12,
+          "memoryUsedMiB": 1333,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 5,
+      "mode": "hzb-instances",
+      "at": "2026-11-04T15:52:18.483Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 10,
+          "memoryUsedMiB": 1336,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 6,
+      "mode": "hzb-instances",
+      "at": "2026-11-04T15:53:12.978Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 11,
+          "memoryUsedMiB": 1338,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 7,
+      "mode": "instances",
+      "at": "2026-11-04T15:54:06.864Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 18,
+          "memoryUsedMiB": 1334,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 8,
+      "mode": "hzb",
+      "at": "2026-11-04T15:55:00.212Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 10,
+          "memoryUsedMiB": 1332,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 9,
+      "mode": "history",
+      "at": "2026-11-04T15:55:53.988Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 9,
+          "memoryUsedMiB": 1335,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-normal-20261104.json",
+      "index": 10,
+      "mode": "control",
+      "at": "2026-11-04T15:56:46.926Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 15,
+          "memoryUsedMiB": 1328,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 1,
+      "mode": "control-local",
+      "at": "2026-11-04T15:58:13.190Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 2,
+          "memoryUsedMiB": 1301,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 2,
+      "mode": "history-local",
+      "at": "2026-11-04T15:59:05.730Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 16,
+          "memoryUsedMiB": 1332,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 3,
+      "mode": "hzb-local",
+      "at": "2026-11-04T15:59:57.561Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 9,
+          "memoryUsedMiB": 1327,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 4,
+      "mode": "hzb-instances-local",
+      "at": "2026-11-04T16:00:51.277Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 10,
+          "memoryUsedMiB": 1328,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 5,
+      "mode": "hzb-instances-local",
+      "at": "2026-11-04T16:01:45.184Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 17,
+          "memoryUsedMiB": 1326,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 6,
+      "mode": "hzb-local",
+      "at": "2026-11-04T16:02:38.994Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 25,
+          "memoryUsedMiB": 1330,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 7,
+      "mode": "history-local",
+      "at": "2026-11-04T16:03:32.662Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 16,
+          "memoryUsedMiB": 1327,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    {
+      "input": "occlusion-v66-local-20261104.json",
+      "index": 8,
+      "mode": "control-local",
+      "at": "2026-11-04T16:04:24.694Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 17,
+          "memoryUsedMiB": 1330,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "camera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "view": {
+      "frame": 1802,
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 3,
+      "parallelRendering": true
+    },
+    "renderer": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "threads": {
+      "sharedMemory": true,
+      "engineWorker": true,
+      "gameThread": 2,
+      "taskThread": 3,
+      "cores": 4,
+      "renderThread": true,
+      "rhiThread": true,
+      "renderThreadId": 14,
+      "rhiThreadId": 1,
+      "taskWorkers": 3,
+      "threadingTest": 0
+    }
+  },
+  "qualityOverrides": [],
+  "summary": {
+    "control": {
+      "runs": [
+        {
+          "fps": 80.27150361624015,
+          "low1Fps": 35.09532509655638
+        },
+        {
+          "fps": 80.99322375013787,
+          "low1Fps": 32.15951117620976
+        }
+      ],
+      "fps": 80.63242607903568,
+      "intervals": {
+        "count": 3225,
+        "low1Fps": 32.99637039976738,
+        "p50Ms": 12.865000002086163,
+        "p99Ms": 18.54500000178814,
+        "maxMs": 43.605000004172325
+      },
+      "rhiMs": 8.87311070113866,
+      "workload": {
+        "draws": 3030.319937694704,
+        "indirectDraws": 73.22990654205607,
+        "dispatches": 157.44080996884736,
+        "ready": 355.1657320872274,
+        "pending": 274.3196261682243,
+        "zero": 341.49501557632396
+      },
+      "history": {
+        "polls": 0,
+        "ready": 0,
+        "hits": 0,
+        "zero": 0,
+        "fallback": 0,
+        "expired": 0,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      },
+      "pendingFraction": 0.43578396633159266,
+      "relativeToSameClockControl": {
+        "fpsPercent": 0,
+        "low1Percent": 0
+      }
+    },
+    "history": {
+      "runs": [
+        {
+          "fps": 85.92503877625727,
+          "low1Fps": 36.36253446860868
+        },
+        {
+          "fps": 86.83641010183976,
+          "low1Fps": 35.70861767933225
+        }
+      ],
+      "fps": 86.38069391493126,
+      "intervals": {
+        "count": 3454,
+        "low1Fps": 35.62685450470233,
+        "p50Ms": 13.339999996125698,
+        "p99Ms": 16.95499999821186,
+        "maxMs": 49.63000000268221
+      },
+      "rhiMs": 8.257312010283824,
+      "workload": {
+        "draws": 2682.5048850574713,
+        "indirectDraws": 84.45517241379311,
+        "dispatches": 159.48103448275862,
+        "ready": 625.8318965517242,
+        "pending": 368.90977011494255,
+        "zero": 598.5048850574713
+      },
+      "history": {
+        "polls": 962.4419540229885,
+        "ready": 608.8514367816092,
+        "hits": 582.6879310344827,
+        "zero": 531.8646551724138,
+        "fallback": 100.31206896551724,
+        "expired": 13.312068965517241,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 609.0235632183908,
+        "queryDropped": 0
+      },
+      "pendingFraction": 0.37085987495742695,
+      "relativeToSameClockControl": {
+        "fpsPercent": 7.128977900604339,
+        "low1Percent": 7.972040782259793
+      }
+    },
+    "hzb": {
+      "runs": [
+        {
+          "fps": 74.99190087469101,
+          "low1Fps": 33.20273590410252
+        },
+        {
+          "fps": 76.47621589683216,
+          "low1Fps": 35.54528691690103
+        }
+      ],
+      "fps": 75.73413369897088,
+      "intervals": {
+        "count": 3028,
+        "low1Fps": 34.35626336780723,
+        "p50Ms": 12.95499999821186,
+        "p99Ms": 17.13000000268221,
+        "maxMs": 44.849999994039536
+      },
+      "rhiMs": 8.371378250247968,
+      "workload": {
+        "draws": 2561.9029702970297,
+        "indirectDraws": 6.768316831683168,
+        "dispatches": 145.3907590759076,
+        "ready": 32.06336633663366,
+        "pending": 0.9366336633663367,
+        "zero": 14.318811881188118
+      },
+      "history": {
+        "polls": 0,
+        "ready": 658.5650165016501,
+        "hits": 594.819801980198,
+        "zero": 489.9217821782178,
+        "fallback": 88.18019801980198,
+        "expired": 1.1801980198019801,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 1,
+        "hzbCompleted": 1,
+        "hzbSkipped": 0,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      },
+      "pendingFraction": 0.028382838283828385,
+      "relativeToSameClockControl": {
+        "fpsPercent": -6.074841869775205,
+        "low1Percent": 4.1213410795311045
+      }
+    },
+    "instances": {
+      "runs": [
+        {
+          "fps": 79.5309125809924,
+          "low1Fps": 30.69897734001893
+        },
+        {
+          "fps": 79.7480062998425,
+          "low1Fps": 33.22880106295144
+        }
+      ],
+      "fps": 79.63944777317599,
+      "intervals": {
+        "count": 3184,
+        "low1Fps": 31.863306415033197,
+        "p50Ms": 13,
+        "p99Ms": 19.310000002384186,
+        "maxMs": 51.189999997615814
+      },
+      "rhiMs": 9.025687701434215,
+      "workload": {
+        "draws": 3043.954716981132,
+        "indirectDraws": 75.27547169811321,
+        "dispatches": 159.81289308176102,
+        "ready": 349.038679245283,
+        "pending": 280.71100628930816,
+        "zero": 335.6311320754717
+      },
+      "history": {
+        "polls": 0,
+        "ready": 0,
+        "hits": 0,
+        "zero": 0,
+        "fallback": 0,
+        "expired": 0,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      },
+      "pendingFraction": 0.445750133326409,
+      "relativeToSameClockControl": {
+        "fpsPercent": -1.2314875716208484,
+        "low1Percent": -3.433904914408925
+      }
+    },
+    "hzb-instances": {
+      "runs": [
+        {
+          "fps": 70.80716166718608,
+          "low1Fps": 34.74715652454966
+        },
+        {
+          "fps": 75.61538705657034,
+          "low1Fps": 35.35052252612146
+        }
+      ],
+      "fps": 73.21109745308596,
+      "intervals": {
+        "count": 2928,
+        "low1Fps": 34.54927590493703,
+        "p50Ms": 13.260000005364418,
+        "p99Ms": 17.49499999731779,
+        "maxMs": 51.850000001490116
+      },
+      "rhiMs": 8.674695141893197,
+      "workload": {
+        "draws": 2561.3122448979593,
+        "indirectDraws": 6.628571428571429,
+        "dispatches": 147.36360544217686,
+        "ready": 32.090816326530614,
+        "pending": 0.9091836734693878,
+        "zero": 14.331972789115646
+      },
+      "history": {
+        "polls": 0,
+        "ready": 658.5517006802721,
+        "hits": 595.3918367346939,
+        "zero": 490.393537414966,
+        "fallback": 87.60816326530612,
+        "expired": 0.6081632653061224,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 1,
+        "hzbCompleted": 1,
+        "hzbSkipped": 0,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      },
+      "pendingFraction": 0.027551020408163266,
+      "relativeToSameClockControl": {
+        "fpsPercent": -9.203900945105337,
+        "low1Percent": 4.7062918931853215
+      }
+    },
+    "control-local": {
+      "runs": [
+        {
+          "fps": 96.18356120510904,
+          "low1Fps": 50.0369022156077
+        },
+        {
+          "fps": 96.93020200623589,
+          "low1Fps": 45.214599794943766
+        }
+      ],
+      "fps": 96.55679083610444,
+      "intervals": {
+        "count": 3862,
+        "low1Fps": 46.617260340216575,
+        "p50Ms": 10.08500000089407,
+        "p99Ms": 19.36999999731779,
+        "maxMs": 31.33000000566244
+      },
+      "rhiMs": 9.840216017164305,
+      "workload": {
+        "draws": 3854.2615384615383,
+        "indirectDraws": 170,
+        "dispatches": 173.27615384615385,
+        "ready": 0,
+        "pending": 692,
+        "zero": 0
+      },
+      "history": {
+        "polls": 0,
+        "ready": 0,
+        "hits": 0,
+        "zero": 0,
+        "fallback": 0,
+        "expired": 0,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      },
+      "pendingFraction": 1,
+      "relativeToSameClockControl": {
+        "fpsPercent": 0,
+        "low1Percent": 0
+      }
+    },
+    "history-local": {
+      "runs": [
+        {
+          "fps": 108.25472246231884,
+          "low1Fps": 53.64152829750431
+        },
+        {
+          "fps": 108.40130061578448,
+          "low1Fps": 55.39259501730899
+        }
+      ],
+      "fps": 108.32802956534945,
+      "intervals": {
+        "count": 4334,
+        "low1Fps": 54.487477167990086,
+        "p50Ms": 9.015000000596046,
+        "p99Ms": 13.130000002682209,
+        "maxMs": 21.075000002980232
+      },
+      "rhiMs": 8.710894582456328,
+      "workload": {
+        "draws": 2841.7558620689656,
+        "indirectDraws": 170,
+        "dispatches": 173.7344827586207,
+        "ready": 618.1131034482759,
+        "pending": 3094.774252873563,
+        "zero": 586.788275862069
+      },
+      "history": {
+        "polls": 3668.213103448276,
+        "ready": 618.436091954023,
+        "hits": 554.3383908045977,
+        "zero": 517.0795402298851,
+        "fallback": 128.6616091954023,
+        "expired": 41.6616091954023,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 622.3742528735633,
+        "queryDropped": 4.328045977011494
+      },
+      "pendingFraction": 0.833522257981829,
+      "relativeToSameClockControl": {
+        "fpsPercent": 12.191000371196603,
+        "low1Percent": 16.88262409746095
+      }
+    },
+    "hzb-local": {
+      "runs": [
+        {
+          "fps": 77.1187668994,
+          "low1Fps": 40.56795131477986
+        },
+        {
+          "fps": 76.89436748759643,
+          "low1Fps": 40.56229481354516
+        }
+      ],
+      "fps": 77.00658580017512,
+      "intervals": {
+        "count": 3079,
+        "low1Fps": 40.10427110413048,
+        "p50Ms": 12.784999996423721,
+        "p99Ms": 15.965000003576279,
+        "maxMs": 46.07999999821186
+      },
+      "rhiMs": 8.41918134023833,
+      "workload": {
+        "draws": 2569.231045751634,
+        "indirectDraws": 10.290196078431373,
+        "dispatches": 145.99869281045753,
+        "ready": 31.37156862745098,
+        "pending": 1.6284313725490196,
+        "zero": 14.01013071895425
+      },
+      "history": {
+        "polls": 0,
+        "ready": 653.185294117647,
+        "hits": 591.1307189542483,
+        "zero": 486.8826797385621,
+        "fallback": 91.86928104575163,
+        "expired": 4.869281045751634,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0.9928104575163399,
+        "hzbCompleted": 0.9928104575163399,
+        "hzbSkipped": 0.00718954248366013,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      },
+      "pendingFraction": 0.04934640522875817,
+      "relativeToSameClockControl": {
+        "fpsPercent": -20.247364133211367,
+        "low1Percent": -13.97119690980071
+      }
+    },
+    "hzb-instances-local": {
+      "runs": [
+        {
+          "fps": 76.47633057569594,
+          "low1Fps": 40.74045781968904
+        },
+        {
+          "fps": 76.16580155508588,
+          "low1Fps": 40.03903806142377
+        }
+      ],
+      "fps": 76.32105523979689,
+      "intervals": {
+        "count": 3052,
+        "low1Fps": 39.94896841289977,
+        "p50Ms": 12.895000003278255,
+        "p99Ms": 16.41500000655651,
+        "maxMs": 45.435000002384186
+      },
+      "rhiMs": 8.461012509264194,
+      "workload": {
+        "draws": 2570.4085808580858,
+        "indirectDraws": 11.037623762376237,
+        "dispatches": 148.13102310231022,
+        "ready": 31.224752475247524,
+        "pending": 1.7752475247524753,
+        "zero": 13.945544554455445
+      },
+      "history": {
+        "polls": 0,
+        "ready": 652.7545751633987,
+        "hits": 590.9359477124183,
+        "zero": 486.7245098039216,
+        "fallback": 92.0640522875817,
+        "expired": 5.064052287581699,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0.9928104575163399,
+        "hzbCompleted": 0.9928104575163399,
+        "hzbSkipped": 0.00718954248366013,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      },
+      "pendingFraction": 0.0537953795379538,
+      "relativeToSameClockControl": {
+        "fpsPercent": -20.957340670793112,
+        "low1Percent": -14.304341093086704
+      }
+    }
+  },
+  "checks": {
+    "completedResults": true,
+    "hzbRing": true,
+    "noQueryWait": true,
+    "runtimeErrors": []
+  },
+  "limits": [
+    "FPS measures RHI submission throughput, not GPU completion, physical display or input latency.",
+    "Fixed camera, 2289x1287, original Cook/config and lighting; OS GPU utilization sampled before each test browser starts.",
+    "Candidates reject camera/projection/rect changes, movable or WPO targets, changed bounds and results older than 8 engine frames or 80 ms.",
+    "Moving occluders, temporal disocclusion and fast gameplay remain manual visual acceptance items.",
+    "Local Game clock has no new GPU-completion budget; retained as a diagnostic entry and defaults off."
+  ]
+}

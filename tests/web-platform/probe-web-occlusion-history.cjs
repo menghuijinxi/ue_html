@@ -52,6 +52,8 @@ let context, log;
   for(const mode of modes) {
     const local = mode.endsWith('-local'), occlusionMode = local ? mode.slice(0,-6) : mode;
     const run = {index: report.runs.length+1, mode, local, errors: []}; report.runs.push(run); save();
+    run.idleGpu=idleGpu();save();
+    assert(!run.idleGpu.adapters?.some(v=>v.utilization>50),'GPU busy between runs; free it before benchmarking');
     context = await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/occlusion-history'),
       {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1});
     await context.route('**/web-engine-worker.js?*',async route=>{
@@ -72,10 +74,12 @@ let context, log;
     await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=90,null,{timeout:180000});
     assert(!await page.evaluate(()=>globalThis.__webEngineFailure));
     const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebOptimizationTest',0)),1);
     const state=()=>owner.evaluate(()=>({frame:__webRHIFrames,game:__webEngineFrames,stages:__webThreadStages,
       threads:__webEngineThreads,view:__webRenderView,camera:__webDefaultCamera,settings:__webProjectSettings,
       occlusion:__webOcclusionRHI,history:globalThis.__webOcclusionHistory,queryWait:globalThis.__webOcclusionWait,
-      optimization:globalThis.__webOptimizationRHI,streaming:__webTextureStreaming,capacity:HEAPU8.buffer.byteLength,
+      optimization:globalThis.__webOptimizationRHI,culling:globalThis.__webOptimizationState,
+      streaming:__webTextureStreaming,capacity:HEAPU8.buffer.byteLength,
       arguments:Module.arguments,failure:globalThis.__webEngineFailure}));
     // Startup texture uploads and browser pipeline creation must leave the window
     // before comparing steady throughput, including cold browser profiles.
@@ -88,6 +92,8 @@ let context, log;
     assert.equal(run.before.history.enabled,['history','hzb','hzb-instances'].includes(occlusionMode));
     assert(run.before.arguments.includes('-WebOcclusionMode='+occlusionMode));
     assert.equal(run.before.arguments.includes('-WebGameLocalClock'),local);
+    assert.equal(run.before.culling.hzbOcclusion,occlusionMode.startsWith('hzb')?2:0);
+    assert.equal(run.before.culling.instanceOcclusion,['instances','hzb-instances'].includes(occlusionMode)?1:0);
     assert.equal(run.before.streaming.pending,0);
     await owner.evaluate(()=>{const c=__occlusionCapture;c.times=[];c.active=true;c.start=performance.now();c.first=__webRHIFrames;});
     await page.waitForTimeout(seconds*1000);
