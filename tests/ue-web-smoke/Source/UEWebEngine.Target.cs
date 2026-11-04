@@ -29,16 +29,28 @@ public class UEWebEngineTarget : UEWebApplicationTarget
         // Isolate the O2 Wasm optimization from export/JS name minification.
         if (target.Arguments?.HasOption("-WebKeepLinkNames") ?? false)
             AdditionalLinkerArguments += " -g3";
-        // Allocator-only experiment: reuse the same UE objects and Cook.
+        // The ordinary threaded runtime defaults to mimalloc. Keep explicit
+        // overrides for allocator A/B without changing UE objects or Cook.
         string Workspace = Path.GetFullPath(Path.Combine(ProjectFile.Directory.FullName, "../.."));
         if (target.Arguments?.HasOption("-WebAllocationProbe") ?? false)
             AdditionalLinkerArguments += " -Wl,--whole-archive,\"" +
                 Path.Combine(Workspace, ".tools/web-allocation-probe/probe.a").Replace('\\', '/') +
                 "\",--no-whole-archive,--wrap=malloc,--wrap=calloc,--wrap=realloc,--wrap=free,--wrap=posix_memalign,--wrap=malloc_usable_size";
-        if (target.Arguments?.HasOption("-WebMimalloc") ?? false)
+        bool bForceMimalloc = target.Arguments?.HasOption("-WebMimalloc") ?? false;
+        bool bForceDlmalloc = target.Arguments?.HasOption("-WebDlmalloc") ?? false;
+        if (bForceMimalloc && bForceDlmalloc)
+            throw new BuildException("Choose either WebMimalloc or WebDlmalloc.");
+        bool bUseMimalloc = !bForceDlmalloc && (bForceMimalloc || target.Name == "UEWebEngineThreads");
+        if (bUseMimalloc)
+        {
+            if (target.Name != "UEWebEngineThreads")
+                throw new BuildException("Mimalloc is supported by the ordinary UEWebEngineThreads target.");
+            if (!File.Exists(Path.Combine(Workspace, ".tools/web-mimalloc-ue/libmimalloc-ue-mt.a")))
+                throw new BuildException("Prepare the UE-compatible allocator with tests/web-platform/build-web-mimalloc.py, or use build-web-engine.ps1 -Threads.");
             AdditionalLinkerArguments += " -sMALLOC=mimalloc -Wl,--whole-archive,\"" +
                 Path.Combine(Workspace, ".tools/web-mimalloc-ue/libmimalloc-ue-mt.a").Replace('\\', '/') +
                 "\",--no-whole-archive";
+        }
         AdditionalLinkerArguments += " --use-port=\"" +
             Path.Combine(Workspace, "reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py")
                 .Replace('\\', '/') + "\"";

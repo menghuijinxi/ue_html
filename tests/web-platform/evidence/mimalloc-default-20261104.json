@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-04T05:41:20.188Z",
+  "pass": true,
+  "build": {
+    "file": "tests/web-platform/results/mimalloc-default-20261104-build.json",
+    "sha256": "5fca8596f716226d4edf5276ee9c14c884d0a1491d70ecc5c9e50c6be7f0bb51"
+  },
+  "allocator": "mimalloc",
+  "allocatorSelection": "target-default",
+  "fullLinkAttempted": true,
+  "objects": 417,
+  "sourceFiles": [
+    {
+      "sha256": "29e0b6b0c1622f144c1bbf539fc089dbc853289fa4a8c6719a492f7b5e013d2b",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1"
+    },
+    {
+      "sha256": "556475453ba80e1b465dac7bee9f87fb16c93db6da876eb9eb5e68f99903ccbd",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine.Target.cs"
+    },
+    {
+      "sha256": "556475453ba80e1b465dac7bee9f87fb16c93db6da876eb9eb5e68f99903ccbd",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine.Target.cs"
+    }
+  ],
+  "link": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+    "sha256": "ede7b22a210bd2f971007f0e1dba8db3fdc31428fcd6702d8716eafcd00fbcc8"
+  },
+  "products": [
+    {
+      "sha256": "97d5af24ece04c8c58efc639b75ee20e10ff37a988720fd503f2eb5e1a09c0a8",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js"
+    },
+    {
+      "sha256": "6f3ea9f7ec2964f905b38ee4d4f1367dc953b327a42efc97cee83c18047eb17a",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
+    },
+    {
+      "sha256": "6605440813a6c78805b6cd6917c7a994f4462006d9d965185de004ece714a270",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target"
+    }
+  ],
+  "identicalToValidatedRuntime": {
+    "file": "tests/web-platform/results/villa-lumen-off-current-mimalloc-v59-build.json",
+    "sha256": "75124b30c4bbbd2e343ce74fce372b7ffdd9ecf2ac7c10a6989be852a6cdf965"
+  },
+  "sameJsWasmAndTargetHashes": true,
+  "dlmallocOverrideExport": {
+    "log": {
+      "file": "tests/web-platform/results/mimalloc-default-dlmalloc-export.log",
+      "sha256": "f45b06d61e87980bebf99871c2258cf2f5471c443f95bb35e90acf48f374cc0f"
+    },
+    "actions": {
+      "file": "tests/web-platform/results/mimalloc-default-dlmalloc-export.actions.json",
+      "sha256": "89c06c736901efb5823090bcf463a19014fc810bd3b2916e98fda64eae8a14cb"
+    },
+    "link": {
+      "file": "tests/web-platform/results/mimalloc-default-dlmalloc-export.link.rsp",
+      "sha256": "a60fa8a560c555a0c2822cc5d46c4d1175e3700fc29b8a860757de34f2a18716"
+    }
+  },
+  "defaultRestoreExport": {
+    "log": {
+      "file": "tests/web-platform/results/mimalloc-default-restored-export.log",
+      "sha256": "986cbf92bb181539abeb9a5c46d82b961b3d349d30ec478d7426574a0dfd0c42"
+    },
+    "actions": {
+      "file": "tests/web-platform/results/mimalloc-default-restored-export.actions.json",
+      "sha256": "e54257aea5de1f25b57c0f924fd35fe0daf7027ccf6587fbe4e4d15d7c65e8b8"
+    }
+  },
+  "boundary": "Ordinary threaded runtime built without allocator override; Target selects mimalloc by default. Actual UBT dlmalloc action export excludes mimalloc, then default response is restored. No new FPS or gameplay claimed: produced JS/Wasm/target hashes exactly equal the v59 mimalloc package validated in the prior round. Single-thread/Trace/SIMD retain their previous allocator."
+}

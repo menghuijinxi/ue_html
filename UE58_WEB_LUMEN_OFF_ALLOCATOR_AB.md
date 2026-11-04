@@ -2,6 +2,23 @@
 
 2026-11-04。外围仓库起点 `56214cf`，引擎起点 `f8843511d3`。本轮不迁移插件目录，不改变原项目的渲染设置；`G:/UE_HTML/TriplexHouseVilla` 的 GI、反射和虚拟阴影均为 0，距离场保持开启。
 
+## 后续默认分配器
+
+2026-11-04，经本轮复测和用户确认，普通 `UEWebEngineThreads` 构建默认改用 mimalloc。`build-web-engine.ps1 -Threads` 自动准备 UE 兼容的 mimalloc archive；UBT Target 自身也采用相同默认值，直接调用普通线程 Target 时不会因漏传旧实验参数而退回 dlmalloc。
+
+```powershell
+# 普通线程版默认使用 mimalloc，无需再写 -Mimalloc。
+./tests/web-platform/build-web-engine.ps1 -Engine D:/UE_5.8 -Threads
+# 分配器回归对照仍可显式使用 dlmalloc。
+./tests/web-platform/build-web-engine.ps1 -Engine D:/UE_5.8 -Threads -Mimalloc:$false
+```
+
+已有 `-Mimalloc` 调用继续有效。直接调用 UBT 可用 `-WebDlmalloc` 选择对照分配器，两个分配器强制开关同时出现时拒绝构建。单线程、Trace 和 SIMD 专用 Target 沿用此前分配器，避免把普通线程版的验收扩展到尚未验证的组合。构建报告新增 `allocatorSelection` 区分默认选择和显式选择，链接校验仍检查最终 `-sMALLOC=mimalloc` 与所选模式一致。
+
+下文 ABBA 数字及早期文档中的“默认 dlmalloc”记录保留为当时结果。本次默认值变更不重新计算历史性能数据。
+
+已实际执行不带分配器开关的完整普通线程构建，报告为 `allocator=mimalloc`、`allocatorSelection=target-default`，417 个对象及最终链接校验通过。生成的 JS、Wasm 和 Target 文件哈希与本轮已验收的 v59 mimalloc 运行时全部相同，未因此重复运行浏览器性能测试。另实际导出 `-WebDlmalloc` 的 UBT 动作，确认链接响应中没有 mimalloc，再恢复并校验默认响应。PowerShell 参数核验覆盖默认、显式开/关、单线程、Trace 和 SIMD 六种选择。证据见 `tests/web-platform/evidence/mimalloc-default-20261104.json`。
+
 ## 区分两类关闭 Lumen 的包
 
 旧 `villa-native-metadata-v57` 保留此前项目设置和完整 Cook，但它内置的平台能力表也是 `bSupportsLumenGI=false`。因此只把最新 RHI 放进这个包，可以检查旧包的运行时回归，却不能覆盖“平台支持 Lumen、项目关闭 Lumen”的新 Cook 情况。
@@ -73,7 +90,7 @@ v58 的三个 Renderer 兼容文件沿用旧 Cook 对应的 `d175ae4ae` 快照�
 
 所有命令在 `G:/UE_HTML/ue_html` 运行。原项目复制时使用 `prepare-web-project.cjs --project=G:/UE_HTML/TriplexHouseVilla/TriplexHouseVilla.uproject --id=lumen-off-v59 --project-settings`；随后用 `cook-web-engine.ps1 -Engine D:/UE_5.8 -Mode WebGPU-SM5 -Scene Project -Project <隔离副本.uproject> -Map /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla -UseProjectSettings -ReportId lumen-off-v59 -SkipBuild` 完整 Cook。先构建相同版本的本地 RenderCore、Renderer 及 Cook 插件模块，安装版引擎保持只读。
 
-运行时用 `build-web-engine.ps1 -Engine D:/UE_5.8 -Threads -SkipHostPreparation -StandaloneCompiles -MaxParallelActions 4` 构建，mimalloc 版本增加 `-Mimalloc`。只有 v58 增加 `-RendererRevision d175ae4ae`；v59 不传这个参数。每次构建后先用 `snapshot-web-runtime-build.cjs` 保存产物，再运行 `audit-web-allocator-pair.cjs` 比较真实对象字节，最后用 `--build-report=...` 指定打包使用的快照。
+运行时用 `build-web-engine.ps1 -Engine D:/UE_5.8 -Threads -SkipHostPreparation -StandaloneCompiles -MaxParallelActions 4` 构建。原测试时 mimalloc 版本增加 `-Mimalloc`；默认值变更后该版本可省略开关，dlmalloc 对照必须增加 `-Mimalloc:$false`。只有 v58 增加 `-RendererRevision d175ae4ae`；v59 不传这个参数。每次构建后先用 `snapshot-web-runtime-build.cjs` 保存产物，再运行 `audit-web-allocator-pair.cjs` 比较真实对象字节，最后用 `--build-report=...` 指定打包使用的快照。
 
 正式帧率依次运行以下命令；需要已安装 Playwright 并启动端口 8765 的 `serve.cjs`，标签不得与既有报告重名：
 
