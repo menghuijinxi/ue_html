@@ -36,7 +36,8 @@ const report = {date: new Date().toISOString(), pass: false, id, output, archite
       path.join(__dirname, name))].map(audit), fullNormalUBTBuildVerified: false,
   completeUEScene: false};
 try {
-  const buildFile = path.join(directory, `web-engine-full${trace ? '-thread-trace' : threads ? '-thread' : ''}-build-results.json`);
+  const buildOption = process.argv.find(value => value.startsWith('--build-report='))?.slice(15);
+  const buildFile = buildOption ? path.resolve(buildOption) : path.join(directory, `web-engine-full${trace ? '-thread-trace' : threads ? '-thread' : ''}-build-results.json`);
   const stageFile = path.join(directory, `${stagePrefix}-stage-results.json`);
   const prepareFile = path.join(directory, `web-project-${id}-prepare-results.json`);
   const build = read(buildFile), stage = read(stageFile), prepared = read(prepareFile);

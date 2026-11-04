@@ -1,0 +1,1959 @@
+{
+  "date": "2026-11-04T05:11:00.033Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-lumen-off-allocator.cjs",
+    "sha256": "71d0052db03657e2a5492d5a7e600e8b8b07e4812993c763df90a9ccb80fca24"
+  },
+  "context": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v58-context.json",
+    "sha256": "36b7332b9f875d08a8d9134913567f7274a85a448a9b26a0ac81ef5610ecfd98"
+  },
+  "project": {
+    "file": "G:/UE_HTML/TriplexHouseVilla/Config/DefaultEngine.ini",
+    "sha256": "408f1f254531be628c9d285b7ca65ef17a81c90d9dac1dcfcd56f2a82b326183"
+  },
+  "builds": {
+    "villa-lumen-off-current-mimalloc-v59": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-lumen-off-current-mimalloc-v59-build.json",
+        "sha256": "75124b30c4bbbd2e343ce74fce372b7ffdd9ecf2ac7c10a6989be852a6cdf965"
+      },
+      "compile": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v59-mimalloc-compile-audit.json",
+        "sha256": "841c3e705aa931241306239f90759f25ea340359f1e2a33ac951dab5f4e85651"
+      },
+      "allocator": "mimalloc",
+      "compileCounts": {
+        "-O2": 416,
+        "-O1": 1
+      },
+      "link": {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261104-115544.log.link.rsp",
+          "sha256": "ede7b22a210bd2f971007f0e1dba8db3fdc31428fcd6702d8716eafcd00fbcc8"
+        },
+        "optimization": [],
+        "assertions": "1",
+        "debug": "-g2",
+        "lto": false,
+        "switches": [
+          "-o",
+          "-m64",
+          "-sENVIRONMENT=web,worker,node",
+          "-sALLOW_MEMORY_GROWTH=1",
+          "-sASSERTIONS=1",
+          "-pthread",
+          "-sPTHREAD_POOL_SIZE=16",
+          "-sPTHREAD_POOL_SIZE_STRICT=2",
+          "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+          "--use-port=zlib",
+          "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 -sMALLOC=mimalloc -Wl,--whole-archive,\"G:/UE_HTML/ue_html/.tools/web-mimalloc-ue/libmimalloc-ue-mt.a\",--no-whole-archive --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+        ]
+      },
+      "rendererRevision": null,
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\web-runtime-snapshots\\lumen-off-current-mimalloc-v59\\UEWebEngineThreads.js",
+          "sha256": "97d5af24ece04c8c58efc639b75ee20e10ff37a988720fd503f2eb5e1a09c0a8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\web-runtime-snapshots\\lumen-off-current-mimalloc-v59\\UEWebEngineThreads.wasm",
+          "sha256": "6f3ea9f7ec2964f905b38ee4d4f1367dc953b327a42efc97cee83c18047eb17a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\web-runtime-snapshots\\lumen-off-current-mimalloc-v59\\UEWebEngineThreads.target",
+          "sha256": "6605440813a6c78805b6cd6917c7a994f4462006d9d965185de004ece714a270"
+        }
+      ]
+    },
+    "villa-lumen-off-current-dlmalloc-v59": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-lumen-off-current-dlmalloc-v59-build.json",
+        "sha256": "878248d5e7a441729e02e43a9878f94e683c0f7597084eccfcc44611da9a2654"
+      },
+      "compile": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v59-dlmalloc-compile-audit.json",
+        "sha256": "e5b556056a3301172c43f6b8ba45b2c655d05b7cff49d2840632677fe03572d9"
+      },
+      "allocator": "default-dlmalloc",
+      "compileCounts": {
+        "-O2": 416,
+        "-O1": 1
+      },
+      "link": {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261104-115711.log.link.rsp",
+          "sha256": "a60fa8a560c555a0c2822cc5d46c4d1175e3700fc29b8a860757de34f2a18716"
+        },
+        "optimization": [],
+        "assertions": "1",
+        "debug": "-g2",
+        "lto": false,
+        "switches": [
+          "-o",
+          "-m64",
+          "-sENVIRONMENT=web,worker,node",
+          "-sALLOW_MEMORY_GROWTH=1",
+          "-sASSERTIONS=1",
+          "-pthread",
+          "-sPTHREAD_POOL_SIZE=16",
+          "-sPTHREAD_POOL_SIZE_STRICT=2",
+          "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+          "--use-port=zlib",
+          "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+        ]
+      },
+      "rendererRevision": null,
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\web-runtime-snapshots\\lumen-off-current-dlmalloc-v59\\UEWebEngineThreads.js",
+          "sha256": "bad9c41c75f0083c33626dbb7ef5493743d85a72f09e0baa9e8da06ee4a924af"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\web-runtime-snapshots\\lumen-off-current-dlmalloc-v59\\UEWebEngineThreads.wasm",
+          "sha256": "29cb229d3e6b135e1887b08931935520730f8204ede559342f5aca83f236a35e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\web-runtime-snapshots\\lumen-off-current-dlmalloc-v59\\UEWebEngineThreads.target",
+          "sha256": "6605440813a6c78805b6cd6917c7a994f4462006d9d965185de004ece714a270"
+        }
+      ]
+    }
+  },
+  "allocatorPair": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v59-allocator-pair.json",
+    "sha256": "e8fcfd2bfa9d3e5dc8d21fd7b2a534d7602000e9961448ba0957e4b5641f442e"
+  },
+  "historicalFrozenAllocatorAudit": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v58-allocator-pair.json",
+    "sha256": "04e530c2ef93227adb49b721f66f888255beafdbb41f4cf87cc8f1f6f56b9e99"
+  },
+  "packages": {
+    "villa-native-metadata-v57": {
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\config-files.json",
+          "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\content-files.json",
+          "sha256": "24eeaa97c9a5d8bb98eb2d31b02c56e1f47d4908fe1bae96f2ece1135ee1d4fe"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\content.bin",
+          "sha256": "bb707f08ad34fcfc2ca0da99893edf063d733a9a4ddf75efc1cd4d63c800190d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\UEWebEngineThreads.js",
+          "sha256": "3be15beb0c2ad89b1f6dcdce7a7a78a2b513af95f6f9ffdea6b47b13851ec53f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-metadata-v57\\UEWebEngineThreads.wasm",
+          "sha256": "c490b161f4e45acfa35b2707539e9794149512a20189ef6af3cf25067d5c7a1c"
+        }
+      ],
+      "projectConfig": "408f1f254531be628c9d285b7ca65ef17a81c90d9dac1dcfcd56f2a82b326183",
+      "platformLumenAdmission": {
+        "SP_WEBGPU_SM5": false,
+        "SP_WEBGPU_ES31": false
+      }
+    },
+    "villa-lumen-off-mimalloc-v58": {
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-mimalloc-v58\\config-files.json",
+          "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-mimalloc-v58\\content-files.json",
+          "sha256": "24eeaa97c9a5d8bb98eb2d31b02c56e1f47d4908fe1bae96f2ece1135ee1d4fe"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-mimalloc-v58\\content.bin",
+          "sha256": "bb707f08ad34fcfc2ca0da99893edf063d733a9a4ddf75efc1cd4d63c800190d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-mimalloc-v58\\UEWebEngineThreads.js",
+          "sha256": "b368e7e8f3c5e4eb53a0dac4ed1c8b0a540b771c919df155e6b31c9791a2d5c2"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-mimalloc-v58\\UEWebEngineThreads.wasm",
+          "sha256": "e507da0b5a91d9e6c1fbb39515c0ca242a03ae15f1bce0c320b8a9e530be9ace"
+        }
+      ],
+      "projectConfig": "408f1f254531be628c9d285b7ca65ef17a81c90d9dac1dcfcd56f2a82b326183",
+      "platformLumenAdmission": {
+        "SP_WEBGPU_SM5": false,
+        "SP_WEBGPU_ES31": false
+      },
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-lumen-off-mimalloc-v58-package.json",
+        "sha256": "67a3f2a73f900ce17d94e1068e9709eb0bca244ccb794913d7bc4167c5bf710a"
+      }
+    },
+    "villa-lumen-off-current-mimalloc-v59": {
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\content-files.json",
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\content.bin",
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\UEWebEngineThreads.js",
+          "sha256": "97d5af24ece04c8c58efc639b75ee20e10ff37a988720fd503f2eb5e1a09c0a8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\UEWebEngineThreads.wasm",
+          "sha256": "6f3ea9f7ec2964f905b38ee4d4f1367dc953b327a42efc97cee83c18047eb17a"
+        }
+      ],
+      "projectConfig": "408f1f254531be628c9d285b7ca65ef17a81c90d9dac1dcfcd56f2a82b326183",
+      "platformLumenAdmission": {
+        "SP_WEBGPU_SM5": true,
+        "SP_WEBGPU_ES31": false
+      },
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-lumen-off-current-mimalloc-v59-package.json",
+        "sha256": "1b708e2af19df12f03ac90965e99815b75bff9427d33b764b33ccbf96930d2da"
+      }
+    },
+    "villa-lumen-off-current-dlmalloc-v59": {
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-dlmalloc-v59\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-dlmalloc-v59\\content-files.json",
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-dlmalloc-v59\\content.bin",
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-dlmalloc-v59\\UEWebEngineThreads.js",
+          "sha256": "bad9c41c75f0083c33626dbb7ef5493743d85a72f09e0baa9e8da06ee4a924af"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-dlmalloc-v59\\UEWebEngineThreads.wasm",
+          "sha256": "29cb229d3e6b135e1887b08931935520730f8204ede559342f5aca83f236a35e"
+        }
+      ],
+      "projectConfig": "408f1f254531be628c9d285b7ca65ef17a81c90d9dac1dcfcd56f2a82b326183",
+      "platformLumenAdmission": {
+        "SP_WEBGPU_SM5": true,
+        "SP_WEBGPU_ES31": false
+      },
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-lumen-off-current-dlmalloc-v59-package.json",
+        "sha256": "64c5ee02cc3bfbe6e47c6dba6191c410a229d366850f0863eabf493789d91dc5"
+      }
+    }
+  },
+  "cook": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-lumen-off-v59-desktop-cook-results.json",
+    "sha256": "030f83a1755a9c1475eed1d928003fb50bf15161524186cb2dfd6e95d2b45b55"
+  },
+  "shaderInventory": {
+    "report": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\web-project-lumen-off-v59-desktop-cook\\20261104-120159\\ShaderConversion\\inventory.json",
+      "sha256": "dfac600491886a2db8637c8e7f699992714f3f94f3e9a5d4f9e2183bc0b33d52"
+    },
+    "lumenRegisteredTypes": 186,
+    "lumenCompiledPermutations": 0,
+    "compiledTypes": 694,
+    "permutations": 3987
+  },
+  "correctness": {
+    "lumen-off-v58-views.json": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v58-views.json",
+        "sha256": "e11810eb35cb1acaa9f488a3f24270b676deacd77a931c81da0ff5a333e2d3e3"
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v58-views.png",
+        "sha256": "07ad900b939ab56d000b7e0946dbc3e618d39ee73edc99f3016ecb70c7c7f4ec"
+      },
+      "metadata": {
+        "nativeLoads": 205,
+        "domLoads": 0,
+        "nativeAllocatedBytes": 2477304,
+        "readMs": 17.380237579345703,
+        "native": true
+      },
+      "views": 6,
+      "windowMetrics": 4
+    },
+    "lumen-off-v59-views.json": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v59-views.json",
+        "sha256": "33ed5c49aa707fbf2b32eccf3d4e453e35149805764f6d6dcb66610dd955c2cc"
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v59-views.png",
+        "sha256": "7362159125a6cd58fed081b89233f3e06a74df3ff334ea81ac3e2e45f63bd0bb"
+      },
+      "metadata": {
+        "nativeLoads": 183,
+        "domLoads": 0,
+        "nativeAllocatedBytes": 2498890,
+        "readMs": 17.38429069519043,
+        "native": true
+      },
+      "views": 6,
+      "windowMetrics": 0
+    },
+    "gameplay": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-gameplay-lumen-off-v59-dlmalloc-native.json",
+        "sha256": "05874cc9431ce1b55a3524bf1d54b069a87506217cd14de2fabe43fffbc53a6b"
+      },
+      "travelCm": 157.06060791517172,
+      "turnDegrees": 36.430641174316406,
+      "bindings": {
+        "ready": 210003,
+        "pending": 170484,
+        "zero": 201428,
+        "bindGroupCacheHits": 3960857,
+        "bindGroupsCreated": 37905,
+        "cachedBindGroups": 552,
+        "bindingEntriesPrepared": 21159778,
+        "bindingEntriesReused": 37226,
+        "bindingEntriesValidated": 17369453,
+        "bindGroupFastHits": 3083822,
+        "uniformSnapshots": 468876,
+        "uniformWriteCalls": 1271,
+        "pipelineLayouts": 130,
+        "drawBundleHits": 0,
+        "drawBundlesCreated": 0,
+        "cachedDrawBundles": 0,
+        "resourceTableCommits": 435723,
+        "resourceTableBuffers": 471096,
+        "bindingRouteResolutions": 1173,
+        "manualVertexFetchEnabled": false,
+        "manualVertexFetchDraws": 0,
+        "vertexFetchFormatBuffers": 0,
+        "skipNoopRHITick": true,
+        "nativeStorageContracts": true,
+        "revalidateStorageDescriptors": true,
+        "noopRHITicksSkipped": 631,
+        "storageDescriptorRevalidations": 195515,
+        "nativeStorageContractUses": 6888297,
+        "storageContractRejectionChecks": 0,
+        "groupPreparationHits": 41150,
+        "groupPreparationValidated": 2704355,
+        "groupFrameMisses": 139289,
+        "groupAccessMisses": 517522,
+        "groupVersionMisses": 596446,
+        "groupTextureMisses": 0,
+        "groupCacheEnabled": true,
+        "draws": 2558476,
+        "indirectDraws": 68662,
+        "dispatches": 105799,
+        "sampleFrame": 630
+      }
+    }
+  },
+  "memory": {
+    "report": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-memory-lumen-off-v59-no-lumen.json",
+      "sha256": "50a7d84be1c8074cfd142a7c71bc7953053276e7c5822e78d9b463a676858f5f"
+    },
+    "samples": [
+      {
+        "label": "startup",
+        "frame": 91,
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "lighting": {
+          "reflectionMethod": 0,
+          "giMethod": 0,
+          "ssrIntensity": 100,
+          "ssrQuality": 50,
+          "ssrMaxRoughness": 0.6000000238418579,
+          "antiAliasing": 4,
+          "ssrShowFlag": true,
+          "frame": 91,
+          "shadowCacheEnabled": true
+        },
+        "liveBytes": {
+          "texture": 1090384783,
+          "buffer": 60266892
+        },
+        "lumenResources": [],
+        "wddm": {
+          "rows": [
+            {
+              "pid": 35164,
+              "name": "pid_35164_luid_0x00000000_0x000138E8_phys_0",
+              "dedicated": 1622745088,
+              "shared": 102969344,
+              "committed": 1726386176
+            }
+          ],
+          "dedicated": 1622745088,
+          "shared": 102969344,
+          "committed": 1726386176
+        }
+      },
+      {
+        "label": "room",
+        "frame": 1072,
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "lighting": {
+          "reflectionMethod": 0,
+          "giMethod": 0,
+          "ssrIntensity": 100,
+          "ssrQuality": 50,
+          "ssrMaxRoughness": 0.6000000238418579,
+          "antiAliasing": 4,
+          "ssrShowFlag": true,
+          "frame": 1072,
+          "shadowCacheEnabled": true
+        },
+        "liveBytes": {
+          "texture": 1239805391,
+          "buffer": 59948860
+        },
+        "lumenResources": [],
+        "wddm": {
+          "rows": [
+            {
+              "pid": 35164,
+              "name": "pid_35164_luid_0x00000000_0x000138E8_phys_0",
+              "dedicated": 1753477120,
+              "shared": 102735872,
+              "committed": 1856999424
+            }
+          ],
+          "dedicated": 1753477120,
+          "shared": 102735872,
+          "committed": 1856999424
+        }
+      },
+      {
+        "label": "wall",
+        "frame": 2127,
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "lighting": {
+          "reflectionMethod": 0,
+          "giMethod": 0,
+          "ssrIntensity": 100,
+          "ssrQuality": 50,
+          "ssrMaxRoughness": 0.6000000238418579,
+          "antiAliasing": 4,
+          "ssrShowFlag": true,
+          "frame": 2126,
+          "shadowCacheEnabled": true
+        },
+        "liveBytes": {
+          "texture": 1242598863,
+          "buffer": 60739156
+        },
+        "lumenResources": [],
+        "wddm": {
+          "rows": [
+            {
+              "pid": 35164,
+              "name": "pid_35164_luid_0x00000000_0x000138E8_phys_0",
+              "dedicated": 1799303168,
+              "shared": 101818368,
+              "committed": 1901793280
+            }
+          ],
+          "dedicated": 1799303168,
+          "shared": 101818368,
+          "committed": 1901793280
+        }
+      },
+      {
+        "label": "room-return",
+        "frame": 3182,
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "lighting": {
+          "reflectionMethod": 0,
+          "giMethod": 0,
+          "ssrIntensity": 100,
+          "ssrQuality": 50,
+          "ssrMaxRoughness": 0.6000000238418579,
+          "antiAliasing": 4,
+          "ssrShowFlag": true,
+          "frame": 3182,
+          "shadowCacheEnabled": true
+        },
+        "liveBytes": {
+          "texture": 1236929999,
+          "buffer": 59961564
+        },
+        "lumenResources": [],
+        "wddm": {
+          "rows": [
+            {
+              "pid": 35164,
+              "name": "pid_35164_luid_0x00000000_0x000138E8_phys_0",
+              "dedicated": 1790914560,
+              "shared": 102866944,
+              "committed": 1894567936
+            }
+          ],
+          "dedicated": 1790914560,
+          "shared": 102866944,
+          "committed": 1894567936
+        }
+      }
+    ],
+    "performanceAccepted": false
+  },
+  "fps": {
+    "lumen-off-v58-runtime-abba.json": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v58-runtime-abba.json",
+        "sha256": "5c0f4374aa75fac139398e4280d9168c666fa3d0bb713254f6e6e31b8bb186c7"
+      },
+      "summary": {
+        "villa-native-metadata-v57": {
+          "fps": 81.54372798031984,
+          "frameMs": {
+            "count": 3261,
+            "mean": 12.26539711744834,
+            "p50": 12.58500000089407,
+            "p95": 15.004999998956919,
+            "p99": 19.595000002533197,
+            "low1Fps": 34.15972258168643,
+            "over33ms": 11
+          }
+        },
+        "villa-lumen-off-mimalloc-v58": {
+          "fps": 80.03248289030947,
+          "frameMs": {
+            "count": 3200,
+            "mean": 12.494860937500489,
+            "p50": 12.725000001490116,
+            "p95": 16.179999999701977,
+            "p99": 20.309999998658895,
+            "low1Fps": 33.28461990539503,
+            "over33ms": 12
+          }
+        }
+      },
+      "changeFpsPercent": -1.853294088265267,
+      "changeLow1Percent": -2.561796789182813,
+      "rhiWorkMs": {
+        "villa-native-metadata-v57": 8.826933566802271,
+        "villa-lumen-off-mimalloc-v58": 9.00139442315182
+      },
+      "runs": [
+        {
+          "folder": "villa-native-metadata-v57",
+          "fps": 82.4191134372351,
+          "frameMs": {
+            "count": 1648,
+            "mean": 12.134129247572771,
+            "p50": 12.559999998658895,
+            "p95": 14.144999999552965,
+            "p99": 16.21499999985099,
+            "low1Fps": 37.052374620959974,
+            "over33ms": 4
+          },
+          "rhiWorkMs": 8.742465620116077,
+          "workload": {
+            "sampleFrames": 1650,
+            "drawsPerFrame": 2996.7642424242426,
+            "indirectDrawsPerFrame": 70.52363636363637,
+            "dispatchesPerFrame": 66.40787878787879
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1294,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-lumen-off-mimalloc-v58",
+          "fps": 80.01883266468069,
+          "frameMs": {
+            "count": 1600,
+            "mean": 12.49930312499986,
+            "p50": 12.740000000223517,
+            "p95": 15.984999999403954,
+            "p99": 20.199999999254942,
+            "low1Fps": 33.08793117732237,
+            "over33ms": 7
+          },
+          "rhiWorkMs": 8.999101822261585,
+          "workload": {
+            "sampleFrames": 1620,
+            "drawsPerFrame": 3040.1722222222224,
+            "indirectDrawsPerFrame": 75.83703703703704,
+            "dispatchesPerFrame": 66.4395061728395
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1135,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 4,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-lumen-off-mimalloc-v58",
+          "fps": 80.04613777385302,
+          "frameMs": {
+            "count": 1600,
+            "mean": 12.490418750001117,
+            "p50": 12.714999999850988,
+            "p95": 16.46499999985099,
+            "p99": 21.134999997913837,
+            "low1Fps": 33.54157058407403,
+            "over33ms": 5
+          },
+          "rhiWorkMs": 9.003687024042057,
+          "workload": {
+            "sampleFrames": 1590,
+            "drawsPerFrame": 3053.5584905660376,
+            "indirectDrawsPerFrame": 77.23018867924529,
+            "dispatchesPerFrame": 66.44779874213836
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1232,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-native-metadata-v57",
+          "fps": 80.6683578366434,
+          "frameMs": {
+            "count": 1613,
+            "mean": 12.399513329199694,
+            "p50": 12.629999998956919,
+            "p95": 15.734999999403954,
+            "p99": 19.940000001341105,
+            "low1Fps": 32.79479141595243,
+            "over33ms": 7
+          },
+          "rhiWorkMs": 8.911401513488467,
+          "workload": {
+            "sampleFrames": 1620,
+            "drawsPerFrame": 3041.6444444444446,
+            "indirectDrawsPerFrame": 75.73333333333333,
+            "dispatchesPerFrame": 66.43888888888888
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1231,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1319567360
+        }
+      ]
+    },
+    "lumen-off-v59-runtime-abba.json": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v59-runtime-abba.json",
+        "sha256": "ebff00d6e8062d3eff2bfe8ee06f55d6ad19f6199b00521a46cca150c90abef2"
+      },
+      "summary": {
+        "villa-native-metadata-v57": {
+          "fps": 77.54692801205877,
+          "frameMs": {
+            "count": 3101,
+            "mean": 12.89767655594979,
+            "p50": 12.615000002086163,
+            "p95": 18.20999999716878,
+            "p99": 24.239999998360872,
+            "low1Fps": 27.443547764784572,
+            "over33ms": 13
+          }
+        },
+        "villa-lumen-off-current-mimalloc-v59": {
+          "fps": 75.55790502399395,
+          "frameMs": {
+            "count": 3021,
+            "mean": 13.232002648130646,
+            "p50": 13.445000000298023,
+            "p95": 17.230000000447035,
+            "p99": 22.859999999403954,
+            "low1Fps": 31.408944457169326,
+            "over33ms": 10
+          }
+        }
+      },
+      "changeFpsPercent": -2.564928152609114,
+      "changeLow1Percent": 14.44928595373931,
+      "rhiWorkMs": {
+        "villa-native-metadata-v57": 9.423340712642208,
+        "villa-lumen-off-current-mimalloc-v59": 9.67003908016246
+      },
+      "runs": [
+        {
+          "folder": "villa-native-metadata-v57",
+          "fps": 84.07591225113816,
+          "frameMs": {
+            "count": 1681,
+            "mean": 11.895288518739111,
+            "p50": 12.375,
+            "p95": 14.059999998658895,
+            "p99": 15.910000000149012,
+            "low1Fps": 34.47646474301562,
+            "over33ms": 4
+          },
+          "rhiWorkMs": 8.618727733915966,
+          "workload": {
+            "sampleFrames": 1680,
+            "drawsPerFrame": 3037.802380952381,
+            "indirectDrawsPerFrame": 75.3,
+            "dispatchesPerFrame": 66.43630952380953
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1308,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-lumen-off-current-mimalloc-v59",
+          "fps": 76.23399086192184,
+          "frameMs": {
+            "count": 1524,
+            "mean": 13.11900918635239,
+            "p50": 13.41500000283122,
+            "p95": 16.75499999895692,
+            "p99": 22.08499999716878,
+            "low1Fps": 32.47049750872727,
+            "over33ms": 5
+          },
+          "rhiWorkMs": 9.562823967855484,
+          "workload": {
+            "sampleFrames": 1530,
+            "drawsPerFrame": 3078.302614379085,
+            "indirectDrawsPerFrame": 80.18039215686275,
+            "dispatchesPerFrame": 158.71764705882353
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1123,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-lumen-off-current-mimalloc-v59",
+          "fps": 74.88184115352864,
+          "frameMs": {
+            "count": 1497,
+            "mean": 13.347034068137367,
+            "p50": 13.495000001043081,
+            "p95": 17.575000002980232,
+            "p99": 23.780000001192093,
+            "low1Fps": 30.56514961716839,
+            "over33ms": 5
+          },
+          "rhiWorkMs": 9.777254192469435,
+          "workload": {
+            "sampleFrames": 1500,
+            "drawsPerFrame": 3078.8553333333334,
+            "indirectDrawsPerFrame": 80.512,
+            "dispatchesPerFrame": 158.758
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1152,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-native-metadata-v57",
+          "fps": 71.01892921846692,
+          "frameMs": {
+            "count": 1420,
+            "mean": 14.084306338028064,
+            "p50": 13.464999999850988,
+            "p95": 20.315000001341105,
+            "p99": 25.71499999985099,
+            "low1Fps": 23.753157190577454,
+            "over33ms": 9
+          },
+          "rhiWorkMs": 10.227953691368452,
+          "workload": {
+            "sampleFrames": 1440,
+            "drawsPerFrame": 3102.1097222222224,
+            "indirectDrawsPerFrame": 82.96666666666667,
+            "dispatchesPerFrame": 66.48194444444445
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1254,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        }
+      ]
+    },
+    "lumen-off-v59-runtime-repeat-baab.json": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v59-runtime-repeat-baab.json",
+        "sha256": "6f9495b413f4fbc3e5d24d5075ec1e4b62843c558a466e7b4cfbc605872069fc"
+      },
+      "summary": {
+        "villa-lumen-off-current-mimalloc-v59": {
+          "fps": 74.54777142648759,
+          "frameMs": {
+            "count": 2981,
+            "mean": 13.414671251258516,
+            "p50": 13.489999998360872,
+            "p95": 17.88000000268221,
+            "p99": 23.935000002384186,
+            "low1Fps": 29.901325625413858,
+            "over33ms": 12
+          }
+        },
+        "villa-native-metadata-v57": {
+          "fps": 79.65023873202944,
+          "frameMs": {
+            "count": 3185,
+            "mean": 12.55562166404944,
+            "p50": 12.739999998360872,
+            "p95": 16.189999997615814,
+            "p99": 20.720000002533197,
+            "low1Fps": 33.53787946291175,
+            "over33ms": 10
+          }
+        }
+      },
+      "changeFpsPercent": -6.406091666226255,
+      "changeLow1Percent": -10.843123941450783,
+      "rhiWorkMs": {
+        "villa-lumen-off-current-mimalloc-v59": 9.761531379956967,
+        "villa-native-metadata-v57": 9.091124151127364
+      },
+      "runs": [
+        {
+          "folder": "villa-lumen-off-current-mimalloc-v59",
+          "fps": 74.00354427508242,
+          "frameMs": {
+            "count": 1480,
+            "mean": 13.514881756758268,
+            "p50": 13.559999998658895,
+            "p95": 17.884999997913837,
+            "p99": 23.935000002384186,
+            "low1Fps": 28.050753163058534,
+            "over33ms": 7
+          },
+          "rhiWorkMs": 9.786363552745172,
+          "workload": {
+            "sampleFrames": 1500,
+            "drawsPerFrame": 3104.3166666666666,
+            "indirectDrawsPerFrame": 82.528,
+            "dispatchesPerFrame": 159.134
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1160,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 5,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-native-metadata-v57",
+          "fps": 80.34156413575975,
+          "frameMs": {
+            "count": 1606,
+            "mean": 12.44743150684885,
+            "p50": 12.634999997913837,
+            "p95": 16.28499999642372,
+            "p99": 20.719999998807907,
+            "low1Fps": 32.15616547218885,
+            "over33ms": 6
+          },
+          "rhiWorkMs": 8.904639726554525,
+          "workload": {
+            "sampleFrames": 1620,
+            "drawsPerFrame": 3057.2549382716047,
+            "indirectDrawsPerFrame": 77.70370370370371,
+            "dispatchesPerFrame": 66.45061728395062
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1252,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-native-metadata-v57",
+          "fps": 78.95919783451548,
+          "frameMs": {
+            "count": 1579,
+            "mean": 12.665661811271825,
+            "p50": 12.885000001639128,
+            "p95": 16.12000000104308,
+            "p99": 20.41999999806285,
+            "low1Fps": 35.858761303590875,
+            "over33ms": 4
+          },
+          "rhiWorkMs": 9.277608575700205,
+          "workload": {
+            "sampleFrames": 1590,
+            "drawsPerFrame": 3069.166037735849,
+            "indirectDrawsPerFrame": 79.02641509433963,
+            "dispatchesPerFrame": 66.45849056603774
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1212,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-lumen-off-current-mimalloc-v59",
+          "fps": 75.0922842677926,
+          "frameMs": {
+            "count": 1501,
+            "mean": 13.31586275816083,
+            "p50": 13.449999999254942,
+            "p95": 17.79000000283122,
+            "p99": 23.54499999806285,
+            "low1Fps": 32.513716723898455,
+            "over33ms": 5
+          },
+          "rhiWorkMs": 9.736699207168762,
+          "workload": {
+            "sampleFrames": 1500,
+            "drawsPerFrame": 3106.6106666666665,
+            "indirectDrawsPerFrame": 82.976,
+            "dispatchesPerFrame": 159.20333333333335
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1165,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        }
+      ]
+    },
+    "lumen-off-v59-allocator-abba.json": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v59-allocator-abba.json",
+        "sha256": "fb7b1f4f883a1d464c5e3ecf2fb5920218e125461ab090d11632a1fa6974b98e"
+      },
+      "summary": {
+        "villa-lumen-off-current-dlmalloc-v59": {
+          "fps": 58.20758865504377,
+          "frameMs": {
+            "count": 2327,
+            "mean": 17.177230339490926,
+            "p50": 17.524999998509884,
+            "p95": 24.990000002086163,
+            "p99": 30.069999996572733,
+            "low1Fps": 24.791211515590252,
+            "over33ms": 20
+          }
+        },
+        "villa-lumen-off-current-mimalloc-v59": {
+          "fps": 75.82681206093895,
+          "frameMs": {
+            "count": 3033,
+            "mean": 13.189360369271988,
+            "p50": 13.455000001937151,
+            "p95": 16.989999998360872,
+            "p99": 22.66499999910593,
+            "low1Fps": 29.918303728439692,
+            "over33ms": 14
+          }
+        }
+      },
+      "changeFpsPercent": 30.269632900122634,
+      "changeLow1Percent": 20.681087770257655,
+      "rhiWorkMs": {
+        "villa-lumen-off-current-dlmalloc-v59": 12.671559971257926,
+        "villa-lumen-off-current-mimalloc-v59": 9.575954449463339
+      },
+      "runs": [
+        {
+          "folder": "villa-lumen-off-current-dlmalloc-v59",
+          "fps": 58.16902499419493,
+          "frameMs": {
+            "count": 1163,
+            "mean": 17.185920034391888,
+            "p50": 17.57999999821186,
+            "p95": 24.675000000745058,
+            "p99": 30.069999996572733,
+            "low1Fps": 24.056773986953342,
+            "over33ms": 10
+          },
+          "rhiWorkMs": 12.695548460655605,
+          "workload": {
+            "sampleFrames": 1170,
+            "drawsPerFrame": 3195.7358974358976,
+            "indirectDrawsPerFrame": 93.8974358974359,
+            "dispatchesPerFrame": 161.191452991453
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 914,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 906297344
+        },
+        {
+          "folder": "villa-lumen-off-current-mimalloc-v59",
+          "fps": 76.48095624189406,
+          "frameMs": {
+            "count": 1529,
+            "mean": 13.076190320471579,
+            "p50": 13.384999997913837,
+            "p95": 16.61999999731779,
+            "p99": 21.890000000596046,
+            "low1Fps": 30.805367835089008,
+            "over33ms": 8
+          },
+          "rhiWorkMs": 9.458562907050638,
+          "workload": {
+            "sampleFrames": 1530,
+            "drawsPerFrame": 3087.0797385620913,
+            "indirectDrawsPerFrame": 80.18039215686275,
+            "dispatchesPerFrame": 158.70980392156864
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1167,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-lumen-off-current-mimalloc-v59",
+          "fps": 75.1731730171854,
+          "frameMs": {
+            "count": 1504,
+            "mean": 13.304411569149531,
+            "p50": 13.519999999552965,
+            "p95": 17.574999999254942,
+            "p99": 22.66499999910593,
+            "low1Fps": 29.686804215271756,
+            "over33ms": 6
+          },
+          "rhiWorkMs": 9.693345991876038,
+          "workload": {
+            "sampleFrames": 1500,
+            "drawsPerFrame": 3091.0666666666666,
+            "indirectDrawsPerFrame": 81.184,
+            "dispatchesPerFrame": 158.88733333333334
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1156,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 1521025024
+        },
+        {
+          "folder": "villa-lumen-off-current-dlmalloc-v59",
+          "fps": 58.24617031429793,
+          "frameMs": {
+            "count": 1164,
+            "mean": 17.168548109963588,
+            "p50": 17.439999997615814,
+            "p95": 25.024999998509884,
+            "p99": 29.33500000089407,
+            "low1Fps": 25.571905000137438,
+            "over33ms": 10
+          },
+          "rhiWorkMs": 12.647571481860247,
+          "workload": {
+            "sampleFrames": 1170,
+            "drawsPerFrame": 3168.3025641025642,
+            "indirectDrawsPerFrame": 90.88205128205128,
+            "dispatchesPerFrame": 160.65897435897435
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 930,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "wasmCapacityBytes": 906231808
+        }
+      ]
+    }
+  },
+  "gpuDiagnostic": {
+    "report": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-v59-pass-diagnostic.json",
+      "sha256": "024c7869c268c53739798117ceaa7e8755c1c1b41d345bd53d0b1a51c1308d0a"
+    },
+    "performanceAccepted": false,
+    "runs": [
+      {
+        "folder": "villa-native-metadata-v57",
+        "meanPassGpuMs": 4.54382933333333,
+        "meanComputeGpuMs": 1.6820906666666666,
+        "meanComputeEncoderCpuMs": 0.4503580729166667,
+        "dispatchCounts": [
+          67,
+          67,
+          67
+        ]
+      },
+      {
+        "folder": "villa-lumen-off-current-mimalloc-v59",
+        "meanPassGpuMs": 4.434602666666663,
+        "meanComputeGpuMs": 2.009770666666667,
+        "meanComputeEncoderCpuMs": 0.9593098958333334,
+        "dispatchCounts": [
+          175,
+          175,
+          144
+        ]
+      }
+    ]
+  },
+  "environment": {
+    "reports": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-allocator-environment.jsonl",
+        "sha256": "eb28cf0855dbf4b5d0149aab4327c4102b359d826823bdbcee22add75936658d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\lumen-off-allocator-repeat-environment.jsonl",
+        "sha256": "5622b87bf614454da1c04eeb89bc574fbc6d454f202f3589504a7d7333eb17aa"
+      }
+    ],
+    "measuredSamples": 63,
+    "blockers": [],
+    "backgroundCPU": {
+      "RuntimeBroker": 0.36647593243525106,
+      "python": 0,
+      "ChatGPT": 0.19890495265177,
+      "cloudmusic": 0.19858664297501538,
+      "SDKDNS": 0,
+      "pwsh": 0
+    }
+  },
+  "boundary": "Fixed spawn, full threading, project quality settings. ABBA wall-time FPS uses completed RHI viewport presents; low1 is 1000 / mean of slowest 1% frame intervals. Current-package comparison includes Cook, platform admission and compute TLV changes; it cannot isolate Lumen alone. The first current-package ABBA has a 84-to-71 FPS old-baseline drift and is retained, with a separate reverse-order repeat to test reproducibility. Frozen comparison retains three historical renderer compatibility files. Historical v58 object audit preceded replacement of shared intermediates and is preserved as historical evidence, not revalidated against current objects. Correctness/memory/GPU probes and all build/Cook/hash work are outside FPS windows. GPU diagnostics contain three instrumented frames per package; compute pipeline names are absent, so TLV attribution is a source-based inference, not isolated timing proof. User background apps retained; no game/build/Cook blocker observed in measured windows. WASM capacity is not live memory or RSS."
+}

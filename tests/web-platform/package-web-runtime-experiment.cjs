@@ -22,7 +22,7 @@ const proof = evidence.packages ? Object.values(evidence.packages).find(x => x.f
 assert(evidence.pass && proof && Object.values(proof.files).every(valid));
 const trace = process.argv.includes('--trace');
 const simd = process.argv.includes('--simd');assert(!(simd&&trace));
-const buildFile = path.join(results, `web-engine-full-thread${simd ? '-simd' : trace ? '-trace' : ''}-build-results.json`), build = read(buildFile);
+const buildFile = option('build-report') ? path.resolve(option('build-report')) : path.join(results, `web-engine-full-thread${simd ? '-simd' : trace ? '-trace' : ''}-build-results.json`), build = read(buildFile);
 assert(build.pass && build.threads && build.buildSucceeded && build.exitCode === 0 &&
   (build.fullLinkAttempted || build.fullLinkVerified) && build.sourceFiles.every(valid) && build.products.every(valid));
 assert(Boolean(build.trace) === trace);
@@ -96,7 +96,9 @@ for (const name of ['content.bin', 'content-files.json', 'config-files.json'])
 const products = fs.readdirSync(output).filter(f => f !== 'asset-versions.json').map(f => audit(path.join(output, f)));
 products.push(writeVersions(output, products));
 const buildSnapshot = path.join(results, outputFolder + '-build.json');
-fs.copyFileSync(buildFile, buildSnapshot);
+if (path.resolve(buildFile).toLowerCase() !== path.resolve(buildSnapshot).toLowerCase()) {
+  fs.copyFileSync(buildFile, buildSnapshot);
+}
 const report = {date: new Date().toISOString(), pass: true, baseline, output, trace, psoPrecache, precacheConcurrency, startupProfile, threadingTest,
   sources: [__filename, ...helpers.map(f => path.join(__dirname, f)), ...(startupProfile ? [startupProfileSource] : [])].map(audit),
   build: audit(buildSnapshot), baselineEvidence: audit(evidenceFile), baselineCookPayload: proof.files,

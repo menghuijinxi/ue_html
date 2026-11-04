@@ -69,6 +69,7 @@ if ((Get-Item -LiteralPath (Split-Path $taskRenderUtils)).LinkType -or
     throw 'RenderCore overlay must be a local build-host copy.'
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp') -Destination $taskRenderUtils -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Public/WebShaderPlatform.h') -Destination (Join-Path $taskHost 'Source/Runtime/RenderCore/Public/WebShaderPlatform.h') -Force
 if ($RendererRevision) {
     $taskRendererSnapshotText = & node (Join-Path $PSScriptRoot 'materialize-web-renderer-revision.cjs') $RendererRevision
     if ($LASTEXITCODE -ne 0) { throw 'Failed to select the renderer revision matching the Cook' }
