@@ -21,10 +21,12 @@ const proof = evidence.packages ? Object.values(evidence.packages).find(x => x.f
   evidence.products?.every(valid) ? {files: evidence.products} : null;
 assert(evidence.pass && proof && Object.values(proof.files).every(valid));
 const trace = process.argv.includes('--trace');
-const buildFile = path.join(results, `web-engine-full-thread${trace ? '-trace' : ''}-build-results.json`), build = read(buildFile);
+const simd = process.argv.includes('--simd');assert(!(simd&&trace));
+const buildFile = path.join(results, `web-engine-full-thread${simd ? '-simd' : trace ? '-trace' : ''}-build-results.json`), build = read(buildFile);
 assert(build.pass && build.threads && build.buildSucceeded && build.exitCode === 0 &&
   (build.fullLinkAttempted || build.fullLinkVerified) && build.sourceFiles.every(valid) && build.products.every(valid));
 assert(Boolean(build.trace) === trace);
+assert(Boolean(build.simd) === simd);
 assert(build.objects.every(x => [x.object, x.response, x.definitions, x.source].every(valid)));
 assert(!fs.existsSync(output), 'Use a fresh experiment folder to preserve prior evidence');
 fs.mkdirSync(output, {recursive: true});
@@ -36,7 +38,7 @@ for (const f of fs.readdirSync(base)) if (fs.statSync(path.join(base, f)).isFile
     try {fs.linkSync(source,destination);} catch {fs.copyFileSync(source,destination);}
   } else fs.copyFileSync(source,destination);
 }
-const runtime = trace ? 'UEWebEngineThreadsTrace' : 'UEWebEngineThreads';
+const runtime = simd ? 'UEWebEngineThreadsSIMD' : trace ? 'UEWebEngineThreadsTrace' : 'UEWebEngineThreads';
 const runtimeNames = [runtime + '.js', runtime + '.wasm'];
 for (const name of runtimeNames) fs.copyFileSync(build.products.find(x => path.basename(x.file) === name).file, path.join(output, name));
 const helpers = ['web-engine-host.js', 'web-engine-worker.js', 'web-content-io.js', 'web-content-worker.js'];
@@ -65,15 +67,21 @@ for (const name of [...runtimeNames, ...helpers]) assets.versions[name] = audit(
 assets.wasm = metadata(path.join(output, runtimeNames[1]), runtimeNames[1]);
 html = html.replace(match[0], 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
 const psoPrecache = process.argv.includes('--pso-precache');
+const threadingTest = option('threading-test') || null;
+assert(threadingTest === null || ['full', 'render-serial', 'single'].includes(threadingTest));
 const precacheConcurrency = option('pso-concurrency') === undefined ? null : Number(option('pso-concurrency'));
 assert(precacheConcurrency === null || (Number.isInteger(precacheConcurrency) && precacheConcurrency >= 1 && precacheConcurrency <= 8));
-if (psoPrecache || precacheConcurrency !== null) {
+if (psoPrecache || precacheConcurrency !== null || threadingTest !== null) {
   const args = html.match(/arguments: (\[[^\n]+\]),/);
   assert(args);
   // Historical hand-authored pages use single-quoted argument literals.
   // Accept only plain argument strings; do not evaluate page source as code.
   assert(/^\[\s*(?:['"][a-zA-Z0-9_./=:-]+['"]\s*,?\s*)*\]$/.test(args[1]));
   const values = [...args[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(match=>match[1]);
+  if (threadingTest !== null) {
+    assert(!values.some(value => value.startsWith('-WebThreadingTest=')));
+    values.push('-WebThreadingTest=' + threadingTest);
+  }
   if (psoPrecache && !values.includes('-WebPSOPrecacheTest')) values.push('-WebPSOPrecacheTest');
   if (precacheConcurrency !== null) {
     assert(values.includes('-WebPSOPrecacheTest'), 'Concurrency variant requires PSO precaching');
@@ -89,7 +97,7 @@ const products = fs.readdirSync(output).filter(f => f !== 'asset-versions.json')
 products.push(writeVersions(output, products));
 const buildSnapshot = path.join(results, outputFolder + '-build.json');
 fs.copyFileSync(buildFile, buildSnapshot);
-const report = {date: new Date().toISOString(), pass: true, baseline, output, trace, psoPrecache, precacheConcurrency, startupProfile,
+const report = {date: new Date().toISOString(), pass: true, baseline, output, trace, psoPrecache, precacheConcurrency, startupProfile, threadingTest,
   sources: [__filename, ...helpers.map(f => path.join(__dirname, f)), ...(startupProfile ? [startupProfileSource] : [])].map(audit),
   build: audit(buildSnapshot), baselineEvidence: audit(evidenceFile), baselineCookPayload: proof.files,
   projectQualityOverrides: [], products,

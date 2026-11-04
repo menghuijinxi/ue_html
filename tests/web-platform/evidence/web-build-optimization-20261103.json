@@ -1,0 +1,1298 @@
+{
+  "date": "2026-11-03T08:41:50.472Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-web-build-optimization.cjs",
+    "sha256": "db65935bee1e5a8afbd69502840db9255e10383c5d92fff6189c809bc4727305"
+  },
+  "experiments": [
+    {
+      "folder": "villa-bridge-extras-v38",
+      "audit": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v38-compile-optimization-audit.json",
+        "sha256": "d589608f9ebd9070cc1c8fcd018ca14db99eb38e6c405196d42776fb12fed0e3"
+      },
+      "level": [],
+      "renderingAccepted": true,
+      "linkSnapshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v38-original-link.rsp",
+        "sha256": "a60fa8a560c555a0c2822cc5d46c4d1175e3700fc29b8a860757de34f2a18716"
+      },
+      "objects": 417,
+      "compileCounts": {
+        "-O2": 416,
+        "-O1": 1
+      },
+      "link": {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "a60fa8a560c555a0c2822cc5d46c4d1175e3700fc29b8a860757de34f2a18716"
+        },
+        "optimization": [],
+        "assertions": "1",
+        "debug": "-g2",
+        "lto": false,
+        "switches": [
+          "-o",
+          "-m64",
+          "-sENVIRONMENT=web,worker,node",
+          "-sALLOW_MEMORY_GROWTH=1",
+          "-sASSERTIONS=1",
+          "-pthread",
+          "-sPTHREAD_POOL_SIZE=16",
+          "-sPTHREAD_POOL_SIZE_STRICT=2",
+          "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+          "--use-port=zlib",
+          "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+        ]
+      },
+      "runtime": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-bridge-extras-v38\\UEWebEngineThreads.js",
+          "sha256": "6650c36bc29553485462964192ec1dde233266bb1b582c222edb98ce734c17f7"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-bridge-extras-v38\\UEWebEngineThreads.wasm",
+          "sha256": "d4504ac442a03395b80dbfc0553b96c0410b8a4b4b780ab045ce15a3cfa2aa98"
+        }
+      ]
+    },
+    {
+      "folder": "villa-final-link-o2-v39",
+      "audit": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v39-compile-optimization-audit.json",
+        "sha256": "8021fd5dec55ecd6b914e465f88897d82dbd8f783d848da5b3718761ed85b8ab"
+      },
+      "level": [
+        "-O2"
+      ],
+      "renderingAccepted": false,
+      "linkSnapshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261103-162029.log.link.rsp",
+        "sha256": "f2e747fb83d1321931bd01ec6541097aba54a6ae1be457f2c5a4647a234a5524"
+      },
+      "objects": 417,
+      "compileCounts": {
+        "-O2": 416,
+        "-O1": 1
+      },
+      "link": {
+        "source": {
+          "sha256": "f2e747fb83d1321931bd01ec6541097aba54a6ae1be457f2c5a4647a234a5524",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp"
+        },
+        "optimization": [
+          "-O2"
+        ],
+        "assertions": "1",
+        "debug": "-g2",
+        "lto": false,
+        "switches": [
+          "-o",
+          "-m64",
+          "-sENVIRONMENT=web,worker,node",
+          "-sALLOW_MEMORY_GROWTH=1",
+          "-sASSERTIONS=1",
+          "-pthread",
+          "-sPTHREAD_POOL_SIZE=16",
+          "-sPTHREAD_POOL_SIZE_STRICT=2",
+          "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+          "--use-port=zlib",
+          "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 -O2 --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+        ]
+      },
+      "runtime": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-final-link-o2-v39\\UEWebEngineThreads.js",
+          "sha256": "e88a41af024ae7f676d1126846bb025f2bc143d277a14ed6163f4012c54a8a03"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-final-link-o2-v39\\UEWebEngineThreads.wasm",
+          "sha256": "6ca8adc3d63c43a88a031235807328760f50b32d18541ee4517216d87d717b78"
+        }
+      ]
+    },
+    {
+      "folder": "villa-final-link-o1-v40",
+      "audit": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v40-compile-optimization-audit.json",
+        "sha256": "b5d8c4a11ba691a01d1f0900ec56cd0e7c0526beabeed5fbb63088c09e90323b"
+      },
+      "level": [
+        "-O1"
+      ],
+      "renderingAccepted": true,
+      "linkSnapshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261103-163205.log.link.rsp",
+        "sha256": "7b9254833497cb6b809d98f6237e0061ceb5f48d5840b4a1a76ea44dc55fa381"
+      },
+      "objects": 417,
+      "compileCounts": {
+        "-O2": 416,
+        "-O1": 1
+      },
+      "link": {
+        "source": {
+          "sha256": "7b9254833497cb6b809d98f6237e0061ceb5f48d5840b4a1a76ea44dc55fa381",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp"
+        },
+        "optimization": [
+          "-O1"
+        ],
+        "assertions": "1",
+        "debug": "-g2",
+        "lto": false,
+        "switches": [
+          "-o",
+          "-m64",
+          "-sENVIRONMENT=web,worker,node",
+          "-sALLOW_MEMORY_GROWTH=1",
+          "-sASSERTIONS=1",
+          "-pthread",
+          "-sPTHREAD_POOL_SIZE=16",
+          "-sPTHREAD_POOL_SIZE_STRICT=2",
+          "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+          "--use-port=zlib",
+          "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 -O1 --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+        ]
+      },
+      "runtime": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-final-link-o1-v40\\UEWebEngineThreads.js",
+          "sha256": "da6a3327f841f5b5d5e890ed21b480e4824e2e466b7ee5b2b8bbc8a29e50d186"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-final-link-o1-v40\\UEWebEngineThreads.wasm",
+          "sha256": "19350d558ebf6b5638ac3d8b86335453ea5f103fe9eba6b3b886a173256407fe"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o2-v39-abba.json",
+        "sha256": "f286cb87d5ad2d246e2e2086e5a0d5c82f31527083ad45407f5a01c9d6ca131a"
+      },
+      "renderingComparable": false,
+      "performanceGainAccepted": false,
+      "causalAttribution": false,
+      "reason": "Rejected: same camera/config but visibly different lighting/shadows and sharply reduced drawing workload. Report.pass only checks automated run completion, not image equivalence.",
+      "summary": {
+        "villa-bridge-extras-v38": {
+          "fps": 54.724666987529254,
+          "frameMs": {
+            "count": 2189,
+            "mean": 18.272702147095863,
+            "p50": 18.609999999403954,
+            "p95": 26.71000000834465,
+            "p99": 32.33500000834465,
+            "low1Fps": 26.562990509806166,
+            "over33ms": 16
+          }
+        },
+        "villa-final-link-o2-v39": {
+          "fps": 77.1799139274073,
+          "frameMs": {
+            "count": 3086,
+            "mean": 12.954611147113496,
+            "p50": 13.435000002384186,
+            "p95": 19.399999991059303,
+            "p99": 23.49499998986721,
+            "low1Fps": 32.974163148339684,
+            "over33ms": 7
+          }
+        }
+      },
+      "runs": [
+        {
+          "index": 1,
+          "folder": "villa-bridge-extras-v38",
+          "started": "2026-11-03T08:26:41.632Z",
+          "fps": 56.636821625470034,
+          "low1": 28.504917097916927,
+          "rhiWorkMs": 13.316068909996611,
+          "workload": {
+            "sampleFrames": 1140,
+            "drawsPerFrame": 3140.3377192982457,
+            "indirectDrawsPerFrame": 88.21052631578948,
+            "dispatchesPerFrame": 66.51315789473684
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 918,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 55,
+                "low": 26.816840976134127,
+                "frameMs": 19.270000000000437,
+                "samples": 283,
+                "seconds": 5,
+                "p99Ms": 30.169999999998254,
+                "maxMs": 50.76499999999942,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 55,
+                "low": 26.443367121385567,
+                "frameMs": 14.054999992251396,
+                "samples": 285,
+                "seconds": 5,
+                "p99Ms": 29.474999994039536,
+                "maxMs": 52.695000007748604,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 267,
+                "low": 121.00259291270832,
+                "frameMs": 3.5200000000004366,
+                "samples": 1312,
+                "seconds": 5,
+                "p99Ms": 4.549999999999272,
+                "maxMs": 30.169999999998254,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 908,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 26343.21
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 55,
+                "low": 27.764923646461096,
+                "frameMs": 18.04500000000553,
+                "samples": 288,
+                "seconds": 5,
+                "p99Ms": 29.845000000001164,
+                "maxMs": 40.94999999999709,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 55,
+                "low": 28.307227777711766,
+                "frameMs": 11.964999988675117,
+                "samples": 288,
+                "seconds": 5,
+                "p99Ms": 30.67000000178814,
+                "maxMs": 37.79999999701977,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 257,
+                "low": 138.923344083352,
+                "frameMs": 3.5,
+                "samples": 1312,
+                "seconds": 5,
+                "p99Ms": 4.529999999998836,
+                "maxMs": 30.729999999995925,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 2046,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 46487.635
+            }
+          }
+        },
+        {
+          "index": 2,
+          "folder": "villa-final-link-o2-v39",
+          "started": "2026-11-03T08:27:30.606Z",
+          "fps": 76.68054231237682,
+          "low1": 31.940909317002017,
+          "rhiWorkMs": 9.876552274671651,
+          "workload": {
+            "sampleFrames": 1530,
+            "drawsPerFrame": 1273.7228758169936,
+            "indirectDrawsPerFrame": 5.215686274509804,
+            "dispatchesPerFrame": 66.5359477124183
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 1142,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 74,
+                "low": 31.399638904152745,
+                "frameMs": 7.025000000001455,
+                "samples": 372,
+                "seconds": 5,
+                "p99Ms": 29.654999999998836,
+                "maxMs": 34.06999999999971,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 74,
+                "low": 32.10144055874772,
+                "frameMs": 8.090000003576279,
+                "samples": 372,
+                "seconds": 5,
+                "p99Ms": 28.844999998807907,
+                "maxMs": 35.34499999880791,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 264,
+                "low": 158.13848412965615,
+                "frameMs": 3.529999999998836,
+                "samples": 1320,
+                "seconds": 5,
+                "p99Ms": 4.525000000001455,
+                "maxMs": 22.039999999997235,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1132,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 30777.18
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 80,
+                "low": 28.233633315688184,
+                "frameMs": 11.150000000001455,
+                "samples": 382,
+                "seconds": 5,
+                "p99Ms": 22.334999999999127,
+                "maxMs": 71.72499999999854,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 81,
+                "low": 32.32715076590511,
+                "frameMs": 7.449999988079071,
+                "samples": 384,
+                "seconds": 5,
+                "p99Ms": 22.935000002384186,
+                "maxMs": 49.64000000059605,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 264,
+                "low": 141.0011078658566,
+                "frameMs": 3.655000000006112,
+                "samples": 1301,
+                "seconds": 5,
+                "p99Ms": 4.5350000000034925,
+                "maxMs": 26.02499999999418,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 2657,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 50679.495
+            }
+          }
+        },
+        {
+          "index": 3,
+          "folder": "villa-final-link-o2-v39",
+          "started": "2026-11-03T08:28:23.747Z",
+          "fps": 77.67927905233825,
+          "low1": 34.693988183705486,
+          "rhiWorkMs": 9.795630914057236,
+          "workload": {
+            "sampleFrames": 1560,
+            "drawsPerFrame": 1274.4012820512821,
+            "indirectDrawsPerFrame": 5.2153846153846155,
+            "dispatchesPerFrame": 66.53589743589744
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 1146,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 67,
+                "low": 32.15434083601249,
+                "frameMs": 35.24499999999898,
+                "samples": 369,
+                "seconds": 5,
+                "p99Ms": 27.25500000000102,
+                "maxMs": 35.24499999999898,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 71,
+                "low": 40.05808422642608,
+                "frameMs": 16.400000005960464,
+                "samples": 373,
+                "seconds": 5,
+                "p99Ms": 23.125,
+                "maxMs": 26.45999999344349,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 255,
+                "low": 161.99016488284775,
+                "frameMs": 3.125,
+                "samples": 1313,
+                "seconds": 5,
+                "p99Ms": 4.525000000001455,
+                "maxMs": 24.00500000000102,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1143,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 30170.735
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 78,
+                "low": 28.237619568670592,
+                "frameMs": 8.00499999999738,
+                "samples": 370,
+                "seconds": 5,
+                "p99Ms": 27.474999999998545,
+                "maxMs": 47.36000000000058,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 78,
+                "low": 31.67313326306386,
+                "frameMs": 8.885000005364418,
+                "samples": 371,
+                "seconds": 5,
+                "p99Ms": 25.350000008940697,
+                "maxMs": 44.775000005960464,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 267,
+                "low": 135.76415826220574,
+                "frameMs": 4.004999999997381,
+                "samples": 1315,
+                "seconds": 5,
+                "p99Ms": 4.525000000001455,
+                "maxMs": 36.724999999998545,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 2690,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 50072.265
+            }
+          }
+        },
+        {
+          "index": 4,
+          "folder": "villa-bridge-extras-v38",
+          "started": "2026-11-03T08:29:16.204Z",
+          "fps": 52.81176428264835,
+          "low1": 25.670046555201534,
+          "rhiWorkMs": 14.397903783431905,
+          "workload": {
+            "sampleFrames": 1050,
+            "drawsPerFrame": 3163.684761904762,
+            "indirectDrawsPerFrame": 90.64,
+            "dispatchesPerFrame": 66.52761904761904
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 830,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 52,
+                "low": 21.301523058898844,
+                "frameMs": 11.034999999999854,
+                "samples": 259,
+                "seconds": 5,
+                "p99Ms": 34.05500000000029,
+                "maxMs": 66.15999999999985,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 51,
+                "low": 21.95470013366352,
+                "frameMs": 11.924999997019768,
+                "samples": 259,
+                "seconds": 5,
+                "p99Ms": 32.105000004172325,
+                "maxMs": 65.7199999988079,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 265,
+                "low": 140.83798601678615,
+                "frameMs": 3.5050000000010186,
+                "samples": 1310,
+                "seconds": 5,
+                "p99Ms": 4.525000000001455,
+                "maxMs": 23.05500000000029,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 822,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 31260.95
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 51,
+                "low": 28.604118993135724,
+                "frameMs": 28.290000000000873,
+                "samples": 263,
+                "seconds": 5,
+                "p99Ms": 33.604999999995925,
+                "maxMs": 37.57499999999709,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 53,
+                "low": 29.31261908285645,
+                "frameMs": 12.909999996423721,
+                "samples": 264,
+                "seconds": 5,
+                "p99Ms": 34.01500000059605,
+                "maxMs": 34.28499999642372,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 265,
+                "low": 165.42597187757568,
+                "frameMs": 3.1850000000049477,
+                "samples": 1314,
+                "seconds": 5,
+                "p99Ms": 4.5350000000034925,
+                "maxMs": 8.525000000001455,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1885,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 51395.135
+            }
+          }
+        }
+      ],
+      "screenshots": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o2-v39-abba-1-full.png",
+          "sha256": "fe5e7ed595c9b9442e6f67b68907949a9e3fbff9e4738f57bcf99b6bd3a033e5"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o2-v39-abba-2-full.png",
+          "sha256": "1a2c8e5a423020c9e47037218d026d1e126ce39a721a17904168dfe11b00a4b1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o2-v39-abba-3-full.png",
+          "sha256": "65a2e2ff449347037051dc73c700caf1fd3e21362a9d94753040aba64b1a8864"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o2-v39-abba-4-full.png",
+          "sha256": "55431775e29b67f273ed6492107773e6a3937d4d18625d0fe14c23fb6fe59f97"
+        }
+      ]
+    },
+    {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o1-v40-abba.json",
+        "sha256": "b7b417951d1921de9f465b664978ddfec04e150a0246e23ab5210a8804a5b6fd"
+      },
+      "renderingComparable": true,
+      "performanceGainAccepted": false,
+      "causalAttribution": false,
+      "reason": "Six-view continuity/error checks and manual screenshot review passed. Baseline itself drifted from 56.98 to 42.50 FPS; background activity prevents attributing the measured difference solely to optimization. No usable gain accepted.",
+      "summary": {
+        "villa-bridge-extras-v38": {
+          "fps": 49.74063455266806,
+          "frameMs": {
+            "count": 1990,
+            "mean": 20.10170603014866,
+            "p50": 21.799999997019768,
+            "p95": 32.50499999523163,
+            "p99": 40.28999999165535,
+            "low1Fps": 21.289278719628708,
+            "over33ms": 93
+          }
+        },
+        "villa-final-link-o1-v40": {
+          "fps": 45.000645542013196,
+          "frameMs": {
+            "count": 1800,
+            "mean": 22.217930555558866,
+            "p50": 22.530000001192093,
+            "p95": 37.320000007748604,
+            "p99": 42.80000001192093,
+            "low1Fps": 20.31682967151901,
+            "over33ms": 182
+          }
+        }
+      },
+      "runs": [
+        {
+          "index": 1,
+          "folder": "villa-bridge-extras-v38",
+          "started": "2026-11-03T08:35:30.133Z",
+          "fps": 56.97994315987474,
+          "low1": 30.414396146590878,
+          "rhiWorkMs": 13.235377387766457,
+          "workload": {
+            "sampleFrames": 1140,
+            "drawsPerFrame": 3139.188596491228,
+            "indirectDrawsPerFrame": 88.06315789473685,
+            "dispatchesPerFrame": 66.51228070175439
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 907,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 58,
+                "low": 24.324981756264055,
+                "frameMs": 15.544999999998254,
+                "samples": 284,
+                "seconds": 5,
+                "p99Ms": 31.209999999999127,
+                "maxMs": 51.97999999999956,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 57,
+                "low": 25.322866545562988,
+                "frameMs": 21.99500000476837,
+                "samples": 284,
+                "seconds": 5,
+                "p99Ms": 28.34000000357628,
+                "maxMs": 50.625,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 263,
+                "low": 160.7809359747465,
+                "frameMs": 4.019999999996799,
+                "samples": 1317,
+                "seconds": 5,
+                "p99Ms": 4.5349999999998545,
+                "maxMs": 21.604999999999563,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 895,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 26237.475
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 58,
+                "low": 27.7418161642317,
+                "frameMs": 11.525000000001455,
+                "samples": 286,
+                "seconds": 5,
+                "p99Ms": 29.989999999997963,
+                "maxMs": 40.23999999999796,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 58,
+                "low": 27.722589288923498,
+                "frameMs": 23.34000000357628,
+                "samples": 287,
+                "seconds": 5,
+                "p99Ms": 30.940000012516975,
+                "maxMs": 39.2749999910593,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 267,
+                "low": 142.3632296115252,
+                "frameMs": 3.5,
+                "samples": 1320,
+                "seconds": 5,
+                "p99Ms": 4.525000000001455,
+                "maxMs": 30.06999999999971,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 2044,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 46405.11
+            }
+          }
+        },
+        {
+          "index": 2,
+          "folder": "villa-final-link-o1-v40",
+          "started": "2026-11-03T08:36:19.025Z",
+          "fps": 51.81890341616143,
+          "low1": 23.930991721214546,
+          "rhiWorkMs": 14.75752226879142,
+          "workload": {
+            "sampleFrames": 1050,
+            "drawsPerFrame": 3204.980952380952,
+            "indirectDrawsPerFrame": 94.96,
+            "dispatchesPerFrame": 66.55333333333333
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 832,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 49,
+                "low": 22.24034398398705,
+                "frameMs": 24.049999999999272,
+                "samples": 242,
+                "seconds": 5,
+                "p99Ms": 40.154999999998836,
+                "maxMs": 54.159999999999854,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 49,
+                "low": 23.145469275347466,
+                "frameMs": 24.83499999344349,
+                "samples": 242,
+                "seconds": 5,
+                "p99Ms": 37.60999999940395,
+                "maxMs": 52.10999999940395,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 266,
+                "low": 135.1155720696742,
+                "frameMs": 4,
+                "samples": 1314,
+                "seconds": 5,
+                "p99Ms": 4.525000000001455,
+                "maxMs": 26.56999999999971,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 831,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 31580.61
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 50,
+                "low": 25.572177470909555,
+                "frameMs": 31.57499999999709,
+                "samples": 250,
+                "seconds": 5,
+                "p99Ms": 38.095000000001164,
+                "maxMs": 40.99500000000262,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 51,
+                "low": 25.38607996359107,
+                "frameMs": 31.355000004172325,
+                "samples": 251,
+                "seconds": 5,
+                "p99Ms": 37.25500001013279,
+                "maxMs": 43.38500000536442,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 265,
+                "low": 140.25948003807738,
+                "frameMs": 3.5,
+                "samples": 1308,
+                "seconds": 5,
+                "p99Ms": 4.5349999999962165,
+                "maxMs": 25.56999999999971,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1862,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 51487.645
+            }
+          }
+        },
+        {
+          "index": 3,
+          "folder": "villa-final-link-o1-v40",
+          "started": "2026-11-03T08:37:13.029Z",
+          "fps": 38.17600638000382,
+          "low1": 19.155024003830814,
+          "rhiWorkMs": 20.34910436700152,
+          "workload": {
+            "sampleFrames": 750,
+            "drawsPerFrame": 3217.0533333333333,
+            "indirectDrawsPerFrame": 97.2,
+            "dispatchesPerFrame": 66.56666666666666
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 614,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 39,
+                "low": 18.000180001799922,
+                "frameMs": 25,
+                "samples": 189,
+                "seconds": 5,
+                "p99Ms": 47.20000000000073,
+                "maxMs": 63.909999999999854,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 39,
+                "low": 17.92034406993621,
+                "frameMs": 34.45000000298023,
+                "samples": 188,
+                "seconds": 5,
+                "p99Ms": 45.65999999642372,
+                "maxMs": 65.9450000077486,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 319,
+                "low": 66.97643266775621,
+                "frameMs": 2.790000000000873,
+                "samples": 1582,
+                "seconds": 5,
+                "p99Ms": 11.125,
+                "maxMs": 27.720000000001164,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 604,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 36068.37
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 45,
+                "low": 23.997120345558645,
+                "frameMs": 24.775000000001455,
+                "samples": 209,
+                "seconds": 5,
+                "p99Ms": 41.66500000000087,
+                "maxMs": 41.68000000000029,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 45,
+                "low": 23.950183617048708,
+                "frameMs": 26.364999994635582,
+                "samples": 209,
+                "seconds": 5,
+                "p99Ms": 39.74500000476837,
+                "maxMs": 43.51500000059605,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 326,
+                "low": 87.87119117152801,
+                "frameMs": 2.8000000000029104,
+                "samples": 1643,
+                "seconds": 5,
+                "p99Ms": 8.349999999998545,
+                "maxMs": 16.660000000003492,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1373,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 56245.86
+            }
+          }
+        },
+        {
+          "index": 4,
+          "folder": "villa-bridge-extras-v38",
+          "started": "2026-11-03T08:38:11.759Z",
+          "fps": 42.50080531786357,
+          "low1": 18.911138660813247,
+          "rhiWorkMs": 18.0413011378323,
+          "workload": {
+            "sampleFrames": 840,
+            "drawsPerFrame": 3220.1642857142856,
+            "indirectDrawsPerFrame": 96.6,
+            "dispatchesPerFrame": 66.56309523809524
+          },
+          "errors": [],
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 675,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 44,
+                "low": 25.11721366376451,
+                "frameMs": 22.224999999998545,
+                "samples": 211,
+                "seconds": 5,
+                "p99Ms": 38.8650000000016,
+                "maxMs": 41.68000000000029,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 44,
+                "low": 25.452848595912805,
+                "frameMs": 36.45999999344349,
+                "samples": 212,
+                "seconds": 5,
+                "p99Ms": 38.24000000953674,
+                "maxMs": 41.26000000536442,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 338,
+                "low": 98.65366759516778,
+                "frameMs": 2.779999999998836,
+                "samples": 1624,
+                "seconds": 5,
+                "p99Ms": 8.344999999997526,
+                "maxMs": 16.67000000000189,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 668,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 34594.46
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 46,
+                "low": 19.282064466368976,
+                "frameMs": 22.24500000000262,
+                "samples": 221,
+                "seconds": 5,
+                "p99Ms": 41.66500000000087,
+                "maxMs": 72.24500000000262,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 46,
+                "low": 19.097332740570852,
+                "frameMs": 15.969999998807907,
+                "samples": 221,
+                "seconds": 5,
+                "p99Ms": 41.90499998629093,
+                "maxMs": 72.39000000059605,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 330,
+                "low": 88.66866605815689,
+                "frameMs": 2.8000000000029104,
+                "samples": 1629,
+                "seconds": 5,
+                "p99Ms": 8.339999999996508,
+                "maxMs": 27.775000000001455,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1514,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 54499.73
+            }
+          }
+        }
+      ],
+      "screenshots": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o1-v40-abba-1-full.png",
+          "sha256": "3f45086badcf7dd94f8090c7fa997f93b4d458fb080b7bd2c6d5592debe0b797"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o1-v40-abba-2-full.png",
+          "sha256": "bffa64dc9cfe1fdc31160e881dc7df0bd37a7fd32f92ad7ce47b58041c171cdc"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o1-v40-abba-3-full.png",
+          "sha256": "6f874a9cd1bf07fa8678e3fc5062f64a2c1a7bb2812a1496eee2dc0ceee7fed6"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o1-v40-abba-4-full.png",
+          "sha256": "69ffb892e8292853e946f4c1057089961d7735791ccbbec2cec69a6288234861"
+        }
+      ]
+    }
+  ],
+  "restoredDefault": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\default-restored-compile-optimization-audit.json",
+      "sha256": "f5311df85e7838a9c16d1c0f6e2bd16d1a57152fb987b3cc338ec3b9d0823011"
+    },
+    "runtime": [
+      {
+        "sha256": "6650c36bc29553485462964192ec1dde233266bb1b582c222edb98ce734c17f7",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js"
+      },
+      {
+        "sha256": "d4504ac442a03395b80dbfc0553b96c0410b8a4b4b780ab045ce15a3cfa2aa98",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
+      }
+    ],
+    "byteIdenticalToV38": true,
+    "experimentalOptimizationAdopted": false
+  },
+  "correctness": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o1-v40-views.json",
+      "sha256": "cf486db7e5ccf64ef814a40ea5d65444d6a81e6b2e5c1a5dfa95e809f833040a"
+    },
+    "screenshot": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o1-v40-views.png",
+      "sha256": "8f29d7a4eb2c671fc3777b00807c1d1217fd490dd929d8ca8c1f37931a39c08e"
+    },
+    "views": 6,
+    "errors": [],
+    "manualReview": "v40 default spawn lighting matches v38; v39 visibly loses shadows/changes lighting and is rejected."
+  },
+  "environment": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-final-link-o2-v39-environment.jsonl",
+      "sha256": "6610302860fef31d0ac99f84e915033d482ffdbc419269d5b2f74e4c6b7e6231"
+    },
+    "samples": 158,
+    "measurementSamples": 32,
+    "first": "2026-11-03T08:26:22.3951492Z",
+    "last": "2026-11-03T08:39:30.4560221Z",
+    "blockersDuringMeasurements": [],
+    "boundary": "Only UTC windows of the measured intervals are checked; builds between experiments are excluded. Existing Edge/Oopz/music and system background activity retained. Monitor is process-level CPU evidence, not proof of exclusive GPU/CPU ownership."
+  },
+  "attribution": {
+    "baselineOwnerProfile": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v38-views-owner-analysis.json",
+      "sha256": "6a028f6640855f3aaa29406ab5564df1104b5948f128ec92e7abe336477f85d9"
+    },
+    "createGroupsInclusivePercent": 23.915580244573693,
+    "createGroupsSelfPercent": 5.585528117007245,
+    "boundary": "Overlapping inclusive wall-clock samples include child JS, allocation and waits; custom Web RHI is not native D3D12. Owner-only samples do not cover browser GPU process, IPC or driver."
+  },
+  "boundary": "All 417 engine objects/responses are identical across variants; no project quality or Cook changes. O2 failure is localized to the O2 link pipeline, not proven to be a Binaryen compiler bug. O1 does not run the main Binaryen optimization pipeline. SIMD/LTO and remaining native/Web gap are unmeasured causes."
+}

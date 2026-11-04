@@ -1,0 +1,1143 @@
+{
+  "date": "2026-11-03T09:52:31.035Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-rhi-simd.cjs",
+    "sha256": "1ec10c079cbe81ef489e60fa67b3316e61c338d519aa755feec756c10408d80e"
+  },
+  "standalone": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-isolation-final.json",
+      "sha256": "c1e9db984566488c39a3d909075715f0537d9fc627b424f511413c95d06902d5"
+    },
+    "rounds": 3,
+    "summary": {
+      "dx12": {
+        "preparation": [
+          {
+            "mode": "pre-resolved",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0132
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0135
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.5285
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.6407
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.3208
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.7943
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0122
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0123
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.2694
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.3287
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.7908
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.4027
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0135
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0138
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.1429
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.173
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 2.9727
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.2085
+          }
+        ],
+        "rendering": [
+          {
+            "mode": "pre-resolved",
+            "encodingMedianMs": 0.3272,
+            "wallMsPerFrameMedian": 0.5569
+          },
+          {
+            "mode": "prepared-version-hit",
+            "encodingMedianMs": 0.3252,
+            "wallMsPerFrameMedian": 0.549433
+          },
+          {
+            "mode": "serial-rebuild",
+            "encodingMedianMs": 0.3237,
+            "wallMsPerFrameMedian": 1.01011
+          },
+          {
+            "mode": "producer-owner-pipeline",
+            "encodingMedianMs": 0.3247,
+            "wallMsPerFrameMedian": 0.631163
+          }
+        ],
+        "stateTracking": [
+          {
+            "cached": false,
+            "bindingCalls": 12800,
+            "medianMs": 0.1473
+          },
+          {
+            "cached": true,
+            "bindingCalls": 4,
+            "medianMs": 0.022
+          }
+        ],
+        "descriptors": [
+          {
+            "entries": 1,
+            "groups": 80,
+            "medianMs": 0.0004
+          },
+          {
+            "entries": 8,
+            "groups": 80,
+            "medianMs": 0.0017
+          },
+          {
+            "entries": 24,
+            "groups": 80,
+            "medianMs": 0.0055
+          }
+        ],
+        "parallelRecording": [
+          {
+            "workers": 1,
+            "commandLists": 4,
+            "draws": 3200,
+            "medianMs": 0.3686
+          },
+          {
+            "workers": 2,
+            "commandLists": 4,
+            "draws": 3200,
+            "medianMs": 0.2054
+          },
+          {
+            "workers": 4,
+            "commandLists": 4,
+            "draws": 3200,
+            "medianMs": 0.1207
+          }
+        ]
+      },
+      "dawn": {
+        "preparation": [
+          {
+            "mode": "pre-resolved",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0129
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0125
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.5276
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.6452
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.3256
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.7973
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0119
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0119
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.2706
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.334
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.7019
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.4045
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.0142
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.014
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.1428
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.1753
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 2.5544
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.2094
+          }
+        ],
+        "rendering": [
+          {
+            "mode": "pre-resolved",
+            "encodingMedianMs": 0.6588,
+            "wallMsPerFrameMedian": 1.61432
+          },
+          {
+            "mode": "prepared-version-hit",
+            "encodingMedianMs": 0.6608,
+            "wallMsPerFrameMedian": 1.60777
+          },
+          {
+            "mode": "serial-rebuild",
+            "encodingMedianMs": 0.6556,
+            "wallMsPerFrameMedian": 2.12357
+          },
+          {
+            "mode": "producer-owner-pipeline",
+            "encodingMedianMs": 0.6602,
+            "wallMsPerFrameMedian": 1.61191
+          }
+        ],
+        "stateTracking": [
+          {
+            "cached": false,
+            "bindingCalls": 12800,
+            "medianMs": 0.6503
+          },
+          {
+            "cached": true,
+            "bindingCalls": 4,
+            "medianMs": 0.0661
+          }
+        ],
+        "descriptors": [
+          {
+            "entries": 1,
+            "groups": 80,
+            "medianMs": 0.0127
+          },
+          {
+            "entries": 8,
+            "groups": 80,
+            "medianMs": 0.0479
+          },
+          {
+            "entries": 24,
+            "groups": 80,
+            "medianMs": 0.1279
+          }
+        ],
+        "parallelRecording": null
+      },
+      "scalar": {
+        "preparation": [
+          {
+            "mode": "pre-resolved",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019968
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019968
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.560128
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.669952
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.24006
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.709888
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019712
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019968
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.290048
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.625152
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 5.12
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.36992
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.025088
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.025088
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.160256
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.48454
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 9.65018
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.205056
+          }
+        ],
+        "rendering": [
+          {
+            "mode": "pre-resolved",
+            "encodingMedianMs": 0.565248,
+            "wallMsPerFrameMedian": 3.53258
+          },
+          {
+            "mode": "prepared-version-hit",
+            "encodingMedianMs": 0.564736,
+            "wallMsPerFrameMedian": 3.52708
+          },
+          {
+            "mode": "serial-rebuild",
+            "encodingMedianMs": 0.560128,
+            "wallMsPerFrameMedian": 3.76316
+          },
+          {
+            "mode": "producer-owner-pipeline",
+            "encodingMedianMs": 0.555008,
+            "wallMsPerFrameMedian": 3.49859
+          }
+        ],
+        "stateTracking": [
+          {
+            "cached": false,
+            "bindingCalls": 12800,
+            "medianMs": 0.539904
+          },
+          {
+            "cached": true,
+            "bindingCalls": 4,
+            "medianMs": 0.019968
+          }
+        ],
+        "descriptors": [
+          {
+            "entries": 1,
+            "groups": 80,
+            "medianMs": 0.094976
+          },
+          {
+            "entries": 8,
+            "groups": 80,
+            "medianMs": 0.254976
+          },
+          {
+            "entries": 24,
+            "groups": 80,
+            "medianMs": 0.570112
+          }
+        ],
+        "parallelRecording": null
+      },
+      "simd": {
+        "preparation": [
+          {
+            "mode": "pre-resolved",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019968
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019968
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.555264
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.649984
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.24032
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 1,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.705024
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019968
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.019968
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.290048
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.649984
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 4.76518
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 2,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.3648
+          },
+          {
+            "mode": "pre-resolved",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.025088
+          },
+          {
+            "mode": "prepared-version-hit",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.025088
+          },
+          {
+            "mode": "rebuild-stack",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.164864
+          },
+          {
+            "mode": "rebuild-allocation",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 1.48992
+          },
+          {
+            "mode": "shared-resource-lock",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 8.64512
+          },
+          {
+            "mode": "immutable-resource-map",
+            "workers": 4,
+            "draws": 3200,
+            "entries": 24,
+            "medianMs": 0.200192
+          }
+        ],
+        "rendering": [
+          {
+            "mode": "pre-resolved",
+            "encodingMedianMs": 0.555264,
+            "wallMsPerFrameMedian": 3.48008
+          },
+          {
+            "mode": "prepared-version-hit",
+            "encodingMedianMs": 0.57472,
+            "wallMsPerFrameMedian": 3.63458
+          },
+          {
+            "mode": "serial-rebuild",
+            "encodingMedianMs": 0.569856,
+            "wallMsPerFrameMedian": 3.76358
+          },
+          {
+            "mode": "producer-owner-pipeline",
+            "encodingMedianMs": 0.555264,
+            "wallMsPerFrameMedian": 3.48659
+          }
+        ],
+        "stateTracking": [
+          {
+            "cached": false,
+            "bindingCalls": 12800,
+            "medianMs": 0.539904
+          },
+          {
+            "cached": true,
+            "bindingCalls": 4,
+            "medianMs": 0.019968
+          }
+        ],
+        "descriptors": [
+          {
+            "entries": 1,
+            "groups": 80,
+            "medianMs": 0.095232
+          },
+          {
+            "entries": 8,
+            "groups": 80,
+            "medianMs": 0.255232
+          },
+          {
+            "entries": 24,
+            "groups": 80,
+            "medianMs": 0.555264
+          }
+        ],
+        "parallelRecording": null
+      },
+      "js": {
+        "preparation": null,
+        "rendering": [
+          {
+            "mode": "rotating",
+            "encodingMedianMs": 0.5199999958276749,
+            "wallMsPerFrameMedian": 3.4953333333134653
+          },
+          {
+            "mode": "repeat",
+            "encodingMedianMs": 0.5049999952316284,
+            "wallMsPerFrameMedian": 2.3779999998708568
+          },
+          {
+            "mode": "cached",
+            "encodingMedianMs": 0.09000000357627869,
+            "wallMsPerFrameMedian": 1.3976666666567326
+          }
+        ],
+        "stateTracking": null,
+        "descriptors": [
+          {
+            "entries": 1,
+            "groups": 80,
+            "medianMs": 0.06000000238418579
+          },
+          {
+            "entries": 8,
+            "groups": 80,
+            "medianMs": 0.1850000023841858
+          },
+          {
+            "entries": 24,
+            "groups": 80,
+            "medianMs": 0.4650000035762787
+          }
+        ],
+        "parallelRecording": null
+      }
+    },
+    "validation": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-isolation-validation-final.json",
+      "sha256": "5830281cec5453a8476c5eb749bee466405eaae9c7b8914ec6dc68612402f441"
+    },
+    "validationLog": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-isolation-validation-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "simd": {
+    "comparison": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-simd-v41-abba.json",
+      "sha256": "756778e263b550927e7575c97d08f362aaf8743d6e77860bcb0548de38203b56"
+    },
+    "summary": {
+      "villa-bridge-extras-v38": {
+        "fps": 50.73811972921804,
+        "frameMs": {
+          "count": 2029,
+          "mean": 19.709618038448752,
+          "p50": 21.17000000178814,
+          "p95": 32.99500000476837,
+          "p99": 39.04999999701977,
+          "low1Fps": 20.973887510262248,
+          "over33ms": 96
+        }
+      },
+      "villa-simd-v41": {
+        "fps": 45.38871739402301,
+        "frameMs": {
+          "count": 1815,
+          "mean": 22.026534435267948,
+          "p50": 21.819999992847443,
+          "p95": 38.26500000059605,
+          "p99": 45.75,
+          "low1Fps": 7.907589413051077,
+          "over33ms": 162
+        }
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-bridge-extras-v38",
+        "fps": 56.80997737093202,
+        "low1": 26.309154489857015,
+        "rhiWorkMs": 13.265456876528294,
+        "workload": {
+          "sampleFrames": 1140,
+          "drawsPerFrame": 3151.8368421052633,
+          "indirectDrawsPerFrame": 89.2421052631579,
+          "dispatchesPerFrame": 66.51929824561404
+        }
+      },
+      {
+        "folder": "villa-simd-v41",
+        "fps": 53.70934202808314,
+        "low1": 24.42436219082873,
+        "rhiWorkMs": 14.180564880371094,
+        "workload": {
+          "sampleFrames": 1080,
+          "drawsPerFrame": 3180.6,
+          "indirectDrawsPerFrame": 92.22222222222223,
+          "dispatchesPerFrame": 66.53703703703704
+        }
+      },
+      {
+        "folder": "villa-simd-v41",
+        "fps": 37.06879733982374,
+        "low1": 4.502793138876508,
+        "rhiWorkMs": 19.255003839168907,
+        "workload": {
+          "sampleFrames": 720,
+          "drawsPerFrame": 3217.9819444444443,
+          "indirectDrawsPerFrame": 97.2,
+          "dispatchesPerFrame": 66.56666666666666
+        }
+      },
+      {
+        "folder": "villa-bridge-extras-v38",
+        "fps": 44.66653359970176,
+        "low1": 19.228509469747074,
+        "rhiWorkMs": 17.322434674973454,
+        "workload": {
+          "sampleFrames": 900,
+          "drawsPerFrame": 3228.2355555555555,
+          "indirectDrawsPerFrame": 99.06666666666666,
+          "dispatchesPerFrame": 66.57777777777778
+        }
+      }
+    ],
+    "compile": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v41-simd-compile-audit.json",
+      "sha256": "f78b9a6c7fb24bb13252617eb3b9164327fcde1325f4f18340341783a8278044"
+    },
+    "metrics": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v41-simd-wasm-metrics.txt",
+      "sha256": "ba451c950da7bab89795768491b9bac3a688b85f4e8a07a9d202f64df8ed93d3"
+    },
+    "scalarMetrics": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v38-scalar-wasm-metrics.txt",
+      "sha256": "ca3ddaf7fe83870a59236d6c7229be944d2a7d01a02f1b69f3d9bdb45d649b0b"
+    },
+    "views": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-simd-v41-views.json",
+      "sha256": "ca09edccf932d7431d4c06a8d55e9761deb78fa8dd8e38ebc1d457dd1bc50803"
+    },
+    "screenshot": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-simd-v41-views.png",
+      "sha256": "ef7002c69846cb2fb8ccbed3f9db8cb2d4d76d0ba33c827ad66d2a5733627575"
+    }
+  },
+  "finalLinkDiagnosis": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\final-link-render-diagnosis-v3.json",
+      "sha256": "676214ab50f50ea5da364a2123808136738756e59375d02d448fa2d7c27ffed6"
+    },
+    "shaderCounts": [
+      {
+        "folder": "villa-bridge-extras-v38",
+        "mode": "default",
+        "frames": 21,
+        "drawsPerFrame": 3087.6190476190477,
+        "shadowDepthDrawsPerFrame": 2007.5238095238096,
+        "dfDispatch": [
+          {
+            "key": "53ca0aa9",
+            "perFrame": 1
+          },
+          {
+            "key": "fd88f0",
+            "perFrame": 1
+          },
+          {
+            "key": "d8e6ba5f",
+            "perFrame": 2
+          },
+          {
+            "key": "db231540",
+            "perFrame": 2
+          },
+          {
+            "key": "951125bf",
+            "perFrame": 2
+          },
+          {
+            "key": "3be5a5a6",
+            "perFrame": 1
+          },
+          {
+            "key": "671fc096",
+            "perFrame": 1
+          },
+          {
+            "key": "ec00e11b",
+            "perFrame": 1
+          },
+          {
+            "key": "2cfd988b",
+            "perFrame": 1
+          }
+        ],
+        "fields": {
+          "frame": 240,
+          "meshes": 591,
+          "cpuResidentBytes": 1139392,
+          "bulkBytes": 13406176,
+          "ao": 1
+        }
+      },
+      {
+        "folder": "villa-bridge-extras-v38",
+        "mode": "no-dfao",
+        "frames": 21,
+        "drawsPerFrame": 3081.809523809524,
+        "shadowDepthDrawsPerFrame": 2006.7619047619048,
+        "dfDispatch": [
+          {
+            "key": "53ca0aa9",
+            "perFrame": 1
+          },
+          {
+            "key": "fd88f0",
+            "perFrame": 1
+          }
+        ],
+        "fields": {
+          "frame": 360,
+          "meshes": 591,
+          "cpuResidentBytes": 1139392,
+          "bulkBytes": 13406176,
+          "ao": 0
+        }
+      },
+      {
+        "folder": "villa-final-link-o2-v39",
+        "mode": "default",
+        "frames": 29,
+        "drawsPerFrame": 1248.2068965517242,
+        "shadowDepthDrawsPerFrame": 200.41379310344828,
+        "dfDispatch": [
+          {
+            "key": "53ca0aa9",
+            "perFrame": 1
+          },
+          {
+            "key": "fd88f0",
+            "perFrame": 1
+          },
+          {
+            "key": "d8e6ba5f",
+            "perFrame": 2
+          },
+          {
+            "key": "db231540",
+            "perFrame": 2
+          },
+          {
+            "key": "951125bf",
+            "perFrame": 2
+          },
+          {
+            "key": "3be5a5a6",
+            "perFrame": 1
+          },
+          {
+            "key": "671fc096",
+            "perFrame": 1
+          },
+          {
+            "key": "ec00e11b",
+            "perFrame": 1
+          },
+          {
+            "key": "2cfd988b",
+            "perFrame": 1
+          }
+        ],
+        "fields": {
+          "frame": 300,
+          "meshes": 591,
+          "cpuResidentBytes": 1139392,
+          "bulkBytes": 13406176,
+          "ao": 1
+        }
+      },
+      {
+        "folder": "villa-final-link-o2-v39",
+        "mode": "no-dfao",
+        "frames": 34,
+        "drawsPerFrame": 1258.4411764705883,
+        "shadowDepthDrawsPerFrame": 200.94117647058823,
+        "dfDispatch": [
+          {
+            "key": "53ca0aa9",
+            "perFrame": 1
+          },
+          {
+            "key": "fd88f0",
+            "perFrame": 1
+          }
+        ],
+        "fields": {
+          "frame": 480,
+          "meshes": 591,
+          "cpuResidentBytes": 1139392,
+          "bulkBytes": 13406176,
+          "ao": 0
+        }
+      }
+    ],
+    "shadowCache": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\final-link-shadow-cache-v1.json",
+      "sha256": "9c9a9d3be22ee09d08be6be4e6e328958d12a845eccb2dda1aee1b3146fa66d4"
+    },
+    "keepNamesViews": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-o2-keep-names-v42-views.json",
+      "sha256": "ee5dabbce941f5c1f56469c5a354d7e68310bccb5f1fb69b1c838be498497630"
+    },
+    "compile": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v42-o2-keep-names-compile-audit.json",
+      "sha256": "fd552d39873e3a05b38a9263e0df845bf903727dc44778b5c52376d38396a2c8"
+    },
+    "dwarfStrip": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261103-173433.log.strip-dwarf.json",
+      "sha256": "ac5ea68b372e9e064d5e9d496f4a3b880cf600cc2d76a780f1491a01d80239ae"
+    },
+    "stripIdempotence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v42-dwarf-idempotent.json",
+      "sha256": "56f0d448511dc5b42bb26d3aa3842f43e175985fa30c2f9ddbf9a1ddd56964c8"
+    },
+    "imageAccepted": false,
+    "performanceAccepted": false,
+    "routeAbandoned": false,
+    "manualReview": "Disabling whole-scene shadow caching restores shadow draw counts but not correct brightness. O2 with names preserved is still too bright. DF dispatch is present; DF inputs/output correctness remains unresolved."
+  },
+  "restoredDefault": {
+    "compile": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-simd-default-restored-compile-audit.json",
+      "sha256": "fc8da07ece29156e6b9cdcc63c64d0134f962434cfe2a2f1c2452765dc01d1cf"
+    },
+    "products": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js",
+        "sha256": "6650c36bc29553485462964192ec1dde233266bb1b582c222edb98ce734c17f7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm",
+        "sha256": "d4504ac442a03395b80dbfc0553b96c0410b8a4b4b780ab045ce15a3cfa2aa98"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target",
+        "sha256": "6605440813a6c78805b6cd6917c7a994f4462006d9d965185de004ece714a270"
+      }
+    ],
+    "objectsEqualBaseline": 417,
+    "jsWasmEqualV38": true
+  },
+  "tools": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\strip-wasm-dwarf.cjs",
+      "sha256": "79360b028b36ab1b68b724b09f8850bac160741ec70cd536f282348a601367d9"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnose-final-link-rendering.cjs",
+      "sha256": "c7dc4f1e19df80801e2420599f3958f659824ab70c7f315ed26e376990514470"
+    }
+  ],
+  "simdTarget": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngineThreadsSIMD.Target.cs",
+    "sha256": "3515aa316d9ccd20889d159da7d5172bce421b7a7ac937c4ab9b1d4a4de6519a"
+  },
+  "environment": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-simd-final-environment.jsonl",
+      "sha256": "39d65ef058b84ea832d9b5925e7b92dfe9bcb5dea2518560c4deda39487028b1"
+    },
+    "measurementSamples": 24,
+    "blockersDuringMeasurements": [],
+    "boundary": "User applications retained. No proof of exclusive CPU/GPU ownership. See raw environment for background activity."
+  },
+  "boundary": "Synthetic preparation is not the linked UE CreateGroups/SetDrawBindings implementation. Lock stress is not proof of actual UE lock contention. CPU sums do not include all browser backend work; API/object semantics and native/Web parallel capabilities differ. No standalone time is subtracted from the UE frame."
+}

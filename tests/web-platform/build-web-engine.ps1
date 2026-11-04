@@ -4,7 +4,13 @@ param(
     [switch]$SkipHostPreparation,
     [switch]$Threads,
     [switch]$Trace,
-    [switch]$StandaloneCompiles
+    [switch]$Simd,
+    [switch]$Mimalloc,
+    [switch]$AllocationProbe,
+    [switch]$StandaloneCompiles,
+    [ValidateRange(0, 2)][int]$LinkOptimization = 0,
+    [switch]$KeepLinkNames,
+    [string]$RendererRevision = ''
 )
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -13,8 +19,16 @@ $taskUbt = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.
 $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/dotnet.exe'
 if (-not (Test-Path -LiteralPath $taskUbt)) { throw 'Run build-web-ubt.ps1 to prepare the isolated Web UBT first.' }
 if ($Trace -and -not $Threads) { throw 'The Trace diagnostic target requires -Threads.' }
-$taskTarget = if ($Trace) { 'UEWebEngineThreadsTrace' } elseif ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
-$taskVariant = if ($Trace) { '-thread-trace' } elseif ($Threads) { '-thread' } else { '' }
+if ($Simd -and (-not $Threads -or $Trace)) { throw 'SIMD comparison requires Threads without Trace.' }
+if ($Mimalloc -and (-not $Threads -or $Trace -or $Simd)) { throw 'Allocator comparison requires Threads without Trace or SIMD.' }
+if ($AllocationProbe -and (-not $Threads -or $Trace -or $Simd)) { throw 'Allocation probe requires Threads without Trace or SIMD.' }
+if ($AllocationProbe) { & (Join-Path $PSScriptRoot 'build-web-allocation-probe.ps1') }
+if ($Mimalloc) {
+    & (Join-Path $taskRoot '.tools/emsdk/python/3.13.3_64bit/python.exe') (Join-Path $PSScriptRoot 'build-web-mimalloc.py')
+    if ($LASTEXITCODE -ne 0) { throw 'UE-compatible mimalloc preparation failed.' }
+}
+$taskTarget = if ($Simd) { 'UEWebEngineThreadsSIMD' } elseif ($Trace) { 'UEWebEngineThreadsTrace' } elseif ($Threads) { 'UEWebEngineThreads' } else { 'UEWebEngine' }
+$taskVariant = if ($Simd) { '-thread-simd' } elseif ($Trace) { '-thread-trace' } elseif ($Threads) { '-thread' } else { '' }
 $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 & (Join-Path $PSScriptRoot 'build-web-blake3.ps1') -Threads:$Threads
 & (Join-Path $PSScriptRoot 'build-web-libpng.ps1') -Threads:$Threads
@@ -25,6 +39,16 @@ $taskMiscOverlay = 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformM
 $taskCoreCopy = Join-Path $taskHost 'Source/Runtime/Core'
 if ((Get-Item -LiteralPath $taskCoreCopy).LinkType) { throw 'Core overlay must be a local build-host copy.' }
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskMiscOverlay") -Destination (Join-Path $taskHost $taskMiscOverlay) -Force
+$taskShaderArchiveRelative = 'Source/Runtime/RenderCore/Private/ShaderLibrary/ShaderCodeArchive.cpp'
+$taskShaderArchiveDestination = Join-Path $taskHost $taskShaderArchiveRelative
+if ((Get-Item -LiteralPath $taskShaderArchiveDestination).LinkType) { throw 'Shader archive overlay must be local.' }
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShaderArchiveRelative") -Destination $taskShaderArchiveDestination -Force
+$taskBulkStreamingRelative = 'Source/Runtime/CoreUObject/Private/Serialization/BulkDataStreaming.cpp'
+$taskBulkStreamingDestination = Join-Path $taskHost $taskBulkStreamingRelative
+if ((Get-Item -LiteralPath $taskBulkStreamingDestination).LinkType -or (Get-Item -LiteralPath (Split-Path (Split-Path (Split-Path $taskBulkStreamingDestination)))).LinkType) {
+    throw 'Bulk streaming overlay must be local.'
+}
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskBulkStreamingRelative") -Destination $taskBulkStreamingDestination -Force
 # Keep the shadow diagnostic overlay current even in incremental runtime builds.
 # Renderer is a local copy; never write through an installed-engine junction.
 $taskShadowOverlay = 'Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
@@ -45,6 +69,12 @@ if ((Get-Item -LiteralPath (Split-Path $taskRenderUtils)).LinkType -or
     throw 'RenderCore overlay must be a local build-host copy.'
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp') -Destination $taskRenderUtils -Force
+if ($RendererRevision) {
+    $taskRendererSnapshotText = & node (Join-Path $PSScriptRoot 'materialize-web-renderer-revision.cjs') $RendererRevision
+    if ($LASTEXITCODE -ne 0) { throw 'Failed to select the renderer revision matching the Cook' }
+    $taskRendererSnapshot = $taskRendererSnapshotText | ConvertFrom-Json
+    Write-Output $taskRendererSnapshotText
+}
 & node (Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'Enhanced Input runtime module preparation failed.' }
 $taskPlatforms = Join-Path $taskHost 'Platforms'
@@ -78,8 +108,14 @@ $taskReport = [ordered]@{
     target = $taskTarget
     threads = [bool]$Threads
     trace = [bool]$Trace
+    simd = [bool]$Simd
+    allocator = $(if ($Mimalloc) { 'mimalloc' } else { 'default-dlmalloc' })
+    allocationProbe = [bool]$AllocationProbe
     standaloneCompiles = [bool]$StandaloneCompiles
+    linkOptimization = $(if ($LinkOptimization -eq 0) { 'default-O0' } else { "O$LinkOptimization" })
+    keepLinkNames = [bool]$KeepLinkNames
     maxParallelActions = $MaxParallelActions
+    rendererRevision = $taskRendererSnapshot
     pass = $false
     buildSucceeded = $false
     fullBuildAttempted = $true
@@ -109,6 +145,10 @@ try {
     $taskArguments = @($taskUbt, $taskTarget, 'Web', 'Development',
         "-Project=$(Join-Path $taskRoot 'tests/ue-web-smoke/UEWebSmoke.uproject')",
         '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
+    if ($LinkOptimization -gt 0) { $taskArguments += "-WebLinkOptimization=$LinkOptimization" }
+    if ($KeepLinkNames) { $taskArguments += '-WebKeepLinkNames' }
+    if ($Mimalloc) { $taskArguments += '-WebMimalloc' }
+    if ($AllocationProbe) { $taskArguments += '-WebAllocationProbe' }
     if ($StandaloneCompiles) {
         $taskActions = "$taskLog.actions.json"
         & $taskDotnet @taskArguments "-WriteOutdatedActions=$taskActions" *> "$taskLog.export.log"
@@ -129,6 +169,16 @@ try {
     $taskReport.buildSucceeded = $taskExit -eq 0 -and $taskText.Contains('Result: Succeeded')
     $taskReport.products = @()
     if ($taskReport.buildSucceeded) {
+        if ($KeepLinkNames) {
+            $taskDwarfWasm = Join-Path $taskRoot "tests/ue-web-smoke/Binaries/Web/$taskTarget.wasm"
+            $taskStrippedWasm = "$taskDwarfWasm.without-dwarf"
+            Remove-Item -LiteralPath $taskStrippedWasm -Force -ErrorAction SilentlyContinue
+            $taskStripReport = "$taskLog.strip-dwarf.json"
+            & node (Join-Path $PSScriptRoot 'strip-wasm-dwarf.cjs') $taskDwarfWasm $taskStrippedWasm $taskStripReport
+            if ($LASTEXITCODE -ne 0) { throw 'DWARF-only stripping failed.' }
+            Move-Item -LiteralPath $taskStrippedWasm -Destination $taskDwarfWasm -Force
+            $taskReport.dwarfStrip = Get-TaskAudit $taskStripReport
+        }
         & node (Join-Path $PSScriptRoot 'validate-web-wasm.cjs') (Join-Path $taskRoot "tests/ue-web-smoke/Binaries/Web/$taskTarget.wasm")
         $taskReport.wasmValidated = $LASTEXITCODE -eq 0
         if (-not $taskReport.wasmValidated) { throw 'Linked WASM failed structural validation.' }
@@ -147,6 +197,13 @@ try {
     if ($Threads -and $taskReport.buildSucceeded) {
         $taskThreadResponse = Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/$taskTarget.js.rsp"
         $taskLinkText = Get-Content -LiteralPath $taskThreadResponse -Raw
+        if ($taskLinkText.Contains('-msimd128') -ne [bool]$Simd) { throw 'Unexpected final SIMD flag.' }
+        if ($taskLinkText.Contains('-sMALLOC=mimalloc') -ne [bool]$Mimalloc) { throw 'Unexpected allocator flag.' }
+        if ($taskLinkText.Contains('--wrap=posix_memalign') -ne [bool]$AllocationProbe) { throw 'Unexpected allocator probe flag.' }
+        $taskLinkOptimizationFlags = @([regex]::Matches($taskLinkText, '(?<!\S)-O[0-3sz](?=\s|$)') | ForEach-Object { $_.Value })
+        if (($LinkOptimization -eq 0 -and $taskLinkOptimizationFlags.Count -ne 0) -or
+            ($LinkOptimization -gt 0 -and ($taskLinkOptimizationFlags.Count -ne 1 -or
+                $taskLinkOptimizationFlags[0] -ne "-O$LinkOptimization"))) { throw 'Unexpected final link optimization level.' }
         if (-not $taskLinkText.Contains('-pthread') -or $taskLinkText.Contains('PROXY_TO_PTHREAD') -or
             -not $taskLinkText.Contains('wasm64-thread/libBLAKE3.a') -or
             -not $taskLinkText.Contains('wasm64-thread/libpng.a')) {
@@ -155,6 +212,7 @@ try {
         $taskReport.objects = @([regex]::Matches($taskLinkText, '(?m)^"([^"\r\n]+\.o)"\r?$') | ForEach-Object {
             $taskObject = $_.Groups[1].Value
             $taskCompile = Get-Content -LiteralPath "$taskObject.rsp" -Raw
+            if ($taskCompile.Contains('-msimd128') -ne [bool]$Simd) { throw "Mixed SIMD compile flags: $taskObject" }
             $taskDefinitions = [regex]::Match($taskCompile, '(?m)^-include "([^"]+/Definitions[^"]*\.h)"').Groups[1].Value
             $taskDefines = Get-Content -LiteralPath $taskDefinitions -Raw
             if (-not $taskCompile.Contains('-pthread') -or
@@ -194,6 +252,17 @@ try {
     $taskFiles = @($PSCommandPath, (Join-Path $PSScriptRoot 'compile-web-actions.cjs'),
         (Join-Path $PSScriptRoot 'WebEngine.BuildConfiguration.xml'),
         (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1'))
+    $taskFiles += Join-Path $taskRoot 'tests/ue-web-smoke/Source/UEWebEngine.Target.cs'
+    if ($Mimalloc) {
+        $taskFiles += Join-Path $PSScriptRoot 'build-web-mimalloc.py'
+        $taskFiles += Join-Path $taskRoot '.tools/web-mimalloc-ue/build.json'
+        $taskFiles += Join-Path $taskRoot '.tools/web-mimalloc-ue/libmimalloc-ue-mt.a'
+    }
+    if ($AllocationProbe) {
+        $taskFiles += Join-Path $PSScriptRoot 'build-web-allocation-probe.ps1'
+        $taskFiles += Join-Path $PSScriptRoot 'web-allocation-probe.cpp'
+        $taskFiles += Join-Path $taskRoot '.tools/web-allocation-probe/probe.a'
+    }
     $taskFiles += Join-Path $PSScriptRoot 'prepare-web-skinning.cjs'
     $taskFiles += Join-Path $PSScriptRoot 'prepare-web-enhanced-input.cjs'
     $taskInputHost = Get-Content -LiteralPath (Join-Path $taskResults 'web-enhanced-input-host.json') -Raw | ConvertFrom-Json
@@ -233,7 +302,7 @@ try {
     $taskFiles += Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderMetadata.h'
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private') -File |
         Where-Object { $_.Name -in @('WebGPUDynamicRHI.cpp', 'WebGPUDynamicRHI.h', 'WebGPUUnsupportedRHI.h',
-            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h') } |
+            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h', 'WebGPUCommandStream.h', 'WebGPUPackedDescriptors.h') } |
         ForEach-Object { $_.FullName })
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot '.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg') -File -Recurse |
         Where-Object { $_.Extension -in @('.py', '.cpp', '.h', '.js') } | ForEach-Object { $_.FullName })
@@ -333,6 +402,16 @@ try {
         $taskFiles += Join-Path $taskHost "Source/Runtime/Slate/Private/Framework/Application/$taskSlateUiSource"
     }
     $taskFiles += Join-Path $PSScriptRoot 'validate-web-wasm.cjs'
+    if ($RendererRevision) {
+        $taskFiles += Join-Path $PSScriptRoot 'materialize-web-renderer-revision.cjs'
+        foreach ($taskPinnedFile in $taskRendererSnapshot.paths) {
+            $taskFiles += Join-Path $taskRendererSnapshot.snapshot $taskPinnedFile
+        }
+    }
+    $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskShaderArchiveRelative"
+    $taskFiles += $taskShaderArchiveDestination
+    $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskBulkStreamingRelative"
+    $taskFiles += $taskBulkStreamingDestination
     $taskReport.sourceFiles = @($taskFiles | ForEach-Object { Get-TaskAudit $_ })
     $taskReport.boundary = 'Full normal UBT Engine Target attempt, using target 5.8.3 Core/TraceLog/ApplicationCore/CoreUObject/Launch/ChaosCore and selected target files in local installed-source Engine, MovieSceneTracks, RenderCore, Renderer, SignalProcessing, SlateCore, Slate, ICMP and BuildPatchServices copies with installed 5.8.0 dependencies. BLAKE3 1.3.1 and libPNG 1.6.44 portable archives use target third-party sources. The source audit lists each target overlay. Web excludes Slate font SDF generation, nonlinear attribute easing, native UDP probes and threaded patch verification but retains font data serialization, linear easing, synchronous patch verification and forced UMG/Slate dependencies. A successful compile/link still does not verify browser initialization, Engine ticking, WebGPU rendering, Cook or a scene. Action counts are not feature completion percentages.'
 } catch {

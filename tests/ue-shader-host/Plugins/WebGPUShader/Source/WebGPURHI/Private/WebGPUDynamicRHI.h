@@ -6,6 +6,10 @@
 #include "Misc/ScopeLock.h"
 #include "Dom/JsonObject.h"
 #include <webgpu/webgpu.h>
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+#include "WebGPUCommandStream.h"
+#include "WebGPUPackedDescriptors.h"
+#endif
 #include <atomic>
 
 class FRHITextureReference;
@@ -20,6 +24,14 @@ struct FWebGPUBindingRoute
     TRefCountPtr<FRHIResource> GlobalResource;
 };
 
+struct FWebGPUStorageContract
+{
+    enum class EPacking { Other, VertexFetch, UNorm8x4 };
+    bool ReadOnlyValid = false, ReadOnly = false, FormatValid = false, StrideValid = false, SlotValid = false;
+    double Format = 0, Stride = 0, Slot = -1;
+    EPacking Packing = EPacking::Other;
+};
+
 struct FWebGPUShaderBinding
 {
     const FJsonObject* Metadata = nullptr;
@@ -30,6 +42,8 @@ struct FWebGPUShaderBinding
     bool TextureArrayed = false, TextureMultisampled = false, TextureContractValid = false;
     FString TextureSampleType;
     int32 StorageFormatOffset = INDEX_NONE, StorageFormatLength = 0;
+    FWebGPUStorageContract StorageContract;
+    bool StorageContractChecked = false;
     // Prepared descriptors are reusable only while their source and access
     // state are unchanged. The bind-group cache below owns GPU handle refs.
     TRefCountPtr<FRHIResource> PreparedResource;
@@ -631,6 +645,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<TArray<WGPUBindGroupEntry>> BindingScratchGroups;
     TArray<TArray<TPair<uint32, uint32>>> BindingScratchDynamicOffsets;
     uint64 BindingStateSerial = 1;
+    // Immutable after RHI construction. Startup switches isolate each experiment.
+    bool SkipNoopRHITick = false, NativeStorageContracts = false, RevalidateStorageDescriptors = false;
+    std::atomic<uint32> NoopRHITicksSkipped{0};
+    uint32 StorageDescriptorRevalidations = 0, NativeStorageContractUses = 0, StorageContractRejectionChecks = 0;
     uint32 BindingEntriesPrepared = 0, BindingEntriesReused = 0, BindingEntriesValidated = 0;
     uint32 GroupPreparationHits = 0, GroupPreparationValidated = 0;
     uint32 GroupPreparationFrameMisses = 0, GroupPreparationAccessMisses = 0,
@@ -741,8 +759,12 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool ValidateBufferSRV(FRHIViewableResource *Resource, const FRHIViewDesc &Desc, FString &Error) const;
     bool ValidateStorageSRVBinding(FRHIResource *Resource, const FJsonObject &Binding, ERHIAccess Access,
                                    FString &Error) const;
+    bool ValidateStorageSRVBinding(FRHIResource *Resource, const FWebGPUStorageContract &Binding, ERHIAccess Access,
+                                                  FString &Error) const;
     bool ValidateStorageUAVBinding(FRHIResource *Resource, const FJsonObject &Binding, ERHIAccess Access,
                                    FString &Error) const;
+    bool ValidateStorageUAVBinding(FRHIResource *Resource, const FWebGPUStorageContract &Binding, ERHIAccess Access,
+                                                  FString &Error) const;
     uint64 RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat Format) override;
     bool ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                ERHIAccess Access, FString &Error) const;

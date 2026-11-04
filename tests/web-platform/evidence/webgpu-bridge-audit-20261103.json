@@ -1,0 +1,1553 @@
+{
+  "date": "2026-11-03T08:08:44.866Z",
+  "pass": true,
+  "package": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v37-package.json",
+    "sha256": "32a6426c784034df9be58a9a5437fa6d526f09d538c3bd6df584b3532b941dec"
+  },
+  "packageFiles": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-bridge-extras-v37\\index.html",
+      "sha256": "8e8464a0e433ef59cc4233f69b27bd998268add4ce980133980792ab3dbad618"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-bridge-extras-v37\\UEWebEngineThreads.js",
+      "sha256": "6650c36bc29553485462964192ec1dde233266bb1b582c222edb98ce734c17f7"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-bridge-extras-v37\\UEWebEngineThreads.wasm",
+      "sha256": "ffa1f960068b2f688e2c6a7c079110d626bbef394d03428a6f8cc64fbd8836ca"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-bridge-extras-v37\\config-files.json",
+      "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-bridge-extras-v37\\content-files.json",
+      "sha256": "24eeaa97c9a5d8bb98eb2d31b02c56e1f47d4908fe1bae96f2ece1135ee1d4fe"
+    }
+  ],
+  "finalPackage": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v38-package.json",
+    "sha256": "19d0ccf81de59f98dbac524a00ca250a577102cbc7e2dafc192f4b9b6e3c1f96"
+  },
+  "finalAB": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v38-abba.json",
+      "sha256": "b260c661373a88cd4240be0e0518881c5935d4990345e8aabd439f2c02c455f9"
+    },
+    "summary": {
+      "baseline": {
+        "fps": 55.045220535689374,
+        "frameMs": {
+          "count": 2201,
+          "mean": 18.162401181277986,
+          "p50": 17.599999994039536,
+          "p95": 24.40999999642372,
+          "p99": 25.894999995827675,
+          "low1Fps": 31.75348252745358,
+          "over33ms": 8
+        }
+      },
+      "all": {
+        "fps": 56.98410855672455,
+        "frameMs": {
+          "count": 2278,
+          "mean": 17.546841527655054,
+          "p50": 16.63000001013279,
+          "p95": 24.00499999523163,
+          "p99": 25.940000012516975,
+          "low1Fps": 29.97738662338244,
+          "over33ms": 13
+        }
+      }
+    },
+    "runs": [
+      {
+        "index": 1,
+        "transport": "baseline",
+        "fps": 54.74473518983239,
+        "low1Fps": 32.11303789416702,
+        "rhiWorkMs": 13.996854968314624,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3148.8477477477477,
+          "indirectDrawsPerFrame": 89.48108108108109,
+          "dispatchesPerFrame": 66.52072072072072
+        }
+      },
+      {
+        "index": 2,
+        "transport": "all",
+        "fps": 57.12326631136798,
+        "low1Fps": 29.760428549159297,
+        "rhiWorkMs": 13.365978331077756,
+        "workload": {
+          "sampleFrames": 1140,
+          "drawsPerFrame": 3168.3350877192984,
+          "indirectDrawsPerFrame": 91.30526315789474,
+          "dispatchesPerFrame": 66.53157894736842
+        }
+      },
+      {
+        "index": 3,
+        "transport": "all",
+        "fps": 56.84489817038413,
+        "low1Fps": 30.771992358006358,
+        "rhiWorkMs": 13.468582166740532,
+        "workload": {
+          "sampleFrames": 1140,
+          "drawsPerFrame": 3166.419298245614,
+          "indirectDrawsPerFrame": 91.45263157894736,
+          "dispatchesPerFrame": 66.53245614035087
+        }
+      },
+      {
+        "index": 4,
+        "transport": "baseline",
+        "fps": 55.345987415904105,
+        "low1Fps": 31.45931916357507,
+        "rhiWorkMs": 13.899677168063032,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3159.2765765765766,
+          "indirectDrawsPerFrame": 90.54054054054055,
+          "dispatchesPerFrame": 66.52702702702703
+        }
+      }
+    ],
+    "boundary": "v38 adds an owner-thread fallback to the v37 descriptor prototype. Four-run same-WASM confirmation; the eight-run component ablation and import audit above remain the immutable v37 package."
+  },
+  "projectQualityOverrides": [],
+  "ue": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v37-repeat.json",
+      "sha256": "9d05afaf784752a33dd67324d32ff5087b47133cba59daf5d4b068e254f54578"
+    },
+    "summary": {
+      "baseline": {
+        "fps": 54.67213204829952,
+        "frameMs": {
+          "count": 2187,
+          "mean": 18.29049839963093,
+          "p50": 17.984999999403954,
+          "p95": 24.61999998986721,
+          "p99": 26.37999999523163,
+          "low1Fps": 29.999727276889036,
+          "over33ms": 9
+        }
+      },
+      "all": {
+        "fps": 55.74289209416539,
+        "frameMs": {
+          "count": 2229,
+          "mean": 17.934791386261175,
+          "p50": 17.094999998807907,
+          "p95": 24.80000001192093,
+          "p99": 26.50499999523163,
+          "low1Fps": 30.20552892555004,
+          "over33ms": 11
+        }
+      },
+      "states": {
+        "fps": 55.26880076197234,
+        "frameMs": {
+          "count": 2210,
+          "mean": 18.091031674211383,
+          "p50": 17.299999997019768,
+          "p95": 24.58499999344349,
+          "p99": 26.075000002980232,
+          "low1Fps": 29.526358696031675,
+          "over33ms": 11
+        }
+      },
+      "groups": {
+        "fps": 54.77590709325543,
+        "frameMs": {
+          "count": 2191,
+          "mean": 18.251663623914116,
+          "p50": 17.88000001013279,
+          "p95": 24.760000005364418,
+          "p99": 26.435000002384186,
+          "low1Fps": 30.389678560407052,
+          "over33ms": 9
+        }
+      }
+    },
+    "runs": [
+      {
+        "index": 1,
+        "transport": "baseline",
+        "fps": 54.013527365619,
+        "low1Fps": 29.61407476502412,
+        "rhiWorkMs": 14.24513449832094,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3150.4702702702702,
+          "indirectDrawsPerFrame": 89.78378378378379,
+          "dispatchesPerFrame": 66.52252252252252
+        },
+        "transportConfirmed": [
+          0,
+          0
+        ]
+      },
+      {
+        "index": 2,
+        "transport": "all",
+        "fps": 55.46960265776173,
+        "low1Fps": 30.25032140984679,
+        "rhiWorkMs": 13.7650457588402,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3172.163963963964,
+          "indirectDrawsPerFrame": 91.75135135135135,
+          "dispatchesPerFrame": 66.53423423423423
+        },
+        "transportConfirmed": [
+          1,
+          1
+        ]
+      },
+      {
+        "index": 3,
+        "transport": "states",
+        "fps": 54.99937307709237,
+        "low1Fps": 27.65903947885812,
+        "rhiWorkMs": 13.924148492007554,
+        "workload": {
+          "sampleFrames": 1080,
+          "drawsPerFrame": 3161.4194444444443,
+          "indirectDrawsPerFrame": 90.66666666666667,
+          "dispatchesPerFrame": 66.52777777777777
+        },
+        "transportConfirmed": [
+          1,
+          0
+        ]
+      },
+      {
+        "index": 4,
+        "transport": "groups",
+        "fps": 54.81604146231246,
+        "low1Fps": 32.55593701951947,
+        "rhiWorkMs": 14.052525149113283,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3163.045045045045,
+          "indirectDrawsPerFrame": 91.14594594594594,
+          "dispatchesPerFrame": 66.53063063063063
+        },
+        "transportConfirmed": [
+          0,
+          1
+        ]
+      },
+      {
+        "index": 5,
+        "transport": "groups",
+        "fps": 54.73579491254475,
+        "low1Fps": 28.493718430475116,
+        "rhiWorkMs": 13.989803129739135,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3154.2945945945944,
+          "indirectDrawsPerFrame": 90.08648648648649,
+          "dispatchesPerFrame": 66.52432432432433
+        },
+        "transportConfirmed": [
+          0,
+          1
+        ]
+      },
+      {
+        "index": 6,
+        "transport": "states",
+        "fps": 55.53842023937512,
+        "low1Fps": 31.546985290773215,
+        "rhiWorkMs": 13.80164917260006,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3159.056756756757,
+          "indirectDrawsPerFrame": 90.3891891891892,
+          "dispatchesPerFrame": 66.52612612612613
+        },
+        "transportConfirmed": [
+          1,
+          0
+        ]
+      },
+      {
+        "index": 7,
+        "transport": "all",
+        "fps": 56.0161662355987,
+        "low1Fps": 30.725899374086342,
+        "rhiWorkMs": 13.648079081798217,
+        "workload": {
+          "sampleFrames": 1140,
+          "drawsPerFrame": 3161.9947368421053,
+          "indirectDrawsPerFrame": 91.01052631578948,
+          "dispatchesPerFrame": 66.52982456140352
+        },
+        "transportConfirmed": [
+          1,
+          1
+        ]
+      },
+      {
+        "index": 8,
+        "transport": "baseline",
+        "fps": 55.33035291827237,
+        "low1Fps": 31.064342018261826,
+        "rhiWorkMs": 13.903335974104568,
+        "workload": {
+          "sampleFrames": 1110,
+          "drawsPerFrame": 3162.907207207207,
+          "indirectDrawsPerFrame": 90.69189189189188,
+          "dispatchesPerFrame": 66.52792792792793
+        },
+        "transportConfirmed": [
+          0,
+          0
+        ]
+      }
+    ],
+    "boundary": "Same pthread WASM and Cook for every run; only startup threading/core-limit, WebGPUImmediateCalls, WebGPUScalarPassCalls or WebGPULegacyDescriptors flags vary. Bridge/transport tests retain full threading and the default core count. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation. Optional CPU sampling starts after the measured interval and screenshot."
+  },
+  "micro": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\bridge-extras-shared-final.json",
+      "sha256": "489dc1bdd62d6fc7bf27c280180f5d348d03dcb8cdaf8b9dc440ad512a6b632b"
+    },
+    "sources": [
+      {
+        "file": "draw-api-webgpu.cpp",
+        "sha256": "a40e155b0bd06b3e9056b49e70b343a67da08a53ea8bac01023f42a4bb268474"
+      },
+      {
+        "file": "draw-api-common.h",
+        "sha256": "e91b1de17f887624135eede43bdf7d69595d957cd61daeab70739ad94ad09b07"
+      },
+      {
+        "file": "draw-api-worker.js",
+        "sha256": "45e9b73561b225bda968632fdd102d0f50f6cbe1897ea24d896d782f990ad01e"
+      },
+      {
+        "file": "benchmark-draw-bridge.cjs",
+        "sha256": "ab3dc21c68cfaf1bcb429673ccb940d4b414446509460cd0ae58026bce3b3cbe"
+      },
+      {
+        "file": "build\\draw-api\\draw-wasm.js",
+        "sha256": "d6c517281bfbb215f6810283ea3982466c1a4c7a20c6da530a63aca7a78ffddd"
+      },
+      {
+        "file": "build\\draw-api\\draw-wasm.wasm",
+        "sha256": "3b9e7de502b14e93a677f0ed1ad96aa7be9770e6979eee5c3ca86689ba07754b"
+      },
+      {
+        "file": "build\\draw-api\\build-config.json",
+        "sha256": "691be451ece06cce33d63b7f2239f05d4ec82d5bbed9ec8c117a70047cf94035"
+      },
+      {
+        "file": "..\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h",
+        "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259"
+      },
+      {
+        "file": "..\\..\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebGPUCommandStream.js",
+        "sha256": "dafafc199d75409710a5ae2417696c7572d4472b9c2d51ca892cfef0b971ff32"
+      },
+      {
+        "file": "..\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h",
+        "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58"
+      },
+      {
+        "file": "..\\..\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebGPUPackedDescriptors.js",
+        "sha256": "417c1d8b317724bd70398f3b485842dec75bb7fc93513af83da49ed656ded2b8"
+      }
+    ],
+    "bindGroups": [
+      {
+        "variant": "legacy-both",
+        "counts": [
+          {
+            "entries": 0,
+            "groupsPerSample": 80,
+            "medianMs": 0.070144
+          },
+          {
+            "entries": 1,
+            "groupsPerSample": 80,
+            "medianMs": 0.12032
+          },
+          {
+            "entries": 8,
+            "groupsPerSample": 80,
+            "medianMs": 0.365056
+          },
+          {
+            "entries": 16,
+            "groupsPerSample": 80,
+            "medianMs": 0.609536
+          },
+          {
+            "entries": 32,
+            "groupsPerSample": 80,
+            "medianMs": 1.15507
+          }
+        ]
+      },
+      {
+        "variant": "original",
+        "counts": [
+          {
+            "entries": 0,
+            "groupsPerSample": 80,
+            "medianMs": 0.050176
+          },
+          {
+            "entries": 1,
+            "groupsPerSample": 80,
+            "medianMs": 0.080384
+          },
+          {
+            "entries": 8,
+            "groupsPerSample": 80,
+            "medianMs": 0.235008
+          },
+          {
+            "entries": 16,
+            "groupsPerSample": 80,
+            "medianMs": 0.399872
+          },
+          {
+            "entries": 32,
+            "groupsPerSample": 80,
+            "medianMs": 0.710144
+          }
+        ]
+      }
+    ],
+    "draws": [
+      {
+        "variant": "legacy-both",
+        "cases": [
+          {
+            "draws": 1000,
+            "mode": 0,
+            "totalFrontendMs": 0.054784
+          },
+          {
+            "draws": 1000,
+            "mode": 1,
+            "totalFrontendMs": 0.20505600000000002
+          },
+          {
+            "draws": 1000,
+            "mode": 2,
+            "totalFrontendMs": 0.024576
+          },
+          {
+            "draws": 1000,
+            "mode": 3,
+            "totalFrontendMs": 0.019968
+          },
+          {
+            "draws": 3200,
+            "mode": 0,
+            "totalFrontendMs": 0.08499199999999998
+          },
+          {
+            "draws": 3200,
+            "mode": 1,
+            "totalFrontendMs": 0.6149119999999999
+          },
+          {
+            "draws": 3200,
+            "mode": 2,
+            "totalFrontendMs": 0.019968
+          },
+          {
+            "draws": 3200,
+            "mode": 3,
+            "totalFrontendMs": 0.015104
+          },
+          {
+            "draws": 10000,
+            "mode": 0,
+            "totalFrontendMs": 0.21504
+          },
+          {
+            "draws": 10000,
+            "mode": 1,
+            "totalFrontendMs": 1.904896
+          },
+          {
+            "draws": 10000,
+            "mode": 2,
+            "totalFrontendMs": 0.015104
+          },
+          {
+            "draws": 10000,
+            "mode": 3,
+            "totalFrontendMs": 0.015104
+          }
+        ]
+      },
+      {
+        "variant": "original",
+        "cases": [
+          {
+            "draws": 1000,
+            "mode": 0,
+            "totalFrontendMs": 0.054784
+          },
+          {
+            "draws": 1000,
+            "mode": 1,
+            "totalFrontendMs": 0.205056
+          },
+          {
+            "draws": 1000,
+            "mode": 2,
+            "totalFrontendMs": 0.020224
+          },
+          {
+            "draws": 1000,
+            "mode": 3,
+            "totalFrontendMs": 0.015359999999999999
+          },
+          {
+            "draws": 3200,
+            "mode": 0,
+            "totalFrontendMs": 0.080384
+          },
+          {
+            "draws": 3200,
+            "mode": 1,
+            "totalFrontendMs": 0.6200319999999999
+          },
+          {
+            "draws": 3200,
+            "mode": 2,
+            "totalFrontendMs": 0.015359999999999999
+          },
+          {
+            "draws": 3200,
+            "mode": 3,
+            "totalFrontendMs": 0.015104000000000001
+          },
+          {
+            "draws": 10000,
+            "mode": 0,
+            "totalFrontendMs": 0.219904
+          },
+          {
+            "draws": 10000,
+            "mode": 1,
+            "totalFrontendMs": 1.904896
+          },
+          {
+            "draws": 10000,
+            "mode": 2,
+            "totalFrontendMs": 0.015360000000000002
+          },
+          {
+            "draws": 10000,
+            "mode": 3,
+            "totalFrontendMs": 0.015104
+          }
+        ]
+      }
+    ],
+    "boundary": "Shared-memory WASM64, JSPI, same binary, three rounds in forward/reverse order. Descriptor batches time creation of 80 groups; release and queue completion are outside that timer. Groups are not used by benchmark draws. GPU preflights run separately from timed draws."
+  },
+  "equivalence": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\bridge-extras-equivalence-v2.json",
+      "sha256": "295bb9be410861ab478965f67853ec8f2779657f5d94c75ab755545ff005da6c"
+    },
+    "variants": [
+      "legacy-both",
+      "legacy-states",
+      "legacy-groups",
+      "original"
+    ],
+    "runs": [
+      {
+        "variant": "legacy-both",
+        "passes": 984,
+        "preflightPasses": 2,
+        "groupDescriptors": {
+          "hash": 2743672740,
+          "calls": 18868
+        }
+      },
+      {
+        "variant": "legacy-states",
+        "passes": 984,
+        "preflightPasses": 2,
+        "groupDescriptors": {
+          "hash": 2743672740,
+          "calls": 18868
+        }
+      },
+      {
+        "variant": "legacy-groups",
+        "passes": 984,
+        "preflightPasses": 2,
+        "groupDescriptors": {
+          "hash": 2743672740,
+          "calls": 18868
+        }
+      },
+      {
+        "variant": "original",
+        "passes": 984,
+        "preflightPasses": 2,
+        "groupDescriptors": {
+          "hash": 2743672740,
+          "calls": 18868
+        }
+      }
+    ]
+  },
+  "correctness": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v38-views.json",
+      "sha256": "d30940cbc9c5a12dfd91fbf34ba1ca6da6d41d8cf55a0f70bfcbe7ad63729eb9"
+    },
+    "views": 6,
+    "errors": []
+  },
+  "imports": [
+    {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\bridge-import-audit-v37-baseline.json",
+        "sha256": "18a223341f82482722df67ee91ba3dd05417101fcc9e8c7ae21facc8b12ffee5"
+      },
+      "transport": "baseline",
+      "frames": 399,
+      "importsPerFrame": 4002.6791979949876,
+      "bigintArgumentsPerFrame": 4611.077694235589,
+      "viewChecksPerFrame": 18059.626566416042,
+      "ranking": [
+        {
+          "name": "ueWGPUReplay",
+          "count": 357289,
+          "bigintArguments": 0,
+          "viewChecks": 872649,
+          "lookups": 3836150,
+          "perFrame": 895.4611528822055
+        },
+        {
+          "name": "emwgpuDelete",
+          "count": 200998,
+          "bigintArguments": 200998,
+          "viewChecks": 0,
+          "lookups": 0,
+          "perFrame": 503.7543859649123
+        },
+        {
+          "name": "wgpuRenderPassEncoderBeginOcclusionQuery",
+          "count": 150713,
+          "bigintArguments": 150713,
+          "viewChecks": 0,
+          "lookups": 150713,
+          "perFrame": 377.7268170426065
+        },
+        {
+          "name": "wgpuRenderPassEncoderEndOcclusionQuery",
+          "count": 150713,
+          "bigintArguments": 150713,
+          "viewChecks": 0,
+          "lookups": 150713,
+          "perFrame": 377.7268170426065
+        },
+        {
+          "name": "wgpuCommandEncoderBeginRenderPass",
+          "count": 110152,
+          "bigintArguments": 220304,
+          "viewChecks": 2328182,
+          "lookups": 461973,
+          "perFrame": 276.0701754385965
+        },
+        {
+          "name": "wgpuRenderPassEncoderEnd",
+          "count": 110152,
+          "bigintArguments": 110152,
+          "viewChecks": 0,
+          "lookups": 110152,
+          "perFrame": 276.0701754385965
+        },
+        {
+          "name": "wgpuRenderPassEncoderSetViewport",
+          "count": 101773,
+          "bigintArguments": 101773,
+          "viewChecks": 0,
+          "lookups": 101773,
+          "perFrame": 255.0701754385965
+        },
+        {
+          "name": "wgpuRenderPassEncoderSetStencilReference",
+          "count": 100975,
+          "bigintArguments": 100975,
+          "viewChecks": 0,
+          "lookups": 100975,
+          "perFrame": 253.0701754385965
+        },
+        {
+          "name": "wgpuRenderPassEncoderSetScissorRect",
+          "count": 34611,
+          "bigintArguments": 34611,
+          "viewChecks": 0,
+          "lookups": 34611,
+          "perFrame": 86.74436090225564
+        },
+        {
+          "name": "wgpuDeviceCreateBindGroup",
+          "count": 31594,
+          "bigintArguments": 63188,
+          "viewChecks": 3675722,
+          "lookups": 612714,
+          "perFrame": 79.1829573934837
+        },
+        {
+          "name": "wgpuCommandEncoderBeginComputePass",
+          "count": 26540,
+          "bigintArguments": 53080,
+          "viewChecks": 0,
+          "lookups": 26540,
+          "perFrame": 66.51629072681705
+        },
+        {
+          "name": "wgpuComputePassEncoderSetPipeline",
+          "count": 26540,
+          "bigintArguments": 53080,
+          "viewChecks": 0,
+          "lookups": 53080,
+          "perFrame": 66.51629072681705
+        },
+        {
+          "name": "wgpuComputePassEncoderSetBindGroup",
+          "count": 26540,
+          "bigintArguments": 106160,
+          "viewChecks": 22151,
+          "lookups": 53080,
+          "perFrame": 66.51629072681705
+        },
+        {
+          "name": "wgpuComputePassEncoderEnd",
+          "count": 26540,
+          "bigintArguments": 26540,
+          "viewChecks": 0,
+          "lookups": 26540,
+          "perFrame": 66.51629072681705
+        },
+        {
+          "name": "wgpuComputePassEncoderDispatchWorkgroups",
+          "count": 21752,
+          "bigintArguments": 21752,
+          "viewChecks": 0,
+          "lookups": 21752,
+          "perFrame": 54.51629072681704
+        },
+        {
+          "name": "emwgpuDeviceCreateBuffer",
+          "count": 21559,
+          "bigintArguments": 64677,
+          "viewChecks": 150913,
+          "lookups": 21559,
+          "perFrame": 54.03258145363409
+        },
+        {
+          "name": "wgpuQueueWriteBuffer",
+          "count": 20362,
+          "bigintArguments": 101810,
+          "viewChecks": 20362,
+          "lookups": 40724,
+          "perFrame": 51.03258145363409
+        },
+        {
+          "name": "wgpuCommandEncoderCopyBufferToBuffer",
+          "count": 18766,
+          "bigintArguments": 112596,
+          "viewChecks": 0,
+          "lookups": 56298,
+          "perFrame": 47.03258145363409
+        },
+        {
+          "name": "_emscripten_receive_on_main_thread_js",
+          "count": 6801,
+          "bigintArguments": 34005,
+          "viewChecks": 29716,
+          "lookups": 0,
+          "perFrame": 17.045112781954888
+        },
+        {
+          "name": "emscripten_get_now",
+          "count": 6795,
+          "bigintArguments": 0,
+          "viewChecks": 0,
+          "lookups": 0,
+          "perFrame": 17.030075187969924
+        },
+        {
+          "name": "wgpuCommandEncoderClearBuffer",
+          "count": 5985,
+          "bigintArguments": 23940,
+          "viewChecks": 0,
+          "lookups": 11970,
+          "perFrame": 15
+        },
+        {
+          "name": "wgpuCommandEncoderCopyTextureToTexture",
+          "count": 5343,
+          "bigintArguments": 21372,
+          "viewChecks": 80145,
+          "lookups": 16029,
+          "perFrame": 13.390977443609023
+        },
+        {
+          "name": "wgpuComputePassEncoderDispatchWorkgroupsIndirect",
+          "count": 4788,
+          "bigintArguments": 14364,
+          "viewChecks": 0,
+          "lookups": 9576,
+          "perFrame": 12
+        },
+        {
+          "name": "wgpuCommandEncoderFinish",
+          "count": 4579,
+          "bigintArguments": 9158,
+          "viewChecks": 0,
+          "lookups": 4579,
+          "perFrame": 11.476190476190476
+        },
+        {
+          "name": "wgpuQueueSubmit",
+          "count": 4579,
+          "bigintArguments": 13737,
+          "viewChecks": 4579,
+          "lookups": 9158,
+          "perFrame": 11.476190476190476
+        },
+        {
+          "name": "wgpuDeviceCreateCommandEncoder",
+          "count": 4579,
+          "bigintArguments": 9158,
+          "viewChecks": 0,
+          "lookups": 4579,
+          "perFrame": 11.476190476190476
+        },
+        {
+          "name": "emscripten_asm_const_int",
+          "count": 4473,
+          "bigintArguments": 13419,
+          "viewChecks": 17781,
+          "lookups": 0,
+          "perFrame": 11.210526315789474
+        },
+        {
+          "name": "emscripten_set_immediate",
+          "count": 3199,
+          "bigintArguments": 6398,
+          "viewChecks": 0,
+          "lookups": 0,
+          "perFrame": 8.017543859649123
+        },
+        {
+          "name": "emwgpuBufferMapAsync",
+          "count": 1596,
+          "bigintArguments": 7980,
+          "viewChecks": 0,
+          "lookups": 1596,
+          "perFrame": 4
+        },
+        {
+          "name": "emwgpuBufferGetConstMappedRange",
+          "count": 1596,
+          "bigintArguments": 4788,
+          "viewChecks": 1596,
+          "lookups": 1596,
+          "perFrame": 4
+        },
+        {
+          "name": "emwgpuBufferUnmap",
+          "count": 1596,
+          "bigintArguments": 1596,
+          "viewChecks": 0,
+          "lookups": 1596,
+          "perFrame": 4
+        },
+        {
+          "name": "wgpuComputePipelineGetBindGroupLayout",
+          "count": 1197,
+          "bigintArguments": 1197,
+          "viewChecks": 0,
+          "lookups": 1197,
+          "perFrame": 3
+        },
+        {
+          "name": "emwgpuQueueOnSubmittedWorkDone",
+          "count": 1197,
+          "bigintArguments": 2394,
+          "viewChecks": 0,
+          "lookups": 1197,
+          "perFrame": 3
+        },
+        {
+          "name": "wgpuDeviceCreateQuerySet",
+          "count": 399,
+          "bigintArguments": 798,
+          "viewChecks": 1197,
+          "lookups": 399,
+          "perFrame": 1
+        },
+        {
+          "name": "wgpuCommandEncoderResolveQuerySet",
+          "count": 399,
+          "bigintArguments": 1596,
+          "viewChecks": 0,
+          "lookups": 1197,
+          "perFrame": 1
+        }
+      ],
+      "nativePerFrame": {
+        "end": 276.0701754385965,
+        "setViewport": 255.0701754385965,
+        "setPipeline": 590.5989974937344,
+        "setStencilReference": 253.0701754385965,
+        "setVertexBuffer": 8031.789473684211,
+        "setBindGroup": 1332.6942355889723,
+        "setIndexBuffer": 2242.3959899749375,
+        "drawIndexed": 3008.2932330827066,
+        "beginOcclusionQuery": 377.7268170426065,
+        "endOcclusionQuery": 377.7268170426065,
+        "draw": 47.87218045112782,
+        "setScissorRect": 86.74436090225564,
+        "drawIndexedIndirect": 88.73684210526316
+      },
+      "groupEntryHistogram": {
+        "2": 1965,
+        "4": 1354,
+        "5": 1371,
+        "7": 576,
+        "9": 1486,
+        "11": 399,
+        "12": 399,
+        "14": 764,
+        "16": 574,
+        "17": 399,
+        "18": 191,
+        "19": 591,
+        "20": 14134,
+        "22": 4775,
+        "28": 399,
+        "30": 2217
+      },
+      "boundary": "Import and helper instrumentation, default spawn and project settings. Counts apply to the WebGPU owner only. Measured FPS and wall durations are perturbed and must not be used for speedup claims."
+    },
+    {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\bridge-import-audit-v37-all.json",
+        "sha256": "770b01fd32cae75ddb9c82214dcb6132409a5c28222c40592dec1dddd55da305"
+      },
+      "transport": "all",
+      "frames": 427,
+      "importsPerFrame": 2024.9484777517564,
+      "bigintArgumentsPerFrame": 3099.6697892271663,
+      "viewChecksPerFrame": 8274,
+      "ranking": [
+        {
+          "name": "emwgpuDelete",
+          "count": 215467,
+          "bigintArguments": 215467,
+          "viewChecks": 0,
+          "lookups": 0,
+          "perFrame": 504.60655737704917
+        },
+        {
+          "name": "wgpuCommandEncoderBeginRenderPass",
+          "count": 117560,
+          "bigintArguments": 235120,
+          "viewChecks": 2485222,
+          "lookups": 493137,
+          "perFrame": 275.3161592505855
+        },
+        {
+          "name": "wgpuRenderPassEncoderEnd",
+          "count": 117560,
+          "bigintArguments": 117560,
+          "viewChecks": 0,
+          "lookups": 117560,
+          "perFrame": 275.3161592505855
+        },
+        {
+          "name": "ueWGPUReplay",
+          "count": 113938,
+          "bigintArguments": 0,
+          "viewChecks": 663094,
+          "lookups": 3662682,
+          "perFrame": 266.8337236533958
+        },
+        {
+          "name": "ueWGPUCreatePackedBindGroup",
+          "count": 34508,
+          "bigintArguments": 0,
+          "viewChecks": 34508,
+          "lookups": 669297,
+          "perFrame": 80.81498829039812
+        },
+        {
+          "name": "wgpuCommandEncoderBeginComputePass",
+          "count": 28396,
+          "bigintArguments": 56792,
+          "viewChecks": 0,
+          "lookups": 28396,
+          "perFrame": 66.50117096018735
+        },
+        {
+          "name": "wgpuComputePassEncoderSetPipeline",
+          "count": 28396,
+          "bigintArguments": 56792,
+          "viewChecks": 0,
+          "lookups": 56792,
+          "perFrame": 66.50117096018735
+        },
+        {
+          "name": "wgpuComputePassEncoderSetBindGroup",
+          "count": 28396,
+          "bigintArguments": 113584,
+          "viewChecks": 23699,
+          "lookups": 56792,
+          "perFrame": 66.50117096018735
+        },
+        {
+          "name": "wgpuComputePassEncoderEnd",
+          "count": 28396,
+          "bigintArguments": 28396,
+          "viewChecks": 0,
+          "lookups": 28396,
+          "perFrame": 66.50117096018735
+        },
+        {
+          "name": "wgpuComputePassEncoderDispatchWorkgroups",
+          "count": 23272,
+          "bigintArguments": 23272,
+          "viewChecks": 0,
+          "lookups": 23272,
+          "perFrame": 54.50117096018735
+        },
+        {
+          "name": "emwgpuDeviceCreateBuffer",
+          "count": 23053,
+          "bigintArguments": 69159,
+          "viewChecks": 161371,
+          "lookups": 23053,
+          "perFrame": 53.988290398126466
+        },
+        {
+          "name": "wgpuQueueWriteBuffer",
+          "count": 21772,
+          "bigintArguments": 108860,
+          "viewChecks": 21772,
+          "lookups": 43544,
+          "perFrame": 50.988290398126466
+        },
+        {
+          "name": "wgpuCommandEncoderCopyBufferToBuffer",
+          "count": 20064,
+          "bigintArguments": 120384,
+          "viewChecks": 0,
+          "lookups": 60192,
+          "perFrame": 46.988290398126466
+        },
+        {
+          "name": "emscripten_get_now",
+          "count": 7445,
+          "bigintArguments": 0,
+          "viewChecks": 0,
+          "lookups": 0,
+          "perFrame": 17.43559718969555
+        },
+        {
+          "name": "_emscripten_receive_on_main_thread_js",
+          "count": 7262,
+          "bigintArguments": 36310,
+          "viewChecks": 31736,
+          "lookups": 0,
+          "perFrame": 17.007025761124122
+        },
+        {
+          "name": "wgpuCommandEncoderClearBuffer",
+          "count": 6405,
+          "bigintArguments": 25620,
+          "viewChecks": 0,
+          "lookups": 12810,
+          "perFrame": 15
+        },
+        {
+          "name": "wgpuCommandEncoderCopyTextureToTexture",
+          "count": 5563,
+          "bigintArguments": 22252,
+          "viewChecks": 83445,
+          "lookups": 16689,
+          "perFrame": 13.028103044496486
+        },
+        {
+          "name": "wgpuComputePassEncoderDispatchWorkgroupsIndirect",
+          "count": 5124,
+          "bigintArguments": 15372,
+          "viewChecks": 0,
+          "lookups": 10248,
+          "perFrame": 12
+        },
+        {
+          "name": "wgpuCommandEncoderFinish",
+          "count": 4904,
+          "bigintArguments": 9808,
+          "viewChecks": 0,
+          "lookups": 4904,
+          "perFrame": 11.484777517564403
+        },
+        {
+          "name": "wgpuQueueSubmit",
+          "count": 4904,
+          "bigintArguments": 14712,
+          "viewChecks": 4904,
+          "lookups": 9808,
+          "perFrame": 11.484777517564403
+        },
+        {
+          "name": "wgpuDeviceCreateCommandEncoder",
+          "count": 4903,
+          "bigintArguments": 9806,
+          "viewChecks": 0,
+          "lookups": 4903,
+          "perFrame": 11.482435597189696
+        },
+        {
+          "name": "emscripten_asm_const_int",
+          "count": 4874,
+          "bigintArguments": 14622,
+          "viewChecks": 19298,
+          "lookups": 0,
+          "perFrame": 11.414519906323186
+        },
+        {
+          "name": "emscripten_set_immediate",
+          "count": 3508,
+          "bigintArguments": 7016,
+          "viewChecks": 0,
+          "lookups": 0,
+          "perFrame": 8.215456674473067
+        },
+        {
+          "name": "emwgpuBufferMapAsync",
+          "count": 1708,
+          "bigintArguments": 8540,
+          "viewChecks": 0,
+          "lookups": 1708,
+          "perFrame": 4
+        },
+        {
+          "name": "emwgpuBufferGetConstMappedRange",
+          "count": 1708,
+          "bigintArguments": 5124,
+          "viewChecks": 1708,
+          "lookups": 1708,
+          "perFrame": 4
+        },
+        {
+          "name": "emwgpuBufferUnmap",
+          "count": 1708,
+          "bigintArguments": 1708,
+          "viewChecks": 0,
+          "lookups": 1708,
+          "perFrame": 4
+        },
+        {
+          "name": "wgpuComputePipelineGetBindGroupLayout",
+          "count": 1281,
+          "bigintArguments": 1281,
+          "viewChecks": 0,
+          "lookups": 1281,
+          "perFrame": 3
+        },
+        {
+          "name": "emwgpuQueueOnSubmittedWorkDone",
+          "count": 1281,
+          "bigintArguments": 2562,
+          "viewChecks": 0,
+          "lookups": 1281,
+          "perFrame": 3
+        },
+        {
+          "name": "wgpuDeviceCreateQuerySet",
+          "count": 427,
+          "bigintArguments": 854,
+          "viewChecks": 1281,
+          "lookups": 427,
+          "perFrame": 1
+        },
+        {
+          "name": "wgpuCommandEncoderResolveQuerySet",
+          "count": 427,
+          "bigintArguments": 1708,
+          "viewChecks": 0,
+          "lookups": 1281,
+          "perFrame": 1
+        },
+        {
+          "name": "wgpuSurfaceGetCurrentTexture",
+          "count": 427,
+          "bigintArguments": 854,
+          "viewChecks": 854,
+          "lookups": 427,
+          "perFrame": 1
+        },
+        {
+          "name": "emscripten_date_now",
+          "count": 4,
+          "bigintArguments": 0,
+          "viewChecks": 0,
+          "lookups": 0,
+          "perFrame": 0.00936768149882904
+        },
+        {
+          "name": "_gmtime_js",
+          "count": 4,
+          "bigintArguments": 8,
+          "viewChecks": 32,
+          "lookups": 0,
+          "perFrame": 0.00936768149882904
+        },
+        {
+          "name": "wgpuDeviceCreateTexture",
+          "count": 4,
+          "bigintArguments": 8,
+          "viewChecks": 52,
+          "lookups": 4,
+          "perFrame": 0.00936768149882904
+        },
+        {
+          "name": "wgpuTextureCreateView",
+          "count": 4,
+          "bigintArguments": 8,
+          "viewChecks": 22,
+          "lookups": 4,
+          "perFrame": 0.00936768149882904
+        }
+      ],
+      "nativePerFrame": {
+        "end": 275.3161592505855,
+        "setViewport": 254.31615925058549,
+        "setPipeline": 588.1709601873537,
+        "setStencilReference": 252.31615925058549,
+        "setVertexBuffer": 7989.63700234192,
+        "setBindGroup": 1327.0843091334896,
+        "setIndexBuffer": 2232.9648711943796,
+        "drawIndexed": 2990.255269320843,
+        "beginOcclusionQuery": 369.40749414519905,
+        "endOcclusionQuery": 369.40749414519905,
+        "draw": 47.6463700234192,
+        "setScissorRect": 86.2927400468384,
+        "drawIndexedIndirect": 86.19672131147541
+      },
+      "groupEntryHistogram": {
+        "2": 2121,
+        "4": 1477,
+        "5": 1484,
+        "7": 630,
+        "9": 1628,
+        "11": 427,
+        "12": 427,
+        "14": 840,
+        "16": 630,
+        "17": 427,
+        "18": 210,
+        "19": 637,
+        "20": 15540,
+        "22": 5250,
+        "28": 427,
+        "30": 2353
+      },
+      "boundary": "Import and helper instrumentation, default spawn and project settings. Counts apply to the WebGPU owner only. Measured FPS and wall durations are perturbed and must not be used for speedup claims."
+    }
+  ],
+  "environment": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v37-repeat-environment.jsonl",
+      "sha256": "f35f181455a790b87f3a3fc29d18db4d078f2a711d4fb1a000dde45c0f6d971b"
+    },
+    "samples": 82,
+    "blockers": [],
+    "backgroundProcesses": [
+      "TGitCache",
+      "oopz",
+      "Aac3572MbHal_x86",
+      "RuntimeBroker",
+      "node",
+      "cloudmusic",
+      "pwsh",
+      "ChatGPT",
+      "python",
+      "SearchHost",
+      "SecurityHealthSystray"
+    ],
+    "boundary": "Background programs remain running. No exclusive-machine claim. Process monitor does not measure per-thread frequency or prove the cause of earlier environmental slowdowns.",
+    "final": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v38-environment.jsonl",
+        "sha256": "d611c9f21263ed9f99303bedde4bae9dc7897c4364c98bd662dab22098cd5536"
+      },
+      "samples": 44,
+      "backgroundProcesses": [
+        "oopz",
+        "Aac3572MbHal_x86",
+        "RuntimeBroker",
+        "SDKDNS",
+        "cloudmusic",
+        "TGitCache",
+        "node",
+        "python",
+        "pwsh",
+        "ChatGPT",
+        "SecurityHealthSystray"
+      ]
+    }
+  },
+  "profile": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v38-views-owner-analysis.json",
+      "sha256": "6a028f6640855f3aaa29406ab5564df1104b5948f128ec92e7abe336477f85d9"
+    },
+    "profiles": [
+      {
+        "role": "RHI",
+        "categories": {
+          "idle": {
+            "ms": 1268.081,
+            "percent": 20.82673574744893
+          },
+          "mutexWait": {
+            "ms": 411.673,
+            "percent": 6.7612437891266755
+          },
+          "conditionWait": {
+            "ms": 0,
+            "percent": 0
+          },
+          "allocationPath": {
+            "ms": 758.426,
+            "percent": 12.456253098969782
+          },
+          "allocationMutexWait": {
+            "ms": 191.187,
+            "percent": 3.140021124318966
+          },
+          "groupPreparation": {
+            "ms": 1456.152,
+            "percent": 23.915580244573693
+          },
+          "resourceCommit": {
+            "ms": 98.456,
+            "percent": 1.6170237506522311
+          },
+          "dynamicCommandReplay": {
+            "ms": 549.787,
+            "percent": 9.029603445192148
+          },
+          "proxyPath": {
+            "ms": 0,
+            "percent": 0
+          },
+          "bindings": {
+            "ms": 1728.763,
+            "percent": 28.392894595035372
+          },
+          "vertexBindingBridge": {
+            "ms": 485.56,
+            "percent": 7.974750674074686
+          },
+          "waitForRHIFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "self": [
+          {
+            "id": 110,
+            "name": "(idle)",
+            "ms": 1268.081,
+            "percent": 20.82673574744893
+          },
+          {
+            "id": 94,
+            "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+            "ms": 340.087,
+            "percent": 5.585528117007245
+          },
+          {
+            "id": 196,
+            "name": "setVertexBuffer",
+            "ms": 110.345,
+            "percent": 1.8122865621772206
+          },
+          {
+            "id": 350,
+            "name": "unsigned int UEWebGPUStream::Stream::object<WGPUBufferImpl>(WGPUBufferImpl*, UEWebGPUStream::Kind)",
+            "ms": 104.193,
+            "percent": 1.7112472134934176
+          },
+          {
+            "id": 260,
+            "name": "beginRenderPass",
+            "ms": 101.548,
+            "percent": 1.667806206135053
+          },
+          {
+            "id": 97,
+            "name": "FWebGPUDynamicRHI::RHISetStreamSource(unsigned int, FRHIBuffer*, unsigned int)",
+            "ms": 89.449,
+            "percent": 1.469094392135486
+          },
+          {
+            "id": 18,
+            "name": "FMemory::Realloc(void*, unsigned long, unsigned int)",
+            "ms": 81.685,
+            "percent": 1.3415798435039763
+          },
+          {
+            "id": 215,
+            "name": "setVertexBuffer",
+            "ms": 80.81,
+            "percent": 1.3272089998599048
+          },
+          {
+            "id": 169,
+            "name": "createBindGroup",
+            "ms": 75.478,
+            "percent": 1.2396371846482601
+          },
+          {
+            "id": 126,
+            "name": "FWebGPUDynamicRHI::CommitShaderResources(FWebGPUShaderData&)",
+            "ms": 74.959,
+            "percent": 1.231113221389662
+          },
+          {
+            "id": 86,
+            "name": "FWebGPUDynamicRHI::SetDrawBindings(TArray<FWebGPUResolvedGroup, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>>*)",
+            "ms": 61.538,
+            "percent": 1.010689115621567
+          },
+          {
+            "id": 103,
+            "name": "",
+            "ms": 52.575,
+            "percent": 0.8634824052423523
+          },
+          {
+            "id": 128,
+            "name": "unsigned int UEWebGPUStream::Stream::object<WGPUBufferImpl>(WGPUBufferImpl*, UEWebGPUStream::Kind)",
+            "ms": 48.146,
+            "percent": 0.7907413006713894
+          },
+          {
+            "id": 182,
+            "name": "_ueWGPUReplay",
+            "ms": 46.319,
+            "percent": 0.7607349791425682
+          },
+          {
+            "id": 304,
+            "name": "_do_futex_wait",
+            "ms": 44.795,
+            "percent": 0.7357050754699225
+          }
+        ]
+      }
+    ],
+    "boundary": "Statistical wall-clock stack sampling. Inclusive values overlap; idle, futex and CPU compute are distinct. FPS from these captures is not the normal benchmark."
+  },
+  "earlierEnvironmentSensitiveRun": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-bridge-extras-v37-six.json",
+      "sha256": "d4a799711a287c413326ba185ae421457237e2412f346e7b104ea6e58de3e605"
+    },
+    "summary": {
+      "baseline": {
+        "fps": 26.995677317168784,
+        "frameMs": {
+          "count": 1078,
+          "mean": 37.020607606682354,
+          "p50": 35.51500000059605,
+          "p95": 53.570000007748604,
+          "p99": 60.99500000476837,
+          "low1Fps": 14.872703182017693,
+          "over33ms": 593
+        }
+      },
+      "all": {
+        "fps": 25.672216243975313,
+        "frameMs": {
+          "count": 1026,
+          "mean": 38.93061890837974,
+          "p50": 36.820000007748604,
+          "p95": 53.689999997615814,
+          "p99": 63.39000000059605,
+          "low1Fps": 12.793598547958215,
+          "over33ms": 613
+        }
+      },
+      "states": {
+        "fps": 26.616117682179482,
+        "frameMs": {
+          "count": 532,
+          "mean": 37.543599624074716,
+          "p50": 35.82499998807907,
+          "p95": 51.25500001013279,
+          "p99": 56.38000001013279,
+          "low1Fps": 15.682174593899916,
+          "over33ms": 312
+        }
+      },
+      "groups": {
+        "fps": 25.708474386737628,
+        "frameMs": {
+          "count": 514,
+          "mean": 38.87230544746038,
+          "p50": 37.57999999821186,
+          "p95": 51.70499999821186,
+          "p99": 56.520000010728836,
+          "low1Fps": 15.596974185896071,
+          "over33ms": 292
+        }
+      }
+    },
+    "boundary": "Preserved for review; not used for improvement claims. Baseline fell to about 27 FPS, then both old v36 and same v37 baseline recovered above 52 FPS. Background downloads were present during the first set; causation was not isolated."
+  },
+  "sources": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-webgpu-bridge-audit.cjs",
+      "sha256": "9c57b437193d79f43e7b58e447e6d104a63ba742d32c8f1de7c86d3d10d6fa0b"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\audit-webgpu-bridge.cjs",
+      "sha256": "59337df2511ef22bff22ef5a0956d6de2dfa3a0ffc9e37964d6ea212500a0d51"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\benchmark-villa-threading.cjs",
+      "sha256": "cd5f04c5b59b0bc6fe02986f3b012706378ac0aad8fbb7bedd2f2be488bdb984"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\draw-api-webgpu.cpp",
+      "sha256": "a40e155b0bd06b3e9056b49e70b343a67da08a53ea8bac01023f42a4bb268474"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\benchmark-draw-bridge.cjs",
+      "sha256": "7a16d95e80a01d30213c7f6319d64bb87341a79f3d6c212866ac03643aeee2e9"
+    }
+  ]
+}

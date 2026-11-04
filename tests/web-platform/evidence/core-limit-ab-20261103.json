@@ -1,0 +1,1237 @@
+{
+  "date": "2026-11-03T03:55:44.221Z",
+  "pass": true,
+  "summary": [
+    {
+      "cores": 4,
+      "taskWorkers": 3,
+      "repetitions": 2,
+      "frames": 2136,
+      "milliseconds": 40008.37999999523,
+      "fps": 53.3888150432548,
+      "frameMs": {
+        "count": 2134,
+        "mean": 18.73086457357034,
+        "p50": 18.615000002086163,
+        "p95": 24.320000000298023,
+        "p99": 25.785000003874302,
+        "low1Fps": 29.246762915730343,
+        "over33ms": 11
+      },
+      "rhiWorkMs": 14.365826095088144,
+      "resourceProxyCallsPerFrame": 1.0042134831460674,
+      "workload": {
+        "drawsPerFrame": 3134.370892018779,
+        "indirectDrawsPerFrame": 87.73521126760564,
+        "dispatchesPerFrame": 66.51032863849765
+      },
+      "textureResidency": [
+        {
+          "residentMips": 5764,
+          "requestedMips": 5764,
+          "residentBytes": 497762384
+        },
+        {
+          "residentMips": 5762,
+          "requestedMips": 5762,
+          "residentBytes": 497680464
+        }
+      ],
+      "runs": [
+        {
+          "index": 1,
+          "fps": 53.42905581013277,
+          "low1Fps": 28.560671955027754,
+          "rhiWorkMs": 14.332667146473984,
+          "taskWorkers": 3,
+          "workload": {
+            "sampleFrames": 1050,
+            "drawsPerFrame": 3131.2809523809524,
+            "indirectDrawsPerFrame": 87.28,
+            "dispatchesPerFrame": 66.50761904761904
+          }
+        },
+        {
+          "index": 6,
+          "fps": 53.34855958889349,
+          "low1Fps": 29.976836081575165,
+          "rhiWorkMs": 14.399047197307954,
+          "taskWorkers": 3,
+          "workload": {
+            "sampleFrames": 1080,
+            "drawsPerFrame": 3137.375,
+            "indirectDrawsPerFrame": 88.17777777777778,
+            "dispatchesPerFrame": 66.51296296296296
+          }
+        }
+      ],
+      "fpsChangeVs4Percent": 0,
+      "low1ChangeVs4Percent": 0
+    },
+    {
+      "cores": 6,
+      "taskWorkers": 5,
+      "repetitions": 2,
+      "frames": 2043,
+      "milliseconds": 40016.464999996126,
+      "fps": 51.05398490346905,
+      "frameMs": {
+        "count": 2041,
+        "mean": 19.58248897599187,
+        "p50": 18.989999994635582,
+        "p95": 25.649999998509884,
+        "p99": 27.644999995827675,
+        "low1Fps": 29.992716054595835,
+        "over33ms": 9
+      },
+      "rhiWorkMs": 15.308452831199224,
+      "resourceProxyCallsPerFrame": 1.0009789525208028,
+      "workload": {
+        "drawsPerFrame": 3151.5539215686276,
+        "indirectDrawsPerFrame": 89.78823529411764,
+        "dispatchesPerFrame": 66.52254901960784
+      },
+      "textureResidency": [
+        {
+          "residentMips": 5731,
+          "requestedMips": 5731,
+          "residentBytes": 482820176
+        },
+        {
+          "residentMips": 5762,
+          "requestedMips": 5762,
+          "residentBytes": 497680464
+        }
+      ],
+      "runs": [
+        {
+          "index": 2,
+          "fps": 51.16256179541154,
+          "low1Fps": 30.698388335633723,
+          "rhiWorkMs": 15.269273426383734,
+          "taskWorkers": 5,
+          "workload": {
+            "sampleFrames": 1020,
+            "drawsPerFrame": 3150.2401960784314,
+            "indirectDrawsPerFrame": 89.62352941176471,
+            "dispatchesPerFrame": 66.52156862745097
+          }
+        },
+        {
+          "index": 5,
+          "fps": 50.945338501531666,
+          "low1Fps": 29.792535615117124,
+          "rhiWorkMs": 15.347824480395555,
+          "taskWorkers": 5,
+          "workload": {
+            "sampleFrames": 1020,
+            "drawsPerFrame": 3152.8676470588234,
+            "indirectDrawsPerFrame": 89.95294117647059,
+            "dispatchesPerFrame": 66.52352941176471
+          }
+        }
+      ],
+      "fpsChangeVs4Percent": -4.373257091198046,
+      "low1ChangeVs4Percent": 2.55054940956998
+    },
+    {
+      "cores": 8,
+      "taskWorkers": 7,
+      "repetitions": 2,
+      "frames": 1948,
+      "milliseconds": 40004.40000000596,
+      "fps": 48.69464358919793,
+      "frameMs": {
+        "count": 1946,
+        "mean": 20.528715313464893,
+        "p50": 19.75500000268221,
+        "p95": 27.660000003874302,
+        "p99": 29.75,
+        "low1Fps": 28.419990620933703,
+        "over33ms": 11
+      },
+      "rhiWorkMs": 16.220439998031395,
+      "resourceProxyCallsPerFrame": 1.0010266940451746,
+      "workload": {
+        "drawsPerFrame": 3186.4846153846156,
+        "indirectDrawsPerFrame": 94.09846153846154,
+        "dispatchesPerFrame": 66.54820512820513
+      },
+      "textureResidency": [
+        {
+          "residentMips": 5762,
+          "requestedMips": 5762,
+          "residentBytes": 497680464
+        },
+        {
+          "residentMips": 5731,
+          "requestedMips": 5731,
+          "residentBytes": 482820176
+        }
+      ],
+      "runs": [
+        {
+          "index": 3,
+          "fps": 48.643773596973794,
+          "low1Fps": 27.518643880620182,
+          "rhiWorkMs": 16.238950384361527,
+          "taskWorkers": 7,
+          "workload": {
+            "sampleFrames": 960,
+            "drawsPerFrame": 3188.8854166666665,
+            "indirectDrawsPerFrame": 94.4,
+            "dispatchesPerFrame": 66.55
+          }
+        },
+        {
+          "index": 4,
+          "fps": 48.745515412573326,
+          "low1Fps": 29.468100781422258,
+          "rhiWorkMs": 16.20196758172451,
+          "taskWorkers": 7,
+          "workload": {
+            "sampleFrames": 990,
+            "drawsPerFrame": 3184.156565656566,
+            "indirectDrawsPerFrame": 93.80606060606061,
+            "dispatchesPerFrame": 66.54646464646464
+          }
+        }
+      ],
+      "fpsChangeVs4Percent": -8.79242487448677,
+      "low1ChangeVs4Percent": -2.82688479808465
+    }
+  ],
+  "browser": {
+    "version": "156.0.4314.58",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "hardwareConcurrency": 24
+  },
+  "view": {
+    "frame": 877,
+    "width": 1484,
+    "height": 835,
+    "outputWidth": 2289,
+    "outputHeight": 1288,
+    "antiAliasing": 4,
+    "jitterX": 0,
+    "jitterY": 0,
+    "x": 0,
+    "y": 0,
+    "outputX": 0,
+    "outputY": 0,
+    "threadId": 3,
+    "parallelRendering": true
+  },
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 0,
+    "reflections": 0,
+    "virtualShadows": 0,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1
+  },
+  "camera": {
+    "x": 410.7359315721519,
+    "y": -478.05903852213453,
+    "z": 156.64842176437378,
+    "pitch": 0,
+    "yaw": 89.99945068359375
+  },
+  "qualityOverrides": [],
+  "psoPrecache": false,
+  "packageFiles": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-core-limit-v34\\index.html",
+      "sha256": "0baaf9da03518058b439d51cc2c3e38cd90eed77cd1092f52893a5f087c99a96"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-core-limit-v34\\UEWebEngineThreads.js",
+      "sha256": "b65ff4020f56d2c59091fd17aa40266106ebce5321949802b1f7e899d88fe0fa"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-core-limit-v34\\UEWebEngineThreads.wasm",
+      "sha256": "111b0a348192bdefdb152a816736c35823604877cce25b38f5314790b56a30c4"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-core-limit-v34\\config-files.json",
+      "sha256": "3c1f5c00d7266c78990759b194a472c9651d62f14876cb844d1aae469047d982"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-core-limit-v34\\content-files.json",
+      "sha256": "24eeaa97c9a5d8bb98eb2d31b02c56e1f47d4908fe1bae96f2ece1135ee1d4fe"
+    }
+  ],
+  "sources": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\analyze-villa-core-limits.cjs",
+      "sha256": "a09f0e135d915a20fd0cc9cf6aea7792a7584ff92bff6a09c897d574b5dd21e2"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\benchmark-villa-threading.cjs",
+      "sha256": "4d8e3d1a038e1d7d1fb21c037b680db9448fe702c8ab42ef99fd9be26c5e5d29"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\UEWebEngine.cpp",
+      "sha256": "54efd784df7e0a92236cd89174342048c89d81130b46e1d2224d99463b4013a3"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Public\\Web\\WebPlatformMisc.h",
+      "sha256": "1db69572ff03eca3651333edf1d3285944e9b67c5f7fe6ad559aefd3179b90a6"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Source\\Runtime\\Core\\Private\\Web\\WebPlatformMisc.cpp",
+      "sha256": "eacc2e3a1748aa4c66ba6ae60c7437923ff620377d10e6f7611e77dcc85ff436"
+    },
+    {
+      "file": "tests/web-platform/analyze-villa-threading-cpu.cjs",
+      "sha256": "212f4516aa25e89faff00947a2506a4e4b561a88e6d30545bc8c034dde0bc766",
+      "bytes": 3080
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba.json",
+      "sha256": "5e9deb6cc6c4a101b5e0329bf4f8a0a25354a872185d18c83fcab29958ab1df9"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-core-limit-v34-package.json",
+      "sha256": "36c4eb3e692e5ce6d4955b057016f6462cbe701c281873e4f39694ea5d411011"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-core-limit-v34-build.json",
+      "sha256": "2253858b3168d6e2a1c250efae53bea2e9fc108be5b4cfaa7b4913088ba914aa"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-1-full.log",
+      "sha256": "429e797a22a82596a3bfff5f075bf5bc161cd89461de8fa8fc6beb2db5e6c609"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-1-full.png",
+      "sha256": "f3f2055ca8c088a52ab3035875d307c33e713250d709c156f98abb53ba2900d3"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-2-full.log",
+      "sha256": "dea62e9427f40d8fd49f4fe1f0ccbdedcca466bc4a6b34fd732799dab84a4967"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-2-full.png",
+      "sha256": "d96aeab608895dc93d5fee120a5ae132cc6d74ae43befb7ac33b76a1b5e8910e"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-3-full.log",
+      "sha256": "b19a59c6e87af8aab285f711e8ebae6710e739d61d94f77f32e213fee1f559f1"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-3-full.png",
+      "sha256": "248d82cda7f3aa3ac8303b7218b856d520954fdf1fe431f37dbcb5b3b0faacfc"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-4-full.log",
+      "sha256": "84a80a2cfd58858669ee3ee41303791db48571bb3db59a12d574ca428279b7a3"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-4-full.png",
+      "sha256": "1e70529f1cb516a42526238cee164fc79d9c528767e631e88518989fba44feb3"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-5-full.log",
+      "sha256": "769f7ff0c091e9939590c7fe403551b1a7e890b9aaad34c496fa753fd2bc8131"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-5-full.png",
+      "sha256": "b2ef4852f450c8ee47319a72c5b16a3975c7a5fa153acb12e9b9ed9d9ed8c8e2"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-6-full.log",
+      "sha256": "efc98440454fbeebc3ae0cb6a7e38d8494cd5c97971bbfcffacd7c79e3d1c57e"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-6-full.png",
+      "sha256": "00c0bd3bf217957c3fd875962ae985c7ce0e5944223d178633b4f0f5b022ae41"
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-abba-analysis.json",
+      "sha256": "1c62135bacc8c3b6a7149a981eba7e893bef8b6f4e5ccd1d9a6d4fd99e5d1997",
+      "bytes": 12714
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu.json",
+      "sha256": "96212d630bb10652aa1ffdf30cb6e131cf54ec4621faa90d9713205fe8923449",
+      "bytes": 49561
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-preflight.json",
+      "sha256": "cfb993cd0676d18af1c3413f4333be122a0676fb32e4e03869c2899689663861",
+      "bytes": 25133
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-20261103-build1.log",
+      "sha256": "418652aefcfc0bca56f1ad37c4b593f4335444958b040f47a2088b4573281a00",
+      "bytes": 1982
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-20261103-visual-check.jpg",
+      "sha256": "cd9ab4e43d119a692ec56a34d44f2de1d483ee25cb72327493e818d6cddd8a97",
+      "bytes": 96287
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-20261103-environment.jsonl",
+      "sha256": "d13db8376050e75f1e3379e980d6c548f0a4ab74da625442ff017d65d5772028",
+      "bytes": 44253
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-analysis.json",
+      "sha256": "b2b9e93cb4781dc61f2ea0bda3b7cb5c7b7b860bac4157959d10ad365e96acca",
+      "bytes": 559330
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-targets.json",
+      "sha256": "f11df0d092ea3c6ffbf6a81d6c0b51d03be2093df56594ced0133d3e71a1d092",
+      "bytes": 18052
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-0.cpuprofile",
+      "sha256": "5f197d9294e6fa841cf5eb6a634184798b8219f971c3b75bfd84cf36e6c3354a",
+      "bytes": 554938
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-1.cpuprofile",
+      "sha256": "b9ec90ad55b3c8827d5685c36f59dbe98f9288b9a89f553370358102f229010e",
+      "bytes": 33120
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-2.cpuprofile",
+      "sha256": "ab69092b4e35d1e8d3d78ef9601f07e97b275ca7611d7e0f20ba18b0c511aed4",
+      "bytes": 32952
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-3.cpuprofile",
+      "sha256": "3939fc9e52a789a7961aee71095ff6191399159fae18c195350036a2bd9f4be0",
+      "bytes": 32784
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-4.cpuprofile",
+      "sha256": "75a17ea89343467e88eb89f972121730b03f910df8ffa3f8a3c6c488bbd47f2c",
+      "bytes": 32909
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-5.cpuprofile",
+      "sha256": "9b2c2b7496bf647fc4405947a0fdbc639b03ccd485d21edc2a86b5f270f9374c",
+      "bytes": 32728
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-6.cpuprofile",
+      "sha256": "094fc34e246eda73d85bce27ad6d1a62f5de8d5943dabb2fd767ddc7254afac8",
+      "bytes": 32595
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-7.cpuprofile",
+      "sha256": "715d8d7692e4736433801fae6508a78a2d4926d4be0d2480415cae0637c46109",
+      "bytes": 32266
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-8.cpuprofile",
+      "sha256": "af7ff05513c66680ac2942aa55f90dd16d902d7f37d4e0432cda4ed38e6d25cd",
+      "bytes": 32007
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-9.cpuprofile",
+      "sha256": "80db6cf7f293cf11dee4e7f8ba239100a429f4c984250d89536013ade930400e",
+      "bytes": 31762
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-10.cpuprofile",
+      "sha256": "7b1099e21c377e58cbefa8df40f53377c31a3115988314d9ac47aa15db7a03bf",
+      "bytes": 31496
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-11.cpuprofile",
+      "sha256": "34b0ce8cc846ec21850fd8550b39c6f0239324d08e30e5604a5f7334e12908fa",
+      "bytes": 31293
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-12.cpuprofile",
+      "sha256": "2def20a731ec796e25efe37d215ed7732d088c842237c73a69f391381a5c0398",
+      "bytes": 31104
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-13.cpuprofile",
+      "sha256": "5264f0d08d3843c7d0f2888dab39048398c4ed185661a4bc8fddb5db631170b0",
+      "bytes": 30971
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-14.cpuprofile",
+      "sha256": "36aa542ecbf82a95516a97b1203e4f68380eb9cea8f36b6768fe6c4bbede667d",
+      "bytes": 30719
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-15.cpuprofile",
+      "sha256": "d2587122afaf29f8b2c3e72651ff0b6edd9e49ce6be51a1a220c7b3699995ba4",
+      "bytes": 37643
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-16.cpuprofile",
+      "sha256": "0ba57aa22ff1c55eeeead89ce033c8c2f113dcab59f25d2fb9eae7a3de96a744",
+      "bytes": 49221
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-17.cpuprofile",
+      "sha256": "ad3f4cf177dd7213daec890e582611fce9f02e08c109af77a3700e43c4b49c4b",
+      "bytes": 828706
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-18.cpuprofile",
+      "sha256": "a387c4115d133f14a43d315ca6d11f7958f949cdb992e74cda75826ea3768b4f",
+      "bytes": 39985
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-19.cpuprofile",
+      "sha256": "15b7365be6f2ff71b2d96b4bf7dd0942988c7061c23e730b7b378400fd309f90",
+      "bytes": 36432
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-20.cpuprofile",
+      "sha256": "3fe5c7fa2ac4b0e42e06b9aea4c15a9a5a0e2c464bf16c7ca3403904a87ac909",
+      "bytes": 36013
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-21.cpuprofile",
+      "sha256": "59b245423f717bc6040c007e73daa6de82d53192ad58630cf00a1e0cb02e1e5e",
+      "bytes": 35753
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-22.cpuprofile",
+      "sha256": "af612adcf79d367144b528c99d906951dd0127571d7a934c0000c53179ddab68",
+      "bytes": 43745
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-23.cpuprofile",
+      "sha256": "288184e64797f2ce2ea9f7418e6d3ad959397ff04784ccd89a4c3c433a578e13",
+      "bytes": 46945
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-24.cpuprofile",
+      "sha256": "931d475eff47b1f482d8355fc156b80e068cafae21e840ea64aca004c564a95f",
+      "bytes": 41629
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-25.cpuprofile",
+      "sha256": "38d335caa1a9703202e77dd23b02dcaf9e1e60b8f6ba5ea96712f1d02a78245c",
+      "bytes": 34675
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-26.cpuprofile",
+      "sha256": "368a608bc0ab6826676c06d4d24d1c5b64559f3d760e882e639c2cad8113c969",
+      "bytes": 385099
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-27.cpuprofile",
+      "sha256": "49e507914d867edabbf2adbec35a2305b24803cae1ea466161ba3e2e34660b97",
+      "bytes": 414690
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-28.cpuprofile",
+      "sha256": "20505bdcc75475a9bd8214a5e06f3b3a1c99ed1ef66e9c059e68940b8bc1bca0",
+      "bytes": 472555
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-workers-29.cpuprofile",
+      "sha256": "fc8153ebfc22871be36e31815357e0d5ff282e85d12de3415812a7f7a6ce75fd",
+      "bytes": 295801
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-full.log",
+      "sha256": "41a271f1e270ce2e329517f4b2aba5385988ca3f25bc58ff3b9183ea287c1e8b",
+      "bytes": 1856383
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-1-full.png",
+      "sha256": "4a808fd011ace68ec8498804693f6d5ceb8045161287b86c07327fd4e810ee91",
+      "bytes": 3077364
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-analysis.json",
+      "sha256": "0b619f27267c1a94dd0e9799e7c4b023b77b6284cf83782fdddeb83f65180fcf",
+      "bytes": 969356
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-targets.json",
+      "sha256": "b1996b01f67c8bb172a44294d12dd179749970ff539c0c9cce6c5f1ca2e2b7b4",
+      "bytes": 18052
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-0.cpuprofile",
+      "sha256": "a2328d4facaf58a1243eebf64ad4cebedf3507633f3c2532414c7bd27fb50dc0",
+      "bytes": 51992
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-1.cpuprofile",
+      "sha256": "97b1b7b122d31f515548a20b04fcfd48d4d6b0a48a65812d0a874d97ed4da492",
+      "bytes": 42908
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-2.cpuprofile",
+      "sha256": "116a016f4c401f0a87d1a32a4c88cbc3212b1e83706c5f4c81b2b100f8c951ec",
+      "bytes": 39864
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-3.cpuprofile",
+      "sha256": "68b816e5ed27c2a4fcde58c22732cda77ae9331e0a47ed4ea2f53ef470cf99d2",
+      "bytes": 39445
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-4.cpuprofile",
+      "sha256": "3fbd95ea16fadf93b606cde9c896d1f3be945120971d828c25dd3cf96a64a5fb",
+      "bytes": 39203
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-5.cpuprofile",
+      "sha256": "7ebc1085ad113c81fa81dc5ca1042189b6886cde46aae61ff4862715bab1ed0f",
+      "bytes": 32238
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-6.cpuprofile",
+      "sha256": "471f9e3c45c3a16e8e34b81fc5b10fff571c74ffc626ff51faf5324cb9ec30c8",
+      "bytes": 506977
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-7.cpuprofile",
+      "sha256": "88b5dcb81ecee62f13d77053eb36d6c25b419efa9852882bb2e064ff7f0797e4",
+      "bytes": 39191
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-8.cpuprofile",
+      "sha256": "ec25bb58712481b716408fcf163cd6fa7e5dfb1ba2eb4a1d428808066a106b52",
+      "bytes": 49346
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-9.cpuprofile",
+      "sha256": "b8b6c635fa1e85ca93490395ed6d54da9054da6718d3988664d1032e32b314d6",
+      "bytes": 1216504
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-10.cpuprofile",
+      "sha256": "f98a88cee2aac51d4438aa67b32835ba48ad323443a6b79c659c54dd49317cdd",
+      "bytes": 31440
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-11.cpuprofile",
+      "sha256": "496c99b5d976458a6f9d7a063a9084109b6197c406abb16aa39260be2686d911",
+      "bytes": 31565
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-12.cpuprofile",
+      "sha256": "17eaad6722f18e4dca378f6a05b4bd247a3696166bac0e5f4782731fec0bca19",
+      "bytes": 31265
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-13.cpuprofile",
+      "sha256": "259bb9f775d3ae0f232cbee305cb2a4fca62bb18e98a318f74dd2a51238e8d66",
+      "bytes": 31062
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-14.cpuprofile",
+      "sha256": "4a811c0ad02a7d9b2dd345f605d3a3ec4970b7dcb8cbdceaf13284b0863623ed",
+      "bytes": 30866
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-15.cpuprofile",
+      "sha256": "ab683d5fab8a593e7f4ee7e038c6af8ab3f60184f780ffee64583a39eba2a726",
+      "bytes": 30684
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-16.cpuprofile",
+      "sha256": "67683f7f48185438553fb4b29e3587c76cb304d3467cb886bbac758b27e9c430",
+      "bytes": 30509
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-17.cpuprofile",
+      "sha256": "62353a3a74fdec57569dfa2e02eba28a795a3ecd5f2b45c3f9e8d62c9fa25bda",
+      "bytes": 30362
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-18.cpuprofile",
+      "sha256": "a01d910e98f3566b1498d4c4022e8da383a58cc7138e1dd35d33288eb6393b26",
+      "bytes": 30089
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-19.cpuprofile",
+      "sha256": "31f9318a1b039911c2718fd9d40863d458e509a3b5aaa32384ce14e56043d076",
+      "bytes": 318981
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-20.cpuprofile",
+      "sha256": "1527b3b50a2f166207331c4c06d5a1919eae00ea845b5b615973ebf1f0d13818",
+      "bytes": 289609
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-21.cpuprofile",
+      "sha256": "431e65e11ff8fc19be4514333b2f3fe8a4f5d6a1e0e952e4f1150408d7bca606",
+      "bytes": 310521
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-22.cpuprofile",
+      "sha256": "8acbac07b60065a812317df4217140cf6cb42970a9aa23440f32bdba653e0481",
+      "bytes": 313953
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-23.cpuprofile",
+      "sha256": "a3018c89451a400656fafb4d6cbf0a90a5075e572dbfd137cfeb57448f3df469",
+      "bytes": 297862
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-24.cpuprofile",
+      "sha256": "13401f840c71adc90c502c0de5dcd3d919f07c7467c75edfa27917eaf92fa9e3",
+      "bytes": 35235
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-25.cpuprofile",
+      "sha256": "f72763a8719b09a8e933aadfc062f27e5e058feb0d32ab6cee3cac143bf31725",
+      "bytes": 339352
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-26.cpuprofile",
+      "sha256": "232c1ed0b15276e543d2d6c22071a6b18ea2c08b393d91a4976d37c1feff1c43",
+      "bytes": 37950
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-27.cpuprofile",
+      "sha256": "6f695f976947c4af64f2238f0cf735392303cb921765a0ca34469879f26d973d",
+      "bytes": 434614
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-28.cpuprofile",
+      "sha256": "8d2e9a2ea7f861b1e56cbc55cc8d4a7693950a0b250e1a649a698c9df44e7198",
+      "bytes": 455630
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-workers-29.cpuprofile",
+      "sha256": "fe674ea90c86d0e8a100f62a466bbb1447e2916f37591ec52e7c53357fa265dc",
+      "bytes": 46585
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-full.log",
+      "sha256": "5ad1813024b51e086a67adf081191e0c9067527a9d0da95bdc7c40d635537ea4",
+      "bytes": 1842962
+    },
+    {
+      "file": "tests/web-platform/results/core-limit-web-20261103-cpu-2-full.png",
+      "sha256": "d3c3760dd34a32953d1dd722d6c0da0ae682604fa6b85b942795e9a307e5a921",
+      "bytes": 3084059
+    }
+  ],
+  "checks": {
+    "fixedCamera": true,
+    "fixedSettings": true,
+    "fixedResolutionAndAA": true,
+    "textureResidencyStableWithinRuns": true,
+    "textureResidencyEqualAcrossRuns": false,
+    "physicalThreadIDsDistinct": true,
+    "taskWorkerCountsVerified": true,
+    "noRecordedValidationOrFatalErrors": true,
+    "visualComparison": "Inspected default-spawn screenshots for 4/6/8 cores; same camera and scene effects."
+  },
+  "limitations": [
+    "Same pthread WASM and Cook; core limit changes UE task and queued pool sizes, not hardware CPU affinity.",
+    "Core counts are browser-reported logical concurrency, not physical CPU topology.",
+    "Default spawn only; asynchronous visibility and texture streaming can change actual draw work and mip residency between runs. Residency is recorded, not forced by quality overrides.",
+    "1% low uses the reciprocal mean of the slowest 1% frame intervals. RHI frames are completed viewport presents, not display scanout.",
+    "RHI work and proxy counters are approximate snapshots; proxy counter does not include every MAIN_THREAD_EM_ASM call."
+  ],
+  "rendererRevision": {
+    "commit": "d175ae4ae322c3c4873c5a4466d1ffbcc21cd95a",
+    "snapshot": "G:\\UE_HTML\\ue_html\\.tools\\web-renderer-revisions\\d175ae4ae322c3c4873c5a4466d1ffbcc21cd95a",
+    "paths": [
+      "RenderCore/Public/WebShaderPlatform.h",
+      "Renderer/Private/TranslucentLighting.cpp",
+      "Renderer/Private/SystemTextures.cpp"
+    ]
+  },
+  "cpuSampling": {
+    "boundary": "Separate 4/8 runs after normal six-run benchmark. Each worker sampled sequentially, about 6-7 seconds. Percentages include idle/wait; categories overlap. No lock-owner trace or allocator A/B.",
+    "profiles": [
+      {
+        "cores": 4,
+        "threads": [
+          {
+            "role": "RHI",
+            "durationMs": 7157.959,
+            "categories": {
+              "idle": {
+                "ms": 1477.968,
+                "percent": 20.647896977336696
+              },
+              "mutexWait": {
+                "ms": 473.196,
+                "percent": 6.610767119509905
+              },
+              "conditionWait": {
+                "ms": 0,
+                "percent": 0
+              },
+              "allocationPath": {
+                "ms": 650.859,
+                "percent": 9.092801453598714
+              },
+              "proxyPath": {
+                "ms": 0,
+                "percent": 0
+              },
+              "bindings": {
+                "ms": 2380.287,
+                "percent": 33.25371100896219
+              },
+              "vertexBindingBridge": {
+                "ms": 687.352,
+                "percent": 9.602625552898528
+              },
+              "waitForRHIFlush": {
+                "ms": 0,
+                "percent": 0
+              }
+            },
+            "topSelf": [
+              {
+                "id": 144,
+                "name": "(idle)",
+                "ms": 1477.968,
+                "percent": 20.647896977336696
+              },
+              {
+                "id": 114,
+                "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+                "ms": 379.468,
+                "percent": 5.301343581319759
+              },
+              {
+                "id": 169,
+                "name": "bigintToI53Checked",
+                "ms": 239.658,
+                "percent": 3.348133175951413
+              },
+              {
+                "id": 130,
+                "name": "setVertexBuffer",
+                "ms": 234.943,
+                "percent": 3.282262443805559
+              },
+              {
+                "id": 111,
+                "name": "FWebGPUDynamicRHI::SetDrawBindings(TArray<FWebGPUResolvedGroup, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>>*)",
+                "ms": 111.296,
+                "percent": 1.5548566288239427
+              },
+              {
+                "id": 211,
+                "name": "beginRenderPass",
+                "ms": 104.434,
+                "percent": 1.4589913130265206
+              }
+            ]
+          },
+          {
+            "role": "Render",
+            "durationMs": 6468.648,
+            "categories": {
+              "idle": {
+                "ms": 0,
+                "percent": 0
+              },
+              "mutexWait": {
+                "ms": 468.567,
+                "percent": 7.243662044989926
+              },
+              "conditionWait": {
+                "ms": 3896.445,
+                "percent": 60.23584835656539
+              },
+              "allocationPath": {
+                "ms": 1014.578,
+                "percent": 15.684544900263548
+              },
+              "proxyPath": {
+                "ms": 0,
+                "percent": 0
+              },
+              "bindings": {
+                "ms": 0,
+                "percent": 0
+              },
+              "vertexBindingBridge": {
+                "ms": 0,
+                "percent": 0
+              },
+              "waitForRHIFlush": {
+                "ms": 990.249,
+                "percent": 15.308438486682224
+              }
+            },
+            "topSelf": [
+              {
+                "id": 107,
+                "name": "_do_futex_wait",
+                "ms": 2659.981,
+                "percent": 41.121127629761276
+              },
+              {
+                "id": 103,
+                "name": "_do_futex_wait",
+                "ms": 987.217,
+                "percent": 15.261566250010821
+              },
+              {
+                "id": 166,
+                "name": "_do_futex_wait",
+                "ms": 117.662,
+                "percent": 1.818958150142039
+              },
+              {
+                "id": 303,
+                "name": "_do_futex_wait",
+                "ms": 68.558,
+                "percent": 1.0598505282711317
+              },
+              {
+                "id": 25,
+                "name": "__pthread_mutex_timedlock",
+                "ms": 65.875,
+                "percent": 1.018373545754847
+              },
+              {
+                "id": 70,
+                "name": "FProjectedShadowInfo::FinalizeAddSubjectPrimitive(FDynamicShadowsTaskData&, FAddSubjectPrimitiveOp const&, TArrayView<FViewInfo, int>, FFinalizeAddSubjectPrimitiveContext&)",
+                "ms": 47.685,
+                "percent": 0.7371710440883474
+              }
+            ]
+          },
+          {
+            "role": "Game",
+            "durationMs": 5988.539,
+            "categories": {
+              "idle": {
+                "ms": 4918.568,
+                "percent": 82.13302109245677
+              },
+              "mutexWait": {
+                "ms": 47.539,
+                "percent": 0.7938330200404473
+              },
+              "conditionWait": {
+                "ms": 595.741,
+                "percent": 9.948019041038224
+              },
+              "allocationPath": {
+                "ms": 68.861,
+                "percent": 1.1498797953891593
+              },
+              "proxyPath": {
+                "ms": 167.463,
+                "percent": 2.796391573971548
+              },
+              "bindings": {
+                "ms": 0,
+                "percent": 0
+              },
+              "vertexBindingBridge": {
+                "ms": 0,
+                "percent": 0
+              },
+              "waitForRHIFlush": {
+                "ms": 0,
+                "percent": 0
+              }
+            },
+            "topSelf": [
+              {
+                "id": 2,
+                "name": "(idle)",
+                "ms": 4918.568,
+                "percent": 82.13302109245677
+              },
+              {
+                "id": 61,
+                "name": "_do_futex_wait",
+                "ms": 382.022,
+                "percent": 6.379218704261589
+              },
+              {
+                "id": 38,
+                "name": "_do_futex_wait",
+                "ms": 58.444,
+                "percent": 0.9759308572591746
+              },
+              {
+                "id": 30,
+                "name": "_do_futex_wait",
+                "ms": 33.074,
+                "percent": 0.5522882960267939
+              },
+              {
+                "id": 381,
+                "name": "_do_futex_wait",
+                "ms": 22.64,
+                "percent": 0.37805548231379976
+              },
+              {
+                "id": 55,
+                "name": "_do_futex_wait",
+                "ms": 17.888,
+                "percent": 0.2987039075807973
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "cores": 8,
+        "threads": [
+          {
+            "role": "RHI",
+            "durationMs": 6881.227,
+            "categories": {
+              "idle": {
+                "ms": 1506.607,
+                "percent": 21.894452835228368
+              },
+              "mutexWait": {
+                "ms": 675.991,
+                "percent": 9.823698593288668
+              },
+              "conditionWait": {
+                "ms": 0,
+                "percent": 0
+              },
+              "allocationPath": {
+                "ms": 679.807,
+                "percent": 9.879153819515036
+              },
+              "proxyPath": {
+                "ms": 0,
+                "percent": 0
+              },
+              "bindings": {
+                "ms": 2329.503,
+                "percent": 33.853017783020384
+              },
+              "vertexBindingBridge": {
+                "ms": 668.751,
+                "percent": 9.718484799295242
+              },
+              "waitForRHIFlush": {
+                "ms": 0,
+                "percent": 0
+              }
+            },
+            "topSelf": [
+              {
+                "id": 40,
+                "name": "(idle)",
+                "ms": 1506.607,
+                "percent": 21.894452835228368
+              },
+              {
+                "id": 112,
+                "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+                "ms": 293.906,
+                "percent": 4.271127809037544
+              },
+              {
+                "id": 157,
+                "name": "setVertexBuffer",
+                "ms": 233.635,
+                "percent": 3.395252038626251
+              },
+              {
+                "id": 170,
+                "name": "bigintToI53Checked",
+                "ms": 224.472,
+                "percent": 3.26209264713982
+              },
+              {
+                "id": 231,
+                "name": "beginRenderPass",
+                "ms": 121.058,
+                "percent": 1.7592502034884185
+              },
+              {
+                "id": 411,
+                "name": "WebGPU.getJsObject",
+                "ms": 107.127,
+                "percent": 1.5568008438030019
+              }
+            ]
+          },
+          {
+            "role": "Render",
+            "durationMs": 6757.724,
+            "categories": {
+              "idle": {
+                "ms": 0,
+                "percent": 0
+              },
+              "mutexWait": {
+                "ms": 704.178,
+                "percent": 10.420342707100794
+              },
+              "conditionWait": {
+                "ms": 3920.093,
+                "percent": 58.00907228528421
+              },
+              "allocationPath": {
+                "ms": 1239.849,
+                "percent": 18.347138770390742
+              },
+              "proxyPath": {
+                "ms": 3.028,
+                "percent": 0.044807985647238625
+              },
+              "bindings": {
+                "ms": 0,
+                "percent": 0
+              },
+              "vertexBindingBridge": {
+                "ms": 0,
+                "percent": 0
+              },
+              "waitForRHIFlush": {
+                "ms": 1338.26,
+                "percent": 19.80341310180765
+              }
+            },
+            "topSelf": [
+              {
+                "id": 115,
+                "name": "_do_futex_wait",
+                "ms": 2225.079,
+                "percent": 32.926455712011915
+              },
+              {
+                "id": 57,
+                "name": "_do_futex_wait",
+                "ms": 1338.26,
+                "percent": 19.80341310180765
+              },
+              {
+                "id": 66,
+                "name": "_do_futex_wait",
+                "ms": 74.2,
+                "percent": 1.0980028187004973
+              },
+              {
+                "id": 928,
+                "name": "_do_futex_wait",
+                "ms": 69.598,
+                "percent": 1.0299029673304207
+              },
+              {
+                "id": 25,
+                "name": "IsHairVisibilityComputeRasterForwardEnabled(EShaderPlatform)",
+                "ms": 66.586,
+                "percent": 0.9853317477896404
+              },
+              {
+                "id": 942,
+                "name": "_do_futex_wait",
+                "ms": 65.003,
+                "percent": 0.9619067011319196
+              }
+            ]
+          },
+          {
+            "role": "Game",
+            "durationMs": 6237.211,
+            "categories": {
+              "idle": {
+                "ms": 4916.157,
+                "percent": 78.81979621981684
+              },
+              "mutexWait": {
+                "ms": 168.59,
+                "percent": 2.7029709272301354
+              },
+              "conditionWait": {
+                "ms": 694.95,
+                "percent": 11.14199920445212
+              },
+              "allocationPath": {
+                "ms": 185.627,
+                "percent": 2.9761218595939756
+              },
+              "proxyPath": {
+                "ms": 157.852,
+                "percent": 2.5308106459762225
+              },
+              "bindings": {
+                "ms": 0,
+                "percent": 0
+              },
+              "vertexBindingBridge": {
+                "ms": 0,
+                "percent": 0
+              },
+              "waitForRHIFlush": {
+                "ms": 0,
+                "percent": 0
+              }
+            },
+            "topSelf": [
+              {
+                "id": 2,
+                "name": "(idle)",
+                "ms": 4916.157,
+                "percent": 78.81979621981684
+              },
+              {
+                "id": 41,
+                "name": "_do_futex_wait",
+                "ms": 501.041,
+                "percent": 8.03309363752485
+              },
+              {
+                "id": 127,
+                "name": "_do_futex_wait",
+                "ms": 70.652,
+                "percent": 1.132749878110585
+              },
+              {
+                "id": 20,
+                "name": "_do_futex_wait",
+                "ms": 61.465,
+                "percent": 0.9854564804685941
+              },
+              {
+                "id": 261,
+                "name": "_do_futex_wait",
+                "ms": 29.217,
+                "percent": 0.46843052126984325
+              },
+              {
+                "id": 168,
+                "name": "_do_futex_wait",
+                "ms": 28.81,
+                "percent": 0.4619051688326722
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "environment": {
+    "samplesDuringMainMeasurements": 24,
+    "detectedBlockers": [],
+    "note": "Ordinary background apps remained. Monitor detects its named game/editor/compiler process list, not every possible external workload."
+  },
+  "decision": "Keep default reported core limit 4. More workers lowered FPS; sampled mutex waits increased. No claim all regression or the desktop gap comes from one lock.",
+  "referenceEngineCommit": "f4ad8be4e",
+  "workerPolicyClarification": "The generic four-worker game cap does not apply to the current Program target (UE_GAME=0, UE_EDITOR=0, WITH_SERVER_CODE=1). The explicit Web cores-minus-one policy matches its existing generic Program policy. Earlier explanation of an active second cap was corrected; measured 3/5/7 workers remain valid."
+}

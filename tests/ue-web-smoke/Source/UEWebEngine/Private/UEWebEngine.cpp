@@ -78,8 +78,16 @@ bool DesktopRenderer = false;
 bool VisualTestClock = false;
 bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
+bool ImmediateWebGPUCalls = false;
+bool ScalarWebGPUStates = false, LegacyWebGPUDescriptors = false;
+FString RHIExperiment;
 bool PSOPrecacheTest = false;
 bool StartupTrace = false;
+// Diagnostic only: retain the same WASM/Cook while collapsing rendering onto
+// the GPU owner, optionally keeping UE task workers alive.
+int32 ThreadingTest = 0; // 0=normal, 1=serial rendering, 2=no UE worker threads
+bool ThreadingBenchmark = false;
+int32 CoreLimitTest = 0;
 int32 PSOPrecacheConcurrency = 0;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
@@ -1121,7 +1129,15 @@ int32 StartEngine()
         TEXT(" -onethread -norhithread -nosound");
 #endif
     const FString CommandLine = FString(StartupMap()) + ThreadArguments +
+        (CoreLimitTest ? FString::Printf(TEXT(" -corelimit=%d"), CoreLimitTest) : FString()) +
+        (ThreadingBenchmark ? TEXT(" -ini:Engine:[SystemSettings]:r.pso.EnableAsyncCacheConsolidation=0") : TEXT("")) +
+        (ThreadingTest == 1 ? TEXT(" -norenderthread -norhithread") :
+         ThreadingTest == 2 ? TEXT(" -onethread -nothreading -norhithread") : TEXT("")) +
         (ParallelDrawRecording ? TEXT(" -WebParallelDrawRecording") : TEXT("")) +
+        (ImmediateWebGPUCalls ? TEXT(" -WebGPUImmediateCalls") : TEXT("")) +
+        (ScalarWebGPUStates ? TEXT(" -WebGPUScalarPassCalls") : TEXT("")) +
+        (LegacyWebGPUDescriptors ? TEXT(" -WebGPULegacyDescriptors") : TEXT("")) +
+        (RHIExperiment.IsEmpty() ? FString() : TEXT(" -WebRHIExperiment=") + RHIExperiment) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
@@ -1154,16 +1170,17 @@ int32 StartEngine()
     }
 #if UE_WEB_ENGINE_WORKER
     StartupMark("native.threadWitness.begin");
-    check(!emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread());
+    check(!emscripten_is_main_browser_thread());
     std::atomic<uint32> WorkerId{0};
     FEventRef Started;
     auto Task = UE::Tasks::Launch(UE_SOURCE_LOCATION, [&WorkerId, &Started] {
         WorkerId.store(FPlatformTLS::GetCurrentThreadId(), std::memory_order_release);
         Started->Trigger();
     });
-    Started->Wait();
+    if (FPlatformProcess::SupportsMultithreading()) Started->Wait();
     Task.Wait();
-    check(WorkerId.load() && WorkerId.load() != GGameThreadId);
+    check(WorkerId.load());
+    check(!FPlatformProcess::SupportsMultithreading() || WorkerId.load() != GGameThreadId);
     ENQUEUE_RENDER_COMMAND(WebThreadWitness)([](FRHICommandListImmediate& Cmd) {
         RenderWitness.store(FPlatformTLS::GetCurrentThreadId());
         Cmd.EnqueueLambda([](FRHICommandListBase&) { RHIWitness.store(FPlatformTLS::GetCurrentThreadId()); });
@@ -1171,12 +1188,23 @@ int32 StartEngine()
     });
     FlushRenderingCommands();
     StartupMark("native.threadWitness.end");
-    check(RenderWitness.load() && RHIWitness.load() && RenderWitness.load() != RHIWitness.load() &&
-        RenderWitness.load() != GGameThreadId && RHIWitness.load() != GGameThreadId);
+    check(RenderWitness.load() && RHIWitness.load());
+    if (ThreadingTest)
+    {
+        check(!GIsThreadedRendering && !IsRunningRHIInSeparateThread() &&
+            RenderWitness.load() == GGameThreadId && RHIWitness.load() == GGameThreadId);
+    }
+    else
+    {
+        check(RenderWitness.load() != RHIWitness.load() && RenderWitness.load() != GGameThreadId &&
+            RHIWitness.load() != GGameThreadId);
+    }
     std::printf("P3_ENGINE_THREADS {\"sharedMemory\":true,\"engineWorker\":true,"
-        "\"gameThread\":%u,\"taskThread\":%u,\"cores\":%d,\"renderThread\":true,\"rhiThread\":true,"
-        "\"renderThreadId\":%u,\"rhiThreadId\":%u}\n",
-        GGameThreadId, WorkerId.load(), FPlatformMisc::NumberOfCores(), RenderWitness.load(), RHIWitness.load());
+        "\"gameThread\":%u,\"taskThread\":%u,\"cores\":%d,\"renderThread\":%s,\"rhiThread\":%s,"
+        "\"renderThreadId\":%u,\"rhiThreadId\":%u,\"taskWorkers\":%d,\"threadingTest\":%d}\n",
+        GGameThreadId, WorkerId.load(), FPlatformMisc::NumberOfCores(), GIsThreadedRendering ? "true" : "false",
+        IsRunningRHIInSeparateThread() ? "true" : "false", RenderWitness.load(), RHIWitness.load(),
+        FTaskGraphInterface::Get().GetNumWorkerThreads(), ThreadingTest);
 #endif
     if (VisualTestClock)
     {
@@ -1271,8 +1299,35 @@ int main(int argc, char** argv)
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
+        ImmediateWebGPUCalls |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUImmediateCalls") == 0;
+        ScalarWebGPUStates |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUScalarPassCalls") == 0;
+        LegacyWebGPUDescriptors |= FCStringAnsi::Strcmp(argv[Index], "-WebGPULegacyDescriptors") == 0;
+        constexpr const ANSICHAR* RHIExperimentOption = "-WebRHIExperiment=";
+        if (FCStringAnsi::Strncmp(argv[Index], RHIExperimentOption, FCStringAnsi::Strlen(RHIExperimentOption)) == 0)
+        {
+            RHIExperiment = UTF8_TO_TCHAR(argv[Index] + FCStringAnsi::Strlen(RHIExperimentOption));
+            if (RHIExperiment != TEXT("control") && RHIExperiment != TEXT("tick") && RHIExperiment != TEXT("metadata") &&
+                RHIExperiment != TEXT("storage") && RHIExperiment != TEXT("all"))
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED invalid RHI experiment\n");
+                return 1;
+            }
+        }
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
         StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;
+        if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=full") == 0) ThreadingBenchmark = true;
+        if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=render-serial") == 0) { ThreadingTest = 1; ThreadingBenchmark = true; }
+        if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=single") == 0) { ThreadingTest = 2; ThreadingBenchmark = true; }
+        constexpr const ANSICHAR* CoreLimitOption = "-corelimit=";
+        if (FCStringAnsi::Strncmp(argv[Index], CoreLimitOption, FCStringAnsi::Strlen(CoreLimitOption)) == 0)
+        {
+            CoreLimitTest = FCStringAnsi::Atoi(argv[Index] + FCStringAnsi::Strlen(CoreLimitOption));
+            if (CoreLimitTest != 4 && CoreLimitTest != 6 && CoreLimitTest != 8)
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED core-limit test must be 4, 6 or 8\n");
+                return 1;
+            }
+        }
         constexpr const ANSICHAR* PrecacheConcurrencyOption = "-WebPSOPrecacheConcurrency=";
         if (FCStringAnsi::Strncmp(argv[Index], PrecacheConcurrencyOption, FCStringAnsi::Strlen(PrecacheConcurrencyOption)) == 0)
         {
@@ -1307,6 +1362,11 @@ int main(int argc, char** argv)
             return;
         }
 #if UE_WEB_ENGINE_WORKER
+        if (ThreadingTest)
+        {
+            StartEngine();
+            return;
+        }
         FTaskTagScope::SetTagNone();
         pthread_t GameThread;
         pthread_attr_t Attributes;

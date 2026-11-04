@@ -2,6 +2,19 @@
 // The main runtime owns FS, IO, GPU objects and RHI translation. GT/RT are pthreads.
 let initialized = false;
 let frameCounter, lastPresented = 0, presentTimes = [], pipelineEvents = [];
+let browserMetricsReady = false;
+function updateBrowserMetrics(state) {
+  globalThis.__webBrowserState = state;
+  globalThis.devicePixelRatio = state.dpr;
+  // Old immutable runtimes do not export this entry point. New runtimes read
+  // a native shared snapshot, updated before the game thread starts and on
+  // every browser change, without synchronous game -> RHI owner queries.
+  if (browserMetricsReady && typeof Module._WebUpdateBrowserMetrics === 'function') {
+    Module._WebUpdateBrowserMetrics(state.width, state.height, state.dpr);
+    globalThis.__webBrowserMetrics = {width:state.width,height:state.height,dpr:state.dpr,
+      updates:(globalThis.__webBrowserMetrics?.updates||0)+1};
+  }
+}
 const send = (type, values = {}) => postMessage({type, ...values});
 const fail = error => send('failure', {message: error?.stack || error?.message || String(error)});
 const rpcNames = new Set([
@@ -69,18 +82,27 @@ addEventListener('message', event => {
     initialized = true;
     start(message).catch(fail);
   } else if (message.type === 'browser') {
-    globalThis.__webBrowserState = message.state;
-    globalThis.devicePixelRatio = message.state.dpr;
+    updateBrowserMetrics(message.state);
   } else if (message.type === 'inputs') {
     if (globalThis.__webInputBound && globalThis.__webGameThreadWorker)
       globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
+    else if (globalThis.__webInputBound) {
+      globalThis.__webPendingGameCommand = message;
+      try { Module._WebInvokeGameCommand(); send('input-ack'); }
+      finally { globalThis.__webPendingGameCommand = null; }
+    }
     else send('input-ack');
   } else if (message.type === 'rpc') {
     try {
       if (!rpcNames.has(message.name) || !globalThis.__webInputBound)
         throw new Error('Unavailable engine RPC: ' + message.name);
-      if (!globalThis.__webGameThreadWorker) throw new Error('Game thread unavailable');
-      globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
+      if (globalThis.__webGameThreadWorker)
+        globalThis.__webGameThreadWorker.postMessage({type: 'web-game-command', message});
+      else {
+        globalThis.__webPendingGameCommand = message;
+        try { send('rpc', {id: message.id, result: Module._WebInvokeGameCommand()}); }
+        finally { globalThis.__webPendingGameCommand = null; }
+      }
     } catch (error) { send('rpc', {id: message.id, error: error.message}); }
   }
 });
@@ -122,8 +144,7 @@ async function start(message) {
     });
   }
   const versioned = name => name + '?v=' + assets.versions[name];
-  globalThis.__webBrowserState = message.browser;
-  globalThis.devicePixelRatio = message.browser.dpr;
+  updateBrowserMetrics(message.browser);
   globalThis.__webStartupDiagnostics = {mode: message.debug ? 'debug' : 'normal'};
   const requestDevice = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(descriptor) {
@@ -170,7 +191,11 @@ async function start(message) {
     mainScriptUrlOrBlob: new URL(versioned(assets.runtime), location.href).href,
     locateFile: name => name === assets.wasm.url ? versioned(name) : name,
     print, printErr: print, onAbort: fail,
-    onRuntimeInitialized: () => send('stage', {stage: 'engine-starting'}),
+    onRuntimeInitialized: () => {
+      browserMetricsReady = true;
+      updateBrowserMetrics(globalThis.__webBrowserState);
+      send('stage', {stage: 'engine-starting'});
+    },
     preRun: [() => {
       addRunDependency('worker-content');
       (async () => {

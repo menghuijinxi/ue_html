@@ -1,0 +1,3281 @@
+{
+  "date": "2026-11-03T16:27:42.248Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-rhi-hotspots.cjs",
+    "sha256": "39749e662e07d6bad2e915ae06de38ede729be28fbba7a559341b0753b1390a3"
+  },
+  "isolation": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-isolation.json",
+      "sha256": "049ef91e4853537df173c9ff80d68aeec3dc006aa29255fe28f7a1c77b0d6a9d"
+    },
+    "summary": {
+      "control": {
+        "fps": 75.0134496966349,
+        "frameMs": {
+          "count": 3000,
+          "mean": 13.33281333333378,
+          "p50": 13.429999999701977,
+          "p95": 16.62999999895692,
+          "p99": 21.489999998360872,
+          "low1Fps": 30.747786159347218,
+          "over33ms": 12
+        }
+      },
+      "tick": {
+        "fps": 75.82085635833727,
+        "frameMs": {
+          "count": 3032,
+          "mean": 13.189414577836313,
+          "p50": 13.240000000223517,
+          "p95": 16.609999999403954,
+          "p99": 22.169999999925494,
+          "low1Fps": 31.876278907409304,
+          "over33ms": 13
+        }
+      },
+      "metadata": {
+        "fps": 77.33241883687363,
+        "frameMs": {
+          "count": 3093,
+          "mean": 12.922570320077522,
+          "p50": 13.044999999925494,
+          "p95": 16.375,
+          "p99": 20.169999999925494,
+          "low1Fps": 35.112359550529206,
+          "over33ms": 8
+        }
+      },
+      "storage": {
+        "fps": 76.7051333704582,
+        "frameMs": {
+          "count": 3067,
+          "mean": 13.039204434300693,
+          "p50": 13.119999999180436,
+          "p95": 16.615000000223517,
+          "p99": 21.509999999776483,
+          "low1Fps": 30.786801400337072,
+          "over33ms": 14
+        }
+      }
+    },
+    "independent": {
+      "tick": {
+        "fps": 75.82085635833727,
+        "low1": 31.876278907409304,
+        "fpsChangePercent": 1.076349194667947,
+        "lowChangePercent": 3.6701593481032635
+      },
+      "metadata": {
+        "fps": 77.33241883687363,
+        "low1": 35.112359550529206,
+        "fpsChangePercent": 3.0914044742869073,
+        "lowChangePercent": 14.194756554384247
+      },
+      "storage": {
+        "fps": 76.7051333704582,
+        "low1": 30.786801400337072,
+        "fpsChangePercent": 2.2551738130491383,
+        "lowChangePercent": 0.12688796776347822
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "control",
+        "started": "2026-11-03T16:09:40.550Z",
+        "fps": 74.56635193368854,
+        "low1": 32.55950249091252,
+        "rhiWorkMs": 9.699476468339363,
+        "workload": {
+          "sampleFrames": 1500,
+          "drawsPerFrame": 3016.3813333333333,
+          "indirectDrawsPerFrame": 72.784,
+          "dispatchesPerFrame": 66.42133333333334
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 0,
+          "nativeStorageContractUses": 0,
+          "storageDescriptorRevalidations": 0,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4647.215333333334,
+          "bindingEntriesReused": 4305.912666666667,
+          "groupPreparationHits": 3125.2226666666666,
+          "groupFrameMisses": 216.12,
+          "groupAccessMisses": 640.2353333333333,
+          "groupVersionMisses": 728.9406666666666,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4651.282,
+          "bindGroupsCreated": 59.236666666666665
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1168,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 73,
+              "low": 28.23064436445788,
+              "frameMs": 11.110000000000582,
+              "samples": 373,
+              "seconds": 5,
+              "p99Ms": 19.465000000000146,
+              "maxMs": 66.66500000000087,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 75,
+              "low": 29.56720996452428,
+              "frameMs": 17.22499999962747,
+              "samples": 375,
+              "seconds": 5,
+              "p99Ms": 19.52500000037253,
+              "maxMs": 66.5800000000745,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 345,
+              "low": 119.6719580444161,
+              "frameMs": 2.779999999998836,
+              "samples": 1688,
+              "seconds": 5,
+              "p99Ms": 5.580000000001746,
+              "maxMs": 30.540000000000873,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1151,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 25609.395
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 77,
+              "low": 32.738582419383114,
+              "frameMs": 11.115000000005239,
+              "samples": 379,
+              "seconds": 5,
+              "p99Ms": 22.25499999999738,
+              "maxMs": 47.18999999999505,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 74,
+              "low": 31.17085525006946,
+              "frameMs": 13.279999999329448,
+              "samples": 378,
+              "seconds": 5,
+              "p99Ms": 25.595000000670552,
+              "maxMs": 47.25,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 340,
+              "low": 113.22011322012858,
+              "frameMs": 2.805000000000291,
+              "samples": 1678,
+              "seconds": 5,
+              "p99Ms": 5.5899999999965075,
+              "maxMs": 19.44999999999709,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2654,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 45775.785
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "tick",
+        "started": "2026-11-03T16:10:28.726Z",
+        "fps": 75.84072847094329,
+        "low1": 33.531026678128335,
+        "rhiWorkMs": 9.580453446450482,
+        "workload": {
+          "sampleFrames": 1500,
+          "drawsPerFrame": 3060.557333333333,
+          "indirectDrawsPerFrame": 76.032,
+          "dispatchesPerFrame": 66.44066666666667
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 1.0006666666666666,
+          "nativeStorageContractUses": 0,
+          "storageDescriptorRevalidations": 0,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4680.381333333334,
+          "bindingEntriesReused": 4426.866666666667,
+          "groupPreparationHits": 3174.1886666666664,
+          "groupFrameMisses": 217.03933333333333,
+          "groupAccessMisses": 642.816,
+          "groupVersionMisses": 738.1626666666667,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4715.497333333334,
+          "bindGroupsCreated": 56.70933333333333
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1175,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 77,
+              "low": 35.1077368675129,
+              "frameMs": 11.099999999998545,
+              "samples": 370,
+              "seconds": 5,
+              "p99Ms": 22.235000000000582,
+              "maxMs": 44.474999999998545,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 77,
+              "low": 34.899445971227145,
+              "frameMs": 13.815000001341105,
+              "samples": 370,
+              "seconds": 5,
+              "p99Ms": 22.080000000074506,
+              "maxMs": 45.21499999985099,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 335,
+              "low": 87.43956383087911,
+              "frameMs": 2.75,
+              "samples": 1646,
+              "seconds": 5,
+              "p99Ms": 8.319999999999709,
+              "maxMs": 27.764999999999418,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1171,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29877.555
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 80,
+              "low": 46.43872990073219,
+              "frameMs": 13.904999999998836,
+              "samples": 379,
+              "seconds": 5,
+              "p99Ms": 19.470000000001164,
+              "maxMs": 24.9800000000032,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 79,
+              "low": 45.70645032249051,
+              "frameMs": 15.464999999850988,
+              "samples": 379,
+              "seconds": 5,
+              "p99Ms": 19.115000000223517,
+              "maxMs": 24.02000000141561,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 335,
+              "low": 102.02244493787903,
+              "frameMs": 2.805000000000291,
+              "samples": 1647,
+              "seconds": 5,
+              "p99Ms": 8.325000000004366,
+              "maxMs": 13.875,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2679,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49763.39
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "metadata",
+        "started": "2026-11-03T16:11:20.958Z",
+        "fps": 76.4287492984611,
+        "low1": 36.80191369937362,
+        "rhiWorkMs": 9.418611744650049,
+        "workload": {
+          "sampleFrames": 1530,
+          "drawsPerFrame": 3024.583006535948,
+          "indirectDrawsPerFrame": 73.26274509803922,
+          "dispatchesPerFrame": 66.42418300653594
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 0,
+          "nativeStorageContractUses": 533.5588235294117,
+          "storageDescriptorRevalidations": 0,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4653.216993464052,
+          "bindingEntriesReused": 4328.941176470588,
+          "groupPreparationHits": 3134.3751633986926,
+          "groupFrameMisses": 216.28039215686275,
+          "groupAccessMisses": 640.6117647058824,
+          "groupVersionMisses": 730.7274509803922,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4663.761437908497,
+          "bindGroupsCreated": 58.233333333333334
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1180,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 73,
+              "low": 35.13394817742689,
+              "frameMs": 22.174999999999272,
+              "samples": 374,
+              "seconds": 5,
+              "p99Ms": 22.215000000000146,
+              "maxMs": 41.67499999999927,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 75,
+              "low": 35.15710832714935,
+              "frameMs": 10.525000000372529,
+              "samples": 376,
+              "seconds": 5,
+              "p99Ms": 23.015000000596046,
+              "maxMs": 42.53000000119209,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 334,
+              "low": 87.4440615194725,
+              "frameMs": 2.764999999999418,
+              "samples": 1641,
+              "seconds": 5,
+              "p99Ms": 8.319999999999709,
+              "maxMs": 27.74499999999898,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1166,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29472.815
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 73,
+              "low": 34.26711213912353,
+              "frameMs": 13.884999999994761,
+              "samples": 376,
+              "seconds": 5,
+              "p99Ms": 22.25499999999738,
+              "maxMs": 36.095000000001164,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 74,
+              "low": 36.61997619624114,
+              "frameMs": 11.58500000089407,
+              "samples": 378,
+              "seconds": 5,
+              "p99Ms": 23.255000000819564,
+              "maxMs": 32.080000000074506,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 337,
+              "low": 95.55930297920102,
+              "frameMs": 2.764999999999418,
+              "samples": 1648,
+              "seconds": 5,
+              "p99Ms": 5.5899999999965075,
+              "maxMs": 33.28500000000349,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2703,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49614.19
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "storage",
+        "started": "2026-11-03T16:12:13.108Z",
+        "fps": 76.2650705976657,
+        "low1": 30.607657653397133,
+        "rhiWorkMs": 9.388796623849931,
+        "workload": {
+          "sampleFrames": 1530,
+          "drawsPerFrame": 3039.759477124183,
+          "indirectDrawsPerFrame": 74.25098039215686,
+          "dispatchesPerFrame": 66.43006535947713
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 0,
+          "nativeStorageContractUses": 0,
+          "storageDescriptorRevalidations": 265.5450980392157,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4398.930718954249,
+          "bindingEntriesReused": 4636.739869281046,
+          "groupPreparationHits": 3151.267320261438,
+          "groupFrameMisses": 216.60392156862744,
+          "groupAccessMisses": 641.416339869281,
+          "groupVersionMisses": 733.9294117647058,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4685.563398692811,
+          "bindGroupsCreated": 57.65359477124183
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1170,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 79,
+              "low": 30.639601685179116,
+              "frameMs": 13.909999999999854,
+              "samples": 386,
+              "seconds": 5,
+              "p99Ms": 22.229999999999563,
+              "maxMs": 58.32999999999811,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 79,
+              "low": 30.733768728742195,
+              "frameMs": 13.220000000670552,
+              "samples": 386,
+              "seconds": 5,
+              "p99Ms": 22.309999998658895,
+              "maxMs": 58.75,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 336,
+              "low": 107.35034099520534,
+              "frameMs": 2.775000000001455,
+              "samples": 1655,
+              "seconds": 5,
+              "p99Ms": 5.5900000000001455,
+              "maxMs": 27.764999999999418,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1162,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29298.285
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 79,
+              "low": 30.647818258437866,
+              "frameMs": 13.885000000002037,
+              "samples": 381,
+              "seconds": 5,
+              "p99Ms": 22.205000000001746,
+              "maxMs": 47.154999999998836,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 79,
+              "low": 32.342834041125094,
+              "frameMs": 9.75,
+              "samples": 382,
+              "seconds": 5,
+              "p99Ms": 22.625,
+              "maxMs": 36.084999999031425,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 341,
+              "low": 95.65608822866977,
+              "frameMs": 2.7600000000020373,
+              "samples": 1653,
+              "seconds": 5,
+              "p99Ms": 5.595000000001164,
+              "maxMs": 36.099999999998545,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2678,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49186.89
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "storage",
+        "started": "2026-11-03T16:13:04.790Z",
+        "fps": 77.14537127772621,
+        "low1": 31.802190375899816,
+        "rhiWorkMs": 9.21190379891238,
+        "workload": {
+          "sampleFrames": 1560,
+          "drawsPerFrame": 3031.4634615384616,
+          "indirectDrawsPerFrame": 72.96923076923076,
+          "dispatchesPerFrame": 66.4224358974359
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 0,
+          "nativeStorageContractUses": 0,
+          "storageDescriptorRevalidations": 264.95,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4392.078205128205,
+          "bindingEntriesReused": 4615.782692307693,
+          "groupPreparationHits": 3142.4147435897435,
+          "groupFrameMisses": 216.3852564102564,
+          "groupAccessMisses": 640.3916666666667,
+          "groupVersionMisses": 732.3685897435897,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4675.208333333333,
+          "bindGroupsCreated": 56.35192307692308
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1167,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 79,
+              "low": 36.00360036003647,
+              "frameMs": 13.875,
+              "samples": 383,
+              "seconds": 5,
+              "p99Ms": 24.99500000000262,
+              "maxMs": 33.33499999999913,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 79,
+              "low": 33.076986686594374,
+              "frameMs": 13.009999999776483,
+              "samples": 384,
+              "seconds": 5,
+              "p99Ms": 25.66499999910593,
+              "maxMs": 35.14000000059605,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 340,
+              "low": 92.79729250252294,
+              "frameMs": 2.7700000000004366,
+              "samples": 1640,
+              "seconds": 5,
+              "p99Ms": 8.320000000003347,
+              "maxMs": 24.970000000001164,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1153,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30115.365
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 80,
+              "low": 32.730545781853095,
+              "frameMs": 13.894999999996799,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 22.214999999996508,
+              "maxMs": 41.654999999998836,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 80,
+              "low": 34.116593458381686,
+              "frameMs": 13.130000000819564,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 21.46499999985099,
+              "maxMs": 36.65000000037253,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 332,
+              "low": 97.11788397268563,
+              "frameMs": 2.790000000000873,
+              "samples": 1657,
+              "seconds": 5,
+              "p99Ms": 8.315000000002328,
+              "maxMs": 30.544999999998254,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2707,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50256.775
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "metadata",
+        "started": "2026-11-03T16:13:57.425Z",
+        "fps": 78.2367779845174,
+        "low1": 34.226063147190146,
+        "rhiWorkMs": 9.100511812935242,
+        "workload": {
+          "sampleFrames": 1560,
+          "drawsPerFrame": 3040.9474358974358,
+          "indirectDrawsPerFrame": 74.47692307692307,
+          "dispatchesPerFrame": 66.43141025641026
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 0,
+          "nativeStorageContractUses": 534.3365384615385,
+          "storageDescriptorRevalidations": 0,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4665.523076923077,
+          "bindingEntriesReused": 4373.760256410256,
+          "groupPreparationHits": 3152.5339743589743,
+          "groupFrameMisses": 216.63012820512822,
+          "groupAccessMisses": 641.5653846153846,
+          "groupVersionMisses": 734.1442307692307,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4688.219230769231,
+          "bindGroupsCreated": 56.65448717948718
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1189,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 5,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 75,
+              "low": 31.311154598824942,
+              "frameMs": 44.47999999999956,
+              "samples": 367,
+              "seconds": 5,
+              "p99Ms": 25.00500000000102,
+              "maxMs": 38.88500000000204,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 78,
+              "low": 32.83533081587764,
+              "frameMs": 28.980000000447035,
+              "samples": 369,
+              "seconds": 5,
+              "p99Ms": 25.33999999985099,
+              "maxMs": 37.11500000022352,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 326,
+              "low": 86.20689655172382,
+              "frameMs": 2.7950000000018917,
+              "samples": 1635,
+              "seconds": 5,
+              "p99Ms": 8.325000000000728,
+              "maxMs": 30.54500000000189,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1182,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29890.395
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 83,
+              "low": 30.001875117193844,
+              "frameMs": 13.889999999999418,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 22.220000000001164,
+              "maxMs": 47.26000000000204,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 83,
+              "low": 28.416154584512636,
+              "frameMs": 13.455000000074506,
+              "samples": 391,
+              "seconds": 5,
+              "p99Ms": 21.0149999987334,
+              "maxMs": 49.519999999552965,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 335,
+              "low": 102.03469179520556,
+              "frameMs": 2.779999999998836,
+              "samples": 1647,
+              "seconds": 5,
+              "p99Ms": 5.584999999999127,
+              "maxMs": 38.845000000001164,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2742,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49820.645
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "tick",
+        "started": "2026-11-03T16:14:49.707Z",
+        "fps": 75.80099465695541,
+        "low1": 31.18422078461825,
+        "rhiWorkMs": 9.558769771749438,
+        "workload": {
+          "sampleFrames": 1530,
+          "drawsPerFrame": 3046.164052287582,
+          "indirectDrawsPerFrame": 75.78823529411764,
+          "dispatchesPerFrame": 66.43921568627451
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 1,
+          "nativeStorageContractUses": 0,
+          "storageDescriptorRevalidations": 0,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4671.101960784314,
+          "bindingEntriesReused": 4385.077777777778,
+          "groupPreparationHits": 3157.756209150327,
+          "groupFrameMisses": 216.77254901960785,
+          "groupAccessMisses": 642.6163398692811,
+          "groupVersionMisses": 735.0150326797385,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4693.844444444445,
+          "bindGroupsCreated": 58.3156862745098
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1171,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 73,
+              "low": 28.80391733275671,
+              "frameMs": 11.099999999998545,
+              "samples": 375,
+              "seconds": 5,
+              "p99Ms": 19.460000000002765,
+              "maxMs": 66.65499999999884,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 73,
+              "low": 31.404569365044658,
+              "frameMs": 10.865000000223517,
+              "samples": 376,
+              "seconds": 5,
+              "p99Ms": 20.81499999947846,
+              "maxMs": 52.57500000111759,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 330,
+              "low": 122.30655778984625,
+              "frameMs": 5.56000000000131,
+              "samples": 1662,
+              "seconds": 5,
+              "p99Ms": 5.5900000000001455,
+              "maxMs": 16.665000000000873,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1164,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29502.02
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 73,
+              "low": 33.488216333877595,
+              "frameMs": 13.87999999999738,
+              "samples": 379,
+              "seconds": 5,
+              "p99Ms": 25.00499999999738,
+              "maxMs": 36.1050000000032,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 73,
+              "low": 33.61062095681134,
+              "frameMs": 22.179999999701977,
+              "samples": 380,
+              "seconds": 5,
+              "p99Ms": 24.019999999552965,
+              "maxMs": 35.394999999552965,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 317,
+              "low": 92.75931685490777,
+              "frameMs": 2.7850000000034925,
+              "samples": 1646,
+              "seconds": 5,
+              "p99Ms": 5.635000000002037,
+              "maxMs": 22.214999999996508,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2675,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49440.635
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "control",
+        "started": "2026-11-03T16:15:41.635Z",
+        "fps": 75.4605152853775,
+        "low1": 29.83265743691889,
+        "rhiWorkMs": 9.578623045359226,
+        "workload": {
+          "sampleFrames": 1530,
+          "drawsPerFrame": 3033.9797385620914,
+          "indirectDrawsPerFrame": 73.70196078431373,
+          "dispatchesPerFrame": 66.42679738562092
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 0,
+          "nativeStorageContractUses": 0,
+          "storageDescriptorRevalidations": 0,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4659.774509803921,
+          "bindingEntriesReused": 4355.645098039216,
+          "groupPreparationHits": 3144.948366013072,
+          "groupFrameMisses": 216.46601307189542,
+          "groupAccessMisses": 640.9326797385621,
+          "groupVersionMisses": 732.7666666666667,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4677.473856209151,
+          "bindGroupsCreated": 57.639869281045755
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1162,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 77,
+              "low": 35.998740044097936,
+              "frameMs": 11.110000000000582,
+              "samples": 381,
+              "seconds": 5,
+              "p99Ms": 19.445000000003347,
+              "maxMs": 36.11499999999796,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 77,
+              "low": 36.210564432221936,
+              "frameMs": 10.424999998882413,
+              "samples": 381,
+              "seconds": 5,
+              "p99Ms": 20.93999999947846,
+              "maxMs": 34.72499999962747,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 328,
+              "low": 95.66416251653122,
+              "frameMs": 2.805000000000291,
+              "samples": 1651,
+              "seconds": 5,
+              "p99Ms": 5.595000000001164,
+              "maxMs": 27.779999999998836,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1147,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29293.015
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 79,
+              "low": 31.99616046074486,
+              "frameMs": 8.325000000004366,
+              "samples": 387,
+              "seconds": 5,
+              "p99Ms": 16.689999999995052,
+              "maxMs": 47.25,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 79,
+              "low": 35.24384334079244,
+              "frameMs": 10.884999999776483,
+              "samples": 388,
+              "seconds": 5,
+              "p99Ms": 16.78999999910593,
+              "maxMs": 47.00999999977648,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 338,
+              "low": 105.40674603174203,
+              "frameMs": 5.540000000000873,
+              "samples": 1670,
+              "seconds": 5,
+              "p99Ms": 5.584999999999127,
+              "maxMs": 38.86000000000058,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2668,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49445.49
+          }
+        }
+      }
+    ]
+  },
+  "combined": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-combined-abba.json",
+      "sha256": "fa7a1c00b5d735822e6124bf05b78b92a9f9dba5a8e3be6611610fbbbaeda532"
+    },
+    "summary": {
+      "villa-browser-metrics-v47": {
+        "fps": 73.57541017354139,
+        "frameMs": {
+          "count": 2943,
+          "mean": 13.592910295616262,
+          "p50": 13.5,
+          "p95": 17.84999999962747,
+          "p99": 21.84999999962747,
+          "low1Fps": 30.92177820829006,
+          "over33ms": 13
+        }
+      },
+      "villa-rhi-hotspots-v52": {
+        "fps": 78.74504735260989,
+        "frameMs": {
+          "count": 3149,
+          "mean": 12.699114004445784,
+          "p50": 12.830000000074506,
+          "p95": 16.34999999962747,
+          "p99": 20.195000000298023,
+          "low1Fps": 33.93299294272442,
+          "over33ms": 8
+        }
+      }
+    },
+    "runs": [
+      {
+        "folder": "villa-browser-metrics-v47",
+        "mode": "default",
+        "started": "2026-11-03T16:16:54.152Z",
+        "fps": 75.1983387412839,
+        "low1": 30.588347751213142,
+        "rhiWorkMs": 9.521557563959165,
+        "workload": {
+          "sampleFrames": 1530,
+          "drawsPerFrame": 3032.1124183006536,
+          "indirectDrawsPerFrame": 73.48235294117647,
+          "dispatchesPerFrame": 66.42549019607843
+        },
+        "countersPerFrame": {
+          "bindingEntriesPrepared": 4658.176470588235,
+          "bindingEntriesReused": 4350.858823529412,
+          "groupPreparationHits": 3142.961437908497,
+          "groupFrameMisses": 216.42549019607844,
+          "groupAccessMisses": 640.7346405228758,
+          "groupVersionMisses": 732.4006535947713,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4675.158169934641,
+          "bindGroupsCreated": 57.3640522875817
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1196,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 78,
+              "low": 35.11852502194863,
+              "frameMs": 11.125,
+              "samples": 382,
+              "seconds": 5,
+              "p99Ms": 19.455000000001746,
+              "maxMs": 38.88500000000204,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 78,
+              "low": 35.22832357275303,
+              "frameMs": 10.394999999552965,
+              "samples": 382,
+              "seconds": 5,
+              "p99Ms": 19.91499999910593,
+              "maxMs": 36.209999999031425,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 334,
+              "low": 117.43981209630277,
+              "frameMs": 2.8149999999986903,
+              "samples": 1675,
+              "seconds": 5,
+              "p99Ms": 5.584999999999127,
+              "maxMs": 33.29999999999927,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1180,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 26541.145
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 70,
+              "low": 31.985926192475237,
+              "frameMs": 33.24500000000262,
+              "samples": 380,
+              "seconds": 5,
+              "p99Ms": 24.99500000000262,
+              "maxMs": 41.63999999999942,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 70,
+              "low": 31.153861131772473,
+              "frameMs": 31.054999999701977,
+              "samples": 380,
+              "seconds": 5,
+              "p99Ms": 23.71499999985099,
+              "maxMs": 40.49000000022352,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 325,
+              "low": 92.64052750606015,
+              "frameMs": 22.235000000000582,
+              "samples": 1675,
+              "seconds": 5,
+              "p99Ms": 5.584999999999127,
+              "maxMs": 27.770000000004075,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2699,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 46715.815
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "default",
+        "started": "2026-11-03T16:17:43.261Z",
+        "fps": 78.569318681053,
+        "low1": 34.53485862272813,
+        "rhiWorkMs": 9.173107966211916,
+        "workload": {
+          "sampleFrames": 1560,
+          "drawsPerFrame": 3053.926282051282,
+          "indirectDrawsPerFrame": 76.2,
+          "dispatchesPerFrame": 66.44166666666666
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 1,
+          "nativeStorageContractUses": 268.95576923076925,
+          "storageDescriptorRevalidations": 266.45,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4410.013461538461,
+          "bindingEntriesReused": 4672.860256410257,
+          "groupPreparationHits": 3166.4455128205127,
+          "groupFrameMisses": 216.9224358974359,
+          "groupAccessMisses": 642.9269230769231,
+          "groupVersionMisses": 736.6365384615384,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4705.060256410256,
+          "bindGroupsCreated": 57.871153846153845
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1209,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 78,
+              "low": 33.47980749110734,
+              "frameMs": 8.319999999999709,
+              "samples": 381,
+              "seconds": 5,
+              "p99Ms": 19.459999999999127,
+              "maxMs": 47.215000000000146,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 78,
+              "low": 33.257119102469815,
+              "frameMs": 12.969999998807907,
+              "samples": 381,
+              "seconds": 5,
+              "p99Ms": 19.209999999031425,
+              "maxMs": 38.544999999925494,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 333,
+              "low": 97.13453132588465,
+              "frameMs": 2.8150000000023283,
+              "samples": 1639,
+              "seconds": 5,
+              "p99Ms": 5.5900000000001455,
+              "maxMs": 36.10499999999956,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1195,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30314.56
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 75,
+              "low": 33.49102022020207,
+              "frameMs": 13.875,
+              "samples": 381,
+              "seconds": 5,
+              "p99Ms": 22.24500000000262,
+              "maxMs": 38.86499999999796,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 75,
+              "low": 34.811365911173084,
+              "frameMs": 12.944999998435378,
+              "samples": 380,
+              "seconds": 5,
+              "p99Ms": 21.65000000037253,
+              "maxMs": 36.81499999947846,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 316,
+              "low": 84.99362547808012,
+              "frameMs": 2.780000000006112,
+              "samples": 1611,
+              "seconds": 5,
+              "p99Ms": 8.330000000001746,
+              "maxMs": 27.770000000004075,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2780,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50489.245
+          }
+        }
+      },
+      {
+        "folder": "villa-rhi-hotspots-v52",
+        "mode": "default",
+        "started": "2026-11-03T16:18:36.110Z",
+        "fps": 78.92077958135529,
+        "low1": 33.46790218977419,
+        "rhiWorkMs": 9.116233640867671,
+        "workload": {
+          "sampleFrames": 1590,
+          "drawsPerFrame": 3052.3893081761007,
+          "indirectDrawsPerFrame": 76.27924528301887,
+          "dispatchesPerFrame": 66.44213836477988
+        },
+        "countersPerFrame": {
+          "noopRHITicksSkipped": 1,
+          "nativeStorageContractUses": 268.96603773584906,
+          "storageDescriptorRevalidations": 266.4867924528302,
+          "storageContractRejectionChecks": 0,
+          "bindingEntriesPrepared": 4409.276100628931,
+          "bindingEntriesReused": 4668.688679245283,
+          "groupPreparationHits": 3164.6377358490568,
+          "groupFrameMisses": 216.9,
+          "groupAccessMisses": 642.9666666666667,
+          "groupVersionMisses": 736.3572327044025,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4703.54213836478,
+          "bindGroupsCreated": 57.31949685534591
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1217,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 78,
+              "low": 26.654228026920823,
+              "frameMs": 8.325000000000728,
+              "samples": 397,
+              "seconds": 5,
+              "p99Ms": 27.80500000000029,
+              "maxMs": 47.24499999999898,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 80,
+              "low": 33.70833859998611,
+              "frameMs": 15.995000001043081,
+              "samples": 400,
+              "seconds": 5,
+              "p99Ms": 18.08500000089407,
+              "maxMs": 36.855000000447035,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 325,
+              "low": 105.39367637941295,
+              "frameMs": 5.579999999998108,
+              "samples": 1652,
+              "seconds": 5,
+              "p99Ms": 5.5900000000001455,
+              "maxMs": 27.7599999999984,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1200,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 29467.57
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 80,
+              "low": 36.0117038037348,
+              "frameMs": 13.904999999998836,
+              "samples": 397,
+              "seconds": 5,
+              "p99Ms": 22.235000000000582,
+              "maxMs": 38.87000000000262,
+              "over50ms": 0
+            },
+            "submitted": {
+              "fps": 80,
+              "low": 39.535458365384976,
+              "frameMs": 16.015000000596046,
+              "samples": 398,
+              "seconds": 5,
+              "p99Ms": 19.03999999910593,
+              "maxMs": 38.494999999180436,
+              "over50ms": 0
+            },
+            "refresh": {
+              "fps": 324,
+              "low": 98.7625631789983,
+              "frameMs": 2.7849999999962165,
+              "samples": 1648,
+              "seconds": 5,
+              "p99Ms": 5.5899999999965075,
+              "maxMs": 22.18499999999767,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2790,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 49611.725
+          }
+        }
+      },
+      {
+        "folder": "villa-browser-metrics-v47",
+        "mode": "default",
+        "started": "2026-11-03T16:19:28.108Z",
+        "fps": 71.95243943752938,
+        "low1": 32.112694147837914,
+        "rhiWorkMs": 9.997407760885027,
+        "workload": {
+          "sampleFrames": 1440,
+          "drawsPerFrame": 3040.972222222222,
+          "indirectDrawsPerFrame": 75.96666666666667,
+          "dispatchesPerFrame": 66.44027777777778
+        },
+        "countersPerFrame": {
+          "bindingEntriesPrepared": 4668.03125,
+          "bindingEntriesReused": 4368.448611111111,
+          "groupPreparationHits": 3151.6756944444446,
+          "groupFrameMisses": 216.69027777777777,
+          "groupAccessMisses": 642.7090277777778,
+          "groupVersionMisses": 733.80625,
+          "groupTextureMisses": 0,
+          "bindGroupCacheHits": 4685.829861111111,
+          "bindGroupsCreated": 59.05138888888889
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 1121,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "threads": {
+          "sharedMemory": true,
+          "engineWorker": true,
+          "gameThread": 2,
+          "taskThread": 3,
+          "cores": 4,
+          "renderThread": true,
+          "rhiThread": true,
+          "renderThreadId": 14,
+          "rhiThreadId": 1,
+          "taskWorkers": 3,
+          "threadingTest": 0
+        },
+        "pageBefore": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 62,
+              "low": 27.696036004846945,
+              "frameMs": 16.665000000000873,
+              "samples": 346,
+              "seconds": 5,
+              "p99Ms": 25.020000000000437,
+              "maxMs": 55.54999999999927,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 62,
+              "low": 26.937840932008747,
+              "frameMs": 11.285000000149012,
+              "samples": 346,
+              "seconds": 5,
+              "p99Ms": 26.929999999701977,
+              "maxMs": 55.78000000119209,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 316,
+              "low": 88.6478594149256,
+              "frameMs": 2.764999999999418,
+              "samples": 1614,
+              "seconds": 5,
+              "p99Ms": 8.345000000001164,
+              "maxMs": 27.770000000000437,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 1110,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 30080.14
+          }
+        },
+        "pageAfter": {
+          "visibility": "visible",
+          "focused": true,
+          "live": {
+            "visual": {
+              "fps": 71,
+              "low": 30.632562413847214,
+              "frameMs": 16.67000000000553,
+              "samples": 360,
+              "seconds": 5,
+              "p99Ms": 22.239999999997963,
+              "maxMs": 52.775000000001455,
+              "over50ms": 1
+            },
+            "submitted": {
+              "fps": 70,
+              "low": 30.9441844271965,
+              "frameMs": 13.349999999627471,
+              "samples": 359,
+              "seconds": 5,
+              "p99Ms": 21.634999999776483,
+              "maxMs": 53.16499999910593,
+              "over50ms": 1
+            },
+            "refresh": {
+              "fps": 322,
+              "low": 97.15673667665678,
+              "frameMs": 2.7699999999967986,
+              "samples": 1634,
+              "seconds": 5,
+              "p99Ms": 8.319999999999709,
+              "maxMs": 24.994999999995343,
+              "over50ms": 0
+            },
+            "visible": true,
+            "frame": 2555,
+            "source": "rhi-owner-submission-intervals",
+            "windowMs": 5000,
+            "time": 50232.625
+          }
+        }
+      }
+    ],
+    "reverse": {
+      "file": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-combined-baab.json",
+        "sha256": "1d22ef9c28f9932250209c5582cf122cbea7b25bdcba3b10c111364ea2f2eada"
+      },
+      "summary": {
+        "villa-rhi-hotspots-v52": {
+          "fps": 83.94039182925366,
+          "frameMs": {
+            "count": 3358,
+            "mean": 11.91486748064324,
+            "p50": 12.429999999701977,
+            "p95": 14.035000000149012,
+            "p99": 15.910000000149012,
+            "low1Fps": 35.824544027299694,
+            "over33ms": 8
+          }
+        },
+        "villa-browser-metrics-v47": {
+          "fps": 70.32402406361085,
+          "frameMs": {
+            "count": 2812,
+            "mean": 14.221762091038645,
+            "p50": 13.634999999776483,
+            "p95": 20.544999999925494,
+            "p99": 26.47499999962747,
+            "low1Fps": 29.758698005799765,
+            "over33ms": 10
+          }
+        }
+      },
+      "runs": [
+        {
+          "folder": "villa-rhi-hotspots-v52",
+          "mode": "default",
+          "started": "2026-11-03T16:21:12.767Z",
+          "fps": 83.9095555942089,
+          "low1": 34.911540317807194,
+          "rhiWorkMs": 8.666146717446415,
+          "workload": {
+            "sampleFrames": 1680,
+            "drawsPerFrame": 3053.255357142857,
+            "indirectDrawsPerFrame": 76.8,
+            "dispatchesPerFrame": 66.4452380952381
+          },
+          "countersPerFrame": {
+            "noopRHITicksSkipped": 0.9994047619047619,
+            "nativeStorageContractUses": 269.04285714285714,
+            "storageDescriptorRevalidations": 266.73035714285714,
+            "storageContractRejectionChecks": 0,
+            "bindingEntriesPrepared": 4410.558333333333,
+            "bindingEntriesReused": 4669.711904761904,
+            "groupPreparationHits": 3165.3755952380952,
+            "groupFrameMisses": 216.9452380952381,
+            "groupAccessMisses": 643.4083333333333,
+            "groupVersionMisses": 736.3952380952381,
+            "groupTextureMisses": 0,
+            "bindGroupCacheHits": 4700.477380952381,
+            "bindGroupsCreated": 61.64702380952381
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1309,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 86,
+                "low": 41.84800803481897,
+                "frameMs": 11.1150000000016,
+                "samples": 421,
+                "seconds": 5,
+                "p99Ms": 16.68499999999767,
+                "maxMs": 36.090000000000146,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 85,
+                "low": 42.163848715792916,
+                "frameMs": 12.455000000074506,
+                "samples": 421,
+                "seconds": 5,
+                "p99Ms": 15.199999999254942,
+                "maxMs": 34.38499999977648,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 337,
+                "low": 135.6581414834513,
+                "frameMs": 2.780000000002474,
+                "samples": 1690,
+                "seconds": 5,
+                "p99Ms": 5.580000000001746,
+                "maxMs": 27.7599999999984,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1297,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 25602.825
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 84,
+                "low": 39.12669222943865,
+                "frameMs": 13.900000000001455,
+                "samples": 423,
+                "seconds": 5,
+                "p99Ms": 16.665000000000873,
+                "maxMs": 49.98999999999796,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 84,
+                "low": 41.120111846477464,
+                "frameMs": 12.740000000223517,
+                "samples": 423,
+                "seconds": 5,
+                "p99Ms": 14.83500000089407,
+                "maxMs": 49.165000000968575,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 330,
+                "low": 148.64687622959943,
+                "frameMs": 2.805000000000291,
+                "samples": 1681,
+                "seconds": 5,
+                "p99Ms": 5.57499999999709,
+                "maxMs": 22.220000000001164,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 2989,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 45760.87
+            }
+          }
+        },
+        {
+          "folder": "villa-browser-metrics-v47",
+          "mode": "default",
+          "started": "2026-11-03T16:22:00.844Z",
+          "fps": 73.63402141735298,
+          "low1": 32.21857078405049,
+          "rhiWorkMs": 9.835896974344765,
+          "workload": {
+            "sampleFrames": 1470,
+            "drawsPerFrame": 3030.9469387755103,
+            "indirectDrawsPerFrame": 73.88571428571429,
+            "dispatchesPerFrame": 66.42789115646258
+          },
+          "countersPerFrame": {
+            "bindingEntriesPrepared": 4658.1469387755105,
+            "bindingEntriesReused": 4345.77619047619,
+            "groupPreparationHits": 3141.31156462585,
+            "groupFrameMisses": 216.41972789115647,
+            "groupAccessMisses": 641.0755102040816,
+            "groupVersionMisses": 732.0265306122449,
+            "groupTextureMisses": 0,
+            "bindGroupCacheHits": 4672.6639455782315,
+            "bindGroupsCreated": 58.16938775510204
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1271,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 83,
+                "low": 39.11291899714391,
+                "frameMs": 11.044999999998254,
+                "samples": 409,
+                "seconds": 5,
+                "p99Ms": 16.68000000000029,
+                "maxMs": 41.6449999999968,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 83,
+                "low": 38.8409850072449,
+                "frameMs": 12.590000001713634,
+                "samples": 410,
+                "seconds": 5,
+                "p99Ms": 16.544999999925494,
+                "maxMs": 38.99500000104308,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 340,
+                "low": 138.52672750976473,
+                "frameMs": 2.8699999999989814,
+                "samples": 1680,
+                "seconds": 5,
+                "p99Ms": 5.580000000001746,
+                "maxMs": 30.544999999998254,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1258,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 29155.905
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 59,
+                "low": 29.38799500403915,
+                "frameMs": 22.224999999998545,
+                "samples": 349,
+                "seconds": 5,
+                "p99Ms": 27.735000000000582,
+                "maxMs": 50.025000000001455,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 60,
+                "low": 29.636215455139123,
+                "frameMs": 17.865000000223517,
+                "samples": 349,
+                "seconds": 5,
+                "p99Ms": 27.105000000447035,
+                "maxMs": 50.03000000119209,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 308,
+                "low": 92.6657763484261,
+                "frameMs": 5.584999999999127,
+                "samples": 1616,
+                "seconds": 5,
+                "p99Ms": 8.339999999996508,
+                "maxMs": 22.219999999993888,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 2744,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 49316.665
+            }
+          }
+        },
+        {
+          "folder": "villa-browser-metrics-v47",
+          "mode": "default",
+          "started": "2026-11-03T16:22:52.595Z",
+          "fps": 67.01503490553628,
+          "low1": 27.663883811932354,
+          "rhiWorkMs": 10.750200568874055,
+          "workload": {
+            "sampleFrames": 1320,
+            "drawsPerFrame": 3033.669696969697,
+            "indirectDrawsPerFrame": 74.2909090909091,
+            "dispatchesPerFrame": 66.43030303030304
+          },
+          "countersPerFrame": {
+            "bindingEntriesPrepared": 4660.520454545454,
+            "bindingEntriesReused": 4351.771212121213,
+            "groupPreparationHits": 3144.205303030303,
+            "groupFrameMisses": 216.48939393939395,
+            "groupAccessMisses": 641.425,
+            "groupVersionMisses": 732.4825757575758,
+            "groupTextureMisses": 0,
+            "bindGroupCacheHits": 4677.116666666667,
+            "bindGroupsCreated": 57.48560606060606
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 993,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 65,
+                "low": 27.688367424636393,
+                "frameMs": 16.68000000000029,
+                "samples": 327,
+                "seconds": 5,
+                "p99Ms": 25.00500000000102,
+                "maxMs": 50.025000000001455,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 65,
+                "low": 27.98572727914602,
+                "frameMs": 10.945000000298023,
+                "samples": 328,
+                "seconds": 5,
+                "p99Ms": 26.429999999701977,
+                "maxMs": 51.105000000447035,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 307,
+                "low": 73.85694832321701,
+                "frameMs": 2.775000000001455,
+                "samples": 1590,
+                "seconds": 5,
+                "p99Ms": 8.360000000000582,
+                "maxMs": 38.88999999999942,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 979,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 30705.945
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 73,
+                "low": 27.694118461592165,
+                "frameMs": 13.875,
+                "samples": 343,
+                "seconds": 5,
+                "p99Ms": 22.255000000004657,
+                "maxMs": 52.75999999999476,
+                "over50ms": 1
+              },
+              "submitted": {
+                "fps": 73,
+                "low": 26.710293479535647,
+                "frameMs": 14.640000000596046,
+                "samples": 342,
+                "seconds": 5,
+                "p99Ms": 27.800000000745058,
+                "maxMs": 56.019999999552965,
+                "over50ms": 1
+              },
+              "refresh": {
+                "fps": 340,
+                "low": 63.33498268184614,
+                "frameMs": 2.7950000000055297,
+                "samples": 1569,
+                "seconds": 5,
+                "p99Ms": 11.094999999993888,
+                "maxMs": 52.75999999999476,
+                "over50ms": 1
+              },
+              "visible": true,
+              "frame": 2331,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 50877.91
+            }
+          }
+        },
+        {
+          "folder": "villa-rhi-hotspots-v52",
+          "mode": "default",
+          "started": "2026-11-03T16:23:45.863Z",
+          "fps": 83.97121400845406,
+          "low1": 36.78658371637864,
+          "rhiWorkMs": 8.662950276335671,
+          "workload": {
+            "sampleFrames": 1680,
+            "drawsPerFrame": 3046.972619047619,
+            "indirectDrawsPerFrame": 75.5,
+            "dispatchesPerFrame": 66.4375
+          },
+          "countersPerFrame": {
+            "noopRHITicksSkipped": 1.000595238095238,
+            "nativeStorageContractUses": 268.84285714285716,
+            "storageDescriptorRevalidations": 266.125,
+            "storageContractRejectionChecks": 0,
+            "bindingEntriesPrepared": 4405.054761904762,
+            "bindingEntriesReused": 4654.925,
+            "groupPreparationHits": 3158.8494047619047,
+            "groupFrameMisses": 216.77440476190475,
+            "groupAccessMisses": 642.3928571428571,
+            "groupVersionMisses": 735.3196428571429,
+            "groupTextureMisses": 0,
+            "bindGroupCacheHits": 4692.200595238095,
+            "bindGroupsCreated": 61.135714285714286
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "view": {
+            "frame": 1303,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "pageBefore": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 85,
+                "low": 39.12210007433301,
+                "frameMs": 11.125,
+                "samples": 411,
+                "seconds": 5,
+                "p99Ms": 16.68499999999767,
+                "maxMs": 41.650000000001455,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 85,
+                "low": 39.99040230366165,
+                "frameMs": 9.740000000223517,
+                "samples": 411,
+                "seconds": 5,
+                "p99Ms": 15.099999999627471,
+                "maxMs": 40.51500000059605,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 335,
+                "low": 132.66739503667546,
+                "frameMs": 2.7700000000004366,
+                "samples": 1659,
+                "seconds": 5,
+                "p99Ms": 5.575000000000728,
+                "maxMs": 33.330000000001746,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 1292,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 29361.105
+            }
+          },
+          "pageAfter": {
+            "visibility": "visible",
+            "focused": true,
+            "live": {
+              "visual": {
+                "fps": 86,
+                "low": 39.12210007432967,
+                "frameMs": 13.87999999999738,
+                "samples": 414,
+                "seconds": 5,
+                "p99Ms": 16.67500000000291,
+                "maxMs": 44.470000000001164,
+                "over50ms": 0
+              },
+              "submitted": {
+                "fps": 86,
+                "low": 39.24800816372342,
+                "frameMs": 13.554999999701977,
+                "samples": 414,
+                "seconds": 5,
+                "p99Ms": 16.044999999925494,
+                "maxMs": 35.20000000111759,
+                "over50ms": 0
+              },
+              "refresh": {
+                "fps": 336,
+                "low": 127.09805240924439,
+                "frameMs": 2.775000000001455,
+                "samples": 1652,
+                "seconds": 5,
+                "p99Ms": 5.584999999999127,
+                "maxMs": 33.36000000000058,
+                "over50ms": 0
+              },
+              "visible": true,
+              "frame": 2983,
+              "source": "rhi-owner-submission-intervals",
+              "windowMs": 5000,
+              "time": 49508.035
+            }
+          }
+        }
+      ]
+    },
+    "pooled": {
+      "villa-browser-metrics-v47": {
+        "fps": 71.94996460284011,
+        "low1Fps": 29.81913154354906,
+        "frames": 5755,
+        "over33ms": 23
+      },
+      "villa-rhi-hotspots-v52": {
+        "fps": 81.34314764874347,
+        "low1Fps": 34.406270281923604,
+        "frames": 6507,
+        "over33ms": 16
+      }
+    },
+    "change": {
+      "fpsPercent": 13.055160065405481,
+      "lowPercent": 15.383207024910517
+    }
+  },
+  "build": {
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-package.json",
+      "sha256": "7d60ba2d1c96be15642e3a88bf48c6e38306bc9d4a28e8a0a33ccc8d43ced209"
+    },
+    "capture": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-build.json",
+      "sha256": "38c19b0ca11d09de7924002cd035853b2721cd2d6a9d12b845289c8f7127a044"
+    },
+    "compile": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\v52-rhi-hotspots-compile-audit.json",
+      "sha256": "4e4a52c75981ca06764ca3d814a825db6669df7e7e68dd0e319a4cae76164bef"
+    },
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\UEWebEngine.cpp",
+        "sha256": "6728c8515c3490c2c0679e51a91f39642107da79e8ab1ddbfd3caec2e72bec5d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+        "sha256": "bdca32961b3136401302d04c8bd2da17e43482df3d1be7e62e024f8545bd8d61"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+        "sha256": "fbd3bb86b0d0b4e34ada2d370af8463d5b25adefa11a2fccfb279d6134e1b36e"
+      }
+    ],
+    "compileCounts": {
+      "-O2": 416,
+      "-O1": 1
+    },
+    "link": {
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+        "sha256": "ede7b22a210bd2f971007f0e1dba8db3fdc31428fcd6702d8716eafcd00fbcc8"
+      },
+      "optimization": [],
+      "assertions": "1",
+      "debug": "-g2",
+      "lto": false,
+      "switches": [
+        "-o",
+        "-m64",
+        "-sENVIRONMENT=web,worker,node",
+        "-sALLOW_MEMORY_GROWTH=1",
+        "-sASSERTIONS=1",
+        "-pthread",
+        "-sPTHREAD_POOL_SIZE=16",
+        "-sPTHREAD_POOL_SIZE_STRICT=2",
+        "-sALLOW_BLOCKING_ON_MAIN_THREAD=1",
+        "--use-port=zlib",
+        "-Wl,--error-limit=0 -g2 -sSTACK_SIZE=4194304 -sMALLOC=mimalloc -Wl,--whole-archive,\"G:/UE_HTML/ue_html/.tools/web-mimalloc-ue/libmimalloc-ue-mt.a\",--no-whole-archive --use-port=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/emdawnwebgpu-ue.port.py\" -sINITIAL_MEMORY=134217728 -sPTHREAD_POOL_SIZE=28 -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob --js-library=\"G:/UE_HTML/ue_html/reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js\""
+      ]
+    }
+  },
+  "correctness": {
+    "view": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-views.json",
+      "sha256": "5927c4355ce57c883f28171dfdf08352a18eac182236ae1561a617a0f71fa401"
+    },
+    "screenshot": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-views.png",
+      "sha256": "a2cda39b69e252f23d920e37955919400e3b3664403ca369c6f08788c5da7af1"
+    },
+    "imageAccepted": true,
+    "windowMetrics": [
+      {
+        "width": 1000,
+        "height": 650,
+        "dpr": 1,
+        "expected": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 0.9999999760941023
+        },
+        "metrics": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 0.9999999760941023,
+          "updates": 4
+        },
+        "view": {
+          "frame": 1310,
+          "width": 1000,
+          "height": 562,
+          "outputWidth": 1000,
+          "outputHeight": 562,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "frames": 1309
+      },
+      {
+        "width": 1000,
+        "height": 650,
+        "dpr": 1.5,
+        "expected": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 1.4999999280803422
+        },
+        "metrics": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 1.4999999280803422,
+          "updates": 5
+        },
+        "view": {
+          "frame": 1396,
+          "width": 1317,
+          "height": 741,
+          "outputWidth": 1500,
+          "outputHeight": 844,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "frames": 1393
+      },
+      {
+        "width": 1200,
+        "height": 720,
+        "dpr": 1.5,
+        "expected": {
+          "width": 1199.9998779296875,
+          "height": 674.9999389648438,
+          "dpr": 1.4999999280803422
+        },
+        "metrics": {
+          "width": 1199.9998779296875,
+          "height": 674.9999389648438,
+          "dpr": 1.4999999280803422,
+          "updates": 7
+        },
+        "view": {
+          "frame": 1465,
+          "width": 1375,
+          "height": 773,
+          "outputWidth": 1800,
+          "outputHeight": 1012,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "frames": 1462
+      },
+      {
+        "width": 2289,
+        "height": 1287,
+        "dpr": 1,
+        "expected": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023
+        },
+        "metrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 9
+        },
+        "view": {
+          "frame": 1544,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "frames": 1539
+      }
+    ],
+    "gameplay": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-gameplay-rhi-hotspots-v52-reboot-validate.json",
+      "sha256": "270b3c435fa705df4b9dd7cfe70341c76c29f53cbaa23b61e59b5e24e0db6a20"
+    },
+    "validation": [
+      {
+        "travelCm": 158.06819727184006,
+        "turnDegrees": 44.82980394363403,
+        "frames": 1131,
+        "bindings": {
+          "ready": 432412,
+          "pending": 300768,
+          "zero": 415573,
+          "bindGroupCacheHits": 7115942,
+          "bindGroupsCreated": 57472,
+          "cachedBindGroups": 464,
+          "bindingEntriesPrepared": 37842177,
+          "bindingEntriesReused": 37201,
+          "bindingEntriesValidated": 32116201,
+          "bindGroupFastHits": 5662673,
+          "uniformSnapshots": 637655,
+          "uniformWriteCalls": 2234,
+          "pipelineLayouts": 126,
+          "drawBundleHits": 0,
+          "drawBundlesCreated": 0,
+          "cachedDrawBundles": 0,
+          "resourceTableCommits": 774724,
+          "resourceTableBuffers": 836398,
+          "bindingRouteResolutions": 1156,
+          "manualVertexFetchEnabled": false,
+          "manualVertexFetchDraws": 0,
+          "vertexFetchFormatBuffers": 0,
+          "skipNoopRHITick": true,
+          "nativeStorageContracts": true,
+          "revalidateStorageDescriptors": true,
+          "noopRHITicksSkipped": 1110,
+          "storageDescriptorRevalidations": 370006,
+          "nativeStorageContractUses": 12604599,
+          "storageContractRejectionChecks": 1200,
+          "groupPreparationHits": 41249,
+          "groupPreparationValidated": 4954450,
+          "groupFrameMisses": 243716,
+          "groupAccessMisses": 866891,
+          "groupVersionMisses": 1067108,
+          "groupTextureMisses": 0,
+          "groupCacheEnabled": true,
+          "draws": 4671392,
+          "indirectDraws": 134384,
+          "dispatches": 75388,
+          "sampleFrame": 1110
+        }
+      }
+    ]
+  },
+  "profiles": {
+    "control": {
+      "capture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-profile-control.json",
+        "sha256": "bc52d95ea8db85b2bd8c665a40f2c07f2d1fa275c9bd94bf8502336065cc4b3e"
+      },
+      "costs": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\rhi-hotspots-v52-reboot-control-costs-20261104.json",
+        "sha256": "9439efd99470a6471f9228b78584d9786bc51f188ebc55ede1851a81a60d2017"
+      },
+      "threads": [
+        {
+          "role": "RHI",
+          "durationMs": 6946.792,
+          "inclusive": {
+            "tick": {
+              "ms": 0,
+              "percent": 0
+            },
+            "proxy": {
+              "ms": 0,
+              "percent": 0
+            },
+            "groups": {
+              "ms": 1398.647,
+              "percent": 20.133710639385775
+            },
+            "drawBindings": {
+              "ms": 1978.506,
+              "percent": 28.480858502744866
+            },
+            "jsonStorage": {
+              "ms": 209.867,
+              "percent": 3.021063535513947
+            },
+            "nativeStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "bufferShape": {
+              "ms": 1.508,
+              "percent": 0.02170786170076778
+            },
+            "jsonLookup": {
+              "ms": 138.059,
+              "percent": 1.9873777709192963
+            },
+            "access": {
+              "ms": 188.38,
+              "percent": 2.711755296545513
+            },
+            "commandReplay": {
+              "ms": 817.301,
+              "percent": 11.765157212134753
+            }
+          }
+        },
+        {
+          "role": "Render",
+          "durationMs": 6454.513,
+          "inclusive": {
+            "tick": {
+              "ms": 0,
+              "percent": 0
+            },
+            "proxy": {
+              "ms": 1.54,
+              "percent": 0.023859274898044205
+            },
+            "groups": {
+              "ms": 0,
+              "percent": 0
+            },
+            "drawBindings": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "nativeStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "bufferShape": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonLookup": {
+              "ms": 0,
+              "percent": 0
+            },
+            "access": {
+              "ms": 0,
+              "percent": 0
+            },
+            "commandReplay": {
+              "ms": 0,
+              "percent": 0
+            }
+          }
+        },
+        {
+          "role": "Game",
+          "durationMs": 6010.44,
+          "inclusive": {
+            "tick": {
+              "ms": 387.158,
+              "percent": 6.441425253392429
+            },
+            "proxy": {
+              "ms": 390.161,
+              "percent": 6.491388317660604
+            },
+            "groups": {
+              "ms": 0,
+              "percent": 0
+            },
+            "drawBindings": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "nativeStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "bufferShape": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonLookup": {
+              "ms": 0,
+              "percent": 0
+            },
+            "access": {
+              "ms": 0,
+              "percent": 0
+            },
+            "commandReplay": {
+              "ms": 0,
+              "percent": 0
+            }
+          }
+        }
+      ]
+    },
+    "all": {
+      "capture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-profile-all.json",
+        "sha256": "8782b7cfa25665f4cd79be6a12dba82476cfa26ba46e8020c6bde33a3fd255c3"
+      },
+      "costs": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\rhi-hotspots-v52-reboot-all-costs-20261104.json",
+        "sha256": "09bb9cbb339ceb2b497c8811fa8f8bd3700b28424da056ee2ee80979759b8e22"
+      },
+      "threads": [
+        {
+          "role": "RHI",
+          "durationMs": 7116.138,
+          "inclusive": {
+            "tick": {
+              "ms": 0,
+              "percent": 0
+            },
+            "proxy": {
+              "ms": 0,
+              "percent": 0
+            },
+            "groups": {
+              "ms": 1353.875,
+              "percent": 19.025418000606507
+            },
+            "drawBindings": {
+              "ms": 2058.34,
+              "percent": 28.924959015690817
+            },
+            "jsonStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "nativeStorage": {
+              "ms": 10.573,
+              "percent": 0.14857778193733737
+            },
+            "bufferShape": {
+              "ms": 3.009,
+              "percent": 0.042284171554851806
+            },
+            "jsonLookup": {
+              "ms": 10.764,
+              "percent": 0.1512618220725905
+            },
+            "access": {
+              "ms": 184.321,
+              "percent": 2.5901830459161976
+            },
+            "commandReplay": {
+              "ms": 748.07,
+              "percent": 10.512303162192751
+            }
+          }
+        },
+        {
+          "role": "Render",
+          "durationMs": 6532.293,
+          "inclusive": {
+            "tick": {
+              "ms": 0,
+              "percent": 0
+            },
+            "proxy": {
+              "ms": 3.132,
+              "percent": 0.04794641024216152
+            },
+            "groups": {
+              "ms": 0,
+              "percent": 0
+            },
+            "drawBindings": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "nativeStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "bufferShape": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonLookup": {
+              "ms": 0,
+              "percent": 0
+            },
+            "access": {
+              "ms": 0,
+              "percent": 0
+            },
+            "commandReplay": {
+              "ms": 0,
+              "percent": 0
+            }
+          }
+        },
+        {
+          "role": "Game",
+          "durationMs": 6047.024,
+          "inclusive": {
+            "tick": {
+              "ms": 0,
+              "percent": 0
+            },
+            "proxy": {
+              "ms": 0,
+              "percent": 0
+            },
+            "groups": {
+              "ms": 0,
+              "percent": 0
+            },
+            "drawBindings": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "nativeStorage": {
+              "ms": 0,
+              "percent": 0
+            },
+            "bufferShape": {
+              "ms": 0,
+              "percent": 0
+            },
+            "jsonLookup": {
+              "ms": 0,
+              "percent": 0
+            },
+            "access": {
+              "ms": 0,
+              "percent": 0
+            },
+            "commandReplay": {
+              "ms": 0,
+              "percent": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "earlyFailure": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\project-gameplay-rhi-hotspots-v49-validate.json",
+      "sha256": "33788e870994fcca47e8626af46192e3142bdf942f959a127d8c9283b97e84ba"
+    },
+    "reason": "Experiment flags were read before FCommandLine initialization. Moved to ConfigureStartup; v49 excluded from FPS."
+  },
+  "flagForwardingFailure": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v51-isolation.json",
+      "sha256": "f5f0e93f091627c1e747a203c82a16c6ff8760882c8cff237d2e2d757222ad25"
+    },
+    "reason": "Startup mode assertion detected all instead of control before measurement. v52 forwards the explicitly validated experiment argument to UE."
+  },
+  "interruptedCapture": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-isolation.json",
+      "sha256": "acc40bc7e4eca27a8e9843413550e6e4efb95413239f1de02f6834ff3a28bec5"
+    },
+    "includedInPerformance": false,
+    "runs": [
+      {
+        "mode": "control",
+        "fps": 77.52670322571764,
+        "low1": 37.404151861690465
+      },
+      {
+        "mode": "tick",
+        "fps": 50.14017024187233,
+        "low1": 23.18034306802926
+      },
+      {
+        "mode": "metadata",
+        "fps": 61.0075082704678,
+        "low1": 25.04117346739608
+      },
+      {
+        "mode": "storage",
+        "fps": 61.66669998197298,
+        "low1": 27.604072663705473
+      },
+      {
+        "mode": "storage",
+        "fps": 57.077425878075424,
+        "low1": 22.167624184951208
+      }
+    ],
+    "reason": "Incomplete before the user-reported power interruption. Retained as raw history; all final performance windows were collected after restart."
+  },
+  "environment": {
+    "file": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-rhi-hotspots-v52-reboot-environment.jsonl",
+      "sha256": "6e4494d6605c44e9d0a2d561db6005c85edf581be14b8eb283ef002b3b5124e9"
+    },
+    "measurementSamples": 64,
+    "blockersDuringMeasurements": [],
+    "backgroundCPU": {
+      "OneDrive.Sync.Service": 0,
+      "PhoneExperienceHost": 0,
+      "pwsh": 0,
+      "SDKDNS": 0,
+      "cloudmusic": 0.3981321946593313,
+      "OneDrive": 0,
+      "nvsphelper64": 0,
+      "Aac3572MbHal_x86": 0,
+      "ChatGPT": 0.5979195747149538,
+      "SearchHost": 0,
+      "msedgewebview2": 0.19900756123258675,
+      "SunloginClient": 0.19902898534744629,
+      "Weixin": 0.19906755958818653
+    },
+    "boundary": "User apps retained. Formal tests serial without builds, packaging or profilers. No exclusive CPU/GPU ownership."
+  },
+  "boundary": "Fixed-spawn ABBA, not a traversal low-frame or long-term stability test. Same Wasm switches isolate each change; a separate v47 comparison measures the combined net effect. 1% Low is inverse mean slowest 1% intervals. Short per-thread stack samples include waits, overlap inclusively, and exclude browser GPU process/GPU execution. No per-thread percentage is an exact saved frame cost."
+}
