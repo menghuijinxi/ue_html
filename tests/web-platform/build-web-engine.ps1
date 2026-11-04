@@ -5,6 +5,7 @@ param(
     [switch]$Threads,
     [switch]$Trace,
     [switch]$Simd,
+    # Ordinary threaded builds use mimalloc; -Mimalloc:$false selects dlmalloc.
     [switch]$Mimalloc,
     [switch]$AllocationProbe,
     [switch]$StandaloneCompiles,
@@ -13,6 +14,10 @@ param(
     [string]$RendererRevision = ''
 )
 $ErrorActionPreference = 'Stop'
+$taskAllocatorExplicit = $PSBoundParameters.ContainsKey('Mimalloc')
+if (-not $taskAllocatorExplicit) {
+    $Mimalloc = $Threads -and -not $Trace -and -not $Simd
+}
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-build-host/Engine'
 $taskUbt = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll'
@@ -20,7 +25,7 @@ $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/
 if (-not (Test-Path -LiteralPath $taskUbt)) { throw 'Run build-web-ubt.ps1 to prepare the isolated Web UBT first.' }
 if ($Trace -and -not $Threads) { throw 'The Trace diagnostic target requires -Threads.' }
 if ($Simd -and (-not $Threads -or $Trace)) { throw 'SIMD comparison requires Threads without Trace.' }
-if ($Mimalloc -and (-not $Threads -or $Trace -or $Simd)) { throw 'Allocator comparison requires Threads without Trace or SIMD.' }
+if ($Mimalloc -and (-not $Threads -or $Trace -or $Simd)) { throw 'Mimalloc requires Threads without Trace or SIMD.' }
 if ($AllocationProbe -and (-not $Threads -or $Trace -or $Simd)) { throw 'Allocation probe requires Threads without Trace or SIMD.' }
 if ($AllocationProbe) { & (Join-Path $PSScriptRoot 'build-web-allocation-probe.ps1') }
 if ($Mimalloc) {
@@ -69,6 +74,7 @@ if ((Get-Item -LiteralPath (Split-Path $taskRenderUtils)).LinkType -or
     throw 'RenderCore overlay must be a local build-host copy.'
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp') -Destination $taskRenderUtils -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Public/WebShaderPlatform.h') -Destination (Join-Path $taskHost 'Source/Runtime/RenderCore/Public/WebShaderPlatform.h') -Force
 if ($RendererRevision) {
     $taskRendererSnapshotText = & node (Join-Path $PSScriptRoot 'materialize-web-renderer-revision.cjs') $RendererRevision
     if ($LASTEXITCODE -ne 0) { throw 'Failed to select the renderer revision matching the Cook' }
@@ -110,6 +116,7 @@ $taskReport = [ordered]@{
     trace = [bool]$Trace
     simd = [bool]$Simd
     allocator = $(if ($Mimalloc) { 'mimalloc' } else { 'default-dlmalloc' })
+    allocatorSelection = $(if ($taskAllocatorExplicit) { 'explicit' } else { 'target-default' })
     allocationProbe = [bool]$AllocationProbe
     standaloneCompiles = [bool]$StandaloneCompiles
     linkOptimization = $(if ($LinkOptimization -eq 0) { 'default-O0' } else { "O$LinkOptimization" })
@@ -147,7 +154,9 @@ try {
         '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
     if ($LinkOptimization -gt 0) { $taskArguments += "-WebLinkOptimization=$LinkOptimization" }
     if ($KeepLinkNames) { $taskArguments += '-WebKeepLinkNames' }
-    if ($Mimalloc) { $taskArguments += '-WebMimalloc' }
+    if ($taskAllocatorExplicit) {
+        $taskArguments += $(if ($Mimalloc) { '-WebMimalloc' } else { '-WebDlmalloc' })
+    }
     if ($AllocationProbe) { $taskArguments += '-WebAllocationProbe' }
     if ($StandaloneCompiles) {
         $taskActions = "$taskLog.actions.json"

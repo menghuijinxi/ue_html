@@ -4,6 +4,8 @@ const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const option = n => process.argv.find(v => v.startsWith('--' + n + '='))?.slice(n.length + 3);
 const folders=option('folders')?.split(',');
+const differentCook=process.argv.includes('--different-cook');
+assert(!differentCook || folders, '--different-cook requires an explicit folder comparison');
 const folder = option('folder')||folders?.[0], tag = option('tag');
 assert([folder, tag].every(v => v && /^[a-z0-9-]+$/.test(v)));
 assert(!folders||(!option('folder')&&!option('modes')&&!option('cores')&&!option('bridge')&&!option('transport')&&folders.length>=2&&folders.every(f=>/^[a-z0-9-]+$/.test(f))));
@@ -30,12 +32,20 @@ assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 fs.copyFileSync(__filename, output+'-source.cjs');
 const report = {date: new Date().toISOString(), folder, seconds, warmup, runs: [], pass: false,
   allocationProbe:process.argv.includes('--allocation-probe'),performanceAccepted:!process.argv.includes('--allocation-probe'),
-  coreLimits, bridges, transports, folders, rhi,
+  coreLimits, bridges, transports, folders, rhi, differentCook,
   source: audit(__filename), capturedSource:audit(output+'-source.cjs'), qualityOverrides: [], psoPrecache: false,
   packageFiles: packageNames(folder).map(n => audit(path.join(base, n))),
   packages:Object.fromEntries([...new Set(folders||[folder])].map(f=>[f,{folder:f,files:Object.fromEntries(packageNames(f).map(n=>[n,audit(path.join(__dirname,'build',f,n))]))}])),
   boundary: 'Thread/bridge/transport tests use the same pthread WASM and Cook, varying only the named startup flags. Folder comparisons use separately audited runtimes and identical content/config hashes. Full threading and default cores for bridge/transport/folder tests. Visible Edge, 2289x1287 CSS, DPR 1, fixed default spawn, normal browser cache. Timings use completed RHI viewport presents, no per-draw instrumentation. Optional CPU sampling starts after the measured interval and screenshot.'};
-for(const p of Object.values(report.packages))for(const n of ['config-files.json','content-files.json'])assert.equal(p.files[n].sha256,report.packages[folder].files[n].sha256,'Cook or project config changed');
+if(differentCook){
+  const projectConfig=f=>{
+    const config=JSON.parse(fs.readFileSync(path.join(__dirname,'build',f,'config-files.json'),'utf8'));
+    const entry=config.find(e=>e.path==='/Engine/Programs/UEWebEngine/Config/DefaultEngine.ini');assert(entry);
+    return entry.sha256;
+  };
+  for(const f of folders)assert.equal(projectConfig(f),projectConfig(folder),'Original project renderer config changed');
+  report.boundary+=' Explicit different-Cook comparison: package platform admission, shader permutations and renderer compatibility may differ. Original project DefaultEngine.ini, measured settings, resolution and camera must match; this is an end-to-end package comparison, not an isolated runtime A/B.';
+}else for(const p of Object.values(report.packages))for(const n of ['config-files.json','content-files.json'])assert.equal(p.files[n].sha256,report.packages[folder].files[n].sha256,'Cook or project config changed');
 function install() {
   const state = globalThis.__threadingCapture = {active: false, times: []};
   let count = 0;
@@ -150,7 +160,8 @@ async function profileBlockedWorker(file, all = false) {
         threads: globalThis.__webEngineThreads, stages: globalThis.__webThreadStages,
         view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera,
         occlusion: globalThis.__webOcclusionRHI, memory: globalThis.__webTextureStreaming, io: globalThis.__webContentIO?.stats,
-        browserMetrics:globalThis.__webBrowserMetrics}));
+        browserMetrics:globalThis.__webBrowserMetrics, metadata:globalThis.__webShaderMetadata,
+        wasmCapacityBytes:typeof HEAPU8==='undefined'?null:HEAPU8.buffer.byteLength}));
       await page.waitForTimeout(warmup*1000);
       run.before = await state();
       run.pageBefore=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),live:globalThis.__webLivePerformance}));
