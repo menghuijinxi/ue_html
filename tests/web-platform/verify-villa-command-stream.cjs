@@ -61,6 +61,7 @@ async function captureOwner(){
    Object.assign(report.windowMetrics.at(-1),{view:after.view,frames:after.frames});
   }
  }
+ report.metadata=await pageOwner().evaluate(()=>globalThis.__webShaderMetadata||null);
  report.page=await page.evaluate(()=>({visibility:document.visibilityState,focused:document.hasFocus(),
   performance:globalThis.__webLivePerformance,userAgent:navigator.userAgent}));
  if(process.argv.includes('--profile-owner'))await captureOwner();

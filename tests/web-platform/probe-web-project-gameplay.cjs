@@ -13,6 +13,8 @@ const width = Number(option('width') || 1533), height = Number(option('height') 
 const dpr = Number(option('dpr') || 1.21);
 const requireRenderThreads = process.argv.includes('--require-render-threads');
 const validateBindingCache = process.argv.includes('--validate-binding-cache');
+const nativeValidation = process.argv.includes('--native-validation');
+assert(!nativeValidation || validateBindingCache);
 const requireGPUScene = process.argv.includes('--require-gpuscene');
 const requireResourceTables = process.argv.includes('--require-resource-tables');
 const requireParallelRecording = process.argv.includes('--require-parallel-recording');
@@ -25,7 +27,7 @@ const report = {date: new Date().toISOString(), folder, width, height, dpr, requ
   headful: process.argv.includes('--visible'),
   hostCondition: process.env.UE_WEB_TEST_HOST_CONDITION || 'default scheduling',
   sourceSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
-  runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, requireGPUScene, requireResourceTables,
+  runs: [], settingsOverrides: [], requireRenderThreads, validateBindingCache, nativeValidation, requireGPUScene, requireResourceTables,
   requireParallelRecording, requireManualVertexFetch, pass: false};
 const log = fs.createWriteStream(output + '.log');
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
@@ -50,6 +52,15 @@ let context;
         if (parallel) result.parallelDrawThreads.push(JSON.parse(parallel[1]));
         if (text.includes('P3_DEFAULT_POSITION_SRV bytes=12 format=float32 zero=1')) result.defaultPositionSRV = true;
         if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(text)) result.errors.push(text);
+      });
+      if (validateBindingCache && !nativeValidation) await context.route('**/index.html', async route => {
+        const response = await route.fetch(); let html = await response.text();
+        const match = html.match(/arguments: (\[[^\n]+\]),/); assert(match);
+        const args = [...match[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(m => m[1]);
+        assert(args.length && !args.includes('-WebShaderMetadataDOM'));
+        args.push('-WebShaderMetadataValidate');
+        html = html.replace(match[0], 'arguments: ' + JSON.stringify(args) + ',');
+        await route.fulfill({response, body:html});
       });
       const start = Date.now();
       await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
@@ -93,6 +104,9 @@ let context;
           result.diagnostics = state.diagnostics;
           delete state.diagnostics;
         }
+        const metadataOwner = page.workers().find(w => w.url().includes('web-engine-worker.js'));
+        state.metadata = await metadataOwner.evaluate(() => globalThis.__webShaderMetadata || null);
+        if (nativeValidation && state.metadata) assert.equal(state.metadata.domLoads, 0);
         result.samples.push({label, elapsedMilliseconds: Date.now() - start, ...state});
         save();
         assert(!state.failure, JSON.stringify(state.failure));

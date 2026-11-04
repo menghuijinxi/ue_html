@@ -6,6 +6,8 @@ const option = n => process.argv.find(x => x.startsWith('--' + n + '='))?.slice(
 const folder = option('folder') || 'villa-pso-concurrency-v18-default', tag = option('tag');
 const rounds = Number(option('rounds') || 3), startupTrace = process.argv.includes('--ue-trace'), browserTrace = process.argv.includes('--browser-trace');
 const cpuProfile = process.argv.includes('--cpu-profile');
+const metadataModes = option('metadata')?.split(',');
+assert(!metadataModes || (metadataModes.length === rounds && metadataModes.every(m => ['native','dom'].includes(m))));
 const manual = process.argv.includes('--manual');
 const psoCorpus = process.argv.includes('--pso-corpus');
 const profileName = option('profile') || 'stutters', settleCacheMs = Number(option('settle-cache-ms') || 0);
@@ -17,7 +19,8 @@ const browserArgs = [...(gpuCacheKB === null ? [] : ['--gpu-disk-cache-size-kb='
 assert([folder, tag].every(x => x && /^[a-z0-9-]+$/.test(x)) && Number.isInteger(rounds) && rounds > 0 && rounds <= 5);
 const output = path.join(__dirname, 'results', tag), recorder = fs.readFileSync(path.join(__dirname, 'web-startup-profile.js'), 'utf8');
 assert(!fs.existsSync(output + '.json'), 'Preserve existing captures; use a new tag');
-const report = {date: new Date().toISOString(), folder, startupTrace, browserTrace, cpuProfile, manual, psoCorpus, rounds, runs: [], errors: [], pass: false,
+fs.copyFileSync(__filename, output+'-source.cjs');
+const report = {date: new Date().toISOString(), source:audit(__filename), capturedSource:audit(output+'-source.cjs'), metadataModes, folder, startupTrace, browserTrace, cpuProfile, manual, psoCorpus, rounds, runs: [], errors: [], pass: false,
   profileName, settleCacheMs, browserArgs,
   qualityOverrides: [], boundary: 'Original package, retained browser/content caches. Opt-in API timing and marks. First canvas submit/completion and loading-hidden are different milestones.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
@@ -53,7 +56,7 @@ async function profileOwner(cdp, target) {
   for (let index = 0; index < rounds; index++) {
     const context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', profileName), {
       channel: 'msedge', headless: false, viewport: {width: 1863, height: 1030}, deviceScaleFactor: 1.25, args: browserArgs});
-    const run = {index, errors: [], samples: []}; report.runs.push(run); save();
+    const run = {index, metadataMode:metadataModes?.[index] || null, started:new Date().toISOString(), errors: [], samples: []}; report.runs.push(run); save();
     try {
       if (manual && psoCorpus) await context.route('**/web-engine-worker.js?*', async route => {
         const response = await route.fetch();
@@ -65,10 +68,11 @@ async function profileOwner(cdp, target) {
         const response = await route.fetch(); let html = await response.text();
         const stage = 'function startupStage(stage) {'; assert(html.includes(stage));
         html = html.replace(stage, stage + '\n globalThis.__webStartupProfile?.mark("page.stage." + stage);');
-        if (startupTrace) {
+        if (startupTrace || run.metadataMode === 'dom') {
           const args = html.match(/arguments: (\[[^\n]+\]),/); assert(args);
           const values = [...args[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(x => x[1]);
-          values.push('-WebStartupTrace'); html = html.replace(args[0], 'arguments: ' + JSON.stringify(values) + ',');
+          if (startupTrace) values.push('-WebStartupTrace');
+          if (run.metadataMode === 'dom') values.push('-WebShaderMetadataDOM'); html = html.replace(args[0], 'arguments: ' + JSON.stringify(values) + ',');
         }
         await route.fulfill({response, body: html});
       });
@@ -112,7 +116,13 @@ async function profileOwner(cdp, target) {
         await page.waitForTimeout(500);
         run.elapsedMs = Date.now() - at;
         run.state = await owner.evaluate(() => ({settings: __webProjectSettings, view: __webRenderView,
-          rhi: __webOptimizationRHI, pso: __webPSOPrecache, io: __webContentIO.stats}));
+          metadata:globalThis.__webShaderMetadata, memory:{wasmCapacityBytes:typeof HEAPU8 === 'undefined' ? null : HEAPU8.buffer.byteLength},
+          rhi: globalThis.__webOptimizationRHI, pso: globalThis.__webPSOPrecache, io: __webContentIO.stats}));
+        if (run.metadataMode) {
+          assert.equal(run.state.metadata.native, run.metadataMode === 'native');
+          assert.equal(run.state.metadata.domLoads === 0, run.metadataMode === 'native');
+          assert(run.state.metadata.nativeLoads + run.state.metadata.domLoads > 100);
+        }
         run.page = await page.evaluate(() => {__webStartupProfile.freeze(); return {...__webStartupProfile,
           navigation: performance.getEntriesByType('navigation').map(x => x.toJSON()), diagnostics: startupSnapshot()};});
         run.owner = await owner.evaluate(() => {__webStartupProfile.freeze(); return __webStartupProfile;});
@@ -163,7 +173,7 @@ async function profileOwner(cdp, target) {
           finally {fs.closeSync(fd); await cdp.send('IO.close', {handle: stream});}
         }
         await page.locator('canvas').screenshot({path: output + `-${index}-scene.png`, timeout: 60000});
-        save(); console.log(JSON.stringify({index, elapsedMs: run.elapsedMs, pipelines: run.owner.pipelines.length, modules: run.owner.modules.length,
+        save(); console.log(JSON.stringify({index, metadata:run.state.metadata, elapsedMs: run.elapsedMs, pipelines: run.owner.pipelines.length, modules: run.owner.modules.length,
           marks: run.owner.marks.filter(m => m.name !== 'native.pso.complete'), nativePSOCompletions: run.owner.marks.filter(m => m.name === 'native.pso.complete').length, io: run.state.io}));
         if (settleCacheMs) await page.waitForTimeout(settleCacheMs);
       } finally {page.off('console', logConsole); log.end(); if (browserCDP) await browserCDP.detach();}
