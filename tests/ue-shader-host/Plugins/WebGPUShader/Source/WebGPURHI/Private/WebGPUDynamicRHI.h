@@ -82,6 +82,16 @@ struct FWebGPUGroupSnapshot
     TArray<TPair<FRHITextureReference*, FRHITexture*>, TInlineAllocator<4>> TextureReferences;
 };
 
+// Immutable pipeline layout work. Descriptor order stays identical to the
+// reference path; only dynamic offsets use WebGPU's binding-number order.
+struct FWebGPUBindingPlan
+{
+    struct FSlot { int32 Entry = 0, Dynamic = INDEX_NONE; };
+    TArray<FSlot> Slots[2];
+    TArray<int32, TInlineAllocator<4>> EntryCounts, DynamicCounts;
+    bool Initialized = false;
+};
+
 struct FWebGPUShaderData
 {
     FRHIShader* Owner = nullptr;
@@ -445,6 +455,7 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
     // Cached PSOs can outlive the material/task that supplied these raw pointers.
+    FWebGPUBindingPlan BindingPlan;
     FVertexDeclarationRHIRef VertexDeclaration;
     FVertexShaderRHIRef VertexShader;
     FPixelShaderRHIRef PixelShader;
@@ -484,6 +495,7 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     TSet<uint64> DynamicBindings;
     TMap<uint64, uint32> StorageFormats;
     TMap<FString, TRefCountPtr<FWebGPUComputePipeline>> FormatVariants;
+    FWebGPUBindingPlan BindingPlan;
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
@@ -642,6 +654,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     std::atomic<uint32> NoopRHITicksSkipped{0};
     uint32 StorageDescriptorRevalidations = 0, NativeStorageContractUses = 0, StorageContractRejectionChecks = 0;
     uint32 BindingEntriesPrepared = 0, BindingEntriesReused = 0, BindingEntriesValidated = 0;
+    uint32 BindingPlanEntries = 0, BindingPlansBuilt = 0, BindingPlanValidations = 0;
     uint32 GroupPreparationHits = 0, GroupPreparationValidated = 0;
     uint32 GroupPreparationFrameMisses = 0, GroupPreparationAccessMisses = 0,
         GroupPreparationVersionMisses = 0, GroupPreparationTextureMisses = 0;

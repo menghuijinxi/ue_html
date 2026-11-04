@@ -763,6 +763,14 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.TSR.History.R11G11B10"))->Set(Value, ECVF_SetByCode);
     else if (Parameter == 15 && (Value == 0 || Value == 1))
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.TranslucencyLightingVolume"))->Set(Value, ECVF_SetByCode);
+    else if (Parameter >= 16 && Parameter <= 18 && (Value == 0 || Value == 1))
+    {
+        const TCHAR* Experiments[] = {TEXT("r.WebGPU.BindingPlan"), TEXT("r.WebGPU.TLVShareCascades"),
+            TEXT("r.WebGPU.ValidateBindingCache")};
+        auto* Variable = IConsoleManager::Get().FindConsoleVariable(Experiments[Parameter - 16]);
+        if (!Variable) return 0;
+        Variable->Set(Value, ECVF_SetByCode);
+    }
     else if (Parameter != -1)
         return 0;
     auto* LocalPlayer = Controller->GetLocalPlayer();

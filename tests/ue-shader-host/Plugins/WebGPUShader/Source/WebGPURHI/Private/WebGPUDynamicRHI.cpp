@@ -37,6 +37,9 @@ static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
 static TAutoConsoleVariable<int32> CVarWebGPUBindingGroupCache(
     TEXT("r.WebGPU.BindingGroupCache"), 1,
     TEXT("Reuse prepared binding groups when resource, uniform and access generations match."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUBindingPlan(
+    TEXT("r.WebGPU.BindingPlan"), 0,
+    TEXT("Experiment: precompute descriptor slots and dynamic offset order per pipeline."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
@@ -1180,6 +1183,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, GroupPreparationHits, GroupPreparationValidated, GroupPreparationFrameMisses,
             GroupPreparationAccessMisses, GroupPreparationVersionMisses, GroupPreparationTextureMisses,
             CVarWebGPUBindingGroupCache.GetValueOnAnyThread());
+        EM_ASM({ Object.assign(globalThis.__webOcclusionRHI,
+            {bindingPlanEnabled:!!$0, bindingPlanEntries:$1, bindingPlansBuilt:$2, bindingPlanValidations:$3}); },
+            CVarWebGPUBindingPlan.GetValueOnAnyThread(), BindingPlanEntries, BindingPlansBuilt, BindingPlanValidations);
         EM_ASM({
             globalThis.__webOptimizationRHI = ({sampleFrame: $0, graphicsPipelines: $1, computePipelines: $2,
                 graphicsPipelineCreateMs: $3, computePipelineCreateMs: $4,
@@ -3182,7 +3188,40 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     auto& PreviousFrame = Render ? GraphicsPipeline->PreviousGroupsFrame : ComputePipeline->PreviousGroupsFrame;
     auto& PreparedGroups = Render ? GraphicsPipeline->PreparedGroups : ComputePipeline->PreparedGroups;
     const auto& Layouts = Render ? GraphicsPipeline->GroupLayouts : ComputePipeline->GroupLayouts;
+    auto& Plan = Render ? GraphicsPipeline->BindingPlan : ComputePipeline->BindingPlan;
+    const bool UsePlan = CVarWebGPUBindingPlan.GetValueOnAnyThread() != 0;
     check(Shaders.Num() <= 2 && Layouts.Num() <= 32);
+    if (UsePlan && !Plan.Initialized)
+    {
+        Plan.EntryCounts.SetNumZeroed(Layouts.Num());
+        Plan.DynamicCounts.SetNumZeroed(Layouts.Num());
+        TArray<TPair<uint64, FWebGPUBindingPlan::FSlot*>> SortedOffsets;
+        for (int32 ShaderIndex = 0; ShaderIndex < Shaders.Num(); ++ShaderIndex)
+        {
+            Plan.Slots[ShaderIndex].SetNum(Shaders[ShaderIndex]->Bindings.Num());
+            for (int32 Index = 0; Index < Shaders[ShaderIndex]->Bindings.Num(); ++Index)
+            {
+                const auto& Binding = Shaders[ShaderIndex]->Bindings[Index];
+                auto& Slot = Plan.Slots[ShaderIndex][Index];
+                check(Plan.EntryCounts.IsValidIndex(Binding.Group));
+                Slot.Entry = Plan.EntryCounts[Binding.Group]++;
+                // Duplicate bindings are a pipeline invariant, checked once here.
+                for (int32 EarlierShader = 0; EarlierShader <= ShaderIndex; ++EarlierShader)
+                    for (int32 Earlier = 0; Earlier < (EarlierShader == ShaderIndex ? Index : Shaders[EarlierShader]->Bindings.Num()); ++Earlier)
+                    {
+                        const auto& Other = Shaders[EarlierShader]->Bindings[Earlier];
+                        check(Binding.Group != Other.Group || Binding.Index != Other.Index);
+                    }
+                if (DynamicBindings.Contains((uint64(Binding.Group) << 32) | Binding.Index))
+                    SortedOffsets.Emplace((uint64(Binding.Group) << 32) | Binding.Index, &Slot);
+            }
+        }
+        SortedOffsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
+        for (const auto& Offset : SortedOffsets)
+            Offset.Value->Dynamic = Plan.DynamicCounts[Offset.Key >> 32]++;
+        Plan.Initialized = true;
+        ++BindingPlansBuilt;
+    }
     Groups.SetNum(Layouts.Num());
     DynamicOffsets.SetNum(Layouts.Num());
     PreparedGroups.SetNum(Layouts.Num());
@@ -3224,8 +3263,16 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         }
         if (!(ReusedGroups & (1u << Group))) Cached.TextureReferences.Reset();
     }
-    for (FWebGPUShaderData *Shader : Shaders)
+    if (UsePlan)
+        for (int32 Group = 0; Group < Layouts.Num(); ++Group)
+        {
+            if (ReusedGroups & (1u << Group)) continue;
+            Groups[Group].SetNum(Plan.EntryCounts[Group], EAllowShrinking::No);
+            DynamicOffsets[Group].SetNum(Plan.DynamicCounts[Group], EAllowShrinking::No);
+        }
+    for (int32 ShaderIndex = 0; ShaderIndex < Shaders.Num(); ++ShaderIndex)
     {
+        auto* Shader = Shaders[ShaderIndex];
         uint32 VertexFetchCodes[4] = {}, VertexFetchKey = 0;
         if (Shader->HasVertexFetchFormats)
         {
@@ -3254,8 +3301,9 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 VertexFetchKey |= Code << (VertexBinding.VertexFetchFormatSlot * 3);
             }
         }
-        for (auto &Reflected : Shader->Bindings)
+        for (int32 BindingIndex = 0; BindingIndex < Shader->Bindings.Num(); ++BindingIndex)
         {
+            auto& Reflected = Shader->Bindings[BindingIndex];
             if (ReusedGroups & (1u << Reflected.Group)) continue;
             const auto* Binding = Reflected.Metadata;
             const auto& Name = Reflected.Name;
@@ -3513,17 +3561,54 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 Reflected.PreparedSerial = BindingStateSerial;
                 ++BindingEntriesPrepared;
             }
-            if (DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding))
+            const auto* Slot = UsePlan ? &Plan.Slots[ShaderIndex][BindingIndex] : nullptr;
+            const bool Dynamic = Slot ? Slot->Dynamic != INDEX_NONE :
+                DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding);
+            if (Dynamic)
             {
                 check(Entry.buffer && Entry.offset <= MAX_uint32 && Entry.offset % Limits.minUniformBufferOffsetAlignment == 0);
-                DynamicOffsets[Group].Emplace(Entry.binding, uint32(Entry.offset));
+                if (Slot) DynamicOffsets[Group][Slot->Dynamic] = {Entry.binding, uint32(Entry.offset)};
+                else DynamicOffsets[Group].Emplace(Entry.binding, uint32(Entry.offset));
                 Entry.offset = 0;
             }
-            check(!Groups[Group].ContainsByPredicate(
-                [&](const auto &Other) { return Other.binding == Entry.binding; }));
-            Groups[Group].Add(Entry);
+            if (Slot)
+            {
+                Groups[Group][Slot->Entry] = Entry;
+                ++BindingPlanEntries;
+            }
+            else
+            {
+                check(!Groups[Group].ContainsByPredicate(
+                    [&](const auto &Other) { return Other.binding == Entry.binding; }));
+                Groups[Group].Add(Entry);
+            }
         }
     }
+    if (UsePlan && ValidatePrepared)
+        for (int32 Group = 0; Group < Layouts.Num(); ++Group)
+        {
+            int32 EntryIndex = 0;
+            TArray<TPair<uint32, uint32>> ReferenceOffsets;
+            for (const auto* Shader : Shaders)
+                for (const auto& Binding : Shader->Bindings)
+                {
+                    if (Binding.Group != uint32(Group)) continue;
+                    auto Expected = Binding.PreparedEntry;
+                    if (DynamicBindings.Contains((uint64(Group) << 32) | Expected.binding))
+                    {
+                        ReferenceOffsets.Emplace(Expected.binding, uint32(Expected.offset));
+                        Expected.offset = 0;
+                    }
+                    const auto& Actual = Groups[Group][EntryIndex++];
+                    checkf(Actual.binding == Expected.binding && Actual.buffer == Expected.buffer &&
+                        Actual.offset == Expected.offset && Actual.size == Expected.size &&
+                        Actual.textureView == Expected.textureView && Actual.sampler == Expected.sampler,
+                        TEXT("WebGPU binding plan differs from reference: group=%d"), Group);
+                }
+            ReferenceOffsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
+            check(EntryIndex == Groups[Group].Num() && ReferenceOffsets == DynamicOffsets[Group]);
+            ++BindingPlanValidations;
+        }
     FWebGPUResolvedGroups Result;
     for (uint32 Group = 0; HasBindings && Group <= Maximum; ++Group)
     {
@@ -3541,7 +3626,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         auto& Offsets = DynamicOffsets[Group];
         if (!Offsets.IsEmpty())
         {
-            Offsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
+            if (!UsePlan) Offsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
             for (const auto& Offset : Offsets) Resolved.DynamicOffsets.Add(Offset.Value);
         }
         const auto* Entries = &Groups[Group];
