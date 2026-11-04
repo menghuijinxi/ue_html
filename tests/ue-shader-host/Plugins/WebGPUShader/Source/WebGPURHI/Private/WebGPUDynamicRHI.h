@@ -536,7 +536,9 @@ class FWebGPURenderQuery final : public FRHIRenderQuery
   public:
     FWebGPUOcclusionRef Batch;
     uint32 Index = 0;
-    std::atomic<bool> ResultReady{false};
+    // A 32-bit word also supports sleeping Render workers until the owner
+    // publishes a result. The owner itself must always remain nonblocking.
+    std::atomic<uint32> ResultReady{0};
     std::atomic<uint64> ResultValue{0};
     uint64 Generation = 0; // RHI owns reuse and completion publication.
 };

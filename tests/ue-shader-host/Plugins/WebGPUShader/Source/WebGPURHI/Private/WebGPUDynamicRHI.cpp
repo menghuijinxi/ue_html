@@ -3,6 +3,7 @@
 #include "DataDrivenShaderPlatformInfo.h"
 #include "GlobalRenderResources.h"
 #include "RenderResource.h"
+#include "RenderingThread.h"
 #include "Containers/ResourceArray.h"
 #include "RHITextureUtils.h"
 #include "RHITextureReference.h"
@@ -43,6 +44,9 @@ static TAutoConsoleVariable<int32> CVarWebGPUBindingPlan(
 static TAutoConsoleVariable<int32> CVarWebGPUStagingUploadPages(
     TEXT("r.WebGPU.StagingUploadPages"), 0,
     TEXT("Experiment: reuse up to four 1 MiB upload pages after all frame encoders are submitted."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUOcclusionQueryWaitMs(
+    TEXT("r.WebGPU.OcclusionQueryWaitMs"), 0,
+    TEXT("Experiment: Render worker query wait budget per frame (0 disables, clamped to 20 ms). Never blocks the GPU owner."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
@@ -56,6 +60,8 @@ using FWebGPUCompletionRef = TSharedPtr<FWebGPUCompletion, ESPMode::ThreadSafe>;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
 bool ProfilePSOStartup = false;
 std::atomic<uint32> PSOProfileSequence{0};
+std::atomic<uint32> QueryWaitCalls{0}, QueryWaitUnready{0};
+std::atomic<uint64> QueryWaitMicroseconds{0};
 double PSOProfileTime()
 {
     return ProfilePSOStartup ? EM_ASM_DOUBLE({ return performance.timeOrigin + performance.now(); }) : 0;
@@ -1148,6 +1154,7 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             {rhiThreadId: $0, rhiFrames: $1, submitted: $2, presented: $3,
                 parallelCommandRecording: !!$4, parallelRHITranslation: !!$5});
         globalThis.__webRHIFrames = $3;
+        globalThis.__webGPUFrameSubmitted?.();
     }, FPlatformTLS::GetCurrentThreadId(), EndFrames, Submitted, FramesPresented,
         GRHICommandList.UseParallelAlgorithms(), GRHISupportsParallelRHIExecute);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
@@ -1156,6 +1163,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #endif
     if (EndFrames % 30 == 0)
     {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+        EM_ASM({globalThis.__webOcclusionWait = ({budgetMs: $0, calls: $1, unready: $2, microseconds: $3});},
+            CVarWebGPUOcclusionQueryWaitMs.GetValueOnAnyThread(), QueryWaitCalls.load(),
+            QueryWaitUnready.load(), double(QueryWaitMicroseconds.load()));
+#endif
         EM_ASM({
             globalThis.__webOcclusionRHI = {};
             globalThis.__webOcclusionRHI.ready = $0;
@@ -4584,6 +4596,7 @@ void FWebGPUDynamicRHI::RHIEndRenderPass()
         OcclusionBatch->Readback = Readback;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         Readback->OnReady = [Results = MoveTemp(OcclusionBatch->Results)](const TArray<uint8>& Data) {
+            const bool WakeWaiters = CVarWebGPUOcclusionQueryWaitMs.GetValueOnAnyThread() > 0;
             for (int32 Index = 0; Index < Results.Num(); ++Index)
             {
                 auto* Query = static_cast<FWebGPURenderQuery*>(Results[Index].Query.GetReference());
@@ -4592,6 +4605,9 @@ void FWebGPUDynamicRHI::RHIEndRenderPass()
                 FMemory::Memcpy(&Value, Data.GetData() + Index * sizeof(Value), sizeof(Value));
                 Query->ResultValue.store(Value, std::memory_order_relaxed);
                 Query->ResultReady.store(true, std::memory_order_release);
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+                if (WakeWaiters) emscripten_futex_wake(&Query->ResultReady, MAX_int32);
+#endif
             }
         };
 #endif
@@ -4640,6 +4656,33 @@ bool FWebGPUDynamicRHI::RHIGetRenderQueryResult(FRHIRenderQuery* Query, uint64& 
 {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     const auto* Value = static_cast<FWebGPURenderQuery*>(Query);
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+    const int32 WaitBudgetMs = FMath::Clamp(CVarWebGPUOcclusionQueryWaitMs.GetValueOnAnyThread(), 0, 20);
+    if (WaitForResult && WaitBudgetMs && !Value->ResultReady.load(std::memory_order_acquire) &&
+        !emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread())
+    {
+        // Native D3D12 may wait for the requested older query. Only the consuming
+        // worker sleeps here; mapAsync and result publication continue on owner.
+        // Bound the sum of waits per consuming thread/frame, including timeouts.
+        static thread_local uint32 WaitFrame = MAX_uint32;
+        static thread_local double RemainingMs = 0;
+        if (WaitFrame != GFrameNumberRenderThread)
+        {
+            WaitFrame = GFrameNumberRenderThread;
+            RemainingMs = WaitBudgetMs;
+        }
+        if (RemainingMs > 0)
+        {
+            ++QueryWaitCalls;
+            const double Started = FPlatformTime::Seconds();
+            emscripten_futex_wait(const_cast<std::atomic<uint32>*>(&Value->ResultReady), 0, RemainingMs);
+            const double ElapsedMs = (FPlatformTime::Seconds() - Started) * 1000.0;
+            RemainingMs -= ElapsedMs;
+            QueryWaitMicroseconds += uint64(ElapsedMs * 1000.0);
+            if (!Value->ResultReady.load(std::memory_order_acquire)) ++QueryWaitUnready;
+        }
+    }
+#endif
     if (!Value->ResultReady.load(std::memory_order_acquire))
     {
         ++OcclusionResultsPending;

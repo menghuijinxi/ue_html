@@ -771,6 +771,12 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
         if (!Variable) return 0;
         Variable->Set(Value, ECVF_SetByCode);
     }
+    else if (Parameter == 20 && Value >= 0 && Value <= 20)
+    {
+        auto* Variable = IConsoleManager::Get().FindConsoleVariable(TEXT("r.WebGPU.OcclusionQueryWaitMs"));
+        if (!Variable) return 0;
+        Variable->Set(Value, ECVF_SetByCode);
+    }
     else if (Parameter != -1)
         return 0;
     auto* LocalPlayer = Controller->GetLocalPlayer();
@@ -1390,6 +1396,7 @@ int main(int argc, char** argv)
             FTaskTagScope::SetTagNone();
             MAIN_THREAD_ASYNC_EM_ASM({
                 globalThis.__webGameThreadWorker = PThread.pthreads[Number($0)];
+                globalThis.__webAttachFrameScheduler?.(globalThis.__webGameThreadWorker);
                 globalThis.__webGameThreadWorker.addEventListener('message', event => {
                     if (event.data.type === 'web-game-raf-request') {
                         const id = event.data.id;
