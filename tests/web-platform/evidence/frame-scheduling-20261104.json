@@ -1,0 +1,674 @@
+{
+  "date": "2026-11-04T07:37:04.331Z",
+  "pass": true,
+  "diagnosticWindowsVerified": true,
+  "acceptedForDefault": false,
+  "schedulingOpportunityObserved": true,
+  "qualityParityVerified": false,
+  "motionStabilityVerified": false,
+  "gpuUtilizationMeasured": false,
+  "fullGpuFrameMeasured": false,
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/frame-scheduling-v62-20261104-v2.json",
+      "sha256": "f6c3d1b5f95744ac9ce1f5b474ccd2fbdd87016c447b5cd906be281ee1eea42e"
+    },
+    {
+      "file": "tests/web-platform/results/frame-scheduling-v62-noqueries-20261104.json",
+      "sha256": "f36ef4cd6524fad4af7c2a712875825783ad918a5327d4e7e7ed9749a15f73a0"
+    }
+  ],
+  "executedSources": [
+    {
+      "file": "tests/web-platform/results/frame-scheduling-v62-20261104-v2-executed-source.cjs",
+      "sha256": "0dd09e44bceda604f8918302b1aaec0dcd0735d3c4e609e12320bbea2cf353e4"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\frame-scheduling-v62-noqueries-20261104-source.cjs",
+      "sha256": "739ac0173a10e1093f95fd18b77f8334bb5a376f5dd1d85e57df10f25360789c"
+    }
+  ],
+  "captureValidation": [
+    {
+      "rawPass": true,
+      "aggregateMetadataGateRechecked": false,
+      "rawError": null
+    },
+    {
+      "rawPass": false,
+      "aggregateMetadataGateRechecked": true,
+      "rawError": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    antiAliasing: 4,\n    height: 835,\n    jitterX: 0,\n    jitterY: 0,\n...\n    parallelRendering: true,\n+   threadId: 3,\n-   threadId: 4,\n    width: 1484,\n    x: 0,\n    y: 0\n  }\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-frame-scheduling.cjs:207:12"
+    }
+  ],
+  "excludedCaptures": [
+    {
+      "input": {
+        "file": "tests/web-platform/results/frame-scheduling-v62-20261104.json",
+        "sha256": "c264b9b178fb1a056d3ec97edbc63f69c1413c38f859beb3231843197c64ddde"
+      },
+      "rawPass": false,
+      "rawError": "AssertionError [ERR_ASSERTION]: Game did not acknowledge timing capture\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-frame-scheduling.cjs:161:5",
+      "modeOrder": [
+        "owner-raf",
+        "owner-immediate",
+        "game-local",
+        "game-local",
+        "owner-immediate",
+        "owner-raf"
+      ],
+      "completedRuns": 0,
+      "excludedFromPerformanceSummary": true
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/frame-scheduling-v62-buffer4-20261104.json",
+        "sha256": "867d721a7468f5c248a382ef97a5b3b9f86b3a4dae4bfef7fe20bd48d681632a"
+      },
+      "rawPass": false,
+      "rawError": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    antiAliasing: 4,\n+   frame: 1390,\n-   frame: 2286,\n    height: 835,\n    jitterX: 0,\n    jitterY: 0,\n    outputHeight: 1288,\n    outputWidth: 2289,\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-frame-scheduling.cjs:200:12",
+      "modeOrder": [
+        "owner-raf",
+        "game-local",
+        "game-local",
+        "owner-raf"
+      ],
+      "completedRuns": 4,
+      "excludedFromPerformanceSummary": true
+    }
+  ],
+  "analysisSource": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-web-frame-scheduling.cjs",
+    "sha256": "cc1ee3f628376b4aa2a8447e9b20f6fa9e6d744c9c04ce889981f0d0cfd63ece"
+  },
+  "contextSources": [
+    {
+      "file": "reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js",
+      "sha256": "efd71f7e140cc1d19fb9174fc0809c19774931e6429551061cc3d963e885cefd"
+    },
+    {
+      "file": "tests/ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "a136f77f3ada42036679df2167b39759eec2e81ff800ed4e9eeaf094dbe40b15"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "76d5c7f321abc974323ac19bc6b9942630f3d5d0b1ad9ae45eda6e534e3da05c"
+    }
+  ],
+  "priorNullResults": [
+    {
+      "file": "tests/web-platform/evidence/binding-tlv-20261104.json",
+      "sha256": "9e6c38dd54b21d5c942e55b17fe3af4a28394a087d2b2fccd2d9cbf5207e43ba"
+    },
+    {
+      "file": "tests/web-platform/evidence/buffer-lifecycle-20261104.json",
+      "sha256": "edccf10b6743c3054e878457e1d068f6e0726f1594469f3fbadbaeb2eca94577"
+    }
+  ],
+  "packageFiles": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\index.html",
+      "sha256": "aa43961c2418a6cba9351d1f44d82fefef6579e6848799296148670a88cb2087"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\UEWebEngineThreads.js",
+      "sha256": "f5f065ba0f76d9cced0a52ca3797b3403514a52525a1fbf2ef3ebc34b9b2ccd9"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\UEWebEngineThreads.wasm",
+      "sha256": "d13764ae375ebcc987a750eb71dfafcd3079cc46b21daced96769dee5417ce19"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    }
+  ],
+  "settings": {
+    "view": {
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "parallelRendering": true
+    },
+    "camera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "renderer": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "threads": {
+      "sharedMemory": true,
+      "engineWorker": true,
+      "gameThread": 2,
+      "taskThread": 5,
+      "cores": 4,
+      "renderThread": true,
+      "rhiThread": true,
+      "renderThreadId": 14,
+      "rhiThreadId": 1,
+      "taskWorkers": 3,
+      "threadingTest": 0
+    },
+    "capacity": 1521025024
+  },
+  "normal": {
+    "order": [
+      "owner-raf",
+      "owner-immediate",
+      "game-local",
+      "game-local",
+      "owner-immediate",
+      "owner-raf"
+    ],
+    "seconds": 10,
+    "warmup": 15,
+    "results": {
+      "owner-raf": {
+        "runs": [
+          {
+            "index": 1,
+            "fps": 78.2748346406642,
+            "low1Fps": 34.52815123270283
+          },
+          {
+            "index": 6,
+            "fps": 78.33631257785319,
+            "low1Fps": 36.07503607476943
+          }
+        ],
+        "frames": 1567,
+        "milliseconds": 20011.345000002533,
+        "fps": 78.30558115907759,
+        "frameMs": {
+          "count": 1565,
+          "mean": 12.772846645369127,
+          "p50": 13.109999999403954,
+          "p95": 15.394999999552965,
+          "p99": 18.08000000193715,
+          "maximum": 36.38500000163913,
+          "low1Fps": 35.1054259821509
+        },
+        "rhiWorkMs": 9.206691819844005,
+        "workload": {
+          "draws": 3053.7141025641026,
+          "indirectDraws": 76.41538461538461,
+          "dispatches": 158.01346153846154,
+          "ready": 344.51794871794874,
+          "pending": 285.0692307692308,
+          "zero": 331.2448717948718,
+          "pendingFraction": 0.4527875408794529
+        },
+        "scheduling": {
+          "requestToGame": {
+            "count": 634,
+            "mean": 10.401620570041404,
+            "p50": 11.56982421875,
+            "p95": 20.31494140625,
+            "p99": 21.380126953125,
+            "maximum": 67.269775390625
+          },
+          "gameCallbackWall": {
+            "count": 634,
+            "mean": 2.295705512495071,
+            "p50": 1.4150390625,
+            "p95": 4.460205078125,
+            "p99": 4.75,
+            "maximum": 8.594970703125
+          },
+          "requestToOwner": {
+            "count": 634,
+            "mean": 3.3990728817527605,
+            "p50": 0.10986328125,
+            "p95": 10.374755859375,
+            "p99": 11.494873046875,
+            "maximum": 12.18505859375
+          },
+          "ownerScheduleWait": {
+            "count": 634,
+            "mean": 6.955047703691838,
+            "p50": 10.159912109375,
+            "p95": 12.14501953125,
+            "p99": 13.5849609375,
+            "maximum": 64.19482421875
+          },
+          "ownerToGame": {
+            "count": 634,
+            "mean": 0.047499984596805996,
+            "p50": 0.045166015625,
+            "p95": 0.070068359375,
+            "p99": 0.10009765625,
+            "maximum": 0.169921875
+          }
+        },
+        "frameProgressSnapshots": [
+          {
+            "before": {
+              "game": 1225,
+              "rhi": 1226
+            },
+            "after": {
+              "game": 2010,
+              "rhi": 2010
+            }
+          },
+          {
+            "before": {
+              "game": 1230,
+              "rhi": 1231
+            },
+            "after": {
+              "game": 2015,
+              "rhi": 2015
+            }
+          }
+        ]
+      },
+      "owner-immediate": {
+        "runs": [
+          {
+            "index": 2,
+            "fps": 80.6189376581871,
+            "low1Fps": 46.084129138427876
+          },
+          {
+            "index": 5,
+            "fps": 80.0827188582357,
+            "low1Fps": 39.30731771170016
+          }
+        ],
+        "frames": 1609,
+        "milliseconds": 20024.699999999255,
+        "fps": 80.35076680300129,
+        "frameMs": {
+          "count": 1607,
+          "mean": 12.446988176725986,
+          "p50": 12.830000001937151,
+          "p95": 15.20499999821186,
+          "p99": 17.265000000596046,
+          "maximum": 36.875,
+          "low1Fps": 41.348948642383306
+        },
+        "rhiWorkMs": 9.52862315180881,
+        "workload": {
+          "draws": 3166.198113207547,
+          "indirectDraws": 90.86037735849057,
+          "dispatches": 160.64905660377357,
+          "ready": 292.6446540880503,
+          "pending": 337.1459119496855,
+          "zero": 281.25220125786166,
+          "pendingFraction": 0.535330203611663
+        },
+        "scheduling": {
+          "requestToGame": {
+            "count": 644,
+            "mean": 9.522476480614325,
+            "p50": 8.199951171875,
+            "p95": 19.925048828125,
+            "p99": 21.695068359375,
+            "maximum": 33.5400390625
+          },
+          "gameCallbackWall": {
+            "count": 644,
+            "mean": 2.96477058363257,
+            "p50": 1.9951171875,
+            "p95": 5.0400390625,
+            "p99": 5.455078125,
+            "maximum": 7.4150390625
+          },
+          "requestToOwner": {
+            "count": 644,
+            "mean": 4.005633810292119,
+            "p50": 0.43505859375,
+            "p95": 8.75,
+            "p99": 10.385009765625,
+            "maximum": 12.304931640625
+          },
+          "ownerScheduleWait": {
+            "count": 644,
+            "mean": 5.475747813349185,
+            "p50": 8.05517578125,
+            "p95": 11.434814453125,
+            "p99": 12.9599609375,
+            "maximum": 21.320068359375
+          },
+          "ownerToGame": {
+            "count": 644,
+            "mean": 0.041094856973020184,
+            "p50": 0.0400390625,
+            "p95": 0.05517578125,
+            "p99": 0.0849609375,
+            "maximum": 0.130126953125
+          }
+        },
+        "frameProgressSnapshots": [
+          {
+            "before": {
+              "game": 1251,
+              "rhi": 1251
+            },
+            "after": {
+              "game": 2058,
+              "rhi": 2059
+            }
+          },
+          {
+            "before": {
+              "game": 1232,
+              "rhi": 1233
+            },
+            "after": {
+              "game": 2035,
+              "rhi": 2035
+            }
+          }
+        ]
+      },
+      "game-local": {
+        "runs": [
+          {
+            "index": 3,
+            "fps": 92.26773420301173,
+            "low1Fps": 50.01875703276928
+          },
+          {
+            "index": 4,
+            "fps": 90.35633342985999,
+            "low1Fps": 49.04485151681956
+          }
+        ],
+        "frames": 1829,
+        "milliseconds": 20030.234999999404,
+        "fps": 91.3119591457641,
+        "frameMs": {
+          "count": 1827,
+          "mean": 10.951839080458628,
+          "p50": 10.625,
+          "p95": 12.554999999701977,
+          "p99": 17.225000001490116,
+          "maximum": 22.010000001639128,
+          "low1Fps": 49.09687588800118
+        },
+        "rhiWorkMs": 10.343215711915864,
+        "workload": {
+          "draws": 3854.2699453551913,
+          "indirectDraws": 170,
+          "dispatches": 174.4639344262295,
+          "ready": 0,
+          "pending": 692,
+          "zero": 0,
+          "pendingFraction": 1
+        },
+        "scheduling": {
+          "requestToGame": {
+            "count": 738,
+            "mean": 0.05644147505928184,
+            "p50": 0.054931640625,
+            "p95": 0.06982421875,
+            "p99": 0.164794921875,
+            "maximum": 0.244873046875
+          },
+          "gameCallbackWall": {
+            "count": 738,
+            "mean": 10.870798002413618,
+            "p50": 10.594970703125,
+            "p95": 12.179931640625,
+            "p99": 15.280029296875,
+            "maximum": 21.93994140625
+          }
+        },
+        "frameProgressSnapshots": [
+          {
+            "before": {
+              "game": 1393,
+              "rhi": 1393
+            },
+            "after": {
+              "game": 2319,
+              "rhi": 2319
+            }
+          },
+          {
+            "before": {
+              "game": 1390,
+              "rhi": 1390
+            },
+            "after": {
+              "game": 2297,
+              "rhi": 2297
+            }
+          }
+        ]
+      }
+    },
+    "change": {
+      "fpsPercent": 16.60977135239452,
+      "low1Percent": 39.85551952272031,
+      "dispatchPercent": 10.410804704612975
+    }
+  },
+  "noqueries": {
+    "order": [
+      "owner-raf",
+      "game-local",
+      "game-local",
+      "owner-raf"
+    ],
+    "seconds": 20,
+    "warmup": 15,
+    "diagnosticOverrides": {
+      "occlusionEnabled": false
+    },
+    "results": {
+      "owner-raf": {
+        "runs": [
+          {
+            "index": 1,
+            "fps": 74.46853704310206,
+            "low1Fps": 34.406037113033435
+          },
+          {
+            "index": 4,
+            "fps": 74.55653354094507,
+            "low1Fps": 37.90558981037797
+          }
+        ],
+        "frames": 2982,
+        "milliseconds": 40020.109999999404,
+        "fps": 74.51253882110879,
+        "frameMs": {
+          "count": 2980,
+          "mean": 13.425337248321798,
+          "p50": 13.184999998658895,
+          "p95": 15.195000000298023,
+          "p99": 19.065000001341105,
+          "maximum": 43.67999999970198,
+          "low1Fps": 36.05292569478456
+        },
+        "rhiWorkMs": 9.669872037041994,
+        "workload": {
+          "draws": 3162.2856666666667,
+          "indirectDraws": 170,
+          "dispatches": 174.998,
+          "ready": 0,
+          "pending": 0,
+          "zero": 0,
+          "pendingFraction": 0
+        },
+        "scheduling": {
+          "requestToGame": {
+            "count": 607,
+            "mean": 9.63882551868822,
+            "p50": 9.419921875,
+            "p95": 10.44482421875,
+            "p99": 14.070068359375,
+            "maximum": 68.80517578125
+          },
+          "gameCallbackWall": {
+            "count": 607,
+            "mean": 3.5834804076142914,
+            "p50": 3.56005859375,
+            "p95": 4.474853515625,
+            "p99": 5.47998046875,
+            "maximum": 9.590087890625
+          },
+          "requestToOwner": {
+            "count": 607,
+            "mean": 7.370531060157537,
+            "p50": 7.465087890625,
+            "p95": 8.125,
+            "p99": 8.920166015625,
+            "maximum": 14.05517578125
+          },
+          "ownerScheduleWait": {
+            "count": 607,
+            "mean": 2.222544033798394,
+            "p50": 1.905029296875,
+            "p95": 2.4951171875,
+            "p99": 10.02490234375,
+            "maximum": 54.69482421875
+          },
+          "ownerToGame": {
+            "count": 607,
+            "mean": 0.04575042473228995,
+            "p50": 0.044921875,
+            "p95": 0.06982421875,
+            "p99": 0.090087890625,
+            "maximum": 0.10498046875
+          }
+        },
+        "frameProgressSnapshots": [
+          {
+            "before": {
+              "game": 1136,
+              "rhi": 1136
+            },
+            "after": {
+              "game": 2627,
+              "rhi": 2626
+            }
+          },
+          {
+            "before": {
+              "game": 1154,
+              "rhi": 1154
+            },
+            "after": {
+              "game": 2647,
+              "rhi": 2646
+            }
+          }
+        ]
+      },
+      "game-local": {
+        "runs": [
+          {
+            "index": 2,
+            "fps": 96.13165039657376,
+            "low1Fps": 59.917014933995
+          },
+          {
+            "index": 3,
+            "fps": 97.50488398568214,
+            "low1Fps": 56.29917380827827
+          }
+        ],
+        "frames": 3876,
+        "milliseconds": 40033.72999999672,
+        "fps": 96.81835791969216,
+        "frameMs": {
+          "count": 3874,
+          "mean": 10.328519617965581,
+          "p50": 10.129999998956919,
+          "p95": 12.010000001639128,
+          "p99": 15.57999999821186,
+          "maximum": 23.529999997466803,
+          "low1Fps": 57.83689994131955
+        },
+        "rhiWorkMs": 9.932590404408144,
+        "workload": {
+          "draws": 3162.284237726098,
+          "indirectDraws": 170,
+          "dispatches": 173.54341085271318,
+          "ready": 0,
+          "pending": 0,
+          "zero": 0,
+          "pendingFraction": 0
+        },
+        "scheduling": {
+          "requestToGame": {
+            "count": 774,
+            "mean": 0.05539216428456072,
+            "p50": 0.054931640625,
+            "p95": 0.06494140625,
+            "p99": 0.179931640625,
+            "maximum": 0.27001953125
+          },
+          "gameCallbackWall": {
+            "count": 774,
+            "mean": 10.408909366420382,
+            "p50": 10.159912109375,
+            "p95": 12.219970703125,
+            "p99": 15.804931640625,
+            "maximum": 20.89501953125
+          }
+        },
+        "frameProgressSnapshots": [
+          {
+            "before": {
+              "game": 1392,
+              "rhi": 1391
+            },
+            "after": {
+              "game": 3320,
+              "rhi": 3319
+            }
+          },
+          {
+            "before": {
+              "game": 1391,
+              "rhi": 1390
+            },
+            "after": {
+              "game": 3345,
+              "rhi": 3346
+            }
+          }
+        ]
+      }
+    },
+    "change": {
+      "fpsPercent": 29.935658416009204,
+      "low1Percent": 60.422209367841326,
+      "dispatchPercent": -0.8312032979158723
+    }
+  },
+  "boundary": "Fixed-view diagnostic, not a product optimization. FPS is completed RHI submissions, not display scanout or GPU completion. Ordinary scheduling changes occlusion readiness and draw/dispatch counts. Queries-off is a separate matched-workload isolation, not a shipping setting. Scheduling telemetry uses a later four-second window. All timings are wall clock; callback and wait intervals overlap other threads. Screenshots are observations, not accepted pixel parity. No moving-camera, first-use PSO, hidden-tab, input latency, GPU queue depth or desktop parity acceptance."
+}

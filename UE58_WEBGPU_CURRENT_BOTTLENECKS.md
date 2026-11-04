@@ -1,5 +1,7 @@
 # 当前 Web 性能瓶颈与可复用方案（2026-11-02）
 
+2026-11-04 最新复核：绑定计划、TLV 共享和 GPUBuffer 上传页均未确认稳定 FPS 收益，不能继续仅凭 RHI 热点占比确定优先级。[帧调度与异步遮挡查询诊断](UE58_WEB_FRAME_SCHEDULING_DIAGNOSIS.md) 已对 Game 经 RHI owner 请求下一帧的串行路径做运行时对照；后续优先处理帧生产节奏与异步结果消费，再评估减少绘制/dispatch 的结构性改动。以下按时间保留各阶段证据，较早数值不是当前基线。
+
 2026-11-04 GPUBuffer 实验：Lock/Unlock 上传页复用使创建量约减少 80%，同包 ABBA 平均 FPS +0.73%、RHI 墙钟减少约 0.19 ms/帧；尚未确认稳定帧率收益，保持默认关闭。见 [生命周期与验证边界](UE58_WEBGPU_BUFFER_LIFECYCLE.md)。
 
 2026-11-04 更新：最新完整 mimalloc 包的逐帧、GPU 服务时间线和 Worker 栈复测见 [mimalloc 之后的优化空间](UE58_WEB_POST_MIMALLOC_OPPORTUNITIES.md)。当前固定视角约 76.6–76.9 FPS、1% Low 约 32.5，首次转向仍有 331 ms 长帧；绑定未命中准备、TLV、资源生命周期和唤醒排队的具体证据与验证顺序以新报告为准。下文保留历史版本结果。
