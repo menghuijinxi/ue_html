@@ -4,9 +4,10 @@ const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(x => x.startsWith('--' + name + '='))?.slice(name.length + 3);
 const folder = option('folder'), tag = option('tag');
+const staging = process.argv.includes('--staging');
 assert([folder, tag].every(x => x && /^[a-z0-9-]+$/.test(x)));
 const output = path.join(__dirname, 'results', tag); assert(!fs.existsSync(output + '.json'));
-const report = {date: new Date().toISOString(), pass: false, folder, source: audit(__filename), views: [], errors: [],
+const report = {date: new Date().toISOString(), pass: false, folder, staging, source: audit(__filename), views: [], errors: [],
   boundary: 'Visual diagnostic after tour warmup. Every candidate is bracketed by controls at the same camera. Render time frozen, original quality and pool, full threading. Descriptor validation disabled here; validated separately. Temporal control drift is retained for image comparison.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context; const log = fs.createWriteStream(output + '.log');
@@ -46,9 +47,10 @@ let context; const log = fs.createWriteStream(output + '.log');
       const view = views[index]; await rpc('WebProjectViewTest', view.x, view.y, view.z, view.pitch, view.yaw);
       await page.waitForTimeout(5000);
       const entry = {view, images: []}; report.views.push(entry);
-      for (const mode of ['control', 'binding', 'control', 'tlv', 'control', 'combined', 'control']) {
+      for (const mode of staging ? ['control', 'staging', 'control'] : ['control', 'binding', 'control', 'tlv', 'control', 'combined', 'control']) {
         await rpc('WebLightingQualityTest', 16, Number(mode === 'binding' || mode === 'combined'));
         await rpc('WebLightingQualityTest', 17, Number(mode === 'tlv' || mode === 'combined'));
+        if (staging) await rpc('WebLightingQualityTest', 19, Number(mode === 'staging'));
         await page.waitForTimeout(2000);
         const snapshot = await state();
         assert(!report.errors.length && !snapshot.failure, report.errors.join('\n'));

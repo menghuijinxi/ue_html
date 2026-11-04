@@ -699,6 +699,13 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint32 UniformWriteCalls = 0;
     TArray<WGPUBuffer> FrameUniformPages;
     uint32 FrameUniformPage = 0;
+    // Upload slices are unique until RHIEndFrame has submitted every encoder.
+    WGPUBuffer StagingUploadBuffer = nullptr;
+    uint64 StagingUploadOffset = 0;
+    uint32 StagingUploadPage = 0;
+    TArray<WGPUBuffer> StagingUploadPages;
+    uint32 StagingUploadCalls = 0, StagingUploadPooled = 0, StagingUploadPageCreates = 0;
+    uint32 StagingUploadFallbacks = 0;
     TArray<TRefCountPtr<FRHIShader>> FrameShaders;
     uint32 OwnerThread = 0;
     uint32 ResourceTableBindings = 0;
@@ -749,6 +756,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RequireOwner() const;
     bool Wait(TFunctionRef<bool()> Complete);
     WGPUBuffer CreateBuffer(uint64 Size, WGPUBufferUsage Usage, const void *Data = nullptr);
+    WGPUBuffer UploadStagingBytes(const void* Data, uint64 Size, uint64& Offset);
     WGPUSampler ResolveSampler(FWebGPUSampler *Sampler);
     bool LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency, FWebGPUShaderData &Data,
                     FString &Error);

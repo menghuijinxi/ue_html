@@ -40,6 +40,9 @@ static TAutoConsoleVariable<int32> CVarWebGPUBindingGroupCache(
 static TAutoConsoleVariable<int32> CVarWebGPUBindingPlan(
     TEXT("r.WebGPU.BindingPlan"), 0,
     TEXT("Experiment: precompute descriptor slots and dynamic offset order per pipeline."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUStagingUploadPages(
+    TEXT("r.WebGPU.StagingUploadPages"), 0,
+    TEXT("Experiment: reuse up to four 1 MiB upload pages after all frame encoders are submitted."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
@@ -1006,6 +1009,10 @@ void FWebGPUDynamicRHI::Shutdown()
     for (auto Page : FrameUniformPages) wgpuBufferRelease(Page);
     FrameUniformPages.Empty();
     FrameUniformUploadBytes.Empty();
+    if (StagingUploadBuffer) wgpuBufferRelease(StagingUploadBuffer);
+    StagingUploadBuffer = nullptr;
+    for (auto Page : StagingUploadPages) wgpuBufferRelease(Page);
+    StagingUploadPages.Empty();
     ReleaseBindings();
     RasterExtentAttachment.SafeRelease();
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
@@ -1106,6 +1113,15 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     FrameUniformBuffer = nullptr;
     FrameUniformOffset = 0;
     FrameUniformPage = 0;
+    if (StagingUploadBuffer) wgpuBufferRelease(StagingUploadBuffer);
+    StagingUploadBuffer = nullptr;
+    StagingUploadOffset = 0;
+    StagingUploadPage = 0;
+    if (!CVarWebGPUStagingUploadPages.GetValueOnAnyThread())
+    {
+        for (auto Page : StagingUploadPages) wgpuBufferRelease(Page);
+        StagingUploadPages.Empty();
+    }
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     // All encoders have been submitted. Retire allocations even if JS has not run GC.
     EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
@@ -1122,6 +1138,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #endif
     ++EndFrames;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
+    if (EndFrames % 30 == 0)
+        EM_ASM({ globalThis.__webUploadStaging = ({enabled: !!$0, calls: $1, pooled: $2,
+            pageCreates: $3, fallbacks: $4, retainedBytes: $5}); },
+            CVarWebGPUStagingUploadPages.GetValueOnAnyThread(), StagingUploadCalls, StagingUploadPooled,
+            StagingUploadPageCreates, StagingUploadFallbacks, StagingUploadPages.Num() * 1024 * 1024);
     EM_ASM({
         Object.assign(globalThis.__webThreadStages ||= {},
             {rhiThreadId: $0, rhiFrames: $1, submitted: $2, presented: $3,
@@ -1224,6 +1245,52 @@ WGPUBuffer FWebGPUDynamicRHI::CreateBuffer(uint64 Size, WGPUBufferUsage Usage, c
     if (Data)
         wgpuQueueWriteBuffer(Queue, Result, 0, Data, Size);
     return Result;
+}
+WGPUBuffer FWebGPUDynamicRHI::UploadStagingBytes(const void* Data, uint64 Size, uint64& Offset)
+{
+    RequireOwner();
+    check(Data && Size && Size % 4 == 0);
+    ++StagingUploadCalls;
+    Offset = 0;
+    constexpr uint64 PageBytes = 1024 * 1024;
+    constexpr uint32 RetainedPages = 4;
+    if (!CVarWebGPUStagingUploadPages.GetValueOnAnyThread() || Size > PageBytes)
+    {
+        ++StagingUploadFallbacks;
+        return CreateBuffer(Size, WGPUBufferUsage_CopySrc, Data);
+    }
+    // Texture copies also require texel-block alignment (up to RGBA32F here).
+    const uint64 AlignedOffset = Align(StagingUploadOffset, uint64(256));
+    if (!StagingUploadBuffer || AlignedOffset + Size > PageBytes)
+    {
+        if (StagingUploadBuffer) wgpuBufferRelease(StagingUploadBuffer);
+        if (StagingUploadPage < RetainedPages)
+        {
+            if (StagingUploadPage == uint32(StagingUploadPages.Num()))
+            {
+                StagingUploadPages.Add(CreateBuffer(PageBytes, WGPUBufferUsage_CopySrc));
+                ++StagingUploadPageCreates;
+            }
+            StagingUploadBuffer = StagingUploadPages[StagingUploadPage];
+            wgpuBufferAddRef(StagingUploadBuffer);
+        }
+        else
+        {
+            StagingUploadBuffer = CreateBuffer(PageBytes, WGPUBufferUsage_CopySrc);
+            ++StagingUploadPageCreates;
+        }
+        ++StagingUploadPage;
+        StagingUploadOffset = 0;
+    }
+    Offset = Align(StagingUploadOffset, uint64(256));
+    StagingUploadOffset = Offset + Size;
+    // A write must precede the copy using this slice. Never overwrite a slice
+    // still referenced by an unsubmitted encoder. Across frame boundaries,
+    // queue order puts the next write after every previously submitted copy.
+    wgpuQueueWriteBuffer(Queue, StagingUploadBuffer, Offset, Data, Size);
+    ++StagingUploadPooled;
+    wgpuBufferAddRef(StagingUploadBuffer); // Return the same owning reference as CreateBuffer.
+    return StagingUploadBuffer;
 }
 bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency,
                                    FWebGPUShaderData &Data, FString &Error)
@@ -1814,9 +1881,11 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
                    UploadPitch, Snapshot = MoveTemp(Snapshot)](FRHICommandListBase &) {
         check(Encoder && !Pass);
         RequireAccess(Texture, ERHIAccess::CopyDest, true);
-        WGPUBuffer Staging = CreateBuffer(Snapshot.Num(), WGPUBufferUsage_CopySrc, Snapshot.GetData());
+        uint64 UploadOffset = 0;
+        WGPUBuffer Staging = UploadStagingBytes(Snapshot.GetData(), Snapshot.Num(), UploadOffset);
         WGPUTexelCopyBufferInfo Source = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
         Source.buffer = Staging;
+        Source.layout.offset = UploadOffset;
         Source.layout.bytesPerRow = UploadPitch;
         Source.layout.rowsPerImage = Region.Height;
         WGPUTexelCopyTextureInfo Destination = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;

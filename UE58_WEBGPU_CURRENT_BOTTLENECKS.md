@@ -1,5 +1,7 @@
 # 当前 Web 性能瓶颈与可复用方案（2026-11-02）
 
+2026-11-04 GPUBuffer 实验：Lock/Unlock 上传页复用使创建量约减少 80%，同包 ABBA 平均 FPS +0.73%、RHI 墙钟减少约 0.19 ms/帧；尚未确认稳定帧率收益，保持默认关闭。见 [生命周期与验证边界](UE58_WEBGPU_BUFFER_LIFECYCLE.md)。
+
 2026-11-04 更新：最新完整 mimalloc 包的逐帧、GPU 服务时间线和 Worker 栈复测见 [mimalloc 之后的优化空间](UE58_WEB_POST_MIMALLOC_OPPORTUNITIES.md)。当前固定视角约 76.6–76.9 FPS、1% Low 约 32.5，首次转向仍有 331 ms 长帧；绑定未命中准备、TLV、资源生命周期和唤醒排队的具体证据与验证顺序以新报告为准。下文保留历史版本结果。
 
 桌面端补充实测见 [D3D12 并行绘制对照](UE58_NATIVE_PARALLEL_DRAW_BENCHMARK.md)：默认约 155 FPS，关闭 RHI 并行翻译后约 144 FPS，开启收益 7.84%；被测绘制录制、Mesh 准备及翻译一起关闭后仍约 145 FPS。原生 `.utrace` 确认翻译从工作线程收回 RHIThread。当前证据没有支持仅靠这些并行差异就能解释 Web 约 53 FPS；还需要降低串行路径成本。此测试保留其他任务并行，SM6 / TSR 与 Web SM5 / TAA 的差异见报告。

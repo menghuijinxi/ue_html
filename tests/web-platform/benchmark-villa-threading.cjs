@@ -20,7 +20,7 @@ assert(!bridges || (!coreLimits && !option('modes') && bridges.every(v=>['immedi
 assert(!coreLimits || (coreLimits.length && coreLimits.every(n => [4,6,8].includes(n)) && !option('modes')));
 const throughput = option('throughput')?.split(',');
 assert(!throughput || (!folders && !rhi && !transports && !bridges && !coreLimits && !option('modes') &&
-  throughput.every(v => ['control','binding','tlv'].includes(v))));
+  throughput.every(v => ['control','binding','tlv','staging'].includes(v))));
 const validateBindings = process.argv.includes('--validate-bindings');
 assert(!validateBindings || throughput);
 const modes = throughput ? throughput.map(()=>'full') : rhi ? rhi.map(()=>'full') : folders ? folders.map(()=>'full') : transports ? transports.map(()=>'full') : bridges ? bridges.map(()=>'full') : coreLimits ? coreLimits.map(() => 'full') :
@@ -46,6 +46,11 @@ if (throughput) {
   report.experimentalOverrides = {control: {'r.WebGPU.BindingPlan':0, 'r.WebGPU.TLVShareCascades':0},
     binding: {'r.WebGPU.BindingPlan':1, 'r.WebGPU.TLVShareCascades':0},
     tlv: {'r.WebGPU.BindingPlan':0, 'r.WebGPU.TLVShareCascades':1}};
+  if (throughput.includes('staging')) {
+    for (const overrides of Object.values(report.experimentalOverrides)) overrides['r.WebGPU.StagingUploadPages'] = 0;
+    report.experimentalOverrides.staging = {'r.WebGPU.BindingPlan':0, 'r.WebGPU.TLVShareCascades':0,
+      'r.WebGPU.StagingUploadPages':1};
+  }
   report.boundary += ' Throughput experiments set only the named optimization cvars after startup. Both branches use the same runtime, Cook, full threading and normal project settings. Descriptor validation, if requested, disqualifies timings from performance acceptance.';
 }
 if(differentCook){
@@ -176,10 +181,12 @@ async function profileBlockedWorker(file, all = false) {
         view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera,
         occlusion: globalThis.__webOcclusionRHI, memory: globalThis.__webTextureStreaming, io: globalThis.__webContentIO?.stats,
         browserMetrics:globalThis.__webBrowserMetrics, metadata:globalThis.__webShaderMetadata,
+        uploadStaging:globalThis.__webUploadStaging,
         wasmCapacityBytes:typeof HEAPU8==='undefined'?null:HEAPU8.buffer.byteLength}));
       if (run.throughputExperiment) {
         for (const [parameter, value] of [[16, Number(run.throughputExperiment === 'binding')],
-          [17, Number(run.throughputExperiment === 'tlv')], [18, Number(validateBindings)]])
+          [17, Number(run.throughputExperiment === 'tlv')], [18, Number(validateBindings)],
+          ...(throughput.includes('staging') ? [[19, Number(run.throughputExperiment === 'staging')]] : [])])
           assert.equal(await page.evaluate(p => __webEngineRPC('WebLightingQualityTest', ...p), [parameter, value]), 1);
       }
       await page.waitForTimeout(warmup*1000);
@@ -190,6 +197,7 @@ async function profileBlockedWorker(file, all = false) {
         assert.equal(run.before.occlusion.bindingPlanEnabled, run.throughputExperiment === 'binding');
         assert.equal(run.tlv?.shared, Number(run.throughputExperiment === 'tlv'));
         assert.equal(run.before.settings.translucencyLightingVolume ?? 1, 1);
+        if (throughput.includes('staging')) assert.equal(run.before.uploadStaging.enabled, run.throughputExperiment === 'staging');
       }
       if(run.rhiExperiment){
         assert.equal(run.rhiExperimentConfirmed,run.rhiExperiment);

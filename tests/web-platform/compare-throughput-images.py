@@ -32,8 +32,8 @@ def difference(a, b):
 comparisons = []
 if "views" in report:
     for view, group in enumerate(report["views"]):
-        assert len(group["images"]) == 7
-        for index in (1, 3, 5):
+        assert len(group["images"]) == (3 if report.get("staging") else 7)
+        for index in range(1, len(group["images"]), 2):
             before, actual, after = group["images"][index - 1:index + 2]
             assert before["mode"] == after["mode"] == "control"
             a, b, c = [pixels(item["screenshot"]) for item in (before, actual, after)]
