@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-04",
+  "pass": true,
+  "purpose": "Two user-requested manual comparisons: no Lumen at 10 FPS with original motion blur, and original Lumen/frame scheduling with motion blur disabled.",
+  "baseline": "triplex-project-lumen-shadows-fixed-20261104",
+  "packageReport": {
+    "file": "tests/web-platform/results/motion-blur-ab-20261104-v2-package.json",
+    "sha256": "081e85695d84844cb68dec99bda4b25f71b577ebc52a38e6f5293ac12f15e55f"
+  },
+  "runtimeReport": {
+    "file": "tests/web-platform/results/motion-blur-ab-20261104-v2-runtime.json",
+    "sha256": "2db21d4614fc8bd9ff48c3d1ec8462012ef485f23a134b3012d81b69e6622d91"
+  },
+  "unchangedPayload": {
+    "UEWebEngineThreads.js": "aed674d684e35bfa1be3a083cf4c245fb618008871673f437e0038272eabcbd2",
+    "UEWebEngineThreads.wasm": "99470af69d0d60d4313e3057c1ac293689b16b1db141e3efc2b3d9ae350fbdcc",
+    "content-files.json": "6b455315fc246b7be7ff8c24f425bb93a03987e1a47a0938030d7654f43b2bff",
+    "content.bin": "af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309"
+  },
+  "environment": {
+    "browser": "Edge",
+    "viewport": [1280, 720],
+    "dpr": 1,
+    "browserAndGPUAffinityMask": "0xffff0000"
+  },
+  "baselineCheck": {
+    "giMethod": 1,
+    "reflectionMethod": 1,
+    "antiAliasing": 4,
+    "motionBlurOutputAllocations": 1,
+    "motionBlurOutputComputeBindings": 556,
+    "lumenProbeDepthAllocations": 2,
+    "pageErrors": [],
+    "gpuErrors": [],
+    "deviceLosses": []
+  },
+  "cases": [
+    {
+      "name": "no-lumen-10fps",
+      "folder": "triplex-motion-no-lumen-10fps-20261104-v2",
+      "settingsApplied": {
+        "r.DynamicGlobalIlluminationMethod": 0,
+        "r.ReflectionMethod": 0,
+        "r.Lumen.DiffuseIndirect.Allow": 0,
+        "r.Lumen.Reflections.Allow": 0,
+        "t.MaxFPS": 10
+      },
+      "ownerRAFMaxFPS": 10,
+      "giMethod": 0,
+      "reflectionMethod": 0,
+      "antiAliasing": 4,
+      "motionBlurOutputAllocations": 1,
+      "motionBlurOutputComputeBindings": 496,
+      "lumenProbeDepthAllocations": 0,
+      "submissionTiming": {
+        "points": 66,
+        "intervals": 65,
+        "elapsedMs": 6741.320000000298,
+        "fps": 9.642028564138348,
+        "medianMs": 100.27000000141561,
+        "maxMs": 291.089999999851
+      },
+      "image": {
+        "file": "tests/web-platform/results/motion-blur-ab-20261104-v2-runtime-no-lumen-10fps.png",
+        "sha256": "27ca3a490fa42f7b36be37f7cf3d5dcb7320c9a5d0b6e31d39318dd0c3240419"
+      },
+      "pageErrors": [],
+      "gpuErrors": [],
+      "deviceLosses": [],
+      "pass": true
+    },
+    {
+      "name": "no-motion-blur",
+      "folder": "triplex-motion-no-motion-blur-20261104-v2",
+      "settingsApplied": {
+        "r.MotionBlurQuality": 0
+      },
+      "ownerRAFMaxFPS": null,
+      "giMethod": 1,
+      "reflectionMethod": 1,
+      "antiAliasing": 4,
+      "motionBlurOutputAllocations": 0,
+      "motionBlurOutputComputeBindings": 0,
+      "lumenProbeDepthAllocations": 2,
+      "image": {
+        "file": "tests/web-platform/results/motion-blur-ab-20261104-v2-runtime-no-motion-blur.png",
+        "sha256": "1f62656585cb070217ccea57985d0c5363a970da3ff49e08f390119dfd1064f1"
+      },
+      "pageErrors": [],
+      "gpuErrors": [],
+      "deviceLosses": [],
+      "pass": true
+    }
+  ],
+  "failedConfigOnlyAttempt": {
+    "file": "tests/web-platform/results/motion-blur-ab-20261104-runtime.json",
+    "reason": "t.MaxFPS=10 was logged as applied but actual submission FPS remained 38.7969. The final A package adds an explicit diagnostic RAF gate; the underlying setting override cause remains unconfirmed."
+  },
+  "manualObservations": {
+    "date": "2026-11-04",
+    "source": "User feedback after sequential tests in the same visible browser tab.",
+    "noLumen10FPS": {
+      "result": "No obvious shaking with Lumen disabled, original motion blur retained, and actual 10 FPS.",
+      "userFeedback": "Lumen关闭，10fps画面无明显抖动",
+      "hudAtHandoff": {
+        "submittedFPS": 10,
+        "visualFPS": 10
+      }
+    },
+    "lumenWithoutMotionBlur": {
+      "result": "No obvious shaking with Lumen enabled, motion blur disabled, and original frame scheduling.",
+      "userFeedback": "lumen开启，动态模糊关闭，无明显抖动。基本可以确定是动态模糊和lumen混合下导致的问题了"
+    },
+    "conclusion": "The reported severe shaking requires the original Lumen-plus-motion-blur conditions in these comparisons. Disabling either effect removed obvious shaking in the user observations. Different frame schedules prevent these tests from isolating the specific implementation defect.",
+    "currentPreview": "triplex-motion-no-motion-blur-20261104-v2"
+  },
+  "boundary": "Functional configuration checks passed. Same WASM/runtime and Cook scene; A additionally changes its private worker RAF scheduler. Submission timestamps are not physical presentation times. Both manual comparisons completed without obvious shaking according to the user. Motion blur internals and the precise Lumen-dependent failure mechanism remain unverified; no implementation repair is claimed."
+}
