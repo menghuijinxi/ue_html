@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-11-05 下载包部署：将用户提供的 `villa-scheduling-latest-v71.zip` 原样部署到 `build/villa-scheduling-latest-v71`，接入现有 8765 服务，提供包自带对比页和 Game 本地调度关 / 开入口。注意此包使用 Lumen 关闭版既有 Cook，与此前 Lumen 开启包不同。来源、入口及完整性和启动验证见 [v71 本地部署](../../UE58_WEB_V71_DEPLOYMENT_20261105.md)。
+
 2026-11-05 优化独立开关对照：用户反馈两台设备性能变化方向相反，现提供同一包的遮挡历史 / Game 本地调度四种组合，统一固定 RHI channel，另加只开 RHI priority 的单变量入口。Lumen、动态模糊、TSR 与 Lag 1 保持一致。五组实际模式、渲染、输入和文件核验通过，C 首次启动失败及复测记录均保留。按用户最新决定暂停画面抖动排查与修复，本轮只隔离性能变量。链接、模式和验证记录见 [优化分别开关](../../UE58_WEB_RENDER_COMPARISON_20261105.md#当前分别切换遮挡与调度优化)。
 
 2026-11-05 新优化卡顿对照：增加同一 D 包的 `?occlusion=control&clock=owner&rhiwake=channel` 入口，关闭新默认的遮挡历史、Game 本地时钟和 RHI priority 唤醒；保留 Lumen、动态模糊、TSR 与 Lag 1。回退模式、实际渲染及鼠标转向、GPU 错误和文件一致性检查通过，体感性能待人工复核。两个对照链接、复现和边界见 [关闭默认优化](../../UE58_WEB_RENDER_COMPARISON_20261105.md#历史关闭刚合入的默认优化)。
