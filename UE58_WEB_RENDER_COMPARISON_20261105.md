@@ -2,6 +2,31 @@
 
 日期：2026-11-05。
 
+## 新增：关闭刚合入的默认优化
+
+用户反馈本机新版本反而更卡。本轮以动态模糊矩阵的 D 为基准，增加以下回退入口。两个链接读取同一个包，运行时、Cook、分辨率、输入桥接和项目配置完全相同，只通过已有启动开关切换新启用的三项优化。
+
+| 对照 | 遮挡历史 | Game 时钟 | RHI 唤醒 | 入口 |
+| --- | --- | --- | --- | --- |
+| D，当前默认优化 | history | local | priority | [优化开启](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html) |
+| D，关闭新启用优化 | control | owner | channel | [优化关闭](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html?occlusion=control&clock=owner&rhiwake=channel) |
+
+固定保留 Lumen GI / 反射开启、TSR 开启、动态模糊质量 4、`r.OneFrameThreadLag=1`、`t.MaxFPS=0`。关闭版用 `?occlusion=control&clock=owner&rhiwake=channel` 恢复原遮挡查询、owner RAF 和 MessageChannel 唤醒。它是同一新运行时的开关回退，不是合并前的二进制；此前已有的绑定缓存等优化继续保留。刚拉取但默认关闭的 BindingPlan、StagingUploadPages、OcclusionQueryWaitMs 和 TLVShareCascades 不属于本轮开关变量。
+
+独立 Edge 运行验证通过：实际模式为 `history.enabled=false`、`gameClock.mode=owner`、`rhiWake.requested/active=channel`，启动参数不含 `-WebGameLocalClock` 或页面帧调度。BindingPlan、上传页复用和查询等待预算在运行中均为关闭；Lumen、TSR 和动态模糊输出仍实际创建并使用，鼠标输入已确认抵达游戏线程且旋转相机。未捕获运行错误、GPU validation 或 device lost；截图像素检查与人工查看通过。入口 HTTP 200 及跨源隔离响应头通过，测试浏览器已关闭。
+
+文件核验再次确认 D 包与先前完整编译记录、配置和 Cook 校验值一致，没有修改任何发布包文件或全局默认值。可携带证据为 `tests/web-platform/evidence/render-matrix-20261105-optimizations-off.json`，完整记录为 `tests/web-platform/results/motion-blur-ab-20261105-optimizations-off-runtime*`。
+
+探针增加独立测量标签、已有包标签、单组选择和优化回退参数，复现如下；重复测量须换新 `--tag`，保留既有结果。
+
+```powershell
+$env:NODE_PATH='C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-motion-blur-ab.cjs --tag=20261105-optimizations-off --package-tag=20261105-blur --case=lumen-blur-lag1 --optimizations-off "--profile-root=$env:TEMP/ue-web-performance-control-20261105"
+node tests/web-platform/verify-web-render-matrix.cjs --tag=20261105-optimizations-off --package-tag=20261105-blur --case=lumen-blur-lag1 --optimizations-off
+```
+
+此轮只确认回退有效及渲染、输入正常，不据短窗口探针 FPS 判断性能变化。实际卡顿、鼠标手感与抖动仍待用户比较；每次只运行一个页面，保持相同分辨率及移动路线，并等待启动预热结束。
+
 ## 当前对照：动态模糊
 
 用户更正：需要比较动态模糊开关，抗锯齿不是本轮变量。以下入口替代上一轮抗锯齿对照，四组统一保留 TSR（`r.AntiAliasingMethod=4`），不限帧率，沿用刚合并并编译的性能优化运行时 `triplex-perf-merged-20261105`。

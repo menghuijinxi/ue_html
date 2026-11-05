@@ -8,16 +8,24 @@ const {PNG} = require('pngjs');
 const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const tag = option('tag') || '20261104';
-assert(/^[a-z0-9-]+$/.test(tag));
-const packageFile = path.join(__dirname, 'results', `motion-blur-ab-${tag}-package.json`);
+const packageTag = option('package-tag') || tag;
+assert(/^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(packageTag));
+const packageFile = path.join(__dirname, 'results', `motion-blur-ab-${packageTag}-package.json`);
 const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
 assert(packaged.pass);
 const renderMatrix = packaged.renderMatrix === true;
+const optimizationsOff = process.argv.includes('--optimizations-off');
+assert(!optimizationsOff || renderMatrix, 'Optimization rollback requires an explicit render configuration');
+const selectedCase = option('case');
+const cases = [...(renderMatrix ? [] : [{name: 'baseline', folder: packaged.baseline, settings: {}}]),
+  ...packaged.cases].filter(entry => !selectedCase || entry.name === selectedCase);
+assert(cases.length > 0 && (!selectedCase || cases.length === 1), 'Choose an existing case');
+const query = optimizationsOff ? '?occlusion=control&clock=owner&rhiwake=channel' : '';
 const profileRoot = path.resolve(option('profile-root') || path.join(__dirname, 'build/browser-profiles'));
 const output = path.join(__dirname, 'results', `motion-blur-ab-${tag}-runtime`);
 assert(!fs.existsSync(output + '.json'), 'Preserve previous measurements; use a new tag');
 const report = {date: new Date().toISOString(), pass: false, package: audit(packageFile),
-  profileRoot,
+  profileRoot, packageTag, selectedCase, optimizationsOff, query,
   source: audit(__filename), runs: [], boundary: 'Functional verification of the packaged configurations, not a subjective shaking or mouse-latency verdict. Diagnostic GPU wrappers add overhead. FPS measures RHI submission intervals, not physical presentation.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
@@ -101,8 +109,9 @@ function summarize(presents) {
 }
 (async () => {
   try {
-    for (const entry of [...(renderMatrix ? [] : [{name: 'baseline', folder: packaged.baseline, settings: {}}]), ...packaged.cases]) {
-      const run = {name: entry.name, folder: entry.folder, settings: entry.settings, errors: [], applied: {}};
+    for (const entry of cases) {
+      const run = {name: entry.name, folder: entry.folder, settings: entry.settings,
+        url: `http://127.0.0.1:8765/build/${entry.folder}/index.html${query}`, errors: [], applied: {}};
       report.runs.push(run); save();
       const profile = path.join(profileRoot, `motion-ab-${tag}-${entry.name}`);
       context = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: true,
@@ -125,7 +134,7 @@ function summarize(presents) {
         for (const [name, value] of Object.entries(entry.settings))
           if (text.includes(`Set CVar [[${name}:${value}]]`)) run.applied[name] = value;
       });
-      await page.goto(`http://127.0.0.1:8765/build/${entry.folder}/index.html`, {waitUntil: 'commit'});
+      await page.goto(run.url, {waitUntil: 'commit'});
       const advance = async count => {
         const frame = await page.evaluate(() => globalThis.__webEngineFrames || 0);
         await page.waitForFunction(target => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= target,
@@ -151,6 +160,8 @@ function summarize(presents) {
         camera: globalThis.__webDefaultCamera, frameLimit: globalThis.__webMotionABFrameLimit,
         gameClock: globalThis.__webGameFrameClock, rhiWake: globalThis.__webRHIWakeScheduler,
         history: globalThis.__webOcclusionHistory, arguments: Module.arguments,
+        occlusionRHI: globalThis.__webOcclusionRHI, uploadStaging: globalThis.__webUploadStaging,
+        occlusionWait: globalThis.__webOcclusionWait,
         cpuTraceSamples: globalThis.__webMotionBlurCPU?.length || 0, probe: __motionAB}));
       run.timing = summarize(run.state.probe.presents.slice(before));
       run.hud = await page.evaluate(() => __webLivePerformance);
@@ -171,13 +182,21 @@ function summarize(presents) {
         assert.equal(run.state.lighting.antiAliasing, aa);
         assert.equal(run.state.frameLimit, undefined);
         assert.equal(run.state.cpuTraceSamples, 0, 'CPU diagnostic must remain disabled');
-        assert.equal(run.state.gameClock.mode, 'local');
-        assert.equal(run.state.gameClock.paused, false);
-        assert.equal(run.state.rhiWake.requested, 'priority');
-        assert.equal(run.state.rhiWake.active, run.state.rhiWake.prioritySupported ? 'priority' : 'channel');
-        assert.equal(run.state.history.enabled, true);
-        assert(run.state.arguments.includes('-WebOcclusionMode=history'));
-        assert(run.state.arguments.includes('-WebGameLocalClock'));
+        assert.equal(run.state.gameClock.mode, optimizationsOff ? 'owner' : 'local');
+        if (!optimizationsOff) assert.equal(run.state.gameClock.paused, false);
+        assert.equal(run.state.rhiWake.requested, optimizationsOff ? 'channel' : 'priority');
+        assert.equal(run.state.rhiWake.active,
+          !optimizationsOff && run.state.rhiWake.prioritySupported ? 'priority' : 'channel');
+        assert.equal(run.state.history.enabled, !optimizationsOff);
+        assert(run.state.arguments.includes('-WebOcclusionMode=' + (optimizationsOff ? 'control' : 'history')));
+        assert.equal(run.state.arguments.includes('-WebGameLocalClock'), !optimizationsOff);
+        if (optimizationsOff) {
+          assert(run.state.arguments.includes('-WebRHIWake=channel'));
+          assert(!run.state.arguments.some(value => value.startsWith('-WebFrameScheduler=')));
+          assert.equal(run.state.occlusionRHI.bindingPlanEnabled, false);
+          assert.equal(run.state.uploadStaging.enabled, false);
+          assert.equal(run.state.occlusionWait.budgetMs, 0);
+        }
         const blurEnabled = entry.settings['r.MotionBlurQuality'] !== 0;
         assert.equal(motionBlur > 0, blurEnabled, 'Motion blur output must match the requested mode');
         assert.equal((run.state.probe.bindings['MotionBlur.SceneColor'] || 0) > 0, blurEnabled,

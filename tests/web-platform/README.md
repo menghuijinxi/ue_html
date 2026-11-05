@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-11-05 新优化卡顿对照：增加同一 D 包的 `?occlusion=control&clock=owner&rhiwake=channel` 入口，关闭新默认的遮挡历史、Game 本地时钟和 RHI priority 唤醒；保留 Lumen、动态模糊、TSR 与 Lag 1。回退模式、实际渲染及鼠标转向、GPU 错误和文件一致性检查通过，体感性能待人工复核。两个对照链接、复现和边界见 [关闭默认优化](../../UE58_WEB_RENDER_COMPARISON_20261105.md#新增关闭刚合入的默认优化)。
+
 2026-11-05 合并两仓库最新遮挡与调度性能优化，解决输入桥接、帧时钟及构建覆盖冲突。用户更正测试变量为动态模糊后，复用完整编译的运行时提供无 Lumen＋动态模糊、有 Lumen 无动态模糊、有 Lumen＋动态模糊的线程 Lag 0 / 1 四个新入口；统一开启 TSR、不限制 FPS。四组实际渲染、输入及文件核验通过，鼠标手感仍待逐版人工对比，链接、复现和边界见 [四组对照记录](../../UE58_WEB_RENDER_COMPARISON_20261105.md)。
 
 2026-11-04 浴室镜面专项：三方同机位对照确认 Web 软件 Lumen 与原生完整软件模式接近，但镜面细节明显低于原生项目硬件模式；桌面效果门槛仍失败。`capture-villa-distance-fields.ps1 -UseProjectSettings -LumenTracing Software` 只覆盖追踪选择，`lumen-reflection-cases.json` 固定机位，`summarize-web-lumen-reflections.cjs --require-desktop-parity` 防止将链路运行记作画质通过。证据、开关恢复及混合模式近黑镜面的边界见 [镜面诊断](../../UE58_WEBGPU_LUMEN_REFLECTIONS.md)。

@@ -5,23 +5,32 @@ const assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const tag = option('tag');
-assert(tag && /^[a-z0-9-]+$/.test(tag));
+const packageTag = option('package-tag') || tag;
+assert(tag && /^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(packageTag));
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
-const packageFile = path.join(__dirname, 'results', `motion-blur-ab-${tag}-package.json`);
+const packageFile = path.join(__dirname, 'results', `motion-blur-ab-${packageTag}-package.json`);
 const runtimeFile = path.join(__dirname, 'results', `motion-blur-ab-${tag}-runtime.json`);
 const packaged = read(packageFile), runtime = read(runtimeFile);
 assert(packaged.pass && packaged.renderMatrix && runtime.pass);
 assert.equal(audit(packageFile).sha256, runtime.package.sha256);
 const motionMatrix = packaged.comparisonAxis === 'motion-blur';
-const expected = motionMatrix ? [
+const optimizationsOff = process.argv.includes('--optimizations-off');
+const selectedCase = option('case');
+assert.equal(runtime.optimizationsOff === true, optimizationsOff);
+assert.equal(runtime.selectedCase, selectedCase);
+const expectedMatrix = motionMatrix ? [
   ['no-lumen-blur', 0, 4, 1, 4], ['lumen-no-blur', 1, 4, 1, 0],
   ['lumen-blur-lag0', 1, 4, 0, 4], ['lumen-blur-lag1', 1, 4, 1, 4],
 ] : [
   ['no-lumen-aa', 0, 4, 1], ['lumen-no-aa', 1, 0, 1],
   ['lumen-aa-lag0', 1, 4, 0], ['lumen-aa-lag1', 1, 4, 1],
 ];
-assert.equal(packaged.cases.length, expected.length);
+assert.equal(packaged.cases.length, expectedMatrix.length);
+const expected = expectedMatrix.filter(([name]) => !selectedCase || name === selectedCase);
+assert(expected.length > 0 && (!selectedCase || expected.length === 1));
 assert.equal(runtime.runs.length, expected.length);
+if (optimizationsOff)
+  assert.equal(runtime.query, '?occlusion=control&clock=owner&rhiwake=channel');
 const reference = new Map(packaged.baselineProducts.map(item => [path.basename(item.file), item.sha256]));
 const baselineFile = path.join(__dirname, 'results', packaged.baseline + '-package.json');
 const baseline = read(baselineFile);
@@ -36,7 +45,7 @@ for (const name of ['UEWebEngineThreads.js', 'UEWebEngineThreads.wasm']) {
   assert.equal(reference.get(name), product.sha256, 'Variants must use the newly compiled runtime');
 }
 const entries = expected.map(([name, lumen, aa, lag, blurQuality], index) => {
-  const entry = packaged.cases[index], run = runtime.runs[index];
+  const entry = packaged.cases.find(value => value.name === name), run = runtime.runs[index];
   assert.equal(entry.name, name);
   assert.equal(run.name, name);
   assert(run.pass);
@@ -72,19 +81,33 @@ const entries = expected.map(([name, lumen, aa, lag, blurQuality], index) => {
     } else assert.deepEqual(config, original);
   }
   assert.equal(run.state.cpuTraceSamples, 0);
-  assert.equal(run.state.gameClock.mode, 'local');
-  assert.equal(run.state.history.enabled, true);
+  assert.equal(run.state.gameClock.mode, optimizationsOff ? 'owner' : 'local');
+  assert.equal(run.state.history.enabled, !optimizationsOff);
+  assert.equal(run.state.rhiWake.requested, optimizationsOff ? 'channel' : 'priority');
+  if (optimizationsOff) {
+    assert.equal(run.url, entry.url + runtime.query);
+    assert.equal(run.state.rhiWake.active, 'channel');
+    assert.equal(run.state.arguments.includes('-WebGameLocalClock'), false);
+    assert(run.state.arguments.includes('-WebOcclusionMode=control'));
+    assert(run.state.arguments.includes('-WebRHIWake=channel'));
+    assert.equal(run.state.occlusionRHI.bindingPlanEnabled, false);
+    assert.equal(run.state.uploadStaging.enabled, false);
+    assert.equal(run.state.occlusionWait.budgetMs, 0);
+  }
   assert.equal(run.input.mode, 'owner-forwarded');
-  return {name, folder: entry.folder, url: entry.url, settings: entry.settings,
+  return {name, folder: entry.folder, url: run.url || entry.url, settings: entry.settings,
     actual: {settings: run.state.settings, lighting: run.state.lighting, view: run.state.view,
       gameClock: run.state.gameClock, rhiWake: run.state.rhiWake,
       historyEnabled: run.state.history.enabled, inputMode: run.input.mode,
+      arguments: run.state.arguments, occlusionRHI: run.state.occlusionRHI,
+      uploadStaging: run.state.uploadStaging, occlusionWait: run.state.occlusionWait,
       cpuTraceSamples: run.state.cpuTraceSamples},
     resources: run.state.probe.resources, bindings: run.state.probe.bindings, image: run.image,
     files: entry.products.filter(item => /(?:config-files\.json|index\.html|UEWebEngineThreads\.(?:js|wasm))$/.test(item.file))};
 });
 const evidence = {date: new Date().toISOString(), pass: true, package: audit(packageFile),
-  comparisonAxis: packaged.comparisonAxis || 'anti-aliasing',
+  comparisonAxis: optimizationsOff ? 'performance-defaults' : packaged.comparisonAxis || 'anti-aliasing',
+  optimizationsOff, selectedCase,
   runtime: audit(runtimeFile), baseline: audit(baselineFile), build: baseline.build,
   source: audit(__filename), cases: entries,
   boundary: 'Configuration, shared payload, real rendering passes, camera input and error checks passed. Functional probes include wrappers and are not a performance benchmark or a subjective mouse-stutter verdict.'};
