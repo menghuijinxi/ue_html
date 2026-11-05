@@ -10,11 +10,15 @@ param(
     [string]$CasesFile,
     [string]$Project,
     [switch]$UseProjectSettings,
+    [ValidateSet('Project', 'Software', 'SoftwareReflections')][string]$LumenTracing = 'Project',
     [switch]$NoDistanceFieldResources,
     [ValidateRange(0, 4294967295)][long]$HostProcessorAffinity = 0,
     [string]$Report = 'baseline'
 )
 $ErrorActionPreference = 'Stop'
+if ($LumenTracing -ne 'Project' -and -not $UseProjectSettings) {
+    throw 'Lumen tracing isolation requires -UseProjectSettings.'
+}
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskResults = Join-Path $PSScriptRoot 'results'
 $taskProject = Join-Path $PSScriptRoot 'build/projects/villa-distance-fields/TriplexHouseVilla.uproject'
@@ -106,6 +110,11 @@ if ($UseProjectSettings) {
         '-RenderOffscreen', '-NoSplash', '-NoSound', '-NoLoadingScreen', '-unattended', '-nop4',
         '-windowed', "-ResX=$Width", "-ResY=$Height", '-ForceRes', '-d3d12')
 }
+if ($LumenTracing -eq 'Software') {
+    $taskArguments += '-ini:Engine:[SystemSettings]:r.Lumen.HardwareRayTracing=0'
+} elseif ($LumenTracing -eq 'SoftwareReflections') {
+    $taskArguments += '-ini:Engine:[SystemSettings]:r.Lumen.Reflections.HardwareRayTracing=0'
+}
 $taskProcess = Start-Process -FilePath (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor.exe') `
     -ArgumentList $taskArguments -WindowStyle Hidden -PassThru
 Write-Output "Distance-field comparison PID: $($taskProcess.Id); log: $taskOutput.log"
@@ -132,6 +141,7 @@ while (-not $taskProcess.HasExited) {
 }
 @{started = $taskStarted.ToUniversalTime().ToString('o'); exitCode = $taskProcess.ExitCode;
     hostProcessorAffinity = $HostProcessorAffinity;
+    lumenTracing = $LumenTracing; arguments = $taskArguments;
     gpu = $taskMemory; note = 'values is whole-adapter usage; process is this native editor only.'} |
     ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskOutput-system.json" -Encoding utf8
 if ($taskProcess.ExitCode -ne 0) { throw "Distance-field comparison failed: $taskOutput.log" }

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "desk",
+    "x": -775,
+    "y": -300,
+    "z": 180,
+    "pitch": -30,
+    "yaw": 270,
+    "fov": 90,
+    "ao": 1,
+    "shadows": 1,
+    "fixedExposure": false,
+    "ev100": -1
+  }
+]

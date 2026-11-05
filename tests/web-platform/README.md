@@ -1,5 +1,13 @@
 # UE Web 平台独立验证
 
+2026-11-05 优化独立开关对照：用户反馈两台设备性能变化方向相反，现提供同一包的遮挡历史 / Game 本地调度四种组合，统一固定 RHI channel，另加只开 RHI priority 的单变量入口。Lumen、动态模糊、TSR 与 Lag 1 保持一致。五组实际模式、渲染、输入和文件核验通过，C 首次启动失败及复测记录均保留。按用户最新决定暂停画面抖动排查与修复，本轮只隔离性能变量。链接、模式和验证记录见 [优化分别开关](../../UE58_WEB_RENDER_COMPARISON_20261105.md#当前分别切换遮挡与调度优化)。
+
+2026-11-05 新优化卡顿对照：增加同一 D 包的 `?occlusion=control&clock=owner&rhiwake=channel` 入口，关闭新默认的遮挡历史、Game 本地时钟和 RHI priority 唤醒；保留 Lumen、动态模糊、TSR 与 Lag 1。回退模式、实际渲染及鼠标转向、GPU 错误和文件一致性检查通过，体感性能待人工复核。两个对照链接、复现和边界见 [关闭默认优化](../../UE58_WEB_RENDER_COMPARISON_20261105.md#历史关闭刚合入的默认优化)。
+
+2026-11-05 合并两仓库最新遮挡与调度性能优化，解决输入桥接、帧时钟及构建覆盖冲突。用户更正测试变量为动态模糊后，复用完整编译的运行时提供无 Lumen＋动态模糊、有 Lumen 无动态模糊、有 Lumen＋动态模糊的线程 Lag 0 / 1 四个新入口；统一开启 TSR、不限制 FPS。四组实际渲染、输入及文件核验通过，鼠标手感仍待逐版人工对比，链接、复现和边界见 [四组对照记录](../../UE58_WEB_RENDER_COMPARISON_20261105.md)。
+
+2026-11-04 浴室镜面专项：三方同机位对照确认 Web 软件 Lumen 与原生完整软件模式接近，但镜面细节明显低于原生项目硬件模式；桌面效果门槛仍失败。`capture-villa-distance-fields.ps1 -UseProjectSettings -LumenTracing Software` 只覆盖追踪选择，`lumen-reflection-cases.json` 固定机位，`summarize-web-lumen-reflections.cjs --require-desktop-parity` 防止将链路运行记作画质通过。证据、开关恢复及混合模式近黑镜面的边界见 [镜面诊断](../../UE58_WEBGPU_LUMEN_REFLECTIONS.md)。
+
 2026-11-05 用户完成快速移动人工检查，未发现缺物或明显操作延迟，已将 **有效查询历史＋Game 本地调度** 设为线程包默认。无参数入口为 `build/villa-occlusion-default-v67/index.html`；`?occlusion=control&clock=owner` 切回原路径。此前十八轮性能复测中该组合 108.33 FPS / Low 54.49，较同调度原路径提升 12.19% / 16.88%。普通 HZB 仍为独立对照项。构建、默认启动验证及边界见 [遮挡历史与 HZB 记录](../../UE58_WEB_OCCLUSION_HISTORY_EXPERIMENT.md)。
 
 2026-11-04 绑定重建与 TLV 两个单变量实验：同包独立 ABBA 分别约 +0.77% / +0.69% FPS，Low 无明确改善，两个候选默认关闭。descriptor reference 校验、TLV 回读、纹理流送及窗口变化通过，严格图像对照未通过，保留未验收状态。实现范围、计数、画面对照和复现见 [实验报告](../../UE58_WEB_BINDING_TLV_EXPERIMENTS.md)。

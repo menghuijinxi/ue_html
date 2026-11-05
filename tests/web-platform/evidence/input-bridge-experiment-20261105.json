@@ -1,0 +1,245 @@
+{
+  "date": "2026-11-05",
+  "functionalCapturePassed": true,
+  "visualFixClaimed": false,
+  "manualVisualVerdict": {
+    "date": "2026-11-05",
+    "folder": "triplex-input-direct-20261105",
+    "result": "用户反馈：这一版抖动没有任何改善。",
+    "symptomImproved": false
+  },
+  "referenceEngineCommit": "3764d5d828f4607f7864aa5763e06a50b94faff4",
+  "sources": [
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "a0036b715f12f79e239e8654a6969f398b253d11a3750f6bfd0152a556f4c423"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "6bddb4dfb5dcc67aade7fe521d9c4eed28695ce2ef0e9bd2d3637e823c1b816e"
+    },
+    {
+      "file": "tests/web-platform/package-web-input-bridge.cjs",
+      "sha256": "58f759089bc781e038279869fb5acd0b0e9c1148360196cf867a82f1162da316"
+    },
+    {
+      "file": "tests/web-platform/probe-web-motion-blur-inputs.cjs",
+      "sha256": "b3333569d33a71bb63fdfe8dbab2fc7377256d836b60e849b3cc8ab4cb127976"
+    },
+    {
+      "file": "tests/web-platform/verify-web-input-bridge.cjs",
+      "sha256": "667ad0e5c94cd398c03c024eac3657ea6db793c34928e51fef098c85d68567af"
+    }
+  ],
+  "packageReport": {
+    "file": "tests/web-platform/results/input-bridge-20261105-package.json",
+    "sha256": "94d82aa70e4e2cbfd3163c51a97df3798fcefe6de53ee159bba3ef3363afaeab"
+  },
+  "rounds": [
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-input-direct-r1.json",
+        "sha256": "8a57eda0c450a593bf248515f94b83e6561d71e899206d8c4a85fd1fb74be6a5"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "40c91fdc224a84920946bd431c989adceb2949e20054a8e5e59bf34e83c611d3"
+      },
+      "runs": [
+        {
+          "folder": "triplex-input-owner-20261105",
+          "mode": "owner-forwarded",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "scale": {
+            "samples": 228,
+            "minScaleX": 16.575517654418945,
+            "medianScaleX": 183.49594116210938,
+            "maxScaleX": 3543.983154296875,
+            "maxToMin": 213.80829414712534
+          },
+          "movingSamples": 117,
+          "movingScaleOver500": 55,
+          "sent": 83,
+          "acknowledged": 83,
+          "pageErrors": 0,
+          "gpuErrors": 0,
+          "deviceLosses": 0
+        },
+        {
+          "folder": "triplex-input-direct-20261105",
+          "mode": "direct-game-thread",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "scale": {
+            "samples": 230,
+            "minScaleX": 16.925308227539062,
+            "medianScaleX": 184.5449981689453,
+            "maxScaleX": 3591.782470703125,
+            "maxToMin": 212.2137111133349
+          },
+          "movingSamples": 133,
+          "movingScaleOver500": 58,
+          "sent": 84,
+          "acknowledged": 84,
+          "pageErrors": 0,
+          "gpuErrors": 0,
+          "deviceLosses": 0
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-input-direct-r2.json",
+        "sha256": "6e552f01617ee68b1d91169bc4c7567642de1125f7780fa66157406bcd8063d7"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "b3333569d33a71bb63fdfe8dbab2fc7377256d836b60e849b3cc8ab4cb127976"
+      },
+      "runs": [
+        {
+          "folder": "triplex-input-owner-20261105",
+          "mode": "owner-forwarded",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "scale": {
+            "samples": 223,
+            "minScaleX": 17.16748046875,
+            "medianScaleX": 176.5697479248047,
+            "maxScaleX": 3809.540771484375,
+            "maxToMin": 221.90447680536988
+          },
+          "movingSamples": 116,
+          "movingScaleOver500": 63,
+          "sent": 82,
+          "acknowledged": 82,
+          "pageErrors": 0,
+          "gpuErrors": 0,
+          "deviceLosses": 0,
+          "inputRoundTripMs": {
+            "count": 82,
+            "min": 0.10498046875,
+            "median": 1.77001953125,
+            "p95": 22.02490234375,
+            "max": 30.309814453125
+          },
+          "pageQueueMs": {
+            "count": 82,
+            "min": 0.025146484375,
+            "median": 0.039794921875,
+            "p95": 0.22998046875,
+            "max": 3.044921875
+          },
+          "screenshot": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\motion-blur-inputs-20261105-input-direct-r2-0.png",
+            "sha256": "59dc4ea64aeecebae1f8e797c21021216b9a244f120e608ec49a844f34dec6fb"
+          }
+        },
+        {
+          "folder": "triplex-input-direct-20261105",
+          "mode": "direct-game-thread",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "scale": {
+            "samples": 222,
+            "minScaleX": 18.339574813842773,
+            "medianScaleX": 180.30274963378906,
+            "maxScaleX": 3665.3486328125,
+            "maxToMin": 199.86006600577687
+          },
+          "movingSamples": 143,
+          "movingScaleOver500": 61,
+          "sent": 83,
+          "acknowledged": 83,
+          "pageErrors": 0,
+          "gpuErrors": 0,
+          "deviceLosses": 0,
+          "inputRoundTripMs": {
+            "count": 83,
+            "min": 0.074951171875,
+            "median": 0.64013671875,
+            "p95": 6.255126953125,
+            "max": 35.35498046875
+          },
+          "pageQueueMs": {
+            "count": 83,
+            "min": 0.0048828125,
+            "median": 0.010009765625,
+            "p95": 0.0400390625,
+            "max": 0.074951171875
+          },
+          "screenshot": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\motion-blur-inputs-20261105-input-direct-r2-1.png",
+            "sha256": "8a7fd28a6c34eeb26d14163711d165f9aada111716a21fcbdda20c135ea0d552"
+          }
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "realMessagePortAndSourceHandler": "PASS",
+    "baselineAndPackageSHA256": "PASS",
+    "sameRuntimeAndCookBothArms": "PASS",
+    "sourceSyntax": "PASS",
+    "postTurnScreenshots": "Both reviewed; scene visible"
+  },
+  "conclusion": "Direct input improves measured delivery latency but did not remove the observed motion blur scale spikes in either round. RHI-owner input forwarding or extra page RAF waiting alone is insufficient to explain the anomaly.",
+  "boundary": "903 real velocity-flatten dispatch samples. No velocity texture readback or CPU DeltaRealTime measurement. User subsequently confirmed no visual improvement. r1 input timing includes startup and is not used for latency comparison. r2 clears timing records after 90 warmup frames. Confirmation means GT enqueue, not PumpMessages consumption. JS-only derived runtime, not a full UBT/WASM build. Diagnostic overhead and automated mouse timing are not a performance benchmark."
+}

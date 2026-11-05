@@ -1,0 +1,945 @@
+{
+  "date": "2026-11-05",
+  "captureChecksPassed": true,
+  "visualFixClaimed": false,
+  "manualDirectInputVerdict": {
+    "symptomImproved": false,
+    "result": "用户反馈：这一版抖动没有任何改善。"
+  },
+  "referenceEngineCommit": "b747bb3840b84c990e0a360d9a2ee22bfb5c7656",
+  "sources": [
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "82a73a5f5e9147bd6eed33fa7b28e84df62a30b868d0f15d445a3a602ad3dc83"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "d59e461d97ec95df3ea4eb755d93812d9a31aa7c1f35bf444510d65ee039150c"
+    },
+    {
+      "file": "tests/web-platform/package-web-input-bridge.cjs",
+      "sha256": "988ba0d017650b4e815257be2464970fac8ff15b86807200b56248c6c3b7ce65"
+    },
+    {
+      "file": "tests/web-platform/probe-web-motion-blur-inputs.cjs",
+      "sha256": "3e2209f7e6c3e8824e8c3617862212eb66fdde74e2354d06293f0cb776f9e9c4"
+    },
+    {
+      "file": "tests/web-platform/verify-web-input-bridge.cjs",
+      "sha256": "3f8c0ab4a1fbc2d0df3617e11283309a34bea5ab3c6d3108688220cbba92b881"
+    },
+    {
+      "file": "tests/web-platform/package-web-game-clock.cjs",
+      "sha256": "b3856319f575e81a0fdf5aea9cf612df562a58ae65951553abc6b44dd970cc29"
+    },
+    {
+      "file": "tests/web-platform/web-game-clock-observer.cjs",
+      "sha256": "92fbf7d6f9d23b7a9099f98f2553c92f1f071f0f8ad0c394ed14a6c1917bca50"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-game-clock.cjs",
+      "sha256": "a41169f8b19cf64ed28bed4bc9322978aa89570613dbde3195edfadfc784804a"
+    },
+    {
+      "file": "tests/web-platform/verify-web-game-clock-evidence.cjs",
+      "sha256": "630ac710245529a0de2b14395625ddcc2f7c5e21774ce6e938246aa836d0d376"
+    },
+    {
+      "file": "reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js",
+      "sha256": "e0afdb2bfa5928c3eed9342b5ea8da7726c606756e2805305db77c6d7c2a7042"
+    }
+  ],
+  "finalDispatchSamples": 863,
+  "captures": [
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-game-clock-r2.json",
+        "sha256": "1ced103b4066548f81b9da786faf198b0814709b5a2022247d9f448e72ae6a2b"
+      },
+      "analysis": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-game-clock-r2-analysis.json",
+        "sha256": "50fadff23626228b5a54d030e68615e0b1220af4c3face0030c749e03d45ed8b"
+      },
+      "packageReport": {
+        "file": "tests/web-platform/results/game-clock-20261105-r2-package.json",
+        "sha256": "7e1cec5b1a242caf5f2acce2e5aed394cc958f0baf4fb0e36c2442c136ad8c8d"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "279b22b53ac9ff57815e3bd930aca3cf90cb408183c66c9922c840506cf79cfc"
+      },
+      "packageSourcesAtCapture": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\package-web-game-clock.cjs",
+          "sha256": "5f1956105ac950a7c8f13258300a37b4ed59080be8443cc384ab39c2bbdef767"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\web-game-clock-observer.cjs",
+          "sha256": "812b8cff5d6fdf4baaed604dc53fc31a1f6ffdb6b7e1cceba4fcb779f33c0d68"
+        }
+      ],
+      "runs": [
+        {
+          "folder": "triplex-game-clock-20261105-r2",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "scale": {
+            "samples": 204,
+            "minScaleX": 17.82381820678711,
+            "medianScaleX": 163.14852905273438,
+            "maxScaleX": 3440.421875,
+            "maxToMin": 193.02384231510655
+          },
+          "intervalsAfter90FramesMs": {
+            "count": 207,
+            "min": 1.56494140625,
+            "median": 32.900146484375,
+            "p95": 67.28515625,
+            "max": 299.205078125
+          },
+          "GTIntervalsUnder8ms": 70,
+          "movingSamples": 113,
+          "movingScaleOver500": 53,
+          "alignments": [
+            {
+              "GTSequenceMinusCapturedRHIFrame": -1,
+              "scaleTimesInterval": {
+                "count": 204,
+                "min": 5306.082019358873,
+                "median": 5333.304343998432,
+                "p95": 5368.851127266884,
+                "max": 5431.262389540672
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 0,
+              "scaleTimesInterval": {
+                "count": 204,
+                "min": 131.69609444215894,
+                "median": 5573.671044096351,
+                "p95": 112927.99712008238,
+                "max": 308366.95530056953
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 1,
+              "scaleTimesInterval": {
+                "count": 204,
+                "min": 113.6728884615004,
+                "median": 5450.2818854525685,
+                "p95": 63021.251787662506,
+                "max": 204360.72339630127
+              }
+            }
+          ],
+          "examples": [
+            {
+              "capturedRHIFrame": 109,
+              "scaleX": 1186.465576171875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 108,
+                "start": 1793845234475.005,
+                "interval": 4.52001953125,
+                "rafTimestamp": 39280.41,
+                "inputCount": 1,
+                "end": 1793845234495.5398,
+                "duration": 20.534912109375
+              }
+            },
+            {
+              "capturedRHIFrame": 115,
+              "scaleX": 1278.921875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 114,
+                "start": 1793845234716.68,
+                "interval": 4.175048828125,
+                "rafTimestamp": 39522.04,
+                "inputCount": 1,
+                "end": 1793845234721.835,
+                "duration": 5.155029296875
+              }
+            },
+            {
+              "capturedRHIFrame": 117,
+              "scaleX": 1062.3870849609375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 116,
+                "start": 1793845234916.6548,
+                "interval": 5.02490234375,
+                "rafTimestamp": 39722.085,
+                "inputCount": 1,
+                "end": 1793845234919.6848,
+                "duration": 3.030029296875
+              }
+            },
+            {
+              "capturedRHIFrame": 124,
+              "scaleX": 1350.0888671875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 123,
+                "start": 1793845235150.3398,
+                "interval": 3.969970703125,
+                "rafTimestamp": 39955.415,
+                "inputCount": 1,
+                "end": 1793845235154.14,
+                "duration": 3.800048828125
+              }
+            },
+            {
+              "capturedRHIFrame": 126,
+              "scaleX": 1020.7913818359375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 125,
+                "start": 1793845235208.3599,
+                "interval": 5.22998046875,
+                "rafTimestamp": 40013.795,
+                "inputCount": 1,
+                "end": 1793845235210.3298,
+                "duration": 1.969970703125
+              }
+            },
+            {
+              "capturedRHIFrame": 132,
+              "scaleX": 1543.6907958984375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 131,
+                "start": 1793845235450.015,
+                "interval": 3.469970703125,
+                "rafTimestamp": 40255.435,
+                "inputCount": 0,
+                "end": 1793845235453.94,
+                "duration": 3.925048828125
+              }
+            },
+            {
+              "capturedRHIFrame": 134,
+              "scaleX": 1066.642333984375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 133,
+                "start": 1793845235483.2998,
+                "interval": 5.010009765625,
+                "rafTimestamp": 40288.73,
+                "inputCount": 1,
+                "end": 1793845235485.6448,
+                "duration": 2.344970703125
+              }
+            },
+            {
+              "capturedRHIFrame": 137,
+              "scaleX": 1144.4603271484375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 136,
+                "start": 1793845235591.67,
+                "interval": 4.679931640625,
+                "rafTimestamp": 40397.1,
+                "inputCount": 0,
+                "end": 1793845235594.3848,
+                "duration": 2.71484375
+              }
+            }
+          ],
+          "errors": {
+            "page": 0,
+            "gpu": 0,
+            "deviceLosses": 0
+          }
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-page-raf-r2.json",
+        "sha256": "e6d86c580c278436bbbb3e8669c4eddc0f5675d262362e76cc0b28e1ae9c6de2"
+      },
+      "analysis": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-page-raf-r2-analysis.json",
+        "sha256": "4e231b25b6ebe4541875193de76a77142b120a389e1a171ca247061ce626e7b3"
+      },
+      "packageReport": {
+        "file": "tests/web-platform/results/game-clock-20261105-page-raf-r1-package.json",
+        "sha256": "36c755941369cee5afe9def5f5f44069d1c49ad6947b99e312c37cde42940370"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "3e2209f7e6c3e8824e8c3617862212eb66fdde74e2354d06293f0cb776f9e9c4"
+      },
+      "packageSourcesAtCapture": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\package-web-game-clock.cjs",
+          "sha256": "8196917df98f9791e09b889d66c4d5c48b3fd209aff14e38e056294363375863"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\web-game-clock-observer.cjs",
+          "sha256": "612266e8312672c064844d20ad7cb62eb2e0d37c5aa6d271c79b44a475ff6509"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\web-engine-host.js",
+          "sha256": "a4fcd5f1db13a42220c217fc9a86e0c67834d97427ef53a1cc6f7640ddc8cd26"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "7917c1d1a9a15820a386cdea04faeca4bd2997e260103d94508b004401464d42"
+        },
+        {
+          "file": "H:\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebWorkerCanvas.js",
+          "sha256": "e27f908f2ef4adaefc832cbbd49d6689a451753a3685bb57edd47088dae5b7db"
+        }
+      ],
+      "runs": [
+        {
+          "folder": "triplex-game-clock-20261105-page-raf-r1",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "frameBridge": {
+            "mode": "page-raf",
+            "ready": true,
+            "delivered": 315
+          },
+          "scale": {
+            "samples": 224,
+            "minScaleX": 16.805049896240234,
+            "medianScaleX": 236.67050170898438,
+            "maxScaleX": 3463.326171875,
+            "maxToMin": 206.08841944883747
+          },
+          "intervalsAfter90FramesMs": {
+            "count": 225,
+            "min": 1.565185546875,
+            "median": 22.52490234375,
+            "p95": 79.98486328125,
+            "max": 317.35009765625
+          },
+          "GTIntervalsUnder8ms": 90,
+          "movingSamples": 107,
+          "movingScaleOver500": 66,
+          "alignments": [
+            {
+              "GTSequenceMinusCapturedRHIFrame": -1,
+              "scaleTimesInterval": {
+                "count": 224,
+                "min": 5323.614557549357,
+                "median": 5333.307661682367,
+                "p95": 5377.861440181732,
+                "max": 5432.863981246948
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 0,
+              "scaleTimesInterval": {
+                "count": 224,
+                "min": 107.1642702491954,
+                "median": 5798.958454698324,
+                "p95": 130742.3691110611,
+                "max": 321157.74192631245
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 1,
+              "scaleTimesInterval": {
+                "count": 223,
+                "min": 185.10058914497495,
+                "median": 5342.132244594395,
+                "p95": 55338.565564870834,
+                "max": 416557.8984286785
+              }
+            }
+          ],
+          "examples": [
+            {
+              "capturedRHIFrame": 93,
+              "scaleX": 1473.236572265625,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 92,
+                "start": 1793846433159.64,
+                "interval": 3.635009765625,
+                "rafTimestamp": 31855.495,
+                "inputCount": 0,
+                "end": 1793846433163.055,
+                "duration": 3.4150390625
+              }
+            },
+            {
+              "capturedRHIFrame": 99,
+              "scaleX": 2172.44091796875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 98,
+                "start": 1793846433343.005,
+                "interval": 2.474853515625,
+                "rafTimestamp": 32038.875,
+                "inputCount": 0,
+                "end": 1793846433347.4849,
+                "duration": 4.47998046875
+              }
+            },
+            {
+              "capturedRHIFrame": 101,
+              "scaleX": 1726.0511474609375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 100,
+                "start": 1793846433368.0999,
+                "interval": 3.10986328125,
+                "rafTimestamp": 32063.895,
+                "inputCount": 0,
+                "end": 1793846433371.9749,
+                "duration": 3.875
+              }
+            },
+            {
+              "capturedRHIFrame": 107,
+              "scaleX": 2551.57080078125,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 106,
+                "start": 1793846433526.25,
+                "interval": 2.114990234375,
+                "rafTimestamp": 32222.17,
+                "inputCount": 1,
+                "end": 1793846433531.0898,
+                "duration": 4.83984375
+              }
+            },
+            {
+              "capturedRHIFrame": 109,
+              "scaleX": 1265.32177734375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 108,
+                "start": 1793846433576.3599,
+                "interval": 4.224853515625,
+                "rafTimestamp": 32272.17,
+                "inputCount": 0,
+                "end": 1793846433579.21,
+                "duration": 2.85009765625
+              }
+            },
+            {
+              "capturedRHIFrame": 113,
+              "scaleX": 2844.19873046875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 112,
+                "start": 1793846433668.03,
+                "interval": 1.91015625,
+                "rafTimestamp": 32363.935,
+                "inputCount": 1,
+                "end": 1793846433673.31,
+                "duration": 5.280029296875
+              }
+            },
+            {
+              "capturedRHIFrame": 115,
+              "scaleX": 2172.44091796875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 114,
+                "start": 1793846433693.02,
+                "interval": 2.465087890625,
+                "rafTimestamp": 32388.88,
+                "inputCount": 0,
+                "end": 1793846433700.47,
+                "duration": 7.449951171875
+              }
+            },
+            {
+              "capturedRHIFrame": 117,
+              "scaleX": 1144.5189208984375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 116,
+                "start": 1793846433742.99,
+                "interval": 4.670166015625,
+                "rafTimestamp": 32438.88,
+                "inputCount": 1,
+                "end": 1793846433745.55,
+                "duration": 2.56005859375
+              }
+            }
+          ],
+          "screenshot": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\motion-blur-inputs-20261105-page-raf-r2-0-clock.png",
+            "sha256": "3418185d7ccbcf4f9804c1e1e940b99d3f49a22df58b4be3ce987047954b185c"
+          },
+          "errors": {
+            "page": 0,
+            "gpu": 0,
+            "deviceLosses": 0
+          }
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-mailbox-r1.json",
+        "sha256": "61f85efe990e779cfe92a01d19f40e5542624306ac3ff9760148cbd72d0724c7"
+      },
+      "analysis": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-mailbox-r1-analysis.json",
+        "sha256": "a743a8dee902522b3a96d648169604dcffb6b978821a8569b0c4248c089d1cca"
+      },
+      "packageReport": {
+        "file": "tests/web-platform/results/input-bridge-20261105-mailbox-r1-package.json",
+        "sha256": "ec03c705bc03be382e29d7ee597b7765e6fb75983b99d4d253e59d6d17ce1a69"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "8978af2e6ab433c05940d5d56138a46e00016f39e5d319de9de5f0000ed64a88"
+      },
+      "packageSourcesAtCapture": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\package-web-input-bridge.cjs",
+          "sha256": "988ba0d017650b4e815257be2464970fac8ff15b86807200b56248c6c3b7ce65"
+        },
+        {
+          "file": "H:\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebWorkerCanvas.js",
+          "sha256": "e0afdb2bfa5928c3eed9342b5ea8da7726c606756e2805305db77c6d7c2a7042"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\web-engine-host.js",
+          "sha256": "82a73a5f5e9147bd6eed33fa7b28e84df62a30b868d0f15d445a3a602ad3dc83"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "d59e461d97ec95df3ea4eb755d93812d9a31aa7c1f35bf444510d65ee039150c"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\web-game-clock-observer.cjs",
+          "sha256": "92fbf7d6f9d23b7a9099f98f2553c92f1f071f0f8ad0c394ed14a6c1917bca50"
+        }
+      ],
+      "runs": [
+        {
+          "folder": "triplex-input-owner-20261105-mailbox-r1",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "frameBridge": {
+            "mode": "owner-raf"
+          },
+          "scale": {
+            "samples": 221,
+            "minScaleX": 16.24728775024414,
+            "medianScaleX": 207.03794860839844,
+            "maxScaleX": 3343.740234375,
+            "maxToMin": 205.8029799050463
+          },
+          "intervalsAfter90FramesMs": {
+            "count": 224,
+            "min": 1.619873046875,
+            "median": 25.864990234375,
+            "p95": 71.945068359375,
+            "max": 328.22998046875
+          },
+          "GTIntervalsUnder8ms": 79,
+          "movingSamples": 98,
+          "movingScaleOver500": 53,
+          "alignments": [
+            {
+              "GTSequenceMinusCapturedRHIFrame": -1,
+              "scaleTimesInterval": {
+                "count": 221,
+                "min": 5315.60031747818,
+                "median": 5333.334287974983,
+                "p95": 5380.712928593159,
+                "max": 5416.574890136719
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 0,
+              "scaleTimesInterval": {
+                "count": 221,
+                "min": 75.23397541372105,
+                "median": 5395.418304771185,
+                "p95": 114601.36092567444,
+                "max": 319402.36120319366
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 1,
+              "scaleTimesInterval": {
+                "count": 221,
+                "min": 221.40171334147453,
+                "median": 5346.183285266161,
+                "p95": 61417.36224395037,
+                "max": 151972.04803311825
+              }
+            }
+          ],
+          "examples": [
+            {
+              "capturedRHIFrame": 99,
+              "scaleX": 1149.39990234375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 98,
+                "start": 1793845928837.6099,
+                "interval": 4.659912109375,
+                "rafTimestamp": 32446.805,
+                "inputCount": 0,
+                "end": 1793845928842.22,
+                "duration": 4.610107421875
+              }
+            },
+            {
+              "capturedRHIFrame": 132,
+              "scaleX": 2112.33447265625,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 131,
+                "start": 1793845929887.5798,
+                "interval": 2.559814453125,
+                "rafTimestamp": 33496.795,
+                "inputCount": 1,
+                "end": 1793845929892.22,
+                "duration": 4.64013671875
+              }
+            },
+            {
+              "capturedRHIFrame": 135,
+              "scaleX": 1477.3228759765625,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 134,
+                "start": 1793845930012.615,
+                "interval": 3.635009765625,
+                "rafTimestamp": 33621.75,
+                "inputCount": 1,
+                "end": 1793845930016.42,
+                "duration": 3.804931640625
+              }
+            },
+            {
+              "capturedRHIFrame": 137,
+              "scaleX": 1964.3153076171875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 136,
+                "start": 1793845930063.67,
+                "interval": 2.73486328125,
+                "rafTimestamp": 33671.735,
+                "inputCount": 0,
+                "end": 1793845930068.625,
+                "duration": 4.955078125
+              }
+            },
+            {
+              "capturedRHIFrame": 139,
+              "scaleX": 1777.7655029296875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 138,
+                "start": 1793845930095.865,
+                "interval": 3.010009765625,
+                "rafTimestamp": 33705.07,
+                "inputCount": 0,
+                "end": 1793845930100.755,
+                "duration": 4.889892578125
+              }
+            },
+            {
+              "capturedRHIFrame": 143,
+              "scaleX": 1172.10498046875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 142,
+                "start": 1793845930279.22,
+                "interval": 4.570068359375,
+                "rafTimestamp": 33888.405,
+                "inputCount": 1,
+                "end": 1793845930282.0999,
+                "duration": 2.8798828125
+              }
+            },
+            {
+              "capturedRHIFrame": 149,
+              "scaleX": 1534.7939453125,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 148,
+                "start": 1793845930412.71,
+                "interval": 3.52001953125,
+                "rafTimestamp": 34021.755,
+                "inputCount": 0,
+                "end": 1793845930417.145,
+                "duration": 4.43505859375
+              }
+            },
+            {
+              "capturedRHIFrame": 153,
+              "scaleX": 1935.7581787109375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 152,
+                "start": 1793845930545.9,
+                "interval": 2.77001953125,
+                "rafTimestamp": 34155.085,
+                "inputCount": 1,
+                "end": 1793845930550.8699,
+                "duration": 4.969970703125
+              }
+            }
+          ],
+          "screenshot": {
+            "excluded": true,
+            "reason": "Original owner image was overwritten by shared image; raw report preserved."
+          },
+          "errors": {
+            "page": 0,
+            "gpu": 0,
+            "deviceLosses": 0
+          }
+        },
+        {
+          "folder": "triplex-input-shared-20261105-mailbox-r1",
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "frameBridge": {
+            "mode": "owner-raf"
+          },
+          "scale": {
+            "samples": 214,
+            "minScaleX": 15.910432815551758,
+            "medianScaleX": 179.6641387939453,
+            "maxScaleX": 3795.96533203125,
+            "maxToMin": 238.58341102580556
+          },
+          "intervalsAfter90FramesMs": {
+            "count": 218,
+            "min": 1.409912109375,
+            "median": 29.81005859375,
+            "p95": 64.330078125,
+            "max": 335.155029296875
+          },
+          "GTIntervalsUnder8ms": 89,
+          "movingSamples": 128,
+          "movingScaleOver500": 62,
+          "alignments": [
+            {
+              "GTSequenceMinusCapturedRHIFrame": -1,
+              "scaleTimesInterval": {
+                "count": 214,
+                "min": 5297.826619148254,
+                "median": 5333.339878041297,
+                "p95": 5408.513945102692,
+                "max": 5526.02512550354
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 0,
+              "scaleTimesInterval": {
+                "count": 214,
+                "min": 73.00931367091835,
+                "median": 5586.406721590087,
+                "p95": 164901.66284179688,
+                "max": 420086.92220136523
+              }
+            },
+            {
+              "GTSequenceMinusCapturedRHIFrame": 1,
+              "scaleTimesInterval": {
+                "count": 214,
+                "min": 164.98434925451875,
+                "median": 5416.397540165111,
+                "p95": 46781.524169802666,
+                "max": 191891.68720018864
+              }
+            }
+          ],
+          "examples": [
+            {
+              "capturedRHIFrame": 99,
+              "scaleX": 1286.6456298828125,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 98,
+                "start": 1793845973287.3599,
+                "interval": 4.135009765625,
+                "rafTimestamp": 32175.94,
+                "inputCount": 0,
+                "end": 1793845973301.0698,
+                "duration": 13.7099609375
+              }
+            },
+            {
+              "capturedRHIFrame": 107,
+              "scaleX": 1131.1500244140625,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 106,
+                "start": 1793845973462.38,
+                "interval": 4.73486328125,
+                "rafTimestamp": 32350.925,
+                "inputCount": 0,
+                "end": 1793845973464.74,
+                "duration": 2.360107421875
+              }
+            },
+            {
+              "capturedRHIFrame": 109,
+              "scaleX": 1360.4344482421875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 108,
+                "start": 1793845973512.3398,
+                "interval": 3.969970703125,
+                "rafTimestamp": 32400.925,
+                "inputCount": 0,
+                "end": 1793845973515.575,
+                "duration": 3.235107421875
+              }
+            },
+            {
+              "capturedRHIFrame": 111,
+              "scaleX": 1017.81884765625,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 110,
+                "start": 1793845973562.405,
+                "interval": 5.205078125,
+                "rafTimestamp": 32450.935,
+                "inputCount": 0,
+                "end": 1793845973564.335,
+                "duration": 1.929931640625
+              }
+            },
+            {
+              "capturedRHIFrame": 119,
+              "scaleX": 1596.8035888671875,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 118,
+                "start": 1793845973762.395,
+                "interval": 3.35009765625,
+                "rafTimestamp": 32650.92,
+                "inputCount": 0,
+                "end": 1793845973766.5698,
+                "duration": 4.1748046875
+              }
+            },
+            {
+              "capturedRHIFrame": 121,
+              "scaleX": 1365.8336181640625,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 120,
+                "start": 1793845973904.05,
+                "interval": 3.9501953125,
+                "rafTimestamp": 32792.595,
+                "inputCount": 0,
+                "end": 1793845973908.49,
+                "duration": 4.43994140625
+              }
+            },
+            {
+              "capturedRHIFrame": 123,
+              "scaleX": 1461.207275390625,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 122,
+                "start": 1793845973954.0798,
+                "interval": 3.664794921875,
+                "rafTimestamp": 32842.61,
+                "inputCount": 0,
+                "end": 1793845973958.1199,
+                "duration": 4.0400390625
+              }
+            },
+            {
+              "capturedRHIFrame": 125,
+              "scaleX": 3486.537109375,
+              "empiricallyAlignedGTFrame": {
+                "sequence": 124,
+                "start": 1793845974004.055,
+                "interval": 1.5849609375,
+                "rafTimestamp": 32892.6,
+                "inputCount": 0,
+                "end": 1793845974009.6948,
+                "duration": 5.639892578125
+              }
+            }
+          ],
+          "screenshot": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\motion-blur-inputs-20261105-mailbox-r1-clock.png",
+            "sha256": "3c1b2e147c4629f8ab1dfac12bd070c4f68a999bef7122303968b7c6a2c69069"
+          },
+          "mailbox": {
+            "consumed": 84,
+            "drains": 308,
+            "maxBatch": 3,
+            "overflowResets": 0,
+            "lastSampledAt": 1793845979284.025
+          },
+          "sharedProducer": {
+            "mode": "shared-mailbox",
+            "sent": 84,
+            "overflows": 0,
+            "maxQueue": 3
+          },
+          "errors": {
+            "page": 0,
+            "gpu": 0,
+            "deviceLosses": 0
+          }
+        }
+      ]
+    }
+  ],
+  "failedCapture": {
+    "report": {
+      "file": "tests/web-platform/results/motion-blur-inputs-20261105-game-clock-r1.json",
+      "sha256": "5dc67d106f8c3aca930b5ae70cf06ffb86da4efaee1d09152805c1359a8ee4e7"
+    },
+    "reason": "Route injection did not install readable GT observer; excluded."
+  },
+  "provisionalCapture": {
+    "report": {
+      "file": "tests/web-platform/results/motion-blur-inputs-20261105-page-raf-r1.json",
+      "sha256": "e724ba181c4254c8a384c3a189375374d619e445d2563b0684fc400f6ab6cbf7"
+    },
+    "samples": 238,
+    "boundary": "RAF activation counters absent. Repeated as page-raf-r2 with explicit ready/delivered assertions."
+  },
+  "checks": {
+    "sourceAndDerivedSyntax": "PASS",
+    "realPortsAndSharedQueue": "PASS",
+    "captureAndAnalysisHashes": "PASS",
+    "unchangedResourcesAtPackaging": "PASS",
+    "screenshots": "Shared and page-RAF-r2 reviewed; owner overwritten image excluded."
+  },
+  "conclusion": "Changing input transport or RAF provider did not remove scale spikes. GT entry intervals and uploaded scale are inversely correlated; CPU timing versus camera history remains unresolved.",
+  "boundary": "JS-only derived runtime, no full UBT/WASM rebuild. GT entry intervals are not a direct read of CPU DeltaRealTime, Amount or TargetFPS. Counter alignment is empirical. No velocity texture readback or manual visual verdict for the new variants. Diagnostics and browser-generated mouse events add overhead; not a performance benchmark. Capture-time source hashes remain historical."
+}

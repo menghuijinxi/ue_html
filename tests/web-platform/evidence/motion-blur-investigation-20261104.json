@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-04",
+  "purpose": "Investigate severe motion blur variation when Lumen is enabled; online primary sources, desktop/Web source differences, and real uploaded shader constants.",
+  "functionalCapturePassed": true,
+  "implementationFixClaimed": false,
+  "sources": {
+    "probe": {
+      "file": "tests/web-platform/probe-web-motion-blur-inputs.cjs",
+      "sha256": "d5ac762650c86e39c8656f356ebea5cc1410ae14e3c59f0501fae6c4451b5e79"
+    },
+    "layoutReader": {
+      "file": "tests/web-platform/web-wgsl-uniform-layout.cjs",
+      "sha256": "b87fcb34b8216433a9dffeccdc54b020590e935e0ef935c420f1f2f0e293a56d"
+    }
+  },
+  "sourceComparison": {
+    "desktopRootReadOnly": "H:/UE_5.8",
+    "referenceRoot": "reference-engine",
+    "normalization": "Replace CRLF with LF only.",
+    "motionBlurCppIdentical": true,
+    "motionBlurCppNormalizedSHA256": "6e5129b1293d46b2d9a1372f6fde928d3aabf8d7a6b3c0fb9f25235389f46e6b",
+    "updateMotionBlurTimeScaleFunctionIdentical": true,
+    "updateMotionBlurTimeScaleFunctionNormalizedSHA256": "e8ef2bd9b445896fa6540beddc59fc73ae79a9e895b9a4e58e3fac79b4224d76"
+  },
+  "reports": [
+    {
+      "file": "tests/web-platform/results/motion-blur-inputs-20261104-r5.json",
+      "sha256": "3f76600133f0eb102cbe7f22b8bbd8e89d26987d9b8cce1d2845fcfebf020054"
+    },
+    {
+      "file": "tests/web-platform/results/motion-blur-inputs-20261104-r7.json",
+      "sha256": "7e5093e8bc22be49559f923a950f9f29f738e627148130abeb88c47fccc337af"
+    },
+    {
+      "file": "tests/web-platform/results/motion-blur-inputs-20261104-paced.json",
+      "sha256": "4a4b7873b6ea810dd631ed5c27372857ebfbc96e6ffad348263117a0dd20cd26"
+    }
+  ],
+  "actualShader": {
+    "entry": "main_0000362c_8681433e",
+    "type": "FMotionBlurVelocityFlattenCS",
+    "matchingCookReflection": "tests/web-platform/build/web-project-triplex-project-desktop-cook/20261102-125359/ShaderConversion/534D683943EC23E55F5ABD92B1091217/input.json",
+    "velocityScaleOffsetBytes": 0,
+    "velocityMaxOffsetBytes": 8,
+    "viewClipToPrevClipOffsetBytes": 2240,
+    "interpretation": "This captured run uses the standalone velocity flatten shader; it does not establish a TSR external-flatten defect."
+  },
+  "comparisons": [
+    {
+      "name": "Lumen and motion blur, original scheduling",
+      "reportIndex": 1,
+      "runIndex": 0,
+      "gi": 1,
+      "reflections": 1,
+      "antiAliasing": 4,
+      "samples": 194,
+      "scaleX": {
+        "min": 18.3037109375,
+        "median": 159.82411193847656,
+        "max": 3396.54150390625
+      },
+      "medianDispatchIntervalMs": 28.679999999701977,
+      "pageErrors": 0,
+      "gpuErrors": 0,
+      "deviceLosses": 0
+    },
+    {
+      "name": "No Lumen, original motion blur, A package 10 FPS scheduling",
+      "reportIndex": 1,
+      "runIndex": 1,
+      "gi": 0,
+      "reflections": 0,
+      "antiAliasing": 4,
+      "samples": 86,
+      "scaleX": {
+        "min": 17.29242706298828,
+        "median": 53.330589294433594,
+        "max": 58.92216110229492
+      },
+      "medianDispatchIntervalMs": 100.20999999903142,
+      "pageErrors": 0,
+      "gpuErrors": 0,
+      "deviceLosses": 0
+    },
+    {
+      "name": "Lumen and motion blur, diagnostic owner RAF gate at 10 FPS",
+      "reportIndex": 2,
+      "runIndex": 0,
+      "gi": 1,
+      "reflections": 1,
+      "antiAliasing": 4,
+      "samples": 86,
+      "scaleX": {
+        "min": 16.885116577148438,
+        "median": 53.325252532958984,
+        "max": 63.31121063232422
+      },
+      "medianDispatchIntervalMs": 100.65000000037253,
+      "pageErrors": 0,
+      "gpuErrors": 0,
+      "deviceLosses": 0,
+      "manualVisualVerdict": "Not collected."
+    }
+  ],
+  "excludedReadings": {
+    "report": "tests/web-platform/results/motion-blur-inputs-20261104-r6.json",
+    "field": "View_RealTime",
+    "reason": "An offset from another shader was outside the current shader's meaningful upload range. Excluded from all timing conclusions. Final reader removed it and checks binding ranges."
+  },
+  "leadingHypothesis": "Lumen load exposes timing/input-batching mismatch, causing strongly varying motion blur normalization for similar camera displacements. Keeping both effects and gating RAF at 10 FPS removed the observed scale spikes in the diagnostic capture.",
+  "unproven": [
+    "The exact faulty boundary: input event timestamps, GT DeltaRealTime, ViewState previous transforms, or RHI parameter snapshots.",
+    "Final per-view MotionBlurAmount and MotionBlurTargetFPS and CPU DeltaRealTime were not captured.",
+    "Velocity texture pixels and final image blur radius were not read back.",
+    "The new Lumen-plus-motion-blur 10 FPS condition has no user visual verdict."
+  ],
+  "boundary": "Read-only source comparison and browser-only instrumentation. No production rendering repair. GPU calls and CPU copies introduce diagnostic overhead; dispatch intervals are not physical presentation times. The visible user preview remains the prior B configuration."
+}

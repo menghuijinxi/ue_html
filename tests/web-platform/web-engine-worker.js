@@ -3,6 +3,22 @@
 let initialized = false;
 let frameCounter, lastPresented = 0, presentTimes = [], pipelineEvents = [];
 let browserMetricsReady = false;
+let inputPort, framePort, inputMailbox;
+function connectInputPort() {
+  if (!globalThis.__webInputBound || !globalThis.__webGameThreadWorker) return;
+  if (inputPort) {
+    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-input-channel', port: inputPort}, [inputPort]);
+    inputPort = null;
+  }
+  if (framePort) {
+    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-frame-channel', port: framePort}, [framePort]);
+    framePort = null;
+  }
+  if (inputMailbox) {
+    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-input-mailbox', buffer: inputMailbox});
+    inputMailbox = null;
+  }
+}
 let frameScheduler;
 let rhiWakePriority = false;
 function markGpuFrame() {
@@ -79,6 +95,7 @@ const diagnosticStateKeys = [
   '__webPSOPrecache', '__webOcclusionHistory', '__webGameFrameClock', '__webRHIWakeScheduler'
 ];
 function snapshot() {
+  connectInputPort();
   const state = {};
   for (const key of diagnosticStateKeys)
     if (globalThis[key] !== undefined) state[key] = globalThis[key];
@@ -114,6 +131,17 @@ addEventListener('message', event => {
     initialized = true;
     globalThis.__webGameClockHidden = !!message.gameClockHidden;
     start(message).catch(fail);
+  } else if (message.type === 'input-channel') {
+    if (inputPort) throw new Error('Input channel already pending');
+    inputPort = message.port;
+    connectInputPort();
+  } else if (message.type === 'frame-channel') {
+    if (framePort) throw new Error('Frame channel already pending');
+    framePort = message.port;
+    connectInputPort();
+  } else if (message.type === 'input-mailbox') {
+    inputMailbox = message.buffer;
+    connectInputPort();
   } else if (message.type === 'browser') {
     updateBrowserMetrics(message.state);
   } else if (message.type === 'inputs') {

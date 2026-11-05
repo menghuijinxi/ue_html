@@ -64,6 +64,7 @@ foreach ($taskOcclusionOverlay in @('SceneOcclusion.cpp', 'SceneVisibility.cpp',
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionOverlay") -Destination (Join-Path $taskRendererCopy "Private/$taskOcclusionOverlay") -Force
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/TemporalSuperResolution.cpp') -Destination (Join-Path $taskRendererCopy 'Private/PostProcess/TemporalSuperResolution.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp') -Destination (Join-Path $taskRendererCopy 'Private/PostProcess/PostProcessMotionBlur.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentRendering.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentLighting.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentLighting.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SystemTextures.cpp') -Destination (Join-Path $taskRendererCopy 'Private/SystemTextures.cpp') -Force
@@ -368,6 +369,8 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneCulling/SceneCullingRenderer.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneVisibility.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
     foreach ($taskOcclusionAudit in @('SceneOcclusion.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionAudit"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskOcclusionAudit"
