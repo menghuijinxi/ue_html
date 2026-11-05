@@ -71,7 +71,7 @@ const diagnosticStateKeys = [
   '__webThreadsExitCode', '__webThreadsFailure', '__webThreadsMemory', '__webThreadsResult',
   '__webDistanceFields', '__webDistanceFieldsExposure', '__webDistanceFieldsGPU',
   '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings', '__webOptimizationRHI', '__webOptimizationState',
-  '__webPSOPrecache', '__webOcclusionHistory'
+  '__webPSOPrecache', '__webOcclusionHistory', '__webGameFrameClock'
 ];
 function snapshot() {
   const state = {};
@@ -100,12 +100,14 @@ addEventListener('unhandledrejection', event => fail(event.reason));
 addEventListener('message', event => {
   const message = event.data;
   if (message.type === 'game-clock-visibility') {
+    globalThis.__webGameClockHidden = !!message.hidden;
     globalThis.__webGameThreadWorker?.postMessage({type: 'web-game-local-clock', paused: message.hidden});
     return;
   }
   if (message.type === 'start') {
     if (initialized) throw new Error('Engine Worker already initialized');
     initialized = true;
+    globalThis.__webGameClockHidden = !!message.gameClockHidden;
     start(message).catch(fail);
   } else if (message.type === 'browser') {
     updateBrowserMetrics(message.state);

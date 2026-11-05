@@ -7,15 +7,18 @@ const option = n => process.argv.find(v => v.startsWith('--' + n + '='))?.slice(
 const folder = option('folder'), tag = option('tag');
 assert([folder, tag].every(v => v && /^[a-z0-9-]+$/.test(v)));
 const modes = (option('modes') || 'control,history,hzb,instances,instances,hzb,history,control').split(',');
-assert(modes.every(v => /^(control|history|hzb|instances|hzb-instances)(-local)?$/.test(v)));
+assert(modes.every(v => v==='default' || /^(control|history|hzb|instances|hzb-instances)(-local)?$/.test(v)));
 const seconds = Number(option('seconds') || 20), warmup = Number(option('warmup') || 15);
 assert(seconds >= 5 && seconds <= 60 && warmup >= 5 && warmup <= 120);
 const tour = process.argv.includes('--tour');
+const lifecycle = process.argv.includes('--lifecycle');
+const initialHidden = process.argv.includes('--initial-hidden');
+assert(!initialHidden || modes.every(mode=>mode==='default' || mode.endsWith('-local')));
 const output = path.join(__dirname, 'results', tag), base = path.join(__dirname, 'build', folder);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 fs.copyFileSync(__filename, output + '-source.cjs');
 const runtime = fs.readdirSync(base).find(v => /^UEWebEngineThreads\w*\.js$/.test(v)); assert(runtime);
-const report = {date: new Date().toISOString(), folder, modes, seconds, warmup, tour, pass: false,
+const report = {date: new Date().toISOString(), folder, modes, seconds, warmup, tour, lifecycle, initialHidden, pass: false,
   source: audit(output + '-source.cjs'),
   packageFiles: ['index.html', runtime, runtime.replace(/\.js$/, '.wasm'), 'config-files.json', 'content-files.json',
     'web-engine-host.js', 'web-engine-worker.js'].map(f => audit(path.join(base, f))),
@@ -50,7 +53,8 @@ let context, log;
   report.idleGpu=idleGpu();save();
   assert(!report.idleGpu.adapters?.some(v=>v.utilization>50),'GPU already busy before the test browser starts; free it before benchmarking');
   for(const mode of modes) {
-    const local = mode.endsWith('-local'), occlusionMode = local ? mode.slice(0,-6) : mode;
+    const local = mode==='default' || mode.endsWith('-local');
+    const occlusionMode = mode==='default' ? 'history' : local ? mode.slice(0,-6) : mode;
     const run = {index: report.runs.length+1, mode, local, errors: []}; report.runs.push(run); save();
     run.idleGpu=idleGpu();save();
     assert(!run.idleGpu.adapters?.some(v=>v.utilization>50),'GPU busy between runs; free it before benchmarking');
@@ -61,6 +65,7 @@ let context, log;
       await route.fulfill({response,body:'('+presents.toString()+')();\n'+await response.text()});
     });
     const page=context.pages()[0], cdp=await context.newCDPSession(page);
+    if(initialHidden) await page.addInitScript(()=>Object.defineProperty(document,'hidden',{configurable:true,value:true}));
     await cdp.send('Input.setIgnoreInputEvents',{ignore:true});
     await cdp.send('Emulation.setFocusEmulationEnabled',{enabled:true});
     log=fs.createWriteStream(output+'-'+run.index+'-'+mode+'.log');
@@ -69,8 +74,18 @@ let context, log;
     page.on('pageerror',e=>run.errors.push(e.message));
     page.on('crash',()=>run.errors.push('Page crashed'));
     console.log('Occlusion start',run.index,mode);
-    await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html?occlusion='+occlusionMode+(local?'&clock=local':''),{waitUntil:'commit'});
+    run.url='http://127.0.0.1:8765/build/'+folder+'/index.html'+
+      (mode==='default'?'':'?occlusion='+occlusionMode+'&clock='+(local?'local':'owner'));
+    await page.goto(run.url,{waitUntil:'commit'});
     await page.bringToFront();
+    if(initialHidden) {
+      await page.waitForFunction(()=>globalThis.__webGameFrameClock?.paused===true,null,{timeout:180000});
+      const snapshot=()=>page.evaluate(()=>({clock:__webGameFrameClock,frame:globalThis.__webEngineFrames||0}));
+      const hidden=await snapshot();await page.waitForTimeout(600);const hiddenAfter=await snapshot();
+      assert(hiddenAfter.frame-hidden.frame<=3,'Initially hidden local clock kept ticking');
+      await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
+      run.initialVisibility={handlerSimulated:true,hidden,hiddenAfter};
+    }
     await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=90,null,{timeout:180000});
     assert(!await page.evaluate(()=>globalThis.__webEngineFailure));
     const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
@@ -79,6 +94,7 @@ let context, log;
       threads:__webEngineThreads,view:__webRenderView,camera:__webDefaultCamera,settings:__webProjectSettings,
       occlusion:__webOcclusionRHI,history:globalThis.__webOcclusionHistory,queryWait:globalThis.__webOcclusionWait,
       optimization:globalThis.__webOptimizationRHI,culling:globalThis.__webOptimizationState,
+      gameClock:globalThis.__webGameFrameClock,
       streaming:__webTextureStreaming,capacity:HEAPU8.buffer.byteLength,
       arguments:Module.arguments,failure:globalThis.__webEngineFailure}));
     // Startup texture uploads and browser pipeline creation must leave the window
@@ -92,6 +108,8 @@ let context, log;
     assert.equal(run.before.history.enabled,['history','hzb','hzb-instances'].includes(occlusionMode));
     assert(run.before.arguments.includes('-WebOcclusionMode='+occlusionMode));
     assert.equal(run.before.arguments.includes('-WebGameLocalClock'),local);
+    // New runtimes report the clock actually activated in the Game Worker.
+    if(run.before.gameClock) assert.deepEqual(run.before.gameClock,{mode:local?'local':'owner',paused:false});
     assert.equal(run.before.culling.hzbOcclusion,occlusionMode.startsWith('hzb')?2:0);
     assert.equal(run.before.culling.instanceOcclusion,['instances','hzb-instances'].includes(occlusionMode)?1:0);
     assert.equal(run.before.streaming.pending,0);
@@ -113,6 +131,20 @@ let context, log;
     if(run.before.history.enabled) assert(run.history.hits>0 && run.history.ready>0,'Candidate must consume real results');
     if(occlusionMode.startsWith('hzb')) assert(run.history.hzbCompleted>0,'HZB ring must complete and consume readbacks');
     await page.locator('canvas').screenshot({path:output+'-'+run.index+'-'+mode+'.png'});
+    if(lifecycle && local) {
+      await page.evaluate(()=>{
+        Object.defineProperty(document,'hidden',{configurable:true,value:true});
+        document.dispatchEvent(new Event('visibilitychange'));
+      });
+      await page.waitForTimeout(500);const hidden=await state();
+      await page.waitForTimeout(600);const hiddenAfter=await state();
+      assert(hidden.gameClock.paused && hiddenAfter.gameClock.paused);
+      assert(hiddenAfter.frame-hidden.frame<=3,'Hidden local clock kept submitting');
+      await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
+      await page.waitForTimeout(700);const resumed=await state();
+      assert(!resumed.gameClock.paused && resumed.frame>hiddenAfter.frame+20);
+      run.visibility={handlerSimulated:true,actualHiddenObserved:false,hidden,hiddenAfter,resumed};
+    }
     if(tour) {
       run.tour=[];const camera=run.before.camera;
       for(const delta of [0,90,180,270,0]) {

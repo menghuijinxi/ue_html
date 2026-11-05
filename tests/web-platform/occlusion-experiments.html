@@ -4,15 +4,17 @@
 <style>body{font:16px/1.65 system-ui,sans-serif;background:#15191e;color:#e8edf2;max-width:1000px;margin:40px auto;padding:0 24px}a{color:#91c8ff}td,th{padding:12px 16px;border-bottom:1px solid #39414c;text-align:left}table{border-collapse:collapse;width:100%}code{background:#252d37;padding:2px 5px}small{color:#b2bcc8}</style>
 <h1>遮挡剔除对比</h1>
 <p>每次只打开一个运行页面。各入口使用相同内容和画质；在同一视角观察 FPS 与 1% Low，再测试快速转向、走出墙角、门窗遮挡变化和窗口缩放。</p>
-<p>重点检查物体是否延迟出现、短暂消失、阴影闪烁。历史结果候选在相机移动、结果过期或目标包围盒变化时恢复可见；运动中的遮挡物仍可能造成滞后，待人工验收。</p>
+<p><a id="default">运行默认模式：有效查询历史＋Game 本地调度</a></p>
+<p>快速移动的人工测试未发现缺物或明显操作延迟，已将此组合设为默认。仍可用下面的入口对照快速转向、物体出现时机和阴影。</p>
 <table><thead><tr><th>剔除模式</th><th>原调度</th><th>Game 本地调度</th></tr></thead><tbody id="modes"></tbody></table>
-<p><small>普通物体 HZB 使用四槽异步读回；实例 HZB 在 GPU 上剔除实例。两者独立，也可组合。Game 本地调度是吞吐实验，尚未验收输入延迟和真实后台节流。</small></p>
+<p><small>普通物体 HZB 使用四槽异步读回；实例 HZB 在 GPU 上剔除实例。两者仍是独立对照项。操作延迟经人工观察，尚未量测输入到显示的时间。</small></p>
 <p id="package"></p>
 <script>
-const folder=new URLSearchParams(location.search).get('folder')||'villa-occlusion-history-v66';
+const folder=new URLSearchParams(location.search).get('folder')||'villa-occlusion-default-v67';
 if(!/^[a-z0-9-]+$/.test(folder))throw Error('Invalid folder');
 const modes=[['control','原路径'],['history','有效查询历史，不阻塞'],['hzb','普通物体 HZB，异步读回'],['instances','实例 HZB'],['hzb-instances','普通物体 HZB ＋ 实例 HZB']];
 for(const [mode,label] of modes){const tr=document.createElement('tr'),name=document.createElement('td');name.textContent=label;tr.append(name);
-for(const local of [false,true]){const td=document.createElement('td'),a=document.createElement('a');a.href='build/'+folder+'/index.html?occlusion='+mode+(local?'&clock=local':'');a.textContent='运行';td.append(a);tr.append(td);}document.querySelector('#modes').append(tr);}
+for(const local of [false,true]){const td=document.createElement('td'),a=document.createElement('a');a.href='build/'+folder+'/index.html?occlusion='+mode+'&clock='+(local?'local':'owner');a.textContent='运行';td.append(a);tr.append(td);}document.querySelector('#modes').append(tr);}
+document.querySelector('#default').href='build/'+folder+'/index.html';
 document.querySelector('#package').textContent='测试包：'+folder;
 </script></html>

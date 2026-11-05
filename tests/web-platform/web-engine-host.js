@@ -190,12 +190,20 @@ function createWebGameFrameClock(maxAhead, fail) {
 
 globalThis.startWebEngineWorker = function({assets, module, record, failed, stage, diagnostics, render}) {
   const experiment = new URLSearchParams(location.search);
-  const occlusionMode = experiment.get('occlusion');
-  if (occlusionMode !== null) {
-    if (!['control', 'history', 'hzb', 'instances', 'hzb-instances'].includes(occlusionMode)) throw new Error('Invalid occlusion experiment');
-    module.arguments.push('-WebOcclusionMode=' + occlusionMode);
-  }
-  if (experiment.get('clock') === 'local') module.arguments.push('-WebGameLocalClock');
+  const occlusionArgs = module.arguments.filter(v => v.startsWith('-WebOcclusionMode='));
+  if (occlusionArgs.length > 1) throw new Error('Choose one occlusion mode');
+  const occlusionMode = experiment.get('occlusion') ?? occlusionArgs[0]?.split('=')[1] ?? 'history';
+  if (!['control', 'history', 'hzb', 'instances', 'hzb-instances'].includes(occlusionMode)) throw new Error('Invalid occlusion mode');
+  module.arguments = module.arguments.filter(v => !v.startsWith('-WebOcclusionMode='));
+  module.arguments.push('-WebOcclusionMode=' + occlusionMode);
+  // Approved default: schedule Game ticks locally and consume completed history.
+  // A page-frame scheduler is an explicit alternative; owner rAF remains selectable.
+  const clock = experiment.get('clock');
+  if (clock !== null && !['local', 'owner'].includes(clock)) throw new Error('Invalid Game frame clock');
+  const localClock = clock === 'local' || (clock === null &&
+    !module.arguments.some(v => v.startsWith('-WebFrameScheduler=')));
+  module.arguments = module.arguments.filter(v => v !== '-WebGameLocalClock');
+  if (localClock) module.arguments.push('-WebGameLocalClock');
   if (module.arguments.includes('-WebGameLocalClock') && module.arguments.some(v => v.startsWith('-WebFrameScheduler=')))
     throw new Error('Choose one frame clock experiment');
   const canvas = module.canvas;
@@ -209,10 +217,12 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   const performanceHUD = createWebPerformanceHUD(frameCounter, canvas);
   let sequence = 0, stopped = false, frameClock;
   let inputInFlight = false, inputScheduled = false;
+  const gameClockVisibility = () => worker.postMessage({type: 'game-clock-visibility', hidden: document.hidden});
   const inputQueue = [];
   const pending = new Map();
   const reportFailure = error => {
     stopped = true;
+    document.removeEventListener('visibilitychange', gameClockVisibility);
     frameClock?.dispose();
     performanceHUD.dispose();
     worker.terminate();
@@ -224,8 +234,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     failed(error, {kind: 'engine-worker'});
   };
   worker.onerror = event => reportFailure(event.message);
-  if (module.arguments.includes('-WebGameLocalClock')) document.addEventListener('visibilitychange', () =>
-    worker.postMessage({type: 'game-clock-visibility', hidden: document.hidden}));
+  if (localClock) document.addEventListener('visibilitychange', gameClockVisibility);
   const frameSchedulerArg = module.arguments.filter(arg => arg.startsWith('-WebFrameScheduler='));
   if (frameSchedulerArg.length) {
     const maxAhead = Number(frameSchedulerArg[0].split('=')[1]);
@@ -420,6 +429,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   document.addEventListener('pointerlockchange', () => input(20, Number(document.pointerLockElement === canvas)));
   addEventListener('pagehide', () => {
     stopped = true;
+    document.removeEventListener('visibilitychange', gameClockVisibility);
     frameClock?.dispose();
     performanceHUD.dispose();
     observer.disconnect();
@@ -433,6 +443,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   }, {once: true});
   const offscreen = canvas.transferControlToOffscreen();
   worker.postMessage({type: 'start', assets, canvas: offscreen, browser: browser(),
+    gameClockHidden: document.hidden,
     frameCounter: frameCounter.buffer,
     frameScheduler: frameClock?.transfer,
     arguments: module.arguments, debug: diagnostics.mode !== 'normal',

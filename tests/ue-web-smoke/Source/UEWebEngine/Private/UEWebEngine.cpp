@@ -81,7 +81,7 @@ bool ParallelDrawRecording = false;
 bool ImmediateWebGPUCalls = false;
 bool ScalarWebGPUStates = false, LegacyWebGPUDescriptors = false;
 FString RHIExperiment;
-FString WebOcclusionMode;
+FString WebOcclusionMode = TEXT("history");
 bool ShaderMetadataDOM = false, ShaderMetadataValidate = false;
 bool PSOPrecacheTest = false;
 bool StartupTrace = false;
@@ -1426,10 +1426,14 @@ int main(int argc, char** argv)
             FTaskTagScope::SetTagNone();
             MAIN_THREAD_ASYNC_EM_ASM({
                 globalThis.__webGameThreadWorker = PThread.pthreads[Number($0)];
+                globalThis.__webGameFrameClock = ({mode: Module.arguments.includes('-WebGameLocalClock') ? 'local' :
+                    Module.arguments.some(arg => arg.startsWith('-WebFrameScheduler=')) ? 'page' : 'owner', paused: false});
                 globalThis.__webAttachFrameScheduler?.(globalThis.__webGameThreadWorker);
                 if (Module.arguments.includes('-WebGameLocalClock'))
-                    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-local-clock', paused: false});
+                    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-local-clock', paused: !!globalThis.__webGameClockHidden});
                 globalThis.__webGameThreadWorker.addEventListener('message', event => {
+                    if (event.data.type === 'web-game-clock-state')
+                        globalThis.__webGameFrameClock = {mode: 'local', paused: event.data.paused};
                     if (event.data.type === 'web-game-raf-request') {
                         const id = event.data.id;
                         requestAnimationFrame(timestamp => globalThis.__webGameThreadWorker.postMessage(
