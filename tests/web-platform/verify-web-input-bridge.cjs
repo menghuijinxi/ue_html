@@ -8,6 +8,34 @@ const {WebInputBridge, WebInputMailbox} = require('./web-engine-host.js');
 const channels = [];
 
 (async () => {
+  const hostSource = fs.readFileSync(path.join(__dirname, 'web-engine-host.js'), 'utf8');
+  function selectClock(search, assets = {}, args = []) {
+    const reachedWorker = new Error('Selection complete');
+    const environment = vm.createContext({
+      URLSearchParams, location: {search},
+      Worker: class {constructor() {throw reachedWorker;}},
+    });
+    vm.runInContext(hostSource, environment);
+    const engine = {arguments: args, canvas: {transferControlToOffscreen() {}}};
+    assert.throws(() => environment.startWebEngineWorker({
+      assets: {versions: {}, ...assets}, module: engine,
+    }), error => error === reachedWorker);
+    return engine.arguments;
+  }
+  const defaultArgs = selectClock('');
+  assert(defaultArgs.includes('-WebOcclusionMode=history'));
+  assert(defaultArgs.includes('-WebGameLocalClock'));
+  assert(defaultArgs.includes('-WebRHIWake=priority'));
+  const ownerArgs = selectClock('?clock=owner&occlusion=control&rhiwake=channel');
+  assert(!ownerArgs.includes('-WebGameLocalClock'));
+  assert(ownerArgs.includes('-WebOcclusionMode=control'));
+  assert(ownerArgs.includes('-WebRHIWake=channel'));
+  assert(!selectClock('', {gameFrameBridge: 'page-raf'}).includes('-WebGameLocalClock'),
+    'Diagnostic page rAF must not also select the new default local clock');
+  assert(!selectClock('', {}, ['-WebFrameScheduler=2']).includes('-WebGameLocalClock'));
+  assert.throws(() => selectClock('?clock=local', {gameFrameBridge: 'page-raf'}),
+    /Choose one frame clock experiment/);
+
   const sent = [], frames = [];
   const legacy = new WebInputBridge({
     send: message => sent.push(message), schedule: callback => frames.push(callback),
@@ -120,9 +148,27 @@ const channels = [];
   game.MainLoop.preMainLoop[0]();
   assert.deepEqual(Array.from(received.at(-1).events, v => v[0]), [8, 6, 12]);
   assert.equal(Atomics.load(mailbox.header, 1), 1);
+  // The merged local scheduler must retain cancellation and hidden-page pauses.
+  const clockStates = [];
+  game.postMessage = message => clockStates.push(message);
+  handlers[0]({data: {type: 'web-game-local-clock', paused: false}});
+  let localFrames = 0;
+  game.requestAnimationFrame(() => localFrames++);
+  const localCancelled = game.requestAnimationFrame(() => assert.fail('Cancelled local frame ran'));
+  game.cancelAnimationFrame(localCancelled);
+  await new Promise(resolve => setTimeout(resolve, 20));
+  assert.equal(localFrames, 1);
+  handlers[0]({data: {type: 'web-game-local-clock', paused: true}});
+  game.requestAnimationFrame(() => localFrames++);
+  await new Promise(resolve => setTimeout(resolve, 20));
+  assert.equal(localFrames, 1, 'Hidden local clock must stay paused');
+  handlers[0]({data: {type: 'web-game-local-clock', paused: false}});
+  await new Promise(resolve => setTimeout(resolve, 20));
+  assert.equal(localFrames, 2, 'Resume must deliver a pending frame exactly once');
+  assert.deepEqual(clockStates.map(value => value.paused), [false, true, false]);
   direct.dispose();
   channel.port2.close();
   legacy.dispose();
-  console.log('PASS: input/frame MessagePorts, shared queue wrap/overflow, native timestamps, cancellation and bounded backpressure');
+  console.log('PASS: input/frame MessagePorts, shared queue wrap/overflow, local clock pause/resume, cancellation and bounded backpressure');
 })().catch(error => { console.error(error); process.exitCode = 1; })
   .finally(() => channels.forEach(channel => {channel.port1.close(); channel.port2.close();}));

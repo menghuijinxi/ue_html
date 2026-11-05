@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-11-05 合并两仓库最新遮挡与调度性能优化，解决输入桥接、帧时钟及构建覆盖冲突。完整运行时重编和四组浏览器检查通过；提供无 Lumen＋TSR、有 Lumen 无 AA、有 Lumen＋TSR 的线程 Lag 0 / 1 四个独立入口，全部保留动态模糊且不限制 FPS。鼠标手感仍待逐版人工对比，链接、复现和边界见 [四组对照记录](../../UE58_WEB_RENDER_COMPARISON_20261105.md)。
+
 2026-11-04 浴室镜面专项：三方同机位对照确认 Web 软件 Lumen 与原生完整软件模式接近，但镜面细节明显低于原生项目硬件模式；桌面效果门槛仍失败。`capture-villa-distance-fields.ps1 -UseProjectSettings -LumenTracing Software` 只覆盖追踪选择，`lumen-reflection-cases.json` 固定机位，`summarize-web-lumen-reflections.cjs --require-desktop-parity` 防止将链路运行记作画质通过。证据、开关恢复及混合模式近黑镜面的边界见 [镜面诊断](../../UE58_WEBGPU_LUMEN_REFLECTIONS.md)。
 
 2026-11-05 用户完成快速移动人工检查，未发现缺物或明显操作延迟，已将 **有效查询历史＋Game 本地调度** 设为线程包默认。无参数入口为 `build/villa-occlusion-default-v67/index.html`；`?occlusion=control&clock=owner` 切回原路径。此前十八轮性能复测中该组合 108.33 FPS / Low 54.49，较同调度原路径提升 12.19% / 16.88%。普通 HZB 仍为独立对照项。构建、默认启动验证及边界见 [遮挡历史与 HZB 记录](../../UE58_WEB_OCCLUSION_HISTORY_EXPERIMENT.md)。

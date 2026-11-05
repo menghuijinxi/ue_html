@@ -10,7 +10,7 @@
 
 http://127.0.0.1:8765/build/triplex-motion-frame-sync-20261105/index.html
 
-该预览沿用 `triplex-project-lumen-shadows-fixed-20261104` 的原版 WASM、运行时 JS、输入桥接、Cook 和着色器。配置唯一变化是 `r.OneFrameThreadLag=0`，另更新页面标题及资源清单；没有 CPU 诊断代码，不受此前直连或共享队列实验影响。尚未获得用户视觉验收，不把参数尖峰消失表述为最终画面已修复。
+该预览沿用 `triplex-project-lumen-shadows-fixed-20261104` 的原版 WASM、运行时 JS、输入桥接、Cook 和着色器。配置唯一变化是 `r.OneFrameThreadLag=0`，另更新页面标题及资源清单；没有 CPU 诊断代码，不受此前直连或共享队列实验影响。用户随后反馈严重抖动明显减轻，但鼠标转向仍有很强的卡顿感；这是部分改善，不作完整修复验收。合并远程性能优化后的四组复核见 `UE58_WEB_RENDER_COMPARISON_20261105.md`。
 
 ## CPU 与上传参数
 

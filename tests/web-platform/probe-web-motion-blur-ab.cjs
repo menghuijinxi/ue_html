@@ -12,10 +12,11 @@ assert(/^[a-z0-9-]+$/.test(tag));
 const packageFile = path.join(__dirname, 'results', `motion-blur-ab-${tag}-package.json`);
 const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
 assert(packaged.pass);
+const renderMatrix = packaged.renderMatrix === true;
 const output = path.join(__dirname, 'results', `motion-blur-ab-${tag}-runtime`);
 assert(!fs.existsSync(output + '.json'), 'Preserve previous measurements; use a new tag');
 const report = {date: new Date().toISOString(), pass: false, package: audit(packageFile),
-  source: audit(__filename), runs: [], boundary: 'Functional verification of the two user-requested configurations, not a subjective shaking verdict. FPS measures RHI submission intervals, not physical presentation.'};
+  source: audit(__filename), runs: [], boundary: 'Functional verification of the packaged configurations, not a subjective shaking or mouse-latency verdict. Diagnostic GPU wrappers add overhead. FPS measures RHI submission intervals, not physical presentation.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
 function observe() {
@@ -35,7 +36,7 @@ function observe() {
     device.lost.then(info => {if (info.reason !== 'destroyed') state.losses.push(info.message);});
     return device;
   };
-  const relevant = label => /^(MotionBlur\.|Lumen\.(ScreenProbeGather|Reflections))/.test(label || '');
+  const relevant = label => /^(TSR\.|MotionBlur\.|Lumen\.(ScreenProbeGather|Reflections))/.test(label || '');
   const createTexture = GPUDevice.prototype.createTexture;
   GPUDevice.prototype.createTexture = function(desc) {
     if (relevant(desc.label)) state.resources[desc.label] = (state.resources[desc.label] || 0) + 1;
@@ -98,7 +99,7 @@ function summarize(presents) {
 }
 (async () => {
   try {
-    for (const entry of [{name: 'baseline', folder: packaged.baseline, settings: {}}, ...packaged.cases]) {
+    for (const entry of [...(renderMatrix ? [] : [{name: 'baseline', folder: packaged.baseline, settings: {}}]), ...packaged.cases]) {
       const run = {name: entry.name, folder: entry.folder, settings: entry.settings, errors: [], applied: {}};
       report.runs.push(run); save();
       const profile = path.join(__dirname, 'build/browser-profiles', `motion-ab-${tag}-${entry.name}`);
@@ -134,6 +135,7 @@ function summarize(presents) {
       const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
       assert(owner);
       const before = await owner.evaluate(() => __motionAB.presents.length);
+      if (renderMatrix) run.cameraBeforeInput = await owner.evaluate(() => __webDefaultCamera);
       await page.locator('canvas').focus();
       await page.mouse.move(700, 400);
       await page.mouse.down({button: 'right'});
@@ -144,17 +146,49 @@ function summarize(presents) {
       await advance(2);
       run.state = await owner.evaluate(() => ({settings: globalThis.__webProjectSettings,
         lighting: globalThis.__webDistanceFieldsLighting, view: globalThis.__webRenderView,
-        camera: globalThis.__webDefaultCamera, frameLimit: globalThis.__webMotionABFrameLimit, probe: __motionAB}));
+        camera: globalThis.__webDefaultCamera, frameLimit: globalThis.__webMotionABFrameLimit,
+        gameClock: globalThis.__webGameFrameClock, rhiWake: globalThis.__webRHIWakeScheduler,
+        history: globalThis.__webOcclusionHistory, arguments: Module.arguments,
+        cpuTraceSamples: globalThis.__webMotionBlurCPU?.length || 0, probe: __motionAB}));
       run.timing = summarize(run.state.probe.presents.slice(before));
       run.hud = await page.evaluate(() => __webLivePerformance);
       assert.deepEqual(run.state.probe.errors, []);
       assert.deepEqual(run.state.probe.losses, []);
       assert.deepEqual(run.applied, entry.settings);
-      assert.equal(run.state.view.antiAliasing, 4);
+      assert.equal(run.state.view.antiAliasing, renderMatrix ? entry.settings['r.AntiAliasingMethod'] : 4);
       const resources = run.state.probe.resources;
       const motionBlur = resources['MotionBlur.SceneColor'] || 0;
       const lumen = resources['Lumen.ScreenProbeGather.ScreenProbeSceneDepth'] || 0;
-      if (entry.name === 'no-lumen-10fps') {
+      if (renderMatrix) {
+        const gi = entry.settings['r.DynamicGlobalIlluminationMethod'], aa = entry.settings['r.AntiAliasingMethod'];
+        assert.equal(run.state.settings.gi, gi);
+        assert.equal(run.state.settings.reflections, gi);
+        assert.equal(run.state.lighting.giMethod, gi, 'Final camera GI must match the package');
+        assert.equal(run.state.lighting.reflectionMethod, gi);
+        assert.equal(run.state.settings.antiAliasing, aa);
+        assert.equal(run.state.lighting.antiAliasing, aa);
+        assert.equal(run.state.frameLimit, undefined);
+        assert.equal(run.state.cpuTraceSamples, 0, 'CPU diagnostic must remain disabled');
+        assert.equal(run.state.gameClock.mode, 'local');
+        assert.equal(run.state.gameClock.paused, false);
+        assert.equal(run.state.rhiWake.requested, 'priority');
+        assert.equal(run.state.rhiWake.active, run.state.rhiWake.prioritySupported ? 'priority' : 'channel');
+        assert.equal(run.state.history.enabled, true);
+        assert(run.state.arguments.includes('-WebOcclusionMode=history'));
+        assert(run.state.arguments.includes('-WebGameLocalClock'));
+        assert(motionBlur > 0 && (run.state.probe.bindings['MotionBlur.SceneColor'] || 0) > 0,
+          'All four cases must execute the original motion blur');
+        assert.equal(lumen > 0, gi === 1, 'Actual Lumen resources must match the requested mode');
+        const tsr = Object.entries(resources).filter(([label]) => label.startsWith('TSR.'))
+          .reduce((total, [, count]) => total + count, 0);
+        assert.equal(tsr > 0, aa === 4, 'Actual TSR resources must match the requested AA mode');
+        run.input = await page.evaluate(() => __webInputBridge);
+        assert.equal(run.input.mode, 'owner-forwarded');
+        assert(run.input.acknowledged > 0, 'Mouse input must reach the game thread');
+        assert(Math.abs(run.state.camera.yaw - run.cameraBeforeInput.yaw) > 0.1 ||
+          Math.abs(run.state.camera.pitch - run.cameraBeforeInput.pitch) > 0.1,
+          'Mouse movement must actually rotate the camera');
+      } else if (entry.name === 'no-lumen-10fps') {
         assert.equal(run.state.settings.gi, 0);
         assert.equal(run.state.settings.reflections, 0);
         assert.equal(run.state.frameLimit.fps, 10);

@@ -18,7 +18,23 @@ const sourceProducts = Object.entries(versions).map(([name, expected]) => {
   return product;
 });
 const frameSyncOnly = process.argv.includes('--frame-sync-only');
-const cases = frameSyncOnly ? [
+const renderMatrix = process.argv.includes('--render-matrix');
+assert(!(frameSyncOnly && renderMatrix), 'Choose one comparison set');
+const matrixSettings = (lumen, aa, lag) => ({
+  'r.DynamicGlobalIlluminationMethod': lumen,
+  'r.ReflectionMethod': lumen,
+  'r.Lumen.DiffuseIndirect.Allow': lumen,
+  'r.Lumen.Reflections.Allow': lumen,
+  'r.AntiAliasingMethod': aa,
+  'r.OneFrameThreadLag': lag,
+  't.MaxFPS': 0,
+});
+const cases = renderMatrix ? [
+  {name: 'no-lumen-aa', title: 'A - Lumen OFF - TSR ON - Lag 1', settings: matrixSettings(0, 4, 1)},
+  {name: 'lumen-no-aa', title: 'B - Lumen ON - AA OFF - Lag 1', settings: matrixSettings(1, 0, 1)},
+  {name: 'lumen-aa-lag0', title: 'C - Lumen ON - TSR ON - Lag 0', settings: matrixSettings(1, 4, 0)},
+  {name: 'lumen-aa-lag1', title: 'D - Lumen ON - TSR ON - Lag 1', settings: matrixSettings(1, 4, 1)},
+] : frameSyncOnly ? [
   {name: 'frame-sync', title: 'Lumen ON - Motion Blur ON - Frame Sync', settings: {
     'r.OneFrameThreadLag': 0,
   }},
@@ -65,9 +81,10 @@ function installTestFrameLimit(fps) {
     if (item) {cancel(item.native); pending.delete(id);}
   };
 }
-const report = {date: new Date().toISOString(), baseline, source: audit(__filename),
+const report = {date: new Date().toISOString(), baseline, renderMatrix, source: audit(__filename),
   baselineProducts: sourceProducts, cases: [], pass: false,
-  boundary: frameSyncOnly ?
+  boundary: renderMatrix ?
+    'Four user-requested Lumen/TSR/thread-lag configurations. Identical runtime, Cook, input, resolution settings and original motion blur; no frame cap. The first two cases explicitly use lag=1. Perceived mouse stutter and shaking require manual comparison.' : frameSyncOnly ?
     'Frame synchronization candidate: only r.OneFrameThreadLag=0. Original shadow-fixed WASM/runtime, Cook, input, Lumen and motion blur. No frame-rate cap or time manipulation. Visual acceptance pending.' :
     'User-requested diagnostic variants. Same shadow-fixed WASM/runtime, Cook content, TSR and input code. A additionally gates the owner RAF used by the game thread because t.MaxFPS alone did not enforce a browser frame cap. Perceived shaking still requires user review.'};
 for (const entry of cases) {
