@@ -66,6 +66,8 @@ A1 另有一个与 PSO 请求不重叠的 66.955ms 帧，重复路线也有一�
 
 ## 复现与证据
 
+人工体验页：`http://127.0.0.1:8765/build/villa-runtime-async-pso-v70/component-pso.html`。该页复制同目录 `index.html`，仅在启动参数追加 `-corelimit=4`、`-WebPSOPrecacheTest`、`-WebRuntimeAsyncPSO`，使用相同 WASM/Cook 和加载就绪检查，不带自动相机路线或测量注入。重新生成构建目录后需按以上参数重新生成体验页。
+
 ```powershell
 $env:NODE_PATH='C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
 node tests/web-platform/serve.cjs
