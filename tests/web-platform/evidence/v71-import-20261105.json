@@ -1,0 +1,282 @@
+{
+  "date": "2026-11-05T07:18:55.141Z",
+  "pass": true,
+  "folder": "villa-scheduling-latest-v71",
+  "source": {
+    "file": "H:\\ue_html\\tests\\web-platform\\probe-web-scheduling-package.cjs",
+    "sha256": "3c14479f5d95346d18d1ab559913f8263971f33f649bc301f7b89dc689cfb35a"
+  },
+  "archive": {
+    "file": "E:\\BaiduNetdiskDownload\\villa-scheduling-latest-v71.zip",
+    "sha256": "9672535d1505b733065223e2a009232fd2253c86c1ebd51b3d9e1a89bba3270b"
+  },
+  "packageInfo": {
+    "workspace": "5b3db645c2fb1c4b28ea3b6c2a9f37ffdcc35400",
+    "engine": "93f9ea35a8be0444bb821deedb488a8dd8752e33",
+    "baseline": "villa-lumen-off-current-mimalloc-v59",
+    "folder": "villa-scheduling-latest-v71",
+    "date": "2026-11-05T07:01:16.022Z",
+    "boundary": "Latest runtime; original audited local Cook/config reused without recooking. Lumen remains disabled."
+  },
+  "files": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134",
+      "size": 663743
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+      "size": 1907015
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\content.bin",
+      "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+      "size": 3268110126
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\index.html",
+      "sha256": "4d23bec38eb2be69eb876dfd898ca7b927e72e170b5c31e4b5a3f8f896dc3993",
+      "size": 93200
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\UEWebEngineThreads.js",
+      "sha256": "15d92c188511f4c7d7afcca8bc65ca543435e3513fcea0eae0ed4fdd45d8d10a",
+      "size": 420828
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\UEWebEngineThreads.wasm",
+      "sha256": "88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+      "size": 182539328
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\web-content-io.js",
+      "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+      "size": 4781
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\web-content-worker.js",
+      "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+      "size": 10411
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\web-engine-host.js",
+      "sha256": "cf2bc14c34e2e4f042851025a0d5c0861c81ec4496efe602cc9bb98d7dad7925",
+      "size": 32638
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\web-engine-worker.js",
+      "sha256": "37e4b20be765559cbf07b8ba5720a0e1743bf207d597578660394fa34772cea5",
+      "size": 16477
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\asset-versions.json",
+      "sha256": "84c34cb1dceed86bd1ad1e167829e8f07dac1a82e1e44b726ed3bcfa78e5ee50"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\comparison.html",
+      "sha256": "e044640cf0d7e6e30da5ce17f2ac58824cf2c1b88a6af589cf2787838faea197"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-scheduling-latest-v71\\package-info.json",
+      "sha256": "bfd8f3eabae8e9fa61559cb3861d2e1da27dc41d53a0ba9cbcc5eb634316151c"
+    }
+  ],
+  "runs": [
+    {
+      "clock": "owner",
+      "errors": [],
+      "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=owner&rhiwake=priority",
+      "state": {
+        "clock": {
+          "mode": "owner",
+          "paused": false
+        },
+        "rhiWake": {
+          "requested": "priority",
+          "active": "priority",
+          "prioritySupported": true
+        },
+        "history": {
+          "enabled": true,
+          "frame": 120,
+          "polls": 143188,
+          "ready": 76631,
+          "hits": 64895,
+          "zero": 60046,
+          "fallback": 21178,
+          "expired": 10698,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 85877,
+          "queryDropped": 6366,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 131,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "camera": {
+          "x": 430.7057210126321,
+          "y": -473.6494921185762,
+          "z": 156.64842176437378,
+          "pitch": -4.045937240123755,
+          "yaw": 119.98752737045288
+        },
+        "arguments": [
+          "./this.program",
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebRHIWake=priority"
+        ],
+        "frames": 130
+      },
+      "input": {
+        "mode": "owner-forwarded",
+        "ready": true,
+        "sent": 9,
+        "acknowledged": 9,
+        "maxQueue": 3,
+        "trace": []
+      },
+      "image": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v71-import-20261105-owner.png",
+        "sha256": "cacd7ab34aef27572e7d5e8c940a5f2dc742b6f59e052fe09ae4f8bfbced3fcc"
+      },
+      "pass": true
+    },
+    {
+      "clock": "local",
+      "errors": [],
+      "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=local&rhiwake=priority",
+      "state": {
+        "clock": {
+          "mode": "local",
+          "paused": false
+        },
+        "rhiWake": {
+          "requested": "priority",
+          "active": "priority",
+          "prioritySupported": true
+        },
+        "history": {
+          "enabled": true,
+          "frame": 120,
+          "polls": 182738,
+          "ready": 52245,
+          "hits": 44948,
+          "zero": 40964,
+          "fallback": 33354,
+          "expired": 18107,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 85482,
+          "queryDropped": 25235,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "view": {
+          "frame": 141,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "camera": {
+          "x": 432.1456256945035,
+          "y": -472.8632896613379,
+          "z": 156.64842176437378,
+          "pitch": -4.437720105052004,
+          "yaw": 122.36597001552586
+        },
+        "arguments": [
+          "./this.program",
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebGameLocalClock",
+          "-WebRHIWake=priority"
+        ],
+        "frames": 140
+      },
+      "input": {
+        "mode": "owner-forwarded",
+        "ready": true,
+        "sent": 11,
+        "acknowledged": 11,
+        "maxQueue": 3,
+        "trace": []
+      },
+      "image": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v71-import-20261105-local.png",
+        "sha256": "04fcc1af23d4f1b4c91ae8fd5b532976112e807f814df3d24ca903156d24d3e1"
+      },
+      "pass": true
+    }
+  ],
+  "boundary": "Imported package integrity and functional startup checks only. No recook or configuration changes. Headless browser probes are not performance comparisons or visual parity acceptance.",
+  "comparisonURL": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/comparison.html"
+}

@@ -20,7 +20,42 @@ function connectInputPort() {
   }
 }
 let frameScheduler;
+let localFrameBudget, localGpuQueue;
 let rhiWakePriority = false;
+function createWebLocalFrameBudget(maxAhead, mode = 'submitted') {
+  if (!Number.isInteger(maxAhead) || maxAhead < 1 || maxAhead > 8)
+    throw new Error('Invalid local frame budget');
+  if (!['submitted', 'pipeline'].includes(mode)) throw new Error('Invalid local frame budget mode');
+  const state = new Int32Array(new SharedArrayBuffer(mode === 'pipeline' ? 16 : 12));
+  const diagnostics = {maxAhead, mode, submitted: 0, completed: 0, pending: 0, peak: 0, wakes: 0};
+  let game;
+  return {
+    state, diagnostics,
+    attach(worker) {
+      if (game) throw new Error('Local frame budget attached twice');
+      game = worker;
+      game.postMessage({type: 'web-game-local-budget', buffer: state.buffer, maxAhead, mode});
+    },
+    submit(queue) {
+      const sequence = ++diagnostics.submitted;
+      Atomics.store(state, 0, sequence | 0);
+      diagnostics.pending = sequence - diagnostics.completed;
+      diagnostics.peak = Math.max(diagnostics.peak, diagnostics.pending);
+      // Register after the native RHIEndFrame has submitted every encoder.
+      // These callbacks include browser delivery latency, not just GPU execution.
+      queue.onSubmittedWorkDone().then(() => {
+        diagnostics.completed = Math.max(diagnostics.completed, sequence);
+        Atomics.store(state, 1, diagnostics.completed | 0);
+        diagnostics.pending = diagnostics.submitted - diagnostics.completed;
+        const outstanding = ((Atomics.load(state, mode === 'pipeline' ? 3 : 0) - Atomics.load(state, 1)) >>> 0);
+        if (outstanding < maxAhead && Atomics.exchange(state, 2, 0)) {
+          diagnostics.wakes++;
+          game.postMessage({type: 'web-game-local-ready'});
+        }
+      }).catch(fail);
+    },
+  };
+}
 function markGpuFrame() {
   if (!frameScheduler) return;
   if (!frameScheduler.attached || !frameScheduler.queue) throw new Error('Frame scheduler runtime support unavailable');
@@ -107,6 +142,7 @@ function snapshot() {
     reserved: Atomics.load(frameScheduler.state, 2), peakSubmitted: Atomics.load(frameScheduler.state, 3),
     completions: Atomics.load(frameScheduler.state, 4), peakReserved: Atomics.load(frameScheduler.state, 5),
     ready: !!Atomics.load(frameScheduler.state, 6)};
+  if (localFrameBudget) state.__webLocalFrameBudget = {...localFrameBudget.diagnostics};
   state.__webEngineSurface = {width: Module.canvas.width, height: Module.canvas.height};
   const io = globalThis.__webContentIO;
   state.__webLocalContentStats = {...io?.stats, activeRequests: io?.requests.size,
@@ -177,6 +213,14 @@ async function start(message) {
   rhiWakePriority = priorityRequested && typeof globalThis.scheduler?.postTask === 'function';
   globalThis.__webRHIWakeScheduler = {requested:priorityRequested?'priority':'channel',
     active:rhiWakePriority?'priority':'channel',prioritySupported:typeof globalThis.scheduler?.postTask === 'function'};
+  if (message.localFrameBudget) {
+    if (message.frameScheduler || !message.arguments.includes('-WebGameLocalClock'))
+      throw new Error('Local GPU budget requires the local Game clock');
+    localFrameBudget = createWebLocalFrameBudget(message.localFrameBudget, message.localFrameBudgetMode);
+    globalThis.__webLocalFrameBudget = localFrameBudget.diagnostics;
+    globalThis.__webGPUFrameSubmitted = () => localFrameBudget.submit(localGpuQueue);
+    globalThis.__webAttachFrameScheduler = game => localFrameBudget.attach(game);
+  }
   if (message.frameScheduler) {
     const {maxAhead, state, port} = message.frameScheduler;
     if (!Number.isInteger(maxAhead) || maxAhead < 1 || maxAhead > 4 || !(state instanceof SharedArrayBuffer) || state.byteLength !== 32)
@@ -229,6 +273,7 @@ async function start(message) {
   GPUAdapter.prototype.requestDevice = async function(descriptor) {
     const device = await requestDevice.call(this, descriptor);
     if (frameScheduler) frameScheduler.queue = device.queue;
+    if (localFrameBudget) localGpuQueue = device.queue;
     device.addEventListener('uncapturederror', event => fail(event.error));
     device.lost.then(info => {
       if (info.reason !== 'destroyed') fail(new Error('WebGPU device lost: ' + info.message));

@@ -1,0 +1,2064 @@
+{
+  "pass": true,
+  "date": "2026-11-05T10:40:24.840Z",
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-engine-host.js",
+      "sha256": "a6a0ecf64b4b252cde7a5c56bf515549e3a2d940ad67f8122ec3e79e844cba7d"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+      "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+      "sha256": "b98ee0bd9755f1d280f77172ad559d9aebddadc0afbdbb35a1e04297991277b9"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-local-pipeline-observer.cjs",
+      "sha256": "97e913c59ddc2d2a73b5c084a757cadce2a8f3632380f67cc959636ea083694d"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\analyze-web-local-pipeline.cjs",
+      "sha256": "d03d6f2236f56e906186610d19e03852a561dee5106f95a8da3e7e4c4f04142b"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\analyze-web-compositor-motion.cjs",
+      "sha256": "86c4cfdab8e7ad8278e89ba6b13d44a943448c05286670c27f1531189195340e"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-pipeline-budget.cjs",
+      "sha256": "85ad4db827369cb53b955b1912ce9817908b89a5ef5e9789d3974d935cca3eab"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-local-frame-budget.cjs",
+      "sha256": "701a5d1d0583f581803be98d1d679c090503273b70435273d0fd6decc87bc229"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-input-bridge.cjs",
+      "sha256": "d7c008dc4e1c961caa0c970096db76b78d363ebff62ed23194249b3623f905a1"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\package-web-local-frame-budget.cjs",
+      "sha256": "4b781f00ce7d2205e13429f60551a75b04976716ed96e996803b137bcd87a907"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-pipeline-budget.cjs",
+      "sha256": "68dd3ae320e625dc6d76bc958553f1c8a0f8fd32450d8072b5368d352b4bdf54"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebWorkerCanvas.js",
+      "sha256": "4b23c143f7760e44172341ab16658112be20ff0c703cb6e842ade7fe56477254"
+    }
+  ],
+  "captures": [
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-pipeline-motion-20261105.json",
+        "sha256": "6ce2cde866df8d05f7650038673fe9a5ddc7f52efcb61f67a674b41d25b689e9"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-pipeline-motion-20261105-source.cjs",
+        "sha256": "716b37a609ee43f1557dea5bad7fa985d2508fb15a7519d5cefaa0c0f2cba41b"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\index.html",
+          "sha256": "920241a60150923956c77f9ba28c6f82b04242c36d12c1d5a9b677a2d7af07b7"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\UEWebEngineThreads.js",
+          "sha256": "1620856cc080437a1882378cb69f7890e6c1364324bfa3ad7a2660a3748d28ae"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\web-engine-host.js",
+          "sha256": "4643f062041ab3bcf80ce6748c0c1f08832992d2f2246f498d053bbd3300311e"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\web-engine-worker.js",
+          "sha256": "f5fd74e7e4dcc77b1654ba88e172aa0769544b1df6a318bc883419f0c2642ead"
+        }
+      ],
+      "folder": "villa-local-budget-v72-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "duration": 16,
+      "pipeline": true,
+      "chromeTrace": false,
+      "packagedInput": false,
+      "defaultSettings": false,
+      "inputMode": "owner-forwarded",
+      "analysis": {
+        "file": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-pipeline-motion-20261105-pipeline-analysis.json",
+          "sha256": "7bd19b90bc830668850ebadd618e237e43ba5f11eb5db77352f999c40b25f7d7"
+        },
+        "runs": [
+          {
+            "mode": "local4",
+            "inputMode": "owner-forwarded",
+            "submission": {
+              "samples": 1379,
+              "fps": 83.59518712379494,
+              "low1Fps": 27.17312190057364,
+              "p50": 10.090000000083819,
+              "p95": 27.505000000121072,
+              "p99": 30.834999999962747,
+              "maximum": 61.175000000046566
+            },
+            "page": {
+              "visual": 70.16666666666667,
+              "submitted": 84.33333333333333,
+              "refresh": 100.03333333333333,
+              "ratio": 0.8320158102766799
+            },
+            "gameIntervals": {
+              "count": 1380,
+              "mean": 11.937489031363224,
+              "p50": 6.35986328125,
+              "p95": 35.7900390625,
+              "p99": 40.199951171875,
+              "max": 62.72998046875
+            },
+            "gameWork": {
+              "count": 1381,
+              "mean": 6.51576342296117,
+              "p50": 4.9951171875,
+              "p95": 16.39013671875,
+              "p99": 23.340087890625,
+              "max": 33.789794921875
+            },
+            "rhiTaskWork": {
+              "count": 9597,
+              "mean": 1.0751946256398484,
+              "p50": 0.010009765625,
+              "p95": 9.18994140625,
+              "p99": 11.489990234375,
+              "max": 16.68994140625
+            },
+            "rhiTaskWait": {
+              "count": 9597,
+              "mean": 0.015180499724848912,
+              "p50": 0.005126953125,
+              "p95": 0.02490234375,
+              "p99": 0.260009765625,
+              "max": 1.68505859375
+            },
+            "framesPerTask": {
+              "count": 9597,
+              "mean": 0.1438991351463999,
+              "p50": 0,
+              "p95": 1,
+              "p99": 1,
+              "max": 2
+            },
+            "gpuFeedback": {
+              "count": 1381,
+              "mean": 45.67099867481671,
+              "p50": 45.679931640625,
+              "p95": 62.83984375,
+              "p99": 69.699951171875,
+              "max": 81.119873046875
+            },
+            "inputToTick": {
+              "count": 737,
+              "mean": 27.05080775101764,
+              "p50": 25.51513671875,
+              "p95": 51.869873046875,
+              "p99": 74.659912109375,
+              "max": 92.224853515625
+            },
+            "inputToArrival": {
+              "count": 737,
+              "mean": 17.768788227717945,
+              "p50": 15.93994140625,
+              "p95": 39.02001953125,
+              "p99": 57.614990234375,
+              "max": 72.644775390625
+            },
+            "arrivalToTick": {
+              "count": 737,
+              "mean": 9.282019523299695,
+              "p50": 6.360107421875,
+              "p95": 27.045166015625,
+              "p99": 31.375,
+              "max": 58.5849609375
+            },
+            "mailboxInputAgeAtTick": null,
+            "gameFramesWithoutInput": 786,
+            "intervalsUnder4ms": 469,
+            "intervalsOver25ms": 265,
+            "budget": {
+              "maxAhead": 4,
+              "submitted": 3076,
+              "completed": 3072,
+              "pending": 4,
+              "peak": 7,
+              "wakes": 624
+            }
+          },
+          {
+            "mode": "owner",
+            "inputMode": "owner-forwarded",
+            "submission": {
+              "samples": 1295,
+              "fps": 79.83089412450765,
+              "low1Fps": 36.45592338650151,
+              "p50": 11.485000000102445,
+              "p95": 19.40999999991618,
+              "p99": 25.03000000002794,
+              "maximum": 34.02000000001863
+            },
+            "page": {
+              "visual": 73.4,
+              "submitted": 80.5,
+              "refresh": 112.4,
+              "ratio": 0.9118012422360249
+            },
+            "gameIntervals": {
+              "count": 1298,
+              "mean": 12.525701161341969,
+              "p50": 10.96484375,
+              "p95": 25.0400390625,
+              "p99": 28.55517578125,
+              "max": 48.110107421875
+            },
+            "gameWork": {
+              "count": 1299,
+              "mean": 1.871291280251636,
+              "p50": 1.27001953125,
+              "p95": 4.8349609375,
+              "p99": 11.89990234375,
+              "max": 16.60986328125
+            },
+            "rhiTaskWork": {
+              "count": 18718,
+              "mean": 0.5152879273334825,
+              "p50": 0.005126953125,
+              "p95": 4.460205078125,
+              "p99": 10.51513671875,
+              "max": 13.72509765625
+            },
+            "rhiTaskWait": {
+              "count": 18718,
+              "mean": 0.009957293259663158,
+              "p50": 0.005126953125,
+              "p95": 0.01513671875,
+              "p99": 0.06494140625,
+              "max": 1.625
+            },
+            "framesPerTask": {
+              "count": 18718,
+              "mean": 0.06939844000427396,
+              "p50": 0,
+              "p95": 1,
+              "p99": 1,
+              "max": 1
+            },
+            "gpuFeedback": {
+              "count": 1299,
+              "mean": 37.856765382926774,
+              "p50": 38.550048828125,
+              "p95": 51.559814453125,
+              "p99": 57.590087890625,
+              "max": 68.885009765625
+            },
+            "inputToTick": {
+              "count": 882,
+              "mean": 21.068787036298893,
+              "p50": 18.31494140625,
+              "p95": 43.184814453125,
+              "p99": 55.02978515625,
+              "max": 77.059814453125
+            },
+            "inputToArrival": {
+              "count": 882,
+              "mean": 11.817277350393283,
+              "p50": 10.144775390625,
+              "p95": 26.639892578125,
+              "p99": 36.86962890625,
+              "max": 55.919677734375
+            },
+            "arrivalToTick": {
+              "count": 882,
+              "mean": 9.251509685905612,
+              "p50": 7.81005859375,
+              "p95": 22.0849609375,
+              "p99": 24.699951171875,
+              "max": 43.0400390625
+            },
+            "mailboxInputAgeAtTick": null,
+            "gameFramesWithoutInput": 482,
+            "intervalsUnder4ms": 134,
+            "intervalsOver25ms": 65
+          }
+        ]
+      },
+      "runs": [
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/index.html?occlusion=history&clock=local&gpuahead=4&rhiwake=priority",
+          "result": {
+            "samples": 1379,
+            "fps": 83.59518712379494,
+            "low1Fps": 27.17312190057364,
+            "p50": 10.090000000083819,
+            "p95": 27.505000000121072,
+            "p99": 30.834999999962747,
+            "maximum": 61.175000000046566
+          },
+          "display": {
+            "visual": 70.16666666666667,
+            "submitted": 84.33333333333333,
+            "refresh": 100.03333333333333,
+            "ratio": 0.8320158102766799
+          },
+          "camera": {
+            "travelCm": 1329.6787033866042,
+            "turnDegrees": 889.0998853086494,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1696,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2812.6376811594205,
+            "dispatches": 178.27101449275364,
+            "pending": 1263.5898550724637,
+            "ready": 596.0434782608696
+          },
+          "rhiMs": 7.445865878147948,
+          "budget": {
+            "maxAhead": 4,
+            "submitted": 3076,
+            "completed": 3072,
+            "pending": 4,
+            "peak": 7,
+            "wakes": 624
+          }
+        },
+        {
+          "mode": "owner",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/index.html?occlusion=history&clock=owner&gpuahead=0&rhiwake=priority",
+          "result": {
+            "samples": 1295,
+            "fps": 79.83089412450765,
+            "low1Fps": 36.45592338650151,
+            "p50": 11.485000000102445,
+            "p95": 19.40999999991618,
+            "p99": 25.03000000002794,
+            "maximum": 34.02000000001863
+          },
+          "display": {
+            "visual": 73.4,
+            "submitted": 80.5,
+            "refresh": 112.4,
+            "ratio": 0.9118012422360249
+          },
+          "camera": {
+            "travelCm": 1261.2056345776766,
+            "turnDegrees": 902.0259600598365,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1556,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2697.5348484848487,
+            "dispatches": 179.12727272727273,
+            "pending": 604.9969696969697,
+            "ready": 538.2545454545455
+          },
+          "rhiMs": 7.380728354820838
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\pipeline-credit-motion-20261105.json",
+        "sha256": "88471ede04728266b292da1ad843c1b3b2e22c33a03cef6569b24df7f20e876b"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\pipeline-credit-motion-20261105-source.cjs",
+        "sha256": "f3694f96d67adc2b541bd2b6c510eba614d7b67b3fbf5a7c1da4030cfba506e4"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\index.html",
+          "sha256": "1e5eace9b9d3afb8a87d12ed7165a53760264d1c0951d3c6465a834d4f263556"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\UEWebEngineThreads.js",
+          "sha256": "6509d0eaa301914b19b78e187294ecb7af84c5680119cfcc9e9cce593ba087f3"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\web-engine-host.js",
+          "sha256": "a741e196b9a938b7ae0b672fda7a87d3d24549f50e7a6dc5032aeb030f869f60"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\web-engine-worker.js",
+          "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+        }
+      ],
+      "folder": "villa-pipeline-probe-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "duration": 16,
+      "pipeline": true,
+      "chromeTrace": false,
+      "packagedInput": false,
+      "defaultSettings": false,
+      "inputMode": "owner-forwarded",
+      "analysis": {
+        "file": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\pipeline-credit-motion-20261105-pipeline-analysis.json",
+          "sha256": "ebea2225247d0a1663938a02d5a509c41ac0d6b6c3b6a5672055839b381e3f90"
+        },
+        "runs": [
+          {
+            "mode": "pipeline3",
+            "inputMode": "owner-forwarded",
+            "submission": {
+              "samples": 1274,
+              "fps": 78.4186033055841,
+              "low1Fps": 41.07619634420523,
+              "p50": 11.620000000111759,
+              "p95": 18.71500000008382,
+              "p99": 20.694999999832362,
+              "maximum": 30.22000000020489
+            },
+            "page": {
+              "visual": 78.56666666666666,
+              "submitted": 78.73333333333333,
+              "refresh": 120.36666666666666,
+              "ratio": 0.997883149872989
+            },
+            "gameIntervals": {
+              "count": 1276,
+              "mean": 12.758965471321513,
+              "p50": 11.375,
+              "p95": 24.429931640625,
+              "p99": 28.489990234375,
+              "max": 39.830078125
+            },
+            "gameWork": {
+              "count": 1277,
+              "mean": 1.6058054231719852,
+              "p50": 1.275146484375,
+              "p95": 3.8798828125,
+              "p99": 9.47998046875,
+              "max": 15.60009765625
+            },
+            "rhiTaskWork": {
+              "count": 20114,
+              "mean": 0.46826366080528486,
+              "p50": 0.005126953125,
+              "p95": 4.080078125,
+              "p99": 10.23486328125,
+              "max": 15.804931640625
+            },
+            "rhiTaskWait": {
+              "count": 20114,
+              "mean": 0.009614787993592772,
+              "p50": 0.005126953125,
+              "p95": 0.01513671875,
+              "p99": 0.05517578125,
+              "max": 2.114990234375
+            },
+            "framesPerTask": {
+              "count": 20114,
+              "mean": 0.06343840111365218,
+              "p50": 0,
+              "p95": 1,
+              "p99": 1,
+              "max": 1
+            },
+            "gpuFeedback": {
+              "count": 1276,
+              "mean": 24.60478588331456,
+              "p50": 23.949951171875,
+              "p95": 30.945068359375,
+              "p99": 35.570068359375,
+              "max": 45.695068359375
+            },
+            "inputToTick": {
+              "count": 977,
+              "mean": 13.205498686588408,
+              "p50": 11.9951171875,
+              "p95": 29.81005859375,
+              "p99": 37.304931640625,
+              "max": 55.030029296875
+            },
+            "inputToArrival": {
+              "count": 977,
+              "mean": 8.185414184445369,
+              "p50": 6.794921875,
+              "p95": 20.949951171875,
+              "p99": 28.2900390625,
+              "max": 36.820068359375
+            },
+            "arrivalToTick": {
+              "count": 977,
+              "mean": 5.02008450214304,
+              "p50": 2.385009765625,
+              "p95": 15.364990234375,
+              "p99": 23.309814453125,
+              "max": 32.0400390625
+            },
+            "mailboxInputAgeAtTick": null,
+            "gameFramesWithoutInput": 368,
+            "intervalsUnder4ms": 40,
+            "intervalsOver25ms": 58,
+            "budget": {
+              "maxAhead": 3,
+              "mode": "pipeline",
+              "submitted": 2801,
+              "completed": 2799,
+              "pending": 2,
+              "peak": 3,
+              "wakes": 2756
+            }
+          },
+          {
+            "mode": "pipeline4",
+            "inputMode": "owner-forwarded",
+            "submission": {
+              "samples": 1309,
+              "fps": 79.9617356522448,
+              "low1Fps": 38.30421756791967,
+              "p50": 11.364999999990687,
+              "p95": 18.6500000001397,
+              "p99": 20.645000000018626,
+              "maximum": 42.66500000003725
+            },
+            "page": {
+              "visual": 79.6,
+              "submitted": 80.83333333333333,
+              "refresh": 119.2,
+              "ratio": 0.9847422680412371
+            },
+            "gameIntervals": {
+              "count": 1311,
+              "mean": 12.508684217975306,
+              "p50": 11.050048828125,
+              "p95": 27.93994140625,
+              "p99": 31.989990234375,
+              "max": 41.60498046875
+            },
+            "gameWork": {
+              "count": 1312,
+              "mean": 2.888945416706364,
+              "p50": 1.300048828125,
+              "p95": 10.505126953125,
+              "p99": 17.31982421875,
+              "max": 30.52490234375
+            },
+            "rhiTaskWork": {
+              "count": 18923,
+              "mean": 0.5331407448318515,
+              "p50": 0.005126953125,
+              "p95": 4.455078125,
+              "p99": 10.73486328125,
+              "max": 13.175048828125
+            },
+            "rhiTaskWait": {
+              "count": 18923,
+              "mean": 0.011086755680091688,
+              "p50": 0.005126953125,
+              "p95": 0.01513671875,
+              "p99": 0.074951171875,
+              "max": 1.93994140625
+            },
+            "framesPerTask": {
+              "count": 18923,
+              "mean": 0.06938646092057285,
+              "p50": 0,
+              "p95": 1,
+              "p99": 1,
+              "max": 1
+            },
+            "gpuFeedback": {
+              "count": 1313,
+              "mean": 33.65083483821639,
+              "p50": 33.885009765625,
+              "p95": 41.77001953125,
+              "p99": 46.099853515625,
+              "max": 53.969970703125
+            },
+            "inputToTick": {
+              "count": 873,
+              "mean": 17.642866451442583,
+              "p50": 13.5546875,
+              "p95": 44.824951171875,
+              "p99": 54.10498046875,
+              "max": 63.459716796875
+            },
+            "inputToArrival": {
+              "count": 873,
+              "mean": 11.45589500331114,
+              "p50": 8.114990234375,
+              "p95": 31.669921875,
+              "p99": 46.614990234375,
+              "max": 60.139892578125
+            },
+            "arrivalToTick": {
+              "count": 873,
+              "mean": 6.186971448131444,
+              "p50": 2.494873046875,
+              "p95": 21.580078125,
+              "p99": 23.380126953125,
+              "max": 25.469970703125
+            },
+            "mailboxInputAgeAtTick": null,
+            "gameFramesWithoutInput": 460,
+            "intervalsUnder4ms": 191,
+            "intervalsOver25ms": 140,
+            "budget": {
+              "maxAhead": 4,
+              "mode": "pipeline",
+              "submitted": 2907,
+              "completed": 2904,
+              "pending": 3,
+              "peak": 4,
+              "wakes": 2262
+            }
+          },
+          {
+            "mode": "local4",
+            "inputMode": "owner-forwarded",
+            "submission": {
+              "samples": 865,
+              "fps": 53.83271840602902,
+              "low1Fps": 21.275841282217478,
+              "p50": 16.885000000009313,
+              "p95": 35.91000000014901,
+              "p99": 41.48999999999069,
+              "maximum": 68.40500000002794
+            },
+            "page": {
+              "visual": 54.03448275862069,
+              "submitted": 54.310344827586206,
+              "refresh": 119.96551724137932,
+              "ratio": 0.994920634920635
+            },
+            "gameIntervals": {
+              "count": 864,
+              "mean": 18.61001756456163,
+              "p50": 15.284912109375,
+              "p95": 45.02001953125,
+              "p99": 60.43505859375,
+              "max": 79.264892578125
+            },
+            "gameWork": {
+              "count": 865,
+              "mean": 17.835413656069363,
+              "p50": 13.695068359375,
+              "p95": 44.705078125,
+              "p99": 59.554931640625,
+              "max": 79.1650390625
+            },
+            "rhiTaskWork": {
+              "count": 5858,
+              "mean": 2.1396023016734596,
+              "p50": 0.01513671875,
+              "p95": 15.75,
+              "p99": 24.739990234375,
+              "max": 43.329833984375
+            },
+            "rhiTaskWait": {
+              "count": 5858,
+              "mean": 0.03129721941415586,
+              "p50": 0.014892578125,
+              "p95": 0.050048828125,
+              "p99": 0.544921875,
+              "max": 3.985107421875
+            },
+            "framesPerTask": {
+              "count": 5858,
+              "mean": 0.14783202458176853,
+              "p50": 0,
+              "p95": 1,
+              "p99": 1,
+              "max": 2
+            },
+            "gpuFeedback": {
+              "count": 866,
+              "mean": 34.53795512774249,
+              "p50": 29.974853515625,
+              "p95": 67.5849609375,
+              "p99": 83.68017578125,
+              "max": 97.35009765625
+            },
+            "inputToTick": {
+              "count": 448,
+              "mean": 43.923340388706755,
+              "p50": 36.809814453125,
+              "p95": 105.349853515625,
+              "p99": 133.35498046875,
+              "max": 192.1298828125
+            },
+            "inputToArrival": {
+              "count": 448,
+              "mean": 43.10814666748047,
+              "p50": 35.4951171875,
+              "p95": 105.31005859375,
+              "p99": 131.39501953125,
+              "max": 192.0947265625
+            },
+            "arrivalToTick": {
+              "count": 448,
+              "mean": 0.8151937212262835,
+              "p50": 0.039794921875,
+              "p95": 1.81005859375,
+              "p99": 19.210205078125,
+              "max": 22.77001953125
+            },
+            "mailboxInputAgeAtTick": null,
+            "gameFramesWithoutInput": 425,
+            "intervalsUnder4ms": 26,
+            "intervalsOver25ms": 184,
+            "budget": {
+              "maxAhead": 4,
+              "mode": "submitted",
+              "submitted": 2303,
+              "completed": 2302,
+              "pending": 1,
+              "peak": 6,
+              "wakes": 379
+            }
+          }
+        ]
+      },
+      "runs": [
+        {
+          "mode": "pipeline3",
+          "url": "http://127.0.0.1:8765/build/villa-pipeline-probe-20261105/index.html?occlusion=history&clock=local&gpuahead=3&gpumode=pipeline&rhiwake=priority",
+          "result": {
+            "samples": 1274,
+            "fps": 78.4186033055841,
+            "low1Fps": 41.07619634420523,
+            "p50": 11.620000000111759,
+            "p95": 18.71500000008382,
+            "p99": 20.694999999832362,
+            "maximum": 30.22000000020489
+          },
+          "display": {
+            "visual": 78.56666666666666,
+            "submitted": 78.73333333333333,
+            "refresh": 120.36666666666666,
+            "ratio": 0.997883149872989
+          },
+          "camera": {
+            "travelCm": 1332.7513284128504,
+            "turnDegrees": 928.5112867578864,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1526,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2679.6077519379846,
+            "dispatches": 179.15038759689924,
+            "pending": 264.97131782945735,
+            "ready": 465.5100775193798
+          },
+          "rhiMs": 7.327464120141391,
+          "budget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 2801,
+            "completed": 2799,
+            "pending": 2,
+            "peak": 3,
+            "wakes": 2756
+          }
+        },
+        {
+          "mode": "pipeline4",
+          "url": "http://127.0.0.1:8765/build/villa-pipeline-probe-20261105/index.html?occlusion=history&clock=local&gpuahead=4&gpumode=pipeline&rhiwake=priority",
+          "result": {
+            "samples": 1309,
+            "fps": 79.9617356522448,
+            "low1Fps": 38.30421756791967,
+            "p50": 11.364999999990687,
+            "p95": 18.6500000001397,
+            "p99": 20.645000000018626,
+            "maximum": 42.66500000003725
+          },
+          "display": {
+            "visual": 79.6,
+            "submitted": 80.83333333333333,
+            "refresh": 119.2,
+            "ratio": 0.9847422680412371
+          },
+          "camera": {
+            "travelCm": 1319.8619956152631,
+            "turnDegrees": 877.9855460599065,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1597,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2851.362015503876,
+            "dispatches": 182.38682170542634,
+            "pending": 541.8666666666667,
+            "ready": 552.0612403100776
+          },
+          "rhiMs": 7.639467761682064,
+          "budget": {
+            "maxAhead": 4,
+            "mode": "pipeline",
+            "submitted": 2907,
+            "completed": 2904,
+            "pending": 3,
+            "peak": 4,
+            "wakes": 2262
+          }
+        },
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-pipeline-probe-20261105/index.html?occlusion=history&clock=local&gpuahead=4&gpumode=submitted&rhiwake=priority",
+          "result": {
+            "samples": 865,
+            "fps": 53.83271840602902,
+            "low1Fps": 21.275841282217478,
+            "p50": 16.885000000009313,
+            "p95": 35.91000000014901,
+            "p99": 41.48999999999069,
+            "maximum": 68.40500000002794
+          },
+          "display": {
+            "visual": 54.03448275862069,
+            "submitted": 54.310344827586206,
+            "refresh": 119.96551724137932,
+            "ratio": 0.994920634920635
+          },
+          "camera": {
+            "travelCm": 1366.1773117961902,
+            "turnDegrees": 845.23039026279,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1437,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2451.309195402299,
+            "dispatches": 164.15977011494252,
+            "pending": 469.7988505747126,
+            "ready": 375.4689655172414
+          },
+          "rhiMs": 14.431916074269378,
+          "budget": {
+            "maxAhead": 4,
+            "mode": "submitted",
+            "submitted": 2303,
+            "completed": 2302,
+            "pending": 1,
+            "peak": 6,
+            "wakes": 379
+          }
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\pipeline-normal-abba-20261105.json",
+        "sha256": "ed54febd2a3d96ce0a34c9083cc5d98f0da1a01ac57aa76d416e8a41da22f9db"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\pipeline-normal-abba-20261105-source.cjs",
+        "sha256": "f3694f96d67adc2b541bd2b6c510eba614d7b67b3fbf5a7c1da4030cfba506e4"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\index.html",
+          "sha256": "1e5eace9b9d3afb8a87d12ed7165a53760264d1c0951d3c6465a834d4f263556"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\UEWebEngineThreads.js",
+          "sha256": "6509d0eaa301914b19b78e187294ecb7af84c5680119cfcc9e9cce593ba087f3"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\web-engine-host.js",
+          "sha256": "a741e196b9a938b7ae0b672fda7a87d3d24549f50e7a6dc5032aeb030f869f60"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pipeline-probe-20261105\\web-engine-worker.js",
+          "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+        }
+      ],
+      "folder": "villa-pipeline-probe-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "duration": 16,
+      "pipeline": false,
+      "chromeTrace": false,
+      "packagedInput": false,
+      "defaultSettings": false,
+      "inputMode": "owner-forwarded",
+      "runs": [
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-pipeline-probe-20261105/index.html?occlusion=history&clock=local&gpuahead=4&gpumode=submitted&rhiwake=priority",
+          "result": {
+            "samples": 1364,
+            "fps": 83.10402046162315,
+            "low1Fps": 25.583860239038543,
+            "p50": 9.370000000111759,
+            "p95": 29.08999999985099,
+            "p99": 32.17999999993481,
+            "maximum": 56.71500000008382
+          },
+          "display": {
+            "visual": 68.23333333333333,
+            "submitted": 83.03333333333333,
+            "refresh": 96.5,
+            "ratio": 0.8217583299879567
+          },
+          "camera": {
+            "travelCm": 1276.6846378773073,
+            "turnDegrees": 874.017939175712,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1628,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2608.107407407407,
+            "dispatches": 180.17185185185184,
+            "pending": 1127.0362962962963,
+            "ready": 558.1044444444444
+          },
+          "rhiMs": 7.192969845817868,
+          "budget": {
+            "maxAhead": 4,
+            "mode": "submitted",
+            "submitted": 2992,
+            "completed": 2988,
+            "pending": 4,
+            "peak": 7,
+            "wakes": 604
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 3087,
+            "resumed": 3104
+          }
+        },
+        {
+          "mode": "pipeline3",
+          "url": "http://127.0.0.1:8765/build/villa-pipeline-probe-20261105/index.html?occlusion=history&clock=local&gpuahead=3&gpumode=pipeline&rhiwake=priority",
+          "result": {
+            "samples": 1285,
+            "fps": 78.34391331809928,
+            "low1Fps": 39.38081245641391,
+            "p50": 11.56000000005588,
+            "p95": 18.71999999997206,
+            "p99": 20.885000000009313,
+            "maximum": 35.949999999953434
+          },
+          "display": {
+            "visual": 78.53333333333333,
+            "submitted": 79.06666666666666,
+            "refresh": 120.4,
+            "ratio": 0.9932546374367622
+          },
+          "camera": {
+            "travelCm": 1287.610673950555,
+            "turnDegrees": 926.2126925848424,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1516,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2657.4077519379844,
+            "dispatches": 177.64263565891474,
+            "pending": 254.72403100775193,
+            "ready": 470.19069767441863
+          },
+          "rhiMs": 7.331809241732795,
+          "budget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 2801,
+            "completed": 2798,
+            "pending": 3,
+            "peak": 3,
+            "wakes": 2753
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 2897,
+            "resumed": 2912
+          }
+        },
+        {
+          "mode": "pipeline3",
+          "url": "http://127.0.0.1:8765/build/villa-pipeline-probe-20261105/index.html?occlusion=history&clock=local&gpuahead=3&gpumode=pipeline&rhiwake=priority",
+          "result": {
+            "samples": 1273,
+            "fps": 78.31472615222748,
+            "low1Fps": 33.74169435215702,
+            "p50": 11.649999999906868,
+            "p95": 18.614999999990687,
+            "p99": 21.524999999906868,
+            "maximum": 49.00499999988824
+          },
+          "display": {
+            "visual": 78.03333333333333,
+            "submitted": 78.46666666666667,
+            "refresh": 119.76666666666667,
+            "ratio": 0.9944774851316907
+          },
+          "camera": {
+            "travelCm": 1299.736781087659,
+            "turnDegrees": 916.6687558554113,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1519,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2650.3015503875968,
+            "dispatches": 179.2124031007752,
+            "pending": 266.21860465116276,
+            "ready": 484.08527131782944
+          },
+          "rhiMs": 7.271809518056537,
+          "budget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 2792,
+            "completed": 2790,
+            "pending": 2,
+            "peak": 3,
+            "wakes": 2748
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 2888,
+            "resumed": 2903
+          }
+        },
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-pipeline-probe-20261105/index.html?occlusion=history&clock=local&gpuahead=4&gpumode=submitted&rhiwake=priority",
+          "result": {
+            "samples": 1403,
+            "fps": 85.94125428289752,
+            "low1Fps": 26.925389745006655,
+            "p50": 10.320000000065193,
+            "p95": 27.569999999832362,
+            "p99": 30.869999999878928,
+            "maximum": 53.5
+          },
+          "display": {
+            "visual": 68.7,
+            "submitted": 86.9,
+            "refresh": 97.9,
+            "ratio": 0.7905638665132336
+          },
+          "camera": {
+            "travelCm": 1468.7169165942728,
+            "turnDegrees": 875.0374143018853,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1657,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2713.478014184397,
+            "dispatches": 170.01843971631206,
+            "pending": 1259.523404255319,
+            "ready": 567.3652482269504
+          },
+          "rhiMs": 7.088726648734949,
+          "budget": {
+            "maxAhead": 4,
+            "mode": "submitted",
+            "submitted": 3062,
+            "completed": 3058,
+            "pending": 4,
+            "peak": 7,
+            "wakes": 621
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 3177,
+            "resumed": 3192
+          }
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-default-warm-motion-20261105.json",
+        "sha256": "60811c4918cc337e8034f371c68fdb1696d4174997e5840594085db99922354d"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-default-warm-motion-20261105-source.cjs",
+        "sha256": "11a93a1d30dd0c00f80c241920dd77e05f65950c400a2d9915851af9be209a62"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\index.html",
+          "sha256": "c37af2136a6cbeb0311f6a0f3d86198cf378c235454cbcb0ceb10ebc66b4d2c4"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\UEWebEngineThreads.js",
+          "sha256": "bf777427c5260112462b8d8c9619fdde19e2c05f72a3ba031397816886417b74"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-host.js",
+          "sha256": "a6a0ecf64b4b252cde7a5c56bf515549e3a2d940ad67f8122ec3e79e844cba7d"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-worker.js",
+          "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+        }
+      ],
+      "folder": "villa-local-pipeline-v73-20261105",
+      "profile": "pipeline-normal-abba-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "duration": 16,
+      "pipeline": false,
+      "chromeTrace": false,
+      "packagedInput": true,
+      "defaultSettings": true,
+      "inputMode": "owner-forwarded",
+      "runs": [
+        {
+          "mode": "pipeline3",
+          "url": "http://127.0.0.1:8765/build/villa-local-pipeline-v73-20261105/index.html",
+          "result": {
+            "samples": 1312,
+            "fps": 80.93095269672128,
+            "low1Fps": 38.84249368802653,
+            "p50": 11.115000000223517,
+            "p95": 18.78000000026077,
+            "p99": 20.959999999962747,
+            "maximum": 41.47000000020489
+          },
+          "display": {
+            "visual": 58.8125,
+            "submitted": 81.28125,
+            "refresh": 60.59375,
+            "ratio": 0.7235678585159554
+          },
+          "camera": {
+            "travelCm": 1345.2351419222443,
+            "turnDegrees": 942.4094445649533,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1568,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2288,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2615.1492424242424,
+            "dispatches": 178.99621212121212,
+            "pending": 246.09924242424242,
+            "ready": 499.04318181818184
+          },
+          "rhiMs": 7.381389493085841,
+          "budget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 2880,
+            "completed": 2877,
+            "pending": 3,
+            "peak": 3,
+            "wakes": 2808
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 2933,
+            "resumed": 2951
+          },
+          "inputBridge": {
+            "mode": "owner-forwarded",
+            "ready": true,
+            "sent": 1,
+            "acknowledged": 1,
+            "maxQueue": 1,
+            "trace": []
+          }
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-compositor-warm-20261105.json",
+        "sha256": "54eada17b35306f65dcfc3e073144b5e8efe713ef9b35188c4ea67aed4aebc90"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-compositor-warm-20261105-source.cjs",
+        "sha256": "b98ee0bd9755f1d280f77172ad559d9aebddadc0afbdbb35a1e04297991277b9"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\index.html",
+          "sha256": "c37af2136a6cbeb0311f6a0f3d86198cf378c235454cbcb0ceb10ebc66b4d2c4"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\UEWebEngineThreads.js",
+          "sha256": "bf777427c5260112462b8d8c9619fdde19e2c05f72a3ba031397816886417b74"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-host.js",
+          "sha256": "a6a0ecf64b4b252cde7a5c56bf515549e3a2d940ad67f8122ec3e79e844cba7d"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-worker.js",
+          "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+        }
+      ],
+      "folder": "villa-local-pipeline-v73-20261105",
+      "profile": "pipeline-normal-abba-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "duration": 8,
+      "pipeline": false,
+      "chromeTrace": true,
+      "packagedInput": true,
+      "defaultSettings": false,
+      "inputMode": "owner-forwarded",
+      "compositor": {
+        "file": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-compositor-warm-20261105-compositor-analysis.json",
+          "sha256": "09a646109175601bb7b91c3476962ca525ac8c81687a4da8eea6ccc4f9e15a9e"
+        },
+        "runs": [
+          {
+            "mode": "local4",
+            "trace": {
+              "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-compositor-warm-20261105-1-trace.json",
+              "sha256": "f7d52a6e88fb5a370d04d651125f67348b5fa480782bedcca34556ad74210a7e"
+            },
+            "seconds": 8.215124,
+            "displayCallbacks": {
+              "count": 384,
+              "perSecond": 46.74305585649103,
+              "zeroIntervals": 45,
+              "p50": 16.686,
+              "p95": 33.379,
+              "p99": 50.014,
+              "max": 66.686
+            },
+            "reporters": {
+              "7640:1": {
+                "STATE_NO_UPDATE_DESIRED": 459,
+                "STATE_PRESENTED_ALL": 32,
+                "STATE_DROPPED": 3
+              }
+            }
+          },
+          {
+            "mode": "pipeline3",
+            "trace": {
+              "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-compositor-warm-20261105-2-trace.json",
+              "sha256": "412ee560f9dce3098ad960f93a9454d5159b9295ae5e662afca0ac9226d8b459"
+            },
+            "seconds": 8.165286,
+            "displayCallbacks": {
+              "count": 423,
+              "perSecond": 51.804676529395294,
+              "zeroIntervals": 13,
+              "p50": 16.672,
+              "p95": 33.349,
+              "p99": 49.965,
+              "max": 50.047
+            },
+            "reporters": {
+              "27672:1": {
+                "STATE_NO_UPDATE_DESIRED": 458,
+                "STATE_PRESENTED_ALL": 31
+              }
+            }
+          }
+        ],
+        "boundary": "Display::FrameDisplayed trace callback timestamps, scoped to this browser trace and marked measurement window. Batched callbacks may share timestamps. They do not identify unique UE frames or physical scanout. Renderer PipelineReporter may describe page/HUD rather than the independent OffscreenCanvas surface; its dropped count is not the game dropped-frame count. Tracing adds overhead and is not normal FPS acceptance."
+      },
+      "runs": [
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-local-pipeline-v73-20261105/index.html?occlusion=history&clock=local&gpuahead=4&gpumode=submitted&rhiwake=priority&input=owner-forwarded",
+          "result": {
+            "samples": 743,
+            "fps": 90.54769779736203,
+            "low1Fps": 31.95334811178774,
+            "p50": 10.410000000149012,
+            "p95": 24.24500000011176,
+            "p99": 27.024999999906868,
+            "maximum": 40.06000000005588
+          },
+          "display": {
+            "visual": 54.25,
+            "submitted": 91.5,
+            "refresh": 60.3125,
+            "ratio": 0.592896174863388
+          },
+          "camera": {
+            "travelCm": 776.1273847722482,
+            "turnDegrees": 476.93586688116187,
+            "inputEvents": 499
+          },
+          "view": {
+            "frame": 1022,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2288,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2682.7055555555557,
+            "dispatches": 163.8347222222222,
+            "pending": 965.5069444444445,
+            "ready": 515.9430555555556
+          },
+          "rhiMs": 7.088382506178787,
+          "budget": {
+            "maxAhead": 4,
+            "mode": "submitted",
+            "submitted": 1766,
+            "completed": 1761,
+            "pending": 5,
+            "peak": 7,
+            "wakes": 320
+          },
+          "inputBridge": {
+            "mode": "owner-forwarded",
+            "ready": true,
+            "sent": 1,
+            "acknowledged": 1,
+            "maxQueue": 1,
+            "trace": []
+          },
+          "trace": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-compositor-warm-20261105-1-trace.json",
+            "sha256": "f7d52a6e88fb5a370d04d651125f67348b5fa480782bedcca34556ad74210a7e"
+          }
+        },
+        {
+          "mode": "pipeline3",
+          "url": "http://127.0.0.1:8765/build/villa-local-pipeline-v73-20261105/index.html?occlusion=history&clock=local&gpuahead=3&gpumode=pipeline&rhiwake=priority&input=owner-forwarded",
+          "result": {
+            "samples": 650,
+            "fps": 79.60788828441308,
+            "low1Fps": 38.04244449900645,
+            "p50": 10.68500000005588,
+            "p95": 19.65999999968335,
+            "p99": 22.12999999988824,
+            "maximum": 34.079999999608845
+          },
+          "display": {
+            "visual": 58.5625,
+            "submitted": 81.0625,
+            "refresh": 60.5625,
+            "ratio": 0.7224363916730917
+          },
+          "camera": {
+            "travelCm": 681.687560988438,
+            "turnDegrees": 434.8398592732848,
+            "inputEvents": 499
+          },
+          "view": {
+            "frame": 919,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2288,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2944.7272727272725,
+            "dispatches": 174.77878787878788,
+            "pending": 269.1181818181818,
+            "ready": 519.55
+          },
+          "rhiMs": 7.777766331732731,
+          "budget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 1569,
+            "completed": 1567,
+            "pending": 2,
+            "peak": 3,
+            "wakes": 1492
+          },
+          "inputBridge": {
+            "mode": "owner-forwarded",
+            "ready": true,
+            "sent": 1,
+            "acknowledged": 1,
+            "maxQueue": 1,
+            "trace": []
+          },
+          "trace": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-compositor-warm-20261105-2-trace.json",
+            "sha256": "412ee560f9dce3098ad960f93a9454d5159b9295ae5e662afca0ac9226d8b459"
+          }
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-direct-warm-motion-20261105.json",
+        "sha256": "e7ad3ba5df1892cc04ed3714f62dc53a14f0894db97c78754264245c2cf0bb02"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-direct-warm-motion-20261105-source.cjs",
+        "sha256": "b98ee0bd9755f1d280f77172ad559d9aebddadc0afbdbb35a1e04297991277b9"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\index.html",
+          "sha256": "c37af2136a6cbeb0311f6a0f3d86198cf378c235454cbcb0ceb10ebc66b4d2c4"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\UEWebEngineThreads.js",
+          "sha256": "bf777427c5260112462b8d8c9619fdde19e2c05f72a3ba031397816886417b74"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-host.js",
+          "sha256": "a6a0ecf64b4b252cde7a5c56bf515549e3a2d940ad67f8122ec3e79e844cba7d"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-worker.js",
+          "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+        }
+      ],
+      "folder": "villa-local-pipeline-v73-20261105",
+      "profile": "pipeline-normal-abba-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "duration": 16,
+      "pipeline": false,
+      "chromeTrace": false,
+      "packagedInput": true,
+      "defaultSettings": false,
+      "inputMode": "direct-game-thread",
+      "runs": [
+        {
+          "mode": "pipeline3",
+          "url": "http://127.0.0.1:8765/build/villa-local-pipeline-v73-20261105/index.html?occlusion=history&clock=local&gpuahead=3&gpumode=pipeline&rhiwake=priority&input=direct-game-thread",
+          "result": {
+            "samples": 1342,
+            "fps": 82.55446395424403,
+            "low1Fps": 37.28511125616795,
+            "p50": 10.855000000447035,
+            "p95": 19.145000000484288,
+            "p99": 21.16000000014901,
+            "maximum": 34.52500000037253
+          },
+          "display": {
+            "visual": 59,
+            "submitted": 82.9375,
+            "refresh": 60.5,
+            "ratio": 0.7113790504898266
+          },
+          "camera": {
+            "travelCm": 1392.5155786533078,
+            "turnDegrees": 976.7038035467267,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1563,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2288,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2314.4098484848487,
+            "dispatches": 171.69772727272726,
+            "pending": 200.85227272727272,
+            "ready": 408.8810606060606
+          },
+          "rhiMs": 7.196095126472297,
+          "budget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 2904,
+            "completed": 2903,
+            "pending": 1,
+            "peak": 3,
+            "wakes": 2820
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 2960,
+            "resumed": 2972
+          },
+          "inputBridge": {
+            "mode": "direct-game-thread",
+            "ready": true,
+            "sent": 1,
+            "acknowledged": 1,
+            "maxQueue": 1,
+            "trace": []
+          }
+        }
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\pipeline-direct-input-20261105.json",
+        "sha256": "0f3e39e7d32dbadb150557bce0cce31fcf4070f892d20e73a1e751f2d9b4cc8e"
+      },
+      "folder": "villa-pipeline-probe-20261105",
+      "pipeline": true,
+      "chromeTrace": false,
+      "inputMode": "direct-game-thread",
+      "failure": "page.waitForFunction: Target crashed \n    at H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:162:16",
+      "runs": [
+        {
+          "mode": "pipeline3",
+          "errors": [
+            "Renderer crashed"
+          ],
+          "measured": false
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\pipeline-compositor-20261105.json",
+        "sha256": "35c2314021cddb69c9f6e408e1b8c7d502635822a2bdc16cd57c3006129366a3"
+      },
+      "folder": "villa-pipeline-probe-20261105",
+      "pipeline": false,
+      "chromeTrace": true,
+      "inputMode": "owner-forwarded",
+      "failure": "page.waitForFunction: Target crashed \n    at H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:162:16",
+      "runs": [
+        {
+          "mode": "local4",
+          "errors": [
+            "Renderer crashed"
+          ],
+          "measured": false
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-startup-control-20261105.json",
+        "sha256": "93ab367393233732ecffbdb2692e509819438b414101db4fe0ff9634e8e2de48"
+      },
+      "folder": "villa-local-budget-v72-20261105",
+      "pipeline": false,
+      "chromeTrace": false,
+      "inputMode": "owner-forwarded",
+      "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!await page.evaluate(() => globalThis.__webEngineFailure))\n\n    at H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:165:5",
+      "startupFailure": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/web-engine-worker.js?v=f5fd74e7e4dcc77b1654ba88e172aa0769544b1df6a318bc883419f0c2642ead:283:45",
+      "runs": [
+        {
+          "mode": "owner",
+          "errors": [],
+          "measured": false
+        }
+      ]
+    },
+    {
+      "capture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v73-default-motion-20261105.json",
+        "sha256": "2fea17c974c804d9dc87c7485a5bb97842b282a05e8a7045f9dcfd1e646aea2b"
+      },
+      "folder": "villa-local-pipeline-v73-20261105",
+      "pipeline": false,
+      "chromeTrace": false,
+      "inputMode": "owner-forwarded",
+      "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!await page.evaluate(() => globalThis.__webEngineFailure))\n\n    at H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:172:5",
+      "startupFailure": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/villa-local-pipeline-v73-20261105/web-engine-worker.js?v=5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472:285:45",
+      "runs": [
+        {
+          "mode": "pipeline3",
+          "errors": [],
+          "measured": false
+        }
+      ]
+    }
+  ],
+  "package": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-local-pipeline-v73-20261105-package.json",
+      "sha256": "a33689899eb2f5651d8970474d60aa461319533073eefc8f77917ef67810d2d3"
+    },
+    "folder": "villa-local-pipeline-v73-20261105",
+    "defaultAhead": 3,
+    "budgetMode": "pipeline",
+    "products": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\content.bin",
+        "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\index.html",
+        "sha256": "c37af2136a6cbeb0311f6a0f3d86198cf378c235454cbcb0ceb10ebc66b4d2c4"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\UEWebEngineThreads.js",
+        "sha256": "bf777427c5260112462b8d8c9619fdde19e2c05f72a3ba031397816886417b74"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\UEWebEngineThreads.wasm",
+        "sha256": "88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-content-io.js",
+        "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-content-worker.js",
+        "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-host.js",
+        "sha256": "a6a0ecf64b4b252cde7a5c56bf515549e3a2d940ad67f8122ec3e79e844cba7d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\web-engine-worker.js",
+        "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\comparison.html",
+        "sha256": "57a91c12d9d7c37c6ee2d6e1477d9802405dd23169ed414ed4c1193e2450c29e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\package-info.json",
+        "sha256": "c94384127cb9d1f96aee861bc819722b998ba0d6343485a3c0f044ef98e3a328"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-pipeline-v73-20261105\\asset-versions.json",
+        "sha256": "102b336c23320d7f09ba555a800c75563a9f3e3ad344fad5a5597d87dabb6737"
+      }
+    ],
+    "sources": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\package-web-local-frame-budget.cjs",
+        "sha256": "4b781f00ce7d2205e13429f60551a75b04976716ed96e996803b137bcd87a907"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebWorkerCanvas.js",
+        "sha256": "4b23c143f7760e44172341ab16658112be20ff0c703cb6e842ade7fe56477254"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\web-engine-host.js",
+        "sha256": "a6a0ecf64b4b252cde7a5c56bf515549e3a2d940ad67f8122ec3e79e844cba7d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+        "sha256": "5cbe155863c5a119f7ca580ae6f2051a68ead3ab68bac6290c1df7f620c5c472"
+      }
+    ]
+  },
+  "packagedDefaultPassed": true,
+  "boundary": "One machine, moving synthetic mouse/keyboard input, varying actual camera paths. Submission timing and rAF-observed progress are not physical display FPS. Detailed GPU/input diagnostics are separate from normal timing. GPU feedback includes callback delivery. Synthetic visibility events do not validate OS tab freezing. Startup failures are excluded explicitly; cross-device acceptance remains open."
+}
