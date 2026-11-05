@@ -169,18 +169,22 @@ let context, log;
     await page.goto(run.url, {waitUntil: 'commit'});
     await page.bringToFront();
     await page.waitForFunction(() => globalThis.__webEngineFailure ||
-      (globalThis.__webEngineFrames >= 200 && globalThis.__webTextureStreaming?.pending === 0),
+      (globalThis.__webEngineFrames >= 200 && globalThis.__webTextureStreaming?.pending === 0 &&
+        (!globalThis.__webPSOPrecacheExpected || globalThis.__webPSOPrecacheReady)),
     null, {timeout: 180000});
     const startupFailure = await page.evaluate(() => globalThis.__webEngineFailure);
     assert(!startupFailure, startupFailure);
     const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js')); assert(owner);
     run.inputBridge = await page.evaluate(() => __webInputBridge);
+    run.precache = await page.evaluate(() => ({expected: globalThis.__webPSOPrecacheExpected,
+      ready: globalThis.__webPSOPrecacheReady}));
     assert.equal(run.inputBridge.mode, inputMode);
     const state = () => owner.evaluate(() => ({time: performance.now(), frame: __webRHIFrames,
       game: __webEngineFrames, stages: __webThreadStages, camera: __webDefaultCamera,
       clock: __webGameFrameClock, history: __webOcclusionHistory, occlusion: __webOcclusionRHI,
       view: __webRenderView, settings: __webProjectSettings, stream: __webTextureStreaming,
       rhiWake: __webRHIWakeScheduler, pso: globalThis.__webPSOPrecache,
+      optimization: globalThis.__webOptimizationRHI,
       budget: globalThis.__webLocalFrameBudget,
       gpu: globalThis.__clockMotionGPU && {submitted: __clockMotionGPU.submitted,
         completed: __clockMotionGPU.completed, peak: __clockMotionGPU.peak}}));

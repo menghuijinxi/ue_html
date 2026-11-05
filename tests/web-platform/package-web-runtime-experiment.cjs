@@ -63,6 +63,18 @@ assert(assets.threads && assets.distanceFields && assets.renderer === 'desktop')
 for (const name of Object.keys(assets.versions)) if (/^UEWebEngine.*\.(wasm|js)$/.test(name)) delete assets.versions[name];
 assets.trace = trace;
 assets.runtime = runtimeNames[0];
+const localFrameBudget = option('local-frame-budget') === undefined ? null : Number(option('local-frame-budget'));
+const localFrameBudgetMode = option('local-frame-budget-mode') || 'submitted';
+assert(localFrameBudget === null || (Number.isInteger(localFrameBudget) && localFrameBudget >= 0 && localFrameBudget <= 8));
+assert(['submitted', 'pipeline'].includes(localFrameBudgetMode));
+assert(localFrameBudgetMode !== 'pipeline' || localFrameBudget > 0);
+if (localFrameBudget !== null) {
+  const runtimeSource = fs.readFileSync(path.join(output, runtimeNames[0]), 'utf8');
+  assert(runtimeSource.includes('web-game-local-budget') && runtimeSource.includes('startedFrames'),
+    'Frame budget requires the rebuilt Game clock bridge');
+  assets.localFrameBudget = localFrameBudget;
+  assets.localFrameBudgetMode = localFrameBudgetMode;
+}
 for (const name of [...runtimeNames, ...helpers]) assets.versions[name] = audit(path.join(output, name)).sha256;
 assets.wasm = metadata(path.join(output, runtimeNames[1]), runtimeNames[1]);
 html = html.replace(match[0], 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
@@ -100,6 +112,7 @@ if (path.resolve(buildFile).toLowerCase() !== path.resolve(buildSnapshot).toLowe
   fs.copyFileSync(buildFile, buildSnapshot);
 }
 const report = {date: new Date().toISOString(), pass: true, baseline, output, trace, psoPrecache, precacheConcurrency, startupProfile, threadingTest,
+  localFrameBudget, localFrameBudgetMode,
   sources: [__filename, ...helpers.map(f => path.join(__dirname, f)), ...(startupProfile ? [startupProfileSource] : [])].map(audit),
   build: audit(buildSnapshot), baselineEvidence: audit(evidenceFile), baselineCookPayload: proof.files,
   projectQualityOverrides: [], products,

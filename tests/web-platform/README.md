@@ -1,5 +1,7 @@
 # UE Web 平台独立验证
 
+2026-11-05 v74 调度复测包：合并远端完整流水线限流方案，重新编译多线程运行时，默认启用本地调度、完整预算 3 帧和 PSO 预缓存。提供新版、原始无背压本地调度及 owner 对照；此前的提交 FPS / Low 不能排除画面堵塞。便携包和验证见 [v74 交付记录](../../UE58_WEB_SCHEDULING_PIPELINE_V74_RELEASE.md)。
+
 2026-11-05 PSO 预缓存开启后的运动视角复测：同包 owner / local / local / owner 四轮，持续平移 98.28 → 131.63 FPS、连续转向 85.61 → 110.01、首次区域巡游 95.29 → 115.31、重复巡游 99.32 → 117.43。正式路线由默认关闭的游戏线程测试钩子按每帧驱动，排除相机 RPC 更新频率不同的初测；仅覆盖本机 Lumen 关闭场景，不代表正常键鼠输入延迟或跨设备收益。预缓存、运动轨迹、验证及边界见 [运动视角复测](../../UE58_WEB_SCHEDULING_MOTION_RETEST.md)。
 
 2026-11-05 最新源码跨设备调度复测包：两个仓库已同步并合并，重新编译最新多线程运行时；入口为 `build/villa-scheduling-latest-v71/comparison.html`，便携包为同目录旁的 `villa-scheduling-latest-v71.zip`。同包只切换 Game 本地调度，本机四轮合并 81.27 → 104.29 FPS，1% Low 33.52 → 66.21；复用本机 Lumen 关闭资源，不能外推其他设备或远端 Lumen 开启场景。开关、启动与证据见 [复测记录](../../UE58_WEB_SCHEDULING_DEVICE_RETEST.md)。

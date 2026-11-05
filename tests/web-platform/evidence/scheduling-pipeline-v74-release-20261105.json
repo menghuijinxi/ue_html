@@ -1,0 +1,179 @@
+{
+  "pass": true,
+  "date": "2026-11-05T11:34:34.745Z",
+  "folder": "villa-scheduling-pipeline-v74",
+  "revisions": {
+    "workspace": "127460347ee79eb14c517766e95495e7f78dabaf",
+    "engine": "cff23e31491e770df9e376734698eabd237c1f90"
+  },
+  "packageReport": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-scheduling-pipeline-v74-package.json",
+    "sha256": "7133ae3af29e32b2b12d7ad8aa6c9b7cb4e7c8d36553b8f106b306eb4648a030"
+  },
+  "previewReport": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-scheduling-pipeline-v74-preview.json",
+    "sha256": "eb68ff739450a3838ecb14c5b951e020a1b2762effe70fd1e9ac61e1fbea3cad"
+  },
+  "buildReport": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-scheduling-pipeline-v74-build.json",
+    "sha256": "75e5e9b8626ef494f1f30af1286bf02cba4d0f41157ac6d4111ffdd5f214c554"
+  },
+  "motionReport": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\scheduling-pipeline-v74-default-20261105.json",
+    "sha256": "305cacfa881e69cad6ab3f979c98735959474217745a8a1819c68b5d9b2ff673"
+  },
+  "probeSource": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+    "sha256": "fa1e83631eb228d6bce5ba17feb0e17bf04b94224837147061c4ca8573934a7a"
+  },
+  "archive": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74.zip",
+    "sha256": "f89296cb8c68fb6e1a1390e938076317dbaba2c20a210d7a0d44e9511b98ed63",
+    "bytes": 1412457566
+  },
+  "files": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\content.bin",
+      "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\index.html",
+      "sha256": "14486969738a0f9e0f50672478b8f857ecca391529f48577c467eaa140f1f4c2"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\UEWebEngineThreads.js",
+      "sha256": "38eb8a6bf654aef5d041eb4b80e47f7e802318868bc0cbc153d42624d52243cc"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\UEWebEngineThreads.wasm",
+      "sha256": "8891b5f5daf6639630a2810be4598d4876604f2985323282cd821f882a186116"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\web-content-io.js",
+      "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\web-content-worker.js",
+      "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\web-engine-host.js",
+      "sha256": "6dd05d15ea2c7be3ed91c16c278baf963b4545c8ef786d1f1821333447960fed"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\web-engine-worker.js",
+      "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\asset-versions.json",
+      "sha256": "4d2f759fcbc676874456b71171f42e35108784cb4632086bcd39fc01889a09f7"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\comparison.html",
+      "sha256": "5ae75223a9dac8f41e262ecf27726ea99467338243d9c6abf37ea1ccc0e722e8"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\serve.py",
+      "sha256": "b14fac301c0506aad5471e41f2c3b44eca680f7304aedb86c9b7c853fae31eaf"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\start.cmd",
+      "sha256": "82552800c287d0bc555753bad4ebc37972eeed7b01282ee804ed20b34418ecdc"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\README.txt",
+      "sha256": "d34bab9360de416addb6c68c18931ff9a4faf8d2d77a57319a1d525be344ea7c"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-scheduling-pipeline-v74\\package-info.json",
+      "sha256": "9d48c63cd0524a35cb60759a3e22ce2f44904c26c9a25642dad6735bffc167e5"
+    }
+  ],
+  "checks": {
+    "build": true,
+    "pipelineBudgetRegression": true,
+    "wakeAndCancellationRegression": true,
+    "inputBridgeRegression": true,
+    "portableServerHeadersAndLinks": true,
+    "wasmMime": true
+  },
+  "defaults": {
+    "localClock": true,
+    "frameBudgetMode": "pipeline",
+    "frameBudget": 3,
+    "psoPrecache": true,
+    "runtimeAsyncPso": false,
+    "input": "owner-forwarded"
+  },
+  "functionalMotion": {
+    "viewport": [
+      1280,
+      720
+    ],
+    "seconds": 8,
+    "warmupMotionSeconds": 8,
+    "travelCm": 710.6618431194197,
+    "turnDegrees": 358.675616681576,
+    "precache": {
+      "expected": true,
+      "ready": true
+    },
+    "pso": {
+      "enabled": true,
+      "active": 0,
+      "filePrecompileTasks": 0
+    },
+    "asyncRequested": 1121,
+    "asyncCompleted": 1121,
+    "asyncFailed": 0,
+    "budget": {
+      "maxAhead": 3,
+      "mode": "pipeline",
+      "submitted": 668,
+      "completed": 665,
+      "pending": 3,
+      "peak": 3,
+      "wakes": 631
+    },
+    "pageObservedProgress": {
+      "visual": 27.5,
+      "submitted": 27.75,
+      "refresh": 261.0625,
+      "ratio": 0.990990990990991
+    },
+    "submissionTiming": {
+      "samples": 224,
+      "fps": 26.860187925372795,
+      "low1Fps": 12.385690399604758,
+      "p50": 36.355000004172325,
+      "p95": 52.71999999880791,
+      "p99": 61.42499999701977,
+      "maximum": 91.59000000357628
+    },
+    "visibility": {
+      "method": "synthetic-document-visibility-event",
+      "paused": 685,
+      "resumed": 697
+    },
+    "errors": [],
+    "image": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\scheduling-pipeline-v74-default-20261105-1-pipeline3.png",
+      "sha256": "87ecafc7bb0627d9a98b4d9664a9f9e3384e904ca2077d025fd23f181cf9271a"
+    }
+  },
+  "performanceComparison": false,
+  "limitations": [
+    "Functional release check only; GPU utilization was already 98% before the test and 93% at a later sample. No owner/local ABBA was performed for this release; do not compare these timings with prior unloaded runs.",
+    "Uses the original audited Lumen-OFF Cook/config without recooking. Physical display FPS and input-to-display latency are not measured.",
+    "Visibility pause/resume uses a synthetic document visibility event, not an OS background-tab freeze.",
+    "The earlier remote RTX 3070 results describe a frame-pacing candidate, not cross-device acceptance of this rebuilt PSO-enabled package."
+  ]
+}
