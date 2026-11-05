@@ -44,6 +44,10 @@ $taskMiscOverlay = 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformM
 $taskCoreCopy = Join-Path $taskHost 'Source/Runtime/Core'
 if ((Get-Item -LiteralPath $taskCoreCopy).LinkType) { throw 'Core overlay must be a local build-host copy.' }
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskMiscOverlay") -Destination (Join-Path $taskHost $taskMiscOverlay) -Force
+$taskMemoryOverlay = 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformMemory.cpp'
+$taskMemoryDestination = Join-Path $taskHost $taskMemoryOverlay
+if ((Get-Item -LiteralPath $taskMemoryDestination).LinkType) { throw 'Memory overlay must be local.' }
+Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskMemoryOverlay") -Destination $taskMemoryDestination -Force
 $taskShaderArchiveRelative = 'Source/Runtime/RenderCore/Private/ShaderLibrary/ShaderCodeArchive.cpp'
 $taskShaderArchiveDestination = Join-Path $taskHost $taskShaderArchiveRelative
 if ((Get-Item -LiteralPath $taskShaderArchiveDestination).LinkType) { throw 'Shader archive overlay must be local.' }
@@ -336,6 +340,8 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformProcess.cpp'
     $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskMiscOverlay"
     $taskFiles += Join-Path $taskHost $taskMiscOverlay
+    $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskMemoryOverlay"
+    $taskFiles += $taskMemoryDestination
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Core/Private/IO/IoDispatcher.cpp'
     foreach ($taskStreamingSource in @('RenderAssetUpdate.cpp', 'Texture2DUpdate.cpp', 'Texture2DStreamIn_IO.cpp',

@@ -1,0 +1,2654 @@
+{
+  "date": "2026-11-05T17:58:22.058Z",
+  "performanceAccepted": false,
+  "userTestReady": false,
+  "lowDefinition": "1000 / arithmetic mean of slowest ceil(N*0.01) positive frame intervals; no slow frames removed",
+  "acceptance": {
+    "provisionalRelativeTolerance": 0.1,
+    "averageGap": 0.4855342925368283,
+    "low1Gap": 0.7537909902470804,
+    "physicalPresentationValidated": false,
+    "reason": "Frame rate and 1% low parity not achieved; ETW presentation capture incomplete. No candidate is a final release."
+  },
+  "nativeSM6": {
+    "tag": "parity-native-effects-20261106",
+    "launch": {
+      "started": "2026-11-06T00:44:25.6585784+08:00",
+      "arguments": [
+        "-d3d12",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-ForceRes",
+        "-unattended",
+        "-nosplash",
+        "-nosound",
+        "-NoThrottleCPU",
+        "-traceautostart=0",
+        "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000\"",
+        "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+        "-csvCaptureFrames=24030",
+        "-csvCompression=0",
+        "-csvGpuStats",
+        "-ExitAfterCsvProfiling",
+        "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-effects-20261106.log\"",
+        "-csvExecCmds=\"6000:r.TranslucencyLightingVolume 0,9600:r.TranslucencyLightingVolume 1,9600:r.ShadowQuality 0,13200:r.ShadowQuality 5,13200:r.DistanceFieldAO 0,16800:r.DistanceFieldAO 1,16800:r.AntiAliasingMethod 0,20400:r.AntiAliasingMethod 4,2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-effects-20261106.png -nosuffix\""
+      ],
+      "presentMon": 6552,
+      "exe": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-pso-v1\\Windows\\TriplexHouseVilla\\Binaries\\Win64\\TriplexHouseVilla.exe",
+      "phases": [
+        {
+          "end": 6000,
+          "start": 3000,
+          "commands": [],
+          "name": "baseline"
+        },
+        {
+          "end": 9600,
+          "start": 6600,
+          "commands": [
+            "r.TranslucencyLightingVolume 0"
+          ],
+          "name": "no-tlv"
+        },
+        {
+          "end": 13200,
+          "start": 10200,
+          "commands": [
+            "r.TranslucencyLightingVolume 1",
+            "r.ShadowQuality 0"
+          ],
+          "name": "no-shadows"
+        },
+        {
+          "end": 16800,
+          "start": 13800,
+          "commands": [
+            "r.ShadowQuality 5",
+            "r.DistanceFieldAO 0"
+          ],
+          "name": "no-dfao"
+        },
+        {
+          "end": 20400,
+          "start": 17400,
+          "commands": [
+            "r.DistanceFieldAO 1",
+            "r.AntiAliasingMethod 0"
+          ],
+          "name": "no-aa"
+        },
+        {
+          "end": 24000,
+          "start": 21000,
+          "commands": [
+            "r.AntiAliasingMethod 4"
+          ],
+          "name": "baseline-repeat"
+        }
+      ],
+      "resolution": [
+        1280,
+        720
+      ],
+      "pid": 25444,
+      "visible": true
+    },
+    "complete": {
+      "csv": "G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-effects-20261106.csv",
+      "exitCode": 777003,
+      "completed": "2026-11-06T00:46:43.3114608+08:00",
+      "presentError": "warning: PresentMon requires elevated privilege in order to query processes that are\r\n         short-running or started on another account.  Without it, those processes will\r\n         be listed as '<unknown>' and they can't be targeted by --process_name nor trigger\r\n         --terminate_on_proc_exit.\r\n"
+    },
+    "phases": [
+      {
+        "name": "baseline",
+        "frames": [
+          3000,
+          6000
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 3000,
+            "meanMs": 5.50690936666668,
+            "fps": 181.59005958096924,
+            "low1": 134.79656502406567,
+            "p99": 7.0858,
+            "max": 10.3171,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 3000,
+            "meanMs": 1.5084951999999963,
+            "fps": 662.912285037435,
+            "low1": 497.19663961364506,
+            "p99": 1.8609,
+            "max": 2.4672,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 3000,
+            "meanMs": 5.498607966666674,
+            "fps": 181.86421109890705,
+            "low1": 134.74740251923748,
+            "p99": 7.0763,
+            "max": 10.2884,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 3000,
+            "meanMs": 2.6641458999999945,
+            "fps": 375.35481821772674,
+            "low1": 253.11201218987452,
+            "p99": 3.5786,
+            "max": 7.94,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 3000,
+            "meanMs": 3.802639900000016,
+            "fps": 262.9752030950908,
+            "low1": 233.737153221716,
+            "p99": 4.2024,
+            "max": 5.1066,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      },
+      {
+        "name": "no-tlv",
+        "frames": [
+          6600,
+          9600
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 3000,
+            "meanMs": 5.090084033333337,
+            "fps": 196.46041076165324,
+            "low1": 147.60866580955235,
+            "p99": 6.5594,
+            "max": 7.4962,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 3000,
+            "meanMs": 1.4970962666666747,
+            "fps": 667.9597179321855,
+            "low1": 467.30063786537073,
+            "p99": 2.0045,
+            "max": 2.7025,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 3000,
+            "meanMs": 5.081787766666671,
+            "fps": 196.78114197514714,
+            "low1": 147.68045690364292,
+            "p99": 6.5462,
+            "max": 7.4856,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 3000,
+            "meanMs": 2.548176300000008,
+            "fps": 392.4375248290304,
+            "low1": 276.15892393754757,
+            "p99": 3.4722,
+            "max": 4.3096,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 3000,
+            "meanMs": 3.6360653666666725,
+            "fps": 275.0225584961747,
+            "low1": 245.70648394840487,
+            "p99": 4.0317,
+            "max": 4.2624,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      },
+      {
+        "name": "no-shadows",
+        "frames": [
+          10200,
+          13200
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 3000,
+            "meanMs": 3.2410381333333382,
+            "fps": 308.54311453951374,
+            "low1": 204.67393395581502,
+            "p99": 4.6084,
+            "max": 6.7206,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 3000,
+            "meanMs": 1.3469289666666708,
+            "fps": 742.4296490369217,
+            "low1": 464.6653015832695,
+            "p99": 1.7881,
+            "max": 6.5401,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 3000,
+            "meanMs": 3.2347576999999985,
+            "fps": 309.14216542401317,
+            "low1": 206.93665462065405,
+            "p99": 4.5816,
+            "max": 6.4018,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 3000,
+            "meanMs": 1.7667027333333347,
+            "fps": 566.0261803711852,
+            "low1": 353.0691121017969,
+            "p99": 2.7206,
+            "max": 3.4407,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 3000,
+            "meanMs": 2.049343933333335,
+            "fps": 487.9610414506961,
+            "low1": 409.4523438417004,
+            "p99": 2.362,
+            "max": 2.6214,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      },
+      {
+        "name": "no-dfao",
+        "frames": [
+          13800,
+          16800
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 3000,
+            "meanMs": 5.1644613333333345,
+            "fps": 193.63103631846982,
+            "low1": 138.99126625213296,
+            "p99": 6.8995,
+            "max": 7.8583,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 3000,
+            "meanMs": 1.5072643333333322,
+            "fps": 663.4536344321826,
+            "low1": 496.3624902175227,
+            "p99": 1.8708,
+            "max": 2.854,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 3000,
+            "meanMs": 5.155643133333333,
+            "fps": 193.96222239173085,
+            "low1": 139.24622306223796,
+            "p99": 6.8873,
+            "max": 7.8384,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 3000,
+            "meanMs": 2.403468333333338,
+            "fps": 416.06539438491933,
+            "low1": 293.8957845547969,
+            "p99": 3.2593,
+            "max": 3.8412,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 3000,
+            "meanMs": 3.437019533333334,
+            "fps": 290.9497575738731,
+            "low1": 252.8159483041949,
+            "p99": 3.828,
+            "max": 4.8104,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      },
+      {
+        "name": "no-aa",
+        "frames": [
+          17400,
+          20400
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 3000,
+            "meanMs": 5.352254099999996,
+            "fps": 186.83716828765674,
+            "low1": 138.28408806483864,
+            "p99": 6.9846,
+            "max": 7.9552,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 3000,
+            "meanMs": 1.5235142666666663,
+            "fps": 656.3771812835886,
+            "low1": 455.70127869778804,
+            "p99": 1.9816,
+            "max": 2.6883,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 3000,
+            "meanMs": 5.343657700000001,
+            "fps": 187.13773526324482,
+            "low1": 138.57709043540925,
+            "p99": 6.9622,
+            "max": 7.9475,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 3000,
+            "meanMs": 2.5566415666666686,
+            "fps": 391.1381294264855,
+            "low1": 273.6811760262588,
+            "p99": 3.4867,
+            "max": 4.3403,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 3000,
+            "meanMs": 3.4633890666666702,
+            "fps": 288.73452585055577,
+            "low1": 248.25805597391636,
+            "p99": 3.8397,
+            "max": 5.578,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      },
+      {
+        "name": "baseline-repeat",
+        "frames": [
+          21000,
+          24000
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 3000,
+            "meanMs": 5.454338999999991,
+            "fps": 183.3402727626577,
+            "low1": 134.43245306963064,
+            "p99": 7.1137,
+            "max": 8.5387,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 3000,
+            "meanMs": 1.5099050666666656,
+            "fps": 662.293293847702,
+            "low1": 502.89584188954746,
+            "p99": 1.8789,
+            "max": 2.1777,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 3000,
+            "meanMs": 5.445646666666668,
+            "fps": 183.63292024087738,
+            "low1": 134.67753484444523,
+            "p99": 7.1075,
+            "max": 8.5374,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 3000,
+            "meanMs": 2.5626644,
+            "fps": 390.2188675192897,
+            "low1": 270.4025482736149,
+            "p99": 3.5371,
+            "max": 4.1981,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 3000,
+            "meanMs": 3.802332833333324,
+            "fps": 262.9964402993485,
+            "low1": 228.23841785128752,
+            "p99": 4.1698,
+            "max": 5.5307,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      }
+    ],
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-effects-20261106.csv",
+        "sha256": "e560fcbdaf1a66e38cd787bb9a18cb953be4157891f22c06154d1f18a80ee665"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-effects-20261106-launch.json",
+        "sha256": "f0705dff592b92747c3e286c0935314c506c71d0b8dd421e55614b3d55ea97a2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-effects-20261106-complete.json",
+        "sha256": "06f0011642027ec55dfed3f573894bd18d624f01015ef8c58ada3a71e49ce427"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-effects-20261106.log",
+        "sha256": "4aa034cd27f115b16a5d9bf962cf01525bdde29e6f152925d6ff7c19d75a41fa"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-effects-20261106.png",
+        "sha256": "fc49b5f57698fa88dfffc88fc28f0ee89450f8d72919f277cb7f1f131c4b6db0"
+      }
+    ],
+    "cleanExit": false,
+    "boundary": "UE CSV frame intervals; not display intervals. Exit code retained independently of completed measurements."
+  },
+  "nativeSM5": {
+    "tag": "parity-native-sm5-visible-20261106",
+    "launch": {
+      "pid": 4900,
+      "started": "2026-11-06T01:02:13.8441411+08:00",
+      "exe": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-pso-v1\\Windows\\TriplexHouseVilla\\Binaries\\Win64\\TriplexHouseVilla.exe",
+      "resolution": [
+        1280,
+        720
+      ],
+      "arguments": [
+        "-d3d12",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-ForceRes",
+        "-unattended",
+        "-nosplash",
+        "-nosound",
+        "-NoThrottleCPU",
+        "-traceautostart=0",
+        "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000\"",
+        "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+        "-csvCaptureFrames=9030",
+        "-csvCompression=0",
+        "-csvGpuStats",
+        "-ExitAfterCsvProfiling",
+        "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-visible-20261106.log\"",
+        "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-visible-20261106.png -nosuffix\"",
+        "-sm5",
+        "-ini:Engine:[SystemSettings]:r.RayTracing=0"
+      ],
+      "visible": true,
+      "phases": [
+        {
+          "start": 3000,
+          "name": "baseline",
+          "end": 9000,
+          "commands": []
+        }
+      ],
+      "presentMon": 14500
+    },
+    "complete": {
+      "csv": "G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-visible-20261106.csv",
+      "completed": "2026-11-06T01:03:11.9373499+08:00",
+      "presentError": "warning: PresentMon requires elevated privilege in order to query processes that are\r\n         short-running or started on another account.  Without it, those processes will\r\n         be listed as '<unknown>' and they can't be targeted by --process_name nor trigger\r\n         --terminate_on_proc_exit.\r\n",
+      "exitCode": 777003
+    },
+    "phases": [
+      {
+        "name": "baseline",
+        "frames": [
+          3000,
+          9000
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 6000,
+            "meanMs": 5.387673766666659,
+            "fps": 185.608862620258,
+            "low1": 150.75475367427023,
+            "p99": 6.3949,
+            "max": 7.2897,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 6000,
+            "meanMs": 1.5491785666666629,
+            "fps": 645.5033793500515,
+            "low1": 512.3519516339759,
+            "p99": 1.8568,
+            "max": 2.3329,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 6000,
+            "meanMs": 5.381518249999991,
+            "fps": 185.82116673115465,
+            "low1": 150.9017890916115,
+            "p99": 6.3844,
+            "max": 7.2879,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 6000,
+            "meanMs": 1.751768549999997,
+            "fps": 570.8516687321517,
+            "low1": 400.4089510086302,
+            "p99": 2.4316,
+            "max": 2.7156,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 6000,
+            "meanMs": 3.76192044999999,
+            "fps": 265.82167626644065,
+            "low1": 248.13156928329676,
+            "p99": 3.9721,
+            "max": 4.3361,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      }
+    ],
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-visible-20261106.csv",
+        "sha256": "3607d742926b80b376d406301de6b52ab42ffa2f72c3e53332b0bf1c56732db7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-visible-20261106-launch.json",
+        "sha256": "c0f79962db463ccb3fe4bd8b93d02f837c12b5bd8c253540d7a5f187acc9957b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-visible-20261106-complete.json",
+        "sha256": "2ffd8cad07b71ba68e7d2f48ee3ca2b4ba78828111c5a5fe9702c44d569cd06e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-visible-20261106.log",
+        "sha256": "752991cc8e1df21b59e98086bfea5b56f55a66079e7765208c60283ad79bfc97"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-visible-20261106.png",
+        "sha256": "e28c45dab9326766aa99b2dc635bbbe7b6310cfa777671ba4ad27be03095e860"
+      }
+    ],
+    "cleanExit": false,
+    "boundary": "UE CSV frame intervals; not display intervals. Exit code retained independently of completed measurements."
+  },
+  "nativeNormal": {
+    "tag": "parity-native-sm5-no-etw-20261106",
+    "launch": {
+      "started": "2026-11-06T01:43:34.9978482+08:00",
+      "resolution": [
+        1280,
+        720
+      ],
+      "arguments": [
+        "-d3d12",
+        "-windowed",
+        "-ResX=1280",
+        "-ResY=720",
+        "-ForceRes",
+        "-unattended",
+        "-nosplash",
+        "-nosound",
+        "-NoThrottleCPU",
+        "-traceautostart=0",
+        "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000\"",
+        "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+        "-csvCaptureFrames=9030",
+        "-csvCompression=0",
+        "-csvGpuStats",
+        "-ExitAfterCsvProfiling",
+        "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-no-etw-20261106.log\"",
+        "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-no-etw-20261106.png -nosuffix\"",
+        "-sm5",
+        "-ini:Engine:[SystemSettings]:r.RayTracing=0"
+      ],
+      "visible": true,
+      "phases": [
+        {
+          "start": 3000,
+          "commands": [],
+          "end": 9000,
+          "name": "baseline"
+        }
+      ],
+      "exe": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-native-pso-v1\\Windows\\TriplexHouseVilla\\Binaries\\Win64\\TriplexHouseVilla.exe",
+      "pid": 12728,
+      "presentMon": null
+    },
+    "complete": {
+      "completed": "2026-11-06T01:44:26.6010453+08:00",
+      "lateExitFailure": true,
+      "cleanExit": false,
+      "exitCode": 777003,
+      "physicalPresentationValidated": false,
+      "csv": "G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-no-etw-20261106.csv",
+      "performanceAccepted": false,
+      "presentError": null
+    },
+    "phases": [
+      {
+        "name": "baseline",
+        "frames": [
+          3000,
+          9000
+        ],
+        "metrics": {
+          "FrameTime": {
+            "samples": 6000,
+            "meanMs": 5.108272216666673,
+            "fps": 195.76090654239547,
+            "low1": 157.15318061012624,
+            "p99": 6.2014,
+            "max": 7.1201,
+            "over33": 0,
+            "over50": 0
+          },
+          "GameThreadTime": {
+            "samples": 6000,
+            "meanMs": 1.581853766666664,
+            "fps": 632.1696866501345,
+            "low1": 507.85009280960446,
+            "p99": 1.8988,
+            "max": 2.1946,
+            "over33": 0,
+            "over50": 0
+          },
+          "RenderThreadTime": {
+            "samples": 6000,
+            "meanMs": 5.101610233333311,
+            "fps": 196.01654267237424,
+            "low1": 157.2770106882835,
+            "p99": 6.1891,
+            "max": 7.1282,
+            "over33": 0,
+            "over50": 0
+          },
+          "RHIThreadTime": {
+            "samples": 6000,
+            "meanMs": 1.9832002000000062,
+            "fps": 504.2355280117443,
+            "low1": 365.84384321396266,
+            "p99": 2.641,
+            "max": 3.2036,
+            "over33": 0,
+            "over50": 0
+          },
+          "GPUTime": {
+            "samples": 6000,
+            "meanMs": 3.563794500000001,
+            "fps": 280.5997932821322,
+            "low1": 259.3612106289682,
+            "p99": 3.8205,
+            "max": 4.0584,
+            "over33": 0,
+            "over50": 0
+          }
+        }
+      }
+    ],
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106.csv",
+        "sha256": "34498af234690363ba9ee3b0999c5dc7e20bb0e03ca43914cf746fd048b9dbfa"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106-launch.json",
+        "sha256": "8c3fc89bc35013a12b7189d7857169680889c700187aa250fd2cb4d743b3405e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106-complete.json",
+        "sha256": "0d33d7b0b4dfb95d1b358f4a55e82fb15bb067abbb20b2fba07acd593ca8d7fc"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106.log",
+        "sha256": "4ac2da73df0884116cba0b3dd66ec5e3994e42cb2c7466176a248a4ba9ec7468"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106.png",
+        "sha256": "643c285c835c8ea815a30b45912f469ea1ec6f1aa4ec981b8e8b3666337a9456"
+      }
+    ],
+    "cleanExit": false,
+    "boundary": "UE CSV frame intervals; not display intervals. Exit code retained independently of completed measurements."
+  },
+  "browser": [
+    {
+      "tag": "parity-web-effects-safe-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-effects-safe-20261106.json",
+        "sha256": "31a23a0f7d98e821c1b7558436c6e5e661441c204e848f14e4f626e7094af158"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-effects-safe-20261106.log",
+        "sha256": "33287d4d6a3b761cf490f03d204acbf77c1cb07bd7de8b00529f98034efe34bb"
+      },
+      "folder": "villa-scheduling-pipeline-v74",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-effects-safe-20261106.log"
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 2450,
+            "fps": 81.67196173218645,
+            "low1": 38.06159889166891,
+            "p50": 13.895000000018626,
+            "p95": 15.654999999795109,
+            "p99": 21.78000000026077,
+            "max": 36.44500000029802,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 8.445938963250013,
+          "workload": {
+            "draws": 2662.0983739837397,
+            "dispatches": 158.16341463414633,
+            "ready": 627.4873983739838,
+            "pending": 266.159756097561
+          },
+          "view": {
+            "frame": 1888,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 16.14405140758829,
+            "maxLatency": 34.15999999968335
+          }
+        },
+        {
+          "name": "no-tlv",
+          "result": {
+            "frames": 2651,
+            "fps": 88.39262463410104,
+            "low1": 40.54875988377497,
+            "p50": 12.895000000018626,
+            "p95": 14.415000000037253,
+            "p99": 18.53499999968335,
+            "max": 43.60499999998137,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 7.7701841184636224,
+          "workload": {
+            "draws": 2661.9401515151517,
+            "dispatches": 66.41515151515152,
+            "ready": 627.1875,
+            "pending": 268.99583333333334
+          },
+          "view": {
+            "frame": 4812,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 14.893804675713147,
+            "maxLatency": 32.87000000011176
+          }
+        },
+        {
+          "name": "no-dfao",
+          "result": {
+            "frames": 2587,
+            "fps": 86.25289836577845,
+            "low1": 38.50882000086636,
+            "p50": 13.21500000031665,
+            "p95": 14.635000000242144,
+            "p99": 17.209999999962747,
+            "max": 44.6750000002794,
+            "over33": 4,
+            "over50": 0
+          },
+          "rhiMs": 8.092198895155185,
+          "workload": {
+            "draws": 2661.9954022988504,
+            "dispatches": 127.80229885057472,
+            "ready": 627.2218390804597,
+            "pending": 281.264367816092
+          },
+          "view": {
+            "frame": 7916,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 0,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 15.517250772796094,
+            "maxLatency": 35.640000000130385
+          }
+        },
+        {
+          "name": "no-aa",
+          "result": {
+            "frames": 2530,
+            "fps": 84.36532185120191,
+            "low1": 37.31905640204628,
+            "p50": 13.635000000242144,
+            "p95": 15.084999999962747,
+            "p99": 17.68999999994412,
+            "max": 48.37999999988824,
+            "over33": 3,
+            "over50": 0
+          },
+          "rhiMs": 8.30275956886915,
+          "workload": {
+            "draws": 2666.7674603174605,
+            "dispatches": 150.34722222222223,
+            "ready": 627.2289682539682,
+            "pending": 277.1694444444444
+          },
+          "view": {
+            "frame": 10951,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 0,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 0,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 3,
+            "meanLatency": 15.878038324769852,
+            "maxLatency": 33.74500000011176
+          }
+        },
+        {
+          "name": "baseline-repeat",
+          "result": {
+            "frames": 2459,
+            "fps": 81.99220723922224,
+            "low1": 36.31530399538322,
+            "p50": 13.830000000074506,
+            "p95": 15.5,
+            "p99": 23.140000000130385,
+            "max": 46.325000000186265,
+            "over33": 3,
+            "over50": 0
+          },
+          "rhiMs": 8.480344624368279,
+          "workload": {
+            "draws": 2665.1747967479673,
+            "dispatches": 158.5341463414634,
+            "ready": 627.810975609756,
+            "pending": 275.9341463414634
+          },
+          "view": {
+            "frame": 13921,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 22,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 16.19416056910295,
+            "maxLatency": 42.0500000002794
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-20261106.json",
+        "sha256": "1021f7d882a177ae37606684f299aa126088a242d7b80f71117e9872b47d6139"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-20261106.log",
+        "sha256": "15e78880b10d828afa5d8315ff4644c83b2c2e7a6ac9e0d216919ac843a3cb94"
+      },
+      "folder": "villa-parity-csm-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-20261106.log"
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 3012,
+            "fps": 100.39098154349112,
+            "low1": 41.76715484836038,
+            "p50": 11.704999999841675,
+            "p95": 13.450000000186265,
+            "p99": 21.25,
+            "max": 26.90500000002794,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.843622839415228,
+          "workload": {
+            "draws": 1349.4491749174917,
+            "dispatches": 160.7207920792079,
+            "ready": 624.1924092409241,
+            "pending": 323.3013201320132
+          },
+          "view": {
+            "frame": 2249,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 13.833843345503864,
+            "maxLatency": 32.41000000014901
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-bundles-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-bundles-20261106.json",
+        "sha256": "333bc819c588faff7ece8090aab8147064821e33a735f0788fafd268d29b5873"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-bundles-20261106.log",
+        "sha256": "12fdc1718cf304315ed4f8ec56e73330521c5d6cfa3d0c1fbebd7b55891ff7fe"
+      },
+      "folder": "villa-parity-csm-bundles-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-bundles-20261106.log"
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 2797,
+            "fps": 93.20589973017918,
+            "low1": 40.675799352086024,
+            "p50": 12.53000000002794,
+            "p95": 14.275000000139698,
+            "p99": 20.239999999990687,
+            "max": 42.65500000002794,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 7.6185675328590765,
+          "workload": {
+            "draws": 1348.689964157706,
+            "dispatches": 160.73082437275986,
+            "ready": 623.1974910394265,
+            "pending": 319.9867383512545
+          },
+          "view": {
+            "frame": 2103,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 15.02413152251534,
+            "maxLatency": 33.56499999994412
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-owner-lookahead-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-owner-lookahead-20261106.json",
+        "sha256": "fd5a1bb0969587b7ae6b5ac33a3d8da80a6b28637cdb815abe97d5efb35a72ce"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-owner-lookahead-20261106.log",
+        "sha256": "90be33f77e55d97d28984545498701bc5cd20700a05ad640eea2ff8073a66f83"
+      },
+      "folder": "villa-parity-owner-lookahead-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-owner-lookahead-20261106.log"
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 3260,
+            "fps": 108.67557806406778,
+            "low1": 40.66794010718281,
+            "p50": 7.294999999925494,
+            "p95": 13.359999999869615,
+            "p99": 19.020000000018626,
+            "max": 44.419999999925494,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 6.940599748995492,
+          "workload": {
+            "draws": 1384.4287037037036,
+            "dispatches": 165.6533950617284,
+            "ready": 616.6836419753087,
+            "pending": 611.8780864197531
+          },
+          "view": {
+            "frame": 2405,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 5,
+            "meanLatency": 16.555507513034886,
+            "maxLatency": 37.045000000391155
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-staging-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-staging-20261106.json",
+        "sha256": "941746e8238df35ea80972ea1a502427b0935960fb222651b111cdfb2d88d62c"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-staging-20261106.log",
+        "sha256": "d3a0d5a6e7d32cb945cfa4d2a1764b7b77502772fe23ed1ed8677392a9c609d7"
+      },
+      "folder": "villa-parity-csm-staging-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-staging-20261106.log"
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 4551,
+            "fps": 101.13178264599851,
+            "low1": 41.35760845130275,
+            "p50": 11.694999999832362,
+            "p95": 13.325000000186265,
+            "p99": 18.68500000005588,
+            "max": 41.68999999994412,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 6.739766662694867,
+          "workload": {
+            "draws": 1349.9570175438596,
+            "dispatches": 160.79912280701754,
+            "ready": 623.8414473684211,
+            "pending": 322.7609649122807
+          },
+          "view": {
+            "frame": 2260,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 13.690936950790354,
+            "maxLatency": 35.37999999988824
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-memory-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-memory-20261106.json",
+        "sha256": "ba275bd9aced9d2786b659ca9a04a8a3f692f9ab1e8805f73786cf52010ad5b5"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-memory-20261106.log",
+        "sha256": "489266417226d415d2532fcc0433f30b0d1b21166cd741a40c2ca07057c5979b"
+      },
+      "folder": "villa-parity-csm-memory-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-memory-20261106.log"
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 4529,
+            "fps": 100.64227504429303,
+            "low1": 40.5711715366419,
+            "p50": 11.669999999925494,
+            "p95": 13.459999999962747,
+            "p99": 20.425000000279397,
+            "max": 42.28000000026077,
+            "over33": 3,
+            "over50": 0
+          },
+          "rhiMs": 6.859770726420758,
+          "workload": {
+            "draws": 1349.8209713024282,
+            "dispatches": 160.78013245033114,
+            "ready": 623.8845474613687,
+            "pending": 322.50816777041945
+          },
+          "view": {
+            "frame": 2264,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 13.793994481237009,
+            "maxLatency": 32.75
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-no-shadows-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-no-shadows-20261106.json",
+        "sha256": "8ebac50e106a62f26fea95fae224b45eb3a09ed1c8c3f788e98a391d5b83f25b"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-no-shadows-20261106.log",
+        "sha256": "7714d29668d33e361fc686f938ac616a1351ea9e68de132fd2994f6a3ab15cbc"
+      },
+      "folder": "villa-parity-no-shadows-diagnostic-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-no-shadows-20261106.log"
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 5146,
+            "fps": 171.51403800405788,
+            "low1": 55.98169829091528,
+            "p50": 4.910000000149012,
+            "p95": 8.705000000074506,
+            "p99": 10.25,
+            "max": 60.015000000130385,
+            "over33": 5,
+            "over50": 2
+          },
+          "rhiMs": 3.68314873804095,
+          "workload": {
+            "draws": 477.059649122807,
+            "dispatches": 71,
+            "ready": 606.9380116959064,
+            "pending": 317.9961013645224
+          },
+          "view": {
+            "frame": 3640,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 7.97579755197495,
+            "maxLatency": 65.10999999986961
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-compute-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-compute-20261106.json",
+        "sha256": "137d9341b3b3fa989dc0387d53ccd502fed788e88b22be5396d2c7801e7bb4b3"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-compute-20261106.log",
+        "sha256": "9bb12c1840e7ed512347cf0f21aa3b26b5858ef4de10991cf8b6d15d6c3662e1"
+      },
+      "folder": "villa-parity-csm-compute-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreate": 834,
+        "detailLines": 2550,
+        "otherLogErrors": [],
+        "finalCounters": {
+          "sampleFrame": 6570,
+          "graphicsPipelines": 598,
+          "computePipelines": 709,
+          "graphicsPipelineCreateMs": 40.21501541137695,
+          "computePipelineCreateMs": 26.946306228637695,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1121,
+          "asyncPrecacheCompleted": 1121,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 1066321,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "matchesUnsupportedCount": true
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 4394,
+            "fps": 97.64159114016913,
+            "low1": 34.969342218644535,
+            "p50": 11.415000000037253,
+            "p95": 15.424999999813735,
+            "p99": 23.065000000409782,
+            "max": 52.11500000022352,
+            "over33": 8,
+            "over50": 2
+          },
+          "rhiMs": 7.053170722652501,
+          "workload": {
+            "draws": 1355.1988662131519,
+            "dispatches": 161.37732426303856,
+            "ready": 623.7145124716553,
+            "pending": 341.8201814058957
+          },
+          "view": {
+            "frame": 2119,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": {
+            "requested": 1051733,
+            "opened": 110757,
+            "reused": 940976,
+            "closed": 110757
+          },
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 14.040894197955287,
+            "maxLatency": 67.37000000011176
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-no-etw-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-no-etw-20261106.json",
+        "sha256": "93a77112f5f35010171f8973081ba97cfc80452e2d7d00f30cb10efb8583f712"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-no-etw-20261106.log",
+        "sha256": "fdddaf732e9e854450a7e33aab5a71aee58467cde00d0f402bf4a228a0db37d9"
+      },
+      "folder": "villa-parity-csm-memory-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreate": 834,
+        "detailLines": 2550,
+        "otherLogErrors": [],
+        "finalCounters": {
+          "sampleFrame": 6630,
+          "graphicsPipelines": 598,
+          "computePipelines": 709,
+          "graphicsPipelineCreateMs": 42.03009605407715,
+          "computePipelineCreateMs": 26.95155143737793,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1121,
+          "asyncPrecacheCompleted": 1121,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 1075936,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "matchesUnsupportedCount": true
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 4371,
+            "fps": 97.14542254147304,
+            "low1": 36.19284204292253,
+            "p50": 11.504999999888241,
+            "p95": 15.15500000026077,
+            "p99": 21.830000000074506,
+            "max": 57,
+            "over33": 9,
+            "over50": 2
+          },
+          "rhiMs": 7.078136218210089,
+          "workload": {
+            "draws": 1356.346803652968,
+            "dispatches": 161.50570776255708,
+            "ready": 623.619406392694,
+            "pending": 345.11164383561646
+          },
+          "view": {
+            "frame": 2202,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "peak": 4,
+            "meanLatency": 14.195142955165647,
+            "maxLatency": 61.674999999813735
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-normal-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-normal-20261106.json",
+        "sha256": "57b110655a37cfb0261d41083a2027f4ee0fb6ca4d399024a5ad794c75502bd7"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-normal-20261106.log",
+        "sha256": "9a61687a93f5054f6f778ec0f7ae5a01ee89e7019e24be5d099b8a00ee7c74d1"
+      },
+      "folder": "villa-parity-csm-memory-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreate": 834,
+        "detailLines": 2550,
+        "otherLogErrors": [],
+        "finalCounters": {
+          "sampleFrame": 6810,
+          "graphicsPipelines": 595,
+          "computePipelines": 708,
+          "graphicsPipelineCreateMs": 38.930654525756836,
+          "computePipelineCreateMs": 23.665904998779297,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1121,
+          "asyncPrecacheCompleted": 1121,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 1104882,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "matchesUnsupportedCount": true
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 4533,
+            "fps": 100.71227327796532,
+            "low1": 38.6925289775409,
+            "p50": 11.669999999925494,
+            "p95": 13.320000000298023,
+            "p99": 22.559999999590218,
+            "max": 40.31499999947846,
+            "over33": 5,
+            "over50": 0
+          },
+          "rhiMs": 6.840364650108765,
+          "workload": {
+            "draws": 1349.5832229580574,
+            "dispatches": 160.74547461368653,
+            "ready": 623.8081677704195,
+            "pending": 322.4799116997792
+          },
+          "view": {
+            "frame": 2225,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-baseline-normal-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-baseline-normal-20261106.json",
+        "sha256": "e5083da7f6594233b38b443e9329b10c6099bece0693cc8128d9ef14e48d8213"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-baseline-normal-20261106.log",
+        "sha256": "9c421d97650904970c7c829fa4e5657a433e95480915157d4965f132dfc0d07c"
+      },
+      "folder": "villa-scheduling-pipeline-v74",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreate": 834,
+        "detailLines": 2550,
+        "otherLogErrors": [],
+        "finalCounters": {
+          "sampleFrame": 5520,
+          "graphicsPipelines": 598,
+          "computePipelines": 709,
+          "graphicsPipelineCreateMs": 39.700984954833984,
+          "computePipelineCreateMs": 23.586034774780273,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1121,
+          "asyncPrecacheCompleted": 1121,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 1176902,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "matchesUnsupportedCount": true
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 3631,
+            "fps": 80.69116617291286,
+            "low1": 37.039261617230096,
+            "p50": 13.990000000223517,
+            "p95": 15.949999999254942,
+            "p99": 20.81000000052154,
+            "max": 42.21499999985099,
+            "over33": 4,
+            "over50": 0
+          },
+          "rhiMs": 8.586729957169075,
+          "workload": {
+            "draws": 2663.4636363636364,
+            "dispatches": 158.31019283746556,
+            "ready": 627.8388429752066,
+            "pending": 271.09641873278235
+          },
+          "view": {
+            "frame": 1855,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "parity-web-csm-budget2-retry-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-budget2-retry-20261106.json",
+        "sha256": "365023cab3340cf1cab1f3f2618d8c86157f8dd92767b064d4e905b3d0422277"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-budget2-retry-20261106.log",
+        "sha256": "05d84022ee82202a1158f1ada6a676671a9ee83ef7d4d387d1d88bf857405e44"
+      },
+      "folder": "villa-parity-csm-memory-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreate": 834,
+        "detailLines": 2550,
+        "otherLogErrors": [],
+        "finalCounters": {
+          "sampleFrame": 5730,
+          "graphicsPipelines": 598,
+          "computePipelines": 708,
+          "graphicsPipelineCreateMs": 39.77227210998535,
+          "computePipelineCreateMs": 25.52008628845215,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1121,
+          "asyncPrecacheCompleted": 1121,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 926300,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "matchesUnsupportedCount": true
+      },
+      "runs": [
+        {
+          "name": "baseline",
+          "result": {
+            "frames": 3787,
+            "fps": 84.15542464711666,
+            "low1": 41.24740846868085,
+            "p50": 11.639999999664724,
+            "p95": 12.790000000037253,
+            "p99": 16.799999999813735,
+            "max": 32.66000000014901,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.416625873340095,
+          "workload": {
+            "draws": 1236.7436507936509,
+            "dispatches": 146.02195767195767,
+            "ready": 637.205291005291,
+            "pending": 10.178571428571429
+          },
+          "view": {
+            "frame": 1909,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "page",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": [
+            5695,
+            5696,
+            5697,
+            2,
+            5695,
+            2,
+            1,
+            0
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "parity-owner-baseline-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-baseline-20261106.json",
+        "sha256": "3c283d4362abc293736dbe9533ea94249d3cb86a37c1255c1d3e3ccb1ae5b076"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-baseline-20261106-1-owner.log",
+        "sha256": "689ffe0a324f8c341372bc2e334c543b96dd6dd3f2891356bff84aa9a38a0c75"
+      },
+      "folder": "villa-scheduling-pipeline-v74",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-baseline-20261106-1-owner.log"
+      },
+      "runs": [
+        {
+          "name": "owner",
+          "result": {
+            "samples": 2703,
+            "fps": 89.57978035554862,
+            "low1Fps": 30.661578304772316,
+            "p50": 9.859999999869615,
+            "p95": 24.354999999981374,
+            "p99": 27.255000000121072,
+            "maximum": 62.625,
+            "low1": 30.661578304772316
+          },
+          "rhiMs": 7.7408708119868175,
+          "workload": {
+            "draws": 2289.8766666666666,
+            "dispatches": 146.34148148148148,
+            "pending": 165.57296296296298,
+            "ready": 437.2962962962963
+          },
+          "view": {
+            "frame": 2252,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 420.70644153395034,
+            "y": -327.74579860915134,
+            "z": 156.64842070094377,
+            "pitch": -3.135608211159715,
+            "yaw": 46.586630866862876
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "samples": 2704,
+            "pending": 3,
+            "peak": 4,
+            "meanLatency": 14.654042159764616,
+            "maxLatency": 48.43999999994412
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-owner-csm-motion-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-csm-motion-20261106.json",
+        "sha256": "f356c97f34f7dee2907d4c6c721465ac4764c4da22ee5282d3317a0ea0d6386d"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-csm-motion-20261106-1-owner.log",
+        "sha256": "a3b433b4891177ee0a61dd9fe6faf1931d7aba8f44bb56bd7c1f58938ec35293"
+      },
+      "folder": "villa-parity-csm-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-csm-motion-20261106-1-owner.log"
+      },
+      "runs": [
+        {
+          "name": "owner",
+          "result": {
+            "samples": 3130,
+            "fps": 103.8591815498305,
+            "low1Fps": 35.429387569799616,
+            "p50": 8.955000000074506,
+            "p95": 19.699999999953434,
+            "p99": 21.820000000065193,
+            "maximum": 44.485000000102445,
+            "low1": 35.429387569799616
+          },
+          "rhiMs": 6.5185048121291915,
+          "workload": {
+            "draws": 1502.510576923077,
+            "dispatches": 139.65833333333333,
+            "pending": 142.5794871794872,
+            "ready": 367.60608974358973
+          },
+          "view": {
+            "frame": 2739,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 411.63650063207393,
+            "y": -312.81449232274315,
+            "z": 156.64841944533674,
+            "pitch": -2.6425934447906982,
+            "yaw": 21.05042674858126
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "samples": 3131,
+            "pending": 2,
+            "peak": 4,
+            "meanLatency": 12.841307888853702,
+            "maxLatency": 40.675000000046566
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-owner-csm-memory-motion-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-csm-memory-motion-20261106.json",
+        "sha256": "246296b5f8c757b8ae4233c88595ea564d53779393782c273e5413237905cbeb"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-csm-memory-motion-20261106-1-owner.log",
+        "sha256": "6e1ce3cf0feac53e6ac9113688c53ccb5c2d5c80fb4c0e3d05642846d625ee30"
+      },
+      "folder": "villa-parity-csm-memory-20261106",
+      "pass": true,
+      "physicalPresentationValidated": false,
+      "pipelineDiagnostics": {
+        "failedCreates": 834,
+        "unsupportedPrecacheRequests": 834,
+        "asyncPrecacheFailed": 0,
+        "log": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-csm-memory-motion-20261106-1-owner.log"
+      },
+      "runs": [
+        {
+          "name": "owner",
+          "result": {
+            "samples": 3131,
+            "fps": 102.99027036343739,
+            "low1Fps": 33.44271889306684,
+            "p50": 8.955000000074506,
+            "p95": 20.3050000006333,
+            "p99": 23.5,
+            "maximum": 53.5550000006333,
+            "low1": 33.44271889306684
+          },
+          "rhiMs": 6.627542409389156,
+          "workload": {
+            "draws": 1538.435873015873,
+            "dispatches": 140.89904761904762,
+            "pending": 154.29555555555555,
+            "ready": 383.4787301587302
+          },
+          "view": {
+            "frame": 2630,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 411.9741371815799,
+            "y": -313.783428773804,
+            "z": 156.64841992413574,
+            "pitch": 2.2981749735772117,
+            "yaw": 22.54179063392802
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "errors": [],
+          "computePassMerge": null,
+          "gpuBudget": null,
+          "gpu": {
+            "samples": 3132,
+            "pending": 1,
+            "peak": 4,
+            "meanLatency": 12.971117496804487,
+            "maxLatency": 59.78500000014901
+          }
+        }
+      ]
+    }
+  ],
+  "profiler": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\performance-capture-parity-csm-profile-20261106.json",
+      "sha256": "51a12b6672d3b8865ce3719c7230e985291d763eacf9379479ba2bfdc31cb399"
+    },
+    "baseline": {
+      "milliseconds": 10080.180200000003,
+      "frames": 1008,
+      "fps": 99.99821233354537,
+      "rhiWorkMsPerFrame": 6.914853340103512
+    },
+    "instrumented": {
+      "milliseconds": 5002.3349609375,
+      "frames": 372,
+      "fps": 74.36527199895518
+    },
+    "sampled": {
+      "milliseconds": 5013.364099999992,
+      "frames": 444,
+      "fps": 88.56328627717279
+    },
+    "gpuPassSums": [
+      2.752512,
+      2.8180479999999997,
+      3.080191999999999
+    ],
+    "boundary": "GPU pass sums exclude copies and gaps; profiler timings are excluded from normal performance comparison."
+  },
+  "rejected": {
+    "ownerLookahead": "GPU queue peak and completion latency increased without improving 1% low.",
+    "bundles": "Average FPS regressed.",
+    "staging": "No substantial gain in average FPS or 1% low.",
+    "computeMergePrototype": "Real dispatch readbacks passed, but the JS prototype did not improve FPS or 1% low.",
+    "noShadows": "Diagnostic quality reduction, never an accepted optimization.",
+    "gpuBudgetTwo": "Bounded GPU-completion feedback reduced submission throughput to 84 FPS; low1 remained far below native. Not adopted.",
+    "localClock": "Previously rejected by user. Never enabled in this comparison."
+  },
+  "limitations": [
+    "Native movement route is not captured; browser DOM motion trajectories differ with timing.",
+    "Native SM5 and Web SM5 have different RHI implementations; screenshots inspected, not exhaustive pixel parity.",
+    "Native process exits with historical post-shutdown 777003; not a clean process lifetime pass.",
+    "PresentMon output missing or incomplete; a control run reported lost ETW events. No physical-display FPS claim.",
+    "Single-device diagnostic runs are not an ABBA release acceptance."
+  ],
+  "failedExperiments": [
+    {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-effects-20261106.json",
+        "sha256": "26c4ac09ed58b947010468d4dff25c52d546643ce0e9937baae499f788eaa739"
+      },
+      "reason": "Changing ShadowQuality while deferred rendering tasks are queued asserted. Subsequent shadow attribution uses startup-only changes."
+    },
+    {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-web-csm-budget2-20261106.json",
+        "sha256": "6a68e8366daf960a283695cd57c7d1d5cab0b64dbe4adbc3d76b115ffd8096ae"
+      },
+      "reason": "Harness expected owner mode for the explicit page-raf/GPU-credit diagnostic; assertion corrected and rerun with a fresh tag."
+    }
+  ],
+  "build": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "6d7c570eeb144dce16d0a481e78e3fc9aa0713366e976e847d364476cf256c83"
+    },
+    "memorySource": {
+      "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Core\\Private\\GenericPlatform\\GenericPlatformMemory.cpp",
+      "sha256": "cae151128af88a22fce2d531b2b65c89f10aea9a3dd3d3368deac9a55aafcace"
+    },
+    "note": "Web virtual-memory accounting removes per-frame unimplemented warnings; no measurable FPS gain attributed to this fix."
+  }
+}
