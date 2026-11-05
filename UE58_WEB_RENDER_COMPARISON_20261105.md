@@ -2,7 +2,49 @@
 
 日期：2026-11-05。
 
-## 新增：关闭刚合入的默认优化
+## 当前：分别切换遮挡与调度优化
+
+用户反馈同一组优化在本机导致帧率大幅下降，在另一台设备却明显提升。本轮先拆分有效遮挡历史与 Game 本地帧调度，用四种组合隔离主效应和组合影响。由于上一轮还同时切换了 RHI 唤醒，额外增加 E 单独检查它。以下全部读取同一个 D 包，不修改引擎或包的全局默认值。
+
+| 组别 | 遮挡历史复用 | Game 本地调度 | RHI priority 唤醒 | 入口 |
+| --- | --- | --- | --- | --- |
+| A：全部关闭 | 关闭 | 关闭，owner RAF | 关闭，channel | [打开 A](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html?occlusion=control&clock=owner&rhiwake=channel) |
+| B：只开遮挡历史 | 开启 | 关闭，owner RAF | 关闭，channel | [打开 B](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html?occlusion=history&clock=owner&rhiwake=channel) |
+| C：只开本地调度 | 关闭 | 开启，local | 关闭，channel | [打开 C](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html?occlusion=control&clock=local&rhiwake=channel) |
+| D：遮挡与调度均开 | 开启 | 开启，local | 关闭，channel | [打开 D](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html?occlusion=history&clock=local&rhiwake=channel) |
+| E：只开 RHI 唤醒 | 关闭 | 关闭，owner RAF | 开启，priority | [打开 E](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html?occlusion=control&clock=owner&rhiwake=priority) |
+
+A / B 与 C / D 分别比较相同时钟下的遮挡开关；A / C 与 B / D 分别比较相同遮挡路径下的 Game 时钟；A / E 比较 RHI 唤醒。本轮 D 固定 `rhiwake=channel`，与之前默认三项都开的无参数 D 链接不同。E 在不支持 `scheduler.postTask` 的浏览器中仍回退 channel，必须结合运行状态判读。
+
+固定条件：Lumen GI / 反射、动态模糊质量 4、TSR 全部开启，`r.OneFrameThreadLag=1`、`t.MaxFPS=0`。运行时、Cook、输入桥接和分辨率配置相同。每次只运行一个入口，等待启动预热结束，用相同窗口、分辨率、视角和路线比较平均 FPS 与 1% Low；两台设备分别记录，不合并成一项通用收益结论。
+
+用户另已在桌面端确认：人为限帧没有复现同样问题，但显卡算力不足、实际降到十几帧时也会出现画面抖动；当前 Web 的 Low 帧也在十几帧。按用户决定，**暂停画面抖动排查与修复**，保留现有实现及历史取证，本轮只准备性能开关对照，不宣称此前发现的 Web 路径差异已被证明是唯一原因。
+
+探针与核验脚本现在支持独立的 `--occlusion=control|history`、`--clock=owner|local` 和 `--rhiwake=channel|priority`，并拒绝与 `--optimizations-off` 混用。参数解析和预期模式共用 `web-performance-modes.cjs`，启动 URL 和实际生效模式均写入证据。
+
+五组验证记录使用以下标签；浏览器功能探针含 GPU 包装和进程亲和性设置，其短窗口 FPS 不作为设备间性能比较数据。
+
+| 组别 | 测量标签 |
+| --- | --- |
+| A | `20261105-split-off` |
+| B | `20261105-split-history` |
+| C | `20261105-split-clock-retry1` |
+| D | `20261105-split-history-clock` |
+| E | `20261105-split-rhi` |
+
+五组均通过独立 Edge 启动、实际鼠标转向、相机与项目配置、Lumen / TSR / 动态模糊输出及绑定检查，遮挡 / 时钟 / 唤醒的实际值与表格一致。A 至 D 实际唤醒均为 channel；E 检测到 priority 支持，实际进入 priority。五组未捕获运行错误、GPU validation 或 device lost，截图像素检查通过，D 截图人工查看正常；文件校验再次确认使用相同完整编译的运行时和 Cook，测试浏览器均已关闭。
+
+C 首次测量标签 `20261105-split-clock` 在进入引擎前失败，未应用配置或运行优化路径，原始报告保留，具体启动原因未确定。补充启动失败诊断记录后，以 `20261105-split-clock-retry1` 新会话复测通过；该首次失败不纳入性能对比。测试开关的八种有效参数组合及无效 / 冲突参数检查通过，脚本语法和差异空白检查通过。以上均为功能及配置验证，未据此判断本机或另一设备的优化收益。
+
+运行后完整记录保留在 `tests/web-platform/results/motion-blur-ab-<标签>-runtime*`，文件与运行证据写入 `tests/web-platform/evidence/render-matrix-<标签>.json`。复现 B 的命令如下；其余组只替换标签和对应三个模式，重复测量须使用新标签。
+
+```powershell
+$env:NODE_PATH='C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-motion-blur-ab.cjs --tag=20261105-split-history --package-tag=20261105-blur --case=lumen-blur-lag1 --occlusion=history --clock=owner --rhiwake=channel "--profile-root=$env:TEMP/ue-web-performance-split-20261105"
+node tests/web-platform/verify-web-render-matrix.cjs --tag=20261105-split-history --package-tag=20261105-blur --case=lumen-blur-lag1 --occlusion=history --clock=owner --rhiwake=channel
+```
+
+## 历史：关闭刚合入的默认优化
 
 用户反馈本机新版本反而更卡。本轮以动态模糊矩阵的 D 为基准，增加以下回退入口。两个链接读取同一个包，运行时、Cook、分辨率、输入桥接和项目配置完全相同，只通过已有启动开关切换新启用的三项优化。
 
@@ -27,7 +69,7 @@ node tests/web-platform/verify-web-render-matrix.cjs --tag=20261105-optimization
 
 此轮只确认回退有效及渲染、输入正常，不据短窗口探针 FPS 判断性能变化。实际卡顿、鼠标手感与抖动仍待用户比较；每次只运行一个页面，保持相同分辨率及移动路线，并等待启动预热结束。
 
-## 当前对照：动态模糊
+## 历史：动态模糊对照
 
 用户更正：需要比较动态模糊开关，抗锯齿不是本轮变量。以下入口替代上一轮抗锯齿对照，四组统一保留 TSR（`r.AntiAliasingMethod=4`），不限帧率，沿用刚合并并编译的性能优化运行时 `triplex-perf-merged-20261105`。
 

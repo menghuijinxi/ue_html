@@ -6,6 +6,7 @@ const {execFileSync} = require('node:child_process');
 const {chromium} = require('playwright');
 const {PNG} = require('pngjs');
 const {audit} = require('./content-file-metadata.cjs');
+const {performanceModes} = require('./web-performance-modes.cjs');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const tag = option('tag') || '20261104';
 const packageTag = option('package-tag') || tag;
@@ -15,17 +16,19 @@ const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
 assert(packaged.pass);
 const renderMatrix = packaged.renderMatrix === true;
 const optimizationsOff = process.argv.includes('--optimizations-off');
-assert(!optimizationsOff || renderMatrix, 'Optimization rollback requires an explicit render configuration');
+const {modes: launchModes, query} = performanceModes({optimizationsOff,
+  occlusion: option('occlusion'), clock: option('clock'), rhiwake: option('rhiwake')});
+assert(!query || renderMatrix, 'Performance switches require an explicit render configuration');
 const selectedCase = option('case');
 const cases = [...(renderMatrix ? [] : [{name: 'baseline', folder: packaged.baseline, settings: {}}]),
   ...packaged.cases].filter(entry => !selectedCase || entry.name === selectedCase);
 assert(cases.length > 0 && (!selectedCase || cases.length === 1), 'Choose an existing case');
-const query = optimizationsOff ? '?occlusion=control&clock=owner&rhiwake=channel' : '';
 const profileRoot = path.resolve(option('profile-root') || path.join(__dirname, 'build/browser-profiles'));
 const output = path.join(__dirname, 'results', `motion-blur-ab-${tag}-runtime`);
 assert(!fs.existsSync(output + '.json'), 'Preserve previous measurements; use a new tag');
 const report = {date: new Date().toISOString(), pass: false, package: audit(packageFile),
-  profileRoot, packageTag, selectedCase, optimizationsOff, query,
+  profileRoot, packageTag, selectedCase, optimizationsOff, launchModes, query,
+  modesSource: audit(path.join(__dirname, 'web-performance-modes.cjs')),
   source: audit(__filename), runs: [], boundary: 'Functional verification of the packaged configurations, not a subjective shaking or mouse-latency verdict. Diagnostic GPU wrappers add overhead. FPS measures RHI submission intervals, not physical presentation.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
@@ -139,7 +142,8 @@ function summarize(presents) {
         const frame = await page.evaluate(() => globalThis.__webEngineFrames || 0);
         await page.waitForFunction(target => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= target,
           frame + count, {timeout: 180000});
-        assert(!await page.evaluate(() => globalThis.__webEngineFailure));
+        const failure = await page.evaluate(() => globalThis.__webEngineFailure);
+        assert(!failure, typeof failure === 'string' ? failure : JSON.stringify(failure));
         assert.deepEqual(run.errors, []);
       };
       await advance(60);
@@ -182,16 +186,16 @@ function summarize(presents) {
         assert.equal(run.state.lighting.antiAliasing, aa);
         assert.equal(run.state.frameLimit, undefined);
         assert.equal(run.state.cpuTraceSamples, 0, 'CPU diagnostic must remain disabled');
-        assert.equal(run.state.gameClock.mode, optimizationsOff ? 'owner' : 'local');
-        if (!optimizationsOff) assert.equal(run.state.gameClock.paused, false);
-        assert.equal(run.state.rhiWake.requested, optimizationsOff ? 'channel' : 'priority');
+        assert.equal(run.state.gameClock.mode, launchModes.clock);
+        if (launchModes.clock === 'local') assert.equal(run.state.gameClock.paused, false);
+        assert.equal(run.state.rhiWake.requested, launchModes.rhiwake);
         assert.equal(run.state.rhiWake.active,
-          !optimizationsOff && run.state.rhiWake.prioritySupported ? 'priority' : 'channel');
-        assert.equal(run.state.history.enabled, !optimizationsOff);
-        assert(run.state.arguments.includes('-WebOcclusionMode=' + (optimizationsOff ? 'control' : 'history')));
-        assert.equal(run.state.arguments.includes('-WebGameLocalClock'), !optimizationsOff);
-        if (optimizationsOff) {
-          assert(run.state.arguments.includes('-WebRHIWake=channel'));
+          launchModes.rhiwake === 'priority' && run.state.rhiWake.prioritySupported ? 'priority' : 'channel');
+        assert.equal(run.state.history.enabled, launchModes.occlusion === 'history');
+        assert(run.state.arguments.includes('-WebOcclusionMode=' + launchModes.occlusion));
+        assert.equal(run.state.arguments.includes('-WebGameLocalClock'), launchModes.clock === 'local');
+        assert(run.state.arguments.includes('-WebRHIWake=' + launchModes.rhiwake));
+        if (query) {
           assert(!run.state.arguments.some(value => value.startsWith('-WebFrameScheduler=')));
           assert.equal(run.state.occlusionRHI.bindingPlanEnabled, false);
           assert.equal(run.state.uploadStaging.enabled, false);
@@ -246,6 +250,15 @@ function summarize(presents) {
       await context.close(); context = null;
     }
     report.pass = true;
-  } catch (error) {report.failure = error.stack; process.exitCode = 1;}
+  } catch (error) {
+    report.failure = error.stack;
+    if (context) {
+      const page = context.pages()[0];
+      report.startupFailure = await page?.evaluate(() => ({
+        failure: globalThis.__webEngineFailure, diagnostics: globalThis.__webStartupDiagnostics,
+      })).catch(() => null);
+    }
+    process.exitCode = 1;
+  }
   finally {save(); await context?.close(); console.log(JSON.stringify({pass: report.pass, failure: report.failure, output}));}
 })();

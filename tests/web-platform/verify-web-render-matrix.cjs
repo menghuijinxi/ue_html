@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
+const {performanceModes} = require('./web-performance-modes.cjs');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const tag = option('tag');
 const packageTag = option('package-tag') || tag;
@@ -15,9 +16,17 @@ assert(packaged.pass && packaged.renderMatrix && runtime.pass);
 assert.equal(audit(packageFile).sha256, runtime.package.sha256);
 const motionMatrix = packaged.comparisonAxis === 'motion-blur';
 const optimizationsOff = process.argv.includes('--optimizations-off');
+const {modes: launchModes, query} = performanceModes({optimizationsOff,
+  occlusion: option('occlusion'), clock: option('clock'), rhiwake: option('rhiwake')});
 const selectedCase = option('case');
 assert.equal(runtime.optimizationsOff === true, optimizationsOff);
 assert.equal(runtime.selectedCase, selectedCase);
+if (runtime.query !== undefined || query) assert.equal(runtime.query, query);
+if (runtime.launchModes) assert.deepEqual(runtime.launchModes, launchModes);
+if (query && !optimizationsOff) {
+  assert.deepEqual(runtime.launchModes, launchModes);
+  assert.equal(runtime.modesSource.sha256, audit(path.join(__dirname, 'web-performance-modes.cjs')).sha256);
+}
 const expectedMatrix = motionMatrix ? [
   ['no-lumen-blur', 0, 4, 1, 4], ['lumen-no-blur', 1, 4, 1, 0],
   ['lumen-blur-lag0', 1, 4, 0, 4], ['lumen-blur-lag1', 1, 4, 1, 4],
@@ -29,8 +38,6 @@ assert.equal(packaged.cases.length, expectedMatrix.length);
 const expected = expectedMatrix.filter(([name]) => !selectedCase || name === selectedCase);
 assert(expected.length > 0 && (!selectedCase || expected.length === 1));
 assert.equal(runtime.runs.length, expected.length);
-if (optimizationsOff)
-  assert.equal(runtime.query, '?occlusion=control&clock=owner&rhiwake=channel');
 const reference = new Map(packaged.baselineProducts.map(item => [path.basename(item.file), item.sha256]));
 const baselineFile = path.join(__dirname, 'results', packaged.baseline + '-package.json');
 const baseline = read(baselineFile);
@@ -81,15 +88,16 @@ const entries = expected.map(([name, lumen, aa, lag, blurQuality], index) => {
     } else assert.deepEqual(config, original);
   }
   assert.equal(run.state.cpuTraceSamples, 0);
-  assert.equal(run.state.gameClock.mode, optimizationsOff ? 'owner' : 'local');
-  assert.equal(run.state.history.enabled, !optimizationsOff);
-  assert.equal(run.state.rhiWake.requested, optimizationsOff ? 'channel' : 'priority');
-  if (optimizationsOff) {
-    assert.equal(run.url, entry.url + runtime.query);
-    assert.equal(run.state.rhiWake.active, 'channel');
-    assert.equal(run.state.arguments.includes('-WebGameLocalClock'), false);
-    assert(run.state.arguments.includes('-WebOcclusionMode=control'));
-    assert(run.state.arguments.includes('-WebRHIWake=channel'));
+  assert.equal(run.state.gameClock.mode, launchModes.clock);
+  assert.equal(run.state.history.enabled, launchModes.occlusion === 'history');
+  assert.equal(run.state.rhiWake.requested, launchModes.rhiwake);
+  assert.equal(run.state.rhiWake.active,
+    launchModes.rhiwake === 'priority' && run.state.rhiWake.prioritySupported ? 'priority' : 'channel');
+  if (query) {
+    assert.equal(run.url, entry.url + query);
+    assert.equal(run.state.arguments.includes('-WebGameLocalClock'), launchModes.clock === 'local');
+    assert(run.state.arguments.includes('-WebOcclusionMode=' + launchModes.occlusion));
+    assert(run.state.arguments.includes('-WebRHIWake=' + launchModes.rhiwake));
     assert.equal(run.state.occlusionRHI.bindingPlanEnabled, false);
     assert.equal(run.state.uploadStaging.enabled, false);
     assert.equal(run.state.occlusionWait.budgetMs, 0);
@@ -106,8 +114,8 @@ const entries = expected.map(([name, lumen, aa, lag, blurQuality], index) => {
     files: entry.products.filter(item => /(?:config-files\.json|index\.html|UEWebEngineThreads\.(?:js|wasm))$/.test(item.file))};
 });
 const evidence = {date: new Date().toISOString(), pass: true, package: audit(packageFile),
-  comparisonAxis: optimizationsOff ? 'performance-defaults' : packaged.comparisonAxis || 'anti-aliasing',
-  optimizationsOff, selectedCase,
+  comparisonAxis: query ? 'performance-defaults' : packaged.comparisonAxis || 'anti-aliasing',
+  optimizationsOff, selectedCase, launchModes,
   runtime: audit(runtimeFile), baseline: audit(baselineFile), build: baseline.build,
   source: audit(__filename), cases: entries,
   boundary: 'Configuration, shared payload, real rendering passes, camera input and error checks passed. Functional probes include wrappers and are not a performance benchmark or a subjective mouse-stutter verdict.'};
