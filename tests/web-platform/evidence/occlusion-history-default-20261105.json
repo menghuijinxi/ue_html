@@ -1,0 +1,315 @@
+{
+  "date": "2026-11-05T01:27:46.141Z",
+  "pass": true,
+  "acceptedForDefault": true,
+  "engineCommit": "75d375164",
+  "defaultMode": {
+    "occlusion": "history",
+    "gameClock": "local",
+    "hzb": 0,
+    "instanceHzb": 0,
+    "queryWaitMs": 0
+  },
+  "manualAcceptance": {
+    "source": "User report in this conversation on 2026-11-05",
+    "statement": "人工测试过了，快速移动没有发现缺物，没有发现明显的操作延迟。把这个模式改成默认吧。",
+    "fastMovementMissingObjectsObserved": false,
+    "obviousInputDelayObserved": false,
+    "inputLatencyMeasuredMs": false
+  },
+  "defaultUrl": "http://127.0.0.1:8765/build/villa-occlusion-default-v67/index.html",
+  "rollbackQuery": "?occlusion=control&clock=owner",
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/occlusion-default-v67-startup-20261105.json",
+      "sha256": "54ca77d6ba8cd2ba47357963e56c5c1b9e4d6d9e227b362e0be85684f91a4e08"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-default-v67-hidden-start-20261105.json",
+      "sha256": "8e568f24357c46f79675c2526a0bcec2eeb7c53fa091b068cff0c1992fb6a125"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-default-v67-options-20261105.json",
+      "sha256": "0ce85b18fb161e866902c1b5f83f4787981b2a12f3cb58c6f24633523fb26c54"
+    },
+    {
+      "file": "tests/web-platform/results/villa-occlusion-default-v67-package.json",
+      "sha256": "fd3687807674140e034c6732a976360064b7617855c6a349d5b7c71e2e8ea3cd"
+    },
+    {
+      "file": "tests/web-platform/evidence/occlusion-history-performance-20261105.json",
+      "sha256": "08f014f398499b74231ca1d71f3d222a37aa923e8fb6d6fe3d2acd549cf89999"
+    }
+  ],
+  "executedSources": [
+    {
+      "file": "tests/web-platform/results/occlusion-default-v67-startup-20261105-source.cjs",
+      "sha256": "9f3569158ee07944945b19c48efbb05cb53dd987b3725f6100f6a979d8d3e566"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-default-v67-hidden-start-20261105-source.cjs",
+      "sha256": "6f831a7013638ec546ecff315572d6a8b894fabaf53975406e4f8fdb11ead796"
+    }
+  ],
+  "build": {
+    "file": "tests/web-platform/results/villa-occlusion-default-v67-build.json",
+    "sha256": "7ea50f761d5bb5a7126b8942ff46b939d9e787105cb1e87307642d0c7e508444"
+  },
+  "sources": [
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "27c2a8e17a712554635485fb099354e13e68e5240d14d0404385886ee64dc77c"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "be51e78fc7e49544a6e94bde9cdb2e594e532c4a4c7f65f28ce2e2b1d11e7de6"
+    },
+    {
+      "file": "tests/ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "6fabcb47aa0891d954f550c82dfb86fd25582175c5f17e5fec07be91e2be1a49"
+    },
+    {
+      "file": "reference-engine/Engine/Platforms/Web/Build/WebWorkerCanvas.js",
+      "sha256": "718aaea9053497da6ded74925b9d20d83c2d874960c3a6771bd9c9b160b5362a"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Renderer/Private/SceneOcclusion.cpp",
+      "sha256": "972ae07f3c0d323fe4065a42ec5d0f5cf21afcb30e05c589aa73c564150052c4"
+    }
+  ],
+  "packageFiles": [
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/content.bin",
+      "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/index.html",
+      "sha256": "27e2bd8da121430127901736ada59b050c903ac2accb37b487b6ace35fd34c4b"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/UEWebEngineThreads.js",
+      "sha256": "5ed17f6b14d6951386e8012963b3085d12955a67929b29be338b9a38ed2994c1"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/UEWebEngineThreads.wasm",
+      "sha256": "55eee2955e2615cb6c8614311f6cc025ef1ea4954612162df1d67498cc3faf32"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/web-content-io.js",
+      "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/web-content-worker.js",
+      "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/web-engine-host.js",
+      "sha256": "27c2a8e17a712554635485fb099354e13e68e5240d14d0404385886ee64dc77c"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/web-engine-worker.js",
+      "sha256": "be51e78fc7e49544a6e94bde9cdb2e594e532c4a4c7f65f28ce2e2b1d11e7de6"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-default-v67/asset-versions.json",
+      "sha256": "461f16c42d3099987b51874974cb3081ca1c59b9091a39516eaedffeb6bd0081"
+    }
+  ],
+  "startupRuns": [
+    {
+      "mode": "default",
+      "url": "http://127.0.0.1:8765/build/villa-occlusion-default-v67/index.html",
+      "gameClock": {
+        "mode": "local",
+        "paused": false
+      },
+      "historyEnabled": true,
+      "culling": {
+        "hzbOcclusion": 0,
+        "instanceOcclusion": 0,
+        "renderTargetCount": 152,
+        "renderTargetPoolBytes": 843205632,
+        "renderTargetUsedBytes": 485321728,
+        "rdgTransientCvar": 1,
+        "nativeTransientAllocator": false
+      },
+      "fps": 105.06866416978777,
+      "low1Fps": 54.141851650849965,
+      "history": {
+        "polls": 2770.8780952380953,
+        "ready": 616.0428571428571,
+        "hits": 570.347619047619,
+        "zero": 528.4533333333334,
+        "fallback": 112.65238095238095,
+        "expired": 25.652380952380952,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 617.7685714285715,
+        "queryDropped": 0.5666666666666667
+      },
+      "visibility": {
+        "handlerSimulated": true,
+        "hiddenFrame": 2268,
+        "hiddenAfterFrame": 2268,
+        "resumedFrame": 2342
+      }
+    },
+    {
+      "mode": "control",
+      "url": "http://127.0.0.1:8765/build/villa-occlusion-default-v67/index.html?occlusion=control&clock=owner",
+      "gameClock": {
+        "mode": "owner",
+        "paused": false
+      },
+      "historyEnabled": false,
+      "culling": {
+        "hzbOcclusion": 0,
+        "instanceOcclusion": 0,
+        "renderTargetCount": 148,
+        "renderTargetPoolBytes": 838618112,
+        "renderTargetUsedBytes": 485321728,
+        "rdgTransientCvar": 1,
+        "nativeTransientAllocator": false
+      },
+      "fps": 76.11345899708402,
+      "low1Fps": 31.37131877115294,
+      "history": {
+        "polls": 0,
+        "ready": 0,
+        "hits": 0,
+        "zero": 0,
+        "fallback": 0,
+        "expired": 0,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 0,
+        "queryDropped": 0
+      }
+    },
+    {
+      "mode": "default",
+      "url": "http://127.0.0.1:8765/build/villa-occlusion-default-v67/index.html",
+      "gameClock": {
+        "mode": "local",
+        "paused": false
+      },
+      "historyEnabled": true,
+      "culling": {
+        "hzbOcclusion": 0,
+        "instanceOcclusion": 0,
+        "renderTargetCount": 148,
+        "renderTargetPoolBytes": 838618112,
+        "renderTargetUsedBytes": 838618112,
+        "rdgTransientCvar": 1,
+        "nativeTransientAllocator": false
+      },
+      "fps": 101.22312103958251,
+      "low1Fps": 55.49249590279108,
+      "history": {
+        "polls": 2080.3490196078433,
+        "ready": 616.4823529411765,
+        "hits": 577.0490196078431,
+        "zero": 532,
+        "fallback": 105.95098039215686,
+        "expired": 18.95098039215686,
+        "cameraRejected": 0,
+        "boundsRejected": 0,
+        "hzbSubmitted": 0,
+        "hzbCompleted": 0,
+        "hzbSkipped": 0,
+        "queryCaptured": 614.6490196078431,
+        "queryDropped": 0
+      },
+      "visibility": {
+        "handlerSimulated": true,
+        "hiddenFrame": 2224,
+        "hiddenAfterFrame": 2224,
+        "resumedFrame": 2293
+      }
+    }
+  ],
+  "initiallyHiddenRun": {
+    "mode": "default",
+    "url": "http://127.0.0.1:8765/build/villa-occlusion-default-v67/index.html",
+    "gameClock": {
+      "mode": "local",
+      "paused": false
+    },
+    "historyEnabled": true,
+    "culling": {
+      "hzbOcclusion": 0,
+      "instanceOcclusion": 0,
+      "renderTargetCount": 152,
+      "renderTargetPoolBytes": 843205632,
+      "renderTargetUsedBytes": 485321728,
+      "rdgTransientCvar": 1,
+      "nativeTransientAllocator": false
+    },
+    "fps": 101.17619824942403,
+    "low1Fps": 54.056489028715156,
+    "history": {
+      "polls": 2678.586274509804,
+      "ready": 622.3588235294118,
+      "hits": 573.0294117647059,
+      "zero": 530.9568627450981,
+      "fallback": 109.97058823529412,
+      "expired": 22.970588235294116,
+      "cameraRejected": 0,
+      "boundsRejected": 0,
+      "hzbSubmitted": 0,
+      "hzbCompleted": 0,
+      "hzbSkipped": 0,
+      "queryCaptured": 617.6176470588235,
+      "queryDropped": 0
+    },
+    "initialVisibility": {
+      "handlerSimulated": true,
+      "hidden": {
+        "clock": {
+          "mode": "local",
+          "paused": true
+        },
+        "frame": 0
+      },
+      "hiddenAfter": {
+        "clock": {
+          "mode": "local",
+          "paused": true
+        },
+        "frame": 1
+      }
+    }
+  },
+  "checks": {
+    "buildAndWasm": true,
+    "defaultNoUrlParameters": true,
+    "actualGameWorkerClock": true,
+    "completedHistoryConsumed": true,
+    "explicitOriginalPath": true,
+    "hiddenHandlerPauseResume": true,
+    "initialHiddenHandlerPaused": true,
+    "modeSelectionCases": 10,
+    "runtimeErrors": []
+  },
+  "limits": [
+    "Short startup checks do not replace the prior 18-run performance comparison.",
+    "Hidden-page checks simulate document.hidden and exercise the visibility handler, not browser background throttling.",
+    "Manual input-delay acceptance is observational; input-to-display milliseconds were not measured.",
+    "No added GPU-completion budget. HZB remains an explicit comparison option.",
+    "Prior v66 packages and performance evidence were preserved with their original defaults."
+  ]
+}

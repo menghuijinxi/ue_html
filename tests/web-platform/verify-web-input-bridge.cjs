@@ -43,6 +43,13 @@ const channels = [];
   let library;
   const game = vm.createContext({
     ENVIRONMENT_IS_PTHREAD: true, Map, performance,
+    MessageChannel: class {
+      constructor() {
+        const channel = new MessageChannel();
+        channels.push(channel);
+        return channel;
+      }
+    },
     MainLoop: {preMainLoop: []},
     addToLibrary: value => {library = value;},
     addEventListener: (name, callback) => {assert.equal(name, 'message'); handlers.push(callback);},

@@ -2,6 +2,10 @@
 
 2026-11-04 浴室镜面专项：三方同机位对照确认 Web 软件 Lumen 与原生完整软件模式接近，但镜面细节明显低于原生项目硬件模式；桌面效果门槛仍失败。`capture-villa-distance-fields.ps1 -UseProjectSettings -LumenTracing Software` 只覆盖追踪选择，`lumen-reflection-cases.json` 固定机位，`summarize-web-lumen-reflections.cjs --require-desktop-parity` 防止将链路运行记作画质通过。证据、开关恢复及混合模式近黑镜面的边界见 [镜面诊断](../../UE58_WEBGPU_LUMEN_REFLECTIONS.md)。
 
+2026-11-05 用户完成快速移动人工检查，未发现缺物或明显操作延迟，已将 **有效查询历史＋Game 本地调度** 设为线程包默认。无参数入口为 `build/villa-occlusion-default-v67/index.html`；`?occlusion=control&clock=owner` 切回原路径。此前十八轮性能复测中该组合 108.33 FPS / Low 54.49，较同调度原路径提升 12.19% / 16.88%。普通 HZB 仍为独立对照项。构建、默认启动验证及边界见 [遮挡历史与 HZB 记录](../../UE58_WEB_OCCLUSION_HISTORY_EXPERIMENT.md)。
+
+2026-11-04 绑定重建与 TLV 两个单变量实验：同包独立 ABBA 分别约 +0.77% / +0.69% FPS，Low 无明确改善，两个候选默认关闭。descriptor reference 校验、TLV 回读、纹理流送及窗口变化通过，严格图像对照未通过，保留未验收状态。实现范围、计数、画面对照和复现见 [实验报告](../../UE58_WEB_BINDING_TLV_EXPERIMENTS.md)。
+
 2026-11-03 第二轮调用审计：将状态/遮挡查询纳入命令流，并紧凑传递 bind-group 描述符。owner 每帧导入约 4003 → 2025 次、内存视图检查约 18060 → 8274 次；八轮同包对照约 +1.96%，最终 v38 四轮确认 55.05 → 56.98 FPS（+3.52%）。1% low 未改善，最终组 31.75 → 29.98。共享内存 WASM64 独立创建测试、六视角、GPU 像素/查询读回及调用参数校验见 [调用审计](../../UE58_WEBGPU_CALL_AUDIT.md)。
 
 2026-11-03 WASM64 调用桥接优化：动态命令流将 3200 次复杂绘制的完整 CPU 前端从 2.455 降到 0.605 ms，纯 JS 为 0.550 ms；仍有约 10% 差距。接入同一 UE 包四轮 A/B 后，别墅 51.83 → 55.12 FPS、1% low 27.79 → 32.30，六视角及独立像素/调用顺序检查通过。新包 `villa-command-stream-v36`，剩余热点集中在绑定组准备、分配和互斥等待。实现、证据和复现见 [调用桥接优化](../../UE58_WEBGPU_CALL_BRIDGE.md)。

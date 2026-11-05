@@ -1,0 +1,2084 @@
+{
+  "date": "2026-11-04T09:01:12.286Z",
+  "experimentCompleted": true,
+  "pass": true,
+  "acceptedForDefault": false,
+  "runtimeChecksPassed": true,
+  "strictImagesPassed": true,
+  "candidate": "frame4w8",
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/frame-scheduler-v64-abccba-20261104.json",
+      "sha256": "bbac421675dfc27d5fa05b2e97de81f8cb004f540f0935a3080360a42451ec45"
+    },
+    {
+      "file": "tests/web-platform/results/frame-scheduler-v64-stress5-20261104.json",
+      "sha256": "06ff6e7e7b5313a98d8af2eead0432f6311dc4be2fbfb8aa3c88fdada7d05321"
+    },
+    {
+      "file": "tests/web-platform/results/frame-scheduler-v64-images-20261104.json",
+      "sha256": "114cf85b719718230640f01ff9a4168e3b5da4279b4cede5999fdc592ba4acbe"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-frame-scheduler-v64-package.json",
+      "sha256": "453441d90bf2129e4351e50bbe4a0886e4f0118328fb543248b74a0823055bf0"
+    }
+  ],
+  "analysisSource": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-web-frame-scheduler.cjs",
+    "sha256": "ee5d4f6da1544d63afd7cd7c92509215d19a833731fe6f9ed76c274ee5892711"
+  },
+  "excludedCaptures": [
+    {
+      "input": {
+        "file": "tests/web-platform/results/frame-scheduler-v64-stress-20261104.json",
+        "sha256": "89366b739f922b0adcc8c5b4884499cc7d80f3fb37f434a495c2312a3a83cda8"
+      },
+      "rawError": "AssertionError [ERR_ASSERTION]: Gameplay input did not move the camera\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-frame-scheduler.cjs:163:14",
+      "excludedFromResults": true
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/frame-scheduler-v64-stress2-20261104.json",
+        "sha256": "35471ca40670435e287827f5b603c2d664ae6dc2a77866eae48fa5f8b779348c"
+      },
+      "rawError": "page.waitForFunction: Timeout 5000ms exceeded.\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-frame-scheduler.cjs:173:20",
+      "excludedFromResults": true
+    },
+    {
+      "input": {
+        "file": "tests/web-platform/results/frame-scheduler-v64-stress3-20261104.json",
+        "sha256": "93f86a963a15e0a835ae5eccca636e517e91eaef98eeb63c4a51afa7f538563b"
+      },
+      "rawError": "page.waitForFunction: Timeout 5000ms exceeded.\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-frame-scheduler.cjs:178:20",
+      "excludedFromResults": true
+    }
+  ],
+  "executedSources": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\frame-scheduler-v64-abccba-20261104-source.cjs",
+      "sha256": "78a07f771d5ded635800be66af51b49e08563f792bb53797624a0debb356ccda"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\frame-scheduler-v64-stress5-20261104-source.cjs",
+      "sha256": "8a4b04b665229fbbca5c27e9d63bd57bb0731fbbc3d2d3183d633b0de81771bc"
+    }
+  ],
+  "package": {
+    "folder": "villa-frame-scheduler-v64",
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-frame-scheduler-v64-build.json",
+      "sha256": "54566dfde2958b1ea081cdcea49df7da047cb18c91f435b21cebbd6eb2b9e82c"
+    },
+    "products": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\content.bin",
+        "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\index.html",
+        "sha256": "8405f3a0959b5b621b71c6a191721403a4cb676bff7b0d7a720fa36144062e34"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\UEWebEngineThreads.js",
+        "sha256": "3b50a3236792baaf130818e57f54f96d744893b6eafce97939816479d5514638"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\UEWebEngineThreads.wasm",
+        "sha256": "ce35b9b51fc322eeacf35f2c81e6ea632f085b1781c5ba8884ddec4213936490"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\web-content-io.js",
+        "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\web-content-worker.js",
+        "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\web-engine-host.js",
+        "sha256": "0954a04e201a3a904c4e9d09f119815c820f4c7288710cc810773e011d973f73"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\web-engine-worker.js",
+        "sha256": "1d92b0badde9b742a924aed543c6f068f69480b3f30bb6471d9b31e26719cb8a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-frame-scheduler-v64\\asset-versions.json",
+        "sha256": "8900ccd89e39a78f587d0693f649abda505f23d52c7314e7df473675207185c9"
+      }
+    ],
+    "originalCook": {
+      "index.html": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\index.html",
+        "sha256": "f93c2c0c52c62ff4f9bfb2742e1b8988a44215586681fb3404813768ab6716c3"
+      },
+      "UEWebEngineThreads.js": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\UEWebEngineThreads.js",
+        "sha256": "97d5af24ece04c8c58efc639b75ee20e10ff37a988720fd503f2eb5e1a09c0a8"
+      },
+      "UEWebEngineThreads.wasm": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\UEWebEngineThreads.wasm",
+        "sha256": "6f3ea9f7ec2964f905b38ee4d4f1367dc953b327a42efc97cee83c18047eb17a"
+      },
+      "config-files.json": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      },
+      "content-files.json": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      }
+    },
+    "baselineEvidence": {
+      "file": "tests/web-platform/results/post-mimalloc-v59-profile-20261104.json",
+      "sha256": "7cebaa53c0c05dba2b857075aab25936a0d987ac49ecfb599e54cba600cd5b91"
+    }
+  },
+  "settings": {
+    "camera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "view": {
+      "frame": 1220,
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 3,
+      "parallelRendering": true
+    },
+    "renderer": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "threads": {
+      "sharedMemory": true,
+      "engineWorker": true,
+      "gameThread": 2,
+      "taskThread": 4,
+      "cores": 4,
+      "renderThread": true,
+      "rhiThread": true,
+      "renderThreadId": 14,
+      "rhiThreadId": 1,
+      "taskWorkers": 3,
+      "threadingTest": 0
+    },
+    "qualityOverrides": []
+  },
+  "order": [
+    "control",
+    "controlw8",
+    "frame4w8",
+    "frame4w8",
+    "controlw8",
+    "control"
+  ],
+  "seconds": 20,
+  "warmup": 15,
+  "results": {
+    "control": {
+      "runs": [
+        {
+          "index": 1,
+          "fps": 77.65845272779352,
+          "low1Fps": 35.61531013195073
+        },
+        {
+          "index": 6,
+          "fps": 78.12498047499822,
+          "low1Fps": 34.15191197309929
+        }
+      ],
+      "frames": 3117,
+      "fps": 77.89169156539347,
+      "low1Fps": 34.81477451999334,
+      "maximumMs": 57.485000003129244,
+      "rhiWorkMs": 9.249718555625448,
+      "workload": {
+        "draws": 3057.6133333333332,
+        "indirectDraws": 76.66666666666667,
+        "dispatches": 158.0679365079365,
+        "ready": 342.5657142857143,
+        "pending": 286.83746031746034,
+        "zero": 329.3390476190476,
+        "pendingFraction": 0.45572928750844843
+      },
+      "queryWait": {
+        "callsPerFrame": 0,
+        "unreadyPerFrame": 0,
+        "msPerFrame": 0
+      },
+      "gpu": [
+        {
+          "before": null,
+          "after": null
+        },
+        {
+          "before": null,
+          "after": null
+        }
+      ]
+    },
+    "controlw8": {
+      "runs": [
+        {
+          "index": 2,
+          "fps": 65.53007885603363,
+          "low1Fps": 26.26617011120955
+        },
+        {
+          "index": 5,
+          "fps": 80.47563600120183,
+          "low1Fps": 37.75135183075869
+        }
+      ],
+      "frames": 2921,
+      "fps": 73.00285275954788,
+      "low1Fps": 30.234163596863986,
+      "maximumMs": 64.37000000104308,
+      "rhiWorkMs": 8.950178037967962,
+      "workload": {
+        "draws": 2567.3085034013607,
+        "indirectDraws": 13.314285714285715,
+        "dispatches": 146.59047619047618,
+        "ready": 569.9071428571428,
+        "pending": 59.20238095238095,
+        "zero": 548.3591836734694,
+        "pendingFraction": 0.0941050464375194
+      },
+      "queryWait": {
+        "callsPerFrame": 0.9959183673469387,
+        "unreadyPerFrame": 0.09897959183673469,
+        "msPerFrame": 7.410111224489796
+      },
+      "gpu": [
+        {
+          "before": null,
+          "after": null
+        },
+        {
+          "before": null,
+          "after": null
+        }
+      ]
+    },
+    "frame4w8": {
+      "runs": [
+        {
+          "index": 3,
+          "fps": 81.44823964370279,
+          "low1Fps": 36.8783556590814
+        },
+        {
+          "index": 4,
+          "fps": 81.75056134802965,
+          "low1Fps": 38.74025796451496
+        }
+      ],
+      "frames": 3266,
+      "fps": 81.59939817320844,
+      "low1Fps": 37.33010559899428,
+      "maximumMs": 45.80499999970198,
+      "rhiWorkMs": 8.086554053657565,
+      "workload": {
+        "draws": 2467.1770642201836,
+        "indirectDraws": 4.106422018348624,
+        "dispatches": 144.91039755351682,
+        "ready": 618.188379204893,
+        "pending": 10.634862385321101,
+        "zero": 595.4299694189602,
+        "pendingFraction": 0.0169123239758551
+      },
+      "queryWait": {
+        "callsPerFrame": 1,
+        "unreadyPerFrame": 0.018042813455657492,
+        "msPerFrame": 7.051075229357798
+      },
+      "gpu": [
+        {
+          "before": [
+            1275,
+            1276,
+            1278,
+            4,
+            1275,
+            4,
+            1,
+            0
+          ],
+          "after": [
+            2905,
+            2907,
+            2909,
+            4,
+            2905,
+            4,
+            1,
+            0
+          ]
+        },
+        {
+          "before": [
+            1272,
+            1273,
+            1275,
+            4,
+            1272,
+            4,
+            1,
+            0
+          ],
+          "after": [
+            2909,
+            2911,
+            2913,
+            4,
+            2909,
+            4,
+            1,
+            0
+          ]
+        }
+      ]
+    }
+  },
+  "combinedVsControl": {
+    "fpsPercent": 4.760079712355703,
+    "low1Percent": 7.22489550393739
+  },
+  "queryWaitVsControl": {
+    "fpsPercent": -6.276457357125443,
+    "low1Percent": -13.157089156211011
+  },
+  "clockVsSameQueryWait": {
+    "fpsPercent": 11.775629429133838,
+    "low1Percent": 23.469946437897548
+  },
+  "stressFrozen": false,
+  "stress": [
+    {
+      "mode": "control",
+      "input": {
+        "before": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "after": {
+          "x": 410.7367700227002,
+          "y": -390.60547408427453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        }
+      },
+      "snapshots": [
+        {
+          "frame": 2568,
+          "view": {
+            "frame": 2569,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 2550,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990905344,
+            "nonPoolAllocatedBytes": 857713664,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6025,
+            "requestedMips": 6025,
+            "maximumMips": 7241,
+            "residentBytes": 628015184,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 2788,
+          "view": {
+            "frame": 2789,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 2760,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990905344,
+            "nonPoolAllocatedBytes": 862892032,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6025,
+            "requestedMips": 6025,
+            "maximumMips": 7241,
+            "residentBytes": 628015184,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 3255,
+          "view": {
+            "frame": 3256,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 3240,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990905344,
+            "nonPoolAllocatedBytes": 754428928,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6025,
+            "requestedMips": 6025,
+            "maximumMips": 7241,
+            "residentBytes": 628015184,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 3697,
+          "view": {
+            "frame": 3698,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 3690,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990905344,
+            "nonPoolAllocatedBytes": 808102912,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6025,
+            "requestedMips": 6025,
+            "maximumMips": 7241,
+            "residentBytes": 628015184,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4021,
+          "view": {
+            "frame": 4021,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4020,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 986678272,
+            "nonPoolAllocatedBytes": 860335104,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6076,
+            "requestedMips": 6076,
+            "maximumMips": 7241,
+            "residentBytes": 623788112,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4208,
+          "view": {
+            "frame": 4209,
+            "width": 960,
+            "height": 540,
+            "outputWidth": 960,
+            "outputHeight": 540,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4200,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990872576,
+            "nonPoolAllocatedBytes": 399072256,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6077,
+            "requestedMips": 6077,
+            "maximumMips": 7241,
+            "residentBytes": 627982416,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4328,
+          "view": {
+            "frame": 4331,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4320,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990872576,
+            "nonPoolAllocatedBytes": 548022272,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6077,
+            "requestedMips": 6077,
+            "maximumMips": 7241,
+            "residentBytes": 627982416,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4460,
+          "view": {
+            "frame": 4463,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4440,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990872576,
+            "nonPoolAllocatedBytes": 817867776,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6022,
+            "requestedMips": 6022,
+            "maximumMips": 7241,
+            "residentBytes": 627982416,
+            "fullBytes": 2658304080
+          }
+        }
+      ]
+    },
+    {
+      "mode": "frame4w8",
+      "input": {
+        "before": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "after": {
+          "x": 410.73678542583343,
+          "y": -388.99886894294,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        }
+      },
+      "visibility": {
+        "actualHiddenObserved": false,
+        "handlerSimulated": true,
+        "hidden": {
+          "time": 59746.474999997765,
+          "frame": 4616,
+          "game": 4615,
+          "stages": {
+            "rhiWorkMilliseconds": 31238.121509552002,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 4619,
+            "rhiThreadId": 1,
+            "rhiFrames": 4615,
+            "submitted": 62163,
+            "presented": 4616,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 20353
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "view": {
+            "frame": 4619,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "occlusion": {
+            "ready": 2045280,
+            "pending": 75071,
+            "zero": 1980220,
+            "bindGroupCacheHits": 12101114,
+            "bindGroupsCreated": 62620,
+            "cachedBindGroups": 362,
+            "bindingEntriesPrepared": 17639243,
+            "bindingEntriesReused": 9261322,
+            "bindingEntriesValidated": 0,
+            "bindGroupFastHits": 1597600,
+            "uniformSnapshots": 2421198,
+            "uniformWriteCalls": 9192,
+            "pipelineLayouts": 140,
+            "drawBundleHits": 0,
+            "drawBundlesCreated": 0,
+            "cachedDrawBundles": 0,
+            "resourceTableCommits": 1370646,
+            "resourceTableBuffers": 1575955,
+            "bindingRouteResolutions": 1223,
+            "manualVertexFetchEnabled": false,
+            "manualVertexFetchDraws": 0,
+            "vertexFetchFormatBuffers": 0,
+            "skipNoopRHITick": true,
+            "nativeStorageContracts": true,
+            "revalidateStorageDescriptors": true,
+            "noopRHITicksSkipped": 4592,
+            "storageDescriptorRevalidations": 771438,
+            "nativeStorageContractUses": 1153722,
+            "storageContractRejectionChecks": 0,
+            "groupPreparationHits": 7309298,
+            "groupPreparationValidated": 0,
+            "groupFrameMisses": 857437,
+            "groupAccessMisses": 2251729,
+            "groupVersionMisses": 1745270,
+            "groupTextureMisses": 0,
+            "groupCacheEnabled": true,
+            "bindingPlanEnabled": false,
+            "bindingPlanEntries": 0,
+            "bindingPlansBuilt": 0,
+            "bindingPlanValidations": 0,
+            "draws": 7314777,
+            "indirectDraws": 136764,
+            "dispatches": 589099,
+            "sampleFrame": 4590
+          },
+          "streaming": {
+            "frame": 4590,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 996901888,
+            "nonPoolAllocatedBytes": 817867776,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6009,
+            "requestedMips": 6009,
+            "maximumMips": 7241,
+            "residentBytes": 634011728,
+            "fullBytes": 2658304080
+          },
+          "capacity": 1521025024,
+          "gpu": [
+            4615,
+            4615,
+            4615,
+            4,
+            4615,
+            4,
+            1,
+            0
+          ],
+          "upload": {
+            "enabled": false,
+            "calls": 203823,
+            "pooled": 0,
+            "pageCreates": 0,
+            "fallbacks": 203823,
+            "retainedBytes": 0
+          },
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 4249,
+            "unready": 91,
+            "microseconds": 23172112
+          }
+        },
+        "hiddenAfter": {
+          "time": 60751.65500000119,
+          "frame": 4616,
+          "game": 4615,
+          "stages": {
+            "rhiWorkMilliseconds": 31238.121509552002,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 4619,
+            "rhiThreadId": 1,
+            "rhiFrames": 4615,
+            "submitted": 62163,
+            "presented": 4616,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 20353
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "view": {
+            "frame": 4619,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "occlusion": {
+            "ready": 2045280,
+            "pending": 75071,
+            "zero": 1980220,
+            "bindGroupCacheHits": 12101114,
+            "bindGroupsCreated": 62620,
+            "cachedBindGroups": 362,
+            "bindingEntriesPrepared": 17639243,
+            "bindingEntriesReused": 9261322,
+            "bindingEntriesValidated": 0,
+            "bindGroupFastHits": 1597600,
+            "uniformSnapshots": 2421198,
+            "uniformWriteCalls": 9192,
+            "pipelineLayouts": 140,
+            "drawBundleHits": 0,
+            "drawBundlesCreated": 0,
+            "cachedDrawBundles": 0,
+            "resourceTableCommits": 1370646,
+            "resourceTableBuffers": 1575955,
+            "bindingRouteResolutions": 1223,
+            "manualVertexFetchEnabled": false,
+            "manualVertexFetchDraws": 0,
+            "vertexFetchFormatBuffers": 0,
+            "skipNoopRHITick": true,
+            "nativeStorageContracts": true,
+            "revalidateStorageDescriptors": true,
+            "noopRHITicksSkipped": 4592,
+            "storageDescriptorRevalidations": 771438,
+            "nativeStorageContractUses": 1153722,
+            "storageContractRejectionChecks": 0,
+            "groupPreparationHits": 7309298,
+            "groupPreparationValidated": 0,
+            "groupFrameMisses": 857437,
+            "groupAccessMisses": 2251729,
+            "groupVersionMisses": 1745270,
+            "groupTextureMisses": 0,
+            "groupCacheEnabled": true,
+            "bindingPlanEnabled": false,
+            "bindingPlanEntries": 0,
+            "bindingPlansBuilt": 0,
+            "bindingPlanValidations": 0,
+            "draws": 7314777,
+            "indirectDraws": 136764,
+            "dispatches": 589099,
+            "sampleFrame": 4590
+          },
+          "streaming": {
+            "frame": 4590,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 996901888,
+            "nonPoolAllocatedBytes": 817867776,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6009,
+            "requestedMips": 6009,
+            "maximumMips": 7241,
+            "residentBytes": 634011728,
+            "fullBytes": 2658304080
+          },
+          "capacity": 1521025024,
+          "gpu": [
+            4615,
+            4615,
+            4615,
+            4,
+            4615,
+            4,
+            1,
+            0
+          ],
+          "upload": {
+            "enabled": false,
+            "calls": 203823,
+            "pooled": 0,
+            "pageCreates": 0,
+            "fallbacks": 203823,
+            "retainedBytes": 0
+          },
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 4249,
+            "unready": 91,
+            "microseconds": 23172112
+          }
+        },
+        "resumed": {
+          "time": 62287.0700000003,
+          "frame": 4730,
+          "game": 4730,
+          "stages": {
+            "rhiWorkMilliseconds": 32223.649263381958,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 4734,
+            "rhiThreadId": 1,
+            "rhiFrames": 4729,
+            "submitted": 63317,
+            "presented": 4730,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 20361
+          },
+          "threads": {
+            "sharedMemory": true,
+            "engineWorker": true,
+            "gameThread": 2,
+            "taskThread": 3,
+            "cores": 4,
+            "renderThread": true,
+            "rhiThread": true,
+            "renderThreadId": 14,
+            "rhiThreadId": 1,
+            "taskWorkers": 3,
+            "threadingTest": 0
+          },
+          "view": {
+            "frame": 4734,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "occlusion": {
+            "ready": 2105504,
+            "pending": 90787,
+            "zero": 2037988,
+            "bindGroupCacheHits": 12624941,
+            "bindGroupsCreated": 64834,
+            "cachedBindGroups": 365,
+            "bindingEntriesPrepared": 18248589,
+            "bindingEntriesReused": 9714339,
+            "bindingEntriesValidated": 0,
+            "bindGroupFastHits": 1657163,
+            "uniformSnapshots": 2499908,
+            "uniformWriteCalls": 9432,
+            "pipelineLayouts": 140,
+            "drawBundleHits": 0,
+            "drawBundlesCreated": 0,
+            "cachedDrawBundles": 0,
+            "resourceTableCommits": 1431589,
+            "resourceTableBuffers": 1643276,
+            "bindingRouteResolutions": 1223,
+            "manualVertexFetchEnabled": false,
+            "manualVertexFetchDraws": 0,
+            "vertexFetchFormatBuffers": 0,
+            "skipNoopRHITick": true,
+            "nativeStorageContracts": true,
+            "revalidateStorageDescriptors": true,
+            "noopRHITicksSkipped": 4712,
+            "storageDescriptorRevalidations": 801234,
+            "nativeStorageContractUses": 1185402,
+            "storageContractRejectionChecks": 0,
+            "groupPreparationHits": 7646363,
+            "groupPreparationValidated": 0,
+            "groupFrameMisses": 883015,
+            "groupAccessMisses": 2334394,
+            "groupVersionMisses": 1826003,
+            "groupTextureMisses": 0,
+            "groupCacheEnabled": true,
+            "bindingPlanEnabled": false,
+            "bindingPlanEntries": 0,
+            "bindingPlansBuilt": 0,
+            "bindingPlanValidations": 0,
+            "draws": 7641502,
+            "indirectDraws": 140700,
+            "dispatches": 607123,
+            "sampleFrame": 4710
+          },
+          "streaming": {
+            "frame": 4710,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 996901888,
+            "nonPoolAllocatedBytes": 817867776,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6009,
+            "requestedMips": 6009,
+            "maximumMips": 7241,
+            "residentBytes": 634011728,
+            "fullBytes": 2658304080
+          },
+          "capacity": 1521025024,
+          "gpu": [
+            4728,
+            4729,
+            4731,
+            4,
+            4728,
+            4,
+            1,
+            0
+          ],
+          "upload": {
+            "enabled": false,
+            "calls": 209147,
+            "pooled": 0,
+            "pageCreates": 0,
+            "fallbacks": 209147,
+            "retainedBytes": 0
+          },
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 4368,
+            "unready": 116,
+            "microseconds": 24257784
+          }
+        }
+      },
+      "snapshots": [
+        {
+          "frame": 2678,
+          "view": {
+            "frame": 2679,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": [
+            2676,
+            2677,
+            2679,
+            4,
+            2676,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 2366,
+            "unready": 48,
+            "microseconds": 14015151
+          },
+          "streaming": {
+            "frame": 2670,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 994575360,
+            "nonPoolAllocatedBytes": 833727488,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6005,
+            "requestedMips": 6005,
+            "maximumMips": 7241,
+            "residentBytes": 631685200,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 2940,
+          "view": {
+            "frame": 2941,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": [
+            2937,
+            2939,
+            2941,
+            4,
+            2937,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 2604,
+            "unready": 53,
+            "microseconds": 15474474
+          },
+          "streaming": {
+            "frame": 2940,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 994575360,
+            "nonPoolAllocatedBytes": 784262144,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6005,
+            "requestedMips": 6005,
+            "maximumMips": 7241,
+            "residentBytes": 631685200,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 3408,
+          "view": {
+            "frame": 3409,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": [
+            3406,
+            3407,
+            3409,
+            4,
+            3406,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 3084,
+            "unready": 56,
+            "microseconds": 17105359
+          },
+          "streaming": {
+            "frame": 3390,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 994575360,
+            "nonPoolAllocatedBytes": 718136320,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6005,
+            "requestedMips": 6005,
+            "maximumMips": 7241,
+            "residentBytes": 631685200,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 3867,
+          "view": {
+            "frame": 3868,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "gpu": [
+            3865,
+            3866,
+            3868,
+            4,
+            3865,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 3533,
+            "unready": 58,
+            "microseconds": 18585746
+          },
+          "streaming": {
+            "frame": 3840,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 994575360,
+            "nonPoolAllocatedBytes": 759227392,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6005,
+            "requestedMips": 6005,
+            "maximumMips": 7241,
+            "residentBytes": 631685200,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4158,
+          "view": {
+            "frame": 4159,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "gpu": [
+            4155,
+            4157,
+            4159,
+            4,
+            4155,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 3812,
+            "unready": 59,
+            "microseconds": 20009783
+          },
+          "streaming": {
+            "frame": 4140,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 994149376,
+            "nonPoolAllocatedBytes": 860335104,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6065,
+            "requestedMips": 6065,
+            "maximumMips": 7241,
+            "residentBytes": 631259216,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4330,
+          "view": {
+            "frame": 4332,
+            "width": 960,
+            "height": 540,
+            "outputWidth": 960,
+            "outputHeight": 540,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "gpu": [
+            4327,
+            4329,
+            4331,
+            4,
+            4327,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 3991,
+            "unready": 80,
+            "microseconds": 21298596
+          },
+          "streaming": {
+            "frame": 4320,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 994149376,
+            "nonPoolAllocatedBytes": 394484736,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6065,
+            "requestedMips": 6065,
+            "maximumMips": 7241,
+            "residentBytes": 631259216,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4458,
+          "view": {
+            "frame": 4461,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "gpu": [
+            4456,
+            4457,
+            4459,
+            4,
+            4456,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 4108,
+            "unready": 82,
+            "microseconds": 22141947
+          },
+          "streaming": {
+            "frame": 4440,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 996246528,
+            "nonPoolAllocatedBytes": 543434752,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6065,
+            "requestedMips": 6065,
+            "maximumMips": 7241,
+            "residentBytes": 633356368,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4596,
+          "view": {
+            "frame": 4600,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "gpu": [
+            4593,
+            4595,
+            4597,
+            4,
+            4593,
+            4,
+            1,
+            0
+          ],
+          "queryWait": {
+            "budgetMs": 8,
+            "calls": 4249,
+            "unready": 91,
+            "microseconds": 23172112
+          },
+          "streaming": {
+            "frame": 4590,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 996901888,
+            "nonPoolAllocatedBytes": 817867776,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6009,
+            "requestedMips": 6009,
+            "maximumMips": 7241,
+            "residentBytes": 634011728,
+            "fullBytes": 2658304080
+          }
+        }
+      ]
+    },
+    {
+      "mode": "control",
+      "input": {
+        "before": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "after": {
+          "x": 410.73678286111226,
+          "y": -389.2663790918097,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        }
+      },
+      "snapshots": [
+        {
+          "frame": 2579,
+          "view": {
+            "frame": 2579,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 2550,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 986711040,
+            "nonPoolAllocatedBytes": 857713664,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6028,
+            "requestedMips": 6028,
+            "maximumMips": 7241,
+            "residentBytes": 623820880,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 2801,
+          "view": {
+            "frame": 2802,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 2790,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 986711040,
+            "nonPoolAllocatedBytes": 862892032,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6028,
+            "requestedMips": 6028,
+            "maximumMips": 7241,
+            "residentBytes": 623820880,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 3280,
+          "view": {
+            "frame": 3281,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 3270,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 986711040,
+            "nonPoolAllocatedBytes": 756526080,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6028,
+            "requestedMips": 6028,
+            "maximumMips": 7241,
+            "residentBytes": 623820880,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 3739,
+          "view": {
+            "frame": 3740,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 3720,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 986711040,
+            "nonPoolAllocatedBytes": 808102912,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6028,
+            "requestedMips": 6028,
+            "maximumMips": 7241,
+            "residentBytes": 623820880,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4058,
+          "view": {
+            "frame": 4058,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4050,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 985957376,
+            "nonPoolAllocatedBytes": 860335104,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6079,
+            "requestedMips": 6079,
+            "maximumMips": 7241,
+            "residentBytes": 623067216,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4239,
+          "view": {
+            "frame": 4241,
+            "width": 960,
+            "height": 540,
+            "outputWidth": 960,
+            "outputHeight": 540,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4230,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990151680,
+            "nonPoolAllocatedBytes": 399072256,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6080,
+            "requestedMips": 6080,
+            "maximumMips": 7241,
+            "residentBytes": 627261520,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4358,
+          "view": {
+            "frame": 4361,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4350,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990151680,
+            "nonPoolAllocatedBytes": 548022272,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6080,
+            "requestedMips": 6080,
+            "maximumMips": 7241,
+            "residentBytes": 627261520,
+            "fullBytes": 2658304080
+          }
+        },
+        {
+          "frame": 4495,
+          "view": {
+            "frame": 4498,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "gpu": null,
+          "queryWait": {
+            "budgetMs": 0,
+            "calls": 0,
+            "unready": 0,
+            "microseconds": 0
+          },
+          "streaming": {
+            "frame": 4470,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 990807040,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 6024,
+            "requestedMips": 6024,
+            "maximumMips": 7241,
+            "residentBytes": 627916880,
+            "fullBytes": 2658304080
+          }
+        }
+      ]
+    }
+  ],
+  "images": {
+    "pass": true,
+    "comparisons": [
+      {
+        "view": 0,
+        "before": {
+          "meanAbsoluteRGB": 0.6591322554702016,
+          "fractionPixelsOver8": 0.0007581325050611498
+        },
+        "after": {
+          "meanAbsoluteRGB": 0.6864007598657755,
+          "fractionPixelsOver8": 0.00114187858786988
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 0.6202538432383964,
+          "fractionPixelsOver8": 0.0007661055492387476
+        },
+        "residentBytes": [
+          628015184,
+          631685200,
+          623820880
+        ],
+        "meanAbsoluteRGB": 0.6591322554702016,
+        "fractionPixelsOver8": 0.0007581325050611498,
+        "pass": true
+      },
+      {
+        "view": 1,
+        "before": {
+          "meanAbsoluteRGB": 0.06339101657468778,
+          "fractionPixelsOver8": 0.000043331761834770794
+        },
+        "after": {
+          "meanAbsoluteRGB": 0.4873111890697653,
+          "fractionPixelsOver8": 0.000156340996699853
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 0.4851418277452693,
+          "fractionPixelsOver8": 0.00019065975207299148
+        },
+        "residentBytes": [
+          628015184,
+          631685200,
+          623820880
+        ],
+        "meanAbsoluteRGB": 0.06339101657468778,
+        "fractionPixelsOver8": 0.000043331761834770794,
+        "pass": true
+      },
+      {
+        "view": 2,
+        "before": {
+          "meanAbsoluteRGB": 0.017498174288434695,
+          "fractionPixelsOver8": 0.00001317285559777032
+        },
+        "after": {
+          "meanAbsoluteRGB": 0.14667420061565767,
+          "fractionPixelsOver8": 0.00021388557641642864
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 0.14658545716742005,
+          "fractionPixelsOver8": 0.0002215119664993483
+        },
+        "residentBytes": [
+          628015184,
+          631685200,
+          623820880
+        ],
+        "meanAbsoluteRGB": 0.017498174288434695,
+        "fractionPixelsOver8": 0.00001317285559777032,
+        "pass": true
+      },
+      {
+        "view": 3,
+        "before": {
+          "meanAbsoluteRGB": 0.4545199071891437,
+          "fractionPixelsOver8": 0.0000024265786627471645
+        },
+        "after": {
+          "meanAbsoluteRGB": 0.17570844541815728,
+          "fractionPixelsOver8": 0.00001317285559777032
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 0.4653894774305074,
+          "fractionPixelsOver8": 0.000008319698272275992
+        },
+        "residentBytes": [
+          628015184,
+          631685200,
+          623820880
+        ],
+        "meanAbsoluteRGB": 0.17570844541815728,
+        "fractionPixelsOver8": 0.00001317285559777032,
+        "pass": true
+      },
+      {
+        "view": 4,
+        "before": {
+          "meanAbsoluteRGB": 0.703954167706629,
+          "fractionPixelsOver8": 0.00222517263373915
+        },
+        "after": {
+          "meanAbsoluteRGB": 0.768346667960842,
+          "fractionPixelsOver8": 0.0023229290884383925
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 0.7130105059300961,
+          "fractionPixelsOver8": 0.0017138578440888544
+        },
+        "residentBytes": [
+          623788112,
+          631259216,
+          623067216
+        ],
+        "meanAbsoluteRGB": 0.703954167706629,
+        "fractionPixelsOver8": 0.00222517263373915,
+        "pass": true
+      }
+    ],
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\compare-frame-scheduler-images.py",
+      "sha256": "a1b4ed3df7555a20b80ecab8ea77d54ea39ae5ab8dd83370640fb92e709bdf9f"
+    },
+    "diagnostic": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\frame-scheduler-v64-stress5-20261104.json",
+      "sha256": "06ff6e7e7b5313a98d8af2eead0432f6311dc4be2fbfb8aa3c88fdada7d05321"
+    },
+    "boundary": "Five independent-session views bracketed by controls. Dynamic HUD excluded. Existing temporal-drift thresholds: mean RGB <= max(0.5, 1.25 * control drift), fraction pixels >8 <= max(1%, 1.25 * control drift). This is not bitwise parity or a motion artifact test."
+  },
+  "boundary": "One six-run interleaved fixed-view comparison with two fresh browser runs per branch. Original queries and two-frame query history enabled. Candidate caps reserved and GPU-submitted frames; this is not measured input latency. Runtime stress covers five views, keyboard movement, three sizes and a visibility-handler pause/resume cycle. The capture records actualHiddenObserved and handlerSimulated; a simulated cycle does not verify browser background throttling. Image check uses independent fresh sessions bracketed by controls and retains temporal drift. Frozen-clock state is recorded explicitly. No default promotion, cross-browser or long-run acceptance; no first-use PSO/physical display/OS GPU-utilization/native performance claim."
+}

@@ -1,0 +1,262 @@
+{
+  "date": "2026-11-04T13:03:14.413Z",
+  "pass": false,
+  "experimentCompleted": false,
+  "implementationBuilt": true,
+  "performanceValidated": false,
+  "acceptedForDefault": false,
+  "manualVisualAcceptance": "pending",
+  "engineCommit": "76fc69d1e",
+  "package": {
+    "file": "tests/web-platform/results/villa-occlusion-history-v66-package.json",
+    "sha256": "98889071c90cf336822278f70c78c856360c4d327c827505d9eb583006dff2b3"
+  },
+  "build": {
+    "file": "tests/web-platform/results/villa-occlusion-history-v66-build.json",
+    "sha256": "b212ae79a25d7cd6a9b8eb4ff1fe3c303963b5a9ad1236ad4d5c61dfbaf00827"
+  },
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/occlusion-v65-screen-20261104.json",
+      "sha256": "e23a25b201228fc7d0cbdad79be572bfecef87c5826474e0d9f59e2b41b4d5bc"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-v64-control-check-20261104.json",
+      "sha256": "3e7f17ba2d9f6ebe76c755c4e155733fd691c0a31674dfd9e0b78ae8eca62ad2"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-v66-preflight-20261104.json",
+      "sha256": "d2fdf5dd39c8448c563045d93505439ff285dd09f6b551c684e987db16b3a68d"
+    },
+    {
+      "file": "tests/web-platform/results/occlusion-history-v65-failed-build.json",
+      "sha256": "f5241bf1ec780f9c45aea416a4340308ccb21c477d2e8ffddf4506b2b8d65dc5"
+    }
+  ],
+  "testSources": [
+    {
+      "file": "tests/web-platform/probe-web-occlusion-history.cjs",
+      "sha256": "7daf7e9def7929ec2808f04712c2ead0234426e7962eee0c1f223072569b637d"
+    },
+    {
+      "file": "tests/web-platform/summarize-web-occlusion-history.cjs",
+      "sha256": "f3ab2b6e26df3e05856548a102caacafb4526527745114fecc28a06c701ffa44"
+    }
+  ],
+  "blocker": {
+    "kind": "external-gpu-load",
+    "measuredWithTestBrowserClosed": true,
+    "latestIdleGpu": {
+      "at": "2026-11-04T13:01:50.244Z",
+      "adapters": [
+        {
+          "name": "NVIDIA GeForce RTX 4090",
+          "utilization": 99,
+          "memoryUsedMiB": 21744,
+          "memoryTotalMiB": 24564
+        }
+      ]
+    },
+    "observedGpuProcess": "cod.exe",
+    "action": "Wait for the user to free the GPU. No external app was closed or suspended.",
+    "performanceGate": "AssertionError [ERR_ASSERTION]: GPU already busy before the test browser starts; free it before benchmarking"
+  },
+  "packageFiles": [
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/index.html",
+      "sha256": "5e48d231ab4220e8bc4a31d1636155d8f2a9b30adda1ae6cdf4d88779ebf4372"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/UEWebEngineThreads.js",
+      "sha256": "ad23a39214103217c767bf6b75f6bc6d19b183e51a9e80003edd9cc3e4e163c7"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/UEWebEngineThreads.wasm",
+      "sha256": "535871a5e4499015262da4beda215cc36a3f5c1533986fb9ce441a932507b0ba"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/web-engine-host.js",
+      "sha256": "127c809ce6bd85dc2f98ae764febe7bc4efbf0ec7e875a8b724dbaa39a15118b"
+    },
+    {
+      "file": "tests/web-platform/build/villa-occlusion-history-v66/web-engine-worker.js",
+      "sha256": "2e68d9aedfa1dfe8f6b0288932c82cc1ca35f263941a426908aac9abb8461b01"
+    }
+  ],
+  "qualityOverrides": [],
+  "finalV66RuntimeValidation": "Not run: idle-GPU preflight rejected launch.",
+  "provisionalV65RuntimeChecks": {
+    "normalHistoryConsumedCompletedResults": true,
+    "hzbRingConsumedCompletedResults": true,
+    "noGpuValidationErrors": true,
+    "localHistory": "Failed the real-result-consumption assertion under external GPU load. Retained and excluded.",
+    "candidateModes": [
+      "history",
+      "hzb"
+    ],
+    "boundary": "Preliminary v65 only; startup streaming entered the measurement windows."
+  },
+  "excludedSamples": {
+    "reason": "External GPU load; v65 also had startup texture streaming. Do not compute optimization gains from these samples.",
+    "oldV64Control": {
+      "fps": 17.757293708636023,
+      "low1Fps": 8.707009142246632
+    },
+    "v65": [
+      {
+        "mode": "control",
+        "fps": 18.19306844094677,
+        "low1Fps": 5.908594050139431,
+        "pendingBefore": 25,
+        "pendingAfter": 0,
+        "history": {
+          "polls": 0,
+          "ready": 0,
+          "hits": 0,
+          "zero": 0,
+          "fallback": 0,
+          "expired": 0,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 0,
+          "queryDropped": 0
+        }
+      },
+      {
+        "mode": "history",
+        "fps": 20.991141738188986,
+        "low1Fps": 7.227130648469863,
+        "pendingBefore": 74,
+        "pendingAfter": 0,
+        "history": {
+          "polls": 1531.1083333333333,
+          "ready": 119.88333333333334,
+          "hits": 14.9,
+          "zero": 13.3,
+          "fallback": 668.1,
+          "expired": 581.1,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 658.4666666666667,
+          "queryDropped": 527.6
+        }
+      },
+      {
+        "mode": "hzb",
+        "fps": 18.99648565013774,
+        "low1Fps": 6.682035347913764,
+        "pendingBefore": 70,
+        "pendingAfter": 0,
+        "history": {
+          "polls": 0,
+          "ready": 538.1833333333333,
+          "hits": 4.966666666666667,
+          "zero": 4.091666666666667,
+          "fallback": 678.0333333333333,
+          "expired": 591.0333333333333,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0.9166666666666666,
+          "hzbCompleted": 0.9,
+          "hzbSkipped": 0.08333333333333333,
+          "queryCaptured": 0,
+          "queryDropped": 0
+        }
+      },
+      {
+        "mode": "instances",
+        "fps": 19.79117313676449,
+        "low1Fps": 7.366482504604051,
+        "pendingBefore": 48,
+        "pendingAfter": 0,
+        "history": {
+          "polls": 0,
+          "ready": 0,
+          "hits": 0,
+          "zero": 0,
+          "fallback": 0,
+          "expired": 0,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 0,
+          "queryDropped": 0
+        }
+      },
+      {
+        "mode": "control-local",
+        "fps": 21.498698134412432,
+        "low1Fps": 8.992603583203074,
+        "pendingBefore": 33,
+        "pendingAfter": 0,
+        "history": {
+          "polls": 0,
+          "ready": 0,
+          "hits": 0,
+          "zero": 0,
+          "fallback": 0,
+          "expired": 0,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 0,
+          "queryDropped": 0
+        }
+      },
+      {
+        "mode": "history-local",
+        "fps": 21.67400898577602,
+        "low1Fps": 9.09462962104845,
+        "pendingBefore": 62,
+        "pendingAfter": 0,
+        "history": {
+          "polls": 1508.3777777777777,
+          "ready": 0,
+          "hits": 0,
+          "zero": 0,
+          "fallback": 683,
+          "expired": 0,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 659,
+          "queryDropped": 659
+        }
+      }
+    ]
+  },
+  "limits": {
+    "maxResultAgeFrames": 8,
+    "maxResultAgeMs": 80,
+    "hzbReadbackSlots": 4,
+    "nonblocking": true,
+    "cameraOriginToleranceCm": 0.5,
+    "cameraRotationMatrixTolerance": 0.00001,
+    "boundsToleranceCm": 0.01,
+    "movableAndWpoTargets": "visible fallback",
+    "movingOccluders": "manual visual acceptance pending",
+    "fpsMeaning": "RHI submission throughput, not display FPS or input latency",
+    "localClock": "diagnostic only; no added GPU-completion budget; defaults off"
+  },
+  "next": "Run interleaved original-clock and local-clock comparisons after idle-GPU preflight passes, then camera invalidation and manual visual checks."
+}

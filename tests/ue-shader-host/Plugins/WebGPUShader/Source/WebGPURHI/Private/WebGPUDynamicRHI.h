@@ -82,6 +82,16 @@ struct FWebGPUGroupSnapshot
     TArray<TPair<FRHITextureReference*, FRHITexture*>, TInlineAllocator<4>> TextureReferences;
 };
 
+// Immutable pipeline layout work. Descriptor order stays identical to the
+// reference path; only dynamic offsets use WebGPU's binding-number order.
+struct FWebGPUBindingPlan
+{
+    struct FSlot { int32 Entry = 0, Dynamic = INDEX_NONE; };
+    TArray<FSlot> Slots[2];
+    TArray<int32, TInlineAllocator<4>> EntryCounts, DynamicCounts;
+    bool Initialized = false;
+};
+
 struct FWebGPUShaderData
 {
     FRHIShader* Owner = nullptr;
@@ -445,6 +455,7 @@ class FWebGPUGraphicsPipeline final : public FRHIGraphicsPipelineState
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
     // Cached PSOs can outlive the material/task that supplied these raw pointers.
+    FWebGPUBindingPlan BindingPlan;
     FVertexDeclarationRHIRef VertexDeclaration;
     FVertexShaderRHIRef VertexShader;
     FPixelShaderRHIRef PixelShader;
@@ -484,6 +495,7 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     TSet<uint64> DynamicBindings;
     TMap<uint64, uint32> StorageFormats;
     TMap<FString, TRefCountPtr<FWebGPUComputePipeline>> FormatVariants;
+    FWebGPUBindingPlan BindingPlan;
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
     TArray<FWebGPUGroupSnapshot, TInlineAllocator<4>> PreparedGroups;
@@ -524,7 +536,9 @@ class FWebGPURenderQuery final : public FRHIRenderQuery
   public:
     FWebGPUOcclusionRef Batch;
     uint32 Index = 0;
-    std::atomic<bool> ResultReady{false};
+    // A 32-bit word also supports sleeping Render workers until the owner
+    // publishes a result. The owner itself must always remain nonblocking.
+    std::atomic<uint32> ResultReady{0};
     std::atomic<uint64> ResultValue{0};
     uint64 Generation = 0; // RHI owns reuse and completion publication.
 };
@@ -642,6 +656,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     std::atomic<uint32> NoopRHITicksSkipped{0};
     uint32 StorageDescriptorRevalidations = 0, NativeStorageContractUses = 0, StorageContractRejectionChecks = 0;
     uint32 BindingEntriesPrepared = 0, BindingEntriesReused = 0, BindingEntriesValidated = 0;
+    uint32 BindingPlanEntries = 0, BindingPlansBuilt = 0, BindingPlanValidations = 0;
     uint32 GroupPreparationHits = 0, GroupPreparationValidated = 0;
     uint32 GroupPreparationFrameMisses = 0, GroupPreparationAccessMisses = 0,
         GroupPreparationVersionMisses = 0, GroupPreparationTextureMisses = 0;
@@ -686,6 +701,13 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint32 UniformWriteCalls = 0;
     TArray<WGPUBuffer> FrameUniformPages;
     uint32 FrameUniformPage = 0;
+    // Upload slices are unique until RHIEndFrame has submitted every encoder.
+    WGPUBuffer StagingUploadBuffer = nullptr;
+    uint64 StagingUploadOffset = 0;
+    uint32 StagingUploadPage = 0;
+    TArray<WGPUBuffer> StagingUploadPages;
+    uint32 StagingUploadCalls = 0, StagingUploadPooled = 0, StagingUploadPageCreates = 0;
+    uint32 StagingUploadFallbacks = 0;
     TArray<TRefCountPtr<FRHIShader>> FrameShaders;
     uint32 OwnerThread = 0;
     uint32 ResourceTableBindings = 0;
@@ -736,6 +758,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void RequireOwner() const;
     bool Wait(TFunctionRef<bool()> Complete);
     WGPUBuffer CreateBuffer(uint64 Size, WGPUBufferUsage Usage, const void *Data = nullptr);
+    WGPUBuffer UploadStagingBytes(const void* Data, uint64 Size, uint64& Offset);
     WGPUSampler ResolveSampler(FWebGPUSampler *Sampler);
     bool LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency, FWebGPUShaderData &Data,
                     FString &Error);

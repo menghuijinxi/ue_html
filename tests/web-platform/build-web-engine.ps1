@@ -60,6 +60,9 @@ $taskShadowOverlay = 'Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
 $taskRendererCopy = Join-Path $taskHost 'Source/Runtime/Renderer'
 if ((Get-Item -LiteralPath $taskRendererCopy).LinkType) { throw 'Renderer overlay must be a local build-host copy.' }
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShadowOverlay") -Destination (Join-Path $taskHost $taskShadowOverlay) -Force
+foreach ($taskOcclusionOverlay in @('SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
+    Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionOverlay") -Destination (Join-Path $taskRendererCopy "Private/$taskOcclusionOverlay") -Force
+}
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/TemporalSuperResolution.cpp') -Destination (Join-Path $taskRendererCopy 'Private/PostProcess/TemporalSuperResolution.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp') -Destination (Join-Path $taskRendererCopy 'Private/PostProcess/PostProcessMotionBlur.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentRendering.cpp') -Force
@@ -366,6 +369,10 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneVisibility.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
+    foreach ($taskOcclusionAudit in @('SceneOcclusion.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
+        $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionAudit"
+        $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskOcclusionAudit"
+    }
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ShadowSetup.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/ShadowSetup.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'

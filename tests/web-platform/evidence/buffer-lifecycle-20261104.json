@@ -1,0 +1,805 @@
+{
+  "date": "2026-11-04T07:06:06.514Z",
+  "experimentCompleted": true,
+  "pass": true,
+  "gpuUploadCopiesVerified": true,
+  "acceptedForDefault": false,
+  "performanceBenefitEstablished": false,
+  "sources": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-buffer-lifecycle.cjs",
+      "sha256": "e67b2dda2a39d8806b56e5db03306eae3264114b05ed1eba8c35a458bb0f7547"
+    },
+    {
+      "file": "tests/web-platform/results/buffer-lifecycle-v62-abba-20261104.json",
+      "sha256": "1ecda1c455ffe7fb260623cce890f76979205af2c04d74c4eb9ce690bfbb934c"
+    },
+    {
+      "file": "tests/web-platform/results/buffer-lifecycle-v62-final-20261104.json",
+      "sha256": "8232dbeb8d2fc92aab9aaed3778670eb3c48edd185f8e3a7a6d39fcef315eb3d"
+    },
+    {
+      "file": "tests/web-platform/results/buffer-lifecycle-v62-image-comparison-20261104.json",
+      "sha256": "a3623c5d385e196b721c38e2c639262aa5d57746127491ae5dba4799554c03b9"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-buffer-lifecycle-v62-package.json",
+      "sha256": "1e82a52dd0f38fdc0c23b8c0d39b23bdd1a9f85007be6f5a2a2debbdbbcf5ec0"
+    }
+  ],
+  "package": {
+    "folder": "villa-buffer-lifecycle-v62",
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-buffer-lifecycle-v62-build.json",
+      "sha256": "3a5fe046d7f7b58b064cd9ecb0808c8477d82f8c6f52ff8778404a10b3a7af79"
+    },
+    "runtime": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\UEWebEngineThreads.js",
+        "sha256": "f5f065ba0f76d9cced0a52ca3797b3403514a52525a1fbf2ef3ebc34b9b2ccd9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\UEWebEngineThreads.wasm",
+        "sha256": "d13764ae375ebcc987a750eb71dfafcd3079cc46b21daced96769dee5417ce19"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\web-content-io.js",
+        "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\web-content-worker.js",
+        "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\web-engine-host.js",
+        "sha256": "1ef0c0be004b17f08068342976a30122eee1fb4af17f133b27a072e7ed348fe7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\web-engine-worker.js",
+        "sha256": "c8dedc67ca87a4711002c98467c48a97fe5c7e5563e34a7316cab24acb5f2b86"
+      }
+    ],
+    "baselineEvidence": {
+      "file": "tests/web-platform/results/post-mimalloc-v59-profile-20261104.json",
+      "sha256": "7cebaa53c0c05dba2b857075aab25936a0d987ac49ecfb599e54cba600cd5b91"
+    },
+    "originalCook": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-buffer-lifecycle-v62\\content.bin",
+        "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+      }
+    ]
+  },
+  "settings": {
+    "browser": {
+      "version": "156.0.4314.58",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "hardwareConcurrency": 24
+    },
+    "view": {
+      "frame": 1228,
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 3,
+      "parallelRendering": true
+    },
+    "camera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "threads": {
+      "sharedMemory": true,
+      "engineWorker": true,
+      "gameThread": 2,
+      "taskThread": 3,
+      "cores": 4,
+      "renderThread": true,
+      "rhiThread": true,
+      "renderThreadId": 14,
+      "rhiThreadId": 1,
+      "taskWorkers": 3,
+      "threadingTest": 0
+    },
+    "renderer": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "qualityOverrides": []
+  },
+  "order": [
+    "control",
+    "staging",
+    "staging",
+    "control"
+  ],
+  "control": {
+    "runs": [
+      {
+        "index": 1,
+        "fps": 77.76599681790181,
+        "low1Fps": 35.45627797650515,
+        "rhiWorkMs": 9.294476024902265
+      },
+      {
+        "index": 4,
+        "fps": 76.95640419702926,
+        "low1Fps": 33.268529010774316,
+        "rhiWorkMs": 9.348375766308276
+      }
+    ],
+    "frames": 3096,
+    "milliseconds": 40020.07499999553,
+    "fps": 77.3611743606264,
+    "low1Fps": 33.91313860580949,
+    "maximumMs": 41.875,
+    "over50": 0,
+    "rhiWorkMs": 9.321286619787685,
+    "workload": {
+      "drawsPerFrame": 3108.4576051779936,
+      "indirectDrawsPerFrame": 79.96504854368932,
+      "dispatchesPerFrame": 158.68284789644014
+    },
+    "staging": [
+      {
+        "before": {
+          "enabled": false,
+          "calls": 53998,
+          "pooled": 0,
+          "pageCreates": 0,
+          "fallbacks": 53998,
+          "retainedBytes": 0
+        },
+        "after": {
+          "enabled": false,
+          "calls": 124082,
+          "pooled": 0,
+          "pageCreates": 0,
+          "fallbacks": 124082,
+          "retainedBytes": 0
+        }
+      },
+      {
+        "before": {
+          "enabled": false,
+          "calls": 53988,
+          "pooled": 0,
+          "pageCreates": 0,
+          "fallbacks": 53988,
+          "retainedBytes": 0
+        },
+        "after": {
+          "enabled": false,
+          "calls": 122732,
+          "pooled": 0,
+          "pageCreates": 0,
+          "fallbacks": 122732,
+          "retainedBytes": 0
+        }
+      }
+    ]
+  },
+  "candidate": {
+    "runs": [
+      {
+        "index": 2,
+        "fps": 77.49494345494072,
+        "low1Fps": 34.53336786667899,
+        "rhiWorkMs": 9.11211782886136
+      },
+      {
+        "index": 3,
+        "fps": 78.36138742634392,
+        "low1Fps": 36.12635191577698,
+        "rhiWorkMs": 9.149193915785576
+      }
+    ],
+    "frames": 3118,
+    "milliseconds": 40011.16000000015,
+    "fps": 77.92825801601325,
+    "low1Fps": 35.23006886372322,
+    "maximumMs": 49.46000000089407,
+    "over50": 0,
+    "rhiWorkMs": 9.130762891176039,
+    "workload": {
+      "drawsPerFrame": 3089.560841423948,
+      "indirectDrawsPerFrame": 78.44271844660194,
+      "dispatchesPerFrame": 158.4168284789644
+    },
+    "staging": [
+      {
+        "before": {
+          "enabled": true,
+          "calls": 55322,
+          "pooled": 50734,
+          "pageCreates": 1,
+          "fallbacks": 4588,
+          "retainedBytes": 1048576
+        },
+        "after": {
+          "enabled": true,
+          "calls": 124014,
+          "pooled": 119426,
+          "pageCreates": 1,
+          "fallbacks": 4588,
+          "retainedBytes": 1048576
+        }
+      },
+      {
+        "before": {
+          "enabled": true,
+          "calls": 53980,
+          "pooled": 49634,
+          "pageCreates": 1,
+          "fallbacks": 4346,
+          "retainedBytes": 1048576
+        },
+        "after": {
+          "enabled": true,
+          "calls": 124060,
+          "pooled": 119714,
+          "pageCreates": 1,
+          "fallbacks": 4346,
+          "retainedBytes": 1048576
+        }
+      }
+    ]
+  },
+  "fpsChangePercent": 0.7330339282898279,
+  "low1ChangePercent": 3.8832449960503723,
+  "rhiChangePercent": -2.0439638472997235,
+  "allocations": [
+    {
+      "name": "control-standing",
+      "frames": 791,
+      "createdPerFrame": 55.86978508217446,
+      "byUsage": {
+        "9": {
+          "count": 3164,
+          "bytes": 313276168,
+          "perFrame": 4,
+          "descriptorBytesPerFrame": 396050.78128950694
+        },
+        "12": {
+          "count": 35492,
+          "bytes": 214394168,
+          "perFrame": 44.86978508217446,
+          "descriptorBytesPerFrame": 271041.93173198483
+        },
+        "44": {
+          "count": 791,
+          "bytes": 2278080,
+          "perFrame": 1,
+          "descriptorBytesPerFrame": 2880
+        },
+        "72": {
+          "count": 3955,
+          "bytes": 47548592,
+          "perFrame": 5,
+          "descriptorBytesPerFrame": 60112
+        },
+        "524": {
+          "count": 791,
+          "bytes": 2242312,
+          "perFrame": 1,
+          "descriptorBytesPerFrame": 2834.7812895069533
+        }
+      },
+      "liveDescriptorBytesBefore": 66410844,
+      "liveDescriptorBytesAfter": 66118004,
+      "stagingBefore": {
+        "enabled": false,
+        "calls": 54076,
+        "pooled": 0,
+        "pageCreates": 0,
+        "fallbacks": 54076,
+        "retainedBytes": 0
+      },
+      "stagingAfter": {
+        "enabled": false,
+        "calls": 89118,
+        "pooled": 0,
+        "pageCreates": 0,
+        "fallbacks": 89118,
+        "retainedBytes": 0
+      }
+    },
+    {
+      "name": "standing",
+      "frames": 788,
+      "createdPerFrame": 11,
+      "byUsage": {
+        "9": {
+          "count": 3152,
+          "bytes": 311979976,
+          "perFrame": 4,
+          "descriptorBytesPerFrame": 395913.6751269036
+        },
+        "44": {
+          "count": 788,
+          "bytes": 2269440,
+          "perFrame": 1,
+          "descriptorBytesPerFrame": 2880
+        },
+        "72": {
+          "count": 3940,
+          "bytes": 47368256,
+          "perFrame": 5,
+          "descriptorBytesPerFrame": 60112
+        },
+        "524": {
+          "count": 788,
+          "bytes": 2125768,
+          "perFrame": 1,
+          "descriptorBytesPerFrame": 2697.6751269035535
+        }
+      },
+      "liveDescriptorBytesBefore": 67161532,
+      "liveDescriptorBytesAfter": 67166572,
+      "stagingBefore": {
+        "enabled": true,
+        "calls": 107982,
+        "pooled": 17290,
+        "pageCreates": 1,
+        "fallbacks": 90692,
+        "retainedBytes": 1048576
+      },
+      "stagingAfter": {
+        "enabled": true,
+        "calls": 142974,
+        "pooled": 52282,
+        "pageCreates": 1,
+        "fallbacks": 90692,
+        "retainedBytes": 1048576
+      }
+    },
+    {
+      "name": "tour",
+      "frames": 1154,
+      "createdPerFrame": 11.051993067590988,
+      "byUsage": {
+        "9": {
+          "count": 4611,
+          "bytes": 455520392,
+          "perFrame": 3.9956672443674175,
+          "descriptorBytesPerFrame": 394731.7088388215
+        },
+        "44": {
+          "count": 1154,
+          "bytes": 2028576,
+          "perFrame": 1,
+          "descriptorBytesPerFrame": 1757.8648180242635
+        },
+        "72": {
+          "count": 5825,
+          "bytes": 69371568,
+          "perFrame": 5.047660311958405,
+          "descriptorBytesPerFrame": 60114.01039861352
+        },
+        "140": {
+          "count": 7,
+          "bytes": 16596544,
+          "perFrame": 0.006065857885615251,
+          "descriptorBytesPerFrame": 14381.753899480069
+        },
+        "172": {
+          "count": 1,
+          "bytes": 65536,
+          "perFrame": 0.0008665511265164644,
+          "descriptorBytesPerFrame": 56.79029462738301
+        },
+        "428": {
+          "count": 2,
+          "bytes": 262144,
+          "perFrame": 0.0017331022530329288,
+          "descriptorBytesPerFrame": 227.16117850953205
+        },
+        "524": {
+          "count": 1154,
+          "bytes": 2076808,
+          "perFrame": 1,
+          "descriptorBytesPerFrame": 1799.6603119584056
+        }
+      },
+      "liveDescriptorBytesBefore": 67161540,
+      "liveDescriptorBytesAfter": 67177132,
+      "stagingBefore": {
+        "enabled": true,
+        "calls": 142974,
+        "pooled": 52282,
+        "pageCreates": 1,
+        "fallbacks": 90692,
+        "retainedBytes": 1048576
+      },
+      "stagingAfter": {
+        "enabled": true,
+        "calls": 195435,
+        "pooled": 104743,
+        "pageCreates": 1,
+        "fallbacks": 90692,
+        "retainedBytes": 1048576
+      }
+    }
+  ],
+  "gpuByteValidation": {
+    "copies": 4096,
+    "bytes": 24928104,
+    "nonzeroOffsets": 3004,
+    "checks": [
+      {
+        "enabled": 1,
+        "requested": 1024,
+        "captured": 1024,
+        "completed": 1024,
+        "bytes": 6221164,
+        "nonzeroOffsets": 1002,
+        "errors": [],
+        "staging": {
+          "enabled": true,
+          "calls": 203527,
+          "pooled": 112835,
+          "pageCreates": 1,
+          "fallbacks": 90692,
+          "retainedBytes": 1048576
+        }
+      },
+      {
+        "enabled": 0,
+        "requested": 1024,
+        "captured": 1024,
+        "completed": 1024,
+        "bytes": 6286156,
+        "nonzeroOffsets": 0,
+        "errors": [],
+        "staging": {
+          "enabled": false,
+          "calls": 208915,
+          "pooled": 113867,
+          "pageCreates": 1,
+          "fallbacks": 95048,
+          "retainedBytes": 0
+        }
+      },
+      {
+        "enabled": 1,
+        "requested": 1024,
+        "captured": 1024,
+        "completed": 1024,
+        "bytes": 6160424,
+        "nonzeroOffsets": 1001,
+        "errors": [],
+        "staging": {
+          "enabled": true,
+          "calls": 214305,
+          "pooled": 118267,
+          "pageCreates": 2,
+          "fallbacks": 96038,
+          "retainedBytes": 1048576
+        }
+      },
+      {
+        "size": {
+          "width": 960,
+          "height": 540
+        },
+        "requested": 512,
+        "captured": 512,
+        "completed": 512,
+        "bytes": 3107924,
+        "nonzeroOffsets": 500,
+        "errors": [],
+        "staging": {
+          "enabled": true,
+          "calls": 258728,
+          "pooled": 162690,
+          "pageCreates": 2,
+          "fallbacks": 96038,
+          "retainedBytes": 1048576
+        }
+      },
+      {
+        "size": {
+          "width": 1280,
+          "height": 720
+        },
+        "requested": 512,
+        "captured": 512,
+        "completed": 512,
+        "bytes": 3152436,
+        "nonzeroOffsets": 501,
+        "errors": [],
+        "staging": {
+          "enabled": true,
+          "calls": 266851,
+          "pooled": 170813,
+          "pageCreates": 2,
+          "fallbacks": 96038,
+          "retainedBytes": 1048576
+        }
+      }
+    ]
+  },
+  "churn": [
+    {
+      "budget": 64,
+      "streaming": {
+        "frame": 4950,
+        "supported": true,
+        "poolBytes": 67108864,
+        "poolAllocatedBytes": 365147136,
+        "nonPoolAllocatedBytes": 822455296,
+        "streamable": 613,
+        "pending": 0,
+        "residentMips": 4291,
+        "requestedMips": 4291,
+        "maximumMips": 7241,
+        "residentBytes": 2256976,
+        "fullBytes": 2658304080
+      },
+      "staging": {
+        "enabled": true,
+        "calls": 222379,
+        "pooled": 126341,
+        "pageCreates": 2,
+        "fallbacks": 96038,
+        "retainedBytes": 1048576
+      }
+    },
+    {
+      "budget": 256,
+      "streaming": {
+        "frame": 5100,
+        "supported": true,
+        "poolBytes": 268435456,
+        "poolAllocatedBytes": 365147136,
+        "nonPoolAllocatedBytes": 822455296,
+        "streamable": 613,
+        "pending": 0,
+        "residentMips": 4291,
+        "requestedMips": 4291,
+        "maximumMips": 7241,
+        "residentBytes": 2256976,
+        "fullBytes": 2658304080
+      },
+      "staging": {
+        "enabled": true,
+        "calls": 229115,
+        "pooled": 133077,
+        "pageCreates": 2,
+        "fallbacks": 96038,
+        "retainedBytes": 1048576
+      }
+    },
+    {
+      "budget": 64,
+      "streaming": {
+        "frame": 5250,
+        "supported": true,
+        "poolBytes": 67108864,
+        "poolAllocatedBytes": 365147136,
+        "nonPoolAllocatedBytes": 822455296,
+        "streamable": 613,
+        "pending": 0,
+        "residentMips": 4291,
+        "requestedMips": 4291,
+        "maximumMips": 7241,
+        "residentBytes": 2256976,
+        "fullBytes": 2658304080
+      },
+      "staging": {
+        "enabled": true,
+        "calls": 235841,
+        "pooled": 139803,
+        "pageCreates": 2,
+        "fallbacks": 96038,
+        "retainedBytes": 1048576
+      }
+    },
+    {
+      "budget": 1000,
+      "streaming": {
+        "frame": 5580,
+        "supported": true,
+        "poolBytes": 1048576000,
+        "poolAllocatedBytes": 845104128,
+        "nonPoolAllocatedBytes": 822455296,
+        "streamable": 613,
+        "pending": 0,
+        "residentMips": 5728,
+        "requestedMips": 5728,
+        "maximumMips": 7241,
+        "residentBytes": 482213968,
+        "fullBytes": 2658304080
+      },
+      "staging": {
+        "enabled": true,
+        "calls": 250591,
+        "pooled": 154553,
+        "pageCreates": 2,
+        "fallbacks": 96038,
+        "retainedBytes": 1048576
+      }
+    }
+  ],
+  "images": {
+    "pass": true,
+    "comparisons": [
+      {
+        "mode": "staging",
+        "view": 0,
+        "before": {
+          "meanAbsoluteRGB": 4.061163179828622,
+          "p99RGB": 30,
+          "maxRGB": 143,
+          "fractionPixelsOver8": 0.1398833955712674
+        },
+        "after": {
+          "meanAbsoluteRGB": 3.9877181481313286,
+          "p99RGB": 28,
+          "maxRGB": 146,
+          "fractionPixelsOver8": 0.13567170974416656
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 3.46256932630493,
+          "p99RGB": 25,
+          "maxRGB": 145,
+          "fractionPixelsOver8": 0.1096458900257452
+        },
+        "meanAbsoluteRGB": 3.9877181481313286,
+        "p99RGB": 28,
+        "maxRGB": 146,
+        "fractionPixelsOver8": 0.13567170974416656,
+        "pass": true
+      },
+      {
+        "mode": "staging",
+        "view": 1,
+        "before": {
+          "meanAbsoluteRGB": 2.735777749055563,
+          "p99RGB": 19,
+          "maxRGB": 98,
+          "fractionPixelsOver8": 0.06717854310835689
+        },
+        "after": {
+          "meanAbsoluteRGB": 2.3770594119010107,
+          "p99RGB": 15,
+          "maxRGB": 89,
+          "fractionPixelsOver8": 0.051859511109092794
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 2.7440190839709473,
+          "p99RGB": 17,
+          "maxRGB": 97,
+          "fractionPixelsOver8": 0.06540746925073446
+        },
+        "meanAbsoluteRGB": 2.3770594119010107,
+        "p99RGB": 15,
+        "maxRGB": 89,
+        "fractionPixelsOver8": 0.051859511109092794,
+        "pass": true
+      },
+      {
+        "mode": "staging",
+        "view": 2,
+        "before": {
+          "meanAbsoluteRGB": 2.149294578526729,
+          "p99RGB": 17,
+          "maxRGB": 115,
+          "fractionPixelsOver8": 0.033965959517979136
+        },
+        "after": {
+          "meanAbsoluteRGB": 2.4198027249618947,
+          "p99RGB": 13,
+          "maxRGB": 153,
+          "fractionPixelsOver8": 0.03968090395795999
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 2.475896045766132,
+          "p99RGB": 28,
+          "maxRGB": 142,
+          "fractionPixelsOver8": 0.038921705959820724
+        },
+        "meanAbsoluteRGB": 2.149294578526729,
+        "p99RGB": 17,
+        "maxRGB": 115,
+        "fractionPixelsOver8": 0.033965959517979136,
+        "pass": true
+      },
+      {
+        "mode": "staging",
+        "view": 3,
+        "before": {
+          "meanAbsoluteRGB": 1.7611992378521528,
+          "p99RGB": 11,
+          "maxRGB": 68,
+          "fractionPixelsOver8": 0.03021072402104795
+        },
+        "after": {
+          "meanAbsoluteRGB": 1.7636452837541332,
+          "p99RGB": 11,
+          "maxRGB": 38,
+          "fractionPixelsOver8": 0.031528840790823486
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 1.9138768274994247,
+          "p99RGB": 12,
+          "maxRGB": 69,
+          "fractionPixelsOver8": 0.039833442206052394
+        },
+        "meanAbsoluteRGB": 1.7611992378521528,
+        "p99RGB": 11,
+        "maxRGB": 68,
+        "fractionPixelsOver8": 0.03021072402104795,
+        "pass": true
+      },
+      {
+        "mode": "staging",
+        "view": 4,
+        "before": {
+          "meanAbsoluteRGB": 6.7244561506876055,
+          "p99RGB": 44,
+          "maxRGB": 190,
+          "fractionPixelsOver8": 0.30400057754939735
+        },
+        "after": {
+          "meanAbsoluteRGB": 0.49249360445551416,
+          "p99RGB": 2,
+          "maxRGB": 22,
+          "fractionPixelsOver8": 0.000043083321980295786
+        },
+        "controlDrift": {
+          "meanAbsoluteRGB": 6.723987279940289,
+          "p99RGB": 44,
+          "maxRGB": 188,
+          "fractionPixelsOver8": 0.30402852348797915
+        },
+        "meanAbsoluteRGB": 0.49249360445551416,
+        "p99RGB": 2,
+        "maxRGB": 22,
+        "fractionPixelsOver8": 0.000043083321980295786,
+        "pass": true
+      }
+    ],
+    "diagnostic": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\buffer-lifecycle-v62-images-20261104.json",
+      "sha256": "7e79db62164820780d7ca187f667ad1f60d9bd8537d5199d7b4411b3537a5ab8"
+    },
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\compare-throughput-images.py",
+      "sha256": "7358f6047040b9d13d60b4f8d708c272c35f358eff84fbad670b053ab295fc61"
+    },
+    "boundary": "Five frozen views; excludes the dynamic HUD rectangle. For bracketed captures, use the closer adjacent control and retain the before/after control drift. Acceptance bounds: mean RGB <= max(0.5, 1.25x control drift), fraction pixels >8 <= max(0.01, 1.25x control drift). Image smoke check supplements descriptor validation and actual volume hashes."
+  },
+  "boundary": "One normal ABBA, same runtime/Cook and spawn. Allocation and GPU byte checks run separately. A small FPS difference is not established performance benefit. Upload pages retain at most 4 MiB of descriptor capacity, not driver allocation. The measured workload used one page; large-upload fallback and multi-page overflow were not exercised. No default promotion, first-use PSO improvement, OS GPU utilization or native frame-time claim."
+}

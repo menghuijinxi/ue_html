@@ -81,6 +81,7 @@ bool ParallelDrawRecording = false;
 bool ImmediateWebGPUCalls = false;
 bool ScalarWebGPUStates = false, LegacyWebGPUDescriptors = false;
 FString RHIExperiment;
+FString WebOcclusionMode = TEXT("history");
 bool ShaderMetadataDOM = false, ShaderMetadataValidate = false;
 bool PSOPrecacheTest = false;
 bool StartupTrace = false;
@@ -763,6 +764,26 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebLightingQualityTest(int Parameter, int Va
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.TSR.History.R11G11B10"))->Set(Value, ECVF_SetByCode);
     else if (Parameter == 15 && (Value == 0 || Value == 1))
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.TranslucencyLightingVolume"))->Set(Value, ECVF_SetByCode);
+    else if (Parameter >= 16 && Parameter <= 19 && (Value == 0 || Value == 1))
+    {
+        const TCHAR* Experiments[] = {TEXT("r.WebGPU.BindingPlan"), TEXT("r.WebGPU.TLVShareCascades"),
+            TEXT("r.WebGPU.ValidateBindingCache"), TEXT("r.WebGPU.StagingUploadPages")};
+        auto* Variable = IConsoleManager::Get().FindConsoleVariable(Experiments[Parameter - 16]);
+        if (!Variable) return 0;
+        Variable->Set(Value, ECVF_SetByCode);
+    }
+    else if (Parameter == 20 && Value >= 0 && Value <= 20)
+    {
+        auto* Variable = IConsoleManager::Get().FindConsoleVariable(TEXT("r.WebGPU.OcclusionQueryWaitMs"));
+        if (!Variable) return 0;
+        Variable->Set(Value, ECVF_SetByCode);
+    }
+    else if (Parameter == 21 && (Value == 0 || Value == 1))
+    {
+        auto* Variable = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Web.OcclusionHistory"));
+        if (!Variable) return 0;
+        Variable->Set(Value, ECVF_SetByCode);
+    }
     else if (Parameter != -1)
         return 0;
     auto* LocalPlayer = Controller->GetLocalPlayer();
@@ -1141,6 +1162,7 @@ int32 StartEngine()
         (ShaderMetadataValidate ? TEXT(" -WebShaderMetadataValidate") : TEXT("")) +
         (ShaderMetadataDOM ? TEXT(" -WebShaderMetadataDOM") : TEXT("")) +
         (RHIExperiment.IsEmpty() ? FString() : TEXT(" -WebRHIExperiment=") + RHIExperiment) +
+        (WebOcclusionMode.IsEmpty() ? FString() : TEXT(" -WebOcclusionMode=") + WebOcclusionMode) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
@@ -1170,6 +1192,17 @@ int32 StartEngine()
     {
         std::printf("P3_ENGINE_INIT_FAILED %d\n", InitResult);
         return InitResult;
+    }
+    FString OcclusionMode;
+    if (FParse::Value(FCommandLine::Get(), TEXT("WebOcclusionMode="), OcclusionMode))
+    {
+        const bool History = OcclusionMode == TEXT("history") || OcclusionMode == TEXT("hzb") || OcclusionMode == TEXT("hzb-instances");
+        const bool HZB = OcclusionMode == TEXT("hzb") || OcclusionMode == TEXT("hzb-instances");
+        const bool Instances = OcclusionMode == TEXT("instances") || OcclusionMode == TEXT("hzb-instances");
+        check(History || Instances || OcclusionMode == TEXT("control"));
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Web.OcclusionHistory"))->Set(int32(History), ECVF_SetByCode);
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.HZBOcclusion"))->Set(HZB ? 2 : 0, ECVF_SetByCode);
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.InstanceCulling.OcclusionCull"))->Set(int32(Instances), ECVF_SetByCode);
     }
 #if UE_WEB_ENGINE_WORKER
     StartupMark("native.threadWitness.begin");
@@ -1307,6 +1340,17 @@ int main(int argc, char** argv)
         LegacyWebGPUDescriptors |= FCStringAnsi::Strcmp(argv[Index], "-WebGPULegacyDescriptors") == 0;
         ShaderMetadataValidate |= FCStringAnsi::Strcmp(argv[Index], "-WebShaderMetadataValidate") == 0;
         ShaderMetadataDOM |= FCStringAnsi::Strcmp(argv[Index], "-WebShaderMetadataDOM") == 0;
+        constexpr const ANSICHAR* OcclusionOption = "-WebOcclusionMode=";
+        if (FCStringAnsi::Strncmp(argv[Index], OcclusionOption, FCStringAnsi::Strlen(OcclusionOption)) == 0)
+        {
+            WebOcclusionMode = UTF8_TO_TCHAR(argv[Index] + FCStringAnsi::Strlen(OcclusionOption));
+            if (WebOcclusionMode != TEXT("control") && WebOcclusionMode != TEXT("history") &&
+                WebOcclusionMode != TEXT("hzb") && WebOcclusionMode != TEXT("instances") && WebOcclusionMode != TEXT("hzb-instances"))
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED invalid occlusion experiment\n");
+                return 1;
+            }
+        }
         constexpr const ANSICHAR* RHIExperimentOption = "-WebRHIExperiment=";
         if (FCStringAnsi::Strncmp(argv[Index], RHIExperimentOption, FCStringAnsi::Strlen(RHIExperimentOption)) == 0)
         {
@@ -1382,7 +1426,14 @@ int main(int argc, char** argv)
             FTaskTagScope::SetTagNone();
             MAIN_THREAD_ASYNC_EM_ASM({
                 globalThis.__webGameThreadWorker = PThread.pthreads[Number($0)];
+                globalThis.__webGameFrameClock = ({mode: Module.arguments.includes('-WebGameLocalClock') ? 'local' :
+                    Module.arguments.some(arg => arg.startsWith('-WebFrameScheduler=')) ? 'page' : 'owner', paused: false});
+                globalThis.__webAttachFrameScheduler?.(globalThis.__webGameThreadWorker);
+                if (Module.arguments.includes('-WebGameLocalClock'))
+                    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-local-clock', paused: !!globalThis.__webGameClockHidden});
                 globalThis.__webGameThreadWorker.addEventListener('message', event => {
+                    if (event.data.type === 'web-game-clock-state')
+                        globalThis.__webGameFrameClock = {mode: 'local', paused: event.data.paused};
                     if (event.data.type === 'web-game-raf-request') {
                         const id = event.data.id;
                         requestAnimationFrame(timestamp => globalThis.__webGameThreadWorker.postMessage(

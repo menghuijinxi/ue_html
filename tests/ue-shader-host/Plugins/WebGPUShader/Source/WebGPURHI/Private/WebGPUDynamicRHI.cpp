@@ -3,6 +3,7 @@
 #include "DataDrivenShaderPlatformInfo.h"
 #include "GlobalRenderResources.h"
 #include "RenderResource.h"
+#include "RenderingThread.h"
 #include "Containers/ResourceArray.h"
 #include "RHITextureUtils.h"
 #include "RHITextureReference.h"
@@ -37,6 +38,15 @@ static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
 static TAutoConsoleVariable<int32> CVarWebGPUBindingGroupCache(
     TEXT("r.WebGPU.BindingGroupCache"), 1,
     TEXT("Reuse prepared binding groups when resource, uniform and access generations match."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUBindingPlan(
+    TEXT("r.WebGPU.BindingPlan"), 0,
+    TEXT("Experiment: precompute descriptor slots and dynamic offset order per pipeline."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUStagingUploadPages(
+    TEXT("r.WebGPU.StagingUploadPages"), 0,
+    TEXT("Experiment: reuse up to four 1 MiB upload pages after all frame encoders are submitted."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUOcclusionQueryWaitMs(
+    TEXT("r.WebGPU.OcclusionQueryWaitMs"), 0,
+    TEXT("Experiment: Render worker query wait budget per frame (0 disables, clamped to 20 ms). Never blocks the GPU owner."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
@@ -50,6 +60,8 @@ using FWebGPUCompletionRef = TSharedPtr<FWebGPUCompletion, ESPMode::ThreadSafe>;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
 bool ProfilePSOStartup = false;
 std::atomic<uint32> PSOProfileSequence{0};
+std::atomic<uint32> QueryWaitCalls{0}, QueryWaitUnready{0};
+std::atomic<uint64> QueryWaitMicroseconds{0};
 double PSOProfileTime()
 {
     return ProfilePSOStartup ? EM_ASM_DOUBLE({ return performance.timeOrigin + performance.now(); }) : 0;
@@ -1003,6 +1015,10 @@ void FWebGPUDynamicRHI::Shutdown()
     for (auto Page : FrameUniformPages) wgpuBufferRelease(Page);
     FrameUniformPages.Empty();
     FrameUniformUploadBytes.Empty();
+    if (StagingUploadBuffer) wgpuBufferRelease(StagingUploadBuffer);
+    StagingUploadBuffer = nullptr;
+    for (auto Page : StagingUploadPages) wgpuBufferRelease(Page);
+    StagingUploadPages.Empty();
     ReleaseBindings();
     RasterExtentAttachment.SafeRelease();
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
@@ -1103,6 +1119,15 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     FrameUniformBuffer = nullptr;
     FrameUniformOffset = 0;
     FrameUniformPage = 0;
+    if (StagingUploadBuffer) wgpuBufferRelease(StagingUploadBuffer);
+    StagingUploadBuffer = nullptr;
+    StagingUploadOffset = 0;
+    StagingUploadPage = 0;
+    if (!CVarWebGPUStagingUploadPages.GetValueOnAnyThread())
+    {
+        for (auto Page : StagingUploadPages) wgpuBufferRelease(Page);
+        StagingUploadPages.Empty();
+    }
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     // All encoders have been submitted. Retire allocations even if JS has not run GC.
     EM_ASM({ globalThis.__webFlushRetiredGPUResources(); });
@@ -1119,11 +1144,17 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #endif
     ++EndFrames;
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
+    if (EndFrames % 30 == 0)
+        EM_ASM({ globalThis.__webUploadStaging = ({enabled: !!$0, calls: $1, pooled: $2,
+            pageCreates: $3, fallbacks: $4, retainedBytes: $5}); },
+            CVarWebGPUStagingUploadPages.GetValueOnAnyThread(), StagingUploadCalls, StagingUploadPooled,
+            StagingUploadPageCreates, StagingUploadFallbacks, StagingUploadPages.Num() * 1024 * 1024);
     EM_ASM({
         Object.assign(globalThis.__webThreadStages ||= {},
             {rhiThreadId: $0, rhiFrames: $1, submitted: $2, presented: $3,
                 parallelCommandRecording: !!$4, parallelRHITranslation: !!$5});
         globalThis.__webRHIFrames = $3;
+        globalThis.__webGPUFrameSubmitted?.();
     }, FPlatformTLS::GetCurrentThreadId(), EndFrames, Submitted, FramesPresented,
         GRHICommandList.UseParallelAlgorithms(), GRHISupportsParallelRHIExecute);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
@@ -1132,6 +1163,11 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #endif
     if (EndFrames % 30 == 0)
     {
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+        EM_ASM({globalThis.__webOcclusionWait = ({budgetMs: $0, calls: $1, unready: $2, microseconds: $3});},
+            CVarWebGPUOcclusionQueryWaitMs.GetValueOnAnyThread(), QueryWaitCalls.load(),
+            QueryWaitUnready.load(), double(QueryWaitMicroseconds.load()));
+#endif
         EM_ASM({
             globalThis.__webOcclusionRHI = {};
             globalThis.__webOcclusionRHI.ready = $0;
@@ -1180,6 +1216,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, GroupPreparationHits, GroupPreparationValidated, GroupPreparationFrameMisses,
             GroupPreparationAccessMisses, GroupPreparationVersionMisses, GroupPreparationTextureMisses,
             CVarWebGPUBindingGroupCache.GetValueOnAnyThread());
+        EM_ASM({ Object.assign(globalThis.__webOcclusionRHI,
+            {bindingPlanEnabled:!!$0, bindingPlanEntries:$1, bindingPlansBuilt:$2, bindingPlanValidations:$3}); },
+            CVarWebGPUBindingPlan.GetValueOnAnyThread(), BindingPlanEntries, BindingPlansBuilt, BindingPlanValidations);
         EM_ASM({
             globalThis.__webOptimizationRHI = ({sampleFrame: $0, graphicsPipelines: $1, computePipelines: $2,
                 graphicsPipelineCreateMs: $3, computePipelineCreateMs: $4,
@@ -1218,6 +1257,52 @@ WGPUBuffer FWebGPUDynamicRHI::CreateBuffer(uint64 Size, WGPUBufferUsage Usage, c
     if (Data)
         wgpuQueueWriteBuffer(Queue, Result, 0, Data, Size);
     return Result;
+}
+WGPUBuffer FWebGPUDynamicRHI::UploadStagingBytes(const void* Data, uint64 Size, uint64& Offset)
+{
+    RequireOwner();
+    check(Data && Size && Size % 4 == 0);
+    ++StagingUploadCalls;
+    Offset = 0;
+    constexpr uint64 PageBytes = 1024 * 1024;
+    constexpr uint32 RetainedPages = 4;
+    if (!CVarWebGPUStagingUploadPages.GetValueOnAnyThread() || Size > PageBytes)
+    {
+        ++StagingUploadFallbacks;
+        return CreateBuffer(Size, WGPUBufferUsage_CopySrc, Data);
+    }
+    // Texture copies also require texel-block alignment (up to RGBA32F here).
+    const uint64 AlignedOffset = Align(StagingUploadOffset, uint64(256));
+    if (!StagingUploadBuffer || AlignedOffset + Size > PageBytes)
+    {
+        if (StagingUploadBuffer) wgpuBufferRelease(StagingUploadBuffer);
+        if (StagingUploadPage < RetainedPages)
+        {
+            if (StagingUploadPage == uint32(StagingUploadPages.Num()))
+            {
+                StagingUploadPages.Add(CreateBuffer(PageBytes, WGPUBufferUsage_CopySrc));
+                ++StagingUploadPageCreates;
+            }
+            StagingUploadBuffer = StagingUploadPages[StagingUploadPage];
+            wgpuBufferAddRef(StagingUploadBuffer);
+        }
+        else
+        {
+            StagingUploadBuffer = CreateBuffer(PageBytes, WGPUBufferUsage_CopySrc);
+            ++StagingUploadPageCreates;
+        }
+        ++StagingUploadPage;
+        StagingUploadOffset = 0;
+    }
+    Offset = Align(StagingUploadOffset, uint64(256));
+    StagingUploadOffset = Offset + Size;
+    // A write must precede the copy using this slice. Never overwrite a slice
+    // still referenced by an unsubmitted encoder. Across frame boundaries,
+    // queue order puts the next write after every previously submitted copy.
+    wgpuQueueWriteBuffer(Queue, StagingUploadBuffer, Offset, Data, Size);
+    ++StagingUploadPooled;
+    wgpuBufferAddRef(StagingUploadBuffer); // Return the same owning reference as CreateBuffer.
+    return StagingUploadBuffer;
 }
 bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency,
                                    FWebGPUShaderData &Data, FString &Error)
@@ -1808,9 +1893,11 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
                    UploadPitch, Snapshot = MoveTemp(Snapshot)](FRHICommandListBase &) {
         check(Encoder && !Pass);
         RequireAccess(Texture, ERHIAccess::CopyDest, true);
-        WGPUBuffer Staging = CreateBuffer(Snapshot.Num(), WGPUBufferUsage_CopySrc, Snapshot.GetData());
+        uint64 UploadOffset = 0;
+        WGPUBuffer Staging = UploadStagingBytes(Snapshot.GetData(), Snapshot.Num(), UploadOffset);
         WGPUTexelCopyBufferInfo Source = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
         Source.buffer = Staging;
+        Source.layout.offset = UploadOffset;
         Source.layout.bytesPerRow = UploadPitch;
         Source.layout.rowsPerImage = Region.Height;
         WGPUTexelCopyTextureInfo Destination = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
@@ -3182,7 +3269,40 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     auto& PreviousFrame = Render ? GraphicsPipeline->PreviousGroupsFrame : ComputePipeline->PreviousGroupsFrame;
     auto& PreparedGroups = Render ? GraphicsPipeline->PreparedGroups : ComputePipeline->PreparedGroups;
     const auto& Layouts = Render ? GraphicsPipeline->GroupLayouts : ComputePipeline->GroupLayouts;
+    auto& Plan = Render ? GraphicsPipeline->BindingPlan : ComputePipeline->BindingPlan;
+    const bool UsePlan = CVarWebGPUBindingPlan.GetValueOnAnyThread() != 0;
     check(Shaders.Num() <= 2 && Layouts.Num() <= 32);
+    if (UsePlan && !Plan.Initialized)
+    {
+        Plan.EntryCounts.SetNumZeroed(Layouts.Num());
+        Plan.DynamicCounts.SetNumZeroed(Layouts.Num());
+        TArray<TPair<uint64, FWebGPUBindingPlan::FSlot*>> SortedOffsets;
+        for (int32 ShaderIndex = 0; ShaderIndex < Shaders.Num(); ++ShaderIndex)
+        {
+            Plan.Slots[ShaderIndex].SetNum(Shaders[ShaderIndex]->Bindings.Num());
+            for (int32 Index = 0; Index < Shaders[ShaderIndex]->Bindings.Num(); ++Index)
+            {
+                const auto& Binding = Shaders[ShaderIndex]->Bindings[Index];
+                auto& Slot = Plan.Slots[ShaderIndex][Index];
+                check(Plan.EntryCounts.IsValidIndex(Binding.Group));
+                Slot.Entry = Plan.EntryCounts[Binding.Group]++;
+                // Duplicate bindings are a pipeline invariant, checked once here.
+                for (int32 EarlierShader = 0; EarlierShader <= ShaderIndex; ++EarlierShader)
+                    for (int32 Earlier = 0; Earlier < (EarlierShader == ShaderIndex ? Index : Shaders[EarlierShader]->Bindings.Num()); ++Earlier)
+                    {
+                        const auto& Other = Shaders[EarlierShader]->Bindings[Earlier];
+                        check(Binding.Group != Other.Group || Binding.Index != Other.Index);
+                    }
+                if (DynamicBindings.Contains((uint64(Binding.Group) << 32) | Binding.Index))
+                    SortedOffsets.Emplace((uint64(Binding.Group) << 32) | Binding.Index, &Slot);
+            }
+        }
+        SortedOffsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
+        for (const auto& Offset : SortedOffsets)
+            Offset.Value->Dynamic = Plan.DynamicCounts[Offset.Key >> 32]++;
+        Plan.Initialized = true;
+        ++BindingPlansBuilt;
+    }
     Groups.SetNum(Layouts.Num());
     DynamicOffsets.SetNum(Layouts.Num());
     PreparedGroups.SetNum(Layouts.Num());
@@ -3224,8 +3344,16 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         }
         if (!(ReusedGroups & (1u << Group))) Cached.TextureReferences.Reset();
     }
-    for (FWebGPUShaderData *Shader : Shaders)
+    if (UsePlan)
+        for (int32 Group = 0; Group < Layouts.Num(); ++Group)
+        {
+            if (ReusedGroups & (1u << Group)) continue;
+            Groups[Group].SetNum(Plan.EntryCounts[Group], EAllowShrinking::No);
+            DynamicOffsets[Group].SetNum(Plan.DynamicCounts[Group], EAllowShrinking::No);
+        }
+    for (int32 ShaderIndex = 0; ShaderIndex < Shaders.Num(); ++ShaderIndex)
     {
+        auto* Shader = Shaders[ShaderIndex];
         uint32 VertexFetchCodes[4] = {}, VertexFetchKey = 0;
         if (Shader->HasVertexFetchFormats)
         {
@@ -3254,8 +3382,9 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 VertexFetchKey |= Code << (VertexBinding.VertexFetchFormatSlot * 3);
             }
         }
-        for (auto &Reflected : Shader->Bindings)
+        for (int32 BindingIndex = 0; BindingIndex < Shader->Bindings.Num(); ++BindingIndex)
         {
+            auto& Reflected = Shader->Bindings[BindingIndex];
             if (ReusedGroups & (1u << Reflected.Group)) continue;
             const auto* Binding = Reflected.Metadata;
             const auto& Name = Reflected.Name;
@@ -3513,17 +3642,54 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 Reflected.PreparedSerial = BindingStateSerial;
                 ++BindingEntriesPrepared;
             }
-            if (DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding))
+            const auto* Slot = UsePlan ? &Plan.Slots[ShaderIndex][BindingIndex] : nullptr;
+            const bool Dynamic = Slot ? Slot->Dynamic != INDEX_NONE :
+                DynamicBindings.Contains((uint64(Group) << 32) | Entry.binding);
+            if (Dynamic)
             {
                 check(Entry.buffer && Entry.offset <= MAX_uint32 && Entry.offset % Limits.minUniformBufferOffsetAlignment == 0);
-                DynamicOffsets[Group].Emplace(Entry.binding, uint32(Entry.offset));
+                if (Slot) DynamicOffsets[Group][Slot->Dynamic] = {Entry.binding, uint32(Entry.offset)};
+                else DynamicOffsets[Group].Emplace(Entry.binding, uint32(Entry.offset));
                 Entry.offset = 0;
             }
-            check(!Groups[Group].ContainsByPredicate(
-                [&](const auto &Other) { return Other.binding == Entry.binding; }));
-            Groups[Group].Add(Entry);
+            if (Slot)
+            {
+                Groups[Group][Slot->Entry] = Entry;
+                ++BindingPlanEntries;
+            }
+            else
+            {
+                check(!Groups[Group].ContainsByPredicate(
+                    [&](const auto &Other) { return Other.binding == Entry.binding; }));
+                Groups[Group].Add(Entry);
+            }
         }
     }
+    if (UsePlan && ValidatePrepared)
+        for (int32 Group = 0; Group < Layouts.Num(); ++Group)
+        {
+            int32 EntryIndex = 0;
+            TArray<TPair<uint32, uint32>> ReferenceOffsets;
+            for (const auto* Shader : Shaders)
+                for (const auto& Binding : Shader->Bindings)
+                {
+                    if (Binding.Group != uint32(Group)) continue;
+                    auto Expected = Binding.PreparedEntry;
+                    if (DynamicBindings.Contains((uint64(Group) << 32) | Expected.binding))
+                    {
+                        ReferenceOffsets.Emplace(Expected.binding, uint32(Expected.offset));
+                        Expected.offset = 0;
+                    }
+                    const auto& Actual = Groups[Group][EntryIndex++];
+                    checkf(Actual.binding == Expected.binding && Actual.buffer == Expected.buffer &&
+                        Actual.offset == Expected.offset && Actual.size == Expected.size &&
+                        Actual.textureView == Expected.textureView && Actual.sampler == Expected.sampler,
+                        TEXT("WebGPU binding plan differs from reference: group=%d"), Group);
+                }
+            ReferenceOffsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
+            check(EntryIndex == Groups[Group].Num() && ReferenceOffsets == DynamicOffsets[Group]);
+            ++BindingPlanValidations;
+        }
     FWebGPUResolvedGroups Result;
     for (uint32 Group = 0; HasBindings && Group <= Maximum; ++Group)
     {
@@ -3541,7 +3707,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
         auto& Offsets = DynamicOffsets[Group];
         if (!Offsets.IsEmpty())
         {
-            Offsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
+            if (!UsePlan) Offsets.Sort([](const auto& A, const auto& B) { return A.Key < B.Key; });
             for (const auto& Offset : Offsets) Resolved.DynamicOffsets.Add(Offset.Value);
         }
         const auto* Entries = &Groups[Group];
@@ -4430,6 +4596,7 @@ void FWebGPUDynamicRHI::RHIEndRenderPass()
         OcclusionBatch->Readback = Readback;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         Readback->OnReady = [Results = MoveTemp(OcclusionBatch->Results)](const TArray<uint8>& Data) {
+            const bool WakeWaiters = CVarWebGPUOcclusionQueryWaitMs.GetValueOnAnyThread() > 0;
             for (int32 Index = 0; Index < Results.Num(); ++Index)
             {
                 auto* Query = static_cast<FWebGPURenderQuery*>(Results[Index].Query.GetReference());
@@ -4438,6 +4605,9 @@ void FWebGPUDynamicRHI::RHIEndRenderPass()
                 FMemory::Memcpy(&Value, Data.GetData() + Index * sizeof(Value), sizeof(Value));
                 Query->ResultValue.store(Value, std::memory_order_relaxed);
                 Query->ResultReady.store(true, std::memory_order_release);
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+                if (WakeWaiters) emscripten_futex_wake(&Query->ResultReady, MAX_int32);
+#endif
             }
         };
 #endif
@@ -4486,6 +4656,33 @@ bool FWebGPUDynamicRHI::RHIGetRenderQueryResult(FRHIRenderQuery* Query, uint64& 
 {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     const auto* Value = static_cast<FWebGPURenderQuery*>(Query);
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+    const int32 WaitBudgetMs = FMath::Clamp(CVarWebGPUOcclusionQueryWaitMs.GetValueOnAnyThread(), 0, 20);
+    if (WaitForResult && WaitBudgetMs && !Value->ResultReady.load(std::memory_order_acquire) &&
+        !emscripten_is_main_runtime_thread() && !emscripten_is_main_browser_thread())
+    {
+        // Native D3D12 may wait for the requested older query. Only the consuming
+        // worker sleeps here; mapAsync and result publication continue on owner.
+        // Bound the sum of waits per consuming thread/frame, including timeouts.
+        static thread_local uint32 WaitFrame = MAX_uint32;
+        static thread_local double RemainingMs = 0;
+        if (WaitFrame != GFrameNumberRenderThread)
+        {
+            WaitFrame = GFrameNumberRenderThread;
+            RemainingMs = WaitBudgetMs;
+        }
+        if (RemainingMs > 0)
+        {
+            ++QueryWaitCalls;
+            const double Started = FPlatformTime::Seconds();
+            emscripten_futex_wait(const_cast<std::atomic<uint32>*>(&Value->ResultReady), 0, RemainingMs);
+            const double ElapsedMs = (FPlatformTime::Seconds() - Started) * 1000.0;
+            RemainingMs -= ElapsedMs;
+            QueryWaitMicroseconds += uint64(ElapsedMs * 1000.0);
+            if (!Value->ResultReady.load(std::memory_order_acquire)) ++QueryWaitUnready;
+        }
+    }
+#endif
     if (!Value->ResultReady.load(std::memory_order_acquire))
     {
         ++OcclusionResultsPending;

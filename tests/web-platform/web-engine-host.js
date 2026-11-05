@@ -216,7 +216,89 @@ function createWebPerformanceHUD(counter, canvas) {
   };
 }
 
+// Experimental desktop-style frame overlap: direct page -> Game display ticks,
+// bounded by actual GPU completion. No queued display ticks accumulate.
+function createWebGameFrameClock(maxAhead, fail) {
+  const state = new Int32Array(new SharedArrayBuffer(32));
+  const channel = new MessageChannel();
+  let pending = null, raf = 0, disposed = false, ready = false, issued = null, displayTick = null;
+  const stats = globalThis.__webFrameSchedulerPage = {maxAhead, requests: 0, ticks: 0, budgetStalls: 0, ready: false};
+  function arm() {
+    if (!disposed && ready && pending !== null && !document.hidden && !raf) raf = requestAnimationFrame(tick);
+  }
+  function tick(timestamp) {
+    raf = 0;
+    if (disposed || document.hidden || pending === null) return;
+    displayTick = timestamp;
+    grant(); arm();
+  }
+  function grant() {
+    if (disposed || document.hidden || pending === null || displayTick === null || performance.now() - displayTick > 50) return;
+    const completed = Atomics.load(state, 0), reserved = Atomics.load(state, 2);
+    if (reserved - completed >= maxAhead) { ++stats.budgetStalls; return; }
+    issued = pending; pending = null;
+    const ahead = Atomics.add(state, 2, 1) + 1 - completed;
+    Atomics.store(state, 5, Math.max(Atomics.load(state, 5), ahead));
+    ++stats.ticks;
+    channel.port1.postMessage({type: 'tick', id: issued, timestamp: performance.timeOrigin + displayTick});
+    displayTick = null;
+  }
+  channel.port1.onmessage = ({data}) => {
+    if (disposed) return;
+    if (data.type === 'ready') {
+      if (ready || !Number.isSafeInteger(data.bootstrap) || data.bootstrap < 0 || data.bootstrap > maxAhead)
+        return fail('Invalid Game frame clock bootstrap');
+      ready = stats.ready = true;
+      Atomics.store(state, 2, data.bootstrap);
+      Atomics.store(state, 6, 1);
+    } else if (data.type === 'request') {
+      if (!ready || pending !== null || !Number.isSafeInteger(data.id)) return fail('Overlapping Game frame requests');
+      ++stats.requests; pending = data.id; grant(); arm();
+    } else if (data.type === 'cancel') {
+      if (pending === data.id) pending = null;
+      else if (issued === data.id) { Atomics.sub(state, 2, 1); issued = null; }
+    }
+  };
+  const visibility = () => {
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    displayTick = null;
+    arm();
+  };
+  document.addEventListener('visibilitychange', visibility);
+  return {transfer: {maxAhead, state: state.buffer, port: channel.port2},
+    gpuCompleted() {grant(); arm();},
+    dispose() { disposed = true; if (raf) cancelAnimationFrame(raf); channel.port1.close();
+      document.removeEventListener('visibilitychange', visibility); }};
+}
+
 globalThis.startWebEngineWorker = function({assets, module, record, failed, stage, diagnostics, render}) {
+  const experiment = new URLSearchParams(location.search);
+  const occlusionArgs = module.arguments.filter(v => v.startsWith('-WebOcclusionMode='));
+  if (occlusionArgs.length > 1) throw new Error('Choose one occlusion mode');
+  const occlusionMode = experiment.get('occlusion') ?? occlusionArgs[0]?.split('=')[1] ?? 'history';
+  if (!['control', 'history', 'hzb', 'instances', 'hzb-instances'].includes(occlusionMode)) throw new Error('Invalid occlusion mode');
+  module.arguments = module.arguments.filter(v => !v.startsWith('-WebOcclusionMode='));
+  module.arguments.push('-WebOcclusionMode=' + occlusionMode);
+  // Approved default: schedule Game ticks locally and consume completed history.
+  // A page-frame scheduler is an explicit alternative; owner rAF remains selectable.
+  const clock = experiment.get('clock');
+  if (clock !== null && !['local', 'owner'].includes(clock)) throw new Error('Invalid Game frame clock');
+  const localClock = clock === 'local' || (clock === null &&
+    assets.gameFrameBridge !== 'page-raf' &&
+    !module.arguments.some(v => v.startsWith('-WebFrameScheduler=')));
+  module.arguments = module.arguments.filter(v => v !== '-WebGameLocalClock');
+  if (localClock) module.arguments.push('-WebGameLocalClock');
+  if (module.arguments.includes('-WebGameLocalClock') && module.arguments.some(v => v.startsWith('-WebFrameScheduler=')))
+    throw new Error('Choose one frame clock experiment');
+  if (assets.gameFrameBridge === 'page-raf' && (localClock ||
+      module.arguments.some(v => v.startsWith('-WebFrameScheduler='))))
+    throw new Error('Choose one frame clock experiment');
+  const rhiWakeArgs = module.arguments.filter(v => v.startsWith('-WebRHIWake='));
+  if (rhiWakeArgs.length > 1) throw new Error('Choose one RHI wake mode');
+  const rhiWake = experiment.get('rhiwake') ?? rhiWakeArgs[0]?.split('=')[1] ?? 'priority';
+  if (!['channel', 'priority'].includes(rhiWake)) throw new Error('Invalid RHI wake mode');
+  module.arguments = module.arguments.filter(v => !v.startsWith('-WebRHIWake='));
+  module.arguments.push('-WebRHIWake=' + rhiWake);
   const canvas = module.canvas;
   globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
@@ -226,7 +308,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     {name: 'UE Engine'});
   const frameCounter = new Uint32Array(new SharedArrayBuffer(4));
   const performanceHUD = createWebPerformanceHUD(frameCounter, canvas);
-  let sequence = 0, stopped = false;
+  let sequence = 0, stopped = false, frameClock;
+  const gameClockVisibility = () => worker.postMessage({type: 'game-clock-visibility', hidden: document.hidden});
   const directInput = assets.inputBridge === 'direct-game-thread';
   const inputBridge = new WebInputBridge({
     send: message => worker.postMessage(message),
@@ -279,6 +362,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     stopped = true;
     inputBridge.dispose();
     disposeFrames();
+    document.removeEventListener('visibilitychange', gameClockVisibility);
+    frameClock?.dispose();
     performanceHUD.dispose();
     worker.terminate();
     for (const request of pending.values()) {
@@ -289,10 +374,19 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     failed(error, {kind: 'engine-worker'});
   };
   worker.onerror = event => reportFailure(event.message);
+  if (localClock) document.addEventListener('visibilitychange', gameClockVisibility);
+  const frameSchedulerArg = module.arguments.filter(arg => arg.startsWith('-WebFrameScheduler='));
+  if (frameSchedulerArg.length) {
+    const maxAhead = Number(frameSchedulerArg[0].split('=')[1]);
+    if (frameSchedulerArg.length !== 1 || !Number.isInteger(maxAhead) || maxAhead < 1 || maxAhead > 4)
+      throw new Error('WebFrameScheduler requires a maximum of 1 to 4 frames');
+    frameClock = createWebGameFrameClock(maxAhead, reportFailure);
+  }
   worker.onmessageerror = () => reportFailure('Engine Worker message could not be decoded');
   worker.onmessage = event => {
     const message = event.data;
     if (message.type === 'log') record(message.text);
+    else if (message.type === 'gpu-frame-complete') frameClock?.gpuCompleted();
     else if (message.type === 'failure') reportFailure(message.message);
     else if (message.type === 'stage') stage(message.stage);
     else if (message.type === 'progress') {
@@ -456,6 +550,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     stopped = true;
     inputBridge.dispose();
     disposeFrames();
+    document.removeEventListener('visibilitychange', gameClockVisibility);
+    frameClock?.dispose();
     performanceHUD.dispose();
     observer.disconnect();
     clearInterval(dpiTimer);
@@ -468,9 +564,12 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   }, {once: true});
   const offscreen = canvas.transferControlToOffscreen();
   worker.postMessage({type: 'start', assets, canvas: offscreen, browser: browser(),
+    gameClockHidden: document.hidden,
     frameCounter: frameCounter.buffer,
+    frameScheduler: frameClock?.transfer,
     arguments: module.arguments, debug: diagnostics.mode !== 'normal',
-    verification: new URLSearchParams(location.search).get('verify') === 'full' ? 'full' : 'sampled'}, [offscreen]);
+    verification: new URLSearchParams(location.search).get('verify') === 'full' ? 'full' : 'sampled'},
+    [offscreen, ...(frameClock ? [frameClock.transfer.port] : [])]);
   diagnostics.engineWorker = {url: 'web-engine-worker.js', offscreenCanvas: true};
 };
 

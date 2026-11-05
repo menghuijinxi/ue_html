@@ -1,0 +1,983 @@
+{
+  "date": "2026-11-04T06:06:05.618Z",
+  "pass": true,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-post-mimalloc.cjs",
+    "sha256": "dbd244fa61b3b3543c9b712fce124bba99a85d7408b658e8065de33076310200"
+  },
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/post-mimalloc-v59-stutters-20261104.json",
+      "sha256": "a2b8cccbe00534d7728f7cb6ea0b22a34ed2e090b28c4cc0c57b9fbaf1e8a8a1"
+    },
+    {
+      "file": "tests/web-platform/results/post-mimalloc-v59-stutters-20261104-analysis.json",
+      "sha256": "17c19b1111754fbe1d34f13f0cf97835232294f5709264ea7fc90ae1e1588026"
+    },
+    {
+      "file": "tests/web-platform/results/post-mimalloc-v59-profile-20261104.json",
+      "sha256": "7cebaa53c0c05dba2b857075aab25936a0d987ac49ecfb599e54cba600cd5b91"
+    },
+    {
+      "file": "tests/web-platform/results/post-mimalloc-v59-profile-20261104-1-workers-targets.json",
+      "sha256": "76df2c6713251e634a869f8d216fe624d4a922d1465455b11b39fc9ef34c8d32"
+    },
+    {
+      "file": "tests/web-platform/results/post-mimalloc-v59-stutters-20261104.log",
+      "sha256": "6afc6b0b93e18e53f6e982d765610e8f3827f8ec7efa9d2a399926abae482938"
+    },
+    {
+      "file": "tests/web-platform/results/post-mimalloc-v59-frame-costs-20261104.json",
+      "sha256": "bb333d21fcbe5932d9b0f9b340a18cf55ff02a7e44290e1f9ce93a4a34ae3fe9"
+    }
+  ],
+  "package": {
+    "folder": "villa-lumen-off-current-mimalloc-v59",
+    "files": {
+      "index.html": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\index.html",
+        "sha256": "f93c2c0c52c62ff4f9bfb2742e1b8988a44215586681fb3404813768ab6716c3"
+      },
+      "UEWebEngineThreads.js": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\UEWebEngineThreads.js",
+        "sha256": "97d5af24ece04c8c58efc639b75ee20e10ff37a988720fd503f2eb5e1a09c0a8"
+      },
+      "UEWebEngineThreads.wasm": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\UEWebEngineThreads.wasm",
+        "sha256": "6f3ea9f7ec2964f905b38ee4d4f1367dc953b327a42efc97cee83c18047eb17a"
+      },
+      "config-files.json": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      },
+      "content-files.json": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-lumen-off-current-mimalloc-v59\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      }
+    }
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Edg/156.0.4314.58",
+    "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "jsVersion": "15.6.12.10"
+  },
+  "environment": {
+    "hardwareConcurrency": 24,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "screen": {
+      "width": 2289,
+      "height": 1287
+    },
+    "dpr": 0.9999999760941023,
+    "visibility": "visible"
+  },
+  "viewport": {
+    "width": 2289,
+    "height": 1287,
+    "dpr": 1,
+    "view": {
+      "frame": 1198,
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 3,
+      "parallelRendering": true
+    }
+  },
+  "phases": [
+    {
+      "name": "initial-warmup",
+      "frames": 1495,
+      "fps": 74.64001793357932,
+      "low1Fps": 29.86887563594042,
+      "p99Ms": 26.54000000283122,
+      "maximumMs": 44.82000000029802,
+      "minimumRolling5sLow": 24.83700714109916,
+      "creations": {
+        "createBuffer": 83509,
+        "createTexture": 789,
+        "createShaderModule": 0,
+        "createRenderPipeline": 0,
+        "createComputePipeline": 0
+      },
+      "creationsPerFrame": {
+        "createBuffer": 55.896251673360105,
+        "createTexture": 0.5281124497991968,
+        "createShaderModule": 0,
+        "createRenderPipeline": 0,
+        "createComputePipeline": 0
+      },
+      "diskReads": 870,
+      "diskReadBytes": 552337408,
+      "newPipelineEvents": []
+    },
+    {
+      "name": "standing",
+      "frames": 2309,
+      "fps": 76.9382892609837,
+      "low1Fps": 32.4605063837622,
+      "p99Ms": 18.83999999985099,
+      "maximumMs": 55.69999999925494,
+      "minimumRolling5sLow": 23.90414438090434,
+      "creations": {
+        "createBuffer": 128988,
+        "createTexture": 592,
+        "createShaderModule": 0,
+        "createRenderPipeline": 0,
+        "createComputePipeline": 0
+      },
+      "creationsPerFrame": {
+        "createBuffer": 55.88734835355286,
+        "createTexture": 0.2564991334488735,
+        "createShaderModule": 0,
+        "createRenderPipeline": 0,
+        "createComputePipeline": 0
+      },
+      "diskReads": 0,
+      "diskReadBytes": 0,
+      "newPipelineEvents": []
+    },
+    {
+      "name": "first-tour-with-trace",
+      "frames": 2494,
+      "fps": 99.52579589708726,
+      "low1Fps": 23.324594385180415,
+      "p99Ms": 22.140000000596046,
+      "maximumMs": 331.054999999702,
+      "minimumRolling5sLow": 8.539983133571347,
+      "creations": {
+        "createBuffer": 139382,
+        "createTexture": 608,
+        "createShaderModule": 10,
+        "createRenderPipeline": 15,
+        "createComputePipeline": 0
+      },
+      "creationsPerFrame": {
+        "createBuffer": 55.90934616927397,
+        "createTexture": 0.2438828720417168,
+        "createShaderModule": 0.004011231448054553,
+        "createRenderPipeline": 0.006016847172081829,
+        "createComputePipeline": 0
+      },
+      "diskReads": 7,
+      "diskReadBytes": 13369344,
+      "newPipelineEvents": [
+        {
+          "name": "createRenderPipeline",
+          "start": 83909.05999999866,
+          "end": 83909.08999999985,
+          "ms": 0.030000001192092896,
+          "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83909.56999999657,
+          "end": 83909.59499999881,
+          "ms": 0.02500000223517418,
+          "label": "main_00001dc0_c525be22 / main_00003bec_fe139846"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83909.63999999687,
+          "end": 83909.64499999955,
+          "ms": 0.005000002682209015,
+          "label": "main_00001e24_74849152 / main_000003d0_15306abc"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83909.95499999821,
+          "end": 83909.96999999881,
+          "ms": 0.015000000596046448,
+          "label": "main_00001dc0_c525be22 / main_00003bec_fe139846"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83909.9849999994,
+          "end": 83909.99499999732,
+          "ms": 0.009999997913837433,
+          "label": "main_00001e24_74849152 / main_000003d0_15306abc"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83910.06499999762,
+          "end": 83910.06999999657,
+          "ms": 0.004999998956918716,
+          "label": "main_00003450_12328add / main_00000f58_4e1377bf"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83912.87999999896,
+          "end": 83912.90499999747,
+          "ms": 0.02499999850988388,
+          "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83912.94499999657,
+          "end": 83912.95499999821,
+          "ms": 0.010000001639127731,
+          "label": "main_000007c0_d889bb5b / main_000004e8_31236922"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83912.98999999836,
+          "end": 83913,
+          "ms": 0.010000001639127731,
+          "label": "main_00001f00_a30a26d4 / main_00005764_42866918"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83914.4849999994,
+          "end": 83914.50499999896,
+          "ms": 0.019999999552965164,
+          "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83914.57999999821,
+          "end": 83914.58999999985,
+          "ms": 0.010000001639127731,
+          "label": "main_0000548c_25787371 / main_00009284_585ed8d6"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83914.61999999732,
+          "end": 83914.62999999896,
+          "ms": 0.010000001639127731,
+          "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83931.48999999836,
+          "end": 83931.51999999955,
+          "ms": 0.030000001192092896,
+          "label": "main_000055bc_931ef210 / main_00004e24_c93816cb"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83932.13499999791,
+          "end": 83932.15499999747,
+          "ms": 0.019999999552965164,
+          "label": "main_00001d84_18961c06 / main_00001ac0_643db501"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 83932.79999999702,
+          "end": 83932.81999999657,
+          "ms": 0.019999999552965164,
+          "label": "main_00001ec4_56192608 / main_00001a7c_b30566da"
+        }
+      ]
+    },
+    {
+      "name": "repeat-tour-with-trace",
+      "frames": 2652,
+      "fps": 105.83518205685787,
+      "low1Fps": 31.603712851210005,
+      "p99Ms": 22.574999999254942,
+      "maximumMs": 54.53000000119209,
+      "minimumRolling5sLow": 21.362956632960017,
+      "creations": {
+        "createBuffer": 148022,
+        "createTexture": 647,
+        "createShaderModule": 0,
+        "createRenderPipeline": 0,
+        "createComputePipeline": 0
+      },
+      "creationsPerFrame": {
+        "createBuffer": 55.83628819313466,
+        "createTexture": 0.24405884571859676,
+        "createShaderModule": 0,
+        "createRenderPipeline": 0,
+        "createComputePipeline": 0
+      },
+      "diskReads": 0,
+      "diskReadBytes": 0,
+      "newPipelineEvents": []
+    }
+  ],
+  "longFrames": [
+    {
+      "frame": 4229,
+      "intervalMs": 55.5,
+      "markTimestampUs": 20533583435,
+      "gpuTasks": [
+        {
+          "timestampUs": 20533547302,
+          "durationMs": 22.542,
+          "threadCpuMs": 22.497,
+          "overlapMs": 22.542
+        }
+      ]
+    },
+    {
+      "frame": 4356,
+      "intervalMs": 331.054999999702,
+      "markTimestampUs": 20535573081,
+      "gpuTasks": [
+        {
+          "timestampUs": 20535273252,
+          "durationMs": 150.771,
+          "threadCpuMs": 150.111,
+          "overlapMs": 150.771
+        },
+        {
+          "timestampUs": 20535424027,
+          "durationMs": 116.935,
+          "threadCpuMs": 118.276,
+          "overlapMs": 116.935
+        },
+        {
+          "timestampUs": 20535191975,
+          "durationMs": 80.878,
+          "threadCpuMs": 80.54,
+          "overlapMs": 30.827
+        }
+      ]
+    }
+  ],
+  "trace": {
+    "source": {
+      "file": "tests/web-platform/results/post-mimalloc-v59-stutters-20261104-chrome-trace.json",
+      "sha256": "3812f1a6a3541ba4deb8f141fb929db2ea7871269abb1607a6a0fac69e4bcb86"
+    },
+    "events": 3659078,
+    "gcMaximumMs": 5.614,
+    "cacheHits": 34
+  },
+  "normalFixedView": {
+    "fps": 76.56344908857221,
+    "low1Fps": 32.479395882922184,
+    "rhiWorkMs": 9.366978566991614,
+    "workload": {
+      "sampleFrames": 780,
+      "drawsPerFrame": 3110.1858974358975,
+      "indirectDrawsPerFrame": 81.04615384615384,
+      "dispatchesPerFrame": 158.8576923076923
+    },
+    "perFrame": {
+      "bindGroupCacheHits": 4874.211538461538,
+      "bindGroupsCreated": 59.78589743589744,
+      "bindingEntriesPrepared": 5471.502564102564,
+      "bindingEntriesReused": 4771.03717948718,
+      "resourceTableCommits": 567.4717948717948,
+      "resourceTableBuffers": 622.375641025641,
+      "groupPreparationHits": 3228.5358974358974,
+      "groupFrameMisses": 222.12435897435898,
+      "groupAccessMisses": 735.1153846153846,
+      "groupVersionMisses": 748.2217948717948,
+      "groupTextureMisses": 0,
+      "uniformSnapshots": 690.2179487179487,
+      "uniformWriteCalls": 2
+    },
+    "wholeGroupHitFraction": 0.6543448672969698,
+    "wasmCapacityBytes": [
+      1521025024,
+      1521025024
+    ]
+  },
+  "memoryStatsWarnings": 22637,
+  "threads": [
+    {
+      "role": "RHI",
+      "source": {
+        "file": "tests/web-platform/results/post-mimalloc-v59-profile-20261104-1-workers-4.cpuprofile",
+        "sha256": "d01b72d630553dc33db36ad8e6c343c94a7dd39ee81e20fbd3c609cb658e3852"
+      },
+      "durationMs": 7099.55,
+      "longestSampleMs": 99.505,
+      "longSampleMs": 99.505,
+      "longSamples": [
+        {
+          "ms": 99.505,
+          "stack": [
+            "decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()) UE::Core::Private::ReallocGrow<3u, TSizedHeapAllocator<32, FMemory>::ForAnyElementType>(unsigned int, unsigned int, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity()), TSizedHeapAllocator<32, FMemory>::ForAnyElementType&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&, decltype(std::declval<TSizedHeapAllocator<32, FMemory>::ForAnyElementType&>().GetInitialCapacity())&)",
+            "FWebGPUDynamicRHI::CommitShaderResources(FWebGPUShaderData&)",
+            "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+            "FWebGPUDynamicRHI::SetDrawBindings(TArray<FWebGPUResolvedGroup, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>>*)",
+            "FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer*, int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)",
+            "FRHICommandDrawIndexedPrimitive::Execute(FRHICommandListBase&)",
+            "FRHICommand<FRHICommandDrawIndexedPrimitive, FRHICommandDrawIndexedPrimitiveString1641>::ExecuteAndDestruct(FRHICommandListBase&)",
+            "FRHICommandListBase::Execute()"
+          ]
+        }
+      ],
+      "paths": {
+        "drawBindings": {
+          "inclusiveMs": 2023.855,
+          "inclusivePercent": 28.506806769443134,
+          "selfMs": 150.312,
+          "selfPercent": 2.1172046115598877,
+          "longSampleMs": 99.505,
+          "inclusivePercentWithoutLongSamples": 27.490537560829964
+        },
+        "groups": {
+          "inclusiveMs": 1358.411,
+          "inclusivePercent": 19.133761998999937,
+          "selfMs": 589.265,
+          "selfPercent": 8.30003310068948,
+          "longSampleMs": 99.505,
+          "inclusivePercentWithoutLongSamples": 17.98425581549833
+        },
+        "commitResources": {
+          "inclusiveMs": 243.288,
+          "inclusivePercent": 3.4268087413991024,
+          "selfMs": 115.08,
+          "selfPercent": 1.6209478065511194,
+          "longSampleMs": 99.505,
+          "inclusivePercentWithoutLongSamples": 2.0540296526665185
+        },
+        "allocation": {
+          "inclusiveMs": 200.834,
+          "inclusivePercent": 2.8288271791874133,
+          "selfMs": 199.291,
+          "selfPercent": 2.8070934073286335,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 2.8690386990369348
+        },
+        "bufferCreation": {
+          "inclusiveMs": 149.42,
+          "inclusivePercent": 2.1046404349571453,
+          "selfMs": 39.902,
+          "selfPercent": 0.5620356219760407,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 2.1345577064147445
+        },
+        "frameCleanup": {
+          "inclusiveMs": 90.14,
+          "inclusivePercent": 1.2696579360663702,
+          "selfMs": 24.143,
+          "selfPercent": 0.34006380686099824,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 1.2877060076042368
+        },
+        "resourceRetirement": {
+          "inclusiveMs": 6.139,
+          "inclusivePercent": 0.08647026924241678,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0.08769943621791003
+        },
+        "accessValidation": {
+          "inclusiveMs": 274.082,
+          "inclusivePercent": 3.8605545421892935,
+          "selfMs": 171.767,
+          "selfPercent": 2.419406863815312,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 3.9154319722230357
+        },
+        "rdgValidation": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "tlv": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "memoryStats": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "logging": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "heapViewCheck": {
+          "inclusiveMs": 139.563,
+          "inclusivePercent": 1.96580064933693,
+          "selfMs": 118.39,
+          "selfPercent": 1.6675704798191435,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 1.9937443259293333
+        },
+        "commandReplay": {
+          "inclusiveMs": 720.436,
+          "inclusivePercent": 10.147629075082223,
+          "selfMs": 79.246,
+          "selfPercent": 1.116211590875478,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 10.29187669507839
+        }
+      }
+    },
+    {
+      "role": "Render",
+      "source": {
+        "file": "tests/web-platform/results/post-mimalloc-v59-profile-20261104-1-workers-17.cpuprofile",
+        "sha256": "b7bbfbd83467101c1f7c68517bdc2bd1234a7b9213e38fa87d27550aa8c930dd"
+      },
+      "durationMs": 6697.247,
+      "longestSampleMs": 65.345,
+      "longSampleMs": 65.345,
+      "longSamples": [
+        {
+          "ms": 65.345,
+          "stack": [
+            "_do_futex_wait",
+            "__pthread_cond_timedwait",
+            "FPThreadEvent::Wait(unsigned int, bool)",
+            "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+            "FTaskGraphCompatibilityImplementation::WaitOnNamedThreadForTasks(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type, ENamedThreads::Type)",
+            "FTaskGraphCompatibilityImplementation::WaitUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type)",
+            "FTaskGraphInterface::WaitUntilTaskCompletes(TRefCountPtr<FBaseGraphTask> const&, ENamedThreads::Type)",
+            "FRHICommandListExecutor::Submit(TArrayView<FRHICommandListBase* const, int>, ERHISubmitFlags)"
+          ]
+        }
+      ],
+      "paths": {
+        "drawBindings": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "groups": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "commitResources": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "allocation": {
+          "inclusiveMs": 216.564,
+          "inclusivePercent": 3.2336271903962923,
+          "selfMs": 210.454,
+          "selfPercent": 3.142395673923927,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 3.2654885431057337
+        },
+        "bufferCreation": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "frameCleanup": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "resourceRetirement": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "accessValidation": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "rdgValidation": {
+          "inclusiveMs": 163.992,
+          "inclusivePercent": 2.4486479295149186,
+          "selfMs": 127.567,
+          "selfPercent": 1.9047677351604324,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 2.4727747786381644
+        },
+        "tlv": {
+          "inclusiveMs": 206.081,
+          "inclusivePercent": 3.07710018758454,
+          "selfMs": 18.13,
+          "selfPercent": 0.27070824773223984,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 3.1074192592110075
+        },
+        "memoryStats": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "logging": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "heapViewCheck": {
+          "inclusiveMs": 1.556,
+          "inclusivePercent": 0.023233427108183408,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0.0234623491119139
+        },
+        "commandReplay": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        }
+      }
+    },
+    {
+      "role": "Game",
+      "source": {
+        "file": "tests/web-platform/results/post-mimalloc-v59-profile-20261104-1-workers-29.cpuprofile",
+        "sha256": "bb036d454475f9d6174f0ec22e9264b73eb9db4f032d7148b11043aff603aff8"
+      },
+      "durationMs": 6383.179,
+      "longestSampleMs": 70.475,
+      "longSampleMs": 70.475,
+      "longSamples": [
+        {
+          "ms": 70.475,
+          "stack": [
+            "(idle)",
+            "(root)"
+          ]
+        }
+      ],
+      "paths": {
+        "drawBindings": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "groups": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "commitResources": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "allocation": {
+          "inclusiveMs": 24.385,
+          "inclusivePercent": 0.3820196801625021,
+          "selfMs": 24.385,
+          "selfPercent": 0.3820196801625021,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0.3862845462103086
+        },
+        "bufferCreation": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "frameCleanup": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "resourceRetirement": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "accessValidation": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "rdgValidation": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "tlv": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        },
+        "memoryStats": {
+          "inclusiveMs": 4.767,
+          "inclusivePercent": 0.07468065676992608,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0.0755143912972951
+        },
+        "logging": {
+          "inclusiveMs": 21.519,
+          "inclusivePercent": 0.3371204222848834,
+          "selfMs": 1.507,
+          "selfPercent": 0.02360892589726843,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0.3408840332130257
+        },
+        "heapViewCheck": {
+          "inclusiveMs": 6.111,
+          "inclusivePercent": 0.09573599612356162,
+          "selfMs": 6.111,
+          "selfPercent": 0.09573599612356162,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0.09680479236789813
+        },
+        "commandReplay": {
+          "inclusiveMs": 0,
+          "inclusivePercent": 0,
+          "selfMs": 0,
+          "selfPercent": 0,
+          "longSampleMs": 0,
+          "inclusivePercentWithoutLongSamples": 0
+        }
+      }
+    }
+  ],
+  "existingFrameCosts": [
+    {
+      "role": "RHI",
+      "exclusive": {
+        "wasmLeaf": {
+          "ms": 3201.416,
+          "percent": 45.093224218436376
+        },
+        "scriptLeaf": {
+          "ms": 860.456,
+          "percent": 12.119866752118092
+        },
+        "visibleLanguageBoundary": {
+          "ms": 84.258,
+          "percent": 1.1868076145671205
+        },
+        "idle": {
+          "ms": 1680.166,
+          "percent": 23.665809804846784
+        },
+        "webgpuApiLeaf": {
+          "ms": 1088.865,
+          "percent": 15.337098830207548
+        },
+        "otherLeaf": {
+          "ms": 161.714,
+          "percent": 2.2778063398384405
+        },
+        "garbageCollector": {
+          "ms": 22.675,
+          "percent": 0.3193864399856329
+        }
+      },
+      "inclusive": {
+        "drawBindings": {
+          "ms": 2023.855,
+          "percent": 28.506806769443134
+        },
+        "groups": {
+          "ms": 1358.411,
+          "percent": 19.133761998999937
+        },
+        "commandReplay": {
+          "ms": 720.436,
+          "percent": 10.147629075082223
+        },
+        "syncProxy": {
+          "ms": 0,
+          "percent": 0
+        },
+        "dpiQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "windowSizeQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "rhiFlush": {
+          "ms": 0,
+          "percent": 0
+        }
+      }
+    },
+    {
+      "role": "Render",
+      "exclusive": {
+        "futexWait": {
+          "ms": 4286.263,
+          "percent": 64.00037209318992
+        },
+        "wasmLeaf": {
+          "ms": 2343.038,
+          "percent": 34.985091635413774
+        },
+        "scriptLeaf": {
+          "ms": 47.792,
+          "percent": 0.7136066506133043
+        },
+        "otherLeaf": {
+          "ms": 18.55,
+          "percent": 0.2769794812704384
+        },
+        "visibleLanguageBoundary": {
+          "ms": 1.604,
+          "percent": 0.023950139512548964
+        }
+      },
+      "inclusive": {
+        "drawBindings": {
+          "ms": 0,
+          "percent": 0
+        },
+        "groups": {
+          "ms": 0,
+          "percent": 0
+        },
+        "commandReplay": {
+          "ms": 0,
+          "percent": 0
+        },
+        "syncProxy": {
+          "ms": 3.213,
+          "percent": 0.04797493656721934
+        },
+        "dpiQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "windowSizeQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "rhiFlush": {
+          "ms": 929.127,
+          "percent": 13.873267627728229
+        }
+      }
+    },
+    {
+      "role": "Game",
+      "exclusive": {
+        "idle": {
+          "ms": 5280.644,
+          "percent": 82.72749362034185
+        },
+        "scriptLeaf": {
+          "ms": 57.439,
+          "percent": 0.8998494323909763
+        },
+        "wasmLeaf": {
+          "ms": 598.196,
+          "percent": 9.371443288681078
+        },
+        "futexWait": {
+          "ms": 431.659,
+          "percent": 6.762445483668874
+        },
+        "visibleLanguageBoundary": {
+          "ms": 13.731,
+          "percent": 0.2151122504946203
+        },
+        "otherLeaf": {
+          "ms": 1.51,
+          "percent": 0.023655924422611364
+        }
+      },
+      "inclusive": {
+        "drawBindings": {
+          "ms": 0,
+          "percent": 0
+        },
+        "groups": {
+          "ms": 0,
+          "percent": 0
+        },
+        "commandReplay": {
+          "ms": 0,
+          "percent": 0
+        },
+        "syncProxy": {
+          "ms": 0,
+          "percent": 0
+        },
+        "dpiQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "windowSizeQuery": {
+          "ms": 0,
+          "percent": 0
+        },
+        "rhiFlush": {
+          "ms": 0,
+          "percent": 0
+        }
+      }
+    }
+  ],
+  "boundary": "Single diagnostic run and separate fixed-view measurement/profile, not an optimization A/B. Rare object wrappers and per-frame snapshots affect stutter capture; tour also has browser tracing. Worker profiler starts after normal timing. Inclusive paths overlap; thread windows differ; samples include scheduling and profiler effects. RHI work is a wall-clock pump total, not CPU-only time or a per-present critical path. It updates after present and can cover multiple submissions: per-frame rhiDelta cannot locate a stall. Trace long-task list is truncated to the 80 longest scopes, so absent overlaps do not rule out shorter GPU-service work. CPU GPU-service tasks are not GPU execution time. No GPU utilization/full GPU frame measured; observed 60% is user-reported. Buffer creation counts do not prove allocator/retirement is the dominant cause. GetStats warning costs require isolated A/B; heap view checks do not mean memory grew. Browser/driver caches retained; no batch PSO prewarm or quality override. Ordinary page keeps async PSO-cache consolidation; benchmark full mode disables it."
+}

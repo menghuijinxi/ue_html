@@ -86,9 +86,10 @@ void FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase & WebArg0,
         RHIGetCommandContext(ERHIPipeline::Graphics);
     if (Lock.Mode == RLM_WriteOnly)
     {
-        // Upload into a fresh staging buffer, then copy at this command's position in the encoder.
-        auto Staging = CreateBuffer(Lock.Bytes.Num(), WGPUBufferUsage_CopySrc, Lock.Bytes.GetData());
-        wgpuCommandEncoderCopyBufferToBuffer(Encoder, Staging, 0, Lock.Buffer->Handle, Lock.Offset, Lock.Bytes.Num());
+        // Each upload keeps a unique source slice until every frame encoder is submitted.
+        uint64 UploadOffset = 0;
+        auto Staging = UploadStagingBytes(Lock.Bytes.GetData(), Lock.Bytes.Num(), UploadOffset);
+        wgpuCommandEncoderCopyBufferToBuffer(Encoder, Staging, UploadOffset, Lock.Buffer->Handle, Lock.Offset, Lock.Bytes.Num());
         wgpuBufferRelease(Staging);
         ++BufferUploads;
         BufferUploadBytes += Lock.Bytes.Num();
