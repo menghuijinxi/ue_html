@@ -16,7 +16,11 @@ const records = blocks.map((block, index) => {
   const flagsAt = block.indexOf('/* DXC compile flags */');
   const dxilAt = block.indexOf('/* Dumped disassembled DXIL */');
   assert(flagsAt >= 0 && dxilAt > flagsAt, `Incomplete shader dump ${index}`);
-  const hlsl = block.slice(0, flagsAt).trim() + '\n';
+  // Dawn emits one separator newline on each side of the original string.
+  // Preserve the source's own trailing newlines for the same-input comparison.
+  const surrounded = block.slice(0, flagsAt);
+  assert(surrounded.startsWith('\n') && surrounded.endsWith('\n'));
+  const hlsl = surrounded.slice(1, -1);
   const flags = block.slice(flagsAt + '/* DXC compile flags */'.length, dxilAt).trim().split(/\s+/);
   assert.deepEqual([...flags].sort(), ['D3DCOMPILE_PACK_MATRIX_ROW_MAJOR',
     'D3DCOMPILE_IEEE_STRICTNESS', 'D3DCOMPILE_OPTIMIZATION_LEVEL3'].sort(),
@@ -26,10 +30,14 @@ const records = blocks.map((block, index) => {
   const entry = hlsl.match(/\b(dawn_entry_point_[0-9a-f]+)\s*\(/)?.[1];
   assert(entry, `Missing Dawn entry point ${index}`);
   const profile = `${model[1]}_${model[2]}_${model[3]}`;
+  const dxilShaderHash = block.slice(dxilAt).match(/; shader hash: ([0-9a-f]{32})/)?.[1];
+  assert(dxilShaderHash, `Missing DXIL shader hash ${index}`);
   const file = path.join(output, `${index}-${profile}.hlsl`);
   fs.writeFileSync(file, hlsl);
-  return {index, profile, entry, flags, ...audit(file)};
+  return {index, profile, entry, flags, dxilShaderHash, ...audit(file)};
 });
+fs.writeFileSync(path.join(output, 'inputs.tsv'), records.map(r =>
+  [r.index, path.basename(r.file), r.profile, r.entry, r.dxilShaderHash].join('\t')).join('\n') + '\n');
 fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({
   date: new Date().toISOString(), source: audit(__filename), dump: audit(input), records
 }, null, 2));

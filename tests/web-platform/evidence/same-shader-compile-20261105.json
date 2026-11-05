@@ -1,0 +1,1805 @@
+{
+  "date": "2026-11-05T06:09:37.568Z",
+  "pass": true,
+  "compiler": {
+    "file": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\156.0.4314.58\\dxcompiler.dll",
+    "sha256": "4400daf60bd7fc84ca250bf843906dedac5ad4872bc532ceeae4e844bde032bd"
+  },
+  "manifest": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\manifest.json",
+    "sha256": "1b2cf564f447cf60e12aeefbb65a4aac6c999cc15acc210b18fd4cd8780bfa89"
+  },
+  "sources": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-same-dxc.cpp",
+      "sha256": "2be29fe50e95619eba933efc64b729f51adc56f411c03a6e168292849db1ef57"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnostics\\extract-dawn-hlsl.cjs",
+      "sha256": "7d2021e125e4cad879705b6bd9df57c1aced200edfaa2940e02891831b0a9f6e"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnostics\\analyze-same-shader.cjs",
+      "sha256": "6f5082064f2937af3f400b7247fbb468a92a98f1f51d2f6823a9f33c46575b5b"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\benchmark-web-pso-corpus.cjs",
+      "sha256": "6f3ba110392ecbd50f2ef7bf3ec89ddb456aeab739e2575b7be52057d403e627"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-pso-replay-worker.js",
+      "sha256": "c6f039467f9e523e7246c8f390baca93bb766bd684371516b972bc2971fc859b"
+    }
+  ],
+  "boundary": "Exact exported HLSL, entry point, shader model, optimization flags and Edge DXC DLL. All 30 DXIL shader hashes verified against browser output. Browser detailed DXC scopes versus native Compile/GetStatus/GetResult. Serial per-pipeline execution; caches disabled for DXC workload equality. Neither side renders or runs UE. Native is a compiler baseline, not UE editor frame timing. Driver/global caches are retained. Trace is diagnostic. Wall-time remainder after nested shader scopes includes pipeline setup/cache/driver work, not pure driver time.",
+  "inputs": [
+    {
+      "index": 0,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "8bbdbe6436bec88d9562bc62c0a09630",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\0-vs_6_8.hlsl",
+      "sha256": "c941dfebecb684c0471a1d0e303643f57fd80b9e91a72e9b4480bd45f52e0698"
+    },
+    {
+      "index": 1,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "4b5aac59337726040d275e436d26655d",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\1-ps_6_8.hlsl",
+      "sha256": "4cf16ca00ac14e60776989f6d7043a0589fb4e83681bd90aabd0c1fb353d809f"
+    },
+    {
+      "index": 2,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "3d0be75e647c7333073438b8d1fcb6ba",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\2-vs_6_8.hlsl",
+      "sha256": "0dffa99a162be78845a9fc61015bd231b6218b6c2e71629c28b193e98e2f6aec"
+    },
+    {
+      "index": 3,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "0714dfe86f740fc3d0525ecf7e2ecea8",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\3-ps_6_8.hlsl",
+      "sha256": "4bdaf3d06a2ec153e7a53befe2f029ad7c5441f63da30b930515534fae547ce6"
+    },
+    {
+      "index": 4,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "3d0be75e647c7333073438b8d1fcb6ba",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\4-vs_6_8.hlsl",
+      "sha256": "0dffa99a162be78845a9fc61015bd231b6218b6c2e71629c28b193e98e2f6aec"
+    },
+    {
+      "index": 5,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "0714dfe86f740fc3d0525ecf7e2ecea8",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\5-ps_6_8.hlsl",
+      "sha256": "4bdaf3d06a2ec153e7a53befe2f029ad7c5441f63da30b930515534fae547ce6"
+    },
+    {
+      "index": 6,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "fbeeed3cd40c99282e25bbe714a4c638",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\6-vs_6_8.hlsl",
+      "sha256": "6be4010d87bc56b50a914b32342b85fe96314afe50968a6368ccb4092b073697"
+    },
+    {
+      "index": 7,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "c5c7caf97f5e6953d1cff95c8ab0a951",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\7-ps_6_8.hlsl",
+      "sha256": "c7ba498d51df0be5b2fd22a94da9928bd28da4eea8f04b9a9cb0d44e6a066f5a"
+    },
+    {
+      "index": 8,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "326b8072de5765ebed8d27aaff352621",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\8-vs_6_8.hlsl",
+      "sha256": "55f8ff89794fc6f6c27657b3f203f3bbe30ed2e9cab0540f89588a6c1f30aa01"
+    },
+    {
+      "index": 9,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "1e62e7aa3230ce332b2107b0bc391e4b",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\9-ps_6_8.hlsl",
+      "sha256": "bf5a2ae56a41c37e7b41938da32993cd29393cd66ae15fdf227f5a87f464d9d3"
+    },
+    {
+      "index": 10,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "326b8072de5765ebed8d27aaff352621",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\10-vs_6_8.hlsl",
+      "sha256": "55f8ff89794fc6f6c27657b3f203f3bbe30ed2e9cab0540f89588a6c1f30aa01"
+    },
+    {
+      "index": 11,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "1e62e7aa3230ce332b2107b0bc391e4b",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\11-ps_6_8.hlsl",
+      "sha256": "bf5a2ae56a41c37e7b41938da32993cd29393cd66ae15fdf227f5a87f464d9d3"
+    },
+    {
+      "index": 12,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "170c863f8781f7475e1df05454275a45",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\12-vs_6_8.hlsl",
+      "sha256": "015276c18a6f1c558912d2314bd6d34ecd49a42711a683293329258cf59ca19c"
+    },
+    {
+      "index": 13,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "1558e6bae6961da0f5adc22e47a58622",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\13-ps_6_8.hlsl",
+      "sha256": "473783dfcd425fe212e07dc9610e9e2dca0bb3ffc1c3935937c7b6423056df2c"
+    },
+    {
+      "index": 14,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "170c863f8781f7475e1df05454275a45",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\14-vs_6_8.hlsl",
+      "sha256": "015276c18a6f1c558912d2314bd6d34ecd49a42711a683293329258cf59ca19c"
+    },
+    {
+      "index": 15,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "55a18325f3af2718f4ec1d8abbd94acb",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\15-ps_6_8.hlsl",
+      "sha256": "2a83a28032b6608f2dc46cf260103192c539f1232207f3589a16dfbf3916231c"
+    },
+    {
+      "index": 16,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "326b8072de5765ebed8d27aaff352621",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\16-vs_6_8.hlsl",
+      "sha256": "55f8ff89794fc6f6c27657b3f203f3bbe30ed2e9cab0540f89588a6c1f30aa01"
+    },
+    {
+      "index": 17,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "4c87c1c676c1c98b888214e7443d27d2",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\17-ps_6_8.hlsl",
+      "sha256": "281afea1bcbffa4c3bacb981f537ee40400252aa32c294acf2bd2a6190578aa9"
+    },
+    {
+      "index": 18,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "170c863f8781f7475e1df05454275a45",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\18-vs_6_8.hlsl",
+      "sha256": "015276c18a6f1c558912d2314bd6d34ecd49a42711a683293329258cf59ca19c"
+    },
+    {
+      "index": 19,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "cddec74275b0d14c30eac3d4a4c4f193",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\19-ps_6_8.hlsl",
+      "sha256": "c9fa7aec0382d1333b641c01e7046720a293406a8a05c41ed12fd7f6a15351b1"
+    },
+    {
+      "index": 20,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "f8d6ff09425891241c52915ec9d6478a",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\20-vs_6_8.hlsl",
+      "sha256": "64f678c30e7b55b4ecfe13af1dce85d4295b1d14d62e09a9138f22b04c110ece"
+    },
+    {
+      "index": 21,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "aaf1ce22ac93b5b492b686fdcfe94266",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\21-ps_6_8.hlsl",
+      "sha256": "2a8a217aa737e4a4f952fa917c4e3a7624f60e6c2394d8ada710e33d9cd05b9a"
+    },
+    {
+      "index": 22,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "98cb833f7fca349c679c03fee08ae6c5",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\22-vs_6_8.hlsl",
+      "sha256": "1a1b34edf7e7cab97a0fbc33ec66111796b42d851f1fea3fb04d26eba4585aae"
+    },
+    {
+      "index": 23,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "8be14dceb7fade1d751ac72fc7635327",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\23-ps_6_8.hlsl",
+      "sha256": "884790a7d37466fabfc2ad9da4c9443f2c3832591a0959aa6aaa5cd1eacdcb9e"
+    },
+    {
+      "index": 24,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "e8ec2db4c9a85693025b1cbbbe74f040",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\24-vs_6_8.hlsl",
+      "sha256": "906fe5bc6750453b67769107c3162a180153cd4e94492564017320970ce8308d"
+    },
+    {
+      "index": 25,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "beb6f13ba4718822a68d965d0e277713",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\25-ps_6_8.hlsl",
+      "sha256": "d39c58f73986c9de73100a20393ea4bc0ae8e72d117e6fb7d2cf210da783d9a2"
+    },
+    {
+      "index": 26,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "3539cf2bcd27d472d116e91392149adf",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\26-vs_6_8.hlsl",
+      "sha256": "9d4b33c0f47d9908bfa28e6cf3031b763715411719293b86101d2cf3675347cf"
+    },
+    {
+      "index": 27,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "bbeff4c18a72148988512dcfeee8bd06",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\27-ps_6_8.hlsl",
+      "sha256": "4ba834155e90d5fb1a418b8beb9a8ed86900867ea585ebe824ab7c71e37ccda0"
+    },
+    {
+      "index": 28,
+      "profile": "vs_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "99b3e1b7aa5ffa45d546bfda97a70355",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\28-vs_6_8.hlsl",
+      "sha256": "8aa87dce6bf00d825d20cb47a2e71374ab55d0ec7b97c89f4d177af00c9537c9"
+    },
+    {
+      "index": 29,
+      "profile": "ps_6_8",
+      "entry": "dawn_entry_point_687474703a2f2f3132372e302e302e3120687474703a2f2f3132372e302e302e31",
+      "flags": [
+        "D3DCOMPILE_PACK_MATRIX_ROW_MAJOR",
+        "D3DCOMPILE_IEEE_STRICTNESS",
+        "D3DCOMPILE_OPTIMIZATION_LEVEL3"
+      ],
+      "dxilShaderHash": "ddc23778775287c2cb96c6207a710d05",
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-inputs-20261105\\29-ps_6_8.hlsl",
+      "sha256": "e988afb98d15d7410f72bf5b882b47b060305682d45f73b4b291e708e42b74be"
+    }
+  ],
+  "rounds": [
+    {
+      "index": 1,
+      "browserReport": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-browser-serial-1-20261105.json",
+        "sha256": "c0430144685f257b46dd927b66b4813127156949a045fff539ec15f5241aeda9"
+      },
+      "nativeReport": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-native-serial-1-20261105.json",
+        "sha256": "a4952ed205b2b1e9ef1876b2b9d60062a4543b1ecbdf8b75d2db57ac2ecaaeac"
+      },
+      "trace": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-browser-serial-1-20261105-0-browser-trace.json",
+        "sha256": "6a1f94d63e142ef6ae0ad7c0b05441de175879c13f32730f99069568f2cfce9a"
+      },
+      "browserDxcMs": 554.153,
+      "browserDxcCpuMs": 551.9639999999999,
+      "nativeDxcMs": 598.5706000000001,
+      "nativeDxcCpuMs": 593.75,
+      "nativeBatchMs": 599.5195,
+      "browserPipelineMs": 613.4599999934435,
+      "browserTintMs": 34.584,
+      "browserInitializationRemainderMs": 14.087999999999965,
+      "pairs": [
+        {
+          "index": 0,
+          "profile": "vs_6_8",
+          "browserMs": 18.147,
+          "browserCpuMs": 18.003,
+          "nativeMs": 18.2813,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "8bbdbe6436bec88d9562bc62c0a09630"
+        },
+        {
+          "index": 1,
+          "profile": "ps_6_8",
+          "browserMs": 18.179,
+          "browserCpuMs": 18.144,
+          "nativeMs": 18.5564,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "4b5aac59337726040d275e436d26655d"
+        },
+        {
+          "index": 2,
+          "profile": "vs_6_8",
+          "browserMs": 12.958,
+          "browserCpuMs": 12.92,
+          "nativeMs": 13.5699,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3d0be75e647c7333073438b8d1fcb6ba"
+        },
+        {
+          "index": 3,
+          "profile": "ps_6_8",
+          "browserMs": 2.896,
+          "browserCpuMs": 2.888,
+          "nativeMs": 3.4627,
+          "nativeCpuMs": 0,
+          "dxilHash": "0714dfe86f740fc3d0525ecf7e2ecea8"
+        },
+        {
+          "index": 4,
+          "profile": "vs_6_8",
+          "browserMs": 12.589,
+          "browserCpuMs": 12.558,
+          "nativeMs": 13.1504,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3d0be75e647c7333073438b8d1fcb6ba"
+        },
+        {
+          "index": 5,
+          "profile": "ps_6_8",
+          "browserMs": 2.886,
+          "browserCpuMs": 2.874,
+          "nativeMs": 3.3131,
+          "nativeCpuMs": 0,
+          "dxilHash": "0714dfe86f740fc3d0525ecf7e2ecea8"
+        },
+        {
+          "index": 6,
+          "profile": "vs_6_8",
+          "browserMs": 22.682,
+          "browserCpuMs": 22.622,
+          "nativeMs": 24.3738,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "fbeeed3cd40c99282e25bbe714a4c638"
+        },
+        {
+          "index": 7,
+          "profile": "ps_6_8",
+          "browserMs": 6.24,
+          "browserCpuMs": 6.219,
+          "nativeMs": 6.6409,
+          "nativeCpuMs": 0,
+          "dxilHash": "c5c7caf97f5e6953d1cff95c8ab0a951"
+        },
+        {
+          "index": 8,
+          "profile": "vs_6_8",
+          "browserMs": 13.641,
+          "browserCpuMs": 13.587,
+          "nativeMs": 13.9992,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 9,
+          "profile": "ps_6_8",
+          "browserMs": 22.566,
+          "browserCpuMs": 22.384,
+          "nativeMs": 24.7663,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "1e62e7aa3230ce332b2107b0bc391e4b"
+        },
+        {
+          "index": 10,
+          "profile": "vs_6_8",
+          "browserMs": 13.547,
+          "browserCpuMs": 13.5,
+          "nativeMs": 14.5199,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 11,
+          "profile": "ps_6_8",
+          "browserMs": 22.555,
+          "browserCpuMs": 22.502,
+          "nativeMs": 24.1901,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "1e62e7aa3230ce332b2107b0bc391e4b"
+        },
+        {
+          "index": 12,
+          "profile": "vs_6_8",
+          "browserMs": 13.612,
+          "browserCpuMs": 13.565,
+          "nativeMs": 14.9109,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 13,
+          "profile": "ps_6_8",
+          "browserMs": 24.268,
+          "browserCpuMs": 24.215,
+          "nativeMs": 27.3455,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "1558e6bae6961da0f5adc22e47a58622"
+        },
+        {
+          "index": 14,
+          "profile": "vs_6_8",
+          "browserMs": 13.938,
+          "browserCpuMs": 13.908,
+          "nativeMs": 14.7302,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 15,
+          "profile": "ps_6_8",
+          "browserMs": 38.695,
+          "browserCpuMs": 38.582,
+          "nativeMs": 40.6099,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "55a18325f3af2718f4ec1d8abbd94acb"
+        },
+        {
+          "index": 16,
+          "profile": "vs_6_8",
+          "browserMs": 13.326,
+          "browserCpuMs": 13.29,
+          "nativeMs": 14.5069,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 17,
+          "profile": "ps_6_8",
+          "browserMs": 21.681,
+          "browserCpuMs": 21.587,
+          "nativeMs": 24.6335,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "4c87c1c676c1c98b888214e7443d27d2"
+        },
+        {
+          "index": 18,
+          "profile": "vs_6_8",
+          "browserMs": 13.874,
+          "browserCpuMs": 13.823,
+          "nativeMs": 15.1668,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 19,
+          "profile": "ps_6_8",
+          "browserMs": 22.823,
+          "browserCpuMs": 22.781,
+          "nativeMs": 26.0983,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "cddec74275b0d14c30eac3d4a4c4f193"
+        },
+        {
+          "index": 20,
+          "profile": "vs_6_8",
+          "browserMs": 3.97,
+          "browserCpuMs": 4.018,
+          "nativeMs": 4.4472,
+          "nativeCpuMs": 0,
+          "dxilHash": "f8d6ff09425891241c52915ec9d6478a"
+        },
+        {
+          "index": 21,
+          "profile": "ps_6_8",
+          "browserMs": 4.001,
+          "browserCpuMs": 3.986,
+          "nativeMs": 4.6863,
+          "nativeCpuMs": 0,
+          "dxilHash": "aaf1ce22ac93b5b492b686fdcfe94266"
+        },
+        {
+          "index": 22,
+          "profile": "vs_6_8",
+          "browserMs": 34.098,
+          "browserCpuMs": 33.965,
+          "nativeMs": 36.9746,
+          "nativeCpuMs": 46.875,
+          "dxilHash": "98cb833f7fca349c679c03fee08ae6c5"
+        },
+        {
+          "index": 23,
+          "profile": "ps_6_8",
+          "browserMs": 64.149,
+          "browserCpuMs": 63.933,
+          "nativeMs": 72.348,
+          "nativeCpuMs": 62.5,
+          "dxilHash": "8be14dceb7fade1d751ac72fc7635327"
+        },
+        {
+          "index": 24,
+          "profile": "vs_6_8",
+          "browserMs": 35.347,
+          "browserCpuMs": 35.195,
+          "nativeMs": 37.4817,
+          "nativeCpuMs": 46.875,
+          "dxilHash": "e8ec2db4c9a85693025b1cbbbe74f040"
+        },
+        {
+          "index": 25,
+          "profile": "ps_6_8",
+          "browserMs": 30.162,
+          "browserCpuMs": 29.786,
+          "nativeMs": 31.5235,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "beb6f13ba4718822a68d965d0e277713"
+        },
+        {
+          "index": 26,
+          "profile": "vs_6_8",
+          "browserMs": 13.863,
+          "browserCpuMs": 13.827,
+          "nativeMs": 14.269,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3539cf2bcd27d472d116e91392149adf"
+        },
+        {
+          "index": 27,
+          "profile": "ps_6_8",
+          "browserMs": 12.342,
+          "browserCpuMs": 12.256,
+          "nativeMs": 13.1152,
+          "nativeCpuMs": 0,
+          "dxilHash": "bbeff4c18a72148988512dcfeee8bd06"
+        },
+        {
+          "index": 28,
+          "profile": "vs_6_8",
+          "browserMs": 13.995,
+          "browserCpuMs": 13.961,
+          "nativeMs": 14.5471,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "99b3e1b7aa5ffa45d546bfda97a70355"
+        },
+        {
+          "index": 29,
+          "profile": "ps_6_8",
+          "browserMs": 11.123,
+          "browserCpuMs": 11.085,
+          "nativeMs": 12.352,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "ddc23778775287c2cb96c6207a710d05"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "browserReport": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-browser-serial-2-20261105.json",
+        "sha256": "440217b76272755d7a33eaca6d8462244ade5269a95d26bb92ecdf9c7decc28a"
+      },
+      "nativeReport": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-native-serial-2-20261105.json",
+        "sha256": "d5903c0bb57dcfcc2d3e3ade4d849a1a4ae562e625d17e26f2b1ca4aa172db19"
+      },
+      "trace": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-browser-serial-2-20261105-0-browser-trace.json",
+        "sha256": "66ba9974985ecf53046c44a8dcceee9285b4c5a45ec42db3f009cf46cdb2a014"
+      },
+      "browserDxcMs": 557.629,
+      "browserDxcCpuMs": 555.922,
+      "nativeDxcMs": 603.5151999999999,
+      "nativeDxcCpuMs": 609.375,
+      "nativeBatchMs": 604.442,
+      "browserPipelineMs": 616.4399999976158,
+      "browserTintMs": 34.040000000000006,
+      "browserInitializationRemainderMs": 14.432999999999993,
+      "pairs": [
+        {
+          "index": 0,
+          "profile": "vs_6_8",
+          "browserMs": 17.76,
+          "browserCpuMs": 17.709,
+          "nativeMs": 19.5546,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "8bbdbe6436bec88d9562bc62c0a09630"
+        },
+        {
+          "index": 1,
+          "profile": "ps_6_8",
+          "browserMs": 17.938,
+          "browserCpuMs": 17.896,
+          "nativeMs": 18.2128,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "4b5aac59337726040d275e436d26655d"
+        },
+        {
+          "index": 2,
+          "profile": "vs_6_8",
+          "browserMs": 12.702,
+          "browserCpuMs": 12.67,
+          "nativeMs": 13.395,
+          "nativeCpuMs": 0,
+          "dxilHash": "3d0be75e647c7333073438b8d1fcb6ba"
+        },
+        {
+          "index": 3,
+          "profile": "ps_6_8",
+          "browserMs": 2.897,
+          "browserCpuMs": 2.893,
+          "nativeMs": 3.5129,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "0714dfe86f740fc3d0525ecf7e2ecea8"
+        },
+        {
+          "index": 4,
+          "profile": "vs_6_8",
+          "browserMs": 12.355,
+          "browserCpuMs": 12.331,
+          "nativeMs": 13.4344,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3d0be75e647c7333073438b8d1fcb6ba"
+        },
+        {
+          "index": 5,
+          "profile": "ps_6_8",
+          "browserMs": 2.784,
+          "browserCpuMs": 2.767,
+          "nativeMs": 3.4498,
+          "nativeCpuMs": 0,
+          "dxilHash": "0714dfe86f740fc3d0525ecf7e2ecea8"
+        },
+        {
+          "index": 6,
+          "profile": "vs_6_8",
+          "browserMs": 22.65,
+          "browserCpuMs": 22.605,
+          "nativeMs": 24.1465,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "fbeeed3cd40c99282e25bbe714a4c638"
+        },
+        {
+          "index": 7,
+          "profile": "ps_6_8",
+          "browserMs": 6.103,
+          "browserCpuMs": 6.078,
+          "nativeMs": 6.5672,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "c5c7caf97f5e6953d1cff95c8ab0a951"
+        },
+        {
+          "index": 8,
+          "profile": "vs_6_8",
+          "browserMs": 13.374,
+          "browserCpuMs": 13.347,
+          "nativeMs": 14.4776,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 9,
+          "profile": "ps_6_8",
+          "browserMs": 22.835,
+          "browserCpuMs": 22.764,
+          "nativeMs": 24.9803,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "1e62e7aa3230ce332b2107b0bc391e4b"
+        },
+        {
+          "index": 10,
+          "profile": "vs_6_8",
+          "browserMs": 15.864,
+          "browserCpuMs": 15.789,
+          "nativeMs": 14.1963,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 11,
+          "profile": "ps_6_8",
+          "browserMs": 22.672,
+          "browserCpuMs": 22.612,
+          "nativeMs": 27.5687,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "1e62e7aa3230ce332b2107b0bc391e4b"
+        },
+        {
+          "index": 12,
+          "profile": "vs_6_8",
+          "browserMs": 13.732,
+          "browserCpuMs": 13.696,
+          "nativeMs": 17.104,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 13,
+          "profile": "ps_6_8",
+          "browserMs": 24.975,
+          "browserCpuMs": 24.921,
+          "nativeMs": 27.1072,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "1558e6bae6961da0f5adc22e47a58622"
+        },
+        {
+          "index": 14,
+          "profile": "vs_6_8",
+          "browserMs": 13.879,
+          "browserCpuMs": 13.844,
+          "nativeMs": 14.7878,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 15,
+          "profile": "ps_6_8",
+          "browserMs": 40.466,
+          "browserCpuMs": 40.37,
+          "nativeMs": 41.307,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "55a18325f3af2718f4ec1d8abbd94acb"
+        },
+        {
+          "index": 16,
+          "profile": "vs_6_8",
+          "browserMs": 13.744,
+          "browserCpuMs": 13.686,
+          "nativeMs": 14.045,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 17,
+          "profile": "ps_6_8",
+          "browserMs": 21.15,
+          "browserCpuMs": 21.101,
+          "nativeMs": 23.6739,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "4c87c1c676c1c98b888214e7443d27d2"
+        },
+        {
+          "index": 18,
+          "profile": "vs_6_8",
+          "browserMs": 13.754,
+          "browserCpuMs": 13.718,
+          "nativeMs": 14.7699,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 19,
+          "profile": "ps_6_8",
+          "browserMs": 24.186,
+          "browserCpuMs": 24.057,
+          "nativeMs": 24.5953,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "cddec74275b0d14c30eac3d4a4c4f193"
+        },
+        {
+          "index": 20,
+          "profile": "vs_6_8",
+          "browserMs": 3.849,
+          "browserCpuMs": 3.841,
+          "nativeMs": 5.9788,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "f8d6ff09425891241c52915ec9d6478a"
+        },
+        {
+          "index": 21,
+          "profile": "ps_6_8",
+          "browserMs": 3.953,
+          "browserCpuMs": 3.945,
+          "nativeMs": 6.4977,
+          "nativeCpuMs": 0,
+          "dxilHash": "aaf1ce22ac93b5b492b686fdcfe94266"
+        },
+        {
+          "index": 22,
+          "profile": "vs_6_8",
+          "browserMs": 34.98,
+          "browserCpuMs": 34.904,
+          "nativeMs": 37.7934,
+          "nativeCpuMs": 46.875,
+          "dxilHash": "98cb833f7fca349c679c03fee08ae6c5"
+        },
+        {
+          "index": 23,
+          "profile": "ps_6_8",
+          "browserMs": 64.231,
+          "browserCpuMs": 64.097,
+          "nativeMs": 67.4575,
+          "nativeCpuMs": 62.5,
+          "dxilHash": "8be14dceb7fade1d751ac72fc7635327"
+        },
+        {
+          "index": 24,
+          "profile": "vs_6_8",
+          "browserMs": 35.664,
+          "browserCpuMs": 35.522,
+          "nativeMs": 39.1297,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "e8ec2db4c9a85693025b1cbbbe74f040"
+        },
+        {
+          "index": 25,
+          "profile": "ps_6_8",
+          "browserMs": 28.696,
+          "browserCpuMs": 28.52,
+          "nativeMs": 30.7899,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "beb6f13ba4718822a68d965d0e277713"
+        },
+        {
+          "index": 26,
+          "profile": "vs_6_8",
+          "browserMs": 13.412,
+          "browserCpuMs": 13.378,
+          "nativeMs": 14.6021,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3539cf2bcd27d472d116e91392149adf"
+        },
+        {
+          "index": 27,
+          "profile": "ps_6_8",
+          "browserMs": 12.144,
+          "browserCpuMs": 12.115,
+          "nativeMs": 13.582,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "bbeff4c18a72148988512dcfeee8bd06"
+        },
+        {
+          "index": 28,
+          "profile": "vs_6_8",
+          "browserMs": 13.888,
+          "browserCpuMs": 13.854,
+          "nativeMs": 14.7133,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "99b3e1b7aa5ffa45d546bfda97a70355"
+        },
+        {
+          "index": 29,
+          "profile": "ps_6_8",
+          "browserMs": 10.992,
+          "browserCpuMs": 10.892,
+          "nativeMs": 12.0846,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "ddc23778775287c2cb96c6207a710d05"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "browserReport": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-browser-serial-3-20261105.json",
+        "sha256": "075543aa0050d1f063155d69dba37cd18b618e9c2335fe7440e0006b071457e2"
+      },
+      "nativeReport": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-native-serial-3-20261105.json",
+        "sha256": "dcdacc1a7855fa2b511db9d8e8aef18c63983491dcefdcaa00610f55a9abaf8b"
+      },
+      "trace": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\same-shader-final-browser-serial-3-20261105-0-browser-trace.json",
+        "sha256": "0f1bd83f801c5d681cd7cc68a0e7c972f1728327abf1fe7ea5f9df2350a4d432"
+      },
+      "browserDxcMs": 557.9559999999999,
+      "browserDxcCpuMs": 556.4069999999999,
+      "nativeDxcMs": 593.691,
+      "nativeDxcCpuMs": 593.75,
+      "nativeBatchMs": 594.6591,
+      "browserPipelineMs": 619.5899999886751,
+      "browserTintMs": 36.54399999999999,
+      "browserInitializationRemainderMs": 14.282000000000039,
+      "pairs": [
+        {
+          "index": 0,
+          "profile": "vs_6_8",
+          "browserMs": 18.295,
+          "browserCpuMs": 18.243,
+          "nativeMs": 17.8721,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "8bbdbe6436bec88d9562bc62c0a09630"
+        },
+        {
+          "index": 1,
+          "profile": "ps_6_8",
+          "browserMs": 18.318,
+          "browserCpuMs": 18.262,
+          "nativeMs": 18.4625,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "4b5aac59337726040d275e436d26655d"
+        },
+        {
+          "index": 2,
+          "profile": "vs_6_8",
+          "browserMs": 13.023,
+          "browserCpuMs": 12.995,
+          "nativeMs": 13.5192,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3d0be75e647c7333073438b8d1fcb6ba"
+        },
+        {
+          "index": 3,
+          "profile": "ps_6_8",
+          "browserMs": 3.019,
+          "browserCpuMs": 3.016,
+          "nativeMs": 3.3943,
+          "nativeCpuMs": 0,
+          "dxilHash": "0714dfe86f740fc3d0525ecf7e2ecea8"
+        },
+        {
+          "index": 4,
+          "profile": "vs_6_8",
+          "browserMs": 12.519,
+          "browserCpuMs": 12.482,
+          "nativeMs": 13.1271,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3d0be75e647c7333073438b8d1fcb6ba"
+        },
+        {
+          "index": 5,
+          "profile": "ps_6_8",
+          "browserMs": 2.923,
+          "browserCpuMs": 2.917,
+          "nativeMs": 3.3025,
+          "nativeCpuMs": 0,
+          "dxilHash": "0714dfe86f740fc3d0525ecf7e2ecea8"
+        },
+        {
+          "index": 6,
+          "profile": "vs_6_8",
+          "browserMs": 22.768,
+          "browserCpuMs": 22.713,
+          "nativeMs": 24.3578,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "fbeeed3cd40c99282e25bbe714a4c638"
+        },
+        {
+          "index": 7,
+          "profile": "ps_6_8",
+          "browserMs": 6.127,
+          "browserCpuMs": 6.108,
+          "nativeMs": 6.7779,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "c5c7caf97f5e6953d1cff95c8ab0a951"
+        },
+        {
+          "index": 8,
+          "profile": "vs_6_8",
+          "browserMs": 13.274,
+          "browserCpuMs": 13.247,
+          "nativeMs": 14.2355,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 9,
+          "profile": "ps_6_8",
+          "browserMs": 22.973,
+          "browserCpuMs": 22.918,
+          "nativeMs": 23.7864,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "1e62e7aa3230ce332b2107b0bc391e4b"
+        },
+        {
+          "index": 10,
+          "profile": "vs_6_8",
+          "browserMs": 14.033,
+          "browserCpuMs": 13.96,
+          "nativeMs": 14.6513,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 11,
+          "profile": "ps_6_8",
+          "browserMs": 22.707,
+          "browserCpuMs": 22.64,
+          "nativeMs": 25.0429,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "1e62e7aa3230ce332b2107b0bc391e4b"
+        },
+        {
+          "index": 12,
+          "profile": "vs_6_8",
+          "browserMs": 13.861,
+          "browserCpuMs": 13.833,
+          "nativeMs": 15.3318,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 13,
+          "profile": "ps_6_8",
+          "browserMs": 25.016,
+          "browserCpuMs": 24.962,
+          "nativeMs": 28.2933,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "1558e6bae6961da0f5adc22e47a58622"
+        },
+        {
+          "index": 14,
+          "profile": "vs_6_8",
+          "browserMs": 13.876,
+          "browserCpuMs": 13.841,
+          "nativeMs": 15.1081,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 15,
+          "profile": "ps_6_8",
+          "browserMs": 38.485,
+          "browserCpuMs": 38.402,
+          "nativeMs": 41.0437,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "55a18325f3af2718f4ec1d8abbd94acb"
+        },
+        {
+          "index": 16,
+          "profile": "vs_6_8",
+          "browserMs": 13.564,
+          "browserCpuMs": 13.52,
+          "nativeMs": 14.735,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "326b8072de5765ebed8d27aaff352621"
+        },
+        {
+          "index": 17,
+          "profile": "ps_6_8",
+          "browserMs": 23.572,
+          "browserCpuMs": 23.518,
+          "nativeMs": 23.727,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "4c87c1c676c1c98b888214e7443d27d2"
+        },
+        {
+          "index": 18,
+          "profile": "vs_6_8",
+          "browserMs": 13.389,
+          "browserCpuMs": 13.356,
+          "nativeMs": 14.8913,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "170c863f8781f7475e1df05454275a45"
+        },
+        {
+          "index": 19,
+          "profile": "ps_6_8",
+          "browserMs": 22.87,
+          "browserCpuMs": 22.821,
+          "nativeMs": 25.4132,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "cddec74275b0d14c30eac3d4a4c4f193"
+        },
+        {
+          "index": 20,
+          "profile": "vs_6_8",
+          "browserMs": 3.883,
+          "browserCpuMs": 3.868,
+          "nativeMs": 4.3213,
+          "nativeCpuMs": 0,
+          "dxilHash": "f8d6ff09425891241c52915ec9d6478a"
+        },
+        {
+          "index": 21,
+          "profile": "ps_6_8",
+          "browserMs": 3.873,
+          "browserCpuMs": 3.865,
+          "nativeMs": 4.5279,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "aaf1ce22ac93b5b492b686fdcfe94266"
+        },
+        {
+          "index": 22,
+          "profile": "vs_6_8",
+          "browserMs": 34.709,
+          "browserCpuMs": 34.71,
+          "nativeMs": 36.4972,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "98cb833f7fca349c679c03fee08ae6c5"
+        },
+        {
+          "index": 23,
+          "profile": "ps_6_8",
+          "browserMs": 67.801,
+          "browserCpuMs": 67.515,
+          "nativeMs": 68.1513,
+          "nativeCpuMs": 62.5,
+          "dxilHash": "8be14dceb7fade1d751ac72fc7635327"
+        },
+        {
+          "index": 24,
+          "profile": "vs_6_8",
+          "browserMs": 34.788,
+          "browserCpuMs": 34.71,
+          "nativeMs": 37.1634,
+          "nativeCpuMs": 46.875,
+          "dxilHash": "e8ec2db4c9a85693025b1cbbbe74f040"
+        },
+        {
+          "index": 25,
+          "profile": "ps_6_8",
+          "browserMs": 28.367,
+          "browserCpuMs": 28.238,
+          "nativeMs": 30.1806,
+          "nativeCpuMs": 31.25,
+          "dxilHash": "beb6f13ba4718822a68d965d0e277713"
+        },
+        {
+          "index": 26,
+          "profile": "vs_6_8",
+          "browserMs": 13.384,
+          "browserCpuMs": 13.346,
+          "nativeMs": 14.606,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "3539cf2bcd27d472d116e91392149adf"
+        },
+        {
+          "index": 27,
+          "profile": "ps_6_8",
+          "browserMs": 12.054,
+          "browserCpuMs": 12.023,
+          "nativeMs": 13.1421,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "bbeff4c18a72148988512dcfeee8bd06"
+        },
+        {
+          "index": 28,
+          "profile": "vs_6_8",
+          "browserMs": 13.539,
+          "browserCpuMs": 13.512,
+          "nativeMs": 15.7708,
+          "nativeCpuMs": 15.625,
+          "dxilHash": "99b3e1b7aa5ffa45d546bfda97a70355"
+        },
+        {
+          "index": 29,
+          "profile": "ps_6_8",
+          "browserMs": 10.946,
+          "browserCpuMs": 10.866,
+          "nativeMs": 12.2575,
+          "nativeCpuMs": 0,
+          "dxilHash": "ddc23778775287c2cb96c6207a710d05"
+        }
+      ]
+    }
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Edg/156.0.4314.58",
+    "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "jsVersion": "15.6.12.10"
+  },
+  "corpus": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\runtime-pso-detail-async-20261105-1-async-corpus.json",
+    "sha256": "36fb4978d632aa5d9ac5716b423e35dd86873a715a77432013590226af14e59a"
+  },
+  "summary": {
+    "shaders": 30,
+    "rounds": 3,
+    "browserDxcMs": 557.629,
+    "nativeDxcMs": 598.5706000000001,
+    "browserPipelineMs": 616.4399999976158,
+    "browserTintMs": 34.584,
+    "browserInitializationRemainderMs": 14.282000000000039,
+    "perShader": [
+      {
+        "index": 0,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "8bbdbe6436bec88d9562bc62c0a09630",
+        "browserMs": 18.147,
+        "nativeMs": 18.2813
+      },
+      {
+        "index": 1,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "4b5aac59337726040d275e436d26655d",
+        "browserMs": 18.179,
+        "nativeMs": 18.4625
+      },
+      {
+        "index": 2,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "3d0be75e647c7333073438b8d1fcb6ba",
+        "browserMs": 12.958,
+        "nativeMs": 13.5192
+      },
+      {
+        "index": 3,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "0714dfe86f740fc3d0525ecf7e2ecea8",
+        "browserMs": 2.897,
+        "nativeMs": 3.4627
+      },
+      {
+        "index": 4,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "3d0be75e647c7333073438b8d1fcb6ba",
+        "browserMs": 12.519,
+        "nativeMs": 13.1504
+      },
+      {
+        "index": 5,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "0714dfe86f740fc3d0525ecf7e2ecea8",
+        "browserMs": 2.886,
+        "nativeMs": 3.3131
+      },
+      {
+        "index": 6,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "fbeeed3cd40c99282e25bbe714a4c638",
+        "browserMs": 22.682,
+        "nativeMs": 24.3578
+      },
+      {
+        "index": 7,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "c5c7caf97f5e6953d1cff95c8ab0a951",
+        "browserMs": 6.127,
+        "nativeMs": 6.6409
+      },
+      {
+        "index": 8,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "326b8072de5765ebed8d27aaff352621",
+        "browserMs": 13.374,
+        "nativeMs": 14.2355
+      },
+      {
+        "index": 9,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "1e62e7aa3230ce332b2107b0bc391e4b",
+        "browserMs": 22.835,
+        "nativeMs": 24.7663
+      },
+      {
+        "index": 10,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "326b8072de5765ebed8d27aaff352621",
+        "browserMs": 14.033,
+        "nativeMs": 14.5199
+      },
+      {
+        "index": 11,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "1e62e7aa3230ce332b2107b0bc391e4b",
+        "browserMs": 22.672,
+        "nativeMs": 25.0429
+      },
+      {
+        "index": 12,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "170c863f8781f7475e1df05454275a45",
+        "browserMs": 13.732,
+        "nativeMs": 15.3318
+      },
+      {
+        "index": 13,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "1558e6bae6961da0f5adc22e47a58622",
+        "browserMs": 24.975,
+        "nativeMs": 27.3455
+      },
+      {
+        "index": 14,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "170c863f8781f7475e1df05454275a45",
+        "browserMs": 13.879,
+        "nativeMs": 14.7878
+      },
+      {
+        "index": 15,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "55a18325f3af2718f4ec1d8abbd94acb",
+        "browserMs": 38.695,
+        "nativeMs": 41.0437
+      },
+      {
+        "index": 16,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "326b8072de5765ebed8d27aaff352621",
+        "browserMs": 13.564,
+        "nativeMs": 14.5069
+      },
+      {
+        "index": 17,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "4c87c1c676c1c98b888214e7443d27d2",
+        "browserMs": 21.681,
+        "nativeMs": 23.727
+      },
+      {
+        "index": 18,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "170c863f8781f7475e1df05454275a45",
+        "browserMs": 13.754,
+        "nativeMs": 14.8913
+      },
+      {
+        "index": 19,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "cddec74275b0d14c30eac3d4a4c4f193",
+        "browserMs": 22.87,
+        "nativeMs": 25.4132
+      },
+      {
+        "index": 20,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "f8d6ff09425891241c52915ec9d6478a",
+        "browserMs": 3.883,
+        "nativeMs": 4.4472
+      },
+      {
+        "index": 21,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "aaf1ce22ac93b5b492b686fdcfe94266",
+        "browserMs": 3.953,
+        "nativeMs": 4.6863
+      },
+      {
+        "index": 22,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "98cb833f7fca349c679c03fee08ae6c5",
+        "browserMs": 34.709,
+        "nativeMs": 36.9746
+      },
+      {
+        "index": 23,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "8be14dceb7fade1d751ac72fc7635327",
+        "browserMs": 64.231,
+        "nativeMs": 68.1513
+      },
+      {
+        "index": 24,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "e8ec2db4c9a85693025b1cbbbe74f040",
+        "browserMs": 35.347,
+        "nativeMs": 37.4817
+      },
+      {
+        "index": 25,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "beb6f13ba4718822a68d965d0e277713",
+        "browserMs": 28.696,
+        "nativeMs": 30.7899
+      },
+      {
+        "index": 26,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "3539cf2bcd27d472d116e91392149adf",
+        "browserMs": 13.412,
+        "nativeMs": 14.6021
+      },
+      {
+        "index": 27,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "bbeff4c18a72148988512dcfeee8bd06",
+        "browserMs": 12.144,
+        "nativeMs": 13.1421
+      },
+      {
+        "index": 28,
+        "profile": "vs_6_8",
+        "dxilShaderHash": "99b3e1b7aa5ffa45d546bfda97a70355",
+        "browserMs": 13.888,
+        "nativeMs": 14.7133
+      },
+      {
+        "index": 29,
+        "profile": "ps_6_8",
+        "dxilShaderHash": "ddc23778775287c2cb96c6207a710d05",
+        "browserMs": 10.992,
+        "nativeMs": 12.2575
+      }
+    ],
+    "browserToNativeRatio": 0.9316010509036026
+  },
+  "topic": "Exact exported HLSL compile timing in Edge and native Windows, plus DXIL-ready driver samples",
+  "environment": {
+    "cpu": "Intel Core i9-12900K, 16 cores / 24 logical processors",
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "driver": "621.01",
+    "idleGpuEngineMaximumBeforeMeasurementPercent": [
+      8.93,
+      8.75
+    ],
+    "compilerFileVersion": "1.9.2609.0",
+    "cpuAffinityPinned": false
+  },
+  "rootBaseCommit": "08fdea6",
+  "engineCommit": "d5e91d5140667d6058ae34dd0532d89c817dd606",
+  "runtimeChanged": false,
+  "defaultChanged": false,
+  "precacheEnabled": false,
+  "inputDump": {
+    "report": {
+      "file": "tests/web-platform/results/same-shader-inputs-20261105.json",
+      "sha256": "0266f0d3137f2c95a1673ae14c9897fd38a66fd15bbefbe1569191af13ffda8e"
+    },
+    "log": {
+      "file": "tests/web-platform/results/same-shader-inputs-20261105-0-hlsl.log",
+      "sha256": "3dfbcedf45f0c016ccffcde65a68aa001eab1189573c1107e41184cd86a3ce7e"
+    },
+    "uniqueSources": 23
+  },
+  "hv2021CrossCheck": {
+    "report": {
+      "file": "tests/web-platform/results/same-shader-final-native-hv2021.json",
+      "sha256": "1c4d21b3ee610bac09d33dfd59c37c1e9af73b8803de9a8d3c80582e88d3b353"
+    },
+    "hashMatches": 30,
+    "batchMs": 599.9645,
+    "boundary": "Both language modes emit the same shader hashes for these inputs. The dump does not identify the hidden language mode; the timed native baseline uses 2018."
+  },
+  "nativeReadyPSO": {
+    "sources": [
+      {
+        "file": "tests/web-platform/diagnostics/benchmark-native-ready-pso.cpp",
+        "sha256": "7b26ab17589d415b3303d05b885612f4b237f55ee700239a8be88a457461970c"
+      },
+      {
+        "file": "tests/web-platform/diagnostics/prepare-native-pso.cjs",
+        "sha256": "8b20717ecf183328c76ef53b0e1a8fd8813fec14542a96c1280517b07cb1a630"
+      }
+    ],
+    "generatedHeader": {
+      "file": "tests/web-platform/results/same-shader-native-descriptors.h",
+      "sha256": "f2a44bc8bdefd8711211d32a570838d9feb4b81f04a61f5077ec8f46b232f73c"
+    },
+    "boundary": "Same shader hashes and captured vertex/render/depth/blend/raster/multisample states, compatible diagnostic root signature, not an exact Dawn/UE root signature. CreateGraphicsPipelineState only, DXIL already compiled, no draw submission or visual validation. No global driver cache cleared; first sample is not a guaranteed cold driver. Values are not UE editor timings.",
+    "runs": [
+      {
+        "report": {
+          "file": "tests/web-platform/results/same-shader-native-ready-pso-20261105.json",
+          "sha256": "5c65b1799df2b055b4a187eb986d911b9e5cd1df112f3cde2f8e36ec032dc673"
+        },
+        "vendorId": 4318,
+        "deviceId": 9860,
+        "rounds": [
+          [
+            25.9312,
+            20.1303,
+            0.0263,
+            26.1995,
+            36.2067,
+            0.0254,
+            35.8931,
+            31.8801,
+            21.8852,
+            22.2573,
+            5.5128,
+            80.1071,
+            50.794,
+            20.295,
+            20.4833
+          ],
+          [
+            0.7798,
+            7.5461,
+            0.0258,
+            0.8109,
+            0.5663,
+            0.0195,
+            0.6093,
+            0.3883,
+            0.3025,
+            0.2894,
+            0.3622,
+            0.6846,
+            0.6419,
+            0.4963,
+            0.4875
+          ],
+          [
+            0.5817,
+            0.4196,
+            0.0185,
+            0.5221,
+            0.5406,
+            0.0177,
+            0.5597,
+            0.3575,
+            0.2781,
+            0.2887,
+            0.3761,
+            0.6306,
+            0.6394,
+            0.5705,
+            0.498
+          ]
+        ],
+        "success": true,
+        "summedCallMs": [
+          397.62729999999993,
+          14.0104,
+          6.2988
+        ]
+      },
+      {
+        "report": {
+          "file": "tests/web-platform/results/same-shader-native-ready-pso-restart-1-20261105.json",
+          "sha256": "96347a1540a4461e939eb8d8bdfa99b7f647869de8e08cac62caf48f3636aba2"
+        },
+        "vendorId": 4318,
+        "deviceId": 9860,
+        "rounds": [
+          [
+            1.2903,
+            2.3822,
+            0.0217,
+            0.5469,
+            0.5992,
+            0.0193,
+            0.6622,
+            0.3928,
+            0.303,
+            0.3022,
+            0.5183,
+            0.7109,
+            0.8026,
+            0.5454,
+            0.5227
+          ],
+          [
+            0.5998,
+            0.5105,
+            0.023,
+            0.4783,
+            0.5329,
+            0.0194,
+            0.6838,
+            0.3761,
+            0.3128,
+            0.3057,
+            0.3528,
+            0.7254,
+            0.6401,
+            0.525,
+            0.5581
+          ],
+          [
+            0.5975,
+            0.4885,
+            0.0202,
+            0.4966,
+            0.5346,
+            0.0181,
+            0.5909,
+            0.3476,
+            0.2915,
+            0.2962,
+            0.3506,
+            0.6461,
+            0.6986,
+            0.6059,
+            0.5449
+          ]
+        ],
+        "success": true,
+        "summedCallMs": [
+          9.619700000000002,
+          6.643700000000001,
+          6.5278
+        ]
+      },
+      {
+        "report": {
+          "file": "tests/web-platform/results/same-shader-native-ready-pso-restart-2-20261105.json",
+          "sha256": "8726921d48dc6df992572860bdd4e455603ac8fcf858c2204d6fc347bd21986b"
+        },
+        "vendorId": 4318,
+        "deviceId": 9860,
+        "rounds": [
+          [
+            1.1702,
+            2.2793,
+            0.0226,
+            0.5079,
+            0.5457,
+            0.0271,
+            0.7003,
+            0.4439,
+            0.3341,
+            0.3009,
+            0.4672,
+            0.6988,
+            0.8375,
+            0.5443,
+            0.525
+          ],
+          [
+            0.6298,
+            0.6004,
+            0.0296,
+            0.5117,
+            0.5538,
+            0.0184,
+            0.6433,
+            0.3948,
+            0.314,
+            0.2895,
+            0.3559,
+            0.7276,
+            0.7726,
+            0.5619,
+            0.5545
+          ],
+          [
+            0.7048,
+            0.6199,
+            0.046,
+            0.5928,
+            0.5876,
+            0.0191,
+            0.6604,
+            0.3928,
+            0.3003,
+            0.2844,
+            0.3843,
+            0.6793,
+            0.7241,
+            0.5183,
+            0.5022
+          ]
+        ],
+        "success": true,
+        "summedCallMs": [
+          9.404800000000002,
+          6.957799999999999,
+          7.016299999999999
+        ]
+      }
+    ]
+  },
+  "conclusion": "Browser and native DXC take comparable time for the identical exported HLSL with identical DXIL shader hashes. Native here is a compiler baseline, not a running UE editor. No measured evidence of a multiple-times browser compiler penalty. Runtime source compilation differs from starting with cooked DXIL. Existing cache-capacity findings are not a new optimization result."
+}
