@@ -35,6 +35,9 @@ const channels = [];
   assert(!selectClock('', {}, ['-WebFrameScheduler=2']).includes('-WebGameLocalClock'));
   assert.throws(() => selectClock('?clock=local', {gameFrameBridge: 'page-raf'}),
     /Choose one frame clock experiment/);
+  for (const value of ['-1', '9', '1.5', 'invalid'])
+    assert.throws(() => selectClock('?gpuahead=' + value), /Invalid local GPU frame budget/);
+  assert(selectClock('?clock=local&gpuahead=4').includes('-WebGameLocalClock'));
 
   const sent = [], frames = [];
   const legacy = new WebInputBridge({

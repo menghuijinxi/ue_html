@@ -1,0 +1,1686 @@
+{
+  "pass": true,
+  "date": "2026-11-05T08:24:11.236Z",
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+      "sha256": "f5fd74e7e4dcc77b1654ba88e172aa0769544b1df6a318bc883419f0c2642ead"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-engine-host.js",
+      "sha256": "4643f062041ab3bcf80ce6748c0c1f08832992d2f2246f498d053bbd3300311e"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+      "sha256": "f9a4e2fdf5a36df5e7c06f8e877ea9eed2a7be1cbd040d34a835b797011532c9"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-local-frame-budget.cjs",
+      "sha256": "701a5d1d0583f581803be98d1d679c090503273b70435273d0fd6decc87bc229"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-input-bridge.cjs",
+      "sha256": "1f92c997bad5cb73e460c95dbc1b045579508e040868c8971b9802ab64725a94"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\package-web-local-frame-budget.cjs",
+      "sha256": "86f5e4cb6bdfaee946a1820ef20d6ef9727bedac440759a739e96e1677a07092"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\summarize-web-local-frame-budget.cjs",
+      "sha256": "d27630a0d307cd24d22b4f8a9620169037c6a7bf87210273dce74057b686a576"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Build\\WebWorkerCanvas.js",
+      "sha256": "6720a56881e3f475df3b6939b6aa6139259d6f51913468e7516c1559547334f2"
+    }
+  ],
+  "captures": [
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v71-moving-input-repro-20261105.json",
+        "sha256": "88707fa5f453fe12cac24d829dcbae7b0b24506aeb0f0d956de443dd6f028397"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "a1792d0c9d54ce583d289006e2118c74d9e1275d3db29463797599c9c083d231"
+      },
+      "folder": "villa-scheduling-latest-v71",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "acceptanceThreshold": 0,
+      "gpuProbe": false,
+      "rhiWake": "priority",
+      "runs": [
+        {
+          "mode": "owner",
+          "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=owner&rhiwake=priority",
+          "result": {
+            "samples": 1244,
+            "fps": 76.62502490774715,
+            "low1Fps": 35.278633359918594,
+            "p50": 12.419999998062849,
+            "p95": 20.24499999731779,
+            "p99": 25.46000000089407,
+            "maximum": 33.625
+          },
+          "display": {
+            "visual": 68.65625,
+            "submitted": 76.9375,
+            "refresh": 110.5
+          },
+          "visibleRatio": 0.8923639317627945,
+          "camera": {
+            "before": {
+              "x": 387.1265123325268,
+              "y": -424.23986394293973,
+              "z": 156.64842005407039,
+              "pitch": 3.6049700407311516,
+              "yaw": 91.96675116010015
+            },
+            "after": {
+              "x": 392.57316330900466,
+              "y": -427.23084174618805,
+              "z": 156.6484190354476,
+              "pitch": 5.969695773906993,
+              "yaw": 98.82376388274136
+            },
+            "travelCm": 1305.6505058824855,
+            "turnDegrees": 908.9661916382612,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1500,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2713.984920634921,
+            "dispatches": 178.0968253968254,
+            "pending": 516.0833333333334,
+            "ready": 496.6333333333333
+          },
+          "rhiMs": 7.664164577622011,
+          "history": {
+            "polls": 1194794,
+            "ready": 608413,
+            "hits": 16449,
+            "expired": 7855,
+            "cameraRejected": 219925
+          }
+        },
+        {
+          "mode": "local",
+          "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=local&rhiwake=priority",
+          "result": {
+            "samples": 1434,
+            "fps": 87.38315777992254,
+            "low1Fps": 20.640260893020418,
+            "p50": 10.53999999910593,
+            "p95": 19.225000001490116,
+            "p99": 34.03000000119209,
+            "maximum": 77.93999999761581
+          },
+          "display": {
+            "visual": 16.25,
+            "submitted": 87.5625,
+            "refresh": 22.625
+          },
+          "visibleRatio": 0.185581727337616,
+          "camera": {
+            "before": {
+              "x": 348.31821859563604,
+              "y": -368.0211575339599,
+              "z": 156.648420287951,
+              "pitch": 5.863602072931777,
+              "yaw": 56.94927448313686
+            },
+            "after": {
+              "x": 337.2624642376995,
+              "y": -356.0624149000614,
+              "z": 156.64841831910647,
+              "pitch": 8.646884993650024,
+              "yaw": 33.44333459716292
+            },
+            "travelCm": 1505.4307418824994,
+            "turnDegrees": 1007.2206207662821,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1709,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2267.1625,
+            "dispatches": 157.99444444444444,
+            "pending": 2280.24375,
+            "ready": 35.18680555555556
+          },
+          "rhiMs": 9.573150244807003,
+          "history": {
+            "polls": 3311134,
+            "ready": 50669,
+            "hits": 0,
+            "expired": 463964,
+            "cameraRejected": 0
+          }
+        },
+        {
+          "mode": "local",
+          "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=local&rhiwake=priority",
+          "result": {
+            "samples": 1351,
+            "fps": 82.37548710376518,
+            "low1Fps": 16.754628466116753,
+            "p50": 11.254999998956919,
+            "p95": 20.62999999895692,
+            "p99": 39.05000000074506,
+            "maximum": 95.75499999895692
+          },
+          "display": {
+            "visual": 17.375,
+            "submitted": 82.03125,
+            "refresh": 24.5
+          },
+          "visibleRatio": 0.2118095238095238,
+          "camera": {
+            "before": {
+              "x": 381.06102089169235,
+              "y": -422.67177618615,
+              "z": 156.6484223587936,
+              "pitch": 4.725719299167408,
+              "yaw": 83.26590536162254
+            },
+            "after": {
+              "x": 382.929107141844,
+              "y": -419.0960030485208,
+              "z": 156.64842332289464,
+              "pitch": 8.238897129893315,
+              "yaw": 87.8002406843007
+            },
+            "travelCm": 1436.3010997119818,
+            "turnDegrees": 998.8873680457473,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1634,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2556.8992592592595,
+            "dispatches": 172.13407407407408,
+            "pending": 2595.716296296296,
+            "ready": 33.64074074074074
+          },
+          "rhiMs": 10.06698643615362,
+          "history": {
+            "polls": 3519794,
+            "ready": 45415,
+            "hits": 0,
+            "expired": 493672,
+            "cameraRejected": 0
+          }
+        },
+        {
+          "mode": "owner",
+          "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=owner&rhiwake=priority",
+          "result": {
+            "samples": 1240,
+            "fps": 76.49020971580933,
+            "low1Fps": 34.743565758713615,
+            "p50": 12.515000000596046,
+            "p95": 19.850000001490116,
+            "p99": 25.114999998360872,
+            "maximum": 34.310000002384186
+          },
+          "display": {
+            "visual": 68.53125,
+            "submitted": 76.875,
+            "refresh": 109.5
+          },
+          "visibleRatio": 0.8914634146341464,
+          "camera": {
+            "before": {
+              "x": 393.9201978946611,
+              "y": -425.141161368217,
+              "z": 156.64842015815776,
+              "pitch": 4.834101036190963,
+              "yaw": 101.09741528332238
+            },
+            "after": {
+              "x": 390.09992396334826,
+              "y": -422.81512408777445,
+              "z": 156.64841885461374,
+              "pitch": 10.596111374907222,
+              "yaw": 96.6848171893507
+            },
+            "travelCm": 1359.8706706728703,
+            "turnDegrees": 883.6651877742261,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1489,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2714.9520325203252,
+            "dispatches": 179.9268292682927,
+            "pending": 564.1682926829268,
+            "ready": 535.7764227642276
+          },
+          "rhiMs": 7.635418586823174,
+          "history": {
+            "polls": 1389616,
+            "ready": 678920,
+            "hits": 39328,
+            "expired": 9682,
+            "cameraRejected": 237534
+          }
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v71-moving-gpu-repro-20261105.json",
+        "sha256": "abb30220fed5a53a9156f743a486b964863c2f03840c3dbe99942cfc8417afb5"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "56d02a9150563448f68f69130ea2548e21db10b2021deaee4724eacb7d2e9e06"
+      },
+      "folder": "villa-scheduling-latest-v71",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "acceptanceThreshold": 0,
+      "gpuProbe": true,
+      "rhiWake": "priority",
+      "runs": [
+        {
+          "mode": "owner",
+          "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=owner&rhiwake=priority",
+          "result": {
+            "samples": 1224,
+            "fps": 75.24526174623858,
+            "low1Fps": 34.43206949983515,
+            "p50": 13.07999999821186,
+            "p95": 20.434999998658895,
+            "p99": 26.00499999895692,
+            "maximum": 34.605000000447035
+          },
+          "display": {
+            "visual": 67.46875,
+            "submitted": 75.59375,
+            "refresh": 108.46875
+          },
+          "visibleRatio": 0.892517569243489,
+          "camera": {
+            "before": {
+              "x": 388.7755544016806,
+              "y": -417.04776839781977,
+              "z": 156.6484198235667,
+              "pitch": 6.0095010660589026,
+              "yaw": 97.33960391022265
+            },
+            "after": {
+              "x": 395.7589392998176,
+              "y": -436.91450977777157,
+              "z": 156.64841862431894,
+              "pitch": 7.346669298596687,
+              "yaw": 101.53147484362128
+            },
+            "travelCm": 1305.9365782354437,
+            "turnDegrees": 900.7936144638805,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1484,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2712.3048780487807,
+            "dispatches": 181.0349593495935,
+            "pending": 568.430081300813,
+            "ready": 515.9
+          },
+          "rhiMs": 7.755883275246133,
+          "gpu": {
+            "samples": 1225,
+            "pending": 5,
+            "peak": 7,
+            "meanLatency": 41.6505632652616,
+            "maxLatency": 73.03500000014901
+          },
+          "history": {
+            "polls": 1316293,
+            "ready": 633612,
+            "hits": 26420,
+            "expired": 8540,
+            "cameraRejected": 223004
+          }
+        },
+        {
+          "mode": "local",
+          "url": "http://127.0.0.1:8765/build/villa-scheduling-latest-v71/index.html?occlusion=history&clock=local&rhiwake=priority",
+          "result": {
+            "samples": 1396,
+            "fps": 84.84841854338553,
+            "low1Fps": 19.318072056186335,
+            "p50": 10.83500000089407,
+            "p95": 20.21499999985099,
+            "p99": 34.88500000163913,
+            "maximum": 78.49000000208616
+          },
+          "display": {
+            "visual": 16.875,
+            "submitted": 85.4375,
+            "refresh": 24.75
+          },
+          "visibleRatio": 0.19751280175566935,
+          "camera": {
+            "before": {
+              "x": 369.8028333389422,
+              "y": -398.1590480855284,
+              "z": 156.648422260043,
+              "pitch": 3.0502995848655474,
+              "yaw": 71.48313923180109
+            },
+            "after": {
+              "x": 354.9583596968447,
+              "y": -374.67995221238823,
+              "z": 156.6484177313692,
+              "pitch": 8.669139280915282,
+              "yaw": 60.253027074038954
+            },
+            "travelCm": 1472.188237404678,
+            "turnDegrees": 1030.442547507584,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1664,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2445.963120567376,
+            "dispatches": 166.4695035460993,
+            "pending": 2480.6929078014186,
+            "ready": 43.55460992907801
+          },
+          "rhiMs": 9.913172698003892,
+          "gpu": {
+            "samples": 1397,
+            "pending": 19,
+            "peak": 34,
+            "meanLatency": 207.4383786685482,
+            "maxLatency": 307.9000000022352
+          },
+          "history": {
+            "polls": 3531262,
+            "ready": 61412,
+            "hits": 0,
+            "expired": 488296,
+            "cameraRejected": 730
+          }
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v71-moving-budget-20261105.json",
+        "sha256": "64fbd7ff97361afb9325d1cd6274e50db3892b75f192fb266ea080b3ec736019"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "c43d08f681b5a4949b287cfbaa33ee831e062c6f3655cc240e77e62e4a648374"
+      },
+      "folder": "villa-local-budget-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "acceptanceThreshold": 0,
+      "gpuProbe": false,
+      "rhiWake": "priority",
+      "runs": [
+        {
+          "mode": "local",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-20261105/index.html?occlusion=history&clock=local&gpuahead=0&rhiwake=priority",
+          "result": {
+            "samples": 1460,
+            "fps": 88.80049387671131,
+            "low1Fps": 19.51029167878497,
+            "p50": 10.010000001639128,
+            "p95": 19.550000000745058,
+            "p99": 37.435000002384186,
+            "maximum": 71.92500000074506
+          },
+          "display": {
+            "visual": 15.09375,
+            "submitted": 88.6875,
+            "refresh": 21.65625
+          },
+          "visibleRatio": 0.17019027484143764,
+          "camera": {
+            "before": {
+              "x": 339.91674576385634,
+              "y": -352.1091544758765,
+              "z": 156.6484195370154,
+              "pitch": 5.561838122084725,
+              "yaw": 44.21769285760819
+            },
+            "after": {
+              "x": 335.63685800698113,
+              "y": -342.77429516380374,
+              "z": 156.64842193097408,
+              "pitch": 8.911557817831628,
+              "yaw": 34.841742105782046
+            },
+            "travelCm": 1464.4588868408896,
+            "turnDegrees": 1035.4672496784478,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1695,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2184.0938775510203,
+            "dispatches": 153.57006802721088,
+            "pending": 2019.634693877551,
+            "ready": 25.776190476190475
+          },
+          "rhiMs": 9.345738755784781,
+          "history": {
+            "polls": 2983308,
+            "ready": 37891,
+            "hits": 0,
+            "expired": 415832,
+            "cameraRejected": 0
+          }
+        },
+        {
+          "mode": "local2",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-20261105/index.html?occlusion=history&clock=local&gpuahead=2&rhiwake=priority",
+          "result": {
+            "samples": 1206,
+            "fps": 74.44060753658275,
+            "low1Fps": 22.857544747955682,
+            "p50": 10.535000000149012,
+            "p95": 32.625,
+            "p99": 36.399999998509884,
+            "maximum": 64.6550000011921
+          },
+          "display": {
+            "visual": 61.75,
+            "submitted": 74.90625,
+            "refresh": 120.0625
+          },
+          "visibleRatio": 0.8243637880684188,
+          "camera": {
+            "before": {
+              "x": 377.5517511065885,
+              "y": -400.6105306759736,
+              "z": 156.6484195389141,
+              "pitch": 2.104848616756499,
+              "yaw": 82.97224879125137
+            },
+            "after": {
+              "x": 375.6070234092184,
+              "y": -392.92840593844835,
+              "z": 156.64842208341872,
+              "pitch": 8.626675454666843,
+              "yaw": 81.94003171660003
+            },
+            "travelCm": 1520.823401601715,
+            "turnDegrees": 920.8056307476943,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1451,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2600.8575,
+            "dispatches": 167.61416666666668,
+            "pending": 625.8975,
+            "ready": 571.5508333333333
+          },
+          "rhiMs": 7.22152829268992,
+          "budget": {
+            "maxAhead": 2,
+            "submitted": 2657,
+            "completed": 2655,
+            "pending": 2,
+            "peak": 5,
+            "wakes": 655
+          },
+          "history": {
+            "polls": 1417223,
+            "ready": 687023,
+            "hits": 9488,
+            "expired": 15472,
+            "cameraRejected": 379320
+          }
+        },
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-20261105/index.html?occlusion=history&clock=local&gpuahead=4&rhiwake=priority",
+          "result": {
+            "samples": 1276,
+            "fps": 78.43214390208593,
+            "low1Fps": 27.703192260057516,
+            "p50": 10.805000003427267,
+            "p95": 30.024999998509884,
+            "p99": 32.480000000447035,
+            "maximum": 46.23999999836087
+          },
+          "display": {
+            "visual": 65.875,
+            "submitted": 78.84375,
+            "refresh": 97.25
+          },
+          "visibleRatio": 0.8355132778438367,
+          "camera": {
+            "before": {
+              "x": 386.789726080071,
+              "y": -419.88213088255526,
+              "z": 156.6484180900347,
+              "pitch": 3.2298387433401605,
+              "yaw": 93.00761835020968
+            },
+            "after": {
+              "x": 396.430307944574,
+              "y": -426.3767806697142,
+              "z": 156.64841781397206,
+              "pitch": 9.156474798917758,
+              "yaw": 104.26309231505734
+            },
+            "travelCm": 1356.161937351903,
+            "turnDegrees": 848.392361565493,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1519,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2849.537984496124,
+            "dispatches": 177.80077519379844,
+            "pending": 1310.5333333333333,
+            "ready": 606.3519379844961
+          },
+          "rhiMs": 7.733214526971803,
+          "budget": {
+            "maxAhead": 4,
+            "submitted": 2795,
+            "completed": 2791,
+            "pending": 4,
+            "peak": 7,
+            "wakes": 559
+          },
+          "history": {
+            "polls": 2443696,
+            "ready": 780699,
+            "hits": 27650,
+            "expired": 50435,
+            "cameraRejected": 375559
+          }
+        },
+        {
+          "mode": "local8",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-20261105/index.html?occlusion=history&clock=local&gpuahead=8&rhiwake=priority",
+          "result": {
+            "samples": 1376,
+            "fps": 84.53809851330989,
+            "low1Fps": 23.528027762919567,
+            "p50": 9.449999999254942,
+            "p95": 29.195000000298023,
+            "p99": 34.00999999791384,
+            "maximum": 62.230000000447035
+          },
+          "display": {
+            "visual": 30.09375,
+            "submitted": 85.1875,
+            "refresh": 42.5
+          },
+          "visibleRatio": 0.3532648569332355,
+          "camera": {
+            "before": {
+              "x": 361.79914706649873,
+              "y": -380.42320664354446,
+              "z": 156.64841951081402,
+              "pitch": 5.5138693704502195,
+              "yaw": 68.17189776967281
+            },
+            "after": {
+              "x": 352.1261381346889,
+              "y": -371.4038301369928,
+              "z": 156.64841854890744,
+              "pitch": 10.19536974478976,
+              "yaw": 59.72146423696543
+            },
+            "travelCm": 1476.5105753006553,
+            "turnDegrees": 977.9812331823633,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1639,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2380.5659420289853,
+            "dispatches": 160.2840579710145,
+            "pending": 2072.384782608696,
+            "ready": 139.07391304347826
+          },
+          "rhiMs": 6.7066096844579794,
+          "budget": {
+            "maxAhead": 8,
+            "submitted": 3016,
+            "completed": 3006,
+            "pending": 10,
+            "peak": 11,
+            "wakes": 623
+          },
+          "history": {
+            "polls": 3029462,
+            "ready": 191922,
+            "hits": 61,
+            "expired": 422201,
+            "cameraRejected": 7782
+          }
+        },
+        {
+          "mode": "owner",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-20261105/index.html?occlusion=history&clock=owner&gpuahead=0&rhiwake=priority",
+          "result": {
+            "samples": 1251,
+            "fps": 77.1846780701605,
+            "low1Fps": 34.05682249814181,
+            "p50": 12.08499999716878,
+            "p95": 19.945000000298023,
+            "p99": 25.125,
+            "maximum": 40.375
+          },
+          "display": {
+            "visual": 68.90625,
+            "submitted": 77.96875,
+            "refresh": 111.15625
+          },
+          "visibleRatio": 0.8837675350701403,
+          "camera": {
+            "before": {
+              "x": 390.0736098837984,
+              "y": -423.26457287165465,
+              "z": 156.64842328900997,
+              "pitch": 3.8157980926334942,
+              "yaw": 96.55495893955232
+            },
+            "after": {
+              "x": 382.7983307349016,
+              "y": -422.9501952065548,
+              "z": 156.64841920027266,
+              "pitch": 11.108368473127442,
+              "yaw": 86.10974971391259
+            },
+            "travelCm": 1489.1834575540292,
+            "turnDegrees": 889.4471976365895,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1499,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2673.218253968254,
+            "dispatches": 174.95873015873016,
+            "pending": 510.4547619047619,
+            "ready": 510.7206349206349
+          },
+          "rhiMs": 7.334477985248017,
+          "history": {
+            "polls": 1275303,
+            "ready": 644020,
+            "hits": 31646,
+            "expired": 8946,
+            "cameraRejected": 223925
+          }
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-moving-budget-accept-r3-20261105.json",
+        "sha256": "9fa96d87c7a195b8adbc90ec86dce7d866d5606cf5b863a3a6ae441af280c45d"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "f9a4e2fdf5a36df5e7c06f8e877ea9eed2a7be1cbd040d34a835b797011532c9"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-moving-budget-accept-r3-20261105-source.cjs",
+        "sha256": "f9a4e2fdf5a36df5e7c06f8e877ea9eed2a7be1cbd040d34a835b797011532c9"
+      },
+      "folder": "villa-local-budget-v72-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "acceptanceThreshold": 0.65,
+      "gpuProbe": false,
+      "rhiWake": "priority",
+      "runs": [
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/index.html?occlusion=history&clock=local&gpuahead=4&rhiwake=priority",
+          "result": {
+            "samples": 1229,
+            "fps": 75.51930273992787,
+            "low1Fps": 25.37352760316037,
+            "p50": 10.379999998956919,
+            "p95": 31.059999998658895,
+            "p99": 34.05000000074506,
+            "maximum": 53.9049999974668
+          },
+          "display": {
+            "visual": 64.65625,
+            "submitted": 75.96875,
+            "refresh": 93.4375,
+            "ratio": 0.851090086384204
+          },
+          "visibleRatio": 0.851090086384204,
+          "camera": {
+            "before": {
+              "x": 404.32556609487176,
+              "y": -438.51909044240995,
+              "z": 156.64841965469333,
+              "pitch": 4.978573377942664,
+              "yaw": 110.63806871976708
+            },
+            "after": {
+              "x": 413.1151910200319,
+              "y": -483.3894507924214,
+              "z": 156.64842171132787,
+              "pitch": 7.144473706255684,
+              "yaw": 119.26476179645402
+            },
+            "travelCm": 1323.8967979271463,
+            "turnDegrees": 811.9691032853443,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1598,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2894.3731707317074,
+            "dispatches": 184.9008130081301,
+            "pending": 1249.5463414634146,
+            "ready": 617.3203252032521
+          },
+          "rhiMs": 7.924850930245691,
+          "budget": {
+            "maxAhead": 4,
+            "submitted": 2827,
+            "completed": 2823,
+            "pending": 4,
+            "peak": 7,
+            "wakes": 570
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 2885,
+            "resumed": 2898
+          },
+          "history": {
+            "polls": 2266123,
+            "ready": 759304,
+            "hits": 19103,
+            "expired": 53676,
+            "cameraRejected": 337284
+          }
+        },
+        {
+          "mode": "owner",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/index.html?occlusion=history&clock=owner&gpuahead=0&rhiwake=priority",
+          "result": {
+            "samples": 1237,
+            "fps": 76.31051903798974,
+            "low1Fps": 34.020281321225426,
+            "p50": 12.345000002533197,
+            "p95": 20.29499999806285,
+            "p99": 24.769999999552965,
+            "maximum": 34.519999999552965
+          },
+          "display": {
+            "visual": 68.375,
+            "submitted": 76.78125,
+            "refresh": 111.625,
+            "ratio": 0.8905168905168905
+          },
+          "visibleRatio": 0.8905168905168905,
+          "camera": {
+            "before": {
+              "x": 379.2373223906286,
+              "y": -414.43412322001166,
+              "z": 156.64842231000804,
+              "pitch": 2.273882731795326,
+              "yaw": 84.74492357857521
+            },
+            "after": {
+              "x": 373.0446514319963,
+              "y": -396.25163926303657,
+              "z": 156.64841832885898,
+              "pitch": 5.418043024837952,
+              "yaw": 77.4962573517114
+            },
+            "travelCm": 1343.586340429126,
+            "turnDegrees": 876.3550295196479,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1499,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2723.3190476190475,
+            "dispatches": 174.80079365079365,
+            "pending": 518.9547619047619,
+            "ready": 522.5793650793651
+          },
+          "rhiMs": 7.53341221040295,
+          "history": {
+            "polls": 1297738,
+            "ready": 658971,
+            "hits": 32230,
+            "expired": 9698,
+            "cameraRejected": 236686
+          }
+        },
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/index.html?occlusion=history&clock=local&gpuahead=4&rhiwake=priority",
+          "result": {
+            "samples": 1278,
+            "fps": 78.78364949538064,
+            "low1Fps": 26.3096647542437,
+            "p50": 10.719999998807907,
+            "p95": 31.070000000298023,
+            "p99": 34.849999997764826,
+            "maximum": 44.01000000163913
+          },
+          "display": {
+            "visual": 63.59375,
+            "submitted": 79.09375,
+            "refresh": 93.125,
+            "ratio": 0.8040300276570526
+          },
+          "visibleRatio": 0.8040300276570526,
+          "camera": {
+            "before": {
+              "x": 364.53550467979835,
+              "y": -381.4153937663216,
+              "z": 156.64841993119398,
+              "pitch": 4.941507803276214,
+              "yaw": 72.57612924044946
+            },
+            "after": {
+              "x": 384.82201000310084,
+              "y": -404.8957108869144,
+              "z": 156.64842173823777,
+              "pitch": 10.662761773099184,
+              "yaw": 92.81078436621469
+            },
+            "travelCm": 1453.4166575936147,
+            "turnDegrees": 840.6989166925199,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1563,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2745.015079365079,
+            "dispatches": 171.29285714285714,
+            "pending": 1320.620634920635,
+            "ready": 583.6793650793651
+          },
+          "rhiMs": 7.427964012915497,
+          "budget": {
+            "maxAhead": 4,
+            "submitted": 2841,
+            "completed": 2837,
+            "pending": 4,
+            "peak": 7,
+            "wakes": 598
+          },
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 2903,
+            "resumed": 2914
+          },
+          "history": {
+            "polls": 2377823,
+            "ready": 734395,
+            "hits": 20752,
+            "expired": 57749,
+            "cameraRejected": 356822
+          }
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-moving-rhi-channel-20261105.json",
+        "sha256": "ab4186bd335f7cd19fe381b6e330bb43b15c40c0cf20ae68a32ab395b2468a5b"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "f9a4e2fdf5a36df5e7c06f8e877ea9eed2a7be1cbd040d34a835b797011532c9"
+      },
+      "capturedSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\v72-moving-rhi-channel-20261105-source.cjs",
+        "sha256": "f9a4e2fdf5a36df5e7c06f8e877ea9eed2a7be1cbd040d34a835b797011532c9"
+      },
+      "folder": "villa-local-budget-v72-20261105",
+      "width": 2289,
+      "height": 1287,
+      "scale": 1,
+      "acceptanceThreshold": 0,
+      "gpuProbe": false,
+      "rhiWake": "channel",
+      "runs": [
+        {
+          "mode": "local",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/index.html?occlusion=history&clock=local&gpuahead=0&rhiwake=channel",
+          "result": {
+            "samples": 1790,
+            "fps": 110.10614478405039,
+            "low1Fps": 23.48627683792773,
+            "p50": 8.824999999254942,
+            "p95": 13.885000001639128,
+            "p99": 25.070000000298023,
+            "maximum": 96.61500000208616
+          },
+          "display": {
+            "visual": 12.875,
+            "submitted": 109.6875,
+            "refresh": 17.78125,
+            "ratio": 0.11737891737891738
+          },
+          "visibleRatio": 0.11737891737891738,
+          "camera": {
+            "before": {
+              "x": 341.8288816337928,
+              "y": -303.90628571133965,
+              "z": 156.6484199972786,
+              "pitch": -89.9000015258875,
+              "yaw": 2.703750157740006
+            },
+            "after": {
+              "x": 329.18697393450003,
+              "y": -320.3473536232122,
+              "z": 157.33243789187503,
+              "pitch": -79.7936397176237,
+              "yaw": 3.747937144711516
+            },
+            "travelCm": 1692.5863364354775,
+            "turnDegrees": 1027.8992054462508,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1784,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 746.7272222222222,
+            "dispatches": 113.76777777777778,
+            "pending": 189.21722222222223,
+            "ready": 1.2922222222222222
+          },
+          "rhiMs": 7.9088245632258865,
+          "history": {
+            "polls": 331838,
+            "ready": 2326,
+            "hits": 0,
+            "expired": 53953,
+            "cameraRejected": 0
+          }
+        },
+        {
+          "mode": "local4",
+          "url": "http://127.0.0.1:8765/build/villa-local-budget-v72-20261105/index.html?occlusion=history&clock=local&gpuahead=4&rhiwake=channel",
+          "result": {
+            "samples": 1401,
+            "fps": 86.54128578360329,
+            "low1Fps": 28.457058299058946,
+            "p50": 10.245000001043081,
+            "p95": 26.825000002980232,
+            "p99": 29.640000000596046,
+            "maximum": 54.25999999791384
+          },
+          "display": {
+            "visual": 67.0625,
+            "submitted": 87.09375,
+            "refresh": 107.71875,
+            "ratio": 0.7700035880875493
+          },
+          "visibleRatio": 0.7700035880875493,
+          "camera": {
+            "before": {
+              "x": 354.99424363026577,
+              "y": -375.0642400753052,
+              "z": 156.64842284286357,
+              "pitch": 2.8201046856120424,
+              "yaw": 59.56995569821446
+            },
+            "after": {
+              "x": 355.0860009738411,
+              "y": -372.90872669238445,
+              "z": 156.6484187672316,
+              "pitch": 6.1769614145159935,
+              "yaw": 65.35059401951736
+            },
+            "travelCm": 1477.6552811253978,
+            "turnDegrees": 962.2937316326424,
+            "inputEvents": 999
+          },
+          "view": {
+            "frame": 1661,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1287,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "workload": {
+            "draws": 2490.32695035461,
+            "dispatches": 161.27801418439716,
+            "pending": 878.7468085106383,
+            "ready": 514.172340425532
+          },
+          "rhiMs": 6.890624910274405,
+          "budget": {
+            "maxAhead": 4,
+            "submitted": 3063,
+            "completed": 3059,
+            "pending": 4,
+            "peak": 7,
+            "wakes": 601
+          },
+          "history": {
+            "polls": 1945064,
+            "ready": 725733,
+            "hits": 16164,
+            "expired": 14537,
+            "cameraRejected": 346003
+          }
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-local-budget-20261105-package.json",
+        "sha256": "35a23fdc8df05976216127fdc7c79b15516e0bc36f4c1967470799d410cbbd07"
+      },
+      "folder": "villa-local-budget-20261105",
+      "products": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\content-files.json",
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\content.bin",
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\index.html",
+          "sha256": "aeefdb9683ddb3da86abf071900941e7ca7c3b54f7000c7a0cabf23f09953fba"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\UEWebEngineThreads.js",
+          "sha256": "1620856cc080437a1882378cb69f7890e6c1364324bfa3ad7a2660a3748d28ae"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\UEWebEngineThreads.wasm",
+          "sha256": "88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\web-engine-host.js",
+          "sha256": "4643f062041ab3bcf80ce6748c0c1f08832992d2f2246f498d053bbd3300311e"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\web-engine-worker.js",
+          "sha256": "f5fd74e7e4dcc77b1654ba88e172aa0769544b1df6a318bc883419f0c2642ead"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\comparison.html",
+          "sha256": "3cfb087c1fe382952aec86cc292194e32666ca8e82374c724758899c924befd5"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-20261105\\asset-versions.json",
+          "sha256": "24cf5d7ef7967eb1235abf229186342754f5dc7b7d602686428e1d9fdcf6aea8"
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-local-budget-v72-20261105-package.json",
+        "sha256": "784f1a686995ce2a7cdd444bca85987c4f03935bdae76d00a499eac18b7cdd28"
+      },
+      "folder": "villa-local-budget-v72-20261105",
+      "defaultAhead": 4,
+      "products": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\content-files.json",
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\content.bin",
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\index.html",
+          "sha256": "920241a60150923956c77f9ba28c6f82b04242c36d12c1d5a9b677a2d7af07b7"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\UEWebEngineThreads.js",
+          "sha256": "1620856cc080437a1882378cb69f7890e6c1364324bfa3ad7a2660a3748d28ae"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\UEWebEngineThreads.wasm",
+          "sha256": "88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\web-engine-host.js",
+          "sha256": "4643f062041ab3bcf80ce6748c0c1f08832992d2f2246f498d053bbd3300311e"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\web-engine-worker.js",
+          "sha256": "f5fd74e7e4dcc77b1654ba88e172aa0769544b1df6a318bc883419f0c2642ead"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\comparison.html",
+          "sha256": "3cfb087c1fe382952aec86cc292194e32666ca8e82374c724758899c924befd5"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\package-info.json",
+          "sha256": "c3f95ab3f9387f992d75f6392fca3fa86d94d1eedd398319fbac904e2726403b"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-local-budget-v72-20261105\\asset-versions.json",
+          "sha256": "83d27d5af03ac611e79dd94fbdcbabdd1c3e18b8d46f071290df0b9b8786be39"
+        }
+      ]
+    }
+  ],
+  "boundary": "Visible Edge on one machine, continuous synthetic mouse/keyboard movement. Page-observed FPS is the mean of rolling HUD samples, not physical display measurements. Equal input schedules do not guarantee identical camera paths or draw counts. GPU completion latency includes browser callback delivery. Visibility checks synthesize document visibility events; actual OS tab freezing and a second device remain unverified."
+}

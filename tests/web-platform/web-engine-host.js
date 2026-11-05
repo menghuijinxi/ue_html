@@ -288,6 +288,11 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     !module.arguments.some(v => v.startsWith('-WebFrameScheduler=')));
   module.arguments = module.arguments.filter(v => v !== '-WebGameLocalClock');
   if (localClock) module.arguments.push('-WebGameLocalClock');
+  // Opt-in until cross-device movement tests establish a suitable default.
+  const requestedBudget = Number(experiment.get('gpuahead') ?? assets.localFrameBudget ?? 0);
+  if (!Number.isInteger(requestedBudget) || requestedBudget < 0 || requestedBudget > 8)
+    throw new Error('Invalid local GPU frame budget');
+  const localFrameBudget = localClock ? requestedBudget : 0;
   if (module.arguments.includes('-WebGameLocalClock') && module.arguments.some(v => v.startsWith('-WebFrameScheduler=')))
     throw new Error('Choose one frame clock experiment');
   if (assets.gameFrameBridge === 'page-raf' && (localClock ||
@@ -565,6 +570,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   const offscreen = canvas.transferControlToOffscreen();
   worker.postMessage({type: 'start', assets, canvas: offscreen, browser: browser(),
     gameClockHidden: document.hidden,
+    localFrameBudget,
     frameCounter: frameCounter.buffer,
     frameScheduler: frameClock?.transfer,
     arguments: module.arguments, debug: diagnostics.mode !== 'normal',
