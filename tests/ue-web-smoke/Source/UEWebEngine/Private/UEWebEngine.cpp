@@ -96,6 +96,15 @@ FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
 TWeakObjectPtr<AStaticMeshActor> MaterialMotionSample;
 FVector MaterialMotionOrigin;
+// Diagnostic camera routes are disabled unless explicitly started by the benchmark RPC.
+int32 MotionBenchmarkMode = 0;
+double MotionBenchmarkStart = 0, MotionBenchmarkSeconds = 0;
+uint32 MotionBenchmarkUpdates = 0;
+int32 MotionBenchmarkSerial = 0;
+bool MotionBenchmarkActive = false, MotionBenchmarkHasOrigin = false;
+FVector MotionBenchmarkOrigin;
+FRotator MotionBenchmarkOriginRotation;
+TWeakObjectPtr<ACameraActor> MotionBenchmarkCamera;
 #if UE_WEB_ENGINE_WORKER
 UE::Tasks::FTask ThreadIOProbe;
 std::atomic<int32> ThreadIOResult{0};
@@ -181,6 +190,40 @@ void VerifyFileCache()
         "\"checkedBytes\":25362483}\n");
 }
 
+void ApplyMotionBenchmarkPose(double T)
+{
+    FVector Location(-175, -80, 160);
+    FRotator Rotation(-5, 50, 0);
+    if (MotionBenchmarkMode == 1)
+    {
+        const double U = (1 - FMath::Cos(T * 8 * PI)) * 0.5;
+        Location += FVector(275 * U, 20 * U, 0);
+    }
+    else if (MotionBenchmarkMode == 2)
+        Rotation.Yaw += 360 * T;
+    else
+    {
+        const FVector Points[] = {MotionBenchmarkOrigin, FVector(610, -225, 170),
+            FVector(100, -60, 150), FVector(-730, -255, 155), FVector(-620, 0, 160)};
+        const FRotator Rotations[] = {MotionBenchmarkOriginRotation, FRotator(-4, 20, 0),
+            FRotator(-10, 50, 0), FRotator(0, 110, 0), FRotator(0, 0, 0)};
+        const int32 Segment = FMath::Min(3, FMath::FloorToInt(T * 4));
+        const double U = T * 4 - Segment;
+        Location = FMath::Lerp(Points[Segment], Points[Segment + 1], U);
+        Rotation = Rotations[Segment] + (Rotations[Segment + 1] - Rotations[Segment]).GetNormalized() * U;
+    }
+    MotionBenchmarkCamera->SetActorLocationAndRotation(Location, Rotation);
+}
+
+void PublishMotionBenchmark(bool Completed, double Elapsed)
+{
+    MAIN_THREAD_ASYNC_EM_ASM({
+        globalThis.__webMotionBenchmark = ({mode:$0, duration:$1, elapsed:$2, updates:$3,
+            active:!!$4, completed:!!$5, serial:$6, driver:'game-frame'});
+    }, MotionBenchmarkMode, MotionBenchmarkSeconds, Elapsed, MotionBenchmarkUpdates,
+        MotionBenchmarkActive, Completed, MotionBenchmarkSerial);
+}
+
 void EngineFrame(void*)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
@@ -192,6 +235,16 @@ void EngineFrame(void*)
     }
     const double TickStart = emscripten_get_now();
     if (Frames == 0) StartupMark("native.firstTick.begin");
+    if (MotionBenchmarkActive && MotionBenchmarkCamera.IsValid())
+    {
+        const double Elapsed = (TickStart - MotionBenchmarkStart) / 1000.0;
+        const double T = FMath::Clamp(Elapsed / MotionBenchmarkSeconds, 0.0, 1.0);
+        ApplyMotionBenchmarkPose(T);
+        ++MotionBenchmarkUpdates;
+        if (T >= 1) MotionBenchmarkActive = false;
+        if (Frames % 30 == 0 || !MotionBenchmarkActive)
+            PublishMotionBenchmark(!MotionBenchmarkActive, Elapsed);
+    }
     if (AStaticMeshActor* Sample = MaterialMotionSample.Get())
     {
         Sample->SetActorLocation(MaterialMotionOrigin + FVector(10 * FMath::Sin(Frames * 0.1), 0, 0));
@@ -698,6 +751,38 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, doubl
     Camera->SetActorLocationAndRotation(FVector(X, Y, Z), FRotator(Pitch, Yaw, 0));
     Controller->SetViewTarget(Camera.Get());
     return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebMotionBenchmarkControl(int Mode, double Seconds)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    APlayerController* Controller = TemplateController.Get();
+    if (!Controller || Mode < 0 || Mode > 3 || !FMath::IsFinite(Seconds) || Seconds < 0 || Seconds > 60)
+        return 0;
+    MotionBenchmarkActive = false;
+    ++MotionBenchmarkSerial;
+    MotionBenchmarkMode = Mode;
+    MotionBenchmarkSeconds = Seconds;
+    MotionBenchmarkUpdates = 0;
+    if (Mode == 0)
+    {
+        PublishMotionBenchmark(true, 0);
+        return MotionBenchmarkSerial;
+    }
+    if (!MotionBenchmarkHasOrigin)
+    {
+        Controller->GetPlayerViewPoint(MotionBenchmarkOrigin, MotionBenchmarkOriginRotation);
+        MotionBenchmarkHasOrigin = true;
+    }
+    if (!MotionBenchmarkCamera.IsValid())
+        MotionBenchmarkCamera = Controller->GetWorld()->SpawnActor<ACameraActor>();
+    if (!MotionBenchmarkCamera.IsValid()) return 0;
+    ApplyMotionBenchmarkPose(0);
+    Controller->SetViewTarget(MotionBenchmarkCamera.Get());
+    MotionBenchmarkStart = emscripten_get_now();
+    MotionBenchmarkActive = Seconds > 0;
+    PublishMotionBenchmark(!MotionBenchmarkActive, 0);
+    return MotionBenchmarkSerial;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebDistanceFieldTest(int Enabled)

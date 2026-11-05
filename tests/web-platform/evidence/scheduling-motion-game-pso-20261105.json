@@ -1,0 +1,735 @@
+{
+  "date": "2026-11-05T07:40:37.826Z",
+  "pass": true,
+  "folder": "villa-scheduling-motion-pso-v73",
+  "checks": {
+    "explicitPrecache": true,
+    "completedPrecache": true,
+    "defaultCameraRouteDisabled": true,
+    "noSteadyPipelineShaderCreation": true,
+    "gameFrameCameraDriver": true,
+    "continuousMotion": true,
+    "sameSettings": true,
+    "noRuntimeErrors": true
+  },
+  "analyzer": {
+    "file": "tests/web-platform/summarize-web-scheduling-motion.cjs",
+    "sha256": "467cad24ec86c20c70d740e6d6c4925b76f2249a6e06b48e03f350b3add8f7ae"
+  },
+  "benchmark": {
+    "file": "tests/web-platform/results/scheduling-motion-game-pso-v73-abba-20261105.json",
+    "sha256": "e801209a95ca5805100e73ecedc05107eac0bb9b646f31f1316a92b3ffcd15f3"
+  },
+  "executedSource": {
+    "file": "tests/web-platform/results/scheduling-motion-game-pso-v73-abba-20261105-source.cjs",
+    "sha256": "173436989dfd14a8e40420046b5de66991cbd0c6aca700e395f379709eadb55d"
+  },
+  "package": {
+    "file": "tests/web-platform/results/villa-scheduling-motion-pso-v73-package.json",
+    "sha256": "9e606e49be109c4362a6dea46b76d74286be30af37d715538bbdaa86e71d53d6"
+  },
+  "build": {
+    "file": "tests/web-platform/results/villa-scheduling-motion-pso-v73-build.json",
+    "sha256": "ccd4b824d53c3294919d078bf00b5be6a283c84c252211ac3b9b160778688d50"
+  },
+  "changedSources": [
+    {
+      "file": "tests/ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "9ce83eb9a9ab4f1e13d8437bb1cfd951612a57be5118fa01274875e34245dfa2"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "8e766b49d8bbc3d7f62ec23a02b9671836c62206b77a9c25d1440f47f6263327"
+    }
+  ],
+  "packageFiles": [
+    {
+      "file": "tests/web-platform/build/villa-scheduling-motion-pso-v73/index.html",
+      "sha256": "602fb284d55181abf6e750df6b018321affb31cffcf38a7135e7b64fa914dffa"
+    },
+    {
+      "file": "tests/web-platform/build/villa-scheduling-motion-pso-v73/UEWebEngineThreads.js",
+      "sha256": "c34defc07329098e531d56f6fb542f95781c344f27eaf1ab5bb3f04c2503df5e"
+    },
+    {
+      "file": "tests/web-platform/build/villa-scheduling-motion-pso-v73/UEWebEngineThreads.wasm",
+      "sha256": "8891b5f5daf6639630a2810be4598d4876604f2985323282cd821f882a186116"
+    },
+    {
+      "file": "tests/web-platform/build/villa-scheduling-motion-pso-v73/config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "tests/web-platform/build/villa-scheduling-motion-pso-v73/content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "tests/web-platform/build/villa-scheduling-motion-pso-v73/web-engine-host.js",
+      "sha256": "cf2bc14c34e2e4f042851025a0d5c0861c81ec4496efe602cc9bb98d7dad7925"
+    },
+    {
+      "file": "tests/web-platform/build/villa-scheduling-motion-pso-v73/web-engine-worker.js",
+      "sha256": "8e766b49d8bbc3d7f62ec23a02b9671836c62206b77a9c25d1440f47f6263327"
+    }
+  ],
+  "order": [
+    "owner",
+    "local",
+    "local",
+    "owner"
+  ],
+  "secondsPerPhase": 20,
+  "warmupSeconds": 15,
+  "summary": {
+    "first-area": {
+      "owner": {
+        "fps": 95.29154842646268,
+        "low1Fps": 32.91694800984141,
+        "runs": [
+          97.76935569847704,
+          92.8114600411847
+        ],
+        "frames": 3815,
+        "seconds": 40.03503000000119,
+        "pipelineShaderCreates": [
+          1,
+          1
+        ]
+      },
+      "local": {
+        "fps": 115.31012094079745,
+        "low1Fps": 44.71463500555884,
+        "runs": [
+          115.31390076859381,
+          115.30634299691606
+        ],
+        "frames": 4619,
+        "seconds": 40.05719500000775,
+        "pipelineShaderCreates": [
+          1,
+          1
+        ]
+      },
+      "fpsGainPercent": 21.007710384497823
+    },
+    "moving": {
+      "owner": {
+        "fps": 98.2810440436579,
+        "low1Fps": 38.063699601649766,
+        "runs": [
+          99.43662577384526,
+          97.12559719374849
+        ],
+        "frames": 3932,
+        "seconds": 40.00771499998868,
+        "pipelineShaderCreates": [
+          0,
+          0
+        ]
+      },
+      "local": {
+        "fps": 131.632875610315,
+        "low1Fps": 68.27961145046687,
+        "runs": [
+          131.2091797478122,
+          132.05640530986298
+        ],
+        "frames": 5272,
+        "seconds": 40.050784999996424,
+        "pipelineShaderCreates": [
+          0,
+          0
+        ]
+      },
+      "fpsGainPercent": 33.93516205611504
+    },
+    "turning": {
+      "owner": {
+        "fps": 85.61325144234618,
+        "low1Fps": 35.14850242462957,
+        "runs": [
+          86.21435036607738,
+          85.01252211468825
+        ],
+        "frames": 3427,
+        "seconds": 40.028850000023844,
+        "pipelineShaderCreates": [
+          0,
+          0
+        ]
+      },
+      "local": {
+        "fps": 110.00668682791952,
+        "low1Fps": 58.36765135101384,
+        "runs": [
+          110.90129784493453,
+          109.11200117108153
+        ],
+        "frames": 4404,
+        "seconds": 40.03392999999225,
+        "pipelineShaderCreates": [
+          0,
+          0
+        ]
+      },
+      "fpsGainPercent": 28.49259311451382
+    },
+    "repeat-area": {
+      "owner": {
+        "fps": 99.31738350289982,
+        "low1Fps": 34.66219524288945,
+        "runs": [
+          100.63707666783743,
+          97.99757129934025
+        ],
+        "frames": 3975,
+        "seconds": 40.023204999998214,
+        "pipelineShaderCreates": [
+          0,
+          0
+        ]
+      },
+      "local": {
+        "fps": 117.43043444517689,
+        "low1Fps": 42.425313772002546,
+        "runs": [
+          120.08109216892595,
+          114.78002408385356
+        ],
+        "frames": 4706,
+        "seconds": 40.07479000000656,
+        "pipelineShaderCreates": [
+          0,
+          0
+        ]
+      },
+      "fpsGainPercent": 18.237543422343805
+    }
+  },
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 0,
+    "reflections": 0,
+    "virtualShadows": 0,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1
+  },
+  "view": {
+    "frame": 1826,
+    "width": 1484,
+    "height": 835,
+    "outputWidth": 2289,
+    "outputHeight": 1288,
+    "antiAliasing": 4,
+    "jitterX": 0,
+    "jitterY": 0,
+    "x": 0,
+    "y": 0,
+    "outputX": 0,
+    "outputY": 0,
+    "threadId": 4,
+    "parallelRendering": true
+  },
+  "camera": {
+    "x": 410.7359315721519,
+    "y": -478.05903852213453,
+    "z": 156.64842176437378,
+    "pitch": 0,
+    "yaw": 89.99945068359375
+  },
+  "routes": {
+    "spawn": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "movingStart": {
+      "x": -175,
+      "y": -80,
+      "z": 160,
+      "pitch": -5,
+      "yaw": 50
+    },
+    "firstAreaEnd": {
+      "x": -620,
+      "y": 0,
+      "z": 160,
+      "pitch": 0,
+      "yaw": 0
+    }
+  },
+  "runs": [
+    {
+      "index": 1,
+      "mode": "owner",
+      "idleGpu": "NVIDIA GeForce RTX 4090, 4, 1497",
+      "pso": {
+        "enabled": true,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "precacheRequested": 1121,
+      "precacheCompleted": 1121,
+      "precachedGraphicsPipelines": 484,
+      "errors": [],
+      "phases": [
+        {
+          "name": "first-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.022465087890627,
+            "updates": 1957,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "fps": 97.76935569847704,
+          "low1Fps": 34.610758755893904,
+          "durationSeconds": 20.02672499999404,
+          "travelCm": 1977.0579069509558,
+          "turnDegrees": 267.4361103515628,
+          "movingSampleFraction": 1,
+          "creations": [
+            {
+              "name": "createRenderPipeline",
+              "time": 46087.41999998689,
+              "label": "main_00000774_2edfba25 / main_0000359c_50de497b"
+            }
+          ],
+          "historyHits": 18639,
+          "streamingPendingAfter": 24
+        },
+        {
+          "name": "moving",
+          "driver": {
+            "mode": 1,
+            "duration": 20,
+            "elapsed": 20.0020048828125,
+            "updates": 1989,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "fps": 99.43662577384526,
+          "low1Fps": 39.49681063449407,
+          "durationSeconds": 20.002689999997617,
+          "travelCm": 2203.220968140435,
+          "turnDegrees": 0,
+          "movingSampleFraction": 1,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 75222,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "turning",
+          "driver": {
+            "mode": 2,
+            "duration": 20,
+            "elapsed": 20.007380126953127,
+            "updates": 1725,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "fps": 86.21435036607738,
+          "low1Fps": 36.37686431701286,
+          "durationSeconds": 20.00827000001073,
+          "travelCm": 0,
+          "turnDegrees": 358.13726806640597,
+          "movingSampleFraction": 0,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 4578,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "repeat-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.00783984375,
+            "updates": 2013,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "fps": 100.63707666783743,
+          "low1Fps": 35.54141421072808,
+          "durationSeconds": 20.012504999995233,
+          "travelCm": 1978.6006561106396,
+          "turnDegrees": 267.33468896484374,
+          "movingSampleFraction": 1,
+          "creations": [],
+          "historyHits": 9954,
+          "streamingPendingAfter": 1
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "mode": "local",
+      "idleGpu": "NVIDIA GeForce RTX 4090, 13, 1555",
+      "pso": {
+        "enabled": true,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "precacheRequested": 1121,
+      "precacheCompleted": 1121,
+      "precachedGraphicsPipelines": 484,
+      "errors": [],
+      "phases": [
+        {
+          "name": "first-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.00456005859375,
+            "updates": 2308,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "fps": 115.31390076859381,
+          "low1Fps": 45.78929293304416,
+          "durationSeconds": 20.02360500000417,
+          "travelCm": 1978.8639949531187,
+          "turnDegrees": 266.54345751953133,
+          "movingSampleFraction": 1,
+          "creations": [
+            {
+              "name": "createRenderPipeline",
+              "time": 43991.25,
+              "label": "main_00000774_2edfba25 / main_0000359c_50de497b"
+            }
+          ],
+          "historyHits": 7413,
+          "streamingPendingAfter": 63
+        },
+        {
+          "name": "moving",
+          "driver": {
+            "mode": 1,
+            "duration": 20,
+            "elapsed": 20.006815185546873,
+            "updates": 2626,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "fps": 131.2091797478122,
+          "low1Fps": 71.26454984189368,
+          "durationSeconds": 20.021465000003577,
+          "travelCm": 2203.0557689767024,
+          "turnDegrees": 0,
+          "movingSampleFraction": 0.9947368421052631,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 0,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "turning",
+          "driver": {
+            "mode": 2,
+            "duration": 20,
+            "elapsed": 20.000380126953125,
+            "updates": 2219,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "fps": 110.90129784493453,
+          "low1Fps": 59.62874624098072,
+          "durationSeconds": 20.01779999999702,
+          "travelCm": 0,
+          "turnDegrees": 358.26678369140683,
+          "movingSampleFraction": 0,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 0,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "repeat-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.00593994140625,
+            "updates": 2405,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "fps": 120.08109216892595,
+          "low1Fps": 43.30991710709945,
+          "durationSeconds": 20.036460000008343,
+          "travelCm": 1977.9072606949749,
+          "turnDegrees": 265.9619721679687,
+          "movingSampleFraction": 1,
+          "creations": [],
+          "historyHits": 14340,
+          "streamingPendingAfter": 1
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "mode": "local",
+      "idleGpu": "NVIDIA GeForce RTX 4090, 14, 1557",
+      "pso": {
+        "enabled": true,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "precacheRequested": 1121,
+      "precacheCompleted": 1121,
+      "precachedGraphicsPipelines": 484,
+      "errors": [],
+      "phases": [
+        {
+          "name": "first-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.002510009765626,
+            "updates": 2308,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "fps": 115.30634299691606,
+          "low1Fps": 44.12494714711598,
+          "durationSeconds": 20.033590000003578,
+          "travelCm": 1980.9684590359232,
+          "turnDegrees": 267.4663286132819,
+          "movingSampleFraction": 1,
+          "creations": [
+            {
+              "name": "createRenderPipeline",
+              "time": 43909.05999998748,
+              "label": "main_00000774_2edfba25 / main_0000359c_50de497b"
+            }
+          ],
+          "historyHits": 11522,
+          "streamingPendingAfter": 1
+        },
+        {
+          "name": "moving",
+          "driver": {
+            "mode": 1,
+            "duration": 20,
+            "elapsed": 20.00723486328125,
+            "updates": 2644,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "fps": 132.05640530986298,
+          "low1Fps": 65.93084586900538,
+          "durationSeconds": 20.029319999992847,
+          "travelCm": 2203.840286689323,
+          "turnDegrees": 0,
+          "movingSampleFraction": 1,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 684,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "turning",
+          "driver": {
+            "mode": 2,
+            "duration": 20,
+            "elapsed": 20.0009150390625,
+            "updates": 2183,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "fps": 109.11200117108153,
+          "low1Fps": 57.15324864376083,
+          "durationSeconds": 20.016129999995233,
+          "travelCm": 0,
+          "turnDegrees": 359.6026508789063,
+          "movingSampleFraction": 0,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 0,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "repeat-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.00927978515625,
+            "updates": 2299,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "fps": 114.78002408385356,
+          "low1Fps": 41.65572449409941,
+          "durationSeconds": 20.03832999999821,
+          "travelCm": 1976.6997223861943,
+          "turnDegrees": 266.42329945499876,
+          "movingSampleFraction": 1,
+          "creations": [],
+          "historyHits": 7414,
+          "streamingPendingAfter": 14
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "mode": "owner",
+      "idleGpu": "NVIDIA GeForce RTX 4090, 14, 1555",
+      "pso": {
+        "enabled": true,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "precacheRequested": 1121,
+      "precacheCompleted": 1121,
+      "precachedGraphicsPipelines": 484,
+      "errors": [],
+      "phases": [
+        {
+          "name": "first-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.004735107421876,
+            "updates": 1857,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "fps": 92.8114600411847,
+          "low1Fps": 31.662445010571666,
+          "durationSeconds": 20.00830500000715,
+          "travelCm": 1978.690333887009,
+          "turnDegrees": 265.90452310749833,
+          "movingSampleFraction": 1,
+          "creations": [
+            {
+              "name": "createRenderPipeline",
+              "time": 46794.64499999583,
+              "label": "main_00000774_2edfba25 / main_0000359c_50de497b"
+            }
+          ],
+          "historyHits": 13444,
+          "streamingPendingAfter": 1
+        },
+        {
+          "name": "moving",
+          "driver": {
+            "mode": 1,
+            "duration": 20,
+            "elapsed": 20.00078515625,
+            "updates": 1943,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "fps": 97.12559719374849,
+          "low1Fps": 36.942628098888314,
+          "durationSeconds": 20.005024999991058,
+          "travelCm": 2204.0753543298365,
+          "turnDegrees": 0,
+          "movingSampleFraction": 0.9947089947089947,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 66181,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "turning",
+          "driver": {
+            "mode": 2,
+            "duration": 20,
+            "elapsed": 20.01693505859375,
+            "updates": 1701,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "fps": 85.01252211468825,
+          "low1Fps": 34.68909895192986,
+          "durationSeconds": 20.020580000013112,
+          "travelCm": 0,
+          "turnDegrees": 359.22222070312444,
+          "movingSampleFraction": 0,
+          "steadyAccepted": true,
+          "creations": [],
+          "historyHits": 5717,
+          "streamingPendingAfter": 0
+        },
+        {
+          "name": "repeat-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.009905029296874,
+            "updates": 1961,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "fps": 97.99757129934025,
+          "low1Fps": 34.3935133810139,
+          "durationSeconds": 20.01070000000298,
+          "travelCm": 1983.4292139789634,
+          "turnDegrees": 267.87689802472903,
+          "movingSampleFraction": 1,
+          "creations": [],
+          "historyHits": 1756,
+          "streamingPendingAfter": 1
+        }
+      ]
+    }
+  ],
+  "excluded": {
+    "report": {
+      "file": "tests/web-platform/results/scheduling-motion-pso-v72-abba-20261105.json",
+      "sha256": "e8e41ad56a06d43e97898e54737999a9ff07fd0172c2ca77185489481d8e868f"
+    },
+    "reason": "RPC camera update rate depended on scheduling mode; preliminary numbers excluded. Fourth run deliberately interrupted by closing its test browser."
+  },
+  "limits": [
+    "RTX 4090 on this machine, original local Lumen-off Cook/config only; no inference about other devices or Lumen-on.",
+    "Scripted camera routes bypass collision and update directly on Game frames; does not measure keyboard/mouse latency or normal player traversal.",
+    "First-area means first visit per engine session, with browser/driver caches retained; one uncovered render pipeline still appears per first traversal.",
+    "FPS and Low are RHI submission intervals, not physical display or end-to-end input latency.",
+    "No motion image quality or temporal artifact acceptance."
+  ]
+}
