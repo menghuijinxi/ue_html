@@ -95,7 +95,7 @@ let context,log;
     if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|Ensure condition failed/.test(t))report.errors.push(t);});
   page.on('pageerror',e=>report.errors.push(e.message));page.on('crash',()=>report.errors.push('Page crashed'));
   await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html'+
-    (immediateMode==='native-priority'?'?rhiwake=priority':''),{waitUntil:'commit'});await page.bringToFront();
+    (immediateMode==='native-priority'?'?rhiwake=priority':'?rhiwake=channel'),{waitUntil:'commit'});await page.bringToFront();
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=600&&
     globalThis.__webTextureStreaming?.pending===0,null,{timeout:180000});
   assert(!await page.evaluate(()=>globalThis.__webEngineFailure));await page.waitForTimeout(20000);

@@ -143,7 +143,9 @@ async function start(message) {
   if (!crossOriginIsolated || typeof SharedArrayBuffer === 'undefined' || !navigator.gpu)
     throw new Error('Engine Worker requires isolated shared memory and WebGPU');
   const assets = message.assets;
-  const priorityRequested = message.arguments.includes('-WebRHIWake=priority');
+  // Approved default; older hosts may omit the option. Explicit channel remains
+  // available, and browsers without postTask use the MessageChannel fallback.
+  const priorityRequested = !message.arguments.includes('-WebRHIWake=channel');
   rhiWakePriority = priorityRequested && typeof globalThis.scheduler?.postTask === 'function';
   globalThis.__webRHIWakeScheduler = {requested:priorityRequested?'priority':'channel',
     active:rhiWakePriority?'priority':'channel',prioritySupported:typeof globalThis.scheduler?.postTask === 'function'};

@@ -8,6 +8,8 @@
 
 切回完整原路径使用 `?occlusion=control&clock=owner`。只恢复原调度使用 `?clock=owner`；只关闭有效历史使用 `?occlusion=control`。对比页的原调度链接显式包含 `clock=owner`，不依赖默认值。显式 `-WebFrameScheduler=1..4` 仍选择页面帧时钟；本地调度与页面帧时钟不能同时指定。
 
+后续 RHI 周期长帧调查完成后，v69 起又默认启用 RHI priority 唤醒。仅恢复原 RHI 唤醒使用 `?rhiwake=channel`；在新包中同时恢复本文实验之前的遮挡、Game 时钟及 RHI 唤醒，使用 `?occlusion=control&clock=owner&rhiwake=channel`。v67 原包行为不变。详见 [RHI 唤醒调查与默认启用](UE58_WEB_RHI_WAKE_STUTTER_DIAGNOSIS.md)。
+
 页面隐藏状态在 Game Worker 启动前保存，本地调度启动时读取当前隐藏状态；后续隐藏/恢复继续更新暂停状态。Game Worker 回报实际启用的时钟和暂停状态，诊断名为 `__webGameFrameClock`。页面关闭或启动失败时移除时钟的 visibility 监听。
 
 用户的人工观察确认快速移动没有发现缺物或明显操作延迟；未量测输入到显示的毫秒数，也不将此结论推广为所有动态遮挡场景的正确性证明。默认启用记录与运行检查见 [默认模式验证](tests/web-platform/evidence/occlusion-history-default-20261105.json)。

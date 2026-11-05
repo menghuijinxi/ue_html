@@ -206,12 +206,12 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (localClock) module.arguments.push('-WebGameLocalClock');
   if (module.arguments.includes('-WebGameLocalClock') && module.arguments.some(v => v.startsWith('-WebFrameScheduler=')))
     throw new Error('Choose one frame clock experiment');
-  const rhiWake = experiment.get('rhiwake');
-  if (rhiWake !== null) {
-    if (!['channel', 'priority'].includes(rhiWake)) throw new Error('Invalid RHI wake experiment');
-    module.arguments = module.arguments.filter(v => !v.startsWith('-WebRHIWake='));
-    module.arguments.push('-WebRHIWake=' + rhiWake);
-  }
+  const rhiWakeArgs = module.arguments.filter(v => v.startsWith('-WebRHIWake='));
+  if (rhiWakeArgs.length > 1) throw new Error('Choose one RHI wake mode');
+  const rhiWake = experiment.get('rhiwake') ?? rhiWakeArgs[0]?.split('=')[1] ?? 'priority';
+  if (!['channel', 'priority'].includes(rhiWake)) throw new Error('Invalid RHI wake mode');
+  module.arguments = module.arguments.filter(v => !v.startsWith('-WebRHIWake='));
+  module.arguments.push('-WebRHIWake=' + rhiWake);
   const canvas = module.canvas;
   globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;

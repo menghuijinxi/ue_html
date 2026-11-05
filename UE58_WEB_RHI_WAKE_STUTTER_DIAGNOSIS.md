@@ -2,6 +2,16 @@
 
 2026-11-05。调查对象是 Villa 静止镜头、Game 本地时钟、有效遮挡历史默认模式。先保留 v67 原包复现，再在相同 WASM、Cook、光照及分辨率的 v68 包内对照 RHI 回调调度。
 
+## 人工验收后的默认模式
+
+用户人工测试确认“帧率稳定性暴增”，并要求设为默认。公共启动器和 Worker 现在默认使用 priority；新包 `villa-rhi-wake-default-v69` 无需 URL 参数：[默认模式](http://127.0.0.1:8765/build/villa-rhi-wake-default-v69/index.html)。其他项目使用公共打包流程生成的新线程包同样继承默认值。
+
+`?rhiwake=channel` 或显式 `-WebRHIWake=channel` 可恢复原 RHI 唤醒。URL 参数优先于打包参数，打包参数优先于默认值。缺少 `scheduler.postTask` 时自动使用 MessageChannel，`__webRHIWakeScheduler` 同时回报请求模式与实际模式。Game 本地调度与有效遮挡历史继续默认启用。
+
+v68 及其性能证据保留原默认，下面的“候选”描述对应当时的对照。默认启用的打包与启动验证单独记录在 `tests/web-platform/evidence/rhi-wake-default-20261105.json`。
+
+v69 按“无参数默认 → 显式 channel → 无参数默认”启动三次，实际模式为 priority / channel / priority；默认两轮十秒短测 1% Low 为 66.81 / 66.44 FPS，仅用于启动回归。三轮都消费有效遮挡历史，模拟隐藏期间提交帧计数停止，恢复后继续运行。另一次无参数启动在隐藏 `scheduler` API 后正确报告 requested=priority、active=channel。十二组默认选择、显式覆盖及非法参数检查通过，所有启动均未捕获 GPU 验证或运行错误。
+
 ## 已定位的原因
 
 问题可以复现，与 RHI 唤醒和排队有关。直接占用 GPU 所属 Worker 的工作是浏览器原生堆清扫 `cppgc::internal::Sweeper::…::IncrementalSweepTask`，不是新增 PSO 编译。
@@ -30,7 +40,7 @@ RHI 当前在 `TaskGraph.cpp` 每处理一批任务后主动让出 Worker。`Web
 
 仅把 owner Worker 的 `setImmediate` 回调改用 `scheduler.postTask(..., {priority:'user-blocking'})`。继续异步让出事件循环，让 WebGPU 回读和清扫继续执行，保留回调取消语义。浏览器没有该 API 时回退 MessageChannel。
 
-候选开关为 `?rhiwake=priority`，对应 `-WebRHIWake=priority`；`?rhiwake=channel` 为原调度。当前默认仍为 channel。可从 `__webRHIWakeScheduler` 查看请求模式和实际模式。
+实验开关为 `?rhiwake=priority`，对应 `-WebRHIWake=priority`；`?rhiwake=channel` 为原调度。实验包 v68 默认仍为 channel；验收后的 v69 与公共启动器默认 priority。可从 `__webRHIWakeScheduler` 查看请求模式和实际模式。
 
 初步带探针实验为 104.23 → 107.17 FPS、1% Low 52.39 → 66.44 FPS；60 秒超过 20 ms 的帧为 28 → 0。这只是定位阶段的数据，正式收益以不带详细探针的交错测试为准。
 
@@ -75,4 +85,4 @@ v67 首次时间线录制时尚未加 capture-start mark。分析器用连续 RH
 - 调度优先级只能减少清扫插队造成的连续停顿，不能消除对象创建和回收本身的成本。尚未按具体原生对象类型归因，不能断言某类 GPUBuffer 或 BindGroup 是来源。
 - FPS 与 1% Low 来自 RHI 提交间隔，不是物理屏幕显示或端到端输入延迟测量。
 - 诊断还看到了 `FGenericPlatformMemory::GetStats not implemented` 的逐帧警告。它值得另行处理；本轮没有把它认定为周期清扫的根因，也没有同时修改它。
-- HZB、遮挡结果有效期、Game 时钟、画质参数均沿用既有模式。候选尚未替换默认调度。
+- HZB、遮挡结果有效期、Game 时钟、画质参数均沿用既有模式。priority 已经人工验收并设为新线程包默认；旧包保留原默认。

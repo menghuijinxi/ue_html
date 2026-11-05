@@ -7,18 +7,22 @@ const option = n => process.argv.find(v => v.startsWith('--' + n + '='))?.slice(
 const folder = option('folder'), tag = option('tag');
 assert([folder, tag].every(v => v && /^[a-z0-9-]+$/.test(v)));
 const modes = (option('modes') || 'control,history,hzb,instances,instances,hzb,history,control').split(',');
-assert(modes.every(v => ['default','rhi-priority'].includes(v) || /^(control|history|hzb|instances|hzb-instances)(-local)?$/.test(v)));
+assert(modes.every(v => ['default','rhi-priority','rhi-channel'].includes(v) || /^(control|history|hzb|instances|hzb-instances)(-local)?$/.test(v)));
 const seconds = Number(option('seconds') || 20), warmup = Number(option('warmup') || 15);
 assert(seconds >= 5 && seconds <= 60 && warmup >= 5 && warmup <= 120);
 const tour = process.argv.includes('--tour');
 const lifecycle = process.argv.includes('--lifecycle');
 const initialHidden = process.argv.includes('--initial-hidden');
-assert(!initialHidden || modes.every(mode=>['default','rhi-priority'].includes(mode) || mode.endsWith('-local')));
+const withoutTaskScheduler = process.argv.includes('--without-task-scheduler');
+const expectedRhiWake = option('expect-rhi-wake');
+assert(expectedRhiWake === undefined || ['priority','channel'].includes(expectedRhiWake));
+assert(!initialHidden || modes.every(mode=>['default','rhi-priority','rhi-channel'].includes(mode) || mode.endsWith('-local')));
 const output = path.join(__dirname, 'results', tag), base = path.join(__dirname, 'build', folder);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 fs.copyFileSync(__filename, output + '-source.cjs');
 const runtime = fs.readdirSync(base).find(v => /^UEWebEngineThreads\w*\.js$/.test(v)); assert(runtime);
-const report = {date: new Date().toISOString(), folder, modes, seconds, warmup, tour, lifecycle, initialHidden, pass: false,
+const report = {date: new Date().toISOString(), folder, modes, seconds, warmup, tour, lifecycle, initialHidden,
+  withoutTaskScheduler, expectedRhiWake, pass: false,
   source: audit(output + '-source.cjs'),
   packageFiles: ['index.html', runtime, runtime.replace(/\.js$/, '.wasm'), 'config-files.json', 'content-files.json',
     'web-engine-host.js', 'web-engine-worker.js'].map(f => audit(path.join(base, f))),
@@ -53,8 +57,8 @@ let context, log;
   report.idleGpu=idleGpu();save();
   assert(!report.idleGpu.adapters?.some(v=>v.utilization>50),'GPU already busy before the test browser starts; free it before benchmarking');
   for(const mode of modes) {
-    const local = ['default','rhi-priority'].includes(mode) || mode.endsWith('-local');
-    const occlusionMode = ['default','rhi-priority'].includes(mode) ? 'history' : local ? mode.slice(0,-6) : mode;
+    const local = ['default','rhi-priority','rhi-channel'].includes(mode) || mode.endsWith('-local');
+    const occlusionMode = ['default','rhi-priority','rhi-channel'].includes(mode) ? 'history' : local ? mode.slice(0,-6) : mode;
     const run = {index: report.runs.length+1, mode, local, errors: []}; report.runs.push(run); save();
     run.idleGpu=idleGpu();save();
     assert(!run.idleGpu.adapters?.some(v=>v.utilization>50),'GPU busy between runs; free it before benchmarking');
@@ -62,7 +66,8 @@ let context, log;
       {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1});
     await context.route('**/web-engine-worker.js?*',async route=>{
       const response=await route.fetch();
-      await route.fulfill({response,body:'('+presents.toString()+')();\n'+await response.text()});
+      const fallback = withoutTaskScheduler ? "Object.defineProperty(globalThis,'scheduler',{configurable:true,value:undefined});\n" : '';
+      await route.fulfill({response,body:fallback+'('+presents.toString()+')();\n'+await response.text()});
     });
     const page=context.pages()[0], cdp=await context.newCDPSession(page);
     if(initialHidden) await page.addInitScript(()=>Object.defineProperty(document,'hidden',{configurable:true,value:true}));
@@ -75,7 +80,7 @@ let context, log;
     page.on('crash',()=>run.errors.push('Page crashed'));
     console.log('Occlusion start',run.index,mode);
     run.url='http://127.0.0.1:8765/build/'+folder+'/index.html'+
-      (mode==='default'?'':mode==='rhi-priority'?'?rhiwake=priority':'?occlusion='+occlusionMode+'&clock='+(local?'local':'owner'));
+      (mode==='default'?'':mode.startsWith('rhi-')?'?rhiwake='+mode.slice(4):'?occlusion='+occlusionMode+'&clock='+(local?'local':'owner'));
     await page.goto(run.url,{waitUntil:'commit'});
     await page.bringToFront();
     if(initialHidden) {
@@ -111,7 +116,14 @@ let context, log;
     assert.equal(run.before.arguments.includes('-WebGameLocalClock'),local);
     // New runtimes report the clock actually activated in the Game Worker.
     if(run.before.gameClock) assert.deepEqual(run.before.gameClock,{mode:local?'local':'owner',paused:false});
-    if(mode==='rhi-priority') assert.equal(run.before.rhiWake.active,'priority');
+    const requestedRhiWake = mode.startsWith('rhi-') ? mode.slice(4) : expectedRhiWake;
+    if(requestedRhiWake) {
+      assert.equal(run.before.rhiWake.requested,requestedRhiWake);
+      assert.equal(run.before.rhiWake.active,
+        requestedRhiWake==='priority' && run.before.rhiWake.prioritySupported ? 'priority' : 'channel');
+      assert(run.before.arguments.includes('-WebRHIWake='+requestedRhiWake));
+    }
+    if(withoutTaskScheduler) assert.equal(run.before.rhiWake.prioritySupported,false);
     assert.equal(run.before.culling.hzbOcclusion,occlusionMode.startsWith('hzb')?2:0);
     assert.equal(run.before.culling.instanceOcclusion,['instances','hzb-instances'].includes(occlusionMode)?1:0);
     assert.equal(run.before.streaming.pending,0);
