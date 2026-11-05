@@ -1,0 +1,222 @@
+{
+  "date": "2026-11-05T07:04:33.983Z",
+  "pass": true,
+  "folder": "villa-scheduling-latest-v71",
+  "sourceRevisions": {
+    "workspace": "5b3db645c2fb1c4b28ea3b6c2a9f37ffdcc35400",
+    "engine": "93f9ea35a8be0444bb821deedb488a8dd8752e33"
+  },
+  "remoteRevisions": {
+    "workspace": "bba3099e1b272e421eb9ed08a46a477cfaf68e82",
+    "engine": "1b09219ce296439a5117ee0add11367710c87f47"
+  },
+  "sourceSynchronization": "GitHub API Git objects; exact SHA-1 verified before importing; local commits preserved with Git merges.",
+  "baseline": "villa-lumen-off-current-mimalloc-v59",
+  "rebuiltRuntime": true,
+  "recooked": false,
+  "inputs": {
+    "benchmark": {
+      "file": "tests/web-platform/results/scheduling-latest-v71-abba-20261105.json",
+      "sha256": "cba4682a639d0b2ddb67025b46a3f495a0e42daca9d8731811790eaa5bbe2616"
+    },
+    "package": {
+      "file": "tests/web-platform/results/villa-scheduling-latest-v71-package.json",
+      "sha256": "050f348db690b6c38f4cd9e2a9f2f4b95096e2077d5bda89e52508d3b1fe6043"
+    },
+    "build": {
+      "file": "tests/web-platform/results/villa-scheduling-latest-v71-build.json",
+      "sha256": "d20d3d30572d802c8386a410d18d3bc01c468c59d315c772d9ad3bc20b088522"
+    },
+    "preview": {
+      "file": "tests/web-platform/results/villa-scheduling-latest-v71-preview.json",
+      "sha256": "9580005e0869fc1d52450a46824b09a1efcbfc2aa62ae1dd120e06e9422d4f22"
+    },
+    "portableServer": {
+      "file": "tests/web-platform/results/villa-scheduling-latest-v71-portable-server.json",
+      "sha256": "daab4ca7d862cf4654ccec8c228bb8c2055e4c25c4b9892fe6b0c1f57f7bdc5e"
+    }
+  },
+  "order": [
+    "history",
+    "history-local",
+    "history-local",
+    "history"
+  ],
+  "secondsPerRun": 20,
+  "warmupSeconds": 15,
+  "summary": {
+    "owner": {
+      "fps": 81.27409388257493,
+      "low1Fps": 33.51836145959302,
+      "runs": [
+        81.58152178531077,
+        80.96672267698459
+      ]
+    },
+    "local": {
+      "fps": 104.29215292104665,
+      "low1Fps": 66.20741838620589,
+      "runs": [
+        103.76333167722588,
+        104.82101736345412
+      ]
+    },
+    "gainPercent": {
+      "fps": 28.321520350295494,
+      "low1": 97.52582018670606
+    }
+  },
+  "controls": {
+    "settings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "view": {
+      "frame": 1814,
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 3,
+      "parallelRendering": true
+    },
+    "camera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "threads": {
+      "sharedMemory": true,
+      "engineWorker": true,
+      "gameThread": 2,
+      "taskThread": 3,
+      "cores": 4,
+      "renderThread": true,
+      "rhiThread": true,
+      "renderThreadId": 14,
+      "rhiThreadId": 1,
+      "taskWorkers": 3,
+      "threadingTest": 0
+    },
+    "historyEnabled": true,
+    "rhiWake": "priority"
+  },
+  "runs": [
+    {
+      "index": 1,
+      "mode": "history",
+      "fps": 81.58152178531077,
+      "low1Fps": 35.18940177734766,
+      "actualClock": {
+        "mode": "owner",
+        "paused": false
+      },
+      "actualRhiWake": {
+        "requested": "priority",
+        "active": "priority",
+        "prioritySupported": true
+      },
+      "historyHitsPerFrame": 583.366049382716,
+      "errors": [],
+      "visibility": null
+    },
+    {
+      "index": 2,
+      "mode": "history-local",
+      "fps": 103.76333167722588,
+      "low1Fps": 65.59527714700707,
+      "actualClock": {
+        "mode": "local",
+        "paused": false
+      },
+      "actualRhiWake": {
+        "requested": "priority",
+        "active": "priority",
+        "prioritySupported": true
+      },
+      "historyHitsPerFrame": 573.7550724637681,
+      "errors": [],
+      "visibility": {
+        "handlerSimulated": true,
+        "actualHiddenObserved": false,
+        "paused": true,
+        "resumedFrame": 4400
+      }
+    },
+    {
+      "index": 3,
+      "mode": "history-local",
+      "fps": 104.82101736345412,
+      "low1Fps": 66.96108285433225,
+      "actualClock": {
+        "mode": "local",
+        "paused": false
+      },
+      "actualRhiWake": {
+        "requested": "priority",
+        "active": "priority",
+        "prioritySupported": true
+      },
+      "historyHitsPerFrame": 550.7295238095238,
+      "errors": [],
+      "visibility": {
+        "handlerSimulated": true,
+        "actualHiddenObserved": false,
+        "paused": true,
+        "resumedFrame": 4435
+      }
+    },
+    {
+      "index": 4,
+      "mode": "history",
+      "fps": 80.96672267698459,
+      "low1Fps": 32.94956778030303,
+      "actualClock": {
+        "mode": "owner",
+        "paused": false
+      },
+      "actualRhiWake": {
+        "requested": "priority",
+        "active": "priority",
+        "prioritySupported": true
+      },
+      "historyHitsPerFrame": 583.2191358024692,
+      "errors": [],
+      "visibility": null
+    }
+  ],
+  "limits": [
+    "Single machine and fixed view; does not establish portability or identify the other device regression.",
+    "Original local Lumen-off Cook/config; no claim about remote Lumen-on assets or performance.",
+    "FPS and 1% low measure RHI submission intervals, not physical display or input latency.",
+    "Visibility handler simulation passed; real background/minimized-window behavior was not tested.",
+    "Two main clock modes tested in the browser. Extra isolation links use existing selectors; their performance was not benchmarked."
+  ],
+  "archive": {
+    "file": "tests/web-platform/build/villa-scheduling-latest-v71.zip",
+    "size": 1412457918,
+    "integrityTestPassed": true,
+    "entries": 17
+  }
+}
