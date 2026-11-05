@@ -26,8 +26,8 @@ static double ThreadMs() {
 }
 static std::wstring Widen(const std::string& s) { return {s.begin(), s.end()}; }
 int wmain(int argc, wchar_t** argv) {
-    if (argc != 8) {
-        std::cerr << "benchmark-same-dxc DLL input-dir HV rounds concurrency output-json output-dxil-dir\n";
+    if (argc != 8 && argc != 9) {
+        std::cerr << "benchmark-same-dxc DLL input-dir HV rounds concurrency output-json output-dxil-dir [O0|O1|O2|O3|Od]\n";
         return 2;
     }
     HMODULE module = LoadLibraryExW(argv[1], nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
@@ -45,11 +45,14 @@ int wmain(int argc, wchar_t** argv) {
         std::ifstream source(directory / name, std::ios::binary);
         inputs.push_back({std::stoi(index), name, {std::istreambuf_iterator<char>(source), {}}, expected, Widen(profile), Widen(entry)});
     }
+    const std::wstring optimization = argc == 9 ? argv[8] : L"O3";
+    if (optimization != L"O0" && optimization != L"O1" && optimization != L"O2" && optimization != L"O3" && optimization != L"Od") return 4;
+    const std::wstring optimizationArg = L"/" + optimization;
     const int rounds = _wtoi(argv[4]), concurrency = _wtoi(argv[5]);
     if (inputs.empty() || rounds < 1 || concurrency < 1 || concurrency > 8) return 4;
     std::filesystem::create_directories(argv[7]);
     std::ofstream output(argv[6]);
-    output << std::fixed << std::setprecision(6) << "{\"hv\":" << _wtoi(argv[3]) << ",\"concurrency\":" << concurrency << ",\"rounds\":[";
+    output << std::fixed << std::setprecision(6) << "{\"hv\":" << _wtoi(argv[3]) << ",\"optimization\":\"O" << char(optimization[1]) << "\",\"concurrency\":" << concurrency << ",\"rounds\":[";
     bool allSuccess = true;
     for (int round = 0; round < rounds; ++round) {
         std::vector<Measurement> results(inputs.size()); std::atomic<size_t> next{0};
@@ -61,7 +64,7 @@ int wmain(int argc, wchar_t** argv) {
                 const auto& in = inputs[i]; auto& m = results[i];
                 // Match Dawn's ShaderUtils.cpp. The hash check detects a mismatched language mode or flags.
                 const wchar_t* args[] = {L"-T", in.profile.c_str(), L"-E", in.entry.c_str(),
-                    L"-opt-disable", L"structurize-loop-exits-for-unroll", L"/Gis", L"/O3", L"/Zpr", L"-HV", argv[3]};
+                    L"-opt-disable", L"structurize-loop-exits-for-unroll", L"/Gis", optimizationArg.c_str(), L"/Zpr", L"-HV", argv[3]};
                 DxcBuffer source{in.text.data(), in.text.size(), DXC_CP_UTF8};
                 ComPtr<IDxcResult> result;
                 const double cpuStart = ThreadMs(); const auto begin = Clock::now();

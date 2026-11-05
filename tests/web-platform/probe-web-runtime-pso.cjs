@@ -5,6 +5,11 @@ const {audit}=require('./content-file-metadata.cjs');
 const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3);
 const folder=option('folder'),tag=option('tag');assert([folder,tag].every(v=>v&&/^[a-z0-9-]+$/.test(v)));
 const modes=(option('modes')||'sync,async,async,sync').split(',');assert(modes.every(m=>['sync','async'].includes(m)));
+const coreLimits=option('core-limits')?.split(',').map(Number);
+assert(!coreLimits||(coreLimits.length===modes.length&&coreLimits.every(n=>[4,6,8].includes(n))));
+const disableDiskCache=option('disable-disk-cache')==='true';
+const schedules=option('schedules')?.split(',');
+assert(!schedules||(schedules.length===modes.length&&schedules.every(s=>['fifo','shared'].includes(s))));
 const hold=Number(option('hold')||5),warmup=Number(option('warmup')||10);
 const verifyUse=option('verify-use')==='true';
 const trace=option('trace')==='true',captureCorpus=option('capture-corpus')==='true';
@@ -13,15 +18,46 @@ assert(hold>=1&&hold<=10&&warmup>=5&&warmup<=60);
 const output=path.join(__dirname,'results',tag),base=path.join(__dirname,'build',folder);
 assert(!fs.existsSync(output+'.json'),'Use a fresh tag');
 fs.copyFileSync(__filename,output+'-source.cjs');
-const report={date:new Date().toISOString(),folder,modes,hold,warmup,verifyUse,trace,captureCorpus,pass:false,runs:[],qualityOverrides:[],
+const report={date:new Date().toISOString(),folder,modes,coreLimits,schedules,disableDiskCache,hold,warmup,verifyUse,trace,captureCorpus,pass:false,runs:[],qualityOverrides:[],
   source:audit(output+'-source.cjs'),packageFiles:['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm',
     'content-files.json','config-files.json','web-engine-host.js','web-engine-worker.js'].map(n=>audit(path.join(base,n))),
-  boundary:'Runtime first-use PSOs only; no PSO precaching, camera warm tour or browser flags. Fresh visible Edge per run with browser/driver caches retained. Same WASM/Cook, resolution, history/local-clock/priority-wake defaults. Rare pipeline/shader creation observation and one record per submit; no resource creation wrappers, CPU profiler or additional GPU query. Submission intervals are not physical display latency. '+
+  boundary:'Runtime first-use PSOs only; no PSO precaching or camera warm tour. Fresh visible Edge per run; driver caches retained; optional shader disk-cache disable, UE core-limit overrides and shared-stage async scheduling recorded. Shared scheduling queues actual first-use requests only and awaits every original pipeline. Same WASM/Cook, resolution, history/local-clock/priority-wake defaults. Rare pipeline/shader creation observation and one record per submit; no resource creation wrappers, CPU profiler or additional GPU query. Submission intervals are not physical display latency. '+
     (verifyUse?'Diagnostic only: per-bind identity tracking enabled; do not use these timings for performance claims.':'No per-draw or per-bind wrappers.')+
     (trace||captureCorpus?' Diagnostic browser trace/descriptor capture enabled; timings excluded from normal performance claims.':' No browser trace or descriptor corpus capture.')};
 const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2)+'\n');
-function install(verifyUse){
+function install(verifyUse,schedule){
   const c=globalThis.__runtimePSOCapture={active:false,frames:[],events:[],counts:{},pending:0,failures:[]};
+  c.scheduling={mode:schedule,submitted:0,deferred:0,peak:0};
+  if(schedule==='shared'){
+    const devices=new WeakMap(),modules=new WeakMap();let nextModule=1;
+    for(const name of ['createRenderPipelineAsync','createComputePipelineAsync']){
+      const original=GPUDevice.prototype[name];
+      GPUDevice.prototype[name]=function(descriptor){
+        let state=devices.get(this);if(!state){state={busy:new Set(),queue:[],active:0};devices.set(this,state);}
+        const keys=['vertex','fragment','compute'].map(s=>descriptor[s]).filter(Boolean).map(s=>{
+          if(!modules.has(s.module))modules.set(s.module,nextModule++);
+          return modules.get(s.module)+':'+s.entryPoint;
+        });
+        if(keys.some(k=>state.busy.has(k)))c.scheduling.deferred++;
+        return new Promise((resolve,reject)=>{
+          const device=this;
+          state.queue.push({keys,run(){
+            keys.forEach(k=>state.busy.add(k));state.active++;c.scheduling.submitted++;
+            c.scheduling.peak=Math.max(c.scheduling.peak,state.active);
+            let promise;try{promise=original.call(device,descriptor);}catch(e){promise=Promise.reject(e);}
+            Promise.resolve(promise).then(resolve,reject).finally(()=>{
+              keys.forEach(k=>state.busy.delete(k));state.active--;pump();
+            });
+          }});
+          function pump(){
+            for(;;){const i=state.queue.findIndex(r=>r.keys.every(k=>!state.busy.has(k)));if(i<0)break;
+              state.queue.splice(i,1)[0].run();}
+          }
+          pump();
+        });
+      };
+    }
+  }
   const identities=verifyUse?new WeakMap():null;
   c.usage={};
   if(verifyUse){
@@ -70,16 +106,23 @@ function summarize(data){
 let context,log;
 (async()=>{try{
   for(const mode of modes){
-    const run={index:report.runs.length+1,mode,errors:[],phases:[]};report.runs.push(run);save();
+    const run={index:report.runs.length+1,mode,coreLimit:coreLimits?.[report.runs.length],schedule:schedules?.[report.runs.length]||'fifo',errors:[],phases:[]};report.runs.push(run);save();
     run.idleGpu=execFileSync('nvidia-smi',['--query-gpu=utilization.gpu,memory.used','--format=csv,noheader,nounits'],
       {encoding:'utf8',windowsHide:true,timeout:10000}).trim();
     assert(run.idleGpu.split(/\r?\n/).every(l=>Number(l.split(',')[0])<=50),'GPU busy before run');
     context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/runtime-pso'),
-      {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1});
+      {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1,args:disableDiskCache?['--disable-gpu-shader-disk-cache']:[]});
+    if(run.coreLimit)await context.route('**/index.html?*',async route=>{
+      const response=await route.fetch(),html=await response.text();
+      const match=html.match(/arguments: (\[[^\n]+\]),/);assert(match,'Package arguments not found');
+      const args=JSON.parse(match[1]);assert(!args.some(v=>v.startsWith('-corelimit=')));
+      args.push('-corelimit='+run.coreLimit);
+      await route.fulfill({response,body:html.replace(match[0],'arguments: '+JSON.stringify(args)+',')});
+    });
     await context.route('**/web-engine-worker.js?*',async route=>{
       const response=await route.fetch();
       const corpusRecorder=captureCorpus?'globalThis.__webStartupPSOCorpus=true;\n'+fs.readFileSync(path.join(__dirname,'web-startup-profile.js'),'utf8')+'\n':'';
-      await route.fulfill({response,body:corpusRecorder+'('+install.toString()+')('+verifyUse+');\n'+await response.text()});
+      await route.fulfill({response,body:corpusRecorder+'('+install.toString()+')('+verifyUse+','+JSON.stringify(run.schedule)+');\n'+await response.text()});
     });
     const page=context.pages()[0],cdp=await context.newCDPSession(page);
     run.browser=await cdp.send('Browser.getVersion');
@@ -89,7 +132,7 @@ let context,log;
       if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|Ensure condition failed/.test(t))run.errors.push(t);});
     page.on('pageerror',e=>run.errors.push(e.message));page.on('crash',()=>run.errors.push('Page crashed'));
     run.url='http://127.0.0.1:8765/build/'+folder+'/index.html?pso='+mode;
-    console.log('Runtime PSO start',run.index,mode);const start=Date.now();
+    console.log('Runtime PSO start',run.index,mode,'cores',run.coreLimit||'default');const start=Date.now();
     await page.goto(run.url,{waitUntil:'commit'});await page.bringToFront();
     await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=30,null,{timeout:180000});
     assert(!await page.evaluate(()=>globalThis.__webEngineFailure));run.first30FramesMs=Date.now()-start;
@@ -101,13 +144,14 @@ let context,log;
       await page.waitForTimeout(100);
     }
     const state=()=>owner.evaluate(()=>({frame:__webRHIFrames,game:__webEngineFrames,arguments:Module.arguments,
-      rhi:__webOptimizationRHI,pso:__webPSOPrecache,history:__webOcclusionHistory,clock:__webGameFrameClock,
+      rhi:__webOptimizationRHI,pso:__webPSOPrecache,history:__webOcclusionHistory,clock:__webGameFrameClock,threads:globalThis.__webEngineThreads,
       wake:__webRHIWakeScheduler,camera:__webDefaultCamera,view:__webRenderView,settings:__webProjectSettings,
       streaming:__webTextureStreaming,io:globalThis.__webContentIO?.stats,
-      counts:__runtimePSOCapture.counts,pending:__runtimePSOCapture.pending,failures:__runtimePSOCapture.failures,
+      counts:__runtimePSOCapture.counts,pending:__runtimePSOCapture.pending,failures:__runtimePSOCapture.failures,scheduling:__runtimePSOCapture.scheduling,
       usage:__runtimePSOCapture.usage,
       failure:globalThis.__webEngineFailure}));
     run.initial=await state();assert(!run.initial.arguments.includes('-WebPSOPrecacheTest'));assert(!run.initial.pso.enabled);
+    if(run.coreLimit){assert.equal(run.initial.threads.cores,run.coreLimit);assert.equal(run.initial.threads.taskWorkers,run.coreLimit-1);}
     assert.equal(run.initial.arguments.includes('-WebRuntimeAsyncPSO'),mode==='async');
     assert.equal(run.initial.rhi.runtimeAsyncPSO,mode==='async');
     assert.equal(run.initial.clock.mode,'local');assert.equal(run.initial.wake.active,'priority');assert(run.initial.history.enabled);

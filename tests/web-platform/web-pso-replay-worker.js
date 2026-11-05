@@ -1,7 +1,7 @@
 'use strict';
 // Replay real descriptors exported at the WebGPU boundary, without UE, Wasm,
 // content IO, rendering or pthread proxy scheduling.
-onmessage = async ({data: {url, concurrency, moduleFence, requestLimit, asyncPipelines, targetEntry, progress}}) => {
+onmessage = async ({data: {url, concurrency, moduleFence, requestLimit, asyncPipelines, targetEntry, progress, schedule='fifo'}}) => {
   try {
     const corpus = await (await fetch(url)).json();
     if (corpus.version !== 1 || corpus.devices.length !== 1) throw Error('Expected one captured device');
@@ -48,9 +48,8 @@ onmessage = async ({data: {url, concurrency, moduleFence, requestLimit, asyncPip
     for (const d of corpus.descriptors) descriptors.set(d.id, decode(d.descriptor));
     const layoutEnd = performance.now(), attempts = [], begin = performance.now();
     let cursor = 0;
-    async function lane() {
-      while (cursor < corpus.requests.length) {
-        const r = corpus.requests[cursor++], start = performance.now();
+    async function create(r) {
+        const start = performance.now();
         const a = {id: r.id, descriptorId: r.descriptorId, method: r.name, start: start - begin}; attempts.push(a);
         if (asyncPipelines && !a.method.endsWith('Async')) a.method += 'Async';
         if (progress) postMessage({progress: {id: a.id, method: a.method, descriptorId: a.descriptorId}});
@@ -59,9 +58,32 @@ onmessage = async ({data: {url, concurrency, moduleFence, requestLimit, asyncPip
           kept.push(await promise); a.success = true;
         } catch (e) {a.success = false; a.error = e.message;}
         a.end = performance.now() - begin;
+    }
+    async function lane() {
+      while (cursor < corpus.requests.length) await create(corpus.requests[cursor++]);
+    }
+    if(schedule==='fifo')await Promise.all(Array.from({length: concurrency}, lane));
+    else {
+      if(!['shared','largest','shared-largest'].includes(schedule))throw Error('Invalid schedule');
+      const captured=new Map(corpus.descriptors.map(d=>[d.id,d.descriptor]));
+      const lengths=new Map(corpus.modules.map(m=>[m.id,m.descriptor.code.length]));
+      const stages=r=>['vertex','fragment','compute'].map(s=>captured.get(r.descriptorId)[s]).filter(Boolean);
+      const keys=r=>stages(r).map(s=>s.module.id+':'+s.entryPoint);
+      const pending=corpus.requests.slice();
+      if(schedule.includes('largest'))pending.sort((a,b)=>
+        stages(b).reduce((v,s)=>v+lengths.get(s.module.id),0)-stages(a).reduce((v,s)=>v+lengths.get(s.module.id),0));
+      const running=new Set(),busy=new Set();
+      while(pending.length||running.size) {
+        while(running.size<concurrency&&pending.length) {
+          const i=schedule.includes('shared')?pending.findIndex(r=>keys(r).every(k=>!busy.has(k))):0;
+          if(i<0)break;
+          const [r]=pending.splice(i,1),locked=keys(r);locked.forEach(k=>busy.add(k));
+          const task=create(r).finally(()=>{locked.forEach(k=>busy.delete(k));running.delete(task);});
+          running.add(task);
+        }
+        if(running.size)await Promise.race(running);
       }
     }
-    await Promise.all(Array.from({length: concurrency}, lane));
     const end = performance.now();
     if (progress) {
       await device.queue.onSubmittedWorkDone();
@@ -70,7 +92,7 @@ onmessage = async ({data: {url, concurrency, moduleFence, requestLimit, asyncPip
     // Keep returned objects alive until all requests have completed. This is a
     // fresh-device/reload measurement, never a second call on retained objects.
     const result = {adapter: Object.fromEntries(['vendor', 'architecture', 'device', 'description'].map(k => [k, adapter.info[k]])), concurrency, modules: corpus.modules.length,
-      moduleChars: corpus.modules.reduce((s,m) => s + m.descriptor.code.length, 0),
+      schedule, moduleChars: corpus.modules.reduce((s,m) => s + m.descriptor.code.length, 0),
       moduleApiMs: moduleEnd - moduleStart, moduleReadyMs: moduleReady - moduleStart, layoutApiMs: layoutEnd - moduleReady,
       pipelineWallMs: end - begin, preparationAndPipelinesMs: end - moduleStart,
       successful: kept.length, failed: attempts.filter(a => !a.success).length, errors, attempts};
