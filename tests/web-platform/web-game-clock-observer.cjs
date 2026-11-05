@@ -1,13 +1,35 @@
 'use strict';
 // Installed only by the diagnostic probe inside the actual pthread runtime.
 module.exports = function observeGameClock() {
-  if (!ENVIRONMENT_IS_PTHREAD) return;
+  if (!ENVIRONMENT_IS_PTHREAD) {
+    const samples = globalThis.__webMotionBlurCPU = [], attached = new WeakSet();
+    const attach = worker => {
+      if (attached.has(worker)) return worker;
+      attached.add(worker);
+      worker.addEventListener('message', event => {
+        if (event.data.type !== 'web-motion-blur-cpu') return;
+        samples.push(event.data.sample);
+        if (samples.length > 600) samples.shift();
+      });
+      return worker;
+    };
+    for (const worker of [...PThread.unusedWorkers, ...Object.values(PThread.pthreads)]) attach(worker);
+    const allocate = PThread.allocateUnusedWorker;
+    PThread.allocateUnusedWorker = function() {return attach(allocate.call(this));};
+    return;
+  }
+  const samples = globalThis.__webMotionBlurCPU = [];
+  samples.push = function(sample) {
+    postMessage({type: 'web-motion-blur-cpu', sample});
+    return Array.prototype.push.call(this, sample);
+  };
   const state = globalThis.__webGameClock = {frames: [], sequence: 0};
   let current, previous, lastRAF, inputCount = 0;
   const now = () => performance.timeOrigin + performance.now();
   addEventListener('message', event => {
     if (event.data.type === 'web-game-clock-read') {
-      event.data.port.postMessage({...state, mailbox: globalThis.__webInputMailboxState});
+      event.data.port.postMessage({...state, mailbox: globalThis.__webInputMailboxState,
+        motionBlurCPU: Array.from(globalThis.__webMotionBlurCPU || [])});
       event.data.port.close(); return;
     }
     if (event.data.type === 'web-game-raf') lastRAF = event.data.timestamp;

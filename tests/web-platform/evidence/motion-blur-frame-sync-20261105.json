@@ -1,0 +1,703 @@
+{
+  "date": "2026-11-05",
+  "automatedChecksPassed": true,
+  "manualVisualAcceptance": "pending",
+  "referenceEngineCommit": "a410562fb875632c3772b4953c6786cbf91e5c57",
+  "finalSamples": 1079,
+  "sources": [
+    {
+      "file": "tests/web-platform/build-web-engine.ps1",
+      "sha256": "1b83a1143733ad8913f1d1c6fb47258baf0a2c2a7de0c825ebc4039a99fc3226"
+    },
+    {
+      "file": "tests/web-platform/prepare-web-core-host.ps1",
+      "sha256": "49ca5a8accc44a0fa9d00be77234df9323bbf429ff0e047ced04c3e4910fb546"
+    },
+    {
+      "file": "tests/web-platform/package-web-game-clock.cjs",
+      "sha256": "fd28d63448571d6ea906b80ab0acc5d0ae79f2afe8d550b2714a3067bf736568"
+    },
+    {
+      "file": "tests/web-platform/package-web-motion-blur-ab.cjs",
+      "sha256": "48232f59439a1bec819c9b5797e050d3737634d0cf110b65e0bee824782a1d18"
+    },
+    {
+      "file": "tests/web-platform/probe-web-motion-blur-inputs.cjs",
+      "sha256": "07e5e798a38bda47778d309658e6e37771a40ffd07029ccda566a355c9faf775"
+    },
+    {
+      "file": "tests/web-platform/web-game-clock-observer.cjs",
+      "sha256": "fad5c2ef8bcaf379f0391522380f2cfabfce0feadecd66a6d88d4a687bff46b4"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-motion-blur-cpu.cjs",
+      "sha256": "f3a4ae8419fb202afa8a9ce474fffe2f798137fd8715147352b1921067a893c1"
+    },
+    {
+      "file": "tests/web-platform/verify-web-motion-blur-cpu.cjs",
+      "sha256": "f6c8f900512839b42f4120971385757d96eee44fa3464649bfe2e36ead184cbe"
+    },
+    {
+      "file": "tests/web-platform/verify-web-motion-blur-sync.cjs",
+      "sha256": "c821dcde4308b2059da245101c46484ecfac4bdb6ece7fed5367afeef80b8cc0"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp",
+      "sha256": "d0163f05b81f50929c49d94bebb66f90b34b916471396aec65fc4e67808f2994"
+    }
+  ],
+  "build": {
+    "file": "tests/web-platform/results/motion-blur-cpu-20261105-build.json",
+    "sha256": "f913c5f99605573a87c6a80eb086321dcc96dfe9991ce9e8deaa67d1d69cd060"
+  },
+  "captures": [
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-r4.json",
+        "sha256": "99257428e6329ec96b29d1e4af9cbbce1b77250d251c3762d61a6be085dbd4df"
+      },
+      "analysis": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-r4-cpu-analysis.json",
+        "sha256": "5560b05c7a89d23c2f4faccb022304ea7ddb09c78617a5fe7b9c2448de8cf673"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "419c39ff48a8531f140aeb448e219e478e66199e1c6ba2aefd26d042e75229ce"
+      },
+      "folder": "triplex-game-clock-20261105-cpu-r4",
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 0,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1
+      },
+      "uniformsMatched": 221,
+      "CPUFrames": 311,
+      "targetFPS": 30,
+      "amount": 0.5,
+      "frameTimeAndCameraHistory": "All captured frames exactly match prior CPU frame",
+      "scales": {
+        "samples": 221,
+        "minScaleX": 16.389575958251953,
+        "medianScaleX": 183.05596923828125,
+        "maxScaleX": 3964.839111328125,
+        "maxToMin": 241.91224479678357
+      },
+      "deltaMs": {
+        "count": 221,
+        "min": 1.3451576232910156,
+        "median": 29.13498878479004,
+        "p95": 62.47997283935547,
+        "max": 325.4101276397705
+      },
+      "intervalsUnder8ms": 77,
+      "movingSamples": 116,
+      "movingScaleOver500": 53,
+      "centerCameraRadiusProxy": {
+        "count": 116,
+        "min": 0.20163085002353298,
+        "median": 1.7179032458827919,
+        "p95": 21.934132396913956,
+        "max": 32
+      },
+      "radiusProxyOver20px": 9,
+      "shortMovingExamples": [
+        {
+          "frame": 100,
+          "deltaMs": 6.439924240112305,
+          "scaleX": 828.1671142578125,
+          "radius": 10.190780563034094,
+          "moving": true,
+          "origin": [
+            411.70104890592415,
+            -478.09008320035366,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            411.2183954267575,
+            -478.07750838657387,
+            156.64842176437378
+          ],
+          "rotation": [
+            -1.399306843650622,
+            -179.99572562414036,
+            -90.17503472091873
+          ],
+          "previousRotation": [
+            -0.6993832793647524,
+            180,
+            -90
+          ]
+        },
+        {
+          "frame": 107,
+          "deltaMs": 6.079673767089844,
+          "scaleX": 877.2400512695312,
+          "radius": 10.796352859299958,
+          "moving": true,
+          "origin": [
+            412.66663661321746,
+            -478.097541049737,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            412.1838199828584,
+            -478.0967610869236,
+            156.64842176437378
+          ],
+          "rotation": [
+            -2.7990559744740033,
+            -179.9743337315032,
+            -90.525574627013
+          ],
+          "previousRotation": [
+            -2.0992042850938364,
+            -179.98717207148798,
+            -90.35020006693757
+          ]
+        },
+        {
+          "frame": 111,
+          "deltaMs": 2.9251575469970703,
+          "scaleX": 1823.263671875,
+          "radius": 21.73299650811565,
+          "moving": true,
+          "origin": [
+            413.14942674586064,
+            -478.0924229723993,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            412.66663661321746,
+            -478.097541049737,
+            156.64842176437378
+          ],
+          "rotation": [
+            -3.498956599440561,
+            -179.96790152688737,
+            -90.52592797301615
+          ],
+          "previousRotation": [
+            -2.7990559744740033,
+            -179.9743337315032,
+            -90.525574627013
+          ]
+        },
+        {
+          "frame": 121,
+          "deltaMs": 6.145238876342773,
+          "scaleX": 867.880615234375,
+          "radius": 10.684436637339667,
+          "moving": true,
+          "origin": [
+            414.5969177699099,
+            -478.0416925372631,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            414.11463934395965,
+            -478.0644966324265,
+            156.64842176437378
+          ],
+          "rotation": [
+            -5.597950961765636,
+            -179.89708321493356,
+            -91.05492676416362
+          ],
+          "previousRotation": [
+            -4.89839128191167,
+            -179.92501242590367,
+            -90.87812002686098
+          ]
+        },
+        {
+          "frame": 124,
+          "deltaMs": 7.09986686706543,
+          "scaleX": 751.1878051757812,
+          "radius": 7.6587317341911065,
+          "moving": true,
+          "origin": [
+            415.490852305231,
+            -477.98378325950006,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            415.0788816406283,
+            -478.0129987362701,
+            156.64842176437378
+          ],
+          "rotation": [
+            -6.896384553137419,
+            -179.87300162925808,
+            -91.05754743608132
+          ],
+          "previousRotation": [
+            -6.297762270247427,
+            -179.88411895260649,
+            -91.05627018927842
+          ]
+        },
+        {
+          "frame": 126,
+          "deltaMs": 1.5301704406738281,
+          "scaleX": 3485.45068359375,
+          "radius": 6.226726185183161,
+          "moving": true,
+          "origin": [
+            416.25748361037347,
+            -477.91787752268334,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            416.18649790364447,
+            -477.92461211948097,
+            156.64842176437378
+          ],
+          "rotation": [
+            -8.011130231568895,
+            -179.82506915097375,
+            -91.25499823820653
+          ],
+          "previousRotation": [
+            -7.907840533837095,
+            -179.82983715868204,
+            -91.23663909964228
+          ]
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-sync-r1.json",
+        "sha256": "8d0abddc44d1effdb7755814ea10c5e7ad06da41e36268ea4af168c598365c9d"
+      },
+      "analysis": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-sync-r1-cpu-analysis.json",
+        "sha256": "a37f7bb46844327c3b1e22a2cf2a20e23656dd2521a3a4083da68bd38e628242"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "419c39ff48a8531f140aeb448e219e478e66199e1c6ba2aefd26d042e75229ce"
+      },
+      "folder": "triplex-game-clock-20261105-cpu-sync-r1",
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 0,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1
+      },
+      "uniformsMatched": 208,
+      "CPUFrames": 300,
+      "targetFPS": 30,
+      "amount": 0.5,
+      "frameTimeAndCameraHistory": "All captured frames exactly match prior CPU frame",
+      "scales": {
+        "samples": 208,
+        "minScaleX": 17.94133949279785,
+        "medianScaleX": 212.94869995117188,
+        "maxScaleX": 313.6338806152344,
+        "maxToMin": 17.48107384853487
+      },
+      "deltaMs": {
+        "count": 208,
+        "min": 17.004966735839844,
+        "median": 25.155067443847656,
+        "p95": 62.42012977600098,
+        "max": 297.26505279541016
+      },
+      "intervalsUnder8ms": 0,
+      "movingSamples": 102,
+      "movingScaleOver500": 0,
+      "centerCameraRadiusProxy": {
+        "count": 102,
+        "min": 0.6744782173229975,
+        "median": 2.034170376696592,
+        "p95": 3.366676132770148,
+        "max": 4.404271928019201
+      },
+      "radiusProxyOver20px": 0,
+      "shortMovingExamples": []
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-r5.json",
+        "sha256": "34e4106f6d770438cb85030a5bec9c6b00effbbf4e323412cfc959bbf989c7c1"
+      },
+      "analysis": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-r5-cpu-analysis.json",
+        "sha256": "277f4af2c09a7b56e4a9518b2bae62b8334d442387c7c34d4b2fb5db03c75e8f"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "07e5e798a38bda47778d309658e6e37771a40ffd07029ccda566a355c9faf775"
+      },
+      "settingLogs": [
+        "LogConfig: Set CVar [[r.Web.MotionBlurTrace:1]]\n"
+      ],
+      "folder": "triplex-game-clock-20261105-cpu-r4",
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 0,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1
+      },
+      "uniformsMatched": 225,
+      "CPUFrames": 319,
+      "targetFPS": 30,
+      "amount": 0.5,
+      "frameTimeAndCameraHistory": "All captured frames exactly match prior CPU frame",
+      "scales": {
+        "samples": 225,
+        "minScaleX": 17.828590393066406,
+        "medianScaleX": 181.52886962890625,
+        "maxScaleX": 3333.77392578125,
+        "maxToMin": 186.99032577907926
+      },
+      "deltaMs": {
+        "count": 225,
+        "min": 1.5997886657714844,
+        "median": 29.380083084106445,
+        "p95": 71.97999954223633,
+        "max": 299.144983291626
+      },
+      "intervalsUnder8ms": 78,
+      "movingSamples": 112,
+      "movingScaleOver500": 56,
+      "centerCameraRadiusProxy": {
+        "count": 112,
+        "min": 0.23230981425847425,
+        "median": 1.9804582009309608,
+        "p95": 27.51203347100131,
+        "max": 32
+      },
+      "radiusProxyOver20px": 10,
+      "shortMovingExamples": [
+        {
+          "frame": 101,
+          "deltaMs": 6.254911422729492,
+          "scaleX": 852.663330078125,
+          "radius": 10.49221197898592,
+          "moving": true,
+          "origin": [
+            411.70104890592415,
+            -478.09008320035366,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            411.2183954267575,
+            -478.07750838657387,
+            156.64842176437378
+          ],
+          "rotation": [
+            -1.399306843650622,
+            -179.99572562414036,
+            -90.17503472091873
+          ],
+          "previousRotation": [
+            -0.6993832793647524,
+            180,
+            -90
+          ]
+        },
+        {
+          "frame": 108,
+          "deltaMs": 4.745006561279297,
+          "scaleX": 1123.9886474609375,
+          "radius": 10.060323760439449,
+          "moving": true,
+          "origin": [
+            413.017864673915,
+            -478.0944023593903,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            412.66663661321746,
+            -478.097541049737,
+            156.64842176437378
+          ],
+          "rotation": [
+            -3.3081457684510265,
+            -179.96229716151612,
+            -90.65333301953318
+          ],
+          "previousRotation": [
+            -2.7990559744740033,
+            -179.9743337315032,
+            -90.525574627013
+          ]
+        },
+        {
+          "frame": 111,
+          "deltaMs": 3.0698776245117188,
+          "scaleX": 1737.3114013671875,
+          "radius": 21.384966834395303,
+          "moving": true,
+          "origin": [
+            413.5005902579734,
+            -478.08499399137014,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            413.017864673915,
+            -478.0944023593903,
+            156.64842176437378
+          ],
+          "rotation": [
+            -4.007872021550188,
+            -179.94203641818086,
+            -90.82925491572816
+          ],
+          "previousRotation": [
+            -3.3081457684510265,
+            -179.96229716151612,
+            -90.65333301953318
+          ]
+        },
+        {
+          "frame": 118,
+          "deltaMs": 2.794981002807617,
+          "scaleX": 1908.182373046875,
+          "radius": 23.493572828671134,
+          "moving": true,
+          "origin": [
+            414.4655165630575,
+            -478.0484910360104,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            413.9831648926967,
+            -478.06968945560715,
+            156.64842176437378
+          ],
+          "rotation": [
+            -5.407005805700588,
+            -179.88856162878218,
+            -91.18245397161473
+          ],
+          "previousRotation": [
+            -4.707498672408586,
+            -179.9174628949618,
+            -91.00560190806449
+          ]
+        },
+        {
+          "frame": 126,
+          "deltaMs": 2.6350021362304688,
+          "scaleX": 2024.0338134765625,
+          "radius": 24.92647389910316,
+          "moving": true,
+          "origin": [
+            415.91051420123233,
+            -477.9495685035842,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            415.4292631276894,
+            -477.98842607822627,
+            156.64842176437378
+          ],
+          "rotation": [
+            -7.505258778542252,
+            -179.79875531061182,
+            -91.54035644968299
+          ],
+          "previousRotation": [
+            -6.806106069407345,
+            -179.83858663415162,
+            -91.36177272304413
+          ]
+        },
+        {
+          "frame": 136,
+          "deltaMs": 5.825281143188477,
+          "scaleX": 915.549560546875,
+          "radius": 4.125504007042667,
+          "moving": true,
+          "origin": [
+            417.532090959372,
+            -477.7748853885234,
+            156.64842176437378
+          ],
+          "previousOrigin": [
+            417.3509170373588,
+            -477.79776760954496,
+            156.64842176437378
+          ],
+          "rotation": [
+            -9.868060536385718,
+            -179.70381832306282,
+            -91.72770840951584
+          ],
+          "previousRotation": [
+            -9.603451637841466,
+            -179.71191322280768,
+            -91.7263395220015
+          ]
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-sync-r2.json",
+        "sha256": "d793fda0dc59a07ea2eaee73cb1543f85397e394f5999b61725b77cd2b570513"
+      },
+      "analysis": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-sync-r2-cpu-analysis.json",
+        "sha256": "73838d4111311f8c04df409cf823f85e1bc059de3761b09fc7e2fe8e10d826b3"
+      },
+      "probeAtCapture": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-motion-blur-inputs.cjs",
+        "sha256": "07e5e798a38bda47778d309658e6e37771a40ffd07029ccda566a355c9faf775"
+      },
+      "settingLogs": [
+        "LogConfig: Set CVar [[r.Web.MotionBlurTrace:1]]\n",
+        "LogConfig: Set CVar [[r.OneFrameThreadLag:0]]\n"
+      ],
+      "folder": "triplex-game-clock-20261105-cpu-sync-r1",
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 0,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1
+      },
+      "uniformsMatched": 213,
+      "CPUFrames": 306,
+      "targetFPS": 30,
+      "amount": 0.5,
+      "frameTimeAndCameraHistory": "All captured frames exactly match prior CPU frame",
+      "scales": {
+        "samples": 213,
+        "minScaleX": 16.833946228027344,
+        "medianScaleX": 212.10470581054688,
+        "maxScaleX": 308.0196838378906,
+        "maxToMin": 18.29753283428335
+      },
+      "deltaMs": {
+        "count": 213,
+        "min": 17.314910888671875,
+        "median": 25.14481544494629,
+        "p95": 58.31503868103027,
+        "max": 316.8201446533203
+      },
+      "intervalsUnder8ms": 0,
+      "movingSamples": 90,
+      "movingScaleOver500": 0,
+      "centerCameraRadiusProxy": {
+        "count": 90,
+        "min": 0.576963754258107,
+        "median": 2.6280931537475927,
+        "p95": 3.713640299933464,
+        "max": 5.2134593947106085
+      },
+      "radiusProxyOver20px": 0,
+      "shortMovingExamples": []
+    }
+  ],
+  "preview": {
+    "report": {
+      "file": "tests/web-platform/results/motion-blur-inputs-20261105-frame-sync-preview.json",
+      "sha256": "23e250a2a3f44678cd676009b9fb94c8427b0a69402a56993b5275ea13f2485e"
+    },
+    "packageReport": {
+      "file": "tests/web-platform/results/motion-blur-ab-20261105-package.json",
+      "sha256": "2e3ffc6e5e2f480525f7deecb98cb88515739cd35837522ed63ace74870900b4"
+    },
+    "folder": "triplex-motion-frame-sync-20261105",
+    "url": "http://127.0.0.1:8765/build/triplex-motion-frame-sync-20261105/index.html",
+    "settings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 1,
+      "reflections": 1,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "settingLogs": [
+      "LogConfig: Set CVar [[r.OneFrameThreadLag:0]]\n"
+    ],
+    "scale": {
+      "samples": 212,
+      "minScaleX": 18.955219268798828,
+      "medianScaleX": 211.51307678222656,
+      "maxScaleX": 334.689208984375,
+      "maxToMin": 17.65683658090355
+    },
+    "changedConfig": {
+      "r.OneFrameThreadLag": 0
+    },
+    "unchangedWasmAndRuntimeAndCookVerified": true
+  },
+  "excluded": [
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-r1.json",
+        "sha256": "b9ccd0b11435015f9264dcc0eddf4716bc0184dcb84462c572384e90488a6bc3"
+      },
+      "reason": "Diagnostic transport failed before complete capture; excluded from conclusion."
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-r2.json",
+        "sha256": "9186ae75824ddf6501b6b518547d9549193252a0256a3efba930d67563fa36ae"
+      },
+      "reason": "Diagnostic transport failed before complete capture; excluded from conclusion."
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/motion-blur-inputs-20261105-cpu-r3.json",
+        "sha256": "aff13ac9f7fdd136068f1a82846ebf5059e996c3e880ddf976f379c3a691357d"
+      },
+      "reason": "Diagnostic transport failed before complete capture; excluded from conclusion."
+    }
+  ],
+  "conclusion": "CPU parameters and camera history match uploaded frames. Disabling one-frame thread lag removed the reproduced short-frame/scale-spike signature in two native diagnostic runs and an original-WASM preview.",
+  "boundary": "No frame-rate cap, time manipulation, blur clamp or disabled Lumen/motion blur. Does not prove perceived shake fixed; manual acceptance pending. Fixed-depth camera-radius proxy is not GPU texture or final-image readback. Full synchronization reduces CPU pipeline overlap and may affect throughput. Long frames remain."
+}

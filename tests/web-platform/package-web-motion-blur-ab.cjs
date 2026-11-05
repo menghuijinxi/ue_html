@@ -17,7 +17,12 @@ const sourceProducts = Object.entries(versions).map(([name, expected]) => {
   assert.equal(product.sha256, expected.sha256, `Baseline changed: ${name}`);
   return product;
 });
-const cases = [
+const frameSyncOnly = process.argv.includes('--frame-sync-only');
+const cases = frameSyncOnly ? [
+  {name: 'frame-sync', title: 'Lumen ON - Motion Blur ON - Frame Sync', settings: {
+    'r.OneFrameThreadLag': 0,
+  }},
+] : [
   {name: 'no-lumen-10fps', title: 'A - Lumen OFF - 10 FPS - Motion Blur ON', settings: {
     'r.DynamicGlobalIlluminationMethod': 0,
     'r.ReflectionMethod': 0,
@@ -62,7 +67,9 @@ function installTestFrameLimit(fps) {
 }
 const report = {date: new Date().toISOString(), baseline, source: audit(__filename),
   baselineProducts: sourceProducts, cases: [], pass: false,
-  boundary: 'User-requested diagnostic variants. Same shadow-fixed WASM/runtime, Cook content, TSR and input code. A additionally gates the owner RAF used by the game thread because t.MaxFPS alone did not enforce a browser frame cap. Perceived shaking still requires user review.'};
+  boundary: frameSyncOnly ?
+    'Frame synchronization candidate: only r.OneFrameThreadLag=0. Original shadow-fixed WASM/runtime, Cook, input, Lumen and motion blur. No frame-rate cap or time manipulation. Visual acceptance pending.' :
+    'User-requested diagnostic variants. Same shadow-fixed WASM/runtime, Cook content, TSR and input code. A additionally gates the owner RAF used by the game thread because t.MaxFPS alone did not enforce a browser frame cap. Perceived shaking still requires user review.'};
 for (const entry of cases) {
   const folder = `triplex-motion-${entry.name}-${tag}`;
   const directory = path.join(__dirname, 'build', folder);

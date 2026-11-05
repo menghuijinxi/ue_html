@@ -93,5 +93,20 @@ const destination = 'tests/web-platform/evidence/game-clock-investigation-202611
 if (process.argv.includes('--write')) {
   assert(!fs.existsSync(path.join(root, destination)), 'Preserve previous evidence');
   fs.writeFileSync(path.join(root, destination), JSON.stringify(evidence, null, 2) + '\n');
-} else assert.deepEqual(read(destination), evidence);
+} else {
+  const saved = read(destination);
+  // Historical captures retain their source versions as diagnostic tools evolve.
+  for (const item of saved.sources) {
+    const engine = item.file.startsWith('reference-engine/');
+    const repo = engine ? path.join(root, 'reference-engine') : root;
+    const relative = engine ? item.file.slice('reference-engine/'.length) : item.file;
+    const revision = engine ? saved.referenceEngineCommit : '942850f';
+    const bytes = execFileSync('git', ['show', revision + ':' + relative],
+      {cwd: repo, windowsHide: true, maxBuffer: 4 * 1024 * 1024});
+    assert.equal(require('node:crypto').createHash('sha256').update(bytes).digest('hex'), item.sha256);
+  }
+  evidence.sources = saved.sources;
+  evidence.referenceEngineCommit = saved.referenceEngineCommit;
+  assert.deepEqual(saved, evidence);
+}
 console.log(JSON.stringify({pass: true, finalDispatchSamples: total, evidence: destination}));

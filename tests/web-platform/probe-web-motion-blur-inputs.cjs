@@ -13,6 +13,8 @@ const pacedOnly = process.argv.includes('--lumen-paced-only');
 const inputBridgeTag = option('input-bridge-tag');
 assert(!inputBridgeTag || /^[a-z0-9-]+$/.test(inputBridgeTag));
 const gameClock = process.argv.includes('--game-clock');
+const cpuParams = process.argv.includes('--cpu-params');
+assert(!cpuParams || gameClock, '--cpu-params requires --game-clock');
 const mailboxTag = option('mailbox-tag');
 assert(!mailboxTag || /^[a-z0-9-]+$/.test(mailboxTag));
 const folderOverride = option('folder');
@@ -245,9 +247,10 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
         const response = await route.fetch();
         await route.fulfill({response, body: `(${observe.toString()})(${JSON.stringify(entries)}, ${uniformLayouts.toString()}, ${JSON.stringify(rafMaxFPS)});\n` + await response.text()});
       });
-      const page = context.pages()[0], errors = [];
+      const page = context.pages()[0], errors = [], settingLogs = [];
       page.on('console', message => {
         const text = message.text();
+        if (/OneFrameThreadLag|MotionBlurTrace/.test(text)) settingLogs.push(text.slice(0, 2000));
         if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|TypeError:/.test(text)) errors.push(text.slice(0, 2000));
       });
       page.on('pageerror', error => errors.push(error.message));
@@ -289,6 +292,8 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
         __motionInputs.enabled = false;
         return {probe: __motionInputs, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera};
       });
+      report.pendingRun = {folder, ...state, errors, settingLogs};
+      save();
       if (gameClock) {
         state.gameClock = await owner.evaluate(() => new Promise((resolve, reject) => {
           const channel = new MessageChannel();
@@ -297,6 +302,10 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
           globalThis.__webGameThreadWorker.postMessage({type: 'web-game-clock-read', port: channel.port2}, [channel.port2]);
         }));
         assert(state.gameClock.frames.length > 100);
+        if (cpuParams) {
+          state.motionBlurCPU = await owner.evaluate(() => globalThis.__webMotionBlurCPU);
+          assert(state.motionBlurCPU.length > 100, 'Need native CPU parameters');
+        }
         state.clockObserverAtProbe = audit(path.join(__dirname, 'web-game-clock-observer.cjs'));
         state.frameBridge = await page.evaluate(() => globalThis.__webGameFrameBridge || {mode: 'owner-raf'});
         assert.equal(state.settings.gi, 1);
@@ -343,10 +352,11 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
       assert(state.probe.samples.length >= 30, 'Need real matched velocity-flatten shader dispatches');
       assert(state.probe.samples.every(s => s.globals?.VelocityScale?.every(Number.isFinite)));
       const scales = state.probe.samples.map(s => s.globals.VelocityScale[0]).sort((a, b) => a - b);
-      const run = {folder, rafMaxFPS, affinity, ...state, errors,
+      const run = {folder, rafMaxFPS, affinity, ...state, errors, settingLogs,
         summary: {samples: scales.length, minScaleX: scales[0], medianScaleX: scales[Math.floor(scales.length / 2)],
           maxScaleX: scales.at(-1), maxToMin: scales.at(-1) / scales[0]}};
       report.runs.push(run); save();
+      delete report.pendingRun;
       console.log(JSON.stringify({folder, ...run.summary}));
       await context.close(); context = null;
     }
