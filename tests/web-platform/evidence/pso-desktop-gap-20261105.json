@@ -1,0 +1,1421 @@
+{
+  "date": "2026-11-05T04:33:22.257Z",
+  "pass": true,
+  "topic": "Desktop versus Web first-use PSO compile cost",
+  "conclusion": "Real Web runtime DXC compilation dominates the measured background PSO initialization. Desktop UE normally supplies previously compiled DXIL; this is a difference in remaining runtime work, not a measured same-source compiler speed ratio. Successful persistent-cache reuse eliminates DXC for the identical captured batch.",
+  "runtimeChanged": false,
+  "defaultChanged": false,
+  "precacheEnabled": false,
+  "rootBaseCommit": "9a076f84f5f3dd5bc4d64e8e611f41b29231d4f0",
+  "engineCommit": "d5e91d5140667d6058ae34dd0532d89c817dd606",
+  "environment": {
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Edg/156.0.4314.58",
+      "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "jsVersion": "15.6.12.10"
+    },
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "driver": "621.01",
+    "idleGpuBeforeCapture": "2, 1236",
+    "system": "Windows",
+    "normalBrowserArgs": [],
+    "renderSettings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "view": {
+      "frame": 1138,
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 5,
+      "parallelRendering": true
+    },
+    "camera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "packageFiles": [
+      {
+        "file": "tests/web-platform/build/villa-runtime-async-pso-v70/index.html",
+        "sha256": "6c9e6563c32a58455b31ad4432adb71c3db40cdc6d77e11f700bc8e741fc6aa1"
+      },
+      {
+        "file": "tests/web-platform/build/villa-runtime-async-pso-v70/UEWebEngineThreads.js",
+        "sha256": "0b6d035da03ef4e9487c6edac7c3c334b7ed62bff40358e1b964acf5a019a2a7"
+      },
+      {
+        "file": "tests/web-platform/build/villa-runtime-async-pso-v70/UEWebEngineThreads.wasm",
+        "sha256": "3b16e4bfa98b25d5a7c3cb36ee7f50208f24992101826a4a304940a30fdd69d7"
+      },
+      {
+        "file": "tests/web-platform/build/villa-runtime-async-pso-v70/content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "tests/web-platform/build/villa-runtime-async-pso-v70/config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      },
+      {
+        "file": "tests/web-platform/build/villa-runtime-async-pso-v70/web-engine-host.js",
+        "sha256": "fa979e5f6b08cbbe81daff05043814488aa8587b1401f41c07736a08849d1b7d"
+      },
+      {
+        "file": "tests/web-platform/build/villa-runtime-async-pso-v70/web-engine-worker.js",
+        "sha256": "5680a3c2083add173f6a1c2e183aeb11db515861b30a26e3cda86c239d0743e7"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "file": "tests/web-platform/probe-web-runtime-pso.cjs",
+      "sha256": "b3649e2b849aed7bb9564783fabefc66ffab8b9496e16467ba781cfe88805269"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-runtime-pso-detail.cjs",
+      "sha256": "095bd080edc5cbdd5e3b48ee622959b5605746751bee0b36398c47b25d2b3540"
+    },
+    {
+      "file": "tests/web-platform/benchmark-web-pso-corpus.cjs",
+      "sha256": "231312b74516f2028c5c837d6c4e03a88a09650f09f0c5abab5dcdf3b0214a01"
+    },
+    {
+      "file": "tests/web-platform/web-startup-profile.js",
+      "sha256": "9415e7ad97befdec8215c8b67044cd4e810ac15e82b1b76b1b8ea85cd02b8e04"
+    },
+    {
+      "file": "tests/web-platform/web-pso-replay-worker.js",
+      "sha256": "c6f039467f9e523e7246c8f390baca93bb766bd684371516b972bc2971fc859b"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Developer/Windows/ShaderFormatD3D/Private/D3DShaderCompilerDXC.cpp",
+      "sha256": "57b62a754819415749253acb7d93991359a667552b0815d9e007542c399cd17b"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/D3D12RHI/Private/D3D12Shaders.cpp",
+      "sha256": "b1b040d573cf57c1efd1fe600c77fb7cbb62b2d2bc9861455b61796596bd2c92"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/D3D12RHI/Private/Windows/WindowsD3D12PipelineState.cpp",
+      "sha256": "05d55d9f2052398086020cb4063839df421754ff07c8ac70d25bdaebb82acfed"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RHI/Private/PipelineStateCache.cpp",
+      "sha256": "37a0360774d0c7dd6fc48acfd0db1dc842fde8157b4cb77e53ea05188aa2cfd4"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RHI/Private/RHICommandList.cpp",
+      "sha256": "fe3b8781faca57c9b2a9120d555188481062289fd2f67ac30a726c0660a8bbd0"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Private/WebGPUShaderFormat.cpp",
+      "sha256": "520d5b438f25006ea59299499a47fdc3e0f242f72c02b6acadc076826641dcec"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "0090757be6e9f08f6d9771e9d322621a13e9059e132c590f62649d024a7c940a"
+    }
+  ],
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/runtime-pso-detail-async-20261105.json",
+      "sha256": "afcf12f924c24f74f3b5893631661503518e83e63cac1daaeb6f5e2b6df66c23"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-detail-dawn-20261105.json",
+      "sha256": "f0d9d98da0063806bcaa26d1a2a279460d2f64f5c26e1a5685ca14dc08ed66c7"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-detail-dawn-20261105-analysis.json",
+      "sha256": "e0827b0cf5198a8339fd54711c59bb3450e23371d9d0e7b993e15a5a82a8c7f3"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-c3-20261105.json",
+      "sha256": "10b40e8c68516fe5ea848d3547a5b75a8a51dce1a5247a6b8c280d0a2f32357c"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-dawn-c3-20261105.json",
+      "sha256": "b18ae8716e52faacfc8c186d26288e2ab9f9881261d3c102c6b6f9cd8110cbf1"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-dawn-c3-20261105-analysis.json",
+      "sha256": "569678ff394178c790845ef97572a500169070dda883f0faff0a923286925bcd"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-fence-c3-20261105.json",
+      "sha256": "caa9efebba8ee657bbe850edc298636d59b387ff41ac15401c93ad7839d51ed7"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-fence-c3-20261105-analysis.json",
+      "sha256": "83bd98f0d52d42f55da52bbefe34ed14f16d35df932ad1b9476f341865a1da40"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-small-default-20261105.json",
+      "sha256": "f3cf4f67bebdb02d795fed643726651e45727a53c4adf2addd871a6b4afc40d9"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-small-default-20261105-analysis.json",
+      "sha256": "8d335b0ad3699dea8fd3ef7df40c7310938e65a1861cc8ec699dbce8c93a5eab"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-cache-control-20261105.json",
+      "sha256": "92309e20cc8eaa0d1ab275050dbaa37b1f06692a77b3de541f5a24306adf8706"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-replay-cache-control-20261105-analysis.json",
+      "sha256": "6246813734b7c2ef4079a17e1a429b4b0a3b1d741f5e4e4feaf8932627068eb8"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-pso-detail-async-20261105-1-async-corpus.json",
+      "sha256": "36fb4978d632aa5d9ac5716b423e35dd86873a715a77432013590226af14e59a"
+    },
+    {
+      "file": "tests/web-platform/evidence/runtime-async-pso-20261105.json",
+      "sha256": "0026b1db6c2475cd61b097d5b451f4feee05cab8df9a48bc02443f25dd864f12"
+    },
+    {
+      "file": "tests/web-platform/evidence/pso-cache-capacity-20261103.json",
+      "sha256": "083fe8dc94905d7490b915990c9caa0885c4c046a2b35994e62f7101616a6dc0"
+    }
+  ],
+  "corpus": {
+    "file": {
+      "file": "tests/web-platform/results/runtime-pso-detail-async-20261105-1-async-corpus.json",
+      "sha256": "36fb4978d632aa5d9ac5716b423e35dd86873a715a77432013590226af14e59a"
+    },
+    "requests": 15,
+    "descriptors": 15,
+    "modules": 23,
+    "moduleChars": 320129,
+    "device": {
+      "requiredFeatures": [
+        "texture-compression-bc",
+        "texture-formats-tier1",
+        "texture-formats-tier2",
+        "rg11b10ufloat-renderable",
+        "subgroups",
+        "float32-filterable"
+      ],
+      "requiredLimits": {
+        "maxColorAttachmentBytesPerSample": 64,
+        "maxComputeInvocationsPerWorkgroup": 1024,
+        "maxComputeWorkgroupSizeX": 1024,
+        "maxComputeWorkgroupSizeY": 1024,
+        "maxComputeWorkgroupStorageSize": 32768,
+        "maxDynamicUniformBuffersPerPipelineLayout": 10,
+        "maxInterStageShaderVariables": 28,
+        "maxSampledTexturesPerShaderStage": 32,
+        "maxStorageBuffersPerShaderStage": 16,
+        "maxStorageTexturesPerShaderStage": 8
+      }
+    },
+    "extraction": "Only actual asynchronous PSO requests started in first-tour; no speculative PSO precaching. Module set includes earlier-used stages referenced by those requests."
+  },
+  "realScene": {
+    "timingsAreDiagnostic": true,
+    "allRunsPassed": true,
+    "stages": {
+      "DawnPlatformImpl::RunWorkerTask": {
+        "count": 15,
+        "summedElapsedMs": 346.333,
+        "summedThreadCpuMs": 343.649,
+        "activeUnionMs": 134.641,
+        "spanMs": 222.322,
+        "maximumMs": 72.828,
+        "peakConcurrent": 3
+      },
+      "CreatePipelineAsyncEvent::InitializeImpl": {
+        "count": 15,
+        "summedElapsedMs": 346.158,
+        "summedThreadCpuMs": 343.546,
+        "activeUnionMs": 134.613,
+        "spanMs": 222.31,
+        "maximumMs": 72.76,
+        "peakConcurrent": 3
+      },
+      "ShaderModuleD3D12::Compile": {
+        "count": 30,
+        "summedElapsedMs": 334.627,
+        "summedThreadCpuMs": 332.136,
+        "activeUnionMs": 131.469,
+        "spanMs": 220.985,
+        "maximumMs": 70.725,
+        "peakConcurrent": 3
+      },
+      "CompileShaderDXC": {
+        "count": 16,
+        "summedElapsedMs": 308.39,
+        "summedThreadCpuMs": 306.138,
+        "activeUnionMs": 125.05,
+        "spanMs": 219.76,
+        "maximumMs": 66.162,
+        "peakConcurrent": 3
+      },
+      "CompileShaderFXC": {
+        "count": 0,
+        "summedElapsedMs": 0,
+        "summedThreadCpuMs": 0,
+        "activeUnionMs": 0,
+        "spanMs": 0,
+        "maximumMs": 0,
+        "peakConcurrent": 0
+      },
+      "tint::hlsl::writer::Generate": {
+        "count": 16,
+        "summedElapsedMs": 20.392,
+        "summedThreadCpuMs": 20.271,
+        "activeUnionMs": 15.772,
+        "spanMs": 192.867,
+        "maximumMs": 4.03,
+        "peakConcurrent": 3
+      },
+      "DeviceBase::APICreateShaderModule": {
+        "count": 10,
+        "summedElapsedMs": 15.361,
+        "summedThreadCpuMs": 15.271,
+        "activeUnionMs": 15.361,
+        "spanMs": 156.899,
+        "maximumMs": 3.94,
+        "peakConcurrent": 1
+      },
+      "DawnCachingInterface::CacheHit": {
+        "count": 14,
+        "summedElapsedMs": 0.015,
+        "summedThreadCpuMs": 0.001,
+        "activeUnionMs": 0.015,
+        "spanMs": 129.957,
+        "maximumMs": 0.002,
+        "peakConcurrent": 1
+      }
+    },
+    "dxcShareOfPipelineInitializationElapsed": 0.8908937537193997,
+    "worstFrame": {
+      "submissionMs": 247.15999999642372,
+      "scopes": {
+        "DawnPlatformImpl::RunWorkerTask": {
+          "count": 15,
+          "summedElapsedMs": 346.333,
+          "summedThreadCpuMs": 343.649,
+          "activeUnionMs": 134.641,
+          "spanMs": 222.322,
+          "maximumMs": 72.828,
+          "peakConcurrent": 3
+        },
+        "CreatePipelineAsyncEvent::InitializeImpl": {
+          "count": 15,
+          "summedElapsedMs": 346.158,
+          "summedThreadCpuMs": 343.546,
+          "activeUnionMs": 134.613,
+          "spanMs": 222.31,
+          "maximumMs": 72.76,
+          "peakConcurrent": 3
+        },
+        "ShaderModuleD3D12::Compile": {
+          "count": 30,
+          "summedElapsedMs": 334.627,
+          "summedThreadCpuMs": 332.136,
+          "activeUnionMs": 131.469,
+          "spanMs": 220.985,
+          "maximumMs": 70.725,
+          "peakConcurrent": 3
+        },
+        "CompileShaderDXC": {
+          "count": 16,
+          "summedElapsedMs": 308.39,
+          "summedThreadCpuMs": 306.138,
+          "activeUnionMs": 125.05,
+          "spanMs": 219.76,
+          "maximumMs": 66.162,
+          "peakConcurrent": 3
+        },
+        "CompileShaderFXC": {
+          "count": 0,
+          "summedElapsedMs": 0,
+          "summedThreadCpuMs": 0,
+          "activeUnionMs": 0,
+          "spanMs": 0,
+          "maximumMs": 0,
+          "peakConcurrent": 0
+        },
+        "tint::hlsl::writer::Generate": {
+          "count": 16,
+          "summedElapsedMs": 20.392,
+          "summedThreadCpuMs": 20.271,
+          "activeUnionMs": 15.772,
+          "spanMs": 192.867,
+          "maximumMs": 4.03,
+          "peakConcurrent": 3
+        },
+        "DeviceBase::APICreateShaderModule": {
+          "count": 10,
+          "summedElapsedMs": 15.361,
+          "summedThreadCpuMs": 15.271,
+          "activeUnionMs": 15.361,
+          "spanMs": 156.899,
+          "maximumMs": 3.94,
+          "peakConcurrent": 1
+        },
+        "DawnCachingInterface::CacheHit": {
+          "count": 14,
+          "summedElapsedMs": 0.015,
+          "summedThreadCpuMs": 0.001,
+          "activeUnionMs": 0.015,
+          "spanMs": 129.957,
+          "maximumMs": 0.002,
+          "peakConcurrent": 1
+        }
+      }
+    },
+    "phases": [
+      {
+        "name": "first-tour",
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 346.333,
+            "summedThreadCpuMs": 343.649,
+            "activeUnionMs": 134.641,
+            "spanMs": 222.322,
+            "maximumMs": 72.828,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 346.158,
+            "summedThreadCpuMs": 343.546,
+            "activeUnionMs": 134.613,
+            "spanMs": 222.31,
+            "maximumMs": 72.76,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 334.627,
+            "summedThreadCpuMs": 332.136,
+            "activeUnionMs": 131.469,
+            "spanMs": 220.985,
+            "maximumMs": 70.725,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 16,
+            "summedElapsedMs": 308.39,
+            "summedThreadCpuMs": 306.138,
+            "activeUnionMs": 125.05,
+            "spanMs": 219.76,
+            "maximumMs": 66.162,
+            "peakConcurrent": 3
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 16,
+            "summedElapsedMs": 20.392,
+            "summedThreadCpuMs": 20.271,
+            "activeUnionMs": 15.772,
+            "spanMs": 192.867,
+            "maximumMs": 4.03,
+            "peakConcurrent": 3
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 10,
+            "summedElapsedMs": 15.361,
+            "summedThreadCpuMs": 15.271,
+            "activeUnionMs": 15.361,
+            "spanMs": 156.899,
+            "maximumMs": 3.94,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 14,
+            "summedElapsedMs": 0.015,
+            "summedThreadCpuMs": 0.001,
+            "activeUnionMs": 0.015,
+            "spanMs": 129.957,
+            "maximumMs": 0.002,
+            "peakConcurrent": 1
+          }
+        }
+      },
+      {
+        "name": "repeat-tour",
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "CompileShaderDXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          }
+        }
+      }
+    ],
+    "errors": [],
+    "finalRHI": {
+      "sampleFrame": 4170,
+      "graphicsPipelines": 217,
+      "computePipelines": 71,
+      "graphicsPipelineCreateMs": 9.890079498291016,
+      "computePipelineCreateMs": 2.0971298217773438,
+      "textureReadbacks": 0,
+      "textureReadbacksReady": 0,
+      "textureReadbackMaps": 0,
+      "textureReadbackNotReady": 0,
+      "psoPrecaching": false,
+      "precachedGraphicsPipelines": 0,
+      "asyncPrecacheRequested": 0,
+      "asyncPrecacheCompleted": 0,
+      "asyncPrecacheFailed": 0,
+      "unsupportedPrecacheRequests": 0,
+      "precachedGraphicsUsed": 0,
+      "precachedGraphicsBinds": 0,
+      "precacheConcurrency": 0,
+      "runtimeAsyncPSO": true,
+      "runtimeAsyncRequested": 288,
+      "runtimeAsyncCompleted": 288,
+      "runtimeAsyncFailed": 0
+    },
+    "trace": {
+      "file": "tests/web-platform/results/runtime-pso-detail-dawn-20261105-1-async-trace.json",
+      "sha256": "acfe55c945826a77b12ac6be75ead514d042dca46d6ff9b3d43aa245b4260507"
+    }
+  },
+  "replayFullSceneProfile": {
+    "browserArgs": [],
+    "profile": "runtime-pso",
+    "moduleFence": true,
+    "concurrency": 3,
+    "settleCacheMs": 0,
+    "runs": [
+      {
+        "index": 0,
+        "pipelineWallMs": 142.63499999046326,
+        "preparationAndPipelinesMs": 167.1499999910593,
+        "moduleApiMs": 1.334999993443489,
+        "moduleReadyMs": 21.854999989271164,
+        "layoutApiMs": 2.6600000113248825,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 389.604,
+            "summedThreadCpuMs": 382.305,
+            "activeUnionMs": 141.097,
+            "spanMs": 141.097,
+            "maximumMs": 74.552,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 389.476,
+            "summedThreadCpuMs": 382.202,
+            "activeUnionMs": 141.083,
+            "spanMs": 141.083,
+            "maximumMs": 74.542,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 369.374,
+            "summedThreadCpuMs": 363.83,
+            "activeUnionMs": 139.688,
+            "spanMs": 139.688,
+            "maximumMs": 72.516,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 17,
+            "summedElapsedMs": 337.805,
+            "summedThreadCpuMs": 333.309,
+            "activeUnionMs": 137.421,
+            "spanMs": 137.421,
+            "maximumMs": 67.779,
+            "peakConcurrent": 3
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 17,
+            "summedElapsedMs": 25.409,
+            "summedThreadCpuMs": 24.508,
+            "activeUnionMs": 21.401,
+            "spanMs": 110.876,
+            "maximumMs": 4.218,
+            "peakConcurrent": 3
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 19.529,
+            "summedThreadCpuMs": 19.456,
+            "activeUnionMs": 19.529,
+            "spanMs": 19.99,
+            "maximumMs": 3.722,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 18,
+            "summedElapsedMs": 0.019,
+            "summedThreadCpuMs": 0.001,
+            "activeUnionMs": 0.019,
+            "spanMs": 96.435,
+            "maximumMs": 0.002,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 9876,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 6288255,
+            "entries": 445
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-fence-c3-20261105-0-browser-trace.json",
+          "sha256": "f1cf3bfe51c9a9927cbaec0c90da2c7db624214240cd0e0b6a08339687531cbc"
+        }
+      },
+      {
+        "index": 1,
+        "pipelineWallMs": 144.53499999642372,
+        "preparationAndPipelinesMs": 168.83500000834465,
+        "moduleApiMs": 1.3550000041723251,
+        "moduleReadyMs": 21.625,
+        "layoutApiMs": 2.675000011920929,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 393.079,
+            "summedThreadCpuMs": 386.214,
+            "activeUnionMs": 142.92,
+            "spanMs": 142.92,
+            "maximumMs": 74.151,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 392.939,
+            "summedThreadCpuMs": 386.094,
+            "activeUnionMs": 142.907,
+            "spanMs": 142.907,
+            "maximumMs": 74.142,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 372.96,
+            "summedThreadCpuMs": 367.56,
+            "activeUnionMs": 141.485,
+            "spanMs": 141.485,
+            "maximumMs": 72.104,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 17,
+            "summedElapsedMs": 340.452,
+            "summedThreadCpuMs": 336.734,
+            "activeUnionMs": 139.177,
+            "spanMs": 139.218,
+            "maximumMs": 67.397,
+            "peakConcurrent": 3
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 17,
+            "summedElapsedMs": 26.197,
+            "summedThreadCpuMs": 24.665,
+            "activeUnionMs": 21.344,
+            "spanMs": 113.233,
+            "maximumMs": 4.497,
+            "peakConcurrent": 3
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 19.472,
+            "summedThreadCpuMs": 19.388,
+            "activeUnionMs": 19.472,
+            "spanMs": 19.769,
+            "maximumMs": 3.826,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 24,
+            "summedElapsedMs": 0.029,
+            "summedThreadCpuMs": 0.005,
+            "activeUnionMs": 0.029,
+            "spanMs": 96.574,
+            "maximumMs": 0.005,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 13768,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 6288255,
+            "entries": 445
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-fence-c3-20261105-1-browser-trace.json",
+          "sha256": "7d22ecaf7c917637c6d36a5883c3473ed6e33f2747cd1eedf04eeca5c602ff71"
+        }
+      }
+    ]
+  },
+  "replaySmallNormalProfile": {
+    "browserArgs": [],
+    "profile": "runtime-pso-small-default",
+    "moduleFence": true,
+    "concurrency": 3,
+    "settleCacheMs": 2000,
+    "runs": [
+      {
+        "index": 0,
+        "pipelineWallMs": 235.625,
+        "preparationAndPipelinesMs": 272.434999987483,
+        "moduleApiMs": 1.364999994635582,
+        "moduleReadyMs": 34.16499999165535,
+        "layoutApiMs": 2.6400000005960464,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 639.594,
+            "summedThreadCpuMs": 633.06,
+            "activeUnionMs": 234.075,
+            "spanMs": 234.075,
+            "maximumMs": 110.858,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 639.459,
+            "summedThreadCpuMs": 632.954,
+            "activeUnionMs": 234.062,
+            "spanMs": 234.062,
+            "maximumMs": 110.848,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 618.953,
+            "summedThreadCpuMs": 613.76,
+            "activeUnionMs": 232.195,
+            "spanMs": 232.195,
+            "maximumMs": 70.936,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 28,
+            "summedElapsedMs": 575.771,
+            "summedThreadCpuMs": 570.891,
+            "activeUnionMs": 230.356,
+            "spanMs": 230.356,
+            "maximumMs": 66.557,
+            "peakConcurrent": 3
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 28,
+            "summedElapsedMs": 35.185,
+            "summedThreadCpuMs": 35.05,
+            "activeUnionMs": 30.596,
+            "spanMs": 191.237,
+            "maximumMs": 3.862,
+            "peakConcurrent": 3
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 31.915,
+            "summedThreadCpuMs": 31.837,
+            "activeUnionMs": 31.915,
+            "spanMs": 32.309,
+            "maximumMs": 3.808,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 3,
+            "summedElapsedMs": 0.007,
+            "summedThreadCpuMs": 0.004,
+            "activeUnionMs": 0.007,
+            "spanMs": 28.426,
+            "maximumMs": 0.005,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 15296,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 825880,
+            "entries": 61
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-small-default-20261105-0-browser-trace.json",
+          "sha256": "7e6712ae6f049993929d5d908f6511521c9281cebcbeefa63e00145c60833e1a"
+        }
+      },
+      {
+        "index": 1,
+        "pipelineWallMs": 11.13000001013279,
+        "preparationAndPipelinesMs": 24,
+        "moduleApiMs": 1.4299999922513962,
+        "moduleReadyMs": 10.304999992251396,
+        "layoutApiMs": 2.564999997615814,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 24.325,
+            "summedThreadCpuMs": 19.517,
+            "activeUnionMs": 9.453,
+            "spanMs": 9.665,
+            "maximumMs": 3.56,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 24.209,
+            "summedThreadCpuMs": 19.432,
+            "activeUnionMs": 9.424,
+            "spanMs": 9.649,
+            "maximumMs": 3.544,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 3.835,
+            "summedThreadCpuMs": 3.669,
+            "activeUnionMs": 2.445,
+            "spanMs": 8.815,
+            "maximumMs": 0.257,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 8.063,
+            "summedThreadCpuMs": 7.933,
+            "activeUnionMs": 8.063,
+            "spanMs": 8.333,
+            "maximumMs": 0.799,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 50,
+            "summedElapsedMs": 0.054,
+            "summedThreadCpuMs": 0.004,
+            "activeUnionMs": 0.054,
+            "spanMs": 21.545,
+            "maximumMs": 0.005,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 38892,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 825880,
+            "entries": 61
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-small-default-20261105-1-browser-trace.json",
+          "sha256": "991ee7775e1c1bc2a131e72a609497accbca9d0a04bf630749e37c5491cb2eeb"
+        }
+      },
+      {
+        "index": 2,
+        "pipelineWallMs": 11.424999997019768,
+        "preparationAndPipelinesMs": 24.195000007748604,
+        "moduleApiMs": 1.280000001192093,
+        "moduleReadyMs": 10.094999998807907,
+        "layoutApiMs": 2.675000011920929,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 24.927,
+            "summedThreadCpuMs": 19.86,
+            "activeUnionMs": 9.634,
+            "spanMs": 9.898,
+            "maximumMs": 3.84,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 24.77,
+            "summedThreadCpuMs": 19.77,
+            "activeUnionMs": 9.607,
+            "spanMs": 9.885,
+            "maximumMs": 3.827,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 3.833,
+            "summedThreadCpuMs": 3.556,
+            "activeUnionMs": 2.63,
+            "spanMs": 9.079,
+            "maximumMs": 0.253,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 8.095,
+            "summedThreadCpuMs": 7.977,
+            "activeUnionMs": 8.095,
+            "spanMs": 8.347,
+            "maximumMs": 0.789,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 55,
+            "summedElapsedMs": 0.059,
+            "summedThreadCpuMs": 0.004,
+            "activeUnionMs": 0.059,
+            "spanMs": 21.971,
+            "maximumMs": 0.004,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 38288,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 825880,
+            "entries": 61
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-small-default-20261105-2-browser-trace.json",
+          "sha256": "144054d0a634684f5fc70db0b5fd17c6fb07995c25ffed1fd61f9b70bbc041ee"
+        }
+      }
+    ]
+  },
+  "additionalSpecialBrowserDiagnostic": {
+    "browserArgs": [
+      "--gpu-disk-cache-size-kb=262144",
+      "--in-process-gpu"
+    ],
+    "profile": "runtime-pso-cache-control",
+    "moduleFence": true,
+    "concurrency": 3,
+    "settleCacheMs": 2000,
+    "runs": [
+      {
+        "index": 0,
+        "pipelineWallMs": 242.5,
+        "preparationAndPipelinesMs": 279.94499999284744,
+        "moduleApiMs": 1.3949999958276749,
+        "moduleReadyMs": 34.729999989271164,
+        "layoutApiMs": 2.7150000035762787,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 634.632,
+            "summedThreadCpuMs": 627.937,
+            "activeUnionMs": 240.896,
+            "spanMs": 240.896,
+            "maximumMs": 123.7,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 634.469,
+            "summedThreadCpuMs": 627.809,
+            "activeUnionMs": 240.885,
+            "spanMs": 240.885,
+            "maximumMs": 123.69,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 612.671,
+            "summedThreadCpuMs": 607.341,
+            "activeUnionMs": 238.985,
+            "spanMs": 238.985,
+            "maximumMs": 82.039,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 27,
+            "summedElapsedMs": 568.382,
+            "summedThreadCpuMs": 563.709,
+            "activeUnionMs": 237.091,
+            "spanMs": 237.091,
+            "maximumMs": 76.92,
+            "peakConcurrent": 3
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 27,
+            "summedElapsedMs": 36.246,
+            "summedThreadCpuMs": 35.761,
+            "activeUnionMs": 30.187,
+            "spanMs": 179.799,
+            "maximumMs": 4.571,
+            "peakConcurrent": 3
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 32.36,
+            "summedThreadCpuMs": 32.291,
+            "activeUnionMs": 32.36,
+            "spanMs": 32.818,
+            "maximumMs": 3.863,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 2,
+            "summedElapsedMs": 0.003,
+            "summedThreadCpuMs": 0.003,
+            "activeUnionMs": 0.003,
+            "spanMs": 28.072,
+            "maximumMs": 0.002,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 4036,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 825880,
+            "entries": 61
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-cache-control-20261105-0-browser-trace.json",
+          "sha256": "3c830e0db9d0c61449e9c6c7922ce305900d22252bbc8ab39711544d43ecdca1"
+        }
+      },
+      {
+        "index": 1,
+        "pipelineWallMs": 11.659999996423721,
+        "preparationAndPipelinesMs": 24.44999998807907,
+        "moduleApiMs": 1.3049999922513962,
+        "moduleReadyMs": 10.16499999165535,
+        "layoutApiMs": 2.625,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 25.059,
+            "summedThreadCpuMs": 20.227,
+            "activeUnionMs": 9.849,
+            "spanMs": 10.083,
+            "maximumMs": 3.636,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 24.948,
+            "summedThreadCpuMs": 20.148,
+            "activeUnionMs": 9.831,
+            "spanMs": 10.074,
+            "maximumMs": 3.627,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 3.713,
+            "summedThreadCpuMs": 3.619,
+            "activeUnionMs": 2.367,
+            "spanMs": 9.188,
+            "maximumMs": 0.247,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 8.07,
+            "summedThreadCpuMs": 7.954,
+            "activeUnionMs": 8.07,
+            "spanMs": 8.357,
+            "maximumMs": 0.808,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 59,
+            "summedElapsedMs": 0.062,
+            "summedThreadCpuMs": 0.002,
+            "activeUnionMs": 0.062,
+            "spanMs": 22.084,
+            "maximumMs": 0.002,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 11848,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 825880,
+            "entries": 61
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-cache-control-20261105-1-browser-trace.json",
+          "sha256": "d4c3b2ae05bfe26a23b23946adf5889880971ceeec13906190a07aa4ba93ad5f"
+        }
+      },
+      {
+        "index": 2,
+        "pipelineWallMs": 11.510000005364418,
+        "preparationAndPipelinesMs": 24.140000000596046,
+        "moduleApiMs": 1.3199999928474426,
+        "moduleReadyMs": 10.009999990463257,
+        "layoutApiMs": 2.6200000047683716,
+        "successful": 15,
+        "failed": 0,
+        "stages": {
+          "DawnPlatformImpl::RunWorkerTask": {
+            "count": 15,
+            "summedElapsedMs": 24.917,
+            "summedThreadCpuMs": 20.183,
+            "activeUnionMs": 9.615,
+            "spanMs": 9.976,
+            "maximumMs": 3.655,
+            "peakConcurrent": 3
+          },
+          "CreatePipelineAsyncEvent::InitializeImpl": {
+            "count": 15,
+            "summedElapsedMs": 24.804,
+            "summedThreadCpuMs": 20.098,
+            "activeUnionMs": 9.592,
+            "spanMs": 9.967,
+            "maximumMs": 3.646,
+            "peakConcurrent": 3
+          },
+          "ShaderModuleD3D12::Compile": {
+            "count": 30,
+            "summedElapsedMs": 3.632,
+            "summedThreadCpuMs": 3.559,
+            "activeUnionMs": 2.142,
+            "spanMs": 9.118,
+            "maximumMs": 0.243,
+            "peakConcurrent": 3
+          },
+          "CompileShaderDXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "CompileShaderFXC": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "tint::hlsl::writer::Generate": {
+            "count": 0,
+            "summedElapsedMs": 0,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0,
+            "spanMs": 0,
+            "maximumMs": 0,
+            "peakConcurrent": 0
+          },
+          "DeviceBase::APICreateShaderModule": {
+            "count": 23,
+            "summedElapsedMs": 7.946,
+            "summedThreadCpuMs": 7.87,
+            "activeUnionMs": 7.946,
+            "spanMs": 8.218,
+            "maximumMs": 0.795,
+            "peakConcurrent": 1
+          },
+          "DawnCachingInterface::CacheHit": {
+            "count": 58,
+            "summedElapsedMs": 0.059,
+            "summedThreadCpuMs": 0,
+            "activeUnionMs": 0.059,
+            "spanMs": 21.814,
+            "maximumMs": 0.002,
+            "peakConcurrent": 1
+          }
+        },
+        "memoryCaches": [
+          {
+            "pid": 34296,
+            "name": "gpu/shader_cache/webgpu_cache_0x1",
+            "bytes": 825880,
+            "entries": 61
+          }
+        ],
+        "trace": {
+          "file": "tests/web-platform/results/runtime-pso-replay-cache-control-20261105-2-browser-trace.json",
+          "sha256": "ef73467ba91970135e45846d8d4213467249bbbb4a93889267bef8434cb831c3"
+        }
+      }
+    ]
+  },
+  "localSourceFindings": [
+    "Native ShaderFormatD3D invokes DXC during shader compilation and reads DXC_OUT_OBJECT; D3D12 runtime loads native shader bytecode.",
+    "Web Cook translates SPIR-V to WGSL; Web RHI creates WGPUShaderSourceWGSL.",
+    "Native PSO path can load Pipeline Library or call CreatePipelineState depending on runtime configuration.",
+    "UE editor disables PSO precaching in this branch, independently from compiled shader/DDC/driver-cache availability.",
+    "Web runtime async path gates command-list translation on dependencies so the GPU owner can receive its own completion callbacks."
+  ],
+  "externalSources": [
+    {
+      "url": "https://github.com/google/dawn/blob/main/src/dawn/native/d3d/ShaderUtils.cpp",
+      "supports": "Tint HLSL generation followed by DXC or FXC compilation"
+    },
+    {
+      "url": "https://github.com/google/dawn/blob/main/src/dawn/native/d3d12/ShaderModuleD3D12.cpp",
+      "supports": "Shader compile cache load-or-run path"
+    },
+    {
+      "url": "https://github.com/chromium/chromium/blob/main/gpu/command_buffer/service/memory_cache.cc",
+      "supports": "LRU eviction in GPU service cache"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_shader_bytecode",
+      "supports": "D3D12 shader bytecode input"
+    },
+    {
+      "url": "https://www.w3.org/TR/webgpu/#dictdef-gpushadermoduledescriptor",
+      "supports": "Standard shader module input uses WGSL"
+    },
+    {
+      "url": "https://github.com/google/dawn/blob/main/src/dawn/platform/tracing/trace_categories.h",
+      "supports": "Detailed Dawn traces require gpu.dawn category"
+    }
+  ],
+  "limitations": [
+    "Upstream main explains mechanisms; actual Edge trace provides direct evidence for measured DXC execution.",
+    "No controlled desktop-editor replay of the exact same HLSL, compiler version, flags and cold-cache state; no fixed Web/desktop compiler slowdown ratio.",
+    "Detailed diagnostic traces perturb timings; do not compare their FPS/maximum stalls to prior untraced performance measurements.",
+    "Nested scope elapsed times overlap, and multiple workers run concurrently; elapsed sums are not wall times. Thread CPU sums are recorded separately.",
+    "GPU cache size plus DXC calls support cache pressure; this round does not identify the eviction history of each shader key.",
+    "No driver/system cache deletion. A new profile is not a fully cold GPU compiler environment.",
+    "No quality changes, no automatic browser flag deployment, no PSO precache default or async default change.",
+    "Original capture omitted new gpu.dawn category and is used only for corpus extraction; definitive compiler-stage counts use the later trace with gpu.dawn enabled."
+  ]
+}

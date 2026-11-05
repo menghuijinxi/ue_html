@@ -7,15 +7,18 @@ const folder=option('folder'),tag=option('tag');assert([folder,tag].every(v=>v&&
 const modes=(option('modes')||'sync,async,async,sync').split(',');assert(modes.every(m=>['sync','async'].includes(m)));
 const hold=Number(option('hold')||5),warmup=Number(option('warmup')||10);
 const verifyUse=option('verify-use')==='true';
+const trace=option('trace')==='true',captureCorpus=option('capture-corpus')==='true';
+assert(!captureCorpus||modes.every(mode=>mode==='async'),'Corpus export requires asynchronous runs');
 assert(hold>=1&&hold<=10&&warmup>=5&&warmup<=60);
 const output=path.join(__dirname,'results',tag),base=path.join(__dirname,'build',folder);
 assert(!fs.existsSync(output+'.json'),'Use a fresh tag');
 fs.copyFileSync(__filename,output+'-source.cjs');
-const report={date:new Date().toISOString(),folder,modes,hold,warmup,verifyUse,pass:false,runs:[],qualityOverrides:[],
+const report={date:new Date().toISOString(),folder,modes,hold,warmup,verifyUse,trace,captureCorpus,pass:false,runs:[],qualityOverrides:[],
   source:audit(output+'-source.cjs'),packageFiles:['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm',
     'content-files.json','config-files.json','web-engine-host.js','web-engine-worker.js'].map(n=>audit(path.join(base,n))),
-  boundary:'Runtime first-use PSOs only; no PSO precaching, camera warm tour or browser flags. Fresh visible Edge per run with browser/driver caches retained. Same WASM/Cook, resolution, history/local-clock/priority-wake defaults. Rare pipeline/shader creation observation and one record per submit; no resource creation wrappers, profiler, trace or additional GPU query. Submission intervals are not physical display latency. '+
-    (verifyUse?'Diagnostic only: per-bind identity tracking enabled; do not use these timings for performance claims.':'No per-draw or per-bind wrappers.')};
+  boundary:'Runtime first-use PSOs only; no PSO precaching, camera warm tour or browser flags. Fresh visible Edge per run with browser/driver caches retained. Same WASM/Cook, resolution, history/local-clock/priority-wake defaults. Rare pipeline/shader creation observation and one record per submit; no resource creation wrappers, CPU profiler or additional GPU query. Submission intervals are not physical display latency. '+
+    (verifyUse?'Diagnostic only: per-bind identity tracking enabled; do not use these timings for performance claims.':'No per-draw or per-bind wrappers.')+
+    (trace||captureCorpus?' Diagnostic browser trace/descriptor capture enabled; timings excluded from normal performance claims.':' No browser trace or descriptor corpus capture.')};
 const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2)+'\n');
 function install(verifyUse){
   const c=globalThis.__runtimePSOCapture={active:false,frames:[],events:[],counts:{},pending:0,failures:[]};
@@ -74,9 +77,12 @@ let context,log;
     context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/runtime-pso'),
       {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1});
     await context.route('**/web-engine-worker.js?*',async route=>{
-      const response=await route.fetch();await route.fulfill({response,body:'('+install.toString()+')('+verifyUse+');\n'+await response.text()});
+      const response=await route.fetch();
+      const corpusRecorder=captureCorpus?'globalThis.__webStartupPSOCorpus=true;\n'+fs.readFileSync(path.join(__dirname,'web-startup-profile.js'),'utf8')+'\n':'';
+      await route.fulfill({response,body:corpusRecorder+'('+install.toString()+')('+verifyUse+');\n'+await response.text()});
     });
     const page=context.pages()[0],cdp=await context.newCDPSession(page);
+    run.browser=await cdp.send('Browser.getVersion');
     await cdp.send('Input.setIgnoreInputEvents',{ignore:true});await cdp.send('Emulation.setFocusEmulationEnabled',{enabled:true});
     log=fs.createWriteStream(output+'-'+run.index+'-'+mode+'.log');
     page.on('console',m=>{const t=m.text();log?.write(t+'\n');
@@ -110,9 +116,11 @@ let context,log;
     assert(!await page.evaluate(()=>globalThis.__webEngineFailure));await page.waitForTimeout(warmup*1000);
     run.ready=await state();save();
     async function capture(name,action){
-      const before=await state();await owner.evaluate(()=>{const c=__runtimePSOCapture;c.frames=[];c.events=[];c.active=true;});
+      const before=await state();const begin=await owner.evaluate(name=>{const c=__runtimePSOCapture;c.frames=[];c.events=[];c.active=true;
+        performance.mark('RuntimePSO.'+name+'.begin');return performance.now();},name);
       await action();const data=await owner.evaluate(()=>{const c=__runtimePSOCapture;c.active=false;return{frames:c.frames,events:c.events};});
-      const after=await state(),summary=summarize(data);run.phases.push({name,before,after,summary,data});save();
+      const end=await owner.evaluate(name=>{performance.mark('RuntimePSO.'+name+'.end');return performance.now();},name);
+      const after=await state(),summary=summarize(data);run.phases.push({name,begin,end,before,after,summary,data});save();
       console.log(JSON.stringify({index:run.index,mode,phase:name,...summary,worst:summary.worst.slice(0,2)}));
       assert(!run.errors.length&&!after.failure&&!after.failures.length,run.errors.join('\n'));
     }
@@ -122,7 +130,34 @@ let context,log;
       assert.equal(await page.evaluate(v=>__webEngineRPC('WebProjectViewTest',v.x,v.y,v.z,v.pitch,v.yaw),{...camera,yaw:camera.yaw+delta}),1);
       await page.waitForTimeout(hold*1000);
     }};
+    let traceDone;
+    if(trace){
+      run.histogramsBefore=(await cdp.send('Browser.getHistograms')).histograms.filter(h=>/dawn|webgpu|(?:^|\.)tint(?:\.|$)/i.test(h.name));
+      traceDone=new Promise(resolve=>cdp.once('Tracing.tracingComplete',resolve));
+      await cdp.send('Tracing.start',{categories:'toplevel,devtools.timeline,blink.user_timing,gpu,gpu.dawn,disabled-by-default-gpu.dawn,disabled-by-default-gpu.service',transferMode:'ReturnAsStream'});
+      run.traceClock=await owner.evaluate(()=>{const now=performance.now();performance.mark('RuntimePSO.clock');return{now,timeOrigin:performance.timeOrigin};});
+    }
     await capture('first-tour',tour);await capture('repeat-tour',tour);
+    if(captureCorpus){
+      const corpus=await owner.evaluate(()=>{__webStartupProfile.freeze();return __webStartupProfile.exportPSOCorpus();});
+      const phase=run.phases.find(p=>p.name==='first-tour');
+      const timeOrigin=await owner.evaluate(()=>performance.timeOrigin);
+      corpus.requests=corpus.requests.filter(r=>r.start>=timeOrigin+phase.begin&&r.start<=timeOrigin+phase.end);
+      const ids=new Set(corpus.requests.map(r=>r.descriptorId));corpus.descriptors=corpus.descriptors.filter(d=>ids.has(d.id));
+      const modules=new Set(corpus.descriptors.flatMap(d=>['vertex','fragment','compute'].map(s=>d.descriptor[s]?.module?.id).filter(Boolean)));
+      corpus.modules=corpus.modules.filter(m=>modules.has(m.id));
+      run.corpusFile=output+'-'+run.index+'-'+mode+'-corpus.json';
+      fs.writeFileSync(run.corpusFile,JSON.stringify(corpus));run.corpus=audit(run.corpusFile);
+    }
+    if(trace){
+      await cdp.send('Tracing.end');const {stream}=await traceDone;
+      run.traceFile=output+'-'+run.index+'-'+mode+'-trace.json';const fd=fs.openSync(run.traceFile,'w');
+      try{for(;;){const chunk=await cdp.send('IO.read',{handle:stream,size:1024*1024});
+        fs.writeSync(fd,Buffer.from(chunk.data,chunk.base64Encoded?'base64':'utf8'));if(chunk.eof)break;}}
+      finally{fs.closeSync(fd);await cdp.send('IO.close',{handle:stream});}
+      run.trace=audit(run.traceFile);
+      run.histogramsAfter=(await cdp.send('Browser.getHistograms')).histograms.filter(h=>/dawn|webgpu|(?:^|\.)tint(?:\.|$)/i.test(h.name));
+    }
     await page.locator('canvas').screenshot({path:output+'-'+run.index+'-'+mode+'.png'});
     run.final=await state();assert(!run.final.pso.enabled);assert.equal(run.final.rhi.asyncPrecacheRequested,0);
     assert.equal(run.final.pending,0);assert.equal(run.final.rhi.runtimeAsyncFailed,0);

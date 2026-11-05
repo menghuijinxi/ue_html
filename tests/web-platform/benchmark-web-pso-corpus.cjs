@@ -33,7 +33,7 @@ const save = () => fs.writeFileSync(output, JSON.stringify(report, null, 2));
       const cdp = await context.newCDPSession(page);
       report.browser = await cdp.send('Browser.getVersion');
       report.browserCommand = await cdp.send('Browser.getBrowserCommandLine').catch(e => ({unavailable: e.message, requestedAdditionalArguments: browserArgs}));
-      if (browserTrace) await cdp.send('Tracing.start', {categories: 'disabled-by-default-gpu.dawn,gpu,toplevel,disabled-by-default-memory-infra',
+      if (browserTrace) await cdp.send('Tracing.start', {categories: 'gpu.dawn,disabled-by-default-gpu.dawn,gpu,toplevel,disabled-by-default-memory-infra',
         options: 'record-until-full', transferMode: 'ReturnAsStream'});
       const run = await page.evaluate(({url, concurrency, moduleFence, requestLimit}) => new Promise((resolve, reject) => {
         const worker = new Worker('web-pso-replay-worker.js');
