@@ -279,13 +279,11 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (!['control', 'history', 'hzb', 'instances', 'hzb-instances'].includes(occlusionMode)) throw new Error('Invalid occlusion mode');
   module.arguments = module.arguments.filter(v => !v.startsWith('-WebOcclusionMode='));
   module.arguments.push('-WebOcclusionMode=' + occlusionMode);
-  // Approved default: schedule Game ticks locally and consume completed history.
-  // A page-frame scheduler is an explicit alternative; owner rAF remains selectable.
+  // Local scheduling failed manual movement acceptance (backlog, then jitter).
+  // Use owner rAF by default; retain local mode only for explicit diagnostics.
   const clock = experiment.get('clock');
   if (clock !== null && !['local', 'owner'].includes(clock)) throw new Error('Invalid Game frame clock');
-  const localClock = clock === 'local' || (clock === null &&
-    assets.gameFrameBridge !== 'page-raf' &&
-    !module.arguments.some(v => v.startsWith('-WebFrameScheduler=')));
+  const localClock = clock === 'local';
   module.arguments = module.arguments.filter(v => v !== '-WebGameLocalClock');
   if (localClock) module.arguments.push('-WebGameLocalClock');
   // Opt-in until cross-device movement tests establish a suitable default.

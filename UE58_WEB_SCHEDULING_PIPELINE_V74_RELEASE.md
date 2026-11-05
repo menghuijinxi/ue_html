@@ -1,5 +1,7 @@
 # v74：完整流水线预算与 PSO 预缓存复测包
 
+2026-11-06 状态更新：用户实测本版本仍有抖动，本地调度优化已否决。请使用 [关闭本地调度入口](http://127.0.0.1:8765/build/villa-scheduling-pipeline-v74/index.html?occlusion=history&clock=owner&rhiwake=priority&gpuahead=0&gpumode=submitted)；下文为原始交付记录，采用决定见 [本地调度已否决](UE58_WEB_LOCAL_SCHEDULING_REJECTED.md)。
+
 2026-11-05。按用户在另一台设备上的实际卡顿反馈，合并远端最新修复后重新构建并交付。此前本机的提交 FPS / 1% Low 不能排除实际画面更新下降，已在两份旧复测文档顶部补充这一限制。
 
 ## 使用

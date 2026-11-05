@@ -15,6 +15,8 @@ const revision = cwd => execFileSync('git', ['rev-parse', 'HEAD'], {cwd, encodin
 const versions = {workspace: revision(root), engine: revision(path.join(root, 'reference-engine')),
   baseline: packaged.baseline, folder, date: new Date().toISOString(),
   psoPrecache: packaged.psoPrecache === true,
+  defaultGameClock: 'owner',
+  localSchedulingStatus: 'rejected-after-manual-backlog-and-jitter',
   localFrameBudget: packaged.localFrameBudget ?? 0,
   localFrameBudgetMode: packaged.localFrameBudgetMode || 'submitted',
   boundary: 'Latest runtime; original audited local Cook/config reused without recooking. Lumen remains disabled.'};
@@ -22,9 +24,9 @@ const pipeline = versions.localFrameBudgetMode === 'pipeline' && versions.localF
 const link = (occlusion, clock, rhiwake, gpuahead, gpumode) => 'index.html?' + new URLSearchParams({occlusion, clock, rhiwake,
   ...(gpuahead === undefined ? {} : {gpuahead, gpumode})});
 const combinations = pipeline ? [
-  ['新版调度（推荐）', 'history', 'local', 'priority', versions.localFrameBudget, 'pipeline'],
+  ['关闭本地调度（默认）', 'history', 'owner', 'priority', 0, 'submitted'],
+  ['三帧限流实验（已否决）', 'history', 'local', 'priority', versions.localFrameBudget, 'pipeline'],
   ['旧版本地调度', 'history', 'local', 'priority', 0, 'submitted'],
-  ['关闭本地调度', 'history', 'owner', 'priority', 0, 'submitted'],
   ['上一轮修复方案', 'history', 'local', 'priority', 4, 'submitted'],
   ['新版调度 · 放宽预算', 'history', 'local', 'priority', 4, 'pipeline'],
 ] : [
@@ -34,13 +36,8 @@ const combinations = pipeline ? [
   ['D · 遮挡与本地调度均开', 'history', 'local', 'channel'],
   ['E · 只开 RHI 优先级唤醒', 'control', 'owner', 'priority'],
 ];
-const introduction = pipeline ? '新版调度限制尚未完成的帧，避免连续生产帧造成画面积压。先比较新版、旧版和关闭本地调度三个入口。' :
-  '先用下面两个入口比较。两者均开启遮挡历史与 RHI 优先级唤醒，只切换 Game 本地调度。';
-const navigation = pipeline ? `<a href="index.html">新版调度（推荐）</a>
-<a href="${link('history','local','priority',0,'submitted')}">旧版本地调度</a>
-<a href="${link('history','owner','priority',0,'submitted')}">关闭本地调度</a>` :
-  `<a href="${link('history','owner','priority')}">关闭本地调度</a>
-<a href="${link('history','local','priority')}">开启本地调度</a>`;
+const introduction = '本地调度已因画面堵塞及限流后的抖动被否决。默认使用关闭本地调度的入口，实验链接仅供复查历史问题。';
+const navigation = `<a href="${link('history','owner','priority',0,'submitted')}">关闭本地调度（默认）</a>`;
 fs.writeFileSync(path.join(output, 'comparison.html'), `<!doctype html>
 <html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>最新版本 · 调度对照</title><style>
@@ -57,7 +54,7 @@ ${versions.psoPrecache ? '<p>已开启 PSO 预缓存。请等待加载完成，�
 <p>每次只运行一个页面，启动并预热后，保持相同窗口、视角和移动路线，比较平均帧率与 1% Low。测试下一组前关闭上一组。</p>
 <h2>进一步定位</h2><table><thead><tr><th>入口</th><th>遮挡历史</th><th>本地调度</th><th>RHI 优先级</th></tr></thead><tbody>
 ${combinations.map(([name,occlusion,clock,rhiwake,ahead,mode]) => `<tr><td><a href="${link(occlusion,clock,rhiwake,ahead,mode)}">${name}</a></td><td>${occlusion==='history'?'开':'关'}</td><td>${clock==='local'?'开':'关'}</td><td>${rhiwake==='priority'?'开':'关'}</td></tr>`).join('\n')}
-</tbody></table><p>本包使用本机既有别墅资源，Lumen 关闭；所有入口使用同一运行时和资源。<a href="index.html">无参数默认入口</a></p>
+</tbody></table><p>本包使用本机既有别墅资源，Lumen 关闭；所有入口使用同一运行时和资源。<a href="${link('history','owner','priority',0,'submitted')}">默认入口（关闭本地调度）</a></p>
 <small>外围版本 ${versions.workspace.slice(0,8)} · 引擎版本 ${versions.engine.slice(0,9)} · ${folder}</small></main></html>`);
 fs.writeFileSync(path.join(output, 'serve.py'), `import argparse
 from functools import partial
@@ -90,7 +87,7 @@ finally:
     server.server_close()
 `);
 fs.writeFileSync(path.join(output, 'start.cmd'), '@echo off\r\ncd /d "%~dp0"\r\nwhere py >nul 2>nul\r\nif errorlevel 1 (\r\n  python serve.py\r\n) else (\r\n  py -3 serve.py\r\n)\r\nif errorlevel 1 pause\r\n');
-fs.writeFileSync(path.join(output, 'README.txt'), `最新调度对照包\n\n解压后运行 start.cmd，需要 Python 3。\n也可执行 python serve.py，浏览器打开 http://127.0.0.1:8875/comparison.html。\n使用支持 WebGPU / memory64 的桌面 Edge 或 Chrome。关闭服务窗口即可停止。\n\n${introduction}\n每次只运行一个页面，等待加载完成后持续移动和转向。\nPSO 预缓存：${versions.psoPrecache ? '开启' : '关闭'}。\n${pipeline ? `默认完整流水线预算 ${versions.localFrameBudget} 帧。\n` : ''}本包复用本机已有 Lumen 关闭版别墅资源；没有重新 Cook。\n\n外围版本：${versions.workspace}\n引擎版本：${versions.engine}\n资源基线：${versions.baseline}\n`);
+fs.writeFileSync(path.join(output, 'README.txt'), `最新调度对照包\n\n解压后运行 start.cmd，需要 Python 3。\n也可执行 python serve.py，浏览器打开 http://127.0.0.1:8875/comparison.html。\n使用支持 WebGPU / memory64 的桌面 Edge 或 Chrome。关闭服务窗口即可停止。\n\n${introduction}\n每次只运行一个页面，等待加载完成后持续移动和转向。\nPSO 预缓存：${versions.psoPrecache ? '开启' : '关闭'}。\n本包复用本机已有 Lumen 关闭版别墅资源；没有重新 Cook。\n\n外围版本：${versions.workspace}\n引擎版本：${versions.engine}\n资源基线：${versions.baseline}\n`);
 fs.writeFileSync(path.join(output, 'package-info.json'), JSON.stringify(versions, null, 2) + '\n');
 const report = {pass:true, ...versions, packageReport:audit(reportFile), source:audit(__filename),
   products:['comparison.html','serve.py','start.cmd','README.txt','package-info.json'].map(name=>audit(path.join(output,name)))};

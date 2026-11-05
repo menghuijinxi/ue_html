@@ -5,6 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const {MessageChannel} = require('node:worker_threads');
 const {WebInputBridge, WebInputMailbox} = require('./web-engine-host.js');
+const {performanceModes} = require('./web-performance-modes.cjs');
 const channels = [];
 
 (async () => {
@@ -24,14 +25,22 @@ const channels = [];
   }
   const defaultArgs = selectClock('');
   assert(defaultArgs.includes('-WebOcclusionMode=history'));
-  assert(defaultArgs.includes('-WebGameLocalClock'));
+  assert(!defaultArgs.includes('-WebGameLocalClock'));
   assert(defaultArgs.includes('-WebRHIWake=priority'));
   const ownerArgs = selectClock('?clock=owner&occlusion=control&rhiwake=channel');
   assert(!ownerArgs.includes('-WebGameLocalClock'));
   assert(ownerArgs.includes('-WebOcclusionMode=control'));
   assert(ownerArgs.includes('-WebRHIWake=channel'));
   assert(!selectClock('', {gameFrameBridge: 'page-raf'}).includes('-WebGameLocalClock'),
-    'Diagnostic page rAF must not also select the new default local clock');
+    'Diagnostic page rAF must not also select the local clock');
+  assert(!selectClock('', {localFrameBudget: 3, localFrameBudgetMode: 'pipeline'},
+    ['-WebGameLocalClock']).includes('-WebGameLocalClock'),
+    'Inherited local flags and a stored pipeline budget must not enable local scheduling');
+  const publishedDefaults = performanceModes();
+  assert.equal(publishedDefaults.modes.clock, 'owner');
+  assert.equal(new URLSearchParams(publishedDefaults.query).get('clock'), 'owner');
+  assert(!selectClock(publishedDefaults.query).includes('-WebGameLocalClock'));
+  assert(selectClock(performanceModes({clock: 'local'}).query).includes('-WebGameLocalClock'));
   assert(!selectClock('', {}, ['-WebFrameScheduler=2']).includes('-WebGameLocalClock'));
   assert.throws(() => selectClock('?clock=local', {gameFrameBridge: 'page-raf'}),
     /Choose one frame clock experiment/);
@@ -42,7 +51,7 @@ const channels = [];
   assert.throws(() => selectClock('?gpumode=invalid'), /Invalid local GPU budget mode/);
   assert.throws(() => selectClock('?input=invalid'), /Invalid browser input mode/);
   for (const value of ['owner-forwarded', 'direct-game-thread', 'shared-mailbox'])
-    assert(selectClock('?input=' + value).includes('-WebGameLocalClock'));
+    assert(!selectClock('?input=' + value).includes('-WebGameLocalClock'));
 
   const sent = [], frames = [];
   const legacy = new WebInputBridge({
