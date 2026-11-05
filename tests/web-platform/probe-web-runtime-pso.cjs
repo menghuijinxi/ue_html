@@ -8,6 +8,8 @@ const modes=(option('modes')||'sync,async,async,sync').split(',');assert(modes.e
 const coreLimits=option('core-limits')?.split(',').map(Number);
 assert(!coreLimits||(coreLimits.length===modes.length&&coreLimits.every(n=>[4,6,8].includes(n))));
 const disableDiskCache=option('disable-disk-cache')==='true';
+const precacheModes=option('precache')?.split(',');
+assert(!precacheModes||(precacheModes.length===modes.length&&precacheModes.every(v=>['on','off'].includes(v))));
 const schedules=option('schedules')?.split(',');
 assert(!schedules||(schedules.length===modes.length&&schedules.every(s=>['fifo','shared'].includes(s))));
 const hold=Number(option('hold')||5),warmup=Number(option('warmup')||10);
@@ -18,10 +20,10 @@ assert(hold>=1&&hold<=10&&warmup>=5&&warmup<=60);
 const output=path.join(__dirname,'results',tag),base=path.join(__dirname,'build',folder);
 assert(!fs.existsSync(output+'.json'),'Use a fresh tag');
 fs.copyFileSync(__filename,output+'-source.cjs');
-const report={date:new Date().toISOString(),folder,modes,coreLimits,schedules,disableDiskCache,hold,warmup,verifyUse,trace,captureCorpus,pass:false,runs:[],qualityOverrides:[],
+const report={date:new Date().toISOString(),folder,modes,coreLimits,precacheModes,schedules,disableDiskCache,hold,warmup,verifyUse,trace,captureCorpus,pass:false,runs:[],qualityOverrides:[],
   source:audit(output+'-source.cjs'),packageFiles:['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm',
     'content-files.json','config-files.json','web-engine-host.js','web-engine-worker.js'].map(n=>audit(path.join(base,n))),
-  boundary:'Runtime first-use PSOs only; no PSO precaching or camera warm tour. Fresh visible Edge per run; driver caches retained; optional shader disk-cache disable, UE core-limit overrides and shared-stage async scheduling recorded. Shared scheduling queues actual first-use requests only and awaits every original pipeline. Same WASM/Cook, resolution, history/local-clock/priority-wake defaults. Rare pipeline/shader creation observation and one record per submit; no resource creation wrappers, CPU profiler or additional GPU query. Submission intervals are not physical display latency. '+
+  boundary:'No camera warm tour. UE automatic component/global PSO precaching is disabled by default; optional on/off tests record startup flags and wait for its real queue/callback completion before first-tour measurement. Fresh visible Edge per run; driver caches retained; optional shader disk-cache disable, UE core-limit overrides and shared-stage async scheduling recorded. Shared scheduling queues actual requests only and awaits every original pipeline. Same WASM/Cook, resolution, history/local-clock/priority-wake defaults. Rare pipeline/shader creation observation and one record per submit; no resource creation wrappers, CPU profiler or additional GPU query. Submission intervals are not physical display latency. '+
     (verifyUse?'Diagnostic only: per-bind identity tracking enabled; do not use these timings for performance claims.':'No per-draw or per-bind wrappers.')+
     (trace||captureCorpus?' Diagnostic browser trace/descriptor capture enabled; timings excluded from normal performance claims.':' No browser trace or descriptor corpus capture.')};
 const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2)+'\n');
@@ -106,17 +108,19 @@ function summarize(data){
 let context,log;
 (async()=>{try{
   for(const mode of modes){
-    const run={index:report.runs.length+1,mode,coreLimit:coreLimits?.[report.runs.length],schedule:schedules?.[report.runs.length]||'fifo',errors:[],phases:[]};report.runs.push(run);save();
+    const run={index:report.runs.length+1,mode,coreLimit:coreLimits?.[report.runs.length],precache:precacheModes?.[report.runs.length]==='on',schedule:schedules?.[report.runs.length]||'fifo',errors:[],phases:[]};report.runs.push(run);save();
     run.idleGpu=execFileSync('nvidia-smi',['--query-gpu=utilization.gpu,memory.used','--format=csv,noheader,nounits'],
       {encoding:'utf8',windowsHide:true,timeout:10000}).trim();
     assert(run.idleGpu.split(/\r?\n/).every(l=>Number(l.split(',')[0])<=50),'GPU busy before run');
     context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/runtime-pso'),
       {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1,args:disableDiskCache?['--disable-gpu-shader-disk-cache']:[]});
-    if(run.coreLimit)await context.route('**/index.html?*',async route=>{
+    if(run.coreLimit||precacheModes)await context.route('**/index.html?*',async route=>{
       const response=await route.fetch(),html=await response.text();
       const match=html.match(/arguments: (\[[^\n]+\]),/);assert(match,'Package arguments not found');
       const args=JSON.parse(match[1]);assert(!args.some(v=>v.startsWith('-corelimit=')));
-      args.push('-corelimit='+run.coreLimit);
+      if(run.coreLimit)args.push('-corelimit='+run.coreLimit);
+      assert(!args.includes('-WebPSOPrecacheTest'),'Use a package without baked-in precaching');
+      if(run.precache)args.push('-WebPSOPrecacheTest');
       await route.fulfill({response,body:html.replace(match[0],'arguments: '+JSON.stringify(args)+',')});
     });
     await context.route('**/web-engine-worker.js?*',async route=>{
@@ -132,7 +136,7 @@ let context,log;
       if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|Ensure condition failed/.test(t))run.errors.push(t);});
     page.on('pageerror',e=>run.errors.push(e.message));page.on('crash',()=>run.errors.push('Page crashed'));
     run.url='http://127.0.0.1:8765/build/'+folder+'/index.html?pso='+mode;
-    console.log('Runtime PSO start',run.index,mode,'cores',run.coreLimit||'default');const start=Date.now();
+    console.log('Runtime PSO start',run.index,mode,'cores',run.coreLimit||'default','precache',run.precache);const start=Date.now();
     await page.goto(run.url,{waitUntil:'commit'});await page.bringToFront();
     await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=30,null,{timeout:180000});
     assert(!await page.evaluate(()=>globalThis.__webEngineFailure));run.first30FramesMs=Date.now()-start;
@@ -150,15 +154,29 @@ let context,log;
       counts:__runtimePSOCapture.counts,pending:__runtimePSOCapture.pending,failures:__runtimePSOCapture.failures,scheduling:__runtimePSOCapture.scheduling,
       usage:__runtimePSOCapture.usage,
       failure:globalThis.__webEngineFailure}));
-    run.initial=await state();assert(!run.initial.arguments.includes('-WebPSOPrecacheTest'));assert(!run.initial.pso.enabled);
+    run.initial=await state();assert.equal(run.initial.arguments.includes('-WebPSOPrecacheTest'),run.precache);assert.equal(!!run.initial.pso.enabled,run.precache);
     if(run.coreLimit){assert.equal(run.initial.threads.cores,run.coreLimit);assert.equal(run.initial.threads.taskWorkers,run.coreLimit-1);}
     assert.equal(run.initial.arguments.includes('-WebRuntimeAsyncPSO'),mode==='async');
     assert.equal(run.initial.rhi.runtimeAsyncPSO,mode==='async');
     assert.equal(run.initial.clock.mode,'local');assert.equal(run.initial.wake.active,'priority');assert(run.initial.history.enabled);
+    if(run.precache){
+      await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webPSOPrecacheReady===true,null,{timeout:180000});
+      assert(!await page.evaluate(()=>globalThis.__webEngineFailure));
+      run.precacheReadyMs=Date.now()-start;
+    }
     await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=600&&
       globalThis.__webTextureStreaming?.pending===0,null,{timeout:120000});
     assert(!await page.evaluate(()=>globalThis.__webEngineFailure));await page.waitForTimeout(warmup*1000);
-    run.ready=await state();save();
+    run.ready=await state();
+    assert.equal(run.ready.pending,0);
+    if(run.precache){
+      assert.equal(run.ready.pso.active,0);assert(run.ready.rhi.asyncPrecacheRequested>0);
+      assert.equal(run.ready.rhi.asyncPrecacheCompleted,run.ready.rhi.asyncPrecacheRequested);
+      // UE collectors can propose unsupported permutations. Only reported
+      // speculative failures are permitted; no new failure during the tour.
+      assert.equal(run.ready.failures.length,run.ready.rhi.asyncPrecacheFailed);
+    }else assert.equal(run.ready.failures.length,0);
+    save();
     async function capture(name,action){
       const before=await state();const begin=await owner.evaluate(name=>{const c=__runtimePSOCapture;c.frames=[];c.events=[];c.active=true;
         performance.mark('RuntimePSO.'+name+'.begin');return performance.now();},name);
@@ -166,7 +184,8 @@ let context,log;
       const end=await owner.evaluate(name=>{performance.mark('RuntimePSO.'+name+'.end');return performance.now();},name);
       const after=await state(),summary=summarize(data);run.phases.push({name,begin,end,before,after,summary,data});save();
       console.log(JSON.stringify({index:run.index,mode,phase:name,...summary,worst:summary.worst.slice(0,2)}));
-      assert(!run.errors.length&&!after.failure&&!after.failures.length,run.errors.join('\n'));
+      assert(!run.errors.length&&!after.failure,run.errors.join('\n'));
+      assert.equal(after.failures.length,before.failures.length,'New pipeline rejection during measurement');
     }
     await capture('standing',()=>page.waitForTimeout(5000));
     const camera=run.ready.camera;
@@ -203,7 +222,8 @@ let context,log;
       run.histogramsAfter=(await cdp.send('Browser.getHistograms')).histograms.filter(h=>/dawn|webgpu|(?:^|\.)tint(?:\.|$)/i.test(h.name));
     }
     await page.locator('canvas').screenshot({path:output+'-'+run.index+'-'+mode+'.png'});
-    run.final=await state();assert(!run.final.pso.enabled);assert.equal(run.final.rhi.asyncPrecacheRequested,0);
+    run.final=await state();assert.equal(!!run.final.pso.enabled,run.precache);
+    if(!run.precache)assert.equal(run.final.rhi.asyncPrecacheRequested,0);
     assert.equal(run.final.pending,0);assert.equal(run.final.rhi.runtimeAsyncFailed,0);
     if(mode==='async')assert(run.final.rhi.runtimeAsyncCompleted>0,'Must complete actual runtime asynchronous PSOs');
     if(verifyUse){

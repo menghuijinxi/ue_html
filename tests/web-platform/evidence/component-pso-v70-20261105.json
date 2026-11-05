@@ -1,0 +1,556 @@
+{
+  "date": "2026-11-05T09:29:17.123Z",
+  "pass": true,
+  "input": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\component-pso-v70-20261105.json",
+    "sha256": "4a2a86f792898670b57d73234cad8f9f85606792ebf3c5c0cce2b3523505dd17"
+  },
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnostics\\analyze-component-precache.cjs",
+    "sha256": "f0e28d934ec348e58e9af53f6dfd29a89acec16abb8f23b81b5607a8e81bbcc0"
+  },
+  "probe": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\component-pso-v70-20261105-source.cjs",
+    "sha256": "7c17aeee810a174dab8701b28f9f49b22c9ce1bd3ef3fb9dba236dfce5e47480"
+  },
+  "packageFiles": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-runtime-async-pso-v70\\index.html",
+      "sha256": "6c9e6563c32a58455b31ad4432adb71c3db40cdc6d77e11f700bc8e741fc6aa1"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-runtime-async-pso-v70\\UEWebEngineThreads.js",
+      "sha256": "0b6d035da03ef4e9487c6edac7c3c334b7ed62bff40358e1b964acf5a019a2a7"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-runtime-async-pso-v70\\UEWebEngineThreads.wasm",
+      "sha256": "3b16e4bfa98b25d5a7c3cb36ee7f50208f24992101826a4a304940a30fdd69d7"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-runtime-async-pso-v70\\content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-runtime-async-pso-v70\\config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-runtime-async-pso-v70\\web-engine-host.js",
+      "sha256": "fa979e5f6b08cbbe81daff05043814488aa8587b1401f41c07736a08849d1b7d"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-runtime-async-pso-v70\\web-engine-worker.js",
+      "sha256": "5680a3c2083add173f6a1c2e183aeb11db515861b30a26e3cda86c239d0743e7"
+    }
+  ],
+  "boundary": "Four fresh Edge launches, off/on/on/off, same WASM/Cook/view and three UE TaskGraph workers. Enabling UE automatic component/global precaching also activates its existing dedicated pool of eight workers and waits for real completion before the first camera tour. No camera warm tour, trace or per-bind wrapper; browser shader disk cache disabled, driver cache retained. This tests advance preparation and actual object reuse, not equal compiler concurrency or faster compilation. Frame intervals are viewport submissions, not physical presentation. Equivalent single-frame FPS is 1000 / worst frame milliseconds, not a one-second average. Request-overlapping frames are associated with PSO preparation, not pure compiler CPU time. Startup first-30-frame timing is a load milestone, not exact first visibility or interactivity. Static route only; dynamic streaming and material changes remain untested.",
+  "view": {
+    "frame": 1623,
+    "width": 1484,
+    "height": 835,
+    "outputWidth": 2289,
+    "outputHeight": 1288,
+    "antiAliasing": 4,
+    "jitterX": 0,
+    "jitterY": 0,
+    "x": 0,
+    "y": 0,
+    "outputX": 0,
+    "outputY": 0,
+    "threadId": 4,
+    "parallelRendering": true
+  },
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 0,
+    "reflections": 0,
+    "virtualShadows": 0,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1
+  },
+  "camera": {
+    "x": 410.7359315721519,
+    "y": -478.05903852213453,
+    "z": 156.64842176437378,
+    "pitch": 0,
+    "yaw": 89.99945068359375
+  },
+  "runs": [
+    {
+      "index": 1,
+      "precache": false,
+      "taskWorkers": 3,
+      "precachePool": 0,
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Edg/156.0.4314.58",
+        "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "jsVersion": "15.6.12.10"
+      },
+      "idleGpu": "0, 1535",
+      "arguments": [
+        "./this.program",
+        "-webgpu",
+        "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+        "-corelimit=4",
+        "-WebDesktop",
+        "-WebOcclusionMode=history",
+        "-WebGameLocalClock",
+        "-WebRHIWake=priority",
+        "-WebRuntimeAsyncPSO"
+      ],
+      "first30FramesMs": 11267,
+      "ready": {
+        "requested": 0,
+        "completed": 0,
+        "failed": 0,
+        "unsupportedSpeculativeRequests": 0,
+        "active": 0,
+        "pending": 0
+      },
+      "used": {
+        "before": 0,
+        "after": 0,
+        "new": 0
+      },
+      "firstTour": {
+        "maximumMs": 235.61500000953674,
+        "over50": 2,
+        "over100": 1,
+        "equivalentSingleFrameFps": 4.244211955773292,
+        "creations": {
+          "createShaderModule": 10,
+          "createRenderPipelineAsync": 15
+        },
+        "events": [
+          {
+            "startOffsetMs": 5122.230000004172,
+            "pendingSpanMs": 203.01500000059605,
+            "requests": [
+              {
+                "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+                "startMs": 0,
+                "completedMs": 92.57500000298023
+              },
+              {
+                "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                "startMs": 0.09999999403953552,
+                "completedMs": 75.25
+              },
+              {
+                "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                "startMs": 0.1550000011920929,
+                "completedMs": 75.28499999642372
+              },
+              {
+                "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+                "startMs": 75.50499999523163,
+                "completedMs": 109.4299999922514
+              },
+              {
+                "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                "startMs": 77.09000000357628,
+                "completedMs": 82.35500000417233
+              },
+              {
+                "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                "startMs": 82.5,
+                "completedMs": 83.40000000596046
+              },
+              {
+                "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+                "startMs": 83.58499999344349,
+                "completedMs": 116.06499999761581
+              },
+              {
+                "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+                "startMs": 92.77500000596046,
+                "completedMs": 93.82500000298023
+              },
+              {
+                "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+                "startMs": 93.95999999344349,
+                "completedMs": 124.29999999701977
+              },
+              {
+                "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+                "startMs": 109.62999999523163,
+                "completedMs": 110.53999999165535
+              },
+              {
+                "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+                "startMs": 115.56000000238419,
+                "completedMs": 130.34999999403954
+              },
+              {
+                "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+                "startMs": 116.20999999344349,
+                "completedMs": 203.01500000059605
+              },
+              {
+                "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+                "startMs": 124.56000000238419,
+                "completedMs": 202.51999999582767
+              },
+              {
+                "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+                "startMs": 130.5549999922514,
+                "completedMs": 146.28999999165535
+              },
+              {
+                "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+                "startMs": 146.51999999582767,
+                "completedMs": 176.7199999988079
+              }
+            ],
+            "frames": [
+              {
+                "frame": 2679,
+                "ms": 235.61500000953674,
+                "startMs": -30.135000005364418,
+                "endMs": 205.48000000417233
+              }
+            ],
+            "associated": {
+              "maximumMs": 235.61500000953674,
+              "over50": 1,
+              "over100": 1
+            },
+            "submissionsWhilePending": 0,
+            "post500ms": {
+              "maximumMs": 20.59000000357628,
+              "over50": 0,
+              "over100": 0
+            }
+          }
+        ],
+        "outsidePSOFramesOver50": [
+          {
+            "frame": 4854,
+            "ms": 66.95499999821186,
+            "offsetMs": 20232.905000001192
+          }
+        ]
+      },
+      "repeatTour": {
+        "maximumMs": 67.01500000059605,
+        "over50": 1,
+        "over100": 0,
+        "creations": {}
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\component-pso-v70-20261105-1-async.png",
+        "sha256": "4bd2dd2204f6cb24590d99c89bcc462ef6a0191e40770bedc61fd9feef9c07eb"
+      }
+    },
+    {
+      "index": 2,
+      "precache": true,
+      "taskWorkers": 3,
+      "precachePool": 8,
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Edg/156.0.4314.58",
+        "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "jsVersion": "15.6.12.10"
+      },
+      "idleGpu": "36, 1570",
+      "arguments": [
+        "./this.program",
+        "-webgpu",
+        "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+        "-corelimit=4",
+        "-WebPSOPrecacheTest",
+        "-WebDesktop",
+        "-WebOcclusionMode=history",
+        "-WebGameLocalClock",
+        "-WebRHIWake=priority",
+        "-WebRuntimeAsyncPSO"
+      ],
+      "first30FramesMs": 15323,
+      "precacheReadyObservedMs": 15437,
+      "ready": {
+        "requested": 1121,
+        "completed": 1121,
+        "failed": 0,
+        "unsupportedSpeculativeRequests": 834,
+        "active": 0,
+        "pending": 0
+      },
+      "used": {
+        "before": 70,
+        "after": 85,
+        "new": 15
+      },
+      "firstTour": {
+        "maximumMs": 34.019999995827675,
+        "over50": 0,
+        "over100": 0,
+        "equivalentSingleFrameFps": 29.39447384252332,
+        "creations": {},
+        "events": [],
+        "outsidePSOFramesOver50": []
+      },
+      "repeatTour": {
+        "maximumMs": 35.17000000178814,
+        "over50": 0,
+        "over100": 0,
+        "creations": {}
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\component-pso-v70-20261105-2-async.png",
+        "sha256": "4070a2fd28e53df316918e9062998b8ca90a8a79eed787d69fcb8584f41aad8c"
+      }
+    },
+    {
+      "index": 3,
+      "precache": true,
+      "taskWorkers": 3,
+      "precachePool": 8,
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Edg/156.0.4314.58",
+        "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "jsVersion": "15.6.12.10"
+      },
+      "idleGpu": "32, 1573",
+      "arguments": [
+        "./this.program",
+        "-webgpu",
+        "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+        "-corelimit=4",
+        "-WebPSOPrecacheTest",
+        "-WebDesktop",
+        "-WebOcclusionMode=history",
+        "-WebGameLocalClock",
+        "-WebRHIWake=priority",
+        "-WebRuntimeAsyncPSO"
+      ],
+      "first30FramesMs": 15029,
+      "precacheReadyObservedMs": 15047,
+      "ready": {
+        "requested": 1121,
+        "completed": 1121,
+        "failed": 0,
+        "unsupportedSpeculativeRequests": 834,
+        "active": 0,
+        "pending": 0
+      },
+      "used": {
+        "before": 70,
+        "after": 85,
+        "new": 15
+      },
+      "firstTour": {
+        "maximumMs": 38.48499999940395,
+        "over50": 0,
+        "over100": 0,
+        "equivalentSingleFrameFps": 25.98414966910453,
+        "creations": {},
+        "events": [],
+        "outsidePSOFramesOver50": []
+      },
+      "repeatTour": {
+        "maximumMs": 45.70000000298023,
+        "over50": 0,
+        "over100": 0,
+        "creations": {}
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\component-pso-v70-20261105-3-async.png",
+        "sha256": "83999ca2fb07fa00d626ede697b02c81f398c91970bbcd2e1151e84b117001a1"
+      }
+    },
+    {
+      "index": 4,
+      "precache": false,
+      "taskWorkers": 3,
+      "precachePool": 0,
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Edg/156.0.4314.58",
+        "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "jsVersion": "15.6.12.10"
+      },
+      "idleGpu": "37, 1571",
+      "arguments": [
+        "./this.program",
+        "-webgpu",
+        "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+        "-corelimit=4",
+        "-WebDesktop",
+        "-WebOcclusionMode=history",
+        "-WebGameLocalClock",
+        "-WebRHIWake=priority",
+        "-WebRuntimeAsyncPSO"
+      ],
+      "first30FramesMs": 11519,
+      "ready": {
+        "requested": 0,
+        "completed": 0,
+        "failed": 0,
+        "unsupportedSpeculativeRequests": 0,
+        "active": 0,
+        "pending": 0
+      },
+      "used": {
+        "before": 0,
+        "after": 0,
+        "new": 0
+      },
+      "firstTour": {
+        "maximumMs": 177.73999999463558,
+        "over50": 1,
+        "over100": 1,
+        "equivalentSingleFrameFps": 5.6261955667276995,
+        "creations": {
+          "createShaderModule": 10,
+          "createRenderPipelineAsync": 15
+        },
+        "events": [
+          {
+            "startOffsetMs": 5082.7249999940395,
+            "pendingSpanMs": 161.6550000011921,
+            "requests": [
+              {
+                "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+                "startMs": 0,
+                "completedMs": 55.894999995827675
+              },
+              {
+                "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                "startMs": 0.07500000298023224,
+                "completedMs": 38.67000000178814
+              },
+              {
+                "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                "startMs": 0.16500000655651093,
+                "completedMs": 38.70499999821186
+              },
+              {
+                "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+                "startMs": 38.93000000715256,
+                "completedMs": 72.26500000059605
+              },
+              {
+                "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                "startMs": 40.54000000655651,
+                "completedMs": 45.80500000715256
+              },
+              {
+                "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                "startMs": 45.96500000357628,
+                "completedMs": 46.82500000298023
+              },
+              {
+                "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+                "startMs": 46.99500000476837,
+                "completedMs": 77.92000000178814
+              },
+              {
+                "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+                "startMs": 56.05500000715256,
+                "completedMs": 57.025000005960464
+              },
+              {
+                "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+                "startMs": 57.185000002384186,
+                "completedMs": 86.88500000536442
+              },
+              {
+                "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+                "startMs": 72.48000000417233,
+                "completedMs": 73.38500000536442
+              },
+              {
+                "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+                "startMs": 78.37000000476837,
+                "completedMs": 92.34000000357628
+              },
+              {
+                "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+                "startMs": 78.51000000536442,
+                "completedMs": 161.62000000476837
+              },
+              {
+                "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+                "startMs": 87.10999999940395,
+                "completedMs": 161.6550000011921
+              },
+              {
+                "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+                "startMs": 92.47499999403954,
+                "completedMs": 106.74500000476837
+              },
+              {
+                "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+                "startMs": 106.93500000238419,
+                "completedMs": 134.9050000011921
+              }
+            ],
+            "frames": [
+              {
+                "frame": 2754,
+                "ms": 177.73999999463558,
+                "startMs": -13.765000000596046,
+                "endMs": 163.97499999403954
+              }
+            ],
+            "associated": {
+              "maximumMs": 177.73999999463558,
+              "over50": 1,
+              "over100": 1
+            },
+            "submissionsWhilePending": 0,
+            "post500ms": {
+              "maximumMs": 16.70999999344349,
+              "over50": 0,
+              "over100": 0
+            }
+          }
+        ],
+        "outsidePSOFramesOver50": []
+      },
+      "repeatTour": {
+        "maximumMs": 33.29000000655651,
+        "over50": 0,
+        "over100": 0,
+        "creations": {}
+      },
+      "screenshot": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\component-pso-v70-20261105-4-async.png",
+        "sha256": "d85fe526313277bea416ebb285b272265b394f3a668b8a1d3338987b4d863059"
+      }
+    }
+  ],
+  "groups": [
+    {
+      "precache": false,
+      "runs": 2,
+      "medianFirstTourWorstFrameMs": 206.67750000208616,
+      "equivalentSingleFrameFps": 4.838456048626029,
+      "medianFirst30FramesMs": 11393,
+      "firstTourFramesOver100": 2
+    },
+    {
+      "precache": true,
+      "runs": 2,
+      "medianFirstTourWorstFrameMs": 36.252499997615814,
+      "equivalentSingleFrameFps": 27.58430453253613,
+      "medianFirst30FramesMs": 15176,
+      "firstTourFramesOver100": 0
+    }
+  ]
+}
