@@ -12,7 +12,11 @@ const runtimeFile = path.join(__dirname, 'results', `motion-blur-ab-${tag}-runti
 const packaged = read(packageFile), runtime = read(runtimeFile);
 assert(packaged.pass && packaged.renderMatrix && runtime.pass);
 assert.equal(audit(packageFile).sha256, runtime.package.sha256);
-const expected = [
+const motionMatrix = packaged.comparisonAxis === 'motion-blur';
+const expected = motionMatrix ? [
+  ['no-lumen-blur', 0, 4, 1, 4], ['lumen-no-blur', 1, 4, 1, 0],
+  ['lumen-blur-lag0', 1, 4, 0, 4], ['lumen-blur-lag1', 1, 4, 1, 4],
+] : [
   ['no-lumen-aa', 0, 4, 1], ['lumen-no-aa', 1, 0, 1],
   ['lumen-aa-lag0', 1, 4, 0], ['lumen-aa-lag1', 1, 4, 1],
 ];
@@ -31,7 +35,7 @@ for (const name of ['UEWebEngineThreads.js', 'UEWebEngineThreads.wasm']) {
   assert(product);
   assert.equal(reference.get(name), product.sha256, 'Variants must use the newly compiled runtime');
 }
-const entries = expected.map(([name, lumen, aa, lag], index) => {
+const entries = expected.map(([name, lumen, aa, lag, blurQuality], index) => {
   const entry = packaged.cases[index], run = runtime.runs[index];
   assert.equal(entry.name, name);
   assert.equal(run.name, name);
@@ -42,6 +46,12 @@ const entries = expected.map(([name, lumen, aa, lag], index) => {
   assert.equal(entry.settings['r.AntiAliasingMethod'], aa);
   assert.equal(entry.settings['r.OneFrameThreadLag'], lag);
   assert.equal(entry.settings['t.MaxFPS'], 0);
+  if (motionMatrix) {
+    assert.equal(entry.settings['r.MotionBlurQuality'], blurQuality);
+    assert.equal(run.state.view.antiAliasing, 4);
+    assert.equal((run.state.probe.resources['MotionBlur.SceneColor'] || 0) > 0, blurQuality > 0);
+    assert.equal((run.state.probe.bindings['MotionBlur.SceneColor'] || 0) > 0, blurQuality > 0);
+  }
   assert.deepEqual([run.errors, run.state.probe.errors, run.state.probe.losses], [[], [], []]);
   for (const item of entry.products) {
     assert.equal(audit(item.file).sha256, item.sha256, item.file);
@@ -70,10 +80,11 @@ const entries = expected.map(([name, lumen, aa, lag], index) => {
       gameClock: run.state.gameClock, rhiWake: run.state.rhiWake,
       historyEnabled: run.state.history.enabled, inputMode: run.input.mode,
       cpuTraceSamples: run.state.cpuTraceSamples},
-    resources: run.state.probe.resources, image: run.image,
+    resources: run.state.probe.resources, bindings: run.state.probe.bindings, image: run.image,
     files: entry.products.filter(item => /(?:config-files\.json|index\.html|UEWebEngineThreads\.(?:js|wasm))$/.test(item.file))};
 });
 const evidence = {date: new Date().toISOString(), pass: true, package: audit(packageFile),
+  comparisonAxis: packaged.comparisonAxis || 'anti-aliasing',
   runtime: audit(runtimeFile), baseline: audit(baselineFile), build: baseline.build,
   source: audit(__filename), cases: entries,
   boundary: 'Configuration, shared payload, real rendering passes, camera input and error checks passed. Functional probes include wrappers and are not a performance benchmark or a subjective mouse-stutter verdict.'};

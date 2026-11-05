@@ -13,9 +13,11 @@ const packageFile = path.join(__dirname, 'results', `motion-blur-ab-${tag}-packa
 const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
 assert(packaged.pass);
 const renderMatrix = packaged.renderMatrix === true;
+const profileRoot = path.resolve(option('profile-root') || path.join(__dirname, 'build/browser-profiles'));
 const output = path.join(__dirname, 'results', `motion-blur-ab-${tag}-runtime`);
 assert(!fs.existsSync(output + '.json'), 'Preserve previous measurements; use a new tag');
 const report = {date: new Date().toISOString(), pass: false, package: audit(packageFile),
+  profileRoot,
   source: audit(__filename), runs: [], boundary: 'Functional verification of the packaged configurations, not a subjective shaking or mouse-latency verdict. Diagnostic GPU wrappers add overhead. FPS measures RHI submission intervals, not physical presentation.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
 let context;
@@ -102,7 +104,7 @@ function summarize(presents) {
     for (const entry of [...(renderMatrix ? [] : [{name: 'baseline', folder: packaged.baseline, settings: {}}]), ...packaged.cases]) {
       const run = {name: entry.name, folder: entry.folder, settings: entry.settings, errors: [], applied: {}};
       report.runs.push(run); save();
-      const profile = path.join(__dirname, 'build/browser-profiles', `motion-ab-${tag}-${entry.name}`);
+      const profile = path.join(profileRoot, `motion-ab-${tag}-${entry.name}`);
       context = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: true,
         viewport: {width: 1280, height: 720}, deviceScaleFactor: 1});
       run.affinity = pinBrowser(profile);
@@ -176,8 +178,10 @@ function summarize(presents) {
         assert.equal(run.state.history.enabled, true);
         assert(run.state.arguments.includes('-WebOcclusionMode=history'));
         assert(run.state.arguments.includes('-WebGameLocalClock'));
-        assert(motionBlur > 0 && (run.state.probe.bindings['MotionBlur.SceneColor'] || 0) > 0,
-          'All four cases must execute the original motion blur');
+        const blurEnabled = entry.settings['r.MotionBlurQuality'] !== 0;
+        assert.equal(motionBlur > 0, blurEnabled, 'Motion blur output must match the requested mode');
+        assert.equal((run.state.probe.bindings['MotionBlur.SceneColor'] || 0) > 0, blurEnabled,
+          'Actual motion blur use must match the requested mode');
         assert.equal(lumen > 0, gi === 1, 'Actual Lumen resources must match the requested mode');
         const tsr = Object.entries(resources).filter(([label]) => label.startsWith('TSR.'))
           .reduce((total, [, count]) => total + count, 0);

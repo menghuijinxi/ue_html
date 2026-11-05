@@ -2,6 +2,32 @@
 
 日期：2026-11-05。
 
+## 当前对照：动态模糊
+
+用户更正：需要比较动态模糊开关，抗锯齿不是本轮变量。以下入口替代上一轮抗锯齿对照，四组统一保留 TSR（`r.AntiAliasingMethod=4`），不限帧率，沿用刚合并并编译的性能优化运行时 `triplex-perf-merged-20261105`。
+
+| 组别 | Lumen GI / 反射 | 动态模糊 | r.OneFrameThreadLag | 入口 |
+| --- | --- | --- | --- | --- |
+| A | 关闭 | 开启 | 1 | [打开 A](http://127.0.0.1:8765/build/triplex-motion-no-lumen-blur-20261105-blur/index.html) |
+| B | 开启 | 关闭 | 1 | [打开 B](http://127.0.0.1:8765/build/triplex-motion-lumen-no-blur-20261105-blur/index.html) |
+| C | 开启 | 开启 | 0 | [打开 C](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag0-20261105-blur/index.html) |
+| D | 开启 | 开启 | 1 | [打开 D](http://127.0.0.1:8765/build/triplex-motion-lumen-blur-lag1-20261105-blur/index.html) |
+
+动态模糊开启时使用与原项目相同的质量 4，保持原来的 Amount / TargetFPS；关闭时仅设置 `r.MotionBlurQuality=0`。四组 JS/WASM、Cook、输入与调度代码相同，只修改配置、标题及资源清单，C / D 的配置只差线程参数。上一轮入口与证据保留为历史，下面原来的验证描述对应标签 `20261105-perf`。
+
+本轮使用 `--motion-matrix` 打包，标签为 `20261105-blur`。运行探针会核对动态模糊输出的创建和实际绑定；B 两项必须为零，其余三组必须大于零，同时每组都检查 TSR、Lumen 和鼠标转向。测试浏览器 profile 新建在 C 盘临时目录 `ue-web-motion-20261105`，避免继续占用 H 盘空间，不清理或覆盖已有 profile。
+
+四组均已在独立 Edge 会话中通过启动、实际鼠标转向和截图像素检查，最终相机 AA 全部为 4。A 没有 Lumen screen probe；B 的动态模糊输出与绑定均为零；A / C / D 均创建并使用动态模糊输出。四组都启用原有 TSR、有效遮挡历史、Game 本地时钟和 RHI priority 唤醒，未启用 CPU 取证，未捕获 GPU validation、device lost 或运行错误。四个入口 HTTP 200 与隔离响应头通过，所有本轮测试浏览器均已关闭。
+
+文件和配置核验通过，四组 JS/WASM 与上一轮完整编译记录匹配；除配置、标题与清单外，所有文件保持同一基线。可携带证据为 `tests/web-platform/evidence/render-matrix-20261105-blur.json`，完整记录为 `tests/web-platform/results/motion-blur-ab-20261105-blur-runtime*`。本轮只重打配置包，没有修改或重编引擎；鼠标卡顿及抖动的体验仍待人工对比。
+
+```powershell
+node tests/web-platform/package-web-motion-blur-ab.cjs --motion-matrix --baseline=triplex-perf-merged-20261105 --tag=20261105-blur
+$env:NODE_PATH='C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/probe-web-motion-blur-ab.cjs --tag=20261105-blur "--profile-root=$env:TEMP/ue-web-motion-20261105"
+node tests/web-platform/verify-web-render-matrix.cjs --tag=20261105-blur
+```
+
 ## 背景与合并
 
 用户反馈旧包设置 `r.OneFrameThreadLag=0` 后严重抖动明显减轻，键盘移动没有明显卡顿，但鼠标转向仍有很强的卡顿感。本轮按用户要求先合并最新性能优化，再准备四个独立入口，不将已有线程同步候选表述为完整修复。
@@ -10,7 +36,7 @@
 
 冲突处理同时保留有效遮挡历史、Game 本地调度、RHI 优先级唤醒，以及原有默认关闭的输入直连、共享输入队列、页面 RAF 和动态模糊 CPU 取证。显式页面 RAF 不再同时隐式启用本地帧时钟，冲突的时钟组合会明确拒绝。输入、共享队列回绕与溢出、取消回调、本地调度暂停和恢复的回归检查通过。
 
-## 四组配置
+## 历史：抗锯齿对照
 
 新运行时基线目录为 `triplex-perf-merged-20261105`，四组打包标签为 `20261105-perf`。同一基线的运行时、场景 Cook、输入方式及分辨率配置在四组之间完全相同。动态模糊沿用项目设置，所有版本都不限制 FPS，CPU 取证默认关闭。
 
