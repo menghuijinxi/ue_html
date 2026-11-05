@@ -5,8 +5,10 @@ const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const folder = option('folder') || 'villa-scheduling-latest-v71', tag = option('tag');
 assert(tag && [folder, tag].every(value => /^[a-z0-9-]+$/.test(value)));
+const profile = option('profile') || tag;
+assert(/^[a-z0-9-]+$/.test(profile));
 const modes = (option('modes') || 'owner,local,local,owner').split(',');
-assert(modes.every(value => ['owner', 'local', 'local2', 'local4', 'local8'].includes(value)));
+assert(modes.every(value => /^(owner|local|local[1-8]|pipeline[1-8])$/.test(value)));
 const duration = Number(option('seconds') || 20);
 const width = Number(option('width') || 2289), height = Number(option('height') || 1287);
 const scale = Number(option('scale') || 1);
@@ -14,14 +16,24 @@ const gpuProbe = process.argv.includes('--gpu-probe');
 const rhiWake = option('rhiwake') || 'priority';
 const minVisibleRatio = Number(option('min-visible-ratio') || 0);
 const visibilityCheck = process.argv.includes('--visibility-check');
+const pipeline = process.argv.includes('--pipeline');
+const chromeTrace = process.argv.includes('--chrome-trace');
+const inputMode = option('input') || 'owner-forwarded';
+const packagedInput = process.argv.includes('--packaged-input');
+const defaultSettings = process.argv.includes('--default-settings');
+assert(['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode));
+assert(!defaultSettings || (modes.length === 1 && packagedInput));
+const pipelineObserver = require('./web-local-pipeline-observer.cjs');
 assert(['priority', 'channel'].includes(rhiWake));
 assert(minVisibleRatio >= 0 && minVisibleRatio <= 1);
 assert(duration >= 8 && duration <= 60 && width >= 640 && height >= 480 && scale >= 1 && scale <= 2);
 const base = path.join(__dirname, 'build', folder), output = path.join(__dirname, 'results', tag);
 assert(!fs.existsSync(output + '.json'));
 fs.copyFileSync(__filename, output + '-source.cjs');
-const report = {date: new Date().toISOString(), pass: false, folder, modes, duration, width, height, scale, gpuProbe, rhiWake,
-  minVisibleRatio, visibilityCheck, source: audit(__filename), capturedSource: audit(output + '-source.cjs'),
+const report = {date: new Date().toISOString(), pass: false, folder, profile, modes, duration, width, height, scale, gpuProbe, rhiWake,
+  minVisibleRatio, visibilityCheck, pipeline, chromeTrace, inputMode, packagedInput, defaultSettings,
+  source: audit(__filename), capturedSource: audit(output + '-source.cjs'),
+  observerSource: pipeline ? audit(path.join(__dirname, 'web-local-pipeline-observer.cjs')) : undefined,
   runs: [], files: ['index.html', 'UEWebEngineThreads.js', 'config-files.json',
     'web-engine-host.js', 'web-engine-worker.js'].map(name => audit(path.join(base, name))),
   boundary: 'Continuous DOM mouse/keyboard events through the packaged input bridge; light submission hook, no draw wrappers. Each run repeats a motion warmup before measurement. Submission throughput is not physical display FPS. Actual trajectories and background GPU utilization must be considered.'};
@@ -96,17 +108,51 @@ function distribution(times) {
 let context, log;
 (async () => {try {
   for (const mode of modes) {
-    const clock = mode === 'owner' ? 'owner' : 'local', ahead = Number(mode.slice(5)) || 0;
+    const clock = mode === 'owner' ? 'owner' : 'local', ahead = Number(mode.match(/[1-8]$/)?.[0]) || 0;
+    const budgetMode = mode.startsWith('pipeline') ? 'pipeline' : 'submitted';
     assert(!ahead || !gpuProbe, 'The budget already registers its own GPU completion callbacks');
     const run = {index: report.runs.length + 1, mode, errors: [], samples: []};
     report.runs.push(run); save();
     console.log('Moving clock start', run.index, mode);
-    context = await chromium.launchPersistentContext(path.join(process.env.TEMP, 'ue-web-clock-motion', tag),
+    context = await chromium.launchPersistentContext(path.join(process.env.TEMP, 'ue-web-clock-motion', profile),
       {channel: 'msedge', headless: false, viewport: {width, height}, deviceScaleFactor: scale});
+    let diagnosticUrl;
+    if (pipeline) {
+      let source = fs.readFileSync(path.join(base, 'UEWebEngineThreads.js'), 'utf8');
+      const marker = 'var WebThreadBridge = '; assert.equal(source.split(marker).length, 2);
+      source = source.replace(marker, '(' + pipelineObserver.game.toString() + ')();\n' + marker);
+      const file = output + '-runtime.js';
+      fs.writeFileSync(file, source); run.diagnosticRuntime = audit(file);
+      diagnosticUrl = 'http://127.0.0.1:8765/results/' + path.basename(file);
+    }
+    if (!packagedInput || pipeline) await context.route('**/web-engine-host.js?*', async route => {
+      const response = await route.fetch();
+      let body = await response.text();
+      const marker = '  const experiment = new URLSearchParams(location.search);';
+      assert.equal(body.split(marker).length, 2);
+      body = body.replace(marker, `  assets = {...assets, inputTrace: true${packagedInput ? '' :
+        ', inputBridge: ' + JSON.stringify(inputMode)}};\n` + marker);
+      if (pipeline) {
+        const marker = "const message = {type: 'inputs', sequence, events: items.map(v => v.values)};";
+        assert.equal(body.split(marker).length, 2);
+        body = body.replace(marker, marker + '\nmessage.pipelineFirst = items[0].first; message.pipelineLast = items.at(-1).last; message.pipelineSent = performance.timeOrigin + performance.now();');
+      }
+      await route.fulfill({response, body});
+    });
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
+      let body = await response.text();
+      if (pipeline) {
+        const marker = 'const diagnosticStateKeys = [';
+        assert.equal(body.split(marker).length, 2);
+        body = body.replace(marker, '(' + pipelineObserver.owner.toString() + ')();\n' + marker);
+        const versioned = "const versioned = name => name + '?v=' + assets.versions[name];";
+        assert.equal(body.split(versioned).length, 2);
+        body = body.replace(versioned, 'const versioned = name => name === assets.runtime ? ' +
+          JSON.stringify(diagnosticUrl) + " : name + '?v=' + assets.versions[name];");
+      }
       await route.fulfill({response, body: '(' + presents.toString() + ')();\n' +
-        (gpuProbe ? '(' + gpuCompletions.toString() + ')();\n' : '') + await response.text()});
+        (gpuProbe ? '(' + gpuCompletions.toString() + ')();\n' : '') + body});
     });
     const page = context.pages()[0], cdp = await context.newCDPSession(page);
     await cdp.send('Emulation.setFocusEmulationEnabled', {enabled: true});
@@ -117,14 +163,19 @@ let context, log;
     });
     page.on('pageerror', error => run.errors.push(error.message));
     page.on('crash', () => run.errors.push('Renderer crashed'));
-    run.url = `http://127.0.0.1:8765/build/${folder}/index.html?occlusion=history&clock=${clock}&gpuahead=${ahead}&rhiwake=${rhiWake}`;
+    run.url = `http://127.0.0.1:8765/build/${folder}/index.html?occlusion=history&clock=${clock}&gpuahead=${ahead}&gpumode=${budgetMode}&rhiwake=${rhiWake}`;
+    if (packagedInput) run.url += '&input=' + inputMode;
+    if (defaultSettings) run.url = `http://127.0.0.1:8765/build/${folder}/index.html`;
     await page.goto(run.url, {waitUntil: 'commit'});
     await page.bringToFront();
     await page.waitForFunction(() => globalThis.__webEngineFailure ||
       (globalThis.__webEngineFrames >= 200 && globalThis.__webTextureStreaming?.pending === 0),
     null, {timeout: 180000});
-    assert(!await page.evaluate(() => globalThis.__webEngineFailure));
+    const startupFailure = await page.evaluate(() => globalThis.__webEngineFailure);
+    assert(!startupFailure, startupFailure);
     const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js')); assert(owner);
+    run.inputBridge = await page.evaluate(() => __webInputBridge);
+    assert.equal(run.inputBridge.mode, inputMode);
     const state = () => owner.evaluate(() => ({time: performance.now(), frame: __webRHIFrames,
       game: __webEngineFrames, stages: __webThreadStages, camera: __webDefaultCamera,
       clock: __webGameFrameClock, history: __webOcclusionHistory, occlusion: __webOcclusionRHI,
@@ -140,8 +191,20 @@ let context, log;
     run.before = await state();
     assert.equal(run.before.clock.mode, clock);
     if (ahead) assert.equal(run.before.budget.maxAhead, ahead);
+    if (budgetMode === 'pipeline') assert.equal(run.before.budget.mode, budgetMode);
     assert.equal(run.before.history.enabled, true);
     await owner.evaluate(() => {__clockMotionFrames.times = []; __clockMotionFrames.active = true;});
+    if (pipeline) await owner.evaluate(() => {
+      __webPipelineCapture.start = performance.timeOrigin + performance.now();
+      __webPipelineCapture.active = true;
+    });
+    let traceComplete;
+    if (chromeTrace) {
+      traceComplete = new Promise(resolve => cdp.once('Tracing.tracingComplete', resolve));
+      await cdp.send('Tracing.start', {categories: 'cc,viz,benchmark,blink.user_timing',
+        transferMode: 'ReturnAsStream'});
+      await page.evaluate(() => performance.mark('UE motion trace start'));
+    }
     await page.evaluate(motionStart, duration);
     while (!await page.evaluate(() => __clockMotionInput.done)) {
       await page.waitForTimeout(500);
@@ -152,6 +215,41 @@ let context, log;
       __clockMotionFrames.active = false; return __clockMotionFrames.times;
     });
     run.after = await state();
+    const runtimeFailure = await page.evaluate(() => globalThis.__webEngineFailure);
+    assert(!runtimeFailure, runtimeFailure);
+    if (budgetMode === 'pipeline') assert(run.after.budget.peak <= ahead, 'Pipeline budget overshot');
+    if (chromeTrace) {
+      await page.evaluate(() => performance.mark('UE motion trace end'));
+      await cdp.send('Tracing.end');
+      const {stream} = await traceComplete, file = output + '-' + run.index + '-trace.json';
+      const descriptor = fs.openSync(file, 'w');
+      try {
+        for (;;) {
+          const chunk = await cdp.send('IO.read', {handle: stream, size: 1024 * 1024});
+          fs.writeSync(descriptor, Buffer.from(chunk.data, chunk.base64Encoded ? 'base64' : 'utf8'));
+          if (chunk.eof) break;
+        }
+      } finally {fs.closeSync(descriptor); await cdp.send('IO.close', {handle: stream});}
+      run.trace = audit(file);
+    }
+    if (pipeline) {
+      await owner.evaluate(() => {
+        __webPipelineCapture.active = false;
+        __webPipelineCapture.end = performance.timeOrigin + performance.now();
+      });
+      await page.waitForTimeout(500);
+      run.pipeline = await owner.evaluate(async () => {
+        const channel = new MessageChannel();
+        const game = await new Promise(resolve => {
+          channel.port1.onmessage = ({data}) => {channel.port1.close(); resolve(data);};
+          __webGameThreadWorker.postMessage({type: 'web-pipeline-read', port: channel.port2}, [channel.port2]);
+        });
+        return {...__webPipelineCapture, game};
+      });
+      const {start, end} = run.pipeline;
+      run.pipeline.game.frames = run.pipeline.game.frames.filter(frame => frame.begin >= start && frame.begin <= end);
+      assert(run.pipeline.game.frames.length > 20 && run.pipeline.tasks.length > 20 && run.pipeline.gpu.length > 20);
+    }
     if (gpuProbe) {
       await page.waitForTimeout(1000);
       run.gpu = await owner.evaluate(() => __clockMotionGPU);

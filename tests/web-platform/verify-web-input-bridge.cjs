@@ -38,6 +38,11 @@ const channels = [];
   for (const value of ['-1', '9', '1.5', 'invalid'])
     assert.throws(() => selectClock('?gpuahead=' + value), /Invalid local GPU frame budget/);
   assert(selectClock('?clock=local&gpuahead=4').includes('-WebGameLocalClock'));
+  assert(selectClock('?clock=local&gpuahead=3&gpumode=pipeline').includes('-WebGameLocalClock'));
+  assert.throws(() => selectClock('?gpumode=invalid'), /Invalid local GPU budget mode/);
+  assert.throws(() => selectClock('?input=invalid'), /Invalid browser input mode/);
+  for (const value of ['owner-forwarded', 'direct-game-thread', 'shared-mailbox'])
+    assert(selectClock('?input=' + value).includes('-WebGameLocalClock'));
 
   const sent = [], frames = [];
   const legacy = new WebInputBridge({

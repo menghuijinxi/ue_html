@@ -22,18 +22,19 @@ function connectInputPort() {
 let frameScheduler;
 let localFrameBudget, localGpuQueue;
 let rhiWakePriority = false;
-function createWebLocalFrameBudget(maxAhead) {
+function createWebLocalFrameBudget(maxAhead, mode = 'submitted') {
   if (!Number.isInteger(maxAhead) || maxAhead < 1 || maxAhead > 8)
     throw new Error('Invalid local frame budget');
-  const state = new Int32Array(new SharedArrayBuffer(12));
-  const diagnostics = {maxAhead, submitted: 0, completed: 0, pending: 0, peak: 0, wakes: 0};
+  if (!['submitted', 'pipeline'].includes(mode)) throw new Error('Invalid local frame budget mode');
+  const state = new Int32Array(new SharedArrayBuffer(mode === 'pipeline' ? 16 : 12));
+  const diagnostics = {maxAhead, mode, submitted: 0, completed: 0, pending: 0, peak: 0, wakes: 0};
   let game;
   return {
     state, diagnostics,
     attach(worker) {
       if (game) throw new Error('Local frame budget attached twice');
       game = worker;
-      game.postMessage({type: 'web-game-local-budget', buffer: state.buffer, maxAhead});
+      game.postMessage({type: 'web-game-local-budget', buffer: state.buffer, maxAhead, mode});
     },
     submit(queue) {
       const sequence = ++diagnostics.submitted;
@@ -46,7 +47,8 @@ function createWebLocalFrameBudget(maxAhead) {
         diagnostics.completed = Math.max(diagnostics.completed, sequence);
         Atomics.store(state, 1, diagnostics.completed | 0);
         diagnostics.pending = diagnostics.submitted - diagnostics.completed;
-        if (diagnostics.pending < maxAhead && Atomics.exchange(state, 2, 0)) {
+        const outstanding = ((Atomics.load(state, mode === 'pipeline' ? 3 : 0) - Atomics.load(state, 1)) >>> 0);
+        if (outstanding < maxAhead && Atomics.exchange(state, 2, 0)) {
           diagnostics.wakes++;
           game.postMessage({type: 'web-game-local-ready'});
         }
@@ -214,7 +216,7 @@ async function start(message) {
   if (message.localFrameBudget) {
     if (message.frameScheduler || !message.arguments.includes('-WebGameLocalClock'))
       throw new Error('Local GPU budget requires the local Game clock');
-    localFrameBudget = createWebLocalFrameBudget(message.localFrameBudget);
+    localFrameBudget = createWebLocalFrameBudget(message.localFrameBudget, message.localFrameBudgetMode);
     globalThis.__webLocalFrameBudget = localFrameBudget.diagnostics;
     globalThis.__webGPUFrameSubmitted = () => localFrameBudget.submit(localGpuQueue);
     globalThis.__webAttachFrameScheduler = game => localFrameBudget.attach(game);

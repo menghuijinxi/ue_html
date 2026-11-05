@@ -293,6 +293,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (!Number.isInteger(requestedBudget) || requestedBudget < 0 || requestedBudget > 8)
     throw new Error('Invalid local GPU frame budget');
   const localFrameBudget = localClock ? requestedBudget : 0;
+  const localFrameBudgetMode = experiment.get('gpumode') ?? assets.localFrameBudgetMode ?? 'submitted';
+  if (!['submitted', 'pipeline'].includes(localFrameBudgetMode)) throw new Error('Invalid local GPU budget mode');
   if (module.arguments.includes('-WebGameLocalClock') && module.arguments.some(v => v.startsWith('-WebFrameScheduler=')))
     throw new Error('Choose one frame clock experiment');
   if (assets.gameFrameBridge === 'page-raf' && (localClock ||
@@ -304,6 +306,9 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (!['channel', 'priority'].includes(rhiWake)) throw new Error('Invalid RHI wake mode');
   module.arguments = module.arguments.filter(v => !v.startsWith('-WebRHIWake='));
   module.arguments.push('-WebRHIWake=' + rhiWake);
+  const inputMode = experiment.get('input') ?? assets.inputBridge ?? 'owner-forwarded';
+  if (!['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode))
+    throw new Error('Invalid browser input mode');
   const canvas = module.canvas;
   globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
@@ -315,7 +320,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   const performanceHUD = createWebPerformanceHUD(frameCounter, canvas);
   let sequence = 0, stopped = false, frameClock;
   const gameClockVisibility = () => worker.postMessage({type: 'game-clock-visibility', hidden: document.hidden});
-  const directInput = assets.inputBridge === 'direct-game-thread';
+  const directInput = inputMode === 'direct-game-thread';
   const inputBridge = new WebInputBridge({
     send: message => worker.postMessage(message),
     schedule: callback => directInput ? queueMicrotask(callback) : requestAnimationFrame(callback),
@@ -323,7 +328,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     trace: assets.inputTrace === true,
   });
   globalThis.__webInputBridge = inputBridge.state;
-  const inputMailbox = assets.inputBridge === 'shared-mailbox' ?
+  const inputMailbox = inputMode === 'shared-mailbox' ?
     new WebInputMailbox(() => document.activeElement === canvas) : null;
   if (inputMailbox) {
     globalThis.__webInputBridge = inputMailbox.state;
@@ -571,6 +576,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   worker.postMessage({type: 'start', assets, canvas: offscreen, browser: browser(),
     gameClockHidden: document.hidden,
     localFrameBudget,
+    localFrameBudgetMode,
     frameCounter: frameCounter.buffer,
     frameScheduler: frameClock?.transfer,
     arguments: module.arguments, debug: diagnostics.mode !== 'normal',
