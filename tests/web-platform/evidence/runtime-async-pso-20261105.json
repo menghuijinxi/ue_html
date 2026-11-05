@@ -1,0 +1,2314 @@
+{
+  "date": "2026-11-05T04:04:41.705Z",
+  "pass": true,
+  "acceptedForDefault": false,
+  "conclusion": "Runtime first-use asynchronous PSOs are functional. First-tour 1% Low improves, but the worst single stall increases; do not enable by default based on these results.",
+  "engineCommit": "d5e91d5140667d6058ae34dd0532d89c817dd606",
+  "rootBaseCommit": "718350cec1fa6282fd8cb1eeaf7070899a622262",
+  "url": "http://127.0.0.1:8765/build/villa-runtime-async-pso-v70/index.html?pso=async",
+  "controlQuery": "?pso=sync",
+  "default": "Runtime asynchronous PSO experiment remains off; PSO precaching off. Existing history/local-clock/priority-wake defaults retained.",
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/runtime-async-pso-v70-abba-20261105.json",
+      "sha256": "f70343b7662b7e39aeb8261c499058897c83758f7e57a45b323dcd6083a05621"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-async-pso-v70-abba-retry4-20261105.json",
+      "sha256": "7564148e69002950a0e73549511bf1c445aced2446962b4bc5971f95ff1013b4"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-async-pso-v70-usage-20261105.json",
+      "sha256": "ae64e892c4036fe12e607bdeaa9043db4c50af1dd765c0c13f8eec2de550ea45"
+    },
+    {
+      "file": "tests/web-platform/results/runtime-async-pso-v70-smoke-20261105.json",
+      "sha256": "ae4967f55cae1430ba8663acf47d49135d9b86dced7f6b4b4d847dda0699b028"
+    },
+    {
+      "file": "tests/web-platform/results/villa-runtime-async-pso-v70-build.json",
+      "sha256": "988da73836ab60252fdc7d40ac4aa6c77fc51a69e23662d944fd726b83a33109"
+    },
+    {
+      "file": "tests/web-platform/results/villa-runtime-async-pso-v70-package.json",
+      "sha256": "68c2b8f63221237c99df454cffb1f308fc71fb63ddad890eba5993874e54875c"
+    }
+  ],
+  "sources": [
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "0090757be6e9f08f6d9771e9d322621a13e9059e132c590f62649d024a7c940a"
+    },
+    {
+      "file": "tests/ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "db992967f9bbdf371a55ee4aadb8e94b46317c9bf15d98784cf56109dad9eca1"
+    },
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "fa979e5f6b08cbbe81daff05043814488aa8587b1401f41c07736a08849d1b7d"
+    },
+    {
+      "file": "tests/web-platform/prepare-web-rhi-host.cjs",
+      "sha256": "a58fe084f6e944ff8c94ad1480f8626df3e1a8bdeb208792e36afda7096dc7c0"
+    },
+    {
+      "file": "tests/web-platform/build-web-engine.ps1",
+      "sha256": "4c707d34c0ecb2f5e058db9834f2433f69d3296c0564ecedb931f51276047b15"
+    },
+    {
+      "file": "tests/web-platform/probe-web-runtime-pso.cjs",
+      "sha256": "cc5d71e32744f385ff962a017b004ea50a15a367fade1d951d31da642d110dff"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RHI/Private/RHICommandList.cpp",
+      "sha256": "fe3b8781faca57c9b2a9120d555188481062289fd2f67ac30a726c0660a8bbd0"
+    }
+  ],
+  "packageFiles": [
+    {
+      "file": "tests/web-platform/build/villa-runtime-async-pso-v70/index.html",
+      "sha256": "6c9e6563c32a58455b31ad4432adb71c3db40cdc6d77e11f700bc8e741fc6aa1"
+    },
+    {
+      "file": "tests/web-platform/build/villa-runtime-async-pso-v70/UEWebEngineThreads.js",
+      "sha256": "0b6d035da03ef4e9487c6edac7c3c334b7ed62bff40358e1b964acf5a019a2a7"
+    },
+    {
+      "file": "tests/web-platform/build/villa-runtime-async-pso-v70/UEWebEngineThreads.wasm",
+      "sha256": "3b16e4bfa98b25d5a7c3cb36ee7f50208f24992101826a4a304940a30fdd69d7"
+    },
+    {
+      "file": "tests/web-platform/build/villa-runtime-async-pso-v70/content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "tests/web-platform/build/villa-runtime-async-pso-v70/config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "tests/web-platform/build/villa-runtime-async-pso-v70/web-engine-host.js",
+      "sha256": "fa979e5f6b08cbbe81daff05043814488aa8587b1401f41c07736a08849d1b7d"
+    },
+    {
+      "file": "tests/web-platform/build/villa-runtime-async-pso-v70/web-engine-worker.js",
+      "sha256": "5680a3c2083add173f6a1c2e183aeb11db515861b30a26e3cda86c239d0743e7"
+    }
+  ],
+  "build": {
+    "pass": true,
+    "fullLinkVerified": true,
+    "wasmValidated": true,
+    "allocator": "mimalloc",
+    "architecture": "wasm64",
+    "products": [
+      {
+        "sha256": "0b6d035da03ef4e9487c6edac7c3c334b7ed62bff40358e1b964acf5a019a2a7",
+        "file": "tests/ue-web-smoke/Binaries/Web/UEWebEngineThreads.js"
+      },
+      {
+        "sha256": "3b16e4bfa98b25d5a7c3cb36ee7f50208f24992101826a4a304940a30fdd69d7",
+        "file": "tests/ue-web-smoke/Binaries/Web/UEWebEngineThreads.wasm"
+      },
+      {
+        "sha256": "6605440813a6c78805b6cd6917c7a994f4462006d9d965185de004ece714a270",
+        "file": "tests/ue-web-smoke/Binaries/Web/UEWebEngineThreads.target"
+      }
+    ]
+  },
+  "package": {
+    "baseline": "villa-lumen-off-current-mimalloc-v59",
+    "qualityOverrides": [],
+    "cookPayload": {
+      "index.html": {
+        "file": "tests/web-platform/build/villa-lumen-off-current-mimalloc-v59/index.html",
+        "sha256": "f93c2c0c52c62ff4f9bfb2742e1b8988a44215586681fb3404813768ab6716c3"
+      },
+      "UEWebEngineThreads.js": {
+        "file": "tests/web-platform/build/villa-lumen-off-current-mimalloc-v59/UEWebEngineThreads.js",
+        "sha256": "97d5af24ece04c8c58efc639b75ee20e10ff37a988720fd503f2eb5e1a09c0a8"
+      },
+      "UEWebEngineThreads.wasm": {
+        "file": "tests/web-platform/build/villa-lumen-off-current-mimalloc-v59/UEWebEngineThreads.wasm",
+        "sha256": "6f3ea9f7ec2964f905b38ee4d4f1367dc953b327a42efc97cee83c18047eb17a"
+      },
+      "config-files.json": {
+        "file": "tests/web-platform/build/villa-lumen-off-current-mimalloc-v59/config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      },
+      "content-files.json": {
+        "file": "tests/web-platform/build/villa-lumen-off-current-mimalloc-v59/content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      }
+    }
+  },
+  "protocol": {
+    "sequence": [
+      "sync",
+      "async",
+      "async",
+      "sync"
+    ],
+    "holdSeconds": 5,
+    "warmupSeconds": 10,
+    "standingSecondsPerRun": 5,
+    "firstTourSecondsPerRun": 25,
+    "repeatTourSecondsPerRun": 25,
+    "ready": "At least 600 game frames, texture streaming pending zero, then 10 seconds",
+    "viewport": {
+      "width": 2289,
+      "height": 1287,
+      "deviceScaleFactor": 1
+    },
+    "initialCamera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "settings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 0,
+      "reflections": 0,
+      "virtualShadows": 0,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1
+    },
+    "renderView": {
+      "width": 1484,
+      "height": 835,
+      "outputWidth": 2289,
+      "outputHeight": 1288,
+      "antiAliasing": 4
+    },
+    "instrumentation": "Rare pipeline/shader API wrappers and one submit-interval record per frame. No per-bind/draw wrappers, CPU profiler, browser trace or extra GPU queries in performance runs.",
+    "browserCache": "Retained browser/driver caches, fresh visible Edge session per run",
+    "metric": "1% Low is inverse mean of the slowest ceil(total frames * .01) submission intervals pooled across the two runs. Not physical display latency."
+  },
+  "harnessRecovery": {
+    "originalReportPass": false,
+    "originalError": "worker.evaluate: ReferenceError: __webOptimizationRHI is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:2:11)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at state (G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-runtime-pso.cjs:74:27)\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-runtime-pso.cjs:80:23",
+    "validOriginalRuns": [
+      1,
+      2,
+      3
+    ],
+    "excludedRun": 4,
+    "retry": "runtime-async-pso-v70-abba-retry4-20261105.json",
+    "reason": "Game published 30 frames before the first RHI 30-frame diagnostics existed. No performance phase of the failed fourth run was sampled. Wait for owner diagnostics before reading initial state.",
+    "instrumentationDifference": "Retry uses the same frame recorder with optional identity tracking disabled. The new WeakMap and per-bind wrappers are enabled only in the separate usage diagnostic."
+  },
+  "aggregate": {
+    "standing": {
+      "sync": {
+        "frames": 1073,
+        "durationMs": 10026.77500000596,
+        "fps": 107.01347143018191,
+        "low1Fps": 67.4019607892371,
+        "p50Ms": 9.144999995827675,
+        "p99Ms": 14.379999995231628,
+        "maximumMs": 15.099999994039536,
+        "over20": 0,
+        "over50": 0,
+        "over100": 0
+      },
+      "async": {
+        "frames": 1054,
+        "durationMs": 10033.47500000894,
+        "fps": 105.0483506461182,
+        "low1Fps": 67.86143929241078,
+        "p50Ms": 9.254999995231628,
+        "p99Ms": 14.5,
+        "maximumMs": 15.120000004768372,
+        "over20": 0,
+        "over50": 0,
+        "over100": 0
+      }
+    },
+    "first-tour": {
+      "sync": {
+        "frames": 6597,
+        "durationMs": 50320.22499997914,
+        "fps": 131.1003676951511,
+        "low1Fps": 35.927556979663414,
+        "p50Ms": 6.205000013113022,
+        "p99Ms": 17.5,
+        "maximumMs": 152.57500000298023,
+        "over20": 40,
+        "over50": 4,
+        "over100": 4
+      },
+      "async": {
+        "frames": 6684,
+        "durationMs": 50312.590000003576,
+        "fps": 132.84945179724448,
+        "low1Fps": 40.60753724420398,
+        "p50Ms": 6.215000003576279,
+        "p99Ms": 15.064999997615814,
+        "maximumMs": 205.28499999642372,
+        "over20": 27,
+        "over50": 2,
+        "over100": 2
+      }
+    },
+    "repeat-tour": {
+      "sync": {
+        "frames": 6866,
+        "durationMs": 50292.67499999702,
+        "fps": 136.52087505785698,
+        "low1Fps": 52.938062468269386,
+        "p50Ms": 5.545000001788139,
+        "p99Ms": 15.58500000834465,
+        "maximumMs": 32.445000007748604,
+        "over20": 21,
+        "over50": 0,
+        "over100": 0
+      },
+      "async": {
+        "frames": 6816,
+        "durationMs": 50342.20499999821,
+        "fps": 135.3933543435422,
+        "low1Fps": 51.82884463019489,
+        "p50Ms": 5.6400000005960464,
+        "p99Ms": 15.909999996423721,
+        "maximumMs": 33.809999987483025,
+        "over20": 24,
+        "over50": 0,
+        "over100": 0
+      }
+    }
+  },
+  "runs": [
+    {
+      "sequence": 1,
+      "originalIndex": 1,
+      "mode": "sync",
+      "url": "http://127.0.0.1:8765/build/villa-runtime-async-pso-v70/index.html?pso=sync",
+      "idleGpu": "2, 1250",
+      "first30FramesMs": 9011,
+      "phases": [
+        {
+          "name": "standing",
+          "summary": {
+            "frames": 532,
+            "fps": 106.20691582695063,
+            "low1Fps": 66.78539626843651,
+            "p50": 9.20499999821186,
+            "p99": 14.769999995827675,
+            "maximum": 15.099999994039536,
+            "over20": 0,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 1864,
+                "time": 27573.59999999404,
+                "ms": 15.099999994039536,
+                "rhiTotal": 17768.566370010376,
+                "gameMs": 12.9248046875,
+                "events": []
+              },
+              {
+                "frame": 1866,
+                "time": 27603.614999994636,
+                "ms": 15.07999999821186,
+                "rhiTotal": 17787.286520004272,
+                "gameMs": 14.85498046875,
+                "events": []
+              },
+              {
+                "frame": 1869,
+                "time": 27648.339999988675,
+                "ms": 14.989999994635582,
+                "rhiTotal": 17815.42158126831,
+                "gameMs": 14.89501953125,
+                "events": []
+              },
+              {
+                "frame": 1868,
+                "time": 27633.34999999404,
+                "ms": 14.965000003576279,
+                "rhiTotal": 17805.981636047363,
+                "gameMs": 14.719970703125,
+                "events": []
+              },
+              {
+                "frame": 1865,
+                "time": 27588.534999996424,
+                "ms": 14.935000002384186,
+                "rhiTotal": 17777.99153327942,
+                "gameMs": 15.0400390625,
+                "events": []
+              },
+              {
+                "frame": 1867,
+                "time": 27618.384999990463,
+                "ms": 14.769999995827675,
+                "rhiTotal": 17796.706676483154,
+                "gameMs": 15.01513671875,
+                "events": []
+              },
+              {
+                "frame": 1916,
+                "time": 28113.839999988675,
+                "ms": 13.780000001192093,
+                "rhiTotal": 18255.377054214478,
+                "gameMs": 9.3798828125,
+                "events": []
+              },
+              {
+                "frame": 1863,
+                "time": 27558.5,
+                "ms": 12.980000004172325,
+                "rhiTotal": 17758.756399154663,
+                "gameMs": 11.264892578125,
+                "events": []
+              },
+              {
+                "frame": 1969,
+                "time": 28598.894999995828,
+                "ms": 12.33500000834465,
+                "rhiTotal": 18716.503620147705,
+                "gameMs": 8.780029296875,
+                "events": []
+              },
+              {
+                "frame": 2110,
+                "time": 29918.030000001192,
+                "ms": 12.060000002384186,
+                "rhiTotal": 19966.898202896118,
+                "gameMs": 9.110107421875,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "first-tour",
+          "summary": {
+            "frames": 3274,
+            "fps": 130.08003458211167,
+            "low1Fps": 35.50735163441558,
+            "p50": 6.239999994635582,
+            "p99": 17.655000001192093,
+            "maximum": 152.57500000298023,
+            "over20": 20,
+            "over50": 2,
+            "over100": 2,
+            "creations": {
+              "createShaderModule": 10,
+              "createRenderPipeline": 15
+            },
+            "worst": [
+              {
+                "frame": 2719,
+                "time": 36104.04500000179,
+                "ms": 152.57500000298023,
+                "rhiTotal": 25628.175973892212,
+                "gameMs": 11.780029296875,
+                "events": []
+              },
+              {
+                "frame": 2720,
+                "time": 36232.44999998808,
+                "ms": 128.40499998629093,
+                "rhiTotal": 25780.631065368652,
+                "gameMs": 152.5048828125,
+                "events": []
+              },
+              {
+                "frame": 2711,
+                "time": 35864.09999999404,
+                "ms": 39.98999999463558,
+                "rhiTotal": 25544.126272201538,
+                "gameMs": 23.94482421875,
+                "events": [
+                  {
+                    "name": "createShaderModule",
+                    "start": 35833.42000000179,
+                    "end": 35833.439999997616
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35837.914999991655,
+                    "end": 35837.984999999404
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35838.05499999225,
+                    "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+                    "end": 35838.07999999821
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35838.11999998987,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 35838.140000000596
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35838.37999999523,
+                    "end": 35838.42000000179
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35838.45999999344,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 35838.46999999881
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35838.5,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 35838.50999999046
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35838.56999999285,
+                    "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+                    "end": 35838.57499998808
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35838.59999999404,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 35838.60499998927
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35839.10499998927,
+                    "end": 35839.19999998808
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35841.05999998748,
+                    "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+                    "end": 35841.089999988675
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35841.13499999046,
+                    "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+                    "end": 35841.14499999583
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35841.17499999702,
+                    "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+                    "end": 35841.18499998748
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35841.739999994636,
+                    "end": 35841.814999997616
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35842.359999999404,
+                    "end": 35842.47499999404
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35842.564999997616,
+                    "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+                    "end": 35842.57999999821
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35842.64499999583,
+                    "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+                    "end": 35842.659999996424
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35842.68499998748,
+                    "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+                    "end": 35842.69499999285
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35843.14499999583,
+                    "end": 35843.20999999344
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35860.00999999046,
+                    "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+                    "end": 35860.039999991655
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35860.62999999523,
+                    "end": 35860.65500000119
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35861.09499999881,
+                    "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+                    "end": 35861.125
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35861.364999994636,
+                    "end": 35861.38499999046
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35861.57999999821,
+                    "end": 35861.59999999404
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 35861.72999998927,
+                    "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+                    "end": 35861.75499999523
+                  }
+                ]
+              },
+              {
+                "frame": 2731,
+                "time": 36399.33499999344,
+                "ms": 28.185000002384186,
+                "rhiTotal": 26039.870738983154,
+                "gameMs": 10.27490234375,
+                "events": []
+              },
+              {
+                "frame": 4982,
+                "time": 50928.939999997616,
+                "ms": 26.700000002980232,
+                "rhiTotal": 39313.11869621277,
+                "gameMs": 4.945068359375,
+                "events": []
+              },
+              {
+                "frame": 2835,
+                "time": 37794.97499999404,
+                "ms": 21.924999997019768,
+                "rhiTotal": 27319.608449935913,
+                "gameMs": 12.474853515625,
+                "events": []
+              },
+              {
+                "frame": 3051,
+                "time": 40579.42999999225,
+                "ms": 21.40999999642372,
+                "rhiTotal": 29992.1658039093,
+                "gameMs": 12.39501953125,
+                "events": []
+              },
+              {
+                "frame": 3010,
+                "time": 40037.26999999583,
+                "ms": 21.280000001192093,
+                "rhiTotal": 29469.934701919556,
+                "gameMs": 12.715087890625,
+                "events": []
+              },
+              {
+                "frame": 2789,
+                "time": 37138.88499999046,
+                "ms": 21.239999994635582,
+                "rhiTotal": 26726.032495498657,
+                "gameMs": 12.35498046875,
+                "events": []
+              },
+              {
+                "frame": 2935,
+                "time": 39061.159999996424,
+                "ms": 21.07999999821186,
+                "rhiTotal": 28529.015064239502,
+                "gameMs": 11.844970703125,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "repeat-tour",
+          "summary": {
+            "frames": 3397,
+            "fps": 135.15567371349266,
+            "low1Fps": 52.34957196612929,
+            "p50": 5.549999997019768,
+            "p99": 15.82999999821186,
+            "maximum": 32.445000007748604,
+            "over20": 13,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 6011,
+                "time": 61209.015000000596,
+                "ms": 32.445000007748604,
+                "rhiTotal": 48956.55703544617,
+                "gameMs": 9.4951171875,
+                "events": []
+              },
+              {
+                "frame": 8407,
+                "time": 76264.6400000006,
+                "ms": 25.83500000834465,
+                "rhiTotal": 62696.42972946167,
+                "gameMs": 5.449951171875,
+                "events": []
+              },
+              {
+                "frame": 6299,
+                "time": 64849.214999988675,
+                "ms": 23.70499999821186,
+                "rhiTotal": 52377.17700004578,
+                "gameMs": 20.614990234375,
+                "events": []
+              },
+              {
+                "frame": 6230,
+                "time": 63912.97999998927,
+                "ms": 21.614999994635582,
+                "rhiTotal": 51508.83722305298,
+                "gameMs": 15.705078125,
+                "events": []
+              },
+              {
+                "frame": 6270,
+                "time": 64431.84499999881,
+                "ms": 21.480000004172325,
+                "rhiTotal": 52009.32693481445,
+                "gameMs": 16.985107421875,
+                "events": []
+              },
+              {
+                "frame": 6353,
+                "time": 65565.50499999523,
+                "ms": 21.42000000178814,
+                "rhiTotal": 53070.10102272034,
+                "gameMs": 12.25,
+                "events": []
+              },
+              {
+                "frame": 6306,
+                "time": 64957.589999988675,
+                "ms": 21.40999999642372,
+                "rhiTotal": 52485.09168624878,
+                "gameMs": 12.389892578125,
+                "events": []
+              },
+              {
+                "frame": 6255,
+                "time": 64235.089999988675,
+                "ms": 21.189999997615814,
+                "rhiTotal": 51819.03648376465,
+                "gameMs": 13.625,
+                "events": []
+              },
+              {
+                "frame": 6301,
+                "time": 64885.964999988675,
+                "ms": 21.16499999165535,
+                "rhiTotal": 52424.1669178009,
+                "gameMs": 14.89501953125,
+                "events": []
+              },
+              {
+                "frame": 6195,
+                "time": 63456.47499999404,
+                "ms": 21.144999995827675,
+                "rhiTotal": 51070.117235183716,
+                "gameMs": 12.43994140625,
+                "events": []
+              }
+            ]
+          }
+        }
+      ],
+      "finalRHI": {
+        "sampleFrame": 8970,
+        "graphicsPipelines": 208,
+        "computePipelines": 71,
+        "graphicsPipelineCreateMs": 5.855083465576172,
+        "computePipelineCreateMs": 0.9493827819824219,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": false,
+        "precachedGraphicsPipelines": 0,
+        "asyncPrecacheRequested": 0,
+        "asyncPrecacheCompleted": 0,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 0,
+        "precachedGraphicsBinds": 0,
+        "precacheConcurrency": 0,
+        "runtimeAsyncPSO": false,
+        "runtimeAsyncRequested": 0,
+        "runtimeAsyncCompleted": 0,
+        "runtimeAsyncFailed": 0
+      },
+      "finalCounts": {
+        "createShaderModule": 193,
+        "createRenderPipeline": 208,
+        "createComputePipeline": 74
+      },
+      "precache": {
+        "enabled": false,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "errors": []
+    },
+    {
+      "sequence": 2,
+      "originalIndex": 2,
+      "mode": "async",
+      "url": "http://127.0.0.1:8765/build/villa-runtime-async-pso-v70/index.html?pso=async",
+      "idleGpu": "15, 1280",
+      "first30FramesMs": 8800,
+      "phases": [
+        {
+          "name": "standing",
+          "summary": {
+            "frames": 530,
+            "fps": 105.50297548235172,
+            "low1Fps": 67.3778776103853,
+            "p50": 9.20499999821186,
+            "p99": 14.509999990463257,
+            "maximum": 15.120000004768372,
+            "over20": 0,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 2085,
+                "time": 29476.70000000298,
+                "ms": 15.120000004768372,
+                "rhiTotal": 19233.48617553711,
+                "gameMs": 14.465087890625,
+                "events": []
+              },
+              {
+                "frame": 1737,
+                "time": 26196.155000001192,
+                "ms": 15.07999999821186,
+                "rhiTotal": 16167.001008987427,
+                "gameMs": 12.724853515625,
+                "events": []
+              },
+              {
+                "frame": 1741,
+                "time": 26254.30499999225,
+                "ms": 14.78999999165535,
+                "rhiTotal": 16202.526092529297,
+                "gameMs": 13.53515625,
+                "events": []
+              },
+              {
+                "frame": 2082,
+                "time": 29432.689999997616,
+                "ms": 14.775000005960464,
+                "rhiTotal": 19207.001209259033,
+                "gameMs": 12.85009765625,
+                "events": []
+              },
+              {
+                "frame": 1738,
+                "time": 26210.92999999225,
+                "ms": 14.774999991059303,
+                "rhiTotal": 16176.020860671997,
+                "gameMs": 15.030029296875,
+                "events": []
+              },
+              {
+                "frame": 2086,
+                "time": 29491.209999993443,
+                "ms": 14.509999990463257,
+                "rhiTotal": 19242.966175079346,
+                "gameMs": 15.054931640625,
+                "events": []
+              },
+              {
+                "frame": 2084,
+                "time": 29461.579999998212,
+                "ms": 14.5,
+                "rhiTotal": 19224.791049957275,
+                "gameMs": 14.31005859375,
+                "events": []
+              },
+              {
+                "frame": 2083,
+                "time": 29447.079999998212,
+                "ms": 14.390000000596046,
+                "rhiTotal": 19216.016054153442,
+                "gameMs": 14.724853515625,
+                "events": []
+              },
+              {
+                "frame": 1739,
+                "time": 26225.27499999106,
+                "ms": 14.344999998807907,
+                "rhiTotal": 16185.065984725952,
+                "gameMs": 14.710205078125,
+                "events": []
+              },
+              {
+                "frame": 1740,
+                "time": 26239.515000000596,
+                "ms": 14.240000009536743,
+                "rhiTotal": 16193.785905838013,
+                "gameMs": 14.2900390625,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "first-tour",
+          "summary": {
+            "frames": 3355,
+            "fps": 133.35002692831125,
+            "low1Fps": 41.26313745607609,
+            "p50": 6.219999998807907,
+            "p99": 15.064999997615814,
+            "maximum": 194.65000000596046,
+            "over20": 11,
+            "over50": 1,
+            "over100": 1,
+            "creations": {
+              "createShaderModule": 10,
+              "createRenderPipelineAsync": 15
+            },
+            "worst": [
+              {
+                "frame": 2756,
+                "time": 35962.640000000596,
+                "ms": 194.65000000596046,
+                "rhiTotal": 25168.703317642212,
+                "gameMs": 42.664794921875,
+                "events": [
+                  {
+                    "name": "createShaderModule",
+                    "start": 35790.560000002384,
+                    "end": 35790.57999999821
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35794.90500000119,
+                    "end": 35794.97499999404
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35795.364999994636,
+                    "end": 35795.414999991655
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35795.515000000596,
+                    "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+                    "end": 35795.55499999225,
+                    "completed": 35829.47499999404
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35795.60499998927,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 35795.61999998987,
+                    "completed": 35850.289999991655
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35795.65500000119,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 35795.664999991655,
+                    "completed": 35850.31999999285
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35829.92499999702,
+                    "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+                    "end": 35829.964999988675,
+                    "completed": 35865.92999999225
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35852.125,
+                    "end": 35852.234999999404
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35852.364999994636,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 35852.40500000119,
+                    "completed": 35857.24499998987
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35852.875,
+                    "end": 35852.95000000298
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35853.185000002384,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 35853.20999999344,
+                    "completed": 35857.909999996424
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35857.439999997616,
+                    "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+                    "end": 35857.46999999881,
+                    "completed": 35888.25499999523
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35858.01999999583,
+                    "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+                    "end": 35858.04999999702,
+                    "completed": 35859.04999999702
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35859.20499999821,
+                    "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+                    "end": 35859.234999999404,
+                    "completed": 35886.39999999106
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35866.11999998987,
+                    "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+                    "end": 35866.164999991655,
+                    "completed": 35867.00499999523
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35870.25999999046,
+                    "end": 35870.390000000596
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35870.92000000179,
+                    "end": 35870.989999994636
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35871.27499999106,
+                    "end": 35871.29999999702
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35871.515000000596,
+                    "end": 35871.539999991655
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35871.72999998927,
+                    "end": 35871.74499998987
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35871.97499999404,
+                    "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+                    "end": 35872,
+                    "completed": 35885.92999999225
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35886.17499999702,
+                    "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+                    "end": 35886.214999988675,
+                    "completed": 35960.234999999404
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35886.55499999225,
+                    "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+                    "end": 35886.57500000298,
+                    "completed": 35960.40500000119
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35888.36999998987,
+                    "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+                    "end": 35888.39999999106,
+                    "completed": 35903.37999999523
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35903.625,
+                    "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+                    "end": 35903.664999991655,
+                    "completed": 35931.989999994636
+                  }
+                ]
+              },
+              {
+                "frame": 3229,
+                "time": 41164.36999998987,
+                "ms": 40.809999987483025,
+                "rhiTotal": 30030.272483825684,
+                "gameMs": 4.52001953125,
+                "events": []
+              },
+              {
+                "frame": 5066,
+                "time": 50857.84999999404,
+                "ms": 26.83499999344349,
+                "rhiTotal": 38761.95454597473,
+                "gameMs": 5.215087890625,
+                "events": []
+              },
+              {
+                "frame": 3085,
+                "time": 39868.78000000119,
+                "ms": 22.275000005960464,
+                "rhiTotal": 28815.21248817444,
+                "gameMs": 12.9599609375,
+                "events": []
+              },
+              {
+                "frame": 3061,
+                "time": 39561.94499999285,
+                "ms": 21.599999994039536,
+                "rhiTotal": 28520.158290863037,
+                "gameMs": 11.655029296875,
+                "events": []
+              },
+              {
+                "frame": 3132,
+                "time": 40487.46999999881,
+                "ms": 21.46000000834465,
+                "rhiTotal": 29412.476778030396,
+                "gameMs": 12.639892578125,
+                "events": []
+              },
+              {
+                "frame": 3148,
+                "time": 40696.09499999881,
+                "ms": 21.115000009536743,
+                "rhiTotal": 29613.20686340332,
+                "gameMs": 11.885009765625,
+                "events": []
+              },
+              {
+                "frame": 3121,
+                "time": 40340.00499999523,
+                "ms": 21.099999994039536,
+                "rhiTotal": 29270.16305923462,
+                "gameMs": 11.614990234375,
+                "events": []
+              },
+              {
+                "frame": 3009,
+                "time": 38891.38499999046,
+                "ms": 20.734999999403954,
+                "rhiTotal": 27883.50749015808,
+                "gameMs": 16.7548828125,
+                "events": []
+              },
+              {
+                "frame": 3107,
+                "time": 40159.125,
+                "ms": 20.525000005960464,
+                "rhiTotal": 29095.807552337646,
+                "gameMs": 12.074951171875,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "repeat-tour",
+          "summary": {
+            "frames": 3392,
+            "fps": 134.68786226894807,
+            "low1Fps": 50.269087467149,
+            "p50": 5.719999998807907,
+            "p99": 16.83499999344349,
+            "maximum": 32.689999997615814,
+            "over20": 14,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 6104,
+                "time": 61099.31999999285,
+                "ms": 32.689999997615814,
+                "rhiTotal": 48359.44867134094,
+                "gameMs": 9.2099609375,
+                "events": []
+              },
+              {
+                "frame": 8478,
+                "time": 76201.67499999702,
+                "ms": 27.04000000655651,
+                "rhiTotal": 62169.12126541138,
+                "gameMs": 5.044921875,
+                "events": []
+              },
+              {
+                "frame": 6503,
+                "time": 66083.17999999225,
+                "ms": 23.174999997019768,
+                "rhiTotal": 53084.630727767944,
+                "gameMs": 20.530029296875,
+                "events": []
+              },
+              {
+                "frame": 6477,
+                "time": 65693.11499999464,
+                "ms": 22.95499999821186,
+                "rhiTotal": 52740.150928497314,
+                "gameMs": 13.739990234375,
+                "events": []
+              },
+              {
+                "frame": 6505,
+                "time": 66117.92499999702,
+                "ms": 22.424999997019768,
+                "rhiTotal": 53129.49538230896,
+                "gameMs": 12.255126953125,
+                "events": []
+              },
+              {
+                "frame": 6464,
+                "time": 65513.92999999225,
+                "ms": 21.950000002980232,
+                "rhiTotal": 52567.955493927,
+                "gameMs": 12.72509765625,
+                "events": []
+              },
+              {
+                "frame": 6419,
+                "time": 64915.85499998927,
+                "ms": 21.390000000596046,
+                "rhiTotal": 51991.06955528259,
+                "gameMs": 11.9951171875,
+                "events": []
+              },
+              {
+                "frame": 6359,
+                "time": 64136.589999988675,
+                "ms": 21.224999994039536,
+                "rhiTotal": 51241.59598350525,
+                "gameMs": 12.059814453125,
+                "events": []
+              },
+              {
+                "frame": 6375,
+                "time": 64346.265000000596,
+                "ms": 21.20499999821186,
+                "rhiTotal": 51443.230390548706,
+                "gameMs": 12.97509765625,
+                "events": []
+              },
+              {
+                "frame": 5970,
+                "time": 59779.359999999404,
+                "ms": 21.12000000476837,
+                "rhiTotal": 47144.46973800659,
+                "gameMs": 16.775146484375,
+                "events": []
+              }
+            ]
+          }
+        }
+      ],
+      "finalRHI": {
+        "sampleFrame": 9060,
+        "graphicsPipelines": 219,
+        "computePipelines": 67,
+        "graphicsPipelineCreateMs": 9.476900100708008,
+        "computePipelineCreateMs": 1.966714859008789,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": false,
+        "precachedGraphicsPipelines": 0,
+        "asyncPrecacheRequested": 0,
+        "asyncPrecacheCompleted": 0,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 0,
+        "precachedGraphicsBinds": 0,
+        "precacheConcurrency": 0,
+        "runtimeAsyncPSO": true,
+        "runtimeAsyncRequested": 286,
+        "runtimeAsyncCompleted": 286,
+        "runtimeAsyncFailed": 0
+      },
+      "finalCounts": {
+        "createShaderModule": 184,
+        "createRenderPipelineAsync": 219,
+        "createComputePipelineAsync": 67,
+        "createComputePipeline": 3
+      },
+      "precache": {
+        "enabled": false,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "errors": []
+    },
+    {
+      "sequence": 3,
+      "originalIndex": 3,
+      "mode": "async",
+      "url": "http://127.0.0.1:8765/build/villa-runtime-async-pso-v70/index.html?pso=async",
+      "idleGpu": "12, 1274",
+      "first30FramesMs": 8798,
+      "phases": [
+        {
+          "name": "standing",
+          "summary": {
+            "frames": 524,
+            "fps": 104.5924885027731,
+            "low1Fps": 68.64595849166497,
+            "p50": 9.304999992251396,
+            "p99": 14.399999991059303,
+            "maximum": 14.814999997615814,
+            "over20": 0,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 1704,
+                "time": 25756.579999998212,
+                "ms": 14.814999997615814,
+                "rhiTotal": 15849.52449798584,
+                "gameMs": 12.7548828125,
+                "events": []
+              },
+              {
+                "frame": 1706,
+                "time": 25785.619999989867,
+                "ms": 14.640000000596046,
+                "rhiTotal": 15867.199659347534,
+                "gameMs": 14.295166015625,
+                "events": []
+              },
+              {
+                "frame": 2043,
+                "time": 29024.494999989867,
+                "ms": 14.559999987483025,
+                "rhiTotal": 18918.910264968872,
+                "gameMs": 12.8701171875,
+                "events": []
+              },
+              {
+                "frame": 2047,
+                "time": 29081.814999997616,
+                "ms": 14.530000001192093,
+                "rhiTotal": 18953.635454177856,
+                "gameMs": 13.969970703125,
+                "events": []
+              },
+              {
+                "frame": 2045,
+                "time": 29053.25499999523,
+                "ms": 14.459999993443489,
+                "rhiTotal": 18936.370372772217,
+                "gameMs": 14.18994140625,
+                "events": []
+              },
+              {
+                "frame": 1705,
+                "time": 25770.97999998927,
+                "ms": 14.399999991059303,
+                "rhiTotal": 15858.37459564209,
+                "gameMs": 14.77001953125,
+                "events": []
+              },
+              {
+                "frame": 2044,
+                "time": 29038.795000001788,
+                "ms": 14.300000011920929,
+                "rhiTotal": 18927.720308303833,
+                "gameMs": 14.47998046875,
+                "events": []
+              },
+              {
+                "frame": 1708,
+                "time": 25813.859999999404,
+                "ms": 14.195000007748604,
+                "rhiTotal": 15884.864330291748,
+                "gameMs": 13.985107421875,
+                "events": []
+              },
+              {
+                "frame": 1787,
+                "time": 26603.739999994636,
+                "ms": 14.194999992847443,
+                "rhiTotal": 16627.549171447754,
+                "gameMs": 9.789794921875,
+                "events": []
+              },
+              {
+                "frame": 1707,
+                "time": 25799.664999991655,
+                "ms": 14.04500000178814,
+                "rhiTotal": 15876.264572143555,
+                "gameMs": 14.60009765625,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "first-tour",
+          "summary": {
+            "frames": 3329,
+            "fps": 132.34875507094554,
+            "low1Fps": 40.42710042515786,
+            "p50": 6.204999998211861,
+            "p99": 15.060000002384186,
+            "maximum": 205.28499999642372,
+            "over20": 16,
+            "over50": 1,
+            "over100": 1,
+            "creations": {
+              "createShaderModule": 10,
+              "createRenderPipelineAsync": 15
+            },
+            "worst": [
+              {
+                "frame": 2738,
+                "time": 35732.01999999583,
+                "ms": 205.28499999642372,
+                "rhiTotal": 25032.02176094055,
+                "gameMs": 24.260009765625,
+                "events": [
+                  {
+                    "name": "createShaderModule",
+                    "start": 35536.314999997616,
+                    "end": 35536.32999999821
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35540.72499999404,
+                    "end": 35540.79999999702
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35541.08499999344,
+                    "end": 35541.125
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35541.27499999106,
+                    "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+                    "end": 35541.32999999821,
+                    "completed": 35617.92000000179
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35541.37999999523,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 35541.39499999583,
+                    "completed": 35599.20499999821
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35541.435000002384,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 35541.439999997616,
+                    "completed": 35599.24499998987
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35599.47499999404,
+                    "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+                    "end": 35599.62999999523,
+                    "completed": 35634.30499999225
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35600.19999998808,
+                    "end": 35600.310000002384
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35600.89999999106,
+                    "end": 35600.97999998927
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35601.214999988675,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 35601.25,
+                    "completed": 35606.67999999225
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35606.88499999046,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 35606.935000002384,
+                    "completed": 35607.79999999702
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35607.95999999344,
+                    "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+                    "end": 35607.989999994636,
+                    "completed": 35640.45999999344
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35618.125,
+                    "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+                    "end": 35618.17499999702,
+                    "completed": 35619.25
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35619.435000002384,
+                    "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+                    "end": 35619.464999988675,
+                    "completed": 35649.55499999225
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35634.52499999106,
+                    "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+                    "end": 35634.58499999344,
+                    "completed": 35635.560000002384
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35639.32499998808,
+                    "end": 35639.464999988675
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35640.04500000179,
+                    "end": 35640.11999998987
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35640.39999999106,
+                    "end": 35640.42999999225
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35640.65500000119,
+                    "end": 35640.67999999225
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 35640.859999999404,
+                    "end": 35640.875
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35640.984999999404,
+                    "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+                    "end": 35641.00999999046,
+                    "completed": 35655.46999999881
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35641.13499999046,
+                    "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+                    "end": 35641.15500000119,
+                    "completed": 35729.664999991655
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35649.82999999821,
+                    "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+                    "end": 35649.86999998987,
+                    "completed": 35729.69999998808
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35655.664999991655,
+                    "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+                    "end": 35655.714999988675,
+                    "completed": 35671.09999999404
+                  },
+                  {
+                    "name": "createRenderPipelineAsync",
+                    "start": 35671.34999999404,
+                    "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+                    "end": 35671.39499999583,
+                    "completed": 35701.10499998927
+                  }
+                ]
+              },
+              {
+                "frame": 5049,
+                "time": 50633.5,
+                "ms": 27.99500000476837,
+                "rhiTotal": 38611.50527000427,
+                "gameMs": 9.505126953125,
+                "events": []
+              },
+              {
+                "frame": 2962,
+                "time": 38349.95499999821,
+                "ms": 23.260000005364418,
+                "rhiTotal": 27427.427768707275,
+                "gameMs": 22.39501953125,
+                "events": []
+              },
+              {
+                "frame": 3107,
+                "time": 40238.14999999106,
+                "ms": 22.935000002384186,
+                "rhiTotal": 29241.59002304077,
+                "gameMs": 12.179931640625,
+                "events": []
+              },
+              {
+                "frame": 3020,
+                "time": 39096.57499998808,
+                "ms": 22.594999998807907,
+                "rhiTotal": 28143.85223388672,
+                "gameMs": 13.425048828125,
+                "events": []
+              },
+              {
+                "frame": 2961,
+                "time": 38326.69499999285,
+                "ms": 22.435000002384186,
+                "rhiTotal": 27405.26795387268,
+                "gameMs": 12.06494140625,
+                "events": []
+              },
+              {
+                "frame": 3078,
+                "time": 39853.67000000179,
+                "ms": 21.08500000834465,
+                "rhiTotal": 28873.485803604126,
+                "gameMs": 11.81494140625,
+                "events": []
+              },
+              {
+                "frame": 3121,
+                "time": 40431.62999999523,
+                "ms": 21.03499999642372,
+                "rhiTotal": 29430.625438690186,
+                "gameMs": 11.1650390625,
+                "events": []
+              },
+              {
+                "frame": 2966,
+                "time": 38412.82499998808,
+                "ms": 20.979999989271164,
+                "rhiTotal": 27488.07191848755,
+                "gameMs": 12.239990234375,
+                "events": []
+              },
+              {
+                "frame": 3097,
+                "time": 40102.784999996424,
+                "ms": 20.924999997019768,
+                "rhiTotal": 29114.069938659668,
+                "gameMs": 11.889892578125,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "repeat-tour",
+          "summary": {
+            "frames": 3424,
+            "fps": 136.09957846496073,
+            "low1Fps": 53.87226117376008,
+            "p50": 5.545000001788139,
+            "p99": 15.180000007152557,
+            "maximum": 33.809999987483025,
+            "over20": 10,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 6064,
+                "time": 60912.839999988675,
+                "ms": 33.809999987483025,
+                "rhiTotal": 48263.246297836304,
+                "gameMs": 9.610107421875,
+                "events": []
+              },
+              {
+                "frame": 8479,
+                "time": 75982.15999999642,
+                "ms": 25.269999995827675,
+                "rhiTotal": 62067.681074142456,
+                "gameMs": 5.010009765625,
+                "events": []
+              },
+              {
+                "frame": 6331,
+                "time": 64170.685000002384,
+                "ms": 23.37000000476837,
+                "rhiTotal": 51362.34402656555,
+                "gameMs": 11.89013671875,
+                "events": []
+              },
+              {
+                "frame": 6269,
+                "time": 63384,
+                "ms": 22.525000005960464,
+                "rhiTotal": 50604.59876060486,
+                "gameMs": 12.93994140625,
+                "events": []
+              },
+              {
+                "frame": 6251,
+                "time": 63151.875,
+                "ms": 21.74500000476837,
+                "rhiTotal": 50389.718532562256,
+                "gameMs": 12.31005859375,
+                "events": []
+              },
+              {
+                "frame": 6446,
+                "time": 65654.83499999344,
+                "ms": 21.399999991059303,
+                "rhiTotal": 52790.58742523193,
+                "gameMs": 12.179931640625,
+                "events": []
+              },
+              {
+                "frame": 6248,
+                "time": 63101.78000000119,
+                "ms": 21.135000005364418,
+                "rhiTotal": 50332.783460617065,
+                "gameMs": 12.330078125,
+                "events": []
+              },
+              {
+                "frame": 6363,
+                "time": 64582.664999991655,
+                "ms": 20.979999989271164,
+                "rhiTotal": 51759.11331176758,
+                "gameMs": 11.7998046875,
+                "events": []
+              },
+              {
+                "frame": 6417,
+                "time": 65273.814999997616,
+                "ms": 20.799999997019768,
+                "rhiTotal": 52424.46327209473,
+                "gameMs": 12.25,
+                "events": []
+              },
+              {
+                "frame": 6426,
+                "time": 65390.65500000119,
+                "ms": 20.760000005364418,
+                "rhiTotal": 52537.57309913635,
+                "gameMs": 11.56005859375,
+                "events": []
+              }
+            ]
+          }
+        }
+      ],
+      "finalRHI": {
+        "sampleFrame": 9030,
+        "graphicsPipelines": 221,
+        "computePipelines": 71,
+        "graphicsPipelineCreateMs": 11.158943176269531,
+        "computePipelineCreateMs": 2.5031566619873047,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": false,
+        "precachedGraphicsPipelines": 0,
+        "asyncPrecacheRequested": 0,
+        "asyncPrecacheCompleted": 0,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 0,
+        "precachedGraphicsBinds": 0,
+        "precacheConcurrency": 0,
+        "runtimeAsyncPSO": true,
+        "runtimeAsyncRequested": 292,
+        "runtimeAsyncCompleted": 292,
+        "runtimeAsyncFailed": 0
+      },
+      "finalCounts": {
+        "createShaderModule": 189,
+        "createRenderPipelineAsync": 221,
+        "createComputePipelineAsync": 71,
+        "createComputePipeline": 3
+      },
+      "precache": {
+        "enabled": false,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "errors": []
+    },
+    {
+      "sequence": 4,
+      "originalIndex": 1,
+      "mode": "sync",
+      "url": "http://127.0.0.1:8765/build/villa-runtime-async-pso-v70/index.html?pso=sync",
+      "idleGpu": "2, 1163",
+      "first30FramesMs": 9400,
+      "phases": [
+        {
+          "name": "standing",
+          "summary": {
+            "frames": 541,
+            "fps": 107.81864545098844,
+            "low1Fps": 68.98930665841372,
+            "p50": 9.099999994039536,
+            "p99": 13.609999999403954,
+            "maximum": 15,
+            "over20": 0,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 2007,
+                "time": 28916.019999995828,
+                "ms": 15,
+                "rhiTotal": 18669.47317123413,
+                "gameMs": 12.159912109375,
+                "events": []
+              },
+              {
+                "frame": 2010,
+                "time": 28959.77499999106,
+                "ms": 14.709999993443489,
+                "rhiTotal": 18696.49314880371,
+                "gameMs": 14.375,
+                "events": []
+              },
+              {
+                "frame": 2008,
+                "time": 28930.685000002384,
+                "ms": 14.665000006556511,
+                "rhiTotal": 18678.79295349121,
+                "gameMs": 14.93505859375,
+                "events": []
+              },
+              {
+                "frame": 2011,
+                "time": 28974.37999999523,
+                "ms": 14.605000004172325,
+                "rhiTotal": 18705.42311668396,
+                "gameMs": 13.409912109375,
+                "events": []
+              },
+              {
+                "frame": 2009,
+                "time": 28945.064999997616,
+                "ms": 14.379999995231628,
+                "rhiTotal": 18687.608003616333,
+                "gameMs": 14.60498046875,
+                "events": []
+              },
+              {
+                "frame": 2012,
+                "time": 28987.989999994636,
+                "ms": 13.609999999403954,
+                "rhiTotal": 18714.44797515869,
+                "gameMs": 14.559814453125,
+                "events": []
+              },
+              {
+                "frame": 2034,
+                "time": 29191.969999998808,
+                "ms": 13.269999995827675,
+                "rhiTotal": 18905.5335521698,
+                "gameMs": 8.875,
+                "events": []
+              },
+              {
+                "frame": 1756,
+                "time": 26611.894999995828,
+                "ms": 13.259999990463257,
+                "rhiTotal": 16486.892700195312,
+                "gameMs": 9.094970703125,
+                "events": []
+              },
+              {
+                "frame": 1715,
+                "time": 26226.935000002384,
+                "ms": 12.924999997019768,
+                "rhiTotal": 16122.480869293213,
+                "gameMs": 9.844970703125,
+                "events": []
+              },
+              {
+                "frame": 2006,
+                "time": 28901.019999995828,
+                "ms": 12.215000003576279,
+                "rhiTotal": 18660.342931747437,
+                "gameMs": 10.219970703125,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "first-tour",
+          "summary": {
+            "frames": 3323,
+            "fps": 132.12143164292056,
+            "low1Fps": 36.90137023350997,
+            "p50": 6.179999992251396,
+            "p99": 16.25499999523163,
+            "maximum": 141.06500001251698,
+            "over20": 20,
+            "over50": 2,
+            "over100": 2,
+            "creations": {
+              "createShaderModule": 10,
+              "createRenderPipeline": 15
+            },
+            "worst": [
+              {
+                "frame": 2789,
+                "time": 36379.12000000477,
+                "ms": 141.06500001251698,
+                "rhiTotal": 25520.549774169922,
+                "gameMs": 11.614990234375,
+                "events": []
+              },
+              {
+                "frame": 2790,
+                "time": 36494.090000003576,
+                "ms": 114.9699999988079,
+                "rhiTotal": 25661.38982772827,
+                "gameMs": 141.010009765625,
+                "events": []
+              },
+              {
+                "frame": 2781,
+                "time": 36149.09999999404,
+                "ms": 39.19499999284744,
+                "rhiTotal": 25434.620141983032,
+                "gameMs": 22.949951171875,
+                "events": [
+                  {
+                    "name": "createShaderModule",
+                    "start": 36119.015000000596,
+                    "end": 36119.03000000119
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36123.034999996424,
+                    "end": 36123.109999999404
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36123.20000000298,
+                    "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+                    "end": 36123.23000000417
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36123.28000000119,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 36123.289999991655
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36123.53000000119,
+                    "end": 36123.56999999285
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36123.609999999404,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 36123.625
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36123.65500000119,
+                    "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+                    "end": 36123.664999991655
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36123.72499999404,
+                    "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+                    "end": 36123.734999999404
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36123.760000005364,
+                    "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+                    "end": 36123.765000000596
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36124.29999999702,
+                    "end": 36124.40500000119
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36126.689999997616,
+                    "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+                    "end": 36126.71999999881
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36126.765000000596,
+                    "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+                    "end": 36126.76999999583
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36126.810000002384,
+                    "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+                    "end": 36126.81999999285
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36127.510000005364,
+                    "end": 36127.58499999344
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36128.140000000596,
+                    "end": 36128.26999999583
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36128.37000000477,
+                    "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+                    "end": 36128.390000000596
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36128.46999999881,
+                    "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+                    "end": 36128.48000000417
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36128.515000000596,
+                    "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+                    "end": 36128.52499999106
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36128.95000000298,
+                    "end": 36129.01999999583
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36145.689999997616,
+                    "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+                    "end": 36145.71999999881
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36146.32500000298,
+                    "end": 36146.34999999404
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36146.44499999285,
+                    "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+                    "end": 36146.45999999344
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36146.659999996424,
+                    "end": 36146.67999999225
+                  },
+                  {
+                    "name": "createShaderModule",
+                    "start": 36146.85500000417,
+                    "end": 36146.875
+                  },
+                  {
+                    "name": "createRenderPipeline",
+                    "start": 36146.95499999821,
+                    "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+                    "end": 36146.96999999881
+                  }
+                ]
+              },
+              {
+                "frame": 2791,
+                "time": 36522.90500000119,
+                "ms": 28.814999997615814,
+                "rhiTotal": 25783.339977264404,
+                "gameMs": 114.06494140625,
+                "events": []
+              },
+              {
+                "frame": 2954,
+                "time": 38676.95000000298,
+                "ms": 28.150000005960464,
+                "rhiTotal": 27780.774354934692,
+                "gameMs": 12.93505859375,
+                "events": []
+              },
+              {
+                "frame": 5062,
+                "time": 51215.15500000119,
+                "ms": 25.900000005960464,
+                "rhiTotal": 39214.916467666626,
+                "gameMs": 5.03515625,
+                "events": []
+              },
+              {
+                "frame": 2976,
+                "time": 38964.05499999225,
+                "ms": 24.149999991059303,
+                "rhiTotal": 28058.07399749756,
+                "gameMs": 11.989990234375,
+                "events": []
+              },
+              {
+                "frame": 2801,
+                "time": 36670.185000002384,
+                "ms": 22.200000002980232,
+                "rhiTotal": 25921.36573791504,
+                "gameMs": 9.344970703125,
+                "events": []
+              },
+              {
+                "frame": 3017,
+                "time": 39502.70000000298,
+                "ms": 21.490000009536743,
+                "rhiTotal": 28577.138900756836,
+                "gameMs": 12.9951171875,
+                "events": []
+              },
+              {
+                "frame": 2890,
+                "time": 37802.95999999344,
+                "ms": 21.339999988675117,
+                "rhiTotal": 26976.604223251343,
+                "gameMs": 14.580078125,
+                "events": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "repeat-tour",
+          "summary": {
+            "frames": 3469,
+            "fps": 137.8847352773636,
+            "low1Fps": 53.60246878037854,
+            "p50": 5.5350000113248825,
+            "p99": 15.399999991059303,
+            "maximum": 32.35999999940395,
+            "over20": 8,
+            "over50": 0,
+            "over100": 0,
+            "creations": {},
+            "worst": [
+              {
+                "frame": 6103,
+                "time": 61464.46999999881,
+                "ms": 32.35999999940395,
+                "rhiTotal": 48815.71269035339,
+                "gameMs": 9.195068359375,
+                "events": []
+              },
+              {
+                "frame": 8536,
+                "time": 76539.87000000477,
+                "ms": 26.12000000476837,
+                "rhiTotal": 62558.87842178345,
+                "gameMs": 5.6201171875,
+                "events": []
+              },
+              {
+                "frame": 6435,
+                "time": 65529.765000000596,
+                "ms": 24.78499999642372,
+                "rhiTotal": 52642.359495162964,
+                "gameMs": 18.489990234375,
+                "events": []
+              },
+              {
+                "frame": 6413,
+                "time": 65205.44499999285,
+                "ms": 21.589999988675117,
+                "rhiTotal": 52364.49384689331,
+                "gameMs": 11.594970703125,
+                "events": []
+              },
+              {
+                "frame": 6358,
+                "time": 64513.539999991655,
+                "ms": 21.479999989271164,
+                "rhiTotal": 51698.27198982239,
+                "gameMs": 12.330078125,
+                "events": []
+              },
+              {
+                "frame": 6446,
+                "time": 65685.31999999285,
+                "ms": 21.399999991059303,
+                "rhiTotal": 52796.29468917847,
+                "gameMs": 12.594970703125,
+                "events": []
+              },
+              {
+                "frame": 6501,
+                "time": 66378.58499999344,
+                "ms": 21.20499999821186,
+                "rhiTotal": 53462.23950386047,
+                "gameMs": 11.8349609375,
+                "events": []
+              },
+              {
+                "frame": 8544,
+                "time": 76643.47499999404,
+                "ms": 20.20999999344349,
+                "rhiTotal": 62666.468143463135,
+                "gameMs": 18.094970703125,
+                "events": []
+              },
+              {
+                "frame": 6182,
+                "time": 62280.17999999225,
+                "ms": 18.689999997615814,
+                "rhiTotal": 49578.00030708313,
+                "gameMs": 15.27001953125,
+                "events": []
+              },
+              {
+                "frame": 6434,
+                "time": 65504.98000000417,
+                "ms": 18.535000011324883,
+                "rhiTotal": 52624.17435646057,
+                "gameMs": 12.18505859375,
+                "events": []
+              }
+            ]
+          }
+        }
+      ],
+      "finalRHI": {
+        "sampleFrame": 9120,
+        "graphicsPipelines": 209,
+        "computePipelines": 71,
+        "graphicsPipelineCreateMs": 6.428956985473633,
+        "computePipelineCreateMs": 1.0211467742919922,
+        "textureReadbacks": 0,
+        "textureReadbacksReady": 0,
+        "textureReadbackMaps": 0,
+        "textureReadbackNotReady": 0,
+        "psoPrecaching": false,
+        "precachedGraphicsPipelines": 0,
+        "asyncPrecacheRequested": 0,
+        "asyncPrecacheCompleted": 0,
+        "asyncPrecacheFailed": 0,
+        "unsupportedPrecacheRequests": 0,
+        "precachedGraphicsUsed": 0,
+        "precachedGraphicsBinds": 0,
+        "precacheConcurrency": 0,
+        "runtimeAsyncPSO": false,
+        "runtimeAsyncRequested": 0,
+        "runtimeAsyncCompleted": 0,
+        "runtimeAsyncFailed": 0
+      },
+      "finalCounts": {
+        "createShaderModule": 193,
+        "createRenderPipeline": 209,
+        "createComputePipeline": 74
+      },
+      "precache": {
+        "enabled": false,
+        "active": 0,
+        "filePrecompileTasks": 0
+      },
+      "errors": []
+    }
+  ],
+  "usageDiagnostic": {
+    "pass": true,
+    "timingsExcluded": true,
+    "usage": {
+      "createRenderPipelineAsync": {
+        "unique": 220,
+        "binds": 1700550
+      },
+      "createComputePipelineAsync": {
+        "unique": 67,
+        "binds": 497081
+      },
+      "createComputePipeline": {
+        "unique": 3,
+        "binds": 8101
+      }
+    },
+    "rhi": {
+      "sampleFrame": 3120,
+      "graphicsPipelines": 220,
+      "computePipelines": 67,
+      "graphicsPipelineCreateMs": 9.826898574829102,
+      "computePipelineCreateMs": 2.259492874145508,
+      "textureReadbacks": 0,
+      "textureReadbacksReady": 0,
+      "textureReadbackMaps": 0,
+      "textureReadbackNotReady": 0,
+      "psoPrecaching": false,
+      "precachedGraphicsPipelines": 0,
+      "asyncPrecacheRequested": 0,
+      "asyncPrecacheCompleted": 0,
+      "asyncPrecacheFailed": 0,
+      "unsupportedPrecacheRequests": 0,
+      "precachedGraphicsUsed": 0,
+      "precachedGraphicsBinds": 0,
+      "precacheConcurrency": 0,
+      "runtimeAsyncPSO": true,
+      "runtimeAsyncRequested": 287,
+      "runtimeAsyncCompleted": 287,
+      "runtimeAsyncFailed": 0
+    },
+    "errors": []
+  },
+  "visualCheck": {
+    "screenshots": [
+      {
+        "file": "tests/web-platform/results/runtime-async-pso-v70-abba-20261105-1-sync.png",
+        "sha256": "ab895e44787cbe3fa764c0641b971f8c803f3b0a07de5801489131a1304840c4"
+      },
+      {
+        "file": "tests/web-platform/results/runtime-async-pso-v70-abba-20261105-2-async.png",
+        "sha256": "9cf8f6fd8d218450a0b890ee6a0e92485a5b53ee6c88c7e3cc3bf2bf434b3882"
+      },
+      {
+        "file": "tests/web-platform/results/runtime-async-pso-v70-abba-20261105-3-async.png",
+        "sha256": "d833eaf45800aebcf2a2deab4445b108bedd11cbed2ac38ac4bae891527ca68c"
+      },
+      {
+        "file": "tests/web-platform/results/runtime-async-pso-v70-abba-retry4-20261105-1-sync.png",
+        "sha256": "467281e8c8e4e0b083ae92efc9a171617739f5caa75199159bfef3aac8228dc5"
+      }
+    ],
+    "inspection": "Inspected same-camera sync/async screenshots; no obvious missing objects or material changes. Does not replace manual movement testing."
+  },
+  "limitations": [
+    "No elimination of first-use stalls: command lists still depend on the required pipeline becoming ready.",
+    "Compute storage-format variants requiring actual UAV bindings remain synchronous at dispatch; three such variants were actually used in the usage diagnostic.",
+    "Owner-local direct creation retains synchronous fallback.",
+    "Async API Promise duration includes browser scheduling/validation/compilation and completion delivery; it is not pure compiler CPU time.",
+    "Only two measured runs per mode with retained browser/driver caches; no desktop PSO compile-time comparison or universal performance claim."
+  ]
+}

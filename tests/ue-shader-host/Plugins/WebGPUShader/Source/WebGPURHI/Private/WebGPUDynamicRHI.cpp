@@ -59,6 +59,8 @@ struct FWebGPUCompletion
 using FWebGPUCompletionRef = TSharedPtr<FWebGPUCompletion, ESPMode::ThreadSafe>;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
 bool ProfilePSOStartup = false;
+bool RuntimeAsyncPSO = false;
+uint32 RuntimeAsyncRequested = 0, RuntimeAsyncCompleted = 0, RuntimeAsyncFailed = 0;
 std::atomic<uint32> PSOProfileSequence{0};
 std::atomic<uint32> QueryWaitCalls{0}, QueryWaitUnready{0};
 std::atomic<uint64> QueryWaitMicroseconds{0};
@@ -94,6 +96,10 @@ struct FWebGPUPrecacheTiming
 // returns to its event loop so the WebGPU Promise can deliver this callback.
 template <typename HandleType> struct TWebGPUPrecacheRequest : FWebGPUPrecacheTiming
 {
+    // Match the exact owner invocation; reentrant runtime calls must not inherit
+    // a surrounding request's asynchronous completion callback.
+    const void* Initializer = nullptr;
+    bool bPrecache = true;
     FEvent* Event = FPlatformProcess::GetSynchEventFromPool(true);
     HandleType Handle = nullptr;
     FString Error;
@@ -698,6 +704,12 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     GRHISupportsMultithreadedShaderCreation = false;
 #endif
     GRHISupportsAsyncPipelinePrecompile = false;
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+    RuntimeAsyncPSO = FParse::Param(FCommandLine::Get(), TEXT("WebRuntimeAsyncPSO"));
+    GRHISupportsAsyncPipelinePrecompile = RuntimeAsyncPSO;
+    if (RuntimeAsyncPSO)
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.CreateOnRHIThread"))->Set(0, ECVF_SetByCode);
+#endif
     GRHISupportsPSOPrecaching = FParse::Param(FCommandLine::Get(), TEXT("WebPSOPrecacheTest"));
     if (GRHISupportsPSOPrecaching)
     {
@@ -1233,6 +1245,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
              precachedGraphicsUsed:$4, precachedGraphicsBinds:$5, precacheConcurrency:$6});
         }, AsyncPrecacheRequested, AsyncPrecacheCompleted, AsyncPrecacheFailed, UnsupportedPrecacheRequests,
             PrecachedGraphicsUsed, PrecachedGraphicsBinds, PrecacheRequestConcurrency);
+        EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
+            {runtimeAsyncPSO:!!$0, runtimeAsyncRequested:$1, runtimeAsyncCompleted:$2, runtimeAsyncFailed:$3});
+        }, RuntimeAsyncPSO, RuntimeAsyncRequested, RuntimeAsyncCompleted, RuntimeAsyncFailed);
 #endif
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI,
@@ -3966,9 +3981,11 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
 FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(const FGraphicsPipelineStateInitializer &In)
 {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
-    if (In.bPSOPrecache && GRHISupportsPSOPrecaching && !emscripten_is_main_runtime_thread())
+    if (((In.bPSOPrecache && GRHISupportsPSOPrecaching) || RuntimeAsyncPSO) && !emscripten_is_main_runtime_thread())
     {
         FWebGPUGraphicsPrecacheRequest Request;
+        Request.Initializer = &In;
+        Request.bPrecache = In.bPSOPrecache;
         FGraphicsPipelineStateRHIRef Result;
         SubmitWebGPUPrecache([&] {
             TGuardValue<FWebGPUGraphicsPrecacheRequest*> Guard(GraphicsPrecacheRequest, &Request);
@@ -4186,18 +4203,26 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     // A synchronous owner proxy can run reentrantly during this creation.
     // Runtime draws must not inherit the surrounding precache callback.
-    if (In.bPSOPrecache && GraphicsPrecacheRequest)
+    if (GraphicsPrecacheRequest && GraphicsPrecacheRequest->Initializer == &In)
     {
-        ++AsyncPrecacheRequested;
+        if (GraphicsPrecacheRequest->bPrecache) ++AsyncPrecacheRequested;
+        else ++RuntimeAsyncRequested;
         auto Callback = WGPU_CREATE_RENDER_PIPELINE_ASYNC_CALLBACK_INFO_INIT;
         Callback.mode = WGPUCallbackMode_AllowSpontaneous;
         Callback.userdata1 = GraphicsPrecacheRequest;
         Callback.callback = [](WGPUCreatePipelineAsyncStatus Status, WGPURenderPipeline Pipeline,
             WGPUStringView Message, void* Userdata, void*) {
             const bool Success = Status == WGPUCreatePipelineAsyncStatus_Success;
-            ++AsyncPrecacheCompleted;
-            if (!Success) { ++AsyncPrecacheFailed; if (Pipeline) wgpuRenderPipelineRelease(Pipeline); }
-            static_cast<FWebGPUGraphicsPrecacheRequest*>(Userdata)->Complete(Success ? Pipeline : nullptr, Message);
+            auto* Request = static_cast<FWebGPUGraphicsPrecacheRequest*>(Userdata);
+            if (Request->bPrecache) ++AsyncPrecacheCompleted;
+            else ++RuntimeAsyncCompleted;
+            if (!Success)
+            {
+                if (Request->bPrecache) ++AsyncPrecacheFailed;
+                else ++RuntimeAsyncFailed;
+                if (Pipeline) wgpuRenderPipelineRelease(Pipeline);
+            }
+            Request->Complete(Success ? Pipeline : nullptr, Message);
         };
         GraphicsPrecacheRequest->BeginAPI();
         wgpuDeviceCreateRenderPipelineAsync(Device, &Desc, Callback);
@@ -4215,9 +4240,15 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
 FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(const FComputePipelineStateInitializer &In)
 {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
-    if (In.bPSOPrecache && GRHISupportsPSOPrecaching && !emscripten_is_main_runtime_thread())
+    // Storage-format variants are completed only after actual UAV bindings are
+    // known at dispatch; their deferred wrapper has no pipeline to await here.
+    const bool RuntimeAsyncEligible = RuntimeAsyncPSO &&
+        static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data.StorageFormatSource.IsEmpty();
+    if (((In.bPSOPrecache && GRHISupportsPSOPrecaching) || RuntimeAsyncEligible) && !emscripten_is_main_runtime_thread())
     {
         FWebGPUComputePrecacheRequest Request;
+        Request.Initializer = &In;
+        Request.bPrecache = In.bPSOPrecache;
         FComputePipelineStateRHIRef Result;
         SubmitWebGPUPrecache([&] {
             TGuardValue<FWebGPUComputePrecacheRequest*> Guard(ComputePrecacheRequest, &Request);
@@ -4259,18 +4290,26 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     const double CreateStart = FPlatformTime::Seconds();
     WGPUComputePipeline Handle = nullptr;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
-    if (In.bPSOPrecache && ComputePrecacheRequest)
+    if (ComputePrecacheRequest && ComputePrecacheRequest->Initializer == &In)
     {
-        ++AsyncPrecacheRequested;
+        if (ComputePrecacheRequest->bPrecache) ++AsyncPrecacheRequested;
+        else ++RuntimeAsyncRequested;
         auto Callback = WGPU_CREATE_COMPUTE_PIPELINE_ASYNC_CALLBACK_INFO_INIT;
         Callback.mode = WGPUCallbackMode_AllowSpontaneous;
         Callback.userdata1 = ComputePrecacheRequest;
         Callback.callback = [](WGPUCreatePipelineAsyncStatus Status, WGPUComputePipeline Pipeline,
             WGPUStringView Message, void* Userdata, void*) {
             const bool Success = Status == WGPUCreatePipelineAsyncStatus_Success;
-            ++AsyncPrecacheCompleted;
-            if (!Success) { ++AsyncPrecacheFailed; if (Pipeline) wgpuComputePipelineRelease(Pipeline); }
-            static_cast<FWebGPUComputePrecacheRequest*>(Userdata)->Complete(Success ? Pipeline : nullptr, Message);
+            auto* Request = static_cast<FWebGPUComputePrecacheRequest*>(Userdata);
+            if (Request->bPrecache) ++AsyncPrecacheCompleted;
+            else ++RuntimeAsyncCompleted;
+            if (!Success)
+            {
+                if (Request->bPrecache) ++AsyncPrecacheFailed;
+                else ++RuntimeAsyncFailed;
+                if (Pipeline) wgpuComputePipelineRelease(Pipeline);
+            }
+            Request->Complete(Success ? Pipeline : nullptr, Message);
         };
         ComputePrecacheRequest->BeginAPI();
         wgpuDeviceCreateComputePipelineAsync(Device, &Desc, Callback);

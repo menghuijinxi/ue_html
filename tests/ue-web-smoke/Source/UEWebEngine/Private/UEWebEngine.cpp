@@ -84,6 +84,7 @@ FString RHIExperiment;
 FString WebOcclusionMode = TEXT("history");
 bool ShaderMetadataDOM = false, ShaderMetadataValidate = false;
 bool PSOPrecacheTest = false;
+bool RuntimeAsyncPSO = false;
 bool StartupTrace = false;
 // Diagnostic only: retain the same WASM/Cook while collapsing rendering onto
 // the GPU owner, optionally keeping UE task workers alive.
@@ -1164,7 +1165,8 @@ int32 StartEngine()
         (RHIExperiment.IsEmpty() ? FString() : TEXT(" -WebRHIExperiment=") + RHIExperiment) +
         (WebOcclusionMode.IsEmpty() ? FString() : TEXT(" -WebOcclusionMode=") + WebOcclusionMode) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
-        (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) + (UseWebGPU ?
+        (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) +
+        (RuntimeAsyncPSO ? TEXT(" -WebRuntimeAsyncPSO") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
         TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -NoSplash -NoLoadingScreen -unattended -stdout") :
         TEXT(" -nullrhi -sm5 -NoSplash -NoLoadingScreen -unattended -stdout"));
@@ -1363,6 +1365,7 @@ int main(int argc, char** argv)
             }
         }
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
+        RuntimeAsyncPSO |= FCStringAnsi::Strcmp(argv[Index], "-WebRuntimeAsyncPSO") == 0;
         StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=full") == 0) ThreadingBenchmark = true;
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=render-serial") == 0) { ThreadingTest = 1; ThreadingBenchmark = true; }

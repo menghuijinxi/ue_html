@@ -212,6 +212,12 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (!['channel', 'priority'].includes(rhiWake)) throw new Error('Invalid RHI wake mode');
   module.arguments = module.arguments.filter(v => !v.startsWith('-WebRHIWake='));
   module.arguments.push('-WebRHIWake=' + rhiWake);
+  const runtimePSO = experiment.get('pso');
+  if (runtimePSO !== null) {
+    if (!['sync', 'async'].includes(runtimePSO)) throw new Error('Invalid runtime PSO mode');
+    module.arguments = module.arguments.filter(v => v !== '-WebRuntimeAsyncPSO');
+    if (runtimePSO === 'async') module.arguments.push('-WebRuntimeAsyncPSO');
+  }
   const canvas = module.canvas;
   globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;

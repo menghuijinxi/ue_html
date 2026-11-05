@@ -18,9 +18,11 @@ if (!fs.existsSync(marker)) {
   fs.cpSync(stock, destination, {recursive: true});
   fs.writeFileSync(marker, stock);
 }
-const source = path.join(root, 'reference-engine/Engine/Source/Runtime/RHI/Private/PipelineStateCache.cpp');
-const target = path.join(destination, 'Private/PipelineStateCache.cpp');
-assert.equal(fs.statSync(target).nlink, 1);
-fs.chmodSync(target, 0o666);
-if (!fs.readFileSync(source).equals(fs.readFileSync(target))) fs.copyFileSync(source, target);
-console.log('Prepared local RHI pipeline cache overlay');
+for (const name of ['PipelineStateCache.cpp', 'RHICommandList.cpp']) {
+  const source = path.join(root, 'reference-engine/Engine/Source/Runtime/RHI/Private', name);
+  const target = path.join(destination, 'Private', name);
+  assert.equal(fs.statSync(target).nlink, 1);
+  fs.chmodSync(target, 0o666);
+  if (!fs.readFileSync(source).equals(fs.readFileSync(target))) fs.copyFileSync(source, target);
+}
+console.log('Prepared local RHI pipeline cache and command list overlays');
