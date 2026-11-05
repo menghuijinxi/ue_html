@@ -2,6 +2,12 @@
   "date": "2026-11-05",
   "functionalCapturePassed": true,
   "visualFixClaimed": false,
+  "manualVisualVerdict": {
+    "date": "2026-11-05",
+    "folder": "triplex-input-direct-20261105",
+    "result": "用户反馈：这一版抖动没有任何改善。",
+    "symptomImproved": false
+  },
   "referenceEngineCommit": "3764d5d828f4607f7864aa5763e06a50b94faff4",
   "sources": [
     {
@@ -235,5 +241,5 @@
     "postTurnScreenshots": "Both reviewed; scene visible"
   },
   "conclusion": "Direct input improves measured delivery latency but did not remove the observed motion blur scale spikes in either round. RHI-owner input forwarding or extra page RAF waiting alone is insufficient to explain the anomaly.",
-  "boundary": "903 real velocity-flatten dispatch samples. No velocity texture readback, CPU DeltaRealTime measurement or manual visual verdict. r1 input timing includes startup and is not used for latency comparison. r2 clears timing records after 90 warmup frames. Confirmation means GT enqueue, not PumpMessages consumption. JS-only derived runtime, not a full UBT/WASM build. Diagnostic overhead and automated mouse timing are not a performance benchmark."
+  "boundary": "903 real velocity-flatten dispatch samples. No velocity texture readback or CPU DeltaRealTime measurement. User subsequently confirmed no visual improvement. r1 input timing includes startup and is not used for latency comparison. r2 clears timing records after 90 warmup frames. Confirmation means GT enqueue, not PumpMessages consumption. JS-only derived runtime, not a full UBT/WASM build. Diagnostic overhead and automated mouse timing are not a performance benchmark."
 }

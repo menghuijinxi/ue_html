@@ -3,11 +3,21 @@
 let initialized = false;
 let frameCounter, lastPresented = 0, presentTimes = [], pipelineEvents = [];
 let browserMetricsReady = false;
-let inputPort;
+let inputPort, framePort, inputMailbox;
 function connectInputPort() {
-  if (!inputPort || !globalThis.__webInputBound || !globalThis.__webGameThreadWorker) return;
-  globalThis.__webGameThreadWorker.postMessage({type: 'web-game-input-channel', port: inputPort}, [inputPort]);
-  inputPort = null;
+  if (!globalThis.__webInputBound || !globalThis.__webGameThreadWorker) return;
+  if (inputPort) {
+    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-input-channel', port: inputPort}, [inputPort]);
+    inputPort = null;
+  }
+  if (framePort) {
+    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-frame-channel', port: framePort}, [framePort]);
+    framePort = null;
+  }
+  if (inputMailbox) {
+    globalThis.__webGameThreadWorker.postMessage({type: 'web-game-input-mailbox', buffer: inputMailbox});
+    inputMailbox = null;
+  }
 }
 function updateBrowserMetrics(state) {
   globalThis.__webBrowserState = state;
@@ -91,6 +101,13 @@ addEventListener('message', event => {
   } else if (message.type === 'input-channel') {
     if (inputPort) throw new Error('Input channel already pending');
     inputPort = message.port;
+    connectInputPort();
+  } else if (message.type === 'frame-channel') {
+    if (framePort) throw new Error('Frame channel already pending');
+    framePort = message.port;
+    connectInputPort();
+  } else if (message.type === 'input-mailbox') {
+    inputMailbox = message.buffer;
     connectInputPort();
   } else if (message.type === 'browser') {
     updateBrowserMetrics(message.state);

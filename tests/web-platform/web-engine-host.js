@@ -1,4 +1,27 @@
 'use strict';
+class WebInputMailbox {
+  constructor(focused) {
+    this.focused = focused;
+    // SPSC layout: write/read/overflow/focused i32, then 256 x 10 f64 records.
+    this.buffer = new SharedArrayBuffer(16 + 256 * 10 * 8);
+    this.header = new Int32Array(this.buffer, 0, 4);
+    this.events = new Float64Array(this.buffer, 16);
+    this.state = {mode: 'shared-mailbox', sent: 0, overflows: 0, maxQueue: 0};
+  }
+  push(values) {
+    const write = Atomics.load(this.header, 0) >>> 0, read = Atomics.load(this.header, 1) >>> 0;
+    Atomics.store(this.header, 3, Number(this.focused()));
+    if (((write - read) >>> 0) >= 256) {
+      Atomics.add(this.header, 2, 1); this.state.overflows++; return;
+    }
+    const begin = (write % 256) * 10;
+    this.events.set(values, begin);
+    this.events[begin + 9] = performance.timeOrigin + performance.now();
+    Atomics.store(this.header, 0, (write + 1) | 0);
+    this.state.sent++; this.state.maxQueue = Math.max(this.state.maxQueue, ((write - read) >>> 0) + 1);
+  }
+}
+
 class WebInputBridge {
   constructor({send, schedule, focused, trace = false}) {
     this.send = send; this.schedule = schedule; this.focused = focused; this.tracing = trace;
@@ -212,15 +235,50 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     trace: assets.inputTrace === true,
   });
   globalThis.__webInputBridge = inputBridge.state;
+  const inputMailbox = assets.inputBridge === 'shared-mailbox' ?
+    new WebInputMailbox(() => document.activeElement === canvas) : null;
+  if (inputMailbox) {
+    globalThis.__webInputBridge = inputMailbox.state;
+    worker.postMessage({type: 'input-mailbox', buffer: inputMailbox.buffer});
+  }
   if (directInput) {
     const channel = new MessageChannel();
     inputBridge.connect(channel.port1);
     worker.postMessage({type: 'input-channel', port: channel.port2}, [channel.port2]);
   }
+  let framePort;
+  const pageFrames = new Map();
+  if (assets.gameFrameBridge === 'page-raf') {
+    const channel = new MessageChannel();
+    framePort = channel.port1;
+    const state = globalThis.__webGameFrameBridge = {mode: 'page-raf', ready: false, delivered: 0};
+    framePort.onmessage = event => {
+      const message = event.data;
+      if (message.type === 'frame-ready') state.ready = true;
+      else if (message.type === 'frame-request') {
+        if (pageFrames.has(message.id)) throw new Error('Duplicate game RAF request');
+        pageFrames.set(message.id, requestAnimationFrame(timestamp => {
+          pageFrames.delete(message.id);
+          state.delivered++;
+          framePort.postMessage({type: 'frame', id: message.id, timestamp});
+        }));
+      } else if (message.type === 'frame-cancel') {
+        if (pageFrames.has(message.id)) cancelAnimationFrame(pageFrames.get(message.id));
+        pageFrames.delete(message.id);
+      }
+    };
+    framePort.start();
+    worker.postMessage({type: 'frame-channel', port: channel.port2}, [channel.port2]);
+  }
+  const disposeFrames = () => {
+    for (const id of pageFrames.values()) cancelAnimationFrame(id);
+    pageFrames.clear(); framePort?.close();
+  };
   const pending = new Map();
   const reportFailure = error => {
     stopped = true;
     inputBridge.dispose();
+    disposeFrames();
     performanceHUD.dispose();
     worker.terminate();
     for (const request of pending.values()) {
@@ -357,7 +415,9 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   const input = (type, code = 0, character = 0, x = 0, y = 0, dx = 0, dy = 0, wheel = 0, flags = 0) => {
     if (stopped) return;
     if (!globalThis.__webPSOPrecacheReady && type < 12) return;
-    inputBridge.push([type, code, character, x, y, dx, dy, wheel, flags]);
+    const values = [type, code, character, x, y, dx, dy, wheel, flags];
+    if (inputMailbox) inputMailbox.push(values);
+    else inputBridge.push(values);
   };
   for (const [type, id] of [['keydown', 2], ['keyup', 3]]) {
     canvas.addEventListener(type, event => {
@@ -395,6 +455,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   addEventListener('pagehide', () => {
     stopped = true;
     inputBridge.dispose();
+    disposeFrames();
     performanceHUD.dispose();
     observer.disconnect();
     clearInterval(dpiTimer);
@@ -413,4 +474,4 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   diagnostics.engineWorker = {url: 'web-engine-worker.js', offscreenCanvas: true};
 };
 
-if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples, WebInputBridge};
+if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox};

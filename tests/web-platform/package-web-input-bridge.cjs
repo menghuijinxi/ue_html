@@ -7,6 +7,7 @@ const {audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const option = name => process.argv.find(v => v.startsWith(`--${name}=`))?.slice(name.length + 3);
 const tag = option('tag');
+const mailbox = process.argv.includes('--mailbox');
 assert(tag && /^[a-z0-9-]+$/.test(tag));
 const baseline = 'triplex-project-lumen-shadows-fixed-20261104';
 const base = path.join(__dirname, 'build', baseline);
@@ -23,15 +24,22 @@ const begin = originalRuntime.indexOf('var WebThreadBridge = () => {');
 const end = originalRuntime.indexOf('\nvar findCanvasEventTarget = ', begin);
 assert(begin >= 0 && end > begin && originalRuntime.indexOf('var WebThreadBridge = ', begin + 1) === -1);
 // Both arms receive the same JS bridge. WASM, Cook resources and game RAF remain identical.
-const runtime = originalRuntime.slice(0, begin) + 'var WebThreadBridge = ' +
+let runtime = originalRuntime.slice(0, begin) + 'var WebThreadBridge = ' +
   library.$WebThreadBridge.toString() + ';\n' + originalRuntime.slice(end);
+if (mailbox) {
+  const observer = require('./web-game-clock-observer.cjs');
+  const marker = 'var WebThreadBridge = () => {';
+  assert.equal(runtime.split(marker).length, 2);
+  runtime = runtime.replace(marker, `${marker}\n(${observer.toString()})();`);
+}
 const changed = ['index.html', 'web-engine-host.js', 'web-engine-worker.js', 'UEWebEngineThreads.js'];
 const report = {date: new Date().toISOString(), pass: false, baseline,
   sources: [__filename, bridgeSource, path.join(__dirname, 'web-engine-host.js'),
-    path.join(__dirname, 'web-engine-worker.js')].map(audit),
+    path.join(__dirname, 'web-engine-worker.js'),
+    ...(mailbox ? [path.join(__dirname, 'web-game-clock-observer.cjs')] : [])].map(audit),
   cases: [], boundary: 'Diagnostic JS-only input bridge experiment; no WASM rebuild, Cook, rendering settings or game RAF changes. Both arms use the same bridge implementation; only transport and page scheduling differ.'};
-for (const mode of ['owner-forwarded', 'direct-game-thread']) {
-  const folder = `triplex-input-${mode === 'owner-forwarded' ? 'owner' : 'direct'}-${tag}`;
+for (const mode of ['owner-forwarded', mailbox ? 'shared-mailbox' : 'direct-game-thread']) {
+  const folder = `triplex-input-${mode === 'owner-forwarded' ? 'owner' : mailbox ? 'shared' : 'direct'}-${tag}`;
   const directory = path.join(__dirname, 'build', folder);
   assert(!fs.existsSync(directory), 'Use a fresh tag');
   fs.mkdirSync(directory);

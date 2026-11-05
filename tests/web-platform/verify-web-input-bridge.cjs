@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const {MessageChannel} = require('node:worker_threads');
-const {WebInputBridge} = require('./web-engine-host.js');
+const {WebInputBridge, WebInputMailbox} = require('./web-engine-host.js');
 const channels = [];
 
 (async () => {
@@ -43,6 +43,7 @@ const channels = [];
   let library;
   const game = vm.createContext({
     ENVIRONMENT_IS_PTHREAD: true, Map, performance,
+    MainLoop: {preMainLoop: []},
     addToLibrary: value => {library = value;},
     addEventListener: (name, callback) => {assert.equal(name, 'message'); handlers.push(callback);},
     postMessage: () => assert.fail('Direct input must not return via the owner'),
@@ -69,9 +70,52 @@ const channels = [];
   assert.equal(direct.state.acknowledged, 2);
   assert(direct.state.trace.every(v => Number.isFinite(v.enqueuedAt)));
   assert.equal(direct.state.mode, 'direct-game-thread');
+  const framesChannel = new MessageChannel(), requests = [], delivered = [];
+  channels.push(framesChannel);
+  framesChannel.port2.on('message', message => requests.push(message));
+  handlers[0]({data: {type: 'web-game-frame-channel', port: framesChannel.port1}});
+  const frame = game.requestAnimationFrame(timestamp => delivered.push(timestamp));
+  await new Promise(resolve => setTimeout(resolve, 10));
+  assert.deepEqual(requests.map(v => v.type), ['frame-ready', 'frame-request']);
+  framesChannel.port2.postMessage({type: 'frame', id: frame, timestamp: 123.5});
+  await new Promise(resolve => setTimeout(resolve, 10));
+  assert.deepEqual(delivered, [123.5]);
+  const cancelled = game.requestAnimationFrame(() => assert.fail('Cancelled frame ran'));
+  game.cancelAnimationFrame(cancelled);
+  framesChannel.port2.postMessage({type: 'frame', id: cancelled, timestamp: 130});
+  await new Promise(resolve => setTimeout(resolve, 10));
+  assert.equal(requests.at(-1).type, 'frame-cancel');
+  const mailbox = new WebInputMailbox(() => true);
+  handlers[0]({data: {type: 'web-game-input-mailbox', buffer: mailbox.buffer}});
+  const count = received.length;
+  mailbox.push([5, 2, 0, 10, 20, 0, 0, 0, 0]);
+  mailbox.push([8, 0, 0, 14, 20, 4, 0, 0, 0]);
+  mailbox.push([6, 2, 0, 14, 20, 0, 0, 0, 0]);
+  assert.equal(received.length, count, 'Mailbox must be sampled at frame entry');
+  game.MainLoop.preMainLoop[0]();
+  assert.deepEqual(Array.from(received.at(-1).events, v => v[0]), [5, 8, 6]);
+  assert.equal(Atomics.load(mailbox.header, 0), Atomics.load(mailbox.header, 1));
+  // Repeated ring wraps must retain exact displacement totals and release order.
+  for (let batch = 0; batch < 8; batch++) {
+    for (let i = 0; i < 200; i++) mailbox.push([8, 0, 0, i, 0, 1, -1, 0, 0]);
+    game.MainLoop.preMainLoop[0]();
+    assert.equal(received.at(-1).events.length, 200);
+    assert.equal(received.at(-1).events.reduce((sum, v) => sum + v[5], 0), 200);
+  }
+  for (let i = 0; i < 257; i++) mailbox.push([8, 0, 0, i, 0, 1, 0, 0, 0]);
+  game.MainLoop.preMainLoop[0]();
+  assert.deepEqual(Array.from(received.at(-1).events, v => v[0]), [12, 13]);
+  assert.equal(game.__webInputMailboxState.overflowResets, 1);
+  Atomics.store(mailbox.header, 0, -2); Atomics.store(mailbox.header, 1, -2);
+  mailbox.push([8, 0, 0, 1, 0, 2, 0, 0, 0]);
+  mailbox.push([6, 2, 0, 1, 0, 0, 0, 0, 0]);
+  mailbox.push([12, 0, 0, 0, 0, 0, 0, 0, 0]);
+  game.MainLoop.preMainLoop[0]();
+  assert.deepEqual(Array.from(received.at(-1).events, v => v[0]), [8, 6, 12]);
+  assert.equal(Atomics.load(mailbox.header, 1), 1);
   direct.dispose();
   channel.port2.close();
   legacy.dispose();
-  console.log('PASS: real MessagePort handshake, direct delivery, ordered release, coalescing and bounded backpressure');
+  console.log('PASS: input/frame MessagePorts, shared queue wrap/overflow, native timestamps, cancellation and bounded backpressure');
 })().catch(error => { console.error(error); process.exitCode = 1; })
   .finally(() => channels.forEach(channel => {channel.port1.close(); channel.port2.close();}));

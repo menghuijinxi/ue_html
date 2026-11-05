@@ -12,6 +12,15 @@ assert(tag && /^[a-z0-9-]+$/.test(tag));
 const pacedOnly = process.argv.includes('--lumen-paced-only');
 const inputBridgeTag = option('input-bridge-tag');
 assert(!inputBridgeTag || /^[a-z0-9-]+$/.test(inputBridgeTag));
+const gameClock = process.argv.includes('--game-clock');
+const mailboxTag = option('mailbox-tag');
+assert(!mailboxTag || /^[a-z0-9-]+$/.test(mailboxTag));
+const folderOverride = option('folder');
+assert(!folderOverride || /^[a-z0-9-]+$/.test(folderOverride));
+assert(!gameClock || folderOverride || mailboxTag,
+  '--game-clock requires an observer-instrumented --folder or --mailbox-tag package');
+assert([pacedOnly, !!inputBridgeTag, !!mailboxTag, !!folderOverride].filter(Boolean).length <= 1,
+  'Choose one experiment package selector');
 const conversion = path.resolve(option('conversion') ||
   path.join(__dirname, 'build/web-project-triplex-project-desktop-cook/20261102-132137/ShaderConversion'));
 const entries = {};
@@ -203,7 +212,9 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
 
 (async () => {
   try {
-    const cases = inputBridgeTag ?
+    const cases = mailboxTag ? ['owner', 'shared'].map(mode => ({folder: `triplex-input-${mode}-${mailboxTag}`})) :
+      folderOverride ? [{folder: folderOverride}] :
+      inputBridgeTag ?
       ['owner', 'direct'].map(mode => ({folder: `triplex-input-${mode}-${inputBridgeTag}`})) :
       pacedOnly ? [{folder: 'triplex-project-lumen-shadows-fixed-20261104', rafMaxFPS: 10}] :
       ['triplex-project-lumen-shadows-fixed-20261104', 'triplex-motion-no-lumen-10fps-20261104-v2'].map(folder => ({folder}));
@@ -278,6 +289,42 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
         __motionInputs.enabled = false;
         return {probe: __motionInputs, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera};
       });
+      if (gameClock) {
+        state.gameClock = await owner.evaluate(() => new Promise((resolve, reject) => {
+          const channel = new MessageChannel();
+          const timeout = setTimeout(() => {channel.port1.close(); reject(Error('GT clock read timed out'));}, 10000);
+          channel.port1.onmessage = event => {clearTimeout(timeout); channel.port1.close(); resolve(event.data);};
+          globalThis.__webGameThreadWorker.postMessage({type: 'web-game-clock-read', port: channel.port2}, [channel.port2]);
+        }));
+        assert(state.gameClock.frames.length > 100);
+        state.clockObserverAtProbe = audit(path.join(__dirname, 'web-game-clock-observer.cjs'));
+        state.frameBridge = await page.evaluate(() => globalThis.__webGameFrameBridge || {mode: 'owner-raf'});
+        assert.equal(state.settings.gi, 1);
+        assert.equal(state.settings.reflections, 1);
+        assert.equal(state.settings.antiAliasing, 4);
+        if (folder.includes('-page-raf-')) {
+          assert.equal(state.frameBridge.mode, 'page-raf');
+          assert(state.frameBridge.ready && state.frameBridge.delivered > 100);
+        }
+        const image = path.join(__dirname, 'results', `motion-blur-inputs-${tag}-${report.runs.length}-clock.png`);
+        await page.screenshot({path: image});
+        state.screenshot = audit(image);
+      }
+      if (mailboxTag) {
+        state.inputBridge = await page.evaluate(() => globalThis.__webInputBridge);
+        assert.equal(state.inputBridge.mode, folder.includes('-shared-') ? 'shared-mailbox' : 'owner-forwarded');
+        assert(state.inputBridge.sent > 50);
+        if (folder.includes('-shared-')) {
+          assert.equal(state.inputBridge.overflows, 0);
+          if (gameClock) {
+            assert(state.gameClock.mailbox.consumed > 50);
+            assert.equal(state.gameClock.mailbox.overflowResets, 0);
+          }
+        }
+        assert.equal(state.settings.gi, 1);
+        assert.equal(state.settings.reflections, 1);
+        assert.equal(state.settings.antiAliasing, 4);
+      }
       if (inputBridgeTag) {
         state.inputBridge = await page.evaluate(() => globalThis.__webInputBridge);
         assert(state.inputBridge.sent >= 10 && state.inputBridge.acknowledged >= 10);
