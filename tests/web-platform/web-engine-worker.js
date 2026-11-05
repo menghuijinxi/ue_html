@@ -4,6 +4,7 @@ let initialized = false;
 let frameCounter, lastPresented = 0, presentTimes = [], pipelineEvents = [];
 let browserMetricsReady = false;
 let frameScheduler;
+let rhiWakePriority = false;
 function markGpuFrame() {
   if (!frameScheduler) return;
   if (!frameScheduler.attached || !frameScheduler.queue) throw new Error('Frame scheduler runtime support unavailable');
@@ -47,15 +48,19 @@ const rpcNames = new Set([
 if (!globalThis.setImmediate) {
   const channel = new MessageChannel(), callbacks = new Map();
   let sequence = 0;
-  channel.port1.onmessage = event => {
-    const callback = callbacks.get(event.data);
-    callbacks.delete(event.data);
+  const invoke = id => {
+    const callback = callbacks.get(id);
+    callbacks.delete(id);
     callback?.();
   };
+  channel.port1.onmessage = event => invoke(event.data);
   globalThis.setImmediate = callback => {
     const id = ++sequence;
     callbacks.set(id, callback);
-    channel.port2.postMessage(id);
+    // Keep yielding for GPU completion and GC. A priority task prevents a second
+    // native sweep slice from entering between the proxy notification and RHI.
+    if (rhiWakePriority) scheduler.postTask(() => invoke(id), {priority:'user-blocking'}).catch(fail);
+    else channel.port2.postMessage(id);
     return id;
   };
   globalThis.clearImmediate = id => callbacks.delete(id);
@@ -71,7 +76,7 @@ const diagnosticStateKeys = [
   '__webThreadsExitCode', '__webThreadsFailure', '__webThreadsMemory', '__webThreadsResult',
   '__webDistanceFields', '__webDistanceFieldsExposure', '__webDistanceFieldsGPU',
   '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings', '__webOptimizationRHI', '__webOptimizationState',
-  '__webPSOPrecache', '__webOcclusionHistory', '__webGameFrameClock'
+  '__webPSOPrecache', '__webOcclusionHistory', '__webGameFrameClock', '__webRHIWakeScheduler'
 ];
 function snapshot() {
   const state = {};
@@ -138,6 +143,10 @@ async function start(message) {
   if (!crossOriginIsolated || typeof SharedArrayBuffer === 'undefined' || !navigator.gpu)
     throw new Error('Engine Worker requires isolated shared memory and WebGPU');
   const assets = message.assets;
+  const priorityRequested = message.arguments.includes('-WebRHIWake=priority');
+  rhiWakePriority = priorityRequested && typeof globalThis.scheduler?.postTask === 'function';
+  globalThis.__webRHIWakeScheduler = {requested:priorityRequested?'priority':'channel',
+    active:rhiWakePriority?'priority':'channel',prioritySupported:typeof globalThis.scheduler?.postTask === 'function'};
   if (message.frameScheduler) {
     const {maxAhead, state, port} = message.frameScheduler;
     if (!Number.isInteger(maxAhead) || maxAhead < 1 || maxAhead > 4 || !(state instanceof SharedArrayBuffer) || state.byteLength !== 32)

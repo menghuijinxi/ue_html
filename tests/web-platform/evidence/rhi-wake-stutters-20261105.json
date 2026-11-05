@@ -1,0 +1,4854 @@
+{
+  "date": "2026-11-05T02:33:12.613Z",
+  "pass": true,
+  "engineCommit": "75d375164",
+  "rootBaseCommit": "0ad9140",
+  "conclusion": "Static-camera periodic stalls align with native cppgc sweeper tasks on the RHI owner. Two-stage RHI notification permits two approximately 5-ms sweep slices between submissions. Priority setImmediate delivery reduces worst-frame stalls while mean FPS stays approximately unchanged.",
+  "defaultsChanged": false,
+  "defaultRhiWake": "channel",
+  "candidate": "?rhiwake=priority",
+  "rollback": "?rhiwake=channel",
+  "candidateUrl": "http://127.0.0.1:8765/build/villa-rhi-wake-v68/index.html?rhiwake=priority",
+  "sources": [
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "4e2071c326df34bb8c362f1ac7bb825c7ac886685d5953ece95f6153e4f72955"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "a19a06eb97648653547d2574ac0c8aadc4994eea298d84431d2f11eaa630aee8"
+    },
+    {
+      "file": "tests/web-platform/probe-web-occlusion-history.cjs",
+      "sha256": "8bb826a65efa7ee3d896c7a7ccbce3c298bdfd3a349bbfb50fc5e7d4e15f7338"
+    },
+    {
+      "file": "tests/web-platform/probe-web-rhi-stalls.cjs",
+      "sha256": "d2b443150a45f0842ee56aae4483bad18bc1d0fea6f33f63b7e6b0355d610ee0"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-rhi-stalls.cjs",
+      "sha256": "7a8328f16fcb6caa554bf4da0ada7b716b0421b367c4b733312e32d8a02d5982"
+    }
+  ],
+  "inputs": [
+    {
+      "file": "tests/web-platform/results/rhi-wake-abba-20261105.json",
+      "sha256": "7e3af61617653fd7a5f34db9a5a5959f80c33c860e79accd2ea3d22b70de4673"
+    },
+    {
+      "file": "tests/web-platform/results/rhi-stall-baseline-20261105.json",
+      "sha256": "31d85c11a45cccf72a8b110d832af56a37d1cfabae74463f81e36273bcdeba95"
+    },
+    {
+      "file": "tests/web-platform/results/rhi-stall-diagnostic-20261105.json",
+      "sha256": "31ec9c902ffec5197221a124223e80fb785abb6ca78edb828cdd08391bc8b20a"
+    },
+    {
+      "file": "tests/web-platform/results/rhi-stall-diagnostic-20261105-analysis.json",
+      "sha256": "7f70f492ca2b3eb07fe72174aa9b536fa88ca26e2a42ed174d856daafa5ab44a"
+    },
+    {
+      "file": "tests/web-platform/results/rhi-wake-priority-trace-20261105.json",
+      "sha256": "141e102cb95b2bda22b047c57a5a143f08d9b2bbb2a2e138bb42e002a90f8915"
+    },
+    {
+      "file": "tests/web-platform/results/rhi-wake-priority-trace-20261105-analysis.json",
+      "sha256": "56ba7dc9d1f073acf44239bc80114d0601d0206c3b19dc63f697504e778e028b"
+    },
+    {
+      "file": "tests/web-platform/results/rhi-wake-fallback-20261105.json",
+      "sha256": "3d5ad527952e5540d6f6c016541b516a7dd4cb05a1009d32052b04ace8be78f6"
+    },
+    {
+      "file": "tests/web-platform/results/villa-rhi-wake-v68-package.json",
+      "sha256": "51318ed54bfd760701bd383f93bc9fa2c8d00adf16806daf861e126de55449ad"
+    }
+  ],
+  "packageFiles": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\index.html",
+      "sha256": "ce211f37855c44fcc5d2e23c5dcc8da857e7da08c3ba551cfd4b6aac67d0ed82"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\UEWebEngineThreads.js",
+      "sha256": "5ed17f6b14d6951386e8012963b3085d12955a67929b29be338b9a38ed2994c1"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\UEWebEngineThreads.wasm",
+      "sha256": "55eee2955e2615cb6c8614311f6cc025ef1ea4954612162df1d67498cc3faf32"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\config-files.json",
+      "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\content-files.json",
+      "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\web-engine-host.js",
+      "sha256": "4e2071c326df34bb8c362f1ac7bb825c7ac886685d5953ece95f6153e4f72955"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\web-engine-worker.js",
+      "sha256": "a19a06eb97648653547d2574ac0c8aadc4994eea298d84431d2f11eaa630aee8"
+    }
+  ],
+  "sameWasm": "55eee2955e2615cb6c8614311f6cc025ef1ea4954612162df1d67498cc3faf32",
+  "normal": {
+    "order": [
+      "default",
+      "rhi-priority",
+      "rhi-priority",
+      "default"
+    ],
+    "secondsPerRun": 60,
+    "warmupSeconds": 15,
+    "runs": [
+      {
+        "index": 1,
+        "mode": "default",
+        "fps": 107.65451964834709,
+        "frameMs": {
+          "count": 6459,
+          "p50": 9.054999992251396,
+          "p95": 10.515000000596046,
+          "p99": 14.034999996423721,
+          "maximum": 24.729999989271164,
+          "low1Fps": 53.784127062427565
+        },
+        "over18": 47,
+        "over20": 22,
+        "rhiMs": 8.755630789895545,
+        "history": {
+          "polls": 3441.2417054263565,
+          "ready": 617.3260465116279,
+          "hits": 555.0274418604652,
+          "zero": 517.0066666666667,
+          "fallback": 127.97255813953488,
+          "expired": 40.97255813953488,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 621.6254263565892,
+          "queryDropped": 4.606201550387597
+        },
+        "workload": {
+          "draws": 2838.968527131783,
+          "indirectDraws": 170,
+          "dispatches": 173.8446511627907,
+          "ready": 617.2130232558139,
+          "pending": 2856.1982945736436,
+          "zero": 586.8767441860465
+        },
+        "idleGpu": {
+          "at": "2026-11-05T02:23:27.492Z",
+          "adapters": [
+            {
+              "name": "NVIDIA GeForce RTX 4090",
+              "utilization": 2,
+              "memoryUsedMiB": 1143,
+              "memoryTotalMiB": 24564
+            }
+          ]
+        },
+        "actualScheduler": {
+          "requested": "channel",
+          "active": "channel",
+          "prioritySupported": true
+        },
+        "errors": []
+      },
+      {
+        "index": 2,
+        "mode": "rhi-priority",
+        "fps": 107.10490590620279,
+        "frameMs": {
+          "count": 6427,
+          "p50": 9.065000012516975,
+          "p95": 10.854999989271164,
+          "p99": 14.439999997615814,
+          "maximum": 16.875,
+          "low1Fps": 66.73477035979889
+        },
+        "over18": 0,
+        "over20": 0,
+        "rhiMs": 8.788606804501736,
+        "history": {
+          "polls": 3411.687596899225,
+          "ready": 612.1071317829458,
+          "hits": 543.4443410852713,
+          "zero": 505.91612403100777,
+          "fallback": 139.5556589147287,
+          "expired": 52.55565891472868,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 622.1116279069768,
+          "queryDropped": 9.900930232558139
+        },
+        "workload": {
+          "draws": 2860.708372093023,
+          "indirectDraws": 170,
+          "dispatches": 173.90744186046513,
+          "ready": 612.2100775193799,
+          "pending": 2832.5882170542636,
+          "zero": 581.9846511627907
+        },
+        "idleGpu": {
+          "at": "2026-11-05T02:25:00.472Z",
+          "adapters": [
+            {
+              "name": "NVIDIA GeForce RTX 4090",
+              "utilization": 15,
+              "memoryUsedMiB": 1176,
+              "memoryTotalMiB": 24564
+            }
+          ]
+        },
+        "actualScheduler": {
+          "requested": "priority",
+          "active": "priority",
+          "prioritySupported": true
+        },
+        "errors": []
+      },
+      {
+        "index": 3,
+        "mode": "rhi-priority",
+        "fps": 107.71320891545265,
+        "frameMs": {
+          "count": 6463,
+          "p50": 9.024999991059303,
+          "p95": 10.689999997615814,
+          "p99": 14.424999997019768,
+          "maximum": 16.605000004172325,
+          "low1Fps": 67.19283828065332
+        },
+        "over18": 0,
+        "over20": 0,
+        "rhiMs": 8.73223581526539,
+        "history": {
+          "polls": 3699.581172839506,
+          "ready": 615.1438271604939,
+          "hits": 546.1330246913581,
+          "zero": 509.50493827160494,
+          "fallback": 136.86697530864197,
+          "expired": 49.866975308641976,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 623.008950617284,
+          "queryDropped": 7.595061728395062
+        },
+        "workload": {
+          "draws": 2854.8225308641977,
+          "indirectDraws": 170,
+          "dispatches": 173.76342592592593,
+          "ready": 615.1396604938271,
+          "pending": 3118.0737654320988,
+          "zero": 583.791512345679
+        },
+        "idleGpu": {
+          "at": "2026-11-05T02:26:32.698Z",
+          "adapters": [
+            {
+              "name": "NVIDIA GeForce RTX 4090",
+              "utilization": 14,
+              "memoryUsedMiB": 1188,
+              "memoryTotalMiB": 24564
+            }
+          ]
+        },
+        "actualScheduler": {
+          "requested": "priority",
+          "active": "priority",
+          "prioritySupported": true
+        },
+        "errors": []
+      },
+      {
+        "index": 4,
+        "mode": "default",
+        "fps": 108.41513765938217,
+        "frameMs": {
+          "count": 6505,
+          "p50": 9,
+          "p95": 10.339999988675117,
+          "p99": 14.029999986290932,
+          "maximum": 22.275000005960464,
+          "low1Fps": 53.28446232872328
+        },
+        "over18": 53,
+        "over20": 18,
+        "rhiMs": 8.68715054066116,
+        "history": {
+          "polls": 3484.0299539170505,
+          "ready": 619.1669738863287,
+          "hits": 561.8090629800307,
+          "zero": 523.5010752688172,
+          "fallback": 121.19093701996928,
+          "expired": 34.190937019969276,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 621.3299539170507,
+          "queryDropped": 2.234869431643625
+        },
+        "workload": {
+          "draws": 2826.6695852534563,
+          "indirectDraws": 170,
+          "dispatches": 173.82442396313365,
+          "ready": 619.174193548387,
+          "pending": 2897.6336405529955,
+          "zero": 588.9119815668203
+        },
+        "idleGpu": {
+          "at": "2026-11-05T02:28:04.675Z",
+          "adapters": [
+            {
+              "name": "NVIDIA GeForce RTX 4090",
+              "utilization": 14,
+              "memoryUsedMiB": 1188,
+              "memoryTotalMiB": 24564
+            }
+          ]
+        },
+        "actualScheduler": {
+          "requested": "channel",
+          "active": "channel",
+          "prioritySupported": true
+        },
+        "errors": []
+      }
+    ],
+    "summary": {
+      "default": {
+        "fps": 108.03483911089481,
+        "frameMs": {
+          "count": 12964,
+          "p50": 9.029999986290932,
+          "p95": 10.430000007152557,
+          "p99": 14.034999996423721,
+          "maximum": 24.729999989271164,
+          "low1Fps": 53.42890256836485
+        },
+        "runs": [
+          107.65451964834709,
+          108.41513765938217
+        ],
+        "over18": 100,
+        "over20": 40
+      },
+      "rhi-priority": {
+        "fps": 107.40904546290989,
+        "frameMs": {
+          "count": 12890,
+          "p50": 9.04500000178814,
+          "p95": 10.765000000596046,
+          "p99": 14.435000002384186,
+          "maximum": 16.875,
+          "low1Fps": 66.94517242626088
+        },
+        "runs": [
+          107.10490590620279,
+          107.71320891545265
+        ],
+        "over18": 0,
+        "over20": 0
+      }
+    },
+    "delta": {
+      "fpsPercent": -0.5792517054082569,
+      "low1Percent": 25.29767449481359
+    }
+  },
+  "reproduction": {
+    "default": {
+      "fps": 105.26359640900664,
+      "frameMs": {
+        "count": 6316,
+        "p50": 9.24499998986721,
+        "p95": 10.790000006556511,
+        "p99": 14.70499999821186,
+        "maximum": 22.469999998807907,
+        "low1Fps": 51.77072042260533
+      },
+      "runs": [
+        105.26359640900664
+      ]
+    }
+  },
+  "baselineDiagnostic": {
+    "pass": true,
+    "packageFiles": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-occlusion-default-v67\\index.html",
+        "sha256": "27e2bd8da121430127901736ada59b050c903ac2accb37b487b6ace35fd34c4b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-occlusion-default-v67\\UEWebEngineThreads.js",
+        "sha256": "5ed17f6b14d6951386e8012963b3085d12955a67929b29be338b9a38ed2994c1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-occlusion-default-v67\\UEWebEngineThreads.wasm",
+        "sha256": "55eee2955e2615cb6c8614311f6cc025ef1ea4954612162df1d67498cc3faf32"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-occlusion-default-v67\\web-engine-worker.js",
+        "sha256": "be51e78fc7e49544a6e94bde9cdb2e594e532c4a4c7f65f28ce2e2b1d11e7de6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-occlusion-default-v67\\web-engine-host.js",
+        "sha256": "27c2a8e17a712554635485fb099354e13e68e5240d14d0404385886ee64dc77c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-occlusion-default-v67\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-occlusion-default-v67\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      }
+    ],
+    "phases": [
+      {
+        "name": "standing",
+        "before": {
+          "time": 53788.060000002384,
+          "origin": 1793844904291.495,
+          "frames": 2692,
+          "stages": {
+            "rhiWorkMilliseconds": 29279.707431793213,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 2693,
+            "rhiThreadId": 1,
+            "rhiFrames": 2691,
+            "submitted": 44308,
+            "presented": 2692,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17694
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 2693,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 2670,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852263936,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5761,
+            "requestedMips": 5761,
+            "maximumMips": 7241,
+            "residentBytes": 489373776,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 2670,
+            "graphicsPipelines": 195,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.150318145751953,
+            "computePipelineCreateMs": 1.009225845336914,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 2670,
+            "polls": 8118537,
+            "ready": 1616907,
+            "hits": 1438839,
+            "zero": 1335320,
+            "fallback": 382722,
+            "expired": 150511,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 1657448,
+            "queryDropped": 35998,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2161,
+            "diskReads": 2848,
+            "diskReadBytes": 1580412136,
+            "downloadedBytes": 3450646536,
+            "downloads": 2,
+            "persistentHits": 0,
+            "evictions": 2130,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 54308872,
+            "hashMs": 37.12499985098839,
+            "downloadMs": 13758.680000022054,
+            "diskReadMs": 7249.504999548197
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "immediateMappingLength": 33150
+        },
+        "after": {
+          "time": 114390.95499999821,
+          "origin": 1793844904291.495,
+          "frames": 8996,
+          "stages": {
+            "rhiWorkMilliseconds": 86175.53639411926,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 8998,
+            "rhiThreadId": 1,
+            "rhiFrames": 8995,
+            "submitted": 113653,
+            "presented": 8996,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17694
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 8998,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 8970,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852263936,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5761,
+            "requestedMips": 5761,
+            "maximumMips": 7241,
+            "residentBytes": 489373776,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 8970,
+            "graphicsPipelines": 195,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.150318145751953,
+            "computePipelineCreateMs": 1.009225845336914,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 8970,
+            "polls": 28009942,
+            "ready": 5501115,
+            "hits": 4941857,
+            "zero": 4590828,
+            "fallback": 1182604,
+            "expired": 402293,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 5565890,
+            "queryDropped": 62836,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2161,
+            "diskReads": 2848,
+            "diskReadBytes": 1580412136,
+            "downloadedBytes": 3450646536,
+            "downloads": 2,
+            "persistentHits": 0,
+            "evictions": 2130,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 54308872,
+            "hashMs": 37.12499985098839,
+            "downloadMs": 13758.680000022054,
+            "diskReadMs": 7249.504999548197
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "immediateMappingLength": 39456
+        },
+        "summary": {
+          "fps": 104.22566406154142,
+          "frames": {
+            "count": 6254,
+            "mean": 9.594565877839232,
+            "p50": 9.334999993443489,
+            "p95": 10.939999997615814,
+            "p99": 14.805000007152557,
+            "max": 21.809999987483025,
+            "low1Fps": 52.38802060800608
+          },
+          "queue": {
+            "count": 6256,
+            "mean": 0.3317215472502667,
+            "p50": 0.2549999952316284,
+            "p95": 0.5,
+            "p99": 2.314999997615814,
+            "max": 6.135000005364418,
+            "low1Fps": 201.9683903875973
+          },
+          "execution": {
+            "count": 6256,
+            "mean": 9.03198769187931,
+            "p50": 8.870000004768372,
+            "p95": 10.134999990463257,
+            "p99": 11.5,
+            "max": 15.324999988079071,
+            "low1Fps": 78.85991100484084
+          },
+          "pipelineEvents": 0,
+          "over20": 28,
+          "over30": 0,
+          "worst": [
+            {
+              "frame": 5562,
+              "time": 81430.89999999106,
+              "rhi": 55241.581201553345,
+              "game": 5562,
+              "gameMs": 20.044921875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 21.809999987483025
+            },
+            {
+              "frame": 2885,
+              "time": 55641.67000000179,
+              "rhi": 31015.050411224365,
+              "game": 2885,
+              "gameMs": 13.735107421875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 21.484999999403954
+            },
+            {
+              "frame": 2886,
+              "time": 55662.92999999225,
+              "rhi": 31025.500297546387,
+              "game": 2886,
+              "gameMs": 21.419921875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 21.259999990463257
+            },
+            {
+              "frame": 5225,
+              "time": 78152.3599999994,
+              "rhi": 52177.497148513794,
+              "game": 5225,
+              "gameMs": 13.02001953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.935000002384186
+            },
+            {
+              "frame": 6538,
+              "time": 90779.01000000536,
+              "rhi": 64052.25419998169,
+              "game": 6538,
+              "gameMs": 15.16015625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.850000008940697
+            },
+            {
+              "frame": 8869,
+              "time": 113062.96500000358,
+              "rhi": 85013.87882232666,
+              "game": 8869,
+              "gameMs": 19.8701171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.575000002980232
+            },
+            {
+              "frame": 4555,
+              "time": 71637.31000000238,
+              "rhi": 46048.37369918823,
+              "game": 4555,
+              "gameMs": 12.05517578125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.564999997615814
+            },
+            {
+              "frame": 2887,
+              "time": 55683.44499999285,
+              "rhi": 31035.400390625,
+              "game": 2887,
+              "gameMs": 21.190185546875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.515000000596046
+            },
+            {
+              "frame": 3901,
+              "time": 65446.60500000417,
+              "rhi": 40217.23389625549,
+              "game": 3901,
+              "gameMs": 19.449951171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.50500001013279
+            },
+            {
+              "frame": 3232,
+              "time": 58961.484999999404,
+              "rhi": 34130.40041923523,
+              "game": 3232,
+              "gameMs": 14.52001953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.489999994635582
+            },
+            {
+              "frame": 3557,
+              "time": 62132.859999999404,
+              "rhi": 37112.247943878174,
+              "game": 3557,
+              "gameMs": 12.090087890625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.450000002980232
+            },
+            {
+              "frame": 7547,
+              "time": 100365.56999999285,
+              "rhi": 73061.85507774353,
+              "game": 7547,
+              "gameMs": 20.2451171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.444999992847443
+            },
+            {
+              "frame": 6884,
+              "time": 94071.03000000119,
+              "rhi": 67147.6731300354,
+              "game": 6884,
+              "gameMs": 13.18994140625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.41500000655651
+            },
+            {
+              "frame": 5226,
+              "time": 78172.76000000536,
+              "rhi": 52186.84720993042,
+              "game": 5226,
+              "gameMs": 20.8701171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.400000005960464
+            },
+            {
+              "frame": 4228,
+              "time": 68568.47499999404,
+              "rhi": 43158.04672241211,
+              "game": 4228,
+              "gameMs": 13.815185546875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.339999988675117
+            },
+            {
+              "frame": 7880,
+              "time": 103558.28000000119,
+              "rhi": 76085.57963371277,
+              "game": 7880,
+              "gameMs": 12.574951171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.33500000834465
+            },
+            {
+              "frame": 5560,
+              "time": 81388.96999999881,
+              "rhi": 55223.5164642334,
+              "game": 5560,
+              "gameMs": 12.974853515625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.33499999344349
+            },
+            {
+              "frame": 7219,
+              "time": 97283.06999999285,
+              "rhi": 70167.99736022949,
+              "game": 7219,
+              "gameMs": 12.505126953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.32999999821186
+            },
+            {
+              "frame": 7546,
+              "time": 100345.125,
+              "rhi": 73052.53028869629,
+              "game": 7546,
+              "gameMs": 12.300048828125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.320000007748604
+            },
+            {
+              "frame": 5896,
+              "time": 84660.41499999166,
+              "rhi": 58291.12672805786,
+              "game": 5896,
+              "gameMs": 19.784912109375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.274999991059303
+            },
+            {
+              "frame": 4556,
+              "time": 71657.56999999285,
+              "rhi": 46057.50870704651,
+              "game": 4556,
+              "gameMs": 20.5048828125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.259999990463257
+            },
+            {
+              "frame": 8215,
+              "time": 106805.1099999994,
+              "rhi": 79139.86301422119,
+              "game": 8215,
+              "gameMs": 13.269775390625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.15999999642372
+            },
+            {
+              "frame": 8216,
+              "time": 106825.26000000536,
+              "rhi": 79148.68783950806,
+              "game": 8216,
+              "gameMs": 20.10498046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.150000005960464
+            },
+            {
+              "frame": 3900,
+              "time": 65426.09999999404,
+              "rhi": 40207.99899101257,
+              "game": 3900,
+              "gameMs": 12.494873046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.140000000596046
+            },
+            {
+              "frame": 5561,
+              "time": 81409.09000000358,
+              "rhi": 55232.506275177,
+              "game": 5561,
+              "gameMs": 20.14501953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.12000000476837
+            },
+            {
+              "frame": 8543,
+              "time": 110005.04500000179,
+              "rhi": 82133.19945335388,
+              "game": 8543,
+              "gameMs": 19.68994140625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.070000007748604
+            },
+            {
+              "frame": 3558,
+              "time": 62152.89499999583,
+              "rhi": 37121.258020401,
+              "game": 3558,
+              "gameMs": 20.39501953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.03499999642372
+            },
+            {
+              "frame": 7220,
+              "time": 97303.09000000358,
+              "rhi": 70177.12235450745,
+              "game": 7220,
+              "gameMs": 20.264892578125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.020000010728836
+            },
+            {
+              "frame": 3233,
+              "time": 58981.484999999404,
+              "rhi": 34139.29057121277,
+              "game": 3233,
+              "gameMs": 20.425048828125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20
+            },
+            {
+              "frame": 6213,
+              "time": 87685.84499999881,
+              "rhi": 61142.20309257507,
+              "game": 6213,
+              "gameMs": 14.7548828125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 19.969999998807907
+            }
+          ]
+        }
+      },
+      {
+        "name": "standing-trace",
+        "before": {
+          "time": 114480.93500000238,
+          "origin": 1793844904291.495,
+          "frames": 9005,
+          "stages": {
+            "rhiWorkMilliseconds": 86261.07144355774,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 9006,
+            "rhiThreadId": 1,
+            "rhiFrames": 9004,
+            "submitted": 113752,
+            "presented": 9005,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17694
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 9006,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 9000,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852263936,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5761,
+            "requestedMips": 5761,
+            "maximumMips": 7241,
+            "residentBytes": 489373776,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 9000,
+            "graphicsPipelines": 195,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.150318145751953,
+            "computePipelineCreateMs": 1.009225845336914,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 9000,
+            "polls": 28069813,
+            "ready": 5519012,
+            "hits": 4959078,
+            "zero": 4606788,
+            "fallback": 1185873,
+            "expired": 402952,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 5584422,
+            "queryDropped": 62836,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2161,
+            "diskReads": 2848,
+            "diskReadBytes": 1580412136,
+            "downloadedBytes": 3450646536,
+            "downloads": 2,
+            "persistentHits": 0,
+            "evictions": 2130,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 54308872,
+            "hashMs": 37.12499985098839,
+            "downloadMs": 13758.680000022054,
+            "diskReadMs": 7249.504999548197
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "immediateMappingLength": 39464
+        },
+        "after": {
+          "time": 139747.2650000006,
+          "origin": 1793844904291.495,
+          "frames": 11551,
+          "stages": {
+            "rhiWorkMilliseconds": 109613.29102516174,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 11553,
+            "rhiThreadId": 1,
+            "rhiFrames": 11550,
+            "submitted": 141758,
+            "presented": 11551,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17694
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 11553,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 11550,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852263936,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5761,
+            "requestedMips": 5761,
+            "maximumMips": 7241,
+            "residentBytes": 489373776,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 11550,
+            "graphicsPipelines": 195,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.150318145751953,
+            "computePipelineCreateMs": 1.009225845336914,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 11550,
+            "polls": 33528390,
+            "ready": 7085827,
+            "hits": 6423826,
+            "zero": 5957535,
+            "fallback": 1462775,
+            "expired": 458004,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 7152623,
+            "queryDropped": 62836,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2161,
+            "diskReads": 2848,
+            "diskReadBytes": 1580412136,
+            "downloadedBytes": 3450646536,
+            "downloads": 2,
+            "persistentHits": 0,
+            "evictions": 2130,
+            "diskEvictions": 0,
+            "activeReads": 2,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 54308872,
+            "hashMs": 37.12499985098839,
+            "downloadMs": 13758.680000022054,
+            "diskReadMs": 7249.504999548197
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "immediateMappingLength": 42011
+        },
+        "summary": {
+          "fps": 101.08622691160427,
+          "frames": {
+            "count": 2527,
+            "mean": 9.892544519190125,
+            "p50": 9.649999991059303,
+            "p95": 11.155000001192093,
+            "p99": 14.310000002384186,
+            "max": 20.895000010728836,
+            "low1Fps": 52.53533506734232
+          },
+          "queue": {
+            "count": 2528,
+            "mean": 0.4339398732290992,
+            "p50": 0.38499999046325684,
+            "p95": 0.6050000041723251,
+            "p99": 2.310000002384186,
+            "max": 6.174999997019768,
+            "low1Fps": 208.18320121607746
+          },
+          "execution": {
+            "count": 2528,
+            "mean": 9.181018591764136,
+            "p50": 9.019999995827675,
+            "p95": 10.114999994635582,
+            "p99": 11.444999992847443,
+            "max": 14.995000004768372,
+            "low1Fps": 81.48299042742292
+          },
+          "pipelineEvents": 0,
+          "over20": 15,
+          "over30": 0,
+          "worst": [
+            {
+              "frame": 10895,
+              "time": 133171.62000000477,
+              "rhi": 103574.87678527832,
+              "game": 10895,
+              "gameMs": 12.755126953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.895000010728836
+            },
+            {
+              "frame": 9522,
+              "time": 119628.78999999166,
+              "rhi": 91014.59097862244,
+              "game": 9522,
+              "gameMs": 20.614990234375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.875
+            },
+            {
+              "frame": 9176,
+              "time": 116158.48999999464,
+              "rhi": 87807.1882724762,
+              "game": 9176,
+              "gameMs": 13.215087890625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.804999992251396
+            },
+            {
+              "frame": 11231,
+              "time": 136500.56499999762,
+              "rhi": 106659.08885002136,
+              "game": 11231,
+              "gameMs": 12.85498046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.734999999403954
+            },
+            {
+              "frame": 9523,
+              "time": 119649.48000000417,
+              "rhi": 91023.92578125,
+              "game": 9523,
+              "gameMs": 20.780029296875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.690000012516975
+            },
+            {
+              "frame": 10553,
+              "time": 129847.47499999404,
+              "rhi": 100471.87733650208,
+              "game": 10553,
+              "gameMs": 20.139892578125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.685000002384186
+            },
+            {
+              "frame": 9521,
+              "time": 119607.91499999166,
+              "rhi": 91005.37061691284,
+              "game": 9521,
+              "gameMs": 13.14501953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.674999997019768
+            },
+            {
+              "frame": 9864,
+              "time": 123032.06000000238,
+              "rhi": 94173.4311580658,
+              "game": 9864,
+              "gameMs": 13.719970703125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.59000000357628
+            },
+            {
+              "frame": 11232,
+              "time": 136521.09999999404,
+              "rhi": 106668.38884353638,
+              "game": 11232,
+              "gameMs": 20.669921875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.53499999642372
+            },
+            {
+              "frame": 9865,
+              "time": 123052.50499999523,
+              "rhi": 94182.70635604858,
+              "game": 9865,
+              "gameMs": 20.419921875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.444999992847443
+            },
+            {
+              "frame": 10551,
+              "time": 129806.54999999702,
+              "rhi": 100453.42254638672,
+              "game": 10551,
+              "gameMs": 13.22998046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.349999994039536
+            },
+            {
+              "frame": 9177,
+              "time": 116178.78000000119,
+              "rhi": 87816.3480758667,
+              "game": 9177,
+              "gameMs": 20.739990234375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.29000000655651
+            },
+            {
+              "frame": 10552,
+              "time": 129826.78999999166,
+              "rhi": 100462.8324508667,
+              "game": 10552,
+              "gameMs": 20.195068359375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.239999994635582
+            },
+            {
+              "frame": 10207,
+              "time": 126394.54500000179,
+              "rhi": 97292.64116287231,
+              "game": 10207,
+              "gameMs": 13.324951171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.15999999642372
+            },
+            {
+              "frame": 10208,
+              "time": 126414.6099999994,
+              "rhi": 97301.58615112305,
+              "game": 10208,
+              "gameMs": 20.085205078125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.064999997615814
+            },
+            {
+              "frame": 10896,
+              "time": 133191.39999999106,
+              "rhi": 103584.01679992676,
+              "game": 10896,
+              "gameMs": 20.809814453125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 19.77999998629093
+            },
+            {
+              "frame": 10897,
+              "time": 133210.66499999166,
+              "rhi": 103592.86689758301,
+              "game": 10897,
+              "gameMs": 19.7099609375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 19.265000000596046
+            },
+            {
+              "frame": 9866,
+              "time": 123071.67999999225,
+              "rhi": 94191.70641899109,
+              "game": 9866,
+              "gameMs": 20.4599609375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 19.174999997019768
+            },
+            {
+              "frame": 11233,
+              "time": 136540.0300000012,
+              "rhi": 106677.50382423401,
+              "game": 11233,
+              "gameMs": 20.4951171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 18.930000007152557
+            },
+            {
+              "frame": 10209,
+              "time": 126433.375,
+              "rhi": 97310.5411529541,
+              "game": 10209,
+              "gameMs": 19.9951171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 18.765000000596046
+            },
+            {
+              "frame": 9178,
+              "time": 116195.22499999404,
+              "rhi": 87825.4029750824,
+              "game": 9178,
+              "gameMs": 20.195068359375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 16.444999992847443
+            },
+            {
+              "frame": 10708,
+              "time": 131339.37000000477,
+              "rhi": 101869.5707321167,
+              "game": 10708,
+              "gameMs": 9.320068359375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.450000002980232
+            },
+            {
+              "frame": 9542,
+              "time": 119841.39999999106,
+              "rhi": 91201.72619819641,
+              "game": 9542,
+              "gameMs": 9.969970703125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.28999999165535
+            },
+            {
+              "frame": 11204,
+              "time": 136226.95999999344,
+              "rhi": 106410.0091457367,
+              "game": 11204,
+              "gameMs": 9.455078125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.054999992251396
+            },
+            {
+              "frame": 9817,
+              "time": 122562.6099999994,
+              "rhi": 93743.28017234802,
+              "game": 9817,
+              "gameMs": 10,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.405000001192093
+            },
+            {
+              "frame": 9897,
+              "time": 123377.37999999523,
+              "rhi": 94477.15735435486,
+              "game": 9897,
+              "gameMs": 10.47998046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.310000002384186
+            },
+            {
+              "frame": 10846,
+              "time": 132682.84999999404,
+              "rhi": 103125.97036361694,
+              "game": 10846,
+              "gameMs": 9.60986328125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.034999996423721
+            },
+            {
+              "frame": 10943,
+              "time": 133681.73000000417,
+              "rhi": 104033.29682350159,
+              "game": 10943,
+              "gameMs": 11.47509765625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.785000011324883
+            },
+            {
+              "frame": 9863,
+              "time": 123011.46999999881,
+              "rhi": 94163.35606575012,
+              "game": 9863,
+              "gameMs": 10.330078125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.700000002980232
+            },
+            {
+              "frame": 9698,
+              "time": 121412.06000000238,
+              "rhi": 92668.52593421936,
+              "game": 9698,
+              "gameMs": 9.389892578125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.510000005364418
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "baselineTrace": {
+    "pass": true,
+    "capture": {
+      "file": "tests/web-platform/results/rhi-stall-diagnostic-20261105.json",
+      "sha256": "31ec9c902ffec5197221a124223e80fb785abb6ca78edb828cdd08391bc8b20a"
+    },
+    "trace": {
+      "file": "tests/web-platform/results/rhi-stall-diagnostic-20261105-trace.json",
+      "sha256": "5d5c406c2f62086ae60c249c574114515cb124bf5d801d01b8dc4369fdf73d3e"
+    },
+    "events": 2537171,
+    "ownerThread": 19744,
+    "calibration": {
+      "offsetMs": 93556241.16,
+      "method": "Explicit calibration verified against consecutive RHI callback start times and durations",
+      "samples": [
+        {
+          "capturedStart": 114491.54500000179,
+          "capturedDuration": 9.909999996423721,
+          "traceStart": 93670732706,
+          "traceDuration": 9937,
+          "errorMs": 0.0010000020265579224,
+          "durationErrorMs": 0.027000003576278075
+        },
+        {
+          "capturedStart": 114501.93500000238,
+          "capturedDuration": 8.679999992251396,
+          "traceStart": 93670743094,
+          "traceDuration": 8694,
+          "errorMs": -0.0010000020265579224,
+          "durationErrorMs": 0.01400000774860466
+        },
+        {
+          "capturedStart": 114511.26999999583,
+          "capturedDuration": 8.990000009536743,
+          "traceStart": 93670752429,
+          "traceDuration": 9004,
+          "errorMs": -0.0009999871253967285,
+          "durationErrorMs": 0.013999990463256395
+        },
+        {
+          "capturedStart": 114520.8599999994,
+          "capturedDuration": 8.784999996423721,
+          "traceStart": 93670762019,
+          "traceDuration": 8801,
+          "errorMs": -0.0010000020265579224,
+          "durationErrorMs": 0.016000003576278843
+        },
+        {
+          "capturedStart": 114530.25,
+          "capturedDuration": 9.234999999403954,
+          "traceStart": 93670771413,
+          "traceDuration": 9244,
+          "errorMs": 0.003000006079673767,
+          "durationErrorMs": 0.00900000059604622
+        },
+        {
+          "capturedStart": 114540.18500000238,
+          "capturedDuration": 8.899999991059303,
+          "traceStart": 93670781346,
+          "traceDuration": 8909,
+          "errorMs": 0.0010000020265579224,
+          "durationErrorMs": 0.009000008940697413
+        }
+      ]
+    },
+    "window": {
+      "start": 114490.93999999762,
+      "end": 139500.02499999106
+    },
+    "summary": {
+      "fps": 101.08622691160427,
+      "frames": {
+        "count": 2527,
+        "mean": 9.892544519190125,
+        "p50": 9.649999991059303,
+        "p95": 11.155000001192093,
+        "p99": 14.310000002384186,
+        "max": 20.895000010728836,
+        "low1Fps": 52.53533506734232
+      },
+      "queue": {
+        "count": 2528,
+        "mean": 0.4339398732290992,
+        "p50": 0.38499999046325684,
+        "p95": 0.6050000041723251,
+        "p99": 2.310000002384186,
+        "max": 6.174999997019768,
+        "low1Fps": 208.18320121607746
+      },
+      "execution": {
+        "count": 2528,
+        "mean": 9.181018591764136,
+        "p50": 9.019999995827675,
+        "p95": 10.114999994635582,
+        "p99": 11.444999992847443,
+        "max": 14.995000004768372,
+        "low1Fps": 81.48299042742292
+      },
+      "pipelineEvents": 0,
+      "over20": 15,
+      "over30": 0,
+      "worst": [
+        {
+          "frame": 10895,
+          "time": 133171.62000000477,
+          "rhi": 103574.87678527832,
+          "game": 10895,
+          "gameMs": 12.755126953125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.895000010728836
+        },
+        {
+          "frame": 9522,
+          "time": 119628.78999999166,
+          "rhi": 91014.59097862244,
+          "game": 9522,
+          "gameMs": 20.614990234375,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.875
+        },
+        {
+          "frame": 9176,
+          "time": 116158.48999999464,
+          "rhi": 87807.1882724762,
+          "game": 9176,
+          "gameMs": 13.215087890625,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.804999992251396
+        },
+        {
+          "frame": 11231,
+          "time": 136500.56499999762,
+          "rhi": 106659.08885002136,
+          "game": 11231,
+          "gameMs": 12.85498046875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.734999999403954
+        },
+        {
+          "frame": 9523,
+          "time": 119649.48000000417,
+          "rhi": 91023.92578125,
+          "game": 9523,
+          "gameMs": 20.780029296875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.690000012516975
+        },
+        {
+          "frame": 10553,
+          "time": 129847.47499999404,
+          "rhi": 100471.87733650208,
+          "game": 10553,
+          "gameMs": 20.139892578125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.685000002384186
+        },
+        {
+          "frame": 9521,
+          "time": 119607.91499999166,
+          "rhi": 91005.37061691284,
+          "game": 9521,
+          "gameMs": 13.14501953125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.674999997019768
+        },
+        {
+          "frame": 9864,
+          "time": 123032.06000000238,
+          "rhi": 94173.4311580658,
+          "game": 9864,
+          "gameMs": 13.719970703125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.59000000357628
+        },
+        {
+          "frame": 11232,
+          "time": 136521.09999999404,
+          "rhi": 106668.38884353638,
+          "game": 11232,
+          "gameMs": 20.669921875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.53499999642372
+        },
+        {
+          "frame": 9865,
+          "time": 123052.50499999523,
+          "rhi": 94182.70635604858,
+          "game": 9865,
+          "gameMs": 20.419921875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.444999992847443
+        },
+        {
+          "frame": 10551,
+          "time": 129806.54999999702,
+          "rhi": 100453.42254638672,
+          "game": 10551,
+          "gameMs": 13.22998046875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.349999994039536
+        },
+        {
+          "frame": 9177,
+          "time": 116178.78000000119,
+          "rhi": 87816.3480758667,
+          "game": 9177,
+          "gameMs": 20.739990234375,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.29000000655651
+        },
+        {
+          "frame": 10552,
+          "time": 129826.78999999166,
+          "rhi": 100462.8324508667,
+          "game": 10552,
+          "gameMs": 20.195068359375,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.239999994635582
+        },
+        {
+          "frame": 10207,
+          "time": 126394.54500000179,
+          "rhi": 97292.64116287231,
+          "game": 10207,
+          "gameMs": 13.324951171875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.15999999642372
+        },
+        {
+          "frame": 10208,
+          "time": 126414.6099999994,
+          "rhi": 97301.58615112305,
+          "game": 10208,
+          "gameMs": 20.085205078125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 20.064999997615814
+        },
+        {
+          "frame": 10896,
+          "time": 133191.39999999106,
+          "rhi": 103584.01679992676,
+          "game": 10896,
+          "gameMs": 20.809814453125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 19.77999998629093
+        },
+        {
+          "frame": 10897,
+          "time": 133210.66499999166,
+          "rhi": 103592.86689758301,
+          "game": 10897,
+          "gameMs": 19.7099609375,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 19.265000000596046
+        },
+        {
+          "frame": 9866,
+          "time": 123071.67999999225,
+          "rhi": 94191.70641899109,
+          "game": 9866,
+          "gameMs": 20.4599609375,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 19.174999997019768
+        },
+        {
+          "frame": 11233,
+          "time": 136540.0300000012,
+          "rhi": 106677.50382423401,
+          "game": 11233,
+          "gameMs": 20.4951171875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 18.930000007152557
+        },
+        {
+          "frame": 10209,
+          "time": 126433.375,
+          "rhi": 97310.5411529541,
+          "game": 10209,
+          "gameMs": 19.9951171875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 18.765000000596046
+        },
+        {
+          "frame": 9178,
+          "time": 116195.22499999404,
+          "rhi": 87825.4029750824,
+          "game": 9178,
+          "gameMs": 20.195068359375,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 16.444999992847443
+        },
+        {
+          "frame": 10708,
+          "time": 131339.37000000477,
+          "rhi": 101869.5707321167,
+          "game": 10708,
+          "gameMs": 9.320068359375,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.450000002980232
+        },
+        {
+          "frame": 9542,
+          "time": 119841.39999999106,
+          "rhi": 91201.72619819641,
+          "game": 9542,
+          "gameMs": 9.969970703125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.28999999165535
+        },
+        {
+          "frame": 11204,
+          "time": 136226.95999999344,
+          "rhi": 106410.0091457367,
+          "game": 11204,
+          "gameMs": 9.455078125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.054999992251396
+        },
+        {
+          "frame": 9817,
+          "time": 122562.6099999994,
+          "rhi": 93743.28017234802,
+          "game": 9817,
+          "gameMs": 10,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.405000001192093
+        },
+        {
+          "frame": 9897,
+          "time": 123377.37999999523,
+          "rhi": 94477.15735435486,
+          "game": 9897,
+          "gameMs": 10.47998046875,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.310000002384186
+        },
+        {
+          "frame": 10846,
+          "time": 132682.84999999404,
+          "rhi": 103125.97036361694,
+          "game": 10846,
+          "gameMs": 9.60986328125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.034999996423721
+        },
+        {
+          "frame": 10943,
+          "time": 133681.73000000417,
+          "rhi": 104033.29682350159,
+          "game": 10943,
+          "gameMs": 11.47509765625,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 13.785000011324883
+        },
+        {
+          "frame": 9863,
+          "time": 123011.46999999881,
+          "rhi": 94163.35606575012,
+          "game": 9863,
+          "gameMs": 10.330078125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 13.700000002980232
+        },
+        {
+          "frame": 9698,
+          "time": 121412.06000000238,
+          "rhi": 92668.52593421936,
+          "game": 9698,
+          "gameMs": 9.389892578125,
+          "graphics": 195,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 13.510000005364418
+        }
+      ]
+    },
+    "sweepTasks": {
+      "count": 57,
+      "total": 211.97600000000006,
+      "p50": 5.116,
+      "max": 5.411
+    },
+    "bursts": [
+      {
+        "timeMs": 116127.82100000978,
+        "tasks": 8,
+        "totalMs": 27.917999999999996,
+        "maxMs": 5.252
+      },
+      {
+        "timeMs": 119577.9319999963,
+        "tasks": 9,
+        "totalMs": 31.975,
+        "maxMs": 5.358
+      },
+      {
+        "timeMs": 123001.2310000062,
+        "tasks": 8,
+        "totalMs": 30.178000000000004,
+        "maxMs": 5.323
+      },
+      {
+        "timeMs": 126364.66400000453,
+        "tasks": 8,
+        "totalMs": 30.16,
+        "maxMs": 5.32
+      },
+      {
+        "timeMs": 129776.32000000775,
+        "tasks": 8,
+        "totalMs": 30.619000000000003,
+        "maxMs": 5.304
+      },
+      {
+        "timeMs": 133141.45600000024,
+        "tasks": 8,
+        "totalMs": 30.558,
+        "maxMs": 5.354
+      },
+      {
+        "timeMs": 136470.63799999654,
+        "tasks": 8,
+        "totalMs": 30.567999999999994,
+        "maxMs": 5.411
+      }
+    ],
+    "longFrames": [
+      {
+        "frame": 9176,
+        "time": 116158.48999999464,
+        "intervalMs": 20.804999992251396,
+        "sweepMs": 10.445000007748604,
+        "gcMs": 0
+      },
+      {
+        "frame": 9177,
+        "time": 116178.78000000119,
+        "intervalMs": 20.29000000655651,
+        "sweepMs": 10.423000007867813,
+        "gcMs": 0
+      },
+      {
+        "frame": 9521,
+        "time": 119607.91499999166,
+        "intervalMs": 20.674999997019768,
+        "sweepMs": 10.472000002861023,
+        "gcMs": 0
+      },
+      {
+        "frame": 9522,
+        "time": 119628.78999999166,
+        "intervalMs": 20.875,
+        "sweepMs": 10.478999987244606,
+        "gcMs": 0
+      },
+      {
+        "frame": 9523,
+        "time": 119649.48000000417,
+        "intervalMs": 20.690000012516975,
+        "sweepMs": 10.312999993562698,
+        "gcMs": 0
+      },
+      {
+        "frame": 9864,
+        "time": 123032.06000000238,
+        "intervalMs": 20.59000000357628,
+        "sweepMs": 10.558999985456467,
+        "gcMs": 0
+      },
+      {
+        "frame": 9865,
+        "time": 123052.50499999523,
+        "intervalMs": 20.444999992847443,
+        "sweepMs": 10.455000013113022,
+        "gcMs": 0
+      },
+      {
+        "frame": 9866,
+        "time": 123071.67999999225,
+        "intervalMs": 19.174999997019768,
+        "sweepMs": 9.152999982237816,
+        "gcMs": 0
+      },
+      {
+        "frame": 10207,
+        "time": 126394.54500000179,
+        "intervalMs": 20.15999999642372,
+        "sweepMs": 10.49600000679493,
+        "gcMs": 0
+      },
+      {
+        "frame": 10208,
+        "time": 126414.6099999994,
+        "intervalMs": 20.064999997615814,
+        "sweepMs": 10.319000020623207,
+        "gcMs": 0
+      },
+      {
+        "frame": 10209,
+        "time": 126433.375,
+        "intervalMs": 18.765000000596046,
+        "sweepMs": 9.332000002264977,
+        "gcMs": 0
+      },
+      {
+        "frame": 10551,
+        "time": 129806.54999999702,
+        "intervalMs": 20.349999994039536,
+        "sweepMs": 10.133000016212463,
+        "gcMs": 0
+      },
+      {
+        "frame": 10552,
+        "time": 129826.78999999166,
+        "intervalMs": 20.239999994635582,
+        "sweepMs": 10.4200000166893,
+        "gcMs": 0
+      },
+      {
+        "frame": 10553,
+        "time": 129847.47499999404,
+        "intervalMs": 20.685000002384186,
+        "sweepMs": 10.054000005126,
+        "gcMs": 0
+      },
+      {
+        "frame": 10895,
+        "time": 133171.62000000477,
+        "intervalMs": 20.895000010728836,
+        "sweepMs": 10.695999994874,
+        "gcMs": 0
+      },
+      {
+        "frame": 10896,
+        "time": 133191.39999999106,
+        "intervalMs": 19.77999998629093,
+        "sweepMs": 10.236000001430511,
+        "gcMs": 0
+      },
+      {
+        "frame": 10897,
+        "time": 133210.66499999166,
+        "intervalMs": 19.265000000596046,
+        "sweepMs": 9.609999999403954,
+        "gcMs": 0
+      },
+      {
+        "frame": 11231,
+        "time": 136500.56499999762,
+        "intervalMs": 20.734999999403954,
+        "sweepMs": 10.763999998569489,
+        "gcMs": 0
+      },
+      {
+        "frame": 11232,
+        "time": 136521.09999999404,
+        "intervalMs": 20.53499999642372,
+        "sweepMs": 10.385000005364418,
+        "gcMs": 0
+      },
+      {
+        "frame": 11233,
+        "time": 136540.0300000012,
+        "intervalMs": 18.930000007152557,
+        "sweepMs": 9.399999991059303,
+        "gcMs": 0
+      }
+    ],
+    "over18": 20,
+    "over18WithSweepOver4ms": 20,
+    "majorGc": [
+      {
+        "timeMs": 116124.88199999928,
+        "durationMs": 2.566
+      },
+      {
+        "timeMs": 119574.54600000381,
+        "durationMs": 2.907
+      },
+      {
+        "timeMs": 122998.23399999738,
+        "durationMs": 2.634
+      },
+      {
+        "timeMs": 126361.41400000453,
+        "durationMs": 2.885
+      },
+      {
+        "timeMs": 129773.37600000203,
+        "durationMs": 2.572
+      },
+      {
+        "timeMs": 133138.4130000025,
+        "durationMs": 2.52
+      },
+      {
+        "timeMs": 136467.3710000068,
+        "durationMs": 2.462
+      }
+    ],
+    "minorGc": {
+      "count": 30,
+      "total": 54.64699999999999,
+      "p50": 1.809,
+      "max": 2.137
+    },
+    "sampleSweep": {
+      "args": {
+        "src_file": "v8/src/heap/cppgc-internal/sweeper.cc",
+        "src_func": "static Handle cppgc::internal::Sweeper::SweeperImpl::IncrementalSweepTask::Post(SweeperImpl &, const std::shared_ptr<cppgc::TaskRunner> &, cppgc::TaskPriority, std::optional<v8::base::TimeDelta>)",
+        "src_line": 1466
+      },
+      "cat": "toplevel",
+      "dur": 9,
+      "name": "ThreadControllerImpl::RunTask",
+      "ph": "X",
+      "pid": 32616,
+      "tdur": 9,
+      "tid": 19744,
+      "ts": 93672368981,
+      "tts": 92473167
+    },
+    "clockCalibrationSamples": [
+      {
+        "ts": 93670713061,
+        "duration": 8904
+      },
+      {
+        "ts": 93670722828,
+        "duration": 9139
+      },
+      {
+        "ts": 93670732706,
+        "duration": 9937
+      },
+      {
+        "ts": 93670743094,
+        "duration": 8694
+      },
+      {
+        "ts": 93670752429,
+        "duration": 9004
+      },
+      {
+        "ts": 93670762019,
+        "duration": 8801
+      }
+    ],
+    "boundary": "Both sweeper tasks and RHI callbacks execute on the GPU owner Worker. Queue samples measure setImmediate delivery only; the preceding native proxy hop is not measured. Trace overhead is excluded from normal FPS comparisons. Sweep timing establishes the observed stalls; it does not identify which object classes account for collection cost."
+  },
+  "priorityDiagnostic": {
+    "pass": true,
+    "packageFiles": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\index.html",
+        "sha256": "ce211f37855c44fcc5d2e23c5dcc8da857e7da08c3ba551cfd4b6aac67d0ed82"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\UEWebEngineThreads.js",
+        "sha256": "5ed17f6b14d6951386e8012963b3085d12955a67929b29be338b9a38ed2994c1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\UEWebEngineThreads.wasm",
+        "sha256": "55eee2955e2615cb6c8614311f6cc025ef1ea4954612162df1d67498cc3faf32"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\web-engine-worker.js",
+        "sha256": "a19a06eb97648653547d2574ac0c8aadc4994eea298d84431d2f11eaa630aee8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\web-engine-host.js",
+        "sha256": "4e2071c326df34bb8c362f1ac7bb825c7ac886685d5953ece95f6153e4f72955"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      }
+    ],
+    "phases": [
+      {
+        "name": "standing",
+        "before": {
+          "time": 35481.45999999344,
+          "origin": 1793845792357.49,
+          "frames": 2742,
+          "stages": {
+            "rhiWorkMilliseconds": 25232.877492904663,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 2743,
+            "rhiThreadId": 1,
+            "rhiFrames": 2741,
+            "submitted": 44851,
+            "presented": 2742,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17706
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 2743,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 2730,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852182016,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5759,
+            "requestedMips": 5759,
+            "maximumMips": 7241,
+            "residentBytes": 489291856,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 2730,
+            "graphicsPipelines": 193,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.391836166381836,
+            "computePipelineCreateMs": 1.035451889038086,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 2730,
+            "polls": 6960059,
+            "ready": 1672441,
+            "hits": 1555149,
+            "zero": 1439592,
+            "fallback": 306709,
+            "expired": 69365,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 1684914,
+            "queryDropped": 9825,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2217,
+            "diskReads": 2819,
+            "diskReadBytes": 1572809960,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 2101,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 7006.419999659061
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "rhiWake": {
+            "requested": "priority",
+            "active": "priority",
+            "prioritySupported": true
+          },
+          "immediateMappingLength": 33905
+        },
+        "after": {
+          "time": 45641.984999999404,
+          "origin": 1793845792357.49,
+          "frames": 3822,
+          "stages": {
+            "rhiWorkMilliseconds": 34734.6625328064,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 3823,
+            "rhiThreadId": 1,
+            "rhiFrames": 3821,
+            "submitted": 56731,
+            "presented": 3822,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17706
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 3823,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 3810,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852182016,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5759,
+            "requestedMips": 5759,
+            "maximumMips": 7241,
+            "residentBytes": 489291856,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 3810,
+            "graphicsPipelines": 193,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.391836166381836,
+            "computePipelineCreateMs": 1.035451889038086,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 3810,
+            "polls": 10342705,
+            "ready": 2341179,
+            "hits": 2169099,
+            "zero": 2010428,
+            "fallback": 430399,
+            "expired": 99095,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2354214,
+            "queryDropped": 9825,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2217,
+            "diskReads": 2819,
+            "diskReadBytes": 1572809960,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 2101,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 7006.419999659061
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "rhiWake": {
+            "requested": "priority",
+            "active": "priority",
+            "prioritySupported": true
+          },
+          "immediateMappingLength": 34985
+        },
+        "summary": {
+          "fps": 106.75054638386547,
+          "frames": {
+            "count": 1067,
+            "mean": 9.367633552001589,
+            "p50": 9.109999999403954,
+            "p95": 10.625,
+            "p99": 14.340000003576279,
+            "max": 15.29500000178814,
+            "low1Fps": 67.6070188447086
+          },
+          "queue": {
+            "count": 1068,
+            "mean": 0.018937265716688464,
+            "p50": 0.019999995827674866,
+            "p95": 0.025000005960464478,
+            "p99": 0.040000006556510925,
+            "max": 0.11499999463558197,
+            "low1Fps": 16541.353220370584
+          },
+          "execution": {
+            "count": 1068,
+            "mean": 8.799101123621178,
+            "p50": 8.660000011324883,
+            "p95": 9.650000005960464,
+            "p99": 10.525000005960464,
+            "max": 12.480000004172325,
+            "low1Fps": 89.88764044943821
+          },
+          "pipelineEvents": 0,
+          "over20": 0,
+          "over30": 0,
+          "worst": [
+            {
+              "frame": 3751,
+              "time": 44879.81999999285,
+              "rhi": 34043.113708496094,
+              "game": 3751,
+              "gameMs": 14.114990234375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.29500000178814
+            },
+            {
+              "frame": 3752,
+              "time": 44895.04999999702,
+              "rhi": 34052.33359336853,
+              "game": 3752,
+              "gameMs": 15.215087890625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.230000004172325
+            },
+            {
+              "frame": 3079,
+              "time": 38671.08499999344,
+              "rhi": 28210.067987442017,
+              "game": 3079,
+              "gameMs": 14.824951171875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.969999998807907
+            },
+            {
+              "frame": 3414,
+              "time": 41771.29999999702,
+              "rhi": 31127.328872680664,
+              "game": 3414,
+              "gameMs": 12.114990234375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.91499999165535
+            },
+            {
+              "frame": 3078,
+              "time": 38656.114999994636,
+              "rhi": 28201.172828674316,
+              "game": 3078,
+              "gameMs": 12.539794921875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.879999995231628
+            },
+            {
+              "frame": 3415,
+              "time": 41786.140000000596,
+              "rhi": 31136.304140090942,
+              "game": 3415,
+              "gameMs": 14.860107421875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.840000003576279
+            },
+            {
+              "frame": 3750,
+              "time": 44864.52499999106,
+              "rhi": 34033.95867347717,
+              "game": 3750,
+              "gameMs": 12.014892578125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.809999987483025
+            },
+            {
+              "frame": 3080,
+              "time": 38685.67000000179,
+              "rhi": 28218.793153762817,
+              "game": 3080,
+              "gameMs": 14.89501953125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.58500000834465
+            },
+            {
+              "frame": 3416,
+              "time": 41800.564999997616,
+              "rhi": 31145.244121551514,
+              "game": 3416,
+              "gameMs": 14.764892578125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.424999997019768
+            },
+            {
+              "frame": 3754,
+              "time": 44923.80499999225,
+              "rhi": 34070.218324661255,
+              "game": 3754,
+              "gameMs": 14.284912109375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.41499999165535
+            },
+            {
+              "frame": 3753,
+              "time": 44909.390000000596,
+              "rhi": 34061.543464660645,
+              "game": 3753,
+              "gameMs": 15.18505859375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.340000003576279
+            },
+            {
+              "frame": 2746,
+              "time": 35539.185000002384,
+              "rhi": 25259.10258293152,
+              "game": 2746,
+              "gameMs": 14.169921875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.320000007748604
+            },
+            {
+              "frame": 3755,
+              "time": 44938.034999996424,
+              "rhi": 34079.063177108765,
+              "game": 3755,
+              "gameMs": 14.35498046875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.230000004172325
+            },
+            {
+              "frame": 2745,
+              "time": 35524.864999994636,
+              "rhi": 25250.42748451233,
+              "game": 2745,
+              "gameMs": 14.4599609375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.229999989271164
+            },
+            {
+              "frame": 3418,
+              "time": 41828.810000002384,
+              "rhi": 31162.61911392212,
+              "game": 3418,
+              "gameMs": 14.0400390625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.150000005960464
+            },
+            {
+              "frame": 3417,
+              "time": 41814.659999996424,
+              "rhi": 31153.98931503296,
+              "game": 3417,
+              "gameMs": 14.385009765625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.094999998807907
+            },
+            {
+              "frame": 3082,
+              "time": 38713.70499999821,
+              "rhi": 28235.953092575073,
+              "game": 3082,
+              "gameMs": 13.9150390625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.069999992847443
+            },
+            {
+              "frame": 3081,
+              "time": 38699.635000005364,
+              "rhi": 28227.543115615845,
+              "game": 3081,
+              "gameMs": 14.545166015625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.965000003576279
+            },
+            {
+              "frame": 2747,
+              "time": 35552.56999999285,
+              "rhi": 25267.78244972229,
+              "game": 2747,
+              "gameMs": 14.235107421875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.384999990463257
+            },
+            {
+              "frame": 3419,
+              "time": 41841.939999997616,
+              "rhi": 31171.03910446167,
+              "game": 3419,
+              "gameMs": 14.094970703125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.129999995231628
+            },
+            {
+              "frame": 3768,
+              "time": 45068.715000003576,
+              "rhi": 34200.65379142761,
+              "game": 3768,
+              "gameMs": 10.514892578125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.075000002980232
+            },
+            {
+              "frame": 3083,
+              "time": 38726.77499999106,
+              "rhi": 28244.538068771362,
+              "game": 3083,
+              "gameMs": 14,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.069999992847443
+            },
+            {
+              "frame": 3077,
+              "time": 38641.234999999404,
+              "rhi": 28191.487789154053,
+              "game": 3077,
+              "gameMs": 9.85498046875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.57999999821186
+            },
+            {
+              "frame": 3413,
+              "time": 41756.385000005364,
+              "rhi": 31118.093729019165,
+              "game": 3413,
+              "gameMs": 10.840087890625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.165000006556511
+            },
+            {
+              "frame": 3749,
+              "time": 44849.715000003576,
+              "rhi": 34024.71852302551,
+              "game": 3749,
+              "gameMs": 9.9248046875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.07999999821186
+            },
+            {
+              "frame": 3776,
+              "time": 45154.390000000596,
+              "rhi": 34283.86378288269,
+              "game": 3776,
+              "gameMs": 9.425048828125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.754999995231628
+            },
+            {
+              "frame": 3770,
+              "time": 45091.935000002384,
+              "rhi": 34224.233865737915,
+              "game": 3770,
+              "gameMs": 11.465087890625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.695000007748604
+            },
+            {
+              "frame": 2813,
+              "time": 36211.70999999344,
+              "rhi": 25891.977787017822,
+              "game": 2813,
+              "gameMs": 10.01513671875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.689999997615814
+            },
+            {
+              "frame": 3762,
+              "time": 45005.21999999881,
+              "rhi": 34141.26396179199,
+              "game": 3762,
+              "gameMs": 9.64990234375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.635000005364418
+            },
+            {
+              "frame": 3797,
+              "time": 45362.25,
+              "rhi": 34481.9073677063,
+              "game": 3797,
+              "gameMs": 9.889892578125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.594999998807907
+            }
+          ]
+        }
+      },
+      {
+        "name": "standing-trace",
+        "before": {
+          "time": 45698.42999999225,
+          "origin": 1793845792357.49,
+          "frames": 3828,
+          "stages": {
+            "rhiWorkMilliseconds": 34787.77241706848,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 3829,
+            "rhiThreadId": 1,
+            "rhiFrames": 3827,
+            "submitted": 56797,
+            "presented": 3828,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17706
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 3829,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 3810,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852182016,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5759,
+            "requestedMips": 5759,
+            "maximumMips": 7241,
+            "residentBytes": 489291856,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 3810,
+            "graphicsPipelines": 193,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.391836166381836,
+            "computePipelineCreateMs": 1.035451889038086,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 3810,
+            "polls": 10342705,
+            "ready": 2341179,
+            "hits": 2169099,
+            "zero": 2010428,
+            "fallback": 430399,
+            "expired": 99095,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2354214,
+            "queryDropped": 9825,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2217,
+            "diskReads": 2819,
+            "diskReadBytes": 1572809960,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 2101,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 7006.419999659061
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "rhiWake": {
+            "requested": "priority",
+            "active": "priority",
+            "prioritySupported": true
+          },
+          "immediateMappingLength": 34991
+        },
+        "after": {
+          "time": 70966.18500000238,
+          "origin": 1793845792357.49,
+          "frames": 6464,
+          "stages": {
+            "rhiWorkMilliseconds": 58112.06126213074,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 6465,
+            "rhiThreadId": 1,
+            "rhiFrames": 6463,
+            "submitted": 85794,
+            "presented": 6464,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17706
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 6465,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 6450,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852182016,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5759,
+            "requestedMips": 5759,
+            "maximumMips": 7241,
+            "residentBytes": 489291856,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 6450,
+            "graphicsPipelines": 193,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.391836166381836,
+            "computePipelineCreateMs": 1.035451889038086,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 6450,
+            "polls": 17023621,
+            "ready": 3969853,
+            "hits": 3685364,
+            "zero": 3413844,
+            "fallback": 717254,
+            "expired": 156270,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 3982918,
+            "queryDropped": 11039,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2217,
+            "diskReads": 2819,
+            "diskReadBytes": 1572809960,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 2101,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 7006.419999659061
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "rhiWake": {
+            "requested": "priority",
+            "active": "priority",
+            "prioritySupported": true
+          },
+          "immediateMappingLength": 37627
+        },
+        "summary": {
+          "fps": 104.54718251543358,
+          "frames": {
+            "count": 2614,
+            "mean": 9.565059296097022,
+            "p50": 9.33500000834465,
+            "p95": 10.885000005364418,
+            "p99": 14.720000013709068,
+            "max": 15.969999998807907,
+            "low1Fps": 66.59267480772931
+          },
+          "queue": {
+            "count": 2615,
+            "mean": 0.029762906303369294,
+            "p50": 0.030000001192092896,
+            "p95": 0.03999999165534973,
+            "p99": 0.05500000715255737,
+            "max": 0.20000000298023224,
+            "low1Fps": 13043.477648673179
+          },
+          "execution": {
+            "count": 2615,
+            "mean": 8.85333269606015,
+            "p50": 8.734999999403954,
+            "p95": 9.674999997019768,
+            "p99": 10.564999997615814,
+            "max": 14.95499999821186,
+            "low1Fps": 85.65038779798712
+          },
+          "pipelineEvents": 0,
+          "over20": 0,
+          "over30": 0,
+          "worst": [
+            {
+              "frame": 4737,
+              "time": 54390.164999991655,
+              "rhi": 42827.406883239746,
+              "game": 4737,
+              "gameMs": 14.8798828125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.969999998807907
+            },
+            {
+              "frame": 5483,
+              "time": 61594.95000000298,
+              "rhi": 49471.3089466095,
+              "game": 5483,
+              "gameMs": 9.544921875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.615000009536743
+            },
+            {
+              "frame": 4741,
+              "time": 54449.42499999702,
+              "rhi": 42863.16180229187,
+              "game": 4741,
+              "gameMs": 13.614990234375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.504999995231628
+            },
+            {
+              "frame": 5294,
+              "time": 59776.02499999106,
+              "rhi": 47798.879861831665,
+              "game": 5294,
+              "gameMs": 10.010009765625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.389999985694885
+            },
+            {
+              "frame": 5734,
+              "time": 63964.45000000298,
+              "rhi": 51683.8812828064,
+              "game": 5734,
+              "gameMs": 13.33984375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.275000005960464
+            },
+            {
+              "frame": 4067,
+              "time": 47964,
+              "rhi": 36884.021043777466,
+              "game": 4067,
+              "gameMs": 12.8251953125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.140000000596046
+            },
+            {
+              "frame": 6075,
+              "time": 67229.70999999344,
+              "rhi": 54682.69348144531,
+              "game": 6075,
+              "gameMs": 14.090087890625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.099999994039536
+            },
+            {
+              "frame": 6397,
+              "time": 70266.97499999404,
+              "rhi": 57508.803606033325,
+              "game": 6397,
+              "gameMs": 14.945068359375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.084999993443489
+            },
+            {
+              "frame": 6071,
+              "time": 67171.09999999404,
+              "rhi": 54647.28879928589,
+              "game": 6071,
+              "gameMs": 14.830078125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.04500000178814
+            },
+            {
+              "frame": 6396,
+              "time": 70251.8900000006,
+              "rhi": 57499.80354309082,
+              "game": 6396,
+              "gameMs": 12.97998046875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 15.015000000596046
+            },
+            {
+              "frame": 4736,
+              "time": 54374.19499999285,
+              "rhi": 42815.20652770996,
+              "game": 4736,
+              "gameMs": 10.27001953125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.974999994039536
+            },
+            {
+              "frame": 4403,
+              "time": 51209.510000005364,
+              "rhi": 39885.531187057495,
+              "game": 4403,
+              "gameMs": 12.56494140625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.96000000834465
+            },
+            {
+              "frame": 5411,
+              "time": 60907.090000003576,
+              "rhi": 48840.253829956055,
+              "game": 5411,
+              "gameMs": 14.869873046875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.95499999821186
+            },
+            {
+              "frame": 4407,
+              "time": 51267.685000002384,
+              "rhi": 39920.57108879089,
+              "game": 4407,
+              "gameMs": 14.43994140625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.950000002980232
+            },
+            {
+              "frame": 5410,
+              "time": 60892.135000005364,
+              "rhi": 48831.17866516113,
+              "game": 5410,
+              "gameMs": 14.4599609375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.925000011920929
+            },
+            {
+              "frame": 4068,
+              "time": 47978.89999999106,
+              "rhi": 36892.97127723694,
+              "game": 4068,
+              "gameMs": 15.080078125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.899999991059303
+            },
+            {
+              "frame": 6070,
+              "time": 67156.05499999225,
+              "rhi": 54638.28372955322,
+              "game": 6070,
+              "gameMs": 12.364990234375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.890000000596046
+            },
+            {
+              "frame": 5073,
+              "time": 57584.32999999821,
+              "rhi": 45781.771183013916,
+              "game": 5073,
+              "gameMs": 12.880126953125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.879999995231628
+            },
+            {
+              "frame": 5075,
+              "time": 57613.94499999285,
+              "rhi": 45799.69620704651,
+              "game": 5075,
+              "gameMs": 14.655029296875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.879999995231628
+            },
+            {
+              "frame": 5077,
+              "time": 57643.50499999523,
+              "rhi": 45817.641258239746,
+              "game": 5077,
+              "gameMs": 14.695068359375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.810000002384186
+            },
+            {
+              "frame": 4738,
+              "time": 54404.939999997616,
+              "rhi": 42836.936712265015,
+              "game": 4738,
+              "gameMs": 15.89990234375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.775000005960464
+            },
+            {
+              "frame": 5076,
+              "time": 57628.69499999285,
+              "rhi": 45808.71629714966,
+              "game": 5076,
+              "gameMs": 14.784912109375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.75
+            },
+            {
+              "frame": 5735,
+              "time": 63979.20000000298,
+              "rhi": 51693.021059036255,
+              "game": 5735,
+              "gameMs": 15.210205078125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.75
+            },
+            {
+              "frame": 5074,
+              "time": 57599.064999997616,
+              "rhi": 45790.68613052368,
+              "game": 5074,
+              "gameMs": 14.8251953125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.734999999403954
+            },
+            {
+              "frame": 5408,
+              "time": 60862.664999991655,
+              "rhi": 48813.613414764404,
+              "game": 5408,
+              "gameMs": 12.130126953125,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.729999989271164
+            },
+            {
+              "frame": 5412,
+              "time": 60921.814999997616,
+              "rhi": 48849.48372840881,
+              "game": 5412,
+              "gameMs": 14.864990234375,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.724999994039536
+            },
+            {
+              "frame": 4069,
+              "time": 47993.62000000477,
+              "rhi": 36901.92627906799,
+              "game": 4069,
+              "gameMs": 14.824951171875,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.720000013709068
+            },
+            {
+              "frame": 6073,
+              "time": 67200.45999999344,
+              "rhi": 54665.11392593384,
+              "game": 6073,
+              "gameMs": 14.599853515625,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.694999992847443
+            },
+            {
+              "frame": 6398,
+              "time": 70281.64999999106,
+              "rhi": 57517.71354675293,
+              "game": 6398,
+              "gameMs": 15,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.674999997019768
+            },
+            {
+              "frame": 5078,
+              "time": 57658.17499999702,
+              "rhi": 45826.60150527954,
+              "game": 5078,
+              "gameMs": 14.75,
+              "graphics": 193,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.67000000178814
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "priorityTrace": {
+    "pass": true,
+    "capture": {
+      "file": "tests/web-platform/results/rhi-wake-priority-trace-20261105.json",
+      "sha256": "141e102cb95b2bda22b047c57a5a143f08d9b2bbb2a2e138bb42e002a90f8915"
+    },
+    "trace": {
+      "file": "tests/web-platform/results/rhi-wake-priority-trace-20261105-trace.json",
+      "sha256": "2d81ea4b65bfbe674f87afb1b75f54bc0aef68cbcd7b7c5f379c27b88c48d676"
+    },
+    "events": 2643232,
+    "ownerThread": 25896,
+    "calibration": {
+      "offsetMs": 94444307.172,
+      "method": "performance.mark at capture start",
+      "mark": {
+        "args": {
+          "data": {
+            "callTime": 94490015073,
+            "sampleTraceId": 6737111325151823,
+            "startTime": 45707.89999999106
+          }
+        },
+        "cat": "blink.user_timing",
+        "name": "UE RHI capture start",
+        "ph": "I",
+        "pid": 40180,
+        "s": "t",
+        "tid": 25896,
+        "ts": 94490015072,
+        "tts": 40350062
+      },
+      "samples": []
+    },
+    "window": {
+      "start": 45707.89999999106,
+      "end": 70719.70000000298
+    },
+    "summary": {
+      "fps": 104.54718251543358,
+      "frames": {
+        "count": 2614,
+        "mean": 9.565059296097022,
+        "p50": 9.33500000834465,
+        "p95": 10.885000005364418,
+        "p99": 14.720000013709068,
+        "max": 15.969999998807907,
+        "low1Fps": 66.59267480772931
+      },
+      "queue": {
+        "count": 2615,
+        "mean": 0.029762906303369294,
+        "p50": 0.030000001192092896,
+        "p95": 0.03999999165534973,
+        "p99": 0.05500000715255737,
+        "max": 0.20000000298023224,
+        "low1Fps": 13043.477648673179
+      },
+      "execution": {
+        "count": 2615,
+        "mean": 8.85333269606015,
+        "p50": 8.734999999403954,
+        "p95": 9.674999997019768,
+        "p99": 10.564999997615814,
+        "max": 14.95499999821186,
+        "low1Fps": 85.65038779798712
+      },
+      "pipelineEvents": 0,
+      "over20": 0,
+      "over30": 0,
+      "worst": [
+        {
+          "frame": 4737,
+          "time": 54390.164999991655,
+          "rhi": 42827.406883239746,
+          "game": 4737,
+          "gameMs": 14.8798828125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.969999998807907
+        },
+        {
+          "frame": 5483,
+          "time": 61594.95000000298,
+          "rhi": 49471.3089466095,
+          "game": 5483,
+          "gameMs": 9.544921875,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.615000009536743
+        },
+        {
+          "frame": 4741,
+          "time": 54449.42499999702,
+          "rhi": 42863.16180229187,
+          "game": 4741,
+          "gameMs": 13.614990234375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.504999995231628
+        },
+        {
+          "frame": 5294,
+          "time": 59776.02499999106,
+          "rhi": 47798.879861831665,
+          "game": 5294,
+          "gameMs": 10.010009765625,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.389999985694885
+        },
+        {
+          "frame": 5734,
+          "time": 63964.45000000298,
+          "rhi": 51683.8812828064,
+          "game": 5734,
+          "gameMs": 13.33984375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.275000005960464
+        },
+        {
+          "frame": 4067,
+          "time": 47964,
+          "rhi": 36884.021043777466,
+          "game": 4067,
+          "gameMs": 12.8251953125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.140000000596046
+        },
+        {
+          "frame": 6075,
+          "time": 67229.70999999344,
+          "rhi": 54682.69348144531,
+          "game": 6075,
+          "gameMs": 14.090087890625,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.099999994039536
+        },
+        {
+          "frame": 6397,
+          "time": 70266.97499999404,
+          "rhi": 57508.803606033325,
+          "game": 6397,
+          "gameMs": 14.945068359375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.084999993443489
+        },
+        {
+          "frame": 6071,
+          "time": 67171.09999999404,
+          "rhi": 54647.28879928589,
+          "game": 6071,
+          "gameMs": 14.830078125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.04500000178814
+        },
+        {
+          "frame": 6396,
+          "time": 70251.8900000006,
+          "rhi": 57499.80354309082,
+          "game": 6396,
+          "gameMs": 12.97998046875,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 15.015000000596046
+        },
+        {
+          "frame": 4736,
+          "time": 54374.19499999285,
+          "rhi": 42815.20652770996,
+          "game": 4736,
+          "gameMs": 10.27001953125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.974999994039536
+        },
+        {
+          "frame": 4403,
+          "time": 51209.510000005364,
+          "rhi": 39885.531187057495,
+          "game": 4403,
+          "gameMs": 12.56494140625,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.96000000834465
+        },
+        {
+          "frame": 5411,
+          "time": 60907.090000003576,
+          "rhi": 48840.253829956055,
+          "game": 5411,
+          "gameMs": 14.869873046875,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.95499999821186
+        },
+        {
+          "frame": 4407,
+          "time": 51267.685000002384,
+          "rhi": 39920.57108879089,
+          "game": 4407,
+          "gameMs": 14.43994140625,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.950000002980232
+        },
+        {
+          "frame": 5410,
+          "time": 60892.135000005364,
+          "rhi": 48831.17866516113,
+          "game": 5410,
+          "gameMs": 14.4599609375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.925000011920929
+        },
+        {
+          "frame": 4068,
+          "time": 47978.89999999106,
+          "rhi": 36892.97127723694,
+          "game": 4068,
+          "gameMs": 15.080078125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.899999991059303
+        },
+        {
+          "frame": 6070,
+          "time": 67156.05499999225,
+          "rhi": 54638.28372955322,
+          "game": 6070,
+          "gameMs": 12.364990234375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.890000000596046
+        },
+        {
+          "frame": 5073,
+          "time": 57584.32999999821,
+          "rhi": 45781.771183013916,
+          "game": 5073,
+          "gameMs": 12.880126953125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.879999995231628
+        },
+        {
+          "frame": 5075,
+          "time": 57613.94499999285,
+          "rhi": 45799.69620704651,
+          "game": 5075,
+          "gameMs": 14.655029296875,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.879999995231628
+        },
+        {
+          "frame": 5077,
+          "time": 57643.50499999523,
+          "rhi": 45817.641258239746,
+          "game": 5077,
+          "gameMs": 14.695068359375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.810000002384186
+        },
+        {
+          "frame": 4738,
+          "time": 54404.939999997616,
+          "rhi": 42836.936712265015,
+          "game": 4738,
+          "gameMs": 15.89990234375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.775000005960464
+        },
+        {
+          "frame": 5076,
+          "time": 57628.69499999285,
+          "rhi": 45808.71629714966,
+          "game": 5076,
+          "gameMs": 14.784912109375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.75
+        },
+        {
+          "frame": 5735,
+          "time": 63979.20000000298,
+          "rhi": 51693.021059036255,
+          "game": 5735,
+          "gameMs": 15.210205078125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.75
+        },
+        {
+          "frame": 5074,
+          "time": 57599.064999997616,
+          "rhi": 45790.68613052368,
+          "game": 5074,
+          "gameMs": 14.8251953125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.734999999403954
+        },
+        {
+          "frame": 5408,
+          "time": 60862.664999991655,
+          "rhi": 48813.613414764404,
+          "game": 5408,
+          "gameMs": 12.130126953125,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.729999989271164
+        },
+        {
+          "frame": 5412,
+          "time": 60921.814999997616,
+          "rhi": 48849.48372840881,
+          "game": 5412,
+          "gameMs": 14.864990234375,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.724999994039536
+        },
+        {
+          "frame": 4069,
+          "time": 47993.62000000477,
+          "rhi": 36901.92627906799,
+          "game": 4069,
+          "gameMs": 14.824951171875,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.720000013709068
+        },
+        {
+          "frame": 6073,
+          "time": 67200.45999999344,
+          "rhi": 54665.11392593384,
+          "game": 6073,
+          "gameMs": 14.599853515625,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.694999992847443
+        },
+        {
+          "frame": 6398,
+          "time": 70281.64999999106,
+          "rhi": 57517.71354675293,
+          "game": 6398,
+          "gameMs": 15,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.674999997019768
+        },
+        {
+          "frame": 5078,
+          "time": 57658.17499999702,
+          "rhi": 45826.60150527954,
+          "game": 5078,
+          "gameMs": 14.75,
+          "graphics": 193,
+          "compute": 70,
+          "streamPending": 0,
+          "ms": 14.67000000178814
+        }
+      ]
+    },
+    "sweepTasks": {
+      "count": 60,
+      "total": 245.65499999999997,
+      "p50": 5.101,
+      "max": 5.394
+    },
+    "bursts": [
+      {
+        "timeMs": 47949.756999999285,
+        "tasks": 7,
+        "totalMs": 28.555,
+        "maxMs": 5.338
+      },
+      {
+        "timeMs": 51195.29999999702,
+        "tasks": 8,
+        "totalMs": 31.082,
+        "maxMs": 5.348
+      },
+      {
+        "timeMs": 54375.464999988675,
+        "tasks": 7,
+        "totalMs": 31.022000000000002,
+        "maxMs": 5.394
+      },
+      {
+        "timeMs": 57569.995999991894,
+        "tasks": 8,
+        "totalMs": 31.471,
+        "maxMs": 5.291
+      },
+      {
+        "timeMs": 60848.856999993324,
+        "tasks": 8,
+        "totalMs": 31.250999999999998,
+        "maxMs": 5.28
+      },
+      {
+        "timeMs": 63950.35799999535,
+        "tasks": 7,
+        "totalMs": 30.416,
+        "maxMs": 5.363
+      },
+      {
+        "timeMs": 67141.86100000143,
+        "tasks": 8,
+        "totalMs": 31.477,
+        "maxMs": 5.201
+      },
+      {
+        "timeMs": 70237.70299999416,
+        "tasks": 7,
+        "totalMs": 30.381,
+        "maxMs": 5.235
+      }
+    ],
+    "longFrames": [],
+    "over18": 0,
+    "over18WithSweepOver4ms": 0,
+    "majorGc": [
+      {
+        "timeMs": 47936.68099999428,
+        "durationMs": 2.807
+      },
+      {
+        "timeMs": 51182.42999999225,
+        "durationMs": 2.34
+      },
+      {
+        "timeMs": 54360.03299999237,
+        "durationMs": 2.337
+      },
+      {
+        "timeMs": 57557.36899998784,
+        "durationMs": 2.439
+      },
+      {
+        "timeMs": 60836.31899999082,
+        "durationMs": 2.372
+      },
+      {
+        "timeMs": 63936.71099999547,
+        "durationMs": 2.673
+      },
+      {
+        "timeMs": 67129.50199998915,
+        "durationMs": 2.277
+      },
+      {
+        "timeMs": 70224.6779999882,
+        "durationMs": 3.04
+      }
+    ],
+    "minorGc": {
+      "count": 31,
+      "total": 55.84700000000001,
+      "p50": 1.828,
+      "max": 1.968
+    },
+    "sampleSweep": {
+      "args": {
+        "src_file": "v8/src/heap/cppgc-internal/sweeper.cc",
+        "src_func": "static Handle cppgc::internal::Sweeper::SweeperImpl::IncrementalSweepTask::Post(SweeperImpl &, const std::shared_ptr<cppgc::TaskRunner> &, cppgc::TaskPriority, std::optional<v8::base::TimeDelta>)",
+        "src_line": 1466
+      },
+      "cat": "toplevel",
+      "dur": 5282,
+      "name": "ThreadControllerImpl::RunTask",
+      "ph": "X",
+      "pid": 40180,
+      "tdur": 5268,
+      "tid": 25896,
+      "ts": 94492256929,
+      "tts": 42555071
+    },
+    "clockCalibrationSamples": [],
+    "boundary": "Both sweeper tasks and RHI callbacks execute on the GPU owner Worker. Queue samples measure setImmediate delivery only; the preceding native proxy hop is not measured. Trace overhead is excluded from normal FPS comparisons. Sweep timing establishes the observed stalls; it does not identify which object classes account for collection cost."
+  },
+  "fallback": {
+    "pass": true,
+    "packageFiles": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\index.html",
+        "sha256": "ce211f37855c44fcc5d2e23c5dcc8da857e7da08c3ba551cfd4b6aac67d0ed82"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\UEWebEngineThreads.js",
+        "sha256": "5ed17f6b14d6951386e8012963b3085d12955a67929b29be338b9a38ed2994c1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\UEWebEngineThreads.wasm",
+        "sha256": "55eee2955e2615cb6c8614311f6cc025ef1ea4954612162df1d67498cc3faf32"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\web-engine-worker.js",
+        "sha256": "a19a06eb97648653547d2574ac0c8aadc4994eea298d84431d2f11eaa630aee8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\web-engine-host.js",
+        "sha256": "4e2071c326df34bb8c362f1ac7bb825c7ac886685d5953ece95f6153e4f72955"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-rhi-wake-v68\\config-files.json",
+        "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+      }
+    ],
+    "phases": [
+      {
+        "name": "standing",
+        "before": {
+          "time": 35476.589999988675,
+          "origin": 1793845893359.925,
+          "frames": 2747,
+          "stages": {
+            "rhiWorkMilliseconds": 25360.013484954834,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 2748,
+            "rhiThreadId": 1,
+            "rhiFrames": 2746,
+            "submitted": 44903,
+            "presented": 2747,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17723
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 2748,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 2730,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852182016,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5759,
+            "requestedMips": 5759,
+            "maximumMips": 7241,
+            "residentBytes": 489291856,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 2730,
+            "graphicsPipelines": 195,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.493640899658203,
+            "computePipelineCreateMs": 0.9489059448242188,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 2730,
+            "polls": 8037207,
+            "ready": 1671435,
+            "hits": 1527714,
+            "zero": 1418046,
+            "fallback": 334144,
+            "expired": 96786,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 1690869,
+            "queryDropped": 16136,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2179,
+            "diskReads": 2839,
+            "diskReadBytes": 1578052840,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 2121,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 6609.909999653697
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "rhiWake": {
+            "requested": "priority",
+            "active": "channel",
+            "prioritySupported": false
+          },
+          "immediateMappingLength": 33434
+        },
+        "after": {
+          "time": 45660.77499999106,
+          "origin": 1793845893359.925,
+          "frames": 3827,
+          "stages": {
+            "rhiWorkMilliseconds": 34906.012535095215,
+            "renderCommandThreadId": 14,
+            "renderCommandFrame": 3828,
+            "rhiThreadId": 1,
+            "rhiFrames": 3826,
+            "submitted": 56783,
+            "presented": 3827,
+            "parallelCommandRecording": false,
+            "parallelRHITranslation": false,
+            "resourceProxyCalls": 17723
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 3828,
+            "width": 1484,
+            "height": 835,
+            "outputWidth": 2289,
+            "outputHeight": 1288,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "stream": {
+            "frame": 3810,
+            "supported": true,
+            "poolBytes": 1048576000,
+            "poolAllocatedBytes": 852182016,
+            "nonPoolAllocatedBytes": 822455296,
+            "streamable": 613,
+            "pending": 0,
+            "residentMips": 5759,
+            "requestedMips": 5759,
+            "maximumMips": 7241,
+            "residentBytes": 489291856,
+            "fullBytes": 2658304080
+          },
+          "optimization": {
+            "sampleFrame": 3810,
+            "graphicsPipelines": 195,
+            "computePipelines": 70,
+            "graphicsPipelineCreateMs": 5.493640899658203,
+            "computePipelineCreateMs": 0.9489059448242188,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": false,
+            "precachedGraphicsPipelines": 0,
+            "asyncPrecacheRequested": 0,
+            "asyncPrecacheCompleted": 0,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 0,
+            "precachedGraphicsUsed": 0,
+            "precachedGraphicsBinds": 0,
+            "precacheConcurrency": 0
+          },
+          "history": {
+            "enabled": true,
+            "frame": 3810,
+            "polls": 11249015,
+            "ready": 2340553,
+            "hits": 2144654,
+            "zero": 1991010,
+            "fallback": 454844,
+            "expired": 123526,
+            "cameraRejected": 0,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2359333,
+            "queryDropped": 16136,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80
+          },
+          "pso": {
+            "enabled": false,
+            "active": 0,
+            "filePrecompileTasks": 0
+          },
+          "io": {
+            "memoryLimit": 16777216,
+            "memoryBytes": 16777216,
+            "peakMemoryBytes": 16777216,
+            "memoryHits": 2179,
+            "diskReads": 2839,
+            "diskReadBytes": 1578052840,
+            "downloadedBytes": 0,
+            "downloads": 0,
+            "persistentHits": 2,
+            "evictions": 2121,
+            "diskEvictions": 0,
+            "activeReads": 1,
+            "peakActiveReads": 4,
+            "verification": "sampled",
+            "hashedBytes": 0,
+            "hashMs": 0,
+            "downloadMs": 0,
+            "diskReadMs": 6609.909999653697
+          },
+          "clock": {
+            "mode": "local",
+            "paused": false
+          },
+          "rhiWake": {
+            "requested": "priority",
+            "active": "channel",
+            "prioritySupported": false
+          },
+          "immediateMappingLength": 34514
+        },
+        "summary": {
+          "fps": 106.3262096103973,
+          "frames": {
+            "count": 1064,
+            "mean": 9.405018797004246,
+            "p50": 9.189999997615814,
+            "p95": 10.410000011324883,
+            "p99": 14.650000005960464,
+            "max": 21.030000001192093,
+            "low1Fps": 53.93743257883984
+          },
+          "queue": {
+            "count": 1065,
+            "mean": 0.33411267612461754,
+            "p50": 0.26500000059604645,
+            "p95": 0.4749999940395355,
+            "p99": 2.1299999952316284,
+            "max": 5.719999998807907,
+            "low1Fps": 208.41227743192758
+          },
+          "execution": {
+            "count": 1065,
+            "mean": 8.845704225405282,
+            "p50": 8.730000004172325,
+            "p95": 9.599999994039536,
+            "p99": 11.61999998986721,
+            "max": 14.370000004768372,
+            "low1Fps": 79.60919125329129
+          },
+          "pipelineEvents": 0,
+          "over20": 5,
+          "over30": 0,
+          "worst": [
+            {
+              "frame": 3604,
+              "time": 43523.62999999523,
+              "rhi": 32909.09743309021,
+              "game": 3604,
+              "gameMs": 13.4248046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 21.030000001192093
+            },
+            {
+              "frame": 3606,
+              "time": 43564.39499999583,
+              "rhi": 32928.30753326416,
+              "game": 3606,
+              "gameMs": 20.125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.564999997615814
+            },
+            {
+              "frame": 3605,
+              "time": 43543.82999999821,
+              "rhi": 32918.8973903656,
+              "game": 3605,
+              "gameMs": 20.905029296875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.200000002980232
+            },
+            {
+              "frame": 2915,
+              "time": 37047.80499999225,
+              "rhi": 26829.17070388794,
+              "game": 2915,
+              "gameMs": 12.235107421875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.149999991059303
+            },
+            {
+              "frame": 3261,
+              "time": 40287.05499999225,
+              "rhi": 29863.82555961609,
+              "game": 3261,
+              "gameMs": 14.580078125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 20.11999998986721
+            },
+            {
+              "frame": 2916,
+              "time": 37067.625,
+              "rhi": 26838.090658187866,
+              "game": 2916,
+              "gameMs": 20.114990234375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 19.820000007748604
+            },
+            {
+              "frame": 3262,
+              "time": 40306.71999999881,
+              "rhi": 29872.880458831787,
+              "game": 3262,
+              "gameMs": 20.070068359375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 19.66500000655651
+            },
+            {
+              "frame": 2917,
+              "time": 37085.72999998927,
+              "rhi": 26846.7857837677,
+              "game": 2917,
+              "gameMs": 19.7451171875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 18.104999989271164
+            },
+            {
+              "frame": 3430,
+              "time": 41852.20000000298,
+              "rhi": 31332.04960823059,
+              "game": 3430,
+              "gameMs": 9.070068359375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.865000009536743
+            },
+            {
+              "frame": 3263,
+              "time": 40321.489999994636,
+              "rhi": 29881.715297698975,
+              "game": 3263,
+              "gameMs": 19.60498046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.769999995827675
+            },
+            {
+              "frame": 3260,
+              "time": 40266.935000002384,
+              "rhi": 29854.80546951294,
+              "game": 3260,
+              "gameMs": 12.52001953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.650000005960464
+            },
+            {
+              "frame": 2892,
+              "time": 36818.61999998987,
+              "rhi": 26619.466543197632,
+              "game": 2892,
+              "gameMs": 8.6748046875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 14.030000001192093
+            },
+            {
+              "frame": 3603,
+              "time": 43502.59999999404,
+              "rhi": 32898.89740943909,
+              "game": 3603,
+              "gameMs": 10.89501953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.459999993443489
+            },
+            {
+              "frame": 3574,
+              "time": 43211.69499999285,
+              "rhi": 32622.692584991455,
+              "game": 3574,
+              "gameMs": 9.93994140625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 13.384999990463257
+            },
+            {
+              "frame": 3074,
+              "time": 38524.26999999583,
+              "rhi": 28210.18075942993,
+              "game": 3074,
+              "gameMs": 9,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.799999997019768
+            },
+            {
+              "frame": 2971,
+              "time": 37576.640000000596,
+              "rhi": 27312.612056732178,
+              "game": 2971,
+              "gameMs": 8.389892578125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.665000006556511
+            },
+            {
+              "frame": 3480,
+              "time": 42321.47499999404,
+              "rhi": 31778.504610061646,
+              "game": 3480,
+              "gameMs": 9.079833984375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.629999995231628
+            },
+            {
+              "frame": 3075,
+              "time": 38536.89499999583,
+              "rhi": 28222.73063659668,
+              "game": 3075,
+              "gameMs": 12.679931640625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.625
+            },
+            {
+              "frame": 3598,
+              "time": 43446.42000000179,
+              "rhi": 32846.747398376465,
+              "game": 3598,
+              "gameMs": 9.5849609375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.625
+            },
+            {
+              "frame": 3259,
+              "time": 40252.284999996424,
+              "rhi": 29845.590591430664,
+              "game": 3259,
+              "gameMs": 10.39501953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.57999999821186
+            },
+            {
+              "frame": 3765,
+              "time": 45052.909999996424,
+              "rhi": 34340.05641937256,
+              "game": 3765,
+              "gameMs": 9.259765625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.450000002980232
+            },
+            {
+              "frame": 2914,
+              "time": 37027.65500000119,
+              "rhi": 26820.015907287598,
+              "game": 2914,
+              "gameMs": 10.309814453125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.300000011920929
+            },
+            {
+              "frame": 3773,
+              "time": 45132.02499999106,
+              "rhi": 34415.712118148804,
+              "game": 3773,
+              "gameMs": 9.985107421875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 12.089999988675117
+            },
+            {
+              "frame": 3611,
+              "time": 43619.359999999404,
+              "rhi": 32977.712869644165,
+              "game": 3611,
+              "gameMs": 9.925048828125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.875
+            },
+            {
+              "frame": 3599,
+              "time": 43458.17499999702,
+              "rhi": 32859.04240608215,
+              "game": 3599,
+              "gameMs": 12.550048828125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.754999995231628
+            },
+            {
+              "frame": 3745,
+              "time": 44864.409999996424,
+              "rhi": 34162.83702850342,
+              "game": 3745,
+              "gameMs": 9.27001953125,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.734999999403954
+            },
+            {
+              "frame": 3607,
+              "time": 43576.10499998927,
+              "rhi": 32937.89744377136,
+              "game": 3607,
+              "gameMs": 20.510009765625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.709999993443489
+            },
+            {
+              "frame": 3609,
+              "time": 43597.42499999702,
+              "rhi": 32956.63785934448,
+              "game": 3609,
+              "gameMs": 9.570068359375,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.689999997615814
+            },
+            {
+              "frame": 3127,
+              "time": 39024.489999994636,
+              "rhi": 28686.31148338318,
+              "game": 3127,
+              "gameMs": 9.51513671875,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.469999998807907
+            },
+            {
+              "frame": 3197,
+              "time": 39674.67999999225,
+              "rhi": 29301.11575126648,
+              "game": 3197,
+              "gameMs": 8.9150390625,
+              "graphics": 195,
+              "compute": 70,
+              "streamPending": 0,
+              "ms": 11.469999998807907
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "callbackCheck": {
+    "artifact": {
+      "file": "tests/web-platform/results/rhi-wake-callback-check-20261105.txt",
+      "sha256": "8a56dd34d2a58e8eda007a37ae668462ad3f1deb14e6791ae2aeb0118585f9b6"
+    },
+    "passed": [
+      "asynchronous delivery",
+      "callback cancellation",
+      "user-blocking priority"
+    ]
+  },
+  "checks": {
+    "normalGpuErrors": [],
+    "priorityCollectionsContinue": true,
+    "baselineLongFramesExplained": true,
+    "fallbackObserved": true,
+    "qualityOverrides": []
+  },
+  "limits": [
+    "RHI submission intervals, not physical display or end-to-end input latency.",
+    "Candidate is opt-in and does not change prior accepted Game/history defaults.",
+    "P95 and P99 do not improve; mean FPS changes -0.58%. Main gain is the worst 1% and reduced stall maxima.",
+    "Object classes responsible for native heap pressure were not isolated. Collection frames around 14-16 ms remain.",
+    "The exact first native proxy latency is not separately instrumented.",
+    "Browser traces run separately from the normal ABBA comparison.",
+    "API fallback check hides scheduler in Edge; it is not a test of a second browser.",
+    "Camera movement visual acceptance of this RHI candidate remains manual."
+  ]
+}

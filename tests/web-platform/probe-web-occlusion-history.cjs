@@ -7,13 +7,13 @@ const option = n => process.argv.find(v => v.startsWith('--' + n + '='))?.slice(
 const folder = option('folder'), tag = option('tag');
 assert([folder, tag].every(v => v && /^[a-z0-9-]+$/.test(v)));
 const modes = (option('modes') || 'control,history,hzb,instances,instances,hzb,history,control').split(',');
-assert(modes.every(v => v==='default' || /^(control|history|hzb|instances|hzb-instances)(-local)?$/.test(v)));
+assert(modes.every(v => ['default','rhi-priority'].includes(v) || /^(control|history|hzb|instances|hzb-instances)(-local)?$/.test(v)));
 const seconds = Number(option('seconds') || 20), warmup = Number(option('warmup') || 15);
 assert(seconds >= 5 && seconds <= 60 && warmup >= 5 && warmup <= 120);
 const tour = process.argv.includes('--tour');
 const lifecycle = process.argv.includes('--lifecycle');
 const initialHidden = process.argv.includes('--initial-hidden');
-assert(!initialHidden || modes.every(mode=>mode==='default' || mode.endsWith('-local')));
+assert(!initialHidden || modes.every(mode=>['default','rhi-priority'].includes(mode) || mode.endsWith('-local')));
 const output = path.join(__dirname, 'results', tag), base = path.join(__dirname, 'build', folder);
 assert(!fs.existsSync(output + '.json'), 'Use a fresh tag');
 fs.copyFileSync(__filename, output + '-source.cjs');
@@ -53,8 +53,8 @@ let context, log;
   report.idleGpu=idleGpu();save();
   assert(!report.idleGpu.adapters?.some(v=>v.utilization>50),'GPU already busy before the test browser starts; free it before benchmarking');
   for(const mode of modes) {
-    const local = mode==='default' || mode.endsWith('-local');
-    const occlusionMode = mode==='default' ? 'history' : local ? mode.slice(0,-6) : mode;
+    const local = ['default','rhi-priority'].includes(mode) || mode.endsWith('-local');
+    const occlusionMode = ['default','rhi-priority'].includes(mode) ? 'history' : local ? mode.slice(0,-6) : mode;
     const run = {index: report.runs.length+1, mode, local, errors: []}; report.runs.push(run); save();
     run.idleGpu=idleGpu();save();
     assert(!run.idleGpu.adapters?.some(v=>v.utilization>50),'GPU busy between runs; free it before benchmarking');
@@ -75,7 +75,7 @@ let context, log;
     page.on('crash',()=>run.errors.push('Page crashed'));
     console.log('Occlusion start',run.index,mode);
     run.url='http://127.0.0.1:8765/build/'+folder+'/index.html'+
-      (mode==='default'?'':'?occlusion='+occlusionMode+'&clock='+(local?'local':'owner'));
+      (mode==='default'?'':mode==='rhi-priority'?'?rhiwake=priority':'?occlusion='+occlusionMode+'&clock='+(local?'local':'owner'));
     await page.goto(run.url,{waitUntil:'commit'});
     await page.bringToFront();
     if(initialHidden) {
@@ -95,6 +95,7 @@ let context, log;
       occlusion:__webOcclusionRHI,history:globalThis.__webOcclusionHistory,queryWait:globalThis.__webOcclusionWait,
       optimization:globalThis.__webOptimizationRHI,culling:globalThis.__webOptimizationState,
       gameClock:globalThis.__webGameFrameClock,
+      rhiWake:globalThis.__webRHIWakeScheduler,
       streaming:__webTextureStreaming,capacity:HEAPU8.buffer.byteLength,
       arguments:Module.arguments,failure:globalThis.__webEngineFailure}));
     // Startup texture uploads and browser pipeline creation must leave the window
@@ -110,6 +111,7 @@ let context, log;
     assert.equal(run.before.arguments.includes('-WebGameLocalClock'),local);
     // New runtimes report the clock actually activated in the Game Worker.
     if(run.before.gameClock) assert.deepEqual(run.before.gameClock,{mode:local?'local':'owner',paused:false});
+    if(mode==='rhi-priority') assert.equal(run.before.rhiWake.active,'priority');
     assert.equal(run.before.culling.hzbOcclusion,occlusionMode.startsWith('hzb')?2:0);
     assert.equal(run.before.culling.instanceOcclusion,['instances','hzb-instances'].includes(occlusionMode)?1:0);
     assert.equal(run.before.streaming.pending,0);
