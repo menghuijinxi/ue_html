@@ -1,4 +1,64 @@
 'use strict';
+class WebInputBridge {
+  constructor({send, schedule, focused, trace = false}) {
+    this.send = send; this.schedule = schedule; this.focused = focused; this.tracing = trace;
+    this.queue = []; this.inFlight = null; this.scheduled = false; this.stopped = false; this.sequence = 0;
+    this.state = {mode: 'owner-forwarded', ready: true, sent: 0, acknowledged: 0, maxQueue: 0, trace: []};
+  }
+  connect(port) {
+    this.port = port;
+    this.state.mode = 'direct-game-thread'; this.state.ready = false;
+    port.onmessage = event => {
+      if (event.data.type === 'input-ready') {this.state.ready = true; this.flush();}
+      else if (event.data.type === 'input-ack') this.acknowledge(event.data);
+      else if (event.data.type === 'input-error') throw new Error(event.data.message);
+    };
+    port.start();
+  }
+  push(values) {
+    if (this.stopped) return;
+    const time = performance.timeOrigin + performance.now(), previous = this.queue.at(-1);
+    if (values[0] === 8 && previous?.values[0] === 8 && this.queue.at(-2)?.values[0] === 8) {
+      previous.values[3] = values[3]; previous.values[4] = values[4];
+      previous.values[5] += values[5]; previous.values[6] += values[6]; previous.last = time;
+    } else {
+      if (this.queue.length >= 256) {
+        this.queue = [{values: [12, 0, 0, 0, 0, 0, 0, 0, 0], first: time, last: time}];
+        if (this.focused()) this.queue.push({values: [13, 0, 0, 0, 0, 0, 0, 0, 0], first: time, last: time});
+      }
+      this.queue.push({values: [...values], first: time, last: time});
+    }
+    this.state.maxQueue = Math.max(this.state.maxQueue, this.queue.length);
+    this.flush();
+  }
+  flush() {
+    if (this.stopped || !this.state.ready || this.inFlight || this.scheduled || !this.queue.length) return;
+    this.scheduled = true;
+    this.schedule(() => {
+      this.scheduled = false;
+      if (this.stopped || !this.state.ready || this.inFlight || !this.queue.length) return;
+      const items = this.queue.splice(0), sequence = ++this.sequence;
+      const message = {type: 'inputs', sequence, events: items.map(v => v.values)};
+      this.inFlight = {sequence, count: items.length, first: items[0].first, last: items.at(-1).last,
+        sentAt: performance.timeOrigin + performance.now()};
+      this.state.sent++;
+      if (this.port) this.port.postMessage(message);
+      else this.send(message);
+    });
+  }
+  acknowledge(message) {
+    if (!this.inFlight || (message.sequence !== undefined && message.sequence !== this.inFlight.sequence)) return;
+    if (this.tracing) {
+      this.state.trace.push({...this.inFlight, enqueuedAt: message.enqueuedAt,
+        acknowledgedAt: performance.timeOrigin + performance.now()});
+      if (this.state.trace.length > 512) this.state.trace.shift();
+    }
+    this.inFlight = null; this.state.acknowledged++;
+    this.flush();
+  }
+  dispose() {this.stopped = true; this.queue.length = 0; this.port?.close();}
+}
+
 // Store intervals rather than averaging instantaneous FPS, so stalls remain visible.
 class WebFrameSamples {
   constructor() { this.reset(); }
@@ -144,11 +204,23 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   const frameCounter = new Uint32Array(new SharedArrayBuffer(4));
   const performanceHUD = createWebPerformanceHUD(frameCounter, canvas);
   let sequence = 0, stopped = false;
-  let inputInFlight = false, inputScheduled = false;
-  const inputQueue = [];
+  const directInput = assets.inputBridge === 'direct-game-thread';
+  const inputBridge = new WebInputBridge({
+    send: message => worker.postMessage(message),
+    schedule: callback => directInput ? queueMicrotask(callback) : requestAnimationFrame(callback),
+    focused: () => document.activeElement === canvas,
+    trace: assets.inputTrace === true,
+  });
+  globalThis.__webInputBridge = inputBridge.state;
+  if (directInput) {
+    const channel = new MessageChannel();
+    inputBridge.connect(channel.port1);
+    worker.postMessage({type: 'input-channel', port: channel.port2}, [channel.port2]);
+  }
   const pending = new Map();
   const reportFailure = error => {
     stopped = true;
+    inputBridge.dispose();
     performanceHUD.dispose();
     worker.terminate();
     for (const request of pending.values()) {
@@ -194,8 +266,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
       if (message.error) request.reject(new Error(message.error));
       else request.resolve(message.result);
     } else if (message.type === 'input-ack') {
-      inputInFlight = false;
-      flushInput();
+      inputBridge.acknowledge(message);
     } else if (message.type === 'trace') {
       globalThis.__webTraceBlob = new Blob([message.bytes], {type: 'application/octet-stream'});
     }
@@ -283,32 +354,10 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   const dpiTimer = setInterval(() => {
     if (lastDpr !== devicePixelRatio) { lastDpr = devicePixelRatio; resize(); }
   }, 250);
-  function flushInput() {
-    if (stopped || inputInFlight || inputScheduled || !inputQueue.length) return;
-    inputScheduled = true;
-    requestAnimationFrame(() => {
-      inputScheduled = false;
-      if (stopped) return;
-      inputInFlight = true;
-      worker.postMessage({type: 'inputs', events: inputQueue.splice(0)});
-    });
-  }
   const input = (type, code = 0, character = 0, x = 0, y = 0, dx = 0, dy = 0, wheel = 0, flags = 0) => {
     if (stopped) return;
     if (!globalThis.__webPSOPrecacheReady && type < 12) return;
-    const previous = inputQueue.at(-1);
-    if (type === 8 && previous?.[0] === 8 && inputQueue.at(-2)?.[0] === 8) {
-      previous[3] = x; previous[4] = y;
-      previous[5] += dx; previous[6] += dy;
-    } else {
-      if (inputQueue.length >= 256) {
-        inputQueue.length = 0;
-        inputQueue.push([12, 0, 0, 0, 0, 0, 0, 0, 0]);
-        if (document.activeElement === canvas) inputQueue.push([13, 0, 0, 0, 0, 0, 0, 0, 0]);
-      }
-      inputQueue.push([type, code, character, x, y, dx, dy, wheel, flags]);
-    }
-    flushInput();
+    inputBridge.push([type, code, character, x, y, dx, dy, wheel, flags]);
   };
   for (const [type, id] of [['keydown', 2], ['keyup', 3]]) {
     canvas.addEventListener(type, event => {
@@ -345,6 +394,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   document.addEventListener('pointerlockchange', () => input(20, Number(document.pointerLockElement === canvas)));
   addEventListener('pagehide', () => {
     stopped = true;
+    inputBridge.dispose();
     performanceHUD.dispose();
     observer.disconnect();
     clearInterval(dpiTimer);
@@ -363,4 +413,4 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   diagnostics.engineWorker = {url: 'web-engine-worker.js', offscreenCanvas: true};
 };
 
-if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples};
+if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples, WebInputBridge};

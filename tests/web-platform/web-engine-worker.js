@@ -3,6 +3,12 @@
 let initialized = false;
 let frameCounter, lastPresented = 0, presentTimes = [], pipelineEvents = [];
 let browserMetricsReady = false;
+let inputPort;
+function connectInputPort() {
+  if (!inputPort || !globalThis.__webInputBound || !globalThis.__webGameThreadWorker) return;
+  globalThis.__webGameThreadWorker.postMessage({type: 'web-game-input-channel', port: inputPort}, [inputPort]);
+  inputPort = null;
+}
 function updateBrowserMetrics(state) {
   globalThis.__webBrowserState = state;
   globalThis.devicePixelRatio = state.dpr;
@@ -57,6 +63,7 @@ const diagnosticStateKeys = [
   '__webPSOPrecache'
 ];
 function snapshot() {
+  connectInputPort();
   const state = {};
   for (const key of diagnosticStateKeys)
     if (globalThis[key] !== undefined) state[key] = globalThis[key];
@@ -81,6 +88,10 @@ addEventListener('message', event => {
     if (initialized) throw new Error('Engine Worker already initialized');
     initialized = true;
     start(message).catch(fail);
+  } else if (message.type === 'input-channel') {
+    if (inputPort) throw new Error('Input channel already pending');
+    inputPort = message.port;
+    connectInputPort();
   } else if (message.type === 'browser') {
     updateBrowserMetrics(message.state);
   } else if (message.type === 'inputs') {

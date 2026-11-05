@@ -10,6 +10,8 @@ const option = name => process.argv.find(v => v.startsWith(`--${name}=`))?.slice
 const tag = option('tag');
 assert(tag && /^[a-z0-9-]+$/.test(tag));
 const pacedOnly = process.argv.includes('--lumen-paced-only');
+const inputBridgeTag = option('input-bridge-tag');
+assert(!inputBridgeTag || /^[a-z0-9-]+$/.test(inputBridgeTag));
 const conversion = path.resolve(option('conversion') ||
   path.join(__dirname, 'build/web-project-triplex-project-desktop-cook/20261102-132137/ShaderConversion'));
 const entries = {};
@@ -201,7 +203,9 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
 
 (async () => {
   try {
-    const cases = pacedOnly ? [{folder: 'triplex-project-lumen-shadows-fixed-20261104', rafMaxFPS: 10}] :
+    const cases = inputBridgeTag ?
+      ['owner', 'direct'].map(mode => ({folder: `triplex-input-${mode}-${inputBridgeTag}`})) :
+      pacedOnly ? [{folder: 'triplex-project-lumen-shadows-fixed-20261104', rafMaxFPS: 10}] :
       ['triplex-project-lumen-shadows-fixed-20261104', 'triplex-motion-no-lumen-10fps-20261104-v2'].map(folder => ({folder}));
     for (const {folder, rafMaxFPS} of cases) {
       const profile = path.join(__dirname, 'build/browser-profiles', `motion-inputs-${tag}-${report.runs.length}`);
@@ -247,6 +251,13 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
         assert(!failure, JSON.stringify({failure, errors}));
       };
       await advance(90);
+      if (inputBridgeTag) {
+        await page.waitForFunction(() => globalThis.__webInputBridge?.ready === true);
+        await page.evaluate(() => {
+          const state = globalThis.__webInputBridge;
+          state.trace.length = 0; state.sent = 0; state.acknowledged = 0; state.maxQueue = 0;
+        });
+      }
       const owner = page.workers().find(w => w.url().includes('web-engine-worker.js'));
       assert(owner);
       await owner.evaluate(() => {__motionInputs.enabled = true;});
@@ -259,10 +270,26 @@ function observe(entries, uniformLayouts, rafMaxFPS) {
       }
       await page.mouse.up({button: 'right'});
       await advance(30);
+      if (inputBridgeTag) await page.waitForFunction(() => {
+        const state = globalThis.__webInputBridge;
+        return state.sent === state.acknowledged;
+      });
       const state = await owner.evaluate(() => {
         __motionInputs.enabled = false;
         return {probe: __motionInputs, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera};
       });
+      if (inputBridgeTag) {
+        state.inputBridge = await page.evaluate(() => globalThis.__webInputBridge);
+        assert(state.inputBridge.sent >= 10 && state.inputBridge.acknowledged >= 10);
+        assert.equal(state.settings.gi, 1);
+        assert.equal(state.settings.reflections, 1);
+        assert.equal(state.settings.antiAliasing, 4);
+        assert.equal(state.inputBridge.mode,
+          folder.includes('-direct-') ? 'direct-game-thread' : 'owner-forwarded');
+        const image = path.join(__dirname, 'results', `motion-blur-inputs-${tag}-${report.runs.length}.png`);
+        await page.screenshot({path: image});
+        state.screenshot = audit(image);
+      }
       assert.deepEqual(errors, []);
       assert.deepEqual(state.probe.errors, []);
       assert.deepEqual(state.probe.losses, []);
