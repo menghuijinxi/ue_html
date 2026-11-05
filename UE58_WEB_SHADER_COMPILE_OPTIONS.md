@@ -91,9 +91,30 @@ O1/O2 没有明显收益。O0/Od 约节约 22%，但会改变 GPU 代码；本�
 
 最快完成与最少 CPU 不是同一个选择。当前独立批次的折中在约 6–8 路；实际引擎还需要让出 CPU 给 Game/Render，不能直接把离线最优上限复制过去。
 
-## 完整场景：增加工作线程的四轮交错对照
+## 完整场景：首次 PSO 编译事件的四轮交错对照
 
 两侧均为 v70 运行期 async PSO 实验；命令行 `-corelimit=4/8`，对应实际 TaskGraph worker 3/7。顺序 4、8、8、4，每次首次转向 25 秒、重复转向 25 秒，先等待初始加载/纹理与编译完成。
+
+**主要判据是首次编译事件覆盖的帧间隔，不是整段平均 FPS 或 1% Low。** 按用户指出的口径，重新分析原始未开 trace 的逐帧/逐请求记录。以下是上轮数据的事件级重算，没有冒充新的性能试验。
+
+每轮首次转向均有一批连续重叠的 15 个 `createRenderPipelineAsync` 请求，入口 label 多重集一致，另有 10 个新 shader module。以请求开始到回调完成的区间组成事件窗口，再寻找与窗口重叠的完整帧间隔。四轮都只有一个这样的帧间隔，且待编译期间 **没有新的视口帧提交**。
+
+| 运行顺序 | UE worker | 首次 PSO 对应的停帧 | 等效单帧速率 | PSO 请求到完成跨度 | 后续 500ms 最慢帧 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| A1 | 3 | 243.735ms | 4.10 FPS | 197.010ms | 17.770ms |
+| B1 | 7 | 140.865ms | 7.10 FPS | 123.560ms | 16.875ms |
+| B2 | 7 | 133.315ms | 7.50 FPS | 114.775ms | 18.565ms |
+| A2 | 3 | 253.865ms | 3.94 FPS | 200.610ms | 21.360ms |
+
+`等效单帧速率 = 1000 / 帧间隔毫秒`，用于表达这个卡顿帧的严重程度，不是按一秒窗口统计的 FPS。事件停帧中位数 **248.80 → 137.09ms（-44.9%）**，对应约 **4.02 → 7.29 FPS**。PSO 请求批次跨度 **198.81 → 119.17ms（-40.1%）**。
+
+四轮在该事件外均没有超过 50ms 的帧；事件完成后的 500ms 内也没有超过 50ms 的帧。重复相同转向时，四轮均无新 shader/PSO 请求，也没有超过 50ms 的帧。该范围内未发现把长停顿转移到邻帧的情况。
+
+结论是这批首次 PSO 相关卡顿确实缩短，但两侧仍每次都有一个超过 100ms 的卡顿帧，没有实现“编译时保持正常帧率”。每种配置只有两个首次事件，不能据此代表所有场景/材质。完整帧间隔还包含 UE 命令准备、模块处理等工作，不能把全部 249ms 或 137ms 归为 DXC 计算；另外的 GPU trace 用于确认后台确实发生了 DXC。
+
+事件证据为 `tests/web-platform/evidence/shader-first-use-stalls-20261105.json`；分析器 `diagnostics/analyze-first-use-stalls.cjs` 同时保留每个 PSO 请求的相对时间、相邻帧和恢复窗口，检查输入帧时间连续性及四轮请求入口多重集。
+
+下面的长区间数据仅作为稳定运行是否退化的补充，不用于判断 PSO 首次编译卡顿是否改善：
 
 | 指标，中位数 | 3 worker | 7 worker |
 | --- | ---: | ---: |
@@ -136,6 +157,7 @@ O1/O2 没有明显收益。O0/Od 约节约 22%，但会改变 GPU 代码；本�
 - `diagnostics/analyze-compile-options.cjs <tag>`：流式分析 DXC/Tint/PSO scope，保留所有轮次。
 - `probe-web-runtime-pso.cjs`：新增 core-limits、磁盘缓存控制与仅用于测试的 shared 调度注入；默认调用行为不变。
 - `diagnostics/analyze-compile-scene.cjs <tag>`：校验真实线程数，统计帧间隔与异步请求跨度。
+- `diagnostics/analyze-first-use-stalls.cjs <tag>`：以首次 PSO 事件对齐卡顿帧，检查相邻帧及完成后 500ms 恢复情况，排除长区间平均值稀释。
 
 浏览器测试依赖 Playwright，使用本地 8765 测试服务器。raw JSON、trace、输入/输出 shader 与截图留在 `tests/web-platform/results/compile-options-*`，大文件不纳入 Git。精简证据为 `tests/web-platform/evidence/shader-compile-options-20261105.json`，包含原始报告 hash、各轮数据、工具与输入 hash。
 

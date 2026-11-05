@@ -1,0 +1,751 @@
+{
+  "date": "2026-11-05T09:00:31.748Z",
+  "pass": true,
+  "input": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\compile-options-scene-20261105.json",
+    "sha256": "846528780917c50f6ef465bce06b0a2e207fcf4580940374ac3d56c5584a6d36"
+  },
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnostics\\analyze-first-use-stalls.cjs",
+    "sha256": "f302b2044761ac06d8149d99ba2ababe9115254fecfebced76f1062c885e6acc"
+  },
+  "boundary": "Reanalysis of saved, untraced full-scene runs; no new performance run. Event windows are the union of overlapping first-use async PSO request-to-callback intervals. Frames are measured viewport submission intervals, not physical presentation. A frame overlapping a request is associated with the first-use event; its entire duration is not pure DXC time. Requests themselves can hit browser caches; companion GPU traces establish actual DXC work separately. 1000/frameMs is an equivalent single-frame rate, not a one-second FPS average. Post-event 500ms tail is checked for shifted stalls. Both sides use runtime async PSOs; comparison is 3 versus 7 UE task workers, not sync versus async.",
+  "runs": [
+    {
+      "index": 1,
+      "cores": 4,
+      "workers": 3,
+      "mode": "async",
+      "schedule": "fifo",
+      "newModules": 10,
+      "pipelineRequests": 15,
+      "events": [
+        {
+          "index": 1,
+          "startOffsetMs": 5104.70000000298,
+          "requests": 15,
+          "pendingSpanMs": 197.01000000536442,
+          "submissionsWhilePending": 0,
+          "associatedFrames": [
+            {
+              "frame": 2706,
+              "startMs": -44.310000002384186,
+              "endMs": 199.42499999701977,
+              "ms": 243.73499999940395
+            }
+          ],
+          "worstFrameMs": 243.73499999940395,
+          "equivalentSingleFrameFps": 4.102816583594664,
+          "firstSubmissionAfterCompletionMs": 2.4149999916553497,
+          "associatedFrameStats": {
+            "frames": 1,
+            "maximumMs": 243.73499999940395,
+            "over33": 1,
+            "over50": 1,
+            "over100": 1
+          },
+          "beforeFrames": [
+            {
+              "frame": 2703,
+              "startMs": -72.02500000596046,
+              "endMs": -62.88500000536442,
+              "ms": 9.140000000596046
+            },
+            {
+              "frame": 2704,
+              "startMs": -62.88500000536442,
+              "endMs": -53.37000000476837,
+              "ms": 9.515000000596046
+            },
+            {
+              "frame": 2705,
+              "startMs": -53.37000000476837,
+              "endMs": -44.310000002384186,
+              "ms": 9.060000002384186
+            }
+          ],
+          "nextFrames": [
+            {
+              "frame": 2707,
+              "startMs": 199.42499999701977,
+              "endMs": 214.48499999940395,
+              "ms": 15.060000002384186
+            },
+            {
+              "frame": 2708,
+              "startMs": 214.48499999940395,
+              "endMs": 228.36499999463558,
+              "ms": 13.879999995231628
+            },
+            {
+              "frame": 2709,
+              "startMs": 228.36499999463558,
+              "endMs": 241.18000000715256,
+              "ms": 12.815000012516975
+            },
+            {
+              "frame": 2710,
+              "startMs": 241.18000000715256,
+              "endMs": 253.73999999463558,
+              "ms": 12.559999987483025
+            },
+            {
+              "frame": 2711,
+              "startMs": 253.73999999463558,
+              "endMs": 266.65000000596046,
+              "ms": 12.910000011324883
+            }
+          ],
+          "post500ms": {
+            "frames": 43,
+            "maximumMs": 17.769999995827675,
+            "over33": 0,
+            "over50": 0,
+            "over100": 0
+          },
+          "requestsRelative": [
+            {
+              "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+              "startMs": 0,
+              "completedMs": 88.1550000011921
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.09000000357627869,
+              "completedMs": 71.53499999642372
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.14000000059604645,
+              "completedMs": 71.5700000077486
+            },
+            {
+              "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+              "startMs": 71.78499999642372,
+              "completedMs": 104.98999999463558
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 73.39000000059605,
+              "completedMs": 78.60999999940395
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 78.75,
+              "completedMs": 79.57999999821186
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+              "startMs": 79.71500000357628,
+              "completedMs": 110.88500000536442
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+              "startMs": 88.32999999821186,
+              "completedMs": 89.33499999344349
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+              "startMs": 89.4699999988079,
+              "completedMs": 119.6550000011921
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+              "startMs": 105.21500000357628,
+              "completedMs": 106.10999999940395
+            },
+            {
+              "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+              "startMs": 111.1550000011921,
+              "completedMs": 125.23999999463558
+            },
+            {
+              "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+              "startMs": 111.29500000178814,
+              "completedMs": 196.9699999988079
+            },
+            {
+              "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+              "startMs": 119.90999999642372,
+              "completedMs": 197.01000000536442
+            },
+            {
+              "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+              "startMs": 125.42000000178814,
+              "completedMs": 139.7099999934435
+            },
+            {
+              "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+              "startMs": 139.9350000023842,
+              "completedMs": 168.62000000476837
+            }
+          ]
+        }
+      ],
+      "outsideEventFramesOver50ms": [],
+      "repeat": {
+        "pipelineRequests": 0,
+        "shaderModules": 0,
+        "framesOver50": 0
+      }
+    },
+    {
+      "index": 2,
+      "cores": 8,
+      "workers": 7,
+      "mode": "async",
+      "schedule": "fifo",
+      "newModules": 10,
+      "pipelineRequests": 15,
+      "events": [
+        {
+          "index": 1,
+          "startOffsetMs": 5102.795000001788,
+          "requests": 15,
+          "pendingSpanMs": 123.56000000238419,
+          "submissionsWhilePending": 0,
+          "associatedFrames": [
+            {
+              "frame": 2686,
+              "startMs": -14.990000009536743,
+              "endMs": 125.875,
+              "ms": 140.86500000953674
+            }
+          ],
+          "worstFrameMs": 140.86500000953674,
+          "equivalentSingleFrameFps": 7.098995491657251,
+          "firstSubmissionAfterCompletionMs": 2.314999997615814,
+          "associatedFrameStats": {
+            "frames": 1,
+            "maximumMs": 140.86500000953674,
+            "over33": 1,
+            "over50": 1,
+            "over100": 1
+          },
+          "beforeFrames": [
+            {
+              "frame": 2683,
+              "startMs": -57.04999999701977,
+              "endMs": -42.57500000298023,
+              "ms": 14.474999994039536
+            },
+            {
+              "frame": 2684,
+              "startMs": -42.57500000298023,
+              "endMs": -27.350000008940697,
+              "ms": 15.224999994039536
+            },
+            {
+              "frame": 2685,
+              "startMs": -27.350000008940697,
+              "endMs": -14.990000009536743,
+              "ms": 12.359999999403954
+            }
+          ],
+          "nextFrames": [
+            {
+              "frame": 2687,
+              "startMs": 125.875,
+              "endMs": 140.17000000178814,
+              "ms": 14.29500000178814
+            },
+            {
+              "frame": 2688,
+              "startMs": 140.17000000178814,
+              "endMs": 153.62999999523163,
+              "ms": 13.459999993443489
+            },
+            {
+              "frame": 2689,
+              "startMs": 153.62999999523163,
+              "endMs": 166.39000000059605,
+              "ms": 12.760000005364418
+            },
+            {
+              "frame": 2690,
+              "startMs": 166.39000000059605,
+              "endMs": 180.03499999642372,
+              "ms": 13.644999995827675
+            },
+            {
+              "frame": 2691,
+              "startMs": 180.03499999642372,
+              "endMs": 192.67499999701977,
+              "ms": 12.640000000596046
+            }
+          ],
+          "post500ms": {
+            "frames": 44,
+            "maximumMs": 16.875,
+            "over33": 0,
+            "over50": 0,
+            "over100": 0
+          },
+          "requestsRelative": [
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 0,
+              "completedMs": 33.679999992251396
+            },
+            {
+              "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+              "startMs": 0.0949999988079071,
+              "completedMs": 33.59499999880791
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 0.1550000011920929,
+              "completedMs": 33.75
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.20999999344348907,
+              "completedMs": 33.644999995827675
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.25,
+              "completedMs": 33.65999999642372
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+              "startMs": 0.375,
+              "completedMs": 66.92499999701977
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+              "startMs": 0.5549999922513962,
+              "completedMs": 36.71500000357628
+            },
+            {
+              "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+              "startMs": 33.95000000298023,
+              "completedMs": 71.51500000059605
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+              "startMs": 34.179999992251396,
+              "completedMs": 64.63499999046326
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+              "startMs": 34.304999992251396,
+              "completedMs": 36.729999989271164
+            },
+            {
+              "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+              "startMs": 36.814999997615814,
+              "completedMs": 47.54500000178814
+            },
+            {
+              "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+              "startMs": 37.54500000178814,
+              "completedMs": 123.07500000298023
+            },
+            {
+              "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+              "startMs": 38.099999994039536,
+              "completedMs": 123.56000000238419
+            },
+            {
+              "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+              "startMs": 38.48499999940395,
+              "completedMs": 62.62999999523163
+            },
+            {
+              "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+              "startMs": 47.804999992251396,
+              "completedMs": 88.99499998986721
+            }
+          ]
+        }
+      ],
+      "outsideEventFramesOver50ms": [],
+      "repeat": {
+        "pipelineRequests": 0,
+        "shaderModules": 0,
+        "framesOver50": 0
+      }
+    },
+    {
+      "index": 3,
+      "cores": 8,
+      "workers": 7,
+      "mode": "async",
+      "schedule": "fifo",
+      "newModules": 10,
+      "pipelineRequests": 15,
+      "events": [
+        {
+          "index": 1,
+          "startOffsetMs": 5086.25,
+          "requests": 15,
+          "pendingSpanMs": 114.7749999910593,
+          "submissionsWhilePending": 0,
+          "associatedFrames": [
+            {
+              "frame": 2682,
+              "startMs": -16.365000009536743,
+              "endMs": 116.95000000298023,
+              "ms": 133.31500001251698
+            }
+          ],
+          "worstFrameMs": 133.31500001251698,
+          "equivalentSingleFrameFps": 7.501031391112101,
+          "firstSubmissionAfterCompletionMs": 2.175000011920929,
+          "associatedFrameStats": {
+            "frames": 1,
+            "maximumMs": 133.31500001251698,
+            "over33": 1,
+            "over50": 1,
+            "over100": 1
+          },
+          "beforeFrames": [
+            {
+              "frame": 2679,
+              "startMs": -44.25499999523163,
+              "endMs": -34.83500000834465,
+              "ms": 9.419999986886978
+            },
+            {
+              "frame": 2680,
+              "startMs": -34.83500000834465,
+              "endMs": -25.275000005960464,
+              "ms": 9.560000002384186
+            },
+            {
+              "frame": 2681,
+              "startMs": -25.275000005960464,
+              "endMs": -16.365000009536743,
+              "ms": 8.909999996423721
+            }
+          ],
+          "nextFrames": [
+            {
+              "frame": 2683,
+              "startMs": 116.95000000298023,
+              "endMs": 129.45499999821186,
+              "ms": 12.504999995231628
+            },
+            {
+              "frame": 2684,
+              "startMs": 129.45499999821186,
+              "endMs": 144.79500000178814,
+              "ms": 15.340000003576279
+            },
+            {
+              "frame": 2685,
+              "startMs": 144.79500000178814,
+              "endMs": 156.85999999940395,
+              "ms": 12.064999997615814
+            },
+            {
+              "frame": 2686,
+              "startMs": 156.85999999940395,
+              "endMs": 169.23499999940395,
+              "ms": 12.375
+            },
+            {
+              "frame": 2687,
+              "startMs": 169.23499999940395,
+              "endMs": 179.3049999922514,
+              "ms": 10.069999992847443
+            }
+          ],
+          "post500ms": {
+            "frames": 44,
+            "maximumMs": 18.564999997615814,
+            "over33": 0,
+            "over50": 0,
+            "over100": 0
+          },
+          "requestsRelative": [
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 0,
+              "completedMs": 24.364999994635582
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 0.16499999165534973,
+              "completedMs": 24.82999999821186
+            },
+            {
+              "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+              "startMs": 0.23999999463558197,
+              "completedMs": 65.5949999988079
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.2749999910593033,
+              "completedMs": 24.304999992251396
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.3149999976158142,
+              "completedMs": 24.344999998807907
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+              "startMs": 0.4449999928474426,
+              "completedMs": 57.394999995827675
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+              "startMs": 0.5900000035762787,
+              "completedMs": 24.939999997615814
+            },
+            {
+              "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+              "startMs": 24.59000000357628,
+              "completedMs": 62.75499999523163
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+              "startMs": 24.78999999165535,
+              "completedMs": 57.20499999821186
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+              "startMs": 24.905000001192093,
+              "completedMs": 25.83499999344349
+            },
+            {
+              "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+              "startMs": 26.599999994039536,
+              "completedMs": 36.98499999940395
+            },
+            {
+              "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+              "startMs": 28.394999995827675,
+              "completedMs": 114.7749999910593
+            },
+            {
+              "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+              "startMs": 29.53999999165535,
+              "completedMs": 113.6799999922514
+            },
+            {
+              "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+              "startMs": 37.20999999344349,
+              "completedMs": 55.32500000298023
+            },
+            {
+              "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+              "startMs": 55.560000002384186,
+              "completedMs": 95.7199999988079
+            }
+          ]
+        }
+      ],
+      "outsideEventFramesOver50ms": [],
+      "repeat": {
+        "pipelineRequests": 0,
+        "shaderModules": 0,
+        "framesOver50": 0
+      }
+    },
+    {
+      "index": 4,
+      "cores": 4,
+      "workers": 3,
+      "mode": "async",
+      "schedule": "fifo",
+      "newModules": 10,
+      "pipelineRequests": 15,
+      "events": [
+        {
+          "index": 1,
+          "startOffsetMs": 5126.769999995828,
+          "requests": 15,
+          "pendingSpanMs": 200.60999999940395,
+          "submissionsWhilePending": 0,
+          "associatedFrames": [
+            {
+              "frame": 2731,
+              "startMs": -50.80500000715256,
+              "endMs": 203.0600000023842,
+              "ms": 253.86500000953674
+            }
+          ],
+          "worstFrameMs": 253.86500000953674,
+          "equivalentSingleFrameFps": 3.9391014908019373,
+          "firstSubmissionAfterCompletionMs": 2.4500000029802322,
+          "associatedFrameStats": {
+            "frames": 1,
+            "maximumMs": 253.86500000953674,
+            "over33": 1,
+            "over50": 1,
+            "over100": 1
+          },
+          "beforeFrames": [
+            {
+              "frame": 2728,
+              "startMs": -79.875,
+              "endMs": -69.93000000715256,
+              "ms": 9.944999992847443
+            },
+            {
+              "frame": 2729,
+              "startMs": -69.93000000715256,
+              "endMs": -60.33499999344349,
+              "ms": 9.595000013709068
+            },
+            {
+              "frame": 2730,
+              "startMs": -60.33499999344349,
+              "endMs": -50.80500000715256,
+              "ms": 9.529999986290932
+            }
+          ],
+          "nextFrames": [
+            {
+              "frame": 2732,
+              "startMs": 203.0600000023842,
+              "endMs": 215.48000000417233,
+              "ms": 12.42000000178814
+            },
+            {
+              "frame": 2733,
+              "startMs": 215.48000000417233,
+              "endMs": 228.59000000357628,
+              "ms": 13.109999999403954
+            },
+            {
+              "frame": 2734,
+              "startMs": 228.59000000357628,
+              "endMs": 240.28499999642372,
+              "ms": 11.694999992847443
+            },
+            {
+              "frame": 2735,
+              "startMs": 240.28499999642372,
+              "endMs": 252.85500000417233,
+              "ms": 12.570000007748604
+            },
+            {
+              "frame": 2736,
+              "startMs": 252.85500000417233,
+              "endMs": 265.29999999701977,
+              "ms": 12.444999992847443
+            }
+          ],
+          "post500ms": {
+            "frames": 44,
+            "maximumMs": 21.359999999403954,
+            "over33": 0,
+            "over50": 0,
+            "over100": 0
+          },
+          "requestsRelative": [
+            {
+              "label": "main_00001f64_054dc7ac / main_00001c80_6ba8bb54",
+              "startMs": 0,
+              "completedMs": 95.06000000238419
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.07999999821186066,
+              "completedMs": 76.51999999582767
+            },
+            {
+              "label": "main_00001e24_74849152 / main_000003d0_15306abc",
+              "startMs": 0.14000000059604645,
+              "completedMs": 76.5549999922514
+            },
+            {
+              "label": "main_00003450_12328add / main_00000f58_4e1377bf",
+              "startMs": 76.7800000011921,
+              "completedMs": 110.03499999642372
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 78.5,
+              "completedMs": 83.89000000059605
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003bec_fe139846",
+              "startMs": 84.02500000596046,
+              "completedMs": 85.00499999523163
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6",
+              "startMs": 85.17000000178814,
+              "completedMs": 116.59999999403954
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_00005764_42866918",
+              "startMs": 95.27500000596046,
+              "completedMs": 96.33499999344349
+            },
+            {
+              "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3",
+              "startMs": 96.48999999463558,
+              "completedMs": 124.8049999922514
+            },
+            {
+              "label": "main_00001f00_a30a26d4 / main_000040d8_8fc3edc4",
+              "startMs": 110.24500000476837,
+              "completedMs": 111.125
+            },
+            {
+              "label": "main_000007c0_d889bb5b / main_000004e8_31236922",
+              "startMs": 116.12000000476837,
+              "completedMs": 130.34000000357628
+            },
+            {
+              "label": "main_0000548c_25787371 / main_00009284_585ed8d6",
+              "startMs": 116.84000000357628,
+              "completedMs": 200.57999999821186
+            },
+            {
+              "label": "main_000055bc_931ef210 / main_00004e24_c93816cb",
+              "startMs": 125.06499999761581,
+              "completedMs": 200.60999999940395
+            },
+            {
+              "label": "main_00001d84_18961c06 / main_00001ac0_643db501",
+              "startMs": 130.51500000059605,
+              "completedMs": 145.15999999642372
+            },
+            {
+              "label": "main_00001ec4_56192608 / main_00001a7c_b30566da",
+              "startMs": 145.38500000536442,
+              "completedMs": 173.67499999701977
+            }
+          ]
+        }
+      ],
+      "outsideEventFramesOver50ms": [],
+      "repeat": {
+        "pipelineRequests": 0,
+        "shaderModules": 0,
+        "framesOver50": 0
+      }
+    }
+  ],
+  "groups": [
+    {
+      "key": "async/3/fifo",
+      "runs": 2,
+      "events": 2,
+      "medianWorstFrameMs": 248.80000000447035,
+      "equivalentSingleFrameFps": 4.01929260442939,
+      "medianPendingSpanMs": 198.8100000023842,
+      "eventsOver100ms": 2,
+      "maximumPost500msFrame": 21.359999999403954,
+      "post500msFramesOver50": 0
+    },
+    {
+      "key": "async/7/fifo",
+      "runs": 2,
+      "events": 2,
+      "medianWorstFrameMs": 137.09000001102686,
+      "equivalentSingleFrameFps": 7.294478079506637,
+      "medianPendingSpanMs": 119.16749999672174,
+      "eventsOver100ms": 2,
+      "maximumPost500msFrame": 18.564999997615814,
+      "post500msFramesOver50": 0
+    }
+  ]
+}
