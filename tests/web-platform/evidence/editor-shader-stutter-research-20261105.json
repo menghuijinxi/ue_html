@@ -1,0 +1,180 @@
+{
+  "date": "2026-11-05T06:36:32.767Z",
+  "pass": true,
+  "type": "source and primary-publication investigation, no new performance benchmark",
+  "rootBaseCommit": "af41d5c",
+  "engineCommit": "d5e91d5140667d6058ae34dd0532d89c817dd606",
+  "runtimeChanged": false,
+  "defaultChanged": false,
+  "report": {
+    "file": "UE58_WEB_EDITOR_SHADER_STUTTER_RESEARCH.md",
+    "sha256": "2fc6cad711726b15fb320654fdd47456a7ab93b7bd46109d5be47058024a7f19"
+  },
+  "localSources": [
+    {
+      "file": "reference-engine/Engine/Config/BaseEngine.ini",
+      "sha256": "176d147bc7cb42bcee3cde8ca55701cedffccc4d1043f19b93ede7a0440e3270",
+      "line": 2176,
+      "anchor": "bAllowAsynchronousShaderCompiling=True"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompilerJobCache.cpp",
+      "sha256": "db863f22c722c4979ba366806061a44ce878d62d7ca15be7e34bb563edec0aed",
+      "line": 77,
+      "anchor": "r.ShaderCompiler.JobCacheDDC"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Engine/Private/Materials/MaterialShared.cpp",
+      "sha256": "31c43df402ef7efc73514b12ae265f03b0955d1dacedfac9867763ffd0143656",
+      "line": 3057,
+      "anchor": "IsMaterialMapDDCEnabled"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Engine/Private/Materials/MaterialRenderProxy.cpp",
+      "sha256": "e6d75cb02ed92f9795ddc8a5cc512ce9fd810ba0a882df1a84dc593daa64faf5",
+      "line": 870,
+      "anchor": "FMaterialRenderProxy::GetMaterialWithFallback"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp",
+      "sha256": "01cf29f3e0f8894f50d63dbd5ffebcc8216702ea2f08f1c46787037782d0056f",
+      "line": 2889,
+      "anchor": "FShaderCompilingManager::ProcessAsyncResults"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/D3D12RHI/Private/D3D12Shaders.cpp",
+      "sha256": "b1b040d573cf57c1efd1fe600c77fb7cbb62b2d2bc9861455b61796596bd2c92",
+      "line": 168,
+      "anchor": "InitShaderCommon"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/D3D12RHI/Private/D3D12Shader.h",
+      "sha256": "137097af681fa2874f87d88bc90c78df266c6b335a944a1c28aae37282dd6bdb",
+      "line": 86,
+      "anchor": "GetShaderBytecode"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/D3D12RHI/Private/D3D12Pipelinestate.cpp",
+      "sha256": "d7cfda70f564b11054a6f17e7113d817774ec410749e18b049d8e2537ee5cdfc",
+      "line": 93,
+      "anchor": "GetShaderBytecode"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RHI/Private/PipelineStateCache.cpp",
+      "sha256": "37a0360774d0c7dd6fc48acfd0db1dc842fde8157b4cb77e53ea05188aa2cfd4",
+      "line": 4176,
+      "anchor": "IsAsyncCompilationAllowed"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RHI/Private/PipelineStateCache.cpp",
+      "sha256": "37a0360774d0c7dd6fc48acfd0db1dc842fde8157b4cb77e53ea05188aa2cfd4",
+      "line": 4999,
+      "anchor": "PipelineStateCache::IsPSOPrecachingEnabled"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Engine/Private/PSOPrecache.cpp",
+      "sha256": "543d5d0bf9d96fcb199d22a7637b486d4ed9c14333fc202f21c8e42b9f124787",
+      "line": 34,
+      "anchor": "GPSOPrecacheProxyCreationStrategy"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/Renderer/Private/MeshPassProcessor.cpp",
+      "sha256": "d9a88e17b816c47462c6200e9001ae8d852eea6a5cd8f964e8f14a79c8370cf2",
+      "line": 56,
+      "anchor": "GSkipDrawOnPSOPrecaching"
+    },
+    {
+      "file": "reference-engine/Engine/Source/Runtime/RHI/Private/RHICommandList.cpp",
+      "sha256": "fe3b8781faca57c9b2a9120d555188481062289fd2f67ac30a726c0660a8bbd0",
+      "line": 240,
+      "anchor": "FRHICommandListBase::AddDispatchPrerequisite"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "0090757be6e9f08f6d9771e9d322621a13e9059e132c590f62649d024a7c940a",
+      "anchors": [
+        {
+          "line": 1420,
+          "name": "Cooked WGSL module creation"
+        },
+        {
+          "line": 3981,
+          "name": "Runtime async submission and wait"
+        },
+        {
+          "line": 4209,
+          "name": "Asynchronous backend callback"
+        }
+      ]
+    }
+  ],
+  "existingMeasurements": [
+    {
+      "file": "tests/web-platform/evidence/same-shader-compile-20261105.json",
+      "sha256": "8d5e955578423bdb23e1f8d80cb4f94ef4ea5a0de8af11f7bfc0d7a8914c7211"
+    },
+    {
+      "file": "tests/web-platform/evidence/runtime-async-pso-20261105.json",
+      "sha256": "0026b1db6c2475cd61b097d5b451f4feee05cab8df9a48bc02443f25dd864f12"
+    },
+    {
+      "file": "tests/web-platform/evidence/pso-desktop-gap-20261105.json",
+      "sha256": "ffccd0f1a91bfa1e13aa92cf1b50c8117dc730b0279d6cc0fd990c3745f3c6b9"
+    }
+  ],
+  "publications": [
+    {
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/shader-development?application_version=4.27",
+      "type": "Epic UE4.27 documentation",
+      "supports": "UE4 already enqueues asynchronous source compilation, uses ShaderCompileWorker processes, and applies completed results without blocking the engine."
+    },
+    {
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5.1-release-notes?application_version=5.1",
+      "type": "Epic release notes",
+      "supports": "Default editor ODSC and early DX12 PSO preparation; immediate first use or teleportation can still stall."
+    },
+    {
+      "url": "https://www.unrealengine.com/tech-blog/game-engines-and-shader-stuttering-unreal-engines-solution-to-the-problem",
+      "published": "2025-02-04",
+      "type": "Epic PSO system authors",
+      "supports": "Source-to-bytecode versus driver compilation, bundled caches, UE5.2 automatic precaching and Fortnite experience; earlier/later work and readiness strategies."
+    },
+    {
+      "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/pso-precaching-for-unreal-engine",
+      "type": "Epic current PSO documentation",
+      "supports": "Component/global precaching, delay/fallback/block tradeoffs, loading wait, validation, and 117ms example. Current local source deprecates older proxy-strategy CVar names still used on this page."
+    },
+    {
+      "url": "https://github.com/gkjohnson/three-gpu-pathtracer/issues/889",
+      "published": "2026-10-11",
+      "type": "upstream reporter benchmark",
+      "supports": "Chrome Windows first-frame stalls 1.46-1.48s; async warmup workaround 152-157ms. Reported externally, not reproduced in this workspace."
+    },
+    {
+      "url": "https://github.com/gkjohnson/three-gpu-pathtracer/pull/893",
+      "merged": "2026-10-28",
+      "type": "merged upstream implementation",
+      "supports": "Bind final buffers and compile kernels asynchronously before dispatch. Some synchronous initialization remains."
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/pull/34816",
+      "merged": "2026-10-14",
+      "type": "merged upstream implementation and author benchmark",
+      "supports": "Compile up to 16 pipelines concurrently and yield for browser frames after about 8ms. Author batch result about 12.8s to 1.5s, not an expected UE gain."
+    }
+  ],
+  "findings": [
+    "Equal single-invocation DXC cost does not establish equal runtime compile counts, timing or critical-path placement.",
+    "Native D3D12 shader creation consumes existing bytecode. The Web backend creates a WGSL module; browser DXC happens later and is outside UE ShaderCompileWorker/ShaderMap completion.",
+    "Editor material fallback and ODSC are separate from runtime PSO creation. They do not automatically provide a fallback for a browser PSO whose UE ShaderMap is already complete.",
+    "Normal asynchronous PSOs still register a completion dependency. Current Web path waits before command-list translation to avoid owner-thread callback self-wait.",
+    "Current local UE5.8 explicitly disables PSO precaching for WITH_EDITOR; component readiness/proxy-delay logic also excludes GIsEditor.",
+    "UE5 reduces work or moves it earlier and can defer visibility or use fallback. It does not universally eliminate first-use PSO stalls."
+  ],
+  "limits": [
+    "No capture of the user actual editor session. Which caches or fallbacks explain that specific observation remains unmeasured.",
+    "No new FPS numbers or implemented optimization. External case measurements are attributed and are not forecasts for this project.",
+    "No clearing system-wide driver caches, changing render quality, enabling precaching by default, or dropping draws.",
+    "Same exported browser HLSL comparison does not compare native UE original HLSL complexity with Tint generated HLSL."
+  ]
+}
