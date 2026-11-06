@@ -1257,8 +1257,8 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
                 {draws: $0, indirectDraws: $1, dispatches: $2, sampleFrame: $3});
         }, Draws, IndirectDraws, Dispatches, EndFrames);
         EM_ASM({ Object.assign(globalThis.__webOcclusionRHI,
-            {reuseComputePass:!!$0, computePassesOpened:$1, computePassesReused:$2}); },
-            CVarWebGPUReuseComputePass.GetValueOnAnyThread(), ComputePassesOpened, ComputePassesReused);
+            {reuseComputePass:!!$0, computePassesOpened:$1, computePassesReused:$2, renderPassesOpened:$3}); },
+            CVarWebGPUReuseComputePass.GetValueOnAnyThread(), ComputePassesOpened, ComputePassesReused, RenderPassesOpened);
     }
 #endif
 }
@@ -4618,6 +4618,7 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
     Desc.colorAttachments = Colors.GetData();
     EndComputePass();
     Pass = wgpuCommandEncoderBeginRenderPass(Encoder, &Desc);
+    ++RenderPassesOpened;
     PassBundleKey.Reset();
     if (UseRenderBundles)
     {

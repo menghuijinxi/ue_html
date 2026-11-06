@@ -8,11 +8,13 @@ assert([folder,tag].every(v=>v&&/^[a-z0-9-]+$/.test(v)));
 const modes=(option('modes')||'owner,local,local,owner').split(',');
 assert(modes.every(v=>['owner','local'].includes(v)));
 const seconds=Number(option('seconds')||20),warmup=Number(option('warmup')||15);
+const width=Number(option('width')||2289),height=Number(option('height')||1287);
 assert(seconds>=5&&seconds<=60&&warmup>=5&&warmup<=60);
+assert(Number.isInteger(width)&&Number.isInteger(height)&&width>=640&&height>=480);
 const base=path.join(__dirname,'build',folder),output=path.join(__dirname,'results',tag);
 assert(!fs.existsSync(output+'.json'),'Use a fresh measurement tag');
 fs.copyFileSync(__filename,output+'-source.cjs');
-const report={date:new Date().toISOString(),folder,modes,seconds,warmup,pass:false,runs:[],qualityOverrides:[],
+const report={date:new Date().toISOString(),folder,modes,seconds,warmup,width,height,pass:false,runs:[],qualityOverrides:[],
   source:audit(output+'-source.cjs'),
   packageFiles:['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm','config-files.json','content-files.json',
     'web-engine-host.js','web-engine-worker.js'].map(f=>audit(path.join(base,f))),
@@ -80,7 +82,7 @@ let context,log;
       {encoding:'utf8',windowsHide:true,timeout:10000}).trim();
     assert(run.idleGpu.split(/\r?\n/).every(v=>Number(v.split(',').at(-2))<=50),'GPU busy before test');
     context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/scheduling-motion-pso'),
-      {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1});
+      {channel:'msedge',headless:false,viewport:{width,height},deviceScaleFactor:1});
     await context.route('**/web-engine-worker.js?*',async route=>{
       const response=await route.fetch();await route.fulfill({response,body:'('+install.toString()+')();\n'+await response.text()});
     });

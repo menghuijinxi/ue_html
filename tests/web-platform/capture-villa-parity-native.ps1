@@ -35,7 +35,7 @@ foreach ($taskCase in $taskCases) {
     $taskPhases += @{name=$taskCase.name;start=$taskFrame+600;end=$taskFrame+600+$MeasureFrames;commands=$taskCase.commands}
     $taskFrame += 600+$MeasureFrames
 }
-foreach ($taskQuery in @('LogLoc','r.ScreenPercentage','r.AntiAliasingMethod','r.ShadowQuality','r.Shadow.CSMCaching','r.MotionBlurQuality','r.DynamicGlobalIlluminationMethod','r.ReflectionMethod','r.VSync','t.MaxFPS','r.OneFrameThreadLag','r.TranslucencyLightingVolume','r.RayTracing')) { $taskCommands.Add("2300:$taskQuery") }
+foreach ($taskQuery in @('LogLoc','r.ScreenPercentage','r.AntiAliasingMethod','r.ShadowQuality','r.Shadow.CSMCaching','r.MotionBlurQuality','r.DynamicGlobalIlluminationMethod','r.ReflectionMethod','r.VSync','t.MaxFPS','r.OneFrameThreadLag','r.FinishCurrentFrame','r.TranslucencyLightingVolume','r.RayTracing')) { $taskCommands.Add("2300:$taskQuery") }
 $taskCommands.Add("2350:shot filename=$taskPrefix.png -nosuffix")
 $taskArgs = @('-d3d12','-windowed','-ResX=1280','-ResY=720','-ForceRes','-unattended','-nosplash','-nosound','-NoThrottleCPU',
     '-traceautostart=0',"-ExecCmds=`"$($taskSettings -join ',')`"",

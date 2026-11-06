@@ -634,6 +634,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     WGPURenderPassEncoder Pass = nullptr;
     WGPUComputePassEncoder ComputePass = nullptr;
     uint32 ComputePassGroups = 0, ComputePassesOpened = 0, ComputePassesReused = 0;
+    uint32 RenderPassesOpened = 0;
     TRefCountPtr<FWebGPUGraphicsPipeline> GraphicsPipeline;
     TRefCountPtr<FWebGPUComputePipeline> ComputePipeline;
     TArray<TRefCountPtr<FWebGPUTexture>> Attachments;

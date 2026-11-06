@@ -251,7 +251,8 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 $taskShaderArchive = 'Private/ShaderLibrary/ShaderCodeArchive.cpp'
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/RenderCore/$taskShaderArchive") -Destination (Join-Path $taskRenderModule $taskShaderArchive) -Force
 foreach ($taskShaderOverlay in @('Private/Shader.cpp', 'Private/RenderUtils.cpp', 'Private/GPUDebugCrashUtils.cpp',
-    'Private/ResolveShader.cpp', 'Private/VertexFactory.cpp', 'Private/RenderingThread.cpp', 'Public/WebShaderPlatform.h')) {
+    'Private/ResolveShader.cpp', 'Private/VertexFactory.cpp', 'Private/RenderingThread.cpp',
+    'Private/RenderGraphPrivate.cpp', 'Private/RenderGraphPrivate.h', 'Public/WebShaderPlatform.h')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/RenderCore/$taskShaderOverlay") -Destination (Join-Path $taskRenderModule $taskShaderOverlay) -Force
 }
 $taskRendererModule = Join-Path $taskRuntime 'Renderer'

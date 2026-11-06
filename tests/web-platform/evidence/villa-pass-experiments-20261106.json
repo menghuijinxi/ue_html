@@ -1,0 +1,3199 @@
+{
+  "date": "2026-11-06T02:10:24.641Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "physicalPresentationValidated": false,
+  "controls": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "clock": "owner",
+    "rhiWake": "priority",
+    "fpsCap": 0,
+    "vsync": 0,
+    "csmCaching": 1,
+    "renderAhead": 0,
+    "unchanged": "Cook, shaders, lighting, dispatches, browser owner frame scheduling and browser backpressure"
+  },
+  "lowDefinition": "1000 divided by mean of slowest ceil(N*0.01) intervals. All long frames retained; no cross-run gaps.",
+  "rdg": {
+    "on": {
+      "frames": 8042,
+      "fps": 89.35612147765855,
+      "low1": 33.568520187766154,
+      "p99": 25.344999998807907,
+      "max": 65.12000000104308,
+      "over33": 13,
+      "over50": 4,
+      "rhiMs": 7.7336616689142295
+    },
+    "off": {
+      "frames": 9044,
+      "fps": 100.4850257978961,
+      "low1": 38.62601738193992,
+      "p99": 22.304999999701977,
+      "max": 43.19500000029802,
+      "over33": 8,
+      "over50": 0,
+      "rhiMs": 6.865452697470524
+    },
+    "relative": {
+      "fps": -0.11075186807058135,
+      "low1": -0.13093498985837615,
+      "rhiMs": 0.12646055689285918
+    },
+    "captures": [
+      {
+        "tag": "parity-rdg-merge-on-1-20261106",
+        "folder": "villa-rdg-merge-on-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-1-20261106.json",
+          "sha256": "6738745f844658af5968bf0587a770ea4cc58f3e829b50919a019e745feda3b0"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-1-20261106.log",
+          "sha256": "7686dcbedaf920fc31f08b0b259a8119a1eb5ed534adeed3531f28feba9fa1e9"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-1-20261106.png",
+          "sha256": "014cd0572c7d881c859a758fffe0f38506c718fd656abca2e95b9f0d272f7eab"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 3467,
+              "fps": 77.03435294420952,
+              "low1": 29.378436227863908,
+              "p50": 12.309999998658895,
+              "p95": 22.54000000283122,
+              "p99": 26.924999997019768,
+              "max": 65.12000000104308,
+              "over33": 11,
+              "over50": 4
+            },
+            "rhiMs": 9.015937331225214,
+            "perFrame": {
+              "renderPassesOpened": 246.8657971014493,
+              "computePassesOpened": 158.7014492753623,
+              "computePassesReused": 0,
+              "draws": 1360.5301449275362,
+              "dispatches": 161.7014492753623,
+              "bindGroupsCreated": 29.305797101449276,
+              "bindingEntriesPrepared": 4545.180579710145,
+              "bindingEntriesReused": 3110.6484057971015
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": {
+          "pending": false,
+          "pass": true,
+          "rowPitchPixels": 64,
+          "height": 2
+        }
+      },
+      {
+        "tag": "parity-rdg-merge-on-2-20261106",
+        "folder": "villa-rdg-merge-on-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106.json",
+          "sha256": "5c7849c8260a6279cd58281b72e21d7e40d60ab3445c031493acbe6f67406795"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106.log",
+          "sha256": "ac4d52de6c24ba3d1c80b1b03d46c68c1e686a757fd3d40deb223345c08dda5d"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106.png",
+          "sha256": "fbb5710c1cb735942411c9a58b4cd50b7d8abd6d220392467e040dae5ff102a8"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4575,
+              "fps": 101.68127487649025,
+              "low1": 40.10199856171503,
+              "p50": 11.404999997466803,
+              "p95": 13.315000001341105,
+              "p99": 22.50499999895692,
+              "max": 34.49499999731779,
+              "over33": 2,
+              "over50": 0
+            },
+            "rhiMs": 6.762011543847214,
+            "perFrame": {
+              "renderPassesOpened": 244.86230936819172,
+              "computePassesOpened": 157.75228758169933,
+              "computePassesReused": 0,
+              "draws": 1349.6254901960785,
+              "dispatches": 160.75228758169933,
+              "bindGroupsCreated": 31.751633986928105,
+              "bindingEntriesPrepared": 4515.562309368192,
+              "bindingEntriesReused": 3110.5270152505445
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": [
+          {
+            "name": "right",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 179.99945068359375
+            },
+            "view": {
+              "frame": 7138,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106-tour-right.png",
+              "sha256": "07d65485e6fef17aaa95be95bfbf73f56ec3665ca0f97392b5b61e525e384d62"
+            }
+          },
+          {
+            "name": "back",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": -90.00054931640625
+            },
+            "view": {
+              "frame": 7622,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106-tour-back.png",
+              "sha256": "0cb33573639d0bab09dfdba4c9082227504255af24569d8a6aa927e1be1f8f0d"
+            }
+          },
+          {
+            "name": "left",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": -0.0005493164062461184
+            },
+            "view": {
+              "frame": 8058,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106-tour-left.png",
+              "sha256": "49de198d1deedb5f10249880d3f2fcf9bf83d9ca3bba11115f663dd9358496bf"
+            }
+          },
+          {
+            "name": "room",
+            "camera": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "view": {
+              "frame": 8343,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106-tour-room.png",
+              "sha256": "1b100751b872e3cd4e6589d4eb3eff2163c260c646818e55e63cd73c719c4007"
+            }
+          },
+          {
+            "name": "return",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "view": {
+              "frame": 8620,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-on-2-20261106-tour-return.png",
+              "sha256": "5847814c5e95905fdc264db3e63b91bfd96fac46fbc1d068c6f375da3af28146"
+            }
+          }
+        ],
+        "readback": {
+          "pending": false,
+          "pass": true,
+          "rowPitchPixels": 64,
+          "height": 2
+        }
+      },
+      {
+        "tag": "parity-rdg-merge-off-12-20261106",
+        "folder": "villa-rdg-merge-off-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106.json",
+          "sha256": "50c67307f1a502adf183543130dd6521a7ef57271a258c6552bac6035dc02447"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106.log",
+          "sha256": "59e182a751bb54f691f29e543ac3d07235680b1fba523513ff9b9eae5cf5b371"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106.png",
+          "sha256": "e0d5e8bfb29aa6c310c474f45482b1b9151fd2fa3a347860bf9a3ff3eb2a9cda"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4527,
+              "fps": 100.61054174898514,
+              "low1": 39.32598678339447,
+              "p50": 11.589999999850988,
+              "p95": 13.33500000089407,
+              "p99": 22.695000000298023,
+              "max": 42.900000002235174,
+              "over33": 2,
+              "over50": 0
+            },
+            "rhiMs": 6.850936756117184,
+            "perFrame": {
+              "renderPassesOpened": 275.8812362030905,
+              "computePassesOpened": 157.53222958057395,
+              "computePassesReused": 0,
+              "draws": 1348.028476821192,
+              "dispatches": 160.53222958057395,
+              "bindGroupsCreated": 31.45364238410596,
+              "bindingEntriesPrepared": 4761.84238410596,
+              "bindingEntriesReused": 2858.057395143488
+            },
+            "replayScratch": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4517,
+              "fps": 100.35954579362361,
+              "low1": 38.18901069730546,
+              "p50": 11.54500000178814,
+              "p95": 13.304999999701977,
+              "p99": 20.37000000104308,
+              "max": 43.19500000029802,
+              "over33": 6,
+              "over50": 0
+            },
+            "rhiMs": 6.880000767954792,
+            "perFrame": {
+              "renderPassesOpened": 275.7496688741722,
+              "computePassesOpened": 157.45099337748346,
+              "computePassesReused": 0,
+              "draws": 1347.5068432671083,
+              "dispatches": 160.45099337748346,
+              "bindGroupsCreated": 31.292935982339955,
+              "bindingEntriesPrepared": 4760.030905077263,
+              "bindingEntriesReused": 2857.5849889624724
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": [
+          {
+            "name": "right",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 179.99945068359375
+            },
+            "view": {
+              "frame": 12080,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 5,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106-tour-right.png",
+              "sha256": "0bb713ee3af354c55e070df801189b3ecccfe4aade93b1e2ea3280f2f5bcde84"
+            }
+          },
+          {
+            "name": "back",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": -90.00054931640625
+            },
+            "view": {
+              "frame": 12549,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106-tour-back.png",
+              "sha256": "c8c224569e1c5936ca0d992064bcd83dbeeaed6531baa7cd3fd43431fcf739cc"
+            }
+          },
+          {
+            "name": "left",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": -0.0005493164062461184
+            },
+            "view": {
+              "frame": 12984,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106-tour-left.png",
+              "sha256": "70e7cf2a43267bd9a78d5cee0e1d0a80d74874244719a5c0158b09f459473ae6"
+            }
+          },
+          {
+            "name": "room",
+            "camera": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "view": {
+              "frame": 13265,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 3,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106-tour-room.png",
+              "sha256": "488a48151367ab8a169334722f5b41ba00f81afaaca7298cf8107e48e0f55d30"
+            }
+          },
+          {
+            "name": "return",
+            "camera": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "view": {
+              "frame": 13544,
+              "width": 1280,
+              "height": 720,
+              "outputWidth": 1280,
+              "outputHeight": 720,
+              "antiAliasing": 4,
+              "jitterX": 0,
+              "jitterY": 0,
+              "x": 0,
+              "y": 0,
+              "outputX": 0,
+              "outputY": 0,
+              "threadId": 4,
+              "parallelRendering": true
+            },
+            "image": {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-off-12-20261106-tour-return.png",
+              "sha256": "aaf12e679a842e4a1745ac2cf67026bb4f554a3f4d8ffacb61cdb4f648d9a111"
+            }
+          }
+        ],
+        "readback": {
+          "pending": false,
+          "pass": true,
+          "rowPitchPixels": 64,
+          "height": 2
+        }
+      }
+    ]
+  },
+  "scratch": {
+    "on": {
+      "frames": 8900,
+      "fps": 98.89358083989457,
+      "low1": 38.76315061659959,
+      "p99": 20.150000002235174,
+      "max": 74.38499999791384,
+      "over33": 6,
+      "over50": 2,
+      "rhiMs": 7.00975521972245
+    },
+    "off": {
+      "frames": 9052,
+      "fps": 100.55096418732782,
+      "low1": 38.24188200488559,
+      "p99": 19.41000000014901,
+      "max": 46.59499999880791,
+      "over33": 11,
+      "over50": 0,
+      "rhiMs": 6.847516544716097
+    },
+    "relative": {
+      "fps": -0.016483017948445755,
+      "low1": 0.013630830502730173,
+      "rhiMs": 0.023693067982660798
+    },
+    "captures": [
+      {
+        "tag": "parity-replay-scratch-on-1-20261106",
+        "folder": "villa-replay-scratch-on-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-on-1-20261106.json",
+          "sha256": "85bcb0711cac83c3ad0685c3cf935b3e4660369c2d3697c6c90a4617ceb1cde3"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-on-1-20261106.log",
+          "sha256": "27bbaaa0ec8a9330236616dc2cae33c4dcc27ee3322b579b50d9d606f9f9bd78"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-on-1-20261106.png",
+          "sha256": "90fed559fc4264dfafe3361f68551e5b985a0303643cc6b34cecf9324bb83900"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4502,
+              "fps": 100.04729023403597,
+              "low1": 38.373465582483405,
+              "p50": 11.654999997466803,
+              "p95": 13.375,
+              "p99": 20.104999996721745,
+              "max": 74.38499999791384,
+              "over33": 3,
+              "over50": 2
+            },
+            "rhiMs": 6.925592835285555,
+            "perFrame": {
+              "renderPassesOpened": 276.01955555555554,
+              "computePassesOpened": 157.61666666666667,
+              "computePassesReused": 0,
+              "draws": 1349.3326666666667,
+              "dispatches": 160.61666666666667,
+              "bindGroupsCreated": 31.63911111111111,
+              "bindingEntriesPrepared": 4764.171555555556,
+              "bindingEntriesReused": 2860.3682222222224
+            },
+            "replayScratch": {
+              "state": {
+                "calls": 1734828,
+                "allocations": 1,
+                "reuses": 1734827,
+                "inUse": 0,
+                "maxObjects": 383
+              },
+              "measured": {
+                "calls": 1157858,
+                "allocations": 0,
+                "reuses": 1157858
+              }
+            },
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": null
+      },
+      {
+        "tag": "parity-replay-scratch-on-2-20261106",
+        "folder": "villa-replay-scratch-on-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-on-2-20261106.json",
+          "sha256": "bce4d480e428d8390ebecbcdd2e6a0e871d62e933737e8e92f5c4517f59e8fbf"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-on-2-20261106.log",
+          "sha256": "4de4283fc37b74dff8b554f708905bf694e958ac2e0dee1f2a55501d061ebb4a"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-on-2-20261106.png",
+          "sha256": "898eb7dd9b585fa0bcdff35095012b57234be6f942a15d03e70e957e827debb4"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4398,
+              "fps": 97.73982760188296,
+              "low1": 39.38893439539094,
+              "p50": 11.869999997317791,
+              "p95": 13.870000001043081,
+              "p99": 21.20499999821186,
+              "max": 48.32999999821186,
+              "over33": 3,
+              "over50": 0
+            },
+            "rhiMs": 7.095926024697044,
+            "perFrame": {
+              "renderPassesOpened": 276.21315192743765,
+              "computePassesOpened": 157.73469387755102,
+              "computePassesReused": 0,
+              "draws": 1349.0773242630385,
+              "dispatches": 160.73469387755102,
+              "bindGroupsCreated": 31.52857142857143,
+              "bindingEntriesPrepared": 4766.42380952381,
+              "bindingEntriesReused": 2859.260770975057
+            },
+            "replayScratch": {
+              "state": {
+                "calls": 1699992,
+                "allocations": 1,
+                "reuses": 1699991,
+                "inUse": 0,
+                "maxObjects": 383
+              },
+              "measured": {
+                "calls": 1131738,
+                "allocations": 0,
+                "reuses": 1131738
+              }
+            },
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": {
+          "pending": false,
+          "pass": true,
+          "rowPitchPixels": 64,
+          "height": 2
+        }
+      },
+      {
+        "tag": "parity-replay-scratch-off-12-20261106",
+        "folder": "villa-replay-scratch-off-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-off-12-20261106.json",
+          "sha256": "41e3e9381b811389138c9ea863b7505851bd964d3f8afa3b69c1d21f5c967f8f"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-off-12-20261106.log",
+          "sha256": "5cce9eee3633a99db679ad3e3f9b49a515523b7b5eb0d0df0dccdaebb5dd021a"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-off-12-20261106.png",
+          "sha256": "b65b6200bf02606d0870e0afd1430e1f5c61078edcb48a919c74976715a30580"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4519,
+              "fps": 100.38728744619061,
+              "low1": 39.22705643579056,
+              "p50": 11.615000002086163,
+              "p95": 13.42000000178814,
+              "p99": 18.634999997913837,
+              "max": 41.815000001341105,
+              "over33": 6,
+              "over50": 0
+            },
+            "rhiMs": 6.855348939389254,
+            "perFrame": {
+              "renderPassesOpened": 276.18278145695365,
+              "computePassesOpened": 157.71633554083886,
+              "computePassesReused": 0,
+              "draws": 1349.3737306843268,
+              "dispatches": 160.71633554083886,
+              "bindGroupsCreated": 31.611920529801324,
+              "bindingEntriesPrepared": 4766.030905077263,
+              "bindingEntriesReused": 2859.2165562913906
+            },
+            "replayScratch": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4533,
+              "fps": 100.71466754828138,
+              "low1": 37.53370894247917,
+              "p50": 11.57999999821186,
+              "p95": 13.304999999701977,
+              "p99": 22.03500000014901,
+              "max": 46.59499999880791,
+              "over33": 5,
+              "over50": 0
+            },
+            "rhiMs": 6.839711777537378,
+            "perFrame": {
+              "renderPassesOpened": 275.9783664459161,
+              "computePassesOpened": 157.5916114790287,
+              "computePassesReused": 0,
+              "draws": 1348.5971302428256,
+              "dispatches": 160.5916114790287,
+              "bindGroupsCreated": 31.422075055187637,
+              "bindingEntriesPrepared": 4763.202428256071,
+              "bindingEntriesReused": 2858.3900662251654
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": null
+      }
+    ]
+  },
+  "combined": {
+    "on": {
+      "frames": 9380,
+      "fps": 104.22568483109167,
+      "low1": 44.18424831559004,
+      "p99": 15.105000004172325,
+      "max": 45.07500000298023,
+      "over33": 7,
+      "over50": 0,
+      "rhiMs": 6.607647417654952
+    },
+    "off": {
+      "frames": 13556,
+      "fps": 100.3853535725313,
+      "low1": 38.338910329410936,
+      "p99": 19.41000000014901,
+      "max": 46.59499999880791,
+      "over33": 16,
+      "over50": 0,
+      "rhiMs": 6.862862273115613
+    },
+    "relative": {
+      "fps": 0.03825589213854408,
+      "low1": 0.1524648962621915,
+      "rhiMs": -0.03718781541929417
+    },
+    "captures": [
+      {
+        "tag": "parity-pass-combined-normal-20261106",
+        "folder": "villa-pass-reuse-combined-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-normal-20261106.json",
+          "sha256": "098ac4db6f5e521773a8fe4009d1ea23230d5b8d3396794e34bbc759d82f9fc1"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-normal-20261106.log",
+          "sha256": "ca75185e4750724a9fcd8f8eb2719f6b53dfae7f415860bbdfe3499bef8f1a7d"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-normal-20261106.png",
+          "sha256": "a42a6c11706aac650b7925e7cdb0c0bbc83a9855ae771d4e760a3e96b6b507e3"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4660,
+              "fps": 103.55861628799697,
+              "low1": 44.20034984029877,
+              "p50": 11.260000005364418,
+              "p95": 13.134999997913837,
+              "p99": 15.285000003874302,
+              "max": 42.689999997615814,
+              "over33": 4,
+              "over50": 0
+            },
+            "rhiMs": 6.643824942398807,
+            "perFrame": {
+              "renderPassesOpened": 245.09139784946237,
+              "computePassesOpened": 18,
+              "computePassesReused": 139.85978494623657,
+              "draws": 1350.5187096774193,
+              "dispatches": 160.85978494623657,
+              "bindGroupsCreated": 31.68989247311828,
+              "bindingEntriesPrepared": 4518.874193548387,
+              "bindingEntriesReused": 3110.2894623655916
+            },
+            "replayScratch": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4720,
+              "fps": 104.89275826620285,
+              "low1": 44.500275810402755,
+              "p50": 11.155000001192093,
+              "p95": 12.864999994635582,
+              "p99": 14.950000002980232,
+              "max": 45.07500000298023,
+              "over33": 3,
+              "over50": 0
+            },
+            "rhiMs": 6.571929484586859,
+            "perFrame": {
+              "renderPassesOpened": 245.1303609341826,
+              "computePassesOpened": 18,
+              "computePassesReused": 139.8783439490446,
+              "draws": 1350.6819532908705,
+              "dispatches": 160.8783439490446,
+              "bindGroupsCreated": 31.77452229299363,
+              "bindingEntriesPrepared": 4519.447770700637,
+              "bindingEntriesReused": 3110.2532908704884
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": null
+      },
+      {
+        "tag": "parity-replay-scratch-off-12-20261106",
+        "folder": "villa-replay-scratch-off-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-off-12-20261106.json",
+          "sha256": "41e3e9381b811389138c9ea863b7505851bd964d3f8afa3b69c1d21f5c967f8f"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-off-12-20261106.log",
+          "sha256": "5cce9eee3633a99db679ad3e3f9b49a515523b7b5eb0d0df0dccdaebb5dd021a"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-off-12-20261106.png",
+          "sha256": "b65b6200bf02606d0870e0afd1430e1f5c61078edcb48a919c74976715a30580"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4519,
+              "fps": 100.38728744619061,
+              "low1": 39.22705643579056,
+              "p50": 11.615000002086163,
+              "p95": 13.42000000178814,
+              "p99": 18.634999997913837,
+              "max": 41.815000001341105,
+              "over33": 6,
+              "over50": 0
+            },
+            "rhiMs": 6.855348939389254,
+            "perFrame": {
+              "renderPassesOpened": 276.18278145695365,
+              "computePassesOpened": 157.71633554083886,
+              "computePassesReused": 0,
+              "draws": 1349.3737306843268,
+              "dispatches": 160.71633554083886,
+              "bindGroupsCreated": 31.611920529801324,
+              "bindingEntriesPrepared": 4766.030905077263,
+              "bindingEntriesReused": 2859.2165562913906
+            },
+            "replayScratch": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4533,
+              "fps": 100.71466754828138,
+              "low1": 37.53370894247917,
+              "p50": 11.57999999821186,
+              "p95": 13.304999999701977,
+              "p99": 22.03500000014901,
+              "max": 46.59499999880791,
+              "over33": 5,
+              "over50": 0
+            },
+            "rhiMs": 6.839711777537378,
+            "perFrame": {
+              "renderPassesOpened": 275.9783664459161,
+              "computePassesOpened": 157.5916114790287,
+              "computePassesReused": 0,
+              "draws": 1348.5971302428256,
+              "dispatches": 160.5916114790287,
+              "bindGroupsCreated": 31.422075055187637,
+              "bindingEntriesPrepared": 4763.202428256071,
+              "bindingEntriesReused": 2858.3900662251654
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": null
+      },
+      {
+        "tag": "parity-pass-reference-repeat-20261106",
+        "folder": "villa-replay-scratch-off-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-repeat-20261106.json",
+          "sha256": "ceaa74f2f2e5700cfe7f084ba62524b0c1153238fd683c51bc895d99f7dd4726"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-repeat-20261106.log",
+          "sha256": "8766b44edf16f2fdf0f1a6f9c80b801dc76caca172ec391ed894f6ef957c4505"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-repeat-20261106.png",
+          "sha256": "4f9a9c9283028eb74fb3f533bdcd9bc060c8744ee1ce8c95bbbef9c4400b542f"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4504,
+              "fps": 100.0541589786005,
+              "low1": 38.78191076845675,
+              "p50": 11.685000002384186,
+              "p95": 13.504999995231628,
+              "p99": 18.399999998509884,
+              "max": 44.690000005066395,
+              "over33": 5,
+              "over50": 0
+            },
+            "rhiMs": 6.893710423256793,
+            "perFrame": {
+              "renderPassesOpened": 276.23066666666665,
+              "computePassesOpened": 157.74755555555555,
+              "computePassesReused": 0,
+              "draws": 1349.4182222222223,
+              "dispatches": 160.74755555555555,
+              "bindGroupsCreated": 31.607777777777777,
+              "bindingEntriesPrepared": 4766.68,
+              "bindingEntriesReused": 2859.2997777777778
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": null
+      }
+    ]
+  },
+  "combinedVsCompute": {
+    "on": {
+      "frames": 9380,
+      "fps": 104.22568483109167,
+      "low1": 44.18424831559004,
+      "p99": 15.105000004172325,
+      "max": 45.07500000298023,
+      "over33": 7,
+      "over50": 0,
+      "rhiMs": 6.607647417654952
+    },
+    "off": {
+      "frames": 9347,
+      "fps": 103.84330781430371,
+      "low1": 42.406716502168706,
+      "p99": 15.060000002384186,
+      "max": 48.350000001490116,
+      "over33": 10,
+      "over50": 0,
+      "rhiMs": 6.63047478857072
+    },
+    "relative": {
+      "fps": 0.003682249967149831,
+      "low1": 0.04191628025080485,
+      "rhiMs": -0.003442795824383116
+    },
+    "captures": [
+      {
+        "tag": "parity-pass-combined-normal-20261106",
+        "folder": "villa-pass-reuse-combined-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-normal-20261106.json",
+          "sha256": "098ac4db6f5e521773a8fe4009d1ea23230d5b8d3396794e34bbc759d82f9fc1"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-normal-20261106.log",
+          "sha256": "ca75185e4750724a9fcd8f8eb2719f6b53dfae7f415860bbdfe3499bef8f1a7d"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-normal-20261106.png",
+          "sha256": "a42a6c11706aac650b7925e7cdb0c0bbc83a9855ae771d4e760a3e96b6b507e3"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4660,
+              "fps": 103.55861628799697,
+              "low1": 44.20034984029877,
+              "p50": 11.260000005364418,
+              "p95": 13.134999997913837,
+              "p99": 15.285000003874302,
+              "max": 42.689999997615814,
+              "over33": 4,
+              "over50": 0
+            },
+            "rhiMs": 6.643824942398807,
+            "perFrame": {
+              "renderPassesOpened": 245.09139784946237,
+              "computePassesOpened": 18,
+              "computePassesReused": 139.85978494623657,
+              "draws": 1350.5187096774193,
+              "dispatches": 160.85978494623657,
+              "bindGroupsCreated": 31.68989247311828,
+              "bindingEntriesPrepared": 4518.874193548387,
+              "bindingEntriesReused": 3110.2894623655916
+            },
+            "replayScratch": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4720,
+              "fps": 104.89275826620285,
+              "low1": 44.500275810402755,
+              "p50": 11.155000001192093,
+              "p95": 12.864999994635582,
+              "p99": 14.950000002980232,
+              "max": 45.07500000298023,
+              "over33": 3,
+              "over50": 0
+            },
+            "rhiMs": 6.571929484586859,
+            "perFrame": {
+              "renderPassesOpened": 245.1303609341826,
+              "computePassesOpened": 18,
+              "computePassesReused": 139.8783439490446,
+              "draws": 1350.6819532908705,
+              "dispatches": 160.8783439490446,
+              "bindGroupsCreated": 31.77452229299363,
+              "bindingEntriesPrepared": 4519.447770700637,
+              "bindingEntriesReused": 3110.2532908704884
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": null
+      },
+      {
+        "tag": "parity-pass-compute-only-normal-20261106",
+        "folder": "villa-pass-compute-only-20261106",
+        "raw": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-normal-20261106.json",
+          "sha256": "607ed1062916abbf85876c2445e66da186664cc5674e9df3bec8aa13e04d1de8"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-normal-20261106.log",
+          "sha256": "c581f733f2b905a7fb93cce38cc33f8a691631e1af5387b6ef79325116c54555"
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-normal-20261106.png",
+          "sha256": "8b4fa42213d4ef198ad30392088cc7b27d145393f20c56cf9a540c8fa9dac4fb"
+        },
+        "gpuCompletionProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4665,
+              "fps": 103.65255840177309,
+              "low1": 42.34768349191858,
+              "p50": 11.369999997317791,
+              "p95": 13.009999997913837,
+              "p99": 15.160000003874302,
+              "max": 48.350000001490116,
+              "over33": 5,
+              "over50": 0
+            },
+            "rhiMs": 6.6367261616102935,
+            "perFrame": {
+              "renderPassesOpened": 276.4511827956989,
+              "computePassesOpened": 18,
+              "computePassesReused": 139.88172043010752,
+              "draws": 1350.6969892473119,
+              "dispatches": 160.88172043010752,
+              "bindGroupsCreated": 31.793548387096774,
+              "bindingEntriesPrepared": 4769.71311827957,
+              "bindingEntriesReused": 2860.123440860215
+            },
+            "replayScratch": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4682,
+              "fps": 104.03406415670487,
+              "low1": 42.465914327150884,
+              "p50": 11.304999999701977,
+              "p95": 12.994999997317791,
+              "p99": 15.060000002384186,
+              "max": 39.00500000268221,
+              "over33": 5,
+              "over50": 0
+            },
+            "rhiMs": 6.624243439147545,
+            "perFrame": {
+              "renderPassesOpened": 276.4132478632479,
+              "computePassesOpened": 18,
+              "computePassesReused": 139.8604700854701,
+              "draws": 1350.5311965811966,
+              "dispatches": 160.8604700854701,
+              "bindGroupsCreated": 31.726495726495727,
+              "bindingEntriesPrepared": 4769.216025641025,
+              "bindingEntriesReused": 2859.9726495726495
+            },
+            "replayScratch": null,
+            "gpu": null
+          }
+        ],
+        "tour": null,
+        "readback": null
+      }
+    ]
+  },
+  "gpu": [
+    {
+      "tag": "parity-pass-combined-gpu-20261106",
+      "folder": "villa-pass-reuse-combined-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106.json",
+        "sha256": "b8583424c569d6c70a4303bfb9567fae06e25d07be1013aaefcfc17ec9132426"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106.log",
+        "sha256": "32d51d3d514c81ba4c593774c8646ddcc95c4233862fcfacb1defbd9a68ac846"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106.png",
+        "sha256": "e88c5d87e83ef19338801d1050c5a0fec8b20d79f6f18904e13dd3c9fbfaccd5"
+      },
+      "gpuCompletionProbe": true,
+      "runs": [
+        {
+          "result": {
+            "frames": 3130,
+            "fps": 104.28930586471056,
+            "low1": 44.63382825645147,
+            "p50": 11.259999997913837,
+            "p95": 13,
+            "p99": 15.074999995529652,
+            "max": 44.21000000089407,
+            "over33": 3,
+            "over50": 0
+          },
+          "rhiMs": 6.609212012431022,
+          "perFrame": {
+            "renderPassesOpened": 245.03557692307692,
+            "computePassesOpened": 18,
+            "computePassesReused": 139.83333333333334,
+            "draws": 1350.2919871794873,
+            "dispatches": 160.83333333333334,
+            "bindGroupsCreated": 31.90673076923077,
+            "bindingEntriesPrepared": 4518.044871794872,
+            "bindingEntriesReused": 3110.3522435897435
+          },
+          "replayScratch": null,
+          "gpu": {
+            "peak": 3,
+            "meanMs": 13.326679974427927,
+            "maxMs": 28.270000003278255
+          }
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 5780,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-right.png",
+            "sha256": "b240a24c761d4ac2e68be728b5a50447c39dcbdaa3f3701c42cd712bd85246cb"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 6279,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-back.png",
+            "sha256": "2c73adc020750bd3ff6c71abde39286f83a511dc1c1bb01036696bdb5870bf81"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 6707,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-left.png",
+            "sha256": "d4abac0fb74134aa86feae84bc5624e8afb7e784adf28c3ec5a2b16c1aa90192"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 6979,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-room.png",
+            "sha256": "59c1eec7527865d1ae518ed8c0c67df82cc8558b74de4c3ad4940e1dd6c38c39"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 7265,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 22,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-return.png",
+            "sha256": "2b7894cb198c58f4aadc3fa4e5d2ac61df00c99f1602fe727c2c3030fb30c7b7"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      }
+    },
+    {
+      "tag": "parity-pass-reference-gpu-20261106",
+      "folder": "villa-replay-scratch-off-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106.json",
+        "sha256": "d1e20e30355773e80efa43c3d81bcae72d5cf9f13c2a95a86fb79d1a04ce62f7"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106.log",
+        "sha256": "6cc45f4049575a47c1d7f5839720bf6e009f6ba881e0219d90b0bf623ba2ee69"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106.png",
+        "sha256": "01a2adc3ae515d59e89f91422c883d10a4f29718fee5127b3a7ff029ed83bec3"
+      },
+      "gpuCompletionProbe": true,
+      "runs": [
+        {
+          "result": {
+            "frames": 2991,
+            "fps": 99.67190913361512,
+            "low1": 38.86362753025853,
+            "p50": 11.760000005364418,
+            "p95": 13.445000000298023,
+            "p99": 22.140000000596046,
+            "max": 42.62000000476837,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 6.933332605157944,
+          "perFrame": {
+            "renderPassesOpened": 275.9993333333333,
+            "computePassesOpened": 157.607,
+            "computePassesReused": 0,
+            "draws": 1348.4663333333333,
+            "dispatches": 160.607,
+            "bindGroupsCreated": 31.555333333333333,
+            "bindingEntriesPrepared": 4763.544,
+            "bindingEntriesReused": 2858.490333333333
+          },
+          "replayScratch": null,
+          "gpu": {
+            "peak": 4,
+            "meanMs": 13.922398061469137,
+            "maxMs": 33.67500000447035
+          }
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 5533,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-right.png",
+            "sha256": "0ab8316a05f95a715ca622a2509ae8d0d5ea997ce7e4700d68f714c169a027f4"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 6014,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-back.png",
+            "sha256": "8c13979d415dcafd7bd9688d1222401cabba882028d9bd77456e04193c0c4869"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 6436,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-left.png",
+            "sha256": "10703b78485cb5a9e4b5a24bebef8825895348e51965a72f6a4483b2003a28ca"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 6708,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-room.png",
+            "sha256": "d3c67cb1958b05c33100e6273ae49e97a9e024fd1e9288e5952b9231a6ef2e3a"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 6981,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-return.png",
+            "sha256": "375f366124a70819953776492cc2876ddc3f820b620a19cb80840b8f486da567"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      }
+    }
+  ],
+  "motion": [
+    {
+      "tag": "parity-pass-combined-motion-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-motion-20261106.json",
+        "sha256": "acacccef65bf2e554226037c573efb0e8b5001d6b604c3a911a6faaf70a0d23d"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-motion-20261106-1-owner.log",
+        "sha256": "079d80b7b703b94750abc335904e3e08ff09a12d6ee2480fe661a26f14cfff04"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-motion-20261106-1-owner.png",
+        "sha256": "30c4ab58a3823893b613238d377bd5eb75190b4634ec328ff9a9e6b401bdccf0"
+      },
+      "runs": [
+        {
+          "result": {
+            "samples": 3422,
+            "fps": 112.22113400736855,
+            "low1Fps": 37.289778871658655,
+            "p50": 8.435000002384186,
+            "p95": 18.375,
+            "p99": 21.060000002384186,
+            "maximum": 57.980000004172325
+          },
+          "gpu": {
+            "samples": 3423,
+            "pending": 3,
+            "peak": 4,
+            "meanLatency": 12.010778556828988,
+            "maxLatency": 42.74499999731779
+          },
+          "travel": 2710.7760176827805,
+          "turn": 1674.7387124388479,
+          "rhiMs": 6.035736778021067,
+          "workload": {
+            "draws": 1335.4921739130434,
+            "dispatches": 134.95710144927537,
+            "pending": 135.4055072463768,
+            "ready": 317.93768115942026
+          },
+          "display": {
+            "visual": 112.30508474576271,
+            "submitted": 112.86440677966101,
+            "refresh": 346.4237288135593,
+            "ratio": 0.9950443009460881
+          },
+          "errors": []
+        }
+      ]
+    },
+    {
+      "tag": "parity-pass-reference-motion-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-motion-20261106.json",
+        "sha256": "bf9cf9642a2959b991402d0d466b15f2585ee797f964c8ee2b743d836a67ccaf"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-motion-20261106-1-owner.log",
+        "sha256": "4fc1d5604f738fe5ebc5d04d134c9244fd26fabc8185c97b0f3111b63151d5b6"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-motion-20261106-1-owner.png",
+        "sha256": "4e7b1c05615ac92cf87cdc1fad4041dd0269a04f4c7cf8ed47492288e8388187"
+      },
+      "runs": [
+        {
+          "result": {
+            "samples": 3013,
+            "fps": 100.42302323628707,
+            "low1Fps": 33.66473184932243,
+            "p50": 9.140000000596046,
+            "p95": 20.53999999910593,
+            "p99": 23.125,
+            "maximum": 61.38499999791384
+          },
+          "gpu": {
+            "samples": 3014,
+            "pending": 3,
+            "peak": 4,
+            "meanLatency": 13.378097212974133,
+            "maxLatency": 58.28499999642372
+          },
+          "travel": 2535.735642631458,
+          "turn": 1617.5140884416178,
+          "rhiMs": 6.813960554270228,
+          "workload": {
+            "draws": 1646.7980198019802,
+            "dispatches": 143.95775577557757,
+            "pending": 164.93960396039603,
+            "ready": 412.35874587458744
+          },
+          "display": {
+            "visual": 100.39655172413794,
+            "submitted": 100.44827586206897,
+            "refresh": 336.6551724137931,
+            "ratio": 0.9994850669412977
+          },
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "tag": "parity-pass-combined-route-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-route-20261106.json",
+        "sha256": "db38b2cf078ac6a477ad28847489cebc62103ed33131a6682b9368f392ddb6d5"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-route-20261106-source.cjs",
+        "sha256": "19597eb7b31a80eef601bd7c6d6a6aa0ef2b5b3638f8eb5096c8dd0aab324c86"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-route-20261106-1-owner.log",
+        "sha256": "db755ae025afbe3d4f7011b2655aeefab98299d379f10f37373659dc9eb70f90"
+      },
+      "ready": {
+        "frame": 2165,
+        "game": 2164,
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "view": {
+          "frame": 2165,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 5,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "streaming": {
+          "frame": 2160,
+          "supported": true,
+          "poolBytes": 1048576000,
+          "poolAllocatedBytes": 571397120,
+          "nonPoolAllocatedBytes": 573188096,
+          "streamable": 613,
+          "pending": 0,
+          "residentMips": 5346,
+          "requestedMips": 5346,
+          "maximumMips": 7241,
+          "residentBytes": 208506960,
+          "fullBytes": 2658304080
+        },
+        "pso": {
+          "enabled": true,
+          "active": 0,
+          "filePrecompileTasks": 0
+        },
+        "optimization": {
+          "sampleFrame": 2160,
+          "graphicsPipelines": 608,
+          "computePipelines": 706,
+          "graphicsPipelineCreateMs": 34.64794158935547,
+          "computePipelineCreateMs": 27.919530868530273,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1130,
+          "asyncPrecacheCompleted": 1130,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 61,
+          "precachedGraphicsBinds": 335955,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "clock": {
+          "mode": "owner",
+          "paused": false
+        },
+        "wake": {
+          "requested": "priority",
+          "active": "priority",
+          "prioritySupported": true
+        },
+        "history": {
+          "enabled": true,
+          "frame": 2160,
+          "polls": 1994525,
+          "ready": 1292569,
+          "hits": 1243601,
+          "zero": 1132096,
+          "fallback": 228947,
+          "expired": 25283,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 1312261,
+          "queryDropped": 17793,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80
+        },
+        "arguments": [
+          "./this.program",
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebPSOPrecacheTest",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebRHIWake=priority"
+        ],
+        "counts": {
+          "createShaderModule": 1699,
+          "createRenderPipelineAsync": 484,
+          "createRenderPipeline": 124,
+          "createComputePipelineAsync": 646,
+          "createComputePipeline": 63
+        }
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.006294921875,
+            "updates": 2205,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2205,
+            "fps": 110.24366098950132,
+            "low1": 43.80743774180595,
+            "p99": 17.530000001192093,
+            "max": 43.71000000089407,
+            "over33": 3,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 1979.2838901232212,
+            "turnDegrees": 266.74226653824394,
+            "before": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "after": {
+              "x": -620,
+              "y": 0,
+              "z": 160,
+              "pitch": 0,
+              "yaw": 0
+            }
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 6
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-route-20261106-1-first-area.png",
+            "sha256": "26e5d92675364d9bde56be0fcaa4532a6135f3e0c982183a3b39aa0ebfa36dd3"
+          }
+        },
+        {
+          "name": "moving",
+          "steadyAccepted": true,
+          "driver": {
+            "mode": 1,
+            "duration": 20,
+            "elapsed": 20.014550048828124,
+            "updates": 2212,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2212,
+            "fps": 110.49171811623785,
+            "low1": 41.53461368274525,
+            "p99": 14.234999999403954,
+            "max": 45.23499999940395,
+            "over33": 6,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 2204.455971600805,
+            "turnDegrees": 0,
+            "before": {
+              "x": -174.9999809068546,
+              "y": -79.9999986114076,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "after": {
+              "x": -174.99999999029822,
+              "y": -79.99999999929442,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-route-20261106-1-moving.png",
+            "sha256": "a60e54f732f9fb16c31b90dd50d45c48a91952737596917def6ff7bfbc65cede"
+          }
+        },
+        {
+          "name": "turning",
+          "steadyAccepted": true,
+          "driver": {
+            "mode": 2,
+            "duration": 20,
+            "elapsed": 20.014510009765626,
+            "updates": 1963,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 1962,
+            "fps": 98.07418197159305,
+            "low1": 38.98901484479558,
+            "p99": 16.865000002086163,
+            "max": 49.2850000038743,
+            "over33": 4,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 0,
+            "turnDegrees": 359.0541914062511,
+            "before": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "after": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-route-20261106-1-turning.png",
+            "sha256": "a26c8f4f26d7c3cfc99cd3b12152551a381a21b89faffcd6083d6c005afbc80b"
+          }
+        },
+        {
+          "name": "repeat-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.0162099609375,
+            "updates": 2284,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2283,
+            "fps": 114.10221969550251,
+            "low1": 42.12261343471534,
+            "p99": 18.16499999910593,
+            "max": 39.394999995827675,
+            "over33": 3,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 1977.6453945590927,
+            "turnDegrees": 267.301849168864,
+            "before": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "after": {
+              "x": -620,
+              "y": 0,
+              "z": 160,
+              "pitch": 0,
+              "yaw": 0
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-route-20261106-1-repeat-area.png",
+            "sha256": "3ae039e6433821d3ae73a9c704189d1c2f76123ce9bed3761c2eb51382b504c9"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-pass-reference-route-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-route-20261106.json",
+        "sha256": "01e7e8b7cd39e82187d5eaa3ff972f600240797116dd8928c4965fcb76fd3a64"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-route-20261106-source.cjs",
+        "sha256": "19597eb7b31a80eef601bd7c6d6a6aa0ef2b5b3638f8eb5096c8dd0aab324c86"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-route-20261106-1-owner.log",
+        "sha256": "29510a22a3e2f72ef6ad5ed73af5b588bdb2eb0456046c17ad8dab5b198385e5"
+      },
+      "ready": {
+        "frame": 2108,
+        "game": 2107,
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "view": {
+          "frame": 2108,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "streaming": {
+          "frame": 2100,
+          "supported": true,
+          "poolBytes": 1048576000,
+          "poolAllocatedBytes": 571397120,
+          "nonPoolAllocatedBytes": 573188096,
+          "streamable": 613,
+          "pending": 0,
+          "residentMips": 5346,
+          "requestedMips": 5346,
+          "maximumMips": 7241,
+          "residentBytes": 208506960,
+          "fullBytes": 2658304080
+        },
+        "pso": {
+          "enabled": true,
+          "active": 0,
+          "filePrecompileTasks": 0
+        },
+        "optimization": {
+          "sampleFrame": 2100,
+          "graphicsPipelines": 595,
+          "computePipelines": 706,
+          "graphicsPipelineCreateMs": 35.41254997253418,
+          "computePipelineCreateMs": 26.22699737548828,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1130,
+          "asyncPrecacheCompleted": 1130,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 341726,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "clock": {
+          "mode": "owner",
+          "paused": false
+        },
+        "wake": {
+          "requested": "priority",
+          "active": "priority",
+          "prioritySupported": true
+        },
+        "history": {
+          "enabled": true,
+          "frame": 2100,
+          "polls": 1920684,
+          "ready": 1257937,
+          "hits": 1209274,
+          "zero": 1100708,
+          "fallback": 222977,
+          "expired": 23850,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 1275669,
+          "queryDropped": 17134,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80
+        },
+        "arguments": [
+          "./this.program",
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebPSOPrecacheTest",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebRHIWake=priority"
+        ],
+        "counts": {
+          "createShaderModule": 1700,
+          "createRenderPipelineAsync": 484,
+          "createRenderPipeline": 111,
+          "createComputePipelineAsync": 646,
+          "createComputePipeline": 63
+        }
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.01427001953125,
+            "updates": 2117,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2117,
+            "fps": 105.80347292277276,
+            "low1": 38.21202462992085,
+            "p99": 19.109999999403954,
+            "max": 50.53999999910593,
+            "over33": 5,
+            "over50": 1
+          },
+          "camera": {
+            "travelCm": 1979.6295073965123,
+            "turnDegrees": 266.85114160156263,
+            "before": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "after": {
+              "x": -620,
+              "y": 0,
+              "z": 160,
+              "pitch": 0,
+              "yaw": 0
+            }
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 2
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-route-20261106-1-first-area.png",
+            "sha256": "88d655386f6018a24055b446bae1f86cca094b45ab420e6f6f9c7af1dba0ee12"
+          }
+        },
+        {
+          "name": "moving",
+          "steadyAccepted": true,
+          "driver": {
+            "mode": 1,
+            "duration": 20,
+            "elapsed": 20.00897998046875,
+            "updates": 2130,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2129,
+            "fps": 106.43887713732012,
+            "low1": 40.33810667591257,
+            "p99": 15.480000004172325,
+            "max": 46.560000002384186,
+            "over33": 4,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 2204.5452161388057,
+            "turnDegrees": 0,
+            "before": {
+              "x": -174.99999999996638,
+              "y": -79.99999999999756,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "after": {
+              "x": -174.99999999996638,
+              "y": -79.99999999999756,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-route-20261106-1-moving.png",
+            "sha256": "4cb772671c919e2678de31a61943679d61ddc7be8c844d22039177c060ac3871"
+          }
+        },
+        {
+          "name": "turning",
+          "steadyAccepted": true,
+          "driver": {
+            "mode": 2,
+            "duration": 20,
+            "elapsed": 20.0140849609375,
+            "updates": 1885,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 1884,
+            "fps": 94.17003038781925,
+            "low1": 38.88462522621408,
+            "p99": 16.82999999821186,
+            "max": 47.92999999970198,
+            "over33": 6,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 0,
+            "turnDegrees": 358.6228198242188,
+            "before": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "after": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-route-20261106-1-turning.png",
+            "sha256": "783f22b3313aebbc53b82a7cf8534a89272475d160fe0a04c1024fa5f5258510"
+          }
+        },
+        {
+          "name": "repeat-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.010919921875,
+            "updates": 2217,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2216,
+            "fps": 110.79288155733848,
+            "low1": 40.2027617553568,
+            "p99": 18.024999998509884,
+            "max": 44.92000000178814,
+            "over33": 6,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 1978.285926297859,
+            "turnDegrees": 266.8034869877729,
+            "before": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "after": {
+              "x": -620,
+              "y": 0,
+              "z": 160,
+              "pitch": 0,
+              "yaw": 0
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-reference-route-20261106-1-repeat-area.png",
+            "sha256": "92e2b0d43bfc38b915009a081fb32ec7bc4fa1b167ea4891b0f59685c13b004c"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-pass-compute-only-route-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-route-20261106.json",
+        "sha256": "16bcef4ba23b17ae366ed70ab1ae335e32b434552e22ed8d7049c07a943b0865"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-route-20261106-source.cjs",
+        "sha256": "19597eb7b31a80eef601bd7c6d6a6aa0ef2b5b3638f8eb5096c8dd0aab324c86"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-route-20261106-1-owner.log",
+        "sha256": "e6a638e8335b5ab643d9f1af9078ab2b021c0b849fcbd9d98d8c7cb081ebb688"
+      },
+      "ready": {
+        "frame": 2143,
+        "game": 2143,
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "view": {
+          "frame": 2144,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 0,
+          "reflections": 0,
+          "virtualShadows": 0,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1
+        },
+        "streaming": {
+          "frame": 2130,
+          "supported": true,
+          "poolBytes": 1048576000,
+          "poolAllocatedBytes": 571397120,
+          "nonPoolAllocatedBytes": 573188096,
+          "streamable": 613,
+          "pending": 0,
+          "residentMips": 5346,
+          "requestedMips": 5346,
+          "maximumMips": 7241,
+          "residentBytes": 208506960,
+          "fullBytes": 2658304080
+        },
+        "pso": {
+          "enabled": true,
+          "active": 0,
+          "filePrecompileTasks": 0
+        },
+        "optimization": {
+          "sampleFrame": 2130,
+          "graphicsPipelines": 598,
+          "computePipelines": 709,
+          "graphicsPipelineCreateMs": 35.523414611816406,
+          "computePipelineCreateMs": 30.579090118408203,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1130,
+          "asyncPrecacheCompleted": 1130,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 346762,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "clock": {
+          "mode": "owner",
+          "paused": false
+        },
+        "wake": {
+          "requested": "priority",
+          "active": "priority",
+          "prioritySupported": true
+        },
+        "history": {
+          "enabled": true,
+          "frame": 2130,
+          "polls": 1968582,
+          "ready": 1272884,
+          "hits": 1224009,
+          "zero": 1114540,
+          "fallback": 228049,
+          "expired": 24611,
+          "cameraRejected": 0,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 1294562,
+          "queryDropped": 20429,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80
+        },
+        "arguments": [
+          "./this.program",
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebPSOPrecacheTest",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebRHIWake=priority"
+        ],
+        "counts": {
+          "createShaderModule": 1701,
+          "createRenderPipelineAsync": 484,
+          "createRenderPipeline": 114,
+          "createComputePipelineAsync": 646,
+          "createComputePipeline": 66
+        }
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.0177099609375,
+            "updates": 2185,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2185,
+            "fps": 109.1870809446138,
+            "low1": 40.84208963065823,
+            "p99": 18.280000001192093,
+            "max": 45.440000005066395,
+            "over33": 4,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 1978.3868931581985,
+            "turnDegrees": 268.0469296875003,
+            "before": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "after": {
+              "x": -620,
+              "y": 0,
+              "z": 160,
+              "pitch": 0,
+              "yaw": 0
+            }
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 2
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-route-20261106-1-first-area.png",
+            "sha256": "406493816226c5a962faabc49289d83a1e22d15d9e7c56a66596c5cb9cc94e39"
+          }
+        },
+        {
+          "name": "moving",
+          "steadyAccepted": true,
+          "driver": {
+            "mode": 1,
+            "duration": 20,
+            "elapsed": 20.00243994140625,
+            "updates": 2174,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2173,
+            "fps": 108.69263468594909,
+            "low1": 35.91455600469385,
+            "p99": 14.859999999403954,
+            "max": 75.93500000238419,
+            "over33": 6,
+            "over50": 2
+          },
+          "camera": {
+            "travelCm": 2204.46319902339,
+            "turnDegrees": 0,
+            "before": {
+              "x": -174.99999999996638,
+              "y": -79.99999999999756,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "after": {
+              "x": -174.99999999996638,
+              "y": -79.99999999999756,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-route-20261106-1-moving.png",
+            "sha256": "88664615284ee35a9ae123737c4c926c479e7b55d115609e8ac5e78766f3bcbd"
+          }
+        },
+        {
+          "name": "turning",
+          "steadyAccepted": true,
+          "driver": {
+            "mode": 2,
+            "duration": 20,
+            "elapsed": 20.009094970703124,
+            "updates": 1938,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 1937,
+            "fps": 96.84840200133957,
+            "low1": 41.582202817065415,
+            "p99": 16.58500000089407,
+            "max": 42.00999999791384,
+            "over33": 5,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 0,
+            "turnDegrees": 359.42022070312464,
+            "before": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            },
+            "after": {
+              "x": -175,
+              "y": -80,
+              "z": 160,
+              "pitch": -5.0000000000000036,
+              "yaw": 50.00000000000001
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-route-20261106-1-turning.png",
+            "sha256": "518d319153b82f42a734af45d5533e034a60c5d962a0554407cfeac784010b22"
+          }
+        },
+        {
+          "name": "repeat-area",
+          "driver": {
+            "mode": 3,
+            "duration": 20,
+            "elapsed": 20.000574951171874,
+            "updates": 2273,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "result": {
+            "frames": 2273,
+            "fps": 113.68885316553205,
+            "low1": 39.71268734155292,
+            "p99": 17.46000000089407,
+            "max": 49.8399999961257,
+            "over33": 6,
+            "over50": 0
+          },
+          "camera": {
+            "travelCm": 1984.8112209542674,
+            "turnDegrees": 268.8341357421873,
+            "before": {
+              "x": 410.7359315721519,
+              "y": -478.05903852213453,
+              "z": 156.64842176437378,
+              "pitch": 0,
+              "yaw": 89.99945068359375
+            },
+            "after": {
+              "x": -620,
+              "y": 0,
+              "z": 160,
+              "pitch": 0,
+              "yaw": 0
+            }
+          },
+          "creations": {},
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-compute-only-route-20261106-1-repeat-area.png",
+            "sha256": "aac98e6af7489581db6ce4c2ebb0302b0b7ec802227545b60da39a015aa174c9"
+          }
+        }
+      ]
+    }
+  ],
+  "desktop": {
+    "tag": "parity-native-csm-repeat-20261106",
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-repeat-20261106.csv",
+        "sha256": "0a7397a9a8a1dc74e72cd327849d96cfcb6d2ad40077e14d456e151da1477534"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-repeat-20261106.log",
+        "sha256": "7332d8b57366eda6bc4e1e19a966f1a39b2445260f29ed82a1d83e7a0532a57d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-repeat-20261106.png",
+        "sha256": "972c8533ccbb8c2a9d194d338dc4da87b6fbd89274406e4a45a4c3b94b93d351"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-repeat-20261106-launch.json",
+        "sha256": "bd25869d54c2ddd2be12d26ab26b4e16b5f3e4bcfff1cd7be7ef134030498526"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-repeat-20261106-complete.json",
+        "sha256": "9953ecda741b77b77294780d5bc98711c2dd48f114a1fd21f5d5abb244e29c35"
+      }
+    ],
+    "stats": {
+      "frames": 6000,
+      "fps": 234.4937032773739,
+      "low1": 182.36616451130126,
+      "p99": 5.2743,
+      "max": 6.3928,
+      "over33": 0,
+      "over50": 0
+    },
+    "workload": {
+      "RHI/DrawCalls": 1190.342,
+      "RHIThreadTime": 1.8699883333333367,
+      "GPUTime": 3.424500116666651,
+      "DrawCall/ShadowDepths": 602.0531666666667
+    },
+    "exitCode": 777003,
+    "cleanExit": false
+  },
+  "packages": [
+    {
+      "folder": "villa-replay-scratch-off-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-replay-scratch-off-20261106\\asset-versions.json",
+        "sha256": "30a269d7513bb25bef253033e1d40a908daa331a6569aa4fac98f46e090ad931"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "bd456da9f678c1c776e2bb0b3fc495afb07f5b1ad6e332e81837044b1a7446ac",
+          "size": 663823,
+          "mtimeMs": 1793928738195.6414
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "87778806790760e1e7be2ef8dc4e30662f107c4d8a9db425d430db1c36d40059",
+          "size": 93278,
+          "mtimeMs": 1793928738197.6414
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "a543b06962b2e1e3d9cb3003b1f7e36c8bde2c400e106c7790dd1dbfa9636dfb",
+          "size": 424795,
+          "mtimeMs": 1793928699744.5042
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "db5409b380e066a661ac9ffcc11c7c9d347fc74ee183786efc756e226ccadd3b",
+          "size": 182548113,
+          "mtimeMs": 1793928698511.3254
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    },
+    {
+      "folder": "villa-replay-scratch-on-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-replay-scratch-on-20261106\\asset-versions.json",
+        "sha256": "c6fd4c04e9143c8c0460e748f7806d3f174916eb89d059920640f997b48f313c"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "bd456da9f678c1c776e2bb0b3fc495afb07f5b1ad6e332e81837044b1a7446ac",
+          "size": 663823,
+          "mtimeMs": 1793928742447.735
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "f481663f0be3e1b1dcab43a764f3176e15efef87ecd055c2f78fa1bb52cc5166",
+          "size": 93278,
+          "mtimeMs": 1793928742450.735
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "a543b06962b2e1e3d9cb3003b1f7e36c8bde2c400e106c7790dd1dbfa9636dfb",
+          "size": 424795,
+          "mtimeMs": 1793928699744.5042
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "db5409b380e066a661ac9ffcc11c7c9d347fc74ee183786efc756e226ccadd3b",
+          "size": 182548113,
+          "mtimeMs": 1793928698511.3254
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "7f09d5528ea8147de2e32b1c698a1e479d94a67fe7db6d6072306a0bd7d93160",
+          "size": 19057,
+          "mtimeMs": 1793928742449.735
+        }
+      }
+    },
+    {
+      "folder": "villa-pass-reuse-combined-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-pass-reuse-combined-20261106\\asset-versions.json",
+        "sha256": "8c3144e7dbee3d4795ee977ff7ab994d7ce1079804f95890c1bc796ed0694aea"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "29474be9803cca06619df587d8127398e2162f5b7cd4ee6e6c84fd380ecca18f",
+          "size": 663903,
+          "mtimeMs": 1793928949579.1072
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "87778806790760e1e7be2ef8dc4e30662f107c4d8a9db425d430db1c36d40059",
+          "size": 93278,
+          "mtimeMs": 1793928949581.1067
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "a543b06962b2e1e3d9cb3003b1f7e36c8bde2c400e106c7790dd1dbfa9636dfb",
+          "size": 424795,
+          "mtimeMs": 1793928699744.5042
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "db5409b380e066a661ac9ffcc11c7c9d347fc74ee183786efc756e226ccadd3b",
+          "size": 182548113,
+          "mtimeMs": 1793928698511.3254
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    },
+    {
+      "folder": "villa-pass-compute-only-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-pass-compute-only-20261106\\asset-versions.json",
+        "sha256": "19c974d0c3340df3552092e000977f432167cfd6c999404b8a637a0f9867a430"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "4a87087bfb215ea6895dd3ed0b6bab6895d4e97c173a3a82901e262a7d4b5b9c",
+          "size": 663863,
+          "mtimeMs": 1793929892168.797
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "87778806790760e1e7be2ef8dc4e30662f107c4d8a9db425d430db1c36d40059",
+          "size": 93278,
+          "mtimeMs": 1793929892170.7969
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "a543b06962b2e1e3d9cb3003b1f7e36c8bde2c400e106c7790dd1dbfa9636dfb",
+          "size": 424795,
+          "mtimeMs": 1793928699744.5042
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "db5409b380e066a661ac9ffcc11c7c9d347fc74ee183786efc756e226ccadd3b",
+          "size": 182548113,
+          "mtimeMs": 1793928698511.3254
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    }
+  ],
+  "decision": {
+    "enableByDefault": false,
+    "reason": "No stable improvement across static and moving cases; native parity and physical presentation remain unverified.",
+    "combinedTurningVsComputeOnly": {
+      "fps": 0.012656687616141804,
+      "low1": -0.062362929248317434,
+      "maximumMs": {
+        "computeOnly": 42.00999999791384,
+        "combined": 49.2850000038743
+      }
+    },
+    "boundary": "One fixed-route run per variant is regression screening, not statistical proof of causation."
+  },
+  "parity": {
+    "fpsGap": 0.5555288548289632,
+    "low1Gap": 0.7577168526080837
+  },
+  "visual": [
+    {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-tour-comparison-20261106.json",
+        "sha256": "5eb7cae47ff7ff4350b777d263d68fc8ae81eb3953026877f309f90649a02762"
+      },
+      "contactSheet": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-tour-comparison-20261106.jpg",
+        "sha256": "6e89902c331d2ac2b404578c704ee2597016ee091f64a03e1952cbfaf429961a"
+      },
+      "views": [
+        {
+          "view": "right",
+          "meanAbsoluteRGB255": [
+            0.6277072025690748,
+            0.6282442310045139,
+            0.693427140074556
+          ],
+          "rmsRGB255": [
+            0.968766266291814,
+            0.9729984136829536,
+            1.070946310246452
+          ]
+        },
+        {
+          "view": "back",
+          "meanAbsoluteRGB255": [
+            0.4365142523665522,
+            0.4328600770246026,
+            0.4461872605161753
+          ],
+          "rmsRGB255": [
+            0.8404356390018168,
+            0.852712834479839,
+            0.8781724822793208
+          ]
+        },
+        {
+          "view": "left",
+          "meanAbsoluteRGB255": [
+            0.5522633691388381,
+            0.5618703314526511,
+            0.6393420968578423
+          ],
+          "rmsRGB255": [
+            0.8576852178074776,
+            0.8724422735171851,
+            0.9840840557258492
+          ]
+        },
+        {
+          "view": "room",
+          "meanAbsoluteRGB255": [
+            0.8499795907540161,
+            0.8234746389404083,
+            0.8504657314143228
+          ],
+          "rmsRGB255": [
+            1.4787435019070352,
+            1.443781154760316,
+            1.4690508782113048
+          ]
+        },
+        {
+          "view": "return",
+          "meanAbsoluteRGB255": [
+            0.9484160367951096,
+            0.960802337806044,
+            1.076198488308263
+          ],
+          "rmsRGB255": [
+            1.4726096866137368,
+            1.4983561639886718,
+            1.6706116470588812
+          ]
+        }
+      ],
+      "boundary": "HUD excluded; screenshots contain temporal effects, not exact pixel parity"
+    },
+    {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-tour-comparison-20261106.json",
+        "sha256": "b1c53ce14b88457f2c1ad4011263088bfb0519d289a268610d4d53bee4cc1c4c"
+      },
+      "contactSheet": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-combined-tour-comparison-20261106.jpg",
+        "sha256": "47faf06d2ef673b6107f66e85ed372d38c489f5f242f6cc8dcdd0ed4faddab75"
+      },
+      "views": [
+        {
+          "view": "right",
+          "files": [
+            "tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-right.png",
+            "tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-right.png"
+          ],
+          "meanAbsoluteRGB255": [
+            0.49611842791117905,
+            0.48979856598440885,
+            0.5584089145266474
+          ],
+          "rmsRGB255": [
+            0.8588880389201896,
+            0.8609086251129797,
+            0.9757861202885355
+          ]
+        },
+        {
+          "view": "back",
+          "files": [
+            "tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-back.png",
+            "tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-back.png"
+          ],
+          "meanAbsoluteRGB255": [
+            0.4454911908816068,
+            0.4404373863386269,
+            0.45332383500712375
+          ],
+          "rmsRGB255": [
+            0.7802785411039971,
+            0.7836729160769629,
+            0.8036163931361693
+          ]
+        },
+        {
+          "view": "left",
+          "files": [
+            "tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-left.png",
+            "tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-left.png"
+          ],
+          "meanAbsoluteRGB255": [
+            0.5930407385527794,
+            0.6025066314533597,
+            0.6880888672666828
+          ],
+          "rmsRGB255": [
+            0.9000057272922961,
+            0.9148564854363087,
+            1.0312354253104008
+          ]
+        },
+        {
+          "view": "room",
+          "files": [
+            "tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-room.png",
+            "tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-room.png"
+          ],
+          "meanAbsoluteRGB255": [
+            0.872657562173495,
+            0.844591166556625,
+            0.8752568602240215
+          ],
+          "rmsRGB255": [
+            1.4289074213075128,
+            1.3887647641576988,
+            1.405468398255164
+          ]
+        },
+        {
+          "view": "return",
+          "files": [
+            "tests\\web-platform\\results\\parity-pass-reference-gpu-20261106-tour-return.png",
+            "tests\\web-platform\\results\\parity-pass-combined-gpu-20261106-tour-return.png"
+          ],
+          "meanAbsoluteRGB255": [
+            1.0397030035560806,
+            1.0527736270864463,
+            1.1864892101330924
+          ],
+          "rmsRGB255": [
+            1.583388856112041,
+            1.6094164648511529,
+            1.8063209901814314
+          ]
+        }
+      ],
+      "boundary": "HUD rectangle (0,0,260,230) excluded; temporal screenshots are not exact pixel parity. Left=reference, right=combined. Canvas element includes its one-pixel CSS edge."
+    }
+  ],
+  "nativeWebView": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-native-web-view-20261106.jpg",
+    "sha256": "b6307800ba62baec7ae326cfc04a243d77e175032391a25e972eda87279f840f"
+  },
+  "builds": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-rdg-merge-build-20261106.json",
+      "sha256": "6136533afafa564cb3f985fb3d6940cc3becbe84cac6b5f1ffafab19cd34d568"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-build-20261106.json",
+      "sha256": "621fa598e79ebc43b686452bd9c88ce6c90a456bac8ef75aa2e06b59812f1a45"
+    }
+  ],
+  "replayValidation": {
+    "pass": true,
+    "checks": [
+      "same command order and resources",
+      "nested replay isolation",
+      "exception cleanup",
+      "bounded allocations",
+      "GPU references released"
+    ],
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-replay-scratch-validation-20261106.json",
+      "sha256": "4000ccf085f38ce4c7b5dc8afcc5463b00cefb7e6a744a80c0888da9c67cb460"
+    }
+  },
+  "testPage": {
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\villa-parity-test.html",
+      "sha256": "835c53e71369a1cc0fd17b6917c0a10196279c56a98730e5f58570c530dbb711"
+    },
+    "validation": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-test-page-20261106.json",
+      "sha256": "b92d3663c0d449f1e8ff93583fd8b8d9af6fc1dfcfc5ed71815f4e0485e18517"
+    },
+    "screenshot": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-pass-test-page-20261106.png",
+      "sha256": "cd20dc3dd754fe15790a041f846adf195e09bdf64843a17ac955aa35b323f717"
+    }
+  },
+  "limitations": [
+    "The first RDG-enabled window fell to 77 FPS and is retained. Background activity was observed afterward, not causally attributed to that window.",
+    "GPU completion callbacks and RHI submission intervals do not verify physical presentation.",
+    "Motion is a regression stress test; actual paths and draw counts vary with timing.",
+    "Native 777003 is the existing post-CSV/log-close exit failure, not a clean process lifecycle pass.",
+    "Experiments remain opt-in; browser/native average and 1% low parity is not achieved."
+  ]
+}

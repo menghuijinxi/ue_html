@@ -15,8 +15,9 @@ assert(!fs.existsSync(dest));fs.mkdirSync(dest);
 const changed=new Set(['index.html','config-files.json','asset-versions.json','web-engine-host.js']);
 const lookahead=process.argv.includes('--owner-lookahead');
 const mergeCompute=process.argv.includes('--merge-compute');
+const replayScratch=process.argv.includes('--replay-scratch');
 if(lookahead)changed.add('UEWebEngineThreads.js');
-if(mergeCompute)changed.add('web-engine-worker.js');
+if(mergeCompute||replayScratch)changed.add('web-engine-worker.js');
 // Copy only audited runtime products. Old comparison pages and launch/readme
 // files can describe another clock mode and must not appear in a new candidate.
 for(const f of Object.keys(versions))if(!changed.has(f))fs.linkSync(path.join(source,f),path.join(dest,f));
@@ -29,6 +30,7 @@ if(process.argv.includes('--no-shadows'))settings['r.ShadowQuality']=0;
 if(process.argv.includes('--bundles'))settings['r.WebGPU.RenderBundles']=1;
 if(process.argv.includes('--staging'))settings['r.WebGPU.StagingUploadPages']=1;
 if(process.argv.includes('--reuse-compute'))settings['r.WebGPU.ReuseComputePass']=1;
+if(process.argv.includes('--merge-raster'))settings['r.WebGPU.RDGMergeRenderPasses']=1;
 if(process.argv.includes('--binding-plan'))settings['r.WebGPU.BindingPlan']=1;
 if(process.argv.includes('--tlv-share'))settings['r.WebGPU.TLVShareCascades']=1;
 let ini=Buffer.from(config.data,'base64').toString();
@@ -38,8 +40,10 @@ fs.writeFileSync(path.join(dest,'config-files.json'),JSON.stringify(configs));
 let html=fs.readFileSync(path.join(source,'index.html'),'utf8');
 const match=html.match(/const localRuntimeAssets = (\{[^\n]+\});/);assert(match);
 const assets=JSON.parse(match[1]);assets.localFrameBudget=0;assets.localFrameBudgetMode='submitted';
-if(mergeCompute){
-  const worker='('+require('./web-compute-pass-merge.cjs').toString()+')();\n'+fs.readFileSync(path.join(source,'web-engine-worker.js'),'utf8');
+if(mergeCompute||replayScratch){
+  const worker=(replayScratch?'globalThis.__webReuseReplayScratch=true;\n':'')+
+    (mergeCompute?'('+require('./web-compute-pass-merge.cjs').toString()+')();\n':'')+
+    fs.readFileSync(path.join(source,'web-engine-worker.js'),'utf8');
   fs.writeFileSync(path.join(dest,'web-engine-worker.js'),worker);
   assets.versions['web-engine-worker.js']=crypto.createHash('sha256').update(worker).digest('hex');
 }
@@ -55,7 +59,7 @@ html=html.replace(match[0],'const localRuntimeAssets = '+JSON.stringify(assets)+
 fs.writeFileSync(path.join(dest,'index.html'),html);
 const products=Object.keys(versions).map(n=>audit(path.join(dest,n)));
 writeVersions(dest,products);
-fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,clock:'owner',lookahead,mergeCompute,experimental:true,
+fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,clock:'owner',lookahead,mergeCompute,replayScratch,experimental:true,
   performanceAccepted:false,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
   candidateManifest:audit(path.join(dest,'asset-versions.json'))},null,2));
 console.log(dest);

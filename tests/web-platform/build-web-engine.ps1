@@ -82,6 +82,9 @@ if ((Get-Item -LiteralPath (Split-Path $taskRenderUtils)).LinkType -or
     throw 'RenderCore overlay must be a local build-host copy.'
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp') -Destination $taskRenderUtils -Force
+foreach ($taskGraphOverlay in @('RenderGraphPrivate.cpp', 'RenderGraphPrivate.h')) {
+    Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/RenderCore/Private/$taskGraphOverlay") -Destination (Join-Path $taskHost "Source/Runtime/RenderCore/Private/$taskGraphOverlay") -Force
+}
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Public/WebShaderPlatform.h') -Destination (Join-Path $taskHost 'Source/Runtime/RenderCore/Public/WebShaderPlatform.h') -Force
 if ($RendererRevision) {
     $taskRendererSnapshotText = & node (Join-Path $PSScriptRoot 'materialize-web-renderer-revision.cjs') $RendererRevision
@@ -388,7 +391,8 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     foreach ($taskShaderOverlay in @('RenderCore/Private/RenderingThread.cpp', 'RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',
-        'RenderCore/Public/WebShaderPlatform.h', 'Engine/Private/SkeletalRenderGPUSkin.cpp',
+        'RenderCore/Public/WebShaderPlatform.h', 'RenderCore/Private/RenderGraphPrivate.cpp', 'RenderCore/Private/RenderGraphPrivate.h',
+        'Engine/Private/SkeletalRenderGPUSkin.cpp',
         'Engine/Private/PhysicsField/PhysicsFieldComponent.cpp',
         'Engine/Private/Rendering/SubsurfaceProfile.cpp',
         'Renderer/Private/LightGridInjection.cpp', 'Renderer/Private/IESTextureManager.cpp', 'Renderer/Private/MobileFogRendering.cpp',

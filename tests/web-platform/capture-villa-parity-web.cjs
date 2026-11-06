@@ -91,6 +91,7 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
   const state=()=>owner.evaluate(()=>({frame:__webRHIFrames,game:__webEngineFrames,view:__webRenderView,settings:__webProjectSettings,camera:__webDefaultCamera,
     clock:__webGameFrameClock,stages:__webThreadStages,occlusion:__webOcclusionRHI,optimization:__webOptimizationRHI,history:__webOcclusionHistory,
     computePassMerge:globalThis.__webComputePassMerge||null,
+    replayScratch:globalThis.__webReplayScratchStats||null,
     gpuBudget:frameScheduler?Array.from(frameScheduler.state):null}));
   const browserCDP=await context.browser().newBrowserCDPSession();
   report.browser=await browserCDP.send('Browser.getVersion');
@@ -129,6 +130,24 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     save();console.log(JSON.stringify({name:r.name,round,result:r.result,rhiMs:r.rhiMs,workload:r.workload}));
   }
   await page.locator('canvas').screenshot({path:output+'.png'});
+  if(process.argv.includes('--tour')){
+    const start=await state(),c=start.camera;
+    const views=[{name:'right',args:[c.x,c.y,c.z,c.pitch,c.yaw+90]},
+      {name:'back',args:[c.x,c.y,c.z,c.pitch,c.yaw+180]},
+      {name:'left',args:[c.x,c.y,c.z,c.pitch,c.yaw+270]},
+      {name:'room',args:[-175,-80,160,-5,50]},
+      {name:'return',args:[c.x,c.y,c.z,c.pitch,c.yaw]}];
+    report.tour=[];
+    for(const view of views){
+      assert.equal(await page.evaluate(args=>__webEngineRPC('WebProjectViewTest',...args),view.args),1);
+      await page.waitForTimeout(2500);
+      const current=await state();assert.deepEqual(current.settings,start.settings);
+      assert(current.frame>start.frame);assert.deepEqual(report.errors,[]);
+      const file=output+'-tour-'+view.name+'.png';
+      await page.locator('canvas').screenshot({path:file});
+      report.tour.push({name:view.name,camera:current.camera,view:current.view,image:audit(file)});save();
+    }
+  }
   // Keep validation work outside the timed window.
   if(process.argv.includes('--readback')){
     assert.equal(await page.evaluate(()=>__webEngineRPC('WebTextureReadbackTest',1)),1);
