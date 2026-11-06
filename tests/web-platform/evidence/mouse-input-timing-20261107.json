@@ -1,0 +1,922 @@
+{
+  "date": "2026-11-07",
+  "pass": true,
+  "defaultChanged": false,
+  "visualFeelAccepted": false,
+  "physicalLatencyMeasured": false,
+  "boundary": "Source comparison with installed Windows UE; same-runtime browser A/B captures with 16 ms synthetic DOM events. This is not a native hardware-to-display latency measurement. Final packages preserve the earlier accepted WASM and assets.",
+  "diagnostics": [
+    "tests/web-platform/results/input-timing-free-abba-20261107.json",
+    "tests/web-platform/results/input-timing-30-ba-20261107.json"
+  ],
+  "releaseChecks": [
+    "tests/web-platform/results/input-raw-release-30-20261107.json",
+    "tests/web-platform/results/input-raw-release-free-20261107.json"
+  ],
+  "packages": [
+    {
+      "folder": "villa-input-raw-30-20261107",
+      "maxFPS": 30,
+      "smoothing": false,
+      "baseline": "villa-low-30fps-no-blur-20261107"
+    },
+    {
+      "folder": "villa-input-raw-free-20261107",
+      "maxFPS": 0,
+      "smoothing": false,
+      "baseline": "villa-low-30fps-no-blur-20261107"
+    },
+    {
+      "folder": "villa-input-control-free-20261107",
+      "maxFPS": 0,
+      "smoothing": true,
+      "baseline": "villa-low-30fps-no-blur-20261107"
+    }
+  ],
+  "nativeSources": [
+    {
+      "native": {
+        "file": "D:/UE_5.8/Engine/Source/Runtime/Engine/Private/UserInterface/PlayerInput.cpp",
+        "sha256": "ffea97690caf6feba2f3d08ea81fdb9e3d43e8bd05b64faea382eed38e4de9ca"
+      },
+      "web": {
+        "file": "G:/UE_HTML/UnrealEngine-1/Engine/Source/Runtime/Engine/Private/UserInterface/PlayerInput.cpp",
+        "sha256": "ffea97690caf6feba2f3d08ea81fdb9e3d43e8bd05b64faea382eed38e4de9ca"
+      }
+    },
+    {
+      "native": {
+        "file": "D:/UE_5.8/Engine/Source/Runtime/Engine/Private/Slate/SceneViewport.cpp",
+        "sha256": "a4ed0de6c9fa3d43e7801f57997c9fd60543f1231e61d593bb690c4c4b8e2efd"
+      },
+      "web": {
+        "file": "G:/UE_HTML/UnrealEngine-1/Engine/Source/Runtime/Engine/Private/Slate/SceneViewport.cpp",
+        "sha256": "a4ed0de6c9fa3d43e7801f57997c9fd60543f1231e61d593bb690c4c4b8e2efd"
+      }
+    },
+    {
+      "native": {
+        "file": "D:/UE_5.8/Engine/Source/Runtime/ApplicationCore/Private/Windows/WindowsApplication.cpp",
+        "sha256": "deb25cb5a24c7946e2ba0257dee49fbdbefda97cd293bd593c976ddb55fd9ec9"
+      },
+      "web": {
+        "file": "G:/UE_HTML/UnrealEngine-1/Engine/Source/Runtime/ApplicationCore/Private/Windows/WindowsApplication.cpp",
+        "sha256": "deb25cb5a24c7946e2ba0257dee49fbdbefda97cd293bd593c976ddb55fd9ec9"
+      }
+    }
+  ],
+  "files": [
+    {
+      "file": "tests/ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "ff3d364915e219b4dc8e386f8196f755cd56b517738e8255bbc29b2aef24be3b"
+    },
+    {
+      "file": "tests/web-platform/package-villa-parity-candidate.cjs",
+      "sha256": "6ab0011dc051f3cd34d779c11db99c9276a6f8c4147376acb32b9018c77b57c9"
+    },
+    {
+      "file": "tests/web-platform/probe-web-local-clock-motion.cjs",
+      "sha256": "dfbdf2dbd3c515b5108ccae98af83494e1f82b9122ee04b37a485962829b4cc3"
+    },
+    {
+      "file": "tests/web-platform/analyze-web-input-timing.cjs",
+      "sha256": "3780ff41338d9f714410a2116b6cfcbe2c722dfb37ee58f81ef91c5d374a4928"
+    },
+    {
+      "file": "tests/web-platform/verify-web-input-timing-evidence.cjs",
+      "sha256": "13a51a0fc1e4362e7e4d22747a07210fd8842208998906e7370f7ae86bc7ba28"
+    },
+    {
+      "file": "tests/web-platform/villa-low-test.html",
+      "sha256": "0429e4083929aecb52b38d8e8ddfda0a4594c9373760e8ca795be1e7b0195b15"
+    },
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "42ad45b76e4d6b9c4d748838ea227362e702771f884b4d0fe6c463099101e0a9"
+    },
+    {
+      "file": "tests/web-platform/web-local-pipeline-observer.cjs",
+      "sha256": "8cc236505b7472a65e694749036e5656b8a57addd56bb7050a12e9a10ff012dd"
+    },
+    {
+      "file": "tests/web-platform/results/input-timing-free-abba-20261107.json",
+      "sha256": "3fae3ed5c0def77ef609d3879fd7b3ec11d4a16d1ccd32e4a8b70354362d0348"
+    },
+    {
+      "file": "tests/web-platform/results/input-timing-30-ba-20261107.json",
+      "sha256": "7adca6b8cc52a2f60a23a0447f361d4d810f0e16e7f9be070725e72c1436981f"
+    },
+    {
+      "file": "tests/web-platform/results/input-timing-free-abba-20261107-input-analysis.json",
+      "sha256": "e4da7c5328b1b18ea52811eabd488aeb094f5c78bc338cf568c97316f6d6d39b"
+    },
+    {
+      "file": "tests/web-platform/results/input-timing-30-ba-20261107-input-analysis.json",
+      "sha256": "2c1f6b52b39b8c2e5bdb71350f52829c04af39c81ad011ec217da353072af74b"
+    },
+    {
+      "file": "tests/web-platform/results/input-raw-release-30-20261107.json",
+      "sha256": "785e259f823e82ea5f7da25b56b9094c776a127bb0b0b5b61d5db1358455b9b9"
+    },
+    {
+      "file": "tests/web-platform/results/input-raw-release-free-20261107.json",
+      "sha256": "f6a80c1f0ff5c2179c185d8272449fcffd16aba2f95799a973c7a945a777393a"
+    },
+    {
+      "file": "tests/web-platform/results/mouse-input-timing-r2-runtime-20261107.json",
+      "sha256": "c8b551ed6e46d768232e3e22768e84245af46e5e4477b0fb707f5f1760049457"
+    },
+    {
+      "file": "tests/web-platform/build/villa-input-raw-30-20261107/asset-versions.json",
+      "sha256": "bf66e9383180010d11103102abe49dcf2f902fb60980112ba5d4432cfec7f507"
+    },
+    {
+      "file": "tests/web-platform/results/villa-input-raw-30-20261107-package.json",
+      "sha256": "a3e692a0fcfc471dd78c5d65cd707f0db7cf2346608f481282fb178b70f651ad"
+    },
+    {
+      "file": "tests/web-platform/build/villa-input-raw-free-20261107/asset-versions.json",
+      "sha256": "7d3c876bd901092cbac3a41bf09c679c3ada8cbe0268fc8f2b318d30a10048a4"
+    },
+    {
+      "file": "tests/web-platform/results/villa-input-raw-free-20261107-package.json",
+      "sha256": "30980038d2b5c976355dd42b9a56cd9929c5e844eec99379505ef59b9171d0b4"
+    },
+    {
+      "file": "tests/web-platform/build/villa-input-control-free-20261107/asset-versions.json",
+      "sha256": "41088ae56ba2d713a86fd138d3b454d07360a5523bde12fae00453098cde39c8"
+    },
+    {
+      "file": "tests/web-platform/results/villa-input-control-free-20261107-package.json",
+      "sha256": "c74e330f5567497ada39e88d97d2ccbef884b4c9bbd62d3942a422a530155d92"
+    },
+    {
+      "file": "tests/web-platform/build/villa-low-30fps-no-blur-20261107/asset-versions.json",
+      "sha256": "edee381d9223ed4e59deca87cea9ad725cb0e2772518b6726175300db8842891"
+    },
+    {
+      "file": "tests/web-platform/results/input-raw-release-30-20261107-1-page3.png",
+      "sha256": "4cfeb00c29b80c0140bf91d20688dbe4b187bb5012cfd299c706c03a57cbf923"
+    },
+    {
+      "file": "tests/web-platform/results/input-raw-release-free-20261107-1-page3.png",
+      "sha256": "ea97b61d2eeca48d58f549111a453abeaf2a0a1355e0a43973c45aee128aa2c4"
+    }
+  ],
+  "diagnosticsSummary": [
+    {
+      "source": "tests/web-platform/results/input-timing-free-abba-20261107.json",
+      "pass": true,
+      "runs": [
+        {
+          "index": 1,
+          "smoothing": true,
+          "epochValid": true,
+          "frames": 2001,
+          "events": 1000,
+          "frameResult": {
+            "samples": 1940,
+            "fps": 120.97557447027407,
+            "low1Fps": 38.754808019667855,
+            "p50": 7.814999997615814,
+            "p95": 16.939999997615814,
+            "p99": 21.679999992251396,
+            "maximum": 38.34499999880791
+          },
+          "axisGain": 0.06999300000000001,
+          "yawGain": 0.17498250000000004,
+          "gainErrorPercent": {
+            "n": 559,
+            "min": -88.77804265497731,
+            "p50": -5.9332048688522825,
+            "p95": 73.97898905182292,
+            "max": 98.81965104876367,
+            "mean": -5.466374221749636,
+            "rms": 38.99146349940451
+          },
+          "absoluteGainErrorPercent": {
+            "n": 559,
+            "min": 0.000001091839219036217,
+            "p50": 20.754725076760096,
+            "p95": 78.91141759164387,
+            "max": 98.81965104876367,
+            "mean": 28.893200027411485,
+            "rms": 38.99146349940451
+          },
+          "driftPixels": {
+            "n": 2001,
+            "min": -87.78402525899594,
+            "p50": -27.493399629735165,
+            "p95": 167.7635524723837,
+            "max": 170.6613048853186,
+            "mean": 7.875315282751873,
+            "rms": 80.18302484486573
+          },
+          "rawTotal": 0,
+          "rawPath": 5200,
+          "yawTotal": 5.18593074195087,
+          "yawPath": 1057.171863378957,
+          "expectedYawPath": 909.9090000000002,
+          "axisYawPath": 1057.1718630834948,
+          "expectedAxisYawPath": 909.9090000000002,
+          "cameraAxisErrorDegrees": {
+            "n": 2000,
+            "min": -1.1920928955078125e-7,
+            "p50": 0,
+            "p95": 2.9802322387695312e-8,
+            "max": 1.1920928955078125e-7,
+            "mean": -3.584427759051323e-10,
+            "rms": 2.24808367729813e-8
+          },
+          "extrapolatedFrames": 889,
+          "tickMilliseconds": {
+            "n": 2001,
+            "min": 1.02001953125,
+            "p50": 1.3349609375,
+            "p95": 4.4150390625,
+            "max": 11.905029296875,
+            "mean": 1.8204301169727637,
+            "rms": 2.1565110753136882
+          },
+          "inputBehindAtTickPixels": {
+            "n": 2001,
+            "min": 0,
+            "p50": 0,
+            "p95": 0,
+            "max": 0,
+            "mean": 0,
+            "rms": 0
+          },
+          "inputToGameBeginMs": {
+            "n": 1001,
+            "min": 0.054931640625,
+            "p50": 4.159912109375,
+            "p95": 18.110107421875,
+            "max": 31.074951171875,
+            "mean": 6.049728347824051,
+            "rms": 8.269826557261297
+          },
+          "inputBridgeMs": {
+            "n": 1001,
+            "min": 0.02490234375,
+            "p50": 0.054931640625,
+            "p95": 1.550048828125,
+            "max": 8.295166015625,
+            "mean": 0.28955614697802196,
+            "rms": 0.7919454381696963
+          },
+          "ownerQueueMs": {
+            "n": 17515,
+            "min": 0,
+            "p50": 0.010009765625,
+            "p95": 0.02490234375,
+            "max": 0.2099609375,
+            "mean": 0.010569706992220953,
+            "rms": 0.014126666543431272
+          },
+          "gpuCompletionFeedbackMs": {
+            "n": 2024,
+            "min": 3.864990234375,
+            "p50": 9.7900390625,
+            "p95": 26.205078125,
+            "max": 58.6201171875,
+            "mean": 11.572301811851531,
+            "rms": 13.33628822252369
+          },
+          "boundary": "Game-thread axis/camera values; submission timing is not physical presentation or end-to-end input latency."
+        },
+        {
+          "index": 2,
+          "smoothing": false,
+          "epochValid": true,
+          "frames": 1902,
+          "events": 1000,
+          "frameResult": {
+            "samples": 1839,
+            "fps": 114.18154679679377,
+            "low1Fps": 41.2223511908171,
+            "p50": 8.190000012516975,
+            "p95": 17.5,
+            "p99": 21.625,
+            "maximum": 31.12000000476837
+          },
+          "axisGain": 0.06999300000000001,
+          "yawGain": 0.17498250000000004,
+          "gainErrorPercent": {
+            "n": 567,
+            "min": -0.000001091839219036217,
+            "p50": 0.000006004661456948668,
+            "p95": 0.000009046018911718079,
+            "max": 0.000009046018911718079,
+            "mean": 0.000005510037967104638,
+            "rms": 0.000006201741578591562
+          },
+          "absoluteGainErrorPercent": {
+            "n": 567,
+            "min": 0.000001091839219036217,
+            "p50": 0.000006004661456948668,
+            "p95": 0.000009046018911718079,
+            "max": 0.000009046018911718079,
+            "mean": 0.0000056525355018642154,
+            "rms": 0.000006201741578591562
+          },
+          "driftPixels": {
+            "n": 1902,
+            "min": -0.000037540034327321337,
+            "p50": -0.00001339036782610492,
+            "p95": 0.00003548205825154582,
+            "max": 0.00003647555922725587,
+            "mean": -0.000007950403507147173,
+            "rms": 0.00002649494656620006
+          },
+          "rawTotal": 0,
+          "rawPath": 5200,
+          "yawTotal": 5.662441253662109e-7,
+          "yawPath": 909.909061819315,
+          "expectedYawPath": 909.9090000000002,
+          "axisYawPath": 909.9090515077114,
+          "expectedAxisYawPath": 909.9090000000002,
+          "cameraAxisErrorDegrees": {
+            "n": 1901,
+            "min": -1.1920928955078125e-7,
+            "p50": 0,
+            "p95": 5.960464477539063e-8,
+            "max": 1.1920928955078125e-7,
+            "mean": -1.56771816873726e-11,
+            "rms": 2.6385808154979806e-8
+          },
+          "extrapolatedFrames": 0,
+          "tickMilliseconds": {
+            "n": 1902,
+            "min": 0.9599609375,
+            "p50": 1.275146484375,
+            "p95": 4.679931640625,
+            "max": 9.320068359375,
+            "mean": 1.8067985077385647,
+            "rms": 2.1696147856816683
+          },
+          "inputBehindAtTickPixels": {
+            "n": 1902,
+            "min": -6,
+            "p50": 0,
+            "p95": 0,
+            "max": 8,
+            "mean": -0.008412197686645636,
+            "rms": 0.3400995709955799
+          },
+          "inputToGameBeginMs": {
+            "n": 1001,
+            "min": 0.065185546875,
+            "p50": 4.880126953125,
+            "p95": 19.830322265625,
+            "max": 32.93017578125,
+            "mean": 6.888704801058316,
+            "rms": 9.314384312705982
+          },
+          "inputBridgeMs": {
+            "n": 1001,
+            "min": 0.03515625,
+            "p50": 0.060302734375,
+            "p95": 2.01025390625,
+            "max": 5.705322265625,
+            "mean": 0.33178271923389113,
+            "rms": 0.8430138307384429
+          },
+          "ownerQueueMs": {
+            "n": 16957,
+            "min": 0,
+            "p50": 0.010009765625,
+            "p95": 0.02490234375,
+            "max": 0.199951171875,
+            "mean": 0.009865515762295806,
+            "rms": 0.013472314884253276
+          },
+          "gpuCompletionFeedbackMs": {
+            "n": 1927,
+            "min": 3.8798828125,
+            "p50": 10.489990234375,
+            "p95": 27.64990234375,
+            "max": 39.72509765625,
+            "mean": 12.288685583363064,
+            "rms": 14.193145822878494
+          },
+          "boundary": "Game-thread axis/camera values; submission timing is not physical presentation or end-to-end input latency."
+        },
+        {
+          "index": 3,
+          "smoothing": false,
+          "epochValid": true,
+          "frames": 2022,
+          "events": 1000,
+          "frameResult": {
+            "samples": 1956,
+            "fps": 118.58117263199028,
+            "low1Fps": 49.53683063240595,
+            "p50": 8.125,
+            "p95": 16.489999994635582,
+            "p99": 18.33499999344349,
+            "maximum": 27.265000000596046
+          },
+          "axisGain": 0.06999300000000001,
+          "yawGain": 0.17498250000000004,
+          "gainErrorPercent": {
+            "n": 561,
+            "min": -0.000001091839219036217,
+            "p50": 0.000006004661456948668,
+            "p95": 0.000009046018911718079,
+            "max": 0.000009046018911718079,
+            "mean": 0.000005629065240985582,
+            "rms": 0.000006255194836930629
+          },
+          "absoluteGainErrorPercent": {
+            "n": 561,
+            "min": 0.000001091839219036217,
+            "p50": 0.000006004661456948668,
+            "p95": 0.000009046018911718079,
+            "max": 0.000009046018911718079,
+            "mean": 0.000005738054539142495,
+            "rms": 0.000006255194836930629
+          },
+          "driftPixels": {
+            "n": 2022,
+            "min": -0.000036262664252717514,
+            "p50": -0.000009782079928299936,
+            "p95": 0.00003809138138421986,
+            "max": 0.00003924319457837555,
+            "mean": -0.000005300166394087169,
+            "rms": 0.00002621595487255235
+          },
+          "rawTotal": 0,
+          "rawPath": 5200,
+          "yawTotal": 3.5762786865234375e-7,
+          "yawPath": 909.9090638160706,
+          "expectedYawPath": 909.9090000000002,
+          "axisYawPath": 909.9090525135398,
+          "expectedAxisYawPath": 909.9090000000002,
+          "cameraAxisErrorDegrees": {
+            "n": 2021,
+            "min": -1.1920928955078125e-7,
+            "p50": 0,
+            "p95": 2.9802322387695312e-8,
+            "max": 1.1920928955078125e-7,
+            "mean": -2.838667520846783e-10,
+            "rms": 2.5886609559240024e-8
+          },
+          "extrapolatedFrames": 0,
+          "tickMilliseconds": {
+            "n": 2022,
+            "min": 0.965087890625,
+            "p50": 1.22998046875,
+            "p95": 4.31005859375,
+            "max": 7.169921875,
+            "mean": 1.7160695242952522,
+            "rms": 2.0259448302742578
+          },
+          "inputBehindAtTickPixels": {
+            "n": 2022,
+            "min": -3,
+            "p50": 0,
+            "p95": 0,
+            "max": 8,
+            "mean": 0.002967359050445104,
+            "rms": 0.1913045433041854
+          },
+          "inputToGameBeginMs": {
+            "n": 1001,
+            "min": 0.06494140625,
+            "p50": 4.465087890625,
+            "p95": 18.704833984375,
+            "max": 33.31494140625,
+            "mean": 6.510447560252247,
+            "rms": 8.787439266278811
+          },
+          "inputBridgeMs": {
+            "n": 1001,
+            "min": 0.02490234375,
+            "p50": 0.054931640625,
+            "p95": 1.64501953125,
+            "max": 5.125,
+            "mean": 0.3153909079202048,
+            "rms": 0.8037205186502547
+          },
+          "ownerQueueMs": {
+            "n": 18091,
+            "min": 0,
+            "p50": 0.005126953125,
+            "p95": 0.02001953125,
+            "max": 0.23486328125,
+            "mean": 0.008708523488889503,
+            "rms": 0.011751870881729088
+          },
+          "gpuCompletionFeedbackMs": {
+            "n": 2046,
+            "min": 3.965087890625,
+            "p50": 10.14501953125,
+            "p95": 26.06005859375,
+            "max": 44.800048828125,
+            "mean": 11.815963909190188,
+            "rms": 13.536337815175894
+          },
+          "boundary": "Game-thread axis/camera values; submission timing is not physical presentation or end-to-end input latency."
+        },
+        {
+          "index": 4,
+          "smoothing": true,
+          "epochValid": true,
+          "frames": 2285,
+          "events": 1000,
+          "frameResult": {
+            "samples": 2227,
+            "fps": 135.02014540577576,
+            "low1Fps": 48.77117835524996,
+            "p50": 6.864999994635582,
+            "p95": 15.900000005960464,
+            "p99": 18.719999998807907,
+            "maximum": 28.024999991059303
+          },
+          "axisGain": 0.06999300000000001,
+          "yawGain": 0.17498250000000004,
+          "gainErrorPercent": {
+            "n": 566,
+            "min": -86.58936261950203,
+            "p50": 0.000006004661456948668,
+            "p95": 82.47208108331027,
+            "max": 99.24184417838279,
+            "mean": 4.412196362694886,
+            "rms": 40.21236180711902
+          },
+          "absoluteGainErrorPercent": {
+            "n": 566,
+            "min": 0.000001091839219036217,
+            "p50": 20.4244623954986,
+            "p95": 84.99758770836469,
+            "max": 99.24184417838279,
+            "mean": 28.942589443079854,
+            "rms": 40.21236180711902
+          },
+          "driftPixels": {
+            "n": 2285,
+            "min": -131.46408461301996,
+            "p50": -14.943834846590306,
+            "p95": 255.9511335858333,
+            "max": 259.7900639953276,
+            "mean": 24.403469243215955,
+            "rms": 140.58968864760175
+          },
+          "rawTotal": 0,
+          "rawPath": 5200,
+          "yawTotal": 7.915579975582659,
+          "yawPath": 1172.3039009375498,
+          "expectedYawPath": 909.9090000000002,
+          "axisYawPath": 1172.303897687234,
+          "expectedAxisYawPath": 909.9090000000002,
+          "cameraAxisErrorDegrees": {
+            "n": 2284,
+            "min": -1.1920928955078125e-7,
+            "p50": 0,
+            "p95": 2.9802322387695312e-8,
+            "max": 1.1920928955078125e-7,
+            "mean": 1.8695770598125958e-10,
+            "rms": 2.271259495489648e-8
+          },
+          "extrapolatedFrames": 950,
+          "tickMilliseconds": {
+            "n": 2285,
+            "min": 0.969970703125,
+            "p50": 1.215087890625,
+            "p95": 4.03515625,
+            "max": 8.170166015625,
+            "mean": 1.6488640248905908,
+            "rms": 1.9336703653365057
+          },
+          "inputBehindAtTickPixels": {
+            "n": 2285,
+            "min": -1,
+            "p50": 0,
+            "p95": 0,
+            "max": 3,
+            "mean": 0.000437636761487965,
+            "rms": 0.06938302657255314
+          },
+          "inputToGameBeginMs": {
+            "n": 1001,
+            "min": 0.074951171875,
+            "p50": 3.934814453125,
+            "p95": 16.634765625,
+            "max": 31.52978515625,
+            "mean": 5.637774091143232,
+            "rms": 7.650582122144249
+          },
+          "inputBridgeMs": {
+            "n": 1001,
+            "min": 0.02978515625,
+            "p50": 0.054931640625,
+            "p95": 1.364990234375,
+            "max": 4.934814453125,
+            "mean": 0.2899597960633117,
+            "rms": 0.7050371372928241
+          },
+          "ownerQueueMs": {
+            "n": 20810,
+            "min": 0,
+            "p50": 0.009765625,
+            "p95": 0.02001953125,
+            "max": 0.175048828125,
+            "mean": 0.008837655987205671,
+            "rms": 0.01195731548114276
+          },
+          "gpuCompletionFeedbackMs": {
+            "n": 2307,
+            "min": 3.705078125,
+            "p50": 8.335205078125,
+            "p95": 24.659912109375,
+            "max": 43.3798828125,
+            "mean": 10.330925368105223,
+            "rms": 11.962466860694025
+          },
+          "boundary": "Game-thread axis/camera values; submission timing is not physical presentation or end-to-end input latency."
+        }
+      ]
+    },
+    {
+      "source": "tests/web-platform/results/input-timing-30-ba-20261107.json",
+      "pass": true,
+      "runs": [
+        {
+          "index": 1,
+          "smoothing": false,
+          "epochValid": true,
+          "frames": 382,
+          "events": 750,
+          "frameResult": {
+            "samples": 365,
+            "fps": 30.013201697355225,
+            "low1Fps": 24.066664661370204,
+            "p50": 32.95000000298023,
+            "p95": 36.854999989271164,
+            "p99": 38.855000004172325,
+            "maximum": 44.314999997615814
+          },
+          "axisGain": 0.06999300000000001,
+          "yawGain": 0.17498250000000004,
+          "gainErrorPercent": {
+            "n": 301,
+            "min": -0.000001091839219036217,
+            "p50": 0.000006004661456948668,
+            "p95": 0.000009046018911718079,
+            "max": 0.000009366161801693806,
+            "mean": 0.000005307476386254902,
+            "rms": 0.000005967233308897409
+          },
+          "absoluteGainErrorPercent": {
+            "n": 301,
+            "min": 0.000001091839219036217,
+            "p50": 0.000006004661456948668,
+            "p95": 0.000009046018911718079,
+            "max": 0.000009366161801693806,
+            "mean": 0.000005467080790366508,
+            "rms": 0.000005967233308897409
+          },
+          "driftPixels": {
+            "n": 382,
+            "min": -0.00003370792398982303,
+            "p50": 0.000013024706163378141,
+            "p95": 0.000036977787090108905,
+            "max": 0.000038178719478310086,
+            "mean": 0.000008405518458880518,
+            "rms": 0.000025096987642183516
+          },
+          "rawTotal": 0,
+          "rawPath": 3900,
+          "yawTotal": -1.5748430788516998,
+          "yawPath": 680.8569523394108,
+          "expectedYawPath": 680.8569075000001,
+          "axisYawPath": 682.4317875504494,
+          "expectedAxisYawPath": 682.4317500000002,
+          "cameraAxisErrorDegrees": {
+            "n": 381,
+            "min": -1.1920928955078125e-7,
+            "p50": 0,
+            "p95": 1.1920928955078125e-7,
+            "max": 1.1920928955078125e-7,
+            "mean": -9.777664825359354e-10,
+            "rms": 6.512738647360942e-8
+          },
+          "extrapolatedFrames": 0,
+          "tickMilliseconds": {
+            "n": 382,
+            "min": 1.125,
+            "p50": 1.280029296875,
+            "p95": 1.43994140625,
+            "max": 1.710205078125,
+            "mean": 1.2922433583524215,
+            "rms": 1.294489262944827
+          },
+          "inputBehindAtTickPixels": {
+            "n": 382,
+            "min": -8,
+            "p50": 0,
+            "p95": 0,
+            "max": 5,
+            "mean": -0.007853403141361256,
+            "rms": 0.4826844654572149
+          },
+          "inputToGameBeginMs": {
+            "n": 751,
+            "min": 0.065185546875,
+            "p50": 16.315185546875,
+            "p95": 31.9951171875,
+            "max": 38.85009765625,
+            "mean": 16.70165918098785,
+            "rms": 19.376851400809898
+          },
+          "inputBridgeMs": {
+            "n": 751,
+            "min": 0.030029296875,
+            "p50": 0.05517578125,
+            "p95": 0.135009765625,
+            "max": 1.594970703125,
+            "mean": 0.093390778441245,
+            "rms": 0.21453257024937863
+          },
+          "ownerQueueMs": {
+            "n": 6281,
+            "min": 0,
+            "p50": 0.005126953125,
+            "p95": 0.02490234375,
+            "max": 0.135009765625,
+            "mean": 0.008693326413489095,
+            "rms": 0.012067308560223798
+          },
+          "gpuCompletionFeedbackMs": {
+            "n": 385,
+            "min": 6.130126953125,
+            "p50": 16.159912109375,
+            "p95": 30.919921875,
+            "max": 44.669921875,
+            "mean": 16.958201856737013,
+            "rms": 17.961964871321968
+          },
+          "boundary": "Game-thread axis/camera values; submission timing is not physical presentation or end-to-end input latency."
+        },
+        {
+          "index": 2,
+          "smoothing": true,
+          "epochValid": true,
+          "frames": 382,
+          "events": 750,
+          "frameResult": {
+            "samples": 366,
+            "fps": 30.000774610158253,
+            "low1Fps": 24.052193258338384,
+            "p50": 32.93000000715256,
+            "p95": 37.310000002384186,
+            "p99": 38.96999999880791,
+            "maximum": 44.84000000357628
+          },
+          "axisGain": 0.06999300000000001,
+          "yawGain": 0.17498250000000004,
+          "gainErrorPercent": {
+            "n": 299,
+            "min": -34.580591841434696,
+            "p50": -1.5064746453254174,
+            "p95": 10.566727150842281,
+            "max": 93.98030797155566,
+            "mean": -0.5190030981775903,
+            "rms": 12.776193362961374
+          },
+          "absoluteGainErrorPercent": {
+            "n": 299,
+            "min": 0.000007256985123937909,
+            "p50": 2.8628784986195366,
+            "p95": 27.77120691995768,
+            "max": 93.98030797155566,
+            "mean": 7.260624104689375,
+            "rms": 12.776193362961374
+          },
+          "driftPixels": {
+            "n": 382,
+            "min": -15.966928827824518,
+            "p50": -5.377990060154218,
+            "p95": 9.370279472326388,
+            "max": 11.726221801925021,
+            "mean": -3.9986282173803773,
+            "rms": 8.937985582725169
+          },
+          "rawTotal": 0,
+          "rawPath": 3900,
+          "yawTotal": -0.39183828234672546,
+          "yawPath": 671.3730994164944,
+          "expectedYawPath": 682.4317500000002,
+          "axisYawPath": 671.373098269105,
+          "expectedAxisYawPath": 682.4317500000002,
+          "cameraAxisErrorDegrees": {
+            "n": 381,
+            "min": -1.1920928955078125e-7,
+            "p50": 0,
+            "p95": 1.1920928955078125e-7,
+            "max": 1.1920928955078125e-7,
+            "mean": -1.8382009871675586e-9,
+            "rms": 5.57210580157917e-8
+          },
+          "extrapolatedFrames": 0,
+          "tickMilliseconds": {
+            "n": 382,
+            "min": 1.10498046875,
+            "p50": 1.300048828125,
+            "p95": 1.43994140625,
+            "max": 1.6650390625,
+            "mean": 1.3088717635389397,
+            "rms": 1.3107262526423915
+          },
+          "inputBehindAtTickPixels": {
+            "n": 382,
+            "min": 0,
+            "p50": 0,
+            "p95": 0,
+            "max": 0,
+            "mean": 0,
+            "rms": 0
+          },
+          "inputToGameBeginMs": {
+            "n": 751,
+            "min": 0.090087890625,
+            "p50": 17.030029296875,
+            "p95": 31.8701171875,
+            "max": 35.93017578125,
+            "mean": 16.995860337258655,
+            "rms": 19.59443700455823
+          },
+          "inputBridgeMs": {
+            "n": 751,
+            "min": 0.030029296875,
+            "p50": 0.05517578125,
+            "p95": 0.400146484375,
+            "max": 1.400146484375,
+            "mean": 0.09543395264647137,
+            "rms": 0.2040854513733325
+          },
+          "ownerQueueMs": {
+            "n": 6073,
+            "min": 0,
+            "p50": 0.010009765625,
+            "p95": 0.034912109375,
+            "max": 0.114990234375,
+            "mean": 0.011360559160423184,
+            "rms": 0.01521018801978773
+          },
+          "gpuCompletionFeedbackMs": {
+            "n": 386,
+            "min": 4.469970703125,
+            "p50": 18.794921875,
+            "p95": 32.205078125,
+            "max": 38.81494140625,
+            "mean": 18.37822505970693,
+            "rms": 19.74425452733431
+          },
+          "boundary": "Game-thread axis/camera values; submission timing is not physical presentation or end-to-end input latency."
+        }
+      ]
+    }
+  ],
+  "releaseSummary": [
+    {
+      "source": "tests/web-platform/results/input-raw-release-30-20261107.json",
+      "result": {
+        "samples": 246,
+        "fps": 29.992465307487205,
+        "low1Fps": 23.702299124354365,
+        "p50": 32.79500000178814,
+        "p95": 37,
+        "p99": 40.57500000298023,
+        "maximum": 43.62999999523163
+      },
+      "visibility": {
+        "method": "synthetic-document-visibility-event",
+        "paused": 759,
+        "resumed": 770
+      },
+      "errors": [],
+      "closedPathYawError": 0.0000012516975402832031
+    },
+    {
+      "source": "tests/web-platform/results/input-raw-release-free-20261107.json",
+      "result": {
+        "samples": 956,
+        "fps": 115.72609956452652,
+        "low1Fps": 49.026817676715,
+        "p50": 8.334999993443489,
+        "p95": 16.59000000357628,
+        "p99": 19.064999997615814,
+        "maximum": 24.32999999821186
+      },
+      "visibility": {
+        "method": "synthetic-document-visibility-event",
+        "paused": 2359,
+        "resumed": 2374
+      },
+      "errors": [],
+      "closedPathYawError": -0.000001549720778371011
+    }
+  ]
+}

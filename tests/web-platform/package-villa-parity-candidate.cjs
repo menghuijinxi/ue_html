@@ -10,7 +10,8 @@ const source=path.join(__dirname,'build',baseline),dest=path.join(__dirname,'bui
 const versions=JSON.parse(fs.readFileSync(path.join(source,'asset-versions.json')));
 const runtimeBuild=option('runtime-build');
 const pageMaxFPS=option('page-max-fps');
-assert(pageMaxFPS===undefined||(/^\d+$/.test(pageMaxFPS)&&Number(pageMaxFPS)>=1&&Number(pageMaxFPS)<=240));
+assert(pageMaxFPS===undefined||(/^\d+$/.test(pageMaxFPS)&&Number(pageMaxFPS)<=240));
+const noMouseSmoothing=process.argv.includes('--no-mouse-smoothing');
 const cores=option('cores');assert(cores===undefined||/^[468]$/.test(cores));
 const csmScrollSubjects=option('csm-scroll-subjects');
 const csmMode=option('csm-mode');
@@ -51,6 +52,11 @@ if(build)for(const name of ['UEWebEngineThreads.js','UEWebEngineThreads.wasm'])
   fs.copyFileSync(build.products.find(p=>path.basename(p.file)===name).file,path.join(dest,name));
 fs.copyFileSync(path.join(__dirname,'web-engine-host.js'),path.join(dest,'web-engine-host.js'));
 const configs=JSON.parse(fs.readFileSync(path.join(source,'config-files.json')));
+if(noMouseSmoothing){
+  const input=configs.find(v=>v.path==='/Engine/Programs/UEWebEngine/Config/DefaultInput.ini');assert(input);
+  const text=Buffer.from(input.data,'base64').toString()+'\n[/Script/Engine.InputSettings]\nbEnableMouseSmoothing=False\n';
+  input.data=Buffer.from(text).toString('base64');input.sha256=crypto.createHash('sha256').update(text).digest('hex');
+}
 const config=configs.find(v=>v.path==='/Engine/Platforms/Web/Config/WebEngine.ini');assert(config);
 const settings={'t.MaxFPS':0,'r.VSync':0};
 if(process.argv.includes('--csm'))settings['r.Shadow.CSMCaching']=1;
@@ -116,7 +122,7 @@ html=html.replace(match[0],'const localRuntimeAssets = '+JSON.stringify(assets)+
 fs.writeFileSync(path.join(dest,'index.html'),html);
 const products=Object.keys(versions).map(n=>audit(path.join(dest,n)));
 writeVersions(dest,products);
-fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,pageFrameMaxFPS:assets.pageFrameMaxFPS,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
+fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,noMouseSmoothing,pageFrameMaxFPS:assets.pageFrameMaxFPS,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
   performanceAccepted:false,runtimeBuild:runtimeBuild?audit(runtimeBuild):null,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
   candidateManifest:audit(path.join(dest,'asset-versions.json'))},null,2));
 console.log(dest);

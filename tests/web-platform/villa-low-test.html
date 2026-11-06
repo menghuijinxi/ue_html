@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>别墅 · 转向低帧测试</title>
+<title>别墅 · 鼠标转向对照</title>
 <style>
 :root{color-scheme:dark;font:16px/1.7 system-ui,sans-serif;background:#111719;color:#edf3f0}
 *{box-sizing:border-box}body{margin:0;padding:48px 24px}main{max-width:860px;margin:auto}
@@ -18,20 +18,22 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}footer{margin-top:30px;border
 </style>
 <main>
 <div class="date">TRIPLEX HOUSE VILLA · 2026-11-07</div>
-<h1>转向低帧测试</h1>
-<p>本次比较运动模糊：两个主要入口都限制为 30 FPS，使用相同优化候选和鼠标输入方式，只切换运动模糊。重点观察轻微转动鼠标时，几帧画面之间的异常抖动是否减轻。</p>
-<p class="note">已收到体感反馈：转向流畅度改善，转身时画面突然空白的问题未再出现；键盘移动丝滑，但鼠标转向仍抖动。30 FPS 入口用于排查帧率波动，尚未替换默认版本。</p>
+<h1>鼠标转向对照</h1>
+<p>新候选关闭鼠标平滑。下面四个入口都关闭运动模糊，分别比较 30 FPS 和不限帧时的转向连贯性、轻微移动与停手响应。</p>
+<p class="note">逐帧记录已确认：旧版会改变鼠标位移对应的转角，不限帧时还会在没有新位移的帧继续转向。新候选消除了这部分输入误差；最终手感仍待体感测试，尚未替换默认版本。</p>
 <nav aria-label="测试版本">
-<a class="candidate" href="build/villa-low-30fps-no-blur-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>30 FPS · 关闭运动模糊</strong><span>在刚才的 30 FPS 版上关闭运动模糊。</span></a>
-<a href="build/villa-low-30fps-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>30 FPS · 原运动模糊对照</strong><span>保留刚才的限帧版，便于比较转向画面。</span></a>
+<a class="candidate" href="build/villa-input-raw-30-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>新候选 · 30 FPS</strong><span>关闭鼠标平滑，先与刚才的 30 FPS 版比较。</span></a>
+<a class="candidate" href="build/villa-input-raw-free-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>新候选 · 不限帧</strong><span>关闭鼠标平滑，检查高帧率转向是否还会异常抖动。</span></a>
+<a href="build/villa-low-30fps-no-blur-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>原版对照 · 30 FPS</strong><span>保留刚才关闭运动模糊的版本，鼠标平滑开启。</span></a>
+<a href="build/villa-input-control-free-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>原版对照 · 不限帧</strong><span>与左侧原版相同，仅解除 30 FPS 上限。</span></a>
 </nav>
 <ol>
 <li>用 Edge 或 Chrome 打开，每次只运行一个版本。切换时返回此页，避免两个游戏同时占用显卡。</li>
 <li>加载后先移动、转向约 30 秒，再用相同窗口大小和路线比较。</li>
-<li>重点看 1% Low、最长帧和转向手感。左上角“导出”可保存性能记录。</li>
+<li>先小幅、匀速左右转动，再突然停下。比较是否忽快忽慢、停手后继续转动；再比较键盘移动。左上角“导出”可保存性能记录。</li>
 </ol>
 <footer>
-<p><a href="build/villa-low-final-candidate-20261106/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread">同版不限帧、原运动模糊入口</a>仍可用于限帧对照。</p>
+<p>此前开启运动模糊的版本仍保留：<a href="build/villa-low-30fps-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread">30 FPS</a> / <a href="build/villa-low-final-candidate-20261106/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread">不限帧</a>。</p>
 <p><a href="build/villa-low-final-control-20261106/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">此前关闭优化的对照</a>仍保留。此前候选 720p 转向长测：平均 113.32 → 126.20 FPS，1% Low 43.72 → 45.64（约 +4.4%）。</p>
 <p><a href="villa-parity-test.html">返回此前版本与其他对照</a></p>
 <p>页面数字来自 RHI 提交间隔，不是显示器实际呈现帧率。没有开启后续长测失败的合批保留或新入视野合批实验。</p>

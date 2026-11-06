@@ -32,6 +32,8 @@ const recoveryCheck=process.argv.includes('--recovery-check');
 const passCounts=process.argv.includes('--pass-counts');
 const shadowCacheProbe=process.argv.includes('--shadow-cache-probe');
 const bufferLifecycle=process.argv.includes('--buffer-lifecycle');
+const inputCapture=(option('input-capture')||'').split(',').filter(Boolean).map(Number);
+assert(!inputCapture.length || (inputCapture.length===modes.length && inputCapture.every(v=>[0,1,2].includes(v))));
 assert(!resetInput||mouseOnly,'Orientation reset is for mouse-only runs');
 assert(['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode));
 assert(!defaultSettings || (modes.length === 1 && packagedInput));
@@ -45,7 +47,7 @@ fs.copyFileSync(__filename, output + '-source.cjs');
 const report = {date: new Date().toISOString(), pass: false, folder, profile, modes, duration, width, height, scale, gpuProbe, gpuTimestamps, rhiWake,
   occlusionMode,
   minVisibleRatio, visibilityCheck, pipeline, chromeTrace, inputMode, packagedInput, defaultSettings,
-  mouseOnly,profileWorkers,resetInput,recoveryCheck,stallTrace,dawnTrace,passCounts,shadowCacheProbe,bufferLifecycle,
+  mouseOnly,profileWorkers,resetInput,recoveryCheck,stallTrace,dawnTrace,passCounts,shadowCacheProbe,bufferLifecycle,inputCapture,
   source: audit(__filename), capturedSource: audit(output + '-source.cjs'),
   observerSource: pipeline ? audit(path.join(__dirname, 'web-local-pipeline-observer.cjs')) : undefined,
   passCounterSource:passCounts?audit(require.resolve('./web-render-pass-counts.cjs')):undefined,
@@ -88,6 +90,11 @@ function motionStart(options) {
   const canvas = document.querySelector('canvas');
   canvas.focus();
   const state = globalThis.__clockMotionInput = {started: performance.now(), events: 0, done: false, key: null};
+  if(options.capture)state.raw=[];
+  if(options.capture)canvas.addEventListener('mousemove',function record(event){
+    if(state.done){canvas.removeEventListener('mousemove',record);return;}
+    state.raw.push([performance.timeOrigin+performance.now(),event.movementX,event.movementY]);
+  });
   const mouse = (type, dx, dy) => canvas.dispatchEvent(new MouseEvent(type, {
     bubbles: true, cancelable: true, button: 2, buttons: type === 'mouseup' ? 0 : 2,
     clientX: innerWidth / 2, clientY: innerHeight / 2, movementX: dx, movementY: dy,
@@ -234,6 +241,7 @@ ${marker}
       gpu: globalThis.__clockMotionGPU && {submitted: __clockMotionGPU.submitted,
         completed: __clockMotionGPU.completed, peak: __clockMotionGPU.peak}}));
     run.spawn = (await state()).camera;
+    if(inputCapture.length)run.smoothing=await page.evaluate(value=>__webEngineRPC('WebMotionBenchmarkControl',7,value),inputCapture[run.index-1]);
     if(resetInput)assert.equal(await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',4,0)),1);
     if(shadowCacheProbe)assert.equal(await page.evaluate(()=>__webEngineRPC('WebLightingQualityTest',11,256)),1);
     await page.evaluate(motionStart, {duration,mouseOnly});
@@ -266,7 +274,8 @@ ${marker}
       await page.evaluate(() => performance.mark('UE motion trace start'));
       run.ownerTraceStart=await owner.evaluate(()=>{performance.mark('UE mouse owner start');return performance.now();});
     }
-    await page.evaluate(motionStart, {duration,mouseOnly});
+    if(inputCapture.length)assert.equal(await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',6,0)),run.smoothing);
+    await page.evaluate(motionStart, {duration,mouseOnly,capture:!!inputCapture.length});
     while (!await page.evaluate(() => __clockMotionInput.done)) {
       await page.waitForTimeout(500);
       run.samples.push({state: await state(), input: await page.evaluate(() => __webInputBridge),
@@ -281,6 +290,14 @@ ${marker}
       __clockMotionFrames.active = false; return __clockMotionFrames.times;
     });
     run.after = await state();
+    if(inputCapture.length){
+      await page.waitForTimeout(500);
+      assert.equal(await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',7,0)),run.smoothing);
+      await page.waitForTimeout(100);
+      run.inputFrames=await owner.evaluate(()=>__webInputMotionCapture);
+      assert(run.inputFrames.length>20);
+      run.inputFrameColumns=['frame','beginEpoch','endEpoch','dt','rawX','rawY','axisX','axisY','controlYaw','controlPitch','viewYaw','viewPitch','samplingHz','smoothedX','zeroX'];
+    }
     if(gpuTimestamps)assert.deepEqual(await owner.evaluate(()=>__webPerformanceCapture.errors),[]);
     if(occlusionMode==='hzb')assert(run.after.history.hzbCompleted>run.before.history.hzbCompleted);
     if(frameBudget){assert(run.after.ownerBudget[3]<=frameBudget&&run.after.ownerBudget[5]<=frameBudget);

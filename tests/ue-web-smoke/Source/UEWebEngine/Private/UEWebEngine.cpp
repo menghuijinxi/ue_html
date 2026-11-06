@@ -48,6 +48,8 @@
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "GameFramework/PlayerInput.h"
+#include "GameFramework/InputSettings.h"
 #include "Stats/StatsData.h"
 #include "Engine/Texture2D.h"
 #include "StaticMeshResources.h"
@@ -102,6 +104,7 @@ double MotionBenchmarkStart = 0, MotionBenchmarkSeconds = 0;
 uint32 MotionBenchmarkUpdates = 0;
 int32 MotionBenchmarkSerial = 0;
 bool MotionBenchmarkActive = false, MotionBenchmarkHasOrigin = false;
+int32 InputMotionCaptureRemaining = 0;
 FVector MotionBenchmarkOrigin;
 FRotator MotionBenchmarkOriginRotation;
 TWeakObjectPtr<ACameraActor> MotionBenchmarkCamera;
@@ -234,6 +237,8 @@ void EngineFrame(void*)
         return;
     }
     const double TickStart = emscripten_get_now();
+    const double InputTickEpoch = InputMotionCaptureRemaining > 0 ?
+        EM_ASM_DOUBLE({ return performance.timeOrigin + performance.now(); }) : 0;
     if (Frames == 0) StartupMark("native.firstTick.begin");
     if (MotionBenchmarkActive && MotionBenchmarkCamera.IsValid())
     {
@@ -252,6 +257,30 @@ void EngineFrame(void*)
             Frames, Sample->GetActorLocation().X);
     }
     GEngineLoop.Tick();
+    if (InputMotionCaptureRemaining > 0)
+    {
+        --InputMotionCaptureRemaining;
+        if (APlayerController* Controller = TemplateController.Get())
+        {
+            if (UPlayerInput* Input = Controller->PlayerInput)
+            {
+                FVector Location;
+                FRotator View;
+                Controller->GetPlayerViewPoint(Location, View);
+                // Diagnostic only. Timestamp the game thread itself; owner message
+                // arrival may be delayed by RHI work and is not an input timestamp.
+                const double EndEpoch = EM_ASM_DOUBLE({ return performance.timeOrigin + performance.now(); });
+                MAIN_THREAD_ASYNC_EM_ASM({
+                    (globalThis.__webInputMotionCapture ||= []).push([$0,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14]);
+                }, Frames, InputTickEpoch, EndEpoch, FApp::GetDeltaTime(),
+                    Input->GetRawKeyValue(EKeys::MouseX), Input->GetRawKeyValue(EKeys::MouseY),
+                    Input->GetKeyValue(EKeys::MouseX), Input->GetKeyValue(EKeys::MouseY),
+                    Controller->GetControlRotation().Yaw, Controller->GetControlRotation().Pitch,
+                    View.Yaw, View.Pitch, Input->MouseSamples / Input->MouseSamplingTotal,
+                    Input->SmoothedMouse[0], Input->ZeroTime[0]);
+            }
+        }
+    }
     if (Frames == 0) StartupMark("native.firstTick.end");
     if (IsEngineExitRequested())
     {
@@ -816,8 +845,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebMotionBenchmarkControl(int Mode, double S
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     APlayerController* Controller = TemplateController.Get();
-    if (!Controller || Mode < 0 || Mode > 5 || !FMath::IsFinite(Seconds) || Seconds < 0 || Seconds > 60)
+    if (!Controller || Mode < 0 || Mode > 7 || !FMath::IsFinite(Seconds) || Seconds < 0 || Seconds > 60)
         return 0;
+    if (Mode >= 6)
+    {
+        // 6 starts a bounded exact-frame trace; 7 stops it. Seconds selects
+        // unchanged (0), smoothing off (1), or smoothing on (2), without saving config.
+        if (Seconds > 2 || Seconds != FMath::FloorToDouble(Seconds)) return 0;
+        if (Seconds > 0) GetMutableDefault<UInputSettings>()->bEnableMouseSmoothing = Seconds == 2;
+        InputMotionCaptureRemaining = Mode == 6 ? 10000 : 0;
+        if (Mode == 6)
+        {
+            MAIN_THREAD_ASYNC_EM_ASM({ globalThis.__webInputMotionCapture = []; });
+        }
+        return GetDefault<UInputSettings>()->bEnableMouseSmoothing ? 2 : 1;
+    }
     if (Mode >= 4)
     {
         // Reset only input orientation between mouse benchmark phases. Keep the
