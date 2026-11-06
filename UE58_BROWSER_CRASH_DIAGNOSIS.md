@@ -1,5 +1,91 @@
 # Edge 原生崩溃诊断
 
+## 2026-11-06：当前 VT/VSM 包的高概率启动失败
+
+用户报告普通页面约 80% 无法显示画面，其他电脑似乎正常。本轮在同一台机器、
+同一 `triplex-virtual-distance-fields-threads` 包复现；未把少量测试换算成 80% 的统计结论。
+直接故障确认是 Edge 内的 DXC 原生崩溃，普通调度仍未修复。
+
+### 原始诊断与精确转储对应
+
+- 用户文件 `ue-startup-diagnostics-2026-11-06T06-48-22-397Z.json` 记录 5163/5163 个资源完成挂载，
+  6163 个 Shader 已注册，桌面 SM5 路径已运行到第 1 帧，画布为 2405×1353。
+- 设备丢失时间是 2026-11-06 **14:48:19.228（UTC+8）**；Edge Crashpad 的
+  `56ac6f16-aab9-408f-9c32-9d6d7a92ff87.dmp` 头部时间为同秒。
+  异常码 `0xc000001d`，指令地址落在 Edge 156.0.4314.58 的
+  `dxcompiler.dll+0xf4162d`。本机对应 DLL 字节为 `0f 0b`（UD2）。
+- 14:47:14 的 Windows Application Error 1000 还记录了一次 DXC `0xc0000409`；
+  它早于用户这次启动，不将其误配为 14:48:19 这次故障。
+- 此次 `A valid external Instance reference no longer exists` 是页面观测到的设备丢失，
+  不能仅据其文字推断 UE 释放 Instance 出错，也不能据 `0xc000001d` 认定 CPU 缺少指令集。
+
+### 同包 A/B/A 对照
+
+全部使用可见 Edge 156.0.4314.58、独立配置目录、CSS 1614×902、DPR 1.5。
+各组依次执行，包文件哈希相同，未改 Shader、UE 设置、特效或浏览器编译开关。
+
+| 条件 | 结果 |
+| --- | --- |
+| 默认调度 A | 第一次启动、第 1 帧失败；15:01:49 转储为 `dxcompiler.dll+0xc7ebf8`、`0xc0000005` |
+| 仅测试浏览器限制逻辑核心 16–31，`0xffff0000` | 三轮启动/刷新及三次缩放全部通过；启动帧 180/181/180，缩放后 270/273/270 |
+| 恢复默认调度 B，另一个新配置 | 第一次启动、第 1 帧失败；15:07:57 转储为 `dxcompiler.dll+0xf4162d`、`0xc000001d` |
+
+受限组首轮与第三轮启动为 2405×1353，第二轮因沿用前次缩放为 1920×1080。
+启动前实际设置浏览器及其子进程掩码，随后六个采样点只读复核，GPU 进程始终保持同一 PID
+及 `0xffff0000`；不能只凭 Node 父进程掩码认定 GPU 已受限。
+通过组无页面/GPU 错误，最终截图人工确认有实际带光照场景；这不是普通调度的性能验收。
+
+本轮假设依次为主机/核心调度条件、DXC 软件缺陷、当前场景资源压力。
+结果支持前两者及其交互；改变亲和性同时改变核心、并发和时序，尚未做等核心数/等负载对照，
+不能区分硬件问题与编译器缺陷。历史独立 DXC 回放见下文，本轮没有重跑已清理的 HLSL 语料。
+
+### 主机检查与下一步
+
+本机读取到 i9-14900KF、RTX 3070、ROG STRIX Z790-A GAMING WIFI S，
+BIOS 1801（SMBIOS 日期 2024-11-30）。重新查询系统日志仍可见
+2026-11-04 11:03:21 的 WHEA-Logger 19：处理器核心 `Internal parity error`、APIC ID 8。
+这使主机稳定性成为高优先级检查项，不能仅由这一条历史纠正错误宣布 CPU 已损坏。
+
+2026-11-06 访问该型号的[华硕官方支持页](https://rog.asus.com.cn/motherboards/rog-strix/rog-strix-z790-a-gaming-wifi-s/helpdesk_download/)，
+“BIOS & 固件”列出 2301、发布日期 2026-11-06，说明涉及系统性能、安全与兼容性，
+并会更新 Intel ME 至 16.1.40.2765。本轮只核对页面，没有下载/刷写 BIOS，
+也没有确认现有超频、降压或 XMP 状态。后续应由用户在确认主板型号及厂商操作要求后，
+核对 BIOS 更新与 Intel 默认设置，再在默认 CPU 调度下重跑同包；必要时进一步检查 CPU/内存稳定性。
+固件更新本身不能保证修复这次故障。
+
+需要临时查看当前原画质包时，本机可运行：
+
+```powershell
+& H:/ue_html/tests/web-platform/start-web-preview.ps1 -Folder triplex-virtual-distance-fields-threads -AffinityMask 4294901760
+```
+
+它只限制新建独立浏览器，可能降低 CPU 性能；不适用于其他机器，也不构成普通启动修复。
+普通网页无法用 JavaScript 设置浏览器原生 GPU 进程的 Windows CPU 亲和性。
+本轮另用该脚本打开实际交互窗口，在 1866×1050 下验证到 184 帧、无启动失败，
+并在加载后核对浏览器/GPU 子进程仍为 `0xffff0000`；窗口保留给用户。
+截图与诊断为 `results/virtual-startup-host-preview-20261106.{png,json}`。
+
+### 可复核证据与工具
+
+摘要与原始文件哈希：`tests/web-platform/evidence/virtual-startup-host-20261106.json`。
+三份生命周期原始报告标签为 `virtual-startup-{default-a,ecores,default-b}-20261106`。
+原始转储留在本机，未上传或提交其内存内容。
+
+`probe-web-browser-lifecycle.cjs` 新增显式 `--affinity-mask`；默认不改变调度。
+它在空白页阶段设置实际浏览器/GPU 进程，启动及缩放后只读校验；成功时保存场景截图。
+新增 `diagnostics/inspect-minidump.cjs` 读取时间、异常码和包含异常地址的模块；
+拒绝截断数据，只报告直接异常位置，不猜测调用栈或硬件健康状态。
+真实三份转储的异常位置、非法/截断输入、JavaScript 语法及上述 A/B/A 路径均已检查。
+
+```powershell
+$env:NODE_PATH = 'C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node H:/ue_html/tests/web-platform/probe-web-browser-lifecycle.cjs --folder=triplex-virtual-distance-fields-threads --headful --width=1614 --height=902 --dpr=1.5 --runs=3 --affinity-mask=4294901760 --tag=host-recheck
+node H:/ue_html/tests/web-platform/diagnostics/inspect-minidump.cjs "C:/Users/wap80/AppData/Local/Microsoft/Edge/User Data/Crashpad/reports/56ac6f16-aab9-408f-9c32-9d6d7a92ff87.dmp"
+```
+
+默认调度对照去掉 `--affinity-mask`，使用不同 `--tag`。普通浏览器修复、长期稳定性、
+跨机器及硬件根因均仍待验收。本轮没有修改引擎或发布包。
+
 ## 2026-11-04：继续尝试兼容
 
 普通 WebGPU 应用能运行，与别墅触发 DXC 崩溃并不矛盾。本轮抓到 302 个实际 WGSL 模块、333 个不同描述符和 420 次管线创建请求；脱离 UE 后逐条异步编译全部完成。报告点名的 `main_00002028_1fc9f5c5` 约 12 KB，对应两条阴影管线也能单独创建，不能把它当成必然失败的 Shader。同步创建回放虽无设备丢失，但没有绘制，也没有等待每条管线实际完成编译，不据此计作同等编译验收。
