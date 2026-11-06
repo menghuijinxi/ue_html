@@ -580,7 +580,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v29-NanitePackedAtomic-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v30-NaniteVisibilityResolve-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -594,7 +594,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1_NaniteResolve1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -606,6 +606,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Loose Web archives use the engine's uncompressed entry format; no browser Oodle decoder is required.
         Input.CompressionFormat = NAME_None;
         Input.Environment.SetDefine(TEXT("COMPILER_WEBGPU"), 1);
+        if (Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/Nanite/")))
+            Input.Environment.SetDefine(TEXT("WEB_NANITE_PACKED_VISIBILITY"), 1);
         Input.Environment.SetDefine(TEXT("WEB_VSM_SCALAR_ATOMICS"),
             Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ? 1 : 0);
         Input.Environment.SetDefine(TEXT("EARLYDEPTHSTENCIL"), TEXT(""));

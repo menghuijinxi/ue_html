@@ -73,18 +73,38 @@ int32 RunWebNaniteVisibilityProbe(const FString& Params)
         const FString Original = Ordinary;
         if (!UE::WebGPUShader::LowerNaniteAtomicMax(Ordinary, 0, Error) || Ordinary != Original) return 1;
     }
-    struct FStage { EShaderFrequency Frequency; const TCHAR* Entry; const TCHAR* Name; };
+    struct FStage { EShaderFrequency Frequency; const TCHAR* Entry; const TCHAR* Name; const TCHAR* File = nullptr; };
     for (const FStage& Stage : {FStage{SF_Compute, TEXT("MainCS"), TEXT("compute")},
         FStage{SF_Vertex, TEXT("MainVS"), TEXT("vertex")}, FStage{SF_Pixel, TEXT("MainPS"), TEXT("fragment")},
-        FStage{SF_Compute, TEXT("MainCS"), TEXT("consumer")}})
+        FStage{SF_Compute, TEXT("MainCS"), TEXT("consumer")},
+        FStage{SF_Compute, TEXT("ClearCS"), TEXT("clear"), TEXT("/Engine/Private/Nanite/WebNaniteVisibility.usf")},
+        FStage{SF_Compute, TEXT("ResolveCS"), TEXT("resolve"), TEXT("/Engine/Private/Nanite/WebNaniteVisibility.usf")},
+        FStage{SF_Pixel, TEXT("EmitSceneDepthPS"), TEXT("depth"), TEXT("/Engine/Private/Nanite/NaniteExportGBuffer.usf")},
+        FStage{SF_Compute, TEXT("HZBBuildCS"), TEXT("hzb"), TEXT("/Engine/Private/HZB.usf")}})
     {
         FShaderCompileJob Job;
         Job.Key = FShaderCompileJobKey(Type, Platform, nullptr, 0);
         GlobalBeginCompileShader(TEXT("WebNaniteVisibilityProbe"), nullptr, Type, nullptr, 0,
-            FString(Stage.Name) == TEXT("consumer") ? TEXT("/WebGPUProbe/Private/WebNaniteVisibilityReadProbe.usf") :
+            Stage.File ? Stage.File : FString(Stage.Name) == TEXT("consumer") ? TEXT("/WebGPUProbe/Private/WebNaniteVisibilityReadProbe.usf") :
                 TEXT("/WebGPUProbe/Private/WebNaniteVisibilityProbe.usf"), Stage.Entry,
             FShaderTarget(Stage.Frequency, Platform), Job.Input, false);
         Job.Input.ShaderFormat = UE::WebGPUShader::SM5Format;
+        if (FString(Stage.Name) == TEXT("depth"))
+        {
+            Job.Input.Environment.SetDefine(TEXT("VELOCITY_EXPORT"), 0);
+            Job.Input.Environment.SetDefine(TEXT("SHADING_MASK_EXPORT"), 0);
+            Job.Input.Environment.SetDefine(TEXT("USE_SKINNING"), 0);
+            Job.Input.Environment.SetDefine(TEXT("NANITE_USE_VIEW_UNIFORM_BUFFER"), 0);
+            Job.Input.Environment.CompilerFlags.Add(CFLAG_HLSL2021);
+        }
+        if (FString(Stage.Name) == TEXT("hzb"))
+        {
+            Job.Input.Environment.SetDefine(TEXT("VIS_BUFFER_FORMAT"), 1);
+            Job.Input.Environment.SetDefine(TEXT("DIM_FURTHEST"), 1);
+            Job.Input.Environment.SetDefine(TEXT("DIM_CLOSEST"), 0);
+            Job.Input.Environment.SetDefine(TEXT("DIM_FROXELS"), 0);
+            Job.Input.Environment.SetDefine(TEXT("DIM_MIP_LEVEL_COUNT"), 1);
+        }
         Format->ModifyShaderCompilerInput(Job.Input);
         if (!Format->PreprocessShader(Job.Input, Job.Input.Environment, Job.PreprocessOutput))
         {

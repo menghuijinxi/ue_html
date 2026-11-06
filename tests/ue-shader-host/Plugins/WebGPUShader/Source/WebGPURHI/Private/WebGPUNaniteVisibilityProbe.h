@@ -5,6 +5,7 @@
 #include "PipelineStateCache.h"
 #include "RenderingThread.h"
 #include "Serialization/JsonSerializer.h"
+#include "WebGPUNaniteRDGProbe.h"
 
 inline bool RunWebGPUNaniteVisibilityProbe(IDynamicRHIModule& Module, const FString& Directory, const FString& Output)
 {
@@ -99,6 +100,8 @@ inline bool RunWebGPUNaniteVisibilityProbe(IDynamicRHIModule& Module, const FStr
                 Record(TEXT("compute-submission"), RHI.Dispatches == 1 && RHI.ComputePipelinesCreated == 1);
                 Data.Resources.Reset();
             }
+            if (Supported)
+                Record(TEXT("rdg-clear-packed-write-resolve-extraction"), RunWebGPUNaniteRDGProbe(RHI, Cmd, Directory));
             Scope.PrepareShutdown();
             Record(TEXT("gpu-validation-clean"), RHI.Errors.IsEmpty());
             auto Mode = MakeShared<FJsonObject>();

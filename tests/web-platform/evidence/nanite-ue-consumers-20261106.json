@@ -1,0 +1,1408 @@
+{
+  "date": "2026-11-06T09:41:52.252Z",
+  "pass": true,
+  "referenceCommit": "984d090b8ee3d094d6465436cab6180d6fa191bb",
+  "boundary": "RDG visibility allocation/clear/packed write/resolve/extraction and actual UE depth/HZB shader execution. No complete Nanite scene, real asset culling/rasterization, material reconstruction or streaming. Global Nanite remains disabled; native Renderer DLL build/link and wasm64 translation-unit compile do not establish packaged scene acceptance.",
+  "bridge": {
+    "packedBufferBytesPerPixel": 8,
+    "resolvedTextureBytesPerPixel": 8,
+    "resolvedFormat": "RG32_UINT",
+    "storageAccess": "write",
+    "resolveAfterEachRasterStage": true,
+    "fullScenePerformanceMeasured": false
+  },
+  "sources": [
+    {
+      "file": "H:\\ue_html\\UE58_WEBGPU_NANITE_IMPLEMENTATION.md",
+      "sha256": "ce1c5b7feb35dba8667100f4149cde98fb5f3836c25ff41e972857314ecbba55"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUNaniteVisibilityProbe.h",
+      "sha256": "b8e5432369884ef85628d2c45af7bb2121f3b7bdadb584d2f196ed507b0866a2"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\WebGPURHI.Build.cs",
+      "sha256": "2f20cb71ca364118c234620ac0e43d5a4e2c96a34d2e9e31664e82e18dcffd77"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "9a102e6a20a0efd5568698503cf3cf3f4e1c6e1be082ab9de1f5dd8227c8ab40"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteVisibilityProbe.cpp",
+      "sha256": "271d4001d66cfb32d17e7aee7554de3c5b6f9943725d91bbb06230fa158038d2"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build-web-engine.ps1",
+      "sha256": "976719dc4deb8443a647510fb951980fd423d3df867e9c943d99b8fc5a0eb247"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\prepare-native-rendercore-host.cjs",
+      "sha256": "ba52bff03fec22ccc565cb5c9eea57d6813ef51323c40beb448fad365d17a00d"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\prepare-web-cook-shaders.cjs",
+      "sha256": "74dfef4d39445b0a6519ca1b3396a9c069058dc41d86009285d2811cfdebb2f1"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-nanite-visibility.cjs",
+      "sha256": "ee6744947daf7cad05ef06a57fd38a603de55fdb683fb0b3b365dc576149e7d2"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-nanite-shader-overrides.cjs",
+      "sha256": "52b086707c672cd390766dcf47faf047a0d5212e7492e73429bd41d516b3812c"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUNaniteRDGProbe.h",
+      "sha256": "2fbbb06fc0a0a87a906e424c5d2980cea7e52f1a7dcb381b21aad7b416ce7443"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\compile-web-nanite.cjs",
+      "sha256": "b063f6b5d61cd75952029c1bb079643ccc546fb9968d8e0ca15a2273657521d1"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteWritePixel.ush",
+      "sha256": "4a6be5810b917358943b92be9d567ac0f89a03ea18249874b16306143320b106"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteVisibility.usf",
+      "sha256": "8e914d6a20b9c857f3f1f1bc9d69b12f894f51ed0cdafe2a7253dee620ba0ab1"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Public\\Platform\\Vulkan\\VulkanCommon.ush",
+      "sha256": "d78167552dc81c25ae4b0916af77cd95b6bf7e7ffa2088ab84fe808a50cdc6fc"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+      "sha256": "55edec3611afd9ff2161fb37226f5d7c61180bf74a4d1f2834fe556ffa2650fc"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.h",
+      "sha256": "d1cab9058f502174c93f5b20e179de149e83ac88b2d58d4f2259531cffadcac0"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebVisibility.h",
+      "sha256": "0d998b899740e807408b6d54155e60b995b66b2f5b867305b8666226970a2328"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Config\\DataDrivenPlatformInfo.ini",
+      "sha256": "eaef15df13cea0ca8d9e0201045626581554db037d96fa2836aea74322e24e8f"
+    }
+  ],
+  "stages": [
+    {
+      "name": "compute",
+      "entry": "main_000008f0_1946ae26",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    },
+    {
+      "name": "vertex",
+      "entry": "main_00000340_419df3f8",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    },
+    {
+      "name": "fragment",
+      "entry": "main_00000788_d0701bd7",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    },
+    {
+      "name": "consumer",
+      "entry": "main_00000470_07fb9a51",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    },
+    {
+      "name": "clear",
+      "entry": "main_000006f0_497f3873",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    },
+    {
+      "name": "resolve",
+      "entry": "main_00000704_d92e1dee",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    },
+    {
+      "name": "depth",
+      "entry": "main_00000694_7dbee57a",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    },
+    {
+      "name": "hzb",
+      "entry": "main_00000d5c_6fd9a5f3",
+      "formatVersion": 100063350,
+      "bindingContractVerified": true
+    }
+  ],
+  "browser": {
+    "date": "2026-11-06T09:16:46.797Z",
+    "pass": true,
+    "compilerTests": {
+      "pass": true,
+      "sharedTypeAndOrdinaryShaderPreserved": true,
+      "negativeCases": [
+        {
+          "input": "let x = WebNaniteAtomicMax_Test.data[0];",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "WebNaniteAtomicMax_Test.data[0].x = 3u;",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "let p = &WebNaniteAtomicMax_Test;",
+          "rejected": true,
+          "error": "Nanite atomic carrier cannot escape through a pointer or function: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "WebNaniteAtomicMax_Test.data[0] = WebNaniteAtomicMax_Test.data[1];",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "_ = atomicAdd(&(WebNaniteAtomicMax_Test.data[0]), 1u);",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "let x = atomicCompareExchangeWeak(&(WebNaniteAtomicMax_Test.data[0]), 1u, 2u).old_value;",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "atomicStore(&(WebNaniteAtomicMax_Test.data[0]), 1u);",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "expected-binding-count=0",
+          "rejected": true,
+          "error": "Nanite atomic carrier declaration/reflection count mismatch"
+        },
+        {
+          "input": "expected-binding-count=2",
+          "rejected": true,
+          "error": "Nanite atomic carrier declaration/reflection count mismatch"
+        }
+      ]
+    },
+    "browsers": [
+      {
+        "channel": "chrome",
+        "version": "157.0.8103.39",
+        "pass": true,
+        "errors": [],
+        "cases": [
+          {
+            "name": "compute-contention",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "fragment-and-repeated-store",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment"
+            ]
+          },
+          {
+            "name": "compute-then-fragment",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "fragment-then-compute",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment",
+              "compute"
+            ]
+          },
+          {
+            "name": "offset-subview-guards",
+            "pass": true,
+            "checkedWords": 33308,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "short-view-guards",
+            "pass": true,
+            "checkedWords": 33112,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 15,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "zero-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 0,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "overflow-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 4294967295,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "unsigned-id-ties-and-depth-priority",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "mixed-compute-raster-winners",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "resolve-depth-hzb-even",
+            "pass": true,
+            "width": 8,
+            "height": 8,
+            "rect": [
+              0,
+              0,
+              8,
+              8
+            ],
+            "clearRect": [
+              0,
+              0,
+              8,
+              8
+            ],
+            "count": 64,
+            "checkedPixels": 208
+          },
+          {
+            "name": "resolve-depth-hzb-odd",
+            "pass": true,
+            "width": 11,
+            "height": 9,
+            "rect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "clearRect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "count": 99,
+            "checkedPixels": 327
+          },
+          {
+            "name": "resolve-depth-hzb-offset-view",
+            "pass": true,
+            "width": 12,
+            "height": 10,
+            "rect": [
+              2,
+              1,
+              11,
+              8
+            ],
+            "clearRect": [
+              0,
+              0,
+              12,
+              10
+            ],
+            "count": 120,
+            "checkedPixels": 380
+          },
+          {
+            "name": "resolve-short-buffer-zero-fill",
+            "pass": true,
+            "width": 9,
+            "height": 7,
+            "rect": [
+              0,
+              0,
+              9,
+              7
+            ],
+            "clearRect": [
+              0,
+              0,
+              9,
+              7
+            ],
+            "count": 54,
+            "checkedPixels": 209
+          },
+          {
+            "name": "clear-subrect-preserves-neighbors",
+            "pass": true,
+            "width": 10,
+            "height": 8,
+            "rect": [
+              0,
+              0,
+              10,
+              8
+            ],
+            "clearRect": [
+              2,
+              1,
+              8,
+              6
+            ],
+            "count": 80,
+            "checkedPixels": 260
+          },
+          {
+            "name": "resolve-after-main-and-post-writes",
+            "pass": true,
+            "width": 11,
+            "height": 9,
+            "rect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "clearRect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "count": 99,
+            "checkedPixels": 327
+          }
+        ],
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "ampere",
+          "isFallbackAdapter": false
+        }
+      },
+      {
+        "channel": "msedge",
+        "version": "157.0.4341.42",
+        "pass": true,
+        "errors": [],
+        "cases": [
+          {
+            "name": "compute-contention",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "fragment-and-repeated-store",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment"
+            ]
+          },
+          {
+            "name": "compute-then-fragment",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "fragment-then-compute",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment",
+              "compute"
+            ]
+          },
+          {
+            "name": "offset-subview-guards",
+            "pass": true,
+            "checkedWords": 33308,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "short-view-guards",
+            "pass": true,
+            "checkedWords": 33112,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 15,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "zero-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 0,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "overflow-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 4294967295,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "unsigned-id-ties-and-depth-priority",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "mixed-compute-raster-winners",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "resolve-depth-hzb-even",
+            "pass": true,
+            "width": 8,
+            "height": 8,
+            "rect": [
+              0,
+              0,
+              8,
+              8
+            ],
+            "clearRect": [
+              0,
+              0,
+              8,
+              8
+            ],
+            "count": 64,
+            "checkedPixels": 208
+          },
+          {
+            "name": "resolve-depth-hzb-odd",
+            "pass": true,
+            "width": 11,
+            "height": 9,
+            "rect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "clearRect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "count": 99,
+            "checkedPixels": 327
+          },
+          {
+            "name": "resolve-depth-hzb-offset-view",
+            "pass": true,
+            "width": 12,
+            "height": 10,
+            "rect": [
+              2,
+              1,
+              11,
+              8
+            ],
+            "clearRect": [
+              0,
+              0,
+              12,
+              10
+            ],
+            "count": 120,
+            "checkedPixels": 380
+          },
+          {
+            "name": "resolve-short-buffer-zero-fill",
+            "pass": true,
+            "width": 9,
+            "height": 7,
+            "rect": [
+              0,
+              0,
+              9,
+              7
+            ],
+            "clearRect": [
+              0,
+              0,
+              9,
+              7
+            ],
+            "count": 54,
+            "checkedPixels": 209
+          },
+          {
+            "name": "clear-subrect-preserves-neighbors",
+            "pass": true,
+            "width": 10,
+            "height": 8,
+            "rect": [
+              0,
+              0,
+              10,
+              8
+            ],
+            "clearRect": [
+              2,
+              1,
+              8,
+              6
+            ],
+            "count": 80,
+            "checkedPixels": 260
+          },
+          {
+            "name": "resolve-after-main-and-post-writes",
+            "pass": true,
+            "width": 11,
+            "height": 9,
+            "rect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "clearRect": [
+              0,
+              0,
+              11,
+              9
+            ],
+            "count": 99,
+            "checkedPixels": 327
+          }
+        ],
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "ampere",
+          "isFallbackAdapter": false
+        }
+      }
+    ],
+    "sources": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\verify-web-nanite-visibility.cjs",
+        "sha256": "ee6744947daf7cad05ef06a57fd38a603de55fdb683fb0b3b365dc576149e7d2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\compute.wgsl",
+        "sha256": "c583286c5c6cf3345765519153cd28a5b8cacb94ffee440e7b38d936c46a57a6"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\compute.json",
+        "sha256": "9cd3966523b23dedbcde60f20f9176f96da3fdc97986eaaf3eeb208e799c1b18"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\compute.webshader",
+        "sha256": "fa24afd4407333fa1efdc5ec802d454815fa0e3befafbfea599f9355415fab41"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\vertex.wgsl",
+        "sha256": "a7cfef7036f501b327d46fb027e612e38a0b5f00973aef51aec89d557af25014"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\vertex.json",
+        "sha256": "e5b8a3a1e30a6f6c740cc9451fbae048d0233652eb45fa238fb6ed39382fb7cc"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\vertex.webshader",
+        "sha256": "50ffb234c02bb848a39e180860b8406dd6919df7c92d0b23824a2d9893be4a63"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\fragment.wgsl",
+        "sha256": "347c69fdf29646bac79b2bf25e018b28eb37843556945e390fd9261157e8f1a1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\fragment.json",
+        "sha256": "b36a775f2571f0f4002be63a3d303e43a7fe599c4ceccabe258871f12b9d2eaf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\fragment.webshader",
+        "sha256": "c36a6f7bae84751c5e24af8a5d14df7edc4b441420fa402f022d4d88feab18bf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\consumer.wgsl",
+        "sha256": "fc965296efa8ef924d63cbca7b672e334fcae46a15bb1aa10d095765ece30ee0"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\consumer.json",
+        "sha256": "bec1236529f3a78b75a4556201b8eab6457a34db336e6be05cd4a2110f763c99"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\consumer.webshader",
+        "sha256": "f4cb50339c861af59e28606f48c166bc0cec3c7e7c3f1aa8269a3e945558787e"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\clear.wgsl",
+        "sha256": "7a7a7e561cebd11936db7ffdbd00c7c50afd42a5e6de3918e6c71b23168bd19d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\clear.json",
+        "sha256": "a255ddd7f3798aaf25de570683fb39ae0e40e4bfab109bf53f08f3a3ff7c09d8"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\clear.webshader",
+        "sha256": "092d8c8c2bf0972af0898a478da6113ebe727867b4e3e07f0e51c9f6102cd0bf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\resolve.wgsl",
+        "sha256": "3b889f1e3772fcb26764b4ec66631a64628bdf6b60b0ad737c38340c9f349cc8"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\resolve.json",
+        "sha256": "62d5daaf2a3082f439783ee70d7610d956aae3a7f0618167a13f1c9ba088c7f2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\resolve.webshader",
+        "sha256": "d165e330f690194d96a386036287f174e49ea80f5ed940eb67fc7d6801980563"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\depth.wgsl",
+        "sha256": "ae1fc545a34e432c1faac446838214162b03005972f72414b7e6b16242891f75"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\depth.json",
+        "sha256": "04969b228d79761d358fe01a3f45570e7a12494b40dfaedf857b4ea13fc5b301"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\depth.webshader",
+        "sha256": "a8e279bff68127c47e91343e11dee36f23b545c5771e065b5181977d538a8613"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\hzb.wgsl",
+        "sha256": "8de374bf12a8d9a490f3f1fda9880d186c3bf8b037ed4515dd230ef4c4087a1f"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\hzb.json",
+        "sha256": "3ae823b36d52a64791be637728d7f0ec28f3182f8cad196db5c1451fbcbb4513"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\hzb.webshader",
+        "sha256": "d3d4e4295883d6d0f8cd545e3fc6bc0fbee4851651e133cc8495aacac362d95f"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteWritePixel.ush",
+        "sha256": "4a6be5810b917358943b92be9d567ac0f89a03ea18249874b16306143320b106"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteVisibility.usf",
+        "sha256": "8e914d6a20b9c857f3f1f1bc9d69b12f894f51ed0cdafe2a7253dee620ba0ab1"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteExportGBuffer.usf",
+        "sha256": "79a9fe037a145d0d58ed384f4525c877b9f45e29f8b55910ea93a238122a14b9"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\HZB.usf",
+        "sha256": "78563c51b2a504bf709f5e0455a4247c33ce4ddbd9112e8de4cd56923cc448aa"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\ue-shader-host\\Shaders\\Private\\WebNaniteVisibilityProbe.usf",
+        "sha256": "8b62dcb1ff5a4902c875585a343284768dfcaff5667733732e615be46624644b"
+      }
+    ]
+  },
+  "rhi": {
+    "pass": true,
+    "modes": [
+      {
+        "bypass": false,
+        "adapter": "D3D12 driver version 32.0.16.1088 NVIDIA GeForce RTX 3070",
+        "errors": [],
+        "pass": true,
+        "checks": [
+          {
+            "name": "packed-atomic-device-feature",
+            "pass": true
+          },
+          {
+            "name": "ue-packet-dispatch-subview-contention-and-guards",
+            "pass": true
+          },
+          {
+            "name": "read-only-input-preserved",
+            "pass": true
+          },
+          {
+            "name": "compute-submission",
+            "pass": true
+          },
+          {
+            "name": "rdg-clear-packed-write-resolve-extraction",
+            "pass": true
+          },
+          {
+            "name": "gpu-validation-clean",
+            "pass": true
+          },
+          {
+            "name": "host-rhi-restored",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "bypass": true,
+        "adapter": "D3D12 driver version 32.0.16.1088 NVIDIA GeForce RTX 3070",
+        "errors": [],
+        "pass": true,
+        "checks": [
+          {
+            "name": "packed-atomic-device-feature",
+            "pass": true
+          },
+          {
+            "name": "ue-packet-dispatch-subview-contention-and-guards",
+            "pass": true
+          },
+          {
+            "name": "read-only-input-preserved",
+            "pass": true
+          },
+          {
+            "name": "compute-submission",
+            "pass": true
+          },
+          {
+            "name": "rdg-clear-packed-write-resolve-extraction",
+            "pass": true
+          },
+          {
+            "name": "gpu-validation-clean",
+            "pass": true
+          },
+          {
+            "name": "host-rhi-restored",
+            "pass": true
+          }
+        ]
+      }
+    ]
+  },
+  "wasm": {
+    "date": "2026-11-06T09:22:46.864Z",
+    "pass": true,
+    "compileOnly": true,
+    "linked": false,
+    "target": "UEWebEngineThreads wasm64",
+    "milliseconds": 17038,
+    "exitCode": 0,
+    "installedInputsUnmodified": true,
+    "installed": [
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+        "sha256": "ac52e476dd17ba103bbade4f6460cb042279b97ffe5e1bfae35d06725e392fd0"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.h",
+        "sha256": "5910f7fd8bd8d35f5cfd853404d2caff0b6d998cabf01679d9f08b1d70426727"
+      }
+    ],
+    "inputs": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\compile-web-nanite.cjs",
+        "sha256": "b063f6b5d61cd75952029c1bb079643ccc546fb9968d8e0ca15a2273657521d1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\Renderer\\Module.Renderer.17.cpp.o.rsp",
+        "sha256": "fc87221f5dddd987de61e701b95e635f3dc696db66cb3c5dde9c7316607a4603"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-wasm\\compile.rsp",
+        "sha256": "90ef0dcf6b36d4dfa3c2c2091a9ed26f56e9ae8f55fe1924b8c356516a0769ba"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+        "sha256": "55edec3611afd9ff2161fb37226f5d7c61180bf74a4d1f2834fe556ffa2650fc"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.h",
+        "sha256": "d1cab9058f502174c93f5b20e179de149e83ac88b2d58d4f2259531cffadcac0"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebVisibility.h",
+        "sha256": "0d998b899740e807408b6d54155e60b995b66b2f5b867305b8666226970a2328"
+      }
+    ],
+    "log": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-wasm\\compile.log",
+      "sha256": "a2281201eb8df9a41b2daba90142b2e880a9e9a1af59cf63648ea98de61f4900"
+    },
+    "object": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-wasm\\NaniteCullRaster.o",
+      "sha256": "03ef60e43cef0bc0f62913ac5f85ceb41fbf8c3e389dff6a3c7f53744617136b"
+    }
+  },
+  "nativeRenderer": {
+    "date": "2026-11-06T17:26:39.9525154+08:00",
+    "pass": true,
+    "nativeModuleOnly": true,
+    "fullSourceEngineBuild": false,
+    "maxParallelActions": 1,
+    "hostProcessorAffinity": 3,
+    "compilerVersion": "",
+    "disableHostOptimization": false,
+    "nativeModuleLoadVerified": false,
+    "completeUEScene": false,
+    "hostPreparation": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\native-renderer-host-results.json",
+      "sha256": "0767e9d00ddffedb5e4cf51b97ef932168e91b8716e80fe99d51636c494b81d3"
+    },
+    "actions": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\native-renderer-actions-20261106-172639.json",
+      "sha256": "ad8b5f1361a662de6639da7b0631555389b9ac5b19c43edbf29c99f1970314e4"
+    },
+    "actionCount": 40,
+    "exitCode": 0,
+    "installedInputsUnmodified": true,
+    "installedInputs": [
+      {
+        "file": "H:\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor-RenderCore.dll",
+        "sha256": "97796053552a28d3684325bfd1fb0b5a05d9859ca1515051f38b172d0b13707e"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\RenderCore\\Private\\Shader.cpp",
+        "sha256": "934ea4727c270965269ca8dffe71ccbcb4fdfb3e49253e5d4d0fd0071112d62d"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderUtils.cpp",
+        "sha256": "5d989227390d59eaa4aa6949d36bd7bbb74b3e253b480630fa4c45b3b5e17f0b"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\RenderCore\\Private\\GPUDebugCrashUtils.cpp",
+        "sha256": "06e89311aa0009026ea898d3dc41de399ad53c4b5c02c4e96167c8c8cff0cd18"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\RenderCore\\Private\\ResolveShader.cpp",
+        "sha256": "787c8b67fc7910ba138a55389af7d54c25d754f3869e475060706ee31e4a6193"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\RenderCore\\Private\\VertexFactory.cpp",
+        "sha256": "0b655ac493bae7a55875e7c161d628e6550cefc8888ed1e889287a67f50c9925"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Build\\Build.version",
+        "sha256": "eab58750e84719489f3ee0d42d05a533ceb357eb3ee511777e9408d27a85f43c"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor-Renderer.dll",
+        "sha256": "784fbbf4161d49119dd8a1564d596fe0d5616006441e0988b09cbc19db4360e0"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+        "sha256": "ac52e476dd17ba103bbade4f6460cb042279b97ffe5e1bfae35d06725e392fd0"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.h",
+        "sha256": "5910f7fd8bd8d35f5cfd853404d2caff0b6d998cabf01679d9f08b1d70426727"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceField.cpp",
+        "sha256": "af27893c2a54c6422bf1cfff0fb8d233ce1cf42a3e89c7b9eb2c73f07e63376a"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceFieldHeightfields.h",
+        "sha256": "b0f511414da5ef70ccef7613b43004d3a22621d404b9f0862d779d00be8ac67b"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\DistanceFieldAmbientOcclusion.cpp",
+        "sha256": "4dd7e8fcb3799a5dc865c32c44b2ad46d1ac63427a15d17a89cd875a495d7736"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricCloudRendering.cpp",
+        "sha256": "65dc339ccacbf55736fec09b856b286911f6327aa57ade412eb40bfb02461b7d"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileFogRendering.cpp",
+        "sha256": "07e3ecf9c6296c54d8c5c00bab7c7d6f93bae43049b42726789b73a7f2670e7e"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricRenderTarget.cpp",
+        "sha256": "b8d9f863639d4295dd7f7624c2764003e59bc03ed3505180db7b4c0759d6b5ca"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\ScreenPass.cpp",
+        "sha256": "5f8b84a865eaef2330e38e4209cd53cb6dad08f51727b2a3a9db2eb60547ea9c"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\LightGridInjection.cpp",
+        "sha256": "30b75c2cd97711a534b62acd20678cf33fb4e33afb8617dc0bfe9f745fc20fde"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowDepthRendering.cpp",
+        "sha256": "5731bd1118f99ebec61999a925c42cd027853dc7a7111ded36a4884c6fd36fb8"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowRendering.cpp",
+        "sha256": "a7dde72f7d1133b7516364299e2e960f640ac6db8191ac54c1a844088083ca01"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowSetup.cpp",
+        "sha256": "2502f16f958f09c36c5172a20ef61b503d4a54a588ea55995b55bf4fb737017a"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\IESTextureManager.cpp",
+        "sha256": "4e7344ac339bb92bfc620ad7ef12682554b9358b2955356d202e56269a76e6d2"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Runtime\\Renderer\\Private\\StochasticLighting\\StochasticLighting.cpp",
+        "sha256": "37747c2a09999daf57e0386b63a75fd2d8d54da65a3164d01d5e5fcfc1b0796a"
+      }
+    ],
+    "sourceFiles": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\prepare-native-rendercore-host.cjs",
+        "sha256": "ba52bff03fec22ccc565cb5c9eea57d6813ef51323c40beb448fad365d17a00d"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\link-or-copy.cjs",
+        "sha256": "7185b31850f259c0e208c28c0e2ef4bf04c2447d6665b11fd287caf95ff3b859"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Public\\WebShaderPlatform.h",
+        "sha256": "ca5a737aeb55f793eb539104dd722413a7c9bf131c561b8561dc2f2455141e72"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\RenderCore\\Public\\WebShaderPlatform.h",
+        "sha256": "ca5a737aeb55f793eb539104dd722413a7c9bf131c561b8561dc2f2455141e72"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricCloudRendering.cpp",
+        "sha256": "a5db7b25f9d6c983b8c3ee6b5125672c58c503fc987a474643a9f4de27688607"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricCloudRendering.cpp",
+        "sha256": "a5db7b25f9d6c983b8c3ee6b5125672c58c503fc987a474643a9f4de27688607"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+        "sha256": "55edec3611afd9ff2161fb37226f5d7c61180bf74a4d1f2834fe556ffa2650fc"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.cpp",
+        "sha256": "55edec3611afd9ff2161fb37226f5d7c61180bf74a4d1f2834fe556ffa2650fc"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.h",
+        "sha256": "d1cab9058f502174c93f5b20e179de149e83ac88b2d58d4f2259531cffadcac0"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteCullRaster.h",
+        "sha256": "d1cab9058f502174c93f5b20e179de149e83ac88b2d58d4f2259531cffadcac0"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebVisibility.h",
+        "sha256": "0d998b899740e807408b6d54155e60b995b66b2f5b867305b8666226970a2328"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebVisibility.h",
+        "sha256": "0d998b899740e807408b6d54155e60b995b66b2f5b867305b8666226970a2328"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\DistanceFieldAmbientOcclusion.cpp",
+        "sha256": "e159b44a320c98c2ae7e79d82a5877d0be11df32203f52975293c4c147d0e5dd"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\DistanceFieldAmbientOcclusion.cpp",
+        "sha256": "e159b44a320c98c2ae7e79d82a5877d0be11df32203f52975293c4c147d0e5dd"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceField.cpp",
+        "sha256": "9c0c3dbcac86fc804739ae3bee5bd68ad54c611311264ec3cc8787c692ded3ca"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceField.cpp",
+        "sha256": "9c0c3dbcac86fc804739ae3bee5bd68ad54c611311264ec3cc8787c692ded3ca"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceFieldHeightfields.h",
+        "sha256": "80a415edefed1806569293b992f517d805f3f01ee87cb006e66db0a9243de66d"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\GlobalDistanceFieldHeightfields.h",
+        "sha256": "80a415edefed1806569293b992f517d805f3f01ee87cb006e66db0a9243de66d"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileFogRendering.cpp",
+        "sha256": "34d0dc3257f8b39338f389ffa3af6031e2d38bb8427950a57cf357eac619c039"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\MobileFogRendering.cpp",
+        "sha256": "34d0dc3257f8b39338f389ffa3af6031e2d38bb8427950a57cf357eac619c039"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricRenderTarget.cpp",
+        "sha256": "990dc739763a69a361a8a3758f690b7a00247febaff5132b28bd2718d458732d"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\VolumetricRenderTarget.cpp",
+        "sha256": "990dc739763a69a361a8a3758f690b7a00247febaff5132b28bd2718d458732d"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ScreenPass.cpp",
+        "sha256": "3636e40325f217d48c159daa36646cf2b11cf16449b0a77d7c63f37fab418333"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ScreenPass.cpp",
+        "sha256": "3636e40325f217d48c159daa36646cf2b11cf16449b0a77d7c63f37fab418333"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\LightGridInjection.cpp",
+        "sha256": "20bf8d6f710f4e2ebc5eb8c0592a6e2f65edbd3217ec08073170df67c4843254"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\LightGridInjection.cpp",
+        "sha256": "20bf8d6f710f4e2ebc5eb8c0592a6e2f65edbd3217ec08073170df67c4843254"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\IESTextureManager.cpp",
+        "sha256": "0d163673904d16e46b8f62d9a0d3e4787c64a058bd7cf9134900eb286bfeef19"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\IESTextureManager.cpp",
+        "sha256": "0d163673904d16e46b8f62d9a0d3e4787c64a058bd7cf9134900eb286bfeef19"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowDepthRendering.cpp",
+        "sha256": "3e1843790f9b08d8c7295e580b580577a726cc258e6e932c784ce36690a3c876"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowDepthRendering.cpp",
+        "sha256": "3e1843790f9b08d8c7295e580b580577a726cc258e6e932c784ce36690a3c876"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowRendering.cpp",
+        "sha256": "5f17a2034b7237041feb26e2d53b748c86f78d2ac0bb9b1138cf4b89432aac9f"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowRendering.cpp",
+        "sha256": "5f17a2034b7237041feb26e2d53b748c86f78d2ac0bb9b1138cf4b89432aac9f"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowSetup.cpp",
+        "sha256": "6637bdebe03e641c3d0276c5f453eba8bd844c460c7647e8a9b5836907748dae"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\ShadowSetup.cpp",
+        "sha256": "6637bdebe03e641c3d0276c5f453eba8bd844c460c7647e8a9b5836907748dae"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessHistogram.cpp",
+        "sha256": "5036abc96f8e3a21b6d6f83c863bcb5f2b8b302c47d70fcbc6f2453094cfea72"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\PostProcessHistogram.cpp",
+        "sha256": "5036abc96f8e3a21b6d6f83c863bcb5f2b8b302c47d70fcbc6f2453094cfea72"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SkyAtmosphereRendering.cpp",
+        "sha256": "58f7769d3019d4c1943292b6bf36269d562ad89044d8a9f8e2858565737c9a93"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\SkyAtmosphereRendering.cpp",
+        "sha256": "58f7769d3019d4c1943292b6bf36269d562ad89044d8a9f8e2858565737c9a93"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\TemporalSuperResolution.cpp",
+        "sha256": "62ddd19c786b898aa1d02d221698e3ca8b533658cd6dbe3eb65292a2fa580723"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\TemporalSuperResolution.cpp",
+        "sha256": "62ddd19c786b898aa1d02d221698e3ca8b533658cd6dbe3eb65292a2fa580723"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\TranslucentLighting.cpp",
+        "sha256": "c55d9896c7a649fe2dfefdc1ee0a8592be2fa9f9c55f2ae132ee09622b858e3b"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\TranslucentLighting.cpp",
+        "sha256": "c55d9896c7a649fe2dfefdc1ee0a8592be2fa9f9c55f2ae132ee09622b858e3b"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Lumen\\LumenScreenProbeGather.cpp",
+        "sha256": "610bd8294876d82a75330e2abfcdb5ed348a5d71f0db95e7a8dc05889ad34ef6"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\Lumen\\LumenScreenProbeGather.cpp",
+        "sha256": "610bd8294876d82a75330e2abfcdb5ed348a5d71f0db95e7a8dc05889ad34ef6"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Lumen\\LumenScreenProbeImportanceSampling.cpp",
+        "sha256": "3d38bfe7efab75b979527e2b3d349d3cdee827406362fdd9eb5629a73726b62b"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\Lumen\\LumenScreenProbeImportanceSampling.cpp",
+        "sha256": "3d38bfe7efab75b979527e2b3d349d3cdee827406362fdd9eb5629a73726b62b"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Lumen\\LumenRadiosity.cpp",
+        "sha256": "cd7845b6bfa9a83c970cf5c7ee0762fcab6b54a60690b34dea3360a114cfce43"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\Lumen\\LumenRadiosity.cpp",
+        "sha256": "cd7845b6bfa9a83c970cf5c7ee0762fcab6b54a60690b34dea3360a114cfce43"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\StochasticLighting\\StochasticLighting.cpp",
+        "sha256": "5b1bbaf524a2f7fd62d2186bef3a69079695bff6bb61b8127be6ac7f403b1b16"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\StochasticLighting\\StochasticLighting.cpp",
+        "sha256": "5b1bbaf524a2f7fd62d2186bef3a69079695bff6bb61b8127be6ac7f403b1b16"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\VT\\VirtualTextureSpace.cpp",
+        "sha256": "0b44b4db3fd7655cfa328a82e797a12b345cb6c65ce7b80010115b1e9bb1252e"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\VT\\VirtualTextureSpace.cpp",
+        "sha256": "0b44b4db3fd7655cfa328a82e797a12b345cb6c65ce7b80010115b1e9bb1252e"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\VirtualShadowMaps\\VirtualShadowMapArray.cpp",
+        "sha256": "22d5fda657ae4293d1d576ea9f7be1db59b5c672b9ab4ff13a872b6a82e6cda4"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\VirtualShadowMaps\\VirtualShadowMapArray.cpp",
+        "sha256": "22d5fda657ae4293d1d576ea9f7be1db59b5c672b9ab4ff13a872b6a82e6cda4"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\InstanceCulling\\InstanceCullingContext.cpp",
+        "sha256": "e29afd1025cb40b045965b88aa95a68f25444129362336ec6f62d80e1fbb7277"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\InstanceCulling\\InstanceCullingContext.cpp",
+        "sha256": "e29afd1025cb40b045965b88aa95a68f25444129362336ec6f62d80e1fbb7277"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build-native-rendercore.ps1",
+        "sha256": "d5201dbd6ceccca80ee6b071313517d6a58af6bf7335b2a4971805b2ff6a1f7d"
+      },
+      {
+        "file": "H:\\UE_5.8\\Engine\\Source\\Programs\\UnrealBuildTool\\Configuration\\UEBuildTarget.cs",
+        "sha256": "c347e89273c46dd7db4c2281a7c1ea5c8614d37fce8129112e341743f0d99099"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\prepare-native-ubt.cjs",
+        "sha256": "e1b35525b0a02419443df915052fa36f29de9c2f57649dc703e798db6eb9babf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\native-ubt\\build\\UEBuildTarget.cs",
+        "sha256": "40eee7301b2574d41a8b7b76a73470271df884360a84bd8019c469f0f598c85b"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\native-ubt\\UnrealBuildTool.Native.csproj",
+        "sha256": "39531feb593be6e000f33149e0fadf8ae06159065aec6a4bf616da3d0ebd18be"
+      }
+    ],
+    "products": [
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-Renderer.dll",
+        "sha256": "15af00bc4ae4a545d1e173ccdab2e9dd07872cbc8f3b6e0d6fd9376f3149783c"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\Win64\\UnrealEditor-Renderer.pdb",
+        "sha256": "95d1fb51ebbf1339e959c134286c22baad9ea96c4e6da39891d9de787ab6a109"
+      }
+    ],
+    "ubt": {
+      "file": "H:\\ue_html\\.tools\\ue58-web-native-build-host\\Engine\\Binaries\\DotNET\\UnrealBuildTool\\UnrealBuildTool.dll",
+      "sha256": "5ac4a58d0621c98d205369034f844eec06c550e4f475bba29222b1973fe22749"
+    },
+    "log": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\native-renderer-20261106-172639.log",
+      "sha256": "b6cc04d33610f639a39bc4d5206891b6642326af949c53b9d860f8d2df19eb25"
+    },
+    "boundary": "Isolated native Renderer module build using installed 5.8 source with audited target Web overlays. Other native modules remain precompiled dependencies. Module loading, Cook completion, WASM loading and rendering require separate verification."
+  },
+  "worker": {
+    "originalWorkerUnmodified": true,
+    "dll": {
+      "file": "H:/ue_html/.tools/ue58-web-shader-worker/Engine/Binaries/Win64/ShaderCompileWorker-WebGPUShaderFormat.dll",
+      "sha256": "2670cfccf81d3fb3e955ed03c23be461843c8b24e03c15580a9e7f4ee6141e33"
+    },
+    "limitation": "Manual Program-flavor DLL built using installed SCW import libraries and UBT-generated Editor include arguments."
+  },
+  "reports": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-visibility.json",
+      "sha256": "9733814b2ac99f13f567864a3e50e570947483eef072b5410dfd539934f79d33"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-rhi\\nanite-rhi-results.json",
+      "sha256": "958bf78cbe1d2efca23d1b78e145f5b30b18826c989dce91ac5f9cde2410e8c9"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-wasm\\results.json",
+      "sha256": "933c9c00de142dd886f74af381732cf6a9322490f1921c975c5afe62ee4ae118"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\native-renderer-build-results.json",
+      "sha256": "1e79a978d5d4a3bd030bec02544385ee0430857fcaa7fc50e7dd65d1b92eda11"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-cook-shader-sources.json",
+      "sha256": "cd3ea308c688658ecc639fc0d55f68e2831a766f2fc4a40147b9433ae8d93670"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\worker-module-build.json",
+      "sha256": "cf358b267976c16d845f4399bf5cb14886f10bc097dfce8bda130f15865d4e2b"
+    }
+  ],
+  "logs": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-consumer-shader.log",
+      "sha256": "9156c80836d5d397c7cf99d0e53956b02d5b1f9a80dcd3c1cbf68c5519a4c4c8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-rdg-rhi.log",
+      "sha256": "5d84f6d7f2e171b8c060b6a8620a5434b966eaa9348e92c1a0a9402ad08671ce"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-rdg-probe-build.log",
+      "sha256": "839e56fbb6a7abc37b3bdce6204ed411b1fb02a152a73096a46cf1e614dca34d"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-rdg-probe-link.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-resolve-worker-build.log",
+      "sha256": "abee6f86549548300c68f4602e2b6442dfe35b6bc2529db5cbab4418002de3f4"
+    }
+  ],
+  "rhiModule": {
+    "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Binaries\\Win64\\UnrealEditor-WebGPURHI.dll",
+    "sha256": "81a074995b832381ed53d26fe18932c9aaa82d8b0baa07dab0a408edcd099c01"
+  }
+}

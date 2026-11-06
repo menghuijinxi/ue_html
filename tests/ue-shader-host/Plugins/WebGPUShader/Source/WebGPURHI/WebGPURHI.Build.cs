@@ -13,6 +13,9 @@ public class WebGPURHI : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] { "Core", "RHI", "RHICore", "RenderCore", "Json" });
         PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHICore/Internal"));
         PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHI/Internal"));
+        PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RenderCore/Private"));
+        PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory,
+            "../../../../../../reference-engine/Engine/Source/Runtime/Renderer/Private/Nanite")));
         string Dawn = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../../../../.tools/dawn-v20261009.190412"));
         string DawnHost = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../../../../../.tools/ue58-dawn-host"));
         PrivateIncludePaths.Add(Path.Combine(Dawn, "include"));
