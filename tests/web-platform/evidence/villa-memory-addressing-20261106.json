@@ -1,0 +1,4479 @@
+{
+  "date": "2026-11-06T05:18:36.413Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "physicalPresentationValidated": false,
+  "nativeParityReached": false,
+  "lowDefinition": "1000 / mean of slowest ceil(N*0.01) raw RHI intervals; every long frame retained; no cross-window gaps.",
+  "verdict": "Repeatable throughput and fixed-route 1% low improvements. Static tails and free-input smoothness are not consistently improved. Opt-in candidate; no default promotion or native parity claim.",
+  "controls": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "clock": "owner",
+    "rhiWake": "priority",
+    "fpsCap": 0,
+    "vsync": 0,
+    "gpuAhead": 0,
+    "csm": 1,
+    "computeReuse": 1,
+    "newBindingExperiments": 0
+  },
+  "buildAudit": {
+    "objects": 417,
+    "allObjectAndCompileInputsIdentical": true,
+    "differentFiles": [
+      "UEWebEngineThreads.js",
+      "UEWebEngineThreads.wasm",
+      "index.html"
+    ],
+    "reports": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-dynamic-globals-runtime-20261106-build.json",
+        "sha256": "eb80ba1cb2f472ca9cdf5e5a2cc892b71fba59bb054b14a75f5a281dd74f565d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-address32-runtime-20261106-build.json",
+        "sha256": "d61317b85b972ff51678f2a945dc50eefb00414c6edf36f0d78d07fdfa199c9d"
+      }
+    ]
+  },
+  "packages": {
+    "control": {
+      "folder": "villa-address64-compute-20261106",
+      "products": {
+        "config-files.json": {
+          "sha256": "4a87087bfb215ea6895dd3ed0b6bab6895d4e97c173a3a82901e262a7d4b5b9c",
+          "size": 663863,
+          "mtimeMs": 1793939109795.3252
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "20122f5d630412829fb57fd2cea1e1dda05f510736bef64d1fb1493818df7136",
+          "size": 93278,
+          "mtimeMs": 1793939109797.326
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "56541bfd19ce79b4635df7eba7d13caad4b4051ae096b2a457ddc4a92b4a4900",
+          "size": 425065,
+          "mtimeMs": 1793937128223.5508
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "f44e52f75f2923236a1788f09de29329d3fb5fcd5a6db3c25149ac2c1fe3ad2c",
+          "size": 182560219,
+          "mtimeMs": 1793937127004.6494
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      },
+      "memory": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-address64-compute-20261106\\UEWebEngineThreads.wasm",
+        "size": 182560219,
+        "memories": [
+          {
+            "module": "env",
+            "field": "memory",
+            "flags": 7,
+            "addressBits": 64,
+            "shared": true,
+            "minimum": 2048,
+            "maximum": 32768,
+            "minimumBytes": 134217728,
+            "maximumBytes": 2147483648
+          }
+        ],
+        "tables": [
+          {
+            "flags": 5,
+            "addressBits": 64,
+            "shared": false,
+            "minimum": 216460,
+            "maximum": 216460
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "folder": "villa-address32-compute-20261106",
+      "products": {
+        "config-files.json": {
+          "sha256": "4a87087bfb215ea6895dd3ed0b6bab6895d4e97c173a3a82901e262a7d4b5b9c",
+          "size": 663863,
+          "mtimeMs": 1793939113753.8699
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "0a977f7689f2e56cdc42bdb5c178f4d8dda7504edbaad8c967c3d30a350d8e59",
+          "size": 90464,
+          "mtimeMs": 1793939113755.871
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "16a1fa34a0e6e781c3ea8e1b37448ca74bd26f8d5580cd4b10f4ecd69ac5e1b7",
+          "size": 425817,
+          "mtimeMs": 1793937442734.883
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "c40d085de8268800e877bb04484a6e4617f10d4a35f9bc9f8674d1419585700f",
+          "size": 171489686,
+          "mtimeMs": 1793937442132.2727
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      },
+      "memory": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-address32-compute-20261106\\UEWebEngineThreads.wasm",
+        "size": 171489686,
+        "memories": [
+          {
+            "module": "env",
+            "field": "memory",
+            "flags": 3,
+            "addressBits": 32,
+            "shared": true,
+            "minimum": 2048,
+            "maximum": 32768,
+            "minimumBytes": 134217728,
+            "maximumBytes": 2147483648
+          }
+        ],
+        "tables": [
+          {
+            "flags": 1,
+            "addressBits": 32,
+            "shared": false,
+            "minimum": 216460,
+            "maximum": 216460
+          }
+        ]
+      }
+    }
+  },
+  "staticRuns": {
+    "control": {
+      "aggregate": {
+        "frames": 8917,
+        "fps": 99.0570638450934,
+        "low1": 37.312349973254875,
+        "p50": 11.214999996125698,
+        "p95": 14.754999995231628,
+        "p99": 20.310000002384186,
+        "maximum": 61.5899999961257,
+        "over33": 14,
+        "over50": 2
+      },
+      "rhiMs": 6.910731265759932,
+      "captures": [
+        {
+          "tag": "parity-address64-compute-normal-1-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-normal-1-20261106.json",
+            "sha256": "cbf11733c3b8e840eda6d8060bd30dea2d71e5621247b341b4ea9d06ba195234"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-normal-1-20261106-source.cjs",
+            "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 4458,
+                "fps": 99.04726440809954,
+                "low1": 35.90965131740527,
+                "p50": 11.16499999910593,
+                "p95": 14.844999998807907,
+                "p99": 20.844999998807907,
+                "maximum": 61.5899999961257,
+                "over33": 7,
+                "over50": 2
+              },
+              "rhiMs": 6.930986167069507,
+              "workload": {
+                "draws": 1357.9102908277405,
+                "dispatches": 161.71431767337808,
+                "ready": 623.15548098434,
+                "pending": 349.77203579418347
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        },
+        {
+          "tag": "parity-address64-compute-normal-2-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-normal-2-20261106.json",
+            "sha256": "1ddd35e4fcbe7bd9d8546961a9dff8973f4eb266a34ac558c62bea79807b63eb"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-normal-2-20261106-source.cjs",
+            "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 4459,
+                "fps": 99.0668630230042,
+                "low1": 38.97689969074302,
+                "p50": 11.28999999910593,
+                "p95": 14.675000004470348,
+                "p99": 19.475000001490116,
+                "maximum": 47.85999999940395,
+                "over33": 7,
+                "over50": 0
+              },
+              "rhiMs": 6.890476364450357,
+              "workload": {
+                "draws": 1355.731991051454,
+                "dispatches": 161.52997762863535,
+                "ready": 623.3389261744967,
+                "pending": 344.2626398210291
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        }
+      ]
+    },
+    "candidate": {
+      "aggregate": {
+        "frames": 9721,
+        "fps": 107.98841554577832,
+        "low1": 36.49118626186998,
+        "p50": 10.32999999821186,
+        "p95": 13.439999997615814,
+        "p99": 17.975000001490116,
+        "maximum": 60.850000001490116,
+        "over33": 23,
+        "over50": 5
+      },
+      "rhiMs": 6.341328656183075,
+      "captures": [
+        {
+          "tag": "parity-address32-compute-normal-1-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-normal-1-20261106.json",
+            "sha256": "6aa7735e1764e2c4c070261929a597e4bb421a6a06ac77bab15a36c2a8cad3d1"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-normal-1-20261106-source.cjs",
+            "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 4871,
+                "fps": 108.20766586112136,
+                "low1": 37.053000914573104,
+                "p50": 10.310000002384186,
+                "p95": 13.45499999821186,
+                "p99": 18.234999999403954,
+                "maximum": 60.850000001490116,
+                "over33": 11,
+                "over50": 2
+              },
+              "rhiMs": 6.320292655199729,
+              "workload": {
+                "draws": 1355.6605316973414,
+                "dispatches": 161.56175869120653,
+                "ready": 622.9832310838445,
+                "pending": 349.09447852760735
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        },
+        {
+          "tag": "parity-address32-compute-normal-2-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-normal-2-20261106.json",
+            "sha256": "5c00212c78b1ad13d5460cb36d312c17a8a9f96e39a065f65543786d7886ae6f"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-normal-2-20261106-source.cjs",
+            "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 4850,
+                "fps": 107.76910835173457,
+                "low1": 35.94905505461262,
+                "p50": 10.344999998807907,
+                "p95": 13.429999999701977,
+                "p99": 17.899999998509884,
+                "maximum": 55.375,
+                "over33": 12,
+                "over50": 3
+              },
+              "rhiMs": 6.36236465716642,
+              "workload": {
+                "draws": 1354.6473251028806,
+                "dispatches": 161.45185185185184,
+                "ready": 622.9965020576132,
+                "pending": 349.51748971193416
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        }
+      ]
+    }
+  },
+  "postCleanup": {
+    "control": {
+      "tag": "parity-address64-compute-postcleanup-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-postcleanup-20261106.json",
+        "sha256": "763236e91fe9bc51553bc53f8094a75199d28ffa2485d87919d8d2b28c8611b3"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-postcleanup-20261106-source.cjs",
+        "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 5921,
+            "fps": 98.68057850052176,
+            "low1": 36.903205966694735,
+            "p50": 11.334999993443489,
+            "p95": 14.759999997913837,
+            "p99": 20.615000002086163,
+            "maximum": 62.17000000178814,
+            "over33": 8,
+            "over50": 2
+          },
+          "rhiMs": 6.970865267989161,
+          "workload": {
+            "draws": 1355.8258883248732,
+            "dispatches": 161.45346869712353,
+            "ready": 623.4697123519459,
+            "pending": 343.48104906937397
+          },
+          "gpu": null
+        }
+      ],
+      "gpuCompletionProbe": false,
+      "apiCountProbe": false,
+      "bindingEntries": 0,
+      "bindingGroups": 0
+    },
+    "candidate": {
+      "tag": "parity-address32-compute-postcleanup-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-postcleanup-20261106.json",
+        "sha256": "3ce369dcf8ed2676a376717a20bfe97ed66cb161804d3b5c1252689514d52d0d"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-postcleanup-20261106-source.cjs",
+        "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 6532,
+            "fps": 108.89184790649504,
+            "low1": 39.832582448682814,
+            "p50": 10.32999999821186,
+            "p95": 13.435000002384186,
+            "p99": 18.280000001192093,
+            "maximum": 66.81499999761581,
+            "over33": 8,
+            "over50": 3
+          },
+          "rhiMs": 6.311357997260936,
+          "workload": {
+            "draws": 1354.1562691131498,
+            "dispatches": 161.3296636085627,
+            "ready": 622.932874617737,
+            "pending": 343.66743119266056
+          },
+          "gpu": null
+        }
+      ],
+      "gpuCompletionProbe": false,
+      "apiCountProbe": false,
+      "bindingEntries": 0,
+      "bindingGroups": 0
+    }
+  },
+  "allStatic": {
+    "control": {
+      "frames": 14838,
+      "fps": 98.90648607712077,
+      "low1": 37.08044964421731,
+      "p50": 11.265000000596046,
+      "p95": 14.759999997913837,
+      "p99": 20.50500000268221,
+      "maximum": 62.17000000178814,
+      "over33": 22,
+      "over50": 4
+    },
+    "candidate": {
+      "frames": 16253,
+      "fps": 108.34969278365645,
+      "low1": 37.68990916288399,
+      "p50": 10.32999999821186,
+      "p95": 13.439999997615814,
+      "p99": 18.109999999403954,
+      "maximum": 66.81499999761581,
+      "over33": 31,
+      "over50": 8
+    }
+  },
+  "routes": {
+    "control": {
+      "aggregate": {
+        "first-area": {
+          "frames": 3945,
+          "fps": 98.61612454878693,
+          "low1": 30.70934754125779,
+          "p50": 9.755000002682209,
+          "p95": 17.84000000357628,
+          "p99": 24.13000000268221,
+          "maximum": 55.610000006854534,
+          "over33": 14,
+          "over50": 2
+        },
+        "moving": {
+          "frames": 4070,
+          "fps": 101.77783623820508,
+          "low1": 34.05160063244847,
+          "p50": 10.660000003874302,
+          "p95": 15.310000002384186,
+          "p99": 21.37000000476837,
+          "maximum": 66.06000000238419,
+          "over33": 9,
+          "over50": 1
+        },
+        "turning": {
+          "frames": 3764,
+          "fps": 94.09354283062956,
+          "low1": 32.674680561259294,
+          "p50": 10.57999999821186,
+          "p95": 16.310000002384186,
+          "p99": 20.160000003874302,
+          "maximum": 70.8099999949336,
+          "over33": 10,
+          "over50": 6
+        },
+        "repeat-area": {
+          "frames": 4378,
+          "fps": 109.39337525411861,
+          "low1": 35.15064849007305,
+          "p50": 9.075000002980232,
+          "p95": 15.814999997615814,
+          "p99": 20.37000000476837,
+          "maximum": 58.67999999970198,
+          "over33": 8,
+          "over50": 3
+        }
+      },
+      "runs": [
+        {
+          "tag": "parity-address64-compute-route-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-route-20261106.json",
+            "sha256": "d4d6c516006abd80e122c239d6887f8770edd6c590f385e197775c77a432651b"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-route-20261106-source.cjs",
+            "sha256": "19597eb7b31a80eef601bd7c6d6a6aa0ef2b5b3638f8eb5096c8dd0aab324c86"
+          },
+          "phases": [
+            {
+              "name": "first-area",
+              "result": {
+                "frames": 1985,
+                "fps": 99.23923254326017,
+                "low1": 33.157323210394935,
+                "p50": 9.799999997019768,
+                "p95": 16.929999999701977,
+                "p99": 21.28499999642372,
+                "maximum": 55.610000006854534,
+                "over33": 5,
+                "over50": 2
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.0087001953125,
+                "updates": 1985,
+                "active": false,
+                "completed": true,
+                "serial": 2,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 3567,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 5,
+                "parallelRendering": true
+              },
+              "creations": {
+                "createShaderModule": 1,
+                "createRenderPipeline": 2
+              }
+            },
+            {
+              "name": "moving",
+              "result": {
+                "frames": 2097,
+                "fps": 104.87223291338857,
+                "low1": 35.119405980280625,
+                "p50": 10.33500000089407,
+                "p95": 14.419999994337559,
+                "p99": 19.90999999642372,
+                "maximum": 49.75500000268221,
+                "over33": 5,
+                "over50": 0
+              },
+              "camera": {
+                "x": -174.99999999996638,
+                "y": -79.99999999999756,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 1,
+                "duration": 20,
+                "elapsed": 20.004565185546873,
+                "updates": 2099,
+                "active": false,
+                "completed": true,
+                "serial": 6,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 6484,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "turning",
+              "result": {
+                "frames": 1874,
+                "fps": 93.6420355799983,
+                "low1": 31.6981006163816,
+                "p50": 10.66499999910593,
+                "p95": 16.310000002384186,
+                "p99": 20.200000002980232,
+                "maximum": 70.8099999949336,
+                "over33": 5,
+                "over50": 4
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 2,
+                "duration": 20,
+                "elapsed": 20.018175048828127,
+                "updates": 1874,
+                "active": false,
+                "completed": true,
+                "serial": 10,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 9457,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "repeat-area",
+              "result": {
+                "frames": 2197,
+                "fps": 109.73993084934501,
+                "low1": 34.018601990574204,
+                "p50": 9.100000001490116,
+                "p95": 15.689999997615814,
+                "p99": 21.58500000089407,
+                "maximum": 58.67999999970198,
+                "over33": 4,
+                "over50": 2
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.01268505859375,
+                "updates": 2197,
+                "active": false,
+                "completed": true,
+                "serial": 12,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 11424,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 4,
+                "parallelRendering": true
+              },
+              "creations": {}
+            }
+          ]
+        },
+        {
+          "tag": "parity-address64-compute-route-repeat-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-route-repeat-20261106.json",
+            "sha256": "fa527f002ccb102f7cd18253a272f36acf6cf89ff1bbfa3061f2144037742ae7"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-route-repeat-20261106-source.cjs",
+            "sha256": "19597eb7b31a80eef601bd7c6d6a6aa0ef2b5b3638f8eb5096c8dd0aab324c86"
+          },
+          "phases": [
+            {
+              "name": "first-area",
+              "result": {
+                "frames": 1960,
+                "fps": 97.99299350096614,
+                "low1": 29.74044030691561,
+                "p50": 9.740000002086163,
+                "p95": 18.58500000089407,
+                "p99": 25.594999998807907,
+                "maximum": 48.10999999940395,
+                "over33": 9,
+                "over50": 0
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.001630126953124,
+                "updates": 1961,
+                "active": false,
+                "completed": true,
+                "serial": 2,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 3599,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {
+                "createShaderModule": 1,
+                "createRenderPipeline": 2
+              }
+            },
+            {
+              "name": "moving",
+              "result": {
+                "frames": 1973,
+                "fps": 98.68305882468421,
+                "low1": 33.400133600700634,
+                "p50": 10.895000003278255,
+                "p95": 16.16500000655651,
+                "p99": 21.780000001192093,
+                "maximum": 66.06000000238419,
+                "over33": 4,
+                "over50": 1
+              },
+              "camera": {
+                "x": -174.99999999996638,
+                "y": -79.99999999999756,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 1,
+                "duration": 20,
+                "elapsed": 20.004764892578127,
+                "updates": 1974,
+                "active": false,
+                "completed": true,
+                "serial": 6,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 6363,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 5,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "turning",
+              "result": {
+                "frames": 1890,
+                "fps": 94.54554731741031,
+                "low1": 33.7426853835844,
+                "p50": 10.449999995529652,
+                "p95": 16.315000005066395,
+                "p99": 19.895000003278255,
+                "maximum": 52.84000000357628,
+                "over33": 5,
+                "over50": 2
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 2,
+                "duration": 20,
+                "elapsed": 20.000349853515626,
+                "updates": 1891,
+                "active": false,
+                "completed": true,
+                "serial": 10,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 9181,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 4,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "repeat-area",
+              "result": {
+                "frames": 2181,
+                "fps": 109.04648325089728,
+                "low1": 36.80160588844041,
+                "p50": 9.059999994933605,
+                "p95": 15.990000002086163,
+                "p99": 19.49500000476837,
+                "maximum": 55.50500000268221,
+                "over33": 4,
+                "over50": 1
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.00689013671875,
+                "updates": 2181,
+                "active": false,
+                "completed": true,
+                "serial": 12,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 11179,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {}
+            }
+          ]
+        }
+      ]
+    },
+    "candidate": {
+      "aggregate": {
+        "first-area": {
+          "frames": 4391,
+          "fps": 109.80828563656314,
+          "low1": 37.523772162601915,
+          "p50": 8.964999996125698,
+          "p95": 14.884999997913837,
+          "p99": 19.384999997913837,
+          "maximum": 55.144999995827675,
+          "over33": 9,
+          "over50": 1
+        },
+        "moving": {
+          "frames": 4521,
+          "fps": 113.03548404114734,
+          "low1": 36.92880768073256,
+          "p50": 9.800000004470348,
+          "p95": 13.510000005364418,
+          "p99": 17.53999999910593,
+          "maximum": 48.894999995827675,
+          "over33": 13,
+          "over50": 0
+        },
+        "turning": {
+          "frames": 3979,
+          "fps": 99.4784693116254,
+          "low1": 36.05016380349338,
+          "p50": 10.259999997913837,
+          "p95": 15.439999997615814,
+          "p99": 19.99499999731779,
+          "maximum": 54.88499999791384,
+          "over33": 10,
+          "over50": 2
+        },
+        "repeat-area": {
+          "frames": 4651,
+          "fps": 116.25663145222968,
+          "low1": 37.92065707670168,
+          "p50": 8.575000002980232,
+          "p95": 14.260000005364418,
+          "p99": 17.859999999403954,
+          "maximum": 53.48499999940395,
+          "over33": 10,
+          "over50": 1
+        }
+      },
+      "runs": [
+        {
+          "tag": "parity-address32-compute-route-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-route-20261106.json",
+            "sha256": "41167f5de492b44f76799bd38e0c51c9e1a0acf76210bf74f98d97bdd6c5fa4e"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-route-20261106-source.cjs",
+            "sha256": "19597eb7b31a80eef601bd7c6d6a6aa0ef2b5b3638f8eb5096c8dd0aab324c86"
+          },
+          "phases": [
+            {
+              "name": "first-area",
+              "result": {
+                "frames": 2207,
+                "fps": 110.41384680690294,
+                "low1": 37.324332219084894,
+                "p50": 8.92000000178814,
+                "p95": 14.849999994039536,
+                "p99": 19.015000000596046,
+                "maximum": 45.53000000119209,
+                "over33": 6,
+                "over50": 0
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.003125,
+                "updates": 2209,
+                "active": false,
+                "completed": true,
+                "serial": 2,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 3860,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {
+                "createShaderModule": 1,
+                "createRenderPipeline": 2
+              }
+            },
+            {
+              "name": "moving",
+              "result": {
+                "frames": 2287,
+                "fps": 114.32164823123355,
+                "low1": 35.88563404512902,
+                "p50": 9.67000000178814,
+                "p95": 13.065000005066395,
+                "p99": 16.92500000447035,
+                "maximum": 48.894999995827675,
+                "over33": 8,
+                "over50": 0
+              },
+              "camera": {
+                "x": -174.99999999996638,
+                "y": -79.99999999999756,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 1,
+                "duration": 20,
+                "elapsed": 20.00018505859375,
+                "updates": 2287,
+                "active": false,
+                "completed": true,
+                "serial": 6,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 7061,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "turning",
+              "result": {
+                "frames": 1989,
+                "fps": 99.47688362780634,
+                "low1": 35.33943527597317,
+                "p50": 10.225000001490116,
+                "p95": 15.344999998807907,
+                "p99": 19.259999997913837,
+                "maximum": 53.59499999880791,
+                "over33": 6,
+                "over50": 1
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 2,
+                "duration": 20,
+                "elapsed": 20.000030029296877,
+                "updates": 1989,
+                "active": false,
+                "completed": true,
+                "serial": 10,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 10302,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "repeat-area",
+              "result": {
+                "frames": 2338,
+                "fps": 116.88723007010091,
+                "low1": 37.67690484286654,
+                "p50": 8.504999995231628,
+                "p95": 14.199999995529652,
+                "p99": 17.899999998509884,
+                "maximum": 53.48499999940395,
+                "over33": 5,
+                "over50": 1
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.007824951171877,
+                "updates": 2338,
+                "active": false,
+                "completed": true,
+                "serial": 12,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 12401,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 5,
+                "parallelRendering": true
+              },
+              "creations": {}
+            }
+          ]
+        },
+        {
+          "tag": "parity-address32-compute-route-repeat-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-route-repeat-20261106.json",
+            "sha256": "6725ab2bb960bd9d2a756e7dbb10a4b50d97dc11f4c921997757c01117e116e8"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-route-repeat-20261106-source.cjs",
+            "sha256": "19597eb7b31a80eef601bd7c6d6a6aa0ef2b5b3638f8eb5096c8dd0aab324c86"
+          },
+          "phases": [
+            {
+              "name": "first-area",
+              "result": {
+                "frames": 2184,
+                "fps": 109.20305768558754,
+                "low1": 38.258540784711926,
+                "p50": 8.975000001490116,
+                "p95": 14.925000004470348,
+                "p99": 19.474999994039536,
+                "maximum": 55.144999995827675,
+                "over33": 3,
+                "over50": 1
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.007594970703124,
+                "updates": 2185,
+                "active": false,
+                "completed": true,
+                "serial": 2,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 3847,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 5,
+                "parallelRendering": true
+              },
+              "creations": {
+                "createShaderModule": 1,
+                "createRenderPipeline": 2
+              }
+            },
+            {
+              "name": "moving",
+              "result": {
+                "frames": 2234,
+                "fps": 111.74844295002883,
+                "low1": 38.171739634183496,
+                "p50": 9.905000001192093,
+                "p95": 14.034999996423721,
+                "p99": 18.235000006854534,
+                "maximum": 46.21999999880791,
+                "over33": 5,
+                "over50": 0
+              },
+              "camera": {
+                "x": -174.99999999996638,
+                "y": -79.99999999999756,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 1,
+                "duration": 20,
+                "elapsed": 20.002900146484375,
+                "updates": 2236,
+                "active": false,
+                "completed": true,
+                "serial": 6,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 7033,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 5,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "turning",
+              "result": {
+                "frames": 1990,
+                "fps": 99.48005424913342,
+                "low1": 36.93580557166777,
+                "p50": 10.294999994337559,
+                "p95": 15.595000006258488,
+                "p99": 20.69999999552965,
+                "maximum": 54.88499999791384,
+                "over33": 4,
+                "over50": 1
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              },
+              "driver": {
+                "mode": 2,
+                "duration": 20,
+                "elapsed": 20.009304931640624,
+                "updates": 1990,
+                "active": false,
+                "completed": true,
+                "serial": 10,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 10222,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {},
+              "steadyAccepted": true
+            },
+            {
+              "name": "repeat-area",
+              "result": {
+                "frames": 2313,
+                "fps": 115.6260943050145,
+                "low1": 38.6943868956683,
+                "p50": 8.70499999821186,
+                "p95": 14.435000002384186,
+                "p99": 17.810000002384186,
+                "maximum": 45.25499999523163,
+                "over33": 5,
+                "over50": 0
+              },
+              "camera": {
+                "x": -620,
+                "y": 0,
+                "z": 160,
+                "pitch": 0,
+                "yaw": 0
+              },
+              "driver": {
+                "mode": 3,
+                "duration": 20,
+                "elapsed": 20.014804931640626,
+                "updates": 2314,
+                "active": false,
+                "completed": true,
+                "serial": 12,
+                "driver": "game-frame"
+              },
+              "settings": {
+                "antiAliasing": 4,
+                "generateDistanceFields": 1,
+                "distanceFieldAO": 1,
+                "distanceFieldShadows": 1,
+                "gi": 0,
+                "reflections": 0,
+                "virtualShadows": 0,
+                "texturePoolMiB": 1000,
+                "screenPercentage": 0,
+                "staticLighting": 1,
+                "shadowCacheMiB": 256,
+                "dbuffer": 1,
+                "ssrQuality": 3,
+                "volumetricFog": 1
+              },
+              "view": {
+                "frame": 12324,
+                "width": 1280,
+                "height": 720,
+                "outputWidth": 1280,
+                "outputHeight": 720,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              },
+              "creations": {}
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "checks": {
+    "control": {
+      "tag": "parity-address64-compute-gpu-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-gpu-20261106.json",
+        "sha256": "98ded0ba3170f87aa7c91d7e2912bd4662f7f7d9cc744952a516e9a8ed6a674b"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-gpu-20261106-source.cjs",
+        "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 3005,
+            "fps": 100.15147702599434,
+            "low1": 37.161129458334074,
+            "p50": 11.175000004470348,
+            "p95": 14.330000005662441,
+            "p99": 19.810000002384186,
+            "maximum": 53.2149999961257,
+            "over33": 5,
+            "over50": 1
+          },
+          "rhiMs": 6.841178822342903,
+          "workload": {
+            "draws": 1355.937,
+            "dispatches": 161.5,
+            "ready": 623.2503333333333,
+            "pending": 342.23266666666666
+          },
+          "gpu": {
+            "completed": 3006,
+            "records": 3006,
+            "pendingPeak": 4,
+            "meanCallbackMs": 13.769356287433379,
+            "maxCallbackMs": 39.4649999961257
+          }
+        }
+      ],
+      "gpuCompletionProbe": true,
+      "apiCountProbe": false,
+      "bindingEntries": 5207094,
+      "bindingGroups": 800952,
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 7006,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-gpu-20261106-tour-right.png",
+            "sha256": "e52ed2672162cc3c25ac1706f3aa1116b25b63d214cb656aabbfc0487e48f00f"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 7384,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-gpu-20261106-tour-back.png",
+            "sha256": "5e8c6833f621594212ff72b170d756db6657db64feae766b9f6e9f3b9f4e0c60"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 7751,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-gpu-20261106-tour-left.png",
+            "sha256": "e7ac6890a926adbc2fd20f1f7e33ee224f58806277cbebd373330d1e23deafef"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 7955,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-gpu-20261106-tour-room.png",
+            "sha256": "5c84deb24d619ce20c213b03c19eb465546344aa57cabd5395866f74f1cd5605"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 8153,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-gpu-20261106-tour-return.png",
+            "sha256": "6c2224d03f7437cc3baec41bf93ad19164db28e955b3d63daa12d32770e7c0bb"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      }
+    },
+    "candidate": {
+      "tag": "parity-address32-compute-gpu-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-gpu-20261106.json",
+        "sha256": "24552b349807760d0e253d320b9509b1d759d15628ab449fc5da48dfa0d74e29"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-gpu-20261106-source.cjs",
+        "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 3217,
+            "fps": 107.2395711017095,
+            "low1": 37.49616516318679,
+            "p50": 10.359999999403954,
+            "p95": 13.640000000596046,
+            "p99": 18.360000006854534,
+            "maximum": 53.435000002384186,
+            "over33": 6,
+            "over50": 1
+          },
+          "rhiMs": 6.395807171401361,
+          "workload": {
+            "draws": 1355.8890965732087,
+            "dispatches": 161.5520249221184,
+            "ready": 623.0613707165109,
+            "pending": 349.3576323987539
+          },
+          "gpu": {
+            "completed": 3218,
+            "records": 3218,
+            "pendingPeak": 4,
+            "meanCallbackMs": 12.931620571845674,
+            "maxCallbackMs": 41.475000001490116
+          }
+        }
+      ],
+      "gpuCompletionProbe": true,
+      "apiCountProbe": false,
+      "bindingEntries": 5683941,
+      "bindingGroups": 870459,
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 7485,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-gpu-20261106-tour-right.png",
+            "sha256": "0dd11a1666e74f007c8ab89836edfbc3fa5cda956377e40c7aa6194d1191db4c"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 7901,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-gpu-20261106-tour-back.png",
+            "sha256": "3cabb801b0aa791c1a9006a0f7ba577b3a33394716ab50b71e50a91cc2bcf4cb"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 8274,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-gpu-20261106-tour-left.png",
+            "sha256": "280f9e8b4526bd370fa2f70588369f5dcffaaaf7514d692b0c326062d6af3300"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 8506,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-gpu-20261106-tour-room.png",
+            "sha256": "fc6b60fd13dc0df8d4a0d1a0d4d5ece7be2906d5dce3a69d28914c85bac20064"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 8731,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-gpu-20261106-tour-return.png",
+            "sha256": "550095f9684ccf2c8d882aba44bc42e03bca5d2196d455b0f5f9a1b5528a2a70"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      }
+    }
+  },
+  "input": {
+    "32": {
+      "tag": "parity-address32-compute-input-retry-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-input-retry-20261106.json",
+        "sha256": "ed3fc1ae18a80f53dc58cb5f6013a44bf91b36b837abb738f96f007d43a69f01"
+      },
+      "boundary": "Continuous DOM mouse/keyboard events through the packaged input bridge; light submission hook, no draw wrappers. Each run repeats a motion warmup before measurement. Submission throughput is not physical display FPS. Actual trajectories and background GPU utilization must be considered.",
+      "runs": [
+        {
+          "result": {
+            "samples": 3124,
+            "fps": 102.66113838846029,
+            "low1Fps": 30.282096655907182,
+            "p50": 9.034999996423721,
+            "p95": 19.63000000268221,
+            "p99": 23.5,
+            "maximum": 56.73999999463558
+          },
+          "travel": 2702.2671826433348,
+          "turn": 1648.166664129123,
+          "workload": {
+            "draws": 1724.4025641025642,
+            "dispatches": 148.10576923076923,
+            "pending": 200.45416666666668,
+            "ready": 443.11570512820515
+          },
+          "gpu": {
+            "samples": 3125,
+            "pending": 1,
+            "peak": 5,
+            "meanLatency": 13.437427200074195,
+            "maxLatency": 57.10999999940395
+          },
+          "display": {
+            "visual": 101.79661016949153,
+            "submitted": 103.91525423728814,
+            "refresh": 237.71186440677965,
+            "ratio": 0.9796118088403197
+          },
+          "beforeCamera": {
+            "x": 413.2924409023944,
+            "y": -316.96617384578576,
+            "z": 156.64841979581772,
+            "pitch": 1.3214138732291805,
+            "yaw": 27.533456595148895
+          },
+          "afterCamera": {
+            "x": 417.20483893096093,
+            "y": -389.6250175882596,
+            "z": 156.64842199560994,
+            "pitch": -1.3625160767696967,
+            "yaw": -34.042741176206576
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "rhiMs": 6.520818382673209
+        }
+      ]
+    },
+    "64": {
+      "tag": "parity-address64-compute-input-retry-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-input-retry-20261106.json",
+        "sha256": "8ac5c04ced78371b0dd8d95e94706379afcdebc0a4e4f08911b8d9a824d24c62"
+      },
+      "boundary": "Continuous DOM mouse/keyboard events through the packaged input bridge; light submission hook, no draw wrappers. Each run repeats a motion warmup before measurement. Submission throughput is not physical display FPS. Actual trajectories and background GPU utilization must be considered.",
+      "runs": [
+        {
+          "result": {
+            "samples": 2955,
+            "fps": 96.96140033917874,
+            "low1Fps": 32.82688740851939,
+            "p50": 9.630000002682209,
+            "p95": 21.195000000298023,
+            "p99": 24.645000003278255,
+            "maximum": 57.224999994039536
+          },
+          "travel": 2514.657925912753,
+          "turn": 1618.3580508138984,
+          "workload": {
+            "draws": 1612.0717171717172,
+            "dispatches": 143.56161616161617,
+            "pending": 168.34545454545454,
+            "ready": 403.7383838383838
+          },
+          "gpu": {
+            "samples": 2956,
+            "pending": 1,
+            "peak": 4,
+            "meanLatency": 13.706226319412377,
+            "maxLatency": 50.524999998509884
+          },
+          "display": {
+            "visual": 96.57627118644068,
+            "submitted": 97.42372881355932,
+            "refresh": 245.74576271186442,
+            "ratio": 0.9913013221990258
+          },
+          "beforeCamera": {
+            "x": 414.2157006895101,
+            "y": -318.82062955751894,
+            "z": 156.64842309812906,
+            "pitch": -1.127466377802258,
+            "yaw": 30.53693124838174
+          },
+          "afterCamera": {
+            "x": 427.9081797842504,
+            "y": -415.5070213600717,
+            "z": 156.64841895500314,
+            "pitch": -3.133756376802927,
+            "yaw": -53.43306732363999
+          },
+          "clock": {
+            "mode": "owner",
+            "paused": false
+          },
+          "rhiMs": 6.947265435425795
+        }
+      ]
+    }
+  },
+  "correctness": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-compute-window-20261106.json",
+      "sha256": "223316d7f3900ee2ff2afc4ab78d2256fce6cba9a8d7881d991d8e272a981b6e"
+    },
+    "windowMetrics": [
+      {
+        "width": 1000,
+        "height": 650,
+        "dpr": 1,
+        "expected": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 0.9999999760941023
+        },
+        "metrics": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 0.9999999760941023,
+          "updates": 4
+        },
+        "view": {
+          "frame": 1946,
+          "width": 1000,
+          "height": 562,
+          "outputWidth": 1000,
+          "outputHeight": 562,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "frames": 1945
+      },
+      {
+        "width": 1000,
+        "height": 650,
+        "dpr": 1.5,
+        "expected": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 1.4999999280803422
+        },
+        "metrics": {
+          "width": 999.9999389648438,
+          "height": 562.4999389648438,
+          "dpr": 1.4999999280803422,
+          "updates": 5
+        },
+        "view": {
+          "frame": 2046,
+          "width": 1317,
+          "height": 741,
+          "outputWidth": 1500,
+          "outputHeight": 844,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 4,
+          "parallelRendering": true
+        },
+        "frames": 2044
+      },
+      {
+        "width": 1200,
+        "height": 720,
+        "dpr": 1.5,
+        "expected": {
+          "width": 1199.9998779296875,
+          "height": 674.9999389648438,
+          "dpr": 1.4999999280803422
+        },
+        "metrics": {
+          "width": 1199.9998779296875,
+          "height": 674.9999389648438,
+          "dpr": 1.4999999280803422,
+          "updates": 7
+        },
+        "view": {
+          "frame": 2157,
+          "width": 1375,
+          "height": 773,
+          "outputWidth": 1800,
+          "outputHeight": 1012,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "frames": 2154
+      },
+      {
+        "width": 2289,
+        "height": 1287,
+        "dpr": 1,
+        "expected": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023
+        },
+        "metrics": {
+          "width": 2289.062255859375,
+          "height": 1287.59033203125,
+          "dpr": 0.9999999760941023,
+          "updates": 9
+        },
+        "view": {
+          "frame": 2266,
+          "width": 1484,
+          "height": 835,
+          "outputWidth": 2289,
+          "outputHeight": 1288,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "frames": 2262
+      }
+    ]
+  },
+  "initialAddressOnly": {
+    "control": {
+      "aggregate": {
+        "frames": 8504,
+        "fps": 94.48256905482982,
+        "low1": 34.370853515948056,
+        "p50": 11.759999997913837,
+        "p95": 15.82999999821186,
+        "p99": 22.310000002384186,
+        "maximum": 92.61500000208616,
+        "over33": 14,
+        "over50": 3
+      },
+      "rhiMs": 7.3516837157727375,
+      "captures": [
+        {
+          "tag": "parity-address64-normal-1-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-normal-1-20261106.json",
+            "sha256": "18be8fd0520cef0fd2b0c134a70f4596506b4d416e9e11715332e9c18580f4ec"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-normal-1-20261106-source.cjs",
+            "sha256": "93a4d62d3ff7cbc0bc7ffc85126ec02308ff391ff326c7c9a0b3ab7bc73e8a9e"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 4528,
+                "fps": 100.58241393796166,
+                "low1": 39.84995625122577,
+                "p50": 11.53999999910593,
+                "p95": 13.479999996721745,
+                "p99": 16.13000000268221,
+                "maximum": 92.61500000208616,
+                "over33": 3,
+                "over50": 1
+              },
+              "rhiMs": 6.841372297764665,
+              "workload": {
+                "draws": 1350.7988962472407,
+                "dispatches": 160.84039735099338,
+                "ready": 623.8121412803532,
+                "pending": 325.5403973509934
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        },
+        {
+          "tag": "parity-address64-normal-2-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-normal-2-20261106.json",
+            "sha256": "8a1cdaddf39800f97c20b91b811962560d0b6c285e708a6386dc982fc56d3164"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-normal-2-20261106-source.cjs",
+            "sha256": "9772f19f0b795f199332fbacbd3e3dfe427b0b8108483da39d74e8eaf7533497"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 3976,
+                "fps": 88.37871077777757,
+                "low1": 31.49879123424123,
+                "p50": 12.03999999910593,
+                "p95": 17.719999998807907,
+                "p99": 23.564999997615814,
+                "maximum": 71.07499999552965,
+                "over33": 11,
+                "over50": 2
+              },
+              "rhiMs": 7.86199513378081,
+              "workload": {
+                "draws": 1363.370426065163,
+                "dispatches": 162.2453634085213,
+                "ready": 623.8265664160401,
+                "pending": 368.1330827067669
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        }
+      ]
+    },
+    "candidate": {
+      "aggregate": {
+        "frames": 9062,
+        "fps": 100.67837918474699,
+        "low1": 34.842605230807706,
+        "p50": 10.754999995231628,
+        "p95": 14.92000000178814,
+        "p99": 21.29500000178814,
+        "maximum": 73.10000000149012,
+        "over33": 20,
+        "over50": 5
+      },
+      "rhiMs": 6.876351549938521,
+      "captures": [
+        {
+          "tag": "parity-address32-normal-1-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-normal-1-20261106.json",
+            "sha256": "91e05e81f98b67b97b6268c56bf300fef629873d9c03b145f77d401aa42fbe63"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-normal-1-20261106-source.cjs",
+            "sha256": "93a4d62d3ff7cbc0bc7ffc85126ec02308ff391ff326c7c9a0b3ab7bc73e8a9e"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 4819,
+                "fps": 107.0694974132498,
+                "low1": 39.52011291437085,
+                "p50": 10.560000002384186,
+                "p95": 12.975000001490116,
+                "p99": 19.12999999523163,
+                "maximum": 42.05000000447035,
+                "over33": 6,
+                "over50": 0
+              },
+              "rhiMs": 6.443089481219495,
+              "workload": {
+                "draws": 1347.3784679089026,
+                "dispatches": 160.5016563146998,
+                "ready": 623.7407867494824,
+                "pending": 319.36107660455485
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        },
+        {
+          "tag": "parity-address32-normal-2-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-normal-2-20261106.json",
+            "sha256": "5aac9d166aa0db0fc098181f32254866f1a41022f7bb436e6e68a8f8aa28936b"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-normal-2-20261106-source.cjs",
+            "sha256": "93a4d62d3ff7cbc0bc7ffc85126ec02308ff391ff326c7c9a0b3ab7bc73e8a9e"
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 4243,
+                "fps": 94.28628030179055,
+                "low1": 31.024754867814213,
+                "p50": 11.140000000596046,
+                "p95": 16.719999998807907,
+                "p99": 21.650000005960464,
+                "maximum": 73.10000000149012,
+                "over33": 14,
+                "over50": 5
+              },
+              "rhiMs": 7.309613618657547,
+              "workload": {
+                "draws": 1365.8612293144208,
+                "dispatches": 162.69408983451535,
+                "ready": 622.4245862884161,
+                "pending": 394.19078014184396
+              },
+              "gpu": null
+            }
+          ],
+          "gpuCompletionProbe": false,
+          "apiCountProbe": false,
+          "bindingEntries": 0,
+          "bindingGroups": 0
+        }
+      ]
+    }
+  },
+  "screening": {
+    "accessGroups": {
+      "tag": "parity-group-access-all-check-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-group-access-all-check-20261106.json",
+        "sha256": "261764dd896f5de68e955c709ac0f61af3904780087fa214e7e78b4609ebe25a"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-group-access-all-check-20261106-source.cjs",
+        "sha256": "93a4d62d3ff7cbc0bc7ffc85126ec02308ff391ff326c7c9a0b3ab7bc73e8a9e"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 2019,
+            "fps": 101.0084333787111,
+            "low1": 38.76612947880847,
+            "p50": 11.515000000596046,
+            "p95": 13.479999996721745,
+            "p99": 16.779999993741512,
+            "maximum": 40.35999999940395,
+            "over33": 3,
+            "over50": 0
+          },
+          "rhiMs": 6.7811989064620075,
+          "workload": {
+            "draws": 1350.2522388059701,
+            "dispatches": 160.8169154228856,
+            "ready": 623.9865671641791,
+            "pending": 325.71691542288556
+          },
+          "gpu": null
+        }
+      ],
+      "gpuCompletionProbe": false,
+      "apiCountProbe": false,
+      "bindingEntries": 5588373,
+      "bindingGroups": 949987,
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 4632,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-group-access-all-check-20261106-tour-right.png",
+            "sha256": "e0d751a230f069cae56772436a65bb22d5b547279afc84d272f069a12f45b190"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 5030,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-group-access-all-check-20261106-tour-back.png",
+            "sha256": "8bf9ae8ad3a947767472bab55c1c42421e564804bc91a2a4d7d8afbf6cfe2031"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 5408,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-group-access-all-check-20261106-tour-left.png",
+            "sha256": "e965474222c06a3c0cf55842fc64b9a5555018f463d0365a20506e576e84de76"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 5633,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-group-access-all-check-20261106-tour-room.png",
+            "sha256": "5934e703fa05d1eabddb7dcccb253e594c0ac45664e0907492d4e77f947b5ec6"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 5842,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-group-access-all-check-20261106-tour-return.png",
+            "sha256": "945cb699eee37b9a6e895d27b92feeb3b90a009f72dd3fbaef91252f4f3630ea"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      }
+    },
+    "dynamicGlobals": {
+      "tag": "parity-dynamic-globals-check-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-dynamic-globals-check-20261106.json",
+        "sha256": "eba885ca131eb1c8182495bd6fe1cce159a55554495530aaeb17acd1f9b462d2"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-dynamic-globals-check-20261106-source.cjs",
+        "sha256": "93a4d62d3ff7cbc0bc7ffc85126ec02308ff391ff326c7c9a0b3ab7bc73e8a9e"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 2023,
+            "fps": 101.14097316812514,
+            "low1": 39.88679747100828,
+            "p50": 11.464999996125698,
+            "p95": 13.429999999701977,
+            "p99": 18.524999998509884,
+            "maximum": 44.5899999961257,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 6.7853174897521855,
+          "workload": {
+            "draws": 1350.5872549019607,
+            "dispatches": 160.88186274509803,
+            "ready": 623.5083333333333,
+            "pending": 323.8622549019608
+          },
+          "gpu": null
+        }
+      ],
+      "gpuCompletionProbe": false,
+      "apiCountProbe": false,
+      "bindingEntries": 5276333,
+      "bindingGroups": 1034274,
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 4609,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-dynamic-globals-check-20261106-tour-right.png",
+            "sha256": "2493880b9b892daf8386f1aa3867588767cc1b3b2b7c19f97678127cd24c76b1"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4991,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-dynamic-globals-check-20261106-tour-back.png",
+            "sha256": "4fa40916ecd06bfe041d510d6fa978b34fabf50e8f495f4b73a01326a84ce8ca"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 5357,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-dynamic-globals-check-20261106-tour-left.png",
+            "sha256": "b4fb67b197f658128e7d730edca559cc36def65775806a1e6767b23303df3cbe"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 5579,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-dynamic-globals-check-20261106-tour-room.png",
+            "sha256": "cff1858b87df54ca2d0d4db59dbf60f4ca3fa18bb63f8670da7f71c4cfd56e13"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 5783,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-dynamic-globals-check-20261106-tour-return.png",
+            "sha256": "7b02456f9da7693e14153579b6c7a7e93ab275340bb36f90ad55d38da2d1997d"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      }
+    },
+    "memory32": {
+      "tag": "parity-address32-check-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-check-20261106.json",
+        "sha256": "96f166423632989597cb68d7cb8176370729ca64566ca81ff3e10caec35e2e40"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-check-20261106-source.cjs",
+        "sha256": "93a4d62d3ff7cbc0bc7ffc85126ec02308ff391ff326c7c9a0b3ab7bc73e8a9e"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 2212,
+            "fps": 110.58214098424918,
+            "low1": 41.2197460505651,
+            "p50": 10.450000002980232,
+            "p95": 12.20499999821186,
+            "p99": 17.45499999821186,
+            "maximum": 41.17999999970198,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 6.225182575927404,
+          "workload": {
+            "draws": 1347.7648401826484,
+            "dispatches": 160.57077625570776,
+            "ready": 623.6630136986302,
+            "pending": 319.7269406392694
+          },
+          "gpu": null
+        }
+      ],
+      "gpuCompletionProbe": false,
+      "apiCountProbe": false,
+      "bindingEntries": 5812183,
+      "bindingGroups": 888763,
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 5045,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-check-20261106-tour-right.png",
+            "sha256": "1d13f5f43597ea7c9c20226d6b2de1dc7e4c2160c42a224b58b55a6769bafc17"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 5482,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-check-20261106-tour-back.png",
+            "sha256": "a9473f4964d82b5fe627863f35ae1377918d0fca80165811064ebaa93ae2fcbd"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 5862,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-check-20261106-tour-left.png",
+            "sha256": "3bceb7909a833efd98dcb7017da76c61b4b2c0a5a97b8b0a6dd6c80e0625332b"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 6114,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-check-20261106-tour-room.png",
+            "sha256": "513e3867ec2f666ffa0f896088b368826ac1b060402c34de1c54e9e29447c5e7"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 6341,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-check-20261106-tour-return.png",
+            "sha256": "e393c998fa770acee97cdad50942db8f9fe63ad621c2649a26798c81c839d1c9"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      }
+    },
+    "memory32O2": {
+      "tag": "parity-address32-o2-check-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-check-20261106.json",
+        "sha256": "1407b86ed0a2d486e25e40a719e4ce862a9deffea757cb0b16596c557c7b70c8"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-check-20261106-source.cjs",
+        "sha256": "9772f19f0b795f199332fbacbd3e3dfe427b0b8108483da39d74e8eaf7533497"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 2672,
+            "fps": 133.5016426647707,
+            "low1": 37.515631511421624,
+            "p50": 8.175000004470348,
+            "p95": 11.824999995529652,
+            "p99": 17.190000005066395,
+            "maximum": 49.25499999523163,
+            "over33": 7,
+            "over50": 0
+          },
+          "rhiMs": 4.9309168600474145,
+          "workload": {
+            "draws": 710.3922222222222,
+            "dispatches": 105.64851851851851,
+            "ready": 621.3085185185186,
+            "pending": 376.8233333333333
+          },
+          "gpu": null
+        }
+      ],
+      "gpuCompletionProbe": false,
+      "apiCountProbe": false,
+      "bindingEntries": 3636883,
+      "bindingGroups": 443636,
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 6116,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-check-20261106-tour-right.png",
+            "sha256": "df7d9ef37361958e0f726835bf7b065454740dfcab69636ea22805edb3584847"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 6660,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-check-20261106-tour-back.png",
+            "sha256": "4a57b2f77026af477b8a86ede58e21c4e23afa29711255a0fcc6f45ad604c499"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 7145,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-check-20261106-tour-left.png",
+            "sha256": "c5dffec2c9f28eee89695f362a8e647e8b5f9ad5786e4bddb635052c9b95a47c"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 7452,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-check-20261106-tour-room.png",
+            "sha256": "2b92d3873dc2bdcc566fac44136fbc2599ed0c121b6504b854d6d2c83bc26c1e"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 7748,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-check-20261106-tour-return.png",
+            "sha256": "04f6c20449daa2490871f27224c854b44b26eb8bbd8a7908bdc9f36b6f3dd562"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "visuallyRejected": true,
+      "reason": "Large lighting/shadow differences and roughly halved draw count; false performance gain.",
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-o2-visual-20261106.jpg",
+        "sha256": "f8046cb0169d9f59e5633c84fd5439dc7541fb6d1562888c5273afe179119b2d"
+      }
+    },
+    "fixed2GiB": {
+      "tag": "parity-address32-fixed-check-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-fixed-check-20261106.json",
+        "sha256": "690c18598e9dbf213bd57ea4b926c0d26766f3b8e89c3d2097588c823f290c69"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-fixed-check-20261106-source.cjs",
+        "sha256": "4e45919ecf18914aff36b2d2b0a0f1e78b873a1c83d17047e435b56b8b64d1bb"
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 2180,
+            "fps": 109.00476895864193,
+            "low1": 34.87109582441689,
+            "p50": 10.255000002682209,
+            "p95": 13.594999998807907,
+            "p99": 19.434999994933605,
+            "maximum": 60.32000000029802,
+            "over33": 6,
+            "over50": 2
+          },
+          "rhiMs": 6.2059324195438546,
+          "workload": {
+            "draws": 1361.2196347031963,
+            "dispatches": 162.02739726027397,
+            "ready": 622.3968036529681,
+            "pending": 369.38173515981737
+          },
+          "gpu": null
+        }
+      ],
+      "gpuCompletionProbe": false,
+      "apiCountProbe": false,
+      "bindingEntries": 5656229,
+      "bindingGroups": 864798,
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 6582,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-fixed-check-20261106-tour-right.png",
+            "sha256": "a746d0b1e6aa156a31ae53d4d838a5f13747887e7d3936a081233c55e9314f2c"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 6973,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-fixed-check-20261106-tour-back.png",
+            "sha256": "bc9b75295b2b1e6d6808060a30ebd9559949e16aa6f95baafa52cd1cea5b5b7d"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 7334,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-fixed-check-20261106-tour-left.png",
+            "sha256": "73df52cd80c8d86f998c0ffe33f640ae1ba5bb6d400790b10c12327f9a7bd8dc"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 7573,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-fixed-check-20261106-tour-room.png",
+            "sha256": "a0e7b72dee1919fe422e860537ee072e66736a0ffeeeac5b5f28cc763fa97a88"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 7800,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address32-fixed-check-20261106-tour-return.png",
+            "sha256": "efffb692192e3b3bcea95ec7756525f22ff1b486aee3ddb2dbc9b3a5cab33a9d"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "accepted": false
+    },
+    "failedO2DebugBuild": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-address32-o2-runtime-20261106-build.json",
+      "sha256": "4c3c690e19113a3b73b003e716b53a485121f53b744e65e09e0055793407530b"
+    }
+  },
+  "profiling": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-hotpath-costs-20261106.json",
+      "sha256": "a0ccef219b85c7f7b0d56eae4b6021b591de4c678462134f496b90b448bf53d6"
+    },
+    "threads": [
+      {
+        "role": "RHI",
+        "profile": {
+          "file": "tests/web-platform/results/parity-hotpath-profile-20261106-workers-0.cpuprofile",
+          "sha256": "5229b1aa1d21cea5636aefa9e32c4be62c239e28908ae216f747086d28eb0570"
+        },
+        "durationMs": 10170.275,
+        "exclusive": {
+          "wasmLeaf": {
+            "ms": 4217.544,
+            "percent": 41.46932113438427
+          },
+          "webgpuApiLeaf": {
+            "ms": 1398.131,
+            "percent": 13.74722905722805
+          },
+          "scriptLeaf": {
+            "ms": 1242.578,
+            "percent": 12.217742391429926
+          },
+          "idle": {
+            "ms": 2925.77,
+            "percent": 28.767855343144603
+          },
+          "visibleLanguageBoundary": {
+            "ms": 102.077,
+            "percent": 1.003679841498878
+          },
+          "otherLeaf": {
+            "ms": 239.907,
+            "percent": 2.3589037661223515
+          },
+          "garbageCollector": {
+            "ms": 42.656,
+            "percent": 0.4194183539776457
+          },
+          "futexWait": {
+            "ms": 1.612,
+            "percent": 0.015850112214271492
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 1792.59,
+            "percent": 17.625777080757405
+          },
+          "groups": {
+            "ms": 1744.867,
+            "percent": 17.156537065123608
+          },
+          "commandReplay": {
+            "ms": 711.925,
+            "percent": 7.000056537310938
+          },
+          "syncProxy": {
+            "ms": 0,
+            "percent": 0
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "topLeafs": [
+          {
+            "name": "(idle)",
+            "url": "",
+            "ms": 2925.77,
+            "percent": 28.767855343144603
+          },
+          {
+            "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 738.966,
+            "percent": 7.265939219932598
+          },
+          {
+            "name": "beginRenderPass",
+            "url": "",
+            "ms": 322.942,
+            "percent": 3.175351698946194
+          },
+          {
+            "name": "setVertexBuffer",
+            "url": "",
+            "ms": 234.179,
+            "percent": 2.3025827718522853
+          },
+          {
+            "name": "",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 199.403,
+            "percent": 1.9606451152992421
+          },
+          {
+            "name": "WebGPU.getJsObject",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 177.951,
+            "percent": 1.7497166989093216
+          },
+          {
+            "name": "setBindGroup",
+            "url": "",
+            "ms": 138.347,
+            "percent": 1.3603073663199865
+          },
+          {
+            "name": "growMemViews",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 137.61,
+            "percent": 1.3530607579441067
+          },
+          {
+            "name": "jsObjectInsert",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 136.238,
+            "percent": 1.3395704639255084
+          },
+          {
+            "name": "FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource*, ERHIAccess, FString&, bool, unsigned int, unsigned int, unsigned int) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 135.637,
+            "percent": 1.3336610858605102
+          },
+          {
+            "name": "writeBuffer",
+            "url": "",
+            "ms": 135.096,
+            "percent": 1.3283416623444302
+          },
+          {
+            "name": "FWebGPUDynamicRHI::CommitShaderResources(FWebGPUShaderData&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 127.686,
+            "percent": 1.255482275553021
+          },
+          {
+            "name": "createBindGroup",
+            "url": "",
+            "ms": 121.091,
+            "percent": 1.1906364380510852
+          },
+          {
+            "name": "FWebGPUDynamicRHI::SetDrawBindings(TArray<FWebGPUResolvedGroup, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>>*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 120.637,
+            "percent": 1.1861724486309366
+          },
+          {
+            "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)::$_6::operator()() const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 118.065,
+            "percent": 1.1608830636339724
+          },
+          {
+            "name": "FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<FRHITransition const*, int>, bool, FString&) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 114.067,
+            "percent": 1.1215724255243837
+          },
+          {
+            "name": "_ueWGPUReplay",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 104.252,
+            "percent": 1.0250656938971658
+          },
+          {
+            "name": "FRHICommandListBase::Execute()",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 102.908,
+            "percent": 1.0118507120013962
+          },
+          {
+            "name": "unsigned int UEWebGPUStream::Stream::object<WGPUBufferImpl>(WGPUBufferImpl*, UEWebGPUStream::Kind)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 101.724,
+            "percent": 1.0002089422360754
+          },
+          {
+            "name": "FWebGPUDynamicRHI::Bind(FWebGPUShaderData&, FRHIShaderParameterResource const&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 98.02,
+            "percent": 0.9637890814161859
+          },
+          {
+            "name": "wasm-to-js",
+            "url": "",
+            "ms": 97.515,
+            "percent": 0.958823630629457
+          },
+          {
+            "name": "bigintToI53Checked",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 92.575,
+            "percent": 0.9102507061018508
+          },
+          {
+            "name": "FWebGPUDynamicRHI::Parameters(FWebGPUShaderData&, TArrayView<unsigned char const, int>, TArrayView<FRHIShaderParameter const, int>, TArrayView<FRHIShaderParameterResource const, int>, TArrayView<FRHIShaderParameterResource const, int>)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 87.07,
+            "percent": 0.8561223762385973
+          },
+          {
+            "name": "FMemory::Free(void*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 84.441,
+            "percent": 0.8302725344201607
+          },
+          {
+            "name": "FWebGPUDynamicRHI::ResolveDrawBinding(FWebGPUShaderData&, FWebGPUShaderBinding&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 83.614,
+            "percent": 0.8221409942209036
+          },
+          {
+            "name": "submit",
+            "url": "",
+            "ms": 81.003,
+            "percent": 0.7964681387671424
+          },
+          {
+            "name": "createBuffer",
+            "url": "",
+            "ms": 79.247,
+            "percent": 0.7792021356354671
+          },
+          {
+            "name": "FWebGPUDynamicRHI::ResourceState(FRHIViewableResource*, unsigned int, unsigned int, unsigned int) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 74.192,
+            "percent": 0.7294984648891009
+          },
+          {
+            "name": "FWebGPUDynamicRHI::RHISetStreamSource(unsigned int, FRHIBuffer*, unsigned int)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 67.746,
+            "percent": 0.6661176811836454
+          },
+          {
+            "name": "unsigned long long std::__2::__cxx_atomic_fetch_sub[abi:nqn220108]<unsigned long long>(std::__2::__cxx_atomic_base_impl<unsigned long long>*, unsigned long long, std::__2::memory_order)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 67.572,
+            "percent": 0.6644068129917824
+          }
+        ]
+      },
+      {
+        "role": "Render",
+        "profile": {
+          "file": "tests/web-platform/results/parity-hotpath-profile-20261106-workers-6.cpuprofile",
+          "sha256": "b66db415a25da728f3fcc13ada9059bbb22c80742e67442af9d9a2657fa2b641"
+        },
+        "durationMs": 9933.481,
+        "exclusive": {
+          "wasmLeaf": {
+            "ms": 4334.8,
+            "percent": 43.63827745782169
+          },
+          "futexWait": {
+            "ms": 5188.951,
+            "percent": 52.236985201864286
+          },
+          "scriptLeaf": {
+            "ms": 314.561,
+            "percent": 3.166674401451012
+          },
+          "otherLeaf": {
+            "ms": 67.544,
+            "percent": 0.6799630461869308
+          },
+          "visibleLanguageBoundary": {
+            "ms": 23.019,
+            "percent": 0.23173145446193535
+          },
+          "garbageCollector": {
+            "ms": 4.606,
+            "percent": 0.046368438214156746
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "groups": {
+            "ms": 0,
+            "percent": 0
+          },
+          "commandReplay": {
+            "ms": 0,
+            "percent": 0
+          },
+          "syncProxy": {
+            "ms": 1.558,
+            "percent": 0.015684330598709557
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 18.05,
+            "percent": 0.18170870815578144
+          }
+        },
+        "topLeafs": [
+          {
+            "name": "_do_futex_wait",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 5188.951,
+            "percent": 52.236985201864286
+          },
+          {
+            "name": "_emscripten_get_now",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 305.519,
+            "percent": 3.075648908977628
+          },
+          {
+            "name": "bool FGPUOcclusionPacket::OcclusionCullPrimitive<false, FGPUOcclusionPacket::FProcessVisitor>(FGPUOcclusionPacket::FProcessVisitor&, FOcclusionCullResult&, int)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 166.109,
+            "percent": 1.6722133962907868
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7>(FRDGUserValidation::ValidateAddPass(FRDGPass const*)::$_7) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 160.584,
+            "percent": 1.616593417755568
+          },
+          {
+            "name": "FMemory::Realloc(void*, unsigned long, unsigned int)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 129.94,
+            "percent": 1.3081013594328113
+          },
+          {
+            "name": "FGenericPlatformString::FormatV(char16_t*, unsigned long, char16_t const*, void*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 101.986,
+            "percent": 1.026689435455708
+          },
+          {
+            "name": "FRDGBuilder::SetupPassInternals(FRDGPass*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 100.06,
+            "percent": 1.0073004619427972
+          },
+          {
+            "name": "__private_cond_signal",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 87.546,
+            "percent": 0.8813224689310827
+          },
+          {
+            "name": "_mi_page_malloc_zero",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 86.516,
+            "percent": 0.8709534955570962
+          },
+          {
+            "name": "(anonymous namespace)::TSafeDestIterator<char16_t>::Write(char16_t, int)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 74.66,
+            "percent": 0.751599565147404
+          },
+          {
+            "name": "void FRDGParameterStruct::Enumerate<FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2>(FRDGBuilder::MarkResourcesAsProduced(FRDGPass*)::$_2) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 67.533,
+            "percent": 0.6798523095780824
+          },
+          {
+            "name": "now",
+            "url": "",
+            "ms": 66.035,
+            "percent": 0.6647719968458187
+          },
+          {
+            "name": "FSetElementId TSet<FRDGResource*, DefaultKeyFuncs<FRDGResource*, false>, TSetAllocator<TSparseArrayAllocator<TRDGArrayAllocator<0u>, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>, TSizedInlineAllocator<1u, 32, TSizedInlineAllocator<4u, 32, TRDGArrayAllocator<0u>>>>>::Emplace<FRDGResource*&>(FRDGResource*&, bool*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 58.182,
+            "percent": 0.5857161250925028
+          },
+          {
+            "name": "mi_theap_malloc_zero_aligned_at_overalloc",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 56.923,
+            "percent": 0.5730418168615816
+          },
+          {
+            "name": "FRelevancePacket::ComputeRelevance(FDynamicPrimitiveIndexList&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 56.807,
+            "percent": 0.571874048986453
+          },
+          {
+            "name": "FMemory::Free(void*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 49.62,
+            "percent": 0.49952277555068564
+          },
+          {
+            "name": "mi_page_thread_collect_to_local",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 48.095,
+            "percent": 0.4841706547785212
+          },
+          {
+            "name": "FRDGBuilder::CollectAllocations(FRDGBuilder::FCollectResourceContext&, FRDGPass*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 45.21,
+            "percent": 0.4551274623669185
+          },
+          {
+            "name": "(anonymous namespace)::UniformSnapshot(void const*, FRHIUniformBufferLayout const&, TArray<unsigned char, TSizedDefaultAllocator<32>>&, TArray<TRefCountPtr<FRHIResource>, TSizedDefaultAllocator<32>>&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 43.155,
+            "percent": 0.43443985044114947
+          },
+          {
+            "name": "SetupCommonViewUniformBufferParameters(FViewUniformShaderParameters&, UE::Math::TIntPoint<int> const&, int, UE::Math::TIntRect<int> const&, FViewMatrices const&, FViewMatrices const&, FSetupViewUniformParametersInputs const&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 38.607,
+            "percent": 0.388655296164557
+          },
+          {
+            "name": "mi_posix_memalign",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 35.119,
+            "percent": 0.3535417241951739
+          },
+          {
+            "name": "FProjectedShadowInfo::SetupMeshDrawCommandsForShadowDepth(FSceneRenderer&, FInstanceCullingManager&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 33.905,
+            "percent": 0.34132042936408696
+          },
+          {
+            "name": "FDeferredShadingSceneRenderer::Render(FRDGBuilder&, FSceneRenderUpdateInputs const*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 32.248,
+            "percent": 0.32463946928574183
+          },
+          {
+            "name": "FRDGBuilder::Execute()",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 31.929,
+            "percent": 0.32142810762913826
+          },
+          {
+            "name": "FRDGBuilder::Compile()",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 30.871,
+            "percent": 0.31077725925081046
+          },
+          {
+            "name": "FGPUOcclusionPacket::FProcessVisitor::AddOcclusionQuery(FOcclusionQuery const&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 28.899,
+            "percent": 0.2909252053736248
+          },
+          {
+            "name": "FRDGBuilder::SetupParameterPass(FRDGPass*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 28.69,
+            "percent": 0.28882120980550524
+          },
+          {
+            "name": "FViewInfo::SetupUniformBufferParameters(FViewMatrices const&, FViewMatrices const&, UE::Math::TBox<double>*, int, FViewUniformShaderParameters&) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 28.035,
+            "percent": 0.28222734809680516
+          },
+          {
+            "name": "FViewSnapshotCache::Create(FViewInfo const*, EViewSnapshotType)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 24.392,
+            "percent": 0.24555339663910364
+          },
+          {
+            "name": "printf_core",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 24.094,
+            "percent": 0.24255344123575612
+          }
+        ]
+      },
+      {
+        "role": "Game",
+        "profile": {
+          "file": "tests/web-platform/results/parity-hotpath-profile-20261106-workers-29.cpuprofile",
+          "sha256": "340dd7214d754ffad7867e35e63a6c9ff54fe7f796b93f20d37505c866a86901"
+        },
+        "durationMs": 9070.242,
+        "exclusive": {
+          "idle": {
+            "ms": 7283.52,
+            "percent": 80.30127531327167
+          },
+          "scriptLeaf": {
+            "ms": 75.263,
+            "percent": 0.829779403901241
+          },
+          "wasmLeaf": {
+            "ms": 921.259,
+            "percent": 10.156939583309905
+          },
+          "otherLeaf": {
+            "ms": 18.519,
+            "percent": 0.20417316318572318
+          },
+          "futexWait": {
+            "ms": 761.38,
+            "percent": 8.394263350415567
+          },
+          "visibleLanguageBoundary": {
+            "ms": 8.826,
+            "percent": 0.09730721627934515
+          },
+          "garbageCollector": {
+            "ms": 1.475,
+            "percent": 0.0162619696365323
+          }
+        },
+        "inclusive": {
+          "drawBindings": {
+            "ms": 0,
+            "percent": 0
+          },
+          "groups": {
+            "ms": 0,
+            "percent": 0
+          },
+          "commandReplay": {
+            "ms": 0,
+            "percent": 0
+          },
+          "syncProxy": {
+            "ms": 8.933,
+            "percent": 0.09848689814450375
+          },
+          "dpiQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "windowSizeQuery": {
+            "ms": 0,
+            "percent": 0
+          },
+          "rhiFlush": {
+            "ms": 0,
+            "percent": 0
+          }
+        },
+        "topLeafs": [
+          {
+            "name": "(idle)",
+            "url": "",
+            "ms": 7283.52,
+            "percent": 80.30127531327167
+          },
+          {
+            "name": "_do_futex_wait",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 761.38,
+            "percent": 8.394263350415567
+          },
+          {
+            "name": "_emscripten_get_now",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 35.248,
+            "percent": 0.38861146152440035
+          },
+          {
+            "name": "__private_cond_signal",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 17.966,
+            "percent": 0.19807630270504362
+          },
+          {
+            "name": "FEngineLoop::Tick()",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 13.392,
+            "percent": 0.14764765923555292
+          },
+          {
+            "name": "bool Chaos::TAABBTree<Chaos::FAccelerationStructureHandle, Chaos::TAABBTreeLeafArray<Chaos::FAccelerationStructureHandle, true, double>, true, double, Chaos::TDefaultAABBTreeStorageTraits<Chaos::FAccelerationStructureHandle>>::QueryImp<(Chaos::EAABBQueryType)1, Chaos::FQueryFastData, Chaos::TSpatialVisitor<Chaos::FAccelerationStructureHandle, double>>(Chaos::TVector<double, 3> const&, Chaos::FQueryFastData&, Chaos::TVector<double, 3> const&, Chaos::TAABB<double, 3> const&, Chaos::TSpatialVisitor<Chaos::FAccelerationStructureHandle, double>&, Chaos::TVector<double, 3> const&, Chaos::TVector<double, 3> const&, bool const*) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 12.169,
+            "percent": 0.13416400576743157
+          },
+          {
+            "name": "FTickableGameObject::TickObjects(UWorld*, ELevelTick, bool, float)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 11.333,
+            "percent": 0.12494705212936986
+          },
+          {
+            "name": "FCycleCounter::Start(TStatId, EStatFlags, bool, UE::FSourceLocation)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 10.781,
+            "percent": 0.11886121671285067
+          },
+          {
+            "name": "_mi_page_malloc_zero",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 10.517,
+            "percent": 0.1159505997745154
+          },
+          {
+            "name": "postMessage",
+            "url": "",
+            "ms": 9.353,
+            "percent": 0.10311742509185533
+          },
+          {
+            "name": "SWidget::Paint(FPaintArgs const&, FGeometry const&, FSlateRect const&, FSlateWindowElementList&, int, FWidgetStyle const&, bool) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 9.088,
+            "percent": 0.1001957830893597
+          },
+          {
+            "name": "wasm-to-js",
+            "url": "",
+            "ms": 8.826,
+            "percent": 0.09730721627934515
+          },
+          {
+            "name": "handleMessage",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 7.924,
+            "percent": 0.08736260840669963
+          },
+          {
+            "name": "FTickTaskLevel::QueueAllTicks()",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 7.595,
+            "percent": 0.08373536229794089
+          },
+          {
+            "name": "IsInGameThread()",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 7.58,
+            "percent": 0.08356998633553549
+          },
+          {
+            "name": "void AlgoImpl::IntroSortInternal<TCheckedPointerIterator<TSharedRef<ISceneViewExtension, (ESPMode)1>, int, false>, long, UE::Core::Private::TProjectionMemberFunction<int (ISceneViewExtension::*)() const>, TGreater<void>>(TCheckedPointerIterator<TSharedRef<ISceneViewExtension, (ESPMode)1>, int, false>, long, UE::Core::Private::TProjectionMemberFunction<int (ISceneViewExtension::*)() const>, TGreater<void>)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 7.566,
+            "percent": 0.08341563543729043
+          },
+          {
+            "name": "FEngineShowFlags::GetSingleFlag(unsigned int) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 7.389,
+            "percent": 0.08146419908090655
+          },
+          {
+            "name": "UGameViewportClient::Draw(FViewport*, FCanvas*)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 6.306,
+            "percent": 0.06952405459523572
+          },
+          {
+            "name": "void TMulticastDelegateBase<FDefaultDelegateUserPolicy>::Broadcast<IBaseDelegateInstance<void (), FDefaultDelegateUserPolicy>>() const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 6.131,
+            "percent": 0.06759466836717257
+          },
+          {
+            "name": "bigintToI53Checked",
+            "url": "http://127.0.0.1:8765/build/villa-hotpath-control-20261106/UEWebEngineThreads.js?v=4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+            "ms": 6.126,
+            "percent": 0.06753954304637076
+          },
+          {
+            "name": "FSlateRHIRenderer::DrawWindows_Private(FSlateDrawBuffer&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 6.121,
+            "percent": 0.06748441772556896
+          },
+          {
+            "name": "UClass::FindFunctionByName(FName, EIncludeSuperFlag::Type) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 6.118,
+            "percent": 0.06745134253308788
+          },
+          {
+            "name": "FTickFunctionTask::DoTask(ENamedThreads::Type, TRefCountPtr<FBaseGraphTask> const&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 6.111,
+            "percent": 0.06737416708396535
+          },
+          {
+            "name": "FRenderCommandFence::Wait(bool) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 6.078,
+            "percent": 0.06701033996667344
+          },
+          {
+            "name": "FRenderCommandPipeRegistry::StopRecording(TBitArray<TSizedInlineAllocator<1u, 32, TLinearArrayAllocatorBase<FDefaultBlockAllocationTag, (ELinearAllocatorThreadPolicy)0>>> const&)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 6.048,
+            "percent": 0.06667958804186261
+          },
+          {
+            "name": "FRendererModule::BeginRenderingViewFamilies(FCanvas*, TArrayView<FSceneViewFamily* const, int>)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 5.766,
+            "percent": 0.06357051994864084
+          },
+          {
+            "name": "FWeakWidgetPath::ToWidgetPath(FWidgetPath&, FWeakWidgetPath::EInterruptedPathHandling::Type, FPointerEvent const*, EVisibility) const",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 5.057,
+            "percent": 0.05575374945894498
+          },
+          {
+            "name": "UGameEngine::Tick(float, bool)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 4.778,
+            "percent": 0.05267775655820429
+          },
+          {
+            "name": "UWorld::Tick(ELevelTick, float)",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 4.726,
+            "percent": 0.05210445322186552
+          },
+          {
+            "name": "FMRSWRecursiveAccessDetector::AcquireWriteAccess()",
+            "url": "wasm://wasm/UEWebEngineThreads.wasm-2b864206",
+            "ms": 4.711,
+            "percent": 0.05193907725946011
+          }
+        ]
+      }
+    ]
+  },
+  "desktop": {
+    "tag": "parity-native-memory-sm5-repeat-20261106",
+    "stats": {
+      "frames": 9000,
+      "fps": 218.70311681029017,
+      "low1": 166.63994255736023,
+      "p50": 4.5664,
+      "p95": 5.3117,
+      "p99": 5.7257,
+      "maximum": 6.8003,
+      "over33": 0,
+      "over50": 0
+    },
+    "arguments": [
+      "-d3d12",
+      "-windowed",
+      "-ResX=1280",
+      "-ResY=720",
+      "-ForceRes",
+      "-unattended",
+      "-nosplash",
+      "-nosound",
+      "-NoThrottleCPU",
+      "-traceautostart=0",
+      "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000,r.Shadow.CSMCaching 1\"",
+      "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+      "-csvCaptureFrames=12030",
+      "-csvCompression=0",
+      "-csvGpuStats",
+      "-ExitAfterCsvProfiling",
+      "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-memory-sm5-repeat-20261106.log\"",
+      "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.Shadow.CSMCaching,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.FinishCurrentFrame,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-memory-sm5-repeat-20261106.png -nosuffix\"",
+      "-sm5",
+      "-ini:Engine:[SystemSettings]:r.RayTracing=0"
+    ],
+    "exeSha256": "7102179a80df8b24fc17a305b066860c3b2d5d62c54da71184dd94d699c1aba9",
+    "workload": {
+      "RHI/DrawCalls": 1190.3396666666667,
+      "RHIThreadTime": 1.8657866000000032,
+      "GPUTime": 3.420628722222214
+    },
+    "exitCode": 777003,
+    "cleanExit": false,
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-repeat-20261106.csv",
+        "sha256": "1c9d55a275c9bffb74a4a314100955f5238ec11b18a4ccaaf2a3451e5ae8a58e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-repeat-20261106.log",
+        "sha256": "24743f6287af16031691f0eef0698d047698e74396528613918dffcbb4e15dec"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-repeat-20261106-launch.json",
+        "sha256": "dd06e85168f4e33879583c02b4825884b8f70c95bfc2af525b0a10b6b1455d93"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-repeat-20261106-complete.json",
+        "sha256": "e4463362d51c0c8537b9221b9733de5e9d4389432755f0f56b111d4a50b3ca13"
+      }
+    ]
+  },
+  "desktopEarlierWindow": {
+    "tag": "parity-native-memory-sm5-20261106",
+    "stats": {
+      "frames": 9000,
+      "fps": 188.6424449781286,
+      "low1": 29.67513736868381,
+      "p50": 4.9736,
+      "p95": 5.922,
+      "p99": 6.5694,
+      "maximum": 669.2718,
+      "over33": 7,
+      "over50": 7
+    },
+    "arguments": [
+      "-d3d12",
+      "-windowed",
+      "-ResX=1280",
+      "-ResY=720",
+      "-ForceRes",
+      "-unattended",
+      "-nosplash",
+      "-nosound",
+      "-NoThrottleCPU",
+      "-traceautostart=0",
+      "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000,r.Shadow.CSMCaching 1\"",
+      "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+      "-csvCaptureFrames=12030",
+      "-csvCompression=0",
+      "-csvGpuStats",
+      "-ExitAfterCsvProfiling",
+      "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-memory-sm5-20261106.log\"",
+      "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.Shadow.CSMCaching,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.FinishCurrentFrame,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-memory-sm5-20261106.png -nosuffix\"",
+      "-sm5",
+      "-ini:Engine:[SystemSettings]:r.RayTracing=0"
+    ],
+    "exeSha256": "7102179a80df8b24fc17a305b066860c3b2d5d62c54da71184dd94d699c1aba9",
+    "workload": {
+      "RHI/DrawCalls": 1190.3427777777779,
+      "RHIThreadTime": 2.271883500000005,
+      "GPUTime": 3.5484300777777724
+    },
+    "exitCode": 777003,
+    "cleanExit": false,
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-20261106.csv",
+        "sha256": "8b5221a1089d4c848890bbe1d1df5891e4e0436b050c4d5976df34cb023e67ab"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-20261106.log",
+        "sha256": "02131468d28fec978fd703a4db75b292c8ac3670a0baae6ba6e0e5a8a756e683"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-20261106-launch.json",
+        "sha256": "cca887408e474a6bd4fd5f8ae598f93be5664653f62ec71d7b3b89f1411b482d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-memory-sm5-20261106-complete.json",
+        "sha256": "e275b36518026e96ed51eb79cecff1f63caa2aa795da923394d2fa38a2bed965"
+      }
+    ],
+    "boundary": "Retained intact: seven >50 ms frames, maximum 669 ms. Cause not established. No parity claim from the depressed low statistic."
+  },
+  "defaultRestored": {
+    "byteIdentical": true,
+    "report": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-addressing-final-default-20261106-build.json",
+      "sha256": "0bf7ae734c000c647b73732ba3d5c8bda39005333e5b69b8c40c81cb065eb7cc"
+    }
+  },
+  "storage": {
+    "failedInput": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-address64-compute-input-20261106.json",
+      "sha256": "d6c5ee3dff7ec167e9fe29c592fb16646f01bba3044035fdf364e8d7f67b3f5b"
+    },
+    "recovery": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-addressing-profile-archive-20261106.json",
+      "sha256": "6ab6bdc9785d141f6fc492faf9b5181b5fdc510f797dd12e229f2976e9e31313"
+    },
+    "finalArchive": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-addressing-final-profile-archive-20261106.json",
+      "sha256": "50b08fb2c7c352853d792072cd34724a5a3801b03c2664120766f48198f706eb"
+    }
+  },
+  "visuals": {
+    "metrics": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-memory-visual-20261106.json",
+      "sha256": "0ebd1994a36ff213dbc5bf266075cf33ca869398f9115dc2b48a6b5d2042ddb3"
+    },
+    "contact": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-memory-visual-20261106.jpg",
+      "sha256": "f206aaaed5d0b6a99858458910b1d472c83661a2f87941a9b84c55f3b9868e08"
+    },
+    "staticFrames": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-memory-frame-times-20261106.png",
+      "sha256": "4149400138a9c836477e3bfda3cc53f44ff30f72912a8a02913e5aca570ecf62"
+    }
+  },
+  "testPage": {
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\villa-parity-test.html",
+      "sha256": "08d6371530acfcde2906c441e09cc916f3cc1bdd534ca2b083a47d4cadf2e37f"
+    },
+    "validation": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-memory-test-page-20261106.json",
+      "sha256": "ae71c3ec1e2c5d9fcacd79f0790c209f35c10d4bde8cb5f91b6dba719653ee3f"
+    }
+  },
+  "limitations": [
+    "Initial address-only ABBA includes substantial common drift; individual windows retained, no outlier removal.",
+    "Submission FPS and completion callbacks do not establish physically displayed new frames or human smoothness.",
+    "The C++ pointer ABI remains wasm64. This experiment lowers linear-memory and table addresses to 32 bits.",
+    "Both tested binaries retain their existing 2 GiB maximum; this does not validate applications needing more than 4 GiB.",
+    "Static low improves in the post-storage-cleanup pair but regresses in the preceding ABBA. More >33 ms and >50 ms static frames remain in the candidate.",
+    "Free-input routes differ in distance and workload; candidate low is lower, completion callback peak 5 versus 4. These runs do not establish smoother gameplay.",
+    "Native exit 777003 is the known failure after CSV completion and log close; it is not a clean lifecycle pass.",
+    "MEMORY64=2 is supported by the pinned SDK but under upstream deprecation review; future SDK upgrades need renewed checks."
+  ]
+}

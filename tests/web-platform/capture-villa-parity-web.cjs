@@ -7,6 +7,7 @@ const option = n => process.argv.find(v => v.startsWith('--'+n+'='))?.slice(n.le
 const tag=option('tag'), folder=option('folder')||'villa-scheduling-pipeline-v74';
 assert(tag && /^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(folder));
 const seconds=Number(option('seconds')||30), rounds=Number(option('rounds')||1);
+const warmupSeconds=Number(option('warmup')||15);assert(warmupSeconds>=15&&warmupSeconds<=120);
 const frameBudget=Number(option('frame-budget')||0);
 assert([0,1,2,3,4].includes(frameBudget));
 assert(!frameBudget || !process.argv.includes('--gpu'),'Budget mode owns its completion hook; inspect its counters separately');
@@ -14,11 +15,12 @@ assert(seconds>=10 && seconds<=60 && rounds>=1 && rounds<=4);
 const output=path.join(__dirname,'results',tag), base=path.join(__dirname,'build',folder);
 assert(!fs.existsSync(output+'.json'));
 fs.copyFileSync(__filename,output+'-source.cjs');
-const report={tag,folder,seconds,date:new Date().toISOString(),pass:false,runs:[],errors:[],
+const report={tag,folder,seconds,warmupSeconds,date:new Date().toISOString(),pass:false,runs:[],errors:[],
   gpuCompletionProbe:process.argv.includes('--gpu'),presentMonEnabled:!process.argv.includes('--no-presentmon'),frameBudget,
   apiCountProbe:process.argv.includes('--api-counts'),
   uploadValidationProbe:process.argv.includes('--validate-uploads'),
   uploadValidatorSource:process.argv.includes('--validate-uploads')?audit(require.resolve('./web-upload-staging-validator.cjs')):null,
+  workerProfilerSource:process.argv.includes('--profile-workers')?audit(require.resolve('./web-worker-cpu-profiler.cjs')):null,
   performanceAccepted:false,physicalPresentationValidated:false,pipelineDiagnostics:{failedCreate:0,detailLines:0,otherLogErrors:[]},
   source:audit(output+'-source.cjs'),files:['index.html','config-files.json','UEWebEngineThreads.js','web-engine-host.js','web-engine-worker.js'].map(n=>audit(path.join(base,n))),
   manifest:audit(path.join(base,'asset-versions.json')),
@@ -132,7 +134,7 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
       '--no_track_gpu','--no_track_input','--timed',String(Math.ceil((seconds+6)*cases.length*rounds+25)),'--terminate_after_timed'],{windowsHide:true,stdio:['ignore','ignore','pipe']});
     pm.stderr.on('data',b=>{report.presentMonError=(report.presentMonError||'')+b.toString()});
   }
-  await page.waitForTimeout(15000);
+  await page.waitForTimeout(warmupSeconds*1000);
   for(let round=0;round<rounds;round++)for(const test of cases){
     for(const args of test.commands)assert.equal(await page.evaluate(p=>__webEngineRPC('WebLightingQualityTest',...p),args),1);
     await page.waitForTimeout(5000);
@@ -197,6 +199,8 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     report.uploadValidation=await owner.evaluate(()=>__webValidateUploadCopies(1024));
     assert.deepEqual(report.uploadValidation.errors,[]);assert.equal(report.uploadValidation.completed,1024);
   }
+  if(process.argv.includes('--profile-workers'))
+    report.workerProfiles=await require('./web-worker-cpu-profiler.cjs')(context,output+'-workers');
   const finalState=await state();
   if(process.argv.includes('--validate-bindings')){
     report.bindingValidationAfter=finalState;

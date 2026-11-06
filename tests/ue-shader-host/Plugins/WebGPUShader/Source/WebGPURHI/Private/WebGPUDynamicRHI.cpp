@@ -38,6 +38,12 @@ static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
 static TAutoConsoleVariable<int32> CVarWebGPUBindingGroupCache(
     TEXT("r.WebGPU.BindingGroupCache"), 1,
     TEXT("Reuse prepared binding groups when resource, uniform and access generations match."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUGroupAccessRevalidation(
+    TEXT("r.WebGPU.GroupAccessRevalidation"), 0,
+    TEXT("Experiment: reuse unchanged groups across access generations. 1: uniform/sampler groups; 2: revalidate resource access."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUDynamicGlobalsGroupReuse(
+    TEXT("r.WebGPU.DynamicGlobalsGroupReuse"), 0,
+    TEXT("Experiment: update dynamic globals offsets without rebuilding unchanged group descriptors."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUBindingPlan(
     TEXT("r.WebGPU.BindingPlan"), 0,
     TEXT("Experiment: precompute descriptor slots and dynamic offset order per pipeline."), ECVF_RenderThreadSafe);
@@ -1239,10 +1245,13 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         EM_ASM({
             Object.assign(globalThis.__webOcclusionRHI, {groupPreparationHits:$0, groupPreparationValidated:$1,
                 groupFrameMisses:$2, groupAccessMisses:$3, groupVersionMisses:$4, groupTextureMisses:$5,
-                groupCacheEnabled:!!$6});
+                groupCacheEnabled:!!$6, groupAccessRevalidation:$7, groupAccessRevalidated:$8,
+                groupAccessBindingsChecked:$9, dynamicGlobalsGroupReuse:!!$10, groupDynamicGlobalsReused:$11});
         }, GroupPreparationHits, GroupPreparationValidated, GroupPreparationFrameMisses,
             GroupPreparationAccessMisses, GroupPreparationVersionMisses, GroupPreparationTextureMisses,
-            CVarWebGPUBindingGroupCache.GetValueOnAnyThread());
+            CVarWebGPUBindingGroupCache.GetValueOnAnyThread(), CVarWebGPUGroupAccessRevalidation.GetValueOnAnyThread(),
+            GroupAccessRevalidated, GroupAccessBindingsChecked,
+            CVarWebGPUDynamicGlobalsGroupReuse.GetValueOnAnyThread(), GroupDynamicGlobalsReused);
         EM_ASM({ Object.assign(globalThis.__webOcclusionRHI,
             {bindingPlanEnabled:!!$0, bindingPlanEntries:$1, bindingPlansBuilt:$2, bindingPlanValidations:$3}); },
             CVarWebGPUBindingPlan.GetValueOnAnyThread(), BindingPlanEntries, BindingPlansBuilt, BindingPlanValidations);
@@ -3294,7 +3303,7 @@ void FWebGPUDynamicRHI::Parameters(FWebGPUShaderData &Shader, TConstArrayView<ui
             if (Shader.GlobalsBuffer) wgpuBufferRelease(Shader.GlobalsBuffer);
             Shader.GlobalsBuffer = nullptr;
             ++Shader.GlobalsVersion;
-            Shader.InvalidateGroups(Shader.GlobalsGroupMask);
+            Shader.InvalidateGroups(Shader.GlobalsGroupMask, true);
         }
         FMemory::Memcpy(Shader.Globals.GetData() + Value.BaseIndex, Bytes.GetData() + Value.ByteOffset, Value.ByteSize);
     }
@@ -3373,29 +3382,129 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     const auto ShaderVersion = [&](int32 ShaderIndex, uint32 Group) -> uint64 {
         return Shaders[ShaderIndex]->GroupVersions.IsValidIndex(Group) ? Shaders[ShaderIndex]->GroupVersions[Group] : 0;
     };
+    const auto ShaderResourceVersion = [&](int32 ShaderIndex, uint32 Group) -> uint64 {
+        const auto& Versions = Shaders[ShaderIndex]->GroupGlobalsVersions;
+        return ShaderVersion(ShaderIndex, Group) - (Versions.IsValidIndex(Group) ? Versions[Group] : 0);
+    };
     for (FWebGPUShaderData *Shader : Shaders)
     {
         TrackShaderBindings(*Shader);
         CommitShaderResources(*Shader);
     }
+    const int32 AccessRevalidation = CVarWebGPUGroupAccessRevalidation.GetValueOnAnyThread();
+    const bool ReuseDynamicGlobals = CVarWebGPUDynamicGlobalsGroupReuse.GetValueOnAnyThread() != 0;
+    const auto RefreshDynamicGlobals = [&](uint32 Group, FWebGPUGroupSnapshot& Cached) {
+        for (int32 Index = 0; Index < Shaders.Num(); ++Index)
+            if (Cached.ShaderResourceVersions[Index] != ShaderResourceVersion(Index, Group)) return false;
+        auto Offsets = Cached.DynamicOffsets;
+        for (int32 Index = 0; Index < Shaders.Num(); ++Index)
+        {
+            if (Cached.ShaderVersions[Index] == ShaderVersion(Index, Group)) continue;
+            auto* Shader = Shaders[Index];
+            const auto* Globals = Shader->Bindings.FindByPredicate([&](const auto& Binding) {
+                return Binding.Group == Group && Binding.Name == TEXT("$Globals");
+            });
+            if (!Globals || !DynamicBindings.Contains((uint64(Group) << 32) | Globals->Index)) return false;
+            const auto* Entry = Cached.Entry->Entries.FindByPredicate([&](const auto& E) { return E.binding == Globals->Index; });
+            if (!Entry) return false;
+            if (!Shader->GlobalsBuffer)
+            {
+                const auto Allocation = UploadFrameConstants(Shader->Globals.GetData(), Shader->Globals.Num());
+                Shader->GlobalsBuffer = Allocation.Buffer;
+                Shader->GlobalsBufferOffset = Allocation.Offset;
+                ++UniformUploads;
+            }
+            // Page rollover changes the descriptor, so use the original path.
+            if (Entry->buffer != Shader->GlobalsBuffer || Entry->size != uint64(Shader->Globals.Num())) return false;
+            int32 Slot = 0;
+            for (uint64 Binding : DynamicBindings)
+                if ((Binding >> 32) == Group && uint32(Binding) < Globals->Index) ++Slot;
+            check(Offsets.IsValidIndex(Slot) && Shader->GlobalsBufferOffset <= MAX_uint32);
+            Offsets[Slot] = uint32(Shader->GlobalsBufferOffset);
+        }
+        Cached.DynamicOffsets = MoveTemp(Offsets);
+        return true;
+    };
+    const auto RevalidateGroupAccess = [&](uint32 Group) {
+        for (const auto* Shader : Shaders)
+        for (const auto& Binding : Shader->Bindings)
+        {
+            if (Binding.Group != Group) continue;
+            if (Binding.Descriptor == 0 || Binding.Descriptor == 6) continue;
+            if (AccessRevalidation < 2) return false;
+            // Resource identities and contents versions were checked first. Keep
+            // all current access, CPU-lock, transition and attachment checks;
+            // only immutable descriptor preparation and key rebuilding are reused.
+            auto* Resource = Binding.PreparedResource.GetReference();
+            if (!Resource) return false;
+            const ERHIAccess ReadAccess = Compute ? ERHIAccess::SRVCompute :
+                Shader->Frequency == SF_Vertex ? ERHIAccess::SRVGraphicsNonPixel : ERHIAccess::SRVGraphicsPixel;
+            const ERHIAccess WriteAccess = Compute ? ERHIAccess::UAVCompute : ERHIAccess::UAVGraphics;
+            if (Binding.Descriptor == 2)
+            {
+                FString Error;
+                FWebGPUTexture* Texture;
+                WGPUTextureView View;
+                if (!ValidateTextureBinding(Resource, Binding, ReadAccess, Error, Texture, View) ||
+                    View != Binding.PreparedEntry.textureView) return false;
+                ++AccessChecks;
+            }
+            else if (Binding.Descriptor == 3)
+            {
+                auto* View = static_cast<FWebGPUTextureUAV*>(Resource);
+                if (View->Handle != Binding.PreparedEntry.textureView) return false;
+                auto* Texture = static_cast<FRHITexture*>(View->GetResource());
+                const auto Info = View->GetDesc().Texture.UAV.GetViewInfo(Texture);
+                const uint32 Faces = Info.Dimension == FRHIViewDesc::EDimension::TextureCube ||
+                    Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? 6 : 1;
+                for (uint32 Slice = Info.ArrayRange.First * Faces; Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
+                    RequireAccess(Texture, WriteAccess, false, 0, Info.MipLevel, Slice);
+            }
+            else if (Binding.Descriptor == 7)
+            {
+                const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
+                auto* Buffer = ReadOnly ? static_cast<FRHIShaderResourceView*>(Resource)->GetBuffer() :
+                    static_cast<FRHIBuffer*>(static_cast<FRHIUnorderedAccessView*>(Resource)->GetResource());
+                if (static_cast<FWebGPUBuffer*>(Buffer)->Handle != Binding.PreparedEntry.buffer) return false;
+                RequireAccess(Buffer, ReadOnly ? ReadAccess : WriteAccess);
+            }
+            else return false;
+            ++GroupAccessBindingsChecked;
+        }
+        return true;
+    };
     uint32 ReusedGroups = 0, ValidateGroups = 0;
     for (int32 Group = 0; CacheGroups && Group < PreparedGroups.Num(); ++Group)
     {
         auto& Cached = PreparedGroups[Group];
+        bool GlobalsRefreshed = false;
         bool Reuse = Cached.Frame == EndFrames && Cached.Entry;
         if (!Reuse) ++GroupPreparationFrameMisses;
-        else if (Cached.AccessSerial != BindingStateSerial) { Reuse = false; ++GroupPreparationAccessMisses; }
+        else if (!AccessRevalidation && Cached.AccessSerial != BindingStateSerial) { Reuse = false; ++GroupPreparationAccessMisses; }
         else
         {
             for (int32 Index = 0; Index < Shaders.Num(); ++Index)
                 if (Cached.ShaderVersions[Index] != ShaderVersion(Index, Group)) { Reuse = false; break; }
+            if (!Reuse && ReuseDynamicGlobals)
+                Reuse = GlobalsRefreshed = RefreshDynamicGlobals(Group, Cached);
             if (!Reuse) ++GroupPreparationVersionMisses;
             else for (const auto& Reference : Cached.TextureReferences)
                 if (Reference.Key->GetReferencedTexture() != Reference.Value)
                 { Reuse = false; ++GroupPreparationTextureMisses; break; }
+            if (Reuse && Cached.AccessSerial != BindingStateSerial)
+            {
+                Reuse = RevalidateGroupAccess(Group);
+                if (Reuse) { Cached.AccessSerial = BindingStateSerial; ++GroupAccessRevalidated; }
+                else ++GroupPreparationAccessMisses;
+            }
         }
         if (Reuse)
         {
+            if (GlobalsRefreshed)
+            {
+                ++GroupDynamicGlobalsReused;
+                for (int32 Index = 0; Index < Shaders.Num(); ++Index) Cached.ShaderVersions[Index] = ShaderVersion(Index, Group);
+            }
             if (ValidatePrepared) ValidateGroups |= 1u << Group;
             else ReusedGroups |= 1u << Group;
         }
@@ -3782,7 +3891,11 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             Snapshot.Entry = PreviousGroups[Group];
             Snapshot.AccessSerial = BindingStateSerial;
             Snapshot.DynamicOffsets = Resolved.DynamicOffsets;
-            for (int32 Index = 0; Index < Shaders.Num(); ++Index) Snapshot.ShaderVersions[Index] = ShaderVersion(Index, Group);
+            for (int32 Index = 0; Index < Shaders.Num(); ++Index)
+            {
+                Snapshot.ShaderVersions[Index] = ShaderVersion(Index, Group);
+                Snapshot.ShaderResourceVersions[Index] = ShaderResourceVersion(Index, Group);
+            }
         };
         const auto Matches = [&](const FWebGPUBindGroupCacheEntry& Cached) {
             if (Cached.Layout != Layout ||

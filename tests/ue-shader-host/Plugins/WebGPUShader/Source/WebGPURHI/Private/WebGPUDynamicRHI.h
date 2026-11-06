@@ -78,6 +78,7 @@ struct FWebGPUGroupSnapshot
     uint32 Frame = MAX_uint32;
     uint64 AccessSerial = 0;
     uint64 ShaderVersions[2] = {};
+    uint64 ShaderResourceVersions[2] = {};
     TArray<uint32, TInlineAllocator<12>> DynamicOffsets;
     TArray<TPair<FRHITextureReference*, FRHITexture*>, TInlineAllocator<4>> TextureReferences;
 };
@@ -117,12 +118,18 @@ struct FWebGPUShaderData
     uint64 UniformUpdateSerial = 0, StaticUniformSerial = 0;
     TArray<FWebGPUShaderBinding> Bindings;
     TArray<uint64, TInlineAllocator<4>> GroupVersions;
+    TArray<uint64, TInlineAllocator<4>> GroupGlobalsVersions;
     TMap<uint32, uint32> ResourceGroupMasks;
     uint32 GlobalsGroupMask = 0;
-    void InvalidateGroups(uint32 Mask)
+    void InvalidateGroups(uint32 Mask, bool GlobalsOnly = false)
     {
+        if (GlobalsOnly) GroupGlobalsVersions.SetNumZeroed(GroupVersions.Num());
         for (int32 Group = 0; Group < GroupVersions.Num(); ++Group)
-            if (Mask & (1u << Group)) ++GroupVersions[Group];
+            if (Mask & (1u << Group))
+            {
+                ++GroupVersions[Group];
+                if (GlobalsOnly) ++GroupGlobalsVersions[Group];
+            }
     }
     bool HasVertexFetchFormats = false;
     mutable TMap<const FJsonObject*, FWebGPUBindingRoute> BindingRoutes;
@@ -661,6 +668,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     uint32 BindingEntriesPrepared = 0, BindingEntriesReused = 0, BindingEntriesValidated = 0;
     uint32 BindingPlanEntries = 0, BindingPlansBuilt = 0, BindingPlanValidations = 0;
     uint32 GroupPreparationHits = 0, GroupPreparationValidated = 0;
+    uint32 GroupAccessRevalidated = 0, GroupAccessBindingsChecked = 0;
+    uint32 GroupDynamicGlobalsReused = 0;
     uint32 GroupPreparationFrameMisses = 0, GroupPreparationAccessMisses = 0,
         GroupPreparationVersionMisses = 0, GroupPreparationTextureMisses = 0;
     TMap<uint32, TArray<TUniquePtr<FWebGPUBindGroupCacheEntry>>> BindGroupCache;

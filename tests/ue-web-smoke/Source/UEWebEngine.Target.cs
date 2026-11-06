@@ -29,6 +29,10 @@ public class UEWebEngineTarget : UEWebApplicationTarget
         // Isolate the O2 Wasm optimization from export/JS name minification.
         if (target.Arguments?.HasOption("-WebKeepLinkNames") ?? false)
             AdditionalLinkerArguments += " -g3";
+        // Preserve the wasm64 C++ ABI while isolating the browser's linear-memory
+        // addressing mode. Opt-in only; all normal builds stay native memory64.
+        if (target.Arguments?.HasOption("-WebLowerMemory64") ?? false)
+            AdditionalLinkerArguments += " -sMEMORY64=2";
         // The ordinary threaded runtime defaults to mimalloc. Keep explicit
         // overrides for allocator A/B without changing UE objects or Cook.
         string Workspace = Path.GetFullPath(Path.Combine(ProjectFile.Directory.FullName, "../.."));

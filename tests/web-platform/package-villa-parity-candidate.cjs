@@ -35,6 +35,9 @@ if(process.argv.includes('--batch-submissions'))settings['r.WebGPU.BatchSubmissi
 if(process.argv.includes('--reuse-present'))settings['r.WebGPU.ReusePresentEncoder']=1;
 if(process.argv.includes('--frame-uniforms'))settings['r.WebGPU.FrameUniformSnapshots']=1;
 if(process.argv.includes('--batch-staging'))settings['r.WebGPU.BatchStagingWrites']=1;
+if(process.argv.includes('--group-access-uniform'))settings['r.WebGPU.GroupAccessRevalidation']=1;
+if(process.argv.includes('--group-access-all'))settings['r.WebGPU.GroupAccessRevalidation']=2;
+if(process.argv.includes('--dynamic-globals'))settings['r.WebGPU.DynamicGlobalsGroupReuse']=1;
 if(process.argv.includes('--binding-plan'))settings['r.WebGPU.BindingPlan']=1;
 if(process.argv.includes('--tlv-share'))settings['r.WebGPU.TLVShareCascades']=1;
 let ini=Buffer.from(config.data,'base64').toString();

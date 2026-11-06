@@ -11,6 +11,8 @@ param(
     [switch]$StandaloneCompiles,
     [ValidateRange(0, 2)][int]$LinkOptimization = 0,
     [switch]$KeepLinkNames,
+    [switch]$LowerMemory64,
+    [switch]$FixedHeap2GiB,
     [string]$RendererRevision = ''
 )
 $ErrorActionPreference = 'Stop'
@@ -25,6 +27,7 @@ $taskDotnet = Join-Path $Engine 'Engine/Binaries/ThirdParty/DotNet/10.0/win-x64/
 if (-not (Test-Path -LiteralPath $taskUbt)) { throw 'Run build-web-ubt.ps1 to prepare the isolated Web UBT first.' }
 if ($Trace -and -not $Threads) { throw 'The Trace diagnostic target requires -Threads.' }
 if ($Simd -and (-not $Threads -or $Trace)) { throw 'SIMD comparison requires Threads without Trace.' }
+if ($FixedHeap2GiB -and (-not $Threads -or $Trace -or $Simd)) { throw 'Fixed heap comparison requires the ordinary threaded target.' }
 if ($Mimalloc -and (-not $Threads -or $Trace -or $Simd)) { throw 'Mimalloc requires Threads without Trace or SIMD.' }
 if ($AllocationProbe -and (-not $Threads -or $Trace -or $Simd)) { throw 'Allocation probe requires Threads without Trace or SIMD.' }
 if ($AllocationProbe) { & (Join-Path $PSScriptRoot 'build-web-allocation-probe.ps1') }
@@ -132,6 +135,9 @@ $taskReport = [ordered]@{
     standaloneCompiles = [bool]$StandaloneCompiles
     linkOptimization = $(if ($LinkOptimization -eq 0) { 'default-O0' } else { "O$LinkOptimization" })
     keepLinkNames = [bool]$KeepLinkNames
+    lowerMemory64 = [bool]$LowerMemory64
+    linearMemoryAddressBits = $(if ($LowerMemory64) { 32 } else { 64 })
+    fixedHeap2GiB = [bool]$FixedHeap2GiB
     maxParallelActions = $MaxParallelActions
     rendererRevision = $taskRendererSnapshot
     pass = $false
@@ -165,6 +171,8 @@ try {
         '-NoUBA', "-MaxParallelActions=$MaxParallelActions", '-NoUBTMakefiles')
     if ($LinkOptimization -gt 0) { $taskArguments += "-WebLinkOptimization=$LinkOptimization" }
     if ($KeepLinkNames) { $taskArguments += '-WebKeepLinkNames' }
+    if ($LowerMemory64) { $taskArguments += '-WebLowerMemory64' }
+    if ($FixedHeap2GiB) { $taskArguments += '-WebFixedHeap2GiB' }
     if ($taskAllocatorExplicit) {
         $taskArguments += $(if ($Mimalloc) { '-WebMimalloc' } else { '-WebDlmalloc' })
     }
@@ -218,6 +226,9 @@ try {
         $taskThreadResponse = Join-Path $taskRoot "tests/ue-web-smoke/Intermediate/Build/Web/wasm64/$taskTarget/Development/$taskTarget.js.rsp"
         $taskLinkText = Get-Content -LiteralPath $taskThreadResponse -Raw
         if ($taskLinkText.Contains('-msimd128') -ne [bool]$Simd) { throw 'Unexpected final SIMD flag.' }
+        if ($taskLinkText.Contains('-sMEMORY64=2') -ne [bool]$LowerMemory64) { throw 'Unexpected memory64 lowering flag.' }
+        if ($taskLinkText.Contains('-sALLOW_MEMORY_GROWTH=0') -ne [bool]$FixedHeap2GiB) { throw 'Unexpected fixed heap flag.' }
+        if ($FixedHeap2GiB -and -not $taskLinkText.Contains('-sINITIAL_MEMORY=2147483648 -sMAXIMUM_MEMORY=2147483648')) { throw 'Fixed heap must preserve the 2 GiB limit.' }
         if ($taskLinkText.Contains('-sMALLOC=mimalloc') -ne [bool]$Mimalloc) { throw 'Unexpected allocator flag.' }
         if ($taskLinkText.Contains('--wrap=posix_memalign') -ne [bool]$AllocationProbe) { throw 'Unexpected allocator probe flag.' }
         $taskLinkOptimizationFlags = @([regex]::Matches($taskLinkText, '(?<!\S)-O[0-3sz](?=\s|$)') | ForEach-Object { $_.Value })

@@ -4,6 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3);
 const folder=option('folder'),tag=option('tag');assert([folder,tag].every(v=>v&&/^[a-z0-9-]+$/.test(v)));
+const clock=option('clock');assert(!clock||['owner','local'].includes(clock));
 const output=path.join(__dirname,'results',tag);assert(!fs.existsSync(output+'.json'));
 const runtime=fs.readdirSync(path.join(__dirname,'build',folder)).filter(n=>/^UEWebEngineThreads\w*\.wasm$/.test(n));assert.equal(runtime.length,1);
 const report={date:new Date().toISOString(),folder,pass:false,errors:[],views:[],source:audit(__filename),
@@ -26,11 +27,14 @@ async function captureOwner(){
  page.on('console',m=>{const text=m.text();log.write(text+'\n');if(text.includes('WebGPU command stream: enabled'))report.streamConfirmed=true;
   if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|P3_ENGINE_PREINIT_FAILED|P3_ENGINE_INIT_FAILED|thread pool is exhausted|Failed to create thread/i.test(text))report.errors.push(text);});
  page.on('pageerror',e=>report.errors.push(e.message));
- await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`,{waitUntil:'commit'});
+ report.url=`http://127.0.0.1:8765/build/${folder}/index.html`+(clock?'?clock='+clock+'&gpuahead=0':'');
+ await page.goto(report.url,{waitUntil:'commit'});
  await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=150,null,{timeout:120000});
  assert(!await page.evaluate(()=>globalThis.__webEngineFailure));assert(report.streamConfirmed);
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
  const state=()=>owner.evaluate(()=>({frames:__webRHIFrames,camera:__webDefaultCamera,settings:__webProjectSettings,view:__webRenderView,handles:globalThis.__webGPUHandleDiagnostics,memory:__webTextureStreaming}));
+ report.clock=await owner.evaluate(()=>globalThis.__webGameFrameClock);
+ if(clock)assert.equal(report.clock.mode,clock);
  report.before=await state();const camera=report.before.camera;assert(camera);
  // Sweep both visibility and streaming demand; returning to spawn also tests
  // that the stream does not retain stale pipeline/binding state across passes.
