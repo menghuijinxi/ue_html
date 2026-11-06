@@ -19,11 +19,11 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}footer{margin-top:30px;border
 <main>
 <div class="date">TRIPLEX HOUSE VILLA · 2026-11-07</div>
 <h1>转向低帧测试</h1>
-<p>本次只比较限帧：30 FPS 版与不限帧版采用同一个低帧候选，保留相同画质和鼠标输入方式。重点观察轻微转动鼠标时，几帧画面之间的异常抖动是否减轻。</p>
+<p>本次比较运动模糊：两个主要入口都限制为 30 FPS，使用相同优化候选和鼠标输入方式，只切换运动模糊。重点观察轻微转动鼠标时，几帧画面之间的异常抖动是否减轻。</p>
 <p class="note">已收到体感反馈：转向流畅度改善，转身时画面突然空白的问题未再出现；键盘移动丝滑，但鼠标转向仍抖动。30 FPS 入口用于排查帧率波动，尚未替换默认版本。</p>
 <nav aria-label="测试版本">
-<a class="candidate" href="build/villa-low-30fps-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>打开 30 FPS 限帧版</strong><span>在刚测试的优化候选上增加 30 FPS 限制。</span></a>
-<a href="build/villa-low-final-candidate-20261106/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>打开同版不限帧对照</strong><span>你刚刚测试过的低帧候选，方便比较鼠标手感。</span></a>
+<a class="candidate" href="build/villa-low-30fps-no-blur-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>30 FPS · 关闭运动模糊</strong><span>在刚才的 30 FPS 版上关闭运动模糊。</span></a>
+<a href="build/villa-low-30fps-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>30 FPS · 原运动模糊对照</strong><span>保留刚才的限帧版，便于比较转向画面。</span></a>
 </nav>
 <ol>
 <li>用 Edge 或 Chrome 打开，每次只运行一个版本。切换时返回此页，避免两个游戏同时占用显卡。</li>
@@ -31,6 +31,7 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}footer{margin-top:30px;border
 <li>重点看 1% Low、最长帧和转向手感。左上角“导出”可保存性能记录。</li>
 </ol>
 <footer>
+<p><a href="build/villa-low-final-candidate-20261106/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread">同版不限帧、原运动模糊入口</a>仍可用于限帧对照。</p>
 <p><a href="build/villa-low-final-control-20261106/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">此前关闭优化的对照</a>仍保留。此前候选 720p 转向长测：平均 113.32 → 126.20 FPS，1% Low 43.72 → 45.64（约 +4.4%）。</p>
 <p><a href="villa-parity-test.html">返回此前版本与其他对照</a></p>
 <p>页面数字来自 RHI 提交间隔，不是显示器实际呈现帧率。没有开启后续长测失败的合批保留或新入视野合批实验。</p>

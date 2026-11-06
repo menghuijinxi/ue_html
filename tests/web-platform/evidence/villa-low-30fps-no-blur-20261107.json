@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-07",
+  "pass": true,
+  "defaultChanged": false,
+  "subjectiveJitterResolved": false,
+  "baseline": "villa-low-30fps-20261107",
+  "candidate": "villa-low-30fps-no-blur-20261107",
+  "onlyChangedProduct": "config-files.json",
+  "motionBlurQuality": 0,
+  "pageFrameMaxFPS": 30,
+  "raw": {
+    "file": "tests/web-platform/results/mouse-low-30fps-no-blur-20261107.json",
+    "sha256": "59284022c65228126d0212651c9a9c423a692835724ef37d58d17d937767bd98"
+  },
+  "log": {
+    "file": "tests/web-platform/results/mouse-low-30fps-no-blur-20261107-1-page3.log",
+    "sha256": "a384875111e36fd698d33ec3e31de02ba4a5600506eb4b94d4b1cd7ef1cfaeec"
+  },
+  "package": {
+    "file": "tests/web-platform/results/villa-low-30fps-no-blur-20261107-package.json",
+    "sha256": "9dfefd5956753175be4069b47c402d23446e181b8ef57a13bf84e6ac99d22c94"
+  },
+  "result": {
+    "samples": 244,
+    "fps": 30.002410029631733,
+    "low1Fps": 25.31645569938603,
+    "p50": 33.230000004172325,
+    "p95": 35.35999999940395,
+    "p99": 38.20000000298023,
+    "maximum": 40.639999985694885
+  },
+  "boundary": "Eight-second mouse-turn smoke after equal warmup. Confirms startup and cap, not comparative performance or subjective jitter acceptance."
+}

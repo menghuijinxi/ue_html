@@ -59,6 +59,7 @@ if(csmScrollSubjects!==undefined)settings['r.Shadow.MaxCSMScrollingStaticShadowS
 if(motionQueryInterval!==undefined)settings['r.Web.OcclusionMotionQueryInterval']=Number(motionQueryInterval);
 if(queryBuffering!==undefined)settings['r.NumBufferedOcclusionQueries']=Number(queryBuffering);
 if(process.argv.includes('--no-shadows'))settings['r.ShadowQuality']=0;
+if(process.argv.includes('--no-motion-blur'))settings['r.MotionBlurQuality']=0;
 if(process.argv.includes('--bundles'))settings['r.WebGPU.RenderBundles']=1;
 if(process.argv.includes('--group-motion-queries'))settings['r.Web.OcclusionGroupMotionQueries']=1;
 if(process.argv.includes('--group-new-motion-queries'))settings['r.Web.OcclusionGroupNewMotionQueries']=1;

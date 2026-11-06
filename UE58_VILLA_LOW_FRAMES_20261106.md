@@ -8,6 +8,8 @@
 
 30 FPS 包继承刚测试的候选及 direct-game-thread 输入，仅通过 `pageFrameMaxFPS=30` 控制 page 调度器发放 Game tick。按实际时间推进 deadline，正常显示刷新保持节拍，长停顿后重置节拍，不补发积压帧；输入投递和模拟时钟不改。单独设置 `t.MaxFPS` 在此前浏览器线程路径中不能可靠限帧，因此沿用其原值，不另加线程等待。引擎 JS/Wasm、渲染 worker 与 Cook 文件哈希一致，画质配置有效值一致。
 
+按用户随后要求，新增 `villa-low-30fps-no-blur-20261107`，仅增加 `r.MotionBlurQuality=0`，继续保留 30 FPS 上限及直接输入。与原 30 FPS 包相比，只有 `config-files.json` 内容改变；原包和默认入口不变。启动日志确认应用关闭配置，8 秒鼠标转向冒烟通过，约 30.00 FPS，中位间隔 33.23 ms；该短测不用于归因或宣称抖动已解决。测试页主入口改为 30 FPS 的模糊关闭/原版对照，仍保留不限帧链接。证据为 `tests/web-platform/evidence/villa-low-30fps-no-blur-20261107.json`。
+
 限帧校验覆盖 60/144/240 Hz 显示刷新、在途额度、长停顿不追帧、隐藏恢复及原有取消/销毁测试。实际鼠标转向预热和计时各 24 秒：**27.33 FPS，帧间隔中位数 33.715 ms，1% Low 8.95，最长 176.615 ms**。限帧上限生效，但仍有长帧，不能称为稳定 30 FPS 或抖动已修复。隐藏恢复与停下后的遮挡恢复通过，没有新增 GPU validation/断言错误。证据为 `tests/web-platform/evidence/villa-low-30fps-20261107.json`，测试页所有入口与跨源隔离响应头检查通过。
 
 ## 实现
