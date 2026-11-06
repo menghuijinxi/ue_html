@@ -1,5 +1,19 @@
 const branch = (before, lines) => ({before, after: lines.join('\n')});
-module.exports = [['Private/Nanite/NaniteWritePixel.ush', [
+module.exports = [['Private/Nanite/NaniteTranscode.usf', [
+  branch('\tBRANCH\n\tif (ClusterDiskHeader.NumVertexRefs == 0)\n\t{\n\t\treturn;\n\t}', [
+    '#if !COMPILER_WEBGPU', '\tBRANCH', '\tif (ClusterDiskHeader.NumVertexRefs == 0)',
+    '\t{', '\t\treturn;', '\t}', '#endif',
+  ]),
+  branch('\tif (GroupIndex >= WaveGetLaneCount())', [
+    '#if !COMPILER_WEBGPU', '\tif (GroupIndex >= WaveGetLaneCount())',
+  ]),
+  branch('\n\tconst uint WaveNumActiveLanes = min(WaveGetLaneCount(), GROUP_SIZE);', [
+    '#endif',
+    '\t// Web dispatch must choose GROUP_SIZE <= the adapter\'s minimum subgroup size.',
+    '\t// All invocations then participate; lane-dependent exits invalidate the barrier.',
+    '', '\tconst uint WaveNumActiveLanes = min(WaveGetLaneCount(), GROUP_SIZE);',
+  ]),
+]], ['Private/Nanite/NaniteWritePixel.ush', [
   branch('RWTexture2D<UlongType>\tOutVisBuffer64;', [
     '#if COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY && !DEPTH_ONLY',
     '// The Web shader compiler lowers this reserved max-only resource to a packed',

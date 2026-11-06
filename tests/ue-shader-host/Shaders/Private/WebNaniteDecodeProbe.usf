@@ -1,0 +1,26 @@
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/Nanite/NaniteDataDecode.ush"
+
+StructuredBuffer<uint4> InstallInfo;
+RWStructuredBuffer<uint4> DecodedClusters;
+RWStructuredBuffer<float4> DecodedTriangles;
+uint ClusterCount;
+
+[numthreads(64, 1, 1)]
+void MainCS(uint3 GroupID : SV_GroupID, uint Lane : SV_GroupIndex)
+{
+    uint Index = GroupID.x;
+    if (Index >= ClusterCount) return;
+    uint Key = InstallInfo[Index].x;
+    FCluster Cluster = GetCluster(Key >> NANITE_MAX_CLUSTERS_PER_PAGE_BITS,
+        Key & NANITE_MAX_CLUSTERS_PER_PAGE_MASK);
+    if (Lane == 0)
+        DecodedClusters[Index] = uint4(Cluster.NumVerts, Cluster.NumTris, Cluster.Flags, Cluster.PosPrecision);
+    for (uint Triangle = Lane; Triangle < Cluster.NumTris; Triangle += 64)
+    {
+        uint3 Indices = DecodeTriangleIndices(Cluster, Triangle);
+        for (uint Corner = 0; Corner < 3; ++Corner)
+            DecodedTriangles[(Index * 128 + Triangle) * 3 + Corner] =
+                float4(DecodePosition(Indices[Corner], Cluster), float(Indices[Corner]));
+    }
+}

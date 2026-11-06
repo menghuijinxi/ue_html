@@ -12,6 +12,7 @@ public class UEShaderHost : ModuleRules
             "MeshDescription", "StaticMeshDescription"
         });
         PrivateIncludePaths.Add(System.IO.Path.Combine(EngineDirectory, "Source/Runtime/RenderCore/Internal"));
+        PrivateIncludePaths.Add(System.IO.Path.Combine(EngineDirectory, "Source/Runtime/Engine/Internal"));
         PrivateIncludePathModuleNames.Add("WebGPURHI");
         DynamicallyLoadedModuleNames.Add("WebGPURHI");
         AddEngineThirdPartyPrivateStaticDependencies(Target, "SPIRVReflect");

@@ -1,6 +1,6 @@
 # Nanite WebGPU 接入记录
 
-更新：2026-11-06。已从可见性写入推进到 RDG 资源接入、深度导出与 HZB 消费。
+更新：2026-11-06。已完成可见性 RDG、深度/HZB 消费，以及真实资产的驻留页转码与几何解码验证。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -26,7 +26,67 @@
   read-write 存储纹理访问。
 - Web Nanite 编译使用 UE 已有的 `uint2` 型 `UlongType` 和打包函数，
   局部关闭 Vulkan 的通用 uint64 图像原子声明；`DEPTH_ONLY` 保留原来的独立分支。
-  本轮 ShaderFormat 缓存版本为 v30。
+  可见性阶段 ShaderFormat 缓存版本为 v30；当前驻留页阶段为 v31。
+
+## 真实资产驻留页
+
+新增 `WebNaniteAssetProbe`：在隔离宿主中复制
+`/Engine/BasicShapes/Sphere.Sphere` 到 transient package，开启 Nanite、设置全驻留预算和
+8 位位置精度，再调用 UE 自身的静态网格构建流程。原始资产不保存、不修改。
+导出器检查 fixup magic、页边界、cluster 数和零外部依赖，输出磁盘页、安装表及
+独立的原网格三角形参考数据。当前 fixture 是 1 个根页、15 个 cluster，
+其中 8 个完整精度叶 cluster、960 个叶三角形；计入粗 LOD 共 1,842 个三角形，
+页中含 431 个引用顶点。
+
+实际执行链路为：
+
+```text
+UE StaticMesh / NaniteBuilder
+  -> 根页去除 fixup 前缀，保留原始磁盘压缩数据
+  -> NaniteTranscode.usf::TranscodePageToGPU（独立阶段）
+  -> NaniteTranscode.usf::TranscodePageToGPU（引用顶点阶段）
+  -> NaniteDataDecode.ush 的 GetCluster / DecodeTriangleIndices / DecodePosition
+  -> GPU 回读逐三角形核对 + 叶三角形诊断绘制
+```
+
+这是编辑器导出的全驻留测试数据，尚不是正常 Web Cook 资源。
+`FResources::Serialize` 在目标平台不支持 Nanite 时仍会写入空资源，
+本阶段没有绕开该能力判断，也没有开启全局 Nanite。
+页面中的球体采用诊断材质和展开后的三角形绘制，尚未使用 Nanite 光栅器、
+cluster 层级剔除、原始 Lit 材质或默认示例关卡。
+
+`NaniteTranscode.usf` 仅在 Web 分支移除屏障前的 lane 提前退出，以及引用数量为零的
+提前退出；其他平台保留原实现。Web 调度必须保证工作组不大于设备最小 subgroup，
+本测试使用 32 线程并检查 `subgroupMinSize >= 32`，不满足即拒绝。
+尚未验证可变 subgroup 的其他 GPU，也未将这一限制接入完整 UE streaming uploader。
+
+固定版本 Tint 库提供 `allow_non_uniform_subgroup_operations`，其 CLI 尚未暴露。
+新增 `tint_nanite.exe` 使用同版库，将原算法活跃 lane 前缀扫描和末尾不满 wave 的操作
+保留为 WGSL `diagnostic(off, subgroup_uniformity)`。ShaderFormat 只对精确路径
+`/Engine/Private/Nanite/NaniteTranscode.usf` 调用此工具；缺失时编译失败。
+工作组屏障一致性校验仍启用，其他 shader 继续使用原转换流程。
+
+| 驻留页验证 | 结果 |
+| --- | --- |
+| UE shader 编译 | 独立转码、引用转码、实际 UE 几何解码，共 3 个入口通过 |
+| Chrome / Edge | 各 2 组：普通上传、256 字节视图偏移并拆分独立阶段批次；全部通过 |
+| 原网格核对 | 每组完整核对 960 个叶三角形，按 1/256 单位量化，保留绕序和重复计数 |
+| 引用阶段 | 431 个引用顶点；第二阶段补写 5,922 个非零差异字节，不能被省略 |
+| 缓冲边界 | 输入和前后保护区未改变；额外工作组无越界写入 |
+| 跨浏览器一致性 | 两浏览器、两批次方式的 32,768 字节 GPU 页完全一致 |
+| 诊断出图 | 512×512 目标覆盖 104,388 像素；桌面与窄视口截图人工检查通过 |
+| 转换器策略 | 5 项测试通过，包括拒绝非一致屏障、截断输入和缺失参数 |
+| 回归 | 可见性/深度/HZB 各浏览器 16 组、原生 RHI 两模式各 7 项通过 |
+
+Chrome `157.0.8103.39`、Edge `157.0.4341.42` 均在 NVIDIA/Ampere 硬件适配器上运行，
+subgroup 最小/最大均为 32，没有附加实验特性开关。
+窄视口截图仍来自桌面 GPU，不代表移动端支持或性能。
+首次未限制 CPU 亲和性的浏览器运行报告 GPU 实例失效；沿用 affinity 3 后一键流程通过，
+当前仅记录此宿主限制，未确定故障原因。未做性能测量。
+
+结果与源文件哈希记录在
+`tests/web-platform/evidence/nanite-asset-20261106.json`。
+原始页、packet、WGSL、反射和截图在忽略目录 `tests/web-platform/results/nanite-asset`。
 
 ## 下游接入
 
@@ -129,11 +189,24 @@ node tests/web-platform/compile-web-nanite.cjs
 Wasm 检查依赖已生成的 `UEWebEngineThreads` UBT 响应文件，只更新工作区内的
 Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，不链接或替换运行包。
 
+真实资产驻留页验证：
+
+```powershell
+./tests/web-platform/probe-nanite-asset.ps1
+```
+
+默认构建专用 Tint 工具、宿主模块和 Worker 模块，检查转换器策略，审计 shader 覆盖，
+导出真实资产并运行两种浏览器。已构建时可加 `-SkipBuild`。
+宿主与浏览器统一使用 affinity 3，退出时恢复调用进程配置。
+工具使用固定 Dawn 库；发行包缺少的共享头由 CMake 按固定版本下载并检查 SHA-256。
+`node tests/web-platform/collect-nanite-asset-evidence.cjs` 汇总结果前会校验源文件哈希，
+并要求上述可见性回归结果存在且通过。
+
 ## 尚未接通
 
 - 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
   在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
-- Nanite 真实资产 Cook 数据保留、页解码、cluster 层级 LOD 与剔除、
+- Nanite 正常 Web Cook 数据保留、完整运行时页上传、cluster 层级 LOD 与剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
@@ -143,5 +216,5 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段保留一个真实 Nanite 资产的构建数据，
-跑通驻留页、cluster 剔除和固定不透明材质的 VS/PS 路径，再扩展材质与流送。
+下一阶段将已验证的驻留页链路接入正常 Cook 与运行时，
+推进 cluster 层级剔除和固定不透明材质的 Nanite VS/PS 路径，再扩展材质与流送。

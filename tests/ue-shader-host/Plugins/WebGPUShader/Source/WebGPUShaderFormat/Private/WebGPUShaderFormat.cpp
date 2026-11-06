@@ -580,7 +580,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v30-NaniteVisibilityResolve-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v31-NaniteTranscode-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -619,6 +619,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
             Input.Environment.SetCompileArgument(TEXT("WebLumenSkyUniformVersion"), int32(1));
         if (UsesTranslucencyVolumeMarks(Input))
             Input.Environment.SetCompileArgument(TEXT("WebLumenVolumeMarkVersion"), int32(1));
+        if (Input.VirtualSourceFilePath == TEXT("/Engine/Private/Nanite/NaniteTranscode.usf"))
+            Input.Environment.SetCompileArgument(TEXT("WebNaniteTranscodeVersion"), int32(1));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -1153,15 +1155,25 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Preserve that policy explicitly in WGSL instead of dropping mip selection.
         const FString DerivativeOptions = Input.ShaderFormat == FName(TEXT("SF_WEBGPU_SM5"))
             ? TEXT(" --allow-non-uniform-derivatives true") : TEXT("");
-        const bool Executed = FPlatformProcess::ExecProcess(
-            *(Tools / TEXT("tint.exe")),
-            *FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\"%s"), *SpirvPath, *WgslPath, *DerivativeOptions), &ExitCode, &StandardOut,
+        const bool NaniteTranscode = Input.VirtualSourceFilePath == TEXT("/Engine/Private/Nanite/NaniteTranscode.usf");
+        const FString Converter = Tools / (NaniteTranscode ? TEXT("tint_nanite.exe") : TEXT("tint.exe"));
+        if (!FPaths::FileExists(Converter))
+        {
+            Error = TEXT("Nanite transcode requires tint_nanite.exe; run tests/web-platform/build-tint-nanite.ps1");
+            return false;
+        }
+        const FString Arguments = NaniteTranscode
+            ? FString::Printf(TEXT("\"%s\" \"%s\""), *SpirvPath, *WgslPath)
+            : FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\"%s"), *SpirvPath, *WgslPath, *DerivativeOptions);
+        const bool Executed = FPlatformProcess::ExecProcess(*Converter, *Arguments, &ExitCode, &StandardOut,
             &StandardError);
         if (!Executed || ExitCode != 0 || !FFileHelper::LoadFileToString(Wgsl, *WgslPath))
         {
             Error = StandardOut + StandardError;
             return false;
         }
+        if (NaniteTranscode)
+            Metadata->SetStringField(TEXT("subgroupUniformityPolicy"), TEXT("nanite-active-lanes"));
         int32 NaniteAtomicBindings = 0;
         for (const auto& Value : Bindings)
         {

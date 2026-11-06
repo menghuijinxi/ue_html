@@ -32,6 +32,7 @@
 
 int32 RunWebManualVertexFetchProbe(const FString& Params);
 int32 RunWebNaniteVisibilityProbe(const FString& Params);
+int32 RunWebNaniteAssetProbe(const FString& Params);
 int32 RunWebShaderMetadataProbe(const FString& Params);
 int32 RunWebLumenShaderProbe(const FString& Params);
 
@@ -136,6 +137,8 @@ UWebShaderProbeCommandlet::UWebShaderProbeCommandlet()
 
 int32 UWebShaderProbeCommandlet::Main(const FString &Params)
 {
+    if (FParse::Param(*Params, TEXT("WebNaniteAssetProbe")))
+        return RunWebNaniteAssetProbe(Params);
     if (FParse::Param(*Params, TEXT("WebNaniteVisibilityProbe")))
         return RunWebNaniteVisibilityProbe(Params);
     if (FParse::Param(*Params, TEXT("MetadataBinaryProbe")))
