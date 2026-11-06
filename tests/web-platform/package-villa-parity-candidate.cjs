@@ -28,6 +28,7 @@ if(process.argv.includes('--csm'))settings['r.Shadow.CSMCaching']=1;
 if(process.argv.includes('--no-shadows'))settings['r.ShadowQuality']=0;
 if(process.argv.includes('--bundles'))settings['r.WebGPU.RenderBundles']=1;
 if(process.argv.includes('--staging'))settings['r.WebGPU.StagingUploadPages']=1;
+if(process.argv.includes('--reuse-compute'))settings['r.WebGPU.ReuseComputePass']=1;
 if(process.argv.includes('--binding-plan'))settings['r.WebGPU.BindingPlan']=1;
 if(process.argv.includes('--tlv-share'))settings['r.WebGPU.TLVShareCascades']=1;
 let ini=Buffer.from(config.data,'base64').toString();

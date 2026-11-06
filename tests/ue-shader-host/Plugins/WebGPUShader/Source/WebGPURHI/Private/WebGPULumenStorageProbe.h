@@ -27,6 +27,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Destination.layout.bytesPerRow = 256;
             Destination.layout.rowsPerImage = 1;
             const WGPUExtent3D Extent{1, 1, 1};
+            RHI.EndComputePass();
             wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &Extent);
             RHI.SubmitCurrent();
             auto Result = RHI.MapBuffer(Buffer, 256);
@@ -318,6 +319,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Destination.layout.bytesPerRow = 256;
             Destination.layout.rowsPerImage = 4;
             const WGPUExtent3D Extent{4, 4, 4};
+            RHI.EndComputePass();
             wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &Extent);
             RHI.SubmitCurrent();
             const auto Bytes = RHI.MapBuffer(Buffer, 4096);

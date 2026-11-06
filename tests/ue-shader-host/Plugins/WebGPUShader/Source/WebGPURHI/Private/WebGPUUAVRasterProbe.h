@@ -158,6 +158,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         Destination.layout.bytesPerRow = 256;
         Destination.layout.rowsPerImage = 16;
         const WGPUExtent3D Size{32, 16, 1};
+        RHI.EndComputePass();
         wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &Size);
         RHI.SubmitCurrent();
         const auto MaskBytes = RHI.MapBuffer(Readback, 256 * 16);
@@ -174,6 +175,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         Destination.buffer = VolumeReadback;
         Destination.layout.rowsPerImage = 4;
         const WGPUExtent3D VolumeSize{4, 4, 4};
+        RHI.EndComputePass();
         wgpuCommandEncoderCopyTextureToBuffer(RHI.Encoder, &Source, &Destination, &VolumeSize);
         RHI.SubmitCurrent();
         const auto VolumeBytes = RHI.MapBuffer(VolumeReadback, 256 * 4 * 4);

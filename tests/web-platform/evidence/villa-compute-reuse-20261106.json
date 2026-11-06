@@ -1,0 +1,1515 @@
+{
+  "date": "2026-11-06T00:55:45.270Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "physicalPresentationValidated": false,
+  "lowDefinition": "1000 / arithmetic mean of slowest ceil(N*0.01) frame intervals; no long frames removed. Aggregate concatenates measured intervals, never cross-run gaps.",
+  "controls": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "clock": "owner",
+    "rhiWake": "priority",
+    "fpsCap": 0,
+    "vsync": 0,
+    "csmCaching": 1,
+    "order": "on, off, off, on; two off windows share one warmed process; each window 45 seconds",
+    "quality": "same runtime/Cook/config except r.WebGPU.ReuseComputePass; all dispatches retained"
+  },
+  "off": {
+    "frames": 9278,
+    "fps": 103.0933677229757,
+    "low1": 39.5152792411265,
+    "meanMs": 9.69994503125672,
+    "p99": 18.025000002235174,
+    "max": 46.40500000119209,
+    "over33": 13,
+    "over50": 0,
+    "rhiMs": 6.685511659833618
+  },
+  "on": {
+    "frames": 9562,
+    "fps": 106.24479269126704,
+    "low1": 42.77341008809418,
+    "meanMs": 9.412225998744846,
+    "p99": 14.679999999701977,
+    "max": 48.46499999985099,
+    "over33": 12,
+    "over50": 0,
+    "rhiMs": 6.431030315100947
+  },
+  "relativeChange": {
+    "fps": 0.030568648962555844,
+    "low1": 0.08245243130097135,
+    "rhiMs": -0.03806460263342126
+  },
+  "nativeCSM": {
+    "tag": "parity-native-csm-sm5-20261106",
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-sm5-20261106.csv",
+        "sha256": "edb126eb67a6ab367dd5cfcdbead340fe4bb11dcf537e50a0ccd228c6702dd9a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-sm5-20261106.log",
+        "sha256": "5e8bccd70e3d129e07920ae35a8c9c27e1f75c2da0ca417aa5a912cc0b4a4687"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-sm5-20261106.png",
+        "sha256": "4e64d0417129c8f555358973048cac4e451caef91b32c3890744f946f83c756f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-sm5-20261106-launch.json",
+        "sha256": "9f4263cf2dcc69bea7740f791a9786ce4059d963e7df88bad1e829497c260cc0"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-csm-sm5-20261106-complete.json",
+        "sha256": "6cb4e4fe64fec6d26e010b28ffd80ac87d74bf2543931e17a19e9e9ea8ebf24c"
+      }
+    ],
+    "arguments": [
+      "-d3d12",
+      "-windowed",
+      "-ResX=1280",
+      "-ResY=720",
+      "-ForceRes",
+      "-unattended",
+      "-nosplash",
+      "-nosound",
+      "-NoThrottleCPU",
+      "-traceautostart=0",
+      "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000,r.Shadow.CSMCaching 1\"",
+      "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+      "-csvCaptureFrames=9030",
+      "-csvCompression=0",
+      "-csvGpuStats",
+      "-ExitAfterCsvProfiling",
+      "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-csm-sm5-20261106.log\"",
+      "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.Shadow.CSMCaching,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-csm-sm5-20261106.png -nosuffix\"",
+      "-sm5",
+      "-ini:Engine:[SystemSettings]:r.RayTracing=0"
+    ],
+    "exitCode": 777003,
+    "cleanExit": false,
+    "stats": {
+      "frames": 6000,
+      "fps": 204.4810474304463,
+      "low1": 159.8722301136931,
+      "meanMs": 4.890428783333318,
+      "p99": 6.0176,
+      "max": 6.8278,
+      "over33": 0,
+      "over50": 0
+    },
+    "workload": {
+      "RHI/DrawCalls": 1190.3268333333333,
+      "DrawCall/ShadowDepths": 615.8071666666667,
+      "DrawCall/Basepass": 88.88133333333333,
+      "DrawCall/Prepass": 88.88133333333333,
+      "ShadowCacheUsageMB": 109.1875,
+      "RHIThreadTime": 2.1177072000000003,
+      "GPUTime": 3.146640199999996
+    }
+  },
+  "nativePrevious": {
+    "tag": "parity-native-sm5-no-etw-20261106",
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106.csv",
+        "sha256": "34498af234690363ba9ee3b0999c5dc7e20bb0e03ca43914cf746fd048b9dbfa"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106.log",
+        "sha256": "4ac2da73df0884116cba0b3dd66ec5e3994e42cb2c7466176a248a4ba9ec7468"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106.png",
+        "sha256": "643c285c835c8ea815a30b45912f469ea1ec6f1aa4ec981b8e8b3666337a9456"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106-launch.json",
+        "sha256": "8c3fc89bc35013a12b7189d7857169680889c700187aa250fd2cb4d743b3405e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-sm5-no-etw-20261106-complete.json",
+        "sha256": "0d33d7b0b4dfb95d1b358f4a55e82fb15bb067abbb20b2fba07acd593ca8d7fc"
+      }
+    ],
+    "arguments": [
+      "-d3d12",
+      "-windowed",
+      "-ResX=1280",
+      "-ResY=720",
+      "-ForceRes",
+      "-unattended",
+      "-nosplash",
+      "-nosound",
+      "-NoThrottleCPU",
+      "-traceautostart=0",
+      "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000\"",
+      "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+      "-csvCaptureFrames=9030",
+      "-csvCompression=0",
+      "-csvGpuStats",
+      "-ExitAfterCsvProfiling",
+      "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-no-etw-20261106.log\"",
+      "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-sm5-no-etw-20261106.png -nosuffix\"",
+      "-sm5",
+      "-ini:Engine:[SystemSettings]:r.RayTracing=0"
+    ],
+    "exitCode": 777003,
+    "cleanExit": false,
+    "stats": {
+      "frames": 6000,
+      "fps": 195.76090654239547,
+      "low1": 157.15318061012624,
+      "meanMs": 5.108272216666673,
+      "p99": 6.2014,
+      "max": 7.1201,
+      "over33": 0,
+      "over50": 0
+    },
+    "workload": {
+      "RHI/DrawCalls": 2521.3351666666667,
+      "DrawCall/ShadowDepths": 1926.2165,
+      "DrawCall/Basepass": 88.021,
+      "DrawCall/Prepass": 88.021,
+      "ShadowCacheUsageMB": 85.1875,
+      "RHIThreadTime": 1.9832002000000062,
+      "GPUTime": 3.563794500000001
+    }
+  },
+  "parity": {
+    "averageGap": 0.4804174077433463,
+    "low1Gap": 0.7324525337660213
+  },
+  "normal": [
+    {
+      "tag": "parity-compute-reuse-on-1-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-1-20261106.json",
+        "sha256": "0a7c17c51e2608ebd5d688af403d00c44b3fe9c7c4afa426efa1c315cb39dbde"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-1-20261106.log",
+        "sha256": "41567f909389402e4b3744a5da22afec183ceb6460019204fbfcc2808da449ea"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-1-20261106.png",
+        "sha256": "08c0a3d6b9c28659fafe21b9268fc33330241503a1d43a9ff8a3a15ed5e0ca62"
+      },
+      "folder": "villa-compute-reuse-on-20261106",
+      "readback": null,
+      "gpuCompletionProbe": false,
+      "runs": [
+        {
+          "result": {
+            "frames": 4795,
+            "fps": 106.57684724126491,
+            "low1": 42.104155153767714,
+            "p50": 11.059999998658895,
+            "p95": 12.894999999552965,
+            "p99": 14.625,
+            "max": 48.46499999985099,
+            "over33": 7,
+            "over50": 0
+          },
+          "rhiMs": 6.411975550124823,
+          "workload": {
+            "draws": 1350.9214583333332,
+            "dispatches": 160.91895833333334,
+            "ready": 623.7879166666667,
+            "pending": 327.59770833333334
+          },
+          "view": {
+            "frame": 2347,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "reuseComputePass": true,
+          "openedPerFrame": 18,
+          "reusedPerFrame": 139.91895833333334,
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "parity-compute-reuse-off-12-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-off-12-20261106.json",
+        "sha256": "0941402e8f39a8398035321c226c83e1494cc367bef7f0d4435881c01367904b"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-off-12-20261106.log",
+        "sha256": "cec640364658c92460fd59534595662dc5f6bd9ce137ddfb62b028de9580d003"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-off-12-20261106.png",
+        "sha256": "8a50d2e275976a60c1b5a09ae76a03047ef8e8ff919bed68984f6a650ede1b29"
+      },
+      "folder": "villa-compute-reuse-off-20261106",
+      "readback": null,
+      "gpuCompletionProbe": false,
+      "runs": [
+        {
+          "result": {
+            "frames": 4618,
+            "fps": 102.64585357873365,
+            "low1": 40.47693891005295,
+            "p50": 11.359999999403954,
+            "p95": 13.240000002086163,
+            "p99": 18.41500000283122,
+            "max": 42.82500000298023,
+            "over33": 5,
+            "over50": 0
+          },
+          "rhiMs": 6.697815096981852,
+          "workload": {
+            "draws": 1350.7502164502164,
+            "dispatches": 160.88722943722945,
+            "ready": 623.7690476190476,
+            "pending": 328.26666666666665
+          },
+          "view": {
+            "frame": 2291,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "reuseComputePass": false,
+          "openedPerFrame": 157.88722943722945,
+          "reusedPerFrame": 0,
+          "gpu": null
+        },
+        {
+          "result": {
+            "frames": 4660,
+            "fps": 103.54071471978077,
+            "low1": 38.96486115623694,
+            "p50": 11.175000000745058,
+            "p95": 13.149999998509884,
+            "p99": 16.365000002086163,
+            "max": 46.40500000119209,
+            "over33": 8,
+            "over50": 0
+          },
+          "rhiMs": 6.673311169273837,
+          "workload": {
+            "draws": 1351.308547008547,
+            "dispatches": 160.94893162393163,
+            "ready": 623.7121794871795,
+            "pending": 328.7931623931624
+          },
+          "view": {
+            "frame": 7470,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "reuseComputePass": false,
+          "openedPerFrame": 157.94893162393163,
+          "reusedPerFrame": 0,
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "parity-compute-reuse-on-2-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-2-20261106.json",
+        "sha256": "12d83602c08655a02f3152f1ddda746082fa11e03bb3c12aadd18a0f5cd9454d"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-2-20261106.log",
+        "sha256": "7aedafa56266398805d3d9eca90fcd0ed8fced87656e09c319793bee18511000"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-2-20261106.png",
+        "sha256": "d8d1ad55876a64a7c2ccdf295546a4757d53d73f6195a71319ef6aa336280166"
+      },
+      "folder": "villa-compute-reuse-on-20261106",
+      "readback": null,
+      "gpuCompletionProbe": false,
+      "runs": [
+        {
+          "result": {
+            "frames": 4767,
+            "fps": 105.9128686134972,
+            "low1": 43.46644933497719,
+            "p50": 11.20499999821186,
+            "p95": 12.96000000089407,
+            "p99": 14.739999998360872,
+            "max": 43.39000000059605,
+            "over33": 5,
+            "over50": 0
+          },
+          "rhiMs": 6.4501969319469525,
+          "workload": {
+            "draws": 1350.7429769392033,
+            "dispatches": 160.8853249475891,
+            "ready": 623.8798742138365,
+            "pending": 326.10670859538783
+          },
+          "view": {
+            "frame": 2348,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "reuseComputePass": true,
+          "openedPerFrame": 18,
+          "reusedPerFrame": 139.8853249475891,
+          "gpu": null
+        }
+      ]
+    }
+  ],
+  "gpu": [
+    {
+      "tag": "parity-compute-reuse-on-gpu-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-gpu-20261106.json",
+        "sha256": "a6ce502b77a3a3dd2fe55cb59566a78ac22057a2ac53e3e2b19d41647a2b2d10"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-gpu-20261106.log",
+        "sha256": "f65d1022659861c67ffd03732e433be1bcc39a77fd0dbcfa020e23d4cb62dd21"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-gpu-20261106.png",
+        "sha256": "ab7b054d44e31455ce1959d7e2ac8758cf92311b1efa9d770df2cde6f653f08e"
+      },
+      "folder": "villa-compute-reuse-on-20261106",
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "gpuCompletionProbe": true,
+      "runs": [
+        {
+          "result": {
+            "frames": 3122,
+            "fps": 104.04065650254103,
+            "low1": 42.03860983602548,
+            "p50": 11.394999999552965,
+            "p95": 13.059999998658895,
+            "p99": 15.254999998956919,
+            "max": 43.61500000208616,
+            "over33": 5,
+            "over50": 0
+          },
+          "rhiMs": 6.622080844142595,
+          "workload": {
+            "draws": 1350.3701923076924,
+            "dispatches": 160.82339743589745,
+            "ready": 624.2541666666667,
+            "pending": 324.324358974359
+          },
+          "view": {
+            "frame": 2293,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "reuseComputePass": true,
+          "openedPerFrame": 18,
+          "reusedPerFrame": 139.82339743589745,
+          "gpu": {
+            "peak": 4,
+            "meanMs": 13.355286583409377,
+            "maxMs": 31.33500000089407
+          }
+        }
+      ]
+    },
+    {
+      "tag": "parity-compute-reuse-off-gpu-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-off-gpu-20261106.json",
+        "sha256": "f5806a8e78b408e68ab291f57cdde100a190a5c41b4e74e03df783a52fe46e1a"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-off-gpu-20261106.log",
+        "sha256": "2c08f0b52611d4680ccb054d2a0108257297c1cd4b03fd37b3e15328bce6721d"
+      },
+      "image": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-off-gpu-20261106.png",
+        "sha256": "34c3e470d04ca257b0e800158c64fedebaa1e39cb7587284e17a88a59ca51c5d"
+      },
+      "folder": "villa-compute-reuse-off-20261106",
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "gpuCompletionProbe": true,
+      "runs": [
+        {
+          "result": {
+            "frames": 3050,
+            "fps": 101.61968449920896,
+            "low1": 38.60691312786748,
+            "p50": 11.515000000596046,
+            "p95": 13.300000000745058,
+            "p99": 20.83999999985099,
+            "max": 57.66500000283122,
+            "over33": 2,
+            "over50": 1
+          },
+          "rhiMs": 6.766192759110942,
+          "workload": {
+            "draws": 1349.9683006535947,
+            "dispatches": 160.79084967320262,
+            "ready": 624.1137254901961,
+            "pending": 324.27875816993463
+          },
+          "view": {
+            "frame": 2263,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "reuseComputePass": false,
+          "openedPerFrame": 157.79084967320262,
+          "reusedPerFrame": 0,
+          "gpu": {
+            "peak": 4,
+            "meanMs": 13.658790560478911,
+            "maxMs": 36.26000000163913
+          }
+        }
+      ]
+    }
+  ],
+  "motion": [
+    {
+      "tag": "parity-compute-reuse-on-motion-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-on-motion-20261106.json",
+        "sha256": "75d40788f457254e776d106405d5b67ecb67c4f283d2a237961f9bde279d86dc"
+      },
+      "runs": [
+        {
+          "result": {
+            "samples": 3147,
+            "fps": 103.34525673349442,
+            "low1Fps": 35.90039883082522,
+            "p50": 8.815000001341105,
+            "p95": 20.49499999731779,
+            "p99": 23.36999999731779,
+            "maximum": 45.975000001490116
+          },
+          "gpu": {
+            "samples": 3148,
+            "pending": 2,
+            "peak": 4,
+            "meanLatency": 13.061354828420955,
+            "maxLatency": 45.32000000029802
+          },
+          "travel": 2514.8955470707424,
+          "turn": 1643.6117556518873,
+          "workload": {
+            "draws": 1607.8701587301587,
+            "dispatches": 143.04190476190476,
+            "pending": 153.5936507936508,
+            "ready": 397.9320634920635
+          },
+          "errors": []
+        }
+      ]
+    },
+    {
+      "tag": "parity-compute-reuse-off-motion-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-off-motion-20261106.json",
+        "sha256": "ba0334e475fd86a1e9db477b91242fb4cbf64febff7a6a223be6866382c76e6a"
+      },
+      "runs": [
+        {
+          "result": {
+            "samples": 3119,
+            "fps": 102.54346590338996,
+            "low1Fps": 35.44076684992025,
+            "p50": 9,
+            "p95": 20.424999997019768,
+            "p99": 22.385000001639128,
+            "maximum": 56.42999999970198
+          },
+          "gpu": {
+            "samples": 3120,
+            "pending": 3,
+            "peak": 4,
+            "meanLatency": 13.023365384585057,
+            "maxLatency": 39.21499999985099
+          },
+          "travel": 2513.26621658265,
+          "turn": 1635.4348275517114,
+          "workload": {
+            "draws": 1579.0810897435897,
+            "dispatches": 142.20064102564103,
+            "pending": 150.97628205128206,
+            "ready": 390.85128205128206
+          },
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "imageComparison": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-image-comparison-20261106.json",
+      "sha256": "48e89fedfb6bb4afa08f170821222842804f18202a921000cf7afff067e48593"
+    },
+    "size": [
+      1281,
+      721
+    ],
+    "excludedHUD": [
+      0,
+      0,
+      260,
+      230
+    ],
+    "meanAbsoluteRGB255": [
+      0.3417579669142844,
+      0.34535042729490334,
+      0.4375309251505791
+    ],
+    "rmsRGB255": [
+      0.7969268638181187,
+      0.7955058418135741,
+      0.9029217196424308
+    ],
+    "differentPixels": 522503,
+    "boundary": "Static screenshot only; temporal noise and exposure vary. Not a dynamic shadow correctness proof."
+  },
+  "ownerDiagnostics": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-stalls-20261106-analysis.json",
+      "sha256": "d9a2c0a028f2d361dfb1f6d08ed437dcad917e2e3233ef3d5782238797646885"
+    },
+    "capture": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-owner-stalls-20261106.json",
+      "sha256": "1005f1b34422f57573981750280494fbc32fb27ad217edb6cfd9222c3555c291"
+    },
+    "trace": {
+      "file": "tests/web-platform/results/parity-owner-stalls-20261106-trace.json",
+      "sha256": "36e344dfbb578f62a235f7cdc7251b79d435d62efac2d7239336150c2ae4071e"
+    },
+    "normal": {
+      "fps": 100.36416185838367,
+      "frames": {
+        "count": 3010,
+        "mean": 9.963715946843903,
+        "p50": 11.644999999552965,
+        "p95": 13.409999996423721,
+        "p99": 22.79500000178814,
+        "max": 27.849999997764826,
+        "low1Fps": 40.8031642199178
+      },
+      "queue": {
+        "count": 25080,
+        "mean": 0.009332336520737533,
+        "p50": 0.009999997913837433,
+        "p95": 0.019999999552965164,
+        "p99": 0.030000001192092896,
+        "max": 0.17999999970197678,
+        "low1Fps": 23016.96455104575
+      },
+      "execution": {
+        "count": 25080,
+        "mean": 0.8287121212188647,
+        "p50": 0.010000001639127731,
+        "p95": 6.504999998956919,
+        "p99": 6.969999998807907,
+        "max": 12.144999999552965,
+        "low1Fps": 135.75345873732792
+      },
+      "pipelineEvents": 0,
+      "over20": 36,
+      "over30": 0,
+      "worst": [
+        {
+          "frame": 5410,
+          "time": 70498.1649999991,
+          "rhi": 40244.157791137695,
+          "game": 5409,
+          "gameMs": 1.419921875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 27.849999997764826
+        },
+        {
+          "frame": 4920,
+          "time": 65575.66000000015,
+          "rhi": 36860.98027229309,
+          "game": 4919,
+          "gameMs": 1.304931640625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 27.37000000104308
+        },
+        {
+          "frame": 5168,
+          "time": 68067.6400000006,
+          "rhi": 38575.39963722229,
+          "game": 5167,
+          "gameMs": 1.369873046875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 26.925000000745058
+        },
+        {
+          "frame": 4673,
+          "time": 63144.990000002086,
+          "rhi": 35186.39802932739,
+          "game": 4672,
+          "gameMs": 1.31494140625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 26.865000002086163
+        },
+        {
+          "frame": 3435,
+          "time": 50837.025000002235,
+          "rhi": 26723.77109527588,
+          "game": 3434,
+          "gameMs": 1.510009765625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 26.74500000104308
+        },
+        {
+          "frame": 2938,
+          "time": 45823.35000000149,
+          "rhi": 23247.41268157959,
+          "game": 2937,
+          "gameMs": 1.474853515625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 26.054999999701977
+        },
+        {
+          "frame": 4177,
+          "time": 58156.150000002235,
+          "rhi": 31754.588842391968,
+          "game": 4176,
+          "gameMs": 1.419921875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 25.800000000745058
+        },
+        {
+          "frame": 3682,
+          "time": 53269.199999999255,
+          "rhi": 28395.853519439697,
+          "game": 3681,
+          "gameMs": 1.530029296875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 25.61999999731779
+        },
+        {
+          "frame": 3181,
+          "time": 48237.33999999985,
+          "rhi": 24927.55627632141,
+          "game": 3180,
+          "gameMs": 1.275146484375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 25.609999999403954
+        },
+        {
+          "frame": 3934,
+          "time": 55755.824999999255,
+          "rhi": 30111.424207687378,
+          "game": 3933,
+          "gameMs": 1.349853515625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 25.21499999985099
+        },
+        {
+          "frame": 4672,
+          "time": 63118.125,
+          "rhi": 35180.19390106201,
+          "game": 4671,
+          "gameMs": 1.2451171875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.934999998658895
+        },
+        {
+          "frame": 2705,
+          "time": 43491.539999999106,
+          "rhi": 21654.431104660034,
+          "game": 2704,
+          "gameMs": 1.27001953125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.65999999642372
+        },
+        {
+          "frame": 4176,
+          "time": 58130.35000000149,
+          "rhi": 31747.644424438477,
+          "game": 4175,
+          "gameMs": 1.2548828125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.484999999403954
+        },
+        {
+          "frame": 5167,
+          "time": 68040.71499999985,
+          "rhi": 38568.43948364258,
+          "game": 5166,
+          "gameMs": 1.260009765625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.45999999716878
+        },
+        {
+          "frame": 3180,
+          "time": 48211.73000000045,
+          "rhi": 24920.106410980225,
+          "game": 3179,
+          "gameMs": 1.675048828125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.07999999821186
+        },
+        {
+          "frame": 5166,
+          "time": 68016.25500000268,
+          "rhi": 38561.46001815796,
+          "game": 5165,
+          "gameMs": 1.544921875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.765000000596046
+        },
+        {
+          "frame": 3434,
+          "time": 50810.28000000119,
+          "rhi": 26716.626405715942,
+          "game": 3433,
+          "gameMs": 1.570068359375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.71000000089407
+        },
+        {
+          "frame": 3681,
+          "time": 53243.58000000194,
+          "rhi": 28388.638019561768,
+          "game": 3680,
+          "gameMs": 1.614990234375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.699999999254942
+        },
+        {
+          "frame": 4424,
+          "time": 60565.08999999985,
+          "rhi": 33438.007831573486,
+          "game": 4424,
+          "gameMs": 1.625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.524999998509884
+        },
+        {
+          "frame": 2706,
+          "time": 43515.0549999997,
+          "rhi": 21661.03982925415,
+          "game": 2705,
+          "gameMs": 1.60986328125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.515000000596046
+        },
+        {
+          "frame": 5409,
+          "time": 70470.31500000134,
+          "rhi": 40237.831592559814,
+          "game": 5408,
+          "gameMs": 1.28515625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.5
+        },
+        {
+          "frame": 4919,
+          "time": 65548.2899999991,
+          "rhi": 36854.42018508911,
+          "game": 4918,
+          "gameMs": 1.349853515625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.424999997019768
+        },
+        {
+          "frame": 5408,
+          "time": 70446.81500000134,
+          "rhi": 40231.15634918213,
+          "game": 5407,
+          "gameMs": 1.590087890625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.394999999552965
+        },
+        {
+          "frame": 3933,
+          "time": 55730.609999999404,
+          "rhi": 30104.64382171631,
+          "game": 3932,
+          "gameMs": 1.760009765625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.375
+        },
+        {
+          "frame": 2704,
+          "time": 43466.88000000268,
+          "rhi": 21647.76635169983,
+          "game": 2703,
+          "gameMs": 1.35986328125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.34000000357628
+        },
+        {
+          "frame": 2936,
+          "time": 45774.5,
+          "rhi": 23234.20810699463,
+          "game": 2935,
+          "gameMs": 1.619873046875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.184999998658895
+        },
+        {
+          "frame": 4175,
+          "time": 58105.865000002086,
+          "rhi": 31740.939140319824,
+          "game": 4174,
+          "gameMs": 1.780029296875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.17000000178814
+        },
+        {
+          "frame": 3182,
+          "time": 48260.38500000164,
+          "rhi": 24934.470653533936,
+          "game": 3181,
+          "gameMs": 1.330078125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.04500000178814
+        },
+        {
+          "frame": 4671,
+          "time": 63093.19000000134,
+          "rhi": 35173.57873916626,
+          "game": 4670,
+          "gameMs": 1.619873046875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 22.820000000298023
+        },
+        {
+          "frame": 4918,
+          "time": 65524.865000002086,
+          "rhi": 36847.7303981781,
+          "game": 4917,
+          "gameMs": 1.830078125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 22.804999999701977
+        }
+      ]
+    },
+    "traceSummary": {
+      "fps": 98.64382738049765,
+      "frames": {
+        "count": 2466,
+        "mean": 10.137481751825302,
+        "p50": 11.765000000596046,
+        "p95": 13.785000000149012,
+        "p99": 16.33999999985099,
+        "max": 81.46499999985099,
+        "low1Fps": 34.390260678211185
+      },
+      "queue": {
+        "count": 19195,
+        "mean": 0.016703047674788755,
+        "p50": 0.015000000596046448,
+        "p95": 0.03500000014901161,
+        "p99": 0.04500000178813934,
+        "max": 0.24000000208616257,
+        "low1Fps": 15750.615145966995
+      },
+      "execution": {
+        "count": 19195,
+        "mean": 0.8945123730044434,
+        "p50": 0.010000001639127731,
+        "p95": 6.5650000013411045,
+        "p99": 7.129999998956919,
+        "max": 10.599999997764826,
+        "low1Fps": 131.78847949320814
+      },
+      "pipelineEvents": 0,
+      "over20": 17,
+      "over30": 5,
+      "worst": [
+        {
+          "frame": 6521,
+          "time": 81727.1950000003,
+          "rhi": 47914.64400291443,
+          "game": 6520,
+          "gameMs": 1.294921875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 81.46499999985099
+        },
+        {
+          "frame": 6525,
+          "time": 81836.99500000104,
+          "rhi": 47948.92883300781,
+          "game": 6524,
+          "gameMs": 1.295166015625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 71.60000000149012
+        },
+        {
+          "frame": 7270,
+          "time": 89499.6400000006,
+          "rhi": 53181.53166770935,
+          "game": 7269,
+          "gameMs": 1.300048828125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 52.809999998658895
+        },
+        {
+          "frame": 6774,
+          "time": 84304.29500000179,
+          "rhi": 49625.54478645325,
+          "game": 6773,
+          "gameMs": 1.5,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 43.99500000104308
+        },
+        {
+          "frame": 7518,
+          "time": 91984.5549999997,
+          "rhi": 54872.35450744629,
+          "game": 7517,
+          "gameMs": 1.2451171875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 43.20499999821186
+        },
+        {
+          "frame": 7024,
+          "time": 86867.03500000015,
+          "rhi": 51381.18529319763,
+          "game": 7023,
+          "gameMs": 1.239990234375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 26.91000000014901
+        },
+        {
+          "frame": 8020,
+          "time": 97008.22000000253,
+          "rhi": 58290.151834487915,
+          "game": 8019,
+          "gameMs": 1.2548828125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 25.825000002980232
+        },
+        {
+          "frame": 6520,
+          "time": 81645.73000000045,
+          "rhi": 47907.848834991455,
+          "game": 6519,
+          "gameMs": 1.324951171875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 25.239999998360872
+        },
+        {
+          "frame": 7269,
+          "time": 89446.83000000194,
+          "rhi": 53173.89130592346,
+          "game": 7268,
+          "gameMs": 1.5,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 25.095000002533197
+        },
+        {
+          "frame": 7765,
+          "time": 94465.8350000009,
+          "rhi": 56550.60434341431,
+          "game": 7764,
+          "gameMs": 1.31005859375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.519999999552965
+        },
+        {
+          "frame": 8021,
+          "time": 97032.33000000194,
+          "rhi": 58297.04213142395,
+          "game": 8020,
+          "gameMs": 1.25,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.109999999403954
+        },
+        {
+          "frame": 7023,
+          "time": 86840.125,
+          "rhi": 51374.74489212036,
+          "game": 7022,
+          "gameMs": 1.280029296875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.064999997615814
+        },
+        {
+          "frame": 8019,
+          "time": 96982.39499999955,
+          "rhi": 58283.13636779785,
+          "game": 8018,
+          "gameMs": 1.5849609375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 24.04499999806285
+        },
+        {
+          "frame": 7764,
+          "time": 94441.31500000134,
+          "rhi": 56544.18444633484,
+          "game": 7763,
+          "gameMs": 1.215087890625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.975000001490116
+        },
+        {
+          "frame": 7022,
+          "time": 86816.06000000238,
+          "rhi": 51367.69461631775,
+          "game": 7021,
+          "gameMs": 1.494873046875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.855000000447035
+        },
+        {
+          "frame": 7763,
+          "time": 94417.33999999985,
+          "rhi": 56537.428855895996,
+          "game": 7762,
+          "gameMs": 1.389892578125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 23.640000000596046
+        },
+        {
+          "frame": 6523,
+          "time": 81757.47500000149,
+          "rhi": 47932.3046207428,
+          "game": 6522,
+          "gameMs": 1.2451171875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 21.780000001192093
+        },
+        {
+          "frame": 6773,
+          "time": 84260.30000000075,
+          "rhi": 49618.00456047058,
+          "game": 6772,
+          "gameMs": 1.755126953125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 19.894999999552965
+        },
+        {
+          "frame": 7245,
+          "time": 89161.70500000194,
+          "rhi": 52980.86500167847,
+          "game": 7245,
+          "gameMs": 3.184814453125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 19.275000002235174
+        },
+        {
+          "frame": 7517,
+          "time": 91941.35000000149,
+          "rhi": 54865.54956436157,
+          "game": 7516,
+          "gameMs": 1.375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 18.79500000178814
+        },
+        {
+          "frame": 6366,
+          "time": 80080.2349999994,
+          "rhi": 46826.356649398804,
+          "game": 6365,
+          "gameMs": 1.344970703125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 17.00499999895692
+        },
+        {
+          "frame": 7521,
+          "time": 92020.3049999997,
+          "rhi": 54892.37976074219,
+          "game": 7520,
+          "gameMs": 1.18505859375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 16.599999997764826
+        },
+        {
+          "frame": 6726,
+          "time": 83802.57499999925,
+          "rhi": 49306.26463890076,
+          "game": 6725,
+          "gameMs": 1.26513671875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 16.529999997466803
+        },
+        {
+          "frame": 7241,
+          "time": 89106.9450000003,
+          "rhi": 52944.37599182129,
+          "game": 7240,
+          "gameMs": 1.419921875,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 16.375
+        },
+        {
+          "frame": 7243,
+          "time": 89132.82499999925,
+          "rhi": 52962.645292282104,
+          "game": 7243,
+          "gameMs": 5.804931640625,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 16.33999999985099
+        },
+        {
+          "frame": 6912,
+          "time": 85694.51999999955,
+          "rhi": 50597.368240356445,
+          "game": 6912,
+          "gameMs": 2.320068359375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 16.174999997019768
+        },
+        {
+          "frame": 7234,
+          "time": 89028.42000000179,
+          "rhi": 52885.875940322876,
+          "game": 7233,
+          "gameMs": 1.21484375,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 15.975000001490116
+        },
+        {
+          "frame": 6518,
+          "time": 81612.0700000003,
+          "rhi": 47893.33415031433,
+          "game": 6518,
+          "gameMs": 2.75,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 15.95499999821186
+        },
+        {
+          "frame": 7257,
+          "time": 89296.97500000149,
+          "rhi": 53073.970794677734,
+          "game": 7256,
+          "gameMs": 1.23486328125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 15.929999999701977
+        },
+        {
+          "frame": 7267,
+          "time": 89413.84500000253,
+          "rhi": 53158.43152999878,
+          "game": 7266,
+          "gameMs": 1.27001953125,
+          "graphics": 598,
+          "compute": 708,
+          "streamPending": 0,
+          "ms": 15.905000001192093
+        }
+      ]
+    },
+    "boundary": "Tracing perturbs stalls, especially its initial sweep burst; correlation is not complete causal attribution."
+  },
+  "immediates": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-webgpu-immediates-20261106.json",
+      "sha256": "76cd72ed6fc1a23828c9742b9960cf9008f93002ec6ad85dec646f44ff965ac4"
+    },
+    "date": "2026-11-06T00:49:54.559Z",
+    "pass": true,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "adapter": {
+      "vendor": "nvidia",
+      "architecture": "lovelace"
+    },
+    "languageFeatures": [
+      "packed_4x8_integer_dot_product",
+      "subgroup_uniformity",
+      "immediate_address_space",
+      "linear_indexing",
+      "subgroup_id",
+      "readonly_and_readwrite_storage_textures",
+      "swizzle_assignment",
+      "unrestricted_pointer_parameters",
+      "buffer_view",
+      "pointer_composite_access",
+      "texture_and_sampler_let",
+      "texture_formats_tier1",
+      "uniform_buffer_standard_layout"
+    ],
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "bgra8unorm-storage",
+      "texture-formats-tier1",
+      "texture-compression-bc",
+      "dual-source-blending",
+      "core-features-and-limits",
+      "float32-filterable",
+      "indirect-first-instance",
+      "float32-blendable",
+      "subgroup-size-control",
+      "texture-compression-unaligned",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "texture-formats-tier2",
+      "clip-distances",
+      "timestamp-query",
+      "shader-f16",
+      "primitive-index",
+      "texture-component-swizzle",
+      "subgroups"
+    ],
+    "maxImmediateSize": 64,
+    "validation": null,
+    "values": [
+      21,
+      24,
+      27,
+      30
+    ],
+    "supported": true,
+    "boundary": "Actual API and GPU readback supported. Not integrated with UE shaders, no performance benefit claimed."
+  },
+  "build": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-compute-reuse-build-20261106.json",
+    "sha256": "bde92e68f7455fdc8808806b820b8842d6b595b42d0c68b81bb92de79e7e865e"
+  },
+  "previousBuildArchived": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-before-compute-reuse-build-20261106.json",
+    "sha256": "6d7c570eeb144dce16d0a481e78e3fc9aa0713366e976e847d364476cf256c83"
+  },
+  "limitations": [
+    "Physical display frame intervals are not verified. RHI submissions and GPU completion are separate measurements.",
+    "Static worst frame did not improve in the normal aggregate; long frames remain.",
+    "Motion trajectories vary with event timing and game speed; they are regression stress tests, not an identical-path benchmark.",
+    "Native historical exit code 777003 follows completed CSV and log closure; not a clean lifecycle pass.",
+    "CSM caching must be evaluated visually during movement. Static image similarity is not exhaustive visual correctness.",
+    "Browser/desktop performance parity is not achieved. The experiment remains off by default."
+  ]
+}

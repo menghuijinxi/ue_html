@@ -50,6 +50,9 @@ static TAutoConsoleVariable<int32> CVarWebGPUOcclusionQueryWaitMs(
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUReuseComputePass(
+    TEXT("r.WebGPU.ReuseComputePass"), 0,
+    TEXT("Experiment: reuse compute passes across adjacent dispatches, preserving encoder boundaries."), ECVF_RenderThreadSafe);
 
 struct FWebGPUCompletion
 {
@@ -1253,6 +1256,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             Object.assign(globalThis.__webOcclusionRHI,
                 {draws: $0, indirectDraws: $1, dispatches: $2, sampleFrame: $3});
         }, Draws, IndirectDraws, Dispatches, EndFrames);
+        EM_ASM({ Object.assign(globalThis.__webOcclusionRHI,
+            {reuseComputePass:!!$0, computePassesOpened:$1, computePassesReused:$2}); },
+            CVarWebGPUReuseComputePass.GetValueOnAnyThread(), ComputePassesOpened, ComputePassesReused);
     }
 #endif
 }
@@ -1919,6 +1925,7 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
         Destination.texture = Texture->Handle;
         Destination.origin = {Region.DestX, Region.DestY, 0};
         WGPUExtent3D Extent{Region.Width, Region.Height, 1};
+        EndComputePass();
         wgpuCommandEncoderCopyBufferToTexture(Encoder, &Source, &Destination, &Extent);
         wgpuBufferRelease(Staging);
     };
@@ -4337,7 +4344,7 @@ IRHIComputeContext *FWebGPUDynamicRHI::RHIGetCommandContext(ERHIPipeline Pipelin
 {
     WEBGPU_ON_OWNER(RHIGetCommandContext(Pipeline));
     RequireOwner();
-    check(Pipeline == ERHIPipeline::Graphics && !ContextOpen && !Encoder);
+    check(Pipeline == ERHIPipeline::Graphics && !ContextOpen && !Encoder && !ComputePass);
     Encoder = wgpuDeviceCreateCommandEncoder(Device, nullptr);
     ContextOpen = true;
     return this;
@@ -4356,6 +4363,7 @@ FDynamicRHI::FRHIFinalizeContextsResult FWebGPUDynamicRHI::RHIFinalizeContexts(F
     check(ContextOpen && Encoder && !Pass && Args.Contexts[ERHIPipeline::Graphics] == this &&
           !Args.Contexts[ERHIPipeline::AsyncCompute] && !Args.UploadContext);
     FRHIFinalizeContextsResult Result;
+    EndComputePass();
     auto* List = new FWebGPUCommandList(wgpuCommandEncoderFinish(Encoder, nullptr), Finalized + 1);
     List->Readbacks = MoveTemp(PendingReadbacks);
     List->Fences = MoveTemp(PendingFences);
@@ -4430,6 +4438,7 @@ void FWebGPUDynamicRHI::RHICopyToStagingBuffer(FRHIBuffer* Source, FRHIStagingBu
     State->Size = Size;
     State->Handle = CreateBuffer(Size, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
     static_cast<FWebGPUStagingBuffer*>(Destination)->SetState(State);
+    EndComputePass();
     wgpuCommandEncoderCopyBufferToBuffer(Encoder, static_cast<FWebGPUBuffer*>(Source)->Handle,
         Offset, State->Handle, 0, Size);
     PendingReadbacks.Add(State);
@@ -4607,6 +4616,7 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
     }
     Desc.colorAttachmentCount = Colors.Num();
     Desc.colorAttachments = Colors.GetData();
+    EndComputePass();
     Pass = wgpuCommandEncoderBeginRenderPass(Encoder, &Desc);
     PassBundleKey.Reset();
     if (UseRenderBundles)
@@ -4650,8 +4660,10 @@ void FWebGPUDynamicRHI::RHIEndRenderPass()
             }
         };
 #endif
+        EndComputePass();
         wgpuCommandEncoderResolveQuerySet(Encoder, OcclusionBatch->Queries, 0, OcclusionBatch->Count,
             OcclusionBatch->Resolve, 0);
+        EndComputePass();
         wgpuCommandEncoderCopyBufferToBuffer(Encoder, OcclusionBatch->Resolve, 0, Readback->Handle, 0, Bytes);
         PendingReadbacks.Add(Readback);
     }
@@ -5136,7 +5148,14 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
 {
     check(Encoder && !Pass && ComputePipeline);
     TGuardValue<TRefCountPtr<FWebGPUComputePipeline>> Variant(ComputePipeline, ResolveComputePipeline(*ComputePipeline));
-    auto Compute = wgpuCommandEncoderBeginComputePass(Encoder, nullptr);
+    if (!CVarWebGPUReuseComputePass.GetValueOnAnyThread()) EndComputePass();
+    if (!ComputePass)
+    {
+        ComputePass = wgpuCommandEncoderBeginComputePass(Encoder, nullptr);
+        ++ComputePassesOpened;
+    }
+    else ++ComputePassesReused;
+    auto Compute = ComputePass;
     wgpuComputePassEncoderSetPipeline(Compute, ComputePipeline->Handle);
     FWebGPUShaderData *Shaders[] = {&ShaderData(ComputePipeline->GetComputeShader())};
     const auto Groups = CreateGroups(nullptr, ComputePipeline->Handle, Shaders);
@@ -5146,15 +5165,27 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
         wgpuComputePassEncoderSetBindGroup(Compute, Index, Group.Handle, Group.DynamicOffsets.Num(), Group.DynamicOffsets.GetData());
         if (Group.OwnedHandle) wgpuBindGroupRelease(Group.Handle);
     }
+    // Dispatches have separate resource usage scopes, but encoder bindings persist.
+    // Remove slots omitted by the next layout so old resources cannot alias its UAVs.
+    for (uint32 Index = Groups.Num(); Index < ComputePassGroups; ++Index)
+        wgpuComputePassEncoderSetBindGroup(Compute, Index, nullptr, 0, nullptr);
+    ComputePassGroups = Groups.Num();
     return Compute;
+}
+void FWebGPUDynamicRHI::EndComputePass()
+{
+    if (!ComputePass) return;
+    wgpuComputePassEncoderEnd(ComputePass);
+    wgpuComputePassEncoderRelease(ComputePass);
+    ComputePass = nullptr;
+    ComputePassGroups = 0;
 }
 void FWebGPUDynamicRHI::RHIDispatchComputeShader(uint32 X, uint32 Y, uint32 Z)
 {
     WEBGPU_COMMAND_ON_OWNER(RHIDispatchComputeShader(X, Y, Z));
     auto Compute = BeginComputePass();
     wgpuComputePassEncoderDispatchWorkgroups(Compute, X, Y, Z);
-    wgpuComputePassEncoderEnd(Compute);
-    wgpuComputePassEncoderRelease(Compute);
+    if (!CVarWebGPUReuseComputePass.GetValueOnAnyThread()) EndComputePass();
     ++Dispatches;
 }
 void FWebGPUDynamicRHI::RHIDispatchIndirectComputeShader(FRHIBuffer* Arguments, uint32 Offset)
@@ -5164,8 +5195,7 @@ void FWebGPUDynamicRHI::RHIDispatchIndirectComputeShader(FRHIBuffer* Arguments, 
     checkf(ValidateIndirectArguments(Arguments, Offset, 12, Error), TEXT("%s"), *Error);
     auto Compute = BeginComputePass();
     wgpuComputePassEncoderDispatchWorkgroupsIndirect(Compute, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
-    wgpuComputePassEncoderEnd(Compute);
-    wgpuComputePassEncoderRelease(Compute);
+    if (!CVarWebGPUReuseComputePass.GetValueOnAnyThread()) EndComputePass();
     ++Dispatches;
 }
 void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destination, const FRHICopyTextureInfo &Info)
@@ -5209,6 +5239,7 @@ void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destina
         Dst.layout.bytesPerRow = PitchBytes;
         Dst.layout.rowsPerImage = Height;
         const WGPUExtent3D Size{Width, Height, 1};
+        EndComputePass();
         wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Src, &Dst, &Size);
         PendingReadbacks.Add(State);
         ++TextureReadbacksPending;
@@ -5252,6 +5283,7 @@ void FWebGPUDynamicRHI::RHICopyTexture(FRHITexture *Source, FRHITexture *Destina
         Size.width = Align(Size.width, uint32(Pixel.BlockSizeX));
         Size.height = Align(Size.height, uint32(Pixel.BlockSizeY));
     }
+    EndComputePass();
     wgpuCommandEncoderCopyTextureToTexture(Encoder, &Src, &Dst, &Size);
     }
 }
@@ -5336,6 +5368,7 @@ void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUi
             auto Clear = WGPU_RENDER_PASS_DESCRIPTOR_INIT;
             Clear.colorAttachmentCount = 1;
             Clear.colorAttachments = &Attachment;
+            EndComputePass();
             auto ClearPass = wgpuCommandEncoderBeginRenderPass(Encoder, &Clear);
             wgpuRenderPassEncoderEnd(ClearPass);
             wgpuRenderPassEncoderRelease(ClearPass);
@@ -5350,6 +5383,7 @@ void FWebGPUDynamicRHI::RHIClearUAVUint(FRHIUnorderedAccessView* View, const FUi
     auto* Buffer = static_cast<FWebGPUBuffer*>(Resource);
     RequireAccess(Buffer, ERHIAccess::UAVCompute);
     const auto Info = View->GetDesc().Buffer.UAV.GetViewInfo(Buffer);
+    EndComputePass();
     wgpuCommandEncoderClearBuffer(Encoder, Buffer->Handle, Info.OffsetInBytes,
         uint64(Info.NumElements) * Info.StrideInBytes);
 }
@@ -5447,6 +5481,7 @@ void FWebGPUDynamicRHI::ClearStorageUAV(FRHIUnorderedAccessView* View, const FUi
     GroupDesc.entryCount = UE_ARRAY_COUNT(Entries);
     GroupDesc.entries = Entries;
     auto Group = wgpuDeviceCreateBindGroup(Device, &GroupDesc);
+    EndComputePass();
     auto Compute = wgpuCommandEncoderBeginComputePass(Encoder, nullptr);
     wgpuComputePassEncoderSetPipeline(Compute, *Found);
     wgpuComputePassEncoderSetBindGroup(Compute, 0, Group, 0, nullptr);
@@ -5469,6 +5504,7 @@ void FWebGPUDynamicRHI::RHICopyBufferRegion(FRHIBuffer *Dest, uint64 DstOffset, 
     check(Dest != Src);
     RequireAccess(Src, ERHIAccess::CopySrc);
     RequireAccess(Dest, ERHIAccess::CopyDest);
+    EndComputePass();
     wgpuCommandEncoderCopyBufferToBuffer(Encoder, static_cast<FWebGPUBuffer *>(Src)->Handle, SrcOffset,
                                          static_cast<FWebGPUBuffer *>(Dest)->Handle, DstOffset, Size);
 }
@@ -5536,6 +5572,7 @@ TArray<uint8> FWebGPUDynamicRHI::ReadBuffer(FRHIBuffer *Source, uint64 Bytes)
     RequireAccess(Source, ERHIAccess::CopySrc, true);
     WGPUBuffer Buffer = CreateBuffer(Bytes, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
     RHIGetCommandContext(ERHIPipeline::Graphics);
+    EndComputePass();
     wgpuCommandEncoderCopyBufferToBuffer(Encoder, static_cast<FWebGPUBuffer *>(Source)->Handle, 0, Buffer, 0, Bytes);
     SubmitCurrent();
     auto Result = MapBuffer(Buffer, Bytes);
@@ -5568,6 +5605,7 @@ void FWebGPUDynamicRHI::RHIReadSurfaceData(FRHITexture *Texture, FIntRect Rect, 
     Dst.layout.bytesPerRow = Pitch;
     Dst.layout.rowsPerImage = Rect.Height();
     WGPUExtent3D Extent{uint32(Rect.Width()), uint32(Rect.Height()), 1};
+    EndComputePass();
     wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Src, &Dst, &Extent);
     SubmitCurrent();
     const auto Bytes = MapBuffer(Buffer, Size);

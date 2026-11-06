@@ -7,6 +7,9 @@ const option = n => process.argv.find(v => v.startsWith('--'+n+'='))?.slice(n.le
 const folder=option('folder'), tag=option('tag');
 assert([folder,tag].every(v=>v&&/^[a-z0-9-]+$/.test(v)));
 const seconds=Number(option('seconds')||60), traceSeconds=Number(option('trace-seconds')||20);
+const width=Number(option('width')||2289),height=Number(option('height')||1287),clock=option('clock');
+assert(width>=640&&width<=3840&&height>=480&&height<=2160);
+assert(!clock||['owner','local'].includes(clock));
 const immediateMode=option('immediate')||'channel';assert(['channel','priority','native-priority'].includes(immediateMode));
 const withoutTaskScheduler=process.argv.includes('--without-task-scheduler');
 assert(!withoutTaskScheduler||immediateMode==='native-priority');
@@ -14,10 +17,10 @@ assert(seconds>=10&&seconds<=180&&traceSeconds>=0&&traceSeconds<=60);
 const output=path.join(__dirname,'results',tag), base=path.join(__dirname,'build',folder);
 assert(!fs.existsSync(output+'.json'),'Use a fresh tag');
 const runtime=fs.readdirSync(base).find(v=>/^UEWebEngineThreads\w*\.js$/.test(v)); assert(runtime);
-const report={date:new Date().toISOString(),folder,seconds,traceSeconds,immediateMode,withoutTaskScheduler,pass:false,errors:[],phases:[],
+const report={date:new Date().toISOString(),folder,seconds,traceSeconds,width,height,clock,immediateMode,withoutTaskScheduler,pass:false,errors:[],phases:[],
   packageFiles:['index.html',runtime,runtime.replace(/\.js$/,'.wasm'),'web-engine-worker.js','web-engine-host.js',
     'content-files.json','config-files.json'].map(f=>audit(path.join(base,f))),qualityOverrides:[],
-  boundary:'Static camera, visible Edge, original defaults/Cook/resolution. RHI submission intervals, not physical display. No CPU profiler, per-draw wrappers or additional GPU queries. Diagnostic JS records native setImmediate delivery and execution; it does not measure the first native proxy hop. Trace is a separate diagnostic phase.'};
+  boundary:'Static camera, visible Edge, original Cook and quality; resolution and optional clock are recorded explicitly. RHI submission intervals, not physical display. No CPU profiler, per-draw wrappers or additional GPU queries. Diagnostic JS records native setImmediate delivery and execution; it does not measure the first native proxy hop. Trace is a separate diagnostic phase.'};
 fs.copyFileSync(__filename,output+'-source.cjs');report.source=audit(output+'-source.cjs');
 const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2)+'\n');
 function install(){
@@ -51,7 +54,7 @@ let context,log;
     {encoding:'utf8',windowsHide:true,timeout:10000}).trim();
   assert(report.idleGpu.split(/\r?\n/).every(l=>Number(l.split(',')[0])<=50),'GPU already busy');save();
   context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/rhi-stalls'),
-    {channel:'msedge',headless:false,viewport:{width:2289,height:1287},deviceScaleFactor:1});
+    {channel:'msedge',headless:false,viewport:{width,height},deviceScaleFactor:1});
   await context.route('**/web-engine-worker.js?*',async route=>{
     const response=await route.fetch();let body='('+install.toString()+')();\n'+await response.text();
     if(withoutTaskScheduler)body="Object.defineProperty(globalThis,'scheduler',{configurable:true,value:undefined});\n"+body;
@@ -95,7 +98,7 @@ let context,log;
     if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|Ensure condition failed/.test(t))report.errors.push(t);});
   page.on('pageerror',e=>report.errors.push(e.message));page.on('crash',()=>report.errors.push('Page crashed'));
   await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html'+
-    (immediateMode==='native-priority'?'?rhiwake=priority':'?rhiwake=channel'),{waitUntil:'commit'});await page.bringToFront();
+    (immediateMode==='native-priority'?'?rhiwake=priority':'?rhiwake=channel')+(clock?'&clock='+clock:''),{waitUntil:'commit'});await page.bringToFront();
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=600&&
     globalThis.__webTextureStreaming?.pending===0,null,{timeout:180000});
   assert(!await page.evaluate(()=>globalThis.__webEngineFailure));await page.waitForTimeout(20000);
@@ -108,6 +111,7 @@ let context,log;
     immediateMappingLength:typeof setImmediateWrapped==='function'?setImmediateWrapped.mapping?.length:null}));
   async function capture(name,duration){
     const before=await state();
+    if(clock)assert.equal(before.clock.mode,clock);
     if(immediateMode==='native-priority')assert.equal(before.rhiWake.active,withoutTaskScheduler?'channel':'priority');
     await owner.evaluate(()=>{const c=__rhiStallCapture;c.frames=[];c.immediates=[];c.pipelines=[];c.start=performance.now();c.active=true;performance.mark('UE RHI capture start');});
     await page.waitForTimeout(duration*1000);

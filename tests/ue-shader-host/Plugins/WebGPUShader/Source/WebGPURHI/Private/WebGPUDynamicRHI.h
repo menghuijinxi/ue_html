@@ -632,6 +632,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
         PreviousFloatRGBFormat, PreviousR16UIntFormat;
     WGPUCommandEncoder Encoder = nullptr;
     WGPURenderPassEncoder Pass = nullptr;
+    WGPUComputePassEncoder ComputePass = nullptr;
+    uint32 ComputePassGroups = 0, ComputePassesOpened = 0, ComputePassesReused = 0;
     TRefCountPtr<FWebGPUGraphicsPipeline> GraphicsPipeline;
     TRefCountPtr<FWebGPUComputePipeline> ComputePipeline;
     TArray<TRefCountPtr<FWebGPUTexture>> Attachments;
@@ -943,6 +945,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void SetIndexBinding(FWebGPUBuffer*);
     void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr);
     WGPUComputePassEncoder BeginComputePass();
+    void EndComputePass();
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
     TMap<FString, WGPUComputePipeline> ClearPipelines;
     TArray<TRefCountPtr<FRHIUniformBuffer>> StaticUniformBuffers;

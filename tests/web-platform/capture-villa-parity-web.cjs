@@ -129,6 +129,18 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     save();console.log(JSON.stringify({name:r.name,round,result:r.result,rhiMs:r.rhiMs,workload:r.workload}));
   }
   await page.locator('canvas').screenshot({path:output+'.png'});
+  // Keep validation work outside the timed window.
+  if(process.argv.includes('--readback')){
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebTextureReadbackTest',1)),1);
+    for(let i=0;i<30;i++){
+      await page.waitForTimeout(100);
+      assert.equal(await page.evaluate(()=>__webEngineRPC('WebTextureReadbackTest',2)),1);
+      report.readbackTest=await owner.evaluate(()=>globalThis.__webTextureReadbackTest);
+      if(report.readbackTest?.pass)break;
+    }
+    assert.equal(report.readbackTest?.pass,true,'RHI texture upload/copy/readback failed');
+    assert.deepEqual(report.errors,[]);
+  }
   const finalState=await state();
   report.pipelineDiagnostics.finalCounters=finalState.optimization;
   report.pipelineDiagnostics.matchesUnsupportedCount=report.pipelineDiagnostics.failedCreate===finalState.optimization.unsupportedPrecacheRequests;

@@ -23,6 +23,7 @@ void FWebGPUDynamicRHI::RHIBeginBreadcrumbGPU(FRHIBreadcrumbNode *Node)
         }
         else if (Encoder)
         {
+            EndComputePass();
             wgpuCommandEncoderInsertDebugMarker(Encoder, Text);
             ++BreadcrumbMarkersEmitted;
         }

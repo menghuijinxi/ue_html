@@ -18,11 +18,11 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}small{color:#90a59a}footer{ma
 <main>
 <div class="eyebrow">TRIPLEX HOUSE VILLA · 2026-11-06</div>
 <h1>性能回退检查</h1>
-<p>比较当前候选与优化前版本的画面、移动手感和低帧。两个入口均不限帧，使用 owner 调度；候选增加阴影缓存并修复内存统计。</p>
-<p class="note">候选尚未达到桌面端性能。请特别留意转向、走动时的顿挫，以及阴影是否跳变、拖尾或缺失。</p>
+<p>本轮比较“计算 pass 复用”开关。两个入口使用相同运行时与画质，均开启阴影缓存、不限帧，保持 owner 调度。</p>
+<p class="note">实验尚未达到桌面端性能，也未确认改善移动手感。静止低帧有提升，移动收益很小，最坏 GPU 完成延迟有所增加。请特别留意转向顿挫、阴影跳变、拖尾或缺失。</p>
 <nav aria-label="测试版本">
-<a class="candidate" href="build/villa-parity-csm-memory-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开当前候选</strong><span>阴影缓存开启 · owner 调度</span><small>此前 720p 静止采样：100.71 FPS / 1% low 38.69</small></a>
-<a href="build/villa-scheduling-pipeline-v74/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开优化前基线</strong><span>阴影缓存关闭 · owner 调度</span><small>此前 720p 静止采样：80.69 FPS / 1% low 37.04</small></a>
+<a class="candidate" href="build/villa-compute-reuse-on-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开本轮实验</strong><span>计算 pass 复用开启 · 默认未启用</span><small>720p 静止两轮合并：106.24 FPS / 1% low 42.77</small></a>
+<a href="build/villa-compute-reuse-off-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开同运行时对照</strong><span>计算 pass 复用关闭</span><small>720p 静止两轮合并：103.09 FPS / 1% low 39.52</small></a>
 </nav>
 <ol>
 <li>每次只运行一个版本。按钮在当前标签页打开；切换时先返回此页，避免两个游戏同时占用显卡。</li>
@@ -30,8 +30,9 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}small{color:#90a59a}footer{ma
 <li>同时看平均 FPS、1% low、最长帧和实际手感。左上角“导出”可保存性能记录。</li>
 </ol>
 <footer>
+<p>此前版本仍可对照：<a href="build/villa-parity-csm-memory-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">上一轮候选</a> · <a href="build/villa-scheduling-pipeline-v74/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">最初基线</a>。</p>
 <p>如需只比较阴影缓存：<a href="build/villa-parity-memory-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">打开相同新运行时、阴影缓存关闭版</a>。</p>
-<small>上述数字是此前固定 1280×720 的提交帧采样，不代表当前窗口或显示器实际呈现帧率。</small>
+<small>上述数字是固定 1280×720 的提交帧采样，不代表当前窗口或显示器实际呈现帧率。同设置桌面端本轮为 204.48 FPS / 1% low 159.87。</small>
 </footer>
 </main>
 </html>

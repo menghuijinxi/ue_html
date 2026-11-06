@@ -558,6 +558,7 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
         GroupDesc.entries = Entries;
         auto Group = wgpuDeviceCreateBindGroup(RHI->Device, &GroupDesc);
         RHI->RHIGetDefaultContext();
+        RHI->EndComputePass();
         auto ComputePass = wgpuCommandEncoderBeginComputePass(RHI->Encoder, nullptr);
         wgpuComputePassEncoderSetPipeline(ComputePass, Compute);
         wgpuComputePassEncoderSetBindGroup(ComputePass, 0, Group, 0, nullptr);
