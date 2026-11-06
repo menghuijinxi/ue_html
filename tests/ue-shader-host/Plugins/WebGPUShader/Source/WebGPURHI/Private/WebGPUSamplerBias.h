@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WebGPUDynamicRHI.h"
+#include "WebGPUShaderDeclarations.h"
 
 inline bool LowerWebGPUViewSamplerBias(FString& Source, FWebGPUShaderData& Data, FString& Error)
 {
@@ -12,69 +13,24 @@ inline bool LowerWebGPUViewSamplerBias(FString& Source, FWebGPUShaderData& Data,
              Binding.Name == TEXT("View_LandscapeWeightmapSampler"));
     };
     if (!Data.Bindings.ContainsByPredicate(IsSharedViewSampler)) return true;
-    // Web builds omit ICU, so FRegexMatcher is a stub. Parse generated WGSL declarations directly.
-    TArray<FString> Tokens;
-    for (int32 Index = 0; Index < Source.Len();)
-    {
-        if (FChar::IsWhitespace(Source[Index])) { ++Index; continue; }
-        if (Source[Index] == TCHAR('/') && Index + 1 < Source.Len() && Source[Index + 1] == TCHAR('/'))
-        {
-            while (Index < Source.Len() && Source[Index] != TCHAR('\n')) ++Index;
-            continue;
-        }
-        if (Source[Index] == TCHAR('/') && Index + 1 < Source.Len() && Source[Index + 1] == TCHAR('*'))
-        {
-            int32 Depth = 1;
-            Index += 2;
-            while (Index < Source.Len() && Depth)
-            {
-                if (Index + 1 < Source.Len() && Source[Index] == TCHAR('/') && Source[Index + 1] == TCHAR('*')) { ++Depth; Index += 2; }
-                else if (Index + 1 < Source.Len() && Source[Index] == TCHAR('*') && Source[Index + 1] == TCHAR('/')) { --Depth; Index += 2; }
-                else ++Index;
-            }
-            continue;
-        }
-        const int32 Start = Index++;
-        if (FChar::IsAlnum(Source[Start]) || Source[Start] == TCHAR('_'))
-            while (Index < Source.Len() && (FChar::IsAlnum(Source[Index]) || Source[Index] == TCHAR('_'))) ++Index;
-        Tokens.Add(Source.Mid(Start, Index - Start));
-    }
-    TMap<uint64, FString> Declarations;
+    const auto Declarations = ParseWebGPUShaderDeclarations(Source);
     TMap<FString, FString> TextureDimensions;
-    int32 AttributeGroup = INDEX_NONE, AttributeBinding = INDEX_NONE;
-    for (int32 Index = 0; Index < Tokens.Num(); ++Index)
-    {
-        if (Index + 4 < Tokens.Num() && Tokens[Index] == TEXT("@") &&
-            Tokens[Index + 2] == TEXT("(") && Tokens[Index + 4] == TEXT(")"))
-        {
-            if (Tokens[Index + 1] == TEXT("group")) AttributeGroup = FCString::Atoi(*Tokens[Index + 3]);
-            if (Tokens[Index + 1] == TEXT("binding")) AttributeBinding = FCString::Atoi(*Tokens[Index + 3]);
-        }
-        if (Tokens[Index] == TEXT("var"))
-        {
-            if (Index + 3 < Tokens.Num() && Tokens[Index + 2] == TEXT(":"))
-            {
-                if (AttributeGroup != INDEX_NONE && AttributeBinding != INDEX_NONE)
-                    Declarations.Add((uint64(AttributeGroup) << 32) | uint32(AttributeBinding), Tokens[Index + 1]);
-                if (Tokens[Index + 3].StartsWith(TEXT("texture_")))
-                    TextureDimensions.Add(Tokens[Index + 1], Tokens[Index + 3].Mid(8));
-            }
-            AttributeGroup = AttributeBinding = INDEX_NONE;
-        }
-    }
+    for (const auto& Pair : Declarations)
+        if (Pair.Value.Type.StartsWith(TEXT("texture_")))
+            TextureDimensions.Add(Pair.Value.Name, Pair.Value.Type.Mid(8));
     TMap<FString, int32> Samplers;
     uint32 Group = 0, BindingIndex = 0;
     for (auto& Binding : Data.Bindings)
     {
         if (!IsSharedViewSampler(Binding)) continue;
-        const FString* Declaration = Declarations.Find((uint64(Binding.Group) << 32) | Binding.Index);
+        const auto* Declaration = Declarations.Find((uint64(Binding.Group) << 32) | Binding.Index);
         if (!Declaration || Samplers.Num() >= 4)
         {
             Error = TEXT("Cannot locate a shared view sampler declaration");
             return false;
         }
         Binding.SamplerBiasSlot = Samplers.Num();
-        Samplers.Add(*Declaration, Binding.SamplerBiasSlot);
+        Samplers.Add(Declaration->Name, Binding.SamplerBiasSlot);
         Group = Binding.Group;
     }
     if (Samplers.IsEmpty()) return true;

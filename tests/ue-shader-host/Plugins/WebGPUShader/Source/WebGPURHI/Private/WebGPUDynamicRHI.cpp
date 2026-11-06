@@ -801,7 +801,7 @@ void FWebGPUDynamicRHI::BeginBrowserDevice(void (*Completion)(bool))
         TArray<WGPUFeatureName> Features;
         for (WGPUFeatureName Feature : {WGPUFeatureName_TextureCompressionBC,
                  WGPUFeatureName_TextureFormatsTier1, WGPUFeatureName_TextureFormatsTier2, WGPUFeatureName_RG11B10UfloatRenderable,
-                 WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable})
+                 WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable, WGPUFeatureName_ClipDistances})
         {
             if (wgpuAdapterHasFeature(Adapter, Feature))
                 Features.Add(Feature);
@@ -874,7 +874,7 @@ void FWebGPUDynamicRHI::Init()
     TArray<WGPUFeatureName> Features;
     for (WGPUFeatureName Feature : {WGPUFeatureName_TextureCompressionBC,
              WGPUFeatureName_TextureFormatsTier1, WGPUFeatureName_TextureFormatsTier2, WGPUFeatureName_RG11B10UfloatRenderable,
-             WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable})
+             WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable, WGPUFeatureName_ClipDistances})
     {
         if (wgpuAdapterHasFeature(Adapter, Feature))
             Features.Add(Feature);
@@ -1473,6 +1473,7 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         if (Data.Bindings.Last().Name == TEXT("$Globals")) Data.Globals.SetNumZeroed(Data.Bindings.Last().PaddedSize);
     }
     Data.RuntimeMetadata.Bindings.Empty();
+    if (!PrepareWebGPUPackedShadowMaskFormat(Source, Data, Error)) return false;
     if (!LowerWebGPUViewSamplerBias(Source, Data, Error)) return false;
     if (!Data.StorageFormatSource.IsEmpty()) Data.StorageFormatSource = Source;
     const FTCHARToUTF8 Code(*Source);
@@ -5287,7 +5288,8 @@ TRefCountPtr<FWebGPUComputePipeline> FWebGPUDynamicRHI::ResolveComputePipeline(F
     TrackShaderBindings(Shader);
     CommitShaderResources(Shader);
     TMap<uint64, uint32> Formats;
-    TArray<TPair<int32, uint32>, TInlineAllocator<8>> Replacements;
+    struct FFormatReplacement { int32 Offset, Length; uint32 Format; };
+    TArray<FFormatReplacement, TInlineAllocator<8>> Replacements;
     FString Key;
     for (auto& Binding : Shader.Bindings)
     {
@@ -5298,19 +5300,21 @@ TRefCountPtr<FWebGPUComputePipeline> FWebGPUDynamicRHI::ResolveComputePipeline(F
         check(View->GetResource()->GetType() == RRT_Texture);
         auto* Texture = static_cast<FRHITexture*>(View->GetResource());
         const uint32 ImageFormat = StorageImageFormat(View->GetDesc().Texture.UAV.GetViewInfo(Texture).Format);
-        checkf(ImageFormat && ImageFormat < 30, TEXT("Lumen storage format must retain its floating point scalar type: %s"),
-            *Binding.Name);
+        const bool PackedShadowMask = Binding.Name == TEXT("OutShadowMaskBits") && Binding.StorageImageFormat == 30;
+        checkf(PackedShadowMask ? (ImageFormat == 30 || ImageFormat == 33 || ImageFormat == 35) :
+            (ImageFormat && ImageFormat < 30),
+            TEXT("Storage format must retain the shader's scalar type and packed-mask precision: %s"), *Binding.Name);
         Formats.Add((uint64(Binding.Group) << 32) | Binding.Index, ImageFormat);
-        Replacements.Emplace(Binding.StorageFormatOffset, ImageFormat);
+        Replacements.Add({Binding.StorageFormatOffset, Binding.StorageFormatLength, ImageFormat});
         Key.Appendf(TEXT("%02x"), ImageFormat);
     }
     if (const auto* Existing = Pipeline.FormatVariants.Find(Key)) return *Existing;
     FString Source = Shader.StorageFormatSource;
-    Replacements.Sort([](const auto& A, const auto& B) { return A.Key > B.Key; });
+    Replacements.Sort([](const auto& A, const auto& B) { return A.Offset > B.Offset; });
     for (const auto& Replacement : Replacements)
     {
-        Source.RemoveAt(Replacement.Key, 11, EAllowShrinking::No);
-        Source.InsertAt(Replacement.Key, StorageFormatName(Replacement.Value));
+        Source.RemoveAt(Replacement.Offset, Replacement.Length, EAllowShrinking::No);
+        Source.InsertAt(Replacement.Offset, StorageFormatName(Replacement.Format));
     }
     const FTCHARToUTF8 Code(*Source);
     auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;

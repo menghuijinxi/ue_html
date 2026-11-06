@@ -10,6 +10,8 @@ const argument = name => process.argv.find(value => value.startsWith(`--${name}=
 const folder = argument('folder') || 'triplex-virtual-distance-fields-threads';
 const tag = argument('tag') || 'virtual-scene';
 const fixture = process.argv.includes('--vt-fixture');
+const viewTimeout = Number(argument('view-timeout-ms') || 180000);
+assert(Number.isFinite(viewTimeout) && viewTimeout >= 10000 && viewTimeout <= 900000);
 assert([folder, tag].every(value => /^[a-z0-9-]+$/.test(value)));
 const output = path.join(__dirname, 'results', tag);
 async function bounded(promise, milliseconds = 10000) {
@@ -21,7 +23,10 @@ async function bounded(promise, milliseconds = 10000) {
   } finally { clearTimeout(timer); }
 }
 const report = {date: new Date().toISOString(), pass: false, virtualTextureStreamingCovered: false,
-  desktopVisualParityAccepted: false, source: audit(__filename), folder, fixture, views: [], errors: []};
+  desktopVisualParityAccepted: false, source: audit(__filename), folder, fixture, viewTimeout,
+  views: [], viewWaits: [], errors: []};
+const packageReportFile = path.join(__dirname, 'results', `web-project-${folder}-package-results.json`);
+if (fs.existsSync(packageReportFile)) report.packageReport = audit(packageReportFile);
 if (fixture) {
   report.viewDefinitions = audit(path.join(__dirname, 'virtual-texture-views.json'));
   report.imageCheck = audit(require.resolve('./virtual-texture-image-check.cjs'));
@@ -29,7 +34,7 @@ if (fixture) {
 function observe() {
   const state = globalThis.__virtualSceneGPU = {
     errors: [], losses: [], textures: [], atomicToTexture: 0, textureToAtomic: 0,
-    textureUploads: {}, largestBuffer: 0,
+    textureUploads: {}, largestBuffer: 0, slowPipelineCreations: [],
   };
   const createDevice = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(...args) {
@@ -54,6 +59,18 @@ function observe() {
     state.largestBuffer = Math.max(state.largestBuffer, descriptor.size);
     return buffer.call(this, descriptor);
   };
+  for (const name of ['createComputePipeline', 'createRenderPipeline', 'createShaderModule']) {
+    const original = GPUDevice.prototype[name];
+    GPUDevice.prototype[name] = function(...args) {
+      const start = performance.now();
+      try { return original.apply(this, args); }
+      finally {
+        const milliseconds = performance.now() - start;
+        if (milliseconds > 20 && state.slowPipelineCreations.length < 300)
+          state.slowPipelineCreations.push({name, milliseconds, label: args[0]?.label});
+      }
+    };
+  }
   const writeTexture = GPUQueue.prototype.writeTexture;
   GPUQueue.prototype.writeTexture = function(destination, ...args) {
     const label = destination.texture.label;
@@ -175,8 +192,18 @@ function observe() {
     for (const [name, ...values] of views) {
       const before = (await snapshot()).frames;
       assert.equal(await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), values), 1);
-      await page.waitForFunction(frame => globalThis.__webEngineFailure ||
-        globalThis.__webEngineFrames >= frame + 45, before, {timeout: 180000});
+      const started = Date.now();
+      while (true) {
+        const state = await page.evaluate(() => ({
+          failure: globalThis.__webEngineFailure, frames: globalThis.__webEngineFrames,
+        }));
+        assert(!state.failure && !report.errors.length, state.failure || report.errors.join('\n'));
+        if (state.frames >= before + 45) break;
+        assert(Date.now() - started < viewTimeout, `View ${name} did not finish 45 frames in ${viewTimeout}ms`);
+        console.log(JSON.stringify({view: name, elapsedMs: Date.now() - started, frames: state.frames, before}));
+        await page.waitForTimeout(15000);
+      }
+      report.viewWaits.push({name, milliseconds: Date.now() - started});
       await capture(name);
     }
     report.final = await snapshot();

@@ -7,6 +7,7 @@
 #include "WebGPUTextureUploadProbe.h"
 #include "WebGPUVirtualResourceViewProbe.h"
 #include "WebGPUSamplerBiasProbe.h"
+#include "WebGPUPackedShadowMaskProbe.h"
 #include "RenderingThread.h"
 #include "Serialization/JsonSerializer.h"
 #include "Math/Float16.h"
@@ -581,9 +582,12 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Pass &= VolatilePass;
         TArray<TSharedPtr<FJsonValue>> SamplerBiasCases;
         Pass &= RunWebGPUSamplerBiasCases(RHI, Cmd, SamplerBiasCases);
+        TArray<TSharedPtr<FJsonValue>> PackedShadowMaskCases;
+        Pass &= RunWebGPUPackedShadowMaskCases(RHI, Cmd, PackedShadowMaskCases);
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
+        Report->SetArrayField(TEXT("packedShadowMaskCases"), PackedShadowMaskCases);
         Report->SetNumberField(TEXT("pipelines"), RHI.ComputePipelinesCreated);
         Report->SetArrayField(TEXT("cases"), Cases);
         Report->SetArrayField(TEXT("volumeCases"), VolumeCases);

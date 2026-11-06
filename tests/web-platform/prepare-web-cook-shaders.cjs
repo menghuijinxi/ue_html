@@ -142,6 +142,12 @@ const overrides = new Map([
   ['Private/ShadowDepthCommon.ush', [{
     before: '#if SUPPORT_SHADOW_DEPTH_POINT\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
     after: '#if SUPPORT_SHADOW_DEPTH_POINT && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
+  }, {
+    before: '#define INTERPOLATE_POSITION (MATERIALBLENDING_MASKED)',
+    after: ['#define INTERPOLATE_POSITION (MATERIALBLENDING_MASKED)', '',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '// VSM needs hardware clipping even when the platform\'s global clip-plane path is disabled.',
+      '#undef SV_ClipDistance', '#endif'].join('\n'),
   }]],
   ['Private/ShadowDepthVertexShader.usf', ['VFIntermediates', 'Input'].map((input, index) => ({
     before: [
