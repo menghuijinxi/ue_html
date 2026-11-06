@@ -18,11 +18,11 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}small{color:#90a59a}footer{ma
 <main>
 <div class="eyebrow">TRIPLEX HOUSE VILLA · 2026-11-06</div>
 <h1>性能回退检查</h1>
-<p>本轮比较“计算与渲染 pass 复用”组合。两个入口使用相同运行时与画质，均开启阴影缓存、不限帧，保持 owner 调度。</p>
-<p class="note">实验尚未达到桌面端性能和实际平滑度验收。静止低帧有所改善，但固定转向相对“仅计算复用”出现回退：1% low 41.58 → 38.99，最长帧 42.01 → 49.29 ms。新开关均未默认启用，请特别留意转向顿挫、阴影跳变、拖尾或缺失。</p>
+<p>本轮继续比较提交、输出复制和上传开销。下方两个入口使用相同运行时与画质，均复用上传页、开启阴影缓存、不限帧，保持 owner 调度。</p>
+<p class="note">合并上传显著减少了 GPU API 调用，但没有测出稳定的帧率或低帧收益。本轮四项新开关均未默认启用，尚未达到桌面端性能及实际平滑度验收。这里保留可复查的实验入口，请特别留意转向顿挫、阴影跳变、拖尾或缺失。</p>
 <nav aria-label="测试版本">
-<a class="candidate" href="build/villa-pass-reuse-combined-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开本轮组合实验</strong><span>计算复用与渲染合并开启</span><small>720p 静止两轮合并：104.23 FPS / 1% low 44.18</small></a>
-<a href="build/villa-replay-scratch-off-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开同运行时对照</strong><span>两项 pass 优化均关闭</span><small>720p 静止三轮合并：100.39 FPS / 1% low 38.34</small></a>
+<a class="candidate" href="build/villa-upload-batch-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开合并上传实验</strong><span>复用上传页，并合并写入</span><small>720p 静止两窗合并：101.11 FPS / 1% low 41.32</small></a>
+<a href="build/villa-upload-pages-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开同运行时对照</strong><span>仅复用上传页，逐笔写入</span><small>720p 静止首尾两窗合并：100.98 FPS / 1% low 41.63</small></a>
 </nav>
 <ol>
 <li>每次只运行一个版本。按钮在当前标签页打开；切换时先返回此页，避免两个游戏同时占用显卡。</li>
@@ -30,11 +30,13 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}small{color:#90a59a}footer{ma
 <li>同时看平均 FPS、1% low、最长帧和实际手感。左上角“导出”可保存性能记录。</li>
 </ol>
 <footer>
-<p>拆分比较：<a href="build/villa-pass-compute-only-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">相同新运行时，仅开启计算复用</a>。JS 临时数组复用在这些入口均关闭，本轮未测出收益。</p>
+<p>其他单项实验：<a href="build/villa-submit-batch-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">批量提交</a> · <a href="build/villa-submit-present-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">输出 encoder 复用</a> · <a href="build/villa-submit-uniform-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">小常量页</a> · <a href="build/villa-submit-control-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">这三项的共同对照</a>。这些单项也没有稳定低帧收益。</p>
+<p>前轮组合：<a href="build/villa-pass-reuse-combined-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">计算与渲染 pass 复用</a> · <a href="build/villa-replay-scratch-off-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">两项关闭</a>。组合在固定转向时相对仅计算复用的 1% low 为 41.58 → 38.99，继续保留回退提示。</p>
+<p>拆分比较：<a href="build/villa-pass-compute-only-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">前轮相同运行时，仅开启计算复用</a>。JS 临时数组复用在这些入口均关闭，此前未测出收益。</p>
 <p>上一轮计算复用：<a href="build/villa-compute-reuse-on-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">开启</a> · <a href="build/villa-compute-reuse-off-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">关闭</a>。</p>
 <p>此前版本仍可对照：<a href="build/villa-parity-csm-memory-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">上一轮候选</a> · <a href="build/villa-scheduling-pipeline-v74/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">最初基线</a>。</p>
 <p>如需只比较阴影缓存：<a href="build/villa-parity-memory-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">打开相同新运行时、阴影缓存关闭版</a>。</p>
-<small>上述数字是固定 1280×720 的提交帧采样，不代表当前窗口或显示器实际呈现帧率。同设置桌面端本轮复测为 234.49 FPS / 1% low 182.37。长帧均保留在统计中。</small>
+<small>上述数字是固定 1280×720 的提交帧采样，不代表当前窗口或显示器实际呈现帧率。同设置桌面端本轮复测为 233.51 FPS / 1% low 183.03。长帧均保留在统计中，新的上传实验尚未完成移动场景的性能验收。</small>
 </footer>
 </main>
 </html>

@@ -16,14 +16,38 @@ assert(!fs.existsSync(output+'.json'));
 fs.copyFileSync(__filename,output+'-source.cjs');
 const report={tag,folder,seconds,date:new Date().toISOString(),pass:false,runs:[],errors:[],
   gpuCompletionProbe:process.argv.includes('--gpu'),presentMonEnabled:!process.argv.includes('--no-presentmon'),frameBudget,
+  apiCountProbe:process.argv.includes('--api-counts'),
+  uploadValidationProbe:process.argv.includes('--validate-uploads'),
+  uploadValidatorSource:process.argv.includes('--validate-uploads')?audit(require.resolve('./web-upload-staging-validator.cjs')):null,
   performanceAccepted:false,physicalPresentationValidated:false,pipelineDiagnostics:{failedCreate:0,detailLines:0,otherLogErrors:[]},
   source:audit(output+'-source.cjs'),files:['index.html','config-files.json','UEWebEngineThreads.js','web-engine-host.js','web-engine-worker.js'].map(n=>audit(path.join(base,n))),
   manifest:audit(path.join(base,'asset-versions.json')),
   boundary:'Owner rAF retained. Submission, GPU completion and Windows compositor presentation are separate clocks; compositor refresh is not proof of new canvas content. Effects disabled only to attribute costs, not accepted quality reductions.'};
 if(frameBudget)report.boundary='Diagnostic page-rAF scheduling gated by GPU completion credits from the owner. No local Game clock or FPS cap. Maximum outstanding reserved/submitted frames is asserted. Submission throughput is not physical display FPS; this is not an accepted replacement for owner scheduling.';
-function observe(gpu) {
+function observe(gpu,apiCounts) {
   const s=globalThis.__parity={active:false,frames:[],completed:0,submitted:0,pendingPeak:0,errors:[]};
   let frame=0,queue;
+  if(apiCounts){
+    globalThis.__parityAPICounts={};
+    for(const [type,names] of [[GPUDevice,['createCommandEncoder','createTexture','createBuffer','createBindGroup']],
+      [GPUTexture,['createView']],[GPUCommandEncoder,['beginRenderPass','beginComputePass','finish','copyTextureToTexture']],
+      [GPUQueue,['submit','writeBuffer']]])for(const name of names){
+      const original=type.prototype[name];
+      type.prototype[name]=function(...args){
+        const key=type.name+'.'+name,c=globalThis.__parityAPICounts;c[key]=(c[key]||0)+1;
+        if(name==='submit')c.commandBuffers=(c.commandBuffers||0)+args[0].length;
+        if(name==='createBuffer'){
+          const key='buffer:'+args[0].size+':'+args[0].usage;c[key]=(c[key]||0)+1;
+          if(s.active){
+            const sites=globalThis.__parityBufferSites||(globalThis.__parityBufferSites={});
+            const usage=String(args[0].usage);
+            if(!(usage in sites)&&Object.keys(sites).length<8)sites[usage]=new Error().stack;
+          }
+        }
+        return original.apply(this,args);
+      };
+    }
+  }
   Object.defineProperty(globalThis,'__webRHIFrames',{configurable:true,get:()=>frame,set:n=>{
     if(s.active && n>frame)s.frames.push({at:performance.now(),frame:n}); frame=n;
   }});
@@ -69,7 +93,8 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     await route.fulfill({response,body});
   });
   await context.route('**/web-engine-worker.js?*',async route=>{
-    const response=await route.fetch();await route.fulfill({response,body:`(${observe.toString()})(${process.argv.includes('--gpu')});\n`+await response.text()});
+    const response=await route.fetch();await route.fulfill({response,body:`(${observe.toString()})(${process.argv.includes('--gpu')},${report.apiCountProbe});\n`+
+      (report.uploadValidationProbe?'('+require('./web-upload-staging-validator.cjs').toString()+')();\n':'')+await response.text()});
   });
   const page=context.pages()[0],cdp=await context.newCDPSession(page);
   await cdp.send('Input.setIgnoreInputEvents',{ignore:true});
@@ -92,6 +117,9 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     clock:__webGameFrameClock,stages:__webThreadStages,occlusion:__webOcclusionRHI,optimization:__webOptimizationRHI,history:__webOcclusionHistory,
     computePassMerge:globalThis.__webComputePassMerge||null,
     replayScratch:globalThis.__webReplayScratchStats||null,
+    apiCounts:globalThis.__parityAPICounts||null,
+    bufferSites:globalThis.__parityBufferSites||null,
+    staging:globalThis.__webUploadStaging||null,
     gpuBudget:frameScheduler?Array.from(frameScheduler.state):null}));
   const browserCDP=await context.browser().newBrowserCDPSession();
   report.browser=await browserCDP.send('Browser.getVersion');
@@ -130,6 +158,11 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     save();console.log(JSON.stringify({name:r.name,round,result:r.result,rhiMs:r.rhiMs,workload:r.workload}));
   }
   await page.locator('canvas').screenshot({path:output+'.png'});
+  if(process.argv.includes('--validate-bindings')){
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebLightingQualityTest',18,1)),1);
+    await page.waitForTimeout(1000);
+    report.bindingValidationBefore=await state();
+  }
   if(process.argv.includes('--tour')){
     const start=await state(),c=start.camera;
     const views=[{name:'right',args:[c.x,c.y,c.z,c.pitch,c.yaw+90]},
@@ -160,13 +193,23 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     assert.equal(report.readbackTest?.pass,true,'RHI texture upload/copy/readback failed');
     assert.deepEqual(report.errors,[]);
   }
+  if(report.uploadValidationProbe){
+    report.uploadValidation=await owner.evaluate(()=>__webValidateUploadCopies(1024));
+    assert.deepEqual(report.uploadValidation.errors,[]);assert.equal(report.uploadValidation.completed,1024);
+  }
   const finalState=await state();
+  if(process.argv.includes('--validate-bindings')){
+    report.bindingValidationAfter=finalState;
+    assert(finalState.occlusion.bindingEntriesValidated>report.bindingValidationBefore.occlusion.bindingEntriesValidated);
+  }
   report.pipelineDiagnostics.finalCounters=finalState.optimization;
   report.pipelineDiagnostics.matchesUnsupportedCount=report.pipelineDiagnostics.failedCreate===finalState.optimization.unsupportedPrecacheRequests;
   assert(report.pipelineDiagnostics.matchesUnsupportedCount,'Unexplained pipeline creation errors');
   assert.equal(finalState.optimization.asyncPrecacheFailed,0);
   assert.equal(finalState.optimization.runtimeAsyncFailed,0);
   assert.deepEqual(report.pipelineDiagnostics.otherLogErrors,[]);
+  assert.deepEqual(report.errors,[]);
+  assert.deepEqual(await owner.evaluate(()=>__parity.errors),[]);
   report.pass=true;
 }catch(e){report.error=e.stack;process.exitCode=1;}finally{
   await context?.close();if(log)await new Promise(r=>log.end(r));

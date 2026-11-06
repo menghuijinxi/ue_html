@@ -1,4 +1,9 @@
 #include "WebGPUDynamicRHI.h"
+#include "HAL/IConsoleManager.h"
+
+static TAutoConsoleVariable<int32> CVarWebGPUReusePresentEncoder(
+    TEXT("r.WebGPU.ReusePresentEncoder"), 0,
+    TEXT("Experiment: append the canvas copy to an open encoder and submit in the same owner task."), ECVF_RenderThreadSafe);
 
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
 #include <emscripten/html5.h>
@@ -243,23 +248,29 @@ void FWebGPUDynamicRHI::PresentBrowserViewport(FWebGPUViewport& Viewport, const 
 {
     RequireOwner();
     check(!Pass && Viewport.BackBuffer);
-    if (ContextOpen) SubmitCurrent();
+    const bool ReuseEncoder = ContextOpen && Args.bPresent && CVarWebGPUReusePresentEncoder.GetValueOnAnyThread();
+    if (ContextOpen && !ReuseEncoder) SubmitCurrent();
     RequireAccess(Viewport.BackBuffer, ERHIAccess::Present);
     if (!Args.bPresent) { ++FramesSkipped; return; }
     auto Surface = WGPU_SURFACE_TEXTURE_INIT;
     wgpuSurfaceGetCurrentTexture(Viewport.Surface, &Surface);
     check(Surface.texture);
-    auto Copy = wgpuDeviceCreateCommandEncoder(Device, nullptr);
+    EndComputePass();
+    auto Copy = ReuseEncoder ? Encoder : wgpuDeviceCreateCommandEncoder(Device, nullptr);
     auto Source = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
     auto Destination = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
     Source.texture = Viewport.BackBuffer->Handle;
     Destination.texture = Surface.texture;
     const WGPUExtent3D Extent{Viewport.Configuration.width, Viewport.Configuration.height, 1};
     wgpuCommandEncoderCopyTextureToTexture(Copy, &Source, &Destination, &Extent);
-    auto Commands = wgpuCommandEncoderFinish(Copy, nullptr);
-    wgpuQueueSubmit(Queue, 1, &Commands);
-    wgpuCommandBufferRelease(Commands);
-    wgpuCommandEncoderRelease(Copy);
+    if (ReuseEncoder) SubmitCurrent();
+    else
+    {
+        auto Commands = wgpuCommandEncoderFinish(Copy, nullptr);
+        wgpuQueueSubmit(Queue, 1, &Commands);
+        wgpuCommandBufferRelease(Commands);
+        wgpuCommandEncoderRelease(Copy);
+    }
     wgpuTextureRelease(Surface.texture);
     ++FramesAcquired;
     ++FramesPresented;

@@ -53,6 +53,15 @@ static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
 static TAutoConsoleVariable<int32> CVarWebGPUReuseComputePass(
     TEXT("r.WebGPU.ReuseComputePass"), 0,
     TEXT("Experiment: reuse compute passes across adjacent dispatches, preserving encoder boundaries."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUBatchSubmissions(
+    TEXT("r.WebGPU.BatchSubmissions"), 0,
+    TEXT("Experiment: batch lists inside one RHI submission, preserving readback and fence boundaries."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUFrameUniformSnapshots(
+    TEXT("r.WebGPU.FrameUniformSnapshots"), 0,
+    TEXT("Experiment: allocate small multi-frame uniform snapshots from existing frame pages."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUBatchStagingWrites(
+    TEXT("r.WebGPU.BatchStagingWrites"), 0,
+    TEXT("Experiment: coalesce staging page writes before each submission; retains at most four 1 MiB GPU pages."), ECVF_RenderThreadSafe);
 
 struct FWebGPUCompletion
 {
@@ -1034,6 +1043,7 @@ void FWebGPUDynamicRHI::Shutdown()
     StagingUploadBuffer = nullptr;
     for (auto Page : StagingUploadPages) wgpuBufferRelease(Page);
     StagingUploadPages.Empty();
+    StagingUploadBytes.Empty();
     ReleaseBindings();
     RasterExtentAttachment.SafeRelease();
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
@@ -1110,6 +1120,7 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     RequireOwner();
     check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame && !FrameUniformDirtyEnd);
     check(PendingDrawBundles.IsEmpty());
+    check(!StagingDirtyEnd);
     for (auto Bucket = DrawBundleCache.CreateIterator(); Bucket; ++Bucket)
     {
         DrawBundleEntries -= Bucket.Value().RemoveAll([this](const auto& Entry) {
@@ -1138,7 +1149,7 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     StagingUploadBuffer = nullptr;
     StagingUploadOffset = 0;
     StagingUploadPage = 0;
-    if (!CVarWebGPUStagingUploadPages.GetValueOnAnyThread())
+    if (!CVarWebGPUStagingUploadPages.GetValueOnAnyThread() && !CVarWebGPUBatchStagingWrites.GetValueOnAnyThread())
     {
         for (auto Page : StagingUploadPages) wgpuBufferRelease(Page);
         StagingUploadPages.Empty();
@@ -1161,9 +1172,10 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     if (EndFrames % 30 == 0)
         EM_ASM({ globalThis.__webUploadStaging = ({enabled: !!$0, calls: $1, pooled: $2,
-            pageCreates: $3, fallbacks: $4, retainedBytes: $5}); },
-            CVarWebGPUStagingUploadPages.GetValueOnAnyThread(), StagingUploadCalls, StagingUploadPooled,
-            StagingUploadPageCreates, StagingUploadFallbacks, StagingUploadPages.Num() * 1024 * 1024);
+            pageCreates: $3, fallbacks: $4, retainedBytes: $5, batchWrites:!!$6, writeBatches:$7}); },
+            CVarWebGPUStagingUploadPages.GetValueOnAnyThread() || CVarWebGPUBatchStagingWrites.GetValueOnAnyThread(), StagingUploadCalls, StagingUploadPooled,
+            StagingUploadPageCreates, StagingUploadFallbacks, StagingUploadPages.Num() * 1024 * 1024,
+            CVarWebGPUBatchStagingWrites.GetValueOnAnyThread(), StagingWriteBatches);
     EM_ASM({
         Object.assign(globalThis.__webThreadStages ||= {},
             {rhiThreadId: $0, rhiFrames: $1, submitted: $2, presented: $3,
@@ -1287,7 +1299,11 @@ WGPUBuffer FWebGPUDynamicRHI::UploadStagingBytes(const void* Data, uint64 Size, 
     Offset = 0;
     constexpr uint64 PageBytes = 1024 * 1024;
     constexpr uint32 RetainedPages = 4;
-    if (!CVarWebGPUStagingUploadPages.GetValueOnAnyThread() || Size > PageBytes)
+    const bool BatchWrites = CVarWebGPUBatchStagingWrites.GetValueOnAnyThread() != 0;
+    // Switching batching off must publish the old dirty range before direct
+    // writes can fill later slices; a subsequent batch must not cover those.
+    if (!BatchWrites && StagingDirtyEnd) FlushStagingUploads();
+    if ((!CVarWebGPUStagingUploadPages.GetValueOnAnyThread() && !BatchWrites) || Size > PageBytes)
     {
         ++StagingUploadFallbacks;
         return CreateBuffer(Size, WGPUBufferUsage_CopySrc, Data);
@@ -1296,6 +1312,7 @@ WGPUBuffer FWebGPUDynamicRHI::UploadStagingBytes(const void* Data, uint64 Size, 
     const uint64 AlignedOffset = Align(StagingUploadOffset, uint64(256));
     if (!StagingUploadBuffer || AlignedOffset + Size > PageBytes)
     {
+        FlushStagingUploads();
         if (StagingUploadBuffer) wgpuBufferRelease(StagingUploadBuffer);
         if (StagingUploadPage < RetainedPages)
         {
@@ -1320,10 +1337,28 @@ WGPUBuffer FWebGPUDynamicRHI::UploadStagingBytes(const void* Data, uint64 Size, 
     // A write must precede the copy using this slice. Never overwrite a slice
     // still referenced by an unsubmitted encoder. Across frame boundaries,
     // queue order puts the next write after every previously submitted copy.
-    wgpuQueueWriteBuffer(Queue, StagingUploadBuffer, Offset, Data, Size);
+    if (BatchWrites)
+    {
+        if (StagingUploadBytes.IsEmpty()) StagingUploadBytes.SetNumZeroed(PageBytes);
+        FMemory::Memcpy(StagingUploadBytes.GetData() + Offset, Data, Size);
+        if (!StagingDirtyEnd) StagingDirtyBegin = Offset;
+        StagingDirtyEnd = Offset + Size;
+    }
+    else wgpuQueueWriteBuffer(Queue, StagingUploadBuffer, Offset, Data, Size);
     ++StagingUploadPooled;
     wgpuBufferAddRef(StagingUploadBuffer); // Return the same owning reference as CreateBuffer.
     return StagingUploadBuffer;
+}
+void FWebGPUDynamicRHI::FlushStagingUploads()
+{
+    if (!StagingDirtyEnd) return;
+    check(StagingUploadBuffer && StagingDirtyEnd <= uint64(StagingUploadBytes.Num()));
+    // Every copy retains a disjoint slice until EndFrame. Upload before any
+    // command using the slice is submitted, including synchronous readbacks.
+    wgpuQueueWriteBuffer(Queue, StagingUploadBuffer, StagingDirtyBegin,
+        StagingUploadBytes.GetData() + StagingDirtyBegin, StagingDirtyEnd - StagingDirtyBegin);
+    StagingDirtyBegin = StagingDirtyEnd = 0;
+    ++StagingWriteBatches;
 }
 bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency,
                                    FWebGPUShaderData &Data, FString &Error)
@@ -3544,7 +3579,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                         }
                         if (!Snapshot.Buffer)
                         {
-                            if (Uniform->SingleFrame && Entry.size <= 64 * 1024)
+                            if ((Uniform->SingleFrame || CVarWebGPUFrameUniformSnapshots.GetValueOnAnyThread()) && Entry.size <= 64 * 1024)
                             {
                                 Snapshot = UploadFrameConstants(Uniform->Bytes.GetData(), Entry.size);
                             }
@@ -4380,11 +4415,21 @@ void FWebGPUDynamicRHI::RHISubmitCommandLists(FRHISubmitCommandListsArgs &&Args)
     RequireOwner();
     FString Error;
     checkf(ValidateSubmissionOrder(Args.CommandLists, Error), TEXT("%s"), *Error);
+    FlushStagingUploads();
     FlushFrameConstants();
-    for (auto *Base : Args.CommandLists)
+    const bool BatchSubmissions = CVarWebGPUBatchSubmissions.GetValueOnAnyThread() != 0;
+    TArray<WGPUCommandBuffer, TInlineAllocator<32>> SubmitBatch;
+    for (int32 Index = 0; Index < Args.CommandLists.Num(); ++Index)
     {
-        auto *List = static_cast<FWebGPUCommandList *>(Base);
-        wgpuQueueSubmit(Queue, 1, &List->Handle);
+        auto *List = static_cast<FWebGPUCommandList *>(Args.CommandLists[Index]);
+        SubmitBatch.Add(List->Handle);
+        // Keep completion notifications at their original position in queue order.
+        // Never retain commands across RHI submissions, tasks or frames.
+        if (!BatchSubmissions || !List->Readbacks.IsEmpty() || !List->Fences.IsEmpty() || Index + 1 == Args.CommandLists.Num())
+        {
+            wgpuQueueSubmit(Queue, SubmitBatch.Num(), SubmitBatch.GetData());
+            SubmitBatch.Reset();
+        }
         for (const auto& State : List->Readbacks)
         {
             WGPUBufferMapCallbackInfo Callback = WGPU_BUFFER_MAP_CALLBACK_INFO_INIT;
@@ -4415,9 +4460,10 @@ void FWebGPUDynamicRHI::RHISubmitCommandLists(FRHISubmitCommandListsArgs &&Args)
             };
             wgpuQueueOnSubmittedWorkDone(Queue, Callback);
         }
-        delete List;
         ++Submitted;
     }
+    // Keep every handle alive until its batch has actually been submitted.
+    for (auto* Base : Args.CommandLists) delete static_cast<FWebGPUCommandList*>(Base);
 }
 FGPUFenceRHIRef FWebGPUDynamicRHI::RHICreateGPUFence(const FName& Name)
 {

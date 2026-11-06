@@ -1,0 +1,3607 @@
+{
+  "date": "2026-11-06T03:33:16.399Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "physicalPresentationValidated": false,
+  "lowDefinition": "1000 / mean of slowest ceil(N*0.01) raw RHI intervals; no long frames removed; no cross-window gaps.",
+  "controls": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "clock": "owner",
+    "rhiWake": "priority",
+    "fpsCap": 0,
+    "vsync": 0,
+    "csm": 1,
+    "gpuAhead": 0,
+    "computeReuse": 0,
+    "rdgMerge": 0,
+    "replayScratch": 0
+  },
+  "normal": {
+    "control": {
+      "aggregate": {
+        "frames": 9058,
+        "fps": 100.65542147735901,
+        "low1": 38.67337571786717,
+        "p99": 21.67000000178814,
+        "maximum": 46.05500000715256,
+        "over33": 9,
+        "over50": 0
+      },
+      "capture": {
+        "tag": "parity-submit-control-normal-20261106",
+        "files": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-normal-20261106.json",
+            "sha256": "f899147d25beee05b0f0fbc95b394fd6df1ee120f2e59c9b13f36179e0a76689"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-normal-20261106.log",
+            "sha256": "14c06218d271146dba74dac7e4eef403a046b3d2399e20c5d5706b14dc660ddb"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-normal-20261106.png",
+            "sha256": "48e25d373b7539a913b1ab778f6c5789feaa814a6981708511d3765b1a1430a2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-normal-20261106-source.cjs",
+            "sha256": "f0774daa084dbb3b66689f220ae4c6e3e54adb8d82d521922436a5e6e36d9c53"
+          }
+        ],
+        "apiCountProbe": false,
+        "gpuCompletionProbe": false,
+        "uploadValidationProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4517,
+              "fps": 100.39827018026324,
+              "low1": 38.812506064375995,
+              "p99": 20.155000001192093,
+              "maximum": 44.34499999880791,
+              "over33": 5,
+              "over50": 0
+            },
+            "rhiMs": 6.893383870878385,
+            "workload": {
+              "draws": 1348.7172185430463,
+              "dispatches": 160.62229580573953,
+              "bindGroupsCreated": 31.594701986754966,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4541,
+              "fps": 100.91252388645154,
+              "low1": 38.77390179189485,
+              "p99": 22.24500000476837,
+              "maximum": 46.05500000715256,
+              "over33": 4,
+              "over50": 0
+            },
+            "rhiMs": 6.872954687742555,
+            "workload": {
+              "draws": 1348.4515350877193,
+              "dispatches": 160.5765350877193,
+              "bindGroupsCreated": 31.6,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": null,
+            "gpu": null
+          }
+        ],
+        "validatedBindingEntries": 0
+      }
+    },
+    "batch": {
+      "aggregate": {
+        "frames": 9103,
+        "fps": 101.14066852615348,
+        "low1": 38.93553629464702,
+        "p99": 19.38000000268221,
+        "maximum": 48.12000000476837,
+        "over33": 8,
+        "over50": 0
+      },
+      "capture": {
+        "tag": "parity-submit-batch-normal-20261106",
+        "files": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-normal-20261106.json",
+            "sha256": "5e4caa4a2fbaf99d8e6a25fea9b43264401464d14b3fa3173cadde2acebcc509"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-normal-20261106.log",
+            "sha256": "4b11bfc71d3b93d12d2f7e537b1a70ae0f6ecfb3c14e284b88b9944548d3511f"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-normal-20261106.png",
+            "sha256": "4a98f6b04b16efea3eff43c92c8f9776454ae31ad6b99b8365c7c35311633c99"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-normal-20261106-source.cjs",
+            "sha256": "8cf8b2a048edc56ce9e56abe2affad6c09431f2d03bac7295df538a6293176c2"
+          }
+        ],
+        "apiCountProbe": false,
+        "gpuCompletionProbe": false,
+        "uploadValidationProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4551,
+              "fps": 101.12597360970175,
+              "low1": 39.93610223655605,
+              "p99": 21.945000000298023,
+              "maximum": 43.13499999791384,
+              "over33": 2,
+              "over50": 0
+            },
+            "rhiMs": 6.821235317756505,
+            "workload": {
+              "draws": 1349.3844298245615,
+              "dispatches": 160.7,
+              "bindGroupsCreated": 31.673684210526314,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": null,
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4552,
+              "fps": 101.15536448430952,
+              "low1": 38.16651386217575,
+              "p99": 18.74499999731779,
+              "maximum": 48.12000000476837,
+              "over33": 6,
+              "over50": 0
+            },
+            "rhiMs": 6.8323995526115,
+            "workload": {
+              "draws": 1349.1552631578948,
+              "dispatches": 160.66359649122808,
+              "bindGroupsCreated": 31.49956140350877,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": null,
+            "gpu": null
+          }
+        ],
+        "validatedBindingEntries": 0
+      }
+    },
+    "present": {
+      "aggregate": {
+        "frames": 9071,
+        "fps": 100.79957924427575,
+        "low1": 38.38868757089037,
+        "p99": 21.075000002980232,
+        "maximum": 45,
+        "over33": 9,
+        "over50": 0
+      },
+      "capture": {
+        "tag": "parity-submit-present-normal-20261106",
+        "files": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-normal-20261106.json",
+            "sha256": "a123e383b308222c6b5fdbfb4049bb0fb56f16ed3e94fb58db1dff50d705b5ea"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-normal-20261106.log",
+            "sha256": "0471a6f51e72bd8be3104208849e24ec79cb97b36901d170ac71f907f6e9dbf1"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-normal-20261106.png",
+            "sha256": "1eece7d62859858df7dcef39eeb0343860494793bc536dc8ce8964f926c25d44"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-normal-20261106-source.cjs",
+            "sha256": "f847b0c9c47f9b24e4edf82c19dbf1c12623034b3eac8c17125da066e0dd0ef2"
+          }
+        ],
+        "apiCountProbe": false,
+        "gpuCompletionProbe": false,
+        "uploadValidationProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4515,
+              "fps": 100.35066054739517,
+              "low1": 38.39957259630992,
+              "p99": 21.53999999910593,
+              "maximum": 44.21500000357628,
+              "over33": 5,
+              "over50": 0
+            },
+            "rhiMs": 6.887185251675859,
+            "workload": {
+              "draws": 1348.719426048565,
+              "dispatches": 160.61434878587195,
+              "bindGroupsCreated": 31.621633554083886,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": {
+              "enabled": false,
+              "calls": 303836,
+              "pooled": 0,
+              "pageCreates": 0,
+              "fallbacks": 303836,
+              "retainedBytes": 0
+            },
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4556,
+              "fps": 101.24843813285086,
+              "low1": 38.60355824073083,
+              "p99": 19.03999999910593,
+              "maximum": 45,
+              "over33": 4,
+              "over50": 0
+            },
+            "rhiMs": 6.840701897067442,
+            "workload": {
+              "draws": 1348.6565789473684,
+              "dispatches": 160.60416666666666,
+              "bindGroupsCreated": 31.495394736842105,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": {
+              "enabled": false,
+              "calls": 533284,
+              "pooled": 0,
+              "pageCreates": 0,
+              "fallbacks": 533284,
+              "retainedBytes": 0
+            },
+            "gpu": null
+          }
+        ],
+        "validatedBindingEntries": 0
+      }
+    },
+    "uniform": {
+      "aggregate": {
+        "frames": 9218,
+        "fps": 102.40918211970644,
+        "low1": 38.89927597107044,
+        "p99": 21.46000000089407,
+        "maximum": 48.439999997615814,
+        "over33": 10,
+        "over50": 0
+      },
+      "capture": {
+        "tag": "parity-submit-uniform-normal-20261106",
+        "files": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-normal-20261106.json",
+            "sha256": "ce6458ee889390e453a2f28c065def2de1e1820a0782dc4a14c1e8618c119c60"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-normal-20261106.log",
+            "sha256": "7dd1062e60d90ba3bc97ccb91ade823f8cfd7474ce341b587aec09bb5d51ec07"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-normal-20261106.png",
+            "sha256": "61a2ebf8aca3d3599fa47686a40452595557e3f4b1e018075372328bd584a2ac"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-normal-20261106-source.cjs",
+            "sha256": "cc69c519bc7fe1d84ed93c0bfc3e3d50c0378cb633a60ccab14822bc89792912"
+          }
+        ],
+        "apiCountProbe": false,
+        "gpuCompletionProbe": false,
+        "uploadValidationProbe": false,
+        "runs": [
+          {
+            "result": {
+              "frames": 4595,
+              "fps": 102.11072535949484,
+              "low1": 39.699834727085914,
+              "p99": 21.679999999701977,
+              "maximum": 48.439999997615814,
+              "over33": 4,
+              "over50": 0
+            },
+            "rhiMs": 6.752951345323427,
+            "workload": {
+              "draws": 1350.0995642701525,
+              "dispatches": 160.79934640522876,
+              "bindGroupsCreated": 24.796949891067538,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": {
+              "enabled": false,
+              "calls": 309308,
+              "pooled": 0,
+              "pageCreates": 0,
+              "fallbacks": 309308,
+              "retainedBytes": 0
+            },
+            "gpu": null
+          },
+          {
+            "result": {
+              "frames": 4623,
+              "fps": 102.70756514643531,
+              "low1": 38.45131204913454,
+              "p99": 16.29499999433756,
+              "maximum": 47.53999999910593,
+              "over33": 6,
+              "over50": 0
+            },
+            "rhiMs": 6.723794712327344,
+            "workload": {
+              "draws": 1350.2203463203464,
+              "dispatches": 160.8116883116883,
+              "bindGroupsCreated": 24.8,
+              "uniformWriteCalls": 2
+            },
+            "apiPerFrame": null,
+            "staging": {
+              "enabled": false,
+              "calls": 542876,
+              "pooled": 0,
+              "pageCreates": 0,
+              "fallbacks": 542876,
+              "retainedBytes": 0
+            },
+            "gpu": null
+          }
+        ],
+        "validatedBindingEntries": 0
+      }
+    }
+  },
+  "checks": {
+    "control": {
+      "tag": "parity-submit-control-check-20261106",
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106.json",
+          "sha256": "49540e41f14e155f33d85c394c97a5c898e9acdb30dff2534e9460d73ae2c55b"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106.log",
+          "sha256": "ae5c686ea548f41e5c853ce84ddca87bd432b2c4a7da36a9a1b36fc8036c84cb"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106.png",
+          "sha256": "b0b6c44d104f2d4f50eddc4cd2bdadc986441e81a4f57da86937755e36a47975"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106-source.cjs",
+          "sha256": "cc69c519bc7fe1d84ed93c0bfc3e3d50c0378cb633a60ccab14822bc89792912"
+        }
+      ],
+      "apiCountProbe": true,
+      "gpuCompletionProbe": true,
+      "uploadValidationProbe": false,
+      "runs": [
+        {
+          "result": {
+            "frames": 990,
+            "fps": 99.0058908504938,
+            "low1": 40.96262160778289,
+            "p99": 23.365000002086163,
+            "maximum": 26.219999998807907,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 7.028881580598893,
+          "workload": {
+            "draws": 1348.7626262626263,
+            "dispatches": 160.65151515151516,
+            "bindGroupsCreated": 31.684848484848484,
+            "uniformWriteCalls": 2
+          },
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 11.108870967741936,
+            "GPUDevice.createBuffer": 55.98084677419355,
+            "GPUQueue.writeBuffer": 52.98084677419355,
+            "GPUDevice.createTexture": 0,
+            "GPUTexture.createView": 0,
+            "GPUCommandEncoder.finish": 11.109879032258064,
+            "GPUQueue.submit": 11.109879032258064,
+            "commandBuffers": 11.109879032258064,
+            "GPUCommandEncoder.copyTextureToTexture": 12.903225806451612,
+            "GPUCommandEncoder.beginRenderPass": 276.0766129032258,
+            "GPUDevice.createBindGroup": 34.68346774193548,
+            "buffer:4:12": 4,
+            "buffer:1056:12": 1,
+            "buffer:8:12": 0.4959677419354839,
+            "buffer:48:12": 1,
+            "buffer:128:12": 2,
+            "buffer:7020:12": 1,
+            "buffer:2560:12": 1,
+            "GPUCommandEncoder.beginComputePass": 160.65322580645162,
+            "buffer:10912:72": 1,
+            "buffer:65536:9": 2,
+            "buffer:262144:9": 1,
+            "buffer:65536:12": 0.998991935483871,
+            "buffer:104:12": 1,
+            "buffer:5568:12": 1,
+            "buffer:912:12": 3,
+            "buffer:3648:12": 1,
+            "buffer:228:12": 1,
+            "buffer:32:72": 3,
+            "buffer:2880:44": 1,
+            "buffer:49104:72": 1,
+            "buffer:44:12": 3.995967741935484,
+            "buffer:1760:12": 1.0131048387096775,
+            "buffer:528:12": 0.998991935483871,
+            "buffer:352:12": 1.0070564516129032,
+            "buffer:96:12": 1,
+            "buffer:264:12": 0.4959677419354839,
+            "buffer:7744:12": 0.998991935483871,
+            "buffer:176:12": 0.998991935483871,
+            "buffer:704:12": 1.4959677419354838,
+            "buffer:2640:12": 0.998991935483871,
+            "buffer:51744:12": 0.4959677419354839,
+            "buffer:1976:12": 0.4959677419354839,
+            "buffer:160:12": 0.4959677419354839,
+            "buffer:1824:12": 0.4959677419354839,
+            "buffer:1408:12": 0.48185483870967744,
+            "buffer:34848:12": 0.5040322580645161,
+            "buffer:2016:12": 1,
+            "buffer:5040:12": 1,
+            "buffer:1008:12": 1,
+            "buffer:24:12": 1,
+            "buffer:2928:12": 1,
+            "buffer:4896:12": 0.2469758064516129,
+            "buffer:12240:12": 0.2469758064516129,
+            "buffer:2448:12": 0.2469758064516129,
+            "buffer:1656:12": 0.5040322580645161,
+            "buffer:144:12": 0.5040322580645161,
+            "buffer:5400:12": 0.2399193548387097,
+            "buffer:1512:12": 0.5040322580645161,
+            "buffer:5240:12": 0.1532258064516129,
+            "buffer:13100:12": 0.1532258064516129,
+            "buffer:2620:12": 0.1532258064516129,
+            "buffer:5520:12": 0.15625,
+            "buffer:1056:524": 0.05342741935483871,
+            "buffer:1056:9": 0.05342741935483871,
+            "buffer:4904:12": 0.0625,
+            "buffer:12260:12": 0.0625,
+            "buffer:2452:12": 0.0625,
+            "buffer:5408:12": 0.047379032258064516,
+            "buffer:1064:524": 0.0655241935483871,
+            "buffer:1064:9": 0.0655241935483871,
+            "buffer:1040:524": 0.034274193548387094,
+            "buffer:1040:9": 0.034274193548387094,
+            "buffer:5248:12": 0.0655241935483871,
+            "buffer:13120:12": 0.0655241935483871,
+            "buffer:2624:12": 0.0655241935483871,
+            "buffer:5528:12": 0.04939516129032258,
+            "buffer:1072:524": 0.059475806451612906,
+            "buffer:1072:9": 0.059475806451612906,
+            "buffer:1048:524": 0.06048387096774194,
+            "buffer:1048:9": 0.06048387096774194,
+            "buffer:1080:524": 0.04536290322580645,
+            "buffer:1080:9": 0.04536290322580645,
+            "buffer:1488:524": 0.0010080645161290322,
+            "buffer:1488:9": 0.0010080645161290322,
+            "buffer:1088:524": 0.05342741935483871,
+            "buffer:1088:9": 0.05342741935483871,
+            "buffer:1096:524": 0.057459677419354836,
+            "buffer:1096:9": 0.057459677419354836,
+            "buffer:1112:524": 0.03931451612903226,
+            "buffer:1112:9": 0.03931451612903226,
+            "buffer:4888:12": 0.1431451612903226,
+            "buffer:12220:12": 0.1431451612903226,
+            "buffer:2444:12": 0.1431451612903226,
+            "buffer:5392:12": 0.07661290322580645,
+            "buffer:5224:12": 0.09778225806451613,
+            "buffer:13060:12": 0.09778225806451613,
+            "buffer:2612:12": 0.09778225806451613,
+            "buffer:5504:12": 0.09173387096774194,
+            "buffer:5232:12": 0.16431451612903225,
+            "buffer:13080:12": 0.16431451612903225,
+            "buffer:2616:12": 0.16431451612903225,
+            "buffer:5512:12": 0.12298387096774194,
+            "buffer:4880:12": 0.05141129032258065,
+            "buffer:12200:12": 0.05141129032258065,
+            "buffer:2440:12": 0.05141129032258065,
+            "buffer:5384:12": 0.1159274193548387,
+            "buffer:1120:524": 0.04334677419354839,
+            "buffer:1120:9": 0.04334677419354839,
+            "buffer:1104:524": 0.05141129032258065,
+            "buffer:1104:9": 0.05141129032258065,
+            "buffer:1416:524": 0.0010080645161290322,
+            "buffer:1416:9": 0.0010080645161290322,
+            "buffer:1144:524": 0.01310483870967742,
+            "buffer:1144:9": 0.01310483870967742,
+            "buffer:1344:524": 0.0020161290322580645,
+            "buffer:1344:9": 0.0020161290322580645,
+            "buffer:1152:524": 0.015120967741935484,
+            "buffer:1152:9": 0.015120967741935484,
+            "buffer:1128:524": 0.05443548387096774,
+            "buffer:1128:9": 0.05443548387096774,
+            "buffer:1400:524": 0.004032258064516129,
+            "buffer:1400:9": 0.004032258064516129,
+            "buffer:1456:524": 0.0010080645161290322,
+            "buffer:1456:9": 0.0010080645161290322,
+            "buffer:1440:524": 0.0020161290322580645,
+            "buffer:1440:9": 0.0020161290322580645,
+            "buffer:1176:524": 0.020161290322580645,
+            "buffer:1176:9": 0.020161290322580645,
+            "buffer:1168:524": 0.01310483870967742,
+            "buffer:1168:9": 0.01310483870967742,
+            "buffer:1184:524": 0.028225806451612902,
+            "buffer:1184:9": 0.028225806451612902,
+            "buffer:1376:524": 0.0010080645161290322,
+            "buffer:1376:9": 0.0010080645161290322,
+            "buffer:1192:524": 0.02721774193548387,
+            "buffer:1192:9": 0.02721774193548387,
+            "buffer:1312:524": 0.0030241935483870967,
+            "buffer:1312:9": 0.0030241935483870967,
+            "buffer:1320:524": 0.010080645161290322,
+            "buffer:1320:9": 0.010080645161290322,
+            "buffer:1280:524": 0.010080645161290322,
+            "buffer:1280:9": 0.010080645161290322,
+            "buffer:1296:524": 0.006048387096774193,
+            "buffer:1296:9": 0.006048387096774193,
+            "buffer:1208:524": 0.020161290322580645,
+            "buffer:1208:9": 0.020161290322580645,
+            "buffer:1264:524": 0.011088709677419355,
+            "buffer:1264:9": 0.011088709677419355,
+            "buffer:1256:524": 0.012096774193548387,
+            "buffer:1256:9": 0.012096774193548387,
+            "buffer:1232:524": 0.016129032258064516,
+            "buffer:1232:9": 0.016129032258064516,
+            "buffer:1240:524": 0.009072580645161291,
+            "buffer:1240:9": 0.009072580645161291,
+            "buffer:5496:12": 0.07560483870967742,
+            "buffer:1224:524": 0.017137096774193547,
+            "buffer:1224:9": 0.017137096774193547,
+            "buffer:1200:524": 0.025201612903225805,
+            "buffer:1200:9": 0.025201612903225805,
+            "buffer:1248:524": 0.011088709677419355,
+            "buffer:1248:9": 0.011088709677419355,
+            "buffer:1216:524": 0.01310483870967742,
+            "buffer:1216:9": 0.01310483870967742,
+            "buffer:5376:12": 0.024193548387096774,
+            "buffer:1136:524": 0.028225806451612902,
+            "buffer:1136:9": 0.028225806451612902,
+            "buffer:1160:524": 0.007056451612903226,
+            "buffer:1160:9": 0.007056451612903226,
+            "buffer:1336:524": 0.005040322580645161,
+            "buffer:1336:9": 0.005040322580645161,
+            "buffer:1352:524": 0.0010080645161290322,
+            "buffer:1352:9": 0.0010080645161290322,
+            "buffer:1272:524": 0.01310483870967742,
+            "buffer:1272:9": 0.01310483870967742,
+            "buffer:1328:524": 0.004032258064516129,
+            "buffer:1328:9": 0.004032258064516129,
+            "buffer:1288:524": 0.008064516129032258,
+            "buffer:1288:9": 0.008064516129032258,
+            "buffer:5216:12": 0.015120967741935484,
+            "buffer:13040:12": 0.015120967741935484,
+            "buffer:2608:12": 0.015120967741935484,
+            "buffer:1360:524": 0.0010080645161290322,
+            "buffer:1360:9": 0.0010080645161290322,
+            "buffer:1304:524": 0.008064516129032258,
+            "buffer:1304:9": 0.008064516129032258,
+            "buffer:1384:524": 0.0030241935483870967,
+            "buffer:1384:9": 0.0030241935483870967,
+            "buffer:1432:524": 0.0020161290322580645,
+            "buffer:1432:9": 0.0020161290322580645,
+            "buffer:1392:524": 0.0010080645161290322,
+            "buffer:1392:9": 0.0010080645161290322,
+            "buffer:1472:524": 0.0010080645161290322,
+            "buffer:1472:9": 0.0010080645161290322,
+            "buffer:1408:524": 0.006048387096774193,
+            "buffer:1408:9": 0.006048387096774193
+          },
+          "staging": {
+            "enabled": false,
+            "calls": 144564,
+            "pooled": 0,
+            "pageCreates": 0,
+            "fallbacks": 144564,
+            "retainedBytes": 0
+          },
+          "gpu": {
+            "peak": 3,
+            "meanMs": 14.044868819385496,
+            "maxMs": 32.684999994933605
+          }
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 3503,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106-tour-right.png",
+            "sha256": "261170319145bf283c85b87a8999669b46beb0dc4de555704f463fd098d4832e"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 3966,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106-tour-back.png",
+            "sha256": "3a6c5c2e4506f915b6b7c571a969632fb66e8bad3489eebbafb0bfc99ead4e33"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 4399,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106-tour-left.png",
+            "sha256": "2d9dd65d640a3fe229e577a934e344f91041b7b749865d3135161755538f5d30"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 4681,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106-tour-room.png",
+            "sha256": "e074935930825cc1c323e5e925a966620c211c77b0ce6f81858f37490f27856f"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 4951,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-control-check-20261106-tour-return.png",
+            "sha256": "68342daf916adf960228a60f79eae96e6b77bf940c97d673a723dd997ef72cf8"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "validatedBindingEntries": 0
+    },
+    "batch": {
+      "tag": "parity-submit-batch-check-20261106",
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106.json",
+          "sha256": "b86471cfc8ebfec940312f13a14d47f43d98c4e17ce68e6b4b1e7f6b1c06a34e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106.log",
+          "sha256": "88bb7d099b54ea6edb04115f8783f5b57f967b7c4fb09252d424a0baeaf2fd85"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106.png",
+          "sha256": "cdff9fabf9b334ec30c2866311400d942d7fbb02d8867539bc719ad218eddc7a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106-source.cjs",
+          "sha256": "cc69c519bc7fe1d84ed93c0bfc3e3d50c0378cb633a60ccab14822bc89792912"
+        }
+      ],
+      "apiCountProbe": true,
+      "gpuCompletionProbe": true,
+      "uploadValidationProbe": false,
+      "runs": [
+        {
+          "result": {
+            "frames": 990,
+            "fps": 99.0495743119697,
+            "low1": 38.77246379634634,
+            "p99": 21.549999997019768,
+            "maximum": 42.060000002384186,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 7.0213683302188805,
+          "workload": {
+            "draws": 1349.8353535353535,
+            "dispatches": 160.83333333333334,
+            "bindGroupsCreated": 31.59292929292929,
+            "uniformWriteCalls": 2
+          },
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 11.141993957703928,
+            "GPUDevice.createBuffer": 56.003021148036254,
+            "GPUQueue.writeBuffer": 53.003021148036254,
+            "GPUDevice.createTexture": 0.004028197381671702,
+            "GPUTexture.createView": 0.004028197381671702,
+            "GPUCommandEncoder.finish": 11.141993957703928,
+            "GPUQueue.submit": 11.141993957703928,
+            "commandBuffers": 11.141993957703928,
+            "GPUCommandEncoder.copyTextureToTexture": 13.036253776435045,
+            "GPUCommandEncoder.beginRenderPass": 276.34944612286,
+            "GPUDevice.createBindGroup": 34.57401812688822,
+            "buffer:4:12": 4,
+            "buffer:1056:12": 1,
+            "buffer:8:12": 0.5015105740181269,
+            "buffer:48:12": 1,
+            "buffer:128:12": 2,
+            "buffer:7020:12": 1,
+            "buffer:2560:12": 1,
+            "GPUCommandEncoder.beginComputePass": 160.8207452165156,
+            "buffer:10912:72": 1,
+            "buffer:65536:9": 2,
+            "buffer:262144:9": 1,
+            "buffer:65536:12": 1,
+            "buffer:104:12": 1,
+            "buffer:5568:12": 1,
+            "buffer:912:12": 3,
+            "buffer:3648:12": 1,
+            "buffer:228:12": 1,
+            "buffer:32:72": 3,
+            "buffer:2880:44": 1,
+            "buffer:49104:72": 1,
+            "buffer:44:12": 4,
+            "buffer:1760:12": 1.013091641490433,
+            "buffer:528:12": 1,
+            "buffer:352:12": 1.0040281973816716,
+            "buffer:96:12": 1,
+            "buffer:264:12": 0.5015105740181269,
+            "buffer:7744:12": 1,
+            "buffer:176:12": 1,
+            "buffer:704:12": 1.4934541792547835,
+            "buffer:2640:12": 1,
+            "buffer:51744:12": 0.5015105740181269,
+            "buffer:1976:12": 0.5015105740181269,
+            "buffer:160:12": 0.5015105740181269,
+            "buffer:1824:12": 0.5015105740181269,
+            "buffer:1408:12": 0.4773413897280967,
+            "buffer:24:12": 1,
+            "buffer:2016:12": 1,
+            "buffer:34848:12": 0.4984894259818731,
+            "buffer:5040:12": 1,
+            "buffer:1008:12": 1,
+            "buffer:2928:12": 1,
+            "buffer:4888:12": 0.14501510574018128,
+            "buffer:12220:12": 0.14501510574018128,
+            "buffer:2444:12": 0.14501510574018128,
+            "buffer:1656:12": 0.4984894259818731,
+            "buffer:144:12": 0.4984894259818731,
+            "buffer:5392:12": 0.07150050352467271,
+            "buffer:1512:12": 0.4984894259818731,
+            "buffer:4896:12": 0.24370594159113795,
+            "buffer:12240:12": 0.24370594159113795,
+            "buffer:2448:12": 0.24370594159113795,
+            "buffer:5400:12": 0.23967774420946628,
+            "buffer:1056:524": 0.08459214501510574,
+            "buffer:1056:9": 0.08459214501510574,
+            "buffer:5240:12": 0.1581067472306143,
+            "buffer:13100:12": 0.1581067472306143,
+            "buffer:2620:12": 0.1581067472306143,
+            "buffer:5520:12": 0.16112789526686808,
+            "buffer:1064:524": 0.05840886203423968,
+            "buffer:1064:9": 0.05840886203423968,
+            "buffer:1040:524": 0.03323262839879154,
+            "buffer:1040:9": 0.03323262839879154,
+            "buffer:1048:524": 0.07452165156092648,
+            "buffer:1048:9": 0.07452165156092648,
+            "buffer:1104:524": 0.028197381671701913,
+            "buffer:1104:9": 0.028197381671701913,
+            "buffer:4904:12": 0.059415911379657606,
+            "buffer:12260:12": 0.059415911379657606,
+            "buffer:2452:12": 0.059415911379657606,
+            "buffer:5408:12": 0.0433031218529708,
+            "buffer:5248:12": 0.06143001007049345,
+            "buffer:13120:12": 0.06143001007049345,
+            "buffer:2624:12": 0.06143001007049345,
+            "buffer:5528:12": 0.045317220543806644,
+            "buffer:1136:524": 0.015105740181268883,
+            "buffer:1136:9": 0.015105740181268883,
+            "buffer:1096:524": 0.02920443101711984,
+            "buffer:1096:9": 0.02920443101711984,
+            "buffer:1400:524": 0.0010070493454179255,
+            "buffer:1400:9": 0.0010070493454179255,
+            "buffer:1160:524": 0.02920443101711984,
+            "buffer:1160:9": 0.02920443101711984,
+            "buffer:1216:524": 0.03323262839879154,
+            "buffer:1216:9": 0.03323262839879154,
+            "buffer:5232:12": 0.16817724068479356,
+            "buffer:13080:12": 0.16817724068479356,
+            "buffer:2616:12": 0.16817724068479356,
+            "buffer:5512:12": 0.12386706948640483,
+            "buffer:1080:524": 0.05740181268882175,
+            "buffer:1080:9": 0.05740181268882175,
+            "buffer:1072:524": 0.05639476334340383,
+            "buffer:1072:9": 0.05639476334340383,
+            "buffer:1336:524": 0.002014098690835851,
+            "buffer:1336:9": 0.002014098690835851,
+            "buffer:1184:524": 0.026183282980866064,
+            "buffer:1184:9": 0.026183282980866064,
+            "buffer:1120:524": 0.027190332326283987,
+            "buffer:1120:9": 0.027190332326283987,
+            "buffer:1320:524": 0.002014098690835851,
+            "buffer:1320:9": 0.002014098690835851,
+            "buffer:1256:524": 0.016112789526686808,
+            "buffer:1256:9": 0.016112789526686808,
+            "buffer:1288:524": 0.004028197381671702,
+            "buffer:1288:9": 0.004028197381671702,
+            "buffer:1248:524": 0.013091641490433032,
+            "buffer:1248:9": 0.013091641490433032,
+            "buffer:1304:524": 0.004028197381671702,
+            "buffer:1304:9": 0.004028197381671702,
+            "buffer:4880:12": 0.050352467270896276,
+            "buffer:12200:12": 0.050352467270896276,
+            "buffer:2440:12": 0.050352467270896276,
+            "buffer:5384:12": 0.12084592145015106,
+            "buffer:1128:524": 0.023162134944612285,
+            "buffer:1128:9": 0.023162134944612285,
+            "buffer:5216:12": 0.015105740181268883,
+            "buffer:13040:12": 0.015105740181268883,
+            "buffer:2608:12": 0.015105740181268883,
+            "buffer:5496:12": 0.07955689828801611,
+            "buffer:1144:524": 0.023162134944612285,
+            "buffer:1144:9": 0.023162134944612285,
+            "buffer:5224:12": 0.0986908358509567,
+            "buffer:13060:12": 0.0986908358509567,
+            "buffer:2612:12": 0.0986908358509567,
+            "buffer:5504:12": 0.09164149043303121,
+            "buffer:1200:524": 0.03121852970795569,
+            "buffer:1200:9": 0.03121852970795569,
+            "buffer:1088:524": 0.05639476334340383,
+            "buffer:1088:9": 0.05639476334340383,
+            "buffer:1152:524": 0.025176233635448138,
+            "buffer:1152:9": 0.025176233635448138,
+            "buffer:1328:524": 0.002014098690835851,
+            "buffer:1328:9": 0.002014098690835851,
+            "buffer:1272:524": 0.01812688821752266,
+            "buffer:1272:9": 0.01812688821752266,
+            "buffer:1280:524": 0.011077542799597181,
+            "buffer:1280:9": 0.011077542799597181,
+            "buffer:1112:524": 0.02920443101711984,
+            "buffer:1112:9": 0.02920443101711984,
+            "buffer:1312:524": 0.0030211480362537764,
+            "buffer:1312:9": 0.0030211480362537764,
+            "buffer:1176:524": 0.016112789526686808,
+            "buffer:1176:9": 0.016112789526686808,
+            "buffer:1264:524": 0.017119838872104734,
+            "buffer:1264:9": 0.017119838872104734,
+            "buffer:320:12": 0.0030211480362537764,
+            "buffer:1376:12": 0.005035246727089627,
+            "buffer:672:12": 0.0030211480362537764,
+            "buffer:5376:12": 0.023162134944612285,
+            "buffer:1240:524": 0.02416918429003021,
+            "buffer:1240:9": 0.02416918429003021,
+            "buffer:1168:524": 0.021148036253776436,
+            "buffer:1168:9": 0.021148036253776436,
+            "buffer:1224:524": 0.02416918429003021,
+            "buffer:1224:9": 0.02416918429003021,
+            "buffer:1232:524": 0.014098690835850957,
+            "buffer:1232:9": 0.014098690835850957,
+            "buffer:1208:524": 0.026183282980866064,
+            "buffer:1208:9": 0.026183282980866064,
+            "buffer:1352:524": 0.0010070493454179255,
+            "buffer:1352:9": 0.0010070493454179255,
+            "buffer:1192:524": 0.022155085599194362,
+            "buffer:1192:9": 0.022155085599194362,
+            "buffer:1368:524": 0.002014098690835851,
+            "buffer:1368:9": 0.002014098690835851,
+            "buffer:1296:524": 0.012084592145015106,
+            "buffer:1296:9": 0.012084592145015106,
+            "buffer:1728:12": 0.0010070493454179255,
+            "buffer:1344:524": 0.0010070493454179255,
+            "buffer:1344:9": 0.0010070493454179255,
+            "buffer:1472:524": 0.0010070493454179255,
+            "buffer:1472:9": 0.0010070493454179255
+          },
+          "staging": {
+            "enabled": false,
+            "calls": 144598,
+            "pooled": 0,
+            "pageCreates": 0,
+            "fallbacks": 144598,
+            "retainedBytes": 0
+          },
+          "gpu": {
+            "peak": 4,
+            "meanMs": 14.059243188744297,
+            "maxMs": 32.310000002384186
+          }
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 3516,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106-tour-right.png",
+            "sha256": "458300c223b1477fa86c87c3ce69421b90c94e8cfe9cbcf956c7be1e41edb3dc"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4002,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106-tour-back.png",
+            "sha256": "96bf7e0a3342ae5d7238129f9bf98da7338d3d95326fd2f1c34930305a0875a0"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 4435,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106-tour-left.png",
+            "sha256": "0b99f24dd24249bbbb9dc8c1f0192539bed1e2c090f498313e74a02790a45436"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 4712,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106-tour-room.png",
+            "sha256": "5f09711e33bd530de7809d0d61dfb04f6cece18397efd67f46d25830017207a4"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 4978,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-batch-check-20261106-tour-return.png",
+            "sha256": "a2cd77338b7984794df7657ef4ae6bf97e8944838d10a03740e9f68ac26fdbb4"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "validatedBindingEntries": 0
+    },
+    "present": {
+      "tag": "parity-submit-present-check-20261106",
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106.json",
+          "sha256": "e2365e718fa7e1f49889c2dfe5b2014045db93c2ee3d627f51dbe4f6c924558e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106.log",
+          "sha256": "de9b34dfef8501210e76536c992a7eed01295ecee8e1d56b4b7bcaefcc1099d4"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106.png",
+          "sha256": "fd61cfd44544ad5388ce56a7c30db4fd80416f7b799bb578094037e18e268034"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106-source.cjs",
+          "sha256": "75fa59746c78c93446f211032527273dfd5f90399555a6d5c4090ffd96e3f2fb"
+        }
+      ],
+      "apiCountProbe": true,
+      "gpuCompletionProbe": true,
+      "uploadValidationProbe": false,
+      "runs": [
+        {
+          "result": {
+            "frames": 984,
+            "fps": 98.4543467993922,
+            "low1": 37.498125094834855,
+            "p99": 20.79500000178814,
+            "maximum": 39.20499999821186,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 7.039080274865983,
+          "workload": {
+            "draws": 1348.6555555555556,
+            "dispatches": 160.70606060606062,
+            "bindGroupsCreated": 31.767676767676768,
+            "uniformWriteCalls": 2
+          },
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 10.099290780141844,
+            "GPUDevice.createBuffer": 55.99493414387032,
+            "GPUQueue.writeBuffer": 52.99493414387032,
+            "GPUDevice.createTexture": 0,
+            "GPUTexture.createView": 0,
+            "GPUCommandEncoder.finish": 10.099290780141844,
+            "GPUQueue.submit": 10.099290780141844,
+            "commandBuffers": 10.099290780141844,
+            "GPUCommandEncoder.copyTextureToTexture": 12.939209726443769,
+            "GPUCommandEncoder.beginRenderPass": 276.14083080040524,
+            "GPUDevice.createBindGroup": 34.74772036474164,
+            "buffer:4:12": 4,
+            "buffer:1056:12": 1,
+            "buffer:8:12": 0.49746707193515705,
+            "buffer:48:12": 1,
+            "buffer:128:12": 2,
+            "buffer:7020:12": 1,
+            "buffer:2560:12": 1,
+            "GPUCommandEncoder.beginComputePass": 160.6889564336373,
+            "buffer:10912:72": 1,
+            "buffer:65536:9": 2,
+            "buffer:262144:9": 1,
+            "buffer:65536:12": 1,
+            "buffer:104:12": 1,
+            "buffer:5568:12": 1,
+            "buffer:912:12": 3,
+            "buffer:3648:12": 1,
+            "buffer:228:12": 1,
+            "buffer:32:72": 3,
+            "buffer:2880:44": 1,
+            "buffer:49104:72": 1,
+            "buffer:44:12": 4,
+            "buffer:1760:12": 1.0141843971631206,
+            "buffer:528:12": 1,
+            "buffer:352:12": 1.0040526849037488,
+            "buffer:96:12": 1,
+            "buffer:264:12": 0.49746707193515705,
+            "buffer:7744:12": 1,
+            "buffer:176:12": 1,
+            "buffer:704:12": 1.4934143870314083,
+            "buffer:2640:12": 1,
+            "buffer:51744:12": 0.49746707193515705,
+            "buffer:1976:12": 0.49746707193515705,
+            "buffer:160:12": 0.49746707193515705,
+            "buffer:1824:12": 0.49746707193515705,
+            "buffer:1408:12": 0.47619047619047616,
+            "buffer:4896:12": 0.24417426545086118,
+            "buffer:2016:12": 1,
+            "buffer:144:12": 0.502532928064843,
+            "buffer:34848:12": 0.502532928064843,
+            "buffer:5040:12": 1,
+            "buffer:1008:12": 1,
+            "buffer:24:12": 1,
+            "buffer:2928:12": 1,
+            "buffer:12240:12": 0.24417426545086118,
+            "buffer:2448:12": 0.24417426545086118,
+            "buffer:1656:12": 0.502532928064843,
+            "buffer:5400:12": 0.23606889564336372,
+            "buffer:1512:12": 0.502532928064843,
+            "buffer:1064:524": 0.05268490374873354,
+            "buffer:1064:9": 0.05268490374873354,
+            "buffer:5240:12": 0.1580547112462006,
+            "buffer:13100:12": 0.1580547112462006,
+            "buffer:2620:12": 0.1580547112462006,
+            "buffer:5520:12": 0.15501519756838905,
+            "buffer:1048:524": 0.0729483282674772,
+            "buffer:1048:9": 0.0729483282674772,
+            "buffer:4904:12": 0.060790273556231005,
+            "buffer:12260:12": 0.060790273556231005,
+            "buffer:2452:12": 0.060790273556231005,
+            "buffer:5408:12": 0.04660587639311044,
+            "buffer:5248:12": 0.05876393110435663,
+            "buffer:13120:12": 0.05876393110435663,
+            "buffer:2624:12": 0.05876393110435663,
+            "buffer:5528:12": 0.04660587639311044,
+            "buffer:1040:524": 0.04660587639311044,
+            "buffer:1040:9": 0.04660587639311044,
+            "buffer:1056:524": 0.0800405268490375,
+            "buffer:1056:9": 0.0800405268490375,
+            "buffer:1080:524": 0.047619047619047616,
+            "buffer:1080:9": 0.047619047619047616,
+            "buffer:1072:524": 0.06382978723404255,
+            "buffer:1072:9": 0.06382978723404255,
+            "buffer:1128:524": 0.017223910840932118,
+            "buffer:1128:9": 0.017223910840932118,
+            "buffer:1160:524": 0.017223910840932118,
+            "buffer:1160:9": 0.017223910840932118,
+            "buffer:1200:524": 0.015197568389057751,
+            "buffer:1200:9": 0.015197568389057751,
+            "buffer:1192:524": 0.028368794326241134,
+            "buffer:1192:9": 0.028368794326241134,
+            "buffer:5232:12": 0.1651469098277609,
+            "buffer:13080:12": 0.1651469098277609,
+            "buffer:2616:12": 0.1651469098277609,
+            "buffer:5512:12": 0.12056737588652482,
+            "buffer:5224:12": 0.10131712259371833,
+            "buffer:13060:12": 0.10131712259371833,
+            "buffer:2612:12": 0.10131712259371833,
+            "buffer:5504:12": 0.09827760891590678,
+            "buffer:1376:524": 0.0010131712259371835,
+            "buffer:1376:9": 0.0010131712259371835,
+            "buffer:4888:12": 0.14285714285714285,
+            "buffer:12220:12": 0.14285714285714285,
+            "buffer:2444:12": 0.14285714285714285,
+            "buffer:5392:12": 0.0729483282674772,
+            "buffer:1096:524": 0.04154002026342452,
+            "buffer:1096:9": 0.04154002026342452,
+            "buffer:1184:524": 0.020263424518743668,
+            "buffer:1184:9": 0.020263424518743668,
+            "buffer:1368:524": 0.0010131712259371835,
+            "buffer:1368:9": 0.0010131712259371835,
+            "buffer:1176:524": 0.02330293819655522,
+            "buffer:1176:9": 0.02330293819655522,
+            "buffer:1384:524": 0.0010131712259371835,
+            "buffer:1384:9": 0.0010131712259371835,
+            "buffer:1104:524": 0.02634245187436677,
+            "buffer:1104:9": 0.02634245187436677,
+            "buffer:1208:524": 0.02127659574468085,
+            "buffer:1208:9": 0.02127659574468085,
+            "buffer:4880:12": 0.0547112462006079,
+            "buffer:12200:12": 0.0547112462006079,
+            "buffer:2440:12": 0.0547112462006079,
+            "buffer:5384:12": 0.12360688956433637,
+            "buffer:1320:524": 0.0010131712259371835,
+            "buffer:1320:9": 0.0010131712259371835,
+            "buffer:1232:524": 0.0243161094224924,
+            "buffer:1232:9": 0.0243161094224924,
+            "buffer:1304:524": 0.011144883485309016,
+            "buffer:1304:9": 0.011144883485309016,
+            "buffer:1216:524": 0.025329280648429583,
+            "buffer:1216:9": 0.025329280648429583,
+            "buffer:1272:524": 0.010131712259371834,
+            "buffer:1272:9": 0.010131712259371834,
+            "buffer:1264:524": 0.022289766970618033,
+            "buffer:1264:9": 0.022289766970618033,
+            "buffer:1224:524": 0.019250253292806486,
+            "buffer:1224:9": 0.019250253292806486,
+            "buffer:1240:524": 0.015197568389057751,
+            "buffer:1240:9": 0.015197568389057751,
+            "buffer:1256:524": 0.022289766970618033,
+            "buffer:1256:9": 0.022289766970618033,
+            "buffer:1312:524": 0.0060790273556231,
+            "buffer:1312:9": 0.0060790273556231,
+            "buffer:1088:524": 0.04660587639311044,
+            "buffer:1088:9": 0.04660587639311044,
+            "buffer:1296:524": 0.005065856129685917,
+            "buffer:1296:9": 0.005065856129685917,
+            "buffer:1112:524": 0.03850050658561297,
+            "buffer:1112:9": 0.03850050658561297,
+            "buffer:1248:524": 0.013171225937183385,
+            "buffer:1248:9": 0.013171225937183385,
+            "buffer:1280:524": 0.011144883485309016,
+            "buffer:1280:9": 0.011144883485309016,
+            "buffer:1328:524": 0.0010131712259371835,
+            "buffer:1328:9": 0.0010131712259371835,
+            "buffer:1120:524": 0.02127659574468085,
+            "buffer:1120:9": 0.02127659574468085,
+            "buffer:5496:12": 0.07700101317122594,
+            "buffer:1152:524": 0.031408308004052685,
+            "buffer:1152:9": 0.031408308004052685,
+            "buffer:1136:524": 0.02330293819655522,
+            "buffer:1136:9": 0.02330293819655522,
+            "buffer:1288:524": 0.0060790273556231,
+            "buffer:1288:9": 0.0060790273556231,
+            "buffer:1168:524": 0.03546099290780142,
+            "buffer:1168:9": 0.03546099290780142,
+            "buffer:5376:12": 0.02330293819655522,
+            "buffer:1144:524": 0.029381965552178316,
+            "buffer:1144:9": 0.029381965552178316,
+            "buffer:5216:12": 0.014184397163120567,
+            "buffer:13040:12": 0.014184397163120567,
+            "buffer:2608:12": 0.014184397163120567,
+            "buffer:1336:524": 0.002026342451874367,
+            "buffer:1336:9": 0.002026342451874367,
+            "buffer:320:12": 0.00303951367781155,
+            "buffer:672:12": 0.00303951367781155,
+            "buffer:1376:12": 0.0060790273556231,
+            "buffer:1536:524": 0.0010131712259371835,
+            "buffer:1536:9": 0.0010131712259371835
+          },
+          "staging": {
+            "enabled": false,
+            "calls": 144626,
+            "pooled": 0,
+            "pageCreates": 0,
+            "fallbacks": 144626,
+            "retainedBytes": 0
+          },
+          "gpu": {
+            "peak": 4,
+            "meanMs": 14.076228426601077,
+            "maxMs": 33.5
+          }
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 3522,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106-tour-right.png",
+            "sha256": "a74e747d78050dc23b411ff0afb5a8419dd324ba6f6c1627021e1269e96d182c"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4006,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106-tour-back.png",
+            "sha256": "8121d606054b24a825fb0662bb2e0509b527a15bf33dc474761c517b168f867f"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 4435,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106-tour-left.png",
+            "sha256": "94b43aff3c341419eb22978340c5982939c716d9a994bfcff29a447c68fc240d"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 4707,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106-tour-room.png",
+            "sha256": "7ef9c2f274a055078d084141a80c748bd1862cf0fa56acca9ba9442e6f9416a4"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 4973,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-present-check-20261106-tour-return.png",
+            "sha256": "75e5c00d17c29bfb89178b3a659e5c8bc43de7f59900e57661c79275c049a7be"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "validatedBindingEntries": 0
+    },
+    "uniform": {
+      "tag": "parity-submit-uniform-check-20261106",
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106.json",
+          "sha256": "59d2030f0f34d2d345a4add93876d7665fb539e7e7b4984da015f1caa23ea095"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106.log",
+          "sha256": "9c2f5b7d0de50dd5f5ba02c28d351f1594657f25496b51d3237f3945dc4e6e07"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106.png",
+          "sha256": "c3ca0ec59f38edb5e7ed08c62503334dd6f0fd6bf4a10ded40d608e5116b70aa"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106-source.cjs",
+          "sha256": "f0774daa084dbb3b66689f220ae4c6e3e54adb8d82d521922436a5e6e36d9c53"
+        }
+      ],
+      "apiCountProbe": true,
+      "gpuCompletionProbe": false,
+      "uploadValidationProbe": false,
+      "runs": [
+        {
+          "result": {
+            "frames": 1511,
+            "fps": 100.70533724961595,
+            "low1": 40.099748123936315,
+            "p99": 20.86999999731779,
+            "maximum": 45.25500000268221,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 6.874556421602844,
+          "workload": {
+            "draws": 1349.4926666666668,
+            "dispatches": 160.75,
+            "bindGroupsCreated": 24.922,
+            "uniformWriteCalls": 2
+          },
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 11.069444444444445,
+            "GPUDevice.createBuffer": 53.99867724867725,
+            "GPUQueue.writeBuffer": 50.99867724867725,
+            "GPUDevice.createTexture": 0,
+            "GPUTexture.createView": 0,
+            "GPUCommandEncoder.finish": 11.069444444444445,
+            "GPUQueue.submit": 11.069444444444445,
+            "commandBuffers": 11.069444444444445,
+            "GPUCommandEncoder.copyTextureToTexture": 12.984126984126984,
+            "GPUCommandEncoder.beginRenderPass": 276.23809523809524,
+            "GPUDevice.createBindGroup": 27.922619047619047,
+            "GPUCommandEncoder.beginComputePass": 160.75066137566137
+          },
+          "staging": null,
+          "gpu": null
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 4012,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106-tour-right.png",
+            "sha256": "6733e3278d38d8556dc8b784b7d60c52e64253ce7c69e95dcd3a64eb544a1fb0"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4429,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106-tour-back.png",
+            "sha256": "6459a935094af6124cb715b8de6e2659502b45e51f049c2c75cf62afd4362042"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 4793,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106-tour-left.png",
+            "sha256": "15123f28c15cc9afbc1e4b8f92b1feac8e2fe665a960b0d725ecb32b34c64cae"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 5013,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106-tour-room.png",
+            "sha256": "34382675959a9ffd113637bee1cf55b5110218fd32bd70bab0d118cbc3717577"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 5219,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-uniform-check-20261106-tour-return.png",
+            "sha256": "6f9e218e316d30017b0fdc4faa444a24001abd0e3c4a3cd0b63bf2cf77c9a2a2"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "validatedBindingEntries": 5591466
+    }
+  },
+  "upload": {
+    "pages": {
+      "aggregate": {
+        "frames": 9090,
+        "fps": 100.97706698611437,
+        "low1": 41.62997358131885,
+        "p99": 19.639999993145466,
+        "maximum": 44.28000000119209,
+        "over33": 5,
+        "over50": 0
+      },
+      "captures": [
+        {
+          "tag": "parity-upload-pages-normal-1-20261106",
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-1-20261106.json",
+              "sha256": "cdd434052073d1c056499ade3c6c0fbccbe3695695b238390a5fdf8b4eedbc54"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-1-20261106.log",
+              "sha256": "799419b52a7dd5405b6ea4dea7bf9f49fe51e588de116311ed356211a029b2e7"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-1-20261106.png",
+              "sha256": "c48ac66a0585437ec7bfa1fbc4aeac3a3fa90305f1e1c69143a1892445f076b6"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-1-20261106-source.cjs",
+              "sha256": "75fa59746c78c93446f211032527273dfd5f90399555a6d5c4090ffd96e3f2fb"
+            }
+          ],
+          "apiCountProbe": false,
+          "gpuCompletionProbe": false,
+          "uploadValidationProbe": false,
+          "runs": [
+            {
+              "result": {
+                "frames": 4549,
+                "fps": 101.05793147587141,
+                "low1": 41.10023543191822,
+                "p99": 19.649999998509884,
+                "maximum": 40.225000001490116,
+                "over33": 4,
+                "over50": 0
+              },
+              "rhiMs": 6.829071673718127,
+              "workload": {
+                "draws": 1350.0311258278145,
+                "dispatches": 160.80794701986756,
+                "bindGroupsCreated": 31.772847682119206,
+                "uniformWriteCalls": 2
+              },
+              "apiPerFrame": null,
+              "staging": {
+                "enabled": true,
+                "calls": 305248,
+                "pooled": 305243,
+                "pageCreates": 4,
+                "fallbacks": 5,
+                "retainedBytes": 4194304,
+                "batchWrites": false,
+                "writeBatches": 0
+              },
+              "gpu": null
+            }
+          ],
+          "validatedBindingEntries": 0
+        },
+        {
+          "tag": "parity-upload-pages-normal-2-20261106",
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-2-20261106.json",
+              "sha256": "d1fdd6eb3e6387a896997360ff232d9dd76be2685d4cdaf085a0bd1d8a98de46"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-2-20261106.log",
+              "sha256": "e8d40e03b745cf87e774da9b47e5cdccc5716a9456e6c1d356aae126ec85b572"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-2-20261106.png",
+              "sha256": "591ec3007d4eacc7da2b224143f1260f5a0d8ef36ee897d4edf6b75089b20188"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-pages-normal-2-20261106-source.cjs",
+              "sha256": "75fa59746c78c93446f211032527273dfd5f90399555a6d5c4090ffd96e3f2fb"
+            }
+          ],
+          "apiCountProbe": false,
+          "gpuCompletionProbe": false,
+          "uploadValidationProbe": false,
+          "runs": [
+            {
+              "result": {
+                "frames": 4541,
+                "fps": 100.8961896857227,
+                "low1": 42.35278953131571,
+                "p99": 19.405000001192093,
+                "maximum": 44.28000000119209,
+                "over33": 1,
+                "over50": 0
+              },
+              "rhiMs": 6.81924295026476,
+              "workload": {
+                "draws": 1349.1519736842106,
+                "dispatches": 160.69561403508771,
+                "bindGroupsCreated": 31.67609649122807,
+                "uniformWriteCalls": 2
+              },
+              "apiPerFrame": null,
+              "staging": {
+                "enabled": true,
+                "calls": 305268,
+                "pooled": 305263,
+                "pageCreates": 4,
+                "fallbacks": 5,
+                "retainedBytes": 4194304,
+                "batchWrites": false,
+                "writeBatches": 0
+              },
+              "gpu": null
+            }
+          ],
+          "validatedBindingEntries": 0
+        }
+      ]
+    },
+    "batch": {
+      "aggregate": {
+        "frames": 9098,
+        "fps": 101.10570052009605,
+        "low1": 41.322126409502694,
+        "p99": 19.535000003874302,
+        "maximum": 42.82000000029802,
+        "over33": 5,
+        "over50": 0
+      },
+      "captures": [
+        {
+          "tag": "parity-upload-batch-normal-20261106",
+          "files": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-normal-20261106.json",
+              "sha256": "d89c60dc853b1e8a0ced0d2fc8ee6487a108ac87baff2cdfb6b578ef7753bd6d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-normal-20261106.log",
+              "sha256": "9ed19841b1bdf952152f917546c607b7356e97c7a5eb16b1f04700d35d1b0544"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-normal-20261106.png",
+              "sha256": "facdb132892b3e60565fbb3177501d300c0e24528d3bce1f592e785295764de1"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-normal-20261106-source.cjs",
+              "sha256": "75fa59746c78c93446f211032527273dfd5f90399555a6d5c4090ffd96e3f2fb"
+            }
+          ],
+          "apiCountProbe": false,
+          "gpuCompletionProbe": false,
+          "uploadValidationProbe": false,
+          "runs": [
+            {
+              "result": {
+                "frames": 4551,
+                "fps": 101.13374910541835,
+                "low1": 41.45432589487468,
+                "p99": 19.54500000178814,
+                "maximum": 42.82000000029802,
+                "over33": 2,
+                "over50": 0
+              },
+              "rhiMs": 6.795082444256345,
+              "workload": {
+                "draws": 1350.4532894736842,
+                "dispatches": 160.83530701754387,
+                "bindGroupsCreated": 31.65219298245614,
+                "uniformWriteCalls": 2
+              },
+              "apiPerFrame": null,
+              "staging": {
+                "enabled": true,
+                "calls": 306618,
+                "pooled": 306611,
+                "pageCreates": 4,
+                "fallbacks": 7,
+                "retainedBytes": 4194304,
+                "batchWrites": true,
+                "writeBatches": 7392
+              },
+              "gpu": null
+            },
+            {
+              "result": {
+                "frames": 4547,
+                "fps": 101.07764283469372,
+                "low1": 41.38197814828334,
+                "p99": 19.104999996721745,
+                "maximum": 41.985000006854534,
+                "over33": 3,
+                "over50": 0
+              },
+              "rhiMs": 6.804198629518507,
+              "workload": {
+                "draws": 1349.512582781457,
+                "dispatches": 160.7412803532009,
+                "bindGroupsCreated": 31.59867549668874,
+                "uniformWriteCalls": 2
+              },
+              "apiPerFrame": null,
+              "staging": {
+                "enabled": true,
+                "calls": 536106,
+                "pooled": 536099,
+                "pageCreates": 4,
+                "fallbacks": 7,
+                "retainedBytes": 4194304,
+                "batchWrites": true,
+                "writeBatches": 12993
+              },
+              "gpu": null
+            }
+          ],
+          "validatedBindingEntries": 0
+        }
+      ]
+    },
+    "check": {
+      "tag": "parity-upload-batch-check-20261106",
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106.json",
+          "sha256": "87f2884f2245efba734b4bf5c0df3e16a1dc79a8321168c6d42e92d0246a8dea"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106.log",
+          "sha256": "4d274c6a782ef904904ea92d179d5dce22b6737fc69e3dda62ff6cdfc8640fde"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106.png",
+          "sha256": "5cd3ef662b77243ea8a33ed221bba29812559e004270f6faa0084620cb591e1f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106-source.cjs",
+          "sha256": "75fa59746c78c93446f211032527273dfd5f90399555a6d5c4090ffd96e3f2fb"
+        }
+      ],
+      "apiCountProbe": true,
+      "gpuCompletionProbe": false,
+      "uploadValidationProbe": true,
+      "runs": [
+        {
+          "result": {
+            "frames": 1507,
+            "fps": 100.45461211323303,
+            "low1": 42.86498868089548,
+            "p99": 19.660000003874302,
+            "maximum": 27.875,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.875679192953552,
+          "workload": {
+            "draws": 1349.708,
+            "dispatches": 160.74866666666668,
+            "bindGroupsCreated": 31.72,
+            "uniformWriteCalls": 2
+          },
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 11.132450331125828,
+            "GPUDevice.createBuffer": 11,
+            "GPUQueue.writeBuffer": 9.133774834437085,
+            "GPUDevice.createTexture": 0,
+            "GPUTexture.createView": 0,
+            "GPUCommandEncoder.finish": 11.133112582781457,
+            "GPUQueue.submit": 11.133112582781457,
+            "commandBuffers": 11.133112582781457,
+            "GPUCommandEncoder.copyTextureToTexture": 12.9841059602649,
+            "GPUCommandEncoder.beginRenderPass": 276.23708609271523,
+            "GPUDevice.createBindGroup": 34.72119205298013,
+            "GPUCommandEncoder.beginComputePass": 160.7496688741722,
+            "buffer:10912:72": 1,
+            "buffer:65536:9": 2,
+            "buffer:262144:9": 1,
+            "buffer:32:72": 3,
+            "buffer:2880:44": 1,
+            "buffer:49104:72": 1,
+            "buffer:1056:524": 0.052980132450331126,
+            "buffer:1056:9": 0.052980132450331126,
+            "buffer:1048:524": 0.03443708609271523,
+            "buffer:1048:9": 0.03443708609271523,
+            "buffer:1040:524": 0.024503311258278145,
+            "buffer:1040:9": 0.024503311258278145,
+            "buffer:1080:524": 0.0423841059602649,
+            "buffer:1080:9": 0.0423841059602649,
+            "buffer:1072:524": 0.04966887417218543,
+            "buffer:1072:9": 0.04966887417218543,
+            "buffer:1064:524": 0.05562913907284768,
+            "buffer:1064:9": 0.05562913907284768,
+            "buffer:1112:524": 0.0456953642384106,
+            "buffer:1112:9": 0.0456953642384106,
+            "buffer:1128:524": 0.035099337748344374,
+            "buffer:1128:9": 0.035099337748344374,
+            "buffer:1408:524": 0.001986754966887417,
+            "buffer:1408:9": 0.001986754966887417,
+            "buffer:1208:524": 0.018543046357615896,
+            "buffer:1208:9": 0.018543046357615896,
+            "buffer:1400:524": 0.0006622516556291391,
+            "buffer:1400:9": 0.0006622516556291391,
+            "buffer:1192:524": 0.02384105960264901,
+            "buffer:1192:9": 0.02384105960264901,
+            "buffer:1184:524": 0.026490066225165563,
+            "buffer:1184:9": 0.026490066225165563,
+            "buffer:1368:524": 0.0013245033112582781,
+            "buffer:1368:9": 0.0013245033112582781,
+            "buffer:1088:524": 0.04900662251655629,
+            "buffer:1088:9": 0.04900662251655629,
+            "buffer:1168:524": 0.035099337748344374,
+            "buffer:1168:9": 0.035099337748344374,
+            "buffer:1336:524": 0.005298013245033113,
+            "buffer:1336:9": 0.005298013245033113,
+            "buffer:1096:524": 0.04768211920529802,
+            "buffer:1096:9": 0.04768211920529802,
+            "buffer:1120:524": 0.05099337748344371,
+            "buffer:1120:9": 0.05099337748344371,
+            "buffer:1360:524": 0.001986754966887417,
+            "buffer:1360:9": 0.001986754966887417,
+            "buffer:1312:524": 0.004635761589403974,
+            "buffer:1312:9": 0.004635761589403974,
+            "buffer:1176:524": 0.03245033112582781,
+            "buffer:1176:9": 0.03245033112582781,
+            "buffer:1304:524": 0.0033112582781456954,
+            "buffer:1304:9": 0.0033112582781456954,
+            "buffer:1296:524": 0.008609271523178808,
+            "buffer:1296:9": 0.008609271523178808,
+            "buffer:1288:524": 0.005298013245033113,
+            "buffer:1288:9": 0.005298013245033113,
+            "buffer:1224:524": 0.015231788079470199,
+            "buffer:1224:9": 0.015231788079470199,
+            "buffer:1144:524": 0.02781456953642384,
+            "buffer:1144:9": 0.02781456953642384,
+            "buffer:1416:524": 0.001986754966887417,
+            "buffer:1416:9": 0.001986754966887417,
+            "buffer:1344:524": 0.0033112582781456954,
+            "buffer:1344:9": 0.0033112582781456954,
+            "buffer:1376:524": 0.001986754966887417,
+            "buffer:1376:9": 0.001986754966887417,
+            "buffer:1104:524": 0.048344370860927154,
+            "buffer:1104:9": 0.048344370860927154,
+            "buffer:1392:524": 0.0013245033112582781,
+            "buffer:1392:9": 0.0013245033112582781,
+            "buffer:1328:524": 0.0033112582781456954,
+            "buffer:1328:9": 0.0033112582781456954,
+            "buffer:1136:524": 0.03642384105960265,
+            "buffer:1136:9": 0.03642384105960265,
+            "buffer:1264:524": 0.009933774834437087,
+            "buffer:1264:9": 0.009933774834437087,
+            "buffer:1272:524": 0.005298013245033113,
+            "buffer:1272:9": 0.005298013245033113,
+            "buffer:1248:524": 0.010596026490066225,
+            "buffer:1248:9": 0.010596026490066225,
+            "buffer:1232:524": 0.011258278145695364,
+            "buffer:1232:9": 0.011258278145695364,
+            "buffer:1240:524": 0.011258278145695364,
+            "buffer:1240:9": 0.011258278145695364,
+            "buffer:1216:524": 0.019205298013245033,
+            "buffer:1216:9": 0.019205298013245033,
+            "buffer:1200:524": 0.02185430463576159,
+            "buffer:1200:9": 0.02185430463576159,
+            "buffer:1160:524": 0.039735099337748346,
+            "buffer:1160:9": 0.039735099337748346,
+            "buffer:1152:524": 0.045033112582781455,
+            "buffer:1152:9": 0.045033112582781455,
+            "buffer:1280:524": 0.00728476821192053,
+            "buffer:1280:9": 0.00728476821192053,
+            "buffer:1256:524": 0.013245033112582781,
+            "buffer:1256:9": 0.013245033112582781,
+            "buffer:1352:524": 0.0026490066225165563,
+            "buffer:1352:9": 0.0026490066225165563,
+            "buffer:1320:524": 0.0026490066225165563,
+            "buffer:1320:9": 0.0026490066225165563,
+            "buffer:1384:524": 0.001986754966887417,
+            "buffer:1384:9": 0.001986754966887417,
+            "buffer:1432:524": 0.0006622516556291391,
+            "buffer:1432:9": 0.0006622516556291391
+          },
+          "staging": {
+            "enabled": true,
+            "calls": 168862,
+            "pooled": 168858,
+            "pageCreates": 4,
+            "fallbacks": 4,
+            "retainedBytes": 4194304,
+            "batchWrites": true,
+            "writeBatches": 4206
+          },
+          "gpu": null
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 4075,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106-tour-right.png",
+            "sha256": "fcd7415711f0089436e603fc5ce2b4675a36061754924ea457508624679ca303"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4561,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106-tour-back.png",
+            "sha256": "36a7a957213ffa3ba08dec9a6a5d0ab293163b6c6d6a278749080a4d6597f853"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 4988,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106-tour-left.png",
+            "sha256": "cfcc3895131cef1735956b2c034f5018f5cb20ac98ffdf907a5465270cc5ae14"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 5267,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106-tour-room.png",
+            "sha256": "434a0885c908b9dfd57cfddb44f4725cc1fe5abf5c8428db847bd38713d6fabd"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 5545,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-batch-check-20261106-tour-return.png",
+            "sha256": "de301e2d80a26c90d286e5fcc7008dd484983a6ce0d3b304cac521bce0ed5a2c"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "uploadValidation": {
+        "requested": 1024,
+        "captured": 1024,
+        "completed": 1024,
+        "bytes": 4292208,
+        "nonzeroOffsets": 1002,
+        "errors": []
+      },
+      "validatedBindingEntries": 0
+    }
+  },
+  "desktop": {
+    "tag": "parity-native-submit-sm5-repeat-20261106",
+    "stats": {
+      "frames": 9000,
+      "fps": 233.50509258780613,
+      "low1": 183.0263033201378,
+      "p99": 5.2718,
+      "maximum": 6.341,
+      "over33": 0,
+      "over50": 0
+    },
+    "arguments": [
+      "-d3d12",
+      "-windowed",
+      "-ResX=1280",
+      "-ResY=720",
+      "-ForceRes",
+      "-unattended",
+      "-nosplash",
+      "-nosound",
+      "-NoThrottleCPU",
+      "-traceautostart=0",
+      "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000,r.Shadow.CSMCaching 1\"",
+      "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+      "-csvCaptureFrames=12030",
+      "-csvCompression=0",
+      "-csvGpuStats",
+      "-ExitAfterCsvProfiling",
+      "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-submit-sm5-repeat-20261106.log\"",
+      "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.Shadow.CSMCaching,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.FinishCurrentFrame,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-submit-sm5-repeat-20261106.png -nosuffix\"",
+      "-sm5",
+      "-ini:Engine:[SystemSettings]:r.RayTracing=0"
+    ],
+    "shaderPlatform": "PCD3D_SM5",
+    "workload": {
+      "RHI/DrawCalls": 1190.3307777777777,
+      "RHIThreadTime": 1.890423922222229,
+      "GPUTime": 3.4442372999999855,
+      "DrawCall/ShadowDepths": 603.277
+    },
+    "exitCode": 777003,
+    "cleanExit": false,
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-sm5-repeat-20261106.csv",
+        "sha256": "9e85de88b3b7db864dfb4984298eb13d9d9ddf163c47a12cd9094bbca7fc4a43"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-sm5-repeat-20261106.log",
+        "sha256": "b9f3bd33b1286ccd51e8582c219fca43f6e82811573957750031a0330fde8d57"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-sm5-repeat-20261106.png",
+        "sha256": "1cd7434207c3133019de4e022f813634eddbd97fbbb05de49e99859cd6ff2093"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-sm5-repeat-20261106-launch.json",
+        "sha256": "2903804f0d9b5e190f71b3ae3f70c5b59eda4dbd1271f145c049f1d563030638"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-sm5-repeat-20261106-complete.json",
+        "sha256": "4f863040efa721158acae7d69d51e618217e86144b4e041a19abdde4add057ee"
+      }
+    ]
+  },
+  "desktopSM6": {
+    "tag": "parity-native-submit-repeat-20261106",
+    "stats": {
+      "frames": 9000,
+      "fps": 221.42225532359257,
+      "low1": 165.7474130972501,
+      "p99": 5.7424,
+      "maximum": 6.9878,
+      "over33": 0,
+      "over50": 0
+    },
+    "arguments": [
+      "-d3d12",
+      "-windowed",
+      "-ResX=1280",
+      "-ResY=720",
+      "-ForceRes",
+      "-unattended",
+      "-nosplash",
+      "-nosound",
+      "-NoThrottleCPU",
+      "-traceautostart=0",
+      "-ExecCmds=\"t.MaxFPS 0,r.VSync 0,r.DynamicRes.OperationMode 0,r.ScreenPercentage 100,r.AntiAliasingMethod 4,r.DynamicGlobalIlluminationMethod 0,r.ReflectionMethod 0,r.MotionBlurQuality 4,r.OneFrameThreadLag 1,r.Streaming.PoolSize 1000,r.Shadow.CSMCaching 1\"",
+      "-ini:Engine:[/Script/Engine.Engine]:bSmoothFrameRate=False",
+      "-csvCaptureFrames=12030",
+      "-csvCompression=0",
+      "-csvGpuStats",
+      "-ExitAfterCsvProfiling",
+      "-abslog=\"G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-submit-repeat-20261106.log\"",
+      "-csvExecCmds=\"2300:LogLoc,2300:r.ScreenPercentage,2300:r.AntiAliasingMethod,2300:r.ShadowQuality,2300:r.Shadow.CSMCaching,2300:r.MotionBlurQuality,2300:r.DynamicGlobalIlluminationMethod,2300:r.ReflectionMethod,2300:r.VSync,2300:t.MaxFPS,2300:r.OneFrameThreadLag,2300:r.FinishCurrentFrame,2300:r.TranslucencyLightingVolume,2300:r.RayTracing,2350:shot filename=G:/UE_HTML/ue_html/tests/web-platform/results/parity-native-submit-repeat-20261106.png -nosuffix\""
+    ],
+    "shaderPlatform": "PCD3D_SM6",
+    "workload": {
+      "RHI/DrawCalls": 1190.3492222222221,
+      "RHIThreadTime": 1.8575352666666658,
+      "GPUTime": 3.496826788888888,
+      "DrawCall/ShadowDepths": 595.893
+    },
+    "exitCode": 777003,
+    "cleanExit": false,
+    "raw": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-repeat-20261106.csv",
+        "sha256": "2d93d63481a34dfe7c0934de8c6c5ae448f73bdd8bfe579bd2d0f11b2c75d366"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-repeat-20261106.log",
+        "sha256": "6729b7620dde0f0187ea7ee6f0e31a27d5a4eee3b374d0b24fb96deb1677ea86"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-repeat-20261106.png",
+        "sha256": "448bdec258ffe53f410bbceeb8730cfbdb853db1f5369eab2052cc7296fe5a66"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-repeat-20261106-launch.json",
+        "sha256": "2cbc162b2424f0cafed6c2f79ea6d2d07d99f93fb52d0e40c6ebd0413701215e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-native-submit-repeat-20261106-complete.json",
+        "sha256": "e85e73297cf08d6a8f26897d512ddd342fb55a9c8831bff4e22204daf99115de"
+      }
+    ]
+  },
+  "packages": [
+    {
+      "folder": "villa-submit-control-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-submit-control-20261106\\asset-versions.json",
+        "sha256": "3863a82d738cc96a7f4dfb6c56dec960640ffbad4052af4ebfa1e4f7c73acae4"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "bd456da9f678c1c776e2bb0b3fc495afb07f5b1ad6e332e81837044b1a7446ac",
+          "size": 663823,
+          "mtimeMs": 1793933984402.502
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "37bc61d39590a3c19fc640f4311b5ee88d9e1a586fe7342a13d064802e68d5df",
+          "size": 93278,
+          "mtimeMs": 1793933984404.5774
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "19e7f4ece38b3d178ae55b545ff516a2d933189e8fa8ec75bafeff22b575bdf5",
+          "size": 424795,
+          "mtimeMs": 1793933935247.2551
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "53778e58b7e0102445be66c7c638d10b2f58a8f767dc9aae26736caee34e1b9b",
+          "size": 182552866,
+          "mtimeMs": 1793933933967.0928
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    },
+    {
+      "folder": "villa-submit-batch-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-submit-batch-20261106\\asset-versions.json",
+        "sha256": "092c1e06578971dc50564f35bb9014e22a837e514f658bbf38aeb66b2124ebf4"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "dbf35d6a193e8e98c3c9578c12e58e167238d6ec700b1c848c0c8b517fdbc2e6",
+          "size": 663863,
+          "mtimeMs": 1793933988423.1802
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "37bc61d39590a3c19fc640f4311b5ee88d9e1a586fe7342a13d064802e68d5df",
+          "size": 93278,
+          "mtimeMs": 1793933988424.4404
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "19e7f4ece38b3d178ae55b545ff516a2d933189e8fa8ec75bafeff22b575bdf5",
+          "size": 424795,
+          "mtimeMs": 1793933935247.2551
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "53778e58b7e0102445be66c7c638d10b2f58a8f767dc9aae26736caee34e1b9b",
+          "size": 182552866,
+          "mtimeMs": 1793933933967.0928
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    },
+    {
+      "folder": "villa-submit-present-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-submit-present-20261106\\asset-versions.json",
+        "sha256": "5bb6fadcb15e1e9747f6c275879350c934173bfb9fc0249fb236b0810f863d02"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "9c763e2fde6090777d49aeb844aab69158ec7d602e957656bcbc6d03e18304e4",
+          "size": 663867,
+          "mtimeMs": 1793933992407.0808
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "37bc61d39590a3c19fc640f4311b5ee88d9e1a586fe7342a13d064802e68d5df",
+          "size": 93278,
+          "mtimeMs": 1793933992409.08
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "19e7f4ece38b3d178ae55b545ff516a2d933189e8fa8ec75bafeff22b575bdf5",
+          "size": 424795,
+          "mtimeMs": 1793933935247.2551
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "53778e58b7e0102445be66c7c638d10b2f58a8f767dc9aae26736caee34e1b9b",
+          "size": 182552866,
+          "mtimeMs": 1793933933967.0928
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    },
+    {
+      "folder": "villa-submit-uniform-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-submit-uniform-20261106\\asset-versions.json",
+        "sha256": "e23d5f1dd341d3b228cde9fa8079a94043077c2b6a3c50ba379eec3c2bfcdbc4"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "25cdd9d89f540f6394e9af1fcbfb5c8f90f18c575439020da1b29f0872b39720",
+          "size": 663867,
+          "mtimeMs": 1793933996399.7808
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "37bc61d39590a3c19fc640f4311b5ee88d9e1a586fe7342a13d064802e68d5df",
+          "size": 93278,
+          "mtimeMs": 1793933996401.7805
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "19e7f4ece38b3d178ae55b545ff516a2d933189e8fa8ec75bafeff22b575bdf5",
+          "size": 424795,
+          "mtimeMs": 1793933935247.2551
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "53778e58b7e0102445be66c7c638d10b2f58a8f767dc9aae26736caee34e1b9b",
+          "size": 182552866,
+          "mtimeMs": 1793933933967.0928
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    }
+  ],
+  "uploadPackages": [
+    {
+      "folder": "villa-upload-pages-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-upload-pages-20261106\\asset-versions.json",
+        "sha256": "e2d3a14bd70e4a3354159927fc7dd501b6c8c682a4e908b29bd76daba3b4d60b"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "5cea3e56fcf5e2cc5b4d542bcd6bdcc72c8f2e97f7ab8a32215af80f7c6a8e99",
+          "size": 663863,
+          "mtimeMs": 1793935069727.9094
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "d3ee637f43aba829c25079fbf903f73d6ae971548c563ec48a2cb8d58611c065",
+          "size": 93278,
+          "mtimeMs": 1793935069729.9102
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+          "size": 424854,
+          "mtimeMs": 1793935031504.3098
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "1e016bde9c2f11d470d9bc937b821dbff80908e3f04f5a92848eff3df47b83b9",
+          "size": 182554729,
+          "mtimeMs": 1793935030271.9429
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    },
+    {
+      "folder": "villa-upload-batch-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-upload-batch-20261106\\asset-versions.json",
+        "sha256": "c449205be4976a9afae9f5781ed8c28f842d19ce5cfe71343545548bf775f63e"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "1fb2c5219d60cebb1e7b3595af90cdb1a08678c4c4505a87d18003642b7026c2",
+          "size": 663863,
+          "mtimeMs": 1793935073718.9355
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "d3ee637f43aba829c25079fbf903f73d6ae971548c563ec48a2cb8d58611c065",
+          "size": 93278,
+          "mtimeMs": 1793935073720.9875
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+          "size": 424854,
+          "mtimeMs": 1793935031504.3098
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "1e016bde9c2f11d470d9bc937b821dbff80908e3f04f5a92848eff3df47b83b9",
+          "size": 182554729,
+          "mtimeMs": 1793935030271.9429
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    }
+  ],
+  "guard": {
+    "check": {
+      "tag": "parity-upload-guard-check-20261106",
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106.json",
+          "sha256": "1ecb031492c22aa695fda4b35706e2576978a6259b9fa603c3c86823c95c8446"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106.log",
+          "sha256": "b91de89f301133a0308a6e08333d7a0dd863634064d40b678e516401243c46af"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106.png",
+          "sha256": "8578ca495d3c2862df3dbecbc6fa997fdd7352b77549a59424a6f9c4294ed934"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106-source.cjs",
+          "sha256": "7478cc2b3b0fcb59afae5cce9d20347a75cd546ee269f0bf323bbeac7bd145ac"
+        }
+      ],
+      "apiCountProbe": true,
+      "gpuCompletionProbe": false,
+      "uploadValidationProbe": true,
+      "runs": [
+        {
+          "result": {
+            "frames": 996,
+            "fps": 99.47635089583943,
+            "low1": 42.21190375579737,
+            "p99": 20.375,
+            "maximum": 27.729999996721745,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.938311669442269,
+          "workload": {
+            "draws": 1349.959595959596,
+            "dispatches": 160.81010101010102,
+            "bindGroupsCreated": 31.82323232323232,
+            "uniformWriteCalls": 2
+          },
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 11.176176176176176,
+            "GPUDevice.createBuffer": 11,
+            "GPUQueue.writeBuffer": 9.176176176176176,
+            "GPUDevice.createTexture": 0,
+            "GPUTexture.createView": 0,
+            "GPUCommandEncoder.finish": 11.176176176176176,
+            "GPUQueue.submit": 11.176176176176176,
+            "commandBuffers": 11.176176176176176,
+            "GPUCommandEncoder.copyTextureToTexture": 13.012012012012011,
+            "GPUCommandEncoder.beginRenderPass": 276.3013013013013,
+            "GPUDevice.createBindGroup": 34.810810810810814,
+            "GPUCommandEncoder.beginComputePass": 160.79179179179178,
+            "buffer:10912:72": 1,
+            "buffer:65536:9": 2,
+            "buffer:262144:9": 1,
+            "buffer:32:72": 3,
+            "buffer:2880:44": 1,
+            "buffer:49104:72": 1,
+            "buffer:1056:524": 0.06006006006006006,
+            "buffer:1056:9": 0.06006006006006006,
+            "buffer:1064:524": 0.05805805805805806,
+            "buffer:1064:9": 0.05805805805805806,
+            "buffer:1040:524": 0.026026026026026026,
+            "buffer:1040:9": 0.026026026026026026,
+            "buffer:1048:524": 0.06606606606606606,
+            "buffer:1048:9": 0.06606606606606606,
+            "buffer:1112:524": 0.03303303303303303,
+            "buffer:1112:9": 0.03303303303303303,
+            "buffer:1136:524": 0.04604604604604605,
+            "buffer:1136:9": 0.04604604604604605,
+            "buffer:1088:524": 0.043043043043043044,
+            "buffer:1088:9": 0.043043043043043044,
+            "buffer:1144:524": 0.03203203203203203,
+            "buffer:1144:9": 0.03203203203203203,
+            "buffer:1168:524": 0.03903903903903904,
+            "buffer:1168:9": 0.03903903903903904,
+            "buffer:1352:524": 0.001001001001001001,
+            "buffer:1352:9": 0.001001001001001001,
+            "buffer:1192:524": 0.013013013013013013,
+            "buffer:1192:9": 0.013013013013013013,
+            "buffer:1320:524": 0.004004004004004004,
+            "buffer:1320:9": 0.004004004004004004,
+            "buffer:1072:524": 0.056056056056056056,
+            "buffer:1072:9": 0.056056056056056056,
+            "buffer:1256:524": 0.009009009009009009,
+            "buffer:1256:9": 0.009009009009009009,
+            "buffer:1328:524": 0.001001001001001001,
+            "buffer:1328:9": 0.001001001001001001,
+            "buffer:1096:524": 0.02902902902902903,
+            "buffer:1096:9": 0.02902902902902903,
+            "buffer:1248:524": 0.016016016016016016,
+            "buffer:1248:9": 0.016016016016016016,
+            "buffer:1296:524": 0.002002002002002002,
+            "buffer:1296:9": 0.002002002002002002,
+            "buffer:1104:524": 0.03003003003003003,
+            "buffer:1104:9": 0.03003003003003003,
+            "buffer:1264:524": 0.008008008008008008,
+            "buffer:1264:9": 0.008008008008008008,
+            "buffer:1280:524": 0.004004004004004004,
+            "buffer:1280:9": 0.004004004004004004,
+            "buffer:1288:524": 0.008008008008008008,
+            "buffer:1288:9": 0.008008008008008008,
+            "buffer:1120:524": 0.03803803803803804,
+            "buffer:1120:9": 0.03803803803803804,
+            "buffer:1224:524": 0.01901901901901902,
+            "buffer:1224:9": 0.01901901901901902,
+            "buffer:1152:524": 0.04604604604604605,
+            "buffer:1152:9": 0.04604604604604605,
+            "buffer:1080:524": 0.043043043043043044,
+            "buffer:1080:9": 0.043043043043043044,
+            "buffer:1160:524": 0.03803803803803804,
+            "buffer:1160:9": 0.03803803803803804,
+            "buffer:1400:524": 0.004004004004004004,
+            "buffer:1400:9": 0.004004004004004004,
+            "buffer:1208:524": 0.028028028028028028,
+            "buffer:1208:9": 0.028028028028028028,
+            "buffer:1376:524": 0.001001001001001001,
+            "buffer:1376:9": 0.001001001001001001,
+            "buffer:1344:524": 0.001001001001001001,
+            "buffer:1344:9": 0.001001001001001001,
+            "buffer:1336:524": 0.001001001001001001,
+            "buffer:1336:9": 0.001001001001001001,
+            "buffer:1216:524": 0.022022022022022022,
+            "buffer:1216:9": 0.022022022022022022,
+            "buffer:1464:524": 0.001001001001001001,
+            "buffer:1464:9": 0.001001001001001001,
+            "buffer:1184:524": 0.015015015015015015,
+            "buffer:1184:9": 0.015015015015015015,
+            "buffer:1432:524": 0.004004004004004004,
+            "buffer:1432:9": 0.004004004004004004,
+            "buffer:1416:524": 0.003003003003003003,
+            "buffer:1416:9": 0.003003003003003003,
+            "buffer:1128:524": 0.03903903903903904,
+            "buffer:1128:9": 0.03903903903903904,
+            "buffer:1360:524": 0.002002002002002002,
+            "buffer:1360:9": 0.002002002002002002,
+            "buffer:1392:524": 0.002002002002002002,
+            "buffer:1392:9": 0.002002002002002002,
+            "buffer:1312:524": 0.001001001001001001,
+            "buffer:1312:9": 0.001001001001001001,
+            "buffer:1176:524": 0.03003003003003003,
+            "buffer:1176:9": 0.03003003003003003,
+            "buffer:1304:524": 0.002002002002002002,
+            "buffer:1304:9": 0.002002002002002002,
+            "buffer:1272:524": 0.008008008008008008,
+            "buffer:1272:9": 0.008008008008008008,
+            "buffer:1240:524": 0.01701701701701702,
+            "buffer:1240:9": 0.01701701701701702,
+            "buffer:1232:524": 0.012012012012012012,
+            "buffer:1232:9": 0.012012012012012012,
+            "buffer:1200:524": 0.02902902902902903,
+            "buffer:1200:9": 0.02902902902902903,
+            "buffer:1424:524": 0.002002002002002002,
+            "buffer:1424:9": 0.002002002002002002,
+            "buffer:1384:524": 0.003003003003003003,
+            "buffer:1384:9": 0.003003003003003003,
+            "buffer:1368:524": 0.003003003003003003,
+            "buffer:1368:9": 0.003003003003003003,
+            "buffer:1456:524": 0.001001001001001001,
+            "buffer:1456:9": 0.001001001001001001
+          },
+          "staging": {
+            "enabled": true,
+            "calls": 145908,
+            "pooled": 145903,
+            "pageCreates": 4,
+            "fallbacks": 5,
+            "retainedBytes": 4194304,
+            "batchWrites": true,
+            "writeBatches": 3739
+          },
+          "gpu": null
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 3556,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106-tour-right.png",
+            "sha256": "131f6dea8425a65dd4c7240c95d8aa7b90a4ba028e5362d7164a661404757daa"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4043,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106-tour-back.png",
+            "sha256": "18c16f8ad8fd0976315719fd6e77817bb9be0c4fcaacdfae57cebf2d55b9d8ae"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 4481,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106-tour-left.png",
+            "sha256": "0d33517f4ee604e2cdf909e45d8a272f012dd9fe6f355ef2830e1be857eb0a02"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 4759,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106-tour-room.png",
+            "sha256": "fc8bb4eb0c4afd0c2f216ca9c199e7b6bc96b5089cd3956430c81ddb0b4e3917"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 5031,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-upload-guard-check-20261106-tour-return.png",
+            "sha256": "d7a8bc2d510a9fff6c05495f0977514ac501524fdd18497da953155cdee6148d"
+          }
+        }
+      ],
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "uploadValidation": {
+        "requested": 1024,
+        "captured": 1024,
+        "completed": 1024,
+        "bytes": 4290936,
+        "nonzeroOffsets": 1002,
+        "errors": []
+      },
+      "validatedBindingEntries": 0
+    },
+    "package": {
+      "folder": "villa-upload-guard-check-20261106",
+      "manifest": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-upload-guard-check-20261106\\asset-versions.json",
+        "sha256": "f8f36acd3b8de831690f393a6d4a493d644911ac44e261acd1a35ff5c47e9834"
+      },
+      "products": {
+        "config-files.json": {
+          "sha256": "213c29a77dbb1740ce4feb4d182bee98f338d4763eb8899dfd71cc046f5a1765",
+          "size": 663903,
+          "mtimeMs": 1793935864835.0981
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "5398642088f922caf7632dd4e6c35dc187f8cca11d5aed75828eba2907c607f8",
+          "size": 93278,
+          "mtimeMs": 1793935864837.097
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "4851ca7162c9c74dc445345e85a11791030ba86031eee11853ba263167acc941",
+          "size": 424854,
+          "mtimeMs": 1793935792476.4834
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "a66254329ee703172f8131383ce3826e5d48fecfc628d82c250b48ef6d5bd427",
+          "size": 182554753,
+          "mtimeMs": 1793935791197.0383
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      }
+    },
+    "boundary": "Final build adds a flush when switching batching off. Correctness was rerun; earlier static timing used fixed startup settings and is not relabeled as timing of this final build. Hot toggling has code review coverage, not an automated live-toggle test."
+  },
+  "builds": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-submit-runtime-20261106-build.json",
+      "sha256": "75cc1afb0108f86f9ccd3ae9dbe8f3d443f4511513b5fc2c77a9215e8be4c74b"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-upload-batch-runtime-20261106-build.json",
+      "sha256": "f0e19dc26a9496898f7c26f8a3eab11a1efbb68d6adc7a75b02892142bbfe050"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-upload-guard-runtime-20261106-build.json",
+      "sha256": "3210f872347a7158553b0abc320bebd9cb30f137d77ffdbaa4fe37492b6d1616"
+    }
+  ],
+  "visual": {
+    "hudExcludedTopPixels": 90,
+    "differences": [
+      {
+        "view": "right",
+        "variant": "Control",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0
+      },
+      {
+        "view": "right",
+        "variant": "Batch submit",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.5533979701707222
+      },
+      {
+        "view": "right",
+        "variant": "Present encoder",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.7764523803338071
+      },
+      {
+        "view": "right",
+        "variant": "Uniform pages",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.6215363476021811
+      },
+      {
+        "view": "right",
+        "variant": "Batched upload",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.766364678941645
+      },
+      {
+        "view": "back",
+        "variant": "Control",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0
+      },
+      {
+        "view": "back",
+        "variant": "Batch submit",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.5146311258909009
+      },
+      {
+        "view": "back",
+        "variant": "Present encoder",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.5319342843699187
+      },
+      {
+        "view": "back",
+        "variant": "Uniform pages",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.550710885620345
+      },
+      {
+        "view": "back",
+        "variant": "Batched upload",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.3421591441907879
+      },
+      {
+        "view": "left",
+        "variant": "Control",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0
+      },
+      {
+        "view": "left",
+        "variant": "Batch submit",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.4986030541874766
+      },
+      {
+        "view": "left",
+        "variant": "Present encoder",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.6946624917059564
+      },
+      {
+        "view": "left",
+        "variant": "Uniform pages",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.5018369579695604
+      },
+      {
+        "view": "left",
+        "variant": "Batched upload",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.6899741147487374
+      },
+      {
+        "view": "room",
+        "variant": "Control",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0
+      },
+      {
+        "view": "room",
+        "variant": "Batch submit",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.8019409196047892
+      },
+      {
+        "view": "room",
+        "variant": "Present encoder",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 1.0238134414435367
+      },
+      {
+        "view": "room",
+        "variant": "Uniform pages",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.8960264056780125
+      },
+      {
+        "view": "room",
+        "variant": "Batched upload",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 1.022294636594083
+      },
+      {
+        "view": "return",
+        "variant": "Control",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0
+      },
+      {
+        "view": "return",
+        "variant": "Batch submit",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.7103416877909616
+      },
+      {
+        "view": "return",
+        "variant": "Present encoder",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 1.2537187625390063
+      },
+      {
+        "view": "return",
+        "variant": "Uniform pages",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 0.6723270292416327
+      },
+      {
+        "view": "return",
+        "variant": "Batched upload",
+        "size": [
+          1281,
+          721
+        ],
+        "meanAbsoluteChannelDifference": 1.1645633095842236
+      }
+    ],
+    "physicalPresentationValidated": false,
+    "files": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-tour-comparison-20261106.json",
+        "sha256": "7cbeabbb79010ff909cb26ccca21928ec97d200509709b999e3628fa3c79a8e0"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-tour-comparison-20261106.jpg",
+        "sha256": "65f66eec68c187b6ae0da23899af19738dab5a1e1a27a36032974e0724f31ef7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-visual-20261106.py",
+        "sha256": "e55f387ce347dbdd7175d4405667a283bca335ee44ec991dd9cdaad74abcd258"
+      }
+    ]
+  },
+  "testPage": {
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\villa-parity-test.html",
+      "sha256": "84b260a32408c90d670a2f55aee8165f53499828953e82fedfd3dbae3ff08cde"
+    },
+    "validation": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-test-page-20261106.json",
+      "sha256": "d1fcde041c012ee217607b735b391363618fd9b39a75fb611815f79750dc1138"
+    },
+    "screenshot": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-test-page-20261106.png",
+      "sha256": "70107bb745c98324e51e9f5c984d8e9277d2608f6622a153f012c17d71343f3a"
+    }
+  },
+  "initialApiDiagnostic": {
+    "tag": "parity-submit-counts-20261106",
+    "files": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-counts-20261106.json",
+        "sha256": "f220b7eee4426e90699f158b530ae5a33d21955c6fd7b3ec32a5059db3eb139a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-counts-20261106.log",
+        "sha256": "5a7299aff3988e01698052589bba027239429c545481890530869bca149d1a35"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-counts-20261106.png",
+        "sha256": "e6532b4497be5cd473a33ff71d090090c505a3417fbe1455e3e661ee23ccc136"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\parity-submit-counts-20261106-source.cjs",
+        "sha256": "f1906c1323a9aa2141913adb4217e1407d7c1eedb18e9e31232a61430faf03ba"
+      }
+    ],
+    "apiCountProbe": true,
+    "gpuCompletionProbe": false,
+    "uploadValidationProbe": false,
+    "runs": [
+      {
+        "result": {
+          "frames": 1485,
+          "fps": 98.99184967104767,
+          "low1": 40.35892537644407,
+          "p99": 20.65999999642372,
+          "maximum": 38.78999999910593,
+          "over33": 1,
+          "over50": 0
+        },
+        "rhiMs": 7.012971626814975,
+        "workload": {
+          "draws": 1349.408,
+          "dispatches": 160.728,
+          "bindGroupsCreated": 31.596666666666668,
+          "uniformWriteCalls": 2
+        },
+        "apiPerFrame": {
+          "GPUDevice.createCommandEncoder": 11.105510752688172,
+          "GPUDevice.createBuffer": 56.00067204301075,
+          "GPUQueue.writeBuffer": 53.00067204301075,
+          "GPUDevice.createTexture": 0,
+          "GPUTexture.createView": 0,
+          "GPUCommandEncoder.finish": 11.105510752688172,
+          "GPUQueue.submit": 11.105510752688172,
+          "commandBuffers": 11.105510752688172,
+          "GPUCommandEncoder.copyTextureToTexture": 12.96774193548387,
+          "GPUCommandEncoder.beginRenderPass": 276.2016129032258,
+          "GPUDevice.createBindGroup": 34.618951612903224,
+          "GPUCommandEncoder.beginComputePass": 160.7271505376344
+        },
+        "staging": null,
+        "gpu": null
+      }
+    ],
+    "validatedBindingEntries": 0
+  },
+  "limitations": [
+    "API wrappers and GPU completion probes only in separate diagnostic windows.",
+    "RHI throughput and GPU callback latency do not verify physical presentation.",
+    "First three candidates were measured sequentially, without an interleaved end control. Tiny gains may be run drift.",
+    "Control and batch API diagnostics recorded first stacks for each size; later captures bound stacks per usage. GPU callback latency in those diagnostic runs is not a fair performance comparison.",
+    "Native exit 777003, when present, is the known post-CSV/log-close failure and not a clean lifecycle pass.",
+    "All candidate switches remain opt-in until stable tail latency and moving-scene behavior are established."
+  ]
+}
