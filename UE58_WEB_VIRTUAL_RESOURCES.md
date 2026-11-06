@@ -168,3 +168,14 @@ node tests/web-platform/probe-web-virtual-scene.cjs --folder=triplex-vt-fixture-
 2 项为 Histogram/Panini 的原始 RG32F 读写存储格式限制。
 这些结果保存在 `web-virtual-cook-gpu-progress.json`，不应将 VT/VSM 专项通过扩大为所有全局排列通过。
 不包含 Nanite、硬件光追、移动端兼容性或收费 SDK。
+
+## 2026-11-06 后续：玻璃偏蓝已修复
+
+上述完整别墅验收后，针对用户提供的玻璃对照图修复了 TLV 方向光未启用 VSM 采样的问题。
+原材质的微弱蓝色被未受遮挡的阳光放大；现在透明光照体正确使用虚拟阴影遮挡。
+保持 TLV 开启，酒柜和窗玻璃同视角色度回归通过，转向并返回后仍通过，无 GPU 错误。
+详细诊断、修复前后数值和复现命令见 `UE58_WEBGPU_TRANSLUCENCY_VOLUME.md` 的同日记录。
+
+别墅入口已更新为本次修复包，最终 Cook 为 `20261106-142850`。
+同步了用户新设置 `r.RayTracing=False`，原工程未改动；本次重新取得对应原生截图。
+玻璃专项通过不改变其余桌面视觉一致性和持续性能的验收边界。

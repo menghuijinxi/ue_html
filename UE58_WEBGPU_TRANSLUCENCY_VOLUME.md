@@ -86,3 +86,54 @@ API 分配估计与 WDDM 进程专用显存分开记录，前者不包含驱动�
 别墅实际验证了材质光照注入、批量局部灯注入、空间过滤及默认项目运行。Simple Light、Ambient Cubemap 的新入口已转换成功，但未另构造专门的运行场景；时间过滤、体素标记及全尺寸 Specular Direction 未作为此次验收配置。
 
 VSM、Adaptive Volumetric Shadow Map、MegaLights、分层光栅输出及体积雾不在此次兼容范围内。不能据此认定所有半透明高级功能或与 PC 的逐像素一致性已经验收，也没有将此次短时测试当作此前随机崩溃已修复的证据。
+
+## 2026-11-06：修复 VSM 下玻璃偏蓝
+
+用户报告酒柜和落地窗玻璃在 Web 端偏蓝。保持原材质和项目设置，使用
+`(-175,-80,160)`、俯仰 -5°、朝向 50°、水平 FOV 90°、1280×720 复现。
+禁用 TLV 或只跳过方向光注入能消除偏色，禁用反射不能解决。
+
+根因是 `FWebTranslucentLightingInjectCS` 仍排除 VSM 排列，运行时也没有设置
+`FVirtualShadowMap`。原生光栅注入会按 `InjectionData.VirtualShadowMapId` 选择该排列。
+因此 Web 端将未受房屋遮挡的方向光写入室内光照体，放大了玻璃材质原有的微弱蓝色基色。
+
+修复允许支持 VSM 的 Web 平台编译对应排列，并按真实阴影 ID 选择它。
+沿用 `InjectMainPS` 的 `SampleVirtualShadowMapTranslatedWorld`、原参数绑定和 RDG 依赖。
+TLV、VSM、VT、Lumen 和原玻璃材质均保持开启/原值。
+Adaptive Volumetric Shadow Map 仍被局部排除，不扩展为全部透明高级功能已通过。
+
+验证结果：
+
+| 检查 | 结果 |
+| --- | --- |
+| Renderer 原生模块、线程 Wasm | 编译及链接通过，安装目录输入摘要未变 |
+| VSM TLV 着色器 | Cook 编译 24 次；20 份有实际 VSM 资源的转换产物，去重后 12 个入口 |
+| 原项目设置 | 检测到用户将 `r.RayTracing` 改为 False；同步隔离副本，重新 Cook 和取原生基线 |
+| 最终别墅包 | 5163 个 Cook 资源，11 个运行包文件，3,650,453,810 字节；源码与构建摘要核验通过 |
+| 玻璃浏览器回归 | 入口、客厅、返回三视角，最终第 497 帧；996 次真实 VSM TLV 派发 |
+| GPU 状态 | 校验错误 0、设备丢失 0，VT/VSM 开启 |
+| 酒柜玻璃最大色度差 | 修复前 0.10534，修复后首次 0.00118、返回 0.00132；阈值 0.02 |
+| 窗玻璃最大色度差 | 修复前 0.02693，修复后首次 0.00083、返回 0.00077；阈值 0.02 |
+
+色度为固定截图区域的 RGB 均值除以三通道总和，再取与原生的最大通道差。
+它针对本次蓝色异常，不等同于所有反射、折射和亮度逐像素一致。
+`verify-web-glass-color.cjs` 在修改前已运行失败，修复后由浏览器回归调用通过。
+测试同时验证运行时确实派发带 VSM 资源的 TLV 着色器，避免仅凭画面接近而漏测阴影路径。
+
+证据均在 `tests/web-platform/results`：
+
+- `glass-color-current-native-before.json`：修复前失败，使用当前工程设置的原生基线。
+- `glass-isolation.json`、`glass-directional-isolation.json`：逐项隔离，开关截图保留。
+- `glass-vsm.json`、`glass-vsm-interior.png`、`glass-vsm-return.png`：修复后验证。
+- `villa-distance-fields-glass-vsm-native-capture.json`：原生同视角、当前项目设置。
+- `web-project-triplex-virtual-desktop-cook-20261106-142850.log`：最终 Cook。
+
+复现命令（本地服务仍以 `tests/web-platform` 为根目录，端口 8765）：
+
+```powershell
+node tests/web-platform/probe-web-glass.cjs --input=tests/web-platform/build/web-project-triplex-virtual-desktop-cook/20261106-142142/ShaderConversion
+```
+
+输入目录包含新增的 VSM TLV 转换产物；最终一次 Cook 复用这些着色器缓存。
+浏览器报告记录转换输入、打包报告、截图及检查脚本的 SHA-256。
+本次没有更改原项目或 `H:/UE_5.8`，也没有关闭透明光照或修改材质颜色。
