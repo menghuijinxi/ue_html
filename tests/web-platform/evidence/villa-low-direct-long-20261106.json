@@ -1,0 +1,614 @@
+{
+  "date": "2026-11-06T11:53:12.796Z",
+  "pass": true,
+  "defaultEnabled": false,
+  "physicalPresentationValidated": false,
+  "definition": "RHI submission intervals; 1% Low = 1000 / mean(slowest ceil(N*0.01) intervals). No stalls excluded; no inter-run gaps included.",
+  "boundary": "Same DOM mouse trajectory and possessed pawn, reset only between phases; frame-weighted workload may differ. This does not measure physical presentation or subjective input latency.",
+  "order": [
+    "control",
+    "candidate",
+    "candidate",
+    "control"
+  ],
+  "normal": {
+    "control": {
+      "result": {
+        "frames": 13664,
+        "fps": 113.3181172689129,
+        "low1": 43.7161957329339,
+        "p95": 17.79500000178814,
+        "p99": 20.030000001192093,
+        "max": 38.900000005960464,
+        "over25": 26,
+        "over33": 7,
+        "over50": 0
+      },
+      "windows": [
+        {
+          "tag": "mouse-low-final-abba-a1-20261106",
+          "folder": "villa-low-final-control-20261106",
+          "input": "owner-forwarded",
+          "seconds": 60,
+          "result": {
+            "frames": 6850,
+            "fps": 113.49991143693266,
+            "low1": 44.54357362197215,
+            "p95": 17.825000002980232,
+            "p99": 20.099999994039536,
+            "max": 37.54500000178814,
+            "over25": 10,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 6.227235179062936,
+          "workload": {
+            "draws": 1763.5219796215429,
+            "dispatches": 161.4574963609898,
+            "pending": 188.5783114992722,
+            "ready": 450.84381368267833
+          },
+          "turnDegrees": 3869.658770299051,
+          "travelCm": 2607.5988490069835,
+          "display": {
+            "visual": 114.19658119658119,
+            "submitted": 114.1880341880342,
+            "refresh": 344.12820512820514,
+            "ratio": 1.000074850299401
+          },
+          "budget": [
+            14229,
+            14231,
+            14232,
+            3,
+            14229,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": false,
+            "created": 22073,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "poolAfter": {
+            "enabled": false,
+            "created": 42709,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "psoBefore": {
+            "sampleFrame": 7350,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 33.32924842834473,
+            "computePipelineCreateMs": 25.85625648498535,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 980583,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 14220,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 33.32924842834473,
+            "computePipelineCreateMs": 25.85625648498535,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 1930117,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        },
+        {
+          "tag": "mouse-low-final-abba-a2-20261106",
+          "folder": "villa-low-final-control-20261106",
+          "input": "owner-forwarded",
+          "seconds": 60,
+          "result": {
+            "frames": 6814,
+            "fps": 113.13594868204402,
+            "low1": 42.99949522167183,
+            "p95": 17.775000005960464,
+            "p99": 19.95999999344349,
+            "max": 38.900000005960464,
+            "over25": 16,
+            "over33": 6,
+            "over50": 0
+          },
+          "rhiMs": 6.279070775705086,
+          "workload": {
+            "draws": 1798.3211988304095,
+            "dispatches": 161.90116959064326,
+            "pending": 196.00555555555556,
+            "ready": 463.03991228070174
+          },
+          "turnDegrees": 3847.050409561489,
+          "travelCm": 2593.2319623411345,
+          "display": {
+            "visual": 112.85470085470085,
+            "submitted": 113.47863247863248,
+            "refresh": 344.1880341880342,
+            "ratio": 0.9945017699781578
+          },
+          "budget": [
+            13835,
+            13836,
+            13837,
+            3,
+            13835,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": false,
+            "created": 21001,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "poolAfter": {
+            "enabled": false,
+            "created": 41549,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "psoBefore": {
+            "sampleFrame": 6990,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 36.588430404663086,
+            "computePipelineCreateMs": 25.776147842407227,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 1004434,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 13830,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 36.588430404663086,
+            "computePipelineCreateMs": 25.776147842407227,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 1960166,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "result": {
+        "frames": 15206,
+        "fps": 126.20273233147012,
+        "low1": 45.64200854673041,
+        "p95": 16.655000001192093,
+        "p99": 18.890000000596046,
+        "max": 43.82999999821186,
+        "over25": 27,
+        "over33": 3,
+        "over50": 0
+      },
+      "windows": [
+        {
+          "tag": "mouse-low-final-abba-b1-20261106",
+          "folder": "villa-low-final-candidate-20261106",
+          "input": "direct-game-thread",
+          "seconds": 60,
+          "result": {
+            "frames": 7635,
+            "fps": 126.6577588743019,
+            "low1": 45.852301993377495,
+            "p95": 16.65999999642372,
+            "p99": 18.905000001192093,
+            "max": 43.82999999821186,
+            "over25": 13,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 5.475301515399248,
+          "workload": {
+            "draws": 1232.4269281045752,
+            "dispatches": 153.35150326797387,
+            "pending": 166.89098039215688,
+            "ready": 391.9118954248366
+          },
+          "turnDegrees": 4317.278732724022,
+          "travelCm": 2892.5230888026044,
+          "display": {
+            "visual": 126.3076923076923,
+            "submitted": 127.05128205128206,
+            "refresh": 342.65811965811963,
+            "ratio": 0.9941473259334005
+          },
+          "budget": [
+            15755,
+            15758,
+            15758,
+            3,
+            15755,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": true,
+            "created": 21,
+            "reused": 24311,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "poolAfter": {
+            "enabled": true,
+            "created": 21,
+            "reused": 47289,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "psoBefore": {
+            "sampleFrame": 8100,
+            "graphicsPipelines": 612,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 35.851240158081055,
+            "computePipelineCreateMs": 26.264667510986328,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 982588,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 15750,
+            "graphicsPipelines": 612,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 35.851240158081055,
+            "computePipelineCreateMs": 26.264667510986328,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 1944870,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        },
+        {
+          "tag": "mouse-low-final-abba-b2-20261106",
+          "folder": "villa-low-final-candidate-20261106",
+          "input": "direct-game-thread",
+          "seconds": 60,
+          "result": {
+            "frames": 7571,
+            "fps": 125.7471583567034,
+            "low1": 45.432535674252115,
+            "p95": 16.655000001192093,
+            "p99": 18.859999999403954,
+            "max": 34.854999989271164,
+            "over25": 14,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 5.541820392724422,
+          "workload": {
+            "draws": 1255.2927536231884,
+            "dispatches": 153.55704874835308,
+            "pending": 176.39156785243742,
+            "ready": 407.5806324110672
+          },
+          "turnDegrees": 4256.920321284328,
+          "travelCm": 2854.7004926479394,
+          "display": {
+            "visual": 126.62393162393163,
+            "submitted": 127.2051282051282,
+            "refresh": 342.8376068376068,
+            "ratio": 0.9954310286904522
+          },
+          "budget": [
+            15607,
+            15610,
+            15610,
+            3,
+            15607,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": true,
+            "created": 21,
+            "reused": 24041,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "poolAfter": {
+            "enabled": true,
+            "created": 21,
+            "reused": 46839,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "psoBefore": {
+            "sampleFrame": 8010,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 34.651994705200195,
+            "computePipelineCreateMs": 25.61330795288086,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 977238,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 15600,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 34.651994705200195,
+            "computePipelineCreateMs": 25.61330795288086,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 1943320,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        }
+      ]
+    }
+  },
+  "captures": {
+    "mouse-low-final-abba-a1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-a1-20261106.json",
+        "sha256": "0d73d3cf837e9f3e9108fcde1e788870ac6562aaeb3b15ec6242dda0e691dc1e"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "01c7a8d7dfa5a2d573178024630bb1be02c5f63bc5a5aefe078702aeca997efa"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-a1-20261106-source.cjs",
+        "sha256": "01c7a8d7dfa5a2d573178024630bb1be02c5f63bc5a5aefe078702aeca997efa"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\index.html",
+          "sha256": "96b1d1178fe6a01168ec0076283dcaaf4167e11a1911f34ad8fcd02d88ec0100"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\UEWebEngineThreads.js",
+          "sha256": "809fe2c8f0955326ff0568f9d92eda879bea2294f0bcc22af44352ea7dda3dc8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\config-files.json",
+          "sha256": "1babf886515cd7a70c1803afef50d90384d4fd1fcf359ceed68277ac6d0edafa"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    },
+    "mouse-low-final-abba-a2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-a2-20261106.json",
+        "sha256": "5d5b21e80f44075f796254d779dc36cc92ced3b09e51fcf278defbe8fba55666"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "bcdea065604cb2d587ae8a45af7be0e3b4204da1fd9dff02a9ce7eb80b489ace"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-a2-20261106-source.cjs",
+        "sha256": "bcdea065604cb2d587ae8a45af7be0e3b4204da1fd9dff02a9ce7eb80b489ace"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\index.html",
+          "sha256": "96b1d1178fe6a01168ec0076283dcaaf4167e11a1911f34ad8fcd02d88ec0100"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\UEWebEngineThreads.js",
+          "sha256": "809fe2c8f0955326ff0568f9d92eda879bea2294f0bcc22af44352ea7dda3dc8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\config-files.json",
+          "sha256": "1babf886515cd7a70c1803afef50d90384d4fd1fcf359ceed68277ac6d0edafa"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-control-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    },
+    "mouse-low-final-abba-b1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-b1-20261106.json",
+        "sha256": "122826296889abf0d39c97af38f43332d67426bf4ecf8a8e9cd1a08cc489dd55"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "01c7a8d7dfa5a2d573178024630bb1be02c5f63bc5a5aefe078702aeca997efa"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-b1-20261106-source.cjs",
+        "sha256": "01c7a8d7dfa5a2d573178024630bb1be02c5f63bc5a5aefe078702aeca997efa"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\index.html",
+          "sha256": "96b1d1178fe6a01168ec0076283dcaaf4167e11a1911f34ad8fcd02d88ec0100"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\UEWebEngineThreads.js",
+          "sha256": "809fe2c8f0955326ff0568f9d92eda879bea2294f0bcc22af44352ea7dda3dc8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\config-files.json",
+          "sha256": "0a4e6bb09f2ee6cdeef2ad24861a891a892567731a5fb86c2bd434256b00e2d3"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    },
+    "mouse-low-final-abba-b2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-b2-20261106.json",
+        "sha256": "462abbdaf502b07cd8b259821ccb0a9443c0ea1dcf2a1d2fbf0db1ffc9b34817"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "01c7a8d7dfa5a2d573178024630bb1be02c5f63bc5a5aefe078702aeca997efa"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-abba-b2-20261106-source.cjs",
+        "sha256": "01c7a8d7dfa5a2d573178024630bb1be02c5f63bc5a5aefe078702aeca997efa"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\index.html",
+          "sha256": "96b1d1178fe6a01168ec0076283dcaaf4167e11a1911f34ad8fcd02d88ec0100"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\UEWebEngineThreads.js",
+          "sha256": "809fe2c8f0955326ff0568f9d92eda879bea2294f0bcc22af44352ea7dda3dc8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\config-files.json",
+          "sha256": "0a4e6bb09f2ee6cdeef2ad24861a891a892567731a5fb86c2bd434256b00e2d3"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-final-candidate-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    }
+  },
+  "changes": {
+    "fpsPercent": 11.370304566551347,
+    "low1Percent": 4.405261669065341,
+    "p95Percent": -6.406293905487459,
+    "p99Percent": -5.69146280842835
+  }
+}

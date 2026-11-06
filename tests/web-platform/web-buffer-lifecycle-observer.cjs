@@ -2,7 +2,7 @@
 // Diagnostic only: weak ownership, one aggregate per descriptor/callsite.
 module.exports = function installBufferLifecycleObserver() {
   const state = globalThis.__webBufferLifecycle = {created: 0, destroyed: 0, collected: 0,
-    liveBytes: 0, peakBytes: 0, groups: {}, errors: []};
+    liveBytes: 0, peakBytes: 0, groups: {}, copies: {}, errors: []};
   const records = new WeakMap();
   const frame = () => globalThis.__webRHIFrames || 0;
   const registry = new FinalizationRegistry(record => {
@@ -23,6 +23,15 @@ module.exports = function installBufferLifecycleObserver() {
     return result;
   };
   const destroy = GPUBuffer.prototype.destroy;
+  const copy = GPUCommandEncoder.prototype.copyBufferToBuffer;
+  GPUCommandEncoder.prototype.copyBufferToBuffer = function(source, offset, destination, destinationOffset, size) {
+    const record=records.get(destination);
+    if(record && (record.group.usage & GPUBufferUsage.MAP_READ)) {
+      const key=[source.label||'',size].join('|');
+      state.copies[key]=(state.copies[key]||0)+1;
+    }
+    return copy.apply(this,arguments);
+  };
   GPUBuffer.prototype.destroy = function() {
     const record = records.get(this);
     if (record && !record.destroyed) {

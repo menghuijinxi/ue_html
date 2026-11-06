@@ -67,6 +67,8 @@ $taskShadowOverlay = 'Source/Runtime/Renderer/Private/ShadowDepthRendering.cpp'
 $taskRendererCopy = Join-Path $taskHost 'Source/Runtime/Renderer'
 if ((Get-Item -LiteralPath $taskRendererCopy).LinkType) { throw 'Renderer overlay must be a local build-host copy.' }
 Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShadowOverlay") -Destination (Join-Path $taskHost $taskShadowOverlay) -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ShadowSetup.cpp') -Destination (Join-Path $taskRendererCopy 'Private/ShadowSetup.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/LightGridInjection.cpp') -Destination (Join-Path $taskRendererCopy 'Private/LightGridInjection.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/LightRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/LightRendering.cpp') -Force
 foreach ($taskOcclusionOverlay in @('SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionOverlay") -Destination (Join-Path $taskRendererCopy "Private/$taskOcclusionOverlay") -Force

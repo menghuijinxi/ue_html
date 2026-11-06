@@ -1,0 +1,192 @@
+{
+  "raw": {
+    "file": "tests/web-platform/results/mouse-low-gpu-passes-20261106.json",
+    "sha256": "14af652917cdeb519e88f7f5972fddeeafbcced9e66094fb0c2833e52f3a577e"
+  },
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+    "sha256": "094954264e65b3ccdf38db7fc6c3c56e2255fd0761232e83c673b3281bb019c5"
+  },
+  "observer": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-performance-capture-observer.cjs",
+    "sha256": "4c7a0fd28f8df4d3c9c899ca7eb01095e70d9db4ea9af815da799648af2379a8"
+  },
+  "frames": [
+    {
+      "frame": 2251,
+      "passes": 390,
+      "passSumMs": 3.9976959999999986,
+      "spanMs": 16.973824
+    },
+    {
+      "frame": 2297,
+      "passes": 334,
+      "passSumMs": 3.6044799999999992,
+      "spanMs": 8.978432
+    },
+    {
+      "frame": 2368,
+      "passes": 196,
+      "passSumMs": 2.6869759999999996,
+      "spanMs": 5.177344
+    },
+    {
+      "frame": 2456,
+      "passes": 196,
+      "passSumMs": 2.555904,
+      "spanMs": 7.143424
+    },
+    {
+      "frame": 2524,
+      "passes": 328,
+      "passSumMs": 3.080192,
+      "spanMs": 9.17504
+    },
+    {
+      "frame": 2569,
+      "passes": 390,
+      "passSumMs": 3.6700159999999995,
+      "spanMs": 11.730944
+    },
+    {
+      "frame": 2612,
+      "passes": 259,
+      "passSumMs": 3.2112639999999995,
+      "spanMs": 12.058624
+    },
+    {
+      "frame": 2680,
+      "passes": 171,
+      "passSumMs": 2.686976,
+      "spanMs": 4.980736
+    },
+    {
+      "frame": 2762,
+      "passes": 147,
+      "passSumMs": 2.162688,
+      "spanMs": 6.946816
+    },
+    {
+      "frame": 2856,
+      "passes": 140,
+      "passSumMs": 2.1626879999999997,
+      "spanMs": 4.194304
+    },
+    {
+      "frame": 2954,
+      "passes": 140,
+      "passSumMs": 1.9005440000000005,
+      "spanMs": 3.866624
+    },
+    {
+      "frame": 3048,
+      "passes": 156,
+      "passSumMs": 2.162688,
+      "spanMs": 8.388608
+    },
+    {
+      "frame": 3125,
+      "passes": 173,
+      "passSumMs": 2.359296,
+      "spanMs": 7.405568
+    },
+    {
+      "frame": 3183,
+      "passes": 271,
+      "passSumMs": 3.080191999999999,
+      "spanMs": 15.532032
+    },
+    {
+      "frame": 3225,
+      "passes": 388,
+      "passSumMs": 3.6044799999999992,
+      "spanMs": 13.238272
+    },
+    {
+      "frame": 3271,
+      "passes": 318,
+      "passSumMs": 3.4078719999999993,
+      "spanMs": 7.667712
+    },
+    {
+      "frame": 3346,
+      "passes": 160,
+      "passSumMs": 2.29376,
+      "spanMs": 4.718592
+    },
+    {
+      "frame": 3445,
+      "passes": 150,
+      "passSumMs": 2.228224,
+      "spanMs": 5.046272
+    },
+    {
+      "frame": 3528,
+      "passes": 254,
+      "passSumMs": 3.080192,
+      "spanMs": 7.405568
+    },
+    {
+      "frame": 3578,
+      "passes": 376,
+      "passSumMs": 2.9491199999999997,
+      "spanMs": 10.747904
+    },
+    {
+      "frame": 3617,
+      "passes": 322,
+      "passSumMs": 2.7525119999999994,
+      "spanMs": 9.764864
+    },
+    {
+      "frame": 3676,
+      "passes": 179,
+      "passSumMs": 2.62144,
+      "spanMs": 5.111808
+    },
+    {
+      "frame": 3755,
+      "passes": 167,
+      "passSumMs": 2.359296,
+      "spanMs": 7.077888
+    },
+    {
+      "frame": 3845,
+      "passes": 140,
+      "passSumMs": 2.0971520000000003,
+      "spanMs": 4.25984
+    },
+    {
+      "frame": 3948,
+      "passes": 138,
+      "passSumMs": 1.9660800000000003,
+      "spanMs": 4.25984
+    },
+    {
+      "frame": 4037,
+      "passes": 148,
+      "passSumMs": 1.8350080000000002,
+      "spanMs": 7.077888
+    },
+    {
+      "frame": 4109,
+      "passes": 169,
+      "passSumMs": 2.228224,
+      "spanMs": 8.323072
+    },
+    {
+      "frame": 4173,
+      "passes": 249,
+      "passSumMs": 3.2767999999999997,
+      "spanMs": 10.420224
+    },
+    {
+      "frame": 4226,
+      "passes": 293,
+      "passSumMs": 2.9491199999999993,
+      "spanMs": 10.354688
+    }
+  ],
+  "performanceAccepted": false,
+  "boundary": "Diagnostic samples only. Quantized GPU timestamps; pass sums exclude copies and gaps. GPU span does not identify the cause of gaps. Never included in normal FPS acceptance."
+}

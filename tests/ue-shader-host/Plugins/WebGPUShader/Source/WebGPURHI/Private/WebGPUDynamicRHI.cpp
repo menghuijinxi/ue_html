@@ -56,6 +56,9 @@ static TAutoConsoleVariable<int32> CVarWebGPUOcclusionQueryWaitMs(
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUStagingReadbackPool(
+    TEXT("r.WebGPU.StagingReadbackPool"), 0,
+    TEXT("Experimental reuse of completed, unreferenced staging readbacks. Bounded to 64 entries and 32 MiB."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUReuseComputePass(
     TEXT("r.WebGPU.ReuseComputePass"), 0,
     TEXT("Experiment: reuse compute passes across adjacent dispatches, preserving encoder boundaries."), ECVF_RenderThreadSafe);
@@ -1039,6 +1042,8 @@ void FWebGPUDynamicRHI::Shutdown()
     for (const auto& Buffer : VertexFetchFormatBuffers) wgpuBufferRelease(Buffer.Value);
     VertexFetchFormatBuffers.Empty();
     DrawBundleCache.Empty();
+    StagingReadbackPool.Empty();
+    StagingReadbackPoolBytes = 0;
     ReleaseFrameBindings();
     if (FrameUniformBuffer) wgpuBufferRelease(FrameUniformBuffer);
     FrameUniformBuffer = nullptr;
@@ -1175,6 +1180,14 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     }
 #endif
     ++EndFrames;
+#if PLATFORM_WEB
+    if (EndFrames % 30 == 0)
+    {
+        EM_ASM({globalThis.__webStagingReadbackPool = ({enabled:!!$0, created:$1, reused:$2, entries:$3, bytes:$4});},
+            CVarWebGPUStagingReadbackPool.GetValueOnAnyThread(), StagingReadbacksCreated,
+            StagingReadbacksReused, StagingReadbackPool.Num(), StagingReadbackPoolBytes);
+    }
+#endif
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     if (EndFrames % 30 == 0)
         EM_ASM({ globalThis.__webUploadStaging = ({enabled: !!$0, calls: $1, pooled: $2,
@@ -4593,9 +4606,43 @@ void FWebGPUDynamicRHI::RHICopyToStagingBuffer(FRHIBuffer* Source, FRHIStagingBu
     check(Encoder && !Pass && Size && Offset % 4 == 0 && Size % 4 == 0 &&
           uint64(Offset) + Size <= Source->GetSize());
     RequireAccess(Source, ERHIAccess::CopySrc);
-    auto State = MakeShared<FWebGPUReadbackState, ESPMode::ThreadSafe>();
-    State->Size = Size;
-    State->Handle = CreateBuffer(Size, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+    FWebGPUReadbackRef State;
+    const bool bPool = CVarWebGPUStagingReadbackPool.GetValueOnAnyThread() != 0;
+    if (bPool)
+    {
+        for (const auto& Candidate : StagingReadbackPool)
+        {
+            // No staging object, CPU lock, fence or pending callback may retain
+            // this generation. Ready is published only after the map is unmapped.
+            if (Candidate.GetSharedReferenceCount() == 1 && Candidate->Size == Size &&
+                Candidate->Ready.load(std::memory_order_acquire))
+            {
+                State = Candidate;
+                State->Ready.store(false, std::memory_order_release);
+                State->Bytes.Reset();
+                check(!State->OnReady);
+                ++StagingReadbacksReused;
+                break;
+            }
+        }
+    }
+    else if (!bPool && !StagingReadbackPool.IsEmpty())
+    {
+        StagingReadbackPool.Empty();
+        StagingReadbackPoolBytes = 0;
+    }
+    if (!State)
+    {
+        State = MakeShared<FWebGPUReadbackState, ESPMode::ThreadSafe>();
+        State->Size = Size;
+        State->Handle = CreateBuffer(Size, WGPUBufferUsage_CopyDst | WGPUBufferUsage_MapRead);
+        ++StagingReadbacksCreated;
+        if (bPool && StagingReadbackPool.Num() < 64 && uint64(StagingReadbackPoolBytes) + Size <= 32u * 1024u * 1024u)
+        {
+            StagingReadbackPool.Add(State);
+            StagingReadbackPoolBytes += Size;
+        }
+    }
     static_cast<FWebGPUStagingBuffer*>(Destination)->SetState(State);
     EndComputePass();
     wgpuCommandEncoderCopyBufferToBuffer(Encoder, static_cast<FWebGPUBuffer*>(Source)->Handle,

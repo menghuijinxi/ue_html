@@ -215,6 +215,21 @@ ${marker}
     report.uploadValidation=await owner.evaluate(()=>__webValidateUploadCopies(1024));
     assert.deepEqual(report.uploadValidation.errors,[]);assert.equal(report.uploadValidation.completed,1024);
   }
+  if(process.argv.includes('--staging-readback')){
+    report.stagingPoolBefore=await owner.evaluate(()=>globalThis.__webStagingReadbackPool);
+    assert(report.stagingPoolBefore?.enabled);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebTextureReadbackTest',3)),1);
+    for(let i=0;i<200;i++){
+      await page.waitForTimeout(100);
+      assert.equal(await page.evaluate(()=>__webEngineRPC('WebTextureReadbackTest',4)),1);
+      report.stagingReadbackTest=await owner.evaluate(()=>globalThis.__webStagingReadbackTest);
+      if(report.stagingReadbackTest?.pending===false)break;
+    }
+    assert.equal(report.stagingReadbackTest?.pass,true);
+    assert.equal(report.stagingReadbackTest.rounds,32);
+    report.stagingPoolAfter=await owner.evaluate(()=>globalThis.__webStagingReadbackPool);
+    assert(report.stagingPoolAfter.reused>report.stagingPoolBefore.reused);
+  }
   if(process.argv.includes('--profile-workers'))
     report.workerProfiles=await require('./web-worker-cpu-profiler.cjs')(context,output+'-workers');
   const finalState=await state();

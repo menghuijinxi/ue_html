@@ -9,10 +9,17 @@ assert(name && [baseline,name].every(v=>/^[a-z0-9-]+$/.test(v)));
 const source=path.join(__dirname,'build',baseline),dest=path.join(__dirname,'build',name);
 const versions=JSON.parse(fs.readFileSync(path.join(source,'asset-versions.json')));
 const runtimeBuild=option('runtime-build');
+const cores=option('cores');assert(cores===undefined||/^[468]$/.test(cores));
 const csmScrollSubjects=option('csm-scroll-subjects');
+const csmMode=option('csm-mode');
+assert(csmMode===undefined||/^[01]$/.test(csmMode));
 assert(csmScrollSubjects===undefined||(/^\d+$/.test(csmScrollSubjects)&&Number(csmScrollSubjects)<=4096));
 const motionQueryInterval=option('motion-query-interval');
 assert(motionQueryInterval===undefined||(/^[0-8]$/.test(motionQueryInterval)));
+const queryBuffering=option('query-buffering');
+assert(queryBuffering===undefined||/^[1-4]$/.test(queryBuffering));
+const motionGroupHold=option('motion-group-hold');
+assert(motionGroupHold===undefined||(/^\d+$/.test(motionGroupHold)&&Number(motionGroupHold)<=200));
 assert(!runtimeBuild||!process.argv.includes('--owner-lookahead'),'Runtime replacement and owner lookahead must be tested separately');
 let build;
 if(runtimeBuild){
@@ -45,10 +52,18 @@ const configs=JSON.parse(fs.readFileSync(path.join(source,'config-files.json')))
 const config=configs.find(v=>v.path==='/Engine/Platforms/Web/Config/WebEngine.ini');assert(config);
 const settings={'t.MaxFPS':0,'r.VSync':0};
 if(process.argv.includes('--csm'))settings['r.Shadow.CSMCaching']=1;
+if(csmMode!==undefined)settings['r.Shadow.CSMCaching']=Number(csmMode);
 if(csmScrollSubjects!==undefined)settings['r.Shadow.MaxCSMScrollingStaticShadowSubjects']=Number(csmScrollSubjects);
 if(motionQueryInterval!==undefined)settings['r.Web.OcclusionMotionQueryInterval']=Number(motionQueryInterval);
+if(queryBuffering!==undefined)settings['r.NumBufferedOcclusionQueries']=Number(queryBuffering);
 if(process.argv.includes('--no-shadows'))settings['r.ShadowQuality']=0;
 if(process.argv.includes('--bundles'))settings['r.WebGPU.RenderBundles']=1;
+if(process.argv.includes('--group-motion-queries'))settings['r.Web.OcclusionGroupMotionQueries']=1;
+if(process.argv.includes('--group-new-motion-queries'))settings['r.Web.OcclusionGroupNewMotionQueries']=1;
+if(motionGroupHold!==undefined)settings['r.Web.OcclusionMotionGroupHoldMs']=Number(motionGroupHold);
+if(process.argv.includes('--hzb'))Object.assign(settings,{'r.HZBOcclusion':2,'r.Web.OcclusionGroupMotionQueries':0});
+if(process.argv.includes('--light-grid-buckets'))settings['r.Web.LightGridAllocationBuckets']=1;
+if(process.argv.includes('--staging-readback-pool'))settings['r.WebGPU.StagingReadbackPool']=1;
 if(process.argv.includes('--staging'))settings['r.WebGPU.StagingUploadPages']=1;
 if(process.argv.includes('--reuse-compute'))settings['r.WebGPU.ReuseComputePass']=1;
 if(process.argv.includes('--merge-raster'))settings['r.WebGPU.RDGMergeRenderPasses']=1;
@@ -67,6 +82,11 @@ ini+='\n[SystemSettings]\n'+Object.entries(settings).map(([k,v])=>k+'='+v).join(
 config.data=Buffer.from(ini).toString('base64');config.sha256=crypto.createHash('sha256').update(ini).digest('hex');
 fs.writeFileSync(path.join(dest,'config-files.json'),JSON.stringify(configs));
 let html=fs.readFileSync(path.join(source,'index.html'),'utf8');
+if(cores){
+  const args=html.match(/arguments: (\[[^\n]+\]),/);assert(args);
+  const values=JSON.parse(args[1]).filter(v=>!v.startsWith('-corelimit='));values.push('-corelimit='+cores);
+  html=html.replace(args[0],'arguments: '+JSON.stringify(values)+',');
+}
 const match=html.match(/const localRuntimeAssets = (\{[^\n]+\});/);assert(match);
 const assets=JSON.parse(match[1]);assets.localFrameBudget=0;assets.localFrameBudgetMode='submitted';
 if(build){
@@ -92,7 +112,7 @@ html=html.replace(match[0],'const localRuntimeAssets = '+JSON.stringify(assets)+
 fs.writeFileSync(path.join(dest,'index.html'),html);
 const products=Object.keys(versions).map(n=>audit(path.join(dest,n)));
 writeVersions(dest,products);
-fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
+fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
   performanceAccepted:false,runtimeBuild:runtimeBuild?audit(runtimeBuild):null,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
   candidateManifest:audit(path.join(dest,'asset-versions.json'))},null,2));
 console.log(dest);

@@ -1,0 +1,3010 @@
+{
+  "date": "2026-11-06T12:21:39.793Z",
+  "defaultChanged": false,
+  "boundary": "Exploratory single runs and diagnostics, not independent release acceptance. Instrumented runs are not normal FPS measurements. Retain failures and configuration mistakes.",
+  "experiments": [
+    {
+      "tag": "mouse-low-renderpool768-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-renderpool768-probe-20261106.json",
+        "sha256": "aa95d301271e188ca96e6d1b48ab93f505bf50ed17c12cb3002283c9d3d8bc5d"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-renderpool768-probe-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2693,
+            "fps": 110.73520900603184,
+            "low1Fps": 43.967138634987116,
+            "p50": 8.560000002384186,
+            "p95": 18.315000005066395,
+            "p99": 20.640000000596046,
+            "maximum": 37.395000003278255
+          },
+          "workload": {
+            "draws": 1831.4292592592592,
+            "dispatches": 161.03185185185185,
+            "pending": 212.0651851851852,
+            "ready": 483.72555555555556
+          },
+          "rhiMs": 6.51657382278584,
+          "history": {
+            "enabled": true,
+            "frame": 5640,
+            "polls": 3968441,
+            "ready": 2811954,
+            "hits": 422200,
+            "zero": 396181,
+            "fallback": 1161856,
+            "expired": 38982,
+            "cameraRejected": 1018930,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2936340,
+            "queryDropped": 117788,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 110.19148936170212,
+            "submitted": 110.87234042553192,
+            "refresh": 345.51063829787233,
+            "ratio": 0.9938591441182114
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5659,
+            5660,
+            5661,
+            3,
+            5659,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-submit-coalesce-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-submit-coalesce-probe-20261106.json",
+        "sha256": "06480794a32d09b775219129d763760ad8c5d0f571448e0fcbace7b364225591"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-submit-coalesce-probe-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2661,
+            "fps": 109.61034777702797,
+            "low1Fps": 43.228011751181896,
+            "p50": 8.665000006556511,
+            "p95": 18.42000000178814,
+            "p99": 20.849999994039536,
+            "maximum": 39.67999999970198
+          },
+          "workload": {
+            "draws": 1858.167415730337,
+            "dispatches": 159.46479400749064,
+            "pending": 215.15580524344568,
+            "ready": 492.0052434456929
+          },
+          "rhiMs": 6.496936004501154,
+          "history": {
+            "enabled": true,
+            "frame": 5640,
+            "polls": 3933188,
+            "ready": 2782333,
+            "hits": 352597,
+            "zero": 327397,
+            "fallback": 1198299,
+            "expired": 39544,
+            "cameraRejected": 1055301,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2901606,
+            "queryDropped": 112995,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 108.95744680851064,
+            "submitted": 109.57446808510639,
+            "refresh": 347.63829787234044,
+            "ratio": 0.9943689320388349
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5657,
+            5659,
+            5660,
+            3,
+            5657,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-bundles-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-bundles-probe-20261106.json",
+        "sha256": "c27e24e4b50ef90346e18dccd297d7c1bc506969dcddc39a4fa7e2e625684308"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-bundles-probe-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2063,
+            "fps": 84.8985343171399,
+            "low1Fps": 25.323477274866217,
+            "p50": 10.859999999403954,
+            "p95": 22.88000000268221,
+            "p99": 28.78999999910593,
+            "maximum": 81.85999999940395
+          },
+          "workload": {
+            "draws": 2090.6971014492756,
+            "dispatches": 164.80772946859904,
+            "pending": 261.0217391304348,
+            "ready": 577.1787439613527
+          },
+          "rhiMs": 8.797842558448105,
+          "history": {
+            "enabled": true,
+            "frame": 4380,
+            "polls": 3739342,
+            "ready": 2632128,
+            "hits": 380824,
+            "zero": 357442,
+            "fallback": 1128423,
+            "expired": 37277,
+            "cameraRejected": 993497,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2702119,
+            "queryDropped": 64511,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 85.51063829787235,
+            "submitted": 86.19148936170212,
+            "refresh": 343.3191489361702,
+            "ratio": 0.9921007158726242
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            4391,
+            4394,
+            4394,
+            3,
+            4391,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-querypool-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-querypool-probe-20261106.json",
+        "sha256": "aeefbe8b75f23b39e8581685a2a1b1a112ac9220494dd7020d427727ba7dfd4f"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-querypool-candidate-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2673,
+            "fps": 110.13406442903761,
+            "low1Fps": 43.2935139898051,
+            "p50": 8.54500000178814,
+            "p95": 18.445000000298023,
+            "p99": 20.719999998807907,
+            "maximum": 35.92500000447035
+          },
+          "workload": {
+            "draws": 1777.4670411985019,
+            "dispatches": 159.9756554307116,
+            "pending": 190.15992509363295,
+            "ready": 442.63970037453186
+          },
+          "rhiMs": 6.46779186166099,
+          "history": {
+            "enabled": true,
+            "frame": 5760,
+            "polls": 3663912,
+            "ready": 2596844,
+            "hits": 368944,
+            "zero": 342998,
+            "fallback": 1112006,
+            "expired": 38422,
+            "cameraRejected": 974978,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2819931,
+            "queryDropped": 217686,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 110.12765957446808,
+            "submitted": 111.34042553191489,
+            "refresh": 251.40425531914894,
+            "ratio": 0.9891075864704758
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5777,
+            5780,
+            5780,
+            3,
+            5777,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-pace8-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-pace8-probe-20261106.json",
+        "sha256": "5d69b5ebdbb99381422098a361c9a65dd2ab2b8c332c840923b89ebd33144f7e"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-pace8-probe-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2385,
+            "fps": 99.00749654874444,
+            "low1Fps": 34.40613576139185,
+            "p50": 9.009999997913837,
+            "p95": 17.515000000596046,
+            "p99": 20.859999999403954,
+            "maximum": 136.88500000536442
+          },
+          "workload": {
+            "draws": 1724.6591666666666,
+            "dispatches": 154.3775,
+            "pending": 34.5525,
+            "ready": 211.56583333333333
+          },
+          "rhiMs": 6.164014913769112,
+          "history": {
+            "enabled": true,
+            "frame": 5130,
+            "polls": 1584014,
+            "ready": 1253367,
+            "hits": 345720,
+            "zero": 320431,
+            "fallback": 434396,
+            "expired": 20549,
+            "cameraRejected": 351952,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2513829,
+            "queryDropped": 1249406,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 98.85106382978724,
+            "submitted": 98.97872340425532,
+            "refresh": 255.51063829787233,
+            "ratio": 0.9987102321582115
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5132,
+            5134,
+            5135,
+            3,
+            5132,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-pace10-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-pace10-probe-20261106.json",
+        "sha256": "e927d2dc9564af01f54533e0dd08239780e69d7ca0b90e54d8073d3af886d250"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-pace10-probe-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2066,
+            "fps": 85.88524259984031,
+            "low1Fps": 43.84179375660339,
+            "p50": 11.090000003576279,
+            "p95": 17.12000000476837,
+            "p99": 20.78999999910593,
+            "maximum": 33.0350000038743
+          },
+          "workload": {
+            "draws": 1786.1270531400967,
+            "dispatches": 157.35410628019324,
+            "pending": 6.853623188405797,
+            "ready": 111.97391304347826
+          },
+          "rhiMs": 6.315884092098509,
+          "history": {
+            "enabled": true,
+            "frame": 4470,
+            "polls": 839530,
+            "ready": 769507,
+            "hits": 274807,
+            "zero": 252089,
+            "fallback": 274513,
+            "expired": 14591,
+            "cameraRejected": 210493,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2255808,
+            "queryDropped": 1470745,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 86.14893617021276,
+            "submitted": 86.42553191489361,
+            "refresh": 348.4468085106383,
+            "ratio": 0.9967996061053669
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            4478,
+            4480,
+            4481,
+            3,
+            4478,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-shadowcache768-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-shadowcache768-probe-20261106.json",
+        "sha256": "c303b19b16993e99d5dfe029e5ffe80694b13a39e69634c59ef72e0dbb215dfe"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-shadowcache768-probe-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2751,
+            "fps": 114.1938468569508,
+            "low1Fps": 42.809528177686964,
+            "p50": 8.280000001192093,
+            "p95": 17.71000000089407,
+            "p99": 19.859999999403954,
+            "maximum": 40.975000001490116
+          },
+          "workload": {
+            "draws": 1760.1891304347826,
+            "dispatches": 157.91159420289856,
+            "pending": 203.68115942028984,
+            "ready": 458.82717391304345
+          },
+          "rhiMs": 6.221397769736828,
+          "history": {
+            "enabled": true,
+            "frame": 5760,
+            "polls": 3861797,
+            "ready": 2740077,
+            "hits": 394731,
+            "zero": 369488,
+            "fallback": 1154084,
+            "expired": 37928,
+            "cameraRejected": 1013716,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2902134,
+            "queryDropped": 153136,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 113.87234042553192,
+            "submitted": 114.12765957446808,
+            "refresh": 344.02127659574467,
+            "ratio": 0.9977628635346757
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 768,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5776,
+            5779,
+            5779,
+            3,
+            5776,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-render-state-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-render-state-probe-20261106.json",
+        "sha256": "1c0ccfa7727996f9bdfcdb25848b641e3310766d7958ecceee0db57650468491"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-render-state-probe-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2622,
+            "fps": 108.12859384784059,
+            "low1Fps": 32.07603207659991,
+            "p50": 8.779999993741512,
+            "p95": 18.679999999701977,
+            "p99": 20.95499999821186,
+            "maximum": 91.85499999672174
+          },
+          "workload": {
+            "draws": 1862.478787878788,
+            "dispatches": 158.67765151515152,
+            "pending": 216.03977272727272,
+            "ready": 503.4094696969697
+          },
+          "rhiMs": 6.5688678196498325,
+          "history": {
+            "enabled": true,
+            "frame": 5550,
+            "polls": 3881219,
+            "ready": 2773615,
+            "hits": 389065,
+            "zero": 363081,
+            "fallback": 1162255,
+            "expired": 43123,
+            "cameraRejected": 1017440,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2883676,
+            "queryDropped": 103447,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 107.59574468085107,
+            "submitted": 107.70212765957447,
+            "refresh": 344.78723404255317,
+            "ratio": 0.9990122481232715
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5560,
+            5563,
+            5563,
+            3,
+            5560,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-budgets-diagnostic",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-budgets-diagnostic-20261106.json",
+        "sha256": "6961eb2e905604fa611bf6f8d91f0f0e480b0c299579dba05be76e785b4e9133"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-mouse-query-control-v2-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [
+        "pipeline"
+      ],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2704,
+            "fps": 112.43212856182585,
+            "low1Fps": 46.615777775835426,
+            "p50": 8.449999995529652,
+            "p95": 17.690000005066395,
+            "p99": 19.65999999642372,
+            "maximum": 29.695000000298023
+          },
+          "workload": {
+            "draws": 1806.8925925925926,
+            "dispatches": 159.49481481481482,
+            "pending": 204.13407407407408,
+            "ready": 472.31296296296296
+          },
+          "rhiMs": 6.301332321561567,
+          "history": {
+            "enabled": true,
+            "frame": 5790,
+            "polls": 3882331,
+            "ready": 2752085,
+            "hits": 360928,
+            "zero": 335990,
+            "fallback": 1194563,
+            "expired": 39980,
+            "cameraRejected": 1050862,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2888759,
+            "queryDropped": 130986,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 113.22222222222223,
+            "submitted": 113.37777777777778,
+            "refresh": 343.73333333333335,
+            "ratio": 0.9986279890239123
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5804,
+            5807,
+            5807,
+            3,
+            5804,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "mode": "page4",
+          "result": {
+            "samples": 3172,
+            "fps": 130.64285386269205,
+            "low1Fps": 48.678826231449385,
+            "p50": 7.440000005066395,
+            "p95": 15.370000004768372,
+            "p99": 18.125,
+            "maximum": 28.935000002384186
+          },
+          "workload": {
+            "draws": 1648.9955555555555,
+            "dispatches": 154.62190476190477,
+            "pending": 273.5025396825397,
+            "ready": 442.9425396825397
+          },
+          "rhiMs": 5.990606379426422,
+          "history": {
+            "enabled": true,
+            "frame": 6690,
+            "polls": 4826881,
+            "ready": 2991105,
+            "hits": 554751,
+            "zero": 522221,
+            "fallback": 1174503,
+            "expired": 46603,
+            "cameraRejected": 1007292,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 3083346,
+            "queryDropped": 86896,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 129.6,
+            "submitted": 130.66666666666666,
+            "refresh": 333.3777777777778,
+            "ratio": 0.9918367346938776
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6685,
+            6688,
+            6689,
+            4,
+            6685,
+            4,
+            1,
+            2
+          ]
+        },
+        {
+          "mode": "page4",
+          "result": {
+            "samples": 3135,
+            "fps": 129.49357685009917,
+            "low1Fps": 46.175379863794554,
+            "p50": 7.434999994933605,
+            "p95": 15.285000003874302,
+            "p99": 18.535000003874302,
+            "maximum": 27.71500000357628
+          },
+          "workload": {
+            "draws": 1608.8253205128206,
+            "dispatches": 154.00064102564102,
+            "pending": 246.77564102564102,
+            "ready": 427.62371794871797
+          },
+          "rhiMs": 6.027514118537392,
+          "history": {
+            "enabled": true,
+            "frame": 6540,
+            "polls": 4658244,
+            "ready": 2927213,
+            "hits": 539026,
+            "zero": 507004,
+            "fallback": 1124830,
+            "expired": 46400,
+            "cameraRejected": 963349,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 3035882,
+            "queryDropped": 102763,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 128.48888888888888,
+            "submitted": 129.57777777777778,
+            "refresh": 334.2,
+            "ratio": 0.9915966386554621
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6559,
+            6562,
+            6563,
+            4,
+            6559,
+            4,
+            1,
+            2
+          ]
+        },
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2732,
+            "fps": 113.11509958227457,
+            "low1Fps": 46.46338933831155,
+            "p50": 8.529999993741512,
+            "p95": 17.67000000178814,
+            "p99": 19.564999997615814,
+            "maximum": 26.734999999403954
+          },
+          "workload": {
+            "draws": 1765.5421245421246,
+            "dispatches": 159.58058608058607,
+            "pending": 181.28791208791208,
+            "ready": 441.7267399267399
+          },
+          "rhiMs": 6.253842201735211,
+          "history": {
+            "enabled": true,
+            "frame": 5730,
+            "polls": 3876183,
+            "ready": 2783245,
+            "hits": 401002,
+            "zero": 375304,
+            "fallback": 1125566,
+            "expired": 38533,
+            "cameraRejected": 986175,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2914702,
+            "queryDropped": 127983,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0
+          },
+          "display": {
+            "visual": 114.53333333333333,
+            "submitted": 115.15555555555555,
+            "refresh": 344.9111111111111,
+            "ratio": 0.994596680818217
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5735,
+            5737,
+            5738,
+            3,
+            5735,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-group-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-group-probe-20261106.json",
+        "sha256": "4c661101470c4cbc781346a71b837ddb8fd30b83cc01be6e514c914f67375d87"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-group-candidate-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2988,
+            "fps": 123.55202137597153,
+            "low1Fps": 42.914771263208024,
+            "p50": 7.744999997317791,
+            "p95": 16.740000002086163,
+            "p99": 19.265000000596046,
+            "maximum": 38.88000000268221
+          },
+          "workload": {
+            "draws": 1275.407,
+            "dispatches": 155.61866666666666,
+            "pending": 176.67,
+            "ready": 393.6236666666667
+          },
+          "rhiMs": 5.698780995952131,
+          "history": {
+            "enabled": true,
+            "frame": 6330,
+            "polls": 3863905,
+            "ready": 2730862,
+            "hits": 419967,
+            "zero": 379693,
+            "fallback": 1136471,
+            "expired": 40245,
+            "cameraRejected": 990888,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2919655,
+            "queryDropped": 176744,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2350287
+          },
+          "display": {
+            "visual": 121.31914893617021,
+            "submitted": 123.70212765957447,
+            "refresh": 250.17021276595744,
+            "ratio": 0.9807361541107671
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6339,
+            6341,
+            6342,
+            3,
+            6339,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-group-direct-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-group-direct-probe-20261106.json",
+        "sha256": "ea84c6e270df5a5602853115e202c2152040beb6a25b4e52e20a89983104e287"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-group-candidate-20261106",
+      "seconds": 24,
+      "input": "direct-game-thread",
+      "diagnostic": [
+        "pipeline"
+      ],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3100,
+            "fps": 129.0568876516128,
+            "low1Fps": 46.371782022851924,
+            "p50": 7.53999999910593,
+            "p95": 16.399999998509884,
+            "p99": 18.84000000357628,
+            "maximum": 35.7149999961257
+          },
+          "workload": {
+            "draws": 1144.6585760517798,
+            "dispatches": 148.64077669902912,
+            "pending": 150.62815533980583,
+            "ready": 357.51877022653724
+          },
+          "rhiMs": 5.4250867193088,
+          "history": {
+            "enabled": true,
+            "frame": 6510,
+            "polls": 3605418,
+            "ready": 2566804,
+            "hits": 405002,
+            "zero": 364294,
+            "fallback": 1043133,
+            "expired": 40911,
+            "cameraRejected": 902230,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2725794,
+            "queryDropped": 149643,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2157678
+          },
+          "display": {
+            "visual": 127.75555555555556,
+            "submitted": 131.37777777777777,
+            "refresh": 252.4,
+            "ratio": 0.9724289580514209
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6524,
+            6526,
+            6527,
+            3,
+            6524,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-csmoff",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-csmoff-20261106.json",
+        "sha256": "3e6bdb8ae04ddc1eabb82afdaa8f0ac2148211b8f3317e00554fdf9b56e107dd"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-csmoff-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2801,
+            "fps": 115.45649627250444,
+            "low1Fps": 44.68894950150759,
+            "p50": 8.075000002980232,
+            "p95": 18.240000002086163,
+            "p99": 20.549999997019768,
+            "maximum": 27.04500000178814
+          },
+          "workload": {
+            "draws": 1731.5892473118279,
+            "dispatches": 157.5584229390681,
+            "pending": 219.80179211469533,
+            "ready": 468.789605734767
+          },
+          "rhiMs": 6.223048986896973,
+          "history": {
+            "enabled": true,
+            "frame": 5820,
+            "polls": 3962199,
+            "ready": 2775532,
+            "hits": 371185,
+            "zero": 336925,
+            "fallback": 1218990,
+            "expired": 36950,
+            "cameraRejected": 1077917,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2916244,
+            "queryDropped": 132482,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2402052
+          },
+          "display": {
+            "visual": 114.38297872340425,
+            "submitted": 117.06382978723404,
+            "refresh": 247.93617021276594,
+            "ratio": 0.9770992366412213
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5840,
+            5843,
+            5843,
+            3,
+            5840,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-group-bindings",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-group-bindings-20261106.json",
+        "sha256": "85eb588e748c85179dba9671104bbff37931049b7f69d7897b266aa1d127205c"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-group-bindings-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3028,
+            "fps": 125.44452435477741,
+            "low1Fps": 43.096257575243115,
+            "p50": 7.674999997019768,
+            "p95": 16.679999999701977,
+            "p99": 18.825000002980232,
+            "maximum": 40.49499999731779
+          },
+          "workload": {
+            "draws": 1282.0891089108911,
+            "dispatches": 155.74554455445545,
+            "pending": 181.55643564356436,
+            "ready": 408.04125412541254
+          },
+          "rhiMs": 5.611188572126203,
+          "history": {
+            "enabled": true,
+            "frame": 6420,
+            "polls": 3906421,
+            "ready": 2744283,
+            "hits": 431715,
+            "zero": 388754,
+            "fallback": 1130322,
+            "expired": 40857,
+            "cameraRejected": 984359,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2954199,
+            "queryDropped": 202547,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2353814
+          },
+          "display": {
+            "visual": 123.59574468085107,
+            "submitted": 126.29787234042553,
+            "refresh": 248.6595744680851,
+            "ratio": 0.9786051212938006
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6428,
+            6430,
+            6431,
+            3,
+            6428,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-group-clocks",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-group-clocks-20261106.json",
+        "sha256": "91925b37f54143216c66e7cf72c0c8351c6ff7e28de0e73a5ff636788f75ab04"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-group-bindings-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "pipeline3",
+          "result": {
+            "samples": 2836,
+            "fps": 117.17991413967488,
+            "low1Fps": 47.554236428427515,
+            "p50": 8.244999997317791,
+            "p95": 16.86999999731779,
+            "p99": 18.37999999523163,
+            "maximum": 43.23499999940395
+          },
+          "workload": {
+            "draws": 1434.0971929824561,
+            "dispatches": 162.08526315789473,
+            "pending": 259.85508771929824,
+            "ready": 500.3066666666667
+          },
+          "rhiMs": 5.971531703322601,
+          "history": {
+            "enabled": true,
+            "frame": 6030,
+            "polls": 4541071,
+            "ready": 3073597,
+            "hits": 424496,
+            "zero": 381329,
+            "fallback": 1490667,
+            "expired": 46856,
+            "cameraRejected": 1316063,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 3088816,
+            "queryDropped": 11034,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2506851
+          },
+          "display": {
+            "visual": 116.68085106382979,
+            "submitted": 118.72340425531915,
+            "refresh": 250.5744680851064,
+            "ratio": 0.9827956989247312
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": null,
+          "localBudget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 6045,
+            "completed": 6044,
+            "pending": 1,
+            "peak": 3,
+            "wakes": 4233
+          }
+        },
+        {
+          "mode": "page2",
+          "result": {
+            "samples": 2410,
+            "fps": 98.54134279550458,
+            "low1Fps": 43.05853377049861,
+            "p50": 8.734999999403954,
+            "p95": 17.674999997019768,
+            "p99": 19.46000000089407,
+            "maximum": 35.125
+          },
+          "workload": {
+            "draws": 1165.3325102880658,
+            "dispatches": 144.78559670781894,
+            "pending": 5.4563786008230455,
+            "ready": 202.05473251028806
+          },
+          "rhiMs": 5.401449879323404,
+          "history": {
+            "enabled": true,
+            "frame": 5040,
+            "polls": 1228686,
+            "ready": 1197327,
+            "hits": 414648,
+            "zero": 365191,
+            "fallback": 429103,
+            "expired": 19712,
+            "cameraRejected": 344923,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2273804,
+            "queryDropped": 1068998,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 1774740
+          },
+          "display": {
+            "visual": 98.91666666666667,
+            "submitted": 99.39583333333333,
+            "refresh": 252.4375,
+            "ratio": 0.9951792077132677
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5045,
+            5047,
+            5047,
+            2,
+            5045,
+            2,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-querybuffer3",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-querybuffer3-20261106.json",
+        "sha256": "011c1df4f0f7ce1478b6f8dfd358800e2df86613f79e0f204c261a5b7262d592"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-querybuffer3-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3223,
+            "fps": 133.80236813170174,
+            "low1Fps": 44.05903911081531,
+            "p50": 6.8599999994039536,
+            "p95": 16.96500000357628,
+            "p99": 19.344999998807907,
+            "maximum": 39.25999999791384
+          },
+          "workload": {
+            "draws": 1152.1141975308642,
+            "dispatches": 136.84876543209876,
+            "pending": 142.61697530864197,
+            "ready": 401.6151234567901
+          },
+          "rhiMs": 5.181862490559984,
+          "history": {
+            "enabled": true,
+            "frame": 6810,
+            "polls": 3847820,
+            "ready": 2793866,
+            "hits": 442295,
+            "zero": 401268,
+            "fallback": 1094176,
+            "expired": 43718,
+            "cameraRejected": 946013,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2953385,
+            "queryDropped": 151964,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2322264
+          },
+          "display": {
+            "visual": 130.59574468085106,
+            "submitted": 135.10638297872342,
+            "refresh": 250.0212765957447,
+            "ratio": 0.9666141732283463
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6808,
+            6811,
+            6811,
+            3,
+            6808,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-alloc-candidate",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-candidate-20261106.json",
+        "sha256": "fb382bed42c4349b73d5cccad0f4990e7eadd6a3ef673f1e72b5b3bca0d85e3b"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-alloc-candidate-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2939,
+            "fps": 121.28532734351296,
+            "low1Fps": 47.40197666425718,
+            "p50": 7.979999989271164,
+            "p95": 16.689999997615814,
+            "p99": 18.875,
+            "maximum": 32.064999997615814
+          },
+          "workload": {
+            "draws": 1325.6312925170068,
+            "dispatches": 157.7312925170068,
+            "pending": 193.64285714285714,
+            "ready": 445.5986394557823
+          },
+          "rhiMs": 5.734604473548239,
+          "history": {
+            "enabled": true,
+            "frame": 6150,
+            "polls": 4089791,
+            "ready": 2888416,
+            "hits": 415635,
+            "zero": 374268,
+            "fallback": 1212943,
+            "expired": 40041,
+            "cameraRejected": 1062523,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2971926,
+            "queryDropped": 78430,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2399026
+          },
+          "pool": {
+            "enabled": true,
+            "created": 21,
+            "reused": 18455,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "display": {
+            "visual": 121.76595744680851,
+            "submitted": 122.61702127659575,
+            "refresh": 345.21276595744683,
+            "ratio": 0.9930591705708832
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6164,
+            6167,
+            6167,
+            3,
+            6164,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-readback-pages-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-readback-pages-probe-20261106.json",
+        "sha256": "fd79bc3248f4a5229723aca39168d3a08af461b7615f4199ec88d667e6b27b2e"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-readback-pages-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2896,
+            "fps": 119.29209860792739,
+            "low1Fps": 45.80743502320463,
+            "p50": 8.049999997019768,
+            "p95": 16.82999999821186,
+            "p99": 19.04500000178814,
+            "maximum": 37.95999999344349
+          },
+          "workload": {
+            "draws": 1329.292439862543,
+            "dispatches": 157.24089347079038,
+            "pending": 188.88865979381444,
+            "ready": 451.9621993127148
+          },
+          "rhiMs": 5.840255145368905,
+          "history": {
+            "enabled": true,
+            "frame": 6120,
+            "polls": 4053599,
+            "ready": 2885346,
+            "hits": 442413,
+            "zero": 399695,
+            "fallback": 1172996,
+            "expired": 39735,
+            "cameraRejected": 1023809,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2987158,
+            "queryDropped": 96677,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2385316
+          },
+          "pool": {
+            "enabled": true,
+            "mode": 2,
+            "created": 0,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0,
+            "pages": 3,
+            "pageMaps": 6120,
+            "pagedCopies": 18383
+          },
+          "display": {
+            "visual": 119.59574468085107,
+            "submitted": 120.19148936170212,
+            "refresh": 344.40425531914894,
+            "ratio": 0.9950433705080546
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6119,
+            6122,
+            6122,
+            3,
+            6119,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-motion-hzb",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-motion-hzb-20261106.json",
+        "sha256": "1e21045347cc11c8281cbcb6f1f9f639a593e8102c70e6b3d47f73e4035ad458"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-motion-hzb-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2849,
+            "fps": 117.54806050859611,
+            "low1Fps": 45.52840422917614,
+            "p50": 8.129999995231628,
+            "p95": 17.469999998807907,
+            "p99": 19.67500001192093,
+            "maximum": 31.405000001192093
+          },
+          "workload": {
+            "draws": 1729.559649122807,
+            "dispatches": 157.79614035087718,
+            "pending": 192.74456140350878,
+            "ready": 447.8143859649123
+          },
+          "rhiMs": 5.969012172462145,
+          "history": {
+            "enabled": true,
+            "frame": 5970,
+            "polls": 4002388,
+            "ready": 2821097,
+            "hits": 438550,
+            "zero": 411298,
+            "fallback": 1180037,
+            "expired": 40164,
+            "cameraRejected": 1033128,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2956549,
+            "queryDropped": 131475,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": false,
+            "motionQueriesGrouped": 0
+          },
+          "pool": {
+            "enabled": true,
+            "mode": 1,
+            "created": 21,
+            "reused": 17915,
+            "entries": 21,
+            "bytes": 2162688,
+            "pages": 0,
+            "pageMaps": 0,
+            "pagedCopies": 0
+          },
+          "display": {
+            "visual": 117.04255319148936,
+            "submitted": 117.31914893617021,
+            "refresh": 345.2340425531915,
+            "ratio": 0.9976423648893725
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5974,
+            5976,
+            5977,
+            3,
+            5974,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-motion-hzb-active",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-motion-hzb-active-20261106.json",
+        "sha256": "3a4b8f40e646b57f30b5a4dfd512a01b25919be898a68e7ed6c5633feda2522d"
+      },
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(after.history.queryCaptured>before.history.queryCaptured)\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:383:7",
+      "folder": "villa-low-motion-hzb-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "occlusion": "hzb",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2673,
+            "fps": 110.78447260080776,
+            "low1Fps": 46.91654068871882,
+            "p50": 7.564999997615814,
+            "p95": 16.770000010728836,
+            "p99": 18.844999998807907,
+            "maximum": 32.560000002384186
+          },
+          "workload": {
+            "draws": 1093.7285185185185,
+            "dispatches": 143.24555555555557,
+            "pending": 1.0437037037037038,
+            "ready": 6.924814814814815
+          },
+          "rhiMs": 5.500132727516072,
+          "history": {
+            "enabled": true,
+            "frame": 5610,
+            "polls": 0,
+            "ready": 2402007,
+            "hits": 318387,
+            "zero": 267520,
+            "fallback": 601459,
+            "expired": 22331,
+            "cameraRejected": 510048,
+            "boundsRejected": 0,
+            "hzbSubmitted": 5608,
+            "hzbCompleted": 5607,
+            "hzbSkipped": 0,
+            "queryCaptured": 0,
+            "queryDropped": 0,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": false,
+            "motionQueriesGrouped": 0
+          },
+          "pool": {
+            "enabled": true,
+            "mode": 1,
+            "created": 22,
+            "reused": 16837,
+            "entries": 22,
+            "bytes": 2228224,
+            "pages": 0,
+            "pageMaps": 0,
+            "pagedCopies": 0
+          },
+          "display": {
+            "visual": 110.44680851063829,
+            "submitted": 110.48936170212765,
+            "refresh": 349.70212765957444,
+            "ratio": 0.9996148661659927
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5611,
+            5612,
+            5614,
+            3,
+            5611,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-cores6",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-cores6-20261106.json",
+        "sha256": "8e665e86fd59c6a32226fb4cd8b8b4282083a605c2ba97b824d0bc3661a0b1f5"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-cores6-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2814,
+            "fps": 116.49214578412942,
+            "low1Fps": 45.7611740101635,
+            "p50": 8.325000002980232,
+            "p95": 17.29000000655651,
+            "p99": 19.450000002980232,
+            "maximum": 32.78999999165535
+          },
+          "workload": {
+            "draws": 1348.1645390070921,
+            "dispatches": 159.27163120567377,
+            "pending": 193.40709219858155,
+            "ready": 455.97588652482267
+          },
+          "rhiMs": 6.009010239811634,
+          "history": {
+            "enabled": true,
+            "frame": 6030,
+            "polls": 3979047,
+            "ready": 2838896,
+            "hits": 421396,
+            "zero": 381538,
+            "fallback": 1162778,
+            "expired": 39380,
+            "cameraRejected": 1016249,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2934310,
+            "queryDropped": 90214,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2363581
+          },
+          "pool": {
+            "enabled": true,
+            "mode": 1,
+            "created": 21,
+            "reused": 18098,
+            "entries": 21,
+            "bytes": 2162688,
+            "pages": 0,
+            "pageMaps": 0,
+            "pagedCopies": 0
+          },
+          "display": {
+            "visual": 117.2127659574468,
+            "submitted": 117.8936170212766,
+            "refresh": 344.36170212765956,
+            "ratio": 0.9942248691571918
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6035,
+            6038,
+            6038,
+            3,
+            6035,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-cores8",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-cores8-20261106.json",
+        "sha256": "1e76d0d2770d45e1de25c78eea4d1a8c250f361ac78c8ecfd4ddec7511f836fa"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-cores8-20261106",
+      "seconds": 24,
+      "input": "owner-forwarded",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2861,
+            "fps": 118.20455502757333,
+            "low1Fps": 40.21856711023135,
+            "p50": 8.054999992251396,
+            "p95": 17.260000005364418,
+            "p99": 19.855000004172325,
+            "maximum": 57.92500001192093
+          },
+          "workload": {
+            "draws": 1368.7618055555556,
+            "dispatches": 156.05868055555555,
+            "pending": 200.03298611111111,
+            "ready": 454.23020833333334
+          },
+          "rhiMs": 5.906142297005628,
+          "history": {
+            "enabled": true,
+            "frame": 6090,
+            "polls": 3982111,
+            "ready": 2830653,
+            "hits": 400177,
+            "zero": 358301,
+            "fallback": 1189424,
+            "expired": 39553,
+            "cameraRejected": 1040863,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2952785,
+            "queryDropped": 116184,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2398835
+          },
+          "pool": {
+            "enabled": true,
+            "mode": 1,
+            "created": 21,
+            "reused": 18278,
+            "entries": 21,
+            "bytes": 2162688,
+            "pages": 0,
+            "pageMaps": 0,
+            "pagedCopies": 0
+          },
+          "display": {
+            "visual": 119.04255319148936,
+            "submitted": 118.59574468085107,
+            "refresh": 342.78723404255317,
+            "ratio": 1.003767491926803
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6091,
+            6094,
+            6094,
+            3,
+            6091,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-input-direct-game-thread",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-input-direct-game-thread-20261106.json",
+        "sha256": "dbb0b80c62e61158b85012e48163a2aaf0c66c7e327a6d436a01c024ed139bdb"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-readback-control-20261106",
+      "seconds": 24,
+      "input": "direct-game-thread",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3066,
+            "fps": 126.4022882689493,
+            "low1Fps": 47.57629472468689,
+            "p50": 7.7349999994039536,
+            "p95": 16.314999997615814,
+            "p99": 18.70499999821186,
+            "maximum": 28.690000012516975
+          },
+          "workload": {
+            "draws": 1187.2307189542485,
+            "dispatches": 150.98464052287582,
+            "pending": 155.1137254901961,
+            "ready": 377.9330065359477
+          },
+          "rhiMs": 5.463102974410166,
+          "history": {
+            "enabled": true,
+            "frame": 6450,
+            "polls": 3713767,
+            "ready": 2644463,
+            "hits": 402304,
+            "zero": 363229,
+            "fallback": 1066260,
+            "expired": 40414,
+            "cameraRejected": 922216,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2769682,
+            "queryDropped": 118959,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2215760
+          },
+          "pool": {
+            "enabled": true,
+            "mode": 1,
+            "created": 21,
+            "reused": 19358,
+            "entries": 21,
+            "bytes": 2162688,
+            "pages": 0,
+            "pageMaps": 0,
+            "pagedCopies": 0
+          },
+          "display": {
+            "visual": 126.93617021276596,
+            "submitted": 127.72340425531915,
+            "refresh": 346.21276595744683,
+            "ratio": 0.9938364151257705
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6461,
+            6463,
+            6464,
+            3,
+            6461,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-input-shared-mailbox",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-input-shared-mailbox-20261106.json",
+        "sha256": "b7821b0806b0efeccab29eb3eb070b49bef41b59c270f2715049136b324aa717"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-readback-control-20261106",
+      "seconds": 24,
+      "input": "shared-mailbox",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3080,
+            "fps": 127.28945373809508,
+            "low1Fps": 45.15067215925099,
+            "p50": 7.5250000059604645,
+            "p95": 16.549999997019768,
+            "p99": 19.189999997615814,
+            "maximum": 38.20499999821186
+          },
+          "workload": {
+            "draws": 1205.6624595469257,
+            "dispatches": 152.26084142394822,
+            "pending": 168.99417475728154,
+            "ready": 389.94466019417473
+          },
+          "rhiMs": 5.425924841861929,
+          "history": {
+            "enabled": true,
+            "frame": 6450,
+            "polls": 3730474,
+            "ready": 2640337,
+            "hits": 367455,
+            "zero": 330697,
+            "fallback": 1096881,
+            "expired": 42588,
+            "cameraRejected": 952278,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2754955,
+            "queryDropped": 108888,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2236703
+          },
+          "pool": {
+            "enabled": true,
+            "mode": 1,
+            "created": 21,
+            "reused": 19358,
+            "entries": 21,
+            "bytes": 2162688,
+            "pages": 0,
+            "pageMaps": 0,
+            "pagedCopies": 0
+          },
+          "display": {
+            "visual": 126.97872340425532,
+            "submitted": 127.02127659574468,
+            "refresh": 346.02127659574467,
+            "ratio": 0.9996649916247906
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6457,
+            6460,
+            6460,
+            3,
+            6457,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-hold-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-hold-probe-20261106.json",
+        "sha256": "d9f7f5cba0aee3bfacc2b9ad538df899326aacd9fb93395876073ae7f0288269"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-hold-candidate-20261106",
+      "seconds": 24,
+      "input": "direct-game-thread",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3252,
+            "fps": 134.45133560361154,
+            "low1Fps": 49.15175978408308,
+            "p50": 6.9849999994039536,
+            "p95": 15.965000003576279,
+            "p99": 18.445000007748604,
+            "maximum": 27.239999994635582
+          },
+          "workload": {
+            "draws": 1128.4599388379204,
+            "dispatches": 148.9474006116208,
+            "pending": 154.0782874617737,
+            "ready": 359.74587155963303
+          },
+          "rhiMs": 5.152669223955333,
+          "history": {
+            "enabled": true,
+            "frame": 6780,
+            "polls": 3786719,
+            "ready": 2681974,
+            "hits": 398227,
+            "zero": 344621,
+            "fallback": 1090579,
+            "expired": 41743,
+            "cameraRejected": 943801,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2770703,
+            "queryDropped": 82811,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2301743,
+            "motionGroupHoldMs": 75,
+            "motionGroupHoldRequests": 175239
+          },
+          "pool": {
+            "enabled": true,
+            "created": 21,
+            "reused": 20347,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "display": {
+            "visual": 131.61702127659575,
+            "submitted": 134.72340425531914,
+            "refresh": 250.38297872340425,
+            "ratio": 0.9769425142135187
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6785,
+            6788,
+            6788,
+            3,
+            6785,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-bounded-clock",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-bounded-clock-20261106.json",
+        "sha256": "dac94a191c629202d52319bb5fa20e51425f37bea7e9240798d3bff79ec0baee"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-hold-control-20261106",
+      "seconds": 24,
+      "input": "direct-game-thread",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "pipeline3",
+          "result": {
+            "samples": 2667,
+            "fps": 110.56867830217284,
+            "low1Fps": 43.15822284103074,
+            "p50": 8.599999994039536,
+            "p95": 17.349999994039536,
+            "p99": 20.33499999344349,
+            "maximum": 32.11500000953674
+          },
+          "workload": {
+            "draws": 1361.7988764044944,
+            "dispatches": 160.2071161048689,
+            "pending": 244.7928838951311,
+            "ready": 468.3749063670412
+          },
+          "rhiMs": 6.2551809160896905,
+          "history": {
+            "enabled": true,
+            "frame": 5700,
+            "polls": 4158648,
+            "ready": 2795457,
+            "hits": 368496,
+            "zero": 334395,
+            "fallback": 1343892,
+            "expired": 44688,
+            "cameraRejected": 1183962,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2814412,
+            "queryDropped": 13816,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2315520,
+            "motionGroupHoldMs": 0,
+            "motionGroupHoldRequests": 0
+          },
+          "pool": {
+            "enabled": true,
+            "created": 21,
+            "reused": 17107,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "display": {
+            "visual": 109.57446808510639,
+            "submitted": 111.44680851063829,
+            "refresh": 246.2127659574468,
+            "ratio": 0.9831996945399009
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": null,
+          "localBudget": {
+            "maxAhead": 3,
+            "mode": "pipeline",
+            "submitted": 5712,
+            "completed": 5710,
+            "pending": 2,
+            "peak": 3,
+            "wakes": 4153
+          }
+        },
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2997,
+            "fps": 123.97230085677161,
+            "low1Fps": 37.989831388350325,
+            "p50": 7.489999994635582,
+            "p95": 16.819999992847443,
+            "p99": 21.34000000357628,
+            "maximum": 42.939999997615814
+          },
+          "workload": {
+            "draws": 1163.9,
+            "dispatches": 150.31566666666666,
+            "pending": 159.50466666666668,
+            "ready": 370.5133333333333
+          },
+          "rhiMs": 5.551427523295085,
+          "history": {
+            "enabled": true,
+            "frame": 6210,
+            "polls": 3604324,
+            "ready": 2545179,
+            "hits": 363511,
+            "zero": 326866,
+            "fallback": 1043038,
+            "expired": 39089,
+            "cameraRejected": 905011,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2656110,
+            "queryDropped": 101529,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2148999,
+            "motionGroupHoldMs": 0,
+            "motionGroupHoldRequests": 0
+          },
+          "pool": {
+            "enabled": true,
+            "created": 21,
+            "reused": 18637,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "display": {
+            "visual": 121.70212765957447,
+            "submitted": 124.55319148936171,
+            "refresh": 245.95744680851064,
+            "ratio": 0.9771096686026648
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6230,
+            6232,
+            6233,
+            3,
+            6230,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-gpu-passes",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-gpu-passes-20261106.json",
+        "sha256": "14af652917cdeb519e88f7f5972fddeeafbcced9e66094fb0c2833e52f3a577e"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-hold-candidate-20261106",
+      "seconds": 16,
+      "input": "direct-game-thread",
+      "occlusion": "history",
+      "diagnostic": [
+        "gpuTimestamps"
+      ],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2016,
+            "fps": 122.36956275652807,
+            "low1Fps": 42.06646501402009,
+            "p50": 7.74499998986721,
+            "p95": 17.075000002980232,
+            "p99": 20.40999999642372,
+            "maximum": 34.13499999046326
+          },
+          "workload": {
+            "draws": 1192.5258706467662,
+            "dispatches": 151.41641791044776,
+            "pending": 165.78358208955223,
+            "ready": 378.4487562189055
+          },
+          "rhiMs": 5.650195143987593,
+          "history": {
+            "enabled": true,
+            "frame": 4230,
+            "polls": 2472324,
+            "ready": 1738897,
+            "hits": 372736,
+            "zero": 328962,
+            "fallback": 687682,
+            "expired": 31403,
+            "cameraRejected": 578797,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 1896694,
+            "queryDropped": 150810,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 1469125,
+            "motionGroupHoldMs": 75,
+            "motionGroupHoldRequests": 95867
+          },
+          "pool": {
+            "enabled": true,
+            "created": 21,
+            "reused": 12599,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "display": {
+            "visual": 121.27586206896552,
+            "submitted": 124.20689655172414,
+            "refresh": 249.44827586206895,
+            "ratio": 0.9764019988895059
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            4228,
+            4229,
+            4230,
+            3,
+            4228,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-new-motion-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-new-motion-probe-20261106.json",
+        "sha256": "5a65207f732a8a6b92609c3b101912551e116623067f897d4129d1cdb85263e5"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-new-motion-candidate-20261106",
+      "seconds": 24,
+      "input": "direct-game-thread",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2605,
+            "fps": 107.59036609842815,
+            "low1Fps": 35.53940925470332,
+            "p50": 8.470000013709068,
+            "p95": 18.679999992251396,
+            "p99": 23.599999994039536,
+            "maximum": 53.820000007748604
+          },
+          "workload": {
+            "draws": 1235.8750957854406,
+            "dispatches": 154.42183908045976,
+            "pending": 164.71685823754788,
+            "ready": 386.21379310344827
+          },
+          "rhiMs": 6.44919238513029,
+          "history": {
+            "enabled": true,
+            "frame": 5640,
+            "polls": 3400534,
+            "ready": 2400359,
+            "hits": 345271,
+            "zero": 313829,
+            "fallback": 946068,
+            "expired": 36263,
+            "cameraRejected": 819034,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2533764,
+            "queryDropped": 126246,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2076696,
+            "motionGroupHoldMs": 0,
+            "motionGroupHoldRequests": 0,
+            "groupNewMotionQueries": true,
+            "newMotionGroupRequests": 23028
+          },
+          "pool": {
+            "enabled": true,
+            "created": 21,
+            "reused": 16927,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "display": {
+            "visual": 105.85106382978724,
+            "submitted": 108.19148936170212,
+            "refresh": 242.46808510638297,
+            "ratio": 0.9783677482792528
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            5642,
+            5644,
+            5645,
+            3,
+            5642,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "mouse-low-new-motion-control-probe",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-new-motion-control-probe-20261106.json",
+        "sha256": "8b8bc1978db211d614df2f0b43d1e4cd9cd1b5f230e2d079b1d5664d65086df2"
+      },
+      "pass": true,
+      "error": null,
+      "folder": "villa-low-new-motion-control-20261106",
+      "seconds": 24,
+      "input": "direct-game-thread",
+      "occlusion": "history",
+      "diagnostic": [],
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 2882,
+            "fps": 119.32489930149335,
+            "low1Fps": 39.6686979780008,
+            "p50": 7.675000011920929,
+            "p95": 17.135000005364418,
+            "p99": 21.28499999642372,
+            "maximum": 57.48999999463558
+          },
+          "workload": {
+            "draws": 1227.1975694444445,
+            "dispatches": 152.80972222222223,
+            "pending": 172.68993055555555,
+            "ready": 389.2236111111111
+          },
+          "rhiMs": 5.777006711249128,
+          "history": {
+            "enabled": true,
+            "frame": 6120,
+            "polls": 3650489,
+            "ready": 2567034,
+            "hits": 377674,
+            "zero": 341978,
+            "fallback": 1039973,
+            "expired": 39473,
+            "cameraRejected": 901525,
+            "boundsRejected": 0,
+            "hzbSubmitted": 0,
+            "hzbCompleted": 0,
+            "hzbSkipped": 0,
+            "queryCaptured": 2689531,
+            "queryDropped": 115925,
+            "maxAgeFrames": 8,
+            "maxAgeMs": 80,
+            "motionQueryInterval": 0,
+            "motionQueriesSkipped": 0,
+            "groupMotionQueries": true,
+            "motionQueriesGrouped": 2158481,
+            "motionGroupHoldMs": 0,
+            "motionGroupHoldRequests": 0,
+            "groupNewMotionQueries": false,
+            "newMotionGroupRequests": 0
+          },
+          "pool": {
+            "enabled": true,
+            "created": 21,
+            "reused": 18367,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "display": {
+            "visual": 117.19148936170212,
+            "submitted": 119.87234042553192,
+            "refresh": 245.12765957446808,
+            "ratio": 0.9776357827476038
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 0,
+            "reflections": 0,
+            "virtualShadows": 0,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1
+          },
+          "ownerBudget": [
+            6127,
+            6130,
+            6130,
+            3,
+            6127,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    }
+  ],
+  "missing": [],
+  "notes": {
+    "mouse-low-motion-hzb": "Misconfigured isolation: history URL overrode HZB INI. hzbCompleted remained zero; not an HZB result.",
+    "mouse-low-motion-hzb-active": "HZB completed during measurement. Post-measurement recovery assertion incorrectly required hardware queryCaptured; raw failure retained, harness subsequently corrected.",
+    "mouse-low-readback-pages-probe": "32-round byte validation and five-view binding checks passed separately, but map batching did not improve low FPS; implementation removed and archived.",
+    "mouse-low-alloc-candidate": "Short-run improvement shrank to 4.67% low FPS in the separate 60-second ABBA; not treated as sufficient handoff evidence."
+  }
+}

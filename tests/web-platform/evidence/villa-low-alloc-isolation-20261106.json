@@ -1,0 +1,610 @@
+{
+  "date": "2026-11-06T11:24:15.794Z",
+  "pass": true,
+  "defaultEnabled": false,
+  "physicalPresentationValidated": false,
+  "definition": "RHI submission intervals; 1% Low = 1000 / mean(slowest ceil(N*0.01) intervals). No stalls excluded; no inter-run gaps included.",
+  "boundary": "Same DOM mouse trajectory and possessed pawn, reset only between phases; frame-weighted workload may differ. This does not measure physical presentation or subjective input latency.",
+  "order": [
+    "control",
+    "candidate",
+    "candidate",
+    "control"
+  ],
+  "normal": {
+    "control": {
+      "result": {
+        "frames": 5790,
+        "fps": 119.79138919217438,
+        "low1": 45.761354535276496,
+        "p95": 16.899999991059303,
+        "p99": 19.174999997019768,
+        "max": 42.474999994039536,
+        "over25": 8,
+        "over33": 2,
+        "over50": 0
+      },
+      "windows": [
+        {
+          "tag": "mouse-low-alloc-abba-a1-20261106",
+          "folder": "villa-low-alloc-control-20261106",
+          "seconds": 24,
+          "result": {
+            "frames": 2857,
+            "fps": 118.16837773680606,
+            "low1": 44.33064546665705,
+            "p95": 17.200000002980232,
+            "p99": 19.385000005364418,
+            "max": 42.474999994039536,
+            "over25": 5,
+            "over33": 2,
+            "over50": 0
+          },
+          "rhiMs": 5.956941115943671,
+          "workload": {
+            "draws": 1345.2136842105263,
+            "dispatches": 158.75087719298244,
+            "pending": 193.4715789473684,
+            "ready": 450.28491228070175
+          },
+          "turnDegrees": 1577.32685572817,
+          "travelCm": 1062.896290307532,
+          "display": {
+            "visual": 117.91489361702128,
+            "submitted": 118.55319148936171,
+            "refresh": 341.17021276595744,
+            "ratio": 0.994615936826992
+          },
+          "budget": [
+            6055,
+            6058,
+            6058,
+            3,
+            6055,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": false,
+            "created": 9553,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "poolAfter": {
+            "enabled": false,
+            "created": 18115,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "psoBefore": {
+            "sampleFrame": 3180,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 33.124446868896484,
+            "computePipelineCreateMs": 24.74832534790039,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 445645,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 6030,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 33.124446868896484,
+            "computePipelineCreateMs": 24.74832534790039,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 830889,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        },
+        {
+          "tag": "mouse-low-alloc-abba-a2-20261106",
+          "folder": "villa-low-alloc-control-20261106",
+          "seconds": 24,
+          "result": {
+            "frames": 2933,
+            "fps": 121.41579175261087,
+            "low1": 47.51496721503147,
+            "p95": 16.609999999403954,
+            "p99": 18.96000000834465,
+            "max": 31.45999999344349,
+            "over25": 3,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 5.747397199313712,
+          "workload": {
+            "draws": 1300.6261904761905,
+            "dispatches": 156.4891156462585,
+            "pending": 177.8095238095238,
+            "ready": 426.2142857142857
+          },
+          "turnDegrees": 1628.694751915522,
+          "travelCm": 1095.5428084159919,
+          "display": {
+            "visual": 121.42553191489361,
+            "submitted": 122.14893617021276,
+            "refresh": 342.1489361702128,
+            "ratio": 0.9940776868141439
+          },
+          "budget": [
+            6156,
+            6159,
+            6159,
+            3,
+            6156,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": false,
+            "created": 9647,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "poolAfter": {
+            "enabled": false,
+            "created": 18479,
+            "reused": 0,
+            "entries": 0,
+            "bytes": 0
+          },
+          "psoBefore": {
+            "sampleFrame": 3210,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 36.17262840270996,
+            "computePipelineCreateMs": 26.081085205078125,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 455974,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 6150,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 36.17262840270996,
+            "computePipelineCreateMs": 26.081085205078125,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 842384,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "result": {
+        "frames": 5909,
+        "fps": 122.32460217077197,
+        "low1": 48.56883822931196,
+        "p95": 16.625,
+        "p99": 18.814999997615814,
+        "max": 30.41500000655651,
+        "over25": 4,
+        "over33": 0,
+        "over50": 0
+      },
+      "windows": [
+        {
+          "tag": "mouse-low-alloc-abba-b1-20261106",
+          "folder": "villa-low-alloc-candidate-20261106",
+          "seconds": 24,
+          "result": {
+            "frames": 3004,
+            "fps": 124.6015208935197,
+            "low1": 49.246215186996935,
+            "p95": 16.41500000655651,
+            "p99": 18.594999998807907,
+            "max": 27.080000013113022,
+            "over25": 2,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 5.553386629895961,
+          "workload": {
+            "draws": 1255.872,
+            "dispatches": 153.35033333333334,
+            "pending": 166.221,
+            "ready": 404.04833333333335
+          },
+          "turnDegrees": 1632.0896403468216,
+          "travelCm": 1096.7809985238327,
+          "display": {
+            "visual": 125.51063829787235,
+            "submitted": 126.12765957446808,
+            "refresh": 345.0851063829787,
+            "ratio": 0.9951079622132254
+          },
+          "budget": [
+            6247,
+            6250,
+            6250,
+            3,
+            6247,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": true,
+            "created": 21,
+            "reused": 9713,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "poolAfter": {
+            "enabled": true,
+            "created": 21,
+            "reused": 18721,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "psoBefore": {
+            "sampleFrame": 3240,
+            "graphicsPipelines": 611,
+            "computePipelines": 714,
+            "graphicsPipelineCreateMs": 33.949851989746094,
+            "computePipelineCreateMs": 26.397705078125,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 454103,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 6240,
+            "graphicsPipelines": 611,
+            "computePipelines": 714,
+            "graphicsPipelineCreateMs": 33.949851989746094,
+            "computePipelineCreateMs": 26.397705078125,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 835610,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        },
+        {
+          "tag": "mouse-low-alloc-abba-b2-20261106",
+          "folder": "villa-low-alloc-candidate-20261106",
+          "seconds": 24,
+          "result": {
+            "frames": 2905,
+            "fps": 120.05598204242648,
+            "low1": 48.11161895160887,
+            "p95": 16.895000010728836,
+            "p99": 18.94999998807907,
+            "max": 30.41500000655651,
+            "over25": 2,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 5.798341811441162,
+          "workload": {
+            "draws": 1340.4436426116838,
+            "dispatches": 158.19312714776632,
+            "pending": 196.0508591065292,
+            "ready": 448.0786941580756
+          },
+          "turnDegrees": 1600.021836580243,
+          "travelCm": 1077.1802386443742,
+          "display": {
+            "visual": 120.08510638297872,
+            "submitted": 121.04255319148936,
+            "refresh": 342.8085106382979,
+            "ratio": 0.9920899982422218
+          },
+          "budget": [
+            6178,
+            6181,
+            6181,
+            3,
+            6178,
+            3,
+            1,
+            2
+          ],
+          "poolBefore": {
+            "enabled": true,
+            "created": 21,
+            "reused": 9803,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "poolAfter": {
+            "enabled": true,
+            "created": 21,
+            "reused": 18545,
+            "entries": 21,
+            "bytes": 2162688
+          },
+          "psoBefore": {
+            "sampleFrame": 3270,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 33.50520133972168,
+            "computePipelineCreateMs": 26.22509002685547,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 451191,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          },
+          "psoAfter": {
+            "sampleFrame": 6180,
+            "graphicsPipelines": 611,
+            "computePipelines": 710,
+            "graphicsPipelineCreateMs": 33.50520133972168,
+            "computePipelineCreateMs": 26.22509002685547,
+            "textureReadbacks": 0,
+            "textureReadbacksReady": 0,
+            "textureReadbackMaps": 0,
+            "textureReadbackNotReady": 0,
+            "psoPrecaching": true,
+            "precachedGraphicsPipelines": 484,
+            "asyncPrecacheRequested": 1130,
+            "asyncPrecacheCompleted": 1130,
+            "asyncPrecacheFailed": 0,
+            "unsupportedPrecacheRequests": 834,
+            "precachedGraphicsUsed": 73,
+            "precachedGraphicsBinds": 842723,
+            "precacheConcurrency": 8,
+            "runtimeAsyncPSO": false,
+            "runtimeAsyncRequested": 0,
+            "runtimeAsyncCompleted": 0,
+            "runtimeAsyncFailed": 0
+          }
+        }
+      ]
+    }
+  },
+  "captures": {
+    "mouse-low-alloc-abba-a1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-a1-20261106.json",
+        "sha256": "3a07c6d2856909eaa947afa22d6f07d40a2f6dae8c82d9c2cb907fa6b659f180"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-a1-20261106-source.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\index.html",
+          "sha256": "27ac4f5a7cd40f2247b7cf246b23aec7d9bf9d21d99f2224e3fadf0d6cf65ce9"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\UEWebEngineThreads.js",
+          "sha256": "58e822e0e6cd42fafc9582f8c35163417dfff35a34d90f9940c86bb89a676120"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\config-files.json",
+          "sha256": "4438e8b8668407c54d3cb5cb8d684c5c80495b6c2092fcf6a679587da73ccd92"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    },
+    "mouse-low-alloc-abba-a2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-a2-20261106.json",
+        "sha256": "e8939d2f3eb153b89bdabafb56ad664ef111696e54a9c291b13cf89412c83c98"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-a2-20261106-source.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\index.html",
+          "sha256": "27ac4f5a7cd40f2247b7cf246b23aec7d9bf9d21d99f2224e3fadf0d6cf65ce9"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\UEWebEngineThreads.js",
+          "sha256": "58e822e0e6cd42fafc9582f8c35163417dfff35a34d90f9940c86bb89a676120"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\config-files.json",
+          "sha256": "4438e8b8668407c54d3cb5cb8d684c5c80495b6c2092fcf6a679587da73ccd92"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-control-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    },
+    "mouse-low-alloc-abba-b1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-b1-20261106.json",
+        "sha256": "2886be01c82c42c474a882c74f83e04aebf75f593be7b063db5d1870b4d6c8c4"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-b1-20261106-source.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\index.html",
+          "sha256": "27ac4f5a7cd40f2247b7cf246b23aec7d9bf9d21d99f2224e3fadf0d6cf65ce9"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\UEWebEngineThreads.js",
+          "sha256": "58e822e0e6cd42fafc9582f8c35163417dfff35a34d90f9940c86bb89a676120"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\config-files.json",
+          "sha256": "0fcc0018c3c8836daa93798a39ba7a742d662595e213b998fd984faaa399fc41"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    },
+    "mouse-low-alloc-abba-b2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-b2-20261106.json",
+        "sha256": "1a0e783a0b99657241652d0732f527509d4888cdf7cda40fcd695f5a343b87a6"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "capturedSource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-alloc-abba-b2-20261106-source.cjs",
+        "sha256": "5cc9efde115f9c2521fdbff6579094562908632af766cd5306fb63479ee272a1"
+      },
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\index.html",
+          "sha256": "27ac4f5a7cd40f2247b7cf246b23aec7d9bf9d21d99f2224e3fadf0d6cf65ce9"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\UEWebEngineThreads.js",
+          "sha256": "58e822e0e6cd42fafc9582f8c35163417dfff35a34d90f9940c86bb89a676120"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\config-files.json",
+          "sha256": "0fcc0018c3c8836daa93798a39ba7a742d662595e213b998fd984faaa399fc41"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-alloc-candidate-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ]
+    }
+  },
+  "changes": {
+    "fpsPercent": 2.1146870369235904,
+    "low1Percent": 6.135053742500629,
+    "p95Percent": -1.627218882868564,
+    "p99Percent": -1.8774445864923384
+  }
+}

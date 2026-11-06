@@ -566,8 +566,67 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebVisibilityTest(int Parameter, int Value)
 extern "C" EMSCRIPTEN_KEEPALIVE int WebTextureReadbackTest(int Step)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
-    if (!UseWebGPU || (Step != 1 && Step != 2)) return 0;
+    if (!UseWebGPU || Step < 1 || Step > 4) return 0;
     ENQUEUE_RENDER_COMMAND(WebTextureReadbackProbe)([Step](FRHICommandListImmediate& Cmd) {
+        // Steps 3/4 exercise staging generations with changing bytes and sizes,
+        // including a completed result retained while later copies are issued.
+        if (Step >= 3)
+        {
+            static FBufferRHIRef Buffers[3];
+            static TUniquePtr<FRHIGPUBufferReadback> Reads[3], Retained;
+            static uint32 Round = 0, RetainedRound = 0;
+            static bool Active = false, Valid = true;
+            const uint32 Sizes[] = {65536, 65536, 262144};
+            const auto Pattern = [](uint32 Generation, uint32 Slot, uint32 Index) {
+                return uint8(Generation * 17 + Slot * 53 + Index * 7 + 3);
+            };
+            const auto Verify = [&](FRHIGPUBufferReadback& Read, uint32 Generation, uint32 Slot) {
+                const auto* Bytes = static_cast<const uint8*>(Read.Lock(Sizes[Slot]));
+                bool Match = Bytes != nullptr;
+                if (Bytes)
+                {
+                    for (uint32 Index = 0; Index < Sizes[Slot]; ++Index)
+                        if (Bytes[Index] != Pattern(Generation, Slot, Index)) { Match = false; break; }
+                    Read.Unlock();
+                }
+                return Match;
+            };
+            if (Step == 3)
+            {
+                check(!Active);
+                Round = 0; Valid = true; Active = true;
+            }
+            else
+            {
+                if (!Active || !Reads[0]->IsReady() || !Reads[1]->IsReady() || !Reads[2]->IsReady()) return;
+                for (uint32 Slot = 0; Slot < 3; ++Slot) Valid &= Verify(*Reads[Slot], Round, Slot);
+                if (Retained) { Valid &= Verify(*Retained, RetainedRound, 0); Retained.Reset(); }
+                if (Round % 2 == 0) { RetainedRound = Round; Retained = MoveTemp(Reads[0]); }
+                for (auto& Read : Reads) Read.Reset();
+                for (auto& Buffer : Buffers) Buffer.SafeRelease();
+                ++Round;
+                if (Round == 32 || !Valid)
+                {
+                    Retained.Reset(); Active = false;
+                    MAIN_THREAD_ASYNC_EM_ASM({globalThis.__webStagingReadbackTest = ({pending:false, pass:!!$0, rounds:$1});}, Valid, Round);
+                    return;
+                }
+            }
+            for (uint32 Slot = 0; Slot < 3; ++Slot)
+            {
+                TArray<uint8> Bytes; Bytes.SetNumUninitialized(Sizes[Slot]);
+                for (uint32 Index = 0; Index < Sizes[Slot]; ++Index) Bytes[Index] = Pattern(Round, Slot, Index);
+                auto Desc = FRHIBufferCreateDesc::Create(TEXT("WebStagingReadbackPattern"), Sizes[Slot], 4, EBufferUsageFlags::SourceCopy)
+                    .SetInitialState(ERHIAccess::CopySrc).SetInitActionInitializer();
+                auto Initializer = Cmd.CreateBufferInitializer(Desc);
+                Initializer.WriteData(Bytes.GetData(), Bytes.Num());
+                Buffers[Slot] = Initializer.Finalize();
+                Reads[Slot] = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebStagingReadbackProbe"));
+                Reads[Slot]->EnqueueCopy(Cmd, Buffers[Slot], Sizes[Slot]);
+            }
+            MAIN_THREAD_ASYNC_EM_ASM({globalThis.__webStagingReadbackTest = ({pending:true, rounds:$0});}, Round);
+            return;
+        }
         static FTextureRHIRef Source;
         static TUniquePtr<FRHIGPUTextureReadback> Readback;
         if (Step == 1)

@@ -13,17 +13,25 @@ const duration = Number(option('seconds') || 20);
 const width = Number(option('width') || 2289), height = Number(option('height') || 1287);
 const scale = Number(option('scale') || 1);
 const gpuProbe = process.argv.includes('--gpu-probe');
+const gpuTimestamps = process.argv.includes('--gpu-timestamps');
 const rhiWake = option('rhiwake') || 'priority';
+const occlusionMode=option('occlusion')||'history';
+assert(['history','hzb'].includes(occlusionMode));
 const minVisibleRatio = Number(option('min-visible-ratio') || 0);
 const visibilityCheck = process.argv.includes('--visibility-check');
 const pipeline = process.argv.includes('--pipeline');
-const chromeTrace = process.argv.includes('--chrome-trace');
+const stallTrace = process.argv.includes('--stall-trace');
+const dawnTrace = process.argv.includes('--dawn-trace');
+const chromeTrace = process.argv.includes('--chrome-trace') || stallTrace || dawnTrace;
 const inputMode = option('input') || 'owner-forwarded';
 const packagedInput = process.argv.includes('--packaged-input');
 const defaultSettings = process.argv.includes('--default-settings');
 const mouseOnly=process.argv.includes('--mouse-only'), profileWorkers=process.argv.includes('--profile-workers');
 const resetInput=process.argv.includes('--reset-input');
 const recoveryCheck=process.argv.includes('--recovery-check');
+const passCounts=process.argv.includes('--pass-counts');
+const shadowCacheProbe=process.argv.includes('--shadow-cache-probe');
+const bufferLifecycle=process.argv.includes('--buffer-lifecycle');
 assert(!resetInput||mouseOnly,'Orientation reset is for mouse-only runs');
 assert(['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode));
 assert(!defaultSettings || (modes.length === 1 && packagedInput));
@@ -34,20 +42,25 @@ assert(duration >= 8 && duration <= 60 && width >= 640 && height >= 480 && scale
 const base = path.join(__dirname, 'build', folder), output = path.join(__dirname, 'results', tag);
 assert(!fs.existsSync(output + '.json'));
 fs.copyFileSync(__filename, output + '-source.cjs');
-const report = {date: new Date().toISOString(), pass: false, folder, profile, modes, duration, width, height, scale, gpuProbe, rhiWake,
+const report = {date: new Date().toISOString(), pass: false, folder, profile, modes, duration, width, height, scale, gpuProbe, gpuTimestamps, rhiWake,
+  occlusionMode,
   minVisibleRatio, visibilityCheck, pipeline, chromeTrace, inputMode, packagedInput, defaultSettings,
-  mouseOnly,profileWorkers,resetInput,recoveryCheck,
+  mouseOnly,profileWorkers,resetInput,recoveryCheck,stallTrace,dawnTrace,passCounts,shadowCacheProbe,bufferLifecycle,
   source: audit(__filename), capturedSource: audit(output + '-source.cjs'),
   observerSource: pipeline ? audit(path.join(__dirname, 'web-local-pipeline-observer.cjs')) : undefined,
+  passCounterSource:passCounts?audit(require.resolve('./web-render-pass-counts.cjs')):undefined,
+  bufferObserverSource:bufferLifecycle?audit(require.resolve('./web-buffer-lifecycle-observer.cjs')):undefined,
+  gpuObserverSource:gpuTimestamps?audit(require.resolve('./web-performance-capture-observer.cjs')):undefined,
   runs: [], files: ['index.html', 'UEWebEngineThreads.js', 'config-files.json',
     'web-engine-host.js', 'web-engine-worker.js'].map(name => audit(path.join(base, name))),
   boundary: 'Continuous DOM mouse/keyboard events through the packaged input bridge; light submission hook, no draw wrappers. Each run repeats a motion warmup before measurement. Submission throughput is not physical display FPS. Actual trajectories and background GPU utilization must be considered.'};
 const save = () => fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2) + '\n');
 function presents() {
   const state = globalThis.__clockMotionFrames = {active: false, times: []};
+  const previous = Object.getOwnPropertyDescriptor(globalThis, '__webRHIFrames');
   let count = 0;
   Object.defineProperty(globalThis, '__webRHIFrames', {configurable: true, get: () => count,
-    set(value) {if (state.active && value > count) state.times.push(performance.now()); count = value;}});
+    set(value) {previous?.set?.(value); if (state.active && value > count) state.times.push(performance.now()); count = value;}});
 }
 function gpuCompletions() {
   const state = globalThis.__clockMotionGPU = {submitted: 0, completed: 0, peak: 0, records: []};
@@ -174,7 +187,11 @@ ${marker}
         body = body.replace(versioned, 'const versioned = name => name === assets.runtime ? ' +
           JSON.stringify(diagnosticUrl) + " : name + '?v=' + assets.versions[name];");
       }
-      await route.fulfill({response, body: '(' + presents.toString() + ')();\n' +
+      await route.fulfill({response, body:
+        (gpuTimestamps?'('+require('./web-performance-capture-observer.cjs').toString()+')();\n':'')+
+        '(' + presents.toString() + ')();\n' +
+        (passCounts?'('+require('./web-render-pass-counts.cjs').toString()+')();\n':'')+
+        (bufferLifecycle?'('+require('./web-buffer-lifecycle-observer.cjs').toString()+')();\n':'')+
         (gpuProbe ? '(' + gpuCompletions.toString() + ')();\n' : '') + body});
     });
     const page = context.pages()[0], cdp = await context.newCDPSession(page);
@@ -186,7 +203,7 @@ ${marker}
     });
     page.on('pageerror', error => run.errors.push(error.message));
     page.on('crash', () => run.errors.push('Renderer crashed'));
-    run.url = `http://127.0.0.1:8765/build/${folder}/index.html?occlusion=history&clock=${clock}&gpuahead=${ahead}&gpumode=${budgetMode}&rhiwake=${rhiWake}`+
+    run.url = `http://127.0.0.1:8765/build/${folder}/index.html?occlusion=${occlusionMode}&clock=${clock}&gpuahead=${ahead}&gpumode=${budgetMode}&rhiwake=${rhiWake}`+
       (frameBudget?'&framebudget='+frameBudget:'');
     if (packagedInput) run.url += '&input=' + inputMode;
     if (defaultSettings) run.url = `http://127.0.0.1:8765/build/${folder}/index.html`;
@@ -209,12 +226,16 @@ ${marker}
       view: __webRenderView, settings: __webProjectSettings, stream: __webTextureStreaming,
       rhiWake: __webRHIWakeScheduler, pso: globalThis.__webPSOPrecache,
       optimization: globalThis.__webOptimizationRHI,
+      renderPassCounts:globalThis.__webRenderPassCounts,
+      bufferLifecycle:globalThis.__webBufferLifecycle,
+      stagingReadbackPool:globalThis.__webStagingReadbackPool,
       budget: globalThis.__webLocalFrameBudget,
       ownerBudget: frameScheduler?Array.from(frameScheduler.state):null,
       gpu: globalThis.__clockMotionGPU && {submitted: __clockMotionGPU.submitted,
         completed: __clockMotionGPU.completed, peak: __clockMotionGPU.peak}}));
     run.spawn = (await state()).camera;
     if(resetInput)assert.equal(await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',4,0)),1);
+    if(shadowCacheProbe)assert.equal(await page.evaluate(()=>__webEngineRPC('WebLightingQualityTest',11,256)),1);
     await page.evaluate(motionStart, {duration,mouseOnly});
     await page.waitForFunction(() => __clockMotionInput.done, null, {timeout: (duration + 30) * 1000});
     await page.waitForTimeout(1000);
@@ -238,20 +259,30 @@ ${marker}
     let traceComplete;
     if (chromeTrace) {
       traceComplete = new Promise(resolve => cdp.once('Tracing.tracingComplete', resolve));
-      await cdp.send('Tracing.start', {categories: 'cc,viz,benchmark,blink.user_timing',
+      await cdp.send('Tracing.start', {categories: dawnTrace ?
+        'toplevel,blink.user_timing,gpu,gpu.dawn,gpu.dawn.validation,gpu.dawn.recording,gpu.dawn.gpu_work,disabled-by-default-gpu.dawn' : stallTrace ?
+        'toplevel,devtools.timeline,v8,blink.user_timing,gpu,disabled-by-default-v8.gc' : 'cc,viz,benchmark,blink.user_timing',
         transferMode: 'ReturnAsStream'});
       await page.evaluate(() => performance.mark('UE motion trace start'));
+      run.ownerTraceStart=await owner.evaluate(()=>{performance.mark('UE mouse owner start');return performance.now();});
     }
     await page.evaluate(motionStart, {duration,mouseOnly});
     while (!await page.evaluate(() => __clockMotionInput.done)) {
       await page.waitForTimeout(500);
       run.samples.push({state: await state(), input: await page.evaluate(() => __webInputBridge),
         hud: await page.evaluate(() => __webLivePerformance)});
+      if(gpuTimestamps) {
+        const frame=await owner.evaluate(()=>__webCaptureGPUFrame());
+        assert(!frame.unsupported&&frame.entries.length>0);
+        (run.gpuTimestampFrames||=[]).push(frame);
+      }
     }
     run.measurement = await owner.evaluate(() => {
       __clockMotionFrames.active = false; return __clockMotionFrames.times;
     });
     run.after = await state();
+    if(gpuTimestamps)assert.deepEqual(await owner.evaluate(()=>__webPerformanceCapture.errors),[]);
+    if(occlusionMode==='hzb')assert(run.after.history.hzbCompleted>run.before.history.hzbCompleted);
     if(frameBudget){assert(run.after.ownerBudget[3]<=frameBudget&&run.after.ownerBudget[5]<=frameBudget);
       assert(run.after.ownerBudget[7]<=2);}
     const runtimeFailure = await page.evaluate(() => globalThis.__webEngineFailure);
@@ -321,6 +352,12 @@ ${marker}
     run.cameraRadius=cameraRadius;
     assert.deepEqual(run.errors, []);
     assert.deepEqual(run.before.settings, run.after.settings);
+    if(run.after.history?.groupMotionQueries)
+      assert(run.after.history.motionQueriesGrouped>run.before.history.motionQueriesGrouped,'Motion query batching must actually run');
+    if(run.after.history?.motionGroupHoldMs>0)
+      assert(run.after.history.motionGroupHoldRequests>run.before.history.motionGroupHoldRequests,'Brief input gaps must exercise query grouping hold');
+    if(run.after.history?.groupNewMotionQueries)
+      assert(run.after.history.newMotionGroupRequests>run.before.history.newMotionGroupRequests,'Newly considered primitives must exercise motion grouping');
     await page.locator('canvas').screenshot({path: output + '-' + run.index + '-' + mode + '.png'});
     if (visibilityCheck && (ahead || frameBudget)) {
       // This automated Edge session reports all tabs as visible. Exercise the
@@ -356,7 +393,10 @@ ${marker}
       const after=await state();
       assert.deepEqual(after.camera,before.camera,'Recovery must be stationary');
       assert.equal(after.history.motionQueriesSkipped,before.history.motionQueriesSkipped,'Stationary queries must resume immediately');
-      assert(after.history.queryCaptured>before.history.queryCaptured);
+      if(after.history.motionQueriesGrouped!==undefined)
+        assert.equal(after.history.motionQueriesGrouped,before.history.motionQueriesGrouped,'Motion grouping must stop while stationary');
+      if(occlusionMode==='hzb')assert(after.history.hzbCompleted>before.history.hzbCompleted);
+      else assert(after.history.queryCaptured>before.history.queryCaptured);
       assert(after.history.hits>before.history.hits&&after.history.zero>before.history.zero);
       run.recovery={before,after};
     }

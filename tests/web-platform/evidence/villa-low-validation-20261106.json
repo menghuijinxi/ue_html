@@ -1,0 +1,419 @@
+{
+  "date": "2026-11-06T12:25:26.077Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "defaultChanged": false,
+  "physicalPresentationValidated": false,
+  "source": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\summarize-villa-low-validation.cjs",
+    "sha256": "223bb006a7a5ddae98da3666eca4383da818f036912045299ce309a57d4571a7"
+  },
+  "build": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-new-motion-runtime-20261106.json",
+    "sha256": "4344f2a942a0975683de2d26fc751e398391a2aa2299ac5a9201281d6abf49c2"
+  },
+  "runs": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-control-validation-20261106.json",
+        "sha256": "da1134cc6e14f6023825df93121323df6f6f8fe2f421e00a0d96d409847f84bb"
+      },
+      "folder": "villa-low-review-control-20261106",
+      "bindingChecks": 6722025,
+      "textureReadback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "knownUnsupportedPrecache": 834,
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-review-control-20261106\\index.html",
+          "sha256": "e4ce4414aa68d0d70c25a014295119cb349ca358e59fbf3dcd001eeaa43ba080"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-review-control-20261106\\config-files.json",
+          "sha256": "1babf886515cd7a70c1803afef50d90384d4fd1fcf359ceed68277ac6d0edafa"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-review-control-20261106\\UEWebEngineThreads.js",
+          "sha256": "9e79cb190612a30e495ec87b411866adc13cbd51588204dbce800f3e871672c1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-review-control-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-review-control-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 4029,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-control-validation-20261106-tour-right.png",
+            "sha256": "225634751b75c8e1e7414217571bc1de726b50e89fa782eef216a1dbb92685d3"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4519,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-control-validation-20261106-tour-back.png",
+            "sha256": "a194cb6121bc3fe8d6e06290158a9f9f60ff63d87ec8d0b38528c7f56bace018"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 4941,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-control-validation-20261106-tour-left.png",
+            "sha256": "5b152e09e06861f6ac6ec70fa205bebb7dc95712b9e7a3b7ba654c2e4662ab58"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 5184,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-control-validation-20261106-tour-room.png",
+            "sha256": "769b66014763a3153c88b868255d4c7b01e61c42a2aa3e7165f44892963fc7f0"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 5414,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-control-validation-20261106-tour-return.png",
+            "sha256": "8d000f7ab69c62b38afad52085e76f4331c9785e0dde578a3e24a035998184b9"
+          }
+        }
+      ]
+    },
+    "final": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-validation-20261106.json",
+        "sha256": "21bc470252a432cd2ee1a0dfa0faf82b9df996ab7a572d3b591daf6e9e905258"
+      },
+      "folder": "villa-low-new-motion-candidate-20261106",
+      "bindingChecks": 9409549,
+      "textureReadback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "stagingReadback": {
+        "pending": false,
+        "pass": true,
+        "rounds": 32
+      },
+      "poolBefore": {
+        "enabled": true,
+        "created": 21,
+        "reused": 16546,
+        "entries": 21,
+        "bytes": 2162688
+      },
+      "poolAfter": {
+        "enabled": true,
+        "created": 26,
+        "reused": 17627,
+        "entries": 26,
+        "bytes": 2686976
+      },
+      "knownUnsupportedPrecache": 834,
+      "files": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-new-motion-candidate-20261106\\index.html",
+          "sha256": "e4ce4414aa68d0d70c25a014295119cb349ca358e59fbf3dcd001eeaa43ba080"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-new-motion-candidate-20261106\\config-files.json",
+          "sha256": "b5b6037b5545782038a97a27d3e90302f09845ad4c95e217e6382ba7039762dd"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-new-motion-candidate-20261106\\UEWebEngineThreads.js",
+          "sha256": "9e79cb190612a30e495ec87b411866adc13cbd51588204dbce800f3e871672c1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-new-motion-candidate-20261106\\web-engine-host.js",
+          "sha256": "21076f2fec8180ee769357c22ffa6dffe5be8eda461d9106fccb4246f89e093e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-low-new-motion-candidate-20261106\\web-engine-worker.js",
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f"
+        }
+      ],
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 4118,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-validation-20261106-tour-right.png",
+            "sha256": "98ab8ce27b3fa482d5340e0235aa89ac2561e61cbe280816d2b9260bc8ce5a29"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 4615,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-validation-20261106-tour-back.png",
+            "sha256": "fa0a18e97f685c82b8967aaf812ccd3ec1e082cd73f4ba9fc94b72969866da0a"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 5042,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-validation-20261106-tour-left.png",
+            "sha256": "baf574f4b43bedd43e6fd4b5247395b7a352d1df73ccb4ae26ad72749caf7a14"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 5285,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-validation-20261106-tour-room.png",
+            "sha256": "ca1570e28d63eeee47a58c8f9b9c33b84efe16b81a1e780b63000b1ba722b61d"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 5509,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-final-validation-20261106-tour-return.png",
+            "sha256": "58be69ef25e939523ec4098fe70aecf253e2133f7987acde0ab8f8896b07f2ce"
+          }
+        }
+      ]
+    }
+  },
+  "boundary": "Correctness regression only. Five static views do not prove absence of transient artifacts during all camera motion. Performance acceptance remains unfulfilled.",
+  "comparison": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-low-validation-comparison-20261106.jpg",
+    "sha256": "cb449cd613dc2828be56ed59ad732da1b8021e732d7432d8fe79c61c27ecf52c"
+  }
+}
