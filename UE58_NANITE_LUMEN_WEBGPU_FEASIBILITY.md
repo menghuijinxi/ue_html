@@ -2,7 +2,7 @@
 
 评估日期：2026-10-30，UTC+8。对象为 `H:/ue_html` 的本地浏览器执行方案，采用 Wasm64、桌面延迟渲染和 WebGPU；不使用像素流、收费 SDK 或移动 ES3.1 路径替代桌面验收。
 
-2026-11-06 Nanite 复核：本机 Chrome 157 的 `atomic-vec2u-min-max` 已通过实际计算/片元写入与回读，Edge 156 尚未暴露。新探针使用设备特性申请及 `enable atomic_vec2u_min_max`；本文下方“本机均未暴露”和旧 `requires` 探针不代表当前结果。固定 Tint 能处理该 WGSL，但含 Int64 的 SPIR-V 读回仍失败。更新后的主线、兼容方案、实际证据与边界见 [Nanite 实现方案复核](UE58_WEBGPU_NANITE_RESEARCH_20261106.md)，尚未移植完整 UE Nanite。
+2026-11-06 Nanite 复核：本机 Chrome 157 的 `atomic-vec2u-min-max` 已通过实际计算/片元写入与回读；首次测试的 Edge 156 未暴露，同日更新至 Edge 157.0.4341.42 后也通过相同 17 项检查，特性集合与限额均与 Chrome 一致。新探针使用设备特性申请及 `enable atomic_vec2u_min_max`；本文下方“本机均未暴露”和旧 `requires` 探针不代表当前结果。固定 Tint 能处理该 WGSL，但含 Int64 的 SPIR-V 读回仍失败。更新后的主线、兼容方案、实际证据与边界见 [Nanite 实现方案复核](UE58_WEBGPU_NANITE_RESEARCH_20261106.md)，尚未移植完整 UE Nanite。
 
 源码基线：根仓库 `42e75165fc0b8a2bfdeed1c8a6b40cde4787a6d3`；独立参考引擎 `9e1a16e57eca867b37aaf683a3e022ca4739a560`，`Build.version` 为 5.8.3。本报告依据这些源码、本机浏览器探针和下方一手资料；不是已经完成移植的交付说明。
 

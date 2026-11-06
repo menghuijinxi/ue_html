@@ -23,6 +23,15 @@ async function probe(packedCode) {
   const feature = 'atomic-vec2u-min-max';
   const packed = adapter.features.has(feature);
   const device = await adapter.requestDevice({requiredFeatures: packed ? [feature] : []});
+  const snapshotLimits = limits => {
+    const names = new Set();
+    for (let proto = limits; proto && proto !== Object.prototype; proto = Object.getPrototypeOf(proto)) {
+      for (const name of Object.getOwnPropertyNames(proto)) {
+        if (typeof limits[name] === 'number') names.add(name);
+      }
+    }
+    return Object.fromEntries([...names].sort().map(name => [name, limits[name]]));
+  };
   const result = {
     adapter: {
       vendor: adapter.info.vendor, architecture: adapter.info.architecture,
@@ -30,6 +39,9 @@ async function probe(packedCode) {
     },
     adapterFeatures: [...adapter.features].sort(),
     languageFeatures: [...navigator.gpu.wgslLanguageFeatures].sort(),
+    adapterLimits: snapshotLimits(adapter.limits),
+    deviceLimits: snapshotLimits(device.limits),
+    deviceFeatures: [...device.features].sort(),
     packedAtomicsAdvertised: packed,
     checks: [],
     unexpectedErrors: [],
