@@ -1919,34 +1919,46 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
 {
     WEBGPU_ON_OWNER(RHIUpdateTexture2D(Cmd, Texture, Mip, Region, Pitch, Bytes));
     RequireOwner();
-    const uint32 PixelBytes = GPixelFormats[Texture->GetFormat()].BlockBytes;
-    check(Texture->GetDesc().Dimension == ETextureDimension::Texture2D && Mip == 0 &&
-          (Texture->GetFormat() == PF_R8G8B8A8 || Texture->GetFormat() == PF_R32_FLOAT ||
-           Texture->GetFormat() == PF_A32B32G32R32F) &&
-          Region.Width && Region.Height &&
-          Region.DestX + Region.Width <= Texture->GetSizeX() && Region.DestY + Region.Height <= Texture->GetSizeY() &&
-          Pitch >= (Region.SrcX + Region.Width) * PixelBytes);
-    const uint32 UploadPitch = Align(Region.Width * PixelBytes, 256u);
+    check(Texture->GetDesc().Dimension == ETextureDimension::Texture2D && Mip < Texture->GetNumMips() &&
+          IsSampled2DTextureFormat(Texture->GetFormat()) && Bytes);
+    const auto& Pixel = GPixelFormats[Texture->GetFormat()];
+    const uint32 BlockX = Pixel.BlockSizeX, BlockY = Pixel.BlockSizeY, BlockBytes = Pixel.BlockBytes;
+    const uint32 MipWidth = FMath::Max(1u, Texture->GetSizeX() >> Mip);
+    const uint32 MipHeight = FMath::Max(1u, Texture->GetSizeY() >> Mip);
+    check(Region.Width && Region.Height && Region.SrcX >= 0 && Region.SrcY >= 0 &&
+          uint64(Region.DestX) + Region.Width <= MipWidth && uint64(Region.DestY) + Region.Height <= MipHeight &&
+          Region.SrcX % BlockX == 0 && Region.SrcY % BlockY == 0 &&
+          Region.DestX % BlockX == 0 && Region.DestY % BlockY == 0 &&
+          (Region.Width % BlockX == 0 || Region.DestX + Region.Width == MipWidth) &&
+          (Region.Height % BlockY == 0 || Region.DestY + Region.Height == MipHeight));
+    const uint32 Columns = FMath::DivideAndRoundUp(Region.Width, BlockX);
+    const uint32 Rows = FMath::DivideAndRoundUp(Region.Height, BlockY);
+    check(uint64(Pitch) >= (uint64(Region.SrcX) / BlockX + Columns) * BlockBytes);
+    const uint32 UploadPitch = Align(Columns * BlockBytes, 256u);
+    check(uint64(UploadPitch) * Rows <= MAX_int32);
     TArray<uint8> Snapshot;
-    Snapshot.SetNumZeroed(UploadPitch * Region.Height);
-    for (uint32 Row = 0; Row < Region.Height; ++Row)
-        FMemory::Memcpy(Snapshot.GetData() + Row * UploadPitch, Bytes + (Region.SrcY + Row) * Pitch + Region.SrcX * PixelBytes,
-                        Region.Width * PixelBytes);
+    Snapshot.SetNumZeroed(UploadPitch * Rows);
+    // VT uploads may include compressed borders and padded source rows.
+    for (uint32 Row = 0; Row < Rows; ++Row)
+        FMemory::Memcpy(Snapshot.GetData() + Row * UploadPitch,
+            Bytes + (uint64(Region.SrcY) / BlockY + Row) * Pitch + (Region.SrcX / BlockX) * BlockBytes,
+            Columns * BlockBytes);
+    const WGPUExtent3D Extent{Columns * BlockX, Rows * BlockY, 1};
     auto Upload = [this, Texture = TRefCountPtr<FWebGPUTexture>(static_cast<FWebGPUTexture *>(Texture)), Region,
-                   UploadPitch, Snapshot = MoveTemp(Snapshot)](FRHICommandListBase &) {
+                   Mip, UploadPitch, Rows, Extent, Snapshot = MoveTemp(Snapshot)](FRHICommandListBase &) {
         check(Encoder && !Pass);
-        RequireAccess(Texture, ERHIAccess::CopyDest, true);
+        RequireAccess(Texture, ERHIAccess::CopyDest, true, 0, Mip);
         uint64 UploadOffset = 0;
         WGPUBuffer Staging = UploadStagingBytes(Snapshot.GetData(), Snapshot.Num(), UploadOffset);
         WGPUTexelCopyBufferInfo Source = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
         Source.buffer = Staging;
         Source.layout.offset = UploadOffset;
         Source.layout.bytesPerRow = UploadPitch;
-        Source.layout.rowsPerImage = Region.Height;
+        Source.layout.rowsPerImage = Rows;
         WGPUTexelCopyTextureInfo Destination = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
         Destination.texture = Texture->Handle;
+        Destination.mipLevel = Mip;
         Destination.origin = {Region.DestX, Region.DestY, 0};
-        WGPUExtent3D Extent{Region.Width, Region.Height, 1};
         EndComputePass();
         wgpuCommandEncoderCopyBufferToTexture(Encoder, &Source, &Destination, &Extent);
         wgpuBufferRelease(Staging);

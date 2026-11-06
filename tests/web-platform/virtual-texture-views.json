@@ -1,0 +1,6 @@
+[
+  {"name": "mid", "x": -450, "y": 0, "z": 200, "pitch": 0, "yaw": 0, "fov": 90, "fixedExposure": false, "ao": 1, "shadows": 1},
+  {"name": "near", "x": -220, "y": 0, "z": 200, "pitch": 0, "yaw": 0, "fov": 90, "fixedExposure": false, "ao": 1, "shadows": 1},
+  {"name": "far", "x": -700, "y": 0, "z": 200, "pitch": 0, "yaw": 0, "fov": 90, "fixedExposure": false, "ao": 1, "shadows": 1},
+  {"name": "return", "x": -450, "y": 0, "z": 200, "pitch": 0, "yaw": 0, "fov": 90, "fixedExposure": false, "ao": 1, "shadows": 1}
+]

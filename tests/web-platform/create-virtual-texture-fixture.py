@@ -75,7 +75,7 @@ plane = unreal.load_asset("/Engine/BasicShapes/Plane")
 for index, material in enumerate(materials):
     actor = actors.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, -115 + index * 230, 200))
     actor.set_actor_label("WebVT_" + ("Virtual" if index else "Regular"))
-    actor.set_actor_rotation(unreal.Rotator(90, 0, 0), False)
+    actor.set_actor_rotation(unreal.Rotator(pitch=90.0, yaw=0.0, roll=0.0), False)
     actor.set_actor_scale3d(unreal.Vector(2, 2, 2))
     component = actor.get_component_by_class(unreal.StaticMeshComponent)
     component.set_static_mesh(plane)

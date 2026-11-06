@@ -19,7 +19,9 @@
 检查脚本为 `tests/web-platform/inspect-virtual-texture-assets.py`，
 结果为 `tests/web-platform/results/virtual-texture-assets.json`。
 隔离副本 `triplex-vt-fixture` 已从默认光照关卡创建普通纹理/虚拟纹理对照板，
-使用相同的 1024 像素多尺度棋盘图；此样例尚未完成 Cook 和浏览器验证。
+使用相同的 1024 像素多尺度棋盘图。原生四视角截图及色彩检查已完成；
+此样例尚未完成 Cook 和浏览器验证。浏览器通过条件还包括移动相机后的新增物理页上传，
+不能只凭 VT 资源对象存在判定流送通过。
 
 ## 实现范围
 
@@ -40,6 +42,8 @@
 - VSM 启用的 HZB Froxel 路径在 WGSL 中不能使用共享内存投票控制屏障。
   Web 分支用容量为候选数两倍的共享原子哈希表去重，保留全部深度单元；
   屏障只在一致控制流中执行，原生分支不变。
+- VT 物理页的 `UpdateTexture2D` 支持 BC1/2/3/4/5/6H/7 及已有采样颜色格式，
+  按压缩块处理源偏移、行填充、区域边界和 mip，保留上传数据快照及命令顺序。
 
 ## 已完成验证
 
@@ -52,7 +56,9 @@
 | 实际 UE VT 页表绘制回读 | 6/8 位物理页坐标编码、零/非零更新起点；2048 个像素无差异 |
 | 原生 Dawn 原子镜像回读 | 12 组尺寸/mip/数组组合；22401 个值核对通过 |
 | HZB Froxel 实际 GPU 回读 | 重复、碰撞、负深度切片、无限深度及不完整视口五例通过；集合、计数、HZB 像素无差异 |
+| VT 区域上传原生 GPU 回读 | 11 种格式、mip 0/1 共 22 例，7260 字节无差异；既有 12 组原子测试重测通过 |
 | 隔离 RenderCore、Renderer 与线程 Wasm | 编译通过，最终打包仍须核验构建摘要 |
+| 原生截图基线 | 别墅三个视角及 VT 样例四个视角完成；VSM=1，保留工程设置 |
 
 页表绘制测试使用真实转换后的 `TPageTableUpdateVS` 与 `TPageTableUpdatePS`，
 包含跨八个四边形实例边界的 11 条更新和未使用尾部实例。
@@ -62,6 +68,10 @@
 
 - `tests/web-platform/results/web-virtual-resource-gpu.json`
 - `tests/web-platform/results/web-froxel-gpu.json`
+- `tests/web-platform/build/virtual-resource-rhi-upload/lumen-storage-rhi.json`
+- `tests/web-platform/results/virtual-texture-native-image-check.json`
+- `tests/web-platform/results/villa-distance-fields-virtual-native-capture.json`
+- `tests/web-platform/results/villa-distance-fields-vt-fixture-native-capture.json`
 - `tests/web-platform/build/virtual-resource-rhi/lumen-storage-rhi.json`
 - `tests/web-platform/build/virtual-resource-probe/20261106-100811/virtual-resource-shader-results.json`
 - `tests/web-platform/build/virtual-resource-probe/20261106-101919/virtual-resource-shader-results.json`
@@ -89,4 +99,8 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 
 完整别墅画面、动态相机下的 VSM 更新/缓存、真实 VT 资产流送、运行性能和显存峰值尚需验收。
 镜像同步增加了 GPU 存储与复制开销，当前优先验证正确性。
+扩展全局探针检查的 1970 个模块中，有 55 个排列不能直接创建浏览器计算管线：
+53 项属于 Lumen 头发/高度场/可视化路径的存储缓冲区超限，
+2 项为 Histogram/Panini 的原始 RG32F 读写存储格式限制。
+这些结果保存在 `web-virtual-cook-gpu-progress.json`，不应将 VT/VSM 专项通过扩大为所有全局排列通过。
 不包含 Nanite、硬件光追、移动端兼容性或收费 SDK。

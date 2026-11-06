@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {PNG} = require('pngjs');
 const {audit} = require('./content-file-metadata.cjs');
+const inspectTexturePair = require('./virtual-texture-image-check.cjs');
 const argument = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const folder = argument('folder') || 'triplex-virtual-distance-fields-threads';
 const tag = argument('tag') || 'virtual-scene';
@@ -13,6 +14,10 @@ assert([folder, tag].every(value => /^[a-z0-9-]+$/.test(value)));
 const output = path.join(__dirname, 'results', tag);
 const report = {date: new Date().toISOString(), pass: false, virtualTextureStreamingCovered: false,
   desktopVisualParityAccepted: false, source: audit(__filename), folder, fixture, views: [], errors: []};
+if (fixture) {
+  report.viewDefinitions = audit(path.join(__dirname, 'virtual-texture-views.json'));
+  report.imageCheck = audit(require.resolve('./virtual-texture-image-check.cjs'));
+}
 function observe() {
   const state = globalThis.__virtualSceneGPU = {
     errors: [], losses: [], textures: [], atomicToTexture: 0, textureToAtomic: 0,
@@ -57,7 +62,12 @@ function observe() {
   ]) {
     const original = GPUCommandEncoder.prototype[name];
     GPUCommandEncoder.prototype[name] = function(...args) {
-      if (/Shadow\.Virtual/.test(args[side]?.texture?.label || '')) ++state[count];
+      const label = args[side]?.texture?.label || '';
+      if (/Shadow\.Virtual/.test(label)) ++state[count];
+      if (name === 'copyBufferToTexture' && /VirtualTexture_Physical/.test(label)) {
+        const item = state.textureUploads[label] ||= {count: 0, bytes: 0};
+        ++item.count;
+      }
       return original.apply(this, args);
     };
   }
@@ -117,14 +127,18 @@ function observe() {
       const state = await snapshot();
       report.views.push({name, screenshot: audit(file), colors: colors.size,
         visibleFraction: visible / (png.width * png.height), state});
+      if (fixture) {
+        const view = require('./virtual-texture-views.json').find(view => view.name === name);
+        const comparison = inspectTexturePair(png, view);
+        report.views.at(-1).textureComparison = comparison;
+        assert(comparison.pass, 'Ordinary and virtual texture panels do not show matching colors');
+      }
       assert(colors.size > 1000 && visible > png.width * png.height * 0.2, 'Scene screenshot is blank');
       assert(!state.gpu.errors.length && !state.gpu.losses.length, 'WebGPU validation or device loss');
     };
     if (!fixture) await capture('spawn');
-    const views = fixture ? [
-      ['mid', -450, 0, 200, 0, 0], ['near', -220, 0, 200, 0, 0],
-      ['far', -700, 0, 200, 0, 0], ['return', -450, 0, 200, 0, 0],
-    ] : [
+    const views = fixture ? require('./virtual-texture-views.json').map(view =>
+      [view.name, view.x, view.y, view.z, view.pitch, view.yaw]) : [
       ['interior', -175, -80, 160, -5, 50], ['kitchen', -175, -80, 160, -5, 230],
       ['living', -20, 200, 130, 12, -35], ['return', camera.x, camera.y, camera.z, camera.pitch, camera.yaw],
     ];
@@ -140,8 +154,14 @@ function observe() {
       'No virtual shadow physical page pool was created');
     assert(report.final.gpu.atomicToTexture > 0 && report.final.gpu.textureToAtomic > 0,
       'Virtual shadow atomic texture synchronization was not exercised');
-    report.virtualTextureStreamingCovered = report.final.streaming.virtualTextureResources > 0;
-    if (fixture) assert(report.virtualTextureStreamingCovered, 'Fixture has no virtual texture resource');
+    const uploads = state => Object.entries(state.gpu.textureUploads)
+      .filter(([name]) => /VirtualTexture_Physical/.test(name)).reduce((sum, [, item]) => sum + item.count, 0);
+    report.virtualTextureResourcesActive = report.final.streaming.virtualTextureResources > 0;
+    report.physicalTileUploadsAfterCameraChanges = uploads(report.final) - uploads(report.initial);
+    report.virtualTextureStreamingCovered = fixture && report.virtualTextureResourcesActive &&
+      report.physicalTileUploadsAfterCameraChanges > 0 && report.views.every(view => view.textureComparison?.pass);
+    if (fixture) assert(report.virtualTextureStreamingCovered,
+      'Fixture did not exercise visible virtual texture tiles after camera changes');
     assert(!report.errors.length, 'Page reported JavaScript errors');
     report.pass = true;
   } catch (error) {
