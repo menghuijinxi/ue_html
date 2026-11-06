@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TriplexHouseVilla · 性能回退检查</title>
+<style>
+:root{color-scheme:dark;font:16px/1.7 system-ui,sans-serif;background:#111719;color:#edf3f0}
+*{box-sizing:border-box}body{margin:0;padding:48px 24px}main{max-width:860px;margin:auto}
+.eyebrow{color:#8db4a4;font-size:13px;letter-spacing:.08em}h1{font-size:30px;line-height:1.3;margin:8px 0 16px}
+p{color:#b7c7c0}nav{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0}
+nav a{display:block;padding:24px;border:1px solid #3a5047;border-radius:12px;background:#19241f;color:inherit;text-decoration:none}
+nav a:hover{background:#22362b;border-color:#83cfac}nav a:focus-visible,a:focus-visible{outline:2px solid #a2e4c4;outline-offset:4px}
+nav strong{display:block;font-size:20px}nav span{display:block;color:#b7c7c0;margin-top:8px}
+.candidate{border-color:#63977c}a{color:#9bd7b9}.note{border-left:3px solid #a38d61;padding:8px 18px;background:#211f19}
+ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}small{color:#90a59a}footer{margin-top:30px;border-top:1px solid #2d3d35;padding-top:18px}
+@media(max-width:600px){body{padding:28px 18px}nav{grid-template-columns:1fr}h1{font-size:26px}}
+</style>
+<main>
+<div class="eyebrow">TRIPLEX HOUSE VILLA · 2026-11-06</div>
+<h1>性能回退检查</h1>
+<p>比较当前候选与优化前版本的画面、移动手感和低帧。两个入口均不限帧，使用 owner 调度；候选增加阴影缓存并修复内存统计。</p>
+<p class="note">候选尚未达到桌面端性能。请特别留意转向、走动时的顿挫，以及阴影是否跳变、拖尾或缺失。</p>
+<nav aria-label="测试版本">
+<a class="candidate" href="build/villa-parity-csm-memory-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开当前候选</strong><span>阴影缓存开启 · owner 调度</span><small>此前 720p 静止采样：100.71 FPS / 1% low 38.69</small></a>
+<a href="build/villa-scheduling-pipeline-v74/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded"><strong>打开优化前基线</strong><span>阴影缓存关闭 · owner 调度</span><small>此前 720p 静止采样：80.69 FPS / 1% low 37.04</small></a>
+</nav>
+<ol>
+<li>每次只运行一个版本。按钮在当前标签页打开；切换时先返回此页，避免两个游戏同时占用显卡。</li>
+<li>等待加载完成，再移动、转向预热约 30 秒。两次保持相同窗口大小和路线。</li>
+<li>同时看平均 FPS、1% low、最长帧和实际手感。左上角“导出”可保存性能记录。</li>
+</ol>
+<footer>
+<p>如需只比较阴影缓存：<a href="build/villa-parity-memory-20261106/index.html?clock=owner&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=owner-forwarded">打开相同新运行时、阴影缓存关闭版</a>。</p>
+<small>上述数字是此前固定 1280×720 的提交帧采样，不代表当前窗口或显示器实际呈现帧率。</small>
+</footer>
+</main>
+</html>
