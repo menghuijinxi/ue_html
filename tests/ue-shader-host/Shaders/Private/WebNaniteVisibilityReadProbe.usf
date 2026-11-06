@@ -1,0 +1,13 @@
+#include "/Engine/Public/Platform.ush"
+
+StructuredBuffer<uint2> Visibility;
+RWStructuredBuffer<uint2> Results;
+
+[numthreads(64, 1, 1)]
+void MainCS(uint3 Id : SV_DispatchThreadID)
+{
+    uint Count, Stride;
+    Visibility.GetDimensions(Count, Stride);
+    if (Id.x < Count)
+        Results[Id.x] = Visibility[Id.x];
+}

@@ -1,0 +1,38 @@
+const branch = (before, lines) => ({before, after: lines.join('\n')});
+module.exports = [['Private/Nanite/NaniteWritePixel.ush', [
+  branch('RWTexture2D<UlongType>\tOutVisBuffer64;', [
+    '#if COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY',
+    '// The Web shader compiler lowers this reserved max-only resource to a packed',
+    '// atomic<vec2u> buffer. It must never be read while rasterization is in flight.',
+    'RWStructuredBuffer<uint> WebNaniteAtomicMax_Visibility;',
+    'uint2 WebNaniteVisibilitySize;', '#else',
+    'RWTexture2D<UlongType>\tOutVisBuffer64;', '#endif',
+  ]),
+  branch('void WritePixel(', ['#if !(COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY)', 'void WritePixel(']),
+  branch('\n}\n\nstruct FVisBufferPixel', ['\n}', '#endif', '', 'struct FVisBufferPixel']),
+  branch('#elif COMPILER_SUPPORTS_UINT64_IMAGE_ATOMICS\n\t\treturn UnpackUlongType', [
+    '#elif COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY',
+    '\t\t// Packed min/max has no atomic load. Final visibility is still selected',
+    '\t\t// atomically; only the optional early rejection is omitted.',
+    '\t\treturn true;', '#elif COMPILER_SUPPORTS_UINT64_IMAGE_ATOMICS',
+    '\t\treturn UnpackUlongType',
+  ]),
+  branch('\t\tInterlockedMax( OutDepthBufferArray[ PhysicalPosition ], DepthInt );\n#else', [
+    '\t\tInterlockedMax( OutDepthBufferArray[ PhysicalPosition ], DepthInt );',
+    '#elif COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY',
+    '\t#if DEPTH_ONLY || VISUALIZE',
+    '\t\t#error Web packed visibility requires the non-debug color visibility permutation',
+    '\t#endif',
+    '\t\tuint Count, Stride;',
+    '\t\tWebNaniteAtomicMax_Visibility.GetDimensions(Count, Stride);',
+    '\t\t// Division first prevents overflow before the final linear address.',
+    '\t\tif (WebNaniteVisibilitySize.x > 0 && all(Position < WebNaniteVisibilitySize) &&',
+    '\t\t\tPosition.y < Count / WebNaniteVisibilitySize.x)',
+    '\t\t{',
+    '\t\t\t// This compare-store is a compiler carrier, not an executable scalar',
+    '\t\t\t// operation. The Web compiler preserves it as one packed atomic max.',
+    '\t\t\tInterlockedCompareStore(',
+    '\t\t\t\tWebNaniteAtomicMax_Visibility[Position.y * WebNaniteVisibilitySize.x + Position.x], Value, DepthInt);',
+    '\t\t}', '#else',
+  ]),
+]]];

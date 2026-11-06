@@ -801,7 +801,8 @@ void FWebGPUDynamicRHI::BeginBrowserDevice(void (*Completion)(bool))
         TArray<WGPUFeatureName> Features;
         for (WGPUFeatureName Feature : {WGPUFeatureName_TextureCompressionBC,
                  WGPUFeatureName_TextureFormatsTier1, WGPUFeatureName_TextureFormatsTier2, WGPUFeatureName_RG11B10UfloatRenderable,
-                 WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable, WGPUFeatureName_ClipDistances})
+                 WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable, WGPUFeatureName_ClipDistances,
+                 WGPUFeatureName_AtomicVec2uMinMax})
         {
             if (wgpuAdapterHasFeature(Adapter, Feature))
                 Features.Add(Feature);
@@ -874,7 +875,8 @@ void FWebGPUDynamicRHI::Init()
     TArray<WGPUFeatureName> Features;
     for (WGPUFeatureName Feature : {WGPUFeatureName_TextureCompressionBC,
              WGPUFeatureName_TextureFormatsTier1, WGPUFeatureName_TextureFormatsTier2, WGPUFeatureName_RG11B10UfloatRenderable,
-             WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable, WGPUFeatureName_ClipDistances})
+             WGPUFeatureName_Subgroups, WGPUFeatureName_Float32Filterable, WGPUFeatureName_ClipDistances,
+             WGPUFeatureName_AtomicVec2uMinMax})
     {
         if (wgpuAdapterHasFeature(Adapter, Feature))
             Features.Add(Feature);
@@ -1450,6 +1452,9 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     Data.ResourceTable.UnorderedAccessViewMap = MoveTemp(Data.RuntimeMetadata.UAVs);
     Data.ResourceTable.ResourceTableLayoutHashes = MoveTemp(Data.RuntimeMetadata.LayoutHashes);
     FString Source(FUTF8ToTCHAR(Utf8 + Header[5], Header[6]));
+    if (Source.Contains(TEXT("enable atomic_vec2u_min_max;")) &&
+        !wgpuDeviceHasFeature(Device, WGPUFeatureName_AtomicVec2uMinMax))
+        return Fail(TEXT("Nanite packed visibility requires the WebGPU atomic-vec2u-min-max device feature"));
     Data.Frequency = Frequency;
     for (int32 Index = 0; Index < Data.RuntimeMetadata.Bindings.Num(); ++Index)
     {

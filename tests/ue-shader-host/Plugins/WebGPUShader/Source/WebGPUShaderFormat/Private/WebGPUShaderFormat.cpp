@@ -2,6 +2,7 @@
 #include "WebGPUShaderMetadata.h"
 #include "WebGPUVertexFetch.h"
 #include "WebGPUTextureAtomics.h"
+#include "WebGPUNaniteAtomics.h"
 
 #include "Dom/JsonObject.h"
 #include "GlobalShader.h"
@@ -579,7 +580,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v28-VirtualResourceMips-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v29-NanitePackedAtomic-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -593,7 +594,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -1157,6 +1158,37 @@ class FWebGPUShaderFormat final : public IShaderFormat
         if (!Executed || ExitCode != 0 || !FFileHelper::LoadFileToString(Wgsl, *WgslPath))
         {
             Error = StandardOut + StandardError;
+            return false;
+        }
+        int32 NaniteAtomicBindings = 0;
+        for (const auto& Value : Bindings)
+        {
+            const auto Binding = Value->AsObject();
+            if (!UE::WebGPUShader::IsNaniteAtomicMaxBinding(Binding->GetStringField(TEXT("name"))))
+                continue;
+            bool ReadOnly = true;
+            int32 Stride = 0, Format = 0;
+            if (Binding->GetIntegerField(TEXT("descriptorType")) != 7 ||
+                !Binding->TryGetNumberField(TEXT("storageElementStride"), Stride) || Stride != 4 ||
+                !Binding->TryGetNumberField(TEXT("storageElementFormat"), Format) || Format != PF_R32_UINT ||
+                !Binding->TryGetBoolField(TEXT("readOnlyStorage"), ReadOnly) || ReadOnly)
+            {
+                Error = TEXT("Nanite max-only carrier requires writable scalar uint storage");
+                return false;
+            }
+            // The carrier's scalar atomic is replaced with one packed 8-byte
+            // atomic. Publish the final layout, never the intermediate stride.
+            Binding->SetNumberField(TEXT("storageElementStride"), 8);
+            Binding->RemoveField(TEXT("storageElementFormat"));
+            Binding->SetStringField(TEXT("storagePacking"), TEXT("nanite-packed-visibility"));
+            ++NaniteAtomicBindings;
+        }
+        if (!UE::WebGPUShader::LowerNaniteAtomicMax(Wgsl, NaniteAtomicBindings, Error))
+            return false;
+        if (NaniteAtomicBindings && !FFileHelper::SaveStringToFile(Wgsl, *WgslPath,
+            FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
+        {
+            Error = TEXT("Unable to write lowered Nanite shader");
             return false;
         }
         StandardOut.Reset();

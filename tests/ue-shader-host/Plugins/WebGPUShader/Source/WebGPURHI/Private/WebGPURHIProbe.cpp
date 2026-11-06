@@ -18,6 +18,7 @@
 #include "WebGPUTextureUintProbe.h"
 #include "WebGPUSkyResourceProbe.h"
 #include "WebGPUDistanceFieldProbe.h"
+#include "WebGPUNaniteVisibilityProbe.h"
 
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
@@ -642,6 +643,8 @@ class FWebGPURHIModule final : public IWebGPURHIProbeModule
     }
     bool RunProbe(const FString &Shaders, const FString &Materials, const FString &Output) override
     {
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebNaniteVisibilityRHIProbe")))
+            return RunWebGPUNaniteVisibilityProbe(*this, Shaders, Output);
         if (FParse::Param(FCommandLine::Get(), TEXT("WebLumenStorageRHIProbe")))
             return RunWebGPULumenStorageProbe(*this, Output);
         if (FParse::Param(FCommandLine::Get(), TEXT("WebDistanceFieldRHIProbe")))

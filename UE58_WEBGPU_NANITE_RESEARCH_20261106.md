@@ -14,6 +14,10 @@ Chrome 157 实际执行新原子的数值检查通过；首次测试的 Edge 156
 因此将原报告 N1 从等待项提升为主线候选，N2 两遍算法保留为兼容方案。
 这不表示当前 UE 包已支持 Nanite。
 
+同日后续实现已打通真实 `NaniteWritePixel.ush` 的受限编译原语、UE RHI 绑定和
+Chrome/Edge GPU 回读，见 `UE58_WEBGPU_NANITE_IMPLEMENTATION.md`。
+下文的“当前仅独立 WGSL 探针通过”描述调研时点；真实资产、完整渲染与流送仍未完成。
+
 Nanite 的几何管线不要求先接通硬件光追。其必要工作是实际 cluster 数据、LOD、
 剔除、可见性、材质与页流送；显示 fallback mesh 不能作为完成证明。[S3][S4][L2]
 

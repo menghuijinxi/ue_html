@@ -1,0 +1,39 @@
+#define DEPTH_ONLY 0
+#define VISUALIZE 0
+#define VIRTUAL_TEXTURE_TARGET 0
+#define WEB_NANITE_PACKED_VISIBILITY 1
+#include "/Engine/Private/Nanite/NaniteWritePixel.ush"
+
+StructuredBuffer<uint4> Candidates;
+
+[numthreads(64, 1, 1)]
+void MainCS(uint3 Id : SV_DispatchThreadID)
+{
+    uint Count, Stride;
+    Candidates.GetDimensions(Count, Stride);
+    if (Id.x >= Count) return;
+    uint4 Candidate = Candidates[Id.x];
+    FVisBufferPixel Pixel = CreateVisBufferPixel(Candidate.zw, Candidate.x, asfloat(Candidate.y));
+    if (Pixel.EarlyDepthTest()) Pixel.Write();
+    // A later weaker write must not erase the earlier winner during optimization.
+    Pixel.Value = 0;
+    Pixel.Depth = 0;
+    Pixel.Write();
+}
+
+void MainVS(uint Id : SV_VertexID, out float4 Position : SV_Position)
+{
+    const float2 Points[3] = {float2(-1, -1), float2(3, -1), float2(-1, 3)};
+    Position = float4(Points[Id], 0.5, 1);
+}
+
+void MainPS(float4 Position : SV_Position, out float4 Color : SV_Target0)
+{
+    uint2 Coord = uint2(Position.xy);
+    FVisBufferPixel Pixel = CreateVisBufferPixel(Coord, 0x80000000u + Coord.y * 16u + Coord.x, 0.5);
+    if (Pixel.EarlyDepthTest()) Pixel.Write();
+    Pixel.Value = 0xffffffffu;
+    Pixel.Depth = 0.25;
+    Pixel.Write();
+    Color = 1;
+}

@@ -13,6 +13,7 @@ const storageDeclaration = (before, format) => ({before, after: [
   '#endif', before,
 ].join('\n')});
 const overrides = new Map([
+  ...require('./web-nanite-shader-overrides.cjs'),
   ...require('./web-tsr-shader-overrides.cjs'),
   ...require('./web-translucency-shader-overrides.cjs'),
   ...require('./web-lumen-shader-overrides.cjs'),
@@ -701,6 +702,7 @@ function prepare() {
   }
   const report = {date: new Date().toISOString(), pass: true, output,
     sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'),
+      require.resolve('./web-nanite-shader-overrides.cjs'),
       require.resolve('./web-translucency-shader-overrides.cjs'),
       require.resolve('./web-lumen-shader-overrides.cjs'),
       require.resolve('./web-virtual-texture-shader-overrides.cjs'), ...overrideFiles].map(audit),
