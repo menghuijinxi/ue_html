@@ -6,7 +6,7 @@ const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3
 const folder=option('folder'),tag=option('tag');
 assert([folder,tag].every(v=>v&&/^[a-z0-9-]+$/.test(v)));
 const modes=(option('modes')||'owner,local,local,owner').split(',');
-assert(modes.every(v=>['owner','local'].includes(v)));
+assert(modes.every(v=>['owner','local','page3','page4'].includes(v)));
 const seconds=Number(option('seconds')||20),warmup=Number(option('warmup')||15);
 const width=Number(option('width')||2289),height=Number(option('height')||1287);
 assert(seconds>=5&&seconds<=60&&warmup>=5&&warmup<=60);
@@ -77,6 +77,7 @@ function summarize(data){
 let context,log;
 (async()=>{try{
   for(const mode of modes){
+    const frameBudget=mode.startsWith('page')?Number(mode.slice(4)):0,clock=frameBudget?'page':mode;
     const run={index:report.runs.length+1,mode,errors:[],phases:[]};report.runs.push(run);save();
     run.idleGpu=execFileSync('nvidia-smi',['--query-gpu=name,utilization.gpu,memory.used','--format=csv,noheader,nounits'],
       {encoding:'utf8',windowsHide:true,timeout:10000}).trim();
@@ -93,7 +94,8 @@ let context,log;
     page.on('console',m=>{const t=m.text();log?.write(t+'\n');
       if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed|Ensure condition failed/.test(t))run.errors.push(t);});
     page.on('pageerror',e=>run.errors.push(e.message));page.on('crash',()=>run.errors.push('Page crashed'));
-    run.url='http://127.0.0.1:8765/build/'+folder+'/index.html?occlusion=history&clock='+mode+'&rhiwake=priority';
+    run.url='http://127.0.0.1:8765/build/'+folder+'/index.html?occlusion=history&clock='+clock+'&rhiwake=priority'+
+      (frameBudget?'&framebudget='+frameBudget:'');
     console.log('Motion start',run.index,mode);await page.goto(run.url,{waitUntil:'commit'});await page.bringToFront();
     await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=600&&
       globalThis.__webPSOPrecacheExpected&&globalThis.__webPSOPrecacheReady&&globalThis.__webTextureStreaming?.pending===0,
@@ -115,7 +117,7 @@ let context,log;
     }
     await settled();await page.waitForTimeout(warmup*1000);run.ready=await state();
     assert(run.ready.pso.enabled&&run.ready.arguments.includes('-WebPSOPrecacheTest'));
-    assert.equal(run.ready.clock.mode,mode);assert.equal(run.ready.wake.active,'priority');assert(run.ready.history.enabled);
+    assert.equal(run.ready.clock.mode,clock);assert.equal(run.ready.wake.active,'priority');assert(run.ready.history.enabled);
     assert.equal(run.ready.optimization.runtimeAsyncPSO,false);
     const spawn=run.ready.camera;run.routes={spawn,movingStart:pose('moving',0,spawn),firstAreaEnd:pose('first-area',1,spawn)};
     async function route(kind,duration){

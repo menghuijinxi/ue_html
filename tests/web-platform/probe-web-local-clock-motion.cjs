@@ -8,7 +8,7 @@ assert(tag && [folder, tag].every(value => /^[a-z0-9-]+$/.test(value)));
 const profile = option('profile') || tag;
 assert(/^[a-z0-9-]+$/.test(profile));
 const modes = (option('modes') || 'owner,local,local,owner').split(',');
-assert(modes.every(value => /^(owner|local|local[1-8]|pipeline[1-8])$/.test(value)));
+assert(modes.every(value => /^(owner|local|local[1-8]|pipeline[1-8]|page[34])$/.test(value)));
 const duration = Number(option('seconds') || 20);
 const width = Number(option('width') || 2289), height = Number(option('height') || 1287);
 const scale = Number(option('scale') || 1);
@@ -108,13 +108,15 @@ function distribution(times) {
 let context, log;
 (async () => {try {
   for (const mode of modes) {
-    const clock = mode === 'owner' ? 'owner' : 'local', ahead = Number(mode.match(/[1-8]$/)?.[0]) || 0;
+    const frameBudget=mode.startsWith('page')?Number(mode.slice(4)):0;
+    const clock = frameBudget?'page':mode === 'owner' ? 'owner' : 'local', ahead = clock==='local'?(Number(mode.match(/[1-8]$/)?.[0]) || 0):0;
     const budgetMode = mode.startsWith('pipeline') ? 'pipeline' : 'submitted';
     assert(!ahead || !gpuProbe, 'The budget already registers its own GPU completion callbacks');
     const run = {index: report.runs.length + 1, mode, errors: [], samples: []};
     report.runs.push(run); save();
     console.log('Moving clock start', run.index, mode);
-    context = await chromium.launchPersistentContext(path.join(process.env.TEMP, 'ue-web-clock-motion', profile),
+    context = await chromium.launchPersistentContext(process.argv.includes('--workspace-profile')?
+      path.join(__dirname,'build/browser-profiles',profile):path.join(process.env.TEMP, 'ue-web-clock-motion', profile),
       {channel: 'msedge', headless: false, viewport: {width, height}, deviceScaleFactor: scale});
     let diagnosticUrl;
     if (pipeline) {
@@ -142,6 +144,16 @@ let context, log;
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       let body = await response.text();
+      if(frameBudget&&gpuProbe){
+        const marker='  frameScheduler.queue.onSubmittedWorkDone().then(() => {';
+        assert.equal(body.split(marker).length,2);
+        body=body.replace(marker,`  const s=__clockMotionGPU,at=performance.now(),pending=submitted-Atomics.load(state,0);
+  s.submitted=submitted;s.peak=Math.max(s.peak,pending);
+  const measured=__clockMotionFrames.active?{sequence:submitted,at,pending,game:globalThis.__webEngineFrames}:null;
+  if(measured)s.records.push(measured);
+${marker}
+    s.completed=Math.max(s.completed,submitted);if(measured)measured.done=performance.now();`);
+      }
       if (pipeline) {
         const marker = 'const diagnosticStateKeys = [';
         assert.equal(body.split(marker).length, 2);
@@ -163,7 +175,8 @@ let context, log;
     });
     page.on('pageerror', error => run.errors.push(error.message));
     page.on('crash', () => run.errors.push('Renderer crashed'));
-    run.url = `http://127.0.0.1:8765/build/${folder}/index.html?occlusion=history&clock=${clock}&gpuahead=${ahead}&gpumode=${budgetMode}&rhiwake=${rhiWake}`;
+    run.url = `http://127.0.0.1:8765/build/${folder}/index.html?occlusion=history&clock=${clock}&gpuahead=${ahead}&gpumode=${budgetMode}&rhiwake=${rhiWake}`+
+      (frameBudget?'&framebudget='+frameBudget:'');
     if (packagedInput) run.url += '&input=' + inputMode;
     if (defaultSettings) run.url = `http://127.0.0.1:8765/build/${folder}/index.html`;
     await page.goto(run.url, {waitUntil: 'commit'});
@@ -186,6 +199,7 @@ let context, log;
       rhiWake: __webRHIWakeScheduler, pso: globalThis.__webPSOPrecache,
       optimization: globalThis.__webOptimizationRHI,
       budget: globalThis.__webLocalFrameBudget,
+      ownerBudget: frameScheduler?Array.from(frameScheduler.state):null,
       gpu: globalThis.__clockMotionGPU && {submitted: __clockMotionGPU.submitted,
         completed: __clockMotionGPU.completed, peak: __clockMotionGPU.peak}}));
     run.spawn = (await state()).camera;
@@ -219,6 +233,8 @@ let context, log;
       __clockMotionFrames.active = false; return __clockMotionFrames.times;
     });
     run.after = await state();
+    if(frameBudget){assert(run.after.ownerBudget[3]<=frameBudget&&run.after.ownerBudget[5]<=frameBudget);
+      assert(run.after.ownerBudget[7]<=2);}
     const runtimeFailure = await page.evaluate(() => globalThis.__webEngineFailure);
     assert(!runtimeFailure, runtimeFailure);
     if (budgetMode === 'pipeline') assert(run.after.budget.peak <= ahead, 'Pipeline budget overshot');
@@ -283,14 +299,14 @@ let context, log;
     assert.deepEqual(run.errors, []);
     assert.deepEqual(run.before.settings, run.after.settings);
     await page.locator('canvas').screenshot({path: output + '-' + run.index + '-' + mode + '.png'});
-    if (visibilityCheck && ahead) {
+    if (visibilityCheck && (ahead || frameBudget)) {
       // This automated Edge session reports all tabs as visible. Exercise the
       // real host visibility handler explicitly; this is not OS tab freezing.
       await page.evaluate(() => {
         Object.defineProperty(document, 'hidden', {configurable: true, get: () => true});
         document.dispatchEvent(new Event('visibilitychange'));
       });
-      await page.waitForFunction(() => document.hidden && __webGameFrameClock.paused, null,
+      await page.waitForFunction(pageClock => document.hidden && (pageClock || __webGameFrameClock.paused), !!frameBudget,
         {timeout: 10000, polling: 100});
       await page.waitForTimeout(1000);
       const paused = await state();
@@ -300,8 +316,8 @@ let context, log;
         delete document.hidden;
         document.dispatchEvent(new Event('visibilitychange'));
       });
-      await page.waitForFunction(frame => !document.hidden && !__webGameFrameClock.paused &&
-        __webEngineFrames > frame + 10, paused.game, {timeout: 10000});
+      await page.waitForFunction(({frame,pageClock}) => !document.hidden && (pageClock || !__webGameFrameClock.paused) &&
+        __webEngineFrames > frame + 10, {frame:paused.game,pageClock:!!frameBudget}, {timeout: 10000});
       run.visibility = {method: 'synthetic-document-visibility-event',
         paused: paused.frame, resumed: (await state()).frame};
     }

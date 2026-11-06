@@ -8,14 +8,15 @@ const tag=option('tag'), folder=option('folder')||'villa-scheduling-pipeline-v74
 assert(tag && /^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(folder));
 const seconds=Number(option('seconds')||30), rounds=Number(option('rounds')||1);
 const warmupSeconds=Number(option('warmup')||15);assert(warmupSeconds>=15&&warmupSeconds<=120);
+const profile=option('profile');assert(!profile||/^[a-z0-9-]+$/.test(profile));
+const wakePriority=option('wake-priority');assert(!wakePriority||['user-visible','background'].includes(wakePriority));
 const frameBudget=Number(option('frame-budget')||0);
 assert([0,1,2,3,4].includes(frameBudget));
-assert(!frameBudget || !process.argv.includes('--gpu'),'Budget mode owns its completion hook; inspect its counters separately');
 assert(seconds>=10 && seconds<=60 && rounds>=1 && rounds<=4);
 const output=path.join(__dirname,'results',tag), base=path.join(__dirname,'build',folder);
 assert(!fs.existsSync(output+'.json'));
 fs.copyFileSync(__filename,output+'-source.cjs');
-const report={tag,folder,seconds,warmupSeconds,date:new Date().toISOString(),pass:false,runs:[],errors:[],
+const report={tag,folder,seconds,warmupSeconds,wakePriority,date:new Date().toISOString(),pass:false,runs:[],errors:[],
   gpuCompletionProbe:process.argv.includes('--gpu'),presentMonEnabled:!process.argv.includes('--no-presentmon'),frameBudget,
   apiCountProbe:process.argv.includes('--api-counts'),
   uploadValidationProbe:process.argv.includes('--validate-uploads'),
@@ -84,7 +85,7 @@ if(process.argv.includes('--effects'))cases.push(
 let context,log,pm;
 const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
 (async()=>{try{
-  context=await chromium.launchPersistentContext(path.join(process.env.TEMP,'ue-villa-parity',tag),{
+  context=await chromium.launchPersistentContext(profile?path.join(__dirname,'build/browser-profiles',profile):path.join(process.env.TEMP,'ue-villa-parity',tag),{
     channel:'msedge',headless:false,viewport:{width:1280,height:720},deviceScaleFactor:1});
   if(frameBudget)await context.route('**/index.html?*',async route=>{
     const response=await route.fetch();let body=await response.text();
@@ -95,8 +96,22 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     await route.fulfill({response,body});
   });
   await context.route('**/web-engine-worker.js?*',async route=>{
-    const response=await route.fetch();await route.fulfill({response,body:`(${observe.toString()})(${process.argv.includes('--gpu')},${report.apiCountProbe});\n`+
-      (report.uploadValidationProbe?'('+require('./web-upload-staging-validator.cjs').toString()+')();\n':'')+await response.text()});
+    const response=await route.fetch();let body=await response.text();
+    if(wakePriority){assert.equal(body.split("{priority:'user-blocking'}").length,2);
+      body=body.replace("{priority:'user-blocking'}","{priority:'"+wakePriority+"'}");}
+    if(frameBudget&&report.gpuCompletionProbe){
+      const marker='  frameScheduler.queue.onSubmittedWorkDone().then(() => {';
+      assert.equal(body.split(marker).length,2);
+      body=body.replace(marker,`  const measured = __parity.active ? __parity.frames.at(-1) : null;
+  if (measured) {
+    measured.pending = submitted - Atomics.load(state, 0); measured.submit = performance.now();
+    __parity.pendingPeak = Math.max(__parity.pendingPeak, measured.pending);
+  }
+${marker}
+    if (measured) measured.done = performance.now();`);
+    }
+    await route.fulfill({response,body:`(${observe.toString()})(${report.gpuCompletionProbe&&!frameBudget},${report.apiCountProbe});\n`+
+      (report.uploadValidationProbe?'('+require('./web-upload-staging-validator.cjs').toString()+')();\n':'')+body});
   });
   const page=context.pages()[0],cdp=await context.newCDPSession(page);
   await cdp.send('Input.setIgnoreInputEvents',{ignore:true});
@@ -148,7 +163,8 @@ const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));
     r.ended=new Date().toISOString();r.after=await state();
     assert.deepEqual(r.after.camera,r.before.camera,'Camera changed during static measurement');
     assert.deepEqual(r.after.settings,r.before.settings,'Quality changed during measurement');
-    if(frameBudget){assert.equal(r.after.gpuBudget[6],1);assert(r.after.gpuBudget[3]<=frameBudget && r.after.gpuBudget[5]<=frameBudget);}
+    if(frameBudget){assert.equal(r.after.gpuBudget[6],1);assert(r.after.gpuBudget[3]<=frameBudget && r.after.gpuBudget[5]<=frameBudget);
+      assert(r.after.gpuBudget[7]<=2,'Unsubmitted work exceeded RHI plus one preparing frame');}
     for(const key of ['width','height','outputWidth','outputHeight','antiAliasing'])
       assert.equal(r.after.view[key],r.before.view[key],'View changed: '+key);
     await page.waitForTimeout(300);

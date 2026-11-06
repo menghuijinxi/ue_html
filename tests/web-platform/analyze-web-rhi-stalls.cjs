@@ -5,7 +5,7 @@ const input=process.argv[2];assert(input,'Usage: node analyze-web-rhi-stalls.cjs
 const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3);
 const capture=JSON.parse(fs.readFileSync(input,'utf8'));
 const phase=capture.phases.find(p=>p.name==='standing-trace');assert(capture.pass&&phase);
-const trace=input.replace(/\.json$/,'-trace.json'),marks=[],sweeps=[],gc=[],calls=[];
+const trace=input.replace(/\.json$/,'-trace.json'),marks=[],sweeps=[],gc=[],calls=[],raf=[],gpuTasks=[],threadNames=new Map();
 function distribution(values){const a=values.toSorted((x,y)=>x-y);return{count:a.length,
   total:values.reduce((s,v)=>s+v,0),p50:a[Math.floor(a.length*.5)],max:a.at(-1)};}
 (async()=>{
@@ -13,10 +13,13 @@ function distribution(values){const a=values.toSorted((x,y)=>x-y);return{count:a
   for await(let line of readline.createInterface({input:fs.createReadStream(trace),crlfDelay:Infinity})){
     line=line.trim().replace(/,$/,'');if(!line.startsWith('{"'))continue;
     let e;try{e=JSON.parse(line);}catch{continue;}++events;
+    if(e.name==='thread_name')threadNames.set(e.tid,e.args?.name);
     if(e.name==='UE RHI capture start')marks.push(e);
+    if(['RequestAnimationFrame','FireAnimationFrame'].includes(e.name))raf.push(e);
     if(e.ph!=='X')continue;
+    if(e.name==='CommandBufferService:PutChanged'&&e.args?.handler==='WebGPUDecoderImpl')gpuTasks.push(e);
     if(e.name==='ThreadControllerImpl::RunTask'&&/cppgc.*sweeper/.test(e.args?.src_file||''))sweeps.push(e);
-    if(['MajorGC','MinorGC'].includes(e.name))gc.push(e);
+    if(['MajorGC','MinorGC','V8.GCFinalizeMC','V8.GCScavenger'].includes(e.name))gc.push(e);
     if(e.name==='FunctionCall'&&e.args?.data?.functionName==='channel.port1.onmessage')calls.push(e);
   }
   const mark=marks.at(-1),ownerThread=option('owner-thread')?Number(option('owner-thread')):mark?.tid;
@@ -35,7 +38,23 @@ function distribution(values){const a=values.toSorted((x,y)=>x-y);return{count:a
   }
   const start=phase.data.start,end=phase.data.end;
   const owner=e=>e.tid===ownerThread&&e.ts/1000-offset>=start&&e.ts/1000-offset<end;
-  const tasks=sweeps.filter(owner),collections=gc.filter(owner),bursts=[];
+  const tasks=sweeps.filter(owner),ownerGc=gc.filter(owner),bursts=[];
+  const collections=ownerGc.some(e=>e.name==='MajorGC'||e.name==='MinorGC')?
+    ownerGc.filter(e=>e.name==='MajorGC'||e.name==='MinorGC'):
+    ownerGc.map(e=>({...e,name:e.name==='V8.GCFinalizeMC'?'MajorGC':'MinorGC'}));
+  const requests=new Map(),rafWaits=[];
+  for(const e of raf.filter(e=>e.tid===ownerThread).sort((a,b)=>a.ts-b.ts)){
+    const id=e.args?.data?.id;
+    if(e.name==='RequestAnimationFrame')requests.set(id,e.ts/1000-offset);
+    else if(requests.has(id)){
+      const requested=requests.get(id),delivered=e.ts/1000-offset;requests.delete(id);
+      if(requested<start||delivered>end)continue;
+      const f={start:requested,time:delivered};
+      const overlap=e=>Math.max(0,Math.min(f.time+offset,(e.ts+e.dur)/1000)-Math.max(f.start+offset,e.ts/1000));
+      rafWaits.push({id,requested,delivered,waitMs:delivered-requested,
+        sweepMs:tasks.reduce((sum,e)=>sum+overlap(e),0),gcMs:collections.reduce((sum,e)=>sum+overlap(e),0)});
+    }
+  }
   for(const e of tasks){if(!bursts.length||e.ts-bursts.at(-1).at(-1).ts>100000)bursts.push([e]);else bursts.at(-1).push(e);}
   const frames=phase.data.frames.slice(1).map((f,i)=>({...f,ms:f.time-phase.data.frames[i].time,start:phase.data.frames[i].time}));
   const overlap=(e,f)=>Math.max(0,Math.min(f.time+offset,(e.ts+e.dur)/1000)-Math.max(f.start+offset,e.ts/1000));
@@ -49,6 +68,11 @@ function distribution(values){const a=values.toSorted((x,y)=>x-y);return{count:a
     longFrames,over18:longFrames.length,over18WithSweepOver4ms:longFrames.filter(f=>f.sweepMs>4).length,
     majorGc:collections.filter(e=>e.name==='MajorGC').map(e=>({timeMs:e.ts/1000-offset,durationMs:e.dur/1000})),
     minorGc:distribution(collections.filter(e=>e.name==='MinorGC').map(e=>e.dur/1000)),
+    ownerRaf:{waits:distribution(rafWaits.map(e=>e.waitMs)),longWaits:rafWaits.filter(e=>e.waitMs>18)},
+    gpuDecoder:{tasks:distribution(gpuTasks.filter(e=>e.ts/1000-offset>=start&&e.ts/1000-offset<end).map(e=>e.dur/1000)),
+      over10ms:gpuTasks.filter(e=>e.dur>10000&&e.ts/1000-offset>=start&&e.ts/1000-offset<end)
+        .map(e=>({timeMs:e.ts/1000-offset,durationMs:e.dur/1000,thread:e.tid,threadName:threadNames.get(e.tid)})),
+      boundary:'GPU service CPU task duration, not GPU execution time. Temporal correlation with sweeping does not prove which command or resource destructor causes the work.'},
     sampleSweep:tasks[0],
     clockCalibrationSamples:calls.filter(e=>e.tid===ownerThread).slice(0,6).map(e=>({ts:e.ts,duration:e.dur})),
     boundary:'Both sweeper tasks and RHI callbacks execute on the GPU owner Worker. Queue samples measure setImmediate delivery only; the preceding native proxy hop is not measured. Trace overhead is excluded from normal FPS comparisons. Sweep timing establishes the observed stalls; it does not identify which object classes account for collection cost.'};

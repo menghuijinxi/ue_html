@@ -222,7 +222,9 @@ function createWebGameFrameClock(maxAhead, fail) {
   const state = new Int32Array(new SharedArrayBuffer(32));
   const channel = new MessageChannel();
   let pending = null, raf = 0, disposed = false, ready = false, issued = null, displayTick = null;
-  const stats = globalThis.__webFrameSchedulerPage = {maxAhead, requests: 0, ticks: 0, budgetStalls: 0, ready: false};
+  const stats = globalThis.__webFrameSchedulerPage = {maxAhead, requests: 0, ticks: 0, budgetStalls: 0, ready: false,
+    displayClock: 'page-rAF', gate: 'owner-submit-and-GPU-completion', maxUnsubmitted: 2, maxTickAgeMs: 16,
+    ownerStalls: 0};
   function arm() {
     if (!disposed && ready && pending !== null && !document.hidden && !raf) raf = requestAnimationFrame(tick);
   }
@@ -233,13 +235,20 @@ function createWebGameFrameClock(maxAhead, fail) {
     grant(); arm();
   }
   function grant() {
-    if (disposed || document.hidden || pending === null || displayTick === null || performance.now() - displayTick > 50) return;
+    if(disposed || document.hidden || pending === null || displayTick === null ||
+        performance.now()-displayTick>stats.maxTickAgeMs) return;
     const completed = Atomics.load(state, 0), reserved = Atomics.load(state, 2);
+    // Includes the frame currently executing on RHI plus one frame being built.
+    if (reserved - Atomics.load(state,1) >= stats.maxUnsubmitted) { ++stats.ownerStalls; return; }
     if (reserved - completed >= maxAhead) { ++stats.budgetStalls; return; }
     issued = pending; pending = null;
     const ahead = Atomics.add(state, 2, 1) + 1 - completed;
     Atomics.store(state, 5, Math.max(Atomics.load(state, 5), ahead));
+    Atomics.store(state, 7, Math.max(Atomics.load(state, 7), reserved + 1 - Atomics.load(state, 1)));
     ++stats.ticks;
+    // At most one grant per display tick. Owner acknowledgement covers actual
+    // submission, not Game work that has merely entered the rendering pipeline.
+    // Expire a tick held across a stall; never accumulate missed display ticks.
     channel.port1.postMessage({type: 'tick', id: issued, timestamp: performance.timeOrigin + displayTick});
     displayTick = null;
   }
@@ -253,7 +262,7 @@ function createWebGameFrameClock(maxAhead, fail) {
       Atomics.store(state, 6, 1);
     } else if (data.type === 'request') {
       if (!ready || pending !== null || !Number.isSafeInteger(data.id)) return fail('Overlapping Game frame requests');
-      ++stats.requests; pending = data.id; grant(); arm();
+      ++stats.requests; pending = data.id; issued = null; grant(); arm();
     } else if (data.type === 'cancel') {
       if (pending === data.id) pending = null;
       else if (issued === data.id) { Atomics.sub(state, 2, 1); issued = null; }
@@ -267,6 +276,7 @@ function createWebGameFrameClock(maxAhead, fail) {
   document.addEventListener('visibilitychange', visibility);
   return {transfer: {maxAhead, state: state.buffer, port: channel.port2},
     gpuCompleted() {grant(); arm();},
+    ownerSubmitted() {grant(); arm();},
     dispose() { disposed = true; if (raf) cancelAnimationFrame(raf); channel.port1.close();
       document.removeEventListener('visibilitychange', visibility); }};
 }
@@ -282,10 +292,16 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   // Local scheduling failed manual movement acceptance (backlog, then jitter).
   // Use owner rAF by default; retain local mode only for explicit diagnostics.
   const clock = experiment.get('clock');
-  if (clock !== null && !['local', 'owner'].includes(clock)) throw new Error('Invalid Game frame clock');
+  if (clock !== null && !['local', 'owner', 'page'].includes(clock)) throw new Error('Invalid Game frame clock');
   const localClock = clock === 'local';
   module.arguments = module.arguments.filter(v => v !== '-WebGameLocalClock');
   if (localClock) module.arguments.push('-WebGameLocalClock');
+  if (clock === 'page') {
+    const budget = Number(experiment.get('framebudget') ?? 3);
+    if (!Number.isInteger(budget) || budget < 1 || budget > 4) throw new Error('Invalid owner completion frame budget');
+    module.arguments = module.arguments.filter(v => !v.startsWith('-WebFrameScheduler='));
+    module.arguments.push('-WebFrameScheduler=' + budget);
+  } else if (experiment.has('framebudget')) throw new Error('framebudget requires clock=page');
   // Opt-in until cross-device movement tests establish a suitable default.
   const requestedBudget = Number(experiment.get('gpuahead') ?? assets.localFrameBudget ?? 0);
   if (!Number.isInteger(requestedBudget) || requestedBudget < 0 || requestedBudget > 8)
@@ -401,6 +417,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     const message = event.data;
     if (message.type === 'log') record(message.text);
     else if (message.type === 'gpu-frame-complete') frameClock?.gpuCompleted();
+    else if (message.type === 'gpu-frame-submitted') frameClock?.ownerSubmitted();
     else if (message.type === 'failure') reportFailure(message.message);
     else if (message.type === 'stage') stage(message.stage);
     else if (message.type === 'progress') {

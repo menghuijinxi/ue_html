@@ -63,6 +63,7 @@ function markGpuFrame() {
   // RHIEndFrame reports one complete frame after submitting every encoder.
   // This is independent of the viewport/HUD counter, which may start at 2.
   const submitted = Atomics.add(state, 1, 1) + 1;
+  send('gpu-frame-submitted');
   Atomics.store(state, 3, Math.max(Atomics.load(state, 3), submitted - Atomics.load(state, 0)));
   // Register only after the complete frame has been submitted. Promise callbacks
   // run on this owner; do not block it waiting for its own completion messages.
@@ -141,7 +142,7 @@ function snapshot() {
     completed: Atomics.load(frameScheduler.state, 0), submitted: Atomics.load(frameScheduler.state, 1),
     reserved: Atomics.load(frameScheduler.state, 2), peakSubmitted: Atomics.load(frameScheduler.state, 3),
     completions: Atomics.load(frameScheduler.state, 4), peakReserved: Atomics.load(frameScheduler.state, 5),
-    ready: !!Atomics.load(frameScheduler.state, 6)};
+    ready: !!Atomics.load(frameScheduler.state, 6), peakUnsubmitted: Atomics.load(frameScheduler.state, 7)};
   if (localFrameBudget) state.__webLocalFrameBudget = {...localFrameBudget.diagnostics};
   state.__webEngineSurface = {width: Module.canvas.width, height: Module.canvas.height};
   const io = globalThis.__webContentIO;

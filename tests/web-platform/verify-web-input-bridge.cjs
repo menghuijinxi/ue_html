@@ -42,6 +42,11 @@ const channels = [];
   assert(!selectClock(publishedDefaults.query).includes('-WebGameLocalClock'));
   assert(selectClock(performanceModes({clock: 'local'}).query).includes('-WebGameLocalClock'));
   assert(!selectClock('', {}, ['-WebFrameScheduler=2']).includes('-WebGameLocalClock'));
+  assert(selectClock('?clock=page&framebudget=3').includes('-WebFrameScheduler=3'));
+  assert(selectClock('?clock=page').includes('-WebFrameScheduler=3'));
+  for (const value of ['0','5','1.5','invalid'])
+    assert.throws(()=>selectClock('?clock=page&framebudget='+value),/Invalid owner completion frame budget/);
+  assert.throws(()=>selectClock('?clock=owner&framebudget=3'),/framebudget requires clock=page/);
   assert.throws(() => selectClock('?clock=local', {gameFrameBridge: 'page-raf'}),
     /Choose one frame clock experiment/);
   for (const value of ['-1', '9', '1.5', 'invalid'])

@@ -1,0 +1,2903 @@
+{
+  "date": "2026-11-06T07:34:18.547Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "periodicStallsEliminated": false,
+  "physicalPresentationValidated": false,
+  "packages": {
+    "control": {
+      "folder": "villa-address32-compute-20261106",
+      "manifest": {
+        "config-files.json": {
+          "sha256": "4a87087bfb215ea6895dd3ed0b6bab6895d4e97c173a3a82901e262a7d4b5b9c",
+          "size": 663863,
+          "mtimeMs": 1793939113753.8699
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "0a977f7689f2e56cdc42bdb5c178f4d8dda7504edbaad8c967c3d30a350d8e59",
+          "size": 90464,
+          "mtimeMs": 1793939113755.871
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "16a1fa34a0e6e781c3ea8e1b37448ca74bd26f8d5580cd4b10f4ecd69ac5e1b7",
+          "size": 425817,
+          "mtimeMs": 1793937442734.883
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "c40d085de8268800e877bb04484a6e4617f10d4a35f9bc9f8674d1419585700f",
+          "size": 171489686,
+          "mtimeMs": 1793937442132.2727
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "8fe672a95eb906800edaae8edaaa2bf5c073a0fedc9d8ef82bf243e4b01066b4",
+          "size": 33353,
+          "mtimeMs": 1793896541291.302
+        },
+        "web-engine-worker.js": {
+          "sha256": "292e0badc6a27f3f235448e328534e7e0c0f46f19936997d967764aafbaef040",
+          "size": 19016,
+          "mtimeMs": 1793878070429.2434
+        }
+      },
+      "settings": [
+        "; Project rendering settings are inherited without Web profile overrides.\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.Shadow.CSMCaching=1\nr.WebGPU.ReuseComputePass=1\n"
+      ]
+    },
+    "candidate": {
+      "folder": "villa-owner-credit-transient-20261106",
+      "manifest": {
+        "config-files.json": {
+          "sha256": "f1901fad54c805bd7c8b7096987805d80b38db0fbf1e47a12a44a6eb1715965a",
+          "size": 664171,
+          "mtimeMs": 1793947738716.1206
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "746a8269daccc7b41d9582c2b2e520b8fd528e4483025eb2ea56f65f92879578",
+          "size": 90464,
+          "mtimeMs": 1793947738719.1196
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "16a1fa34a0e6e781c3ea8e1b37448ca74bd26f8d5580cd4b10f4ecd69ac5e1b7",
+          "size": 425817,
+          "mtimeMs": 1793937442734.883
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "c40d085de8268800e877bb04484a6e4617f10d4a35f9bc9f8674d1419585700f",
+          "size": 171489686,
+          "mtimeMs": 1793937442132.2727
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "1490867b2b1486bc227f58a1b295b4cad1ae8e2d7d9b5766ca435bbaeb76f995",
+          "size": 34642,
+          "mtimeMs": 1793947598919.2349
+        },
+        "web-engine-worker.js": {
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f",
+          "size": 19145,
+          "mtimeMs": 1793947738718.1194
+        }
+      },
+      "settings": [
+        "; Project rendering settings are inherited without Web profile overrides.\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.Shadow.CSMCaching=1\nr.WebGPU.ReuseComputePass=1\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.WebGPU.StagingUploadPages=1\nr.WebGPU.RDGMergeRenderPasses=1\nr.WebGPU.BatchSubmissions=1\nr.WebGPU.ReusePresentEncoder=1\nr.WebGPU.FrameUniformSnapshots=1\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\n"
+      ]
+    }
+  },
+  "normal": {
+    "control": {
+      "result": {
+        "frames": 13376,
+        "seconds": 119.99276999999583,
+        "fps": 111.47338293799255,
+        "low1": 42.802065998466745,
+        "p50": 10.380000002682209,
+        "p95": 11.78999999910593,
+        "p99": 13.58500000089407,
+        "max": 45.73499999940395,
+        "over20": 73,
+        "over25": 41,
+        "over33": 25,
+        "over50": 0
+      },
+      "captures": [
+        {
+          "tag": "periodic-final-a1-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-final-a1-20261106.json",
+            "sha256": "37d2fe0d60792fed0f507043ebc2c052f4b8e05bb826dd4a531dee0f0b9e1d6a"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-final-a1-20261106-source.cjs",
+            "sha256": "64794ae9c8a2f57bdb840aa8191c938647f76a2d371ace5133823831d5cd1dbe"
+          },
+          "folder": "villa-address32-compute-20261106",
+          "frameBudget": 0,
+          "instrumentation": {
+            "gpu": false,
+            "api": false,
+            "uploads": false
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 6667,
+                "seconds": 59.9925,
+                "fps": 111.13055798641496,
+                "low1": 42.53833211692368,
+                "p50": 10.400000005960464,
+                "p95": 11.890000000596046,
+                "p99": 13.965000003576279,
+                "max": 45.73499999940395,
+                "over20": 35,
+                "over25": 17,
+                "over33": 13,
+                "over50": 0
+              },
+              "rhiMs": 6.105400382846907,
+              "workload": {
+                "draws": 1338.00990990991,
+                "dispatches": 159.4370870870871,
+                "ready": 623.6273273273273,
+                "pending": 294.96186186186185
+              },
+              "budget": null,
+              "gpu": null
+            },
+            {
+              "result": {
+                "frames": 6709,
+                "seconds": 60.00026999999583,
+                "fps": 111.81616349393872,
+                "low1": 43.400838658438985,
+                "p50": 10.350000001490116,
+                "p95": 11.679999999701977,
+                "p99": 13.349999994039536,
+                "max": 45.54500000178814,
+                "over20": 38,
+                "over25": 24,
+                "over33": 12,
+                "over50": 0
+              },
+              "rhiMs": 6.071637639700922,
+              "workload": {
+                "draws": 1337.192857142857,
+                "dispatches": 159.3373511904762,
+                "ready": 623.5607142857143,
+                "pending": 293.1266369047619
+              },
+              "budget": null,
+              "gpu": null
+            }
+          ]
+        }
+      ]
+    },
+    "candidate": {
+      "result": {
+        "frames": 14236,
+        "seconds": 120.0098900000006,
+        "fps": 118.6235567751952,
+        "low1": 52.97306708488356,
+        "p50": 7.214999996125698,
+        "p95": 11.475000001490116,
+        "p99": 12.92000000178814,
+        "max": 40.67999999970198,
+        "over20": 55,
+        "over25": 22,
+        "over33": 4,
+        "over50": 0
+      },
+      "captures": [
+        {
+          "tag": "periodic-final-b1-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-final-b1-20261106.json",
+            "sha256": "760c406e6dfb16115b3b994ea68e9b349570d1e705c5b230b2e6622838607327"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-final-b1-20261106-source.cjs",
+            "sha256": "64794ae9c8a2f57bdb840aa8191c938647f76a2d371ace5133823831d5cd1dbe"
+          },
+          "folder": "villa-owner-credit-transient-20261106",
+          "frameBudget": 3,
+          "instrumentation": {
+            "gpu": false,
+            "api": false,
+            "uploads": false
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 7094,
+                "seconds": 60.00411500000209,
+                "fps": 118.22522505331098,
+                "low1": 52.33653126838055,
+                "p50": 7.325000002980232,
+                "p95": 11.5,
+                "p99": 12.915000006556511,
+                "max": 40.67999999970198,
+                "over20": 27,
+                "over25": 14,
+                "over33": 3,
+                "over50": 0
+              },
+              "rhiMs": 5.909164136306356,
+              "workload": {
+                "draws": 1354.3666666666666,
+                "dispatches": 161.45274261603376,
+                "ready": 622.6229254571027,
+                "pending": 342.0399437412096
+              },
+              "budget": [
+                11459,
+                11460,
+                11462,
+                3,
+                11459,
+                3,
+                1,
+                2
+              ],
+              "gpu": null
+            }
+          ]
+        },
+        {
+          "tag": "periodic-final-b2-20261106",
+          "raw": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-final-b2-20261106.json",
+            "sha256": "b7741a8e3892a875ee66643a152153c2484cb73781b7a3624a239b76d1550325"
+          },
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-final-b2-20261106-source.cjs",
+            "sha256": "421848d3fb5bfd5464e463b0e21b43c7eaea3c712861beee5b3f922f619c5e1e"
+          },
+          "folder": "villa-owner-credit-transient-20261106",
+          "frameBudget": 3,
+          "instrumentation": {
+            "gpu": false,
+            "api": false,
+            "uploads": false
+          },
+          "windows": [
+            {
+              "result": {
+                "frames": 7142,
+                "seconds": 60.00577499999851,
+                "fps": 119.02187747762908,
+                "low1": 53.61630829228531,
+                "p50": 7.119999997317791,
+                "p95": 11.45499999821186,
+                "p99": 12.935000002384186,
+                "max": 37.729999996721745,
+                "over20": 28,
+                "over25": 8,
+                "over33": 1,
+                "over50": 0
+              },
+              "rhiMs": 5.857472023876478,
+              "workload": {
+                "draws": 1354.7303921568628,
+                "dispatches": 161.5018207282913,
+                "ready": 622.5187675070028,
+                "pending": 342.6733893557423
+              },
+              "budget": [
+                11546,
+                11547,
+                11548,
+                3,
+                11546,
+                3,
+                1,
+                2
+              ],
+              "gpu": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "screens": [
+    {
+      "tag": "periodic-owner-budget3-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-budget3-screen-20261106.json",
+        "sha256": "fa4d5eea352bc2176bf9d40a0f11e67db4190c82ba94837b58a86c2886aceca7"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-budget3-screen-20261106-source.cjs",
+        "sha256": "644fa570f4d1eb72aa80791ffbcffd2d00eda96bb0e00536aac358d548a200f5"
+      },
+      "folder": "villa-address32-compute-20261106",
+      "frameBudget": 3,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 5252,
+            "seconds": 44.9995549999997,
+            "fps": 116.71226526573507,
+            "low1": 51.64685246563133,
+            "p50": 8.410000003874302,
+            "p95": 11.505000002682209,
+            "p99": 14.16499999910593,
+            "max": 29.434999994933605,
+            "over20": 20,
+            "over25": 9,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.026767527455948,
+          "workload": {
+            "draws": 1354.627238095238,
+            "dispatches": 161.44285714285715,
+            "ready": 622.8609523809524,
+            "pending": 345.61485714285715
+          },
+          "budget": [
+            9553,
+            9554,
+            9555,
+            3,
+            9553,
+            3,
+            1,
+            0
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-owner-budget4-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-budget4-screen-20261106.json",
+        "sha256": "3d378ba258599ee69b5a98173ae3bc1edd62420feaf6af3cc86e61ee11ca1bc6"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-budget4-screen-20261106-source.cjs",
+        "sha256": "644fa570f4d1eb72aa80791ffbcffd2d00eda96bb0e00536aac358d548a200f5"
+      },
+      "folder": "villa-address32-compute-20261106",
+      "frameBudget": 4,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 5735,
+            "seconds": 44.9986099999994,
+            "fps": 127.44838118333158,
+            "low1": 54.541522082123066,
+            "p50": 6.46000000089407,
+            "p95": 11.78999999910593,
+            "p99": 13.094999998807907,
+            "max": 30.679999999701977,
+            "over20": 20,
+            "over25": 7,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.1522348987840045,
+          "workload": {
+            "draws": 1411.205410122164,
+            "dispatches": 168.75549738219894,
+            "ready": 616.7356020942408,
+            "pending": 773.8884816753927
+          },
+          "budget": [
+            10455,
+            10457,
+            10458,
+            4,
+            10455,
+            4,
+            1,
+            0
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-owner-control-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-control-screen-20261106.json",
+        "sha256": "be0a11e63e7fc308cc5465e03d17a1c7cdf3a63ec1381830c19b429ec55a3fc3"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-control-screen-20261106-source.cjs",
+        "sha256": "644fa570f4d1eb72aa80791ffbcffd2d00eda96bb0e00536aac358d548a200f5"
+      },
+      "folder": "villa-address32-compute-20261106",
+      "frameBudget": 0,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 6925,
+            "seconds": 60.0034299999997,
+            "fps": 115.41006905771943,
+            "low1": 43.41879599763778,
+            "p50": 10.159999996423721,
+            "p95": 11.799999997019768,
+            "p99": 13.645000003278255,
+            "max": 42.78000000119209,
+            "over20": 39,
+            "over25": 18,
+            "over33": 13,
+            "over50": 0
+          },
+          "rhiMs": 5.985381835256737,
+          "workload": {
+            "draws": 1349.3763347763347,
+            "dispatches": 160.72929292929294,
+            "ready": 623.9310245310245,
+            "pending": 323.4864357864358
+          },
+          "budget": null,
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-fresh-budget3-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-fresh-budget3-screen-20261106.json",
+        "sha256": "77fb4a18d3484ef3e97879d63472cf5a7c05023e772e42efccfbea4806932484"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-fresh-budget3-screen-20261106-source.cjs",
+        "sha256": "644fa570f4d1eb72aa80791ffbcffd2d00eda96bb0e00536aac358d548a200f5"
+      },
+      "folder": "villa-fresh-frame-gate-20261106",
+      "frameBudget": 3,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 6326,
+            "seconds": 60.01353000000119,
+            "fps": 105.40956347676722,
+            "low1": 42.24436384285975,
+            "p50": 6.950000002980232,
+            "p95": 14.384999997913837,
+            "p99": 15.45499999821186,
+            "max": 39.80499999970198,
+            "over20": 38,
+            "over25": 22,
+            "over33": 11,
+            "over50": 0
+          },
+          "rhiMs": 6.033997259114391,
+          "workload": {
+            "draws": 1364.6696682464456,
+            "dispatches": 162.80758293838863,
+            "ready": 621.2306477093207,
+            "pending": 416.2429699842022
+          },
+          "budget": [
+            10298,
+            10299,
+            10299,
+            3,
+            10298,
+            3,
+            1,
+            0
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-fresh-budget4-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-fresh-budget4-screen-20261106.json",
+        "sha256": "dd5203d198359929a0e24ebab2dad560f512b113224a190d467b8b301d028eab"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-fresh-budget4-screen-20261106-source.cjs",
+        "sha256": "38858db2d08b3dc5d48f7531c1b6ca38ce99ea9665b80172403161695b57b222"
+      },
+      "folder": "villa-fresh-frame-gate-20261106",
+      "frameBudget": 4,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 7288,
+            "seconds": 59.99669000000507,
+            "fps": 121.47336794745485,
+            "low1": 48.69669629716256,
+            "p50": 6.4749999940395355,
+            "p95": 13.564999997615814,
+            "p99": 15.195000000298023,
+            "max": 33.524999998509884,
+            "over20": 38,
+            "over25": 11,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 6.138589225493761,
+          "workload": {
+            "draws": 1398.004938271605,
+            "dispatches": 167.35349794238684,
+            "ready": 615.7336076817559,
+            "pending": 699.0934156378601
+          },
+          "budget": [
+            11808,
+            11810,
+            11811,
+            4,
+            11808,
+            4,
+            1,
+            0
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-owner-credit3-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-credit3-screen-20261106.json",
+        "sha256": "8abb32f842dafe0c9e444f65e36f94103c4e40be65810edb517394223959b5aa"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-credit3-screen-20261106-source.cjs",
+        "sha256": "38858db2d08b3dc5d48f7531c1b6ca38ce99ea9665b80172403161695b57b222"
+      },
+      "folder": "villa-owner-credit-gate-20261106",
+      "frameBudget": 3,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 5748,
+            "seconds": 59.999619999997314,
+            "fps": 95.80060673718029,
+            "low1": 48.60735730897967,
+            "p50": 10.220000006258488,
+            "p95": 11.230000004172325,
+            "p99": 12.994999997317791,
+            "max": 35.36500000208616,
+            "over20": 27,
+            "over25": 12,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 5.827666448510212,
+          "workload": {
+            "draws": 1235.976265270506,
+            "dispatches": 146.06492146596858,
+            "ready": 636.0457242582897,
+            "pending": 14.976614310645724
+          },
+          "budget": [
+            9323,
+            9324,
+            9325,
+            3,
+            9323,
+            3,
+            1,
+            0
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-owner-credit2-budget3-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-credit2-budget3-screen-20261106.json",
+        "sha256": "e332c06bc9d532531e56afb50c8ef75f53c085f73b42ef9653f664188de01b47"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-credit2-budget3-screen-20261106-source.cjs",
+        "sha256": "38858db2d08b3dc5d48f7531c1b6ca38ce99ea9665b80172403161695b57b222"
+      },
+      "folder": "villa-owner-credit2-gate-20261106",
+      "frameBudget": 3,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 6922,
+            "seconds": 59.994640000000594,
+            "fps": 115.37697367631392,
+            "low1": 49.15920207591259,
+            "p50": 7.574999995529652,
+            "p95": 11.685000002384186,
+            "p99": 14.20499999821186,
+            "max": 35.08499999344349,
+            "over20": 32,
+            "over25": 8,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 6.150152316884041,
+          "workload": {
+            "draws": 1357.0551226551227,
+            "dispatches": 161.84256854256853,
+            "ready": 621.9049062049062,
+            "pending": 354.2279942279942
+          },
+          "budget": [
+            11177,
+            11178,
+            11180,
+            3,
+            11177,
+            3,
+            1,
+            0
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-transient-reduction-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-transient-reduction-screen-20261106.json",
+        "sha256": "b040c1e8f850185267ac985e2149473d53a20bd10258259a059e569b0d0815a4"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-transient-reduction-screen-20261106-source.cjs",
+        "sha256": "38858db2d08b3dc5d48f7531c1b6ca38ce99ea9665b80172403161695b57b222"
+      },
+      "folder": "villa-transient-reduction-20261106",
+      "frameBudget": 0,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 6975,
+            "seconds": 60.00013499999791,
+            "fps": 116.24973843809255,
+            "low1": 48.00093258980251,
+            "p50": 10.060000002384186,
+            "p95": 11.594999998807907,
+            "p99": 13.185000002384186,
+            "max": 47.0350000038743,
+            "over20": 31,
+            "over25": 18,
+            "over33": 5,
+            "over50": 0
+          },
+          "rhiMs": 5.870652820812452,
+          "workload": {
+            "draws": 1348.242959770115,
+            "dispatches": 160.658908045977,
+            "ready": 623.253591954023,
+            "pending": 320.5272988505747
+          },
+          "budget": null,
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-owner-credit2-budget4-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-credit2-budget4-screen-20261106.json",
+        "sha256": "4a411ea60fbaa6c6b60799cb302a93bc49f75559e0136c41413acd9f825a5bd8"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-credit2-budget4-screen-20261106-source.cjs",
+        "sha256": "64794ae9c8a2f57bdb840aa8191c938647f76a2d371ace5133823831d5cd1dbe"
+      },
+      "folder": "villa-owner-credit-bounded-20261106",
+      "frameBudget": 4,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 7530,
+            "seconds": 60.00459499999881,
+            "fps": 125.49038952767116,
+            "low1": 55.131390436680654,
+            "p50": 6.644999995827675,
+            "p95": 11.935000002384186,
+            "p99": 13.109999999403954,
+            "max": 30.439999997615814,
+            "over20": 24,
+            "over25": 6,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.289518351006767,
+          "workload": {
+            "draws": 1414.0669322709164,
+            "dispatches": 169.11580345285523,
+            "ready": 616.6891102257636,
+            "pending": 780.53598937583
+          },
+          "budget": [
+            12135,
+            12138,
+            12139,
+            4,
+            12135,
+            4,
+            1,
+            2
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-owner-transient-budget4-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-budget4-screen-20261106.json",
+        "sha256": "bfa301b3a068cd2690c5f397b579c007c1eb1235aa735792b5c09b1b3b4a6993"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-budget4-screen-20261106-source.cjs",
+        "sha256": "64794ae9c8a2f57bdb840aa8191c938647f76a2d371ace5133823831d5cd1dbe"
+      },
+      "folder": "villa-owner-credit-transient-20261106",
+      "frameBudget": 4,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 7752,
+            "seconds": 60.01927999999374,
+            "fps": 129.15849706962177,
+            "low1": 57.952278528426085,
+            "p50": 6.380000002682209,
+            "p95": 11.464999996125698,
+            "p99": 12.740000002086163,
+            "max": 28.304999999701977,
+            "over20": 20,
+            "over25": 4,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.002091088490539,
+          "workload": {
+            "draws": 1400.5201550387596,
+            "dispatches": 167.55568475452196,
+            "ready": 616.4824289405685,
+            "pending": 720.0514211886305
+          },
+          "budget": [
+            12501,
+            12503,
+            12504,
+            4,
+            12501,
+            4,
+            1,
+            2
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-rhi-visible-budget3-retry-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-rhi-visible-budget3-retry-20261106.json",
+        "sha256": "b058a79294913cbe63705543eff3627a84a05f0c0d9612f3239b8ddca99ae49f"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-rhi-visible-budget3-retry-20261106-source.cjs",
+        "sha256": "fb1d3791180bab4ae5827d24486695268bd1796ed4a59bef6472e41d8b351d0b"
+      },
+      "folder": "villa-owner-credit-transient-20261106",
+      "wakePriority": "user-visible",
+      "frameBudget": 3,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 7156,
+            "seconds": 60.01441999999434,
+            "fps": 119.23800979832306,
+            "low1": 47.3187674773536,
+            "p50": 7.324999995529652,
+            "p95": 11.219999998807907,
+            "p99": 12.445000000298023,
+            "max": 49.63499999791384,
+            "over20": 28,
+            "over25": 25,
+            "over33": 4,
+            "over50": 0
+          },
+          "rhiMs": 5.887749575862376,
+          "workload": {
+            "draws": 1357.4912133891214,
+            "dispatches": 161.87364016736402,
+            "ready": 622.1012552301255,
+            "pending": 358.715760111576
+          },
+          "budget": [
+            11549,
+            11550,
+            11551,
+            3,
+            11549,
+            3,
+            1,
+            2
+          ],
+          "gpu": null
+        }
+      ]
+    },
+    {
+      "tag": "periodic-owner-bundles-budget3-screen-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-bundles-budget3-screen-20261106.json",
+        "sha256": "eea7dacf1c78efadc132a132ae1f7b0d97518f1b95889c00348473b614bf740d"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-bundles-budget3-screen-20261106-source.cjs",
+        "sha256": "fb1d3791180bab4ae5827d24486695268bd1796ed4a59bef6472e41d8b351d0b"
+      },
+      "folder": "villa-owner-credit-bundles-20261106",
+      "frameBudget": 3,
+      "instrumentation": {
+        "gpu": false,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 6622,
+            "seconds": 60.012079999998214,
+            "fps": 110.34445065060564,
+            "low1": 50.67618673136222,
+            "p50": 10.639999993145466,
+            "p95": 12.07999999821186,
+            "p99": 13.850000001490116,
+            "max": 35.40999999642372,
+            "over20": 29,
+            "over25": 8,
+            "over33": 1,
+            "over50": 0
+          },
+          "rhiMs": 6.462594776306198,
+          "workload": {
+            "draws": 1352.014177978884,
+            "dispatches": 161.04841628959275,
+            "ready": 623.6770739064857,
+            "pending": 329.9844645550528
+          },
+          "budget": [
+            10701,
+            10702,
+            10703,
+            3,
+            10701,
+            3,
+            1,
+            2
+          ],
+          "gpu": null
+        }
+      ]
+    }
+  ],
+  "gpu": {
+    "control": {
+      "tag": "periodic-owner-control-gpu-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-control-gpu-20261106.json",
+        "sha256": "2632c18d07c7a14aedfc129808f34e8fe1629ed24b71cef6091ad9f5115215f4"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-control-gpu-20261106-source.cjs",
+        "sha256": "64794ae9c8a2f57bdb840aa8191c938647f76a2d371ace5133823831d5cd1dbe"
+      },
+      "folder": "villa-address32-compute-20261106",
+      "frameBudget": 0,
+      "instrumentation": {
+        "gpu": true,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 3295,
+            "seconds": 29.9850549999997,
+            "fps": 109.88807590981683,
+            "low1": 41.89518586229495,
+            "p50": 10.520000003278255,
+            "p95": 12.015000000596046,
+            "p99": 13.490000002086163,
+            "max": 45.26500000059605,
+            "over20": 16,
+            "over25": 12,
+            "over33": 8,
+            "over50": 0
+          },
+          "rhiMs": 6.197064174610434,
+          "workload": {
+            "draws": 1339.4345454545455,
+            "dispatches": 159.59757575757575,
+            "ready": 623.6572727272727,
+            "pending": 298.35212121212123
+          },
+          "budget": null,
+          "gpu": {
+            "records": 3296,
+            "peak": 4,
+            "meanMs": 12.501224211179787,
+            "p99Ms": 20.785000003874302,
+            "maxMs": 49.82500000298023
+          }
+        }
+      ]
+    },
+    "rejectedFour": {
+      "tag": "periodic-owner-transient-gpu-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106.json",
+        "sha256": "5bf6490bf6dbda34269d43167dc50006a1477defe0f6e6b063f57145233346c7"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106-source.cjs",
+        "sha256": "64794ae9c8a2f57bdb840aa8191c938647f76a2d371ace5133823831d5cd1dbe"
+      },
+      "folder": "villa-owner-credit-transient-20261106",
+      "frameBudget": 4,
+      "instrumentation": {
+        "gpu": true,
+        "api": true,
+        "uploads": true
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 3852,
+            "seconds": 29.993815000005068,
+            "fps": 128.42647725870648,
+            "low1": 60.2679606256818,
+            "p50": 6.405000001192093,
+            "p95": 11.480000004172325,
+            "p99": 12.524999998509884,
+            "max": 26.810000002384186,
+            "over20": 9,
+            "over25": 1,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 6.041617252520012,
+          "workload": {
+            "draws": 1395.419638242894,
+            "dispatches": 166.99328165374678,
+            "ready": 616.2286821705426,
+            "pending": 691.2596899224807
+          },
+          "budget": [
+            8585,
+            8586,
+            8588,
+            4,
+            8585,
+            4,
+            1,
+            2
+          ],
+          "gpu": {
+            "records": 3853,
+            "peak": 4,
+            "meanMs": 14.631962107497857,
+            "p99Ms": 28.190000005066395,
+            "maxMs": 39.99000000208616
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "tag": "periodic-owner-transient-budget3-gpu-20261106",
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-budget3-gpu-20261106.json",
+        "sha256": "791753084371c817982cd28bd47a0e0e5119f63e6d0863e1c6f21b8765c3dd8f"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-budget3-gpu-20261106-source.cjs",
+        "sha256": "64794ae9c8a2f57bdb840aa8191c938647f76a2d371ace5133823831d5cd1dbe"
+      },
+      "folder": "villa-owner-credit-transient-20261106",
+      "frameBudget": 3,
+      "instrumentation": {
+        "gpu": true,
+        "api": false,
+        "uploads": false
+      },
+      "windows": [
+        {
+          "result": {
+            "frames": 5326,
+            "seconds": 45.00202500000596,
+            "fps": 118.3502297951991,
+            "low1": 54.4280768259719,
+            "p50": 7.144999995827675,
+            "p95": 11.464999996125698,
+            "p99": 12.950000002980232,
+            "max": 32.39000000059605,
+            "over20": 19,
+            "over25": 7,
+            "over33": 0,
+            "over50": 0
+          },
+          "rhiMs": 5.886118206584881,
+          "workload": {
+            "draws": 1355.6026217228464,
+            "dispatches": 161.6441947565543,
+            "ready": 622.2970037453183,
+            "pending": 346.34831460674155
+          },
+          "budget": [
+            9700,
+            9701,
+            9702,
+            3,
+            9700,
+            3,
+            1,
+            2
+          ],
+          "gpu": {
+            "records": 5327,
+            "peak": 3,
+            "meanMs": 11.904302609383343,
+            "p99Ms": 23.774999998509884,
+            "maxMs": 34.10999999940395
+          }
+        }
+      ]
+    }
+  },
+  "routes": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-control-route-20261106.json",
+        "sha256": "52d864b790db7599cc5a533ef0007db1face5a56e985f4cee7b0f699f111d8f3"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-control-route-20261106-source.cjs",
+        "sha256": "fa21ee9ec40905b131fb38b0774829e6cb686837d1e3005b072b33e9e8cedfb4"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "result": {
+            "frames": 2360,
+            "seconds": 20.005664999999105,
+            "fps": 117.96658596453084,
+            "low1": 42.73618419231885,
+            "p50": 8.534999996423721,
+            "p95": 13.380000002682209,
+            "p99": 16.009999997913837,
+            "max": 42.92999999970198,
+            "over20": 10,
+            "over25": 8,
+            "over33": 4,
+            "over50": 0
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 2
+          },
+          "travel": 1981.2335722466448,
+          "turn": 269.04402392578106
+        },
+        {
+          "name": "moving",
+          "result": {
+            "frames": 2325,
+            "seconds": 20.000159999996423,
+            "fps": 116.24907000746073,
+            "low1": 43.05859557078274,
+            "p50": 9.91499999910593,
+            "p95": 11.854999996721745,
+            "p99": 13.344999998807907,
+            "max": 44.125,
+            "over20": 12,
+            "over25": 7,
+            "over33": 4,
+            "over50": 0
+          },
+          "creations": {},
+          "travel": 2203.1966529328197,
+          "turn": 0
+        },
+        {
+          "name": "turning",
+          "result": {
+            "frames": 2056,
+            "seconds": 20.0045549999997,
+            "fps": 102.77659263102983,
+            "low1": 41.60928877711801,
+            "p50": 10.350000001490116,
+            "p95": 13.825000002980232,
+            "p99": 15.450000002980232,
+            "max": 40.975000001490116,
+            "over20": 11,
+            "over25": 8,
+            "over33": 4,
+            "over50": 0
+          },
+          "creations": {},
+          "travel": 0,
+          "turn": 358.4683784179686
+        },
+        {
+          "name": "repeat-area",
+          "result": {
+            "frames": 2439,
+            "seconds": 19.994875,
+            "fps": 121.98125769728492,
+            "low1": 40.97118087121498,
+            "p50": 8.280000001192093,
+            "p95": 13.25,
+            "p99": 16.49500000476837,
+            "max": 45.189999997615814,
+            "over20": 9,
+            "over25": 8,
+            "over33": 7,
+            "over50": 0
+          },
+          "creations": {},
+          "travel": 1980.16941169262,
+          "turn": 267.3495009765629
+        }
+      ]
+    },
+    "candidate": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-route-screen-20261106.json",
+        "sha256": "0e8438360530cac6d9acc049a863356673fd60ff49905bfdfa0b34b377bacdec"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-route-screen-20261106-source.cjs",
+        "sha256": "fa21ee9ec40905b131fb38b0774829e6cb686837d1e3005b072b33e9e8cedfb4"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "result": {
+            "frames": 2498,
+            "seconds": 20.004859999999404,
+            "fps": 124.86965667343208,
+            "low1": 53.769800727360746,
+            "p50": 8.314999997615814,
+            "p95": 12.719999998807907,
+            "p99": 14.759999997913837,
+            "max": 35.520000003278255,
+            "over20": 9,
+            "over25": 2,
+            "over33": 1,
+            "over50": 0
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 6
+          },
+          "travel": 1979.3481563927492,
+          "turn": 267.46436015138374
+        },
+        {
+          "name": "moving",
+          "result": {
+            "frames": 2504,
+            "seconds": 20.006869999997317,
+            "fps": 125.15700856757383,
+            "low1": 59.74333344716064,
+            "p50": 8.21000000089407,
+            "p95": 11.600000001490116,
+            "p99": 12.865000002086163,
+            "max": 31.78999999910593,
+            "over20": 5,
+            "over25": 1,
+            "over33": 0,
+            "over50": 0
+          },
+          "creations": {},
+          "travel": 2203.4789643062204,
+          "turn": 0
+        },
+        {
+          "name": "turning",
+          "result": {
+            "frames": 2055,
+            "seconds": 20.009890000000595,
+            "fps": 102.69921523806171,
+            "low1": 45.4176804556405,
+            "p50": 9.5,
+            "p95": 15.649999998509884,
+            "p99": 19.429999999701977,
+            "max": 28.855000004172325,
+            "over20": 15,
+            "over25": 4,
+            "over33": 0,
+            "over50": 0
+          },
+          "creations": {},
+          "travel": 0,
+          "turn": 359.50364648437585
+        },
+        {
+          "name": "repeat-area",
+          "result": {
+            "frames": 2425,
+            "seconds": 19.990329999998213,
+            "fps": 121.30865273360754,
+            "low1": 42.95754076514431,
+            "p50": 8.344999998807907,
+            "p95": 13.745000004768372,
+            "p99": 18.33500000089407,
+            "max": 49.42000000178814,
+            "over20": 18,
+            "over25": 4,
+            "over33": 1,
+            "over50": 0
+          },
+          "creations": {},
+          "travel": 1980.3540529568775,
+          "turn": 268.2762243809192
+        }
+      ]
+    }
+  },
+  "inputs": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-real-input-owner-20261106.json",
+        "sha256": "24ad3f5fab11eb46995199aef03a91389d8e5f824b46d995217fe6bf7b3ae309"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-real-input-owner-20261106-source.cjs",
+        "sha256": "2b11f1cb225bd26cb3883a08c143fd03eed9c6dd2c67619fc2322f3c207e83d6"
+      },
+      "result": {
+        "samples": 3376,
+        "fps": 111.05818448815653,
+        "low1Fps": 37.33596881415691,
+        "p50": 8.325000002980232,
+        "p95": 18.46000000089407,
+        "p99": 20.625,
+        "maximum": 39.10999999940395
+      },
+      "gpu": {
+        "samples": 3377,
+        "pending": 3,
+        "peak": 4,
+        "meanLatency": 12.168498667523481,
+        "maxLatency": 37.99000000208616,
+        "p95Ms": 28.36999999731779,
+        "p99Ms": 32.15999999642372
+      },
+      "budget": null,
+      "travel": 2541.8469907259937,
+      "turn": 1676.4496609498747,
+      "workload": {
+        "draws": 1540.179761904762,
+        "dispatches": 141.7199404761905,
+        "pending": 156.3904761904762,
+        "ready": 384.51875
+      },
+      "display": {
+        "visual": 111.27118644067797,
+        "submitted": 111.52542372881356,
+        "refresh": 334.1525423728813,
+        "ratio": 0.9977203647416413
+      }
+    },
+    "candidate": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-real-input-page3-20261106.json",
+        "sha256": "b17114191f15ac0505419ee5abc7fa8d549be8b7c203c3ed057e534c6608a046"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-real-input-page3-20261106-source.cjs",
+        "sha256": "2b11f1cb225bd26cb3883a08c143fd03eed9c6dd2c67619fc2322f3c207e83d6"
+      },
+      "result": {
+        "samples": 3695,
+        "fps": 121.23669964501644,
+        "low1Fps": 44.37940795437587,
+        "p50": 7.78999999910593,
+        "p95": 17.565000005066395,
+        "p99": 19.844999998807907,
+        "maximum": 30.310000002384186
+      },
+      "gpu": {
+        "samples": 3696,
+        "pending": 2,
+        "peak": 3,
+        "meanLatency": 11.500932088746685,
+        "maxLatency": 47.03000000119209,
+        "p95Ms": 27.075000002980232,
+        "p99Ms": 31.524999998509884
+      },
+      "budget": [
+        7095,
+        7097,
+        7098,
+        3,
+        7095,
+        3,
+        1,
+        2
+      ],
+      "visibility": {
+        "method": "synthetic-document-visibility-event",
+        "paused": 7373,
+        "resumed": 7388
+      },
+      "travel": 2545.1631875411017,
+      "turn": 1754.085023354739,
+      "workload": {
+        "draws": 1530.8585365853658,
+        "dispatches": 142.7869918699187,
+        "pending": 161.83360433604335,
+        "ready": 367.8864498644987
+      },
+      "display": {
+        "visual": 121.10169491525424,
+        "submitted": 121.40677966101696,
+        "refresh": 340.9491525423729,
+        "ratio": 0.997487086416306
+      }
+    }
+  },
+  "validation": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106.json",
+      "sha256": "5bf6490bf6dbda34269d43167dc50006a1477defe0f6e6b063f57145233346c7"
+    },
+    "tour": [
+      {
+        "name": "right",
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 179.99945068359375
+        },
+        "view": {
+          "frame": 9011,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106-tour-right.png",
+          "sha256": "66a62a03844684daa8ba7ec6ff8123f9371ff8d43f70b827d17405b207b188aa"
+        }
+      },
+      {
+        "name": "back",
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": -90.00054931640625
+        },
+        "view": {
+          "frame": 9555,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106-tour-back.png",
+          "sha256": "09908fd711ad9a0f0184cff09517d9eb08ae3d57708dbbaaf4f95d4929a180e8"
+        }
+      },
+      {
+        "name": "left",
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": -0.0005493164062461184
+        },
+        "view": {
+          "frame": 10034,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106-tour-left.png",
+          "sha256": "e953d5ec89fb4cce9c3b0ec7b636dd71cfe406181d3b5faa11a452a28a816b0f"
+        }
+      },
+      {
+        "name": "room",
+        "camera": {
+          "x": -175,
+          "y": -80,
+          "z": 160,
+          "pitch": -5.0000000000000036,
+          "yaw": 50.00000000000001
+        },
+        "view": {
+          "frame": 10327,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106-tour-room.png",
+          "sha256": "f701b39522f559e94836bd5af10754a890fda2d62c5b04c3589cb1f5b61dcab8"
+        }
+      },
+      {
+        "name": "return",
+        "camera": {
+          "x": 410.7359315721519,
+          "y": -478.05903852213453,
+          "z": 156.64842176437378,
+          "pitch": 0,
+          "yaw": 89.99945068359375
+        },
+        "view": {
+          "frame": 10613,
+          "width": 1280,
+          "height": 720,
+          "outputWidth": 1280,
+          "outputHeight": 720,
+          "antiAliasing": 4,
+          "jitterX": 0,
+          "jitterY": 0,
+          "x": 0,
+          "y": 0,
+          "outputX": 0,
+          "outputY": 0,
+          "threadId": 3,
+          "parallelRendering": true
+        },
+        "image": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-owner-transient-gpu-20261106-tour-return.png",
+          "sha256": "3a9f093f023e2878a4c24f9140d8cc9a23efdc4c594ac86fb97641ba3c86f207"
+        }
+      }
+    ],
+    "uploads": {
+      "requested": 1024,
+      "captured": 1024,
+      "completed": 1024,
+      "bytes": 4375308,
+      "nonzeroOffsets": 1002,
+      "errors": []
+    },
+    "readback": {
+      "pending": false,
+      "pass": true,
+      "rowPitchPixels": 64,
+      "height": 2
+    },
+    "visuals": {
+      "hudExcluded": [
+        0,
+        0,
+        280,
+        240
+      ],
+      "views": [
+        {
+          "view": "right",
+          "meanAbsoluteChannelDifference": 0.6907110882246362,
+          "channelFractionOver8": 0.00004359328554419406
+        },
+        {
+          "view": "back",
+          "meanAbsoluteChannelDifference": 0.45668559471555964,
+          "channelFractionOver8": 0.00017398391641298877
+        },
+        {
+          "view": "left",
+          "meanAbsoluteChannelDifference": 0.6380718067042581,
+          "channelFractionOver8": 0.0000023353545827246815
+        },
+        {
+          "view": "room",
+          "meanAbsoluteChannelDifference": 0.9403963018881731,
+          "channelFractionOver8": 0.0021617598920754804
+        },
+        {
+          "view": "return",
+          "meanAbsoluteChannelDifference": 1.0361034141716323,
+          "channelFractionOver8": 0.000502490461049594
+        }
+      ],
+      "boundary": "Temporal AA/lighting can differ. This comparison is descriptive, not automatic visual acceptance. GPU diagnostic used four credits; final timing uses three."
+    }
+  },
+  "diagnosis": {
+    "pass": true,
+    "capture": {
+      "file": "tests/web-platform/results/memory-owner-periodic-trace-20261106.json",
+      "sha256": "5146ba75fd9c4f8a035f30fee9b64fc0bc28e9a9650b84590434b98b0fa67b57"
+    },
+    "trace": {
+      "file": "tests/web-platform/results/memory-owner-periodic-trace-20261106-trace.json",
+      "sha256": "55585653bfa206d54f990b03b55288f5c21679c31899ba89e17363fec1ee4b7a"
+    },
+    "events": 2974434,
+    "ownerThread": 26780,
+    "calibration": {
+      "offsetMs": 50079558.144,
+      "method": "performance.mark at capture start",
+      "mark": {
+        "args": {
+          "data": {
+            "callTime": 50151134410,
+            "sampleTraceId": 4343419988232327,
+            "startTime": 71576.26999999583
+          }
+        },
+        "cat": "blink.user_timing",
+        "name": "UE RHI capture start",
+        "ph": "I",
+        "pid": 3872,
+        "s": "t",
+        "tid": 26780,
+        "ts": 50151134409,
+        "tts": 49718616
+      },
+      "samples": []
+    },
+    "window": {
+      "start": 71576.2650000006,
+      "end": 96586.5700000003
+    },
+    "summary": {
+      "fps": 106.65333166645831,
+      "frames": {
+        "count": 2666,
+        "mean": 9.376172168042011,
+        "p50": 10.765000000596046,
+        "p95": 12.285000003874302,
+        "p99": 14.090000003576279,
+        "max": 157.55000000447035,
+        "low1Fps": 36.240637835428856
+      },
+      "queue": {
+        "count": 21184,
+        "mean": 0.017060281294524623,
+        "p50": 0.015000000596046448,
+        "p95": 0.034999996423721313,
+        "p99": 0.04500000178813934,
+        "max": 0.17500000447034836,
+        "low1Fps": 16459.627182946053
+      },
+      "execution": {
+        "count": 21184,
+        "mean": 0.8066942031886373,
+        "p50": 0.01000000536441803,
+        "p95": 6.009999997913837,
+        "p99": 6.494999997317791,
+        "max": 13.21000000089407,
+        "low1Fps": 145.41164527272196
+      },
+      "pipelineEvents": 0,
+      "over20": 6,
+      "over30": 4,
+      "worst": [
+        {
+          "frame": 8136,
+          "time": 89969.8900000006,
+          "rhi": 53945.84274291992,
+          "game": 8135,
+          "gameMs": 1.22998046875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 157.55000000447035
+        },
+        {
+          "frame": 8140,
+          "time": 90133.49000000209,
+          "rhi": 53977.86259651184,
+          "game": 8139,
+          "gameMs": 1.31005859375,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 130.76000000536442
+        },
+        {
+          "frame": 8788,
+          "time": 96430.4299999997,
+          "rhi": 58203.79590988159,
+          "game": 8787,
+          "gameMs": 1.30517578125,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 46.600000001490116
+        },
+        {
+          "frame": 8466,
+          "time": 93285.9600000009,
+          "rhi": 56093.443632125854,
+          "game": 8466,
+          "gameMs": 1.9150390625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 41.59499999880791
+        },
+        {
+          "frame": 8787,
+          "time": 96383.82999999821,
+          "rhi": 58197.070837020874,
+          "game": 8786,
+          "gameMs": 1.7099609375,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 23.32499999552965
+        },
+        {
+          "frame": 8465,
+          "time": 93244.36500000209,
+          "rhi": 56086.453437805176,
+          "game": 8464,
+          "gameMs": 1.655029296875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 21.785000003874302
+        },
+        {
+          "frame": 8141,
+          "time": 90153.14999999851,
+          "rhi": 53986.06753349304,
+          "game": 8140,
+          "gameMs": 1.2451171875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 19.65999999642372
+        },
+        {
+          "frame": 8731,
+          "time": 95823.1400000006,
+          "rhi": 57819.605350494385,
+          "game": 8730,
+          "gameMs": 1.1748046875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 19.230000004172325
+        },
+        {
+          "frame": 8135,
+          "time": 89812.33999999613,
+          "rhi": 53939.462661743164,
+          "game": 8134,
+          "gameMs": 1.710205078125,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 18.144999995827675
+        },
+        {
+          "frame": 8470,
+          "time": 93329.50500000268,
+          "rhi": 56120.25427818298,
+          "game": 8469,
+          "gameMs": 1.16015625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 17.679999999701977
+        },
+        {
+          "frame": 8142,
+          "time": 90169.3900000006,
+          "rhi": 53994.57240104675,
+          "game": 8141,
+          "gameMs": 1.1650390625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 16.240000002086163
+        },
+        {
+          "frame": 8174,
+          "time": 90479.00500000268,
+          "rhi": 54205.58285713196,
+          "game": 8174,
+          "gameMs": 2.56494140625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 15.240000002086163
+        },
+        {
+          "frame": 8471,
+          "time": 93344.39999999851,
+          "rhi": 56128.01909446716,
+          "game": 8471,
+          "gameMs": 3.5400390625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.894999995827675
+        },
+        {
+          "frame": 8715,
+          "time": 95667.59499999881,
+          "rhi": 57715.28220176697,
+          "game": 8714,
+          "gameMs": 1.1748046875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.894999995827675
+        },
+        {
+          "frame": 8383,
+          "time": 92451.92499999702,
+          "rhi": 55556.29587173462,
+          "game": 8383,
+          "gameMs": 4.324951171875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.774999998509884
+        },
+        {
+          "frame": 7714,
+          "time": 85866.46499999613,
+          "rhi": 51204.04028892517,
+          "game": 7713,
+          "gameMs": 1.26513671875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.744999997317791
+        },
+        {
+          "frame": 7796,
+          "time": 86624.85499999672,
+          "rhi": 51728.893756866455,
+          "game": 7795,
+          "gameMs": 1.30517578125,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.649999998509884
+        },
+        {
+          "frame": 7562,
+          "time": 84460.36999999732,
+          "rhi": 50227.707862854004,
+          "game": 7561,
+          "gameMs": 1.39501953125,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.484999999403954
+        },
+        {
+          "frame": 7610,
+          "time": 84906.01999999583,
+          "rhi": 50536.31782531738,
+          "game": 7610,
+          "gameMs": 2.570068359375,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.484999999403954
+        },
+        {
+          "frame": 6574,
+          "time": 75524.01999999583,
+          "rhi": 44039.1628742218,
+          "game": 6573,
+          "gameMs": 1.175048828125,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.434999994933605
+        },
+        {
+          "frame": 8122,
+          "time": 89683.74499999732,
+          "rhi": 53854.70652580261,
+          "game": 8121,
+          "gameMs": 1.260009765625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.41499999910593
+        },
+        {
+          "frame": 8172,
+          "time": 90455.84499999881,
+          "rhi": 54189.04757499695,
+          "game": 8171,
+          "gameMs": 1.31005859375,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.384999997913837
+        },
+        {
+          "frame": 7878,
+          "time": 87384.13000000268,
+          "rhi": 52261.53826713562,
+          "game": 7878,
+          "gameMs": 2.804931640625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.380000002682209
+        },
+        {
+          "frame": 8550,
+          "time": 94096.3350000009,
+          "rhi": 56644.82140541077,
+          "game": 8549,
+          "gameMs": 1.1650390625,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.375
+        },
+        {
+          "frame": 7061,
+          "time": 79925.82999999821,
+          "rhi": 47085.27588844299,
+          "game": 7060,
+          "gameMs": 1.2099609375,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.104999996721745
+        },
+        {
+          "frame": 7469,
+          "time": 83595.99000000209,
+          "rhi": 49625.596046447754,
+          "game": 7468,
+          "gameMs": 1.155029296875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.095000006258488
+        },
+        {
+          "frame": 8632,
+          "time": 94879.97500000149,
+          "rhi": 57178.264141082764,
+          "game": 8631,
+          "gameMs": 1.244873046875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.090000003576279
+        },
+        {
+          "frame": 6655,
+          "time": 76253.32500000298,
+          "rhi": 44546.5304851532,
+          "game": 6654,
+          "gameMs": 1.169921875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 14.040000006556511
+        },
+        {
+          "frame": 8300,
+          "time": 91664.375,
+          "rhi": 55015.75589179993,
+          "game": 8300,
+          "gameMs": 2.9501953125,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 13.980000004172325
+        },
+        {
+          "frame": 7632,
+          "time": 85109.50999999791,
+          "rhi": 50678.59888076782,
+          "game": 7632,
+          "gameMs": 3.449951171875,
+          "graphics": 598,
+          "compute": 715,
+          "streamPending": 0,
+          "ms": 13.909999996423721
+        }
+      ]
+    },
+    "sweepTasks": {
+      "count": 285,
+      "total": 191.40500000000122,
+      "p50": 0.001,
+      "max": 5.357
+    },
+    "bursts": [
+      {
+        "timeMs": 89806.62099999934,
+        "tasks": 31,
+        "totalMs": 142.06199999999998,
+        "maxMs": 5.357
+      },
+      {
+        "timeMs": 93233.12200000137,
+        "tasks": 6,
+        "totalMs": 24.787999999999997,
+        "maxMs": 5.249
+      },
+      {
+        "timeMs": 96366.29800000042,
+        "tasks": 248,
+        "totalMs": 24.555000000000003,
+        "maxMs": 5.301
+      }
+    ],
+    "longFrames": [
+      {
+        "frame": 8135,
+        "time": 89812.33999999613,
+        "intervalMs": 18.144999995827675,
+        "sweepMs": 0.020999997854232788,
+        "gcMs": 9.597999997437
+      },
+      {
+        "frame": 8136,
+        "time": 89969.8900000006,
+        "intervalMs": 157.55000000447035,
+        "sweepMs": 142.02899999171495,
+        "gcMs": 0
+      },
+      {
+        "frame": 8140,
+        "time": 90133.49000000209,
+        "intervalMs": 130.76000000536442,
+        "sweepMs": 0.012000001966953278,
+        "gcMs": 0
+      },
+      {
+        "frame": 8141,
+        "time": 90153.14999999851,
+        "intervalMs": 19.65999999642372,
+        "sweepMs": 0,
+        "gcMs": 0
+      },
+      {
+        "frame": 8465,
+        "time": 93244.36500000209,
+        "intervalMs": 21.785000003874302,
+        "sweepMs": 5.068999998271465,
+        "gcMs": 7.119000002741814
+      },
+      {
+        "frame": 8466,
+        "time": 93285.9600000009,
+        "intervalMs": 41.59499999880791,
+        "sweepMs": 19.7140000090003,
+        "gcMs": 0
+      },
+      {
+        "frame": 8731,
+        "time": 95823.1400000006,
+        "intervalMs": 19.230000004172325,
+        "sweepMs": 0,
+        "gcMs": 0
+      },
+      {
+        "frame": 8787,
+        "time": 96383.82999999821,
+        "intervalMs": 23.32499999552965,
+        "sweepMs": 10.711999952793121,
+        "gcMs": 2.537000000476837
+      },
+      {
+        "frame": 8788,
+        "time": 96430.4299999997,
+        "intervalMs": 46.600000001490116,
+        "sweepMs": 13.83900000154972,
+        "gcMs": 0
+      }
+    ],
+    "over18": 9,
+    "over18WithSweepOver4ms": 5,
+    "majorGc": [
+      {
+        "timeMs": 89796.0930000022,
+        "durationMs": 9.598
+      },
+      {
+        "timeMs": 93226.64099999517,
+        "durationMs": 5.161
+      },
+      {
+        "timeMs": 96363.41299999505,
+        "durationMs": 2.537
+      }
+    ],
+    "minorGc": {
+      "count": 32,
+      "total": 69.515,
+      "p50": 2.232,
+      "max": 2.544
+    },
+    "ownerRaf": {
+      "waits": {
+        "count": 2667,
+        "total": 5751.774999886751,
+        "p50": 0.721000000834465,
+        "max": 150.20199999958277
+      },
+      "longWaits": [
+        {
+          "id": 8135,
+          "requested": 89806.5169999972,
+          "delivered": 89956.71899999678,
+          "waitMs": 150.20199999958277,
+          "sweepMs": 142.0499999895692,
+          "gcMs": 0
+        },
+        {
+          "id": 8139,
+          "requested": 89990.73099999875,
+          "delivered": 90119.94999999553,
+          "waitMs": 129.21899999678135,
+          "sweepMs": 0.012000001966953278,
+          "gcMs": 0
+        },
+        {
+          "id": 8465,
+          "requested": 93232.99799999595,
+          "delivered": 93274.86599999666,
+          "waitMs": 41.868000000715256,
+          "sweepMs": 24.783000007271767,
+          "gcMs": 0
+        },
+        {
+          "id": 8787,
+          "requested": 96363.24000000209,
+          "delivered": 96418.98299999535,
+          "waitMs": 55.742999993264675,
+          "sweepMs": 24.550999954342842,
+          "gcMs": 2.537000000476837
+        }
+      ]
+    },
+    "sampleSweep": {
+      "args": {
+        "src_file": "v8/src/heap/cppgc-internal/sweeper.cc",
+        "src_func": "static Handle cppgc::internal::Sweeper::SweeperImpl::IncrementalSweepTask::Post(SweeperImpl &, const std::shared_ptr<cppgc::TaskRunner> &, cppgc::TaskPriority, std::optional<v8::base::TimeDelta>)",
+        "src_line": 1466
+      },
+      "cat": "toplevel",
+      "dur": 21,
+      "name": "ThreadControllerImpl::RunTask",
+      "ph": "X",
+      "pid": 3872,
+      "tdur": 20,
+      "tid": 26780,
+      "ts": 50169364765,
+      "tts": 63819764
+    },
+    "clockCalibrationSamples": [],
+    "boundary": "Both sweeper tasks and RHI callbacks execute on the GPU owner Worker. Queue samples measure setImmediate delivery only; the preceding native proxy hop is not measured. Trace overhead is excluded from normal FPS comparisons. Sweep timing establishes the observed stalls; it does not identify which object classes account for collection cost."
+  },
+  "remainingDiagnosis": {
+    "pass": true,
+    "capture": {
+      "file": "tests/web-platform/results/periodic-candidate-gpu-trace-20261106.json",
+      "sha256": "5f8728dbefda36f5df55920600f2b2164df1626e298f1a068837ab9e029f708f"
+    },
+    "trace": {
+      "file": "tests/web-platform/results/periodic-candidate-gpu-trace-20261106-trace.json",
+      "sha256": "cfc6df9817dde9876a9cc773a3866ba4dc0d1a7fc9c48756db80ed0617475604"
+    },
+    "events": 2398202,
+    "ownerThread": 25328,
+    "calibration": {
+      "offsetMs": 54022175.872999996,
+      "method": "performance.mark at capture start",
+      "mark": {
+        "args": {
+          "data": {
+            "callTime": 54072621714,
+            "sampleTraceId": 1309409892329313,
+            "startTime": 50445.84000000358
+          }
+        },
+        "cat": "blink.user_timing",
+        "name": "UE RHI capture start",
+        "ph": "I",
+        "pid": 7704,
+        "s": "t",
+        "tid": 25328,
+        "ts": 54072621713,
+        "tts": 35406870
+      },
+      "samples": []
+    },
+    "window": {
+      "start": 50445.840000003576,
+      "end": 70450.41000000387
+    },
+    "summary": {
+      "fps": 115.68392431081621,
+      "frames": {
+        "count": 2313,
+        "mean": 8.644243406830054,
+        "p50": 7.730000004172325,
+        "p95": 11.740000002086163,
+        "p99": 13.244999997317791,
+        "max": 28.04500000178814,
+        "low1Fps": 56.57508574216283
+      },
+      "queue": {
+        "count": 18135,
+        "mean": 0.016947063682885875,
+        "p50": 0.015000000596046448,
+        "p95": 0.034999996423721313,
+        "p99": 0.04500000178813934,
+        "max": 1.0349999964237213,
+        "low1Fps": 12995.358770285746
+      },
+      "execution": {
+        "count": 18135,
+        "mean": 0.7679583678071842,
+        "p50": 0.009999997913837433,
+        "p95": 5.715000003576279,
+        "p99": 6.244999997317791,
+        "max": 10.299999997019768,
+        "low1Fps": 152.3216497601815
+      },
+      "pipelineEvents": 0,
+      "over20": 6,
+      "over30": 0,
+      "worst": [
+        {
+          "frame": 4566,
+          "time": 54230.535000003874,
+          "rhi": 29304.874897003174,
+          "game": 4565,
+          "gameMs": 1.239990234375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 28.04500000178814
+        },
+        {
+          "frame": 5868,
+          "time": 65525.609999999404,
+          "rhi": 37126.360177993774,
+          "game": 5867,
+          "gameMs": 1.2099609375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 26.695000000298023
+        },
+        {
+          "frame": 4956,
+          "time": 57651.77000000328,
+          "rhi": 31689.55898284912,
+          "game": 4956,
+          "gameMs": 4.090087890625,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 25
+        },
+        {
+          "frame": 5474,
+          "time": 62162.52500000596,
+          "rhi": 34808.74490737915,
+          "game": 5473,
+          "gameMs": 1.235107421875,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 22.850000001490116
+        },
+        {
+          "frame": 4166,
+          "time": 50808.73000000417,
+          "rhi": 26957.298278808594,
+          "game": 4166,
+          "gameMs": 3.429931640625,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 22.600000001490116
+        },
+        {
+          "frame": 6215,
+          "time": 68519.06000000238,
+          "rhi": 39195.25694847107,
+          "game": 6214,
+          "gameMs": 1.125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 22.064999997615814
+        },
+        {
+          "frame": 5468,
+          "time": 62073.33000000566,
+          "rhi": 34770.5762386322,
+          "game": 5468,
+          "gameMs": 1.300048828125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 18.525000005960464
+        },
+        {
+          "frame": 4563,
+          "time": 54187.990000002086,
+          "rhi": 29286.394834518433,
+          "game": 4562,
+          "gameMs": 1.139892578125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 18.21000000089407
+        },
+        {
+          "frame": 5470,
+          "time": 62102.58000000566,
+          "rhi": 34783.42604637146,
+          "game": 5470,
+          "gameMs": 1.2451171875,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 17.690000005066395
+        },
+        {
+          "frame": 6210,
+          "time": 68450.64500000328,
+          "rhi": 39163.76280784607,
+          "game": 6210,
+          "gameMs": 2.6298828125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 17.689999997615814
+        },
+        {
+          "frame": 5865,
+          "time": 65483.9299999997,
+          "rhi": 37108.02435874939,
+          "game": 5865,
+          "gameMs": 1.110107421875,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 17.644999995827675
+        },
+        {
+          "frame": 6212,
+          "time": 68479.08000000566,
+          "rhi": 39176.25308036804,
+          "game": 6212,
+          "gameMs": 1.034912109375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 16.525000005960464
+        },
+        {
+          "frame": 4960,
+          "time": 57706.10500000417,
+          "rhi": 31715.14320373535,
+          "game": 4959,
+          "gameMs": 1.18505859375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 16.149999998509884
+        },
+        {
+          "frame": 5862,
+          "time": 65442.85000000149,
+          "rhi": 37089.71428871155,
+          "game": 5862,
+          "gameMs": 3.06494140625,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 15.074999995529652
+        },
+        {
+          "frame": 4560,
+          "time": 54146.15000000596,
+          "rhi": 29267.87495613098,
+          "game": 4560,
+          "gameMs": 2.070068359375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 14.830000005662441
+        },
+        {
+          "frame": 5193,
+          "time": 59746.07500000298,
+          "rhi": 33147.10783958435,
+          "game": 5192,
+          "gameMs": 1.199951171875,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 14.785000003874302
+        },
+        {
+          "frame": 4959,
+          "time": 57689.95500000566,
+          "rhi": 31708.563804626465,
+          "game": 4958,
+          "gameMs": 1.239990234375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 14.515000000596046
+        },
+        {
+          "frame": 5473,
+          "time": 62139.67500000447,
+          "rhi": 34802.165508270264,
+          "game": 5472,
+          "gameMs": 1.139892578125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 14.130000002682209
+        },
+        {
+          "frame": 4171,
+          "time": 50869.34500000626,
+          "rhi": 26988.73209953308,
+          "game": 4170,
+          "gameMs": 1.085205078125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.985000006854534
+        },
+        {
+          "frame": 5053,
+          "time": 58527.74500000477,
+          "rhi": 32295.67313194275,
+          "game": 5052,
+          "gameMs": 1.465087890625,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.800000004470348
+        },
+        {
+          "frame": 6161,
+          "time": 68031.63000000268,
+          "rhi": 38873.64411354065,
+          "game": 6161,
+          "gameMs": 3.460205078125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.505000002682209
+        },
+        {
+          "frame": 6063,
+          "time": 67184.79500000179,
+          "rhi": 38279.199838638306,
+          "game": 6063,
+          "gameMs": 3.6298828125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.344999998807907
+        },
+        {
+          "frame": 5764,
+          "time": 64623.60000000149,
+          "rhi": 36518.60857009888,
+          "game": 5764,
+          "gameMs": 3.72509765625,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.310000002384186
+        },
+        {
+          "frame": 4916,
+          "time": 57280.70000000298,
+          "rhi": 31439.799070358276,
+          "game": 4915,
+          "gameMs": 1.219970703125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.244999997317791
+        },
+        {
+          "frame": 4760,
+          "time": 55906.85000000149,
+          "rhi": 30476.891040802002,
+          "game": 4760,
+          "gameMs": 3.300048828125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.219999998807907
+        },
+        {
+          "frame": 5666,
+          "time": 63791.97500000149,
+          "rhi": 35940.34767150879,
+          "game": 5665,
+          "gameMs": 1.175048828125,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.179999999701977
+        },
+        {
+          "frame": 6410,
+          "time": 70194.94000000507,
+          "rhi": 40378.59535217285,
+          "game": 6410,
+          "gameMs": 2.864990234375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.140000000596046
+        },
+        {
+          "frame": 4961,
+          "time": 57719.185000002384,
+          "rhi": 31721.683025360107,
+          "game": 4960,
+          "gameMs": 1.14990234375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.07999999821186
+        },
+        {
+          "frame": 5056,
+          "time": 58554.914999999106,
+          "rhi": 32316.628456115723,
+          "game": 5056,
+          "gameMs": 2.190185546875,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.069999992847443
+        },
+        {
+          "frame": 5252,
+          "time": 60251.890000000596,
+          "rhi": 33506.15692138672,
+          "game": 5251,
+          "gameMs": 1.18505859375,
+          "graphics": 607,
+          "compute": 719,
+          "streamPending": 0,
+          "ms": 13.024999998509884
+        }
+      ]
+    },
+    "sweepTasks": {
+      "count": 107,
+      "total": 134.07,
+      "p50": 0.002,
+      "max": 5.275
+    },
+    "bursts": [
+      {
+        "timeMs": 50792.25600000471,
+        "tasks": 38,
+        "totalMs": 19.852,
+        "maxMs": 5.215
+      },
+      {
+        "timeMs": 54140.42700000107,
+        "tasks": 7,
+        "totalMs": 21.386,
+        "maxMs": 5.254
+      },
+      {
+        "timeMs": 57635.03400000185,
+        "tasks": 10,
+        "totalMs": 22.875,
+        "maxMs": 5.21
+      },
+      {
+        "timeMs": 62061.54400000721,
+        "tasks": 38,
+        "totalMs": 29.324,
+        "maxMs": 5.243
+      },
+      {
+        "timeMs": 65436.89200000465,
+        "tasks": 9,
+        "totalMs": 21.193,
+        "maxMs": 5.275
+      },
+      {
+        "timeMs": 68439.73800000548,
+        "tasks": 5,
+        "totalMs": 19.44,
+        "maxMs": 5.27
+      }
+    ],
+    "longFrames": [
+      {
+        "frame": 4166,
+        "time": 50808.73000000417,
+        "intervalMs": 22.600000001490116,
+        "sweepMs": 10.392000004649162,
+        "gcMs": 3.7569999992847443
+      },
+      {
+        "frame": 4563,
+        "time": 54187.990000002086,
+        "intervalMs": 18.21000000089407,
+        "sweepMs": 11.024999998509884,
+        "gcMs": 0
+      },
+      {
+        "frame": 4566,
+        "time": 54230.535000003874,
+        "intervalMs": 28.04500000178814,
+        "sweepMs": 0,
+        "gcMs": 0
+      },
+      {
+        "frame": 4956,
+        "time": 57651.77000000328,
+        "intervalMs": 25,
+        "sweepMs": 10.273999996483326,
+        "gcMs": 5.223999999463558
+      },
+      {
+        "frame": 5468,
+        "time": 62073.33000000566,
+        "intervalMs": 18.525000005960464,
+        "sweepMs": 5.156999997794628,
+        "gcMs": 5.01799999922514
+      },
+      {
+        "frame": 5474,
+        "time": 62162.52500000596,
+        "intervalMs": 22.850000001490116,
+        "sweepMs": 0,
+        "gcMs": 0
+      },
+      {
+        "frame": 5868,
+        "time": 65525.609999999404,
+        "intervalMs": 26.695000000298023,
+        "sweepMs": 0,
+        "gcMs": 0
+      },
+      {
+        "frame": 6215,
+        "time": 68519.06000000238,
+        "intervalMs": 22.064999997615814,
+        "sweepMs": 0,
+        "gcMs": 0
+      }
+    ],
+    "over18": 8,
+    "over18WithSweepOver4ms": 4,
+    "majorGc": [
+      {
+        "timeMs": 50787.9260000065,
+        "durationMs": 3.757
+      },
+      {
+        "timeMs": 54135.53100000322,
+        "durationMs": 4.22
+      },
+      {
+        "timeMs": 57631.349000006914,
+        "durationMs": 3.301
+      },
+      {
+        "timeMs": 62055.83100000769,
+        "durationMs": 5.018
+      },
+      {
+        "timeMs": 65432.86900000274,
+        "durationMs": 3.689
+      },
+      {
+        "timeMs": 68434.57100000232,
+        "durationMs": 4.424
+      }
+    ],
+    "minorGc": {
+      "count": 22,
+      "total": 41.001,
+      "p50": 1.909,
+      "max": 2.194
+    },
+    "ownerRaf": {
+      "waits": {
+        "count": 0,
+        "total": 0
+      },
+      "longWaits": []
+    },
+    "gpuDecoder": {
+      "tasks": {
+        "count": 28663,
+        "total": 14283.572000000026,
+        "p50": 0.047,
+        "max": 20.311
+      },
+      "over10ms": [
+        {
+          "timeMs": 50821.59200000763,
+          "durationMs": 11.4,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 50838.80800000578,
+          "durationMs": 11.658,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 54165.03900000453,
+          "durationMs": 14.62,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 54188.196000002325,
+          "durationMs": 20.311,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 57682.149000003934,
+          "durationMs": 11.242,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 62092.23800000548,
+          "durationMs": 12.101,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 62104.65200000256,
+          "durationMs": 14.539,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 62124.00200000405,
+          "durationMs": 13.802,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 65461.61600000411,
+          "durationMs": 14.805,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 65481.53900000453,
+          "durationMs": 12.362,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 65494.21900000423,
+          "durationMs": 12.645,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 68457.35000000149,
+          "durationMs": 10.39,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 68472.87600000203,
+          "durationMs": 12.525,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        },
+        {
+          "timeMs": 68486.24400000274,
+          "durationMs": 10.54,
+          "thread": 33788,
+          "threadName": "CrGpuMain"
+        }
+      ],
+      "boundary": "GPU service CPU task duration, not GPU execution time. Temporal correlation with sweeping does not prove which command or resource destructor causes the work."
+    },
+    "sampleSweep": {
+      "args": {
+        "src_file": "v8/src/heap/cppgc-internal/sweeper.cc",
+        "src_func": "static Handle cppgc::internal::Sweeper::SweeperImpl::IncrementalSweepTask::Post(SweeperImpl &, const std::shared_ptr<cppgc::TaskRunner> &, cppgc::TaskPriority, std::optional<v8::base::TimeDelta>)",
+        "src_line": 1466
+      },
+      "cat": "toplevel",
+      "dur": 13,
+      "name": "ThreadControllerImpl::RunTask",
+      "ph": "X",
+      "pid": 7704,
+      "tdur": 12,
+      "tid": 25328,
+      "ts": 54072968129,
+      "tts": 35668400
+    },
+    "clockCalibrationSamples": [],
+    "boundary": "Both sweeper tasks and RHI callbacks execute on the GPU owner Worker. Queue samples measure setImmediate delivery only; the preceding native proxy hop is not measured. Trace overhead is excluded from normal FPS comparisons. Sweep timing establishes the observed stalls; it does not identify which object classes account for collection cost."
+  },
+  "rejected": {
+    "fourCredits": "Higher throughput but GPU completion mean/p99 increased; final candidate uses three.",
+    "bundles": "Lower mean FPS and 1% low than the three-credit candidate.",
+    "userVisiblePriority": "Lower 1% low and longer worst frame; keep the existing user-blocking priority.",
+    "firstPriorityCapture": {
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-rhi-visible-budget3-screen-20261106-source.cjs",
+        "sha256": "421848d3fb5bfd5464e463b0e21b43c7eaea3c712861beee5b3f922f619c5e1e"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\periodic-rhi-visible-budget3-screen-20261106.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "reason": "Harness applied the Worker patch to the HTML route and asserted before engine startup. No timing JSON was produced. Retained source/log; corrected retry has a separate tag."
+    }
+  },
+  "boundary": "B/A/A/B, 60 seconds per window. Submission intervals, all long frames retained. Same compiled runtime/Cook; candidate combines opt-in owner submission/GPU credits with resource-reuse settings. Three total reservations, at most two not yet submitted. Four-credit option rejected for increased completion latency. The candidate reduces periodic stalls but does not eliminate them. No local Game clock, frame-rate cap or quality reduction. GPU feedback includes callback scheduling and is not physical presentation."
+}
