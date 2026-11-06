@@ -1,0 +1,1296 @@
+{
+  "date": "2026-11-06T09:31:38.600Z",
+  "pass": true,
+  "experimentCompleted": true,
+  "defaultEnabled": false,
+  "performanceAccepted": false,
+  "physicalPresentationValidated": false,
+  "packages": {
+    "control": {
+      "folder": "villa-mouse-query-control-v2-20261106",
+      "manifest": {
+        "config-files.json": {
+          "sha256": "338e97d07756f9f0483171ef25f4dece796b6841a51d7e686c827e744d5d9b29",
+          "size": 664419,
+          "mtimeMs": 1793956636542.1306
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "7cec8209d8e4ba197fc5cc308b1ec7f6f239ad20dc53f312eb50fb4b38a49635",
+          "size": 90464,
+          "mtimeMs": 1793956636817.958
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "b40522ba71dfc202da279477f72ff71c45436f0486f4d6d401aeb2ee0efd6848",
+          "size": 425978,
+          "mtimeMs": 1793956572497.5745
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "af60922d6a38e3f3db9503141290c6fcfe5c5e26cb53662597315c29629740bf",
+          "size": 171492591,
+          "mtimeMs": 1793956571887.2786
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "1490867b2b1486bc227f58a1b295b4cad1ae8e2d7d9b5766ca435bbaeb76f995",
+          "size": 34642,
+          "mtimeMs": 1793947598919.2349
+        },
+        "web-engine-worker.js": {
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f",
+          "size": 19145,
+          "mtimeMs": 1793947738718.1194
+        }
+      }
+    },
+    "candidate": {
+      "folder": "villa-mouse-query-candidate-v2-20261106",
+      "manifest": {
+        "config-files.json": {
+          "sha256": "54c2437d3dbcbf3ee8743b61445ec63a7b26985d123a704f351163de22edafe0",
+          "size": 664519,
+          "mtimeMs": 1793956640885.1245
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "7cec8209d8e4ba197fc5cc308b1ec7f6f239ad20dc53f312eb50fb4b38a49635",
+          "size": 90464,
+          "mtimeMs": 1793956640888.1206
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "b40522ba71dfc202da279477f72ff71c45436f0486f4d6d401aeb2ee0efd6848",
+          "size": 425978,
+          "mtimeMs": 1793956572497.5745
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "af60922d6a38e3f3db9503141290c6fcfe5c5e26cb53662597315c29629740bf",
+          "size": 171492591,
+          "mtimeMs": 1793956571887.2786
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "1490867b2b1486bc227f58a1b295b4cad1ae8e2d7d9b5766ca435bbaeb76f995",
+          "size": 34642,
+          "mtimeMs": 1793947598919.2349
+        },
+        "web-engine-worker.js": {
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f",
+          "size": 19145,
+          "mtimeMs": 1793947738718.1194
+        }
+      }
+    }
+  },
+  "captures": {
+    "mouse-query-a1-v2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-a1-v2-20261106.json",
+        "sha256": "40ff46cbd62392e569faae73bcbcc3e86a4dd32d0898433afb37d71e9b85aead"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "c2f8d8be92421f67ccb641f8501334832a92f340115f97ad202193f39a6a1d3c"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-a1-v2-20261106-1-page3.log",
+        "sha256": "96b124fb5bd3f178b5ab5f319fee283e75f008e2e19fc00aca8718f3b2875918"
+      }
+    },
+    "mouse-query-a2-v2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-a2-v2-20261106.json",
+        "sha256": "3e23f183571538bfd9c34ea9d8a085885e43ea3e4b4925af908caef3a4cfc051"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "c2f8d8be92421f67ccb641f8501334832a92f340115f97ad202193f39a6a1d3c"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-a2-v2-20261106-1-page3.log",
+        "sha256": "b4c33ac81ec5db3de03a990da7dfbaa8497387146b9f7eff457f2893b07f59a6"
+      }
+    },
+    "mouse-query-b1-v2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-b1-v2-20261106.json",
+        "sha256": "422fd164c9dcf6e0e97849629b63b0f70380195861bdf1db74443df450abeee1"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "c2f8d8be92421f67ccb641f8501334832a92f340115f97ad202193f39a6a1d3c"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-b1-v2-20261106-1-page3.log",
+        "sha256": "5d4ed0018aa3ede67ea4d713c37b58ba3aee7b7f7d63420332e2a9e5c714bc8c"
+      }
+    },
+    "mouse-query-b2-v2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-b2-v2-20261106.json",
+        "sha256": "b77ffc6f174da425e889a28880dfe55739b211177758401c3a11c8e3ce3d372d"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "c2f8d8be92421f67ccb641f8501334832a92f340115f97ad202193f39a6a1d3c"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-b2-v2-20261106-1-page3.log",
+        "sha256": "117c81b4e2932c1fe60c51ed3e1b125d5bf131c6b1451723b2888b60e927feae"
+      }
+    }
+  },
+  "normal": {
+    "control": {
+      "result": {
+        "frames": 5295,
+        "fps": 109.16187696167898,
+        "low1": 43.602737923281225,
+        "p95": 18.100000001490116,
+        "p99": 20.375,
+        "max": 38.03000000119209,
+        "over33": 3,
+        "over50": 0
+      },
+      "windows": [
+        {
+          "tag": "mouse-query-a1-v2-20261106",
+          "result": {
+            "frames": 2639,
+            "fps": 108.91214145454857,
+            "low1": 41.855273764610345,
+            "p95": 18.174999997019768,
+            "p99": 20.375,
+            "max": 38.03000000119209,
+            "over33": 3,
+            "over50": 0
+          },
+          "history": {
+            "polls": 654.8299242424242,
+            "ready": 464.02007575757574,
+            "hits": 25.830303030303032,
+            "zero": 24.713636363636365,
+            "fallback": 210.4219696969697,
+            "cameraRejected": 191.15530303030303,
+            "queryCaptured": 495.0439393939394,
+            "motionQueriesSkipped": 0
+          },
+          "workload": {
+            "draws": 1827.7011363636364,
+            "dispatches": 161.48257575757575,
+            "pending": 202.49545454545455,
+            "ready": 466.79886363636365
+          },
+          "rhiMs": 6.522955246779939,
+          "cameraStart": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "cameraEnd": {
+            "x": 418.69438937607936,
+            "y": -477.6077711771897,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 101.57479628268631
+          },
+          "travelCm": 1028.148056336513,
+          "turnDegrees": 1523.9064656859264,
+          "display": {
+            "visual": 108.82978723404256,
+            "submitted": 109.68085106382979,
+            "refresh": 343.4255319148936,
+            "ratio": 0.9922405431619786
+          },
+          "budget": [
+            5617,
+            5620,
+            5620,
+            3,
+            5617,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "tag": "mouse-query-a2-v2-20261106",
+          "result": {
+            "frames": 2656,
+            "fps": 109.41115091591136,
+            "low1": 45.70732079008935,
+            "p95": 18.019999995827675,
+            "p99": 20.274999998509884,
+            "max": 28.65999999642372,
+            "over33": 0,
+            "over50": 0
+          },
+          "history": {
+            "polls": 675.1659176029963,
+            "ready": 480.10898876404497,
+            "hits": 30.41310861423221,
+            "zero": 28.992883895131087,
+            "fallback": 215.09925093632958,
+            "cameraRejected": 195.23033707865167,
+            "queryCaptured": 500.33370786516855,
+            "motionQueriesSkipped": 0
+          },
+          "workload": {
+            "draws": 1838.3857677902622,
+            "dispatches": 162.0494382022472,
+            "pending": 207.24943820224718,
+            "ready": 482.6003745318352
+          },
+          "rhiMs": 6.509190172394131,
+          "cameraStart": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "cameraEnd": {
+            "x": 425.9310454213166,
+            "y": -475.741894061365,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 112.42486642859876
+          },
+          "travelCm": 1033.1595385505568,
+          "turnDegrees": 1531.9608067739755,
+          "display": {
+            "visual": 109.57446808510639,
+            "submitted": 110.59574468085107,
+            "refresh": 343.82978723404256,
+            "ratio": 0.990765679107349
+          },
+          "budget": [
+            5645,
+            5648,
+            5648,
+            3,
+            5645,
+            3,
+            1,
+            2
+          ]
+        }
+      ],
+      "history": {
+        "polls": 664.9979209227103,
+        "ready": 472.0645322608103,
+        "hits": 28.12170582226762,
+        "zero": 26.853260129383727,
+        "fallback": 212.76061031664966,
+        "cameraRejected": 193.19282005447735,
+        "queryCaptured": 497.688823629554,
+        "motionQueriesSkipped": 0
+      },
+      "rhiMs": 6.516072709587036,
+      "workload": {
+        "draws": 1833.0434520769493,
+        "dispatches": 161.76600697991148,
+        "pending": 204.87244637385086,
+        "ready": 474.6996190840994
+      }
+    },
+    "candidate": {
+      "result": {
+        "frames": 5448,
+        "fps": 112.09860397320347,
+        "low1": 42.16772788789559,
+        "p95": 17.42500000447035,
+        "p99": 19.924999997019768,
+        "max": 40.23499999940395,
+        "over33": 3,
+        "over50": 0
+      },
+      "windows": [
+        {
+          "tag": "mouse-query-b1-v2-20261106",
+          "result": {
+            "frames": 2726,
+            "fps": 112.13169509724118,
+            "low1": 40.78333127035126,
+            "p95": 17.42500000447035,
+            "p99": 19.964999996125698,
+            "max": 40.23499999940395,
+            "over33": 2,
+            "over50": 0
+          },
+          "history": {
+            "polls": 212.11501831501832,
+            "ready": 153.63113553113553,
+            "hits": 21.406593406593405,
+            "zero": 20.41062271062271,
+            "fallback": 205.26849816849816,
+            "cameraRejected": 186.6153846153846,
+            "queryCaptured": 153.55347985347984,
+            "motionQueriesSkipped": 333.252380952381
+          },
+          "workload": {
+            "draws": 1474.6153846153845,
+            "dispatches": 160.78608058608057,
+            "pending": 69.87399267399267,
+            "ready": 157.15164835164836
+          },
+          "rhiMs": 6.313118766829415,
+          "cameraStart": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "cameraEnd": {
+            "x": 427.8609893726218,
+            "y": -474.9861165935842,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 115.42987127183007
+          },
+          "travelCm": 1044.8493649384616,
+          "turnDegrees": 1550.085548878182,
+          "display": {
+            "visual": 112.08510638297872,
+            "submitted": 112.57446808510639,
+            "refresh": 345.25531914893617,
+            "ratio": 0.9956529956529956
+          },
+          "budget": [
+            5796,
+            5798,
+            5799,
+            3,
+            5796,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "tag": "mouse-query-b2-v2-20261106",
+          "result": {
+            "frames": 2722,
+            "fps": 112.06548378980047,
+            "low1": 43.91364694981829,
+            "p95": 17.424999997019768,
+            "p99": 19.854999996721745,
+            "max": 37.025000005960464,
+            "over33": 1,
+            "over50": 0
+          },
+          "history": {
+            "polls": 213.86556776556776,
+            "ready": 151.13846153846154,
+            "hits": 18.345787545787545,
+            "zero": 17.367399267399268,
+            "fallback": 213.8901098901099,
+            "cameraRejected": 194.4208791208791,
+            "queryCaptured": 151.303663003663,
+            "motionQueriesSkipped": 338.05091575091575
+          },
+          "workload": {
+            "draws": 1484.6648351648353,
+            "dispatches": 160.36739926739926,
+            "pending": 74.3087912087912,
+            "ready": 153.75897435897437
+          },
+          "rhiMs": 6.3428991608819105,
+          "cameraStart": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "cameraEnd": {
+            "x": 415.50038564884045,
+            "y": -477.98305594944236,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 96.91140582039955
+          },
+          "travelCm": 1044.9382744886304,
+          "turnDegrees": 1549.9773882590234,
+          "display": {
+            "visual": 111.51063829787235,
+            "submitted": 111.93617021276596,
+            "refresh": 342.9148936170213,
+            "ratio": 0.996198441360958
+          },
+          "budget": [
+            5833,
+            5836,
+            5836,
+            3,
+            5833,
+            3,
+            1,
+            2
+          ]
+        }
+      ],
+      "history": {
+        "polls": 212.99029304029304,
+        "ready": 152.38479853479853,
+        "hits": 19.876190476190473,
+        "zero": 18.88901098901099,
+        "fallback": 209.579304029304,
+        "cameraRejected": 190.51813186813186,
+        "queryCaptured": 152.42857142857142,
+        "motionQueriesSkipped": 335.65164835164836
+      },
+      "rhiMs": 6.3280089638556625,
+      "workload": {
+        "draws": 1479.64010989011,
+        "dispatches": 160.57673992673992,
+        "pending": 72.09139194139195,
+        "ready": 155.45531135531138
+      }
+    }
+  },
+  "definition": "Submission intervals; slowest ceil(N*0.01) intervals form 1% Low; all stalls included, no gaps between independent windows.",
+  "boundary": "DOM mouse events through the packaged owner-forwarded input bridge and real possessed pawn camera. Orientation reset occurs only between phases. Identical start and input trajectory do not guarantee identical frame-weighted draw counts or physical mouse latency.",
+  "build": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-build-report-v2-20261106.json",
+    "sha256": "1326a08b7e8e0e5de54c021e2de58aada2d311242b9888e392bded0470370d13"
+  },
+  "diagnostics": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-diagnostic-20261106.json",
+        "sha256": "bf5f37be02fabc57b692505afd6402ac14d2afbc872920a3dff065fd3b244f8d"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "ed660a224b40d5d9a96361e4851cd5fb15368a2359dfb52a649cbc187e81964a"
+      },
+      "gpu": {
+        "samples": 2644,
+        "pending": 3,
+        "peak": 3,
+        "meanLatency": 12.744328668651011,
+        "maxLatency": 41.75500000268221,
+        "p99Ms": 32.21500000357628
+      },
+      "visibility": {
+        "method": "synthetic-document-visibility-event",
+        "paused": 5742,
+        "resumed": 5753
+      },
+      "recovery": {
+        "before": {
+          "enabled": true,
+          "frame": 5910,
+          "polls": 4380358,
+          "ready": 3059442,
+          "hits": 643870,
+          "zero": 599868,
+          "fallback": 1227227,
+          "expired": 48316,
+          "cameraRejected": 1048304,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 3193412,
+          "queryDropped": 129929,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80,
+          "motionQueryInterval": 0,
+          "motionQueriesSkipped": 0
+        },
+        "after": {
+          "enabled": true,
+          "frame": 6180,
+          "polls": 4685791,
+          "ready": 3257718,
+          "hits": 837374,
+          "zero": 778608,
+          "fallback": 1252963,
+          "expired": 54612,
+          "cameraRejected": 1048304,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 3392404,
+          "queryDropped": 129929,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80,
+          "motionQueryInterval": 0,
+          "motionQueriesSkipped": 0
+        }
+      }
+    },
+    "candidate": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-diagnostic-20261106.json",
+        "sha256": "89d24333d1f0f38e3706b05e454b5b8438f219779c553fa9dded5431576f5802"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "ed660a224b40d5d9a96361e4851cd5fb15368a2359dfb52a649cbc187e81964a"
+      },
+      "gpu": {
+        "samples": 2672,
+        "pending": 3,
+        "peak": 3,
+        "meanLatency": 12.617456961029996,
+        "maxLatency": 38.84500000625849,
+        "p99Ms": 30.219999998807907
+      },
+      "visibility": {
+        "method": "synthetic-document-visibility-event",
+        "paused": 5952,
+        "resumed": 5964
+      },
+      "recovery": {
+        "before": {
+          "enabled": true,
+          "frame": 6090,
+          "polls": 2184874,
+          "ready": 1475910,
+          "hits": 727710,
+          "zero": 686942,
+          "fallback": 1150489,
+          "expired": 47805,
+          "cameraRejected": 976014,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 1478479,
+          "queryDropped": 679,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80,
+          "motionQueryInterval": 4,
+          "motionQueriesSkipped": 1805892
+        },
+        "after": {
+          "enabled": true,
+          "frame": 6330,
+          "polls": 2702511,
+          "ready": 1783583,
+          "hits": 1026638,
+          "zero": 972542,
+          "fallback": 1177721,
+          "expired": 52717,
+          "cameraRejected": 976014,
+          "boundsRejected": 0,
+          "hzbSubmitted": 0,
+          "hzbCompleted": 0,
+          "hzbSkipped": 0,
+          "queryCaptured": 1787427,
+          "queryDropped": 679,
+          "maxAgeFrames": 8,
+          "maxAgeMs": 80,
+          "motionQueryInterval": 4,
+          "motionQueriesSkipped": 1805892
+        }
+      }
+    }
+  },
+  "validation": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106.json",
+        "sha256": "f4be2fceaf12b0fb52a977076a8bbdea77072fe4aece445584d49e79cb31656f"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106-source.cjs",
+        "sha256": "fb1d3791180bab4ae5827d24486695268bd1796ed4a59bef6472e41d8b351d0b"
+      },
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 5976,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106-tour-right.png",
+            "sha256": "286c70b7bf24f8ee3276fee297c46cdfd1e7cc3725fd123f35af32c75a815808"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 6451,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106-tour-back.png",
+            "sha256": "bd398823d6b2f1358cae855cbea0d2017ca73622b6983dda361933dd41b412dc"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 6858,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106-tour-left.png",
+            "sha256": "3d9ecc8556d6359309fc703bbb5625d37af23fa5402a154778aca209a72449ef"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 7117,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106-tour-room.png",
+            "sha256": "a21f9e3fd62f194b9213b3ce7d937ed079bd392f23abbae8b64f967cfc64708f"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 7354,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106-tour-return.png",
+            "sha256": "67eb9a892c0654199c0afc3047ef5da18ae529342dd013cd8898c7751750e879"
+          }
+        }
+      ],
+      "bindingChecks": 6863829,
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "pipelineDiagnostics": {
+        "failedCreate": 834,
+        "detailLines": 2550,
+        "otherLogErrors": [],
+        "finalCounters": {
+          "sampleFrame": 7380,
+          "graphicsPipelines": 612,
+          "computePipelines": 718,
+          "graphicsPipelineCreateMs": 39.72935676574707,
+          "computePipelineCreateMs": 25.257587432861328,
+          "textureReadbacks": 1,
+          "textureReadbacksReady": 1,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1130,
+          "asyncPrecacheCompleted": 1130,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 73,
+          "precachedGraphicsBinds": 1039493,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "matchesUnsupportedCount": true
+      },
+      "staticResult": {
+        "frames": 2367,
+        "fps": 118.36026775322406,
+        "low1": 60.06832772251583,
+        "p50": 7.21000000089407,
+        "p95": 11.66499999910593,
+        "p99": 13.310000002384186,
+        "max": 22.615000002086163,
+        "over33": 0,
+        "over50": 0
+      }
+    },
+    "candidate": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-validation-20261106.json",
+        "sha256": "df693d2d30cdadcfdbe52d3283cecc0ec090fa67036a33e917c99bf4838f9cae"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-validation-20261106-source.cjs",
+        "sha256": "fb1d3791180bab4ae5827d24486695268bd1796ed4a59bef6472e41d8b351d0b"
+      },
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 5970,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-validation-20261106-tour-right.png",
+            "sha256": "534973679e604e435753359405471bff01f9ef095929ba402f35bef79abaaa7a"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 6442,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-validation-20261106-tour-back.png",
+            "sha256": "4b9802c55c7249f386f6ef7a83a9a59aa14f196441065eb1d386783d6cbb6bdc"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 6854,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-validation-20261106-tour-left.png",
+            "sha256": "8e1a4ee47f6b3dc026e09bf7273b9468291f840bd32144171d0663d4814a5b53"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 7102,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-validation-20261106-tour-room.png",
+            "sha256": "88138ea6bd7e0cb623fa6d69c3847100dbca04ee5a53df9c12dae0d6744b0a82"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 7340,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 22,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-candidate-validation-20261106-tour-return.png",
+            "sha256": "76c84a8b52f223aeefa618f27033f22dd447edbdc338012f04ab94c2b0fa17ca"
+          }
+        }
+      ],
+      "bindingChecks": 6643978,
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "pipelineDiagnostics": {
+        "failedCreate": 834,
+        "detailLines": 2550,
+        "otherLogErrors": [],
+        "finalCounters": {
+          "sampleFrame": 7350,
+          "graphicsPipelines": 613,
+          "computePipelines": 709,
+          "graphicsPipelineCreateMs": 34.976959228515625,
+          "computePipelineCreateMs": 26.134252548217773,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 484,
+          "asyncPrecacheRequested": 1130,
+          "asyncPrecacheCompleted": 1130,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 834,
+          "precachedGraphicsUsed": 73,
+          "precachedGraphicsBinds": 1035264,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "matchesUnsupportedCount": true
+      },
+      "staticResult": {
+        "frames": 2371,
+        "fps": 118.48128085709406,
+        "low1": 57.53533029007084,
+        "p50": 6.9749999940395355,
+        "p95": 11.765000000596046,
+        "p99": 13.094999998807907,
+        "max": 26.609999999403954,
+        "over33": 0,
+        "over50": 0
+      }
+    }
+  },
+  "exploratory": {
+    "mouse-turn-diagnostic-orbit-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-turn-diagnostic-orbit-20261106.json",
+        "sha256": "811491df91ff8f47e78f99f8c17fa0055c648bb2e9c16419aba7fb36283a8f4f"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "f9dd904e48be301583b5f17ee0689087db98af4d3639c0339312552f32f98a1a"
+      },
+      "result": {
+        "samples": 2660,
+        "fps": 109.7167822130028,
+        "low1Fps": 43.056363970246935,
+        "p50": 8.890000000596046,
+        "p95": 17.839999996125698,
+        "p99": 20.325000002980232,
+        "maximum": 38.96999999880791
+      },
+      "workload": {
+        "draws": 1737.258426966292,
+        "dispatches": 159.8681647940075,
+        "pending": 181.15543071161048,
+        "ready": 441.9176029962547
+      },
+      "rhiMs": 6.480083222054379,
+      "resetInput": false,
+      "mode": "page3",
+      "start": {
+        "x": 431.15004451779697,
+        "y": -473.4151289601009,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 120.71576528251173
+      },
+      "end": {
+        "x": 427.86250700066046,
+        "y": -474.985475856321,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 115.43225937569515
+      },
+      "recovery": false
+    },
+    "mouse-bindings-probe-b1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-bindings-probe-b1-20261106.json",
+        "sha256": "3881b56db6fc698898bf0afc6af3ff4f78053a66346ad2dbc55b61d71083c5c2"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "f9dd904e48be301583b5f17ee0689087db98af4d3639c0339312552f32f98a1a"
+      },
+      "result": {
+        "samples": 2759,
+        "fps": 113.76170242592649,
+        "low1Fps": 42.47701689932368,
+        "p50": 8.399999998509884,
+        "p95": 17.980000004172325,
+        "p99": 20.385000005364418,
+        "maximum": 41.014999993145466
+      },
+      "workload": {
+        "draws": 1678.9597826086956,
+        "dispatches": 156.4913043478261,
+        "pending": 175.98442028985508,
+        "ready": 436.3938405797102
+      },
+      "rhiMs": 6.227177437624148,
+      "resetInput": false,
+      "mode": "page3",
+      "start": {
+        "x": 431.20656880341085,
+        "y": -473.3847948617195,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 120.80876083392653
+      },
+      "end": {
+        "x": 432.8308921433304,
+        "y": -472.4612446606446,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 123.51775229489428
+      },
+      "recovery": false
+    },
+    "mouse-csm128-probe-b1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-csm128-probe-b1-20261106.json",
+        "sha256": "b17a93b02b6651c402b2db4417c436d3d9186f5cda6e5a527fb0de8542b6cfa7"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "f9dd904e48be301583b5f17ee0689087db98af4d3639c0339312552f32f98a1a"
+      },
+      "result": {
+        "samples": 2711,
+        "fps": 111.75390561554377,
+        "low1Fps": 43.20454265016827,
+        "p50": 8.650000005960464,
+        "p95": 18.03499999642372,
+        "p99": 20.214999996125698,
+        "maximum": 40.95499999821186
+      },
+      "workload": {
+        "draws": 1682.632962962963,
+        "dispatches": 157.97222222222223,
+        "pending": 178.96333333333334,
+        "ready": 445.7614814814815
+      },
+      "rhiMs": 6.338091736739735,
+      "resetInput": false,
+      "mode": "page3",
+      "start": {
+        "x": 427.5246554768634,
+        "y": -475.126284179858,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 114.90164925809955
+      },
+      "end": {
+        "x": 430.97696214863106,
+        "y": -473.50728202267703,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 120.43150508636612
+      },
+      "recovery": false
+    },
+    "mouse-query-page2-probe-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-page2-probe-20261106.json",
+        "sha256": "f3f4f6a87a7c572e1c9fd0e4105910c6e8389605585933dcc199930d9b8911cb"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "ed660a224b40d5d9a96361e4851cd5fb15368a2359dfb52a649cbc187e81964a"
+      },
+      "result": {
+        "samples": 2209,
+        "fps": 91.58986151231261,
+        "low1Fps": 39.75730756664389,
+        "p50": 9.405000001192093,
+        "p95": 18.24499999731779,
+        "p99": 20.325000002980232,
+        "maximum": 44.84499999880791
+      },
+      "workload": {
+        "draws": 1311.4036036036036,
+        "dispatches": 148.48783783783784,
+        "pending": 2.6981981981981984,
+        "ready": 99.45585585585586
+      },
+      "rhiMs": 5.996780015935945,
+      "resetInput": true,
+      "mode": "page2",
+      "start": {
+        "x": 410.7359315721519,
+        "y": -478.05903852213453,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 89.99945068359375
+      },
+      "end": {
+        "x": 415.23149399940866,
+        "y": -478.00268048763866,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 96.52056412026285
+      },
+      "recovery": true
+    }
+  },
+  "failures": {
+    "mouse-turn-diagnostic-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-turn-diagnostic-20261106.json",
+        "sha256": "51130b439300b82e524f270d490ba4b99258a15c10b37dc7f7d426d05df86ef5"
+      },
+      "failure": "AssertionError [ERR_ASSERTION]: Camera must follow the requested input motion\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:308:5"
+    },
+    "mouse-turn-diagnostic-retry-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-turn-diagnostic-retry-20261106.json",
+        "sha256": "fb3c40aa5bf95affadb6f148e668f810f92044d374b6115299bf2cf222cca80b"
+      },
+      "failure": "AssertionError [ERR_ASSERTION]: Camera must follow the requested input motion\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:303:5"
+    },
+    "mouse-query-a1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-a1-20261106.json",
+        "sha256": "a71395fa003f799ac727db72c540cd4112d8f5376578ebbd17f5ae5987d531a3"
+      },
+      "failure": "AssertionError [ERR_ASSERTION]: Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs:200:5"
+    },
+    "validationInvocation": {
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-control-validation-20261106-run.log",
+        "sha256": "41b07011b523647bf745e187390f2f66c79be0641827998691b14fc703cc2f05"
+      },
+      "reason": "Absolute profile path rejected before browser launch; retried with a valid profile name."
+    }
+  },
+  "ownerProfile": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-turn-diagnostic-orbit-20261106-1-mouse-cpu-0.cpuprofile",
+    "sha256": "d2704c4b5a2b594f5fa12874f4fbc5244fa8503e769b0ab55c1b4f1e9159c957"
+  },
+  "implementation": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneVisibility.cpp",
+      "sha256": "9a2e29f4f0baadd76239588e06e371b51bed8c099b2b14ba6584e33d85ab7912"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneOcclusion.cpp",
+      "sha256": "974453bd167bdb3654b370cc6b6d3a934bf91f9f13f3adddf1ffaf677f462e0b"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\WebOcclusionHistory.h",
+      "sha256": "807fad82c8a51764fd749d40e8e468d373e5a66296bc0af85b45120e0722dcb9"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\UEWebEngine.cpp",
+      "sha256": "5a78116f57a1b75617478d7e17b811f594e381308960295d9165fe2b3d7175ae"
+    }
+  ],
+  "links": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-links-20261106.json",
+    "sha256": "87aa2b78c9d3b8536d1ea2d6b5e85c1e9b38bec945e6fa51bdabbf396ed70565"
+  },
+  "visuals": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-tail-20261106.png",
+      "sha256": "dee4110e8c1471132fd0f1c05f006690108755f55e72dba9e0ecb143aed9c9f2"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\mouse-query-views-20261106.jpg",
+      "sha256": "dfd1c684d16ebdfe9299d7c587e273599b2ec7a0254823ce16e515c34e188ece"
+    }
+  ],
+  "fpsChangePercent": 2.6902496487445138,
+  "low1ChangePercent": -3.2911007513118373
+}

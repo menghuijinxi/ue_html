@@ -8,7 +8,7 @@ assert(tag && [folder, tag].every(value => /^[a-z0-9-]+$/.test(value)));
 const profile = option('profile') || tag;
 assert(/^[a-z0-9-]+$/.test(profile));
 const modes = (option('modes') || 'owner,local,local,owner').split(',');
-assert(modes.every(value => /^(owner|local|local[1-8]|pipeline[1-8]|page[34])$/.test(value)));
+assert(modes.every(value => /^(owner|local|local[1-8]|pipeline[1-8]|page[1-4])$/.test(value)));
 const duration = Number(option('seconds') || 20);
 const width = Number(option('width') || 2289), height = Number(option('height') || 1287);
 const scale = Number(option('scale') || 1);
@@ -21,6 +21,10 @@ const chromeTrace = process.argv.includes('--chrome-trace');
 const inputMode = option('input') || 'owner-forwarded';
 const packagedInput = process.argv.includes('--packaged-input');
 const defaultSettings = process.argv.includes('--default-settings');
+const mouseOnly=process.argv.includes('--mouse-only'), profileWorkers=process.argv.includes('--profile-workers');
+const resetInput=process.argv.includes('--reset-input');
+const recoveryCheck=process.argv.includes('--recovery-check');
+assert(!resetInput||mouseOnly,'Orientation reset is for mouse-only runs');
 assert(['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode));
 assert(!defaultSettings || (modes.length === 1 && packagedInput));
 const pipelineObserver = require('./web-local-pipeline-observer.cjs');
@@ -32,6 +36,7 @@ assert(!fs.existsSync(output + '.json'));
 fs.copyFileSync(__filename, output + '-source.cjs');
 const report = {date: new Date().toISOString(), pass: false, folder, profile, modes, duration, width, height, scale, gpuProbe, rhiWake,
   minVisibleRatio, visibilityCheck, pipeline, chromeTrace, inputMode, packagedInput, defaultSettings,
+  mouseOnly,profileWorkers,resetInput,recoveryCheck,
   source: audit(__filename), capturedSource: audit(output + '-source.cjs'),
   observerSource: pipeline ? audit(path.join(__dirname, 'web-local-pipeline-observer.cjs')) : undefined,
   runs: [], files: ['index.html', 'UEWebEngineThreads.js', 'config-files.json',
@@ -64,7 +69,9 @@ function gpuCompletions() {
     });
   };
 }
-function motionStart(duration) {
+function motionStart(options) {
+  const duration=typeof options==='number'?options:options.duration;
+  const mouseOnly=typeof options==='object'&&options.mouseOnly;
   const canvas = document.querySelector('canvas');
   canvas.focus();
   const state = globalThis.__clockMotionInput = {started: performance.now(), events: 0, done: false, key: null};
@@ -82,16 +89,20 @@ function motionStart(duration) {
     const elapsed = (performance.now() - state.started) / 1000;
     if (elapsed >= duration) {
       if (state.key) key('keyup', state.key);
+      if(mouseOnly)mouse('mousemove',-previousX,-previousY);
       mouse('mouseup', 0, 0);
       clearInterval(timer); state.done = true; state.ended = performance.now();
       return;
     }
-    const nextKey = Math.floor(elapsed / 2) % 2 ? 'S' : 'W';
+    const nextKey = mouseOnly?null:Math.floor(elapsed / 2) % 2 ? 'S' : 'W';
     if (nextKey !== state.key) {
       if (state.key) key('keyup', state.key);
-      key('keydown', nextKey); state.key = nextKey;
+      if(nextKey)key('keydown', nextKey); state.key = nextKey;
     }
-    const x = 650 * Math.sin(elapsed * Math.PI / 4), y = 65 * Math.sin(elapsed * Math.PI / 3);
+    // MouseEvent movement values are integers. Round the absolute trajectory
+    // before differencing to avoid accumulating truncation drift every event.
+    const x = mouseOnly?Math.round(650*Math.sin(elapsed*Math.PI/4)):650*Math.sin(elapsed*Math.PI/4);
+    const y = mouseOnly?0:65 * Math.sin(elapsed * Math.PI / 3);
     mouse('mousemove', x - previousX, y - previousY);
     previousX = x; previousY = y; state.events++;
   }, 16);
@@ -203,9 +214,17 @@ ${marker}
       gpu: globalThis.__clockMotionGPU && {submitted: __clockMotionGPU.submitted,
         completed: __clockMotionGPU.completed, peak: __clockMotionGPU.peak}}));
     run.spawn = (await state()).camera;
-    await page.evaluate(motionStart, duration);
+    if(resetInput)assert.equal(await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',4,0)),1);
+    await page.evaluate(motionStart, {duration,mouseOnly});
     await page.waitForFunction(() => __clockMotionInput.done, null, {timeout: (duration + 30) * 1000});
     await page.waitForTimeout(1000);
+    if(resetInput){
+      assert.equal(await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',5,0)),1);
+      await page.waitForTimeout(1000);
+      const camera=(await state()).camera;
+      assert(Math.hypot(camera.x-run.spawn.x,camera.y-run.spawn.y,camera.z-run.spawn.z)<1);
+      assert(Math.abs(((camera.yaw-run.spawn.yaw+540)%360)-180)<.5,'Mouse phases must start from the same pawn camera');
+    }
     run.before = await state();
     assert.equal(run.before.clock.mode, clock);
     if (ahead) assert.equal(run.before.budget.maxAhead, ahead);
@@ -223,7 +242,7 @@ ${marker}
         transferMode: 'ReturnAsStream'});
       await page.evaluate(() => performance.mark('UE motion trace start'));
     }
-    await page.evaluate(motionStart, duration);
+    await page.evaluate(motionStart, {duration,mouseOnly});
     while (!await page.evaluate(() => __clockMotionInput.done)) {
       await page.waitForTimeout(500);
       run.samples.push({state: await state(), input: await page.evaluate(() => __webInputBridge),
@@ -295,7 +314,11 @@ ${marker}
       value.x - cameras[i].x, value.y - cameras[i].y, value.z - cameras[i].z), 0);
     run.turn = cameras.slice(1).reduce((sum, value, i) => sum +
       Math.abs(((value.yaw - cameras[i].yaw + 540) % 360) - 180), 0);
-    assert(run.travel > 10 && run.turn > 30, 'Camera must translate and turn during measurement');
+    // Villa's camera is offset from its yaw pivot; mouse-only turning traces
+    // an ~80 cm orbit. Do not replace that real input path with a fixed camera.
+    const cameraRadius=Math.max(...cameras.map(v=>Math.hypot(v.x-run.spawn.x,v.y-run.spawn.y,v.z-run.spawn.z)));
+    assert((mouseOnly?cameraRadius<100:run.travel>10)&&run.turn>30,'Camera must follow the requested input motion');
+    run.cameraRadius=cameraRadius;
     assert.deepEqual(run.errors, []);
     assert.deepEqual(run.before.settings, run.after.settings);
     await page.locator('canvas').screenshot({path: output + '-' + run.index + '-' + mode + '.png'});
@@ -321,6 +344,23 @@ ${marker}
       run.visibility = {method: 'synthetic-document-visibility-event',
         paused: paused.frame, resumed: (await state()).frame};
     }
+    if(profileWorkers){
+      await page.evaluate(motionStart,{duration:12,mouseOnly});
+      run.profiles=await require('./web-worker-cpu-profiler.cjs')(context,output+'-'+run.index+'-mouse-cpu',8);
+      await page.waitForFunction(()=>__clockMotionInput.done,null,{timeout:20000});
+    }
+    if(recoveryCheck){
+      await page.waitForTimeout(1500);
+      const before=await state();
+      await page.waitForTimeout(2500);
+      const after=await state();
+      assert.deepEqual(after.camera,before.camera,'Recovery must be stationary');
+      assert.equal(after.history.motionQueriesSkipped,before.history.motionQueriesSkipped,'Stationary queries must resume immediately');
+      assert(after.history.queryCaptured>before.history.queryCaptured);
+      assert(after.history.hits>before.history.hits&&after.history.zero>before.history.zero);
+      run.recovery={before,after};
+    }
+    assert.deepEqual(run.errors,[]);
     run.pass = true; save();
     console.log(JSON.stringify({mode, ...run.result, travel: run.travel, turn: run.turn, rhiMs: run.rhiMs,
       workload: run.workload, display: run.display, gpu: run.gpuSummary, budget: run.after.budget}));

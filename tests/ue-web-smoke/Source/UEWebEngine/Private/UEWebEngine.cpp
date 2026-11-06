@@ -757,8 +757,31 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebMotionBenchmarkControl(int Mode, double S
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     APlayerController* Controller = TemplateController.Get();
-    if (!Controller || Mode < 0 || Mode > 3 || !FMath::IsFinite(Seconds) || Seconds < 0 || Seconds > 60)
+    if (!Controller || Mode < 0 || Mode > 5 || !FMath::IsFinite(Seconds) || Seconds < 0 || Seconds > 60)
         return 0;
+    if (Mode >= 4)
+    {
+        // Reset only input orientation between mouse benchmark phases. Keep the
+        // possessed pawn and its real camera rig (including its rotation orbit).
+        static TWeakObjectPtr<AActor> InputViewTarget;
+        static TWeakObjectPtr<APawn> InputPawn;
+        static FRotator InputRotation;
+        if (Seconds != 0 || MotionBenchmarkActive || !Controller->GetPawn()) return 0;
+        if (Mode == 4)
+        {
+            InputViewTarget = Controller->GetViewTarget();
+            InputPawn = Controller->GetPawn();
+            InputRotation = Controller->GetControlRotation();
+        }
+        else
+        {
+            if (!InputPawn.IsValid() || InputPawn.Get() != Controller->GetPawn() ||
+                InputViewTarget.Get() != Controller->GetViewTarget()) return 0;
+            Controller->FlushPressedKeys();
+            Controller->SetControlRotation(InputRotation);
+        }
+        return 1;
+    }
     MotionBenchmarkActive = false;
     ++MotionBenchmarkSerial;
     MotionBenchmarkMode = Mode;

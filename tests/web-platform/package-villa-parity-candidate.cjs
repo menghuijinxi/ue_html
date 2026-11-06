@@ -9,6 +9,10 @@ assert(name && [baseline,name].every(v=>/^[a-z0-9-]+$/.test(v)));
 const source=path.join(__dirname,'build',baseline),dest=path.join(__dirname,'build',name);
 const versions=JSON.parse(fs.readFileSync(path.join(source,'asset-versions.json')));
 const runtimeBuild=option('runtime-build');
+const csmScrollSubjects=option('csm-scroll-subjects');
+assert(csmScrollSubjects===undefined||(/^\d+$/.test(csmScrollSubjects)&&Number(csmScrollSubjects)<=4096));
+const motionQueryInterval=option('motion-query-interval');
+assert(motionQueryInterval===undefined||(/^[0-8]$/.test(motionQueryInterval)));
 assert(!runtimeBuild||!process.argv.includes('--owner-lookahead'),'Runtime replacement and owner lookahead must be tested separately');
 let build;
 if(runtimeBuild){
@@ -41,6 +45,8 @@ const configs=JSON.parse(fs.readFileSync(path.join(source,'config-files.json')))
 const config=configs.find(v=>v.path==='/Engine/Platforms/Web/Config/WebEngine.ini');assert(config);
 const settings={'t.MaxFPS':0,'r.VSync':0};
 if(process.argv.includes('--csm'))settings['r.Shadow.CSMCaching']=1;
+if(csmScrollSubjects!==undefined)settings['r.Shadow.MaxCSMScrollingStaticShadowSubjects']=Number(csmScrollSubjects);
+if(motionQueryInterval!==undefined)settings['r.Web.OcclusionMotionQueryInterval']=Number(motionQueryInterval);
 if(process.argv.includes('--no-shadows'))settings['r.ShadowQuality']=0;
 if(process.argv.includes('--bundles'))settings['r.WebGPU.RenderBundles']=1;
 if(process.argv.includes('--staging'))settings['r.WebGPU.StagingUploadPages']=1;
