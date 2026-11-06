@@ -13,6 +13,14 @@
 测试副本为 `tests/web-platform/build/projects/triplex-virtual`，
 使用 `--project-settings` 保留原工程渲染设置。原始工程和 `H:/UE_5.8` 安装目录不作修改。
 
+资产只读检查找到 689 张 Texture2D，其中 688 张缺失资产索引标签，
+已加载读取真实属性；启用资产级 `VirtualTextureStreaming` 的数量为 0。
+因此当前别墅只能验证全局 VT 支持开关，不能单独证明实际 VT 流送可用。
+检查脚本为 `tests/web-platform/inspect-virtual-texture-assets.py`，
+结果为 `tests/web-platform/results/virtual-texture-assets.json`。
+隔离副本 `triplex-vt-fixture` 已从默认光照关卡创建普通纹理/虚拟纹理对照板，
+使用相同的 1024 像素多尺度棋盘图；此样例尚未完成 Cook 和浏览器验证。
+
 ## 实现范围
 
 - Web 桌面 SM5 路径启用虚拟纹理能力判断及非 Nanite VSM；ES3.1 不作为验收路径。
@@ -29,6 +37,9 @@
   保留 UMG/Slate 及实际阴影渲染。
 - 运行时诊断增加 VT/VSM 路径状态，以及已加载 VT 资产和实际 VT 资源数量。
   开启项目支持本身并不能证明关卡材质正在使用虚拟纹理。
+- VSM 启用的 HZB Froxel 路径在 WGSL 中不能使用共享内存投票控制屏障。
+  Web 分支用容量为候选数两倍的共享原子哈希表去重，保留全部深度单元；
+  屏障只在一致控制流中执行，原生分支不变。
 
 ## 已完成验证
 
@@ -40,6 +51,7 @@
 | Edge WebGPU 模块与管线 | 358 个模块、335 条计算管线通过 |
 | 实际 UE VT 页表绘制回读 | 6/8 位物理页坐标编码、零/非零更新起点；2048 个像素无差异 |
 | 原生 Dawn 原子镜像回读 | 12 组尺寸/mip/数组组合；22401 个值核对通过 |
+| HZB Froxel 实际 GPU 回读 | 重复、碰撞、负深度切片、无限深度及不完整视口五例通过；集合、计数、HZB 像素无差异 |
 | 隔离 RenderCore、Renderer 与线程 Wasm | 编译通过，最终打包仍须核验构建摘要 |
 
 页表绘制测试使用真实转换后的 `TPageTableUpdateVS` 与 `TPageTableUpdatePS`，
@@ -49,6 +61,7 @@
 主要证据：
 
 - `tests/web-platform/results/web-virtual-resource-gpu.json`
+- `tests/web-platform/results/web-froxel-gpu.json`
 - `tests/web-platform/build/virtual-resource-rhi/lumen-storage-rhi.json`
 - `tests/web-platform/build/virtual-resource-probe/20261106-100811/virtual-resource-shader-results.json`
 - `tests/web-platform/build/virtual-resource-probe/20261106-101919/virtual-resource-shader-results.json`
