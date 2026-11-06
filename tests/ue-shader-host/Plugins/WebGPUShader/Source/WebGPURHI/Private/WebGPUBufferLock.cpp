@@ -1,5 +1,15 @@
 #include "WebGPUDynamicRHI.h"
 
+namespace
+{
+bool CanDiscardBuffer(FRHIBuffer* Buffer, uint32 Offset, EResourceLockMode Mode)
+{
+    return Buffer && Mode == RLM_WriteOnly && Offset == 0 &&
+        EnumHasAnyFlags(Buffer->GetUsage(), EBufferUsageFlags::Volatile) &&
+        !EnumHasAnyFlags(Buffer->GetUsage(), EBufferUsageFlags::UnorderedAccess);
+}
+}
+
 bool FWebGPUDynamicRHI::ValidateBufferLock(FRHIBuffer *Buffer, uint32 Offset, uint32 Size, EResourceLockMode Mode,
                                            FString &Error) const
 {
@@ -15,7 +25,8 @@ bool FWebGPUDynamicRHI::ValidateBufferLock(FRHIBuffer *Buffer, uint32 Offset, ui
     }
     if (!Size || Size > MAX_int32 || Offset % 4 || Size % 4 || uint64(Offset) + Size > Buffer->GetSize())
     {
-        Error = TEXT("Buffer lock requires a nonempty four-byte-aligned in-bounds range");
+        Error = FString::Printf(TEXT("Buffer lock requires a nonempty four-byte-aligned in-bounds range: name=%s offset=%u size=%u capacity=%u mode=%u"),
+            *Buffer->GetName().ToString(), Offset, Size, Buffer->GetSize(), uint32(Mode));
         return false;
     }
     if (BufferLocks.Contains(Buffer) || static_cast<FWebGPUBuffer *>(Buffer)->Locked)
@@ -23,6 +34,8 @@ bool FWebGPUDynamicRHI::ValidateBufferLock(FRHIBuffer *Buffer, uint32 Offset, ui
         Error = TEXT("Buffer already has an active lock");
         return false;
     }
+    if (Pass && CanDiscardBuffer(Buffer, Offset, Mode))
+        return ValidateAccess(Buffer, static_cast<FWebGPUBuffer*>(Buffer)->State.Access, Error);
     return ValidateAccess(Buffer, Mode == RLM_ReadOnly ? ERHIAccess::CopySrc : ERHIAccess::CopyDest, Error, true);
 }
 
@@ -34,7 +47,7 @@ bool FWebGPUDynamicRHI::ValidateBufferUnlock(FRHIBuffer *Buffer, FString &Error)
         Error = TEXT("Buffer unlock requires a matching active lock");
         return false;
     }
-    if (Pass || Lock->Buffer->State.Pending)
+    if ((Pass && !CanDiscardBuffer(Buffer, Lock->Offset, Lock->Mode)) || Lock->Buffer->State.Pending)
     {
         Error = TEXT("Buffer unlock is forbidden inside a render pass or split transition");
         return false;
@@ -50,7 +63,9 @@ void *FWebGPUDynamicRHI::LockBuffer_BottomOfPipe(FRHICommandListBase & WebArg0, 
         UE_LOG(LogRHI, Display, TEXT("P2_STARTUP BufferLock requested name=%s offset=%u size=%u mode=%u"),
                *Buffer->GetName().ToString(), Offset, Size, uint32(Mode));
     FString Error;
-    checkf(ValidateBufferLock(Buffer, Offset, Size, Mode, Error), TEXT("WebGPU BufferLock unsupported: %s"), *Error);
+    checkf(ValidateBufferLock(Buffer, Offset, Size, Mode, Error),
+        TEXT("WebGPU BufferLock unsupported: name=%s offset=%u size=%u mode=%u: %s"),
+        Buffer ? *Buffer->GetName().ToString() : TEXT("<null>"), Offset, Size, uint32(Mode), *Error);
     FWebGPUBufferLock Lock;
     Lock.Buffer = static_cast<FWebGPUBuffer *>(Buffer);
     Lock.Offset = Offset;
@@ -86,11 +101,25 @@ void FWebGPUDynamicRHI::UnlockBuffer_BottomOfPipe(FRHICommandListBase & WebArg0,
         RHIGetCommandContext(ERHIPipeline::Graphics);
     if (Lock.Mode == RLM_WriteOnly)
     {
-        // Each upload keeps a unique source slice until every frame encoder is submitted.
-        uint64 UploadOffset = 0;
-        auto Staging = UploadStagingBytes(Lock.Bytes.GetData(), Lock.Bytes.Num(), UploadOffset);
-        wgpuCommandEncoderCopyBufferToBuffer(Encoder, Staging, UploadOffset, Lock.Buffer->Handle, Lock.Offset, Lock.Bytes.Num());
-        wgpuBufferRelease(Staging);
+        if (Pass)
+        {
+            // Volatile writes discard old contents. Previously encoded draws retain the old handle.
+            FlushDrawBundles();
+            ResetEncoderBindings();
+            auto Previous = Lock.Buffer->Handle;
+            Lock.Buffer->Handle = CreateBuffer(Lock.Buffer->GetSize(), wgpuBufferGetUsage(Previous));
+            wgpuQueueWriteBuffer(Queue, Lock.Buffer->Handle, 0, Lock.Bytes.GetData(), Lock.Bytes.Num());
+            wgpuBufferRelease(Previous);
+        }
+        else
+        {
+            // Each upload keeps a unique source slice until every frame encoder is submitted.
+            uint64 UploadOffset = 0;
+            auto Staging = UploadStagingBytes(Lock.Bytes.GetData(), Lock.Bytes.Num(), UploadOffset);
+            EndComputePass();
+            wgpuCommandEncoderCopyBufferToBuffer(Encoder, Staging, UploadOffset, Lock.Buffer->Handle, Lock.Offset, Lock.Bytes.Num());
+            wgpuBufferRelease(Staging);
+        }
         ++BufferUploads;
         BufferUploadBytes += Lock.Bytes.Num();
     }

@@ -75,16 +75,23 @@ function observe() {
 (async () => {
   let browser, page, log, owner;
   try {
-    browser = await chromium.launch({headless: true,
-      executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'});
-    const context = await browser.newContext({viewport: {width: 1280, height: 720}});
+    const context = await chromium.launchPersistentContext(
+      path.join(__dirname, 'build/browser-profiles', tag), {headless: true,
+        executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+        viewport: {width: 1280, height: 720}});
+    browser = context;
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       await route.fulfill({response, body: `(${observe.toString()})();\n` + await response.text()});
     });
-    page = await context.newPage();
+    page = context.pages()[0] || await context.newPage();
+    for (const extra of context.pages().filter(value => value !== page)) await extra.close();
     log = fs.createWriteStream(output + '.console.log');
-    page.on('console', message => log.write(message.text() + '\n'));
+    page.on('console', message => {
+      const text = message.text();
+      log.write(text + '\n');
+      if (/Assertion failed:|Fatal error:/.test(text)) report.errors.push(text);
+    });
     page.on('pageerror', error => report.errors.push(error.stack || error.message));
     report.url = `http://127.0.0.1:8765/build/${folder}/index.html`;
     await page.goto(report.url, {waitUntil: 'commit'});
@@ -93,7 +100,9 @@ function observe() {
       const state = await page.evaluate(() => ({
         failure: globalThis.__webEngineFailure || globalThis.__webThreadsFailure,
         frames: globalThis.__webEngineFrames || 0,
+        loading: globalThis.__webStartupDiagnostics?.localContent,
       }));
+      assert(!report.errors.length, report.errors.join('\n'));
       assert(!state.failure, JSON.stringify(state.failure));
       if (state.frames >= 60 && owner) break;
       console.log(JSON.stringify({startupAttempt: attempt, ...state}));

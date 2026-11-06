@@ -227,6 +227,10 @@ int32 UWebShaderProbeCommandlet::Main(const FString &Params)
             FString Json;
             FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
             IFileManager::Get().MakeDirectory(*OutputDirectory, true);
+            if (Preprocessed && Job.Output.bSucceeded)
+                check(FFileHelper::SaveArrayToFile(
+                    Job.Output.ShaderCode.GetReadView().Left(Job.Output.ShaderCode.GetShaderCodeSize()),
+                    *(OutputDirectory / (TypeName + TEXT(".webshader")))));
             FFileHelper::SaveStringToFile(Json, *(OutputDirectory / TEXT("desktop-shader-results.json")),
                 FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
             UE_LOG(LogTemp, Display, TEXT("WEB_DESKTOP_SHADER %s permutation=%d pass=%d"),

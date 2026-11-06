@@ -67,6 +67,7 @@ Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShadow
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VT/VirtualTextureSpace.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VT/VirtualTextureSpace.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Force
 foreach ($taskOcclusionOverlay in @('SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionOverlay") -Destination (Join-Path $taskRendererCopy "Private/$taskOcclusionOverlay") -Force
 }

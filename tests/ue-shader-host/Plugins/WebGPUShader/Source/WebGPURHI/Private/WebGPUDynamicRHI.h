@@ -266,7 +266,8 @@ class FWebGPUTexture final : public FRHITexture
     FWebGPUReadbackRef Readback, LockedReadback;
     bool SurfaceFrameActive = true;
     uint32 LayerCount() const { return uint32(GetDesc().ArraySize) * (GetDesc().IsTextureCube() ? 6u : 1u); }
-    FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle)
+    FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle,
+        WGPUTextureFormat SampleFormat = WGPUTextureFormat_Undefined)
         : FRHITexture(Desc), Handle(InHandle),
           State(Desc.InitialState), StencilState(Desc.InitialState)
     {
@@ -275,6 +276,10 @@ class FWebGPUTexture final : public FRHITexture
             Desc.NumMips * LayerCount() - 1);
         if (!Handle) return; // CPUReadback uses a mapped buffer, not a GPU texture.
         WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
+        Sample.format = SampleFormat;
+        if (SampleFormat != WGPUTextureFormat_Undefined)
+            Sample.usage = wgpuTextureGetUsage(Handle) &
+                (WGPUTextureUsage_TextureBinding | WGPUTextureUsage_RenderAttachment);
         if (Desc.IsTextureCube())
         {
             Sample.dimension = Desc.Dimension == ETextureDimension::TextureCubeArray
@@ -291,7 +296,7 @@ class FWebGPUTexture final : public FRHITexture
             View = wgpuTextureCreateView(Handle, &Sample);
         }
         else
-            View = wgpuTextureCreateView(Handle, nullptr);
+            View = wgpuTextureCreateView(Handle, &Sample);
         if (Desc.Format == PF_DepthStencil && EnumHasAnyFlags(Desc.Flags, ETextureCreateFlags::ShaderResource))
         {
             Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;

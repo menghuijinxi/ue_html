@@ -5,6 +5,7 @@
 #include "WebGPUUAVRasterProbe.h"
 #include "WebGPUTextureAtomicProbe.h"
 #include "WebGPUTextureUploadProbe.h"
+#include "WebGPUVirtualResourceViewProbe.h"
 #include "RenderingThread.h"
 #include "Serialization/JsonSerializer.h"
 #include "Math/Float16.h"
@@ -571,6 +572,10 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Pass &= RunWebGPUTextureAtomicCases(RHI, Cmd, TextureAtomicCases);
         TArray<TSharedPtr<FJsonValue>> TextureUploadCases;
         Pass &= RunWebGPUTextureUploadCases(RHI, Cmd, TextureUploadCases);
+        TArray<TSharedPtr<FJsonValue>> TextureViewCases;
+        Pass &= RunWebGPUVirtualResourceViewCases(RHI, Cmd, TextureViewCases);
+        const bool VolatilePass = RunWebGPUVolatilePassCase(RHI, Cmd);
+        Pass &= VolatilePass;
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
@@ -583,6 +588,8 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("depthAtlasCases"), DepthAtlasCases);
         Report->SetArrayField(TEXT("textureAtomicCases"), TextureAtomicCases);
         Report->SetArrayField(TEXT("textureUploadCases"), TextureUploadCases);
+        Report->SetArrayField(TEXT("textureViewCases"), TextureViewCases);
+        Report->SetBoolField(TEXT("volatilePassVersions"), VolatilePass);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);

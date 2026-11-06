@@ -1509,7 +1509,8 @@ WGPUSampler FWebGPUDynamicRHI::ResolveSampler(FWebGPUSampler *Sampler)
     const auto &In = Sampler->Initializer;
     checkf(In.Filter <= SF_AnisotropicLinear && In.MipBias == 0 &&
                (In.SamplerComparisonFunction == SCF_Never || In.SamplerComparisonFunction == SCF_Less),
-           TEXT("WebGPU sampler requires a supported filter without mip bias"));
+           TEXT("WebGPU sampler requires a supported filter without mip bias: filter=%u bias=%f compare=%u min=%f max=%f"),
+           uint32(In.Filter), In.MipBias, uint32(In.SamplerComparisonFunction), In.MinMipLevel, In.MaxMipLevel);
     const auto Address = [](ESamplerAddressMode Mode) {
         check(Mode == AM_Wrap || Mode == AM_Clamp || Mode == AM_Mirror);
         return Mode == AM_Wrap     ? WGPUAddressMode_Repeat
@@ -1763,7 +1764,15 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     Desc.dimension = Volume ? WGPUTextureDimension_3D : WGPUTextureDimension_2D;
     Desc.size = {uint32(In.Extent.X), uint32(In.Extent.Y), In.IsTextureCube() ? 6u * In.ArraySize :
         In.Dimension == ETextureDimension::Texture2DArray ? uint32(In.ArraySize) : uint32(In.Depth)};
-    Desc.format = Format(In.Format, EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB));
+    const bool SRGB = EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB);
+    const bool SRGBStorage = SRGB && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV);
+    Desc.format = Format(In.Format, SRGB && !SRGBStorage);
+    const WGPUTextureFormat AlternateFormat = Format(In.Format, SRGBStorage);
+    if (SRGB)
+    {
+        Desc.viewFormatCount = 1;
+        Desc.viewFormats = &AlternateFormat;
+    }
     Desc.mipLevelCount = In.NumMips;
     Desc.usage = Volume || IsBCTextureFormat(In.Format) ||
         ((In.Format == PF_FloatRGB || In.Format == PF_FloatR11G11B10) &&
@@ -1777,7 +1786,8 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
         Desc.usage |= WGPUTextureUsage_TextureBinding;
     if (In.Format == PF_ShadowDepth)
         Desc.usage |= WGPUTextureUsage_CopySrc | WGPUTextureUsage_CopyDst;
-    auto *Texture = new FWebGPUTexture(In, wgpuDeviceCreateTexture(Device, &Desc));
+    auto *Texture = new FWebGPUTexture(In, wgpuDeviceCreateTexture(Device, &Desc),
+        SRGBStorage ? Format(In.Format, true) : WGPUTextureFormat_Undefined);
     if (In.Format == PF_R32_UINT && (In.Dimension == ETextureDimension::Texture2D ||
         In.Dimension == ETextureDimension::Texture2DArray) &&
         EnumHasAllFlags(In.Flags, ETextureCreateFlags::UAV | ETextureCreateFlags::AtomicCompatible))
@@ -1889,7 +1899,7 @@ FShaderResourceViewRHIRef FWebGPUDynamicRHI::RHICreateShaderResourceView(FRHICom
     const bool DepthStencil = Texture->GetFormat() == PF_DepthStencil;
     const bool Stencil = DepthStencil && Info.Plane == ERHITexturePlane::Stencil;
     View.format = DepthStencil ? (Stencil ? WGPUTextureFormat_Stencil8 : WGPUTextureFormat_Depth24Plus)
-                               : Format(Info.Format);
+                               : Format(Info.Format, Info.bSRGB);
     View.dimension = Info.Dimension == FRHIViewDesc::EDimension::Texture3D ? WGPUTextureViewDimension_3D :
         Info.Dimension == FRHIViewDesc::EDimension::TextureCube ? WGPUTextureViewDimension_Cube :
         Info.Dimension == FRHIViewDesc::EDimension::TextureCubeArray ? WGPUTextureViewDimension_CubeArray :
@@ -2181,10 +2191,9 @@ bool FWebGPUDynamicRHI::ValidateTextureSRV(FRHIViewableResource *Resource, const
     if (!SupportedFormat ||
         (View.Format != PF_Unknown && View.Format != Target.Format && !(DepthStencil && View.Format == PF_X24_G8)) ||
         (DepthStencil && ((View.Plane == ERHITexturePlane::Depth && View.Format == PF_X24_G8) ||
-            (View.Plane == ERHITexturePlane::Stencil && View.Format == PF_DepthStencil))) ||
-        EnumHasAnyFlags(Target.Flags, ETextureCreateFlags::SRGB))
+            (View.Plane == ERHITexturePlane::Stencil && View.Format == PF_DepthStencil))))
     {
-        Error = TEXT("Texture SRV requires a matching supported linear sampled format");
+        Error = TEXT("Texture SRV requires a matching supported sampled format");
         return false;
     }
     // Reject invalid ranges before GetViewInfo, which asserts on malformed descriptors.

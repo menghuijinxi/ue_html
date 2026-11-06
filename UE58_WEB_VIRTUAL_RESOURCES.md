@@ -7,7 +7,8 @@
 
 ## 当前状态
 
-基础资源、着色器转换和浏览器管线验证通过。完整别墅 Cook、打包及浏览器关卡验收尚未完成，
+基础资源、着色器转换和浏览器管线验证通过。完整别墅与 VT 对照场景 Cook、打包均已完成，
+别墅运行包约 3.65 GB，对照场景约 622 MB；浏览器关卡验收尚未完成，
 不能把这些基础结果当作虚拟纹理流送、虚拟阴影画面或桌面效果对照通过。
 
 测试副本为 `tests/web-platform/build/projects/triplex-virtual`，
@@ -20,7 +21,7 @@
 结果为 `tests/web-platform/results/virtual-texture-assets.json`。
 隔离副本 `triplex-vt-fixture` 已从默认光照关卡创建普通纹理/虚拟纹理对照板，
 使用相同的 1024 像素多尺度棋盘图。原生四视角截图及色彩检查已完成；
-此样例尚未完成 Cook 和浏览器验证。浏览器通过条件还包括移动相机后的新增物理页上传，
+此样例已完成 Cook 和打包，浏览器验证仍在进行。浏览器通过条件还包括移动相机后的新增物理页上传，
 不能只凭 VT 资源对象存在判定流送通过。
 
 ## 实现范围
@@ -44,6 +45,11 @@
   屏障只在一致控制流中执行，原生分支不变。
 - VT 物理页的 `UpdateTexture2D` 支持 BC1/2/3/4/5/6H/7 及已有采样颜色格式，
   按压缩块处理源偏移、行填充、区域边界和 mip，保留上传数据快照及命令顺序。
+- VSM 投影的 Wave Operations 断言允许已有的 Web 标量实现；
+  缓存动态标记位图按完整 uint32 上传，避免 279 字节等尾部范围不满足 WebGPU 四字节对齐。
+- VT 物理池支持显式线性/sRGB 采样视图；同时带存储用途时采用线性存储和 sRGB 采样视图。
+- 绘制通道内允许 Volatile 缓冲从零偏移执行可丢弃写入，为新内容分配独立 GPU 缓冲。
+  已记录绘制保留旧缓冲，绑定缓存重新解析新缓冲；普通缓冲、部分偏移及读锁仍受原校验约束。
 
 ## 已完成验证
 
@@ -59,6 +65,9 @@
 | VT 区域上传原生 GPU 回读 | 11 种格式、mip 0/1 共 22 例，7260 字节无差异；既有 12 组原子测试重测通过 |
 | 隔离 RenderCore、Renderer 与线程 Wasm | 编译通过，最终打包仍须核验构建摘要 |
 | 原生截图基线 | 别墅三个视角及 VT 样例四个视角完成；VSM=1，保留工程设置 |
+| 完整项目 Cook / 打包 | 别墅与 VT 对照场景通过，均使用原项目设置和桌面 SM5 |
+| 线性/sRGB 视图实际采样 | RGBA8、BGRA8，以及带 UAV 的 RGBA8，共 9 例通过 |
+| 通道内 Volatile 缓冲版本 | 连续写入后左右红/绿两次绘制回读通过；原子镜像和纹理上传重测通过 |
 
 页表绘制测试使用真实转换后的 `TPageTableUpdateVS` 与 `TPageTableUpdatePS`，
 包含跨八个四边形实例边界的 11 条更新和未使用尾部实例。
@@ -69,6 +78,7 @@
 - `tests/web-platform/results/web-virtual-resource-gpu.json`
 - `tests/web-platform/results/web-froxel-gpu.json`
 - `tests/web-platform/build/virtual-resource-rhi-upload/lumen-storage-rhi.json`
+- `tests/web-platform/build/virtual-resource-runtime-rhi/lumen-storage-rhi.json`
 - `tests/web-platform/results/virtual-texture-native-image-check.json`
 - `tests/web-platform/results/villa-distance-fields-virtual-native-capture.json`
 - `tests/web-platform/results/villa-distance-fields-vt-fixture-native-capture.json`
@@ -98,6 +108,9 @@ node tests/web-platform/verify-web-lumen-settings.cjs
 ## 尚未验收的边界
 
 完整别墅画面、动态相机下的 VSM 更新/缓存、真实 VT 资产流送、运行性能和显存峰值尚需验收。
+实际首帧已修复 VSM 投影断言、位图上传对齐、sRGB 视图与临时顶点缓冲上传。
+最新 VT 场景测试停在采样器参数校验，尚未产生可验收的浏览器截图。
+浏览器探针使用专用持久配置和单个页面，避免大型资源包的隐私存储配额及恢复页面缓存锁干扰。
 镜像同步增加了 GPU 存储与复制开销，当前优先验证正确性。
 扩展全局探针检查的 1970 个模块中，有 55 个排列不能直接创建浏览器计算管线：
 53 项属于 Lumen 头发/高度场/可视化路径的存储缓冲区超限，
