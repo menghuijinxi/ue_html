@@ -9,6 +9,8 @@ assert(name && [baseline,name].every(v=>/^[a-z0-9-]+$/.test(v)));
 const source=path.join(__dirname,'build',baseline),dest=path.join(__dirname,'build',name);
 const versions=JSON.parse(fs.readFileSync(path.join(source,'asset-versions.json')));
 const runtimeBuild=option('runtime-build');
+const pageMaxFPS=option('page-max-fps');
+assert(pageMaxFPS===undefined||(/^\d+$/.test(pageMaxFPS)&&Number(pageMaxFPS)>=1&&Number(pageMaxFPS)<=240));
 const cores=option('cores');assert(cores===undefined||/^[468]$/.test(cores));
 const csmScrollSubjects=option('csm-scroll-subjects');
 const csmMode=option('csm-mode');
@@ -89,6 +91,7 @@ if(cores){
 }
 const match=html.match(/const localRuntimeAssets = (\{[^\n]+\});/);assert(match);
 const assets=JSON.parse(match[1]);assets.localFrameBudget=0;assets.localFrameBudgetMode='submitted';
+if(pageMaxFPS!==undefined)assets.pageFrameMaxFPS=Number(pageMaxFPS);
 if(build){
   for(const name of ['UEWebEngineThreads.js','UEWebEngineThreads.wasm'])assets.versions[name]=audit(path.join(dest,name)).sha256;
   assets.wasm=metadata(path.join(dest,'UEWebEngineThreads.wasm'),'UEWebEngineThreads.wasm');
@@ -112,7 +115,7 @@ html=html.replace(match[0],'const localRuntimeAssets = '+JSON.stringify(assets)+
 fs.writeFileSync(path.join(dest,'index.html'),html);
 const products=Object.keys(versions).map(n=>audit(path.join(dest,n)));
 writeVersions(dest,products);
-fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
+fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,pageFrameMaxFPS:assets.pageFrameMaxFPS,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
   performanceAccepted:false,runtimeBuild:runtimeBuild?audit(runtimeBuild):null,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
   candidateManifest:audit(path.join(dest,'asset-versions.json'))},null,2));
 console.log(dest);

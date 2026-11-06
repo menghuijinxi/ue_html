@@ -218,13 +218,16 @@ function createWebPerformanceHUD(counter, canvas) {
 
 // Experimental desktop-style frame overlap: direct page -> Game display ticks,
 // bounded by actual GPU completion. No queued display ticks accumulate.
-function createWebGameFrameClock(maxAhead, fail) {
+function createWebGameFrameClock(maxAhead, fail, maxFPS = 0) {
+  if (!Number.isFinite(maxFPS) || maxFPS < 0 || maxFPS > 240) throw new Error('Invalid page frame rate limit');
+  const frameInterval = maxFPS ? 1000 / maxFPS : 0;
+  let nextFrameAt = null;
   const state = new Int32Array(new SharedArrayBuffer(32));
   const channel = new MessageChannel();
   let pending = null, raf = 0, disposed = false, ready = false, issued = null, displayTick = null;
   const stats = globalThis.__webFrameSchedulerPage = {maxAhead, requests: 0, ticks: 0, budgetStalls: 0, ready: false,
     displayClock: 'page-rAF', gate: 'owner-submit-and-GPU-completion', maxUnsubmitted: 2, maxTickAgeMs: 16,
-    ownerStalls: 0};
+    ownerStalls: 0, maxFPS, rateLimitStalls: 0};
   function arm() {
     if (!disposed && ready && pending !== null && !document.hidden && !raf) raf = requestAnimationFrame(tick);
   }
@@ -241,6 +244,15 @@ function createWebGameFrameClock(maxAhead, fail) {
     // Includes the frame currently executing on RHI plus one frame being built.
     if (reserved - Atomics.load(state,1) >= stats.maxUnsubmitted) { ++stats.ownerStalls; return; }
     if (reserved - completed >= maxAhead) { ++stats.budgetStalls; return; }
+    if (frameInterval) {
+      const now = performance.now();
+      if (nextFrameAt !== null && now < nextFrameAt) { ++stats.rateLimitStalls; return; }
+      // Keep a steady phase across display ticks instead of rounding every
+      // interval up to a refresh. After a stall, restart without catch-up frames.
+      // Only gate Game ticks; input delivery and actual simulation time are intact.
+      nextFrameAt = nextFrameAt === null || now - nextFrameAt > frameInterval / 2 ?
+        now + frameInterval : nextFrameAt + frameInterval;
+    }
     issued = pending; pending = null;
     const ahead = Atomics.add(state, 2, 1) + 1 - completed;
     Atomics.store(state, 5, Math.max(Atomics.load(state, 5), ahead));
@@ -271,6 +283,7 @@ function createWebGameFrameClock(maxAhead, fail) {
   const visibility = () => {
     if (raf) { cancelAnimationFrame(raf); raf = 0; }
     displayTick = null;
+    nextFrameAt = null;
     arm();
   };
   document.addEventListener('visibilitychange', visibility);
@@ -410,7 +423,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     const maxAhead = Number(frameSchedulerArg[0].split('=')[1]);
     if (frameSchedulerArg.length !== 1 || !Number.isInteger(maxAhead) || maxAhead < 1 || maxAhead > 4)
       throw new Error('WebFrameScheduler requires a maximum of 1 to 4 frames');
-    frameClock = createWebGameFrameClock(maxAhead, reportFailure);
+    frameClock = createWebGameFrameClock(maxAhead, reportFailure, assets.pageFrameMaxFPS ?? 0);
   }
   worker.onmessageerror = () => reportFailure('Engine Worker message could not be decoded');
   worker.onmessage = event => {

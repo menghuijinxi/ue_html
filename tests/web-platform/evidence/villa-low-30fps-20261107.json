@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-07",
+  "pass": true,
+  "defaultChanged": false,
+  "subjectiveMouseJitterResolved": false,
+  "requestedMaxFPS": 30,
+  "input": "direct-game-thread",
+  "raw": {
+    "file": "tests/web-platform/results/mouse-low-30fps-20261107.json",
+    "sha256": "d416e4e3c375c055893474efd604ead91527172ebf027046ea06d38cd249b743"
+  },
+  "package": {
+    "file": "tests/web-platform/results/villa-low-30fps-20261107-package.json",
+    "sha256": "ac5b8f2188e01fea66985ad7b6c599fe3f3c4b4d45de42cd9ed54fc6fb4056ae"
+  },
+  "candidateManifest": {
+    "file": "tests/web-platform/build/villa-low-30fps-20261107/asset-versions.json",
+    "sha256": "2891918bb6fb7b29a317741717fc849f122f1cc05d691e165cd72887b316bf4a"
+  },
+  "source": {
+    "file": "tests/web-platform/web-engine-host.js",
+    "sha256": "42ad45b76e4d6b9c4d748838ea227362e702771f884b4d0fe6c463099101e0a9"
+  },
+  "result": {
+    "samples": 657,
+    "fps": 27.33460742281883,
+    "low1Fps": 8.951120488407208,
+    "p50": 33.71499998867512,
+    "p95": 55.689999997615814,
+    "p99": 81.76999999582767,
+    "maximum": 176.61499999463558
+  },
+  "visibility": {
+    "method": "synthetic-document-visibility-event",
+    "paused": 1656,
+    "resumed": 1667
+  },
+  "stationaryRecovery": true,
+  "ownerBudget": [
+    1639,
+    1640,
+    1641,
+    3,
+    1639,
+    3,
+    1,
+    2
+  ],
+  "changed": [
+    "config-files.json",
+    "index.html",
+    "web-engine-host.js"
+  ],
+  "limitations": "RHI submission timing only. 30 FPS upper target is active, but measured turning throughput is 27.33 FPS and long frames remain. This experiment does not establish the cause or resolution of mouse jitter. Identical runtime, rendering worker, cooked scene and effective quality settings; only page Game-tick rate limiting added."
+}

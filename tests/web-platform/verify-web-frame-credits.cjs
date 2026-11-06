@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync(path.join(__dirname,'web-engine-host.js'),'utf8');
-function setup(budget){
+function setup(budget,maxFPS=0){
   const frames=new Map(),listeners=new Map(),delivered=[];let sequence=0,now=0;
   class MessageChannel{
     constructor(){
@@ -15,7 +15,7 @@ function setup(budget){
     performance:{timeOrigin:1000,now:()=>now},requestAnimationFrame:f=>{frames.set(++sequence,f);return sequence;},
     cancelAnimationFrame:id=>frames.delete(id)});
   vm.runInContext(source,c);
-  const clock=c.createWebGameFrameClock(budget,e=>{throw Error(e)}),state=new Int32Array(clock.transfer.state);
+  const clock=c.createWebGameFrameClock(budget,e=>{throw Error(e)},maxFPS),state=new Int32Array(clock.transfer.state);
   clock.transfer.port.onmessage=({data})=>delivered.push(data);
   const send=data=>clock.transfer.port.postMessage(data);
   const tick=time=>{now=time;const callbacks=[...frames.values()];frames.clear();callbacks.forEach(f=>f(time));};
@@ -63,4 +63,27 @@ for(const budget of [1,2,3,4]){
   assert.equal(s.delivered.length,3,'Multiple notifications cannot spend a tick twice');
   s.tick(40);assert.equal(s.delivered.length,4);s.clock.dispose();
 }
+for(const refresh of [60,144,240]){
+  const s=setup(3,30);s.state[0]=s.state[1]=1;
+  let id=2;s.send({type:'request',id});
+  for(let frame=1;frame<=refresh*4;frame++){
+    s.tick(frame*1000/refresh);
+    if(s.delivered.at(-1)?.id===id){
+      s.state[0]=s.state[1]=s.state[2];
+      s.send({type:'request',id:++id});
+    }
+  }
+  assert(Math.abs(s.delivered.length-120)<=1,'30 FPS must not drift with display refresh rate');
+  const count=s.delivered.length,reserved=s.state[2];
+  s.clock.ownerSubmitted();s.clock.gpuCompleted();
+  assert.equal(s.delivered.length,count,'Completion notifications cannot bypass the cap');
+  assert.equal(s.state[2],reserved,'Waiting for the cap must not consume credits');
+  s.tick(5000);assert.equal(s.delivered.length,count+1,'Resume with one frame after a long stall');
+  s.state[0]=s.state[1]=s.state[2];s.send({type:'request',id:++id});s.tick(5005);
+  assert.equal(s.delivered.length,count+1,'Do not burst to catch up missed frames');
+  s.visibility(true);s.tick(5100);assert.equal(s.delivered.length,count+1);
+  s.visibility(false);s.tick(5200);assert.equal(s.delivered.length,count+2);
+  s.clock.dispose();
+}
 console.log('Frame credits: owner acknowledgement, bounded reservations, stale ticks, delayed feedback, cancellation, visibility and disposal passed');
+console.log('30 FPS cap: 60/144/240 Hz refresh, credit accounting, no catch-up burst and visibility recovery passed');
