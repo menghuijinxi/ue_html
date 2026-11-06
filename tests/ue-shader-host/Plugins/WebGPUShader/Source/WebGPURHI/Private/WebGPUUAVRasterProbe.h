@@ -86,6 +86,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         "textureStore(Mask,vec2i(p.xy),vec4f(0.5));\n"
         "textureStore(VolumeMark,vec3i(i32(p.x)%4,i32(p.y)%4,(i32(p.x)/4)%4),vec4u(255)); }\n", true);
     VS->InitResourceTable();
+    VS->Data.VertexInputMask = 0;
     PS->InitResourceTable();
     auto Blend = RHI.RHICreateBlendState(FBlendStateInitializerRHI(FBlendStateInitializerRHI::FRenderTarget()));
     FRasterizerStateInitializerRHI RasterInitializer;
@@ -96,6 +97,9 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
     FGraphicsPipelineStateInitializer Initializer;
     Initializer.BoundShaderState.VertexShaderRHI = VS;
     Initializer.BoundShaderState.PixelShaderRHI = PS;
+    FVertexDeclarationElementList UnusedElements;
+    UnusedElements.Add(FVertexElement(0, 0, VET_Float2, 0, 8));
+    Initializer.BoundShaderState.VertexDeclarationRHI = RHI.RHICreateVertexDeclaration(UnusedElements);
     Initializer.BlendState = Blend;
     Initializer.RasterizerState = Raster;
     Initializer.DepthStencilState = Depth;
@@ -194,6 +198,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         Case->SetNumberField(TEXT("height"), Extent.Y);
         Case->SetBoolField(TEXT("pixelAtomicsAndR8Storage"), true);
         Case->SetBoolField(TEXT("pixelVolumeR8UInt"), true);
+        Case->SetBoolField(TEXT("unusedVertexDeclarationIgnored"), true);
         Case->SetNumberField(TEXT("extentAttachmentBytes"),
             RHI.RasterExtentAttachment->GetDesc().CalcMemorySizeEstimate());
         Case->SetBoolField(TEXT("pass"), OK);

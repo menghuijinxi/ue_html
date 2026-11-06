@@ -12,6 +12,14 @@ const tag = argument('tag') || 'virtual-scene';
 const fixture = process.argv.includes('--vt-fixture');
 assert([folder, tag].every(value => /^[a-z0-9-]+$/.test(value)));
 const output = path.join(__dirname, 'results', tag);
+async function bounded(promise, milliseconds = 10000) {
+  let timer;
+  try {
+    return await Promise.race([promise, new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Diagnostic snapshot timed out')), milliseconds);
+    })]);
+  } finally { clearTimeout(timer); }
+}
 const report = {date: new Date().toISOString(), pass: false, virtualTextureStreamingCovered: false,
   desktopVisualParityAccepted: false, source: audit(__filename), folder, fixture, views: [], errors: []};
 if (fixture) {
@@ -80,6 +88,19 @@ function observe() {
         executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
         viewport: {width: 1280, height: 720}});
     browser = context;
+    if (process.argv.includes('--proxy-diagnostics')) {
+      report.proxyDiagnostics = true;
+      await context.route('**/UEWebEngineThreads.js?*', async route => {
+        const response = await route.fetch();
+        const original = 'assert(func.length == proxiedJSCallArgs.length, "Call args mismatch in _emscripten_receive_on_main_thread_js");';
+        const replacement = `if (func.length !== proxiedJSCallArgs.length) console.error('WEB_PROXY_MISMATCH',
+          JSON.stringify({funcIndex, emAsmAddr, expected:func.length, actual:proxiedJSCallArgs.length,
+          functionSource:String(func), values:proxiedJSCallArgs.map(String)}));\n${original}`;
+        const source = await response.text();
+        assert(source.includes(original));
+        await route.fulfill({response, body: source.replace(original, replacement)});
+      });
+    }
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       await route.fulfill({response, body: `(${observe.toString()})();\n` + await response.text()});
@@ -176,16 +197,16 @@ function observe() {
   } catch (error) {
     report.failure = String(error.stack || error);
     if (owner) {
-      try { report.ownerFailureState = await owner.evaluate(() => ({
+      try { report.ownerFailureState = await bounded(owner.evaluate(() => ({
         frames: globalThis.__webEngineFrames, gpu: globalThis.__virtualSceneGPU,
         settings: globalThis.__webProjectSettings, streaming: globalThis.__webTextureStreaming,
-      })); } catch {}
+      }))); } catch {}
     }
     if (page) {
-      try { report.pageState = await page.evaluate(() => ({
+      try { report.pageState = await bounded(page.evaluate(() => ({
         failure: globalThis.__webEngineFailure, threadsFailure: globalThis.__webThreadsFailure,
         frames: globalThis.__webEngineFrames, settings: globalThis.__webProjectSettings,
-      })); } catch {}
+      }))); } catch {}
     }
     process.exitCode = 1;
   } finally {

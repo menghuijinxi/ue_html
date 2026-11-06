@@ -31,6 +31,7 @@ struct FWebGPUShaderBinding : UE::WebGPUShader::FRuntimeBinding
 {
     const FJsonObject* Metadata = nullptr; // Only legacy/explicit validation loads own a DOM.
     bool StorageContractChecked = false;
+    int32 SamplerBiasSlot = INDEX_NONE;
     // Prepared descriptors are reusable only while their source and access
     // state are unchanged. The bind-group cache below owns GPU handle refs.
     TRefCountPtr<FRHIResource> PreparedResource;
@@ -97,6 +98,7 @@ struct FWebGPUShaderData
     FRHIShader* Owner = nullptr;
     uint32 BindingFrame = MAX_uint32;
     WGPUShaderModule Module = nullptr;
+    uint32 VertexInputMask = MAX_uint32;
     FString Entry;
     FString StorageFormatSource;
     TSharedPtr<FJsonObject> Metadata;
@@ -130,11 +132,17 @@ struct FWebGPUShaderData
     WGPUBuffer GlobalsBuffer = nullptr;
     uint64 GlobalsBufferOffset = 0;
     uint64 GlobalsVersion = 1;
+    int32 SamplerBiasGroup = INDEX_NONE;
+    WGPUBuffer SamplerBiasBuffer = nullptr;
+    float SamplerBiasValues[4] = {};
+    uint64 SamplerBiasVersion = 1;
     EShaderFrequency Frequency = SF_NumFrequencies;
     ~FWebGPUShaderData()
     {
         if (GlobalsBuffer)
             WebGPUOnOwner([&] { wgpuBufferRelease(GlobalsBuffer); });
+        if (SamplerBiasBuffer)
+            WebGPUOnOwner([&] { wgpuBufferRelease(SamplerBiasBuffer); });
         if (Module)
             WebGPUOnOwner([&] { wgpuShaderModuleRelease(Module); });
     }
@@ -777,7 +785,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     WGPUBuffer CreateBuffer(uint64 Size, WGPUBufferUsage Usage, const void *Data = nullptr);
     WGPUBuffer UploadStagingBytes(const void* Data, uint64 Size, uint64& Offset);
     void EndComputePass();
-    WGPUSampler ResolveSampler(FWebGPUSampler *Sampler);
+    WGPUSampler ResolveSampler(FWebGPUSampler *Sampler, bool ShaderBias = false);
     bool LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency, FWebGPUShaderData &Data,
                     FString &Error);
     bool ValidateUAV(FRHIBuffer *Buffer, const FRHIViewDesc &Desc, FString &Error) const;

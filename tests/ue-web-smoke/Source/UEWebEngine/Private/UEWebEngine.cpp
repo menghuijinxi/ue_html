@@ -283,7 +283,7 @@ void EngineFrame(void*)
                 distanceFieldShadows: $3, gi: $4, reflections: $5, virtualShadows: $6,
                 texturePoolMiB: $7, screenPercentage: $8, staticLighting: $9,
                 shadowCacheMiB: $10, dbuffer: $11, ssrQuality: $12, volumetricFog: $13,
-                virtualTextures: $14, virtualTexturePathActive: !!$15, virtualShadowPathActive: !!$16
+                virtualTextures: $14, virtualTexturePathActive: !!($15 & 1), virtualShadowPathActive: !!($15 & 2)
             });
         }, Setting(TEXT("r.AntiAliasingMethod")), Setting(TEXT("r.GenerateMeshDistanceFields")),
             Setting(TEXT("r.DistanceFieldAO")), Setting(TEXT("r.DistanceFieldShadowing")),
@@ -292,8 +292,8 @@ void EngineFrame(void*)
             Setting(TEXT("r.ScreenPercentage")), Setting(TEXT("r.AllowStaticLighting")),
             Setting(TEXT("r.Shadow.WholeSceneShadowCacheMb")), Setting(TEXT("r.DBuffer")),
             Setting(TEXT("r.SSR.Quality")), Setting(TEXT("r.VolumetricFog")),
-            Setting(TEXT("r.VirtualTextures")), UseVirtualTexturing(GMaxRHIShaderPlatform),
-            UseVirtualShadowMaps(GMaxRHIShaderPlatform));
+            Setting(TEXT("r.VirtualTextures")), (UseVirtualTexturing(GMaxRHIShaderPlatform) ? 1 : 0) |
+                (UseVirtualShadowMaps(GMaxRHIShaderPlatform) ? 2 : 0));
         FTextureMemoryStats Memory;
         RHIGetTextureMemoryStats(Memory);
         int32 Streamable = 0, Pending = 0, ResidentMips = 0, RequestedMips = 0, MaximumMips = 0;
