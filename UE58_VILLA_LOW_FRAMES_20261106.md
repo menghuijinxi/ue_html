@@ -2,6 +2,8 @@
 
 本轮按用户要求以持续转向的 1% Low 为交付标准，**尚未达到稳定交测标准，不提供新的用户测试入口**。上一版实验保留；所有新增优化默认关闭，默认入口暂不变。以下数据均为 RHI 提交间隔，不是物理显示器帧率或主观延迟。
 
+2026-11-07：用户另行要求测试页面，已提供 `tests/web-platform/villa-low-test.html`，链接已做 60 秒 ABBA 的 `villa-low-final-candidate-20261106` 与同运行时 control，输入分别为 direct-game-thread、owner-forwarded。页面明确标注 Low 约 +4.4%、尚未稳定验收，不启用后续失败扩展；此授权仅用于提供体感测试入口，不将候选设为默认。以上“不提供入口”为 11 月 6 日的历史结论。
+
 ## 实现
 
 - `r.Web.OcclusionGroupMotionQueries=1`：转向期间把允许近似遮挡的普通 primitive 查询交给原生查询批处理器，每批最多 16 个原始包围盒。只有整组样本为零才可能剔除成员；非零组仍可见。精确查询和 subquery 保持原逻辑。
