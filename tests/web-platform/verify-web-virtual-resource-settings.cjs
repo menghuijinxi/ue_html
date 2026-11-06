@@ -1,0 +1,36 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+const inspect = require('./inspect-project-settings.cjs');
+const root = path.join(__dirname, 'build/virtual-resource-settings');
+fs.mkdirSync(root, {recursive: true});
+const directory = fs.mkdtempSync(path.join(root, 'case-'));
+const project = path.join(directory, 'Settings.uproject');
+fs.writeFileSync(project, '{}');
+fs.mkdirSync(path.join(directory, 'Config/Web'), {recursive: true});
+fs.mkdirSync(path.join(directory, 'Config/Windows'), {recursive: true});
+fs.mkdirSync(path.join(directory, 'Platforms/Web/Config'), {recursive: true});
+const set = (file, entries, section = '/Script/Engine.RendererSettings') =>
+  fs.writeFileSync(path.join(directory, file), `[${section}]\n` +
+    Object.entries(entries).map(([name, value]) => `${name}=${value}`).join('\n') + '\n');
+set('Config/DefaultEngine.ini', {'r.Shadow.Virtual.Enable': 1});
+assert.equal(inspect(project).virtualTextures.enabled, true, 'UE 5.8 defaults to VT enabled');
+assert.equal(inspect(project).virtualShadows.enabled, true);
+assert.equal(inspect(project).virtualShadows.geometry, 'non-nanite');
+set('Config/Windows/WindowsEngine.ini', {'r.VirtualTextures': 0, 'r.Shadow.Virtual.Enable': 0});
+assert.equal(inspect(project).virtualTextures.enabled, true);
+assert.equal(inspect(project).virtualShadows.enabled, true);
+set('Config/Web/WebEngine.ini', {'r.VirtualTextures': 0, 'r.Shadow.Virtual.Enable': 0});
+assert.equal(inspect(project).virtualTextures.enabled, false);
+assert.equal(inspect(project).virtualShadows.enabled, false);
+set('Platforms/Web/Config/WebEngine.ini', {'r.VirtualTextures': 1, 'r.Shadow.Virtual.Enable': 1});
+assert.equal(inspect(project).virtualTextures.enabled, true);
+assert.equal(inspect(project).virtualShadows.enabled, true);
+set('Config/DefaultEngine.ini', {'r.Shadow.Virtual.Enable': 0}, 'SystemSettings');
+assert.equal(inspect(project).virtualShadows.enabled, false, 'SystemSettings set-by priority is retained');
+set('Config/DefaultEngine.ini', {'r.ForwardShading': true});
+assert.throws(() => inspect(project), /virtual shadow maps require deferred rendering/);
+set('Config/DefaultEngine.ini', {'r.ForwardShading': false});
+assert.deepEqual(inspect(project).rendererOverrides, []);
+console.log(JSON.stringify({pass: true, assertions: 12, directory}));

@@ -248,6 +248,14 @@ class FWebGPUTexture final : public FRHITexture
     WGPUTexture Handle;
     WGPUTextureView View = nullptr;
     WGPUTextureView DepthSampleView = nullptr;
+    struct FAtomicMip
+    {
+        WGPUBuffer Buffer = nullptr;
+        uint64 Bytes = 0;
+        uint32 RowPitch = 0;
+        TArray<uint8> DirtySlices;
+    };
+    TArray<FAtomicMip> AtomicMips;
     FWebGPUResourceState State;
     FWebGPUResourceState StencilState;
     TArray<FWebGPUResourceState> SubresourceStates;
@@ -314,6 +322,8 @@ class FWebGPUTexture final : public FRHITexture
     ~FWebGPUTexture() override
     {
         check(MipLocks.IsEmpty());
+        if (!AtomicMips.IsEmpty())
+            WebGPUOnOwner([&] { for (const auto& Mip : AtomicMips) wgpuBufferRelease(Mip.Buffer); });
         if (DepthSampleView)
             WebGPUOnOwner([&] { wgpuTextureViewRelease(DepthSampleView); });
         for (const auto& Entry : AttachmentViews)
@@ -761,6 +771,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     bool Wait(TFunctionRef<bool()> Complete);
     WGPUBuffer CreateBuffer(uint64 Size, WGPUBufferUsage Usage, const void *Data = nullptr);
     WGPUBuffer UploadStagingBytes(const void* Data, uint64 Size, uint64& Offset);
+    void EndComputePass();
     WGPUSampler ResolveSampler(FWebGPUSampler *Sampler);
     bool LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency, FWebGPUShaderData &Data,
                     FString &Error);
@@ -782,6 +793,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
                                    FString &Error) const;
     bool ValidateStorageUAVBinding(FRHIResource *Resource, const FWebGPUStorageContract &Binding, ERHIAccess Access,
                                                   FString &Error) const;
+    bool ValidateTextureAtomicBinding(FRHIResource* Resource, const FWebGPUStorageContract& Binding,
+        ERHIAccess Access, FString& Error) const;
+    void SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, ERHIAccess NextAccess);
     uint64 RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat Format) override;
     bool ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                ERHIAccess Access, FString &Error) const;
@@ -945,7 +959,6 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void SetIndexBinding(FWebGPUBuffer*);
     void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr);
     WGPUComputePassEncoder BeginComputePass();
-    void EndComputePass();
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
     TMap<FString, WGPUComputePipeline> ClearPipelines;
     TArray<TRefCountPtr<FRHIUniformBuffer>> StaticUniformBuffers;

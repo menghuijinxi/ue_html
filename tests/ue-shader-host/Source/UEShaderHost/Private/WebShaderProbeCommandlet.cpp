@@ -139,7 +139,8 @@ int32 UWebShaderProbeCommandlet::Main(const FString &Params)
         return RunWebShaderMetadataProbe(Params);
     if (FParse::Param(*Params, TEXT("WebManualVertexFetchProbe")))
         return RunWebManualVertexFetchProbe(Params);
-    if (FParse::Param(*Params, TEXT("LumenShaderProbe")))
+    if (FParse::Param(*Params, TEXT("LumenShaderProbe")) ||
+        FParse::Param(*Params, TEXT("VirtualResourceShaderProbe")))
         return RunWebLumenShaderProbe(Params);
     if (FParse::Param(*Params, TEXT("LumenPolicyProbe")))
     {

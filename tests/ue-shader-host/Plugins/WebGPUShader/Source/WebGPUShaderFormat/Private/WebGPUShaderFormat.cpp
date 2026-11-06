@@ -1,6 +1,7 @@
 #include "WebGPUShaderCode.h"
 #include "WebGPUShaderMetadata.h"
 #include "WebGPUVertexFetch.h"
+#include "WebGPUTextureAtomics.h"
 
 #include "Dom/JsonObject.h"
 #include "GlobalShader.h"
@@ -94,7 +95,9 @@ static bool NeedsRuntimeStorageFormats(const FShaderCompilerInput& Input)
 {
     return Input.Target.GetFrequency() == SF_Compute &&
         (Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/Lumen/")) ||
-         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/StochasticLighting/")));
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/StochasticLighting/")) ||
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ||
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualTexture")));
 }
 
 static bool UsesSingleVectorSkyUniform(const FShaderCompilerInput& Input)
@@ -576,7 +579,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261103-v26-CompactBinaryMetadata-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v28-VirtualResourceMips-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -602,6 +605,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Loose Web archives use the engine's uncompressed entry format; no browser Oodle decoder is required.
         Input.CompressionFormat = NAME_None;
         Input.Environment.SetDefine(TEXT("COMPILER_WEBGPU"), 1);
+        Input.Environment.SetDefine(TEXT("WEB_VSM_SCALAR_ATOMICS"),
+            Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ? 1 : 0);
         Input.Environment.SetDefine(TEXT("EARLYDEPTHSTENCIL"), TEXT(""));
         // Metadata fields are additive. Invalidate only the affected jobs while
         // AppendToKeyString invalidates complete shader maps containing them.
@@ -663,6 +668,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
             if (Input.ShaderFormat == UE::WebGPUShader::SM5Format)
             {
                 UE::WebGPUShader::LowerVertexFetch(Source);
+                UE::WebGPUShader::LowerTextureAtomics(Source);
                 // Web storage arrays preserve 32-bit typed-buffer indexing without texel-buffer objects.
                 const FRegexPattern TypedBuffer(TEXT("\\b(RW)?Buffer\\s*<\\s*((?:float|uint|int)[1-4]?)\\s*>"));
                 FRegexMatcher BufferMatch(TypedBuffer, Source);
@@ -975,6 +981,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
             }
             if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER)
             {
+                if (UE::WebGPUShader::IsTextureAtomicBinding(UTF8_TO_TCHAR(Binding->name)))
+                    Json->SetStringField(TEXT("storagePacking"), TEXT("texture-uint-atomic"));
                 const auto &Block = Binding->block;
                 const bool ReadOnly = (Block.decoration_flags & SPV_REFLECT_DECORATION_NON_WRITABLE) ||
                                       (Block.member_count == 1 &&

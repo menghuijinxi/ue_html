@@ -169,6 +169,8 @@ WGPULimits RenderingLimits(WGPUAdapter Adapter)
     Required.maxColorAttachmentBytesPerSample = FMath::Min(64u, Supported.maxColorAttachmentBytesPerSample);
     Required.maxSampledTexturesPerShaderStage = FMath::Min(32u, Supported.maxSampledTexturesPerShaderStage);
     Required.maxStorageBuffersPerShaderStage = FMath::Min(16u, Supported.maxStorageBuffersPerShaderStage);
+    Required.maxStorageBufferBindingSize = Supported.maxStorageBufferBindingSize;
+    Required.maxBufferSize = Supported.maxBufferSize;
     // TSR RejectShading writes up to seven storage textures in one dispatch.
     Required.maxStorageTexturesPerShaderStage = FMath::Min(8u, Supported.maxStorageTexturesPerShaderStage);
     // Lumen trace compaction and probe scattering use up to 1024 invocations.
@@ -1776,6 +1778,26 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     if (In.Format == PF_ShadowDepth)
         Desc.usage |= WGPUTextureUsage_CopySrc | WGPUTextureUsage_CopyDst;
     auto *Texture = new FWebGPUTexture(In, wgpuDeviceCreateTexture(Device, &Desc));
+    if (In.Format == PF_R32_UINT && (In.Dimension == ETextureDimension::Texture2D ||
+        In.Dimension == ETextureDimension::Texture2DArray) &&
+        EnumHasAllFlags(In.Flags, ETextureCreateFlags::UAV | ETextureCreateFlags::AtomicCompatible))
+    {
+        Texture->AtomicMips.SetNum(In.NumMips);
+        for (uint32 Level = 0; Level < In.NumMips; ++Level)
+        {
+            auto& Mip = Texture->AtomicMips[Level];
+            const uint32 Width = FMath::Max(1u, uint32(In.Extent.X) >> Level);
+            const uint32 Height = FMath::Max(1u, uint32(In.Extent.Y) >> Level);
+            Mip.RowPitch = Align(Width * 4u, 256u);
+            Mip.Bytes = 256u + uint64(Mip.RowPitch) * Height * Texture->LayerCount();
+            checkf(Mip.Bytes <= Limits.maxStorageBufferBindingSize && Mip.Bytes <= Limits.maxBufferSize,
+                TEXT("WebGPU virtual shadow atomic pool exceeds adapter storage buffer limits: %llu"), Mip.Bytes);
+            Mip.Buffer = CreateBuffer(Mip.Bytes, WGPUBufferUsage_Storage | WGPUBufferUsage_CopySrc | WGPUBufferUsage_CopyDst);
+            const uint32 Header[] = {Width, Height, Mip.RowPitch / 4u, Texture->LayerCount()};
+            wgpuQueueWriteBuffer(Queue, Mip.Buffer, 0, Header, sizeof(Header));
+            Mip.DirtySlices.SetNumZeroed(Texture->LayerCount());
+        }
+    }
     const bool Writable = In.InitAction == ERHITextureInitAction::Initializer;
     if (Writable || In.InitAction == ERHITextureInitAction::BulkData)
     {
@@ -2334,6 +2356,15 @@ bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const 
 bool FWebGPUDynamicRHI::ValidateStorageUAVBinding(FRHIResource *Resource, const FJsonObject &Binding, ERHIAccess Access,
                                                   FString &Error) const
 {
+    FString Packing;
+    if (Binding.TryGetStringField(TEXT("storagePacking"), Packing) && Packing == TEXT("texture-uint-atomic"))
+    {
+        FWebGPUStorageContract Contract;
+        Contract.Packing = FWebGPUStorageContract::EPacking::TextureUIntAtomic;
+        Contract.ReadOnlyValid = Binding.TryGetBoolField(TEXT("readOnlyStorage"), Contract.ReadOnly);
+        Contract.StrideValid = Binding.TryGetNumberField(TEXT("storageElementStride"), Contract.Stride);
+        return ValidateTextureAtomicBinding(Resource, Contract, Access, Error);
+    }
     if (!Resource || Resource->GetType() != RRT_UnorderedAccessView)
     {
         Error = TEXT("Writable storage binding requires a buffer UAV");
@@ -2425,6 +2456,8 @@ bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const 
 bool FWebGPUDynamicRHI::ValidateStorageUAVBinding(FRHIResource *Resource, const FWebGPUStorageContract &Binding, ERHIAccess Access,
                                                   FString &Error) const
 {
+    if (Binding.Packing == FWebGPUStorageContract::EPacking::TextureUIntAtomic)
+        return ValidateTextureAtomicBinding(Resource, Binding, Access, Error);
     if (!Resource || Resource->GetType() != RRT_UnorderedAccessView)
     {
         Error = TEXT("Writable storage binding requires a buffer UAV");
@@ -2458,6 +2491,62 @@ bool FWebGPUDynamicRHI::ValidateStorageUAVBinding(FRHIResource *Resource, const 
         }
     }
     return ValidateAccess(static_cast<FRHIBuffer *>(View->GetResource()), Access, Error);
+}
+bool FWebGPUDynamicRHI::ValidateTextureAtomicBinding(FRHIResource* Resource,
+    const FWebGPUStorageContract& Binding, ERHIAccess Access, FString& Error) const
+{
+    if (!Binding.ReadOnlyValid || Binding.ReadOnly || !Binding.StrideValid || Binding.Stride != 4 ||
+        !Resource || Resource->GetType() != RRT_UnorderedAccessView)
+    {
+        Error = TEXT("Texture atomics require a writable uint32 storage contract and a texture UAV");
+        return false;
+    }
+    const auto* View = static_cast<FRHIUnorderedAccessView*>(Resource);
+    if (View->GetDesc().Common.ViewType != FRHIViewDesc::EViewType::TextureUAV ||
+        View->GetResource()->GetType() != RRT_Texture)
+    {
+        Error = TEXT("Texture atomic binding requires a texture UAV");
+        return false;
+    }
+    auto* Texture = static_cast<FWebGPUTexture*>(View->GetResource());
+    const auto Info = View->GetDesc().Texture.UAV.GetViewInfo(Texture);
+    if (!Texture->AtomicMips.IsValidIndex(Info.MipLevel) || Info.Format != PF_R32_UINT ||
+        Info.ArrayRange.First || Info.ArrayRange.Num != Texture->LayerCount() ||
+        Info.Plane != ERHITexturePlane::Primary)
+    {
+        Error = TEXT("Texture atomics require a full-layer R32_UINT atomic-compatible mip view");
+        return false;
+    }
+    for (uint32 Slice = 0; Slice < Texture->LayerCount(); ++Slice)
+        if (!ValidateAccess(Texture, Access, Error, false, 0, Info.MipLevel, Slice)) return false;
+    return true;
+}
+
+void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level, uint32 Slice, ERHIAccess NextAccess)
+{
+    if (Texture->AtomicMips.IsEmpty()) return;
+    check(Encoder && !Pass && Slice < Texture->LayerCount());
+    auto& Mip = Texture->AtomicMips[Level];
+    const uint32 Width = FMath::Max(1u, uint32(Texture->GetDesc().Extent.X) >> Level);
+    const uint32 Height = FMath::Max(1u, uint32(Texture->GetDesc().Extent.Y) >> Level);
+    EndComputePass();
+    WGPUTexelCopyTextureInfo Image = WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;
+    Image.texture = Texture->Handle;
+    Image.mipLevel = Level;
+    Image.origin.z = Slice;
+    WGPUTexelCopyBufferInfo Buffer = WGPU_TEXEL_COPY_BUFFER_INFO_INIT;
+    Buffer.buffer = Mip.Buffer;
+    Buffer.layout.offset = 256u + uint64(Slice) * Mip.RowPitch * Height;
+    Buffer.layout.bytesPerRow = Mip.RowPitch;
+    Buffer.layout.rowsPerImage = Height;
+    const WGPUExtent3D Extent{Width, Height, 1};
+    if (Mip.DirtySlices[Slice])
+    {
+        wgpuCommandEncoderCopyBufferToTexture(Encoder, &Buffer, &Image, &Extent);
+        Mip.DirtySlices[Slice] = 0;
+    }
+    if (EnumHasAnyFlags(NextAccess, ERHIAccess::UAVMask))
+        wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Image, &Buffer, &Extent);
 }
 bool FWebGPUDynamicRHI::ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                               ERHIAccess Access, FString &Error) const
@@ -3443,7 +3532,9 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 }
                 Version = Descriptor == 6 ? static_cast<FWebGPUUniform*>(Resource)->ContentsVersion : 0;
             }
-            if (ValidatePrepared && Binding && Descriptor == 7 && !Reflected.StorageContractChecked)
+            const bool TextureAtomic = Descriptor == 7 &&
+                Reflected.StorageContract.Packing == FWebGPUStorageContract::EPacking::TextureUIntAtomic;
+            if (ValidatePrepared && Binding && Descriptor == 7 && !TextureAtomic && !Reflected.StorageContractChecked)
             {
                 const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
                 const bool Typed = ReadOnly ? static_cast<FRHIShaderResourceView*>(Resource)->GetDesc().Buffer.SRV.BufferType == FRHIViewDesc::EBufferType::Typed :
@@ -3483,7 +3574,7 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             // A storage view's range, format, resource and shader contract are
             // immutable. A new encoder changes access/attachment state, not this
             // descriptor. Revalidate current buffer access before borrowing it.
-            if (!Reuse && RevalidateStorageDescriptors && Descriptor == 7 &&
+            if (!Reuse && RevalidateStorageDescriptors && Descriptor == 7 && !TextureAtomic &&
                 Reflected.PreparedResource == Resource && Reflected.PreparedEntry.buffer)
             {
                 const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
@@ -3638,12 +3729,23 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                             }
                             checkf(Valid, TEXT("%s"), *Error);
                             auto *View = static_cast<FRHIUnorderedAccessView *>(Resource);
-                            auto *Buffer = static_cast<FWebGPUBuffer *>(View->GetResource());
-                            RequireAccess(Buffer, Access);
-                            const auto Description = View->GetDesc().Buffer.UAV.GetViewInfo(Buffer);
-                            Entry.buffer = Buffer->Handle;
-                            Entry.offset = Description.OffsetInBytes;
-                            Entry.size = Description.SizeInBytes;
+                            if (TextureAtomic)
+                            {
+                                auto* Texture = static_cast<FWebGPUTexture*>(View->GetResource());
+                                auto& Mip = Texture->AtomicMips[View->GetDesc().Texture.UAV.GetViewInfo(Texture).MipLevel];
+                                Entry.buffer = Mip.Buffer;
+                                Entry.size = Mip.Bytes;
+                                for (uint8& Dirty : Mip.DirtySlices) Dirty = 1;
+                            }
+                            else
+                            {
+                                auto *Buffer = static_cast<FWebGPUBuffer *>(View->GetResource());
+                                RequireAccess(Buffer, Access);
+                                const auto Description = View->GetDesc().Buffer.UAV.GetViewInfo(Buffer);
+                                Entry.buffer = Buffer->Handle;
+                                Entry.offset = Description.OffsetInBytes;
+                                Entry.size = Description.SizeInBytes;
+                            }
                         }
                     }
                     else

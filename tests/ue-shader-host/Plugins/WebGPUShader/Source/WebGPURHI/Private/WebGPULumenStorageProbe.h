@@ -3,6 +3,7 @@
 #include "WebGPUGlobalScope.h"
 #include "WebGPUProbeUtils.h"
 #include "WebGPUUAVRasterProbe.h"
+#include "WebGPUTextureAtomicProbe.h"
 #include "RenderingThread.h"
 #include "Serialization/JsonSerializer.h"
 #include "Math/Float16.h"
@@ -565,6 +566,8 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         TArray<TSharedPtr<FJsonValue>> RasterCases;
         TArray<TSharedPtr<FJsonValue>> DepthAtlasCases;
         Pass &= RunWebGPUUAVRasterCases(RHI, Cmd, RasterCases, DepthAtlasCases);
+        TArray<TSharedPtr<FJsonValue>> TextureAtomicCases;
+        Pass &= RunWebGPUTextureAtomicCases(RHI, Cmd, TextureAtomicCases);
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
@@ -575,6 +578,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("uniformCases"), UniformCases);
         Report->SetArrayField(TEXT("rasterCases"), RasterCases);
         Report->SetArrayField(TEXT("depthAtlasCases"), DepthAtlasCases);
+        Report->SetArrayField(TEXT("textureAtomicCases"), TextureAtomicCases);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);

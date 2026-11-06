@@ -83,6 +83,8 @@ try {
     'Private/Lumen/LumenScreenProbeImportanceSampling.cpp',
     'Private/Lumen/LumenRadiosity.cpp',
     'Private/StochasticLighting/StochasticLighting.cpp',
+    'Private/VT/VirtualTextureSpace.cpp',
+    'Private/VirtualShadowMaps/VirtualShadowMapArray.cpp',
     'Private/InstanceCulling/InstanceCullingContext.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);

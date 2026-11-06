@@ -28,9 +28,12 @@ assert.throws(() => inspect(project), /deferred rendering/);
 set(web, {'r.DynamicGlobalIlluminationMethod': 1, 'r.Lumen.Supported': 0});
 assert.equal(inspect(project).lumen.enabled, false);
 set(web, {'r.Shadow.Virtual.Enable': 1});
-assert.throws(() => inspect(project), /Virtual shadow maps/);
+assert.equal(inspect(project).virtualShadows.enabled, true);
+set(web, {'r.Shadow.Virtual.Enable': 1, 'r.ForwardShading': 1,
+  'r.DynamicGlobalIlluminationMethod': 0});
+assert.throws(() => inspect(project), /virtual shadow maps require deferred rendering/);
 fs.writeFileSync(base, '[SystemSettings]\nr.DynamicGlobalIlluminationMethod=0\nr.GenerateMeshDistanceFields=1\n');
 set(web, {'r.DynamicGlobalIlluminationMethod': 1});
 assert.equal(inspect(project).lumen.enabled, false, 'SystemSettings CVar priority wins across INI layers');
 assert.deepEqual(inspect(project).rendererOverrides, []);
-console.log(JSON.stringify({pass: true, cases: 9, directory}));
+console.log(JSON.stringify({pass: true, cases: 10, directory}));

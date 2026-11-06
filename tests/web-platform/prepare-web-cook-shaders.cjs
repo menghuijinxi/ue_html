@@ -599,6 +599,8 @@ const overrides = new Map([
       '}', '#endif'].join('\n'),
   }]],
 ]);
+for (const [file, changes] of require('./web-virtual-texture-shader-overrides.cjs'))
+  overrides.set(file, [...(overrides.get(file) || []), ...changes]);
 const reportFile = path.join(__dirname, 'results/web-cook-shader-sources.json');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const audit = file => ({file, sha256: sha(fs.readFileSync(file))});
@@ -694,7 +696,8 @@ function prepare() {
   const report = {date: new Date().toISOString(), pass: true, output,
     sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'),
       require.resolve('./web-translucency-shader-overrides.cjs'),
-      require.resolve('./web-lumen-shader-overrides.cjs'), ...overrideFiles].map(audit),
+      require.resolve('./web-lumen-shader-overrides.cjs'),
+      require.resolve('./web-virtual-texture-shader-overrides.cjs'), ...overrideFiles].map(audit),
     files, installedEngineUnmodified: audit(path.join(stock, 'Private/PostProcessTonemap.usf')),
     installedInputs: [...overrides.keys()].map(relative => audit(path.join(stock, relative))),
     boundary: 'Independent native Cook shader snapshot. Audited overrides contain WebGPU decal ordering, finite math, structured buffers, explicit atmosphere/sky-capture storage image formats and indirect arguments. Other files are installed-source copies, not a complete 5.8.3 shader snapshot.'};
