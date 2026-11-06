@@ -1,0 +1,2909 @@
+{
+  "date": "2026-11-06T08:39:10.630Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "defaultEnabled": false,
+  "physicalPresentationValidated": false,
+  "periodicStallsEliminated": false,
+  "failedInputAttempt": {
+    "raw": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-input-20261106.json",
+      "sha256": "ad5c5b335d7afdb339253458f8cdf16d171d95299c7f2ceee5edfd8d18a893b4"
+    },
+    "reason": "Invocation used --default-settings, stripping page3 URL switches. Clock assertion rejected owner before the timed window. Reran both sides with explicit page3 URLs and workspace profiles."
+  },
+  "definition": "RHI submission intervals, all long frames retained; 1% low = 1000 / mean(slowest ceil(N*0.01) intervals). No cross-window gaps.",
+  "boundary": "Same rebuilt runtime and Cook for A/B/B/A, page clock with 3 total credits and 2 unsubmitted maximum. API diagnostics are separate, different window durations and previous control binary; never used for FPS claims. No physical input-to-display latency measurement.",
+  "packages": {
+    "control": {
+      "folder": "villa-shadow-clear-control-20261106",
+      "manifest": {
+        "config-files.json": {
+          "sha256": "21a132e01cc0d4b9bf14783428ee34dcafee57e7a0ba4e4fe142073bef39f1c4",
+          "size": 664223,
+          "mtimeMs": 1793952825329.9753
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "20b19683b1cf7fd2fc88b7e64ca776419144ccdc8df642e376a51b2ab43fcb50",
+          "size": 90464,
+          "mtimeMs": 1793952825598.806
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "584a5911485a045d30fd069f097e4a74b807dc8f0f72dcc8a4c63c625a7b48a4",
+          "size": 425817,
+          "mtimeMs": 1793952802878.6326
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "4ffc6139bef549679a990b534150f7f983bba68e4c65ddce9dbdbcc6d4ed5d11",
+          "size": 171490612,
+          "mtimeMs": 1793952802257.9504
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "1490867b2b1486bc227f58a1b295b4cad1ae8e2d7d9b5766ca435bbaeb76f995",
+          "size": 34642,
+          "mtimeMs": 1793947598919.2349
+        },
+        "web-engine-worker.js": {
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f",
+          "size": 19145,
+          "mtimeMs": 1793947738718.1194
+        }
+      },
+      "ini": "; Project rendering settings are inherited without Web profile overrides.\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.Shadow.CSMCaching=1\nr.WebGPU.ReuseComputePass=1\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.WebGPU.StagingUploadPages=1\nr.WebGPU.RDGMergeRenderPasses=1\nr.WebGPU.BatchSubmissions=1\nr.WebGPU.ReusePresentEncoder=1\nr.WebGPU.FrameUniformSnapshots=1\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\n"
+    },
+    "candidate": {
+      "folder": "villa-shadow-clear-candidate-20261106",
+      "manifest": {
+        "config-files.json": {
+          "sha256": "336234a05dcfc7e66b7b87c790d1fcfefdecdfdde8bba804e57e639386369f2f",
+          "size": 664319,
+          "mtimeMs": 1793952841170.361
+        },
+        "content-files.json": {
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e",
+          "size": 1907015,
+          "mtimeMs": 1793767771529.6204
+        },
+        "content.bin": {
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d",
+          "size": 3268110126,
+          "mtimeMs": 1793767768140.7217
+        },
+        "index.html": {
+          "sha256": "20b19683b1cf7fd2fc88b7e64ca776419144ccdc8df642e376a51b2ab43fcb50",
+          "size": 90464,
+          "mtimeMs": 1793952841172.3606
+        },
+        "UEWebEngineThreads.js": {
+          "sha256": "584a5911485a045d30fd069f097e4a74b807dc8f0f72dcc8a4c63c625a7b48a4",
+          "size": 425817,
+          "mtimeMs": 1793952802878.6326
+        },
+        "UEWebEngineThreads.wasm": {
+          "sha256": "4ffc6139bef549679a990b534150f7f983bba68e4c65ddce9dbdbcc6d4ed5d11",
+          "size": 171490612,
+          "mtimeMs": 1793952802257.9504
+        },
+        "web-content-io.js": {
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37",
+          "size": 4781,
+          "mtimeMs": 1793423840336.8542
+        },
+        "web-content-worker.js": {
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05",
+          "size": 10411,
+          "mtimeMs": 1793362871101.5842
+        },
+        "web-engine-host.js": {
+          "sha256": "1490867b2b1486bc227f58a1b295b4cad1ae8e2d7d9b5766ca435bbaeb76f995",
+          "size": 34642,
+          "mtimeMs": 1793947598919.2349
+        },
+        "web-engine-worker.js": {
+          "sha256": "08829adb5293f33c10592ee67b4b1cc8f543bd0af2dd8de1b3bf28dd3899d69f",
+          "size": 19145,
+          "mtimeMs": 1793947738718.1194
+        }
+      },
+      "ini": "; Project rendering settings are inherited without Web profile overrides.\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.Shadow.CSMCaching=1\nr.WebGPU.ReuseComputePass=1\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.WebGPU.StagingUploadPages=1\nr.WebGPU.RDGMergeRenderPasses=1\nr.WebGPU.BatchSubmissions=1\nr.WebGPU.ReusePresentEncoder=1\nr.WebGPU.FrameUniformSnapshots=1\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\n\n[SystemSettings]\nt.MaxFPS=0\nr.VSync=0\nr.WebGPU.MergeShadowMaskClear=1\n"
+    }
+  },
+  "captures": {
+    "turning-clear-a1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-a1-20261106.json",
+        "sha256": "20513a730951c78885fe854a792808e421415e34626049e92acbff142fe60e42"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-a1-20261106-source.cjs",
+        "sha256": "594b074f47e6e8c9d3b1d63a66168eb44bee07cfc8d92b8437a74c7574c37588"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-a1-20261106-1-page3.log",
+        "sha256": "83b040b07f1cc7850e7258f863cb7e2bf0c71713fd1d8e1ba88198e2a32cc62c"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "result": {
+            "frames": 3870,
+            "seconds": 30.012135000005365,
+            "fps": 128.94784059845486,
+            "low1": 52.13346166094051,
+            "p95": 12.320000000298023,
+            "p99": 14.075000002980232,
+            "max": 45.84000000357628,
+            "over20": 9,
+            "over25": 6,
+            "over33": 3,
+            "over50": 0
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 6
+          },
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.0066650390625,
+            "updates": 3870,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "budget": [
+            7930,
+            7932,
+            7933,
+            3,
+            7930,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "moving",
+          "result": {
+            "frames": 3763,
+            "seconds": 29.998185000002383,
+            "fps": 125.44092250913516,
+            "low1": 52.43331999473077,
+            "p95": 11.529999993741512,
+            "p99": 12.850000001490116,
+            "max": 56.63500000536442,
+            "over20": 12,
+            "over25": 7,
+            "over33": 3,
+            "over50": 1
+          },
+          "creations": {},
+          "start": {
+            "x": -174.99999999996638,
+            "y": -79.99999999999756,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -174.99999999996638,
+            "y": -79.99999999999756,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 1,
+            "duration": 30,
+            "elapsed": 30.000014892578125,
+            "updates": 3764,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "budget": [
+            12797,
+            12799,
+            12800,
+            3,
+            12797,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "turning",
+          "result": {
+            "frames": 3278,
+            "seconds": 30.001820000000297,
+            "fps": 109.26003822434663,
+            "low1": 42.58284298457649,
+            "p95": 14.270000003278255,
+            "p99": 20.179999999701977,
+            "max": 39.810000002384186,
+            "over20": 35,
+            "over25": 7,
+            "over33": 1,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 2,
+            "duration": 30,
+            "elapsed": 30.0107548828125,
+            "updates": 3279,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "budget": [
+            17123,
+            17124,
+            17126,
+            3,
+            17123,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "repeat-area",
+          "result": {
+            "frames": 3721,
+            "seconds": 29.999910000003876,
+            "fps": 124.03370543443361,
+            "low1": 41.82281434528019,
+            "p95": 13.78999999910593,
+            "p99": 17.57999999821186,
+            "max": 39.645000003278255,
+            "over20": 21,
+            "over25": 13,
+            "over33": 5,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.005650146484374,
+            "updates": 3721,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "budget": [
+            20952,
+            20954,
+            20955,
+            3,
+            20952,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    "turning-clear-a2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-a2-20261106.json",
+        "sha256": "7cccb26137a89c1228a04f003fafc88db7329e671714cf61534f1bdc843499c8"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-a2-20261106-source.cjs",
+        "sha256": "d192857be78738548635279e67092ee2c707ee23bcc82cfc950edabe6ec350a7"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-a2-20261106-1-page3.log",
+        "sha256": "f0dd568eeb6e05a087413a6ad7f3fcae7ca944d013deae52fdbd472e41671da4"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "result": {
+            "frames": 3785,
+            "seconds": 30.02295000000298,
+            "fps": 126.07022294610037,
+            "low1": 54.206340717800714,
+            "p95": 12.765000000596046,
+            "p99": 14.820000000298023,
+            "max": 37.53000000119209,
+            "over20": 10,
+            "over25": 4,
+            "over33": 1,
+            "over50": 0
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 6
+          },
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.01658984375,
+            "updates": 3785,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "budget": [
+            7946,
+            7947,
+            7948,
+            3,
+            7946,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "moving",
+          "result": {
+            "frames": 3742,
+            "seconds": 29.99623000000417,
+            "fps": 124.74901012558843,
+            "low1": 52.26456875173069,
+            "p95": 11.574999995529652,
+            "p99": 12.950000002980232,
+            "max": 41.57000000029802,
+            "over20": 12,
+            "over25": 8,
+            "over33": 3,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": -174.99999999996638,
+            "y": -79.99999999999756,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -174.99999999996638,
+            "y": -79.99999999999756,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 1,
+            "duration": 30,
+            "elapsed": 30.00581005859375,
+            "updates": 3743,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "budget": [
+            12787,
+            12788,
+            12789,
+            3,
+            12787,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "turning",
+          "result": {
+            "frames": 3321,
+            "seconds": 30.005005000002683,
+            "fps": 110.68153463062923,
+            "low1": 50.26239929074534,
+            "p95": 13.725000001490116,
+            "p99": 14.875,
+            "max": 40.019999995827675,
+            "over20": 11,
+            "over25": 4,
+            "over33": 2,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 2,
+            "duration": 30,
+            "elapsed": 30.014365234375,
+            "updates": 3322,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "budget": [
+            17134,
+            17137,
+            17137,
+            3,
+            17134,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "repeat-area",
+          "result": {
+            "frames": 3980,
+            "seconds": 30.011155000001192,
+            "fps": 132.6173551134517,
+            "low1": 51.37624105877832,
+            "p95": 12.304999999701977,
+            "p99": 14.57999999821186,
+            "max": 38.314999997615814,
+            "over20": 15,
+            "over25": 6,
+            "over33": 2,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.00772998046875,
+            "updates": 3980,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "budget": [
+            21236,
+            21238,
+            21239,
+            3,
+            21236,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    "turning-clear-b1-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-b1-20261106.json",
+        "sha256": "2366b89866cbd491376528155f47481557709dd6ca90f53fb2ab36a3c0527378"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-b1-20261106-source.cjs",
+        "sha256": "d192857be78738548635279e67092ee2c707ee23bcc82cfc950edabe6ec350a7"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-b1-20261106-1-page3.log",
+        "sha256": "f2f91651146039c6c3a4af0fb06b9d9f3b52e0c3ff6303bd221ce637ceba6cfe"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "result": {
+            "frames": 3903,
+            "seconds": 30.014465000003575,
+            "fps": 130.03730034833322,
+            "low1": 54.05332360443168,
+            "p95": 12.344999998807907,
+            "p99": 14.25,
+            "max": 36.46999999880791,
+            "over20": 13,
+            "over25": 3,
+            "over33": 2,
+            "over50": 0
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 6
+          },
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.019425048828126,
+            "updates": 3903,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "budget": [
+            8171,
+            8172,
+            8173,
+            3,
+            8171,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "moving",
+          "result": {
+            "frames": 3848,
+            "seconds": 30.003615000002085,
+            "fps": 128.25121239556407,
+            "low1": 58.84216720037627,
+            "p95": 11.365000002086163,
+            "p99": 12.775000005960464,
+            "max": 28.78499999642372,
+            "over20": 8,
+            "over25": 5,
+            "over33": 0,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": -174.99999999996638,
+            "y": -79.99999999999756,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -174.99998938042285,
+            "y": -79.99999922766712,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 1,
+            "duration": 30,
+            "elapsed": 30.01318994140625,
+            "updates": 3849,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "budget": [
+            13145,
+            13148,
+            13148,
+            3,
+            13145,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "turning",
+          "result": {
+            "frames": 3398,
+            "seconds": 30.0006799999997,
+            "fps": 113.26409934708259,
+            "low1": 53.53487639792016,
+            "p95": 13.439999997615814,
+            "p99": 14.510000005364418,
+            "max": 36.21500000357628,
+            "over20": 9,
+            "over25": 4,
+            "over33": 2,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 2,
+            "duration": 30,
+            "elapsed": 30.005630126953125,
+            "updates": 3398,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "budget": [
+            17616,
+            17617,
+            17618,
+            3,
+            17616,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "repeat-area",
+          "result": {
+            "frames": 4020,
+            "seconds": 30.00452000000328,
+            "fps": 133.97981370805334,
+            "low1": 56.767833407599305,
+            "p95": 12.299999997019768,
+            "p99": 14,
+            "max": 38.474999994039536,
+            "over20": 8,
+            "over25": 5,
+            "over33": 1,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.009385009765627,
+            "updates": 4020,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "budget": [
+            21753,
+            21754,
+            21756,
+            3,
+            21753,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    "turning-clear-b2-20261106": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-b2-20261106.json",
+        "sha256": "c1e6b828f01c974b234c8b5ae529ddb0873702ab1ab72b1f196087834cfe49a5"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-b2-20261106-source.cjs",
+        "sha256": "d192857be78738548635279e67092ee2c707ee23bcc82cfc950edabe6ec350a7"
+      },
+      "log": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-b2-20261106-1-page3.log",
+        "sha256": "c27bda9030e0d2c9ac609a7b1891c4d39ced7af3da4b28f03b6e52e49b493620"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "result": {
+            "frames": 3924,
+            "seconds": 30.008135000005364,
+            "fps": 130.7645410152713,
+            "low1": 54.32088706103104,
+            "p95": 12.270000003278255,
+            "p99": 14.285000003874302,
+            "max": 48.45499999821186,
+            "over20": 9,
+            "over25": 4,
+            "over33": 3,
+            "over50": 0
+          },
+          "creations": {
+            "createShaderModule": 1,
+            "createRenderPipeline": 6
+          },
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.016544921875,
+            "updates": 3925,
+            "active": false,
+            "completed": true,
+            "serial": 2,
+            "driver": "game-frame"
+          },
+          "budget": [
+            8216,
+            8219,
+            8219,
+            3,
+            8216,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "moving",
+          "result": {
+            "frames": 3727,
+            "seconds": 30.005969999998808,
+            "fps": 124.20861581879032,
+            "low1": 48.753889085088744,
+            "p95": 11.765000000596046,
+            "p99": 15.520000003278255,
+            "max": 74.54999999701977,
+            "over20": 8,
+            "over25": 5,
+            "over33": 3,
+            "over50": 1
+          },
+          "creations": {},
+          "start": {
+            "x": -174.99999999996638,
+            "y": -79.99999999999756,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -174.99991729387853,
+            "y": -79.99999398500935,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 1,
+            "duration": 30,
+            "elapsed": 30.0108349609375,
+            "updates": 3727,
+            "active": false,
+            "completed": true,
+            "serial": 6,
+            "driver": "game-frame"
+          },
+          "budget": [
+            13069,
+            13071,
+            13072,
+            3,
+            13069,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "turning",
+          "result": {
+            "frames": 3402,
+            "seconds": 30.00077000000328,
+            "fps": 113.3970894746911,
+            "low1": 53.768396474220985,
+            "p95": 13.380000002682209,
+            "p99": 14.469999998807907,
+            "max": 35,
+            "over20": 10,
+            "over25": 4,
+            "over33": 1,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "end": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "driver": {
+            "mode": 2,
+            "duration": 30,
+            "elapsed": 30.006429931640625,
+            "updates": 3402,
+            "active": false,
+            "completed": true,
+            "serial": 10,
+            "driver": "game-frame"
+          },
+          "budget": [
+            17527,
+            17530,
+            17530,
+            3,
+            17527,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "name": "repeat-area",
+          "result": {
+            "frames": 4032,
+            "seconds": 29.98975499999523,
+            "fps": 134.44591327940628,
+            "low1": 56.5583551152411,
+            "p95": 12.284999996423721,
+            "p99": 14.174999997019768,
+            "max": 40.75499999523163,
+            "over20": 7,
+            "over25": 4,
+            "over33": 1,
+            "over50": 0
+          },
+          "creations": {},
+          "start": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "end": {
+            "x": -620,
+            "y": 0,
+            "z": 160,
+            "pitch": 0,
+            "yaw": 0
+          },
+          "driver": {
+            "mode": 3,
+            "duration": 30,
+            "elapsed": 30.000079833984376,
+            "updates": 4033,
+            "active": false,
+            "completed": true,
+            "serial": 12,
+            "driver": "game-frame"
+          },
+          "budget": [
+            21688,
+            21690,
+            21691,
+            3,
+            21688,
+            3,
+            1,
+            2
+          ]
+        }
+      ]
+    }
+  },
+  "normal": {
+    "control": {
+      "first-area": {
+        "result": {
+          "frames": 7655,
+          "seconds": 60.035085000008344,
+          "fps": 127.50877257855029,
+          "low1": 53.0147856172663,
+          "p95": 12.534999996423721,
+          "p99": 14.625,
+          "max": 45.84000000357628,
+          "over20": 19,
+          "over25": 10,
+          "over33": 4,
+          "over50": 0
+        },
+        "windows": [
+          {
+            "frames": 3870,
+            "seconds": 30.012135000005365,
+            "fps": 128.94784059845486,
+            "low1": 52.13346166094051,
+            "p95": 12.320000000298023,
+            "p99": 14.075000002980232,
+            "max": 45.84000000357628,
+            "over20": 9,
+            "over25": 6,
+            "over33": 3,
+            "over50": 0
+          },
+          {
+            "frames": 3785,
+            "seconds": 30.02295000000298,
+            "fps": 126.07022294610037,
+            "low1": 54.206340717800714,
+            "p95": 12.765000000596046,
+            "p99": 14.820000000298023,
+            "max": 37.53000000119209,
+            "over20": 10,
+            "over25": 4,
+            "over33": 1,
+            "over50": 0
+          }
+        ]
+      },
+      "moving": {
+        "result": {
+          "frames": 7505,
+          "seconds": 59.994415000006555,
+          "fps": 125.09497759081708,
+          "low1": 52.34394101816896,
+          "p95": 11.560000002384186,
+          "p99": 12.905000001192093,
+          "max": 56.63500000536442,
+          "over20": 24,
+          "over25": 15,
+          "over33": 6,
+          "over50": 1
+        },
+        "windows": [
+          {
+            "frames": 3763,
+            "seconds": 29.998185000002383,
+            "fps": 125.44092250913516,
+            "low1": 52.43331999473077,
+            "p95": 11.529999993741512,
+            "p99": 12.850000001490116,
+            "max": 56.63500000536442,
+            "over20": 12,
+            "over25": 7,
+            "over33": 3,
+            "over50": 1
+          },
+          {
+            "frames": 3742,
+            "seconds": 29.99623000000417,
+            "fps": 124.74901012558843,
+            "low1": 52.26456875173069,
+            "p95": 11.574999995529652,
+            "p99": 12.950000002980232,
+            "max": 41.57000000029802,
+            "over20": 12,
+            "over25": 8,
+            "over33": 3,
+            "over50": 0
+          }
+        ]
+      },
+      "turning": {
+        "result": {
+          "frames": 6599,
+          "seconds": 60.00682500000298,
+          "fps": 109.97082415208058,
+          "low1": 44.1505533877716,
+          "p95": 13.880000002682209,
+          "p99": 18.439999997615814,
+          "max": 40.019999995827675,
+          "over20": 46,
+          "over25": 11,
+          "over33": 3,
+          "over50": 0
+        },
+        "windows": [
+          {
+            "frames": 3278,
+            "seconds": 30.001820000000297,
+            "fps": 109.26003822434663,
+            "low1": 42.58284298457649,
+            "p95": 14.270000003278255,
+            "p99": 20.179999999701977,
+            "max": 39.810000002384186,
+            "over20": 35,
+            "over25": 7,
+            "over33": 1,
+            "over50": 0
+          },
+          {
+            "frames": 3321,
+            "seconds": 30.005005000002683,
+            "fps": 110.68153463062923,
+            "low1": 50.26239929074534,
+            "p95": 13.725000001490116,
+            "p99": 14.875,
+            "max": 40.019999995827675,
+            "over20": 11,
+            "over25": 4,
+            "over33": 2,
+            "over50": 0
+          }
+        ]
+      },
+      "repeat-area": {
+        "result": {
+          "frames": 7701,
+          "seconds": 60.01106500000507,
+          "fps": 128.32633448513786,
+          "low1": 45.20062121897374,
+          "p95": 13.179999999701977,
+          "p99": 16.17000000178814,
+          "max": 39.645000003278255,
+          "over20": 36,
+          "over25": 19,
+          "over33": 7,
+          "over50": 0
+        },
+        "windows": [
+          {
+            "frames": 3721,
+            "seconds": 29.999910000003876,
+            "fps": 124.03370543443361,
+            "low1": 41.82281434528019,
+            "p95": 13.78999999910593,
+            "p99": 17.57999999821186,
+            "max": 39.645000003278255,
+            "over20": 21,
+            "over25": 13,
+            "over33": 5,
+            "over50": 0
+          },
+          {
+            "frames": 3980,
+            "seconds": 30.011155000001192,
+            "fps": 132.6173551134517,
+            "low1": 51.37624105877832,
+            "p95": 12.304999999701977,
+            "p99": 14.57999999821186,
+            "max": 38.314999997615814,
+            "over20": 15,
+            "over25": 6,
+            "over33": 2,
+            "over50": 0
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "first-area": {
+        "result": {
+          "frames": 7827,
+          "seconds": 60.02260000000894,
+          "fps": 130.40088233430131,
+          "low1": 54.03094810717804,
+          "p95": 12.325000002980232,
+          "p99": 14.270000003278255,
+          "max": 48.45499999821186,
+          "over20": 22,
+          "over25": 7,
+          "over33": 5,
+          "over50": 0
+        },
+        "windows": [
+          {
+            "frames": 3903,
+            "seconds": 30.014465000003575,
+            "fps": 130.03730034833322,
+            "low1": 54.05332360443168,
+            "p95": 12.344999998807907,
+            "p99": 14.25,
+            "max": 36.46999999880791,
+            "over20": 13,
+            "over25": 3,
+            "over33": 2,
+            "over50": 0
+          },
+          {
+            "frames": 3924,
+            "seconds": 30.008135000005364,
+            "fps": 130.7645410152713,
+            "low1": 54.32088706103104,
+            "p95": 12.270000003278255,
+            "p99": 14.285000003874302,
+            "max": 48.45499999821186,
+            "over20": 9,
+            "over25": 4,
+            "over33": 3,
+            "over50": 0
+          }
+        ]
+      },
+      "moving": {
+        "result": {
+          "frames": 7575,
+          "seconds": 60.0095850000009,
+          "fps": 126.22983478389139,
+          "low1": 52.11601298692176,
+          "p95": 11.54500000178814,
+          "p99": 14.28999999910593,
+          "max": 74.54999999701977,
+          "over20": 16,
+          "over25": 10,
+          "over33": 3,
+          "over50": 1
+        },
+        "windows": [
+          {
+            "frames": 3848,
+            "seconds": 30.003615000002085,
+            "fps": 128.25121239556407,
+            "low1": 58.84216720037627,
+            "p95": 11.365000002086163,
+            "p99": 12.775000005960464,
+            "max": 28.78499999642372,
+            "over20": 8,
+            "over25": 5,
+            "over33": 0,
+            "over50": 0
+          },
+          {
+            "frames": 3727,
+            "seconds": 30.005969999998808,
+            "fps": 124.20861581879032,
+            "low1": 48.753889085088744,
+            "p95": 11.765000000596046,
+            "p99": 15.520000003278255,
+            "max": 74.54999999701977,
+            "over20": 8,
+            "over25": 5,
+            "over33": 3,
+            "over50": 1
+          }
+        ]
+      },
+      "turning": {
+        "result": {
+          "frames": 6800,
+          "seconds": 60.00145000000298,
+          "fps": 113.33059451062702,
+          "low1": 53.47719748089443,
+          "p95": 13.409999996423721,
+          "p99": 14.510000005364418,
+          "max": 36.21500000357628,
+          "over20": 19,
+          "over25": 8,
+          "over33": 3,
+          "over50": 0
+        },
+        "windows": [
+          {
+            "frames": 3398,
+            "seconds": 30.0006799999997,
+            "fps": 113.26409934708259,
+            "low1": 53.53487639792016,
+            "p95": 13.439999997615814,
+            "p99": 14.510000005364418,
+            "max": 36.21500000357628,
+            "over20": 9,
+            "over25": 4,
+            "over33": 2,
+            "over50": 0
+          },
+          {
+            "frames": 3402,
+            "seconds": 30.00077000000328,
+            "fps": 113.3970894746911,
+            "low1": 53.768396474220985,
+            "p95": 13.380000002682209,
+            "p99": 14.469999998807907,
+            "max": 35,
+            "over20": 10,
+            "over25": 4,
+            "over33": 1,
+            "over50": 0
+          }
+        ]
+      },
+      "repeat-area": {
+        "result": {
+          "frames": 8052,
+          "seconds": 59.99427499999851,
+          "fps": 134.21280613858906,
+          "low1": 56.49934258409361,
+          "p95": 12.28999999910593,
+          "p99": 14.109999999403954,
+          "max": 40.75499999523163,
+          "over20": 15,
+          "over25": 9,
+          "over33": 2,
+          "over50": 0
+        },
+        "windows": [
+          {
+            "frames": 4020,
+            "seconds": 30.00452000000328,
+            "fps": 133.97981370805334,
+            "low1": 56.767833407599305,
+            "p95": 12.299999997019768,
+            "p99": 14,
+            "max": 38.474999994039536,
+            "over20": 8,
+            "over25": 5,
+            "over33": 1,
+            "over50": 0
+          },
+          {
+            "frames": 4032,
+            "seconds": 29.98975499999523,
+            "fps": 134.44591327940628,
+            "low1": 56.5583551152411,
+            "p95": 12.284999996423721,
+            "p99": 14.174999997019768,
+            "max": 40.75499999523163,
+            "over20": 7,
+            "over25": 4,
+            "over33": 1,
+            "over50": 0
+          }
+        ]
+      }
+    }
+  },
+  "gains": {
+    "first-area": {
+      "fpsPercent": 2.2681653169936755,
+      "low1Percent": 1.9167529927364146
+    },
+    "moving": {
+      "fpsPercent": 0.9071964477953776,
+      "low1Percent": -0.4354430079464011
+    },
+    "turning": {
+      "fpsPercent": 3.055147021450133,
+      "low1Percent": 21.124636901393945
+    },
+    "repeat-area": {
+      "fpsPercent": 4.587111193558591,
+      "low1Percent": 24.99682761080515
+    }
+  },
+  "diagnostic": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-pass-diag-20261106.json",
+        "sha256": "e8575625ce9b9cd8454816dc3e356349743e3af0d980ec9abdbb10a0c626b673"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-pass-diag-20261106-source.cjs",
+        "sha256": "f4d4118d7f4b506e41d75420c9c7d51a7b762d5886380a598485f085a222326b"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 11.635398230088496,
+            "GPUDevice.createBuffer": 9.099115044247787,
+            "GPUQueue.writeBuffer": 51.28495575221239,
+            "GPUDevice.createTexture": 0.9787610619469026,
+            "GPUTexture.createView": 0.9805309734513274,
+            "GPUCommandEncoder.finish": 11.636283185840709,
+            "GPUQueue.submit": 11.636283185840709,
+            "createShaderModule": 0.0008849557522123894,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0.005309734513274336,
+            "GPUCommandEncoder.beginRenderPass": 172.32123893805309,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 15.826548672566371,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21.061061946902655,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 525.0681415929204,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 32.03716814159292,
+            "draw:pass:SceneColor:SceneDepthZ": 46.40088495575221,
+            "pass:ShadowMaskTexture:-": 28.136283185840707,
+            "pass:ShadowMaskTexture:SceneDepthZ": 28.03716814159292,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 57.95929203539823,
+            "draw:pass:ShadowMaskTexture:-": 27.136283185840707,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 0.9362831858407079,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 179.33893805309734,
+            "pass:depth:CachedShadowDepthMap": 4.283185840707965,
+            "draw:pass:depth:CachedShadowDepthMap": 32.703539823008846,
+            "draw:pass:depth:WholeSceneShadowmap": 46.6858407079646,
+            "pass:depth:ShadowDepthAtlas": 25.47787610619469,
+            "draw:pass:depth:ShadowDepthAtlas": 279.9867256637168,
+            "pass:depth:WebCubeShadowFace": 7.423008849557522,
+            "draw:pass:depth:WebCubeShadowFace": 140.90442477876107,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 0.9265486725663716,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 16.934513274336283,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 25.42212389380531,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "pass:SceneVelocity:SceneDepthZ": 0.06371681415929203,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0.17345132743362832
+          },
+          "rhiMs": 5.756300107567712
+        },
+        {
+          "name": "moving",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 10.374071015689513,
+            "GPUDevice.createBuffer": 9.086705202312139,
+            "GPUQueue.writeBuffer": 52.001651527663086,
+            "GPUDevice.createTexture": 0.1337737407101569,
+            "GPUTexture.createView": 0.1337737407101569,
+            "GPUCommandEncoder.finish": 10.374896779521057,
+            "GPUQueue.submit": 10.374896779521057,
+            "createShaderModule": 0,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0,
+            "GPUCommandEncoder.beginRenderPass": 212.3344343517754,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 11.415359207266722,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21.026424442609414,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 471.7679603633361,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 42.60611065235343,
+            "draw:pass:SceneColor:SceneDepthZ": 57.23864574731627,
+            "pass:ShadowMaskTexture:-": 38.60611065235343,
+            "pass:ShadowMaskTexture:SceneDepthZ": 38.60611065235343,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 78.56895127993394,
+            "draw:pass:ShadowMaskTexture:-": 37.60611065235343,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 1,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 161.36746490503717,
+            "pass:depth:CachedShadowDepthMap": 0.4227910817506193,
+            "draw:pass:depth:CachedShadowDepthMap": 3.9801816680429396,
+            "draw:pass:depth:WholeSceneShadowmap": 40.66804293971924,
+            "pass:depth:ShadowDepthAtlas": 39.093311312964495,
+            "draw:pass:depth:ShadowDepthAtlas": 203.25516102394715,
+            "pass:depth:WebCubeShadowFace": 6,
+            "draw:pass:depth:WebCubeShadowFace": 186,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 1,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 21.11065235342692,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 28.680429397192402,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "pass:SceneVelocity:SceneDepthZ": 0,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0
+          },
+          "rhiMs": 5.9002227373698055
+        },
+        {
+          "name": "turning",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 10.37639405204461,
+            "GPUDevice.createBuffer": 9.079925650557621,
+            "GPUQueue.writeBuffer": 52.12825278810409,
+            "GPUDevice.createTexture": 0.1496282527881041,
+            "GPUTexture.createView": 0.1496282527881041,
+            "GPUCommandEncoder.finish": 10.37732342007435,
+            "GPUQueue.submit": 10.37732342007435,
+            "createShaderModule": 0,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0,
+            "GPUCommandEncoder.beginRenderPass": 240.29553903345726,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 14.343866171003718,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 656.2955390334572,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 47.8410780669145,
+            "draw:pass:SceneColor:SceneDepthZ": 65.78903345724908,
+            "pass:ShadowMaskTexture:-": 44.40334572490706,
+            "pass:ShadowMaskTexture:SceneDepthZ": 43.8410780669145,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 87.38011152416357,
+            "draw:pass:ShadowMaskTexture:-": 43.40334572490706,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 1,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 240.90985130111525,
+            "pass:depth:CachedShadowDepthMap": 0.1895910780669145,
+            "draw:pass:depth:CachedShadowDepthMap": 5.837360594795539,
+            "draw:pass:depth:WholeSceneShadowmap": 69.64776951672863,
+            "pass:depth:ShadowDepthAtlas": 41.71375464684015,
+            "draw:pass:depth:ShadowDepthAtlas": 351.42936802973975,
+            "pass:depth:WebCubeShadowFace": 15.306691449814126,
+            "draw:pass:depth:WebCubeShadowFace": 159.81412639405204,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 1,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 15.017657992565056,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 24.320631970260223,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "pass:SceneVelocity:SceneDepthZ": 0,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0
+          },
+          "rhiMs": 6.758837451722099
+        },
+        {
+          "name": "repeat-area",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 10.53147996729354,
+            "GPUDevice.createBuffer": 9.084219133278822,
+            "GPUQueue.writeBuffer": 51.358953393295174,
+            "GPUDevice.createTexture": 0.3793949304987735,
+            "GPUTexture.createView": 0.3810302534750613,
+            "GPUCommandEncoder.finish": 10.53147996729354,
+            "GPUQueue.submit": 10.53147996729354,
+            "createShaderModule": 0,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0,
+            "GPUCommandEncoder.beginRenderPass": 174.58135731807033,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 14.734260016353229,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21.05641864268193,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 519.4317252657399,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 32.54619787408013,
+            "draw:pass:SceneColor:SceneDepthZ": 46.346688470973014,
+            "pass:ShadowMaskTexture:-": 28.645952575633686,
+            "pass:ShadowMaskTexture:SceneDepthZ": 28.546197874080132,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 58.92232215862633,
+            "draw:pass:ShadowMaskTexture:-": 27.645952575633686,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 0.9419460343417825,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 177.73589533932952,
+            "pass:depth:CachedShadowDepthMap": 1.205233033524121,
+            "draw:pass:depth:CachedShadowDepthMap": 18.349141455437447,
+            "draw:pass:depth:WholeSceneShadowmap": 46.54210956663941,
+            "pass:depth:ShadowDepthAtlas": 29.097301717089124,
+            "draw:pass:depth:ShadowDepthAtlas": 298.1267375306623,
+            "pass:depth:WebCubeShadowFace": 7.609157808667212,
+            "draw:pass:depth:WebCubeShadowFace": 145.44235486508586,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 0.9313164349959117,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 17.01471790678659,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 25.479967293540476,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "pass:SceneVelocity:SceneDepthZ": 0.0580539656582175,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0.15944399018806213
+          },
+          "rhiMs": 5.699268443995778
+        }
+      ]
+    },
+    "candidate": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-diag-20261106.json",
+        "sha256": "90cff37c8049ced8a1cdfa2fd03417e74f90a69e69f06999d4c44d93132db8d7"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-diag-20261106-source.cjs",
+        "sha256": "f4d4118d7f4b506e41d75420c9c7d51a7b762d5886380a598485f085a222326b"
+      },
+      "phases": [
+        {
+          "name": "first-area",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 11.169076751946607,
+            "GPUDevice.createBuffer": 9.066740823136819,
+            "GPUQueue.writeBuffer": 51.17686318131257,
+            "GPUDevice.createTexture": 0.6507230255839822,
+            "GPUTexture.createView": 0.6518353726362626,
+            "GPUCommandEncoder.finish": 11.169632925472747,
+            "GPUQueue.submit": 11.169632925472747,
+            "createShaderModule": 0.0005561735261401557,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0.0033370411568409346,
+            "GPUCommandEncoder.beginRenderPass": 142.37708565072302,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 17.02836484983315,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21.03837597330367,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 523.4154616240266,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 31.186318131256954,
+            "draw:pass:SceneColor:SceneDepthZ": 46.4432703003337,
+            "pass:ShadowMaskTexture:-": 1.0945494994438265,
+            "pass:ShadowMaskTexture:SceneDepthZ": 27.186318131256954,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 82.61902113459399,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 0.9505005561735261,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 178.92714126807564,
+            "pass:depth:CachedShadowDepthMap": 1.9521690767519466,
+            "draw:pass:depth:CachedShadowDepthMap": 31.311457174638488,
+            "draw:pass:depth:WholeSceneShadowmap": 45.75083426028921,
+            "pass:depth:ShadowDepthAtlas": 27.186874304783093,
+            "draw:pass:depth:ShadowDepthAtlas": 256.41101223581757,
+            "pass:depth:WebCubeShadowFace": 6.8409343715239155,
+            "draw:pass:depth:WebCubeShadowFace": 127.04449388209122,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 0.9299221357063404,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 17.17853170189099,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 25.690211345939932,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:ShadowMaskTexture:-": 0.09454949944382647,
+            "pass:SceneVelocity:SceneDepthZ": 0.04949944382647386,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0.14738598442714126
+          },
+          "rhiMs": 5.5524361412039855
+        },
+        {
+          "name": "moving",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 10.38852813852814,
+            "GPUDevice.createBuffer": 9.058982683982684,
+            "GPUQueue.writeBuffer": 51.99837662337662,
+            "GPUDevice.createTexture": 0.1001082251082251,
+            "GPUTexture.createView": 0.1001082251082251,
+            "GPUCommandEncoder.finish": 10.389069264069263,
+            "GPUQueue.submit": 10.389069264069263,
+            "createShaderModule": 0,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0,
+            "GPUCommandEncoder.beginRenderPass": 174.51298701298703,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 11.253246753246753,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21.017316017316016,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 461.51028138528136,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 42.553030303030305,
+            "draw:pass:SceneColor:SceneDepthZ": 57.092532467532465,
+            "pass:ShadowMaskTexture:-": 1,
+            "pass:ShadowMaskTexture:SceneDepthZ": 38.553030303030305,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 116.0108225108225,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 1,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 159.12229437229436,
+            "pass:depth:CachedShadowDepthMap": 0.5357142857142857,
+            "draw:pass:depth:CachedShadowDepthMap": 5.353354978354979,
+            "draw:pass:depth:WholeSceneShadowmap": 40.739177489177486,
+            "pass:depth:ShadowDepthAtlas": 38.871212121212125,
+            "draw:pass:depth:ShadowDepthAtlas": 196.37554112554113,
+            "pass:depth:WebCubeShadowFace": 6,
+            "draw:pass:depth:WebCubeShadowFace": 186,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 1,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 20.75,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 28.131493506493506,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:ShadowMaskTexture:-": 0,
+            "pass:SceneVelocity:SceneDepthZ": 0,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0
+          },
+          "rhiMs": 5.681279288741933
+        },
+        {
+          "name": "turning",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 10.390712074303405,
+            "GPUDevice.createBuffer": 9.059442724458204,
+            "GPUQueue.writeBuffer": 52.13188854489164,
+            "GPUDevice.createTexture": 0.09845201238390093,
+            "GPUTexture.createView": 0.09845201238390093,
+            "GPUCommandEncoder.finish": 10.390712074303405,
+            "GPUQueue.submit": 10.390712074303405,
+            "createShaderModule": 0,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0,
+            "GPUCommandEncoder.beginRenderPass": 189.7201238390093,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 23.25448916408669,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 654.7331269349845,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 44.747987616099074,
+            "draw:pass:SceneColor:SceneDepthZ": 65.81609907120743,
+            "pass:ShadowMaskTexture:-": 1.5609907120743034,
+            "pass:ShadowMaskTexture:SceneDepthZ": 40.747987616099074,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 121.08730650154799,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 1,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 239.71640866873065,
+            "pass:depth:CachedShadowDepthMap": 0.1696594427244582,
+            "draw:pass:depth:CachedShadowDepthMap": 4.182043343653251,
+            "draw:pass:depth:WholeSceneShadowmap": 68.61795665634675,
+            "pass:depth:ShadowDepthAtlas": 40.294736842105266,
+            "draw:pass:depth:ShadowDepthAtlas": 334.8712074303406,
+            "pass:depth:WebCubeShadowFace": 15.198761609907121,
+            "draw:pass:depth:WebCubeShadowFace": 158.73065015479875,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 1,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 15.15108359133127,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 24.46439628482972,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:ShadowMaskTexture:-": 0.5609907120743034,
+            "pass:SceneVelocity:SceneDepthZ": 0,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0
+          },
+          "rhiMs": 6.688596737274075
+        },
+        {
+          "name": "repeat-area",
+          "apiPerFrame": {
+            "GPUDevice.createCommandEncoder": 10.446652719665272,
+            "GPUDevice.createBuffer": 9.056485355648535,
+            "GPUQueue.writeBuffer": 51.25941422594142,
+            "GPUDevice.createTexture": 0.25418410041841005,
+            "GPUTexture.createView": 0.25523012552301255,
+            "GPUCommandEncoder.finish": 10.447175732217573,
+            "GPUQueue.submit": 10.447175732217573,
+            "createShaderModule": 0,
+            "createRenderPipelineAsync": 0,
+            "createRenderPipeline": 0,
+            "GPUCommandEncoder.beginRenderPass": 143.82112970711296,
+            "pass:unnamed:-": 1,
+            "GPUDevice.createBindGroup": 16.784518828451883,
+            "draw:pass:unnamed:-": 1,
+            "createComputePipelineAsync": 0,
+            "createComputePipeline": 0,
+            "GPUCommandEncoder.beginComputePass": 21.036087866108787,
+            "pass:IES.AtlasTexture:-": 0,
+            "draw:pass:IES.AtlasTexture:-": 0,
+            "pass:depth:SceneDepthZ": 3,
+            "draw:pass:depth:SceneDepthZ": 522.9843096234309,
+            "pass:LightFunction.Atlas:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:-": 1,
+            "pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 2,
+            "pass:depth:WholeSceneShadowmap": 6,
+            "pass:AmbientOcclusionSetup:-": 1,
+            "draw:pass:AmbientOcclusionSetup:-": 1,
+            "pass:AmbientOcclusion:-": 1,
+            "draw:pass:AmbientOcclusion:-": 1,
+            "pass:ScreenSpaceAO:-": 1,
+            "draw:pass:ScreenSpaceAO:-": 1,
+            "pass:SceneColor:-": 2,
+            "draw:pass:SceneColor:-": 2,
+            "pass:SceneColor:SceneDepthZ": 31.601464435146443,
+            "draw:pass:SceneColor:SceneDepthZ": 46.42154811715481,
+            "pass:ShadowMaskTexture:-": 1.1009414225941423,
+            "pass:ShadowMaskTexture:SceneDepthZ": 27.601464435146443,
+            "draw:pass:ShadowMaskTexture:SceneDepthZ": 83.77353556485356,
+            "pass:Translucency.AfterDOF.Color:-": 1,
+            "pass:HistogramReduce:-": 1,
+            "draw:pass:HistogramReduce:-": 1,
+            "pass:Scene(1/4):-": 2,
+            "draw:pass:Scene(1/4):-": 2,
+            "pass:Scene(1/8):-": 1,
+            "draw:pass:Scene(1/8):-": 1,
+            "pass:Scene(1/16):-": 1,
+            "draw:pass:Scene(1/16):-": 1,
+            "pass:Scene(1/32):-": 1,
+            "draw:pass:Scene(1/32):-": 1,
+            "pass:Scene(1/64):-": 1,
+            "draw:pass:Scene(1/64):-": 1,
+            "pass:BloomX:-": 10,
+            "draw:pass:BloomX:-": 10,
+            "pass:BloomY:-": 1,
+            "draw:pass:BloomY:-": 1,
+            "pass:ReflectionCubeTexture:-": 0,
+            "draw:pass:ReflectionCubeTexture:-": 0,
+            "pass:FilteredCubemapTexture:-": 0,
+            "draw:pass:FilteredCubemapTexture:-": 0,
+            "pass:SceneVelocity:-": 0.9482217573221757,
+            "draw:pass:SceneColor,GBufferA,GBufferB,GBufferC,GBufferD,GBufferE:SceneDepthZ": 178.68566945606693,
+            "pass:depth:CachedShadowDepthMap": 2.0993723849372383,
+            "draw:pass:depth:CachedShadowDepthMap": 23.06223849372385,
+            "draw:pass:depth:WholeSceneShadowmap": 46.54027196652719,
+            "pass:depth:ShadowDepthAtlas": 27.3755230125523,
+            "draw:pass:depth:ShadowDepthAtlas": 266.98326359832635,
+            "pass:depth:WebCubeShadowFace": 7.107740585774058,
+            "draw:pass:depth:WebCubeShadowFace": 134.13389121338912,
+            "pass:DistanceFieldNormal:-": 1,
+            "draw:pass:DistanceFieldNormal:-": 1,
+            "pass:Dummy:-": 2,
+            "draw:pass:Dummy:-": 2,
+            "pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "draw:pass:PerViewDistanceFieldBentNormalAO:-": 1,
+            "pass:Translucency.AfterDOF.Color:SceneDepthZ": 0.9346234309623431,
+            "draw:pass:Translucency.AfterDOF.Color:SceneDepthZ": 17.25418410041841,
+            "pass:Distortion:SceneDepthZ": 1,
+            "draw:pass:Distortion:SceneDepthZ": 25.768828451882847,
+            "pass:DistortedSceneColor:SceneDepthZ": 1,
+            "draw:pass:DistortedSceneColor:SceneDepthZ": 1,
+            "pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:DistanceFieldAOHistory:-": 1,
+            "draw:pass:ShadowMaskTexture:-": 0.10094142259414227,
+            "pass:SceneVelocity:SceneDepthZ": 0.05177824267782427,
+            "draw:pass:SceneVelocity:SceneDepthZ": 0.14905857740585773
+          },
+          "rhiMs": 5.485210832691592
+        }
+      ]
+    }
+  },
+  "validation": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-validation-20261106.json",
+        "sha256": "bfc2ca8e019be619c9c207846d26be75cf9aa286a67340628691051940e8ceb0"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-validation-20261106-source.cjs",
+        "sha256": "fb1d3791180bab4ae5827d24486695268bd1796ed4a59bef6472e41d8b351d0b"
+      },
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 8305,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-validation-20261106-tour-right.png",
+            "sha256": "c92512cccefaf222cc765486ff14dcdc31f5149b6183d17da0dadcf716d3d0ec"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 8816,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-validation-20261106-tour-back.png",
+            "sha256": "94579102b81f972a7675d24d43701ba03182f7fcadf843933f68756a267623a0"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 9229,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-validation-20261106-tour-left.png",
+            "sha256": "ac308558881f7faca333cab08ec805f030622f8db39d8786ab8fe5712ad9a70d"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 9488,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-validation-20261106-tour-room.png",
+            "sha256": "38b1eeb5f6ffb72e8e8f8ffdcffc824150fec33bf50aa993cd097d9b952ae591"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 9730,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-validation-20261106-tour-return.png",
+            "sha256": "96f7358bc9d402c47d4a2ac5dfaa5cc6ec82d0505467ea9ca02ee3cec16d6298"
+          }
+        }
+      ],
+      "gpu": {
+        "records": 3562,
+        "meanMs": 11.901837450892971,
+        "p99Ms": 22.95499999821186,
+        "maxMs": 35.185000002384186,
+        "pendingPeak": 3
+      },
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "bindingBefore": {
+        "ready": 5025078,
+        "pending": 2735041,
+        "zero": 4824338,
+        "bindGroupCacheHits": 19926529,
+        "bindGroupsCreated": 194942,
+        "cachedBindGroups": 281,
+        "bindingEntriesPrepared": 37277702,
+        "bindingEntriesReused": 24885793,
+        "bindingEntriesValidated": 684139,
+        "bindGroupFastHits": 6117115,
+        "uniformSnapshots": 6271255,
+        "uniformWriteCalls": 16146,
+        "pipelineLayouts": 481,
+        "drawBundleHits": 0,
+        "drawBundlesCreated": 0,
+        "cachedDrawBundles": 0,
+        "resourceTableCommits": 1945896,
+        "resourceTableBuffers": 2370037,
+        "bindingRouteResolutions": 1199,
+        "manualVertexFetchEnabled": false,
+        "manualVertexFetchDraws": 0,
+        "vertexFetchFormatBuffers": 0,
+        "skipNoopRHITick": true,
+        "nativeStorageContracts": true,
+        "revalidateStorageDescriptors": true,
+        "noopRHITicksSkipped": 8071,
+        "storageDescriptorRevalidations": 2142806,
+        "nativeStorageContractUses": 2416054,
+        "storageContractRejectionChecks": 0,
+        "groupPreparationHits": 10335718,
+        "groupPreparationValidated": 99231,
+        "groupFrameMisses": 1611879,
+        "groupAccessMisses": 5598574,
+        "groupVersionMisses": 2476069,
+        "groupTextureMisses": 0,
+        "groupCacheEnabled": true,
+        "groupAccessRevalidation": 0,
+        "groupAccessRevalidated": 0,
+        "groupAccessBindingsChecked": 0,
+        "dynamicGlobalsGroupReuse": false,
+        "groupDynamicGlobalsReused": 0,
+        "bindingPlanEnabled": false,
+        "bindingPlanEntries": 0,
+        "bindingPlansBuilt": 0,
+        "bindingPlanValidations": 0,
+        "draws": 10946872,
+        "indirectDraws": 722562,
+        "dispatches": 1301919,
+        "sampleFrame": 8070,
+        "reuseComputePass": true,
+        "computePassesOpened": 145275,
+        "computePassesReused": 1132431,
+        "renderPassesOpened": 1986011
+      },
+      "bindingAfter": {
+        "ready": 5602326,
+        "pending": 3078567,
+        "zero": 5381855,
+        "bindGroupCacheHits": 22160953,
+        "bindGroupsCreated": 235199,
+        "cachedBindGroups": 281,
+        "bindingEntriesPrepared": 49535610,
+        "bindingEntriesReused": 24885793,
+        "bindingEntriesValidated": 7489902,
+        "bindGroupFastHits": 7825533,
+        "uniformSnapshots": 7227296,
+        "uniformWriteCalls": 19507,
+        "pipelineLayouts": 482,
+        "drawBundleHits": 0,
+        "drawBundlesCreated": 0,
+        "cachedDrawBundles": 0,
+        "resourceTableCommits": 2130970,
+        "resourceTableBuffers": 2623864,
+        "bindingRouteResolutions": 1307,
+        "manualVertexFetchEnabled": false,
+        "manualVertexFetchDraws": 0,
+        "vertexFetchFormatBuffers": 0,
+        "skipNoopRHITick": true,
+        "nativeStorageContracts": true,
+        "revalidateStorageDescriptors": true,
+        "noopRHITicksSkipped": 9751,
+        "storageDescriptorRevalidations": 2411643,
+        "nativeStorageContractUses": 5377702,
+        "storageContractRejectionChecks": 0,
+        "groupPreparationHits": 10335718,
+        "groupPreparationValidated": 1096143,
+        "groupFrameMisses": 1903929,
+        "groupAccessMisses": 6357780,
+        "groupVersionMisses": 2702582,
+        "groupTextureMisses": 0,
+        "groupCacheEnabled": true,
+        "groupAccessRevalidation": 0,
+        "groupAccessRevalidated": 0,
+        "groupAccessBindingsChecked": 0,
+        "dynamicGlobalsGroupReuse": false,
+        "groupDynamicGlobalsReused": 0,
+        "bindingPlanEnabled": false,
+        "bindingPlanEntries": 0,
+        "bindingPlansBuilt": 0,
+        "bindingPlanValidations": 0,
+        "draws": 12149655,
+        "indirectDraws": 895998,
+        "dispatches": 1530593,
+        "sampleFrame": 9750,
+        "reuseComputePass": true,
+        "computePassesOpened": 175520,
+        "computePassesReused": 1325820,
+        "renderPassesOpened": 2291502
+      }
+    },
+    "candidate": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-validation-20261106.json",
+        "sha256": "277843e640c51af23a918b3c054192cbd4399ed0f45657fa3a6ce20d82e45d7e"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-validation-20261106-source.cjs",
+        "sha256": "fb1d3791180bab4ae5827d24486695268bd1796ed4a59bef6472e41d8b351d0b"
+      },
+      "tour": [
+        {
+          "name": "right",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 179.99945068359375
+          },
+          "view": {
+            "frame": 8437,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-validation-20261106-tour-right.png",
+            "sha256": "4d8bcfd347604da6ccc98b937f8f40b3273c6421bb1eec9bba5b4b09b106f7ec"
+          }
+        },
+        {
+          "name": "back",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -90.00054931640625
+          },
+          "view": {
+            "frame": 8922,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-validation-20261106-tour-back.png",
+            "sha256": "1279f58214565f1aced414fb579f5677a1d60aa200e0e733c2d8d51bc005f4ef"
+          }
+        },
+        {
+          "name": "left",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": -0.0005493164062461184
+          },
+          "view": {
+            "frame": 9356,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 4,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-validation-20261106-tour-left.png",
+            "sha256": "916cceb81ab867c2cf510c10a3c26a714dcb66f975e52b88ead70d352c2bad57"
+          }
+        },
+        {
+          "name": "room",
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 9619,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-validation-20261106-tour-room.png",
+            "sha256": "cb6c7f973384f9fcfbbcb0a46b69ff221c7a8ff8a272f1766e3e99e999df8633"
+          }
+        },
+        {
+          "name": "return",
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 9865,
+            "width": 1280,
+            "height": 720,
+            "outputWidth": 1280,
+            "outputHeight": 720,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "image": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-validation-20261106-tour-return.png",
+            "sha256": "da94aa8f59303e663a5d7facc5ce5c7254ff01f80a2619ac99b964df2abe75eb"
+          }
+        }
+      ],
+      "gpu": {
+        "records": 3594,
+        "meanMs": 11.746075403434522,
+        "p99Ms": 23.100000001490116,
+        "maxMs": 34.649999998509884,
+        "pendingPeak": 3
+      },
+      "readback": {
+        "pending": false,
+        "pass": true,
+        "rowPitchPixels": 64,
+        "height": 2
+      },
+      "bindingBefore": {
+        "ready": 5100218,
+        "pending": 2773081,
+        "zero": 4897235,
+        "bindGroupCacheHits": 20220525,
+        "bindGroupsCreated": 197637,
+        "cachedBindGroups": 281,
+        "bindingEntriesPrepared": 37825794,
+        "bindingEntriesReused": 25253615,
+        "bindingEntriesValidated": 684312,
+        "bindGroupFastHits": 6206959,
+        "uniformSnapshots": 6364897,
+        "uniformWriteCalls": 16386,
+        "pipelineLayouts": 481,
+        "drawBundleHits": 0,
+        "drawBundlesCreated": 0,
+        "cachedDrawBundles": 0,
+        "resourceTableCommits": 1974451,
+        "resourceTableBuffers": 2404916,
+        "bindingRouteResolutions": 1199,
+        "manualVertexFetchEnabled": false,
+        "manualVertexFetchDraws": 0,
+        "vertexFetchFormatBuffers": 0,
+        "skipNoopRHITick": true,
+        "nativeStorageContracts": true,
+        "revalidateStorageDescriptors": true,
+        "noopRHITicksSkipped": 8191,
+        "storageDescriptorRevalidations": 2175364,
+        "nativeStorageContractUses": 2448694,
+        "storageContractRejectionChecks": 0,
+        "groupPreparationHits": 10488034,
+        "groupPreparationValidated": 99244,
+        "groupFrameMisses": 1635914,
+        "groupAccessMisses": 5682617,
+        "groupVersionMisses": 2512353,
+        "groupTextureMisses": 0,
+        "groupCacheEnabled": true,
+        "groupAccessRevalidation": 0,
+        "groupAccessRevalidated": 0,
+        "groupAccessBindingsChecked": 0,
+        "dynamicGlobalsGroupReuse": false,
+        "groupDynamicGlobalsReused": 0,
+        "bindingPlanEnabled": false,
+        "bindingPlanEntries": 0,
+        "bindingPlansBuilt": 0,
+        "bindingPlanValidations": 0,
+        "draws": 11107541,
+        "indirectDraws": 734058,
+        "dispatches": 1321487,
+        "sampleFrame": 8190,
+        "reuseComputePass": true,
+        "computePassesOpened": 147439,
+        "computePassesReused": 1149475,
+        "renderPassesOpened": 1672617
+      },
+      "bindingAfter": {
+        "ready": 5706089,
+        "pending": 3138072,
+        "zero": 5482160,
+        "bindGroupCacheHits": 22545214,
+        "bindGroupsCreated": 238629,
+        "cachedBindGroups": 318,
+        "bindingEntriesPrepared": 50574595,
+        "bindingEntriesReused": 25253615,
+        "bindingEntriesValidated": 7797296,
+        "bindGroupFastHits": 7989407,
+        "uniformSnapshots": 7351953,
+        "uniformWriteCalls": 19807,
+        "pipelineLayouts": 482,
+        "drawBundleHits": 0,
+        "drawBundlesCreated": 0,
+        "cachedDrawBundles": 0,
+        "resourceTableCommits": 2167107,
+        "resourceTableBuffers": 2668337,
+        "bindingRouteResolutions": 1307,
+        "manualVertexFetchEnabled": false,
+        "manualVertexFetchDraws": 0,
+        "vertexFetchFormatBuffers": 0,
+        "skipNoopRHITick": true,
+        "nativeStorageContracts": true,
+        "revalidateStorageDescriptors": true,
+        "noopRHITicksSkipped": 9900,
+        "storageDescriptorRevalidations": 2455718,
+        "nativeStorageContractUses": 5534301,
+        "storageContractRejectionChecks": 0,
+        "groupPreparationHits": 10488034,
+        "groupPreparationValidated": 1140592,
+        "groupFrameMisses": 1934755,
+        "groupAccessMisses": 6471952,
+        "groupVersionMisses": 2748510,
+        "groupTextureMisses": 0,
+        "groupCacheEnabled": true,
+        "groupAccessRevalidation": 0,
+        "groupAccessRevalidated": 0,
+        "groupAccessBindingsChecked": 0,
+        "dynamicGlobalsGroupReuse": false,
+        "groupDynamicGlobalsReused": 0,
+        "bindingPlanEnabled": false,
+        "bindingPlanEntries": 0,
+        "bindingPlansBuilt": 0,
+        "bindingPlanValidations": 0,
+        "draws": 12361329,
+        "indirectDraws": 914628,
+        "dispatches": 1556345,
+        "sampleFrame": 9900,
+        "reuseComputePass": true,
+        "computePassesOpened": 178228,
+        "computePassesReused": 1348414,
+        "renderPassesOpened": 1936361
+      }
+    }
+  },
+  "inputs": {
+    "control": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-control-input-retry-20261106.json",
+        "sha256": "c25f68c373b077f39a30e174670f1c7d176c36a0fb9e66c6e0f51c96d4ab0bf5"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "2b11f1cb225bd26cb3883a08c143fd03eed9c6dd2c67619fc2322f3c207e83d6"
+      },
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3452,
+            "fps": 113.55688996229534,
+            "low1Fps": 43.78228943784062,
+            "p50": 8.245000004768372,
+            "p95": 18.469999998807907,
+            "p99": 20.28999999910593,
+            "maximum": 29.140000000596046
+          },
+          "workload": {
+            "draws": 1753.1005747126437,
+            "dispatches": 150.83218390804598,
+            "pending": 195.47758620689655,
+            "ready": 438.0594827586207
+          },
+          "display": {
+            "visual": 113.22033898305085,
+            "submitted": 113.52542372881356,
+            "refresh": 339.20338983050846,
+            "ratio": 0.9973126306360107
+          },
+          "gpu": {
+            "samples": 3453,
+            "pending": 3,
+            "peak": 3,
+            "meanLatency": 12.227867072047339,
+            "maxLatency": 42.375
+          },
+          "cameraStart": {
+            "x": 414.6868844355664,
+            "y": -319.6764878307123,
+            "z": 156.6484216061614,
+            "pitch": 3.3289900692179906,
+            "yaw": 31.956801837310184
+          },
+          "cameraEnd": {
+            "x": 421.99634077109886,
+            "y": -420.3868385871199,
+            "z": 156.64841977000196,
+            "pitch": 0.7142908438109142,
+            "yaw": -42.29731561429798
+          },
+          "errors": [],
+          "travelCm": 2652.454202560831,
+          "turnDegrees": 1712.4964242149144,
+          "pass": true,
+          "ownerBudget": [
+            6842,
+            6844,
+            6845,
+            3,
+            6842,
+            3,
+            1,
+            2
+          ],
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 7106,
+            "resumed": 7131
+          },
+          "gpuP99Ms": 32.46500000357628
+        }
+      ]
+    },
+    "candidate": {
+      "raw": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-candidate-input-retry-20261106.json",
+        "sha256": "a854e29b7fbe01100acf736316ddc492250d45a9582d0b6708632545c2b9f6b1"
+      },
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-local-clock-motion.cjs",
+        "sha256": "2b11f1cb225bd26cb3883a08c143fd03eed9c6dd2c67619fc2322f3c207e83d6"
+      },
+      "runs": [
+        {
+          "mode": "page3",
+          "result": {
+            "samples": 3778,
+            "fps": 124.09894410783372,
+            "low1Fps": 42.77593290817824,
+            "p50": 7.700000002980232,
+            "p95": 16.625,
+            "p99": 19.66499999910593,
+            "maximum": 39.9100000038743
+          },
+          "workload": {
+            "draws": 1416.1714285714286,
+            "dispatches": 138.85687830687831,
+            "pending": 159.07275132275132,
+            "ready": 338.1142857142857
+          },
+          "display": {
+            "visual": 124.28813559322033,
+            "submitted": 124.61016949152543,
+            "refresh": 345.9491525423729,
+            "ratio": 0.9974156692056583
+          },
+          "gpu": {
+            "samples": 3779,
+            "pending": 2,
+            "peak": 3,
+            "meanLatency": 11.144437682040314,
+            "maxLatency": 53.07000000029802
+          },
+          "cameraStart": {
+            "x": 409.8994882963972,
+            "y": -305.17948003097354,
+            "z": 156.64842085839808,
+            "pitch": 0.5856606513262064,
+            "yaw": 9.683058358728884
+          },
+          "cameraEnd": {
+            "x": 439.2174107778824,
+            "y": -410.243501676035,
+            "z": 156.64841960599736,
+            "pitch": 2.026624902617203,
+            "yaw": -71.59054052643478
+          },
+          "errors": [],
+          "travelCm": 2717.520151330721,
+          "turnDegrees": 1764.3432249519974,
+          "pass": true,
+          "ownerBudget": [
+            7161,
+            7162,
+            7163,
+            3,
+            7161,
+            3,
+            1,
+            2
+          ],
+          "visibility": {
+            "method": "synthetic-document-visibility-event",
+            "paused": 7431,
+            "resumed": 7457
+          },
+          "gpuP99Ms": 30.564999997615814
+        }
+      ]
+    }
+  },
+  "build": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-shadow-clear-build-report-20261106.json",
+    "sha256": "eda10f76d4dff7cc3042a4425659e87c0ae67b5ec18560a904c1b5aa618ed1a0"
+  },
+  "implementation": {
+    "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\LightRendering.cpp",
+    "sha256": "afc144d07c4c2d8413b812203b69605fc28a006bc107d82b26544bde783c2794"
+  },
+  "buildHost": {
+    "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Renderer\\Private\\LightRendering.cpp",
+    "sha256": "afc144d07c4c2d8413b812203b69605fc28a006bc107d82b26544bde783c2794"
+  },
+  "translationUnit": {
+    "source": {
+      "sha256": "e882f8f83145ee0ce75532e50a072780f04906eb6e6af66a0325ef863adb405e",
+      "file": "G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/Renderer/Module.Renderer.9.cpp"
+    },
+    "object": {
+      "sha256": "a5abfecd3c77ee130bcb9ca76c2d4efc771eac334ee6b7fbb285055e9fa6d112",
+      "file": "G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/Renderer/Module.Renderer.9.cpp.o"
+    },
+    "response": {
+      "sha256": "fcab0ade026efb8b4fee80c77c23a62c3da25c8deaa36370651eeba0acb766ff",
+      "file": "G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/Renderer/Module.Renderer.9.cpp.o.rsp"
+    },
+    "definitions": {
+      "sha256": "cdcf1b35decb42f5d0c4348120b0a98ca51a4ed522f725dba2394f79f0746ed8",
+      "file": "G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/Renderer/Definitions.h"
+    }
+  },
+  "visuals": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\turning-clear-views-20261106.json",
+    "sha256": "9c6dbc7eb6d0e8da40c92de314c00d8320a75de4a47dc02edd508a0577aae168"
+  }
+}

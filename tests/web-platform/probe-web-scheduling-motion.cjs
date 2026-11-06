@@ -9,23 +9,48 @@ const modes=(option('modes')||'owner,local,local,owner').split(',');
 assert(modes.every(v=>['owner','local','page3','page4'].includes(v)));
 const seconds=Number(option('seconds')||20),warmup=Number(option('warmup')||15);
 const width=Number(option('width')||2289),height=Number(option('height')||1287);
+const apiCounts=process.argv.includes('--api-counts'),profileWorkers=process.argv.includes('--profile-workers');
 assert(seconds>=5&&seconds<=60&&warmup>=5&&warmup<=60);
 assert(Number.isInteger(width)&&Number.isInteger(height)&&width>=640&&height>=480);
 const base=path.join(__dirname,'build',folder),output=path.join(__dirname,'results',tag);
 assert(!fs.existsSync(output+'.json'),'Use a fresh measurement tag');
 fs.copyFileSync(__filename,output+'-source.cjs');
 const report={date:new Date().toISOString(),folder,modes,seconds,warmup,width,height,pass:false,runs:[],qualityOverrides:[],
+  apiCounts,profileWorkers,performanceTiming:!apiCounts,
   source:audit(output+'-source.cjs'),
   packageFiles:['index.html','UEWebEngineThreads.js','UEWebEngineThreads.wasm','config-files.json','content-files.json',
     'web-engine-host.js','web-engine-worker.js'].map(f=>audit(path.join(base,f))),
   methodology:'Visible Edge, identical package/settings; explicit PSO precaching enabled and completed before capture. First-area is the first traversal per engine session, with browser/driver caches retained. Moving/turning routes warmed before steady measurements. A disabled-by-default benchmark updates the camera directly before every Game tick using wall-clock interpolation. RPC is used only to start/reset a route. This scripted camera tour bypasses pawn collision and is not a keyboard/mouse latency test. No profiler, browser trace, per-draw wrapper or extra GPU query. FPS measures RHI submission throughput.'};
 const save=()=>fs.writeFileSync(output+'.json',JSON.stringify(report,null,2)+'\n');
-function install(){
+function install(countAPIs){
   const c=globalThis.__motionCapture={active:false,times:[],cameras:[],counts:{},events:[]};
   let frame=0,camera,lastCamera=-Infinity;
   Object.defineProperty(globalThis,'__webRHIFrames',{configurable:true,get:()=>frame,set(v){
     if(c.active&&v>frame)c.times.push(performance.now());frame=v;
   }});
+  if(countAPIs){
+    const views=new WeakMap(),passes=new WeakMap();
+    const view=GPUTexture.prototype.createView,begin=GPUCommandEncoder.prototype.beginRenderPass;
+    GPUTexture.prototype.createView=function(...args){const v=view.apply(this,args);views.set(v,this.label||'unnamed');return v;};
+    GPUCommandEncoder.prototype.beginRenderPass=function(d){
+      const key='pass:'+((d.colorAttachments||[]).map(a=>views.get(a?.view)||'-').join(',')||'depth')+':'+(views.get(d.depthStencilAttachment?.view)||'-');
+      c.counts[key]=(c.counts[key]||0)+1;const p=begin.call(this,d);passes.set(p,key);return p;
+    };
+    for(const name of ['draw','drawIndexed','drawIndirect','drawIndexedIndirect']){
+      const original=GPURenderPassEncoder.prototype[name];GPURenderPassEncoder.prototype[name]=function(...args){
+        const key='draw:'+passes.get(this);c.counts[key]=(c.counts[key]||0)+1;return original.apply(this,args);
+      };
+    }
+  }
+  if(countAPIs)for(const [type,names] of [[GPUDevice,['createBindGroup','createBuffer','createTexture','createCommandEncoder']],
+    [GPUTexture,['createView']],[GPUCommandEncoder,['beginRenderPass','beginComputePass','finish']],
+    [GPUQueue,['submit','writeBuffer']]])for(const name of names){
+    const original=type.prototype[name];
+    type.prototype[name]=function(...args){
+      const key=type.name+'.'+name;c.counts[key]=(c.counts[key]||0)+1;
+      return original.apply(this,args);
+    };
+  }
   Object.defineProperty(globalThis,'__webDefaultCamera',{configurable:true,get:()=>camera,set(v){
     camera=v;const now=performance.now();if(c.active&&now-lastCamera>=100){
       c.cameras.push({time:now,...v});lastCamera=now;
@@ -85,7 +110,7 @@ let context,log;
     context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/scheduling-motion-pso'),
       {channel:'msedge',headless:false,viewport:{width,height},deviceScaleFactor:1});
     await context.route('**/web-engine-worker.js?*',async route=>{
-      const response=await route.fetch();await route.fulfill({response,body:'('+install.toString()+')();\n'+await response.text()});
+      const response=await route.fetch();await route.fulfill({response,body:'('+install.toString()+')('+apiCounts+');\n'+await response.text()});
     });
     const page=context.pages()[0],cdp=await context.newCDPSession(page);
     await cdp.send('Input.setIgnoreInputEvents',{ignore:true});
@@ -105,7 +130,8 @@ let context,log;
     const state=()=>owner.evaluate(()=>({frame:__webRHIFrames,game:__webEngineFrames,camera:__webDefaultCamera,
       view:__webRenderView,settings:__webProjectSettings,streaming:__webTextureStreaming,
       pso:__webPSOPrecache,optimization:__webOptimizationRHI,clock:__webGameFrameClock,wake:__webRHIWakeScheduler,
-      history:__webOcclusionHistory,motion:globalThis.__webMotionBenchmark,
+      history:__webOcclusionHistory,occlusion:__webOcclusionRHI,stages:__webThreadStages,
+      gpuBudget:typeof frameScheduler!=='undefined'&&frameScheduler?Array.from(frameScheduler.state):null,motion:globalThis.__webMotionBenchmark,
       arguments:Module.arguments,counts:__motionCapture.counts,failure:globalThis.__webEngineFailure}));
     async function settled(){
       const deadline=Date.now()+120000;
@@ -149,6 +175,7 @@ let context,log;
       if(kind==='turning')assert(summary.turnDegrees>300&&summary.travelCm<1,'Camera must rotate continuously in place');
       else assert(summary.travelCm>500&&summary.movingSampleFraction>.8,'Camera must actually move throughout capture');
       const phase={name,kind,before,after,driver,data,summary};run.phases.push(phase);save();
+      if(frameBudget){assert(after.gpuBudget[3]<=frameBudget&&after.gpuBudget[5]<=frameBudget);assert(after.gpuBudget[7]<=2);}
       console.log(JSON.stringify({index:run.index,mode,phase:name,...summary,intervals:undefined}));
       await page.locator('canvas').screenshot({path:output+'-'+run.index+'-'+name+'.png'});
       return phase;
@@ -163,6 +190,12 @@ let context,log;
       }else phase.steadyAccepted=true;
     }
     await capture('repeat-area','first-area');
+    if(profileWorkers){
+      await setStart('turning');
+      await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',2,20));
+      run.profiles=await require('./web-worker-cpu-profiler.cjs')(context,output+'-'+run.index+'-turning-cpu',8);
+      await route('turning',0);
+    }
     run.final=await state();assert.equal(run.final.optimization.asyncPrecacheFailed,0);run.pass=true;save();
     await context.close();context=null;log.end();log=null;
   }

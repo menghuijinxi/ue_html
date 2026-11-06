@@ -2,17 +2,29 @@
 // Preserve historical packages; create an independently versioned candidate.
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const {writeVersions}=require('./asset-versions.cjs');
-const {audit}=require('./content-file-metadata.cjs');
+const {audit,metadata}=require('./content-file-metadata.cjs');
 const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3);
 const baseline=option('baseline')||'villa-scheduling-pipeline-v74',name=option('output');
 assert(name && [baseline,name].every(v=>/^[a-z0-9-]+$/.test(v)));
 const source=path.join(__dirname,'build',baseline),dest=path.join(__dirname,'build',name);
 const versions=JSON.parse(fs.readFileSync(path.join(source,'asset-versions.json')));
+const runtimeBuild=option('runtime-build');
+assert(!runtimeBuild||!process.argv.includes('--owner-lookahead'),'Runtime replacement and owner lookahead must be tested separately');
+let build;
+if(runtimeBuild){
+  build=JSON.parse(fs.readFileSync(runtimeBuild,'utf8').replace(/^\uFEFF/,''));
+  assert(build.pass&&build.threads&&build.buildSucceeded&&build.exitCode===0&&
+    (build.fullLinkAttempted||build.fullLinkVerified)&&!build.trace&&!build.simd);
+  for(const item of [...build.sourceFiles,...build.products])assert.equal(audit(item.file).sha256,item.sha256);
+  for(const object of build.objects)for(const key of ['object','response','definitions','source'])
+    assert.equal(audit(object[key].file).sha256,object[key].sha256);
+}
 for(const [n,v] of Object.entries(versions)){
   assert.equal(path.basename(n),n);assert.equal(audit(path.join(source,n)).sha256,v.sha256,'Source package changed: '+n);
 }
 assert(!fs.existsSync(dest));fs.mkdirSync(dest);
 const changed=new Set(['index.html','config-files.json','asset-versions.json','web-engine-host.js']);
+if(build){changed.add('UEWebEngineThreads.js');changed.add('UEWebEngineThreads.wasm');}
 const lookahead=process.argv.includes('--owner-lookahead');
 const mergeCompute=process.argv.includes('--merge-compute');
 const replayScratch=process.argv.includes('--replay-scratch');
@@ -22,6 +34,8 @@ if(mergeCompute||replayScratch||currentWorker)changed.add('web-engine-worker.js'
 // Copy only audited runtime products. Old comparison pages and launch/readme
 // files can describe another clock mode and must not appear in a new candidate.
 for(const f of Object.keys(versions))if(!changed.has(f))fs.linkSync(path.join(source,f),path.join(dest,f));
+if(build)for(const name of ['UEWebEngineThreads.js','UEWebEngineThreads.wasm'])
+  fs.copyFileSync(build.products.find(p=>path.basename(p.file)===name).file,path.join(dest,name));
 fs.copyFileSync(path.join(__dirname,'web-engine-host.js'),path.join(dest,'web-engine-host.js'));
 const configs=JSON.parse(fs.readFileSync(path.join(source,'config-files.json')));
 const config=configs.find(v=>v.path==='/Engine/Platforms/Web/Config/WebEngine.ini');assert(config);
@@ -32,6 +46,7 @@ if(process.argv.includes('--bundles'))settings['r.WebGPU.RenderBundles']=1;
 if(process.argv.includes('--staging'))settings['r.WebGPU.StagingUploadPages']=1;
 if(process.argv.includes('--reuse-compute'))settings['r.WebGPU.ReuseComputePass']=1;
 if(process.argv.includes('--merge-raster'))settings['r.WebGPU.RDGMergeRenderPasses']=1;
+if(process.argv.includes('--merge-shadow-clear'))settings['r.WebGPU.MergeShadowMaskClear']=1;
 if(process.argv.includes('--batch-submissions'))settings['r.WebGPU.BatchSubmissions']=1;
 if(process.argv.includes('--reuse-present'))settings['r.WebGPU.ReusePresentEncoder']=1;
 if(process.argv.includes('--frame-uniforms'))settings['r.WebGPU.FrameUniformSnapshots']=1;
@@ -48,6 +63,10 @@ fs.writeFileSync(path.join(dest,'config-files.json'),JSON.stringify(configs));
 let html=fs.readFileSync(path.join(source,'index.html'),'utf8');
 const match=html.match(/const localRuntimeAssets = (\{[^\n]+\});/);assert(match);
 const assets=JSON.parse(match[1]);assets.localFrameBudget=0;assets.localFrameBudgetMode='submitted';
+if(build){
+  for(const name of ['UEWebEngineThreads.js','UEWebEngineThreads.wasm'])assets.versions[name]=audit(path.join(dest,name)).sha256;
+  assets.wasm=metadata(path.join(dest,'UEWebEngineThreads.wasm'),'UEWebEngineThreads.wasm');
+}
 if(mergeCompute||replayScratch||currentWorker){
   const worker=(replayScratch?'globalThis.__webReuseReplayScratch=true;\n':'')+
     (mergeCompute?'('+require('./web-compute-pass-merge.cjs').toString()+')();\n':'')+
@@ -68,6 +87,6 @@ fs.writeFileSync(path.join(dest,'index.html'),html);
 const products=Object.keys(versions).map(n=>audit(path.join(dest,n)));
 writeVersions(dest,products);
 fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
-  performanceAccepted:false,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
+  performanceAccepted:false,runtimeBuild:runtimeBuild?audit(runtimeBuild):null,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
   candidateManifest:audit(path.join(dest,'asset-versions.json'))},null,2));
 console.log(dest);
