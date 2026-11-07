@@ -11,6 +11,29 @@ public class WebGPURHI : ModuleRules
             System.Environment.GetEnvironmentVariable("WEBGPU_NATIVE_PROBE_NO_OPTIMIZE") == "1")
             OptimizeCode = CodeOptimization.Never;
         PrivateDependencyModuleNames.AddRange(new string[] { "Core", "RHI", "RHICore", "RenderCore", "Json" });
+        if (Target.bBuildEditor)
+        {
+            PrivateDependencyModuleNames.AddRange(new string[] { "CoreUObject", "Engine", "TargetPlatform", "WebGPUShaderFormat" });
+            PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/Engine/Internal"));
+            PrivateIncludePaths.Add(Path.Combine(ModuleDirectory, "../../Intermediate/NaniteUploaderProbe"));
+            PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/Engine/Private"));
+            PrivateIncludePaths.Add(Path.GetFullPath(Path.Combine(ModuleDirectory,
+                "../../../../../../reference-engine/Engine/Source/Runtime/RenderCore/Public")));
+            string UploaderSource = Path.GetFullPath(Path.Combine(ModuleDirectory,
+                "../../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite"));
+            string UploaderProbe = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../Intermediate/NaniteUploaderProbe"));
+            Directory.CreateDirectory(UploaderProbe);
+            foreach (string Name in new[] { "NaniteStreamingPageUploader.h", "NaniteStreamingPageUploader.cpp" })
+            {
+                string Input = Path.Combine(UploaderSource, Name);
+                ExternalDependencies.Add(Input);
+                string Text = File.ReadAllText(Input).Replace("FStreamingPageUploader", "FWebProbeStreamingPageUploader")
+                    .Replace("FTranscodePageToGPU_CS", "FWebProbeTranscodePageToGPU_CS")
+                    .Replace("r.Nanite.Streaming.", "r.WebProbe.Nanite.Streaming.");
+                string Output = Path.Combine(UploaderProbe, Name);
+                if (!File.Exists(Output) || File.ReadAllText(Output) != Text) File.WriteAllText(Output, Text);
+            }
+        }
         PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHICore/Internal"));
         PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RHI/Internal"));
         PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/RenderCore/Private"));
@@ -21,6 +44,7 @@ public class WebGPURHI : ModuleRules
         PrivateIncludePaths.Add(Path.Combine(Dawn, "include"));
         PrivateDefinitions.Add("WGPU_SHARED_LIBRARY=1");
         PublicAdditionalLibraries.Add(Path.Combine(DawnHost, "WebGPUHost.lib"));
+        RuntimeDependencies.Add("$(PluginDir)/Binaries/Win64/WebGPUHost.dll", Path.Combine(DawnHost, "WebGPUHost.dll"));
         PublicSystemLibraries.Add("user32.lib");
     }
 }

@@ -1,7 +1,8 @@
 # Nanite WebGPU 接入记录
 
 更新：2026-11-07。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
-本次增加显式 Web Cook 数据保留入口及 Cook 资源序列化/重载验证。
+已增加显式 Web Cook 数据保留入口、Cook 资源序列化/重载，以及实际运行时 uploader
+的 Web 转码调度适配与原生 Dawn RHI 验证。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -58,7 +59,8 @@ cluster 层级剔除、原始 Lit 材质或默认示例关卡。
 `NaniteTranscode.usf` 仅在 Web 分支移除屏障前的 lane 提前退出，以及引用数量为零的
 提前退出；其他平台保留原实现。Web 调度必须保证工作组不大于设备最小 subgroup，
 本测试使用 32 线程并检查 `subgroupMinSize >= 32`，不满足即拒绝。
-尚未验证可变 subgroup 的其他 GPU，也未将这一限制接入完整 UE streaming uploader。
+尚未验证可变 subgroup 的其他 GPU。2026-11-07 已将这一限制接入 UE streaming uploader，
+调度验证及剩余边界见后文。
 
 固定版本 Tint 库提供 `allow_non_uniform_subgroup_operations`，其 CLI 尚未暴露。
 新增 `tint_nanite.exe` 使用同版库，将原算法活跃 lane 前缀扫描和末尾不满 wave 的操作
@@ -133,10 +135,62 @@ node tests/web-platform/collect-nanite-cook-evidence.cjs <本次输出目录>/re
 `tests/web-platform/build/tint-nanite/support/src/utils/compiler.h`，仅 SHA-256 与固定版本
 匹配时复用；下载与校验要求没有放宽。
 
-边界：验证的是 Cook **资源序列化**与重载后的 GPU 几何链路，尚未运行完整关卡 Cook、
-打包加载或浏览器内 UE Nanite Renderer。未接入运行时 uploader、层级 LOD/剔除、
-Nanite VS/PS/微三角形光栅、原材质及缺页流送。原 uploader 的默认最大 wave 选择
-仍需适配 Web 转码的工作组约束，RHI 的 wave 能力及实际设备下限也需一并接入。
+此阶段验证的是 Cook **资源序列化**与重载后的 GPU 几何链路，尚未运行完整关卡 Cook、
+打包加载或浏览器内 UE Nanite Renderer。下节继续接入运行时 uploader 的工作组约束
+及 RHI 设备能力；层级 LOD/剔除、Nanite 光栅、原材质及缺页流送仍未完成。
+
+## 2026-11-07：运行时页上传调度
+
+参考引擎的 `NaniteStreamingPageUploader.cpp` 现在为 Web 桌面平台单独编译
+`GROUP_SIZE=32` 的独立/引用两阶段转码 permutation。该入口不依赖完整 Nanite
+或通用 wave 平台声明，ES3.1 不准入。运行时要求设备已启用 subgroups、最小宽度
+至少 32、最大宽度不小于最小宽度；控制台覆盖只接受 0（自动）或 32，否则明确失败。
+Web 的 32 是工作组大小，不是请求固定 wave 宽度，故最小 subgroup 为 64 的设备
+不会被原生 wave precache 策略误排除；这类设备目前仅验证选择策略，未实机验证。
+
+共享 WebGPURHI 初始化从适配器查询 subgroup 范围，并检查设备实际获授的
+`Subgroups` 特性，再填写 `GRHISupportsWaveOperations` 与最小/最大 wave 宽度。
+Web uploader 关闭 async compute，沿用原有独立阶段、依赖拓扑排序、引用阶段的
+RDG 调度和参数绑定。`bSupportsNanite`、uint64 原子及通用 Wave 的 DDPI 声明未开启。
+
+新增 `WebNaniteUploaderRHIProbe`，直接编译参考引擎 uploader 源码，只重命名两个
+类和控制台变量前缀以便与安装版 Engine DLL 共存。测试使用真正的 GlobalShader
+参数元数据、`Init` / `Add_GetRef` / `ResourceUploadTo`、RDG 和 WebGPURHI，
+没有用手写绑定或测试 dispatch 代替 uploader。生成源码和参与构建的文件均记录哈希。
+测试模块提前到 `PostConfigInit` 注册 shader，并在工作区暂存 Dawn host DLL。
+
+| 检查 | 结果 |
+| --- | --- |
+| 工作组/平台策略 | 21 项通过；含无 subgroups、下限不足、非法覆盖、可变宽度及 SM5/ES3.1 permutation |
+| UE RDG + 原生 Dawn | recorded/bypass 各 4 组，共 8 组通过，零 GPU 校验错误 |
+| 普通与偏移上传 | 目标偏移 0 / 256 字节，各执行独立与引用两次 dispatch；保护区不变 |
+| 依赖排序 | 两个真实根页添加合成依赖边，先提交子页；执行 3 次 dispatch，覆盖非零引用阶段 cluster 起点 |
+| 缓冲生命周期 | 同一 RDG 图分两次上传执行 4 次 dispatch；跨图复用及空批次检查通过 |
+| GPU 内容 | 共 12 份 32,768 字节页与浏览器 Cook 页转码结果逐字节一致 |
+| Wasm64 编译 | 实际 Engine uploader 与 BrowserDynamicRHI 两个对象编译通过；未重新链接运行包 |
+| Cook/浏览器回归 | 4 种 Cook 保留策略与 Edge 的 2 组页转码/几何解码通过，每组核对 960 个叶三角形 |
+
+本次原生设备为 RTX 4090 / Dawn D3D12，subgroup min/max=32；浏览器报告
+Edge `157.0.4341.42` / Lovelace，版本已不同于前节较早的 Cook 验证。页哈希仍为
+`81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95`。
+合成依赖只验证排序及调度，不等于验证真实跨页顶点引用或流送 fixup。
+本次没有重复前一机器的 Chrome、可见性原子和深度/HZB 验收。
+
+工作区 Engine 覆盖准备和链接前审计均纳入 uploader 源文件，安装目录未修改。
+证据为 `tests/web-platform/evidence/nanite-uploader-20261107.json`；原生输出位于
+`results/nanite-uploader`，独立 Wasm 编译输出位于 `results/nanite-uploader-wasm`。
+复现时先运行前节 Cook 验证，再执行：
+
+```powershell
+./tests/web-platform/probe-nanite-uploader.ps1 -Engine D:/UE_5.8 -CookedAsset <Cook输出目录>/sm5-retained
+$env:UE_ENGINE_ROOT='D:/UE_5.8/Engine'
+node tests/web-platform/compile-web-nanite.cjs --uploader
+node tests/web-platform/collect-nanite-uploader-evidence.cjs <Uploader输出目录>/verified.json <Cook输出目录>/results.json
+```
+
+Uploader 的 `-SkipBuild` 要求已有构建记录，且源码、生成源码和 DLL 哈希均一致。
+Wasm 检查要求先准备线程版引擎的 UBT 响应文件。当前执行证据是原生 Dawn 上的
+实际 uploader 加浏览器 shader 回归，尚未执行浏览器内完整 UE uploader 或关卡。
 
 ## 下游接入
 
@@ -256,15 +310,16 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 - 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
   在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
-- Nanite 完整关卡 Cook/打包加载验收、完整运行时页上传、cluster 层级 LOD 与剔除、
+- Nanite 完整关卡 Cook/打包加载验收、浏览器 UE 中的运行时页上传、cluster 层级 LOD 与剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
 - 不具备新原子特性的设备兼容路径。
 
-`bSupportsNanite`、`bSupportsUInt64ImageAtomics` 和 Wave 平台声明保持原值。
+`bSupportsNanite`、`bSupportsUInt64ImageAtomics` 和 Wave 平台声明保持原值；
+RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段验证带 Nanite 资产的完整 Cook 包并将驻留页接入运行时 uploader，
+下一阶段验证带 Nanite 资产的完整 Cook 包和浏览器 UE 中的驻留页上传，
 推进 cluster 层级剔除和固定不透明材质的 Nanite VS/PS 路径，再扩展材质与流送。

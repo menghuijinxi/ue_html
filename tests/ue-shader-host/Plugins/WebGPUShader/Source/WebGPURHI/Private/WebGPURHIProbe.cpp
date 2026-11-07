@@ -20,6 +20,10 @@
 #include "WebGPUDistanceFieldProbe.h"
 #include "WebGPUNaniteVisibilityProbe.h"
 
+#if WITH_EDITOR
+bool RunWebGPUNaniteUploaderProbe(IDynamicRHIModule& Module, const FString& Directory, const FString& Output);
+#endif
+
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -643,6 +647,10 @@ class FWebGPURHIModule final : public IWebGPURHIProbeModule
     }
     bool RunProbe(const FString &Shaders, const FString &Materials, const FString &Output) override
     {
+#if WITH_EDITOR
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebNaniteUploaderRHIProbe")))
+            return RunWebGPUNaniteUploaderProbe(*this, Shaders, Output);
+#endif
         if (FParse::Param(FCommandLine::Get(), TEXT("WebNaniteVisibilityRHIProbe")))
             return RunWebGPUNaniteVisibilityProbe(*this, Shaders, Output);
         if (FParse::Param(FCommandLine::Get(), TEXT("WebLumenStorageRHIProbe")))

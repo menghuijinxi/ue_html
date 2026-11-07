@@ -36,7 +36,7 @@
     {
       "Name": "WebGPURHI",
       "Type": "Runtime",
-      "LoadingPhase": "None",
+      "LoadingPhase": "PostConfigInit",
       "PlatformAllowList": ["Win64"]
     }
   ]

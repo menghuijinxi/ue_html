@@ -986,6 +986,13 @@ void FWebGPUDynamicRHI::Init()
     }
     if (StartupProbeMode || GlobalProbeMode)
     {
+        WGPUAdapterInfo WaveInfo = WGPU_ADAPTER_INFO_INIT;
+        const bool HasWaveInfo = wgpuAdapterGetInfo(Adapter, &WaveInfo) == WGPUStatus_Success;
+        GRHISupportsWaveOperations = HasWaveInfo && wgpuDeviceHasFeature(Device, WGPUFeatureName_Subgroups) &&
+            WaveInfo.subgroupMinSize > 0 && WaveInfo.subgroupMaxSize >= WaveInfo.subgroupMinSize;
+        GRHIMinimumWaveSize = GRHISupportsWaveOperations ? WaveInfo.subgroupMinSize : 0;
+        GRHIMaximumWaveSize = GRHISupportsWaveOperations ? WaveInfo.subgroupMaxSize : 0;
+        wgpuAdapterInfoFreeMembers(WaveInfo);
         GRHIMaxDispatchThreadGroupsPerDimension = FIntVector(Limits.maxComputeWorkgroupsPerDimension);
         GRHIGlobals.MaxComputeSharedMemory = Limits.maxComputeWorkgroupStorageSize;
     }
@@ -1187,7 +1194,7 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     }
 #endif
     ++EndFrames;
-#if PLATFORM_WEB
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
     if (EndFrames % 30 == 0)
     {
         EM_ASM({globalThis.__webStagingReadbackPool = ({enabled:!!$0, created:$1, reused:$2, entries:$3, bytes:$4});},

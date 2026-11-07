@@ -138,6 +138,7 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/FXRenderingUtils.cpp'
     foreach ($taskShaderOverlay in @('RenderCore/Private/Shader.cpp', 'RenderCore/Private/RenderUtils.cpp',
+        'Engine/Private/Nanite/NaniteStreamingPageUploader.cpp',
         'Engine/Private/UnrealEngine.cpp',
         'Engine/Private/SparseVolumeTexture/SparseVolumeTextureUpload.cpp',
         'Engine/Private/GPUSort.cpp', 'Engine/Private/GPUBitonicSort.cpp', 'Engine/Private/GPUSortManager.cpp',
