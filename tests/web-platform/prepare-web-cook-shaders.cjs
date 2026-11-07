@@ -13,6 +13,7 @@ const storageDeclaration = (before, format) => ({before, after: [
   '#endif', before,
 ].join('\n')});
 const overrides = new Map([
+  ...require('./web-nanite-shader-overrides.cjs'),
   ...require('./web-tsr-shader-overrides.cjs'),
   ...require('./web-translucency-shader-overrides.cjs'),
   ...require('./web-lumen-shader-overrides.cjs'),
@@ -142,6 +143,12 @@ const overrides = new Map([
   ['Private/ShadowDepthCommon.ush', [{
     before: '#if SUPPORT_SHADOW_DEPTH_POINT\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
     after: '#if SUPPORT_SHADOW_DEPTH_POINT && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
+  }, {
+    before: '#define INTERPOLATE_POSITION (MATERIALBLENDING_MASKED)',
+    after: ['#define INTERPOLATE_POSITION (MATERIALBLENDING_MASKED)', '',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '// VSM needs hardware clipping even when the platform\'s global clip-plane path is disabled.',
+      '#undef SV_ClipDistance', '#endif'].join('\n'),
   }]],
   ['Private/ShadowDepthVertexShader.usf', ['VFIntermediates', 'Input'].map((input, index) => ({
     before: [
@@ -599,6 +606,8 @@ const overrides = new Map([
       '}', '#endif'].join('\n'),
   }]],
 ]);
+for (const [file, changes] of require('./web-virtual-texture-shader-overrides.cjs'))
+  overrides.set(file, [...(overrides.get(file) || []), ...changes]);
 const reportFile = path.join(__dirname, 'results/web-cook-shader-sources.json');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const audit = file => ({file, sha256: sha(fs.readFileSync(file))});
@@ -679,7 +688,8 @@ function prepare() {
     }
   }
   copy();
-  for (const relative of ['Private/WebTranslucencyVolume.ush', 'Private/Lumen/WebLumenAdaptiveProbe.usf']) {
+  for (const relative of ['Private/WebTranslucencyVolume.ush', 'Private/Lumen/WebLumenAdaptiveProbe.usf',
+    'Private/Nanite/WebNaniteVisibility.usf']) {
     assert(!fs.existsSync(path.join(stock, relative)), 'Web-only shaders must not overwrite installed inputs');
     const source = path.join(root, 'reference-engine/Engine/Shaders', relative);
     const destination = path.join(output, relative);
@@ -693,8 +703,10 @@ function prepare() {
   }
   const report = {date: new Date().toISOString(), pass: true, output,
     sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'),
+      require.resolve('./web-nanite-shader-overrides.cjs'),
       require.resolve('./web-translucency-shader-overrides.cjs'),
-      require.resolve('./web-lumen-shader-overrides.cjs'), ...overrideFiles].map(audit),
+      require.resolve('./web-lumen-shader-overrides.cjs'),
+      require.resolve('./web-virtual-texture-shader-overrides.cjs'), ...overrideFiles].map(audit),
     files, installedEngineUnmodified: audit(path.join(stock, 'Private/PostProcessTonemap.usf')),
     installedInputs: [...overrides.keys()].map(relative => audit(path.join(stock, relative))),
     boundary: 'Independent native Cook shader snapshot. Audited overrides contain WebGPU decal ordering, finite math, structured buffers, explicit atmosphere/sky-capture storage image formats and indirect arguments. Other files are installed-source copies, not a complete 5.8.3 shader snapshot.'};

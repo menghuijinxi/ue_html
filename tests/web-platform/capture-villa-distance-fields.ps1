@@ -9,6 +9,8 @@ param(
     [string]$View = 'all',
     [string]$CasesFile,
     [string]$Project,
+    [ValidatePattern('^/(Game|Engine)/[a-zA-Z0-9_/]+$')]
+    [string]$Map = '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla',
     [switch]$UseProjectSettings,
     [ValidateSet('Project', 'Software', 'SoftwareReflections')][string]$LumenTracing = 'Project',
     [switch]$NoDistanceFieldResources,
@@ -77,12 +79,12 @@ if ($CasesFile) {
     $taskCases = @(Get-Content -LiteralPath $CasesFile -Raw | ConvertFrom-Json)
     if ($taskCases.Count -eq 0) { throw 'Empty comparison cases.' }
 }
-@{map = '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla'; output = $taskOutput;
+@{map = $Map; output = $taskOutput;
     width = $Width; height = $Height; warmup = $Warmup; samples = $Samples; cases = $taskCases;
     preserveProjectSettings = [bool]$UseProjectSettings} |
     ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $taskInput -Encoding utf8
 $taskArguments = @(
-    $taskProject, '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla',
+    $taskProject, $Map,
     "-WebDistanceFieldComparison=$taskInput", "-abslog=$taskOutput.log",
     '-RenderOffscreen', '-NoSplash', '-NoSound', '-NoLoadingScreen', '-unattended', '-nop4',
     '-windowed', "-ResX=$Width", "-ResY=$Height", '-ForceRes', '-NoThrottleCPU', '-d3d12', '-sm5',
@@ -105,7 +107,7 @@ $taskArguments = @(
 $taskStarted = Get-Date
 if ($UseProjectSettings) {
     if ($NoDistanceFieldResources) { throw 'Project settings cannot be combined with distance-field overrides.' }
-    $taskArguments = @($taskProject, '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla',
+    $taskArguments = @($taskProject, $Map,
         "-WebDistanceFieldComparison=$taskInput", "-abslog=$taskOutput.log",
         '-RenderOffscreen', '-NoSplash', '-NoSound', '-NoLoadingScreen', '-unattended', '-nop4',
         '-windowed', "-ResX=$Width", "-ResY=$Height", '-ForceRes', '-d3d12')

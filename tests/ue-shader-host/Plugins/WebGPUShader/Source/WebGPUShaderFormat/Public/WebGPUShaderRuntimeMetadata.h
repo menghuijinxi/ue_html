@@ -10,7 +10,7 @@ namespace UE::WebGPUShader
 {
 struct FStorageContract
 {
-    enum class EPacking { Other, VertexFetch, UNorm8x4 };
+    enum class EPacking { Other, VertexFetch, UNorm8x4, TextureUIntAtomic };
     bool ReadOnlyValid = false, ReadOnly = false, FormatValid = false, StrideValid = false, SlotValid = false;
     double Format = 0, Stride = 0, Slot = -1;
     EPacking Packing = EPacking::Other;
@@ -174,7 +174,9 @@ inline bool ReadRuntimeMetadata(FMetadataField Root, FRuntimeMetadata& Out)
             C.SlotValid = Field["vertexFetchFormatSlot"].Number(C.Slot);
             FString Packing; Field["storagePacking"].String(Packing);
             C.Packing = Packing == TEXT("vertex-fetch") ? FStorageContract::EPacking::VertexFetch :
-                Packing == TEXT("unorm8x4") ? FStorageContract::EPacking::UNorm8x4 : FStorageContract::EPacking::Other;
+                Packing == TEXT("unorm8x4") ? FStorageContract::EPacking::UNorm8x4 :
+                Packing == TEXT("texture-uint-atomic") ? FStorageContract::EPacking::TextureUIntAtomic :
+                FStorageContract::EPacking::Other;
             double UniformBytes;
             B.SingleVectorUniform = Field["storageUniformBytes"].Number(UniformBytes) && UniformBytes == 16 &&
                 B.Name == TEXT("View_DistantSkyLightLutBufferSRV") && C.ReadOnlyValid && C.ReadOnly &&

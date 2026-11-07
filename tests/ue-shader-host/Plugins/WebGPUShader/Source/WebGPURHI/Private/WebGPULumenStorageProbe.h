@@ -3,6 +3,11 @@
 #include "WebGPUGlobalScope.h"
 #include "WebGPUProbeUtils.h"
 #include "WebGPUUAVRasterProbe.h"
+#include "WebGPUTextureAtomicProbe.h"
+#include "WebGPUTextureUploadProbe.h"
+#include "WebGPUVirtualResourceViewProbe.h"
+#include "WebGPUSamplerBiasProbe.h"
+#include "WebGPUPackedShadowMaskProbe.h"
 #include "RenderingThread.h"
 #include "Serialization/JsonSerializer.h"
 #include "Math/Float16.h"
@@ -458,6 +463,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Pass &= OK;
             Data.Resources.Reset();
         }
+        for (uint32 SkyBufferBytes : {16u, 65536u})
         {
             TRefCountPtr<FWebGPUComputeShader> Shader = new FWebGPUComputeShader;
             auto& Data = Shader->Data;
@@ -520,7 +526,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             Shader->InitResourceTable();
             const float Initial[4]{0.25f, 0.5f, 1.0f, 0.75f};
             auto SkyBuffer = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(
-                TEXT("SkyAtmosphere.DistantSkyLightLutBuffer"), 16, 16, BUF_ShaderResource | BUF_UnorderedAccess | BUF_StructuredBuffer)
+                TEXT("SkyAtmosphere.DistantSkyLightLutBuffer"), SkyBufferBytes, 16, BUF_ShaderResource | BUF_UnorderedAccess | BUF_StructuredBuffer)
                 .SetInitialState(ERHIAccess::SRVCompute), Initial, sizeof(Initial));
             auto ResultBuffer = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(
                 TEXT("SkyUniformResult"), 16, 16, BUF_ShaderResource | BUF_UnorderedAccess)
@@ -556,6 +562,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
             }
             auto Case = MakeShared<FJsonObject>();
             Case->SetNumberField(TEXT("checkedValues"), 8);
+            Case->SetNumberField(TEXT("backingBufferBytes"), SkyBufferBytes);
             Case->SetBoolField(TEXT("gpuWriteThenUniformRead"), true);
             Case->SetBoolField(TEXT("pass"), OK);
             UniformCases.Add(MakeShared<FJsonValueObject>(Case));
@@ -565,9 +572,22 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         TArray<TSharedPtr<FJsonValue>> RasterCases;
         TArray<TSharedPtr<FJsonValue>> DepthAtlasCases;
         Pass &= RunWebGPUUAVRasterCases(RHI, Cmd, RasterCases, DepthAtlasCases);
+        TArray<TSharedPtr<FJsonValue>> TextureAtomicCases;
+        Pass &= RunWebGPUTextureAtomicCases(RHI, Cmd, TextureAtomicCases);
+        TArray<TSharedPtr<FJsonValue>> TextureUploadCases;
+        Pass &= RunWebGPUTextureUploadCases(RHI, Cmd, TextureUploadCases);
+        TArray<TSharedPtr<FJsonValue>> TextureViewCases;
+        Pass &= RunWebGPUVirtualResourceViewCases(RHI, Cmd, TextureViewCases);
+        const bool VolatilePass = RunWebGPUVolatilePassCase(RHI, Cmd);
+        Pass &= VolatilePass;
+        TArray<TSharedPtr<FJsonValue>> SamplerBiasCases;
+        Pass &= RunWebGPUSamplerBiasCases(RHI, Cmd, SamplerBiasCases);
+        TArray<TSharedPtr<FJsonValue>> PackedShadowMaskCases;
+        Pass &= RunWebGPUPackedShadowMaskCases(RHI, Cmd, PackedShadowMaskCases);
         Scope.PrepareShutdown();
         auto Report = MakeShared<FJsonObject>();
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
+        Report->SetArrayField(TEXT("packedShadowMaskCases"), PackedShadowMaskCases);
         Report->SetNumberField(TEXT("pipelines"), RHI.ComputePipelinesCreated);
         Report->SetArrayField(TEXT("cases"), Cases);
         Report->SetArrayField(TEXT("volumeCases"), VolumeCases);
@@ -575,6 +595,11 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("uniformCases"), UniformCases);
         Report->SetArrayField(TEXT("rasterCases"), RasterCases);
         Report->SetArrayField(TEXT("depthAtlasCases"), DepthAtlasCases);
+        Report->SetArrayField(TEXT("textureAtomicCases"), TextureAtomicCases);
+        Report->SetArrayField(TEXT("textureUploadCases"), TextureUploadCases);
+        Report->SetArrayField(TEXT("textureViewCases"), TextureViewCases);
+        Report->SetBoolField(TEXT("volatilePassVersions"), VolatilePass);
+        Report->SetArrayField(TEXT("samplerBiasCases"), SamplerBiasCases);
         TArray<TSharedPtr<FJsonValue>> Errors;
         for (const auto& Error : RHI.Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
         Report->SetArrayField(TEXT("errors"), Errors);

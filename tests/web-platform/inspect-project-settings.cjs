@@ -28,7 +28,11 @@ function inspect(project) {
   }
   // CVar set-by priority wins over INI layer order across different sections.
   for (const values of sections.values()) Object.assign(settings, values);
-  assert(!enabled(settings['r.Shadow.Virtual.Enable']), 'Virtual shadow maps are not supported by this Web target');
+  const virtualTextures = !/^(?:false|0)$/i.test(settings['r.VirtualTextures'] || '1');
+  const virtualShadows = enabled(settings['r.Shadow.Virtual.Enable']);
+  if (virtualShadows) {
+    assert(!enabled(settings['r.ForwardShading']), 'Experimental Web virtual shadow maps require deferred rendering');
+  }
   const diffuseGI = settings['r.DynamicGlobalIlluminationMethod'] === '1';
   const reflections = settings['r.ReflectionMethod'] === '1';
   const supported = !/^(?:false|0)$/i.test(settings['r.Lumen.Supported'] || '1');
@@ -39,6 +43,8 @@ function inspect(project) {
     assert(distanceFields, 'Experimental Web software Lumen requires project Generate Mesh Distance Fields');
   }
   return {project, sourceFiles: [project, ...sources].map(audit), effectiveSources, settings, distanceFields,
+    virtualTextures: {enabled: virtualTextures, experimental: true},
+    virtualShadows: {enabled: virtualShadows, geometry: 'non-nanite', experimental: true},
     lumen: {enabled: lumenEnabled, diffuseGI, reflections, supported,
       tracing: lumenEnabled ? 'software-distance-fields' : null, experimental: true},
     rendererOverrides: []};
@@ -48,5 +54,6 @@ if (require.main === module) {
   const report = inspect(process.argv[2]);
   fs.writeFileSync(process.argv[3], JSON.stringify(report, null, 2));
   console.log(JSON.stringify({project: report.project, distanceFields: report.distanceFields,
-    lumen: report.lumen, rendererOverrides: []}));
+    lumen: report.lumen, virtualTextures: report.virtualTextures,
+    virtualShadows: report.virtualShadows, rendererOverrides: []}));
 }

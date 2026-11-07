@@ -1,0 +1,64 @@
+const branch = (before, lines) => ({before, after: lines.join('\n')});
+module.exports = [['Private/Nanite/NaniteTranscode.usf', [
+  branch('\tBRANCH\n\tif (ClusterDiskHeader.NumVertexRefs == 0)\n\t{\n\t\treturn;\n\t}', [
+    '#if !COMPILER_WEBGPU', '\tBRANCH', '\tif (ClusterDiskHeader.NumVertexRefs == 0)',
+    '\t{', '\t\treturn;', '\t}', '#endif',
+  ]),
+  branch('\tif (GroupIndex >= WaveGetLaneCount())', [
+    '#if !COMPILER_WEBGPU', '\tif (GroupIndex >= WaveGetLaneCount())',
+  ]),
+  branch('\n\tconst uint WaveNumActiveLanes = min(WaveGetLaneCount(), GROUP_SIZE);', [
+    '#endif',
+    '\t// Web dispatch must choose GROUP_SIZE <= the adapter\'s minimum subgroup size.',
+    '\t// All invocations then participate; lane-dependent exits invalidate the barrier.',
+    '', '\tconst uint WaveNumActiveLanes = min(WaveGetLaneCount(), GROUP_SIZE);',
+  ]),
+]], ['Private/Nanite/NaniteWritePixel.ush', [
+  branch('RWTexture2D<UlongType>\tOutVisBuffer64;', [
+    '#if COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY && !DEPTH_ONLY',
+    '// The Web shader compiler lowers this reserved max-only resource to a packed',
+    '// atomic<vec2u> buffer. It must never be read while rasterization is in flight.',
+    'RWStructuredBuffer<uint> WebNaniteAtomicMax_Visibility;',
+    'uint2 WebNaniteVisibilitySize;', '#else',
+    'RWTexture2D<UlongType>\tOutVisBuffer64;', '#endif',
+  ]),
+  branch('void WritePixel(', ['#if !(COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY && !DEPTH_ONLY)', 'void WritePixel(']),
+  branch('\n}\n\nstruct FVisBufferPixel', ['\n}', '#endif', '', 'struct FVisBufferPixel']),
+  branch('#elif COMPILER_SUPPORTS_UINT64_IMAGE_ATOMICS\n\t\treturn UnpackUlongType', [
+    '#elif COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY && !DEPTH_ONLY',
+    '\t\t// Packed min/max has no atomic load. Final visibility is still selected',
+    '\t\t// atomically; only the optional early rejection is omitted.',
+    '\t\treturn true;', '#elif COMPILER_SUPPORTS_UINT64_IMAGE_ATOMICS',
+    '\t\treturn UnpackUlongType',
+  ]),
+  branch('\t\tInterlockedMax( OutDepthBufferArray[ PhysicalPosition ], DepthInt );\n#else', [
+    '\t\tInterlockedMax( OutDepthBufferArray[ PhysicalPosition ], DepthInt );',
+    '#elif COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY && !DEPTH_ONLY',
+    '\t#if DEPTH_ONLY || VISUALIZE',
+    '\t\t#error Web packed visibility requires the non-debug color visibility permutation',
+    '\t#endif',
+    '\t\tuint Count, Stride;',
+    '\t\tWebNaniteAtomicMax_Visibility.GetDimensions(Count, Stride);',
+    '\t\t// Division first prevents overflow before the final linear address.',
+    '\t\tif (WebNaniteVisibilitySize.x > 0 && all(Position < WebNaniteVisibilitySize) &&',
+    '\t\t\tPosition.y < Count / WebNaniteVisibilitySize.x)',
+    '\t\t{',
+    '\t\t\t// This compare-store is a compiler carrier, not an executable scalar',
+    '\t\t\t// operation. The Web compiler preserves it as one packed atomic max.',
+    '\t\t\tInterlockedCompareStore(',
+    '\t\t\t\tWebNaniteAtomicMax_Visibility[Position.y * WebNaniteVisibilitySize.x + Position.x], Value, DepthInt);',
+    '\t\t}', '#else',
+  ]),
+]], ['Public/Platform/Vulkan/VulkanCommon.ush', [
+  branch('#define COMPILER_SUPPORTS_ULONG_TYPES 1', [
+    '#if !(COMPILER_WEBGPU && WEB_NANITE_PACKED_VISIBILITY)',
+    '#define COMPILER_SUPPORTS_ULONG_TYPES 1',
+  ]),
+  branch('#if UE_BINDLESS_ENABLED\n\t// While we use descriptor indexing, declare unbounded resource arrays', [
+    '#else',
+    '// Platform.ush supplies the existing uint2 packing helpers for Web visibility.',
+    '#define COMPILER_SUPPORTS_UINT64_IMAGE_ATOMICS 0',
+    '#endif', '', '#if UE_BINDLESS_ENABLED',
+    '\t// While we use descriptor indexing, declare unbounded resource arrays',
+  ]),
+]]];

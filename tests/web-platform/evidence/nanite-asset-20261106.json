@@ -1,0 +1,417 @@
+{
+  "date": "2026-11-06T15:41:00.039Z",
+  "pass": true,
+  "referenceCommit": "3e17c0b377ccc437af7568cf6840d043d58428cc",
+  "scope": "Real UE Nanite root pages transcoded and decoded in WebGPU. Fully resident editor export; no normal Web Cook, streaming, hierarchy traversal or material pass.",
+  "hostProcessorAffinity": 3,
+  "asset": {
+    "sourceAsset": "/Engine/BasicShapes/Sphere.Sphere",
+    "scope": "fully-resident-editor-export",
+    "webCookEnabled": false,
+    "numRootPages": 1,
+    "numClusters": 15,
+    "numInputTriangles": 960,
+    "positionPrecision": 8,
+    "gpuPageBytes": 32768,
+    "clusterIndexBits": 8,
+    "transcodeGroupSize": 32,
+    "hierarchyNodes": 1,
+    "pages": [
+      {
+        "sourceOffset": 0,
+        "diskBytes": 19764,
+        "fixupBytes": 152,
+        "numClusters": 15,
+        "dependencyCount": 0,
+        "vertexReferences": 431
+      }
+    ],
+    "sourceTriangles": 960
+  },
+  "browsers": [
+    {
+      "channel": "chrome",
+      "version": "157.0.8103.39",
+      "pass": true,
+      "adapter": {
+        "vendor": "nvidia",
+        "architecture": "ampere",
+        "subgroupMinSize": 32,
+        "subgroupMaxSize": 32,
+        "isFallbackAdapter": false
+      },
+      "cases": [
+        {
+          "prefix": 0,
+          "split": 15,
+          "leafClusters": 8,
+          "leafTriangles": 960,
+          "totalTriangles": 1842,
+          "coveredPixels": 104388,
+          "referencedBytes": 5922,
+          "windingPreserved": true,
+          "guardsPreserved": true,
+          "pass": true
+        },
+        {
+          "prefix": 256,
+          "split": 7,
+          "leafClusters": 8,
+          "leafTriangles": 960,
+          "totalTriangles": 1842,
+          "coveredPixels": 104388,
+          "referencedBytes": 5922,
+          "windingPreserved": true,
+          "guardsPreserved": true,
+          "pass": true
+        }
+      ],
+      "errors": [],
+      "gpuPageSha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+    },
+    {
+      "channel": "msedge",
+      "version": "157.0.4341.42",
+      "pass": true,
+      "adapter": {
+        "vendor": "nvidia",
+        "architecture": "ampere",
+        "subgroupMinSize": 32,
+        "subgroupMaxSize": 32,
+        "isFallbackAdapter": false
+      },
+      "cases": [
+        {
+          "prefix": 0,
+          "split": 15,
+          "leafClusters": 8,
+          "leafTriangles": 960,
+          "totalTriangles": 1842,
+          "coveredPixels": 104388,
+          "referencedBytes": 5922,
+          "windingPreserved": true,
+          "guardsPreserved": true,
+          "pass": true
+        },
+        {
+          "prefix": 256,
+          "split": 7,
+          "leafClusters": 8,
+          "leafTriangles": 960,
+          "totalTriangles": 1842,
+          "coveredPixels": 104388,
+          "referencedBytes": 5922,
+          "windingPreserved": true,
+          "guardsPreserved": true,
+          "pass": true
+        }
+      ],
+      "errors": [],
+      "gpuPageSha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+    }
+  ],
+  "converter": {
+    "cases": [
+      {
+        "entry": "ValidBarrier",
+        "pass": true,
+        "rejected": false
+      },
+      {
+        "entry": "InvalidBarrier",
+        "pass": true,
+        "rejected": true
+      },
+      {
+        "entry": "ActiveLanes",
+        "pass": true,
+        "rejected": false
+      },
+      {
+        "entry": "truncated-input",
+        "pass": true,
+        "rejected": true
+      },
+      {
+        "entry": "missing-arguments",
+        "pass": true,
+        "rejected": true
+      }
+    ],
+    "sources": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\verify-tint-nanite.cjs",
+        "sha256": "f611151843fac63724b6d11355bea3f0e48534f6fa52d4ebf42790325daec414"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\shader-fixtures\\nanite-transcode-policy.hlsl",
+        "sha256": "d21aa178ce988fcc35c05a757cf1df8d3f610e72b5dee5c4c8388fd1ff64c66b"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\dawn-v20261009.190412\\bin\\tint_nanite.exe",
+        "sha256": "753337bd0121782db1b4d5071f7f71c914028bc154dcd74396a2aaeccf6cd087"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\dxc-v1.9.2609\\bin\\x64\\dxc.exe",
+        "sha256": "aa7965b3763d9c710baaa5a28cedcc633449962a75d1391d161a85304a41b3e2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\tint-nanite\\main.cpp",
+        "sha256": "87bb7db16556a431d1e76d3bf09a16f2a803f6bfae5609dcd0dccafec4146531"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\tint-nanite\\CMakeLists.txt",
+        "sha256": "ff080d5393142f74aa6c021385f31205a52f4f843dd2f6306a3126c2c508eafc"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\dawn-v20261009.190412\\lib\\webgpu_dawn.lib",
+        "sha256": "4cda677048656ff568177a23582f0a81c1cf18bcb6bedbdadcce56044e4f625f"
+      }
+    ]
+  },
+  "regression": {
+    "browsers": [
+      {
+        "channel": "chrome",
+        "version": "157.0.8103.39",
+        "pass": true,
+        "cases": 16
+      },
+      {
+        "channel": "msedge",
+        "version": "157.0.4341.42",
+        "pass": true,
+        "cases": 16
+      }
+    ],
+    "rhi": [
+      {
+        "bypass": false,
+        "adapter": "D3D12 driver version 32.0.16.1088 NVIDIA GeForce RTX 3070",
+        "errors": [],
+        "pass": true,
+        "checks": [
+          {
+            "name": "packed-atomic-device-feature",
+            "pass": true
+          },
+          {
+            "name": "ue-packet-dispatch-subview-contention-and-guards",
+            "pass": true
+          },
+          {
+            "name": "read-only-input-preserved",
+            "pass": true
+          },
+          {
+            "name": "compute-submission",
+            "pass": true
+          },
+          {
+            "name": "rdg-clear-packed-write-resolve-extraction",
+            "pass": true
+          },
+          {
+            "name": "gpu-validation-clean",
+            "pass": true
+          },
+          {
+            "name": "host-rhi-restored",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "bypass": true,
+        "adapter": "D3D12 driver version 32.0.16.1088 NVIDIA GeForce RTX 3070",
+        "errors": [],
+        "pass": true,
+        "checks": [
+          {
+            "name": "packed-atomic-device-feature",
+            "pass": true
+          },
+          {
+            "name": "ue-packet-dispatch-subview-contention-and-guards",
+            "pass": true
+          },
+          {
+            "name": "read-only-input-preserved",
+            "pass": true
+          },
+          {
+            "name": "compute-submission",
+            "pass": true
+          },
+          {
+            "name": "rdg-clear-packed-write-resolve-extraction",
+            "pass": true
+          },
+          {
+            "name": "gpu-validation-clean",
+            "pass": true
+          },
+          {
+            "name": "host-rhi-restored",
+            "pass": true
+          }
+        ]
+      }
+    ]
+  },
+  "worker": {
+    "dll": "H:/ue_html/.tools/ue58-web-shader-worker/Engine/Binaries/Win64/ShaderCompileWorker-WebGPUShaderFormat.dll",
+    "dllSha256": "8a27f0a9540197f7feced4f89c8a826dbcafdaf4706099e8cc892c629ccfe31f",
+    "originalWorkerUnmodified": true,
+    "boundary": "Manual Program-flavor DLL built using installed SCW import libraries and UBT-generated Editor include arguments."
+  },
+  "sources": [
+    {
+      "file": "H:\\ue_html\\UE58_WEBGPU_NANITE_IMPLEMENTATION.md",
+      "sha256": "e12712751e89ce8c6276759061f7193f3f90045625d9cfcf8003c2482fee4f92"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteAssetProbe.cpp",
+      "sha256": "9601d2ef87213485cd89a2c64cbd4b0207cfae305827b1efa3c69840a3cf3ecf"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebShaderProbeCommandlet.cpp",
+      "sha256": "2185b8492c7b7d40f58a2c5e78187758c08415dbab0e6442b415f318881badeb"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\UEShaderHost.Build.cs",
+      "sha256": "bcf8c1d0f7bdfbb3810ad529050eddcfd2da52f8b0e3c3648f45ca75068a2144"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "8a60ade848bef7fb3076846ec82758c3e6c410bb07e05ee75c9cc40ea7867e36"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-nanite-asset.ps1",
+      "sha256": "ff34323795a33cd1bcc9b824aa6cc9ed56171ef57a39ac54add7eea62d48d1d7"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build-tint-nanite.ps1",
+      "sha256": "dbb10560e3720554e46ab3a3797eaac1570a8c1bdcd7712a9ea1f14c81608393"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-nanite-shader-overrides.cjs",
+      "sha256": "a3dece445a903c5453b615238babadb1035baf5464aaba6971cedaa858c2ccb3"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\collect-nanite-asset-evidence.cjs",
+      "sha256": "f95aabb6a6a5b2498a9ce986e9f27a83d2096b0c7dd8284fe62c08f0d6166a42"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\platform-extension\\Config\\DataDrivenPlatformInfo.ini",
+      "sha256": "f9376e77881e7efc6a1c4e758b26c6d32ae906f4311a47fe7816926e29743289"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-nanite-asset.cjs",
+      "sha256": "feec2f0c0e675dd4fb4b53e06afd9918e13a285a1ac7f094e6c218e8add2ff7d"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\independent.wgsl",
+      "sha256": "93bd5025973a70b91f8045c0bb93e92677deb6d5fa97fd5888987f52a2914574"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\independent.json",
+      "sha256": "f21131f5a641f2a9f64dc31b11e11f3f359c39dcf64db89cc0bc6c7688bc3db8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\independent.webshader",
+      "sha256": "c995d79d81cb9d0cb1bfb41fd7329ea4f38d6875d383959235aa294b74fec949"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\dependent.wgsl",
+      "sha256": "f726c790a3a20b0c931913d0e1c5b8ef1b611a284168b39016eec47757b42777"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\dependent.json",
+      "sha256": "4a8510236c9277a48eae795ec48994d06af7b67405188ea8ac3b8c55eaadbf44"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\dependent.webshader",
+      "sha256": "63cc16152b23f9580c5f2c292e1a375b832e0916ae90afa4535c35be43a801ed"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\decode.wgsl",
+      "sha256": "52c18d2ec8fea805634abbca714e9acfc260a3ef155b90fd294768a61b33e9cb"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\decode.json",
+      "sha256": "be9484fe015c7e13a5cd0c5c9885d5efd58b1c351974146f15c7fe5352c41205"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\decode.webshader",
+      "sha256": "89497511be129be08a2920c4d13919118863847ad3744cb3be447aa695599091"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\asset.json",
+      "sha256": "b3b5dfea1a4e8d9f7c6d2ae54fce4a939236202f38460f544d4ecfcb4709d632"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\pages.bin",
+      "sha256": "d7e5cf532de3f29f6bbf11a156f1a0a0f1e83e06279e1b277a2e1f6765141ee4"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\install.bin",
+      "sha256": "208fa573bc13b4ce554cc3304f81049c70aab9897bc681e1630b22c44e05b579"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\source-triangles.bin",
+      "sha256": "b6823c0f37c541cfc4447ddd45d855fcbbd28e1c31715d9a91c95e27015fbd70"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteTranscode.usf",
+      "sha256": "39e782d6a7c42e7162b469dd0163a8da4bf9812aa463c1c316d009adc45e2ad4"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteDataDecode.ush",
+      "sha256": "e633e3298bed8d53e8423419790a6a6d8ad80e3503c845c98e15a301a44e96d9"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Shaders\\Private\\WebNaniteDecodeProbe.usf",
+      "sha256": "4094c2e4a8a3e60303c78a0bbb67cbdc7d7e72f0df3107818ac2353b6d761451"
+    }
+  ],
+  "installedShaderInputs": [
+    {
+      "file": "H:\\UE_5.8\\Engine\\Shaders\\Private\\Nanite\\NaniteTranscode.usf",
+      "sha256": "5430b0ef61201f5fa30daf773d1f0405d9053ba9150fb36208b5c8da4c225fed"
+    },
+    {
+      "file": "H:\\UE_5.8\\Engine\\Shaders\\Private\\Nanite\\NaniteWritePixel.ush",
+      "sha256": "8e3cee1e7d5b6e250d1f12318dff286e52290dd667540a61953cef3d072a2265"
+    },
+    {
+      "file": "H:\\UE_5.8\\Engine\\Shaders\\Public\\Platform\\Vulkan\\VulkanCommon.ush",
+      "sha256": "882bcb5ec66df2a3cf23901bf22c367c3c1815618f92058ae8ad64e88098118e"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\chrome-desktop.png",
+      "sha256": "62533cf2e9955930793e6bd019410379ff90a7eff9c0eb992d73da957e64ffbc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\chrome-mobile.png",
+      "sha256": "43d43d9c6082c096b3df2d2678106cf850966e47a235c6f87218748b8477a420"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\msedge-desktop.png",
+      "sha256": "62533cf2e9955930793e6bd019410379ff90a7eff9c0eb992d73da957e64ffbc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-asset\\msedge-mobile.png",
+      "sha256": "43d43d9c6082c096b3df2d2678106cf850966e47a235c6f87218748b8477a420"
+    }
+  ],
+  "limitations": [
+    "Normal Web Cook still strips Nanite. Global Nanite, uint64 image atomics and Wave DDPI remain disabled.",
+    "Geometry-only validation: normals/UV/materials, hierarchy culling, Nanite rasterizers and streaming are not yet integrated.",
+    "32-thread transcode requires adapter subgroupMinSize >= 32; only NVIDIA Ampere was tested.",
+    "Desktop and narrow viewport screenshots use a diagnostic draw of GPU-decoded triangles, not UE Lit shading or mobile hardware.",
+    "No full scene performance measurement or packaged Template_Default acceptance."
+  ]
+}

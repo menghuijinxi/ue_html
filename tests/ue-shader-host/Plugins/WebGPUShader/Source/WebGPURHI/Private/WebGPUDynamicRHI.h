@@ -31,6 +31,7 @@ struct FWebGPUShaderBinding : UE::WebGPUShader::FRuntimeBinding
 {
     const FJsonObject* Metadata = nullptr; // Only legacy/explicit validation loads own a DOM.
     bool StorageContractChecked = false;
+    int32 SamplerBiasSlot = INDEX_NONE;
     // Prepared descriptors are reusable only while their source and access
     // state are unchanged. The bind-group cache below owns GPU handle refs.
     TRefCountPtr<FRHIResource> PreparedResource;
@@ -98,6 +99,7 @@ struct FWebGPUShaderData
     FRHIShader* Owner = nullptr;
     uint32 BindingFrame = MAX_uint32;
     WGPUShaderModule Module = nullptr;
+    uint32 VertexInputMask = MAX_uint32;
     FString Entry;
     FString StorageFormatSource;
     TSharedPtr<FJsonObject> Metadata;
@@ -137,11 +139,17 @@ struct FWebGPUShaderData
     WGPUBuffer GlobalsBuffer = nullptr;
     uint64 GlobalsBufferOffset = 0;
     uint64 GlobalsVersion = 1;
+    int32 SamplerBiasGroup = INDEX_NONE;
+    WGPUBuffer SamplerBiasBuffer = nullptr;
+    float SamplerBiasValues[4] = {};
+    uint64 SamplerBiasVersion = 1;
     EShaderFrequency Frequency = SF_NumFrequencies;
     ~FWebGPUShaderData()
     {
         if (GlobalsBuffer)
             WebGPUOnOwner([&] { wgpuBufferRelease(GlobalsBuffer); });
+        if (SamplerBiasBuffer)
+            WebGPUOnOwner([&] { wgpuBufferRelease(SamplerBiasBuffer); });
         if (Module)
             WebGPUOnOwner([&] { wgpuShaderModuleRelease(Module); });
     }
@@ -255,6 +263,14 @@ class FWebGPUTexture final : public FRHITexture
     WGPUTexture Handle;
     WGPUTextureView View = nullptr;
     WGPUTextureView DepthSampleView = nullptr;
+    struct FAtomicMip
+    {
+        WGPUBuffer Buffer = nullptr;
+        uint64 Bytes = 0;
+        uint32 RowPitch = 0;
+        TArray<uint8> DirtySlices;
+    };
+    TArray<FAtomicMip> AtomicMips;
     FWebGPUResourceState State;
     FWebGPUResourceState StencilState;
     TArray<FWebGPUResourceState> SubresourceStates;
@@ -265,7 +281,8 @@ class FWebGPUTexture final : public FRHITexture
     FWebGPUReadbackRef Readback, LockedReadback;
     bool SurfaceFrameActive = true;
     uint32 LayerCount() const { return uint32(GetDesc().ArraySize) * (GetDesc().IsTextureCube() ? 6u : 1u); }
-    FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle)
+    FWebGPUTexture(const FRHITextureCreateDesc &Desc, WGPUTexture InHandle,
+        WGPUTextureFormat SampleFormat = WGPUTextureFormat_Undefined)
         : FRHITexture(Desc), Handle(InHandle),
           State(Desc.InitialState), StencilState(Desc.InitialState)
     {
@@ -274,6 +291,10 @@ class FWebGPUTexture final : public FRHITexture
             Desc.NumMips * LayerCount() - 1);
         if (!Handle) return; // CPUReadback uses a mapped buffer, not a GPU texture.
         WGPUTextureViewDescriptor Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
+        Sample.format = SampleFormat;
+        if (SampleFormat != WGPUTextureFormat_Undefined)
+            Sample.usage = wgpuTextureGetUsage(Handle) &
+                (WGPUTextureUsage_TextureBinding | WGPUTextureUsage_RenderAttachment);
         if (Desc.IsTextureCube())
         {
             Sample.dimension = Desc.Dimension == ETextureDimension::TextureCubeArray
@@ -290,7 +311,7 @@ class FWebGPUTexture final : public FRHITexture
             View = wgpuTextureCreateView(Handle, &Sample);
         }
         else
-            View = wgpuTextureCreateView(Handle, nullptr);
+            View = wgpuTextureCreateView(Handle, &Sample);
         if (Desc.Format == PF_DepthStencil && EnumHasAnyFlags(Desc.Flags, ETextureCreateFlags::ShaderResource))
         {
             Sample = WGPU_TEXTURE_VIEW_DESCRIPTOR_INIT;
@@ -321,6 +342,8 @@ class FWebGPUTexture final : public FRHITexture
     ~FWebGPUTexture() override
     {
         check(MipLocks.IsEmpty());
+        if (!AtomicMips.IsEmpty())
+            WebGPUOnOwner([&] { for (const auto& Mip : AtomicMips) wgpuBufferRelease(Mip.Buffer); });
         if (DepthSampleView)
             WebGPUOnOwner([&] { wgpuTextureViewRelease(DepthSampleView); });
         for (const auto& Entry : AttachmentViews)
@@ -777,7 +800,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     WGPUBuffer CreateBuffer(uint64 Size, WGPUBufferUsage Usage, const void *Data = nullptr);
     void FlushStagingUploads();
     WGPUBuffer UploadStagingBytes(const void* Data, uint64 Size, uint64& Offset);
-    WGPUSampler ResolveSampler(FWebGPUSampler *Sampler);
+    void EndComputePass();
+    WGPUSampler ResolveSampler(FWebGPUSampler *Sampler, bool ShaderBias = false);
     bool LoadShader(const FRHICreateShaderDesc &Desc, EShaderFrequency Frequency, FWebGPUShaderData &Data,
                     FString &Error);
     bool ValidateUAV(FRHIBuffer *Buffer, const FRHIViewDesc &Desc, FString &Error) const;
@@ -798,6 +822,9 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
                                    FString &Error) const;
     bool ValidateStorageUAVBinding(FRHIResource *Resource, const FWebGPUStorageContract &Binding, ERHIAccess Access,
                                                   FString &Error) const;
+    bool ValidateTextureAtomicBinding(FRHIResource* Resource, const FWebGPUStorageContract& Binding,
+        ERHIAccess Access, FString& Error) const;
+    void SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, ERHIAccess NextAccess);
     uint64 RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat Format) override;
     bool ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                ERHIAccess Access, FString &Error) const;
@@ -961,7 +988,6 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     void SetIndexBinding(FWebGPUBuffer*);
     void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr);
     WGPUComputePassEncoder BeginComputePass();
-    void EndComputePass();
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
     TMap<FString, WGPUComputePipeline> ClearPipelines;
     TArray<TRefCountPtr<FRHIUniformBuffer>> StaticUniformBuffers;

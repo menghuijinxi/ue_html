@@ -75,6 +75,10 @@ Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskShadow
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/ShadowSetup.cpp') -Destination (Join-Path $taskRendererCopy 'Private/ShadowSetup.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/LightGridInjection.cpp') -Destination (Join-Path $taskRendererCopy 'Private/LightGridInjection.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/LightRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/LightRendering.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VT/VirtualTextureSpace.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VT/VirtualTextureSpace.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Force
 foreach ($taskOcclusionOverlay in @('SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionOverlay") -Destination (Join-Path $taskRendererCopy "Private/$taskOcclusionOverlay") -Force
 }
@@ -83,6 +87,10 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentRendering.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentLighting.cpp') -Destination (Join-Path $taskRendererCopy 'Private/TranslucentLighting.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/SystemTextures.cpp') -Destination (Join-Path $taskRendererCopy 'Private/SystemTextures.cpp') -Force
+foreach ($taskNaniteFile in @('NaniteCullRaster.cpp', 'NaniteCullRaster.h', 'NaniteWebVisibility.h')) {
+    Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/Nanite/$taskNaniteFile") `
+        -Destination (Join-Path $taskRendererCopy "Private/Nanite/$taskNaniteFile") -Force
+}
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenScreenProbeGather.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenScreenProbeGather.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenScreenProbeImportanceSampling.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenScreenProbeImportanceSampling.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Lumen/LumenRadiosity.cpp') -Destination (Join-Path $taskRendererCopy 'Private/Lumen/LumenRadiosity.cpp') -Force
@@ -419,6 +427,8 @@ try {
         'Renderer/Private/LightGridInjection.cpp', 'Renderer/Private/IESTextureManager.cpp', 'Renderer/Private/MobileFogRendering.cpp',
         'Renderer/Private/IndirectLightRendering.cpp', 'Renderer/Private/DistortionRendering.cpp',
         'Renderer/Private/SystemTextures.cpp', 'Renderer/Private/SceneTextureReductions.cpp',
+        'Renderer/Private/Nanite/NaniteCullRaster.cpp', 'Renderer/Private/Nanite/NaniteCullRaster.h',
+        'Renderer/Private/Nanite/NaniteWebVisibility.h',
         'Renderer/Private/SceneRendering.cpp', 'Renderer/Private/GPUScene.cpp', 'Renderer/Private/GlobalDistanceField.cpp',
         'Renderer/Private/Lumen/LumenScreenProbeGather.cpp',
         'Renderer/Private/Lumen/LumenScreenProbeImportanceSampling.cpp',

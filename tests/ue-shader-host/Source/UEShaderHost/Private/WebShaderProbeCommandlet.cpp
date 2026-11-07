@@ -31,6 +31,8 @@
 #include "VulkanShaderResources.h"
 
 int32 RunWebManualVertexFetchProbe(const FString& Params);
+int32 RunWebNaniteVisibilityProbe(const FString& Params);
+int32 RunWebNaniteAssetProbe(const FString& Params);
 int32 RunWebShaderMetadataProbe(const FString& Params);
 int32 RunWebLumenShaderProbe(const FString& Params);
 
@@ -135,11 +137,16 @@ UWebShaderProbeCommandlet::UWebShaderProbeCommandlet()
 
 int32 UWebShaderProbeCommandlet::Main(const FString &Params)
 {
+    if (FParse::Param(*Params, TEXT("WebNaniteAssetProbe")))
+        return RunWebNaniteAssetProbe(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteVisibilityProbe")))
+        return RunWebNaniteVisibilityProbe(Params);
     if (FParse::Param(*Params, TEXT("MetadataBinaryProbe")))
         return RunWebShaderMetadataProbe(Params);
     if (FParse::Param(*Params, TEXT("WebManualVertexFetchProbe")))
         return RunWebManualVertexFetchProbe(Params);
-    if (FParse::Param(*Params, TEXT("LumenShaderProbe")))
+    if (FParse::Param(*Params, TEXT("LumenShaderProbe")) ||
+        FParse::Param(*Params, TEXT("VirtualResourceShaderProbe")))
         return RunWebLumenShaderProbe(Params);
     if (FParse::Param(*Params, TEXT("LumenPolicyProbe")))
     {
@@ -226,6 +233,10 @@ int32 UWebShaderProbeCommandlet::Main(const FString &Params)
             FString Json;
             FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
             IFileManager::Get().MakeDirectory(*OutputDirectory, true);
+            if (Preprocessed && Job.Output.bSucceeded)
+                check(FFileHelper::SaveArrayToFile(
+                    Job.Output.ShaderCode.GetReadView().Left(Job.Output.ShaderCode.GetShaderCodeSize()),
+                    *(OutputDirectory / (TypeName + TEXT(".webshader")))));
             FFileHelper::SaveStringToFile(Json, *(OutputDirectory / TEXT("desktop-shader-results.json")),
                 FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
             UE_LOG(LogTemp, Display, TEXT("WEB_DESKTOP_SHADER %s permutation=%d pass=%d"),

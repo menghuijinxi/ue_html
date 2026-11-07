@@ -1,0 +1,711 @@
+{
+  "recordedAt": "2026-11-06T07:10:57.602Z",
+  "status": "DXC native crash confirmed; host/core scheduling implicated; ordinary browser startup remains unfixed",
+  "folder": "triplex-virtual-distance-fields-threads",
+  "rendererSettingsChanged": false,
+  "sourceDiagnostics": {
+    "file": "C:/Users/wap80/Downloads/ue-startup-diagnostics-2026-11-06T06-48-22-397Z.json",
+    "sha256": "c0c9d264ae232f0317f6f3c6e6e3281cf9f0da4fe7eb3dbdf0c5fce863c79e30",
+    "startedAt": "2026-11-06T06:48:09.224Z",
+    "errors": [
+      {
+        "time": "2026-11-06T06:48:19.228Z",
+        "stage": "running",
+        "message": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/triplex-virtual-distance-fields-threads/web-engine-worker.js?v=679a7898b733c603f34c232aec621afacb11081fec70bb6fd5e1c9af6afe02b7:279:45",
+        "kind": "engine-worker"
+      }
+    ],
+    "frames": 1,
+    "surface": {
+      "width": 2405,
+      "height": 1353
+    },
+    "content": {
+      "completed": 5163,
+      "total": 5163
+    }
+  },
+  "crashDumps": [
+    {
+      "file": "C:\\Users\\wap80\\AppData\\Local\\Microsoft\\Edge\\User Data\\Crashpad\\reports\\56ac6f16-aab9-408f-9c32-9d6d7a92ff87.dmp",
+      "sha256": "f5a9b312a9787c4b1c93962dbcc2b1341906920c329f63c68d2b536100f02c3e",
+      "timestamp": "2026-11-06T06:48:19Z",
+      "threadId": 9080,
+      "exceptionCode": "0xc000001d",
+      "address": "0x7ffb1d20162d",
+      "parameters": [],
+      "module": {
+        "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\156.0.4314.58\\dxcompiler.dll",
+        "base": "0x7ffb1c2c0000",
+        "size": 20566016,
+        "offset": "0xf4162d"
+      },
+      "boundary": "Exception location only. Does not identify root cause, unwind a stack, or diagnose hardware health."
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lifecycle-msedge-virtual-startup-default-a-20261106\\Crashpad\\reports\\641309c7-037b-4b01-9a41-c8c8d49c6e4f.dmp",
+      "sha256": "e768fe95cb21b75f47927b60459ba6c6a84ae5477358683f99c02813633774d5",
+      "timestamp": "2026-11-06T07:01:49Z",
+      "threadId": 29432,
+      "exceptionCode": "0xc0000005",
+      "address": "0x7ffb1cf3ebf8",
+      "parameters": [
+        "0x0",
+        "0xffffffffffffffff"
+      ],
+      "module": {
+        "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\156.0.4314.58\\dxcompiler.dll",
+        "base": "0x7ffb1c2c0000",
+        "size": 20566016,
+        "offset": "0xc7ebf8"
+      },
+      "boundary": "Exception location only. Does not identify root cause, unwind a stack, or diagnose hardware health."
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lifecycle-msedge-virtual-startup-default-b-20261106\\Crashpad\\reports\\78473266-86b5-45e8-8123-b928ab8489ce.dmp",
+      "sha256": "c0b9fc50455eddec81471402e4789dcc2242da753be20daf56053292b7fac4ee",
+      "timestamp": "2026-11-06T07:07:57Z",
+      "threadId": 7132,
+      "exceptionCode": "0xc000001d",
+      "address": "0x7ffb1d20162d",
+      "parameters": [],
+      "module": {
+        "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\156.0.4314.58\\dxcompiler.dll",
+        "base": "0x7ffb1c2c0000",
+        "size": 20566016,
+        "offset": "0xf4162d"
+      },
+      "boundary": "Exception location only. Does not identify root cause, unwind a stack, or diagnose hardware health."
+    }
+  ],
+  "compiler": {
+    "file": "C:/Program Files (x86)/Microsoft/Edge/Application/156.0.4314.58/dxcompiler.dll",
+    "sha256": "4400daf60bd7fc84ca250bf843906dedac5ad4872bc532ceeae4e844bde032bd"
+  },
+  "historicalEvidence": {
+    "file": "H:\\ue_html\\tests\\web-platform\\evidence\\villa-startup-crash-20261104.json",
+    "sha256": "dd7feb2f220dbd8310695f9814bb9967258f10949341d00c678434743632f2b4"
+  },
+  "reproductions": [
+    {
+      "tag": "default-a",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-virtual-startup-default-a-20261106-results.json",
+        "sha256": "ec378cfdce26ee30690c369b889ee677c4e6121ec9091ccbb9f160e5b8ebfa23"
+      },
+      "date": "2026-11-06T07:01:27.274Z",
+      "pass": false,
+      "condition": "default scheduling",
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Edg/156.0.4314.58",
+        "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "jsVersion": "15.6.12.10"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-browser-lifecycle.cjs",
+        "sha256": "0b23075f4e5f95f00a5b4c45b3d6f335dcac4e80f4895a179f28a707ba922f4d"
+      },
+      "package": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-distance-fields-threads-package-results.json",
+        "sha256": "ef7929f16f8cd70e9689ccf7b7b086a064ca7a025fe0792359f7904aacc3e487"
+      },
+      "samples": [
+        {
+          "run": 0,
+          "phase": "startup",
+          "frames": 1,
+          "surface": {
+            "width": 2405,
+            "height": 1353
+          },
+          "failure": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/triplex-virtual-distance-fields-threads/web-engine-worker.js?v=679a7898b733c603f34c232aec621afacb11081fec70bb6fd5e1c9af6afe02b7:279:45"
+        }
+      ],
+      "affinityChecks": [],
+      "errors": [],
+      "crashes": []
+    },
+    {
+      "tag": "ecores",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-virtual-startup-ecores-20261106-results.json",
+        "sha256": "d1e27bfa0b8c409f0a4b7803dc9e517b9b61dc04e4c52be13922961c4f7be534"
+      },
+      "date": "2026-11-06T07:04:25.335Z",
+      "pass": true,
+      "condition": "diagnostic CPU affinity 0xffff0000",
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Edg/156.0.4314.58",
+        "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "jsVersion": "15.6.12.10"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-browser-lifecycle.cjs",
+        "sha256": "e957071870d6bab804c06646e9283f90e269bc22632d12431f37ca6c55d73070"
+      },
+      "package": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-distance-fields-threads-package-results.json",
+        "sha256": "ef7929f16f8cd70e9689ccf7b7b086a064ca7a025fe0792359f7904aacc3e487"
+      },
+      "samples": [
+        {
+          "run": 0,
+          "phase": "startup",
+          "frames": 180,
+          "surface": {
+            "width": 2405,
+            "height": 1353
+          },
+          "failure": null
+        },
+        {
+          "run": 0,
+          "phase": "resized",
+          "frames": 270,
+          "surface": {
+            "width": 1920,
+            "height": 1080
+          },
+          "failure": null
+        },
+        {
+          "run": 1,
+          "phase": "startup",
+          "frames": 181,
+          "surface": {
+            "width": 1920,
+            "height": 1080
+          },
+          "failure": null
+        },
+        {
+          "run": 1,
+          "phase": "resized",
+          "frames": 273,
+          "surface": {
+            "width": 2405,
+            "height": 1353
+          },
+          "failure": null
+        },
+        {
+          "run": 2,
+          "phase": "startup",
+          "frames": 180,
+          "surface": {
+            "width": 2405,
+            "height": 1353
+          },
+          "failure": null
+        },
+        {
+          "run": 2,
+          "phase": "resized",
+          "frames": 270,
+          "surface": {
+            "width": 1920,
+            "height": 1080
+          },
+          "failure": null
+        }
+      ],
+      "affinityChecks": [
+        {
+          "time": "2026-11-06T07:04:31.736Z",
+          "apply": true,
+          "processes": [
+            {
+              "pid": 29520,
+              "type": "browser",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7752,
+              "type": "crashpad-handler",
+              "mask": 4294901760
+            },
+            {
+              "pid": 28804,
+              "type": "gpu-process",
+              "mask": 4294901760
+            },
+            {
+              "pid": 33516,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 29008,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 31728,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7012,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 13888,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 18248,
+              "type": "utility",
+              "mask": 4294901760
+            }
+          ]
+        },
+        {
+          "time": "2026-11-06T07:05:18.874Z",
+          "apply": false,
+          "processes": [
+            {
+              "pid": 29520,
+              "type": "browser",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7752,
+              "type": "crashpad-handler",
+              "mask": 4294901760
+            },
+            {
+              "pid": 28804,
+              "type": "gpu-process",
+              "mask": 4294901760
+            },
+            {
+              "pid": 33516,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 29008,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 31728,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 5024,
+              "type": "renderer",
+              "mask": 4294901760
+            }
+          ]
+        },
+        {
+          "time": "2026-11-06T07:05:24.063Z",
+          "apply": false,
+          "processes": [
+            {
+              "pid": 29520,
+              "type": "browser",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7752,
+              "type": "crashpad-handler",
+              "mask": 4294901760
+            },
+            {
+              "pid": 28804,
+              "type": "gpu-process",
+              "mask": 4294901760
+            },
+            {
+              "pid": 33516,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 29008,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 31728,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 5024,
+              "type": "renderer",
+              "mask": 4294901760
+            }
+          ]
+        },
+        {
+          "time": "2026-11-06T07:05:58.782Z",
+          "apply": false,
+          "processes": [
+            {
+              "pid": 29520,
+              "type": "browser",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7752,
+              "type": "crashpad-handler",
+              "mask": 4294901760
+            },
+            {
+              "pid": 28804,
+              "type": "gpu-process",
+              "mask": 4294901760
+            },
+            {
+              "pid": 33516,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 29008,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 31728,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 5024,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 34876,
+              "type": "utility",
+              "mask": 4294901760
+            }
+          ]
+        },
+        {
+          "time": "2026-11-06T07:06:03.591Z",
+          "apply": false,
+          "processes": [
+            {
+              "pid": 29520,
+              "type": "browser",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7752,
+              "type": "crashpad-handler",
+              "mask": 4294901760
+            },
+            {
+              "pid": 28804,
+              "type": "gpu-process",
+              "mask": 4294901760
+            },
+            {
+              "pid": 33516,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 29008,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 31728,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 5024,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 34876,
+              "type": "utility",
+              "mask": 4294901760
+            }
+          ]
+        },
+        {
+          "time": "2026-11-06T07:06:38.404Z",
+          "apply": false,
+          "processes": [
+            {
+              "pid": 29520,
+              "type": "browser",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7752,
+              "type": "crashpad-handler",
+              "mask": 4294901760
+            },
+            {
+              "pid": 28804,
+              "type": "gpu-process",
+              "mask": 4294901760
+            },
+            {
+              "pid": 33516,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 29008,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 31728,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 5024,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 34876,
+              "type": "utility",
+              "mask": 4294901760
+            }
+          ]
+        },
+        {
+          "time": "2026-11-06T07:06:42.987Z",
+          "apply": false,
+          "processes": [
+            {
+              "pid": 29520,
+              "type": "browser",
+              "mask": 4294901760
+            },
+            {
+              "pid": 7752,
+              "type": "crashpad-handler",
+              "mask": 4294901760
+            },
+            {
+              "pid": 28804,
+              "type": "gpu-process",
+              "mask": 4294901760
+            },
+            {
+              "pid": 33516,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 29008,
+              "type": "utility",
+              "mask": 4294901760
+            },
+            {
+              "pid": 31728,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 5024,
+              "type": "renderer",
+              "mask": 4294901760
+            },
+            {
+              "pid": 34876,
+              "type": "utility",
+              "mask": 4294901760
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "crashes": []
+    },
+    {
+      "tag": "default-b",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-virtual-startup-default-b-20261106-results.json",
+        "sha256": "7861574c49f93db085c14a55ddc62833e9e3cbda9470102adadd7a3d5dd63f9c"
+      },
+      "date": "2026-11-06T07:07:33.93Z",
+      "pass": false,
+      "condition": "default scheduling",
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Edg/156.0.4314.58",
+        "revision": "@7806b68d20d1c1273d5b07b4f4de18e8f5852581",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "jsVersion": "15.6.12.10"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-web-browser-lifecycle.cjs",
+        "sha256": "e957071870d6bab804c06646e9283f90e269bc22632d12431f37ca6c55d73070"
+      },
+      "package": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-distance-fields-threads-package-results.json",
+        "sha256": "ef7929f16f8cd70e9689ccf7b7b086a064ca7a025fe0792359f7904aacc3e487"
+      },
+      "samples": [
+        {
+          "run": 0,
+          "phase": "startup",
+          "frames": 1,
+          "surface": {
+            "width": 2405,
+            "height": 1353
+          },
+          "failure": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/triplex-virtual-distance-fields-threads/web-engine-worker.js?v=679a7898b733c603f34c232aec621afacb11081fec70bb6fd5e1c9af6afe02b7:279:45"
+        }
+      ],
+      "affinityChecks": [],
+      "errors": [],
+      "crashes": []
+    }
+  ],
+  "screenshot": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\web-browser-lifecycle-msedge-virtual-startup-ecores-20261106.png",
+    "sha256": "b6f5c11bc2a57cdd8c4b17101916d20a41ca995cd8ceb4490d5d18e2a6b02ac1"
+  },
+  "tools": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-browser-lifecycle.cjs",
+      "sha256": "e957071870d6bab804c06646e9283f90e269bc22632d12431f37ca6c55d73070"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\inspect-minidump.cjs",
+      "sha256": "93cf1823b27c92f46a109c6c03be7a609db8e50269deac65ee2f6efd4b0d0529"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\start-web-preview.ps1",
+      "sha256": "fe237ff271c7b27bab09916564761206d895b84c9ccbbb78b1363973acdb8207"
+    }
+  ],
+  "boundary": "Two default-profile starts failed; one restricted profile passed three starts and three resizes. No 80-percent failure-rate estimate, equal-load core comparison, hardware-failure diagnosis, normal-scheduling repair, cross-machine comparison or long-term stability claim.",
+  "host": {
+    "processor": {
+      "Name": "Intel(R) Core(TM) i9-14900KF",
+      "NumberOfCores": 24,
+      "NumberOfLogicalProcessors": 32
+    },
+    "board": {
+      "Manufacturer": "ASUSTeK COMPUTER INC.",
+      "Product": "ROG STRIX Z790-A GAMING WIFI S"
+    },
+    "bios": {
+      "releaseDate": "2024-11-30",
+      "version": "1801"
+    },
+    "gpu": {
+      "Name": "NVIDIA GeForce RTX 3070",
+      "DriverVersion": "32.0.16.1088"
+    },
+    "whea": [
+      {
+        "recordId": 89654647,
+        "time": "2026-11-04T03:03:21.2393248Z",
+        "id": 19,
+        "message": "出现已更正的硬件错误。\r\n\r\n由以下组件报告: 处理器核心\r\n错误源: Corrected Machine Check\r\n错误类型: Internal parity error\r\n处理器 APIC ID: 8\r\n\r\n该项的详细信息视图包含进一步的信息。"
+      }
+    ]
+  },
+  "preview": {
+    "launch": {
+      "sha256": "95f52e790a4dba5807d7f0037945d3e452ce69b1913d80b036b8a3460e4f6703",
+      "file": "H:/ue_html/tests/web-platform/results/preview-20261106-151340-21824.json"
+    },
+    "url": "http://127.0.0.1:8765/build/triplex-virtual-distance-fields-threads/index.html",
+    "frames": 184,
+    "failure": null,
+    "surface": {
+      "width": 1866,
+      "height": 1050
+    },
+    "affinityChecks": [
+      {
+        "pid": 2952,
+        "type": "browser",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 18864,
+        "type": "crashpad-handler",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 25176,
+        "type": "gpu-process",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 6860,
+        "type": "utility",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 27868,
+        "type": "utility",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 2392,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 23052,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 35492,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 3832,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 22692,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 19100,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 29248,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 10768,
+        "type": "utility",
+        "mask": "0xffff0000"
+      },
+      {
+        "pid": 6520,
+        "type": "renderer",
+        "mask": "0xffff0000"
+      }
+    ],
+    "screenshot": "H:/ue_html/tests/web-platform/results/virtual-startup-host-preview-20261106.png"
+  }
+}

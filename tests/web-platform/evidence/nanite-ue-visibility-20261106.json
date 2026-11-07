@@ -1,0 +1,653 @@
+{
+  "date": "2026-11-06T08:54:38.455Z",
+  "pass": true,
+  "referenceCommit": "32593c2510cc4594c565578f112ac38d5daa8c62",
+  "boundary": "Real UE NaniteWritePixel include, restricted compiler lowering and visibility buffers only. No real asset cluster traversal, full Nanite rasterizer, renderer consumers, streaming or packaged Nanite scene. Global Nanite capability remains disabled.",
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+      "sha256": "b81ed5e90b96060d6d7d538fb20b6eccd2b7c4cf61ae1fe60fc568e3985ce225"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUNaniteAtomics.h",
+      "sha256": "22f60a12bd759f4f915577e329acf01824105e0505d2f20e5d2cfc987b7f6d0d"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+      "sha256": "03613437032bb24d9905974420e9cfa49ec89f15091e87ffe1b200c72deba1e7"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUNaniteVisibilityProbe.h",
+      "sha256": "36dd6ed96273c57062e8a0db136290ae10a13fe2b624d435d61999947141e19c"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPURHIProbe.cpp",
+      "sha256": "9ccc7cdd46937cffd2c471e8ea80c5be84b9abe0f15adae47cfbc7c3c0727d3f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteVisibilityProbe.cpp",
+      "sha256": "0dd9d370fa5cedce605d2f1f4e7035c0f5c4cf5f193ae11dff197049bc498c4c"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebShaderProbeCommandlet.cpp",
+      "sha256": "50049f7f395a7b55f7b35a0264be6093ad1168352fa74d31064ebdf379ae520a"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Shaders\\Private\\WebNaniteVisibilityProbe.usf",
+      "sha256": "8b62dcb1ff5a4902c875585a343284768dfcaff5667733732e615be46624644b"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Shaders\\Private\\WebNaniteVisibilityReadProbe.usf",
+      "sha256": "d90322b647854bc03b338ef14cec40e558527f93eca481556698a5dd50fbd594"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-nanite-ue.ps1",
+      "sha256": "9624073302143888fecf2e501de7bfd0dc6b8094659ed1c4428bc22516393634"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-nanite-visibility.cjs",
+      "sha256": "9477dceee1e92aaaf144d38dbf4b00b7a65d8969e90856a4870071d6eccaddbe"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\prepare-web-cook-shaders.cjs",
+      "sha256": "96e91c9434bf93b3563fbe576074b07ce14bfaf9dc79249604e4beb995f6730e"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-nanite-shader-overrides.cjs",
+      "sha256": "4d0cbc2a3430c24ae7bd41148cd16ddf3c143684540511064105ab85baf59e50"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteWritePixel.ush",
+      "sha256": "0433088d7bda2955d2267b2903884f27aab847b3ee4d070bd97e850ee449c9df"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Platforms\\Web\\Config\\DataDrivenPlatformInfo.ini",
+      "sha256": "eaef15df13cea0ca8d9e0201045626581554db037d96fa2836aea74322e24e8f"
+    }
+  ],
+  "browser": {
+    "date": "2026-11-06T08:50:18.437Z",
+    "pass": true,
+    "compilerTests": {
+      "pass": true,
+      "sharedTypeAndOrdinaryShaderPreserved": true,
+      "negativeCases": [
+        {
+          "input": "let x = WebNaniteAtomicMax_Test.data[0];",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "WebNaniteAtomicMax_Test.data[0].x = 3u;",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "let p = &WebNaniteAtomicMax_Test;",
+          "rejected": true,
+          "error": "Nanite atomic carrier cannot escape through a pointer or function: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "WebNaniteAtomicMax_Test.data[0] = WebNaniteAtomicMax_Test.data[1];",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "_ = atomicAdd(&(WebNaniteAtomicMax_Test.data[0]), 1u);",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "let x = atomicCompareExchangeWeak(&(WebNaniteAtomicMax_Test.data[0]), 1u, 2u).old_value;",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "atomicStore(&(WebNaniteAtomicMax_Test.data[0]), 1u);",
+          "rejected": true,
+          "error": "Nanite atomic carrier only permits discarded compare-stores: WebNaniteAtomicMax_Test"
+        },
+        {
+          "input": "expected-binding-count=0",
+          "rejected": true,
+          "error": "Nanite atomic carrier declaration/reflection count mismatch"
+        },
+        {
+          "input": "expected-binding-count=2",
+          "rejected": true,
+          "error": "Nanite atomic carrier declaration/reflection count mismatch"
+        }
+      ]
+    },
+    "browsers": [
+      {
+        "channel": "chrome",
+        "version": "157.0.8103.39",
+        "pass": true,
+        "errors": [],
+        "cases": [
+          {
+            "name": "compute-contention",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "fragment-and-repeated-store",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment"
+            ]
+          },
+          {
+            "name": "compute-then-fragment",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "fragment-then-compute",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment",
+              "compute"
+            ]
+          },
+          {
+            "name": "offset-subview-guards",
+            "pass": true,
+            "checkedWords": 33308,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "short-view-guards",
+            "pass": true,
+            "checkedWords": 33112,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 15,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "zero-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 0,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "overflow-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 4294967295,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "unsigned-id-ties-and-depth-priority",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "mixed-compute-raster-winners",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          }
+        ],
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "ampere",
+          "isFallbackAdapter": false
+        }
+      },
+      {
+        "channel": "msedge",
+        "version": "157.0.4341.42",
+        "pass": true,
+        "errors": [],
+        "cases": [
+          {
+            "name": "compute-contention",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "fragment-and-repeated-store",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment"
+            ]
+          },
+          {
+            "name": "compute-then-fragment",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "fragment-then-compute",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "fragment",
+              "compute"
+            ]
+          },
+          {
+            "name": "offset-subview-guards",
+            "pass": true,
+            "checkedWords": 33308,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          },
+          {
+            "name": "short-view-guards",
+            "pass": true,
+            "checkedWords": 33112,
+            "candidates": 8199,
+            "prefix": 256,
+            "count": 15,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "zero-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 0,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "overflow-width",
+            "pass": true,
+            "checkedWords": 33244,
+            "candidates": 8199,
+            "prefix": 0,
+            "count": 64,
+            "width": 4294967295,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "unsigned-id-ties-and-depth-priority",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute"
+            ]
+          },
+          {
+            "name": "mixed-compute-raster-winners",
+            "pass": true,
+            "checkedWords": 480,
+            "candidates": 8,
+            "prefix": 0,
+            "count": 64,
+            "width": 8,
+            "order": [
+              "compute",
+              "fragment"
+            ]
+          }
+        ],
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "ampere",
+          "isFallbackAdapter": false
+        }
+      }
+    ],
+    "sources": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\verify-web-nanite-visibility.cjs",
+        "sha256": "9477dceee1e92aaaf144d38dbf4b00b7a65d8969e90856a4870071d6eccaddbe"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\compute.wgsl",
+        "sha256": "c583286c5c6cf3345765519153cd28a5b8cacb94ffee440e7b38d936c46a57a6"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\compute.json",
+        "sha256": "cc4def3ea68269b493bd97767de30224d0de16a3758ec94a58a464763f4e6f76"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\compute.webshader",
+        "sha256": "d86ca2d835ed7a5152a86af53a9bba86b24481450ab1a084f047b733e01299ed"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\vertex.wgsl",
+        "sha256": "a7cfef7036f501b327d46fb027e612e38a0b5f00973aef51aec89d557af25014"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\vertex.json",
+        "sha256": "24b99ddee64887fc88c779a66956d5634b9c0fbd6b5e2ebf76fae06116a301e0"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\vertex.webshader",
+        "sha256": "02008393512f1705fefba1cd68d8cb9d223d097d212cbf79b3d3a61250816af6"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\fragment.wgsl",
+        "sha256": "347c69fdf29646bac79b2bf25e018b28eb37843556945e390fd9261157e8f1a1"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\fragment.json",
+        "sha256": "07529f12d18d61d601c35b58da9b328a36215a4e34254cf915d8570867da8699"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\fragment.webshader",
+        "sha256": "a8866c065f25fd76b4886f6833c1dfb101a0eabe910f69f033daf07332cc6fb3"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\consumer.wgsl",
+        "sha256": "fc965296efa8ef924d63cbca7b672e334fcae46a15bb1aa10d095765ece30ee0"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\consumer.json",
+        "sha256": "479dc61cb59c4e73bd65a7ca83b41564cdc2bd0647c7d78573c6443db8f69c92"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-ue-shader\\consumer.webshader",
+        "sha256": "3148eac91de4cde53623fd5e40db9b722130482606b60e57ac52791c68e04108"
+      },
+      {
+        "file": "H:\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteWritePixel.ush",
+        "sha256": "0433088d7bda2955d2267b2903884f27aab847b3ee4d070bd97e850ee449c9df"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\ue-shader-host\\Shaders\\Private\\WebNaniteVisibilityProbe.usf",
+        "sha256": "8b62dcb1ff5a4902c875585a343284768dfcaff5667733732e615be46624644b"
+      }
+    ]
+  },
+  "nativeRHI": {
+    "pass": true,
+    "modes": [
+      {
+        "bypass": false,
+        "adapter": "D3D12 driver version 32.0.16.1088 NVIDIA GeForce RTX 3070",
+        "errors": [],
+        "pass": true,
+        "checks": [
+          {
+            "name": "packed-atomic-device-feature",
+            "pass": true
+          },
+          {
+            "name": "ue-packet-dispatch-subview-contention-and-guards",
+            "pass": true
+          },
+          {
+            "name": "read-only-input-preserved",
+            "pass": true
+          },
+          {
+            "name": "compute-submission",
+            "pass": true
+          },
+          {
+            "name": "gpu-validation-clean",
+            "pass": true
+          },
+          {
+            "name": "host-rhi-restored",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "bypass": true,
+        "adapter": "D3D12 driver version 32.0.16.1088 NVIDIA GeForce RTX 3070",
+        "errors": [],
+        "pass": true,
+        "checks": [
+          {
+            "name": "packed-atomic-device-feature",
+            "pass": true
+          },
+          {
+            "name": "ue-packet-dispatch-subview-contention-and-guards",
+            "pass": true
+          },
+          {
+            "name": "read-only-input-preserved",
+            "pass": true
+          },
+          {
+            "name": "compute-submission",
+            "pass": true
+          },
+          {
+            "name": "gpu-validation-clean",
+            "pass": true
+          },
+          {
+            "name": "host-rhi-restored",
+            "pass": true
+          }
+        ]
+      }
+    ]
+  },
+  "wasmCompile": {
+    "pass": true,
+    "target": "wasm64 pthread BrowserDynamicRHI.cpp",
+    "log": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-browser-rhi-build.log",
+      "sha256": "df92e2b545e6ca433ea6d1a7997ac02fa458af4c1cff4ca76f9e8b1766bfa2f8"
+    },
+    "object": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-browser-rhi.o",
+      "sha256": "b33d403ae8a08245d67611115125bc7ad3be6c522879a42916baf1fbd619a64e"
+    },
+    "fullEngineLinked": false
+  },
+  "compilerBuilds": {
+    "hostLog": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-full-verification.log",
+      "sha256": "8367f82d7ed6cdf958407e76ebbbd4bffd52df82207b474d7557b8f598d78eb3"
+    },
+    "worker": {
+      "file": "H:\\ue_html\\.tools\\ue58-web-shader-worker\\Engine\\Binaries\\Win64\\ShaderCompileWorker-WebGPUShaderFormat.dll",
+      "sha256": "e90038c7ea9d2251670f4bd5e1eea1d61dda214456e2f8dcd312905e10a38344"
+    }
+  },
+  "regression": {
+    "date": "2026-11-06T08:49:50.526Z",
+    "pass": true,
+    "sources": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\verify-web-manual-vertex-fetch.cjs",
+        "sha256": "39c5320b9d64acc3031007bd5dd09f782c9841368d097ce325d7c475161f44b0"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\manual-vertex-fetch-shader\\vertex-fetch.wgsl",
+        "sha256": "8c8a87e8de4fbc8fbc06d0210a6b9bbbdc62333ee3debdcd97debcad5d764203"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\manual-vertex-fetch-shader\\vertex-fetch.json",
+        "sha256": "7aa86323fdd0533ea7e7f87bd27e66d6c2dc4290ad43ea57d137e998dbec97a1"
+      }
+    ],
+    "gpu": {
+      "adapter": {
+        "vendor": "nvidia",
+        "architecture": "ampere"
+      },
+      "messages": [],
+      "errors": [],
+      "cases": [
+        {
+          "uv": "half",
+          "tangent": "snorm8",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        },
+        {
+          "uv": "half",
+          "tangent": "snorm16",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        },
+        {
+          "uv": "half",
+          "tangent": "float4",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        },
+        {
+          "uv": "half",
+          "tangent": "nullTangent",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        },
+        {
+          "uv": "uv32",
+          "tangent": "snorm8",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        },
+        {
+          "uv": "uv32",
+          "tangent": "snorm16",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        },
+        {
+          "uv": "uv32",
+          "tangent": "float4",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        },
+        {
+          "uv": "uv32",
+          "tangent": "nullTangent",
+          "maxError": 5.983838846645995e-8,
+          "values": 36,
+          "offset": 256,
+          "outOfBoundsZero": true
+        }
+      ]
+    }
+  },
+  "overlayAudit": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\web-cook-shader-sources.json",
+    "sha256": "831b5e64d715d3f1a11e84f7688878afbcc0f7f0e213ff0f221a6d42a0cf786e"
+  },
+  "installedNaniteShader": {
+    "file": "H:/UE_5.8/Engine/Shaders/Private/Nanite/NaniteWritePixel.ush",
+    "sha256": "8e3cee1e7d5b6e250d1f12318dff286e52290dd667540a61953cef3d072a2265"
+  }
+}

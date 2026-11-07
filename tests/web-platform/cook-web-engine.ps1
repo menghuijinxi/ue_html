@@ -207,6 +207,8 @@ try {
         $taskReport.projectSettings = Get-TaskAudit $taskArgumentsPolicy
         $taskReport.distanceFields = [bool]$taskPolicy.distanceFields
         $taskReport.lumen = $taskPolicy.lumen
+        $taskReport.virtualTextures = $taskPolicy.virtualTextures
+        $taskReport.virtualShadows = $taskPolicy.virtualShadows
     }
     $taskPackages = @(
         '/Engine/EngineMaterials/WorldGridMaterial',

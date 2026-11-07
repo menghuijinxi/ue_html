@@ -1,6 +1,8 @@
 #include "WebGPUShaderCode.h"
 #include "WebGPUShaderMetadata.h"
 #include "WebGPUVertexFetch.h"
+#include "WebGPUTextureAtomics.h"
+#include "WebGPUNaniteAtomics.h"
 
 #include "Dom/JsonObject.h"
 #include "GlobalShader.h"
@@ -94,7 +96,9 @@ static bool NeedsRuntimeStorageFormats(const FShaderCompilerInput& Input)
 {
     return Input.Target.GetFrequency() == SF_Compute &&
         (Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/Lumen/")) ||
-         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/StochasticLighting/")));
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/StochasticLighting/")) ||
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ||
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualTexture")));
 }
 
 static bool UsesSingleVectorSkyUniform(const FShaderCompilerInput& Input)
@@ -576,7 +580,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261103-v26-CompactBinaryMetadata-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v31-NaniteTranscode-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -590,7 +594,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1_NaniteResolve1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -602,6 +606,10 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Loose Web archives use the engine's uncompressed entry format; no browser Oodle decoder is required.
         Input.CompressionFormat = NAME_None;
         Input.Environment.SetDefine(TEXT("COMPILER_WEBGPU"), 1);
+        if (Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/Nanite/")))
+            Input.Environment.SetDefine(TEXT("WEB_NANITE_PACKED_VISIBILITY"), 1);
+        Input.Environment.SetDefine(TEXT("WEB_VSM_SCALAR_ATOMICS"),
+            Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ? 1 : 0);
         Input.Environment.SetDefine(TEXT("EARLYDEPTHSTENCIL"), TEXT(""));
         // Metadata fields are additive. Invalidate only the affected jobs while
         // AppendToKeyString invalidates complete shader maps containing them.
@@ -611,6 +619,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
             Input.Environment.SetCompileArgument(TEXT("WebLumenSkyUniformVersion"), int32(1));
         if (UsesTranslucencyVolumeMarks(Input))
             Input.Environment.SetCompileArgument(TEXT("WebLumenVolumeMarkVersion"), int32(1));
+        if (Input.VirtualSourceFilePath == TEXT("/Engine/Private/Nanite/NaniteTranscode.usf"))
+            Input.Environment.SetCompileArgument(TEXT("WebNaniteTranscodeVersion"), int32(1));
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,
@@ -663,6 +673,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
             if (Input.ShaderFormat == UE::WebGPUShader::SM5Format)
             {
                 UE::WebGPUShader::LowerVertexFetch(Source);
+                UE::WebGPUShader::LowerTextureAtomics(Source);
                 // Web storage arrays preserve 32-bit typed-buffer indexing without texel-buffer objects.
                 const FRegexPattern TypedBuffer(TEXT("\\b(RW)?Buffer\\s*<\\s*((?:float|uint|int)[1-4]?)\\s*>"));
                 FRegexMatcher BufferMatch(TypedBuffer, Source);
@@ -975,6 +986,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
             }
             if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER)
             {
+                if (UE::WebGPUShader::IsTextureAtomicBinding(UTF8_TO_TCHAR(Binding->name)))
+                    Json->SetStringField(TEXT("storagePacking"), TEXT("texture-uint-atomic"));
                 const auto &Block = Binding->block;
                 const bool ReadOnly = (Block.decoration_flags & SPV_REFLECT_DECORATION_NON_WRITABLE) ||
                                       (Block.member_count == 1 &&
@@ -1142,13 +1155,54 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // Preserve that policy explicitly in WGSL instead of dropping mip selection.
         const FString DerivativeOptions = Input.ShaderFormat == FName(TEXT("SF_WEBGPU_SM5"))
             ? TEXT(" --allow-non-uniform-derivatives true") : TEXT("");
-        const bool Executed = FPlatformProcess::ExecProcess(
-            *(Tools / TEXT("tint.exe")),
-            *FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\"%s"), *SpirvPath, *WgslPath, *DerivativeOptions), &ExitCode, &StandardOut,
+        const bool NaniteTranscode = Input.VirtualSourceFilePath == TEXT("/Engine/Private/Nanite/NaniteTranscode.usf");
+        const FString Converter = Tools / (NaniteTranscode ? TEXT("tint_nanite.exe") : TEXT("tint.exe"));
+        if (!FPaths::FileExists(Converter))
+        {
+            Error = TEXT("Nanite transcode requires tint_nanite.exe; run tests/web-platform/build-tint-nanite.ps1");
+            return false;
+        }
+        const FString Arguments = NaniteTranscode
+            ? FString::Printf(TEXT("\"%s\" \"%s\""), *SpirvPath, *WgslPath)
+            : FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\"%s"), *SpirvPath, *WgslPath, *DerivativeOptions);
+        const bool Executed = FPlatformProcess::ExecProcess(*Converter, *Arguments, &ExitCode, &StandardOut,
             &StandardError);
         if (!Executed || ExitCode != 0 || !FFileHelper::LoadFileToString(Wgsl, *WgslPath))
         {
             Error = StandardOut + StandardError;
+            return false;
+        }
+        if (NaniteTranscode)
+            Metadata->SetStringField(TEXT("subgroupUniformityPolicy"), TEXT("nanite-active-lanes"));
+        int32 NaniteAtomicBindings = 0;
+        for (const auto& Value : Bindings)
+        {
+            const auto Binding = Value->AsObject();
+            if (!UE::WebGPUShader::IsNaniteAtomicMaxBinding(Binding->GetStringField(TEXT("name"))))
+                continue;
+            bool ReadOnly = true;
+            int32 Stride = 0, Format = 0;
+            if (Binding->GetIntegerField(TEXT("descriptorType")) != 7 ||
+                !Binding->TryGetNumberField(TEXT("storageElementStride"), Stride) || Stride != 4 ||
+                !Binding->TryGetNumberField(TEXT("storageElementFormat"), Format) || Format != PF_R32_UINT ||
+                !Binding->TryGetBoolField(TEXT("readOnlyStorage"), ReadOnly) || ReadOnly)
+            {
+                Error = TEXT("Nanite max-only carrier requires writable scalar uint storage");
+                return false;
+            }
+            // The carrier's scalar atomic is replaced with one packed 8-byte
+            // atomic. Publish the final layout, never the intermediate stride.
+            Binding->SetNumberField(TEXT("storageElementStride"), 8);
+            Binding->RemoveField(TEXT("storageElementFormat"));
+            Binding->SetStringField(TEXT("storagePacking"), TEXT("nanite-packed-visibility"));
+            ++NaniteAtomicBindings;
+        }
+        if (!UE::WebGPUShader::LowerNaniteAtomicMax(Wgsl, NaniteAtomicBindings, Error))
+            return false;
+        if (NaniteAtomicBindings && !FFileHelper::SaveStringToFile(Wgsl, *WgslPath,
+            FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
+        {
+            Error = TEXT("Unable to write lowered Nanite shader");
             return false;
         }
         StandardOut.Reset();

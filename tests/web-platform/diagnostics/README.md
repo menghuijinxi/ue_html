@@ -2,6 +2,21 @@
 
 这些脚本用于复现编译器故障，不改变独立包、UE 渲染设置或系统配置。报告和转储写入被 Git 忽略的 `results`，不提交引擎生成的着色器及二进制。
 
+## 2026-11-06 当前包启动故障
+
+`triplex-virtual-distance-fields-threads` 的用户转储与两次普通可见 Edge 复测均指向
+`dxcompiler.dll` 原生异常。仅将独立测试浏览器限制到本机逻辑核心 16–31 后，
+三次启动和三次缩放通过；恢复默认调度再次失败。主机 WHEA 记录使稳定性检查优先级提高，
+但还不能诊断硬件损坏。详见根目录 `UE58_BROWSER_CRASH_DIAGNOSIS.md` 的 2026-11-06 节。
+
+`../probe-web-browser-lifecycle.cjs --affinity-mask=4294901760` 现在直接设置并核对隔离浏览器及
+GPU 子进程；启动/缩放后只读复核，成功保存截图。省略该选项不会改变调度。
+报告保留实际掩码与进程 ID，不能用 `UE_WEB_TEST_HOST_CONDITION` 文字替代设置及验证。
+
+`inspect-minidump.cjs <转储路径> [其他转储路径...]` 输出时间、异常码、异常地址所在模块及偏移。
+它只读本机文件，检查结构边界，不输出内存内容，不下载符号，不进行推测性栈回溯。
+真实转储可以继续与页面日志按 UTC 时间对应，不能把相邻的 WER 事件误认成同一次故障。
+
 ## 浏览器管线回放
 
 先启动 `node tests/web-platform/serve.cjs`，并设置工作区 Playwright 的 `NODE_PATH`。已有默认关卡独立包时执行：

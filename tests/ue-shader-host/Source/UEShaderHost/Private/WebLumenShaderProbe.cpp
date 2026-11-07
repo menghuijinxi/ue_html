@@ -12,6 +12,7 @@
 
 int32 RunWebLumenShaderProbe(const FString& Params)
 {
+    const bool VirtualResources = FParse::Param(*Params, TEXT("VirtualResourceShaderProbe"));
     FString OutputDirectory, Names;
     if (!FParse::Value(*Params, TEXT("Output="), OutputDirectory))
         return 1;
@@ -27,7 +28,8 @@ int32 RunWebLumenShaderProbe(const FString& Params)
         FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
     const IShaderFormat* Format =
         GetTargetPlatformManagerRef().FindShaderFormat(UE::WebGPUShader::SM5Format);
-    if (Platform == SP_NumPlatforms || !Format || !DoesPlatformSupportLumenGI(Platform))
+    if (Platform == SP_NumPlatforms || !Format ||
+        (!VirtualResources && !DoesPlatformSupportLumenGI(Platform)))
         return 1;
     TArray<TSharedPtr<FJsonValue>> Cases;
     TArray<FString> Found;
@@ -38,9 +40,15 @@ int32 RunWebLumenShaderProbe(const FString& Params)
         const FShaderType* Type = *It;
         const FGlobalShaderType* Global = Type->GetGlobalShaderType();
         const FString Source(Type->GetShaderFilename());
-        if (!Global || (!Source.StartsWith(TEXT("/Engine/Private/Lumen/")) &&
-            !Source.StartsWith(TEXT("/Engine/Private/StochasticLighting/")) &&
-            Source != TEXT("/Engine/Private/GPUFeedbackCompaction.usf")) ||
+        const bool SelectedFamily = VirtualResources ?
+            (Source.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ||
+             Source.StartsWith(TEXT("/Engine/Private/VirtualTexture")) ||
+             Source == TEXT("/Engine/Private/PageTableUpdate.usf") ||
+             Source == TEXT("/Engine/Private/VirtualTextureFeedback.usf")) :
+            (Source.StartsWith(TEXT("/Engine/Private/Lumen/")) ||
+            Source.StartsWith(TEXT("/Engine/Private/StochasticLighting/")) ||
+            Source == TEXT("/Engine/Private/GPUFeedbackCompaction.usf"));
+        if (!Global || !SelectedFamily ||
             (!Requested.IsEmpty() && !Requested.Contains(Type->GetName())))
             continue;
         Found.Add(Type->GetName());
@@ -82,7 +90,8 @@ int32 RunWebLumenShaderProbe(const FString& Params)
             Case->SetArrayField(TEXT("errors"), Errors);
             Cases.Add(MakeShared<FJsonValueObject>(Case));
             Pass &= Succeeded;
-            UE_LOG(LogTemp, Display, TEXT("WEB_LUMEN_SHADER %s permutation=%d pass=%d"),
+            UE_LOG(LogTemp, Display, TEXT("WEB_%s_SHADER %s permutation=%d pass=%d"),
+                VirtualResources ? TEXT("VIRTUAL_RESOURCE") : TEXT("LUMEN"),
                 Type->GetName(), Permutation, Succeeded);
             if (!AllPermutations)
                 break;
@@ -96,11 +105,18 @@ int32 RunWebLumenShaderProbe(const FString& Params)
     Report->SetBoolField(TEXT("allPermutations"), AllPermutations);
     if (SelectPermutation) Report->SetNumberField(TEXT("selectedPermutation"), SelectedPermutation);
     Report->SetBoolField(TEXT("completeLumenScene"), false);
+    if (VirtualResources)
+    {
+        Report->SetBoolField(TEXT("virtualTexturingSupported"), UseVirtualTexturing(Platform));
+        Report->SetBoolField(TEXT("virtualShadowMapsSupported"), DoesPlatformSupportVirtualShadowMaps(Platform));
+        Report->SetBoolField(TEXT("completeVirtualResourceScene"), false);
+    }
     Report->SetArrayField(TEXT("cases"), Cases);
     FString Json;
     FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
     IFileManager::Get().MakeDirectory(*OutputDirectory, true);
-    const bool Saved = FFileHelper::SaveStringToFile(Json, *(OutputDirectory / TEXT("lumen-shader-results.json")),
+    const bool Saved = FFileHelper::SaveStringToFile(Json, *(OutputDirectory /
+        (VirtualResources ? TEXT("virtual-resource-shader-results.json") : TEXT("lumen-shader-results.json"))),
         FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
     return Saved && Pass ? 0 : 1;
 }

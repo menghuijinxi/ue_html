@@ -72,6 +72,7 @@ try {
     fs.copyFileSync(source, destination);
   }
   const rendererOverlays = renderer ? ['Private/VolumetricCloudRendering.cpp',
+    'Private/Nanite/NaniteCullRaster.cpp', 'Private/Nanite/NaniteCullRaster.h', 'Private/Nanite/NaniteWebVisibility.h',
     'Private/DistanceFieldAmbientOcclusion.cpp', 'Private/GlobalDistanceField.cpp', 'Private/GlobalDistanceFieldHeightfields.h',
     'Private/MobileFogRendering.cpp', 'Private/VolumetricRenderTarget.cpp', 'Private/ScreenPass.cpp',
     'Private/LightGridInjection.cpp', 'Private/IESTextureManager.cpp',
@@ -83,13 +84,15 @@ try {
     'Private/Lumen/LumenScreenProbeImportanceSampling.cpp',
     'Private/Lumen/LumenRadiosity.cpp',
     'Private/StochasticLighting/StochasticLighting.cpp',
+    'Private/VT/VirtualTextureSpace.cpp',
+    'Private/VirtualShadowMaps/VirtualShadowMapArray.cpp',
     'Private/InstanceCulling/InstanceCullingContext.cpp'] : [];
   for (const name of rendererOverlays) {
     const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Renderer', name);
     const destination = path.join(host, 'Source/Runtime/Renderer', name);
-    assert.equal(fs.statSync(destination).nlink, 1);
-    if (sha(source) !== sha(destination)) {
-      fs.chmodSync(destination, 0o666);
+    if (fs.existsSync(destination)) assert.equal(fs.statSync(destination).nlink, 1);
+    if (!fs.existsSync(destination) || sha(source) !== sha(destination)) {
+      if (fs.existsSync(destination)) fs.chmodSync(destination, 0o666);
       fs.copyFileSync(source, destination);
     }
   }
@@ -136,6 +139,8 @@ try {
     'Source/Runtime/RenderCore/Private/VertexFactory.cpp',
     'Build/Build.version',
     ...(renderer ? ['Binaries/Win64/UnrealEditor-Renderer.dll',
+      'Source/Runtime/Renderer/Private/Nanite/NaniteCullRaster.cpp',
+      'Source/Runtime/Renderer/Private/Nanite/NaniteCullRaster.h',
       'Source/Runtime/Renderer/Private/GlobalDistanceField.cpp',
       'Source/Runtime/Renderer/Private/GlobalDistanceFieldHeightfields.h',
       'Source/Runtime/Renderer/Private/DistanceFieldAmbientOcclusion.cpp',

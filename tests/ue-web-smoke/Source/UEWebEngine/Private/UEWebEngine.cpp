@@ -311,7 +311,8 @@ void EngineFrame(void*)
                 antiAliasing: $0, generateDistanceFields: $1, distanceFieldAO: $2,
                 distanceFieldShadows: $3, gi: $4, reflections: $5, virtualShadows: $6,
                 texturePoolMiB: $7, screenPercentage: $8, staticLighting: $9,
-                shadowCacheMiB: $10, dbuffer: $11, ssrQuality: $12, volumetricFog: $13
+                shadowCacheMiB: $10, dbuffer: $11, ssrQuality: $12, volumetricFog: $13,
+                virtualTextures: $14, virtualTexturePathActive: !!($15 & 1), virtualShadowPathActive: !!($15 & 2)
             });
         }, Setting(TEXT("r.AntiAliasingMethod")), Setting(TEXT("r.GenerateMeshDistanceFields")),
             Setting(TEXT("r.DistanceFieldAO")), Setting(TEXT("r.DistanceFieldShadowing")),
@@ -319,13 +320,18 @@ void EngineFrame(void*)
             Setting(TEXT("r.Shadow.Virtual.Enable")), Setting(TEXT("r.Streaming.PoolSize")),
             Setting(TEXT("r.ScreenPercentage")), Setting(TEXT("r.AllowStaticLighting")),
             Setting(TEXT("r.Shadow.WholeSceneShadowCacheMb")), Setting(TEXT("r.DBuffer")),
-            Setting(TEXT("r.SSR.Quality")), Setting(TEXT("r.VolumetricFog")));
+            Setting(TEXT("r.SSR.Quality")), Setting(TEXT("r.VolumetricFog")),
+            Setting(TEXT("r.VirtualTextures")), (UseVirtualTexturing(GMaxRHIShaderPlatform) ? 1 : 0) |
+                (UseVirtualShadowMaps(GMaxRHIShaderPlatform) ? 2 : 0));
         FTextureMemoryStats Memory;
         RHIGetTextureMemoryStats(Memory);
         int32 Streamable = 0, Pending = 0, ResidentMips = 0, RequestedMips = 0, MaximumMips = 0;
+        int32 VirtualTextureAssets = 0, VirtualTextureResources = 0;
         uint64 ResidentBytes = 0, FullBytes = 0;
         for (TObjectIterator<UTexture2D> It; It; ++It)
         {
+            VirtualTextureAssets += It->VirtualTextureStreaming ? 1 : 0;
+            VirtualTextureResources += It->IsCurrentlyVirtualTextured() ? 1 : 0;
             if (!It->IsStreamable())
                 continue;
             const auto& State = It->GetStreamableResourceState();
@@ -342,12 +348,13 @@ void EngineFrame(void*)
                 frame: $0, supported: !!$1, poolBytes: $2, poolAllocatedBytes: $3,
                 nonPoolAllocatedBytes: $4, streamable: $5, pending: $6,
                 residentMips: $7, requestedMips: $8, maximumMips: $9,
-                residentBytes: $10, fullBytes: $11
+                residentBytes: $10, fullBytes: $11,
+                virtualTextureAssets: $12, virtualTextureResources: $13
             });
         }, Frames, GRHISupportsTextureStreaming, double(Memory.TexturePoolSize),
             double(Memory.StreamingMemorySize), double(Memory.NonStreamingMemorySize),
             Streamable, Pending, ResidentMips, RequestedMips, MaximumMips,
-            double(ResidentBytes), double(FullBytes));
+            double(ResidentBytes), double(FullBytes), VirtualTextureAssets, VirtualTextureResources);
         const auto* GenerateDF = IConsoleManager::Get().FindConsoleVariable(TEXT("r.GenerateMeshDistanceFields"));
         if (GenerateDF && GenerateDF->GetInt())
         {
