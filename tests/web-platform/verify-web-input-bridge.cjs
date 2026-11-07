@@ -6,6 +6,7 @@ const vm = require('node:vm');
 const {MessageChannel} = require('node:worker_threads');
 const {WebInputBridge, WebInputMailbox} = require('./web-engine-host.js');
 const {performanceModes} = require('./web-performance-modes.cjs');
+const {runtimeAssets: acceptedDefaults} = require('./web-accepted-defaults.cjs');
 const channels = [];
 
 (async () => {
@@ -27,6 +28,12 @@ const channels = [];
   assert(defaultArgs.includes('-WebOcclusionMode=history'));
   assert(!defaultArgs.includes('-WebGameLocalClock'));
   assert(defaultArgs.includes('-WebRHIWake=priority'));
+  const acceptedArgs = selectClock('', acceptedDefaults);
+  assert(acceptedArgs.includes('-WebFrameScheduler=3'));
+  assert(!acceptedArgs.includes('-WebGameLocalClock'));
+  assert(selectClock('?clock=page&framebudget=2', acceptedDefaults).includes('-WebFrameScheduler=2'));
+  assert(!selectClock('?clock=owner', acceptedDefaults).some(v=>v.startsWith('-WebFrameScheduler=')));
+  assert(selectClock('?clock=local', acceptedDefaults).includes('-WebGameLocalClock'));
   const ownerArgs = selectClock('?clock=owner&occlusion=control&rhiwake=channel');
   assert(!ownerArgs.includes('-WebGameLocalClock'));
   assert(ownerArgs.includes('-WebOcclusionMode=control'));

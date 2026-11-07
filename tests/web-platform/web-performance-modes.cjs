@@ -1,4 +1,6 @@
 'use strict';
+// Historical render/motion comparison matrix. Production package defaults are
+// versioned separately in web-accepted-defaults.cjs; do not reinterpret old A/Bs.
 const assert = require('node:assert/strict');
 
 function performanceModes({optimizationsOff = false, occlusion, clock, rhiwake} = {}) {

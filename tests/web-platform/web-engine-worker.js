@@ -208,6 +208,7 @@ async function start(message) {
   if (!crossOriginIsolated || typeof SharedArrayBuffer === 'undefined' || !navigator.gpu)
     throw new Error('Engine Worker requires isolated shared memory and WebGPU');
   const assets = message.assets;
+  if (assets.reuseReplayScratch !== undefined) globalThis.__webReuseReplayScratch = !!assets.reuseReplayScratch;
   // Approved default; older hosts may omit the option. Explicit channel remains
   // available, and browsers without postTask use the MessageChannel fallback.
   const priorityRequested = !message.arguments.includes('-WebRHIWake=channel');

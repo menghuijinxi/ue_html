@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const {metadata, audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
+const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
@@ -41,6 +42,8 @@ try {
   const stageFile = path.join(directory, `${stagePrefix}-stage-results.json`);
   const prepareFile = path.join(directory, `web-project-${id}-prepare-results.json`);
   const build = read(buildFile), stage = read(stageFile), prepared = read(prepareFile);
+  const acceptedDefaults = threads && !trace && !process.argv.includes('--legacy-defaults');
+  if (acceptedDefaults) assert(build.lowerMemory64, 'Default desktop runtime requires lowered memory64; rebuild or select --legacy-defaults');
   assert.equal(build.trace === true, trace, 'Trace package must use the matching diagnostic runtime');
   assert(build.pass && build.buildSucceeded && build.exitCode === 0 &&
     (build.fullLinkAttempted || threads && build.fullLinkVerified) &&
@@ -109,6 +112,11 @@ try {
     const destination = path.join(output, name);
     fs.copyFileSync(source, destination);
     assert.equal(audit(source).sha256, audit(destination).sha256);
+  }
+  if (acceptedDefaults) {
+    report.performanceProfile = applyAcceptedDefaults(output);
+    report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
+    report.engineArguments.push('-WebPSOPrecacheTest');
   }
   report.products = ['index.html', ...copies.map(([, name]) => name)].map(name => audit(path.join(output, name)));
   report.products.push(writeVersions(output, report.products));

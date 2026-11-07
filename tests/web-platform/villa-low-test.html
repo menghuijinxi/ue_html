@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>别墅 · 鼠标转向对照</title>
+<title>别墅 · 默认版与转向对照</title>
 <style>
 :root{color-scheme:dark;font:16px/1.7 system-ui,sans-serif;background:#111719;color:#edf3f0}
 *{box-sizing:border-box}body{margin:0;padding:48px 24px}main{max-width:860px;margin:auto}
@@ -18,12 +18,12 @@ ol{padding-left:24px;color:#d0dcd6}li{margin:8px 0}footer{margin-top:30px;border
 </style>
 <main>
 <div class="date">TRIPLEX HOUSE VILLA · 2026-11-07</div>
-<h1>鼠标转向对照</h1>
-<p>新候选关闭鼠标平滑。下面四个入口都关闭运动模糊，分别比较 30 FPS 和不限帧时的转向连贯性、轻微移动与停手响应。</p>
-<p class="note">逐帧记录已确认：旧版会改变鼠标位移对应的转角，不限帧时还会在没有新位移的帧继续转向。新候选消除了这部分输入误差；最终手感仍待体感测试，尚未替换默认版本。</p>
+<h1>默认版与转向对照</h1>
+<p>鼠标转向修复和此前性能优化已通过体感测试，现已设为默认。默认不限帧，关闭鼠标平滑和运动模糊。</p>
+<p class="note">2026-11-07：用户确认转向改善明显、此前性能优化无异常，批准应用为默认值。30 FPS 和旧版入口继续保留，便于按需比较。</p>
 <nav aria-label="测试版本">
-<a class="candidate" href="build/villa-input-raw-30-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>新候选 · 30 FPS</strong><span>关闭鼠标平滑，先与刚才的 30 FPS 版比较。</span></a>
-<a class="candidate" href="build/villa-input-raw-free-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>新候选 · 不限帧</strong><span>关闭鼠标平滑，检查高帧率转向是否还会异常抖动。</span></a>
+<a class="candidate" href="villa.html"><strong>打开默认版 · 不限帧</strong><span>已启用通过测试的鼠标修复及性能优化。</span></a>
+<a href="build/villa-input-raw-30-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>30 FPS 对照</strong><span>同样关闭鼠标平滑和运动模糊，保留限帧版本。</span></a>
 <a href="build/villa-low-30fps-no-blur-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>原版对照 · 30 FPS</strong><span>保留刚才关闭运动模糊的版本，鼠标平滑开启。</span></a>
 <a href="build/villa-input-control-free-20261107/index.html?clock=page&amp;framebudget=3&amp;occlusion=history&amp;rhiwake=priority&amp;gpuahead=0&amp;input=direct-game-thread"><strong>原版对照 · 不限帧</strong><span>与左侧原版相同，仅解除 30 FPS 上限。</span></a>
 </nav>

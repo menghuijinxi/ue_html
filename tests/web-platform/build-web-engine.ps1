@@ -20,6 +20,11 @@ $taskAllocatorExplicit = $PSBoundParameters.ContainsKey('Mimalloc')
 if (-not $taskAllocatorExplicit) {
     $Mimalloc = $Threads -and -not $Trace -and -not $Simd
 }
+# Accepted ordinary runtime uses lowered 32-bit linear-memory accesses.
+# Preserve explicit -LowerMemory64:$false for the native memory64 comparison.
+if (-not $PSBoundParameters.ContainsKey('LowerMemory64')) {
+    $LowerMemory64 = $Threads -and -not $Trace -and -not $Simd
+}
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-build-host/Engine'
 $taskUbt = Join-Path $taskHost 'Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.dll'

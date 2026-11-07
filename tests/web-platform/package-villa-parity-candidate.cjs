@@ -3,6 +3,7 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const {writeVersions}=require('./asset-versions.cjs');
 const {audit,metadata}=require('./content-file-metadata.cjs');
+const {applyAcceptedDefaults}=require('./web-accepted-defaults.cjs');
 const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3);
 const baseline=option('baseline')||'villa-scheduling-pipeline-v74',name=option('output');
 assert(name && [baseline,name].every(v=>/^[a-z0-9-]+$/.test(v)));
@@ -12,6 +13,7 @@ const runtimeBuild=option('runtime-build');
 const pageMaxFPS=option('page-max-fps');
 assert(pageMaxFPS===undefined||(/^\d+$/.test(pageMaxFPS)&&Number(pageMaxFPS)<=240));
 const noMouseSmoothing=process.argv.includes('--no-mouse-smoothing');
+const acceptedDefaults=process.argv.includes('--accepted-defaults');
 const cores=option('cores');assert(cores===undefined||/^[468]$/.test(cores));
 const csmScrollSubjects=option('csm-scroll-subjects');
 const csmMode=option('csm-mode');
@@ -120,9 +122,11 @@ if(lookahead){
 assets.versions['web-engine-host.js']=crypto.createHash('sha256').update(fs.readFileSync(path.join(dest,'web-engine-host.js'))).digest('hex');
 html=html.replace(match[0],'const localRuntimeAssets = '+JSON.stringify(assets)+';');
 fs.writeFileSync(path.join(dest,'index.html'),html);
+const performanceProfile=acceptedDefaults?applyAcceptedDefaults(dest):undefined;
 const products=Object.keys(versions).map(n=>audit(path.join(dest,n)));
 writeVersions(dest,products);
-fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,noMouseSmoothing,pageFrameMaxFPS:assets.pageFrameMaxFPS,clock:'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:true,
-  performanceAccepted:false,runtimeBuild:runtimeBuild?audit(runtimeBuild):null,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
+fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,noMouseSmoothing,pageFrameMaxFPS:acceptedDefaults?0:assets.pageFrameMaxFPS,clock:acceptedDefaults?'page':'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:!acceptedDefaults,
+  performanceProfile,defaultsSource:acceptedDefaults?audit(require.resolve('./web-accepted-defaults.cjs')):undefined,
+  performanceAccepted:acceptedDefaults,runtimeBuild:runtimeBuild?audit(runtimeBuild):null,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
   candidateManifest:audit(path.join(dest,'asset-versions.json'))},null,2));
 console.log(dest);

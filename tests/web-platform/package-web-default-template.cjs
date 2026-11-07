@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const {metadata} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
+const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
 const directory = path.join(__dirname, 'results');
 const desktop = process.argv.includes('--desktop');
 const threads = process.argv.includes('--threads');
@@ -27,6 +28,8 @@ const report = {date: new Date().toISOString(), pass: false, output,
 try {
   const buildFile = path.join(directory, `web-engine-full${threads ? '-thread' : ''}-build-results.json`);
   const build = read(buildFile);
+  const acceptedDefaults = threads && !process.argv.includes('--legacy-defaults');
+  if (acceptedDefaults) assert(build.lowerMemory64, 'Default desktop runtime requires lowered memory64; rebuild or select --legacy-defaults');
   assert(build.pass && build.buildSucceeded && build.exitCode === 0 &&
     (build.fullLinkAttempted || threads && build.fullLinkVerified),
     'A successful normal UBT build is required');
@@ -76,6 +79,11 @@ try {
     assert.equal(audit(source).sha256, audit(destination).sha256);
     return audit(destination);
   })];
+  if (acceptedDefaults) {
+    report.performanceProfile = applyAcceptedDefaults(output);
+    report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
+    report.products = report.products.map(item => audit(item.file));
+  }
   report.products.push(writeVersions(output, report.products));
   report.totalBytes = report.products.reduce((total, item) => total + fs.statSync(item.file).size, 0);
   report.fullNormalUBTBuildVerified = true;

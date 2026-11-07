@@ -1,0 +1,144 @@
+{
+  "date": "2026-11-07",
+  "pass": true,
+  "profile": "desktop-accepted-20261107",
+  "defaultChanged": true,
+  "userAccepted": true,
+  "acceptance": "这版改善明显，可以用于默认值。之前的性能优化也都无异常情况，都用于默认值。",
+  "baseline": "villa-input-raw-free-20261107",
+  "folder": "villa-default-20261107",
+  "entry": "http://127.0.0.1:8765/villa.html",
+  "settings": {
+    "t.MaxFPS": 0,
+    "r.VSync": 0,
+    "r.MotionBlurQuality": 0,
+    "r.Shadow.CSMCaching": 1,
+    "r.WebGPU.ReuseComputePass": 1,
+    "r.WebGPU.StagingUploadPages": 1,
+    "r.WebGPU.RDGMergeRenderPasses": 1,
+    "r.WebGPU.BatchSubmissions": 1,
+    "r.WebGPU.ReusePresentEncoder": 1,
+    "r.WebGPU.FrameUniformSnapshots": 1,
+    "r.WebGPU.MergeShadowMaskClear": 1,
+    "r.Web.OcclusionMotionQueryInterval": 0,
+    "r.Web.OcclusionGroupMotionQueries": 1,
+    "r.Web.LightGridAllocationBuckets": 1,
+    "r.WebGPU.StagingReadbackPool": 1,
+    "r.WebGPU.GroupAccessRevalidation": 2,
+    "r.WebGPU.DynamicGlobalsGroupReuse": 1,
+    "r.WebGPU.BindingPlan": 1
+  },
+  "runtimeAssets": {
+    "performanceProfile": "desktop-accepted-20261107",
+    "gameFrameClock": "page",
+    "pageFrameBudget": 3,
+    "inputBridge": "direct-game-thread",
+    "pageFrameMaxFPS": 0,
+    "localFrameBudget": 0,
+    "localFrameBudgetMode": "submitted",
+    "reuseReplayScratch": true
+  },
+  "retainedRuntimeAndCook": true,
+  "physicalLatencyMeasured": false,
+  "validation": {
+    "url": "http://127.0.0.1:8765/build/villa-default-20261107/index.html",
+    "result": {
+      "samples": 1015,
+      "fps": 81.86401540173041,
+      "low1Fps": 30.422878007368624,
+      "p50": 11.21000000834465,
+      "p95": 23.91499999165535,
+      "p99": 29.689999997615814,
+      "maximum": 40.04500000178814
+    },
+    "visibility": {
+      "method": "synthetic-document-visibility-event",
+      "paused": 2243,
+      "resumed": 2263
+    },
+    "errors": [],
+    "cameraReturnError": -4.172325418494438e-7,
+    "defaultMode": {
+      "mode": "page",
+      "paused": false
+    },
+    "inputMode": "direct-game-thread",
+    "frameBudget": [
+      2207,
+      2209,
+      2210,
+      3,
+      2207,
+      3,
+      1,
+      2
+    ]
+  },
+  "files": [
+    {
+      "file": "tests/web-platform/web-accepted-defaults.cjs",
+      "sha256": "a57b378f38aa264ca2afae72459601b527cbdf4f8180b3a74335bbb21654d7a0"
+    },
+    {
+      "file": "tests/web-platform/build-web-engine.ps1",
+      "sha256": "7e197fdf78c162a4c3db147ebf9dd9f8a104bd868a291a02886e87649f788b8d"
+    },
+    {
+      "file": "tests/web-platform/package-web-project.cjs",
+      "sha256": "fee664be2a52efafd665aa2268d773da0876aa8441b6a2de2601fbd8380ff046"
+    },
+    {
+      "file": "tests/web-platform/package-web-default-template.cjs",
+      "sha256": "c71936b9c6c6b5d45ec55fd30fcc3630240c7cc6bc6de4d5207d5637cc51d5ad"
+    },
+    {
+      "file": "tests/web-platform/package-villa-parity-candidate.cjs",
+      "sha256": "19fd0f8e2cd3c9c4e86a0c172442992597c42fa23c309d551dced16b7c1b467e"
+    },
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "de70a32af05a8f1736fc807876db17d7159c4448cd7531139f63f14192ce1d5d"
+    },
+    {
+      "file": "tests/web-platform/verify-web-accepted-defaults.cjs",
+      "sha256": "144cc7daeb8d1ab5b4059c4bc585e21dc563f9187b621509034ab18ab01706a8"
+    },
+    {
+      "file": "tests/web-platform/villa.html",
+      "sha256": "f6c8d3359cc60364d3860898d5dc0ad7e2b527c777f2202f23b000dbfbf951f3"
+    },
+    {
+      "file": "tests/web-platform/villa-low-test.html",
+      "sha256": "dadcdb543ffd662c86df354805816be37b0d901b85b50b628ec0ceeb3a2bf573"
+    },
+    {
+      "file": "tests/web-platform/results/villa-default-20261107-package.json",
+      "sha256": "4d898f09c39ffdcdb11537d223f0e185bddd93175a78ec7809cc34c9bd38b8cd"
+    },
+    {
+      "file": "tests/web-platform/results/accepted-default-mouse-20261107.json",
+      "sha256": "703709ae3443a2d9ab5246ea40db7ed46a47ffd5b8fdcba1c6b2b2cce3346734"
+    },
+    {
+      "file": "tests/web-platform/results/accepted-default-mouse-20261107-1-page3.log",
+      "sha256": "401da87b0434ae4cbdb4bea98d53550d01b291d0b99625af00a70bb3cd17d25a"
+    },
+    {
+      "file": "tests/web-platform/results/accepted-default-mouse-20261107-1-page3.png",
+      "sha256": "41e953f4dc99ae84835a560ee5fc39c95a35b9200bb73279d951aab997a64084"
+    },
+    {
+      "file": "tests/web-platform/build/villa-default-20261107/asset-versions.json",
+      "sha256": "14b254b5ead06ea05eb306364459f7fca1266ffdaf7e12800bce5e1def63814e"
+    },
+    {
+      "file": "tests/web-platform/build/villa-input-raw-free-20261107/asset-versions.json",
+      "sha256": "7d3c876bd901092cbac3a41bf09c679c3ada8cbe0268fc8f2b318d30a10048a4"
+    }
+  ],
+  "boundary": "Promotes the exact manually accepted combination. Current release reuses accepted WASM/Cook. Normal threaded package scripts now apply this profile; mobile and explicit legacy/diagnostic packages keep their own settings. No new native engine build or physical display latency measurement."
+}

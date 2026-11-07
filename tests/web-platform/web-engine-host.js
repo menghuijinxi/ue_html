@@ -303,14 +303,15 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   module.arguments = module.arguments.filter(v => !v.startsWith('-WebOcclusionMode='));
   module.arguments.push('-WebOcclusionMode=' + occlusionMode);
   // Local scheduling failed manual movement acceptance (backlog, then jitter).
-  // Use owner rAF by default; retain local mode only for explicit diagnostics.
-  const clock = experiment.get('clock');
+  // Accepted packages choose page rAF with bounded frame overlap. Preserve the
+  // owner fallback for older packages and explicit historical comparisons.
+  const clock = experiment.get('clock') ?? assets.gameFrameClock ?? null;
   if (clock !== null && !['local', 'owner', 'page'].includes(clock)) throw new Error('Invalid Game frame clock');
   const localClock = clock === 'local';
   module.arguments = module.arguments.filter(v => v !== '-WebGameLocalClock');
   if (localClock) module.arguments.push('-WebGameLocalClock');
   if (clock === 'page') {
-    const budget = Number(experiment.get('framebudget') ?? 3);
+    const budget = Number(experiment.get('framebudget') ?? assets.pageFrameBudget ?? 3);
     if (!Number.isInteger(budget) || budget < 1 || budget > 4) throw new Error('Invalid owner completion frame budget');
     module.arguments = module.arguments.filter(v => !v.startsWith('-WebFrameScheduler='));
     module.arguments.push('-WebFrameScheduler=' + budget);
