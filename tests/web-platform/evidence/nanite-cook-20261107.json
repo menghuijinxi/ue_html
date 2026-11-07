@@ -1,0 +1,266 @@
+{
+  "date": "2026-11-07T13:21:26.7718696+08:00",
+  "pass": true,
+  "cases": [
+    {
+      "result": {
+        "pass": true,
+        "retained": false,
+        "runtimeNaniteEnabled": false,
+        "serializedBytes": 126,
+        "rootBytes": 0,
+        "clusters": 0,
+        "hierarchyNodes": 0
+      },
+      "resource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-stripped\\resources.cooked.bin",
+        "sha256": "84e346c7424a239369e772f4845eac5ab87808a983b6b1b5680ed3a3b63e4482"
+      },
+      "name": "sm5-stripped"
+    },
+    {
+      "result": {
+        "pass": true,
+        "retained": true,
+        "runtimeNaniteEnabled": false,
+        "serializedBytes": 20306,
+        "rootBytes": 19916,
+        "clusters": 15,
+        "hierarchyNodes": 1
+      },
+      "resource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\resources.cooked.bin",
+        "sha256": "08db60680ea1e67239933b7ca19c2e2168fda301607b6c53ec49fe9f5ca4b957"
+      },
+      "name": "sm5-retained"
+    },
+    {
+      "result": {
+        "pass": true,
+        "retained": false,
+        "runtimeNaniteEnabled": false,
+        "serializedBytes": 126,
+        "rootBytes": 0,
+        "clusters": 0,
+        "hierarchyNodes": 0
+      },
+      "resource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\es31-stripped\\resources.cooked.bin",
+        "sha256": "84e346c7424a239369e772f4845eac5ab87808a983b6b1b5680ed3a3b63e4482"
+      },
+      "name": "es31-stripped"
+    },
+    {
+      "result": {
+        "pass": true,
+        "retained": false,
+        "runtimeNaniteEnabled": false,
+        "serializedBytes": 126,
+        "rootBytes": 0,
+        "clusters": 0,
+        "hierarchyNodes": 0
+      },
+      "resource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\null-stripped\\resources.cooked.bin",
+        "sha256": "84e346c7424a239369e772f4845eac5ab87808a983b6b1b5680ed3a3b63e4482"
+      },
+      "name": "null-stripped"
+    }
+  ],
+  "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126",
+  "packagedLevel": false,
+  "runtimeNaniteEnabled": false,
+  "renderCore": {
+    "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-nanite-cook-host\\Engine\\Binaries\\Win64\\UnrealEditor-RenderCore.dll",
+    "sha256": "cef6d1ea7c298cb53d73ed34ad07db0fb1a91fe98736fac60508fedfe1df4b77"
+  },
+  "browser": {
+    "date": "2026-11-07T05:22:23.196Z",
+    "pass": true,
+    "asset": {
+      "sourceAsset": "/Engine/BasicShapes/Sphere.Sphere",
+      "scope": "fully-resident-cooked-resource-roundtrip",
+      "webCookEnabled": true,
+      "numRootPages": 1,
+      "numClusters": 15,
+      "numInputTriangles": 960,
+      "positionPrecision": 8,
+      "gpuPageBytes": 32768,
+      "clusterIndexBits": 8,
+      "transcodeGroupSize": 32,
+      "hierarchyNodes": 1,
+      "pages": [
+        {
+          "sourceOffset": 0,
+          "diskBytes": 19764,
+          "fixupBytes": 152,
+          "numClusters": 15,
+          "dependencyCount": 0,
+          "vertexReferences": 431
+        }
+      ],
+      "sourceTriangles": 960
+    },
+    "requestedChannels": [
+      "msedge"
+    ],
+    "browsers": [
+      {
+        "channel": "msedge",
+        "version": "156.0.4314.58",
+        "pass": true,
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "lovelace",
+          "subgroupMinSize": 32,
+          "subgroupMaxSize": 32,
+          "isFallbackAdapter": false
+        },
+        "cases": [
+          {
+            "prefix": 0,
+            "split": 15,
+            "leafClusters": 8,
+            "leafTriangles": 960,
+            "totalTriangles": 1842,
+            "coveredPixels": 104388,
+            "referencedBytes": 5922,
+            "windingPreserved": true,
+            "guardsPreserved": true,
+            "pass": true
+          },
+          {
+            "prefix": 256,
+            "split": 7,
+            "leafClusters": 8,
+            "leafTriangles": 960,
+            "totalTriangles": 1842,
+            "coveredPixels": 104388,
+            "referencedBytes": 5922,
+            "windingPreserved": true,
+            "guardsPreserved": true,
+            "pass": true
+          }
+        ],
+        "errors": [],
+        "gpuPageSha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      }
+    ],
+    "boundary": "Real UE Nanite root pages transcoded and decoded in WebGPU. Source: fully-resident-cooked-resource-roundtrip; no packaged level, streaming, hierarchy traversal or material pass.",
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-asset.cjs",
+        "sha256": "0f440947c260b39bf4810c544f800f1942bee0ca9773bbefa9f37092d0eea50f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\independent.wgsl",
+        "sha256": "93bd5025973a70b91f8045c0bb93e92677deb6d5fa97fd5888987f52a2914574"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\independent.json",
+        "sha256": "f21131f5a641f2a9f64dc31b11e11f3f359c39dcf64db89cc0bc6c7688bc3db8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\independent.webshader",
+        "sha256": "c995d79d81cb9d0cb1bfb41fd7329ea4f38d6875d383959235aa294b74fec949"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\dependent.wgsl",
+        "sha256": "f726c790a3a20b0c931913d0e1c5b8ef1b611a284168b39016eec47757b42777"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\dependent.json",
+        "sha256": "4a8510236c9277a48eae795ec48994d06af7b67405188ea8ac3b8c55eaadbf44"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\dependent.webshader",
+        "sha256": "63cc16152b23f9580c5f2c292e1a375b832e0916ae90afa4535c35be43a801ed"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\decode.wgsl",
+        "sha256": "52c18d2ec8fea805634abbca714e9acfc260a3ef155b90fd294768a61b33e9cb"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\decode.json",
+        "sha256": "be9484fe015c7e13a5cd0c5c9885d5efd58b1c351974146f15c7fe5352c41205"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\decode.webshader",
+        "sha256": "89497511be129be08a2920c4d13919118863847ad3744cb3be447aa695599091"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\asset.json",
+        "sha256": "351a13297489ebf1f8204e594746ff3f815226387eb7e633f145243f0a934940"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\pages.bin",
+        "sha256": "d7e5cf532de3f29f6bbf11a156f1a0a0f1e83e06279e1b277a2e1f6765141ee4"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\install.bin",
+        "sha256": "208fa573bc13b4ce554cc3304f81049c70aab9897bc681e1630b22c44e05b579"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\source-triangles.bin",
+        "sha256": "b6823c0f37c541cfc4447ddd45d855fcbbd28e1c31715d9a91c95e27015fbd70"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\cook-roundtrip.json",
+        "sha256": "ac7ac1904deb41fd14a7158884173a546ca78e1df8ca73909b24d4ac5629a00e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\sm5-retained\\resources.cooked.bin",
+        "sha256": "08db60680ea1e67239933b7ca19c2e2168fda301607b6c53ec49fe9f5ca4b957"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteTranscode.usf",
+        "sha256": "c4085aaeec1aa5572b561eb764f1d0ef5660583eb7de3b1bcf0ea86d3a0f69b9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteDataDecode.ush",
+        "sha256": "c8c57dcc4e71ba964c4a08d4d03a659a8646c641afdc872d4f66c75539c892c5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Shaders\\Private\\WebNaniteDecodeProbe.usf",
+        "sha256": "062d7e7b08ba51b6492597024cf548aad8a9d7ec8572b934ef6c34690d60a729"
+      }
+    ]
+  },
+  "installedInputsUnmodified": true,
+  "sources": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-cook.ps1",
+      "sha256": "be4704360592b8363591fc1e66932ee4b78f7273ef8d2ea0a06e65ad2e4569c2"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-nanite-cook-host.cjs",
+      "sha256": "36b8e95e1e87a022fafae0e14b10c1c56d5ca3afe8a1ced53a86457b3d589b4f"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderUtils.cpp",
+      "sha256": "8bbb019f86a84d314ecdb2b691be50c23b76795fa5d2b3d02607fdbd6a445d14"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteAssetProbe.cpp",
+      "sha256": "a29b2022113e1631ec1e78f48265ff76372128b76ebfca2bbfda2dde923f87c9"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-asset.cjs",
+      "sha256": "0f440947c260b39bf4810c544f800f1942bee0ca9773bbefa9f37092d0eea50f"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-cook-evidence.cjs",
+      "sha256": "ad279983da7d57e78226f88039bb55fee413a1b2c3ce87f9aa0c6bc306006d77"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cook-web-engine.ps1",
+      "sha256": "a8316afa039616e7ba976dc9cb585ca5815426373eaaffbb7baf1e141a89dd4a"
+    }
+  ],
+  "sourceReport": {
+    "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-132126\\results.json",
+    "sha256": "508ec4b59fc12e45da6e426240277abcf9df037b9fe3b58a86c1eea13b5b58cf"
+  },
+  "referenceCommit": "49382dda8419c54d7d625dcb9e3781c662513120",
+  "boundary": "Cook resource serialization and reload followed by real UE page transcode/decode. No complete package load, Nanite rasterization, hierarchy culling, streaming or Lit scene acceptance."
+}

@@ -4,11 +4,16 @@
 #include "HAL/FileManager.h"
 #include "Interfaces/IShaderFormat.h"
 #include "Interfaces/ITargetPlatformManagerModule.h"
+#include "Interfaces/ITargetPlatform.h"
 #include "MeshDescription.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Nanite/NaniteFixupChunk.h"
 #include "Rendering/NaniteResources.h"
+#include "RenderUtils.h"
+#include "Serialization/ArchiveSavePackageDataBuffer.h"
+#include "Serialization/MemoryReader.h"
+#include "Serialization/MemoryWriter.h"
 #include "Serialization/JsonSerializer.h"
 #include "ShaderCompiler.h"
 #include "ShaderPreprocessTypes.h"
@@ -16,7 +21,8 @@
 #include "StaticMeshResources.h"
 #include "WebGPUShaderCode.h"
 
-// This exports a fully resident diagnostic asset; it does not enable Nanite in Web Cook.
+// The optional round trip exercises the actual cooked resource serializer and
+// Web target policy. It is not a packaged level or a runtime Nanite scene.
 int32 RunWebNaniteAssetProbe(const FString& Params)
 {
     FString Directory;
@@ -35,13 +41,70 @@ int32 RunWebNaniteAssetProbe(const FString& Params)
     FAssetCompilingManager::Get().FinishAllCompilation();
     const auto* RenderData = Mesh->GetRenderData();
     if (!RenderData || !RenderData->NaniteResourcesPtr.IsValid()) return 1;
-    const auto& Resources = *RenderData->NaniteResourcesPtr;
-    if (!Resources.NumRootPages || Resources.HasStreamingData() || Resources.RootData.IsEmpty()) return 1;
+    auto& BuiltResources = *RenderData->NaniteResourcesPtr;
+    if (!BuiltResources.NumRootPages || BuiltResources.HasStreamingData() || BuiltResources.RootData.IsEmpty()) return 1;
+
+    Nanite::FResources CookedResources;
+    const bool bCookRoundTrip = FParse::Param(*Params, TEXT("WebNaniteCookRoundTrip"));
+    if (bCookRoundTrip)
+    {
+        const ITargetPlatform* Target = GetTargetPlatformManagerRef().FindTargetPlatform(TEXT("Web"));
+        if (!Target) return 1;
+        const bool bExpectRetained = FParse::Param(*Params, TEXT("WebNaniteCookData")) &&
+            !FParse::Param(*Params, TEXT("WebGPUES31Cook")) &&
+            FParse::Param(*Params, TEXT("WebGPUCook"));
+        if (DoesTargetPlatformSupportNanite(Target) != bExpectRetained) return 1;
+        TArray<uint8> CookedBytes;
+        FArchiveSavePackageDataBuffer CookContext(Target, Mesh->GetOutermost());
+        FMemoryWriter Writer(CookedBytes, true);
+        Writer.SetSavePackageData(&CookContext);
+        Writer.SetFilterEditorOnly(true);
+        BuiltResources.Serialize(Writer, Mesh, true);
+        if (Writer.IsError()) return 1;
+        FMemoryReader Reader(CookedBytes, true);
+        Reader.SetFilterEditorOnly(true);
+        CookedResources.Serialize(Reader, Mesh, true);
+        if (Reader.IsError() || Reader.Tell() != CookedBytes.Num()) return 1;
+        if (bExpectRetained)
+        {
+            // Reserializing verifies every serialized field, including hierarchy,
+            // fixups and dependency arrays, without a second hand-written layout.
+            TArray<uint8> ReloadedBytes;
+            FMemoryWriter ReloadedWriter(ReloadedBytes, true);
+            ReloadedWriter.SetSavePackageData(&CookContext);
+            ReloadedWriter.SetFilterEditorOnly(true);
+            CookedResources.Serialize(ReloadedWriter, Mesh, true);
+            if (ReloadedWriter.IsError() || ReloadedBytes != CookedBytes ||
+                CookedResources.RootData != BuiltResources.RootData ||
+                CookedResources.NumClusters != BuiltResources.NumClusters ||
+                CookedResources.NumRootPages != BuiltResources.NumRootPages ||
+                CookedResources.HierarchyNodes.Num() != BuiltResources.HierarchyNodes.Num()) return 1;
+        }
+        else if (!CookedResources.RootData.IsEmpty() || !CookedResources.PageStreamingStates.IsEmpty() ||
+            !CookedResources.HierarchyNodes.IsEmpty() || CookedResources.NumClusters != 0) return 1;
+        const auto Platform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(FName(TEXT("SP_WEBGPU_SM5")));
+        if (Platform == SP_NumPlatforms || DoesPlatformSupportNanite(Platform)) return 1;
+        auto CookReport = MakeShared<FJsonObject>();
+        CookReport->SetBoolField(TEXT("pass"), true);
+        CookReport->SetBoolField(TEXT("retained"), bExpectRetained);
+        CookReport->SetBoolField(TEXT("runtimeNaniteEnabled"), false);
+        CookReport->SetNumberField(TEXT("serializedBytes"), CookedBytes.Num());
+        CookReport->SetNumberField(TEXT("rootBytes"), CookedResources.RootData.Num());
+        CookReport->SetNumberField(TEXT("clusters"), CookedResources.NumClusters);
+        CookReport->SetNumberField(TEXT("hierarchyNodes"), CookedResources.HierarchyNodes.Num());
+        FString CookJson;
+        FJsonSerializer::Serialize(CookReport, TJsonWriterFactory<>::Create(&CookJson));
+        if (!FFileHelper::SaveArrayToFile(CookedBytes, *(Directory / TEXT("resources.cooked.bin"))) ||
+            !FFileHelper::SaveStringToFile(CookJson, *(Directory / TEXT("cook-roundtrip.json")),
+                FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM)) return 1;
+        if (!bExpectRetained) return 0;
+    }
+    const auto& Resources = bCookRoundTrip ? CookedResources : BuiltResources;
 
     auto Report = MakeShared<FJsonObject>();
     Report->SetStringField(TEXT("sourceAsset"), SourcePath);
-    Report->SetStringField(TEXT("scope"), TEXT("fully-resident-editor-export"));
-    Report->SetBoolField(TEXT("webCookEnabled"), false);
+    Report->SetStringField(TEXT("scope"), bCookRoundTrip ? TEXT("fully-resident-cooked-resource-roundtrip") : TEXT("fully-resident-editor-export"));
+    Report->SetBoolField(TEXT("webCookEnabled"), bCookRoundTrip);
     Report->SetNumberField(TEXT("numRootPages"), Resources.NumRootPages);
     Report->SetNumberField(TEXT("numClusters"), Resources.NumClusters);
     Report->SetNumberField(TEXT("numInputTriangles"), Resources.NumInputTriangles);

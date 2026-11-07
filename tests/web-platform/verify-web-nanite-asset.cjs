@@ -6,7 +6,10 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
-const directory = path.join(__dirname, 'results/nanite-asset');
+const directory = process.argv[2] ? path.resolve(process.argv[2]) : path.join(__dirname, 'results/nanite-asset');
+const channels = process.argv[3] ? process.argv[3].split(',') : ['chrome', 'msedge'];
+assert(channels.length > 0 && new Set(channels).size === channels.length &&
+  channels.every(channel => ['chrome', 'msedge'].includes(channel)), 'Expected chrome and/or msedge');
 const read = name => fs.readFileSync(path.join(directory, name), 'utf8').replace(/^\uFEFF/, '');
 const asset = JSON.parse(read('asset.json'));
 const stages = Object.fromEntries(['independent', 'dependent', 'decode'].map(name => [name, {
@@ -14,7 +17,13 @@ const stages = Object.fromEntries(['independent', 'dependent', 'decode'].map(nam
 }]));
 const binaries = Object.fromEntries(['pages', 'install', 'source-triangles'].map(name =>
   [name, [...fs.readFileSync(path.join(directory, `${name}.bin`))]]));
-assert.equal(asset.webCookEnabled, false);
+assert(['fully-resident-editor-export', 'fully-resident-cooked-resource-roundtrip'].includes(asset.scope));
+assert.equal(asset.webCookEnabled, asset.scope === 'fully-resident-cooked-resource-roundtrip');
+if (asset.webCookEnabled) {
+  const cooked = JSON.parse(read('cook-roundtrip.json'));
+  assert(cooked.pass && cooked.retained && !cooked.runtimeNaniteEnabled);
+  assert.equal(cooked.clusters, asset.numClusters);
+}
 assert(asset.pages.every(page => page.dependencyCount === 0));
 assert(asset.pages.some(page => page.vertexReferences > 0), 'Fixture must exercise referenced vertices');
 for (const [name, stage] of Object.entries(stages)) {
@@ -25,11 +34,12 @@ for (const [name, stage] of Object.entries(stages)) {
     assert.equal(stage.metadata.subgroupUniformityPolicy, 'nanite-active-lanes');
   }
 }
-const report = {date: new Date().toISOString(), pass: false, asset, browsers: [],
-  boundary: 'Real UE Nanite root pages transcoded and decoded in WebGPU. Fully resident editor export; no normal Web Cook, streaming, hierarchy traversal or material pass.',
+const report = {date: new Date().toISOString(), pass: false, asset, requestedChannels: channels, browsers: [],
+  boundary: `Real UE Nanite root pages transcoded and decoded in WebGPU. Source: ${asset.scope}; no packaged level, streaming, hierarchy traversal or material pass.`,
   sources: [__filename, ...Object.keys(stages).flatMap(name => ['wgsl', 'json', 'webshader']
     .map(ext => path.join(directory, `${name}.${ext}`))), ...['asset.json', 'pages.bin', 'install.bin', 'source-triangles.bin']
     .map(file => path.join(directory, file)),
+  ...(asset.webCookEnabled ? ['cook-roundtrip.json', 'resources.cooked.bin'].map(file => path.join(directory, file)) : []),
   path.join(__dirname, '../../reference-engine/Engine/Shaders/Private/Nanite/NaniteTranscode.usf'),
   path.join(__dirname, '../../reference-engine/Engine/Shaders/Private/Nanite/NaniteDataDecode.ush'),
   path.join(__dirname, '../ue-shader-host/Shaders/Private/WebNaniteDecodeProbe.usf')].map(audit)};
@@ -41,7 +51,7 @@ const report = {date: new Date().toISOString(), pass: false, asset, browsers: []
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   try {
-    for (const channel of ['chrome', 'msedge']) {
+    for (const channel of channels) {
       let browser;
       try {
         browser = await chromium.launch({channel, headless: true});
@@ -275,7 +285,8 @@ const report = {date: new Date().toISOString(), pass: false, asset, browsers: []
         await browser?.close();
       }
     }
-    assert.equal(report.browsers[0].gpuPageSha256, report.browsers[1].gpuPageSha256);
+    for (const browser of report.browsers)
+      assert.equal(report.browsers[0].gpuPageSha256, browser.gpuPageSha256);
     report.pass = true;
   } finally {
     server.close();

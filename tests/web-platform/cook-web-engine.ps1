@@ -11,6 +11,7 @@ param(
     [switch]$CompressHDRCubemaps,
     [switch]$TemplateEnvironment,
     [switch]$DistanceFields,
+    [switch]$NaniteCookData,
     [ValidatePattern('^[a-z0-9]+(?:-[a-z0-9]+)*$')][string]$ReportId,
     [switch]$DisableProjectSkyLight,
     [switch]$StopOnShaderError,
@@ -26,6 +27,7 @@ $taskHost = Join-Path $taskRoot '.tools/ue58-web-platform-host/Engine'
 $taskWebGPU = $Mode -ne 'NullRHI-only'
 $taskES31 = $Mode -eq 'WebGPU-ES31'
 if ($DistanceFields -and $Mode -ne 'WebGPU-SM5') { throw 'Distance fields require desktop SM5 Cook.' }
+if ($NaniteCookData -and $Mode -ne 'WebGPU-SM5') { throw 'Nanite resource Cook requires desktop SM5.' }
 if ($Scene -eq 'DefaultTemplate' -and -not $taskWebGPU) { throw 'DefaultTemplate requires WebGPU Cook.' }
 $taskMap = if ($Scene -eq 'DefaultTemplate') { '/Engine/Maps/Templates/Template_Default' } else { '/Game/WebMinimal' }
 if ($Scene -eq 'Project') {
@@ -292,6 +294,8 @@ try {
                 '-ini:Engine:[SystemSettings]:r.ShaderCompiler.JobCacheDDC=0')
         }
         if ($taskES31) { $taskArguments += '-WebGPUES31Cook' }
+        if ($NaniteCookData) { $taskArguments += '-WebNaniteCookData' }
+        $taskReport.naniteCookData = [bool]$NaniteCookData
         if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment) { $taskArguments += '-WebDefaultCloudDensityCook' }
         $env:WEBGPU_TINT_DIR = Join-Path $taskRoot '.tools/dawn-v20261009.190412/bin'
         $env:WEBGPU_INTERMEDIATE_DIR = Join-Path $taskOutput 'ShaderConversion'

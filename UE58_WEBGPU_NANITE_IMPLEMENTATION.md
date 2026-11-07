@@ -1,6 +1,7 @@
 # Nanite WebGPU 接入记录
 
-更新：2026-11-06。已完成可见性 RDG、深度/HZB 消费，以及真实资产的驻留页转码与几何解码验证。
+更新：2026-11-07。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
+本次增加显式 Web Cook 数据保留入口及 Cook 资源序列化/重载验证。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -49,9 +50,8 @@ UE StaticMesh / NaniteBuilder
   -> GPU 回读逐三角形核对 + 叶三角形诊断绘制
 ```
 
-这是编辑器导出的全驻留测试数据，尚不是正常 Web Cook 资源。
-`FResources::Serialize` 在目标平台不支持 Nanite 时仍会写入空资源，
-本阶段没有绕开该能力判断，也没有开启全局 Nanite。
+2026-11-06 的数据是编辑器导出的全驻留测试数据。默认 Web Cook 仍剥离 Nanite；
+2026-11-07 新增的显式数据保留模式见下一节，没有开启全局 Nanite。
 页面中的球体采用诊断材质和展开后的三角形绘制，尚未使用 Nanite 光栅器、
 cluster 层级剔除、原始 Lit 材质或默认示例关卡。
 
@@ -87,6 +87,56 @@ subgroup 最小/最大均为 32，没有附加实验特性开关。
 结果与源文件哈希记录在
 `tests/web-platform/evidence/nanite-asset-20261106.json`。
 原始页、packet、WGSL、反射和截图在忽略目录 `tests/web-platform/results/nanite-asset`。
+
+## 2026-11-07：Cook 数据保留与重载
+
+`DoesTargetPlatformSupportNanite` 增加仅编辑器使用的 `-WebNaniteCookData` 分支，
+要求目标 `IniPlatformName=Web` 且包含 `SF_WEBGPU_SM5`。这使原有静态网格构建和
+`FResources::Serialize` 能保留真实 Nanite 数据，不改变运行时/Shader 平台准入。
+普通 Web Cook、ES3.1 和 NullRHI 保持剥离。现有 Web 目标不剥离 fallback mesh。
+
+正常 Cook 脚本 `cook-web-engine.ps1` 新增 `-NaniteCookData` 开关，仅接受 WebGPU-SM5，
+将选择记入 Cook 报告并转发给 UE。开关不强制将普通资产转换为 Nanite，不把流送资产
+改成全驻留，也不保证已有资产的所有特性可在 Web 运行。
+
+本次验证使用原 `Sphere` 的 transient 副本，经 UE NaniteBuilder 构建后，调用真正的
+`FResources::Serialize`，传入真实 Web Cook 目标、Cook 上下文和 editor-only 过滤。
+随后反序列化并重新序列化，检查字节一致、根页不变及 cluster/层级数量。
+浏览器使用**重载后的资源**导出页并执行原有 UE 转码和几何解码 shader。
+
+| 检查 | 结果 |
+| --- | --- |
+| SM5 默认、ES3.1 带开关、NullRHI 带开关 | 均剥离；序列化 126 字节，0 根页数据/cluster/层级节点 |
+| SM5 显式保留 | 序列化 20,306 字节；根页 19,916 字节；15 cluster、1 层级节点；往返字节一致 |
+| 原生构建 | 宿主/ShaderFormat 25 个动作、隔离 RenderCore 8 个动作通过；安装目录输入哈希未变 |
+| Tint 策略 | 5 项通过，保留非一致屏障拒绝检查 |
+| Edge GPU 回读 | 普通上传与 256 字节偏移/分批上传均通过；每组完整核对 960 个叶三角形及绕序 |
+| 引用转码和边界 | 引用阶段补写 5,922 字节；输入与保护区不变；零 GPU 校验错误 |
+
+当前机器为 Edge `156.0.4314.58`、NVIDIA/Lovelace、非 fallback，subgroup min/max=32。
+Chrome 未安装，本次没有 Chrome 复测；这不是前文 2026-11-06 的 Ampere/双浏览器环境。
+此阶段只需要 subgroups，不使用打包可见性原子；通过不代表 Edge 156 能运行完整 Nanite 光栅器。
+GPU 页 SHA-256 为 `81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95`。
+
+新增独立 `.tools/ue58-nanite-cook-host`，同时注册 SM5/ES3.1，保留已存在的渲染宿主配置。
+主机选择、完整日志、源码/资源/packet 哈希在 `tests/web-platform/evidence/nanite-cook-20261107.json`。
+复现（按本机安装位置调整 `-Engine`）：
+
+```powershell
+$env:NODE_PATH='C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+./tests/web-platform/probe-nanite-cook.ps1 -Engine D:/UE_5.8 -BrowserChannels msedge
+# 已构建可加 -SkipBuild；默认 BrowserChannels 要求 Chrome 与 Edge 均通过。
+node tests/web-platform/collect-nanite-cook-evidence.cjs <本次输出目录>/results.json
+```
+
+前提是现有 SM5 Cook host 和平台映射构建文件已准备。Tint 支持头可以离线预置到
+`tests/web-platform/build/tint-nanite/support/src/utils/compiler.h`，仅 SHA-256 与固定版本
+匹配时复用；下载与校验要求没有放宽。
+
+边界：验证的是 Cook **资源序列化**与重载后的 GPU 几何链路，尚未运行完整关卡 Cook、
+打包加载或浏览器内 UE Nanite Renderer。未接入运行时 uploader、层级 LOD/剔除、
+Nanite VS/PS/微三角形光栅、原材质及缺页流送。原 uploader 的默认最大 wave 选择
+仍需适配 Web 转码的工作组约束，RHI 的 wave 能力及实际设备下限也需一并接入。
 
 ## 下游接入
 
@@ -206,7 +256,7 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 - 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
   在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
-- Nanite 正常 Web Cook 数据保留、完整运行时页上传、cluster 层级 LOD 与剔除、
+- Nanite 完整关卡 Cook/打包加载验收、完整运行时页上传、cluster 层级 LOD 与剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
@@ -216,5 +266,5 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段将已验证的驻留页链路接入正常 Cook 与运行时，
+下一阶段验证带 Nanite 资产的完整 Cook 包并将驻留页接入运行时 uploader，
 推进 cluster 层级剔除和固定不透明材质的 Nanite VS/PS 路径，再扩展材质与流送。
