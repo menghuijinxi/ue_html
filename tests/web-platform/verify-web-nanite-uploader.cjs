@@ -43,9 +43,9 @@ function observe() {
     return device;
   };
 }
-const report = {date:new Date().toISOString(), pass:false, cases:[], errors:[], logs:[],
+const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], errors:[], logs:[],
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
-  boundary:'Browser UE FResources deserialization and actual Engine uploader through RDG/RHI. Resident root fixture with synthetic ordering edges; no full Nanite raster, hierarchy culling or streaming.'};
+  boundary:'Browser UE FResources, original Engine uploader and resident StreamingManager through RDG/RHI. Private root pool lifecycle and hierarchy installation; no scene component activation, Nanite raster, hierarchy culling or streaming.'};
 (async () => {
   let browser;
   try {
@@ -102,6 +102,75 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], errors:[], 
       }
       report.cases.push({index, pass:true, guards:true, dispatches, pages});
       console.log('Browser UE uploader case ' + index + ' passed');
+    }
+    let originalHierarchy, fixups, previousActive;
+    for (let step = 1; step <= 4; ++step) {
+      const before = await owner.evaluate(() => __naniteBrowserAudit.dispatches);
+      assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteResourcesTest', s), step), 1);
+      let result;
+      const start = Date.now();
+      do {
+        await page.waitForTimeout(100);
+        assert.equal(report.errors.length, 0, report.errors.join('\n'));
+        assert.equal(await page.evaluate(() => globalThis.__webEngineFailure || null), null);
+        assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteResourcesTest', 0)), 1);
+        result = await owner.evaluate(() => globalThis.__webNaniteResourcesTest || null);
+      } while ((!result || result.pending || result.step !== step) && Date.now() - start < 30000);
+      assert(result && !result.pending && result.step === step);
+      const dispatches = await owner.evaluate(() => __naniteBrowserAudit.dispatches) - before;
+      assert.equal(dispatches, step === 4 ? 0 : 2);
+      assert.equal(result.active.length, [1,2,2,0][step - 1]);
+      assert.equal(result.hasResources, step !== 4);
+      assert.equal(result.modifiedCount, step === 4 ? 0 : 1);
+      assert.equal(result.levels, step === 4 ? 0 : result.expectedLevels);
+      if (step === 1) {
+        assert(result.rejectedStreaming);
+        assert(result.fixups.length > 0);
+        originalHierarchy = Buffer.from(result.originalHierarchy); fixups = result.fixups;
+        assert.equal(result.active[0].page, 0);
+      } else if (step !== 4) {
+        assert.deepEqual(Buffer.from(result.originalHierarchy), originalHierarchy);
+        assert.deepEqual(result.fixups, fixups);
+      }
+      if (step === 2) {
+        assert.deepEqual(result.active[0], previousActive[0]);
+        assert.equal(result.active[1].page, 1);
+        assert(result.active[1].hierarchyOffset >= result.active[0].hierarchyBytes);
+      }
+      if (step === 3) {
+        assert(result.rejectedBudget);
+        assert.deepEqual(result.active[1], previousActive[1]);
+        assert.equal(result.removedId, previousActive[0].id);
+        assert.notEqual(result.active[0].id, result.removedId);
+        assert.equal(result.active[0].page, previousActive[0].page);
+        assert.equal(result.active[0].hierarchyOffset, previousActive[0].hierarchyOffset);
+      }
+      if (step === 4) assert(result.cancelledPending);
+      const info = r => ({page:r.page, id:r.id, clusters:r.clusters});
+      assert.deepEqual(result.installed, step === 4 ? [] : [info(result.active[step === 2 ? 1 : 0])]);
+      const removed = step === 3 ? [previousActive[0]] : step === 4 ? previousActive : [];
+      assert.deepEqual(result.uninstalled.sort((a,b) => a.page-b.page), removed.map(info).sort((a,b) => a.page-b.page));
+      const pages = Buffer.from(result.pages), hierarchy = Buffer.from(result.hierarchy);
+      assert.equal(pages.length, oracle.asset.gpuPageBytes * (step === 1 ? 1 : 2));
+      const products = [];
+      for (const resource of result.active) {
+        assert.equal(resource.clusters, oracle.asset.numClusters);
+        const file = path.join(output, `resident-${step}-${resource.page}.bin`);
+        fs.writeFileSync(file, pages.subarray(resource.page * oracle.asset.gpuPageBytes, (resource.page + 1) * oracle.asset.gpuPageBytes));
+        const product = audit(file);
+        for (const b of oracle.browsers) assert.equal(product.sha256, b.gpuPageSha256);
+        products.push(product);
+        const expected = Buffer.from(originalHierarchy);
+        for (const fixup of fixups) expected.writeUInt32LE(((resource.page + fixup.page) << result.clusterBits) | fixup.cluster, fixup.offset);
+        assert.equal(resource.hierarchyBytes, expected.length);
+        assert.deepEqual(hierarchy.subarray(resource.hierarchyOffset, resource.hierarchyOffset + expected.length), expected);
+      }
+      const hierarchyFile = path.join(output, `hierarchy-${step}.bin`);
+      fs.writeFileSync(hierarchyFile, hierarchy); products.push(audit(hierarchyFile));
+      const {pages:ignoredPages, hierarchy:ignoredHierarchy, ...metadata} = result;
+      report.residency.push({...metadata, pass:true, dispatches, poolBytes:pages.length, hierarchyPoolBytes:hierarchy.length, products});
+      previousActive = result.active;
+      console.log('Browser UE resident manager step ' + step + ' passed');
     }
     const shaders = await owner.evaluate(() => __naniteBrowserAudit.shaders);
     assert.equal(shaders.length, 2);

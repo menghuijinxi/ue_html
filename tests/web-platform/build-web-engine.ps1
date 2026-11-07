@@ -48,13 +48,19 @@ $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
 & node (Join-Path $PSScriptRoot 'prepare-web-rhi-host.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'RHI cache overlay preparation failed.' }
-$taskNaniteUploaderRelative = 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp'
-$taskNaniteUploader = Join-Path $taskHost $taskNaniteUploaderRelative
-if ((Get-Item -LiteralPath (Join-Path $taskHost 'Source/Runtime/Engine')).LinkType -or
-    (Get-Item -LiteralPath $taskNaniteUploader).LinkType) {
-    throw 'Nanite uploader overlay must be a local build-host copy.'
+$taskNaniteOverlays = @(
+    'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp',
+    'Source/Runtime/Engine/Private/Rendering/NaniteStreamingManager.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteStreamingManager.h'
+)
+foreach ($taskNaniteRelative in $taskNaniteOverlays) {
+    $taskNaniteDestination = Join-Path $taskHost $taskNaniteRelative
+    if ((Get-Item -LiteralPath (Join-Path $taskHost 'Source/Runtime/Engine')).LinkType -or
+        (Get-Item -LiteralPath $taskNaniteDestination).LinkType) {
+        throw 'Nanite overlay must be a local build-host copy.'
+    }
+    Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskNaniteRelative") -Destination $taskNaniteDestination -Force
 }
-Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskNaniteUploaderRelative") -Destination $taskNaniteUploader -Force
 $taskMiscOverlay = 'Source/Runtime/Core/Private/GenericPlatform/GenericPlatformMisc.cpp'
 $taskCoreCopy = Join-Path $taskHost 'Source/Runtime/Core'
 if ((Get-Item -LiteralPath $taskCoreCopy).LinkType) { throw 'Core overlay must be a local build-host copy.' }
@@ -362,8 +368,10 @@ try {
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot '.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg') -File -Recurse |
         Where-Object { $_.Extension -in @('.py', '.cpp', '.h', '.js') } | ForEach-Object { $_.FullName })
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/GameEngine.cpp'
-    $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskNaniteUploaderRelative"
-    $taskFiles += $taskNaniteUploader
+    foreach ($taskNaniteRelative in $taskNaniteOverlays) {
+        $taskFiles += Join-Path $taskRoot "reference-engine/Engine/$taskNaniteRelative"
+        $taskFiles += Join-Path $taskHost $taskNaniteRelative
+    }
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/TranslucentRendering.cpp'
     $taskFiles += Join-Path $taskRoot 'tests/web-platform/prepare-web-rhi-host.cjs'

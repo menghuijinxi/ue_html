@@ -9,6 +9,10 @@ const browser = read(browserFile);
 assert(browser.pass && browser.errors.length === 0);
 assert.deepEqual(browser.cases.map(c => c.dispatches), [2,2,3,4]);
 for (const test of browser.cases) {assert(test.pass && test.guards); test.pages.forEach(verify);}
+assert.deepEqual(browser.residency.map(c => c.dispatches), [2,2,2,0]);
+assert.deepEqual(browser.residency.map(c => c.active.length), [1,2,2,0]);
+assert(browser.residency[0].rejectedStreaming && browser.residency[2].rejectedBudget && browser.residency[3].cancelledPending);
+for (const test of browser.residency) {assert(test.pass); test.products.forEach(verify);}
 [browser.source, browser.package, ...browser.shaders].forEach(verify);
 const packaged = read(browser.package.file);
 assert(packaged.pass);
@@ -40,7 +44,7 @@ const report = {date:new Date().toISOString(), pass:true,
     products:native.products, runtimeShaderArchive:native.runtimeShaderArchive},
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
-  boundary:'Actual browser UE resource deserialization, original Engine uploader, global shader archive and RDG/RHI execution. Explicit resident fixture within the existing Villa runtime; no whole-scene Nanite activation, actual cross-page references, culling, rasterization, Lit parity or streaming acceptance.'};
-const destination = path.join(__dirname, 'evidence/nanite-browser-uploader-20261107.json');
+  boundary:'Actual browser UE resident StreamingManager registration, root upload, hierarchy relocation, pool growth, removal, versioned slot reuse, rejection and pending cancellation. Private two-root-page pool within the existing Villa runtime; no scene component activation, culling, rasterization, Lit parity or streaming acceptance.'};
+const destination = path.join(__dirname, 'evidence/nanite-browser-residency-20261107.json');
 fs.writeFileSync(destination, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, destination}));

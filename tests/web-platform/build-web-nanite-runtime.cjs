@@ -23,22 +23,32 @@ const execute = (response, log) => {
   if (result.status !== 0) console.error(fs.readFileSync(log, 'utf8').slice(-9000));
   assert.equal(result.status, 0, result.error?.message || log);
 };
-const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp');
-const overlay = path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp');
-assert.equal(fs.realpathSync(overlay).toLowerCase(), overlay.toLowerCase());
-assert.equal(fs.statSync(overlay).nlink, 1);
-fs.copyFileSync(source, overlay);
+const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
+  'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h'];
+const engineDependencies = [];
+for (const file of engineFiles) {
+  const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Engine', file);
+  const overlay = path.join(host, 'Source/Runtime/Engine', file);
+  assert.equal(fs.realpathSync(overlay).toLowerCase(), overlay.toLowerCase());
+  assert.equal(fs.statSync(overlay).nlink, 1);
+  fs.chmodSync(overlay, 0o666);
+  fs.copyFileSync(source, overlay);
+  engineDependencies.push(source, overlay);
+}
 const engine = path.join(intermediate, 'Engine');
-const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
-  .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Nanite/NaniteStreamingPageUploader.cpp'));
-assert.equal(unity.length, 1);
-const tasks = [
-  [path.join(engine, unity[0] + '.o.rsp'), null, 'EngineNanite'],
+const tasks = engineFiles.filter(f => f.endsWith('.cpp')).map((file, i) => {
+  const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
+    .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Runtime/Engine/' + file));
+  assert.equal(unity.length, 1);
+  return [path.join(engine, unity[0] + '.o.rsp'), null, i ? 'EngineNaniteStreaming' : 'EngineNanite'];
+});
+assert.equal(new Set(tasks.map(t => t[0])).size, tasks.length);
+tasks.push(
   ...fs.readdirSync(path.join(intermediate, 'WebGPURHI')).filter(n => n.endsWith('.cpp.o.rsp'))
     .map(n => [path.join(intermediate, 'WebGPURHI', n), null, n.replace('.cpp.o.rsp', '')]),
-  [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
-    path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private/WebNaniteUploaderTest.cpp'), 'WebNaniteUploaderTest'],
-];
+  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest'].map(name => [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
+    path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private', name + '.cpp'), name]),
+);
 // RHI resource layouts are shared by all six translation units. Mixing an
 // updated DynamicRHI with cached transitions/viewport code corrupts field reads.
 const rhiRoots = [path.join(root, 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private'),
@@ -57,7 +67,7 @@ for (const [response, override] of tasks) if (!override && response.includes('We
   const lines = fs.readFileSync(response, 'utf8').split(/\r?\n/);
   visitRHI(lines[lines.indexOf('-c') + 1].replaceAll('"', ''));
 }
-const sources = [__filename, source, overlay,
+const sources = [__filename, ...engineDependencies,
   path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/UEWebEngine.Build.cs'),
   ...['WebGPUDynamicRHI.cpp', 'WebGPUDynamicRHI.h'].map(n => path.join(root,
     'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private', n))].map(audit);
@@ -74,10 +84,10 @@ for (const [original, override, name] of tasks) {
     lines.push('-I"' + unix(path.join(host, 'Source/Runtime', part)) + '"');
   const response = path.join(output, name + '.rsp'), log = path.join(output, name + '.log');
   fs.writeFileSync(response, lines.join('\n'));
-  const dependencies = name === 'EngineNanite' ? [source, overlay,
+  const dependencies = name.startsWith('EngineNanite') ? [...engineDependencies,
     path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h'),
     path.join(host, 'Source/Runtime/RenderCore/Public/WebShaderPlatform.h')] : !override ? [...rhiDependencies].sort() :
-    [path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h')];
+    [...engineDependencies, path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h')];
   const inputs = [original, response, input, ...dependencies].map(audit);
   const cached = previous?.compiled.find(c => c.object.file === path.join(output, name + '.o'));
   const unchanged = cached && JSON.stringify(cached.inputs) === JSON.stringify(inputs) &&

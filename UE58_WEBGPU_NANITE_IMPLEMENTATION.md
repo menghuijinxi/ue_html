@@ -4,6 +4,7 @@
 已增加显式 Web Cook 数据保留入口、Cook 资源序列化/重载，以及实际运行时 uploader
 的 Web 转码调度适配与原生 Dawn RHI 验证。现已在浏览器线程版 UE 中完成
 Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 GPU 回读验证。
+本轮继续接通显式 Web 常驻 StreamingManager 的注册、层级安装及资源生命周期。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -247,7 +248,52 @@ node tests/web-platform/collect-nanite-browser-evidence.cjs
 
 本机验证沿用 CPU affinity 3。完整原生构建与浏览器日志、编译对象、链接输入、
 Cook shader section、资源和 GPU 页哈希均有记录。尚未把 Nanite 静态网格组件接入
-场景，也未执行 `FStreamingManager` 的完整资源注册、层级安装和流送生命周期。
+场景。当时尚未执行 StreamingManager；下节记录本轮常驻资源注册与层级安装，
+完整流送生命周期仍未接通。
+
+## 2026-11-07：Web 常驻 StreamingManager 与层级安装
+
+在原 `FStreamingManager` 中增加显式 `ConfigureWebResidentResources` 和
+`AddWebResidentResource` 入口，默认实例继续遵循原平台条件。常驻模式仅接受
+Web SM5、实际 wave 下限至少 32 的设备；根页预算受实际非类型化 buffer 上限约束。
+它从一页开始增长，使用原来的分配器、资源 ID 版本、根页 uploader、hierarchy fixup、
+scatter upload 和安装／卸载通知，不创建 512 MB 默认流送池或缺页反馈缓冲。
+不含根页、含流送页、重复注册、页池超预算或层级缓冲超设备上限的资源在分配前拒绝。
+
+新增 `WebNaniteResourcesTest`，在浏览器 UE 的渲染线程里创建独立的两根页管理器。
+输入仍是真正 Cook 后经 `FResources::Serialize` 重载的 Sphere。GPU 回读比较完整根页，
+并把 Cook 原始层级按资源根页位置重定位后，与 GPU hierarchy 逐字节比较。管理器自身
+仍使用原始 Engine 实现；JavaScript 仅发诊断 RPC、观察 dispatch 和检查回读。
+
+| 浏览器生命周期检查 | 结果 |
+| --- | --- |
+| 首个资源安装 | 根页池 32,768 字节、层级池 256 字节；15 clusters、4 个层级引用正确 |
+| 第二个资源触发扩容 | 根页池 65,536 字节、层级池 512 字节；已有页和层级完整保留 |
+| 移除后复用槽位 | 根页索引 0、层级偏移 0 复用；资源 ID 从 0 更新为 131072；第二个资源保持不变 |
+| 移除与取消 | 两个卸载通知、无新增安装通知、无活动资源，层级深度归零；待安装资源可取消 |
+| 拒绝策略 | 零／越界池预算、初始化后重配置、含流送页资源、重复注册和资源超预算均拒绝 |
+| GPU 回读 | 5 份根页与既有黄金数据逐字节一致；5 份有效层级切片各 240 字节全部一致 |
+| 回归和运行状态 | 原 4 组 uploader、4 步生命周期全部通过，零 GPU 错误，测试结束为第 161 帧 |
+
+设备仍为 Edge `157.0.4341.42`、NVIDIA/Lovelace、subgroup min/max=32。
+生命周期四步实际转码 dispatch 数为 `2、2、2、0`，额外清零和 hierarchy scatter
+使用正常 UE 全局 shader；没有把这些 dispatch 计入转码数量。
+
+首次运行暴露了 pooled buffer 中未被 bitstream writer 覆盖的填充位及页尾旧内容，
+完整页哈希因此不同。常驻模式现在只在安装前清零新根页，不清理已有资源；扩容保留旧页
+和槽位复用同时检查这一边界。取消未安装资源也会扣除待上传 hierarchy 大小。
+
+构建脚本刷新并审计 StreamingManager 的源文件与公共头，重编译所在 Engine unity，
+加入生命周期诊断对象。新字段位于类末尾，保留已有字段偏移；此次仍是隔离增量诊断链接，
+不是全量 UBT 重建。正常构建入口同样同步上述覆盖，安装引擎未修改。
+
+证据：`tests/web-platform/evidence/nanite-browser-residency-20261107.json`。
+复现沿用上一节的构建、打包和验证命令；验证器现在先执行原 4 组 uploader 回归，再执行
+常驻管理器生命周期。此前 uploader 证据保留为历史记录。
+
+本阶段只把资源注册进独立的真实 StreamingManager。普通静态网格组件仍未自动注册，
+场景也没有启用 Nanite Renderer。cluster 层级剔除、光栅、Lit 材质、实际流送页依赖、
+缺页请求、淘汰与设备恢复仍待实现；没有全场景或性能验收结论。
 
 ## 下游接入
 
@@ -367,7 +413,7 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 - 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
   在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
-- Nanite 完整关卡 Cook/打包加载验收、场景组件/StreamingManager 资源注册、cluster 层级 LOD 与剔除、
+- Nanite 完整关卡 Cook/打包加载验收、场景组件与常驻 StreamingManager 的自动连接、cluster 层级 LOD 与剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
@@ -378,5 +424,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段将已验证的浏览器驻留页上传接入 Nanite 场景资源注册、层级安装与完整 Cook 包，
+下一阶段将已验证的浏览器常驻 StreamingManager 接入 Nanite 场景组件与完整 Cook 包，
 推进 cluster 层级剔除和固定不透明材质的 Nanite VS/PS 路径，再扩展材质与流送。
