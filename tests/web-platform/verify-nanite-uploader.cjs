@@ -7,6 +7,9 @@ assert(process.argv[2] && process.argv[3], 'Pass uploader output and cooked asse
 const output = path.resolve(process.argv[2]), assetDir = path.resolve(process.argv[3]);
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const report = read(path.join(output, 'uploader-results.json'));
+const archiveFile = path.join(output, 'uploader-global-shaders.bin');
+const archive = fs.readFileSync(archiveFile);
+assert.equal(archive.readInt32LE(), 1, 'Expected one cooked transcode shader-map section');
 const browser = read(path.join(assetDir, 'browser-results.json'));
 const build = read(path.join(output, 'build.json'));
 assert(build.pass);
@@ -35,6 +38,7 @@ const root = path.resolve(__dirname, '../..');
 const generated = read(path.join(root, 'tests/ue-shader-host/Plugins/WebGPUShader/Intermediate/NaniteUploaderProbe/sources.json'));
 for (const source of [...generated.sources, ...generated.generated]) assert.equal(audit(source.file).sha256, source.sha256);
 const verified = {date: new Date().toISOString(), pass: true, ...report, products, build,
+  runtimeShaderArchive: audit(archiveFile),
   browserOracle: audit(path.join(assetDir, 'browser-results.json')), generated,
   sources: [__filename, path.join(__dirname, 'probe-nanite-uploader.ps1'),
     ...['WebGPUNaniteUploaderProbe.cpp', 'WebGPUDynamicRHI.cpp', 'WebGPURHIProbe.cpp'].map(n => path.join(root,

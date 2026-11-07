@@ -52,7 +52,7 @@ try {
     $env:WEBGPU_TINT_DIR = Join-Path $taskRoot '.tools/dawn-v20261009.190412/bin'
     $env:WEBGPU_INTERMEDIATE_DIR = Join-Path $taskOutput 'conversion'
     & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject `
-        -run=WebShaderProbe -WebRHIProbe -WebNaniteUploaderRHIProbe -WebShaderMetadataValidate `
+        -run=WebShaderProbe -WebRHIProbe -WebNaniteUploaderRHIProbe -WebShaderMetadataValidate -WebGPUCook `
         "-WebShaderDirectory=$taskAsset" "-WebMaterialShaderDirectory=$taskAsset" "-Output=$taskOutput" `
         -nullrhi -unattended -nop4 -nosplash -nosound "-abslog=$taskOutput/rhi.log" *> "$taskOutput/console.log"
     if ($LASTEXITCODE -ne 0) { throw "Nanite uploader execution failed: $taskOutput/rhi.log" }

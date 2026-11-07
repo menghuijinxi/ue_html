@@ -10,6 +10,9 @@
 #include "RenderingThread.h"
 #include "RenderGraphResourcePool.h"
 #include "WebGPUShaderCode.h"
+#include "Serialization/ArchiveSavePackageDataBuffer.h"
+#include "Serialization/MemoryWriter.h"
+#include "Interfaces/ITargetPlatform.h"
 
 // Generated from the runtime source, with only class/console names changed.
 #include "NaniteStreamingPageUploader.cpp"
@@ -78,6 +81,35 @@ bool RunWebGPUNaniteUploaderProbe(IDynamicRHIModule& Module, const FString& Dire
         if (!Job->Output.bSucceeded) return false;
         Job->Output.GenerateOutputHash();
         Jobs.Add(MoveTemp(Job));
+    }
+    // Export a cooked global-map section using the production shader type.
+    // Browser UE loads this through its ordinary global shader archive; the
+    // diagnostic names used by the native coexistence test never enter it.
+    {
+        auto* ShaderType = FShaderType::GetShaderTypeByName(TEXT("FTranscodePageToGPU_CS"));
+        auto* RuntimeType = ShaderType ? ShaderType->GetGlobalShaderType() : nullptr;
+        const ITargetPlatform* Target = GetTargetPlatformManagerRef().FindTargetPlatform(TEXT("Web"));
+        if (!RuntimeType || !Target)
+        {
+            UE_LOG(LogRHI, Error, TEXT("Nanite shader archive requires the production shader type and -WebGPUCook Web target."));
+            return false;
+        }
+        FGlobalShaderMap RuntimeMap(Platform);
+        for (const auto& Job : Jobs)
+        {
+            RuntimeMap.FindOrAddSection(RuntimeType)->GetResourceCode()->AddShaderCompilerOutput(Job->Output, Job->Key);
+            auto* Shader = RuntimeType->ConstructCompiled(FGlobalShaderType::CompiledShaderInitializerType(
+                RuntimeType, nullptr, Job->Key.PermutationId, Job->Output, 0, nullptr, nullptr));
+            RuntimeMap.FindOrAddShader(RuntimeType, Job->Key.PermutationId, Shader);
+        }
+        RuntimeMap.FindOrAddSection(RuntimeType)->FinalizeContent();
+        TArray<uint8> Archive;
+        FArchiveSavePackageDataBuffer CookContext(Target);
+        FMemoryWriter Writer(Archive, true);
+        Writer.SetSavePackageData(&CookContext);
+        Writer.SetFilterEditorOnly(true);
+        RuntimeMap.SaveToGlobalArchive(Writer);
+        if (!FFileHelper::SaveArrayToFile(Archive, *(Output / TEXT("uploader-global-shaders.bin")))) return false;
     }
     bool Success = true;
     ENQUEUE_RENDER_COMMAND(WebNaniteUploaderProbe)([&](FRHICommandListImmediate& Cmd) {

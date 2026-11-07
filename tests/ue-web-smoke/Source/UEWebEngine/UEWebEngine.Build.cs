@@ -1,4 +1,5 @@
 using UnrealBuildTool;
+using System.IO;
 
 public class UEWebEngine : ModuleRules
 {
@@ -6,5 +7,7 @@ public class UEWebEngine : ModuleRules
     {
         PCHUsage = PCHUsageMode.NoPCHs;
         PrivateDependencyModuleNames.AddRange(new[] { "Core", "CoreUObject", "ApplicationCore", "Engine", "Launch", "WebGPURHI", "RenderCore", "RHI", "UMG", "EnhancedInput" });
+        PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/Engine/Private"));
+        PrivateIncludePaths.Add(Path.Combine(EngineDirectory, "Source/Runtime/Engine/Internal"));
     }
 }

@@ -1,0 +1,1141 @@
+{
+  "date": "2026-11-07T11:06:22.356Z",
+  "pass": true,
+  "referenceCommit": "fe898919a66ce19490a3c787c3e4616461f132dd",
+  "browser": {
+    "date": "2026-11-07T11:02:12.974Z",
+    "pass": true,
+    "cases": [
+      {
+        "index": 0,
+        "pass": true,
+        "guards": true,
+        "dispatches": 2,
+        "pages": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\page-0-0.bin",
+            "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "pass": true,
+        "guards": true,
+        "dispatches": 2,
+        "pages": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\page-1-0.bin",
+            "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "pass": true,
+        "guards": true,
+        "dispatches": 3,
+        "pages": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\page-2-0.bin",
+            "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\page-2-1.bin",
+            "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "pass": true,
+        "guards": true,
+        "dispatches": 4,
+        "pages": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\page-3-0.bin",
+            "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\page-3-1.bin",
+            "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-uploader.cjs",
+      "sha256": "6b449529f97edede3e866ffaac11ebfd65b0c23f66e3008d8cc19e58bd96a532"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "37b10dcda893fb6256de1da422cf63e9d7969926199e10653c973f1e1ed140d3"
+    },
+    "boundary": "Browser UE FResources deserialization and actual Engine uploader through RDG/RHI. Resident root fixture with synthetic ordering edges; no full Nanite raster, hierarchy culling or streaming.",
+    "browser": "157.0.4341.42",
+    "adapter": {
+      "vendor": "nvidia",
+      "architecture": "lovelace",
+      "subgroupMinSize": 32,
+      "subgroupMaxSize": 32,
+      "isFallbackAdapter": false
+    },
+    "shaders": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\transcode-0.wgsl",
+        "sha256": "f726c790a3a20b0c931913d0e1c5b8ef1b611a284168b39016eec47757b42777"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\transcode-1.wgsl",
+        "sha256": "93bd5025973a70b91f8045c0bb93e92677deb6d5fa97fd5888987f52a2914574"
+      }
+    ],
+    "framesAfter": 108,
+    "logReport": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\results.json",
+      "sha256": "e7969c409a93d906b35d892ea4244daf9280f058098e5e131a0702d884197c0f"
+    }
+  },
+  "package": {
+    "date": "2026-11-07T11:00:11.658Z",
+    "pass": true,
+    "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser",
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+      "sha256": "3c6400b558e18fd4176e2ef81501c3b966c57288384aeb90543ba13274db19aa"
+    },
+    "native": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\verified.json",
+      "sha256": "5b8fd1dd2e88a216e05d2e2a971f8e8e79b3123fa3ec22842e6ea5e5d81bcf23"
+    },
+    "browserOracle": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\browser-results.json",
+      "sha256": "16c48ab41c9151e2c917430aa4d9e28470142cf57351e8cf55ded52f40e5d03a"
+    },
+    "archive": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\uploader-global-shaders.bin",
+      "sha256": "09290c026a79a9da4ff556903a1507dc31963d3457a2b372b9459f0957e5791f"
+    },
+    "baseline": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\content.bin",
+        "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\content-files.json",
+        "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\config-files.json",
+        "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\index.html",
+        "sha256": "fa4d27a0e08a3dbdc021d6b89a9e225c6493f3aad3d1c280bd7ec8b6bd84a036"
+      }
+    ],
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-runtime.cjs",
+        "sha256": "2c5a6e0ad0e3bc814867ccd3e66faf6742b43edc5e53544282536256aeb8686f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-io.js",
+        "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+        "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-host.js",
+        "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+        "sha256": "8f263f7e9321b8da05fc54f8a6efa684db6395167f11ef8868adec4314e89381"
+      }
+    ],
+    "cookedResource": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\resources.cooked.bin",
+      "sha256": "08db60680ea1e67239933b7ca19c2e2168fda301607b6c53ec49fe9f5ca4b957"
+    },
+    "products": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\index.html",
+        "sha256": "7c91802e62da108c2321a72695fe74477575361c548a0483b830e2384b45ab1a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\content.bin",
+        "sha256": "540cccff1d831c2643e54811a37c7dd26338c95517676c78e91732bccfe8f506"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\content-files.json",
+        "sha256": "9aed3facf55a87c3c8b00c7d8c1a5a5b26a2c59ccc42f0fe96e63e329d108833"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\config-files.json",
+        "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-content-io.js",
+        "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-content-worker.js",
+        "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-engine-host.js",
+        "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-engine-worker.js",
+        "sha256": "8f263f7e9321b8da05fc54f8a6efa684db6395167f11ef8868adec4314e89381"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.js",
+        "sha256": "8e21c92e7881b6eb5b1260428dd5a84eb3427ab4cb3a44c2d691986e22c9480b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.wasm",
+        "sha256": "40082ae26d4f58ce98f9fb93ffac3b188dcc0a3934a87e1e11b83011c6926175"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\asset-versions.json",
+        "sha256": "6c7055ffe80d63e60c78c84d2bcf599f3b23332a8aae2ab2ae6fd6e49a6cb637"
+      }
+    ],
+    "boundary": "Existing matching Villa Cook payload plus a cooked transcode global-map section and serialized resident Nanite resource. Explicit diagnostic uses actual browser UE uploader; this is not full Nanite scene activation or a new full level Cook."
+  },
+  "build": {
+    "report": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+      "sha256": "3c6400b558e18fd4176e2ef81501c3b966c57288384aeb90543ba13274db19aa"
+    },
+    "incrementalDiagnostic": true,
+    "fullRebuild": false,
+    "compiled": [
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\Engine\\Module.Engine.34.cpp.o.rsp",
+            "sha256": "7a39c77e61053267c44ab8b2c6293a0ea0bb14d007a22fd025dd2cbe7aa38228"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\EngineNanite.rsp",
+            "sha256": "673bf66e21005bb3c5f05ec10d0716b31aad28b431ceda067e35f626eb5a78b2"
+          },
+          {
+            "file": "G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/Engine/Module.Engine.34.cpp",
+            "sha256": "bfe00fac2905f93dddef8e0ddb37f2e2707fd09bfc80c371d3ff6509d8e0b4bc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteStreamingPageUploader.cpp",
+            "sha256": "981c09df39b664a332073fd0947f836f76c93ab4d1ee75eee67dc5e3aa8975f5"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteStreamingPageUploader.cpp",
+            "sha256": "981c09df39b664a332073fd0947f836f76c93ab4d1ee75eee67dc5e3aa8975f5"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteStreamingPageUploader.h",
+            "sha256": "5dd54a1e4999a4c71cc78dbb671885ca4a483575d839c2604c13534c07722487"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RenderCore\\Public\\WebShaderPlatform.h",
+            "sha256": "00a6c5e9a5e974a173e0eaad391b674ec9c176ca4da39b119f582db267bb7e48"
+          }
+        ],
+        "previousObject": "\"G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/Engine/Module.Engine.34.cpp.o\"",
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\EngineNanite.o",
+          "sha256": "ca52f19f103d9180f1b6997b4fec2796601fd1e586eeea6e4d6dce71e5a76cb2"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\EngineNanite.log",
+          "sha256": "430a8d1e2dd4175d8c10997123f2ed9b186a32e77a568a8df8d58509590b570d"
+        }
+      },
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\WebGPURHI\\BrowserBreadcrumbs.cpp.o.rsp",
+            "sha256": "08a0af3f2dc23785c41fb09d976dc6e25cb8d8558de5a90375d155b445c5b2dc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserBreadcrumbs.rsp",
+            "sha256": "920071b942f5e7c873d3c82932b896b1259336b304c56079fe23cc9d0eeba0bc"
+          },
+          {
+            "file": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserBreadcrumbs.cpp",
+            "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBreadcrumbs.cpp",
+            "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBufferLock.cpp",
+            "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserDynamicRHI.cpp",
+            "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserTransitions.cpp",
+            "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserViewport.cpp",
+            "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\WebGPUBrowserModule.cpp",
+            "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Public\\WebGPUBrowser.h",
+            "sha256": "d02da25931cdc426f0bc2e4d6b7d571af897b0ce87b2c88df8c1a9aef5224d77"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBreadcrumbs.cpp",
+            "sha256": "0c825c6a92aa71d575640d0be8850c4f2a7e618084d5df6b85b28f397ebed2f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBufferLock.cpp",
+            "sha256": "b1bfea6c2a4caead3eb3f6b74c2aa9a7528efb3ef5a6855ffba149f82da597e0"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h",
+            "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+            "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+            "sha256": "ba3cc8994d00edbbcc800f75fc81ad0bd2f89b93e03342a7264d7c3773e6a247"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUOwner.h",
+            "sha256": "c600425adb59919d151ae8b76fa08905e2dbfdc63216a6bd182d8692862ce7f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h",
+            "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUSamplerBias.h",
+            "sha256": "c04e69aba567579768313fe22d688c36b46e75d1019d4ee6ec83b10c7f3aa840"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUShaderDeclarations.h",
+            "sha256": "9d1cfda25a683a68bea1383b77a1ec51fe10ff6ee16d381bed6f3b24c2fce813"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp",
+            "sha256": "eac02049ad3dae884422a3b95d68be9cc5acee9ee186eed1df2c1290f9adc881"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUnsupportedRHI.h",
+            "sha256": "ca27eb25c934fe2d229ba1cef2c2a5f4bd40bc6b1659bf0aed400f8144e15772"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUViewport.cpp",
+            "sha256": "d568546e6e15681f2fb441f5f7614fb49ad865ebc50a2b4646b2fce4a960322f"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",
+            "sha256": "7452abd6aeeff7c33004adbf7b3e125b05cde41c83e0fb0fd4fb7f0293c03459"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderRuntimeMetadata.h",
+            "sha256": "9ef63087efae270f7e4c9bb4cfef04178dd1af7926d066aeab654def04f67ccf"
+          }
+        ],
+        "previousObject": "\"G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/WebGPURHI/BrowserBreadcrumbs.cpp.o\"",
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserBreadcrumbs.o",
+          "sha256": "1cc82a6414a96214ba7d1b383c6bc344fcdd0d3160a17243e44d1eb93803a8e4"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserBreadcrumbs.log",
+          "sha256": "9b0bc05132f1fd429cfd605c8c2271358aad35a738f765306139d095e562607a"
+        }
+      },
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\WebGPURHI\\BrowserBufferLock.cpp.o.rsp",
+            "sha256": "75533baa4f51eb56e18158e072634b73534f711d84ada1d2a4e139bf48cb356c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserBufferLock.rsp",
+            "sha256": "deb98d572d5e52b981b7cc34559bbd5e2b2bcce5d40954866810f22ac3b615a9"
+          },
+          {
+            "file": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserBufferLock.cpp",
+            "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBreadcrumbs.cpp",
+            "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBufferLock.cpp",
+            "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserDynamicRHI.cpp",
+            "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserTransitions.cpp",
+            "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserViewport.cpp",
+            "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\WebGPUBrowserModule.cpp",
+            "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Public\\WebGPUBrowser.h",
+            "sha256": "d02da25931cdc426f0bc2e4d6b7d571af897b0ce87b2c88df8c1a9aef5224d77"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBreadcrumbs.cpp",
+            "sha256": "0c825c6a92aa71d575640d0be8850c4f2a7e618084d5df6b85b28f397ebed2f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBufferLock.cpp",
+            "sha256": "b1bfea6c2a4caead3eb3f6b74c2aa9a7528efb3ef5a6855ffba149f82da597e0"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h",
+            "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+            "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+            "sha256": "ba3cc8994d00edbbcc800f75fc81ad0bd2f89b93e03342a7264d7c3773e6a247"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUOwner.h",
+            "sha256": "c600425adb59919d151ae8b76fa08905e2dbfdc63216a6bd182d8692862ce7f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h",
+            "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUSamplerBias.h",
+            "sha256": "c04e69aba567579768313fe22d688c36b46e75d1019d4ee6ec83b10c7f3aa840"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUShaderDeclarations.h",
+            "sha256": "9d1cfda25a683a68bea1383b77a1ec51fe10ff6ee16d381bed6f3b24c2fce813"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp",
+            "sha256": "eac02049ad3dae884422a3b95d68be9cc5acee9ee186eed1df2c1290f9adc881"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUnsupportedRHI.h",
+            "sha256": "ca27eb25c934fe2d229ba1cef2c2a5f4bd40bc6b1659bf0aed400f8144e15772"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUViewport.cpp",
+            "sha256": "d568546e6e15681f2fb441f5f7614fb49ad865ebc50a2b4646b2fce4a960322f"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",
+            "sha256": "7452abd6aeeff7c33004adbf7b3e125b05cde41c83e0fb0fd4fb7f0293c03459"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderRuntimeMetadata.h",
+            "sha256": "9ef63087efae270f7e4c9bb4cfef04178dd1af7926d066aeab654def04f67ccf"
+          }
+        ],
+        "previousObject": "\"G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/WebGPURHI/BrowserBufferLock.cpp.o\"",
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserBufferLock.o",
+          "sha256": "8ae0cb39d9493c6d90155d6a7617c375144d00e95d37f7beea433075a142ecf3"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserBufferLock.log",
+          "sha256": "9b48fa47fc4711ff0b69d8e2ad311dcfae3ebf1234ad3d4512665ae83ce2c396"
+        }
+      },
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\WebGPURHI\\BrowserDynamicRHI.cpp.o.rsp",
+            "sha256": "69546d00cc18eaa35c687e2f669e731376a3a2e3bce7845f336a7771663e60ff"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserDynamicRHI.rsp",
+            "sha256": "a139950bc6e19872279cd2d6879ffa6afa36fad5742c867f6b44dc6871ac8413"
+          },
+          {
+            "file": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserDynamicRHI.cpp",
+            "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBreadcrumbs.cpp",
+            "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBufferLock.cpp",
+            "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserDynamicRHI.cpp",
+            "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserTransitions.cpp",
+            "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserViewport.cpp",
+            "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\WebGPUBrowserModule.cpp",
+            "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Public\\WebGPUBrowser.h",
+            "sha256": "d02da25931cdc426f0bc2e4d6b7d571af897b0ce87b2c88df8c1a9aef5224d77"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBreadcrumbs.cpp",
+            "sha256": "0c825c6a92aa71d575640d0be8850c4f2a7e618084d5df6b85b28f397ebed2f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBufferLock.cpp",
+            "sha256": "b1bfea6c2a4caead3eb3f6b74c2aa9a7528efb3ef5a6855ffba149f82da597e0"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h",
+            "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+            "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+            "sha256": "ba3cc8994d00edbbcc800f75fc81ad0bd2f89b93e03342a7264d7c3773e6a247"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUOwner.h",
+            "sha256": "c600425adb59919d151ae8b76fa08905e2dbfdc63216a6bd182d8692862ce7f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h",
+            "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUSamplerBias.h",
+            "sha256": "c04e69aba567579768313fe22d688c36b46e75d1019d4ee6ec83b10c7f3aa840"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUShaderDeclarations.h",
+            "sha256": "9d1cfda25a683a68bea1383b77a1ec51fe10ff6ee16d381bed6f3b24c2fce813"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp",
+            "sha256": "eac02049ad3dae884422a3b95d68be9cc5acee9ee186eed1df2c1290f9adc881"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUnsupportedRHI.h",
+            "sha256": "ca27eb25c934fe2d229ba1cef2c2a5f4bd40bc6b1659bf0aed400f8144e15772"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUViewport.cpp",
+            "sha256": "d568546e6e15681f2fb441f5f7614fb49ad865ebc50a2b4646b2fce4a960322f"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",
+            "sha256": "7452abd6aeeff7c33004adbf7b3e125b05cde41c83e0fb0fd4fb7f0293c03459"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderRuntimeMetadata.h",
+            "sha256": "9ef63087efae270f7e4c9bb4cfef04178dd1af7926d066aeab654def04f67ccf"
+          }
+        ],
+        "previousObject": "\"G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/WebGPURHI/BrowserDynamicRHI.cpp.o\"",
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserDynamicRHI.o",
+          "sha256": "b057c56a63ff080fd42ec4bab474f5cf7158dd10a766545001e5dd1ba1b1d44e"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserDynamicRHI.log",
+          "sha256": "872860fc4a0b7288022384c5bfc6bbfdf85faef0ff5e4184957aa10a168adaa5"
+        }
+      },
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\WebGPURHI\\BrowserTransitions.cpp.o.rsp",
+            "sha256": "72bc6075f1a19b9a2d0b62f5561837d8d65dbcecd285e6aba32d04cff3dcaad3"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserTransitions.rsp",
+            "sha256": "cb1cd3506ec88e9ed9160a5aedfe885d58fdff200e7071bbee13cf62d9781710"
+          },
+          {
+            "file": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserTransitions.cpp",
+            "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBreadcrumbs.cpp",
+            "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBufferLock.cpp",
+            "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserDynamicRHI.cpp",
+            "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserTransitions.cpp",
+            "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserViewport.cpp",
+            "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\WebGPUBrowserModule.cpp",
+            "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Public\\WebGPUBrowser.h",
+            "sha256": "d02da25931cdc426f0bc2e4d6b7d571af897b0ce87b2c88df8c1a9aef5224d77"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBreadcrumbs.cpp",
+            "sha256": "0c825c6a92aa71d575640d0be8850c4f2a7e618084d5df6b85b28f397ebed2f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBufferLock.cpp",
+            "sha256": "b1bfea6c2a4caead3eb3f6b74c2aa9a7528efb3ef5a6855ffba149f82da597e0"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h",
+            "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+            "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+            "sha256": "ba3cc8994d00edbbcc800f75fc81ad0bd2f89b93e03342a7264d7c3773e6a247"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUOwner.h",
+            "sha256": "c600425adb59919d151ae8b76fa08905e2dbfdc63216a6bd182d8692862ce7f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h",
+            "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUSamplerBias.h",
+            "sha256": "c04e69aba567579768313fe22d688c36b46e75d1019d4ee6ec83b10c7f3aa840"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUShaderDeclarations.h",
+            "sha256": "9d1cfda25a683a68bea1383b77a1ec51fe10ff6ee16d381bed6f3b24c2fce813"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp",
+            "sha256": "eac02049ad3dae884422a3b95d68be9cc5acee9ee186eed1df2c1290f9adc881"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUnsupportedRHI.h",
+            "sha256": "ca27eb25c934fe2d229ba1cef2c2a5f4bd40bc6b1659bf0aed400f8144e15772"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUViewport.cpp",
+            "sha256": "d568546e6e15681f2fb441f5f7614fb49ad865ebc50a2b4646b2fce4a960322f"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",
+            "sha256": "7452abd6aeeff7c33004adbf7b3e125b05cde41c83e0fb0fd4fb7f0293c03459"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderRuntimeMetadata.h",
+            "sha256": "9ef63087efae270f7e4c9bb4cfef04178dd1af7926d066aeab654def04f67ccf"
+          }
+        ],
+        "previousObject": "\"G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/WebGPURHI/BrowserTransitions.cpp.o\"",
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserTransitions.o",
+          "sha256": "ee010cbc1e36ea9ec66923d148a9902080b1f2c7dc556eee7cda8810be5b6b4c"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserTransitions.log",
+          "sha256": "7b68f265d598b990889a4babafbc2a4d1aaa65ea661b33372eceac5e64c282e1"
+        }
+      },
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\WebGPURHI\\BrowserViewport.cpp.o.rsp",
+            "sha256": "51cf68eaad1cd7e1f34aaac2ed75ddb4245f2901a84aa45763ff1ec6416fb9ae"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserViewport.rsp",
+            "sha256": "64d62cecbaf621c7b5885812991336fe62994400072d1aa913756b989472137f"
+          },
+          {
+            "file": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/BrowserViewport.cpp",
+            "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBreadcrumbs.cpp",
+            "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBufferLock.cpp",
+            "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserDynamicRHI.cpp",
+            "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserTransitions.cpp",
+            "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserViewport.cpp",
+            "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\WebGPUBrowserModule.cpp",
+            "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Public\\WebGPUBrowser.h",
+            "sha256": "d02da25931cdc426f0bc2e4d6b7d571af897b0ce87b2c88df8c1a9aef5224d77"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBreadcrumbs.cpp",
+            "sha256": "0c825c6a92aa71d575640d0be8850c4f2a7e618084d5df6b85b28f397ebed2f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBufferLock.cpp",
+            "sha256": "b1bfea6c2a4caead3eb3f6b74c2aa9a7528efb3ef5a6855ffba149f82da597e0"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h",
+            "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+            "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+            "sha256": "ba3cc8994d00edbbcc800f75fc81ad0bd2f89b93e03342a7264d7c3773e6a247"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUOwner.h",
+            "sha256": "c600425adb59919d151ae8b76fa08905e2dbfdc63216a6bd182d8692862ce7f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h",
+            "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUSamplerBias.h",
+            "sha256": "c04e69aba567579768313fe22d688c36b46e75d1019d4ee6ec83b10c7f3aa840"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUShaderDeclarations.h",
+            "sha256": "9d1cfda25a683a68bea1383b77a1ec51fe10ff6ee16d381bed6f3b24c2fce813"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp",
+            "sha256": "eac02049ad3dae884422a3b95d68be9cc5acee9ee186eed1df2c1290f9adc881"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUnsupportedRHI.h",
+            "sha256": "ca27eb25c934fe2d229ba1cef2c2a5f4bd40bc6b1659bf0aed400f8144e15772"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUViewport.cpp",
+            "sha256": "d568546e6e15681f2fb441f5f7614fb49ad865ebc50a2b4646b2fce4a960322f"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",
+            "sha256": "7452abd6aeeff7c33004adbf7b3e125b05cde41c83e0fb0fd4fb7f0293c03459"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderRuntimeMetadata.h",
+            "sha256": "9ef63087efae270f7e4c9bb4cfef04178dd1af7926d066aeab654def04f67ccf"
+          }
+        ],
+        "previousObject": "\"G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/WebGPURHI/BrowserViewport.cpp.o\"",
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserViewport.o",
+          "sha256": "698edb6ca77463dec34c9803ae505c83d171a9c60dcdd76277e39013e3d1fecb"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\BrowserViewport.log",
+          "sha256": "24f6e1c82a1a4b6af360243da8799af7764ebdc813b8c48149d50915d9fe9f95"
+        }
+      },
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\WebGPURHI\\WebGPUBrowserModule.cpp.o.rsp",
+            "sha256": "2430d49613af9163987ba096c6e318c57171728495183ac35fd5ccdd6f4e7b1a"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\WebGPUBrowserModule.rsp",
+            "sha256": "f499539291d18b9d5390859781f7338341ceab7a3cd678ce7e24c8f562bd3e95"
+          },
+          {
+            "file": "G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Platforms/Web/Source/Runtime/WebGPURHI/Private/WebGPUBrowserModule.cpp",
+            "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBreadcrumbs.cpp",
+            "sha256": "652acb5de5ab59d5fdbb19311f22a644f22c623b800f50602f2ab3d0d40f6d76"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserBufferLock.cpp",
+            "sha256": "6c31c27e9123eff6537f87b4dbe915f360cba6125ac9b6c03647061da0f99c1d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserDynamicRHI.cpp",
+            "sha256": "4d689908827cefe84197ae6fada093a89671d6484f8d6edf858e0f38d4740b7c"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserTransitions.cpp",
+            "sha256": "cc220308d70346181927fdf5cdfbf1269bc3f205d038165a9fe25ecb61d17afc"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\BrowserViewport.cpp",
+            "sha256": "969aa9e3341512b350691364659fd7281ab290fac912d4c591cb14f59be5b9d7"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Private\\WebGPUBrowserModule.cpp",
+            "sha256": "83858b6c2a6a9021c1e8525157c8b580d1b1316fce05c5054853c4ae83339e39"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Platforms\\Web\\Source\\Runtime\\WebGPURHI\\Public\\WebGPUBrowser.h",
+            "sha256": "d02da25931cdc426f0bc2e4d6b7d571af897b0ce87b2c88df8c1a9aef5224d77"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBreadcrumbs.cpp",
+            "sha256": "0c825c6a92aa71d575640d0be8850c4f2a7e618084d5df6b85b28f397ebed2f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUBufferLock.cpp",
+            "sha256": "b1bfea6c2a4caead3eb3f6b74c2aa9a7528efb3ef5a6855ffba149f82da597e0"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUCommandStream.h",
+            "sha256": "d64df107e1da5d5d3315661d179a81ba76be8416163178ecb61e062cb8908259"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+            "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+            "sha256": "ba3cc8994d00edbbcc800f75fc81ad0bd2f89b93e03342a7264d7c3773e6a247"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUOwner.h",
+            "sha256": "c600425adb59919d151ae8b76fa08905e2dbfdc63216a6bd182d8692862ce7f2"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUPackedDescriptors.h",
+            "sha256": "9316c049c188e6cf82f90ca62c3fa08c21cfdc0a01d00148c12b7ed2f407fd58"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUSamplerBias.h",
+            "sha256": "c04e69aba567579768313fe22d688c36b46e75d1019d4ee6ec83b10c7f3aa840"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUShaderDeclarations.h",
+            "sha256": "9d1cfda25a683a68bea1383b77a1ec51fe10ff6ee16d381bed6f3b24c2fce813"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp",
+            "sha256": "eac02049ad3dae884422a3b95d68be9cc5acee9ee186eed1df2c1290f9adc881"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUUnsupportedRHI.h",
+            "sha256": "ca27eb25c934fe2d229ba1cef2c2a5f4bd40bc6b1659bf0aed400f8144e15772"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUViewport.cpp",
+            "sha256": "d568546e6e15681f2fb441f5f7614fb49ad865ebc50a2b4646b2fce4a960322f"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderMetadata.h",
+            "sha256": "7452abd6aeeff7c33004adbf7b3e125b05cde41c83e0fb0fd4fb7f0293c03459"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Public\\WebGPUShaderRuntimeMetadata.h",
+            "sha256": "9ef63087efae270f7e4c9bb4cfef04178dd1af7926d066aeab654def04f67ccf"
+          }
+        ],
+        "previousObject": "\"G:/UE_HTML/ue_html/tests/ue-web-smoke/Intermediate/Build/Web/wasm64/UEWebEngineThreads/Development/WebGPURHI/WebGPUBrowserModule.cpp.o\"",
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\WebGPUBrowserModule.o",
+          "sha256": "c2a58dffd376ca320be0463770bf9af69e2a8d61365ec1d2a075638939a8906f"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\WebGPUBrowserModule.log",
+          "sha256": "172ada3dc5882dcbe6c929442e41d8666afa6e70fe67084692364ad885f64d47"
+        }
+      },
+      {
+        "inputs": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngine\\UEWebEngine.cpp.o.rsp",
+            "sha256": "ae7400e5eb06e4107b60869960b382f3cf114ce8f83d9565fa3150a1df91304b"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\WebNaniteUploaderTest.rsp",
+            "sha256": "86bdd871b553ccc66152e6f99db7ccb77e0859945358ef896a40797c25844f13"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteUploaderTest.cpp",
+            "sha256": "77ab678c4595e3b93ab1b7976fc603fc25c0dfd3b8cbc4cb37868d1eed54431a"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteStreamingPageUploader.h",
+            "sha256": "5dd54a1e4999a4c71cc78dbb671885ca4a483575d839c2604c13534c07722487"
+          }
+        ],
+        "previousObject": null,
+        "object": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\WebNaniteUploaderTest.o",
+          "sha256": "7def16446d26759deacbc8ae879b105136c9df97b516f602f54f8e4ece06cf24"
+        },
+        "log": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\WebNaniteUploaderTest.log",
+          "sha256": "ab397d17c0702bfdb5e1eb685fbdabea478ee8221c35ec58b4927834fa3aaaf8"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-nanite-runtime.cjs",
+        "sha256": "24632590aa345501dbf33b630d0428e68df84a87041ab23d9d6d63193b4212b6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteStreamingPageUploader.cpp",
+        "sha256": "981c09df39b664a332073fd0947f836f76c93ab4d1ee75eee67dc5e3aa8975f5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteStreamingPageUploader.cpp",
+        "sha256": "981c09df39b664a332073fd0947f836f76c93ab4d1ee75eee67dc5e3aa8975f5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\UEWebEngine.Build.cs",
+        "sha256": "10d9a7e6274a46a49adfaa6f96c59399433fd9bd348188165d917f9433adf789"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+        "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.h",
+        "sha256": "ba3cc8994d00edbbcc800f75fc81ad0bd2f89b93e03342a7264d7c3773e6a247"
+      }
+    ],
+    "products": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\UEWebEngineThreads.js",
+        "sha256": "8e21c92e7881b6eb5b1260428dd5a84eb3427ab4cb3a44c2d691986e22c9480b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\UEWebEngineThreads.wasm",
+        "sha256": "40082ae26d4f58ce98f9fb93ffac3b188dcc0a3934a87e1e11b83011c6926175"
+      }
+    ],
+    "log": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\link.log",
+      "sha256": "fa2751a587abaea6e0512d32f34fa7b3175591c2cc7d0c7bb37478701a5f1a3a"
+    },
+    "preservedLinkInputs": 421
+  },
+  "native": {
+    "report": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\verified.json",
+      "sha256": "5b8fd1dd2e88a216e05d2e2a971f8e8e79b3123fa3ec22842e6ea5e5d81bcf23"
+    },
+    "policyChecks": 21,
+    "modes": [
+      {
+        "bypass": false,
+        "adapter": "D3D12 driver version 32.0.16.2101 NVIDIA GeForce RTX 4090",
+        "minimumWaveSize": 32,
+        "maximumWaveSize": 32,
+        "cases": [
+          {
+            "prefix": 0,
+            "index": 0,
+            "pages": 1,
+            "dispatches": 2,
+            "pass": true
+          },
+          {
+            "prefix": 256,
+            "index": 1,
+            "pages": 1,
+            "dispatches": 2,
+            "pass": true
+          },
+          {
+            "prefix": 256,
+            "index": 2,
+            "pages": 2,
+            "dispatches": 3,
+            "pass": true
+          },
+          {
+            "prefix": 256,
+            "index": 3,
+            "pages": 2,
+            "dispatches": 4,
+            "pass": true
+          }
+        ],
+        "errors": [],
+        "pass": true
+      },
+      {
+        "bypass": true,
+        "adapter": "D3D12 driver version 32.0.16.2101 NVIDIA GeForce RTX 4090",
+        "minimumWaveSize": 32,
+        "maximumWaveSize": 32,
+        "cases": [
+          {
+            "prefix": 0,
+            "index": 0,
+            "pages": 1,
+            "dispatches": 2,
+            "pass": true
+          },
+          {
+            "prefix": 256,
+            "index": 1,
+            "pages": 1,
+            "dispatches": 2,
+            "pass": true
+          },
+          {
+            "prefix": 256,
+            "index": 2,
+            "pages": 2,
+            "dispatches": 3,
+            "pass": true
+          },
+          {
+            "prefix": 256,
+            "index": 3,
+            "pages": 2,
+            "dispatches": 4,
+            "pass": true
+          }
+        ],
+        "errors": [],
+        "pass": true
+      }
+    ],
+    "products": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-0-0-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-0-1-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-0-2-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-0-2-1.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-0-3-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-0-3-1.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-1-0-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-1-1-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-1-2-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-1-2-1.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-1-3-0.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\page-1-3-1.bin",
+        "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+      }
+    ],
+    "runtimeShaderArchive": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261107-184920\\uploader-global-shaders.bin",
+      "sha256": "09290c026a79a9da4ff556903a1507dc31963d3457a2b372b9459f0957e5791f"
+    }
+  },
+  "sources": [
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-browser-evidence.cjs",
+      "sha256": "aae8312a512bf0b9e81fec8ce5010846f951eedc27482a0216a72751966da5cb"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1",
+      "sha256": "f00da7d4f565c65ca9e99679257d11f06f837a43d06fa00d8d3728809f34c516"
+    },
+    {
+      "file": "G:\\UE_HTML\\ue_html\\UE58_WEBGPU_NANITE_IMPLEMENTATION.md",
+      "sha256": "af29bc5c2bfdfb96f8ab04f08f7774cec3b38f7dd73ca763410c5190acaf2288"
+    }
+  ],
+  "boundary": "Actual browser UE resource deserialization, original Engine uploader, global shader archive and RDG/RHI execution. Explicit resident fixture within the existing Villa runtime; no whole-scene Nanite activation, actual cross-page references, culling, rasterization, Lit parity or streaming acceptance."
+}

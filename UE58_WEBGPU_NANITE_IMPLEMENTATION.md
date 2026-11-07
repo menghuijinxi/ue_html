@@ -2,7 +2,8 @@
 
 更新：2026-11-07。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
 已增加显式 Web Cook 数据保留入口、Cook 资源序列化/重载，以及实际运行时 uploader
-的 Web 转码调度适配与原生 Dawn RHI 验证。
+的 Web 转码调度适配与原生 Dawn RHI 验证。现已在浏览器线程版 UE 中完成
+Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 GPU 回读验证。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -189,8 +190,64 @@ node tests/web-platform/collect-nanite-uploader-evidence.cjs <Uploader输出目�
 ```
 
 Uploader 的 `-SkipBuild` 要求已有构建记录，且源码、生成源码和 DLL 哈希均一致。
-Wasm 检查要求先准备线程版引擎的 UBT 响应文件。当前执行证据是原生 Dawn 上的
-实际 uploader 加浏览器 shader 回归，尚未执行浏览器内完整 UE uploader 或关卡。
+Wasm 检查要求先准备线程版引擎的 UBT 响应文件。此阶段证据是原生 Dawn 上的
+实际 uploader 加浏览器 shader 回归；后续浏览器 UE 执行见下一节。
+
+## 2026-11-07：浏览器 UE 资源加载与实际页上传
+
+新增显式 `WebNaniteUploaderTest` 诊断 RPC，浏览器从 UE 内容文件系统读取
+20,306 字节的 `resources.cooked.bin`，使用真正的 `Nanite::FResources::Serialize`
+反序列化，检查根页、页边界、fixup magic 和零流送依赖，再把压缩页交给 Engine
+模块原有的 `FStreamingPageUploader`。没有重命名或复制浏览器中的 uploader 实现，
+也没有由 JavaScript 手写转码 dispatch。
+
+原生导出器新增生产类型 `FTranscodePageToGPU_CS` 的 global shader map section，
+用 Web Cook 目标布局序列化两阶段 shader 及参数绑定。诊断打包器将此 section
+合入已有 shader map，并将 Cook 资源放入项目 Content 路径。浏览器通过 UE 原有
+global shader archive 加载、检查和实例化它，随后执行 RDG 上传及异步 GPU 回读。
+
+| 浏览器检查 | 结果 |
+| --- | --- |
+| 普通根页上传 | 2 次实际 WebGPU dispatch，完整 GPU 页一致 |
+| 256 字节目标偏移 | 2 次 dispatch，前后保护区不变 |
+| 两根页的合成依赖排序 | 子页先提交，3 次 dispatch，两页均一致 |
+| 同一 RDG 图重复上传 | 4 次 dispatch，两页均一致；随后执行空批次 |
+| 汇总 | 4 组通过、6 份 32,768 字节页逐字节一致，零 GPU 校验错误 |
+| shader 实际加载 | 两个 WGSL 入口均为 32 线程，代码哈希与此前独立 shader 验证一致 |
+| 场景继续运行 | 测试后继续推进帧，结束时为第 108 帧；未进行画质或性能验收 |
+| 原生回归 | recorded/bypass 共 8 组、21 项策略、12 份页均通过，并成功导出 Cook shader section |
+
+设备为 Edge `157.0.4341.42`、NVIDIA/Lovelace、非 fallback，subgroup min/max=32。
+6 份 GPU 页的 SHA-256 仍为
+`81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95`。
+
+本次重编译 uploader 所在 Engine unity、整个 WebGPURHI 模块和诊断入口，再用已有
+线程版 UE 对象链接到独立目录。构建脚本会审计共享 RHI 头文件并一起重编译所有
+相关对象，避免新旧资源布局混用；此问题曾在纹理初始化时触发访问断言。
+普通构建脚本也在跳过宿主准备时刷新并审计 uploader 覆盖。
+本次不是干净的全量 UBT 构建，安装引擎未修改。
+
+测试使用现有 `villa-default-20261107` 的匹配 Cook 包。历史默认关卡包缺少当前
+Renderer 要求的半透明光照 shader，不能与本次运行时直接组合。浏览器使用独立的
+工作区持久配置目录，避免完整场景缓存超过临时上下文配额；没有放宽资源或 GPU 校验。
+场景本身继续使用既有网格路径，Nanite fixture 仅验证页上传。
+
+证据：`tests/web-platform/evidence/nanite-browser-uploader-20261107.json`。
+复现需要前节已通过的 Cook 资源、匹配场景包、既有线程版 UBT 响应文件及对象：
+
+```powershell
+./tests/web-platform/probe-nanite-uploader.ps1 -Engine D:/UE_5.8 -CookedAsset <Cook输出目录>/sm5-retained
+node tests/web-platform/build-web-nanite-runtime.cjs
+node tests/web-platform/package-web-nanite-runtime.cjs <Uploader输出目录>
+# 在另一终端运行 node tests/web-platform/serve.cjs，使用 localhost:8765。
+$env:NODE_PATH='C:/Users/wap80/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules'
+node tests/web-platform/verify-web-nanite-uploader.cjs
+node tests/web-platform/collect-nanite-browser-evidence.cjs
+```
+
+本机验证沿用 CPU affinity 3。完整原生构建与浏览器日志、编译对象、链接输入、
+Cook shader section、资源和 GPU 页哈希均有记录。尚未把 Nanite 静态网格组件接入
+场景，也未执行 `FStreamingManager` 的完整资源注册、层级安装和流送生命周期。
 
 ## 下游接入
 
@@ -310,7 +367,7 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 - 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
   在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
-- Nanite 完整关卡 Cook/打包加载验收、浏览器 UE 中的运行时页上传、cluster 层级 LOD 与剔除、
+- Nanite 完整关卡 Cook/打包加载验收、场景组件/StreamingManager 资源注册、cluster 层级 LOD 与剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
@@ -321,5 +378,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段验证带 Nanite 资产的完整 Cook 包和浏览器 UE 中的驻留页上传，
+下一阶段将已验证的浏览器驻留页上传接入 Nanite 场景资源注册、层级安装与完整 Cook 包，
 推进 cluster 层级剔除和固定不透明材质的 Nanite VS/PS 路径，再扩展材质与流送。
