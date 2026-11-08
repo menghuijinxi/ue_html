@@ -7,6 +7,7 @@ const verifySceneCull = require('./verify-nanite-scene-cull-output.cjs');
 const verifyRaster = require('./verify-nanite-raster-output.cjs');
 const verifyDepth = require('./verify-nanite-depth-output.cjs');
 const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
+const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -23,7 +24,8 @@ function observe() {
   const depthModules = new WeakSet(), depthPipelines = new WeakSet(), depthBound = new WeakMap();
   const recordModules = new WeakSet(), recordPipelines = new WeakSet(), recordBound = new WeakMap();
   const materialModules = new WeakSet(), materialPipelines = new WeakSet(), materialBound = new WeakMap();
-  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], recordDispatches:0, materialDispatches:0, materialShaders:[], errors:[], adapter:null};
+  const gbufferModules=new WeakSet(),gbufferPipelines=new WeakSet(),gbufferBound=new WeakMap();
+  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], recordDispatches:0, materialDispatches:0, materialShaders:[], gbufferDraws:0,gbufferShaders:[],errors:[], adapter:null};
   const create = GPUDevice.prototype.createShaderModule;
   GPUDevice.prototype.createShaderModule = function(desc) {
     const result = create.call(this, desc);
@@ -41,6 +43,8 @@ function observe() {
     } else if(desc.code.includes('WebDepthSnapshotOutput')||desc.code.includes('WebNaniteResolvedVisibility')) state.depthShaders.push(desc.code);
     if(desc.code.includes('WebVisibleClusterOutput')) {recordModules.add(result);state.materialShaders.push(desc.code);}
     if(desc.code.includes('WebMaterialOutput')) {materialModules.add(result);state.materialShaders.push(desc.code);}
+    if(desc.code.includes('WebGBufferBaseMetallic')) {gbufferModules.add(result);state.gbufferShaders.push(desc.code);}
+    if(desc.code.includes('WebGBufferSnapshot')) state.gbufferShaders.push(desc.code);
     return result;
   };
   const sync = GPUDevice.prototype.createComputePipeline;
@@ -66,14 +70,19 @@ function observe() {
     const create = GPUDevice.prototype[name];
     const record = (p,d) => {
       if(rasterModules.has(d.vertex.module)&&rasterModules.has(d.fragment?.module)) rasterPipelines.add(p);
-      if(depthModules.has(d.fragment?.module)) {assertDepthPipeline(d);depthPipelines.add(p);} return p;
+      if(depthModules.has(d.fragment?.module)) {assertDepthPipeline(d);depthPipelines.add(p);}
+      if(gbufferModules.has(d.fragment?.module)) {
+        if(d.depthStencil?.depthCompare!=='equal'||d.depthStencil.depthWriteEnabled||d.fragment.targets.length!==6)
+          state.errors.push('Invalid Nanite GBuffer depth/MRT state');
+        gbufferPipelines.add(p);
+      } return p;
     };
     const assertDepthPipeline = d => {if(d.depthStencil?.depthCompare!=='greater-equal'||!d.depthStencil.depthWriteEnabled) state.errors.push('Invalid Nanite export depth state');};
     GPUDevice.prototype[name] = name.endsWith('Async') ? async function(d) {return record(await create.call(this,d),d);} : function(d) {return record(create.call(this,d),d);};
   }
   const rasterBind = GPURenderPassEncoder.prototype.setPipeline, draw = GPURenderPassEncoder.prototype.draw;
-  GPURenderPassEncoder.prototype.setPipeline = function(p) {rasterBound.set(this,rasterPipelines.has(p));depthBound.set(this,depthPipelines.has(p));return rasterBind.call(this,p);};
-  GPURenderPassEncoder.prototype.draw = function(...args) {if(rasterBound.get(this)) state.rasterDraws.push(args);if(depthBound.get(this)) ++state.depthDraws;return draw.apply(this,args);};
+  GPURenderPassEncoder.prototype.setPipeline = function(p) {rasterBound.set(this,rasterPipelines.has(p));depthBound.set(this,depthPipelines.has(p));gbufferBound.set(this,gbufferPipelines.has(p));return rasterBind.call(this,p);};
+  GPURenderPassEncoder.prototype.draw = function(...args) {if(rasterBound.get(this)) state.rasterDraws.push(args);if(depthBound.get(this)) ++state.depthDraws;if(gbufferBound.get(this)) ++state.gbufferDraws;return draw.apply(this,args);};
   GPUAdapter.prototype.requestDevice = async function(...args) {
     state.adapter = {vendor:this.info.vendor, architecture:this.info.architecture,
       subgroupMinSize:this.info.subgroupMinSize, subgroupMaxSize:this.info.subgroupMaxSize, isFallbackAdapter:this.info.isFallbackAdapter};
@@ -83,16 +92,17 @@ function observe() {
     return device;
   };
 }
-const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], sceneCulling:[], sceneDepth:[], errors:[], logs:[],
+const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], sceneCulling:[], sceneDepth:[], sceneGBuffer:[],errors:[], logs:[],
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
   cullOracle:audit(require.resolve('./verify-nanite-hierarchy-output.cjs')),
   sceneCullOracle:audit(require.resolve('./verify-nanite-scene-cull-output.cjs')),
   rasterOracle:audit(require.resolve('./verify-nanite-raster-output.cjs')),
   depthOracle:audit(require.resolve('./verify-nanite-depth-output.cjs')),
   materialOracle:audit(require.resolve('./verify-nanite-material-inputs.cjs')),
+  gbufferOracle:audit(require.resolve('./verify-nanite-gbuffer-output.cjs')),
   rasterReferencePolicy:{subpixelFractionalBits:8, depthTolerance:3e-5, edgeBandPixels:.02, minimumInteriorFraction:.25,
     reference:'https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants'},
-  boundary:'Bounded opaque Nanite raster consumes original 8-byte visible-cluster records with current GPUScene instance offsets. UE attribute/material-slot decoding is checked per visible sample; the prepass retains its exact records and visibility for later consumers. Material-input diagnostics are not UMaterial evaluation or GBuffer. Scene-depth mode remains default off; fallback base-pass shading, no LOD/HZB/streaming or complete-scene acceptance.'};
+  boundary:'Default-off resident Nanite depth and explicit constant DefaultLit bindings now write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Zero-fallback fixtures verify this subset. No arbitrary UMaterial graph, lightmaps, normal maps, Substrate, material binning, LOD/HZB/streaming or complete-scene acceptance.'};
 (async () => {
   let browser;
   try {
@@ -369,6 +379,40 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     await page.waitForFunction(f=>__webEngineFrames>=f+4,stoppedFrame,{timeout:30000});
     assert.deepEqual(await owner.evaluate(()=>({depth:__naniteBrowserAudit.depthDraws,cull:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length})),stopped,'cleanup must stop the experimental scene path');
     report.sceneDepthCleanup={pass:true,framesObserved:4,...stopped};
+    assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws),0,'constant GBuffer must default off');
+    for(let step=1;step<=6;++step) {
+      const before=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws);
+      assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteGBufferTest',s),step),1);
+      let result;const start=Date.now();
+      do {
+        await page.waitForTimeout(100);assert.equal(report.errors.length,0,report.errors.join('\n'));
+        assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',0)),1);
+        result=await owner.evaluate(()=>globalThis.__webNaniteGBufferTest||null);
+      } while((!result||result.pending||result.step!==step)&&Date.now()-start<45000);
+      assert(result&&!result.pending&&result.step===step,JSON.stringify(result));
+      try{result.validation=verifyGBuffer(result,fixturePage);}catch(error){result.validationFailure=error.stack;}
+      const products={};
+      for(const name of ['before','after','materialInputs']) {
+        const b=Buffer.alloc(result[name].length*4);result[name].forEach((v,i)=>b.writeUInt32LE(v,i*4));
+        const file=path.join(output,`gbuffer-${step}-${name}.bin`);fs.writeFileSync(file,b);products[name]=audit(file);delete result[name];
+      }
+      const draws=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws)-before;
+      if(step!==4) assert(draws>=4,'real per-frame GBuffer pass must execute');
+      report.sceneGBuffer.push({...result,products,draws,pass:!result.validationFailure});
+      if(step===2||step===6) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
+      console.log(`Browser scene GBuffer step ${step} ${result.validationFailure?'failed validation':'passed'}`);
+    }
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',7)),1);
+    assert(report.sceneGBuffer.every(c=>c.pass),report.sceneGBuffer.filter(c=>!c.pass).map(c=>`Step ${c.step}: ${c.validationFailure}`).join('\n'));
+    const gbufferShaders=await owner.evaluate(()=>__naniteBrowserAudit.gbufferShaders);assert.equal(gbufferShaders.length,2);
+    report.gbufferShaders=gbufferShaders.map((code,i)=>{const file=path.join(output,`gbuffer-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
+    const gbufferFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+8,gbufferFrame,{timeout:30000});
+    const endCounts=()=>({gbuffer:__naniteBrowserAudit.gbufferDraws,depth:__naniteBrowserAudit.depthDraws,raster:__naniteBrowserAudit.rasterDraws.length,cull:__naniteBrowserAudit.cullDispatches,records:__naniteBrowserAudit.recordDispatches,materials:__naniteBrowserAudit.materialDispatches});
+    const stoppedGBuffer=await owner.evaluate(endCounts),stoppedGBufferFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+4,stoppedGBufferFrame,{timeout:30000});
+    assert.deepEqual(await owner.evaluate(endCounts),stoppedGBuffer,'GBuffer cleanup must stop all experimental passes');
+    report.sceneGBufferCleanup={pass:true,framesObserved:4,...stoppedGBuffer};
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
     report.startupPipelineFailures = report.logs.filter(line => /LogRHI: Error: Failed to create .*pipeline/.test(line));
     report.errors.push(...await owner.evaluate(() => __naniteBrowserAudit.errors));
@@ -394,6 +438,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(await normal.evaluate(() => globalThis.__webEngineFailure || null), null);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 1)), 0);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 1)), 0);
+    assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteGBufferTest', 1)), 0);
     const normalOwner = normal.workers().find(w => w.url().includes('web-engine-worker.js')); assert(normalOwner);
     const normalAudit = await normalOwner.evaluate(() => __naniteBrowserAudit);
     assert.equal(normalAudit.dispatches, 0);
@@ -401,8 +446,9 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(normalAudit.rasterDraws.length, 0);
     assert.equal(normalAudit.depthDraws,0);
     assert.equal(normalAudit.recordDispatches,0);assert.equal(normalAudit.materialDispatches,0);
+    assert.equal(normalAudit.gbufferDraws,0);
     report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
-    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0, recordDispatches:0, materialDispatches:0,
+    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0, recordDispatches:0, materialDispatches:0, gbufferDraws:0,
       startupPipelineFailures:normalPipelineFailures};
     await normal.close();
     const preview = await context.newPage();
@@ -483,6 +529,27 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     }
     const materialFile=path.join(output,'material-inputs.png');
     await materialPreview.screenshot({path:materialFile,fullPage:true});await materialPreview.close();report.materialPreview=audit(materialFile);
+    const gbufferPreview=await context.newPage();await gbufferPreview.setViewportSize({width:1020,height:900});
+    await gbufferPreview.setContent('<style>body{margin:20px;background:#eef2f6;color:#203040;font:14px sans-serif}main{display:grid;grid-template-columns:repeat(3,320px);gap:10px}canvas{display:block;width:320px;height:180px;image-rendering:pixelated}p{margin:8px 0}</style><h2>Actual scene GBuffer: constant DefaultLit</h2><p>Nanite-owned samples: linear base color, encoded world normal, pre-lighting emissive. Unchanged samples shown dark.</p><main></main>');
+    for(const test of report.sceneGBuffer) {
+      const readWords=p=>{const b=fs.readFileSync(p.file);return Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));};
+      await gbufferPreview.evaluate(({test,before,after})=>{
+        const f=new Float32Array(1),u=new Uint32Array(f.buffer),asFloat=b=>{u[0]=b;return f[0];};
+        const gamma=v=>Math.round(255*Math.max(0,Math.min(1,v))**(1/2.2));
+        for(let mode=0;mode<3;++mode) {
+          const div=document.createElement('div'),title=document.createElement('p'),canvas=document.createElement('canvas');
+          title.textContent=`Step ${test.step}: `+['Base color','World normal','Emissive'][mode];canvas.width=test.materialWidth;canvas.height=test.materialHeight;
+          const ctx=canvas.getContext('2d'),im=ctx.createImageData(canvas.width,canvas.height);
+          for(let i=0;i<after.length/28;++i) {
+            const o=i*28,changed=after.slice(o+4,o+28).some((v,j)=>v!==before[o+4+j]);let rgb=[15,23,35];
+            if(changed) rgb=[0,1,2].map(c=>mode===1?asFloat(after[o+8+c])*255:gamma(asFloat(after[o+(mode===0?16:4)+c])));
+            im.data.set([...rgb,255],i*4);
+          }ctx.putImageData(im,0,0);div.append(title,canvas);document.querySelector('main').append(div);
+        }
+      },{test,before:readWords(test.products.before),after:readWords(test.products.after)});
+    }
+    const gbufferFile=path.join(output,'scene-gbuffer.png');await gbufferPreview.screenshot({path:gbufferFile,fullPage:true});
+    await gbufferPreview.close();report.gbufferPreview=audit(gbufferFile);
     report.pass = true;
   } catch(error) {report.failure = error.stack; process.exitCode = 1; console.error(error.stack);}
   finally {

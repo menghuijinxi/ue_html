@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
 const verifyDepth = require('./verify-nanite-depth-output.cjs');
 const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
+const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const verify = i => assert.equal(audit(i.file).sha256, i.sha256, `Stale file: ${i.file}`);
 const browserFile = path.join(__dirname, 'results/nanite-browser/results.json');
@@ -49,11 +50,19 @@ for(const test of browser.sceneDepth) {
 }
 assert(browser.depthDraws>=20&&browser.totalCullDispatches>100&&browser.totalRasterDraws>33);
 assert(browser.sceneDepthCleanup.pass&&browser.sceneDepthCleanup.framesObserved>=4);
+assert.equal(browser.sceneGBuffer.length,6);assert.equal(browser.defaultDisabled.gbufferDraws,0);
+assert(browser.sceneGBufferCleanup.pass&&browser.sceneGBufferCleanup.framesObserved>=4);
+for(const test of browser.sceneGBuffer) {
+  assert(test.pass&&test.validation.pass);const raw={...test};
+  for(const [key,p] of Object.entries(test.products)) {verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));}
+  if(test.screenshot) verify(test.screenshot);
+  assert.deepEqual(verifyGBuffer(raw,fixturePage),test.validation);
+}
 assert.equal([...browser.residency, ...browser.scene].flatMap(c => c.culling || []).length, 62);
 assert.equal([...browser.residency, ...browser.scene].reduce((n, c) => n + (c.cullInputRejections || 0), 0), 88);
-[browser.source, browser.cullOracle, browser.sceneCullOracle, browser.rasterOracle, browser.depthOracle, browser.materialOracle, browser.package,
+[browser.source, browser.cullOracle, browser.sceneCullOracle, browser.rasterOracle, browser.depthOracle, browser.materialOracle, browser.gbufferOracle,browser.package,
   ...browser.shaders, ...browser.cullShaders, ...browser.rasterShaders, ...browser.depthShaders, ...browser.materialShaders,
-  browser.visibilityPreview, browser.depthPreview, browser.materialPreview].forEach(verify);
+  ...browser.gbufferShaders,browser.visibilityPreview, browser.depthPreview, browser.materialPreview,browser.gbufferPreview].forEach(verify);
 const packaged = read(browser.package.file);
 assert(packaged.pass);
 const packageInputs = [...packaged.sources, ...packaged.products, ...packaged.baseline,
@@ -90,9 +99,13 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-material-inputs-20261108.json');
+const destination = path.join(__dirname, 'evidence/nanite-browser-gbuffer-20261108.json');
 const previewDestination = destination.replace(/\.json$/, '.png');
-fs.copyFileSync(browser.materialPreview.file, previewDestination);
-report.materialPreview = audit(previewDestination);
+fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
+report.gbufferPreview = audit(previewDestination);
+for(const test of browser.sceneGBuffer.filter(t=>t.screenshot)) {
+  const file=destination.replace(/\.json$/,`-scene-${test.step}.png`);fs.copyFileSync(test.screenshot.file,file);
+  (report.sceneScreenshots ||= []).push(audit(file));
+}
 fs.writeFileSync(destination, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, destination}));

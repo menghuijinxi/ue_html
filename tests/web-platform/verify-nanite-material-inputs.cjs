@@ -66,9 +66,10 @@ function triangle(page, cluster, tri) {
   assert(material<64); return {vertices,material};
 }
 
-module.exports = function verifyMaterialInputs(result, page) {
+module.exports = function verifyMaterialInputs(result, page, tolerances = {position:.0003,normal:.00001,uv:.000004,color:.000001}) {
   const {entries,visibleRecords:records,materialInputs:inputs,materialWidth:width,materialHeight:height}=result;
-  assert.equal(result.materialStride,4);assert.equal(width,45);assert.equal(height,30);
+  const rect=result.rect||[7,5,185,123],stride=result.materialStride;
+  assert(stride>0);assert.equal(width,Math.ceil((rect[2]-rect[0])/stride));assert.equal(height,Math.ceil((rect[3]-rect[1])/stride));
   assert.equal(inputs.length,width*height*16);
   const capacity=entries.reduce((n,e)=>n+e.keys.length,0);
   assert.equal(records.length,Math.max(capacity,1)*2);
@@ -92,8 +93,8 @@ module.exports = function verifyMaterialInputs(result, page) {
   let covered=0, empty=0;const maxError={position:0,normal:0,uv:0,color:0};
   const materialSlots=new Set(), cache=new Map();
   for(let y=0;y<height;++y) for(let x=0;x<width;++x) {
-    const offset=(y*width+x)*16, px=7+x*4, py=5+y*4;
-    const id=result.visibility[(py*result.rasterWidth+px)*2];
+    const offset=(y*width+x)*16, px=rect[0]+x*stride, py=rect[1]+y*stride;
+    const id=result.sampledVisibility ? result.sampledVisibility[y*width+x] : result.visibility[(py*result.rasterWidth+px)*2];
     assert.equal(inputs[offset],id,`material and raster ID at ${x},${y}`);
     if(!id) {assert(inputs.slice(offset,offset+16).every(v=>v===0));++empty;continue;}
     ++covered;
@@ -105,25 +106,25 @@ module.exports = function verifyMaterialInputs(result, page) {
     const m=Array.from({length:16},(_,i)=>Math.fround([0,1,2,3].reduce((s,k)=>s+
       entry.localToWorld[Math.floor(i/4)*4+k]*result.worldToClip[k*4+i%4],0)));
     const clip=decoded.vertices.map(v=>transform([...v.position,1],m));
-    const ndc=[(px+.5-7)/178*2-1,1-(py+.5-5)/118*2];
+    const ndc=[(px+.5-rect[0])/(rect[2]-rect[0])*2-1,1-(py+.5-rect[1])/(rect[3]-rect[1])*2];
     // Solve homogeneous projected triangle coordinates in double precision;
     // this is independent of the shader's reciprocal-W edge-function formula.
     const a=clip.map(v=>v[0]-ndc[0]*v[3]), b=clip.map(v=>v[1]-ndc[1]*v[3]);
     const weights=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
     const sum=weights.reduce((s,v)=>s+v,0);assert(Math.abs(sum)>1e-15);
     const bary=weights.map(v=>v/sum);
-    for(const [name,channels,tolerance] of [['position',[4,5,6],.0003],['normal',[8,9,10],.00001],['uv',[7,11],.000004],['color',[12,13,14,15],.000001]]) {
+    for(const [name,channels] of [['position',[4,5,6]],['normal',[8,9,10]],['uv',[7,11]],['color',[12,13,14,15]]]) {
       let expected=channels.map((_,c)=>decoded.vertices.reduce((s,v,i)=>s+v[name][c]*bary[i],0));
       if(name==='normal') expected=normalize(expected);
       channels.forEach((c,i)=>{
         const actual=asFloat(inputs[offset+c]), error=Math.abs(actual-expected[i]);
         assert(Number.isFinite(actual));maxError[name]=Math.max(maxError[name],error);
-        assert(error<tolerance,`step ${result.step}, ${x},${y} ${name}[${i}]: GPU ${actual}, CPU ${expected[i]}`);
+        assert(error<tolerances[name],`step ${result.step}, ${x},${y} ${name}[${i}]: GPU ${actual}, CPU ${expected[i]}`);
       });
     }
   }
   // The camera-inside/near-plane case may cover every sample in the viewport.
-  if(result.raster.covered>50) assert(covered>0);
-  if(result.step===1) assert.equal(result.materialInputRejections,7);
+  if(result.raster?.covered>50) assert(covered>0);
+  if(result.step===1&&!result.rect) assert.equal(result.materialInputRejections,7);
   return {pass:true,validRecords,covered,empty,maxError,materialSlots:[...materialSlots].sort()};
 };

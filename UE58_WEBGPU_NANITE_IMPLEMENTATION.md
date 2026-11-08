@@ -12,8 +12,8 @@ Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 G
 可见性与真实普通网格预深度合并；同时修正可见性 ID 的 8 位打包布局。
 现已让光栅消费原有 8 字节可见 cluster 记录，填入当前 GPUScene 实例偏移，
 并增加胜出像素的位置、法线、UV0、顶点色和相对材质槽解码；预深度输出保存于
-RDG blackboard，后续阶段可复用同一份几何与可见性。这仍是材质输入准备，
-尚未执行 UMaterial 图或写入 Nanite GBuffer。
+RDG blackboard，后续阶段可复用同一份几何与可见性。继续加入显式固定参数
+DefaultLit 的实际 GBuffer/场景颜色写入，入口默认关闭；这仍不包含任意 UMaterial 图。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -627,6 +627,69 @@ GPU 页解码本身当作几何正确性的唯一依据。测试沿用 19 个状
 证据保存至 `tests/web-platform/evidence/nanite-browser-material-inputs-20261108.json`，
 同名 PNG 展示局部法线、UV0 和实例归属，属于属性回读可视化而非最终材质画面。
 
+### 固定参数 DefaultLit 的真实 GBuffer 接入
+
+新增 `r.Nanite.WebResidentGBuffer`，默认 0，且依赖已有实验场景深度路径。
+Renderer 在普通 Base Pass 后读取本帧保存的可见性和记录，以全屏三角形逐绑定
+实例处理胜出像素；属性解析与上一阶段共用 `WebResolveMaterialInputs`。
+局部法线经过实例矩阵的逆转置变为世界法线，支持镜像和非均匀缩放。
+PS 调用 UE 原有 `EncodeGBuffer`，写实际 SceneColor 和 GBuffer A–E 六个附件。
+使用只读深度、`equal` 比较、load 附件：前方普通网格、空像素和未绑定材质保持原值。
+SceneColor 为乘以 `View.PreExposure` 的发光项，后续标准 deferred lighting 可继续消费。
+
+当前仅支持经过核对的 legacy deferred 布局：10:10:10:2 法线、BGRA8 参数/基色/
+自定义数据/预计算阴影，基色附件使用 sRGB；不支持 Substrate、MSAA、其他 GBuffer
+格式及关闭静态光照的布局。没有 lightmap/间接光照项，AO=1、预计算阴影因子=1，
+不写 velocity、stencil、shading mask。没有材质分桶，当前每个绑定实例一次全屏 draw，
+不能据此估计完整场景性能。
+
+`SetWebConstantMaterial` 是显式的 render-thread 绑定接口，绑定 component ID、
+当前 Nanite runtime resource ID、单个相对材质槽和固定 BaseColor/Metallic/Specular/
+Roughness/Emissive。拒绝非法 ID、槽位和非有限或越界参数；资源 ID 不匹配时跳过，
+代理注销时删除绑定。它不会猜测或替换原 UMaterial 的内容，没有纹理、法线贴图、
+材质图或自动 Cook 绑定支持。一般网格仍保留 fallback base pass，本轮测试使用
+零 fallback 三角形的真实 Nanite fixture，避免混淆几何来源。
+
+新增独立 `WebNaniteGBufferTest`，六个场景状态覆盖前方/后方/部分交叠普通网格、
+两个实例不同材质、参数变化、镜像非均匀缩放、隐藏/重建、失效资源绑定和缺失槽位。
+每帧真实写入前后采样场景颜色和五张 GBuffer，记录原始值；CPU 先独立验证页属性，
+再核对逆转置法线、sRGB 编解码、材质参数量化和 pre-exposure 发光项。
+不属于当前写入的采样点逐位保持，深度和可见性也逐位保持。shader 归档现为
+12 个入口、6 个 section；Wasm 构建覆盖 Engine、Renderer 及新增测试模块。
+
+全尺寸属性参考允许位置 `0.001`（小于资产的 `1/256` 量化单位）、法线 `2.5e-5`、
+UV `8e-6` 和颜色 `1e-6` 的误差；原有 192×128 离屏检查保留更严格的容限。
+GBuffer 法线允许一个 10 位码值的差异。硬件 sRGB 转换存在逼近误差，因此把
+线性回读重新编码后要求落在同一个最近的 8 位 sRGB 码值内（差值不超过半码），
+不要求与理想转换公式的线性浮点结果逐位相同。FloatRGBA 发光项相对容限为
+`0.15%`，下限为一个最小半精度步长；未写入区域和所有深度检查仍要求逐位一致。
+诊断快照拒绝空/错配视图，避免跨视图使用错误的曝光和属性数据。
+
+最终 Edge `157.0.4341.42` / NVIDIA Lovelace 运行至第 4,324 帧；默认关闭启动至
+第 13 帧。原有 19 组光栅/属性和 5 组场景深度回归通过，深度合并最大误差仍为零。
+新增六组 GBuffer 每组采样 8,160 点，共 48,960 点；704 点正确写入，48,256 点
+逐位保持，所有点的深度、可见性和曝光参数保持不变。11 项非法输入检查通过。
+
+| GBuffer 状态 | 材质写入点 | 被普通网格遮挡 | 失效绑定/缺失槽位 |
+| --- | ---: | ---: | ---: |
+| 普通网格在前 | 131 | 98 | 0 |
+| 普通网格在后并更新基色 | 229 | 0 | 0 |
+| 部分交叠、镜像非均匀缩放 | 114 | 117 | 0 |
+| 隐藏第一实例，第二实例资源 ID 失效 | 0 | 40 | 78 |
+| 第一实例材质槽不存在 | 117 | 0 | 111 |
+| 隐藏第二实例并更新发光/粗糙度 | 113 | 0 | 0 |
+
+法线编码最大误差 `9.776e-4`，sRGB 最大误差 `0.260` 个码值，参数最大误差
+`2.385e-8`，pre-exposure 发光最大误差 `1.444e-5`，均在上述容限内。
+退出后连续 4 帧所有实验 pass 计数不变，默认关闭启动没有新增 GBuffer 调用。
+无未捕获 GPU 错误、Fatal 或断言；开启/关闭配置仍各有既有 834 条 PSO 预缓存
+失败日志。使用隔离增量 Wasm 链接与既有 Villa Cook 包，未重新 Cook 完整关卡。
+画布截图确认已有 deferred lighting 消费输出，但不作为完整光照一致性或性能结论。
+
+证据：`tests/web-platform/evidence/nanite-browser-gbuffer-20261108.json`，
+同名 PNG 为真实 GBuffer 回读图，`-scene-2.png` / `-scene-6.png` 为实际运行画布截图。
+完整默认灯光天空关卡、任意材质以及与原生同视角对照仍未验收。
+
 当前保留 UE 纹理消费者，用解析纹理作为桥接：
 
 ```text
@@ -743,8 +806,8 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 ## 尚未接通
 
-- 已执行有界常驻页光栅与真实场景深度导出，但完整 Nanite Renderer 的
-  材质、GBuffer、速度和 stencil/shading mask 消费尚未接通。
+- 已执行有界常驻页光栅、真实场景深度和显式固定参数 DefaultLit GBuffer，
+  完整 Nanite Renderer 的任意材质图、材质分桶、速度和 stencil/shading mask 消费尚未接通。
   HZB 专项仍使用导出的 UE shader packet，尚未做真实 Nanite HZB 剔除。
 - Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、cluster 层级 LOD 与 HZB 剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。

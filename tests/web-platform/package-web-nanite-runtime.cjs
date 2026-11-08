@@ -34,7 +34,7 @@ assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
 const hierarchyArchive = fs.readFileSync(hierarchyShaders.archive.file);
-assert.equal(hierarchyArchive.readInt32LE(), 5);
+assert.equal(hierarchyArchive.readInt32LE(), 6);
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }
@@ -75,6 +75,6 @@ const report = {date:new Date().toISOString(), pass:true, output, build:audit(pa
   baseline:[baselinePack, ...['content-files.json', 'config-files.json', 'index.html'].map(n => path.join(baseline, n))].map(audit),
   sources:[__filename, ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:'Existing Villa Cook plus transcode, cull/raster, packed visible-cluster records, material-input decode, resolve and depth export/snapshot global shaders. Default-off Deferred scene depth integration with resident fixtures; no new whole-level Cook or UMaterial/GBuffer integration.'};
+  boundary:'Existing Villa Cook plus resident Nanite depth, visible records and constant DefaultLit GBuffer export/snapshot global shaders. Explicit component bindings and default-off toggles; no whole-level Cook, arbitrary UMaterial graph, lightmaps, Substrate or complete scene acceptance.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));

@@ -14,6 +14,8 @@
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebRaster.cpp"
 #define WEB_NANITE_DEPTH_SHADER_ONLY 1
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebDepth.cpp"
+#define WEB_NANITE_GBUFFER_SHADER_ONLY 1
+#include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebGBuffer.cpp"
 
 int32 RunWebNaniteHierarchyProbe(const FString& Params)
 {
@@ -29,7 +31,9 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
         &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
         &Nanite::FWebNaniteVisibleClustersCS::GetStaticType(), &Nanite::FWebNaniteMaterialInputsCS::GetStaticType(),
         &Nanite::FWebNaniteResolveCS::GetStaticType(), &Nanite::FWebNaniteDepthVS::GetStaticType(),
-        &Nanite::FWebNaniteDepthPS::GetStaticType(), &Nanite::FWebNaniteDepthSnapshotCS::GetStaticType()};
+        &Nanite::FWebNaniteDepthPS::GetStaticType(), &Nanite::FWebNaniteDepthSnapshotCS::GetStaticType(),
+        &Nanite::FWebNaniteGBufferVS::GetStaticType(), &Nanite::FWebNaniteGBufferPS::GetStaticType(),
+        &Nanite::FWebNaniteGBufferSnapshotCS::GetStaticType()};
     for (auto* Type : Types)
     {
         if (!Type->ShouldCompilePermutation(Platform, 0, EShaderPermutationFlags::HasEditorOnlyData)) return 1;

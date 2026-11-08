@@ -89,6 +89,7 @@ const send = (type, values = {}) => postMessage({type, ...values});
 const fail = error => send('failure', {message: error?.stack || error?.message || String(error)});
 const rpcNames = new Set([
   'WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest',
+  'WebNaniteGBufferTest',
   'WebTextureStreamingTestBudget', 'WebOcclusionTestMode', 'WebDefaultSamplesVisibility',
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest', 'WebMotionBenchmarkControl',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
