@@ -6,6 +6,7 @@ const verifyHierarchy = require('./verify-nanite-hierarchy-output.cjs');
 const verifySceneCull = require('./verify-nanite-scene-cull-output.cjs');
 const verifyRaster = require('./verify-nanite-raster-output.cjs');
 const verifyDepth = require('./verify-nanite-depth-output.cjs');
+const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -20,7 +21,9 @@ function observe() {
   const cullModules = new WeakSet(), cullPipelines = new WeakSet(), cullBound = new WeakMap();
   const rasterModules = new WeakSet(), rasterPipelines = new WeakSet(), rasterBound = new WeakMap();
   const depthModules = new WeakSet(), depthPipelines = new WeakSet(), depthBound = new WeakMap();
-  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], errors:[], adapter:null};
+  const recordModules = new WeakSet(), recordPipelines = new WeakSet(), recordBound = new WeakMap();
+  const materialModules = new WeakSet(), materialPipelines = new WeakSet(), materialBound = new WeakMap();
+  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], recordDispatches:0, materialDispatches:0, materialShaders:[], errors:[], adapter:null};
   const create = GPUDevice.prototype.createShaderModule;
   GPUDevice.prototype.createShaderModule = function(desc) {
     const result = create.call(this, desc);
@@ -30,28 +33,34 @@ function observe() {
     if (desc.code.includes('WebCullClusterKeys') && desc.code.includes('WebCullInputNodes')) {
       cullModules.add(result); state.cullShaders.push(desc.code);
     }
-    if (desc.code.includes('WebRasterClusterKeys') || desc.code.includes('WebNaniteAtomicMax_Visibility')) {
+    if ((desc.code.includes('WebRasterLocalToClip') && desc.code.includes('@vertex')) || desc.code.includes('WebNaniteAtomicMax_Visibility')) {
       rasterModules.add(result); state.rasterShaders.push(desc.code);
     }
     if (desc.code.includes('VisBuffer64')&&desc.code.includes('ViewRect')&&desc.code.includes('@builtin(frag_depth)')) {
       depthModules.add(result);state.depthShaders.push(desc.code);
     } else if(desc.code.includes('WebDepthSnapshotOutput')||desc.code.includes('WebNaniteResolvedVisibility')) state.depthShaders.push(desc.code);
+    if(desc.code.includes('WebVisibleClusterOutput')) {recordModules.add(result);state.materialShaders.push(desc.code);}
+    if(desc.code.includes('WebMaterialOutput')) {materialModules.add(result);state.materialShaders.push(desc.code);}
     return result;
   };
   const sync = GPUDevice.prototype.createComputePipeline;
   GPUDevice.prototype.createComputePipeline = function(desc) {
     const result = sync.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
-    if (cullModules.has(desc.compute.module)) cullPipelines.add(result); return result;
+    if (cullModules.has(desc.compute.module)) cullPipelines.add(result);
+    if(recordModules.has(desc.compute.module)) recordPipelines.add(result);
+    if(materialModules.has(desc.compute.module)) materialPipelines.add(result); return result;
   };
   const async = GPUDevice.prototype.createComputePipelineAsync;
   GPUDevice.prototype.createComputePipelineAsync = async function(desc) {
     const result = await async.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
-    if (cullModules.has(desc.compute.module)) cullPipelines.add(result); return result;
+    if (cullModules.has(desc.compute.module)) cullPipelines.add(result);
+    if(recordModules.has(desc.compute.module)) recordPipelines.add(result);
+    if(materialModules.has(desc.compute.module)) materialPipelines.add(result); return result;
   };
   const bind = GPUComputePassEncoder.prototype.setPipeline;
-  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {bound.set(this, pipelines.has(pipeline)); cullBound.set(this, cullPipelines.has(pipeline)); return bind.call(this, pipeline);};
+  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {bound.set(this, pipelines.has(pipeline)); cullBound.set(this, cullPipelines.has(pipeline)); recordBound.set(this,recordPipelines.has(pipeline));materialBound.set(this,materialPipelines.has(pipeline));return bind.call(this, pipeline);};
   const dispatch = GPUComputePassEncoder.prototype.dispatchWorkgroups;
-  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches; return dispatch.apply(this, args);};
+  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches;if(recordBound.get(this)) ++state.recordDispatches;if(materialBound.get(this)) ++state.materialDispatches; return dispatch.apply(this, args);};
   const request = GPUAdapter.prototype.requestDevice;
   for (const name of ['createRenderPipeline','createRenderPipelineAsync']) {
     const create = GPUDevice.prototype[name];
@@ -80,9 +89,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   sceneCullOracle:audit(require.resolve('./verify-nanite-scene-cull-output.cjs')),
   rasterOracle:audit(require.resolve('./verify-nanite-raster-output.cjs')),
   depthOracle:audit(require.resolve('./verify-nanite-depth-output.cjs')),
+  materialOracle:audit(require.resolve('./verify-nanite-material-inputs.cjs')),
   rasterReferencePolicy:{subpixelFractionalBits:8, depthTolerance:3e-5, edgeBandPixels:.02, minimumInteriorFraction:.25,
     reference:'https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants'},
-  boundary:'Bounded opaque Nanite visibility now resolves and exports to actual Deferred Renderer scene depth after the ordinary prepass, using original EmitSceneDepthPS. Default off, fallback base-pass shading remains. No Nanite GBuffer/material, LOD, HZB culling, streaming or complete scene acceptance.'};
+  boundary:'Bounded opaque Nanite raster consumes original 8-byte visible-cluster records with current GPUScene instance offsets. UE attribute/material-slot decoding is checked per visible sample; the prepass retains its exact records and visibility for later consumers. Material-input diagnostics are not UMaterial evaluation or GBuffer. Scene-depth mode remains default off; fallback base-pass shading, no LOD/HZB/streaming or complete-scene acceptance.'};
 (async () => {
   let browser;
   try {
@@ -274,12 +284,17 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       try {
         verifySceneCull(result, fixturePage, report.sceneCulling);
         result.raster = verifyRaster(result, sourceTriangles, fixturePage, oracle.asset.positionPrecision);
+        result.materialValidation = verifyMaterialInputs(result, fixturePage);
       }
       catch (error) { result.validationFailure = error.stack; }
       const bytes = Buffer.alloc(result.visibility.length*4);
       result.visibility.forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
       const file = path.join(output, `visibility-${step}.bin`); fs.writeFileSync(file,bytes);
       result.visibilityProduct = audit(file); delete result.visibility;
+      const materialBytes=Buffer.alloc(result.materialInputs.length*4);
+      result.materialInputs.forEach((v,i)=>materialBytes.writeUInt32LE(v,i*4));
+      const materialFile=path.join(output,`material-inputs-${step}.bin`);fs.writeFileSync(materialFile,materialBytes);
+      result.materialProduct=audit(materialFile);delete result.materialInputs;
       result.rasterDraws = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws.length) - drawsBefore;
       assert.equal(result.rasterDraws,result.entries.length);
       const dispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches) - before;
@@ -304,6 +319,11 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       const file=path.join(output,`raster-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);
     });
     report.rasterDraws = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws);
+    report.recordDispatches=await owner.evaluate(()=>__naniteBrowserAudit.recordDispatches);
+    report.materialDispatches=await owner.evaluate(()=>__naniteBrowserAudit.materialDispatches);
+    assert.equal(report.recordDispatches,33);assert.equal(report.materialDispatches,33);
+    const materialShaders=await owner.evaluate(()=>__naniteBrowserAudit.materialShaders);assert.equal(materialShaders.length,2);
+    report.materialShaders=materialShaders.map((code,i)=>{const file=path.join(output,`material-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
     assert.equal(report.rasterDraws.length,33);
     assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.depthDraws),0,'scene depth mode must default off');
     assert(report.rasterDraws.every(d=>d[0]===384&&d[1]>0));
@@ -380,8 +400,9 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(normalAudit.cullDispatches, 0);
     assert.equal(normalAudit.rasterDraws.length, 0);
     assert.equal(normalAudit.depthDraws,0);
+    assert.equal(normalAudit.recordDispatches,0);assert.equal(normalAudit.materialDispatches,0);
     report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
-    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0,
+    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0, recordDispatches:0, materialDispatches:0,
       startupPipelineFailures:normalPipelineFailures};
     await normal.close();
     const preview = await context.newPage();
@@ -439,6 +460,29 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     }
     const depthFile=path.join(output,'scene-depth-visibility.png');
     await depthPreview.screenshot({path:depthFile,fullPage:true});await depthPreview.close();report.depthPreview=audit(depthFile);
+    const materialPreview=await context.newPage();await materialPreview.setViewportSize({width:960,height:800});
+    await materialPreview.setContent('<style>body{margin:20px;background:#eef2f6;color:#203040;font:14px sans-serif}main{display:grid;grid-template-columns:repeat(3,300px);gap:10px}canvas{display:block;width:300px;height:200px;image-rendering:pixelated}p{margin:8px 0}</style><h2>Nanite material input readback</h2><p>Actual packed pages and winning visibility IDs; every 4th pixel. Diagnostic attributes, not final scene shading.</p><main></main>');
+    for(const step of [1,3,5,11,13,19]) {
+      const test=report.sceneCulling[step-1], bytes=fs.readFileSync(test.materialProduct.file);
+      const words=Array.from({length:bytes.length/4},(_,i)=>bytes.readUInt32LE(i*4));
+      await materialPreview.evaluate(({test,words})=>{
+        const f=new Float32Array(1),u=new Uint32Array(f.buffer),asFloat=b=>{u[0]=b;return f[0];};
+        for(let mode=0;mode<3;++mode) {
+          const div=document.createElement('div'),title=document.createElement('p'),canvas=document.createElement('canvas');
+          title.textContent=`Step ${test.step}: `+['Local normal','UV0','GPUScene instance'][mode];canvas.width=test.materialWidth;canvas.height=test.materialHeight;
+          const ctx=canvas.getContext('2d'),im=ctx.createImageData(canvas.width,canvas.height);
+          for(let i=0;i<words.length/16;++i) {
+            let rgb=[15,23,35];if(words[i*16]) {
+              if(mode===0) rgb=[8,9,10].map(c=>(asFloat(words[i*16+c])*.5+.5)*255);
+              else if(mode===1) rgb=[asFloat(words[i*16+7])*255,asFloat(words[i*16+11])*255,70];
+              else rgb=test.entries.find(e=>e.instanceId===words[i*16+1]).component?[255,166,65]:[65,219,192];
+            } im.data.set([...rgb,255],i*4);
+          } ctx.putImageData(im,0,0);div.append(title,canvas);document.querySelector('main').append(div);
+        }
+      },{test,words});
+    }
+    const materialFile=path.join(output,'material-inputs.png');
+    await materialPreview.screenshot({path:materialFile,fullPage:true});await materialPreview.close();report.materialPreview=audit(materialFile);
     report.pass = true;
   } catch(error) {report.failure = error.stack; process.exitCode = 1; console.error(error.stack);}
   finally {

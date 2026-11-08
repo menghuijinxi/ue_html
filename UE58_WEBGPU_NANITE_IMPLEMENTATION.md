@@ -10,6 +10,10 @@ Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 G
 写入离屏打包可见性缓冲，并验证覆盖、深度和实例归属。
 随后增加默认关闭的场景深度接入，复用原有深度导出 PS，将解析后的 Nanite
 可见性与真实普通网格预深度合并；同时修正可见性 ID 的 8 位打包布局。
+现已让光栅消费原有 8 字节可见 cluster 记录，填入当前 GPUScene 实例偏移，
+并增加胜出像素的位置、法线、UV0、顶点色和相对材质槽解码；预深度输出保存于
+RDG blackboard，后续阶段可复用同一份几何与可见性。这仍是材质输入准备，
+尚未执行 UMaterial 图或写入 Nanite GBuffer。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -492,8 +496,9 @@ PS 调用原有 `NaniteWritePixel.ush` 打包原子分支；每像素输出
 CPU 先用 double 合成实例到裁剪空间的矩阵，再转为 float 上传。
 每像素 ID 现在调用 UE 原有 `PackVisPixelX`，即
 `((entryBase + visibleSlot + 1) << 8) | triangle`，
-返回的 `ClusterBases` 与原剔除输出共同解释 ID；它还不是生产材质消费者
-所需的完整 `VisibleClustersSWHW` 表，不可直接交给现有 GBuffer 导出。
+返回的 `ClusterBases` 与原剔除输出共同解释 ID。后续“可见记录与材质输入”阶段
+补充了非扩展 `VisibleClustersSWHW` 布局；完整 GBuffer 所需的材质分桶、
+primitive/material 绑定和 view 表仍未齐备。
 
 浏览器验证通过现有场景观察者调用这个 Engine 接口并回读离屏缓冲。
 主场景仍绘制 fallback mesh。测试包括透视、正交、镜像和非均匀缩放、
@@ -569,8 +574,58 @@ UE 的 `ShouldRenderInDepthPass()` 对 main-pass 网格仍返回 true。
 同名 PNG 展示普通预深度、Nanite 可见性深度及合并后的真实 scene depth。
 
 开启此实验路径仍保留 fallback base-pass shading，几何差异可能造成材质和深度
-不一致；尚不能作为完整关卡发布配置。还需补齐生产可见 cluster/材质记录、
+不一致；尚不能作为完整关卡发布配置。后续已补齐非扩展可见 cluster 记录，仍需材质绑定、
 Nanite GBuffer、速度/stencil 标记、LOD 与流送，再进行完整关卡画面对照。
+
+### 可见记录与材质输入
+
+`NaniteWebRaster` 在剔除与光栅之间增加 `PackVisibleCS`，调用 UE 原有
+`PackVisibleCluster` 输出 8 字节记录。VS 改用原有 `GetVisibleCluster`，
+不再单独从剔除 key 解释 page/cluster。记录使用硬件光栅标记、当前单视图的
+view ID 0、`FPrimitiveSceneInfo::GetInstanceSceneDataOffset()` 提供的 GPUScene
+实例偏移；每帧重新获取，避免组件重建后继续使用旧偏移。只接受单实例代理。
+汇总表仍按 entry 容量预留，错误剔除状态、计数溢出及未使用 slot 均保持零。
+
+特别区分两种页引用：层级 key 的 cluster 位宽为 8，而无流送池时原有
+`PackPoolClusterRef` 的根页 cluster 位宽为 6。记录打包直接复用 UE 函数，
+CPU 按原始位布局逐字段核对，包括跨 32 位边界的实例 ID 与已重定位的页号。
+shader 明确关闭 assembly/voxel/curve permutation，并检查记录必须为非扩展布局；
+这不是通用 12 字节扩展记录支持。
+
+新增 `AddWebMaterialInputResolvePasses`，对每个有效可见性 ID 调用原有
+`DecodeTriangleIndices`、`DecodePosition`、`GetRawAttributeData<3>`、
+`CalculateTriangleBarycentrics` 和 `GetRelativeMaterialIndex`。输出为局部位置、
+归一化局部法线、UV0、顶点色、GPUScene 实例 ID 和相对材质槽，使用透视正确插值。
+这是有界诊断接口，按指定步长采样，最多 1,048,576 点，每点 64 字节；
+未被调用时不执行属性解析。它没有 UMaterial 参数求值、世界空间切线基、纹理采样、
+解析导数输出或 GBuffer 写入。当前真实球体 fixture 只有一个材质槽，不能据此
+宣称多材质范围及任意材质图均已验收。
+
+预深度阶段将原始可见性缓冲、可见记录、entry bases、视口和解析纹理保存到
+`FWebSceneRasterViews`，其对象与资源均归本帧 RDG 管理。五组真实场景深度测试
+检查它与正在导出的纹理、视图及视口一致；此处只建立复用接口，没有启用
+后续 GBuffer pass。普通 fallback base pass 仍然存在。
+
+浏览器回归新增逐字段记录检查，以及独立 CPU GPU 页属性解码：逐位读取索引、
+位置、八面体法线、UV 压缩值、颜色及材质槽，再用双精度齐次方程求解重心坐标，
+与 GPU 回读比较。原有来自非 Nanite 源网格的覆盖/深度参考继续保留，避免把
+GPU 页解码本身当作几何正确性的唯一依据。测试沿用 19 个状态，包括透视/正交、
+镜像和非均匀缩放、遮挡、同深度胜者、近裁剪面、隐藏/重建及六类剔除失败。
+新增 2 项实例 ID 拒绝及 7 项材质输入接口拒绝检查。着色器归档现为 9 个入口、
+5 个 section；新增两个 compute shader 使用实际 Engine 类型导出。
+
+最终 Edge `157.0.4341.42` / NVIDIA Lovelace 回归通过：19 个状态共核对
+134 条有效可见记录、1,569 个有效属性采样点和 24,081 个清零采样点，
+记录生成与属性解析各执行 33 次 dispatch。局部位置最大误差 `2.301e-4`，
+法线分量 `4.708e-6`、UV 分量 `1.092e-6`、颜色分量 `2.385e-7`；
+相应容限为 `3e-4`、`1e-5`、`4e-6`、`1e-6`。相机进入网格的状态允许
+整个采样视口被覆盖。五组实际深度合并的 162,000 点仍为零误差，
+退出实验模式后连续 4 帧没有新增路径调用，默认关闭运行推进到第 12 帧。
+无未捕获 GPU 错误、Fatal 或断言；启用与关闭配置仍各有既有 834 条 PSO
+预缓存失败日志。仍是隔离增量 Wasm 链接与既有 Cook 包，非完整关卡验收。
+
+证据保存至 `tests/web-platform/evidence/nanite-browser-material-inputs-20261108.json`，
+同名 PNG 展示局部法线、UV0 和实例归属，属于属性回读可视化而非最终材质画面。
 
 当前保留 UE 纹理消费者，用解析纹理作为桥接：
 
@@ -703,5 +758,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
 下一阶段将已验证的浏览器静态网格常驻资源路径接入完整 Cook 包，
-补齐可见 cluster 的生产消费者记录和材质/GBuffer，统一 Nanite 深度与材质的
+继续补齐材质分桶、GPUScene/material/view 绑定和材质/GBuffer，统一 Nanite 深度与材质的
 几何来源，再推进 LOD、Compute 微三角形光栅与页流送。

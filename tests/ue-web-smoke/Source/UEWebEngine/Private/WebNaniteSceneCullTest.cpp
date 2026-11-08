@@ -50,6 +50,8 @@ struct FReadback
 TArray<FReadback> Pending;
 TSharedPtr<FJsonObject> Report;
 TUniquePtr<FRHIGPUBufferReadback> Visibility;
+TUniquePtr<FRHIGPUBufferReadback> VisibleRecords, MaterialInputs;
+uint32 VisibleRecordBytes = 0, MaterialInputBytes = 0;
 const FIntPoint RasterExtent(192, 128);
 const FIntRect RasterRect(7, 5, 185, 123);
 
@@ -100,11 +102,37 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
         check(!Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, FIntRect(5, 5, 5, 5), Invalid) && !Invalid.Pixels);
         auto BadView = View; BadView.Entries[0].Result.State = nullptr;
         check(!Nanite::AddWebResidentRasterPasses(Graph, BadView, RasterExtent, RasterRect, Invalid) && !Invalid.Pixels);
-        Report->SetNumberField(TEXT("rasterInputRejections"), 6);
+        BadView = View; BadView.Entries[0].InstanceSceneDataOffset = MAX_uint32;
+        check(!Nanite::AddWebResidentRasterPasses(Graph, BadView, RasterExtent, RasterRect, Invalid) && !Invalid.Pixels);
+        BadView.Entries[0].InstanceSceneDataOffset = 1u << 24;
+        check(!Nanite::AddWebResidentRasterPasses(Graph, BadView, RasterExtent, RasterRect, Invalid) && !Invalid.Pixels);
+        Report->SetNumberField(TEXT("rasterInputRejections"), 8);
+        check(!Nanite::AddWebMaterialInputResolvePasses(Graph, RasterView, Raster, 0));
+        check(!Nanite::AddWebMaterialInputResolvePasses(Graph, RasterView, Raster, 65537));
+        auto BadRaster = Raster; BadRaster.VisibleClusters = nullptr;
+        check(!Nanite::AddWebMaterialInputResolvePasses(Graph, RasterView, BadRaster, 4));
+        BadRaster = Raster; BadRaster.ClusterBases[0] = 1;
+        check(!Nanite::AddWebMaterialInputResolvePasses(Graph, RasterView, BadRaster, 4));
+        BadRaster = Raster; BadRaster.NumVisibleClusterSlots++;
+        check(!Nanite::AddWebMaterialInputResolvePasses(Graph, RasterView, BadRaster, 4));
+        BadRaster = Raster; BadRaster.SourceView = nullptr;
+        check(!Nanite::AddWebMaterialInputResolvePasses(Graph, RasterView, BadRaster, 4));
+        check(!Nanite::AddWebMaterialInputResolvePasses(Graph, BadView, Raster, 4));
+        Report->SetNumberField(TEXT("materialInputRejections"), 7);
     }
     Report->SetNumberField(TEXT("rasterWidth"), RasterExtent.X); Report->SetNumberField(TEXT("rasterHeight"), RasterExtent.Y);
     Visibility = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneRasterVisibility"));
     AddEnqueueCopyPass(Graph, Visibility.Get(), Raster.Pixels, RasterExtent.X * RasterExtent.Y * 8);
+    VisibleRecordBytes = Raster.VisibleClusters->Desc.GetSize();
+    VisibleRecords = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebVisibleClusterRecords"));
+    AddEnqueueCopyPass(Graph, VisibleRecords.Get(), Raster.VisibleClusters, VisibleRecordBytes);
+    auto* Inputs = Nanite::AddWebMaterialInputResolvePasses(Graph, RasterView, Raster, 4);
+    check(Inputs); MaterialInputBytes = Inputs->Desc.GetSize();
+    MaterialInputs = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebMaterialInputs"));
+    AddEnqueueCopyPass(Graph, MaterialInputs.Get(), Inputs, MaterialInputBytes);
+    Report->SetNumberField(TEXT("materialStride"), 4);
+    Report->SetNumberField(TEXT("materialWidth"), FMath::DivideAndRoundUp(RasterRect.Width(), 4));
+    Report->SetNumberField(TEXT("materialHeight"), FMath::DivideAndRoundUp(RasterRect.Height(), 4));
     for (int32 EntryIndex = 0; EntryIndex < View.Entries.Num(); ++EntryIndex)
     {
         const auto& Entry = View.Entries[EntryIndex];
@@ -117,6 +145,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
         Copy.Json->SetNumberField(TEXT("page"), Entry.Input.FirstRootPage);
         Copy.Json->SetNumberField(TEXT("levels"), Entry.Input.MaxLevels);
         Copy.Json->SetNumberField(TEXT("clusterBase"), Raster.ClusterBases[EntryIndex]);
+        Copy.Json->SetNumberField(TEXT("instanceId"), Entry.InstanceSceneDataOffset);
         Copy.Json->SetArrayField(TEXT("localToWorld"), MatrixJSON(Entry.LocalToWorld));
         Copy.Keys = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullKeys"));
         Copy.State = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullState"));
@@ -143,6 +172,12 @@ void ObserveDepth(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View, FIn
         Report->SetNumberField(TEXT("height"), FMath::DivideAndRoundUp(Rect.Height(), 4));
         Report->SetNumberField(TEXT("stride"), 4);
         Report->SetStringField(TEXT("depthFormat"), GPixelFormats[SceneDepth->Desc.Format].Name);
+        const auto* RasterViews = Graph.Blackboard.Get<Nanite::FWebSceneRasterViews>();
+        check(RasterViews);
+        const auto* Saved = RasterViews->Views.FindByPredicate([&View](const auto* Item) { return Item->Cull == &View; });
+        check(Saved && (*Saved)->ResolvedVisibility == Resolved && (*Saved)->Raster.SourceView == View.View &&
+            (*Saved)->Raster.Rect == Rect && (*Saved)->Raster.VisibleClusters);
+        Report->SetBoolField(TEXT("sharedVisibilityRecords"), true);
         if (ActiveStep == 20)
         {
             check(!Nanite::AddWebDepthExportPass(Graph, nullptr, SceneDepth, Rect));
@@ -183,7 +218,7 @@ void Poll()
         MAIN_THREAD_EM_ASM({globalThis.__webNaniteSceneDepthTest = JSON.parse(UTF8ToString($0));}, Utf8.Get());
         DepthBefore.Reset(); DepthAfter.Reset(); Report.Reset(); return;
     }
-    if (!Visibility->IsReady()) return;
+    if (!Visibility->IsReady() || !VisibleRecords->IsReady() || !MaterialInputs->IsReady()) return;
     for (const auto& Copy : Pending) if (!Copy.Keys->IsReady() || !Copy.State->IsReady()) return;
     TArray<TSharedPtr<FJsonValue>> Entries;
     for (auto& Copy : Pending)
@@ -205,6 +240,16 @@ void Poll()
     for (int32 I = 0; I < RasterExtent.X * RasterExtent.Y * 2; ++I) PixelsJSON.Add(MakeShared<FJsonValueNumber>(Pixels[I]));
     Report->SetArrayField(TEXT("visibility"), PixelsJSON);
     Visibility->Unlock(); Visibility.Reset();
+    const auto ReadWords = [](FRHIGPUBufferReadback& Copy, uint32 Bytes)
+    {
+        const auto* Data = static_cast<const uint32*>(Copy.Lock(Bytes)); check(Data);
+        TArray<TSharedPtr<FJsonValue>> Values;
+        for (uint32 I = 0; I < Bytes / 4; ++I) Values.Add(MakeShared<FJsonValueNumber>(Data[I]));
+        Copy.Unlock(); return Values;
+    };
+    Report->SetArrayField(TEXT("visibleRecords"), ReadWords(*VisibleRecords, VisibleRecordBytes));
+    Report->SetArrayField(TEXT("materialInputs"), ReadWords(*MaterialInputs, MaterialInputBytes));
+    VisibleRecords.Reset(); MaterialInputs.Reset();
     FString Json; FJsonSerializer::Serialize(Report.ToSharedRef(), TJsonWriterFactory<>::Create(&Json));
     FTCHARToUTF8 Utf8(*Json);
     MAIN_THREAD_EM_ASM({globalThis.__webNaniteSceneCullTest = JSON.parse(UTF8ToString($0));}, Utf8.Get());

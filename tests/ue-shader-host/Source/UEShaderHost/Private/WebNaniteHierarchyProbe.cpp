@@ -27,6 +27,7 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
     FGlobalShaderMap Map(Platform);
     FGlobalShaderType* Types[] = {&Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
         &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
+        &Nanite::FWebNaniteVisibleClustersCS::GetStaticType(), &Nanite::FWebNaniteMaterialInputsCS::GetStaticType(),
         &Nanite::FWebNaniteResolveCS::GetStaticType(), &Nanite::FWebNaniteDepthVS::GetStaticType(),
         &Nanite::FWebNaniteDepthPS::GetStaticType(), &Nanite::FWebNaniteDepthSnapshotCS::GetStaticType()};
     for (auto* Type : Types)

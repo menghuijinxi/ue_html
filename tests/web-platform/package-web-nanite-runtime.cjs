@@ -75,6 +75,6 @@ const report = {date:new Date().toISOString(), pass:true, output, build:audit(pa
   baseline:[baselinePack, ...['content-files.json', 'config-files.json', 'index.html'].map(n => path.join(baseline, n))].map(audit),
   sources:[__filename, ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:'Existing Villa Cook plus transcode, cull/raster, resolve, original depth export and depth snapshot global-map sections. Default-off Deferred scene depth integration with resident fixtures; no new whole-level Cook or Nanite material/GBuffer integration.'};
+  boundary:'Existing Villa Cook plus transcode, cull/raster, packed visible-cluster records, material-input decode, resolve and depth export/snapshot global shaders. Default-off Deferred scene depth integration with resident fixtures; no new whole-level Cook or UMaterial/GBuffer integration.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));
