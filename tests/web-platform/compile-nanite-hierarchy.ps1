@@ -22,6 +22,8 @@ try {
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteHierarchy.usf',
         'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebRaster.cpp',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteRaster.usf',
+        'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebDepth.cpp',
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteDepth.usf',
         'reference-engine/Engine/Shaders/Private/Nanite/NaniteDataDecode.ush',
         'reference-engine/Engine/Shaders/Shared/NaniteDefinitions.h',
         'tests/ue-shader-host/Source/UEShaderHost/Private/WebNaniteHierarchyProbe.cpp',

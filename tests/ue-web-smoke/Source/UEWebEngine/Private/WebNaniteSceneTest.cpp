@@ -26,7 +26,7 @@ namespace
 UStaticMesh* SceneMesh;
 UStaticMeshComponent* SceneComponents[2];
 
-UStaticMesh* CreateResidentSceneMesh()
+UStaticMesh* CreateResidentSceneMesh(bool WithNanite = true, bool WithFallback = true)
 {
     TArray<uint8> Cooked, Triangles;
     const FString Directory = TEXT("/Engine/Programs/UEWebEngine/Content/NaniteUploader/");
@@ -36,12 +36,15 @@ UStaticMesh* CreateResidentSceneMesh()
     auto Data = MakeUnique<FStaticMeshRenderData>();
     Data->NaniteResourcesPtr = MakePimpl<Nanite::FResources>();
     FMemoryReader Reader(Cooked, true); Reader.SetFilterEditorOnly(true);
-    Data->NaniteResourcesPtr->Serialize(Reader, GetTransientPackage(), true);
-    if (Reader.IsError() || Reader.Tell() != Cooked.Num()) return nullptr;
+    if (WithNanite)
+    {
+        Data->NaniteResourcesPtr->Serialize(Reader, GetTransientPackage(), true);
+        if (Reader.IsError() || Reader.Tell() != Cooked.Num()) return nullptr;
+    }
     // Build a normal fallback from the fixture's original triangle soup. This
     // permits real component scene proxies while the Nanite raster is unfinished.
     Data->AllocateLODResources(1);
-    Data->bHasNaniteFallbackMesh = true;
+    Data->bHasNaniteFallbackMesh = WithNanite;
     Data->NumInlinedLODs = 1;
     Data->ScreenSize[0] = 1.0f;
     auto& LOD = Data->LODResources[0];
@@ -66,7 +69,9 @@ UStaticMesh* CreateResidentSceneMesh()
     LOD.IndexBuffer.SetIndices(Indices, EIndexBufferStride::Force32Bit);
     verify(LOD.IndexBuffer.TrySetAllowCPUAccess(true));
     auto& Section = LOD.Sections.AddDefaulted_GetRef();
-    Section.NumTriangles = 960; Section.MinVertexIndex = 0; Section.MaxVertexIndex = Vertices.Num() - 1;
+    // A depth-only Nanite fixture retains the real proxy/resource lifetime but
+    // submits no fallback batches, so prepass/velocity cannot duplicate its depth.
+    Section.NumTriangles = WithFallback ? 960 : 0; Section.MinVertexIndex = 0; Section.MaxVertexIndex = Vertices.Num() - 1;
     Section.bEnableCollision = false;
     Data->Bounds = FBoxSphereBounds(Bounds);
     auto* Mesh = NewObject<UStaticMesh>(GetTransientPackage(), NAME_None, RF_Transient);
@@ -82,6 +87,8 @@ UStaticMesh* CreateResidentSceneMesh()
 }
 
 UStaticMesh* CreateWebNaniteSceneFixture() { return CreateResidentSceneMesh(); }
+UStaticMesh* CreateWebNaniteOrdinaryFixture() { return CreateResidentSceneMesh(false); }
+UStaticMesh* CreateWebNaniteDepthFixture() { return CreateResidentSceneMesh(true, false); }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneTest(int Step)
 {

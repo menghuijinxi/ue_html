@@ -73,12 +73,12 @@ module.exports = function verifyRaster(result, source, page, precision) {
     if(!!id!==expected) {assert(edge[i],`coverage pixel ${i%width},${Math.floor(i/width)}: GPU ${id}, CPU ${owner[i]}`); ++edgeDifferences;}
     if(!id) {assert.equal(zbits,0,`empty pixel ${i}`); continue;}
     ++covered; assert(Number.isFinite(z)&&z>=0&&z<=1);
-    const slot=(id>>>7)-1;
+    const slot=(id>>>8)-1;
     const found=entries.findIndex(e=>slot>=e.clusterBase&&slot<e.clusterBase+e.keys.length);
     assert(found>=0,`unknown visible slot ${slot}`);
     const entry=entries[found], local=slot-entry.clusterBase;
     assert(local<entry.state[0] && entry.state[1]===0);
-    const cluster=entry.keys[local]&255, triangle=id&127;
+    const cluster=entry.keys[local]&255, triangle=id&255;
     assert(cluster<clusterCount && triangle<(page.readUInt32LE(16+cluster*16+4)&255));
     byComponent[entry.component]=(byComponent[entry.component]||0)+1;
     if(expected && !edge[i]) {

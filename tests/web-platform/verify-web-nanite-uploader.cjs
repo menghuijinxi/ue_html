@@ -5,6 +5,7 @@ const {audit} = require('./content-file-metadata.cjs');
 const verifyHierarchy = require('./verify-nanite-hierarchy-output.cjs');
 const verifySceneCull = require('./verify-nanite-scene-cull-output.cjs');
 const verifyRaster = require('./verify-nanite-raster-output.cjs');
+const verifyDepth = require('./verify-nanite-depth-output.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -18,7 +19,8 @@ function observe() {
   const modules = new WeakSet(), pipelines = new WeakSet(), bound = new WeakMap();
   const cullModules = new WeakSet(), cullPipelines = new WeakSet(), cullBound = new WeakMap();
   const rasterModules = new WeakSet(), rasterPipelines = new WeakSet(), rasterBound = new WeakMap();
-  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], errors:[], adapter:null};
+  const depthModules = new WeakSet(), depthPipelines = new WeakSet(), depthBound = new WeakMap();
+  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], errors:[], adapter:null};
   const create = GPUDevice.prototype.createShaderModule;
   GPUDevice.prototype.createShaderModule = function(desc) {
     const result = create.call(this, desc);
@@ -31,6 +33,9 @@ function observe() {
     if (desc.code.includes('WebRasterClusterKeys') || desc.code.includes('WebNaniteAtomicMax_Visibility')) {
       rasterModules.add(result); state.rasterShaders.push(desc.code);
     }
+    if (desc.code.includes('VisBuffer64')&&desc.code.includes('ViewRect')&&desc.code.includes('@builtin(frag_depth)')) {
+      depthModules.add(result);state.depthShaders.push(desc.code);
+    } else if(desc.code.includes('WebDepthSnapshotOutput')||desc.code.includes('WebNaniteResolvedVisibility')) state.depthShaders.push(desc.code);
     return result;
   };
   const sync = GPUDevice.prototype.createComputePipeline;
@@ -50,12 +55,16 @@ function observe() {
   const request = GPUAdapter.prototype.requestDevice;
   for (const name of ['createRenderPipeline','createRenderPipelineAsync']) {
     const create = GPUDevice.prototype[name];
-    const record = (p,d) => {if(rasterModules.has(d.vertex.module)&&rasterModules.has(d.fragment?.module)) rasterPipelines.add(p); return p;};
+    const record = (p,d) => {
+      if(rasterModules.has(d.vertex.module)&&rasterModules.has(d.fragment?.module)) rasterPipelines.add(p);
+      if(depthModules.has(d.fragment?.module)) {assertDepthPipeline(d);depthPipelines.add(p);} return p;
+    };
+    const assertDepthPipeline = d => {if(d.depthStencil?.depthCompare!=='greater-equal'||!d.depthStencil.depthWriteEnabled) state.errors.push('Invalid Nanite export depth state');};
     GPUDevice.prototype[name] = name.endsWith('Async') ? async function(d) {return record(await create.call(this,d),d);} : function(d) {return record(create.call(this,d),d);};
   }
   const rasterBind = GPURenderPassEncoder.prototype.setPipeline, draw = GPURenderPassEncoder.prototype.draw;
-  GPURenderPassEncoder.prototype.setPipeline = function(p) {rasterBound.set(this,rasterPipelines.has(p));return rasterBind.call(this,p);};
-  GPURenderPassEncoder.prototype.draw = function(...args) {if(rasterBound.get(this)) state.rasterDraws.push(args);return draw.apply(this,args);};
+  GPURenderPassEncoder.prototype.setPipeline = function(p) {rasterBound.set(this,rasterPipelines.has(p));depthBound.set(this,depthPipelines.has(p));return rasterBind.call(this,p);};
+  GPURenderPassEncoder.prototype.draw = function(...args) {if(rasterBound.get(this)) state.rasterDraws.push(args);if(depthBound.get(this)) ++state.depthDraws;return draw.apply(this,args);};
   GPUAdapter.prototype.requestDevice = async function(...args) {
     state.adapter = {vendor:this.info.vendor, architecture:this.info.architecture,
       subgroupMinSize:this.info.subgroupMinSize, subgroupMaxSize:this.info.subgroupMaxSize, isFallbackAdapter:this.info.isFallbackAdapter};
@@ -65,14 +74,15 @@ function observe() {
     return device;
   };
 }
-const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], sceneCulling:[], errors:[], logs:[],
+const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], sceneCulling:[], sceneDepth:[], errors:[], logs:[],
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
   cullOracle:audit(require.resolve('./verify-nanite-hierarchy-output.cjs')),
   sceneCullOracle:audit(require.resolve('./verify-nanite-scene-cull-output.cjs')),
   rasterOracle:audit(require.resolve('./verify-nanite-raster-output.cjs')),
+  depthOracle:audit(require.resolve('./verify-nanite-depth-output.cjs')),
   rasterReferencePolicy:{subpixelFractionalBits:8, depthTolerance:3e-5, edgeBandPixels:.02, minimumInteriorFraction:.25,
     reference:'https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants'},
-  boundary:'Actual browser UE scene culling feeds bounded opaque two-sided Nanite page-decoding VS/PS into an offscreen packed visibility buffer. Independent source-mesh coverage, reversed depth and instance checks. Main scene still uses fallback raster; no GBuffer/material, LOD, HZB or streaming acceptance.'};
+  boundary:'Bounded opaque Nanite visibility now resolves and exports to actual Deferred Renderer scene depth after the ordinary prepass, using original EmitSceneDepthPS. Default off, fallback base-pass shading remains. No Nanite GBuffer/material, LOD, HZB culling, streaming or complete scene acceptance.'};
 (async () => {
   let browser;
   try {
@@ -277,7 +287,6 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       report.sceneCulling.push({...result, dispatches, pass:!result.validationFailure});
       console.log('Browser renderer scene cull/raster step ' + step + (result.validationFailure ? ' failed validation' : ' passed'));
     }
-    assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 20)), 1);
     assert(report.sceneCulling.every(c => c.pass), report.sceneCulling.filter(c => !c.pass).map(c => `Step ${c.step}: ${c.validationFailure}`).join('\n'));
     const shaders = await owner.evaluate(() => __naniteBrowserAudit.shaders);
     const cullShaders = await owner.evaluate(() => __naniteBrowserAudit.cullShaders);
@@ -296,14 +305,50 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     });
     report.rasterDraws = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws);
     assert.equal(report.rasterDraws.length,33);
+    assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.depthDraws),0,'scene depth mode must default off');
     assert(report.rasterDraws.every(d=>d[0]===384&&d[1]>0));
     assert.equal(shaders.length, 2);
     report.shaders = shaders.map((code,i) => {
       assert(/@workgroup_size\(32(?:u)?(?:,|\))/.test(code));
       const file = path.join(output, `transcode-${i}.wgsl`); fs.writeFileSync(file, code); return audit(file);
     });
+    for(let step=20;step<=24;++step) {
+      const before=await owner.evaluate(()=>({draws:__naniteBrowserAudit.depthDraws,culls:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length}));
+      assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteSceneCullTest',s),step),1);
+      let result;const start=Date.now();
+      do {
+        await page.waitForTimeout(100);
+        assert.equal(report.errors.length,0,report.errors.join('\n'));
+        assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteSceneCullTest',0)),1);
+        result=await owner.evaluate(()=>globalThis.__webNaniteSceneDepthTest||null);
+      }while((!result||result.pending||result.step!==step)&&Date.now()-start<30000);
+      assert(result&&!result.pending&&result.step===step,JSON.stringify(result));
+      try{result.validation=verifyDepth(result);}catch(error){result.validationFailure=error.stack;}
+      const products=[];
+      for(const name of ['before','after']) {
+        const bytes=Buffer.alloc(result[name].length*4);result[name].forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
+        const file=path.join(output,`scene-depth-${step}-${name}.bin`);fs.writeFileSync(file,bytes);products.push(audit(file));delete result[name];
+      }
+      const after=await owner.evaluate(()=>({draws:__naniteBrowserAudit.depthDraws,culls:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length}));
+      assert(after.draws-before.draws>=4,'real per-frame depth export must execute');
+      report.sceneDepth.push({...result,products,depthDraws:after.draws-before.draws,cullDispatches:after.culls-before.culls,rasterDraws:after.raster-before.raster,pass:!result.validationFailure});
+      console.log(`Browser scene depth step ${step} ${result.validationFailure?'failed validation':'passed'}`);
+    }
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteSceneCullTest',25)),1);
+    assert(report.sceneDepth.every(c=>c.pass),report.sceneDepth.filter(c=>!c.pass).map(c=>c.validationFailure).join('\n'));
+    report.depthDraws=await owner.evaluate(()=>__naniteBrowserAudit.depthDraws);
+    report.totalCullDispatches=await owner.evaluate(()=>__naniteBrowserAudit.cullDispatches);
+    report.totalRasterDraws=await owner.evaluate(()=>__naniteBrowserAudit.rasterDraws.length);
+    const depthShaders=await owner.evaluate(()=>__naniteBrowserAudit.depthShaders);
+    assert.equal(depthShaders.length,3);
+    report.depthShaders=depthShaders.map((code,i)=>{const file=path.join(output,`depth-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
     const frame = await page.evaluate(() => __webEngineFrames);
     await page.waitForFunction(f => __webEngineFrames >= f + 8, frame, {timeout:30000});
+    const stopped=await owner.evaluate(()=>({depth:__naniteBrowserAudit.depthDraws,cull:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length}));
+    const stoppedFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+4,stoppedFrame,{timeout:30000});
+    assert.deepEqual(await owner.evaluate(()=>({depth:__naniteBrowserAudit.depthDraws,cull:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length})),stopped,'cleanup must stop the experimental scene path');
+    report.sceneDepthCleanup={pass:true,framesObserved:4,...stopped};
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
     report.startupPipelineFailures = report.logs.filter(line => /LogRHI: Error: Failed to create .*pipeline/.test(line));
     report.errors.push(...await owner.evaluate(() => __naniteBrowserAudit.errors));
@@ -334,8 +379,9 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(normalAudit.dispatches, 0);
     assert.equal(normalAudit.cullDispatches, 0);
     assert.equal(normalAudit.rasterDraws.length, 0);
+    assert.equal(normalAudit.depthDraws,0);
     report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
-    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0,
+    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0,
       startupPipelineFailures:normalPipelineFailures};
     await normal.close();
     const preview = await context.newPage();
@@ -354,7 +400,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
         for(let i=0;i<words.length/2;++i){
           let rgb=[15,23,35];
           if(words[i*2]) {
-            const slot=(words[i*2]>>>7)-1, entry=test.entries.find(e=>slot>=e.clusterBase&&slot<e.clusterBase+e.keys.length);
+            const slot=(words[i*2]>>>8)-1, entry=test.entries.find(e=>slot>=e.clusterBase&&slot<e.clusterBase+e.keys.length);
             bits[0]=words[i*2+1];const light=.3+.7*(floats[0]-min)/Math.max(max-min,1e-9);
             rgb=(entry.component?[255,166,65]:[65,219,192]).map(v=>Math.round(v*light));
           }
@@ -366,6 +412,33 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const previewFile=path.join(output,'opaque-raster-visibility.png');
     await preview.screenshot({path:previewFile,fullPage:true});await preview.close();
     report.visibilityPreview=audit(previewFile);
+    const depthPreview=await context.newPage();
+    await depthPreview.setViewportSize({width:1020,height:900});
+    await depthPreview.setContent('<style>body{margin:20px;background:#eef2f6;color:#203040;font:14px sans-serif}main{display:grid;grid-template-columns:repeat(3,320px);gap:12px}canvas{display:block;width:320px;height:180px;image-rendering:pixelated}p{margin:8px 0}</style><h2>Actual UE scene depth: before / Nanite / after</h2><p>Sampled every 4 pixels. Teal: ordinary prepass; orange: Nanite. Brightness: reversed depth.</p><main></main>');
+    const depthLabels={20:'Foreground ordinary mesh',21:'Background ordinary mesh',22:'Partial overlap',23:'Nanite hidden',24:'Ordinary mesh hidden'};
+    for(const test of report.sceneDepth) {
+      const b=fs.readFileSync(test.products[0].file), a=fs.readFileSync(test.products[1].file);
+      const words=b=>Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));
+      await depthPreview.evaluate(({test,before,after,label})=>{
+        const f=new Float32Array(1),u=new Uint32Array(f.buffer),asFloat=b=>{u[0]=b;return f[0];};
+        let max=0;for(let i=0;i<before.length;i+=4) max=Math.max(max,asFloat(before[i+2]),before[i]?asFloat(before[i+1]):0);
+        for(let mode=0;mode<3;++mode){
+          const div=document.createElement('div'),title=document.createElement('p'),canvas=document.createElement('canvas');
+          title.textContent=label+' — '+['Before','Nanite','After'][mode];canvas.width=test.width;canvas.height=test.height;
+          const ctx=canvas.getContext('2d'),image=ctx.createImageData(canvas.width,canvas.height);
+          for(let i=0;i<before.length/4;++i){
+            const old=asFloat(before[i*4+2]),nanite=before[i*4]?asFloat(before[i*4+1]):0;
+            const z=mode===0?old:mode===1?nanite:asFloat(after[i*4+2]);
+            const color=mode===1||mode===2&&nanite>old?[255,166,65]:[65,219,192];
+            const rgb=z>0?color.map(v=>Math.round(v*(.2+.8*z/Math.max(max,1e-9)))):[15,23,35];
+            image.data.set([...rgb,255],i*4);
+          }
+          ctx.putImageData(image,0,0);div.append(title,canvas);document.querySelector('main').append(div);
+        }
+      },{test,before:words(b),after:words(a),label:depthLabels[test.step]});
+    }
+    const depthFile=path.join(output,'scene-depth-visibility.png');
+    await depthPreview.screenshot({path:depthFile,fullPage:true});await depthPreview.close();report.depthPreview=audit(depthFile);
     report.pass = true;
   } catch(error) {report.failure = error.stack; process.exitCode = 1; console.error(error.stack);}
   finally {

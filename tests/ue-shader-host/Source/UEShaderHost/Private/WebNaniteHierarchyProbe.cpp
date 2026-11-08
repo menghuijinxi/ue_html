@@ -12,6 +12,8 @@
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp"
 #define WEB_NANITE_RASTER_SHADER_ONLY 1
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebRaster.cpp"
+#define WEB_NANITE_DEPTH_SHADER_ONLY 1
+#include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebDepth.cpp"
 
 int32 RunWebNaniteHierarchyProbe(const FString& Params)
 {
@@ -24,7 +26,9 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
     if (!Format || !Target || Platform == SP_NumPlatforms) return 1;
     FGlobalShaderMap Map(Platform);
     FGlobalShaderType* Types[] = {&Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
-        &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType()};
+        &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
+        &Nanite::FWebNaniteResolveCS::GetStaticType(), &Nanite::FWebNaniteDepthVS::GetStaticType(),
+        &Nanite::FWebNaniteDepthPS::GetStaticType(), &Nanite::FWebNaniteDepthSnapshotCS::GetStaticType()};
     for (auto* Type : Types)
     {
         if (!Type->ShouldCompilePermutation(Platform, 0, EShaderPermutationFlags::HasEditorOnlyData)) return 1;
@@ -45,8 +49,9 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
             Type, nullptr, 0, Job.Output, 0, nullptr, nullptr)));
         Job.Output.ParameterMap.VerifyBindingsAreComplete(Type->GetName(), Job.Output.Target, nullptr);
     }
-    Map.FindOrAddSection(Types[0])->FinalizeContent();
-    Map.FindOrAddSection(Types[1])->FinalizeContent();
+    TSet<FGlobalShaderMapSection*> Sections;
+    for (auto* Type : Types) Sections.Add(Map.FindOrAddSection(Type));
+    for (auto* Section : Sections) Section->FinalizeContent();
     TArray<uint8> Archive;
     FArchiveSavePackageDataBuffer CookContext(Target);
     FMemoryWriter Writer(Archive, true); Writer.SetSavePackageData(&CookContext); Writer.SetFilterEditorOnly(true);

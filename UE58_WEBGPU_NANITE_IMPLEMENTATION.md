@@ -8,6 +8,8 @@ Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 G
 并继续接入静态网格初始化与 Deferred Renderer 的逐帧资源更新。
 真实场景剔除输出现已增加固定不透明 VS/PS 消费接口，直接解码常驻 Nanite 页，
 写入离屏打包可见性缓冲，并验证覆盖、深度和实例归属。
+随后增加默认关闭的场景深度接入，复用原有深度导出 PS，将解析后的 Nanite
+可见性与真实普通网格预深度合并；同时修正可见性 ID 的 8 位打包布局。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -488,7 +490,8 @@ PS 调用原有 `NaniteWritePixel.ush` 打包原子分支；每像素输出
 当前合计最多 `65,536` 个可见 slot，目标最多 `16,777,216` 像素。
 这仍是有界固定 draw，没有 indirect draw 或微三角形 Compute 光栅优化。
 CPU 先用 double 合成实例到裁剪空间的矩阵，再转为 float 上传。
-每像素 ID 为 `((entryBase + visibleSlot + 1) << 7) | triangle`，
+每像素 ID 现在调用 UE 原有 `PackVisPixelX`，即
+`((entryBase + visibleSlot + 1) << 8) | triangle`，
 返回的 `ClusterBases` 与原剔除输出共同解释 ID；它还不是生产材质消费者
 所需的完整 `VisibleClustersSWHW` 表，不可直接交给现有 GBuffer 导出。
 
@@ -520,7 +523,56 @@ shader-map section，打包时按真实 section 数合并。编译与证据审�
 证据：`tests/web-platform/evidence/nanite-browser-opaque-raster-20261108.json`，
 同名 PNG 为离屏 GPU 可见性回读图。
 
-当前保留 UE 纹理消费者，先用解析纹理作为桥接：
+### 场景深度接入
+
+新增默认关闭的 `r.Nanite.WebResidentSceneDepth`。显式 Web 常驻模式下开启后，
+Deferred Renderer 在普通网格预深度和速度 pass 后、scene depth resolve/HZB 前，
+读取同一 RDG 图上的场景剔除结果，执行固定不透明光栅和 RG32_UINT 解析，
+再调用 UE 原有 `NaniteExportGBuffer.usf::EmitSceneDepthPS`。该全局着色器关闭
+速度、shading mask 和蒙皮 permutation，只依赖可见性纹理与矩形视口；
+不需要尚未建立的生产材质表。Depth attachment 使用 load 和 reversed-Z
+`greater-equal`，保留更近的普通网格深度，不修改 stencil。
+
+接入原有消费者时修正了前一阶段的 ID 布局：此前自定义路径将三角形上限的
+7 位与可见性像素的 8 位混用，独立回读虽通过，但原有 `UnpackVisPixel`
+会错误解释 ID。现在 VS 调用同文件的 `PackVisPixelX`，CPU 回读按 8 位解释，
+并直接通过原有 PS 做 GPU 集成验证；此前离屏证据保留为历史记录。
+
+`NaniteWebDepth` 提供解析、depth export 和诊断快照接口。尺寸不匹配、
+未产生的目标、空/越界视口、多重采样及错误纹理格式直接拒绝。
+快照在真实 depth attachment 合并前后各采样一次，通过 RDG 的读写依赖保证顺序。
+测试观察者只消费真实 Renderer 输出，不重新提交或替代深度导出。
+五个场景状态覆盖普通网格在前/在后/部分交叠、隐藏 Nanite、隐藏普通网格；
+Nanite fixture 保留真实资源和场景代理，但将 fallback section 的三角形数置零，
+以确保新增深度来自 Nanite 页光栅。仅关闭组件 depth-pass 标记不足以隔离：
+UE 的 `ShouldRenderInDepthPass()` 对 main-pass 网格仍返回 true。
+普通遮挡物使用不带 Nanite 数据的常规静态网格，实际参与 UE 预深度 pass。
+
+最终 Edge/NVIDIA Lovelace 回归通过，推进至第 1,429 帧；默认关闭运行至第 10 帧。
+原有 19 组光栅检查和新增 5 组场景深度检查全部通过。每组在真实视口按 4 像素
+步长采样 32,400 点，合计 162,000 点，合并结果与 `max(普通深度, Nanite深度)`
+完全一致，最大误差为零；空可见性保留原深度位模式。
+
+| 深度场景 | Nanite 覆盖采样点 | 普通网格胜出 | Nanite 胜出 |
+| --- | ---: | ---: | ---: |
+| 普通网格在前 | 453 | 390 | 63 |
+| 普通网格在后 | 452 | 0 | 452 |
+| 部分交叠 | 453 | 314 | 139 |
+| 隐藏 Nanite | 0 | 原有 940 点保持不变 | 0 |
+| 隐藏普通网格 | 454 | 合并前全部为零 | 454 |
+
+五项非法深度输入被拒绝。恢复开关后连续 4 帧没有新增光栅、剔除或深度导出。
+无未捕获 GPU 错误、Fatal 或断言；启用和关闭运行仍各有既有 834 条 PSO
+预缓存失败日志。验证包含实际全局 shader-map 导出、增量 Wasm 链接和浏览器执行；
+未重新 Cook 完整关卡。证据：
+`tests/web-platform/evidence/nanite-browser-scene-depth-20261108.json`，
+同名 PNG 展示普通预深度、Nanite 可见性深度及合并后的真实 scene depth。
+
+开启此实验路径仍保留 fallback base-pass shading，几何差异可能造成材质和深度
+不一致；尚不能作为完整关卡发布配置。还需补齐生产可见 cluster/材质记录、
+Nanite GBuffer、速度/stencil 标记、LOD 与流送，再进行完整关卡画面对照。
+
+当前保留 UE 纹理消费者，用解析纹理作为桥接：
 
 ```text
 RDG 矩形清理
@@ -534,7 +586,9 @@ RDG 矩形清理
 无效 cluster ID 与视口外像素 discard。HZB 验证编译原有
 `HZB.usf::HZBBuildCS` 的 RG32_UINT 可见性、furthest、单 mip permutation，
 使用 UE 原始视口映射参数，对场景深度和 Nanite 深度逐像素取近值再做 2x2 归约。
-这尚未覆盖速度、shading mask、多 mip、材质重建与完整 GBuffer。
+深度导出现已在浏览器 UE Renderer 的真实 scene depth 上执行并回读；
+HZB 的该专项仍为导出 packet 验证。这尚未覆盖速度、shading mask、多 mip、
+材质重建与完整 GBuffer。
 
 Web 路径将重叠 HW/SW 光栅调度改为有序执行；目前仅接矩形视口清理，
 尚不支持多矩形列表、外部深度和 debug 可见性。对应检查会拒绝这些上下文。
@@ -634,8 +688,9 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 ## 尚未接通
 
-- 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
-  在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
+- 已执行有界常驻页光栅与真实场景深度导出，但完整 Nanite Renderer 的
+  材质、GBuffer、速度和 stencil/shading mask 消费尚未接通。
+  HZB 专项仍使用导出的 UE shader packet，尚未做真实 Nanite HZB 剔除。
 - Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、cluster 层级 LOD 与 HZB 剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
@@ -648,5 +703,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
 下一阶段将已验证的浏览器静态网格常驻资源路径接入完整 Cook 包，
-补齐可见 cluster 的生产消费者记录，将固定不透明 VS/PS 的离屏结果接到
-场景深度与材质/GBuffer，再推进 LOD、Compute 微三角形光栅与页流送。
+补齐可见 cluster 的生产消费者记录和材质/GBuffer，统一 Nanite 深度与材质的
+几何来源，再推进 LOD、Compute 微三角形光栅与页流送。

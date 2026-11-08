@@ -10,6 +10,8 @@
 #include "Rendering/NaniteStreamingManager.h"
 #include "Rendering/NaniteWebScene.h"
 #include "Rendering/NaniteWebRaster.h"
+#include "Rendering/NaniteWebDepth.h"
+#include "HAL/IConsoleManager.h"
 #include "RenderingThread.h"
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
@@ -18,6 +20,8 @@
 #include <emscripten.h>
 
 UStaticMesh* CreateWebNaniteSceneFixture();
+UStaticMesh* CreateWebNaniteOrdinaryFixture();
+UStaticMesh* CreateWebNaniteDepthFixture();
 
 namespace
 {
@@ -28,6 +32,13 @@ TWeakObjectPtr<AActor> SavedViewTarget;
 TWeakObjectPtr<APlayerController> Controller;
 FPrimitiveComponentId IDs[2];
 FDelegateHandle Observer;
+FDelegateHandle DepthObserver;
+UStaticMesh* OrdinaryMesh;
+UStaticMeshComponent* OrdinaryComponent;
+int SavedDepthMode = 0;
+TUniquePtr<FRHIGPUBufferReadback> DepthBefore, DepthAfter;
+uint32 DepthBytes = 0;
+bool DepthCapture = false;
 int ActiveStep = 0, SettledFrames = 0;
 bool Requested = false;
 struct FReadback
@@ -52,6 +63,7 @@ TArray<TSharedPtr<FJsonValue>> MatrixJSON(const FMatrix& Matrix)
 
 void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
 {
+    if (ActiveStep >= 20) return;
     if (!Requested || ++SettledFrames < 4) return;
     Requested = false;
     Report = MakeShared<FJsonObject>();
@@ -113,9 +125,64 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     }
 }
 
+void ObserveDepth(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View, FIntRect Rect,
+    FRDGTextureRef Resolved, FRDGTextureRef SceneDepth, bool After)
+{
+    if (ActiveStep < 20) return;
+    if (!After)
+    {
+        if (!Requested || ++SettledFrames < 4) return;
+        Requested = false; DepthCapture = true;
+        Report = MakeShared<FJsonObject>();
+        Report->SetNumberField(TEXT("step"), ActiveStep);
+        Report->SetNumberField(TEXT("frame"), View.View->Family->FrameNumber);
+        Report->SetNumberField(TEXT("entries"), View.Entries.Num());
+        Report->SetNumberField(TEXT("registered"), View.Registered);
+        Report->SetNumberField(TEXT("rejected"), View.Rejected);
+        Report->SetNumberField(TEXT("width"), FMath::DivideAndRoundUp(Rect.Width(), 4));
+        Report->SetNumberField(TEXT("height"), FMath::DivideAndRoundUp(Rect.Height(), 4));
+        Report->SetNumberField(TEXT("stride"), 4);
+        Report->SetStringField(TEXT("depthFormat"), GPixelFormats[SceneDepth->Desc.Format].Name);
+        if (ActiveStep == 20)
+        {
+            check(!Nanite::AddWebDepthExportPass(Graph, nullptr, SceneDepth, Rect));
+            check(!Nanite::AddWebDepthExportPass(Graph, Resolved, nullptr, Rect));
+            check(!Nanite::AddWebDepthExportPass(Graph, Resolved, SceneDepth, FIntRect(0, 0, 0, 0)));
+            check(!Nanite::AddWebDepthExportPass(Graph, Resolved, SceneDepth, FIntRect(MAX_int32, 0, MIN_int32, 1)));
+            check(!Nanite::AddWebDepthSnapshotPass(Graph, Resolved, SceneDepth, Rect, 0));
+            Report->SetNumberField(TEXT("inputRejections"), 5);
+        }
+    }
+    if (!DepthCapture) return;
+    auto* Buffer = Nanite::AddWebDepthSnapshotPass(Graph, Resolved, SceneDepth, Rect, 4);
+    check(Buffer); DepthBytes = Buffer->Desc.GetSize();
+    auto& Copy = After ? DepthAfter : DepthBefore;
+    Copy = MakeUnique<FRHIGPUBufferReadback>(After ? TEXT("WebSceneDepthAfter") : TEXT("WebSceneDepthBefore"));
+    AddEnqueueCopyPass(Graph, Copy.Get(), Buffer, DepthBytes);
+    if (After) DepthCapture = false;
+}
+
 void Poll()
 {
     if (!Report) return;
+    if (ActiveStep >= 20)
+    {
+        if (!DepthBefore || !DepthAfter || !DepthBefore->IsReady() || !DepthAfter->IsReady()) return;
+        const auto Read = [](FRHIGPUBufferReadback& Copy)
+        {
+            const auto* Data = static_cast<const uint32*>(Copy.Lock(DepthBytes)); check(Data);
+            TArray<TSharedPtr<FJsonValue>> Values;
+            for (uint32 I = 0; I < DepthBytes / 4; ++I) Values.Add(MakeShared<FJsonValueNumber>(Data[I]));
+            Copy.Unlock(); return Values;
+        };
+        Report->SetArrayField(TEXT("before"), Read(*DepthBefore));
+        Report->SetArrayField(TEXT("after"), Read(*DepthAfter));
+        Report->SetBoolField(TEXT("pending"), false);
+        FString Json; FJsonSerializer::Serialize(Report.ToSharedRef(), TJsonWriterFactory<>::Create(&Json));
+        FTCHARToUTF8 Utf8(*Json);
+        MAIN_THREAD_EM_ASM({globalThis.__webNaniteSceneDepthTest = JSON.parse(UTF8ToString($0));}, Utf8.Get());
+        DepthBefore.Reset(); DepthAfter.Reset(); Report.Reset(); return;
+    }
     if (!Visibility->IsReady()) return;
     for (const auto& Copy : Pending) if (!Copy.Keys->IsReady() || !Copy.State->IsReady()) return;
     TArray<TSharedPtr<FJsonValue>> Entries;
@@ -149,7 +216,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     static int LastStep = 0;
-    if (Step < 0 || Step > 20 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
+    if (Step < 0 || Step > 25 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
     if (!Step) { ENQUEUE_RENDER_COMMAND(PollWebSceneCull)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (Step != LastStep + 1) return 0;
     if (Step == 1)
@@ -215,19 +282,53 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
     }
     if (Step == 20)
     {
+        for (auto* Component : Components) Component->UnregisterComponent();
+        Mesh->ReleaseResources(); Mesh->RemoveFromRoot();
+        Mesh = CreateWebNaniteDepthFixture(); if (!Mesh) return 0;
+        for (auto* Component : Components) Component->SetStaticMesh(Mesh);
+        const FVector Origin(100000, 0, 100000);
+        Camera->SetActorLocationAndRotation(Origin, FRotator::ZeroRotator);
+        Components[0]->SetWorldLocation(Origin + FVector(500, 0, 0));
+        Components[1]->SetWorldLocation(Origin + FVector(500, 2000, 0));
+        for (auto* Component : Components) Component->RegisterComponentWithWorld(Controller->GetWorld());
+        OrdinaryMesh = CreateWebNaniteOrdinaryFixture(); if (!OrdinaryMesh) return 0;
+        OrdinaryComponent = NewObject<UStaticMeshComponent>(); OrdinaryComponent->AddToRoot();
+        OrdinaryComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        OrdinaryComponent->SetMobility(EComponentMobility::Movable); OrdinaryComponent->SetStaticMesh(OrdinaryMesh);
+        OrdinaryComponent->SetWorldLocation(Origin + FVector(350, 0, 0)); OrdinaryComponent->SetWorldScale3D(FVector(0.65));
+        OrdinaryComponent->RegisterComponentWithWorld(Controller->GetWorld());
+        auto* Mode = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth")); check(Mode);
+        SavedDepthMode = Mode->GetInt(); Mode->Set(1, ECVF_SetByCode);
+        ENQUEUE_RENDER_COMMAND(ObserveWebSceneDepth)([](FRHICommandListImmediate&) {
+            DepthObserver = Nanite::GetWebSceneDepthDelegate().AddStatic(&ObserveDepth);
+        });
+    }
+    if (Step == 21) { OrdinaryComponent->SetWorldLocation(FVector(100700, 0, 100000)); OrdinaryComponent->SetWorldScale3D(FVector(1)); }
+    if (Step == 22) OrdinaryComponent->SetWorldLocation(FVector(100350, 35, 100000));
+    if (Step == 23) for (auto* Component : Components) Component->SetHiddenInGame(true);
+    if (Step == 24) { for (auto* Component : Components) Component->SetHiddenInGame(false); OrdinaryComponent->SetHiddenInGame(true); }
+    if (Step == 25)
+    {
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"))->Set(SavedDepthMode, ECVF_SetByCode);
+        OrdinaryComponent->UnregisterComponent(); OrdinaryComponent->RemoveFromRoot(); OrdinaryComponent->DestroyComponent(); OrdinaryComponent = nullptr;
+        OrdinaryMesh->ReleaseResources(); OrdinaryMesh->RemoveFromRoot(); OrdinaryMesh = nullptr;
         for (auto*& Component : Components) { Component->UnregisterComponent(); Component->RemoveFromRoot(); Component->DestroyComponent(); Component = nullptr; }
         Mesh->ReleaseResources(); Mesh->RemoveFromRoot(); Mesh = nullptr;
         if (SavedViewTarget.IsValid()) Controller->SetViewTarget(SavedViewTarget.Get());
         Camera->Destroy(); Camera.Reset();
         ENQUEUE_RENDER_COMMAND(RemoveWebSceneCullObserver)([](FRHICommandListImmediate&) {
             check(!Requested && !Report && Pending.IsEmpty()); Nanite::GetWebSceneCullDelegate().Remove(Observer);
+            Nanite::GetWebSceneDepthDelegate().Remove(DepthObserver);
         });
         LastStep = Step; return 1;
     }
     LastStep = Step;
     ENQUEUE_RENDER_COMMAND(RequestWebSceneCull)([Step](FRHICommandListImmediate&) {
         check(!Requested && !Report && Pending.IsEmpty()); ActiveStep = Step; Requested = true; SettledFrames = 0;
-        MAIN_THREAD_ASYNC_EM_ASM({globalThis.__webNaniteSceneCullTest = ({pending:true,step:$0});}, Step);
+        MAIN_THREAD_ASYNC_EM_ASM({
+            if ($0 >= 20) globalThis.__webNaniteSceneDepthTest = ({pending:true,step:$0});
+            else globalThis.__webNaniteSceneCullTest = ({pending:true,step:$0});
+        }, Step);
     });
     return 1;
 }
