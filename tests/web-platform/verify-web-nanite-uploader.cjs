@@ -2,38 +2,45 @@
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
+const verifyHierarchy = require('./verify-nanite-hierarchy-output.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const packaged = read(path.join(__dirname, 'build/nanite-browser/package.json'));
 assert(packaged.pass);
 for (const input of [...packaged.sources, ...packaged.products, packaged.build, packaged.native,
-  packaged.archive, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles]) assert.equal(audit(input.file).sha256, input.sha256);
+  packaged.archive, packaged.hierarchyShaders, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles]) assert.equal(audit(input.file).sha256, input.sha256);
 const oracle = read(packaged.browserOracle.file);
 assert(oracle.pass && oracle.asset.webCookEnabled);
 function observe() {
   const modules = new WeakSet(), pipelines = new WeakSet(), bound = new WeakMap();
-  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], errors:[], adapter:null};
+  const cullModules = new WeakSet(), cullPipelines = new WeakSet(), cullBound = new WeakMap();
+  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], errors:[], adapter:null};
   const create = GPUDevice.prototype.createShaderModule;
   GPUDevice.prototype.createShaderModule = function(desc) {
     const result = create.call(this, desc);
     if (desc.code.includes('FPackedClusterInstallInfo') && desc.code.includes('SrcPageOffset')) {
       modules.add(result); state.shaders.push(desc.code);
     }
+    if (desc.code.includes('WebCullClusterKeys') && desc.code.includes('WebCullInputNodes')) {
+      cullModules.add(result); state.cullShaders.push(desc.code);
+    }
     return result;
   };
   const sync = GPUDevice.prototype.createComputePipeline;
   GPUDevice.prototype.createComputePipeline = function(desc) {
-    const result = sync.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result); return result;
+    const result = sync.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
+    if (cullModules.has(desc.compute.module)) cullPipelines.add(result); return result;
   };
   const async = GPUDevice.prototype.createComputePipelineAsync;
   GPUDevice.prototype.createComputePipelineAsync = async function(desc) {
-    const result = await async.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result); return result;
+    const result = await async.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
+    if (cullModules.has(desc.compute.module)) cullPipelines.add(result); return result;
   };
   const bind = GPUComputePassEncoder.prototype.setPipeline;
-  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {bound.set(this, pipelines.has(pipeline)); return bind.call(this, pipeline);};
+  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {bound.set(this, pipelines.has(pipeline)); cullBound.set(this, cullPipelines.has(pipeline)); return bind.call(this, pipeline);};
   const dispatch = GPUComputePassEncoder.prototype.dispatchWorkgroups;
-  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; return dispatch.apply(this, args);};
+  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches; return dispatch.apply(this, args);};
   const request = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(...args) {
     state.adapter = {vendor:this.info.vendor, architecture:this.info.architecture,
@@ -45,7 +52,8 @@ function observe() {
 }
 const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], errors:[], logs:[],
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
-  boundary:'Browser UE uploader, private residency and automatic global manager lifecycle through real shared static mesh components and deferred renderer updates. Components use fallback raster; no Nanite culling, raster or streaming acceptance.'};
+  cullOracle:audit(require.resolve('./verify-nanite-hierarchy-output.cjs')),
+  boundary:'Browser UE uploader, resident managers and bounded full-detail GPU hierarchy/frustum culling, including shared static mesh lifecycle. Components use fallback raster; no LOD selection, HZB culling, Nanite raster or streaming acceptance.'};
 (async () => {
   let browser;
   try {
@@ -151,6 +159,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       const removed = step === 3 ? [previousActive[0]] : step === 4 ? previousActive : [];
       assert.deepEqual(result.uninstalled.sort((a,b) => a.page-b.page), removed.map(info).sort((a,b) => a.page-b.page));
       const pages = Buffer.from(result.pages), hierarchy = Buffer.from(result.hierarchy);
+      verifyHierarchy(result, pages, result.active);
       assert.equal(pages.length, oracle.asset.gpuPageBytes * (step === 1 ? 1 : 2));
       const products = [];
       for (const resource of result.active) {
@@ -199,6 +208,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
         if (step === 2) assert.equal(result.id, report.scene[0].id);
         if (step === 4) assert.notEqual(result.id, report.scene[0].id);
         const pageBytes = Buffer.from(result.pages).subarray(result.page * oracle.asset.gpuPageBytes, (result.page + 1) * oracle.asset.gpuPageBytes);
+        verifyHierarchy(result, Buffer.from(result.pages), [result]);
         const pageFile = path.join(output, `scene-page-${step}.bin`); fs.writeFileSync(pageFile, pageBytes);
         const pageAudit = audit(pageFile); products.push(pageAudit);
         for (const browser of oracle.browsers) assert.equal(pageAudit.sha256, browser.gpuPageSha256);
@@ -215,6 +225,14 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     }
     assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 6)), 1);
     const shaders = await owner.evaluate(() => __naniteBrowserAudit.shaders);
+    const cullShaders = await owner.evaluate(() => __naniteBrowserAudit.cullShaders);
+    assert.equal(cullShaders.length, 1);
+    report.cullShaders = cullShaders.map(code => {
+      assert(/@workgroup_size\(64(?:u)?(?:,|\))/.test(code));
+      const file = path.join(output, 'hierarchy.wgsl'); fs.writeFileSync(file, code); return audit(file);
+    });
+    report.cullDispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
+    assert.equal(report.cullDispatches, 67);
     assert.equal(shaders.length, 2);
     report.shaders = shaders.map((code,i) => {
       assert(/@workgroup_size\(32(?:u)?(?:,|\))/.test(code));
@@ -249,8 +267,9 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const normalOwner = normal.workers().find(w => w.url().includes('web-engine-worker.js')); assert(normalOwner);
     const normalAudit = await normalOwner.evaluate(() => __naniteBrowserAudit);
     assert.equal(normalAudit.dispatches, 0);
+    assert.equal(normalAudit.cullDispatches, 0);
     report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
-    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0,
+    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0,
       startupPipelineFailures:normalPipelineFailures};
     report.pass = true;
   } catch(error) {report.failure = error.stack; process.exitCode = 1; console.error(error.stack);}

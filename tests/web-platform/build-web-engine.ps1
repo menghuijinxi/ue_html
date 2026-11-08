@@ -53,13 +53,15 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Rendering/NaniteStreamingManager.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteStreamingManager.h',
     'Source/Runtime/Engine/Private/Rendering/NaniteResources.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebHierarchy.h',
     'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp'
 )
 foreach ($taskNaniteRelative in $taskNaniteOverlays) {
     $taskNaniteDestination = Join-Path $taskHost $taskNaniteRelative
     $taskNaniteModule = if ($taskNaniteRelative.StartsWith('Source/Runtime/Renderer/')) { 'Renderer' } else { 'Engine' }
     if ((Get-Item -LiteralPath (Join-Path $taskHost "Source/Runtime/$taskNaniteModule")).LinkType -or
-        (Get-Item -LiteralPath $taskNaniteDestination).LinkType) {
+        ((Test-Path -LiteralPath $taskNaniteDestination) -and (Get-Item -LiteralPath $taskNaniteDestination).LinkType)) {
         throw 'Nanite overlay must be a local build-host copy.'
     }
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/$taskNaniteRelative") -Destination $taskNaniteDestination -Force

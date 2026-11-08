@@ -25,25 +25,40 @@ const execute = (response, log) => {
 };
 const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
   'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h',
-  'Private/Rendering/NaniteResources.cpp'];
+  'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebHierarchy.cpp',
+  'Public/Rendering/NaniteWebHierarchy.h'];
 const engineDependencies = [];
 for (const file of engineFiles) {
   const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Engine', file);
   const overlay = path.join(host, 'Source/Runtime/Engine', file);
-  assert.equal(fs.realpathSync(overlay).toLowerCase(), overlay.toLowerCase());
-  assert.equal(fs.statSync(overlay).nlink, 1);
-  fs.chmodSync(overlay, 0o666);
+  assert.equal(fs.realpathSync(path.dirname(overlay)).toLowerCase(), path.dirname(overlay).toLowerCase());
+  if (fs.existsSync(overlay)) {
+    assert.equal(fs.realpathSync(overlay).toLowerCase(), overlay.toLowerCase());
+    assert.equal(fs.statSync(overlay).nlink, 1);
+    fs.chmodSync(overlay, 0o666);
+  }
   fs.copyFileSync(source, overlay);
   engineDependencies.push(source, overlay);
 }
 const engine = path.join(intermediate, 'Engine');
-const tasks = engineFiles.filter(f => f.endsWith('.cpp')).map((file, i) => {
+const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !f.endsWith('NaniteWebHierarchy.cpp')).map((file, i) => {
   const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
     .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Runtime/Engine/' + file));
   assert.equal(unity.length, 1);
   return [path.join(engine, unity[0] + '.o.rsp'), null, i ? 'EngineNaniteStreaming' : 'EngineNanite'];
 });
 for (let i = tasks.length - 1; i >= 0; --i) if (tasks.findIndex(t => t[0] === tasks[i][0]) !== i) tasks.splice(i, 1);
+// A subsequent full UBT build can include the new source in an Engine unity.
+// Compile that unity when present; avoid linking a second shader registration.
+const hierarchyUnity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
+  .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Private/Nanite/NaniteWebHierarchy.cpp'));
+assert(hierarchyUnity.length <= 1);
+if (hierarchyUnity.length) {
+  const response = path.join(engine, hierarchyUnity[0] + '.o.rsp');
+  if (!tasks.some(t => t[0] === response)) tasks.push([response, null, 'EngineNaniteHierarchy']);
+} else {
+  tasks.push([tasks[0][0], path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp'), 'EngineNaniteHierarchy']);
+}
 const rendererRelative = 'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp';
 const rendererSource = path.join(root, 'reference-engine/Engine', rendererRelative);
 const rendererOverlay = path.join(host, rendererRelative);
@@ -101,14 +116,20 @@ for (const [original, override, name] of tasks) {
   const dependencies = name.startsWith('EngineNanite') ? [...engineDependencies,
     path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h'),
     path.join(host, 'Source/Runtime/RenderCore/Public/WebShaderPlatform.h')] : !override ? [...rhiDependencies].sort() :
-    [...engineDependencies, path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h')];
+    [...engineDependencies, path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.h'),
+      path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private/WebNaniteHierarchyTest.h')];
   const inputs = [original, response, input, ...dependencies].map(audit);
-  const cached = previous?.compiled.find(c => c.object.file === path.join(output, name + '.o'));
+  const checkpoint = path.join(output, name + '.verified.json');
+  const cached = fs.existsSync(checkpoint) ? JSON.parse(fs.readFileSync(checkpoint, 'utf8')) :
+    previous?.compiled.find(c => c.object.file === path.join(output, name + '.o'));
   const unchanged = cached && JSON.stringify(cached.inputs) === JSON.stringify(inputs) &&
     [cached.object, cached.log].every(i => fs.existsSync(i.file) && audit(i.file).sha256 === i.sha256);
   console.log((unchanged ? 'Reusing verified object ' : 'Compiling ') + name);
   if (!unchanged) execute(response, log);
-  compiled.push({inputs, previousObject: override ? null : previousObject, object: audit(path.join(output, name + '.o')), log: audit(log)});
+  for (const input of inputs) assert.equal(audit(input.file).sha256, input.sha256, `Input changed during compile: ${input.file}`);
+  const compiledItem = {inputs, previousObject: override ? null : previousObject, object: audit(path.join(output, name + '.o')), log: audit(log)};
+  fs.writeFileSync(checkpoint, JSON.stringify(compiledItem));
+  compiled.push(compiledItem);
 }
 const originalLink = path.join(intermediate, 'UEWebEngineThreads.js.rsp');
 const lines = fs.readFileSync(originalLink, 'utf8').split(/\r?\n/);

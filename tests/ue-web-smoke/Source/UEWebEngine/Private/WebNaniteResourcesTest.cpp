@@ -11,6 +11,7 @@
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
 #include <emscripten.h>
+#include "WebNaniteHierarchyTest.h"
 
 namespace
 {
@@ -61,6 +62,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteResourcesTest(int Step)
         static TUniquePtr<Nanite::FResources> Resources[2];
         static TUniquePtr<FRHIGPUBufferReadback> PagesReadback, HierarchyReadback;
         static TSharedPtr<FJsonObject> Report;
+        static TUniquePtr<FWebNaniteHierarchyChecks> Culling;
         static uint32 PagesSize, HierarchySize, LastStep = 0;
         if (Step)
         {
@@ -167,6 +169,9 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteResourcesTest(int Step)
             for (const auto& Resource : Resources) if (Resource && Modified.Contains(Resource->RuntimeResourceID))
                 check(Modified[Resource->RuntimeResourceID] == Resource->NumResidentClusters);
             auto* Pages = Manager.GetClusterPageDataSRV(Graph)->Desc.Buffer;
+            Culling = MakeUnique<FWebNaniteHierarchyChecks>();
+            for (const auto& Resource : Resources) if (Resource)
+                Culling->Schedule(Graph, Manager, *Resource, Step == 1);
             auto* Hierarchy = Manager.GetHierarchySRV(Graph)->Desc.Buffer;
             PagesSize = Pages->Desc.GetSize(); HierarchySize = Hierarchy->Desc.GetSize();
             PagesReadback = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebNaniteResidentPages"));
@@ -176,12 +181,13 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteResourcesTest(int Step)
             Graph.Execute();
             MAIN_THREAD_ASYNC_EM_ASM({globalThis.__webNaniteResourcesTest = {pending:true};});
         }
-        else if (PagesReadback && PagesReadback->IsReady() && HierarchyReadback->IsReady())
+        else if (PagesReadback && PagesReadback->IsReady() && HierarchyReadback->IsReady() && Culling->IsReady())
         {
             const auto* Pages = static_cast<const uint8*>(PagesReadback->Lock(PagesSize));
             const auto* Hierarchy = static_cast<const uint8*>(HierarchyReadback->Lock(HierarchySize));
             check(Pages && Hierarchy);
             FString Json;
+            Culling->Collect(*Report); Culling.Reset();
             FJsonSerializer::Serialize(Report.ToSharedRef(), TJsonWriterFactory<>::Create(&Json));
             FTCHARToUTF8 Utf8(*Json);
             MAIN_THREAD_EM_ASM({

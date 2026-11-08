@@ -349,6 +349,74 @@ Engine unity 和 DeferredShadingRenderer 所在 Renderer unity；不是全量 UB
 下一步仍需完整关卡 Cook／加载验收，以及 GPU 层级剔除、Nanite 光栅和材质连接。
 本次 transient 资产生命周期验证不能代替 `.uasset` 包加载或完整 Nanite 场景验收。
 
+## 常驻资源的 GPU 层级遍历与视锥剔除（2026-11-08）
+
+新增引擎入口 `AddWebResidentHierarchyCullPasses` 和 `WebNaniteHierarchy.usf`。
+它直接读取常驻管理器的页池和已完成 fixup 的层级缓冲，复用 UE 的
+`GetHierarchyNodeSlice`、`GetCluster` 解码，输出最细层静态三角形 cluster 的
+`page << 8 | cluster` 引用。当前筛选 `FULL_LEAF`，尚未选择屏幕误差 LOD。
+
+调用者传入一个资源、一个根节点及六个向内的 mesh-local 视锥平面；实例变换必须
+预先合入平面，包括平面的常数项。每层使用独立的 compute dispatch，在两个有界
+节点队列之间交替，由 RDG 建立写入／读取依赖。没有跨工作组等待循环。
+shader 使用六个 storage buffer、一个 uniform buffer、64 线程工作组和 32 位原子。
+目前每层按资源的最大节点数调度，还没有接间接 dispatch 或多实例批处理。
+
+CPU 在添加 pass 前检查页／层级范围、根节点、有限平面值和容量，并拒绝带偏移或
+缩短范围的 SRV；此入口只接收完整 byte-address 缓冲视图。当前限制为
+65,536 个节点、64 层、1,048,576 个可见 cluster。GPU 检查节点／页／cluster
+引用、缺页、assembly／skinning、输出队列和深度预算。输出包含计数及错误位；
+未来的绘制消费者必须在任何错误位非零时拒绝使用整份输出，不能把溢出结果当作
+完整可见集。当前没有光栅消费者。
+
+浏览器诊断在私有管理器的首次上传、扩容到第二页、移除／复用槽位后，以及全局
+管理器的真实静态网格初始化、共享组件注销、释放后重新初始化后运行此入口。
+常规用例始终直接读取管理器缓冲。多层遍历、循环引用、深度不足、非法节点、
+skinning 和队列溢出使用明确标注的合成层级；真实 Sphere 的层级仍只有一层。
+独立 JavaScript 校验器从 GPU 页的 packed cluster 字段计算可见集合和三角形数，
+逐项比较 GPU 返回的引用，并检查未使用输出仍保留清理值。
+
+| 最终浏览器检查 | 结果 |
+| --- | --- |
+| 剔除执行与回读 | 62 组检查通过，实际执行 67 次层级剔除 dispatch |
+| 全部可见 | 8 个叶 cluster，960 个三角形 |
+| 部分视锥／旋转平面 | 分别为 5 cluster／600 三角形、6 cluster／721 三角形，与独立 CPU 结果一致 |
+| 恰好接触边界 | 保留 1 个 cluster、121 个三角形 |
+| 完全在外／第六个面排除 | 零 cluster、零三角形 |
+| 合成二层遍历及故障 | 二层输出一致；深度不足、非法节点、循环、skinning、队列溢出返回预期错误位 |
+| 输出容量不足 | 保持边界内写入，报告完整候选数和溢出位 |
+| CPU 输入拒绝 | 8 个资源生命周期状态共 88 次检查，包含非有限平面值、范围越界及局部 SRV |
+| 既有回归 | 原有 13 项转码、驻留和共享静态网格生命周期检查通过 |
+| 默认关闭回归 | 同一运行包关闭常驻选项后正常推进，零转码及零剔除 dispatch |
+
+设备为 Edge `157.0.4341.42`、NVIDIA/Lovelace，非 fallback adapter。
+没有未捕获 GPU 错误、Fatal 或断言。开启和关闭选项的启动中，此前的
+**834 条 PSO 预缓存创建失败**均仍存在，
+不属于本次已修复范围。完整场景渲染与光照验收仍未完成。
+证据：`tests/web-platform/evidence/nanite-browser-hierarchy-20261108.json`。
+
+新增 shader section 与原转码 section 一并合入诊断包。宿主 shader 类型需在
+`PostConfigInit` 注册；普通打包器尚未自动生成这个完整的 Nanite shader 集合。
+构建器增加逐对象成功校验记录，后续对象编译失败时可复用已验证产物。
+输入、对象和日志哈希不匹配时仍会重编译。
+
+复现（沿用上一节的真实 Cook 资产和 native uploader 输出）：
+
+```powershell
+./tests/web-platform/compile-nanite-hierarchy.ps1 -Engine D:/UE_5.8
+node tests/web-platform/build-web-nanite-runtime.cjs
+node tests/web-platform/package-web-nanite-runtime.cjs tests/web-platform/results/nanite-uploader/20261107-184920
+node tests/web-platform/verify-web-nanite-uploader.cjs
+node tests/web-platform/collect-nanite-browser-evidence.cjs
+```
+
+浏览器验证仍使用既有 localhost:8765 服务、Playwright 的 `NODE_PATH` 和宿主
+affinity 3 配置。此步骤不是完整 UBT 重建，也没有重新 Cook 整个关卡。
+
+该入口目前由诊断调用；Deferred Renderer 仍只自动维护资源驻留，尚未按真实场景
+视图自动调度剔除。下一步需连接场景实例／视图、屏幕误差 LOD、可见集到 Nanite
+VS/PS 光栅和材质路径，随后再扩展 HZB、流送和完整默认关卡验收。
+
 ## 下游接入
 
 当前保留 UE 纹理消费者，先用解析纹理作为桥接：
@@ -467,7 +535,7 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 - 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
   在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
-- Nanite 完整关卡 Cook/打包加载验收、cluster 层级 LOD 与剔除、
+- Nanite 完整关卡 Cook/打包加载验收、真实场景视图调度、cluster 层级 LOD 与 HZB 剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
@@ -479,4 +547,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
 下一阶段将已验证的浏览器静态网格常驻资源路径接入完整 Cook 包，
-推进 cluster 层级剔除和固定不透明材质的 Nanite VS/PS 路径，再扩展材质与流送。
+将有界层级剔除连接到真实场景视图及固定不透明材质的 Nanite VS/PS 路径，
+推进 LOD、材质与流送。

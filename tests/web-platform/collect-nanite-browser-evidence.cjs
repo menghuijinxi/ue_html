@@ -17,12 +17,20 @@ assert.deepEqual(browser.scene.map(c => c.dispatches), [2,0,0,2,0]);
 assert.deepEqual(browser.scene.map(c => c.proxies), [2,1,0,2,0]);
 assert(browser.defaultDisabled.pass && browser.defaultDisabled.transcodeDispatches === 0);
 for (const test of browser.scene) {assert(test.pass); test.products.forEach(verify);}
-[browser.source, browser.package, ...browser.shaders].forEach(verify);
+assert.equal(browser.cullDispatches, 67);
+assert.equal(browser.defaultDisabled.cullDispatches, 0);
+assert.equal([...browser.residency, ...browser.scene].flatMap(c => c.culling || []).length, 62);
+assert.equal([...browser.residency, ...browser.scene].reduce((n, c) => n + (c.cullInputRejections || 0), 0), 88);
+[browser.source, browser.cullOracle, browser.package, ...browser.shaders, ...browser.cullShaders].forEach(verify);
 const packaged = read(browser.package.file);
 assert(packaged.pass);
 const packageInputs = [...packaged.sources, ...packaged.products, ...packaged.baseline,
-  packaged.build, packaged.native, packaged.archive, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles];
+  packaged.build, packaged.native, packaged.archive, packaged.hierarchyShaders, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles];
 packageInputs.forEach(verify);
+const hierarchyShaders = read(packaged.hierarchyShaders.file);
+assert(hierarchyShaders.pass);
+[...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
+  hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
 const build = read(packaged.build.file);
 assert(build.pass && build.incrementalDiagnostic && !build.fullRebuild);
 [...build.sources, ...build.linkInputs, ...build.products, build.log,
@@ -46,9 +54,10 @@ const report = {date:new Date().toISOString(), pass:true,
     preservedLinkInputs:build.linkInputs.length},
   native:{report:packaged.native, policyChecks:native.policyChecks, modes:native.modes,
     products:native.products, runtimeShaderArchive:native.runtimeShaderArchive},
+  hierarchyShaders:{report:packaged.hierarchyShaders, ...hierarchyShaders},
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
-  boundary:'Actual browser UE static mesh resource initialization, two shared component proxies, global resident manager updated by the deferred renderer, component unregister and asset release/reinitialize. Default-disabled boot also checked. Transient fixture uses fallback raster; no Nanite culling, raster, whole-level Cook, Lit parity or streaming acceptance.'};
-const destination = path.join(__dirname, 'evidence/nanite-browser-scene-resources-20261108.json');
+  boundary:'Actual browser UE resident buffers consumed by bounded GPU hierarchy traversal and mesh-local six-plane frustum culling. Full-detail static triangle leaves only. Synthetic multi-level and fault cases are labeled. No LOD, HZB occlusion, scene-view automatic cull dispatch, Nanite raster, whole-level Cook, Lit parity or streaming acceptance.'};
+const destination = path.join(__dirname, 'evidence/nanite-browser-hierarchy-20261108.json');
 fs.writeFileSync(destination, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, destination}));

@@ -28,11 +28,18 @@ const archiveFile = path.join(native, 'uploader-global-shaders.bin');
 assert.equal(path.resolve(verified.runtimeShaderArchive.file), archiveFile);
 const archive = fs.readFileSync(archiveFile);
 assert.equal(archive.readInt32LE(), 1, 'Expected exactly the production transcode section');
+const hierarchyFile = path.join(__dirname, 'results/nanite-hierarchy-shaders/verified.json');
+const hierarchyShaders = read(hierarchyFile);
+assert(hierarchyShaders.pass);
+[...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
+  hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
+const hierarchyArchive = fs.readFileSync(hierarchyShaders.archive.file);
+assert.equal(hierarchyArchive.readInt32LE(), 1);
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }
-const merged = Buffer.concat([originalGlobal, archive.subarray(4)]);
-merged.writeInt32LE(originalGlobal.readInt32LE() + 1);
+const merged = Buffer.concat([originalGlobal, archive.subarray(4), hierarchyArchive.subarray(4)]);
+merged.writeInt32LE(originalGlobal.readInt32LE() + 2);
 fs.copyFileSync(baselinePack, path.join(output, 'content.bin'));
 let offset = fs.statSync(baselinePack).size;
 for (const [virtualPath, data] of [[global.path, merged],
@@ -64,9 +71,10 @@ const products = ['index.html', 'content.bin', 'content-files.json', 'config-fil
 products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
+  hierarchyShaders:audit(hierarchyFile),
   baseline:[baselinePack, ...['content-files.json', 'config-files.json', 'index.html'].map(n => path.join(baseline, n))].map(audit),
   sources:[__filename, ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:'Existing Villa Cook plus transcode global-map section, serialized resident resource and original triangle soup for a transient static mesh fallback. Opted-in global manager lifecycle; no full Nanite raster or new full-level Cook.'};
+  boundary:'Existing Villa Cook plus transcode and bounded hierarchy-cull global-map sections, serialized resident resource and original triangle soup for a transient static mesh fallback. No Nanite raster or new full-level Cook.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));

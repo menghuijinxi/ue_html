@@ -18,6 +18,8 @@
 #include "RenderGraphUtils.h"
 #include "RenderUtils.h"
 #include <emscripten.h>
+#include "Serialization/JsonSerializer.h"
+#include "WebNaniteHierarchyTest.h"
 
 namespace
 {
@@ -144,6 +146,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneTest(int Step)
         static bool Requested = false;
         static TUniquePtr<FRHIGPUBufferReadback> PageReadback, HierarchyReadback;
         static uint32 PageBytes, HierarchyBytes;
+        static TUniquePtr<FWebNaniteHierarchyChecks> Culling;
         auto& Manager = Nanite::GStreamingManager;
         if (Step)
         {
@@ -175,6 +178,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneTest(int Step)
             // The renderer must have installed resources on a prior frame. The
             // diagnostic only reads buffers; it never drives manager updates.
             FRDGBuilder Graph(Cmd, RDG_EVENT_NAME("WebNaniteSceneReadback"));
+            Culling = MakeUnique<FWebNaniteHierarchyChecks>();
+            Culling->Schedule(Graph, Manager, *Resource, false);
             auto* Pages = Manager.GetClusterPageDataSRV(Graph)->Desc.Buffer;
             auto* Hierarchy = Manager.GetHierarchySRV(Graph)->Desc.Buffer;
             PageBytes = Pages->Desc.GetSize(); HierarchyBytes = Hierarchy->Desc.GetSize();
@@ -184,16 +189,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneTest(int Step)
             AddEnqueueCopyPass(Graph, HierarchyReadback.Get(), Hierarchy, HierarchyBytes);
             Graph.Execute();
         }
-        else if (PageReadback && PageReadback->IsReady() && HierarchyReadback->IsReady())
+        else if (PageReadback && PageReadback->IsReady() && HierarchyReadback->IsReady() && Culling->IsReady())
         {
             const auto* Pages = static_cast<const uint8*>(PageReadback->Lock(PageBytes));
             const auto* Hierarchy = static_cast<const uint8*>(HierarchyReadback->Lock(HierarchyBytes));
             check(Pages && Hierarchy);
+            auto Report = MakeShared<FJsonObject>();
+            Culling->Collect(*Report); Culling.Reset();
+            FString Json; FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
+            FTCHARToUTF8 Utf8(*Json);
             MAIN_THREAD_EM_ASM({globalThis.__webNaniteSceneTest = ({pending:false,step:$0,registered:$1,proxies:$2,id:$3,page:$4,
                 offset:$5 * 4,levels:$6,clusters:$7,active:true,
                 pages:Array.from(HEAPU8.subarray(Number($8), Number($8) + $9)),
-                hierarchy:Array.from(HEAPU8.subarray(Number($10), Number($10) + $11))});},
-                ActiveStep, RegisteredCount, ProxyCount, ID, Page, Offset, Levels, Clusters, Pages, PageBytes, Hierarchy, HierarchyBytes);
+                hierarchy:Array.from(HEAPU8.subarray(Number($10), Number($10) + $11))});
+                Object.assign(globalThis.__webNaniteSceneTest, JSON.parse(UTF8ToString($12)));},
+                ActiveStep, RegisteredCount, ProxyCount, ID, Page, Offset, Levels, Clusters, Pages, PageBytes, Hierarchy, HierarchyBytes, Utf8.Get());
             PageReadback->Unlock(); HierarchyReadback->Unlock();
             PageReadback.Reset(); HierarchyReadback.Reset();
         }

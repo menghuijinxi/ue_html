@@ -689,7 +689,7 @@ function prepare() {
   }
   copy();
   for (const relative of ['Private/WebTranslucencyVolume.ush', 'Private/Lumen/WebLumenAdaptiveProbe.usf',
-    'Private/Nanite/WebNaniteVisibility.usf']) {
+    'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf']) {
     assert(!fs.existsSync(path.join(stock, relative)), 'Web-only shaders must not overwrite installed inputs');
     const source = path.join(root, 'reference-engine/Engine/Shaders', relative);
     const destination = path.join(output, relative);
