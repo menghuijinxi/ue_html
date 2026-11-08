@@ -94,6 +94,8 @@ int32 ThreadingTest = 0; // 0=normal, 1=serial rendering, 2=no UE worker threads
 bool ThreadingBenchmark = false;
 int32 CoreLimitTest = 0;
 int32 PSOPrecacheConcurrency = 0;
+bool WebNaniteResidentResources = false;
+uint32 WebNaniteRootPages = 1024;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
 TWeakObjectPtr<AStaticMeshActor> MaterialMotionSample;
@@ -1382,6 +1384,7 @@ int32 StartEngine()
         (WebOcclusionMode.IsEmpty() ? FString() : TEXT(" -WebOcclusionMode=") + WebOcclusionMode) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
         (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) +
+        (WebNaniteResidentResources ? FString::Printf(TEXT(" -WebNaniteResidentResources -WebNaniteRootPages=%u"), WebNaniteRootPages) : FString()) +
         (RuntimeAsyncPSO ? TEXT(" -WebRuntimeAsyncPSO") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
         TEXT(" -webgpu -WebRHIStartupProbe -WebMinimalStartup -windowed -NoSplash -NoLoadingScreen -unattended -stdout") :
@@ -1581,6 +1584,25 @@ int main(int argc, char** argv)
             }
         }
         PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
+        WebNaniteResidentResources |= FCStringAnsi::Strcmp(argv[Index], "-WebNaniteResidentResources") == 0;
+        constexpr const ANSICHAR* NanitePagesOption = "-WebNaniteRootPages=";
+        if (FCStringAnsi::Strncmp(argv[Index], NanitePagesOption, FCStringAnsi::Strlen(NanitePagesOption)) == 0)
+        {
+            const ANSICHAR* Value = argv[Index] + FCStringAnsi::Strlen(NanitePagesOption);
+            uint64 Pages = 0;
+            bool Valid = *Value != 0;
+            for (; *Value && Valid; ++Value)
+            {
+                Valid = *Value >= '0' && *Value <= '9';
+                if (Valid) { Pages = Pages * 10 + (*Value - '0'); Valid = Pages <= 131072; }
+            }
+            if (!Valid || !Pages)
+            {
+                std::printf("P3_ENGINE_PREINIT_FAILED Nanite root page budget must be between 1 and 131072\n");
+                return 1;
+            }
+            WebNaniteRootPages = uint32(Pages);
+        }
         RuntimeAsyncPSO |= FCStringAnsi::Strcmp(argv[Index], "-WebRuntimeAsyncPSO") == 0;
         StartupTrace |= FCStringAnsi::Strcmp(argv[Index], "-WebStartupTrace") == 0;
         if (FCStringAnsi::Strcmp(argv[Index], "-WebThreadingTest=full") == 0) ThreadingBenchmark = true;

@@ -154,7 +154,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteResourcesTest(int Step)
                 Item->SetNumberField(TEXT("hierarchyOffset"), Resource->HierarchyOffset * 4);
                 Item->SetNumberField(TEXT("hierarchyBytes"), Resource->NumHierarchyDwords * 4);
                 Item->SetNumberField(TEXT("clusters"), Resource->NumResidentClusters);
-                check(Resource->RootData.IsEmpty() && Resource->HierarchyNodes.IsEmpty());
+                check(!Resource->RootData.IsEmpty() && !Resource->HierarchyNodes.IsEmpty());
                 Active.Add(MakeShared<FJsonValueObject>(Item));
             }
             Report->SetArrayField(TEXT("active"), Active);

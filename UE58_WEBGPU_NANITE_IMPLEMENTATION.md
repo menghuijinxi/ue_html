@@ -1,10 +1,11 @@
 # Nanite WebGPU 接入记录
 
-更新：2026-11-07。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
+更新：2026-11-08。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
 已增加显式 Web Cook 数据保留入口、Cook 资源序列化/重载，以及实际运行时 uploader
 的 Web 转码调度适配与原生 Dawn RHI 验证。现已在浏览器线程版 UE 中完成
 Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 GPU 回读验证。
-本轮继续接通显式 Web 常驻 StreamingManager 的注册、层级安装及资源生命周期。
+现已接通显式 Web 常驻 StreamingManager 的注册、层级安装及资源生命周期，
+并继续接入静态网格初始化与 Deferred Renderer 的逐帧资源更新。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -291,9 +292,62 @@ scatter upload 和安装／卸载通知，不创建 512 MB 默认流送池或缺
 复现沿用上一节的构建、打包和验证命令；验证器现在先执行原 4 组 uploader 回归，再执行
 常驻管理器生命周期。此前 uploader 证据保留为历史记录。
 
-本阶段只把资源注册进独立的真实 StreamingManager。普通静态网格组件仍未自动注册，
+上述阶段只把资源注册进独立的真实 StreamingManager。当时普通静态网格组件尚未自动注册，
 场景也没有启用 Nanite Renderer。cluster 层级剔除、光栅、Lit 材质、实际流送页依赖、
 缺页请求、淘汰与设备恢复仍待实现；没有全场景或性能验收结论。
+
+## 2026-11-08：静态网格资源自动注册与逐帧更新
+
+增加启动选项 `-WebNaniteResidentResources`，让全局 `GStreamingManager` 在 Web SM5
+和实际 wave 能力满足条件时进入常驻模式。`-WebNaniteRootPages=N` 指定根页预算，
+默认 1024 页（32 MB 上限，按需增长）；设备上限或预算不满足时保留关闭状态。
+此选项仍要求包内有可用的 Nanite Cook 数据和转码 global shader section。
+当前普通打包器尚未自动生成这一 section，诊断打包器负责合入。
+Web 启动程序会重建 UE 命令行，本轮同时补齐这两个选项的解析与转发，并校验页预算。
+
+`UStaticMesh::InitResources -> FStaticMeshRenderData::InitResources -> FResources::InitResources`
+现在会自动注册符合条件的常驻资源，`ReleaseResources` 负责排队释放。注册仍是资产级，
+多个组件共享同一份页和层级数据。Web 分支在渲染线程设置资源哈希，避免同一游戏线程
+tick 内释放／重新初始化时，被先排队的释放命令清掉新哈希。
+
+Deferred Renderer 在每帧维护常驻管理器，独立于完整 Nanite 光栅开关；更新在进入深度
+预通道之前成对完成，覆盖仅深度输出的提前返回路径。当前没有 Nanite 光栅消费者，
+因此此模式每帧消费并丢弃修改通知，避免卸载通知长期累积。
+
+常驻模式保留根页压缩数据和 CPU 层级，以支持同一网格释放后重新上传和重定位。
+这是额外 CPU 内存成本；本次没有实现设备丢失后的恢复。完整平台原有释放策略不变。
+
+新增 `WebNaniteSceneTest`：把真实 Cook Sphere 资源放进一个 transient UStaticMesh，
+以此前导出的 960 个原始三角形创建普通 fallback，并注册两个共享它的真实
+StaticMeshComponent。测试只读取全局管理器的状态和 GPU 数据，不手动调用 Add、
+BeginAsyncUpdate 或 EndAsyncUpdate。组件代理仍走普通网格绘制。
+
+| 静态网格生命周期 | 结果 |
+| --- | --- |
+| 两组件共享网格并重复初始化 Nanite 资源 | 两个实际 scene proxy、一个资源 ID、两次转码 dispatch |
+| 注销其中一个组件 | 一个 proxy，资源 ID 保持 0，无额外转码 |
+| 注销全部组件并释放网格资源 | 零 proxy、全局管理器无资源、层级深度归零 |
+| 同帧初始化／释放／再初始化 | 两个 proxy 恢复，资源 ID 更新为 262144，两次转码 dispatch |
+| 再次完整释放 | 零 proxy、无活动资源、层级深度再次归零 |
+| GPU 数据 | 3 次有效状态各核对 32,768 字节页和 240 字节层级，全部与黄金数据／重定位结果一致 |
+| 汇总与清理 | 原有 8 项加新增 5 项全部通过；测试组件已销毁，清理后场景推进至第 201 帧 |
+| 默认关闭回归 | 同一运行时关闭常驻选项后推进至第 10 帧；诊断入口拒绝启用、零转码 dispatch |
+
+设备为 Edge `157.0.4341.42`、NVIDIA/Lovelace、subgroup min/max=32。
+本次没有未捕获 GPU 错误、Fatal 或断言；但开启与关闭常驻选项的两次启动均有
+**834 条 PSO 预缓存创建失败日志**。这些失败另行保存，不纳入“零未捕获 GPU 错误”
+的表述，也没有据此宣称整个运行包渲染通过。后续完整 Cook／渲染验收仍须排查。
+
+运行时构建的 fallback 明确填写存在标记及 UV 密度元数据，并保留顶点和索引 CPU 数据，
+满足 UE 创建代理和重新初始化普通渲染资源的要求。这个测试条件不能推广为所有 Cook
+网格都能在 CPU 数据释放后直接重新创建其 fallback 缓冲。
+
+证据：`tests/web-platform/evidence/nanite-browser-scene-resources-20261108.json`。
+沿用前节构建、打包和浏览器验证命令。隔离增量构建还会重编译 NaniteResources 所在
+Engine unity 和 DeferredShadingRenderer 所在 Renderer unity；不是全量 UBT 构建。
+
+下一步仍需完整关卡 Cook／加载验收，以及 GPU 层级剔除、Nanite 光栅和材质连接。
+本次 transient 资产生命周期验证不能代替 `.uasset` 包加载或完整 Nanite 场景验收。
 
 ## 下游接入
 
@@ -413,7 +467,7 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 - 已加入 RDG 分配、清理、解析及消费者入口，但完整 Nanite Renderer 还未
   在真实场景中执行。当前深度/HZB GPU 验证使用导出的 UE shader packet。
-- Nanite 完整关卡 Cook/打包加载验收、场景组件与常驻 StreamingManager 的自动连接、cluster 层级 LOD 与剔除、
+- Nanite 完整关卡 Cook/打包加载验收、cluster 层级 LOD 与剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
@@ -424,5 +478,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段将已验证的浏览器常驻 StreamingManager 接入 Nanite 场景组件与完整 Cook 包，
+下一阶段将已验证的浏览器静态网格常驻资源路径接入完整 Cook 包，
 推进 cluster 层级剔除和固定不透明材质的 Nanite VS/PS 路径，再扩展材质与流送。

@@ -51,11 +51,14 @@ if ($LASTEXITCODE -ne 0) { throw 'RHI cache overlay preparation failed.' }
 $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp',
     'Source/Runtime/Engine/Private/Rendering/NaniteStreamingManager.cpp',
-    'Source/Runtime/Engine/Public/Rendering/NaniteStreamingManager.h'
+    'Source/Runtime/Engine/Public/Rendering/NaniteStreamingManager.h',
+    'Source/Runtime/Engine/Private/Rendering/NaniteResources.cpp',
+    'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp'
 )
 foreach ($taskNaniteRelative in $taskNaniteOverlays) {
     $taskNaniteDestination = Join-Path $taskHost $taskNaniteRelative
-    if ((Get-Item -LiteralPath (Join-Path $taskHost 'Source/Runtime/Engine')).LinkType -or
+    $taskNaniteModule = if ($taskNaniteRelative.StartsWith('Source/Runtime/Renderer/')) { 'Renderer' } else { 'Engine' }
+    if ((Get-Item -LiteralPath (Join-Path $taskHost "Source/Runtime/$taskNaniteModule")).LinkType -or
         (Get-Item -LiteralPath $taskNaniteDestination).LinkType) {
         throw 'Nanite overlay must be a local build-host copy.'
     }

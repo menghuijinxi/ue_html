@@ -8,7 +8,7 @@ const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const packaged = read(path.join(__dirname, 'build/nanite-browser/package.json'));
 assert(packaged.pass);
 for (const input of [...packaged.sources, ...packaged.products, packaged.build, packaged.native,
-  packaged.archive, packaged.browserOracle, packaged.cookedResource]) assert.equal(audit(input.file).sha256, input.sha256);
+  packaged.archive, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles]) assert.equal(audit(input.file).sha256, input.sha256);
 const oracle = read(packaged.browserOracle.file);
 assert(oracle.pass && oracle.asset.webCookEnabled);
 function observe() {
@@ -43,9 +43,9 @@ function observe() {
     return device;
   };
 }
-const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], errors:[], logs:[],
+const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], errors:[], logs:[],
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
-  boundary:'Browser UE FResources, original Engine uploader and resident StreamingManager through RDG/RHI. Private root pool lifecycle and hierarchy installation; no scene component activation, Nanite raster, hierarchy culling or streaming.'};
+  boundary:'Browser UE uploader, private residency and automatic global manager lifecycle through real shared static mesh components and deferred renderer updates. Components use fallback raster; no Nanite culling, raster or streaming acceptance.'};
 (async () => {
   let browser;
   try {
@@ -116,7 +116,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
         assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteResourcesTest', 0)), 1);
         result = await owner.evaluate(() => globalThis.__webNaniteResourcesTest || null);
       } while ((!result || result.pending || result.step !== step) && Date.now() - start < 30000);
-      assert(result && !result.pending && result.step === step);
+      assert(result && !result.pending && result.step === step, JSON.stringify({...result, pages:undefined, hierarchy:undefined}));
       const dispatches = await owner.evaluate(() => __naniteBrowserAudit.dispatches) - before;
       assert.equal(dispatches, step === 4 ? 0 : 2);
       assert.equal(result.active.length, [1,2,2,0][step - 1]);
@@ -172,6 +172,48 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       previousActive = result.active;
       console.log('Browser UE resident manager step ' + step + ' passed');
     }
+    assert(report.logs.some(line => line.includes('LogInit: Command Line:') &&
+      line.includes('-WebNaniteResidentResources -WebNaniteRootPages=2')));
+    for (let step = 1; step <= 5; ++step) {
+      const before = await owner.evaluate(() => __naniteBrowserAudit.dispatches);
+      assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteSceneTest', s), step), 1);
+      let result;
+      const start = Date.now();
+      do {
+        await page.waitForTimeout(100);
+        assert.equal(report.errors.length, 0, report.errors.join('\n'));
+        assert.equal(await page.evaluate(() => globalThis.__webEngineFailure || null), null);
+        assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 0)), 1);
+        result = await owner.evaluate(() => globalThis.__webNaniteSceneTest || null);
+      } while ((!result || result.pending || result.step !== step) && Date.now() - start < 30000);
+      assert(result && !result.pending && result.step === step, JSON.stringify({...result, pages:undefined, hierarchy:undefined}));
+      const dispatches = await owner.evaluate(() => __naniteBrowserAudit.dispatches) - before;
+      assert.equal(dispatches, [2,0,0,2,0][step - 1]);
+      assert.equal(result.registered, [2,1,0,2,0][step - 1]);
+      assert.equal(result.proxies, result.registered);
+      assert.equal(result.active, ![3,5].includes(step));
+      assert.equal(result.levels, result.active ? 1 : 0);
+      const products = [];
+      if (result.active) {
+        assert.equal(result.clusters, oracle.asset.numClusters);
+        if (step === 2) assert.equal(result.id, report.scene[0].id);
+        if (step === 4) assert.notEqual(result.id, report.scene[0].id);
+        const pageBytes = Buffer.from(result.pages).subarray(result.page * oracle.asset.gpuPageBytes, (result.page + 1) * oracle.asset.gpuPageBytes);
+        const pageFile = path.join(output, `scene-page-${step}.bin`); fs.writeFileSync(pageFile, pageBytes);
+        const pageAudit = audit(pageFile); products.push(pageAudit);
+        for (const browser of oracle.browsers) assert.equal(pageAudit.sha256, browser.gpuPageSha256);
+        const expected = Buffer.from(originalHierarchy);
+        for (const fixup of fixups) expected.writeUInt32LE(((result.page + fixup.page) << oracle.asset.clusterIndexBits) | fixup.cluster, fixup.offset);
+        const hierarchy = Buffer.from(result.hierarchy).subarray(result.offset, result.offset + expected.length);
+        assert.deepEqual(hierarchy, expected);
+        const hierarchyFile = path.join(output, `scene-hierarchy-${step}.bin`); fs.writeFileSync(hierarchyFile, hierarchy);
+        products.push(audit(hierarchyFile));
+      }
+      const {pages, hierarchy, ...metadata} = result;
+      report.scene.push({...metadata, pass:true, dispatches, products});
+      console.log('Browser UE static mesh scene step ' + step + ' passed');
+    }
+    assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 6)), 1);
     const shaders = await owner.evaluate(() => __naniteBrowserAudit.shaders);
     assert.equal(shaders.length, 2);
     report.shaders = shaders.map((code,i) => {
@@ -181,8 +223,35 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const frame = await page.evaluate(() => __webEngineFrames);
     await page.waitForFunction(f => __webEngineFrames >= f + 8, frame, {timeout:30000});
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
+    report.startupPipelineFailures = report.logs.filter(line => /LogRHI: Error: Failed to create .*pipeline/.test(line));
     report.errors.push(...await owner.evaluate(() => __naniteBrowserAudit.errors));
     assert.equal(report.errors.length, 0);
+    await page.close();
+    // Boot the same runtime without the explicit residency flag to check that
+    // ordinary Web rendering still runs with Nanite resource activation off.
+    await context.route('**/build/nanite-browser/index.html', async route => {
+      const response = await route.fetch();
+      const html = await response.text();
+      assert(html.includes('"-WebNaniteResidentResources",'));
+      await route.fulfill({response, body:html.replace('"-WebNaniteResidentResources",', '')});
+    });
+    const normal = await context.newPage();
+    const normalPipelineFailures = [];
+    normal.on('pageerror', error => report.errors.push(error.stack));
+    normal.on('console', message => {
+      if (/LogRHI: Error: Failed to create .*pipeline/.test(message.text())) normalPipelineFailures.push(message.text());
+      if (/GPU validation:|Fatal error:|Assertion failed|DeviceLost/.test(message.text())) report.errors.push(message.text());
+    });
+    await normal.goto('http://127.0.0.1:8765/build/nanite-browser/index.html');
+    await normal.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 10, null, {timeout:180000});
+    assert.equal(await normal.evaluate(() => globalThis.__webEngineFailure || null), null);
+    assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 1)), 0);
+    const normalOwner = normal.workers().find(w => w.url().includes('web-engine-worker.js')); assert(normalOwner);
+    const normalAudit = await normalOwner.evaluate(() => __naniteBrowserAudit);
+    assert.equal(normalAudit.dispatches, 0);
+    report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
+    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0,
+      startupPipelineFailures:normalPipelineFailures};
     report.pass = true;
   } catch(error) {report.failure = error.stack; process.exitCode = 1; console.error(error.stack);}
   finally {

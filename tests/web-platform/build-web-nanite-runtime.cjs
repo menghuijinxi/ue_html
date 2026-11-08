@@ -24,7 +24,8 @@ const execute = (response, log) => {
   assert.equal(result.status, 0, result.error?.message || log);
 };
 const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
-  'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h'];
+  'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h',
+  'Private/Rendering/NaniteResources.cpp'];
 const engineDependencies = [];
 for (const file of engineFiles) {
   const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Engine', file);
@@ -42,11 +43,24 @@ const tasks = engineFiles.filter(f => f.endsWith('.cpp')).map((file, i) => {
   assert.equal(unity.length, 1);
   return [path.join(engine, unity[0] + '.o.rsp'), null, i ? 'EngineNaniteStreaming' : 'EngineNanite'];
 });
-assert.equal(new Set(tasks.map(t => t[0])).size, tasks.length);
+for (let i = tasks.length - 1; i >= 0; --i) if (tasks.findIndex(t => t[0] === tasks[i][0]) !== i) tasks.splice(i, 1);
+const rendererRelative = 'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp';
+const rendererSource = path.join(root, 'reference-engine/Engine', rendererRelative);
+const rendererOverlay = path.join(host, rendererRelative);
+assert.equal(fs.realpathSync(rendererOverlay).toLowerCase(), rendererOverlay.toLowerCase());
+assert.equal(fs.statSync(rendererOverlay).nlink, 1);
+fs.chmodSync(rendererOverlay, 0o666); fs.copyFileSync(rendererSource, rendererOverlay);
+engineDependencies.push(rendererSource, rendererOverlay);
+const renderer = path.join(intermediate, 'Renderer');
+const rendererUnity = fs.readdirSync(renderer).filter(n => /^Module\.Renderer\.\d+\.cpp$/.test(n))
+  .filter(n => fs.readFileSync(path.join(renderer, n), 'utf8').includes('Private/DeferredShadingRenderer.cpp'));
+assert.equal(rendererUnity.length, 1);
+tasks.push([path.join(renderer, rendererUnity[0] + '.o.rsp'), null, 'EngineNaniteRenderer']);
 tasks.push(
+  [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'), null, 'EngineNaniteMain'],
   ...fs.readdirSync(path.join(intermediate, 'WebGPURHI')).filter(n => n.endsWith('.cpp.o.rsp'))
     .map(n => [path.join(intermediate, 'WebGPURHI', n), null, n.replace('.cpp.o.rsp', '')]),
-  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest'].map(name => [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
+  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest'].map(name => [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
     path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private', name + '.cpp'), name]),
 );
 // RHI resource layouts are shared by all six translation units. Mixing an

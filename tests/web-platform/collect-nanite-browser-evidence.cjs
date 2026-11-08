@@ -13,11 +13,15 @@ assert.deepEqual(browser.residency.map(c => c.dispatches), [2,2,2,0]);
 assert.deepEqual(browser.residency.map(c => c.active.length), [1,2,2,0]);
 assert(browser.residency[0].rejectedStreaming && browser.residency[2].rejectedBudget && browser.residency[3].cancelledPending);
 for (const test of browser.residency) {assert(test.pass); test.products.forEach(verify);}
+assert.deepEqual(browser.scene.map(c => c.dispatches), [2,0,0,2,0]);
+assert.deepEqual(browser.scene.map(c => c.proxies), [2,1,0,2,0]);
+assert(browser.defaultDisabled.pass && browser.defaultDisabled.transcodeDispatches === 0);
+for (const test of browser.scene) {assert(test.pass); test.products.forEach(verify);}
 [browser.source, browser.package, ...browser.shaders].forEach(verify);
 const packaged = read(browser.package.file);
 assert(packaged.pass);
 const packageInputs = [...packaged.sources, ...packaged.products, ...packaged.baseline,
-  packaged.build, packaged.native, packaged.archive, packaged.browserOracle, packaged.cookedResource];
+  packaged.build, packaged.native, packaged.archive, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles];
 packageInputs.forEach(verify);
 const build = read(packaged.build.file);
 assert(build.pass && build.incrementalDiagnostic && !build.fullRebuild);
@@ -44,7 +48,7 @@ const report = {date:new Date().toISOString(), pass:true,
     products:native.products, runtimeShaderArchive:native.runtimeShaderArchive},
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
-  boundary:'Actual browser UE resident StreamingManager registration, root upload, hierarchy relocation, pool growth, removal, versioned slot reuse, rejection and pending cancellation. Private two-root-page pool within the existing Villa runtime; no scene component activation, culling, rasterization, Lit parity or streaming acceptance.'};
-const destination = path.join(__dirname, 'evidence/nanite-browser-residency-20261107.json');
+  boundary:'Actual browser UE static mesh resource initialization, two shared component proxies, global resident manager updated by the deferred renderer, component unregister and asset release/reinitialize. Default-disabled boot also checked. Transient fixture uses fallback raster; no Nanite culling, raster, whole-level Cook, Lit parity or streaming acceptance.'};
+const destination = path.join(__dirname, 'evidence/nanite-browser-scene-resources-20261108.json');
 fs.writeFileSync(destination, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, destination}));

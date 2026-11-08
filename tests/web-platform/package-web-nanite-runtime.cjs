@@ -36,7 +36,8 @@ merged.writeInt32LE(originalGlobal.readInt32LE() + 1);
 fs.copyFileSync(baselinePack, path.join(output, 'content.bin'));
 let offset = fs.statSync(baselinePack).size;
 for (const [virtualPath, data] of [[global.path, merged],
-  ['/Engine/Programs/UEWebEngine/Content/NaniteUploader/resources.cooked.bin', fs.readFileSync(path.join(asset, 'resources.cooked.bin'))]]) {
+  ['/Engine/Programs/UEWebEngine/Content/NaniteUploader/resources.cooked.bin', fs.readFileSync(path.join(asset, 'resources.cooked.bin'))],
+  ['/Engine/Programs/UEWebEngine/Content/NaniteUploader/source-triangles.bin', fs.readFileSync(path.join(asset, 'source-triangles.bin'))]]) {
   manifest.files = manifest.files.filter(f => f.path !== virtualPath);
   const sha256 = require('node:crypto').createHash('sha256').update(data).digest('hex');
   manifest.files.push({path: virtualPath, offset, size: data.length, sha256});
@@ -56,6 +57,8 @@ const assets = {...JSON.parse(match[1]), versions, runtime:'UEWebEngineThreads.j
   wasm:metadata(path.join(output, 'UEWebEngineThreads.wasm'), 'UEWebEngineThreads.wasm')};
 assert(assets.threads && assets.renderer === 'desktop');
 html = html.replace(match[0], 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
+assert(html.includes('arguments: ['));
+html = html.replace('arguments: [', 'arguments: ["-WebNaniteResidentResources","-WebNaniteRootPages=2",');
 fs.writeFileSync(path.join(output, 'index.html'), html);
 const products = ['index.html', 'content.bin', 'content-files.json', 'config-files.json', ...helpers, ...runtime].map(n => audit(path.join(output, n)));
 products.push(writeVersions(output, products));
@@ -63,7 +66,7 @@ const report = {date:new Date().toISOString(), pass:true, output, build:audit(pa
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
   baseline:[baselinePack, ...['content-files.json', 'config-files.json', 'index.html'].map(n => path.join(baseline, n))].map(audit),
   sources:[__filename, ...helpers.map(n => path.join(__dirname, n))].map(audit),
-  cookedResource:audit(path.join(asset, 'resources.cooked.bin')), products,
-  boundary:'Existing matching Villa Cook payload plus a cooked transcode global-map section and serialized resident Nanite resource. Explicit diagnostic uses actual browser UE uploader; this is not full Nanite scene activation or a new full level Cook.'};
+  cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
+  boundary:'Existing Villa Cook plus transcode global-map section, serialized resident resource and original triangle soup for a transient static mesh fallback. Opted-in global manager lifecycle; no full Nanite raster or new full-level Cook.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));
