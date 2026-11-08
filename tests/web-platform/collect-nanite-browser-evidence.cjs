@@ -17,14 +17,20 @@ assert.deepEqual(browser.scene.map(c => c.dispatches), [2,0,0,2,0]);
 assert.deepEqual(browser.scene.map(c => c.proxies), [2,1,0,2,0]);
 assert(browser.defaultDisabled.pass && browser.defaultDisabled.transcodeDispatches === 0);
 for (const test of browser.scene) {assert(test.pass); test.products.forEach(verify);}
-assert.equal(browser.cullDispatches, 82);
-assert.equal(browser.sceneCulling.length, 10);
-assert.deepEqual(browser.sceneCulling.map(c => c.entries.length), [2,2,2,2,2,1,0,2,0,2]);
+assert.equal(browser.cullDispatches, 100);
+assert.equal(browser.sceneCulling.length, 19);
+assert.deepEqual(browser.sceneCulling.map(c => c.entries.length), [2,2,2,2,2,1,0,2,0,2,...Array(9).fill(2)]);
 assert(browser.sceneCulling.every(c => c.pass && c.rejected === 0 && c.dispatches === c.entries.length));
+assert(browser.sceneCulling.every(c => c.raster.pass && c.rasterDraws === c.entries.length));
+assert.equal(browser.sceneCulling[0].rasterInputRejections, 6);
+browser.sceneCulling.forEach(c=>verify(c.visibilityProduct));
+assert.equal(browser.rasterDraws.length, 33);
+assert.equal(browser.defaultDisabled.rasterDraws, 0);
 assert.equal(browser.defaultDisabled.cullDispatches, 0);
 assert.equal([...browser.residency, ...browser.scene].flatMap(c => c.culling || []).length, 62);
 assert.equal([...browser.residency, ...browser.scene].reduce((n, c) => n + (c.cullInputRejections || 0), 0), 88);
-[browser.source, browser.cullOracle, browser.sceneCullOracle, browser.package, ...browser.shaders, ...browser.cullShaders].forEach(verify);
+[browser.source, browser.cullOracle, browser.sceneCullOracle, browser.rasterOracle, browser.package,
+  ...browser.shaders, ...browser.cullShaders, ...browser.rasterShaders, browser.visibilityPreview].forEach(verify);
 const packaged = read(browser.package.file);
 assert(packaged.pass);
 const packageInputs = [...packaged.sources, ...packaged.products, ...packaged.baseline,
@@ -60,7 +66,10 @@ const report = {date:new Date().toISOString(), pass:true,
   hierarchyShaders:{report:packaged.hierarchyShaders, ...hierarchyShaders},
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
-  boundary:'Deferred Renderer schedules culling from registered ordinary static-mesh proxies and actual perspective/orthographic views. Readback observer consumes graph-owned outputs; unused passes are removed by RDG. Full-detail resident opaque static triangles only. No instancing, deformation, stereo/capture views, LOD, HZB, Nanite raster, whole-level Cook, Lit parity or streaming acceptance.'};
-const destination = path.join(__dirname, 'evidence/nanite-browser-scene-culling-20261108.json');
+  boundary:browser.boundary};
+const destination = path.join(__dirname, 'evidence/nanite-browser-opaque-raster-20261108.json');
+const previewDestination = destination.replace(/\.json$/, '.png');
+fs.copyFileSync(browser.visibilityPreview.file, previewDestination);
+report.visibilityPreview = audit(previewDestination);
 fs.writeFileSync(destination, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, destination}));

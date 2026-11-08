@@ -7,10 +7,10 @@ const transform = (p, m) => [0,1,2,3].map(col => p.reduce((s, v, row) => s + v *
 module.exports = function verifySceneCull(result, page, previous) {
   const {step, entries} = result;
   assert.equal(result.rejected, 0);
-  assert.equal(entries.length, [2,2,2,2,2,1,0,2,0,2][step-1]);
+  assert.equal(entries.length, step > 10 ? 2 : [2,2,2,2,2,1,0,2,0,2][step-1]);
   // Hidden-in-game components in this runtime drop their scene proxy entirely;
   // registration must disappear and return when the proxy is recreated.
-  assert.equal(result.registered, [2,2,2,2,2,1,0,2,0,2][step-1]);
+  assert.equal(result.registered, step > 10 ? 2 : [2,2,2,2,2,1,0,2,0,2][step-1]);
   assert.equal(result.skipped, 0);
   assert.equal(result.perspective, ![5,6,7].includes(step));
   assert(result.worldToClip.length === 16 && result.worldToClip.every(Number.isFinite));
@@ -40,7 +40,7 @@ module.exports = function verifySceneCull(result, page, previous) {
     if (step === 2) assert.equal(expected.length, entry.component ? 0 : 8);
     if (step === 3 && entry.component === 1) assert(expected.length > 0 && expected.length < 8);
     if (step === 4) assert.equal(expected.length, 0);
-    if (step === 10) assert.notEqual(entry.id, previous[0].entries[0].id);
+    if (step >= 10) assert.notEqual(entry.id, previous[0].entries[0].id);
     else if (step > 1) assert.equal(entry.id, previous[0].entries[0].id);
   }
 };

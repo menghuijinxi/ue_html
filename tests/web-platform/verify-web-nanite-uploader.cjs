@@ -4,6 +4,7 @@ const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const verifyHierarchy = require('./verify-nanite-hierarchy-output.cjs');
 const verifySceneCull = require('./verify-nanite-scene-cull-output.cjs');
+const verifyRaster = require('./verify-nanite-raster-output.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -16,7 +17,8 @@ assert(oracle.pass && oracle.asset.webCookEnabled);
 function observe() {
   const modules = new WeakSet(), pipelines = new WeakSet(), bound = new WeakMap();
   const cullModules = new WeakSet(), cullPipelines = new WeakSet(), cullBound = new WeakMap();
-  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], errors:[], adapter:null};
+  const rasterModules = new WeakSet(), rasterPipelines = new WeakSet(), rasterBound = new WeakMap();
+  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], errors:[], adapter:null};
   const create = GPUDevice.prototype.createShaderModule;
   GPUDevice.prototype.createShaderModule = function(desc) {
     const result = create.call(this, desc);
@@ -25,6 +27,9 @@ function observe() {
     }
     if (desc.code.includes('WebCullClusterKeys') && desc.code.includes('WebCullInputNodes')) {
       cullModules.add(result); state.cullShaders.push(desc.code);
+    }
+    if (desc.code.includes('WebRasterClusterKeys') || desc.code.includes('WebNaniteAtomicMax_Visibility')) {
+      rasterModules.add(result); state.rasterShaders.push(desc.code);
     }
     return result;
   };
@@ -43,10 +48,19 @@ function observe() {
   const dispatch = GPUComputePassEncoder.prototype.dispatchWorkgroups;
   GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches; return dispatch.apply(this, args);};
   const request = GPUAdapter.prototype.requestDevice;
+  for (const name of ['createRenderPipeline','createRenderPipelineAsync']) {
+    const create = GPUDevice.prototype[name];
+    const record = (p,d) => {if(rasterModules.has(d.vertex.module)&&rasterModules.has(d.fragment?.module)) rasterPipelines.add(p); return p;};
+    GPUDevice.prototype[name] = name.endsWith('Async') ? async function(d) {return record(await create.call(this,d),d);} : function(d) {return record(create.call(this,d),d);};
+  }
+  const rasterBind = GPURenderPassEncoder.prototype.setPipeline, draw = GPURenderPassEncoder.prototype.draw;
+  GPURenderPassEncoder.prototype.setPipeline = function(p) {rasterBound.set(this,rasterPipelines.has(p));return rasterBind.call(this,p);};
+  GPURenderPassEncoder.prototype.draw = function(...args) {if(rasterBound.get(this)) state.rasterDraws.push(args);return draw.apply(this,args);};
   GPUAdapter.prototype.requestDevice = async function(...args) {
     state.adapter = {vendor:this.info.vendor, architecture:this.info.architecture,
       subgroupMinSize:this.info.subgroupMinSize, subgroupMaxSize:this.info.subgroupMaxSize, isFallbackAdapter:this.info.isFallbackAdapter};
     const device = await request.apply(this, args);
+    state.features = [...device.features];
     device.addEventListener('uncapturederror', e => state.errors.push(e.error.message));
     return device;
   };
@@ -55,7 +69,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
   cullOracle:audit(require.resolve('./verify-nanite-hierarchy-output.cjs')),
   sceneCullOracle:audit(require.resolve('./verify-nanite-scene-cull-output.cjs')),
-  boundary:'Browser UE uploader, resident managers, bounded hierarchy culling and Deferred Renderer scheduling from actual static-mesh proxies and views. GPU readback consumes graph-owned results; unused passes are culled. Components use fallback raster; no LOD, HZB, Nanite raster or streaming acceptance.'};
+  rasterOracle:audit(require.resolve('./verify-nanite-raster-output.cjs')),
+  rasterReferencePolicy:{subpixelFractionalBits:8, depthTolerance:3e-5, edgeBandPixels:.02, minimumInteriorFraction:.25,
+    reference:'https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants'},
+  boundary:'Actual browser UE scene culling feeds bounded opaque two-sided Nanite page-decoding VS/PS into an offscreen packed visibility buffer. Independent source-mesh coverage, reversed depth and instance checks. Main scene still uses fallback raster; no GBuffer/material, LOD, HZB or streaming acceptance.'};
 (async () => {
   let browser;
   try {
@@ -85,6 +102,8 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(await page.evaluate(() => globalThis.__webEngineFailure || null), null);
     const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
     report.adapter = await owner.evaluate(() => __naniteBrowserAudit.adapter);
+    report.features = await owner.evaluate(() => __naniteBrowserAudit.features);
+    assert(report.features.some(f=>f.includes('atomic-vec2u')));
     assert(!report.adapter.isFallbackAdapter && report.adapter.subgroupMinSize >= 32);
     for (let index = 0; index < 4; ++index) {
       const before = await owner.evaluate(() => __naniteBrowserAudit.dispatches);
@@ -228,8 +247,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 6)), 1);
     assert.equal(await owner.evaluate(() => __naniteBrowserAudit.cullDispatches), 67, 'Unused scene outputs must be culled by RDG');
     const fixturePage = fs.readFileSync(report.scene[0].products[0].file);
-    for (let step = 1; step <= 10; ++step) {
+    const sourceTriangles = fs.readFileSync(packaged.sourceTriangles.file);
+    for (let step = 1; step <= 19; ++step) {
       const before = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
+      const drawsBefore = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws.length);
       assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteSceneCullTest', s), step), 1);
       let result;
       const start = Date.now();
@@ -240,14 +261,23 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
         result = await owner.evaluate(() => globalThis.__webNaniteSceneCullTest || null);
       } while ((!result || result.pending || result.step !== step) && Date.now()-start < 30000);
       assert(result && !result.pending && result.step === step, JSON.stringify(result));
-      try { verifySceneCull(result, fixturePage, report.sceneCulling); }
+      try {
+        verifySceneCull(result, fixturePage, report.sceneCulling);
+        result.raster = verifyRaster(result, sourceTriangles, fixturePage, oracle.asset.positionPrecision);
+      }
       catch (error) { result.validationFailure = error.stack; }
+      const bytes = Buffer.alloc(result.visibility.length*4);
+      result.visibility.forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
+      const file = path.join(output, `visibility-${step}.bin`); fs.writeFileSync(file,bytes);
+      result.visibilityProduct = audit(file); delete result.visibility;
+      result.rasterDraws = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws.length) - drawsBefore;
+      assert.equal(result.rasterDraws,result.entries.length);
       const dispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches) - before;
       assert.equal(dispatches, result.entries.reduce((sum,e) => sum + e.levels, 0));
       report.sceneCulling.push({...result, dispatches, pass:!result.validationFailure});
-      console.log('Browser renderer scene culling step ' + step + (result.validationFailure ? ' failed validation' : ' passed'));
+      console.log('Browser renderer scene cull/raster step ' + step + (result.validationFailure ? ' failed validation' : ' passed'));
     }
-    assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 11)), 1);
+    assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 20)), 1);
     assert(report.sceneCulling.every(c => c.pass), report.sceneCulling.filter(c => !c.pass).map(c => `Step ${c.step}: ${c.validationFailure}`).join('\n'));
     const shaders = await owner.evaluate(() => __naniteBrowserAudit.shaders);
     const cullShaders = await owner.evaluate(() => __naniteBrowserAudit.cullShaders);
@@ -257,7 +287,16 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       const file = path.join(output, 'hierarchy.wgsl'); fs.writeFileSync(file, code); return audit(file);
     });
     report.cullDispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
-    assert.equal(report.cullDispatches, 82);
+    assert.equal(report.cullDispatches, 100);
+    const rasterShaders = await owner.evaluate(() => __naniteBrowserAudit.rasterShaders);
+    assert.equal(rasterShaders.length,2);
+    assert(rasterShaders.some(code=>code.includes('atomicStoreMax')&&code.includes('atomic<vec2<u32>>')));
+    report.rasterShaders = rasterShaders.map((code,i)=>{
+      const file=path.join(output,`raster-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);
+    });
+    report.rasterDraws = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws);
+    assert.equal(report.rasterDraws.length,33);
+    assert(report.rasterDraws.every(d=>d[0]===384&&d[1]>0));
     assert.equal(shaders.length, 2);
     report.shaders = shaders.map((code,i) => {
       assert(/@workgroup_size\(32(?:u)?(?:,|\))/.test(code));
@@ -294,9 +333,39 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const normalAudit = await normalOwner.evaluate(() => __naniteBrowserAudit);
     assert.equal(normalAudit.dispatches, 0);
     assert.equal(normalAudit.cullDispatches, 0);
+    assert.equal(normalAudit.rasterDraws.length, 0);
     report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
-    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0,
+    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0,
       startupPipelineFailures:normalPipelineFailures};
+    await normal.close();
+    const preview = await context.newPage();
+    await preview.setViewportSize({width:824,height:700});
+    await preview.setContent('<style>body{margin:20px;background:#eef2f6;color:#203040;font:14px sans-serif}main{display:grid;grid-template-columns:repeat(2,384px);gap:16px}canvas{display:block;width:384px;height:256px;image-rendering:pixelated}p{margin:8px 0}</style><h2>Nanite offscreen GPU visibility readback</h2><p>Teal / orange: instance; brightness: reversed depth. Main scene shading is not shown.</p><main></main>');
+    const labels = {1:'Perspective: two instances',3:'Mirrored scale and frustum clipping',5:'Orthographic view',11:'Near instance occludes far instance',12:'Equal-depth packed ID tie',13:'Eye / near-plane clipping',14:'Cull error rejects geometry',19:'Overflow count rejects geometry'};
+    for (const [step,label] of Object.entries(labels)) {
+      const test=report.sceneCulling[Number(step)-1], bytes=fs.readFileSync(test.visibilityProduct.file);
+      const words=Array.from({length:bytes.length/4},(_,i)=>bytes.readUInt32LE(i*4));
+      await preview.evaluate(({test,words,label})=>{
+        const div=document.createElement('div'), title=document.createElement('p'), canvas=document.createElement('canvas');
+        title.textContent=label; canvas.width=test.rasterWidth;canvas.height=test.rasterHeight;
+        const ctx=canvas.getContext('2d'), image=ctx.createImageData(canvas.width,canvas.height);
+        const floats=new Float32Array(1), bits=new Uint32Array(floats.buffer);
+        let min=1,max=0;for(let i=0;i<words.length;i+=2) if(words[i]) {bits[0]=words[i+1];min=Math.min(min,floats[0]);max=Math.max(max,floats[0]);}
+        for(let i=0;i<words.length/2;++i){
+          let rgb=[15,23,35];
+          if(words[i*2]) {
+            const slot=(words[i*2]>>>7)-1, entry=test.entries.find(e=>slot>=e.clusterBase&&slot<e.clusterBase+e.keys.length);
+            bits[0]=words[i*2+1];const light=.3+.7*(floats[0]-min)/Math.max(max-min,1e-9);
+            rgb=(entry.component?[255,166,65]:[65,219,192]).map(v=>Math.round(v*light));
+          }
+          image.data.set([...rgb,255],i*4);
+        }
+        ctx.putImageData(image,0,0);div.append(title,canvas);document.querySelector('main').append(div);
+      },{test,words,label});
+    }
+    const previewFile=path.join(output,'opaque-raster-visibility.png');
+    await preview.screenshot({path:previewFile,fullPage:true});await preview.close();
+    report.visibilityPreview=audit(previewFile);
     report.pass = true;
   } catch(error) {report.failure = error.stack; process.exitCode = 1; console.error(error.stack);}
   finally {

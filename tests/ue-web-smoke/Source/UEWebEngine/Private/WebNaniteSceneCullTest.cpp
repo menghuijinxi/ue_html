@@ -9,6 +9,7 @@
 #include "SceneView.h"
 #include "Rendering/NaniteStreamingManager.h"
 #include "Rendering/NaniteWebScene.h"
+#include "Rendering/NaniteWebRaster.h"
 #include "RenderingThread.h"
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
@@ -37,6 +38,9 @@ struct FReadback
 };
 TArray<FReadback> Pending;
 TSharedPtr<FJsonObject> Report;
+TUniquePtr<FRHIGPUBufferReadback> Visibility;
+const FIntPoint RasterExtent(192, 128);
+const FIntRect RasterRect(7, 5, 185, 123);
 
 TArray<TSharedPtr<FJsonValue>> MatrixJSON(const FMatrix& Matrix)
 {
@@ -58,8 +62,40 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     Report->SetNumberField(TEXT("rejected"), View.Rejected);
     Report->SetBoolField(TEXT("perspective"), View.View->IsPerspectiveProjection());
     Report->SetArrayField(TEXT("worldToClip"), MatrixJSON(View.View->ViewMatrices.GetWorldToClip()));
-    for (const auto& Entry : View.Entries)
+    Nanite::FWebSceneCullView RasterView = View;
+    if (ActiveStep >= 14)
     {
+        // Simulate a failed GPU cull, including a count that exceeds capacity.
+        // The raster API must suppress the entire entry without reading keys.
+        for (auto& Entry : RasterView.Entries)
+        {
+            Entry.Result.State = Graph.CreateBuffer(FRDGBufferDesc::CreateStructuredDesc(4, 4), TEXT("WebRasterInvalidCullState"));
+            TArray<uint32> Invalid = {Entry.Input.MaxVisibleClusters + (ActiveStep == 19 ? 1u : 0u),
+                ActiveStep == 19 ? 0u : 1u << (ActiveStep - 14), 0, 0};
+            Graph.QueueBufferUpload(Entry.Result.State, MakeArrayView(Invalid));
+        }
+    }
+    Nanite::FWebRasterVisibility Raster;
+    check(Nanite::AddWebResidentRasterPasses(Graph, RasterView, RasterExtent, RasterRect, Raster));
+    Report->SetBoolField(TEXT("invalidCullState"), ActiveStep >= 14);
+    if (ActiveStep == 1)
+    {
+        Nanite::FWebRasterVisibility Invalid;
+        check(!Nanite::AddWebResidentRasterPasses(Graph, View, FIntPoint(0, 128), RasterRect, Invalid) && !Invalid.Pixels);
+        check(!Nanite::AddWebResidentRasterPasses(Graph, View, FIntPoint(32768, 32768), RasterRect, Invalid) && !Invalid.Pixels);
+        check(!Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, FIntRect(-1, 0, 10, 10), Invalid) && !Invalid.Pixels);
+        check(!Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, FIntRect(0, 0, 193, 128), Invalid) && !Invalid.Pixels);
+        check(!Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, FIntRect(5, 5, 5, 5), Invalid) && !Invalid.Pixels);
+        auto BadView = View; BadView.Entries[0].Result.State = nullptr;
+        check(!Nanite::AddWebResidentRasterPasses(Graph, BadView, RasterExtent, RasterRect, Invalid) && !Invalid.Pixels);
+        Report->SetNumberField(TEXT("rasterInputRejections"), 6);
+    }
+    Report->SetNumberField(TEXT("rasterWidth"), RasterExtent.X); Report->SetNumberField(TEXT("rasterHeight"), RasterExtent.Y);
+    Visibility = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneRasterVisibility"));
+    AddEnqueueCopyPass(Graph, Visibility.Get(), Raster.Pixels, RasterExtent.X * RasterExtent.Y * 8);
+    for (int32 EntryIndex = 0; EntryIndex < View.Entries.Num(); ++EntryIndex)
+    {
+        const auto& Entry = View.Entries[EntryIndex];
         const int Index = Entry.ComponentId == IDs[0] ? 0 : Entry.ComponentId == IDs[1] ? 1 : -1;
         if (Index < 0) continue;
         auto& Copy = Pending.AddDefaulted_GetRef();
@@ -68,6 +104,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
         Copy.Json->SetNumberField(TEXT("id"), Entry.RuntimeResourceID);
         Copy.Json->SetNumberField(TEXT("page"), Entry.Input.FirstRootPage);
         Copy.Json->SetNumberField(TEXT("levels"), Entry.Input.MaxLevels);
+        Copy.Json->SetNumberField(TEXT("clusterBase"), Raster.ClusterBases[EntryIndex]);
         Copy.Json->SetArrayField(TEXT("localToWorld"), MatrixJSON(Entry.LocalToWorld));
         Copy.Keys = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullKeys"));
         Copy.State = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullState"));
@@ -79,6 +116,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
 void Poll()
 {
     if (!Report) return;
+    if (!Visibility->IsReady()) return;
     for (const auto& Copy : Pending) if (!Copy.Keys->IsReady() || !Copy.State->IsReady()) return;
     TArray<TSharedPtr<FJsonValue>> Entries;
     for (auto& Copy : Pending)
@@ -94,6 +132,12 @@ void Poll()
         Copy.Keys->Unlock(); Copy.State->Unlock();
     }
     Report->SetArrayField(TEXT("entries"), Entries); Report->SetBoolField(TEXT("pending"), false);
+    const auto* Pixels = static_cast<const uint32*>(Visibility->Lock(RasterExtent.X * RasterExtent.Y * 8));
+    check(Pixels);
+    TArray<TSharedPtr<FJsonValue>> PixelsJSON;
+    for (int32 I = 0; I < RasterExtent.X * RasterExtent.Y * 2; ++I) PixelsJSON.Add(MakeShared<FJsonValueNumber>(Pixels[I]));
+    Report->SetArrayField(TEXT("visibility"), PixelsJSON);
+    Visibility->Unlock(); Visibility.Reset();
     FString Json; FJsonSerializer::Serialize(Report.ToSharedRef(), TJsonWriterFactory<>::Create(&Json));
     FTCHARToUTF8 Utf8(*Json);
     MAIN_THREAD_EM_ASM({globalThis.__webNaniteSceneCullTest = JSON.parse(UTF8ToString($0));}, Utf8.Get());
@@ -105,7 +149,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     static int LastStep = 0;
-    if (Step < 0 || Step > 11 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
+    if (Step < 0 || Step > 20 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
     if (!Step) { ENQUEUE_RENDER_COMMAND(PollWebSceneCull)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (Step != LastStep + 1) return 0;
     if (Step == 1)
@@ -157,6 +201,19 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
         Mesh->InitResources(); for (auto* Component : Components) Component->RegisterComponentWithWorld(Controller->GetWorld());
     }
     if (Step == 11)
+    {
+        Components[0]->SetWorldLocation(FVector(500, 0, 0)); Components[1]->SetWorldLocation(FVector(600, 0, 0));
+    }
+    if (Step == 12) Components[1]->SetWorldLocation(FVector(500, 0, 0));
+    if (Step == 13)
+    {
+        Components[0]->SetWorldLocation(FVector(10, 0, 0)); Components[1]->SetWorldLocation(FVector(500, 2000, 0));
+    }
+    if (Step == 14)
+    {
+        Components[0]->SetWorldLocation(FVector(500, -100, 0)); Components[1]->SetWorldLocation(FVector(500, 100, 0));
+    }
+    if (Step == 20)
     {
         for (auto*& Component : Components) { Component->UnregisterComponent(); Component->RemoveFromRoot(); Component->DestroyComponent(); Component = nullptr; }
         Mesh->ReleaseResources(); Mesh->RemoveFromRoot(); Mesh = nullptr;

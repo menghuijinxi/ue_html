@@ -57,6 +57,8 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Public/Rendering/NaniteWebHierarchy.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebScene.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebScene.h',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebRaster.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebRaster.h',
     'Source/Runtime/Engine/Private/StaticMeshSceneProxy.cpp',
     'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp'
 )

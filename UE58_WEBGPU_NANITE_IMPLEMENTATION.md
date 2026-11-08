@@ -6,6 +6,8 @@
 Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 GPU 回读验证。
 现已接通显式 Web 常驻 StreamingManager 的注册、层级安装及资源生命周期，
 并继续接入静态网格初始化与 Deferred Renderer 的逐帧资源更新。
+真实场景剔除输出现已增加固定不透明 VS/PS 消费接口，直接解码常驻 Nanite 页，
+写入离屏打包可见性缓冲，并验证覆盖、深度和实例归属。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -472,6 +474,52 @@ ISMC/HISMC、Spline、masked、骨骼／assembly 以及 stereo／capture 视图�
 
 ## 下游接入
 
+新增 `Engine/Public/Rendering/NaniteWebRaster.h::AddWebResidentRasterPasses`，
+接受实际 `FWebSceneCullView`、目标尺寸和矩形视口。它使用全局 VS/PS，
+直接读取剔除产生的 cluster key 和状态，调用原有 `GetCluster`、
+`DecodeTriangleIndices`、`DecodePosition`，不上传 CPU 解码的顶点。
+PS 调用原有 `NaniteWritePixel.ush` 打包原子分支；每像素输出
+`uint2(ID, reversed-Z depth bits)`。固定光栅为双面不透明三角形，
+不执行材质、背面剔除、WPO 或位移。无效的剔除状态整项拒绝绘制。
+场景代理注册进一步排除任何透明混合材质及 Pixel Depth Offset；
+每次 draw 明确设置矩形 scissor，结束时解除，避免继承其他 pass 的裁剪状态。
+
+每项提交 `128` 个三角形、`MaxVisibleClusters` 个实例，GPU 退化多余顶点；
+当前合计最多 `65,536` 个可见 slot，目标最多 `16,777,216` 像素。
+这仍是有界固定 draw，没有 indirect draw 或微三角形 Compute 光栅优化。
+CPU 先用 double 合成实例到裁剪空间的矩阵，再转为 float 上传。
+每像素 ID 为 `((entryBase + visibleSlot + 1) << 7) | triangle`，
+返回的 `ClusterBases` 与原剔除输出共同解释 ID；它还不是生产材质消费者
+所需的完整 `VisibleClustersSWHW` 表，不可直接交给现有 GBuffer 导出。
+
+浏览器验证通过现有场景观察者调用这个 Engine 接口并回读离屏缓冲。
+主场景仍绘制 fallback mesh。测试包括透视、正交、镜像和非均匀缩放、
+偏移视口、视锥裁剪、相机反转、组件隐藏/注销、资源重建、前后实例遮挡、
+同深度 ID 排序、近裁剪面穿越、五种剔除错误位及单独的计数溢出。
+独立 CPU 参考图从 Cook 前导出的原三角形生成，按记录的 8 位位置精度量化，
+执行齐次六平面裁剪，并按本次 Windows/Edge D3D12 光栅的
+[8 位亚像素坐标](https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants)
+量化屏幕顶点，再计算重心深度。逐像素比较覆盖、反向深度和实例，检查 ID 的 cluster/triangle
+范围与视口外清零。覆盖差异只允许在 `0.02` 像素宽的边界带内，数量不得超过
+参考覆盖的 `1%`（最少允许 4 像素）；内部深度误差上限为 `3e-5`。
+每个非空结果必须有超过 `25%` 的覆盖像素参与内部深度和实例检查。
+此参考图采用上述后端精度约定，尚未在其他浏览器后端验证。
+
+着色器导出器使用同一 Engine 全局 shader 类型，新增 VS/PS 所在的第二个
+shader-map section，打包时按真实 section 数合并。编译与证据审计包含新增
+源码、完整 shader 快照、宿主 DLL、WGSL、Wasm、打包产物与 GPU 回读。
+
+本轮浏览器回归覆盖 19 个场景/错误状态、33 次 VS/PS draw、6 项 CPU 输入拒绝；
+连同已有 62 组层级检查，共观察到 100 次层级剔除 dispatch。默认关闭运行没有
+转码、剔除或新增光栅调用。仍存在启用和关闭配置共有的 834 条既有 PSO
+预缓存失败日志，完整场景光照验收仍未通过。
+最终 Edge/NVIDIA Lovelace 运行推进至第 659 帧，默认关闭运行至第 12 帧，
+无未捕获 GPU 错误、Fatal 或断言。19 组回读共覆盖 24,524 个像素，
+覆盖差异为零；23,592 个内部像素完成深度与实例检查，最大深度误差
+`4.363e-6`。仍使用隔离增量 Wasm 链接和既有 Cook 包，未做全量 UBT/关卡 Cook 验收。
+证据：`tests/web-platform/evidence/nanite-browser-opaque-raster-20261108.json`，
+同名 PNG 为离屏 GPU 可见性回读图。
+
 当前保留 UE 纹理消费者，先用解析纹理作为桥接：
 
 ```text
@@ -600,5 +648,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
 下一阶段将已验证的浏览器静态网格常驻资源路径接入完整 Cook 包，
-将真实场景的有界层级剔除输出连接到固定不透明材质的 Nanite VS/PS 路径，
-推进 LOD、材质与流送。
+补齐可见 cluster 的生产消费者记录，将固定不透明 VS/PS 的离屏结果接到
+场景深度与材质/GBuffer，再推进 LOD、Compute 微三角形光栅与页流送。

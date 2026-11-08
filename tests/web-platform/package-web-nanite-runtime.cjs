@@ -34,12 +34,12 @@ assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
 const hierarchyArchive = fs.readFileSync(hierarchyShaders.archive.file);
-assert.equal(hierarchyArchive.readInt32LE(), 1);
+assert.equal(hierarchyArchive.readInt32LE(), 2);
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }
 const merged = Buffer.concat([originalGlobal, archive.subarray(4), hierarchyArchive.subarray(4)]);
-merged.writeInt32LE(originalGlobal.readInt32LE() + 2);
+merged.writeInt32LE(originalGlobal.readInt32LE() + archive.readInt32LE() + hierarchyArchive.readInt32LE());
 fs.copyFileSync(baselinePack, path.join(output, 'content.bin'));
 let offset = fs.statSync(baselinePack).size;
 for (const [virtualPath, data] of [[global.path, merged],
@@ -75,6 +75,6 @@ const report = {date:new Date().toISOString(), pass:true, output, build:audit(pa
   baseline:[baselinePack, ...['content-files.json', 'config-files.json', 'index.html'].map(n => path.join(baseline, n))].map(audit),
   sources:[__filename, ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:'Existing Villa Cook plus transcode and bounded hierarchy-cull global-map sections, serialized resident resource and original triangle soup for a transient static mesh fallback. No Nanite raster or new full-level Cook.'};
+  boundary:'Existing Villa Cook plus transcode, bounded hierarchy culling and opaque page-decoding VS/PS global-map sections. Serialized resident resource and original triangle soup for a transient fallback mesh. Nanite raster is an offscreen visibility consumer; no new whole-level Cook or material/GBuffer integration.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));
