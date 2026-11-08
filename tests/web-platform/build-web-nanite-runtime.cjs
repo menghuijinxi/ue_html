@@ -26,7 +26,8 @@ const execute = (response, log) => {
 const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
   'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h',
   'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebHierarchy.cpp',
-  'Public/Rendering/NaniteWebHierarchy.h'];
+  'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp',
+  'Private/Nanite/NaniteWebScene.cpp', 'Public/Rendering/NaniteWebScene.h'];
 const engineDependencies = [];
 for (const file of engineFiles) {
   const source = path.join(root, 'reference-engine/Engine/Source/Runtime/Engine', file);
@@ -41,23 +42,25 @@ for (const file of engineFiles) {
   engineDependencies.push(source, overlay);
 }
 const engine = path.join(intermediate, 'Engine');
-const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !f.endsWith('NaniteWebHierarchy.cpp')).map((file, i) => {
+const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarchy|Scene)\.cpp$/.test(f)).map((file, i) => {
   const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
     .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Runtime/Engine/' + file));
   assert.equal(unity.length, 1);
-  return [path.join(engine, unity[0] + '.o.rsp'), null, i ? 'EngineNaniteStreaming' : 'EngineNanite'];
+  return [path.join(engine, unity[0] + '.o.rsp'), null, file.endsWith('StaticMeshSceneProxy.cpp') ? 'EngineNaniteProxy' : i ? 'EngineNaniteStreaming' : 'EngineNanite'];
 });
 for (let i = tasks.length - 1; i >= 0; --i) if (tasks.findIndex(t => t[0] === tasks[i][0]) !== i) tasks.splice(i, 1);
 // A subsequent full UBT build can include the new source in an Engine unity.
 // Compile that unity when present; avoid linking a second shader registration.
+for (const kind of ['Hierarchy', 'Scene']) {
 const hierarchyUnity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
-  .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Private/Nanite/NaniteWebHierarchy.cpp'));
+  .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes(`Private/Nanite/NaniteWeb${kind}.cpp`));
 assert(hierarchyUnity.length <= 1);
 if (hierarchyUnity.length) {
   const response = path.join(engine, hierarchyUnity[0] + '.o.rsp');
-  if (!tasks.some(t => t[0] === response)) tasks.push([response, null, 'EngineNaniteHierarchy']);
+  if (!tasks.some(t => t[0] === response)) tasks.push([response, null, 'EngineNanite' + kind]);
 } else {
-  tasks.push([tasks[0][0], path.join(host, 'Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp'), 'EngineNaniteHierarchy']);
+  tasks.push([tasks[0][0], path.join(host, `Source/Runtime/Engine/Private/Nanite/NaniteWeb${kind}.cpp`), 'EngineNanite' + kind]);
+}
 }
 const rendererRelative = 'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp';
 const rendererSource = path.join(root, 'reference-engine/Engine', rendererRelative);
@@ -75,7 +78,7 @@ tasks.push(
   [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'), null, 'EngineNaniteMain'],
   ...fs.readdirSync(path.join(intermediate, 'WebGPURHI')).filter(n => n.endsWith('.cpp.o.rsp'))
     .map(n => [path.join(intermediate, 'WebGPURHI', n), null, n.replace('.cpp.o.rsp', '')]),
-  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest'].map(name => [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
+  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest'].map(name => [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
     path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private', name + '.cpp'), name]),
 );
 // RHI resource layouts are shared by all six translation units. Mixing an

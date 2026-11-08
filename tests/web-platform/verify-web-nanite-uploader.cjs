@@ -3,6 +3,7 @@ const fs = require('node:fs'), path = require('node:path'), assert = require('no
 const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const verifyHierarchy = require('./verify-nanite-hierarchy-output.cjs');
+const verifySceneCull = require('./verify-nanite-scene-cull-output.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -50,10 +51,11 @@ function observe() {
     return device;
   };
 }
-const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], errors:[], logs:[],
+const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], sceneCulling:[], errors:[], logs:[],
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
   cullOracle:audit(require.resolve('./verify-nanite-hierarchy-output.cjs')),
-  boundary:'Browser UE uploader, resident managers and bounded full-detail GPU hierarchy/frustum culling, including shared static mesh lifecycle. Components use fallback raster; no LOD selection, HZB culling, Nanite raster or streaming acceptance.'};
+  sceneCullOracle:audit(require.resolve('./verify-nanite-scene-cull-output.cjs')),
+  boundary:'Browser UE uploader, resident managers, bounded hierarchy culling and Deferred Renderer scheduling from actual static-mesh proxies and views. GPU readback consumes graph-owned results; unused passes are culled. Components use fallback raster; no LOD, HZB, Nanite raster or streaming acceptance.'};
 (async () => {
   let browser;
   try {
@@ -224,6 +226,29 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       console.log('Browser UE static mesh scene step ' + step + ' passed');
     }
     assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 6)), 1);
+    assert.equal(await owner.evaluate(() => __naniteBrowserAudit.cullDispatches), 67, 'Unused scene outputs must be culled by RDG');
+    const fixturePage = fs.readFileSync(report.scene[0].products[0].file);
+    for (let step = 1; step <= 10; ++step) {
+      const before = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
+      assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteSceneCullTest', s), step), 1);
+      let result;
+      const start = Date.now();
+      do {
+        await page.waitForTimeout(100);
+        assert.equal(report.errors.length, 0, report.errors.join('\n'));
+        assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 0)), 1);
+        result = await owner.evaluate(() => globalThis.__webNaniteSceneCullTest || null);
+      } while ((!result || result.pending || result.step !== step) && Date.now()-start < 30000);
+      assert(result && !result.pending && result.step === step, JSON.stringify(result));
+      try { verifySceneCull(result, fixturePage, report.sceneCulling); }
+      catch (error) { result.validationFailure = error.stack; }
+      const dispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches) - before;
+      assert.equal(dispatches, result.entries.reduce((sum,e) => sum + e.levels, 0));
+      report.sceneCulling.push({...result, dispatches, pass:!result.validationFailure});
+      console.log('Browser renderer scene culling step ' + step + (result.validationFailure ? ' failed validation' : ' passed'));
+    }
+    assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 11)), 1);
+    assert(report.sceneCulling.every(c => c.pass), report.sceneCulling.filter(c => !c.pass).map(c => `Step ${c.step}: ${c.validationFailure}`).join('\n'));
     const shaders = await owner.evaluate(() => __naniteBrowserAudit.shaders);
     const cullShaders = await owner.evaluate(() => __naniteBrowserAudit.cullShaders);
     assert.equal(cullShaders.length, 1);
@@ -232,7 +257,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       const file = path.join(output, 'hierarchy.wgsl'); fs.writeFileSync(file, code); return audit(file);
     });
     report.cullDispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
-    assert.equal(report.cullDispatches, 67);
+    assert.equal(report.cullDispatches, 82);
     assert.equal(shaders.length, 2);
     report.shaders = shaders.map((code,i) => {
       assert(/@workgroup_size\(32(?:u)?(?:,|\))/.test(code));
@@ -264,6 +289,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     await normal.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 10, null, {timeout:180000});
     assert.equal(await normal.evaluate(() => globalThis.__webEngineFailure || null), null);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 1)), 0);
+    assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 1)), 0);
     const normalOwner = normal.workers().find(w => w.url().includes('web-engine-worker.js')); assert(normalOwner);
     const normalAudit = await normalOwner.evaluate(() => __naniteBrowserAudit);
     assert.equal(normalAudit.dispatches, 0);

@@ -81,6 +81,8 @@ UStaticMesh* CreateResidentSceneMesh()
 }
 }
 
+UStaticMesh* CreateWebNaniteSceneFixture() { return CreateResidentSceneMesh(); }
+
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneTest(int Step)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
