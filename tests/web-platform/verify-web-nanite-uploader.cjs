@@ -116,7 +116,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   textureReferencePolicy:{lod:'largest singular value of UV Jacobian',maxCommonLODOffset:.25,maxSRGBCodeError:2,
     reference:'https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm',section:'7.18.11',
     boundary:'Probe acceptance bound for approximate footprint transformation; no cross-vendor precision guarantee.'},
-  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures now write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Zero-fallback fixtures verify this subset. GPU-compacted 8x8 tiles and indirect draws replace fullscreen instance shading; no arbitrary UMaterial graph, lightmaps, normal maps, Substrate, shared material bins, LOD/HZB/streaming or complete-scene acceptance.'};
+  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Equal explicit materials share bins of up to 64 instance/slot members, one GPU-compacted union of 8x8 tiles and one indirect draw. Per-pixel member transforms remain distinct. Zero-fallback fixtures verify this subset; no automatic UMaterial bindings, arbitrary graphs, lightmaps, normal maps, Substrate, full Nanite shading bins, LOD/HZB/streaming or complete-scene acceptance.'};
 (async () => {
   let browser;
   try {
@@ -394,7 +394,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.deepEqual(await owner.evaluate(()=>({depth:__naniteBrowserAudit.depthDraws,cull:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length})),stopped,'cleanup must stop the experimental scene path');
     report.sceneDepthCleanup={pass:true,framesObserved:4,...stopped};
     assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws),0,'constant GBuffer must default off');
-    for(let step=1;step<=19;++step) {
+    for(let step=1;step<=26;++step) {
       const before=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws);
       assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteGBufferTest',s),step),1);
       let result;const start=Date.now();
@@ -423,12 +423,12 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
         }
       }
       const draws=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws)-before;
-      if(![4,19].includes(step)) assert(draws>=4,'real per-frame GBuffer pass must execute');
+      if(![4,19,26].includes(step)) assert(draws>=4,'real per-frame GBuffer pass must execute');
       report.sceneGBuffer.push({...result,products,draws,pass:!result.validationFailure});
-      if([12,13,14,15,18,19].includes(step)) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
+      if([12,13,14,15,18,19,20,21,24,25,26].includes(step)) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
       console.log(`Browser scene GBuffer step ${step} ${result.validationFailure?'failed validation':'passed'}`);
     }
-    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',20)),1);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',27)),1);
     assert(report.sceneGBuffer.every(c=>c.pass),report.sceneGBuffer.filter(c=>!c.pass).map(c=>`Step ${c.step}: ${c.validationFailure}`).join('\n'));
     const gbufferShaderCreations=await owner.evaluate(()=>__naniteBrowserAudit.gbufferShaders);
     // Texture/resource replacement may recreate an identical shader module.

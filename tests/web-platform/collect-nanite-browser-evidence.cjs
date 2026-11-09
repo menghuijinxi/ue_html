@@ -52,7 +52,7 @@ for(const test of browser.sceneDepth) {
 }
 assert(browser.depthDraws>=20&&browser.totalCullDispatches>100&&browser.totalRasterDraws>33);
 assert(browser.sceneDepthCleanup.pass&&browser.sceneDepthCleanup.framesObserved>=4);
-assert.equal(browser.sceneGBuffer.length,19);assert.equal(browser.defaultDisabled.gbufferDraws,0);
+assert.equal(browser.sceneGBuffer.length,26);assert.equal(browser.defaultDisabled.gbufferDraws,0);
 assert.equal(browser.defaultDisabled.gbufferIndirectDraws,0);assert.equal(browser.defaultDisabled.tileDispatches,0);
 assert(browser.sceneGBufferCleanup.pass&&browser.sceneGBufferCleanup.framesObserved>=4);
 assert.equal(browser.sceneGBufferCleanup.gbuffer,browser.sceneGBufferCleanup.indirect);
@@ -111,7 +111,12 @@ const {logs, ...browserSummary} = browser;
 const canvasFile=path.join(__dirname,'results/nanite-canvas-transitions.json'),canvas=read(canvasFile);
 assert(canvas.pass&&canvas.checks.length===8&&canvas.checks.every(c=>c.pass));
 [canvas.runtime,canvas.log,...canvas.sources,...canvas.products].forEach(verify);
+const interruptedFile=path.join(__dirname,'evidence/nanite-browser-uniform-buffer-failure-20261109.json');
+const interrupted=read(interruptedFile);assert.equal(interrupted.pass,false);
+[...interrupted.runtime,interrupted.rawReport].forEach(verify);
+assert(interrupted.runtime.some(r=>packaged.products.some(p=>p.sha256===r.sha256&&/\.wasm$/.test(p.file))));
 const report = {date:new Date().toISOString(), pass:true,
+  interruptedRun:{report:audit(interruptedFile),...interrupted},
   canvasTransitions:{report:audit(canvasFile),...canvas},
   multiMaterial:{fixture:multiFixture,native:multiNative,browser:multiBrowser,validation:browser.multiAssetValidation},
   referenceCommit:cp.execFileSync('git', ['-C', path.join(__dirname, '../../reference-engine'), 'rev-parse', 'HEAD'], {encoding:'utf8'}).trim(),
@@ -125,7 +130,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-multimaterial-20261109.json');
+const destination = path.join(__dirname, 'evidence/nanite-browser-material-bins-20261109.json');
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

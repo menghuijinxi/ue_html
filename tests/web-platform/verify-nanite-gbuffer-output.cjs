@@ -50,7 +50,7 @@ function textureReference(index,uv,dx,dy,base,actual) {
 module.exports=function verifyGBuffer(result,page) {
   const {before,after,materialInputs:inputs,entries,step}=result;
   const count=result.materialWidth*result.materialHeight;
-  assert(step>=1&&step<=19);assert.equal(result.materialStride,8);assert.equal(result.rejected,0);
+  assert(step>=1&&step<=26);assert.equal(result.materialStride,8);assert.equal(result.rejected,0);
   assert(result.srgbBaseColor);assert(['FloatR11G11B10','FloatRGBA'].includes(result.colorFormat));
   assert.equal(before.length,count*28);assert.equal(after.length,before.length);
   // Full-resolution projected edges amplify float arithmetic more than the
@@ -129,7 +129,7 @@ module.exports=function verifyGBuffer(result,page) {
     for(let c=0;c<4;++c) {near(f(after[o+20+c]),0,1e-6,'custom data');near(f(after[o+24+c]),1,1e-6,'precomputed shadow factors');}
   }
   assert(background>1000);
-  if(step===4||step===19) {assert.equal(written,0);assert(unbound>10);}
+  if([4,19,26].includes(step)) {assert.equal(written,0);assert(unbound>10);}
   else if(step===11) {assert.equal(written,0);assert(occluded>100);}
   else {assert(written>10);assert.equal(changed,written);}
   if([1,3].includes(step)) assert(occluded>10);
@@ -143,7 +143,10 @@ module.exports=function verifyGBuffer(result,page) {
     const expected=entries.flatMap(e=>e.bindingCurrent?e.materials.map(m=>e.component+'/'+m.slot):[]).sort();
     assert.deepEqual(Object.keys(bySlot).sort(),expected,'every bound material must shade its own pixels');
     for(const count of Object.values(bySlot))assert(count>5);
-    if(step>=15)assert(unbound>10);
+    if((step>=15&&step<=19)||step===26)assert(unbound>10);
+    // The removed slot on the overlapping rear sphere has only a small exposed
+    // region. Require coverage; every unbound sample above must stay bit-exact.
+    if(step===25)assert(unbound>0);
     if(step===16)assert.equal(result.slotInputRejections,10);
   }
   if(step===7) {assert(textures.srgb>20);assert(textures.minified>20);}

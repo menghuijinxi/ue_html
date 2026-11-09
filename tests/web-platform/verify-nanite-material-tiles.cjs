@@ -9,7 +9,13 @@ module.exports=function verifyMaterialTiles(result,page) {
   const {rect,entries,materialTiles:bins,tilePixels:pixels,before}=result;
   const width=rect[2]-rect[0],height=rect[3]-rect[1],gx=Math.ceil(width/8),gy=Math.ceil(height/8);
   assert.equal(result.tilePixelCount,width*height);assert.equal(pixels.length%4,0);
-  const bindings=entries.flatMap((e,index)=>e.bindingCurrent?(e.materials||[{slot:e.materialSlot}]).map(m=>({entry:index,slot:m.slot})):[]);
+  const bindings=entries.flatMap((e,index)=>e.bindingCurrent?(e.materials||[{...e,slot:e.materialSlot}]).map(m=>({entry:index,slot:m.slot,material:m})):[]);
+  // Derive grouping from the independently recorded explicit bindings. Neither
+  // GPU membership nor compacted tile output defines expected material equality.
+  const materialKey=m=>JSON.stringify([m.baseColor,m.emissive,m.metallic,m.specular,m.roughness,m.textureIndex,m.uvScaleBias]);
+  const groups=new Map();
+  for(const b of bindings) {const k=materialKey(b.material);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(b.entry+'/'+b.slot);}
+  const memberKey=members=>members.map(m=>m.entry+'/'+m.slot).sort().join(',');
   const expected=new Map(bindings.map(b=>[b.entry+'/'+b.slot,new Set()])),cache=new Map(),lookup=new Map();
   let occluded=0,unbound=0,owned=0,last=-1;
   for(let i=0;i<pixels.length;i+=4) {
@@ -32,12 +38,13 @@ module.exports=function verifyMaterialTiles(result,page) {
     if(before[offset]) assert.deepEqual(full,before.slice(offset,offset+3));
     else assert.equal(full,undefined);
   }
-  assert.deepEqual(bins.map(b=>b.entry+'/'+b.slot).sort(),bindings.map(b=>b.entry+'/'+b.slot).sort());
+  assert.deepEqual(bins.map(b=>memberKey(b.members)).sort(),[...groups.values()].map(g=>g.sort().join(',')).sort(),'exact bins from material values and texture identity');
   let tileCount=0,emptyBins=0,edgeTiles=0;
   for(const bin of bins) {
     assert.equal(bin.gridWidth,gx);assert.equal(bin.gridHeight,gy);
     assert.equal(bin.tiles.length,gx*gy*2);
-    const expectedTiles=[...expected.get(bin.entry+'/'+bin.slot)].sort((a,b)=>a-b),count=expectedTiles.length;
+    assert(bin.members.length>0&&bin.members.length<=64);
+    const expectedTiles=[...new Set(bin.members.flatMap(m=>[...expected.get(m.entry+'/'+m.slot)]))].sort((a,b)=>a-b),count=expectedTiles.length;
     assert.deepEqual(bin.arguments,[6,count,0,0],'GPU-generated draw arguments');
     const actual=[];
     for(let i=0;i<count;++i) {
@@ -48,13 +55,20 @@ module.exports=function verifyMaterialTiles(result,page) {
     assert(bin.tiles.slice(count*2).every(v=>v===0),'unused tile capacity must remain clear');
     tileCount+=count;if(!count)++emptyBins;
   }
-  if(result.step===1) assert.equal(result.tileInputRejections,8);
+  if(result.step===1) {assert.equal(result.tileInputRejections,8);assert.equal(result.binInputRejections,5);}
   if(result.step===4) assert.equal(bins.length,0);
   if(result.step===5) assert.equal(emptyBins,1);
   if(result.step===11) {assert.equal(tileCount,0);assert.equal(emptyBins,2);assert(occluded>1000);}
   if(result.step===12) {assert(width%8||height%8);assert(edgeTiles>0);}
-  if(![4,11,19].includes(result.step)) {assert(tileCount>0);assert(tileCount<gx*gy*bins.length/4);}
-  if(result.step===19)assert.equal(bins.length,0);
+  if(![4,11,19,26].includes(result.step)) {assert(tileCount>0);assert(tileCount<gx*gy*bins.length/4);}
+  if([19,26].includes(result.step))assert.equal(bins.length,0);
+  const separateTiles=[...expected.values()].reduce((n,s)=>n+s.size,0);
+  if(result.step>=20) {
+    assert.equal(bins.length,({20:4,21:1,22:2,23:3,24:4,25:1,26:0})[result.step]);
+    assert.equal(bindings.length,result.step===26?0:result.step===25?7:8);
+    if(result.step>=21&&result.step<=25)assert(tileCount<separateTiles,'shared tiles must be deduplicated');
+    if(result.step===25)assert(unbound>0,'removed rear-instance slot remains visible');
+  }
   if(result.step>=13&&result.step<=18) {
     assert.equal(bins.length,({13:8,14:8,15:6,16:6,17:3,18:1})[result.step]);
     assert.equal(emptyBins,0);
@@ -76,5 +90,6 @@ module.exports=function verifyMaterialTiles(result,page) {
     assert(offsetValidation.edgeTiles>0);
   }
   return {pass:true,pixels:width*height,nanitePixels:pixels.length/4,owned,occluded,unbound,bins:bins.length,
+    members:bindings.length,separateTiles,savedTiles:separateTiles-tileCount,
     tileCount,emptyBins,edgeTiles,fullScreenTiles:gx*gy*bins.length,indirectVertices:tileCount*6,...(offsetValidation?{offsetValidation}: {})};
 };
