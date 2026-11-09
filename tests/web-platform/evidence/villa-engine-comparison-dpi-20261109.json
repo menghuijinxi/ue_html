@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-09",
+  "pass": true,
+  "entry": "http://127.0.0.1:8766/villa-engine-comparison.html#ours",
+  "package": "villa-ue59-comparison-20261109-v4",
+  "manifestSHA256": "f9afbafc7cb174800f0e6ef4c9dec2dbd0f3b6b7d284470625ba4d2183b67285",
+  "profileSHA256": "b1a29f634498bc0d122be3704bb3683b59911da9931de99242da547745f16514",
+  "correction": {
+    "priorEvidenceScope": "Previous passing comparison reports used DPR=1 only. They did not validate high-DPI equivalence.",
+    "rootCause": "Our v3 host supplied CSS dimensions and actual DPR to the engine, which resized the render target after startup. Official rendering capped its scale at 1.",
+    "reproduction": "tests/web-platform/results/villa-engine-comparison-20261109-dpr15-repro/result.json",
+    "reproductionSHA256": "5e5b787ff3ad0ebc75289f508d9bdc52f2b590623cbfc23e8c472da2a6224792",
+    "dpr": 1.5,
+    "iframeCSSSize": [1920, 1080],
+    "oursActualCanvasAndScene": [2880, 1620],
+    "screenPercentage": 100,
+    "pixelCountRatio": 2.25
+  },
+  "fix": {
+    "fixedRenderSize": [1920, 1080],
+    "effectiveEngineDPR": 1,
+    "realBrowserDPRPreserved": true,
+    "absoluteMouseAndWheelCoordinatesMatchRenderSize": true,
+    "defaultAdaptiveModePreserved": true,
+    "immutableOldV3Preserved": true,
+    "runtimeCookAndQualityConfigUnchanged": true,
+    "officialPrewarmPackUnchanged": true
+  },
+  "validation": [
+    {
+      "dpr": 1,
+      "report": "tests/web-platform/results/villa-engine-comparison-20261109-dpr1-verified/result.json",
+      "sha256": "7a077c08e26c46cc44ad758d86d92c6c76017ad096eb016496ecff5fccf288b3",
+      "cpuAffinity": 0,
+      "bothEnginePass": true
+    },
+    {
+      "dpr": 1.5,
+      "report": "tests/web-platform/results/villa-engine-comparison-20261109-dpr15-stable/result.json",
+      "sha256": "34cba672b8cd0727468c2760d47b150a9fdba6a824e834adb3ac83b023624f30",
+      "cpuAffinity": 4294901760,
+      "bothEnginePass": true
+    },
+    {
+      "dpr": 2,
+      "report": "tests/web-platform/results/villa-engine-comparison-20261109-dpr2-stable/result.json",
+      "sha256": "ab96393bf994eb6e2d289e3074e1f43fc33d7c3be8732aab5ae8c9c44c79556b",
+      "cpuAffinity": 4294901760,
+      "bothEnginePass": true
+    }
+  ],
+  "allPassingRuns": {
+    "actualSceneAndCanvas": [1920, 1080],
+    "oursLiveDPRChanges": [[1, 1.5], [1.5, 2], [2, 2.5]],
+    "mouseAndWheelTestedAtCSSSize": [[1920, 1080], [960, 540]],
+    "mouseAndWheelCenter": [960, 540],
+    "onlyOneSceneIframe": true,
+    "pageAndGPUValidationErrors": []
+  },
+  "hostRegression": {
+    "script": "tests/web-platform/verify-web-fixed-render-size.cjs",
+    "dprs": [1, 1.5, 2],
+    "fixedAndAdaptiveModesPass": true,
+    "resizeAndInputMappingPass": true,
+    "mismatchWarningAndRecoveryPass": true,
+    "usesStubWorkerNotEngine": true
+  },
+  "boundary": "Resolution and input correctness, not comparative FPS. High-DPI full-scene acceptance used restricted CPU affinity; the delivered pages do not. Default-CPU intermittent GPU device loss remains unresolved, with failed runs retained. No engine rebuild or recook."
+}

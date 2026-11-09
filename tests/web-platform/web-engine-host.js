@@ -345,6 +345,10 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (!['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode))
     throw new Error('Invalid browser input mode');
   const canvas = module.canvas;
+  const fixedRenderSize = assets.fixedRenderSize;
+  if (fixedRenderSize && ![fixedRenderSize.width, fixedRenderSize.height].every(value =>
+    Number.isInteger(value) && value > 0))
+    throw new Error('Invalid fixed render size');
   globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
   if (!canvas.transferControlToOffscreen || typeof Worker === 'undefined')
@@ -540,8 +544,16 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     document.body.append(button);
   }
   const browser = () => {
+    // A fixed render target is already measured in pixels, not CSS pixels.
+    if (fixedRenderSize) return {width: fixedRenderSize.width, height: fixedRenderSize.height, dpr: 1};
     const rect = canvas.getBoundingClientRect();
     return {width: rect.width, height: rect.height, dpr: devicePixelRatio};
+  };
+  const canvasPoint = event => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = fixedRenderSize ? fixedRenderSize.width / (rect.width || 1) : devicePixelRatio;
+    const scaleY = fixedRenderSize ? fixedRenderSize.height / (rect.height || 1) : devicePixelRatio;
+    return [Math.round((event.clientX - rect.left) * scaleX), Math.round((event.clientY - rect.top) * scaleY)];
   };
   const resize = () => { if (!stopped) worker.postMessage({type: 'browser', state: browser()}); };
   const observer = new ResizeObserver(resize);
@@ -568,9 +580,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     });
   }
   const mouse = (event, id) => {
-    const rect = canvas.getBoundingClientRect();
-    input(id, event.button, 0, Math.round((event.clientX - rect.left) * devicePixelRatio),
-      Math.round((event.clientY - rect.top) * devicePixelRatio), event.movementX, event.movementY);
+    const [x, y] = canvasPoint(event);
+    input(id, event.button, 0, x, y, event.movementX, event.movementY);
   };
   canvas.addEventListener('mousedown', event => {
     event.preventDefault();
@@ -582,9 +593,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   canvas.addEventListener('contextmenu', event => event.preventDefault());
   canvas.addEventListener('wheel', event => {
     event.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    input(9, 0, 0, Math.round((event.clientX - rect.left) * devicePixelRatio),
-      Math.round((event.clientY - rect.top) * devicePixelRatio), 0, 0,
+    const [x, y] = canvasPoint(event);
+    input(9, 0, 0, x, y, 0, 0,
       -event.deltaY / (event.deltaMode === 0 ? 100 : event.deltaMode === 1 ? 3 : 1));
   }, {passive: false});
   canvas.addEventListener('focus', () => input(13));

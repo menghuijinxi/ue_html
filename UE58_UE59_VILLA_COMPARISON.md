@@ -10,8 +10,10 @@
 两边均使用桌面 WebGPU、固定 1920×1080 画布、100% 渲染比例、Epic 各项质量、
 TAA、软件 Lumen GI、496 MiB 纹理池；关闭 Lumen 反射、硬件光追、
 Nanite、VSM、动态分辨率、运动模糊和 UE VSync，`t.MaxFPS=0`。
-页面只对固定画布进行 CSS 缩放，窗口尺寸和系统 DPI 不改变渲染像素数量。
-顶部现在显示运行时读回的场景尺寸和画布尺寸，不能只凭窗口大小判断渲染分辨率。
+从 v4 修复起，页面只对固定画布进行 CSS 缩放，窗口尺寸和系统 DPI 不改变渲染像素数量。
+v3 实际没有正确锁定高 DPI 下的渲染尺寸，详见下文修正记录。
+顶部显示目标、运行时场景尺寸、画布尺寸和浏览器 DPR；读回尺寸不一致时显示警告，
+不再无条件标注“1080p 固定”。
 `8900/index.html?tier=desktop` 是另一个普通入口，会响应窗口变化，
 也会使用官方自动选择的画质配置；它不是这个固定 1080p 对照入口。
 实测改变官方页面视口后，SceneColor 和画布同步变成 1280×720，
@@ -27,7 +29,7 @@ Nanite、VSM、动态分辨率、运动模糊和 UE VSync，`t.MaxFPS=0`。
   WASM SHA-256 `88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a`。
   配套使用 `triplex-project-lumen-shadows-fixed-20261104` 的 Lumen Cook；
   加入 `desktop-accepted-20261107` 性能设置、页面帧预算 3 和直接游戏线程输入。
-  生成包为 `build/villa-ue59-comparison-20261109-v3`。
+  当前包为 `build/villa-ue59-comparison-20261109-v4`；v3 保留用于复现尺寸问题。
 - 官方：已完成构建的 Epic UE 5.9，
   提交 `589a52b5abcf7b0ee0e2fd9de58b4d2872672f21`，通过启动参数覆盖共同设置；
   官方引擎源码、WASM 和 Cook 文件没有修改。
@@ -65,6 +67,50 @@ node tests/web-platform/verify-villa-engine-comparison.cjs --tag=20261109-final
 官方控制台实际 CVar、键盘移动、场景截图、移动尺寸布局及页内版本切换。
 完整输出留在 `tests/web-platform/results/villa-engine-comparison-20261109-final/`。
 这轮提供手动对照入口，没有发布新的 FPS 排名或端到端输入延迟结论。
+
+## 高 DPI 尺寸修正
+
+用户反馈官方为 1920×1080、我们为 2880×1620 后，在 DPR=1.5 的 Chrome 中复现：
+v3 iframe 的布局是 1920×1080，但传给引擎的浏览器尺寸带有 DPR=1.5，
+运行时按 CSS 尺寸乘 DPR 更新窗口，覆盖了启动时的 ResX/ResY。
+实际画布和 `__webRenderView` 都是 2880×1620，且 `r.ScreenPercentage=100`。
+因此不是 150% 的 ScreenPercentage，也不能归因于打开了不同入口。
+之前所有 DPR=1 的通过记录都不能证明高 DPI 下已对齐；
+此前“系统 DPI 不影响渲染尺寸”和排除分辨率差异的结论范围错误。
+
+CSS 布局像素和渲染像素是两个量。自适应网页画布可以用 DPR 保持清晰度，
+但明确要求 1920×1080 的渲染目标不应再次乘 DPR。
+2880×1620 是 1920×1080 的 2.25 倍像素，原有高 DPI 比较不是相同渲染负载。
+
+v4 在包清单增加 `fixedRenderSize: {width:1920,height:1080}`。
+宿主向引擎报告固定像素尺寸和有效倍率 1，保留浏览器本身的 DPR。
+鼠标和滚轮坐标按画布布局与固定像素目标的比例换算，避免点击位置再偏移 1.5 倍。
+未设置 fixedRenderSize 的普通页面继续使用原有自适应行为。
+官方包、两边 WASM、Cook、画质设置和 PSO 预热内容均未改动。
+
+复现失败记录：`results/villa-engine-comparison-20261109-dpr15-repro/result.json`。
+验证脚本现在接受 `--dpr=1.5`，断言实际场景、输出画布、Worker 尺寸、
+原尺寸与半尺寸下的鼠标/滚轮中心位置，并在运行中改变 DPR 后重新检查。
+真实浏览器模拟返回的 DPR 可能有浮点误差，使用容差判断。
+旧 v3 和原始验证文件保留，不覆盖历史证据。
+
+```powershell
+node tests/web-platform/verify-web-fixed-render-size.cjs
+node tests/web-platform/verify-villa-engine-comparison.cjs --tag=20261109-dpr15-stable --dpr=1.5 --affinity=4294901760
+node tests/web-platform/verify-villa-engine-comparison.cjs --tag=20261109-dpr1-verified --dpr=1
+node tests/web-platform/verify-villa-engine-comparison.cjs --tag=20261109-dpr2-stable --dpr=2 --affinity=4294901760
+```
+
+宿主测试覆盖 DPR=1、1.5、2 的固定和自适应两种模式。
+DPR=1 的双引擎场景在默认 CPU 下通过；DPR=1.5 和 2 的完整场景验收使用受限核心规避本机间歇 GPU 设备丢失，
+只用于验证尺寸和交互，不用于性能排名；页面本身没有 CPU 亲和性限制。
+三组均通过场景/输出尺寸、画质、PSO、输入、版本切换和移动尺寸布局检查。
+运行中 DPR 从 1→1.5、1.5→2、2→2.5 后，我们的渲染也保持 1080p。
+宿主测试另外确认尺寸不一致时出现警告，恢复一致后解除警告。
+相关失败记录仍保留：
+`dpr15-fixed`、`dpr15-verified` 为 GPU 设备丢失，
+`dpr2-verified` 为 D3D12 创建管线时报告 E_OUTOFMEMORY 的设备丢失；
+`dpr15-final` 为测试严格比较 DPR 浮点值而超时。本次没有修复宿主间歇 GPU 故障。
 
 ## 帧统计与 PSO 预热修正
 
@@ -111,7 +157,8 @@ node tests/web-platform/verify-villa-engine-comparison.cjs --tag=20261109-hud-fi
 
 ## 清晰度调查边界
 
-两边的实际 SceneColor 和输出画布均为 1920×1080，
+以下历史清晰度调查均在 DPR=1 下进行，不能排除用户高 DPI 环境中的分辨率差异。
+该环境下两边的实际 SceneColor 和输出画布均为 1920×1080，
 不是只看 HTML 的 width/height。原生像素截图中抽查的白墙、木材纹理尺寸相同；
 将官方纹理池临时从 496 调到 2048 MiB 后，一部分纹理提升了 mip，
 但没有明显消除所观察到的墙面差异。临时增加锐化会改变观感，
@@ -119,8 +166,9 @@ node tests/web-platform/verify-villa-engine-comparison.cjs --tag=20261109-hud-fi
 交付仍为两边 496 MiB、100% 渲染比例和 TAA。
 
 相同质量等级并不保证不同版本的 Lumen 中间缓冲、纹理格式或后处理逐项相同。
-当前尚未定位剩余清晰度差异的单一原因；之前普通入口的自动画质也是比较时
-需要排除的变量。不要由此直接推导等画质性能胜负。
+用户看到的 2880×1620 与 1920×1080 差异已经复现并修复；
+同为 1080p 时的细微差异仍未定位到单一原因。之前普通入口的自动画质也是比较时
+需要排除的变量。不要由历史结果直接推导等画质性能胜负。
 原生截图与资源记录在 `results/villa-quality-20261109-inspect/`，
 该轮截图之后读取录制文件失败，成功录制另存于 `20261109-capture`；
 失败记录保留，未当作完整验证通过。

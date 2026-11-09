@@ -11,6 +11,7 @@ nav { display: flex; align-items: center; gap: 18px; padding: 8px 16px; min-heig
 nav a { color: #c9d6ce; padding: 5px 0; border-bottom: 2px solid transparent; text-decoration: none; }
 nav a[aria-current="page"] { color: #86e6ba; border-color: currentColor; }
 nav span { margin-left: auto; color: #b8c1bd; font-size: 12px; }
+nav span[data-state="mismatch"] { color: #ffb4a2; }
 main { flex: 1; min-height: 0; position: relative; overflow: hidden; }
 iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: center; background: #000; }
 </style>
@@ -18,7 +19,7 @@ iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: c
   <strong>Triplex Villa</strong>
   <a href="#ours" data-engine="ours">UE 5.8 v71 &#25105;&#20204;&#30340;&#29256;&#26412;</a>
   <a href="#official" data-engine="official">UE 5.9 &#23448;&#26041;&#29256;&#26412;</a>
-  <span id="render-status">1080p 固定 &middot; 等待实际尺寸</span>
+  <span id="render-status">目标 1920×1080 &middot; 等待实际尺寸</span>
 </nav>
 <main id="stage"></main>
 <script>
@@ -27,6 +28,7 @@ iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: c
   if (!response.ok) throw Error('Comparison profile unavailable');
   const profile = await response.json();
   const stage = document.getElementById('stage');
+  const status = document.getElementById('render-status');
   const official = new URL(profile.official, location.href);
   official.searchParams.set('tier', 'desktop');
   official.searchParams.set('harness', '1');
@@ -43,9 +45,13 @@ iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: c
     const scene = child?.__ue59Performance?.scene;
     const width = scene?.width || view?.width;
     const height = scene?.height || view?.height;
-    document.getElementById('render-status').textContent = '1080p 固定 · ' +
+    const mismatch = width && height && (width !== profile.width || height !== profile.height ||
+      canvas?.width !== profile.width || canvas?.height !== profile.height);
+    status.dataset.state = mismatch ? 'mismatch' : width && height ? 'match' : 'pending';
+    status.textContent = (mismatch ? '尺寸不一致 · ' : '') + `目标 ${profile.width}×${profile.height} · ` +
       (width && height ? `渲染 ${width}×${height}` : '等待场景尺寸') +
-      (canvas ? ` · 输出 ${canvas.width}×${canvas.height}` : '') + ' · Epic · TAA · Lumen GI';
+      (canvas ? ` · 输出 ${canvas.width}×${canvas.height}` : '') +
+      ` · DPR ${Number((child?.devicePixelRatio || 1).toFixed(3))}`;
   }
   function resize() {
     if (!frame) return;
@@ -54,6 +60,8 @@ iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: c
   }
   function select() {
     const engine = location.hash === '#official' ? 'official' : 'ours';
+    status.dataset.state = 'pending';
+    status.textContent = `目标 ${profile.width}×${profile.height} · 等待实际尺寸`;
     // Remove the previous document and its workers before starting the other engine.
     frame?.remove();
     frame = document.createElement('iframe');

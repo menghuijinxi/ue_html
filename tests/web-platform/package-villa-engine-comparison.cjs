@@ -50,6 +50,7 @@ let html = fs.readFileSync(htmlPath, 'utf8');
 const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/);
 assert(match);
 const assets = JSON.parse(match[1]);
+assets.fixedRenderSize = {width: profile.width, height: profile.height};
 for (const name of Object.keys(assets.versions))
   assets.versions[name] = audit(path.join(dest, name)).sha256;
 assets.wasm = metadata(path.join(dest, 'UEWebEngineThreads.wasm'), 'UEWebEngineThreads.wasm');
@@ -71,5 +72,5 @@ const report = {
   source: audit(__filename),
   boundary: 'Repackaged verified v71 runtime with archived Lumen Cook and accepted performance settings. The accepted Nov 7 executable is absent locally. No new engine build or Cook; rendering equivalence requires browser verification.'
 };
-fs.writeFileSync(path.join(__dirname, 'results/villa-engine-comparison-package.json'), JSON.stringify(report, null, 2));
+fs.writeFileSync(path.join(__dirname, 'results', profile.ours + '-package.json'), JSON.stringify(report, null, 2));
 console.log(JSON.stringify({directory: dest, runtimePackage: profile.runtime, performanceProfile}));

@@ -12,17 +12,19 @@ const selected = option('engine');
 assert(!selected || ['ours', 'official'].includes(selected));
 const affinity = Number(option('affinity') || 0);
 assert(Number.isSafeInteger(affinity) && affinity >= 0);
+const dpr = Number(option('dpr') || 1);
+assert(Number.isFinite(dpr) && dpr > 0);
 const browserProfile = path.join(__dirname, 'build/browser-profiles/comparison-' + tag);
 const directory = path.join(__dirname, 'results/villa-engine-comparison-' + tag);
 fs.mkdirSync(directory, {recursive: true});
-const report = {date: new Date().toISOString(), profile, affinity, affinityChecks: [], runs: [], pass: false};
+const report = {date: new Date().toISOString(), profile, dpr, affinity, affinityChecks: [], runs: [], pass: false};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 let context;
 (async () => {
   try {
     context = await chromium.launchPersistentContext(browserProfile, {
       executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
-      headless: false, viewport: {width: 1600, height: 1000}, deviceScaleFactor: 1,
+      headless: false, viewport: {width: 1600, height: 1000}, deviceScaleFactor: dpr,
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
         '--autoplay-policy=no-user-gesture-required']
@@ -31,6 +33,15 @@ let context;
     await context.addInitScript(() => {
       globalThis.__comparisonTextures = [];
       globalThis.__comparisonPresents = 0;
+      globalThis.__comparisonInputs = [];
+      const send = MessagePort.prototype.postMessage;
+      MessagePort.prototype.postMessage = function(message, ...args) {
+        if (message?.type === 'inputs') {
+          globalThis.__comparisonInputs.push(...message.events);
+          if (globalThis.__comparisonInputs.length > 128) globalThis.__comparisonInputs.splice(0, 64);
+        }
+        return send.call(this, message, ...args);
+      };
       if (typeof GPUDevice === 'undefined') return;
       const create = GPUDevice.prototype.createTexture;
       GPUDevice.prototype.createTexture = function(descriptor) {
@@ -89,6 +100,7 @@ let context;
       await page.waitForTimeout(10000);
       run.state = await frame.evaluate(() => ({
         isolated: crossOriginIsolated,
+        browser: {dpr: devicePixelRatio, width: innerWidth, height: innerHeight},
         canvas: {width: document.getElementById('canvas').width, height: document.getElementById('canvas').height},
         failure: globalThis.__webEngineFailure,
         view: globalThis.__webRenderView,
@@ -103,6 +115,7 @@ let context;
         textures: globalThis.__comparisonTextures,
         args: globalThis.Module?.arguments
       }));
+      save();
       assert(run.state.isolated, 'Cross-origin isolation unavailable inside comparison frame');
       assert(!run.state.failure, JSON.stringify(run.state.failure));
       assert.deepEqual(run.state.canvas, {width: profile.width, height: profile.height});
@@ -111,11 +124,65 @@ let context;
       assert(run.state.performance?.submitted?.low > 0, 'HUD has no 1% Low sample');
       run.resolutionLabel = await page.locator('#render-status').textContent();
       assert(run.resolutionLabel.includes('渲染 1920×1080'), run.resolutionLabel);
+      assert.equal(await page.locator('#render-status').getAttribute('data-state'), 'match');
       if (engine === 'ours') {
+        assert.deepEqual({width: run.state.view.width, height: run.state.view.height},
+          {width: profile.width, height: profile.height}, 'Our actual scene resolution differs from comparison profile');
         assert(run.state.pso?.enabled, 'Our PSO precache is disabled');
         for (const [key, value] of Object.entries({antiAliasing: 2, gi: 1, reflections: 1,
           virtualShadows: 0, texturePoolMiB: 496, screenPercentage: 100}))
           assert.equal(run.state.settings[key], value, key);
+        const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
+        run.workerBrowser = await owner.evaluate(() => globalThis.__webBrowserState);
+        assert.deepEqual(run.workerBrowser, {width: profile.width, height: profile.height, dpr: 1});
+        const checkPoint = async () => {
+          await frame.evaluate(() => {
+            globalThis.__comparisonInputs = [];
+            const canvas = document.getElementById('canvas'), rect = canvas.getBoundingClientRect();
+            const point = {clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2, bubbles: true};
+            canvas.dispatchEvent(new MouseEvent('mousemove', point));
+            canvas.dispatchEvent(new WheelEvent('wheel', {...point, deltaY: 0}));
+          });
+          await frame.waitForFunction(() => [8, 9].every(type => globalThis.__comparisonInputs.some(event =>
+            event[0] === type)), null, {timeout: 5000});
+          const points = await frame.evaluate(() => globalThis.__comparisonInputs.filter(event => [8, 9].includes(event[0])));
+          for (const point of points) assert.deepEqual(point.slice(3, 5), [profile.width / 2, profile.height / 2]);
+          return points;
+        };
+        run.inputAtNativeSize = await checkPoint();
+        await page.locator('iframe').evaluate(node => { node.width = 960; node.height = 540; });
+        await page.waitForTimeout(1000);
+        run.inputAtHalfSize = await checkPoint();
+        assert.deepEqual(await owner.evaluate(() => globalThis.__webBrowserState), run.workerBrowser);
+        assert.deepEqual(await frame.evaluate(() => ({
+          width: __webRenderView.width, height: __webRenderView.height
+        })), {width: profile.width, height: profile.height});
+        await page.locator('iframe').evaluate(node => { node.width = 1920; node.height = 1080; });
+        const cdp = await context.newCDPSession(page);
+        const changedDpr = dpr + 0.5;
+        await cdp.send('Emulation.setDeviceMetricsOverride', {
+          width: 1600, height: 1000, deviceScaleFactor: changedDpr, mobile: false
+        });
+        await frame.waitForFunction(expected => Math.abs(devicePixelRatio - expected) < 0.00001, changedDpr);
+        await page.waitForTimeout(1000);
+        run.dprChangedWhileRunning = await frame.evaluate(() => ({
+          dpr: devicePixelRatio, width: __webRenderView.width, height: __webRenderView.height,
+          canvasWidth: document.getElementById('canvas').width, canvasHeight: document.getElementById('canvas').height
+        }));
+        assert(Math.abs(run.dprChangedWhileRunning.dpr - changedDpr) < 0.00001);
+        const {dpr: actualChangedDpr, ...changedSize} = run.dprChangedWhileRunning;
+        assert.deepEqual(changedSize, {
+          width: profile.width, height: profile.height,
+          canvasWidth: profile.width, canvasHeight: profile.height
+        });
+        run.inputAfterDprChange = await checkPoint();
+        await cdp.send('Emulation.setDeviceMetricsOverride', {
+          width: 1600, height: 1000, deviceScaleFactor: dpr, mobile: false
+        });
+        await frame.waitForFunction(expected => Math.abs(devicePixelRatio - expected) < 0.00001, dpr);
+        await page.waitForFunction(expected =>
+          document.getElementById('render-status').textContent.endsWith('DPR ' + expected), dpr);
+        await cdp.detach();
       } else {
         const metrics = run.state.officialPerformance;
         assert.deepEqual(metrics?.scene, {width: profile.width, height: profile.height});
