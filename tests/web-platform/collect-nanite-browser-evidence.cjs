@@ -103,6 +103,16 @@ for(const test of browser.sceneCulling) {
   const raw={...test,visibility:words(test.visibilityProduct),materialInputs:words(test.materialProduct)};
   assert.deepEqual(verifyMaterialInputs(raw,fixturePage),test.materialValidation);
 }
+const microFile=path.join(__dirname,'results/nanite-micro-raster/verified.json'),micro=read(microFile);
+assert(micro.pass&&micro.triangles===2048&&micro.sharedEdges===512&&micro.rejectedInputs===8&&micro.mismatches.length===0);
+assert(micro.computeTriangles>512&&micro.hardwareFallbackTriangles>0);
+[micro.source,...micro.sources,...micro.tools,...micro.products].forEach(verify);
+assert(browser.microRaster.dispatches>0&&browser.microRaster.shaders.length>0);browser.microRaster.shaders.forEach(verify);
+const microDepthFailureFile=path.join(__dirname,'results/nanite-micro-raster/failure-jitter-depth-20261110.json');
+const microDepthFailure=read(microDepthFailureFile),microDepthFailurePackage=microDepthFailureFile.replace('.json','-package.json'),microDepthFailureBuild=microDepthFailureFile.replace('.json','-build.json');
+assert(!microDepthFailure.pass&&microDepthFailure.failure.includes('Mixed/hardware depth mismatch'));
+assert.equal(audit(microDepthFailurePackage).sha256,microDepthFailure.package.sha256);
+assert.equal(audit(microDepthFailureBuild).sha256,read(microDepthFailurePackage).build.sha256);
 const verifyLOD = require('./verify-nanite-scene-lod.cjs');
 const verifyHZB = require('./verify-nanite-scene-hzb.cjs');
 assert.equal(browser.sceneHZB.length,9);verify(browser.hzbOracle);
@@ -142,7 +152,11 @@ for(const test of browser.sceneLOD) {
 assert.equal(browser.sceneInstances.length,13);verify(browser.instancesOracle);
 assert(browser.sceneInstancesCleanup.pass&&browser.sceneInstancesCleanup.framesObserved>=4);
 const instanceTriangles=fs.readFileSync(lodFixture.sourceTriangles.file);
-for(const test of browser.sceneInstances) {
+assert.equal(browser.sceneMicroRepeats.length,128);
+assert(new Set(browser.sceneMicroRepeats.map(t=>JSON.stringify(t.worldToClip))).size>=4);
+for(const test of [...browser.sceneInstances,...browser.sceneMicroRepeats]) {
+  assert.equal(test.microSpan,[0,1,4,8][(test.step-1)%4]);
+  assert.equal(test.microDispatches,test.microSpan?test.entries.length*rasterPhases:0);
   const raw={...test};for(const [key,p] of Object.entries(test.products)) {
     verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));
   }
@@ -292,6 +306,18 @@ if(build.fullTargetBuild) {
   for(const a of viewsActions.Actions.filter(a=>a.Type==='Compile'&&viewsExecution.results.some(r=>r.id===a.Id&&r.code===0)))
     a.ProducedItems.forEach(f=>rebuilt.add(normalize(f)));
   assert(rebuilt.has(normalize(viewsObjects[0].object.file)));
+  const microBuildFile=path.join(__dirname,'results/web-engine-nanite-micro-build-results.json'),microBuild=read(microBuildFile);
+  assert(microBuild.pass&&microBuild.fullLinkVerified);
+  [microBuild.compileExecution,microBuild.exportedActions,microBuild.log].forEach(verify);
+  const microHeaders=microBuild.sourceFiles.filter(i=>/[\\/]NaniteWebRaster\.h$/.test(i.file));
+  assert(microHeaders.length>0);microHeaders.forEach(verify);
+  const microExecution=read(microBuild.compileExecution.file),microActions=read(microBuild.exportedActions.file);
+  assert(microExecution.pass&&microExecution.results.every(r=>r.code===0));
+  for(const a of microActions.Actions.filter(a=>a.Type==='Compile'&&microExecution.results.some(r=>r.id===a.Id&&r.code===0)))
+    a.ProducedItems.forEach(f=>rebuilt.add(normalize(f)));
+  const microDependents=full.objects.filter(o=>fs.existsSync(o.object.file+'.d')&&
+    /\/Rendering\/NaniteWebRaster\.h/.test(fs.readFileSync(o.object.file+'.d','utf8').replaceAll('\\','/')));
+  assert(microDependents.length>0&&microDependents.every(o=>rebuilt.has(normalize(o.object.file))));
 
 
   const lodLayoutFile=path.join(__dirname,'results/web-engine-nanite-lod-layout-build-results.json'),lodLayout=read(lodLayoutFile);
@@ -325,6 +351,7 @@ if(build.fullTargetBuild) {
   assert(dependentInputs.length>0&&dependentInputs.every(o=>rebuilt.has(normalize(o.object.file))),
     'this RHI header regression must use rebuilt dependent objects');
   fullTargetValidation={compileExecution:full.compileExecution,exportedActions:full.exportedActions,
+    microRasterBuild:{report:audit(microBuildFile),sources:microHeaders,dependentObjects:microDependents.length},
     compiledActions:execution.results.length,linkedObjects:full.objects.length,
     hzbTestBuild:{report:audit(hzbTestBuildFile),compileExecution:hzbTestBuild.compileExecution,
       exportedActions:hzbTestBuild.exportedActions,sources:hzbTestSources,objects:hzbTestObjects.map(o=>o.object)},
@@ -469,6 +496,9 @@ assert(!orthoFailure.pass&&orthoFailure.tests.length===6&&orthoFailure.tests.at(
 assert.equal(audit(orthoFailurePackage).sha256,orthoFailure.package.sha256);
 assert.equal(audit(orthoFailureBuild).sha256,read(orthoFailurePackage).build.sha256);
 const report = {date:new Date().toISOString(), pass:true,
+  microRaster:{helper:{report:audit(microFile),...micro},runtime:browser.microRaster,
+    repeatedFrames:browser.sceneMicroRepeats.map(t=>({frame:t.frame,microSpan:t.microSpan,microDispatches:t.microDispatches,validation:t.validation,products:t.products})),
+    priorFailure:{report:audit(microDepthFailureFile),package:audit(microDepthFailurePackage),build:audit(microDepthFailureBuild)}},
   orthographicPlanes:{failureReport:audit(orthoFailureFile),failurePackage:audit(orthoFailurePackage),failureBuild:audit(orthoFailureBuild),
     verifiedSteps:browser.sceneViews.length},
   captureColorSpace:{report:audit(colorSpaceFile),...colorSpace,
@@ -530,7 +560,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, `evidence/nanite-browser-instances-${scalarVisibility?'fallback':'packed'}-20261109.json`);
+const destination = path.join(__dirname, `evidence/nanite-browser-micro-${scalarVisibility?'fallback':'packed'}-20261110.json`);
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

@@ -38,7 +38,8 @@ function observe(scalarVisibility = false) {
   const materialModules = new WeakSet(), materialPipelines = new WeakSet(), materialBound = new WeakMap();
   const tileModules=new WeakSet(),tilePipelines=new WeakSet(),tileBound=new WeakMap();
   const gbufferModules=new WeakSet(),gbufferPipelines=new WeakSet(),gbufferBound=new WeakMap();
-  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], recordDispatches:0, materialDispatches:0, materialShaders:[], gbufferDraws:0,gbufferIndirectDraws:0,tileDispatches:0,gbufferShaders:[],errors:[], adapter:null};
+  const microModules=new WeakSet(),microPipelines=new WeakSet(),microBound=new WeakMap();
+  const state = globalThis.__naniteBrowserAudit = {microDispatches:0,microShaders:[],dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], recordDispatches:0, materialDispatches:0, materialShaders:[], gbufferDraws:0,gbufferIndirectDraws:0,tileDispatches:0,gbufferShaders:[],errors:[], adapter:null};
   const create = GPUDevice.prototype.createShaderModule;
   GPUDevice.prototype.createShaderModule = function(desc) {
     const result = create.call(this, desc);
@@ -48,7 +49,8 @@ function observe(scalarVisibility = false) {
     if (desc.code.includes('WebCullClusterKeys') && desc.code.includes('WebCullInputNodes')) {
       cullModules.add(result); state.cullShaders.push(desc.code);
     }
-    if ((desc.code.includes('WebRasterLocalToClip') && desc.code.includes('@vertex')) || desc.code.includes('WebNaniteAtomicMax_Visibility') || desc.code.includes('WebNaniteScalarVisibility')) {
+    if ((desc.code.includes('WebRasterLocalToClip') && desc.code.includes('@vertex')) ||
+        (desc.code.includes('@fragment') && (desc.code.includes('WebNaniteAtomicMax_Visibility') || desc.code.includes('WebNaniteScalarVisibility')))) {
       rasterModules.add(result); state.rasterShaders.push(desc.code);
     }
     if (desc.code.includes('VisBuffer64')&&desc.code.includes('ViewRect')&&desc.code.includes('@builtin(frag_depth)')) {
@@ -59,12 +61,17 @@ function observe(scalarVisibility = false) {
     if(desc.code.includes('WebGBufferBaseMetallic')) {gbufferModules.add(result);state.gbufferShaders.push(desc.code);}
     if(desc.code.includes('WebGBufferSnapshot')||desc.code.includes('WebGBufferTiles')) state.gbufferShaders.push(desc.code);
     if(desc.code.includes('WebGBufferTileOutput')) {tileModules.add(result);state.gbufferShaders.push(desc.code);}
+    if(desc.code.includes('WebRasterMicroSpan')&&desc.code.includes('@compute')&&
+      (desc.code.includes('WebNaniteAtomicMax_Visibility')||desc.code.includes('WebNaniteScalarVisibility'))) {
+      microModules.add(result);state.microShaders.push(desc.code);
+    }
     return result;
   };
   const sync = GPUDevice.prototype.createComputePipeline;
   GPUDevice.prototype.createComputePipeline = function(desc) {
     const result = sync.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
     if (cullModules.has(desc.compute.module)) cullPipelines.add(result);
+    if(microModules.has(desc.compute.module)) microPipelines.add(result);
     if(recordModules.has(desc.compute.module)) recordPipelines.add(result);
     if(materialModules.has(desc.compute.module)) materialPipelines.add(result); if(tileModules.has(desc.compute.module)) tilePipelines.add(result); return result;
   };
@@ -72,13 +79,14 @@ function observe(scalarVisibility = false) {
   GPUDevice.prototype.createComputePipelineAsync = async function(desc) {
     const result = await async.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
     if (cullModules.has(desc.compute.module)) cullPipelines.add(result);
+    if(microModules.has(desc.compute.module)) microPipelines.add(result);
     if(recordModules.has(desc.compute.module)) recordPipelines.add(result);
     if(materialModules.has(desc.compute.module)) materialPipelines.add(result); if(tileModules.has(desc.compute.module)) tilePipelines.add(result); return result;
   };
   const bind = GPUComputePassEncoder.prototype.setPipeline;
-  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {bound.set(this, pipelines.has(pipeline)); cullBound.set(this, cullPipelines.has(pipeline)); recordBound.set(this,recordPipelines.has(pipeline));materialBound.set(this,materialPipelines.has(pipeline));tileBound.set(this,tilePipelines.has(pipeline));return bind.call(this, pipeline);};
+  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {microBound.set(this,microPipelines.has(pipeline));bound.set(this, pipelines.has(pipeline)); cullBound.set(this, cullPipelines.has(pipeline)); recordBound.set(this,recordPipelines.has(pipeline));materialBound.set(this,materialPipelines.has(pipeline));tileBound.set(this,tilePipelines.has(pipeline));return bind.call(this, pipeline);};
   const dispatch = GPUComputePassEncoder.prototype.dispatchWorkgroups;
-  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches;if(recordBound.get(this)) ++state.recordDispatches;if(materialBound.get(this)) ++state.materialDispatches;if(tileBound.get(this)) ++state.tileDispatches; return dispatch.apply(this, args);};
+  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if(microBound.get(this))++state.microDispatches;if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches;if(recordBound.get(this)) ++state.recordDispatches;if(materialBound.get(this)) ++state.materialDispatches;if(tileBound.get(this)) ++state.tileDispatches; return dispatch.apply(this, args);};
   const request = GPUAdapter.prototype.requestDevice;
   for (const name of ['createRenderPipeline','createRenderPipelineAsync']) {
     const create = GPUDevice.prototype[name];
@@ -344,15 +352,19 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
     });
     report.cullDispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
     assert.equal(report.cullDispatches, 114);
-    const rasterShaders = await owner.evaluate(() => __naniteBrowserAudit.rasterShaders);
+    const rasterModuleSources = await owner.evaluate(() => __naniteBrowserAudit.rasterShaders);
+    // Precache and runtime creation can instantiate the same module concurrently.
+    // Count shader programs by exact source, while retaining the creation count.
+    report.rasterModuleCreations = rasterModuleSources.length;
+    const rasterShaders = [...new Set(rasterModuleSources)];
+    report.rasterShaders = rasterShaders.map((code,i)=>{
+      const file=path.join(output,`raster-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);
+    });
     assert.equal(rasterShaders.length,scalarVisibility?3:2);
     if(scalarVisibility) {
       assert(rasterShaders.every(code=>!code.includes('atomic<vec2<u32>>')));
       assert.equal(rasterShaders.filter(code=>code.includes('WebNaniteScalarVisibility')&&code.includes('atomicMax(')).length,2);
     } else assert(rasterShaders.some(code=>code.includes('atomicStoreMax')&&code.includes('atomic<vec2<u32>>')));
-    report.rasterShaders = rasterShaders.map((code,i)=>{
-      const file=path.join(output,`raster-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);
-    });
     report.rasterDraws = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws);
     report.recordDispatches=await owner.evaluate(()=>__naniteBrowserAudit.recordDispatches);
     report.materialDispatches=await owner.evaluate(()=>__naniteBrowserAudit.materialDispatches);
@@ -449,7 +461,7 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
     report.gbufferShaders=gbufferShaders.map((code,i)=>{const file=path.join(output,`gbuffer-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
     const gbufferFrame=await page.evaluate(()=>__webEngineFrames);
     await page.waitForFunction(f=>__webEngineFrames>=f+8,gbufferFrame,{timeout:30000});
-    const endCounts=()=>({gbuffer:__naniteBrowserAudit.gbufferDraws,indirect:__naniteBrowserAudit.gbufferIndirectDraws,tiles:__naniteBrowserAudit.tileDispatches,depth:__naniteBrowserAudit.depthDraws,raster:__naniteBrowserAudit.rasterDraws.length,cull:__naniteBrowserAudit.cullDispatches,records:__naniteBrowserAudit.recordDispatches,materials:__naniteBrowserAudit.materialDispatches});
+    const endCounts=()=>({micro:__naniteBrowserAudit.microDispatches,gbuffer:__naniteBrowserAudit.gbufferDraws,indirect:__naniteBrowserAudit.gbufferIndirectDraws,tiles:__naniteBrowserAudit.tileDispatches,depth:__naniteBrowserAudit.depthDraws,raster:__naniteBrowserAudit.rasterDraws.length,cull:__naniteBrowserAudit.cullDispatches,records:__naniteBrowserAudit.recordDispatches,materials:__naniteBrowserAudit.materialDispatches});
     const stoppedGBuffer=await owner.evaluate(endCounts),stoppedGBufferFrame=await page.evaluate(()=>__webEngineFrames);
     await page.waitForFunction(f=>__webEngineFrames>=f+4,stoppedGBufferFrame,{timeout:30000});
     assert.deepEqual(await owner.evaluate(endCounts),stoppedGBuffer,'GBuffer cleanup must stop all experimental passes');
@@ -510,20 +522,43 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
     await page.waitForFunction(f=>__webEngineFrames>=f+4,hzbStoppedFrame,{timeout:30000});
     assert.deepEqual(await owner.evaluate(endCounts),stoppedHZB);report.sceneHZBCleanup={pass:true,framesObserved:4,...stoppedHZB};
     report.hzbOracle=audit(require.resolve('./verify-nanite-scene-hzb.cjs'));
-    report.sceneInstances=[];
+    report.sceneInstances=[];report.sceneMicroRepeats=[];
     for(let step=1;step<=13;++step) {
+      const microBefore=await owner.evaluate(()=>__naniteBrowserAudit.microDispatches);
       assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteInstancesTest',s),step),1);
       let test;const start=Date.now();
       do {await page.waitForTimeout(100);assert.deepEqual(report.errors,[]);assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteInstancesTest',0)),1);test=await owner.evaluate(()=>globalThis.__webNaniteInstancesTest||null);}
       while((!test||test.step!==step)&&Date.now()-start<90000);assert(test&&test.step===step);
-      test.validation=require('./verify-nanite-instances.cjs')(test,fixturePage,sourceTriangles,oracle.asset.positionPrecision);
+      try {test.validation=require('./verify-nanite-instances.cjs')(test,fixturePage,sourceTriangles,oracle.asset.positionPrecision);}
+      catch(error) {test.validationFailure=error.stack;report.sceneInstances.push(test);throw error;}
+      test.microDispatches=await owner.evaluate(()=>__naniteBrowserAudit.microDispatches)-microBefore;
+      assert.equal(test.microDispatches,test.microSpan?test.entries.length*rasterPhases:0);
       test.products={};
-      for(const field of ['visibility','visibleRecords','materialInputs']) {
+      for(const field of ['visibility','visibleRecords','materialInputs','hardwareVisibility']) {
         const bytes=Buffer.alloc(test[field].length*4);test[field].forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
         const file=path.join(output,'instances-'+step+'-'+field+'.bin');fs.writeFileSync(file,bytes);test.products[field]=audit(file);delete test[field];
       }
       report.sceneInstances.push(test);console.log('Browser scene instances step '+step+' passed');
+      if(step===8) for(let repeat=0;repeat<128;++repeat) {
+        const previousFrame=test.frame,microBefore=await owner.evaluate(()=>__naniteBrowserAudit.microDispatches);
+        assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteInstancesTest',15)),1);
+        const started=Date.now();
+        do {await page.waitForTimeout(50);assert.deepEqual(report.errors,[]);assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteInstancesTest',0)),1);test=await owner.evaluate(()=>globalThis.__webNaniteInstancesTest||null);}
+        while((!test||test.frame===previousFrame)&&Date.now()-started<90000);
+        assert(test&&test.step===8&&test.frame!==previousFrame);
+        report.sceneMicroRepeats.push(test);
+        test.validation=require('./verify-nanite-instances.cjs')(test,fixturePage,sourceTriangles,oracle.asset.positionPrecision);
+        test.microDispatches=await owner.evaluate(()=>__naniteBrowserAudit.microDispatches)-microBefore;
+        assert.equal(test.microDispatches,test.entries.length*rasterPhases);
+        test.products={};
+        for(const field of ['visibility','visibleRecords','materialInputs','hardwareVisibility']) {
+          const bytes=Buffer.alloc(test[field].length*4);test[field].forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
+          const file=path.join(output,'micro-repeat-'+repeat+'-'+field+'.bin');fs.writeFileSync(file,bytes);test.products[field]=audit(file);delete test[field];
+        }
+        if(repeat%16===0)console.log('Browser micro repeat '+repeat+' passed');
+      }
     }
+    assert(new Set(report.sceneMicroRepeats.map(t=>JSON.stringify(t.worldToClip))).size>=4,'Micro regression must exercise different temporal jitter positions');
     assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteInstancesTest',14)),1);
     const instancesFrame=await page.evaluate(()=>__webEngineFrames);
     await page.waitForFunction(f=>__webEngineFrames>=f+8,instancesFrame,{timeout:30000});
@@ -554,6 +589,9 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
     report.viewsOracle=audit(require.resolve('./verify-nanite-views.cjs'));
 
 
+    const microAudit=await owner.evaluate(()=>({dispatches:__naniteBrowserAudit.microDispatches,shaders:__naniteBrowserAudit.microShaders}));
+    assert(microAudit.dispatches>0&&microAudit.shaders.length>0);
+    report.microRaster={dispatches:microAudit.dispatches,shaders:microAudit.shaders.map((code,i)=>{const file=path.join(output,'micro-'+i+'.wgsl');fs.writeFileSync(file,code);return audit(file);})};
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
     report.storagePrecache = await owner.evaluate(() => ({...__storagePrecacheAudit, rhi:globalThis.__webOptimizationRHI}));
     report.storagePrecache.validation = verifyStoragePrecache(report.storagePrecache);
@@ -601,6 +639,7 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
     assert.equal(normalStorage.rhi.asyncPrecacheFailed, 0);
     assert.equal(normalStorage.rhi.unsupportedPrecacheRequests, 0);
     assert.equal(normalAudit.dispatches, 0);
+    assert.equal(normalAudit.microDispatches,0);
     assert.equal(normalAudit.cullDispatches, 0);
     assert.equal(normalAudit.rasterDraws.length, 0);
     assert.equal(normalAudit.depthDraws,0);

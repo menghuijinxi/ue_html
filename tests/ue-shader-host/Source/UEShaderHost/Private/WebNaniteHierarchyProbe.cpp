@@ -32,7 +32,7 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
     FGlobalShaderMap Map(Platform);
     TArray<FGlobalShaderType*> Types = {&Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
         &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
-        &Nanite::FWebNaniteScalarRasterPS::GetStaticType(),
+        &Nanite::FWebNaniteScalarRasterPS::GetStaticType(), &Nanite::FWebNaniteMicroRasterCS::GetStaticType(),
         &Nanite::FWebNaniteHZBBuildCS::GetStaticType(), &Nanite::FWebNaniteOcclusionCS::GetStaticType(),
         &Nanite::FWebNaniteVisibleClustersCS::GetStaticType(), &Nanite::FWebNaniteMaterialInputsCS::GetStaticType(),
         &Nanite::FWebNaniteResolveCS::GetStaticType(), &Nanite::FWebNaniteDepthVS::GetStaticType(),
@@ -132,11 +132,12 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
         }
     }
     for (auto* Type : Types)
+    {
+    int32 CompiledPermutations = 0;
     for (int32 Permutation = 0; Permutation < Type->GetPermutationCount(); ++Permutation)
     {
-        if (Supplement && !Names.Contains(Type->GetName()) &&
+        if ((!Supplement || !Names.Contains(Type->GetName())) &&
             !Type->ShouldCompilePermutation(Platform, Permutation, PermutationFlags)) continue;
-        if (!Supplement && !Type->ShouldCompilePermutation(Platform, Permutation, PermutationFlags)) return 1;
         FShaderCompileJob Job;
         Job.Key = FShaderCompileJobKey(Type, Platform, nullptr, Permutation);
         GlobalBeginCompileShader(TEXT("WebNaniteHierarchyProbe"), nullptr, Type, nullptr, Permutation,
@@ -153,7 +154,11 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
         Map.FindOrAddShader(Type, Permutation, Type->ConstructCompiled(FGlobalShaderType::CompiledShaderInitializerType(
             Type, nullptr, Permutation, Job.Output, 0, nullptr, nullptr)));
         Job.Output.ParameterMap.VerifyBindingsAreComplete(Type->GetName(), Job.Output.Target, nullptr);
+        ++CompiledPermutations;
+        UE_LOG(LogTemp, Display, TEXT("WEB_NANITE_SHADER type=%s permutation=%d"), Type->GetName(), Permutation);
         if (Supplement) UE_LOG(LogTemp, Display, TEXT("WEB_SHADER_SUPPLEMENT type=%s permutation=%d"), Type->GetName(), Permutation);
+    }
+    if (!CompiledPermutations) return 1;
     }
     TSet<FGlobalShaderMapSection*> Sections;
     for (auto* Type : Types) Sections.Add(Map.FindOrAddSection(Type));

@@ -63,7 +63,7 @@ struct FReadback
     TUniquePtr<FRHIGPUBufferReadback> Keys, State;
 };
 TArray<FReadback> Pending;
-TUniquePtr<FRHIGPUBufferReadback> Visibility, VisibleRecords, MaterialInputs;
+TUniquePtr<FRHIGPUBufferReadback> Visibility, VisibleRecords, MaterialInputs, HardwareVisibility;
 uint32 VisibleRecordBytes = 0, MaterialInputBytes = 0;
 const FVector Origin(100000, 0, 100000);
 const FIntPoint RasterExtent(192, 128);
@@ -88,8 +88,13 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     Report->SetNumberField(TEXT("skipped"), View.Skipped); Report->SetNumberField(TEXT("pendingPSOs"), 0);
     Report->SetArrayField(TEXT("expected"), Expected);
     Report->SetArrayField(TEXT("worldToClip"), MatrixJSON(View.View->ViewMatrices.GetWorldToClip()));
-    Nanite::FWebRasterVisibility Raster;
-    check(Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, RasterRect, Raster));
+    const int32 MicroSpan = (Step - 1) % 4 == 0 ? 0 : (Step - 1) % 4 == 1 ? 1 : (Step - 1) % 4 == 2 ? 4 : 8;
+    Report->SetNumberField(TEXT("microSpan"), MicroSpan);
+    Nanite::FWebRasterVisibility Raster, Hardware;
+    check(Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, RasterRect, Raster, MicroSpan));
+    check(Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, RasterRect, Hardware, 0));
+    HardwareVisibility = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebInstancesHardwareVisibility"));
+    AddEnqueueCopyPass(Graph, HardwareVisibility.Get(), Hardware.Pixels, RasterExtent.X * RasterExtent.Y * 8);
     Report->SetNumberField(TEXT("rasterWidth"), RasterExtent.X); Report->SetNumberField(TEXT("rasterHeight"), RasterExtent.Y);
     Visibility = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebInstancesVisibility"));
     AddEnqueueCopyPass(Graph, Visibility.Get(), Raster.Pixels, RasterExtent.X * RasterExtent.Y * 8);
@@ -119,7 +124,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
 void Poll()
 {
     if (!Report) return;
-    if (!Visibility->IsReady() || !VisibleRecords->IsReady() || !MaterialInputs->IsReady()) return;
+    if (!HardwareVisibility->IsReady() || !Visibility->IsReady() || !VisibleRecords->IsReady() || !MaterialInputs->IsReady()) return;
     for (const auto& Copy : Pending) if (!Copy.Keys->IsReady() || !Copy.State->IsReady()) return;
     TArray<TSharedPtr<FJsonValue>> Entries;
     for (auto& Copy : Pending)
@@ -150,6 +155,8 @@ void Poll()
     };
     Report->SetArrayField(TEXT("visibleRecords"), ReadWords(*VisibleRecords, VisibleRecordBytes));
     Report->SetArrayField(TEXT("materialInputs"), ReadWords(*MaterialInputs, MaterialInputBytes));
+    Report->SetArrayField(TEXT("hardwareVisibility"), ReadWords(*HardwareVisibility, RasterExtent.X * RasterExtent.Y * 8));
+    HardwareVisibility.Reset();
     VisibleRecords.Reset(); MaterialInputs.Reset();
     FString Json; FJsonSerializer::Serialize(Report.ToSharedRef(), TJsonWriterFactory<>::Create(&Json));
     FTCHARToUTF8 Utf8(*Json);
@@ -160,8 +167,15 @@ void Poll()
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteInstancesTest(int RequestedStep)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread); static int Last = 0;
-    if (!GEngine || !Nanite::GStreamingManager.IsWebResidentMode() || RequestedStep < 0 || RequestedStep > 14) return 0;
+    if (!GEngine || !Nanite::GStreamingManager.IsWebResidentMode() || RequestedStep < 0 || RequestedStep > 15) return 0;
     if (!RequestedStep) { ENQUEUE_RENDER_COMMAND(PollInstances)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
+    if (RequestedStep == 15)
+    {
+        if (Last < 1 || Last > 13) return 0;
+        ENQUEUE_RENDER_COMMAND(RepeatInstances)([](FRHICommandListImmediate&) {
+            check(!Requested && !Report && Pending.IsEmpty()); Settled = 0; Requested = true;
+        }); return 1;
+    }
     if (RequestedStep != Last + 1) return 0;
     if (RequestedStep == 1)
     {

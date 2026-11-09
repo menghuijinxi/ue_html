@@ -35,5 +35,21 @@ module.exports=function verifyInstances(test,page,triangles,precision,options) {
   const generic={...test,step:test.entries.length&&!options?.empty?100+test.step:4};
   const raster=require('./verify-nanite-raster-output.cjs')(generic,triangles,page,precision);
   const material=require('./verify-nanite-material-inputs.cjs')({...generic,raster},page,{position:1/512,normal:1/25600,uv:.000008,color:.000001});
-  return {pass:true,instances:test.entries.length,selected,transformError,raster,material};
+  let hardwareComparison;
+  if(test.hardwareVisibility) {
+    assert.equal(test.microSpan,[0,1,4,8][(test.step-1)%4]);
+    const hardwareRaster=require('./verify-nanite-raster-output.cjs')({...generic,visibility:test.hardwareVisibility},triangles,page,precision);
+    assert.equal(test.visibility.length,test.hardwareVisibility.length);
+    let covered=0,maxDepthError=0;
+    const floats=new Float32Array(2),words=new Uint32Array(floats.buffer);
+    for(let i=0;i<test.visibility.length;i+=2) {
+      assert.equal(test.visibility[i],test.hardwareVisibility[i],'Mixed/hardware winning ID at pixel '+i/2);
+      words[0]=test.visibility[i+1];words[1]=test.hardwareVisibility[i+1];
+      assert(Number.isFinite(floats[0])&&Number.isFinite(floats[1]));
+      maxDepthError=Math.max(maxDepthError,Math.abs(floats[0]-floats[1]));if(test.visibility[i])covered++;
+    }
+    assert(maxDepthError<2e-6,'Mixed/hardware depth mismatch');
+    hardwareComparison={pass:true,span:test.microSpan,covered,maxDepthError,hardwareRaster};
+  }
+  return {...(hardwareComparison?{hardwareComparison}:{}),pass:true,instances:test.entries.length,selected,transformError,raster,material};
 };
