@@ -5,6 +5,8 @@ const {writeVersions} = require('./asset-versions.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
 const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
 const defaultScene = process.argv.includes('--default-scene');
+const fullScene = process.argv.includes('--full-scene');
+assert(!(defaultScene && fullScene), 'Choose one automatic scene');
 assert(process.argv[2], 'Pass the verified native uploader output directory');
 const native = path.resolve(process.argv[2]);
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -23,7 +25,8 @@ verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
 // Inline platform predicates changed with the full target rebuild. Global and
 // material shader maps must both come from a matching scene Cook.
-const stageFile = path.join(__dirname, defaultScene ? 'results/web-engine-webgpu-sm5-default-stage-results.json' : 'results/web-project-nanite-streaming-desktop-stage-results.json');
+const stageFile = path.join(__dirname, defaultScene ? 'results/web-engine-webgpu-sm5-default-stage-results.json' :
+  fullScene ? 'results/web-project-nanite-full-scene-desktop-stage-results.json' : 'results/web-project-nanite-streaming-desktop-stage-results.json');
 const stage = read(stageFile);
 assert(stage.pass && stage.mode === 'WebGPU-SM5' && (defaultScene || stage.useProjectSettings));
 [...stage.sourceFiles, stage.cookReport, stage.pack, stage.manifest, stage.configBundle].forEach(verify);
@@ -32,6 +35,15 @@ validateCook(cook, false, {});
 assert(cook.exitCode === 0 && !cook.disabledSkyLight && (defaultScene || cook.useProjectSettings));
 assert.equal(cook.map, defaultScene ? '/Engine/Maps/Templates/Template_Default' : '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla');
 if(defaultScene){assert(cook.naniteCookData);assert(read(cook.defaultSamples.file).nanite);}
+let sceneConversion;
+if(fullScene){
+  assert(cook.naniteCookData);
+  assert.equal(path.resolve(cook.project),path.join(__dirname,'build/projects/nanite-full-scene/TriplexHouseVilla.uproject'));
+  const conversionFile=path.join(__dirname,'results/nanite-full-scene-conversion-verified.json');
+  const conversion=read(conversionFile);assert(conversion.pass);
+  [...conversion.sources,...conversion.originalFiles,...conversion.convertedFiles,conversion.report,conversion.log].forEach(verify);
+  sceneConversion=audit(conversionFile);
+}
 verify(cook.shaderInventory.artifact);
 const inventory = read(cook.shaderInventory.artifact.file);
 const naniteTypes = ['HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
@@ -51,7 +63,7 @@ const pageSource = path.join(__dirname, 'web-default-template.html');
 const buildDir = path.join(__dirname, 'build/nanite-browser-runtime');
 const build = read(path.join(buildDir, 'build.json'));
 assert(build.pass); build.sources.forEach(verify); build.products.forEach(verify);
-const output = path.join(__dirname, defaultScene ? 'build/nanite-default-scene' : 'build/nanite-browser');
+const output = path.join(__dirname, defaultScene ? 'build/nanite-default-scene' : fullScene ? 'build/nanite-full-scene' : 'build/nanite-browser');
 fs.mkdirSync(output, {recursive: true});
 const manifest = read(path.join(baseline, 'content-files.json'));
 assert.equal(manifest.shaderPlatform, 'SP_WEBGPU_SM5');
@@ -119,12 +131,12 @@ html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets 
 const launchArguments = baselineHTML.match(/arguments: \[[^\n]+\]/); assert(launchArguments);
 html = html.replace(/arguments: \[[^\n]+\]/, launchArguments[0]);
 assert(html.includes('arguments: ['));
-html = html.replace('arguments: [', defaultScene ? 'arguments: ["-WebNaniteScene",' : 'arguments: ["-WebNaniteResidentResources","-WebNaniteRootPages=2",');
+html = html.replace('arguments: [', defaultScene || fullScene ? 'arguments: ["-WebNaniteScene",' : 'arguments: ["-WebNaniteResidentResources","-WebNaniteRootPages=2",');
 fs.writeFileSync(path.join(output, 'index.html'), html);
 const performanceProfile = defaultScene ? applyAcceptedDefaults(output) : undefined;
 const products = ['index.html', 'content.bin', 'content-files.json', 'config-files.json', ...helpers, ...runtime].map(n => audit(path.join(output, n)));
 products.push(writeVersions(output, products));
-const report = {date:new Date().toISOString(), pass:true, output, defaultScene, performanceProfile, build:audit(path.join(buildDir, 'build.json')),
+const report = {date:new Date().toISOString(), pass:true, output, defaultScene, fullScene, sceneConversion, performanceProfile, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
   hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),multiMaterial,
   sceneCook:{stage:audit(stageFile),cook:stage.cookReport,inventory:cook.shaderInventory.artifact,
@@ -132,6 +144,6 @@ const report = {date:new Date().toISOString(), pass:true, output, defaultScene, 
   baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),
   sources:[__filename, pageSource, path.join(__dirname,'cached-cook-validation.cjs'), path.join(__dirname,'web-accepted-defaults.cjs'), ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:defaultScene ? 'Original default lighting/sky world with additive Nanite samples and automatic main-pass selection. Full-scene visual/performance and remaining material/instance acceptance is open.' : 'Fresh Villa scene Cook with real streamable Nanite bulk data and explicit bounded streaming controls. Includes native material graphs, velocity and stencil/shading masks. Full-scene, streaming lifecycle and remaining material/instance acceptance is open.'};
+  boundary:fullScene ? 'Actual Villa project copy with automatic Nanite registration and complete fallback meshes. Unsupported materials still use fallback; this diagnostic package is not final compatibility acceptance.' : defaultScene ? 'Original default lighting/sky world with additive Nanite samples and automatic main-pass selection. Full-scene visual/performance and remaining material/instance acceptance is open.' : 'Fresh Villa scene Cook with real streamable Nanite bulk data and explicit bounded streaming controls. Includes native material graphs, velocity and stencil/shading masks. Full-scene, streaming lifecycle and remaining material/instance acceptance is open.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));

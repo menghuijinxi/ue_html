@@ -53,12 +53,26 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetNumberField(TEXT("skipped"), Cull.Skipped);
     Report->SetNumberField(TEXT("rejected"), Cull.Rejected);
     Report->SetArrayField(TEXT("assets"), Assets);
+    uint64 UnboundedPixels = 0, BoundedPixels = 0;
+    uint32 Levels = 0;
+    for (const auto& Entry : Cull.Entries)
+    {
+        const FIntRect Bounds = Nanite::GetWebSceneEntryPixelBounds(Entry, *Cull.View, Cull.RasterViewRect);
+        UnboundedPixels += uint64(Cull.RasterViewRect.Width()) * Cull.RasterViewRect.Height();
+        BoundedPixels += uint64(FMath::Max(0, Bounds.Width())) * FMath::Max(0, Bounds.Height());
+        Levels += Entry.Input.MaxLevels;
+    }
+    Report->SetNumberField(TEXT("unboundedEntryPixels"), double(UnboundedPixels));
+    Report->SetNumberField(TEXT("boundedEntryPixels"), double(BoundedPixels));
+    Report->SetNumberField(TEXT("hierarchyDispatchLevels"), Levels);
     // Use the effective render projection, not the requested camera FOV: UE's
     // MaintainYFOV policy changes horizontal FOV with the viewport aspect ratio.
     const FMatrix& Projection = Cull.View->ViewMatrices.GetProjectionNoAAMatrix();
     auto View = MakeShared<FJsonObject>();
     View->SetNumberField(TEXT("projectionX"), Projection.M[0][0]);
     View->SetNumberField(TEXT("projectionY"), Projection.M[1][1]);
+    View->SetNumberField(TEXT("jitterX"), Cull.View->ViewMatrices.GetProjectionMatrix().M[2][0] - Projection.M[2][0]);
+    View->SetNumberField(TEXT("jitterY"), Cull.View->ViewMatrices.GetProjectionMatrix().M[2][1] - Projection.M[2][1]);
     View->SetNumberField(TEXT("horizontalFOV"), FMath::RadiansToDegrees(2.0 * FMath::Atan(1.0 / Projection.M[0][0])));
     const FVector Origin = Cull.View->ViewMatrices.GetViewOrigin();
     View->SetNumberField(TEXT("x"), Origin.X);
@@ -139,6 +153,22 @@ void Poll()
     MAIN_THREAD_EM_ASM({ globalThis.__webNaniteAutomaticSceneTest = JSON.parse(UTF8ToString($0)); }, Utf8.Get());
     Copies.Empty(); Report.Reset();
 }
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMaterialBoundsTest(int Enabled, int TemporalIndex)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBoundedMaterialTiles"));
+    auto* Jitter = IConsoleManager::Get().FindConsoleVariable(TEXT("r.TemporalAA.Debug.OverrideTemporalIndex"));
+    static int SavedBounds = -1, SavedJitter = -1;
+    if (!CVar || !Jitter || Enabled < -1 || Enabled > 1 || TemporalIndex < 0 || TemporalIndex > 7) return 0;
+    if (Enabled == -1)
+    {
+        if (SavedBounds < 0) return 0;
+        CVar->Set(SavedBounds, ECVF_SetByCode); Jitter->Set(SavedJitter, ECVF_SetByCode); SavedBounds = -1; return 1;
+    }
+    if (SavedBounds < 0) { SavedBounds = CVar->GetInt(); SavedJitter = Jitter->GetInt(); }
+    CVar->Set(Enabled, ECVF_SetByCode); Jitter->Set(TemporalIndex, ECVF_SetByCode); return 1;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteAutomaticSceneTest(int RequestedStep)
