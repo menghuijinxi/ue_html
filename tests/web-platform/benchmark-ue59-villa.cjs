@@ -22,6 +22,13 @@ assert(seconds >= 10 && seconds <= 120 && warmup >= 10 && warmup <= 180);
 assert(Number.isInteger(runs) && runs >= 1 && runs <= 4);
 const browser = option('browser') || 'chrome';
 assert(['chrome', 'edge'].includes(browser));
+const interaction = process.argv.includes('--interaction');
+const normalPage = process.argv.includes('--normal-page');
+const captureTextures = process.argv.includes('--capture-textures');
+const screenPercentage = option('screen-percentage') === undefined ? null : Number(option('screen-percentage'));
+assert(screenPercentage === null || (screenPercentage >= 25 && screenPercentage <= 100));
+const dpcvars = ['t.MaxFPS=0', 'r.VSync=0'];
+if (screenPercentage !== null) dpcvars.push(`r.ScreenPercentage=${screenPercentage}`);
 const executablePath = browser === 'edge'
   ? 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'
   : 'C:/Program Files/Google/Chrome/Application/chrome.exe';
@@ -30,13 +37,27 @@ const profiles = path.join(__dirname, 'build', 'ue59-benchmark-profiles', tag);
 assert(!fs.existsSync(output) && !fs.existsSync(profiles), 'Use a fresh tag');
 fs.mkdirSync(output, { recursive: true });
 
-function install() {
+function install({ captureTextures }) {
   const state = window.__ue59Benchmark = {
     active: false, times: [], submitted: 0, checkpoints: [], readyMs: null, firstCanvasMs: null,
+    firstEngineTickMs: null,
     errors: [], dimensions: null, instrumentation: 'canvas-texture acquisition followed by queue.submit',
   };
   let pendingCanvas = false;
-  window.addEventListener('ue-first-frame', () => { state.readyMs ??= performance.now(); });
+  if (captureTextures) {
+    const textures = [];
+    const createTexture = GPUDevice.prototype.createTexture;
+    GPUDevice.prototype.createTexture = function (...args) {
+      const texture = createTexture.apply(this, args);
+      textures.push(texture);
+      return texture;
+    };
+    state.textureSnapshot = () => [...new Set(textures.map(texture => JSON.stringify({
+      label: texture.label, width: texture.width, height: texture.height,
+      layers: texture.depthOrArrayLayers, format: texture.format,
+    })))].map(text => JSON.parse(text));
+  }
+  window.addEventListener('ue-first-frame', () => { state.firstEngineTickMs ??= performance.now(); });
   const getTexture = GPUCanvasContext.prototype.getCurrentTexture;
   GPUCanvasContext.prototype.getCurrentTexture = function (...args) {
     const texture = getTexture.apply(this, args);
@@ -109,13 +130,40 @@ async function browserMemory(context) {
   }
 }
 
+async function cameraPosition(page) {
+  const before = await page.evaluate(async () => {
+    const root = await navigator.storage.getDirectory();
+    const file = await (await root.getDirectoryHandle('logs')).getFileHandle(window.ueLogFile.toLowerCase());
+    return ((await (await file.getFile()).text()).match(/LogCheatManager: BugItGo /g) || []).length;
+  });
+  await page.evaluate(() => { window.ueExec('LogLoc'); window.ueExec('FlushLog'); });
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const position = await page.evaluate(async count => {
+      const root = await navigator.storage.getDirectory();
+      const file = await (await root.getDirectoryHandle('logs')).getFileHandle(window.ueLogFile.toLowerCase());
+      const text = await (await file.getFile()).text();
+      const matches = [...text.matchAll(/LogCheatManager: BugItGo ([-\d.]+) ([-\d.]+) ([-\d.]+) ([-\d.]+) ([-\d.]+) ([-\d.]+)/g)];
+      return matches.length > count ? matches.at(-1).slice(1).map(Number) : null;
+    }, before);
+    if (Array.isArray(position) && position.length === 6) {
+      const [x, y, z, pitch, yaw, roll] = position;
+      return { x, y, z, pitch, yaw, roll };
+    }
+    await page.waitForTimeout(250);
+  }
+  throw new Error('Official LogLoc did not produce a fresh camera position');
+}
+
 const report = {
   date: new Date().toISOString(), url: url.href, browser, executablePath, viewport: { width: 1920, height: 1080 },
-  deviceScaleFactor: 1, seconds, warmup, runsPerTier: runs, results: [], pass: false,
+  deviceScaleFactor: 1, seconds, warmup, runsPerTier: runs, interaction, normalPage, results: [], pass: false,
+  captureTextures, performanceEligible: !captureTextures,
   metric: 'CPU submissions of the official final canvas copy, checked against RHI present counters. Not physical display FPS or GPU completion latency.',
   cache: 'Fresh browser profile per tier, reused for later runs. OS file and GPU driver caches are not cleared.',
-  bootMode: 'Official harness=1 skips the page GPU benchmark and automatic quality preset. Project and renderer defaults apply.',
-  qualityOverrides: [], timingOverrides: { 't.MaxFPS': 0, 'r.VSync': 0 },
+  bootMode: normalPage ? 'Normal official page with GPU benchmark, automatic quality selection, and a start click.'
+    : 'Official harness=1 skips the page GPU benchmark and automatic quality preset. Project and renderer defaults apply.',
+  qualityOverrides: screenPercentage === null ? [] : [{ 'r.ScreenPercentage': screenPercentage }],
+  timingOverrides: { 't.MaxFPS': 0, 'r.VSync': 0 },
 };
 
 async function main() {
@@ -126,6 +174,13 @@ async function main() {
       report.results.push(result);
       const lines = [], errors = [];
       let context, page;
+      let rejectBoot;
+      const bootFailure = new Promise((resolve, reject) => { rejectBoot = reject; });
+      bootFailure.catch(() => {});
+      const recordError = message => {
+        errors.push(message);
+        rejectBoot(new Error(message));
+      };
       try {
         context = await chromium.launchPersistentContext(path.join(profiles, tier), {
           executablePath, headless: false, viewport: report.viewport, deviceScaleFactor: 1,
@@ -134,23 +189,30 @@ async function main() {
             '--autoplay-policy=no-user-gesture-required'],
         });
         result.browserVersion = context.browser()?.version() || null;
-        await context.addInitScript(install);
+        await context.addInitScript(install, { captureTextures });
         page = context.pages()[0] || await context.newPage();
-        page.on('pageerror', error => errors.push(error.message));
+        page.on('pageerror', error => recordError(error.message));
+        page.on('crash', () => recordError('Browser page crashed'));
         page.on('console', message => {
           const text = message.text();
           lines.push({ at: Date.now(), type: message.type(), text });
-          if (/WEBGPU (?:PIPELINE )?ERROR|GPUValidationError|UE_RUN ERROR|device (?:was )?lost|HARNESS ABORT/i.test(text)) errors.push(text);
+          if (/WEBGPU (?:PIPELINE )?ERROR|GPUValidationError|UE_RUN ERROR|device (?:was )?lost|HARNESS ABORT/i.test(text)) recordError(text);
         });
         const target = new URL(url);
         target.searchParams.set('tier', tier);
-        target.searchParams.set('harness', '1');
-        target.searchParams.set('args', '-dpcvars=t.MaxFPS=0,r.VSync=0');
+        if (!normalPage) target.searchParams.set('harness', '1');
+        target.searchParams.set('args', `-dpcvars=${dpcvars.join(',')}`);
         const navigationStart = Date.now();
-        await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 120000 });
-        await page.waitForFunction(() => window.__ue59Benchmark?.readyMs !== null &&
-          window.__ue59Benchmark?.submitted > 5, null, { timeout: 600000 });
+        await Promise.race([page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 120000 }), bootFailure]);
+        await Promise.race([page.waitForFunction(() => window.__ue59Benchmark?.readyMs !== null &&
+          window.__ue59Benchmark?.submitted > 5, null, { timeout: 600000 }), bootFailure]);
         result.readyObservedSeconds = (Date.now() - navigationStart) / 1000;
+        if (normalPage) {
+          await Promise.race([page.locator('#cover.click').waitFor({ state: 'visible', timeout: 120000 }), bootFailure]);
+          await page.locator('#cover.click').click({ position: { x: 960, y: 540 } });
+          await page.locator('#cover').waitFor({ state: 'hidden', timeout: 30000 });
+          result.normalPageClickPassed = true;
+        }
         await page.waitForTimeout(warmup * 1000);
         await page.evaluate(() => {
           const state = window.__ue59Benchmark;
@@ -165,6 +227,8 @@ async function main() {
           state.measureEndMs = performance.now();
           return {
             ...state, visibility: document.visibilityState,
+            textureSnapshot: undefined,
+            textures: state.textureSnapshot?.() ?? null,
             pageTimeOrigin: performance.timeOrigin,
             officialBootTimings: window.__harness?.timings ?? null,
             engineArguments: window.Module?.arguments ?? null,
@@ -177,8 +241,11 @@ async function main() {
         Object.assign(result, {
           readySeconds: measured.readyMs / 1000,
           firstCanvasSeconds: measured.firstCanvasMs / 1000,
+          firstEngineTickSeconds: measured.firstEngineTickMs / 1000,
+          textureSizes: measured.textures?.filter(texture => /SceneColor|SceneDepth|GBuffer|TemporalAA|Tonemap/i.test(texture.label)) ?? null,
           dimensions: measured.dimensions, visibility: measured.visibility, memory: measured.memory,
           officialBootTimings: measured.officialBootTimings, engineArguments: measured.engineArguments,
+          pageConfiguration: lines.filter(line => /^WEB_COMPAT |^UE_RUN CONFIG /.test(line.text)).map(line => line.text),
           readyEpochMs: measured.pageTimeOrigin + measured.readyMs,
           timing: distribution(measured.times, measured.measureEndMs - measured.measureStartMs),
         });
@@ -203,6 +270,63 @@ async function main() {
           channelStdevs: imageStats.channels.slice(0, 3).map(channel => channel.stdev),
           entropy: imageStats.entropy,
         };
+        const diagnosticStart = lines.length;
+        const queries = [
+          't.MaxFPS', 'r.VSync', 'r.ScreenPercentage', 'sg.ResolutionQuality',
+          'r.ScreenPercentage.Default', 'r.ScreenPercentage.Default.Desktop.Mode',
+          'r.ScreenPercentage.Auto.PixelCountMultiplier', 'r.Mobile.AntiAliasing',
+          'r.DynamicRes.OperationMode', 'r.AntiAliasingMethod',
+          'r.DynamicGlobalIlluminationMethod', 'r.Lumen.DiffuseIndirect.Allow',
+          'r.ReflectionMethod', 'r.Lumen.Reflections.Allow', 'r.Shadow.Virtual.Enable',
+          'r.Streaming.PoolSize', 'r.Streaming.UseFixedPoolSize',
+          'sg.GlobalIlluminationQuality', 'sg.ReflectionQuality', 'sg.ShadowQuality',
+          'getall World URL', 'getall GameModeBase DefaultPawnClass', 'getall PlayerController Pawn',
+        ];
+        await page.evaluate(commands => {
+          if (typeof window.ueExec !== 'function') throw new Error('Official console bridge is unavailable');
+          for (const command of commands) window.ueExec(command);
+        }, queries);
+        await page.waitForTimeout(3000);
+        result.diagnostics = lines.slice(diagnosticStart).map(line => line.text);
+        if (interaction && run === runs - 1) {
+          await page.locator('#canvas').click({ position: { x: 960, y: 540 } });
+          const beforeMove = await cameraPosition(page);
+          const beforeMoveImage = path.join(output, `${prefix}-before-move.png`);
+          await page.screenshot({ path: beforeMoveImage, timeout: 60000 });
+          await page.keyboard.down('s');
+          await page.waitForTimeout(1000);
+          const afterMove = await cameraPosition(page);
+          await page.keyboard.up('s');
+          await page.keyboard.down('d');
+          await page.waitForTimeout(1000);
+          await page.keyboard.up('d');
+          await page.waitForTimeout(1000);
+          const moved = path.join(output, `${prefix}-moved.png`);
+          await page.screenshot({ path: moved, timeout: 60000 });
+          const before = await sharp(beforeMoveImage).resize(160, 90).removeAlpha().raw().toBuffer();
+          const after = await sharp(moved).resize(160, 90).removeAlpha().raw().toBuffer();
+          const difference = before.reduce((sum, value, index) => sum + Math.abs(value - after[index]), 0) / before.length;
+          await page.mouse.move(1060, 570, { steps: 10 });
+          await page.waitForTimeout(1000);
+          const afterTurn = await cameraPosition(page);
+          const turned = path.join(output, `${prefix}-turned.png`);
+          await page.screenshot({ path: turned, timeout: 60000 });
+          const turnedPixels = await sharp(turned).resize(160, 90).removeAlpha().raw().toBuffer();
+          const turnDifference = after.reduce((sum, value, index) => sum + Math.abs(value - turnedPixels[index]), 0) / after.length;
+          result.interaction = {
+            afterPerformanceMeasurement: true, keys: ['s:1000ms', 'd:1000ms'], mouseDelta: [100, 30],
+            movementImageDifference: difference, turnImageDifference: turnDifference,
+            pointerLock: await page.evaluate(() => document.pointerLockElement?.id ?? null),
+            beforeMove, afterMove, afterTurn,
+            distanceCm: Math.hypot(afterMove.x - beforeMove.x, afterMove.y - beforeMove.y, afterMove.z - beforeMove.z),
+            turnDegrees: Math.abs(((afterTurn.yaw - afterMove.yaw + 540) % 360) - 180),
+            note: 'Official LogLoc/FlushLog captures pawn position and view rotation outside the performance measurement.',
+          };
+          assert(difference > 2, 'Movement did not visibly change the scene');
+          assert(turnDifference > 2, 'Mouse input did not visibly change the scene');
+          assert(result.interaction.distanceCm > 5, 'The actual player pawn did not move');
+          assert(result.interaction.turnDegrees > 1, 'The actual player view did not turn');
+        }
         assert.equal(result.tierRan, tier, 'The requested renderer did not run');
         assert.deepEqual(result.dimensions, report.viewport, 'Unexpected canvas resolution');
         assert.equal(result.visibility, 'visible', 'Background page measurements are invalid');
