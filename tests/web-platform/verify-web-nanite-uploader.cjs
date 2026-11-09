@@ -102,7 +102,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   gbufferOracle:audit(require.resolve('./verify-nanite-gbuffer-output.cjs')),
   rasterReferencePolicy:{subpixelFractionalBits:8, depthTolerance:3e-5, edgeBandPixels:.02, minimumInteriorFraction:.25,
     reference:'https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants'},
-  boundary:'Default-off resident Nanite depth and explicit constant DefaultLit bindings now write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Zero-fallback fixtures verify this subset. No arbitrary UMaterial graph, lightmaps, normal maps, Substrate, material binning, LOD/HZB/streaming or complete-scene acceptance.'};
+  textureReferencePolicy:{lod:'largest singular value of UV Jacobian',maxCommonLODOffset:.25,maxSRGBCodeError:2,
+    reference:'https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm',section:'7.18.11',
+    boundary:'Probe acceptance bound for approximate footprint transformation; no cross-vendor precision guarantee.'},
+  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures now write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Zero-fallback fixtures verify this subset. No arbitrary UMaterial graph, lightmaps, normal maps, Substrate, material binning, LOD/HZB/streaming or complete-scene acceptance.'};
 (async () => {
   let browser;
   try {
@@ -380,7 +383,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.deepEqual(await owner.evaluate(()=>({depth:__naniteBrowserAudit.depthDraws,cull:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length})),stopped,'cleanup must stop the experimental scene path');
     report.sceneDepthCleanup={pass:true,framesObserved:4,...stopped};
     assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws),0,'constant GBuffer must default off');
-    for(let step=1;step<=6;++step) {
+    for(let step=1;step<=10;++step) {
       const before=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws);
       assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteGBufferTest',s),step),1);
       let result;const start=Date.now();
@@ -390,7 +393,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
         result=await owner.evaluate(()=>globalThis.__webNaniteGBufferTest||null);
       } while((!result||result.pending||result.step!==step)&&Date.now()-start<45000);
       assert(result&&!result.pending&&result.step===step,JSON.stringify(result));
-      try{result.validation=verifyGBuffer(result,fixturePage);}catch(error){result.validationFailure=error.stack;}
+      try{
+        result.validation=verifyGBuffer(result,fixturePage);
+        if(step>=7) result.textureReferenceRejections=verifyGBuffer.verifyTextureMutations(result,fixturePage);
+      }catch(error){result.validationFailure=error.stack;}
       const products={};
       for(const name of ['before','after','materialInputs']) {
         const b=Buffer.alloc(result[name].length*4);result[name].forEach((v,i)=>b.writeUInt32LE(v,i*4));
@@ -399,10 +405,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       const draws=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws)-before;
       if(step!==4) assert(draws>=4,'real per-frame GBuffer pass must execute');
       report.sceneGBuffer.push({...result,products,draws,pass:!result.validationFailure});
-      if(step===2||step===6) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
+      if([2,6,7,8,9,10].includes(step)) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
       console.log(`Browser scene GBuffer step ${step} ${result.validationFailure?'failed validation':'passed'}`);
     }
-    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',7)),1);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',11)),1);
     assert(report.sceneGBuffer.every(c=>c.pass),report.sceneGBuffer.filter(c=>!c.pass).map(c=>`Step ${c.step}: ${c.validationFailure}`).join('\n'));
     const gbufferShaders=await owner.evaluate(()=>__naniteBrowserAudit.gbufferShaders);assert.equal(gbufferShaders.length,2);
     report.gbufferShaders=gbufferShaders.map((code,i)=>{const file=path.join(output,`gbuffer-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
@@ -530,7 +536,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const materialFile=path.join(output,'material-inputs.png');
     await materialPreview.screenshot({path:materialFile,fullPage:true});await materialPreview.close();report.materialPreview=audit(materialFile);
     const gbufferPreview=await context.newPage();await gbufferPreview.setViewportSize({width:1020,height:900});
-    await gbufferPreview.setContent('<style>body{margin:20px;background:#eef2f6;color:#203040;font:14px sans-serif}main{display:grid;grid-template-columns:repeat(3,320px);gap:10px}canvas{display:block;width:320px;height:180px;image-rendering:pixelated}p{margin:8px 0}</style><h2>Actual scene GBuffer: constant DefaultLit</h2><p>Nanite-owned samples: linear base color, encoded world normal, pre-lighting emissive. Unchanged samples shown dark.</p><main></main>');
+    await gbufferPreview.setContent('<style>body{margin:20px;background:#eef2f6;color:#203040;font:14px sans-serif}main{display:grid;grid-template-columns:repeat(3,320px);gap:10px}canvas{display:block;width:320px;height:180px;image-rendering:pixelated}p{margin:8px 0}</style><h2>Actual scene GBuffer: textured DefaultLit</h2><p>Nanite-owned samples: linear base color, encoded world normal, pre-lighting emissive. Unchanged samples shown dark.</p><main></main>');
     for(const test of report.sceneGBuffer) {
       const readWords=p=>{const b=fs.readFileSync(p.file);return Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));};
       await gbufferPreview.evaluate(({test,before,after})=>{

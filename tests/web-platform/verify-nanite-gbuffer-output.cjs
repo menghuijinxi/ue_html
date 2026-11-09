@@ -8,10 +8,47 @@ const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
 const normalize=a=>{const n=Math.hypot(...a);assert(n>0);return a.map(x=>x/n);};
 const srgb=v=>v<=.0031308?v*12.92:1.055*v**(1/2.4)-.055;
 const linear=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4;
+function sampleTexture(index, uv, dx, dy, lodOffset=0) {
+  const size=index?64:128, maxMip=index?6:7;
+  // D3D orthogonalizes the projected footprint before isotropic LOD selection.
+  // Its major-axis length is the largest singular value of the UV Jacobian.
+  // Direct3D functional specification, section 7.18.11 (LOD Calculations).
+  const a=dot(dx,dx),b=dot(dy,dy),c=dot(dx,dy);
+  const major=Math.sqrt((a+b+Math.hypot(a-b,2*c))/2);
+  const lod=Math.max(0,Math.min(maxMip,Math.log2(major*size)+lodOffset));
+  const level=mip=>{
+    const n=size>>mip, x=uv[0]*n-.5, y=uv[1]*n-.5, ix=Math.floor(x), iy=Math.floor(y), fx=x-ix, fy=y-iy;
+    const texel=(x,y)=>{
+      x=((x%n)+n)%n;y=((y%n)+n)%n;
+      const block=Math.max(1,n/8), rgb=[(Math.floor(x/block)+Math.floor(y/block))%2?224:48,
+        48+Math.floor(160*y/Math.max(1,n-1)),32+24*mip+16*index];
+      return rgb.map(v=>index?v/255:linear(v/255));
+    };
+    const a=texel(ix,iy),b=texel(ix+1,iy),c=texel(ix,iy+1),d=texel(ix+1,iy+1);
+    return a.map((v,j)=>(v*(1-fx)+b[j]*fx)*(1-fy)+(c[j]*(1-fx)+d[j]*fx)*fy);
+  };
+  const lo=Math.floor(lod),hi=Math.min(maxMip,lo+1),t=lod-lo,low=level(lo),high=level(hi);
+  return {color:low.map((v,c)=>v*(1-t)+high[c]*t),lod,maxMip};
+}
+function textureReference(index,uv,dx,dy,base,actual) {
+  const ideal=sampleTexture(index,uv,dx,dy);
+  // The D3D specification permits approximations of the footprint transform.
+  // Bound that separately from filtering precision: one COMMON LOD offset must
+  // explain all RGB channels within two codes, at most 1/4 mip from the ideal.
+  // This is this probe's acceptance limit, not a claimed cross-vendor guarantee.
+  for(let i=0;i<=512;++i) {
+    const offset=i===0?0:Math.ceil(i/2)/1024*(i%2?1:-1);
+    const sample=i===0?ideal:sampleTexture(index,uv,dx,dy,offset);
+    const color=base.map((v,c)=>v*sample.color[c]);
+    if(color.every((v,c)=>Math.abs(srgb(actual[c])*255-Math.round(srgb(v)*255))<=2))
+      return {...ideal,color,offset};
+  }
+  assert.fail(`texture ${index}: RGB does not match any common LOD within 1/4 mip of ${ideal.lod}; actual ${actual}`);
+}
 module.exports=function verifyGBuffer(result,page) {
   const {before,after,materialInputs:inputs,entries,step}=result;
   const count=result.materialWidth*result.materialHeight;
-  assert(step>=1&&step<=6);assert.equal(result.materialStride,8);assert.equal(result.rejected,0);
+  assert(step>=1&&step<=10);assert.equal(result.materialStride,8);assert.equal(result.rejected,0);
   assert(result.srgbBaseColor);assert(['FloatR11G11B10','FloatRGBA'].includes(result.colorFormat));
   assert.equal(before.length,count*28);assert.equal(after.length,before.length);
   // Full-resolution projected edges amplify float arithmetic more than the
@@ -20,6 +57,8 @@ module.exports=function verifyGBuffer(result,page) {
   const inputValidation=verifyInputs({...result,sampledVisibility:Array.from({length:count},(_,i)=>before[i*28])},page,inputTolerances);
   let written=0,occluded=0,unbound=0,background=0,changed=0;
   const byComponent={},maxError={normal:0,baseColor:0,baseColorCode:0,parameters:0,emissive:0};
+  const textures={samples:0,srgb:0,linear:0,magnified:0,minified:0,clampedLastMip:0,minLOD:null,maxLOD:null,mips:[],maxCodeError:0,maxLODAdjustment:0};
+  const mips=new Set();
   const near=(actual,expected,tolerance,label)=>{assert(Number.isFinite(actual));const error=Math.abs(actual-expected);assert(error<=tolerance,`${label}: ${actual}, expected ${expected}`);return error;};
   for(let i=0;i<count;++i) {
     const o=i*28,a=i*16,id=before[o];
@@ -40,13 +79,29 @@ module.exports=function verifyGBuffer(result,page) {
     const sign=Math.sign(dot(rows[0],cofactors[0]));assert(sign!==0);
     const local=[8,9,10].map(c=>f(inputs[a+c]));
     const world=normalize([0,1,2].map(c=>sign*local.reduce((s,v,r)=>s+v*cofactors[r][c],0)));
+    let baseColor=entry.baseColor, textured=entry.textureIndex>=0;
+    if(textured) {
+      const s=verifyInputs.sampleUV(result,page,i),t=entry.uvScaleBias;
+      const uv=s.uv.map((v,c)=>v*t[c]+t[c+2]),dx=s.dx.map((v,c)=>v*t[c]),dy=s.dy.map((v,c)=>v*t[c]);
+      const sample=textureReference(entry.textureIndex,uv,dx,dy,baseColor,[0,1,2].map(c=>f(after[o+16+c])));
+      baseColor=sample.color;
+      textures.maxLODAdjustment=Math.max(textures.maxLODAdjustment,Math.abs(sample.offset));
+      ++textures.samples;++textures[entry.textureIndex?'linear':'srgb'];
+      ++textures[sample.lod===0?'magnified':'minified'];
+      if(sample.lod===sample.maxMip) ++textures.clampedLastMip;
+      textures.minLOD=textures.minLOD===null?sample.lod:Math.min(textures.minLOD,sample.lod);
+      textures.maxLOD=textures.maxLOD===null?sample.lod:Math.max(textures.maxLOD,sample.lod);
+      mips.add(Math.floor(sample.lod));
+    }
     for(let c=0;c<3;++c) {
       const expected=Math.round((world[c]*.5+.5)*1023)/1023;
       maxError.normal=Math.max(maxError.normal,near(f(after[o+8+c]),expected,1.1/1023,`normal sample ${i}, channel ${c}`));
-      const code=Math.round(srgb(entry.baseColor[c])*255),actualColor=f(after[o+16+c]);
+      const code=Math.round(srgb(baseColor[c])*255),actualColor=f(after[o+16+c]);
       // Hardware sRGB conversion may approximate the ideal transfer curve.
       // Demand the same nearest 8-bit sRGB code, rather than exact linear bits.
-      maxError.baseColorCode=Math.max(maxError.baseColorCode,near(srgb(actualColor)*255,code,.5,`sRGB code sample ${i}, channel ${c}`));
+      const codeError=near(srgb(actualColor)*255,code,textured?2:.5,`sRGB code sample ${i}, channel ${c}`);
+      maxError.baseColorCode=Math.max(maxError.baseColorCode,codeError);
+      if(textured) textures.maxCodeError=Math.max(textures.maxCodeError,codeError);
       maxError.baseColor=Math.max(maxError.baseColor,Math.abs(actualColor-linear(code/255)));
       const emissive=entry.emissive[c]*f(before[o+3]);assert(f(before[o+3])>0);
       const relativeTolerance=result.colorFormat==='FloatRGBA'?.0015:.035;
@@ -66,6 +121,27 @@ module.exports=function verifyGBuffer(result,page) {
   if(step===2) assert.equal(occluded,0);
   if(step===5) {assert(unbound>10);assert.deepEqual(Object.keys(byComponent),['1']);}
   if(step===6) {assert.equal(occluded,0);assert.deepEqual(Object.keys(byComponent),['0']);}
-  if(step===1) assert.equal(result.inputRejections,11);
-  return {pass:true,samples:count,written,changed,occluded,unbound,background,byComponent,maxError,inputTolerances,inputValidation};
+  if(step===1) assert.equal(result.inputRejections,16);
+  if(step>=7) {assert(textures.samples>50);assert(textures.linear>20);}
+  if(step===7) {assert(textures.srgb>20);assert(textures.minified>20);}
+  if(step===8) {assert(textures.magnified>20);assert(textures.minified>20);}
+  if(step===9) assert(textures.clampedLastMip>10);
+  if(step===10) {assert.equal(textures.srgb,0);assert(textures.samples<written);}
+  textures.mips=[...mips].sort((a,b)=>a-b);
+  return {pass:true,samples:count,written,changed,occluded,unbound,background,byComponent,maxError,textures,inputTolerances,inputValidation};
+};
+
+// Ensure the bounded LOD allowance still detects missing/wrong bindings and UVs.
+module.exports.verifyTextureMutations=function(result,page) {
+  assert(result.step>=7&&result.step<=10);
+  let rejected=0;
+  const reject=change=>{
+    const bad={...result,entries:structuredClone(result.entries)};change(bad.entries);
+    assert.throws(()=>module.exports(bad,page));++rejected;
+  };
+  reject(es=>es.forEach(e=>e.textureIndex=-1));
+  reject(es=>es.forEach(e=>{if(e.textureIndex>=0)e.textureIndex=1-e.textureIndex;}));
+  reject(es=>es.forEach(e=>e.uvScaleBias[2]+=.2));
+  if(result.step===8||result.step===9) reject(es=>es.forEach(e=>e.uvScaleBias=[1,1,0,0]));
+  return rejected;
 };

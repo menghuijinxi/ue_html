@@ -50,13 +50,14 @@ for(const test of browser.sceneDepth) {
 }
 assert(browser.depthDraws>=20&&browser.totalCullDispatches>100&&browser.totalRasterDraws>33);
 assert(browser.sceneDepthCleanup.pass&&browser.sceneDepthCleanup.framesObserved>=4);
-assert.equal(browser.sceneGBuffer.length,6);assert.equal(browser.defaultDisabled.gbufferDraws,0);
+assert.equal(browser.sceneGBuffer.length,10);assert.equal(browser.defaultDisabled.gbufferDraws,0);
 assert(browser.sceneGBufferCleanup.pass&&browser.sceneGBufferCleanup.framesObserved>=4);
 for(const test of browser.sceneGBuffer) {
   assert(test.pass&&test.validation.pass);const raw={...test};
   for(const [key,p] of Object.entries(test.products)) {verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));}
   if(test.screenshot) verify(test.screenshot);
   assert.deepEqual(verifyGBuffer(raw,fixturePage),test.validation);
+  if(test.step>=7) assert.equal(verifyGBuffer.verifyTextureMutations(raw,fixturePage),test.textureReferenceRejections);
 }
 assert.equal([...browser.residency, ...browser.scene].flatMap(c => c.culling || []).length, 62);
 assert.equal([...browser.residency, ...browser.scene].reduce((n, c) => n + (c.cullInputRejections || 0), 0), 88);
@@ -99,7 +100,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-gbuffer-20261108.json');
+const destination = path.join(__dirname, 'evidence/nanite-browser-textures-20261109.json');
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

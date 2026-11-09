@@ -1,6 +1,6 @@
 # Nanite WebGPU 接入记录
 
-更新：2026-11-08。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
+更新：2026-11-09。已完成可见性 RDG、深度/HZB 消费、真实资产驻留页转码与几何解码，
 已增加显式 Web Cook 数据保留入口、Cook 资源序列化/重载，以及实际运行时 uploader
 的 Web 转码调度适配与原生 Dawn RHI 验证。现已在浏览器线程版 UE 中完成
 Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 GPU 回读验证。
@@ -13,7 +13,8 @@ Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 G
 现已让光栅消费原有 8 字节可见 cluster 记录，填入当前 GPUScene 实例偏移，
 并增加胜出像素的位置、法线、UV0、顶点色和相对材质槽解码；预深度输出保存于
 RDG blackboard，后续阶段可复用同一份几何与可见性。继续加入显式固定参数
-DefaultLit 的实际 GBuffer/场景颜色写入，入口默认关闭；这仍不包含任意 UMaterial 图。
+DefaultLit 的实际 GBuffer/场景颜色写入，并扩展显式基础色纹理及三角形 UV 梯度采样，
+入口默认关闭；这仍不包含任意 UMaterial 图。
 这还不是完整 Nanite 支持，当前发布场景仍走既有网格路径。
 
 ## 已实现
@@ -690,6 +691,62 @@ GBuffer 法线允许一个 10 位码值的差异。硬件 sRGB 转换存在逼�
 同名 PNG 为真实 GBuffer 回读图，`-scene-2.png` / `-scene-6.png` 为实际运行画布截图。
 完整默认灯光天空关卡、任意材质以及与原生同视角对照仍未验收。
 
+## 显式基础色纹理与三角形 UV 梯度（2026-11-09）
+
+在已有 DefaultLit 绑定上增加可选的常驻基础色纹理和 UV0 缩放/偏移。
+接受带 ShaderResource 标志的单采样 RGBA8/BGRA8 二维纹理，按 RHI 的 sRGB
+标志解释 RGB，忽略 alpha；绑定保留资源引用，替换或流送后的资源需要重新绑定。
+不绑定纹理时使用白纹理，保留原固定参数结果。非法维度、整数格式、虚拟纹理、
+非有限或绝对值大于 65,536 的 UV 参数被拒绝，失败不覆盖已有绑定。
+
+`WebResolveMaterialInputsWithGradients` 复用 UE 原有 `CalculateTriangleBarycentrics`
+的透视正确梯度，插值 UV0 及其屏幕偏导，再对梯度施加 UV 缩放。
+GBuffer PS 使用 `SampleGrad` 和 wrap/trilinear sampler，将采样 RGB 乘以 BaseColor。
+不依赖相邻像素的隐式 ddx/ddy，避免可见性边界处相邻线程属于不同三角形或实例。
+原有属性诊断接口保持输出布局；没有消费者的梯度计算由 shader 编译器消除。
+
+新增四组实际场景 GBuffer 验证：两种格式与色彩空间的纹理同时绑定、负 UV 平铺
+和缩放、放大/缩小与 mip 尾部采样，以及替换纹理并清空另一实例的纹理绑定。
+纹理是测试用的 128×128 BGRA8 sRGB 和 64×64 RGBA8 linear，分别上传 8/7 级
+可区分的 mip；它们不代表已从 UMaterial 或完整 Cook 包自动取得纹理。
+CPU 从实际驻留页解码三角形，用齐次坐标独立求 UV，通过同三角形的中心差分
+计算屏幕梯度，再用 UV Jacobian 的最大奇异值求理想 mip LOD，执行 wrap、
+双线性、三线性和色彩空间转换，核对 GBuffer。
+[D3D 规范 §7.18.11](https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm)
+允许纹理足迹变换的近似；本检查限定相对理想值最多 1/4 mip 的共同 LOD 偏移，
+同一个偏移必须使 RGB 三个通道同时满足最多 2 个 8 位 sRGB 码值的过滤/转换误差。
+这是本探针的验收上限，不代表跨 GPU 的统一精度保证。固定色仍保持原有半码容限，
+深度、可见性以及未拥有的附件区域仍必须逐位不变。
+
+UE 的 12 个 shader 入口编译、隔离 Wasm 增量编译/链接及浏览器回归全部通过。
+最终 Edge `157.0.4341.42` / NVIDIA Lovelace 非 fallback 运行至第 12,914 帧。
+保留 19 组光栅/属性和 5 组场景深度检查；GBuffer 扩展为 10 组，共 81,600
+采样点，1,622 点正确写入，79,978 点逐位保持，深度/可见性/曝光均未改写。
+
+| 新增状态 | GBuffer 写入点 | 纹理采样点 | 理想 mip 下界覆盖 | 最大所需 LOD 调整 |
+| --- | ---: | ---: | --- | ---: |
+| 两实例分别绑定 sRGB / linear | 229 | 229 | 0–4 | 0.13184 |
+| 负 UV 平铺与放大 | 230 | 230 | 0–5 | 0.05664 |
+| 32 倍缩小与 mip 尾部 | 229 | 229 | 3–7 | 0.09766 |
+| 替换纹理，另一实例恢复固定参数 | 231 | 113 | 0–2 | 0.05859 |
+
+801 个纹理点中，sRGB 336 点、linear 465 点，放大 304 点、缩小 497 点，
+16 点钳制到最后一级 mip。最大所需共同 LOD 调整为 `0.131836`，调整后最大颜色
+误差为 `1.994` 个码值。16 项非法输入检查通过；另有 14 项 CPU 参考反例，故意
+移除/交换纹理、改错 UV 偏移或恢复错误的 UV 缩放，均被参考校验拒绝。
+这些反例与 RHI 非法输入检查分别统计，不混称为运行时拒绝。
+
+退出后连续 4 帧所有实验 pass 计数不变；默认关闭启动运行至第 12 帧，相关调用
+全部为零。没有未捕获 GPU 错误、Fatal 或断言；开启/关闭配置仍各有既有 834 条
+PSO 预缓存失败日志。首次测试暴露 CPU LOD 参考遗漏了足迹正交化及硬件近似，
+修正参考后重新执行了完整浏览器流程，没有改动 shader 去适配错误参考。
+本轮仍使用隔离增量链接和已有 Villa Cook 包，不是完整关卡重新 Cook 的验收。
+
+证据：`tests/web-platform/evidence/nanite-browser-textures-20261109.json`；同名 PNG
+为真实 GBuffer 回读图，`-scene-7.png` / `-scene-8.png` / `-scene-9.png` /
+`-scene-10.png` 为纹理场景的实际光照画布。仍未接通自动 UMaterial/Cook 纹理绑定、
+压缩纹理、其他材质属性贴图、材质分桶及完整 Nanite 关卡验收。
+
 当前保留 UE 纹理消费者，用解析纹理作为桥接：
 
 ```text
@@ -806,7 +863,7 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 
 ## 尚未接通
 
-- 已执行有界常驻页光栅、真实场景深度和显式固定参数 DefaultLit GBuffer，
+- 已执行有界常驻页光栅、真实场景深度和显式参数/基础色纹理 DefaultLit GBuffer，
   完整 Nanite Renderer 的任意材质图、材质分桶、速度和 stencil/shading mask 消费尚未接通。
   HZB 专项仍使用导出的 UE shader packet，尚未做真实 Nanite HZB 剔除。
 - Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、cluster 层级 LOD 与 HZB 剔除、

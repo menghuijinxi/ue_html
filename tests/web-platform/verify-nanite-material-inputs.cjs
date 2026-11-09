@@ -128,3 +128,25 @@ module.exports = function verifyMaterialInputs(result, page, tolerances = {posit
   if(result.step===1&&!result.rect) assert.equal(result.materialInputRejections,7);
   return {pass:true,validRecords,covered,empty,maxError,materialSlots:[...materialSlots].sort()};
 };
+
+// Independently solve UV at neighboring subpixel locations on the same decoded
+// triangle. Central differences avoid copying UE's analytic derivative formula.
+module.exports.sampleUV = function(result, page, sample) {
+  const id=result.before[sample*28], slot=(id>>>8)-1;
+  const entry=result.entries.find(e=>slot>=e.clusterBase&&slot<e.clusterBase+e.keys.length);
+  assert(entry);
+  const key=entry.keys[slot-entry.clusterBase], decoded=triangle(page,key&255,id&255);
+  const m=Array.from({length:16},(_,i)=>Math.fround([0,1,2,3].reduce((s,k)=>s+
+    entry.localToWorld[Math.floor(i/4)*4+k]*result.worldToClip[k*4+i%4],0)));
+  const clip=decoded.vertices.map(v=>transform([...v.position,1],m)), rect=result.rect;
+  const px=rect[0]+sample%result.materialWidth*result.materialStride+.5;
+  const py=rect[1]+Math.floor(sample/result.materialWidth)*result.materialStride+.5;
+  const solve=(x,y)=>{
+    const ndc=[(x-rect[0])/(rect[2]-rect[0])*2-1,1-(y-rect[1])/(rect[3]-rect[1])*2];
+    const a=clip.map(v=>v[0]-ndc[0]*v[3]), b=clip.map(v=>v[1]-ndc[1]*v[3]);
+    const w=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]], sum=w.reduce((s,v)=>s+v,0);
+    return [0,1].map(c=>decoded.vertices.reduce((s,v,j)=>s+v.uv[c]*w[j]/sum,0));
+  };
+  const h=.001, uv=solve(px,py), xp=solve(px+h,py), xm=solve(px-h,py), yp=solve(px,py+h), ym=solve(px,py-h);
+  return {uv,dx:xp.map((v,c)=>(v-xm[c])/(2*h)),dy:yp.map((v,c)=>(v-ym[c])/(2*h))};
+};

@@ -36,6 +36,36 @@ TSharedPtr<FJsonObject> Report;
 struct FCopy { FString Field; uint32 Bytes; TUniquePtr<FRHIGPUBufferReadback> Readback; TSharedPtr<FJsonObject> Json; };
 TArray<FCopy> Copies;
 const uint32 Stride = 8;
+FTextureRHIRef BaseTextures[2], InvalidTexture, ArrayTexture;
+
+void CreateTextures(FRHICommandListImmediate& Cmd)
+{
+    for (int Index = 0; Index < 2; ++Index)
+    {
+        const int Size = Index ? 64 : 128, Mips = Index ? 7 : 8;
+        auto Desc = FRHITextureCreateDesc::Create2D(TEXT("WebNanite.BaseColorFixture"), Size, Size, Index ? PF_R8G8B8A8 : PF_B8G8R8A8)
+            .SetNumMips(Mips).SetFlags(TexCreate_ShaderResource | (Index ? TexCreate_None : TexCreate_SRGB));
+        BaseTextures[Index] = Cmd.CreateTexture(Desc);
+        for (int Mip = 0; Mip < Mips; ++Mip)
+        {
+            const int N = FMath::Max(1, Size >> Mip), Block = FMath::Max(1, N / 8);
+            TArray<uint8> Bytes; Bytes.SetNumUninitialized(N * N * 4);
+            for (int Y = 0; Y < N; ++Y) for (int X = 0; X < N; ++X)
+            {
+                const uint8 R = ((X / Block + Y / Block) & 1) ? 224 : 48;
+                const uint8 G = 48 + 160 * Y / FMath::Max(1, N - 1), B = 32 + 24 * Mip + 16 * Index;
+                const int O = (Y * N + X) * 4;
+                Bytes[O] = Index ? R : B; Bytes[O + 1] = G; Bytes[O + 2] = Index ? B : R; Bytes[O + 3] = 255;
+            }
+            Cmd.UpdateTexture2D(BaseTextures[Index], Mip, FUpdateTextureRegion2D(0, 0, 0, 0, N, N), N * 4, Bytes.GetData());
+        }
+    }
+    InvalidTexture = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("WebNanite.InvalidIntegerTexture"), 4, 4, PF_R32_UINT).SetFlags(TexCreate_ShaderResource));
+    ArrayTexture = Cmd.CreateTexture(FRHITextureCreateDesc::Create2DArray(TEXT("WebNanite.InvalidArrayTexture"), 4, 4, 2, PF_R8G8B8A8).SetFlags(TexCreate_ShaderResource));
+}
+
+int TextureIndex(int Index)
+{ return Step < 7 || (Step == 10 && Index == 1) ? -1 : Step == 10 ? 1 : Index; }
 
 TArray<TSharedPtr<FJsonValue>> MatrixJSON(const FMatrix& Matrix)
 {
@@ -52,11 +82,15 @@ Nanite::FWebConstantMaterial Material(int Index)
     M.Emissive = Index ? FVector3f(0.005f, 0.015f, 0.03f) : FVector3f(0.03f, 0.01f, 0.005f);
     M.Metallic = Index ? 0.7f : 0.2f; M.Specular = Index ? 0.25f : 0.6f; M.Roughness = Index ? 0.8f : 0.35f;
     if (Step == 6 && !Index) { M.BaseColor = FVector3f(0.4f, 0.08f, 0.65f); M.Emissive = FVector3f(0.12f, 0.03f, 0.2f); M.Roughness = 0.65f; }
+    const int Texture = TextureIndex(Index);
+    if (Texture >= 0) { M.BaseColorTexture = BaseTextures[Texture]; M.BaseColor = FVector3f(0.8f, 0.7f, 0.9f); }
+    if (Step == 8) M.BaseColorUVScaleBias = Index ? FVector4f(0.05f, 0.05f, 0.13f, 0.27f) : FVector4f(-2.25f, 1.75f, -0.3f, 0.2f);
+    if (Step == 9) M.BaseColorUVScaleBias = FVector4f(32, -32, 0.25f, -0.4f);
     return M;
 }
 void BindMaterials(FRDGBuilder&, const Nanite::FWebSceneCullView& View)
 {
-    if (Step < 1 || Step > 6) return;
+    if (Step < 1 || Step > 10) return;
     for (const auto& Entry : View.Entries)
     {
         const int Index = Entry.ComponentId == IDs[0] ? 0 : Entry.ComponentId == IDs[1] ? 1 : -1;
@@ -76,7 +110,7 @@ void CopyBuffer(FRDGBuilder& Graph, FRDGBufferRef Buffer, const TCHAR* Field, TS
 }
 void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const Nanite::FWebGBufferTargets& Targets, bool After)
 {
-    if (Step < 1 || Step > 6) return;
+    if (Step < 1 || Step > 10) return;
     if (!After)
     {
         if (!Requested || ++Settled < 4) return;
@@ -106,6 +140,9 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
             Json->SetNumberField(TEXT("materialSlot"), Step == 5 && Index == 0 ? 1 : 0);
             Json->SetArrayField(TEXT("baseColor"), VectorJSON(M.BaseColor)); Json->SetArrayField(TEXT("emissive"), VectorJSON(M.Emissive));
             Json->SetNumberField(TEXT("metallic"), M.Metallic); Json->SetNumberField(TEXT("specular"), M.Specular); Json->SetNumberField(TEXT("roughness"), M.Roughness);
+            Json->SetNumberField(TEXT("textureIndex"), TextureIndex(Index));
+            TArray<TSharedPtr<FJsonValue>> UV; for (int J = 0; J < 4; ++J) UV.Add(MakeShared<FJsonValueNumber>(M.BaseColorUVScaleBias[J]));
+            Json->SetArrayField(TEXT("uvScaleBias"), UV);
             CopyBuffer(Graph, Entry.Result.ClusterKeys, TEXT("keys"), Json); CopyBuffer(Graph, Entry.Result.State, TEXT("state"), Json);
             Entries.Add(MakeShared<FJsonValueObject>(Json));
         }
@@ -128,7 +165,17 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
             check(!Nanite::AddWebGBufferSnapshotPass(Graph, InvalidSaved, Targets, Stride));
             InvalidSaved = Saved; InvalidSaved.Raster.SourceView = nullptr;
             check(!Nanite::AddWebGBufferSnapshotPass(Graph, InvalidSaved, Targets, Stride));
-            Report->SetNumberField(TEXT("inputRejections"), 11);
+            M = Material(0); uint32 InvalidBits = 0x7fc00000; FMemory::Memcpy(&M.BaseColorUVScaleBias.X, &InvalidBits, 4);
+            check(!Nanite::SetWebConstantMaterial(Entry.ComponentId, Entry.RuntimeResourceID, 0, M));
+            InvalidBits = 0x7f800000; FMemory::Memcpy(&M.BaseColorUVScaleBias.X, &InvalidBits, 4);
+            check(!Nanite::SetWebConstantMaterial(Entry.ComponentId, Entry.RuntimeResourceID, 0, M));
+            M = Material(0); M.BaseColorUVScaleBias.X = 65537;
+            check(!Nanite::SetWebConstantMaterial(Entry.ComponentId, Entry.RuntimeResourceID, 0, M));
+            M = Material(0); M.BaseColorTexture = InvalidTexture;
+            check(!Nanite::SetWebConstantMaterial(Entry.ComponentId, Entry.RuntimeResourceID, 0, M));
+            M.BaseColorTexture = ArrayTexture;
+            check(!Nanite::SetWebConstantMaterial(Entry.ComponentId, Entry.RuntimeResourceID, 0, M));
+            Report->SetNumberField(TEXT("inputRejections"), 16);
         }
     }
     if (!Capturing) return;
@@ -155,7 +202,7 @@ void Poll()
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread); static int LastStep = 0;
-    if (RequestedStep < 0 || RequestedStep > 7 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
+    if (RequestedStep < 0 || RequestedStep > 11 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
     if (!RequestedStep) { ENQUEUE_RENDER_COMMAND(PollWebGBuffer)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (RequestedStep != LastStep + 1) return 0;
     if (RequestedStep == 1)
@@ -180,7 +227,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
         auto* Depth = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"));
         auto* GBuffer = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentGBuffer")); check(Depth && GBuffer);
         SavedDepth = Depth->GetInt(); SavedGBuffer = GBuffer->GetInt(); Depth->Set(1, ECVF_SetByCode); GBuffer->Set(1, ECVF_SetByCode);
-        ENQUEUE_RENDER_COMMAND(ObserveWebGBuffer)([](FRHICommandListImmediate&) {
+        ENQUEUE_RENDER_COMMAND(ObserveWebGBuffer)([](FRHICommandListImmediate& Cmd) {
+            CreateTextures(Cmd);
             CullObserver = Nanite::GetWebSceneCullDelegate().AddStatic(&BindMaterials); GBufferObserver = Nanite::GetWebGBufferDelegate().AddStatic(&Observe);
         });
     }
@@ -193,7 +241,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
     if (RequestedStep == 4) Components[0]->SetHiddenInGame(true);
     if (RequestedStep == 5) { Components[0]->SetHiddenInGame(false); Ordinary->SetHiddenInGame(true); }
     if (RequestedStep == 6) Components[1]->SetHiddenInGame(true);
-    if (RequestedStep == 7)
+    if (RequestedStep == 7) Components[1]->SetHiddenInGame(false);
+    if (RequestedStep == 11)
     {
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"))->Set(SavedDepth, ECVF_SetByCode);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentGBuffer"))->Set(SavedGBuffer, ECVF_SetByCode);
@@ -201,9 +250,10 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
         for (auto* Mesh : {NaniteMesh, OrdinaryMesh}) { Mesh->ReleaseResources(); Mesh->RemoveFromRoot(); }
         if (SavedTarget.IsValid()) Controller->SetViewTarget(SavedTarget.Get()); Camera->Destroy(); Camera.Reset();
         ENQUEUE_RENDER_COMMAND(RemoveWebGBufferObserver)([](FRHICommandListImmediate&) {
-            check(!Requested && !Report && Copies.IsEmpty()); Step = 7;
+            check(!Requested && !Report && Copies.IsEmpty()); Step = 11;
             Nanite::GetWebSceneCullDelegate().Remove(CullObserver); Nanite::GetWebGBufferDelegate().Remove(GBufferObserver);
             for (auto ID : IDs) Nanite::RemoveWebConstantMaterial(ID);
+            for (auto& Texture : BaseTextures) Texture.SafeRelease(); InvalidTexture.SafeRelease(); ArrayTexture.SafeRelease();
         });
         LastStep = RequestedStep; return 1;
     }
