@@ -2,6 +2,7 @@
 !/.gitignore
 !/AGENTS.md
 !/UE58_*.md
+!/UE59_*.md
 !/tests/
 **/build/
 **/results/
