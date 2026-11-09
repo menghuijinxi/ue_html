@@ -98,7 +98,10 @@ static bool NeedsRuntimeStorageFormats(const FShaderCompilerInput& Input)
         (Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/Lumen/")) ||
          Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/StochasticLighting/")) ||
          Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ||
-         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualTexture")));
+         Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualTexture")) ||
+         // Perspective uses packed float velocity, while orthographic views
+         // need RGBA32F. Specialize the same compute shader to its bound UAV.
+         Input.VirtualSourceFilePath == TEXT("/Engine/Private/MotionBlur/MotionBlurVelocityFlatten.usf"));
 }
 
 static bool UsesSingleVectorSkyUniform(const FShaderCompilerInput& Input)
@@ -594,7 +597,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1_NaniteResolve1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1_NaniteResolve1_MotionBlurStorage1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override

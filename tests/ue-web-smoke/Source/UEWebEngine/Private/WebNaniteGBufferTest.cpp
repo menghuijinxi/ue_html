@@ -430,7 +430,9 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
     if (RequestedStep == 21)
     {
         Components[0]->SetWorldTransform(FTransform(FRotator(10, 12, 5), FVector(100500, 0, 100000), FVector(-1, 1.1, 0.8)));
-        Components[1]->SetWorldTransform(FTransform(FRotator(-8, -15, 4), FVector(100540, 70, 100015), FVector(0.9, 1.15, 1.05)));
+        // Keep partial overlap, with enough exposed rear-slot pixels for the
+        // stride-8 readback across temporal projection jitter.
+        Components[1]->SetWorldTransform(FTransform(FRotator(-8, -15, 4), FVector(100540, 90, 100015), FVector(0.9, 1.15, 1.05)));
     }
     if (RequestedStep == 27)
     {

@@ -339,7 +339,10 @@ try {
             "-Output=$taskSkyInventory", "-SkyCaptureOutput=$taskSkyFile", '-AllowCommandletRendering',
             '-d3d12', '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskSkyLog")
         if (-not $UseProjectSettings) { $taskSkyArguments += '-ini:Engine:[SystemSettings]:r.RayTracing=0' }
-        $taskSkyChild = Start-Process -FilePath (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') `
+        # The host module registers Web Nanite shader types at PostConfigInit.
+        # Native D3D12 capture still needs their source paths in the isolated host.
+        $taskSkyEngine = if ($taskWebGPU) { $taskHost } else { Join-Path $Engine 'Engine' }
+        $taskSkyChild = Start-Process -FilePath (Join-Path $taskSkyEngine 'Binaries/Win64/UnrealEditor-Cmd.exe') `
             -ArgumentList ($taskSkyArguments | ForEach-Object { '"' + $_ + '"' }) `
             -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskSkyLog.console.txt" `
             -RedirectStandardError "$taskSkyLog.stderr.txt"

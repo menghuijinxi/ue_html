@@ -20,6 +20,9 @@ const multiPage=fs.readFileSync(packaged.multiMaterial.gpuPage.file);
 const multiAssetValidation=verifyMultiAsset(multiPage,fs.readFileSync(packaged.multiMaterial.sourceTriangles.file),fs.readFileSync(packaged.multiMaterial.sourceMaterials.file));
 for (const input of [...packaged.sources, ...packaged.products, packaged.build, packaged.native,
   packaged.archive, packaged.hierarchyShaders, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles]) assert.equal(audit(input.file).sha256, input.sha256);
+assert(packaged.sceneCook && !packaged.sceneCook.supplementApplied && !packaged.sceneCook.hierarchyArchiveApplied);
+for (const input of [packaged.sceneCook.stage, packaged.sceneCook.cook, packaged.sceneCook.inventory])
+  assert.equal(audit(input.file).sha256, input.sha256);
 const oracle = read(packaged.browserOracle.file);
 assert(oracle.pass && oracle.asset.webCookEnabled);
 function observe() {

@@ -15,6 +15,8 @@ Cook 资源反序列化、生产 shader map 加载、实际 uploader 执行与 G
 RDG blackboard，后续阶段可复用同一份几何与可见性。继续加入显式固定参数
 DefaultLit 的实际 GBuffer/场景颜色写入，并扩展显式基础色纹理及三角形 UV 梯度采样，
 入口默认关闭；这仍不包含任意 UMaterial 图。
+Web RHI 的资源释放已继续修正为原子引用计数/删除状态转换，覆盖 RDG 异步销毁与
+RHI 删除队列之间的可复现竞态；具体复现及验收边界见后文。
 材质阶段继续增加按绑定实例/材质槽的 GPU 瓦片压缩和间接绘制，替换逐实例全屏绘制。
 现已扩展同一组件的多个显式材质槽，并用真实多材质 Nanite Cook 资源验证槽位归属。
 继续加入跨实例显式材质合批，相同参数、纹理资源和 UV 变换共享瓦片列表与间接绘制。
@@ -945,7 +947,163 @@ Nanite shading bin 管线。每桶仍扫描整个视口，成员查找为有界�
 `FRDGUniformBuffer`。根因未确认，不能归因于或宣称已修复材质分桶；失败运行
 单独保存在 `tests/web-platform/evidence/nanite-browser-uniform-buffer-failure-20261109.json`，
 包括运行时哈希、断言栈及原日志哈希。后续验收使用同一构建，未关闭断言、异步
-销毁或改变线程参数；该问题仍是长期稳定性待查项。
+销毁或改变线程参数；该轮未确认根因，后续定位与修复记录见下节。
+
+## Web RHI 资源释放与删除队列竞态（2026-11-09）
+
+上节失败栈指向 `FRHIResource::MarkForDelete`。检查旧实现后，能够确定复现以下
+交错：资源已标记并在删除队列中，又被临时引用；RDG worker 释放最后一份引用时，
+先执行 `fetch_sub` 将引用数降为零，尚未执行单独的 `MarkForDelete`。RHI 线程此时
+可以从旧队列记录认领并销毁资源，随后 worker 再访问删除标记。原日志缺少资源
+身份及完整线程交错，因此这证明了与断言吻合的代码缺陷，不能严格唯一归因到
+那次历史崩溃中的具体 UniformBuffer。
+
+Web 分支现在使用 CAS 将引用递减和最后引用的删除标记合为一次状态变更。
+已标记的最后引用释放后，只读取局部结果，不再访问该资源；只有成功从未标记
+转为标记的调用者负责入队。删除消费者也用 CAS 同时检查引用数和标记：存在活跃
+引用时清除旧标记，引用为零时认领删除；并发变化会重试。否则只修释放一端，会
+在消费者读取活跃引用、最后引用释放、消费者清除旧标记的顺序中漏掉再次入队。
+删除认领位在 Web 的 `DO_CHECK=0` 配置中也生效。非 Web 分支保持原来的实现。
+入队继续区分允许延长生命周期与普通资源；未关闭 RDG 异步销毁或改变线程调度。
+
+`verify-rhi-resource-lifetime.cjs` 从参考引擎的真实源码提取 `FAtomicFlags`、
+`AddRef/Release/GetRefCount`、删除标记及入队方法，替换的仅是测试原子包装器和
+队列记录器。测试停在线程交错的指定位置，让另一线程执行删除，再恢复；对象
+保持分配，仅观察逻辑删除认领，以便安全检测错误。它不复制另一套修复算法。
+按 Wasm64 ABI、lowered 32 位线性内存与 pthread 构建四个版本：历史提交、Web
+修复、Web 修复且 `DO_CHECK=0`、当前源码的非 Web 对照。
+
+| 可控交错 | 历史/非 Web 对照 | Web 修复（两种检查配置） |
+| --- | --- | --- |
+| 末次释放归零后消费者先认领删除 | 后续标记访问触发断言 | 无后续资源访问 |
+| 消费者读到活跃引用后发生末次释放 | 清除标记后漏入队 | CAS 重试并完成删除 |
+| 消费者读到零后资源被重新引用 | 错误认领活跃资源 | CAS 重试并保留活跃资源 |
+
+各版本还检查两种入队策略下的复用/再次释放，以及 8 线程、160,000 对竞争引用
+增减，四个版本共 640,000 对。历史及非 Web 版本须准确暴露上述三个问题，两个
+Web 版本须全部消除；这不是把旧版本的已知错误计作修复通过。`DO_CHECK=0`
+版本关闭提取的生产方法内的检查，测试自身的断言仍保留。
+
+因为 `Release` 是公共内联函数，本轮通过完整 UBT target 重编所有受头文件变更
+影响的对象。隔离 Nanite 包用 `build-web-nanite-runtime.cjs --from-full-build`
+导入完整 target 的已验证 JS/Wasm，审计源码、对象、响应文件和平台覆盖；未做从零
+清空缓存重编。以后增量诊断重链接也会要求匹配当前 RHI 头文件及实现的完整构建
+记录，避免混用新旧引用计数逻辑。
+
+首次完整 target 构建完成 185 个编译任务、422 个对象的链接和 Wasm 验证。
+依赖文件中包含 `RHIResources.h` 的 184 个对象均在该次成功编译任务中；随后
+RHI 诊断、阴影占位纹理修复及测试几何覆盖修正分别触发 1 个编译任务及完整链接。证据同时保留首次
+头文件重编与最终 target 构建记录，并要求二者使用完全相同的 RHI 资源协议源码。
+新版完整运行时还暴露旧 Villa Cook 包缺少 VT/VSM、透明光照及相关全局着色器
+排列的问题。补充工具读取原 Cook 的 frozen map 元数据，不加载外部 shader library
+或创建 RHI 资源；逐项比较当前原生宿主 `ShouldCompilePermutation` 所需排列。
+使用非编辑器标志，按类型对象排除另外打包的 13 个 Nanite 测试类型，保留 Renderer
+中的生产可见性清理/解析类型。本次发现 59 类、395 个缺项，
+其中包括 HZB froxel 和延迟光照 VSM 排列；按缺项所属 shader section 补编完整内容，
+保留同一 section 原有入口。VT 显式名单另补齐宿主中 `UseVirtualTexturing=false`
+时未选择的 22 类、71 个排列，包含 RVT copy；透明光照 section 保留批量、清理和
+简单灯光入口；另补充受同一 VT 开关影响的 GPU feedback 压缩 3 类、6 个排列。
+编译使用原生 UE 注册类型、编译环境、参数绑定检查及
+`FGlobalShaderMap` 序列化，浏览器仍执行原有的全局着色器完整性检查。
+补编期间的绑定检查还发现旧原生 Renderer DLL 缺少
+`FCullPerPageDrawCommandsCs::WebInstanceCullingMetadata`。因此先按当前参考源码
+重建隔离原生 Renderer；补充脚本校验该构建的源码、产物及安装目录未修改记录，
+再断开旧宿主 DLL 的硬链接并复制新产物。没有忽略未绑定参数或修改安装版 Renderer。
+原生 Renderer 重建 40 个任务通过。诊断补充归档 81 类、661 个排列、22 个
+shader sections，转换与绑定检查均通过。归档的来源、缺失排列清单、编译日志、宿主
+二进制和 shader 输入均进入证据审计，证据收集会逐项检查缺失排列均已补编。
+但仅补全全局 shader 后，旧 Cook 的默认 `WorldGridMaterial` 仍缺少
+`FWebTranslucentLightingInjectCS` 第 8 号排列。因此最终打包入口要求同一 Villa
+工程的新 Cook 与 stage 审计，通过同一套配置重建全局和材质 shader map；历史
+补充归档保留为缺项诊断证据，不拼入新包。新 Cook 已注册 13 个 Nanite 测试类型，
+也不再用独立 hierarchy 归档覆盖共享 shader section，以保留其中的生产入口。
+只有经过验证的 production transcode 独立归档继续追加。
+
+重跑场景流程还修正了两个宿主问题：生成工程的 `UEShaderHost` 模块加载阶段改为
+`PostConfigInit`，与宿主原工程一致，确保在 shader type 初始化前注册；WebGPU
+场景的原生 D3D12 天空光采集改用准备好的工作区 Cook 宿主，取得新增 Nanite shader
+源文件。仍保留天空光采集和工程的 VT/光照设置，不修改安装引擎。
+原生天空光采集已通过；352 字节的 `WebSkyCaptures.bin` 与原 Villa Cook 完全一致，
+SHA-256 为 `0f2bf861eb50b0b3e5be8bc96b16ae3c319caaf0ebc4a687e92fa9b3ff0c8a3c`。
+完整 Web Cook 已通过：处理 1,959 个包，其中 1,928 个完成 Cook、31 个按平台跳过，
+0 错误、14 警告，shader 失败记录为空。全局清单为 774 类、4,459 个排列；已逐项
+核对 13 个 Nanite 测试类型与 2 个生产可见性类型。stage 去掉重复 shader metadata
+后包含 5,163 个文件、3,320,708,311 字节（含下述运动模糊格式与材质精度修复）。打包要求该 Cook 的源码、宿主、资源、
+shader 清单和 stage 审计全部一致，不再接受仅靠历史全局 shader 补充归档启动。
+这些构建及 Cook 兼容修正不等于完成 VT/VSM 渲染或整场景 Nanite 验收。
+
+新 Cook 通过 shader map 完整性检查后，还暴露普通阴影路径的占位纹理契约问题。
+`ShadowDepthPass_OutDepthBufferArray` 在 Web shader 中仍保留原子缓冲绑定，而
+`Dummy-OutDepthBuffer` 原来只有 ShaderResource/UAV 标志。诊断记录其格式为
+R32_UINT、完整单层视图，但没有原子 mip 后备缓冲（`atomicMips=0`）。现仅在 Web
+shader platform 为这份占位纹理补上 `AtomicCompatible`，继续使用 RHI 原有的
+原子缓冲分配、同步和严格视图校验。RHI 错误信息也加入纹理名、格式、mip、层范围
+和标志，便于定位后续契约错误；没有把不兼容纹理当成合法原子资源。
+
+继续回归到正交视图时，`MotionBlur.VelocityFlatten` 使用 RGBA32F，而原 Web shader
+声明固定为打包浮点格式，触发 `OutVelocityFlatTexture` 格式断言。现在只为
+`MotionBlurVelocityFlatten.usf` 的 compute 排列启用已有的运行时 storage format
+替换，按实际 UAV 格式创建并缓存管线；保持透视视图的打包浮点格式与正交视图的
+RGBA32F。更新 shader map 缓存键，受影响编译任务取得 storage-format 编译参数，
+避免沿用旧 metadata。`compile-web-motion-blur-shaders.ps1` 编译真实 UE 类型的
+两个排列，并检查 WGSL 替换位置；浏览器以两种格式各创建一次 compute pipeline，
+四个管线均通过。这一专项不替代下面的实际场景执行回归。
+
+完整运行到 GBuffer 第 23 步时还发现测试取样边界：重叠后方球体的 63 号材质槽在
+该帧只有 5 个 stride-8 样本，未达到原有 `count > 5` 标准；其全分辨率 6,420 个
+Nanite 像素和 3 个材质桶的瓦片、间接参数检查全部通过。投影抖动会改变窄区域的
+稀疏样本数。将后方测试球体横向偏移从 70 调至 90，仍保留局部重叠，增加可见槽位
+的采样面积；保留原有像素数量门槛、逐像素误差与瓦片一致性检查。失败运行和原始
+回读另行保存，证据收集会重验失败帧的完整瓦片，并记录缺少样本的具体材质槽。
+
+随后第 24 步暴露材质插值的实际数值缺陷：原 shader 先把像素坐标归一化，再减 1，
+屏幕中心附近发生浮点消减；细长投影三角形将误差放大，位置与独立双精度参考相差
+约 0.00364 个源模型单位。`WebNaniteRaster.usf` 现先在像素空间减去视口中心，
+再归一化，并用 `precise` 保留计算顺序；原有 UE 透视插值和梯度计算保持不变。
+`verify-nanite-material-precision.cjs` 使用失败帧的真实可见性、矩阵、抖动与 Nanite
+页，在浏览器分别执行旧 WGSL 与重新编译的生产 shader。旧输出与历史 GPU 回读
+逐位一致并重现失败；新输出的 105 个有效样本全部满足原有容差，最大位置误差
+降到约 0.000307。未关闭时间抖动，也未放宽位置、法线、UV 或颜色精度要求。
+
+最终使用完整 target 运行时及更新后的 Villa Cook，在 NVIDIA Lovelace 硬件适配器上
+完成浏览器回归：4 个 uploader、4 个驻留管理、5 个静态网格生命周期、19 个剔除/
+光栅、5 个场景深度及 26 个 GBuffer 用例全部通过。包含原失败位置的第 24 步本轮
+最大位置误差约 0.0000347；第 23 步每个绑定材质槽至少覆盖 8 个稀疏样本。
+清理后观察 4 帧，计数停止增长；同一运行包关闭常驻入口后启动到第 11 帧，所有
+Nanite 专项 dispatch/draw 计数为零。启用运行共观察 23,164 帧，专项未记录断言、
+页面错误或未捕获 GPU 校验错误；Canvas 的 8 项过渡检查也通过。
+
+启用与默认关闭两次启动各记录 **847 条管线创建失败日志**，完整内容保存在证据
+中的 `startupPipelineFailures`，不计作专项通过的管线，也未被隐藏或改为成功。
+所以本轮不代表普通场景所有管线已兼容、VT/VSM 渲染完成或整关卡 Nanite 验收通过。
+仍需自动 UMaterial/组件材质绑定、任意材质图、法线贴图、lightmap/Substrate、
+LOD/HZB 剔除、Compute 微三角形光栅与页流送。
+
+最终证据：`tests/web-platform/evidence/nanite-browser-resource-lifetime-20261109.json`，
+附 GBuffer 回读预览和 11 张实际场景画布截图。收集器逐项重验源码、编译、Cook、
+打包与 GPU 回读哈希，同时保留历史失败、竞态对照和精度回放。
+
+```powershell
+node tests/web-platform/verify-rhi-resource-lifetime.cjs
+node tests/web-platform/prepare-web-rhi-host.cjs D:/UE_5.8
+./tests/web-platform/build-web-engine.ps1 -Engine D:/UE_5.8 -Threads -SkipHostPreparation -StandaloneCompiles -MaxParallelActions 4
+node tests/web-platform/build-web-nanite-runtime.cjs --from-full-build
+./tests/web-platform/build-native-rendercore.ps1 -Engine D:/UE_5.8 -Module Renderer -MaxParallelActions 2 -HostProcessorAffinity 3 -CompilerVersion 14.44.35207
+./tests/web-platform/compile-nanite-hierarchy.ps1 -Engine D:/UE_5.8
+node tests/web-platform/verify-nanite-material-precision.cjs
+./tests/web-platform/compile-web-motion-blur-shaders.ps1 -Engine D:/UE_5.8
+./tests/web-platform/compile-web-shader-supplement.ps1 -Engine D:/UE_5.8
+# 宿主 DLL 改变后，重新执行多材质夹具与对应 uploader 探针，更新审计。
+./tests/web-platform/probe-nanite-multimaterial.ps1 -Engine D:/UE_5.8 -SkipBuild
+./tests/web-platform/probe-nanite-uploader.ps1 -Engine D:/UE_5.8 -CookedAsset tests/web-platform/results/nanite-multimaterial -SkipBuild
+$env:UE_ENGINE_ROOT = 'D:/UE_5.8/Engine'
+# 使用 prepare-web-project.cjs 更新后的 PostConfigInit 工程描述。
+./tests/web-platform/cook-web-engine.ps1 -Engine D:/UE_5.8 -Mode WebGPU-SM5 -Scene Project -Project tests/web-platform/build/projects/lumen-off-v59/TriplexHouseVilla.uproject -Map /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla -UseProjectSettings -ReportId nanite-lifetime -HostProcessorAffinity 3 -SkipBuild -StopOnShaderError
+node tests/web-platform/stage-web-engine.cjs --project=nanite-lifetime --desktop
+node tests/web-platform/package-web-nanite-runtime.cjs <原单材质Uploader目录> <多材质Uploader目录>
+node tests/web-platform/verify-web-nanite-uploader.cjs
+node tests/web-platform/collect-nanite-browser-evidence.cjs
+```
 
 当前保留 UE 纹理消费者，用解析纹理作为桥接：
 
@@ -1078,6 +1236,6 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-下一阶段将已验证的浏览器静态网格常驻资源路径接入完整 Cook 包，
-继续补齐自动材质绑定、完整 GPUScene/material/view 绑定和材质/GBuffer，统一 Nanite 深度与材质的
-几何来源，再推进 LOD、Compute 微三角形光栅与页流送。
+当前专项包已使用重新 Cook 的完整 Villa 资源，Nanite 组件和材质仍由显式测试接口绑定。
+下一阶段继续补齐自动材质绑定、完整 GPUScene/material/view 绑定与材质图支持，
+再推进 LOD、Compute 微三角形光栅、页流送及完整场景验收。

@@ -2,6 +2,7 @@
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {audit, metadata} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
+const {validateCook} = require('./cached-cook-validation.cjs');
 assert(process.argv[2], 'Pass the verified native uploader output directory');
 const native = path.resolve(process.argv[2]);
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -18,9 +19,26 @@ const multiMaterial={native:audit(multiNativeFile),fixture:audit(multiFixtureFil
   sourceMaterials:audit(path.join(multiAsset,'source-materials.bin'))};
 verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
-// Match the current Renderer shader set; the historical default-template Cook
-// predates required translucency shaders in the current threaded runtime.
-const baseline = path.join(__dirname, 'build/villa-default-20261107');
+// Inline platform predicates changed with the full target rebuild. Global and
+// material shader maps must both come from a matching scene Cook.
+const stageFile = path.join(__dirname, 'results/web-project-nanite-lifetime-desktop-stage-results.json');
+const stage = read(stageFile);
+assert(stage.pass && stage.mode === 'WebGPU-SM5' && stage.useProjectSettings);
+[...stage.sourceFiles, stage.cookReport, stage.pack, stage.manifest, stage.configBundle].forEach(verify);
+const cook = read(stage.cookReport.file);
+validateCook(cook, false, {});
+assert(cook.exitCode === 0 && !cook.disabledSkyLight && cook.useProjectSettings);
+assert.equal(cook.map, '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla');
+verify(cook.shaderInventory.artifact);
+const inventory = read(cook.shaderInventory.artifact.file);
+const naniteTypes = ['HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
+  'ResolveCS','DepthVS','DepthPS','DepthSnapshotCS','GBufferVS','GBufferPS','GBufferSnapshotCS',
+  'GBufferTilesCS','VisibilityClearCS','VisibilityResolveCS'].map(name => 'FWebNanite' + name);
+assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === 1)),
+  'The scene Cook must include diagnostic and production Nanite shaders in complete sections');
+assert.deepEqual(inventory.settings['r.VirtualTextures'], {host:'1',target:'1'});
+const baseline = path.dirname(stage.manifest.file);
+const pageTemplate = path.join(__dirname, 'build/villa-default-20261107/index.html');
 const buildDir = path.join(__dirname, 'build/nanite-browser-runtime');
 const build = read(path.join(buildDir, 'build.json'));
 assert(build.pass); build.sources.forEach(verify); build.products.forEach(verify);
@@ -41,13 +59,15 @@ const hierarchyShaders = read(hierarchyFile);
 assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
-const hierarchyArchive = fs.readFileSync(hierarchyShaders.archive.file);
-assert.equal(hierarchyArchive.readInt32LE(), 6);
+assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 6);
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }
-const merged = Buffer.concat([originalGlobal, archive.subarray(4), hierarchyArchive.subarray(4)]);
-merged.writeInt32LE(originalGlobal.readInt32LE() + archive.readInt32LE() + hierarchyArchive.readInt32LE());
+// The full Cook registers the 13 hierarchy/raster/depth/GBuffer shader types.
+// Preserve its complete sections, including production entries in shared files.
+// Only the separately verified production transcode archive is appended.
+const merged = Buffer.concat([originalGlobal, archive.subarray(4)]);
+merged.writeInt32LE(originalGlobal.readInt32LE() + archive.readInt32LE());
 fs.copyFileSync(baselinePack, path.join(output, 'content.bin'));
 let offset = fs.statSync(baselinePack).size;
 for (const [virtualPath, data] of [[global.path, merged],
@@ -68,7 +88,7 @@ for (const name of helpers) fs.copyFileSync(path.join(__dirname, name), path.joi
 for (const file of build.products) fs.copyFileSync(file.file, path.join(output, path.basename(file.file)));
 const runtime = build.products.map(i => path.basename(i.file));
 const versions = Object.fromEntries([...runtime, ...helpers].map(n => [n, audit(path.join(output, n)).sha256]));
-let html = fs.readFileSync(path.join(baseline, 'index.html'), 'utf8');
+let html = fs.readFileSync(pageTemplate, 'utf8');
 const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/); assert(match);
 const assets = {...JSON.parse(match[1]), versions, runtime:'UEWebEngineThreads.js',
   wasm:metadata(path.join(output, 'UEWebEngineThreads.wasm'), 'UEWebEngineThreads.wasm')};
@@ -82,9 +102,11 @@ products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
   hierarchyShaders:audit(hierarchyFile),multiMaterial,
-  baseline:[baselinePack, ...['content-files.json', 'config-files.json', 'index.html'].map(n => path.join(baseline, n))].map(audit),
-  sources:[__filename, ...helpers.map(n => path.join(__dirname, n))].map(audit),
+  sceneCook:{stage:audit(stageFile),cook:stage.cookReport,inventory:cook.shaderInventory.artifact,
+    naniteTypes,supplementApplied:false,hierarchyArchiveApplied:false},
+  baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),
+  sources:[__filename, path.join(__dirname,'cached-cook-validation.cjs'), ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:'Existing Villa Cook plus resident Nanite depth, visible records and constant DefaultLit GBuffer export/snapshot global shaders. Explicit component bindings and default-off toggles; no whole-level Cook, arbitrary UMaterial graph, lightmaps, Substrate or complete scene acceptance.'};
+  boundary:'Fresh Villa scene Cook with resident Nanite depth, visible records and constant DefaultLit GBuffer export/snapshot shaders. Explicit component bindings and default-off toggles; no automatic whole-level Nanite conversion, arbitrary UMaterial graph, lightmaps, Substrate or complete scene acceptance.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));

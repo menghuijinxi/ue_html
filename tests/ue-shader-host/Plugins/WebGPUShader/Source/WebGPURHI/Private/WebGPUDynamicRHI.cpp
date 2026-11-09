@@ -2634,7 +2634,9 @@ bool FWebGPUDynamicRHI::ValidateTextureAtomicBinding(FRHIResource* Resource,
         Info.ArrayRange.First || Info.ArrayRange.Num != Texture->LayerCount() ||
         Info.Plane != ERHITexturePlane::Primary)
     {
-        Error = TEXT("Texture atomics require a full-layer R32_UINT atomic-compatible mip view");
+        Error = FString::Printf(TEXT("Texture atomics require a full-layer R32_UINT atomic-compatible mip view: texture=%s format=%u mip=%u atomicMips=%d firstLayer=%u layers=%u textureLayers=%u flags=0x%llx"),
+            *Texture->GetName().ToString(), uint32(Info.Format), uint32(Info.MipLevel), Texture->AtomicMips.Num(),
+            uint32(Info.ArrayRange.First), uint32(Info.ArrayRange.Num), Texture->LayerCount(), uint64(Texture->GetDesc().Flags));
         return false;
     }
     for (uint32 Slice = 0; Slice < Texture->LayerCount(); ++Slice)

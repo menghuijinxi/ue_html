@@ -393,6 +393,10 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/RHI/Private/PipelineStateCache.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RHI/Private/RHICommandList.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/RHI/Private/RHICommandList.cpp'
+    foreach ($taskRHIResourceFile in @('Public/RHIResources.h', 'Private/RHIResources.cpp')) {
+        $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/RHI/$taskRHIResourceFile"
+        $taskFiles += Join-Path $taskHost "Source/Runtime/RHI/$taskRHIResourceFile"
+    }
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/SceneTexturesConfig.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/SceneTexturesConfig.cpp'
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Experimental/ChaosCore') -File -Recurse | ForEach-Object { $_.FullName })
