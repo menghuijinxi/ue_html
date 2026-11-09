@@ -1,15 +1,27 @@
 'use strict';
 const assert = require('node:assert/strict');
+const lod = require('./nanite-lod-reference.cjs');
 
 // Independent CPU oracle reads packed page fields directly. It does not reuse
 // shader output, generated WGSL, or the GPU hierarchy traversal algorithm.
 module.exports = function verifyHierarchy(result, pages, active) {
-  assert.equal(result.cullInputRejections, active.length * 11);
-  assert.equal(result.culling.length, active.length * 7 + (result.step === 1 && result.active instanceof Array ? 6 : 0));
+  assert.equal(result.cullInputRejections, active.length * 19);
+  assert.equal(result.culling.length, active.length * 7 + (result.step === 1 && result.active instanceof Array ? 20 : 0));
   for (const c of result.culling) {
     const resource = active.find(r => r.page === c.page); assert(resource);
     const pageOffset = c.page * 32768, clusterCount = pages.readUInt32LE(pageOffset) & 65535;
     assert.equal(clusterCount, 15);
+    if (c.lodMode) {
+      const expected=lod.select(c,pages.subarray(pageOffset,pageOffset+32768),Buffer.from(result.hierarchy),resource.hierarchyOffset,c.page);
+      assert.equal(c.state[1],0,c.name);assert.equal(c.state[0],expected.length,c.name);
+      assert.deepEqual(c.keys.slice(0,c.state[0]).sort((a,b)=>a-b),expected,c.name);
+      assert(c.keys.slice(c.state[0]).every(k=>k===0xffffffff),c.name+' unused output');
+      const triangles=expected.reduce((n,key)=>n+(pages.readUInt32LE(pageOffset+16+(key&255)*16+4)&255),0);
+      assert.equal(c.state[3],triangles,c.name);assert(triangles>0,c.name+' must retain geometry');
+      const ortho={'lod-ortho-4.00':960,'lod-ortho-2.00':960,'lod-ortho-1.00':504,'lod-ortho-0.50':252,'lod-ortho-0.25':126};
+      if(c.name in ortho)assert.equal(triangles,ortho[c.name],c.name);
+      continue;
+    }
     const expected = [];
     let triangles = 0;
     for (let i = 0; i < clusterCount; ++i) {

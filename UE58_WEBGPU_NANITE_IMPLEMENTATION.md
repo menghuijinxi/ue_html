@@ -1314,13 +1314,31 @@ Renderer 覆盖，将独立对象和依赖输出写到 `results/nanite-wasm`，�
 `node tests/web-platform/collect-nanite-asset-evidence.cjs` 汇总结果前会校验源文件哈希，
 并要求上述可见性回归结果存在且通过。
 
+## 常驻层级 LOD（2026-11-09）
+
+常驻页层级剔除使用真实视图、视口高度和 `r.Nanite.MaxPixelsPerEdge` 选择
+父子 cluster cut，支持透视和正交投影、相机相对矩阵、镜像和非均匀缩放。
+投影函数与原生 HLSL、独立 CPU 几何推导比较的 3,255 个用例全部通过；
+连续缩放的四档几何分别为 126、252、504、960 个三角形，闭合边检查通过。
+
+完整 Villa Cook 后的浏览器回归运行 11,730 帧，零 GPU 错误。
+新增 10 项实际场景测试覆盖远近、正交缩放、千万量级坐标、镜像、返回原视角
+及像素误差调整，逐项比较 CPU 层级选择和独立可见性/深度参考。
+启动管线开启时 2,246 项、关闭时 2,224 项全部完成且零失败；
+延迟预缓存和失败注入均通过。证据为
+`tests/web-platform/evidence/nanite-browser-lod-20261109.json`。
+
+首次增量构建曾复用时间戳较旧的布局依赖对象，导致无效视图测试失败；
+已重编译全部七个相关对象并保存失败构建、包和运行日志，采集器检查这些依赖。
+本项仅覆盖常驻 root 页，流送页安装/替换时的 LOD 依赖继续归流送项验收。
+
 ## 尚未接通
 
 - 已执行有界常驻页光栅、真实场景深度和显式参数/基础色纹理 DefaultLit GBuffer，
   显式材质已支持跨实例分桶；完整 Nanite Renderer 的任意材质图、原生 shading bin、
   速度和 stencil/shading mask 消费尚未接通。
   HZB 专项仍使用导出的 UE shader packet，尚未做真实 Nanite HZB 剔除。
-- Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、cluster 层级 LOD 与 HZB 剔除、
+- Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、真实 HZB 剔除、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
@@ -1333,4 +1351,4 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 
 当前专项包已使用重新 Cook 的完整 Villa 资源，Nanite 组件和材质仍由显式测试接口绑定。
 下一阶段继续补齐自动材质绑定、完整 GPUScene/material/view 绑定与材质图支持，
-再推进 LOD、Compute 微三角形光栅、页流送及完整场景验收。
+再推进 Compute 微三角形光栅、页流送及完整场景验收。

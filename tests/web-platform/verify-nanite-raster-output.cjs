@@ -17,11 +17,11 @@ function clip(triangle) {
   return polygon;
 }
 
-// Independent source-mesh reference: no cull keys or Nanite page positions are
-// used to generate expected coverage/depth. Quantization matches the cooked
-// fixture's explicitly recorded position precision. Six-plane homogeneous
+// Full-detail tests use independent source triangles. LOD tests supply geometry
+// decoded from independently selected CPU cuts, never the GPU-visible list.
+// Quantization matches the fixture's position precision. Six-plane homogeneous
 // clipping includes triangles crossing the eye/near plane.
-module.exports = function verifyRaster(result, source, page, precision) {
+module.exports = function verifyRaster(result, source, page, precision, referenceMeshes) {
   const {rasterWidth:width, rasterHeight:height, visibility:pixels, entries} = result;
   assert.equal(width,192); assert.equal(height,128); assert.equal(pixels.length,width*height*2);
   const rect = [7,5,185,123], depth = new Float64Array(width*height), owner = new Int32Array(width*height).fill(-1);
@@ -55,10 +55,11 @@ module.exports = function verifyRaster(result, source, page, precision) {
     }
   };
   if(!result.invalidCullState) entries.forEach((entry,index) => {
+    const triangles=referenceMeshes?referenceMeshes.get(entry.component):source;
     const m=[...Array(16)].map((_,i)=>Math.fround([0,1,2,3].reduce((s,k)=>
       s+entry.localToWorld[Math.floor(i/4)*4+k]*result.worldToClip[k*4+i%4],0)));
-    for(let offset=0;offset<source.length;offset+=36) {
-      const tri=[0,1,2].map(v=>transform([...Array(3)].map((_,c)=>Math.round(source.readFloatLE(offset+v*12+c*4)*scale)/scale).concat(1),m));
+    for(let offset=0;offset<triangles.length;offset+=36) {
+      const tri=[0,1,2].map(v=>transform([...Array(3)].map((_,c)=>Math.round(triangles.readFloatLE(offset+v*12+c*4)*scale)/scale).concat(1),m));
       const polygon=clip(tri);
       for(let i=1;i+1<polygon.length;++i) rasterize([polygon[0],polygon[i],polygon[i+1]],index);
     }
@@ -89,8 +90,8 @@ module.exports = function verifyRaster(result, source, page, precision) {
     }
   }
   assert(edgeDifferences<=Math.max(4,referenceCovered*.01),`too many edge differences: ${edgeDifferences}`);
-  if([4,7,9].includes(result.step)||result.step>=14) assert.equal(covered,0);
-  else {assert(covered>50,`step ${result.step} must draw geometry`); assert(depthChecked>covered*.25,'insufficient interior depth/owner checks');}
+  if([4,7,9].includes(result.step)||result.invalidCullState) assert.equal(covered,0);
+  else {assert(covered>(referenceMeshes?8:50),`step ${result.step} must draw geometry`); assert(depthChecked>covered*.25,'insufficient interior depth/owner checks');}
   if(result.step===11) assert.deepEqual(Object.keys(byComponent),['0'],'near instance must occlude far instance');
   if(result.step===12) assert.deepEqual(Object.keys(byComponent),[String(entries.reduce((a,b)=>a.clusterBase>b.clusterBase?a:b).component)]);
   return {pass:true, covered, referenceCovered, edgeDifferences, depthChecked, maxDepthError, byComponent};

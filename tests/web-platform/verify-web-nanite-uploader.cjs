@@ -3,6 +3,7 @@ const fs = require('node:fs'), path = require('node:path'), assert = require('no
 const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const verifyHierarchy = require('./verify-nanite-hierarchy-output.cjs');
+const verifyLOD = require('./verify-nanite-scene-lod.cjs');
 const verifySceneCull = require('./verify-nanite-scene-cull-output.cjs');
 const verifyRaster = require('./verify-nanite-raster-output.cjs');
 const verifyDepth = require('./verify-nanite-depth-output.cjs');
@@ -120,7 +121,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   textureReferencePolicy:{lod:'largest singular value of UV Jacobian',maxCommonLODOffset:.25,maxSRGBCodeError:2,
     reference:'https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm',section:'7.18.11',
     boundary:'Probe acceptance bound for approximate footprint transformation; no cross-vendor precision guarantee.'},
-  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Equal explicit materials share bins of up to 64 instance/slot members, one GPU-compacted union of 8x8 tiles and one indirect draw. Per-pixel member transforms remain distinct. Zero-fallback fixtures verify this subset; no automatic UMaterial bindings, arbitrary graphs, lightmaps, normal maps, Substrate, full Nanite shading bins, LOD/HZB/streaming or complete-scene acceptance.'};
+  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Equal explicit materials share bins of up to 64 instance/slot members, one GPU-compacted union of 8x8 tiles and one indirect draw. Per-pixel member transforms remain distinct. Zero-fallback fixtures verify this subset; no automatic UMaterial bindings, arbitrary graphs, lightmaps, normal maps, Substrate, full Nanite shading bins, HZB/streaming or complete-scene acceptance. Resident LOD uses real view pixel error, with independent CPU cut/raster comparisons; streaming LOD remains unimplemented.'};
 (async () => {
   let browser;
   try {
@@ -293,7 +294,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       console.log('Browser UE static mesh scene step ' + step + ' passed');
     }
     assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 6)), 1);
-    assert.equal(await owner.evaluate(() => __naniteBrowserAudit.cullDispatches), 67, 'Unused scene outputs must be culled by RDG');
+    assert.equal(await owner.evaluate(() => __naniteBrowserAudit.cullDispatches), 81, 'Unused scene outputs must be culled by RDG');
     const fixturePage = fs.readFileSync(report.scene[0].products[0].file);
     const sourceTriangles = fs.readFileSync(packaged.sourceTriangles.file);
     for (let step = 1; step <= 19; ++step) {
@@ -339,7 +340,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       const file = path.join(output, 'hierarchy.wgsl'); fs.writeFileSync(file, code); return audit(file);
     });
     report.cullDispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
-    assert.equal(report.cullDispatches, 100);
+    assert.equal(report.cullDispatches, 114);
     const rasterShaders = await owner.evaluate(() => __naniteBrowserAudit.rasterShaders);
     assert.equal(rasterShaders.length,2);
     assert(rasterShaders.some(code=>code.includes('atomicStoreMax')&&code.includes('atomic<vec2<u32>>')));
@@ -448,6 +449,41 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.deepEqual(await owner.evaluate(endCounts),stoppedGBuffer,'GBuffer cleanup must stop all experimental passes');
     assert.equal(stoppedGBuffer.gbuffer,stoppedGBuffer.indirect);assert.equal(stoppedGBuffer.tiles,stoppedGBuffer.indirect+2);
     report.sceneGBufferCleanup={pass:true,framesObserved:4,...stoppedGBuffer};
+    report.sceneLOD=[];
+    report.lodOracle=audit(require.resolve('./verify-nanite-scene-lod.cjs'));
+    report.lodReference=audit(require.resolve('./nanite-lod-reference.cjs'));
+    const lodHierarchy=fs.readFileSync(report.scene[0].products.find(p=>path.basename(p.file).startsWith('scene-hierarchy-')).file);
+    for(let step=26;step<=35;step++) {
+      assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteSceneCullTest',s),step),1);
+      let result;const started=Date.now();
+      do {
+        await page.waitForTimeout(100);assert.equal(report.errors.length,0,report.errors.join('\n'));
+        assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteSceneCullTest',0)),1);
+        result=await owner.evaluate(()=>globalThis.__webNaniteSceneCullTest||null);
+      }while((!result||result.pending||result.step!==step)&&Date.now()-started<45000);
+      assert(result&&!result.pending&&result.step===step);
+      result.validation=verifyLOD(result,fixturePage,lodHierarchy,report.sceneCulling,oracle.asset.positionPrecision);
+      result.materialValidation=verifyMaterialInputs(result,fixturePage);
+      result.products={};
+      for(const key of ['visibility','materialInputs']) {
+        const data=Buffer.alloc(result[key].length*4);result[key].forEach((v,i)=>data.writeUInt32LE(v,i*4));
+        const file=path.join(output,`lod-${step}-${key}.bin`);fs.writeFileSync(file,data);result.products[key]=audit(file);delete result[key];
+      }
+      report.sceneLOD.push({...result,pass:true});console.log(`Browser scene LOD step ${step} passed`);
+    }
+    const triangles=step=>report.sceneLOD.find(s=>s.step===step).validation.counts.reduce((n,c)=>n+c.triangles,0);
+    assert(triangles(27)<triangles(26)&&triangles(28)<triangles(27)&&triangles(29)>triangles(26));
+    assert(triangles(31)>triangles(30)&&triangles(32)<triangles(30));
+    assert.deepEqual(report.sceneLOD.find(s=>s.step===34).validation.counts.map(c=>c.keys.map(k=>k&255)),
+      report.sceneLOD[0].validation.counts.map(c=>c.keys.map(k=>k&255)),'Returning camera and instances must restore the same cut');
+    assert(triangles(35)<triangles(34));
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteSceneCullTest',36)),1);
+    const lodFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+8,lodFrame,{timeout:30000});
+    const stoppedLOD=await owner.evaluate(endCounts),lodStoppedFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+4,lodStoppedFrame,{timeout:30000});
+    assert.deepEqual(await owner.evaluate(endCounts),stoppedLOD);
+    report.sceneLODCleanup={pass:true,framesObserved:4,...stoppedLOD};
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
     report.storagePrecache = await owner.evaluate(() => ({...__storagePrecacheAudit, rhi:globalThis.__webOptimizationRHI}));
     report.storagePrecache.validation = verifyStoragePrecache(report.storagePrecache);

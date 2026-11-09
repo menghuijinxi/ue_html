@@ -74,7 +74,7 @@ assert.deepEqual(browser.scene.map(c => c.dispatches), [2,0,0,2,0]);
 assert.deepEqual(browser.scene.map(c => c.proxies), [2,1,0,2,0]);
 assert(browser.defaultDisabled.pass && browser.defaultDisabled.transcodeDispatches === 0);
 for (const test of browser.scene) {assert(test.pass); test.products.forEach(verify);}
-assert.equal(browser.cullDispatches, 100);
+assert.equal(browser.cullDispatches, 114);
 assert.equal(browser.sceneCulling.length, 19);
 assert.deepEqual(browser.sceneCulling.map(c => c.entries.length), [2,2,2,2,2,1,0,2,0,2,...Array(9).fill(2)]);
 assert(browser.sceneCulling.every(c => c.pass && c.rejected === 0 && c.dispatches === c.entries.length));
@@ -88,6 +88,22 @@ for(const test of browser.sceneCulling) {
   const raw={...test,visibility:words(test.visibilityProduct),materialInputs:words(test.materialProduct)};
   assert.deepEqual(verifyMaterialInputs(raw,fixturePage),test.materialValidation);
 }
+const verifyLOD = require('./verify-nanite-scene-lod.cjs');
+assert(browser.sceneLOD.length === 10 && browser.sceneLODCleanup.pass && browser.sceneLODCleanup.framesObserved >= 4);
+[browser.lodOracle,browser.lodReference].forEach(verify);
+const lodHierarchy=fs.readFileSync(browser.scene[0].products.find(p=>path.basename(p.file).startsWith('scene-hierarchy-')).file);
+const lodFixture=read(path.dirname(browser.package.file)+'/package.json');
+const lodPrecision=read(lodFixture.browserOracle.file).asset.positionPrecision;
+for(const test of browser.sceneLOD) {
+  assert(test.pass);const raw={...test};
+  for(const [key,p] of Object.entries(test.products)) {verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));}
+  assert.deepEqual(verifyLOD(raw,fixturePage,lodHierarchy,browser.sceneCulling,lodPrecision),test.validation);
+  assert.deepEqual(verifyMaterialInputs(raw,fixturePage),test.materialValidation);
+}
+const lodProjectionFile=path.join(__dirname,'results/nanite-lod-projection/verified.json'),lodProjection=read(lodProjectionFile);
+assert(lodProjection.pass && lodProjection.cases === 3255);
+[lodProjection.source, ...lodProjection.sources, ...lodProjection.tools, ...lodProjection.products].forEach(verify);
+assert.deepEqual(lodProjection.errors, []);
 assert.equal(browser.rasterDraws.length, 33);
 assert.equal(browser.recordDispatches,33);assert.equal(browser.materialDispatches,33);
 assert.equal(browser.defaultDisabled.rasterDraws, 0);
@@ -102,7 +118,7 @@ for(const test of browser.sceneDepth) {
   test.products.forEach((p,i)=>{verify(p);const b=fs.readFileSync(p.file);raw[i?'after':'before']=Array.from({length:b.length/4},(_,j)=>b.readUInt32LE(j*4));});
   assert.deepEqual(verifyDepth(raw),test.validation);
 }
-assert(browser.depthDraws>=20&&browser.totalCullDispatches>100&&browser.totalRasterDraws>33);
+assert(browser.depthDraws>=20&&browser.totalCullDispatches>114&&browser.totalRasterDraws>33);
 assert(browser.sceneDepthCleanup.pass&&browser.sceneDepthCleanup.framesObserved>=4);
 assert.equal(browser.sceneGBuffer.length,26);assert.equal(browser.defaultDisabled.gbufferDraws,0);
 assert.equal(browser.defaultDisabled.gbufferIndirectDraws,0);assert.equal(browser.defaultDisabled.tileDispatches,0);
@@ -132,8 +148,8 @@ for(const test of browser.sceneGBuffer) {
   assert.deepEqual(verifyTiles(raw,test.step>=13?multiPage:fixturePage),test.tileValidation);
   if(test.step>=7&&test.step<=10) assert.equal(verifyGBuffer.verifyTextureMutations(raw,fixturePage),test.textureReferenceRejections);
 }
-assert.equal([...browser.residency, ...browser.scene].flatMap(c => c.culling || []).length, 62);
-assert.equal([...browser.residency, ...browser.scene].reduce((n, c) => n + (c.cullInputRejections || 0), 0), 88);
+assert.equal([...browser.residency, ...browser.scene].flatMap(c => c.culling || []).length, 76);
+assert.equal([...browser.residency, ...browser.scene].reduce((n, c) => n + (c.cullInputRejections || 0), 0), 152);
 [browser.source, browser.cullOracle, browser.sceneCullOracle, browser.rasterOracle, browser.depthOracle, browser.materialOracle, browser.gbufferOracle,browser.tilesOracle,browser.multiAssetOracle,browser.package,
   ...browser.shaders, ...browser.cullShaders, ...browser.rasterShaders, ...browser.depthShaders, ...browser.materialShaders,
   ...browser.gbufferShaders,browser.visibilityPreview, browser.depthPreview, browser.materialPreview,browser.gbufferPreview].forEach(verify);
@@ -181,6 +197,20 @@ if(build.fullTargetBuild) {
   const normalize=f=>path.resolve(f).toLowerCase();
   const rebuilt=new Set(actions.Actions.filter(a=>a.Type==='Compile'&&execution.results.some(r=>r.id===a.Id&&r.code===0))
     .flatMap(a=>a.ProducedItems).map(normalize));
+  const lodLayoutFile=path.join(__dirname,'results/web-engine-nanite-lod-layout-build-results.json'),lodLayout=read(lodLayoutFile);
+  assert(lodLayout.pass && lodLayout.fullLinkVerified);
+  [lodLayout.compileExecution,lodLayout.exportedActions,lodLayout.log].forEach(verify);
+  const lodHeaders=lodLayout.sourceFiles.filter(i=>/[\\/]NaniteWeb(?:Hierarchy|Scene)\.h$/.test(i.file));
+  assert.equal(lodHeaders.length,4);lodHeaders.forEach(verify);
+  const lodExecution=read(lodLayout.compileExecution.file),lodActions=read(lodLayout.exportedActions.file);
+  assert(lodExecution.pass && lodExecution.results.every(r=>r.code===0));
+  const lodRebuilt=new Set(rebuilt);
+  for(const action of lodActions.Actions.filter(a=>a.Type==='Compile' && lodExecution.results.some(r=>r.id===a.Id&&r.code===0)))
+    action.ProducedItems.forEach(f=>lodRebuilt.add(normalize(f)));
+  const lodDependents = full.objects.filter(o=>fs.existsSync(o.object.file+'.d') &&
+    /\/Rendering\/NaniteWeb(?:Hierarchy|Scene)\.h/.test(fs.readFileSync(o.object.file+'.d','utf8').replaceAll('\\','/')));
+  assert(lodDependents.length > 0 && lodDependents.every(o=>lodRebuilt.has(normalize(o.object.file))),
+    'LOD layout changes require every dependent object to be rebuilt');
   // Later full-target builds may only recompile a driver fix. Retain the initial
   // header rebuild's action proof and require the identical RHI protocol.
   const headerFile=path.join(__dirname,'results/web-engine-rhi-lifetime-full-build-results.json');
@@ -199,6 +229,9 @@ if(build.fullTargetBuild) {
     'this RHI header regression must use rebuilt dependent objects');
   fullTargetValidation={compileExecution:full.compileExecution,exportedActions:full.exportedActions,
     compiledActions:execution.results.length,linkedObjects:full.objects.length,
+    lodLayoutRebuild:{report:audit(lodLayoutFile),compileExecution:lodLayout.compileExecution,
+      exportedActions:lodLayout.exportedActions,sourceFiles:lodHeaders,dependentObjects:lodDependents.length,
+      compileLogs:lodExecution.results.flatMap(r=>r.attempts.map(a=>audit(a.log)))},
     headerRebuild:{report:audit(headerFile),compileExecution:headerBuild.compileExecution,exportedActions:headerBuild.exportedActions,
       compiledActions:headerExecution.results.length,sourceFiles:headerSources,
       compileLogs:headerExecution.results.flatMap(r=>r.attempts.map(a=>audit(a.log)))},
@@ -310,7 +343,16 @@ const failedRegistration = registrationFailure.sceneCulling.find(c => c.step ===
 const restoredRegistration = browser.sceneCulling.find(c => c.step === 8);
 assert(!registrationFailure.pass && failedRegistration.entries.length === 1 && failedRegistration.validationFailure);
 assert(restoredRegistration.pass && restoredRegistration.entries.length === 2 && restoredRegistration.pendingPSOsAtCapture === 0);
+const staleLODFile=path.join(__dirname,'results/nanite-browser/failure-lod-stale-object-20261109.json');
+const staleLOD=read(staleLODFile);
+const staleLODPackage=path.join(__dirname,'results/nanite-browser/failure-lod-stale-object-package-20261109.json');
+const staleLODBuild=path.join(__dirname,'results/nanite-browser/failure-lod-stale-object-build-20261109.json');
+assert(!staleLOD.pass && staleLOD.failure.includes('BadView'));
+assert.equal(audit(staleLODPackage).sha256,staleLOD.package.sha256);
+assert.equal(audit(staleLODBuild).sha256,read(staleLODPackage).build.sha256);
 const report = {date:new Date().toISOString(), pass:true,
+  residentLOD:{projectionReport:audit(lodProjectionFile),...lodProjection,
+    staleObjectFailure:{report:audit(staleLODFile),package:audit(staleLODPackage),build:audit(staleLODBuild),failure:staleLOD.failure}},
   componentPrecacheSynchronization:{failedRun:audit(registrationFailureFile), historicalPackage:registrationFailure.package,
     before:{registered:failedRegistration.registered, components:failedRegistration.entries.map(e=>e.component), failure:failedRegistration.validationFailure},
     after:{registered:restoredRegistration.registered, pendingPSOsAtCapture:restoredRegistration.pendingPSOsAtCapture,
@@ -359,7 +401,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-pipelines-20261109.json');
+const destination = path.join(__dirname, 'evidence/nanite-browser-lod-20261109.json');
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

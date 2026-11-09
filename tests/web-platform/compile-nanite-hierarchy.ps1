@@ -20,6 +20,8 @@ try {
     $taskInputs = @(
         'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteHierarchy.usf',
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteLOD.ush',
+        'reference-engine/Engine/Source/Runtime/Engine/Public/Rendering/NaniteWebHierarchy.h',
         'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebRaster.cpp',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteRaster.usf',
         'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebDepth.cpp',

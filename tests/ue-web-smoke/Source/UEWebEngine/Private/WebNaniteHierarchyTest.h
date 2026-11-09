@@ -11,6 +11,9 @@ struct FWebNaniteHierarchyChecks
         FString Name;
         uint32 Capacity, Page;
         FVector4f Planes[6];
+        uint32 LODMode;
+        FMatrix44f LocalToView;
+        FVector4f LODParameters;
         TUniquePtr<FRHIGPUBufferReadback> Keys, State;
     };
     TArray<FCase> Cases;
@@ -22,6 +25,7 @@ struct FWebNaniteHierarchyChecks
         check(Nanite::AddWebResidentHierarchyCullPasses(Graph, Input, Output));
         auto& Case = Cases.AddDefaulted_GetRef();
         Case.Name = Name; Case.Capacity = Input.MaxVisibleClusters; Case.Page = Input.FirstRootPage;
+        Case.LODMode = Input.LODMode; Case.LocalToView = Input.LocalToView; Case.LODParameters = Input.LODParameters;
         for (int32 I = 0; I < 6; ++I) Case.Planes[I] = Input.Planes[I];
         Case.Keys = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebNaniteCullKeys"));
         Case.State = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebNaniteCullState"));
@@ -42,7 +46,7 @@ struct FWebNaniteHierarchyChecks
         Input.MaxLevels = Manager.GetMaxHierarchyLevels();
         Input.MaxVisibleClusters = Resource.NumClusters;
         for (int32 I = 0; I < 6; ++I) { Input.Planes[I] = FVector4f(0, 0, 0, 100); Input.Planes[I][I / 2] = I % 2 ? -1 : 1; }
-        for (uint32 Bad = 0; Bad < 11; ++Bad)
+        for (uint32 Bad = 0; Bad < 19; ++Bad)
         {
             auto Invalid = Input;
             if (Bad == 0) Invalid.MaxVisibleClusters = 0;
@@ -56,6 +60,15 @@ struct FWebNaniteHierarchyChecks
             if (Bad == 8) Invalid.ClusterPageData = Graph.CreateSRV(FRDGBufferSRVDesc(Input.ClusterPageData->Desc.Buffer, uint32(0), 16));
             if (Bad == 9) Invalid.Hierarchy = Graph.CreateSRV(FRDGBufferSRVDesc(Input.Hierarchy->Desc.Buffer, 16, 4));
             if (Bad == 10) Invalid.Hierarchy = Graph.CreateSRV(FRDGBufferSRVDesc(Input.Hierarchy->Desc.Buffer, uint32(0), 4));
+            if (Bad >= 11) Invalid.LODMode = 1;
+            if (Bad == 11) Invalid.LODMode = 3;
+            if (Bad == 12) Invalid.LODParameters.X = 0;
+            if (Bad == 13) Invalid.LODParameters.Y = 0;
+            if (Bad == 14) Invalid.LODParameters.Z = 0.5f;
+            if (Bad == 15) Invalid.LODParameters.W = 0;
+            if (Bad == 16) Invalid.LODParameters.X = std::numeric_limits<float>::infinity();
+            if (Bad == 17) Invalid.LocalToView.M[0][0] = std::numeric_limits<float>::quiet_NaN();
+            if (Bad == 18) Invalid.LocalToView.M[0][3] = 1;
             Nanite::FWebHierarchyCullResult Rejected;
             check(!Nanite::AddWebResidentHierarchyCullPasses(Graph, Invalid, Rejected));
             check(!Rejected.ClusterKeys && !Rejected.State); ++Rejections;
@@ -72,6 +85,30 @@ struct FWebNaniteHierarchyChecks
         Input.MaxVisibleClusters = 1; Add(Graph, Input, TEXT("capacity"));
         if (!Synthetic) return;
         Input.MaxVisibleClusters = Resource.NumClusters;
+        Input.LODMode = 2;
+        for (const float Scale : { 4.0f, 2.0f, 1.0f, 0.5f, 0.25f })
+        {
+            Input.LODParameters = FVector4f(Scale, 1, 1, 1);
+            Add(Graph, Input, *FString::Printf(TEXT("lod-ortho-%.2f"), Scale));
+        }
+        Input.LODMode = 1;
+        for (const float Distance : { 40.0f, 100.0f, 250.0f, 500.0f, 1000.0f, 2000.0f, 4000.0f })
+        {
+            Input.LocalToView = FMatrix44f::Identity;
+            Input.LocalToView.M[3][2] = Distance;
+            Input.LODParameters = FVector4f(512, 1, 1, 10);
+            Add(Graph, Input, *FString::Printf(TEXT("lod-perspective-%.0f"), Distance));
+        }
+        // Off-axis, mirrored scale and camera-inside bounds must stay finite.
+        Input.LocalToView = FMatrix44f::Identity;
+        Input.LocalToView.M[0][0] = -0.5f; Input.LocalToView.M[1][1] = 2.0f;
+        Input.LocalToView.M[3][0] = 250.0f; Input.LocalToView.M[3][2] = 400.0f;
+        Input.LODParameters = FVector4f(512, 0.5f, 2.0f, 10);
+        Add(Graph, Input, TEXT("lod-mirrored-off-axis"));
+        Input.LocalToView = FMatrix44f::Identity;
+        Input.LODParameters = FVector4f(512, 1, 1, 10);
+        Add(Graph, Input, TEXT("lod-camera-inside"));
+        Input.LODMode = 0;
         check(Resource.HierarchyNodes.Num() == 1);
         TArray<Nanite::FPackedHierarchyNode> Nodes;
         Nodes.AddZeroed(); Nodes.Add(Resource.HierarchyNodes[0]);
@@ -124,6 +161,13 @@ struct FWebNaniteHierarchyChecks
             auto Item = MakeShared<FJsonObject>();
             Item->SetStringField(TEXT("name"), Case.Name); Item->SetNumberField(TEXT("page"), Case.Page);
             Item->SetNumberField(TEXT("capacity"), Case.Capacity);
+            Item->SetNumberField(TEXT("lodMode"), Case.LODMode);
+            TArray<TSharedPtr<FJsonValue>> LODMatrix, LODParameters;
+            for (int32 Row = 0; Row < 4; ++Row) for (int32 Col = 0; Col < 4; ++Col)
+                LODMatrix.Add(MakeShared<FJsonValueNumber>(Case.LocalToView.M[Row][Col]));
+            for (int32 Axis = 0; Axis < 4; ++Axis) LODParameters.Add(MakeShared<FJsonValueNumber>(Case.LODParameters[Axis]));
+            Item->SetArrayField(TEXT("localToView"), LODMatrix);
+            Item->SetArrayField(TEXT("lodParameters"), LODParameters);
             TArray<TSharedPtr<FJsonValue>> Values, Counts, Planes;
             for (uint32 I = 0; I < Case.Capacity; ++I) Values.Add(MakeShared<FJsonValueNumber>(Keys[I]));
             for (uint32 I = 0; I < 4; ++I) Counts.Add(MakeShared<FJsonValueNumber>(State[I]));
