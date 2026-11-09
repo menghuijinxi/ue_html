@@ -93,6 +93,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     Report->SetNumberField(TEXT("skipped"), View.Skipped);
     Report->SetNumberField(TEXT("rejected"), View.Rejected);
     Report->SetBoolField(TEXT("perspective"), View.View->IsPerspectiveProjection());
+    Report->SetBoolField(TEXT("cullBackfaces"), true); // The fixture uses the single-sided default material.
+    Report->SetBoolField(TEXT("reverseView"), View.View->bReverseCulling);
     Report->SetArrayField(TEXT("worldToClip"), MatrixJSON(View.View->ViewMatrices.GetWorldToClip()));
     Report->SetArrayField(TEXT("worldToView"), MatrixJSON(View.View->ViewMatrices.GetViewMatrix()));
     Report->SetArrayField(TEXT("projection"), MatrixJSON(View.View->ViewMatrices.GetProjectionMatrix()));

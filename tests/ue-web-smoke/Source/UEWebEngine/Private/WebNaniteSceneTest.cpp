@@ -73,6 +73,19 @@ UStaticMesh* CreateResidentSceneMesh(bool WithNanite = true, bool WithFallback =
     // submits no fallback batches, so prepass/velocity cannot duplicate its depth.
     Section.NumTriangles = WithFallback ? 960 : 0; Section.MinVertexIndex = 0; Section.MaxVertexIndex = Vertices.Num() - 1;
     Section.bEnableCollision = false;
+    if (MultiMaterial)
+    {
+        // The cooked Nanite clusters reference slots 0/7/31/63. Expose their
+        // real section bindings to the proxy instead of relying on an old
+        // visibility pass that ignored missing materials.
+        for (int32 Slot = 1; Slot < 64; ++Slot)
+        {
+            auto& MaterialSection = LOD.Sections.AddDefaulted_GetRef();
+            MaterialSection.MaterialIndex = Slot; MaterialSection.NumTriangles = 0;
+            MaterialSection.MinVertexIndex = 0; MaterialSection.MaxVertexIndex = Vertices.Num() - 1;
+            MaterialSection.bEnableCollision = false;
+        }
+    }
     Data->Bounds = FBoxSphereBounds(Bounds);
     auto* Mesh = NewObject<UStaticMesh>(GetTransientPackage(), NAME_None, RF_Transient);
     Mesh->AddToRoot(); Mesh->NeverStream = true; Mesh->bAllowCPUAccess = true;

@@ -384,6 +384,9 @@ try {
     if ($taskReport.skyLightCapture) { $taskReport.products += $taskReport.skyLightCapture }
     $taskReport.totalBytes = ($taskAssets | Measure-Object -Property Length -Sum).Sum
     if ($taskReport.skyLightCapture) { $taskReport.totalBytes += (Get-Item -LiteralPath $taskReport.skyLightCapture.file).Length }
+    if ($taskWebGPU -and -not (Test-Path -LiteralPath (Join-Path $taskOutput 'ShaderConversion/inventory.json'))) {
+        throw "Web Cook shader inventory was not recorded, including cached shader maps: $taskOutput/ShaderConversion/inventory.json"
+    }
     $taskReport.pass = $true
     $taskReport.stage = 'complete'
 } catch {

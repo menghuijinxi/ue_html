@@ -35,6 +35,12 @@ module.exports = function verifyRaster(result, source, page, precision, referenc
     p.forEach(v=>{v[0]=Math.round(v[0]*256)/256;v[1]=Math.round(v[1]*256)/256;});
     const cross = (a,b,x,y) => (b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0]);
     const area = cross(p[0],p[1],p[2][0],p[2][1]); if (Math.abs(area)<1e-12) return;
+    if(result.cullBackfaces){
+      const m=entries[entryIndex].localToWorld;
+      const determinant=m[0]*(m[5]*m[10]-m[6]*m[9])-m[1]*(m[4]*m[10]-m[6]*m[8])+m[2]*(m[4]*m[9]-m[5]*m[8]);
+      const reverse=(determinant<0)!==!!result.reverseView;
+      if((area<0)===reverse)return;
+    }
     const sign = Math.sign(area);
     const lens = [0,1,2].map(i => Math.hypot(p[(i+2)%3][0]-p[(i+1)%3][0],p[(i+2)%3][1]-p[(i+1)%3][1]));
     const minX = Math.max(rect[0],Math.floor(Math.min(...p.map(v=>v[0]))-.02));
@@ -90,7 +96,9 @@ module.exports = function verifyRaster(result, source, page, precision, referenc
     }
   }
   assert(edgeDifferences<=Math.max(4,referenceCovered*.01),`too many edge differences: ${edgeDifferences}`);
-  if([4,7,9].includes(result.step)||result.invalidCullState) assert.equal(covered,0);
+  // Step 13 places the camera inside the single-sided closed sphere. Its
+  // outward faces are all culled; earlier double-sided raster drew its interior.
+  if([4,7,9].includes(result.step)||(result.cullBackfaces&&result.step===13)||result.invalidCullState) assert.equal(covered,0);
   else {assert(covered>(referenceMeshes?8:50),`step ${result.step} must draw geometry`); assert(depthChecked>covered*.25,'insufficient interior depth/owner checks');}
   if(result.step===11) assert.deepEqual(Object.keys(byComponent),['0'],'near instance must occlude far instance');
   if(result.step===12) assert.deepEqual(Object.keys(byComponent),[String(entries.reduce((a,b)=>a.clusterBase>b.clusterBase?a:b).component)]);

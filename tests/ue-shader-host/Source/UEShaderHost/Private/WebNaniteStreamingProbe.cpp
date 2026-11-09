@@ -46,8 +46,10 @@ int32 RunWebNaniteStreamingProbe(const FString& Params)
     for (int32 Y = 0; Y < Latitudes; ++Y) for (int32 X = 0; X < Longitudes; ++X)
     {
         const int32 A = Y * (Longitudes + 1) + X, B = A + Longitudes + 1;
-        if (Y > 0) Triangle(A, B, A + 1);
-        if (Y < Latitudes - 1) Triangle(A + 1, B, B + 1);
+        // UE's left-handed mesh convention takes cross(edge2, edge1). Keep
+        // winding aligned with the outward normals for single-sided materials.
+        if (Y > 0) Triangle(A, A + 1, B);
+        if (Y < Latitudes - 1) Triangle(A + 1, B + 1, B);
     }
     TArray<TSharedPtr<FJsonValue>> Assets;
     for (int32 Variant = 0; Variant < 3; ++Variant)

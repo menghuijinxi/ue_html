@@ -74,6 +74,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     Report->SetNumberField(TEXT("registered"), View.Registered); Report->SetNumberField(TEXT("rejected"), View.Rejected);
     Report->SetNumberField(TEXT("skipped"), View.Skipped); Report->SetNumberField(TEXT("pendingPSOs"), 0);
     Report->SetArrayField(TEXT("expected"), Expected);
+    Report->SetBoolField(TEXT("cullBackfaces"), true); // The fixture uses the single-sided default material.
+    Report->SetBoolField(TEXT("reverseView"), View.View->bReverseCulling);
     Report->SetArrayField(TEXT("worldToClip"), MatrixJSON(View.View->ViewMatrices.GetWorldToClip()));
     Nanite::FWebRasterVisibility Raster;
     check(Nanite::AddWebResidentRasterPasses(Graph, View, RasterExtent, RasterRect, Raster));

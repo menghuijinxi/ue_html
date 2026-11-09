@@ -14,6 +14,7 @@
 #include "Interfaces/IShaderFormatModule.h"
 #include "Internationalization/Regex.h"
 #include "Misc/CommandLine.h"
+#include "Misc/CoreDelegates.h"
 #include "Misc/Crc.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Guid.h"
@@ -566,6 +567,21 @@ bool UE::WebGPUShader::ValidateBindings(const TSharedRef<FJsonObject> &Metadata,
 class FWebGPUShaderFormat final : public IShaderFormat
 {
   public:
+    static void RecordCachedCookInventory()
+    {
+        // A complete shader-map DDC hit submits no compiler jobs. Enumerate
+        // the same loaded types before module teardown in that case as well.
+        if (!FParse::Param(FCommandLine::Get(), TEXT("WebGPUCook"))) return;
+        const bool Mobile = FParse::Param(FCommandLine::Get(), TEXT("WebGPUES31Cook"));
+        const auto Platform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(
+            Mobile ? TEXT("SP_WEBGPU_ES31") : TEXT("SP_WEBGPU_SM5"));
+        if (Platform == SP_NumPlatforms || FPlatformMisc::GetEnvironmentVariable(TEXT("WEBGPU_INTERMEDIATE_DIR")).IsEmpty()) return;
+        FShaderCompilerInput Input;
+        Input.Target = FShaderTarget(SF_Compute, Platform);
+        Input.ShaderFormat = Mobile ? UE::WebGPUShader::ES31Format : UE::WebGPUShader::SM5Format;
+        RecordCookInventory(Input);
+    }
+
     FWebGPUShaderFormat()
     {
         FDataDrivenShaderPlatformInfo::Initialize();
@@ -1311,6 +1327,14 @@ class FWebGPUShaderFormat final : public IShaderFormat
 class FWebGPUShaderFormatModule final : public IShaderFormatModule
 {
   public:
+    virtual void StartupModule() override
+    {
+        InventoryHandle = FCoreDelegates::OnEnginePreExit.AddStatic(&FWebGPUShaderFormat::RecordCachedCookInventory);
+    }
+    virtual void ShutdownModule() override
+    {
+        FCoreDelegates::OnEnginePreExit.Remove(InventoryHandle);
+    }
     virtual IShaderFormat *GetShaderFormat() override
     {
         if (!Format)
@@ -1319,6 +1343,7 @@ class FWebGPUShaderFormatModule final : public IShaderFormatModule
     }
 
   private:
+    FDelegateHandle InventoryHandle;
     TUniquePtr<FWebGPUShaderFormat> Format;
 };
 
