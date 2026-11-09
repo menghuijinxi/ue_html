@@ -583,7 +583,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261109-v32-StorageAccess-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261109-v33-TextureLoadAccess-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -930,7 +930,9 @@ class FWebGPUShaderFormat final : public IShaderFormat
         // HLSL RWTexture does not imply a read in this entry point. Preserve
         // actual reads, but mark proven write-only images for every shader.
         const TSet<uint32> ImageReads = FindStorageImageReads(Spirv, NativeBindings);
-        const TSet<uint32> LoadOnlyImages = RuntimeStorageFormats ? FindLoadOnlySampledImages(Spirv, NativeBindings) : TSet<uint32>();
+        // Load-only depth/R32F textures require unfilterable bindings in every shader,
+        // including fixed-format HZB builders, not only dynamically formatted Lumen shaders.
+        const TSet<uint32> LoadOnlyImages = FindLoadOnlySampledImages(Spirv, NativeBindings);
         TSet<uint32> WriteOnlyImages;
         TArray<TSharedPtr<FJsonValue>> Bindings, Parameters, Resources;
         for (const SpvReflectDescriptorBinding *Binding : NativeBindings)

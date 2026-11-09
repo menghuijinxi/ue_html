@@ -124,7 +124,7 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
   textureReferencePolicy:{lod:'largest singular value of UV Jacobian',maxCommonLODOffset:.25,maxSRGBCodeError:2,
     reference:'https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm',section:'7.18.11',
     boundary:'Probe acceptance bound for approximate footprint transformation; no cross-vendor precision guarantee.'},
-  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Equal explicit materials share bins of up to 64 instance/slot members, one GPU-compacted union of 8x8 tiles and one indirect draw. Per-pixel member transforms remain distinct. Zero-fallback fixtures verify this subset; no automatic UMaterial bindings, arbitrary graphs, lightmaps, normal maps, Substrate, full Nanite shading bins, HZB/streaming or complete-scene acceptance. Resident LOD uses real view pixel error, with independent CPU cut/raster comparisons; streaming LOD remains unimplemented.'};
+  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Equal explicit materials share bins of up to 64 instance/slot members, one GPU-compacted union of 8x8 tiles and one indirect draw. Per-pixel member transforms remain distinct. Zero-fallback fixtures verify this subset; no automatic UMaterial bindings, arbitrary graphs, lightmaps, normal maps, Substrate, full Nanite shading bins, streaming or complete-scene acceptance. Two-phase resident HZB uses previous/current minimum depth pyramids and recovers disocclusion in the same frame; main geometry is currently rasterized again to build one consistent final visibility table. Resident LOD uses real view pixel error, with independent CPU cut/raster comparisons; streaming LOD remains unimplemented.'};
 (async () => {
   let browser;
   try {
@@ -490,6 +490,26 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
     await page.waitForFunction(f=>__webEngineFrames>=f+4,lodStoppedFrame,{timeout:30000});
     assert.deepEqual(await owner.evaluate(endCounts),stoppedLOD);
     report.sceneLODCleanup={pass:true,framesObserved:4,...stoppedLOD};
+    report.sceneHZB=[];
+    for(let step=1;step<=9;++step) {
+      assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteHZBTest',s),step),1);
+      let test;const start=Date.now();
+      do {await page.waitForTimeout(100);assert.deepEqual(report.errors,[]);assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteHZBTest',0)),1);test=await owner.evaluate(()=>globalThis.__webNaniteHZBTest||null);}
+      while((!test||test.step!==step)&&Date.now()-start<90000);assert(test&&test.step===step);
+      test.validation=require('./verify-nanite-scene-hzb.cjs')(test);test.products={};
+      for(const field of ['candidateState','candidateKeys','mainState','mainKeys','finalState','finalKeys','pixels'])if(test[field]) {
+        const bytes=Buffer.alloc(test[field].length*4);test[field].forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
+        const file=path.join(output,'hzb-'+step+'-'+field+'.bin');fs.writeFileSync(file,bytes);test.products[field]=audit(file);delete test[field];
+      }
+      report.sceneHZB.push(test);console.log('Browser scene HZB step '+step+' passed');
+    }
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteHZBTest',10)),1);
+    const hzbFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+8,hzbFrame,{timeout:30000});
+    const stoppedHZB=await owner.evaluate(endCounts),hzbStoppedFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+4,hzbStoppedFrame,{timeout:30000});
+    assert.deepEqual(await owner.evaluate(endCounts),stoppedHZB);report.sceneHZBCleanup={pass:true,framesObserved:4,...stoppedHZB};
+    report.hzbOracle=audit(require.resolve('./verify-nanite-scene-hzb.cjs'));
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
     report.storagePrecache = await owner.evaluate(() => ({...__storagePrecacheAudit, rhi:globalThis.__webOptimizationRHI}));
     report.storagePrecache.validation = verifyStoragePrecache(report.storagePrecache);

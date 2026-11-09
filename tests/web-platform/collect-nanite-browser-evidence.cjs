@@ -104,6 +104,30 @@ for(const test of browser.sceneCulling) {
   assert.deepEqual(verifyMaterialInputs(raw,fixturePage),test.materialValidation);
 }
 const verifyLOD = require('./verify-nanite-scene-lod.cjs');
+const verifyHZB = require('./verify-nanite-scene-hzb.cjs');
+assert.equal(browser.sceneHZB.length,9);verify(browser.hzbOracle);
+assert(browser.sceneHZBCleanup.pass&&browser.sceneHZBCleanup.framesObserved>=4);
+for(const test of browser.sceneHZB) {
+  const raw={...test};for(const [key,p] of Object.entries(test.products)) {
+    verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));
+  }
+  assert.deepEqual(verifyHZB(raw),test.validation);
+}
+const hzbKernelFile=path.join(__dirname,'results/nanite-hzb/verified.json'),hzbKernel=read(hzbKernelFile);
+assert(hzbKernel.pass&&hzbKernel.cases===12005&&hzbKernel.mips===9&&hzbKernel.rejected>1000);
+assert.deepEqual(hzbKernel.errors,[]);[...hzbKernel.sources,...hzbKernel.tools,...hzbKernel.products].forEach(verify);
+const hzbBindingsFile=path.join(__dirname,'results/nanite-hzb-bindings.json'),hzbBindings=read(hzbBindingsFile);
+assert(hzbBindings.pass&&hzbBindings.cases.length===3&&hzbBindings.cases.every(c=>c.pass&&c.maxError<=1/16777215));
+[hzbBindings.source,...hzbBindings.sources,...hzbBindings.inputs].forEach(verify);
+const occlusionFile=path.join(__dirname,'results/nanite-occlusion.json'),occlusion=read(occlusionFile);
+assert(occlusion.pass&&occlusion.results.length===10&&occlusion.results.every(c=>c.pass));
+assert.deepEqual(occlusion.errors,[]);assert(!occlusion.features.includes('atomic-vec2u-min-max'));
+[occlusion.source,...occlusion.sources,...occlusion.inputs].forEach(verify);
+const hzbFailureFile=path.join(__dirname,'results/nanite-scene-hzb/failure-depth-sample-type-20261109.json');
+const hzbFailure=read(hzbFailureFile),hzbFailurePackage=hzbFailureFile.replace('.json','-package.json'),hzbFailureBuild=hzbFailureFile.replace('.json','-build.json');
+assert(!hzbFailure.pass&&hzbFailure.engineFailure.failure.includes('UnfilterableFloat|Depth'));
+assert.equal(audit(hzbFailurePackage).sha256,hzbFailure.package.sha256);
+assert.equal(audit(hzbFailureBuild).sha256,read(hzbFailurePackage).build.sha256);
 assert(browser.sceneLOD.length === 10 && browser.sceneLODCleanup.pass && browser.sceneLODCleanup.framesObserved >= 4);
 [browser.lodOracle,browser.lodReference].forEach(verify);
 const lodHierarchy=fs.readFileSync(browser.scene[0].products.find(p=>path.basename(p.file).startsWith('scene-hierarchy-')).file);
@@ -214,6 +238,19 @@ if(build.fullTargetBuild) {
   const normalize=f=>path.resolve(f).toLowerCase();
   const rebuilt=new Set(actions.Actions.filter(a=>a.Type==='Compile'&&execution.results.some(r=>r.id===a.Id&&r.code===0))
     .flatMap(a=>a.ProducedItems).map(normalize));
+  // This new test object did not exist during the original RHI header rebuild.
+  const hzbTestBuildFile=path.join(__dirname,'results/web-engine-nanite-hzb-test-build-results.json');
+  const hzbTestBuild=read(hzbTestBuildFile);assert(hzbTestBuild.pass&&hzbTestBuild.fullLinkVerified);
+  [hzbTestBuild.compileExecution,hzbTestBuild.exportedActions,hzbTestBuild.log].forEach(verify);
+  const hzbTestSources=hzbTestBuild.sourceFiles.filter(i=>/[\\/]WebNaniteHZBTest\.cpp$|[\\/]RHIResources\.h$|[\\/]NaniteWeb(?:Hierarchy|Scene)\.h$/.test(i.file));
+  assert(hzbTestSources.some(i=>i.file.endsWith('WebNaniteHZBTest.cpp')));hzbTestSources.forEach(verify);
+  const hzbTestExecution=read(hzbTestBuild.compileExecution.file),hzbTestActions=read(hzbTestBuild.exportedActions.file);
+  assert(hzbTestExecution.pass&&hzbTestExecution.results.every(r=>r.code===0));
+  const hzbTestObjects=hzbTestBuild.objects.filter(o=>o.source.file.endsWith('WebNaniteHZBTest.cpp'));
+  assert.equal(hzbTestObjects.length,1);hzbTestObjects.forEach(o=>verify(o.object));
+  for(const a of hzbTestActions.Actions.filter(a=>a.Type==='Compile'&&hzbTestExecution.results.some(r=>r.id===a.Id&&r.code===0)))
+    a.ProducedItems.forEach(f=>rebuilt.add(normalize(f)));
+  assert(rebuilt.has(normalize(hzbTestObjects[0].object.file)));
   const lodLayoutFile=path.join(__dirname,'results/web-engine-nanite-lod-layout-build-results.json'),lodLayout=read(lodLayoutFile);
   assert(lodLayout.pass && lodLayout.fullLinkVerified);
   [lodLayout.compileExecution,lodLayout.exportedActions,lodLayout.log].forEach(verify);
@@ -246,6 +283,8 @@ if(build.fullTargetBuild) {
     'this RHI header regression must use rebuilt dependent objects');
   fullTargetValidation={compileExecution:full.compileExecution,exportedActions:full.exportedActions,
     compiledActions:execution.results.length,linkedObjects:full.objects.length,
+    hzbTestBuild:{report:audit(hzbTestBuildFile),compileExecution:hzbTestBuild.compileExecution,
+      exportedActions:hzbTestBuild.exportedActions,sources:hzbTestSources,objects:hzbTestObjects.map(o=>o.object)},
     lodLayoutRebuild:{report:audit(lodLayoutFile),compileExecution:lodLayout.compileExecution,
       exportedActions:lodLayout.exportedActions,sourceFiles:lodHeaders,dependentObjects:lodDependents.length,
       compileLogs:lodExecution.results.flatMap(r=>r.attempts.map(a=>audit(a.log)))},
@@ -353,7 +392,7 @@ assert(quantization.maxError <= 1/255 + 1e-7 && quantization.maxUpdateError < 1e
 [quantization.source, ...quantization.sources].forEach(verify);
 const storageCompatFile = path.join(__dirname, 'results/nanite-storage-compat-shaders/verified.json'), storageCompat = read(storageCompatFile);
 assert(storageCompat.pass && storageCompat.cases.length === 70 && storageCompat.cases.every(c => c.pass));
-[storageCompat.source, ...storageCompat.inputs].forEach(verify);
+[storageCompat.source, ...storageCompat.inputs, ...storageCompat.sources].forEach(verify);
 const registrationFailureFile = path.join(__dirname, 'results/nanite-browser/failure-reregister-20261109.json');
 const registrationFailure = read(registrationFailureFile);
 const failedRegistration = registrationFailure.sceneCulling.find(c => c.step === 8);
@@ -368,6 +407,9 @@ assert(!staleLOD.pass && staleLOD.failure.includes('BadView'));
 assert.equal(audit(staleLODPackage).sha256,staleLOD.package.sha256);
 assert.equal(audit(staleLODBuild).sha256,read(staleLODPackage).build.sha256);
 const report = {date:new Date().toISOString(), pass:true,
+  residentHZB:{kernel:{report:audit(hzbKernelFile),...hzbKernel},bindings:{report:audit(hzbBindingsFile),...hzbBindings},
+    occlusion:{report:audit(occlusionFile),...occlusion},
+    depthBindingFailure:{report:audit(hzbFailureFile),package:audit(hzbFailurePackage),build:audit(hzbFailureBuild),...hzbFailure.engineFailure}},
   scalarVisibility:{selected:scalarVisibility,phases:rasterPhases,helperReport:audit(scalarFile),...scalar,
     initializationFailure:{report:audit(scalarInitFailureFile),...scalarInitFailure}},
   residentLOD:{projectionReport:audit(lodProjectionFile),...lodProjection,
@@ -420,7 +462,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, `evidence/nanite-browser-scalar-${scalarVisibility?'fallback':'packed'}-20261109.json`);
+const destination = path.join(__dirname, `evidence/nanite-browser-hzb-${scalarVisibility?'fallback':'packed'}-20261109.json`);
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

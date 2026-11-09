@@ -2,8 +2,9 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const output=path.join(__dirname,'results/nanite-storage-compat-shaders');
-const inputs=fs.readdirSync(path.join(output,'conversion')).flatMap(d=>{
-  const dir=path.join(output,'conversion',d),file=path.join(dir,'input.json'),wgsl=path.join(dir,'output.wgsl');
+const conversion=path.resolve(process.argv[2]||path.join(output,'conversion'));
+const inputs=fs.readdirSync(conversion).flatMap(d=>{
+  const dir=path.join(conversion,d),file=path.join(dir,'input.json'),wgsl=path.join(dir,'output.wgsl');
   if(!fs.existsSync(file)||!fs.existsSync(wgsl))return [];
   const j=JSON.parse(fs.readFileSync(file));
   return [{name:j.shader,metadata:j.metadata,source:fs.readFileSync(wgsl,'utf8'),inputs:[audit(file),audit(wgsl)]}];
@@ -50,6 +51,8 @@ for(const i of inputs){
     }finally{device.destroy();}
   },inputs.map(({inputs,...item})=>item));
   const report={pass:true,date:new Date().toISOString(),source:audit(__filename),inputs:inputs.flatMap(i=>i.inputs),cases:results,
+    sources:['Source/WebGPUShaderFormat/Private/WebGPUShaderFormat.cpp','Binaries/Win64/UnrealEditor-WebGPUShaderFormat.dll']
+      .map(f=>audit(path.join(__dirname,'../ue-shader-host/Plugins/WebGPUShader',f))),
     boundary:'64 subsurface setup, 2 heightfield and 4 non-coverage object-composite permutations. The exporter also attempted unsupported volume-atomic coverage permutation 4; that failed and is not counted. Full Cook/startup validates the platform-selected set.'};
   fs.writeFileSync(path.join(output,'verified.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({pass:true,pipelines:results.length}));
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

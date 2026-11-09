@@ -21,7 +21,7 @@ verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
 // Inline platform predicates changed with the full target rebuild. Global and
 // material shader maps must both come from a matching scene Cook.
-const stageFile = path.join(__dirname, 'results/web-project-nanite-scalar-desktop-stage-results.json');
+const stageFile = path.join(__dirname, 'results/web-project-nanite-hzb-desktop-stage-results.json');
 const stage = read(stageFile);
 assert(stage.pass && stage.mode === 'WebGPU-SM5' && stage.useProjectSettings);
 [...stage.sourceFiles, stage.cookReport, stage.pack, stage.manifest, stage.configBundle].forEach(verify);
@@ -31,7 +31,7 @@ assert(cook.exitCode === 0 && !cook.disabledSkyLight && cook.useProjectSettings)
 assert.equal(cook.map, '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla');
 verify(cook.shaderInventory.artifact);
 const inventory = read(cook.shaderInventory.artifact.file);
-const naniteTypes = ['HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
+const naniteTypes = ['HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
   'ResolveCS','DepthVS','DepthPS','DepthSnapshotCS','GBufferVS','GBufferPS','GBufferSnapshotCS',
   'GBufferTilesCS','VisibilityClearCS','VisibilityResolveCS'].map(name => 'FWebNanite' + name);
 assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === 1)),
@@ -60,7 +60,7 @@ const hierarchyShaders = read(hierarchyFile);
 assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
-assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 6);
+assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 8);
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }

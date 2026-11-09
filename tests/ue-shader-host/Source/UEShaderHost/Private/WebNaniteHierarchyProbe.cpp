@@ -13,6 +13,8 @@
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp"
 #define WEB_NANITE_RASTER_SHADER_ONLY 1
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebRaster.cpp"
+#define WEB_NANITE_HZB_SHADER_ONLY 1
+#include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebHZB.cpp"
 #define WEB_NANITE_DEPTH_SHADER_ONLY 1
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebDepth.cpp"
 #define WEB_NANITE_GBUFFER_SHADER_ONLY 1
@@ -31,6 +33,7 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
     TArray<FGlobalShaderType*> Types = {&Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
         &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
         &Nanite::FWebNaniteScalarRasterPS::GetStaticType(),
+        &Nanite::FWebNaniteHZBBuildCS::GetStaticType(), &Nanite::FWebNaniteOcclusionCS::GetStaticType(),
         &Nanite::FWebNaniteVisibleClustersCS::GetStaticType(), &Nanite::FWebNaniteMaterialInputsCS::GetStaticType(),
         &Nanite::FWebNaniteResolveCS::GetStaticType(), &Nanite::FWebNaniteDepthVS::GetStaticType(),
         &Nanite::FWebNaniteDepthPS::GetStaticType(), &Nanite::FWebNaniteDepthSnapshotCS::GetStaticType(),

@@ -38,6 +38,7 @@ UStaticMesh* OrdinaryMesh;
 UStaticMeshComponent* OrdinaryComponent;
 int SavedDepthMode = 0;
 float SavedPixelsPerEdge = 1.0f;
+int SavedHZB = 1;
 TUniquePtr<FRHIGPUBufferReadback> DepthBefore, DepthAfter;
 uint32 DepthBytes = 0;
 bool DepthCapture = false;
@@ -295,6 +296,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
         // The existing source-mesh raster oracle requires full source detail.
         auto* Pixels = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge")); check(Pixels);
         SavedPixelsPerEdge = Pixels->GetFloat(); Pixels->Set(Step == 1 ? 0.01f : 1.0f, ECVF_SetByCode);
+        auto* HZB = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"));
+        SavedHZB = HZB->GetInt(); HZB->Set(0, ECVF_SetByCode); // Full visibility oracle; HZB has its own two-phase tests.
         UWorld* World = nullptr;
         for (const auto& Context : GEngine->GetWorldContexts()) if (Context.WorldType == EWorldType::Game) World = Context.World();
         if (!World || !World->GetFirstPlayerController()) return 0;
@@ -409,6 +412,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
     if (Step == 25 || Step == 36)
     {
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge"))->Set(SavedPixelsPerEdge, ECVF_SetByCode);
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"))->Set(SavedHZB, ECVF_SetByCode);
         if (Step == 25)
         {
             IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"))->Set(SavedDepthMode, ECVF_SetByCode);

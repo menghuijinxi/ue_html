@@ -58,6 +58,7 @@ const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
   'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp',
   'Private/Nanite/NaniteWebScene.cpp', 'Public/Rendering/NaniteWebScene.h',
   'Private/Nanite/NaniteWebRaster.cpp', 'Public/Rendering/NaniteWebRaster.h',
+  'Private/Nanite/NaniteWebHZB.cpp', 'Public/Rendering/NaniteWebHZB.h',
   'Private/Nanite/NaniteWebDepth.cpp', 'Public/Rendering/NaniteWebDepth.h',
   'Private/Nanite/NaniteWebGBuffer.cpp', 'Public/Rendering/NaniteWebGBuffer.h'];
 const engineDependencies = [];
@@ -84,7 +85,7 @@ for (const file of engineFiles) {
   engineDependencies.push(source, overlay);
 }
 const engine = path.join(intermediate, 'Engine');
-const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarchy|Scene|Raster|Depth|GBuffer)\.cpp$/.test(f)).map((file, i) => {
+const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarchy|Scene|Raster|HZB|Depth|GBuffer)\.cpp$/.test(f)).map((file, i) => {
   const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
     .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Runtime/Engine/' + file));
   assert.equal(unity.length, 1);
@@ -93,7 +94,7 @@ const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarch
 for (let i = tasks.length - 1; i >= 0; --i) if (tasks.findIndex(t => t[0] === tasks[i][0]) !== i) tasks.splice(i, 1);
 // A subsequent full UBT build can include the new source in an Engine unity.
 // Compile that unity when present; avoid linking a second shader registration.
-for (const kind of ['Hierarchy', 'Scene', 'Raster', 'Depth', 'GBuffer']) {
+for (const kind of ['Hierarchy', 'Scene', 'Raster', 'HZB', 'Depth', 'GBuffer']) {
 const hierarchyUnity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
   .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes(`Private/Nanite/NaniteWeb${kind}.cpp`));
 assert(hierarchyUnity.length <= 1);
@@ -120,7 +121,7 @@ tasks.push(
   [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'), null, 'EngineNaniteMain'],
   ...fs.readdirSync(path.join(intermediate, 'WebGPURHI')).filter(n => n.endsWith('.cpp.o.rsp'))
     .map(n => [path.join(intermediate, 'WebGPURHI', n), null, n.replace('.cpp.o.rsp', '')]),
-  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest', 'WebNaniteGBufferTest'].map(name => {
+  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest', 'WebNaniteGBufferTest', 'WebNaniteHZBTest'].map(name => {
     const ownResponse=path.join(intermediate,'UEWebEngine',name+'.cpp.o.rsp');
     return fs.existsSync(ownResponse)?[ownResponse,null,name]:[path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
       path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private', name + '.cpp'), name];

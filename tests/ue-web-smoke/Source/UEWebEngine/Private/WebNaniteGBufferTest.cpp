@@ -34,6 +34,7 @@ FPrimitiveComponentId IDs[2];
 FDelegateHandle CullObserver, GBufferObserver, TilesObserver;
 int SavedDepth = 0, SavedGBuffer = 0, Step = 0, Settled = 0;
 float SavedPixelsPerEdge = 1.0f;
+int SavedHZB = 1;
 bool Requested = false, Capturing = false;
 FRDGTextureRef CaptureDepth = nullptr;
 TSharedPtr<FJsonObject> Report;
@@ -388,6 +389,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
         // Keep a subpixel LOD budget; separate tests exercise coarse selection.
         auto* Pixels = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge")); check(Pixels);
         SavedPixelsPerEdge = Pixels->GetFloat(); Pixels->Set(0.01f, ECVF_SetByCode);
+        auto* HZB = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"));
+        SavedHZB = HZB->GetInt(); HZB->Set(0, ECVF_SetByCode); // Material oracle retains all candidate geometry.
         ENQUEUE_RENDER_COMMAND(ObserveWebGBuffer)([](FRHICommandListImmediate& Cmd) {
             CreateTextures(Cmd);
             CullObserver = Nanite::GetWebSceneCullDelegate().AddStatic(&BindMaterials); GBufferObserver = Nanite::GetWebGBufferDelegate().AddStatic(&Observe);
@@ -444,6 +447,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"))->Set(SavedDepth, ECVF_SetByCode);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentGBuffer"))->Set(SavedGBuffer, ECVF_SetByCode);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.MaxPixelsPerEdge"))->Set(SavedPixelsPerEdge, ECVF_SetByCode);
+        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"))->Set(SavedHZB, ECVF_SetByCode);
         for (auto* C : {Components[0], Components[1], Ordinary}) { C->UnregisterComponent(); C->RemoveFromRoot(); C->DestroyComponent(); }
         for (auto* Mesh : {NaniteMesh, OrdinaryMesh}) { Mesh->ReleaseResources(); Mesh->RemoveFromRoot(); }
         if (SavedTarget.IsValid()) Controller->SetViewTarget(SavedTarget.Get()); Camera->Destroy(); Camera.Reset();

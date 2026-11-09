@@ -1352,13 +1352,35 @@ RHI 根据实际获授设备特性公布只读能力，光栅自动选择 packed
 双路径证据为 `tests/web-platform/evidence/nanite-browser-scalar-packed-20261109.json`
 和 `tests/web-platform/evidence/nanite-browser-scalar-fallback-20261109.json`。
 
+## 常驻场景 HZB 与遮挡恢复（2026-11-09）
+
+真实渲染帧已接入反向深度的最小值金字塔、前一帧遮挡判断和当前帧恢复。
+第一轮保留历史中可见的 cluster，写入当前深度后再次检查之前被遮挡的候选；
+最终可见性表合并两轮结果，避免不同压缩列表的 slot ID 混用。
+当前实现会再次光栅第一轮保留的几何，这一额外成本仍需在完整场景中测量。
+历史按视图、场景、视口和连续帧验证，摄像机切换时失效；设备释放时清空历史纹理。
+
+12,005 个包围盒的独立 GPU/CPU 对照未出现错误遮挡，九级金字塔全部逐值一致。
+实际 UE 编译的遮挡 kernel 通过十项测试，覆盖两轮恢复、保留第一轮结果、错误状态、
+无效页/cluster、计数溢出和缓冲区保护区。真实场景九项检查也通过：移走遮挡物和
+切换到背面视角时，第一轮的零可见 cluster 在当帧第二轮恢复为全部八个；
+另覆盖目标移动、正交视图、重新遮挡、隐藏及十三项非法 API 输入检查。
+
+首轮实际场景触发了深度纹理被误当作可过滤纹理的 WebGPU 绑定错误。
+shader format v33 将纹理仅 Load 的访问分析扩展到所有 shader，并重新 Cook 完整 Villa；
+depth24plus、depth32float 和 R32F 的真实 UE HZB shader 回读均零误差。
+失败运行、包和构建记录保留供证据采集器核对。packed 与无扩展原子配置的整包回归
+分别运行 13,309/13,341 帧，上传、常驻、光栅、深度、材质、LOD、HZB 和清理检查均通过，
+GPU 错误为零；开启/关闭分别 2,248/2,226 项启动管线全部完成且零失败。
+双路径证据为 `tests/web-platform/evidence/nanite-browser-hzb-packed-20261109.json`
+和 `tests/web-platform/evidence/nanite-browser-hzb-fallback-20261109.json`。
+
 ## 尚未接通
 
 - 已执行有界常驻页光栅、真实场景深度和显式参数/基础色纹理 DefaultLit GBuffer，
   显式材质已支持跨实例分桶；完整 Nanite Renderer 的任意材质图、原生 shading bin、
   速度和 stencil/shading mask 消费尚未接通。
-  HZB 专项仍使用导出的 UE shader packet，尚未做真实 Nanite HZB 剔除。
-- Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、真实 HZB 剔除、
+- Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略、
   VS/PS 光栅和 Compute 微三角形光栅的完整接入。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
