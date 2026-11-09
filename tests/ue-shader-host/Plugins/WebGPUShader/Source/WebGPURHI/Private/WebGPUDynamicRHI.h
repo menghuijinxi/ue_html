@@ -525,6 +525,7 @@ class FWebGPUComputePipeline final : public FRHIComputePipelineState
     TSet<uint64> DynamicBindings;
     TMap<uint64, uint32> StorageFormats;
     TMap<FString, TRefCountPtr<FWebGPUComputePipeline>> FormatVariants;
+    bool FormatPrecached = false, FormatPrecacheUsed = false;
     FWebGPUBindingPlan BindingPlan;
     uint32 PreviousGroupsFrame = MAX_uint32;
     TArray<FWebGPUBindGroupCacheEntry*> PreviousGroups;
@@ -868,6 +869,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
         TSet<uint64>& DynamicBindings, TArray<WGPUBindGroupLayout>& Layouts,
         const TMap<uint64, uint32>* StorageFormats = nullptr);
     TRefCountPtr<FWebGPUComputePipeline> ResolveComputePipeline(FWebGPUComputePipeline& Pipeline);
+    TRefCountPtr<FWebGPUComputePipeline> CreateComputePipeline(const FComputePipelineStateInitializer& Initializer,
+        const TMap<uint64, uint32>* StorageFormats = nullptr);
     void Bind(FWebGPUShaderData &Shader, const FRHIShaderParameterResource &Parameter);
     void Parameters(FWebGPUShaderData &Shader, TConstArrayView<uint8>, TConstArrayView<FRHIShaderParameter>,
                     TConstArrayView<FRHIShaderParameterResource>, TConstArrayView<FRHIShaderParameterResource>);

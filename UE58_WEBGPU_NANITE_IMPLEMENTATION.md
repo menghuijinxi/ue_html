@@ -1105,6 +1105,63 @@ node tests/web-platform/verify-web-nanite-uploader.cjs
 node tests/web-platform/collect-nanite-browser-evidence.cjs
 ```
 
+### 动态 UAV 格式的计算管线预缓存（2026-11-09）
+
+继续追查前轮 847 条启动失败时，发现 `CanPrecacheShader` 对所有保留动态存储格式
+源码的 shader 直接返回不支持。运行时虽能按 UAV 格式创建管线，但无法提前编译和
+复用。现在计算预缓存为通过格式/资源限制检查的 shader 编译一个具体变体，并放进
+原有的 `FormatVariants` 缓存。运动模糊 flatten 按 Renderer 的资源约定选择透视
+flat velocity 的 R11G11B10 与 tile array 的 RGBA16F；其他可用组合使用反射格式。
+异步回调完成的是具体变体；外层延迟包装对象保持无句柄，
+因此后续 dispatch 仍会检查实际绑定资源，选择匹配格式或创建新的变体。
+
+预缓存与首次运行共用格式替换、布局构造和管线创建实现，避免两条路径的 WGSL 与
+绑定布局不一致。图形管线尚未接入该变体机制，继续保留原有准入限制；设备格式、
+访问模式和资源数量限制也保持检查。预编译失败仍返回失败，不能被计作完成的可用
+管线。浏览器额外记录计算管线拒绝原因，便于区分预检查拒绝与 WebGPU 编译失败。
+
+最初只编译反射格式的版本通过全部 26 个 GBuffer 用例，但被新增复用检查拒绝：
+9 个动态变体完成异步编译，实际复用为零。原因是动态 float4 的 RGBA32F 反射值
+并不代表 Renderer 创建的纹理格式。保留该失败报告，修正为上述资源约定后重验；
+不能用减少失败日志或完成编译来替代实际 dispatch 证据。
+
+`observe-storage-precache.cjs` 在实际 GPU owner worker 中观测原生 WebGPU API，
+跟踪 shader 格式、管线对象、同步/异步创建方式与直接/间接 dispatch，并将只差
+存储格式的 WGSL 归为同一 shader。验证要求实际执行异步预编译产物，同时覆盖
+运动模糊透视 `rg11b10ufloat` 与正交 `rgba32float` 的同源变体；RHI 复用计数作为
+交叉证据。完整 Nanite 用例和默认关闭检查继续执行。
+
+完整 Web target 与原生 RHI 重编译后，单/多材质 uploader 各 21 项策略检查和 12 页
+回读、Canvas 8 项检查均通过；Cook 源码、宿主与 5,165 个产物哈希保持有效，使用
+上一轮相同场景包。浏览器观察 29,507 帧，4 个 uploader、4 个驻留、5 个静态网格、
+19 个剔除/光栅、5 个深度和 26 个 GBuffer 用例及清理检查全部通过，错误数组为空。
+关闭 Nanite 常驻入口后的第 61 帧，专项 dispatch/draw 均为零。
+
+两次启动的管线失败日志均从 **847 降至 838**，其中计算管线从 677 降至 668，
+图形管线仍为 170；现有日志全部保留。这 9 个新增动态预编译变体中，本场景实际
+命中 1 个，不能把其余 8 个计作已执行。独立 WebGPU 对象跟踪记录运动模糊透视
+预编译管线 dispatch 29,417 次、同源正交 RGBA32F 运行时变体 81 次；RHI 在
+第 29,490 帧的统计记录预编译变体绑定 29,402 次。统计采样点不同，保留原始数值。
+普通场景启动也命中该预编译变体，异步编译失败计数为零。
+
+`verify-storage-precache-failure.cjs` 随后对同一个运动模糊入口注入一次 WebGPU 异步
+编译失败，真实 UE 预缓存任务正确返回失败，运行时重新同步创建相同格式管线并
+执行，启动超过 60 帧且无 GPU 校验错误或断言。该检查验证失败后不会复用无效
+句柄；注入次数与异步失败计数均为 1。
+
+本轮证据：`tests/web-platform/evidence/nanite-browser-storage-precache-20261109.json`，
+附原有类型的回读预览和 11 张实际画布截图。收集器同时校验成功路径、故障恢复、
+占位格式零复用的历史失败，以及原生、完整构建、Cook 和 GPU 回读产物。
+
+```powershell
+node tests/web-platform/verify-web-nanite-uploader.cjs
+node tests/web-platform/verify-storage-precache-failure.cjs
+node tests/web-platform/collect-nanite-browser-evidence.cjs
+```
+
+这些结果补齐动态计算管线的一个预缓存入口，仍不代表剩余 668 个计算、170 个
+图形请求可用，也不代表自动 UMaterial 绑定、LOD/HZB 或页流送完成。
+
 当前保留 UE 纹理消费者，用解析纹理作为桥接：
 
 ```text

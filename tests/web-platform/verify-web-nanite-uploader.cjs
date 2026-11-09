@@ -10,6 +10,7 @@ const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
 const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
 const verifyTiles = require('./verify-nanite-material-tiles.cjs');
 const verifyMultiAsset = require('./verify-nanite-multimaterial-asset.cjs');
+const {observeStoragePrecache, verifyStoragePrecache} = require('./observe-storage-precache.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -131,7 +132,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const context = browser;
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
-      await route.fulfill({response, body:'(' + observe.toString() + ')();\n' + await response.text()});
+      await route.fulfill({response, body:'(' + observeStoragePrecache.toString() + ')();\n(' + observe.toString() + ')();\n' + await response.text()});
     });
     const page = await context.newPage();
     page.on('console', m => {
@@ -448,6 +449,9 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(stoppedGBuffer.gbuffer,stoppedGBuffer.indirect);assert.equal(stoppedGBuffer.tiles,stoppedGBuffer.indirect+2);
     report.sceneGBufferCleanup={pass:true,framesObserved:4,...stoppedGBuffer};
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
+    report.storagePrecache = await owner.evaluate(() => ({...__storagePrecacheAudit, rhi:globalThis.__webOptimizationRHI}));
+    report.storagePrecache.validation = verifyStoragePrecache(report.storagePrecache);
+    report.storagePrecache.source = audit(require.resolve('./observe-storage-precache.cjs'));
     report.startupPipelineFailures = report.logs.filter(line => /LogRHI: Error: Failed to create .*pipeline/.test(line));
     report.errors.push(...await owner.evaluate(() => __naniteBrowserAudit.errors));
     assert.equal(report.errors.length, 0);
@@ -468,13 +472,16 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       if (/GPU validation:|Fatal error:|Assertion failed|DeviceLost/.test(message.text())) report.errors.push(message.text());
     });
     await normal.goto('http://127.0.0.1:8765/build/nanite-browser/index.html');
-    await normal.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 10, null, {timeout:180000});
+    // RHI diagnostics publish every 30 frames; sample after at least two ticks.
+    await normal.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 60, null, {timeout:180000});
     assert.equal(await normal.evaluate(() => globalThis.__webEngineFailure || null), null);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 1)), 0);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 1)), 0);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteGBufferTest', 1)), 0);
     const normalOwner = normal.workers().find(w => w.url().includes('web-engine-worker.js')); assert(normalOwner);
     const normalAudit = await normalOwner.evaluate(() => __naniteBrowserAudit);
+    const normalStorage = await normalOwner.evaluate(() => ({...__storagePrecacheAudit, rhi:globalThis.__webOptimizationRHI}));
+    normalStorage.validation = verifyStoragePrecache(normalStorage, false);
     assert.equal(normalAudit.dispatches, 0);
     assert.equal(normalAudit.cullDispatches, 0);
     assert.equal(normalAudit.rasterDraws.length, 0);
@@ -483,7 +490,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(normalAudit.gbufferDraws,0);assert.equal(normalAudit.gbufferIndirectDraws,0);assert.equal(normalAudit.tileDispatches,0);
     report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
     report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0, recordDispatches:0, materialDispatches:0, gbufferDraws:0, gbufferIndirectDraws:0, tileDispatches:0,
-      startupPipelineFailures:normalPipelineFailures};
+      startupPipelineFailures:normalPipelineFailures, storagePrecache:normalStorage};
     await normal.close();
     const preview = await context.newPage();
     await preview.setViewportSize({width:824,height:700});

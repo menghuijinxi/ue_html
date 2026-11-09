@@ -32,6 +32,7 @@
 namespace
 {
 uint32 PrecachedGraphicsUsed = 0, PrecachedGraphicsBinds = 0;
+uint32 StorageFormatPrecached = 0, StorageFormatPrecachedUsed = 0, StorageFormatPrecachedBinds = 0;
 int32 PrecacheRequestConcurrency = 0;
 static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
     TEXT("r.WebGPU.ValidateBindingCache"), 0,
@@ -124,6 +125,9 @@ template <typename HandleType> struct TWebGPUPrecacheRequest : FWebGPUPrecacheTi
     bool bPrecache = true;
     FEvent* Event = FPlatformProcess::GetSynchEventFromPool(true);
     HandleType Handle = nullptr;
+    // A dynamic-format precache returns a deferred wrapper owning one concrete
+    // variant. Complete that variant, never install its handle on the wrapper.
+    HandleType* HandleDestination = nullptr;
     FString Error;
     ~TWebGPUPrecacheRequest() { FPlatformProcess::ReturnSynchEventToPool(Event); }
     void Complete(HandleType Pipeline, WGPUStringView Message)
@@ -325,10 +329,12 @@ const TCHAR* StorageFormatName(uint32 ImageFormat)
     default: checkNoEntry(); return TEXT("");
     }
 }
-bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits, bool SupportsExtendedStorageAccess)
+bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits,
+    bool SupportsExtendedStorageAccess, bool SupportsStorageVariants = false)
 {
-    // The concrete UAV formats become available when resources are bound.
-    if (!Shader.StorageFormatSource.IsEmpty()) return false;
+    // Compute shaders can precompile their reflected format tuple.
+    // Actual UAV bindings still select the matching tuple at dispatch.
+    if (!SupportsStorageVariants && !Shader.StorageFormatSource.IsEmpty()) return false;
     uint32 Samplers = 0, Textures = 0, StorageTextures = 0, Uniforms = 0, StorageBuffers = 0;
     for (const auto& Binding : Shader.Bindings)
     {
@@ -1290,6 +1296,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, EndFrames, GraphicsPipelinesCreated, ComputePipelinesCreated, GraphicsPipelineCreateMs, ComputePipelineCreateMs,
             TextureReadbacksPending.load(), TextureReadbacksReady->load(), TextureReadbackMaps.load(), TextureReadbackNotReady.load(),
             GRHISupportsPSOPrecaching, PrecachedGraphicsPipelines);
+        EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
+            {storageFormatPrecached:$0, storageFormatPrecachedUsed:$1, storageFormatPrecachedBinds:$2});
+        }, StorageFormatPrecached, StorageFormatPrecachedUsed, StorageFormatPrecachedBinds);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
             {asyncPrecacheRequested:$0, asyncPrecacheCompleted:$1, asyncPrecacheFailed:$2, unsupportedPrecacheRequests:$3,
@@ -4612,8 +4621,8 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
 FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(const FComputePipelineStateInitializer &In)
 {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
-    // Storage-format variants are completed only after actual UAV bindings are
-    // known at dispatch; their deferred wrapper has no pipeline to await here.
+    // Runtime creation without a precache must wait for actual UAV bindings;
+    // its deferred wrapper has no concrete pipeline to await here.
     const bool RuntimeAsyncEligible = RuntimeAsyncPSO &&
         static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data.StorageFormatSource.IsEmpty();
     if (((In.bPSOPrecache && GRHISupportsPSOPrecaching) || RuntimeAsyncEligible) && !emscripten_is_main_runtime_thread())
@@ -4627,8 +4636,14 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
             Result = RHICreateComputePipelineState(In);
         }, Request);
         Request.Wait();
-        if (!Request.Handle) return nullptr;
-        static_cast<FWebGPUComputePipeline*>(Result.GetReference())->Handle = Request.Handle;
+        if (!Request.Handle)
+        {
+            UE_LOG(LogRHI, Warning, TEXT("P3_WEB_COMPUTE_PIPELINE_REJECT precache=%u entry=%s reason=%s"),
+                uint32(In.bPSOPrecache), *static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data.Entry, *Request.Error);
+            return nullptr;
+        }
+        check(Request.HandleDestination);
+        *Request.HandleDestination = Request.Handle;
         return Result;
     }
 #endif
@@ -4637,7 +4652,7 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     TRACE_CPUPROFILER_EVENT_SCOPE(WebPSO_CreateComputeOwner);
     if (In.bPSOPrecache && (!In.SpecializationConstants.IsEmpty() ||
         !CanPrecacheShader(static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data, Limits,
-            wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2) != 0)))
+            wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2) != 0, true)))
     {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         ++UnsupportedPrecacheRequests;
@@ -4649,14 +4664,76 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     check(In.SpecializationConstants.IsEmpty());
     const auto &Shader = static_cast<FWebGPUComputeShader *>(In.ComputeShader)->Data;
     if (!Shader.StorageFormatSource.IsEmpty())
-        return new FWebGPUComputePipeline(In.ComputeShader, nullptr);
+    {
+        TRefCountPtr<FWebGPUComputePipeline> Deferred = new FWebGPUComputePipeline(In.ComputeShader, nullptr);
+        if (In.bPSOPrecache)
+        {
+            TMap<uint64, uint32> Formats;
+            FString Key;
+            // PostProcessMotionBlur.cpp creates PF_FloatRGBA velocity tiles and
+            // PF_FloatR11G11B10 flat velocity for perspective views. The packet's
+            // float4 reflection is a placeholder, not this resource contract.
+            // Seed the common perspective tuple; orthographic views still create
+            // their distinct PF_A32B32G32R32F variant on first dispatch.
+            const bool MotionBlurFlatten = Shader.Bindings.ContainsByPredicate([](const auto& B) {
+                return B.RuntimeStorageFormat && B.Name == TEXT("OutVelocityFlatTexture");
+            }) && Shader.Bindings.ContainsByPredicate([](const auto& B) {
+                return B.RuntimeStorageFormat && B.Name == TEXT("OutVelocityTileArray");
+            });
+            for (const auto& Binding : Shader.Bindings)
+            {
+                if (Binding.StorageFormatOffset == INDEX_NONE) continue;
+                uint32 ImageFormat = Binding.StorageImageFormat;
+                if (MotionBlurFlatten && Binding.RuntimeStorageFormat)
+                {
+                    if (Binding.Name == TEXT("OutVelocityFlatTexture")) ImageFormat = StorageImageFormat(PF_FloatR11G11B10);
+                    else if (Binding.Name == TEXT("OutVelocityTileArray") || Binding.Name == TEXT("DebugOutput"))
+                        ImageFormat = StorageImageFormat(PF_FloatRGBA);
+                }
+                Formats.Add((uint64(Binding.Group) << 32) | Binding.Index, ImageFormat);
+                Key.Appendf(TEXT("%02x"), ImageFormat);
+            }
+            check(!Formats.IsEmpty());
+            Deferred->FormatVariants.Add(Key, CreateComputePipeline(In, &Formats));
+        }
+        return Deferred.GetReference();
+    }
+    return CreateComputePipeline(In).GetReference();
+}
+TRefCountPtr<FWebGPUComputePipeline> FWebGPUDynamicRHI::CreateComputePipeline(
+    const FComputePipelineStateInitializer& In, const TMap<uint64, uint32>* StorageFormats)
+{
+    const auto& Shader = ShaderData(In.ComputeShader);
+    auto* Result = new FWebGPUComputePipeline(In.ComputeShader, nullptr);
+    WGPUShaderModule Module = Shader.Module;
+    if (StorageFormats)
+    {
+        Result->StorageFormats = *StorageFormats;
+        Result->FormatPrecached = In.bPSOPrecache;
+        FString Source = Shader.StorageFormatSource;
+        TArray<const FWebGPUShaderBinding*, TInlineAllocator<8>> Replacements;
+        for (const auto& Binding : Shader.Bindings)
+            if (Binding.StorageFormatOffset != INDEX_NONE) Replacements.Add(&Binding);
+        Replacements.Sort([](const auto& A, const auto& B) { return A.StorageFormatOffset > B.StorageFormatOffset; });
+        for (const auto* Binding : Replacements)
+        {
+            Source.RemoveAt(Binding->StorageFormatOffset, Binding->StorageFormatLength, EAllowShrinking::No);
+            Source.InsertAt(Binding->StorageFormatOffset, StorageFormatName(
+                StorageFormats->FindChecked((uint64(Binding->Group) << 32) | Binding->Index)));
+        }
+        const FTCHARToUTF8 Code(*Source);
+        auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
+        WGSL.code = {Code.Get(), size_t(Code.Length())};
+        auto ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+        ModuleDesc.nextInChain = &WGSL.chain;
+        Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
+    }
     WGPUComputePipelineDescriptor Desc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
     const FWebGPUShaderData* ShaderStages[] = {&Shader};
-    TSet<uint64> DynamicBindings;
-    TArray<WGPUBindGroupLayout> GroupLayouts;
-    Desc.layout = CreatePipelineLayout(ShaderStages, DynamicBindings, GroupLayouts);
-    Desc.compute.module = Shader.Module;
+    Desc.layout = CreatePipelineLayout(ShaderStages, Result->DynamicBindings, Result->GroupLayouts, StorageFormats);
+    Desc.compute.module = Module;
     const FTCHARToUTF8 Entry(*Shader.Entry);
+    Desc.label = Text(Entry.Get());
     Desc.compute.entryPoint = Text(Entry.Get());
     ++ComputePipelinesCreated;
     const double CreateStart = FPlatformTime::Seconds();
@@ -4664,13 +4741,15 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     if (ComputePrecacheRequest && ComputePrecacheRequest->Initializer == &In)
     {
+        ComputePrecacheRequest->HandleDestination = &Result->Handle;
         if (ComputePrecacheRequest->bPrecache) ++AsyncPrecacheRequested;
         else ++RuntimeAsyncRequested;
         auto Callback = WGPU_CREATE_COMPUTE_PIPELINE_ASYNC_CALLBACK_INFO_INIT;
         Callback.mode = WGPUCallbackMode_AllowSpontaneous;
         Callback.userdata1 = ComputePrecacheRequest;
+        Callback.userdata2 = Result;
         Callback.callback = [](WGPUCreatePipelineAsyncStatus Status, WGPUComputePipeline Pipeline,
-            WGPUStringView Message, void* Userdata, void*) {
+            WGPUStringView Message, void* Userdata, void* Target) {
             const bool Success = Status == WGPUCreatePipelineAsyncStatus_Success;
             auto* Request = static_cast<FWebGPUComputePrecacheRequest*>(Userdata);
             if (Request->bPrecache) ++AsyncPrecacheCompleted;
@@ -4681,6 +4760,7 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
                 else ++RuntimeAsyncFailed;
                 if (Pipeline) wgpuComputePipelineRelease(Pipeline);
             }
+            else if (static_cast<FWebGPUComputePipeline*>(Target)->FormatPrecached) ++StorageFormatPrecached;
             Request->Complete(Success ? Pipeline : nullptr, Message);
         };
         ComputePrecacheRequest->BeginAPI();
@@ -4689,12 +4769,14 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     }
     else
 #endif
+    {
         Handle = wgpuDeviceCreateComputePipeline(Device, &Desc);
+        if (Handle && Result->FormatPrecached) ++StorageFormatPrecached;
+    }
     ComputePipelineCreateMs += (FPlatformTime::Seconds() - CreateStart) * 1000;
     wgpuPipelineLayoutRelease(Desc.layout);
-    auto* Result = new FWebGPUComputePipeline(In.ComputeShader, Handle);
-    Result->DynamicBindings = MoveTemp(DynamicBindings);
-    Result->GroupLayouts = MoveTemp(GroupLayouts);
+    if (StorageFormats) wgpuShaderModuleRelease(Module);
+    Result->Handle = Handle;
     return Result;
 }
 IRHICommandContext *FWebGPUDynamicRHI::RHIGetDefaultContext()
@@ -5509,8 +5591,6 @@ TRefCountPtr<FWebGPUComputePipeline> FWebGPUDynamicRHI::ResolveComputePipeline(F
     TrackShaderBindings(Shader);
     CommitShaderResources(Shader);
     TMap<uint64, uint32> Formats;
-    struct FFormatReplacement { int32 Offset, Length; uint32 Format; };
-    TArray<FFormatReplacement, TInlineAllocator<8>> Replacements;
     FString Key;
     for (auto& Binding : Shader.Bindings)
     {
@@ -5526,37 +5606,25 @@ TRefCountPtr<FWebGPUComputePipeline> FWebGPUDynamicRHI::ResolveComputePipeline(F
             (ImageFormat && ImageFormat < 30),
             TEXT("Storage format must retain the shader's scalar type and packed-mask precision: %s"), *Binding.Name);
         Formats.Add((uint64(Binding.Group) << 32) | Binding.Index, ImageFormat);
-        Replacements.Add({Binding.StorageFormatOffset, Binding.StorageFormatLength, ImageFormat});
         Key.Appendf(TEXT("%02x"), ImageFormat);
     }
-    if (const auto* Existing = Pipeline.FormatVariants.Find(Key)) return *Existing;
-    FString Source = Shader.StorageFormatSource;
-    Replacements.Sort([](const auto& A, const auto& B) { return A.Offset > B.Offset; });
-    for (const auto& Replacement : Replacements)
+    if (const auto* Existing = Pipeline.FormatVariants.Find(Key))
     {
-        Source.RemoveAt(Replacement.Offset, Replacement.Length, EAllowShrinking::No);
-        Source.InsertAt(Replacement.Offset, StorageFormatName(Replacement.Format));
+        check((*Existing)->Handle);
+        if ((*Existing)->FormatPrecached)
+        {
+            ++StorageFormatPrecachedBinds;
+            if (!(*Existing)->FormatPrecacheUsed)
+            {
+                (*Existing)->FormatPrecacheUsed = true;
+                ++StorageFormatPrecachedUsed;
+                UE_LOG(LogRHI, Display, TEXT("P3_WEB_STORAGE_PRECACHE_USED entry=%s formats=%s"), *Shader.Entry, *Key);
+            }
+        }
+        return *Existing;
     }
-    const FTCHARToUTF8 Code(*Source);
-    auto WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
-    WGSL.code = {Code.Get(), size_t(Code.Length())};
-    auto ModuleDesc = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
-    ModuleDesc.nextInChain = &WGSL.chain;
-    const auto Module = wgpuDeviceCreateShaderModule(Device, &ModuleDesc);
-    TRefCountPtr<FWebGPUComputePipeline> Result = new FWebGPUComputePipeline(Pipeline.GetComputeShader(), nullptr);
-    Result->StorageFormats = MoveTemp(Formats);
-    const FWebGPUShaderData* Stages[] = {&Shader};
-    auto Desc = WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;
-    Desc.layout = CreatePipelineLayout(Stages, Result->DynamicBindings, Result->GroupLayouts, &Result->StorageFormats);
-    Desc.compute.module = Module;
-    const FTCHARToUTF8 Entry(*Shader.Entry);
-    Desc.compute.entryPoint = Text(Entry.Get());
-    const double Start = FPlatformTime::Seconds();
-    Result->Handle = wgpuDeviceCreateComputePipeline(Device, &Desc);
-    ComputePipelineCreateMs += (FPlatformTime::Seconds() - Start) * 1000;
-    ++ComputePipelinesCreated;
-    wgpuPipelineLayoutRelease(Desc.layout);
-    wgpuShaderModuleRelease(Module);
+    const FComputePipelineStateInitializer In(Pipeline.GetComputeShader());
+    auto Result = CreateComputePipeline(In, &Formats);
     Pipeline.FormatVariants.Add(MoveTemp(Key), Result);
     return Result;
 }

@@ -7,12 +7,42 @@ const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
 const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
 const verifyTiles = require('./verify-nanite-material-tiles.cjs');
 const verifyMultiAsset = require('./verify-nanite-multimaterial-asset.cjs');
+const {verifyStoragePrecache} = require('./observe-storage-precache.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const verify = i => assert.equal(audit(i.file).sha256, i.sha256, `Stale file: ${i.file}`);
 const browserFile = path.join(__dirname, 'results/nanite-browser/results.json');
 const browser = read(browserFile);
 assert(browser.pass && browser.errors.length === 0);
+assert.deepEqual(verifyStoragePrecache(browser.storagePrecache), browser.storagePrecache.validation);
+assert.deepEqual(verifyStoragePrecache(browser.defaultDisabled.storagePrecache, false), browser.defaultDisabled.storagePrecache.validation);
+verify(browser.storagePrecache.source);
+const storageBaselineFile = path.join(__dirname, 'evidence/nanite-browser-resource-lifetime-20261109.json');
+const storageBaseline = read(storageBaselineFile);
+const pipelineFailures = lines => ({total:lines.length, compute:lines.filter(l=>l.includes('compute pipeline')).length,
+  graphics:lines.filter(l=>l.includes('graphics pipeline')).length});
+const storageComparison = {baseline:audit(storageBaselineFile),
+  before:pipelineFailures(storageBaseline.browser.startupPipelineFailures),
+  after:pipelineFailures(browser.startupPipelineFailures),
+  defaultDisabled:pipelineFailures(browser.defaultDisabled.startupPipelineFailures)};
+assert(storageComparison.after.compute < storageComparison.before.compute);
+const storageFailureFile = path.join(__dirname, 'results/nanite-storage-precache-failure/verified.json');
+const storageFailure = read(storageFailureFile);
+assert(storageFailure.pass && storageFailure.frames >= 20 && storageFailure.errors.length === 0);
+[storageFailure.baseline, storageFailure.package, ...storageFailure.sources].forEach(verify);
+assert.equal(storageFailure.baseline.sha256, audit(browserFile).sha256);
+assert.equal(storageFailure.observation.failures.length, 1);
+assert.equal(storageFailure.observation.rhi.asyncPrecacheFailed, 1);
+assert(storageFailure.fallback.some(p => !p.asynchronous && p.dispatches > 0 && p.entry === storageFailure.target.entry));
+const placeholderFile = path.join(__dirname, 'results/nanite-browser/failure-placeholder-precache-20261109.json');
+const placeholder = read(placeholderFile);
+assert(!placeholder.pass && placeholder.failure.includes('must reuse a completed format variant'));
+assert.equal(placeholder.storagePrecache.rhi.storageFormatPrecached, 9);
+assert.equal(placeholder.storagePrecache.rhi.storageFormatPrecachedUsed, 0);
+const placeholderPackageFile = path.join(__dirname,'results/nanite-browser/failure-placeholder-precache-package-20261109.json');
+const placeholderBuildFile = path.join(__dirname,'results/nanite-browser/failure-placeholder-precache-build-20261109.json');
+assert.equal(audit(placeholderPackageFile).sha256, placeholder.package.sha256);
+assert.equal(audit(placeholderBuildFile).sha256, read(placeholderPackageFile).build.sha256);
 assert.deepEqual(browser.cases.map(c => c.dispatches), [2,2,3,4]);
 for (const test of browser.cases) {assert(test.pass && test.guards); test.pages.forEach(verify);}
 assert.deepEqual(browser.residency.map(c => c.dispatches), [2,2,2,0]);
@@ -225,6 +255,11 @@ assert(precision.pass&&precision.oldBitExact&&precision.validation.pass&&precisi
 [...precision.inputs,...precision.sources,...precision.products,precision.hierarchy].forEach(verify);
 assert.deepEqual(precision.tolerances,{position:1/512,normal:1/25600,uv:.000008,color:.000001});
 const report = {date:new Date().toISOString(), pass:true,
+  storagePrecacheComparison:storageComparison,
+  storagePrecacheFailure:{report:audit(storageFailureFile),...storageFailure},
+  storagePlaceholderFailure:{report:audit(placeholderFile),package:audit(placeholderPackageFile),build:audit(placeholderBuildFile),
+    rhi:placeholder.storagePrecache.rhi, failure:placeholder.failure,
+    motionVariants:placeholder.storagePrecache.pipelines.filter(p=>p.formats.some(f=>f.name==='OutVelocityFlatTexture'))},
   resourceLifetime:{report:audit(lifetimeFile),...lifetime},
   motionBlurStorage:{report:audit(motionFile),...motion,failedRun:audit(motionFailureFile),failure:motionFailure.errors},
   materialPrecision:{report:audit(precisionFile),...precision},
@@ -255,7 +290,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-resource-lifetime-20261109.json');
+const destination = path.join(__dirname, 'evidence/nanite-browser-storage-precache-20261109.json');
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);
