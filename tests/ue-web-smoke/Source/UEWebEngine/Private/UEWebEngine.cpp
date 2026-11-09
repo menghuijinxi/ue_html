@@ -393,6 +393,12 @@ void EngineFrame(void*)
         MAIN_THREAD_ASYNC_EM_ASM({
             globalThis.__webDefaultCamera = ({x: $0, y: $1, z: $2, pitch: $3, yaw: $4});
         }, Location.X, Location.Y, Location.Z, Rotation.Pitch, Rotation.Yaw);
+        const bool PawnTarget = Controller->GetPawn() && Controller->GetViewTarget() == Controller->GetPawn();
+        const FVector RestoreLocation = PawnTarget ? Controller->GetPawn()->GetActorLocation() : Location;
+        MAIN_THREAD_ASYNC_EM_ASM({
+            globalThis.__webRecoveryCamera = ({version: 1, args: [$0, $1, $2, $3, $4, $5, $6, $7]});
+        }, RestoreLocation.X, RestoreLocation.Y, RestoreLocation.Z, Rotation.Pitch, Rotation.Yaw,
+            Rotation.Roll, double(Controller->PlayerCameraManager->GetFOVAngle()), int(PawnTarget));
     }
 #if STATS
     if (Frames % 60 == 0 && !FPlatformProcess::SupportsMultithreading())
@@ -810,6 +816,38 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectLightingTestMode(int Mode)
                 const bool Local = !Sky && !Light->IsA<UDirectionalLightComponent>();
                 Light->SetVisibility(Original && !(Mode == 1 && Sky) && !(Mode == 2 && Local));
             }
+    return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebRestoreCamera(double X, double Y, double Z,
+    double Pitch, double Yaw, double Roll, double FOV, int PawnTarget)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* Controller = TemplateController.Get();
+    if (!Controller || !FMath::IsFinite(X) || !FMath::IsFinite(Y) || !FMath::IsFinite(Z) ||
+        !FMath::IsFinite(Pitch) || !FMath::IsFinite(Yaw) || !FMath::IsFinite(Roll) ||
+        !FMath::IsFinite(FOV) || FOV <= 0 || FOV >= 180 || (PawnTarget != 0 && PawnTarget != 1)) return 0;
+    const FVector Location(X, Y, Z);
+    const FRotator Rotation(Pitch, Yaw, Roll);
+    if (PawnTarget)
+    {
+        APawn* Pawn = Controller->GetPawn();
+        if (!Pawn) return 0;
+        Pawn->SetActorLocation(Location, false, nullptr, ETeleportType::TeleportPhysics);
+        Controller->SetControlRotation(Rotation);
+        Controller->SetViewTarget(Pawn);
+        if (auto* Movement = Pawn->GetMovementComponent()) Movement->StopMovementImmediately();
+    }
+    else
+    {
+        auto* Camera = Controller->GetWorld()->SpawnActor<ACameraActor>();
+        if (!Camera) return 0;
+        Camera->SetActorLocationAndRotation(Location, Rotation);
+        Camera->GetCameraComponent()->SetFieldOfView(FOV);
+        Controller->SetViewTarget(Camera);
+    }
+    Controller->PlayerCameraManager->SetFOV(FOV);
+    Controller->FlushPressedKeys();
     return 1;
 }
 

@@ -44,6 +44,7 @@ for(const [name,permutations] of [['FWebNaniteCompositionPS',2],['FWebNaniteComp
 assert.deepEqual(inventory.settings['r.VirtualTextures'], {host:'1',target:'1'});
 const baseline = path.dirname(stage.manifest.file);
 const pageTemplate = path.join(__dirname, 'build/villa-default-20261107/index.html');
+const pageSource = path.join(__dirname, 'web-default-template.html');
 const buildDir = path.join(__dirname, 'build/nanite-browser-runtime');
 const build = read(path.join(buildDir, 'build.json'));
 assert(build.pass); build.sources.forEach(verify); build.products.forEach(verify);
@@ -103,12 +104,17 @@ for (const name of helpers) fs.copyFileSync(path.join(__dirname, name), path.joi
 for (const file of build.products) fs.copyFileSync(file.file, path.join(output, path.basename(file.file)));
 const runtime = build.products.map(i => path.basename(i.file));
 const versions = Object.fromEntries([...runtime, ...helpers].map(n => [n, audit(path.join(output, n)).sha256]));
-let html = fs.readFileSync(pageTemplate, 'utf8');
-const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/); assert(match);
+const baselineHTML = fs.readFileSync(pageTemplate, 'utf8');
+let html = fs.readFileSync(pageSource, 'utf8');
+const match = baselineHTML.match(/const localRuntimeAssets = (\{[^\n]+\});/); assert(match);
 const assets = {...JSON.parse(match[1]), versions, runtime:'UEWebEngineThreads.js',
   wasm:metadata(path.join(output, 'UEWebEngineThreads.wasm'), 'UEWebEngineThreads.wasm')};
 assert(assets.threads && assets.renderer === 'desktop');
-html = html.replace(match[0], 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
+html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
+// Preserve the accepted project's launch settings while using the maintained
+// page lifecycle and input handlers.
+const launchArguments = baselineHTML.match(/arguments: \[[^\n]+\]/); assert(launchArguments);
+html = html.replace(/arguments: \[[^\n]+\]/, launchArguments[0]);
 assert(html.includes('arguments: ['));
 html = html.replace('arguments: [', 'arguments: ["-WebNaniteResidentResources","-WebNaniteRootPages=2",');
 fs.writeFileSync(path.join(output, 'index.html'), html);
@@ -120,7 +126,7 @@ const report = {date:new Date().toISOString(), pass:true, output, build:audit(pa
   sceneCook:{stage:audit(stageFile),cook:stage.cookReport,inventory:cook.shaderInventory.artifact,
     naniteTypes,supplementApplied:false,hierarchyArchiveApplied:false,streamingArchiveApplied:true},
   baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),
-  sources:[__filename, path.join(__dirname,'cached-cook-validation.cjs'), ...helpers.map(n => path.join(__dirname, n))].map(audit),
+  sources:[__filename, pageSource, path.join(__dirname,'cached-cook-validation.cjs'), ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
   boundary:'Fresh Villa scene Cook with real streamable Nanite bulk data and explicit bounded streaming controls. Includes native material graphs, velocity and stencil/shading masks. Full-scene, streaming lifecycle and remaining material/instance acceptance is open.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');

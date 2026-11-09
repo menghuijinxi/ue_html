@@ -107,7 +107,7 @@ function loadingRender() {
   if (startupOnly) return;
   const failure = globalThis.__webEngineFailure;
   const psoWaiting = globalThis.__webPSOPrecacheExpected && !globalThis.__webPSOPrecacheReady;
-  if (!failure && !psoWaiting && globalThis.__webEngineReady && globalThis.__webEngineFrames >= 2) {
+  if (!failure && !psoWaiting && (!globalThis.__webEngineRecovery || globalThis.__webEngineRecovery.phase === 'running') && globalThis.__webEngineReady && globalThis.__webEngineFrames >= 2) {
     loadingComplete = true;
     loading.hidden = true;
     document.getElementById('canvas').setAttribute('aria-busy', 'false');
@@ -118,6 +118,7 @@ function loadingRender() {
   const stage = startupDiagnostics.stage;
   const stages = {
     preflight: ['检查运行环境', '正在准备启动'],
+    'device-recovering': ['恢复图形设备', '正在重新加载场景并恢复视角'],
     'engine-script-loading': ['加载引擎脚本', '正在连接并加载启动脚本'],
     'wasm-initializing': ['准备引擎', '正在初始化 WebAssembly'],
     'wasm-downloading': ['加载引擎', '正在读取引擎资源'],
@@ -194,6 +195,7 @@ function startupSnapshot() {
     occlusion: globalThis.__webOcclusionRHI || null,
     psoPrecache: globalThis.__webPSOPrecache || null,
     psoPrecacheReady: globalThis.__webPSOPrecacheReady ?? null,
+    deviceRecovery: globalThis.__webEngineRecovery || null,
     engineLog: globalThis.__webEngineLog.slice(-80)};
 }
 document.addEventListener('visibilitychange', () => {
@@ -673,60 +675,72 @@ var Module = {
   }]
 };
 if (desktopRenderer) Module.arguments.push('-WebDesktop');
-// Feed single-finger deltas through the existing UE right-drag input path, in CSS pixels like a mouse.
-let lookTouch = null;
-function touchMouse(type, x, y, dx = 0, dy = 0) {
-  Module.canvas.dispatchEvent(new MouseEvent(type, {bubbles: true, cancelable: true, view: window,
-    button: 2, buttons: type === 'mouseup' ? 0 : 2, clientX: x, clientY: y,
-    movementX: dx, movementY: dy}));
+let canvasInputListeners;
+function bindCanvasInput() {
+  canvasInputListeners?.abort();
+  canvasInputListeners = new AbortController();
+  // Feed single-finger deltas through the existing UE right-drag input path, in CSS pixels like a mouse.
+  let lookTouch = null;
+  function touchMouse(type, x, y, dx = 0, dy = 0) {
+    Module.canvas.dispatchEvent(new MouseEvent(type, {bubbles: true, cancelable: true, view: window,
+      button: 2, buttons: type === 'mouseup' ? 0 : 2, clientX: x, clientY: y,
+      movementX: dx, movementY: dy}));
+  }
+  function releaseLookTouch() {
+    if (!lookTouch) return;
+    const touch = lookTouch;
+    lookTouch = null;
+    touchMouse('mouseup', touch.x, touch.y);
+    if (Module.canvas.hasPointerCapture(touch.id)) Module.canvas.releasePointerCapture(touch.id);
+  }
+  Module.canvas.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'touch') return;
+    event.preventDefault();
+    if (!globalThis.__webEngineReady || !event.isPrimary || lookTouch) return;
+    Module.canvas.focus({preventScroll: true});
+    lookTouch = {id: event.pointerId, x: event.clientX, y: event.clientY};
+    Module.canvas.setPointerCapture(event.pointerId);
+    touchMouse('mousedown', event.clientX, event.clientY);
+  }, {passive: false, signal: canvasInputListeners.signal});
+  Module.canvas.addEventListener('pointermove', event => {
+    if (event.pointerType !== 'touch' || lookTouch?.id !== event.pointerId) return;
+    event.preventDefault();
+    const dx = event.clientX - lookTouch.x, dy = event.clientY - lookTouch.y;
+    lookTouch.x = event.clientX;
+    lookTouch.y = event.clientY;
+    touchMouse('mousemove', event.clientX, event.clientY, dx, dy);
+  }, {passive: false, signal: canvasInputListeners.signal});
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture'])
+    Module.canvas.addEventListener(type, event => {
+      if (lookTouch?.id === event.pointerId) releaseLookTouch();
+    }, {signal: canvasInputListeners.signal});
+  function cancelLookTouch() {
+    if (!lookTouch) return;
+    releaseLookTouch();
+    Module.canvas.blur();
+  }
+  addEventListener('blur', cancelLookTouch, {signal: canvasInputListeners.signal});
+  Module.canvas.addEventListener('blur', releaseLookTouch, {signal: canvasInputListeners.signal});
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) cancelLookTouch();
+  }, {signal: canvasInputListeners.signal});
+  Module.canvas.addEventListener('click', event => {
+    if (event.pointerType === 'touch' || event.sourceCapabilities?.firesTouchEvents) return;
+    if (!globalThis.__webEngineReady) return;
+    Module.canvas.focus({preventScroll: true});
+    if (document.pointerLockElement === Module.canvas || !Module.canvas.requestPointerLock) return;
+    try {
+      const pending = Module.canvas.requestPointerLock();
+      if (pending && pending.catch) pending.catch(() => {});
+    } catch (_) {}
+  }, {signal: canvasInputListeners.signal});
 }
-function releaseLookTouch() {
-  if (!lookTouch) return;
-  const touch = lookTouch;
-  lookTouch = null;
-  touchMouse('mouseup', touch.x, touch.y);
-  if (Module.canvas.hasPointerCapture(touch.id)) Module.canvas.releasePointerCapture(touch.id);
-}
-Module.canvas.addEventListener('pointerdown', event => {
-  if (event.pointerType !== 'touch') return;
-  event.preventDefault();
-  if (!globalThis.__webEngineReady || !event.isPrimary || lookTouch) return;
-  Module.canvas.focus({preventScroll: true});
-  lookTouch = {id: event.pointerId, x: event.clientX, y: event.clientY};
-  Module.canvas.setPointerCapture(event.pointerId);
-  touchMouse('mousedown', event.clientX, event.clientY);
-}, {passive: false});
-Module.canvas.addEventListener('pointermove', event => {
-  if (event.pointerType !== 'touch' || lookTouch?.id !== event.pointerId) return;
-  event.preventDefault();
-  const dx = event.clientX - lookTouch.x, dy = event.clientY - lookTouch.y;
-  lookTouch.x = event.clientX;
-  lookTouch.y = event.clientY;
-  touchMouse('mousemove', event.clientX, event.clientY, dx, dy);
-}, {passive: false});
-for (const type of ['pointerup', 'pointercancel', 'lostpointercapture'])
-  Module.canvas.addEventListener(type, event => {
-    if (lookTouch?.id === event.pointerId) releaseLookTouch();
-  });
-function cancelLookTouch() {
-  if (!lookTouch) return;
-  releaseLookTouch();
-  Module.canvas.blur();
-}
-addEventListener('blur', cancelLookTouch);
-Module.canvas.addEventListener('blur', releaseLookTouch);
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) cancelLookTouch();
-});
-Module.canvas.addEventListener('click', event => {
-  if (event.pointerType === 'touch' || event.sourceCapabilities?.firesTouchEvents) return;
-  if (!globalThis.__webEngineReady) return;
-  Module.canvas.focus({preventScroll: true});
-  if (document.pointerLockElement === Module.canvas || !Module.canvas.requestPointerLock) return;
-  try {
-    const pending = Module.canvas.requestPointerLock();
-    if (pending && pending.catch) pending.catch(() => {});
-  } catch (_) {}
+bindCanvasInput();
+document.addEventListener('web-engine-canvas-replaced', () => {
+  bindCanvasInput();
+  loadingComplete = false;
+  Module.canvas.setAttribute('aria-busy', 'true');
+  loadingRender();
 });
 addEventListener('error', event => {
   const target = event.target;

@@ -19,7 +19,7 @@ const channels = [];
     });
     vm.runInContext(hostSource, environment);
     const engine = {arguments: args, canvas: {transferControlToOffscreen() {}}};
-    assert.throws(() => environment.startWebEngineWorker({
+    assert.throws(() => environment.startWebEngineSession({
       assets: {versions: {}, ...assets}, module: engine,
     }), error => error === reachedWorker);
     return engine.arguments;

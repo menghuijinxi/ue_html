@@ -294,7 +294,91 @@ function createWebGameFrameClock(maxAhead, fail, maxFPS = 0) {
       document.removeEventListener('visibilitychange', visibility); }};
 }
 
-globalThis.startWebEngineWorker = function({assets, module, record, failed, stage, diagnostics, render}) {
+// A lost WebGPU device invalidates every resource. Restart the isolated engine
+// and restore a CPU checkpoint; never reuse handles from the previous worker.
+globalThis.startWebEngineWorker = function(options) {
+  const {module, record, failed, stage, diagnostics, render, recovery = {}} = options;
+  const state = globalThis.__webEngineRecovery = {generation: 0, attempts: 0, phase: 'starting', events: []};
+  const publishedKeys = new Set(['__webEngineReady', '__webEngineWorld', '__webRenderScene', '__webTraceBlob',
+    '__webEngineFrames', '__webEngineFailure', '__webRecoveryCamera', '__webLivePerformance']);
+  let session, timer, closed = false, checkpoint;
+  const watchRecovery = () => {
+    clearTimeout(timer);
+    // Background pages intentionally pause the Game frame clock. Their lack
+    // of ready frames is not a recovery timeout, nor is an initial cold load.
+    if (!closed && state.attempts && state.phase === 'recovering' && !document.hidden)
+      timer = setTimeout(() => terminal('图形设备恢复超时，请重新加载页面。', {kind: 'device-recovery-timeout'}), 180000);
+  };
+  const event = (kind, detail = {}) => {
+    state.events.push({kind, generation: state.generation, at: performance.now(), ...detail});
+    if (state.events.length > 32) state.events.shift();
+  };
+  const terminal = (error, details = {}) => {
+    if (closed || state.phase === 'failed') return;
+    clearTimeout(timer); state.phase = 'failed'; event('failed', {message: String(error)});
+    document.removeEventListener('visibilitychange', watchRecovery);
+    session?.dispose(error); failed(error, details);
+  };
+  const launch = () => {
+    const generation = ++state.generation;
+    event('starting');
+    watchRecovery();
+    try {
+      session = startWebEngineSession({...options, publishedKeys,
+        failed: (error, details) => { if (generation === state.generation) terminal(error, details); },
+        onDeviceLost(info) {
+          if (closed || generation !== state.generation || state.phase === 'failed') return;
+          event('device-lost', info);
+          if (state.attempts >= 2) return terminal('图形设备连续丢失，自动恢复已停止。', {kind: 'device-recovery-limit'});
+          // Retain the last complete checkpoint when a replacement device is
+          // lost during startup or restoration.
+          if (state.phase === 'running' || !checkpoint) {
+            try { checkpoint = structuredClone({camera: globalThis.__webRecoveryCamera,
+              application: recovery.capture?.()}); }
+            catch (error) { terminal(error, {kind: 'device-recovery-checkpoint'}); return; }
+          }
+          ++state.attempts; state.phase = 'recovering'; clearTimeout(timer);
+          session.dispose(new Error('WebGPU device lost'));
+          if (document.pointerLockElement === module.canvas) document.exitPointerLock?.();
+          const previous = module.canvas, canvas = previous.cloneNode(false);
+          previous.replaceWith(canvas); module.canvas = canvas;
+          for (const key of publishedKeys) delete globalThis[key];
+          diagnostics.settled = false; delete diagnostics.localContent; delete diagnostics.content;
+          document.dispatchEvent(new CustomEvent('web-engine-canvas-replaced', {detail: {previous, canvas}}));
+          stage('device-recovering'); render();
+          record('WebGPU 设备已丢失，正在重建场景资源（' + state.attempts + '/2）。');
+          launch();
+        },
+        async onReady(rpc) {
+          if (closed || generation !== state.generation || state.phase === 'failed') return;
+          try {
+            if (checkpoint?.camera) {
+              if (checkpoint.camera.version !== 1 || await rpc('WebRestoreCamera', ...checkpoint.camera.args) !== 1)
+                throw new Error('Camera checkpoint could not be restored');
+            }
+            if (state.attempts) await recovery.restore?.(checkpoint?.application, {rpc, generation});
+            if (closed || generation !== state.generation || state.phase === 'failed') return;
+            clearTimeout(timer); state.phase = 'running'; event(state.attempts ? 'recovered' : 'ready');
+            stage('running'); render();
+            document.dispatchEvent(new CustomEvent('web-engine-recovered', {detail: {generation, attempts: state.attempts}}));
+          } catch (error) { if (generation === state.generation) terminal(error, {kind: 'device-recovery-restore'}); }
+        }});
+    } catch (error) { terminal(error, {kind: 'engine-worker-start'}); }
+  };
+  const dispose = () => {
+    if (closed) return;
+    closed = true; clearTimeout(timer); session?.dispose(new Error('Engine page closed'));
+    state.phase = 'closed'; removeEventListener('pagehide', dispose);
+    document.removeEventListener('visibilitychange', watchRecovery);
+  };
+  addEventListener('pagehide', dispose, {once: true});
+  document.addEventListener('visibilitychange', watchRecovery);
+  launch();
+  return {dispose, state};
+};
+
+function startWebEngineSession({assets, module, record, failed, stage, diagnostics, render,
+  onDeviceLost, onReady, publishedKeys}) {
   const experiment = new URLSearchParams(location.search);
   const occlusionArgs = module.arguments.filter(v => v.startsWith('-WebOcclusionMode='));
   if (occlusionArgs.length > 1) throw new Error('Choose one occlusion mode');
@@ -352,7 +436,9 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     {name: 'UE Engine'});
   const frameCounter = new Uint32Array(new SharedArrayBuffer(4));
   const performanceHUD = createWebPerformanceHUD(frameCounter, canvas);
-  let sequence = 0, stopped = false, frameClock;
+  let sequence = 0, stopped = false, frameClock, observer, dpiTimer, traceButton, failureTimer, ready = false;
+  const listeners = new AbortController();
+  const listen = (target, type, callback, options = {}) => target.addEventListener(type, callback, {...options, signal: listeners.signal});
   const gameClockVisibility = () => worker.postMessage({type: 'game-clock-visibility', hidden: document.hidden});
   const directInput = inputMode === 'direct-game-thread';
   const inputBridge = new WebInputBridge({
@@ -402,22 +488,30 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     pageFrames.clear(); framePort?.close();
   };
   const pending = new Map();
-  const reportFailure = error => {
+  const dispose = error => {
+    if (stopped) return;
     stopped = true;
+    clearTimeout(failureTimer); listeners.abort(); observer?.disconnect(); clearInterval(dpiTimer); traceButton?.remove();
     inputBridge.dispose();
     disposeFrames();
     document.removeEventListener('visibilitychange', gameClockVisibility);
     frameClock?.dispose();
     performanceHUD.dispose();
+    worker.onmessage = worker.onerror = worker.onmessageerror = null;
     worker.terminate();
     for (const request of pending.values()) {
       clearTimeout(request.timer);
       request.reject(new Error(String(error)));
     }
     pending.clear();
-    failed(error, {kind: 'engine-worker'});
   };
-  worker.onerror = event => reportFailure(event.message);
+  // Native callbacks may report a failure just before device.lost is delivered.
+  // Give that notification one bounded turn; ordinary validation errors still fail.
+  const reportFailure = error => {
+    if (stopped || failureTimer) return;
+    failureTimer = setTimeout(() => { dispose(error); failed(error, {kind: 'engine-worker'}); }, 100);
+  };
+  worker.onerror = event => { event.preventDefault(); reportFailure(event.message); };
   if (localClock) document.addEventListener('visibilitychange', gameClockVisibility);
   const frameSchedulerArg = module.arguments.filter(arg => arg.startsWith('-WebFrameScheduler='));
   if (frameSchedulerArg.length) {
@@ -428,11 +522,18 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   }
   worker.onmessageerror = () => reportFailure('Engine Worker message could not be decoded');
   worker.onmessage = event => {
+    if (stopped) return;
     const message = event.data;
-    if (message.type === 'log') record(message.text);
+    if (message.type === 'log') {
+      record(message.text);
+      if (/^P3_ENGINE_(?:PREINIT|INIT)_FAILED /.test(message.text)) {
+        dispose(message.text); failed(message.text, {kind: 'engine-startup'});
+      }
+    }
     else if (message.type === 'gpu-frame-complete') frameClock?.gpuCompleted();
     else if (message.type === 'gpu-frame-submitted') frameClock?.ownerSubmitted();
     else if (message.type === 'failure') reportFailure(message.message);
+    else if (message.type === 'device-lost') { clearTimeout(failureTimer); onDeviceLost({reason: message.reason, message: message.message}); }
     else if (message.type === 'stage') stage(message.stage);
     else if (message.type === 'progress') {
       diagnostics.localContent = message.progress;
@@ -442,6 +543,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
       diagnostics.content = {completed: message.completed, total: message.total};
       render();
     } else if (message.type === 'state') {
+      for (const key of Object.keys(message.state)) publishedKeys.add(key);
       Object.assign(globalThis, message.state);
       const pso = message.state.__webPSOPrecache, rhi = message.state.__webOptimizationRHI;
       if (!globalThis.__webPSOPrecacheReady && message.state.__webEngineFrames >= 30 &&
@@ -451,6 +553,9 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
         performanceHUD.reset();
       }
       performanceHUD.ingest(message.state.__webFramePacing, message.state);
+      if (!ready && !failureTimer && globalThis.__webPSOPrecacheReady && message.state.__webEngineFrames >= 30) {
+        ready = true; onReady(rpc);
+      }
       render();
     } else if (message.type === 'dom') {
       if (message.command === 'focus') canvas.focus({preventScroll: true});
@@ -468,7 +573,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
       globalThis.__webTraceBlob = new Blob([message.bytes], {type: 'application/octet-stream'});
     }
   };
-  globalThis.__webEngineRPC = (name, ...args) => new Promise((resolve, reject) => {
+  const rpc = globalThis.__webEngineRPC = (name, ...args) => new Promise((resolve, reject) => {
     if (stopped || pending.size >= 64) { reject(new Error('Engine RPC unavailable')); return; }
     const id = ++sequence;
     const timer = setTimeout(() => {
@@ -489,13 +594,13 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     let started = false;
     try {
     globalThis.__webTraceBlob = null;
-    if (await globalThis.__webEngineRPC('WebTraceStart') !== 1) throw Error('UE Trace could not start');
+    if (await rpc('WebTraceStart') !== 1) throw Error('UE Trace could not start');
     started = true;
     await new Promise(resolve => setTimeout(resolve, seconds * 1000));
-    if (await globalThis.__webEngineRPC('WebTraceStop') !== 1) throw Error('UE Trace could not stop');
+    if (await rpc('WebTraceStop') !== 1) throw Error('UE Trace could not stop');
     started = false;
     for (let attempt = 0; attempt < 100; ++attempt) {
-      const size = await globalThis.__webEngineRPC('WebTraceExport');
+      const size = await rpc('WebTraceExport');
       if (size < 0) throw Error('UE Trace export failed: ' + size);
       if (size > 0) {
         for (let delivery = 0; delivery < 100 && !globalThis.__webTraceBlob; ++delivery)
@@ -507,7 +612,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     }
     throw Error('UE Trace writer did not close');
     } finally {
-      if (started) await globalThis.__webEngineRPC('WebTraceStop').catch(error => record(String(error)));
+      if (started) await rpc('WebTraceStop').catch(error => record(String(error)));
       traceBusy = false;
     }
   };
@@ -518,7 +623,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     link.click(); setTimeout(() => URL.revokeObjectURL(url), 10000);
   };
   if (assets.trace) {
-    const button = document.createElement('button');
+    const button = traceButton = document.createElement('button');
     button.id = 'capture-ue-trace'; button.type = 'button';
     button.textContent = '录制 8 秒性能';
     Object.assign(button.style, {position: 'fixed', right: '12px', top: '12px', zIndex: 4,
@@ -543,23 +648,24 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     return {width: rect.width, height: rect.height, dpr: devicePixelRatio};
   };
   const resize = () => { if (!stopped) worker.postMessage({type: 'browser', state: browser()}); };
-  const observer = new ResizeObserver(resize);
+  observer = new ResizeObserver(resize);
   observer.observe(canvas);
-  addEventListener('resize', resize);
+  listen(globalThis, 'resize', resize);
   // DPI can change between displays without a change to the canvas's CSS dimensions.
   let lastDpr = devicePixelRatio;
-  const dpiTimer = setInterval(() => {
+  dpiTimer = setInterval(() => {
     if (lastDpr !== devicePixelRatio) { lastDpr = devicePixelRatio; resize(); }
   }, 250);
   const input = (type, code = 0, character = 0, x = 0, y = 0, dx = 0, dy = 0, wheel = 0, flags = 0) => {
     if (stopped) return;
+    if (globalThis.__webEngineRecovery?.phase !== 'running' && type < 12) return;
     if (!globalThis.__webPSOPrecacheReady && type < 12) return;
     const values = [type, code, character, x, y, dx, dy, wheel, flags];
     if (inputMailbox) inputMailbox.push(values);
     else inputBridge.push(values);
   };
   for (const [type, id] of [['keydown', 2], ['keyup', 3]]) {
-    canvas.addEventListener(type, event => {
+    listen(canvas, type, event => {
       event.preventDefault();
       input(id, event.keyCode, event.key.length === 1 ? event.key.charCodeAt(0) : 0, 0, 0, 0, 0, 0,
         Number(event.repeat) | Number(event.shiftKey) << 1 | Number(event.ctrlKey) << 2 |
@@ -571,42 +677,26 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     input(id, event.button, 0, Math.round((event.clientX - rect.left) * devicePixelRatio),
       Math.round((event.clientY - rect.top) * devicePixelRatio), event.movementX, event.movementY);
   };
-  canvas.addEventListener('mousedown', event => {
+  listen(canvas, 'mousedown', event => {
     event.preventDefault();
     canvas.focus({preventScroll: true});
     mouse(event, 5);
   });
-  canvas.addEventListener('mousemove', event => mouse(event, 8));
-  addEventListener('mouseup', event => mouse(event, 6));
-  canvas.addEventListener('contextmenu', event => event.preventDefault());
-  canvas.addEventListener('wheel', event => {
+  listen(canvas, 'mousemove', event => mouse(event, 8));
+  listen(globalThis, 'mouseup', event => mouse(event, 6));
+  listen(canvas, 'contextmenu', event => event.preventDefault());
+  listen(canvas, 'wheel', event => {
     event.preventDefault();
     const rect = canvas.getBoundingClientRect();
     input(9, 0, 0, Math.round((event.clientX - rect.left) * devicePixelRatio),
       Math.round((event.clientY - rect.top) * devicePixelRatio), 0, 0,
       -event.deltaY / (event.deltaMode === 0 ? 100 : event.deltaMode === 1 ? 3 : 1));
   }, {passive: false});
-  canvas.addEventListener('focus', () => input(13));
-  canvas.addEventListener('blur', () => input(12));
-  addEventListener('blur', () => input(12));
-  document.addEventListener('visibilitychange', () => { if (document.hidden) input(12); });
-  document.addEventListener('pointerlockchange', () => input(20, Number(document.pointerLockElement === canvas)));
-  addEventListener('pagehide', () => {
-    stopped = true;
-    inputBridge.dispose();
-    disposeFrames();
-    document.removeEventListener('visibilitychange', gameClockVisibility);
-    frameClock?.dispose();
-    performanceHUD.dispose();
-    observer.disconnect();
-    clearInterval(dpiTimer);
-    worker.terminate();
-    for (const request of pending.values()) {
-      clearTimeout(request.timer);
-      request.reject(new Error('Engine page closed'));
-    }
-    pending.clear();
-  }, {once: true});
+  listen(canvas, 'focus', () => input(13));
+  listen(canvas, 'blur', () => input(12));
+  listen(globalThis, 'blur', () => input(12));
+  listen(document, 'visibilitychange', () => { if (document.hidden) input(12); });
+  listen(document, 'pointerlockchange', () => input(20, Number(document.pointerLockElement === canvas)));
   const offscreen = canvas.transferControlToOffscreen();
   worker.postMessage({type: 'start', assets, canvas: offscreen, browser: browser(),
     gameClockHidden: document.hidden,
@@ -618,6 +708,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     verification: new URLSearchParams(location.search).get('verify') === 'full' ? 'full' : 'sampled'},
     [offscreen, ...(frameClock ? [frameClock.transfer.port] : [])]);
   diagnostics.engineWorker = {url: 'web-engine-worker.js', offscreenCanvas: true};
-};
+  return {dispose, rpc};
+}
 
 if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox};
