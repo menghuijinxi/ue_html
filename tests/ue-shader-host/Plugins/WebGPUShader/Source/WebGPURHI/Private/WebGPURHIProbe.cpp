@@ -20,6 +20,7 @@
 #include "WebGPUDistanceFieldProbe.h"
 #include "WebGPUNaniteVisibilityProbe.h"
 #include "WebGPUTopologyProbe.h"
+#include "WebGPUColorSpaceProbe.h"
 
 #if WITH_EDITOR
 bool RunWebGPUNaniteUploaderProbe(IDynamicRHIModule& Module, const FString& Directory, const FString& Output);
@@ -648,12 +649,14 @@ class FWebGPURHIModule final : public IWebGPURHIProbeModule
     }
     bool RunProbe(const FString &Shaders, const FString &Materials, const FString &Output) override
     {
-        if (FParse::Param(FCommandLine::Get(), TEXT("WebTopologyRHIProbe")))
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTopologyRHIProbe")) ||
+            FParse::Param(FCommandLine::Get(), TEXT("WebColorSpaceRHIProbe")))
         {
             bool Result=false; IFileManager::Get().MakeDirectory(*Output,true);
             ENQUEUE_RENDER_COMMAND(WebTopologyProbe)([&](FRHICommandListImmediate&) {
                 FWebGPUGlobalScope Scope(*this);
-                auto Report=RunWebGPUTopologyProbe(*Scope.RHI);
+                auto Report = FParse::Param(FCommandLine::Get(), TEXT("WebColorSpaceRHIProbe")) ?
+                    RunWebGPUColorSpaceProbe(*Scope.RHI) : RunWebGPUTopologyProbe(*Scope.RHI);
                 Scope.PrepareShutdown(); Result=Report->GetBoolField(TEXT("pass")) && Scope.RHI->Errors.IsEmpty();
                 Report->SetBoolField(TEXT("pass"),Result);
                 TArray<TSharedPtr<FJsonValue>> Errors;

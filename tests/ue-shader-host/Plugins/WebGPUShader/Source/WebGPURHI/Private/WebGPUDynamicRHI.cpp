@@ -1798,9 +1798,12 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     const bool Cube = In.IsTextureCube();
     const bool CubeArray = In.Dimension == ETextureDimension::TextureCubeArray;
     const bool Array = In.Dimension == ETextureDimension::Texture2DArray;
+    // Match native RHI format selection: the SRGB flag only changes formats
+    // which have an sRGB view. HDR render targets may legitimately carry it.
+    const bool SRGB = SupportsSRGB(In.Format) && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB);
     if ((In.Format == PF_FloatRGB || In.Format == PF_FloatR11G11B10) &&
         (!EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
-         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::DepthStencilTargetable | ETextureCreateFlags::SRGB) ||
+         EnumHasAnyFlags(In.Flags, ETextureCreateFlags::DepthStencilTargetable) ||
          (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV) &&
              !wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier1)) ||
          (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable) &&
@@ -1811,7 +1814,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
     }
     if (Array && (!IsSampled2DTextureFormat(In.Format) || IsBCTextureFormat(In.Format) ||
         !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
-        EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)))
+        SRGB))
     {
         Error = TEXT("2D arrays require a supported linear sampled color format");
         return false;
@@ -1851,8 +1854,7 @@ bool FWebGPUDynamicRHI::ValidateTextureInitialization(const FRHITextureCreateDes
         (Volume && (!EnumHasAnyFlags(In.Flags, ETextureCreateFlags::ShaderResource) ||
                     (EnumHasAnyFlags(In.Flags, ETextureCreateFlags::RenderTargetable) &&
                      !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV)))) ||
-        (Volume && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)) ||
-        (!SupportsSRGB(In.Format) && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB)) ||
+        (Volume && SRGB) ||
         (!Color && (In.NumMips != 1 ||
                     !EnumHasAnyFlags(In.Flags, ETextureCreateFlags::DepthStencilTargetable) ||
                     EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB | ETextureCreateFlags::UAV |
@@ -1919,7 +1921,7 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
     Desc.dimension = Volume ? WGPUTextureDimension_3D : WGPUTextureDimension_2D;
     Desc.size = {uint32(In.Extent.X), uint32(In.Extent.Y), In.IsTextureCube() ? 6u * In.ArraySize :
         In.Dimension == ETextureDimension::Texture2DArray ? uint32(In.ArraySize) : uint32(In.Depth)};
-    const bool SRGB = EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB);
+    const bool SRGB = SupportsSRGB(In.Format) && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::SRGB);
     const bool SRGBStorage = SRGB && EnumHasAnyFlags(In.Flags, ETextureCreateFlags::UAV);
     Desc.format = Format(In.Format, SRGB && !SRGBStorage);
     const WGPUTextureFormat AlternateFormat = Format(In.Format, SRGBStorage);

@@ -510,6 +510,50 @@ const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), p
     await page.waitForFunction(f=>__webEngineFrames>=f+4,hzbStoppedFrame,{timeout:30000});
     assert.deepEqual(await owner.evaluate(endCounts),stoppedHZB);report.sceneHZBCleanup={pass:true,framesObserved:4,...stoppedHZB};
     report.hzbOracle=audit(require.resolve('./verify-nanite-scene-hzb.cjs'));
+    report.sceneInstances=[];
+    for(let step=1;step<=13;++step) {
+      assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteInstancesTest',s),step),1);
+      let test;const start=Date.now();
+      do {await page.waitForTimeout(100);assert.deepEqual(report.errors,[]);assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteInstancesTest',0)),1);test=await owner.evaluate(()=>globalThis.__webNaniteInstancesTest||null);}
+      while((!test||test.step!==step)&&Date.now()-start<90000);assert(test&&test.step===step);
+      test.validation=require('./verify-nanite-instances.cjs')(test,fixturePage,sourceTriangles,oracle.asset.positionPrecision);
+      test.products={};
+      for(const field of ['visibility','visibleRecords','materialInputs']) {
+        const bytes=Buffer.alloc(test[field].length*4);test[field].forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
+        const file=path.join(output,'instances-'+step+'-'+field+'.bin');fs.writeFileSync(file,bytes);test.products[field]=audit(file);delete test[field];
+      }
+      report.sceneInstances.push(test);console.log('Browser scene instances step '+step+' passed');
+    }
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteInstancesTest',14)),1);
+    const instancesFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+8,instancesFrame,{timeout:30000});
+    const stoppedInstances=await owner.evaluate(endCounts),instancesStoppedFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+4,instancesStoppedFrame,{timeout:30000});
+    assert.deepEqual(await owner.evaluate(endCounts),stoppedInstances);report.sceneInstancesCleanup={pass:true,framesObserved:4,...stoppedInstances};
+    report.instancesOracle=audit(require.resolve('./verify-nanite-instances.cjs'));
+    report.sceneViews=[];
+    for(let step=1;step<=10;++step) {
+      assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteViewsTest',s),step),1);
+      let test;const start=Date.now();
+      do {await page.waitForTimeout(100);assert.deepEqual(report.errors,[]);assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteViewsTest',0)),1);test=await owner.evaluate(()=>globalThis.__webNaniteViewsTest||null);}
+      while((!test||test.step!==step)&&Date.now()-start<90000);assert(test&&test.step===step);
+      test.validation=require('./verify-nanite-views.cjs')(test,fixturePage,sourceTriangles,oracle.asset.positionPrecision);
+      test.products={};
+      for(const field of ['visibility','visibleRecords','materialInputs','scenePixels']) {
+        const bytes=Buffer.alloc(test[field].length*4);test[field].forEach((v,i)=>bytes.writeUInt32LE(v,i*4));
+        const file=path.join(output,'views-'+step+'-'+field+'.bin');fs.writeFileSync(file,bytes);test.products[field]=audit(file);delete test[field];
+      }
+      report.sceneViews.push(test);console.log('Browser scene capture step '+step+' passed');
+    }
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteViewsTest',11)),1);
+    const viewsFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+8,viewsFrame,{timeout:30000});
+    const stoppedViews=await owner.evaluate(endCounts),viewsStoppedFrame=await page.evaluate(()=>__webEngineFrames);
+    await page.waitForFunction(f=>__webEngineFrames>=f+4,viewsStoppedFrame,{timeout:30000});
+    assert.deepEqual(await owner.evaluate(endCounts),stoppedViews);report.sceneViewsCleanup={pass:true,framesObserved:4,...stoppedViews};
+    report.viewsOracle=audit(require.resolve('./verify-nanite-views.cjs'));
+
+
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
     report.storagePrecache = await owner.evaluate(() => ({...__storagePrecacheAudit, rhi:globalThis.__webOptimizationRHI}));
     report.storagePrecache.validation = verifyStoragePrecache(report.storagePrecache);

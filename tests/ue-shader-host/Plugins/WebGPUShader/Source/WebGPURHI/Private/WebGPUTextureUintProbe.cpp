@@ -98,7 +98,7 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
                    !RHI.ValidateTextureBinding(SRV, *Binding, ERHIAccess::SRVCompute, Error));
             auto Invalid = Desc;
             Invalid.Flags |= ETextureCreateFlags::SRGB;
-            Record(Prefix + TEXT("-reject-srgb"), !RHI.ValidateTextureInitialization(Invalid, Error));
+            Record(Prefix + TEXT("-srgb-flag-keeps-linear-format"), RHI.ValidateTextureInitialization(Invalid, Error));
             Invalid = Desc;
             Invalid.Dimension = ETextureDimension::Texture2DArray;
             Record(Prefix + TEXT("-reject-array"), !RHI.ValidateTextureInitialization(Invalid, Error));
@@ -122,7 +122,9 @@ TSharedRef<FJsonObject> RunMode(IDynamicRHIModule &Module, const FString &Direct
             Desc.Dimension = ETextureDimension::TextureCube;
             Desc.Depth = 1;
         });
-        RejectCreate(TEXT("srgb"), [](auto &Desc) { Desc.Flags |= ETextureCreateFlags::SRGB; });
+        auto SRGBVolume = Base;
+        SRGBVolume.Flags |= ETextureCreateFlags::SRGB;
+        Record(TEXT("volume-srgb-flag-keeps-linear-format"), RHI.ValidateTextureInitialization(SRGBVolume, Error));
         RejectCreate(TEXT("render-target"), [](auto &Desc) { Desc.Flags |= ETextureCreateFlags::RenderTargetable; });
         RejectCreate(TEXT("uav"), [](auto &Desc) { Desc.Flags |= ETextureCreateFlags::UAV; });
         RejectCreate(TEXT("multi-mip"), [](auto &Desc) { Desc.NumMips = 2; });

@@ -139,6 +139,23 @@ for(const test of browser.sceneLOD) {
   assert.deepEqual(verifyLOD(raw,fixturePage,lodHierarchy,browser.sceneCulling,lodPrecision),test.validation);
   assert.deepEqual(verifyMaterialInputs(raw,fixturePage),test.materialValidation);
 }
+assert.equal(browser.sceneInstances.length,13);verify(browser.instancesOracle);
+assert(browser.sceneInstancesCleanup.pass&&browser.sceneInstancesCleanup.framesObserved>=4);
+const instanceTriangles=fs.readFileSync(lodFixture.sourceTriangles.file);
+for(const test of browser.sceneInstances) {
+  const raw={...test};for(const [key,p] of Object.entries(test.products)) {
+    verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));
+  }
+  assert.deepEqual(require('./verify-nanite-instances.cjs')(raw,fixturePage,instanceTriangles,lodPrecision),test.validation);
+}
+assert.equal(browser.sceneViews.length,10);verify(browser.viewsOracle);
+assert(browser.sceneViewsCleanup.pass&&browser.sceneViewsCleanup.framesObserved>=4);
+for(const test of browser.sceneViews) {
+  const raw={...test};for(const [key,p] of Object.entries(test.products)) {
+    verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));
+  }
+  assert.deepEqual(require('./verify-nanite-views.cjs')(raw,fixturePage,instanceTriangles,lodPrecision),test.validation);
+}
 const lodProjectionFile=path.join(__dirname,'results/nanite-lod-projection/verified.json'),lodProjection=read(lodProjectionFile);
 assert(lodProjection.pass && lodProjection.cases === 3255);
 [lodProjection.source, ...lodProjection.sources, ...lodProjection.tools, ...lodProjection.products].forEach(verify);
@@ -251,6 +268,32 @@ if(build.fullTargetBuild) {
   for(const a of hzbTestActions.Actions.filter(a=>a.Type==='Compile'&&hzbTestExecution.results.some(r=>r.id===a.Id&&r.code===0)))
     a.ProducedItems.forEach(f=>rebuilt.add(normalize(f)));
   assert(rebuilt.has(normalize(hzbTestObjects[0].object.file)));
+  const instancesBuildFile=path.join(__dirname,'results/web-engine-nanite-instances-build-results.json');
+  const instancesBuild=read(instancesBuildFile);assert(instancesBuild.pass&&instancesBuild.fullLinkVerified);
+  [instancesBuild.compileExecution,instancesBuild.exportedActions,instancesBuild.log].forEach(verify);
+  const instancesSources=instancesBuild.sourceFiles.filter(i=>/[\\/]WebNaniteInstancesTest\.cpp$|[\\/]RHIResources\.h$|[\\/]NaniteWeb(?:Hierarchy|Scene)\.h$/.test(i.file));
+  assert(instancesSources.some(i=>i.file.endsWith('WebNaniteInstancesTest.cpp')));instancesSources.forEach(verify);
+  const instancesExecution=read(instancesBuild.compileExecution.file),instancesActions=read(instancesBuild.exportedActions.file);
+  assert(instancesExecution.pass&&instancesExecution.results.every(r=>r.code===0));
+  const instancesObjects=instancesBuild.objects.filter(o=>o.source.file.endsWith('WebNaniteInstancesTest.cpp'));
+  assert.equal(instancesObjects.length,1);instancesObjects.forEach(o=>verify(o.object));
+  for(const a of instancesActions.Actions.filter(a=>a.Type==='Compile'&&instancesExecution.results.some(r=>r.id===a.Id&&r.code===0)))
+    a.ProducedItems.forEach(f=>rebuilt.add(normalize(f)));
+  assert(rebuilt.has(normalize(instancesObjects[0].object.file)));
+  const viewsBuildFile=path.join(__dirname,'results/web-engine-nanite-views-build-results.json');
+  const viewsBuild=read(viewsBuildFile);assert(viewsBuild.pass&&viewsBuild.fullLinkVerified);
+  [viewsBuild.compileExecution,viewsBuild.exportedActions,viewsBuild.log].forEach(verify);
+  const viewsSources=viewsBuild.sourceFiles.filter(i=>/[\\/]WebNaniteViewsTest\.cpp$|[\\/]RHIResources\.h$|[\\/]NaniteWeb(?:Hierarchy|Scene)\.h$/.test(i.file));
+  assert(viewsSources.some(i=>i.file.endsWith('WebNaniteViewsTest.cpp')));viewsSources.forEach(verify);
+  const viewsExecution=read(viewsBuild.compileExecution.file),viewsActions=read(viewsBuild.exportedActions.file);
+  assert(viewsExecution.pass&&viewsExecution.results.every(r=>r.code===0));
+  const viewsObjects=viewsBuild.objects.filter(o=>o.source.file.endsWith('WebNaniteViewsTest.cpp'));
+  assert.equal(viewsObjects.length,1);viewsObjects.forEach(o=>verify(o.object));
+  for(const a of viewsActions.Actions.filter(a=>a.Type==='Compile'&&viewsExecution.results.some(r=>r.id===a.Id&&r.code===0)))
+    a.ProducedItems.forEach(f=>rebuilt.add(normalize(f)));
+  assert(rebuilt.has(normalize(viewsObjects[0].object.file)));
+
+
   const lodLayoutFile=path.join(__dirname,'results/web-engine-nanite-lod-layout-build-results.json'),lodLayout=read(lodLayoutFile);
   assert(lodLayout.pass && lodLayout.fullLinkVerified);
   [lodLayout.compileExecution,lodLayout.exportedActions,lodLayout.log].forEach(verify);
@@ -383,6 +426,10 @@ assert(topology.bundlesCreated >= 8 && topology.bundleHits >= 8);
 [topology.source, topology.build, topology.runtime, topology.log].forEach(verify);
 const topologyBuild = read(topology.build.file);
 [...topologyBuild.inputs, topologyBuild.binary, topologyBuild.log].forEach(verify);
+const colorSpaceFile=path.join(__dirname,'results/nanite-color-space/verified.json'),colorSpace=read(colorSpaceFile);
+assert(colorSpace.pass&&colorSpace.cases.length===60&&colorSpace.cases.every(c=>c.pass));
+[colorSpace.source,colorSpace.build,colorSpace.runtime,colorSpace.log].forEach(verify);
+assert.equal(colorSpace.build.sha256,topology.build.sha256);
 const gatherFile = path.join(__dirname, 'results/nanite-depth-gather/verified.json'), gather = read(gatherFile);
 assert(gather.pass && gather.cases.length === 2 && gather.cases.every(c => c.maxError < 1e-6));
 [gather.source, ...gather.shaderSources].forEach(verify);
@@ -406,7 +453,28 @@ const staleLODBuild=path.join(__dirname,'results/nanite-browser/failure-lod-stal
 assert(!staleLOD.pass && staleLOD.failure.includes('BadView'));
 assert.equal(audit(staleLODPackage).sha256,staleLOD.package.sha256);
 assert.equal(audit(staleLODBuild).sha256,read(staleLODPackage).build.sha256);
+const instanceFailureFile=path.join(__dirname,'results/nanite-instances/failure-ownerless-reregister-20261109.json');
+const instanceFailure=read(instanceFailureFile),instanceFailurePackage=instanceFailureFile.replace('.json','-package.json'),instanceFailureBuild=instanceFailureFile.replace('.json','-build.json');
+assert(!instanceFailure.pass&&instanceFailure.tests.length===5&&instanceFailure.logs.some(l=>l.includes('Ensure condition failed: MyOwnerWorld')));
+assert.equal(audit(instanceFailurePackage).sha256,instanceFailure.package.sha256);
+assert.equal(audit(instanceFailureBuild).sha256,read(instanceFailurePackage).build.sha256);
+const captureFailureFile=path.join(__dirname,'results/nanite-views/failure-capture-rpc-20261109.json');
+const captureFailure=read(captureFailureFile),captureFailurePackage=captureFailureFile.replace('.json','-package.json'),captureFailureBuild=captureFailureFile.replace('.json','-build.json');
+assert(!captureFailure.pass&&captureFailure.tests.length===0&&captureFailure.logs.some(l=>l.includes('ValidateTextureInitialization')));
+assert.equal(audit(captureFailurePackage).sha256,captureFailure.package.sha256);
+assert.equal(audit(captureFailureBuild).sha256,read(captureFailurePackage).build.sha256);
+const orthoFailureFile=path.join(__dirname,'results/nanite-views/failure-ortho-cull-20261109.json');
+const orthoFailure=read(orthoFailureFile),orthoFailurePackage=orthoFailureFile.replace('.json','-package.json'),orthoFailureBuild=orthoFailureFile.replace('.json','-build.json');
+assert(!orthoFailure.pass&&orthoFailure.tests.length===6&&orthoFailure.tests.at(-1).entries.every(e=>e.state[0]===8));
+assert.equal(audit(orthoFailurePackage).sha256,orthoFailure.package.sha256);
+assert.equal(audit(orthoFailureBuild).sha256,read(orthoFailurePackage).build.sha256);
 const report = {date:new Date().toISOString(), pass:true,
+  orthographicPlanes:{failureReport:audit(orthoFailureFile),failurePackage:audit(orthoFailurePackage),failureBuild:audit(orthoFailureBuild),
+    verifiedSteps:browser.sceneViews.length},
+  captureColorSpace:{report:audit(colorSpaceFile),...colorSpace,
+    failureReport:audit(captureFailureFile),failurePackage:audit(captureFailurePackage),failureBuild:audit(captureFailureBuild)},
+  instanceReregistration:{failureReport:audit(instanceFailureFile),failurePackage:audit(instanceFailurePackage),failureBuild:audit(instanceFailureBuild),
+    failedAtStep:6,verifiedSteps:browser.sceneInstances.length,componentLifecycleFixed:true},
   residentHZB:{kernel:{report:audit(hzbKernelFile),...hzbKernel},bindings:{report:audit(hzbBindingsFile),...hzbBindings},
     occlusion:{report:audit(occlusionFile),...occlusion},
     depthBindingFailure:{report:audit(hzbFailureFile),package:audit(hzbFailurePackage),build:audit(hzbFailureBuild),...hzbFailure.engineFailure}},
@@ -462,7 +530,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, `evidence/nanite-browser-hzb-${scalarVisibility?'fallback':'packed'}-20261109.json`);
+const destination = path.join(__dirname, `evidence/nanite-browser-instances-${scalarVisibility?'fallback':'packed'}-20261109.json`);
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

@@ -121,7 +121,7 @@ tasks.push(
   [path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'), null, 'EngineNaniteMain'],
   ...fs.readdirSync(path.join(intermediate, 'WebGPURHI')).filter(n => n.endsWith('.cpp.o.rsp'))
     .map(n => [path.join(intermediate, 'WebGPURHI', n), null, n.replace('.cpp.o.rsp', '')]),
-  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest', 'WebNaniteGBufferTest', 'WebNaniteHZBTest'].map(name => {
+  ...['WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest', 'WebNaniteGBufferTest', 'WebNaniteHZBTest', 'WebNaniteInstancesTest', 'WebNaniteViewsTest'].map(name => {
     const ownResponse=path.join(intermediate,'UEWebEngine',name+'.cpp.o.rsp');
     return fs.existsSync(ownResponse)?[ownResponse,null,name]:[path.join(intermediate, 'UEWebEngine/UEWebEngine.cpp.o.rsp'),
       path.join(root, 'tests/ue-web-smoke/Source/UEWebEngine/Private', name + '.cpp'), name];

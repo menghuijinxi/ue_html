@@ -31,6 +31,7 @@ try {
         'Source/WebGPURHI/Private/WebGPUTransitions.cpp', 'Source/WebGPURHI/Private/WebGPUTransitionProbe.cpp',
         'Source/WebGPURHI/Private/WebGPUTransitionProbe.h',
         'Source/WebGPURHI/Private/WebGPUTopologyProbe.h',
+        'Source/WebGPURHI/Private/WebGPUColorSpaceProbe.h',
         'Source/WebGPURHI/Private/WebGPUGlobalScope.cpp', 'Source/WebGPURHI/Private/WebGPUGlobalScope.h',
         'Intermediate/NaniteUploaderProbe/NaniteStreamingPageUploader.cpp',
         'Intermediate/NaniteUploaderProbe/NaniteStreamingPageUploader.h') | ForEach-Object { Get-TaskAudit (Join-Path $taskPlugin $_) }
