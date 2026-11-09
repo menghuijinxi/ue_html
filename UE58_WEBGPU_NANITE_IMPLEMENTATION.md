@@ -1424,10 +1424,37 @@ Compute 处理完整位于裁剪体内且不超过 8×8 像素的三角形，采
 证据为 `tests/web-platform/evidence/nanite-browser-micro-packed-20261110.json`
 和 `tests/web-platform/evidence/nanite-browser-micro-fallback-20261110.json`。
 
+## 真实 UMaterial 与 GPUScene（2026-11-10）
+
+新增 `FWebNaniteVertexFactory`，复用原生 Nanite 顶点属性、GPUScene、
+解析导数和 BasePass 材质代码。组件注册时从 LOD section 保存真实材质代理与
+LCI，BasePass 按实际材质和光照策略选择 Cook shader，并通过占用瓦片进行
+间接绘制。像素归属检查同时验证实例、材质槽和场景深度，保留普通几何遮挡。
+入口为 `r.Nanite.WebMaterialGraphs`；当前默认关闭，整关卡自动启用尚未验收。
+
+原生 shader 中的静态 Uniform Buffer 由 RDG 绑定，直接绑定只用于 shader
+独有槽。首轮浏览器发现重复绑定断言，修复后保留原失败日志与构建记录。
+测试夹具的 Root 清理顺序也已修正；冷启动时等待 PSO 预缓存延迟创建的代理就绪，
+使用有界超时，避免空场景被提前判定或永久等待。
+
+完整 Web 构建及包含三种真实材质资产的 Villa Cook 通过。两种设备配置分别
+运行 3,551/3,428 帧、执行 9,564/9,281 次真实材质间接绘制，均实际使用三种
+材质 shader。十项检查覆盖 Unlit、DefaultLit、法线贴图、MID 颜色更新、
+材质替换、旋转、隐藏、注销/恢复、运行时法线纹理替换和参数恢复；组件清理后
+继续运行，GPU 错误为零。基础色误差不超过 0.260 个 sRGB 码值，法线夹角余弦
+最大误差 0.00214（阈值 0.003）。夹具不提交 fallback 三角形。
+
+`tests/web-platform/evidence/nanite-native-materials-20261110.json` 保存源码、
+构建、Cook 和运行包校验信息；完整像素回读、WGSL 和运行日志以无损 gzip/base64
+保存于同一文件。独立管线检查还验证了三个真实材质的 HLSL→WGSL 编译及管线创建。
+该证据不关闭 lightmap、Substrate、全部材质排列和完整关卡画面对照验收。
+同一运行包的现有完整回归运行 42,089 帧，GPU 错误及启动管线失败为零，
+包含 128 次混合光栅重复帧、13 项实例和 10 项真实场景捕获。
+
 ## 尚未接通
 
-- 已执行有界常驻页光栅、真实场景深度和显式参数/基础色纹理 DefaultLit GBuffer，
-  显式材质已支持跨实例分桶；完整 Nanite Renderer 的任意材质图、原生 shading bin、
+- 已执行有界常驻页光栅、真实场景深度和真实 Unlit/DefaultLit 材质图，
+  显式材质支持跨实例分桶；完整 Nanite Renderer 的其余材质排列、lightmap、Substrate、原生 shading bin、
   速度和 stencil/shading mask 消费尚未接通。
 - Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略，
   以及混合光栅在高分辨率、高密度场景中的性能验收。
@@ -1439,6 +1466,5 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 不能据本轮检查宣称通用 64 位原子、全部 Nanite permutations、真实 Nanite 场景
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
-当前专项包已使用重新 Cook 的完整 Villa 资源，Nanite 组件和材质仍由显式测试接口绑定。
-下一阶段继续补齐自动材质绑定、完整 GPUScene/material/view 绑定与材质图支持，
-再推进页流送及完整场景验收。
+当前专项包使用重新 Cook 的完整 Villa 资源，真实组件材质已自动绑定，但 Nanite
+仍由专项入口启用。继续补齐速度/遮罩、其余材质和视图策略、页流送及完整场景验收。

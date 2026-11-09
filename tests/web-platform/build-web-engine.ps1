@@ -65,7 +65,12 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Public/Rendering/NaniteWebDepth.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebGBuffer.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebGBuffer.h',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebVertexFactory.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebMaterial.h',
     'Source/Runtime/Engine/Private/StaticMeshSceneProxy.cpp',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebMaterialPass.cpp',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebMaterialPass.h',
+    'Source/Runtime/Renderer/Private/BasePassRendering.cpp',
     'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp',
     'Source/Runtime/Renderer/Private/GlobalDistanceField.cpp'
 )

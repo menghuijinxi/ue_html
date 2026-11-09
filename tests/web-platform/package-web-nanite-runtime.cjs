@@ -21,7 +21,7 @@ verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
 // Inline platform predicates changed with the full target rebuild. Global and
 // material shader maps must both come from a matching scene Cook.
-const stageFile = path.join(__dirname, 'results/web-project-nanite-micro-desktop-stage-results.json');
+const stageFile = path.join(__dirname, 'results/web-project-nanite-materials-desktop-stage-results.json');
 const stage = read(stageFile);
 assert(stage.pass && stage.mode === 'WebGPU-SM5' && stage.useProjectSettings);
 [...stage.sourceFiles, stage.cookReport, stage.pack, stage.manifest, stage.configBundle].forEach(verify);
@@ -38,6 +38,7 @@ assert(naniteTypes.every(name => inventory.types.some(type => type.name === name
   'The scene Cook must include diagnostic and production Nanite shaders in complete sections');
 assert(inventory.types.some(type=>type.name==='FWebNaniteScalarRasterPS'&&type.permutations===2), 'Both scalar visibility phases must be cooked');
 assert(inventory.types.some(type=>type.name==='FWebNaniteMicroRasterCS'&&type.permutations===3),'All three valid compute raster permutations must be cooked');
+assert(inventory.types.some(type=>type.name==='FWebNaniteMaterialTilesVS'&&type.permutations===1),'The native material tile vertex shader must be cooked');
 assert.deepEqual(inventory.settings['r.VirtualTextures'], {host:'1',target:'1'});
 const baseline = path.dirname(stage.manifest.file);
 const pageTemplate = path.join(__dirname, 'build/villa-default-20261107/index.html');

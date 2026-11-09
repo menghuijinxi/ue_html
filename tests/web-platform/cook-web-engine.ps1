@@ -4,6 +4,7 @@ param(
     [ValidateSet('Minimal', 'DefaultTemplate', 'Project')][string]$Scene = 'Minimal',
     [string]$Project,
     [string]$Map,
+    [string[]]$ExtraPackages = @(),
     [string]$Profile,
     [switch]$UseProjectSettings,
     [switch]$ManualVertexFetch,
@@ -232,6 +233,10 @@ try {
         $taskPackages += '/Engine/BasicShapes/Sphere'
         $taskPackages += $taskSamples.meshPackage
         $taskPackages += @($taskSamples.samples | ForEach-Object { $_.package })
+    }
+    foreach ($taskExtraPackage in $ExtraPackages) {
+        if ($taskExtraPackage -notmatch '^/(Game|Engine)/[a-zA-Z0-9_/]+$') { throw "Invalid extra Cook package: $taskExtraPackage" }
+        $taskPackages += $taskExtraPackage
     }
     # The installed native UBT cannot validate a Web SDK. The custom module handles this cook-only path.
     $taskArguments = @($taskProject, '-run=Cook', '-TargetPlatform=Web',
