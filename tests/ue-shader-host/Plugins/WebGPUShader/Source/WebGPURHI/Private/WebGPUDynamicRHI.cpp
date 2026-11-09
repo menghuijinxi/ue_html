@@ -288,6 +288,7 @@ WGPUTextureFormat StorageFormat(uint32 ImageFormat, bool AllowUnsupported = fals
     case 13: return WGPUTextureFormat_RG8Unorm;
     case 14: return WGPUTextureFormat_R16Unorm;
     case 15: return WGPUTextureFormat_R8Unorm;
+    case 21: return WGPUTextureFormat_RGBA32Sint;
     case 32: return WGPUTextureFormat_RGBA8Uint;
     case 30: return WGPUTextureFormat_RGBA32Uint;
     case 33: return WGPUTextureFormat_R32Uint;
@@ -319,6 +320,7 @@ const TCHAR* StorageFormatName(uint32 ImageFormat)
     case 13: return TEXT("rg8unorm");
     case 14: return TEXT("r16unorm");
     case 15: return TEXT("r8unorm");
+    case 21: return TEXT("rgba32sint");
     case 30: return TEXT("rgba32uint");
     case 32: return TEXT("rgba8uint");
     case 33: return TEXT("r32uint");
@@ -330,28 +332,35 @@ const TCHAR* StorageFormatName(uint32 ImageFormat)
     }
 }
 bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits,
-    bool SupportsExtendedStorageAccess, bool SupportsStorageVariants = false)
+    bool SupportsExtendedStorageAccess, bool SupportsStorageVariants = false, FString* Reason = nullptr)
 {
+    const auto Reject = [&](const FString& Message) { if (Reason) *Reason = Shader.Entry + TEXT(": ") + Message; return false; };
     // Compute shaders can precompile their reflected format tuple.
     // Actual UAV bindings still select the matching tuple at dispatch.
-    if (!SupportsStorageVariants && !Shader.StorageFormatSource.IsEmpty()) return false;
+    if (!SupportsStorageVariants && !Shader.StorageFormatSource.IsEmpty()) return Reject(TEXT("dynamic storage format"));
     uint32 Samplers = 0, Textures = 0, StorageTextures = 0, Uniforms = 0, StorageBuffers = 0;
     for (const auto& Binding : Shader.Bindings)
     {
         if (Binding.Descriptor != 0 && Binding.Descriptor != 2 && Binding.Descriptor != 3 &&
-            Binding.Descriptor != 6 && Binding.Descriptor != 7) return false;
+            Binding.Descriptor != 6 && Binding.Descriptor != 7) return Reject(FString::Printf(TEXT("descriptor %u binding %s"), Binding.Descriptor, *Binding.Name));
         if (Binding.Descriptor == 3)
         {
             const auto Format = StorageFormat(Binding.StorageImageFormat, true);
-            if (Format == WGPUTextureFormat_Undefined) return false;
+            if (Format == WGPUTextureFormat_Undefined) return Reject(FString::Printf(TEXT("storage format %u binding %s"), Binding.StorageImageFormat, *Binding.Name));
             const auto& Access = Binding.StorageTextureAccess;
             // TLV accumulates RGBA16F in place when the device exposes tier 2.
             if (Access == TEXT("read_write") && Format != WGPUTextureFormat_R32Float &&
                 Format != WGPUTextureFormat_R32Uint && Format != WGPUTextureFormat_R32Sint &&
                 !(SupportsExtendedStorageAccess &&
-                    (Format == WGPUTextureFormat_RGBA16Float || Format == WGPUTextureFormat_R16Uint))) return false;
+                    (Format == WGPUTextureFormat_RGBA16Float || Format == WGPUTextureFormat_R16Uint ||
+                     Format == WGPUTextureFormat_R8Uint || Format == WGPUTextureFormat_R16Float ||
+                     Format == WGPUTextureFormat_RGBA8Unorm || Format == WGPUTextureFormat_RGBA8Uint ||
+                     Format == WGPUTextureFormat_RGBA32Float || Format == WGPUTextureFormat_RGBA32Uint ||
+                     Format == WGPUTextureFormat_RGBA32Sint)))
+                return Reject(FString::Printf(TEXT("read_write storage format %u binding %s tier2 %u"), Binding.StorageImageFormat, *Binding.Name, uint32(SupportsExtendedStorageAccess)));
         }
-        if (Binding.Group >= Limits.maxBindGroups || Binding.Index >= Limits.maxBindingsPerBindGroup) return false;
+        if (Binding.Group >= Limits.maxBindGroups || Binding.Index >= Limits.maxBindingsPerBindGroup)
+            return Reject(FString::Printf(TEXT("binding range %u/%u"), Binding.Group, Binding.Index));
         Samplers += Binding.Descriptor == 0;
         Textures += Binding.Descriptor == 2;
         StorageTextures += Binding.Descriptor == 3;
@@ -359,9 +368,13 @@ bool CanPrecacheShader(const FWebGPUShaderData& Shader, const WGPULimits& Limits
         Uniforms += Binding.Descriptor == 6 || SkyUniform;
         StorageBuffers += Binding.Descriptor == 7 && !SkyUniform;
     }
-    return Samplers <= Limits.maxSamplersPerShaderStage && Textures <= Limits.maxSampledTexturesPerShaderStage &&
+    const bool Supported = Samplers <= Limits.maxSamplersPerShaderStage && Textures <= Limits.maxSampledTexturesPerShaderStage &&
         StorageTextures <= Limits.maxStorageTexturesPerShaderStage && Uniforms <= Limits.maxUniformBuffersPerShaderStage &&
         StorageBuffers <= Limits.maxStorageBuffersPerShaderStage;
+    return Supported || Reject(FString::Printf(TEXT("stage limits samplers=%u/%u textures=%u/%u storageTextures=%u/%u uniforms=%u/%u storageBuffers=%u/%u"),
+        Samplers, Limits.maxSamplersPerShaderStage, Textures, Limits.maxSampledTexturesPerShaderStage,
+        StorageTextures, Limits.maxStorageTexturesPerShaderStage, Uniforms, Limits.maxUniformBuffersPerShaderStage,
+        StorageBuffers, Limits.maxStorageBuffersPerShaderStage));
 }
 WGPUTextureFormat Format(EPixelFormat Value, bool SRGB = false, bool AllowUnsupported = false)
 {
@@ -453,7 +466,14 @@ WGPUVertexFormat VertexFormat(EVertexElementType Type, bool AllowUnsupported = f
     case VET_Half2: return WGPUVertexFormat_Float16x2;
     case VET_Half4: return WGPUVertexFormat_Float16x4;
     case VET_Short4N: return WGPUVertexFormat_Snorm16x4;
+    case VET_Short2: return WGPUVertexFormat_Sint16x2;
+    case VET_Short4: return WGPUVertexFormat_Sint16x4;
+    case VET_Short2N: return WGPUVertexFormat_Snorm16x2;
     case VET_UShort2: return WGPUVertexFormat_Uint16x2;
+    case VET_UShort4: return WGPUVertexFormat_Uint16x4;
+    case VET_UShort2N: return WGPUVertexFormat_Unorm16x2;
+    case VET_UShort4N: return WGPUVertexFormat_Unorm16x4;
+    case VET_URGB10A2N: return WGPUVertexFormat_Unorm10_10_10_2;
     case VET_UInt: return WGPUVertexFormat_Uint32; // GPUScene primitive/instance ID stream (D3D: R32_UINT).
     default:
         if (AllowUnsupported) return UnsupportedVertexFormat;
@@ -472,8 +492,25 @@ WGPUStoreOp Store(ERenderTargetActions Action)
 }
 uint32 VertexCount(EPrimitiveType Type, uint32 Primitives)
 {
-    check(Type == PT_TriangleList || Type == PT_TriangleStrip);
-    return Type == PT_TriangleList ? Primitives * 3 : Primitives + 2;
+    switch (Type)
+    {
+    case PT_TriangleList: return Primitives * 3;
+    case PT_TriangleStrip: return Primitives ? Primitives + 2 : 0;
+    case PT_LineList: return Primitives * 2;
+    case PT_PointList: return Primitives;
+    default: checkNoEntry(); return 0;
+    }
+}
+WGPUPrimitiveTopology Topology(EPrimitiveType Type)
+{
+    switch (Type)
+    {
+    case PT_TriangleList: return WGPUPrimitiveTopology_TriangleList;
+    case PT_TriangleStrip: return WGPUPrimitiveTopology_TriangleStrip;
+    case PT_LineList: return WGPUPrimitiveTopology_LineList;
+    case PT_PointList: return WGPUPrimitiveTopology_PointList;
+    default: return WGPUPrimitiveTopology_Undefined;
+    }
 }
 WGPUCompareFunction Compare(ECompareFunction In)
 {
@@ -4383,13 +4420,13 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         // UE collectors also propose states that this backend cannot draw.
         // Reject those requests like a failed native precompile, before the
         // runtime-only assertions below. Always wake the compile task.
-        FBlendStateInitializerRHI Blend;
-        FDepthStencilStateInitializerRHI DepthState;
-        FRasterizerStateInitializerRHI Rasterizer;
+        FBlendStateInitializerRHI Blend{};
+        FDepthStencilStateInitializerRHI DepthState{};
+        FRasterizerStateInitializerRHI Rasterizer{};
         const bool Attachmentless = In.RenderTargetsEnabled == 0 && In.DepthStencilTargetFormat == PF_Unknown;
         bool Supported = (In.NumSamples == 1 || (Attachmentless && In.NumSamples == 0)) &&
             !In.BoundShaderState.GetGeometryShader() &&
-            (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip) &&
+            Topology(In.PrimitiveType) != WGPUPrimitiveTopology_Undefined &&
             In.BlendState && In.RasterizerState && In.DepthStencilState &&
             In.BlendState->GetInitializer(Blend) && In.DepthStencilState->GetInitializer(DepthState) &&
             In.RasterizerState->GetInitializer(Rasterizer) &&
@@ -4403,13 +4440,16 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         if (In.BoundShaderState.VertexDeclarationRHI)
         {
             const auto* Declaration = static_cast<FWebGPUVertexDeclaration*>(In.BoundShaderState.VertexDeclarationRHI);
+            TSet<uint8> Streams;
             for (const FVertexElement& Element : Declaration->Elements)
             {
                 const auto& Vertex = static_cast<FWebGPUVertexShader*>(In.BoundShaderState.GetVertexShader())->Data;
                 if (Element.AttributeIndex >= 32 || !(Vertex.VertexInputMask & (1u << Element.AttributeIndex))) continue;
-                Supported &= Element.StreamIndex < Limits.maxVertexBuffers &&
+                Streams.Add(Element.StreamIndex);
+                Supported &= Element.StreamIndex < MaxVertexElementCount &&
                     VertexFormat(EVertexElementType(Element.Type), true) != UnsupportedVertexFormat;
             }
+            Supported &= uint32(Streams.Num()) <= Limits.maxVertexBuffers;
         }
         for (uint32 Index = 0; Index < In.RenderTargetsEnabled; ++Index)
             Supported &= In.RenderTargetFormats[Index] == PF_Unknown ||
@@ -4418,6 +4458,13 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             Format(In.DepthStencilTargetFormat, false, true) != WGPUTextureFormat_Undefined;
         if (!Supported)
         {
+            FString VertexReason, PixelReason;
+            CanPrecacheShader(static_cast<FWebGPUVertexShader*>(In.BoundShaderState.GetVertexShader())->Data, Limits, ExtendedStorageAccess, false, &VertexReason);
+            if (auto* Pixel = In.BoundShaderState.GetPixelShader()) CanPrecacheShader(static_cast<FWebGPUPixelShader*>(Pixel)->Data, Limits, ExtendedStorageAccess, false, &PixelReason);
+            UE_LOG(LogRHI, Warning, TEXT("P3_WEB_GRAPHICS_PRECACHE_REJECT samples=%u primitive=%u fill=%u cull=%u bias=%g slope=%g clip=%u alpha=%u targets=%u depth=%u vs=%s ps=%s"),
+                uint32(In.NumSamples), uint32(In.PrimitiveType), uint32(Rasterizer.FillMode), uint32(Rasterizer.CullMode), Rasterizer.DepthBias,
+                Rasterizer.SlopeScaleDepthBias, uint32(Rasterizer.DepthClipMode), uint32(Blend.bUseAlphaToCoverage), In.RenderTargetsEnabled,
+                uint32(In.DepthStencilTargetFormat), *VertexReason, *PixelReason);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
             ++UnsupportedPrecacheRequests;
             if (GraphicsPrecacheRequest)
@@ -4432,7 +4479,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     auto *Pixel = static_cast<FWebGPUPixelShader *>(In.BoundShaderState.GetPixelShader());
     const bool Attachmentless = In.RenderTargetsEnabled == 0 && In.DepthStencilTargetFormat == PF_Unknown;
     checkf((In.NumSamples == 1 || (Attachmentless && In.NumSamples == 0)) && !In.BoundShaderState.GetGeometryShader() &&
-          (In.PrimitiveType == PT_TriangleList || In.PrimitiveType == PT_TriangleStrip),
+          Topology(In.PrimitiveType) != WGPUPrimitiveTopology_Undefined,
           TEXT("Web raster pipeline samples=%u geometry=%u primitive=%u vertex=%s pixel=%s"),
           uint32(In.NumSamples), In.BoundShaderState.GetGeometryShader() ? 1u : 0u, uint32(In.PrimitiveType),
           *VS.Entry, Pixel ? *Pixel->Data.Entry : TEXT("depth-only"));
@@ -4455,9 +4502,10 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         for (const auto &Element : Declaration->Elements)
         {
             if (Element.AttributeIndex >= 32 || !(VS.VertexInputMask & (1u << Element.AttributeIndex))) continue;
-            check(Element.StreamIndex < Limits.maxVertexBuffers);
-            Result->VertexStreamMask |= 1u << Element.StreamIndex;
-            while (Layouts.Num() <= Element.StreamIndex)
+            check(Element.StreamIndex < MaxVertexElementCount);
+            const int32 Slot = Result->VertexStreams.AddUnique(Element.StreamIndex);
+            check(uint32(Slot) < Limits.maxVertexBuffers);
+            while (Layouts.Num() <= Slot)
             {
                 Layouts.Add(WGPU_VERTEX_BUFFER_LAYOUT_INIT);
                 Attributes.AddDefaulted();
@@ -4466,8 +4514,8 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             Attribute.offset = Element.Offset;
             Attribute.shaderLocation = Element.AttributeIndex;
             Attribute.format = VertexFormat(EVertexElementType(Element.Type));
-            Attributes[Element.StreamIndex].Add(Attribute);
-            auto &Layout = Layouts[Element.StreamIndex];
+            Attributes[Slot].Add(Attribute);
+            auto &Layout = Layouts[Slot];
             check(!Layout.arrayStride || Layout.arrayStride == Element.Stride);
             Layout.arrayStride = Element.Stride;
             Layout.stepMode = Element.bUseInstanceIndex ? WGPUVertexStepMode_Instance : WGPUVertexStepMode_Vertex;
@@ -4480,8 +4528,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         Desc.vertex.bufferCount = Layouts.Num();
         Desc.vertex.buffers = Layouts.GetData();
     }
-    Desc.primitive.topology =
-        In.PrimitiveType == PT_TriangleList ? WGPUPrimitiveTopology_TriangleList : WGPUPrimitiveTopology_TriangleStrip;
+    Desc.primitive.topology = Topology(In.PrimitiveType);
     Desc.primitive.cullMode = WGPUCullMode_None;
     check(In.BlendState && In.RasterizerState && In.DepthStencilState);
     FBlendStateInitializerRHI Blend;
@@ -4650,22 +4697,32 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
     WEBGPU_ON_OWNER(RHICreateComputePipelineState(In));
     RequireOwner();
     TRACE_CPUPROFILER_EVENT_SCOPE(WebPSO_CreateComputeOwner);
+    FString PrecacheReason;
     if (In.bPSOPrecache && (!In.SpecializationConstants.IsEmpty() ||
         !CanPrecacheShader(static_cast<FWebGPUComputeShader*>(In.ComputeShader)->Data, Limits,
-            wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2) != 0, true)))
+            wgpuDeviceHasFeature(Device, WGPUFeatureName_TextureFormatsTier2) != 0, true, &PrecacheReason)))
     {
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         ++UnsupportedPrecacheRequests;
         if (ComputePrecacheRequest)
-            ComputePrecacheRequest->Complete(nullptr, Text("Unsupported speculative compute state"));
+        {
+            const FTCHARToUTF8 Reason(PrecacheReason.IsEmpty() ? TEXT("specialization constants") : *PrecacheReason);
+            ComputePrecacheRequest->Complete(nullptr, Text(Reason.Get()));
+        }
 #endif
         return nullptr;
     }
     check(In.SpecializationConstants.IsEmpty());
-    const auto &Shader = static_cast<FWebGPUComputeShader *>(In.ComputeShader)->Data;
+    auto &Shader = static_cast<FWebGPUComputeShader *>(In.ComputeShader)->Data;
     if (!Shader.StorageFormatSource.IsEmpty())
     {
         TRefCountPtr<FWebGPUComputePipeline> Deferred = new FWebGPUComputePipeline(In.ComputeShader, nullptr);
+        Deferred->SharedFormatCache = Shader.StoragePipelineCache.Pin();
+        if (!Deferred->SharedFormatCache)
+        {
+            Deferred->SharedFormatCache = MakeShared<FWebGPUStoragePipelineCache, ESPMode::ThreadSafe>();
+            Shader.StoragePipelineCache = Deferred->SharedFormatCache;
+        }
         if (In.bPSOPrecache)
         {
             TMap<uint64, uint32> Formats;
@@ -4694,7 +4751,11 @@ FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(con
                 Key.Appendf(TEXT("%02x"), ImageFormat);
             }
             check(!Formats.IsEmpty());
-            Deferred->FormatVariants.Add(Key, CreateComputePipeline(In, &Formats));
+            auto Variant = CreateComputePipeline(In, &Formats);
+            // Retain this request's result even if another wrapper later seeds
+            // the same tuple while its asynchronous callback is still pending.
+            Deferred->FormatVariants.Add(Key, Variant);
+            Deferred->SharedFormatCache->Precached.Add(Key, Variant);
         }
         return Deferred.GetReference();
     }
@@ -4990,7 +5051,8 @@ void FWebGPUDynamicRHI::RHIBeginRenderPass(const FRHIRenderPassInfo &Info, const
 #if defined(PLATFORM_WEB) && PLATFORM_WEB
     UseRenderBundles = CVarWebGPURenderBundles.GetValueOnAnyThread() != 0;
 #else
-    UseRenderBundles = false;
+    // Native readback probes explicitly select this path before beginning a pass.
+    if (!GlobalProbeMode) UseRenderBundles = false;
 #endif
     PassStencilReference = MAX_uint32;
     PassBundleColors.Reset();
@@ -5304,7 +5366,7 @@ void FWebGPUDynamicRHI::RHISetComputePipelineState(FRHIComputePipelineState *Sta
 void FWebGPUDynamicRHI::RHISetStreamSource(uint32 Stream, FRHIBuffer *Buffer, uint32 Offset)
 {
     WEBGPU_COMMAND_ON_OWNER(RHISetStreamSource(Stream, Buffer, Offset));
-    check(Stream < Limits.maxVertexBuffers);
+    check(Stream < MaxVertexElementCount);
     if (VertexBuffers.Num() <= int32(Stream))
     {
         VertexBuffers.SetNum(Stream + 1);
@@ -5380,10 +5442,9 @@ void FWebGPUDynamicRHI::DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint
     Key.Append(PassBundleKey);
     Key.Append({uint64(reinterpret_cast<UPTRINT>(GraphicsPipeline->Handle)),
         uint64(reinterpret_cast<UPTRINT>(Index->Handle)), uint64(uint32(Base)), FirstInstance, StartIndex, Primitives, Instances});
-    const uint32 Streams = GraphicsPipeline->VertexStreamMask;
-    Key.Add(Streams);
-    for (uint32 Stream = 0; Stream < Limits.maxVertexBuffers; ++Stream)
-        if (Streams & (1u << Stream))
+    const auto& Streams = GraphicsPipeline->VertexStreams;
+    Key.Add(Streams.Num());
+    for (uint8 Stream : Streams)
         {
             check(VertexBuffers.IsValidIndex(Stream) && VertexBuffers[Stream]);
             RequireAccess(VertexBuffers[Stream], ERHIAccess::VertexOrIndexBuffer);
@@ -5421,7 +5482,7 @@ void FWebGPUDynamicRHI::DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint
         // Observe the complete key for three frames before paying the recording cost.
         SetDrawBindings(&Groups);
         SetIndexBinding(Index);
-        wgpuRenderPassEncoderDrawIndexed(Pass, Primitives * 3, Instances, StartIndex, Base, FirstInstance);
+        wgpuRenderPassEncoderDrawIndexed(Pass, VertexCount(GraphicsPipeline->Initializer.PrimitiveType, Primitives), Instances, StartIndex, Base, FirstInstance);
         return;
     }
     if (Found->Handle)
@@ -5441,16 +5502,18 @@ void FWebGPUDynamicRHI::DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint
         Desc.sampleCount = 1;
         auto BundleEncoder = wgpuDeviceCreateRenderBundleEncoder(Device, &Desc);
         wgpuRenderBundleEncoderSetPipeline(BundleEncoder, GraphicsPipeline->Handle);
-        for (int32 Stream = 0; Stream < VertexBuffers.Num(); ++Stream)
-            if ((Streams & (1u << Stream)) && VertexBuffers[Stream])
-                wgpuRenderBundleEncoderSetVertexBuffer(BundleEncoder, Stream, VertexBuffers[Stream]->Handle,
+        for (int32 Slot = 0; Slot < Streams.Num(); ++Slot)
+        {
+            const uint8 Stream = Streams[Slot];
+                wgpuRenderBundleEncoderSetVertexBuffer(BundleEncoder, Slot, VertexBuffers[Stream]->Handle,
                     VertexOffsets[Stream], VertexBuffers[Stream]->GetSize() - VertexOffsets[Stream]);
+        }
         wgpuRenderBundleEncoderSetIndexBuffer(BundleEncoder, Index->Handle,
             Index->GetStride() == 2 ? WGPUIndexFormat_Uint16 : WGPUIndexFormat_Uint32, 0, Index->GetSize());
         for (int32 Group = 0; Group < Groups.Num(); ++Group)
             wgpuRenderBundleEncoderSetBindGroup(BundleEncoder, Group, Groups[Group].Handle,
                 Groups[Group].DynamicOffsets.Num(), Groups[Group].DynamicOffsets.GetData());
-        wgpuRenderBundleEncoderDrawIndexed(BundleEncoder, Primitives * 3, Instances, StartIndex, Base, FirstInstance);
+        wgpuRenderBundleEncoderDrawIndexed(BundleEncoder, VertexCount(GraphicsPipeline->Initializer.PrimitiveType, Primitives), Instances, StartIndex, Base, FirstInstance);
         auto Handle = wgpuRenderBundleEncoderFinish(BundleEncoder, nullptr);
         wgpuRenderBundleEncoderRelease(BundleEncoder);
         ++DrawBundlesCreated;
@@ -5459,8 +5522,7 @@ void FWebGPUDynamicRHI::DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint
             Bundle->Handle = Handle;
             Bundle->Pipeline = GraphicsPipeline;
             Bundle->Buffers.Add(Index);
-            for (int32 Stream = 0; Stream < VertexBuffers.Num(); ++Stream)
-                if ((Streams & (1u << Stream)) && VertexBuffers[Stream]) Bundle->Buffers.Add(VertexBuffers[Stream]);
+            for (uint8 Stream : Streams) Bundle->Buffers.Add(VertexBuffers[Stream]);
             // Keep opaque group handles alive so a released ID cannot alias a cached key.
             for (const auto& Group : Groups) { wgpuBindGroupAddRef(Group.Handle); Bundle->Groups.Add(Group.Handle); }
             ++DrawBundleReadyEntries;
@@ -5478,24 +5540,25 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
         FlushDrawBundles();
         wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
     }
-    if (BoundVertexBuffers.Num() < VertexBuffers.Num())
+    const auto& Streams = GraphicsPipeline->VertexStreams;
+    if (BoundVertexBuffers.Num() < Streams.Num())
     {
-        BoundVertexBuffers.SetNum(VertexBuffers.Num());
-        BoundVertexOffsets.SetNum(VertexBuffers.Num());
+        BoundVertexBuffers.SetNum(Streams.Num());
+        BoundVertexOffsets.SetNum(Streams.Num());
     }
     // UE retains stream state across PSO changes. Only streams declared by this
     // pipeline are consumed; an old stream may now be used as a compute SRV.
-    const uint32 Streams = GraphicsPipeline->VertexStreamMask;
-    for (int32 Stream = 0; Stream < VertexBuffers.Num(); ++Stream)
-        if ((Streams & (1u << Stream)) && VertexBuffers[Stream])
+    for (int32 Slot = 0; Slot < Streams.Num(); ++Slot)
         {
+            const uint8 Stream = Streams[Slot];
+            check(VertexBuffers.IsValidIndex(Stream) && VertexBuffers[Stream]);
             RequireAccess(VertexBuffers[Stream], ERHIAccess::VertexOrIndexBuffer);
-            if (BoundVertexBuffers[Stream] != VertexBuffers[Stream] || BoundVertexOffsets[Stream] != VertexOffsets[Stream])
+            if (BoundVertexBuffers[Slot] != VertexBuffers[Stream] || BoundVertexOffsets[Slot] != VertexOffsets[Stream])
             {
-                wgpuRenderPassEncoderSetVertexBuffer(Pass, Stream, VertexBuffers[Stream]->Handle, VertexOffsets[Stream],
+                wgpuRenderPassEncoderSetVertexBuffer(Pass, Slot, VertexBuffers[Stream]->Handle, VertexOffsets[Stream],
                     VertexBuffers[Stream]->GetSize() - VertexOffsets[Stream]);
-                BoundVertexBuffers[Stream] = VertexBuffers[Stream];
-                BoundVertexOffsets[Stream] = VertexOffsets[Stream];
+                BoundVertexBuffers[Slot] = VertexBuffers[Stream];
+                BoundVertexOffsets[Slot] = VertexOffsets[Stream];
             }
         }
     auto &VS = ShaderData(GraphicsPipeline->GetShader(SF_Vertex));
@@ -5536,7 +5599,8 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer *Index, int32 Base, u
     WEBGPU_COMMAND_ON_OWNER(RHIDrawIndexedPrimitive(Index, Base, FirstInstance, WebArg3, StartIndex, Primitives, Instances));
     auto *Buffer = static_cast<FWebGPUBuffer *>(Index);
     check(Buffer->GetStride() == 2 || Buffer->GetStride() == 4);
-    check(GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList);
+    check(GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList ||
+        GraphicsPipeline->Initializer.PrimitiveType == PT_LineList || GraphicsPipeline->Initializer.PrimitiveType == PT_PointList);
     if (UseRenderBundles)
     {
         DrawIndexedBundle(Buffer, Base, FirstInstance, StartIndex, Primitives, Instances);
@@ -5545,7 +5609,7 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer *Index, int32 Base, u
     }
     SetDrawBindings();
     SetIndexBinding(Buffer);
-    wgpuRenderPassEncoderDrawIndexed(Pass, Primitives * 3, Instances, StartIndex, Base, FirstInstance);
+    wgpuRenderPassEncoderDrawIndexed(Pass, VertexCount(GraphicsPipeline->Initializer.PrimitiveType, Primitives), Instances, StartIndex, Base, FirstInstance);
     ++Draws;
 }
 bool FWebGPUDynamicRHI::ValidateIndirectArguments(FRHIBuffer* Buffer, uint32 Offset, uint32 Bytes,
@@ -5574,7 +5638,8 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIB
     WEBGPU_COMMAND_ON_OWNER(RHIDrawIndexedPrimitiveIndirect(Index, Arguments, Offset));
     FString Error;
     checkf(ValidateIndirectArguments(Arguments, Offset, 20, Error), TEXT("%s"), *Error);
-    check(GraphicsPipeline && GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList);
+    check(GraphicsPipeline && (GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList ||
+        GraphicsPipeline->Initializer.PrimitiveType == PT_LineList || GraphicsPipeline->Initializer.PrimitiveType == PT_PointList));
     auto* Buffer = static_cast<FWebGPUBuffer*>(Index);
     check(Buffer && (Buffer->GetStride() == 2 || Buffer->GetStride() == 4));
     SetDrawBindings();
@@ -5608,9 +5673,16 @@ TRefCountPtr<FWebGPUComputePipeline> FWebGPUDynamicRHI::ResolveComputePipeline(F
         Formats.Add((uint64(Binding.Group) << 32) | Binding.Index, ImageFormat);
         Key.Appendf(TEXT("%02x"), ImageFormat);
     }
-    if (const auto* Existing = Pipeline.FormatVariants.Find(Key))
+    // UE can create a runtime wrapper before global precaching reaches this
+    // shader. Adopt a later completed variant across wrappers of the same shader.
+    // Until completion (or on failure), retain the synchronous local fallback.
+    if (Pipeline.SharedFormatCache)
+        if (const auto* Precached = Pipeline.SharedFormatCache->Precached.Find(Key);
+            Precached && (*Precached)->Handle)
+            Pipeline.FormatVariants.Add(Key, *Precached);
+    if (const auto* Existing = Pipeline.FormatVariants.Find(Key);
+        Existing && (*Existing)->Handle)
     {
-        check((*Existing)->Handle);
         if ((*Existing)->FormatPrecached)
         {
             ++StorageFormatPrecachedBinds;

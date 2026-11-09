@@ -19,6 +19,7 @@
 #include "WebGPUSkyResourceProbe.h"
 #include "WebGPUDistanceFieldProbe.h"
 #include "WebGPUNaniteVisibilityProbe.h"
+#include "WebGPUTopologyProbe.h"
 
 #if WITH_EDITOR
 bool RunWebGPUNaniteUploaderProbe(IDynamicRHIModule& Module, const FString& Directory, const FString& Output);
@@ -647,6 +648,22 @@ class FWebGPURHIModule final : public IWebGPURHIProbeModule
     }
     bool RunProbe(const FString &Shaders, const FString &Materials, const FString &Output) override
     {
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebTopologyRHIProbe")))
+        {
+            bool Result=false; IFileManager::Get().MakeDirectory(*Output,true);
+            ENQUEUE_RENDER_COMMAND(WebTopologyProbe)([&](FRHICommandListImmediate&) {
+                FWebGPUGlobalScope Scope(*this);
+                auto Report=RunWebGPUTopologyProbe(*Scope.RHI);
+                Scope.PrepareShutdown(); Result=Report->GetBoolField(TEXT("pass")) && Scope.RHI->Errors.IsEmpty();
+                Report->SetBoolField(TEXT("pass"),Result);
+                TArray<TSharedPtr<FJsonValue>> Errors;
+                for(const auto& Error:Scope.RHI->Errors)Errors.Add(MakeShared<FJsonValueString>(Error));
+                Report->SetArrayField(TEXT("errors"),Errors); Scope.Restore();
+                Report->SetBoolField(TEXT("hostRestored"),Scope.IsRestored());
+                FString Json; FJsonSerializer::Serialize(Report,TJsonWriterFactory<>::Create(&Json));
+                check(FFileHelper::SaveStringToFile(Json,*(Output/TEXT("rhi-results.json")),FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM));
+            }); FlushRenderingCommands(); return Result;
+        }
         if (FParse::Param(FCommandLine::Get(), TEXT("WebCanvasTransitionRHIProbe")))
         {
             bool Result = false; IFileManager::Get().MakeDirectory(*Output, true);

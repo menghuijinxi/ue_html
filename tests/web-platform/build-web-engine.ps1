@@ -64,7 +64,8 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Nanite/NaniteWebGBuffer.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebGBuffer.h',
     'Source/Runtime/Engine/Private/StaticMeshSceneProxy.cpp',
-    'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp'
+    'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp',
+    'Source/Runtime/Renderer/Private/GlobalDistanceField.cpp'
 )
 foreach ($taskNaniteRelative in $taskNaniteOverlays) {
     $taskNaniteDestination = Join-Path $taskHost $taskNaniteRelative

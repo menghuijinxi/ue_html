@@ -7,6 +7,8 @@ const transform = (p, m) => [0,1,2,3].map(col => p.reduce((s, v, row) => s + v *
 module.exports = function verifySceneCull(result, page, previous) {
   const {step, entries} = result;
   assert.equal(result.rejected, 0);
+  assert.equal(result.pendingPSOsAtCapture, 0, "Scene proxy capture must follow PSO completion");
+  assert(Number.isInteger(result.pendingPSOFrames) && result.pendingPSOFrames >= 0);
   assert.equal(entries.length, step > 10 ? 2 : [2,2,2,2,2,1,0,2,0,2][step-1]);
   // Hidden-in-game components in this runtime drop their scene proxy entirely;
   // registration must disappear and return when the proxy is recreated.

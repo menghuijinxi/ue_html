@@ -12,6 +12,7 @@
 #include "Rendering/NaniteWebRaster.h"
 #include "Rendering/NaniteWebDepth.h"
 #include "HAL/IConsoleManager.h"
+#include "PipelineStateCache.h"
 #include "RenderingThread.h"
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
@@ -40,6 +41,7 @@ TUniquePtr<FRHIGPUBufferReadback> DepthBefore, DepthAfter;
 uint32 DepthBytes = 0;
 bool DepthCapture = false;
 int ActiveStep = 0, SettledFrames = 0;
+uint32 PendingPSOFrames = 0, MaximumPendingPSOs = 0;
 bool Requested = false;
 struct FReadback
 {
@@ -66,10 +68,24 @@ TArray<TSharedPtr<FJsonValue>> MatrixJSON(const FMatrix& Matrix)
 void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
 {
     if (ActiveStep >= 20) return;
-    if (!Requested || ++SettledFrames < 4) return;
+    if (!Requested) return;
+    const uint32 PendingPSOs = PipelineStateCache::NumActivePrecacheRequests();
+    if (PendingPSOs)
+    {
+        // UE delays proxy creation while component PSOs are compiling. In
+        // particular, registering a mirrored component requests its opposite
+        // cull mode. Observe completion and four subsequent frames so the
+        // game-thread completion task has recreated the proxy before capture.
+        ++PendingPSOFrames; MaximumPendingPSOs = FMath::Max(MaximumPendingPSOs, PendingPSOs);
+        SettledFrames = 0; return;
+    }
+    if (++SettledFrames < 4) return;
     Requested = false;
     Report = MakeShared<FJsonObject>();
     Report->SetNumberField(TEXT("step"), ActiveStep);
+    Report->SetNumberField(TEXT("pendingPSOsAtCapture"), PendingPSOs);
+    Report->SetNumberField(TEXT("pendingPSOFrames"), PendingPSOFrames);
+    Report->SetNumberField(TEXT("maximumPendingPSOs"), MaximumPendingPSOs);
     Report->SetNumberField(TEXT("frame"), View.View->Family->FrameNumber);
     Report->SetNumberField(TEXT("registered"), View.Registered);
     Report->SetNumberField(TEXT("skipped"), View.Skipped);
@@ -370,6 +386,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteSceneCullTest(int Step)
     LastStep = Step;
     ENQUEUE_RENDER_COMMAND(RequestWebSceneCull)([Step](FRHICommandListImmediate&) {
         check(!Requested && !Report && Pending.IsEmpty()); ActiveStep = Step; Requested = true; SettledFrames = 0;
+        PendingPSOFrames = 0; MaximumPendingPSOs = 0;
         MAIN_THREAD_ASYNC_EM_ASM({
             if ($0 >= 20) globalThis.__webNaniteSceneDepthTest = ({pending:true,step:$0});
             else globalThis.__webNaniteSceneCullTest = ({pending:true,step:$0});

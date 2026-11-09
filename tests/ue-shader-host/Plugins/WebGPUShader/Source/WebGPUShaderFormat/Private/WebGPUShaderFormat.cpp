@@ -320,7 +320,7 @@ static TSet<uint32> FindLoadOnlySampledImages(const TArray<uint32>& Spirv,
     return Fetched.Difference(OtherUses);
 }
 
-static void PrepareLumenStorageFormats(TArray<uint32>& Spirv, const TSet<uint32>& WriteOnly)
+static void PrepareStorageFormats(TArray<uint32>& Spirv, const TSet<uint32>& WriteOnly, bool RuntimeFormats)
 {
     TSet<uint32> FloatTypes;
     for (int32 Offset = 5; Offset < Spirv.Num(); Offset += Spirv[Offset] >> 16)
@@ -336,7 +336,7 @@ static void PrepareLumenStorageFormats(TArray<uint32>& Spirv, const TSet<uint32>
         {
             // WGSL needs a concrete type. The RHI specializes this placeholder to
             // each bound UAV's format before creating the actual compute pipeline.
-            if (FloatTypes.Contains(Spirv[Offset + 2]))
+            if (RuntimeFormats && FloatTypes.Contains(Spirv[Offset + 2]))
                 Spirv[Offset + 8] = SpvImageFormatRgba32f;
             HasUnformattedImage |= Spirv[Offset + 8] == SpvImageFormatUnknown;
         }
@@ -583,7 +583,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261106-v31-NaniteTranscode-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261109-v32-StorageAccess-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -927,7 +927,9 @@ class FWebGPUShaderFormat final : public IShaderFormat
         TArray<SpvReflectDescriptorBinding *> NativeBindings;
         NativeBindings.SetNumUninitialized(Count);
         Reflection.EnumerateDescriptorBindings(&Count, NativeBindings.GetData());
-        const TSet<uint32> ImageReads = RuntimeStorageFormats ? FindStorageImageReads(Spirv, NativeBindings) : TSet<uint32>();
+        // HLSL RWTexture does not imply a read in this entry point. Preserve
+        // actual reads, but mark proven write-only images for every shader.
+        const TSet<uint32> ImageReads = FindStorageImageReads(Spirv, NativeBindings);
         const TSet<uint32> LoadOnlyImages = RuntimeStorageFormats ? FindLoadOnlySampledImages(Spirv, NativeBindings) : TSet<uint32>();
         TSet<uint32> WriteOnlyImages;
         TArray<TSharedPtr<FJsonValue>> Bindings, Parameters, Resources;
@@ -956,15 +958,14 @@ class FWebGPUShaderFormat final : public IShaderFormat
                     Json->SetBoolField(TEXT("sampledTextureLoadOnly"), true);
                 if (Binding->descriptor_type == SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE)
                 {
-                    if (RuntimeStorageFormats)
-                        Json->SetBoolField(TEXT("storageImageReadDetected"), ImageReads.Contains(Binding->spirv_id));
+                    Json->SetBoolField(TEXT("storageImageReadDetected"), ImageReads.Contains(Binding->spirv_id));
                     Json->SetNumberField(TEXT("storageImageFormat"),
                         RuntimeStorageFormats && (Binding->type_description->type_flags & SPV_REFLECT_TYPE_FLAG_FLOAT) ?
                         SpvImageFormatRgba32f : Binding->image.image_format);
                     Json->SetStringField(TEXT("storageTextureAccess"),
                         Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_READABLE ? TEXT("write") :
                         Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_WRITABLE ? TEXT("read") : TEXT("read_write"));
-                    if (RuntimeStorageFormats && !ImageReads.Contains(Binding->spirv_id) &&
+                    if (!ImageReads.Contains(Binding->spirv_id) &&
                         !(Binding->decoration_flags & SPV_REFLECT_DECORATION_NON_WRITABLE))
                     {
                         Json->SetStringField(TEXT("storageTextureAccess"), TEXT("write"));
@@ -1114,14 +1115,14 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Metadata->SetObjectField(TEXT("resourceTable"), TableJson);
 
         CrossCompiler::FShaderConductorContext Context;
-        if (RuntimeStorageFormats)
+        if (RuntimeStorageFormats || !WriteOnlyImages.IsEmpty())
         {
-            PrepareLumenStorageFormats(Spirv, WriteOnlyImages);
+            PrepareStorageFormats(Spirv, WriteOnlyImages, RuntimeStorageFormats);
             const ANSICHAR* FormatPasses[] = {"--remove-duplicates"};
             if (!Context.OptimizeSpirv(Spirv, FormatPasses, UE_ARRAY_COUNT(FormatPasses)))
             {
                 Context.FlushErrors(NativeOutput.Errors);
-                Error = TEXT("Lumen storage image type deduplication failed");
+                Error = TEXT("Storage image type deduplication failed");
                 return false;
             }
         }

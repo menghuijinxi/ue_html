@@ -17,7 +17,7 @@ assert(browser.pass && browser.errors.length === 0);
 assert.deepEqual(verifyStoragePrecache(browser.storagePrecache), browser.storagePrecache.validation);
 assert.deepEqual(verifyStoragePrecache(browser.defaultDisabled.storagePrecache, false), browser.defaultDisabled.storagePrecache.validation);
 verify(browser.storagePrecache.source);
-const storageBaselineFile = path.join(__dirname, 'evidence/nanite-browser-resource-lifetime-20261109.json');
+const storageBaselineFile = path.join(__dirname, 'evidence/nanite-browser-storage-precache-20261109.json');
 const storageBaseline = read(storageBaselineFile);
 const pipelineFailures = lines => ({total:lines.length, compute:lines.filter(l=>l.includes('compute pipeline')).length,
   graphics:lines.filter(l=>l.includes('graphics pipeline')).length});
@@ -25,7 +25,14 @@ const storageComparison = {baseline:audit(storageBaselineFile),
   before:pipelineFailures(storageBaseline.browser.startupPipelineFailures),
   after:pipelineFailures(browser.startupPipelineFailures),
   defaultDisabled:pipelineFailures(browser.defaultDisabled.startupPipelineFailures)};
-assert(storageComparison.after.compute < storageComparison.before.compute);
+assert.equal(storageComparison.after.total, 0);
+assert.equal(storageComparison.defaultDisabled.total, 0);
+for (const observation of [browser.storagePrecache, browser.defaultDisabled.storagePrecache]) {
+  assert.equal(observation.rhi.asyncPrecacheRequested, observation.rhi.asyncPrecacheCompleted);
+  assert(observation.rhi.asyncPrecacheRequested > 2000 && observation.rhi.precachedGraphicsPipelines > 0);
+  assert.equal(observation.rhi.asyncPrecacheFailed, 0);
+  assert.equal(observation.rhi.unsupportedPrecacheRequests, 0);
+}
 const storageFailureFile = path.join(__dirname, 'results/nanite-storage-precache-failure/verified.json');
 const storageFailure = read(storageFailureFile);
 assert(storageFailure.pass && storageFailure.frames >= 20 && storageFailure.errors.length === 0);
@@ -34,6 +41,20 @@ assert.equal(storageFailure.baseline.sha256, audit(browserFile).sha256);
 assert.equal(storageFailure.observation.failures.length, 1);
 assert.equal(storageFailure.observation.rhi.asyncPrecacheFailed, 1);
 assert(storageFailure.fallback.some(p => !p.asynchronous && p.dispatches > 0 && p.entry === storageFailure.target.entry));
+const lateFile = path.join(__dirname, 'results/nanite-storage-precache-late/verified.json'), late = read(lateFile);
+assert(late.pass && late.frames >= 60 && late.errors.length === 0);
+[late.baseline, late.package, ...late.sources].forEach(verify);
+assert.equal(late.baseline.sha256, audit(browserFile).sha256);
+assert.equal(late.observation.injected, 1);
+assert.deepEqual(late.observation.failures, []);
+assert(late.runtimeFirst.length > 0 && late.precachedAfter.length > 0);
+const lateFailureFile = path.join(__dirname, 'results/nanite-browser/failure-late-storage-precache-20261109.json');
+const lateFailure = read(lateFailureFile);
+assert(!lateFailure.pass && lateFailure.storagePrecache.rhi.storageFormatPrecachedUsed === 0);
+const lateFailurePackageFile=path.join(__dirname,'results/nanite-browser/failure-late-storage-precache-package-20261109.json');
+const lateFailureBuildFile=path.join(__dirname,'results/nanite-browser/failure-late-storage-precache-build-20261109.json');
+assert.equal(audit(lateFailurePackageFile).sha256,lateFailure.package.sha256);
+assert.equal(audit(lateFailureBuildFile).sha256,read(lateFailurePackageFile).build.sha256);
 const placeholderFile = path.join(__dirname, 'results/nanite-browser/failure-placeholder-precache-20261109.json');
 const placeholder = read(placeholderFile);
 assert(!placeholder.pass && placeholder.failure.includes('must reuse a completed format variant'));
@@ -133,17 +154,17 @@ const hierarchyShaders = read(packaged.hierarchyShaders.file);
 assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
-const supplementFile = path.join(__dirname, 'results/nanite-runtime-shader-supplement/verified.json');
-const shaderSupplement = read(supplementFile);
+// Retain the old missing-permutation investigation as historical evidence.
+// It was not applied to this package. Current Cook/shader provenance is checked
+// above; the historical source and DLL hashes belong to the archived revision.
+const historicalSupplement = storageBaseline.historicalShaderAudit;
+const shaderSupplement = historicalSupplement;
 assert(shaderSupplement.pass && shaderSupplement.explicitTypes.length === 28 && shaderSupplement.types.length > 28);
 const supplementKeys=new Set(shaderSupplement.permutations.map(p=>p.type+':'+p.permutation));
 assert.equal(supplementKeys.size,shaderSupplement.permutations.length);
-const missingPermutations=[...fs.readFileSync(shaderSupplement.logs.find(l=>l.file.endsWith('compiler.log')).file,'utf8')
-  .matchAll(/WEB_SHADER_MISSING type=(.+) permutation=(\d+)/g)].map(m=>({type:m[1],permutation:Number(m[2])}));
+const missingPermutations = historicalSupplement.missingPermutations;
 assert.equal(missingPermutations.length,395);
 assert(missingPermutations.every(p=>supplementKeys.has(p.type+':'+p.permutation)));
-[...shaderSupplement.sources, ...shaderSupplement.shaderInputs, ...shaderSupplement.binaries,
-  shaderSupplement.archive, ...shaderSupplement.logs].forEach(verify);
 const build = read(packaged.build.file);
 let fullTargetValidation = null;
 assert(build.pass && (build.incrementalDiagnostic || build.fullTargetBuild) && !build.fullRebuild);
@@ -254,9 +275,57 @@ const precisionFile=path.join(__dirname,'results/nanite-material-precision/verif
 assert(precision.pass&&precision.oldBitExact&&precision.validation.pass&&precision.validation.covered===105);
 [...precision.inputs,...precision.sources,...precision.products,precision.hierarchy].forEach(verify);
 assert.deepEqual(precision.tolerances,{position:1/512,normal:1/25600,uv:.000008,color:.000001});
+const startupFile = path.join(__dirname, 'results/nanite-pipeline-startup/results.json'), startup = read(startupFile);
+assert(startup.pass && !startup.oldCookDiagnostic && startup.errors.length === 0);
+[startup.source, startup.package].forEach(verify);
+assert.equal(startup.package.sha256, browser.package.sha256);
+assert.deepEqual(startup.failures, []);
+assert.deepEqual(startup.rejections, []);
+assert.equal(startup.state.rhi.asyncPrecacheRequested, startup.state.rhi.asyncPrecacheCompleted);
+assert(startup.state.rhi.asyncPrecacheRequested > 2000 && startup.state.rhi.precachedGraphicsPipelines > 0);
+assert.equal(startup.state.rhi.asyncPrecacheFailed, 0);
+assert.equal(startup.state.rhi.unsupportedPrecacheRequests, 0);
+assert.equal(startup.distanceFieldAtlas.format, 'PF_R32_FLOAT');
+assert(startup.distanceFieldAtlas.bytes > 0);
+const topologyFile = path.join(__dirname, 'results/nanite-topology/verified.json'), topology = read(topologyFile);
+assert(topology.pass && topology.cases.length === 24 && topology.cases.every(c => c.pass));
+assert(topology.vertexFormats.length === 7 && topology.vertexFormats.every(c => c.pass));
+assert(topology.bundlesCreated >= 8 && topology.bundleHits >= 8);
+[topology.source, topology.build, topology.runtime, topology.log].forEach(verify);
+const topologyBuild = read(topology.build.file);
+[...topologyBuild.inputs, topologyBuild.binary, topologyBuild.log].forEach(verify);
+const gatherFile = path.join(__dirname, 'results/nanite-depth-gather/verified.json'), gather = read(gatherFile);
+assert(gather.pass && gather.cases.length === 2 && gather.cases.every(c => c.maxError < 1e-6));
+[gather.source, ...gather.shaderSources].forEach(verify);
+const quantizationFile = path.join(__dirname, 'results/nanite-distance-field-quantization/verified.json'), quantization = read(quantizationFile);
+assert(quantization.pass && quantization.samples === 4096 && quantization.levelMismatches === 0);
+assert(quantization.maxError <= 1/255 + 1e-7 && quantization.maxUpdateError < 1e-6);
+[quantization.source, ...quantization.sources].forEach(verify);
+const storageCompatFile = path.join(__dirname, 'results/nanite-storage-compat-shaders/verified.json'), storageCompat = read(storageCompatFile);
+assert(storageCompat.pass && storageCompat.cases.length === 70 && storageCompat.cases.every(c => c.pass));
+[storageCompat.source, ...storageCompat.inputs].forEach(verify);
+const registrationFailureFile = path.join(__dirname, 'results/nanite-browser/failure-reregister-20261109.json');
+const registrationFailure = read(registrationFailureFile);
+const failedRegistration = registrationFailure.sceneCulling.find(c => c.step === 8);
+const restoredRegistration = browser.sceneCulling.find(c => c.step === 8);
+assert(!registrationFailure.pass && failedRegistration.entries.length === 1 && failedRegistration.validationFailure);
+assert(restoredRegistration.pass && restoredRegistration.entries.length === 2 && restoredRegistration.pendingPSOsAtCapture === 0);
 const report = {date:new Date().toISOString(), pass:true,
+  componentPrecacheSynchronization:{failedRun:audit(registrationFailureFile), historicalPackage:registrationFailure.package,
+    before:{registered:failedRegistration.registered, components:failedRegistration.entries.map(e=>e.component), failure:failedRegistration.validationFailure},
+    after:{registered:restoredRegistration.registered, pendingPSOsAtCapture:restoredRegistration.pendingPSOsAtCapture,
+      pendingPSOFrames:restoredRegistration.pendingPSOFrames, maximumPendingPSOs:restoredRegistration.maximumPendingPSOs},
+    source:audit(path.join(__dirname,'../ue-web-smoke/Source/UEWebEngine/Private/WebNaniteSceneCullTest.cpp'))},
+  startupPipelines:{report:audit(startupFile), state:startup.state, failures:startup.failures, rejections:startup.rejections,
+    distanceFieldAtlas:startup.distanceFieldAtlas},
+  vertexTopology:{report:audit(topologyFile), ...topology},
+  depthGather:{report:audit(gatherFile), ...gather},
+  distanceFieldQuantization:{report:audit(quantizationFile), ...quantization},
+  storageCompatibility:{report:audit(storageCompatFile), ...storageCompat},
   storagePrecacheComparison:storageComparison,
   storagePrecacheFailure:{report:audit(storageFailureFile),...storageFailure},
+  storagePrecacheLate:{report:audit(lateFile),...late,failedRun:audit(lateFailureFile),
+    failedPackage:audit(lateFailurePackageFile),failedBuild:audit(lateFailureBuildFile)},
   storagePlaceholderFailure:{report:audit(placeholderFile),package:audit(placeholderPackageFile),build:audit(placeholderBuildFile),
     rhi:placeholder.storagePrecache.rhi, failure:placeholder.failure,
     motionVariants:placeholder.storagePrecache.pipelines.filter(p=>p.formats.some(f=>f.name==='OutVelocityFlatTexture'))},
@@ -282,7 +351,7 @@ const report = {date:new Date().toISOString(), pass:true,
   native:{report:packaged.native, policyChecks:native.policyChecks, modes:native.modes,
     products:native.products, runtimeShaderArchive:native.runtimeShaderArchive},
   hierarchyShaders:{report:packaged.hierarchyShaders, ...hierarchyShaders},
-  historicalShaderAudit:{report:audit(supplementFile), ...shaderSupplement,missingPermutations},
+  historicalShaderAudit:{...shaderSupplement, archivedEvidence:audit(storageBaselineFile), missingPermutations},
   sceneCook:{...packaged.sceneCook,products:sceneCook.products.length,bytes:sceneCook.totalBytes,
     shaderFailures:sceneCook.shaderFailures,stagedFiles:sceneStage.files.length,stagedBytes:sceneStage.totalBytes,
     map:sceneCook.map,sourceFiles:sceneCook.sourceFiles,hostProducts:sceneCook.hostProducts,
@@ -290,7 +359,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-storage-precache-20261109.json');
+const destination = path.join(__dirname, 'evidence/nanite-browser-pipelines-20261109.json');
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

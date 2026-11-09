@@ -48,6 +48,11 @@ const report = {pass:false, target, baseline:audit(baselineFile), package:baseli
     await page.goto('http://127.0.0.1:8765/build/nanite-browser/index.html');
     await page.waitForFunction(()=>globalThis.__webEngineFailure || globalThis.__webEngineFrames>=60,null,{timeout:180000});
     assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure || null),null);
+    await page.waitForFunction(() => globalThis.__webPSOPrecache?.active === 0 &&
+      globalThis.__webPSOPrecache?.filePrecompileTasks === 0 &&
+      globalThis.__webOptimizationRHI?.asyncPrecacheRequested > 2000 &&
+      globalThis.__webOptimizationRHI.asyncPrecacheRequested === globalThis.__webOptimizationRHI.asyncPrecacheCompleted,
+      null, {timeout:120000});
     const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
     report.observation=await owner.evaluate(()=>({...__storagePrecacheAudit,rhi:__webOptimizationRHI,injected:__storagePrecacheInjected}));
     const state=report.observation;

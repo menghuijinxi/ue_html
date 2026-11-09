@@ -21,7 +21,7 @@ verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
 // Inline platform predicates changed with the full target rebuild. Global and
 // material shader maps must both come from a matching scene Cook.
-const stageFile = path.join(__dirname, 'results/web-project-nanite-lifetime-desktop-stage-results.json');
+const stageFile = path.join(__dirname, 'results/web-project-nanite-pipelines-desktop-stage-results.json');
 const stage = read(stageFile);
 assert(stage.pass && stage.mode === 'WebGPU-SM5' && stage.useProjectSettings);
 [...stage.sourceFiles, stage.cookReport, stage.pack, stage.manifest, stage.configBundle].forEach(verify);

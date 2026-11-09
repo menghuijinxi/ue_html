@@ -453,6 +453,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     report.storagePrecache.validation = verifyStoragePrecache(report.storagePrecache);
     report.storagePrecache.source = audit(require.resolve('./observe-storage-precache.cjs'));
     report.startupPipelineFailures = report.logs.filter(line => /LogRHI: Error: Failed to create .*pipeline/.test(line));
+    assert.deepEqual(report.startupPipelineFailures, [], 'All requested startup pipelines must compile');
+    assert.equal(report.storagePrecache.rhi.asyncPrecacheRequested, report.storagePrecache.rhi.asyncPrecacheCompleted);
+    assert.equal(report.storagePrecache.rhi.asyncPrecacheFailed, 0);
+    assert.equal(report.storagePrecache.rhi.unsupportedPrecacheRequests, 0);
     report.errors.push(...await owner.evaluate(() => __naniteBrowserAudit.errors));
     assert.equal(report.errors.length, 0);
     await page.close();
@@ -475,6 +479,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     // RHI diagnostics publish every 30 frames; sample after at least two ticks.
     await normal.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 60, null, {timeout:180000});
     assert.equal(await normal.evaluate(() => globalThis.__webEngineFailure || null), null);
+    await normal.waitForFunction(() => globalThis.__webPSOPrecache?.active === 0 && globalThis.__webPSOPrecache?.filePrecompileTasks === 0 &&
+      globalThis.__webOptimizationRHI?.asyncPrecacheRequested > 2000 &&
+      globalThis.__webOptimizationRHI.asyncPrecacheRequested === globalThis.__webOptimizationRHI.asyncPrecacheCompleted,
+      null, {timeout:180000});
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneTest', 1)), 0);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteSceneCullTest', 1)), 0);
     assert.equal(await normal.evaluate(() => __webEngineRPC('WebNaniteGBufferTest', 1)), 0);
@@ -482,6 +490,10 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const normalAudit = await normalOwner.evaluate(() => __naniteBrowserAudit);
     const normalStorage = await normalOwner.evaluate(() => ({...__storagePrecacheAudit, rhi:globalThis.__webOptimizationRHI}));
     normalStorage.validation = verifyStoragePrecache(normalStorage, false);
+    assert.deepEqual(normalPipelineFailures, [], 'Default scene startup must also compile every requested pipeline');
+    assert.equal(normalStorage.rhi.asyncPrecacheRequested, normalStorage.rhi.asyncPrecacheCompleted);
+    assert.equal(normalStorage.rhi.asyncPrecacheFailed, 0);
+    assert.equal(normalStorage.rhi.unsupportedPrecacheRequests, 0);
     assert.equal(normalAudit.dispatches, 0);
     assert.equal(normalAudit.cullDispatches, 0);
     assert.equal(normalAudit.rasterDraws.length, 0);

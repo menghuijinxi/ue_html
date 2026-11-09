@@ -13,6 +13,20 @@ const storageDeclaration = (before, format) => ({before, after: [
   '#endif', before,
 ].join('\n')});
 const overrides = new Map([
+  ['Private/Common.ush', [{
+    before: '\tfloat4 DeviceZ = Texture.GatherRed(GlobalBilinearClampedSampler, UV);',
+    after: ['\t// Gather returns four texels without interpolation. WebGPU depth views',
+      '\t// require a non-filtering sampler even for this operation.',
+      '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\tfloat4 DeviceZ = Texture.GatherRed(GlobalPointClampedSampler, UV);', '#else',
+      '\tfloat4 DeviceZ = Texture.GatherRed(GlobalBilinearClampedSampler, UV);', '#endif'].join('\n'),
+  }]],
+  ['Private/SceneTexturesCommon.ush', [{
+    before: '\treturn SceneTexturesStruct.SceneDepthTexture.GatherRed(GlobalBilinearClampedSampler, ScreenUV);',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\treturn SceneTexturesStruct.SceneDepthTexture.GatherRed(GlobalPointClampedSampler, ScreenUV);', '#else',
+      '\treturn SceneTexturesStruct.SceneDepthTexture.GatherRed(GlobalBilinearClampedSampler, ScreenUV);', '#endif'].join('\n'),
+  }]],
   ...require('./web-nanite-shader-overrides.cjs'),
   ...require('./web-tsr-shader-overrides.cjs'),
   ...require('./web-translucency-shader-overrides.cjs'),
@@ -247,11 +261,20 @@ const overrides = new Map([
     ].join('\n'),
   }]],
   ...['GlobalDistanceFieldCompositeObjects', 'GlobalDistanceFieldHeightfields'].map(name =>
-    [`Private/DistanceField/${name}.usf`, ['RWPageAtlasTexture', 'RWCoverageAtlasTexture'].map(variable => ({
+    [`Private/DistanceField/${name}.usf`, [...['RWPageAtlasTexture', 'RWCoverageAtlasTexture'].map(variable => ({
       before: `RWTexture3D<UNORM float> ${variable};`,
-      after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '[[vk::image_format("r8")]]',
-        '#endif', `RWTexture3D<UNORM float> ${variable};`].join('\n'),
-    }))]),
+      after: (variable === 'RWPageAtlasTexture' ? ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '[[vk::image_format("r32f")]] RWTexture3D<float> RWPageAtlasTexture;', '#else',
+        'RWTexture3D<UNORM float> RWPageAtlasTexture;', '#endif'] :
+        ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', '[[vk::image_format("r8")]]',
+          '#endif', `RWTexture3D<UNORM float> ${variable};`]).join('\n'),
+    })), ...[name === 'GlobalDistanceFieldCompositeObjects' ? ['\t\t','PageAtlasCoord'] : ['\t\t\t','PageAtlasCoordZ']].map(([indent,coord])=>({
+      before: `${indent}RWPageAtlasTexture[${coord}] = EncodeGlobalDistanceFieldPageDistance(MinDistance, InfluenceRadius);`,
+      after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        `${indent}// Preserve the native R8 UNORM storage precision.`,
+        `${indent}RWPageAtlasTexture[${coord}] = round(saturate(EncodeGlobalDistanceFieldPageDistance(MinDistance, InfluenceRadius)) * 255.0f) / 255.0f;`,
+        '#else',`${indent}RWPageAtlasTexture[${coord}] = EncodeGlobalDistanceFieldPageDistance(MinDistance, InfluenceRadius);`,'#endif'].join('\n'),
+    }))]]),
   ['Private/DistanceField/GlobalDistanceFieldMip.usf', [{
     before: 'RWTexture3D<float> RWMipTexture;',
     after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
