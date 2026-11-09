@@ -715,7 +715,7 @@ function prepare() {
     'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf', 'Private/Nanite/WebNaniteLOD.ush', 'Private/Nanite/WebNaniteScalarVisibility.ush',
     'Private/Nanite/WebNaniteHZB.ush', 'Private/Nanite/WebNaniteHZB.usf', 'Private/Nanite/WebNaniteOcclusion.usf',
     'Private/Nanite/WebNaniteRaster.usf', 'Private/Nanite/WebNaniteMicroRaster.ush', 'Private/Nanite/WebNaniteDepth.usf', 'Private/Nanite/WebNaniteGBuffer.usf',
-    'Private/Nanite/WebNaniteVertexFactory.ush', 'Private/Nanite/WebNaniteMaterialTiles.usf']) {
+    'Private/Nanite/WebNaniteVertexFactory.ush', 'Private/Nanite/WebNaniteMaterialTiles.usf', 'Private/Nanite/WebNaniteComposition.usf']) {
     assert(!fs.existsSync(path.join(stock, relative)), 'Web-only shaders must not overwrite installed inputs');
     const source = path.join(root, 'reference-engine/Engine/Shaders', relative);
     const destination = path.join(output, relative);

@@ -18,8 +18,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Canvas transition probe failed: $taskLog" }
     $taskRuntimePath = Join-Path $taskOutput 'rhi-results.json'
     $taskRuntime = Get-Content -LiteralPath $taskRuntimePath -Raw | ConvertFrom-Json
-    $taskChecks = @($taskRuntime.checks | Where-Object {$_.name -like 'canvas-backbuffer-*'})
-    if (-not $taskRuntime.pass -or -not $taskRuntime.hostRestored -or $taskRuntime.errors.Count -or $taskChecks.Count -ne 8 -or @($taskChecks | Where-Object {-not $_.pass}).Count) {
+    $taskChecks = @($taskRuntime.checks | Where-Object {$_.name -like 'canvas-backbuffer-*' -or $_.name -like 'stencil-metadata-*'})
+    if (-not $taskRuntime.pass -or -not $taskRuntime.hostRestored -or $taskRuntime.errors.Count -or $taskChecks.Count -ne 14 -or @($taskChecks | Where-Object {-not $_.pass}).Count) {
         throw 'Canvas backbuffer transition checks failed or are incomplete'
     }
     $taskSources = @($PSCommandPath) + @('WebGPUTransitions.cpp','WebGPUTransitionProbe.cpp','WebGPUTransitionProbe.h','WebGPUDynamicRHI.cpp','WebGPURHIProbe.cpp') |

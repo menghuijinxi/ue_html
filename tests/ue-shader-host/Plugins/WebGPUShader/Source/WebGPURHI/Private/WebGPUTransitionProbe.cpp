@@ -83,6 +83,42 @@ TSharedRef<FJsonObject> RunWebGPUCanvasTransitionProbe(FWebGPUDynamicRHI& RHI)
         for (const auto& Color : Colors) OK &= FMath::Abs(int32(Color.R) - 64) <= 1 && FMath::Abs(int32(Color.G) - 128) <= 1 && FMath::Abs(int32(Color.B) - 191) <= 1 && Color.A == 255;
         Record(TEXT("canvas-backbuffer-preserves-clear"), OK);
     }
+    {
+        RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        FCommandList Cmd(&RHI);
+        const auto Desc = FRHITextureCreateDesc::Create2D(TEXT("StencilMetadataTransition"), 16, 16, PF_DepthStencil)
+            .SetFlags(TexCreate_DepthStencilTargetable | TexCreate_ShaderResource)
+            .SetInitialState(ERHIAccess::DSVWrite).SetClearValue(FClearValueBinding::DepthFar);
+        auto Texture = RHI.RHICreateTextureInitializer(Cmd, Desc).Finalize();
+        const auto Entry = [&](ERHIAccess Before, ERHIAccess After, uint32 Plane, EResourceTransitionFlags Flags) {
+            FRHITransitionInfo E(Texture, Before, After); E.PlaneSlice = Plane; E.Flags = Flags; return E;
+        };
+        const auto Accept = [&](FRHITransitionInfo E) {
+            FString Error; return RHI.ValidateTransitionCreate(FRHITransitionCreateInfo(ERHIPipeline::Graphics,
+                ERHIPipeline::Graphics, ERHITransitionCreateFlags::None, MakeArrayView(&E, 1)), Error);
+        };
+        Record(TEXT("stencil-metadata-accept"), Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 1, EResourceTransitionFlags::MaintainCompression)));
+        Record(TEXT("stencil-metadata-reject-depth-raw"), !Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 0, EResourceTransitionFlags::MaintainCompression)));
+        Record(TEXT("stencil-metadata-reject-uav"), !Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::UAVCompute, 1, EResourceTransitionFlags::MaintainCompression)));
+        Record(TEXT("stencil-metadata-reject-extra-flags"), !Accept(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 1,
+            EResourceTransitionFlags::MaintainCompression | EResourceTransitionFlags::IgnoreAfterState)));
+        const auto TransitionPlane = [&](FRHITransitionInfo E) {
+            check(GDynamicRHI == &RHI);
+            auto* Transition = RHICreateTransition(FRHITransitionCreateInfo(ERHIPipeline::Graphics,
+                ERHIPipeline::Graphics, ERHITransitionCreateFlags::NoSplit, MakeArrayView(&E, 1)));
+            Cmd.BeginTransition(Transition); Cmd.EndTransition(Transition);
+        };
+        TransitionPlane(Entry(ERHIAccess::DSVWrite, ERHIAccess::SRVCompute, 1, EResourceTransitionFlags::MaintainCompression));
+        Cmd.EnqueueLambda([&, Texture](FRHICommandListBase&) {
+            FString Error;
+            Record(TEXT("stencil-metadata-independent-access"), RHI.ValidateAccess(Texture, ERHIAccess::SRVCompute, Error, false, 1) &&
+                RHI.ValidateAccess(Texture, ERHIAccess::DSVWrite, Error, false, 0));
+        });
+        TransitionPlane(Entry(ERHIAccess::SRVCompute, ERHIAccess::DSVWrite, 1, EResourceTransitionFlags::MaintainCompression));
+        Cmd.EnqueueLambda([&, Texture](FRHICommandListBase&) {
+            FString Error; Record(TEXT("stencil-metadata-restores-write"), RHI.ValidateAccess(Texture, ERHIAccess::DSVWrite, Error, false, 1));
+        });
+    }
     auto Report = MakeShared<FJsonObject>();
     Report->SetBoolField(TEXT("pass"), Pass); Report->SetArrayField(TEXT("checks"), Checks);
     return Report;

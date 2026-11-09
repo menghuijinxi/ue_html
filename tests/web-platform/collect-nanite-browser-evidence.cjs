@@ -376,7 +376,7 @@ for (const b of oracle.browsers) for (const test of browser.cases)
   for (const page of test.pages) assert.equal(page.sha256, b.gpuPageSha256);
 const {logs, ...browserSummary} = browser;
 const canvasFile=path.join(__dirname,'results/nanite-canvas-transitions.json'),canvas=read(canvasFile);
-assert(canvas.pass&&canvas.checks.length===8&&canvas.checks.every(c=>c.pass));
+assert(canvas.pass&&canvas.checks.length===14&&canvas.checks.every(c=>c.pass));
 [canvas.runtime,canvas.log,...canvas.sources,...canvas.products].forEach(verify);
 const interruptedFile=path.join(__dirname,'evidence/nanite-browser-uniform-buffer-failure-20261109.json');
 const interrupted=read(interruptedFile);assert.equal(interrupted.pass,false);

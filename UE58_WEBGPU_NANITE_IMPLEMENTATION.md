@@ -1451,11 +1451,39 @@ LCI，BasePass 按实际材质和光照策略选择 Cook shader，并通过占�
 同一运行包的现有完整回归运行 42,089 帧，GPU 错误及启动管线失败为零，
 包含 128 次混合光栅重复帧、13 项实例和 10 项真实场景捕获。
 
+## 原生速度与 stencil/shading mask（2026-11-10）
+
+常驻刚性不透明路径在场景深度之后输出原生 shading mask 与速度缓冲。
+速度直接调用 UE 的 CalculateNaniteVelocity，读取真实 GPUScene 上一帧变换；
+静止物体保留原生零值语义，由时间重建处理相机运动。
+材质 BasePass 消费生成的 shading mask。WebGPU 的 stencil reference 为每次绘制固定，
+因此用七次有深度归属检查的绘制清除并写入 shadow、ray representation、
+lighting channels 和 decal bits，保留普通几何及其他 stencil 位。
+光照通道 0 按原生 stencil 约定反相存储，后续 CopyStencilToLightingChannels
+读取实际 stencil 并输出原生光照/阴影标记纹理；不会向多视图数组追加无序遮罩。
+七次 stencil 绘制的成本仍须纳入完整场景性能验收。
+
+浏览器发现 stencil metadata 的 MaintainCompression transition 被拒绝，现仅为
+真实深度/stencil 资源的 stencil plane 支持该标记，仍执行访问状态与 Begin/End
+生命周期检查；非法 depth raw、UAV 和额外标记继续拒绝。原生 RHI 的 14 项检查通过。
+着色器还修正了局部 Primitive.Flags 被 UE Uniform Buffer 预处理误展开的问题。
+
+两种设备配置各完成九项真实帧回读：静止、实例运动、相机运动、旋转及镜像非均匀
+缩放、同时运动、三种光照通道与标志更新、普通网格遮挡、正交投影、相机切换当帧。
+速度 XYZ 通过独立矩阵重投影核对，XY 在原生 gamma/16 位量化界限加浮点误差内，
+Z 最大误差 5.97×10⁻⁸。回读位于原生光照通道复制之后，也验证该消费者的最终结果。
+两种配置分别运行 1,313/1,130 帧，GPU 错误为零；原有十项材质回归也重新通过。
+证据为 tests/web-platform/evidence/nanite-native-composition-20261110.json，
+同一文件无损保存两种配置的速度/遮罩、材质像素、WGSL 和日志。
+同一包的完整回归运行 44,687 帧，GPU 错误为零；开启/关闭启动管线分别
+2,252/2,230 项全部完成且零失败，包含 128 次重复帧和十项场景捕获。
+本项不代表变形几何、流送页、完整关卡时间重建或画质/性能验收完成。
+
 ## 尚未接通
 
 - 已执行有界常驻页光栅、真实场景深度和真实 Unlit/DefaultLit 材质图，
   显式材质支持跨实例分桶；完整 Nanite Renderer 的其余材质排列、lightmap、Substrate、原生 shading bin、
-  速度和 stencil/shading mask 消费尚未接通。
+  变形几何和完整场景时间重建仍待完成。
 - Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略，
   以及混合光栅在高分辨率、高密度场景中的性能验收。
 - 页流送、缺页请求、淘汰与依赖 fixup、冷/热缓存及设备恢复。
@@ -1467,4 +1495,4 @@ RHI 的实际 wave 能力已按获授设备特性与 subgroup 范围填写。
 或硬件光追已受支持。本轮结果也不能用于估计完整 Nanite 的帧耗时。
 
 当前专项包使用重新 Cook 的完整 Villa 资源，真实组件材质已自动绑定，但 Nanite
-仍由专项入口启用。继续补齐速度/遮罩、其余材质和视图策略、页流送及完整场景验收。
+仍由专项入口启用。继续补齐其余材质和视图策略、页流送及完整场景验收。

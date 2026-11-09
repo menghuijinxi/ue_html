@@ -227,7 +227,12 @@ bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo 
         const auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FWebGPUTexture*>(Resource) : nullptr;
         const uint32 Mips = Texture ? Texture->GetNumMips() : 1;
         const uint32 Slices = Texture ? Texture->LayerCount() : 1;
-        if ((!Upload && Entry.Flags != EResourceTransitionFlags::None) || Entry.CommitInfo.IsSet() ||
+        // RDG stencil metadata SRVs request MaintainCompression. WebGPU manages
+        // physical compression and exposes the stencil aspect without a format
+        // conversion. Keep tracking its real access and Begin/End lifecycle.
+        const bool StencilMetadata = DepthStencil && Entry.PlaneSlice == 1 &&
+            Entry.Flags == EResourceTransitionFlags::MaintainCompression;
+        if ((!Upload && !StencilMetadata && Entry.Flags != EResourceTransitionFlags::None) || Entry.CommitInfo.IsSet() ||
             (!Entry.IsAllMips() && Entry.MipIndex >= Mips) ||
             (!Entry.IsAllArraySlices() && Entry.ArraySlice >= Slices) ||
             (Entry.PlaneSlice != 0 && !Entry.IsAllPlaneSlices() && !(DepthStencil && Entry.PlaneSlice == 1)))

@@ -20,6 +20,8 @@
 #define WEB_NANITE_MATERIAL_SHADER_ONLY 1
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebVertexFactory.cpp"
 #include "../../../../../reference-engine/Engine/Source/Runtime/Renderer/Private/Nanite/NaniteWebMaterialPass.cpp"
+#define WEB_NANITE_COMPOSITION_SHADER_ONLY 1
+#include "../../../../../reference-engine/Engine/Source/Runtime/Renderer/Private/Nanite/NaniteWebComposition.cpp"
 
 class FWebNaniteProbeMaterial : public FMaterialResource
 {

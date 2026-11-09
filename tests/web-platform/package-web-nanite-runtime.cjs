@@ -21,7 +21,7 @@ verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
 // Inline platform predicates changed with the full target rebuild. Global and
 // material shader maps must both come from a matching scene Cook.
-const stageFile = path.join(__dirname, 'results/web-project-nanite-materials-desktop-stage-results.json');
+const stageFile = path.join(__dirname, 'results/web-project-nanite-composition-desktop-stage-results.json');
 const stage = read(stageFile);
 assert(stage.pass && stage.mode === 'WebGPU-SM5' && stage.useProjectSettings);
 [...stage.sourceFiles, stage.cookReport, stage.pack, stage.manifest, stage.configBundle].forEach(verify);
@@ -39,6 +39,8 @@ assert(naniteTypes.every(name => inventory.types.some(type => type.name === name
 assert(inventory.types.some(type=>type.name==='FWebNaniteScalarRasterPS'&&type.permutations===2), 'Both scalar visibility phases must be cooked');
 assert(inventory.types.some(type=>type.name==='FWebNaniteMicroRasterCS'&&type.permutations===3),'All three valid compute raster permutations must be cooked');
 assert(inventory.types.some(type=>type.name==='FWebNaniteMaterialTilesVS'&&type.permutations===1),'The native material tile vertex shader must be cooked');
+for(const [name,permutations] of [['FWebNaniteCompositionPS',2],['FWebNaniteCompositionStencilPS',1],['FWebNaniteCompositionSnapshotCS',1]])
+ assert(inventory.types.some(t=>t.name===name&&t.permutations===permutations),'Cook must include '+name);
 assert.deepEqual(inventory.settings['r.VirtualTextures'], {host:'1',target:'1'});
 const baseline = path.dirname(stage.manifest.file);
 const pageTemplate = path.join(__dirname, 'build/villa-default-20261107/index.html');
@@ -110,6 +112,6 @@ const report = {date:new Date().toISOString(), pass:true, output, build:audit(pa
   baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),
   sources:[__filename, path.join(__dirname,'cached-cook-validation.cjs'), ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:'Fresh Villa scene Cook with resident Nanite depth, visible records and constant DefaultLit GBuffer export/snapshot shaders. Explicit component bindings and default-off toggles; no automatic whole-level Nanite conversion, arbitrary UMaterial graph, lightmaps, Substrate or complete scene acceptance.'};
+  boundary:'Fresh Villa scene Cook with resident Nanite depth, native material graphs, velocity and stencil/shading masks. Explicit test controls remain enabled; full-scene, streaming and remaining material/instance acceptance is open.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));
