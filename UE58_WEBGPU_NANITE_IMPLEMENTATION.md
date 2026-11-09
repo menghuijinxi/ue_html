@@ -1544,6 +1544,16 @@ GPU 错误为零，开启/关闭启动管线各 2,254/2,232 项全部完成且�
 [Worker 终止](https://html.spec.whatwg.org/multipage/workers.html#terminate-a-worker)、
 [Chromium GPU 故障注入](https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-crashGpuProcess)。
 
+## 有界页池压力验证（2026-11-10）
+
+对真实流送球体分别设置 1、2、4、8、12 页预算，两个原子配置共运行
+26,690 帧，90 个生命周期步骤和 60 组全常驻对照通过，GPU 错误为零。
+预算小于完整细节依赖组时，原生父层级保持闭合；867 个内部采样点没有缺口，
+964 个覆盖采样均一致，最大反向 Z 深度差为 0.000104845。
+12 页预算下 1,059 个簇全部驻留，六类生命周期对照深度差均为零。
+检查包含资产切换、资源重建、远近视角、HZB 返回和页池重置；这不替代完整关卡性能验收。
+证据：`tests/web-platform/evidence/nanite-streaming-budget-20261110.json`。
+
 ## 尚未接通
 
 - 已执行有界常驻页光栅、真实场景深度和真实 Unlit/DefaultLit 材质图，
@@ -1551,7 +1561,7 @@ GPU 错误为零，开启/关闭启动管线各 2,254/2,232 项全部完成且�
   变形几何和完整场景时间重建仍待完成。
 - Nanite 完整关卡 Cook/打包加载验收、完整实例／视图类型和可见性策略，
   以及混合光栅在高分辨率、高密度场景中的性能验收。
-- 页流送的小预算压力及完整关卡验收；设备丢失的运行时重建已通过上述专项。
+- 页流送的完整关卡验收；设备丢失重建和五档小预算压力已通过上述专项。
 - 默认带灯光天空的关卡验收，以及高密度资产性能与原生同视角对比。
 
 `bSupportsNanite`、`bSupportsUInt64ImageAtomics` 和 Wave 平台声明保持原值；
