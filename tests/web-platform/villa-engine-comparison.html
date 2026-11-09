@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Villa | UE 5.8 / UE 5.9</title>
+<style>
+* { box-sizing: border-box; letter-spacing: 0; }
+html, body { margin: 0; height: 100%; background: #080a09; color: #eee; font: 14px system-ui, sans-serif; }
+body { display: flex; flex-direction: column; }
+nav { display: flex; align-items: center; gap: 18px; padding: 8px 16px; min-height: 44px; flex-wrap: wrap; background: #222724; }
+nav a { color: #c9d6ce; padding: 5px 0; border-bottom: 2px solid transparent; text-decoration: none; }
+nav a[aria-current="page"] { color: #86e6ba; border-color: currentColor; }
+nav span { margin-left: auto; color: #b8c1bd; font-size: 12px; }
+main { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: center; background: #000; }
+</style>
+<nav aria-label="Engine">
+  <strong>Triplex Villa</strong>
+  <a href="#ours" data-engine="ours">UE 5.8 v71 &#25105;&#20204;&#30340;&#29256;&#26412;</a>
+  <a href="#official" data-engine="official">UE 5.9 &#23448;&#26041;&#29256;&#26412;</a>
+  <span>1920 &times; 1080 &middot; 100% &middot; Epic &middot; TAA &middot; Lumen GI</span>
+</nav>
+<main id="stage"></main>
+<script>
+(async () => {
+  const response = await fetch('villa-engine-comparison.json', {cache: 'no-cache'});
+  if (!response.ok) throw Error('Comparison profile unavailable');
+  const profile = await response.json();
+  const stage = document.getElementById('stage');
+  const official = new URL(profile.official, location.href);
+  official.searchParams.set('tier', 'desktop');
+  official.searchParams.set('harness', '1');
+  official.searchParams.set('args', '-dpcvars=' +
+    Object.entries(profile.settings).map(([key, value]) => key + '=' + value).join(',') +
+    ' -ini:Input:[/Script/Engine.InputSettings]:bEnableMouseSmoothing=False');
+  let frame;
+  function resize() {
+    if (!frame) return;
+    const scale = Math.min(stage.clientWidth / profile.width, stage.clientHeight / profile.height);
+    frame.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  }
+  function select() {
+    const engine = location.hash === '#official' ? 'official' : 'ours';
+    // Remove the previous document and its workers before starting the other engine.
+    frame?.remove();
+    frame = document.createElement('iframe');
+    frame.width = profile.width;
+    frame.height = profile.height;
+    frame.allow = 'cross-origin-isolated; fullscreen; autoplay';
+    frame.title = engine === 'ours' ? 'UE 5.8 Villa' : 'UE 5.9 Villa';
+    frame.src = engine === 'ours' ? 'build/' + profile.ours + '/index.html' : official.href;
+    stage.replaceChildren(frame);
+    for (const link of document.querySelectorAll('[data-engine]'))
+      if (link.dataset.engine === engine) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    resize();
+  }
+  window.addEventListener('resize', resize);
+  window.addEventListener('hashchange', select);
+  select();
+})().catch(error => { document.getElementById('stage').textContent = error.message; });
+</script>
+</html>
