@@ -1,5 +1,13 @@
 const branch = (before, lines) => ({before, after: lines.join('\n')});
-module.exports = [['Private/Nanite/NaniteTranscode.usf', [
+module.exports = [['Private/Nanite/NaniteStreaming.ush', [
+  branch('\t\tWaveInterlockedAddScalar_(RequestsBuffer[0].RuntimeResourceID_Magic, 1, Index);', [
+    '#if COMPILER_WEBGPU',
+    '\t\t// Visible leaves diverge across a subgroup. Use one scalar atomic per',
+    '\t\t// request; preserve native request packing, bounds and version magic.',
+    '\t\tInterlockedAdd(RequestsBuffer[0].RuntimeResourceID_Magic, 1, Index);',
+    '#else', '\t\tWaveInterlockedAddScalar_(RequestsBuffer[0].RuntimeResourceID_Magic, 1, Index);', '#endif',
+  ]),
+]], ['Private/Nanite/NaniteTranscode.usf', [
   branch('\tBRANCH\n\tif (ClusterDiskHeader.NumVertexRefs == 0)\n\t{\n\t\treturn;\n\t}', [
     '#if !COMPILER_WEBGPU', '\tBRANCH', '\tif (ClusterDiskHeader.NumVertexRefs == 0)',
     '\t{', '\t\treturn;', '\t}', '#endif',

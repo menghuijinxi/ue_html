@@ -713,6 +713,7 @@ function prepare() {
   copy();
   for (const relative of ['Private/WebTranslucencyVolume.ush', 'Private/Lumen/WebLumenAdaptiveProbe.usf',
     'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf', 'Private/Nanite/WebNaniteLOD.ush', 'Private/Nanite/WebNaniteScalarVisibility.ush',
+    'Private/Nanite/WebNanitePageOwnership.ush',
     'Private/Nanite/WebNaniteHZB.ush', 'Private/Nanite/WebNaniteHZB.usf', 'Private/Nanite/WebNaniteOcclusion.usf',
     'Private/Nanite/WebNaniteRaster.usf', 'Private/Nanite/WebNaniteMicroRaster.ush', 'Private/Nanite/WebNaniteDepth.usf', 'Private/Nanite/WebNaniteGBuffer.usf',
     'Private/Nanite/WebNaniteVertexFactory.ush', 'Private/Nanite/WebNaniteMaterialTiles.usf', 'Private/Nanite/WebNaniteComposition.usf']) {

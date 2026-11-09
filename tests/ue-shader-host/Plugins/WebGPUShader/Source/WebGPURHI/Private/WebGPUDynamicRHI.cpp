@@ -615,6 +615,7 @@ struct FBufferInitializer : FRHIBufferInitializer
               Cmd, Buffer, Writable ? Buffer->InitialBytes.GetData() : nullptr,
               Writable ? Buffer->InitialBytes.Num() : 0,
               [Buffer = TRefCountPtr<FWebGPUBuffer>(Buffer), &RHI, Usage](FRHICommandListBase &Commands) mutable -> FBufferRHIRef {
+                  if (Buffer->GetDesc().IsNull()) return FBufferRHIRef(Buffer.GetReference());
                   // Reuse UE's initializer/command ordering. Creating the CPU resource must not
                   // synchronously interrupt RHI for every dynamic occlusion-query buffer.
                   Commands.EnqueueLambda([Buffer, &RHI, Usage,
@@ -1697,6 +1698,13 @@ FVertexDeclarationRHIRef FWebGPUDynamicRHI::RHICreateVertexDeclaration(const FVe
 }
 FRHIBufferInitializer FWebGPUDynamicRHI::RHICreateBufferInitializer(FRHICommandListBase &Cmd, const FRHIBufferCreateDesc &Desc)
 {
+    // Cooked index buffers can retain an index count after discarding their CPU
+    // payload. Native CreateNull is a resource placeholder, including when it
+    // carries that empty array; never dereference or upload its initial data.
+    if (Desc.IsNull())
+    {
+        return FBufferInitializer(Cmd, new FWebGPUBuffer(Desc, nullptr), *this, WGPUBufferUsage_None, false);
+    }
     WGPUBufferUsage Usage = WGPUBufferUsage_CopySrc;
     if (EnumHasAnyFlags(Desc.Usage, EBufferUsageFlags::VertexBuffer))
         Usage |= WGPUBufferUsage_Vertex;

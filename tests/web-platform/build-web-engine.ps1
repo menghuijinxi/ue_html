@@ -51,6 +51,8 @@ if ($LASTEXITCODE -ne 0) { throw 'RHI cache overlay preparation failed.' }
 $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp',
     'Source/Runtime/Engine/Private/Rendering/NaniteStreamingManager.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteReadbackManager.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteOrderedScatterUpdater.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteStreamingManager.h',
     'Source/Runtime/Engine/Private/Rendering/NaniteResources.cpp',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp',

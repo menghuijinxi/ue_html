@@ -21,7 +21,7 @@ verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
 // Inline platform predicates changed with the full target rebuild. Global and
 // material shader maps must both come from a matching scene Cook.
-const stageFile = path.join(__dirname, 'results/web-project-nanite-composition-desktop-stage-results.json');
+const stageFile = path.join(__dirname, 'results/web-project-nanite-streaming-desktop-stage-results.json');
 const stage = read(stageFile);
 assert(stage.pass && stage.mode === 'WebGPU-SM5' && stage.useProjectSettings);
 [...stage.sourceFiles, stage.cookReport, stage.pack, stage.manifest, stage.configBundle].forEach(verify);
@@ -71,8 +71,18 @@ finally { fs.closeSync(fd); }
 // The full Cook registers the 13 hierarchy/raster/depth/GBuffer shader types.
 // Preserve its complete sections, including production entries in shared files.
 // Only the separately verified production transcode archive is appended.
-const merged = Buffer.concat([originalGlobal, archive.subarray(4)]);
-merged.writeInt32LE(originalGlobal.readInt32LE() + archive.readInt32LE());
+const streamingFile = path.join(__dirname, 'results/nanite-streaming-shaders/verified.json');
+const streamingShaders = read(streamingFile); assert(streamingShaders.pass);
+[...streamingShaders.sources, streamingShaders.archive, streamingShaders.binary, ...streamingShaders.logs].forEach(verify);
+const streamingArchive = fs.readFileSync(streamingShaders.archive.file);
+assert.equal(streamingArchive.readInt32LE(), 2);
+// The installed native Engine predicate predates Web streaming. Export its
+// existing registered clear/fixup types explicitly; never duplicate sections
+// if a future native host already includes them in the scene Cook.
+for (const name of ['FClearStreamingRequestCount_CS','FScatterUpdates_CS'])
+  assert(!inventory.types.some(t => t.name === name && t.permutations > 0), 'Streaming supplement is already in Cook: ' + name);
+const merged = Buffer.concat([originalGlobal, archive.subarray(4), streamingArchive.subarray(4)]);
+merged.writeInt32LE(originalGlobal.readInt32LE() + archive.readInt32LE() + streamingArchive.readInt32LE());
 fs.copyFileSync(baselinePack, path.join(output, 'content.bin'));
 let offset = fs.statSync(baselinePack).size;
 for (const [virtualPath, data] of [[global.path, merged],
@@ -106,12 +116,12 @@ const products = ['index.html', 'content.bin', 'content-files.json', 'config-fil
 products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
-  hierarchyShaders:audit(hierarchyFile),multiMaterial,
+  hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),multiMaterial,
   sceneCook:{stage:audit(stageFile),cook:stage.cookReport,inventory:cook.shaderInventory.artifact,
-    naniteTypes,supplementApplied:false,hierarchyArchiveApplied:false},
+    naniteTypes,supplementApplied:false,hierarchyArchiveApplied:false,streamingArchiveApplied:true},
   baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),
   sources:[__filename, path.join(__dirname,'cached-cook-validation.cjs'), ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,
-  boundary:'Fresh Villa scene Cook with resident Nanite depth, native material graphs, velocity and stencil/shading masks. Explicit test controls remain enabled; full-scene, streaming and remaining material/instance acceptance is open.'};
+  boundary:'Fresh Villa scene Cook with real streamable Nanite bulk data and explicit bounded streaming controls. Includes native material graphs, velocity and stencil/shading masks. Full-scene, streaming lifecycle and remaining material/instance acceptance is open.'};
 fs.writeFileSync(path.join(output, 'package.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({pass:true, output}));

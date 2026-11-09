@@ -4,6 +4,7 @@
 #include "ShaderParameterMacros.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "Containers/DynamicRHIResourceArray.h"
 
 namespace
 {
@@ -30,6 +31,21 @@ TSharedRef<FJsonObject> RunWebGPUCanvasTransitionProbe(FWebGPUDynamicRHI& RHI)
         UE_LOG(LogRHI, Display, TEXT("P2_TRANSITION %s pass=%d"), *Name, OK);
         Pass &= OK;
     };
+    {
+        // TResourceArray::GetResourceData asserts on an empty array. Reproduce
+        // the descriptor emitted by a released cooked FRawStaticIndexBuffer.
+        TResourceArray<uint8> Empty;
+        FCommandList Cmd(&RHI);
+        auto Desc = FRHIBufferCreateDesc::CreateNull(TEXT("NaniteReleasedIndices"));
+        Desc.SetInitialState(ERHIAccess::VertexOrIndexBuffer | ERHIAccess::SRVMask);
+        Desc.SetInitActionResourceArray(&Empty);
+        auto Buffer = RHI.RHICreateBufferInitializer(Cmd, Desc).Finalize();
+        Record(TEXT("null-buffer-empty-array-no-upload"), Buffer && Buffer->GetSize() == 0 &&
+            !static_cast<FWebGPUBuffer*>(Buffer.GetReference())->Handle && Empty.IsEmpty());
+        auto Default = RHI.RHICreateBufferInitializer(Cmd, FRHIBufferCreateDesc::CreateNull(TEXT("NaniteNullBuffer")).SetInitialState(ERHIAccess::SRVMask)).Finalize();
+        Record(TEXT("null-buffer-default-no-allocation"), Default && Default->GetSize() == 0 &&
+            !static_cast<FWebGPUBuffer*>(Default.GetReference())->Handle);
+    }
     const auto CheckAccess = [&](FRHIViewableResource *Resource, ERHIAccess Access) {
         FString Error;
         return RHI.ValidateAccess(Resource, Access, Error);
