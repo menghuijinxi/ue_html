@@ -82,7 +82,7 @@ static void Create(UWorld* World, APlayerController* Controller)
             Actor->SetActorLocation(Position);
             Actor->SetActorScale3D(FVector(Radius / 50));
             Spheres.Add(Actor);
-            EM_ASM({
+            MAIN_THREAD_EM_ASM({
                 const state = globalThis.__webDefaultSamples ||= {samples: []};
                 state.samples.push({row: $0, column: $1, material: UTF8ToString($2),
                     metallic: $0, roughness: [0.05, 0.25, 0.6, 1][$1], specular: 0.5,
@@ -91,7 +91,7 @@ static void Create(UWorld* World, APlayerController* Controller)
         }
     const bool Preserved = Unchanged(Before);
     check(Preserved);
-    EM_ASM({
+    MAIN_THREAD_EM_ASM({
         Object.assign(globalThis.__webDefaultSamples, {count: $0, visible: true, sceneUnchanged: !!$1,
             camera: {x: $2, y: $3, z: $4, pitch: $5, yaw: $6, fov: $7},
             floor: {x: $8, y: $9, z: $10, top: $11}});
@@ -138,14 +138,14 @@ static int Visibility(int Visible)
         if (!Controller->ProjectWorldLocationToScreen(Sphere->GetActorLocation(), Center) ||
             !Controller->ProjectWorldLocationToScreen(Sphere->GetActorLocation() + Right * 120, Edge))
             return 0;
-        EM_ASM({
+        MAIN_THREAD_EM_ASM({
             globalThis.__webDefaultSamples.samples[$0].screen = ({x: $1, y: $2, radius: $3});
         }, Index++, Center.X, Center.Y, double(FVector2D::Distance(Center, Edge)));
     }
     const bool Preserved = Unchanged(Before);
     int32 Width = 0, Height = 0;
     Controller->GetViewportSize(Width, Height);
-    EM_ASM({
+    MAIN_THREAD_EM_ASM({
         globalThis.__webDefaultSamples.visible = !!$0;
         globalThis.__webDefaultSamples.sceneUnchanged = !!$1;
         globalThis.__webDefaultSamples.viewport = ({width: $2, height: $3, viewFOV: $4});

@@ -55,7 +55,7 @@ const execute = (response, log) => {
 const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
   'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h',
   'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebHierarchy.cpp',
-  'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp',
+  'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp', 'Public/StaticMeshSceneProxy.h',
   'Private/Nanite/NaniteWebScene.cpp', 'Public/Rendering/NaniteWebScene.h',
   'Private/Nanite/NaniteWebRaster.cpp', 'Public/Rendering/NaniteWebRaster.h',
   'Private/Nanite/NaniteWebHZB.cpp', 'Public/Rendering/NaniteWebHZB.h',

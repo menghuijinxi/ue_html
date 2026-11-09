@@ -70,6 +70,7 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Nanite/NaniteWebVertexFactory.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebMaterial.h',
     'Source/Runtime/Engine/Private/StaticMeshSceneProxy.cpp',
+    'Source/Runtime/Engine/Public/StaticMeshSceneProxy.h',
     'Source/Runtime/Renderer/Private/Nanite/NaniteWebMaterialPass.cpp',
     'Source/Runtime/Renderer/Private/Nanite/NaniteWebMaterialPass.h',
     'Source/Runtime/Renderer/Private/Nanite/NaniteWebComposition.cpp',

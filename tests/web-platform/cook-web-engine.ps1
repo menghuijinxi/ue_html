@@ -136,33 +136,6 @@ try {
         $taskReport.moduleBuildLog = Get-TaskAudit $taskBuildLog
         if ($LASTEXITCODE -ne 0) { throw "Web Cook module build failed: $taskBuildLog" }
     }
-    if ($Scene -eq 'Minimal') {
-        & (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1') -Engine $Engine
-        $taskReport.minimalMapPreparation = Get-TaskAudit (Join-Path $taskResults 'web-minimal-map-results.json')
-        $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
-    } elseif ($Scene -eq 'DefaultTemplate') {
-        $taskReport.templateMap = Get-TaskAudit (Join-Path $Engine 'Engine/Content/Maps/Templates/Template_Default.umap')
-        $taskSampleLayout = Join-Path $taskOutput 'default-samples-layout.json'
-        $taskSampleLog = Join-Path $taskResults "web-default-samples-$taskStamp.log"
-        & (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject `
-            '-run=WebDefaultSamples' "-Output=$taskSampleLayout" '-nullrhi' '-unattended' `
-            '-nop4' '-nosplash' '-nosound' "-abslog=$taskSampleLog" *> "$taskSampleLog.console.txt"
-        if ($LASTEXITCODE -ne 0) { throw "Default sample material generation failed: $taskSampleLog" }
-        $taskSamples = Get-Content -LiteralPath $taskSampleLayout -Raw | ConvertFrom-Json
-        if (-not $taskSamples.worldUnmodified -or $taskSamples.samples.Count -ne 8 -or
-            $taskSamples.meshTriangles -lt 16000) {
-            throw 'Default template requires eight additive sample materials and a dense test sphere.'
-        }
-        $taskReport.defaultSampleMesh = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/DefaultTemplateSamples/SM_TestSphere.uasset')
-        $taskReport.defaultSamples = Get-TaskAudit $taskSampleLayout
-        $taskReport.defaultSamplesLog = Get-TaskAudit $taskSampleLog
-        if ((Get-TaskAudit $taskReport.templateMap.file).sha256 -ne $taskReport.templateMap.sha256) {
-            throw 'The installed default world must remain unchanged.'
-        }
-    } else {
-        $taskMapFile = Join-Path (Split-Path -Parent $taskProject) ("Content/" + $taskMap.Substring(6) + '.umap')
-        $taskReport.projectMap = Get-TaskAudit $taskMapFile
-    }
     if ($taskWebGPU) {
         $taskPrepareLog = Join-Path $taskResults "web-cook-host-$taskStamp.log"
         $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-web-cook-host.cjs'))
@@ -176,6 +149,38 @@ try {
         $taskReport.hostPreparationReport = Get-TaskAudit $taskPreparationSnapshot
         $taskReport.hostPreparationLog = Get-TaskAudit $taskPrepareLog
         $taskReport.shaderSourcesReport = Get-TaskAudit (Join-Path $taskResults 'web-cook-shader-sources.json')
+    }
+    if ($Scene -eq 'Minimal') {
+        & (Join-Path $PSScriptRoot 'prepare-web-minimal-map.ps1') -Engine $Engine
+        $taskReport.minimalMapPreparation = Get-TaskAudit (Join-Path $taskResults 'web-minimal-map-results.json')
+        $taskReport.minimalMap = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/WebMinimal.umap')
+    } elseif ($Scene -eq 'DefaultTemplate') {
+        $taskReport.templateMap = Get-TaskAudit (Join-Path $Engine 'Engine/Content/Maps/Templates/Template_Default.umap')
+        $taskSampleLayout = Join-Path $taskOutput 'default-samples-layout.json'
+        $taskSampleLog = Join-Path $taskResults "web-default-samples-$taskStamp.log"
+        $taskSampleArguments = @()
+        if ($NaniteCookData) { $taskSampleArguments += '-NaniteSamples' }
+        & (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') $taskProject `
+            '-run=WebDefaultSamples' "-Output=$taskSampleLayout" '-nullrhi' '-unattended' `
+            '-nop4' '-nosplash' '-nosound' "-abslog=$taskSampleLog" @taskSampleArguments *> "$taskSampleLog.console.txt"
+        if ($LASTEXITCODE -ne 0) { throw "Default sample material generation failed: $taskSampleLog" }
+        $taskSamples = Get-Content -LiteralPath $taskSampleLayout -Raw | ConvertFrom-Json
+        if ($NaniteCookData -and (-not $taskSamples.nanite -or $taskSamples.naniteClusters -le 0)) {
+            throw 'Nanite default samples must retain built clusters and their ordinary fallback geometry.'
+        }
+        if (-not $taskSamples.worldUnmodified -or $taskSamples.samples.Count -ne 8 -or
+            $taskSamples.meshTriangles -lt 16000) {
+            throw 'Default template requires eight additive sample materials and a dense test sphere.'
+        }
+        $taskReport.defaultSampleMesh = Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Content/DefaultTemplateSamples/SM_TestSphere.uasset')
+        $taskReport.defaultSamples = Get-TaskAudit $taskSampleLayout
+        $taskReport.defaultSamplesLog = Get-TaskAudit $taskSampleLog
+        if ((Get-TaskAudit $taskReport.templateMap.file).sha256 -ne $taskReport.templateMap.sha256) {
+            throw 'The installed default world must remain unchanged.'
+        }
+    } else {
+        $taskMapFile = Join-Path (Split-Path -Parent $taskProject) ("Content/" + $taskMap.Substring(6) + '.umap')
+        $taskReport.projectMap = Get-TaskAudit $taskMapFile
     }
     # Config is an installed-engine junction; add only the isolated platform extension.
     $taskWeb = Join-Path $taskHost 'Platforms/Web'
