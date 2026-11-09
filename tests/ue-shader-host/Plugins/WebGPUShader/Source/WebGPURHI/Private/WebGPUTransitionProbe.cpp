@@ -17,6 +17,77 @@ void ValueParameter(FRHICommandList &Cmd, Shader *InShader, const Value &InValue
 }
 } // namespace
 
+TSharedRef<FJsonObject> RunWebGPUCanvasTransitionProbe(FWebGPUDynamicRHI& RHI)
+{
+    TArray<TSharedPtr<FJsonValue>> Checks;
+    uint64 Checked = 0;
+    bool Pass = true;
+    const auto Record = [&](const FString &Name, bool OK) {
+        auto Check = MakeShared<FJsonObject>();
+        Check->SetStringField(TEXT("name"), Name);
+        Check->SetBoolField(TEXT("pass"), OK);
+        Checks.Add(MakeShared<FJsonValueObject>(Check));
+        UE_LOG(LogRHI, Display, TEXT("P2_TRANSITION %s pass=%d"), *Name, OK);
+        Pass &= OK;
+    };
+    const auto CheckAccess = [&](FRHIViewableResource *Resource, ERHIAccess Access) {
+        FString Error;
+        return RHI.ValidateAccess(Resource, Access, Error);
+    };
+    const auto RejectUse = [&](const TCHAR *Name, FRHIViewableResource *Resource, ERHIAccess Access,
+                               bool Internal = false) {
+        FString Error;
+        Record(Name, !RHI.ValidateAccess(Resource, Access, Error, Internal) && !Error.IsEmpty());
+    };
+    {
+        auto Native = WGPU_TEXTURE_DESCRIPTOR_INIT;
+        Native.size = {16, 16, 1}; Native.format = WGPUTextureFormat_RGBA8Unorm;
+        Native.usage = WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopySrc;
+        const auto Desc = FRHITextureCreateDesc::Create2D(TEXT("CanvasBackbufferEpilogue"), 16, 16, PF_R8G8B8A8)
+            .SetFlags(TexCreate_RenderTargetable | TexCreate_Presentable).SetInitialState(ERHIAccess::RTV)
+            .SetClearValue(FClearValueBinding(FLinearColor(0.25f, 0.5f, 0.75f, 1)));
+        TRefCountPtr<FWebGPUTexture> Backbuffer = new FWebGPUTexture(Desc, wgpuDeviceCreateTexture(RHI.Device, &Native));
+        const auto Accepts = [&](ERHIAccess Before, ERHIAccess After) {
+            const FRHITransitionInfo Entry(Backbuffer, Before, After); FString Error;
+            const FRHITransitionCreateInfo Info(ERHIPipeline::Graphics, ERHIPipeline::Graphics,
+                ERHITransitionCreateFlags::None, MakeArrayView(&Entry, 1));
+            return RHI.ValidateTransitionCreate(Info, Error);
+        };
+        Record(TEXT("canvas-backbuffer-accept-rdg-epilogue"), Accepts(ERHIAccess::RTV, ERHIAccess::SRVMask));
+        Record(TEXT("canvas-backbuffer-reject-partial-srv"), !Accepts(ERHIAccess::RTV, ERHIAccess::SRVCompute));
+        Record(TEXT("canvas-backbuffer-reject-uav"), !Accepts(ERHIAccess::RTV, ERHIAccess::UAVCompute));
+        Backbuffer->SurfaceFrameActive = false;
+        Record(TEXT("canvas-backbuffer-reject-expired-frame"), !Accepts(ERHIAccess::RTV, ERHIAccess::SRVMask));
+        Backbuffer->SurfaceFrameActive = true;
+        RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
+        {
+            FCommandList Cmd(&RHI);
+            Cmd.BeginRenderPass(FRHIRenderPassInfo(Backbuffer, ERenderTargetActions::Clear_Store), TEXT("CanvasBackbuffer"));
+            Cmd.EndRenderPass();
+            Cmd.TransitionLocal(RHI, FRHITransitionInfo(Backbuffer, ERHIAccess::RTV, ERHIAccess::SRVMask));
+            Cmd.EnqueueLambda([&, Backbuffer](FRHICommandListBase&) {
+                RejectUse(TEXT("canvas-backbuffer-reject-actual-srv"), Backbuffer, ERHIAccess::SRVGraphics);
+            });
+            Cmd.TransitionLocal(RHI, FRHITransitionInfo(Backbuffer, ERHIAccess::SRVMask, ERHIAccess::RTV));
+            Cmd.EnqueueLambda([&, Backbuffer](FRHICommandListBase&) {
+                Record(TEXT("canvas-backbuffer-restores-rtv"), CheckAccess(Backbuffer, ERHIAccess::RTV));
+            });
+            Cmd.TransitionLocal(RHI, FRHITransitionInfo(Backbuffer, ERHIAccess::RTV, ERHIAccess::Present));
+            Cmd.EnqueueLambda([&, Backbuffer](FRHICommandListBase&) {
+                Record(TEXT("canvas-backbuffer-restores-present"), CheckAccess(Backbuffer, ERHIAccess::Present));
+            });
+        }
+        RHI.SubmitCurrent();
+        TArray<FColor> Colors; RHI.RHIReadSurfaceData(Backbuffer, FIntRect(0, 0, 16, 16), Colors, RawReadback());
+        bool OK = Colors.Num() == 256;
+        for (const auto& Color : Colors) OK &= FMath::Abs(int32(Color.R) - 64) <= 1 && FMath::Abs(int32(Color.G) - 128) <= 1 && FMath::Abs(int32(Color.B) - 191) <= 1 && Color.A == 255;
+        Record(TEXT("canvas-backbuffer-preserves-clear"), OK);
+    }
+    auto Report = MakeShared<FJsonObject>();
+    Report->SetBoolField(TEXT("pass"), Pass); Report->SetArrayField(TEXT("checks"), Checks);
+    return Report;
+}
+
 TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const FString &Directory,
                                                  const FString &OutputDirectory)
 {

@@ -8,6 +8,7 @@ const verifyRaster = require('./verify-nanite-raster-output.cjs');
 const verifyDepth = require('./verify-nanite-depth-output.cjs');
 const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
 const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
+const verifyTiles = require('./verify-nanite-material-tiles.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
@@ -24,8 +25,9 @@ function observe() {
   const depthModules = new WeakSet(), depthPipelines = new WeakSet(), depthBound = new WeakMap();
   const recordModules = new WeakSet(), recordPipelines = new WeakSet(), recordBound = new WeakMap();
   const materialModules = new WeakSet(), materialPipelines = new WeakSet(), materialBound = new WeakMap();
+  const tileModules=new WeakSet(),tilePipelines=new WeakSet(),tileBound=new WeakMap();
   const gbufferModules=new WeakSet(),gbufferPipelines=new WeakSet(),gbufferBound=new WeakMap();
-  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], recordDispatches:0, materialDispatches:0, materialShaders:[], gbufferDraws:0,gbufferShaders:[],errors:[], adapter:null};
+  const state = globalThis.__naniteBrowserAudit = {dispatches:0, shaders:[], cullDispatches:0, cullShaders:[], rasterDraws:[], rasterShaders:[], depthDraws:0, depthShaders:[], recordDispatches:0, materialDispatches:0, materialShaders:[], gbufferDraws:0,gbufferIndirectDraws:0,tileDispatches:0,gbufferShaders:[],errors:[], adapter:null};
   const create = GPUDevice.prototype.createShaderModule;
   GPUDevice.prototype.createShaderModule = function(desc) {
     const result = create.call(this, desc);
@@ -44,7 +46,8 @@ function observe() {
     if(desc.code.includes('WebVisibleClusterOutput')) {recordModules.add(result);state.materialShaders.push(desc.code);}
     if(desc.code.includes('WebMaterialOutput')) {materialModules.add(result);state.materialShaders.push(desc.code);}
     if(desc.code.includes('WebGBufferBaseMetallic')) {gbufferModules.add(result);state.gbufferShaders.push(desc.code);}
-    if(desc.code.includes('WebGBufferSnapshot')) state.gbufferShaders.push(desc.code);
+    if(desc.code.includes('WebGBufferSnapshot')||desc.code.includes('WebGBufferTiles')) state.gbufferShaders.push(desc.code);
+    if(desc.code.includes('WebGBufferTileOutput')) {tileModules.add(result);state.gbufferShaders.push(desc.code);}
     return result;
   };
   const sync = GPUDevice.prototype.createComputePipeline;
@@ -52,19 +55,19 @@ function observe() {
     const result = sync.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
     if (cullModules.has(desc.compute.module)) cullPipelines.add(result);
     if(recordModules.has(desc.compute.module)) recordPipelines.add(result);
-    if(materialModules.has(desc.compute.module)) materialPipelines.add(result); return result;
+    if(materialModules.has(desc.compute.module)) materialPipelines.add(result); if(tileModules.has(desc.compute.module)) tilePipelines.add(result); return result;
   };
   const async = GPUDevice.prototype.createComputePipelineAsync;
   GPUDevice.prototype.createComputePipelineAsync = async function(desc) {
     const result = await async.call(this, desc); if (modules.has(desc.compute.module)) pipelines.add(result);
     if (cullModules.has(desc.compute.module)) cullPipelines.add(result);
     if(recordModules.has(desc.compute.module)) recordPipelines.add(result);
-    if(materialModules.has(desc.compute.module)) materialPipelines.add(result); return result;
+    if(materialModules.has(desc.compute.module)) materialPipelines.add(result); if(tileModules.has(desc.compute.module)) tilePipelines.add(result); return result;
   };
   const bind = GPUComputePassEncoder.prototype.setPipeline;
-  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {bound.set(this, pipelines.has(pipeline)); cullBound.set(this, cullPipelines.has(pipeline)); recordBound.set(this,recordPipelines.has(pipeline));materialBound.set(this,materialPipelines.has(pipeline));return bind.call(this, pipeline);};
+  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {bound.set(this, pipelines.has(pipeline)); cullBound.set(this, cullPipelines.has(pipeline)); recordBound.set(this,recordPipelines.has(pipeline));materialBound.set(this,materialPipelines.has(pipeline));tileBound.set(this,tilePipelines.has(pipeline));return bind.call(this, pipeline);};
   const dispatch = GPUComputePassEncoder.prototype.dispatchWorkgroups;
-  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches;if(recordBound.get(this)) ++state.recordDispatches;if(materialBound.get(this)) ++state.materialDispatches; return dispatch.apply(this, args);};
+  GPUComputePassEncoder.prototype.dispatchWorkgroups = function(...args) {if (bound.get(this)) ++state.dispatches; if(cullBound.get(this)) ++state.cullDispatches;if(recordBound.get(this)) ++state.recordDispatches;if(materialBound.get(this)) ++state.materialDispatches;if(tileBound.get(this)) ++state.tileDispatches; return dispatch.apply(this, args);};
   const request = GPUAdapter.prototype.requestDevice;
   for (const name of ['createRenderPipeline','createRenderPipelineAsync']) {
     const create = GPUDevice.prototype[name];
@@ -83,6 +86,8 @@ function observe() {
   const rasterBind = GPURenderPassEncoder.prototype.setPipeline, draw = GPURenderPassEncoder.prototype.draw;
   GPURenderPassEncoder.prototype.setPipeline = function(p) {rasterBound.set(this,rasterPipelines.has(p));depthBound.set(this,depthPipelines.has(p));gbufferBound.set(this,gbufferPipelines.has(p));return rasterBind.call(this,p);};
   GPURenderPassEncoder.prototype.draw = function(...args) {if(rasterBound.get(this)) state.rasterDraws.push(args);if(depthBound.get(this)) ++state.depthDraws;if(gbufferBound.get(this)) ++state.gbufferDraws;return draw.apply(this,args);};
+  const drawIndirect=GPURenderPassEncoder.prototype.drawIndirect;
+  GPURenderPassEncoder.prototype.drawIndirect=function(...args) {if(gbufferBound.get(this)) {++state.gbufferDraws;++state.gbufferIndirectDraws;}return drawIndirect.apply(this,args);};
   GPUAdapter.prototype.requestDevice = async function(...args) {
     state.adapter = {vendor:this.info.vendor, architecture:this.info.architecture,
       subgroupMinSize:this.info.subgroupMinSize, subgroupMaxSize:this.info.subgroupMaxSize, isFallbackAdapter:this.info.isFallbackAdapter};
@@ -100,12 +105,13 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   depthOracle:audit(require.resolve('./verify-nanite-depth-output.cjs')),
   materialOracle:audit(require.resolve('./verify-nanite-material-inputs.cjs')),
   gbufferOracle:audit(require.resolve('./verify-nanite-gbuffer-output.cjs')),
+  tilesOracle:audit(require.resolve('./verify-nanite-material-tiles.cjs')),
   rasterReferencePolicy:{subpixelFractionalBits:8, depthTolerance:3e-5, edgeBandPixels:.02, minimumInteriorFraction:.25,
     reference:'https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants'},
   textureReferencePolicy:{lod:'largest singular value of UV Jacobian',maxCommonLODOffset:.25,maxSRGBCodeError:2,
     reference:'https://microsoft.github.io/DirectX-Specs/d3d/archive/D3D11_3_FunctionalSpec.htm',section:'7.18.11',
     boundary:'Probe acceptance bound for approximate footprint transformation; no cross-vendor precision guarantee.'},
-  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures now write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Zero-fallback fixtures verify this subset. No arbitrary UMaterial graph, lightmaps, normal maps, Substrate, material binning, LOD/HZB/streaming or complete-scene acceptance.'};
+  boundary:'Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures now write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Zero-fallback fixtures verify this subset. GPU-compacted 8x8 tiles and indirect draws replace fullscreen instance shading; no arbitrary UMaterial graph, lightmaps, normal maps, Substrate, shared material bins, LOD/HZB/streaming or complete-scene acceptance.'};
 (async () => {
   let browser;
   try {
@@ -383,7 +389,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.deepEqual(await owner.evaluate(()=>({depth:__naniteBrowserAudit.depthDraws,cull:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length})),stopped,'cleanup must stop the experimental scene path');
     report.sceneDepthCleanup={pass:true,framesObserved:4,...stopped};
     assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws),0,'constant GBuffer must default off');
-    for(let step=1;step<=10;++step) {
+    for(let step=1;step<=12;++step) {
       const before=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws);
       assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteGBufferTest',s),step),1);
       let result;const start=Date.now();
@@ -395,29 +401,39 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       assert(result&&!result.pending&&result.step===step,JSON.stringify(result));
       try{
         result.validation=verifyGBuffer(result,fixturePage);
-        if(step>=7) result.textureReferenceRejections=verifyGBuffer.verifyTextureMutations(result,fixturePage);
+        result.tileValidation=verifyTiles(result,fixturePage);
+        if(step>=7&&step<=10) result.textureReferenceRejections=verifyGBuffer.verifyTextureMutations(result,fixturePage);
       }catch(error){result.validationFailure=error.stack;}
       const products={};
-      for(const name of ['before','after','materialInputs']) {
+      for(const name of ['before','after','materialInputs','tilePixels']) {
         const b=Buffer.alloc(result[name].length*4);result[name].forEach((v,i)=>b.writeUInt32LE(v,i*4));
         const file=path.join(output,`gbuffer-${step}-${name}.bin`);fs.writeFileSync(file,b);products[name]=audit(file);delete result[name];
+      }
+      for(const [index,bin] of result.materialTiles.entries()) {
+        const name=`tiles${index}`,b=Buffer.alloc(bin.tiles.length*4);bin.tiles.forEach((v,i)=>b.writeUInt32LE(v,i*4));
+        const file=path.join(output,`gbuffer-${step}-${name}.bin`);fs.writeFileSync(file,b);products[name]=audit(file);delete bin.tiles;
+        if(bin.offsetTiles) {
+          const offsetName=`offsetTiles${index}`,data=Buffer.alloc(bin.offsetTiles.length*4);bin.offsetTiles.forEach((v,i)=>data.writeUInt32LE(v,i*4));
+          const offsetFile=path.join(output,`gbuffer-${step}-${offsetName}.bin`);fs.writeFileSync(offsetFile,data);products[offsetName]=audit(offsetFile);delete bin.offsetTiles;
+        }
       }
       const draws=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws)-before;
       if(step!==4) assert(draws>=4,'real per-frame GBuffer pass must execute');
       report.sceneGBuffer.push({...result,products,draws,pass:!result.validationFailure});
-      if([2,6,7,8,9,10].includes(step)) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
+      if([7,8,9,10,11,12].includes(step)) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
       console.log(`Browser scene GBuffer step ${step} ${result.validationFailure?'failed validation':'passed'}`);
     }
-    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',11)),1);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',13)),1);
     assert(report.sceneGBuffer.every(c=>c.pass),report.sceneGBuffer.filter(c=>!c.pass).map(c=>`Step ${c.step}: ${c.validationFailure}`).join('\n'));
-    const gbufferShaders=await owner.evaluate(()=>__naniteBrowserAudit.gbufferShaders);assert.equal(gbufferShaders.length,2);
+    const gbufferShaders=await owner.evaluate(()=>__naniteBrowserAudit.gbufferShaders);assert.equal(gbufferShaders.length,4);
     report.gbufferShaders=gbufferShaders.map((code,i)=>{const file=path.join(output,`gbuffer-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
     const gbufferFrame=await page.evaluate(()=>__webEngineFrames);
     await page.waitForFunction(f=>__webEngineFrames>=f+8,gbufferFrame,{timeout:30000});
-    const endCounts=()=>({gbuffer:__naniteBrowserAudit.gbufferDraws,depth:__naniteBrowserAudit.depthDraws,raster:__naniteBrowserAudit.rasterDraws.length,cull:__naniteBrowserAudit.cullDispatches,records:__naniteBrowserAudit.recordDispatches,materials:__naniteBrowserAudit.materialDispatches});
+    const endCounts=()=>({gbuffer:__naniteBrowserAudit.gbufferDraws,indirect:__naniteBrowserAudit.gbufferIndirectDraws,tiles:__naniteBrowserAudit.tileDispatches,depth:__naniteBrowserAudit.depthDraws,raster:__naniteBrowserAudit.rasterDraws.length,cull:__naniteBrowserAudit.cullDispatches,records:__naniteBrowserAudit.recordDispatches,materials:__naniteBrowserAudit.materialDispatches});
     const stoppedGBuffer=await owner.evaluate(endCounts),stoppedGBufferFrame=await page.evaluate(()=>__webEngineFrames);
     await page.waitForFunction(f=>__webEngineFrames>=f+4,stoppedGBufferFrame,{timeout:30000});
     assert.deepEqual(await owner.evaluate(endCounts),stoppedGBuffer,'GBuffer cleanup must stop all experimental passes');
+    assert.equal(stoppedGBuffer.gbuffer,stoppedGBuffer.indirect);assert.equal(stoppedGBuffer.tiles,stoppedGBuffer.indirect+2);
     report.sceneGBufferCleanup={pass:true,framesObserved:4,...stoppedGBuffer};
     report.framesAfter = await page.evaluate(() => __webEngineFrames);
     report.startupPipelineFailures = report.logs.filter(line => /LogRHI: Error: Failed to create .*pipeline/.test(line));
@@ -452,9 +468,9 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(normalAudit.rasterDraws.length, 0);
     assert.equal(normalAudit.depthDraws,0);
     assert.equal(normalAudit.recordDispatches,0);assert.equal(normalAudit.materialDispatches,0);
-    assert.equal(normalAudit.gbufferDraws,0);
+    assert.equal(normalAudit.gbufferDraws,0);assert.equal(normalAudit.gbufferIndirectDraws,0);assert.equal(normalAudit.tileDispatches,0);
     report.errors.push(...normalAudit.errors); assert.equal(report.errors.length, 0);
-    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0, recordDispatches:0, materialDispatches:0, gbufferDraws:0,
+    report.defaultDisabled = {pass:true, frames:await normal.evaluate(() => __webEngineFrames), transcodeDispatches:0, cullDispatches:0, rasterDraws:0, depthDraws:0, recordDispatches:0, materialDispatches:0, gbufferDraws:0, gbufferIndirectDraws:0, tileDispatches:0,
       startupPipelineFailures:normalPipelineFailures};
     await normal.close();
     const preview = await context.newPage();

@@ -150,3 +150,4 @@ module.exports.sampleUV = function(result, page, sample) {
   const h=.001, uv=solve(px,py), xp=solve(px+h,py), xm=solve(px-h,py), yp=solve(px,py+h), ym=solve(px,py-h);
   return {uv,dx:xp.map((v,c)=>(v-xm[c])/(2*h)),dy:yp.map((v,c)=>(v-ym[c])/(2*h))};
 };
+module.exports.triangleMaterial = (page,cluster,tri) => triangle(page,cluster,tri).material;

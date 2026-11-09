@@ -48,7 +48,7 @@ function textureReference(index,uv,dx,dy,base,actual) {
 module.exports=function verifyGBuffer(result,page) {
   const {before,after,materialInputs:inputs,entries,step}=result;
   const count=result.materialWidth*result.materialHeight;
-  assert(step>=1&&step<=10);assert.equal(result.materialStride,8);assert.equal(result.rejected,0);
+  assert(step>=1&&step<=12);assert.equal(result.materialStride,8);assert.equal(result.rejected,0);
   assert(result.srgbBaseColor);assert(['FloatR11G11B10','FloatRGBA'].includes(result.colorFormat));
   assert.equal(before.length,count*28);assert.equal(after.length,before.length);
   // Full-resolution projected edges amplify float arithmetic more than the
@@ -116,13 +116,14 @@ module.exports=function verifyGBuffer(result,page) {
   }
   assert(background>1000);
   if(step===4) {assert.equal(written,0);assert(unbound>10);}
+  else if(step===11) {assert.equal(written,0);assert(occluded>100);}
   else {assert(written>10);assert.equal(changed,written);}
   if([1,3].includes(step)) assert(occluded>10);
   if(step===2) assert.equal(occluded,0);
   if(step===5) {assert(unbound>10);assert.deepEqual(Object.keys(byComponent),['1']);}
   if(step===6) {assert.equal(occluded,0);assert.deepEqual(Object.keys(byComponent),['0']);}
   if(step===1) assert.equal(result.inputRejections,16);
-  if(step>=7) {assert(textures.samples>50);assert(textures.linear>20);}
+  if(step>=7&&step!==11) {assert(textures.samples>50);assert(textures.linear>20);}
   if(step===7) {assert(textures.srgb>20);assert(textures.minified>20);}
   if(step===8) {assert(textures.magnified>20);assert(textures.minified>20);}
   if(step===9) assert(textures.clampedLastMip>10);

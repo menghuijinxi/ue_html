@@ -4,5 +4,6 @@
 #include "Dom/JsonObject.h"
 
 class FWebGPUDynamicRHI;
+TSharedRef<FJsonObject> RunWebGPUCanvasTransitionProbe(FWebGPUDynamicRHI& RHI);
 TSharedRef<FJsonObject> RunWebGPUTransitionProbe(FWebGPUDynamicRHI &RHI, const FString &ShaderDirectory,
                                                  const FString &OutputDirectory);

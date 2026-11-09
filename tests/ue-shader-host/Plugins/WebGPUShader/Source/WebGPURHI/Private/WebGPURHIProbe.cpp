@@ -647,6 +647,24 @@ class FWebGPURHIModule final : public IWebGPURHIProbeModule
     }
     bool RunProbe(const FString &Shaders, const FString &Materials, const FString &Output) override
     {
+        if (FParse::Param(FCommandLine::Get(), TEXT("WebCanvasTransitionRHIProbe")))
+        {
+            bool Result = false; IFileManager::Get().MakeDirectory(*Output, true);
+            ENQUEUE_RENDER_COMMAND(WebCanvasTransitionProbe)([&](FRHICommandListImmediate&) {
+                FWebGPUGlobalScope Scope(*this);
+                auto Report = RunWebGPUCanvasTransitionProbe(*Scope.RHI);
+                Scope.PrepareShutdown();
+                Result = Report->GetBoolField(TEXT("pass")) && Scope.RHI->Errors.IsEmpty();
+                Report->SetBoolField(TEXT("pass"), Result);
+                TArray<TSharedPtr<FJsonValue>> Errors;
+                for (const auto& Error : Scope.RHI->Errors) Errors.Add(MakeShared<FJsonValueString>(Error));
+                Report->SetArrayField(TEXT("errors"), Errors);
+                Scope.Restore(); Report->SetBoolField(TEXT("hostRestored"), Scope.IsRestored());
+                FString Json; FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
+                check(FFileHelper::SaveStringToFile(Json, *(Output / TEXT("rhi-results.json")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM));
+            });
+            FlushRenderingCommands(); return Result;
+        }
 #if WITH_EDITOR
         if (FParse::Param(FCommandLine::Get(), TEXT("WebNaniteUploaderRHIProbe")))
             return RunWebGPUNaniteUploaderProbe(*this, Shaders, Output);

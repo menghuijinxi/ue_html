@@ -33,7 +33,7 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
         &Nanite::FWebNaniteResolveCS::GetStaticType(), &Nanite::FWebNaniteDepthVS::GetStaticType(),
         &Nanite::FWebNaniteDepthPS::GetStaticType(), &Nanite::FWebNaniteDepthSnapshotCS::GetStaticType(),
         &Nanite::FWebNaniteGBufferVS::GetStaticType(), &Nanite::FWebNaniteGBufferPS::GetStaticType(),
-        &Nanite::FWebNaniteGBufferSnapshotCS::GetStaticType()};
+        &Nanite::FWebNaniteGBufferSnapshotCS::GetStaticType(), &Nanite::FWebNaniteGBufferTilesCS::GetStaticType()};
     for (auto* Type : Types)
     {
         if (!Type->ShouldCompilePermutation(Platform, 0, EShaderPermutationFlags::HasEditorOnlyData)) return 1;

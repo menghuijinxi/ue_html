@@ -28,6 +28,8 @@ try {
     $taskBuildInputs = @('WebGPUShader.uplugin', 'Source/WebGPURHI/WebGPURHI.Build.cs',
         'Source/WebGPURHI/Private/WebGPUNaniteUploaderProbe.cpp', 'Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp',
         'Source/WebGPURHI/Private/WebGPUDynamicRHI.h', 'Source/WebGPURHI/Private/WebGPURHIProbe.cpp',
+        'Source/WebGPURHI/Private/WebGPUTransitions.cpp', 'Source/WebGPURHI/Private/WebGPUTransitionProbe.cpp',
+        'Source/WebGPURHI/Private/WebGPUTransitionProbe.h',
         'Source/WebGPURHI/Private/WebGPUGlobalScope.cpp', 'Source/WebGPURHI/Private/WebGPUGlobalScope.h',
         'Intermediate/NaniteUploaderProbe/NaniteStreamingPageUploader.cpp',
         'Intermediate/NaniteUploaderProbe/NaniteStreamingPageUploader.h') | ForEach-Object { Get-TaskAudit (Join-Path $taskPlugin $_) }

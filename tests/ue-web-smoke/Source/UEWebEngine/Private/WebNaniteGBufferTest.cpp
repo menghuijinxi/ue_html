@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Rendering/NaniteWebGBuffer.h"
+#include "Rendering/NaniteWebDepth.h"
 #include "Rendering/NaniteStreamingManager.h"
 #include "RenderingThread.h"
 #include "SceneView.h"
@@ -29,9 +30,10 @@ TWeakObjectPtr<ACameraActor> Camera;
 TWeakObjectPtr<AActor> SavedTarget;
 TWeakObjectPtr<APlayerController> Controller;
 FPrimitiveComponentId IDs[2];
-FDelegateHandle CullObserver, GBufferObserver;
+FDelegateHandle CullObserver, GBufferObserver, TilesObserver;
 int SavedDepth = 0, SavedGBuffer = 0, Step = 0, Settled = 0;
 bool Requested = false, Capturing = false;
+FRDGTextureRef CaptureDepth = nullptr;
 TSharedPtr<FJsonObject> Report;
 struct FCopy { FString Field; uint32 Bytes; TUniquePtr<FRHIGPUBufferReadback> Readback; TSharedPtr<FJsonObject> Json; };
 TArray<FCopy> Copies;
@@ -90,7 +92,7 @@ Nanite::FWebConstantMaterial Material(int Index)
 }
 void BindMaterials(FRDGBuilder&, const Nanite::FWebSceneCullView& View)
 {
-    if (Step < 1 || Step > 10) return;
+    if (Step < 1 || Step > 12) return;
     for (const auto& Entry : View.Entries)
     {
         const int Index = Entry.ComponentId == IDs[0] ? 0 : Entry.ComponentId == IDs[1] ? 1 : -1;
@@ -108,13 +110,32 @@ void CopyBuffer(FRDGBuilder& Graph, FRDGBufferRef Buffer, const TCHAR* Field, TS
     Copy.Readback = MakeUnique<FRHIGPUBufferReadback>(Field);
     AddEnqueueCopyPass(Graph, Copy.Readback.Get(), Buffer, Copy.Bytes);
 }
+void ObserveTiles(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, int32 Index, uint32 Slot, const Nanite::FWebMaterialTiles& Tiles)
+{
+    if (!Capturing || !Report) return;
+    auto Json = MakeShared<FJsonObject>();
+    Json->SetNumberField(TEXT("entry"), Index); Json->SetNumberField(TEXT("slot"), Slot);
+    Json->SetNumberField(TEXT("gridWidth"), Tiles.Grid.X); Json->SetNumberField(TEXT("gridHeight"), Tiles.Grid.Y);
+    CopyBuffer(Graph, Tiles.Tiles, TEXT("tiles"), Json); CopyBuffer(Graph, Tiles.Arguments, TEXT("arguments"), Json);
+    if (Step == 12)
+    {
+        auto OffsetSaved = Saved; OffsetSaved.Raster.Rect.Min += FIntPoint(7, 5); OffsetSaved.Raster.Rect.Max -= FIntPoint(3, 2);
+        const auto Offset = Nanite::AddWebMaterialTilePass(Graph, OffsetSaved, CaptureDepth, Index, Slot);
+        const auto R = OffsetSaved.Raster.Rect;
+        Json->SetArrayField(TEXT("offsetRect"), {MakeShared<FJsonValueNumber>(R.Min.X), MakeShared<FJsonValueNumber>(R.Min.Y), MakeShared<FJsonValueNumber>(R.Max.X), MakeShared<FJsonValueNumber>(R.Max.Y)});
+        CopyBuffer(Graph, Offset.Tiles, TEXT("offsetTiles"), Json); CopyBuffer(Graph, Offset.Arguments, TEXT("offsetArguments"), Json);
+    }
+    auto Values = Report->GetArrayField(TEXT("materialTiles")); Values.Add(MakeShared<FJsonValueObject>(Json));
+    Report->SetArrayField(TEXT("materialTiles"), Values);
+}
 void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const Nanite::FWebGBufferTargets& Targets, bool After)
 {
-    if (Step < 1 || Step > 10) return;
+    if (Step < 1 || Step > 12) return;
     if (!After)
     {
         if (!Requested || ++Settled < 4) return;
         Requested = false; Capturing = true; Report = MakeShared<FJsonObject>();
+        CaptureDepth = Targets.Depth;
         const auto Rect = Saved.Raster.Rect;
         Report->SetNumberField(TEXT("step"), Step);
         Report->SetNumberField(TEXT("frame"), Saved.Cull->View->Family->FrameNumber);
@@ -126,6 +147,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
         Report->SetArrayField(TEXT("worldToClip"), MatrixJSON(Saved.Cull->View->ViewMatrices.GetWorldToClip()));
         Report->SetStringField(TEXT("colorFormat"), GPixelFormats[Targets.Color->Desc.Format].Name);
         Report->SetBoolField(TEXT("srgbBaseColor"), EnumHasAnyFlags(Targets.C->Desc.Flags, TexCreate_SRGB));
+        Report->SetArrayField(TEXT("materialTiles"), {});
+        CopyBuffer(Graph, Nanite::AddWebDepthSnapshotPass(Graph, Saved.ResolvedVisibility, Targets.Depth, Rect, 1), TEXT("tilePixels"), Report);
         CopyBuffer(Graph, Saved.Raster.VisibleClusters, TEXT("visibleRecords"), Report);
         CopyBuffer(Graph, Nanite::AddWebMaterialInputResolvePasses(Graph, *Saved.Cull, Saved.Raster, Stride), TEXT("materialInputs"), Report);
         TArray<TSharedPtr<FJsonValue>> Entries;
@@ -176,11 +199,23 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
             M.BaseColorTexture = ArrayTexture;
             check(!Nanite::SetWebConstantMaterial(Entry.ComponentId, Entry.RuntimeResourceID, 0, M));
             Report->SetNumberField(TEXT("inputRejections"), 16);
+            check(!Nanite::AddWebMaterialTilePass(Graph, Saved, Targets.Depth, -1, 0).Arguments);
+            check(!Nanite::AddWebMaterialTilePass(Graph, Saved, Targets.Depth, Saved.Cull->Entries.Num(), 0).Arguments);
+            check(!Nanite::AddWebMaterialTilePass(Graph, Saved, Targets.Depth, 0, 64).Arguments);
+            check(!Nanite::AddWebMaterialTilePass(Graph, Saved, nullptr, 0, 0).Arguments);
+            check(!Nanite::AddWebMaterialTilePass(Graph, Saved, Targets.C, 0, 0).Arguments);
+            auto InvalidTiles = Saved; InvalidTiles.Cull = nullptr;
+            check(!Nanite::AddWebMaterialTilePass(Graph, InvalidTiles, Targets.Depth, 0, 0).Arguments);
+            InvalidTiles = Saved; InvalidTiles.Raster.SourceView = nullptr;
+            check(!Nanite::AddWebMaterialTilePass(Graph, InvalidTiles, Targets.Depth, 0, 0).Arguments);
+            InvalidTiles = Saved; InvalidTiles.Raster.Rect.Min.X = -1;
+            check(!Nanite::AddWebMaterialTilePass(Graph, InvalidTiles, Targets.Depth, 0, 0).Arguments);
+            Report->SetNumberField(TEXT("tileInputRejections"), 8);
         }
     }
     if (!Capturing) return;
     CopyBuffer(Graph, Nanite::AddWebGBufferSnapshotPass(Graph, Saved, Targets, Stride), After ? TEXT("after") : TEXT("before"), Report);
-    if (After) Capturing = false;
+    if (After) { Capturing = false; CaptureDepth = nullptr; }
 }
 void Poll()
 {
@@ -190,7 +225,18 @@ void Poll()
     {
         const auto* Data = static_cast<const uint32*>(Copy.Readback->Lock(Copy.Bytes)); check(Data);
         TArray<TSharedPtr<FJsonValue>> Values;
-        for (uint32 I = 0; I < Copy.Bytes / 4; ++I) Values.Add(MakeShared<FJsonValueNumber>(Data[I]));
+        if (Copy.Field == TEXT("tilePixels"))
+        {
+            // Lossless sparse encoding of the full-resolution ID/depth snapshot:
+            // omit only ID=0 pixels, retain all Nanite pixels including occluded ones.
+            Copy.Json->SetNumberField(TEXT("tilePixelCount"), Copy.Bytes / 16);
+            for (uint32 I = 0; I < Copy.Bytes / 16; ++I) if (Data[I * 4])
+            {
+                Values.Add(MakeShared<FJsonValueNumber>(I));
+                for (uint32 J = 0; J < 3; ++J) Values.Add(MakeShared<FJsonValueNumber>(Data[I * 4 + J]));
+            }
+        }
+        else for (uint32 I = 0; I < Copy.Bytes / 4; ++I) Values.Add(MakeShared<FJsonValueNumber>(Data[I]));
         Copy.Readback->Unlock(); Copy.Json->SetArrayField(Copy.Field, Values);
     }
     Report->SetBoolField(TEXT("pending"), false);
@@ -202,7 +248,7 @@ void Poll()
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread); static int LastStep = 0;
-    if (RequestedStep < 0 || RequestedStep > 11 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
+    if (RequestedStep < 0 || RequestedStep > 13 || !GEngine || !Nanite::GStreamingManager.IsWebResidentMode()) return 0;
     if (!RequestedStep) { ENQUEUE_RENDER_COMMAND(PollWebGBuffer)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (RequestedStep != LastStep + 1) return 0;
     if (RequestedStep == 1)
@@ -230,6 +276,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
         ENQUEUE_RENDER_COMMAND(ObserveWebGBuffer)([](FRHICommandListImmediate& Cmd) {
             CreateTextures(Cmd);
             CullObserver = Nanite::GetWebSceneCullDelegate().AddStatic(&BindMaterials); GBufferObserver = Nanite::GetWebGBufferDelegate().AddStatic(&Observe);
+            TilesObserver = Nanite::GetWebMaterialTilesDelegate().AddStatic(&ObserveTiles);
         });
     }
     if (RequestedStep == 2) { Ordinary->SetWorldLocation(FVector(100700, 0, 100000)); Ordinary->SetWorldScale3D(FVector(1)); }
@@ -244,14 +291,25 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteGBufferTest(int RequestedStep)
     if (RequestedStep == 7) Components[1]->SetHiddenInGame(false);
     if (RequestedStep == 11)
     {
+        Ordinary->SetHiddenInGame(false); Ordinary->SetWorldLocation(FVector(100350, 0, 100000)); Ordinary->SetWorldScale3D(FVector(3));
+    }
+    if (RequestedStep == 12)
+    {
+        Ordinary->SetHiddenInGame(true);
+        Camera->GetCameraComponent()->SetAspectRatio(1.3f); Camera->GetCameraComponent()->SetConstraintAspectRatio(true);
+        Components[1]->SetWorldLocation(FVector(100500, 490, 100000));
+    }
+    if (RequestedStep == 13)
+    {
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentSceneDepth"))->Set(SavedDepth, ECVF_SetByCode);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebResidentGBuffer"))->Set(SavedGBuffer, ECVF_SetByCode);
         for (auto* C : {Components[0], Components[1], Ordinary}) { C->UnregisterComponent(); C->RemoveFromRoot(); C->DestroyComponent(); }
         for (auto* Mesh : {NaniteMesh, OrdinaryMesh}) { Mesh->ReleaseResources(); Mesh->RemoveFromRoot(); }
         if (SavedTarget.IsValid()) Controller->SetViewTarget(SavedTarget.Get()); Camera->Destroy(); Camera.Reset();
         ENQUEUE_RENDER_COMMAND(RemoveWebGBufferObserver)([](FRHICommandListImmediate&) {
-            check(!Requested && !Report && Copies.IsEmpty()); Step = 11;
+            check(!Requested && !Report && Copies.IsEmpty()); Step = 13;
             Nanite::GetWebSceneCullDelegate().Remove(CullObserver); Nanite::GetWebGBufferDelegate().Remove(GBufferObserver);
+            Nanite::GetWebMaterialTilesDelegate().Remove(TilesObserver);
             for (auto ID : IDs) Nanite::RemoveWebConstantMaterial(ID);
             for (auto& Texture : BaseTextures) Texture.SafeRelease(); InvalidTexture.SafeRelease(); ArrayTexture.SafeRelease();
         });

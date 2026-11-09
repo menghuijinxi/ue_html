@@ -70,6 +70,16 @@ bool SupportedTransitionAccess(FRHIViewableResource* Resource, ERHIAccess Access
     if (Resource && Resource->GetType() == RRT_Buffer && Access == ERHIAccess::SRVMask &&
         EnumHasAnyFlags(static_cast<FRHIBuffer*>(Resource)->GetUsage(), BUF_VertexBuffer | BUF_IndexBuffer))
         return true;
+    // Canvas uses the default RDG SRVMask epilogue after drawing letterbox bars
+    // into the presentable backbuffer. This is only a parked transition state:
+    // actual sampling still goes through SupportedAccess and requires an SRV.
+    if (Resource && Resource->GetType() == RRT_Texture && Access == ERHIAccess::SRVMask)
+    {
+        const auto* Texture = static_cast<const FWebGPUTexture*>(Resource);
+        if (Texture->SurfaceFrameActive &&
+            EnumHasAllFlags(Texture->GetFlags(), TexCreate_Presentable | TexCreate_RenderTargetable) &&
+            !EnumHasAnyFlags(Texture->GetFlags(), TexCreate_ShaderResource)) return true;
+    }
     return SupportedAccess(Resource, Access);
 }
 } // namespace
