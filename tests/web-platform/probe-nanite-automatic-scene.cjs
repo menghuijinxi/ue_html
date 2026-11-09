@@ -49,6 +49,8 @@ function verify(t){
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineRecovery?.phase==='running',null,{timeout:180000});
   assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
+  // Hide presentation overlays during image comparisons, without changing UE.
+  await page.addStyleTag({content:'body > :not(canvas) { visibility: hidden !important; } canvas, canvas * { visibility: visible !important; }'});
   for(let step=1;step<=8;step++){
     if(step===4||step===5)assert.equal(await page.evaluate(v=>__webEngineRPC('WebDefaultSamplesVisibility',v),step===5?1:0),1);
     if(step===6)assert.equal(await page.evaluate(()=>__webEngineRPC('WebProjectViewTest',-1000,-70,230,-8,65)),1);

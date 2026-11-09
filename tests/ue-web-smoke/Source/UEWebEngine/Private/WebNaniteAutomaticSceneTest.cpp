@@ -53,6 +53,20 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetNumberField(TEXT("skipped"), Cull.Skipped);
     Report->SetNumberField(TEXT("rejected"), Cull.Rejected);
     Report->SetArrayField(TEXT("assets"), Assets);
+    // Use the effective render projection, not the requested camera FOV: UE's
+    // MaintainYFOV policy changes horizontal FOV with the viewport aspect ratio.
+    const FMatrix& Projection = Cull.View->ViewMatrices.GetProjectionNoAAMatrix();
+    auto View = MakeShared<FJsonObject>();
+    View->SetNumberField(TEXT("projectionX"), Projection.M[0][0]);
+    View->SetNumberField(TEXT("projectionY"), Projection.M[1][1]);
+    View->SetNumberField(TEXT("horizontalFOV"), FMath::RadiansToDegrees(2.0 * FMath::Atan(1.0 / Projection.M[0][0])));
+    const FVector Origin = Cull.View->ViewMatrices.GetViewOrigin();
+    View->SetNumberField(TEXT("x"), Origin.X);
+    View->SetNumberField(TEXT("y"), Origin.Y);
+    View->SetNumberField(TEXT("z"), Origin.Z);
+    View->SetNumberField(TEXT("width"), Cull.View->UnscaledViewRect.Width());
+    View->SetNumberField(TEXT("height"), Cull.View->UnscaledViewRect.Height());
+    Report->SetObjectField(TEXT("view"), View);
     TArray<TSharedPtr<FJsonValue>> Batches;
     for (const auto Id : Candidates)
     {

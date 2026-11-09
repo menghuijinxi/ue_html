@@ -16,6 +16,8 @@
 #include "Misc/CoreDelegates.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Parse.h"
+#include "PrimitiveSceneProxy.h"
+#include "SceneView.h"
 #include "Serialization/JsonSerializer.h"
 #include "Settings/LevelEditorViewportSettings.h"
 #include "Slate/SceneViewport.h"
@@ -56,7 +58,8 @@ void StartWebNativeComparison()
                             FName(TEXT("PCD3D_ES3_1"))), false);
                     else
                         GEditor->SetPreviewPlatform(FPreviewPlatformInfo(
-                            ERHIFeatureLevel::SM5, GMaxRHIShaderPlatform), false);
+                            FParse::Param(FCommandLine::Get(), TEXT("WebNativeNaniteComparison")) ?
+                                ERHIFeatureLevel::SM6 : ERHIFeatureLevel::SM5, GMaxRHIShaderPlatform), false);
                     GetMutableDefault<ULevelEditorViewportSettings>()->AspectRatioAxisConstraint =
                         AspectRatio_MaintainXFOV;
                     UStaticMesh* Sphere = ExistingScene ? nullptr : LoadObject<UStaticMesh>(nullptr,
@@ -90,7 +93,11 @@ void StartWebNativeComparison()
                     Client->EngineShowFlags.SetSelectionOutline(false);
                     if (ExistingScene)
                         Client->EngineShowFlags.SetEyeAdaptation(true);
-                    static_cast<FSceneViewport*>(Client->Viewport)->SetFixedViewportSize(1600, 900);
+                    int32 Width = 1600, Height = 900;
+                    Settings->TryGetNumberField(TEXT("width"), Width);
+                    Settings->TryGetNumberField(TEXT("height"), Height);
+                    check(Width > 0 && Height > 0);
+                    static_cast<FSceneViewport*>(Client->Viewport)->SetFixedViewportSize(Width, Height);
                     FAssetCompilingManager::Get().FinishAllCompilation();
                     IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"))->Set(1, ECVF_SetByCode);
                     Step = 1;
@@ -104,6 +111,9 @@ void StartWebNativeComparison()
                 const auto& View = Views[Index]->AsObject();
                 if (Step % 2 == 1)
                 {
+                    bool NaniteEnabled;
+                    if (View->TryGetBoolField(TEXT("nanite"), NaniteEnabled))
+                        IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite"))->Set(NaniteEnabled ? 1 : 0, ECVF_SetByCode);
                     Client->SetViewLocation(FVector(View->GetNumberField(TEXT("x")),
                         View->GetNumberField(TEXT("y")), View->GetNumberField(TEXT("z"))));
                     Client->SetViewRotation(FRotator(View->GetNumberField(TEXT("pitch")),
@@ -121,7 +131,7 @@ void StartWebNativeComparison()
                                 It->GetStaticMeshComponent()->SetStaticMesh(Sphere);
                         UE_LOG(LogTemp, Display, TEXT("WEB_NATIVE_COMPARE: mesh=%s triangles=%u"),
                             MeshPath, Sphere->GetRenderData()->LODResources[0].GetNumTriangles());
-                        if (Sun.IsValid())
+                        if (Sun.IsValid() && View->HasField(TEXT("bias")))
                         {
                             Sun->SetShadowBias(View->GetNumberField(TEXT("bias")));
                             Sun->SetShadowSlopeBias(View->GetNumberField(TEXT("slope")));
@@ -147,6 +157,34 @@ void StartWebNativeComparison()
                 const FString Output = Settings->GetStringField(TEXT("output")) +
                     TEXT("-") + View->GetStringField(TEXT("name")) + TEXT(".png");
                 check(FFileHelper::SaveArrayToFile(PNG, *Output));
+                int32 NaniteSamples = 0, SampleCount = 0;
+                for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
+                    if (It->Tags.Contains(TEXT("WebNativeSample")))
+                    {
+                        ++SampleCount;
+                        const auto* Proxy = It->GetStaticMeshComponent()->SceneProxy;
+                        if (Proxy && Proxy->IsNaniteMesh()) ++NaniteSamples;
+                    }
+                auto Capture = MakeShared<FJsonObject>();
+                Capture->SetNumberField(TEXT("featureLevel"), int32(World->GetFeatureLevel()));
+                Capture->SetNumberField(TEXT("samples"), SampleCount);
+                Capture->SetNumberField(TEXT("naniteSamples"), NaniteSamples);
+                Capture->SetNumberField(TEXT("width"), Size.X);
+                Capture->SetNumberField(TEXT("height"), Size.Y);
+                Capture->SetNumberField(TEXT("shadowBias"), Sun.IsValid() ? Sun->ShadowBias : -1);
+                Capture->SetNumberField(TEXT("shadowSlopeBias"), Sun.IsValid() ? Sun->ShadowSlopeBias : -1);
+                Capture->SetObjectField(TEXT("view"), View);
+                FSceneViewFamilyContext Family(FSceneViewFamily::ConstructionValues(
+                    Client->Viewport, World->Scene, Client->EngineShowFlags).SetRealtimeUpdate(true));
+                const auto* RenderView = Client->CalcSceneView(&Family);
+                // CalcSceneView has not passed through renderer temporal-jitter
+                // setup yet, so ProjectionNoAA still contains its initial value.
+                const FMatrix& Projection = RenderView->ViewMatrices.GetProjectionMatrix();
+                Capture->SetNumberField(TEXT("projectionX"), Projection.M[0][0]);
+                Capture->SetNumberField(TEXT("projectionY"), Projection.M[1][1]);
+                FString CaptureJSON;
+                FJsonSerializer::Serialize(Capture, TJsonWriterFactory<>::Create(&CaptureJSON));
+                check(FFileHelper::SaveStringToFile(CaptureJSON, *(Output + TEXT(".json"))));
                 UE_LOG(LogTemp, Display, TEXT("WEB_NATIVE_COMPARE: image=%s size=%dx%d feature=%d bias=%g slope=%g fov=%g camera=%s"),
                     *Output, Size.X, Size.Y, int32(World->GetFeatureLevel()),
                     Sun.IsValid() ? Sun->ShadowBias : -1, Sun.IsValid() ? Sun->ShadowSlopeBias : -1,
