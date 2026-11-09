@@ -84,6 +84,7 @@ $taskProcess = Get-Process -Id $PID
 $taskAffinity = $taskProcess.ProcessorAffinity
 $taskPreviousTint = $env:WEBGPU_TINT_DIR
 $taskPreviousIntermediate = $env:WEBGPU_INTERMEDIATE_DIR
+$taskPreviousEngineRoot = $env:UE_ENGINE_ROOT
 function Get-TaskAudit([string]$File) {
     return @{ file = $File; sha256 = (Get-FileHash -LiteralPath $File -Algorithm SHA256).Hash.ToLowerInvariant() }
 }
@@ -127,6 +128,7 @@ function Wait-TaskCookProcess([Diagnostics.Process]$Child) {
 }
 New-Item -ItemType Directory -Path $taskResults, $taskOutput -Force | Out-Null
 try {
+    $env:UE_ENGINE_ROOT = [IO.Path]::GetFullPath((Join-Path $Engine 'Engine'))
     if (-not $UseProjectSettings) { $taskProcess.ProcessorAffinity = [IntPtr]3 }
     if (-not $SkipBuild) {
         $taskBuildLog = Join-Path $taskResults "web-cook-module-build-$taskStamp.log"
@@ -491,5 +493,6 @@ try {
     $taskReport | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $taskResults "$taskPrefix-results.json") -Encoding utf8
     $env:WEBGPU_TINT_DIR = $taskPreviousTint
     $env:WEBGPU_INTERMEDIATE_DIR = $taskPreviousIntermediate
+    $env:UE_ENGINE_ROOT = $taskPreviousEngineRoot
     $taskProcess.ProcessorAffinity = $taskAffinity
 }

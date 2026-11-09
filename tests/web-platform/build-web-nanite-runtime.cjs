@@ -56,6 +56,7 @@ const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
   'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h',
   'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebHierarchy.cpp',
   'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp', 'Public/StaticMeshSceneProxy.h',
+  'Private/InstancedStaticMesh.cpp',
   'Private/Nanite/NaniteWebScene.cpp', 'Public/Rendering/NaniteWebScene.h',
   'Private/Nanite/NaniteWebRaster.cpp', 'Public/Rendering/NaniteWebRaster.h',
   'Private/Nanite/NaniteWebHZB.cpp', 'Public/Rendering/NaniteWebHZB.h',
@@ -89,7 +90,7 @@ const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarch
   const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
     .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Runtime/Engine/' + file));
   assert.equal(unity.length, 1);
-  return [path.join(engine, unity[0] + '.o.rsp'), null, file.endsWith('StaticMeshSceneProxy.cpp') ? 'EngineNaniteProxy' : i ? 'EngineNaniteStreaming' : 'EngineNanite'];
+  return [path.join(engine, unity[0] + '.o.rsp'), null, file.endsWith('InstancedStaticMesh.cpp') ? 'EngineNaniteInstances' : file.endsWith('StaticMeshSceneProxy.cpp') ? 'EngineNaniteProxy' : i ? 'EngineNaniteStreaming' : 'EngineNanite'];
 });
 for (let i = tasks.length - 1; i >= 0; --i) if (tasks.findIndex(t => t[0] === tasks[i][0]) !== i) tasks.splice(i, 1);
 // A subsequent full UBT build can include the new source in an Engine unity.

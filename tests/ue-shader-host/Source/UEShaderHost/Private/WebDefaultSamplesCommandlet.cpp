@@ -80,7 +80,11 @@ int32 UWebDefaultSamplesCommandlet::Main(const FString& Params)
             auto* Material = NewObject<UMaterial>(Package, *Name, RF_Public | RF_Standalone);
             Material->SetShadingModel(MSM_DefaultLit);
             Material->BlendMode = BLEND_Opaque;
-            if (NaniteSamples) Material->SetMaterialUsage(MATUSAGE_Nanite);
+            if (NaniteSamples)
+            {
+                Material->SetMaterialUsage(MATUSAGE_Nanite);
+                Material->SetMaterialUsage(MATUSAGE_InstancedStaticMeshes);
+            }
             Material->FloatPrecisionMode = EMaterialFloatPrecisionMode::MFPM_Full;
             auto* Base = NewObject<UMaterialExpressionConstant3Vector>(Material);
             Base->Constant = FLinearColor(0.5f, 0.5f, 0.5f);
