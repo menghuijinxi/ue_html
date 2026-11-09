@@ -30,6 +30,7 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
     FGlobalShaderMap Map(Platform);
     TArray<FGlobalShaderType*> Types = {&Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
         &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
+        &Nanite::FWebNaniteScalarRasterPS::GetStaticType(),
         &Nanite::FWebNaniteVisibleClustersCS::GetStaticType(), &Nanite::FWebNaniteMaterialInputsCS::GetStaticType(),
         &Nanite::FWebNaniteResolveCS::GetStaticType(), &Nanite::FWebNaniteDepthVS::GetStaticType(),
         &Nanite::FWebNaniteDepthPS::GetStaticType(), &Nanite::FWebNaniteDepthSnapshotCS::GetStaticType(),
@@ -128,11 +129,11 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
         }
     }
     for (auto* Type : Types)
-    for (int32 Permutation = 0; Permutation < (Supplement ? Type->GetPermutationCount() : 1); ++Permutation)
+    for (int32 Permutation = 0; Permutation < Type->GetPermutationCount(); ++Permutation)
     {
         if (Supplement && !Names.Contains(Type->GetName()) &&
             !Type->ShouldCompilePermutation(Platform, Permutation, PermutationFlags)) continue;
-        if (!Supplement && !Type->ShouldCompilePermutation(Platform, 0, PermutationFlags)) return 1;
+        if (!Supplement && !Type->ShouldCompilePermutation(Platform, Permutation, PermutationFlags)) return 1;
         FShaderCompileJob Job;
         Job.Key = FShaderCompileJobKey(Type, Platform, nullptr, Permutation);
         GlobalBeginCompileShader(TEXT("WebNaniteHierarchyProbe"), nullptr, Type, nullptr, Permutation,

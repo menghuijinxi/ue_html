@@ -33,6 +33,13 @@ namespace
 {
 uint32 PrecachedGraphicsUsed = 0, PrecachedGraphicsBinds = 0;
 uint32 StorageFormatPrecached = 0, StorageFormatPrecachedUsed = 0, StorageFormatPrecachedBinds = 0;
+// Immutable while the device is in use. Device init/shutdown already serialize
+// all readers, including native probes created on the render thread. SetOnly
+// publishes both console shadows without scheduling a game-thread CVar change.
+static TAutoConsoleVariable<int32> CVarPackedNaniteVisibilitySupported(
+    TEXT("r.WebGPU.PackedNaniteVisibilitySupported"), 0,
+    TEXT("Actual WebGPU device support for packed Nanite depth and ID atomics."),
+    ECVF_ReadOnly | ECVF_RenderThreadSafe);
 int32 PrecacheRequestConcurrency = 0;
 static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
     TEXT("r.WebGPU.ValidateBindingCache"), 0,
@@ -967,6 +974,8 @@ void FWebGPUDynamicRHI::Init()
     check(Wait([&] { return DeviceDone; }) && Device);
 #endif
     check(wgpuDeviceGetLimits(Device, &Limits) == WGPUStatus_Success);
+    CVarPackedNaniteVisibilitySupported->Set(wgpuDeviceHasFeature(Device, WGPUFeatureName_AtomicVec2uMinMax) ? 1 : 0,
+        EConsoleVariableFlags(ECVF_SetByCode | ECVF_Set_SetOnly_Unsafe));
     check(!PreviousDepthFormat.IsSet() && !PreviousStencilFormat.IsSet() && !PreviousShadowFormat.IsSet());
     PreviousDepthFormat = GPixelFormats[PF_DepthStencil];
     PreviousStencilFormat = GPixelFormats[PF_X24_G8];
@@ -1146,6 +1155,7 @@ void FWebGPUDynamicRHI::Shutdown()
         wgpuInstanceRelease(Instance);
         Instance = nullptr;
     }
+    CVarPackedNaniteVisibilitySupported->Set(0, EConsoleVariableFlags(ECVF_SetByCode | ECVF_Set_SetOnly_Unsafe));
     if (PreviousDepthFormat.IsSet())
     {
         GPixelFormats[PF_DepthStencil] = PreviousDepthFormat.GetValue();

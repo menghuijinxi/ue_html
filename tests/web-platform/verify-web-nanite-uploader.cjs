@@ -12,7 +12,9 @@ const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
 const verifyTiles = require('./verify-nanite-material-tiles.cjs');
 const verifyMultiAsset = require('./verify-nanite-multimaterial-asset.cjs');
 const {observeStoragePrecache, verifyStoragePrecache} = require('./observe-storage-precache.cjs');
-const output = path.join(__dirname, 'results/nanite-browser');
+const scalarVisibility = process.argv.includes('--scalar-visibility');
+const rasterPhases = scalarVisibility ? 2 : 1;
+const output = path.join(__dirname, scalarVisibility ? 'results/nanite-browser-scalar' : 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const packaged = read(path.join(__dirname, 'build/nanite-browser/package.json'));
@@ -27,7 +29,7 @@ for (const input of [packaged.sceneCook.stage, packaged.sceneCook.cook, packaged
   assert.equal(audit(input.file).sha256, input.sha256);
 const oracle = read(packaged.browserOracle.file);
 assert(oracle.pass && oracle.asset.webCookEnabled);
-function observe() {
+function observe(scalarVisibility = false) {
   const modules = new WeakSet(), pipelines = new WeakSet(), bound = new WeakMap();
   const cullModules = new WeakSet(), cullPipelines = new WeakSet(), cullBound = new WeakMap();
   const rasterModules = new WeakSet(), rasterPipelines = new WeakSet(), rasterBound = new WeakMap();
@@ -46,7 +48,7 @@ function observe() {
     if (desc.code.includes('WebCullClusterKeys') && desc.code.includes('WebCullInputNodes')) {
       cullModules.add(result); state.cullShaders.push(desc.code);
     }
-    if ((desc.code.includes('WebRasterLocalToClip') && desc.code.includes('@vertex')) || desc.code.includes('WebNaniteAtomicMax_Visibility')) {
+    if ((desc.code.includes('WebRasterLocalToClip') && desc.code.includes('@vertex')) || desc.code.includes('WebNaniteAtomicMax_Visibility') || desc.code.includes('WebNaniteScalarVisibility')) {
       rasterModules.add(result); state.rasterShaders.push(desc.code);
     }
     if (desc.code.includes('VisBuffer64')&&desc.code.includes('ViewRect')&&desc.code.includes('@builtin(frag_depth)')) {
@@ -100,13 +102,14 @@ function observe() {
   GPUAdapter.prototype.requestDevice = async function(...args) {
     state.adapter = {vendor:this.info.vendor, architecture:this.info.architecture,
       subgroupMinSize:this.info.subgroupMinSize, subgroupMaxSize:this.info.subgroupMaxSize, isFallbackAdapter:this.info.isFallbackAdapter};
+    if (scalarVisibility) args = [{...args[0], requiredFeatures:[...(args[0]?.requiredFeatures || [])].filter(f=>f!=='atomic-vec2u-min-max')}];
     const device = await request.apply(this, args);
     state.features = [...device.features];
     device.addEventListener('uncapturederror', e => state.errors.push(e.error.message));
     return device;
   };
 }
-const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], sceneCulling:[], sceneDepth:[], sceneGBuffer:[],errors:[], logs:[],
+const report = {scalarVisibility, rasterPhases, date:new Date().toISOString(), pass:false, cases:[], residency:[], scene:[], sceneCulling:[], sceneDepth:[], sceneGBuffer:[],errors:[], logs:[],
   source:audit(__filename), package:audit(path.join(__dirname, 'build/nanite-browser/package.json')),
   cullOracle:audit(require.resolve('./verify-nanite-hierarchy-output.cjs')),
   sceneCullOracle:audit(require.resolve('./verify-nanite-scene-cull-output.cjs')),
@@ -127,13 +130,13 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   try {
     // The existing scene pack exceeds the ephemeral context's storage quota.
     // Use a dedicated workspace profile, as the other full-scene probes do.
-    browser = await chromium.launchPersistentContext(path.join(output, 'profile'),
+    browser = await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),
       {channel:'msedge', headless:true, viewport:{width:960,height:640}});
     report.browser = browser.browser().version();
     const context = browser;
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
-      await route.fulfill({response, body:'(' + observeStoragePrecache.toString() + ')();\n(' + observe.toString() + ')();\n' + await response.text()});
+      await route.fulfill({response, body:'(' + observeStoragePrecache.toString() + ')();\n(' + observe.toString() + ')(' + JSON.stringify(scalarVisibility) + ');\n' + await response.text()});
     });
     const page = await context.newPage();
     page.on('console', m => {
@@ -152,7 +155,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
     report.adapter = await owner.evaluate(() => __naniteBrowserAudit.adapter);
     report.features = await owner.evaluate(() => __naniteBrowserAudit.features);
-    assert(report.features.some(f=>f.includes('atomic-vec2u')));
+    assert.equal(report.features.some(f=>f.includes('atomic-vec2u')), !scalarVisibility);
     assert(!report.adapter.isFallbackAdapter && report.adapter.subgroupMinSize >= 32);
     for (let index = 0; index < 4; ++index) {
       const before = await owner.evaluate(() => __naniteBrowserAudit.dispatches);
@@ -325,7 +328,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       const materialFile=path.join(output,`material-inputs-${step}.bin`);fs.writeFileSync(materialFile,materialBytes);
       result.materialProduct=audit(materialFile);delete result.materialInputs;
       result.rasterDraws = await owner.evaluate(() => __naniteBrowserAudit.rasterDraws.length) - drawsBefore;
-      assert.equal(result.rasterDraws,result.entries.length);
+      assert.equal(result.rasterDraws,result.entries.length*rasterPhases);
       const dispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches) - before;
       assert.equal(dispatches, result.entries.reduce((sum,e) => sum + e.levels, 0));
       report.sceneCulling.push({...result, dispatches, pass:!result.validationFailure});
@@ -342,8 +345,11 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     report.cullDispatches = await owner.evaluate(() => __naniteBrowserAudit.cullDispatches);
     assert.equal(report.cullDispatches, 114);
     const rasterShaders = await owner.evaluate(() => __naniteBrowserAudit.rasterShaders);
-    assert.equal(rasterShaders.length,2);
-    assert(rasterShaders.some(code=>code.includes('atomicStoreMax')&&code.includes('atomic<vec2<u32>>')));
+    assert.equal(rasterShaders.length,scalarVisibility?3:2);
+    if(scalarVisibility) {
+      assert(rasterShaders.every(code=>!code.includes('atomic<vec2<u32>>')));
+      assert.equal(rasterShaders.filter(code=>code.includes('WebNaniteScalarVisibility')&&code.includes('atomicMax(')).length,2);
+    } else assert(rasterShaders.some(code=>code.includes('atomicStoreMax')&&code.includes('atomic<vec2<u32>>')));
     report.rasterShaders = rasterShaders.map((code,i)=>{
       const file=path.join(output,`raster-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);
     });
@@ -353,7 +359,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.equal(report.recordDispatches,33);assert.equal(report.materialDispatches,33);
     const materialShaders=await owner.evaluate(()=>__naniteBrowserAudit.materialShaders);assert.equal(materialShaders.length,2);
     report.materialShaders=materialShaders.map((code,i)=>{const file=path.join(output,`material-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
-    assert.equal(report.rasterDraws.length,33);
+    assert.equal(report.rasterDraws.length,33*rasterPhases);
     assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.depthDraws),0,'scene depth mode must default off');
     assert(report.rasterDraws.every(d=>d[0]===384&&d[1]>0));
     assert.equal(shaders.length, 2);

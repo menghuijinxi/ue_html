@@ -11,9 +11,22 @@ const {verifyStoragePrecache} = require('./observe-storage-precache.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const verify = i => assert.equal(audit(i.file).sha256, i.sha256, `Stale file: ${i.file}`);
-const browserFile = path.join(__dirname, 'results/nanite-browser/results.json');
+const scalarVisibility = process.argv.includes('--scalar-visibility');
+const rasterPhases = scalarVisibility ? 2 : 1;
+const packedBrowserFile = path.join(__dirname, 'results/nanite-browser/results.json');
+const browserFile = scalarVisibility ? path.join(__dirname, 'results/nanite-browser-scalar/results.json') : packedBrowserFile;
 const browser = read(browserFile);
 assert(browser.pass && browser.errors.length === 0);
+assert.equal(browser.scalarVisibility,scalarVisibility);assert.equal(browser.rasterPhases,rasterPhases);
+assert.equal(browser.features.includes('atomic-vec2u-min-max'),!scalarVisibility);
+const scalarFile=path.join(__dirname,'results/nanite-scalar-visibility/verified.json'),scalar=read(scalarFile);
+assert(scalar.pass&&scalar.candidates===8199&&scalar.results.length===9&&scalar.results.every(r=>r.pass&&r.guards));
+assert.deepEqual(scalar.errors,[]);assert(!scalar.features.includes('atomic-vec2u-min-max'));
+[scalar.source,...scalar.sources,...scalar.tools,...scalar.products].forEach(verify);
+const scalarInitFailureFile=path.join(__dirname,'results/nanite-scalar-initialization-failure.json');
+const scalarInitFailure=read(scalarInitFailureFile);
+assert(!scalarInitFailure.pass);[scalarInitFailure.log,scalarInitFailure.build,scalarInitFailure.source].forEach(verify);
+assert(read(scalarInitFailure.build.file).inputs.some(i=>i.sha256===scalarInitFailure.source.sha256));
 assert.deepEqual(verifyStoragePrecache(browser.storagePrecache), browser.storagePrecache.validation);
 assert.deepEqual(verifyStoragePrecache(browser.defaultDisabled.storagePrecache, false), browser.defaultDisabled.storagePrecache.validation);
 verify(browser.storagePrecache.source);
@@ -37,14 +50,16 @@ const storageFailureFile = path.join(__dirname, 'results/nanite-storage-precache
 const storageFailure = read(storageFailureFile);
 assert(storageFailure.pass && storageFailure.frames >= 20 && storageFailure.errors.length === 0);
 [storageFailure.baseline, storageFailure.package, ...storageFailure.sources].forEach(verify);
-assert.equal(storageFailure.baseline.sha256, audit(browserFile).sha256);
+assert.equal(storageFailure.baseline.sha256, audit(packedBrowserFile).sha256);
+assert.equal(storageFailure.package.sha256,browser.package.sha256);
 assert.equal(storageFailure.observation.failures.length, 1);
 assert.equal(storageFailure.observation.rhi.asyncPrecacheFailed, 1);
 assert(storageFailure.fallback.some(p => !p.asynchronous && p.dispatches > 0 && p.entry === storageFailure.target.entry));
 const lateFile = path.join(__dirname, 'results/nanite-storage-precache-late/verified.json'), late = read(lateFile);
 assert(late.pass && late.frames >= 60 && late.errors.length === 0);
 [late.baseline, late.package, ...late.sources].forEach(verify);
-assert.equal(late.baseline.sha256, audit(browserFile).sha256);
+assert.equal(late.baseline.sha256, audit(packedBrowserFile).sha256);
+assert.equal(late.package.sha256,browser.package.sha256);
 assert.equal(late.observation.injected, 1);
 assert.deepEqual(late.observation.failures, []);
 assert(late.runtimeFirst.length > 0 && late.precachedAfter.length > 0);
@@ -78,7 +93,7 @@ assert.equal(browser.cullDispatches, 114);
 assert.equal(browser.sceneCulling.length, 19);
 assert.deepEqual(browser.sceneCulling.map(c => c.entries.length), [2,2,2,2,2,1,0,2,0,2,...Array(9).fill(2)]);
 assert(browser.sceneCulling.every(c => c.pass && c.rejected === 0 && c.dispatches === c.entries.length));
-assert(browser.sceneCulling.every(c => c.raster.pass && c.rasterDraws === c.entries.length));
+assert(browser.sceneCulling.every(c => c.raster.pass && c.rasterDraws === c.entries.length*rasterPhases));
 assert.equal(browser.sceneCulling[0].rasterInputRejections, 8);
 browser.sceneCulling.forEach(c=>verify(c.visibilityProduct));
 const fixturePage=fs.readFileSync(browser.scene[0].products[0].file);
@@ -104,7 +119,9 @@ const lodProjectionFile=path.join(__dirname,'results/nanite-lod-projection/verif
 assert(lodProjection.pass && lodProjection.cases === 3255);
 [lodProjection.source, ...lodProjection.sources, ...lodProjection.tools, ...lodProjection.products].forEach(verify);
 assert.deepEqual(lodProjection.errors, []);
-assert.equal(browser.rasterDraws.length, 33);
+assert.equal(browser.rasterDraws.length, 33*rasterPhases);
+assert.equal(browser.rasterShaders.length, scalarVisibility ? 3 : 2);
+if(scalarVisibility) browser.rasterShaders.forEach(shader=>assert(!fs.readFileSync(shader.file,'utf8').includes('atomic<vec2<u32>>')));
 assert.equal(browser.recordDispatches,33);assert.equal(browser.materialDispatches,33);
 assert.equal(browser.defaultDisabled.rasterDraws, 0);
 assert.equal(browser.defaultDisabled.cullDispatches, 0);
@@ -351,6 +368,8 @@ assert(!staleLOD.pass && staleLOD.failure.includes('BadView'));
 assert.equal(audit(staleLODPackage).sha256,staleLOD.package.sha256);
 assert.equal(audit(staleLODBuild).sha256,read(staleLODPackage).build.sha256);
 const report = {date:new Date().toISOString(), pass:true,
+  scalarVisibility:{selected:scalarVisibility,phases:rasterPhases,helperReport:audit(scalarFile),...scalar,
+    initializationFailure:{report:audit(scalarInitFailureFile),...scalarInitFailure}},
   residentLOD:{projectionReport:audit(lodProjectionFile),...lodProjection,
     staleObjectFailure:{report:audit(staleLODFile),package:audit(staleLODPackage),build:audit(staleLODBuild),failure:staleLOD.failure}},
   componentPrecacheSynchronization:{failedRun:audit(registrationFailureFile), historicalPackage:registrationFailure.package,
@@ -401,7 +420,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-lod-20261109.json');
+const destination = path.join(__dirname, `evidence/nanite-browser-scalar-${scalarVisibility?'fallback':'packed'}-20261109.json`);
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);
