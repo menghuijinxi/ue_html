@@ -131,15 +131,16 @@
   const resources = new WeakMap(), identities = new Map();
   const corpus = globalThis.__webStartupPSOCorpus ? {version: 1, devices: [], modules: [], layouts: []} : null;
   let resourceSequence = 0;
-  function encode(value) {
+  function encode(value, descriptorRoot = true) {
     if (value === null || typeof value !== 'object') return value;
     const reference = resources.get(value);
     if (reference) return reference;
-    if (Array.isArray(value) || ArrayBuffer.isView(value)) return Array.from(value, encode);
+    if (Array.isArray(value) || ArrayBuffer.isView(value)) return Array.from(value, child => encode(child, false));
     if (![Object.prototype, null].includes(Object.getPrototypeOf(value)))
       throw Error('Unrecorded WebGPU descriptor resource: ' + value.constructor?.name);
-    return Object.fromEntries(Object.keys(value).sort().filter(k => k !== 'label' && value[k] !== undefined)
-      .map(k => [k, encode(value[k])]));
+    return Object.fromEntries(Object.keys(value).sort().filter(k =>
+      (!descriptorRoot || k !== 'label') && value[k] !== undefined)
+      .map(k => [k, encode(value[k], false)]));
   }
   function registerResource(value, type, descriptor) {
     const reference = {$gpu: type, id: ++resourceSequence}; resources.set(value, reference);

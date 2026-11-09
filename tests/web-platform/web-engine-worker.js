@@ -130,7 +130,7 @@ const diagnosticStateKeys = [
   '__webThreadsExitCode', '__webThreadsFailure', '__webThreadsMemory', '__webThreadsResult',
   '__webDistanceFields', '__webDistanceFieldsExposure', '__webDistanceFieldsGPU',
   '__webDistanceFieldsLighting', '__webVisibilityAudit', '__webProjectSettings', '__webOptimizationRHI', '__webOptimizationState',
-  '__webPSOPrecache', '__webOcclusionHistory', '__webGameFrameClock', '__webRHIWakeScheduler', '__webMotionBenchmark'
+  '__webPSOPrecache', '__webPipelinePrewarm', '__webOcclusionHistory', '__webGameFrameClock', '__webRHIWakeScheduler', '__webMotionBenchmark'
 ];
 function snapshot() {
   connectInputPort();
@@ -271,11 +271,23 @@ async function start(message) {
     });
   }
   const versioned = name => name + '?v=' + assets.versions[name];
+  let prewarm;
+  if (assets.pipelinePrewarm) {
+    importScripts(versioned('web-pipeline-prewarm.js'));
+    // Start before the WASM/content download. A rejected warmup is handled now
+    // and rethrown before engine startup, without an unhandled rejection.
+    prewarm = prepareWebPipelinePrewarm(assets).then(value => ({value}), error => ({error}));
+  }
   updateBrowserMetrics(message.browser);
   globalThis.__webStartupDiagnostics = {mode: message.debug ? 'debug' : 'normal'};
   const requestDevice = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(descriptor) {
-    const device = await requestDevice.call(this, descriptor);
+    const warmed = prewarm && await prewarm;
+    if (warmed?.error) throw warmed.error;
+    const cached = warmed?.value.take(descriptor);
+    warmed?.value.dispose();
+    if (warmed && !cached) throw new Error('Prewarmed device is incompatible with the engine request');
+    const device = cached || await requestDevice.call(this, descriptor);
     if (frameScheduler) frameScheduler.queue = device.queue;
     if (localFrameBudget) localGpuQueue = device.queue;
     device.addEventListener('uncapturederror', event => fail(event.error));
@@ -303,10 +315,13 @@ async function start(message) {
   };
   const digest = async bytes => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
     value => value.toString(16).padStart(2, '0')).join('');
-  const json = async url => {
+  const json = async (url, expectedHash) => {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
-    return response.json();
+    if (!expectedHash) return response.json();
+    const bytes = await response.arrayBuffer();
+    if (await digest(bytes) !== expectedHash) throw new Error('Prewarm config hash mismatch');
+    return JSON.parse(new TextDecoder().decode(bytes));
   };
   const print = text => {
     text = String(text);
@@ -328,10 +343,13 @@ async function start(message) {
     preRun: [() => {
       addRunDependency('worker-content');
       (async () => {
-        const [configs, manifest] = await Promise.all([json('config-files.json'), json('content-files.json')]);
+        const [configs, manifest] = await Promise.all([
+          json('config-files.json', assets.pipelinePrewarm?.config), json('content-files.json')]);
         if (manifest.mode !== 'WebGPU-SM5' || manifest.architecture !== 'wasm64' ||
             manifest.shaderPlatform !== 'SP_WEBGPU_SM5' || manifest.pack.url !== 'content.bin')
           throw new Error('Invalid threaded desktop content manifest');
+        if (assets.pipelinePrewarm && manifest.pack.sha256 !== assets.pipelinePrewarm.content)
+          throw new Error('Prewarm content hash mismatch');
         send('stage', {stage: 'content-mounting'});
         await io.mount(manifest, FS);
         for (const file of configs) {
@@ -341,6 +359,10 @@ async function start(message) {
           if (await digest(bytes) !== file.sha256) throw new Error('Config hash mismatch: ' + file.path);
           FS.mkdirTree(file.path.slice(0, file.path.lastIndexOf('/')));
           FS.writeFile(file.path, bytes);
+        }
+        if (prewarm) {
+          const warmed = await prewarm;
+          if (warmed.error) throw warmed.error;
         }
         removeRunDependency('worker-content');
       })().catch(fail);

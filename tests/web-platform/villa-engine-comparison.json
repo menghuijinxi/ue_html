@@ -1,7 +1,8 @@
 {
   "width": 1920,
   "height": 1080,
-  "ours": "villa-ue59-comparison-20261109-v4",
+  "ours": "villa-prewarm-20261109-v3",
+  "startupBaseline": "villa-ue59-comparison-20261109-v4",
   "baseline": "triplex-project-lumen-shadows-fixed-20261104",
   "runtime": "villa-scheduling-latest-v71",
   "official": "/official/index.html",

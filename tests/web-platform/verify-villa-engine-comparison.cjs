@@ -110,6 +110,7 @@ let context;
         threads: globalThis.__webEngineThreads,
         performance: globalThis.__webLivePerformance,
         pso: globalThis.__webPSOPrecache,
+        prewarm: globalThis.__webPipelinePrewarm,
         officialPerformance: globalThis.__ue59Performance,
         hud: document.querySelector('#web-performance-hud')?.textContent,
         textures: globalThis.__comparisonTextures,
@@ -128,7 +129,11 @@ let context;
       if (engine === 'ours') {
         assert.deepEqual({width: run.state.view.width, height: run.state.view.height},
           {width: profile.width, height: profile.height}, 'Our actual scene resolution differs from comparison profile');
-        assert(run.state.pso?.enabled, 'Our PSO precache is disabled');
+        if (profile.startupBaseline) {
+          assert(run.state.prewarm?.ready && run.state.prewarm.adopted, 'Recorded PSOs were not adopted');
+          assert(run.state.prewarm.counts.ready > 0 && run.state.prewarm.counts.hits > 0);
+          assert.equal(run.state.prewarm.counts.misses, 0, 'Startup pipeline missing from the recorded pack');
+        } else assert(run.state.pso?.enabled, 'Our PSO precache is disabled');
         for (const [key, value] of Object.entries({antiAliasing: 2, gi: 1, reflections: 1,
           virtualShadows: 0, texturePoolMiB: 496, screenPercentage: 100}))
           assert.equal(run.state.settings[key], value, key);

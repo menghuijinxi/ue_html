@@ -4,6 +4,13 @@
 顶部切换 UE 5.8 v71 与 UE 5.9 官方版。切换会移除前一个 iframe 及其运行时，
 每次从同一关卡出生点开始。比较时只保留这一张场景页面。
 
+2026-11-09 启动优化后，“我们的版本”已切到 `villa-prewarm-20261109-v3`，
+复用同一 v71 WASM、Cook 和画质配置，以实际管线预热替代广泛推测性预编译。
+Chrome 缓存启动约 10 秒，原 v4 约 16.4 秒；首次无内容缓存约 15.9 秒，原版约 23.9 秒。
+v2 的 Chrome / Edge 各三轮无诊断插桩启动及移动通过；v3 修正特殊常量缓存键后，
+另外三轮 Chrome 启动及移动通过。仍不能保证间歇性原生崩溃已根治。
+实现、覆盖范围和复现命令见 `UE58_VILLA_STARTUP_PREWARM.md`。
+
 ## 对齐条件
 
 配置源是 `tests/web-platform/villa-engine-comparison.json`。
@@ -29,7 +36,8 @@ v3 实际没有正确锁定高 DPI 下的渲染尺寸，详见下文修正记录
   WASM SHA-256 `88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a`。
   配套使用 `triplex-project-lumen-shadows-fixed-20261104` 的 Lumen Cook；
   加入 `desktop-accepted-20261107` 性能设置、页面帧预算 3 和直接游戏线程输入。
-  当前包为 `build/villa-ue59-comparison-20261109-v4`；v3 保留用于复现尺寸问题。
+  当前包为 `build/villa-prewarm-20261109-v3`；
+  v4 保留为启动优化前基线，v3 保留用于复现尺寸问题。
 - 官方：已完成构建的 Epic UE 5.9，
   提交 `589a52b5abcf7b0ee0e2fd9de58b4d2872672f21`，通过启动参数覆盖共同设置；
   官方引擎源码、WASM 和 Cook 文件没有修改。

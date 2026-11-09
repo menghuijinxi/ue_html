@@ -349,7 +349,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (fixedRenderSize && ![fixedRenderSize.width, fixedRenderSize.height].every(value =>
     Number.isInteger(value) && value > 0))
     throw new Error('Invalid fixed render size');
-  globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
+  globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest') || !!assets.pipelinePrewarm;
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
   if (!canvas.transferControlToOffscreen || typeof Worker === 'undefined')
     throw new Error('此线程包需要 OffscreenCanvas 和 Worker 支持。');
@@ -450,8 +450,9 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
       Object.assign(globalThis, message.state);
       const pso = message.state.__webPSOPrecache, rhi = message.state.__webOptimizationRHI;
       if (!globalThis.__webPSOPrecacheReady && message.state.__webEngineFrames >= 30 &&
-          pso?.enabled && pso.active === 0 && rhi &&
-          rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted) {
+          (assets.pipelinePrewarm ? message.state.__webPipelinePrewarm?.adopted &&
+            message.state.__webPipelinePrewarm.ready : pso?.enabled && pso.active === 0 && rhi &&
+            rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted)) {
         globalThis.__webPSOPrecacheReady = true;
         performanceHUD.reset();
       }
