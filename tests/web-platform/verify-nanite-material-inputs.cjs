@@ -126,7 +126,7 @@ module.exports = function verifyMaterialInputs(result, page, tolerances = {posit
   // The camera-inside/near-plane case may cover every sample in the viewport.
   if(result.raster?.covered>50) assert(covered>0);
   if(result.step===1&&!result.rect) assert.equal(result.materialInputRejections,7);
-  return {pass:true,validRecords,covered,empty,maxError,materialSlots:[...materialSlots].sort()};
+  return {pass:true,validRecords,covered,empty,maxError,materialSlots:[...materialSlots].sort((a,b)=>a-b)};
 };
 
 // Independently solve UV at neighboring subpixel locations on the same decoded
@@ -151,3 +151,4 @@ module.exports.sampleUV = function(result, page, sample) {
   return {uv,dx:xp.map((v,c)=>(v-xm[c])/(2*h)),dy:yp.map((v,c)=>(v-ym[c])/(2*h))};
 };
 module.exports.triangleMaterial = (page,cluster,tri) => triangle(page,cluster,tri).material;
+module.exports.decodeTriangle = triangle;

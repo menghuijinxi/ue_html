@@ -9,7 +9,8 @@ module.exports=function verifyMaterialTiles(result,page) {
   const {rect,entries,materialTiles:bins,tilePixels:pixels,before}=result;
   const width=rect[2]-rect[0],height=rect[3]-rect[1],gx=Math.ceil(width/8),gy=Math.ceil(height/8);
   assert.equal(result.tilePixelCount,width*height);assert.equal(pixels.length%4,0);
-  const expected=entries.map(()=>new Set()),cache=new Map(),lookup=new Map();
+  const bindings=entries.flatMap((e,index)=>e.bindingCurrent?(e.materials||[{slot:e.materialSlot}]).map(m=>({entry:index,slot:m.slot})):[]);
+  const expected=new Map(bindings.map(b=>[b.entry+'/'+b.slot,new Set()])),cache=new Map(),lookup=new Map();
   let occluded=0,unbound=0,owned=0,last=-1;
   for(let i=0;i<pixels.length;i+=4) {
     const [pixel,id,depth,sceneDepth]=pixels.slice(i,i+4);
@@ -20,8 +21,9 @@ module.exports=function verifyMaterialTiles(result,page) {
     const k=(key&255)*128+tri;
     if(!cache.has(k)) cache.set(k,triangleMaterial(page,key&255,tri));
     if(depth!==sceneDepth) {++occluded;continue;}
-    if(!entry.bindingCurrent||entry.materialSlot!==cache.get(k)) {++unbound;continue;}
-    ++owned;expected[entryIndex].add(Math.floor(pixel/width/8)*gx+Math.floor((pixel%width)/8));
+    const tiles=expected.get(entryIndex+'/'+cache.get(k));
+    if(!tiles) {++unbound;continue;}
+    ++owned;tiles.add(Math.floor(pixel/width/8)*gx+Math.floor((pixel%width)/8));
   }
   // Cross-check sparse omission and the independent sampled snapshot.
   for(let y=0;y<result.materialHeight;++y) for(let x=0;x<result.materialWidth;++x) {
@@ -30,13 +32,12 @@ module.exports=function verifyMaterialTiles(result,page) {
     if(before[offset]) assert.deepEqual(full,before.slice(offset,offset+3));
     else assert.equal(full,undefined);
   }
-  const boundEntries=entries.map((e,i)=>e.bindingCurrent?i:-1).filter(i=>i>=0);
-  assert.deepEqual(bins.map(b=>b.entry).sort((a,b)=>a-b),boundEntries);
+  assert.deepEqual(bins.map(b=>b.entry+'/'+b.slot).sort(),bindings.map(b=>b.entry+'/'+b.slot).sort());
   let tileCount=0,emptyBins=0,edgeTiles=0;
   for(const bin of bins) {
-    assert.equal(bin.slot,entries[bin.entry].materialSlot);assert.equal(bin.gridWidth,gx);assert.equal(bin.gridHeight,gy);
+    assert.equal(bin.gridWidth,gx);assert.equal(bin.gridHeight,gy);
     assert.equal(bin.tiles.length,gx*gy*2);
-    const expectedTiles=[...expected[bin.entry]].sort((a,b)=>a-b),count=expectedTiles.length;
+    const expectedTiles=[...expected.get(bin.entry+'/'+bin.slot)].sort((a,b)=>a-b),count=expectedTiles.length;
     assert.deepEqual(bin.arguments,[6,count,0,0],'GPU-generated draw arguments');
     const actual=[];
     for(let i=0;i<count;++i) {
@@ -52,7 +53,12 @@ module.exports=function verifyMaterialTiles(result,page) {
   if(result.step===5) assert.equal(emptyBins,1);
   if(result.step===11) {assert.equal(tileCount,0);assert.equal(emptyBins,2);assert(occluded>1000);}
   if(result.step===12) {assert(width%8||height%8);assert(edgeTiles>0);}
-  if(![4,11].includes(result.step)) {assert(tileCount>0);assert(tileCount<gx*gy*bins.length/4);}
+  if(![4,11,19].includes(result.step)) {assert(tileCount>0);assert(tileCount<gx*gy*bins.length/4);}
+  if(result.step===19)assert.equal(bins.length,0);
+  if(result.step>=13&&result.step<=18) {
+    assert.equal(bins.length,({13:8,14:8,15:6,16:6,17:3,18:1})[result.step]);
+    assert.equal(emptyBins,0);
+  }
   let offsetValidation;
   if(result.step===12) {
     const offsetRect=bins[0].offsetRect;assert(offsetRect[0]>rect[0]&&offsetRect[1]>rect[1]);

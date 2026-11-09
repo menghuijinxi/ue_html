@@ -6,6 +6,7 @@ const verifyDepth = require('./verify-nanite-depth-output.cjs');
 const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
 const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
 const verifyTiles = require('./verify-nanite-material-tiles.cjs');
+const verifyMultiAsset = require('./verify-nanite-multimaterial-asset.cjs');
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const verify = i => assert.equal(audit(i.file).sha256, i.sha256, `Stale file: ${i.file}`);
 const browserFile = path.join(__dirname, 'results/nanite-browser/results.json');
@@ -51,26 +52,39 @@ for(const test of browser.sceneDepth) {
 }
 assert(browser.depthDraws>=20&&browser.totalCullDispatches>100&&browser.totalRasterDraws>33);
 assert(browser.sceneDepthCleanup.pass&&browser.sceneDepthCleanup.framesObserved>=4);
-assert.equal(browser.sceneGBuffer.length,12);assert.equal(browser.defaultDisabled.gbufferDraws,0);
+assert.equal(browser.sceneGBuffer.length,19);assert.equal(browser.defaultDisabled.gbufferDraws,0);
 assert.equal(browser.defaultDisabled.gbufferIndirectDraws,0);assert.equal(browser.defaultDisabled.tileDispatches,0);
 assert(browser.sceneGBufferCleanup.pass&&browser.sceneGBufferCleanup.framesObserved>=4);
 assert.equal(browser.sceneGBufferCleanup.gbuffer,browser.sceneGBufferCleanup.indirect);
 assert.equal(browser.sceneGBufferCleanup.tiles,browser.sceneGBufferCleanup.indirect+2);
+assert.equal(browser.gbufferShaders.length,4);
+assert.deepEqual([...new Set(browser.gbufferShaderCreations)].sort(),browser.gbufferShaders.map(s=>s.sha256).sort());
+const packaged = read(browser.package.file);
+const multi=packaged.multiMaterial;Object.values(multi).forEach(verify);
+const multiPage=fs.readFileSync(multi.gpuPage.file);
+assert.deepEqual(verifyMultiAsset(multiPage,fs.readFileSync(multi.sourceTriangles.file),fs.readFileSync(multi.sourceMaterials.file)),browser.multiAssetValidation);
+const multiFixture=read(multi.fixture.file),multiNative=read(multi.native.file),multiBrowser=read(multi.browserOracle.file);
+assert(multiFixture.pass&&multiNative.pass&&multiBrowser.pass);
+assert.equal(multiNative.policyChecks,21);assert.equal(multiNative.products.length,12);
+assert(multiNative.products.every(p=>p.sha256===multi.gpuPage.sha256));
+[...multiFixture.sources,...multiFixture.products,multiFixture.binary,...multiNative.sources,...multiNative.products,
+  ...multiNative.build.inputs,multiNative.build.binary,multiNative.build.log,multiNative.runtimeShaderArchive,
+  ...multiNative.generated.sources,...multiNative.generated.generated,...multiBrowser.sources].forEach(verify);
+assert(multiBrowser.browsers.every(b=>b.gpuPageSha256===multi.gpuPage.sha256));
 for(const test of browser.sceneGBuffer) {
   assert(test.pass&&test.validation.pass);const raw={...test,materialTiles:structuredClone(test.materialTiles)};
   for(const [key,p] of Object.entries(test.products)) {verify(p);const b=fs.readFileSync(p.file);raw[key]=Array.from({length:b.length/4},(_,i)=>b.readUInt32LE(i*4));}
   if(test.screenshot) verify(test.screenshot);
   raw.materialTiles.forEach((bin,index)=>{bin.tiles=raw[`tiles${index}`];if(bin.offsetRect)bin.offsetTiles=raw[`offsetTiles${index}`];});
-  assert.deepEqual(verifyGBuffer(raw,fixturePage),test.validation);
-  assert.deepEqual(verifyTiles(raw,fixturePage),test.tileValidation);
+  assert.deepEqual(verifyGBuffer(raw,test.step>=13?multiPage:fixturePage),test.validation);
+  assert.deepEqual(verifyTiles(raw,test.step>=13?multiPage:fixturePage),test.tileValidation);
   if(test.step>=7&&test.step<=10) assert.equal(verifyGBuffer.verifyTextureMutations(raw,fixturePage),test.textureReferenceRejections);
 }
 assert.equal([...browser.residency, ...browser.scene].flatMap(c => c.culling || []).length, 62);
 assert.equal([...browser.residency, ...browser.scene].reduce((n, c) => n + (c.cullInputRejections || 0), 0), 88);
-[browser.source, browser.cullOracle, browser.sceneCullOracle, browser.rasterOracle, browser.depthOracle, browser.materialOracle, browser.gbufferOracle,browser.tilesOracle,browser.package,
+[browser.source, browser.cullOracle, browser.sceneCullOracle, browser.rasterOracle, browser.depthOracle, browser.materialOracle, browser.gbufferOracle,browser.tilesOracle,browser.multiAssetOracle,browser.package,
   ...browser.shaders, ...browser.cullShaders, ...browser.rasterShaders, ...browser.depthShaders, ...browser.materialShaders,
   ...browser.gbufferShaders,browser.visibilityPreview, browser.depthPreview, browser.materialPreview,browser.gbufferPreview].forEach(verify);
-const packaged = read(browser.package.file);
 assert(packaged.pass);
 const packageInputs = [...packaged.sources, ...packaged.products, ...packaged.baseline,
   packaged.build, packaged.native, packaged.archive, packaged.hierarchyShaders, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles];
@@ -99,6 +113,7 @@ assert(canvas.pass&&canvas.checks.length===8&&canvas.checks.every(c=>c.pass));
 [canvas.runtime,canvas.log,...canvas.sources,...canvas.products].forEach(verify);
 const report = {date:new Date().toISOString(), pass:true,
   canvasTransitions:{report:audit(canvasFile),...canvas},
+  multiMaterial:{fixture:multiFixture,native:multiNative,browser:multiBrowser,validation:browser.multiAssetValidation},
   referenceCommit:cp.execFileSync('git', ['-C', path.join(__dirname, '../../reference-engine'), 'rev-parse', 'HEAD'], {encoding:'utf8'}).trim(),
   browser:{...browserSummary, logReport:audit(browserFile)},
   package:packaged, build:{report:packaged.build, incrementalDiagnostic:true, fullRebuild:false,
@@ -110,7 +125,7 @@ const report = {date:new Date().toISOString(), pass:true,
   sources:[__filename, path.join(__dirname, 'build-web-engine.ps1'),
     path.join(__dirname, '../../UE58_WEBGPU_NANITE_IMPLEMENTATION.md')].map(audit),
   boundary:browser.boundary};
-const destination = path.join(__dirname, 'evidence/nanite-browser-tiles-20261109.json');
+const destination = path.join(__dirname, 'evidence/nanite-browser-multimaterial-20261109.json');
 const previewDestination = destination.replace(/\.json$/, '.png');
 fs.copyFileSync(browser.gbufferPreview.file, previewDestination);
 report.gbufferPreview = audit(previewDestination);

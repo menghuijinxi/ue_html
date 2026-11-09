@@ -8,6 +8,14 @@ const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const verify = i => assert.equal(audit(i.file).sha256, i.sha256, i.file);
 const verified = read(path.join(native, 'verified.json'));
 assert(verified.pass); verified.sources.forEach(verify);
+assert(process.argv[3], 'Pass the verified multi-material native uploader directory');
+const multiNativeFile=path.join(path.resolve(process.argv[3]),'verified.json'),multiNative=read(multiNativeFile);
+assert(multiNative.pass);[...multiNative.sources,...multiNative.products].forEach(verify);
+const multiAsset=path.dirname(multiNative.browserOracle.file),multiFixtureFile=path.join(multiAsset,'fixture.json'),multiFixture=read(multiFixtureFile);
+assert(multiFixture.pass);[...multiFixture.sources,...multiFixture.products,multiFixture.binary].forEach(verify);
+const multiMaterial={native:audit(multiNativeFile),fixture:audit(multiFixtureFile),browserOracle:multiNative.browserOracle,gpuPage:multiNative.products[0],
+  cookedResource:audit(path.join(multiAsset,'resources.cooked.bin')),sourceTriangles:audit(path.join(multiAsset,'source-triangles.bin')),
+  sourceMaterials:audit(path.join(multiAsset,'source-materials.bin'))};
 verify(verified.runtimeShaderArchive);
 const asset = path.dirname(verified.browserOracle.file);
 // Match the current Renderer shader set; the historical default-template Cook
@@ -44,7 +52,9 @@ fs.copyFileSync(baselinePack, path.join(output, 'content.bin'));
 let offset = fs.statSync(baselinePack).size;
 for (const [virtualPath, data] of [[global.path, merged],
   ['/Engine/Programs/UEWebEngine/Content/NaniteUploader/resources.cooked.bin', fs.readFileSync(path.join(asset, 'resources.cooked.bin'))],
-  ['/Engine/Programs/UEWebEngine/Content/NaniteUploader/source-triangles.bin', fs.readFileSync(path.join(asset, 'source-triangles.bin'))]]) {
+  ['/Engine/Programs/UEWebEngine/Content/NaniteUploader/source-triangles.bin', fs.readFileSync(path.join(asset, 'source-triangles.bin'))],
+  ['/Engine/Programs/UEWebEngine/Content/NaniteMultiMaterial/resources.cooked.bin',fs.readFileSync(multiMaterial.cookedResource.file)],
+  ['/Engine/Programs/UEWebEngine/Content/NaniteMultiMaterial/source-triangles.bin',fs.readFileSync(multiMaterial.sourceTriangles.file)]]) {
   manifest.files = manifest.files.filter(f => f.path !== virtualPath);
   const sha256 = require('node:crypto').createHash('sha256').update(data).digest('hex');
   manifest.files.push({path: virtualPath, offset, size: data.length, sha256});
@@ -71,7 +81,7 @@ const products = ['index.html', 'content.bin', 'content-files.json', 'config-fil
 products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
-  hierarchyShaders:audit(hierarchyFile),
+  hierarchyShaders:audit(hierarchyFile),multiMaterial,
   baseline:[baselinePack, ...['content-files.json', 'config-files.json', 'index.html'].map(n => path.join(baseline, n))].map(audit),
   sources:[__filename, ...helpers.map(n => path.join(__dirname, n))].map(audit),
   cookedResource:audit(path.join(asset, 'resources.cooked.bin')), sourceTriangles:audit(path.join(asset, 'source-triangles.bin')), products,

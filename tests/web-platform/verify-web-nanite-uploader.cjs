@@ -9,11 +9,15 @@ const verifyDepth = require('./verify-nanite-depth-output.cjs');
 const verifyMaterialInputs = require('./verify-nanite-material-inputs.cjs');
 const verifyGBuffer = require('./verify-nanite-gbuffer-output.cjs');
 const verifyTiles = require('./verify-nanite-material-tiles.cjs');
+const verifyMultiAsset = require('./verify-nanite-multimaterial-asset.cjs');
 const output = path.join(__dirname, 'results/nanite-browser');
 fs.mkdirSync(output, {recursive:true});
 const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^\uFEFF/, ''));
 const packaged = read(path.join(__dirname, 'build/nanite-browser/package.json'));
 assert(packaged.pass);
+for(const p of Object.values(packaged.multiMaterial))assert.equal(audit(p.file).sha256,p.sha256);
+const multiPage=fs.readFileSync(packaged.multiMaterial.gpuPage.file);
+const multiAssetValidation=verifyMultiAsset(multiPage,fs.readFileSync(packaged.multiMaterial.sourceTriangles.file),fs.readFileSync(packaged.multiMaterial.sourceMaterials.file));
 for (const input of [...packaged.sources, ...packaged.products, packaged.build, packaged.native,
   packaged.archive, packaged.hierarchyShaders, packaged.browserOracle, packaged.cookedResource, packaged.sourceTriangles]) assert.equal(audit(input.file).sha256, input.sha256);
 const oracle = read(packaged.browserOracle.file);
@@ -106,6 +110,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
   materialOracle:audit(require.resolve('./verify-nanite-material-inputs.cjs')),
   gbufferOracle:audit(require.resolve('./verify-nanite-gbuffer-output.cjs')),
   tilesOracle:audit(require.resolve('./verify-nanite-material-tiles.cjs')),
+  multiAssetOracle:audit(require.resolve('./verify-nanite-multimaterial-asset.cjs')),multiAssetValidation,
   rasterReferencePolicy:{subpixelFractionalBits:8, depthTolerance:3e-5, edgeBandPixels:.02, minimumInteriorFraction:.25,
     reference:'https://learn.microsoft.com/en-us/windows/win32/direct3d12/constants'},
   textureReferencePolicy:{lod:'largest singular value of UV Jacobian',maxCommonLODOffset:.25,maxSRGBCodeError:2,
@@ -389,7 +394,7 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
     assert.deepEqual(await owner.evaluate(()=>({depth:__naniteBrowserAudit.depthDraws,cull:__naniteBrowserAudit.cullDispatches,raster:__naniteBrowserAudit.rasterDraws.length})),stopped,'cleanup must stop the experimental scene path');
     report.sceneDepthCleanup={pass:true,framesObserved:4,...stopped};
     assert.equal(await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws),0,'constant GBuffer must default off');
-    for(let step=1;step<=12;++step) {
+    for(let step=1;step<=19;++step) {
       const before=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws);
       assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteGBufferTest',s),step),1);
       let result;const start=Date.now();
@@ -400,8 +405,8 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
       } while((!result||result.pending||result.step!==step)&&Date.now()-start<45000);
       assert(result&&!result.pending&&result.step===step,JSON.stringify(result));
       try{
-        result.validation=verifyGBuffer(result,fixturePage);
-        result.tileValidation=verifyTiles(result,fixturePage);
+        result.validation=verifyGBuffer(result,step>=13?multiPage:fixturePage);
+        result.tileValidation=verifyTiles(result,step>=13?multiPage:fixturePage);
         if(step>=7&&step<=10) result.textureReferenceRejections=verifyGBuffer.verifyTextureMutations(result,fixturePage);
       }catch(error){result.validationFailure=error.stack;}
       const products={};
@@ -418,14 +423,18 @@ const report = {date:new Date().toISOString(), pass:false, cases:[], residency:[
         }
       }
       const draws=await owner.evaluate(()=>__naniteBrowserAudit.gbufferDraws)-before;
-      if(step!==4) assert(draws>=4,'real per-frame GBuffer pass must execute');
+      if(![4,19].includes(step)) assert(draws>=4,'real per-frame GBuffer pass must execute');
       report.sceneGBuffer.push({...result,products,draws,pass:!result.validationFailure});
-      if([7,8,9,10,11,12].includes(step)) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
+      if([12,13,14,15,18,19].includes(step)) {const screenshot=path.join(output,`gbuffer-scene-${step}.png`);await page.locator('#canvas').screenshot({path:screenshot});report.sceneGBuffer.at(-1).screenshot=audit(screenshot);}
       console.log(`Browser scene GBuffer step ${step} ${result.validationFailure?'failed validation':'passed'}`);
     }
-    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',13)),1);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteGBufferTest',20)),1);
     assert(report.sceneGBuffer.every(c=>c.pass),report.sceneGBuffer.filter(c=>!c.pass).map(c=>`Step ${c.step}: ${c.validationFailure}`).join('\n'));
-    const gbufferShaders=await owner.evaluate(()=>__naniteBrowserAudit.gbufferShaders);assert.equal(gbufferShaders.length,4);
+    const gbufferShaderCreations=await owner.evaluate(()=>__naniteBrowserAudit.gbufferShaders);
+    // Texture/resource replacement may recreate an identical shader module.
+    // Audit every creation, but require exactly the four unique shader bodies.
+    report.gbufferShaderCreations=gbufferShaderCreations.map(code=>require('node:crypto').createHash('sha256').update(code).digest('hex'));
+    const gbufferShaders=[...new Set(gbufferShaderCreations)];assert.equal(gbufferShaders.length,4);
     report.gbufferShaders=gbufferShaders.map((code,i)=>{const file=path.join(output,`gbuffer-${i}.wgsl`);fs.writeFileSync(file,code);return audit(file);});
     const gbufferFrame=await page.evaluate(()=>__webEngineFrames);
     await page.waitForFunction(f=>__webEngineFrames>=f+8,gbufferFrame,{timeout:30000});
