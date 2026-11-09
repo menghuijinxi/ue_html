@@ -7,7 +7,8 @@ param(
     [string]$Emsdk = 'E:/UE59WebBenchmark/emsdk-6.0.10',
     [string]$Archive = 'E:/UE59WebBenchmark/package',
     [int]$MaxParallelActions = 12,
-    [string]$CompilerVersion = '14.50.35732'
+    [string]$CompilerVersion = '14.44.35227',
+    [ValidateRange(0, [long]::MaxValue)][long]$HostProcessorAffinity = 0
 )
 $ErrorActionPreference = 'Stop'
 $taskEngine = (Resolve-Path -LiteralPath $Engine).Path
@@ -22,6 +23,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect engine worktree.' }
 if ($taskDirty.Count) { throw 'Official benchmark requires unmodified tracked engine files.' }
 $env:WASM_EMSDK_ROOT = [IO.Path]::GetFullPath($Emsdk)
 $env:EMSDK = $env:WASM_EMSDK_ROOT
+$env:VSLANG = '1033'
 $taskBuildArgs = @("-MaxParallelActions=$MaxParallelActions", '-NoUBA', "-CompilerVersion=$CompilerVersion")
 switch ($Phase) {
     'Dependencies' {
@@ -52,6 +54,9 @@ switch ($Phase) {
     }
 }
 $taskStart = Get-Date
+$taskBuildProcess = Get-Process -Id $PID
+$taskSavedAffinity = $taskBuildProcess.ProcessorAffinity
+$taskEffectiveAffinity = if ($HostProcessorAffinity) { $HostProcessorAffinity } else { $taskSavedAffinity.ToInt64() }
 [ordered]@{
     started = $taskStart.ToString('o')
     phase = $Phase
@@ -60,6 +65,8 @@ $taskStart = Get-Date
     engineTrackedFilesClean = $true
     project = $Project
     emsdk = $env:WASM_EMSDK_ROOT
+    compilerVersion = $CompilerVersion
+    hostProcessorAffinity = $taskEffectiveAffinity
     executable = $taskExecutable
     arguments = $taskArguments
     log = "$taskPrefix.log"
@@ -67,12 +74,14 @@ $taskStart = Get-Date
 Write-Output "$Phase started. Log: $taskPrefix.log"
 Push-Location $taskEngine
 try {
+    if ($HostProcessorAffinity) { $taskBuildProcess.ProcessorAffinity = [IntPtr]$HostProcessorAffinity }
     & $taskExecutable @taskArguments *> "$taskPrefix.log"
     $taskExit = $LASTEXITCODE
     if ($Phase -eq 'Dependencies' -and (Select-String -LiteralPath "$taskPrefix.log" -Pattern '^Invalid command line parameter:' -Quiet)) {
         $taskExit = 1
     }
 } finally {
+    $taskBuildProcess.ProcessorAffinity = $taskSavedAffinity
     Pop-Location
 }
 [ordered]@{

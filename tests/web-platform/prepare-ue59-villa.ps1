@@ -52,6 +52,14 @@ foreach ($taskName in @('OnlineSubsystemUtils', 'OnlineSubsystemNull')) {
     }
     $taskPlugin.PlatformDenyList = @(@($taskPlugin.PlatformDenyList) + 'Wasm' | Where-Object { $_ } | Select-Object -Unique)
 }
+foreach ($taskName in @('AIAssistant', 'AllToolsets', 'ToolsetRegistry')) {
+    $taskPlugin = $taskPlugins | Where-Object { $_.Name -eq $taskName } | Select-Object -First 1
+    if (-not $taskPlugin) {
+        $taskPlugin = @{ Name = $taskName; Enabled = $false }
+        $taskPlugins.Add($taskPlugin)
+    }
+    $taskPlugin.Enabled = $false
+}
 $taskProject.Plugins = $taskPlugins.ToArray()
 $taskProject | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath (Join-Path $taskDestination 'TriplexHouseVilla.uproject') -Encoding utf8NoBOM
 foreach ($taskInput in $taskManifest | Where-Object { $_.path -ne 'TriplexHouseVilla.uproject' }) {
@@ -68,6 +76,7 @@ $taskReport = [ordered]@{
         'Added a minimal C++ game module and game/editor targets in the copy.'
         'Cleared EngineAssociation for an explicitly selected source engine.'
         'Denied OnlineSubsystemUtils and OnlineSubsystemNull on Wasm only.'
+        'Disabled editor AI toolsets in the isolated project as required by the official web cook guide.'
         'Enabled the experimental desktop tier alongside both default official mobile tiers.'
         'Kept all original asset and configuration files byte-identical.'
     )
