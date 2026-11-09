@@ -96,17 +96,33 @@ let context;
         settings: globalThis.__webProjectSettings,
         scheduler: globalThis.__webFrameScheduler,
         threads: globalThis.__webEngineThreads,
+        performance: globalThis.__webLivePerformance,
+        pso: globalThis.__webPSOPrecache,
+        officialPerformance: globalThis.__ue59Performance,
+        hud: document.querySelector('#web-performance-hud')?.textContent,
         textures: globalThis.__comparisonTextures,
         args: globalThis.Module?.arguments
       }));
       assert(run.state.isolated, 'Cross-origin isolation unavailable inside comparison frame');
       assert(!run.state.failure, JSON.stringify(run.state.failure));
       assert.deepEqual(run.state.canvas, {width: profile.width, height: profile.height});
+      assert(run.state.hud?.includes('FPS'), 'Frame statistics HUD missing');
+      assert(run.state.performance?.submitted?.fps > 0, 'HUD did not measure engine submissions');
+      assert(run.state.performance?.submitted?.low > 0, 'HUD has no 1% Low sample');
+      run.resolutionLabel = await page.locator('#render-status').textContent();
+      assert(run.resolutionLabel.includes('渲染 1920×1080'), run.resolutionLabel);
       if (engine === 'ours') {
+        assert(run.state.pso?.enabled, 'Our PSO precache is disabled');
         for (const [key, value] of Object.entries({antiAliasing: 2, gi: 1, reflections: 1,
           virtualShadows: 0, texturePoolMiB: 496, screenPercentage: 100}))
           assert.equal(run.state.settings[key], value, key);
       } else {
+        const metrics = run.state.officialPerformance;
+        assert.deepEqual(metrics?.scene, {width: profile.width, height: profile.height});
+        assert.equal(run.state.performance.source, 'final-canvas-submission-intervals');
+        assert(metrics?.prewarm?.made?.pipelines_ready > 0, 'Official PSO pack did not warm pipelines');
+        assert(metrics.prewarm.hits.render.hit + metrics.prewarm.hits.compute.hit > 0, 'No official PSO hits');
+        assert.equal(metrics.prewarm.failures, 0, 'Official prewarm errors');
         await frame.evaluate(keys => {
           for (const key of keys) window.ueExec(key);
           window.ueExec('LogLoc');
@@ -162,6 +178,19 @@ let context;
         width: document.getElementById('canvas').width, height: document.getElementById('canvas').height
       })), {width: profile.width, height: profile.height});
       await page.setViewportSize({width: 1600, height: 1000});
+      if (engine === 'official') {
+        // Changing the iframe viewport exercises the official engine's resize path.
+        await page.locator('iframe').evaluate(node => { node.width = 1280; node.height = 720; });
+        await frame.waitForFunction(() => globalThis.__ue59Performance?.scene?.width === 1280 &&
+          document.getElementById('canvas').height === 720, null, {timeout: 30000});
+        run.engineResizeEvidence = await frame.evaluate(() => ({
+          scene: globalThis.__ue59Performance.scene,
+          canvas: {width: document.getElementById('canvas').width, height: document.getElementById('canvas').height}
+        }));
+        await page.locator('iframe').evaluate(node => { node.width = 1920; node.height = 1080; });
+        await frame.waitForFunction(() => globalThis.__ue59Performance?.scene?.width === 1920 &&
+          document.getElementById('canvas').height === 1080, null, {timeout: 30000});
+      }
       assert.equal(run.errors.length, 0, run.errors.join('\n'));
       if (affinity) report.affinityChecks.push(require('./comparison-browser-affinity.cjs')(browserProfile, affinity, false));
       run.pass = true;

@@ -18,7 +18,7 @@ iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: c
   <strong>Triplex Villa</strong>
   <a href="#ours" data-engine="ours">UE 5.8 v71 &#25105;&#20204;&#30340;&#29256;&#26412;</a>
   <a href="#official" data-engine="official">UE 5.9 &#23448;&#26041;&#29256;&#26412;</a>
-  <span>1920 &times; 1080 &middot; 100% &middot; Epic &middot; TAA &middot; Lumen GI</span>
+  <span id="render-status">1080p 固定 &middot; 等待实际尺寸</span>
 </nav>
 <main id="stage"></main>
 <script>
@@ -30,10 +30,23 @@ iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: c
   const official = new URL(profile.official, location.href);
   official.searchParams.set('tier', 'desktop');
   official.searchParams.set('harness', '1');
+  official.searchParams.set('prewarm', '1');
+  official.searchParams.set('prewarm_return', 'full');
   official.searchParams.set('args', '-dpcvars=' +
     Object.entries(profile.settings).map(([key, value]) => key + '=' + value).join(',') +
     ' -ini:Input:[/Script/Engine.InputSettings]:bEnableMouseSmoothing=False');
   let frame;
+  function showResolution() {
+    const child = frame?.contentWindow;
+    const canvas = child?.document.getElementById('canvas');
+    const view = child?.__webRenderView;
+    const scene = child?.__ue59Performance?.scene;
+    const width = scene?.width || view?.width;
+    const height = scene?.height || view?.height;
+    document.getElementById('render-status').textContent = '1080p 固定 · ' +
+      (width && height ? `渲染 ${width}×${height}` : '等待场景尺寸') +
+      (canvas ? ` · 输出 ${canvas.width}×${canvas.height}` : '') + ' · Epic · TAA · Lumen GI';
+  }
   function resize() {
     if (!frame) return;
     const scale = Math.min(stage.clientWidth / profile.width, stage.clientHeight / profile.height);
@@ -57,6 +70,7 @@ iframe { position: absolute; left: 50%; top: 50%; border: 0; transform-origin: c
   }
   window.addEventListener('resize', resize);
   window.addEventListener('hashchange', select);
+  setInterval(showResolution, 1000);
   select();
 })().catch(error => { document.getElementById('stage').textContent = error.message; });
 </script>

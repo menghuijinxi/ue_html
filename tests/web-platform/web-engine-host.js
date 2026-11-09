@@ -115,7 +115,8 @@ class WebFrameSamples {
   }
 }
 
-function createWebPerformanceHUD(counter, canvas) {
+function createWebPerformanceHUD(counter, canvas, options = {}) {
+  const source = options.source || 'rhi-owner-submission-intervals';
   const visual = new WebFrameSamples(), submitted = new WebFrameSamples(), refresh = new WebFrameSamples();
   let contexts = [], events = [];
   const element = document.createElement('aside');
@@ -149,7 +150,7 @@ function createWebPerformanceHUD(counter, canvas) {
   element.querySelector('[data-action="export"]').onclick = () => {
     const now = performance.now(); submitted.prune(now);
     const data = {version:1,date:new Date().toISOString(),timeOrigin:performance.timeOrigin,
-      source:'rhi-owner-submission-intervals',lowWindowMs:5000,
+      source,lowWindowMs:5000,
       lowDefinition:'1000 / mean(slowest ceil(N*0.01) submission intervals)',
       boundary:'Submission intervals are not physical display timings. Async creation events measure API invocation only. Context counters are sampled every 100 ms.',
       summary:submitted.read(now),frames:submitted.samples.slice(submitted.head),
@@ -181,7 +182,7 @@ function createWebPerformanceHUD(counter, canvas) {
         fields.refresh.textContent = format(r.fps);
         fields.state.textContent = submitted.first !== null ? `近5秒 >50ms：${s.over50ms} 帧 · 提交间隔统计` : '等待场景画面';
         globalThis.__webLivePerformance = {visual:v, submitted:s, refresh:r, visible:true,
-          frame:current, source:'rhi-owner-submission-intervals', windowMs:5000, time:now};
+          frame:current, source, windowMs:5000, time:now};
         lastUpdate = now;
       }
     }
