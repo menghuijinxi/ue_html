@@ -1,4 +1,7 @@
 #include "CoreMinimal.h"
+#include "WebNaniteGPUComponent.h"
+#include "PrimitiveSceneProxy.h"
+#include "InstanceDataSceneProxy.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -31,11 +34,12 @@ namespace
 UStaticMesh* Meshes[3]{};
 UStaticMeshComponent* Component;
 UMaterialInstanceDynamic* WPOMaterial;
-bool WPO = false, Spline = false;
+bool WPO = false, Spline = false, GPUInstances = false;
+bool LegacyResetOrder = false;
 TWeakObjectPtr<ACameraActor> Camera;
 TWeakObjectPtr<AActor> SavedTarget;
 TWeakObjectPtr<APlayerController> Controller;
-FDelegateHandle Observer;
+FDelegateHandle Observer, Tick;
 int Step = 0, Settled = 0;
 bool Requested = false;
 uint32 Bytes = 0;
@@ -54,6 +58,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
 {
     if (!Requested || Report || !Saved.Cull || Saved.Cull->Entries.Num() != 1) return;
     const auto& Entry = Saved.Cull->Entries[0];
+    if (GPUInstances && (!Entry.Input.GPUInstance.Buffer || GWebGPUInstanceTestFrame.Step != 100 ||
+        Entry.InstanceSceneDataOffset != GWebGPUInstanceWriterFirst)) return;
     const int Active = Step == 2 ? 1 : Step == 4 ? 2 : 0;
     const auto& Resource = *Meshes[Active]->GetRenderData()->NaniteResourcesPtr;
     if (Entry.RuntimeResourceID != Resource.RuntimeResourceID) return;
@@ -68,6 +74,16 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
     Requested = false; Report = MakeShared<FJsonObject>();
     Report->SetNumberField(TEXT("step"), Step); Report->SetNumberField(TEXT("asset"), Active);
     Report->SetBoolField(TEXT("spline"), Spline);
+    Report->SetBoolField(TEXT("gpuInstances"), GPUInstances);
+    Report->SetBoolField(TEXT("legacyResetOrder"), LegacyResetOrder);
+    if (GPUInstances)
+    {
+        check(Entry.Proxy->GetInstanceSceneDataBuffers()->IsInstanceDataGPUOnly());
+        check(Entry.Proxy->GetInstanceSceneDataBuffers()->GetReadView().InstanceToPrimitiveRelative.IsEmpty());
+        Report->SetArrayField(TEXT("primitiveLocalToWorld"), Matrix(Entry.Proxy->GetLocalToWorld()));
+        Report->SetNumberField(TEXT("writerFirst"), GWebGPUInstanceWriterFirst);
+        Report->SetNumberField(TEXT("instance"), Entry.InstanceSceneDataOffset);
+    }
     TArray<TSharedPtr<FJsonValue>> PackedSpline;
     for (const auto& V : Entry.Input.SplineParams) for (int K = 0; K < 4; ++K)
         PackedSpline.Add(MakeShared<FJsonValueNumber>(FMath::AsUInt(V[K])));
@@ -99,7 +115,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
     const uint32 RecordBytes = WPO ? Saved.Raster.VisibleClusters->Desc.GetSize() : 0;
     const uint32 StreamBytes = WPO ? Entry.Input.MaxStreamingPages * (1u << 17) : 0;
     const uint32 RootBytes = WPO ? Entry.Input.NumRootPages * (1u << 15) : 0;
-    Bytes = GeometryOffset + RecordBytes + StreamBytes + RootBytes;
+    const uint32 GPUBytes = GPUInstances ? Entry.Input.GPUInstance.Buffer->Desc.Buffer->Desc.GetSize() : 0;
+    Bytes = GeometryOffset + RecordBytes + StreamBytes + RootBytes + GPUBytes;
     auto* Combined = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Bytes), TEXT("Nanite.Web.StreamingEvidence"));
     AddCopyBufferPass(Graph, Combined, 0, Snapshot.Buffer, 0, PixelBytes);
     AddCopyBufferPass(Graph, Combined, PixelBytes, Entry.Input.StreamingPageOwners->Desc.Buffer, 0, OwnerBytes);
@@ -118,6 +135,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
     }
     Report->SetNumberField(TEXT("recordBytes"), RecordBytes); Report->SetNumberField(TEXT("streamBytes"), StreamBytes);
     Report->SetNumberField(TEXT("rootBytes"), RootBytes);
+    Report->SetNumberField(TEXT("gpuBytes"), GPUBytes);
+    if (GPUInstances) AddCopyBufferPass(Graph, Combined, Bytes - GPUBytes, Entry.Input.GPUInstance.Buffer->Desc.Buffer, 0, GPUBytes);
     Report->SetNumberField(TEXT("pixelWords"), PixelBytes / 4); Report->SetNumberField(TEXT("ownerWords"), OwnerBytes / 4);
     Report->SetNumberField(TEXT("requestWords"), RequestBytes / 4);
     Readback = MakeUnique<FRHIGPUBufferReadback>(TEXT("Nanite.Web.StreamingTest")); AddEnqueueCopyPass(Graph, Readback.Get(), Combined, Bytes);
@@ -149,16 +168,28 @@ void Poll()
         Report->SetStringField(TEXT("streamPages"), FBase64::Encode(Geometry + RecordBytes, StreamBytes));
         Report->SetStringField(TEXT("rootPagesData"), FBase64::Encode(Geometry + RecordBytes + StreamBytes, RootBytes));
     }
+    if (GPUInstances)
+    {
+        Values.Reset(); const uint32 GPUBytes = Report->GetNumberField(TEXT("gpuBytes"));
+        for (uint32 I = (Bytes - GPUBytes) / 4; I < Bytes / 4; ++I) Values.Add(MakeShared<FJsonValueNumber>(Data[I]));
+        Report->SetArrayField(TEXT("gpuData"), Values);
+    }
     Readback->Unlock();
     FString Json; FJsonSerializer::Serialize(Report.ToSharedRef(), TJsonWriterFactory<>::Create(&Json)); FTCHARToUTF8 Utf8(*Json);
     MAIN_THREAD_EM_ASM({globalThis.__webNaniteStreamingTest = JSON.parse(UTF8ToString($0));}, Utf8.Get());
     Readback.Reset(); Report.Reset();
 }
+void WriteGPUInstances(UWorld* World, ELevelTick, float)
+{
+    if (Camera.IsValid() && World == Camera->GetWorld() && GPUInstances)
+        WriteWebGPUInstances(Cast<UWebNaniteGPUComponent>(Component), {100, 1, 0, 0});
+}
 }
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread); static int Last = 0;
-    if (RequestedStep == -1 || RequestedStep == -2) { if (Last != 0) return 0; WPO = true; Spline = RequestedStep == -2; return 1; }
+    if (RequestedStep == -4) { if (Last != 0) return 0; LegacyResetOrder = true; return 1; }
+    if (RequestedStep >= -3 && RequestedStep <= -1) { if (Last != 0) return 0; WPO = true; Spline = RequestedStep == -2; GPUInstances = RequestedStep == -3; return 1; }
     if (RequestedStep < 0 || RequestedStep > 10 || !GEngine || !Nanite::GStreamingManager.IsWebStreamingMode()) return 0;
     if (!RequestedStep) { ENQUEUE_RENDER_COMMAND(PollWebStreaming)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (RequestedStep != Last + 1) return 0;
@@ -197,9 +228,19 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
         Camera->SetActorLocationAndRotation(FVector(100000, 0, 100000), FRotator::ZeroRotator);
         Camera->GetCameraComponent()->SetFieldOfView(90); Camera->GetCameraComponent()->SetConstraintAspectRatio(false);
         Controller->SetViewTarget(Camera.Get());
-        Component = Spline ? static_cast<UStaticMeshComponent*>(NewObject<USplineMeshComponent>()) : NewObject<UStaticMeshComponent>(); Component->AddToRoot(); Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Component = GPUInstances ? static_cast<UStaticMeshComponent*>(NewObject<UWebNaniteGPUComponent>()) :
+            Spline ? static_cast<UStaticMeshComponent*>(NewObject<USplineMeshComponent>()) : NewObject<UStaticMeshComponent>();
+        if (GPUInstances)
+        {
+            Cast<UWebNaniteGPUComponent>(Component)->GPUInstanceCount = 1;
+            Component->bAffectDynamicIndirectLighting = false; Component->bAffectDistanceFieldLighting = false;
+        }
+        Component->AddToRoot(); Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         Component->SetMobility(EComponentMobility::Movable); Component->SetStaticMesh(Meshes[0]); Component->SetMaterial(0, Material);
         Component->SetWorldLocation(FVector(100250, 0, 100000));
+        // Retain the existing streaming sphere's world-space size and distant
+        // sample coverage while the individual pose remains GPU-owned.
+        if (GPUInstances) Component->SetWorldScale3D(FVector(1.0f / .55f));
         if (Spline)
         {
             auto* S = static_cast<USplineMeshComponent*>(Component);
@@ -208,6 +249,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
             S->SetStartAndEnd(FVector(0, 0, -100), FVector(60, 0, 200), FVector(30, 0, 100), FVector(-40, 0, 200), false);
         }
         Component->RegisterComponentWithWorld(World);
+        if (GPUInstances) Tick = FWorldDelegates::OnWorldTickStart.AddStatic(&WriteGPUInstances);
         // Fix sample positions for the independent resident/streaming geometry
         // comparison; temporal jitter/velocity is covered by the composition suite.
         const float Values[] = {1, 0, 1, 0, 0.01f, 1, 0};
@@ -216,6 +258,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
     }
     if (RequestedStep == 10)
     {
+        if (Tick.IsValid()) FWorldDelegates::OnWorldTickStart.Remove(Tick);
         Component->RemoveFromRoot(); Component->DestroyComponent();
         for (auto* Mesh : Meshes) Mesh->RemoveFromRoot();
         if (WPOMaterial) { WPOMaterial->RemoveFromRoot(); WPOMaterial = nullptr; }
@@ -237,8 +280,24 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
         Camera->SetActorLocation(FVector(100000, 0, 100000));
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"))->Set(1, ECVF_SetByCode);
     }
-    if (RequestedStep == 9)
+    if (RequestedStep == 9 && LegacyResetOrder)
+    {
         IConsoleManager::Get().ProcessUserConsoleInput(TEXT("r.Nanite.Streaming.ResetStreamingPool"), *GLog, Camera->GetWorld());
-    ENQUEUE_RENDER_COMMAND(RequestWebStreaming)([RequestedStep](FRHICommandListImmediate&) { check(!Requested && !Report && !Readback); Step = RequestedStep; Settled = 0; Requested = true; });
+        // Negative control: drain already queued render frames before arming
+        // observation, exposing the original lost-reset-sample ordering.
+        FlushRenderingCommands();
+    }
+    ENQUEUE_RENDER_COMMAND(RequestWebStreaming)([RequestedStep](FRHICommandListImmediate&) {
+        check(!Requested && !Report && !Readback); Step = RequestedStep; Settled = 0; Requested = true;
+        if (RequestedStep == 9 && !LegacyResetOrder)
+        {
+            // Hot cached pages can refill in one frame. Arm observation and
+            // request reset in the same render command so that frame is kept.
+            auto* Command = IConsoleManager::Get().FindConsoleObject(TEXT("r.Nanite.Streaming.ResetStreamingPool"));
+            check(Command && Command->AsCommand());
+            const bool ResetRequested = Command->AsCommand()->Execute({}, nullptr, *GLog);
+            check(ResetRequested);
+        }
+    });
     Last = RequestedStep; return 1;
 }

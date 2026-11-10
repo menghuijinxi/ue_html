@@ -9,6 +9,10 @@
 #include "ShaderPreprocessTypes.h"
 #include "WebGPUShaderCode.h"
 
+#define WEB_NANITE_INSTANCE_SHADER_ONLY 1
+#include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebInstance.cpp"
+#define WEB_NANITE_GPU_TEST_SHADER_ONLY 1
+#include "../../../../../tests/ue-web-smoke/Source/UEWebEngine/Private/WebNaniteGPUComponent.cpp"
 #define WEB_NANITE_HIERARCHY_SHADER_ONLY 1
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp"
 #define WEB_NANITE_RASTER_SHADER_ONLY 1
@@ -30,7 +34,8 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
     const auto* Target = GetTargetPlatformManagerRef().FindTargetPlatform(TEXT("Web"));
     if (!Format || !Target || Platform == SP_NumPlatforms) return 1;
     FGlobalShaderMap Map(Platform);
-    TArray<FGlobalShaderType*> Types = {&Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
+    TArray<FGlobalShaderType*> Types = {&Nanite::FWebNaniteInstanceDataCS::GetStaticType(), &FWebNaniteGPUInstanceTestCS::GetStaticType(),
+        &Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
         &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
         &Nanite::FWebNaniteScalarRasterPS::GetStaticType(), &Nanite::FWebNaniteMicroRasterCS::GetStaticType(),
         &Nanite::FWebNaniteHZBBuildCS::GetStaticType(), &Nanite::FWebNaniteOcclusionCS::GetStaticType(),

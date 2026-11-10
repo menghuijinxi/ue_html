@@ -30,6 +30,12 @@ const cases=[
  {name:'spline-static-occluded-final',previous:1,current:1,final:1,spline:0,keep:false},
  {name:'spline-deformed-near-plane-main',previous:1,current:1,final:0,spline:-800,keep:true},
  {name:'spline-deformed-near-plane-final',previous:1,current:1,final:1,spline:-800,keep:true},
+ {name:'gpu-instance-static-occluded-main',previous:1,current:1,final:0,gpuZ:0,keep:false},
+ {name:'gpu-instance-static-occluded-final',previous:1,current:1,final:1,gpuZ:0,keep:false},
+ {name:'gpu-instance-moved-near-main',previous:1,current:1,final:0,gpuZ:-800,keep:true},
+ {name:'gpu-instance-moved-near-final',previous:1,current:1,final:1,gpuZ:-800,keep:true},
+ {name:'gpu-instance-wpo-expanded',previous:1,current:1,final:0,gpuZ:0,gpuWPO:[0,0,800,0],keep:true},
+ {name:'gpu-instance-wpo-unbounded',previous:1,current:1,final:1,gpuZ:0,gpuWPO:[0,0,0,1],keep:true},
  {name:'input-error',previous:0,current:0,final:1,error:32,keep:false},
  // Count overflow and the sentinel keys both report errors. Consumers reject
  // the entire result when any error bit is set, including its valid prefix.
@@ -65,7 +71,11 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
     const candidates=test.capacity?Array.from({length:capacity},(_,i)=>keys[i%keys.length]):keys;
     const list=Array.from({length:capacity},(_,i)=>candidates[i]??0xffffffff);if(test.replace!==undefined)list[0]=test.replace;
     const state=[test.overflow?capacity+1:candidates.length,test.error||0,123,456];
+    const instance=new Float32Array(84);
+    instance.set([1,0,0,0,0,1,0,0,0,0,1,0,0,0,test.gpuZ||0,1],32);
+    instance.set(test.gpuWPO||[0,0,0,0],76);
     const resources={ClusterPageData:cluster,
+     WebInstanceData:makeBuffer(instance,GPUBufferUsage.STORAGE),
      WebStreamingPageOwners:makeBuffer(new Uint32Array([0xffffffff]),GPUBufferUsage.STORAGE),
      WebOcclusionInputKeys:makeBuffer(new Uint32Array(list),GPUBufferUsage.STORAGE),
      WebOcclusionInputState:makeBuffer(new Uint32Array(state),GPUBufferUsage.STORAGE),
@@ -84,7 +94,7 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
     su[17]=su[18]=su[22]=0x3c003c00;su[19]=0xffffffff;
     sf[20]=1/200;sf[21]=.5;
     su[24]=0x7fff7fff;su[25]=0x3c00ffff;su[26]=0x7fff7fff;su[27]=0xffff7fff;
-    const values={PageConstants:[0,0,0,0],MaxVisibleClusters:[capacity],WebOcclusionFirstRootPage:[1],WebOcclusionNumRootPages:[1],
+    const values={WebInstanceDataOffset:[test.gpuZ!==undefined?0:0xffffffff],PageConstants:[0,0,0,0],MaxVisibleClusters:[capacity],WebOcclusionFirstRootPage:[1],WebOcclusionNumRootPages:[1],
      WebOcclusionPreviousLocalToClip:matrix,WebOcclusionCurrentLocalToClip:matrix,WebOcclusionPreviousRect:[0,0,128,128],WebOcclusionCurrentRect:[0,0,128,128],
      WebOcclusionPreviousExtent:[128,128],WebOcclusionCurrentExtent:[128,128],WebOcclusionPreviousMaxMip:[7],WebOcclusionCurrentMaxMip:[7],WebOcclusionFinal:[test.final],
      WebOcclusionWPOBounds:test.wpo||[0,0,0,0],WebSplineEnabled:[test.spline!==undefined?1:0],WebSplineParams:[...su]};
@@ -113,6 +123,6 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
   assert(r.keys.slice(r.state[0]).every(k=>k===0xffffffff));r.pass=true;
  }
  const report={pass:true,local,...result,source:audit(__filename),inputs:[input,shader,nativeFile,native.products[0].file].map(audit),
-  sources:['WebNaniteOcclusion.usf','WebNaniteHZB.ush','WebNaniteSpline.ush'].map(f=>audit(path.join(root,'reference-engine/Engine/Shaders/Private/Nanite',f)))};
+  sources:['WebNaniteOcclusion.usf','WebNaniteHZB.ush','WebNaniteSpline.ush','WebNaniteInstanceData.ush'].map(f=>audit(path.join(root,'reference-engine/Engine/Shaders/Private/Nanite',f)))};
  fs.writeFileSync(path.join(__dirname,local?'results/nanite-local-occlusion-kernel.json':'results/nanite-occlusion.json'),JSON.stringify(report,null,2));console.log({pass:true,local,cases:cases.length});
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

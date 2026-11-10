@@ -46,7 +46,7 @@ if(fullScene){
 }
 verify(cook.shaderInventory.artifact);
 const inventory = read(cook.shaderInventory.artifact.file);
-const naniteTypes = ['HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
+const naniteTypes = ['InstanceDataCS','GPUInstanceTestCS','HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
   'ResolveCS','DepthVS','DepthPS','DepthSnapshotCS','GBufferVS','GBufferPS','GBufferSnapshotCS',
   'GBufferTilesCS','VisibilityClearCS','VisibilityResolveCS'].map(name => 'FWebNanite' + name);
 assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === (['FWebNaniteHierarchyCull_CS','FWebNaniteOcclusionCS'].includes(name) ? 2 : 1))),
@@ -88,7 +88,7 @@ const hierarchyShaders = read(hierarchyFile);
 assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
-assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 8);
+assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 10);
 const programmableFile = path.join(__dirname, 'results/nanite-programmable/verified.json');
 const programmableShaders = read(programmableFile); assert(programmableShaders.pass);
 [...programmableShaders.sources, programmableShaders.binary, ...programmableShaders.logs].forEach(verify);
@@ -99,7 +99,7 @@ assert(programmableShaders.cases.every(c => c.preprocessed && c.compiled && c.er
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }
-// The full Cook registers the 13 hierarchy/raster/depth/GBuffer shader types.
+// The full Cook registers the instance/hierarchy/raster/depth/GBuffer shaders.
 // Preserve its complete sections, including production entries in shared files.
 // Only the separately verified production transcode archive is appended.
 const streamingFile = path.join(__dirname, 'results/nanite-streaming-shaders/verified.json');

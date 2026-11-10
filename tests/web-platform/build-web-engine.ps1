@@ -55,6 +55,8 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Nanite/NaniteOrderedScatterUpdater.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteStreamingManager.h',
     'Source/Runtime/Engine/Private/Rendering/NaniteResources.cpp',
+    'Source/Runtime/Engine/Private/Nanite/NaniteWebInstance.cpp',
+    'Source/Runtime/Engine/Public/Rendering/NaniteWebInstance.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebHierarchy.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebScene.cpp',

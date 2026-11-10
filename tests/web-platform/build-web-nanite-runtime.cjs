@@ -54,7 +54,7 @@ const execute = (response, log) => {
 };
 const engineFiles = ['Private/Nanite/NaniteStreamingPageUploader.cpp',
   'Private/Rendering/NaniteStreamingManager.cpp', 'Public/Rendering/NaniteStreamingManager.h',
-  'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebHierarchy.cpp',
+  'Private/Rendering/NaniteResources.cpp', 'Private/Nanite/NaniteWebInstance.cpp', 'Public/Rendering/NaniteWebInstance.h', 'Private/Nanite/NaniteWebHierarchy.cpp',
   'Public/Rendering/NaniteWebHierarchy.h', 'Private/StaticMeshSceneProxy.cpp', 'Public/StaticMeshSceneProxy.h',
   'Private/InstancedStaticMesh.cpp',
   'Private/Nanite/NaniteWebScene.cpp', 'Public/Rendering/NaniteWebScene.h',
@@ -86,7 +86,7 @@ for (const file of engineFiles) {
   engineDependencies.push(source, overlay);
 }
 const engine = path.join(intermediate, 'Engine');
-const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarchy|Scene|Raster|HZB|Depth|GBuffer)\.cpp$/.test(f)).map((file, i) => {
+const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Instance|Hierarchy|Scene|Raster|HZB|Depth|GBuffer)\.cpp$/.test(f)).map((file, i) => {
   const unity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
     .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes('Runtime/Engine/' + file));
   assert.equal(unity.length, 1);
@@ -95,7 +95,7 @@ const tasks = engineFiles.filter(f => f.endsWith('.cpp') && !/NaniteWeb(Hierarch
 for (let i = tasks.length - 1; i >= 0; --i) if (tasks.findIndex(t => t[0] === tasks[i][0]) !== i) tasks.splice(i, 1);
 // A subsequent full UBT build can include the new source in an Engine unity.
 // Compile that unity when present; avoid linking a second shader registration.
-for (const kind of ['Hierarchy', 'Scene', 'Raster', 'HZB', 'Depth', 'GBuffer']) {
+for (const kind of ['Instance', 'Hierarchy', 'Scene', 'Raster', 'HZB', 'Depth', 'GBuffer']) {
 const hierarchyUnity = fs.readdirSync(engine).filter(n => /^Module\.Engine\.\d+\.cpp$/.test(n))
   .filter(n => fs.readFileSync(path.join(engine, n), 'utf8').includes(`Private/Nanite/NaniteWeb${kind}.cpp`));
 assert(hierarchyUnity.length <= 1);

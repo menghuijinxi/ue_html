@@ -37,7 +37,8 @@ try {
         'tests/ue-shader-host/Source/UEShaderHost/Private/WebNaniteProgrammableProbe.cpp',
         'tests/ue-shader-host/Source/UEShaderHost/Private/WebShaderProbeCommandlet.cpp',
         'reference-engine/Engine/Source/Runtime/Renderer/Private/Nanite/NaniteWebProgrammableRaster.cpp',
-        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteProgrammableRaster.usf') | ForEach-Object { Get-TaskAudit (Join-Path $taskRoot $_) }
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteProgrammableRaster.usf',
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteInstanceData.ush') | ForEach-Object { Get-TaskAudit (Join-Path $taskRoot $_) }
     $taskReport | Add-Member sources $taskSources
     $taskReport | Add-Member binary (Get-TaskAudit (Join-Path $taskRoot 'tests/ue-shader-host/Binaries/Win64/UnrealEditor-UEShaderHost.dll'))
     $taskReport | Add-Member logs (@('compiler.log','console.log') | ForEach-Object { Get-TaskAudit (Join-Path $taskOutput $_) })

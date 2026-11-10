@@ -3,10 +3,12 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const {decodeTriangle}=require('./verify-nanite-material-inputs.cjs');
 const spline=process.argv.includes('--spline'),splineReference=require('./nanite-spline-reference.cjs');
-const wpo=spline||process.argv.includes('--wpo');
-const output=path.join(__dirname,spline?'results/nanite-spline-streaming':wpo?'results/nanite-wpo-streaming':'results/nanite-streaming');fs.mkdirSync(output,{recursive:true});
+const gpuInstances=process.argv.includes('--gpu-instances');
+const legacyResetOrder=process.argv.includes('--legacy-reset-order');
+const wpo=spline||gpuInstances||process.argv.includes('--wpo');
+const output=path.join(__dirname,legacyResetOrder?'results/nanite-gpu-instances/failure-legacy-reset-order':gpuInstances?'results/nanite-gpu-streaming':spline?'results/nanite-spline-streaming':wpo?'results/nanite-wpo-streaming':'results/nanite-streaming');fs.mkdirSync(output,{recursive:true});
 const scalarVisibility=process.argv.includes('--scalar-visibility');
-const report={pass:false,scalarVisibility,wpo,spline,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
+const report={pass:false,scalarVisibility,wpo,spline,gpuInstances,legacyResetOrder,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
 if(spline)report.geometryReference=audit(require.resolve('./nanite-spline-reference.cjs'));
 if(wpo)report.geometryDecoder=audit(path.join(__dirname,'verify-nanite-material-inputs.cjs'));
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
@@ -22,6 +24,15 @@ function inverse(m){
 }
 function verifyVelocity(t){
  assert(t.hasVelocity&&t.evaluateWPO);assert(!t.cameraCut||t.step===1);
+ if(t.gpuInstances){
+  assert.deepEqual(t.localToWorld,[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],'no streamed CPU transform mirror');
+  assert.equal(t.writerFirst,t.instance,'streamed GPU writer allocation');
+  assert.equal(t.gpuData.length,84);assert.deepEqual(t.gpuData.slice(80),[1,1,1,0],'streamed GPU instance flags');
+  // The fixture writer has a fixed 0.55 scale and zero current/previous phase.
+  // Derive that pose from its inputs, independently of the GPU record readback.
+  const m=t.primitiveLocalToWorld.slice();for(let i=0;i<12;i++)m[i]*=.55;
+  t={...t,localToWorld:m};
+ }
  const splineParams=t.spline?splineReference.unpack(t.splineParams):null;
  if(t.cameraCut)return {cameraCut:true};
  const records=Buffer.from(t.visibleRecords,'base64'),stream=Buffer.from(t.streamPages,'base64'),roots=Buffer.from(t.rootPagesData,'base64');
@@ -93,6 +104,7 @@ function observe(scalarVisibility){
 function verify(t){
  assert.equal(t.wpo,wpo);
  assert.equal(t.spline,spline);
+ assert.equal(t.gpuInstances,gpuInstances);
  assert.equal(t.rejected,0);assert.equal(t.poolPages,12);assert.equal(t.cullState[1],0);assert(t.cullState[0]>0);
  assert(t.firstRoot>=t.poolPages);assert(t.history.length>=1);assert(t.history.every((v,i,a)=>!i||v.requestVersion>=a[i-1].requestVersion));
  const covered=[];for(let i=0;i<t.pixels.length;i+=12)if(t.pixels[i]){assert(t.pixels[i+2]);assert.equal(t.pixels[i+1],t.pixels[i+10]);covered.push(i/12);}
@@ -118,7 +130,8 @@ function compare(a,b){
  assert(report.logs.some(s=>s.includes('Command Line:')&&s.includes('-WebNaniteStreamingPages=12')));
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
  report.initialIO=await owner.evaluate(()=>globalThis.__webContentIO?.stats);
- if(wpo)assert.equal(await page.evaluate(mode=>__webEngineRPC('WebNaniteStreamingTest',mode),spline?-2:-1),1);
+ if(legacyResetOrder)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteStreamingTest',-4)),1);
+ if(wpo)assert.equal(await page.evaluate(mode=>__webEngineRPC('WebNaniteStreamingTest',mode),gpuInstances?-3:spline?-2:-1),1);
  for(let step=1;step<=9;step++){
   if(step===4)await owner.evaluate(()=>{
    const io=globalThis.__webContentIO,read=io.readRequest;
@@ -140,7 +153,7 @@ function compare(a,b){
  report.comparisons=report.tests.filter(t=>[3,4,5,6,8,9].includes(t.step)).map(t=>({step:t.step,...compare(report.tests[1],t)}));
  assert.notEqual(report.tests[4].runtimeID,report.tests[5].runtimeID,'resource reinitialization must advance version');
  assert(report.tests[0].residentClusters<report.tests[2].residentClusters,'cold start must refine');
- for(const t of report.tests.filter(t=>[4,5,6,9].includes(t.step)))assert(Math.min(...t.history.map(h=>h.residentClusters))<t.totalClusters,'evicted/reset resource must refill');
+ for(const t of report.tests.filter(t=>[4,5,6,9].includes(t.step)))assert(Math.min(...t.history.map(h=>h.residentClusters))<t.totalClusters,`evicted/reset resource must refill at step ${t.step}`);
  report.ioFailure=await owner.evaluate(()=>globalThis.__webStreamingIOFailure);
  assert.equal(report.ioFailure.failures,1);assert(report.ioFailure.retries>=1);
  assert(report.logs.some(s=>s.includes('Retrying IO request RuntimeResourceID:')),'native retry path must run');
