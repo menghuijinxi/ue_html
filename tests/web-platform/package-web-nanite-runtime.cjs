@@ -49,7 +49,7 @@ const inventory = read(cook.shaderInventory.artifact.file);
 const naniteTypes = ['HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
   'ResolveCS','DepthVS','DepthPS','DepthSnapshotCS','GBufferVS','GBufferPS','GBufferSnapshotCS',
   'GBufferTilesCS','VisibilityClearCS','VisibilityResolveCS'].map(name => 'FWebNanite' + name);
-assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === (name === 'FWebNaniteHierarchyCull_CS' ? 2 : 1))),
+assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === (['FWebNaniteHierarchyCull_CS','FWebNaniteOcclusionCS'].includes(name) ? 2 : 1))),
   'The scene Cook must include diagnostic and production Nanite shaders in complete sections');
 assert(inventory.types.some(type=>type.name==='FWebNaniteScalarRasterPS'&&type.permutations===2), 'Both scalar visibility phases must be cooked');
 assert(inventory.types.some(type=>type.name==='FWebNaniteMicroRasterCS'&&type.permutations===3),'All three valid compute raster permutations must be cooked');

@@ -90,7 +90,7 @@ const fail = error => send('failure', {message: error?.stack || error?.message |
 const rpcNames = new Set([
   'WebNaniteUploaderTest', 'WebNaniteResourcesTest', 'WebNaniteSceneTest', 'WebNaniteSceneCullTest',
   'WebNaniteGBufferTest', 'WebNaniteHZBTest', 'WebNaniteInstancesTest', 'WebNaniteViewsTest', 'WebNaniteMaterialsTest', 'WebNaniteProgrammableTest', 'WebNaniteCompositionTest', 'WebNaniteStreamingTest',
-  'WebRestoreCamera', 'WebNaniteSidednessTest', 'WebNaniteAutomaticSceneTest', 'WebNaniteInstanceDistanceTest', 'WebNaniteMaterialBoundsTest', 'WebNaniteMaterialBinsTest', 'WebNaniteHierarchyModeTest', 'WebTextureStreamingTestBudget', 'WebOcclusionTestMode', 'WebDefaultSamplesVisibility',
+  'WebRestoreCamera', 'WebNaniteSidednessTest', 'WebNaniteAutomaticSceneTest', 'WebNaniteInstanceDistanceTest', 'WebNaniteMaterialBoundsTest', 'WebNaniteMaterialBinsTest', 'WebNaniteHierarchyModeTest', 'WebNaniteOcclusionModeTest', 'WebTextureStreamingTestBudget', 'WebOcclusionTestMode', 'WebDefaultSamplesVisibility',
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest', 'WebMotionBenchmarkControl',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',

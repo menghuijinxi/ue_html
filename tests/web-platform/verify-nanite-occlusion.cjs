@@ -3,8 +3,10 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const root=path.resolve(__dirname,'../..'),dir=path.join(__dirname,'results/nanite-hierarchy-shaders/conversion');
 const read=f=>JSON.parse(fs.readFileSync(f,'utf8').replace(/^\uFEFF/,''));
+const local=process.argv.includes('--local');
 const input=fs.readdirSync(dir).map(n=>path.join(dir,n,'input.json')).filter(fs.existsSync)
- .filter(f=>read(f).shaderName==='FWebNaniteOcclusionCS').sort((a,b)=>fs.statSync(b).mtimeMs-fs.statSync(a).mtimeMs)[0];assert(input);
+ .filter(f=>{const r=read(f);return r.shaderName==='FWebNaniteOcclusionCS'&&r.shader.includes(`/FWebNaniteOcclusionCS/${local?1:0}:`);})
+ .sort((a,b)=>fs.statSync(b).mtimeMs-fs.statSync(a).mtimeMs)[0];assert(input);
 const shader=path.join(path.dirname(input),'output.wgsl'),metadata=read(input).metadata;
 for(const name of ['WebOcclusionPrevious','WebOcclusionCurrent'])
  assert.equal(metadata.spirvBindings.find(b=>b.name===name).sampledTextureLoadOnly,true);
@@ -27,9 +29,11 @@ const cases=[
  {name:'foreign-page',previous:0,current:0,final:1,replace:0,expectedError:2},
  {name:'invalid-cluster',previous:0,current:0,final:1,replace:(1<<8)|255,expectedError:2},
 ];
+for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
+ cases.push({name:`capacity-${capacity}-${keep?'visible':'occluded'}`,previous:keep?0:1,current:1,final:0,keep,capacity});
 (async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try {
  const tab=await browser.newPage();await tab.goto('http://127.0.0.1:8765/build/motion-blur-storage-formats/index.html');
- const result=await tab.evaluate(async ({code,metadata,page,keys,cases})=>{
+ const result=await tab.evaluate(async ({code,metadata,page,keys,cases,local})=>{
   const adapter=await navigator.gpu.requestAdapter(),device=await adapter.requestDevice(),errors=[];
   device.addEventListener('uncapturederror',e=>errors.push(e.error.message));device.pushErrorScope('validation');
   try {
@@ -49,13 +53,16 @@ const cases=[
    }
    const results=[];
    for(const test of cases){
-    const capacity=keys.length+2,list=[...keys,0xffffffff,0xffffffff];if(test.replace!==undefined)list[0]=test.replace;
-    const state=[test.overflow?capacity+1:keys.length,test.error||0,123,456];
+    const capacity=test.capacity||keys.length+2;
+    const candidates=test.capacity?Array.from({length:capacity},(_,i)=>keys[i%keys.length]):keys;
+    const list=Array.from({length:capacity},(_,i)=>candidates[i]??0xffffffff);if(test.replace!==undefined)list[0]=test.replace;
+    const state=[test.overflow?capacity+1:candidates.length,test.error||0,123,456];
     const resources={ClusterPageData:cluster,
+     WebStreamingPageOwners:makeBuffer(new Uint32Array([0xffffffff]),GPUBufferUsage.STORAGE),
      WebOcclusionInputKeys:makeBuffer(new Uint32Array(list),GPUBufferUsage.STORAGE),
      WebOcclusionInputState:makeBuffer(new Uint32Array(state),GPUBufferUsage.STORAGE),
-     WebOcclusionOutputKeys:makeBuffer(new Uint32Array(capacity+4).fill(0xffffffff),GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC),
-     WebOcclusionOutputState:makeBuffer(new Uint32Array([0,0,0,0,0x12345678,0x12345678,0x12345678,0x12345678]),GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC)};
+     WebOcclusionOutputKeys:makeBuffer(new Uint32Array(capacity+4).fill(0xffffffff).fill(local?0x12345678:0xffffffff,0,capacity),GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC),
+     WebOcclusionOutputState:makeBuffer(new Uint32Array([local?99:0,local?99:0,local?99:0,local?99:0,0x12345678,0x12345678,0x12345678,0x12345678]),GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC)};
     const data=new ArrayBuffer(b.$Globals.paddedSize),u=new Uint32Array(data),f=new Float32Array(data);
     const matrix=[.01,0,0,0,0,.01,0,0,0,0,.001,0,0,0,.4,1];
     const values={PageConstants:[0,0,0,0],MaxVisibleClusters:[capacity],WebOcclusionFirstRootPage:[1],WebOcclusionNumRootPages:[1],
@@ -66,25 +73,26 @@ const cases=[
     const group=device.createBindGroup({layout,entries:bindings.map(v=>({binding:v.binding,resource:
      v.name==='WebOcclusionPrevious'?textures[test.previous].createView():v.name==='WebOcclusionCurrent'?textures[test.current].createView():
      {buffer:resources[v.name],...(v.name==='WebOcclusionOutputKeys'?{size:capacity*4}:v.name==='WebOcclusionOutputState'?{size:16}:{})}}))});
-    const enc=device.createCommandEncoder(),pass=enc.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(1);pass.end();
+    const enc=device.createCommandEncoder(),pass=enc.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(local?1:Math.ceil(capacity/64));pass.end();
     const reads=[];for(const name of ['WebOcclusionOutputKeys','WebOcclusionOutputState']){const size=resources[name].size,buffer=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});enc.copyBufferToBuffer(resources[name],0,buffer,0,size);reads.push(buffer);}
     device.queue.submit([enc.finish()]);const output=[];for(const buffer of reads){await buffer.mapAsync(GPUMapMode.READ);output.push(Array.from(new Uint32Array(buffer.getMappedRange())));buffer.unmap();buffer.destroy();}
     results.push({name:test.name,keys:output[0],state:output[1]});for(const [name,buffer] of Object.entries(resources))if(name!=='ClusterPageData')buffer.destroy();
    }
    const error=await device.popErrorScope();if(error)throw Error(error.message);return {results,errors,features:[...device.features]};
   }finally{device.destroy();}
- },{code:fs.readFileSync(shader,'utf8'),metadata,page:[...page],keys,cases});
+ },{code:fs.readFileSync(shader,'utf8'),metadata,page:[...page],keys,cases,local});
  assert.deepEqual(result.errors,[]);
  for(let i=0;i<cases.length;i++){
   const c=cases[i],r=result.results[i];assert.equal(r.name,c.name);assert.equal(r.state[1],c.error||c.expectedError||0);
-  assert(r.state[0]<=keys.length+2);
+  const capacity=c.capacity||keys.length+2,candidates=c.capacity?Array.from({length:capacity},(_,i)=>keys[i%keys.length]):keys;
+  assert(r.state[0]<=capacity);
   assert.deepEqual(r.keys.slice(-4),Array(4).fill(0xffffffff));assert.deepEqual(r.state.slice(4),Array(4).fill(0x12345678));
-  if(!r.state[1]){const expected=c.keep?keys:[];assert.equal(r.state[0],expected.length);assert.equal(r.state[2],keys.length);
-   assert.equal(r.state[3],expected.reduce((s,k)=>s+triangles.get(k),0));assert.deepEqual(r.keys.slice(0,r.state[0]).sort((a,b)=>a-b),expected);}
+  if(!r.state[1]){const expected=c.keep?candidates:[];assert.equal(r.state[0],expected.length);assert.equal(r.state[2],candidates.length);
+   assert.equal(r.state[3],expected.reduce((s,k)=>s+triangles.get(k),0));assert.deepEqual(r.keys.slice(0,r.state[0]).sort((a,b)=>a-b),[...expected].sort((a,b)=>a-b));}
   if(c.error){assert.equal(r.state[0],0);assert.equal(r.state[2],0);assert.equal(r.state[3],0);}
   assert(r.keys.slice(r.state[0]).every(k=>k===0xffffffff));r.pass=true;
  }
- const report={pass:true,...result,source:audit(__filename),inputs:[input,shader,nativeFile,native.products[0].file].map(audit),
+ const report={pass:true,local,...result,source:audit(__filename),inputs:[input,shader,nativeFile,native.products[0].file].map(audit),
   sources:['WebNaniteOcclusion.usf','WebNaniteHZB.ush'].map(f=>audit(path.join(root,'reference-engine/Engine/Shaders/Private/Nanite',f)))};
- fs.writeFileSync(path.join(__dirname,'results/nanite-occlusion.json'),JSON.stringify(report,null,2));console.log({pass:true,cases:cases.length});
+ fs.writeFileSync(path.join(__dirname,local?'results/nanite-local-occlusion-kernel.json':'results/nanite-occlusion.json'),JSON.stringify(report,null,2));console.log({pass:true,local,cases:cases.length});
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
