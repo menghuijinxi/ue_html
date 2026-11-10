@@ -1,4 +1,22 @@
 'use strict';
+function resolveWebRenderSize(assets, args) {
+  let size = assets.fixedRenderSize;
+  if (args.some(arg => /^-ForceRes$/i.test(arg))) {
+    const dimension = key => {
+      const matches = args.filter(arg => new RegExp('^-' + key + '=', 'i').test(arg));
+      if (matches.length !== 1) throw new Error('ForceRes requires one ' + key);
+      return Number(matches[0].split('=')[1]);
+    };
+    const forced = {width: dimension('ResX'), height: dimension('ResY')};
+    if (size && (size.width !== forced.width || size.height !== forced.height))
+      throw new Error('Fixed render size disagrees with ForceRes');
+    size = forced;
+  }
+  if (size && ![size.width, size.height].every(value => Number.isSafeInteger(value) && value > 0))
+    throw new Error('Invalid fixed render size');
+  return size;
+}
+
 class WebInputMailbox {
   constructor(focused) {
     this.focused = focused;
@@ -345,10 +363,7 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   if (!['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode))
     throw new Error('Invalid browser input mode');
   const canvas = module.canvas;
-  const fixedRenderSize = assets.fixedRenderSize;
-  if (fixedRenderSize && ![fixedRenderSize.width, fixedRenderSize.height].every(value =>
-    Number.isInteger(value) && value > 0))
-    throw new Error('Invalid fixed render size');
+  const fixedRenderSize = resolveWebRenderSize(assets, module.arguments);
   globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest') || !!assets.pipelinePrewarm;
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
   if (!canvas.transferControlToOffscreen || typeof Worker === 'undefined')
@@ -632,4 +647,5 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
   diagnostics.engineWorker = {url: 'web-engine-worker.js', offscreenCanvas: true};
 };
 
-if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox};
+if (typeof module !== 'undefined' && module.exports)
+  module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox, resolveWebRenderSize};

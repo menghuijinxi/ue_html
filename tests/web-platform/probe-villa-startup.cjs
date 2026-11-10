@@ -11,6 +11,10 @@ assert(['chrome', 'msedge'].includes(browser) && (!affinity || browser === 'chro
 const selected = option('engine');
 const folder = option('folder');
 const direct = process.argv.includes('--direct');
+const serve = process.argv.includes('--serve');
+const settleFrames = Number(option('settle-frames') || 0);
+assert(Number.isInteger(settleFrames) && settleFrames >= 0 && settleFrames <= 600);
+assert(!serve || direct);
 const width = Number(option('width') || 1600), height = Number(option('height') || 1000);
 const dpr = Number(option('dpr') || 1.5);
 assert(!direct || (folder && selected === 'ours'));
@@ -26,7 +30,7 @@ fs.mkdirSync(temporary, {recursive: true}); process.env.TEMP = process.env.TMP =
 const directory = path.join(__dirname, 'results', 'villa-startup-' + tag);
 assert(!fs.existsSync(directory), 'Keep prior measurements; use a new tag');
 fs.mkdirSync(directory);
-const report = {date: new Date().toISOString(), profile, affinity, rounds, cvars, folder, browser,
+const report = {date: new Date().toISOString(), profile: direct ? undefined : profile, affinity, rounds, cvars, folder, browser,
   direct, width, height, dpr, runs: []};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 const recorder = fs.readFileSync(path.join(__dirname, 'web-startup-probe.js'), 'utf8');
@@ -43,9 +47,19 @@ report.plain = plain;
 report.motionSeconds = motionSeconds;
 report.package = require('./content-file-metadata.cjs').audit(
   path.join(__dirname, 'build', folder || profile.ours, 'asset-versions.json'));
-let context;
+const expectedPrewarm = require('./web-pipeline-prewarm-package.cjs')
+  .readPage(path.dirname(report.package.file)).assets.pipelinePrewarm;
+let context, server;
 (async () => {
   try {
+    let origin = option('origin') || (direct ? 'http://127.0.0.1:8765' : 'http://127.0.0.1:8766');
+    if (serve) {
+      server = require('./serve.cjs');
+      await new Promise((resolve, reject) => {
+        server.once('error', reject); server.listen(0, '127.0.0.1', resolve);
+      });
+      origin = 'http://127.0.0.1:' + server.address().port;
+    }
     const browserProfile = path.join(__dirname, 'build/browser-profiles/startup-' + tag);
     context = await chromium.launchPersistentContext(browserProfile, {
       channel: browser,
@@ -89,7 +103,7 @@ let context;
       if (!run) return;
       const text = message.text();
       fs.appendFileSync(path.join(directory, `${run.index}-${run.engine}.log`), text + '\n');
-      if (/GPU validation:|GPUValidationError|Fatal error:|Assertion failed:|HARNESS ABORT|DeviceLost/.test(text)) run.errors.push(text);
+      if (/GPU validation:|GPUValidationError|Fatal error:|Assertion failed:|HARNESS ABORT|DeviceLost|WebGPU device lost|Failed to create (compute|graphics) pipeline/.test(text)) run.errors.push(text);
     });
     page.on('pageerror', error => run?.errors.push(error.message));
     for (let index = 0; index < rounds; ++index) {
@@ -97,8 +111,8 @@ let context;
         run = {index, engine, errors: [], samples: []}; report.runs.push(run);
         console.log(JSON.stringify({index, engine, stage: 'starting'}));
         const began = Date.now();
-        await page.goto(direct ? `http://127.0.0.1:8765/build/${folder}/index.html` :
-          'http://127.0.0.1:8766/villa-engine-comparison.html' +
+        await page.goto(direct ? `${origin}/build/${folder}/index.html` :
+          origin + '/villa-engine-comparison.html' +
           (noLumen ? '?lighting=off' : '') + '#' + engine);
         if (!direct) await page.waitForSelector('iframe');
         const frame = direct ? page : await (await page.locator('iframe').elementHandle()).contentFrame();
@@ -127,6 +141,9 @@ let context;
           }
           await page.waitForTimeout(100);
         }
+        if (run.pass && engine === 'ours' && expectedPrewarm)
+          assert(run.last.prewarm?.ready && run.last.prewarm.adopted && run.last.prewarm.counts.hits > 0,
+            'Published pipeline prewarm must be adopted and used');
         if (run.pass && motionSeconds && engine === 'ours') {
           run.motion = [];
           const state = () => frame.evaluate(() => ({
@@ -174,6 +191,14 @@ let context;
             Math.abs(((sample.camera.yaw - before.camera.yaw + 540) % 360) - 180)));
           assert(run.maxTravelCm > 50 && run.maxTurnDegrees > 10, 'Real movement and turning required');
         }
+        if (run.pass && settleFrames && engine === 'ours') {
+          const before = await frame.evaluate(() => __webEngineFrames);
+          await frame.waitForFunction(before => globalThis.__webEngineFailure || __webEngineFrames >= before,
+            before + settleFrames, {timeout: 60000});
+          assert(!await frame.evaluate(() => globalThis.__webEngineFailure) && !run.errors.length,
+            'Pipeline capture failed during settling');
+          run.settleFrames = settleFrames;
+        }
         save();
         if (capture && run.pass && engine === 'ours') {
           const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
@@ -192,5 +217,8 @@ let context;
     report.pass = report.runs.every(run => run.pass);
     if (!report.pass) process.exitCode = 1;
   } catch (error) {report.error = error.stack; console.error(error); process.exitCode = 1;}
-  finally {save(); await context?.close();}
+  finally {
+    save(); await context?.close();
+    if (server) await new Promise(resolve => {server.close(resolve); server.closeAllConnections();});
+  }
 })().catch(error => {console.error(error); process.exitCode = 1;});

@@ -29,8 +29,7 @@ function applyAcceptedDefaults(folder){
   assert(/^\[\s*(?:['"][a-zA-Z0-9_./=:-]+['"]\s*,?\s*)*\]$/.test(args[1]));
   const values=[...args[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(m=>m[1])
     .filter(v=>!/^-(WebGameLocalClock|WebFrameScheduler=|WebOcclusionMode=|WebRHIWake=)/.test(v));
-  if(!values.includes('-WebPSOPrecacheTest'))values.push('-WebPSOPrecacheTest');
-  html=html.replace(args[0],'arguments: '+JSON.stringify(values)+',');
+  html=html.replace(args[0],'arguments: '+JSON.stringify(values.filter(v=>v!=='-WebPSOPrecacheTest'))+',');
   const configs=JSON.parse(fs.readFileSync(configPath));
   function append(file,text){
     let item=configs.find(c=>c.path===file);

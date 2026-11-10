@@ -2,6 +2,7 @@
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
+const origin = process.env.WEB_TEST_ORIGIN || 'http://127.0.0.1:8765';
 
 (async () => {
   const browser = await chromium.launch({
@@ -11,9 +12,10 @@ const {chromium} = require('playwright');
     for (const dpr of [1, 1.5, 2]) {
       const context = await browser.newContext({viewport: {width: 1280, height: 800}, deviceScaleFactor: dpr});
       try {
-        for (const fixed of [false, true]) {
+        for (const mode of ['adaptive', 'fixed', 'arguments']) {
+          const fixed = mode !== 'adaptive';
           const page = await context.newPage();
-          await page.goto('http://127.0.0.1:8766/');
+          await page.goto(origin + '/');
           await page.setContent('<canvas id="canvas" width="1920" height="1080" tabindex="0" style="width:960px;height:540px"></canvas>');
           await page.evaluate(() => {
             globalThis.messages = [];
@@ -31,13 +33,14 @@ const {chromium} = require('playwright');
             };
           });
           await page.addScriptTag({path: path.join(__dirname, 'web-engine-host.js')});
-          await page.evaluate(fixed => startWebEngineWorker({
-            assets: {versions: {'web-engine-worker.js': 'test'}, ...(fixed ?
+          await page.evaluate(mode => startWebEngineWorker({
+            assets: {versions: {'web-engine-worker.js': 'test'}, ...(mode === 'fixed' ?
               {fixedRenderSize: {width: 1920, height: 1080}} : {})},
-            module: {canvas: document.getElementById('canvas'), arguments: []},
+            module: {canvas: document.getElementById('canvas'), arguments: mode === 'arguments' ?
+              ['-ResX=1920', '-ResY=1080', '-ForceRes'] : []},
             record() {}, failed(error) {throw Error(error);}, stage() {},
             diagnostics: {mode: 'normal'}, render() {}
-          }), fixed);
+          }), mode);
           assert.deepEqual(await page.evaluate(() => messages.find(m => m.type === 'start').browser),
             fixed ? {width: 1920, height: 1080, dpr: 1} : {width: 960, height: 540, dpr});
           for (const width of [960, 480]) {
@@ -61,7 +64,7 @@ const {chromium} = require('playwright');
               assert.deepEqual(event.slice(3, 5), expected);
           }
           await page.close();
-          console.log(JSON.stringify({dpr, fixed, pass: true}));
+          console.log(JSON.stringify({dpr, mode, pass: true}));
         }
       } finally { await context.close(); }
     }
@@ -72,7 +75,7 @@ const {chromium} = require('playwright');
       body: '<canvas id="canvas" width="2880" height="1620"></canvas>' +
         '<script>globalThis.__webRenderView={width:2880,height:1620}</script>'
     }));
-    await page.goto('http://127.0.0.1:8766/villa-engine-comparison.html#ours');
+    await page.goto(origin + '/villa-engine-comparison.html#ours');
     await page.waitForFunction(() => document.getElementById('render-status').dataset.state === 'mismatch');
     assert((await page.locator('#render-status').textContent()).includes('尺寸不一致'));
     const frame = await (await page.locator('iframe').elementHandle()).contentFrame();

@@ -65,7 +65,7 @@ const server = http.createServer(async (request, response) => {
     stream.pipe(response);
   } catch { if (!response.headersSent) response.writeHead(404).end(); else response.destroy(); }
 });
-server.listen(Number(process.env.PORT || 8765), host, () => {
+if (require.main === module) server.listen(Number(process.env.PORT || 8765), host, () => {
   const port = server.address().port;
   console.log(`P0 server listening on ${host}:${port}`);
   if (host === '0.0.0.0') {
@@ -82,3 +82,4 @@ server.listen(Number(process.env.PORT || 8765), host, () => {
     console.log(`P0 server http://${address}:${port}`);
   }
 });
+module.exports = server;

@@ -4,6 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {writeVersions}=require('./asset-versions.cjs');
 const {audit,metadata}=require('./content-file-metadata.cjs');
 const {applyAcceptedDefaults}=require('./web-accepted-defaults.cjs');
+const {releaseOptions,finalizeDesktopRelease}=require('./web-release-defaults.cjs');
 const option=n=>process.argv.find(v=>v.startsWith('--'+n+'='))?.slice(n.length+3);
 const baseline=option('baseline')||'villa-scheduling-pipeline-v74',name=option('output');
 assert(name && [baseline,name].every(v=>/^[a-z0-9-]+$/.test(v)));
@@ -123,10 +124,11 @@ assets.versions['web-engine-host.js']=crypto.createHash('sha256').update(fs.read
 html=html.replace(match[0],'const localRuntimeAssets = '+JSON.stringify(assets)+';');
 fs.writeFileSync(path.join(dest,'index.html'),html);
 const performanceProfile=acceptedDefaults?applyAcceptedDefaults(dest):undefined;
-const products=Object.keys(versions).map(n=>audit(path.join(dest,n)));
+const releaseDefaults=acceptedDefaults?finalizeDesktopRelease(dest,releaseOptions()):undefined;
+const products=[...new Set([...Object.keys(versions),...(releaseDefaults?.files||[])])].map(n=>audit(path.join(dest,n)));
 writeVersions(dest,products);
 fs.writeFileSync(path.join(__dirname,'results',name+'-package.json'),JSON.stringify({baseline,name,settings,cores,noMouseSmoothing,pageFrameMaxFPS:acceptedDefaults?0:assets.pageFrameMaxFPS,clock:acceptedDefaults?'page':'owner',lookahead,mergeCompute,replayScratch,currentWorker,experimental:!acceptedDefaults,
-  performanceProfile,defaultsSource:acceptedDefaults?audit(require.resolve('./web-accepted-defaults.cjs')):undefined,
+  performanceProfile,releaseDefaults,defaultsSource:acceptedDefaults?audit(require.resolve('./web-accepted-defaults.cjs')):undefined,
   performanceAccepted:acceptedDefaults,runtimeBuild:runtimeBuild?audit(runtimeBuild):null,source:audit(__filename),baselineManifest:audit(path.join(source,'asset-versions.json')),
   candidateManifest:audit(path.join(dest,'asset-versions.json'))},null,2));
 console.log(dest);

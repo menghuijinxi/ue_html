@@ -6,6 +6,8 @@ const {metadata} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
 const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
+const {releaseOptions, finalizeDesktopRelease} = require('./web-release-defaults.cjs');
+const startupOptions = releaseOptions();
 const directory = path.join(__dirname, 'results');
 const desktop = process.argv.includes('--desktop');
 const threads = process.argv.includes('--threads');
@@ -14,7 +16,10 @@ assert(!distanceFields || desktop, 'Distance fields require the desktop renderer
 assert(!threads || desktop, 'Threaded engine requires the desktop renderer');
 const runtime = threads ? 'UEWebEngineThreads' : 'UEWebEngine';
 const suffix = (distanceFields ? '-distance-fields' : '') + (threads ? '-threads' : desktop ? '-desktop' : '');
-const output = path.join(__dirname, 'build/ue-default-template' + suffix);
+const outputFolder = process.argv.find(value => value.startsWith('--output-folder='))?.slice(16) ||
+  'ue-default-template' + suffix;
+assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outputFolder));
+const output = path.join(__dirname, 'build', outputFolder);
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const audit = file => ({file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
@@ -29,6 +34,8 @@ try {
   const buildFile = path.join(directory, `web-engine-full${threads ? '-thread' : ''}-build-results.json`);
   const build = read(buildFile);
   const acceptedDefaults = threads && !process.argv.includes('--legacy-defaults');
+  assert(!Object.values(startupOptions).some(Boolean) || acceptedDefaults,
+    'Startup options require an ordinary desktop threaded package');
   if (acceptedDefaults) assert(build.lowerMemory64, 'Default desktop runtime requires lowered memory64; rebuild or select --legacy-defaults');
   assert(build.pass && build.buildSucceeded && build.exitCode === 0 &&
     (build.fullLinkAttempted || threads && build.fullLinkVerified),
@@ -82,7 +89,14 @@ try {
   if (acceptedDefaults) {
     report.performanceProfile = applyAcceptedDefaults(output);
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
-    report.products = report.products.map(item => audit(item.file));
+    report.releaseDefaults = finalizeDesktopRelease(output, startupOptions);
+    report.startupPrewarm = report.releaseDefaults.prewarm;
+    report.engineArguments = report.releaseDefaults.engineArguments;
+    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs',
+      'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
+      audit(path.join(__dirname, name))));
+    report.products = [...new Set([...report.products.map(item => item.file),
+      ...report.releaseDefaults.files.map(name => path.join(output, name))])].map(audit);
   }
   report.products.push(writeVersions(output, report.products));
   report.totalBytes = report.products.reduce((total, item) => total + fs.statSync(item.file).size, 0);

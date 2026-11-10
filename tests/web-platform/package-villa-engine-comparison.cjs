@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 const {audit, metadata} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
+const {releaseOptions, finalizeDesktopRelease} = require('./web-release-defaults.cjs');
 const profile = require('./villa-engine-comparison.json');
 const source = path.join(__dirname, 'build', profile.baseline);
 const dest = path.join(__dirname, 'build', profile.ours);
@@ -62,9 +63,11 @@ const args = JSON.parse(argsMatch[1]);
 args.push(`-ResX=${profile.width}`, `-ResY=${profile.height}`, '-ForceRes');
 html = html.replace(argsMatch[0], 'arguments: ' + JSON.stringify(args) + ',');
 fs.writeFileSync(htmlPath, html);
+const releaseDefaults = finalizeDesktopRelease(dest, releaseOptions());
 writeVersions(dest, fs.readdirSync(dest).map(name => audit(path.join(dest, name))));
 const report = {
   date: new Date().toISOString(), profile, performanceProfile, runtimePackage: profile.runtime,
+  releaseDefaults, startupPrewarm: releaseDefaults.prewarm,
   runtimeManifest: audit(runtimeManifest), products,
   baselineManifest: audit(path.join(source, 'asset-versions.json')),
   candidateManifest: audit(path.join(dest, 'asset-versions.json')),

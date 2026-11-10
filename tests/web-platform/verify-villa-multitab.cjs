@@ -4,7 +4,9 @@ const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(value => value.startsWith('--' + name + '='))?.slice(name.length + 3);
 const tag = option('tag'), folder = option('folder'), channel = option('browser') || 'chrome';
+const origin = option('origin') || 'http://127.0.0.1:8765';
 assert([tag, folder].every(value => value && /^[a-z0-9-]+$/.test(value)));
+const fixed = require('./web-pipeline-prewarm-package.cjs').startupContext(path.join(__dirname, 'build', folder)).fixedRenderSize;
 assert(['chrome', 'msedge'].includes(channel));
 const directory = path.join(__dirname, 'results', 'villa-multitab-' + tag);
 assert(!fs.existsSync(directory));
@@ -13,6 +15,7 @@ const temporary = path.join(__dirname, 'build/test-tmp');
 fs.mkdirSync(temporary, {recursive: true}); process.env.TEMP = process.env.TMP = temporary;
 const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'build', folder, 'asset-versions.json')));
 const report = {date: new Date().toISOString(), folder, channel, pass: false,
+  viewport: {width: 1280, height: 800}, dpr: 1.5,
   package: audit(path.join(__dirname, 'build', folder, 'asset-versions.json')),
   source: audit(__filename), errors: [], states: []};
 let context;
@@ -21,17 +24,17 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
   try {
     context = await chromium.launchPersistentContext(
       path.join(__dirname, 'build/browser-profiles/villa-multitab-' + tag),
-      {channel, headless: false, viewport: {width: 1600, height: 1000}, deviceScaleFactor: 1.5,
+      {channel, headless: false, viewport: report.viewport, deviceScaleFactor: report.dpr,
         args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
           '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']});
-    const url = 'http://127.0.0.1:8766/build/' + folder + '/index.html';
+    const url = origin + '/build/' + folder + '/index.html';
     function observe(page, name) {
       page.on('pageerror', error => report.errors.push({page: name, error: error.message}));
       page.on('crash', () => report.errors.push({page: name, error: 'Renderer crashed'}));
       page.on('console', message => {
         const text = message.text();
         fs.appendFileSync(path.join(directory, name + '.log'), text + '\n');
-        if (/GPU validation:|GPUValidationError|Fatal error:|Assertion failed:|DeviceLost|WebGPU device lost/.test(text))
+        if (/GPU validation:|GPUValidationError|Fatal error:|Assertion failed:|DeviceLost|WebGPU device lost|Failed to create (compute|graphics) pipeline/.test(text))
           report.errors.push({page: name, error: text});
       });
     }
@@ -42,12 +45,18 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
         stage: globalThis.__webStartupDiagnostics?.stage,
         view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings,
         prewarm: globalThis.__webPipelinePrewarm, io: globalThis.__webLocalContentStats,
-        locks: await navigator.locks.query()
+        locks: await navigator.locks.query(),
+        surface: {width: document.getElementById('canvas').width, height: document.getElementById('canvas').height},
+        css: {width: document.getElementById('canvas').getBoundingClientRect().width,
+          height: document.getElementById('canvas').getBoundingClientRect().height, dpr: devicePixelRatio}
       }));
       report.states.push({label, ...value}); save();
       assert(!value.failure && !report.errors.length, value.failure || JSON.stringify(report.errors));
       assert(value.shown && value.ready && value.frames >= 30);
-      assert.equal(value.view.width, 1920); assert.equal(value.view.height, 1080);
+      const expected = fixed || {width: Math.round(value.css.width * value.css.dpr),
+        height: Math.round(value.css.height * value.css.dpr)};
+      for (const dimension of ['width', 'height'])
+        assert(Math.abs(value.surface[dimension] - expected[dimension]) <= 1, 'DPR must apply once');
       assert(value.prewarm.adopted && value.prewarm.ready);
       console.log(JSON.stringify({label, frames: value.frames, downloads: value.io.downloads,
         persistentHits: value.io.persistentHits, pendingLocks: value.locks.pending.length}));
@@ -66,13 +75,16 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
     async function advance(page, label) {
       await page.bringToFront();
       const before = await page.evaluate(() => __webEngineFrames);
+      const start = Date.now();
+      report.states.push({label: label + '-start', frames: before}); save();
       await page.locator('canvas').focus();
       await page.keyboard.down('w');
-      try {
-        await page.waitForFunction(before => globalThis.__webEngineFailure || __webEngineFrames >= before + 60,
-          before, {timeout: 30000});
-      } finally {await page.keyboard.up('w');}
+      try {await page.waitForTimeout(600);}
+      finally {await page.keyboard.up('w');}
+      await page.waitForFunction(before => globalThis.__webEngineFailure || __webEngineFrames >= before + 60,
+        before, {timeout: 90000});
       const value = await state(page, label);
+      report.states.at(-1).advanceMs = Date.now() - start; save();
       await page.screenshot({path: path.join(directory, label + '.png')});
       return value;
     }

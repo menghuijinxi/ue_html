@@ -5,7 +5,7 @@ const {metadata, audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
 const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
-const {prepareRecordedPrewarm, installRecordedPrewarm} = require('./web-pipeline-prewarm-package.cjs');
+const {releaseOptions, finalizeDesktopRelease} = require('./web-release-defaults.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
@@ -27,9 +27,7 @@ const outputFolder = process.argv.find(value => value.startsWith('--output-folde
   id + suffix + (parallelRecording ? '-parallel-recording' : '');
 assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outputFolder));
 const output = path.join(__dirname, 'build', outputFolder);
-const pipelineCorpus = process.argv.find(value => value.startsWith('--pipeline-corpus='))?.slice(18);
-const capturePrewarm = process.argv.includes('--capture-prewarm');
-const legacyPrecache = process.argv.includes('--legacy-precache');
+const startupOptions = releaseOptions();
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
@@ -42,11 +40,8 @@ const report = {date: new Date().toISOString(), pass: false, id, output, archite
   completeUEScene: false};
 try {
   const acceptedDefaults = threads && !trace && !process.argv.includes('--legacy-defaults');
-  assert([!!pipelineCorpus, capturePrewarm, legacyPrecache].filter(Boolean).length <= 1,
-    'Select one startup mode');
-  assert(!acceptedDefaults || pipelineCorpus || capturePrewarm || legacyPrecache,
-    'Desktop releases require --pipeline-corpus=<capture>; use --capture-prewarm for a capture base or --legacy-precache for diagnostics');
-  assert(!pipelineCorpus || acceptedDefaults, 'Recorded prewarm requires an ordinary desktop threaded package');
+  assert(!Object.values(startupOptions).some(Boolean) || acceptedDefaults,
+    'Startup options require an ordinary desktop threaded package');
   const buildOption = process.argv.find(value => value.startsWith('--build-report='))?.slice(15);
   const buildFile = buildOption ? path.resolve(buildOption) : path.join(directory, `web-engine-full${trace ? '-thread-trace' : threads ? '-thread' : ''}-build-results.json`);
   const stageFile = path.join(directory, `${stagePrefix}-stage-results.json`);
@@ -125,24 +120,16 @@ try {
   if (acceptedDefaults) {
     report.performanceProfile = applyAcceptedDefaults(output);
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
-    report.engineArguments.push('-WebPSOPrecacheTest');
   }
   const extraFiles = [];
-  if (pipelineCorpus) {
-    report.startupPrewarm = installRecordedPrewarm(output, prepareRecordedPrewarm(output, pipelineCorpus));
-    report.engineArguments = report.startupPrewarm.engineArguments;
-    extraFiles.push(...report.startupPrewarm.files);
-    report.sourceFiles.push(...['web-pipeline-prewarm-package.cjs', 'web-pipeline-prewarm.js'].map(name =>
+  if (acceptedDefaults) {
+    report.releaseDefaults = finalizeDesktopRelease(output, startupOptions);
+    report.startupPrewarm = report.releaseDefaults.prewarm;
+    report.engineArguments = report.releaseDefaults.engineArguments;
+    extraFiles.push(...report.releaseDefaults.files);
+    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs',
+      'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
       audit(path.join(__dirname, name))));
-  } else if (capturePrewarm) {
-    const file = path.join(output, 'index.html');
-    const content = fs.readFileSync(file, 'utf8'), args = content.match(/arguments: (\[[^\n]+\]),/);
-    assert(args);
-    report.engineArguments = JSON.parse(args[1]).filter(arg => arg !== '-WebPSOPrecacheTest');
-    fs.writeFileSync(file, content.replace(args[0], 'arguments: ' + JSON.stringify(report.engineArguments) + ','));
-    report.startupPrewarm = {mode: 'capture-only', releaseReady: false};
-  } else if (legacyPrecache) {
-    report.startupPrewarm = {mode: 'legacy-speculative-diagnostic', releaseReady: false};
   }
   report.products = [...new Set(['index.html', ...copies.map(([, name]) => name), ...extraFiles])]
     .map(name => audit(path.join(output, name)));
