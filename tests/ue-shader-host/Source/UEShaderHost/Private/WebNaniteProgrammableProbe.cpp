@@ -36,6 +36,50 @@ public:
     { return FMaterialShaderMap::FindCompilingShaderMap(GetGameThreadCompilingShaderMapId()); }
 };
 
+UMaterial* CreateWebNaniteSkinMaterial(int32);
+int32 RunWebNaniteSkinningMaterials(const FString& Params){
+ FString Output;if(!FParse::Value(*Params,TEXT("Output="),Output))return 1;IFileManager::Get().MakeDirectory(*Output,true);
+ const auto Platform=FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
+ const IShaderFormat* Format=GetTargetPlatformManagerRef().FindShaderFormat(UE::WebGPUShader::SM5Format);if(!Format||Platform==SP_NumPlatforms)return 1;
+ TArray<TSharedPtr<FJsonValue>> Cases;bool Passed=true;
+ for(int32 CaseIndex=0;CaseIndex<5;++CaseIndex){auto* Material=CreateWebNaniteSkinMaterial(CaseIndex);const FString Name=Material->GetName();
+        TRefCountPtr<FWebNaniteProgrammableProbeMaterial> Resource = new FWebNaniteProgrammableProbeMaterial();
+        Resource->SetMaterial(Material, nullptr, Platform, EMaterialQualityLevel::High);
+        if (!Resource->CacheShaders(EMaterialShaderPrecompileMode::None)) return 1;
+        auto* Map = Resource->GetProbeShaderMap(); if (!Map || !Map->GetPendingCompilerEnvironment()) return 1;
+        const FCompilationShaderParameters MP(Resource.GetReference(), Map->GetCompilationOutput());
+        for (const auto* Type : {&Nanite::FWebNaniteProgrammableVS::GetStaticType(), &Nanite::FWebNaniteProgrammablePS::GetStaticType()})
+        for (int32 PermutationId : {0, 1, 3})
+        {
+            if (Type->GetFrequency() == SF_Vertex && PermutationId != 0) continue;
+            FShaderCompileJob Job; Job.Key = FShaderCompileJobKey(Type, Platform, nullptr, PermutationId);
+            Job.Input.SharedEnvironment = Map->GetPendingCompilerEnvironment();
+            Type->ModifyCompilationEnvironment(FMaterialShaderPermutationParameters(Platform, MP, PermutationId,
+                EShaderPermutationFlags::HasEditorOnlyData), Job.Input.Environment);
+            GlobalBeginCompileShader(Name, nullptr, Type, nullptr, PermutationId, Type->GetShaderFilename(), Type->GetFunctionName(),
+                FShaderTarget(Type->GetFrequency(), Platform), Job.Input, false);
+            Job.Input.ShaderFormat = UE::WebGPUShader::SM5Format; Job.Input.ExtraSettings.bExtractShaderSource = true;
+            Format->ModifyShaderCompilerInput(Job.Input);
+            FShaderCompilerInput Merged = Job.Input; Merged.Environment.Merge(*Job.Input.SharedEnvironment);
+            const bool Preprocessed = Format->PreprocessShader(Job.Input, Merged.Environment, Job.PreprocessOutput);
+            const FString Stem = FString::Printf(TEXT("%s-%s-%d"), *Name, Type->GetFrequency() == SF_Vertex ? TEXT("vs") : TEXT("ps"), PermutationId);
+            FFileHelper::SaveStringToFile(FString(Job.PreprocessOutput.GetUnstrippedSourceView()), *(Output / Stem + TEXT(".hlsl")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
+            if (Preprocessed) Format->CompilePreprocessedShader(Merged, Job.PreprocessOutput, Job.Output);
+            auto Result = MakeShared<FJsonObject>(); Result->SetStringField(TEXT("name"), Name);
+            Result->SetStringField(TEXT("frequency"), Type->GetFrequency() == SF_Vertex ? TEXT("vertex") : TEXT("pixel"));
+            Result->SetNumberField(TEXT("permutation"), PermutationId); Result->SetBoolField(TEXT("preprocessed"), Preprocessed);
+            Result->SetBoolField(TEXT("compiled"), Job.Output.bSucceeded);
+            TArray<TSharedPtr<FJsonValue>> Errors;
+            for (const auto& Error : Job.PreprocessOutput.GetErrors()) Errors.Add(MakeShared<FJsonValueString>(Error.GetErrorString()));
+            for (const auto& Error : Job.Output.Errors) Errors.Add(MakeShared<FJsonValueString>(Error.GetErrorString()));
+            Result->SetArrayField(TEXT("errors"), Errors); Cases.Add(MakeShared<FJsonValueObject>(Result));
+            Passed &= Preprocessed && Job.Output.bSucceeded;
+            UE_LOG(LogTemp, Display, TEXT("WEB_NANITE_PROGRAMMABLE name=%s permutation=%d compiled=%d"), *Name, PermutationId, Job.Output.bSucceeded);
+        }
+}
+ auto Report=MakeShared<FJsonObject>();Report->SetBoolField(TEXT("pass"),Passed);Report->SetArrayField(TEXT("cases"),Cases);FString Json;FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));FFileHelper::SaveStringToFile(Json,*(Output/TEXT("materials.json")),FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);return Passed?0:1;
+}
+
 int32 RunWebNaniteProgrammableProbe(const FString& Params)
 {
     FString Output, FixtureDirectory;

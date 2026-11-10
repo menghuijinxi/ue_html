@@ -29,11 +29,65 @@ public:
     virtual bool ShouldCache(const FShaderType* Type, const FVertexFactoryType* Factory) const override
     {
         return Factory && FString(Factory->GetName()) == TEXT("FWebNaniteVertexFactory") &&
-            FString(Type->GetName()) == TEXT("TBasePassPSFNoLightMapPolicy");
+            FString(Type->GetName()).StartsWith(TEXT("TBasePassPSFNoLightMapPolicy"));
     }
     FMaterialShaderMap* GetProbeShaderMap() const
     { return FMaterialShaderMap::FindCompilingShaderMap(GetGameThreadCompilingShaderMapId()); }
 };
+
+UMaterial* CreateWebNaniteSkinMaterial(int32);
+int32 RunWebNaniteSkinningBasePass(const FString& Params)
+{
+    FString Output; if (!FParse::Value(*Params, TEXT("Output="), Output)) return 1;
+    IFileManager::Get().MakeDirectory(*Output, true);
+    const auto Platform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
+    const IShaderFormat* Format = GetTargetPlatformManagerRef().FindShaderFormat(UE::WebGPUShader::SM5Format);
+    const auto* Factory = FindVertexFactoryType(FHashedName(TEXT("FWebNaniteVertexFactory")));
+    if (!Factory || !Format || Platform == SP_NumPlatforms) return 1;
+    TArray<const FShaderType*> Types;
+    for (TLinkedList<FShaderType*>::TIterator It(FShaderType::GetTypeList()); It; ++It)
+        if (FString((*It)->GetName()).StartsWith(TEXT("TBasePassPSFNoLightMapPolicy"))) Types.Add(*It);
+    if (Types.IsEmpty()) return 1;
+    TArray<TSharedPtr<FJsonValue>> Cases;
+    for (int32 CaseIndex = 0; CaseIndex < 5; ++CaseIndex)
+    for (const FShaderType* Type : Types)
+    {
+        auto* Material = CreateWebNaniteSkinMaterial(CaseIndex); const FString Name = Material->GetName();
+        TRefCountPtr<FWebNaniteProbeMaterial> Resource = new FWebNaniteProbeMaterial();
+        Resource->SetMaterial(Material, nullptr, Platform, EMaterialQualityLevel::High);
+        if (!Resource->CacheShaders(EMaterialShaderPrecompileMode::None)) return 1;
+        auto* Map = Resource->GetProbeShaderMap(); if (!Map || !Map->GetPendingCompilerEnvironment()) return 1;
+        FShaderCompileJob Job;
+        Job.Key = FShaderCompileJobKey(Type, Platform, Factory, 0);
+        Job.Input.SharedEnvironment = Map->GetPendingCompilerEnvironment();
+        const FCompilationShaderParameters MP(Resource.GetReference(), Map->GetCompilationOutput());
+        Factory->ModifyCompilationEnvironment(FVertexFactoryShaderPermutationParameters(Platform, MP, Factory, Type,
+            EShaderPermutationFlags::HasEditorOnlyData), Job.Input.Environment);
+        Type->ModifyCompilationEnvironment(FMeshMaterialShaderPermutationParameters(Platform, MP, Factory, 0,
+            EShaderPermutationFlags::HasEditorOnlyData), Job.Input.Environment);
+        GlobalBeginCompileShader(Name, Factory, Type, nullptr, 0, Type->GetShaderFilename(), Type->GetFunctionName(),
+            FShaderTarget(SF_Pixel, Platform), Job.Input, false);
+        Job.Input.ShaderFormat = UE::WebGPUShader::SM5Format;
+        Job.Input.ExtraSettings.bExtractShaderSource = true;
+        Format->ModifyShaderCompilerInput(Job.Input);
+        FShaderCompilerInput Merged = Job.Input; Merged.Environment.Merge(*Job.Input.SharedEnvironment);
+        const bool Preprocessed = Format->PreprocessShader(Job.Input, Merged.Environment, Job.PreprocessOutput);
+        FFileHelper::SaveStringToFile(FString(Job.PreprocessOutput.GetUnstrippedSourceView()), *(Output / (Name + TEXT("-") + Type->GetName() + TEXT(".hlsl"))), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
+        if (Preprocessed) Format->CompilePreprocessedShader(Merged, Job.PreprocessOutput, Job.Output);
+        auto Result = MakeShared<FJsonObject>(); Result->SetStringField(TEXT("shader"), Type->GetName()); Result->SetStringField(TEXT("name"), Name);
+        Result->SetBoolField(TEXT("preprocessed"), Preprocessed); Result->SetBoolField(TEXT("compiled"), Job.Output.bSucceeded);
+        TArray<TSharedPtr<FJsonValue>> Errors;
+        for (const auto& Error : Job.PreprocessOutput.GetErrors()) Errors.Add(MakeShared<FJsonValueString>(Error.GetErrorString()));
+        for (const auto& Error : Job.Output.Errors) Errors.Add(MakeShared<FJsonValueString>(Error.GetErrorString()));
+        Result->SetArrayField(TEXT("errors"), Errors); Cases.Add(MakeShared<FJsonValueObject>(Result));
+        UE_LOG(LogTemp, Display, TEXT("WEB_NANITE_MATERIAL name=%s preprocessed=%d compiled=%d"), *Name, Preprocessed, Job.Output.bSucceeded);
+    }
+    const bool Passed = Algo::AllOf(Cases, [](const TSharedPtr<FJsonValue>& V) { return V->AsObject()->GetBoolField(TEXT("compiled")); });
+    auto Report=MakeShared<FJsonObject>(); Report->SetBoolField(TEXT("pass"), Passed); Report->SetArrayField(TEXT("cases"), Cases);
+    FString Json; FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
+    FFileHelper::SaveStringToFile(Json, *(Output / TEXT("basepass.json")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
+    return Passed ? 0 : 1;
+}
 
 int32 RunWebNaniteMaterialProbe(const FString& Params)
 {

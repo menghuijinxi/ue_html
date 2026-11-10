@@ -408,6 +408,7 @@ try {
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-BuildSettings.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-RenderCore.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Renderer.dll'),
+        (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-NaniteBuilder.dll'),
         (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Engine.dll'),
         $taskHostDDPI
     ) | Where-Object { Test-Path -LiteralPath $_ } | ForEach-Object { Get-TaskAudit $_ }
@@ -472,6 +473,7 @@ try {
         $taskReport.sourceFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat') -File -Recurse |
             ForEach-Object { Get-TaskAudit $_.FullName })
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-cook-host.cjs')
+        $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'activate-native-nanite-builder.cjs')
         $taskReport.sourceFiles += Get-TaskAudit (Join-Path $PSScriptRoot 'prepare-web-cook-shaders.cjs')
         $taskReport.nativeRenderCoreBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-rendercore-build-results.json')
         $taskReport.nativeRendererBuildReport = Get-TaskAudit (Join-Path $taskResults 'native-renderer-build-results.json')

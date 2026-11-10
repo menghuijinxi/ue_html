@@ -9,6 +9,8 @@
 #include "ShaderPreprocessTypes.h"
 #include "WebGPUShaderCode.h"
 
+#define WEB_NANITE_SKINNING_SHADER_ONLY 1
+#include "../../../../../reference-engine/Engine/Source/Runtime/Renderer/Private/Nanite/NaniteWebSkinningViewData.cpp"
 #define WEB_NANITE_INSTANCE_SHADER_ONLY 1
 #include "../../../../../reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebInstance.cpp"
 #define WEB_NANITE_GPU_TEST_SHADER_ONLY 1
@@ -34,7 +36,7 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
     const auto* Target = GetTargetPlatformManagerRef().FindTargetPlatform(TEXT("Web"));
     if (!Format || !Target || Platform == SP_NumPlatforms) return 1;
     FGlobalShaderMap Map(Platform);
-    TArray<FGlobalShaderType*> Types = {&Nanite::FWebNaniteInstanceDataCS::GetStaticType(), &FWebNaniteGPUInstanceTestCS::GetStaticType(),
+    TArray<FGlobalShaderType*> Types = {&FWebNaniteSkinningViewDataCS::GetStaticType(), &Nanite::FWebNaniteInstanceDataCS::GetStaticType(), &FWebNaniteGPUInstanceTestCS::GetStaticType(),
         &Nanite::FWebNaniteHierarchyCull_CS::GetStaticType(),
         &Nanite::FWebNaniteRasterVS::GetStaticType(), &Nanite::FWebNaniteRasterPS::GetStaticType(),
         &Nanite::FWebNaniteScalarRasterPS::GetStaticType(), &Nanite::FWebNaniteMicroRasterCS::GetStaticType(),
@@ -145,10 +147,10 @@ int32 RunWebNaniteHierarchyProbe(const FString& Params)
             !Type->ShouldCompilePermutation(Platform, Permutation, PermutationFlags)) continue;
         FShaderCompileJob Job;
         Job.Key = FShaderCompileJobKey(Type, Platform, nullptr, Permutation);
+        Type->SetupCompileEnvironment(Platform, Permutation, PermutationFlags, Job.Input.Environment);
         GlobalBeginCompileShader(TEXT("WebNaniteHierarchyProbe"), nullptr, Type, nullptr, Permutation,
             Type->GetShaderFilename(), Type->GetFunctionName(), FShaderTarget(Type->GetFrequency(), Platform), Job.Input, false);
         Job.Input.ShaderFormat = UE::WebGPUShader::SM5Format;
-        Type->SetupCompileEnvironment(Platform, Permutation, PermutationFlags, Job.Input.Environment);
         Format->ModifyShaderCompilerInput(Job.Input);
         if (!Format->PreprocessShader(Job.Input, Job.Input.Environment, Job.PreprocessOutput)) return 1;
         Format->CompilePreprocessedShader(Job.Input, Job.PreprocessOutput, Job.Output);

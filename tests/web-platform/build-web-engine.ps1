@@ -57,6 +57,8 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Rendering/NaniteResources.cpp',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebInstance.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebInstance.h',
+    'Source/Runtime/Engine/Public/SkinnedMeshComponentHelper.h',
+    'Source/Runtime/Renderer/Private/Nanite/NaniteWebSkinningViewData.cpp',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp',
     'Source/Runtime/Engine/Public/Rendering/NaniteWebHierarchy.h',
     'Source/Runtime/Engine/Private/Nanite/NaniteWebScene.cpp',
@@ -376,6 +378,9 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Experimental/Chaos/Private/ChaosVisualDebugger/ChaosVisualDebuggerTrace.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Experimental/Chaos/Private/ChaosVisualDebugger/ChaosVisualDebuggerTrace.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/Skinning/SkinningSceneExtension.cpp'
+    $taskFiles += Join-Path $Engine 'Engine/Source/Runtime/Renderer/Private/Skinning/SkinningTransformProvider.cpp'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/Skinning/SkinningTransformProvider.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/Skinning/SkinningTransformProvider.cpp'
     foreach ($taskDepthOverlay in @('GenerateConservativeDepthBuffer.cpp', 'GenerateConservativeDepthBuffer.h', 'VolumetricFog.cpp')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskDepthOverlay"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskDepthOverlay"

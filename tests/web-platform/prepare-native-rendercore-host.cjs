@@ -40,6 +40,11 @@ try {
   for (const entry of fs.readdirSync(path.join(stock, 'Source'), {withFileTypes: true})) {
     const destination = path.join(host, 'Source', entry.name);
     if (entry.name === 'Runtime') continue;
+    if (entry.name === 'Developer' && fs.existsSync(destination) && !fs.lstatSync(destination).isSymbolicLink()) {
+      assert.equal(fs.realpathSync(destination), path.resolve(destination));
+      assert(fs.existsSync(path.join(destination, 'NaniteBuilder/Private/NaniteSkinningWeld.h')));
+      continue;
+    }
     if (entry.isDirectory()) link(path.join(stock, 'Source', entry.name), destination);
     else if (!fs.existsSync(destination)) fs.copyFileSync(path.join(stock, 'Source', entry.name), destination);
   }

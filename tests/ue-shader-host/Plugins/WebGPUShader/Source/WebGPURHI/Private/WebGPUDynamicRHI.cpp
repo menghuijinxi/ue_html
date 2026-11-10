@@ -2463,7 +2463,8 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
         return true;
     }
     if (View.BufferType != FRHIViewDesc::EBufferType::Typed ||
-        (View.Format != PF_R32_UINT && View.Format != PF_R32G32_UINT &&
+        (View.Format != PF_R8_UINT && View.Format != PF_R16_UINT &&
+            View.Format != PF_R32_UINT && View.Format != PF_R32G32_UINT &&
             View.Format != PF_R32G32B32A32_UINT && View.Format != PF_A32B32G32R32F &&
             View.Format != PF_R32_FLOAT && View.Format != PF_R32_SINT && View.Format != PF_G8 &&
             View.Format != PF_G16R16F && View.Format != PF_G32R32F && View.Format != PF_R8G8B8A8 &&
@@ -2472,7 +2473,9 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
         EnumHasAnyFlags(Buffer->GetUsage(), BUF_StructuredBuffer | BUF_AccelerationStructure) ||
         !EnumHasAnyFlags(Buffer->GetUsage(), BUF_ShaderResource))
     {
-        Error = TEXT("Unsupported typed buffer SRV format or usage");
+        Error = FString::Printf(TEXT("Unsupported typed buffer SRV name=%s format=%u type=%u usage=0x%llx stride=%u count=%u offset=%u"),
+            *Buffer->GetName().ToString(), uint32(View.Format), uint32(View.BufferType),
+            uint64(Buffer->GetUsage()), View.Stride, View.NumElements, View.OffsetInBytes);
         return false;
     }
     const uint64 Size = Buffer->GetSize();
@@ -2508,6 +2511,15 @@ bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const 
     double Element;
     const auto &Desc = View->GetDesc().Buffer.SRV;
     const bool Typed = Desc.BufferType == FRHIViewDesc::EBufferType::Typed;
+    // Skeletal resources create these views alongside their vertex/index
+    // bindings. A typed view does not reinterpret the bytes as WGSL uint32.
+    // Nanite reads its own packed page data; legacy narrow integer consumers
+    // still require an explicit decoder before they can bind this view.
+    if (Typed && (Desc.Format == PF_R8_UINT || Desc.Format == PF_R16_UINT))
+    {
+        Error = TEXT("Narrow integer SRV requires a packed shader decoder");
+        return false;
+    }
     FString Packing;
     if (Typed && Binding.TryGetStringField(TEXT("storagePacking"), Packing) && Packing == TEXT("vertex-fetch"))
     {
@@ -2608,6 +2620,11 @@ bool FWebGPUDynamicRHI::ValidateStorageSRVBinding(FRHIResource *Resource, const 
     }
     const auto &Desc = View->GetDesc().Buffer.SRV;
     const bool Typed = Desc.BufferType == FRHIViewDesc::EBufferType::Typed;
+    if (Typed && (Desc.Format == PF_R8_UINT || Desc.Format == PF_R16_UINT))
+    {
+        Error = TEXT("Narrow integer SRV requires a packed shader decoder");
+        return false;
+    }
     if (Typed && Binding.Packing == FWebGPUStorageContract::EPacking::VertexFetch)
     {
         check(Binding.SlotValid);

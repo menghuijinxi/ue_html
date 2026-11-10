@@ -46,10 +46,10 @@ if(fullScene){
 }
 verify(cook.shaderInventory.artifact);
 const inventory = read(cook.shaderInventory.artifact.file);
-const naniteTypes = ['InstanceDataCS','GPUInstanceTestCS','HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
+const naniteTypes = ['SkinningViewDataCS','InstanceDataCS','GPUInstanceTestCS','HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
   'ResolveCS','DepthVS','DepthPS','DepthSnapshotCS','GBufferVS','GBufferPS','GBufferSnapshotCS',
   'GBufferTilesCS','VisibilityClearCS','VisibilityResolveCS'].map(name => 'FWebNanite' + name);
-assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === (['FWebNaniteHierarchyCull_CS','FWebNaniteOcclusionCS'].includes(name) ? 2 : 1))),
+assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === (['FWebNaniteHierarchyCull_CS','FWebNaniteOcclusionCS'].includes(name) ? 4 : 1))),
   'The scene Cook must include diagnostic and production Nanite shaders in complete sections');
 assert(inventory.types.some(type=>type.name==='FWebNaniteScalarRasterPS'&&type.permutations===2), 'Both scalar visibility phases must be cooked');
 assert(inventory.types.some(type=>type.name==='FWebNaniteMicroRasterCS'&&type.permutations===3),'All three valid compute raster permutations must be cooked');
@@ -68,7 +68,9 @@ fs.mkdirSync(output, {recursive: true});
 const manifest = read(path.join(baseline, 'content-files.json'));
 assert.equal(manifest.shaderPlatform, 'SP_WEBGPU_SM5');
 if(!defaultScene&&!fullScene){
-  for(const asset of ['WebNaniteMaterials/NaniteMaterial0','WebNaniteMaterials/NaniteMaterial1','WebNaniteMaterials/NaniteMaterial2',
+  for(const asset of ['WebNaniteSkinning/NaniteSkinPlane','WebNaniteSkinning/NaniteSkinSkeleton','WebNaniteSkinning/NaniteSkinMaterial',
+    ...['NaniteSkinStreamingPlane','NaniteSkinResidentPlane','NaniteSkinStreamingPlaneB'].flatMap(n=>[`WebNaniteSkinning/${n}`,`WebNaniteSkinning/${n}Skeleton`]),
+    ...Array.from({length:4},(_,i)=>`WebNaniteSkinning/NaniteSkinMaterial${i+1}`), 'WebNaniteMaterials/NaniteMaterial0','WebNaniteMaterials/NaniteMaterial1','WebNaniteMaterials/NaniteMaterial2',
     'WebNaniteMaterials/NaniteNormal','WebNaniteSidedness/NaniteMixedSidedPlane','WebNaniteSidedness/NaniteOneSided','WebNaniteSidedness/NaniteTwoSided',
     'WebNaniteStreaming/NaniteResidentSphere','WebNaniteStreaming/NaniteStreamingSphere','WebNaniteStreaming/NaniteStreamingSphereB',
     'WebNaniteProgrammable/NaniteMask','WebNaniteProgrammable/NaniteWPOPlane',...Array.from({length:11},(_,i)=>`WebNaniteProgrammable/NaniteProgrammable${i}`)])
@@ -88,7 +90,7 @@ const hierarchyShaders = read(hierarchyFile);
 assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
-assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 10);
+assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 11);
 const programmableFile = path.join(__dirname, 'results/nanite-programmable/verified.json');
 const programmableShaders = read(programmableFile); assert(programmableShaders.pass);
 [...programmableShaders.sources, programmableShaders.binary, ...programmableShaders.logs].forEach(verify);
@@ -96,6 +98,14 @@ assert.equal(programmableShaders.cases.length, 44);
 assert.equal(programmableShaders.cases.filter(c=>c.frequency==='vertex').length, 11);
 assert.equal(programmableShaders.cases.filter(c=>c.frequency==='pixel').length, 33);
 assert(programmableShaders.cases.every(c => c.preprocessed && c.compiled && c.errors.length === 0));
+const skinningFile = path.join(__dirname,'results/nanite-skinning/verified.json');
+const skinningShaders = read(skinningFile); assert(skinningShaders.pass);
+[...skinningShaders.sources,skinningShaders.binary,skinningShaders.builder,skinningShaders.builderBuild,...skinningShaders.logs,...skinningShaders.assets,...skinningShaders.sourceGeometry].forEach(verify);
+const skinningBuilder=read(skinningShaders.builderBuild.file);assert(skinningBuilder.pass&&skinningBuilder.installedInputsUnmodified);
+[...skinningBuilder.sourceFiles,...skinningBuilder.products,...skinningBuilder.installedInputs].forEach(verify);
+assert.equal(skinningShaders.materials.cases.length,20);assert.equal(skinningShaders.basepass.cases.length,10);
+assert([...skinningShaders.materials.cases,...skinningShaders.basepass.cases].every(c=>c.preprocessed&&c.compiled&&c.errors.length===0));
+assert.equal(skinningShaders.fixtures.length,4);assert(skinningShaders.fixtures.every(f=>f.pass&&f.bones===2&&f.hierarchyBoneIndices>0));
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }
@@ -155,7 +165,7 @@ const products = ['index.html', 'content.bin', 'content-files.json', 'config-fil
 products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, defaultScene, fullScene, sceneConversion, performanceProfile, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
-  hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),programmableShaders:audit(programmableFile),multiMaterial,
+  hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),programmableShaders:audit(programmableFile),skinningShaders:audit(skinningFile),multiMaterial,
   sceneCook:{stage:audit(stageFile),cook:stage.cookReport,inventory:cook.shaderInventory.artifact,
     naniteTypes,supplementApplied:false,hierarchyArchiveApplied:false,streamingArchiveApplied:true},
   baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),

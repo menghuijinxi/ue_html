@@ -52,7 +52,21 @@ function triangle(page, cluster, tri) {
       const header=page.readUInt32LE(decodeInfo+i*4), n=header&31;
       const value=decodeUV((header>>>5)+readBits(attrOffset,bit,n));bit+=n;return value;
     });
-    return {position,normal,color,uv};
+    const influences=[];
+    if(extract(word(5,1),1,23)){
+      const headerOffset=decodeInfo+numUVs*8;
+      const a=page.readUInt32LE(headerOffset),b=page.readUInt32LE(headerOffset+4);
+      const address=extract(a,22,0),count=a>>>22,indexBits=extract(b,6,0),weightBits=extract(b,5,6);
+      assert(count>0&&count<=32&&indexBits<=16&&weightBits<=16,'valid vertex bone influence header');
+      for(let influence=0;influence<count;influence++){
+        const offset=(index*count+influence)*(indexBits+weightBits);
+        const bone=readBits(address,offset,indexBits),encoded=readBits(address,offset+indexBits,weightBits);
+        const weight=weightBits?Math.fround(encoded*Math.fround(1/(2**weightBits-1))):1;
+        influences.push({bone,weight});
+      }
+      assert(Math.abs(influences.reduce((n,i)=>n+i.weight,0)-1)<1e-6,'normalized decoded bone weights');
+    }
+    return {position,normal,color,uv,influences};
   });
   const encoding=word(5,3);let material=0xffffffff;
   if(encoding<0xfe000000) {

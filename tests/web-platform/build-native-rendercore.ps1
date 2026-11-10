@@ -1,6 +1,6 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
-    [ValidateSet('RenderCore', 'Renderer')][string]$Module = 'RenderCore',
+    [ValidateSet('RenderCore', 'Renderer', 'NaniteBuilder')][string]$Module = 'RenderCore',
     [ValidateRange(1, 16)][int]$MaxParallelActions = 1,
     [ValidateRange(0, [long]::MaxValue)][long]$HostProcessorAffinity = 0,
     [ValidatePattern('^\d+\.\d+\.\d+$')][string]$CompilerVersion,
@@ -46,6 +46,7 @@ try {
     & node (Join-Path $PSScriptRoot 'prepare-native-ubt.cjs') $env:UE_ENGINE_ROOT
     if ($LASTEXITCODE -ne 0) { throw 'Native UBT source preparation failed' }
     $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-native-rendercore-host.cjs'))
+    if ($Module -eq 'NaniteBuilder') { $taskPrepareArguments = @((Join-Path $PSScriptRoot 'prepare-native-nanite-builder-host.cjs')) }
     if ($Module -eq 'Renderer') { $taskPrepareArguments += '--renderer' }
     & node @taskPrepareArguments *> "$taskLog.prepare"
     if ($LASTEXITCODE -ne 0) { throw "Native host preparation failed: $taskLog.prepare" }

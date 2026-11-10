@@ -10,9 +10,12 @@ const host = path.join(root, '.tools/ue58-nanite-cook-host');
 const build = path.join(host, 'map-build');
 const binaries = path.join(host, 'Engine/Binaries/Win64');
 const native = JSON.parse(fs.readFileSync(path.join(__dirname, 'results/native-rendercore-build-results.json'), 'utf8').replace(/^\uFEFF/, ''));
-assert(native.pass);
-for (const input of [...native.sourceFiles, ...native.products, ...native.installedInputs])
-  assert.equal(audit(input.file).sha256, input.sha256, `Stale native build: ${input.file}`);
+const renderer = JSON.parse(fs.readFileSync(path.join(__dirname, 'results/native-renderer-build-results.json'), 'utf8').replace(/^\uFEFF/, ''));
+for (const module of [native, renderer]) {
+  assert(module.pass && module.installedInputsUnmodified);
+  for (const input of [...module.sourceFiles, ...module.products, ...module.installedInputs])
+    assert.equal(audit(input.file).sha256, input.sha256, `Stale native build: ${input.file}`);
+}
 function local(dir) {
   fs.mkdirSync(dir, {recursive: true});
   assert.equal(fs.realpathSync(dir).toLowerCase(), path.resolve(dir).toLowerCase());
@@ -33,7 +36,9 @@ local(build); local(binaries);
 for (const name of ['Config', 'Content', 'Source', 'Build', 'Plugins', 'Platforms', 'Shaders', 'Binaries/ThirdParty'])
   linkDir(path.join(base, 'Engine', name), path.join(host, 'Engine', name));
 for (const entry of fs.readdirSync(path.join(base, 'Engine/Binaries/Win64'), {withFileTypes: true})) {
-  if (/^UnrealEditor-(?:RenderCore|BuildSettings)\./.test(entry.name)) continue;
+  // Activation records identify their own host and are regenerated below.
+  if (entry.name === 'web-nanite-builder.json') continue;
+  if (/^UnrealEditor-(?:RenderCore|Renderer|BuildSettings|NaniteBuilder)\./.test(entry.name)) continue;
   const source = path.join(base, 'Engine/Binaries/Win64', entry.name), destination = path.join(binaries, entry.name);
   if (fs.statSync(source).isDirectory()) linkDir(source, destination);
   else {
@@ -43,6 +48,9 @@ for (const entry of fs.readdirSync(path.join(base, 'Engine/Binaries/Win64'), {wi
 }
 copy(native.products.find(p => p.file.endsWith('UnrealEditor-RenderCore.dll')).file,
   path.join(binaries, 'UnrealEditor-RenderCore.dll'));
+copy(renderer.products.find(p => p.file.endsWith('UnrealEditor-Renderer.dll')).file,
+  path.join(binaries, 'UnrealEditor-Renderer.dll'));
+const naniteBuilder = require('./activate-native-nanite-builder.cjs').activate(path.join(host, 'Engine'));
 const baseBuild = path.join(base, 'map-build');
 for (const name of ['RHIStaticShaderPlatformNames.gen.h', 'UnrealEditor-Definitions.h', 'UnrealEditor-Forward.def'])
   copy(path.join(baseBuild, name), path.join(build, name));
