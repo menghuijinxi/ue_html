@@ -168,6 +168,7 @@ function verify(t){
   }
   const expected=reference(t),byInstance=new Map(t.entries.map(e=>[e.instance,e]));
   const counts={};let compared=0,edgeSamples=0,maxDepthError=0,maxVelocityError=0,maxVelocityDepthError=0,moving=0;
+  let maxQuantizedDepthError=0;
   let subpixelChecks=0,maxDepthResidual=0,maxDepthIntervalWidth=0,maxVelocityDepthTolerance=0;
   for(let i=0;i<expected.pixels.length;i++){
     const p=i*12,g=i*28,id=t.pixels[p],owner=id?byInstance.get(t.pixels[p+8])?.component:-1,ref=expected.pixels[i];
@@ -184,10 +185,17 @@ function verify(t){
     if(!ref)continue;
     compared++;const depth=float(t.pixels[p+1]),de=Math.abs(depth-ref.depth);maxDepthError=Math.max(maxDepthError,de);
     const depthTolerance=t.perspective?1e-7:1.2e-7;
-    let residual=de;
-    if(de>=depthTolerance&&!ref.pdo){
+    // The scene attachment stores R32F. Compare its representable value to
+    // the independent result rounded to that format, while retaining the raw
+    // double-precision discrepancy above. In orthographic views the existing
+    // two-ULP limit must not accidentally include a third fractional ULP from
+    // comparing a float attachment against an unrepresentable real value.
+    const quantizedError=Math.abs(depth-Math.fround(ref.depth));
+    maxQuantizedDepthError=Math.max(maxQuantizedDepthError,quantizedError);
+    let residual=quantizedError;
+    if(quantizedError>=depthTolerance&&!ref.pdo){
       const interval=depthInterval(ref.vertices,(i%t.width)*8+.5,Math.floor(i/t.width)*8+.5);
-      residual=Math.max(0,interval.min-depth,depth-interval.max);subpixelChecks++;
+      residual=Math.max(0,Math.fround(interval.min)-depth,depth-Math.fround(interval.max));subpixelChecks++;
       maxDepthIntervalWidth=Math.max(maxDepthIntervalWidth,interval.max-interval.min);
     }
     maxDepthResidual=Math.max(maxDepthResidual,residual);
@@ -216,7 +224,7 @@ function verify(t){
   if(t.step===3||t.step>=30)assert(moving>20&&moving>Math.min(100,(counts[0]||0)*.8));
   if([2,3,4,5,7,9,12,13,14,15,16,17,18,20,21,23,25].includes(t.step))assert((counts[0]||0)>20,'deformed surface coverage');
   if(t.step===19)assert.equal(counts[0]||0,0);
-  return {counts,compared,edgeSamples,maxDepthError,maxDepthResidual,subpixelChecks,maxDepthIntervalWidth,
+  return {counts,compared,edgeSamples,maxDepthError,maxQuantizedDepthError,maxDepthResidual,subpixelChecks,maxDepthIntervalWidth,
     maxVelocityError,maxVelocityDepthError,maxVelocityDepthTolerance,moving};
 }
 (async()=>{let browser,page,owner;try{

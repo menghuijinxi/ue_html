@@ -71,7 +71,7 @@ if(!defaultScene&&!fullScene){
   for(const asset of ['WebNaniteMaterials/NaniteMaterial0','WebNaniteMaterials/NaniteMaterial1','WebNaniteMaterials/NaniteMaterial2',
     'WebNaniteMaterials/NaniteNormal','WebNaniteSidedness/NaniteMixedSidedPlane','WebNaniteSidedness/NaniteOneSided','WebNaniteSidedness/NaniteTwoSided',
     'WebNaniteStreaming/NaniteResidentSphere','WebNaniteStreaming/NaniteStreamingSphere','WebNaniteStreaming/NaniteStreamingSphereB',
-    'WebNaniteProgrammable/NaniteMask','WebNaniteProgrammable/NaniteWPOPlane',...Array.from({length:8},(_,i)=>`WebNaniteProgrammable/NaniteProgrammable${i}`)])
+    'WebNaniteProgrammable/NaniteMask','WebNaniteProgrammable/NaniteWPOPlane',...Array.from({length:11},(_,i)=>`WebNaniteProgrammable/NaniteProgrammable${i}`)])
     assert(manifest.files.some(f=>f.path===`/Engine/Programs/UEWebEngine/Content/${asset}.uasset`),
       `Diagnostic Cook is missing ${asset}; include all fixture packages before packaging`);
 }
@@ -92,9 +92,9 @@ assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 8);
 const programmableFile = path.join(__dirname, 'results/nanite-programmable/verified.json');
 const programmableShaders = read(programmableFile); assert(programmableShaders.pass);
 [...programmableShaders.sources, programmableShaders.binary, ...programmableShaders.logs].forEach(verify);
-assert.equal(programmableShaders.cases.length, 32);
-assert.equal(programmableShaders.cases.filter(c=>c.frequency==='vertex').length, 8);
-assert.equal(programmableShaders.cases.filter(c=>c.frequency==='pixel').length, 24);
+assert.equal(programmableShaders.cases.length, 44);
+assert.equal(programmableShaders.cases.filter(c=>c.frequency==='vertex').length, 11);
+assert.equal(programmableShaders.cases.filter(c=>c.frequency==='pixel').length, 33);
 assert(programmableShaders.cases.every(c => c.preprocessed && c.compiled && c.errors.length === 0));
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }

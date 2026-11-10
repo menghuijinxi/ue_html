@@ -30,9 +30,16 @@ reject('wrong-depth-velocity',34,t=>{
 },/WPO depth velocity/);
 reject('undersized-rotated-bounds',4,t=>{const e=t.entries.find(e=>e.component===0);e.localWPOExtent=e.localWPOExtent.map(v=>v*.5);},/culling bounds/);
 reject('stale-component-distance',10,t=>{t.entries.find(e=>e.component===0).evaluateWPO=true;},/WPO component.distance policy/);
+reject('three-ulp-orthographic-depth',34,t=>{
+  const expected=reference(t);
+  for(let i=0;i<t.width*t.height;i++)if(t.pixels[i*12]&&!expected.edge[i]&&expected.pixels[i]?.component===1){
+    const w=word(expected.pixels[i].depth)+3;
+    t.pixels[i*12+1]=w;t.pixels[i*12+10]=w;t.gbuffer[i*28+1]=w;
+  }
+},/WPO depth residual/);
 oracleReport.pass=true;
 `,context);
-assert(report.pass&&report.checks.length===9);
+assert(report.pass&&report.checks.length===10);
 const streamingVerifier=path.join(__dirname,'probe-nanite-streaming.cjs'),streamingInput=path.join(__dirname,'results/nanite-wpo-streaming/browser.json');
 report.streamingVerifier=audit(streamingVerifier);report.streamingInput=audit(streamingInput);
 report.geometryDecoder=audit(path.join(__dirname,'verify-nanite-material-inputs.cjs'));report.streamingChecks=[];

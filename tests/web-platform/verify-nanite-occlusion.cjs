@@ -26,6 +26,10 @@ const cases=[
  {name:'wpo-expanded-near-plane-final',previous:1,current:1,final:1,wpo:[0,0,800,0],keep:true},
  {name:'wpo-unbounded-main',previous:1,current:1,final:0,wpo:[0,0,0,1],keep:true},
  {name:'wpo-unbounded-final',previous:1,current:1,final:1,wpo:[0,0,0,1],keep:true},
+ {name:'spline-static-occluded-main',previous:1,current:1,final:0,spline:0,keep:false},
+ {name:'spline-static-occluded-final',previous:1,current:1,final:1,spline:0,keep:false},
+ {name:'spline-deformed-near-plane-main',previous:1,current:1,final:0,spline:-800,keep:true},
+ {name:'spline-deformed-near-plane-final',previous:1,current:1,final:1,spline:-800,keep:true},
  {name:'input-error',previous:0,current:0,final:1,error:32,keep:false},
  // Count overflow and the sentinel keys both report errors. Consumers reject
  // the entire result when any error bit is set, including its valid prefix.
@@ -69,10 +73,21 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
      WebOcclusionOutputState:makeBuffer(new Uint32Array([local?99:0,local?99:0,local?99:0,local?99:0,0x12345678,0x12345678,0x12345678,0x12345678]),GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC)};
     const data=new ArrayBuffer(b.$Globals.paddedSize),u=new Uint32Array(data),f=new Float32Array(data);
     const matrix=[.01,0,0,0,0,.01,0,0,0,0,.001,0,0,0,.4,1];
+    // Native spline bounds enclose slices with spheres and are wider than the
+    // rigid box. Keep those bounds inside the test frustum to exercise HZB,
+    // rather than the conservative off-screen early-out.
+    if(test.spline!==undefined)matrix[0]=matrix[5]=.002;
+    // Straight X-directed spline, identity cross section, with a world-Z
+    // translation. Bounds must use the deformation before HZB projection.
+    const splineData=new ArrayBuffer(112),sf=new Float32Array(splineData),su=new Uint32Array(splineData);
+    sf.set([-100,0,test.spline||0,200,100,0,test.spline||0,0,200,0,0,0]);
+    su[17]=su[18]=su[22]=0x3c003c00;su[19]=0xffffffff;
+    sf[20]=1/200;sf[21]=.5;
+    su[24]=0x7fff7fff;su[25]=0x3c00ffff;su[26]=0x7fff7fff;su[27]=0xffff7fff;
     const values={PageConstants:[0,0,0,0],MaxVisibleClusters:[capacity],WebOcclusionFirstRootPage:[1],WebOcclusionNumRootPages:[1],
      WebOcclusionPreviousLocalToClip:matrix,WebOcclusionCurrentLocalToClip:matrix,WebOcclusionPreviousRect:[0,0,128,128],WebOcclusionCurrentRect:[0,0,128,128],
      WebOcclusionPreviousExtent:[128,128],WebOcclusionCurrentExtent:[128,128],WebOcclusionPreviousMaxMip:[7],WebOcclusionCurrentMaxMip:[7],WebOcclusionFinal:[test.final],
-     WebOcclusionWPOBounds:test.wpo||[0,0,0,0]};
+     WebOcclusionWPOBounds:test.wpo||[0,0,0,0],WebSplineEnabled:[test.spline!==undefined?1:0],WebSplineParams:[...su]};
     for(const m of b.$Globals.members){if(!values[m.name])throw Error('Unhandled '+m.name);(m.name.endsWith('LocalToClip')||m.name==='WebOcclusionWPOBounds'?f:u).set(values[m.name],m.offset/4);}
     resources.$Globals=makeBuffer(new Uint8Array(data),GPUBufferUsage.UNIFORM);
     const group=device.createBindGroup({layout,entries:bindings.map(v=>({binding:v.binding,resource:
@@ -92,12 +107,12 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
   const capacity=c.capacity||keys.length+2,candidates=c.capacity?Array.from({length:capacity},(_,i)=>keys[i%keys.length]):keys;
   assert(r.state[0]<=capacity);
   assert.deepEqual(r.keys.slice(-4),Array(4).fill(0xffffffff));assert.deepEqual(r.state.slice(4),Array(4).fill(0x12345678));
-  if(!r.state[1]){const expected=c.keep?candidates:[];assert.equal(r.state[0],expected.length);assert.equal(r.state[2],candidates.length);
+  if(!r.state[1]){const expected=c.keep?candidates:[];assert.equal(r.state[0],expected.length,c.name);assert.equal(r.state[2],candidates.length);
    assert.equal(r.state[3],expected.reduce((s,k)=>s+triangles.get(k),0));assert.deepEqual(r.keys.slice(0,r.state[0]).sort((a,b)=>a-b),[...expected].sort((a,b)=>a-b));}
   if(c.error){assert.equal(r.state[0],0);assert.equal(r.state[2],0);assert.equal(r.state[3],0);}
   assert(r.keys.slice(r.state[0]).every(k=>k===0xffffffff));r.pass=true;
  }
  const report={pass:true,local,...result,source:audit(__filename),inputs:[input,shader,nativeFile,native.products[0].file].map(audit),
-  sources:['WebNaniteOcclusion.usf','WebNaniteHZB.ush'].map(f=>audit(path.join(root,'reference-engine/Engine/Shaders/Private/Nanite',f)))};
+  sources:['WebNaniteOcclusion.usf','WebNaniteHZB.ush','WebNaniteSpline.ush'].map(f=>audit(path.join(root,'reference-engine/Engine/Shaders/Private/Nanite',f)))};
  fs.writeFileSync(path.join(__dirname,local?'results/nanite-local-occlusion-kernel.json':'results/nanite-occlusion.json'),JSON.stringify(report,null,2));console.log({pass:true,local,cases:cases.length});
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

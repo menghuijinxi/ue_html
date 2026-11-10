@@ -2,10 +2,12 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const {decodeTriangle}=require('./verify-nanite-material-inputs.cjs');
-const wpo=process.argv.includes('--wpo');
-const output=path.join(__dirname,wpo?'results/nanite-wpo-streaming':'results/nanite-streaming');fs.mkdirSync(output,{recursive:true});
+const spline=process.argv.includes('--spline'),splineReference=require('./nanite-spline-reference.cjs');
+const wpo=spline||process.argv.includes('--wpo');
+const output=path.join(__dirname,spline?'results/nanite-spline-streaming':wpo?'results/nanite-wpo-streaming':'results/nanite-streaming');fs.mkdirSync(output,{recursive:true});
 const scalarVisibility=process.argv.includes('--scalar-visibility');
-const report={pass:false,scalarVisibility,wpo,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
+const report={pass:false,scalarVisibility,wpo,spline,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
+if(spline)report.geometryReference=audit(require.resolve('./nanite-spline-reference.cjs'));
 if(wpo)report.geometryDecoder=audit(path.join(__dirname,'verify-nanite-material-inputs.cjs'));
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
 const mul=(v,m)=>[0,1,2,3].map(c=>v.reduce((s,x,r)=>s+x*m[r*4+c],0));
@@ -20,6 +22,7 @@ function inverse(m){
 }
 function verifyVelocity(t){
  assert(t.hasVelocity&&t.evaluateWPO);assert(!t.cameraCut||t.step===1);
+ const splineParams=t.spline?splineReference.unpack(t.splineParams):null;
  if(t.cameraCut)return {cameraCut:true};
  const records=Buffer.from(t.visibleRecords,'base64'),stream=Buffer.from(t.streamPages,'base64'),roots=Buffer.from(t.rootPagesData,'base64');
  assert.equal(records.length,t.recordBytes);assert.equal(stream.length,t.streamBytes);assert.equal(roots.length,t.rootBytes);
@@ -40,7 +43,8 @@ function verifyVelocity(t){
    const decoded=decodeTriangle(data,cluster,id&255);
    const vertices=decoded.vertices.map(v=>{
     assert(v.color.length===4&&v.color.every(v=>v===1),'authored streaming fixture color');
-    const world=mul([...v.position,1],t.localToWorld);
+    const position=splineParams?splineReference.deform(splineParams,v.position).position:v.position;
+    const world=mul([...position,1],t.localToWorld);
     return {clip:mul(world.map((v,j)=>v+([40,25,15,0][j])),t.worldToClip),
      old:mul(world.map((v,j)=>v+([15,-10,-20,0][j])),t.previousWorldToClip)};
    });
@@ -88,6 +92,7 @@ function observe(scalarVisibility){
 }
 function verify(t){
  assert.equal(t.wpo,wpo);
+ assert.equal(t.spline,spline);
  assert.equal(t.rejected,0);assert.equal(t.poolPages,12);assert.equal(t.cullState[1],0);assert(t.cullState[0]>0);
  assert(t.firstRoot>=t.poolPages);assert(t.history.length>=1);assert(t.history.every((v,i,a)=>!i||v.requestVersion>=a[i-1].requestVersion));
  const covered=[];for(let i=0;i<t.pixels.length;i+=12)if(t.pixels[i]){assert(t.pixels[i+2]);assert.equal(t.pixels[i+1],t.pixels[i+10]);covered.push(i/12);}
@@ -113,7 +118,7 @@ function compare(a,b){
  assert(report.logs.some(s=>s.includes('Command Line:')&&s.includes('-WebNaniteStreamingPages=12')));
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
  report.initialIO=await owner.evaluate(()=>globalThis.__webContentIO?.stats);
- if(wpo)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteStreamingTest',-1)),1);
+ if(wpo)assert.equal(await page.evaluate(mode=>__webEngineRPC('WebNaniteStreamingTest',mode),spline?-2:-1),1);
  for(let step=1;step<=9;step++){
   if(step===4)await owner.evaluate(()=>{
    const io=globalThis.__webContentIO,read=io.readRequest;

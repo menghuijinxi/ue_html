@@ -13,6 +13,13 @@ const storageDeclaration = (before, format) => ({before, after: [
   '#endif', before,
 ].join('\n')});
 const overrides = new Map([
+  ['Private/SplineMeshSceneTexture.usf', [{
+    before: '\tSplineRotTextureOut[PixelPos] = Slice.Quat;',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+      '\t// Store the native signed-normalized 16-bit values in portable RGBA32F.',
+      '\tSplineRotTextureOut[PixelPos] = round(clamp(Slice.Quat, -1.0f, 1.0f) * 32767.0f) / 32767.0f;',
+      '#else', '\tSplineRotTextureOut[PixelPos] = Slice.Quat;', '#endif'].join('\n'),
+  }]],
   ['Private/Common.ush', [{
     before: '\tfloat4 DeviceZ = Texture.GatherRed(GlobalBilinearClampedSampler, UV);',
     after: ['\t// Gather returns four texels without interpolation. WebGPU depth views',
@@ -712,7 +719,7 @@ function prepare() {
   }
   copy();
   for (const relative of ['Private/WebTranslucencyVolume.ush', 'Private/Lumen/WebLumenAdaptiveProbe.usf',
-    'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf', 'Private/Nanite/WebNaniteLOD.ush', 'Private/Nanite/WebNaniteScalarVisibility.ush',
+    'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf', 'Private/Nanite/WebNaniteLOD.ush', 'Private/Nanite/WebNaniteSpline.ush', 'Private/Nanite/WebNaniteScalarVisibility.ush',
     'Private/Nanite/WebNanitePageOwnership.ush', 'Private/Nanite/WebNaniteFaceCulling.ush',
     'Private/Nanite/WebNaniteHZB.ush', 'Private/Nanite/WebNaniteHZB.usf', 'Private/Nanite/WebNaniteOcclusion.usf',
     'Private/Nanite/WebNaniteRaster.usf', 'Private/Nanite/WebNaniteMicroRaster.ush', 'Private/Nanite/WebNaniteDepth.usf', 'Private/Nanite/WebNaniteGBuffer.usf',

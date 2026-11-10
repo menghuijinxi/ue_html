@@ -2,6 +2,8 @@
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SplineMeshComponent.h"
+#include "Engine/Texture.h"
 #include "Engine/Engine.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
@@ -29,7 +31,7 @@ namespace
 UStaticMesh* Meshes[3]{};
 UStaticMeshComponent* Component;
 UMaterialInstanceDynamic* WPOMaterial;
-bool WPO = false;
+bool WPO = false, Spline = false;
 TWeakObjectPtr<ACameraActor> Camera;
 TWeakObjectPtr<AActor> SavedTarget;
 TWeakObjectPtr<APlayerController> Controller;
@@ -65,6 +67,11 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
     if (Step != 1 && ++Settled < 100) return;
     Requested = false; Report = MakeShared<FJsonObject>();
     Report->SetNumberField(TEXT("step"), Step); Report->SetNumberField(TEXT("asset"), Active);
+    Report->SetBoolField(TEXT("spline"), Spline);
+    TArray<TSharedPtr<FJsonValue>> PackedSpline;
+    for (const auto& V : Entry.Input.SplineParams) for (int K = 0; K < 4; ++K)
+        PackedSpline.Add(MakeShared<FJsonValueNumber>(FMath::AsUInt(V[K])));
+    Report->SetArrayField(TEXT("splineParams"), PackedSpline);
     Report->SetBoolField(TEXT("wpo"), WPO); Report->SetBoolField(TEXT("evaluateWPO"), Entry.EvaluateWPO);
     Report->SetBoolField(TEXT("hasVelocity"), Snapshot.HasVelocity); Report->SetBoolField(TEXT("cameraCut"), Snapshot.CameraCut);
     Report->SetArrayField(TEXT("worldToClip"), Matrix(Saved.Cull->View->ViewMatrices.GetViewProjectionMatrix()));
@@ -151,7 +158,7 @@ void Poll()
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread); static int Last = 0;
-    if (RequestedStep == -1) { if (Last != 0) return 0; WPO = true; return 1; }
+    if (RequestedStep == -1 || RequestedStep == -2) { if (Last != 0) return 0; WPO = true; Spline = RequestedStep == -2; return 1; }
     if (RequestedStep < 0 || RequestedStep > 10 || !GEngine || !Nanite::GStreamingManager.IsWebStreamingMode()) return 0;
     if (!RequestedStep) { ENQUEUE_RENDER_COMMAND(PollWebStreaming)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (RequestedStep != Last + 1) return 0;
@@ -169,7 +176,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
             // the proxy: any visible surface must come from Nanite pages.
             for (auto& LOD : Meshes[I]->GetRenderData()->LODResources) for (auto& Section : LOD.Sections) Section.NumTriangles = 0;
         }
-        auto* Material = LoadObject<UMaterialInterface>(nullptr, WPO ?
+        auto* Material = LoadObject<UMaterialInterface>(nullptr, Spline ? TEXT("/Game/WebNaniteProgrammable/NaniteProgrammable9.NaniteProgrammable9") : WPO ?
             TEXT("/Game/WebNaniteProgrammable/NaniteProgrammable4.NaniteProgrammable4") :
             TEXT("/Game/WebNaniteMaterials/NaniteMaterial1.NaniteMaterial1")); if (!Material) return 0;
         if (WPO)
@@ -177,6 +184,12 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
             WPOMaterial = UMaterialInstanceDynamic::Create(Material, GetTransientPackage()); WPOMaterial->AddToRoot();
             WPOMaterial->SetVectorParameterValue(TEXT("NaniteWorldOffset"), FLinearColor(40, 25, 15));
             WPOMaterial->SetVectorParameterValue(TEXT("NanitePreviousWorldOffset"), FLinearColor(15, -10, -20));
+            if (Spline)
+            {
+                auto* White = LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture")); if (!White) return 0;
+                WPOMaterial->SetTextureParameterValue(TEXT("NaniteMask"), White);
+                WPOMaterial->SetScalarParameterValue(TEXT("NaniteDepthOffset"), 0);
+            }
             Material = WPOMaterial;
         }
         Controller = World->GetFirstPlayerController(); SavedTarget = Controller->GetViewTarget();
@@ -184,9 +197,17 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
         Camera->SetActorLocationAndRotation(FVector(100000, 0, 100000), FRotator::ZeroRotator);
         Camera->GetCameraComponent()->SetFieldOfView(90); Camera->GetCameraComponent()->SetConstraintAspectRatio(false);
         Controller->SetViewTarget(Camera.Get());
-        Component = NewObject<UStaticMeshComponent>(); Component->AddToRoot(); Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Component = Spline ? static_cast<UStaticMeshComponent*>(NewObject<USplineMeshComponent>()) : NewObject<UStaticMeshComponent>(); Component->AddToRoot(); Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         Component->SetMobility(EComponentMobility::Movable); Component->SetStaticMesh(Meshes[0]); Component->SetMaterial(0, Material);
-        Component->SetWorldLocation(FVector(100250, 0, 100000)); Component->RegisterComponentWithWorld(World);
+        Component->SetWorldLocation(FVector(100250, 0, 100000));
+        if (Spline)
+        {
+            auto* S = static_cast<USplineMeshComponent*>(Component);
+            S->SetForwardAxis(ESplineMeshAxis::Z, false); S->SetSplineUpDir(FVector(0, 1, 0), false);
+            S->SetBoundaryMin(-100, false); S->SetBoundaryMax(100, false);
+            S->SetStartAndEnd(FVector(0, 0, -100), FVector(60, 0, 200), FVector(30, 0, 100), FVector(-40, 0, 200), false);
+        }
+        Component->RegisterComponentWithWorld(World);
         // Fix sample positions for the independent resident/streaming geometry
         // comparison; temporal jitter/velocity is covered by the composition suite.
         const float Values[] = {1, 0, 1, 0, 0.01f, 1, 0};

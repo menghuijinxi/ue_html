@@ -67,15 +67,16 @@ int32 RunWebNaniteProgrammableProbe(const FString& Params)
     Texture->AddToRoot(); Texture->PostEditChange(); if (!SaveFixture(Texture)) return 1;
     TArray<TSharedPtr<FJsonValue>> Cases; bool Passed = true;
     UMaterial* WPOMaterial = nullptr;
-    for (int32 CaseIndex = 0; CaseIndex < 8; ++CaseIndex)
+    for (int32 CaseIndex = 0; CaseIndex < 11; ++CaseIndex)
     {
         const FString Name = FString::Printf(TEXT("NaniteProgrammable%d"), CaseIndex);
         UPackage* Package = CreatePackage(*(TEXT("/Game/WebNaniteProgrammable/") + Name)); Package->MarkAsFullyLoaded();
         auto* Material = NewObject<UMaterial>(Package, *Name, RF_Public | RF_Standalone); Material->AddToRoot();
         Material->SetShadingModel(MSM_DefaultLit);
         Material->FloatPrecisionMode = EMaterialFloatPrecisionMode::MFPM_Full;
-        Material->BlendMode = CaseIndex == 1 || (CaseIndex >= 4 && CaseIndex != 5) ? BLEND_Opaque : BLEND_Masked;
-        Material->TwoSided = CaseIndex != 3 && CaseIndex != 6;
+        Material->BlendMode = CaseIndex == 1 || (CaseIndex >= 4 && CaseIndex != 5 && CaseIndex != 9) ? BLEND_Opaque : BLEND_Masked;
+        Material->TwoSided = CaseIndex != 3 && CaseIndex != 6 && CaseIndex != 10;
+        if (CaseIndex >= 8) Material->SetMaterialUsage(MATUSAGE_SplineMesh);
         Material->SetMaterialUsage(MATUSAGE_Nanite); Material->SetMaterialUsage(MATUSAGE_InstancedStaticMeshes);
         auto* Color = NewObject<UMaterialExpressionVectorParameter>(Material);
         Color->ParameterName = TEXT("NaniteColor"); Color->DefaultValue = FLinearColor(.2f, .4f, .7f);
@@ -87,13 +88,13 @@ int32 RunWebNaniteProgrammableProbe(const FString& Params)
             Material->GetExpressionCollection().AddExpression(Mask);
             Material->GetEditorOnlyData()->OpacityMask.Connect(1, Mask);
         }
-        if (CaseIndex == 1 || CaseIndex == 2 || CaseIndex == 5)
+        if (CaseIndex == 1 || CaseIndex == 2 || CaseIndex == 5 || CaseIndex == 9)
         {
             auto* Offset = NewObject<UMaterialExpressionScalarParameter>(Material);
             Offset->ParameterName = TEXT("NaniteDepthOffset"); Offset->DefaultValue = 25.0f;
             Material->GetExpressionCollection().AddExpression(Offset); Material->GetEditorOnlyData()->PixelDepthOffset.Connect(0, Offset);
         }
-        if (CaseIndex >= 4)
+        if ((CaseIndex >= 4 && CaseIndex < 8) || CaseIndex == 9)
         {
             Material->MaxWorldPositionOffsetDisplacement = CaseIndex == 7 ? 0.0f : 120.0f;
             Material->bAlwaysEvaluateWorldPositionOffset = CaseIndex == 7;
@@ -211,7 +212,7 @@ int32 RunWebNaniteProgrammableProbe(const FString& Params)
         if (!FFileHelper::SaveArrayToFile(TArrayView<const uint8>(reinterpret_cast<const uint8*>(Source.GetData()),
             Source.Num() * sizeof(float)), *(Output / TEXT("wpo-source-triangles.bin")))) return 1;
     }
-    auto Report = MakeShared<FJsonObject>(); Report->SetBoolField(TEXT("pass"), Passed && Cases.Num() == 32); Report->SetArrayField(TEXT("cases"), Cases);
+    auto Report = MakeShared<FJsonObject>(); Report->SetBoolField(TEXT("pass"), Passed && Cases.Num() == 44); Report->SetArrayField(TEXT("cases"), Cases);
     FString Json; FJsonSerializer::Serialize(Report, TJsonWriterFactory<>::Create(&Json));
     FFileHelper::SaveStringToFile(Json, *(Output / TEXT("verified.json")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
     return Passed ? 0 : 1;

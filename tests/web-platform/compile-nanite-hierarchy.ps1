@@ -21,6 +21,7 @@ try {
         'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebHierarchy.cpp',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteHierarchy.usf',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteLOD.ush',
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteSpline.ush',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNanitePageOwnership.ush',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteHZB.ush',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteHZB.usf',

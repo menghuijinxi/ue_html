@@ -94,7 +94,7 @@ const rpcNames = new Set([
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest', 'WebMotionBenchmarkControl',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
-  'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure', 'WebNaniteNativeCaptureTest', 'WebNaniteWPOTest',
+  'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure', 'WebNaniteNativeCaptureTest', 'WebNaniteWPOTest', 'WebNaniteSplineTest',
   'WebLightingQualityTest', 'WebVisibilityTest', 'WebOptimizationTest', 'WebTextureReadbackTest', 'WebTraceStart', 'WebTraceStop', 'WebTraceExport', 'WebBindingCacheTest', 'WebBindingGroupTest'
 ]);
 // Emscripten's Worker setImmediate fallback sends a token to its parent. This
