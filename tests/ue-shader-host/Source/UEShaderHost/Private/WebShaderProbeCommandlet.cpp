@@ -35,6 +35,7 @@ int32 RunWebNaniteVisibilityProbe(const FString& Params);
 int32 RunWebNaniteAssetProbe(const FString& Params);
 int32 RunWebNaniteHierarchyProbe(const FString& Params);
 int32 RunWebNaniteMaterialProbe(const FString& Params);
+int32 RunWebNaniteProgrammableProbe(const FString& Params);
 int32 RunWebNaniteStreamingProbe(const FString& Params);
 int32 RunWebNaniteSidednessProbe(const FString& Params);
 int32 RunWebNaniteSceneAssets(const FString& Params);
@@ -152,6 +153,8 @@ int32 UWebShaderProbeCommandlet::Main(const FString &Params)
         return RunWebNaniteSceneAssets(Params);
     if (FParse::Param(*Params, TEXT("WebNaniteMaterialProbe")))
         return RunWebNaniteMaterialProbe(Params);
+    if (FParse::Param(*Params, TEXT("WebNaniteProgrammableProbe")))
+        return RunWebNaniteProgrammableProbe(Params);
     if (FParse::Param(*Params, TEXT("WebNaniteAssetProbe")))
         return RunWebNaniteAssetProbe(Params);
     if (FParse::Param(*Params, TEXT("WebNaniteVisibilityProbe")))

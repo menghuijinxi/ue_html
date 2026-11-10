@@ -67,6 +67,14 @@ const output = path.join(__dirname, defaultScene ? 'build/nanite-default-scene' 
 fs.mkdirSync(output, {recursive: true});
 const manifest = read(path.join(baseline, 'content-files.json'));
 assert.equal(manifest.shaderPlatform, 'SP_WEBGPU_SM5');
+if(!defaultScene&&!fullScene){
+  for(const asset of ['WebNaniteMaterials/NaniteMaterial0','WebNaniteMaterials/NaniteMaterial1','WebNaniteMaterials/NaniteMaterial2',
+    'WebNaniteMaterials/NaniteNormal','WebNaniteSidedness/NaniteMixedSidedPlane','WebNaniteSidedness/NaniteOneSided','WebNaniteSidedness/NaniteTwoSided',
+    'WebNaniteStreaming/NaniteResidentSphere','WebNaniteStreaming/NaniteStreamingSphere','WebNaniteStreaming/NaniteStreamingSphereB',
+    'WebNaniteProgrammable/NaniteMask',...Array.from({length:4},(_,i)=>`WebNaniteProgrammable/NaniteProgrammable${i}`)])
+    assert(manifest.files.some(f=>f.path===`/Engine/Programs/UEWebEngine/Content/${asset}.uasset`),
+      `Diagnostic Cook is missing ${asset}; include all fixture packages before packaging`);
+}
 const baselinePack = path.join(baseline, manifest.pack.url);
 assert.equal(audit(baselinePack).sha256, manifest.pack.sha256);
 const global = manifest.files.find(f => f.path === '/Engine/GlobalShaderCache-SP_WEBGPU_SM5.bin');
@@ -81,6 +89,11 @@ assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
 assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 8);
+const programmableFile = path.join(__dirname, 'results/nanite-programmable/verified.json');
+const programmableShaders = read(programmableFile); assert(programmableShaders.pass);
+[...programmableShaders.sources, programmableShaders.binary, ...programmableShaders.logs].forEach(verify);
+assert.equal(programmableShaders.cases.length, 12);
+assert(programmableShaders.cases.every(c => c.preprocessed && c.compiled && c.errors.length === 0));
 const originalGlobal = Buffer.alloc(global.size), fd = fs.openSync(baselinePack, 'r');
 try { assert.equal(fs.readSync(fd, originalGlobal, 0, global.size, global.offset), global.size); }
 finally { fs.closeSync(fd); }
@@ -138,7 +151,7 @@ const products = ['index.html', 'content.bin', 'content-files.json', 'config-fil
 products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, defaultScene, fullScene, sceneConversion, performanceProfile, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
-  hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),multiMaterial,
+  hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),programmableShaders:audit(programmableFile),multiMaterial,
   sceneCook:{stage:audit(stageFile),cook:stage.cookReport,inventory:cook.shaderInventory.artifact,
     naniteTypes,supplementApplied:false,hierarchyArchiveApplied:false,streamingArchiveApplied:true},
   baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),

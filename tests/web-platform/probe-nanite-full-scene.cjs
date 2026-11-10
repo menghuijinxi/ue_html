@@ -35,7 +35,9 @@ function verify(t){
   assert(t.batches.length>2000);assert(t.batches.every(b=>b.created&&b.triangles>0));
   const suppressed=t.batches.filter(b=>!b.material&&!b.depth&&!b.occluder).length;
   if(t.step===2){assert.equal(t.entries,0);assert.equal(suppressed,0);return {covered:0,suppressed};}
-  assert(t.registered>500&&t.entries>0&&suppressed>500);assert(t.materialComplete);
+  // The rigid opaque-only implementation registered 1,254 Villa components.
+  // Newly eligible masked/PDO components must actually leave the fallback path.
+  assert(t.registered>1254&&t.entries>0&&suppressed>1254);assert(t.materialComplete);
   assert.equal(t.entries+t.skipped,t.registered,'Every registered ordinary instance is processed or conservatively rejected');
   assert(t.materialDraws>0);if(!t.materialBins)assert(t.materialDraws>=t.entries);
   assert.equal(t.cullStates.length,t.entries*4);
@@ -105,7 +107,13 @@ function verify(t){
       t[frustumComparison?'frustumComparison':'binsComparison']={compared,before:frustumComparison?previous.entries:previous.materialDraws,
         after:frustumComparison?t.entries:t.materialDraws,maxDepthDifference,maxSpecularDifference};
     }
-    t.rhi=await owner.evaluate(()=>globalThis.__webOptimizationRHI);
+    const pipelineStart=Date.now();
+    do{
+      t.rhi=await owner.evaluate(()=>globalThis.__webOptimizationRHI);
+      if(t.rhi&&t.rhi.asyncPrecacheRequested===t.rhi.asyncPrecacheCompleted)break;
+      await page.waitForTimeout(100);
+      assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
+    }while(Date.now()-pipelineStart<90000);
     assert(t.rhi.asyncPrecacheRequested>100);assert.equal(t.rhi.asyncPrecacheRequested,t.rhi.asyncPrecacheCompleted);assert.equal(t.rhi.asyncPrecacheFailed||0,0);
     const file=path.join(output,`${name}-${step}.png`);await page.locator('canvas').screenshot({path:file});t.image=audit(file);
     const before=await page.evaluate(()=>({time:performance.now(),frames:__webEngineFrames}));

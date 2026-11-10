@@ -33,6 +33,7 @@ try {
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteRaster.usf',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteMicroRaster.ush',
         'reference-engine/Engine/Source/Runtime/Engine/Public/Rendering/NaniteWebRaster.h',
+        'reference-engine/Engine/Source/Runtime/Engine/Public/Rendering/NaniteWebRasterShaders.h',
         'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebDepth.cpp',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteDepth.usf',
         'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebGBuffer.cpp',
