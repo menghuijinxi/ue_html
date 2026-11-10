@@ -1,6 +1,12 @@
 param(
     [string]$Engine = 'H:/UE_5.8',
-    [Parameter(Mandatory=$true)][string]$CookedAsset,
+    [Parameter(Mandatory=$true)]
+    [ValidateScript({
+        if (-not (Test-Path -LiteralPath $_ -PathType Container)) {
+            throw 'CookedAsset must be the exported resource directory containing pages.bin and shader files, not resources.cooked.bin.'
+        }
+        $true
+    })][string]$CookedAsset,
     [switch]$SkipBuild
 )
 $ErrorActionPreference = 'Stop'

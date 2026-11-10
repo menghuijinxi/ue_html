@@ -1,5 +1,7 @@
 # Nanite WebGPU 接入记录
 
+2026-11-10 可编程距离兼容：代理保存真实 `NanitePixelProgrammableDistance`，每实例按原生包围盒中心、距离缩放及严格比较选择像素回退；回退仅停止遮罩/PDO，保留顶点变形与最终原材质。WPO 距离遵守 `r.Nanite.Culling.WPODisableDistance`，`r.Nanite.AllowProgrammableDistances` 使用通用控制变量接口读取，修复引用式变量不具备类型化存储而触发的断言。双设备各 33 项专项通过，精确等值边界、CPU ISM 和 Spline 组合均验证；同包各类材质、变形、速度、流送及页池预算共 518 项、197,987 帧，GPU 错误为零。60 项 HZB、3,096 项原生 HLSL 对照和 34 项错误拒绝检查通过，保持透视 1e-7、正交 1.2e-7 深度残差阈值。完整源码/构建/Cook 审计、原始回读、失败记录和截图见 `tests/web-platform/evidence/nanite-distance-20261110.json`；其余兼容与性能项仍依验收表继续。
+
 2026-11-10 Villa 原生画面对照：三组实际相机/投影、Nanite 开/关/恢复与四个 AO 相位在两种 Web 原子配置全部通过，共 27,714 帧、312 项区域比较，GPU 错误为零。最差均值 3.6104/255、P95 16.3333/255，阈值仍为 <5/<18。原生捕获独立构建、校验模块 BuildId，实际使用 TSR，并核对投影抖动、材质 mip bias、2,062 个开启代理和完整资源清单。`-WebMaterialTestClock` 只固定材质表达式时间，保留世界时间和组件可见时间，避免全帧时间冻结污染纹理流送；最终 GPU 图像与 AO 相位绑定回读，每相位独立稳定后比较。完整证据和失败定位保存在 `tests/web-platform/evidence/nanite-full-scene-native-20261110.json`。本轮不关闭性能、变形、其余材质或多视图项；默认场景历史对照还需按同样的实际 AA/抖动规则复验。
 
 2026-11-10 自动场景接入：`-WebNaniteScene` 启用正常静态网格代理的 Nanite 主画面和深度绘制，按真实材质 shader map/资源可用性注册，保留原 fallback 几何及阴影批次；`r.Nanite` 开关沿用原生代理重建并恢复常规绘制。默认页池为 1,024 根页、512 流送页，显式预算参数完整转交 UE。默认关卡新增的八个真实材质球使用 263 簇、4 页的 Cook 资源，并保留 16,128 三角形 fallback。
