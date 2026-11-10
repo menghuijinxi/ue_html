@@ -5,7 +5,7 @@ const stats = {memoryLimit, memoryBytes: 0, peakMemoryBytes: 0, memoryHits: 0,
   diskReads: 0, diskReadBytes: 0, downloadedBytes: 0, downloads: 0,
   persistentHits: 0, evictions: 0, diskEvictions: 0, activeReads: 0, peakActiveReads: 0,
   verification: 'sampled', hashedBytes: 0, hashMs: 0, downloadMs: 0, diskReadMs: 0,
-  quotaRetries: 0, quotaFailures: 0, reclaimedBytes: 0};
+  quotaRetries: 0, quotaFailures: 0, reclaimedBytes: 0, missingFileRetries: 0};
 const assets = new Map(), blocks = new Map(), pendingBlocks = new Map();
 const queue = [];
 let directory, baseUrl, active = 0, fullVerification = false;
@@ -19,6 +19,7 @@ const hash = async bytes => {
 };
 const markerName = value => value + '.json';
 const lockName = value => 'ue-web-local-' + value;
+const cacheDirectory = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('ue-web-local-v1', {create: true});
 
 async function removeEntry(name) {
   try { await directory.removeEntry(name); }
@@ -138,6 +139,23 @@ async function asset(info) {
       !info.blocks.every(value => /^[a-f0-9]{64}$/.test(value)))
     throw new Error('Invalid local content manifest');
   if (!assets.has(info.sha256)) assets.set(info.sha256, (async () => {
+    for (let attempt = 0; ; ++attempt) {
+      try { return await openAsset(info); }
+      catch (error) {
+        if (error.name !== 'NotFoundError' || attempt !== 0) throw error;
+        // OPFS can invalidate a cached directory/file handle independently of
+        // our Web Locks (for example when browser storage is reclaimed).
+        // Reopen from the storage root and revalidate under the exclusive lock.
+        // A second disappearance remains an error; never return partial data.
+        ++stats.missingFileRetries;
+        directory = await cacheDirectory();
+      }
+    }
+  })().catch(error => { assets.delete(info.sha256); throw error; }));
+  return assets.get(info.sha256);
+}
+
+async function openAsset(info) {
     let opened;
     await navigator.locks.request(lockName(info.sha256), async () => {
       if (await exists(info)) ++stats.persistentHits;
@@ -172,8 +190,6 @@ async function asset(info) {
     });
     const file = await opened;
     return {info, file};
-  })().catch(error => { assets.delete(info.sha256); throw error; }));
-  return assets.get(info.sha256);
 }
 
 async function block(value, index) {
@@ -215,7 +231,7 @@ async function execute(message) {
     baseUrl = message.baseUrl;
     fullVerification = message.verification === 'full';
     stats.verification = fullVerification ? 'full' : 'sampled';
-    directory = await (await navigator.storage.getDirectory()).getDirectoryHandle('ue-web-local-v1', {create: true});
+    directory = await cacheDirectory();
     return null;
   }
   if (message.type === 'asset') return (await asset(message.info)).file;
@@ -261,7 +277,8 @@ function pump() {
     stats.peakActiveReads = Math.max(stats.peakActiveReads, active);
     execute(message).then(result => {
       postMessage({id: message.id, result, stats}, result instanceof ArrayBuffer ? [result] : []);
-    }, error => postMessage({id: message.id, error: error.message, stats})).finally(() => {
+    }, error => postMessage({id: message.id,
+      error: `${message.type}${message.info?.url ? ' ' + message.info.url : ''}: ${error.name}: ${error.message}`, stats})).finally(() => {
       --active;
       stats.activeReads = active;
       pump();
