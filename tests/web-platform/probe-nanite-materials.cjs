@@ -3,7 +3,8 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const output=path.join(__dirname,'results/nanite-materials');fs.mkdirSync(output,{recursive:true});
 const scalarVisibility=process.argv.includes('--scalar-visibility');
-const report={pass:false,scalarVisibility,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
+const unmerged=process.argv.includes('--unmerged');
+const report={pass:false,scalarVisibility,unmerged,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
 function observe(scalarVisibility) {
  const state=globalThis.__webNativeMaterialsGPU={shaders:[],draws:0,errors:[]},modules=new WeakSet(),pipelines=new WeakSet(),bound=new WeakMap();
  const create=GPUDevice.prototype.createShaderModule,asyncPipeline=GPUDevice.prototype.createRenderPipelineAsync,syncPipeline=GPUDevice.prototype.createRenderPipeline;
@@ -24,7 +25,9 @@ const bits=new DataView(new ArrayBuffer(4)),float=b=>{bits.setUint32(0,b,true);r
 const srgb=v=>v<=.0031308?v*12.92:1.055*v**(1/2.4)-.055;
 function verify(t) {
  assert(t.complete,'all registered material shaders must be available');assert.equal(t.rejected,0);
- assert.equal(t.bins,t.step===5||t.step===7?2:3);assert.equal(t.pixels.length,t.width*t.height*28);
+ // Steps 3..7 share the same live MID across components 0 and 1. The
+ // normal-mapped material and different material instances remain separate.
+ assert.equal(t.bins,unmerged?(t.step===5||t.step===7?2:3):(t.step>=3&&t.step<=7?2:3));assert.equal(t.pixels.length,t.width*t.height*28);
  const counts={},maxError={baseColorCode:0,emissive:0,normalAngleCosine:0};
  for(let i=0;i<t.width*t.height;i++) {
   const o=i*28,id=t.pixels[o];if(!id||t.pixels[o+1]!==t.pixels[o+2])continue;
@@ -64,6 +67,7 @@ function verify(t) {
  await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=90,null,{timeout:180000});
  assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
+ assert.equal(await page.evaluate(v=>__webEngineRPC('WebNaniteMaterialBinsTest',v),unmerged?0:1),1);
  for(let step=1;step<=10;step++) {
   assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteMaterialsTest',s),step),1);
   let test;const start=Date.now();
@@ -72,6 +76,7 @@ function verify(t) {
   report.tests.push(test);test.validation=verify(test);console.log({step,...test.validation});
  }
  assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialsTest',11)),1);
+ assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBinsTest',-1)),1);
  const cleanupFrame=await page.evaluate(()=>globalThis.__webEngineFrames);
  await page.waitForFunction(frame=>globalThis.__webEngineFrames>frame+12,cleanupFrame,{timeout:30000});
  report.gpu=await owner.evaluate(()=>globalThis.__webNativeMaterialsGPU);assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalarVisibility);
@@ -79,4 +84,4 @@ function verify(t) {
  report.frames=await page.evaluate(()=>globalThis.__webEngineFrames);
  assert.deepEqual(report.errors,[]);report.pass=true;
 }catch(e){report.engineFailure=page?await page.evaluate(()=>({failure:globalThis.__webEngineFailure,frames:globalThis.__webEngineFrames})).catch(()=>null):null;report.failure=e.stack;console.error(e.stack);process.exitCode=1;}
-finally{if(browser)await browser.close();fs.writeFileSync(path.join(output,scalarVisibility?'browser-scalar.json':'browser.json'),JSON.stringify(report,null,2));}})();
+finally{if(browser)await browser.close();fs.writeFileSync(path.join(output,`browser${scalarVisibility?'-scalar':''}${unmerged?'-unmerged':''}.json`),JSON.stringify(report,null,2));}})();

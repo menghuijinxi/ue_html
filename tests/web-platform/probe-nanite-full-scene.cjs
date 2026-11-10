@@ -3,7 +3,10 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility'),name=scalar?'scalar':'packed';
 const frustumComparison=process.argv.includes('--frustum-comparison');
-const output=path.join(__dirname,frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+const binsComparison=process.argv.includes('--material-bins-comparison');
+assert(!(frustumComparison&&binsComparison));
+const comparison=frustumComparison||binsComparison;
+const output=path.join(__dirname,binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-full-scene/package.json')),
   tests:[],errors:[],events:[],startupLogs:[],logs:[],boundary:'Full-scene diagnostic. Unsupported material categories still use fallback; this is not full compatibility acceptance.'};
 const conversionFile=path.join(__dirname,'results/nanite-full-scene-conversion-verified.json');
@@ -34,7 +37,8 @@ function verify(t){
   if(t.step===2){assert.equal(t.entries,0);assert.equal(suppressed,0);return {covered:0,suppressed};}
   assert(t.registered>500&&t.entries>0&&suppressed>500);assert(t.materialComplete);
   assert.equal(t.entries+t.skipped,t.registered,'Every registered ordinary instance is processed or conservatively rejected');
-  assert(t.materialDraws>=t.entries);assert.equal(t.cullStates.length,t.entries*4);
+  assert(t.materialDraws>0);if(!t.materialBins)assert(t.materialDraws>=t.entries);
+  assert.equal(t.cullStates.length,t.entries*4);
   let visible=0;for(let i=0;i<t.entries;i++){assert.equal(t.cullStates[i*4+1],0);visible+=t.cullStates[i*4];}
   assert(visible>0);assert.equal(t.pixels.length,t.width*t.height*28);
   let covered=0;const shadingModels={};
@@ -63,20 +67,23 @@ function verify(t){
   report.startupMs=Date.now()-started;assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
   await page.addStyleTag({content:'body > :not(canvas) { visibility: hidden !important; } canvas, canvas * { visibility: visible !important; }'});
-  const views=frustumComparison?[[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,50],null,[-175,-80,160,-5,230],null,[-1000,-70,230,-8,65],null]:
+  const views=comparison?[[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,50],null,[-175,-80,160,-5,230],null,[-1000,-70,230,-8,65],null]:
     [[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,230],[-1000,-70,230,-8,65],[-175,-80,160,-5,50]];
   for(let step=1;step<=views.length;step++){
     const camera=views[step-1];if(camera)assert.equal(await page.evaluate(c=>__webEngineRPC('WebProjectViewTest',...c),camera),1);
-    if(frustumComparison)assert.equal(await page.evaluate(a=>__webEngineRPC('WebNaniteMaterialBoundsTest',...a),[1,step<6?0:step<8?3:7,[4,6,8].includes(step)?0:1]),1);
+    if(comparison)assert.equal(await page.evaluate(a=>__webEngineRPC('WebNaniteMaterialBoundsTest',...a),[1,step<6?0:step<8?3:7,frustumComparison&&[4,6,8].includes(step)?0:1]),1);
+    if(binsComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteMaterialBinsTest',s),[4,6,8].includes(step)?0:1),1);
     assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteAutomaticSceneTest',s),step),1);
     const start=Date.now();let t;
     do{await page.waitForTimeout(250);assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
       await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',0));t=await owner.evaluate(()=>globalThis.__webNaniteAutomaticSceneTest||null);
     }while((!t||t.step!==step)&&Date.now()-start<120000);
     assert(t&&t.step===step,`step ${step} readback`);report.tests.push(t);save();t.validation=verify(t);
-    if(frustumComparison&&[5,7,9].includes(step)){
-      const previous=report.tests.at(-2);assert(!previous.instanceFrustum&&t.instanceFrustum);assert.deepEqual(t.view,previous.view);
-      assert(t.entries<previous.entries*.25,'Offscreen GPU work must be removed');
+    if(comparison&&[5,7,9].includes(step)){
+      const previous=report.tests.at(-2);assert.deepEqual(t.view,previous.view);
+      if(frustumComparison){assert(!previous.instanceFrustum&&t.instanceFrustum);assert(t.entries<previous.entries*.25,'Offscreen GPU work must be removed');}
+      else {assert(!previous.materialBins&&t.materialBins);assert.equal(t.entries,previous.entries);assert.deepEqual(t.entryInstanceIDs,previous.entryInstanceIDs);
+        assert(t.materialDraws<previous.materialDraws*.75,'Equivalent native shader bindings must share shading work');}
       const before=new Map(previous.entryInstanceIDs.map((id,i)=>[id,previous.cullStates.slice(i*4,i*4+4)]));
       const after=new Map(t.entryInstanceIDs.map((id,i)=>[id,t.cullStates.slice(i*4,i*4+4)]));
       for(const [id,state] of before){if(!after.has(id))assert.equal(state[0],0,'CPU culling removed a GPU-visible cluster');else assert.deepEqual(after.get(id),state,'Retained hierarchy result changed');}
@@ -95,7 +102,8 @@ function verify(t){
         }
         compared++;
       }
-      t.frustumComparison={compared,before:previous.entries,after:t.entries,maxDepthDifference,maxSpecularDifference};
+      t[frustumComparison?'frustumComparison':'binsComparison']={compared,before:frustumComparison?previous.entries:previous.materialDraws,
+        after:frustumComparison?t.entries:t.materialDraws,maxDepthDifference,maxSpecularDifference};
     }
     t.rhi=await owner.evaluate(()=>globalThis.__webOptimizationRHI);
     assert(t.rhi.asyncPrecacheRequested>100);assert.equal(t.rhi.asyncPrecacheRequested,t.rhi.asyncPrecacheCompleted);assert.equal(t.rhi.asyncPrecacheFailed||0,0);
@@ -107,7 +115,8 @@ function verify(t){
     save();console.log({step,...t.validation,fps:t.performance.fps});
   }
   assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',-1)),1);
-  if(frustumComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',-1,0,1)),1);
+  if(comparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',-1,0,1)),1);
+  if(binsComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBinsTest',-1)),1);
   const before=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>f+30,before,{timeout:30000});
   report.gpu=await owner.evaluate(()=>__fullSceneGPU);assert.deepEqual(report.gpu.errors,[]);assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);
   report.frames=await page.evaluate(()=>__webEngineFrames);assert.deepEqual(report.errors,[]);report.pass=true;
