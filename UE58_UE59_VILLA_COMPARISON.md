@@ -4,6 +4,10 @@
 顶部切换 UE 5.8 v71 与 UE 5.9 官方版。切换会移除前一个 iframe 及其运行时，
 每次从同一关卡出生点开始。比较时只保留这一张场景页面。
 
+2026-11-10 新增独立的关闭 Lumen 对比：
+`http://127.0.0.1:8766/villa-engine-comparison.html?lighting=off#ours`。
+配置、预热和验证说明见 `UE58_UE59_VILLA_NO_LUMEN.md`；原入口继续启用 Lumen GI。
+
 2026-11-10 “我们的版本”已切到 `villa-prewarm-20261110-v4`，
 修复同一浏览器第二页等待缓存独占锁而无法启动的问题。
 Chrome 和 Edge 均验证两页同时打开、两页切换渲染/输入、关闭第一页及刷新第二页通过。

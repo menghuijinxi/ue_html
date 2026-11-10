@@ -1,0 +1,414 @@
+{
+  "date": "2026-11-10",
+  "pass": true,
+  "entry": "http://127.0.0.1:8766/villa-engine-comparison.html?lighting=off#ours",
+  "profile": {
+    "width": 1920,
+    "height": 1080,
+    "ours": "villa-no-lumen-20261110-v1",
+    "startupBaseline": "villa-no-lumen-capture-20261110-v1",
+    "source": "villa-prewarm-20261110-v4",
+    "official": "/official/no-lumen-20261110/index.html",
+    "settings": {
+      "sg.ViewDistanceQuality": 3,
+      "sg.AntiAliasingQuality": 3,
+      "sg.ShadowQuality": 3,
+      "sg.GlobalIlluminationQuality": 3,
+      "sg.ReflectionQuality": 3,
+      "sg.PostProcessQuality": 3,
+      "sg.TextureQuality": 3,
+      "sg.EffectsQuality": 3,
+      "sg.FoliageQuality": 3,
+      "sg.ShadingQuality": 3,
+      "r.ScreenPercentage": 100,
+      "r.DynamicRes.OperationMode": 0,
+      "r.AntiAliasingMethod": 2,
+      "r.DynamicGlobalIlluminationMethod": 0,
+      "r.Lumen.DiffuseIndirect.Allow": 0,
+      "r.ReflectionMethod": 0,
+      "r.Lumen.Reflections.Allow": 0,
+      "r.Lumen.HardwareRayTracing": 0,
+      "r.Shadow.Virtual.Enable": 0,
+      "r.Nanite": 0,
+      "r.MotionBlurQuality": 0,
+      "r.Streaming.PoolSize": 496,
+      "t.MaxFPS": 0,
+      "r.VSync": 0
+    }
+  },
+  "officialChanged": [
+    "TriplexHouseVilla/Content/WebGPUPrewarm-SF_WEBGPU_SM5.json",
+    "wasm-cache.json"
+  ],
+  "originalOfficialFilesVerified": 75,
+  "unchanged": {
+    "UEWebEngineThreads.js": "15d92c188511f4c7d7afcca8bc65ca543435e3513fcea0eae0ed4fdd45d8d10a",
+    "UEWebEngineThreads.wasm": "88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+    "content.bin": "af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+    "web-content-worker.js": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+  },
+  "officialPackPipelines": 159,
+  "runs": [
+    {
+      "browser": "chrome",
+      "engine": "ours",
+      "pass": true,
+      "errors": [],
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "settings": {
+        "antiAliasing": 2,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 0,
+        "reflections": 0,
+        "virtualShadows": 0,
+        "texturePoolMiB": 496,
+        "screenPercentage": 100,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 15.020000000018626,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 167,
+          "layouts": 235,
+          "ready": 191,
+          "hits": 245,
+          "misses": 0
+        },
+        "completed": 2562.7849999996834
+      },
+      "movementDistance": 138.29783253061174,
+      "mobileOverflow": false,
+      "dprChangedWhileRunning": {
+        "dpr": 2.0000000596046448,
+        "width": 1920,
+        "height": 1080,
+        "canvasWidth": 1920,
+        "canvasHeight": 1080
+      }
+    },
+    {
+      "browser": "chrome",
+      "engine": "official",
+      "pass": true,
+      "errors": [],
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "settings": {
+        "sg.ViewDistanceQuality": 3,
+        "sg.AntiAliasingQuality": 3,
+        "sg.ShadowQuality": 3,
+        "sg.GlobalIlluminationQuality": 3,
+        "sg.ReflectionQuality": 3,
+        "sg.PostProcessQuality": 3,
+        "sg.TextureQuality": 3,
+        "sg.EffectsQuality": 3,
+        "sg.FoliageQuality": 3,
+        "sg.ShadingQuality": 3,
+        "r.ScreenPercentage": 100,
+        "r.DynamicRes.OperationMode": 0,
+        "r.AntiAliasingMethod": 2,
+        "r.DynamicGlobalIlluminationMethod": 0,
+        "r.Lumen.DiffuseIndirect.Allow": 0,
+        "r.ReflectionMethod": 0,
+        "r.Lumen.Reflections.Allow": 0,
+        "r.Lumen.HardwareRayTracing": 0,
+        "r.Shadow.Virtual.Enable": 0,
+        "r.Nanite": 0,
+        "r.MotionBlurQuality": 0,
+        "r.Streaming.PoolSize": 496,
+        "t.MaxFPS": 0,
+        "r.VSync": 0
+      },
+      "prewarm": {
+        "why": "asked",
+        "t": 16244,
+        "marks": {
+          "script": 113,
+          "pick": 122,
+          "tier": "desktop",
+          "pack_early": "desktop",
+          "pack": 138,
+          "device": 172,
+          "modules": 249,
+          "layouts": 250,
+          "handoff": 394,
+          "pipelines": 1017,
+          "engine": 1627,
+          "engine_page": true,
+          "ready": 4339
+        },
+        "hits": {
+          "module": {
+            "hit": 156,
+            "miss": 0,
+            "late": 0
+          },
+          "bgl": {
+            "hit": 86,
+            "miss": 0,
+            "late": 0
+          },
+          "layout": {
+            "hit": 166,
+            "miss": 0,
+            "late": 0
+          },
+          "render": {
+            "hit": 118,
+            "miss": 0,
+            "late": 0
+          },
+          "compute": {
+            "hit": 50,
+            "miss": 0,
+            "late": 0
+          }
+        },
+        "made": {
+          "modules": 157,
+          "module_kb": 1064,
+          "layouts": 177,
+          "pipelines": 159,
+          "pipelines_ready": 159,
+          "pipeline_errors": 0,
+          "twins": 0
+        },
+        "failures": 0,
+        "misses": [],
+        "farm": null
+      },
+      "mobileOverflow": false
+    },
+    {
+      "browser": "msedge",
+      "engine": "ours",
+      "pass": true,
+      "errors": [],
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "settings": {
+        "antiAliasing": 2,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 0,
+        "reflections": 0,
+        "virtualShadows": 0,
+        "texturePoolMiB": 496,
+        "screenPercentage": 100,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 5.319999999832362,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 167,
+          "layouts": 235,
+          "ready": 191,
+          "hits": 245,
+          "misses": 0
+        },
+        "completed": 2848.875
+      },
+      "movementDistance": 138.30894346977612,
+      "mobileOverflow": false,
+      "dprChangedWhileRunning": {
+        "dpr": 2.0000000596046448,
+        "width": 1920,
+        "height": 1080,
+        "canvasWidth": 1920,
+        "canvasHeight": 1080
+      }
+    },
+    {
+      "browser": "msedge",
+      "engine": "official",
+      "pass": true,
+      "errors": [],
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "settings": {
+        "sg.ViewDistanceQuality": 3,
+        "sg.AntiAliasingQuality": 3,
+        "sg.ShadowQuality": 3,
+        "sg.GlobalIlluminationQuality": 3,
+        "sg.ReflectionQuality": 3,
+        "sg.PostProcessQuality": 3,
+        "sg.TextureQuality": 3,
+        "sg.EffectsQuality": 3,
+        "sg.FoliageQuality": 3,
+        "sg.ShadingQuality": 3,
+        "r.ScreenPercentage": 100,
+        "r.DynamicRes.OperationMode": 0,
+        "r.AntiAliasingMethod": 2,
+        "r.DynamicGlobalIlluminationMethod": 0,
+        "r.Lumen.DiffuseIndirect.Allow": 0,
+        "r.ReflectionMethod": 0,
+        "r.Lumen.Reflections.Allow": 0,
+        "r.Lumen.HardwareRayTracing": 0,
+        "r.Shadow.Virtual.Enable": 0,
+        "r.Nanite": 0,
+        "r.MotionBlurQuality": 0,
+        "r.Streaming.PoolSize": 496,
+        "t.MaxFPS": 0,
+        "r.VSync": 0
+      },
+      "prewarm": {
+        "why": "asked",
+        "t": 16306,
+        "marks": {
+          "script": 121,
+          "pack_early": "desktop",
+          "pick": 135,
+          "tier": "desktop",
+          "pack": 145,
+          "device": 182,
+          "modules": 257,
+          "layouts": 258,
+          "handoff": 409,
+          "pipelines": 1277,
+          "engine": 1926,
+          "engine_page": true,
+          "ready": 4651
+        },
+        "hits": {
+          "module": {
+            "hit": 156,
+            "miss": 0,
+            "late": 0
+          },
+          "bgl": {
+            "hit": 86,
+            "miss": 0,
+            "late": 0
+          },
+          "layout": {
+            "hit": 166,
+            "miss": 0,
+            "late": 0
+          },
+          "render": {
+            "hit": 118,
+            "miss": 0,
+            "late": 0
+          },
+          "compute": {
+            "hit": 50,
+            "miss": 0,
+            "late": 0
+          }
+        },
+        "made": {
+          "modules": 157,
+          "module_kb": 1064,
+          "layouts": 177,
+          "pipelines": 159,
+          "pipelines_ready": 159,
+          "pipeline_errors": 0,
+          "twins": 0
+        },
+        "failures": 0,
+        "misses": [],
+        "farm": null
+      },
+      "mobileOverflow": false
+    }
+  ],
+  "sources": [
+    {
+      "file": "tests/web-platform/villa-engine-comparison-no-lumen.json",
+      "sha256": "ebc0ab4e45efba9539bf104804da98c2daaf3275db72c1fdc747bd4fd39c24de"
+    },
+    {
+      "file": "tests/web-platform/villa-engine-comparison.json",
+      "sha256": "0f1940afd49641ee8369fd200d19e78895d17c2b22c30271dd1a4c2cc3d8cdaa"
+    },
+    {
+      "file": "tests/web-platform/results/villa-no-lumen-20261110-package.json",
+      "sha256": "056ac06e9d83c5c918798edf58f1c4837c1ed7e91ee91b025822973930cab54e"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-20261110-no-lumen-capture/result.json",
+      "sha256": "0d064bfce84478310400b3676c28e180b2f2c2eecb342b205d11f9708c6411a2"
+    },
+    {
+      "file": "tests/web-platform/results/ue59-no-lumen-20261110-capture-v2/result.json",
+      "sha256": "653af658f04c58457c6ef732dfadd08971374f760f7f93e9da8ccfe71b3e4b1e"
+    },
+    {
+      "file": "tests/web-platform/results/villa-no-lumen-20261110-v1-package.json",
+      "sha256": "006d1778c3df8b32a6fb9ca4ee29b497b71b7ce753ed6f1a8af01ea4b74b69d2"
+    },
+    {
+      "file": "tests/web-platform/results/villa-engine-comparison-20261110-no-lumen-chrome/result.json",
+      "sha256": "0fc43b6f5ce5c10376bf8c35d11a0f94cde36a30b067cbc0c49f8e33a9c3fb87"
+    },
+    {
+      "file": "tests/web-platform/results/villa-engine-comparison-20261110-no-lumen-edge/result.json",
+      "sha256": "c6b14fa41bf5136e2731849f84e13d66c346412f2799acfb816f742febadc2e4"
+    },
+    {
+      "file": "tests/web-platform/build/villa-prewarm-20261110-v4/asset-versions.json",
+      "sha256": "82ca73b147faeec2fedc603e3444b247171b1d1de039e5c8eac5c21b4432810a"
+    },
+    {
+      "file": "tests/web-platform/build/villa-no-lumen-20261110-v1/asset-versions.json",
+      "sha256": "9a60a1d5c25a3b971d0a7b47749b4eddecbbdcc3340f92a1383e392a35f6620f"
+    },
+    {
+      "file": "tests/web-platform/build/ue59-official-villa-20261109/no-lumen-20261110/TriplexHouseVilla/Content/WebGPUPrewarm-SF_WEBGPU_SM5.json",
+      "sha256": "6ae4a219a663f5cc6ac993e85a88ea9a922c587d80eaafd1f7d1b7faaf85b6c2"
+    },
+    {
+      "file": "tests/web-platform/package-villa-no-lumen.cjs",
+      "sha256": "6d5f4fccfa36379d688e2f6f48988c3178e37e53274b1c1f8cc59fa565b2389b"
+    },
+    {
+      "file": "tests/web-platform/capture-ue59-no-lumen.cjs",
+      "sha256": "5731319ed4e4d3752fbbc81564863c42c266054778bac907136ac5626a7cc7e9"
+    },
+    {
+      "file": "tests/web-platform/probe-villa-startup.cjs",
+      "sha256": "6eac28bbc54641abd39b609e007df393183197689b379f6687731babcecd6529"
+    },
+    {
+      "file": "tests/web-platform/verify-villa-engine-comparison.cjs",
+      "sha256": "01a38a17674cd92fcf0282f6092bc36fe5df3cbf5d6a9939d488d08527b2f7f3"
+    },
+    {
+      "file": "tests/web-platform/villa-engine-comparison.html",
+      "sha256": "5548bae513ebc6eca4a9402b207d07ce0dbdb83a4ba4f834f719fba4676c091c"
+    },
+    {
+      "file": "tests/web-platform/build/ue59-official-villa-20261109/comparison-no-lumen-files.json",
+      "sha256": "562da08bd4cac90eaade43c29017bfccc4c389bda5fc014812a1843244315426"
+    }
+  ],
+  "boundary": "Configuration repackaging, no engine rebuild or recook. Rendering, HUD, prewarm, movement, switching, DPI and layout checks only; instrumented FPS samples are not a CPU benchmark or performance ranking. GPU work remains. Initial official capture failed with HTTP 404 before adding the child stage to the server allowlist; the successful rerun is capture-v2. Native GPU/compiler crash root cause remains unresolved."
+}

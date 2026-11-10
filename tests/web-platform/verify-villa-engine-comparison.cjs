@@ -4,8 +4,11 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const sharp = require('sharp');
-const profile = require('./villa-engine-comparison.json');
 const option = name => process.argv.find(v => v.startsWith('--' + name + '='))?.slice(name.length + 3);
+const noLumen = option('lighting') === 'off';
+const profile = require(noLumen ? './villa-engine-comparison-no-lumen.json' : './villa-engine-comparison.json');
+const temporary = path.join(__dirname, 'build/test-tmp');
+fs.mkdirSync(temporary, {recursive: true}); process.env.TEMP = process.env.TMP = temporary;
 const tag = option('tag') || '20261109';
 assert(/^[a-z0-9-]+$/.test(tag));
 const selected = option('engine');
@@ -14,16 +17,18 @@ const affinity = Number(option('affinity') || 0);
 assert(Number.isSafeInteger(affinity) && affinity >= 0);
 const dpr = Number(option('dpr') || 1);
 assert(Number.isFinite(dpr) && dpr > 0);
+const browser = option('browser') || 'chrome';
+assert(['chrome', 'msedge'].includes(browser) && (!affinity || browser === 'chrome'));
 const browserProfile = path.join(__dirname, 'build/browser-profiles/comparison-' + tag);
 const directory = path.join(__dirname, 'results/villa-engine-comparison-' + tag);
 fs.mkdirSync(directory, {recursive: true});
-const report = {date: new Date().toISOString(), profile, dpr, affinity, affinityChecks: [], runs: [], pass: false};
+const report = {date: new Date().toISOString(), profile, browser, dpr, affinity, affinityChecks: [], runs: [], pass: false};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 let context;
 (async () => {
   try {
     context = await chromium.launchPersistentContext(browserProfile, {
-      executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+      channel: browser,
       headless: false, viewport: {width: 1600, height: 1000}, deviceScaleFactor: dpr,
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
@@ -70,7 +75,8 @@ let context;
       run = {engine, errors: [], startup: []}; report.runs.push(run); lines = [];
       const start = Date.now();
       if (report.runs.length === 1)
-        await page.goto('http://127.0.0.1:8766/villa-engine-comparison.html#' + engine);
+        await page.goto('http://127.0.0.1:8766/villa-engine-comparison.html' +
+          (noLumen ? '?lighting=off' : '') + '#' + engine);
       else
         await page.locator('[data-engine="' + engine + '"]').click();
       await page.waitForFunction(() => document.querySelector('iframe')?.src.includes('index.html'));
@@ -134,7 +140,9 @@ let context;
           assert(run.state.prewarm.counts.ready > 0 && run.state.prewarm.counts.hits > 0);
           assert.equal(run.state.prewarm.counts.misses, 0, 'Startup pipeline missing from the recorded pack');
         } else assert(run.state.pso?.enabled, 'Our PSO precache is disabled');
-        for (const [key, value] of Object.entries({antiAliasing: 2, gi: 1, reflections: 1,
+        for (const [key, value] of Object.entries({antiAliasing: 2,
+          gi: profile.settings['r.DynamicGlobalIlluminationMethod'],
+          reflections: profile.settings['r.ReflectionMethod'],
           virtualShadows: 0, texturePoolMiB: 496, screenPercentage: 100}))
           assert.equal(run.state.settings[key], value, key);
         const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));

@@ -13,7 +13,11 @@ const folder = option('folder');
 const cvars = option('cvars') || '';
 assert(tag && /^[a-z0-9-]+$/.test(tag) && Number.isInteger(rounds) && rounds > 0);
 assert(!selected || ['ours', 'official'].includes(selected));
-const profile = require('./villa-engine-comparison.json');
+const noLumen = option('lighting') === 'off';
+const profileName = noLumen ? 'villa-engine-comparison-no-lumen.json' : 'villa-engine-comparison.json';
+const profile = require('./' + profileName);
+const temporary = path.join(__dirname, 'build/test-tmp');
+fs.mkdirSync(temporary, {recursive: true}); process.env.TEMP = process.env.TMP = temporary;
 const directory = path.join(__dirname, 'results', 'villa-startup-' + tag);
 assert(!fs.existsSync(directory), 'Keep prior measurements; use a new tag');
 fs.mkdirSync(directory);
@@ -45,7 +49,7 @@ let context;
     });
     if (affinity) report.affinityCheck = require('./comparison-browser-affinity.cjs')(browserProfile, affinity, true);
     if (!plain) await context.addInitScript({content: recorder});
-    if (folder) await context.route('**/villa-engine-comparison.json', async route => {
+    if (folder) await context.route('**/' + profileName, async route => {
       const response = await route.fetch();
       await route.fulfill({response, json: {...profile, ours: folder}});
     });
@@ -87,7 +91,8 @@ let context;
         run = {index, engine, errors: [], samples: []}; report.runs.push(run);
         console.log(JSON.stringify({index, engine, stage: 'starting'}));
         const began = Date.now();
-        await page.goto('http://127.0.0.1:8766/villa-engine-comparison.html#' + engine);
+        await page.goto('http://127.0.0.1:8766/villa-engine-comparison.html' +
+          (noLumen ? '?lighting=off' : '') + '#' + engine);
         await page.waitForSelector('iframe');
         const frame = await (await page.locator('iframe').elementHandle()).contentFrame();
         while (Date.now() - began < 120000) {
