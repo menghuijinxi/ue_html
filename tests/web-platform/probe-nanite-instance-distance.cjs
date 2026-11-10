@@ -45,6 +45,11 @@ function verify(t){
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineRecovery?.phase==='running',null,{timeout:180000});
   assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   worker=page.workers().find(w=>w.url().includes('web-engine-worker'));assert(worker);
+  // Isolate the distance predicate: this fixture deliberately moves instances
+  // outside the frustum while checking that distance boundaries remain inclusive.
+  // Frustum rejection has independent GPU-reference scene comparisons.
+  assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',1,0,0)),1);
+  report.frustumDisabledForDistanceIsolation=true;
   for(let step=1;step<=17;step++){
     assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteInstanceDistanceTest',s),step),1);
     let t;const start=Date.now();
@@ -54,6 +59,7 @@ function verify(t){
     assert(t&&t.step===step,'distance readback step '+step);report.tests.push(t);t.validation=verify(t);console.log({step,...t.validation});
   }
   assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteInstanceDistanceTest',18)),1);
+  assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',-1,0,1)),1);
   const before=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>=f+120,before,{timeout:30000});
   report.gpu=await worker.evaluate(()=>__distanceGPU);report.rhi=await worker.evaluate(()=>__webOptimizationRHI);report.frames=await page.evaluate(()=>__webEngineFrames);
   assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);assert.deepEqual(report.gpu.errors,[]);assert.deepEqual(report.errors,[]);

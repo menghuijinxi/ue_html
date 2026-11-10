@@ -55,16 +55,20 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetArrayField(TEXT("assets"), Assets);
     uint64 UnboundedPixels = 0, BoundedPixels = 0;
     uint32 Levels = 0;
+    TArray<TSharedPtr<FJsonValue>> EntryIDs;
     for (const auto& Entry : Cull.Entries)
     {
         const FIntRect Bounds = Nanite::GetWebSceneEntryPixelBounds(Entry, *Cull.View, Cull.RasterViewRect);
         UnboundedPixels += uint64(Cull.RasterViewRect.Width()) * Cull.RasterViewRect.Height();
         BoundedPixels += uint64(FMath::Max(0, Bounds.Width())) * FMath::Max(0, Bounds.Height());
         Levels += Entry.Input.MaxLevels;
+        EntryIDs.Add(MakeShared<FJsonValueNumber>(Entry.InstanceSceneDataOffset));
     }
     Report->SetNumberField(TEXT("unboundedEntryPixels"), double(UnboundedPixels));
     Report->SetNumberField(TEXT("boundedEntryPixels"), double(BoundedPixels));
     Report->SetNumberField(TEXT("hierarchyDispatchLevels"), Levels);
+    Report->SetArrayField(TEXT("entryInstanceIDs"), EntryIDs);
+    Report->SetBoolField(TEXT("instanceFrustum"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebInstanceFrustum"))->GetInt() != 0);
     // Use the effective render projection, not the requested camera FOV: UE's
     // MaintainYFOV policy changes horizontal FOV with the viewport aspect ratio.
     const FMatrix& Projection = Cull.View->ViewMatrices.GetProjectionNoAAMatrix();
@@ -155,20 +159,21 @@ void Poll()
 }
 }
 
-extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMaterialBoundsTest(int Enabled, int TemporalIndex)
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMaterialBoundsTest(int Enabled, int TemporalIndex, int FrustumEnabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBoundedMaterialTiles"));
     auto* Jitter = IConsoleManager::Get().FindConsoleVariable(TEXT("r.TemporalAA.Debug.OverrideTemporalIndex"));
-    static int SavedBounds = -1, SavedJitter = -1;
-    if (!CVar || !Jitter || Enabled < -1 || Enabled > 1 || TemporalIndex < 0 || TemporalIndex > 7) return 0;
+    auto* Frustum = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebInstanceFrustum"));
+    static int SavedBounds = -1, SavedJitter = -1, SavedFrustum = 1;
+    if (!CVar || !Jitter || !Frustum || Enabled < -1 || Enabled > 1 || TemporalIndex < 0 || TemporalIndex > 7 || FrustumEnabled < 0 || FrustumEnabled > 1) return 0;
     if (Enabled == -1)
     {
         if (SavedBounds < 0) return 0;
-        CVar->Set(SavedBounds, ECVF_SetByCode); Jitter->Set(SavedJitter, ECVF_SetByCode); SavedBounds = -1; return 1;
+        CVar->Set(SavedBounds, ECVF_SetByCode); Jitter->Set(SavedJitter, ECVF_SetByCode); Frustum->Set(SavedFrustum, ECVF_SetByCode); SavedBounds = -1; return 1;
     }
-    if (SavedBounds < 0) { SavedBounds = CVar->GetInt(); SavedJitter = Jitter->GetInt(); }
-    CVar->Set(Enabled, ECVF_SetByCode); Jitter->Set(TemporalIndex, ECVF_SetByCode); return 1;
+    if (SavedBounds < 0) { SavedBounds = CVar->GetInt(); SavedJitter = Jitter->GetInt(); SavedFrustum = Frustum->GetInt(); }
+    CVar->Set(Enabled, ECVF_SetByCode); Jitter->Set(TemporalIndex, ECVF_SetByCode); Frustum->Set(FrustumEnabled, ECVF_SetByCode); return 1;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteAutomaticSceneTest(int RequestedStep)

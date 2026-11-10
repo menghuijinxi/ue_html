@@ -2,7 +2,8 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility'),name=scalar?'scalar':'packed';
-const output=path.join(__dirname,'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+const frustumComparison=process.argv.includes('--frustum-comparison');
+const output=path.join(__dirname,frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-full-scene/package.json')),
   tests:[],errors:[],events:[],startupLogs:[],logs:[],boundary:'Full-scene diagnostic. Unsupported material categories still use fallback; this is not full compatibility acceptance.'};
 const conversionFile=path.join(__dirname,'results/nanite-full-scene-conversion-verified.json');
@@ -31,7 +32,8 @@ function verify(t){
   assert(t.batches.length>2000);assert(t.batches.every(b=>b.created&&b.triangles>0));
   const suppressed=t.batches.filter(b=>!b.material&&!b.depth&&!b.occluder).length;
   if(t.step===2){assert.equal(t.entries,0);assert.equal(suppressed,0);return {covered:0,suppressed};}
-  assert(t.registered>500&&t.entries>500&&suppressed>500);assert(t.materialComplete);
+  assert(t.registered>500&&t.entries>0&&suppressed>500);assert(t.materialComplete);
+  assert.equal(t.entries+t.skipped,t.registered,'Every registered ordinary instance is processed or conservatively rejected');
   assert(t.materialDraws>=t.entries);assert.equal(t.cullStates.length,t.entries*4);
   let visible=0;for(let i=0;i<t.entries;i++){assert.equal(t.cullStates[i*4+1],0);visible+=t.cullStates[i*4];}
   assert(visible>0);assert.equal(t.pixels.length,t.width*t.height*28);
@@ -61,15 +63,40 @@ function verify(t){
   report.startupMs=Date.now()-started;assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
   await page.addStyleTag({content:'body > :not(canvas) { visibility: hidden !important; } canvas, canvas * { visibility: visible !important; }'});
-  const views=[[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,230],[-1000,-70,230,-8,65],[-175,-80,160,-5,50]];
+  const views=frustumComparison?[[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,50],null,[-175,-80,160,-5,230],null,[-1000,-70,230,-8,65],null]:
+    [[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,230],[-1000,-70,230,-8,65],[-175,-80,160,-5,50]];
   for(let step=1;step<=views.length;step++){
     const camera=views[step-1];if(camera)assert.equal(await page.evaluate(c=>__webEngineRPC('WebProjectViewTest',...c),camera),1);
+    if(frustumComparison)assert.equal(await page.evaluate(a=>__webEngineRPC('WebNaniteMaterialBoundsTest',...a),[1,step<6?0:step<8?3:7,[4,6,8].includes(step)?0:1]),1);
     assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteAutomaticSceneTest',s),step),1);
     const start=Date.now();let t;
     do{await page.waitForTimeout(250);assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
       await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',0));t=await owner.evaluate(()=>globalThis.__webNaniteAutomaticSceneTest||null);
     }while((!t||t.step!==step)&&Date.now()-start<120000);
     assert(t&&t.step===step,`step ${step} readback`);report.tests.push(t);save();t.validation=verify(t);
+    if(frustumComparison&&[5,7,9].includes(step)){
+      const previous=report.tests.at(-2);assert(!previous.instanceFrustum&&t.instanceFrustum);assert.deepEqual(t.view,previous.view);
+      assert(t.entries<previous.entries*.25,'Offscreen GPU work must be removed');
+      const before=new Map(previous.entryInstanceIDs.map((id,i)=>[id,previous.cullStates.slice(i*4,i*4+4)]));
+      const after=new Map(t.entryInstanceIDs.map((id,i)=>[id,t.cullStates.slice(i*4,i*4+4)]));
+      for(const [id,state] of before){if(!after.has(id))assert.equal(state[0],0,'CPU culling removed a GPU-visible cluster');else assert.deepEqual(after.get(id),state,'Retained hierarchy result changed');}
+      for(const id of after.keys())assert(before.has(id));
+      let compared=0,maxDepthDifference=0,maxSpecularDifference=0;
+      for(let i=0;i<t.width*t.height;i++){
+        const p=i*28;assert.equal(!!t.pixels[p],!!previous.pixels[p],'Nanite coverage changed');
+        if(!t.pixels[p])continue;
+        assert.equal(t.pixels[p+1]===t.pixels[p+2],previous.pixels[p+1]===previous.pixels[p+2],'Ordinary mesh depth ownership changed');
+        for(let j=1;j<3;j++){const difference=Math.abs(float(t.pixels[p+j])-float(previous.pixels[p+j]));maxDepthDifference=Math.max(maxDepthDifference,difference);assert(difference<1e-6,'Visibility depth changed');}
+        if(t.pixels[p+1]!==t.pixels[p+2])continue;
+        for(let j=8;j<28;j++){
+          const difference=Math.abs(float(t.pixels[p+j])-float(previous.pixels[p+j]));
+          if(j===13){maxSpecularDifference=Math.max(maxSpecularDifference,difference);assert(difference<=1/255+1e-7);}
+          else assert.equal(t.pixels[p+j],previous.pixels[p+j],`Frustum pixel ${i}, channel ${j}`);
+        }
+        compared++;
+      }
+      t.frustumComparison={compared,before:previous.entries,after:t.entries,maxDepthDifference,maxSpecularDifference};
+    }
     t.rhi=await owner.evaluate(()=>globalThis.__webOptimizationRHI);
     assert(t.rhi.asyncPrecacheRequested>100);assert.equal(t.rhi.asyncPrecacheRequested,t.rhi.asyncPrecacheCompleted);assert.equal(t.rhi.asyncPrecacheFailed||0,0);
     const file=path.join(output,`${name}-${step}.png`);await page.locator('canvas').screenshot({path:file});t.image=audit(file);
@@ -80,6 +107,7 @@ function verify(t){
     save();console.log({step,...t.validation,fps:t.performance.fps});
   }
   assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',-1)),1);
+  if(frustumComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',-1,0,1)),1);
   const before=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>f+30,before,{timeout:30000});
   report.gpu=await owner.evaluate(()=>__fullSceneGPU);assert.deepEqual(report.gpu.errors,[]);assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);
   report.frames=await page.evaluate(()=>__webEngineFrames);assert.deepEqual(report.errors,[]);report.pass=true;
