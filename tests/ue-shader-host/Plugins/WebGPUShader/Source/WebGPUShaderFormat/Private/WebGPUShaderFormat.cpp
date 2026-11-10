@@ -620,7 +620,11 @@ class FWebGPUShaderFormat final : public IShaderFormat
         if (UsesTranslucencyVolumeMarks(Input))
             Input.Environment.SetCompileArgument(TEXT("WebLumenVolumeMarkVersion"), int32(1));
         if (Input.VirtualSourceFilePath == TEXT("/Engine/Private/Nanite/NaniteTranscode.usf"))
+        {
+            // The installed Cook type lacks the Web runtime's subgroup flag.
+            Input.Environment.CompilerFlags.Add(CFLAG_WaveOperations);
             Input.Environment.SetCompileArgument(TEXT("WebNaniteTranscodeVersion"), int32(1));
+        }
     }
 
     virtual bool PreprocessShader(const FShaderCompilerInput &Input, const FShaderCompilerEnvironment &Environment,

@@ -2406,7 +2406,9 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
         EnumHasAnyFlags(Buffer->GetUsage(), BUF_StructuredBuffer | BUF_AccelerationStructure) ||
         !EnumHasAnyFlags(Buffer->GetUsage(), BUF_ShaderResource))
     {
-        Error = TEXT("Unsupported typed buffer SRV format or usage");
+        Error = FString::Printf(TEXT("Unsupported typed buffer SRV: name=%s format=%u type=%u usage=%llu stride=%u counter=%u append=%u"),
+            *Buffer->GetName().ToString(), uint32(View.Format), uint32(View.BufferType),
+            uint64(Buffer->GetUsage()), View.Stride, uint32(View.bAtomicCounter), uint32(View.bAppendBuffer));
         return false;
     }
     const uint64 Size = Buffer->GetSize();

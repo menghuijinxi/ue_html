@@ -128,6 +128,7 @@ if ((Get-Item -LiteralPath (Split-Path $taskRenderUtils)).LinkType -or
     throw 'RenderCore overlay must be a local build-host copy.'
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp') -Destination $taskRenderUtils -Force
+Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RenderCore/Private/Shader.cpp') -Destination (Join-Path $taskHost 'Source/Runtime/RenderCore/Private/Shader.cpp') -Force
 foreach ($taskGraphOverlay in @('RenderGraphPrivate.cpp', 'RenderGraphPrivate.h')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/RenderCore/Private/$taskGraphOverlay") -Destination (Join-Path $taskHost "Source/Runtime/RenderCore/Private/$taskGraphOverlay") -Force
 }

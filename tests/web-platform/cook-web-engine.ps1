@@ -339,7 +339,11 @@ try {
             "-Output=$taskSkyInventory", "-SkyCaptureOutput=$taskSkyFile", '-AllowCommandletRendering',
             '-d3d12', '-unattended', '-nop4', '-nosplash', '-nosound', "-abslog=$taskSkyLog")
         if (-not $UseProjectSettings) { $taskSkyArguments += '-ini:Engine:[SystemSettings]:r.RayTracing=0' }
-        $taskSkyChild = Start-Process -FilePath (Join-Path $Engine 'Engine/Binaries/Win64/UnrealEditor-Cmd.exe') `
+        # The host module registers Web shaders even for native D3D12 capture.
+        # Use the prepared shader tree so those files exist before shader initialization.
+        $taskSkyExecutable = Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe'
+        $taskReport.skyLightExecutable = Get-TaskAudit $taskSkyExecutable
+        $taskSkyChild = Start-Process -FilePath $taskSkyExecutable `
             -ArgumentList ($taskSkyArguments | ForEach-Object { '"' + $_ + '"' }) `
             -WindowStyle Hidden -PassThru -RedirectStandardOutput "$taskSkyLog.console.txt" `
             -RedirectStandardError "$taskSkyLog.stderr.txt"

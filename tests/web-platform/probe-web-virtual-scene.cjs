@@ -10,6 +10,27 @@ const argument = name => process.argv.find(value => value.startsWith(`--${name}=
 const folder = argument('folder') || 'triplex-virtual-distance-fields-threads';
 const tag = argument('tag') || 'virtual-scene';
 const fixture = process.argv.includes('--vt-fixture');
+const requireLumen = process.argv.includes('--require-lumen');
+const requirePrecache = process.argv.includes('--require-precache');
+const lumenShaders = {}, lumenSources = [];
+for (const directory of (argument('lumen-input') || '').split(',').filter(Boolean)) {
+  for (const name of fs.readdirSync(directory)) {
+    const file = path.join(directory, name, 'input.json');
+    if (!fs.existsSync(file)) continue;
+    const input = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const kind = /^FScreenProbe/.test(input.shaderName) ? 'gi' :
+      /^FReflectionTrace/.test(input.shaderName) ? 'reflections' : null;
+    if (kind && input.metadata?.webEntry) {
+      lumenShaders[input.metadata.webEntry] = {kind, name: input.shaderName};
+      lumenSources.push(audit(file));
+    }
+  }
+}
+if (requireLumen) {
+  for (const kind of ['gi', 'reflections'])
+    assert(Object.values(lumenShaders).some(shader => shader.kind === kind),
+      `--require-lumen needs --lumen-input Cook shader metadata for ${kind}`);
+}
 const viewTimeout = Number(argument('view-timeout-ms') || 180000);
 assert(Number.isFinite(viewTimeout) && viewTimeout >= 10000 && viewTimeout <= 900000);
 assert([folder, tag].every(value => /^[a-z0-9-]+$/.test(value)));
@@ -24,18 +45,52 @@ async function bounded(promise, milliseconds = 10000) {
 }
 const report = {date: new Date().toISOString(), pass: false, virtualTextureStreamingCovered: false,
   desktopVisualParityAccepted: false, source: audit(__filename), folder, fixture, viewTimeout,
-  views: [], viewWaits: [], errors: []};
-const packageReportFile = path.join(__dirname, 'results', `web-project-${folder}-package-results.json`);
+  requireLumen, requirePrecache, lumenShaders, lumenSources, views: [], viewWaits: [], errors: []};
+const packageReportFile = argument('package-report') ||
+  path.join(__dirname, 'results', `web-project-${folder}-package-results.json`);
+if (argument('package-report')) {
+  const packaged = JSON.parse(fs.readFileSync(packageReportFile, 'utf8').replace(/^\uFEFF/, ''));
+  assert(packaged.pass && path.basename(packaged.output) === folder,
+    'Package report must describe this browser build');
+}
 if (fs.existsSync(packageReportFile)) report.packageReport = audit(packageReportFile);
 if (fixture) {
   report.viewDefinitions = audit(path.join(__dirname, 'virtual-texture-views.json'));
   report.imageCheck = audit(require.resolve('./virtual-texture-image-check.cjs'));
 }
-function observe() {
+function observe(lumenEntries) {
   const state = globalThis.__virtualSceneGPU = {
     errors: [], losses: [], textures: [], atomicToTexture: 0, textureToAtomic: 0,
-    textureUploads: {}, largestBuffer: 0, slowPipelineCreations: [],
+    textureUploads: {}, largestBuffer: 0, slowPipelineCreations: [], lumenDispatches: {},
   };
+  const pipelines = new WeakMap(), passes = new WeakMap();
+  const createCompute = GPUDevice.prototype.createComputePipeline;
+  GPUDevice.prototype.createComputePipeline = function(descriptor) {
+    const pipeline = createCompute.call(this, descriptor);
+    if (lumenEntries[descriptor.compute.entryPoint])
+      pipelines.set(pipeline, descriptor.compute.entryPoint);
+    return pipeline;
+  };
+  const createComputeAsync = GPUDevice.prototype.createComputePipelineAsync;
+  GPUDevice.prototype.createComputePipelineAsync = async function(descriptor) {
+    const pipeline = await createComputeAsync.call(this, descriptor);
+    if (lumenEntries[descriptor.compute.entryPoint])
+      pipelines.set(pipeline, descriptor.compute.entryPoint);
+    return pipeline;
+  };
+  const setPipeline = GPUComputePassEncoder.prototype.setPipeline;
+  GPUComputePassEncoder.prototype.setPipeline = function(pipeline) {
+    passes.set(this, pipelines.get(pipeline));
+    return setPipeline.call(this, pipeline);
+  };
+  for (const name of ['dispatchWorkgroups', 'dispatchWorkgroupsIndirect']) {
+    const dispatch = GPUComputePassEncoder.prototype[name];
+    GPUComputePassEncoder.prototype[name] = function(...args) {
+      const entry = passes.get(this);
+      if (entry) state.lumenDispatches[entry] = (state.lumenDispatches[entry] || 0) + 1;
+      return dispatch.apply(this, args);
+    };
+  }
   const createDevice = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(...args) {
     const device = await createDevice.apply(this, args);
@@ -105,6 +160,7 @@ function observe() {
         executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
         viewport: {width: 1280, height: 720}});
     browser = context;
+    report.browser = context.browser().version();
     if (process.argv.includes('--proxy-diagnostics')) {
       report.proxyDiagnostics = true;
       await context.route('**/UEWebEngineThreads.js?*', async route => {
@@ -120,7 +176,8 @@ function observe() {
     }
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
-      await route.fulfill({response, body: `(${observe.toString()})();\n` + await response.text()});
+      await route.fulfill({response,
+        body: `(${observe.toString()})(${JSON.stringify(lumenShaders)});\n` + await response.text()});
     });
     page = context.pages()[0] || await context.newPage();
     for (const extra of context.pages().filter(value => value !== page)) await extra.close();
@@ -152,6 +209,7 @@ function observe() {
       settings: globalThis.__webProjectSettings, streaming: globalThis.__webTextureStreaming,
       view: globalThis.__webRenderView, camera: globalThis.__webDefaultCamera,
       threads: globalThis.__webEngineThreads, gpu: globalThis.__virtualSceneGPU,
+      precache: globalThis.__webPSOPrecache,
     }));
     report.initial = await snapshot();
     assert(report.initial.frames >= 60, 'Scene did not reach sixty frames');
@@ -159,6 +217,11 @@ function observe() {
       'Virtual texture support is not active');
     assert(report.initial.settings.virtualShadows === 1 && report.initial.settings.virtualShadowPathActive,
       'Virtual shadow maps are not active');
+    if (requireLumen) {
+      assert.equal(report.initial.settings.gi, 1, 'Lumen GI is not enabled');
+      assert.equal(report.initial.settings.reflections, 1, 'Lumen reflections are not enabled');
+      assert.equal(report.initial.settings.generateDistanceFields, 1, 'Software Lumen distance fields are disabled');
+    }
     const camera = report.initial.camera;
     assert(camera, 'No scene camera');
     const capture = async name => {
@@ -173,7 +236,7 @@ function observe() {
       }
       const state = await snapshot();
       report.views.push({name, screenshot: audit(file), colors: colors.size,
-        visibleFraction: visible / (png.width * png.height), state});
+        width: png.width, height: png.height, visibleFraction: visible / (png.width * png.height), state});
       if (fixture) {
         const view = require('./virtual-texture-views.json').find(view => view.name === name);
         const comparison = inspectTexturePair(png, view);
@@ -207,6 +270,15 @@ function observe() {
       await capture(name);
     }
     report.final = await snapshot();
+    if (requirePrecache)
+      assert.equal(report.final.precache?.enabled, true, 'PSO precaching is not enabled');
+    report.lumenDispatches = {gi: 0, reflections: 0};
+    for (const [entry, count] of Object.entries(report.final.gpu.lumenDispatches))
+      report.lumenDispatches[lumenShaders[entry].kind] += count;
+    if (requireLumen) {
+      for (const kind of ['gi', 'reflections'])
+        assert(report.lumenDispatches[kind] > 0, `No actual Lumen ${kind} GPU dispatch was observed`);
+    }
     assert(report.final.gpu.textures.some(texture => /PhysicalPagePool/.test(texture.label)),
       'No virtual shadow physical page pool was created');
     assert(report.final.gpu.atomicToTexture > 0 && report.final.gpu.textureToAtomic > 0,

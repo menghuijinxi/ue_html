@@ -46,7 +46,7 @@ try {
     assert.equal(report.copiedFiles.at(-1).sha256, report.sourceFiles.at(-1).sha256);
   }
   descriptor.Modules = [...(descriptor.Modules || []).filter(module => module.Name !== 'UEShaderHost'),
-    {Name: 'UEShaderHost', Type: 'Editor', LoadingPhase: 'Default'}];
+    {Name: 'UEShaderHost', Type: 'Editor', LoadingPhase: 'PostConfigInit'}];
   descriptor.Plugins = [...(descriptor.Plugins || []).filter(plugin => plugin.Name !== 'WebGPUShader'),
     {Name: 'WebGPUShader', Enabled: true}];
   if (!useProjectSettings) descriptor.DisableEnginePluginsByDefault = true;

@@ -1,0 +1,453 @@
+{
+  "recordedAt": "2026-11-10T08:01:40.188Z",
+  "pass": true,
+  "rootBaseline": "50740cc",
+  "engineRevision": "06b08ff55dc02165ac1a3625a70acfa963c19026",
+  "originalProject": "H:\\TriplexHouseVilla\\TriplexHouseVilla.uproject",
+  "url": "http://127.0.0.1:8765/build/villa-lumen-vt-20261110/index.html",
+  "renderer": "desktop-deferred",
+  "package": {
+    "bytes": 3640331288,
+    "products": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\index.html",
+        "sha256": "94b2b1677887d58c4f69666471e708627d6698c7d20dac109a634435d324c403"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\content.bin",
+        "sha256": "2d8701f5993955e76c58e4d88ee429555cd22190161d8b11855c5be65d94b3da"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\content-files.json",
+        "sha256": "71ff789547f59e7985a2b2e07f9a419b6e65b6f2efb04adaed28312d8f4bd481"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\config-files.json",
+        "sha256": "bd8f858f96b72e1ed7d97193e1d2c1ce96f13296b0230cd97b0898578c6990d8"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\web-content-io.js",
+        "sha256": "c55809fef34e77b0ced5a8be0e0b033b5b13f7e8e5c7818c276980b89f6ca8cf"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\web-content-worker.js",
+        "sha256": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\web-engine-host.js",
+        "sha256": "a251568d6ee5d9cca0c97aca02af9d15dfd5359394198a35d2af6608c369d2ab"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\web-engine-worker.js",
+        "sha256": "8f6218cc77dfd80f081e12155eb2f156ed9f1ebc1b90d8bd396a5bcde7fa5402"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\UEWebEngineThreads.js",
+        "sha256": "fe220f0bcd7e99e273ac17a734261094a4caf3aef2103b4c244023ee426b9451"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\UEWebEngineThreads.wasm",
+        "sha256": "9d0f41e704edd1cde26487c1328af85ccf3273f62984c072f887e9ebcc7a2250"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110\\asset-versions.json",
+        "sha256": "f46fa1a878518f2de68de930c1e6c3da34ae41bbc232761d78ce7ade7ebe20b6"
+      }
+    ],
+    "performanceProfile": "desktop-accepted-20261107"
+  },
+  "reports": {
+    "browser": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-final.json",
+      "sha256": "cb434b2030807168a8cd4a6b3b604934c603fae73898130ab58b81d855500600"
+    },
+    "glass": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-glass.json",
+      "sha256": "f6673598393993daf7fbc675334ee1134f0866d3ffb499044340a21265a6f141"
+    },
+    "build": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "5c7fabaaf48d36fc940929c33c510f578b3105fb041b056cc7115e665e757a1f"
+    },
+    "cook": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-desktop-cook-results.json",
+      "sha256": "53dbce595b756312352aa891555698037ef8d5649c0cbae2a457c5bea34bae6f"
+    },
+    "stage": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-desktop-stage-results.json",
+      "sha256": "38fc4b1c785e49fd541da82040bb56e789314a8f805b0d3a60493f8b004ad5e0"
+    },
+    "package": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-distance-fields-threads-package-results.json",
+      "sha256": "d6dd171ae79e842dc3ee511f1e8b3468c3eaef3a336b36e1ee43834883bc3884"
+    },
+    "preparation": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-prepare-results.json",
+      "sha256": "1a22079b9cca077cd34a19cf29a944ac366e3660385e883631ea3f2d66cf8761"
+    }
+  },
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 1,
+    "reflections": 1,
+    "virtualShadows": 1,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1,
+    "virtualTextures": 1,
+    "virtualTexturePathActive": true,
+    "virtualShadowPathActive": true
+  },
+  "precache": {
+    "enabled": true,
+    "active": 0,
+    "filePrecompileTasks": 0
+  },
+  "lumenDispatches": {
+    "gi": 53191,
+    "reflections": 9670
+  },
+  "frames": 2418,
+  "browser": "157.0.4341.42",
+  "streaming": {
+    "frame": 2400,
+    "supported": true,
+    "poolBytes": 1048576000,
+    "poolAllocatedBytes": 698516480,
+    "nonPoolAllocatedBytes": 2706171904,
+    "streamable": 613,
+    "pending": 0,
+    "residentMips": 5717,
+    "requestedMips": 5717,
+    "maximumMips": 7241,
+    "residentBytes": 335626320,
+    "fullBytes": 2658304080,
+    "virtualTextureAssets": 0,
+    "virtualTextureResources": 0
+  },
+  "gpu": {
+    "errors": [],
+    "losses": [],
+    "atomicToTexture": 53187,
+    "textureToAtomic": 116053,
+    "virtualShadowTextures": [
+      {
+        "label": "Shadow.Virtual.PhysicalPagePool",
+        "size": {
+          "width": 16384,
+          "height": 4096,
+          "depthOrArrayLayers": 2
+        },
+        "format": "r32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.HZBPhysicalPagePool",
+        "size": {
+          "width": 8192,
+          "height": 2048,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32float",
+        "mips": 7
+      },
+      {
+        "label": "Shadow.Virtual.PageRequestFlags",
+        "size": {
+          "width": 8192,
+          "height": 384,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.PageReceiverMasks",
+        "size": {
+          "width": 4608,
+          "height": 384,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 8
+      },
+      {
+        "label": "Shadow.Virtual.PageTable",
+        "size": {
+          "width": 8192,
+          "height": 384,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.PageFlags",
+        "size": {
+          "width": 8192,
+          "height": 384,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 7
+      },
+      {
+        "label": "Shadow.Virtual.MaskBits",
+        "size": {
+          "width": 1280,
+          "height": 720,
+          "depthOrArrayLayers": 1
+        },
+        "format": "rg32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.ShadowMask",
+        "size": {
+          "width": 1280,
+          "height": 720,
+          "depthOrArrayLayers": 1
+        },
+        "format": "rg16unorm",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.PageRequestFlags",
+        "size": {
+          "width": 8192,
+          "height": 576,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.PageTable",
+        "size": {
+          "width": 8192,
+          "height": 576,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.PageFlags",
+        "size": {
+          "width": 8192,
+          "height": 576,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 7
+      },
+      {
+        "label": "Shadow.Virtual.PageRequestFlags",
+        "size": {
+          "width": 8192,
+          "height": 384,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.PageTable",
+        "size": {
+          "width": 8192,
+          "height": 384,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 1
+      },
+      {
+        "label": "Shadow.Virtual.PageFlags",
+        "size": {
+          "width": 8192,
+          "height": 384,
+          "depthOrArrayLayers": 1
+        },
+        "format": "r32uint",
+        "mips": 7
+      }
+    ]
+  },
+  "views": [
+    {
+      "name": "spawn",
+      "screenshot": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-final-spawn.png",
+        "sha256": "ce398d4ace3645b493d73818d3fe3c40bf4e28acbba643fa51774c65f7ada43b"
+      },
+      "width": 1280,
+      "height": 720,
+      "colors": 17241,
+      "visibleFraction": 0.9312825520833333
+    },
+    {
+      "name": "interior",
+      "screenshot": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-final-interior.png",
+        "sha256": "6ee7ce6b8be79a62defc10570d894fb8ebf748301f1ed84a5bfd1c338006a205"
+      },
+      "width": 1280,
+      "height": 720,
+      "colors": 72409,
+      "visibleFraction": 0.9845008680555556
+    },
+    {
+      "name": "kitchen",
+      "screenshot": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-final-kitchen.png",
+        "sha256": "4a5ed13689bfc04947e38e68401578d925dcac0ccc0bc9bc31e5edbf9ecfe40c"
+      },
+      "width": 1280,
+      "height": 720,
+      "colors": 26739,
+      "visibleFraction": 0.6289973958333334
+    },
+    {
+      "name": "living",
+      "screenshot": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-final-living.png",
+        "sha256": "9bfad11b720f442bb568147cf5c83f9b6a005af984910ecdeb8bc9ad6587eb1d"
+      },
+      "width": 1280,
+      "height": 720,
+      "colors": 37359,
+      "visibleFraction": 0.9869379340277777
+    },
+    {
+      "name": "return",
+      "screenshot": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-final-return.png",
+        "sha256": "2fa63f5fbfeb17bad9d8825f64f385c6a663c512078c56184acd5a4395c710cd"
+      },
+      "width": 1280,
+      "height": 720,
+      "colors": 17144,
+      "visibleFraction": 0.9312575954861111
+    }
+  ],
+  "glass": {
+    "date": "2026-11-10T07:58:25.232Z",
+    "source": {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-glass-color.cjs",
+      "sha256": "37b3d01273e169977e4e425c1eb1494413c6664d4874c0ea08151724f448ddeb"
+    },
+    "actual": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-final-interior.png",
+      "sha256": "6ee7ce6b8be79a62defc10570d894fb8ebf748301f1ed84a5bfd1c338006a205"
+    },
+    "reference": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-distance-fields-glass-vsm-native-interior-auto-project.png",
+      "sha256": "f84277f0f274f3ed1f1da95c9ecd25373beb7e8511b1edfaf79a6f37ec478538"
+    },
+    "pass": true,
+    "maximumChromaticityDifference": 0.02,
+    "cases": [
+      {
+        "region": {
+          "name": "cabinet-glass",
+          "x": 465,
+          "y": 350,
+          "width": 25,
+          "height": 105
+        },
+        "web": {
+          "mean": [
+            47.58895238095238,
+            39.21523809523809,
+            33.653333333333336
+          ],
+          "chromaticity": [
+            0.3950683267921354,
+            0.32555241760778747,
+            0.27937925560007715
+          ]
+        },
+        "native": {
+          "mean": [
+            47.605714285714285,
+            39.20990476190476,
+            33.51161904761905
+          ],
+          "chromaticity": [
+            0.39563539427402733,
+            0.32586058969350246,
+            0.27850401603247016
+          ]
+        },
+        "difference": 0.0008752395676069891,
+        "pass": true
+      },
+      {
+        "region": {
+          "name": "window-glass",
+          "x": 844,
+          "y": 480,
+          "width": 26,
+          "height": 35
+        },
+        "web": {
+          "mean": [
+            102.28791208791209,
+            100.8098901098901,
+            100.86153846153846
+          ],
+          "chromaticity": [
+            0.3365184036326432,
+            0.33165583887376493,
+            0.3318257574935919
+          ]
+        },
+        "native": {
+          "mean": [
+            107.54285714285714,
+            105.48131868131868,
+            105.61318681318681
+          ],
+          "chromaticity": [
+            0.33750862187887987,
+            0.3310387639674438,
+            0.3314526141536764
+          ]
+        },
+        "difference": 0.0009902182462366849,
+        "pass": true
+      }
+    ]
+  },
+  "originalFilesVerified": 1633,
+  "originalProjectUnmodified": true,
+  "buildSourcesCurrent": true,
+  "packageHashesVerified": true,
+  "priorFailures": [
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-browser.json",
+        "sha256": "41c295b40fb6b2caa584501b4ea9c2f5baeec8d04b61e7a1b6a53584766fb1c8"
+      },
+      "failure": "AssertionError [ERR_ASSERTION]: Fatal error: [File:H:/ue_html/.tools/ue58-web-build-host/Engine/Source\\Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp] [Line: 4974] \nMissing global shader FTranscodePageToGPU_CS's permutation 4, Please make sure cooking was successful.\n\nRuntimeError: unreachable\n    at UEWebEngineThreads.wasm.void UE::Logging::Private::BasicFatalLog<char>(UE::Logging::Private::TStaticBasicLogRecord<char> const&, FLogCategoryBase const*, ...) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[6025]:0x25bdc6)\n    at UEWebEngineThreads.wasm.UE::Core::Private::Function::TFunctionRefCaller<VerifyGlobalShaders(EShaderPlatform, ITargetPlatform const*, bool, TArray<FShaderType const*, TSizedDefaultAllocator<32>> const*, TArray<FShaderPipelineType const*, TSizedDefaultAllocator<32>> const*, FShaderCompilerFlags const&)::$_0, bool, int>::Call(void*, int&) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[174461]:0x3321622)\n    at UEWebEngineThreads.wasm.FGlobalShaderType::ForEachCompiledPermutation(EShaderPlatform, EShaderPermutationFlags, TFunction<bool (int)>) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[26726]:0x9021c4)\n    at UEWebEngineThreads.wasm.VerifyGlobalShaders(EShaderPlatform, ITargetPlatform const*, bool, TArray<FShaderType const*, TSizedDefaultAllocator<32>> const*, TArray<FShaderPipelineType const*, TSizedDefaultAllocator<32>> const*, FShaderCompilerFlags const&) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[174457]:0x331f97c)\n    at UEWebEngineThreads.wasm.CompileGlobalShaderMap(EShaderPlatform, ITargetPlatform const*, bool) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[174453]:0x331e982)\n    at UEWebEngineThreads.wasm.CompileGlobalShaderMap(bool) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[174455]:0x331f08f)\n    at UEWebEngineThreads.wasm.FEngineLoop::PreInitPreStartupScreen(char16_t const*) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[329655]:0x5c86885)\n    at UEWebEngineThreads.wasm.FEngineLoop::PreInit(char16_t const*) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[329658]:0x5c8968e)\n    at UEWebEngineThreads.wasm.StartEngine() (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[331325]:0x5cf5e49)\n    at UEWebEngineThreads.wasm.main(int, char**)::$_1::operator()(bool) const::'lambda'(void*)::__invoke(void*) (wasm://wasm/UEWebEngineThreads.wasm-28fe1dc2:wasm-function[331345]:0x5cfd352)\n    at H:\\ue_html\\tests\\web-platform\\probe-web-virtual-scene.cjs:199:7"
+    },
+    {
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-srv.json",
+        "sha256": "ff2b01b0077dac4b8dde5f101f464f085fe316a24fde5dd889ed9f720867d846"
+      },
+      "failure": "AssertionError [ERR_ASSERTION]: Assertion failed: ValidateBufferSRV(Resource, Desc, Error) [File:H:/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private\\WebGPUDynamicRHI.cpp] [Line: 1983] \nWebGPU BufferSRV unsupported: Unsupported typed buffer SRV: name=DefaultBuffer format=49 type=1 usage=16641 stride=0 counter=0 append=0\n\n    at H:\\ue_html\\tests\\web-platform\\probe-web-virtual-scene.cjs:199:7"
+    }
+  ],
+  "speculativePipelineRejectionMessages": 1366,
+  "virtualTextureStreamingCovered": false,
+  "desktopVisualParityAccepted": false,
+  "boundary": "This villa exercises Lumen GI/reflections and non-Nanite VSM with PSO precaching enabled. VT support is active but actual VT asset/resource counts are zero. Glass region chromaticity passes against the existing native same-camera capture; full desktop visual parity is not accepted. Unsupported speculative PSO candidates are rejected; observed rendered views have no WebGPU validation errors or device loss."
+}
