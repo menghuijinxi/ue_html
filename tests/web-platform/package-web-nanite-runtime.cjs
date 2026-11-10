@@ -146,7 +146,9 @@ html = html.replace(/arguments: \[[^\n]+\]/, launchArguments[0]);
 assert(html.includes('arguments: ['));
 html = html.replace('arguments: [', defaultScene || fullScene ? 'arguments: ["-WebNaniteScene",' : 'arguments: ["-WebNaniteResidentResources","-WebNaniteRootPages=2",');
 fs.writeFileSync(path.join(output, 'index.html'), html);
-const performanceProfile = defaultScene ? applyAcceptedDefaults(output) : undefined;
+// Staging supplies project configuration, not the accepted runtime additions.
+// Apply these after the staged config is copied for every desktop package.
+const performanceProfile = applyAcceptedDefaults(output);
 const products = ['index.html', 'content.bin', 'content-files.json', 'config-files.json', ...helpers, ...runtime].map(n => audit(path.join(output, n)));
 products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, defaultScene, fullScene, sceneConversion, performanceProfile, build:audit(path.join(buildDir, 'build.json')),

@@ -5,11 +5,15 @@ const scalar=process.argv.includes('--scalar-visibility'),name=scalar?'scalar':'
 const frustumComparison=process.argv.includes('--frustum-comparison');
 const binsComparison=process.argv.includes('--material-bins-comparison');
 const hierarchyComparison=process.argv.includes('--hierarchy-comparison');
+const acceptedProfile=process.argv.includes('--accepted-profile');
+if(acceptedProfile)assert(hierarchyComparison,'Profile acceptance uses the same three fixed hierarchy-comparison views');
 assert([frustumComparison,binsComparison,hierarchyComparison].filter(Boolean).length<=1);
 const comparison=frustumComparison||binsComparison||hierarchyComparison;
-const output=path.join(__dirname,hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+const output=path.join(__dirname,acceptedProfile?'results/nanite-runtime-profile':hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-full-scene/package.json')),
   tests:[],errors:[],events:[],startupLogs:[],logs:[],boundary:'Full-scene diagnostic. Unsupported material categories still use fallback; this is not full compatibility acceptance.'};
+if(acceptedProfile){const {profile}=require('./web-accepted-defaults.cjs');
+  assert.equal(JSON.parse(fs.readFileSync(report.package.file,'utf8')).performanceProfile,profile);report.acceptedProfile=profile;}
 const conversionFile=path.join(__dirname,'results/nanite-full-scene-conversion-verified.json');
 const conversion=JSON.parse(fs.readFileSync(conversionFile,'utf8'));assert(conversion.pass);report.conversion=audit(conversionFile);
 const assets=JSON.parse(fs.readFileSync(conversion.report.file,'utf8')).meshes;
@@ -121,6 +125,13 @@ function verify(t){
       assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
     }while(Date.now()-pipelineStart<90000);
     assert(t.rhi.asyncPrecacheRequested>100);assert.equal(t.rhi.asyncPrecacheRequested,t.rhi.asyncPrecacheCompleted);assert.equal(t.rhi.asyncPrecacheFailed||0,0);
+    if(acceptedProfile){
+      t.runtimeProfile=await owner.evaluate(()=>({bindings:globalThis.__webOcclusionRHI,
+        uploads:globalThis.__webUploadStaging,readbacks:globalThis.__webStagingReadbackPool,settings:globalThis.__webProjectSettings}));
+      assert(t.runtimeProfile.bindings.bindingPlanEnabled&&t.runtimeProfile.bindings.dynamicGlobalsGroupReuse);
+      assert.equal(t.runtimeProfile.bindings.groupAccessRevalidation,2);
+      assert(t.runtimeProfile.uploads.enabled&&t.runtimeProfile.uploads.pooled>0&&t.runtimeProfile.readbacks.enabled);
+    }
     const file=path.join(output,`${name}-${step}.png`);await page.locator('canvas').screenshot({path:file});t.image=audit(file);
     const before=await page.evaluate(()=>({time:performance.now(),frames:__webEngineFrames}));
     await page.waitForFunction(f=>__webEngineFrames>=f+120,before.frames,{timeout:120000});
