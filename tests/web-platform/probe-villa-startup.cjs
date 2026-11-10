@@ -38,13 +38,17 @@ const candidate = option('worker');
 const capture = process.argv.includes('--capture');
 const plain = process.argv.includes('--plain');
 const motionSeconds = Number(option('motion-seconds') || 0);
+const scriptedMotionSeconds = Number(option('scripted-motion-seconds') || 0);
 assert(!plain || (!capture && selected === 'ours' && !cvars && !candidate));
 assert(Number.isFinite(motionSeconds) && motionSeconds >= 0 && motionSeconds <= 60);
+assert(Number.isInteger(scriptedMotionSeconds) && scriptedMotionSeconds >= 0 && scriptedMotionSeconds <= 60);
+assert(!scriptedMotionSeconds || capture && selected === 'ours' && !motionSeconds);
 const noPrecache = process.argv.includes('--no-precache');
 report.capture = capture;
 report.noPrecache = noPrecache;
 report.plain = plain;
 report.motionSeconds = motionSeconds;
+report.scriptedMotionSeconds = scriptedMotionSeconds;
 report.package = require('./content-file-metadata.cjs').audit(
   path.join(__dirname, 'build', folder || profile.ours, 'asset-versions.json'));
 const expectedPrewarm = require('./web-pipeline-prewarm-package.cjs')
@@ -190,6 +194,21 @@ let context, server;
           run.maxTurnDegrees = Math.max(...run.motion.map(sample =>
             Math.abs(((sample.camera.yaw - before.camera.yaw + 540) % 360) - 180)));
           assert(run.maxTravelCm > 50 && run.maxTurnDegrees > 10, 'Real movement and turning required');
+        }
+        if (run.pass && scriptedMotionSeconds && engine === 'ours') {
+          run.scriptedMotion = [];
+          for (const mode of [2, 1]) {
+            const serial = await frame.evaluate(({mode, seconds}) =>
+              __webEngineRPC('WebMotionBenchmarkControl', mode, seconds), {mode, seconds: scriptedMotionSeconds});
+            assert(serial > 0);
+            await frame.waitForFunction(serial => globalThis.__webEngineFailure ||
+              globalThis.__webMotionBenchmark?.serial === serial && __webMotionBenchmark.completed,
+              serial, {timeout: (scriptedMotionSeconds + 15) * 1000});
+            const state = await frame.evaluate(() => ({motion: __webMotionBenchmark,
+              frames: __webEngineFrames, failure: globalThis.__webEngineFailure}));
+            assert(!state.failure && !run.errors.length && state.motion.updates > 5);
+            run.scriptedMotion.push(state);
+          }
         }
         if (run.pass && settleFrames && engine === 'ours') {
           const before = await frame.evaluate(() => __webEngineFrames);

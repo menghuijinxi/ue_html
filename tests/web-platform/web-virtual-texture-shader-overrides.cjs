@@ -3,6 +3,15 @@ const branch = (before, lines) => ({before,
   after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', ...lines,
     '#else', before, '#endif'].join('\n')});
 module.exports = new Map([
+  ['Private/ShadowDepthPixelShader.usf', [
+    {before: '#include "VirtualShadowMaps/VirtualShadowMapPageAccessCommon.ush"',
+      after: ['#include "VirtualShadowMaps/VirtualShadowMapPageAccessCommon.ush"',
+        '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '#include "VirtualShadowMaps/WebVirtualShadowDepth.ush"', '#endif'].join('\n')},
+    branch('\t\tInterlockedMax( PassStruct.OutDepthBufferArray[ uint3( pAddress, ArrayIndex ) ], asuint( DeviceZ ) );', [
+      '\t\tWebStoreVirtualShadowDepth(PassStruct.OutDepthBufferArray, uint2(VirtualShadowMap.PhysicalPoolSize),',
+      '\t\t\tVirtualShadowMap.StaticCachedArrayIndex + 1u, uint3(pAddress, ArrayIndex), asuint(DeviceZ));']),
+  ]],
   ['Private/Froxel/FroxelBuild.ush', [
     branch('\tWaveInterlockedAddScalarInGroups(OutFroxelArgs[FroxelArgsOffset * FroxelArgsStride + 3], OutFroxelArgs[FroxelArgsOffset * FroxelArgsStride], 64, 1, WriteOffset);', [
       '\tuint ArgsIndex = FroxelArgsOffset * FroxelArgsStride;',
