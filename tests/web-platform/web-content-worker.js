@@ -5,7 +5,7 @@ const stats = {memoryLimit, memoryBytes: 0, peakMemoryBytes: 0, memoryHits: 0,
   diskReads: 0, diskReadBytes: 0, downloadedBytes: 0, downloads: 0,
   persistentHits: 0, evictions: 0, diskEvictions: 0, activeReads: 0, peakActiveReads: 0,
   verification: 'sampled', hashedBytes: 0, hashMs: 0, downloadMs: 0, diskReadMs: 0,
-  quotaRetries: 0, quotaFailures: 0, reclaimedBytes: 0, missingFileRetries: 0};
+  quotaRetries: 0, quotaFailures: 0, reclaimedBytes: 0, missingFileRetries: 0, staleHandleRetries: 0};
 const assets = new Map(), blocks = new Map(), pendingBlocks = new Map();
 const queue = [];
 let directory, baseUrl, active = 0, fullVerification = false;
@@ -142,12 +142,16 @@ async function asset(info) {
     for (let attempt = 0; ; ++attempt) {
       try { return await openAsset(info); }
       catch (error) {
-        if (error.name !== 'NotFoundError' || attempt !== 0) throw error;
+        if (!['NotFoundError', 'InvalidStateError'].includes(error.name) || attempt !== 0) throw error;
         // OPFS can invalidate a cached directory/file handle independently of
         // our Web Locks (for example when browser storage is reclaimed).
         // Reopen from the storage root and revalidate under the exclusive lock.
-        // A second disappearance remains an error; never return partial data.
-        ++stats.missingFileRetries;
+        // A stale snapshot can also fail with InvalidStateError after browser
+        // storage changes. Download already discards any partial write while
+        // holding the exclusive lock. Retry opening with fresh handles once;
+        // a second invalidation remains an error, never partial data.
+        if (error.name === 'NotFoundError') ++stats.missingFileRetries;
+        else ++stats.staleHandleRetries;
         directory = await cacheDirectory();
       }
     }
