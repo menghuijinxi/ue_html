@@ -136,7 +136,7 @@ class WebFrameSamples {
 function createWebPerformanceHUD(counter, canvas, options = {}) {
   const source = options.source || 'rhi-owner-submission-intervals';
   const visual = new WebFrameSamples(), submitted = new WebFrameSamples(), refresh = new WebFrameSamples();
-  let contexts = [], events = [];
+  let contexts = [], events = [], renderView = null;
   const element = document.createElement('aside');
   element.id = 'web-performance-hud'; element.setAttribute('aria-label', '实时帧率');
   Object.assign(element.style, {position:'fixed', top:'12px', left:'12px', zIndex:3,
@@ -148,6 +148,9 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
     '<div title="最近1秒引擎完成提交的帧数。浏览器没有提供显示器实际呈现时间。">FPS <b data-stat="fps">—</b></div>' +
     '<div title="最近5秒最慢1%提交间隔的平均值换算为FPS；不足100个间隔时等待采样。">1% Low <b data-stat="low">采样中</b> <small>近5秒</small></div>' +
     '<div>帧间隔 <b data-stat="ms">—</b> ms</div>' +
+    '<div title="引擎当前主视图的实际渲染尺寸，单位为物理像素。">渲染分辨率 <b data-stat="render-size">—</b></div>' +
+    '<div title="抗锯齿或超分辨率处理后的主视图输出尺寸，单位为物理像素。">输出分辨率 <b data-stat="output-size">—</b></div>' +
+    '<div>抗锯齿 <b data-stat="anti-aliasing">—</b></div>' +
     '<div style="color:#a7c0b6;font-size:11px">P99 <span data-stat="p99">—</span> ms · 最长 <span data-stat="max">—</span> ms</div>' +
     '<svg viewBox="0 0 216 48" width="216" height="48" style="display:block;margin-top:4px" aria-label="近5秒帧间隔曲线"><path d="M0 32H216" stroke="#617d70" stroke-dasharray="3 3"/><polyline data-stat="graph" fill="none" stroke="#8fe2b6" stroke-width="1.5"/></svg>' +
     '<div style="color:#a7c0b6;font-size:11px">页面观察 <span data-stat="submit">—</span> FPS · 刷新 <span data-stat="refresh">—</span> Hz</div>' +
@@ -171,7 +174,7 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
       source,lowWindowMs:5000,
       lowDefinition:'1000 / mean(slowest ceil(N*0.01) submission intervals)',
       boundary:'Submission intervals are not physical display timings. Async creation events measure API invocation only. Context counters are sampled every 100 ms.',
-      summary:submitted.read(now),frames:submitted.samples.slice(submitted.head),
+      summary:submitted.read(now),renderView,frames:submitted.samples.slice(submitted.head),
       pipelineEvents:events.filter(e=>e.end>now-30000),contexts:contexts.filter(c=>c.time>now-30000)};
     const url = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
     const link = document.createElement('a'); link.href = url;
@@ -180,6 +183,10 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
     canvas.focus({preventScroll:true});
   };
   const format = value => value === null ? '—' : value.toFixed(1);
+  const formatSize = (width, height) => [width, height].every(value => Number.isSafeInteger(value) && value > 0) ?
+    `${width} × ${height}` : '—';
+  // EAntiAliasingMethod in Engine/Public/SceneUtils.h.
+  const antiAliasingNames = ['关闭', 'FXAA', 'TAA', 'MSAA', 'TSR', 'SMAA'];
   function update(now) {
     if (stopped) return;
     if (!document.hidden) {
@@ -192,6 +199,10 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
         const v = visual.read(now), s = submitted.read(submittedAt !== null && now - submittedAt < 500 ? submittedAt : now), r = refresh.read(now);
         fields.fps.textContent = format(s.fps); fields.low.textContent = s.low === null ? '采样中' : format(s.low);
         fields.ms.textContent = format(s.frameMs); fields.submit.textContent = format(v.fps);
+        fields['render-size'].textContent = formatSize(renderView?.width, renderView?.height);
+        fields['output-size'].textContent = formatSize(renderView?.outputWidth, renderView?.outputHeight);
+        fields['anti-aliasing'].textContent = Number.isInteger(renderView?.antiAliasing) ?
+          antiAliasingNames[renderView.antiAliasing] ?? `未知 (${renderView.antiAliasing})` : '—';
         fields.p99.textContent = format(s.p99Ms); fields.max.textContent = format(s.maxMs);
         const graphTime = submittedAt ?? now;
         const graphSamples = submitted.samples.slice(submitted.head).filter(sample => sample.time > graphTime - 5000);
@@ -200,7 +211,7 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
         fields.refresh.textContent = format(r.fps);
         fields.state.textContent = submitted.first !== null ? `近5秒 >50ms：${s.over50ms} 帧 · 提交间隔统计` : '等待场景画面';
         globalThis.__webLivePerformance = {visual:v, submitted:s, refresh:r, visible:true,
-          frame:current, source, windowMs:5000, time:now};
+          frame:current, source, renderView, windowMs:5000, time:now};
         lastUpdate = now;
       }
     }
@@ -219,6 +230,7 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
   return {
     reset,
     ingest(pacing, state) {
+      if (state?.__webRenderView) renderView = {...state.__webRenderView};
       if (!pacing || document.hidden) return;
       const offset = pacing.timeOrigin - performance.timeOrigin;
       for (const time of pacing.times) if (time + offset >= visibleSince) submitted.add(time + offset);
@@ -228,7 +240,7 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
       events = events.filter(event=>event.end>submittedAt-30000);
       if(state)contexts.push({time:submittedAt,frame:state.__webEngineFrames,
         stages:state.__webThreadStages,io:state.__webLocalContentStats,
-        streaming:state.__webTextureStreaming,pso:state.__webOptimizationRHI});
+        streaming:state.__webTextureStreaming,pso:state.__webOptimizationRHI,renderView});
       contexts = contexts.filter(context=>context.time>submittedAt-30000);
     },
     dispose() { stopped = true; cancelAnimationFrame(raf); document.removeEventListener('visibilitychange', visibility); element.remove(); }
