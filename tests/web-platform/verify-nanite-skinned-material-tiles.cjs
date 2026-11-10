@@ -2,9 +2,11 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const assembly=process.argv.includes('--assembly');
+const isolated=process.argv.includes('--isolated');
+assert(!isolated||assembly,'Isolated assembly probes require the assembly record stride');
 const read=f=>JSON.parse(fs.readFileSync(f,'utf8').replace(/^\uFEFF/,''));
-const dir=path.join(__dirname,assembly?'results/nanite-assembly/shader-conversion':'results/nanite-hierarchy-shaders/conversion');
-const shaderName=assembly?'FWebAssemblyGBufferTilesCS':'FWebNaniteGBufferTilesCS';
+const dir=path.join(__dirname,isolated?'results/nanite-assembly/shader-conversion':'results/nanite-hierarchy-shaders/conversion');
+const shaderName=isolated?'FWebAssemblyGBufferTilesCS':'FWebNaniteGBufferTilesCS';
 const inputs=fs.readdirSync(dir).map(n=>path.join(dir,n,'input.json')).filter(fs.existsSync)
  .filter(f=>read(f).shaderName===shaderName).sort((a,b)=>fs.statSync(b).mtimeMs-fs.statSync(a).mtimeMs);
 assert(inputs.length);const input=inputs[0],metadata=read(input).metadata,code=fs.readFileSync(path.join(path.dirname(input),'output.wgsl'),'utf8');

@@ -86,14 +86,15 @@ module.exports = function verifyMaterialInputs(result, page, tolerances = {posit
   assert(stride>0);assert.equal(width,Math.ceil((rect[2]-rect[0])/stride));assert.equal(height,Math.ceil((rect[3]-rect[1])/stride));
   assert.equal(inputs.length,width*height*16);
   const capacity=entries.reduce((n,e)=>n+e.keys.length,0);
-  assert.equal(records.length,Math.max(capacity,1)*2);
+  assert.equal(records.length,Math.max(capacity,1)*3);
   let validRecords=0;
   for(const entry of entries) {
     assert(Number.isInteger(entry.instanceId)&&entry.instanceId>=0&&entry.instanceId<2**24);
     for(let slot=0;slot<entry.keys.length;++slot) {
-      const offset=(entry.clusterBase+slot)*2;
+      const offset=(entry.clusterBase+slot)*3;
       const raw=BigInt(records[offset])|(BigInt(records[offset+1])<<32n);
-      if(result.invalidCullState||slot>=entry.state[0]) {assert.equal(raw,0n);continue;}
+      if(result.invalidCullState||slot>=entry.state[0]) {assert.equal(raw,0n);assert.equal(records[offset+2],0);continue;}
+      assert.equal(records[offset+2],0xffffff,"ordinary meshes must carry the invalid assembly index");
       // Fields cross dword boundaries: flags 5, view 12, instance 24, pool 23.
       // Root pool references use 6 cluster bits, whereas cull keys use 8.
       const pool=Number(raw>>41n), key=entry.keys[slot];

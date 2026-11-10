@@ -75,7 +75,7 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     for (const auto& Entry : Cull.Entries)
     {
         MaxHierarchyNodes = FMath::Max(MaxHierarchyNodes, Entry.Input.NumHierarchyNodes);
-        if (LocalHierarchy && Entry.Input.NumHierarchyNodes <= 256 && Entry.Input.MaxVisibleClusters <= 16384) ++LocalEntries;
+        if (LocalHierarchy && (Entry.Input.QueueCapacity ? Entry.Input.QueueCapacity : Entry.Input.NumHierarchyNodes) <= 256 && Entry.Input.MaxVisibleClusters <= 16384) ++LocalEntries;
     }
     Report->SetBoolField(TEXT("localHierarchy"), LocalHierarchy);
     Report->SetNumberField(TEXT("localHierarchyEntries"), LocalEntries);

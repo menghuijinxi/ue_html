@@ -1,5 +1,15 @@
 const branch = (before, lines) => ({before, after: lines.join('\n')});
-module.exports = [['Private/Nanite/NaniteVertexFactory.ush', [
+module.exports = [['Private/Nanite/NaniteVertexFetch.ush', [
+  branch('\t// NOTE: We assume non-negative scale. Otherwise, we\'d have to flip the binormal sign and reverse the winding order', [
+    '#if WEB_NANITE_ASSEMBLY_SUPPORT',
+    '    // Web raster reverses per-part winding separately; preserve the tangent',
+    '    // basis handedness for mirrored parts in native material reconstruction.',
+    '    if (determinant((float3x3)AssemblyTransform) < 0)',
+    '        Vert.RawAttributeData.TangentXAndSign.w *= -1.0f;',
+    '#endif',
+    '\t// Native platforms retain their existing assembly vertex behavior.',
+  ]),
+]], ['Private/Nanite/NaniteVertexFactory.ush', [
   branch('\tVertexParameters.SceneData.Primitive\t= PrimitiveData;', [
     '\tVertexParameters.SceneData.Primitive\t= PrimitiveData;',
     '#if COMPILER_WEBGPU && ALWAYS_EVALUATE_WORLD_POSITION_OFFSET',

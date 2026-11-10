@@ -45,10 +45,20 @@ const cases=[
 ];
 for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
  cases.push({name:`capacity-${capacity}-${keep?'visible':'occluded'}`,previous:keep?0:1,current:1,final:0,keep,capacity});
+cases.push(
+ {name:'assembly-static-main',previous:1,current:1,final:0,keep:false,assembly:0},
+ {name:'assembly-translated-main',previous:1,current:1,final:0,keep:true,assembly:-800},
+ {name:'assembly-translated-final',previous:1,current:1,final:1,keep:true,assembly:-800},
+ {name:'assembly-gpu-compose',previous:1,current:1,final:1,keep:false,assembly:-800,gpuZ:800},
+ {name:'assembly-scaled-bounds',previous:1,current:1,final:1,keep:true,assembly:0,assemblyScale:20},
+ {name:'assembly-invalid-index',previous:0,current:0,final:1,assembly:0,assemblyIndex:2,expectedError:2},
+ {name:'assembly-mixed-compaction',previous:1,current:1,final:1,assembly:0,mixed:true,capacity:257},
+ {name:'assembly-duplicate-key-compaction',previous:1,current:1,final:0,assembly:0,mixed:true,capacity:16384}
+);
 (async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try {
  const tab=await browser.newPage();await tab.goto('http://127.0.0.1:8765/build/motion-blur-storage-formats/index.html');
  const result=await tab.evaluate(async ({code,metadata,page,keys,cases,local})=>{
-  const adapter=await navigator.gpu.requestAdapter(),device=await adapter.requestDevice(),errors=[];
+  const adapter=await navigator.gpu.requestAdapter(),device=await adapter.requestDevice({requiredLimits:{maxStorageBuffersPerShaderStage:Math.min(16,adapter.limits.maxStorageBuffersPerShaderStage)}}),errors=[];
   device.addEventListener('uncapturederror',e=>errors.push(e.error.message));device.pushErrorScope('validation');
   try {
    const bindings=metadata.spirvBindings,b=Object.fromEntries(bindings.map(v=>[v.name,v]));
@@ -74,7 +84,14 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
     const instance=new Float32Array(84);
     instance.set([1,0,0,0,0,1,0,0,0,0,1,0,0,0,test.gpuZ||0,1],32);
     instance.set(test.gpuWPO||[0,0,0,0],76);
+    const assemblyList=Array.from({length:capacity},(_,i)=>test.assembly===undefined?65535:test.mixed?i%2:test.assemblyIndex??0);
+    const assemblyTransforms=new Float32Array(2*3*12);
+    for(let j=0;j<2;j++)for(let k=0;k<3;k++)assemblyTransforms.set(
+      [1,0,0,0,0,1,0,0,0,0,test.assemblyScale||1,test.mixed?(j?-800:0):test.assembly||0],(j*3+k)*12);
     const resources={ClusterPageData:cluster,
+     AssemblyTransforms:makeBuffer(assemblyTransforms,GPUBufferUsage.STORAGE),
+     WebOcclusionInputAssemblies:makeBuffer(new Uint32Array(assemblyList),GPUBufferUsage.STORAGE),
+     WebOcclusionOutputAssemblies:makeBuffer(new Uint32Array(capacity+4).fill(65535).fill(local?0x12345678:65535,0,capacity),GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC),
      WebInstanceData:makeBuffer(instance,GPUBufferUsage.STORAGE),
      WebStreamingPageOwners:makeBuffer(new Uint32Array([0xffffffff]),GPUBufferUsage.STORAGE),
      WebOcclusionInputKeys:makeBuffer(new Uint32Array(list),GPUBufferUsage.STORAGE),
@@ -94,7 +111,7 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
     su[17]=su[18]=su[22]=0x3c003c00;su[19]=0xffffffff;
     sf[20]=1/200;sf[21]=.5;
     su[24]=0x7fff7fff;su[25]=0x3c00ffff;su[26]=0x7fff7fff;su[27]=0xffff7fff;
-    const values={WebInstanceDataOffset:[test.gpuZ!==undefined?0:0xffffffff],PageConstants:[0,0,0,0],MaxVisibleClusters:[capacity],WebOcclusionFirstRootPage:[1],WebOcclusionNumRootPages:[1],
+    const values={WebAssemblyCount:[test.assembly===undefined?0:test.mixed?2:1],WebInstanceDataOffset:[test.gpuZ!==undefined?0:0xffffffff],PageConstants:[0,0,0,0],MaxVisibleClusters:[capacity],WebOcclusionFirstRootPage:[1],WebOcclusionNumRootPages:[1],
      WebOcclusionPreviousLocalToClip:matrix,WebOcclusionCurrentLocalToClip:matrix,WebOcclusionPreviousRect:[0,0,128,128],WebOcclusionCurrentRect:[0,0,128,128],
      WebOcclusionPreviousExtent:[128,128],WebOcclusionCurrentExtent:[128,128],WebOcclusionPreviousMaxMip:[7],WebOcclusionCurrentMaxMip:[7],WebOcclusionFinal:[test.final],
      WebOcclusionWPOBounds:test.wpo||[0,0,0,0],WebSplineEnabled:[test.spline!==undefined?1:0],WebSplineParams:[...su]};
@@ -102,11 +119,11 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
     resources.$Globals=makeBuffer(new Uint8Array(data),GPUBufferUsage.UNIFORM);
     const group=device.createBindGroup({layout,entries:bindings.map(v=>({binding:v.binding,resource:
      v.name==='WebOcclusionPrevious'?textures[test.previous].createView():v.name==='WebOcclusionCurrent'?textures[test.current].createView():
-     {buffer:resources[v.name],...(v.name==='WebOcclusionOutputKeys'?{size:capacity*4}:v.name==='WebOcclusionOutputState'?{size:16}:{})}}))});
+     {buffer:resources[v.name],...(['WebOcclusionOutputKeys','WebOcclusionOutputAssemblies'].includes(v.name)?{size:capacity*4}:v.name==='WebOcclusionOutputState'?{size:16}:{})}}))});
     const enc=device.createCommandEncoder(),pass=enc.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,group);pass.dispatchWorkgroups(local?1:Math.ceil(capacity/64));pass.end();
-    const reads=[];for(const name of ['WebOcclusionOutputKeys','WebOcclusionOutputState']){const size=resources[name].size,buffer=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});enc.copyBufferToBuffer(resources[name],0,buffer,0,size);reads.push(buffer);}
+    const reads=[];for(const name of ['WebOcclusionOutputKeys','WebOcclusionOutputState','WebOcclusionOutputAssemblies']){const size=resources[name].size,buffer=device.createBuffer({size,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});enc.copyBufferToBuffer(resources[name],0,buffer,0,size);reads.push(buffer);}
     device.queue.submit([enc.finish()]);const output=[];for(const buffer of reads){await buffer.mapAsync(GPUMapMode.READ);output.push(Array.from(new Uint32Array(buffer.getMappedRange())));buffer.unmap();buffer.destroy();}
-    results.push({name:test.name,keys:output[0],state:output[1]});for(const [name,buffer] of Object.entries(resources))if(name!=='ClusterPageData')buffer.destroy();
+    results.push({name:test.name,keys:output[0],state:output[1],assemblies:output[2]});for(const [name,buffer] of Object.entries(resources))if(name!=='ClusterPageData')buffer.destroy();
    }
    const error=await device.popErrorScope();if(error)throw Error(error.message);return {results,errors,features:[...device.features]};
   }finally{device.destroy();}
@@ -117,12 +134,19 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
   const capacity=c.capacity||keys.length+2,candidates=c.capacity?Array.from({length:capacity},(_,i)=>keys[i%keys.length]):keys;
   assert(r.state[0]<=capacity);
   assert.deepEqual(r.keys.slice(-4),Array(4).fill(0xffffffff));assert.deepEqual(r.state.slice(4),Array(4).fill(0x12345678));
-  if(!r.state[1]){const expected=c.keep?candidates:[];assert.equal(r.state[0],expected.length,c.name);assert.equal(r.state[2],candidates.length);
+  if(!r.state[1]){const expected=c.mixed?candidates.filter((k,i)=>i%2):c.keep?candidates:[];assert.equal(r.state[0],expected.length,c.name);assert.equal(r.state[2],candidates.length);
    assert.equal(r.state[3],expected.reduce((s,k)=>s+triangles.get(k),0));assert.deepEqual(r.keys.slice(0,r.state[0]).sort((a,b)=>a-b),[...expected].sort((a,b)=>a-b));}
+  if(!r.state[1]){
+   const expected=c.mixed?candidates.flatMap((k,i)=>i%2?[[k,i%2]]:[]):c.keep?candidates.map(k=>[k,c.assembly===undefined?65535:c.assemblyIndex??0]):[];
+   const actual=r.keys.slice(0,r.state[0]).map((k,j)=>[k,r.assemblies[j]]);
+   const sort=(a,b)=>a[0]-b[0]||a[1]-b[1];assert.deepEqual(actual.sort(sort),expected.sort(sort));
+  }
+  assert.deepEqual(r.assemblies.slice(-4),Array(4).fill(65535));
+  assert(r.assemblies.slice(r.state[0]).every(k=>k===65535));
   if(c.error){assert.equal(r.state[0],0);assert.equal(r.state[2],0);assert.equal(r.state[3],0);}
   assert(r.keys.slice(r.state[0]).every(k=>k===0xffffffff));r.pass=true;
  }
  const report={pass:true,local,...result,source:audit(__filename),inputs:[input,shader,nativeFile,native.products[0].file].map(audit),
-  sources:['WebNaniteOcclusion.usf','WebNaniteHZB.ush','WebNaniteSpline.ush','WebNaniteInstanceData.ush'].map(f=>audit(path.join(root,'reference-engine/Engine/Shaders/Private/Nanite',f)))};
+  sources:['WebNaniteHierarchy.usf','WebNaniteOcclusion.usf','WebNaniteAssembly.ush','WebNaniteFeatures.ush'].map(f=>audit(path.join(root,'reference-engine/Engine/Shaders/Private/Nanite',f)))};
  fs.writeFileSync(path.join(__dirname,local?'results/nanite-local-occlusion-kernel.json':'results/nanite-occlusion.json'),JSON.stringify(report,null,2));console.log({pass:true,local,cases:cases.length});
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

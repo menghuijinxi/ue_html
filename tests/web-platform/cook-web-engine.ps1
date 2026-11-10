@@ -306,7 +306,7 @@ try {
                 '-ini:Engine:[SystemSettings]:r.ShaderCompiler.JobCacheDDC=0')
         }
         if ($taskES31) { $taskArguments += '-WebGPUES31Cook' }
-        if ($NaniteCookData) { $taskArguments += '-WebNaniteCookData' }
+        if ($NaniteCookData) { $taskArguments += @('-WebNaniteCookData', '-ini:Engine:[SystemSettings]:r.Nanite.AllowAssemblies=1') }
         $taskReport.naniteCookData = [bool]$NaniteCookData
         if ($Scene -eq 'DefaultTemplate' -or $TemplateEnvironment) { $taskArguments += '-WebDefaultCloudDensityCook' }
         $env:WEBGPU_TINT_DIR = Join-Path $taskRoot '.tools/dawn-v20261009.190412/bin'

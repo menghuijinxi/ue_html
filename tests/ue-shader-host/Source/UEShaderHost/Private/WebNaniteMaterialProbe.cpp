@@ -38,6 +38,7 @@ public:
 UMaterial* CreateWebNaniteSkinMaterial(int32);
 int32 RunWebNaniteSkinningBasePass(const FString& Params)
 {
+ const bool Assembly = FParse::Param(*Params, TEXT("WebNaniteAssemblyShaders"));
     FString Output; if (!FParse::Value(*Params, TEXT("Output="), Output)) return 1;
     IFileManager::Get().MakeDirectory(*Output, true);
     const auto Platform = FDataDrivenShaderPlatformInfo::GetShaderPlatformFromName(TEXT("SP_WEBGPU_SM5"));
@@ -49,10 +50,11 @@ int32 RunWebNaniteSkinningBasePass(const FString& Params)
         if (FString((*It)->GetName()).StartsWith(TEXT("TBasePassPSFNoLightMapPolicy"))) Types.Add(*It);
     if (Types.IsEmpty()) return 1;
     TArray<TSharedPtr<FJsonValue>> Cases;
-    for (int32 CaseIndex = 0; CaseIndex < 5; ++CaseIndex)
+    for (int32 CaseIndex = 0; CaseIndex < (Assembly ? 10 : 5); ++CaseIndex)
     for (const FShaderType* Type : Types)
     {
-        auto* Material = CreateWebNaniteSkinMaterial(CaseIndex); const FString Name = Material->GetName();
+        auto* Material = CreateWebNaniteSkinMaterial(CaseIndex % 5); Material->bUsedWithSkeletalMesh = !Assembly || CaseIndex < 5;
+        const FString Name = Material->GetName() + (Assembly ? (CaseIndex < 5 ? TEXT("-skinned") : TEXT("-static")) : TEXT(""));
         TRefCountPtr<FWebNaniteProbeMaterial> Resource = new FWebNaniteProbeMaterial();
         Resource->SetMaterial(Material, nullptr, Platform, EMaterialQualityLevel::High);
         if (!Resource->CacheShaders(EMaterialShaderPrecompileMode::None)) return 1;

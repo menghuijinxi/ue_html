@@ -34,6 +34,7 @@ function check(r,scalar,steps){
  for(const name of ['geometry','geometryDecoder','geometryReference'])if(r[name])verify(r[name]);
  if(r.rhi){assert.equal(r.rhi.asyncPrecacheCompleted,r.rhi.asyncPrecacheRequested);assert.equal(r.rhi.asyncPrecacheFailed||0,0);}
  if(r.validationFailures)assert.deepEqual(r.validationFailures,[]);
+ assert(!(r.logs||[]).some(s=>/P3_WEB_COMPUTE_PIPELINE_REJECT|Failed to create (?:compute|graphics) pipeline/.test(s)),'runtime pipeline failures must not be hidden by scene coverage');
 }
 const pkgHash=audit(packageFile).sha256;
 for(const scalar of [false,true]){
@@ -56,6 +57,7 @@ for(const scalar of [false,true]){
   if(kind==='skinning')verify(r.verifier);
   assert.deepEqual(r.budgets.map(b=>b.budget),budgets);
   for(const b of r.budgets){assert.equal(b.tests.length,9);assert.deepEqual(b.gpu.errors,[]);assert.equal(b.gpu.features.includes('atomic-vec2u-min-max'),!scalar);
+   assert(!(b.logs||[]).some(s=>/P3_WEB_COMPUTE_PIPELINE_REJECT|Failed to create (?:compute|graphics) pipeline/.test(s)),'budget runtime pipeline failure');
    assert.equal(b.tests.filter(t=>t.comparison).length,6);for(const t of b.tests.filter(t=>t.comparison))assert.equal(t.comparison.missingCore,0);}
   archive(kind+'-budget'+suffix,r);summaries.push({suite:kind+'-budget',scalar,steps:45,frames:r.budgets.reduce((n,b)=>n+b.frames,0)});
  }
@@ -64,7 +66,9 @@ const oracle=read(path.join(__dirname,'results/nanite-skinning/oracle-rejection.
 assert(oracle.pass);assert.equal(oracle.checks.length,12);assert.equal(oracle.streamingChecks.length,3);
 [oracle.source,oracle.verifier,oracle.input,oracle.streamingVerifier,oracle.streamingInput,oracle.geometryDecoder].forEach(verify);
 const hierarchy=read(pkg.hierarchyShaders.file);assert(hierarchy.pass);[...hierarchy.sources,hierarchy.binary,...hierarchy.logs].forEach(verify);
-const materialTiles=read(path.join(__dirname,'results/nanite-skinning/material-tiles.json'));
+const materialTiles=read(path.join(__dirname,pkg.assemblyShaders?'results/nanite-assembly/material-tiles.json':'results/nanite-skinning/material-tiles.json'));
+assert.equal(materialTiles.assembly,!!pkg.assemblyShaders);
+assert.equal(read(materialTiles.shader.file).shaderName,'FWebNaniteGBufferTilesCS');
 assert(materialTiles.pass);assert.equal(materialTiles.cases.length,14);assert.deepEqual(materialTiles.failures,[]);assert.deepEqual(materialTiles.gpu.errors,[]);
 [materialTiles.source,materialTiles.shader,materialTiles.wgsl,materialTiles.uploader,materialTiles.page].forEach(verify);
 const rejectedTiles=read(path.join(__dirname,'results/nanite-skinning/failure-material-tiles/material-tiles.json'));

@@ -46,7 +46,7 @@ function observe(scalarVisibility = false) {
     if (desc.code.includes('FPackedClusterInstallInfo') && desc.code.includes('SrcPageOffset')) {
       modules.add(result); state.shaders.push(desc.code);
     }
-    if (desc.code.includes('WebCullClusterKeys') && desc.code.includes('WebCullInputNodes')) {
+    if (desc.code.includes('WebCullClusterKeys') && desc.code.includes('WebCullNodes')) {
       cullModules.add(result); state.cullShaders.push(desc.code);
     }
     if ((desc.code.includes('WebRasterLocalToClip') && desc.code.includes('@vertex')) ||

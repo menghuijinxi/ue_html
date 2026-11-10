@@ -29,7 +29,7 @@ function verifyVelocity(t){
    1-(Math.floor(i/t.width)*8+.5)/t.viewHeight*2,depth,1];
   const id=t.pixels[p];
   if(!triangles.has(id)){
-   const raw=records.readBigUInt64LE(((id>>>8)-1)*8),pool=Number(raw>>41n),limit=t.poolPages*256;
+   const raw=records.readBigUInt64LE(((id>>>8)-1)*12),pool=Number(raw>>41n),limit=t.poolPages*256;
    assert.equal(Number((raw>>17n)&0xffffffn),t.pixels[p+8],'visibility instance');
    const page=pool<limit?pool>>>8:t.poolPages+((pool-limit)>>>6);
    const cluster=pool<limit?pool&255:(pool-limit)&63;

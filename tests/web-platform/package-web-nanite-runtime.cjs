@@ -46,7 +46,7 @@ if(fullScene){
 }
 verify(cook.shaderInventory.artifact);
 const inventory = read(cook.shaderInventory.artifact.file);
-const naniteTypes = ['SkinningViewDataCS','InstanceDataCS','GPUInstanceTestCS','HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
+const naniteTypes = ['AssemblyTransformsCS','SkinningViewDataCS','InstanceDataCS','GPUInstanceTestCS','HZBBuildCS','OcclusionCS','HierarchyCull_CS','RasterVS','RasterPS','VisibleClustersCS','MaterialInputsCS',
   'ResolveCS','DepthVS','DepthPS','DepthSnapshotCS','GBufferVS','GBufferPS','GBufferSnapshotCS',
   'GBufferTilesCS','VisibilityClearCS','VisibilityResolveCS'].map(name => 'FWebNanite' + name);
 assert(naniteTypes.every(name => inventory.types.some(type => type.name === name && type.permutations === (['FWebNaniteHierarchyCull_CS','FWebNaniteOcclusionCS'].includes(name) ? 4 : 1))),
@@ -68,7 +68,12 @@ fs.mkdirSync(output, {recursive: true});
 const manifest = read(path.join(baseline, 'content-files.json'));
 assert.equal(manifest.shaderPlatform, 'SP_WEBGPU_SM5');
 if(!defaultScene&&!fullScene){
-  for(const asset of ['WebNaniteSkinning/NaniteSkinPlane','WebNaniteSkinning/NaniteSkinSkeleton','WebNaniteSkinning/NaniteSkinMaterial',
+  for(const asset of [
+    ...['NaniteAssemblySmall','NaniteAssemblyStreaming','NaniteAssemblyResident','NaniteAssemblyStreamingB',
+      'NaniteAssemblySkinSmall','NaniteAssemblySkinStreaming','NaniteAssemblySkinResident','NaniteAssemblySkinStreamingB',
+      ...[0,1].flatMap(s=>[0,1].flatMap(p=>[`NaniteAssemblyPart${s}${p}`,`NaniteAssemblySkinPart${s}${p}`])),
+      ...Array.from({length:5},(_,i)=>`NaniteAssemblyMaterial${i}`)].map(n=>'WebNaniteAssembly/'+n),
+    'WebNaniteSkinning/NaniteSkinPlane','WebNaniteSkinning/NaniteSkinSkeleton','WebNaniteSkinning/NaniteSkinMaterial',
     ...['NaniteSkinStreamingPlane','NaniteSkinResidentPlane','NaniteSkinStreamingPlaneB'].flatMap(n=>[`WebNaniteSkinning/${n}`,`WebNaniteSkinning/${n}Skeleton`]),
     ...Array.from({length:4},(_,i)=>`WebNaniteSkinning/NaniteSkinMaterial${i+1}`), 'WebNaniteMaterials/NaniteMaterial0','WebNaniteMaterials/NaniteMaterial1','WebNaniteMaterials/NaniteMaterial2',
     'WebNaniteMaterials/NaniteNormal','WebNaniteSidedness/NaniteMixedSidedPlane','WebNaniteSidedness/NaniteOneSided','WebNaniteSidedness/NaniteTwoSided',
@@ -90,7 +95,7 @@ const hierarchyShaders = read(hierarchyFile);
 assert(hierarchyShaders.pass);
 [...hierarchyShaders.sources, ...hierarchyShaders.shaderInputs, ...hierarchyShaders.compiler,
   hierarchyShaders.archive, hierarchyShaders.binary, ...hierarchyShaders.logs].forEach(verify);
-assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 11);
+assert.equal(fs.readFileSync(hierarchyShaders.archive.file).readInt32LE(), 12);
 const programmableFile = path.join(__dirname, 'results/nanite-programmable/verified.json');
 const programmableShaders = read(programmableFile); assert(programmableShaders.pass);
 [...programmableShaders.sources, programmableShaders.binary, ...programmableShaders.logs].forEach(verify);
@@ -98,6 +103,12 @@ assert.equal(programmableShaders.cases.length, 44);
 assert.equal(programmableShaders.cases.filter(c=>c.frequency==='vertex').length, 11);
 assert.equal(programmableShaders.cases.filter(c=>c.frequency==='pixel').length, 33);
 assert(programmableShaders.cases.every(c => c.preprocessed && c.compiled && c.errors.length === 0));
+const assemblyFile = path.join(__dirname,'results/nanite-assembly/verified.json');
+const assemblyShaders=read(assemblyFile);assert(assemblyShaders.pass);
+[...assemblyShaders.sources,assemblyShaders.binary,assemblyShaders.builder,assemblyShaders.builderBuild,...assemblyShaders.logs,...assemblyShaders.assets,...assemblyShaders.sourceGeometry].forEach(verify);
+assert.equal(assemblyShaders.fixtures.length,8);
+assert.equal(assemblyShaders.materials.cases.length,40);assert.equal(assemblyShaders.basepass.cases.length,20);
+assert([...assemblyShaders.materials.cases,...assemblyShaders.basepass.cases].every(c=>c.preprocessed&&c.compiled&&c.errors.length===0));
 const skinningFile = path.join(__dirname,'results/nanite-skinning/verified.json');
 const skinningShaders = read(skinningFile); assert(skinningShaders.pass);
 [...skinningShaders.sources,skinningShaders.binary,skinningShaders.builder,skinningShaders.builderBuild,...skinningShaders.logs,...skinningShaders.assets,...skinningShaders.sourceGeometry].forEach(verify);
@@ -165,7 +176,7 @@ const products = ['index.html', 'content.bin', 'content-files.json', 'config-fil
 products.push(writeVersions(output, products));
 const report = {date:new Date().toISOString(), pass:true, output, defaultScene, fullScene, sceneConversion, performanceProfile, build:audit(path.join(buildDir, 'build.json')),
   native:audit(path.join(native, 'verified.json')), browserOracle:verified.browserOracle, archive:audit(archiveFile),
-  hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),programmableShaders:audit(programmableFile),skinningShaders:audit(skinningFile),multiMaterial,
+  hierarchyShaders:audit(hierarchyFile),streamingShaders:audit(streamingFile),programmableShaders:audit(programmableFile),skinningShaders:audit(skinningFile),assemblyShaders:audit(assemblyFile),multiMaterial,
   sceneCook:{stage:audit(stageFile),cook:stage.cookReport,inventory:cook.shaderInventory.artifact,
     naniteTypes,supplementApplied:false,hierarchyArchiveApplied:false,streamingArchiveApplied:true},
   baseline:[baselinePack, ...['content-files.json', 'config-files.json'].map(n => path.join(baseline, n)),pageTemplate].map(audit),

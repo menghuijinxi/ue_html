@@ -18,6 +18,11 @@ try {
     & node (Join-Path $PSScriptRoot 'prepare-web-cook-shaders.cjs') *> "$taskOutput/prepare.log"
     if ($LASTEXITCODE -ne 0) { throw 'Shader preparation failed' }
     $taskInputs = @(
+        'reference-engine/Engine/Source/Runtime/Engine/Private/Nanite/NaniteWebAssemblyTransforms.cpp',
+        'reference-engine/Engine/Source/Runtime/Engine/Public/Rendering/NaniteWebAssembly.h',
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteFeatures.ush',
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteAssembly.ush',
+        'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteAssemblyTransforms.usf',
         'reference-engine/Engine/Source/Runtime/Renderer/Private/Nanite/NaniteWebSkinningViewData.cpp',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteSkinningViewData.usf',
         'reference-engine/Engine/Shaders/Private/Nanite/WebNaniteSkinning.ush',
