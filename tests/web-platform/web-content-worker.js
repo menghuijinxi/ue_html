@@ -18,6 +18,7 @@ const hash = async bytes => {
 };
 const markerName = value => value + '.json';
 const lockName = value => 'ue-web-local-' + value;
+const preparationLockName = value => lockName(value) + '-prepare';
 
 async function exists(info) {
   try {
@@ -95,14 +96,29 @@ async function trimDisk() {
   for (const item of items.sort((a, b) => a.used - b.used)) {
     if (bytes <= diskLimit) break;
     if (assets.has(item.sha256)) continue;
-    await navigator.locks.request(lockName(item.sha256), {ifAvailable: true}, async lock => {
-      if (!lock) return;
-      await directory.removeEntry(markerName(item.sha256));
-      await directory.removeEntry(item.sha256 + '.bin');
-      bytes -= item.size;
-      ++stats.diskEvictions;
+    await navigator.locks.request(preparationLockName(item.sha256), {ifAvailable: true}, async preparing => {
+      if (!preparing) return;
+      await navigator.locks.request(lockName(item.sha256), {ifAvailable: true}, async lock => {
+        if (!lock) return;
+        await directory.removeEntry(markerName(item.sha256));
+        await directory.removeEntry(item.sha256 + '.bin');
+        bytes -= item.size;
+        ++stats.diskEvictions;
+      });
     });
   }
+}
+
+function openShared(info) {
+  let ready, failed;
+  const opened = new Promise((resolve, reject) => { ready = resolve; failed = reject; });
+  navigator.locks.request(lockName(info.sha256), {mode: 'shared'}, async () => {
+    if (!await exists(info)) return;
+    ready(await (await directory.getFileHandle(info.sha256 + '.bin')).getFile());
+    // Keep immutable content alive until this worker closes, including bulk reads.
+    await new Promise(() => {});
+  }).then(() => ready(null), failed);
+  return opened;
 }
 
 async function asset(info) {
@@ -111,22 +127,23 @@ async function asset(info) {
       info.blocks.length !== Math.ceil(info.size / info.blockSize) ||
       !info.blocks.every(value => /^[a-f0-9]{64}$/.test(value)))
     throw new Error('Invalid local content manifest');
-  if (!assets.has(info.sha256)) assets.set(info.sha256, (async () => {
-    await navigator.locks.request(lockName(info.sha256), async () => {
-      if (await exists(info)) ++stats.persistentHits;
-      else await download(info);
-    });
-    // Hold a shared lease while this worker uses the immutable file; old-version cleanup cannot delete it.
-    let ready, failed;
-    const opened = new Promise((resolve, reject) => { ready = resolve; failed = reject; });
-    navigator.locks.request(lockName(info.sha256), {mode: 'shared'}, async () => {
-      try { ready(await (await directory.getFileHandle(info.sha256 + '.bin')).getFile()); }
-      catch (error) { failed(error); return; }
-      await new Promise(() => {});
-    }).catch(failed);
-    const file = await opened;
-    return {info, file};
-  })());
+  if (!assets.has(info.sha256)) assets.set(info.sha256,
+    navigator.locks.request(preparationLockName(info.sha256), async () => {
+      // Serialize preparation only. Taking an exclusive content lock on every
+      // cache hit would wait forever behind another page's lifetime read lease.
+      let downloaded = false;
+      for (;;) {
+        const file = await openShared(info);
+        if (file) {
+          if (!downloaded) ++stats.persistentHits;
+          return {info, file};
+        }
+        await navigator.locks.request(lockName(info.sha256), {ifAvailable: true}, async lock => {
+          if (!lock) throw new Error('Local content cache needs rebuilding but another page is using it. Close that page and reload.');
+          if (!await exists(info)) {await download(info); downloaded = true;}
+        });
+      }
+    }).catch(error => {assets.delete(info.sha256); throw error;}));
   return assets.get(info.sha256);
 }
 

@@ -1,0 +1,384 @@
+{
+  "date": "2026-11-10",
+  "pass": true,
+  "folder": "villa-prewarm-20261110-v4",
+  "diagnosis": "Every cache hit previously requested an exclusive content lock before acquiring a lifetime shared lease. A second tab waited behind the first tab until it closed. A short preparation lock now serializes checking/downloading; cache hits take shared leases directly.",
+  "reproduced": {
+    "pass": false,
+    "error": "Error: Second page blocked on a held cache lock\n    at Timeout.<anonymous> (H:\\ue_html\\tests\\web-platform\\verify-web-content-multitab.cjs:46:38)\n    at listOnTimeout (node:internal/timers:605:17)\n    at process.processTimers (node:internal/timers:541:7)",
+    "blockedLocks": {
+      "held": [
+        {
+          "clientId": "0E0524AB4D1D6E799590716B5FDF023C",
+          "mode": "shared",
+          "name": "ue-web-local-614ecaa476b4a7d97a74d978090fdaa111009ea4178a198ce2af08a53bb3be95"
+        }
+      ],
+      "pending": [
+        {
+          "clientId": "5427E12D57412EAF0EB574921991221E",
+          "mode": "exclusive",
+          "name": "ue-web-local-614ecaa476b4a7d97a74d978090fdaa111009ea4178a198ce2af08a53bb3be95"
+        }
+      ]
+    },
+    "resumesWhenFirstCloses": true
+  },
+  "cacheRegression": [
+    {
+      "name": "warm readers coexist and exclude eviction",
+      "requests": 1,
+      "pass": true
+    },
+    {
+      "name": "simultaneous cold opens download once",
+      "requests": 1,
+      "pass": true
+    },
+    {
+      "name": "rebuild of an in-use cache fails explicitly without leaving a queued writer",
+      "pass": true
+    },
+    {
+      "name": "failed download releases preparation lock",
+      "requests": 2,
+      "pass": true
+    },
+    {
+      "name": "full verification cache reused and closed pages release leases",
+      "pass": true
+    }
+  ],
+  "browsers": [
+    {
+      "channel": "chrome",
+      "pass": true,
+      "errors": [],
+      "states": [
+        {
+          "label": "first-ready",
+          "frames": 32,
+          "elapsedMs": 15415,
+          "downloads": 2,
+          "persistentHits": 0,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-ready-while-first-open",
+          "frames": 33,
+          "elapsedMs": 10806,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "first-running-with-second-open",
+          "frames": 142,
+          "downloads": 2,
+          "persistentHits": 0,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-running-with-first-open",
+          "frames": 118,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-reloaded-after-first-closed",
+          "frames": 31,
+          "elapsedMs": 9697,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-after-reload",
+          "frames": 92,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        }
+      ]
+    },
+    {
+      "channel": "msedge",
+      "pass": true,
+      "errors": [],
+      "states": [
+        {
+          "label": "first-ready",
+          "frames": 30,
+          "elapsedMs": 17144,
+          "downloads": 2,
+          "persistentHits": 0,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-ready-while-first-open",
+          "frames": 31,
+          "elapsedMs": 11707,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "first-running-with-second-open",
+          "frames": 131,
+          "downloads": 2,
+          "persistentHits": 0,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-running-with-first-open",
+          "frames": 114,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-reloaded-after-first-closed",
+          "frames": 30,
+          "elapsedMs": 10374,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        },
+        {
+          "label": "second-after-reload",
+          "frames": 95,
+          "downloads": 0,
+          "persistentHits": 2,
+          "heldLocks": [
+            {
+              "name": "ue-web-local-88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+              "mode": "shared"
+            },
+            {
+              "name": "ue-web-local-af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+              "mode": "shared"
+            }
+          ],
+          "pendingLocks": 0
+        }
+      ]
+    }
+  ],
+  "unchanged": {
+    "UEWebEngineThreads.wasm": "88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+    "UEWebEngineThreads.js": "15d92c188511f4c7d7afcca8bc65ca543435e3513fcea0eae0ed4fdd45d8d10a",
+    "content.bin": "af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+    "config-files.json": "289b4328ca93cadd9ac76953f4d7457548ddbdf38237d63fbd1721da9990b76b",
+    "pipeline-prewarm.json": "d3e6c147e1ae56fdab239a18766c8a9dfed94c977f733c3c4dac5934e0ecfb93"
+  },
+  "files": [
+    {
+      "file": "tests/web-platform/results/content-multitab-20261110-before.json",
+      "sha256": "f2da80f7956cc0ba9d45ecdb089245393ef8ba0aebfe828ad5a7b128fecd97b3"
+    },
+    {
+      "file": "tests/web-platform/results/content-multitab-20261110-final.json",
+      "sha256": "de74a16bec9e85460afb4acebc56755bcd71f9e2adb5f103f342e80ec5cfe4ca"
+    },
+    {
+      "file": "tests/web-platform/results/villa-multitab-20261110-fixed-chrome/result.json",
+      "sha256": "996210c5cac42502cbf4be4e7390c998daaa51841f89f847a2ea10bc81f65a50"
+    },
+    {
+      "file": "tests/web-platform/results/villa-multitab-20261110-fixed-edge/result.json",
+      "sha256": "ca3480544db011297276fe4876d2edde92794c8664ad0f83ec5c9f72ba62eae6"
+    },
+    {
+      "file": "tests/web-platform/results/villa-prewarm-20261110-v4-package.json",
+      "sha256": "f3bd1a37cf024da3007ca2ccefae37c9e06aa4a5f2bf4d4ef5c74a18f5111764"
+    },
+    {
+      "file": "tests/web-platform/build/villa-prewarm-20261109-v3/asset-versions.json",
+      "sha256": "5e0156df471551c8080c6514ae3f1fa48bf42030ce0b1816f2981ec358236f6f"
+    },
+    {
+      "file": "tests/web-platform/build/villa-prewarm-20261110-v4/asset-versions.json",
+      "sha256": "82ca73b147faeec2fedc603e3444b247171b1d1de039e5c8eac5c21b4432810a"
+    },
+    {
+      "file": "tests/web-platform/villa-engine-comparison.json",
+      "sha256": "0f1940afd49641ee8369fd200d19e78895d17c2b22c30271dd1a4c2cc3d8cdaa"
+    },
+    {
+      "file": "tests/web-platform/web-content-worker.js",
+      "sha256": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+    },
+    {
+      "file": "tests/web-platform/package-villa-prewarm.cjs",
+      "sha256": "f5fada821588c702f9312ecaa660cd2234687f790b699d288700557f6d8fb32c"
+    },
+    {
+      "file": "tests/web-platform/verify-web-content-multitab.cjs",
+      "sha256": "807c97fdb537e43354998b0244c856c2fd6b2ef9fdf00e05fd78c269b7a511a0"
+    },
+    {
+      "file": "tests/web-platform/verify-villa-multitab.cjs",
+      "sha256": "a9a9441ce53beecb9ab3fe5f64623dc1b2a555cb5b18e499d35a8902dcf8f3f4"
+    }
+  ],
+  "boundary": "Fixes cache-lock blocking of a second same-origin page. Two live villa pages, foreground rendering/input, closing the first, and reloading the second passed on Chrome and Edge. Does not fix native GPU/compiler crashes or guarantee performance with multiple heavy scenes. An in-use cache that requires repair or full-verification upgrade reports an explicit error until other readers close. Existing old-version blocked tabs must be closed or refreshed to cancel queued legacy writers."
+}

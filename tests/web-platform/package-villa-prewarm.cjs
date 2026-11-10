@@ -35,18 +35,18 @@ const pack = {version: 1, wasm: versions['UEWebEngineThreads.wasm'].sha256,
   descriptors: corpus.descriptors};
 fs.mkdirSync(dest);
 for (const name of Object.keys(versions)) {
-  if (['index.html', 'web-engine-worker.js', 'web-engine-host.js', 'web-pipeline-prewarm.js',
+  if (['index.html', 'web-engine-worker.js', 'web-engine-host.js', 'web-content-worker.js', 'web-pipeline-prewarm.js',
     'pipeline-prewarm.json', 'asset-versions.json'].includes(name)) continue;
   fs.linkSync(path.join(source, name), path.join(dest, name));
 }
-for (const name of ['web-engine-host.js', 'web-engine-worker.js', 'web-pipeline-prewarm.js'])
+for (const name of ['web-engine-host.js', 'web-engine-worker.js', 'web-content-worker.js', 'web-pipeline-prewarm.js'])
   fs.copyFileSync(path.join(__dirname, name), path.join(dest, name));
 const packName = 'pipeline-prewarm.json';
 fs.writeFileSync(path.join(dest, packName), JSON.stringify(pack));
 let html = fs.readFileSync(path.join(source, 'index.html'), 'utf8');
 const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/); assert(match);
 const assets = JSON.parse(match[1]);
-for (const name of ['web-engine-host.js', 'web-engine-worker.js', 'web-pipeline-prewarm.js'])
+for (const name of ['web-engine-host.js', 'web-engine-worker.js', 'web-content-worker.js', 'web-pipeline-prewarm.js'])
   assets.versions[name] = audit(path.join(dest, name)).sha256;
 assets.pipelinePrewarm = {url: packName, sha256: audit(path.join(dest, packName)).sha256,
   content: pack.content, config: pack.config};
