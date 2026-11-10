@@ -78,6 +78,7 @@ bool RenderScene = false;
 bool DefaultTemplate = false;
 bool DesktopRenderer = false;
 bool VisualTestClock = false;
+bool MaterialTestClock = false;
 bool MaterialMotionTest = false;
 bool ParallelDrawRecording = false;
 bool ImmediateWebGPUCalls = false;
@@ -380,12 +381,14 @@ void EngineFrame(void*)
             }, Frames, ValidMeshes, double(ResidentDF), double(BulkDF), AO ? AO->GetInt() : -1);
         }
     }
-    if (VisualTestClock)
+    if (VisualTestClock || MaterialTestClock)
     {
         const auto* Frozen = IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"));
+        const auto* MaterialTime = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.OverrideTimeMaterialExpressions"));
         MAIN_THREAD_ASYNC_EM_ASM({
-            globalThis.__webVisualTestClock = ({renderTimeFrozen: !!$0, deltaSeconds: $1});
-        }, Frozen && Frozen->GetInt() != 0, FApp::GetDeltaTime());
+            globalThis.__webVisualTestClock = ({renderTimeFrozen: !!$0, deltaSeconds: $1,
+                materialTimeFrozen: $2 >= 0, materialTime: $2});
+        }, Frozen && Frozen->GetInt() != 0, FApp::GetDeltaTime(), MaterialTime ? MaterialTime->GetFloat() : -1.0f);
     }
     if (APlayerController* Controller = TemplateController.Get())
     {
@@ -1518,6 +1521,16 @@ int32 StartEngine()
         check(Frozen);
         Frozen->Set(1, ECVF_SetByCode);
     }
+    if (MaterialTestClock)
+    {
+        // Freezing the whole view family also freezes LastRenderTime, so the
+        // texture streamer eventually treats visible primitives as hidden.
+        // Only material expressions need a fixed time for image comparisons.
+        check(!VisualTestClock);
+        auto* MaterialTime = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.OverrideTimeMaterialExpressions"));
+        check(MaterialTime);
+        MaterialTime->Set(0.0f, ECVF_SetByCode);
+    }
     UWorld* World = nullptr;
     for (const FWorldContext& Context : GEngine->GetWorldContexts())
         if (Context.WorldType == EWorldType::Game)
@@ -1603,6 +1616,7 @@ int main(int argc, char** argv)
         DefaultTemplate |= FCStringAnsi::Strcmp(argv[Index], "-WebDefaultTemplate") == 0;
         DesktopRenderer |= FCStringAnsi::Strcmp(argv[Index], "-WebDesktop") == 0;
         VisualTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebVisualTestClock") == 0;
+        MaterialTestClock |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialTestClock") == 0;
         MaterialMotionTest |= FCStringAnsi::Strcmp(argv[Index], "-WebMaterialLabMotionTest") == 0;
         ParallelDrawRecording |= FCStringAnsi::Strcmp(argv[Index], "-WebParallelDrawRecording") == 0;
         ImmediateWebGPUCalls |= FCStringAnsi::Strcmp(argv[Index], "-WebGPUImmediateCalls") == 0;

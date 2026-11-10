@@ -7,6 +7,7 @@
 #include "Editor.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
+#include "Engine/Texture2D.h"
 #include "EngineUtils.h"
 #include "HAL/IConsoleManager.h"
 #include "ImageUtils.h"
@@ -17,12 +18,49 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Parse.h"
 #include "PrimitiveSceneProxy.h"
+#include "Rendering/NaniteResources.h"
 #include "SceneView.h"
+#include "SceneViewExtension.h"
 #include "Serialization/JsonSerializer.h"
+#include "ShaderCompiler.h"
 #include "Settings/LevelEditorViewportSettings.h"
 #include "Slate/SceneViewport.h"
 #include "StaticMeshResources.h"
 #include "UnrealClient.h"
+#include "UObject/UObjectIterator.h"
+
+namespace
+{
+class FNativeComparisonViewExtension : public FSceneViewExtensionBase
+{
+public:
+    FNativeComparisonViewExtension(const FAutoRegister& Register) : FSceneViewExtensionBase(Register) {}
+    FMatrix Projection = FMatrix::Identity;
+    int32 Phase = -1, AA = -1;
+    bool Realtime = false, TemporalAA = false;
+    float MaterialMipBias = 0;
+    const FRenderTarget* Target = nullptr;
+    virtual void SetupViewFamily(FSceneViewFamily& Family) override
+    {
+        // An offscreen editor can mark its viewport non-realtime even after
+        // SetRealtime, which silently substitutes FXAA for the game's TSR.
+        if (Target && Family.RenderTarget == Target)
+            Family.bRealtimeUpdate = true;
+    }
+    virtual void PostRenderViewFamily_RenderThread(FRDGBuilder&, FSceneViewFamily& Family) override
+    {
+        if (!Target || Family.RenderTarget != Target || Family.Views.Num() != 1 || Family.Views[0]->bIsSceneCapture) return;
+        const auto& View = *Family.Views[0];
+        Projection = View.ViewMatrices.GetViewToClip();
+        Phase = View.GetDistanceFieldTemporalSampleIndex();
+        AA = int32(View.AntiAliasingMethod);
+        Realtime = Family.bRealtimeUpdate;
+        TemporalAA = Family.EngineShowFlags.TemporalAA;
+        MaterialMipBias = View.MaterialTextureMipBias;
+    }
+};
+TSharedPtr<FNativeComparisonViewExtension, ESPMode::ThreadSafe> NativeComparisonView;
+}
 
 // Opt-in desktop viewport capture. The original world is changed only in memory.
 void StartWebNativeComparison()
@@ -32,12 +70,15 @@ void StartWebNativeComparison()
         !FParse::Value(FCommandLine::Get(), TEXT("WebNativeComparison="), Input))
         return;
     FCoreDelegates::OnFEngineLoopInitComplete.AddLambda([Input] {
+        NativeComparisonView = FSceneViewExtensions::NewExtension<FNativeComparisonViewExtension>();
         FString JSON;
         TSharedPtr<FJsonObject> Settings;
         check(FFileHelper::LoadFileToString(JSON, *Input));
         check(FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(JSON), Settings));
         FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda(
-            [Settings, Step = 0, Warmup = 0, Sun = TWeakObjectPtr<UDirectionalLightComponent>()]
+            [Settings, Step = 0, Warmup = 0, StableSamples = TArray<int32>{0, 0, 0, 0},
+             PreviousPixels = TArray<TArray<FColor>>{TArray<FColor>(), TArray<FColor>(), TArray<FColor>(), TArray<FColor>()},
+             StabilityChecks = TArray<TSharedPtr<FJsonValue>>(), Sun = TWeakObjectPtr<UDirectionalLightComponent>()]
             (float) mutable {
                 if (!GEditor || !GCurrentLevelEditingViewportClient ||
                     !GCurrentLevelEditingViewportClient->Viewport)
@@ -90,6 +131,12 @@ void StartWebNativeComparison()
                             Sun = Light;
                     Client->SetRealtime(true);
                     Client->SetGameView(true);
+                    if (ExistingScene)
+                    {
+                        Client->AddRealtimeOverride(true, FText::FromString(TEXT("Native Nanite comparison")));
+                        Client->EngineShowFlags.SetAntiAliasing(true);
+                        Client->EngineShowFlags.SetTemporalAA(true);
+                    }
                     Client->EngineShowFlags.SetSelectionOutline(false);
                     if (ExistingScene)
                         Client->EngineShowFlags.SetEyeAdaptation(true);
@@ -98,8 +145,13 @@ void StartWebNativeComparison()
                     Settings->TryGetNumberField(TEXT("height"), Height);
                     check(Width > 0 && Height > 0);
                     static_cast<FSceneViewport*>(Client->Viewport)->SetFixedViewportSize(Width, Height);
+                    FlushRenderingCommands();
+                    NativeComparisonView->Target = Client->Viewport;
                     FAssetCompilingManager::Get().FinishAllCompilation();
-                    IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"))->Set(1, ECVF_SetByCode);
+                    bool MaterialTimeOnly = false;
+                    Settings->TryGetBoolField(TEXT("materialTimeOnly"), MaterialTimeOnly);
+                    IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"))->Set(MaterialTimeOnly ? 0 : 1, ECVF_SetByCode);
+                    IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.OverrideTimeMaterialExpressions"))->Set(MaterialTimeOnly ? 0.0f : -1.0f, ECVF_SetByCode);
                     Step = 1;
                 }
                 const int32 Index = (Step - 1) / 2;
@@ -139,11 +191,15 @@ void StartWebNativeComparison()
                         }
                     }
                     Warmup = 0;
+                    for (int32 Phase = 0; Phase < 4; ++Phase) { StableSamples[Phase] = 0; PreviousPixels[Phase].Reset(); }
+                    StabilityChecks.Reset();
                     ++Step;
                 }
                 // Warm up a real viewport, including exposure and realtime sky capture.
                 Client->Invalidate();
-                if (++Warmup < 240 || FAssetCompilingManager::Get().GetNumRemainingAssets() > 0)
+                if (++Warmup < 240 || FAssetCompilingManager::Get().GetNumRemainingAssets() > 0 ||
+                    (GShaderCompilingManager && GShaderCompilingManager->IsCompiling()) ||
+                    (ExistingScene && Warmup % 120 >= 4))
                     return true;
                 FlushRenderingCommands();
                 TArray<FColor> Pixels;
@@ -152,6 +208,52 @@ void StartWebNativeComparison()
                 check(Pixels.Num() == Size.X * Size.Y);
                 for (FColor& Pixel : Pixels)
                     Pixel.A = 255;
+                FSceneViewFamilyContext Family(FSceneViewFamily::ConstructionValues(
+                    Client->Viewport, World->Scene, Client->EngineShowFlags).SetRealtimeUpdate(true));
+                const auto* RenderView = Client->CalcSceneView(&Family);
+                if (ExistingScene)
+                {
+                    const uint32 Phase = NativeComparisonView->Phase; check(Phase < 4);
+                    int32 PendingTextures = 0, ResidentMips = 0, RequestedMips = 0;
+                    for (TObjectIterator<UTexture2D> It; It; ++It)
+                    {
+                        const auto& State = It->GetStreamableResourceState();
+                        PendingTextures += It->HasPendingInitOrStreaming() ? 1 : 0;
+                        ResidentMips += State.NumResidentLODs; RequestedMips += State.NumRequestedLODs;
+                    }
+                    double MeanDifference = 255.0;
+                    if (PreviousPixels[Phase].Num() == Pixels.Num())
+                    {
+                        uint64 Sum = 0;
+                        for (int32 I = 0; I < Pixels.Num(); ++I)
+                            Sum += FMath::Abs(int32(Pixels[I].R) - PreviousPixels[Phase][I].R) +
+                                FMath::Abs(int32(Pixels[I].G) - PreviousPixels[Phase][I].G) +
+                                FMath::Abs(int32(Pixels[I].B) - PreviousPixels[Phase][I].B);
+                        MeanDifference = double(Sum) / (Pixels.Num() * 3.0);
+                    }
+                    StableSamples[Phase] = MeanDifference < 0.05 && !PendingTextures && ResidentMips == RequestedMips ? StableSamples[Phase] + 1 : 0;
+                    auto Check = MakeShared<FJsonObject>();
+                    Check->SetNumberField(TEXT("warmupFrames"), Warmup);
+                    Check->SetNumberField(TEXT("phase"), Phase);
+                    Check->SetNumberField(TEXT("jitterX"), NativeComparisonView->Projection.M[2][0]);
+                    Check->SetNumberField(TEXT("jitterY"), NativeComparisonView->Projection.M[2][1]);
+                    Check->SetNumberField(TEXT("antiAliasingMethod"), NativeComparisonView->AA);
+                    Check->SetBoolField(TEXT("realtime"), NativeComparisonView->Realtime);
+                    Check->SetBoolField(TEXT("temporalAA"), NativeComparisonView->TemporalAA);
+                    Check->SetNumberField(TEXT("materialMipBias"), NativeComparisonView->MaterialMipBias);
+                    Check->SetNumberField(TEXT("antiAliasingCVar"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.AntiAliasingMethod"))->GetInt());
+                    Check->SetNumberField(TEXT("meanDifference"), MeanDifference);
+                    Check->SetNumberField(TEXT("pendingTextures"), PendingTextures);
+                    Check->SetNumberField(TEXT("residentMips"), ResidentMips);
+                    Check->SetNumberField(TEXT("requestedMips"), RequestedMips);
+                    Check->SetNumberField(TEXT("stableSamples"), StableSamples[Phase]);
+                    StabilityChecks.Add(MakeShared<FJsonValueObject>(Check));
+                    UE_LOG(LogTemp, Display, TEXT("WEB_NATIVE_STABILITY: view=%s phase=%u frames=%d mean=%g pending=%d mips=%d/%d stable=%d"),
+                        *View->GetStringField(TEXT("name")), Phase, Warmup, MeanDifference, PendingTextures, ResidentMips, RequestedMips, StableSamples[Phase]);
+                    PreviousPixels[Phase] = Pixels;
+                    if (Warmup < 600 || StableSamples.ContainsByPredicate([](int32 Count) { return Count < 3; })) return true;
+                    Pixels = PreviousPixels[0];
+                }
                 TArray64<uint8> PNG;
                 FImageUtils::PNGCompressImageArray(Size.X, Size.Y, Pixels, PNG);
                 const FString Output = Settings->GetStringField(TEXT("output")) +
@@ -169,17 +271,82 @@ void StartWebNativeComparison()
                 Capture->SetNumberField(TEXT("featureLevel"), int32(World->GetFeatureLevel()));
                 Capture->SetNumberField(TEXT("samples"), SampleCount);
                 Capture->SetNumberField(TEXT("naniteSamples"), NaniteSamples);
+                if (ExistingScene)
+                {
+                    Capture->SetArrayField(TEXT("stability"), StabilityChecks);
+                    Capture->SetBoolField(TEXT("renderTimeFrozen"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"))->GetBool());
+                    Capture->SetNumberField(TEXT("materialTime"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.OverrideTimeMaterialExpressions"))->GetFloat());
+                    TArray<TSharedPtr<FJsonValue>> Textures;
+                    for (TObjectIterator<UTexture2D> It; It; ++It)
+                    {
+                        if (!It->GetPathName().StartsWith(TEXT("/Game/"))) continue;
+                        const auto& State = It->GetStreamableResourceState();
+                        auto Item = MakeShared<FJsonObject>();
+                        Item->SetStringField(TEXT("path"), It->GetPathName());
+                        Item->SetNumberField(TEXT("width"), It->GetSizeX());
+                        Item->SetNumberField(TEXT("height"), It->GetSizeY());
+                        Item->SetNumberField(TEXT("residentMips"), State.NumResidentLODs);
+                        Item->SetNumberField(TEXT("requestedMips"), State.NumRequestedLODs);
+                        Item->SetNumberField(TEXT("maxMips"), State.MaxNumLODs);
+                        Item->SetNumberField(TEXT("filter"), int32(It->Filter));
+                        Textures.Add(MakeShared<FJsonValueObject>(Item));
+                    }
+                    Capture->SetArrayField(TEXT("textures"), Textures);
+                    Capture->SetBoolField(TEXT("temporalSequencesFrozen"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.FreezeTemporalSequences"))->GetBool());
+                    TArray<TSharedPtr<FJsonValue>> PhaseImages;
+                    for (int32 Phase = 0; Phase < 4; ++Phase)
+                    {
+                        const FString PhaseFile = Output.LeftChop(4) + FString::Printf(TEXT("-phase%d.png"), Phase);
+                        TArray64<uint8> PhasePNG;
+                        FImageUtils::PNGCompressImageArray(Size.X, Size.Y, PreviousPixels[Phase], PhasePNG);
+                        check(FFileHelper::SaveArrayToFile(PhasePNG, *PhaseFile));
+                        auto Item = MakeShared<FJsonObject>(); Item->SetNumberField(TEXT("phase"), Phase);
+                        Item->SetStringField(TEXT("file"), PhaseFile); PhaseImages.Add(MakeShared<FJsonValueObject>(Item));
+                    }
+                    Capture->SetArrayField(TEXT("phaseImages"), PhaseImages);
+                    int32 AssetComponents = 0, NaniteProxies = 0;
+                    TArray<TSharedPtr<FJsonValue>> Components;
+                    for (TActorIterator<AActor> It(World); It; ++It)
+                    {
+                        TInlineComponentArray<UStaticMeshComponent*> Meshes(*It);
+                        for (const auto* Mesh : Meshes)
+                        {
+                            const UStaticMesh* Asset = Mesh->GetStaticMesh();
+                            const auto* Data = Asset ? Asset->GetRenderData() : nullptr;
+                            if (!Data || !Data->NaniteResourcesPtr || !Data->NaniteResourcesPtr->NumClusters) continue;
+                            ++AssetComponents;
+                            const bool IsNanite = Mesh->SceneProxy && Mesh->SceneProxy->IsNaniteMesh();
+                            NaniteProxies += IsNanite ? 1 : 0;
+                            auto Item = MakeShared<FJsonObject>();
+                            Item->SetStringField(TEXT("component"), Mesh->GetPathName());
+                            Item->SetStringField(TEXT("mesh"), Asset->GetPathName());
+                            Item->SetBoolField(TEXT("naniteProxy"), IsNanite);
+                            Item->SetNumberField(TEXT("clusters"), Data->NaniteResourcesPtr->NumClusters);
+                            TArray<TSharedPtr<FJsonValue>> Materials;
+                            for (int32 Slot = 0; Slot < Mesh->GetNumMaterials(); ++Slot)
+                            {
+                                const auto* Material = Mesh->GetMaterial(Slot);
+                                auto Info = MakeShared<FJsonObject>();
+                                Info->SetStringField(TEXT("path"), GetPathNameSafe(Material));
+                                Info->SetStringField(TEXT("naniteOverride"), Material ? GetPathNameSafe(Material->GetNaniteOverride()) : TEXT("None"));
+                                Materials.Add(MakeShared<FJsonValueObject>(Info));
+                            }
+                            Item->SetArrayField(TEXT("materials"), Materials);
+                            Components.Add(MakeShared<FJsonValueObject>(Item));
+                        }
+                    }
+                    Capture->SetNumberField(TEXT("naniteAssetComponents"), AssetComponents);
+                    Capture->SetNumberField(TEXT("naniteSceneProxies"), NaniteProxies);
+                    Capture->SetArrayField(TEXT("components"), Components);
+                }
                 Capture->SetNumberField(TEXT("width"), Size.X);
                 Capture->SetNumberField(TEXT("height"), Size.Y);
                 Capture->SetNumberField(TEXT("shadowBias"), Sun.IsValid() ? Sun->ShadowBias : -1);
                 Capture->SetNumberField(TEXT("shadowSlopeBias"), Sun.IsValid() ? Sun->ShadowSlopeBias : -1);
                 Capture->SetObjectField(TEXT("view"), View);
-                FSceneViewFamilyContext Family(FSceneViewFamily::ConstructionValues(
-                    Client->Viewport, World->Scene, Client->EngineShowFlags).SetRealtimeUpdate(true));
-                const auto* RenderView = Client->CalcSceneView(&Family);
                 // CalcSceneView has not passed through renderer temporal-jitter
                 // setup yet, so ProjectionNoAA still contains its initial value.
-                const FMatrix& Projection = RenderView->ViewMatrices.GetProjectionMatrix();
+                const FMatrix& Projection = RenderView->ViewMatrices.GetViewToClip();
                 Capture->SetNumberField(TEXT("projectionX"), Projection.M[0][0]);
                 Capture->SetNumberField(TEXT("projectionY"), Projection.M[1][1]);
                 FString CaptureJSON;
