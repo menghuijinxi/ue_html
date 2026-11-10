@@ -1,5 +1,10 @@
 # 2026-11-10 别墅 Lumen、VT、VSM 重打包
 
+**交付更正：原包漏接 11 月 9 日实际管线预热优化，用户正常启动发生设备丢失。**
+下文为原包历史记录，不能作为正常启动稳定性结论。
+修复入口为 `http://127.0.0.1:8765/build/villa-lumen-vt-20261110-v3/index.html`，
+原因、重复启动验证及新的打包流程见 [启动回归修复](UE58_VILLA_STARTUP_REGRESSION_20261110.md)。
+
 测试工程：`H:/TriplexHouseVilla/TriplexHouseVilla.uproject`。
 隔离副本：`tests/web-platform/build/projects/triplex-virtual`。
 目标入口：`http://127.0.0.1:8765/build/villa-lumen-vt-20261110/index.html`。
@@ -85,7 +90,7 @@ tests/web-platform/build-native-rendercore.ps1 -Module Renderer -MaxParallelActi
 tests/web-platform/build-web-engine.ps1 -Threads -SkipHostPreparation -StandaloneCompiles -MaxParallelActions 4
 tests/web-platform/cook-web-engine.ps1 -Mode WebGPU-SM5 -Scene Project -Project H:/ue_html/tests/web-platform/build/projects/triplex-virtual/TriplexHouseVilla.uproject -Map /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla -UseProjectSettings -ReportId triplex-virtual -StopOnShaderError -HostProcessorAffinity 4294901760
 node tests/web-platform/stage-web-engine.cjs --project=triplex-virtual --desktop
-node tests/web-platform/package-web-project.cjs --project=triplex-virtual --desktop --threads --distance-fields --output-folder=villa-lumen-vt-20261110
+node tests/web-platform/package-web-project.cjs --project=triplex-virtual --desktop --threads --distance-fields --output-folder=villa-lumen-vt-20261110 --legacy-precache
 node tests/web-platform/probe-web-virtual-scene.cjs --folder=villa-lumen-vt-20261110 --tag=villa-lumen-vt-20261110-final --require-lumen --require-precache --lumen-input=tests/web-platform/build/web-project-triplex-virtual-desktop-cook/20261110-140727/ShaderConversion --package-report=tests/web-platform/results/web-project-triplex-virtual-distance-fields-threads-package-results.json
 ```
 

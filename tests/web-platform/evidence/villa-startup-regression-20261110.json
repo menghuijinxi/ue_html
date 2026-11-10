@@ -1,0 +1,633 @@
+{
+  "date": "2026-11-10T08:27:51.797Z",
+  "pass": true,
+  "folder": "villa-lumen-vt-20261110-v3",
+  "url": "http://127.0.0.1:8765/build/villa-lumen-vt-20261110-v3/index.html",
+  "cause": "Project packaging omitted recorded-pipeline prewarming and re-enabled legacy speculative PSO precaching. Prior scene-only validation accepted 1366 pipeline failure logs and did not establish default-scheduling startup reliability.",
+  "user": {
+    "source": {
+      "file": "C:/Users/wap80/Downloads/ue-startup-diagnostics-2026-11-10T08-07-18-803Z.json",
+      "sha256": "99979319da7ca85b8ec31e4acbb91b49bcd61173f0daa41ddf426c8bb7196019"
+    },
+    "startedAt": "2026-11-10T08:06:58.443Z",
+    "errors": [
+      {
+        "time": "2026-11-10T08:07:12.474Z",
+        "stage": "running",
+        "message": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/villa-lumen-vt-20261110/web-engine-worker.js?v=8f6218cc77dfd80f081e12155eb2f156ed9f1ebc1b90d8bd396a5bcde7fa5402:295:45",
+        "kind": "engine-worker"
+      }
+    ],
+    "frames": 1,
+    "localContentRuntime": {
+      "memoryLimit": 16777216,
+      "memoryBytes": 0,
+      "peakMemoryBytes": 16777216,
+      "memoryHits": 1850,
+      "diskReads": 1273,
+      "diskReadBytes": 999368314,
+      "downloadedBytes": 0,
+      "downloads": 0,
+      "persistentHits": 2,
+      "evictions": 920,
+      "diskEvictions": 0,
+      "activeReads": 1,
+      "peakActiveReads": 4,
+      "verification": "sampled",
+      "hashedBytes": 0,
+      "hashMs": 0,
+      "downloadMs": 0,
+      "diskReadMs": 1743.004999961704,
+      "activeRequests": 0,
+      "bulkFiles": 1303,
+      "bulkMemfsBytes": 0
+    },
+    "surface": {
+      "width": 1472,
+      "height": 828
+    }
+  },
+  "dumps": [
+    {
+      "file": "C:\\Users\\wap80\\AppData\\Local\\Microsoft\\Edge\\User Data\\Crashpad\\reports\\8ee36a1e-ab4f-42bf-9e04-e2c6b7fb3745.dmp",
+      "sha256": "9e066cbb228bbf63e0d9cbf0518a827395317fc9f489df99627abd1fd4d25693",
+      "timestamp": "2026-11-10T08:07:12.000Z",
+      "threadId": 15456,
+      "exceptionCode": "0xc000001d",
+      "address": "0x7ffd11ee1b07",
+      "parameters": [],
+      "module": {
+        "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\157.0.4341.42\\dxcompiler.dll",
+        "base": "0x7ffd10fa0000",
+        "size": 20570112,
+        "offset": "0xf41b07"
+      },
+      "boundary": "Exception location only. Does not identify root cause, unwind a stack, or diagnose hardware health."
+    },
+    {
+      "file": "C:\\Users\\wap80\\AppData\\Local\\Microsoft\\Edge\\User Data\\Crashpad\\reports\\78d08272-2a57-4105-9359-af2c1001865a.dmp",
+      "sha256": "5ef5758852f788e2021445ea120de12249174cce65e83e496fa860da96d881ce",
+      "timestamp": "2026-11-10T08:08:10.000Z",
+      "threadId": 31844,
+      "exceptionCode": "0xc000001d",
+      "address": "0x7ffd11ee1b07",
+      "parameters": [],
+      "module": {
+        "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\157.0.4341.42\\dxcompiler.dll",
+        "base": "0x7ffd10fa0000",
+        "size": 20570112,
+        "offset": "0xf41b07"
+      },
+      "boundary": "Exception location only. Does not identify root cause, unwind a stack, or diagnose hardware health."
+    }
+  ],
+  "unchanged": {
+    "UEWebEngineThreads.wasm": "9d0f41e704edd1cde26487c1328af85ccf3273f62984c072f887e9ebcc7a2250",
+    "UEWebEngineThreads.js": "fe220f0bcd7e99e273ac17a734261094a4caf3aef2103b4c244023ee426b9451",
+    "content.bin": "2d8701f5993955e76c58e4d88ee429555cd22190161d8b11855c5be65d94b3da",
+    "config-files.json": "bd8f858f96b72e1ed7d97193e1d2c1ce96f13296b0230cd97b0898578c6990d8"
+  },
+  "package": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-distance-fields-threads-package-results.json",
+    "sha256": "dcf6d470f6f2dbd5864a6cf2a277b2c1e99d287845a9ca53a817056c24c71d7d"
+  },
+  "prewarm": {
+    "mode": "recorded",
+    "concurrency": 2,
+    "modules": 321,
+    "pipelines": 326,
+    "capture": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-capture-20261110\\result.json",
+      "sha256": "4760f027f100a6178488233b48253f61dd51fb06397315dde65250d618541823"
+    },
+    "corpus": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-capture-20261110\\0-corpus.json",
+      "sha256": "f692191ffa2de14ebac78f311ca9d26ed81498acaa3fa48c72b005c4fd2d4fe8"
+    },
+    "pack": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-lumen-vt-20261110-v3\\pipeline-prewarm.json",
+      "sha256": "c92bb6e1e57c11efeaefbf461a7769834f41cb9f38034c3db264b5e0548a8d06"
+    },
+    "engineArguments": [
+      "-webgpu",
+      "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+    ],
+    "files": [
+      "web-engine-host.js",
+      "web-engine-worker.js",
+      "web-content-worker.js",
+      "web-pipeline-prewarm.js",
+      "pipeline-prewarm.json"
+    ]
+  },
+  "candidateAndReleaseIdenticalFiles": 12,
+  "startup": [
+    {
+      "browser": "edge",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-edge-20261110\\result.json",
+        "sha256": "6171221d872c1a7f1d9169c97d9499e4c3bb75f332a7a40698e450013a7b7797"
+      },
+      "width": 1258,
+      "height": 552,
+      "dpr": 1.5,
+      "plain": true,
+      "affinity": 0,
+      "runs": [
+        {
+          "index": 0,
+          "elapsedMs": 17257,
+          "errors": [],
+          "pipelineFailureMessages": 0,
+          "log": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-edge-20261110\\0-ours.log",
+            "sha256": "657abba469d33e8b54317659b9406b3799ce726552579e7ce6de1f2e5f07cce0"
+          },
+          "maxTravelCm": 213.18584591061207,
+          "maxTurnDegrees": 129.48705577850342,
+          "prewarm": {
+            "mode": "active",
+            "start": 6.474999999627471,
+            "ready": true,
+            "adopted": true,
+            "concurrency": 2,
+            "counts": {
+              "modules": 371,
+              "layouts": 481,
+              "ready": 319,
+              "hits": 361,
+              "misses": 0
+            },
+            "completed": 5777.644999999553
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          }
+        },
+        {
+          "index": 1,
+          "elapsedMs": 12594,
+          "errors": [],
+          "pipelineFailureMessages": 0,
+          "log": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-edge-20261110\\1-ours.log",
+            "sha256": "6b46f1ace88e26890eb24bb52856e722f4a10aa8eb4fb3a1ce221fd3c6dc3a9b"
+          },
+          "maxTravelCm": 213.16908089704992,
+          "maxTurnDegrees": 129.48705959320068,
+          "prewarm": {
+            "mode": "active",
+            "start": 5.280000001192093,
+            "ready": true,
+            "adopted": true,
+            "concurrency": 2,
+            "counts": {
+              "modules": 371,
+              "layouts": 481,
+              "ready": 319,
+              "hits": 350,
+              "misses": 0
+            },
+            "completed": 5839.710000000894
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          }
+        },
+        {
+          "index": 2,
+          "elapsedMs": 12359,
+          "errors": [],
+          "pipelineFailureMessages": 0,
+          "log": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-edge-20261110\\2-ours.log",
+            "sha256": "f93b81cb18932d1ab7030dcc03b09ae0666b82543ba4acb3d5214d0767fa5c63"
+          },
+          "maxTravelCm": 213.2234913354786,
+          "maxTurnDegrees": 129.4870543479919,
+          "prewarm": {
+            "mode": "active",
+            "start": 5.5,
+            "ready": true,
+            "adopted": true,
+            "concurrency": 2,
+            "counts": {
+              "modules": 371,
+              "layouts": 481,
+              "ready": 319,
+              "hits": 353,
+              "misses": 0
+            },
+            "completed": 5541.3149999994785
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          }
+        }
+      ]
+    },
+    {
+      "browser": "chrome",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-chrome-20261110\\result.json",
+        "sha256": "7a94871be53dd93b5b9bc0c8cb7f2cee0fd9bfffdfb2582b9762f1e61267aa9f"
+      },
+      "width": 1258,
+      "height": 552,
+      "dpr": 1.5,
+      "plain": true,
+      "affinity": 0,
+      "runs": [
+        {
+          "index": 0,
+          "elapsedMs": 16215,
+          "errors": [],
+          "pipelineFailureMessages": 0,
+          "log": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-chrome-20261110\\0-ours.log",
+            "sha256": "15d1e6d537e23d7c1252a30fa35628299c1324e73376f1c2f9db472e124368f9"
+          },
+          "maxTravelCm": 213.21557950453774,
+          "maxTurnDegrees": 129.48705291748047,
+          "prewarm": {
+            "mode": "active",
+            "start": 5.5849999990314245,
+            "ready": true,
+            "adopted": true,
+            "concurrency": 2,
+            "counts": {
+              "modules": 371,
+              "layouts": 481,
+              "ready": 319,
+              "hits": 350,
+              "misses": 0
+            },
+            "completed": 6052.25
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          }
+        },
+        {
+          "index": 1,
+          "elapsedMs": 12352,
+          "errors": [],
+          "pipelineFailureMessages": 0,
+          "log": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-chrome-20261110\\1-ours.log",
+            "sha256": "1bdcdc47f5fb20fb62113ce621c4e6d237a439e7f037a7f99e2a63d18f58082c"
+          },
+          "maxTravelCm": 213.1694556596066,
+          "maxTurnDegrees": 129.48705387115479,
+          "prewarm": {
+            "mode": "active",
+            "start": 5.370000001043081,
+            "ready": true,
+            "adopted": true,
+            "concurrency": 2,
+            "counts": {
+              "modules": 371,
+              "layouts": 481,
+              "ready": 319,
+              "hits": 361,
+              "misses": 0
+            },
+            "completed": 5441.179999999702
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          }
+        },
+        {
+          "index": 2,
+          "elapsedMs": 12208,
+          "errors": [],
+          "pipelineFailureMessages": 0,
+          "log": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-lumen-vt-repair-chrome-20261110\\2-ours.log",
+            "sha256": "1a62f3ed4f17c6759e66b5c51213dfd8a806d374ec923c742a1cf940ccdbdbcb"
+          },
+          "maxTravelCm": 213.18672727417058,
+          "maxTurnDegrees": 129.48705577850342,
+          "prewarm": {
+            "mode": "active",
+            "start": 5.66499999910593,
+            "ready": true,
+            "adopted": true,
+            "concurrency": 2,
+            "counts": {
+              "modules": 371,
+              "layouts": 481,
+              "ready": 319,
+              "hits": 353,
+              "misses": 0
+            },
+            "completed": 5366.0999999996275
+          },
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          }
+        }
+      ]
+    }
+  ],
+  "scene": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-v3-scene.json",
+      "sha256": "53d46a02ce60fc895086c15f078485eeefeabf2ccbc56f986bcf46f35d3b9fdf"
+    },
+    "pass": true,
+    "frames": 2330,
+    "lumenDispatches": {
+      "gi": 51276,
+      "reflections": 9324
+    },
+    "settings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 1,
+      "reflections": 1,
+      "virtualShadows": 1,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1,
+      "virtualTextures": 1,
+      "virtualTexturePathActive": true,
+      "virtualShadowPathActive": true
+    },
+    "prewarm": {
+      "mode": "active",
+      "start": 7.339999999850988,
+      "ready": true,
+      "adopted": true,
+      "concurrency": 2,
+      "counts": {
+        "modules": 386,
+        "layouts": 505,
+        "ready": 319,
+        "hits": 338,
+        "misses": 11
+      },
+      "completed": 5711.714999999851
+    },
+    "precache": {
+      "enabled": false,
+      "active": 0,
+      "filePrecompileTasks": 0
+    },
+    "errors": [],
+    "gpuErrors": [],
+    "gpuLosses": [],
+    "screenshots": [
+      {
+        "name": "spawn",
+        "screenshot": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-v3-scene-spawn.png",
+          "sha256": "67c18591c6f03d22211b4386390a66cfd3059b7c3e8c66708d05bf9a6f079f55"
+        }
+      },
+      {
+        "name": "interior",
+        "screenshot": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-v3-scene-interior.png",
+          "sha256": "7f60e3db5673850240386a4b89d02837ede3125ff97b82d1effb06df1c4525b8"
+        }
+      },
+      {
+        "name": "kitchen",
+        "screenshot": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-v3-scene-kitchen.png",
+          "sha256": "c767d5c3b70b7dd31bc2c7504ea8c5e4e465481e9a0324854fb89d81fa37f0d1"
+        }
+      },
+      {
+        "name": "living",
+        "screenshot": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-v3-scene-living.png",
+          "sha256": "87ae2e997e507d02139f899ff8e3c6e72f0c9604e5ba2708654020f467fc911a"
+        }
+      },
+      {
+        "name": "return",
+        "screenshot": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-v3-scene-return.png",
+          "sha256": "248b92469d2a1f0497894ac0aea31b975260ddb96fd45d19435480b9293eb675"
+        }
+      }
+    ],
+    "virtualTextureAssets": 0,
+    "virtualTextureResources": 0
+  },
+  "glass": {
+    "report": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-lumen-vt-20261110-v3-glass.json",
+      "sha256": "b5faee9ee16feaf4ebf259ea6ed5c2ac64175d97eccdefa0788dd6db9c125fa9"
+    },
+    "pass": true,
+    "cases": [
+      {
+        "region": {
+          "name": "cabinet-glass",
+          "x": 465,
+          "y": 350,
+          "width": 25,
+          "height": 105
+        },
+        "web": {
+          "mean": [
+            47.40571428571429,
+            39.096380952380954,
+            33.576
+          ],
+          "chromaticity": [
+            0.39479069177202136,
+            0.3255912818641836,
+            0.279618026363795
+          ]
+        },
+        "native": {
+          "mean": [
+            47.605714285714285,
+            39.20990476190476,
+            33.51161904761905
+          ],
+          "chromaticity": [
+            0.39563539427402733,
+            0.32586058969350246,
+            0.27850401603247016
+          ]
+        },
+        "difference": 0.001114010331324855,
+        "pass": true
+      },
+      {
+        "region": {
+          "name": "window-glass",
+          "x": 844,
+          "y": 480,
+          "width": 26,
+          "height": 35
+        },
+        "web": {
+          "mean": [
+            101.8967032967033,
+            100.42857142857143,
+            100.36703296703297
+          ],
+          "chromaticity": [
+            0.3366345979306589,
+            0.33178435287711017,
+            0.3315810491922309
+          ]
+        },
+        "native": {
+          "mean": [
+            107.54285714285714,
+            105.48131868131868,
+            105.61318681318681
+          ],
+          "chromaticity": [
+            0.33750862187887987,
+            0.3310387639674438,
+            0.3314526141536764
+          ]
+        },
+        "difference": 0.0008740239482209478,
+        "pass": true
+      }
+    ]
+  },
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\package-web-project.cjs",
+      "sha256": "1c6caca6aef6ecefd2ab74992e10638529220eb6a4727ac8923745e2bbab1236"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\package-villa-prewarm.cjs",
+      "sha256": "8aee3625fcad5f6baad557fb169213887fa8735f63c3b833eebc5f3f5d6d223f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-pipeline-prewarm-package.cjs",
+      "sha256": "b335c26755eb2c4ae6214d7659131fd74dacd6529e2da82bf6a57860283ca4c7"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-villa-startup.cjs",
+      "sha256": "2765b9b31c58daa5fff36ee875cf663254f6a12f1ce28dcc649ac2023b723048"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\probe-web-virtual-scene.cjs",
+      "sha256": "22ba39d3b7399eaab63b0111590ea375e097ba47c1c0a011952db0fc25697651"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-prewarm-packaging.cjs",
+      "sha256": "dbdd8449d932484fb5d5f5144d653a0ae8341d9cef132901f04f6d5f1bea06d7"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-pipeline-prewarm.js",
+      "sha256": "4c011646359fd16698cdafe2e443396abdaaac58993e334e6cf869abd9229469"
+    }
+  ],
+  "boundary": "Six default-affinity starts with 20 seconds of keyboard/mouse input each passed; this does not prove the native DXC crash root cause is fixed. The broader five-view route compiled eleven uncaptured pipelines on demand. Rendering configuration and binaries are unchanged. No actual VT streaming assets are present."
+}

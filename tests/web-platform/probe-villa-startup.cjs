@@ -10,6 +10,11 @@ const browser = option('browser') || 'chrome';
 assert(['chrome', 'msedge'].includes(browser) && (!affinity || browser === 'chrome'));
 const selected = option('engine');
 const folder = option('folder');
+const direct = process.argv.includes('--direct');
+const width = Number(option('width') || 1600), height = Number(option('height') || 1000);
+const dpr = Number(option('dpr') || 1.5);
+assert(!direct || (folder && selected === 'ours'));
+assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160 && dpr >= 1 && dpr <= 3);
 const cvars = option('cvars') || '';
 assert(tag && /^[a-z0-9-]+$/.test(tag) && Number.isInteger(rounds) && rounds > 0);
 assert(!selected || ['ours', 'official'].includes(selected));
@@ -21,7 +26,8 @@ fs.mkdirSync(temporary, {recursive: true}); process.env.TEMP = process.env.TMP =
 const directory = path.join(__dirname, 'results', 'villa-startup-' + tag);
 assert(!fs.existsSync(directory), 'Keep prior measurements; use a new tag');
 fs.mkdirSync(directory);
-const report = {date: new Date().toISOString(), profile, affinity, rounds, cvars, folder, browser, runs: []};
+const report = {date: new Date().toISOString(), profile, affinity, rounds, cvars, folder, browser,
+  direct, width, height, dpr, runs: []};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 const recorder = fs.readFileSync(path.join(__dirname, 'web-startup-probe.js'), 'utf8');
 const candidate = option('worker');
@@ -43,7 +49,7 @@ let context;
     const browserProfile = path.join(__dirname, 'build/browser-profiles/startup-' + tag);
     context = await chromium.launchPersistentContext(browserProfile, {
       channel: browser,
-      headless: false, viewport: {width: 1600, height: 1000}, deviceScaleFactor: 1.5,
+      headless: false, viewport: {width, height}, deviceScaleFactor: dpr,
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']
     });
@@ -91,10 +97,11 @@ let context;
         run = {index, engine, errors: [], samples: []}; report.runs.push(run);
         console.log(JSON.stringify({index, engine, stage: 'starting'}));
         const began = Date.now();
-        await page.goto('http://127.0.0.1:8766/villa-engine-comparison.html' +
+        await page.goto(direct ? `http://127.0.0.1:8765/build/${folder}/index.html` :
+          'http://127.0.0.1:8766/villa-engine-comparison.html' +
           (noLumen ? '?lighting=off' : '') + '#' + engine);
-        await page.waitForSelector('iframe');
-        const frame = await (await page.locator('iframe').elementHandle()).contentFrame();
+        if (!direct) await page.waitForSelector('iframe');
+        const frame = direct ? page : await (await page.locator('iframe').elementHandle()).contentFrame();
         while (Date.now() - began < 120000) {
           const sample = await frame.evaluate(() => ({
             elapsed: performance.now(), frames: globalThis.__webEngineFrames,

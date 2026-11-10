@@ -5,6 +5,7 @@ const {metadata, audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
 const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
+const {prepareRecordedPrewarm, installRecordedPrewarm} = require('./web-pipeline-prewarm-package.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
@@ -26,6 +27,9 @@ const outputFolder = process.argv.find(value => value.startsWith('--output-folde
   id + suffix + (parallelRecording ? '-parallel-recording' : '');
 assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outputFolder));
 const output = path.join(__dirname, 'build', outputFolder);
+const pipelineCorpus = process.argv.find(value => value.startsWith('--pipeline-corpus='))?.slice(18);
+const capturePrewarm = process.argv.includes('--capture-prewarm');
+const legacyPrecache = process.argv.includes('--legacy-precache');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
@@ -37,12 +41,17 @@ const report = {date: new Date().toISOString(), pass: false, id, output, archite
       path.join(__dirname, name))].map(audit), fullNormalUBTBuildVerified: false,
   completeUEScene: false};
 try {
+  const acceptedDefaults = threads && !trace && !process.argv.includes('--legacy-defaults');
+  assert([!!pipelineCorpus, capturePrewarm, legacyPrecache].filter(Boolean).length <= 1,
+    'Select one startup mode');
+  assert(!acceptedDefaults || pipelineCorpus || capturePrewarm || legacyPrecache,
+    'Desktop releases require --pipeline-corpus=<capture>; use --capture-prewarm for a capture base or --legacy-precache for diagnostics');
+  assert(!pipelineCorpus || acceptedDefaults, 'Recorded prewarm requires an ordinary desktop threaded package');
   const buildOption = process.argv.find(value => value.startsWith('--build-report='))?.slice(15);
   const buildFile = buildOption ? path.resolve(buildOption) : path.join(directory, `web-engine-full${trace ? '-thread-trace' : threads ? '-thread' : ''}-build-results.json`);
   const stageFile = path.join(directory, `${stagePrefix}-stage-results.json`);
   const prepareFile = path.join(directory, `web-project-${id}-prepare-results.json`);
   const build = read(buildFile), stage = read(stageFile), prepared = read(prepareFile);
-  const acceptedDefaults = threads && !trace && !process.argv.includes('--legacy-defaults');
   if (acceptedDefaults) assert(build.lowerMemory64, 'Default desktop runtime requires lowered memory64; rebuild or select --legacy-defaults');
   assert.equal(build.trace === true, trace, 'Trace package must use the matching diagnostic runtime');
   assert(build.pass && build.buildSucceeded && build.exitCode === 0 &&
@@ -118,7 +127,25 @@ try {
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
     report.engineArguments.push('-WebPSOPrecacheTest');
   }
-  report.products = ['index.html', ...copies.map(([, name]) => name)].map(name => audit(path.join(output, name)));
+  const extraFiles = [];
+  if (pipelineCorpus) {
+    report.startupPrewarm = installRecordedPrewarm(output, prepareRecordedPrewarm(output, pipelineCorpus));
+    report.engineArguments = report.startupPrewarm.engineArguments;
+    extraFiles.push(...report.startupPrewarm.files);
+    report.sourceFiles.push(...['web-pipeline-prewarm-package.cjs', 'web-pipeline-prewarm.js'].map(name =>
+      audit(path.join(__dirname, name))));
+  } else if (capturePrewarm) {
+    const file = path.join(output, 'index.html');
+    const content = fs.readFileSync(file, 'utf8'), args = content.match(/arguments: (\[[^\n]+\]),/);
+    assert(args);
+    report.engineArguments = JSON.parse(args[1]).filter(arg => arg !== '-WebPSOPrecacheTest');
+    fs.writeFileSync(file, content.replace(args[0], 'arguments: ' + JSON.stringify(report.engineArguments) + ','));
+    report.startupPrewarm = {mode: 'capture-only', releaseReady: false};
+  } else if (legacyPrecache) {
+    report.startupPrewarm = {mode: 'legacy-speculative-diagnostic', releaseReady: false};
+  }
+  report.products = [...new Set(['index.html', ...copies.map(([, name]) => name), ...extraFiles])]
+    .map(name => audit(path.join(output, name)));
   report.products.push(writeVersions(output, report.products));
   report.totalBytes = report.products.reduce((total, item) => total + fs.statSync(item.file).size, 0);
   report.fullNormalUBTBuildVerified = true;

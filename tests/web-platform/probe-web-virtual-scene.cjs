@@ -12,6 +12,8 @@ const tag = argument('tag') || 'virtual-scene';
 const fixture = process.argv.includes('--vt-fixture');
 const requireLumen = process.argv.includes('--require-lumen');
 const requirePrecache = process.argv.includes('--require-precache');
+const requireRecordedPrewarm = process.argv.includes('--require-recorded-prewarm');
+assert(!(requirePrecache && requireRecordedPrewarm), 'Select the actual startup mode being tested');
 const lumenShaders = {}, lumenSources = [];
 for (const directory of (argument('lumen-input') || '').split(',').filter(Boolean)) {
   for (const name of fs.readdirSync(directory)) {
@@ -45,7 +47,7 @@ async function bounded(promise, milliseconds = 10000) {
 }
 const report = {date: new Date().toISOString(), pass: false, virtualTextureStreamingCovered: false,
   desktopVisualParityAccepted: false, source: audit(__filename), folder, fixture, viewTimeout,
-  requireLumen, requirePrecache, lumenShaders, lumenSources, views: [], viewWaits: [], errors: []};
+  requireLumen, requirePrecache, requireRecordedPrewarm, lumenShaders, lumenSources, views: [], viewWaits: [], errors: []};
 const packageReportFile = argument('package-report') ||
   path.join(__dirname, 'results', `web-project-${folder}-package-results.json`);
 if (argument('package-report')) {
@@ -185,7 +187,8 @@ function observe(lumenEntries) {
     page.on('console', message => {
       const text = message.text();
       log.write(text + '\n');
-      if (/Assertion failed:|Fatal error:/.test(text)) report.errors.push(text);
+      if (/Assertion failed:|Fatal error:|Failed to create (?:compute|graphics) pipeline/.test(text))
+        report.errors.push(text);
     });
     page.on('pageerror', error => report.errors.push(error.stack || error.message));
     report.url = `http://127.0.0.1:8765/build/${folder}/index.html`;
@@ -210,6 +213,7 @@ function observe(lumenEntries) {
       view: globalThis.__webRenderView, camera: globalThis.__webDefaultCamera,
       threads: globalThis.__webEngineThreads, gpu: globalThis.__virtualSceneGPU,
       precache: globalThis.__webPSOPrecache,
+      prewarm: globalThis.__webPipelinePrewarm,
     }));
     report.initial = await snapshot();
     assert(report.initial.frames >= 60, 'Scene did not reach sixty frames');
@@ -272,6 +276,12 @@ function observe(lumenEntries) {
     report.final = await snapshot();
     if (requirePrecache)
       assert.equal(report.final.precache?.enabled, true, 'PSO precaching is not enabled');
+    if (requireRecordedPrewarm) {
+      assert.equal(report.final.precache?.enabled, false, 'Legacy speculative precaching must stay disabled');
+      assert(report.final.prewarm?.ready && report.final.prewarm.adopted &&
+        report.final.prewarm.counts.ready > 0 && report.final.prewarm.counts.hits > 0,
+        'Recorded pipelines were not prewarmed and reused by the engine');
+    }
     report.lumenDispatches = {gi: 0, reflections: 0};
     for (const [entry, count] of Object.entries(report.final.gpu.lumenDispatches))
       report.lumenDispatches[lumenShaders[entry].kind] += count;
