@@ -4,7 +4,8 @@ const diskLimit = 1024 * 1024 * 1024;
 const stats = {memoryLimit, memoryBytes: 0, peakMemoryBytes: 0, memoryHits: 0,
   diskReads: 0, diskReadBytes: 0, downloadedBytes: 0, downloads: 0,
   persistentHits: 0, evictions: 0, diskEvictions: 0, activeReads: 0, peakActiveReads: 0,
-  verification: 'sampled', hashedBytes: 0, hashMs: 0, downloadMs: 0, diskReadMs: 0};
+  verification: 'sampled', hashedBytes: 0, hashMs: 0, downloadMs: 0, diskReadMs: 0,
+  quotaRetries: 0, quotaFailures: 0, reclaimedBytes: 0};
 const assets = new Map(), blocks = new Map(), pendingBlocks = new Map();
 const queue = [];
 let directory, baseUrl, active = 0, fullVerification = false;
@@ -18,6 +19,17 @@ const hash = async bytes => {
 };
 const markerName = value => value + '.json';
 const lockName = value => 'ue-web-local-' + value;
+
+async function removeEntry(name) {
+  try { await directory.removeEntry(name); }
+  catch (error) { if (error.name !== 'NotFoundError') throw error; }
+}
+
+// Call only while holding this asset's exclusive lock.
+async function discard(value) {
+  await removeEntry(markerName(value));
+  await removeEntry(value + '.bin');
+}
 
 async function exists(info) {
   try {
@@ -33,12 +45,13 @@ async function download(info) {
   const started = performance.now();
   const response = await fetch(new URL(info.url + '?v=' + info.sha256, baseUrl));
   if (!response.ok) throw new Error(`Local content download: HTTP ${response.status} (${info.url})`);
-  const handle = await directory.getFileHandle(info.sha256 + '.bin', {create: true});
-  const writer = await handle.createWritable();
   const reader = response.body.getReader();
+  let writer, marker;
   let offset = 0, used = 0, received = 0, previousProgress = 0;
   let buffer = new Uint8Array(Math.min(4 * 1024 * 1024, info.size));
   try {
+    const handle = await directory.getFileHandle(info.sha256 + '.bin', {create: true});
+    writer = await handle.createWritable();
     for (;;) {
       const {done, value} = await reader.read();
       if (done) break;
@@ -72,7 +85,7 @@ async function download(info) {
     }
     if (used || offset !== info.size) throw new Error('Incomplete local content');
     await writer.close();
-    const marker = await (await directory.getFileHandle(markerName(info.sha256), {create: true})).createWritable();
+    marker = await (await directory.getFileHandle(markerName(info.sha256), {create: true})).createWritable();
     await marker.write(JSON.stringify({sha256: info.sha256, size: info.size, used: Date.now(),
       verification: stats.verification}));
     await marker.close();
@@ -80,27 +93,40 @@ async function download(info) {
     stats.downloadMs += performance.now() - started;
   } catch (error) {
     await reader.cancel().catch(() => {});
-    await writer.abort().catch(() => {});
+    if (writer) await writer.abort().catch(() => {});
+    if (marker) await marker.abort().catch(() => {});
+    await discard(info.sha256);
     throw error;
   } finally { reader.releaseLock(); }
 }
 
-async function trimDisk() {
-  const items = [];
+async function trimDisk(quotaRecovery = false) {
+  const entries = new Map();
   for await (const [name, handle] of directory.entries()) {
-    if (!/^[a-f0-9]{64}\.json$/.test(name)) continue;
-    try { items.push(JSON.parse(await (await handle.getFile()).text())); } catch {}
+    const match = /^([a-f0-9]{64})\.(json|bin)$/.exec(name);
+    if (!match || handle.kind !== 'file') continue;
+    const item = entries.get(match[1]) || {sha256: match[1], size: 0, used: 0};
+    entries.set(match[1], item);
+    try {
+      const file = await handle.getFile();
+      if (match[2] === 'bin') item.size = file.size;
+      else {
+        const marker = JSON.parse(await file.text());
+        if (Number.isFinite(marker.used)) item.used = marker.used;
+      }
+    } catch (error) { if (error.name !== 'NotFoundError' && !(error instanceof SyntaxError)) throw error; }
   }
+  const items = [...entries.values()];
   let bytes = items.reduce((sum, item) => sum + item.size, 0);
   for (const item of items.sort((a, b) => a.used - b.used)) {
-    if (bytes <= diskLimit) break;
+    if (!quotaRecovery && bytes <= diskLimit) break;
     if (assets.has(item.sha256)) continue;
     await navigator.locks.request(lockName(item.sha256), {ifAvailable: true}, async lock => {
       if (!lock) return;
-      await directory.removeEntry(markerName(item.sha256));
-      await directory.removeEntry(item.sha256 + '.bin');
+      await discard(item.sha256);
       bytes -= item.size;
       ++stats.diskEvictions;
+      stats.reclaimedBytes += item.size;
     });
   }
 }
@@ -112,21 +138,41 @@ async function asset(info) {
       !info.blocks.every(value => /^[a-f0-9]{64}$/.test(value)))
     throw new Error('Invalid local content manifest');
   if (!assets.has(info.sha256)) assets.set(info.sha256, (async () => {
+    let opened;
     await navigator.locks.request(lockName(info.sha256), async () => {
       if (await exists(info)) ++stats.persistentHits;
-      else await download(info);
+      else {
+        try { await download(info); }
+        catch (error) {
+          if (error.name !== 'QuotaExceededError') throw error;
+          ++stats.quotaRetries;
+          // Large packs may exceed the normal idle-cache budget. On quota
+          // failure reclaim all unused versions, including interrupted files.
+          // Active assets in this worker and shared leases in other tabs survive.
+          await trimDisk(true);
+          try { await download(info); }
+          catch (retryError) {
+            if (retryError.name === 'QuotaExceededError') {
+              ++stats.quotaFailures;
+              throw new Error(`Insufficient browser storage for ${info.url} (${info.size} bytes) after reclaiming unused content`);
+            }
+            throw retryError;
+          }
+        }
+      }
+      // Queue the shared lease before releasing the exclusive lock so another
+      // worker's quota cleanup cannot delete the file between download and use.
+      let ready, failed;
+      opened = new Promise((resolve, reject) => { ready = resolve; failed = reject; });
+      navigator.locks.request(lockName(info.sha256), {mode: 'shared'}, async () => {
+        try { ready(await (await directory.getFileHandle(info.sha256 + '.bin')).getFile()); }
+        catch (error) { failed(error); return; }
+        await new Promise(() => {});
+      }).catch(failed);
     });
-    // Hold a shared lease while this worker uses the immutable file; old-version cleanup cannot delete it.
-    let ready, failed;
-    const opened = new Promise((resolve, reject) => { ready = resolve; failed = reject; });
-    navigator.locks.request(lockName(info.sha256), {mode: 'shared'}, async () => {
-      try { ready(await (await directory.getFileHandle(info.sha256 + '.bin')).getFile()); }
-      catch (error) { failed(error); return; }
-      await new Promise(() => {});
-    }).catch(failed);
     const file = await opened;
     return {info, file};
-  })());
+  })().catch(error => { assets.delete(info.sha256); throw error; }));
   return assets.get(info.sha256);
 }
 

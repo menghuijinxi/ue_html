@@ -7,6 +7,8 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInterface.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Misc/Base64.h"
 #include "Rendering/NaniteResources.h"
 #include "Rendering/NaniteWebMaterial.h"
 #include "Rendering/NaniteWebRaster.h"
@@ -19,12 +21,15 @@
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
 #include "Serialization/JsonSerializer.h"
+#include "UObject/Package.h"
 #include <emscripten.h>
 
 namespace
 {
 UStaticMesh* Meshes[3]{};
 UStaticMeshComponent* Component;
+UMaterialInstanceDynamic* WPOMaterial;
+bool WPO = false;
 TWeakObjectPtr<ACameraActor> Camera;
 TWeakObjectPtr<AActor> SavedTarget;
 TWeakObjectPtr<APlayerController> Controller;
@@ -37,6 +42,12 @@ TSharedPtr<FJsonObject> Report;
 TArray<TSharedPtr<FJsonValue>> History;
 const TCHAR* CVarNames[] = {TEXT("r.Nanite.WebResidentSceneDepth"), TEXT("r.Nanite.WebResidentGBuffer"), TEXT("r.Nanite.WebMaterialGraphs"), TEXT("r.Nanite.WebHZB"), TEXT("r.Nanite.MaxPixelsPerEdge"), TEXT("r.Nanite.Streaming.QualityScale.MinQuality"), TEXT("r.AntiAliasingMethod")};
 float SavedCVars[7];
+TArray<TSharedPtr<FJsonValue>> Matrix(const FMatrix& M)
+{
+    TArray<TSharedPtr<FJsonValue>> Values;
+    for (int Y = 0; Y < 4; ++Y) for (int X = 0; X < 4; ++X) Values.Add(MakeShared<FJsonValueNumber>(M.M[Y][X]));
+    return Values;
+}
 void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const Nanite::FWebCompositionSnapshot& Snapshot)
 {
     if (!Requested || Report || !Saved.Cull || Saved.Cull->Entries.Num() != 1) return;
@@ -54,6 +65,13 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
     if (Step != 1 && ++Settled < 100) return;
     Requested = false; Report = MakeShared<FJsonObject>();
     Report->SetNumberField(TEXT("step"), Step); Report->SetNumberField(TEXT("asset"), Active);
+    Report->SetBoolField(TEXT("wpo"), WPO); Report->SetBoolField(TEXT("evaluateWPO"), Entry.EvaluateWPO);
+    Report->SetBoolField(TEXT("hasVelocity"), Snapshot.HasVelocity); Report->SetBoolField(TEXT("cameraCut"), Snapshot.CameraCut);
+    Report->SetArrayField(TEXT("worldToClip"), Matrix(Saved.Cull->View->ViewMatrices.GetViewProjectionMatrix()));
+    Report->SetArrayField(TEXT("previousWorldToClip"), Matrix(Snapshot.PreviousWorldToClip));
+    Report->SetArrayField(TEXT("localToWorld"), Matrix(Entry.LocalToWorld));
+    Report->SetNumberField(TEXT("viewWidth"), Saved.Raster.Rect.Width());
+    Report->SetNumberField(TEXT("viewHeight"), Saved.Raster.Rect.Height());
     Report->SetNumberField(TEXT("width"), Snapshot.Size.X); Report->SetNumberField(TEXT("height"), Snapshot.Size.Y);
     Report->SetNumberField(TEXT("runtimeID"), Resource.RuntimeResourceID);
     Report->SetNumberField(TEXT("residentClusters"), Resource.NumResidentClusters); Report->SetNumberField(TEXT("totalClusters"), Resource.NumClusters);
@@ -70,13 +88,29 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
     Foreign.StreamingPageOwners = Graph.CreateSRV(CreateStructuredBuffer(Graph, TEXT("Nanite.Web.ForeignPageOwners"), ForeignOwners));
     Nanite::FWebHierarchyCullResult RejectedPages;
     check(Nanite::AddWebResidentHierarchyCullPasses(Graph, Foreign, RejectedPages));
-    Bytes = PixelBytes + OwnerBytes + RequestBytes + 32;
+    const uint32 GeometryOffset = PixelBytes + OwnerBytes + RequestBytes + 32;
+    const uint32 RecordBytes = WPO ? Saved.Raster.VisibleClusters->Desc.GetSize() : 0;
+    const uint32 StreamBytes = WPO ? Entry.Input.MaxStreamingPages * (1u << 17) : 0;
+    const uint32 RootBytes = WPO ? Entry.Input.NumRootPages * (1u << 15) : 0;
+    Bytes = GeometryOffset + RecordBytes + StreamBytes + RootBytes;
     auto* Combined = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Bytes), TEXT("Nanite.Web.StreamingEvidence"));
     AddCopyBufferPass(Graph, Combined, 0, Snapshot.Buffer, 0, PixelBytes);
     AddCopyBufferPass(Graph, Combined, PixelBytes, Entry.Input.StreamingPageOwners->Desc.Buffer, 0, OwnerBytes);
     AddCopyBufferPass(Graph, Combined, PixelBytes + OwnerBytes, Entry.Input.StreamingRequests, 0, RequestBytes);
     AddCopyBufferPass(Graph, Combined, PixelBytes + OwnerBytes + RequestBytes, Entry.Result.State, 0, 16);
     AddCopyBufferPass(Graph, Combined, PixelBytes + OwnerBytes + RequestBytes + 16, RejectedPages.State, 0, 16);
+    if (WPO)
+    {
+        // Preserve the actual LOD triangles and page contents from this frame.
+        // The CPU oracle decodes these bytes independently, rather than using
+        // hardware depth as the analytic material interpolation surface.
+        AddCopyBufferPass(Graph, Combined, GeometryOffset, Saved.Raster.VisibleClusters, 0, RecordBytes);
+        AddCopyBufferPass(Graph, Combined, GeometryOffset + RecordBytes, Entry.Input.ClusterPageData->Desc.Buffer, 0, StreamBytes);
+        const uint32 RootOffset = StreamBytes + (Entry.Input.FirstRootPage - Entry.Input.MaxStreamingPages) * (1u << 15);
+        AddCopyBufferPass(Graph, Combined, GeometryOffset + RecordBytes + StreamBytes, Entry.Input.ClusterPageData->Desc.Buffer, RootOffset, RootBytes);
+    }
+    Report->SetNumberField(TEXT("recordBytes"), RecordBytes); Report->SetNumberField(TEXT("streamBytes"), StreamBytes);
+    Report->SetNumberField(TEXT("rootBytes"), RootBytes);
     Report->SetNumberField(TEXT("pixelWords"), PixelBytes / 4); Report->SetNumberField(TEXT("ownerWords"), OwnerBytes / 4);
     Report->SetNumberField(TEXT("requestWords"), RequestBytes / 4);
     Readback = MakeUnique<FRHIGPUBufferReadback>(TEXT("Nanite.Web.StreamingTest")); AddEnqueueCopyPass(Graph, Readback.Get(), Combined, Bytes);
@@ -98,7 +132,17 @@ void Poll()
     for (uint32 I = 0; I < 4; ++I) Values.Add(MakeShared<FJsonValueNumber>(Data[PixelWords + OwnerWords + RequestWords + I]));
     Report->SetArrayField(TEXT("cullState"), Values); Values.Reset();
     for (uint32 I = 0; I < 4; ++I) Values.Add(MakeShared<FJsonValueNumber>(Data[PixelWords + OwnerWords + RequestWords + 4 + I]));
-    Report->SetArrayField(TEXT("foreignPageState"), Values); Readback->Unlock();
+    Report->SetArrayField(TEXT("foreignPageState"), Values);
+    if (WPO)
+    {
+        const uint8* Geometry = reinterpret_cast<const uint8*>(Data + PixelWords + OwnerWords + RequestWords + 8);
+        const uint32 RecordBytes = Report->GetNumberField(TEXT("recordBytes")), StreamBytes = Report->GetNumberField(TEXT("streamBytes"));
+        const uint32 RootBytes = Report->GetNumberField(TEXT("rootBytes"));
+        Report->SetStringField(TEXT("visibleRecords"), FBase64::Encode(Geometry, RecordBytes));
+        Report->SetStringField(TEXT("streamPages"), FBase64::Encode(Geometry + RecordBytes, StreamBytes));
+        Report->SetStringField(TEXT("rootPagesData"), FBase64::Encode(Geometry + RecordBytes + StreamBytes, RootBytes));
+    }
+    Readback->Unlock();
     FString Json; FJsonSerializer::Serialize(Report.ToSharedRef(), TJsonWriterFactory<>::Create(&Json)); FTCHARToUTF8 Utf8(*Json);
     MAIN_THREAD_EM_ASM({globalThis.__webNaniteStreamingTest = JSON.parse(UTF8ToString($0));}, Utf8.Get());
     Readback.Reset(); Report.Reset();
@@ -107,6 +151,7 @@ void Poll()
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread); static int Last = 0;
+    if (RequestedStep == -1) { if (Last != 0) return 0; WPO = true; return 1; }
     if (RequestedStep < 0 || RequestedStep > 10 || !GEngine || !Nanite::GStreamingManager.IsWebStreamingMode()) return 0;
     if (!RequestedStep) { ENQUEUE_RENDER_COMMAND(PollWebStreaming)([](FRHICommandListImmediate&) { Poll(); }); return 1; }
     if (RequestedStep != Last + 1) return 0;
@@ -124,7 +169,16 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
             // the proxy: any visible surface must come from Nanite pages.
             for (auto& LOD : Meshes[I]->GetRenderData()->LODResources) for (auto& Section : LOD.Sections) Section.NumTriangles = 0;
         }
-        auto* Material = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/WebNaniteMaterials/NaniteMaterial1.NaniteMaterial1")); if (!Material) return 0;
+        auto* Material = LoadObject<UMaterialInterface>(nullptr, WPO ?
+            TEXT("/Game/WebNaniteProgrammable/NaniteProgrammable4.NaniteProgrammable4") :
+            TEXT("/Game/WebNaniteMaterials/NaniteMaterial1.NaniteMaterial1")); if (!Material) return 0;
+        if (WPO)
+        {
+            WPOMaterial = UMaterialInstanceDynamic::Create(Material, GetTransientPackage()); WPOMaterial->AddToRoot();
+            WPOMaterial->SetVectorParameterValue(TEXT("NaniteWorldOffset"), FLinearColor(40, 25, 15));
+            WPOMaterial->SetVectorParameterValue(TEXT("NanitePreviousWorldOffset"), FLinearColor(15, -10, -20));
+            Material = WPOMaterial;
+        }
         Controller = World->GetFirstPlayerController(); SavedTarget = Controller->GetViewTarget();
         Camera = World->SpawnActor<ACameraActor>(); check(Camera.IsValid());
         Camera->SetActorLocationAndRotation(FVector(100000, 0, 100000), FRotator::ZeroRotator);
@@ -143,6 +197,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteStreamingTest(int RequestedStep)
     {
         Component->RemoveFromRoot(); Component->DestroyComponent();
         for (auto* Mesh : Meshes) Mesh->RemoveFromRoot();
+        if (WPOMaterial) { WPOMaterial->RemoveFromRoot(); WPOMaterial = nullptr; }
         if (Controller.IsValid()) Controller->SetViewTarget(SavedTarget.Get()); if (Camera.IsValid()) Camera->Destroy();
         for (int I = 0; I < 7; ++I) IConsoleManager::Get().FindConsoleVariable(CVarNames[I])->Set(SavedCVars[I], ECVF_SetByCode);
         ENQUEUE_RENDER_COMMAND(RemoveWebStreaming)([](FRHICommandListImmediate&) { check(!Requested && !Report && !Readback); Nanite::GetWebNativeCompositionDelegate().Remove(Observer); }); Last = 10; return 1;

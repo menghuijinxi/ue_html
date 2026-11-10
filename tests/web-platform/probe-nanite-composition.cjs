@@ -3,7 +3,8 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const output=path.join(__dirname,'results/nanite-composition');fs.mkdirSync(output,{recursive:true});
 const scalarVisibility=process.argv.includes('--scalar-visibility');
-const report={pass:false,scalarVisibility,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
+const unmerged=process.argv.includes('--unmerged');
+const report={pass:false,scalarVisibility,unmerged,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
 function observe(scalarVisibility) {
  const state=globalThis.__webCompositionGPU={shaders:[],draws:0,errors:[]},modules=new WeakSet(),pipelines=new WeakSet(),bound=new WeakMap();
  const create=GPUDevice.prototype.createShaderModule,asyncPipeline=GPUDevice.prototype.createRenderPipelineAsync,syncPipeline=GPUDevice.prototype.createRenderPipeline;
@@ -73,11 +74,15 @@ function verify(t){
   if(Math.hypot(...velocity)>1e-5)moving[c]=(moving[c]||0)+1;
  }
  assert.deepEqual(Object.keys(counts).map(Number).sort(),t.step===7?[0,2]:[0,1,2]);
- for(const n of Object.values(counts))assert(n>20);assert.equal(new Set(bins.values()).size,bins.size);
+ for(const n of Object.values(counts))assert(n>20);
+ // All three components use the same material and shader bindings. Lighting
+ // channels, decals and motion remain per-instance GPUScene data when merged.
+ assert.equal(new Set(bins.values()).size,unmerged?bins.size:1);
+ if(!unmerged)assert([...bins.values()].every(bin=>bin===0));
  if([2,4,5,7,8].includes(t.step))assert((moving[0]||0)>10,'object movement must be sampled');
  if([3,5].includes(t.step))assert((moving[1]||cameraReconstructed[1]||0)>10,'camera movement must be sampled');
  if(t.step===7)assert(occluded>20);else assert.equal(occluded,0);
- return {counts,moving,cameraReconstructed,maxVelocityError,maxVelocityDepthError,occluded,zeroVelocity};
+ return {counts,moving,cameraReconstructed,maxVelocityError,maxVelocityDepthError,occluded,zeroVelocity,bins:Object.fromEntries(bins)};
 }
 (async()=>{let browser,page;try {
  browser=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:960,height:640}});
@@ -88,6 +93,7 @@ function verify(t){
  await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=90,null,{timeout:180000});
  assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
+ assert.equal(await page.evaluate(v=>__webEngineRPC('WebNaniteMaterialBinsTest',v),unmerged?0:1),1);
  for(let step=1;step<=9;step++) {
   assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteCompositionTest',s),step),1);
   let test;const start=Date.now();
@@ -103,4 +109,4 @@ function verify(t){
  report.frames=await page.evaluate(()=>globalThis.__webEngineFrames);
  assert.deepEqual(report.errors,[]);report.pass=true;
 }catch(e){report.engineFailure=page?await page.evaluate(()=>({failure:globalThis.__webEngineFailure,frames:globalThis.__webEngineFrames})).catch(()=>null):null;report.failure=e.stack;console.error(e.stack);process.exitCode=1;}
-finally{if(browser)await browser.close();fs.writeFileSync(path.join(output,scalarVisibility?'browser-scalar.json':'browser.json'),JSON.stringify(report,null,2));}})();
+finally{if(browser)await browser.close();fs.writeFileSync(path.join(output,`browser${scalarVisibility?'-scalar':''}${unmerged?'-unmerged':''}.json`),JSON.stringify(report,null,2));}})();

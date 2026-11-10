@@ -1,5 +1,14 @@
 const branch = (before, lines) => ({before, after: lines.join('\n')});
-module.exports = [['Private/Nanite/NaniteStreaming.ush', [
+module.exports = [['Private/Nanite/NaniteVertexFactory.ush', [
+  branch('\tVertexParameters.SceneData.Primitive\t= PrimitiveData;', [
+    '\tVertexParameters.SceneData.Primitive\t= PrimitiveData;',
+    '#if COMPILER_WEBGPU && ALWAYS_EVALUATE_WORLD_POSITION_OFFSET',
+    '\t// This material overrides the component switch, including the check in',
+    '\t// MaterialTemplate. Keep the override local so other slots retain their policy.',
+    '\tVertexParameters.SceneData.Primitive.Flags |= PRIMITIVE_SCENE_DATA_FLAG_EVALUATE_WORLD_POSITION_OFFSET;',
+    '#endif',
+  ]),
+]], ['Private/Nanite/NaniteStreaming.ush', [
   branch('\t\tWaveInterlockedAddScalar_(RequestsBuffer[0].RuntimeResourceID_Magic, 1, Index);', [
     '#if COMPILER_WEBGPU',
     '\t\t// Visible leaves diverge across a subgroup. Use one scalar atomic per',

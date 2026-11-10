@@ -22,6 +22,10 @@ const cases=[
  {name:'still-occluded-final',previous:1,current:1,final:1,keep:false},
  {name:'preserve-main-in-final',previous:0,current:1,final:1,keep:true},
  {name:'background-holes-final',previous:0,current:0,final:1,keep:true},
+ {name:'wpo-expanded-near-plane-main',previous:1,current:1,final:0,wpo:[0,0,800,0],keep:true},
+ {name:'wpo-expanded-near-plane-final',previous:1,current:1,final:1,wpo:[0,0,800,0],keep:true},
+ {name:'wpo-unbounded-main',previous:1,current:1,final:0,wpo:[0,0,0,1],keep:true},
+ {name:'wpo-unbounded-final',previous:1,current:1,final:1,wpo:[0,0,0,1],keep:true},
  {name:'input-error',previous:0,current:0,final:1,error:32,keep:false},
  // Count overflow and the sentinel keys both report errors. Consumers reject
  // the entire result when any error bit is set, including its valid prefix.
@@ -67,8 +71,9 @@ for(const capacity of [1,63,64,65,257,16384])for(const keep of [true,false])
     const matrix=[.01,0,0,0,0,.01,0,0,0,0,.001,0,0,0,.4,1];
     const values={PageConstants:[0,0,0,0],MaxVisibleClusters:[capacity],WebOcclusionFirstRootPage:[1],WebOcclusionNumRootPages:[1],
      WebOcclusionPreviousLocalToClip:matrix,WebOcclusionCurrentLocalToClip:matrix,WebOcclusionPreviousRect:[0,0,128,128],WebOcclusionCurrentRect:[0,0,128,128],
-     WebOcclusionPreviousExtent:[128,128],WebOcclusionCurrentExtent:[128,128],WebOcclusionPreviousMaxMip:[7],WebOcclusionCurrentMaxMip:[7],WebOcclusionFinal:[test.final]};
-    for(const m of b.$Globals.members){if(!values[m.name])throw Error('Unhandled '+m.name);(m.name.endsWith('LocalToClip')?f:u).set(values[m.name],m.offset/4);}
+     WebOcclusionPreviousExtent:[128,128],WebOcclusionCurrentExtent:[128,128],WebOcclusionPreviousMaxMip:[7],WebOcclusionCurrentMaxMip:[7],WebOcclusionFinal:[test.final],
+     WebOcclusionWPOBounds:test.wpo||[0,0,0,0]};
+    for(const m of b.$Globals.members){if(!values[m.name])throw Error('Unhandled '+m.name);(m.name.endsWith('LocalToClip')||m.name==='WebOcclusionWPOBounds'?f:u).set(values[m.name],m.offset/4);}
     resources.$Globals=makeBuffer(new Uint8Array(data),GPUBufferUsage.UNIFORM);
     const group=device.createBindGroup({layout,entries:bindings.map(v=>({binding:v.binding,resource:
      v.name==='WebOcclusionPrevious'?textures[test.previous].createView():v.name==='WebOcclusionCurrent'?textures[test.current].createView():
