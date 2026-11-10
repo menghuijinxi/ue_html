@@ -70,6 +70,16 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetArrayField(TEXT("entryInstanceIDs"), EntryIDs);
     Report->SetBoolField(TEXT("instanceFrustum"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebInstanceFrustum"))->GetInt() != 0);
     Report->SetBoolField(TEXT("materialBins"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialBins"))->GetInt() != 0);
+    const bool LocalHierarchy = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebLocalHierarchyQueue"))->GetInt() != 0;
+    uint32 LocalEntries = 0, MaxHierarchyNodes = 0;
+    for (const auto& Entry : Cull.Entries)
+    {
+        MaxHierarchyNodes = FMath::Max(MaxHierarchyNodes, Entry.Input.NumHierarchyNodes);
+        if (LocalHierarchy && Entry.Input.NumHierarchyNodes <= 256 && Entry.Input.MaxVisibleClusters <= 16384) ++LocalEntries;
+    }
+    Report->SetBoolField(TEXT("localHierarchy"), LocalHierarchy);
+    Report->SetNumberField(TEXT("localHierarchyEntries"), LocalEntries);
+    Report->SetNumberField(TEXT("maxHierarchyNodes"), MaxHierarchyNodes);
     // Use the effective render projection, not the requested camera FOV: UE's
     // MaintainYFOV policy changes horizontal FOV with the viewport aspect ratio.
     const FMatrix& Projection = Cull.View->ViewMatrices.GetProjectionNoAAMatrix();
@@ -175,6 +185,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMaterialBoundsTest(int Enabled, int
     }
     if (SavedBounds < 0) { SavedBounds = CVar->GetInt(); SavedJitter = Jitter->GetInt(); SavedFrustum = Frustum->GetInt(); }
     CVar->Set(Enabled, ECVF_SetByCode); Jitter->Set(TemporalIndex, ECVF_SetByCode); Frustum->Set(FrustumEnabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteHierarchyModeTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebLocalHierarchyQueue"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMaterialBinsTest(int Enabled)

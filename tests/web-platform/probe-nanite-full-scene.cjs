@@ -4,9 +4,10 @@ const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.
 const scalar=process.argv.includes('--scalar-visibility'),name=scalar?'scalar':'packed';
 const frustumComparison=process.argv.includes('--frustum-comparison');
 const binsComparison=process.argv.includes('--material-bins-comparison');
-assert(!(frustumComparison&&binsComparison));
-const comparison=frustumComparison||binsComparison;
-const output=path.join(__dirname,binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+const hierarchyComparison=process.argv.includes('--hierarchy-comparison');
+assert([frustumComparison,binsComparison,hierarchyComparison].filter(Boolean).length<=1);
+const comparison=frustumComparison||binsComparison||hierarchyComparison;
+const output=path.join(__dirname,hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-full-scene/package.json')),
   tests:[],errors:[],events:[],startupLogs:[],logs:[],boundary:'Full-scene diagnostic. Unsupported material categories still use fallback; this is not full compatibility acceptance.'};
 const conversionFile=path.join(__dirname,'results/nanite-full-scene-conversion-verified.json');
@@ -75,6 +76,7 @@ function verify(t){
     const camera=views[step-1];if(camera)assert.equal(await page.evaluate(c=>__webEngineRPC('WebProjectViewTest',...c),camera),1);
     if(comparison)assert.equal(await page.evaluate(a=>__webEngineRPC('WebNaniteMaterialBoundsTest',...a),[1,step<6?0:step<8?3:7,frustumComparison&&[4,6,8].includes(step)?0:1]),1);
     if(binsComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteMaterialBinsTest',s),[4,6,8].includes(step)?0:1),1);
+    if(hierarchyComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteHierarchyModeTest',s),[4,6,8].includes(step)?0:1),1);
     assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteAutomaticSceneTest',s),step),1);
     const start=Date.now();let t;
     do{await page.waitForTimeout(250);assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
@@ -84,6 +86,9 @@ function verify(t){
     if(comparison&&[5,7,9].includes(step)){
       const previous=report.tests.at(-2);assert.deepEqual(t.view,previous.view);
       if(frustumComparison){assert(!previous.instanceFrustum&&t.instanceFrustum);assert(t.entries<previous.entries*.25,'Offscreen GPU work must be removed');}
+      else if(hierarchyComparison){assert(!previous.localHierarchy&&t.localHierarchy);assert.equal(previous.localHierarchyEntries,0);
+        assert.equal(t.localHierarchyEntries,t.entries);assert(t.maxHierarchyNodes>0&&t.maxHierarchyNodes<=256);
+        assert.equal(t.entries,previous.entries);assert.deepEqual(t.entryInstanceIDs,previous.entryInstanceIDs);assert.equal(t.materialDraws,previous.materialDraws);}
       else {assert(!previous.materialBins&&t.materialBins);assert.equal(t.entries,previous.entries);assert.deepEqual(t.entryInstanceIDs,previous.entryInstanceIDs);
         assert(t.materialDraws<previous.materialDraws*.75,'Equivalent native shader bindings must share shading work');}
       const before=new Map(previous.entryInstanceIDs.map((id,i)=>[id,previous.cullStates.slice(i*4,i*4+4)]));
@@ -104,8 +109,9 @@ function verify(t){
         }
         compared++;
       }
-      t[frustumComparison?'frustumComparison':'binsComparison']={compared,before:frustumComparison?previous.entries:previous.materialDraws,
-        after:frustumComparison?t.entries:t.materialDraws,maxDepthDifference,maxSpecularDifference};
+      t[hierarchyComparison?'hierarchyComparison':frustumComparison?'frustumComparison':'binsComparison']={compared,
+        before:hierarchyComparison?previous.hierarchyDispatchLevels:frustumComparison?previous.entries:previous.materialDraws,
+        after:hierarchyComparison?t.localHierarchyEntries:frustumComparison?t.entries:t.materialDraws,maxDepthDifference,maxSpecularDifference};
     }
     const pipelineStart=Date.now();
     do{
@@ -125,6 +131,7 @@ function verify(t){
   assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',-1)),1);
   if(comparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',-1,0,1)),1);
   if(binsComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBinsTest',-1)),1);
+  if(hierarchyComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteHierarchyModeTest',-1)),1);
   const before=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>f+30,before,{timeout:30000});
   report.gpu=await owner.evaluate(()=>__fullSceneGPU);assert.deepEqual(report.gpu.errors,[]);assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);
   report.frames=await page.evaluate(()=>__webEngineFrames);assert.deepEqual(report.errors,[]);report.pass=true;
