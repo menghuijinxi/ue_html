@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include "integer-contract.h"
 #include "Platforms/VectorVMWebScalar.h"
 #ifndef __EMSCRIPTEN__
 #include "Platforms/VectorVMPlatformGeneric.h"
@@ -12,6 +13,7 @@ struct Register { uint32_t Values[4]; };
 struct HalfCase { uint32_t Bits[4]; uint16_t Expected[4]; };
 struct ByteCase { Register Value, Mask, Expected; };
 struct ShiftCase { Register Value, Counts, Left, Right; };
+struct IntegerCase { Register Value, Minimum, Maximum, Clamp, Bool, Int, Int2; };
 static uint64_t Checks = 0;
 static void Require(bool OK, const char* Message)
 {
@@ -60,6 +62,19 @@ static void TestShift(const ShiftCase& C)
 		Require(Left.Values[Lane] == C.Left.Values[Lane] && Right.Values[Lane] == C.Right.Values[Lane], "logical immediate shifts");
 	}
 }
+static void TestInteger(const IntegerCase& C)
+{
+	using namespace IntegerWeb;
+	IntegerWeb::VectorRegister4i A, B, D;
+	memcpy(&A, &C.Value, 16); memcpy(&B, &C.Minimum, 16); memcpy(&D, &C.Maximum, 16);
+	const auto Clamp = VVM_Exec3i_clampi(nullptr, A, B, D);
+	const auto Bool = VVM_Exec1i_i2b(nullptr, A);
+	const auto Int = VVM_Exec1i_b2i(nullptr, A);
+	const auto Int2 = VVM_Exec1i_b2i_2x(nullptr, A);
+	Require(!memcmp(&Clamp, &C.Clamp, 16), "signed clamp desktop match including inverted bounds");
+	Require(!memcmp(&Bool, &C.Bool, 16), "integer to boolean desktop match");
+	Require(!memcmp(&Int, &C.Int, 16) && !memcmp(&Int2, &C.Int2, 16), "boolean mask to integer desktop match");
+}
 #ifndef __EMSCRIPTEN__
 static uint32_t HalfToFloatBits(uint32_t Half)
 {
@@ -96,8 +111,8 @@ static void Generate(const char* Path)
 	for (unsigned I = 0; I < 1048576; ++I) Values.push_back(Random());
 	while (Values.size() % 4) Values.push_back(0);
 	FILE* File = fopen(Path, "wb"); Require(File != nullptr, "create fixture");
-	const uint32_t HalfCount = uint32_t(Values.size() / 4), ByteCount = 4096, ShiftCount = 1024;
-	Write(File, HalfCount); Write(File, ByteCount); Write(File, ShiftCount);
+	const uint32_t HalfCount = uint32_t(Values.size() / 4), ByteCount = 4096, ShiftCount = 1024, IntegerCount = 8192;
+	Write(File, HalfCount); Write(File, ByteCount); Write(File, ShiftCount); Write(File, IntegerCount);
 	for (uint32_t I = 0; I < HalfCount; ++I)
 	{
 		HalfCase C; memcpy(C.Bits, Values.data() + I * 4, 16);
@@ -130,6 +145,24 @@ static void Generate(const char* Path)
 		}
 		TestShift(C); Write(File, C);
 	}
+	const uint32_t Edges[] = {0, 1, 2, 0x7ffffffe, 0x7fffffff, 0x80000000, 0x80000001, 0xfffffffe, 0xffffffff, 0x55555555, 0xaaaaaaaa};
+	for (uint32_t I = 0; I < IntegerCount; ++I)
+	{
+		using namespace IntegerDesktop;
+		IntegerCase C;
+		for (uint32_t Lane = 0; Lane < 4; ++Lane)
+		{
+			const uint32_t Index = I * 4 + Lane;
+			C.Value.Values[Lane] = I < 4096 ? Edges[Index % 11] : Random();
+			C.Minimum.Values[Lane] = I < 4096 ? Edges[(Index / 11) % 11] : Random();
+			C.Maximum.Values[Lane] = I < 4096 ? Edges[(Index / 121) % 11] : Random();
+		}
+		IntegerDesktop::VectorRegister4i A, B, D; memcpy(&A, &C.Value, 16); memcpy(&B, &C.Minimum, 16); memcpy(&D, &C.Maximum, 16);
+		const auto Clamp = VVM_Exec3i_clampi(nullptr, A, B, D), Bool = VVM_Exec1i_i2b(nullptr, A);
+		const auto Int = VVM_Exec1i_b2i(nullptr, A), Int2 = VVM_Exec1i_b2i_2x(nullptr, A);
+		memcpy(&C.Clamp, &Clamp, 16); memcpy(&C.Bool, &Bool, 16); memcpy(&C.Int, &Int, 16); memcpy(&C.Int2, &Int2, 16);
+		TestInteger(C); Write(File, C);
+	}
 	Require(!fclose(File), "close fixture");
 }
 #endif
@@ -140,11 +173,12 @@ int main(int Argc, char** Argv)
 	Generate(Path);
 #endif
 	FILE* File = fopen(Path, "rb"); Require(File != nullptr, "open fixture");
-	uint32_t HalfCount, ByteCount, ShiftCount; Read(File, HalfCount); Read(File, ByteCount); Read(File, ShiftCount);
+	uint32_t HalfCount, ByteCount, ShiftCount, IntegerCount; Read(File, HalfCount); Read(File, ByteCount); Read(File, ShiftCount); Read(File, IntegerCount);
 	for (uint32_t I = 0; I < HalfCount; ++I) { HalfCase C; Read(File, C); TestHalf(C); }
 	for (uint32_t I = 0; I < ByteCount; ++I) { ByteCase C; Read(File, C); TestBytes(C); }
 	for (uint32_t I = 0; I < ShiftCount; ++I) { ShiftCase C; Read(File, C); TestShift(C); }
+	for (uint32_t I = 0; I < IntegerCount; ++I) { IntegerCase C; Read(File, C); TestInteger(C); }
 	Require(fgetc(File) == EOF, "complete fixture consumption"); fclose(File);
-	printf("{\"pass\":true,\"halfValues\":%u,\"byteCases\":%u,\"shiftCases\":%u,\"checks\":%llu}\n", HalfCount * 4, ByteCount, ShiftCount, (unsigned long long)Checks);
+	printf("{\"pass\":true,\"halfValues\":%u,\"byteCases\":%u,\"shiftCases\":%u,\"integerCases\":%u,\"checks\":%llu}\n", HalfCount * 4, ByteCount, ShiftCount, IntegerCount, (unsigned long long)Checks);
 	return 0;
 }
