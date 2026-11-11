@@ -3,6 +3,7 @@
 #include "WebGPUVertexFetch.h"
 #include "WebGPUTextureAtomics.h"
 #include "WebGPUNaniteAtomics.h"
+#include "WebGPUNiagaraFinite.h"
 
 #include "Dom/JsonObject.h"
 #include "GlobalShader.h"
@@ -599,7 +600,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
         uint32 Version = HashCombine(Native->GetVersion(NativeFormat(Format)), UE::WebGPUShader::Schema);
         Version = HashCombine(
             Version,
-            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261109-v33-TextureLoadAccess-Tint-v20261009.190412")));
+            FCrc::StrCrc32(TEXT("WebGPUShaderFormat-20261111-v34-NiagaraFinite-Tint-v20261009.190412")));
         const EShaderPlatform Platform = ShaderFormatToLegacyShaderPlatform(Format);
         return Platform != SP_NumPlatforms && FDataDrivenShaderPlatformInfo::IsValid(Platform)
                    ? HashCombine(Version, FDataDrivenShaderPlatformInfo::GetShaderPlatformPropertiesHash(Platform))
@@ -652,6 +653,11 @@ class FWebGPUShaderFormat final : public IShaderFormat
         {
             // View's installed native metadata declares a texel buffer; Web uses a float4 storage array.
             FString Source(Output.GetSourceView());
+            if (Input.VirtualSourceFilePath.StartsWith(TEXT("/Plugin/FX/Niagara/")))
+            {
+                UE::WebGPUShader::LowerNiagaraFiniteChecks(Source);
+                Output.EditSource() = FAnsiString(Source);
+            }
             if (UsesTranslucencyVolumeMarks(Input))
             {
                 // These generated uniform resources are R8_UINT in both active
