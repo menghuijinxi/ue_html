@@ -1,0 +1,478 @@
+{
+  "date": "2026-11-11T08:40:25.217Z",
+  "pass": true,
+  "source": {
+    "file": "H:\\ue_html\\tests\\web-platform\\summarize-villa-shadow-methods.cjs",
+    "sha256": "50097a2194ee681486d8badc14a7f4f5b4f9401043f9531fa0bce6ead556d3e3"
+  },
+  "inputs": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+      "sha256": "74bb184e8348e26b2900cd7444ca7abfcc72fa719424859916c5b9bf025674d8"
+    }
+  ],
+  "package": {
+    "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\asset-versions.json",
+    "sha256": "1a394981818e23075c1d8f60313f7aa5d801d2bce90093167b5d9de525798f4d"
+  },
+  "packages": [
+    {
+      "folder": "villa-shadow-off-20261111-sparse",
+      "virtualShadows": 0,
+      "manifest": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\asset-versions.json",
+        "sha256": "15be942c67c6430599e9403cb47019a29d3d42bfb80fb0255f6b94fc2923ed12"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\UEWebEngineThreads.wasm",
+          "sha256": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\UEWebEngineThreads.js",
+          "sha256": "20db4f100e2f2faed52803a0869ed15a3c031a3e662e69cb7ca8710815e7f1cd"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\content.bin",
+          "sha256": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\content-files.json",
+          "sha256": "9c0aedc5c99fcfdd4938807d313e162e1c2a13f2cfcee56d6806b085ebcda0a9"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\web-engine-host.js",
+          "sha256": "8fa8b3144f86b644a6ba8250c62c8bf0bd2eb04e072477c7c80d0589db5be4e2"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\web-engine-worker.js",
+          "sha256": "996dd8def7b029b1e29da602da87bb4882cef4153b3ad236f1b6883bca435f35"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\web-content-worker.js",
+          "sha256": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\web-pipeline-prewarm.js",
+          "sha256": "4c011646359fd16698cdafe2e443396abdaaac58993e334e6cf869abd9229469"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\config-files.json",
+          "sha256": "cd4c357e8c9a2dcc59752ed48a2e6152ba5d7f5bdb7948bd3400ce274ad96e1b"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\index.html",
+          "sha256": "edd053def1e2fdad49ad506601954ae8a990a5ce6b002209b9ce98dde53644d1"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-sparse\\pipeline-prewarm.json",
+          "sha256": "9b0329da5f99f9d1d585359e94da685498fc9171a6d9e2e7ced1c1d0a65c00e1"
+        }
+      ]
+    },
+    {
+      "folder": "villa-shadow-on-20261111-sparse",
+      "virtualShadows": 1,
+      "manifest": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\asset-versions.json",
+        "sha256": "1a394981818e23075c1d8f60313f7aa5d801d2bce90093167b5d9de525798f4d"
+      },
+      "files": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\UEWebEngineThreads.wasm",
+          "sha256": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\UEWebEngineThreads.js",
+          "sha256": "20db4f100e2f2faed52803a0869ed15a3c031a3e662e69cb7ca8710815e7f1cd"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\content.bin",
+          "sha256": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\content-files.json",
+          "sha256": "9c0aedc5c99fcfdd4938807d313e162e1c2a13f2cfcee56d6806b085ebcda0a9"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\web-engine-host.js",
+          "sha256": "8fa8b3144f86b644a6ba8250c62c8bf0bd2eb04e072477c7c80d0589db5be4e2"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\web-engine-worker.js",
+          "sha256": "996dd8def7b029b1e29da602da87bb4882cef4153b3ad236f1b6883bca435f35"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\web-content-worker.js",
+          "sha256": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\web-pipeline-prewarm.js",
+          "sha256": "4c011646359fd16698cdafe2e443396abdaaac58993e334e6cf869abd9229469"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\config-files.json",
+          "sha256": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\index.html",
+          "sha256": "47affc523264989516162803a2f7f2c864f8e75e83ff513bbad8bc79d8869d2a"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\pipeline-prewarm.json",
+          "sha256": "9561847ebda11bd23b02552b079164c043da3c4b3f5846bf3d2807b943d84f4c"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\index.html",
+      "sha256": "47affc523264989516162803a2f7f2c864f8e75e83ff513bbad8bc79d8869d2a"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\UEWebEngineThreads.wasm",
+      "sha256": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\config-files.json",
+      "sha256": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\content.bin",
+      "sha256": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5"
+    }
+  ],
+  "browser": "157.0.4341.42",
+  "seconds": 30,
+  "warmup": 15,
+  "renderView": {
+    "width": 1400,
+    "height": 788,
+    "outputWidth": 1920,
+    "outputHeight": 1080,
+    "antiAliasing": 4
+  },
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 1,
+    "reflections": 1,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1,
+    "virtualTextures": 1,
+    "virtualTexturePathActive": true
+  },
+  "order": [
+    0,
+    1,
+    1,
+    0
+  ],
+  "excluded": [],
+  "comparisons": [
+    {
+      "name": "standing",
+      "off": {
+        "intervals": 3097,
+        "fps": 51.229406506415394,
+        "low1Fps": 35.491035650827314,
+        "p95Ms": 21.509999999776483,
+        "p99Ms": 23.095000000670552,
+        "maxMs": 39.1100000012666,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 1,
+            "intervals": 1545,
+            "fps": 51.1046543936109,
+            "low1Fps": 37.7207251804513,
+            "p50Ms": 19.515000000596046,
+            "p95Ms": 21.529999999329448,
+            "p99Ms": 23.14500000141561,
+            "maxMs": 37.225000001490116,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 5.58259925126721
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 4,
+            "intervals": 1552,
+            "fps": 51.354202375263455,
+            "low1Fps": 33.88466507063279,
+            "p50Ms": 19.41499999910593,
+            "p95Ms": 21.50499999895692,
+            "p99Ms": 23.015000000596046,
+            "maxMs": 39.1100000012666,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 5.591630782246436
+          }
+        ]
+      },
+      "on": {
+        "intervals": 2661,
+        "fps": 43.85341850663706,
+        "low1Fps": 36.02906344417519,
+        "p95Ms": 24.90000000037253,
+        "p99Ms": 26.125,
+        "maxMs": 38.15000000037253,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 2,
+            "intervals": 1333,
+            "fps": 43.897541885846934,
+            "low1Fps": 36.17243918489861,
+            "p50Ms": 23.419999999925494,
+            "p95Ms": 24.81499999947846,
+            "p99Ms": 26.2649999987334,
+            "maxMs": 38.15000000037253,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 9.890732915326394
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 3,
+            "intervals": 1328,
+            "fps": 43.80921811266933,
+            "low1Fps": 36.056454104828205,
+            "p50Ms": 23.440000001341105,
+            "p95Ms": 24.980000000447035,
+            "p99Ms": 26.009999999776483,
+            "maxMs": 35.87000000104308,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 9.898090470187013
+          }
+        ]
+      },
+      "low1CostPercent": -1.515954052852031,
+      "averageCostPercent": 14.39795715543698
+    },
+    {
+      "name": "turning",
+      "off": {
+        "intervals": 3079,
+        "fps": 50.873961454092274,
+        "low1Fps": 40.708859429638196,
+        "p95Ms": 21.644999999552965,
+        "p99Ms": 22.56499999947846,
+        "maxMs": 30.125,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 1,
+            "intervals": 1542,
+            "fps": 50.989643844611656,
+            "low1Fps": 41.277007416565574,
+            "p50Ms": 19.674999998882413,
+            "p95Ms": 21.455000000074506,
+            "p99Ms": 22.40000000037253,
+            "maxMs": 30.125,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 6.419862313310743,
+            "turnDegrees": 348.1253994140624,
+            "travelCentimeters": 0
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 4,
+            "intervals": 1537,
+            "fps": 50.758429011760256,
+            "low1Fps": 40.511970021111615,
+            "p50Ms": 19.734999999403954,
+            "p95Ms": 21.744999999180436,
+            "p99Ms": 23.08999999985099,
+            "maxMs": 27.59999999962747,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 6.5058333355986715,
+            "turnDegrees": 348.08705859374993,
+            "travelCentimeters": 0
+          }
+        ]
+      },
+      "on": {
+        "intervals": 2664,
+        "fps": 43.94811087461593,
+        "low1Fps": 30.449983083368316,
+        "p95Ms": 26.90000000037253,
+        "p99Ms": 28.85499999858439,
+        "maxMs": 42.49000000022352,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 2,
+            "intervals": 1352,
+            "fps": 44.55971817955524,
+            "low1Fps": 35.7411827781889,
+            "p50Ms": 22.56000000052154,
+            "p95Ms": 26.58999999985099,
+            "p99Ms": 27.494999999180436,
+            "maxMs": 30.22499999962747,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 10.015768349786981,
+            "turnDegrees": 347.9023798828124,
+            "travelCentimeters": 0
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 3,
+            "intervals": 1312,
+            "fps": 43.335176950046126,
+            "low1Fps": 28.425241614472025,
+            "p50Ms": 23,
+            "p95Ms": 27.394999999552965,
+            "p99Ms": 32.65499999932945,
+            "maxMs": 42.49000000022352,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 10.710010971289973,
+            "turnDegrees": 347.98770117187485,
+            "travelCentimeters": 0
+          }
+        ]
+      },
+      "low1CostPercent": 25.200598813144037,
+      "averageCostPercent": 13.613743419069312
+    },
+    {
+      "name": "moving",
+      "off": {
+        "intervals": 3114,
+        "fps": 51.50837325342577,
+        "low1Fps": 41.585715306836406,
+        "p95Ms": 21.22499999962747,
+        "p99Ms": 22.134999999776483,
+        "maxMs": 35.55000000074506,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 1,
+            "intervals": 1560,
+            "fps": 51.58956204265093,
+            "low1Fps": 42.22638621265314,
+            "p50Ms": 19.369999999180436,
+            "p95Ms": 21.12999999895692,
+            "p99Ms": 21.925000000745058,
+            "maxMs": 35.55000000074506,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 5.7314662579005535,
+            "turnDegrees": 0,
+            "travelCentimeters": 2101.5777642190656
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 4,
+            "intervals": 1554,
+            "fps": 51.42712761125358,
+            "low1Fps": 41.06512672461082,
+            "p50Ms": 19.43500000052154,
+            "p95Ms": 21.320000000298023,
+            "p99Ms": 22.449999999254942,
+            "maxMs": 27.554999999701977,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 5.795652536717259,
+            "turnDegrees": 0,
+            "travelCentimeters": 2103.9702903188636
+          }
+        ]
+      },
+      "on": {
+        "intervals": 2648,
+        "fps": 43.70752371046495,
+        "low1Fps": 35.70177120468582,
+        "p95Ms": 25.41499999910593,
+        "p99Ms": 26.934999998658895,
+        "maxMs": 33.49000000022352,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 2,
+            "intervals": 1348,
+            "fps": 44.48027210839416,
+            "low1Fps": 38.26129733037078,
+            "p50Ms": 22.755000000819564,
+            "p95Ms": 24.824999999254942,
+            "p99Ms": 25.705000000074506,
+            "maxMs": 27.52000000141561,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 9.77433850095394,
+            "turnDegrees": 0,
+            "travelCentimeters": 2106.9207568454913
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-sparse-abba-20261111\\result.json",
+            "index": 3,
+            "intervals": 1300,
+            "fps": 42.934096327268996,
+            "low1Fps": 34.68886754208658,
+            "p50Ms": 23.58999999985099,
+            "p95Ms": 25.975000001490116,
+            "p99Ms": 27.680000001564622,
+            "maxMs": 33.49000000022352,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": 0,
+            "creations": 0,
+            "rhiWorkMs": 10.250674679497404,
+            "turnDegrees": 0,
+            "travelCentimeters": 2103.281064675112
+          }
+        ]
+      },
+      "low1CostPercent": 14.148954896498578,
+      "averageCostPercent": 15.144818308627128
+    }
+  ],
+  "boundary": "Pooled raw RHI submission intervals, not average of Low values or physical presentation. Four validated runs, two per mode. Paired releases with mode-matched prewarm and no startup override. Not cold-start validation. VSM off retains conventional shadows with different appearance."
+}

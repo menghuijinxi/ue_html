@@ -96,6 +96,11 @@ FPS 按两轮总帧数/总时长计算；1% Low 合并两轮所有提交间隔�
 旧包和旧对比页面保留。源码、编译、Cook、发布、GPU 回读及浏览器结果的
 审计记录为 `tests/web-platform/evidence/vsm-sparse-sync-20261111.json`。
 
+后续已用相同运行时补做 VSM 开/关四轮对照：开启后平均 FPS 低 13.6%～15.1%，
+转向 1% Low 低 25.2%，移动 Low 低 14.1%。这组测试有独立的关闭组发布包和预热记录，
+详见 [UE58_WEB_VSM_LOW_COMPARISON.md](UE58_WEB_VSM_LOW_COMPARISON.md) 顶部最新结果；
+不覆盖本节先前的“新旧运行时”测量。
+
 ## 失败记录与边界
 
 - 首次 Cook 的输出路径过长，超过 Windows/UE 的 260 字符检查；

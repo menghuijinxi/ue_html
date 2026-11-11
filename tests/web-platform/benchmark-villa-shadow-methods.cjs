@@ -5,11 +5,14 @@ const {audit} = require('./content-file-metadata.cjs');
 const {readPage} = require('./web-pipeline-prewarm-package.cjs');
 const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3);
 const folder = option('folder') || 'villa-lumen-vt-20261110-v7', tag = option('tag');
+const offFolder = option('off-folder');
 const seconds = Number(option('seconds') || 30), warmup = Number(option('warmup') || 15);
 const order = (option('order') || '0,1,1,0').split(',').map(Number);
 const profile = option('profile') || tag;
 const capturePackage = process.argv.includes('--capture-package');
 assert([folder, tag].every(value => value && /^[a-z0-9-]+$/.test(value)));
+assert(!offFolder || /^[a-z0-9-]+$/.test(offFolder));
+assert(!offFolder || !capturePackage, 'Paired packages require matching release prewarm records');
 assert(profile && /^[a-z0-9-]+$/.test(profile));
 assert(Number.isInteger(seconds) && seconds >= 15 && seconds <= 60);
 assert(Number.isInteger(warmup) && warmup >= 15 && warmup <= 60);
@@ -24,12 +27,40 @@ const packageDirectory = path.join(__dirname, 'build', folder), packagedPage = r
 assert(!packagedPage.args.includes('-WebPSOPrecacheTest'), 'Speculative prewarming is not comparable');
 assert(capturePackage ? !packagedPage.assets.pipelinePrewarm : packagedPage.assets.pipelinePrewarm,
   'Explicitly identify diagnostic packages without a release prewarm record');
-const report = {date: new Date().toISOString(), pass: false, folder, seconds, warmup, order,
+let packages;
+if (offFolder) {
+  const sharedFiles = ['UEWebEngineThreads.wasm', 'UEWebEngineThreads.js', 'content.bin', 'content-files.json',
+    'web-engine-host.js', 'web-engine-worker.js', 'web-content-worker.js', 'web-pipeline-prewarm.js'];
+  packages = [offFolder, folder].map((name, virtualShadows) => {
+    const directory = path.join(__dirname, 'build', name), page = readPage(directory);
+    assert(page.assets.pipelinePrewarm && !page.args.includes('-WebPSOPrecacheTest'));
+    assert.deepEqual(page.args, packagedPage.args);
+    assert.deepEqual(page.assets.fixedRenderSize, packagedPage.assets.fixedRenderSize);
+    return {folder: name, virtualShadows, manifest: audit(path.join(directory, 'asset-versions.json')),
+      files: [...sharedFiles, 'config-files.json', 'index.html', 'pipeline-prewarm.json']
+        .map(file => audit(path.join(directory, file)))};
+  });
+  for (let i = 0; i < sharedFiles.length; ++i)
+    assert.equal(packages[0].files[i].sha256, packages[1].files[i].sha256, sharedFiles[i]);
+  const configs = packages.map(item => JSON.parse(fs.readFileSync(
+    path.join(__dirname, 'build', item.folder, 'config-files.json'))).map(entry => {
+      if (entry.path !== '/Engine/Platforms/Web/Config/WebEngine.ini') return entry;
+      const text = Buffer.from(entry.data, 'base64').toString('utf8');
+      assert(text.includes('\nr.Shadow.Virtual.Enable=' + item.virtualShadows + '\n'));
+      const {data, sha256, ...rest} = entry;
+      return {...rest, normalized: text.replace(/^r\.Shadow\.Virtual\.Enable=[01]\r?$/gm,
+        'r.Shadow.Virtual.Enable=<mode>')};
+    }));
+  assert.deepEqual(configs[0], configs[1], 'Only the VSM setting may differ');
+}
+const report = {date: new Date().toISOString(), pass: false, folder, offFolder, packages, seconds, warmup, order,
   source: audit(__filename), package: audit(path.join(__dirname, 'build', folder, 'asset-versions.json')),
   capturePackage, files: ['index.html', 'UEWebEngineThreads.wasm', 'config-files.json', 'content.bin']
     .map(name => audit(path.join(packageDirectory, name))),
   runs: [], errors: [], comparisons: [],
-  boundary: 'Diagnostic startup override only; original package is unchanged. VSM off retains traditional shadows. Both routes warm before timing. RHI submission intervals, not display timings. All measured windows must have zero pipeline creations and, when a release prewarm record exists, zero misses. Explicit capture packages measure warm steady-state only and are not releases.'};
+  boundary: (offFolder ? 'Paired releases with identical runtime/content and configuration-matched prewarm; only VSM config differs. ' :
+    'Diagnostic startup override only; original package is unchanged. ') +
+    'VSM off retains traditional shadows. Both routes warm before timing. RHI submission intervals, not display timings. All measured windows must have zero pipeline creations and, when a release prewarm record exists, zero misses. Explicit capture packages measure warm steady-state only and are not releases.'};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 function install() {
   const capture = globalThis.__shadowMethodCapture = {active: false, times: [], creations: []};
@@ -68,21 +99,24 @@ let context, log, run;
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       let body = await response.text();
-      const marker = "        removeRunDependency('worker-content');";
-      assert.equal(body.split(marker).length, 2);
-      // Validate and mount original assets first, then change only the in-memory
-      // test config. No package hashes or release prewarm records are rewritten.
-      run.override = {path: '/Engine/Platforms/Web/Config/WebEngine.ini',
-        section: 'SystemSettings', key: 'r.Shadow.Virtual.Enable', value: run.virtualShadows};
-      body = body.replace(marker, `
+      if (!offFolder) {
+        const marker = "        removeRunDependency('worker-content');";
+        assert.equal(body.split(marker).length, 2);
+        // Validate and mount original assets first, then change only the in-memory
+        // test config. No package hashes or release prewarm records are rewritten.
+        run.override = {path: '/Engine/Platforms/Web/Config/WebEngine.ini',
+          section: 'SystemSettings', key: 'r.Shadow.Virtual.Enable', value: run.virtualShadows};
+        body = body.replace(marker, `
         const shadowTestPath = ${JSON.stringify(run.override.path)};
         FS.writeFile(shadowTestPath, FS.readFile(shadowTestPath, {encoding: 'utf8'}) +
           '\\n[SystemSettings]\\nr.Shadow.Virtual.Enable=${run.virtualShadows}\\n');
 ${marker}`);
+      }
       await route.fulfill({response, body: '(' + install.toString() + ')();\n' + body});
     });
     for (const virtualShadows of order) {
-      run = {index: report.runs.length + 1, virtualShadows, phases: [], errors: []};
+      run = {index: report.runs.length + 1, virtualShadows,
+        folder: offFolder ? packages[virtualShadows].folder : folder, phases: [], errors: []};
       report.runs.push(run); save();
       log = fs.createWriteStream(path.join(directory, 'run-' + run.index + '.log'));
       const page = await context.newPage();
@@ -93,7 +127,7 @@ ${marker}`);
       });
       page.on('pageerror', error => run.errors.push(error.message));
       console.log(JSON.stringify({run: run.index, virtualShadows, stage: 'starting'}));
-      await page.goto('http://127.0.0.1:8765/build/' + folder + '/index.html');
+      await page.goto('http://127.0.0.1:8765/build/' + run.folder + '/index.html');
       await page.waitForFunction(() => globalThis.__webEngineFailure ||
         globalThis.__webEngineFrames >= 60 && __webPSOPrecacheReady && document.getElementById('loading')?.hidden,
       null, {timeout: 180000});
@@ -191,6 +225,8 @@ ${marker}`);
         averageCostPercent: 100 * (1 - on.fps / off.fps)});
     }
     assert.equal(audit(report.package.file).sha256, report.package.sha256, 'Package changed during comparison');
+    for (const item of packages || [])
+      assert.equal(audit(item.manifest.file).sha256, item.manifest.sha256, 'Paired package changed');
     report.pass = true; console.log(JSON.stringify(report.comparisons));
   } catch (error) {
     report.error = error.stack; report.errors.push(error.message); console.error(error); process.exitCode = 1;

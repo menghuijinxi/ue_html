@@ -38,12 +38,17 @@ for (let reportIndex = 0; reportIndex < reports.length; ++reportIndex) {
   const report = reports[reportIndex];
   assert(!report.error && !report.errors.length);
   assert(report.pass || allowInterrupted, 'Incomplete session requires --allow-interrupted');
-  for (const key of ['folder', 'seconds', 'warmup', 'browser', 'capturePackage'])
+  for (const key of ['folder', 'offFolder', 'seconds', 'warmup', 'browser', 'capturePackage'])
     assert.equal(report[key], reference[key], 'Mismatched session: ' + key);
   assert.equal(report.source.sha256, reference.source.sha256);
   assert.equal(report.package.sha256, reference.package.sha256);
   assert.deepEqual(report.files, reference.files);
+  assert.deepEqual(report.packages, reference.packages);
   for (const item of [report.source, report.package, ...report.files]) once(item);
+  for (const item of report.packages || []) {
+    assert.equal(item.folder, item.virtualShadows ? report.folder : report.offFolder);
+    for (const file of [item.manifest, ...item.files]) once(file);
+  }
   for (let index = 0; index < report.runs.length; ++index) {
     const run = report.runs[index];
     assert.equal(run.virtualShadows, report.order[index]);
@@ -55,8 +60,13 @@ for (let reportIndex = 0; reportIndex < reports.length; ++reportIndex) {
       continue;
     }
     assert.deepEqual(run.phases.map(phase => phase.name), phaseNames, 'Incomplete measured run');
-    assert.deepEqual(run.override, {path: '/Engine/Platforms/Web/Config/WebEngine.ini',
-      section: 'SystemSettings', key: 'r.Shadow.Virtual.Enable', value: run.virtualShadows});
+    if (report.offFolder) {
+      assert.equal(run.override, undefined, 'Paired releases must not override startup settings');
+      assert.equal(run.folder, report.packages[run.virtualShadows].folder);
+    } else {
+      assert.deepEqual(run.override, {path: '/Engine/Platforms/Web/Config/WebEngine.ini',
+        section: 'SystemSettings', key: 'r.Shadow.Virtual.Enable', value: run.virtualShadows});
+    }
     for (const phase of run.phases) {
       assert(phase.summary && phase.capture && !phase.capture.active);
       assert.equal(phase.capture.creations.length, 0, 'Compiled pipelines during timing');
@@ -101,12 +111,15 @@ for (const name of phaseNames) {
   }
 }
 const result = {date: new Date().toISOString(), pass: true, source: audit(__filename),
-  inputs: inputs.map(audit), package: reference.package, files: reference.files,
+  inputs: inputs.map(audit), package: reference.package, packages: reference.packages, files: reference.files,
   browser: reference.browser, seconds: reference.seconds, warmup: reference.warmup,
   renderView: Object.fromEntries(viewKeys.map(key => [key, reference.runs[0].warmed.view[key]])),
   settings: settingsWithoutShadow(reference.runs[0].warmed.settings),
   order: runs.map(run => run.virtualShadows), excluded, comparisons: [],
-  boundary: 'Pooled raw RHI submission intervals, not average of Low values or physical presentation. Four validated runs, two per mode; interrupted unmeasured tail excluded explicitly. Warm diagnostic package only, not cold-start or release validation. VSM off retains conventional shadows with different appearance.'};
+  boundary: 'Pooled raw RHI submission intervals, not average of Low values or physical presentation. Four validated runs, two per mode. ' +
+    (reference.offFolder ? 'Paired releases with mode-matched prewarm and no startup override. ' :
+      'In-memory startup override; warm steady-state only. ') +
+    'Not cold-start validation. VSM off retains conventional shadows with different appearance.'};
 for (const name of phaseNames) {
   const summarizeMode = mode => {
     const selected = runs.filter(run => run.virtualShadows === mode);

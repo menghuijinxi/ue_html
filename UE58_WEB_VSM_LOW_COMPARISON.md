@@ -1,10 +1,71 @@
 # 2026-11-11 虚拟阴影开关与 1% Low 对比
 
-## 结果
+## 最新结果（按页同步后）
+
+当前版本开启 VSM 的平均帧率比传统阴影低 **13.6%～15.1%**，
+约少 7～8 FPS。转向的 1% Low 低 **25.2%**，移动低 **14.1%**。
+平均吞吐差距已经小于同步优化前的约 42%，但转向慢帧仍有明显差距。
+
+| 阶段 | 关闭 VSM FPS | 开启 VSM FPS | 平均降幅 | 关闭 1% Low | 开启 1% Low | Low 降幅 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 静止 | 51.23 | 43.85 | 14.4% | 35.49 | 36.03 | -1.5% |
+| 转向 | 50.87 | 43.95 | 13.6% | 40.71 | 30.45 | 25.2% |
+| 往返移动 | 51.51 | 43.71 | 15.1% | 41.59 | 35.70 | 14.1% |
+
+四轮十二个阶段全部通过，未排除任何计时样本；计时窗口内零管线创建、
+零预热遗漏、零 GPU/页面错误、零超过 50 ms 的间隔。最大间隔为 42.49 ms。
+静止 Low 的 1.5% 小幅反向差异不说明 VSM 能改善静止性能：
+关闭组两轮 Low 为 37.72/33.88，开启组为 36.17/36.06 FPS，尾部本身有波动。
+开启组转向 Low 两轮为 35.74/28.43，关闭为 41.28/40.51 FPS，
+因此汇总保留了第二轮较慢的全部间隔，不能只引用较好的一轮。
+
+平均提交间隔的差值约为 3.1～3.5 ms/帧。这是整体代价，不能直接当作某个
+GPU 通道的耗时。RHI 工作时间仍有差距：移动时开启约 9.8～10.3 ms/帧，
+关闭约 5.7～5.8 ms/帧；本轮没有重新做 GPU 通道分析，不能据此唯一归因。
+
+原始报告为
+`tests/web-platform/results/villa-shadow-methods-sparse-abba-20261111/result.json`。
+独立重算并核验哈希的汇总为
+`tests/web-platform/evidence/shadow-methods-sparse-low-20261111.json`。
+本轮只增加测试入口和记录，没有改动渲染代码、原始项目或开启组发布包。
+新关闭组的采集/发布记录分别为
+`results/villa-startup-vsm-sparse-off-capture-20261111/result.json`、
+`results/villa-shadow-off-20261111-sparse-release.json`，均相对 `tests/web-platform/`。
+
+## 当前版本比较口径
+
+按页同步后的运行时为根仓库 `23306e8`、引擎 `341cf84ba22`。
+当前成对发布包为 `villa-shadow-on-20261111-sparse` 和
+`villa-shadow-off-20261111-sparse`，运行时、Cook 内容、宿主和缓存 worker
+的 SHA-256 完全相同，配置仅 `r.Shadow.Virtual.Enable` 不同。
+两组分别使用匹配自身配置的实际管线记录，经统一发布收尾校验为 `releaseReady=true`。
+关闭组继续使用传统阴影；两种方法的阴影外观不同，其他画质设置相同。
+
+新增 `--off-folder` 让基准直接运行成对发布包，无需注入阴影配置覆盖。
+原有单包诊断模式保留。程序在启动前检查两个包的运行时、内容和配置差异，
+计时中逐秒核验实际阴影路径、相机运动、预热状态和分辨率。
+汇总器重新审计两组文件哈希和每个原始时间戳，不接受计时内新建管线、
+错误阴影路径、不同相机起点或未完成的计时阶段。
+
+条件为 Edge 157.0.4341.42、RTX 3070，输出 1920×1080、实际渲染 1400×788、
+TSR，Lumen GI/反射和 VT 设置开启。VT 实际资源数量仍为零。
+顺序为关、开、开、关，每轮先预热转向和移动各 15 秒，再等待 5 秒，
+静止、转向、移动各计时 30 秒。没有 GPU/CPU 性能插桩，保留轻量提交帧及管线创建计数。
+1% Low 按两轮合并的原始提交间隔计算，不平均各轮 Low，也不计入轮次间的停顿。
+这些是 RHI 提交间隔统计，不是显示器呈现时间或跨硬件保证。
+
+复现：
+
+```powershell
+node tests/web-platform/benchmark-villa-shadow-methods.cjs --folder=villa-shadow-on-20261111-sparse --off-folder=villa-shadow-off-20261111-sparse --tag=shadow-sparse-recheck --profile=villa-shadow-page-20261111 --seconds=30 --warmup=15
+node tests/web-platform/summarize-villa-shadow-methods.cjs --input=tests/web-platform/results/shadow-sparse-recheck/result.json --output=tests/web-platform/results/shadow-sparse-recheck-summary.json
+```
+
+## 历史结果（同步优化前）
 
 充分预热后的有效样本显示：VSM 开启时，转向和移动的 1% Low
 分别比传统阴影低约 38% 和 33%；平均帧率低约 42%。
-这是较大的持续运行代价，当前优化并未让两种阴影方法达到接近的性能。
+这是两轮物理页池同步优化之前的较大持续运行代价，不代表当前版本。
 
 | 阶段 | 关闭 VSM 平均 FPS | 开启 VSM 平均 FPS | 关闭 1% Low | 开启 1% Low | Low 降幅 |
 | --- | ---: | ---: | ---: | ---: | ---: |
