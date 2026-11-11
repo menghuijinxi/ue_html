@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility'),name=scalar?'scalar':'packed';
 const folder=process.argv.find(a=>a.startsWith('--folder='))?.slice(9)||'nanite-full-scene';
@@ -10,13 +10,14 @@ const hierarchyComparison=process.argv.includes('--hierarchy-comparison');
 const occlusionComparison=process.argv.includes('--occlusion-comparison');
 const rasterComparison=process.argv.includes('--raster-comparison');
 const materialPassComparison=process.argv.includes('--material-pass-comparison');
+const primitiveComparison=process.argv.includes('--primitive-visibility-comparison');
 const materialBatchSize=Number(process.argv.find(a=>a.startsWith('--material-batch-size='))?.split('=')[1]||16);
 assert(Number.isInteger(materialBatchSize)&&materialBatchSize>=2&&materialBatchSize<=32);
-const acceptedProfile=process.argv.includes('--accepted-profile')||occlusionComparison||rasterComparison||materialPassComparison;
-if(acceptedProfile)assert(hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison,'Profile acceptance uses three fixed comparison views');
-assert([frustumComparison,binsComparison,hierarchyComparison,occlusionComparison,rasterComparison,materialPassComparison].filter(Boolean).length<=1);
-const comparison=frustumComparison||binsComparison||hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison;
-const output=path.join(__dirname,materialPassComparison?'results/nanite-material-pass':rasterComparison?'results/nanite-raster-batch':occlusionComparison?'results/nanite-local-occlusion':acceptedProfile?'results/nanite-runtime-profile':hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+const acceptedProfile=process.argv.includes('--accepted-profile')||occlusionComparison||rasterComparison||materialPassComparison||primitiveComparison;
+if(acceptedProfile)assert(hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison||primitiveComparison,'Profile acceptance uses three fixed comparison views');
+assert([frustumComparison,binsComparison,hierarchyComparison,occlusionComparison,rasterComparison,materialPassComparison,primitiveComparison].filter(Boolean).length<=1);
+const comparison=frustumComparison||binsComparison||hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison||primitiveComparison;
+const output=path.join(__dirname,primitiveComparison?'results/nanite-primitive-visibility':materialPassComparison?'results/nanite-material-pass':rasterComparison?'results/nanite-raster-batch':occlusionComparison?'results/nanite-local-occlusion':acceptedProfile?'results/nanite-runtime-profile':hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),
   tests:[],errors:[],events:[],startupLogs:[],logs:[],boundary:'Full-scene diagnostic. Unsupported material categories still use fallback; this is not full compatibility acceptance.'};
 if(acceptedProfile){const {profile}=require('./web-accepted-defaults.cjs');
@@ -71,7 +72,13 @@ function verify(t){
 (async()=>{let context,page,owner,pulse;try{
   context=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:1280,height:720}});
   await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:`(${observe.toString()})(${scalar});\n`+await r.text()});});
-  await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebVisualTestClock",')});});
+  await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [',primitiveComparison?'arguments: ["-WebMaterialTestClock",':'arguments: ["-WebVisualTestClock",')});});
+  if(primitiveComparison)await context.route('**/config-files.json*',async route=>{
+    const r=await route.fetch(),files=await r.json(),f=files.find(f=>f.path.endsWith('/UEWebEngine/Config/DefaultEngine.ini'));assert(f);
+    const data=Buffer.from(Buffer.from(f.data,'base64').toString()+'\n[SystemSettings]\nr.Test.FreezeTemporalSequences=1\n');
+    f.data=data.toString('base64');f.sha256=crypto.createHash('sha256').update(data).digest('hex');report.temporalConfig={path:f.path,sha256:f.sha256};
+    await route.fulfill({response:r,body:JSON.stringify(files)});
+  });
   page=await context.newPage();page.on('pageerror',e=>{report.errors.push({name:e.name,message:e.message});save();});
   pulse=setInterval(async()=>{
     report.pulse=await page.evaluate(()=>({time:performance.now(),frames:globalThis.__webEngineFrames,
@@ -84,6 +91,7 @@ function verify(t){
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineRecovery?.phase==='running',null,{timeout:180000});
   report.startupMs=Date.now()-started;assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
+  if(primitiveComparison){report.visualClock=await owner.evaluate(()=>globalThis.__webVisualTestClock);assert(report.visualClock.materialTimeFrozen&&!report.visualClock.renderTimeFrozen);}
   await page.addStyleTag({content:'body > :not(canvas) { visibility: hidden !important; } canvas, canvas * { visibility: visible !important; }'});
   const views=comparison?[[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,50],null,[-175,-80,160,-5,230],null,[-1000,-70,230,-8,65],null]:
     [[-175,-80,160,-5,50],null,null,[-175,-80,160,-5,230],[-1000,-70,230,-8,65],[-175,-80,160,-5,50]];
@@ -94,6 +102,7 @@ function verify(t){
     if(hierarchyComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteHierarchyModeTest',s),[4,6,8].includes(step)?0:1),1);
     if(rasterComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteRasterBatchTest',s),[4,6,8].includes(step)?0:1),1);
     if(materialPassComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteMaterialPassBatchTest',s),[4,6,8].includes(step)?0:materialBatchSize),1);
+    if(primitiveComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNanitePrimitiveVisibilityTest',s),[4,6,8].includes(step)?0:1),1);
     if(occlusionComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteOcclusionModeTest',s),[4,6,8].includes(step)?0:1),1);
     assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteAutomaticSceneTest',s),step),1);
     const start=Date.now();let t;
@@ -106,6 +115,8 @@ function verify(t){
       if(rasterComparison||materialPassComparison){assert(materialPassComparison?(!previous.materialPassBatch&&t.materialPassBatch):(!previous.rasterBatch&&t.rasterBatch));assert.equal(t.entries,previous.entries);
         if(materialPassComparison){assert.equal(previous.materialPassBatchMode,0);assert.equal(t.materialPassBatchMode,materialBatchSize);}
         assert.deepEqual(t.entryInstanceIDs,previous.entryInstanceIDs);assert.equal(t.materialDraws,previous.materialDraws);}
+      else if(primitiveComparison){assert(!previous.primitiveVisibility&&t.primitiveVisibility);assert.equal(previous.primitiveVisibilitySkipped,0);
+        assert(t.entries<previous.entries,'Completed visibility must remove unnecessary work');assert(t.primitiveVisibilitySkipped>0);}
       else if(frustumComparison){assert(!previous.instanceFrustum&&t.instanceFrustum);assert(t.entries<previous.entries*.25,'Offscreen GPU work must be removed');}
       else if(occlusionComparison){assert(!previous.localOcclusion&&t.localOcclusion);assert.equal(previous.localOcclusionEntries,0);
         assert.equal(t.localOcclusionEntries,t.entries);assert.equal(t.entries,previous.entries);
@@ -117,10 +128,29 @@ function verify(t){
         assert(t.materialDraws<previous.materialDraws*.75,'Equivalent native shader bindings must share shading work');}
       const before=new Map(previous.entryInstanceIDs.map((id,i)=>[id,previous.cullStates.slice(i*4,i*4+4)]));
       const after=new Map(t.entryInstanceIDs.map((id,i)=>[id,t.cullStates.slice(i*4,i*4+4)]));
-      for(const [id,state] of before){if(!after.has(id))assert.equal(state[0],0,'CPU culling removed a GPU-visible cluster');else assert.deepEqual(after.get(id),state,'Retained hierarchy result changed');}
+      let removedClusters=0;
+      for(const [id,state] of before){if(!after.has(id)){removedClusters+=state[0];if(!primitiveComparison)assert.equal(state[0],0,'CPU culling removed a GPU-visible cluster');}else assert.deepEqual(after.get(id),state,'Retained hierarchy result changed');}
       for(const id of after.keys())assert(before.has(id));
       let compared=0,maxDepthDifference=0,maxSpecularDifference=0;
       for(let i=0;i<t.width*t.height;i++){
+        if(primitiveComparison){
+          const p=i*28;
+          // Primitive occlusion may remove Nanite geometry behind an ordinary
+          // surface. Compare the final depth and every GBuffer pixel, including
+          // pixels that have no Nanite visibility, to catch holes or overwrites.
+          assert.equal(t.pixels[p+2],previous.pixels[p+2],`Scene depth changed at pixel ${i}`);
+          const owns=!!t.pixels[p]&&t.pixels[p+1]===t.pixels[p+2];
+          const owned=!!previous.pixels[p]&&previous.pixels[p+1]===previous.pixels[p+2];
+          assert.equal(owns,owned,`Depth ownership changed at pixel ${i}`);
+          for(let j=8;j<28;j++){
+            const difference=Math.abs(float(t.pixels[p+j])-float(previous.pixels[p+j]));
+            assert(Number.isFinite(difference));
+            if(j===13){maxSpecularDifference=Math.max(maxSpecularDifference,difference);assert(difference<=1/255+1e-7);}
+            else assert.equal(t.pixels[p+j],previous.pixels[p+j],`Scene material pixel ${i}, channel ${j}`);
+          }
+          if(owns)compared++;
+          continue;
+        }
         const p=i*28;assert.equal(!!t.pixels[p],!!previous.pixels[p],'Nanite coverage changed');
         if(!t.pixels[p])continue;
         assert.equal(t.pixels[p+1]===t.pixels[p+2],previous.pixels[p+1]===previous.pixels[p+2],'Ordinary mesh depth ownership changed');
@@ -133,9 +163,9 @@ function verify(t){
         }
         compared++;
       }
-      t[materialPassComparison?'materialPassComparison':rasterComparison?'rasterComparison':occlusionComparison?'occlusionComparison':hierarchyComparison?'hierarchyComparison':frustumComparison?'frustumComparison':'binsComparison']={compared,
-        before:occlusionComparison?previous.localOcclusionEntries:hierarchyComparison?previous.hierarchyDispatchLevels:frustumComparison?previous.entries:previous.materialDraws,
-        after:occlusionComparison?t.localOcclusionEntries:hierarchyComparison?t.localHierarchyEntries:frustumComparison?t.entries:t.materialDraws,maxDepthDifference,maxSpecularDifference};
+      t[primitiveComparison?'primitiveComparison':materialPassComparison?'materialPassComparison':rasterComparison?'rasterComparison':occlusionComparison?'occlusionComparison':hierarchyComparison?'hierarchyComparison':frustumComparison?'frustumComparison':'binsComparison']={compared,removedClusters,
+        before:occlusionComparison?previous.localOcclusionEntries:hierarchyComparison?previous.hierarchyDispatchLevels:(frustumComparison||primitiveComparison)?previous.entries:previous.materialDraws,
+        after:occlusionComparison?t.localOcclusionEntries:hierarchyComparison?t.localHierarchyEntries:(frustumComparison||primitiveComparison)?t.entries:t.materialDraws,maxDepthDifference,maxSpecularDifference};
     }
     const pipelineStart=Date.now();
     do{
@@ -173,6 +203,7 @@ function verify(t){
   if(binsComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBinsTest',-1)),1);
   if(rasterComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteRasterBatchTest',-1)),1);
   if(materialPassComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialPassBatchTest',-1)),1);
+  if(primitiveComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNanitePrimitiveVisibilityTest',-1)),1);
   if(hierarchyComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteHierarchyModeTest',-1)),1);
   if(occlusionComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteOcclusionModeTest',-1)),1);
   const before=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>f+30,before,{timeout:30000});

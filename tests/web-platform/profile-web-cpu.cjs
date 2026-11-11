@@ -18,6 +18,8 @@ const report = {date: new Date().toISOString(), tag, folder, seconds, width, hei
 const naniteOff = process.argv.includes('--nanite-off');
 const rasterBatch = option('nanite-raster-batch');
 const materialBatch = option('nanite-material-batch');
+const primitiveVisibility = option('nanite-primitive-visibility');
+assert(primitiveVisibility === undefined || primitiveVisibility === '0' || primitiveVisibility === '1');
 assert(materialBatch === undefined || /^(?:[0-9]|[12][0-9]|3[0-2])$/.test(materialBatch));
 assert(rasterBatch === undefined || rasterBatch === '0' || rasterBatch === '1');
 let context;
@@ -91,8 +93,12 @@ function summarize(profile) {
       report.settingsOverrides.push({naniteMaterialPassBatch: Number(materialBatch)});
     }
     report.visualClock = await owner.evaluate(() => globalThis.__webVisualTestClock || null);
+    if (primitiveVisibility !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNanitePrimitiveVisibilityTest', v), Number(primitiveVisibility)), 1);
+      report.settingsOverrides.push({nanitePrimitiveVisibility: Number(primitiveVisibility)});
+    }
     assert(!report.visualClock?.renderTimeFrozen && !report.visualClock?.materialTimeFrozen, 'Game performance requires advancing render and material clocks');
-    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined) {
+    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined || primitiveVisibility !== undefined) {
       for (const step of naniteOff ? [1, 2] : [1]) {
         assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteAutomaticSceneTest', s), step), 1);
         const start = Date.now(); let value;
@@ -105,7 +111,8 @@ function summarize(profile) {
         if (step === 2) assert.equal(value.entries, 0);
         if (rasterBatch !== undefined) assert.equal(value.rasterBatch, rasterBatch === '1');
         if (materialBatch !== undefined) { assert.equal(value.materialPassBatch, materialBatch !== '0'); assert.equal(value.materialPassBatchMode, Number(materialBatch)); }
-        report.nanite = {enabled: value.enabled, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
+        if (primitiveVisibility !== undefined) assert.equal(value.primitiveVisibility, primitiveVisibility === '1');
+        report.nanite = {enabled: value.enabled, primitiveVisibility: value.primitiveVisibility, primitiveVisibilitySkipped: value.primitiveVisibilitySkipped, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
       }
       if (naniteOff) report.settingsOverrides.push({nanite: false, verifiedEntries: 0});
     }

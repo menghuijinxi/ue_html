@@ -4,6 +4,10 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "Camera/PlayerCameraManager.h"
 #include "HAL/IConsoleManager.h"
 #include "PipelineStateCache.h"
 #include "PrimitiveSceneInfo.h"
@@ -51,6 +55,8 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetNumberField(TEXT("registered"), Cull.Registered);
     Report->SetNumberField(TEXT("entries"), Cull.Entries.Num());
     Report->SetNumberField(TEXT("skipped"), Cull.Skipped);
+    Report->SetNumberField(TEXT("primitiveVisibilitySkipped"), Cull.PrimitiveVisibilitySkipped);
+    Report->SetBoolField(TEXT("primitiveVisibility"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebPrimitiveVisibility"))->GetInt() != 0);
     Report->SetNumberField(TEXT("rejected"), Cull.Rejected);
     Report->SetArrayField(TEXT("assets"), Assets);
     uint64 UnboundedPixels = 0, BoundedPixels = 0;
@@ -269,6 +275,127 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMaterialPassBatchTest(int Enabled)
     }
     if (Saved < 0) Saved = CVar->GetInt();
     CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNanitePrimitiveVisibilityTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebPrimitiveVisibility"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+namespace WebPrimitiveRecovery
+{
+TWeakObjectPtr<ACameraActor> Camera;
+TWeakObjectPtr<AActor> SavedTarget;
+TWeakObjectPtr<APlayerController> Controller;
+UStaticMeshComponent* Target = nullptr;
+UStaticMeshComponent* Sentinel = nullptr;
+UStaticMeshComponent* Occluder = nullptr;
+FDelegateHandle Observer;
+FPrimitiveComponentId TargetId;
+int Mode = 0, Frames = 0;
+const FVector Origin(100000, 0, 100000);
+void Observe(FRDGBuilder&, const Nanite::FWebSceneCullView& Cull)
+{
+    if (!Mode || Frames >= 16 || Cull.View->bIsSceneCapture) return;
+    const bool Found = Cull.Entries.ContainsByPredicate([](const auto& E) { return E.ComponentId == TargetId; });
+    MAIN_THREAD_ASYNC_EM_ASM({
+        globalThis.__webNanitePrimitiveRecovery ??= {modes: {}};
+        const rows = globalThis.__webNanitePrimitiveRecovery.modes[$0] ??= [];
+        rows.push({frame: $1, index: $2, candidate: !!$3, cameraCut: !!$4});
+    }, Mode, Cull.View->Family->FrameNumber, Frames++, Found, Cull.View->bCameraCut);
+}
+}
+
+// Use the actual cooked scene mesh/material and an ordinary cooked cube. A
+// second visible Nanite mesh keeps full-view depth/GBuffer readback available
+// while the target is completely occluded. No proxy is manually registered.
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNanitePrimitiveRecoveryTest(int Mode)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    using namespace WebPrimitiveRecovery;
+    if (Mode < -1 || Mode > 8 || !GEngine) return 0;
+    if (Mode == 0) return Target != nullptr;
+    if (Mode == -1)
+    {
+        if (!Target) return 0;
+        ENQUEUE_RENDER_COMMAND(RemovePrimitiveRecoveryObserver)([](FRHICommandListImmediate&) {
+            Nanite::GetWebSceneCullDelegate().Remove(Observer); WebPrimitiveRecovery::Mode = 0;
+        });
+        for (auto* C : {Target, Sentinel, Occluder}) { C->UnregisterComponent(); C->RemoveFromRoot(); C->DestroyComponent(); }
+        Target = Sentinel = Occluder = nullptr;
+        if (Controller.IsValid() && SavedTarget.IsValid()) Controller->SetViewTarget(SavedTarget.Get());
+        Camera->Destroy(); Camera.Reset(); return 1;
+    }
+    if (Mode == 1)
+    {
+        if (Target) return 0;
+        UWorld* World = nullptr;
+        for (const auto& C : GEngine->GetWorldContexts()) if (C.WorldType == EWorldType::Game) World = C.World();
+        if (!World || !World->GetFirstPlayerController()) return 0;
+        UStaticMeshComponent* Source = nullptr;
+        for (TActorIterator<AActor> It(World); It && !Source; ++It)
+        {
+            TInlineComponentArray<UStaticMeshComponent*> Components(*It);
+            for (auto* C : Components)
+                if (C->GetStaticMesh() && C->GetStaticMesh()->GetName() == TEXT("SM_TestSphere")) { Source = C; break; }
+        }
+        auto* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+        if (!Source || !Cube || (Cube->GetRenderData()->NaniteResourcesPtr && Cube->GetRenderData()->NaniteResourcesPtr->NumClusters)) return 0;
+        Controller = World->GetFirstPlayerController(); SavedTarget = Controller->GetViewTarget();
+        Camera = World->SpawnActor<ACameraActor>(); if (!Camera.IsValid()) return 0;
+        Camera->SetActorLocationAndRotation(Origin, FRotator::ZeroRotator);
+        Camera->GetCameraComponent()->SetFieldOfView(90); Camera->GetCameraComponent()->SetConstraintAspectRatio(false);
+        Controller->SetViewTarget(Camera.Get());
+        const auto Create = [&](UStaticMesh* Mesh, FVector Offset, FVector Scale) {
+            auto* C = NewObject<UStaticMeshComponent>(); C->AddToRoot();
+            C->SetCollisionEnabled(ECollisionEnabled::NoCollision); C->SetMobility(EComponentMobility::Movable);
+            C->SetStaticMesh(Mesh); C->SetMaterial(0, Source->GetMaterial(0)); C->SetCastShadow(false);
+            C->SetWorldLocation(Origin + Offset); C->SetWorldScale3D(Scale); C->RegisterComponentWithWorld(World); return C;
+        };
+        Target = Create(Source->GetStaticMesh(), FVector(500, 0, 0), FVector(1));
+        Sentinel = Create(Source->GetStaticMesh(), FVector(500, 350, 0), FVector(1));
+        // The existing Web visibility history conservatively retains movable
+        // targets. Exercise static scene meshes with a movable occluder.
+        Target->SetMobility(EComponentMobility::Static); Sentinel->SetMobility(EComponentMobility::Static);
+        Occluder = Create(Cube, FVector(300, 0, 0), FVector(.5, 2.4, 2.4));
+        ENQUEUE_RENDER_COMMAND(AddPrimitiveRecoveryObserver)([](FRHICommandListImmediate&) {
+            Observer = Nanite::GetWebSceneCullDelegate().AddStatic(&Observe);
+        });
+    }
+    if (!Target || !Camera.IsValid()) return 0;
+    if (Mode == 2) Occluder->SetVisibility(false);
+    if (Mode == 3) Occluder->SetVisibility(true);
+    if (Mode == 4) Occluder->SetWorldLocation(Origin + FVector(300, -500, 0));
+    if (Mode == 5) Occluder->SetWorldLocation(Origin + FVector(300, 0, 0));
+    if (Mode == 6)
+    {
+        Camera->SetActorLocationAndRotation(Origin + FVector(1000, 0, 0), FRotator(0, 180, 0));
+        Controller->PlayerCameraManager->SetGameCameraCutThisFrame();
+    }
+    if (Mode == 7)
+    {
+        Target->UnregisterComponent(); Target->RegisterComponentWithWorld(Camera->GetWorld());
+    }
+    if (Mode == 8)
+    {
+        Camera->SetActorLocationAndRotation(Origin, FRotator::ZeroRotator);
+        Controller->PlayerCameraManager->SetGameCameraCutThisFrame(); Occluder->SetVisibility(false);
+    }
+    const FPrimitiveComponentId Id = Target->GetPrimitiveSceneId();
+    ENQUEUE_RENDER_COMMAND(ArmPrimitiveRecovery)([Mode, Id](FRHICommandListImmediate&) {
+        WebPrimitiveRecovery::Mode = Mode; TargetId = Id; Frames = 0;
+    });
+    return 1;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteAutomaticSceneTest(int RequestedStep)
