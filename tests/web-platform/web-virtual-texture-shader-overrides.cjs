@@ -119,19 +119,19 @@ module.exports = new Map([
   }]],
   ['Private/VirtualShadowMaps/VirtualShadowMapProjectionDirectional.ush', [{
     before: '\t\t#if COMPUTESHADER',
-    after: '\t\t#if COMPUTESHADER && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)',
+    after: '\t\t#if COMPUTESHADER && (!(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU) || WEB_VSM_ADAPTIVE_PROBE)',
   }]],
   ['Private/VirtualShadowMaps/VirtualShadowMapProjectionSpot.ush', [
     branch('\tif (WaveActiveAnyTrue(RayStartFaceHandle.Id != RayEndFaceHandle.Id))', [
       '\tif (RayStartFaceHandle.Id != RayEndFaceHandle.Id)']),
     {before: '\t\tif (MaxRayCount > 1 && Settings.AdaptiveRayCount > 0)',
-      after: '#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\t\tif (MaxRayCount > 1 && Settings.AdaptiveRayCount > 0)'},
+      after: '#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU) || WEB_VSM_ADAPTIVE_PROBE\n\t\tif (MaxRayCount > 1 && Settings.AdaptiveRayCount > 0)'},
     {before: '\t\tuint Seed = asuint( StepOffset );',
       after: '#endif\n\t\tuint Seed = asuint( StepOffset );'},
   ]],
   ['Private/VirtualShadowMaps/VirtualShadowMapProjection.usf', [{
     before: '\t\t\t\t\t#if COMPUTESHADER && USE_ADAPTATIVE',
-    after: '\t\t\t\t\t#if COMPUTESHADER && USE_ADAPTATIVE && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)',
+    after: '\t\t\t\t\t#if COMPUTESHADER && USE_ADAPTATIVE && (!(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU) || WEB_VSM_ADAPTIVE_PROBE)',
   }]],
   ['Private/VirtualShadowMaps/VirtualShadowMapShadowCasterBounds.usf', [
     branch('\tOutput.SvPosition = asfloat(0xFFFFFFFF);', [

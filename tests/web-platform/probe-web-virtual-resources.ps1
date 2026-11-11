@@ -2,9 +2,13 @@ param(
     [string]$Project = 'H:/ue_html/tests/web-platform/build/projects/triplex-virtual/TriplexHouseVilla.uproject',
     [string]$ShaderTypes,
     [ValidateRange(-1, 2147483647)][int]$Permutation = -1,
-    [switch]$AllPermutations
+    [switch]$AllPermutations,
+    [switch]$VSMAdaptiveProbe
 )
 $ErrorActionPreference = 'Stop'
+if ($VSMAdaptiveProbe -and $ShaderTypes -ne 'FVirtualShadowMapProjectionCS') {
+    throw 'VSMAdaptiveProbe is restricted to the projection shader.'
+}
 if ($Permutation -ge 0 -and (-not $ShaderTypes -or $AllPermutations)) {
     throw 'Permutation requires explicit ShaderTypes and cannot be combined with AllPermutations.'
 }
@@ -21,6 +25,7 @@ $taskReport = [ordered]@{
     pass = $false
     project = $taskProject
     completeVirtualResourceScene = $false
+    adaptiveProbe = [bool]$VSMAdaptiveProbe
     output = $taskOutput
 }
 try {
@@ -34,13 +39,16 @@ try {
     if ($ShaderTypes) { $taskArguments += "-ShaderTypes=$ShaderTypes" }
     if ($Permutation -ge 0) { $taskArguments += "-Permutation=$Permutation" }
     if ($AllPermutations) { $taskArguments += '-AllPermutations' }
+    if ($VSMAdaptiveProbe) { $taskArguments += '-WebVSMAdaptiveProbe' }
     $taskChild = Start-Process -FilePath (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') `
         -ArgumentList ($taskArguments | ForEach-Object { '"' + $_ + '"' }) -PassThru -WindowStyle Hidden `
         -RedirectStandardOutput "$taskOutput/shaders.console" -RedirectStandardError "$taskOutput/shaders.stderr"
+    $null = $taskChild.Handle
     while (-not $taskChild.WaitForExit(250)) {
         try { $taskChild.ProcessorAffinity = [IntPtr]4294901760 }
         catch { if (-not $taskChild.HasExited) { throw } }
     }
+    $taskChild.WaitForExit()
     $taskReport.exitCode = $taskChild.ExitCode
     $taskResults = Join-Path $taskOutput 'virtual-resource-shader-results.json'
     if (Test-Path -LiteralPath $taskResults) {

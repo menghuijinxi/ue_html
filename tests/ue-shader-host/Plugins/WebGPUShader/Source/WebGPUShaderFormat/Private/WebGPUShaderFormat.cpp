@@ -562,6 +562,12 @@ bool UE::WebGPUShader::ValidateBindings(const TSharedRef<FJsonObject> &Metadata,
 
 class FWebGPUShaderFormat final : public IShaderFormat
 {
+    static bool IsVSMAdaptiveProbe(const FShaderCompilerInput& Input)
+    {
+        return Input.VirtualSourceFilePath == TEXT("/Engine/Private/VirtualShadowMaps/VirtualShadowMapProjection.usf") &&
+            FParse::Param(FCommandLine::Get(), TEXT("VirtualResourceShaderProbe")) &&
+            FParse::Param(FCommandLine::Get(), TEXT("WebVSMAdaptiveProbe"));
+    }
   public:
     FWebGPUShaderFormat()
     {
@@ -611,6 +617,12 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Input.Environment.SetDefine(TEXT("WEB_VSM_SCALAR_ATOMICS"),
             Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ? 1 : 0);
         Input.Environment.SetDefine(TEXT("EARLYDEPTHSTENCIL"), TEXT(""));
+        if (IsVSMAdaptiveProbe(Input))
+        {
+            Input.Environment.SetDefine(TEXT("WEB_VSM_ADAPTIVE_PROBE"), 1);
+            Input.Environment.CompilerFlags.Add(CFLAG_WaveOperations);
+            Input.Environment.SetCompileArgument(TEXT("WebVSMAdaptiveProbeVersion"), int32(1));
+        }
         // Metadata fields are additive. Invalidate only the affected jobs while
         // AppendToKeyString invalidates complete shader maps containing them.
         if (NeedsRuntimeStorageFormats(Input))
@@ -1160,14 +1172,16 @@ class FWebGPUShaderFormat final : public IShaderFormat
         const FString DerivativeOptions = Input.ShaderFormat == FName(TEXT("SF_WEBGPU_SM5"))
             ? TEXT(" --allow-non-uniform-derivatives true") : TEXT("");
         const bool NaniteTranscode = Input.VirtualSourceFilePath == TEXT("/Engine/Private/Nanite/NaniteTranscode.usf");
-        const FString Converter = Tools / (NaniteTranscode ? TEXT("tint_nanite.exe") : TEXT("tint.exe"));
+        const bool VSMAdaptiveProbe = IsVSMAdaptiveProbe(Input);
+        const FString Converter = Tools / ((NaniteTranscode || VSMAdaptiveProbe) ? TEXT("tint_nanite.exe") : TEXT("tint.exe"));
         if (!FPaths::FileExists(Converter))
         {
-            Error = TEXT("Nanite transcode requires tint_nanite.exe; run tests/web-platform/build-tint-nanite.ps1");
+            Error = TEXT("Subgroup shader conversion requires tint_nanite.exe; run tests/web-platform/build-tint-nanite.ps1");
             return false;
         }
-        const FString Arguments = NaniteTranscode
-            ? FString::Printf(TEXT("\"%s\" \"%s\""), *SpirvPath, *WgslPath)
+        const FString Arguments = (NaniteTranscode || VSMAdaptiveProbe)
+            ? FString::Printf(TEXT("\"%s\" \"%s\"%s"), *SpirvPath, *WgslPath,
+                VSMAdaptiveProbe ? TEXT(" --vsm-adaptive-probe") : TEXT(""))
             : FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\"%s"), *SpirvPath, *WgslPath, *DerivativeOptions);
         const bool Executed = FPlatformProcess::ExecProcess(*Converter, *Arguments, &ExitCode, &StandardOut,
             &StandardError);
@@ -1178,6 +1192,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         }
         if (NaniteTranscode)
             Metadata->SetStringField(TEXT("subgroupUniformityPolicy"), TEXT("nanite-active-lanes"));
+        if (VSMAdaptiveProbe)
+            Metadata->SetStringField(TEXT("subgroupUniformityPolicy"), TEXT("vsm-adaptive-probe-active-lanes"));
         int32 NaniteAtomicBindings = 0;
         for (const auto& Value : Bindings)
         {
