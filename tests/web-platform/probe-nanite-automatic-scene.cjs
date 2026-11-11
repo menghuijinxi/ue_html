@@ -2,12 +2,14 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility'),name=scalar?'scalar':'packed';
+const folder=process.argv.find(a=>a.startsWith('--folder='))?.slice(9)||'nanite-default-scene';
+assert(/^[a-z0-9-]+$/.test(folder));
 const boundsComparison=process.argv.includes('--bounds-comparison');
 const frustumComparison=process.argv.includes('--frustum-comparison');
 assert(!(boundsComparison&&frustumComparison));
 const comparison=boundsComparison||frustumComparison;
 const output=path.join(__dirname,frustumComparison?'results/nanite-default-frustum':boundsComparison?'results/nanite-material-bounds':'results/nanite-automatic-scene');fs.mkdirSync(output,{recursive:true});
-const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-default-scene/package.json')),tests:[],errors:[],logs:[],startupLogs:[],events:[]};
+const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],errors:[],logs:[],startupLogs:[],events:[]};
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
 function observe(scalar){
   const request=GPUAdapter.prototype.requestDevice;globalThis.__automaticGPU={errors:[]};
@@ -46,11 +48,11 @@ function verify(t){
 (async()=>{let context,page,owner;try{
   context=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:1280,height:720}});
   await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:`(${observe.toString()})(${scalar});\n`+await r.text()});});
-  await context.route('**/nanite-default-scene/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebVisualTestClock",')});});
+  await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebVisualTestClock",')});});
   page=await context.newPage();page.on('pageerror',e=>report.errors.push({name:e.name,message:e.message}));
   page.on('console',m=>{const line=m.text();report.logs.push(line);if(report.logs.length>400)report.logs.shift();if(report.startupLogs.length<250)report.startupLogs.push(line);
     if(/Warning:|Error:|Failed to load|Couldn't find|P3_RENDER_SCENE|Command Line:|NaniteStreaming/.test(line))report.events.push(line);});
-  await page.goto('http://127.0.0.1:8765/build/nanite-default-scene/index.html');
+  await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html');
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineRecovery?.phase==='running',null,{timeout:180000});
   assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);

@@ -35,6 +35,7 @@ const overrides = new Map([
       '\treturn SceneTexturesStruct.SceneDepthTexture.GatherRed(GlobalBilinearClampedSampler, ScreenUV);', '#endif'].join('\n'),
   }]],
   ...require('./web-nanite-shader-overrides.cjs'),
+  ...require('./web-nanite-curve-shader-overrides.cjs'),
   ...require('./web-tsr-shader-overrides.cjs'),
   ...require('./web-translucency-shader-overrides.cjs'),
   ...require('./web-lumen-shader-overrides.cjs'),
@@ -677,6 +678,9 @@ overrides.set('Private/StochasticLighting/StochasticLightingTileClassification.u
 
 function prepare() {
   const overrideFiles = [];
+  const preparedOverrides = new Map();
+  const curveVersions = new Map(require('./overlays/nanite-curves-shaders.json').map(r =>
+    [r.relative.slice('Shaders/'.length), r.installedVersionDifferences || []]));
   for (const [relative, replacements] of overrides) {
     const override = path.join(root, 'reference-engine/Engine/Shaders', relative);
     let expected = normalize(fs.readFileSync(path.join(stock, relative)));
@@ -684,8 +688,18 @@ function prepare() {
       assert.equal(expected.split(before).length - 1, count, `Unexpected native declarations: ${relative}`);
       expected = expected.replaceAll(before, after);
     }
-    assert.equal(normalize(fs.readFileSync(override)), expected,
+    let reference = normalize(fs.readFileSync(override));
+    // The reference branch also contains an unrelated native voxel workaround.
+    // Audit that exact version difference, but keep the installed native code
+    // in this 5.8.1 snapshot. Only declared feature patches reach Cook.
+    for (const {before, after} of curveVersions.get(relative) || []) {
+      assert.equal(reference.split(after).length - 1, 1, `Unexpected reference version: ${relative}`);
+      assert.equal(expected.split(before).length - 1, 1, `Unexpected installed version: ${relative}`);
+      reference = reference.replace(after, before);
+    }
+    assert.equal(reference, expected,
       `Only the declared WebGPU branches may differ: ${relative}`);
+    preparedOverrides.set(relative, Buffer.from(expected));
     overrideFiles.push(path.join(stock, relative), override);
   }
   fs.mkdirSync(output, {recursive: true});
@@ -707,7 +721,7 @@ function prepare() {
       } else if (entry.isFile()) {
         const overridden = overrides.has(name.replaceAll('\\', '/'));
         const source = overridden ? path.join(root, 'reference-engine/Engine/Shaders', name) : path.join(stock, name);
-        const bytes = fs.readFileSync(source);
+        const bytes = preparedOverrides.get(name.replaceAll('\\', '/')) || fs.readFileSync(source);
         const hash = sha(bytes);
         if (!fs.existsSync(destination) || sha(fs.readFileSync(destination)) !== hash) {
           fs.writeFileSync(destination, bytes);
@@ -742,6 +756,8 @@ function prepare() {
   const report = {date: new Date().toISOString(), pass: true, output,
     sourceFiles: [__filename, require.resolve('./web-tsr-shader-overrides.cjs'),
       require.resolve('./web-nanite-shader-overrides.cjs'),
+      require.resolve('./web-nanite-curve-shader-overrides.cjs'), require.resolve('./overlays/nanite-curves-shaders.json'),
+      ...require('./overlays/nanite-curves-shaders.json').map(r=>path.join(root,'reference-engine/Engine',r.relative)),
       require.resolve('./web-translucency-shader-overrides.cjs'),
       require.resolve('./web-lumen-shader-overrides.cjs'),
       require.resolve('./web-virtual-texture-shader-overrides.cjs'), ...overrideFiles].map(audit),
