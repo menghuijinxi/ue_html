@@ -100,3 +100,30 @@ node tests/web-platform/summarize-villa-shadow-methods.cjs --input=tests/web-pla
 - 原 v7 的 13 个发布产品哈希全部保持不变；诊断包的内容、配置、
   宿主和缓存 worker 与 v7 一致。
 - 没有修改安装引擎或原始别墅工程，没有发布新正式版本。
+
+## 交互对比页面
+
+后续增加 `http://127.0.0.1:8765/villa-shadow-comparison.html`。
+页面在同一视角切换 VSM 开启与传统阴影，切换时销毁旧 iframe 和 worker，
+只运行一个场景。支持恢复相机、30 秒转向/移动路线、停止和导出当前观察记录。
+页面中的实测表来自上面的历史基准，顶部为当前实例的近 5 秒 Low，二者分别标明。
+
+本页有独立的 `villa-shadow-on-20261111`、`villa-shadow-off-20261111` 包，
+使用已修复关闭路径的相同运行时和内容，仅阴影配置不同。
+两组分别采集出生点、转向和移动的实际管线记录，再经过
+`web-release-defaults.cjs` 收尾，均为 `releaseReady=true`。
+这两组入口固定 1920×1080 物理输出、DPR=1，实际 TSR 渲染为 1400×788。
+Lumen、VT 与缓存 worker 默认修复保留；原 v7 目录不变。
+
+准备、采集、发布分别由 `package-villa-shadow-comparison.cjs --phase=prepare`、
+`probe-villa-startup.cjs --capture --scripted-motion-seconds=15`、
+`package-villa-shadow-comparison.cjs --phase=release --corpus=...` 执行，
+两组均指定 `--mode=on` 或 `--mode=off`，新包目录不允许覆盖。
+
+`verify-villa-shadow-comparison.cjs` 已验证开启→关闭→开启、相机保留、恢复、
+转向、移动、停止、导出、单一引擎 worker，以及桌面/窄窗口的布局与非空画面像素。
+最终记录为 `results/villa-shadow-page-final-20261111/result.json`，
+页面和包摘要为 `evidence/villa-shadow-comparison-page-20261111.json`。
+固定分辨率在 DPR 1、1.5、2 的九项组合和统一发布默认值回归均通过。
+窄窗口检查是在桌面 Edge 缩小视口完成，不代表手机 GPU 已验收。
+切换、恢复相机或调整窗口后的即时 Low 会包含过渡帧，本轮不作为新的稳定性能测量。
