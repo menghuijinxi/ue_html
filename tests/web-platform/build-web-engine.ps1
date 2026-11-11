@@ -130,7 +130,7 @@ Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runt
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapCacheManager.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapArray.cpp') -Force
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Destination (Join-Path $taskRendererCopy 'Private/VirtualShadowMaps/VirtualShadowMapProjection.cpp') -Force
-foreach ($taskOcclusionOverlay in @('SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
+foreach ($taskOcclusionOverlay in @('RendererScene.cpp', 'SceneOcclusion.cpp', 'SceneVisibility.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h', 'WebOcclusionBounds.h')) {
     Copy-Item -LiteralPath (Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionOverlay") -Destination (Join-Path $taskRendererCopy "Private/$taskOcclusionOverlay") -Force
 }
 Copy-Item -LiteralPath (Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/TemporalSuperResolution.cpp') -Destination (Join-Path $taskRendererCopy 'Private/PostProcess/TemporalSuperResolution.cpp') -Force
@@ -469,7 +469,7 @@ try {
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/SceneVisibility.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/PostProcess/PostProcessMotionBlur.cpp'
-    foreach ($taskOcclusionAudit in @('SceneOcclusion.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h')) {
+    foreach ($taskOcclusionAudit in @('RendererScene.cpp', 'SceneOcclusion.cpp', 'SceneVisibilityPrivate.h', 'SceneRendering.h', 'SceneViewOcclusionHistory.h', 'WebOcclusionHistory.h', 'WebOcclusionBounds.h')) {
         $taskFiles += Join-Path $taskRoot "reference-engine/Engine/Source/Runtime/Renderer/Private/$taskOcclusionAudit"
         $taskFiles += Join-Path $taskHost "Source/Runtime/Renderer/Private/$taskOcclusionAudit"
     }

@@ -54,6 +54,11 @@ function observe(scalar){
   await waitFrames(80);
   const history=await owner.evaluate(n=>globalThis.__webNanitePrimitiveRecovery?.modes[n],action);
   assert.equal(history?.length,16);const blocked=[1,3,5].includes(action);
+  report.currentAction={action,history};save();
+  for(const row of history){
+   assert.equal(typeof row.targetPresent,'boolean');assert.equal(typeof row.occluderBlocking,'boolean');
+   if(row.targetPresent&&!row.occluderBlocking)assert(row.candidate,`Target missing after actual render-thread disocclusion: action ${action}, frame ${row.frame}, index ${row.index}`);
+  }
   // Newly occluded targets may remain conservatively visible until the timed
   // query refresh. Only recovery has a frame deadline; steady-state readback
   // below still requires blocked targets to be culled and all pixels to match.

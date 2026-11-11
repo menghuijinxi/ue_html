@@ -59,6 +59,13 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("primitiveVisibility"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebPrimitiveVisibility"))->GetInt() != 0);
     Report->SetNumberField(TEXT("rejected"), Cull.Rejected);
     Report->SetArrayField(TEXT("assets"), Assets);
+    if (!Cull.Entries.IsEmpty())
+    {
+        const auto& Input = Cull.Entries[0].Input;
+        Report->SetNumberField(TEXT("poolPages"), Input.MaxStreamingPages);
+        Report->SetNumberField(TEXT("poolBytes"), double(Input.ClusterPageData->Desc.Buffer->Desc.GetSize()));
+        for (const auto& Entry : Cull.Entries) check(Entry.Input.MaxStreamingPages == Input.MaxStreamingPages);
+    }
     uint64 UnboundedPixels = 0, BoundedPixels = 0;
     uint32 Levels = 0;
     TArray<TSharedPtr<FJsonValue>> EntryIDs;
@@ -166,6 +173,9 @@ void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved
     auto* States = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Saved.Cull->Entries.Num() * 16), TEXT("Nanite.Web.AutomaticStates"));
     for (int32 I = 0; I < Saved.Cull->Entries.Num(); ++I) AddCopyBufferPass(Graph, States, I * 16, Saved.Cull->Entries[I].Result.State, 0, 16);
     Copy(Graph, States, TEXT("cullStates"));
+    const auto& Input = Saved.Cull->Entries[0].Input;
+    if (Input.MaxStreamingPages && Input.StreamingPageOwners)
+        Copy(Graph, Input.StreamingPageOwners->Desc.Buffer, TEXT("poolOwners"));
 }
 
 void Poll()
@@ -301,18 +311,26 @@ UStaticMeshComponent* Target = nullptr;
 UStaticMeshComponent* Sentinel = nullptr;
 UStaticMeshComponent* Occluder = nullptr;
 FDelegateHandle Observer;
-FPrimitiveComponentId TargetId;
+FPrimitiveComponentId TargetId, OccluderId;
 int Mode = 0, Frames = 0;
 const FVector Origin(100000, 0, 100000);
 void Observe(FRDGBuilder&, const Nanite::FWebSceneCullView& Cull)
 {
     if (!Mode || Frames >= 16 || Cull.View->bIsSceneCapture) return;
     const bool Found = Cull.Entries.ContainsByPredicate([](const auto& E) { return E.ComponentId == TargetId; });
+    const auto* TargetInfo = Cull.View->Family->Scene->GetPrimitiveSceneInfo(TargetId);
+    const auto* OccluderInfo = Cull.View->Family->Scene->GetPrimitiveSceneInfo(OccluderId);
+    const auto* OccluderProxy = OccluderInfo ? OccluderInfo->Proxy : nullptr;
+    const bool Shown = OccluderProxy && OccluderProxy->IsShown(Cull.View);
+    const FVector Position = OccluderProxy ? OccluderProxy->GetLocalToWorld().GetOrigin() : FVector::ZeroVector;
+    const FVector Eye = Cull.View->ViewMatrices.GetViewOrigin();
+    const bool Blocking = Shown && Position.Equals(Origin + FVector(300, 0, 0), .01) && Eye.X < Origin.X + 500;
+
     MAIN_THREAD_ASYNC_EM_ASM({
         globalThis.__webNanitePrimitiveRecovery ??= {modes: {}};
         const rows = globalThis.__webNanitePrimitiveRecovery.modes[$0] ??= [];
-        rows.push({frame: $1, index: $2, candidate: !!$3, cameraCut: !!$4});
-    }, Mode, Cull.View->Family->FrameNumber, Frames++, Found, Cull.View->bCameraCut);
+        rows.push({frame: $1, index: $2, candidate: !!$3, cameraCut: !!$4, targetPresent: !!$5, occluderShown: !!$6, occluderBlocking: !!$7, occluderY: $8, eyeX: $9});
+    }, Mode, Cull.View->Family->FrameNumber, Frames++, Found, Cull.View->bCameraCut, TargetInfo && TargetInfo->Proxy, Shown, Blocking, Position.Y, Eye.X);
 }
 }
 
@@ -391,9 +409,9 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNanitePrimitiveRecoveryTest(int Mode)
         Camera->SetActorLocationAndRotation(Origin, FRotator::ZeroRotator);
         Controller->PlayerCameraManager->SetGameCameraCutThisFrame(); Occluder->SetVisibility(false);
     }
-    const FPrimitiveComponentId Id = Target->GetPrimitiveSceneId();
-    ENQUEUE_RENDER_COMMAND(ArmPrimitiveRecovery)([Mode, Id](FRHICommandListImmediate&) {
-        WebPrimitiveRecovery::Mode = Mode; TargetId = Id; Frames = 0;
+    const FPrimitiveComponentId Id = Target->GetPrimitiveSceneId(), BlockerId = Occluder->GetPrimitiveSceneId();
+    ENQUEUE_RENDER_COMMAND(ArmPrimitiveRecovery)([Mode, Id, BlockerId](FRHICommandListImmediate&) {
+        WebPrimitiveRecovery::Mode = Mode; TargetId = Id; OccluderId = BlockerId; Frames = 0;
     });
     return 1;
 }
