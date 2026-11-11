@@ -1,27 +1,32 @@
+param([switch]$DefaultScene)
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
-$taskDirectory = Join-Path $PSScriptRoot 'results/nanite-full-scene-native'
+$taskDirectory = Join-Path $PSScriptRoot $(if ($DefaultScene) { 'results/nanite-default-native-current' } else { 'results/nanite-full-scene-native' })
 $taskBrowser = Get-Content (Join-Path $taskDirectory 'packed.json') -Raw | ConvertFrom-Json
 $taskBrowserSettingsFile = Join-Path $taskDirectory 'browser-settings.json'
 $taskBrowserSettings = Get-Content -LiteralPath $taskBrowserSettingsFile -Raw | ConvertFrom-Json
 if (-not $taskBrowserSettings.pass -or $taskBrowserSettings.package.sha256 -ne $taskBrowser.package.sha256) { throw 'Current browser render settings are required.' }
-if (-not $taskBrowser.pass -or $taskBrowser.views.Count -ne 3) { throw 'Three browser views must pass first.' }
+if (-not $taskBrowser.pass -or $taskBrowser.views.Count -ne $(if ($DefaultScene) { 1 } else { 3 })) { throw 'All requested browser views must pass first.' }
 $taskSourceHash = (Get-FileHash -LiteralPath $PSCommandPath).Hash
 $taskInput = Join-Path $taskDirectory 'native-input.json'
 $taskPrefix = Join-Path $taskDirectory 'native'
-$taskBuildFile = Join-Path $PSScriptRoot 'results/nanite-native-capture-build.json'
+$taskBuildFile = Join-Path $PSScriptRoot $(if ($DefaultScene) { 'results/nanite-default-native-capture-build.json' } else { 'results/nanite-native-capture-build.json' })
 $taskBuild = Get-Content -LiteralPath $taskBuildFile -Raw | ConvertFrom-Json
 if (-not $taskBuild.pass) { throw 'Build the isolated native capture module first.' }
 $taskPreparation = Get-Content -LiteralPath $taskBuild.preparation.file -Raw | ConvertFrom-Json
-$taskConversionFile = Join-Path $PSScriptRoot 'results/nanite-full-scene-conversion-verified.json'
-$taskConversion = Get-Content -LiteralPath $taskConversionFile -Raw | ConvertFrom-Json
-if (-not $taskConversion.pass) { throw 'Verified converted scene required.' }
+$taskConversionFile = $null
+$taskConversion = $null
+if (-not $DefaultScene) {
+    $taskConversionFile = Join-Path $PSScriptRoot 'results/nanite-full-scene-conversion-verified.json'
+    $taskConversion = Get-Content -LiteralPath $taskConversionFile -Raw | ConvertFrom-Json
+    if (-not $taskConversion.pass) { throw 'Verified converted scene required.' }
+}
 foreach ($taskItem in @($taskBuild.source, $taskBuild.preparation, $taskBuild.log, $taskBuild.binary, $taskBuild.manifest, $taskBuild.engineManifest) +
     @($taskPreparation.sources) + @($taskPreparation.generated) + @($taskPreparation.configs)) {
     if ((Get-FileHash -LiteralPath $taskItem.file).Hash.ToLowerInvariant() -ne $taskItem.sha256) { throw "Stale native capture input: $($taskItem.file)" }
 }
 $taskProject = $taskPreparation.project
-$taskMap = '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla'
+$taskMap = if ($DefaultScene) { '/Engine/Maps/Templates/Template_Default' } else { '/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla' }
 $taskViews = @()
 foreach ($taskView in $taskBrowser.views) {
     $taskCamera = $taskView.camera
@@ -30,10 +35,12 @@ foreach ($taskView in $taskBrowser.views) {
     foreach ($taskEnabled in @(1, 0, 1)) {
         $taskStep = 1 + ($taskViews.Count % 3)
         $taskViews += @{name = "$($taskView.index)-$taskStep"; x = $taskCamera[0]; y = $taskCamera[1]; z = $taskCamera[2];
-            pitch = $taskCamera[3]; yaw = $taskCamera[4]; fov = $taskProjection.horizontalFOV; nanite = [bool]$taskEnabled}
+            pitch = $taskCamera[3]; yaw = $taskCamera[4]; fov = $taskProjection.horizontalFOV; nanite = [bool]$taskEnabled; dense = $true}
     }
 }
-@{width = 1280; height = 720; output = $taskPrefix; map = $taskMap; views = $taskViews; materialTimeOnly = $true} |
+$taskInputData = @{width = 1280; height = 720; output = $taskPrefix; map = $taskMap; views = $taskViews; materialTimeOnly = $true}
+if ($DefaultScene) { $taskInputData.samples = $taskBrowser.samples.samples }
+$taskInputData |
     ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $taskInput -Encoding utf8
 $taskLog = Join-Path $taskDirectory 'native.log'
 $taskHost = Join-Path $taskRoot '.tools/ue58-web-cook-host/Engine/Binaries/Win64/UnrealEditor.exe'
@@ -66,7 +73,7 @@ while (-not $taskChild.WaitForExit(250)) {
 }
 if ($taskChild.ExitCode -ne 0) { throw "Native full-scene capture failed: $taskLog" }
 if ((Get-FileHash -LiteralPath $PSCommandPath).Hash -ne $taskSourceHash) { throw 'Capture script changed during execution.' }
-foreach ($taskItem in @($taskConversion.originalFiles) + @($taskConversion.convertedFiles)) {
+foreach ($taskItem in @($taskConversion.originalFiles) + @($taskConversion.convertedFiles) | Where-Object { $_ }) {
     if ((Get-FileHash -LiteralPath $taskItem.file).Hash.ToLowerInvariant() -ne $taskItem.sha256) { throw "Scene changed during capture: $($taskItem.file)" }
 }
 function Get-TaskAudit([string]$File) {
@@ -110,7 +117,7 @@ foreach ($taskView in $taskViews) {
 @{pass = $true; arguments = $taskArguments; input = Get-TaskAudit $taskInput; log = Get-TaskAudit $taskLog;
     source = Get-TaskAudit $PSCommandPath; host = Get-TaskAudit $taskHost; browser = Get-TaskAudit (Join-Path $taskDirectory 'packed.json');
     browserSettings = Get-TaskAudit $taskBrowserSettingsFile;
-    project = Get-TaskAudit $taskProject; conversion = Get-TaskAudit $taskConversionFile;
+    project = Get-TaskAudit $taskProject; conversion = $(if ($taskConversionFile) { Get-TaskAudit $taskConversionFile } else { $null });
     producer = Get-TaskAudit "$taskRoot/tests/ue-shader-host/Source/UEShaderHost/Private/WebNativeComparison.cpp";
     binary = Get-TaskAudit $taskBuild.binary.file; build = Get-TaskAudit $taskBuildFile; hostManifest = Get-TaskAudit $taskHostManifest;
     captures = $taskCaptures; boundary = 'Native SM6 editor viewport captures; not standalone native game performance.'} |

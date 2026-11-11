@@ -3,10 +3,13 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {PNG}=require('pngjs');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility'),mode=scalar?'scalar':'packed';
-const output=path.join(__dirname,'results/nanite-full-scene-native');fs.mkdirSync(output,{recursive:true});
-const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-full-scene/package.json')),
+const defaultScene=process.argv.includes('--default-scene');
+const folder=process.argv.find(a=>a.startsWith('--folder='))?.slice(9)||(defaultScene?'nanite-core-default':'nanite-full-scene');
+assert(/^[a-z0-9-]+$/.test(folder));
+const output=path.join(__dirname,defaultScene?'results/nanite-default-native-current':'results/nanite-full-scene-native');fs.mkdirSync(output,{recursive:true});
+const report={pass:false,scalar,defaultScene,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),
   views:[],errors:[],logs:[],configs:[],boundary:'Native comparison input captures; acceptance requires the separate SM6 captures and image comparison.'};
-const cameras=[[-175,-80,160,-5,50],[-175,-80,160,-5,230],[-1000,-70,230,-8,65]];
+const cameras=defaultScene?[null]:[[-175,-80,160,-5,50],[-175,-80,160,-5,230],[-1000,-70,230,-8,65]];
 const save=()=>fs.writeFileSync(path.join(output,mode+'.json'),JSON.stringify(report,null,2));
 function observe(scalar){
   const request=GPUAdapter.prototype.requestDevice;globalThis.__nativeSceneGPU={errors:[]};
@@ -22,11 +25,11 @@ function observe(scalar){
       channel:'msedge',headless:true,viewport:{width:1280,height:720}});
     await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();
       await route.fulfill({response:r,body:`(${observe.toString()})(${scalar});\n`+await r.text()});});
-    await context.route('**/nanite-full-scene/index.html',async route=>{const r=await route.fetch();
+    await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();
       await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebMaterialTestClock",')});});
     await context.route('**/config-files.json*',async route=>{
       const r=await route.fetch(),files=await r.json();
-      const file=files.find(f=>f.path.endsWith('/UEWebEngine/Config/DefaultEngine.ini'));assert(file);
+      const file=files.find(f=>defaultScene?f.path==='/Engine/Platforms/Web/Config/WebEngine.ini':f.path.endsWith('/UEWebEngine/Config/DefaultEngine.ini'));assert(file);
       const text=Buffer.from(file.data,'base64').toString('utf8')+'\n[SystemSettings]\nr.Test.FreezeTemporalSequences=1\n';
       const data=Buffer.from(text);file.data=data.toString('base64');file.sha256=crypto.createHash('sha256').update(data).digest('hex');
       report.configs.push({path:file.path,sha256:file.sha256,text});await route.fulfill({response:r,body:JSON.stringify(files)});
@@ -34,16 +37,18 @@ function observe(scalar){
     page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.stack));
     page.on('console',m=>{const line=m.text();if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(line))report.errors.push(line);
       report.logs.push(line);if(report.logs.length>500)report.logs.shift();});
-    await page.goto('http://127.0.0.1:8765/build/nanite-full-scene/index.html');
+    await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html');
     await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineRecovery?.phase==='running',null,{timeout:180000});
     assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
     const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
     report.visualClock=await owner.evaluate(()=>globalThis.__webVisualTestClock);
     assert(report.visualClock.materialTimeFrozen&&!report.visualClock.renderTimeFrozen&&report.visualClock.materialTime===0);
-    assert.equal(await page.evaluate(c=>__webEngineRPC('WebProjectViewTest',...c),camera),1);
+    if(camera)assert.equal(await page.evaluate(c=>__webEngineRPC('WebProjectViewTest',...c),camera),1);
+    if(defaultScene){report.samples=await owner.evaluate(()=>globalThis.__webDefaultSamples);
+      assert(report.samples.sceneUnchanged);assert.equal(report.samples.count,8);}
     assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',1,0,1)),1);
     await page.addStyleTag({content:'body > :not(canvas) { visibility: hidden !important; } canvas, canvas * { visibility: visible !important; }'});
-    const view={camera,index,tests:[]};report.views.push(view);
+    const view={camera:camera||['x','y','z','pitch','yaw'].map(k=>report.samples.camera[k]),index,tests:[]};report.views.push(view);
     for(const step of [1,2,3]){
       assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteAutomaticSceneTest',s),step),1);
       let t;const start=Date.now();
@@ -55,10 +60,14 @@ function observe(scalar){
       assert(t&&t.step===step);view.tests.push(t);save();
       assert(t.automatic&&t.rejected===0);assert.equal(t.enabled,step!==2);
       const suppressed=t.batches.filter(b=>!b.material&&!b.depth&&!b.occluder).length;
-      assert(t.assets.length>2000&&t.batches.length>2000);
+      if(defaultScene){assert.equal(t.assets.length,8);assert.equal(t.batches.length,8);
+        for(const asset of t.assets){assert(asset.mesh.includes('SM_TestSphere'));assert(asset.clusters>1&&asset.fallbackTriangles>=16000);}}
+      else assert(t.assets.length>2000&&t.batches.length>2000);
       if(step===2){assert.equal(t.entries,0);assert.equal(suppressed,0);}
       else{
-        assert(t.registered>1254&&t.materialComplete&&t.entries>0&&suppressed>1254);
+        assert(t.materialComplete&&t.entries>0);
+        if(defaultScene){assert.equal(t.registered,8);assert.equal(suppressed,8);}
+        else assert(t.registered>1254&&suppressed>1254);
         assert.equal(t.cullStates.length,t.entries*4);
         for(let i=0;i<t.entries;i++)assert.equal(t.cullStates[i*4+1],0);
       }
@@ -77,7 +86,7 @@ function observe(scalar){
             capture=await owner.evaluate(()=>globalThis.__webNaniteNativeCapture||null);
           }while((!capture||capture.serial<=serial)&&Date.now()-started<30000);
           assert(capture&&capture.serial===serial+1);assert.equal(capture.phase,phase);assert.equal(capture.width,1280);assert.equal(capture.height,720);
-          assert.equal(capture.antiAliasingMethod,4);assert(capture.worldTime>0);
+          assert.equal(capture.antiAliasingMethod,defaultScene?2:4);assert(capture.worldTime>0);
           const bytes=Buffer.from(capture.rgba,'base64');assert.equal(bytes.length,1280*720*4);delete capture.rgba;
           let difference=255;if(previous.has(phase)){let sum=0;const before=previous.get(phase);for(let i=0;i<bytes.length;i++)if(i%4!==3)sum+=Math.abs(bytes[i]-before[i]);difference=sum/(1280*720*3);}
           previous.set(phase,bytes);stable[phase]=difference<.05?stable[phase]+1:0;

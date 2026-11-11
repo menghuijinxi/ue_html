@@ -1,11 +1,14 @@
-param([string]$Engine = 'D:/UE_5.8')
+param([string]$Engine = 'D:/UE_5.8', [switch]$DefaultScene)
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
-& node (Join-Path $PSScriptRoot 'prepare-nanite-native-capture.cjs')
+$taskPrepareArgs = @()
+if ($DefaultScene) { $taskPrepareArgs += '--default-scene' }
+& node (Join-Path $PSScriptRoot 'prepare-nanite-native-capture.cjs') @taskPrepareArgs
 if ($LASTEXITCODE -ne 0) { throw 'Native capture preparation failed.' }
-$taskPreparationFile = Join-Path $PSScriptRoot 'results/nanite-native-capture-prepare.json'
+$taskPrefix = if ($DefaultScene) { 'nanite-default-native-capture' } else { 'nanite-native-capture' }
+$taskPreparationFile = Join-Path $PSScriptRoot "results/$taskPrefix-prepare.json"
 $taskPreparation = Get-Content -LiteralPath $taskPreparationFile -Raw | ConvertFrom-Json
-$taskLog = Join-Path $PSScriptRoot 'results/nanite-native-capture-build.log'
+$taskLog = Join-Path $PSScriptRoot "results/$taskPrefix-build.log"
 function Get-TaskAudit([string]$File) {
     @{file = [IO.Path]::GetFullPath($File); sha256 = (Get-FileHash -LiteralPath $File).Hash.ToLowerInvariant()}
 }
@@ -32,4 +35,4 @@ if ($taskModules.BuildId -ne $taskEngineModules.BuildId -or
 @{pass = $true; source = Get-TaskAudit $PSCommandPath; preparation = Get-TaskAudit $taskPreparationFile;
     log = Get-TaskAudit $taskLog; binary = Get-TaskAudit $taskBinary;
     manifest = Get-TaskAudit $taskManifest; engineManifest = Get-TaskAudit $taskEngineManifest} | ConvertTo-Json -Depth 8 |
-    Set-Content (Join-Path $PSScriptRoot 'results/nanite-native-capture-build.json') -Encoding utf8
+    Set-Content (Join-Path $PSScriptRoot "results/$taskPrefix-build.json") -Encoding utf8

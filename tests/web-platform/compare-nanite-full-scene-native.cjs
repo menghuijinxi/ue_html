@@ -1,7 +1,8 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {PNG}=require('pngjs'),{audit}=require('./content-file-metadata.cjs');
-const dir=path.join(__dirname,'results/nanite-full-scene-native');
+const defaultScene=process.argv.includes('--default-scene');
+const dir=path.join(__dirname,defaultScene?'results/nanite-default-native-current':'results/nanite-full-scene-native');
 const read=f=>JSON.parse(fs.readFileSync(f,'utf8').replace(/^\uFEFF/,''));
 const mode=process.argv.includes('--scalar-visibility')?'scalar':'packed';
 const verify=i=>assert.equal(audit(i.file).sha256,i.sha256,i.file);
@@ -15,7 +16,9 @@ try{
   verify(native.browserSettings);const settings=read(native.browserSettings.file);assert(settings.pass);
   [browser.source,browser.package,native.source,native.producer,native.binary,native.input,native.project,native.host,native.log,
     ...native.captures.flatMap(c=>[c.image,c.metadata,...c.phases.map(p=>p.image)])].forEach(verify);
-  assert.equal(browser.views.length,3);assert.equal(native.captures.length,9);
+  assert.equal(browser.views.length,defaultScene?1:3);assert.equal(native.captures.length,defaultScene?3:9);
+  if(defaultScene){assert(browser.samples.sceneUnchanged);assert.equal(browser.samples.count,8);
+    assert.deepEqual(read(native.input.file).samples,browser.samples.samples);}
   report.inputs.push(audit(browserFile),audit(nativeFile));
   for(const view of browser.views){
     const captures=native.captures.slice(view.index*3,view.index*3+3);assert.equal(view.tests.length,3);
@@ -49,9 +52,18 @@ try{
     for(const image of images){assert.equal(image.width,1280);assert.equal(image.height,720);}
     const regions=[{name:'whole-image',x:0,y:0,width:1280,height:720}];
     for(let y=0;y<3;y++)for(let x=0;x<4;x++)regions.push({name:`tile-${x}-${y}`,x:x*320,y:y*240,width:320,height:240});
+    if(defaultScene){
+      const [cx,cy,cz,pitch,yaw]=view.camera,pitchRad=pitch*Math.PI/180,yawRad=yaw*Math.PI/180;
+      const forward=[Math.cos(pitchRad)*Math.cos(yawRad),Math.cos(pitchRad)*Math.sin(yawRad),Math.sin(pitchRad)];
+      const right=[-Math.sin(yawRad),Math.cos(yawRad),0],up=[-Math.sin(pitchRad)*Math.cos(yawRad),-Math.sin(pitchRad)*Math.sin(yawRad),Math.cos(pitchRad)];
+      const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),focal=640*view.tests[0].view.projectionX;
+      for(const sample of browser.samples.samples){const d=[sample.x-cx,sample.y-cy,sample.z-cz],z=dot(d,forward);assert(z>0);
+        regions.push({name:sample.material,x:0,y:0,width:1280,height:720,circle:{x:640+dot(d,right)/z*focal,y:360-dot(d,up)/z*focal,radius:sample.radius/z*focal*.65}});}
+    }
     for(const region of regions){
       const web=[],desktop=[],difference=[],absolute=[],webRestore=[],nativeRestore=[];
       for(let yy=region.y;yy<region.y+region.height;yy++)for(let xx=region.x;xx<region.x+region.width;xx++){
+        if(region.circle&&Math.hypot(xx-region.circle.x,yy-region.circle.y)>region.circle.radius)continue;
         const p=(yy*1280+xx)*4;let wd=0,nd=0,residual=0,platform=0,wr=0,nr=0;
         for(let c=0;c<3;c++){
           const [a,b,n,f,r,s]=images.map(image=>image.data[p+c]);
@@ -60,6 +72,7 @@ try{
         }
         web.push(wd/3);desktop.push(nd/3);difference.push(residual/3);absolute.push(platform/3);webRestore.push(wr/3);nativeRestore.push(nr/3);
       }
+      assert(web.length>50);
       const comparison={view:view.index,phase,region,webNaniteToFallback:statistics(web),nativeNaniteToFallback:statistics(desktop),
         naniteEffectDifference:statistics(difference),absolutePlatformDifference:statistics(absolute),
         webRecreationDifference:statistics(webRestore),nativeRecreationDifference:statistics(nativeRestore)};
@@ -78,7 +91,7 @@ try{
     }
   }
   assert.equal(report.failures.length,0,'Full-scene Nanite must preserve shading and recreation at all fixed views');report.pass=true;
-  report.boundary='Three original Villa views and all four actual AO phases, native SM6 real proxies and ordinary fallback, effective projections and frozen material time/general sampling sequence. AO jitter and temporal histories remain active. Each phase stabilizes before capture. Absolute platform differences are recorded independently. This comparison does not accept native standalone performance or unsupported deformation/material/view permutations.';
+  report.boundary=(defaultScene?'Original Template_Default lighting, sky and eight sample materials':'Three original Villa views')+' and all four actual AO phases, native SM6 real proxies and ordinary fallback, effective projections and frozen material time/general sampling sequence. AO jitter and temporal histories remain active. Each phase stabilizes before capture. Absolute platform differences are recorded independently. This comparison does not accept native standalone performance or unsupported deformation/material/view permutations.';
 }catch(e){report.failure=e.stack;console.error(e.stack);process.exitCode=1;}
 fs.writeFileSync(path.join(dir,mode+'-comparison.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({pass:report.pass,failures:report.failures,views:report.comparisons.filter(c=>c.region.name==='whole-image')}));

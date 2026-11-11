@@ -90,6 +90,9 @@ void StartWebNativeComparison()
                 if (!World || World->GetPackage()->GetName() != Map)
                     return true;
                 const bool ExistingScene = Map != TEXT("/Engine/Maps/Templates/Template_Default");
+                bool MaterialTimeOnly = false;
+                Settings->TryGetBoolField(TEXT("materialTimeOnly"), MaterialTimeOnly);
+                const bool CaptureTemporalPhases = ExistingScene || MaterialTimeOnly;
                 const auto& Views = Settings->GetArrayField(TEXT("views"));
                 if (Step == 0)
                 {
@@ -131,7 +134,7 @@ void StartWebNativeComparison()
                             Sun = Light;
                     Client->SetRealtime(true);
                     Client->SetGameView(true);
-                    if (ExistingScene)
+                    if (CaptureTemporalPhases)
                     {
                         Client->AddRealtimeOverride(true, FText::FromString(TEXT("Native Nanite comparison")));
                         Client->EngineShowFlags.SetAntiAliasing(true);
@@ -148,8 +151,6 @@ void StartWebNativeComparison()
                     FlushRenderingCommands();
                     NativeComparisonView->Target = Client->Viewport;
                     FAssetCompilingManager::Get().FinishAllCompilation();
-                    bool MaterialTimeOnly = false;
-                    Settings->TryGetBoolField(TEXT("materialTimeOnly"), MaterialTimeOnly);
                     IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"))->Set(MaterialTimeOnly ? 0 : 1, ECVF_SetByCode);
                     IConsoleManager::Get().FindConsoleVariable(TEXT("r.Test.OverrideTimeMaterialExpressions"))->Set(MaterialTimeOnly ? 0.0f : -1.0f, ECVF_SetByCode);
                     Step = 1;
@@ -199,7 +200,7 @@ void StartWebNativeComparison()
                 Client->Invalidate();
                 if (++Warmup < 240 || FAssetCompilingManager::Get().GetNumRemainingAssets() > 0 ||
                     (GShaderCompilingManager && GShaderCompilingManager->IsCompiling()) ||
-                    (ExistingScene && Warmup % 120 >= 4))
+                    (CaptureTemporalPhases && Warmup % 120 >= 4))
                     return true;
                 FlushRenderingCommands();
                 TArray<FColor> Pixels;
@@ -211,7 +212,7 @@ void StartWebNativeComparison()
                 FSceneViewFamilyContext Family(FSceneViewFamily::ConstructionValues(
                     Client->Viewport, World->Scene, Client->EngineShowFlags).SetRealtimeUpdate(true));
                 const auto* RenderView = Client->CalcSceneView(&Family);
-                if (ExistingScene)
+                if (CaptureTemporalPhases)
                 {
                     const uint32 Phase = NativeComparisonView->Phase; check(Phase < 4);
                     int32 PendingTextures = 0, ResidentMips = 0, RequestedMips = 0;
@@ -271,7 +272,7 @@ void StartWebNativeComparison()
                 Capture->SetNumberField(TEXT("featureLevel"), int32(World->GetFeatureLevel()));
                 Capture->SetNumberField(TEXT("samples"), SampleCount);
                 Capture->SetNumberField(TEXT("naniteSamples"), NaniteSamples);
-                if (ExistingScene)
+                if (CaptureTemporalPhases)
                 {
                     Capture->SetArrayField(TEXT("stability"), StabilityChecks);
                     Capture->SetBoolField(TEXT("renderTimeFrozen"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.RenderTimeFrozen"))->GetBool());
