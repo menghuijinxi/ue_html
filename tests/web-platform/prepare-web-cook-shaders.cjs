@@ -162,6 +162,16 @@ const overrides = new Map([
       '#endif',
     ].join('\n'),
   }]],
+  ['Private/ShadowDepthPixelShader.usf', [{
+    before: '#if SUPPORT_SHADOW_DEPTH_VSM\n\tuint2 vAddress = (uint2)SvPosition.xy;',
+    after: ['#if SUPPORT_SHADOW_DEPTH_VSM',
+      '\t#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && SUPPORT_SHADOW_DEPTH_POINT',
+      '\t// The combined permutation also renders ordinary six-face point shadows.',
+      '\t// Keep material clipping above, but never access dummy VSM resources or',
+      '\t// perform atomic depth writes for a classic shadow map (VSM type is 1).',
+      '\tif (PassStruct.ShadowDepthType != 1u)', '\t{', '\t\treturn;', '\t}', '\t#endif', '',
+      '\tuint2 vAddress = (uint2)SvPosition.xy;'].join('\n'),
+  }]],
   ['Private/ShadowDepthCommon.ush', [{
     before: '#if SUPPORT_SHADOW_DEPTH_POINT\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',
     after: '#if SUPPORT_SHADOW_DEPTH_POINT && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\tuint LayerIndex : SV_RenderTargetArrayIndex;',

@@ -17,7 +17,9 @@ const acceptedProfile=process.argv.includes('--accepted-profile')||occlusionComp
 if(acceptedProfile)assert(hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison||primitiveComparison,'Profile acceptance uses three fixed comparison views');
 assert([frustumComparison,binsComparison,hierarchyComparison,occlusionComparison,rasterComparison,materialPassComparison,primitiveComparison].filter(Boolean).length<=1);
 const comparison=frustumComparison||binsComparison||hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison||primitiveComparison;
-const output=path.join(__dirname,primitiveComparison?'results/nanite-primitive-visibility':materialPassComparison?'results/nanite-material-pass':rasterComparison?'results/nanite-raster-batch':occlusionComparison?'results/nanite-local-occlusion':acceptedProfile?'results/nanite-runtime-profile':hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+const tag=process.argv.find(a=>a.startsWith('--tag='))?.slice(6);assert(!tag||/^[a-z0-9-]+$/.test(tag));
+const output=path.join(__dirname,tag?'results/'+tag:primitiveComparison?'results/nanite-primitive-visibility':materialPassComparison?'results/nanite-material-pass':rasterComparison?'results/nanite-raster-batch':occlusionComparison?'results/nanite-local-occlusion':acceptedProfile?'results/nanite-runtime-profile':hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+if(tag){assert(!fs.existsSync(path.join(output,name+'.json')));fs.copyFileSync(__filename,path.join(output,'source.cjs'));}
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),
   tests:[],errors:[],events:[],startupLogs:[],logs:[],boundary:'Full-scene diagnostic. Unsupported material categories still use fallback; this is not full compatibility acceptance.'};
 if(acceptedProfile){const {profile}=require('./web-accepted-defaults.cjs');
@@ -70,7 +72,7 @@ function verify(t){
   return {covered,suppressed,ordinaryFallback:t.batches.length-suppressed,visible,shadingModels};
 }
 (async()=>{let context,page,owner,pulse;try{
-  context=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:1280,height:720}});
+  context=await chromium.launchPersistentContext(tag?`C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/${tag}-${name}`:path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:1280,height:720}});
   await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:`(${observe.toString()})(${scalar});\n`+await r.text()});});
   await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [',primitiveComparison?'arguments: ["-WebMaterialTestClock",':'arguments: ["-WebVisualTestClock",')});});
   if(primitiveComparison)await context.route('**/config-files.json*',async route=>{
