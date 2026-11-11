@@ -1,0 +1,191 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+const {chromium} = require('playwright');
+const {audit} = require('./content-file-metadata.cjs');
+const processMemory = require('./gpu-process-memory.cjs');
+const option = name => process.argv.find(arg => arg.startsWith(`--${name}=`))?.slice(name.length + 3);
+const tag = option('tag'), folder = option('folder') || 'triplex-project-distance-fields-threads';
+assert(/^[a-z0-9-]+$/.test(tag) && /^[a-z0-9-]+$/.test(folder));
+const seconds = Number(option('seconds') || 15);
+const width = Number(option('width') || 1280), height = Number(option('height') || 720);
+const dpr = Number(option('dpr') || 1), warmup = Number(option('warmup') || 90);
+const output = path.join(__dirname, 'results', `cpu-${tag}`);
+const report = {date: new Date().toISOString(), tag, folder, seconds, width, height, dpr,
+  source: audit(__filename),
+  cameraMode: process.argv.includes('--spawn') ? 'original-spawn' : 'fixed-room-wall',
+  settingsOverrides: [], samples: [], errors: [], pass: false};
+const naniteOff = process.argv.includes('--nanite-off');
+const rasterBatch = option('nanite-raster-batch');
+const materialBatch = option('nanite-material-batch');
+const primitiveVisibility = option('nanite-primitive-visibility');
+assert(primitiveVisibility === undefined || primitiveVisibility === '0' || primitiveVisibility === '1');
+assert(materialBatch === undefined || /^(?:[0-9]|[12][0-9]|3[0-2])$/.test(materialBatch));
+assert(rasterBatch === undefined || rasterBatch === '0' || rasterBatch === '1');
+let context;
+function countGPUCalls() {
+  const counts = globalThis.__cpuGPUCalls = {};
+  for (const [prototype, names] of [[GPUDevice.prototype, ['createBindGroup', 'createBuffer']],
+    [GPUQueue.prototype, ['submit', 'writeBuffer']],
+    [GPUCommandEncoder.prototype, ['beginRenderPass', 'beginComputePass']],
+    [GPURenderPassEncoder.prototype, ['draw', 'drawIndexed', 'drawIndirect', 'drawIndexedIndirect']],
+    [GPUComputePassEncoder.prototype, ['dispatchWorkgroups', 'dispatchWorkgroupsIndirect']]]) {
+    for (const name of names) {
+      const original = prototype[name];
+      prototype[name] = function(...args) {
+        counts[name] = (counts[name] || 0) + 1;
+        if (name === 'beginRenderPass' || name === 'beginComputePass') {
+          const label = name + ':' + (args[0]?.label || '(unlabelled)');
+          counts[label] = (counts[label] || 0) + 1;
+        }
+        return original.apply(this, args);
+      };
+    }
+  }
+}
+function summarize(profile) {
+  const nodes = new Map(profile.nodes.map(node => [node.id, node]));
+  const parents = new Map();
+  for (const node of profile.nodes) for (const child of node.children || []) parents.set(child, node.id);
+  const self = new Map(), total = new Map();
+  for (let i = 0; i < profile.samples.length; ++i) {
+    const id = profile.samples[i], delta = profile.timeDeltas[i];
+    self.set(id, (self.get(id) || 0) + delta);
+    for (let cursor = id; cursor !== undefined; cursor = parents.get(cursor)) total.set(cursor, (total.get(cursor) || 0) + delta);
+  }
+  const rank = values => [...values].map(([id, us]) => ({name: nodes.get(id).callFrame.functionName,
+    url: nodes.get(id).callFrame.url, milliseconds: us / 1000})).sort((a, b) => b.milliseconds - a.milliseconds).slice(0, 50);
+  return {durationMs: (profile.endTime - profile.startTime) / 1000, samples: profile.samples.length, self: rank(self), total: rank(total)};
+}
+(async () => {
+  try {
+    const packageFile = path.join(__dirname, 'build', folder, 'package.json');
+    if (fs.existsSync(packageFile)) {
+      report.package = audit(packageFile);
+      const packaged = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
+      assert(packaged.pass);
+      for (const product of packaged.products) assert.equal(audit(product.file).sha256, product.sha256, product.file);
+    }
+    context = await chromium.launchPersistentContext('C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/user-profile-effect-20261111',
+      {channel: 'msedge', headless: !process.argv.includes('--visible'), viewport: {width, height}, deviceScaleFactor: dpr});
+    if (process.argv.includes('--count-gpu')) await context.route('**/web-engine-worker.js?*', async route => {
+      const response = await route.fetch();
+      await route.fulfill({response, body: `(${countGPUCalls.toString()})();\n` + await response.text()});
+    });
+    const page = context.pages()[0];
+    page.on('pageerror', error => report.errors.push(error.message));
+    const logs = fs.createWriteStream(output + '.log');
+    page.on('console', message => { const text = message.text(); logs.write(text + '\n');
+      report.logCount = (report.logCount || 0) + 1;
+      if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost|Local bulk IO failed/.test(text)) report.errors.push(text);
+    });
+    await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
+    await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 30, null, {timeout: 900000});
+    assert(!await page.evaluate(() => globalThis.__webEngineFailure));
+    const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
+    assert(owner);
+    if (rasterBatch !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteRasterBatchTest', v), Number(rasterBatch)), 1);
+      report.settingsOverrides.push({naniteRasterBatch: Number(rasterBatch)});
+    }
+    if (materialBatch !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteMaterialPassBatchTest', v), Number(materialBatch)), 1);
+      report.settingsOverrides.push({naniteMaterialPassBatch: Number(materialBatch)});
+    }
+    report.visualClock = await owner.evaluate(() => globalThis.__webVisualTestClock || null);
+    if (primitiveVisibility !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNanitePrimitiveVisibilityTest', v), Number(primitiveVisibility)), 1);
+      report.settingsOverrides.push({nanitePrimitiveVisibility: Number(primitiveVisibility)});
+    }
+    assert(!report.visualClock?.renderTimeFrozen && !report.visualClock?.materialTimeFrozen, 'Game performance requires advancing render and material clocks');
+    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined || primitiveVisibility !== undefined) {
+      for (const step of naniteOff ? [1, 2] : [1]) {
+        assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteAutomaticSceneTest', s), step), 1);
+        const start = Date.now(); let value;
+        do {
+          await page.waitForTimeout(100);
+          assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteAutomaticSceneTest', 0)), 1);
+          value = await owner.evaluate(() => globalThis.__webNaniteAutomaticSceneTest);
+        } while ((!value || value.step !== step) && Date.now() - start < 120000);
+        assert.equal(value?.step, step); assert.equal(value.enabled, step === 1);
+        if (step === 2) assert.equal(value.entries, 0);
+        if (rasterBatch !== undefined) assert.equal(value.rasterBatch, rasterBatch === '1');
+        if (materialBatch !== undefined) { assert.equal(value.materialPassBatch, materialBatch !== '0'); assert.equal(value.materialPassBatchMode, Number(materialBatch)); }
+        if (primitiveVisibility !== undefined) assert.equal(value.primitiveVisibility, primitiveVisibility === '1');
+        report.nanite = {enabled: value.enabled, primitiveVisibility: value.primitiveVisibility, primitiveVisibilitySkipped: value.primitiveVisibilitySkipped, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
+      }
+      if (naniteOff) report.settingsOverrides.push({nanite: false, verifiedEntries: 0});
+    }
+    const plainSample = async label => {
+      await page.waitForFunction(() => globalThis.__webPSOPrecacheReady, null, {timeout:180000});
+      await page.waitForTimeout(10000);
+      const read=()=>owner.evaluate(()=>({time:performance.now(),stages:globalThis.__webThreadStages,view:globalThis.__webRenderView}));
+      const before=await read();await page.waitForTimeout(20000);const after=await read();
+      const frames=after.stages.presented-before.stages.presented;
+      const value={label,before,after,fps:frames*1000/(after.time-before.time),rhiMs:(after.stages.rhiWorkMilliseconds-before.stages.rhiWorkMilliseconds)/frames};
+      (report.plainSamples ||= []).push(value);fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));console.log({plain:label,fps:value.fps,rhiMs:value.rhiMs});
+    };
+    await plainSample('before-profiler');
+    const cdp = await context.browser().newBrowserCDPSession();
+    const {targetInfos} = await cdp.send('Target.getTargets');
+    const target = targetInfos.find(target => target.type === 'worker' && target.url.includes('web-engine-worker.js'));
+    assert(target);
+    const {sessionId} = await cdp.send('Target.attachToTarget', {targetId: target.targetId, flatten: false});
+    let id = 0;
+    const pending = new Map();
+    cdp.on('Target.receivedMessageFromTarget', event => {
+      if (event.sessionId !== sessionId) return;
+      const message = JSON.parse(event.message), task = pending.get(message.id);
+      if (task) { pending.delete(message.id); message.error ? task.reject(Error(JSON.stringify(message.error))) : task.resolve(message.result); }
+    });
+    const command = (method, params = {}) => new Promise((resolve, reject) => {
+      const key = ++id; pending.set(key, {resolve, reject});
+      cdp.send('Target.sendMessageToTarget', {sessionId, message: JSON.stringify({id: key, method, params})}).catch(reject);
+    });
+    await command('Profiler.enable');
+    await command('Profiler.setSamplingInterval', {interval: 500});
+    const state = () => owner.evaluate(() => ({frame: __webEngineFrames, times: globalThis.__webThreadFrameTimes,
+      presented: globalThis.__webThreadStages?.presented, stages: globalThis.__webThreadStages,
+      threads: globalThis.__webEngineThreads, pool: typeof PThread !== 'undefined' ? {active: Object.keys(PThread.pthreads).length,
+        available: PThread.unusedWorkers.length} : null, camera: globalThis.__webDefaultCamera, view: globalThis.__webRenderView,
+      settings: globalThis.__webProjectSettings, runtime: globalThis.__webEngineRuntime, calls: globalThis.__cpuGPUCalls || {},
+      occlusion: globalThis.__webOcclusionRHI, retirement: globalThis.__webGPUHandleDiagnostics}));
+    const views = process.argv.includes('--spawn') ? [null] : [[-175, -80, 160, -5, 50], [-175, -80, 160, -5, 230]];
+    for (let index = 0; index < views.length; ++index) {
+      if (views[index]) await page.evaluate(values => __webEngineRPC('WebProjectViewTest', ...values), views[index]);
+      const first = (await state()).frame;
+      await page.waitForFunction(target => globalThis.__webEngineFailure || globalThis.__webEngineFrames > target,
+        first + warmup, {timeout: 180000});
+      const baselineStart = performance.now(), baseline = await state();
+      await page.waitForTimeout(5000);
+      const baselineAfter = await state(), baselineMs = performance.now() - baselineStart;
+      const before = await state(), logCount = report.logCount, start = Date.now();
+      await command('Profiler.start');
+      await page.waitForTimeout(seconds * 1000);
+      const {profile} = await command('Profiler.stop');
+      const after = await state(), durationMs = Date.now() - start;
+      fs.writeFileSync(output + `-${index}.cpuprofile`, JSON.stringify(profile));
+      const frames = before.presented === undefined ? after.frame - before.frame : after.presented - before.presented;
+      const sample = {before, after, durationMs, fps: frames / durationMs * 1000,
+        baseline: {fps: ((baselineAfter.presented ?? baselineAfter.frame) -
+          (baseline.presented ?? baseline.frame)) / baselineMs * 1000, durationMs: baselineMs},
+        frameSource: before.presented === undefined ? 'engine-loop' : 'rhi-present',
+        profileThread: after.threads?.rhiThread ? 'rhi-worker' : 'game-and-rhi-worker',
+        logs: report.logCount - logCount, profile: summarize(profile),
+        callsPerFrame: Object.fromEntries(Object.entries(after.calls).map(([key, value]) =>
+          [key, (value - (before.calls[key] || 0)) / frames])),
+        memory: processMemory({profile: 'C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/user-profile-effect-20261111'})};
+      report.samples.push(sample);
+      await page.locator('canvas').screenshot({path: output + `-${index}.png`, timeout: 60000});
+      fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));
+      console.log(JSON.stringify({index, fps: sample.fps, logs: sample.logs, threads: after.threads, pool: after.pool,
+        self: sample.profile.self.slice(0, 14), total: sample.profile.total.slice(0, 14)}));
+    }
+    await command('Profiler.disable');
+    await plainSample('after-profiler-disabled');
+    report.pass = !report.errors.length;
+    logs.end();
+  } catch (error) { report.failure = error.stack; process.exitCode = 1; }
+  finally { fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2)); await context?.close();
+    console.log(JSON.stringify({pass: report.pass, failure: report.failure, output})); }
+})();
