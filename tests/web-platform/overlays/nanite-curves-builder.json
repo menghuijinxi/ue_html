@@ -1,0 +1,112 @@
+[
+  {
+    "relative": "Source/Developer/NaniteBuilder/Private/Cluster.cpp",
+    "hunks": [
+      {
+        "before": "\t}\n}\n\nvoid FCluster::Bound()\n{\n\tBounds = FBounds3f();\n",
+        "after": "\t}\n}\n\nfloat FCluster::GetCurveBoundsRadius() const\n{\n\tif (!IsCurve() || !Verts.Format.bHasCurveRadius)\n\t{\n\t\treturn 0.0f;\n\t}\n\tfloat MaxRadius = 0.0f;\n\tfor (uint32 VertexIndex = 0; VertexIndex < Verts.Num(); ++VertexIndex)\n\t{\n\t\tMaxRadius = FMath::Max(MaxRadius, Verts.GetCurveRadius(VertexIndex));\n\t}\n\t// The stored radius is an eight-bit integer times a ten-bit float scale.\n\t// Half conversion rounds before the low mantissa bits are discarded; cover\n\t// the reconstructed maximum as well as the original authored radius.\n\tFFloat16 EncodedScale;\n\tEncodedScale.Encoded = uint16(ToFloat10(MaxRadius / 255.0f) << 5);\n\treturn FMath::Max(MaxRadius, EncodedScale.GetFloat() * 255.0f);\n}\n\nvoid FCluster::Bound()\n{\n\tBounds = FBounds3f();\n"
+      },
+      {
+        "before": "\t\tPositions[i] = Verts.GetPosition(i);\n\t\tBounds += Positions[i];\n\t}\n\tSphereBounds = FSphere3f( Positions.GetData(), Positions.Num() );\n\tLODBounds = SphereBounds;\n\t\n\tfloat MaxEdgeLength2 = 0.0f;\n",
+        "after": "\t\tPositions[i] = Verts.GetPosition(i);\n\t\tBounds += Positions[i];\n\t}\n\tconst float CurveBoundsRadius = GetCurveBoundsRadius();\n\tif (CurveBoundsRadius > 0.0f)\n\t{\n\t\tBounds.Min -= FVector3f(CurveBoundsRadius);\n\t\tBounds.Max += FVector3f(CurveBoundsRadius);\n\t}\n\tSphereBounds = FSphere3f( Positions.GetData(), Positions.Num() );\n\tSphereBounds.W += CurveBoundsRadius;\n\tLODBounds = SphereBounds;\n\t\n\tfloat MaxEdgeLength2 = 0.0f;\n"
+      },
+      {
+        "before": "\tcheck( MaterialRanges.Num() == 0 );\n\tcheck( NumTris * 3 == Indexes.Num() );\n\tcheck( NumCurves == CurveIndexes.Num() );\n\n\tTArray< int32, TInlineAllocator<128> > MaterialElements;\n\tTArray< int32, TInlineAllocator<64> > MaterialCounts;\n",
+        "after": "\tcheck( MaterialRanges.Num() == 0 );\n\tcheck( NumTris * 3 == Indexes.Num() );\n\tcheck( NumCurves == CurveIndexes.Num() );\n\tif (NumCurves)\n\t{\n\t\t// Curve points are encoded in their persistent/fading order, with no\n\t\t// index stream. Sorting only CurveIndexes detaches materials from those\n\t\t// points, and sorting the points would invalidate CurveFadingIndex.\n\t\tcheck(NumCurves <= NANITE_MAX_CLUSTER_MATERIALS);\n\t\tfor (uint32 Curve = 0; Curve < NumCurves; ++Curve)\n\t\t{\n\t\t\tconst int32 Material = MaterialIndexes[Curve];\n\t\t\tif (!MaterialRanges.IsEmpty() && MaterialRanges.Last().MaterialIndex == Material)\n\t\t\t{\n\t\t\t\t++MaterialRanges.Last().RangeLength;\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tFMaterialRange& Range = MaterialRanges.AddDefaulted_GetRef();\n\t\t\t\tRange.RangeStart = Curve;\n\t\t\t\tRange.RangeLength = 1;\n\t\t\t\tRange.MaterialIndex = Material;\n\t\t\t}\n\t\t}\n\t\treturn;\n\t}\n\n\tTArray< int32, TInlineAllocator<128> > MaterialElements;\n\tTArray< int32, TInlineAllocator<64> > MaterialCounts;\n"
+      }
+    ]
+  },
+  {
+    "relative": "Source/Developer/NaniteBuilder/Private/Cluster.h",
+    "hunks": [
+      {
+        "before": "\tFAdjacency\tBuildAdjacency() const;\n\tvoid\t\tSplit( FGraphPartitioner& Partitioner, const FAdjacency& Adjacency ) const;\n\tvoid\t\tBound();\n\tvoid\t\tVoxelize( FClusterDAG& DAG, TArrayView< const FClusterRef > Children, float VoxelSize );\n\tvoid\t\tBuildMaterialRanges();\n\n",
+        "after": "\tFAdjacency\tBuildAdjacency() const;\n\tvoid\t\tSplit( FGraphPartitioner& Partitioner, const FAdjacency& Adjacency ) const;\n\tvoid\t\tBound();\n\tfloat\t\tGetCurveBoundsRadius() const;\n\tvoid\t\tVoxelize( FClusterDAG& DAG, TArrayView< const FClusterRef > Children, float VoxelSize );\n\tvoid\t\tBuildMaterialRanges();\n\n"
+      },
+      {
+        "before": "\tconst FCluster* Cluster;\n};\n\n} // namespace Nanite",
+        "after": "\tconst FCluster* Cluster;\n};\n\n} // namespace Nanite\n"
+      }
+    ]
+  },
+  {
+    "relative": "Source/Developer/NaniteBuilder/Private/ClusterDAG.cpp",
+    "hunks": [
+      {
+        "before": "\nstatic void InternalGetClusterCurveTargetMetric(const FClusterCurveStats& InStats, const uint32 InNumPoints, const uint32 InNumCurves, uint32 InNumParents, uint32 InTargetClusterSize, uint32& OutTargetNumCurves, uint32& OutTargetNumSegments)\n{\n\tOutTargetNumCurves   = InNumParents * (InStats.MaxPointPerCurve > 0 ? (uint32)FMath::Max(1, (int32)FMath::FloorToInt(float(InTargetClusterSize) / float(InStats.MaxPointPerCurve))) : 0u);\n\tOutTargetNumSegments = InNumParents * InTargetClusterSize;\n}\n\nstatic void GetClusterCurveTargetMetric(const FCluster& In, uint32 InNumParents, uint32 InTargetClusterSize, uint32& OutTargetNumCurves, uint32& OutTargetNumSegments)\n",
+        "after": "\nstatic void InternalGetClusterCurveTargetMetric(const FClusterCurveStats& InStats, const uint32 InNumPoints, const uint32 InNumCurves, uint32 InNumParents, uint32 InTargetClusterSize, uint32& OutTargetNumCurves, uint32& OutTargetNumSegments)\n{\n\t// Curves retain their persistent/fading order. At most one material range\n\t// per curve must fit the native six-bit range count without reordering them.\n\tconst uint32 CurvesPerCluster = InStats.MaxPointPerCurve > 0 ? FMath::Max(1u, InTargetClusterSize / InStats.MaxPointPerCurve) : 0u;\n\tOutTargetNumCurves = InNumParents * FMath::Min(uint32(NANITE_MAX_CLUSTER_MATERIALS), CurvesPerCluster);\n\t// Curve simplification removes whole curves. A legal long curve must still\n\t// fit the parent target; otherwise the last curve cannot be removed and the\n\t// greedy simplifier loops forever below the requested point budget.\n\tOutTargetNumSegments = InNumParents * FMath::Max(InTargetClusterSize, InStats.MaxPointPerCurve);\n}\n\nstatic void GetClusterCurveTargetMetric(const FCluster& In, uint32 InNumParents, uint32 InTargetClusterSize, uint32& OutTargetNumCurves, uint32& OutTargetNumSegments)\n"
+      },
+      {
+        "before": "\t\tOptimalNumClusters = MaxNumClusters;\n\t\tconst uint32 TotalNumSegments = GetClusterCurveStats(CurveIndexes).TotalPointCount;\n\t\tcheck(TotalNumSegments <= FCluster::MaxNumSegmentPerCluster * MaxNumClusters);\n\t}\n\telse\n\t{\n",
+        "after": "\t\tOptimalNumClusters = MaxNumClusters;\n\t\tconst uint32 TotalNumSegments = GetClusterCurveStats(CurveIndexes).TotalPointCount;\n\t\tcheck(TotalNumSegments <= FCluster::MaxNumSegmentPerCluster * MaxNumClusters);\n\t\tcheck(uint32(CurveIndexes.Num()) <= NumCurvePerCluster * MaxNumClusters);\n\t}\n\telse\n\t{\n"
+      },
+      {
+        "before": "\t\t\tOutClusterNumSegments += CurveIndex.Count;\n\t\t\tOutClusteredCurveIndices.Add(Idx++);\n\t\t}\n\t\tcheck(OutClusterNumSegments < FCluster::MaxNumSegmentPerCluster);\n\t\tFRange& Range = OutClusteredCurveRanges.AddDefaulted_GetRef();\n\t\tRange.Begin = 0;\n\t\tRange.End = Idx;\n",
+        "after": "\t\t\tOutClusterNumSegments += CurveIndex.Count;\n\t\t\tOutClusteredCurveIndices.Add(Idx++);\n\t\t}\n\t\tcheck(OutClusterNumSegments <= FCluster::MaxNumSegmentPerCluster);\n\t\tFRange& Range = OutClusteredCurveRanges.AddDefaulted_GetRef();\n\t\tRange.Begin = 0;\n\t\tRange.End = Idx;\n"
+      },
+      {
+        "before": "\t\t\t\t\t\tCurrentCluster.Reserve(NumCurvePerCluster);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n",
+        "after": "\t\t\t\t\t\tCurrentCluster.Reserve(NumCurvePerCluster);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\t// Retain the remainder after emitting the full clusters. Dropping\n\t\t\t\t// it loses original curves before any LOD simplification occurs.\n\t\t\t\tif (!CurrentCluster.IsEmpty())\n\t\t\t\t{\n\t\t\t\t\tcheck(GetClusterCurveStats(CurrentCluster, CurveIndexes).TotalPointCount <= FCluster::MaxNumSegmentPerCluster);\n\t\t\t\t\tClusterIndices.Add(MoveTemp(CurrentCluster));\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n"
+      },
+      {
+        "before": "\t\t\t\t}\n\n\t\t\t\t// All curves of the current cluster are merged\n\t\t\t\tif (SortedClusters[i].NumSegments + SortedClusters[j].NumSegments <= FCluster::MaxNumSegmentPerCluster)\n\t\t\t\t{\n\t\t\t\t\tClusterIndices[Sj].Append(ClusterIndices[Si]);\n\t\t\t\t\tSortedClusters[j].NumCurve    += SortedClusters[i].NumCurve;\n",
+        "after": "\t\t\t\t}\n\n\t\t\t\t// All curves of the current cluster are merged\n\t\t\t\tif (SortedClusters[i].NumSegments + SortedClusters[j].NumSegments <= FCluster::MaxNumSegmentPerCluster &&\n\t\t\t\t\tSortedClusters[i].NumCurve + SortedClusters[j].NumCurve <= NumCurvePerCluster)\n\t\t\t\t{\n\t\t\t\t\tClusterIndices[Sj].Append(ClusterIndices[Si]);\n\t\t\t\t\tSortedClusters[j].NumCurve    += SortedClusters[i].NumCurve;\n"
+      },
+      {
+        "before": "\t\t\t\t\ti++;\n\t\t\t\t}\n\t\t\t\t// 1 curve of the current cluster is merged\n\t\t\t\telse if (SiNumSegmentLastCurve + SortedClusters[j].NumSegments <= FCluster::MaxNumSegmentPerCluster)\n\t\t\t\t{\n\t\t\t\t\t\n\t\t\t\t\tClusterIndices[Sj].Add(ClusterIndices[Si].Last());\n",
+        "after": "\t\t\t\t\ti++;\n\t\t\t\t}\n\t\t\t\t// 1 curve of the current cluster is merged\n\t\t\t\telse if (SiNumSegmentLastCurve + SortedClusters[j].NumSegments <= FCluster::MaxNumSegmentPerCluster &&\n\t\t\t\t\tSortedClusters[j].NumCurve < NumCurvePerCluster)\n\t\t\t\t{\n\t\t\t\t\t\n\t\t\t\t\tClusterIndices[Sj].Add(ClusterIndices[Si].Last());\n"
+      },
+      {
+        "before": "\t\tOutClusteredCurveRanges.Reserve(ClusterIndices.Num());\n\t\tfor (const TArray<int32>& Curves : ClusterIndices)\n\t\t{\n\t\t\tFRange& ClusterRange = OutClusteredCurveRanges.AddDefaulted_GetRef();\n\t\t\tClusterRange.Begin = OutClusteredCurveIndices.Num();\n\t\t\tuint32 ClusterNumSegments = 0;\n",
+        "after": "\t\tOutClusteredCurveRanges.Reserve(ClusterIndices.Num());\n\t\tfor (const TArray<int32>& Curves : ClusterIndices)\n\t\t{\n\t\t\tcheck(uint32(Curves.Num()) <= NumCurvePerCluster);\n\t\t\tFRange& ClusterRange = OutClusteredCurveRanges.AddDefaulted_GetRef();\n\t\t\tClusterRange.Begin = OutClusteredCurveIndices.Num();\n\t\t\tuint32 ClusterNumSegments = 0;\n"
+      },
+      {
+        "before": "\t\t\tOutClusterMaxNumSegments = FMath::Max(OutClusterMaxNumSegments, ClusterNumSegments);\n\t\t}\n\n\t\tcheck(OutClusterMaxNumSegments <= FCluster::MaxNumSegmentPerCluster);\n\t\treturn OutClusterMaxNumSegments;\n\t}\n",
+        "after": "\t\t\tOutClusterMaxNumSegments = FMath::Max(OutClusterMaxNumSegments, ClusterNumSegments);\n\t\t}\n\n\t\tcheck(OutClusteredCurveIndices.Num() == CurveIndexes.Num());\n\t\tcheck(OutClusterMaxNumSegments <= FCluster::MaxNumSegmentPerCluster);\n\t\treturn OutClusterMaxNumSegments;\n\t}\n"
+      },
+      {
+        "before": "\n\t\tUE_LOGF( LogStaticMesh, Verbose, \"Num clusters %i. Error %.4f, %.4f, %.4f\", LevelClusters.Num(), MinError, AvgError, MaxError );\n\n\t\tuint32 MaxClusterSize = FCluster::ClusterSize;\n\t\tif( LevelClusters.Num() == 1 )\n\t\t{\n\t\t\tconst FCluster& Cluster = LevelClusters[0].GetCluster( *this );\n",
+        "after": "\n\t\tUE_LOGF( LogStaticMesh, Verbose, \"Num clusters %i. Error %.4f, %.4f, %.4f\", LevelClusters.Num(), MinError, AvgError, MaxError );\n\n\t\t// Parent allocation must use the same point capacity as ReduceGroup.\n\t\t// With the triangle capacity, a 255-point curve allocates one parent per\n\t\t// child and the hierarchy repeats the same level without ever shrinking.\n\t\tuint32 MaxClusterSize = LevelClusters[0].GetCluster(*this).IsCurve() ?\n\t\t\tFCluster::MaxNumSegmentPerCluster : FCluster::ClusterSize;\n\t\tif( LevelClusters.Num() == 1 )\n\t\t{\n\t\t\tconst FCluster& Cluster = LevelClusters[0].GetCluster( *this );\n"
+      },
+      {
+        "before": "template< typename FPartitioner, typename FPartitionFunc >\nbool SplitCluster( FCluster& Merged, TArray< FCluster >& Clusters, std::atomic< int32 >& NumClusters, uint32 MaxClusterSize, uint32& NumParents, uint32& ParentStart, uint32& ParentEnd, FPartitionFunc&& PartitionFunc )\n{\n\tconst bool bIsSingleCluster = Merged.IsCurve() ? Merged.Verts.Num() <= MaxClusterSize : Merged.MaterialIndexes.Num() <= (int32)MaxClusterSize;\n\tif (bIsSingleCluster)\n\t{\n\t\tParentEnd = ( NumClusters += 1 );\n",
+        "after": "template< typename FPartitioner, typename FPartitionFunc >\nbool SplitCluster( FCluster& Merged, TArray< FCluster >& Clusters, std::atomic< int32 >& NumClusters, uint32 MaxClusterSize, uint32& NumParents, uint32& ParentStart, uint32& ParentEnd, FPartitionFunc&& PartitionFunc )\n{\n\tconst bool bIsSingleCluster = Merged.IsCurve() ?\n\t\tMerged.Verts.Num() <= MaxClusterSize && Merged.NumCurves <= NANITE_MAX_CLUSTER_MATERIALS :\n\t\tMerged.MaterialIndexes.Num() <= (int32)MaxClusterSize;\n\tif (bIsSingleCluster)\n\t{\n\t\tParentEnd = ( NumClusters += 1 );\n"
+      }
+    ]
+  },
+  {
+    "relative": "Source/Developer/NaniteBuilder/Private/Encode/NaniteEncode.cpp",
+    "hunks": [
+      {
+        "before": "\t{\n\t\tconst uint32 NumPointsPerCurve = InCluster.NumCurves ? InCluster.Verts.Num() / InCluster.NumCurves : 0u;\n\t\tOutCluster.SetNumCurves(InCluster.NumCurves);\n\t\tOutCluster.SetNumPointsPerCurve(NumPointsPerCurve);\n\t\tOutCluster.SetHasCurveRadius(bHasCurveRadius);\n\t\tOutCluster.SetCurveRadiusBits(EncodingInfo.CurveRadiusBits);\n\t\tOutCluster.SetCurveRadiusScale(EncodingInfo.CurveRadiusScale);\n",
+        "after": "\t{\n\t\tconst uint32 NumPointsPerCurve = InCluster.NumCurves ? InCluster.Verts.Num() / InCluster.NumCurves : 0u;\n\t\tOutCluster.SetNumCurves(InCluster.NumCurves);\n\t\t// Curves may contain all 256 cluster vertices. Zero encodes that one\n\t\t// otherwise unrepresentable count; non-curve clusters still encode zero.\n\t\tcheck(NumPointsPerCurve <= NANITE_MAX_CLUSTER_VERTICES);\n\t\tOutCluster.SetNumPointsPerCurve(NumPointsPerCurve & 0xffu);\n\t\tOutCluster.SetHasCurveRadius(bHasCurveRadius);\n\t\tOutCluster.SetCurveRadiusBits(EncodingInfo.CurveRadiusBits);\n\t\tOutCluster.SetCurveRadiusScale(EncodingInfo.CurveRadiusScale);\n"
+      },
+      {
+        "before": "\t\t// Update bounds\n\t\tCluster.Bounds.Min = FVector3f((float)IntClusterMin.X * RcpQuantizationScale, (float)IntClusterMin.Y * RcpQuantizationScale, (float)IntClusterMin.Z * RcpQuantizationScale);\n\t\tCluster.Bounds.Max = FVector3f((float)IntClusterMax.X * RcpQuantizationScale, (float)IntClusterMax.Y * RcpQuantizationScale, (float)IntClusterMax.Z * RcpQuantizationScale);\n\n\t\tCluster.QuantizedPosBits = FIntVector(NumBitsX, NumBitsY, NumBitsZ);\n\t\tCluster.QuantizedPosStart = IntClusterMin;\n",
+        "after": "\t\t// Update bounds\n\t\tCluster.Bounds.Min = FVector3f((float)IntClusterMin.X * RcpQuantizationScale, (float)IntClusterMin.Y * RcpQuantizationScale, (float)IntClusterMin.Z * RcpQuantizationScale);\n\t\tCluster.Bounds.Max = FVector3f((float)IntClusterMax.X * RcpQuantizationScale, (float)IntClusterMax.Y * RcpQuantizationScale, (float)IntClusterMax.Z * RcpQuantizationScale);\n\t\t// Re-quantizing the centerline must not discard the curve's width from\n\t\t// the frustum/HZB bounds. The encoded radius can differ from the source.\n\t\tconst float CurveBoundsRadius = Cluster.GetCurveBoundsRadius();\n\t\tif (CurveBoundsRadius > 0.0f)\n\t\t{\n\t\t\tCluster.Bounds.Min -= FVector3f(CurveBoundsRadius);\n\t\t\tCluster.Bounds.Max += FVector3f(CurveBoundsRadius);\n\t\t}\n\n\t\tCluster.QuantizedPosBits = FIntVector(NumBitsX, NumBitsY, NumBitsZ);\n\t\tCluster.QuantizedPosStart = IntClusterMin;\n"
+      }
+    ]
+  },
+  {
+    "relative": "Source/Developer/NaniteBuilder/Private/Encode/NaniteEncodeMaterial.cpp",
+    "hunks": [
+      {
+        "before": "\treturn Packed;\n}\n\nuint32 CalcMaterialTableSize( const FCluster& Cluster )\n{\n\tconst uint32 NumMaterials = Cluster.MaterialRanges.Num();\n\treturn NumMaterials > 3 ? NumMaterials : 0;\n}\n\n// Prints material range stats. This has to happen separate from BuildMaterialRanges as materials might be recalculated because of cluster splitting.\n",
+        "after": "\treturn Packed;\n}\n\nstatic bool CanUseMaterialFastPath(const FCluster& Cluster)\n{\n\t// Curves preserve the native fading order, so their first material run\n\t// need not be the longest. Use a table when the inline contract cannot fit.\n\treturn Cluster.MaterialRanges.Num() <= 3 &&\n\t\t(Cluster.MaterialRanges.Num() < 2 ||\n\t\t (Cluster.MaterialRanges[1].RangeLength <= 64 &&\n\t\t  Cluster.MaterialRanges[1].RangeLength <= Cluster.MaterialRanges[0].RangeLength));\n}\n\nuint32 CalcMaterialTableSize( const FCluster& Cluster )\n{\n\tconst uint32 NumMaterials = Cluster.MaterialRanges.Num();\n\treturn CanUseMaterialFastPath(Cluster) ? 0 : NumMaterials;\n}\n\n// Prints material range stats. This has to happen separate from BuildMaterialRanges as materials might be recalculated because of cluster splitting.\n"
+      },
+      {
+        "before": "\tuint32 PackedMaterialInfo = 0x00000000;\n\n\t// The fast inline path can encode up to 3 materials\n\tif (Cluster.MaterialRanges.Num() <= 3)\n\t{\n\t\tuint32 Material0Length = 0;\n\t\tuint32 Material0Index = 0;\n",
+        "after": "\tuint32 PackedMaterialInfo = 0x00000000;\n\n\t// The fast inline path can encode up to 3 materials\n\tif (CanUseMaterialFastPath(Cluster))\n\t{\n\t\tuint32 Material0Length = 0;\n\t\tuint32 Material0Index = 0;\n"
+      }
+    ]
+  },
+  {
+    "relative": "Source/Developer/NaniteBuilder/Private/NaniteBuilder.cpp",
+    "hunks": [
+      {
+        "before": "\t#endif\n\t}\n\n\tstatic const FString WeldedVersionString = VersionString + TEXT(\"_SKINNING_WELD_2\");\n\treturn WeldedVersionString;\n}\n\n",
+        "after": "\t#endif\n\t}\n\n\tstatic const FString WeldedVersionString = VersionString + TEXT(\"_SKINNING_WELD_2_CURVES_1\");\n\treturn WeldedVersionString;\n}\n\n"
+      }
+    ]
+  }
+]

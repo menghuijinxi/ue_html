@@ -1,0 +1,7 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.8",
+  "Modules": [{"Name":"WebCurveFixture","Type":"Editor","LoadingPhase":"PostConfigInit"}],
+  "DisableEnginePluginsByDefault": true,
+  "Plugins": [{"Name":"WebGPUShader","Enabled":true},{"Name":"HairStrands","Enabled":true}]
+}

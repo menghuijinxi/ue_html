@@ -1,0 +1,19 @@
+#include "/Engine/Public/Platform.ush"
+Texture2D<float> CaptureDepth;
+Texture2D<float4> CaptureA;
+Texture2D<float4> CaptureB;
+Texture2D<float4> CaptureC;
+RWStructuredBuffer<float4> CaptureOutput;
+uint2 CaptureSize;
+uint2 CaptureOrigin;
+uint CaptureStride;
+[numthreads(64,1,1)]
+void MainCS(uint3 ID:SV_DispatchThreadID)
+{
+ if(ID.x>=CaptureSize.x*CaptureSize.y)return;
+ uint2 P=uint2(ID.x%CaptureSize.x,ID.x/CaptureSize.x)*CaptureStride+CaptureOrigin;
+ CaptureOutput[ID.x*4]=float4(CaptureDepth.Load(int3(P,0)),0,0,0);
+ CaptureOutput[ID.x*4+1]=CaptureA.Load(int3(P,0));
+ CaptureOutput[ID.x*4+2]=CaptureB.Load(int3(P,0));
+ CaptureOutput[ID.x*4+3]=CaptureC.Load(int3(P,0));
+}

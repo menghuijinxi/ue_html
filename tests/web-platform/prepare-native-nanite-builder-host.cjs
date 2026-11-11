@@ -46,10 +46,19 @@ try{
    for(const [before,after]of operations){assert(modified.includes(after));text=replace(text,before,after);}
   }else{
    const after='\tstatic const FString WeldedVersionString = VersionString + TEXT("_SKINNING_WELD_2");\n\treturn WeldedVersionString;';
-   assert(modified.includes(after));text=replace(text,'\treturn VersionString;',after);
+   assert(modified.includes('_SKINNING_WELD_2_CURVES_1'));text=replace(text,'\treturn VersionString;',after);
   }
   safe(target);assert.equal(fs.statSync(target).nlink,1);fs.chmodSync(target,0o666);fs.writeFileSync(target,text);
   report.sourceFiles.push(audit(target));
+ }
+ const patchFile=path.join(__dirname,'overlays/nanite-curves-builder.json');
+ report.sourceFiles.push(audit(patchFile));
+ for(const row of JSON.parse(fs.readFileSync(patchFile))){
+  const installed=path.join(stock,row.relative),reference=path.join(root,'reference-engine/Engine',row.relative),target=path.join(host,row.relative);
+  let text=read(['Cluster.cpp','NaniteBuilder.cpp'].includes(path.basename(target))?target:installed),modified=read(reference);
+  for(const h of row.hunks){assert(modified.includes(h.after),'Stale Builder patch '+row.relative);text=replace(text,h.before,h.after);}
+  safe(target);assert.equal(fs.statSync(target).nlink,1);fs.chmodSync(target,0o666);fs.writeFileSync(target,text);
+  report.sourceFiles=report.sourceFiles.filter(r=>r.file!==target);report.sourceFiles.push(audit(reference),audit(target));report.installedInputs.push(audit(installed));
  }
  const helper=path.join(root,'reference-engine/Engine',relative,'NaniteSkinningWeld.h'),target=path.join(host,relative,'NaniteSkinningWeld.h');
  independentCopy(helper,target);report.sourceFiles.push(audit(helper),audit(target),audit(__filename));
