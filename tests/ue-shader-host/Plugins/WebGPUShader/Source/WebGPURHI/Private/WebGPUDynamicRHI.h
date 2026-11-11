@@ -273,6 +273,8 @@ class FWebGPUTexture final : public FRHITexture
         // The texture may have been written without the mirror after the last
         // texture-to-buffer copy. A new texture and its mirror both start zeroed.
         TArray<uint8> StaleSlices;
+        // Opted in by the paired texture/mirror VSM synchronization shader.
+        bool ExplicitSync = false;
     };
     TArray<FAtomicMip> AtomicMips;
     FWebGPUResourceState State;

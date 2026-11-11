@@ -4,6 +4,7 @@
 #include "WebGPUProbeUtils.h"
 #include "WebGPUUAVRasterProbe.h"
 #include "WebGPUTextureAtomicProbe.h"
+#include "WebGPUTextureExplicitSyncProbe.h"
 #include "WebGPUTextureUploadProbe.h"
 #include "WebGPUVirtualResourceViewProbe.h"
 #include "WebGPUSamplerBiasProbe.h"
@@ -574,6 +575,8 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Pass &= RunWebGPUUAVRasterCases(RHI, Cmd, RasterCases, DepthAtlasCases);
         TArray<TSharedPtr<FJsonValue>> TextureAtomicCases;
         Pass &= RunWebGPUTextureAtomicCases(RHI, Cmd, TextureAtomicCases);
+        TArray<TSharedPtr<FJsonValue>> TextureExplicitSyncCases;
+        Pass &= RunWebGPUTextureExplicitSyncCases(RHI, Cmd, TextureExplicitSyncCases);
         TArray<TSharedPtr<FJsonValue>> TextureUploadCases;
         Pass &= RunWebGPUTextureUploadCases(RHI, Cmd, TextureUploadCases);
         TArray<TSharedPtr<FJsonValue>> TextureViewCases;
@@ -596,6 +599,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("rasterCases"), RasterCases);
         Report->SetArrayField(TEXT("depthAtlasCases"), DepthAtlasCases);
         Report->SetArrayField(TEXT("textureAtomicCases"), TextureAtomicCases);
+        Report->SetArrayField(TEXT("textureExplicitSyncCases"), TextureExplicitSyncCases);
         Report->SetArrayField(TEXT("textureUploadCases"), TextureUploadCases);
         Report->SetArrayField(TEXT("textureViewCases"), TextureViewCases);
         Report->SetBoolField(TEXT("volatilePassVersions"), VolatilePass);

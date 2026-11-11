@@ -2680,6 +2680,7 @@ void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 
     if (Texture->AtomicMips.IsEmpty()) return;
     check(Encoder && !Pass && Slice < Texture->LayerCount());
     auto& Mip = Texture->AtomicMips[Level];
+    if (Mip.ExplicitSync) return;
     if (Mip.DirtySlices[Slice])
     {
         // Atomic writes went to the mirror. After this copy both sides match.
@@ -2702,6 +2703,7 @@ void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 
 void FWebGPUDynamicRHI::RefreshTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level)
 {
     auto& Mip = Texture->AtomicMips[Level];
+    if (Mip.ExplicitSync) return;
     for (uint32 Slice = 0; Slice < Texture->LayerCount(); ++Slice)
     {
         if (!Mip.StaleSlices[Slice]) continue;
@@ -4027,9 +4029,20 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                             {
                                 auto* Texture = static_cast<FWebGPUTexture*>(View->GetResource());
                                 const uint32 AtomicLevel = View->GetDesc().Texture.UAV.GetViewInfo(Texture).MipLevel;
+                                auto& Mip = Texture->AtomicMips[AtomicLevel];
+                                if (Name == TEXT("WebShadowPoolAtomicBuffer"))
+                                {
+                                    checkf(Compute && AtomicLevel == 0 && Texture->GetDesc().NumMips == 1,
+                                        TEXT("Explicit VSM synchronization requires a compute pass and a single mip"));
+                                    auto* Paired = Shader->Bindings.FindByPredicate([](const auto& B) {
+                                        return B.Name == TEXT("WebShadowPoolTexture") && B.Descriptor == 3;
+                                    });
+                                    checkf(Paired && ResolveDrawBinding(*Shader, *Paired) == Resource,
+                                        TEXT("Explicit VSM synchronization must bind the same UAV as texture and mirror"));
+                                    Mip.ExplicitSync = true;
+                                }
                                 // Compute bindings are resolved before their pass opens.
                                 if (Compute) RefreshTextureAtomicBuffer(Texture, AtomicLevel);
-                                auto& Mip = Texture->AtomicMips[AtomicLevel];
                                 Entry.buffer = Mip.Buffer;
                                 Entry.size = Mip.Bytes;
                                 for (uint8& Dirty : Mip.DirtySlices) Dirty = 1;
