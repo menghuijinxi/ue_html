@@ -39,6 +39,10 @@ Villa 的确默认开启 Nanite：实际注册 2,062 个普通网格组件，正
 
 **用户关于旧版 100 多帧的反馈已实测确认。先前 54.85 FPS 不是旧版基线，也不是当前关闭 Nanite 后的稳定上限。** 当前同一交付文件补测已达 106.01 FPS，前后运行状态导致的差异仍未解释，原始低帧率结果保留，不能以分辨率或视角差异代替原因调查。普通网格路径的性能损失与 Nanite 开启后的个位数帧率均继续开放；此次仅完成基线核对，不是修复或完整性能验收。
 
+按用户要求另提供当前版本从启动起关闭 Nanite 的测试包：`http://127.0.0.1:8765/build/villa-nanite-off-20261111/index.html`。通过包内 `r.Nanite=0` 使用实际 fallback 网格；运行时与 Cook 资源复用当前版本，新增文件共 758,693 字节。首次启动和刷新均实际确认 enabled=false、registered=0、entries=0，2,062 条组件网格记录均保留 fallback；移动与缩放通过，页面/GPU 错误为零。这是临时关闭版本，不关闭普通 Nanite 的兼容与性能验收。证据为 `tests/web-platform/evidence/villa-nanite-off-delivery-20261111.json`。
+
+用户同时要求手动清理低磁盘空间。已生成 `tests/web-platform/清理旧测试缓存-20261111.bat` 及同目录清单、PowerShell 脚本；191 个固定旧测试缓存/归档和失败交付目录的逻辑大小合计 281.94 GiB，四个含链接的候选排除。脚本执行前检查路径、内容变化及浏览器占用，用户输入 DELETE 后才删除。我仅运行了预览，未删除文件。旧版、当前包、关闭版本、源码、Cook 和证据均未列为清理目标。
+
 双击目录中的 `打开默认关卡.cmd` 或 `打开Villa.cmd`；启动器会建立本地服务并打开 Edge。服务运行时也可访问 `http://127.0.0.1:8766/default/index.html` 和 `http://127.0.0.1:8766/villa/index.html`。操作和运行条件见 [测试说明](tests/web-platform/build/nanite-release-20261111/测试说明.md)。
 
 | 验收范围 | 最终同包结果 | 证据 |

@@ -1,0 +1,1570 @@
+{
+  "date": "2026-11-11T14:25:23.332Z",
+  "buildRoot": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build",
+  "targets": [
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\allocator-contract-v43-final",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 20808168,
+      "files": 221,
+      "links": 0,
+      "lastWrite": 1793701433354.2876
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\allocator-contract-v43-final-v2",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 20808106,
+      "files": 221,
+      "links": 0,
+      "lastWrite": 1793701471760.6562
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\allocator-contract-v43-validation",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 9092270,
+      "files": 172,
+      "links": 0,
+      "lastWrite": 1793700705607.03
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\allocator-contract-v43-validation-v2",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 20808218,
+      "files": 221,
+      "links": 0,
+      "lastWrite": 1793700762765.114
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\binding-tlv-v60-correctness-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485663182,
+      "files": 316,
+      "links": 0,
+      "lastWrite": 1793773208572.39
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\binding-tlv-v61-correctness-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3490319818,
+      "files": 356,
+      "links": 0,
+      "lastWrite": 1793773436775.2156
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\binding-tlv-v61-correctness-final-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3490414954,
+      "files": 361,
+      "links": 0,
+      "lastWrite": 1793773590309.013
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\binding-tlv-v61-steady-images-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3490320177,
+      "files": 356,
+      "links": 0,
+      "lastWrite": 1793774447746.6707
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-equivalence-0-legacy-both",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912881,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692791514.501
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-equivalence-0-legacy-groups",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25913099,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692802493.3462
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-equivalence-0-legacy-states",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912928,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692796914.6826
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-equivalence-v2-0-legacy-both",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24859932,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692930328.2175
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-equivalence-v2-0-legacy-groups",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912708,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692943380.6052
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-equivalence-v2-0-legacy-states",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25896392,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793692937726.7297
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-equivalence-v2-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912593,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692948979.621
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-preflight-0-legacy-groups",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25627864,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793691223870.6418
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-preflight-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25627616,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793691228422.051
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-shared-final-0-legacy-both",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912409,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793692730300.6238
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-shared-final-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912835,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692734157.7646
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-shared-final-1-legacy-both",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25913036,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692741941.0857
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-shared-final-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912828,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793692738043.2732
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-shared-final-2-legacy-both",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912398,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793692745923.276
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-extras-shared-final-2-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25912342,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793692749870.562
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-import-audit-v36",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486243334,
+      "files": 326,
+      "links": 0,
+      "lastWrite": 1793690807910.6755
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-import-audit-v37-all",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486418326,
+      "files": 324,
+      "links": 0,
+      "lastWrite": 1793692655275.528
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\bridge-import-audit-v37-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486418461,
+      "files": 324,
+      "links": 0,
+      "lastWrite": 1793692605691.6653
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\buffer-lifecycle-v59-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486248003,
+      "files": 340,
+      "links": 0,
+      "lastWrite": 1793775081006.9438
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\buffer-lifecycle-v62-diagnostic-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486349183,
+      "files": 362,
+      "links": 0,
+      "lastWrite": 1793775415878.5935
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\buffer-lifecycle-v62-final-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3490672297,
+      "files": 350,
+      "links": 0,
+      "lastWrite": 1793775777646.5393
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\buffer-lifecycle-v62-images-20261104",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3490324808,
+      "files": 356,
+      "links": 0,
+      "lastWrite": 1793775906482.255
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\capture-villa",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3525236362,
+      "files": 803,
+      "links": 0,
+      "lastWrite": 1793898079459.9778
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\compile-options",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 373870942,
+      "files": 257,
+      "links": 0,
+      "lastWrite": 1793867026695.8513
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\cpu-villa",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3691253706,
+      "files": 1215,
+      "links": 0,
+      "lastWrite": 1794392035013.3708
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-backend-diagnostic",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 18242488,
+      "files": 171,
+      "links": 0,
+      "lastWrite": 1793685283744.7585
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-final-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137361,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793685628095.0647
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-final-0-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447836,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793685632105.87
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-final-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137323,
+      "files": 213,
+      "links": 0,
+      "lastWrite": 1793685639817.698
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-final-1-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447343,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793685636125.8147
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-final-2-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137323,
+      "files": 213,
+      "links": 0,
+      "lastWrite": 1793685647849.9695
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-final-2-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447833,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793685651859.8872
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-inspect-gpu",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25944520,
+      "files": 235,
+      "links": 0,
+      "lastWrite": 1793685311354.6824
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-preflight-js-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137514,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793684930524.111
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-preflight-jspi-0-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 23662666,
+      "files": 244,
+      "links": 0,
+      "lastWrite": 1793685489453.0945
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-preflight-jspi2-0-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 13335754,
+      "files": 174,
+      "links": 0,
+      "lastWrite": 1793685490402.1462
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-preflight-jspi3-0-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24455043,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793685547937.2864
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-preflight-wasm-0-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24705072,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793684934530.878
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v1-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137476,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793685076022.8894
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v1-0-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24684684,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793685079824.5352
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v1-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137475,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793685087149.8057
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v1-1-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24684683,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793685083636.369
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v1-2-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137478,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793685094298.2358
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v1-2-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24576693,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793685098091.8928
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v2-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137473,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793685157771.647
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v2-0-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24684777,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793685161854.7024
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v2-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137476,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793685169849.2964
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v2-1-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24684786,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793685166069.6658
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v2-2-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137469,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793685178057.3076
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-api-release-v2-2-wasm",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24684283,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793685182163.1316
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24029579,
+      "files": 213,
+      "links": 0,
+      "lastWrite": 1793686491962.7566
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-0-map-table",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447697,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686480640.3518
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-0-number-map",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447723,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686488299.3342
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-0-number-unchecked",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447861,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686484487.0935
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-0-object-table",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447764,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686476651.4998
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447679,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686472630.7498
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137568,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793686495681.3525
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-1-map-table",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447704,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686507386.0337
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-1-number-map",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447726,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686499525.8508
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-1-number-unchecked",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447863,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686503408.282
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-1-object-table",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447770,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686511428.6646
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-ablation-v1-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447679,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686515462.8728
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-api-equivalence-0-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24448398,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793687561372.8352
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-api-equivalence-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24460442,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793687566479.4026
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-api-equivalence-v2-0-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24448469,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688220871.5688
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-api-equivalence-v2-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24462695,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688226010.1313
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-f64-v1-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137455,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793686618456.1704
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-f64-v1-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24446886,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686614780.1067
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-f64-v1-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137450,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793686622114.1782
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-f64-v1-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24446892,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686625931.4358
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-0-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447996,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793687592311.4397
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137886,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793687599755.5896
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24460212,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793687596067.4355
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-1-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447997,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793687611145.102
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137429,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793687603397.2139
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24460212,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793687607105.3757
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-2-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24447505,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793687615192.8608
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-2-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137432,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793687622574.1235
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-2-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24459713,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793687618935.9058
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-0-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24448065,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688184514.2654
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137501,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793688191928.809
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24462468,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688188308.2676
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-1-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24448063,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688203442.0977
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137958,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793688195591.1294
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24462468,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688199313.9949
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-2-baseline",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24448068,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688207467.0073
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-2-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24136996,
+      "files": 213,
+      "links": 0,
+      "lastWrite": 1793688214859.7922
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-final-v2-2-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24462463,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793688211200.0808
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-profile",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 33610439,
+      "files": 245,
+      "links": 0,
+      "lastWrite": 1793687087319.2688
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v1-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137521,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793686847991.7437
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v1-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24454919,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686844345.914
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v1-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137523,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793686851605.798
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v1-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24454426,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793686855314.1265
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v2-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137523,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793686945535.7944
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v2-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24455727,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686941887.058
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v2-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137525,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793686949149.94
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v2-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24455728,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793686952890.7112
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v3-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137976,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793687159118.8406
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v3-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24453932,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793687155437.3662
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v3-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137523,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793687162810.4043
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-v3-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24454427,
+      "files": 216,
+      "links": 0,
+      "lastWrite": 1793687166520.5571
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-verified-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137653,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793687403036.0908
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-verified-0-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24459949,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793687399389.6145
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-verified-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24137664,
+      "files": 214,
+      "links": 0,
+      "lastWrite": 1793687406638.8296
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\draw-bridge-stream-verified-1-original",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24459945,
+      "files": 215,
+      "links": 0,
+      "lastWrite": 1793687410374.7273
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\final-link-render-diagnosis-v1-villa-bridge-extras-v38",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 9087355,
+      "files": 172,
+      "links": 0,
+      "lastWrite": 1793697367385.7654
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\final-link-render-diagnosis-v2-villa-bridge-extras-v38",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486505563,
+      "files": 325,
+      "links": 0,
+      "lastWrite": 1793697450498.4143
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\final-link-render-diagnosis-v3-villa-bridge-extras-v38",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486505075,
+      "files": 324,
+      "links": 0,
+      "lastWrite": 1793697547645.948
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\final-link-render-diagnosis-v3-villa-final-link-o2-v39",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3427969237,
+      "files": 326,
+      "links": 0,
+      "lastWrite": 1793697596100.3137
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\final-link-shadow-cache-v1-villa-final-link-o2-v39",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3427865803,
+      "files": 322,
+      "links": 0,
+      "lastWrite": 1793698784981.4673
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\frame-scheduler",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3585939278,
+      "files": 430,
+      "links": 0,
+      "lastWrite": 1793796500820.9646
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\frame-scheduling",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3547828729,
+      "files": 374,
+      "links": 0,
+      "lastWrite": 1793777591148.3809
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-binding-skips-v48-validate-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487023237,
+      "files": 340,
+      "links": 0,
+      "lastWrite": 1793705700788.5332
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-lumen-off-v59-dlmalloc-native-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486129237,
+      "files": 339,
+      "links": 0,
+      "lastWrite": 1793767961822.261
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-native-metadata-v55-validate-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485172447,
+      "files": 316,
+      "links": 0,
+      "lastWrite": 1793755914191.3005
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-native-metadata-v57-native-validation-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485702816,
+      "files": 339,
+      "links": 0,
+      "lastWrite": 1793756409275.0664
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-native-metadata-v57-reference-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485613227,
+      "files": 338,
+      "links": 0,
+      "lastWrite": 1793756342255.1387
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-rhi-hotspots-v49-validate-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3474300435,
+      "files": 239,
+      "links": 0,
+      "lastWrite": 1793707498610.8699
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-rhi-hotspots-v51-validate-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487047099,
+      "files": 341,
+      "links": 0,
+      "lastWrite": 1793707828507.6714
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\gameplay-rhi-hotspots-v52-reboot-validate-0",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485666220,
+      "files": 338,
+      "links": 0,
+      "lastWrite": 1793722076043.3115
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lumen-off-v58-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485946024,
+      "files": 349,
+      "links": 0,
+      "lastWrite": 1793767865633.7424
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lumen-off-v59-pass-diagnostic-villa-lumen-off-current-mimalloc-v59",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485864718,
+      "files": 324,
+      "links": 0,
+      "lastWrite": 1793768790812.939
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lumen-off-v59-pass-diagnostic-villa-native-metadata-v57",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485285165,
+      "files": 324,
+      "links": 0,
+      "lastWrite": 1793768744909.5935
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lumen-off-v59-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486227866,
+      "files": 338,
+      "links": 0,
+      "lastWrite": 1793767913756.7354
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\memory-lumen-off-v59-no-lumen",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486094184,
+      "files": 332,
+      "links": 0,
+      "lastWrite": 1793768025067.7573
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\motion-route-pilot",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485970766,
+      "files": 325,
+      "links": 0,
+      "lastWrite": 1793862791083.1765
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\mouse-turn-checks",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3748242042,
+      "files": 1650,
+      "links": 0,
+      "lastWrite": 1794027296451.2576
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\mouse-turn-validation",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3517185202,
+      "files": 836,
+      "links": 0,
+      "lastWrite": 1793957420303.2256
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\native-metadata-v57-normal",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3502073725,
+      "files": 354,
+      "links": 0,
+      "lastWrite": 1793756599307.671
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\native-metadata-v57-pso",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3541412244,
+      "files": 815,
+      "links": 0,
+      "lastWrite": 1793756735350.394
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\occlusion-history",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3537595232,
+      "files": 434,
+      "links": 0,
+      "lastWrite": 1793862216498.7383
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\parity-address32-compute-window-20261106",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3518626041,
+      "files": 795,
+      "links": 0,
+      "lastWrite": 1793941619079.372
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\periodic-input-checks",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3517362542,
+      "files": 838,
+      "links": 0,
+      "lastWrite": 1793949364992.9978
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\periodic-stall-checks",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3540150567,
+      "files": 870,
+      "links": 0,
+      "lastWrite": 1793949754276.5945
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\pso-real-full-cache256-v29",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 135379196,
+      "files": 781,
+      "links": 0,
+      "lastWrite": 1793666317444.4128
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\pso-real-full-v29",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 103653527,
+      "files": 773,
+      "links": 0,
+      "lastWrite": 1793666061070.2852
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\pso-real-subset-v29",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 55630246,
+      "files": 252,
+      "links": 0,
+      "lastWrite": 1793665753035.7617
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 23475782,
+      "files": 175,
+      "links": 0,
+      "lastWrite": 1793698963028.3115
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-0-scalar",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 24929330,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793698957682.4548
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-0-simd",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25981042,
+      "files": 218,
+      "links": 0,
+      "lastWrite": 1793698961474.722
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-1-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 23475661,
+      "files": 175,
+      "links": 0,
+      "lastWrite": 1793698964526.052
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-1-scalar",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25978445,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793698972291.4724
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-1-simd",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25981535,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793698968434.0808
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-2-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 23475662,
+      "files": 175,
+      "links": 0,
+      "lastWrite": 1793698987728.174
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-2-scalar",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25978441,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793698982400.761
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-final-2-simd",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25981532,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793698986196.715
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-js-preflight-0-js",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 23398812,
+      "files": 173,
+      "links": 0,
+      "lastWrite": 1793698618521.3818
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-preflight-v1-0-scalar",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 13224885,
+      "files": 171,
+      "links": 0,
+      "lastWrite": 1793697527566.753
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-preflight-v2-0-scalar",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 23210409,
+      "files": 176,
+      "links": 0,
+      "lastWrite": 1793697586305.9016
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-preflight-v3-0-scalar",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25976180,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793697654039.5613
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-isolation-simd-preflight-final-0-simd",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 25981879,
+      "files": 219,
+      "links": 0,
+      "lastWrite": 1793698640742.577
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\rhi-stalls",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3527092211,
+      "files": 867,
+      "links": 0,
+      "lastWrite": 1793949843891.854
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\runtime-pso",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3531386099,
+      "files": 851,
+      "links": 0,
+      "lastWrite": 1793872034201.354
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\runtime-pso-cache-control",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 34829089,
+      "files": 261,
+      "links": 0,
+      "lastWrite": 1793852848840.5603
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\runtime-pso-small-default",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 33518381,
+      "files": 261,
+      "links": 0,
+      "lastWrite": 1793852902927.8186
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\same-shader-dump",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 28873878,
+      "files": 173,
+      "links": 0,
+      "lastWrite": 1793858167887.922
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\same-shader-timing",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 33077025,
+      "files": 174,
+      "links": 0,
+      "lastWrite": 1793858892157.569
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\scheduling-motion-pso",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3557983598,
+      "files": 911,
+      "links": 0,
+      "lastWrite": 1793953760408.9673
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\stutters",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3869854507,
+      "files": 1174,
+      "links": 0,
+      "lastWrite": 1793771959601.1172
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\threading-ab",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3569543782,
+      "files": 502,
+      "links": 0,
+      "lastWrite": 1793775648945.6912
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\turning-shadow-clear-validation",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3517417964,
+      "files": 838,
+      "links": 0,
+      "lastWrite": 1793954315877.2507
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-allocator-no-proxy-v44-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486928712,
+      "files": 340,
+      "links": 0,
+      "lastWrite": 1793701552810.552
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-binding-skips-v48-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487052049,
+      "files": 342,
+      "links": 0,
+      "lastWrite": 1793705907694.406
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-bridge-extras-v38-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486945156,
+      "files": 342,
+      "links": 0,
+      "lastWrite": 1793693270708.07
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-browser-metrics-v47-metrics-v3",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486716901,
+      "files": 331,
+      "links": 0,
+      "lastWrite": 1793705541437.5056
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-browser-metrics-v47-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487153929,
+      "files": 347,
+      "links": 0,
+      "lastWrite": 1793705346618.2773
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-browser-metrics-v47-views-v2",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487150799,
+      "files": 347,
+      "links": 0,
+      "lastWrite": 1793705467629.782
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-browser-metrics-v47-views-v4",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487237420,
+      "files": 351,
+      "links": 0,
+      "lastWrite": 1793705618219.6204
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-command-stream-v36-view-check",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485623640,
+      "files": 340,
+      "links": 0,
+      "lastWrite": 1793688151720.8271
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-command-stream-v36-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 12902902,
+      "files": 157,
+      "links": 0,
+      "lastWrite": 1793688077758.2937
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-final-link-o1-v40-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486945743,
+      "files": 342,
+      "links": 0,
+      "lastWrite": 1793694868489.4678
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-mimalloc-no-proxy-v45-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487051956,
+      "files": 342,
+      "links": 0,
+      "lastWrite": 1793701711116.9585
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-mimalloc-proxy-v43-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 13169882,
+      "files": 158,
+      "links": 0,
+      "lastWrite": 1793700489990.2085
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-mimalloc-proxy-v43-views-v2",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3486617576,
+      "files": 325,
+      "links": 0,
+      "lastWrite": 1793700599986.0508
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-mimalloc-proxy-v43-views-v3",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487051881,
+      "files": 342,
+      "links": 0,
+      "lastWrite": 1793701126365.0935
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-native-metadata-v55-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485902837,
+      "files": 349,
+      "links": 0,
+      "lastWrite": 1793755833754.4675
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-native-metadata-v57-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485902599,
+      "files": 349,
+      "links": 0,
+      "lastWrite": 1793756485405.468
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-o2-keep-names-v42-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3468814627,
+      "files": 342,
+      "links": 0,
+      "lastWrite": 1793698909076.8972
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-rhi-hotspots-v51-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3487244145,
+      "files": 351,
+      "links": 0,
+      "lastWrite": 1793707894003.573
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-rhi-hotspots-v52-reboot-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485879244,
+      "files": 348,
+      "links": 0,
+      "lastWrite": 1793722150659.097
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\villa-simd-v41-views",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 3485557327,
+      "files": 342,
+      "links": 0,
+      "lastWrite": 1793698018621.8665
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profile-archives\\memory-addressing-20261106",
+      "reason": "旧测试浏览器缓存归档",
+      "bytes": 67092465152,
+      "files": 15562,
+      "links": 0,
+      "lastWrite": 1793942046474.1582
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111-launcher-failed",
+      "reason": "已有证据归档的失败交付副本",
+      "bytes": 3993118707,
+      "files": 45,
+      "links": 0,
+      "lastWrite": 1794395970327.2441
+    }
+  ],
+  "skipped": [
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lifecycle-chrome-nanite-final-default",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 0,
+      "files": 0,
+      "links": 1,
+      "lastWrite": 1794393244685.6853
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lifecycle-chrome-nanite-final-villa",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 0,
+      "files": 0,
+      "links": 1,
+      "lastWrite": 1794393244688.6873
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lifecycle-msedge-nanite-final-default",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 0,
+      "files": 0,
+      "links": 1,
+      "lastWrite": 1794393244607.806
+    },
+    {
+      "path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\browser-profiles\\lifecycle-msedge-nanite-final-villa",
+      "reason": "旧自动测试浏览器缓存",
+      "bytes": 0,
+      "files": 0,
+      "links": 1,
+      "lastWrite": 1794393244681.6858
+    }
+  ],
+  "logicalBytes": 302734773495,
+  "boundary": "Only named test caches and a failed duplicate release. No files are deleted by this generator. Link-containing candidates are excluded. Manual cleanup rechecks paths, live browser use and snapshot changes. Logical file bytes are not a guarantee of physical space recovered."
+}
