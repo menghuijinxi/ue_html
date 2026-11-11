@@ -268,7 +268,11 @@ class FWebGPUTexture final : public FRHITexture
         WGPUBuffer Buffer = nullptr;
         uint64 Bytes = 0;
         uint32 RowPitch = 0;
+        // The mirror was bound for atomics after the last buffer-to-texture copy.
         TArray<uint8> DirtySlices;
+        // The texture may have been written without the mirror after the last
+        // texture-to-buffer copy. A new texture and its mirror both start zeroed.
+        TArray<uint8> StaleSlices;
     };
     TArray<FAtomicMip> AtomicMips;
     FWebGPUResourceState State;
@@ -824,7 +828,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
                                                   FString &Error) const;
     bool ValidateTextureAtomicBinding(FRHIResource* Resource, const FWebGPUStorageContract& Binding,
         ERHIAccess Access, FString& Error) const;
-    void SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, ERHIAccess NextAccess);
+    void SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice,
+        ERHIAccess PreviousAccess, ERHIAccess NextAccess);
+    void CopyTextureAtomicSlice(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, bool ToTexture);
+    void RefreshTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip);
     uint64 RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat Format) override;
     bool ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                ERHIAccess Access, FString &Error) const;

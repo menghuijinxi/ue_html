@@ -4,15 +4,17 @@ const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3);
 const folder = option('folder') || 'villa-lumen-vt-20261110-v6', tag = option('tag');
+const profile = option('profile') || 'vsm-motion-' + tag;
 const gpu = process.argv.includes('--gpu'), cpu = process.argv.includes('--cpu');
 const seconds = Number(option('seconds') || 15), warmup = Number(option('warmup') || 15);
 assert([folder, tag].every(value => value && /^[a-z0-9-]+$/.test(value)));
+assert(/^[a-z0-9-]+$/.test(profile));
 assert(seconds >= 5 && seconds <= 60 && warmup >= 0 && warmup <= 120);
 const directory = path.join(__dirname, 'results', 'vsm-motion-' + tag);
 assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
 const temporary = path.join(__dirname, 'build/test-tmp');
 fs.mkdirSync(temporary, {recursive: true}); process.env.TEMP = process.env.TMP = temporary;
-const report = {date: new Date().toISOString(), pass: false, folder, gpu, cpu, seconds, warmup,
+const report = {date: new Date().toISOString(), pass: false, folder, profile, gpu, cpu, seconds, warmup,
   source: audit(__filename), package: audit(path.join(__dirname, 'build', folder, 'asset-versions.json')),
   errors: [], phases: [], qualityOverrides: [],
   boundary: 'Same package and resolution; scripted game-frame camera rotation. Submission intervals are not display timings. GPU/CPU profiling runs are diagnostic, not baseline performance.'};
@@ -37,10 +39,29 @@ function install() {
     };
   }
 }
+function observeShadowCopies() {
+  const totals = globalThis.__shadowPoolCopies = {};
+  for (const [name, side] of [['copyTextureToBuffer', 0], ['copyBufferToTexture', 1]]) {
+    const original = GPUCommandEncoder.prototype[name];
+    GPUCommandEncoder.prototype[name] = function(...args) {
+      const texture = args[side]?.texture;
+      if (/Shadow\.Virtual/.test(texture?.label || '')) {
+        const extent = args[2];
+        const width = Array.isArray(extent) ? extent[0] : extent.width;
+        const height = Array.isArray(extent) ? extent[1] || 1 : extent.height || 1;
+        const layers = Array.isArray(extent) ? extent[2] || 1 : extent.depthOrArrayLayers || 1;
+        const item = totals[texture.label] ||= {textureToAtomic: 0, atomicToTexture: 0, bytes: 0};
+        ++item[side === 0 ? 'textureToAtomic' : 'atomicToTexture'];
+        item.bytes += width * height * layers * 4;
+      }
+      return original.apply(this, args);
+    };
+  }
+}
 let context, log;
 (async () => {
   try {
-    context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles/vsm-motion-' + tag), {
+    context = await chromium.launchPersistentContext(path.join(__dirname, 'build/browser-profiles', profile), {
       channel: 'msedge', headless: false, viewport: {width: 1280, height: 800}, deviceScaleFactor: 1.5,
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']
@@ -48,7 +69,8 @@ let context, log;
     const observer = gpu ? require('./web-performance-capture-observer.cjs') : install;
     await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
-      await route.fulfill({response, body: '(' + observer.toString() + ')();\n' + await response.text()});
+      await route.fulfill({response, body: '(' + observeShadowCopies.toString() + ')();\n(' +
+        observer.toString() + ')();\n' + await response.text()});
     });
     const page = context.pages()[0];
     log = fs.createWriteStream(path.join(directory, 'page.log'));
@@ -70,7 +92,8 @@ let context, log;
       settings: __webProjectSettings, stages: __webThreadStages,
       streaming: __webTextureStreaming, optimization: __webOptimizationRHI,
       prewarm: __webPipelinePrewarm, occlusion: __webOcclusionRHI,
-      motion: globalThis.__webMotionBenchmark, failure: globalThis.__webEngineFailure
+      motion: globalThis.__webMotionBenchmark, failure: globalThis.__webEngineFailure,
+      shadowCopies: globalThis.__shadowPoolCopies
     }));
     const route = (duration, mode = 2) => page.evaluate(({duration, mode}) =>
       __webEngineRPC('WebMotionBenchmarkControl', mode, duration), {duration, mode});
@@ -123,6 +146,9 @@ let context, log;
         rhiWorkMs: (phase.after.stages.rhiWorkMilliseconds - phase.before.stages.rhiWorkMilliseconds) / frames,
         prewarmMisses: phase.after.prewarm.counts.misses - phase.before.prewarm.counts.misses,
         creations: phase.capture.creations?.length};
+      phase.summary.shadowCopiesPerFrame = Object.fromEntries(Object.entries(phase.after.shadowCopies)
+        .map(([label, counts]) => [label, Object.fromEntries(Object.entries(counts)
+          .map(([key, value]) => [key, (value - (phase.before.shadowCopies[label]?.[key] || 0)) / frames]))]));
       assert.deepEqual(phase.before.settings, phase.after.settings);
       for (const key of ['width', 'height', 'outputWidth', 'outputHeight', 'antiAliasing'])
         assert.equal(phase.before.view[key], phase.after.view[key], key);

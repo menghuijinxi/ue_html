@@ -411,9 +411,10 @@ void FWebGPUDynamicRHI::RHIEndTransitions(TArrayView<const FRHITransition *> Bat
         for (const auto &Entry : Data.Infos)
         {
             auto* Resource = GetViewableResource(Entry);
+            auto &State = ResourceState(Resource, Entry.PlaneSlice, Entry.MipIndex, Entry.ArraySlice);
             if (Resource->GetType() == RRT_Texture && Entry.PlaneSlice == 0)
-                SyncTextureAtomicBuffer(static_cast<FWebGPUTexture*>(Resource), Entry.MipIndex, Entry.ArraySlice, Entry.AccessAfter);
-            auto &State = ResourceState(GetViewableResource(Entry), Entry.PlaneSlice, Entry.MipIndex, Entry.ArraySlice);
+                SyncTextureAtomicBuffer(static_cast<FWebGPUTexture*>(Resource), Entry.MipIndex, Entry.ArraySlice,
+                    State.Access, Entry.AccessAfter);
             State.Access = Entry.AccessAfter;
             State.Pending = nullptr;
         }

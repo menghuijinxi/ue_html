@@ -597,6 +597,9 @@ void WriteTextureMip(FWebGPUDynamicRHI &RHI, FWebGPUTexture *Texture, uint32 Mip
     // WebGPU copies address physical blocks, including the 2x2 and 1x1 mip tails.
     WGPUExtent3D Extent{Blocks.X * Pixel.BlockSizeX, Blocks.Y * Pixel.BlockSizeY, Blocks.Z * Pixel.BlockSizeZ};
     wgpuQueueWriteTexture(RHI.Queue, &Destination, Bytes, Size, &Layout, &Extent);
+    // Uploads bypass transition tracking, so the atomic mirror is behind now.
+    if (Texture->AtomicMips.IsValidIndex(Mip))
+        for (uint8& Stale : Texture->AtomicMips[Mip].StaleSlices) Stale = 1;
     if (RHI.StartupProbeMode)
         UE_LOG(LogRHI, Display, TEXT("P3_TEXTURE_UPLOAD name=%s mip=%u extent=%ux%ux%u bytes=%llu"),
                *Texture->GetName().ToString(), Mip, Extent.width, Extent.height, Extent.depthOrArrayLayers, Size);
@@ -1905,6 +1908,7 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
             const uint32 Header[] = {Width, Height, Mip.RowPitch / 4u, Texture->LayerCount()};
             wgpuQueueWriteBuffer(Queue, Mip.Buffer, 0, Header, sizeof(Header));
             Mip.DirtySlices.SetNumZeroed(Texture->LayerCount());
+            Mip.StaleSlices.SetNumZeroed(Texture->LayerCount());
         }
     }
     const bool Writable = In.InitAction == ERHITextureInitAction::Initializer;
@@ -2071,6 +2075,8 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
         EndComputePass();
         wgpuCommandEncoderCopyBufferToTexture(Encoder, &Source, &Destination, &Extent);
         wgpuBufferRelease(Staging);
+        if (Texture->AtomicMips.IsValidIndex(Mip))
+            for (uint8& Stale : Texture->AtomicMips[Mip].StaleSlices) Stale = 1;
     };
     if (Cmd.Bypass())
         Upload(Cmd);
@@ -2644,10 +2650,9 @@ bool FWebGPUDynamicRHI::ValidateTextureAtomicBinding(FRHIResource* Resource,
     return true;
 }
 
-void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level, uint32 Slice, ERHIAccess NextAccess)
+void FWebGPUDynamicRHI::CopyTextureAtomicSlice(FWebGPUTexture* Texture, uint32 Level, uint32 Slice, bool ToTexture)
 {
-    if (Texture->AtomicMips.IsEmpty()) return;
-    check(Encoder && !Pass && Slice < Texture->LayerCount());
+    check(Encoder && !Pass && Texture->AtomicMips.IsValidIndex(Level) && Slice < Texture->LayerCount());
     auto& Mip = Texture->AtomicMips[Level];
     const uint32 Width = FMath::Max(1u, uint32(Texture->GetDesc().Extent.X) >> Level);
     const uint32 Height = FMath::Max(1u, uint32(Texture->GetDesc().Extent.Y) >> Level);
@@ -2662,13 +2667,47 @@ void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 
     Buffer.layout.bytesPerRow = Mip.RowPitch;
     Buffer.layout.rowsPerImage = Height;
     const WGPUExtent3D Extent{Width, Height, 1};
+    if (ToTexture)
+        wgpuCommandEncoderCopyBufferToTexture(Encoder, &Buffer, &Image, &Extent);
+    else
+        wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Image, &Buffer, &Extent);
+}
+// Each copy moves a whole slice (256 MiB per slice for a 16384x4096 virtual
+// shadow pool), so a transition only copies when one side is really behind.
+void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level, uint32 Slice,
+    ERHIAccess PreviousAccess, ERHIAccess NextAccess)
+{
+    if (Texture->AtomicMips.IsEmpty()) return;
+    check(Encoder && !Pass && Slice < Texture->LayerCount());
+    auto& Mip = Texture->AtomicMips[Level];
     if (Mip.DirtySlices[Slice])
     {
-        wgpuCommandEncoderCopyBufferToTexture(Encoder, &Buffer, &Image, &Extent);
+        // Atomic writes went to the mirror. After this copy both sides match.
+        CopyTextureAtomicSlice(Texture, Level, Slice, true);
         Mip.DirtySlices[Slice] = 0;
+        Mip.StaleSlices[Slice] = 0;
     }
-    if (EnumHasAnyFlags(NextAccess, ERHIAccess::UAVMask))
-        wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Image, &Buffer, &Extent);
+    else if (PreviousAccess == ERHIAccess::Unknown || EnumHasAnyFlags(PreviousAccess, ~ERHIAccess::ReadOnlyMask))
+        // A writable state without an atomic binding may have changed the texture.
+        Mip.StaleSlices[Slice] = 1;
+    // A render pass cannot be interrupted for a copy, so graphics use is prepared
+    // here. Compute-only use refreshes at the first atomic binding instead, which
+    // skips the copy for passes that only write the texture.
+    if (Mip.StaleSlices[Slice] && EnumHasAnyFlags(NextAccess, ERHIAccess::UAVGraphics))
+    {
+        CopyTextureAtomicSlice(Texture, Level, Slice, false);
+        Mip.StaleSlices[Slice] = 0;
+    }
+}
+void FWebGPUDynamicRHI::RefreshTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level)
+{
+    auto& Mip = Texture->AtomicMips[Level];
+    for (uint32 Slice = 0; Slice < Texture->LayerCount(); ++Slice)
+    {
+        if (!Mip.StaleSlices[Slice]) continue;
+        CopyTextureAtomicSlice(Texture, Level, Slice, false);
+        Mip.StaleSlices[Slice] = 0;
+    }
 }
 bool FWebGPUDynamicRHI::ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                               ERHIAccess Access, FString &Error) const
@@ -3648,6 +3687,9 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             }
             else if (Binding.Descriptor == 7)
             {
+                // The resource is a texture UAV backed by its atomic mirror. Full
+                // preparation marks the mirror dirty and refreshes a stale one.
+                if (Binding.StorageContract.Packing == FWebGPUStorageContract::EPacking::TextureUIntAtomic) return false;
                 const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
                 auto* Buffer = ReadOnly ? static_cast<FRHIShaderResourceView*>(Resource)->GetBuffer() :
                     static_cast<FRHIBuffer*>(static_cast<FRHIUnorderedAccessView*>(Resource)->GetResource());
@@ -3984,7 +4026,10 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                             if (TextureAtomic)
                             {
                                 auto* Texture = static_cast<FWebGPUTexture*>(View->GetResource());
-                                auto& Mip = Texture->AtomicMips[View->GetDesc().Texture.UAV.GetViewInfo(Texture).MipLevel];
+                                const uint32 AtomicLevel = View->GetDesc().Texture.UAV.GetViewInfo(Texture).MipLevel;
+                                // Compute bindings are resolved before their pass opens.
+                                if (Compute) RefreshTextureAtomicBuffer(Texture, AtomicLevel);
+                                auto& Mip = Texture->AtomicMips[AtomicLevel];
                                 Entry.buffer = Mip.Buffer;
                                 Entry.size = Mip.Bytes;
                                 for (uint8& Dirty : Mip.DirtySlices) Dirty = 1;
@@ -5564,6 +5609,10 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
 {
     check(Encoder && !Pass && ComputePipeline);
     TGuardValue<TRefCountPtr<FWebGPUComputePipeline>> Variant(ComputePipeline, ResolveComputePipeline(*ComputePipeline));
+    // Resolve bindings before opening the pass: a stale texture atomic mirror is
+    // refreshed with an encoder copy, which has to end any open compute pass.
+    FWebGPUShaderData *Shaders[] = {&ShaderData(ComputePipeline->GetComputeShader())};
+    const auto Groups = CreateGroups(nullptr, ComputePipeline->Handle, Shaders);
     if (!CVarWebGPUReuseComputePass.GetValueOnAnyThread()) EndComputePass();
     if (!ComputePass)
     {
@@ -5573,8 +5622,6 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
     else ++ComputePassesReused;
     auto Compute = ComputePass;
     wgpuComputePassEncoderSetPipeline(Compute, ComputePipeline->Handle);
-    FWebGPUShaderData *Shaders[] = {&ShaderData(ComputePipeline->GetComputeShader())};
-    const auto Groups = CreateGroups(nullptr, ComputePipeline->Handle, Shaders);
     for (int32 Index = 0; Index < Groups.Num(); ++Index)
     {
         const auto& Group = Groups[Index];

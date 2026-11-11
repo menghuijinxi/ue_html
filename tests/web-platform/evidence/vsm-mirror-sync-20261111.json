@@ -1,0 +1,1068 @@
+{
+  "date": "2026-11-11T06:54:42.608Z",
+  "scope": "Review and verification of uncommitted WebGPU texture atomic mirror synchronization changes.",
+  "baseCommit": "63d3668cf84ff73dddc0c24f7b8b1cc017abf3cd",
+  "engineCommit": "556dd8fda26ec0ae3805638ee489199687a78aea",
+  "engineClean": true,
+  "sources": [
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "bytes": 325676,
+      "sha256": "1299c96791334f07e3810da0f54d531ae377e6d365344f9a289f12983445cef8"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.h",
+      "bytes": 47449,
+      "sha256": "15b3e7e74fa3e7f0ac26bccf389b586845b4b34f3defea300bef5f848d614c06"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUTransitions.cpp",
+      "bytes": 23021,
+      "sha256": "318323bbfcf0f1bd9146594669a4768dd2c4f2f5022a9ae01091864f19d7ef0e"
+    },
+    {
+      "file": "tests/web-platform/verify-web-atomic-mirror-sync.cjs",
+      "bytes": 5609,
+      "sha256": "e865f1f9d1f390ab4c28179bda473ceddf7ba74eec13adcd4f805ff10cdadf76"
+    },
+    {
+      "file": "tests/web-platform/probe-villa-vsm-motion.cjs",
+      "bytes": 10942,
+      "sha256": "ad95bef870673b5381058d70a78f526c2dbf27ead3ad66bf4741452236928087"
+    }
+  ],
+  "validationPassed": true,
+  "startupStabilityResolved": false,
+  "build": {
+    "record": {
+      "file": "tests/web-platform/results/web-engine-full-thread-build-results.json",
+      "bytes": 602483,
+      "sha256": "58d4ba71d684b40c03acf858e598e2934150a7b4c3b386ab4e140fd63578d167"
+    },
+    "log": {
+      "file": "tests/web-platform/results/web-engine-full-thread-20261111-142421.log",
+      "bytes": 1060,
+      "sha256": "b49a31579bc0fdd06d35d88eb578c9daae7a3c84dfedafcd723c2dcd77f9b897"
+    },
+    "pass": true,
+    "wasmValidated": true,
+    "products": [
+      {
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js",
+        "sha256": "a79a57a1be684c9b85cc45c0c0f1b7d1f6b55dff4c9ae013e09d3579adf770e2"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm",
+        "sha256": "fe83a910156fd1db12890cfed928e69fae08f23a1a2c6510b16523158505ee92"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target",
+        "sha256": "8c44bbd404aab40b01e03d43b249a3fe0d83b6d7d4e50b35808f00164e19b0c5"
+      }
+    ]
+  },
+  "native": {
+    "record": {
+      "file": "tests/web-platform/results/atomic-mirror-native-full-build-20261111.json",
+      "bytes": 9862,
+      "sha256": "3bf656fd2859142780604d17d7223b7e14149b7d37bed67a753ef12b605001d8"
+    },
+    "translationUnits": 23,
+    "linked": true,
+    "module": {
+      "sha256": "0e500715d43ef9c33fd18539035d3508f5179be3441836e9d851ec5be43c292e",
+      "file": "H:/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Binaries/Win64/UnrealEditor-WebGPURHI.dll"
+    },
+    "readback": {
+      "file": "tests/web-platform/build/atomic-mirror-native-full-20261111/lumen-storage-rhi.json",
+      "bytes": 9749,
+      "sha256": "637fe7bb9efd0f5b951ecb951c4488d9466d3c1493f81d2031e7cbb05cf01e33"
+    },
+    "log": {
+      "file": "tests/web-platform/results/atomic-mirror-native-full-probe-20261111.log",
+      "bytes": 100027,
+      "sha256": "23db9cf055fcd2aa39abd3a3987a54151306efa981e71336ba2301e820f2e476"
+    },
+    "caseCounts": {
+      "packedShadowMaskCases": 4,
+      "cases": 10,
+      "volumeCases": 1,
+      "bufferCases": 1,
+      "uniformCases": 2,
+      "rasterCases": 3,
+      "depthAtlasCases": 8,
+      "textureAtomicCases": 12,
+      "textureUploadCases": 22,
+      "textureViewCases": 9,
+      "samplerBiasCases": 5
+    },
+    "totalCases": 77,
+    "volatilePassVersions": true,
+    "errors": []
+  },
+  "depth": {
+    "record": {
+      "file": "tests/web-platform/results/web-virtual-shadow-depth.json",
+      "bytes": 1874,
+      "sha256": "3a1f704468d405fcb6923242bd9c300886a7eb9159513dc0c5c73ecdf9a9fc7d"
+    },
+    "pass": true,
+    "cases": [
+      {
+        "width": 1,
+        "height": 1,
+        "layers": 1,
+        "pitch": 64,
+        "checkedWords": 128,
+        "mismatches": 0
+      },
+      {
+        "width": 5,
+        "height": 3,
+        "layers": 2,
+        "pitch": 64,
+        "checkedWords": 448,
+        "mismatches": 0
+      },
+      {
+        "width": 65,
+        "height": 7,
+        "layers": 2,
+        "pitch": 128,
+        "checkedWords": 1856,
+        "mismatches": 0
+      },
+      {
+        "width": 129,
+        "height": 4,
+        "layers": 3,
+        "pitch": 192,
+        "checkedWords": 2368,
+        "mismatches": 0
+      },
+      {
+        "width": 128,
+        "height": 128,
+        "layers": 2,
+        "pitch": 128,
+        "checkedWords": 32832,
+        "mismatches": 0
+      }
+    ],
+    "errors": []
+  },
+  "model": {
+    "record": {
+      "file": "tests/web-platform/results/atomic-mirror-model-20261111.json",
+      "bytes": 418,
+      "sha256": "59586efd5d5b21b946419cff688710126c0a7f0dea3b43a2ff8af47cbbbf1cfb"
+    },
+    "sequences": 3000000,
+    "bothCorrect": 2486906,
+    "regressions": 0,
+    "onlyNewCorrect": 58298,
+    "copiesBefore": 4779748,
+    "copiesAfter": 2723529,
+    "shadowFrames": {
+      "beforeCorrect": true,
+      "afterCorrect": true,
+      "beforeCopies": 12,
+      "afterCopies": 6
+    },
+    "computeProbe": {
+      "beforeCorrect": true,
+      "afterCorrect": true,
+      "beforeCopies": 8,
+      "afterCopies": 5
+    }
+  },
+  "regressions": {
+    "virtual-settings": {
+      "record": {
+        "file": "tests/web-platform/results/atomic-mirror-virtual-settings-20261111.json",
+        "bytes": 125,
+        "sha256": "4c8fe9eb524b50e85f3aed80e61dd6a5981986ecead0f1a16a64516b4e42a8fc"
+      },
+      "result": {
+        "pass": true,
+        "assertions": 12,
+        "directory": "H:\\ue_html\\tests\\web-platform\\build\\virtual-resource-settings\\case-JbD1dV"
+      }
+    },
+    "lumen-settings": {
+      "record": {
+        "file": "tests/web-platform/results/atomic-mirror-lumen-settings-20261111.json",
+        "bytes": 120,
+        "sha256": "ea23b924f91eeee8897217a9c19e7a0cf7d1ae6ae4ff4820b3afa37f103663b6"
+      },
+      "result": {
+        "pass": true,
+        "cases": 10,
+        "directory": "H:\\ue_html\\tests\\web-platform\\build\\lumen-settings-validation\\case-aInN15"
+      }
+    },
+    "release-defaults": {
+      "record": {
+        "file": "tests/web-platform/results/atomic-mirror-release-defaults-20261111.json",
+        "bytes": 239,
+        "sha256": "c4b2fdf7ae4e59517e1fabae7433fa21b45712a3ed0de927c6443516b9d5374f"
+      },
+      "result": {
+        "pass": true,
+        "automaticReuse": true,
+        "invalidatedCaptures": 3,
+        "hardlinksPreserved": true,
+        "staleWorkersRejected": true,
+        "captureFailureBlocksRelease": true,
+        "forcedPhysicalSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "diagnosticsRequireExplicitFlags": true
+      }
+    }
+  },
+  "release": {
+    "record": {
+      "file": "tests/web-platform/results/villa-shadow-on-20261111-mirror-release.json",
+      "bytes": 3662,
+      "sha256": "6009dd176cedf2b7bfbfc56bda89c8aede4ff900ebd6545ddc83fd4b26c804c9"
+    },
+    "manifest": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-mirror\\asset-versions.json",
+      "sha256": "e86f4cd3a48cfeb11329c2adcff437c221a3577dfeffa88eb00ebfa581df9f98"
+    },
+    "defaults": {
+      "version": "desktop-startup-20261110",
+      "releaseReady": true,
+      "renderSizing": "fixed-physical-pixels",
+      "fixedRenderSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cacheLock": "shared-read-short-prepare",
+      "files": [
+        "web-engine-host.js",
+        "web-engine-worker.js",
+        "web-content-worker.js",
+        "web-pipeline-prewarm.js",
+        "pipeline-prewarm.json"
+      ],
+      "prewarm": {
+        "mode": "recorded",
+        "concurrency": 2,
+        "modules": 311,
+        "pipelines": 319,
+        "capture": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-mirror-sync-capture-retry-20261111\\result.json",
+          "sha256": "d9d95ffbd11059ffeff6ada6e6acd8bcc490948be245e81a056c56831f9c6977"
+        },
+        "corpus": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-mirror-sync-capture-retry-20261111\\0-corpus.json",
+          "sha256": "45bda78012df3987d1dba51d63281d7f4ae8087ae532fbcbea6d40addb9d5729"
+        },
+        "pack": {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-mirror\\pipeline-prewarm.json",
+          "sha256": "3685392d878c11a297153d63067a1cbddcf5fa39de34047a7b84f79b386476eb"
+        },
+        "engineArguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+        ],
+        "files": [
+          "web-engine-host.js",
+          "web-engine-worker.js",
+          "web-content-worker.js",
+          "web-pipeline-prewarm.js",
+          "pipeline-prewarm.json"
+        ],
+        "selection": "explicit"
+      },
+      "engineArguments": [
+        "-webgpu",
+        "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+      ],
+      "runtime": [
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-mirror\\web-engine-host.js",
+          "sha256": "8fa8b3144f86b644a6ba8250c62c8bf0bd2eb04e072477c7c80d0589db5be4e2"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-mirror\\web-engine-worker.js",
+          "sha256": "996dd8def7b029b1e29da602da87bb4882cef4153b3ad236f1b6883bca435f35"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-mirror\\web-content-worker.js",
+          "sha256": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+        },
+        {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-mirror\\web-pipeline-prewarm.js",
+          "sha256": "4c011646359fd16698cdafe2e443396abdaaac58993e334e6cf869abd9229469"
+        }
+      ]
+    },
+    "existingComparisonPageChanged": false
+  },
+  "diagnosticComparison": {
+    "boundary": "GPU instrumented, one ordered before/after run. Submission intervals, not display timing. Not a new uninstrumented VSM on/off Low baseline.",
+    "before": {
+      "record": {
+        "file": "tests/web-platform/results/vsm-motion-mirror-before-20261111/result.json",
+        "bytes": 4306775,
+        "sha256": "aeca6e511bf8df23c7de83aa3f47ccc4ab89e25c984ddd8186fb130c684dacf0"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-villa-vsm-motion.cjs",
+        "sha256": "ad95bef870673b5381058d70a78f526c2dbf27ead3ad66bf4741452236928087"
+      },
+      "package": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-input-v2\\asset-versions.json",
+        "sha256": "af03e25eb31bfe62f80c66a9fd665a6b5de5a40977dfcbbdc1f2ae32c0a4e9db"
+      },
+      "profile": "villa-shadow-page-20261111",
+      "gpu": true,
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "view": {
+        "frame": 462,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "phases": [
+        {
+          "name": "standing",
+          "fps": 28.86152110557488,
+          "frames": 307,
+          "p50Ms": 34.43994140625,
+          "p95Ms": 37.945068359375,
+          "maxMs": 42.68994140625,
+          "low1Fps": 24.462640125657703,
+          "rhiWorkMs": 20.360318379604077,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 5,
+              "bytes": 138412032
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 17,
+              "atomicToTexture": 9,
+              "bytes": 42466896
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 4,
+              "atomicToTexture": 0,
+              "bytes": 50331648
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 15,
+              "atomicToTexture": 6,
+              "bytes": 50328576
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 2,
+              "bytes": 2147483648
+            }
+          }
+        },
+        {
+          "name": "turning-first",
+          "fps": 28.833551769331585,
+          "frames": 308,
+          "p50Ms": 34.2099609375,
+          "p95Ms": 39.094970703125,
+          "maxMs": 43.010009765625,
+          "low1Fps": 23.652511346968943,
+          "rhiWorkMs": 19.699033204611247,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 5,
+              "bytes": 138412032
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 17,
+              "atomicToTexture": 9,
+              "bytes": 42466896
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 4,
+              "atomicToTexture": 0,
+              "bytes": 50331648
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 15,
+              "atomicToTexture": 6,
+              "bytes": 50328576
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 2,
+              "bytes": 2147483648
+            }
+          },
+          "turnDegrees": 324.19655859374996
+        },
+        {
+          "name": "standing-after-turn",
+          "fps": 28.74859075535513,
+          "frames": 306,
+          "p50Ms": 34.355224609375,
+          "p95Ms": 38.369873046875,
+          "maxMs": 41.764892578125,
+          "low1Fps": 24.515825905315403,
+          "rhiWorkMs": 20.365114305533616,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 5,
+              "bytes": 138412032
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 17,
+              "atomicToTexture": 9,
+              "bytes": 42466896
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 4,
+              "atomicToTexture": 0,
+              "bytes": 50331648
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 15,
+              "atomicToTexture": 6,
+              "bytes": 50328576
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 2,
+              "bytes": 2147483648
+            }
+          }
+        },
+        {
+          "name": "turning-warm",
+          "fps": 27.863487611033193,
+          "frames": 298,
+          "p50Ms": 35.60009765625,
+          "p95Ms": 39.0498046875,
+          "maxMs": 59.97998046875,
+          "low1Fps": 16.874322823043446,
+          "rhiWorkMs": 20.005454953084858,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 5,
+              "bytes": 138412032
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 17,
+              "atomicToTexture": 9,
+              "bytes": 42466896
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 4,
+              "atomicToTexture": 0,
+              "bytes": 50331648
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 15,
+              "atomicToTexture": 6,
+              "bytes": 50328576
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 2,
+              "bytes": 2147483648
+            }
+          },
+          "turnDegrees": 324.44946386718755
+        },
+        {
+          "name": "moving-first",
+          "fps": 28.30981967672615,
+          "frames": 303,
+          "p50Ms": 34.965087890625,
+          "p95Ms": 38.7099609375,
+          "maxMs": 57.68994140625,
+          "low1Fps": 17.75213965074312,
+          "rhiWorkMs": 19.599170181224054,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 4.485148514851486,
+              "atomicToTexture": 1.198019801980198,
+              "bytes": 63931990.17821782
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 17,
+              "atomicToTexture": 9,
+              "bytes": 42466896
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 5.514851485148514,
+              "atomicToTexture": 3.801980198019802,
+              "bytes": 106747113.18811882
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 15,
+              "atomicToTexture": 6,
+              "bytes": 45511649.58415841
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 2,
+              "bytes": 2147483648
+            }
+          },
+          "travelCentimeters": 1435.4495506004237
+        },
+        {
+          "name": "moving-warm",
+          "fps": 27.535957607872824,
+          "frames": 291,
+          "p50Ms": 35.329833984375,
+          "p95Ms": 42.6298828125,
+          "maxMs": 60.460205078125,
+          "low1Fps": 16.86860117454225,
+          "rhiWorkMs": 19.714602899715253,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 4.274914089347079,
+              "atomicToTexture": 0.6872852233676976,
+              "bytes": 54482711.75257732
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 17,
+              "atomicToTexture": 9,
+              "bytes": 42466896
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 5.725085910652921,
+              "atomicToTexture": 4.312714776632302,
+              "bytes": 115775762.4742268
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 15,
+              "atomicToTexture": 6,
+              "bytes": 45399488.65979382
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 2,
+              "bytes": 2147483648
+            }
+          },
+          "travelCentimeters": 1416.8610890299517
+        }
+      ],
+      "timing": {
+        "sampleFrames": 18,
+        "meanSpanMs": 34.53383111111111,
+        "meanPassMs": 21.15720533333334,
+        "meanGapMs": 13.376625777777791,
+        "largeGapCounts": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      },
+      "screenshots": [
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-before-20261111/standing.png",
+          "bytes": 2753384,
+          "sha256": "7b167cf492525788ff35492a897e891ad5e1343b412df96a356f03f63659891c"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-before-20261111/turning-first.png",
+          "bytes": 2677471,
+          "sha256": "57329e4cb2e76fc21837db7819f3bb47c8569df29b169b7d6b494c3b91b00178"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-before-20261111/standing-after-turn.png",
+          "bytes": 2752495,
+          "sha256": "02f5108b088d56f1df498f293b44302e448e9870bd996a4277afe2bef15747f0"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-before-20261111/turning-warm.png",
+          "bytes": 2683035,
+          "sha256": "d468704eacdcb124a17ad962288e825c2e71b1fd35c0f792954a660f9ecf502a"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-before-20261111/moving-first.png",
+          "bytes": 2681971,
+          "sha256": "d319709c2db3b036fbc7b107b67ab7aed5178b5eba50e438bb840701051e92a4"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-before-20261111/moving-warm.png",
+          "bytes": 2661610,
+          "sha256": "2d4567e025e4e96416fb786455a884b5e1898cdfffea99751af74e61233e400b"
+        }
+      ]
+    },
+    "after": {
+      "record": {
+        "file": "tests/web-platform/results/vsm-motion-mirror-after-20261111/result.json",
+        "bytes": 4816109,
+        "sha256": "ad0f675124278cc18fe218451baa6c49dacd29136418efdef1240c4b27397338"
+      },
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\probe-villa-vsm-motion.cjs",
+        "sha256": "ad95bef870673b5381058d70a78f526c2dbf27ead3ad66bf4741452236928087"
+      },
+      "package": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-mirror\\asset-versions.json",
+        "sha256": "e86f4cd3a48cfeb11329c2adcff437c221a3577dfeffa88eb00ebfa581df9f98"
+      },
+      "profile": "villa-shadow-page-20261111",
+      "gpu": true,
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "view": {
+        "frame": 558,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 5,
+        "parallelRendering": true
+      },
+      "phases": [
+        {
+          "name": "standing",
+          "fps": 35.63283922462942,
+          "frames": 375,
+          "p50Ms": 27.949951171875,
+          "p95Ms": 30.23486328125,
+          "maxMs": 32.7548828125,
+          "low1Fps": 30.857082589403426,
+          "rhiWorkMs": 20.52715810139974,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 1,
+              "atomicToTexture": 5,
+              "bytes": 75497472
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 8,
+              "atomicToTexture": 9,
+              "bytes": 25951968
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 6,
+              "bytes": 8386560
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 2,
+              "atomicToTexture": 2,
+              "bytes": 1073741824
+            }
+          }
+        },
+        {
+          "name": "turning-first",
+          "fps": 35.81580443433769,
+          "frames": 378,
+          "p50Ms": 27.5849609375,
+          "p95Ms": 31.469970703125,
+          "maxMs": 35.125,
+          "low1Fps": 29.011786038077968,
+          "rhiWorkMs": 20.22264495728508,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 1,
+              "atomicToTexture": 5,
+              "bytes": 75497472
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 8,
+              "atomicToTexture": 9,
+              "bytes": 25951968
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 6,
+              "bytes": 8386560
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 2,
+              "atomicToTexture": 2,
+              "bytes": 1073741824
+            }
+          },
+          "turnDegrees": 324.02573437499984
+        },
+        {
+          "name": "standing-after-turn",
+          "fps": 34.82774893817839,
+          "frames": 369,
+          "p50Ms": 28.485107421875,
+          "p95Ms": 31.5,
+          "maxMs": 37.6650390625,
+          "low1Fps": 28.250565132002077,
+          "rhiWorkMs": 21.032017420947067,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 1,
+              "atomicToTexture": 5,
+              "bytes": 75497472
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 8,
+              "atomicToTexture": 9,
+              "bytes": 25951968
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 6,
+              "bytes": 8386560
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 2,
+              "atomicToTexture": 2,
+              "bytes": 1073741824
+            }
+          }
+        },
+        {
+          "name": "turning-warm",
+          "fps": 34.54493688905761,
+          "frames": 364,
+          "p50Ms": 28.744873046875,
+          "p95Ms": 32.675048828125,
+          "maxMs": 35.820068359375,
+          "low1Fps": 28.46871204446846,
+          "rhiWorkMs": 20.18769363780598,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 1,
+              "atomicToTexture": 5,
+              "bytes": 75497472
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 8,
+              "atomicToTexture": 9,
+              "bytes": 25951968
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 6,
+              "bytes": 8386560
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 2,
+              "atomicToTexture": 2,
+              "bytes": 1073741824
+            }
+          },
+          "turnDegrees": 323.98866210937507
+        },
+        {
+          "name": "moving-first",
+          "fps": 34.08659323965059,
+          "frames": 359,
+          "p50Ms": 29.030029296875,
+          "p95Ms": 33.52490234375,
+          "maxMs": 53.51513671875,
+          "low1Fps": 22.664174861634272,
+          "rhiWorkMs": 20.013341664603825,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 0.21448467966573817,
+              "atomicToTexture": 1.0807799442896935,
+              "bytes": 14300356.813370474
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 8,
+              "atomicToTexture": 9,
+              "bytes": 25951968
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 6,
+              "bytes": 7452124.345403899
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 2,
+              "atomicToTexture": 2,
+              "bytes": 1073741824
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 0.7855153203342619,
+              "atomicToTexture": 3.9192200557103063,
+              "bytes": 52785140.59052925
+            }
+          },
+          "travelCentimeters": 1360.858809607596
+        },
+        {
+          "name": "moving-warm",
+          "fps": 33.5360060801824,
+          "frames": 353,
+          "p50Ms": 29.514892578125,
+          "p95Ms": 34.22509765625,
+          "maxMs": 42.56494140625,
+          "low1Fps": 24.47681992566122,
+          "rhiWorkMs": 20.38060842087181,
+          "prewarmMisses": 0,
+          "shadowCopiesPerFrame": {
+            "Shadow.Virtual.PageRequestFlags": {
+              "textureToAtomic": 0.11331444759206799,
+              "atomicToTexture": 0.56657223796034,
+              "bytes": 6416215.750708215
+            },
+            "Shadow.Virtual.PageReceiverMasks": {
+              "textureToAtomic": 8,
+              "atomicToTexture": 9,
+              "bytes": 25951968
+            },
+            "Shadow.Virtual.PageFlags": {
+              "textureToAtomic": 6,
+              "atomicToTexture": 6,
+              "bytes": 7459999.546742209
+            },
+            "Shadow.Virtual.PhysicalPagePool": {
+              "textureToAtomic": 2,
+              "atomicToTexture": 2,
+              "bytes": 1073741824
+            },
+            "Shadow.Virtual.PageTable": {
+              "textureToAtomic": 0.886685552407932,
+              "atomicToTexture": 4.43342776203966,
+              "bytes": 60740175.77337111
+            }
+          },
+          "travelCentimeters": 1392.3978686661785
+        }
+      ],
+      "timing": {
+        "sampleFrames": 18,
+        "meanSpanMs": 28.668359111111116,
+        "meanPassMs": 21.532216888888897,
+        "meanGapMs": 7.136142222222235,
+        "largeGapCounts": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "screenshots": [
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-after-20261111/standing.png",
+          "bytes": 2750723,
+          "sha256": "015afe12b8bcfb33ff10113ce34aedd25235f45c898212a7f03149d98378016a"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-after-20261111/turning-first.png",
+          "bytes": 2685378,
+          "sha256": "99ed5c8ac3604de07234c814b53e585fb5c7b4854c98970a315f1eae199ebcee"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-after-20261111/standing-after-turn.png",
+          "bytes": 2752336,
+          "sha256": "433518b33c2679a9b966c1f37e0b682f3ce19fc75ee1b662c601769666fd1662"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-after-20261111/turning-warm.png",
+          "bytes": 2676679,
+          "sha256": "c2c7549d33fa18a60b279fc04405284b296b4bc7b7d4b40f5c7675451848fd89"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-after-20261111/moving-first.png",
+          "bytes": 2676844,
+          "sha256": "2165f7db44065751d1c54a3a18d4f9384e1979dc728a56f16f25e398dc5045fd"
+        },
+        {
+          "file": "tests/web-platform/results/vsm-motion-mirror-after-20261111/moving-warm.png",
+          "bytes": 2670634,
+          "sha256": "24cd64a86c1af4dc614788eccb55c8bf20cb7038c6ec6407adc6142b36353d91"
+        }
+      ]
+    }
+  },
+  "imageComparison": {
+    "width": 1920,
+    "height": 1200,
+    "region": {
+      "x": 0,
+      "y": 60,
+      "width": 1920,
+      "height": 1080
+    },
+    "excludedHUD": {
+      "x": 0,
+      "y": 60,
+      "width": 390,
+      "height": 385
+    },
+    "pixels": 1923450,
+    "meanAbsoluteRGB": 0.7079828779883369,
+    "rmsRGB": 1.5285107487514913,
+    "fractionPixelsDiffOver10": 0.003574306584522603,
+    "visualInspection": "No obvious material, glass or shadow regression in the matched standing screenshots; temporal rendering differs."
+  },
+  "plainInput": {
+    "record": {
+      "file": "tests/web-platform/results/villa-startup-mirror-sync-plain-20261111/result.json",
+      "bytes": 30527,
+      "sha256": "7b3fbb5143096a77da772827853edda3cc048675418659bcd48372f850ef7a14"
+    },
+    "pass": true,
+    "elapsedMs": 10175,
+    "maxTravelCm": 190.59113967826917,
+    "maxTurnDegrees": 100.78992557525635,
+    "errors": [],
+    "prewarm": {
+      "mode": "active",
+      "start": 7.1400000005960464,
+      "ready": true,
+      "adopted": true,
+      "concurrency": 2,
+      "counts": {
+        "modules": 369,
+        "layouts": 478,
+        "ready": 318,
+        "hits": 359,
+        "misses": 1
+      },
+      "completed": 4370.485000000335
+    }
+  },
+  "failures": [
+    {
+      "record": {
+        "file": "tests/web-platform/results/villa-startup-mirror-sync-capture-20261111/result.json",
+        "bytes": 28867,
+        "sha256": "5eab7dfcd7614fc76f89147304d4697e4e3acb92920440182a45aa394b2007b4"
+      },
+      "type": "startup-device-lost",
+      "message": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8765/build/villa-shadow-on-20261111-mirror-capture/web-engine-worker.js?v=996dd8def7b029b1e29da602da87bb4882cef4153b3ad236f1b6883bca435f35:668:45",
+      "resolved": false,
+      "retry": {
+        "file": "tests/web-platform/results/villa-startup-mirror-sync-capture-retry-20261111/result.json",
+        "bytes": 27813,
+        "sha256": "d9d95ffbd11059ffeff6ada6e6acd8bcc490948be245e81a056c56831f9c6977"
+      },
+      "retryPass": true,
+      "boundary": "Unchanged retry passed. Failed capture excluded from release corpus. Root cause remains open."
+    },
+    {
+      "record": {
+        "file": "tests/web-platform/results/atomic-mirror-native-build-20261111.json",
+        "bytes": 924,
+        "sha256": "bfb79f0b0b54b80dc3db6f3ef43a1981477b76045ad89c529cbb1594cd658112"
+      },
+      "type": "compiler-process-crash",
+      "boundary": "No C++ diagnostic; CPU affinity=3 workaround used for successful focused retry and all 23 translation units."
+    },
+    {
+      "record": {
+        "file": "tests/web-platform/results/atomic-mirror-native-probe-20261111.log",
+        "bytes": 75190,
+        "sha256": "fb8be0ed21f65a766499a286ee21aa84c9b34d5bf5b61412ad5eb546f03ffb57"
+      },
+      "type": "old-host-missing-shader",
+      "boundary": "Old platform host failed before RHI probe due to missing WebNaniteGBuffer.usf. Current isolated Cook host passed; installed engine unchanged."
+    }
+  ],
+  "remaining": [
+    "No repeated uninstrumented VSM on/off Low benchmark this turn.",
+    "No long-running multitab stress test this turn; shared-read cache worker and fixed-DPR defaults retained and release checks passed.",
+    "One new pipeline miss on unconstrained real-input route; the six fixed diagnostic phases have zero new misses.",
+    "Two full physical-pool copies remain each frame; per-page synchronization is not implemented."
+  ]
+}
