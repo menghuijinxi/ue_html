@@ -1,0 +1,378 @@
+{
+  "date": "2026-11-11T01:54:26.666Z",
+  "pass": true,
+  "source": {
+    "file": "H:\\ue_html\\tests\\web-platform\\summarize-villa-shadow-methods.cjs",
+    "sha256": "19bd8fe5ae97a7159a443b8e48c6d25f0d7765e37244607d82f7862ee1e21a4f"
+  },
+  "inputs": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+      "sha256": "aaf1de5b55ed28b3de0a404d82ab7178eacccc48b48fc7a3e65af3adcf338f8e"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-ba-warm\\result.json",
+      "sha256": "437a284e019ba5572c6b424433dd2fe4fc0bb28bedec3d53c30e1d3a10f5e275"
+    }
+  ],
+  "package": {
+    "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-ab-20261111-diagnostic\\asset-versions.json",
+    "sha256": "3fe1ef699bec53b68ccd1c275147077d762f1cd4e7d0c06c448cf878439fdcc5"
+  },
+  "files": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-ab-20261111-diagnostic\\index.html",
+      "sha256": "9a3d0566b560e2ad70ce1dc37affc8be42ec6373e2d09a3cd6e369b339376f42"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-ab-20261111-diagnostic\\UEWebEngineThreads.wasm",
+      "sha256": "5f6d8dec7a5b2f2d64041f4cbf3ad02184d136627c7363ada7f6c2fe90088d2f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-ab-20261111-diagnostic\\config-files.json",
+      "sha256": "bd8f858f96b72e1ed7d97193e1d2c1ce96f13296b0230cd97b0898578c6990d8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-ab-20261111-diagnostic\\content.bin",
+      "sha256": "ca850a880ff496ceb6953821c6425412cf88d0d38e9bf87f1052eab0a6d5f42a"
+    }
+  ],
+  "browser": "157.0.4341.42",
+  "seconds": 30,
+  "warmup": 15,
+  "renderView": {
+    "width": 1400,
+    "height": 788,
+    "outputWidth": 1920,
+    "outputHeight": 1080,
+    "antiAliasing": 4
+  },
+  "settings": {
+    "antiAliasing": 4,
+    "generateDistanceFields": 1,
+    "distanceFieldAO": 1,
+    "distanceFieldShadows": 1,
+    "gi": 1,
+    "reflections": 1,
+    "texturePoolMiB": 1000,
+    "screenPercentage": 0,
+    "staticLighting": 1,
+    "shadowCacheMiB": 256,
+    "dbuffer": 1,
+    "ssrQuality": 3,
+    "volumetricFog": 1,
+    "virtualTextures": 1,
+    "virtualTexturePathActive": true
+  },
+  "order": [
+    0,
+    1,
+    1,
+    0
+  ],
+  "excluded": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+      "run": 3,
+      "reason": "Interrupted before measurement"
+    }
+  ],
+  "comparisons": [
+    {
+      "name": "standing",
+      "off": {
+        "intervals": 3169,
+        "fps": 52.236588062332544,
+        "low1Fps": 35.34408014269227,
+        "p95Ms": 21.035000000032596,
+        "p99Ms": 22.509999999892898,
+        "maxMs": 37.574999999953434,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+            "index": 1,
+            "intervals": 1580,
+            "fps": 52.059556791951756,
+            "low1Fps": 35.481438772346614,
+            "p50Ms": 19.079999999841675,
+            "p95Ms": 21.175000000046566,
+            "p99Ms": 22.7750000001397,
+            "maxMs": 37.574999999953434,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 5.637282589279648
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-ba-warm\\result.json",
+            "index": 2,
+            "intervals": 1589,
+            "fps": 52.413814487092665,
+            "low1Fps": 35.381009243272636,
+            "p50Ms": 19.010000000009313,
+            "p95Ms": 20.804999999934807,
+            "p99Ms": 21.96999999997206,
+            "maxMs": 36.60999999998603,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 5.628156152801897
+          }
+        ]
+      },
+      "on": {
+        "intervals": 1813,
+        "fps": 29.905514738569213,
+        "low1Fps": 26.617913856023193,
+        "p95Ms": 35.074999999953434,
+        "p99Ms": 36.52000000001863,
+        "maxMs": 38.800000000046566,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+            "index": 2,
+            "intervals": 905,
+            "fps": 29.868735981496574,
+            "low1Fps": 26.354975160415858,
+            "p50Ms": 33.22500000009313,
+            "p95Ms": 35.420000000158325,
+            "p99Ms": 37.449999999953434,
+            "maxMs": 38.800000000046566,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 10.377119182224568
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-ba-warm\\result.json",
+            "index": 1,
+            "intervals": 908,
+            "fps": 29.942262217053013,
+            "low1Fps": 27.460079908838505,
+            "p50Ms": 33.35499999998137,
+            "p95Ms": 34.67499999993015,
+            "p99Ms": 35.39000000001397,
+            "maxMs": 38.48999999999069,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 10.50275498694116
+          }
+        ]
+      },
+      "low1CostPercent": 24.689187698306235,
+      "averageCostPercent": 42.74986968351809
+    },
+    {
+      "name": "turning",
+      "off": {
+        "intervals": 3114,
+        "fps": 51.37574901313264,
+        "low1Fps": 40.94977893519266,
+        "p95Ms": 21.34499999997206,
+        "p99Ms": 22.12000000011176,
+        "maxMs": 36.17000000004191,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+            "index": 1,
+            "intervals": 1559,
+            "fps": 51.488271969044966,
+            "low1Fps": 41.35809649358499,
+            "p50Ms": 19.494999999878928,
+            "p95Ms": 21.260000000009313,
+            "p99Ms": 22.03500000014901,
+            "maxMs": 30.68499999982305,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 6.453854544356723,
+            "turnDegrees": 348.0049189453126,
+            "travelCentimeters": 0
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-ba-warm\\result.json",
+            "index": 2,
+            "intervals": 1555,
+            "fps": 51.26342924649495,
+            "low1Fps": 40.590078262750886,
+            "p50Ms": 19.4749999998603,
+            "p95Ms": 21.429999999934807,
+            "p99Ms": 22.270000000018626,
+            "maxMs": 36.17000000004191,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 6.564439070400858,
+            "turnDegrees": 348.01848046875,
+            "travelCentimeters": 0
+          }
+        ]
+      },
+      "on": {
+        "intervals": 1811,
+        "fps": 29.911682907091837,
+        "low1Fps": 25.31578105847728,
+        "p95Ms": 35.795000000158325,
+        "p99Ms": 38.59499999997206,
+        "maxMs": 41.794999999925494,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+            "index": 2,
+            "intervals": 904,
+            "fps": 29.88581404048098,
+            "low1Fps": 24.964114086018785,
+            "p50Ms": 33.21499999985099,
+            "p95Ms": 36.204999999841675,
+            "p99Ms": 39.16500000003725,
+            "maxMs": 41.794999999925494,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 10.08943299562233,
+            "turnDegrees": 348.03234082031236,
+            "travelCentimeters": 0
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-ba-warm\\result.json",
+            "index": 1,
+            "intervals": 907,
+            "fps": 29.93751080985098,
+            "low1Fps": 26.797797221057394,
+            "p50Ms": 33.339999999967404,
+            "p95Ms": 35.60999999998603,
+            "p99Ms": 36.40500000002794,
+            "maxMs": 39.18000000005122,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 10.233737454556003,
+            "turnDegrees": 348.04349999999977,
+            "travelCentimeters": 0
+          }
+        ]
+      },
+      "low1CostPercent": 38.17846709614191,
+      "averageCostPercent": 41.7785949953823
+    },
+    {
+      "name": "moving",
+      "off": {
+        "intervals": 3141,
+        "fps": 51.88612078481007,
+        "low1Fps": 39.70888424237543,
+        "p95Ms": 20.979999999981374,
+        "p99Ms": 22.020000000018626,
+        "maxMs": 37.88000000012107,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+            "index": 1,
+            "intervals": 1567,
+            "fps": 51.808255233848776,
+            "low1Fps": 40.33274514744766,
+            "p50Ms": 19.260000000009313,
+            "p95Ms": 21.09000000008382,
+            "p99Ms": 22.449999999953434,
+            "maxMs": 33.71499999985099,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 5.783891039235251,
+            "turnDegrees": 0,
+            "travelCentimeters": 2105.382274615901
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-ba-warm\\result.json",
+            "index": 2,
+            "intervals": 1574,
+            "fps": 51.963872893197326,
+            "low1Fps": 39.37153192165385,
+            "p50Ms": 19.234999999869615,
+            "p95Ms": 20.860000000102445,
+            "p99Ms": 21.65500000002794,
+            "maxMs": 37.88000000012107,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 5.882267873299304,
+            "turnDegrees": 0,
+            "travelCentimeters": 2101.268710275701
+          }
+        ]
+      },
+      "on": {
+        "intervals": 1808,
+        "fps": 29.86017247552715,
+        "low1Fps": 26.578444881219006,
+        "p95Ms": 35.53000000002794,
+        "p99Ms": 36.71999999997206,
+        "maxMs": 40.04000000003725,
+        "over50Ms": 0,
+        "over100Ms": 0,
+        "runs": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-abba\\result.json",
+            "index": 2,
+            "intervals": 903,
+            "fps": 29.843598721583405,
+            "low1Fps": 26.686236573513753,
+            "p50Ms": 33.450000000186265,
+            "p95Ms": 35.64999999990687,
+            "p99Ms": 36.75,
+            "maxMs": 40.04000000003725,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 9.89772733403833,
+            "turnDegrees": 0,
+            "travelCentimeters": 2102.664894539486
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-shadow-methods-20261111-fixed-ba-warm\\result.json",
+            "index": 1,
+            "intervals": 905,
+            "fps": 29.876727960177117,
+            "low1Fps": 26.553372278289192,
+            "p50Ms": 33.485000000102445,
+            "p95Ms": 35.38000000000466,
+            "p99Ms": 36.5,
+            "maxMs": 39.675000000046566,
+            "over50Ms": 0,
+            "over100Ms": 0,
+            "prewarmMisses": null,
+            "creations": 0,
+            "rhiWorkMs": 10.09657367175778,
+            "turnDegrees": 0,
+            "travelCentimeters": 2106.0217847491
+          }
+        ]
+      },
+      "low1CostPercent": 33.066754736825985,
+      "averageCostPercent": 42.45055898596129
+    }
+  ],
+  "boundary": "Pooled raw RHI submission intervals, not average of Low values or physical presentation. Four validated runs, two per mode; interrupted unmeasured tail excluded explicitly. Warm diagnostic package only, not cold-start or release validation. VSM off retains conventional shadows with different appearance."
+}
