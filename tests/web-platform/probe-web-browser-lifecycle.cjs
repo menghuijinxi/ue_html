@@ -7,6 +7,7 @@ const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const folder = option('folder') || 'triplex-house-villa-df-distance-fields-threads';
 const channel = process.argv.includes('--chrome') ? 'chrome' : 'msedge';
+const browserExecutable = option('browser-executable');
 const runs = Number(option('runs') || 4);
 const tag = option('tag') || 'baseline';
 const extraArgs = option('browser-args') ? JSON.parse(option('browser-args')) : [];
@@ -22,6 +23,7 @@ assert(!affinityMask || process.platform === 'win32', 'CPU affinity diagnostics 
 const results = path.join(__dirname, 'results');
 const profile = path.join(__dirname, 'build/browser-profiles', `lifecycle-${channel}-${tag}`);
 const report = {date: new Date().toISOString(), pass: false, folder, channel, runs, extraArgs,
+  browserExecutable: browserExecutable ? audit(path.resolve(browserExecutable)) : null,
   width, height, dpr, headful: process.argv.includes('--headful'), settingsOverrides: [],
   affinityMask, affinityChecks: [],
   hostCondition: affinityMask ? `diagnostic CPU affinity 0x${affinityMask.toString(16)}` :
@@ -83,7 +85,7 @@ const snapshot = () => page.evaluate(() => ({frames: globalThis.__webEngineFrame
     for (const item of packaged.products) assert.equal(audit(item.file).sha256, item.sha256);
     report.package = audit(packageFile);
     context = await chromium.launchPersistentContext(profile,
-      {channel, headless: !report.headful, viewport: {width, height},
+      {channel, executablePath: browserExecutable, headless: !report.headful, viewport: {width, height},
         deviceScaleFactor: dpr, args: extraArgs});
     // GPU sandbox startup can reset inherited affinity; apply it before opening the scene.
     checkAffinity(true);
