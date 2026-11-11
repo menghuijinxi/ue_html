@@ -1,13 +1,17 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),zlib=require('node:zlib');
 const {audit}=require('./content-file-metadata.cjs');
-const output=path.join(__dirname,'evidence/nanite-core-native-20261111');fs.mkdirSync(output,{recursive:true});
+const name=process.argv.find(a=>a.startsWith('--name='))?.slice(7)||'nanite-core-native-20261111';
+assert(/^[a-z0-9-]+$/.test(name));
+const proofName=process.argv.find(a=>a.startsWith('--runtime-evidence='))?.slice(19)||'nanite-primitive-visibility-20261111';
+assert(/^[a-z0-9-]+$/.test(proofName));
+const output=path.join(__dirname,'evidence',name);fs.mkdirSync(output,{recursive:true});
 const read=f=>JSON.parse(fs.readFileSync(f,'utf8').replace(/^\uFEFF/,'')),verify=a=>assert.equal(audit(a.file).sha256,a.sha256,a.file);
 const artifacts=[],seen=new Map();
 function archive(f){f=path.resolve(f);if(seen.has(f))return seen.get(f);const b=fs.readFileSync(f),gz=zlib.gzipSync(b,{level:9});assert(zlib.gunzipSync(gz).equals(b));
  const target=path.join(output,artifacts.length+'-'+path.basename(path.dirname(f))+'-'+path.basename(f)+'.gz');fs.writeFileSync(target,gz);
  const a={original:audit(f),archive:audit(target),encoding:'gzip'};artifacts.push(a);seen.set(f,a);return a;}
-const proofFile=path.join(__dirname,'evidence/nanite-primitive-visibility-20261111.json'),proof=read(proofFile);assert(proof.pass);
+const proofFile=path.join(__dirname,'evidence',proofName+'.json'),proof=read(proofFile);assert(proof.pass);
 for(const a of proof.artifacts)verify(a.archive);archive(proofFile);
 const runs=[];
 for(const isDefault of [false,true]){
@@ -47,4 +51,4 @@ for(const isDefault of [false,true]){
 archive(__filename);
 const report={pass:true,date:new Date().toISOString(),source:audit(__filename),runtimeEvidence:audit(proofFile),runs,artifacts,
  boundary:'Same final runtime in Template_Default and Villa, actual TAA/TSR, matched jitter and material mip bias, four stable AO phases, independent native SM6 on/off/restored capture. Full-world clocks advance and only material time is fixed. Existing image thresholds are unchanged; absolute platform differences remain reported separately. This does not claim every experimental Nanite feature is supported.'};
-const file=path.join(__dirname,'evidence/nanite-core-native-20261111.json');fs.writeFileSync(file,JSON.stringify(report,null,2)+'\n');console.log({pass:true,file,runs,artifacts:artifacts.length});
+const file=path.join(__dirname,'evidence',name+'.json');fs.writeFileSync(file,JSON.stringify(report,null,2)+'\n');console.log({pass:true,file,runs,artifacts:artifacts.length});
