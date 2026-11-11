@@ -17,6 +17,8 @@ const report = {date: new Date().toISOString(), tag, folder, seconds, width, hei
   settingsOverrides: [], samples: [], errors: [], pass: false};
 const naniteOff = process.argv.includes('--nanite-off');
 const rasterBatch = option('nanite-raster-batch');
+const materialBatch = option('nanite-material-batch');
+assert(materialBatch === undefined || /^(?:[0-9]|[12][0-9]|3[0-2])$/.test(materialBatch));
 assert(rasterBatch === undefined || rasterBatch === '0' || rasterBatch === '1');
 let context;
 function countGPUCalls() {
@@ -84,9 +86,13 @@ function summarize(profile) {
       assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteRasterBatchTest', v), Number(rasterBatch)), 1);
       report.settingsOverrides.push({naniteRasterBatch: Number(rasterBatch)});
     }
+    if (materialBatch !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteMaterialPassBatchTest', v), Number(materialBatch)), 1);
+      report.settingsOverrides.push({naniteMaterialPassBatch: Number(materialBatch)});
+    }
     report.visualClock = await owner.evaluate(() => globalThis.__webVisualTestClock || null);
     assert(!report.visualClock?.renderTimeFrozen && !report.visualClock?.materialTimeFrozen, 'Game performance requires advancing render and material clocks');
-    if (naniteOff || rasterBatch !== undefined) {
+    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined) {
       for (const step of naniteOff ? [1, 2] : [1]) {
         assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteAutomaticSceneTest', s), step), 1);
         const start = Date.now(); let value;
@@ -98,7 +104,8 @@ function summarize(profile) {
         assert.equal(value?.step, step); assert.equal(value.enabled, step === 1);
         if (step === 2) assert.equal(value.entries, 0);
         if (rasterBatch !== undefined) assert.equal(value.rasterBatch, rasterBatch === '1');
-        report.nanite = {enabled: value.enabled, rasterBatch: value.rasterBatch, registered: value.registered, entries: value.entries};
+        if (materialBatch !== undefined) { assert.equal(value.materialPassBatch, materialBatch !== '0'); assert.equal(value.materialPassBatchMode, Number(materialBatch)); }
+        report.nanite = {enabled: value.enabled, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
       }
       if (naniteOff) report.settingsOverrides.push({nanite: false, verifiedEntries: 0});
     }

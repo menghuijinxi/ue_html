@@ -71,6 +71,8 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("instanceFrustum"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebInstanceFrustum"))->GetInt() != 0);
     Report->SetBoolField(TEXT("materialBins"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialBins"))->GetInt() != 0);
     Report->SetBoolField(TEXT("rasterBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebRasterBatch"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("materialPassBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialPassBatch"))->GetInt() != 0);
+    Report->SetNumberField(TEXT("materialPassBatchMode"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialPassBatch"))->GetInt());
     const bool LocalHierarchy = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebLocalHierarchyQueue"))->GetInt() != 0;
     uint32 LocalEntries = 0, MaxHierarchyNodes = 0;
     for (const auto& Entry : Cull.Entries)
@@ -245,6 +247,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteRasterBatchTest(int Enabled)
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebRasterBatch"));
     static int Saved = -1;
     if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMaterialPassBatchTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialPassBatch"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 32) return 0;
     if (Enabled < 0)
     {
         if (Saved < 0) return 0;

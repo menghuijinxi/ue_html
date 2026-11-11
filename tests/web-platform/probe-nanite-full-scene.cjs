@@ -9,11 +9,14 @@ const binsComparison=process.argv.includes('--material-bins-comparison');
 const hierarchyComparison=process.argv.includes('--hierarchy-comparison');
 const occlusionComparison=process.argv.includes('--occlusion-comparison');
 const rasterComparison=process.argv.includes('--raster-comparison');
-const acceptedProfile=process.argv.includes('--accepted-profile')||occlusionComparison||rasterComparison;
-if(acceptedProfile)assert(hierarchyComparison||occlusionComparison||rasterComparison,'Profile acceptance uses three fixed comparison views');
-assert([frustumComparison,binsComparison,hierarchyComparison,occlusionComparison,rasterComparison].filter(Boolean).length<=1);
-const comparison=frustumComparison||binsComparison||hierarchyComparison||occlusionComparison||rasterComparison;
-const output=path.join(__dirname,rasterComparison?'results/nanite-raster-batch':occlusionComparison?'results/nanite-local-occlusion':acceptedProfile?'results/nanite-runtime-profile':hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
+const materialPassComparison=process.argv.includes('--material-pass-comparison');
+const materialBatchSize=Number(process.argv.find(a=>a.startsWith('--material-batch-size='))?.split('=')[1]||16);
+assert(Number.isInteger(materialBatchSize)&&materialBatchSize>=2&&materialBatchSize<=32);
+const acceptedProfile=process.argv.includes('--accepted-profile')||occlusionComparison||rasterComparison||materialPassComparison;
+if(acceptedProfile)assert(hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison,'Profile acceptance uses three fixed comparison views');
+assert([frustumComparison,binsComparison,hierarchyComparison,occlusionComparison,rasterComparison,materialPassComparison].filter(Boolean).length<=1);
+const comparison=frustumComparison||binsComparison||hierarchyComparison||occlusionComparison||rasterComparison||materialPassComparison;
+const output=path.join(__dirname,materialPassComparison?'results/nanite-material-pass':rasterComparison?'results/nanite-raster-batch':occlusionComparison?'results/nanite-local-occlusion':acceptedProfile?'results/nanite-runtime-profile':hierarchyComparison?'results/nanite-local-hierarchy':binsComparison?'results/nanite-material-bins':frustumComparison?'results/nanite-full-scene-frustum':'results/nanite-full-scene');fs.mkdirSync(output,{recursive:true});
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),
   tests:[],errors:[],events:[],startupLogs:[],logs:[],boundary:'Full-scene diagnostic. Unsupported material categories still use fallback; this is not full compatibility acceptance.'};
 if(acceptedProfile){const {profile}=require('./web-accepted-defaults.cjs');
@@ -90,6 +93,7 @@ function verify(t){
     if(binsComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteMaterialBinsTest',s),[4,6,8].includes(step)?0:1),1);
     if(hierarchyComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteHierarchyModeTest',s),[4,6,8].includes(step)?0:1),1);
     if(rasterComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteRasterBatchTest',s),[4,6,8].includes(step)?0:1),1);
+    if(materialPassComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteMaterialPassBatchTest',s),[4,6,8].includes(step)?0:materialBatchSize),1);
     if(occlusionComparison)assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteOcclusionModeTest',s),[4,6,8].includes(step)?0:1),1);
     assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteAutomaticSceneTest',s),step),1);
     const start=Date.now();let t;
@@ -99,7 +103,8 @@ function verify(t){
     assert(t&&t.step===step,`step ${step} readback`);report.tests.push(t);save();t.validation=verify(t);
     if(comparison&&[5,7,9].includes(step)){
       const previous=report.tests.at(-2);assert.deepEqual(t.view,previous.view);
-      if(rasterComparison){assert(!previous.rasterBatch&&t.rasterBatch);assert.equal(t.entries,previous.entries);
+      if(rasterComparison||materialPassComparison){assert(materialPassComparison?(!previous.materialPassBatch&&t.materialPassBatch):(!previous.rasterBatch&&t.rasterBatch));assert.equal(t.entries,previous.entries);
+        if(materialPassComparison){assert.equal(previous.materialPassBatchMode,0);assert.equal(t.materialPassBatchMode,materialBatchSize);}
         assert.deepEqual(t.entryInstanceIDs,previous.entryInstanceIDs);assert.equal(t.materialDraws,previous.materialDraws);}
       else if(frustumComparison){assert(!previous.instanceFrustum&&t.instanceFrustum);assert(t.entries<previous.entries*.25,'Offscreen GPU work must be removed');}
       else if(occlusionComparison){assert(!previous.localOcclusion&&t.localOcclusion);assert.equal(previous.localOcclusionEntries,0);
@@ -119,7 +124,7 @@ function verify(t){
         const p=i*28;assert.equal(!!t.pixels[p],!!previous.pixels[p],'Nanite coverage changed');
         if(!t.pixels[p])continue;
         assert.equal(t.pixels[p+1]===t.pixels[p+2],previous.pixels[p+1]===previous.pixels[p+2],'Ordinary mesh depth ownership changed');
-        for(let j=1;j<3;j++){if(rasterComparison)assert.equal(t.pixels[p+j],previous.pixels[p+j],'Batch visibility depth must remain bit exact');const difference=Math.abs(float(t.pixels[p+j])-float(previous.pixels[p+j]));maxDepthDifference=Math.max(maxDepthDifference,difference);assert(difference<1e-6,'Visibility depth changed');}
+        for(let j=1;j<3;j++){if(rasterComparison||materialPassComparison)assert.equal(t.pixels[p+j],previous.pixels[p+j],'Visibility depth must remain bit exact');const difference=Math.abs(float(t.pixels[p+j])-float(previous.pixels[p+j]));maxDepthDifference=Math.max(maxDepthDifference,difference);assert(difference<1e-6,'Visibility depth changed');}
         if(t.pixels[p+1]!==t.pixels[p+2])continue;
         for(let j=8;j<28;j++){
           const difference=Math.abs(float(t.pixels[p+j])-float(previous.pixels[p+j]));
@@ -128,7 +133,7 @@ function verify(t){
         }
         compared++;
       }
-      t[rasterComparison?'rasterComparison':occlusionComparison?'occlusionComparison':hierarchyComparison?'hierarchyComparison':frustumComparison?'frustumComparison':'binsComparison']={compared,
+      t[materialPassComparison?'materialPassComparison':rasterComparison?'rasterComparison':occlusionComparison?'occlusionComparison':hierarchyComparison?'hierarchyComparison':frustumComparison?'frustumComparison':'binsComparison']={compared,
         before:occlusionComparison?previous.localOcclusionEntries:hierarchyComparison?previous.hierarchyDispatchLevels:frustumComparison?previous.entries:previous.materialDraws,
         after:occlusionComparison?t.localOcclusionEntries:hierarchyComparison?t.localHierarchyEntries:frustumComparison?t.entries:t.materialDraws,maxDepthDifference,maxSpecularDifference};
     }
@@ -167,6 +172,7 @@ function verify(t){
   if(comparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBoundsTest',-1,0,1)),1);
   if(binsComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialBinsTest',-1)),1);
   if(rasterComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteRasterBatchTest',-1)),1);
+  if(materialPassComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteMaterialPassBatchTest',-1)),1);
   if(hierarchyComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteHierarchyModeTest',-1)),1);
   if(occlusionComparison)assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteOcclusionModeTest',-1)),1);
   const before=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>f+30,before,{timeout:30000});
