@@ -150,7 +150,9 @@ function verify(t){
     const file=path.join(output,`${name}-${step}.png`);await page.locator('canvas').screenshot({path:file});t.image=audit(file);
     const callsBefore=await owner.evaluate(()=>({...__fullSceneGPU.calls}));
     const before=await page.evaluate(()=>({time:performance.now(),frames:__webEngineFrames}));
-    await page.waitForFunction(f=>__webEngineFrames>=f+120,before.frames,{timeout:120000});
+    await page.waitForFunction(f=>globalThis.__webEngineFailure||globalThis.__webEngineRecovery?.attempts>0||globalThis.__webEngineFrames>=f+120,before.frames,{timeout:120000});
+    const failure=await page.evaluate(()=>({failure:globalThis.__webEngineFailure||null,recovery:globalThis.__webEngineRecovery}));
+    assert(!failure.failure&&!failure.recovery?.attempts,JSON.stringify(failure));
     const end=await page.evaluate(()=>({time:performance.now(),frames:__webEngineFrames,runtime:globalThis.__webEngineRuntime}));
     t.performance={frames:end.frames-before.frames,milliseconds:end.time-before.time,fps:(end.frames-before.frames)*1000/(end.time-before.time),runtime:end.runtime};
     const callsAfter=await owner.evaluate(()=>({...__fullSceneGPU.calls}));
