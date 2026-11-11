@@ -35,7 +35,7 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
       const state = await page.evaluate(() => {
         const child = document.querySelector('iframe').contentWindow;
         return {comparison: __shadowComparison, settings: child.__webProjectSettings, view: child.__webRenderView,
-          camera: child.__webDefaultCamera, prewarm: child.__webPipelinePrewarm,
+          camera: child.__webDefaultCamera, player: child.__webPlayerView, prewarm: child.__webPipelinePrewarm,
           canvas: {width: child.document.getElementById('canvas').width, height: child.document.getElementById('canvas').height},
           text: document.querySelector('.metrics').innerText, frames: child.__webEngineFrames};
       });
@@ -44,6 +44,7 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
       assert.equal(state.settings.virtualShadowPathActive, mode === 'on');
       for (const key of ['gi', 'reflections', 'virtualTextures']) assert.equal(state.settings[key], 1);
       assert(state.settings.virtualTexturePathActive && state.prewarm.ready && state.prewarm.adopted);
+      assert(state.player?.active, 'The possessed player camera must be active');
       assert.deepEqual([state.view.width, state.view.height, state.view.outputWidth, state.view.outputHeight,
         state.view.antiAliasing, state.canvas.width, state.canvas.height], [1400, 788, 1920, 1080, 4, 1920, 1080]);
       assert.equal(await page.locator('iframe').count(), 1);
@@ -54,8 +55,45 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
     };
     const childState = () => page.evaluate(() => {
       const child = document.querySelector('iframe').contentWindow;
-      return {camera: child.__webDefaultCamera, motion: child.__webMotionBenchmark, frames: child.__webEngineFrames};
+      return {camera: child.__webDefaultCamera, player: child.__webPlayerView,
+        motion: child.__webMotionBenchmark, frames: child.__webEngineFrames};
     });
+    const playerInput = async name => {
+      const canvas = page.frameLocator('iframe').locator('#canvas'), box = await canvas.boundingBox();
+      await page.mouse.click(box.x + box.width * .5, box.y + box.height * .5);
+      const before = await childState();
+      let moved, distance = 0;
+      const keys = [];
+      // Preserve the project's collisions; a restored player may face a wall.
+      for (const key of ['w', 's', 'a', 'd']) {
+        try {
+          await page.keyboard.down(key);
+          await page.waitForTimeout(700);
+        } finally {await page.keyboard.up(key);}
+        await page.waitForTimeout(500);
+        moved = await childState();
+        distance = Math.hypot(...['x', 'y', 'z'].map(axis => moved.camera[axis] - before.camera[axis]));
+        keys.push({key, distance});
+        if (distance > 10) break;
+      }
+      await page.mouse.move(box.x + box.width * .5, box.y + box.height * .5);
+      try {
+        await page.mouse.down({button: 'right'});
+        for (let i = 1; i <= 20; ++i) {
+          await page.mouse.move(box.x + box.width * (.5 + i * .007), box.y + box.height * .5);
+          await page.waitForTimeout(30);
+        }
+      } finally {await page.mouse.up({button: 'right'});}
+      await page.waitForTimeout(600);
+      const turned = await childState();
+      const yaw = Math.abs((turned.camera.yaw - moved.camera.yaw + 540) % 360 - 180);
+      report.checks.push({name, before, moved, turned, keys, distance, yaw}); save();
+      assert(distance > 10, name + ': movement keys must move the visible player camera');
+      assert(yaw > 5, name + ': mouse drag must turn the visible player camera');
+    };
+    const playerReady = () => page.waitForFunction(() => !__shadowComparison.busy &&
+      document.querySelector('iframe').contentWindow.__webPlayerView?.active &&
+      document.getElementById('stop').disabled, null, {timeout: 45000});
     const layout = async name => {
       const checks = await page.evaluate(() => {
         const visible = [...document.querySelectorAll('header h1,.modes,button,select,.metrics,footer,iframe')]
@@ -82,7 +120,8 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
       report.checks.push({name, ...checks, scenePixelStats: stats.channels.slice(0, 3)});
     };
     await page.goto('http://127.0.0.1:8765/villa-shadow-comparison.html');
-    await check('on');
+    const initial = await check('on');
+    await playerInput('initial-player-input');
     await page.waitForFunction(() => Number.isFinite(__shadowComparison.observations.on.metrics?.low), null, {timeout: 15000});
     await layout('desktop-on');
     await page.locator('#run').click();
@@ -90,22 +129,32 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
     const turning = await childState();
     assert(turning.motion.active && turning.motion.mode === 2);
     assert(Math.abs(turning.camera.yaw - 50) > 10);
-    await page.locator('#stop').click(); await page.waitForTimeout(500);
+    await page.locator('#stop').click(); await playerReady();
+    await playerInput('after-route-stop');
     const held = (await childState()).camera;
     await page.locator('.modes label:last-child').click();
     const off = await check('off');
     for (const key of ['x', 'y', 'z', 'pitch', 'yaw']) assert(Math.abs(off.camera[key] - held[key]) < .1, 'View not preserved: ' + key);
+    await playerInput('after-shadow-switch-off');
     await page.waitForTimeout(4000); await layout('desktop-off');
-    await page.locator('#reset').click(); await page.waitForTimeout(500);
+    await page.locator('#reset').click(); await playerReady();
+    await page.waitForTimeout(500);
     const reset = (await childState()).camera;
-    for (const [key, value] of Object.entries({x: -175, y: -80, z: 160, pitch: -5, yaw: 50}))
-      assert(Math.abs(reset[key] - value) < .1);
+    for (const key of ['x', 'y', 'z', 'pitch', 'yaw'])
+      assert(Math.abs(reset[key] - initial.camera[key]) < .1, 'Player spawn not restored: ' + key);
+    await playerInput('after-player-reset');
+    const beforeRoute = await childState();
     await page.locator('#route').selectOption('1'); await page.locator('#run').click();
     await page.waitForTimeout(2500);
     const moving = await childState();
     assert(moving.motion.active && moving.motion.mode === 1);
-    assert(Math.hypot(moving.camera.x - reset.x, moving.camera.y - reset.y) > 50);
-    await page.locator('#stop').click();
+    assert(Math.hypot(moving.camera.x + 175, moving.camera.y + 80) > 50);
+    await playerReady();
+    const completed = await childState();
+    assert(completed.motion.completed && !completed.motion.active);
+    for (const key of ['x', 'y', 'z', 'pitch', 'yaw'])
+      assert(Math.abs(completed.camera[key] - beforeRoute.camera[key]) < .1, 'Route must return to player: ' + key);
+    await playerInput('after-route-completion');
     const downloaded = page.waitForEvent('download');
     await page.locator('#export').click();
     const download = await downloaded, exportPath = path.join(directory, 'ui-export.json');
@@ -119,7 +168,8 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
     await check('on'); await page.waitForTimeout(2500); await layout('mobile-on');
     await page.setViewportSize({width: 1600, height: 1000});
     await page.waitForTimeout(1000); await layout('desktop-return');
-    report.cameraChecks = {turning, held, reset, moving};
+    await playerInput('after-shadow-switch-on');
+    report.cameraChecks = {turning, held, reset, moving, completed};
     assert.deepEqual(report.errors, []); report.pass = true;
   } catch (error) {report.error = error.stack; console.error(error); process.exitCode = 1;}
   finally {save(); log?.end(); await context?.close();}

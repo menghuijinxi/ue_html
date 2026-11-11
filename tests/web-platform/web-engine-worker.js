@@ -92,6 +92,7 @@ const rpcNames = new Set([
   'WebNaniteGBufferTest',
   'WebTextureStreamingTestBudget', 'WebOcclusionTestMode', 'WebDefaultSamplesVisibility',
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest', 'WebMotionBenchmarkControl',
+  'WebPlayerViewControl',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
   'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
   'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
@@ -123,7 +124,7 @@ if (!globalThis.setImmediate) {
 // engine's many exported symbols on the RHI owner every 100 ms.
 const diagnosticStateKeys = [
   '__webEngineFrames', '__webEngineRuntime', '__webEngineGPUDeviceReady',
-  '__webDefaultCamera', '__webDefaultCloudBudget', '__webDefaultFog', '__webDefaultSamples',
+  '__webDefaultCamera', '__webPlayerView', '__webDefaultCloudBudget', '__webDefaultFog', '__webDefaultSamples',
   '__webDefaultShadowCamera', '__webDefaultShadowControl', '__webRenderView',
   '__webTextureStreaming', '__webOcclusionRHI', '__webVisualTestClock', '__webGPUHandleDiagnostics',
   '__webThreadFrameTimes', '__webThreadIOProbe', '__webThreadStages',
@@ -209,6 +210,15 @@ addEventListener('message', event => {
 async function start(message) {
   if (!crossOriginIsolated || typeof SharedArrayBuffer === 'undefined' || !navigator.gpu)
     throw new Error('Engine Worker requires isolated shared memory and WebGPU');
+  // Keep the browser's external GPU instance alive across startup GC, including
+  // both the prewarm and engine adapters. The owning worker releases them together.
+  const gpuLifetime = globalThis.__webGPUKeepAlive = {gpu: navigator.gpu, adapters: []};
+  const requestAdapter = gpuLifetime.gpu.requestAdapter.bind(gpuLifetime.gpu);
+  gpuLifetime.gpu.requestAdapter = async function(...args) {
+    const adapter = await requestAdapter(...args);
+    if (adapter) gpuLifetime.adapters.push(adapter);
+    return adapter;
+  };
   const assets = message.assets;
   if (assets.reuseReplayScratch !== undefined) globalThis.__webReuseReplayScratch = !!assets.reuseReplayScratch;
   // Approved default; older hosts may omit the option. Explicit channel remains

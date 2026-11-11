@@ -8,9 +8,12 @@ const {finalizeDesktopRelease} = require('./web-release-defaults.cjs');
 const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3);
 const mode = option('mode'), phase = option('phase');
 assert(['on', 'off'].includes(mode) && ['prepare', 'release'].includes(phase));
-const base = 'villa-shadow-' + mode + '-20261111';
+const version = option('version') || '20261111';
+const input = option('source') || 'villa-shadow-ab-20261111-diagnostic';
+assert(/^[a-z0-9-]+$/.test(version) && /^[a-z0-9-]+$/.test(input));
+const base = 'villa-shadow-' + mode + '-' + version;
 const source = path.join(__dirname, 'build', phase === 'prepare' ?
-  'villa-shadow-ab-20261111-diagnostic' : base + '-capture');
+  input : base + '-capture');
 const destination = path.join(__dirname, 'build', base + (phase === 'prepare' ? '-capture' : ''));
 assert(!fs.existsSync(destination), 'Keep existing packages immutable');
 const sourceManifest = path.join(source, 'asset-versions.json');
@@ -44,6 +47,6 @@ assert.equal(defaults.releaseReady, phase === 'release');
 const manifest = writeVersions(destination, fs.readdirSync(destination).map(name => audit(path.join(destination, name))));
 const report = {date: new Date().toISOString(), pass: true, mode, phase, source: audit(__filename),
   sourceManifest: audit(sourceManifest), destination, manifest, releaseDefaults: defaults,
-  boundary: 'Same verified runtime and Cook as the shadow-method benchmark. Only VSM config differs. Fixed physical output, current host/cache worker, and configuration-matched actual pipeline capture via the shared release finalizer.'};
+  boundary: 'Both modes use the same verified source runtime and Cook; only VSM config differs. Fixed physical output, current host/cache worker, and configuration-matched actual pipeline capture via the shared release finalizer.'};
 fs.writeFileSync(path.join(__dirname, 'results', base + '-' + phase + '.json'), JSON.stringify(report, null, 2));
 console.log(JSON.stringify({destination, releaseReady: defaults.releaseReady}));

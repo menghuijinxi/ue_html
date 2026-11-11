@@ -1,16 +1,22 @@
 'use strict';
 (() => {
   const element = id => document.getElementById(id), sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  const initialCamera = {x: -175, y: -80, z: 160, pitch: -5, yaw: 50};
+  const playerKeys = ['x', 'y', 'z', 'pitch', 'yaw', 'roll', 'controlPitch', 'controlYaw', 'controlRoll'];
+  let initialPlayer = null, routeOrigin = null;
   const controls = ['reset', 'route', 'run', 'stop', 'export'].map(element);
   const radios = [...document.querySelectorAll('[name="mode"]')];
   const compact = matchMedia('(max-width: 660px)');
   const state = globalThis.__shadowComparison = {mode: null, ready: false, busy: false,
-    camera: {...initialCamera}, observations: {}, error: null};
+    camera: null, player: null, observations: {}, error: null};
   let frame, generation = 0, running = false, routeSerial = 0, began = 0;
   const number = value => Number.isFinite(value) ? value.toFixed(1) : '待采样';
   const cameraValid = value => value && ['x', 'y', 'z', 'pitch', 'yaw'].every(key => Number.isFinite(value[key]));
+  const playerValid = value => value && playerKeys.every(key => Number.isFinite(value[key]));
   const windowFor = () => frame?.contentWindow;
+  function focusScene() {
+    const child = windowFor();
+    child?.focus(); child?.document.getElementById('canvas')?.focus({preventScroll: true});
+  }
   function layout() {
     document.querySelector('footer details').open = !compact.matches;
     const hud = windowFor()?.document.getElementById('web-performance-hud');
@@ -21,7 +27,7 @@
   }
   function buttons() {
     for (const control of controls) control.disabled = !state.ready || state.busy;
-    element('stop').disabled = !state.ready || !running;
+    element('stop').disabled = !state.ready || state.busy || !running;
     element('run').disabled ||= running;
     element('reset').disabled ||= running;
     for (const radio of radios) radio.disabled = state.busy;
@@ -33,12 +39,25 @@
     element('loading-detail').textContent = state.error;
     element('loading').hidden = false; element('retry').hidden = false;
   }
-  async function pose(camera) {
-    const child = windowFor();
-    if (await child.__webEngineRPC('WebMotionBenchmarkControl', 0, 0) <= 0) throw Error('停止路线失败');
-    if (await child.__webEngineRPC('WebProjectViewTest', camera.x, camera.y, camera.z, camera.pitch, camera.yaw) !== 1)
-      throw Error('恢复相机失败');
-    state.camera = {...camera}; running = false;
+  async function restorePlayer(player, child = windowFor()) {
+    const serial = await child.__webEngineRPC('WebPlayerViewControl', player ? 1 : 0,
+      ...playerKeys.map(key => player ? player[key] : 0));
+    if (serial <= 0) throw Error('恢复玩家控制失败');
+    const settledFrame = child.__webEngineFrames + 2;
+    for (let attempt = 0; attempt < 100; ++attempt) {
+      const current = child.__webPlayerView;
+      if (current?.serial === serial && current.active && playerValid(current) &&
+          child.__webEngineFrames >= settledFrame) return {...current};
+      await sleep(100);
+    }
+    throw Error('等待玩家相机超时');
+  }
+  async function finishRoute() {
+    if (!running || state.busy) return;
+    state.busy = true; buttons();
+    state.player = await restorePlayer(routeOrigin);
+    running = false; routeOrigin = null; state.busy = false;
+    buttons(); update(); focusScene();
   }
   function verify(child) {
     const settings = child.__webProjectSettings, view = child.__webRenderView;
@@ -56,6 +75,10 @@
   async function select(mode) {
     const ticket = ++generation, previous = windowFor();
     if (state.ready && cameraValid(previous?.__webDefaultCamera)) state.camera = {...previous.__webDefaultCamera};
+    if (state.ready && !running && playerValid(previous?.__webPlayerView))
+      state.player = {...previous.__webPlayerView};
+    if (running && routeOrigin) state.player = {...routeOrigin};
+    routeOrigin = null;
     state.mode = mode; state.ready = false; state.busy = true; state.error = null; running = false;
     state.started = new Date().toISOString(); began = performance.now();
     buttons(); for (const radio of radios) radio.checked = radio.value === mode;
@@ -71,7 +94,7 @@
     frame = document.createElement('iframe');
     frame.title = mode === 'on' ? '虚拟阴影开启的别墅' : '传统阴影的别墅';
     frame.allow = 'cross-origin-isolated; fullscreen; autoplay';
-    frame.src = `build/villa-shadow-${mode}-20261111/index.html`;
+    frame.src = `build/villa-shadow-${mode}-20261111-input-v2/index.html`;
     element('stage').prepend(frame);
     try {
       for (let attempt = 0; attempt < 1500; ++attempt) {
@@ -83,11 +106,15 @@
             child.document.getElementById('loading')?.hidden && verify(child)) {
           if (!child.__webPipelinePrewarm?.ready || !child.__webPipelinePrewarm.adopted)
             throw Error('管线预热未生效');
-          await pose(state.camera);
-          await sleep(300);
+          const savedPlayer = state.player;
+          const spawn = await restorePlayer(null, child);
           if (ticket !== generation) return;
+          initialPlayer ||= {...spawn};
+          const restored = savedPlayer ? await restorePlayer(savedPlayer, child) : spawn;
+          if (ticket !== generation) return;
+          state.player = restored;
           state.ready = true; state.busy = false;
-          element('loading').hidden = true; layout(); buttons(); update();
+          element('loading').hidden = true; layout(); buttons(); update(); focusScene();
           return;
         }
         await sleep(200);
@@ -103,8 +130,10 @@
       verify(child);
       const live = child.__webLivePerformance, view = child.__webRenderView;
       if (cameraValid(child.__webDefaultCamera)) state.camera = {...child.__webDefaultCamera};
-      if (running && child.__webMotionBenchmark?.serial === routeSerial &&
-          child.__webMotionBenchmark.completed) {running = false; buttons();}
+      if (!running && !state.busy && playerValid(child.__webPlayerView))
+        state.player = {...child.__webPlayerView};
+      if (running && !state.busy && child.__webMotionBenchmark?.serial === routeSerial &&
+          child.__webMotionBenchmark.completed) finishRoute().catch(fail);
       const metrics = live?.submitted;
       element('fps').textContent = number(metrics?.fps);
       element('low').textContent = number(metrics?.low);
@@ -112,7 +141,8 @@
       element('output-size').textContent = `${view.outputWidth} × ${view.outputHeight}`;
       element('aa').textContent = 'TSR'; element('quality').textContent = 'Lumen 开启 · VT 开启';
       state.observations[state.mode] = {date: new Date().toISOString(), mode: state.mode, metrics,
-        view, camera: {...state.camera}, settings: child.__webProjectSettings, prewarm: child.__webPipelinePrewarm};
+        view, camera: {...state.camera}, player: {...state.player},
+        settings: child.__webProjectSettings, prewarm: child.__webPipelinePrewarm};
       status((state.mode === 'on' ? '虚拟阴影已开启' : '传统阴影已启用') +
         (running ? ` · 路线 ${Math.min(30, Math.floor(child.__webMotionBenchmark?.elapsed || 0))}/30 秒` : ' · 就绪'));
     } catch (error) {fail(error);}
@@ -120,24 +150,28 @@
   for (const radio of radios) radio.addEventListener('change', () => select(radio.value));
   element('retry').onclick = () => select(state.mode);
   element('reset').onclick = async () => {
-    try {await pose(initialCamera); update();} catch (error) {fail(error);}
+    if (!state.ready || state.busy || running) return;
+    try {
+      state.busy = true; buttons();
+      state.player = await restorePlayer(initialPlayer);
+      state.busy = false; buttons(); update(); focusScene();
+    } catch (error) {fail(error);}
   };
   element('run').onclick = async () => {
     if (!state.ready || running) return;
     try {
       const child = windowFor(), mode = Number(element('route').value);
       state.busy = true; buttons();
-      await pose(initialCamera);
+      routeOrigin = {...child.__webPlayerView};
+      if (!playerValid(routeOrigin) || !routeOrigin.active) throw Error('玩家视角未就绪');
+      state.player = {...routeOrigin};
       const serial = await child.__webEngineRPC('WebMotionBenchmarkControl', mode, 30);
       if (serial <= 0) throw Error('启动路线失败');
       routeSerial = serial; running = true; state.busy = false; buttons();
     } catch (error) {fail(error);}
   };
   element('stop').onclick = async () => {
-    try {
-      const camera = windowFor().__webDefaultCamera;
-      await pose(cameraValid(camera) ? camera : state.camera); buttons(); update();
-    } catch (error) {fail(error);}
+    try {await finishRoute();} catch (error) {fail(error);}
   };
   element('export').onclick = () => {
     const record = {date: new Date().toISOString(), currentMode: state.mode, observations: state.observations,

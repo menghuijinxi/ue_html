@@ -5,6 +5,8 @@ const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const option = name => process.argv.find(value => value.startsWith('--' + name + '='))?.slice(name.length + 3);
 const tag = option('tag'), rounds = Number(option('rounds') || 2);
+const profileNameOverride = option('profile');
+assert(!profileNameOverride || /^[a-z0-9-]+$/.test(profileNameOverride));
 const affinity = Number(option('affinity') || 0);
 const browser = option('browser') || 'chrome';
 assert(['chrome', 'msedge'].includes(browser) && (!affinity || browser === 'chrome'));
@@ -31,6 +33,7 @@ const directory = path.join(__dirname, 'results', 'villa-startup-' + tag);
 assert(!fs.existsSync(directory), 'Keep prior measurements; use a new tag');
 fs.mkdirSync(directory);
 const report = {date: new Date().toISOString(), profile: direct ? undefined : profile, affinity, rounds, cvars, folder, browser,
+  browserProfile: profileNameOverride || 'startup-' + tag,
   direct, width, height, dpr, runs: []};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 const recorder = fs.readFileSync(path.join(__dirname, 'web-startup-probe.js'), 'utf8');
@@ -64,7 +67,7 @@ let context, server;
       });
       origin = 'http://127.0.0.1:' + server.address().port;
     }
-    const browserProfile = path.join(__dirname, 'build/browser-profiles/startup-' + tag);
+    const browserProfile = path.join(__dirname, 'build/browser-profiles', profileNameOverride || 'startup-' + tag);
     context = await chromium.launchPersistentContext(browserProfile, {
       channel: browser,
       headless: false, viewport: {width, height}, deviceScaleFactor: dpr,
