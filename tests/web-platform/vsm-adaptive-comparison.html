@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triplex Villa · VSM 自适应画面对比</title>
+<style>
+* { box-sizing: border-box; letter-spacing: 0; }
+:root { font: 14px/1.5 system-ui, sans-serif; color: #222829; background: #f4f5f5; }
+body { margin: 0; }
+header, .toolbar, .readout, footer { padding: 12px 20px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #d4d9d8; background: #fff; }
+h1 { font-size: 18px; margin: 0; font-weight: 650; }
+.meta { font-size: 12px; color: #596463; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; background: #fff; border-bottom: 1px solid #d4d9d8; }
+.field { display: flex; align-items: center; gap: 7px; min-width: 0; }
+label, legend { color: #586361; font-size: 12px; }
+.field > label { white-space: nowrap; flex-shrink: 0; }
+button, select { font: inherit; color: inherit; background: #fff; border: 1px solid #aab5b2; border-radius: 4px; min-height: 36px; padding: 5px 10px; cursor: pointer; max-width: 100%; }
+button:hover { background: #edf3f1; }
+button:focus-visible, select:focus-visible, input:focus-visible, canvas:focus-visible { outline: 2px solid #087e78; outline-offset: 2px; }
+button:disabled, select:disabled, input:disabled { opacity: .5; cursor: default; }
+.icon { width: 36px; padding: 0; font-size: 20px; }
+.modes { display: flex; padding: 0; margin: 0; border: 1px solid #aab5b2; border-radius: 4px; overflow: hidden; }
+.modes label { position: relative; cursor: pointer; color: #394542; }
+.modes input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.modes span { display: block; padding: 7px 12px; font-size: 13px; border-bottom: 2px solid transparent; }
+.modes input:checked + span { color: #006b61; background: #e5f2ee; border-bottom-color: #087e78; }
+.modes input:focus-visible + span { outline: 2px solid #087e78; outline-offset: -3px; }
+.modes input:disabled + span { opacity: .5; }
+.zoom { margin-left: auto; gap: 6px; }
+.zoom output { width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
+.readout { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 12px; min-height: 42px; }
+.readout b { font-variant-numeric: tabular-nums; color: #1c4a44; }
+#stage { height: clamp(330px, 64dvh, 850px); position: relative; background: #161918; overflow: hidden; touch-action: none; }
+#viewer { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+#viewer:active { cursor: grabbing; }
+.badge { position: absolute; top: 14px; padding: 5px 10px; border-radius: 3px; background: #101716dc; color: #fff; pointer-events: none; font-size: 12px; }
+#left-label { left: 16px; border-left: 3px solid #51c7ab; }
+#right-label { right: 16px; border-right: 3px solid #f39b7d; }
+#divider { position: absolute; top: 0; bottom: 0; width: 32px; padding: 0; border: 0; border-radius: 0; transform: translateX(-50%); background: transparent; cursor: ew-resize; touch-action: none; }
+#divider::before { content: ""; position: absolute; width: 2px; top: 0; bottom: 0; left: 15px; background: #fff; box-shadow: 0 0 3px #000; }
+#divider span { position: absolute; left: 0; top: calc(50% - 18px); display: grid; place-items: center; width: 32px; height: 36px; background: #fff; border: 1px solid #9ba9a2; border-radius: 4px; color: #23342e; font-size: 18px; }
+#loading { position: absolute; inset: 0; background: #161918e8; color: #e2eee8; display: grid; place-content: center; padding: 24px; text-align: center; }
+[hidden] { display: none !important; }
+#retry { margin: 12px auto 0; }
+.adjust { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 10px 20px; border-bottom: 1px solid #d4d9d8; background: #fff; min-height: 54px; }
+.adjust input[type=range] { width: 200px; accent-color: #087e78; min-height: 28px; }
+#status { margin-left: auto; font-size: 12px; color: #596463; }
+footer { display: flex; flex-wrap: wrap; gap: 6px 20px; color: #596463; font-size: 12px; }
+footer a { color: #006d61; }
+@media (max-width: 700px) {
+  header, .toolbar, .readout, footer { padding: 9px 12px; }
+  header { align-items: flex-start; flex-direction: column; gap: 3px; }
+  h1 { font-size: 16px; }
+  .toolbar { gap: 8px 12px; }
+  .toolbar > .field { flex: 0 0 auto; }
+  #scene { min-width: 120px; }
+  #pair { width: 180px; }
+  .zoom { margin-left: 0; }
+  #stage { height: 52dvh; min-height: 310px; }
+  .adjust { padding: 8px 12px; gap: 4px 16px; }
+  .adjust input[type=range] { width: 140px; }
+  #status { width: 100%; margin-left: 0; }
+  .badge { top: 10px; font-size: 11px; }
+  #left-label { left: 8px; } #right-label { right: 8px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Triplex Villa · VSM 自适应对比</h1>
+  <div class="meta">截图对照 · 2026-11-11 实测 · 非实时场景</div>
+</header>
+<div class="toolbar" id="controls">
+  <div class="field"><label for="scene">视角</label><select id="scene" disabled>
+    <option value="kitchen">厨房近景</option><option value="interior">餐厅与玻璃</option><option value="living">客厅与栏杆</option>
+  </select></div>
+  <div class="field"><label for="pair">对照</label><select id="pair" disabled>
+    <option value="1,2">原版 1 / 自适应 2</option><option value="4,3">原版 4 / 自适应 3</option>
+    <option value="1,4">原版 1 / 原版 4</option><option value="2,3">自适应 2 / 自适应 3</option>
+  </select></div>
+  <div class="field"><label for="region">区域</label><select id="region" disabled></select></div>
+  <div class="modes" role="radiogroup" aria-label="查看模式">
+    <label><input type="radio" name="mode" value="split" checked disabled><span>滑动对照</span></label>
+    <label><input type="radio" name="mode" value="left" disabled><span>A</span></label>
+    <label><input type="radio" name="mode" value="right" disabled><span>B</span></label>
+    <label><input type="radio" name="mode" value="diff" disabled><span>绝对差分</span></label>
+  </div>
+  <div class="field zoom">
+    <button id="zoom-out" class="icon" title="缩小" aria-label="缩小" disabled>−</button>
+    <output id="zoom-value" aria-label="缩放">100%</output>
+    <button id="zoom-in" class="icon" title="放大" aria-label="放大" disabled>+</button>
+    <button id="fit" disabled>全图</button>
+    <button id="original" disabled>1:1</button>
+  </div>
+</div>
+<div class="readout">
+  <span>全图 RMS <b id="rms">—</b></span>
+  <span>通道差 &gt; 16 的像素 <b id="changed">—</b></span>
+  <span>渲染 1400 × 788 · 输出 1920 × 1080 · TSR</span>
+  <span>Lumen / VT / VSM 开启</span>
+</div>
+<main id="stage" aria-label="同视角截图">
+  <canvas id="viewer" tabindex="0" aria-label="截图对照画布"></canvas>
+  <span class="badge" id="left-label"></span><span class="badge" id="right-label"></span>
+  <button id="divider" title="对照分界" aria-label="对照分界" hidden><span>↔</span></button>
+  <div id="loading" role="status"><span id="loading-text">正在校验原始截图</span><button id="retry" hidden>重试</button></div>
+</main>
+<div class="adjust">
+  <div class="field" id="split-control"><label for="split">分界</label><input id="split" type="range" min="0" max="100" value="50" disabled></div>
+  <div class="field" id="diff-control" hidden><label for="gain">差分增益</label><select id="gain" disabled><option value="1">×1</option><option value="4">×4</option><option value="8" selected>×8</option><option value="16">×16</option></select></div>
+  <span id="status" aria-live="polite">载入中</span>
+</div>
+<footer>
+  <span>试验结果：局部反射有差异，尚未接受画质等价。</span>
+  <a id="source-a" target="_blank" rel="noopener" hidden>截图 A</a>
+  <a id="source-b" target="_blank" rel="noopener" hidden>截图 B</a>
+  <a href="evidence/vsm-adaptive-20261111.json" target="_blank" rel="noopener">完整测试记录</a>
+</footer>
+<script src="vsm-adaptive-comparison.js"></script>
+</body>
+</html>
