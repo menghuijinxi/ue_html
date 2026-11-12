@@ -1,4 +1,6 @@
 'use strict';
+const {assertProjectOutputTree, initializeProjectOutput} = require('./project-output.cjs');
+initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {execFileSync} = require('node:child_process');
@@ -6,12 +8,15 @@ const {audit} = require('./content-file-metadata.cjs'), {readPage} = require('./
 const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3);
 const folder = option('folder'), tag = option('tag'), seconds = Number(option('seconds') || 15);
 const optimization = option('optimization') || 'indirect';
-assert(['indirect', 'pages'].includes(optimization));
-const setting = optimization === 'pages' ? 'r.WebGPU.VSMPageOptimization' : 'r.WebGPU.IndirectDrawReuse';
-const order = (option('order') || (optimization === 'pages' ? '0,3,3,0' : '0,2,2,0')).split(',').map(Number);
+assert(['indirect', 'pages', 'tsr'].includes(optimization));
+const setting = {pages: 'r.WebGPU.VSMPageOptimization', indirect: 'r.WebGPU.IndirectDrawReuse',
+  tsr: 'r.WebGPU.TSRLargeTiles'}[optimization];
+const order = (option('order') || ({pages: '0,3,3,0', indirect: '0,2,2,0', tsr: '0,1,1,0'}[optimization])).split(',').map(Number);
 assert([folder, tag].every(value => value && /^[a-z0-9-]+$/.test(value)));
 assert(seconds >= 15 && seconds <= 60 && order.every(value => [0, 1, 2, 3].includes(value)));
-const directory = path.join(__dirname, 'results', tag); assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
+if (optimization === 'tsr') assert(order.every(value => [0, 1].includes(value)));
+const directory = assertProjectOutputTree(path.join(__dirname, 'results', tag));
+assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
 const packaged = readPage(path.join(__dirname, 'build', folder));
 assert(packaged.assets.pipelinePrewarm && !packaged.args.includes('-WebPSOPrecacheTest'));
 const report = {date: new Date().toISOString(), pass: false, folder, seconds, order, setting, runs: [], comparisons: [],
@@ -43,9 +48,8 @@ function summarize(intervals) {
 let context, log, run;
 (async () => {
   try {
-    process.env.TEMP = process.env.TMP = path.join(__dirname, 'build/test-tmp');
-    context = await chromium.launchPersistentContext(path.join(__dirname,
-      'build/browser-profiles/vsm-adaptive-production-20261112'), {channel: 'msedge', headless: false,
+    const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles/vsm-adaptive-production-20261112'));
+    context = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: false,
       viewport: {width: 1280, height: 800}, deviceScaleFactor: 1.5,
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']});
@@ -89,6 +93,7 @@ ${marker}`);
           assert.equal(value.rhi.vsmPageOptimization, mode);
           if (mode & 1) assert(value.rhi.atomicHeaderBindings > 0);
         }
+        if (optimization === 'tsr') assert.equal(value.rhi.vsmPageOptimization, 3);
         assert(value.prewarm.ready && value.prewarm.adopted);
         for (const key of ['gi', 'reflections', 'virtualTextures', 'virtualShadows']) assert.equal(value.settings[key], 1);
         assert(value.settings.virtualTexturePathActive && value.settings.virtualShadowPathActive);

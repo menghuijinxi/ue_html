@@ -1006,6 +1006,9 @@ void FWebGPUDynamicRHI::Init()
         wgpuAdapterInfoFreeMembers(WaveInfo);
         GRHIMaxDispatchThreadGroupsPerDimension = FIntVector(Limits.maxComputeWorkgroupsPerDimension);
         GRHIGlobals.MaxComputeSharedMemory = Limits.maxComputeWorkgroupStorageSize;
+        // UE's TSR LDS shaders flatten the tile into a single X dimension.
+        GRHIGlobals.MaxWorkGroupInvocations = FMath::Min(
+            Limits.maxComputeInvocationsPerWorkgroup, Limits.maxComputeWorkgroupSizeX);
     }
     if (StartupProbeMode)
     {

@@ -8,7 +8,12 @@
 页标记与镜像同步将转向页标记通道从约 0.448 ms 降至 0.066 ms，
 自动镜像复制负载减少约 40%，平均 FPS 增加 1.35%～2.24%，见
 `UE58_WEB_VSM_PAGE_MARKING_SYNC.md`。静止和移动 Low 提高，转向 Low 基本持平，尚未全面改善 Low。
-最新正式页为 `http://127.0.0.1:8765/build/villa-vsm-pages-final-20261112/index.html`。
+第 4 项已新增 TSR 大分块及设备额度回退，Lumen 页表实验没有稳定收益，未合入。
+TSR 着色拒绝通道下降约 17%～25%，整体平均 FPS 小幅提升；
+转动 Low 仍有约 2.3% 回落，不宣称全面改善 Low。
+详见 `UE58_WEB_LUMEN_TSR_HOTSPOTS.md`。
+当前测试页为 `http://127.0.0.1:8765/build/villa-tsr-tiles-20261112/index.html`。
+历史第三项 C 盘页面在外部清理后已失效，相关源码与报告保留。
 
 以下为 2026-11-11 的原始研究记录：
 

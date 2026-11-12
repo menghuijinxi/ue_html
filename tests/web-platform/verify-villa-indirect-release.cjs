@@ -1,10 +1,13 @@
 'use strict';
+const {assertProjectOutputTree, initializeProjectOutput} = require('./project-output.cjs');
+initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright'), sharp = require('sharp');
 const {audit} = require('./content-file-metadata.cjs'), {readPage} = require('./web-pipeline-prewarm-package.cjs');
 const [folder, tag] = process.argv.slice(2);
 assert([folder, tag].every(value => value && /^[a-z0-9-]+$/.test(value)));
-const directory = path.join(__dirname, 'results', tag); assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
+const directory = assertProjectOutputTree(path.join(__dirname, 'results', tag));
+assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
 assert(readPage(path.join(__dirname, 'build', folder)).assets.pipelinePrewarm);
 const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), runs: [],
   package: audit(path.join(__dirname, 'build', folder, 'asset-versions.json'))};
@@ -12,11 +15,10 @@ const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.st
 let context, log;
 (async () => {
   try {
-    process.env.TEMP = process.env.TMP = path.join(__dirname, 'build/test-tmp');
     for (const dpr of [1.5, 1]) {
       const run = {dpr, errors: [], states: []}; report.runs.push(run); save();
-      context = await chromium.launchPersistentContext(path.join(__dirname,
-        'build/browser-profiles/vsm-adaptive-production-20261112'), {channel: 'msedge', headless: false,
+      const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles/vsm-adaptive-production-20261112'));
+      context = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: false,
         viewport: {width: 1280, height: 800}, deviceScaleFactor: dpr,
         args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
           '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']});
