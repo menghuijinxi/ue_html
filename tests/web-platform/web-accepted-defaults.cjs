@@ -17,6 +17,7 @@ const settings=Object.freeze({
   'r.WebGPU.GroupAccessRevalidation':2,'r.WebGPU.DynamicGlobalsGroupReuse':1,'r.WebGPU.BindingPlan':1,
   'r.Shadow.Virtual.SMRT.AdaptiveRayCount':1,
   'r.WebGPU.IndirectDrawReuse':2,
+  'r.WebGPU.VSMPageOptimization':3,
 });
 const runtimeAssets=Object.freeze({performanceProfile:profile,gameFrameClock:'page',pageFrameBudget:3,
   inputBridge:'direct-game-thread',pageFrameMaxFPS:0,localFrameBudget:0,localFrameBudgetMode:'submitted',

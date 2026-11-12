@@ -4,6 +4,10 @@ const {chromium} = require('playwright');
 const {audit} = require('../content-file-metadata.cjs');
 const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3);
 const folder = option('folder'), tag = option('tag'), kind = option('kind');
+const pageMode = option('page-mode');
+assert(pageMode === undefined || /^[0-3]$/.test(pageMode));
+const profile = option('profile') || 'villa-shadow-page-20261111';
+assert(/^[a-z0-9-]+$/.test(profile));
 assert([folder, tag].every(value => value && /^[a-z0-9-]+$/.test(value)));
 assert(['gpu', 'cpu'].includes(kind));
 const cpuPhase = option('phase') || 'turning';
@@ -13,7 +17,8 @@ assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
 process.env.TEMP = process.env.TMP = path.join(base, 'build/test-tmp');
 const report = {date: new Date().toISOString(), pass: false, folder, kind, source: audit(__filename),
   package: audit(path.join(base, 'build', folder, 'asset-versions.json')), errors: [], phases: [],
-  overrides: kind === 'gpu' ? {'r.WebGPU.ReuseComputePass': 0} : {},
+  overrides: {...(kind === 'gpu' ? {'r.WebGPU.ReuseComputePass': 0} : {}),
+    ...(pageMode === undefined ? {} : {'r.WebGPU.VSMPageOptimization': Number(pageMode)})},
   boundary: 'Diagnostic only, not an FPS benchmark. GPU mode splits compute dispatches for attribution; pass/driver overhead changes. CPU mode preserves packaged settings. No package files are modified.'};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 function namePipelines() {
@@ -38,7 +43,7 @@ let context, log;
 (async () => {
   try {
     context = await chromium.launchPersistentContext(path.join(base, 'build/browser-profiles',
-      'villa-shadow-page-20261111'), {channel: 'msedge', headless: false,
+      profile), {channel: 'msedge', headless: false,
       viewport: {width: 1280, height: 800}, deviceScaleFactor: 1.5,
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']});
@@ -54,7 +59,7 @@ let context, log;
         body = body.replace(marker, `
         const diagnosticsIni = '/Engine/Platforms/Web/Config/WebEngine.ini';
         FS.writeFile(diagnosticsIni, FS.readFile(diagnosticsIni, {encoding:'utf8'}) +
-          '\\n[SystemSettings]\\nr.WebGPU.ReuseComputePass=0\\n');
+          '\\n[SystemSettings]\\nr.WebGPU.ReuseComputePass=0\\n${pageMode === undefined ? '' : 'r.WebGPU.VSMPageOptimization=' + pageMode + '\\n'}');
 ${marker}`);
         await route.fulfill({response, body: '(' + namePipelines.toString() + ')();\n(' +
           observer.toString() + ')();\n' + body});

@@ -1,0 +1,384 @@
+{
+  "date": "2026-11-12",
+  "pass": true,
+  "releaseReady": true,
+  "folder": "villa-vsm-pages-final-20261112",
+  "url": "http://127.0.0.1:8765/build/villa-vsm-pages-final-20261112/index.html",
+  "referenceEngineCommit": "231b20bb0827ef5f38021789a067947e4e41aa57",
+  "setting": {
+    "r.WebGPU.VSMPageOptimization": 3
+  },
+  "sameQuality": true,
+  "wasm": "8b5e02a07b7ecb59d5474d1cc6f4dc7e11dde69bc54fa9c3713b995cdba08498",
+  "content": "f65626c4db7487698a13752728737025cf418a07d57f7eaa22b30f3b83cb6413",
+  "performance": [
+    {
+      "name": "standing",
+      "before": {
+        "mode": 0,
+        "fps": 46.88330121876667,
+        "low1Fps": 37.59963904333878,
+        "p99Ms": 24.759999999776483,
+        "rhiMs": 9.525856891261878,
+        "counters": {
+          "atomicCopiesToTexturePerFrame": 20,
+          "atomicCopiesToBufferPerFrame": 15,
+          "atomicCopyBytesPerFrame": 109836000
+        },
+        "mirrorMiBPerFrame": 104.74777221679688
+      },
+      "after": {
+        "mode": 3,
+        "fps": 47.517138815335485,
+        "low1Fps": 39.6930404874491,
+        "p99Ms": 24.524999998509884,
+        "rhiMs": 9.635846976678733,
+        "counters": {
+          "atomicCopiesToTexturePerFrame": 16,
+          "atomicCopiesToBufferPerFrame": 15,
+          "atomicCopyBytesPerFrame": 65009376
+        },
+        "mirrorMiBPerFrame": 61.997772216796875
+      },
+      "fpsChangePercent": 1.3519474527000641,
+      "low1ChangePercent": 5.567610480774521,
+      "copyBytesSavedPercent": 40.81232382825303
+    },
+    {
+      "name": "turning",
+      "before": {
+        "mode": 0,
+        "fps": 46.75060219856858,
+        "low1Fps": 37.324574499774585,
+        "p99Ms": 26.320000000298023,
+        "rhiMs": 9.66515937600865,
+        "counters": {
+          "atomicCopiesToTexturePerFrame": 20,
+          "atomicCopiesToBufferPerFrame": 15,
+          "atomicCopyBytesPerFrame": 108903955.2
+        },
+        "mirrorMiBPerFrame": 103.85890502929688
+      },
+      "after": {
+        "mode": 3,
+        "fps": 47.79558156768422,
+        "low1Fps": 37.0796099221485,
+        "p99Ms": 26.019999999552965,
+        "rhiMs": 9.81273299007271,
+        "counters": {
+          "atomicCopiesToTexturePerFrame": 16,
+          "atomicCopiesToBufferPerFrame": 15,
+          "atomicCopyBytesPerFrame": 64464723.2
+        },
+        "mirrorMiBPerFrame": 61.47835083007813
+      },
+      "fpsChangePercent": 2.2352211949638656,
+      "low1ChangePercent": -0.6563090963771501,
+      "copyBytesSavedPercent": 40.80589352185439
+    },
+    {
+      "name": "moving",
+      "before": {
+        "mode": 0,
+        "fps": 46.26621567288923,
+        "low1Fps": 37.22453841581312,
+        "p99Ms": 25.284999998286366,
+        "rhiMs": 9.474853334943115,
+        "counters": {
+          "atomicCopiesToTexturePerFrame": 20,
+          "atomicCopiesToBufferPerFrame": 15,
+          "atomicCopyBytesPerFrame": 97491364.08510639
+        },
+        "mirrorMiBPerFrame": 92.97500999937667
+      },
+      "after": {
+        "mode": 3,
+        "fps": 47.225782503144345,
+        "low1Fps": 37.96074858582612,
+        "p99Ms": 25.054999999701977,
+        "rhiMs": 9.625166197368458,
+        "counters": {
+          "atomicCopiesToTexturePerFrame": 16,
+          "atomicCopiesToBufferPerFrame": 15,
+          "atomicCopyBytesPerFrame": 58297331.2
+        },
+        "mirrorMiBPerFrame": 55.59666748046875
+      },
+      "fpsChangePercent": 2.0740119248987776,
+      "low1ChangePercent": 1.977755000718151,
+      "copyBytesSavedPercent": 40.20256896897189
+    }
+  ],
+  "pageMarkingGPU": [
+    {
+      "mode": 0,
+      "shader": "FGeneratePageFlagsFromPixelsCS",
+      "entry": "main_00008674_0be2b746",
+      "headerLoads": 6,
+      "phases": [
+        {
+          "name": "standing",
+          "gpuMs": 0.36044800000000005,
+          "samples": [
+            0.32768,
+            0.393216,
+            0.393216,
+            0.32768,
+            0.32768,
+            0.393216
+          ]
+        },
+        {
+          "name": "turning",
+          "gpuMs": 0.44782933333333336,
+          "samples": [
+            0.393216,
+            0.458752,
+            0.458752,
+            0.458752,
+            0.458752,
+            0.458752
+          ]
+        }
+      ]
+    },
+    {
+      "mode": 3,
+      "shader": "FGeneratePageFlagsFromPixelsCS",
+      "entry": "main_00008674_0be2b746",
+      "headerLoads": 0,
+      "phases": [
+        {
+          "name": "standing",
+          "gpuMs": 0.065536,
+          "samples": [
+            0.065536,
+            0.065536,
+            0.065536,
+            0.065536,
+            0.065536,
+            0.065536
+          ]
+        },
+        {
+          "name": "turning",
+          "gpuMs": 0.065536,
+          "samples": [
+            0.065536,
+            0.065536,
+            0.065536,
+            0.065536,
+            0.065536,
+            0.065536
+          ]
+        }
+      ]
+    }
+  ],
+  "visualComparison": [
+    {
+      "kind": "before-after",
+      "files": [
+        {
+          "file": "tests/web-platform/results/villa-vsm-pages-final-abba-20261112/run-1-standing.png",
+          "sha256": "cbca4f80750241ff63cd130900a5c76e31ed4e3d5160963bfd218269b432b15a"
+        },
+        {
+          "file": "tests/web-platform/results/villa-vsm-pages-final-abba-20261112/run-2-standing.png",
+          "sha256": "bbc9ad7f0fa45d5ddb93861798c00b438e61ad3963bc094ebaac69cba38544aa"
+        }
+      ],
+      "pixels": 1932000,
+      "rgbMeanAbsoluteDifference": 0.36494668737060043,
+      "changedFractionAbove12": 0.0022712215320910972
+    },
+    {
+      "kind": "repeat-on",
+      "files": [
+        {
+          "file": "tests/web-platform/results/villa-vsm-pages-final-abba-20261112/run-2-standing.png",
+          "sha256": "bbc9ad7f0fa45d5ddb93861798c00b438e61ad3963bc094ebaac69cba38544aa"
+        },
+        {
+          "file": "tests/web-platform/results/villa-vsm-pages-final-abba-20261112/run-3-standing.png",
+          "sha256": "068ec1dd8bd14fccdabfaa59731f79ec2a49cb933a543b6cd402fe89fb90f943"
+        }
+      ],
+      "pixels": 1932000,
+      "rgbMeanAbsoluteDifference": 0.5285469289164941,
+      "changedFractionAbove12": 0.0006092132505175984
+    },
+    {
+      "kind": "repeat-off",
+      "files": [
+        {
+          "file": "tests/web-platform/results/villa-vsm-pages-final-abba-20261112/run-1-standing.png",
+          "sha256": "cbca4f80750241ff63cd130900a5c76e31ed4e3d5160963bfd218269b432b15a"
+        },
+        {
+          "file": "tests/web-platform/results/villa-vsm-pages-final-abba-20261112/run-4-standing.png",
+          "sha256": "a9b0905bad077a2306eaba1b5adad237109930422170f90c4c5557fdb971e62f"
+        }
+      ],
+      "pixels": 1932000,
+      "rgbMeanAbsoluteDifference": 0.6728766390614217,
+      "changedFractionAbove12": 0.0029508281573498965
+    }
+  ],
+  "native": {
+    "pass": true,
+    "cases": 79,
+    "checkedAtomicValues": 29868
+  },
+  "files": [
+    {
+      "file": "tests/web-platform/results/villa-vsm-pages-final-abba-20261112/result.json",
+      "sha256": "4b2be1bac3dbcfcbc778085308da3363d03886712ec47f996276917c3d776dd7"
+    },
+    {
+      "file": "tests/web-platform/build/vsm-pages-coherent-final-20261112/lumen-storage-rhi.json",
+      "sha256": "9c5f9d05fc53dbfbba049ad8aa1d50483322cdcd4586819e2346af89ae5195dd"
+    },
+    {
+      "file": "tests/web-platform/results/villa-vsm-pages-final-release-20261112/result.json",
+      "sha256": "f1d70424a05616540a75a7321399f0a22b759e386f728396e7267875e72498df"
+    },
+    {
+      "file": "tests/web-platform/results/web-project-triplex-virtual-distance-fields-threads-package-results.json",
+      "sha256": "c86ba39287c076c1253a7eda020941fa8726c8cbcb38d23932f7e4caf9df7d51"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-pages-final-off-gpu-20261112/result.json",
+      "sha256": "132edccb72a70258210d7b2228480325e394c6aba4c5f964cedf1e08cc0fbc2a"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-pages-final-on-gpu-20261112/result.json",
+      "sha256": "8420918612153ad4ea41fe977dbd3062b2be12cff90248b39884f4eeb3860472"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-pages-final-off-gpu-20261112/compute-shaders.json",
+      "sha256": "e3126fd91f0a679a6c9ca9fd44095ee68e3e334e1fd92bf41c2f97b9266c937c"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-pages-final-on-gpu-20261112/compute-shaders.json",
+      "sha256": "737550de0fe8266ffe6cae19d3a7cb571ec94700f84d621a619feb58aad15296"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-pages-smoke-retry-20261112/result.json",
+      "sha256": "042e38ce8aa81a8c987f79e233a413671b5a807b28c00ef27aa7b1bb58ea24cc"
+    },
+    {
+      "file": "tests/web-platform/results/villa-vsm-pages-abba-gpu-20261112/result.json",
+      "sha256": "8a5d02eb6d9e7c6b45ce2cf50bc58ff49ec3572f494cebc7338d218c06985ef2"
+    },
+    {
+      "file": "tests/web-platform/results/villa-vsm-pages-abba-20261112/result.json",
+      "sha256": "d48164605bff88a6c93225d893524b2763f3920db583d8d72221964327ae249f"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-vsm-pages-20261112/result.json",
+      "sha256": "6be67a11cd805989095e1ebfc7a6d08dfedf4873a77f73e7fe076491f91c6147"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-vsm-pages-packed-20261112/result.json",
+      "sha256": "e4c1647006f7730542f35e75030c2fe499e7d287786015ee94a3776db9d31687"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-vsm-pages-final-20261112/result.json",
+      "sha256": "3be4e992462c194ff51b7c8bbdacc976ce92deac599211d635645471228562ca"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-vsm-pages-final-20261112/0-corpus.json",
+      "sha256": "3ecc3b1b0ec177bfe0004dad116a8ee037d372e6a2ef2ec7b6c7aae72b70195a"
+    },
+    {
+      "file": "tests/web-platform/build/vsm-pages-cached-writer-baseline-20261112/lumen-storage-rhi.json",
+      "sha256": "fa9ff6f92cf98911ed64241ecd4d3efa527ed443a8d79fd68c46336e713b909a"
+    },
+    {
+      "file": "tests/web-platform/results/web-engine-full-thread-build-results.json",
+      "sha256": "cc021583b7cdfc3062c590e700001bbad96083d5299eb96d8f549dcb8c8a0fb9"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-pages-packed-native-build-20261112.log",
+      "sha256": "8e02a219773ddc41d9eb67dfd88905e83978481b8fb8b7e4b72f930dfece85f4"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-pages-coherent-final-build-20261112.log",
+      "sha256": "5eec0a802c261fdd7e3c5870b80592a3249d19eee94fcd241d790e452aeaa2b5"
+    },
+    {
+      "file": "tests/web-platform/build/villa-vsm-pages-final-20261112/asset-versions.json",
+      "sha256": "393f99c574036b0bba7ec4b97005a082ee523500da5571e8254a51304bf33d3f"
+    },
+    {
+      "file": "tests/web-platform/build/villa-vsm-pages-final-20261112/pipeline-prewarm.json",
+      "sha256": "e57c9d73fca562c3f7621ff7331f7eb733496f1a5d056d9603075b46876bb65a"
+    },
+    {
+      "file": "UE58_WEB_VSM_PAGE_MARKING_SYNC.md",
+      "sha256": "3bc2cd81aa43b633bc92f2337bcc20e4ff50975a11e0868880e7a2503c0b0fc5"
+    },
+    {
+      "file": "UE58_WEB_VSM_REMAINING_OPTIMIZATIONS.md",
+      "sha256": "deda4448c56a5e7225ad7a0b36f59432d5e085c20f32958ec917607f751b9892"
+    },
+    {
+      "file": "tests/web-platform/diagnostics/summarize-vsm-pages.cjs",
+      "sha256": "0bd25216086099546fb7ea7531e84358ea9f9a35d2469ce4596237abe4f4f32c"
+    },
+    {
+      "file": "tests/web-platform/diagnostics/probe-vsm-pages-smoke.cjs",
+      "sha256": "ac06e3945ae9de8137de12a5d1153ce0334e6646f4799f928d0bd5aad08587ef"
+    },
+    {
+      "file": "tests/web-platform/diagnostics/probe-vsm-remaining-costs.cjs",
+      "sha256": "f5ca9cd8b3ef9f102300e59b5c1a4c2f715aa153f7236df063c33dd456a7058c"
+    },
+    {
+      "file": "tests/web-platform/benchmark-villa-indirect-reuse.cjs",
+      "sha256": "84d0fb103dea469850307b9e4ececdfac02b54f712253ee0a99c8481d198a548"
+    },
+    {
+      "file": "tests/web-platform/verify-villa-indirect-release.cjs",
+      "sha256": "fd7f0ff4124d6dd273da8f43f5530c21f78b4ce4e6bf259c41ff2ba363b11a41"
+    },
+    {
+      "file": "tests/web-platform/verify-web-release-defaults.cjs",
+      "sha256": "bba5e56710d9eb1a5e83653536a388be7e3f74abcab546d9e8930472bd5fb7f4"
+    },
+    {
+      "file": "tests/web-platform/web-accepted-defaults.cjs",
+      "sha256": "0d88731cee15ac916621d2c8be43c06360cafc06e381f64629d485b874e0d529"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUTextureAtomicHeaders.h",
+      "sha256": "450831894d8fad1c8b670a4e2a57c78059ee605612017532bc2fdc9ea9743212"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUShaderDeclarations.h",
+      "sha256": "8ea3c4baed770edfd5c57d129e9b9d31390ee39208215f48d809bda19d801ade"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.h",
+      "sha256": "40e44f0c2374396d48acd1f5bc8c3e6dabcc31885903a88a819878cd61ea3863"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "583099545f41c20314e29877cb455f2a0e7da3ff4601b1db9bd6df89f213ed71"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUTransitions.cpp",
+      "sha256": "efc01e661b5bf22232ce63b01fbdbe13b46c81a51f1bea3ade5a8cd55db1b8be"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUTextureAtomicProbe.h",
+      "sha256": "200347860324e2691a02b1882af3901fd43a6fe108cfd9d6e5abd81b00c4b047"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPULumenStorageProbe.h",
+      "sha256": "f87f2b1b68036149b440632651d9a261ca415e6202dd803d5bc15de833092757"
+    }
+  ],
+  "boundary": "RHI submission intervals, not display presentation times. ABBA has no per-draw or profiler instrumentation; NVIDIA state sampled outside measurement windows. Mirror counters use their actual 30-frame publication ranges. GPU dispatch timing splits compute passes and is diagnostic only. Static screenshots cover one view; free movement is separately checked. One device-loss capture and one abnormal ~3 FPS baseline are retained and excluded, with no claim that their triggers are fixed."
+}

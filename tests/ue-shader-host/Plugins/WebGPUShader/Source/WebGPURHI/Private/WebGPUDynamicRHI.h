@@ -32,6 +32,7 @@ struct FWebGPUShaderBinding : UE::WebGPUShader::FRuntimeBinding
     const FJsonObject* Metadata = nullptr; // Only legacy/explicit validation loads own a DOM.
     bool StorageContractChecked = false;
     int32 SamplerBiasSlot = INDEX_NONE;
+    bool TextureAtomicHeaders = false;
     // Prepared descriptors are reusable only while their source and access
     // state are unchanged. The bind-group cache below owns GPU handle refs.
     TRefCountPtr<FRHIResource> PreparedResource;
@@ -145,6 +146,11 @@ struct FWebGPUShaderData
     WGPUBuffer SamplerBiasBuffer = nullptr;
     float SamplerBiasValues[4] = {};
     uint64 SamplerBiasVersion = 1;
+    int32 TextureAtomicHeadersGroup = INDEX_NONE;
+    TArray<int32> TextureAtomicHeaderSources;
+    TArray<FUintVector4> TextureAtomicHeaderValues;
+    WGPUBuffer TextureAtomicHeadersBuffer = nullptr;
+    uint64 TextureAtomicHeadersVersion = 1;
     EShaderFrequency Frequency = SF_NumFrequencies;
     ~FWebGPUShaderData()
     {
@@ -152,6 +158,8 @@ struct FWebGPUShaderData
             WebGPUOnOwner([&] { wgpuBufferRelease(GlobalsBuffer); });
         if (SamplerBiasBuffer)
             WebGPUOnOwner([&] { wgpuBufferRelease(SamplerBiasBuffer); });
+        if (TextureAtomicHeadersBuffer)
+            WebGPUOnOwner([&] { wgpuBufferRelease(TextureAtomicHeadersBuffer); });
         if (Module)
             WebGPUOnOwner([&] { wgpuShaderModuleRelease(Module); });
     }
@@ -840,6 +848,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
         ERHIAccess PreviousAccess, ERHIAccess NextAccess);
     void CopyTextureAtomicSlice(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, bool ToTexture);
     void RefreshTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip);
+    void PrepareTextureAtomicTextureUse(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, bool Write);
+    bool DeferTextureAtomicSync() const;
+    uint64 AtomicCopiesToTexture = 0, AtomicCopiesToBuffer = 0, AtomicCopyBytes = 0;
+    uint32 AtomicHeaderBindings = 0;
     uint64 RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat Format) override;
     bool ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                ERHIAccess Access, FString &Error) const;

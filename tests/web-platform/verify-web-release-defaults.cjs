@@ -33,6 +33,7 @@ function capture(folder, withoutSubgroups = false) {
   return file;
 }
 const source = fixture('source');
+assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.VSMPageOptimization'], 3);
 assert(!readPage(source).args.includes('-WebPSOPrecacheTest'), 'Accepted defaults must not request speculative PSOs');
 const corpus = capture(source);
 const dest = fixture('dest');

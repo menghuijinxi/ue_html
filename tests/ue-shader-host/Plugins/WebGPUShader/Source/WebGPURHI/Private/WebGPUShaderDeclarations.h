@@ -8,11 +8,12 @@ struct FWebGPUShaderDeclaration
     int32 FormatOffset = INDEX_NONE;
 };
 
-inline TMap<uint64, FWebGPUShaderDeclaration> ParseWebGPUShaderDeclarations(const FString& Source)
+struct FWebGPUShaderToken { FString Text; int32 Offset, End; };
+
+inline TArray<FWebGPUShaderToken> TokenizeWebGPUShader(const FString& Source)
 {
     // Web builds omit ICU. Keep byte offsets while lexing generated WGSL without regex.
-    struct FToken { FString Text; int32 Offset; };
-    TArray<FToken> Tokens;
+    TArray<FWebGPUShaderToken> Tokens;
     for (int32 Index = 0; Index < Source.Len();)
     {
         if (FChar::IsWhitespace(Source[Index])) { ++Index; continue; }
@@ -39,8 +40,14 @@ inline TMap<uint64, FWebGPUShaderDeclaration> ParseWebGPUShaderDeclarations(cons
         const int32 Start = Index++;
         if (FChar::IsAlnum(Source[Start]) || Source[Start] == TCHAR('_'))
             while (Index < Source.Len() && (FChar::IsAlnum(Source[Index]) || Source[Index] == TCHAR('_'))) ++Index;
-        Tokens.Add({Source.Mid(Start, Index - Start), Start});
+        Tokens.Add({Source.Mid(Start, Index - Start), Start, Index});
     }
+    return Tokens;
+}
+
+inline TMap<uint64, FWebGPUShaderDeclaration> ParseWebGPUShaderDeclarations(const FString& Source)
+{
+    const auto Tokens = TokenizeWebGPUShader(Source);
     TMap<uint64, FWebGPUShaderDeclaration> Declarations;
     int32 Group = INDEX_NONE, Binding = INDEX_NONE;
     for (int32 Index = 0; Index < Tokens.Num(); ++Index)
@@ -53,17 +60,23 @@ inline TMap<uint64, FWebGPUShaderDeclaration> ParseWebGPUShaderDeclarations(cons
         }
         if (Tokens[Index].Text == TEXT("var"))
         {
+            int32 Name = Index + 1;
+            if (Tokens.IsValidIndex(Name) && Tokens[Name].Text == TEXT("<"))
+            {
+                while (Tokens.IsValidIndex(Name) && Tokens[Name].Text != TEXT(">")) ++Name;
+                ++Name;
+            }
             if (Group != INDEX_NONE && Binding != INDEX_NONE && Index + 3 < Tokens.Num() &&
-                Tokens[Index + 2].Text == TEXT(":"))
+                Tokens.IsValidIndex(Name + 2) && Tokens[Name + 1].Text == TEXT(":"))
             {
                 FWebGPUShaderDeclaration Entry;
-                Entry.Name = Tokens[Index + 1].Text;
-                Entry.Type = Tokens[Index + 3].Text;
-                if (Entry.Type.StartsWith(TEXT("texture_storage_")) && Index + 5 < Tokens.Num() &&
-                    Tokens[Index + 4].Text == TEXT("<"))
+                Entry.Name = Tokens[Name].Text;
+                Entry.Type = Tokens[Name + 2].Text;
+                if (Entry.Type.StartsWith(TEXT("texture_storage_")) && Tokens.IsValidIndex(Name + 4) &&
+                    Tokens[Name + 3].Text == TEXT("<"))
                 {
-                    Entry.Format = Tokens[Index + 5].Text;
-                    Entry.FormatOffset = Tokens[Index + 5].Offset;
+                    Entry.Format = Tokens[Name + 4].Text;
+                    Entry.FormatOffset = Tokens[Name + 4].Offset;
                 }
                 Declarations.Add((uint64(Group) << 32) | uint32(Binding), MoveTemp(Entry));
             }

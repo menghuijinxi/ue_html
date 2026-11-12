@@ -18,6 +18,9 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
     auto* ReuseSetting = IConsoleManager::Get().FindConsoleVariable(TEXT("r.WebGPU.IndirectDrawReuse"));
     const int32 PreviousReuse = ReuseSetting->GetInt();
     ReuseSetting->Set(2, ECVF_SetByCode);
+    auto* PageSetting = IConsoleManager::Get().FindConsoleVariable(TEXT("r.WebGPU.VSMPageOptimization"));
+    const int32 PreviousPage = PageSetting->GetInt();
+    PageSetting->Set(3, ECVF_SetByCode);
     bool Success = false;
     IFileManager::Get().MakeDirectory(*Output, true);
     ENQUEUE_RENDER_COMMAND(WebLumenStorageProbe)([&](FRHICommandListImmediate& Cmd) {
@@ -595,6 +598,9 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
         Report->SetArrayField(TEXT("packedShadowMaskCases"), PackedShadowMaskCases);
         Report->SetNumberField(TEXT("pipelines"), RHI.ComputePipelinesCreated);
+        Report->SetNumberField(TEXT("atomicHeaderBindings"), RHI.AtomicHeaderBindings);
+        Report->SetNumberField(TEXT("atomicCopiesToTexture"), double(RHI.AtomicCopiesToTexture));
+        Report->SetNumberField(TEXT("atomicCopiesToBuffer"), double(RHI.AtomicCopiesToBuffer));
         Report->SetArrayField(TEXT("cases"), Cases);
         Report->SetArrayField(TEXT("volumeCases"), VolumeCases);
         Report->SetArrayField(TEXT("bufferCases"), BufferCases);
@@ -618,5 +624,6 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
     });
     FlushRenderingCommands();
     ReuseSetting->Set(PreviousReuse, ECVF_SetByCode);
+    PageSetting->Set(PreviousPage, ECVF_SetByCode);
     return Success;
 }

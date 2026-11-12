@@ -168,6 +168,15 @@ void FWebGPUDynamicRHI::RequireAccess(FRHIViewableResource *Resource, ERHIAccess
     RequireOwner();
     FString Error;
     checkf(ValidateAccess(Resource, Access, Error, InternalCopy, Plane, Mip, Slice), TEXT("%s"), *Error);
+    if (Resource->GetType() == RRT_Texture && Plane == 0 && DeferTextureAtomicSync())
+    {
+        auto* Texture = static_cast<FWebGPUTexture*>(Resource);
+        const uint32 LastMip = Mip == MAX_uint32 ? Texture->GetNumMips() : Mip + 1;
+        const uint32 LastSlice = Slice == MAX_uint32 ? Texture->LayerCount() : Slice + 1;
+        for (uint32 Z = Slice == MAX_uint32 ? 0 : Slice; Z < LastSlice; ++Z)
+            for (uint32 L = Mip == MAX_uint32 ? 0 : Mip; L < LastMip; ++L)
+                PrepareTextureAtomicTextureUse(Texture, L, Z, EnumHasAnyFlags(Access, ~ERHIAccess::ReadOnlyMask));
+    }
     ++AccessChecks;
 }
 bool FWebGPUDynamicRHI::ValidateTransitionCreate(const FRHITransitionCreateInfo &Info, FString &Error) const

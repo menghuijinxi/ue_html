@@ -40,6 +40,8 @@ let context, log;
       function check(value) {
         assert(!value.failure, value.failure); assert.deepEqual(run.errors, []);
         assert.equal(value.rhi.indirectDrawReuse, 2);
+        assert.equal(value.rhi.vsmPageOptimization, 3);
+        assert(value.rhi.atomicHeaderBindings > 0);
         assert(value.rhi.indirectTemplateHits > 0 && value.rhi.indirectBindingHits > 0);
         assert(value.prewarm.ready && value.prewarm.adopted && value.prewarm.counts.hits > 0);
         assert(value.sampling.enabled && value.sampling.supported);
