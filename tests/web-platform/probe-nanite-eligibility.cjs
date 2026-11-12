@@ -36,7 +36,7 @@ function observe(){
   }
 }
 (async()=>{let context,page,owner;try{
-  context=await chromium.launchPersistentContext(`C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/${tag}`,
+  context=await chromium.launchPersistentContext(`G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}`,
     {channel:'msedge',headless:true,viewport:{width:1280,height:720},deviceScaleFactor:1});
   await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:`(${observe.toString()})();\n`+await r.text()});});
   await context.route('**/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,

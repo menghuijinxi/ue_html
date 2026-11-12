@@ -8,6 +8,8 @@ const file=path.join(__dirname,'results','gpu-'+tag+'.json');
 assert(!fs.existsSync(file),'Use a new result tag');fs.copyFileSync(__filename,file.replace(/\.json$/,'-source.cjs'));
 const spawn=process.argv.includes('--spawn'),width=Number(option('width')||1280),height=Number(option('height')||720);
 const hierarchyBatch=option('nanite-hierarchy-batch');assert(hierarchyBatch===undefined||hierarchyBatch==='0'||hierarchyBatch==='1');
+const occlusionBatch=option('nanite-occlusion-batch');assert(occlusionBatch===undefined||occlusionBatch==='0'||occlusionBatch==='1');
+const primitiveVisibility=option('nanite-primitive-visibility');assert(primitiveVisibility===undefined||primitiveVisibility==='0'||primitiveVisibility==='1');
 const report={pass:false,source:audit(__filename),spawn,width,height,errors:[],boundary:'Diagnostic GPU timestamp pass durations. Instrumented FPS is not a game-performance acceptance metric; copies, barriers and idle gaps are excluded from summed pass time.'};
 function instrument(){
  const state=globalThis.__gpuTiming={errors:[],results:[],pending:0,frame:0,active:false,waiting:false,remaining:0};
@@ -30,7 +32,7 @@ function instrument(){
   const module=device.createShaderModule.bind(device);device.createShaderModule=d=>{const result=module(d);shaders.set(result,d.code);return result;};
   for(const name of ['createRenderPipeline','createRenderPipelineAsync','createComputePipeline','createComputePipelineAsync']){
    const createPipeline=device[name].bind(device),remember=(p,d)=>{const code=[d.compute,d.vertex,d.fragment].filter(Boolean).map(s=>shaders.get(s.module)||'').join('\n');
-    const markers=['WebHierarchyBatchData','WebCullLODMode','WebOcclusionPrevious','WebRasterClusterKeys','WebRasterMaterialMasks','WebNativeMaterial','WebMaterialTile','WebNaniteVisibility','WebNaniteScalarVisibility','WebDepthVisibility'];
+    const markers=['WebHierarchyBatchData','WebCullLODMode','WebOcclusionBatchData','WebOcclusionPrevious','WebRasterClusterKeys','WebRasterMaterialMasks','WebNativeMaterial','WebMaterialTile','WebNaniteVisibility','WebNaniteScalarVisibility','WebDepthVisibility'];
     const record={compute:d.compute?.entryPoint,vertex:d.vertex?.entryPoint,fragment:d.fragment?.entryPoint,markers:markers.filter(s=>code.includes(s))};pipelines.set(p,record);return p;};
    device[name]=d=>name.endsWith('Async')?createPipeline(d).then(p=>remember(p,d)):remember(createPipeline(d),d);
   }
@@ -93,8 +95,24 @@ function instrument(){
  assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
  if(hierarchyBatch!==undefined){assert.equal(await page.evaluate(v=>__webEngineRPC('WebNaniteHierarchyBatchTest',v),Number(hierarchyBatch)),1);report.hierarchyBatch=Number(hierarchyBatch);}
+ if(occlusionBatch!==undefined){assert.equal(await page.evaluate(v=>__webEngineRPC('WebNaniteOcclusionBatchTest',v),Number(occlusionBatch)),1);report.occlusionBatch=Number(occlusionBatch);}
+ if(primitiveVisibility!==undefined){assert.equal(await page.evaluate(v=>__webEngineRPC('WebNanitePrimitiveVisibilityTest',v),Number(primitiveVisibility)),1);report.primitiveVisibility=Number(primitiveVisibility);}
  report.clock=await owner.evaluate(()=>globalThis.__webVisualTestClock||null);assert(!report.clock?.renderTimeFrozen&&!report.clock?.materialTimeFrozen);
  if(!spawn)assert.equal(await page.evaluate(()=>__webEngineRPC('WebProjectViewTest',-175,-80,160,-5,50)),1);
+ if(primitiveVisibility!==undefined){
+  assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',1)),1);
+  const started=Date.now();let state;
+  do{await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',0)),1);
+   state=await owner.evaluate(()=>globalThis.__webNaniteAutomaticSceneTest);
+  }while(state?.step!==1&&Date.now()-started<180000);
+  assert.equal(state?.step,1);assert.equal(state.primitiveVisibility,primitiveVisibility==='1');
+  if(occlusionBatch!==undefined)assert.equal(state.occlusionBatch,occlusionBatch==='1');
+  report.nativeBeforeCapture={frame:state.frame,registered:state.registered,entries:state.entries,primitiveVisibility:state.primitiveVisibility,
+   hierarchyBatch:state.hierarchyBatch,hierarchyDispatchBuffers:state.hierarchyDispatchBuffers,occlusionBatch:state.occlusionBatch,
+   mainOcclusionDispatchBuffers:state.mainOcclusionDispatchBuffers,finalOcclusionDispatchBuffers:state.finalOcclusionDispatchBuffers};
+  assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',-1)),1);
+  report.boundary+=' Explicit primitive-visibility override isolates submission work; it is not the normal shipping configuration or FPS acceptance. Native counts are sampled before the capture.';
+ }
  await page.waitForFunction(()=>globalThis.__webPSOPrecacheReady,null,{timeout:180000});
  report.view=await owner.evaluate(()=>({camera:globalThis.__webDefaultCamera,view:globalThis.__webRenderView}));
  const frame=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>=f+240,frame,{timeout:120000});

@@ -15,6 +15,7 @@
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
+#include "WebNaniteCullReadback.h"
 #include "Serialization/JsonSerializer.h"
 #include <emscripten.h>
 
@@ -267,7 +268,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
                 }
                 Json->SetArrayField(TEXT("materials"), Materials);
             }
-            CopyBuffer(Graph, Entry.Result.ClusterKeys, TEXT("keys"), Json); CopyBuffer(Graph, Entry.Result.State, TEXT("state"), Json);
+            CopyBuffer(Graph, WebNaniteCullReadbackRange(Graph, Entry.Result.ClusterKeys, Entry.Result.ClusterOffset, Entry.Input.MaxVisibleClusters), TEXT("keys"), Json);
+            CopyBuffer(Graph, WebNaniteCullReadbackRange(Graph, Entry.Result.State, Entry.Result.StateOffset, 4), TEXT("state"), Json);
             Entries.Add(MakeShared<FJsonValueObject>(Json));
         }
         Report->SetArrayField(TEXT("entries"), Entries);

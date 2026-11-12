@@ -2,7 +2,8 @@
 // Diagnostic only. Timestamp existing passes during the reproduced interior
 // segment; resolve in the same encoder, without changing submission ordering.
 module.exports = function observeMotionGPU({start = 28, end = 41} = {}) {
-  const state = globalThis.__motionGPU = {results: [], errors: [], pending: 0, shaders:{}, pipelines:{}, markers:{}, window:{start,end}};
+  const state = globalThis.__motionGPU = {results: [], errors: [], pending: 0, shaders:{}, pipelines:{}, markers:{}, pipelineCreations:[], slowCalls:[], window:{start,end}};
+  const elapsedNow=()=>{const c=globalThis.__naniteOffFrames;return c?.active&&c.times.length?performance.now()-c.times[0]:-1;};
   const encoders = new WeakMap(), commands = new WeakMap(), passes = new WeakMap(), views = new WeakMap();
   const shaders = new WeakMap(), pipelines = new WeakMap();
   const createView = GPUTexture.prototype.createView;
@@ -15,14 +16,24 @@ module.exports = function observeMotionGPU({start = 28, end = 41} = {}) {
     const device = await request.call(this, {...desc,
       requiredFeatures: [...new Set([...(desc.requiredFeatures || []), 'timestamp-query'])]});
     const shader = device.createShaderModule.bind(device);
-    device.createShaderModule = d => {const result = shader(d); shaders.set(result,d.code); return result;};
+    device.createShaderModule = d => {const elapsed=elapsedNow(),before=performance.now(),result=shader(d),ms=performance.now()-before;
+      if(elapsed>=0&&ms>=1)state.slowCalls.push({kind:'createShaderModule',elapsed,ms,label:d.label,codeBytes:d.code.length});
+      shaders.set(result,d.code);return result;};
+    for(const name of ['createBuffer','createTexture']){
+      const original=device[name].bind(device);device[name]=d=>{const elapsed=elapsedNow(),before=performance.now(),result=original(d),ms=performance.now()-before;
+        if(elapsed>=0&&ms>=1)state.slowCalls.push({kind:name,elapsed,ms,label:d.label,size:d.size,usage:d.usage});return result;};
+    }
     for (const name of ['createRenderPipeline','createRenderPipelineAsync','createComputePipeline','createComputePipelineAsync']) {
       const original = device[name].bind(device);
       const remember = (p,d) => {pipelines.set(p,d);
         const code=[d.compute,d.vertex,d.fragment].filter(Boolean).map(s=>shaders.get(s.module)||'').join('\n');
-        state.markers[p.label]=['WebHierarchyBatchData','WebCullLODMode','WebOcclusionPrevious','WebRasterClusterKeys','WebNativeMaterial','WebMaterialTile'].filter(s=>code.includes(s));
+        state.markers[p.label]=['WebHierarchyBatchData','WebCullLODMode','WebOcclusionBatchData','WebOcclusionPrevious','WebRasterClusterKeys','WebNativeMaterial','WebMaterialTile'].filter(s=>code.includes(s));
         return p;};
-      device[name] = d => name.endsWith('Async') ? original(d).then(p=>remember(p,d)) : remember(original(d),d);
+      device[name] = d => {const elapsed=elapsedNow(),before=performance.now(),record=elapsed>=0?{kind:name,elapsed,label:d.label}:null;
+        if(record)state.pipelineCreations.push(record);
+        const result=original(d);if(record)record.requestMs=performance.now()-before;
+        if(name.endsWith('Async'))return result.then(p=>{if(record)record.completionMs=performance.now()-before;return remember(p,d);},e=>{if(record)record.error=String(e);throw e;});
+        if(record)record.completionMs=performance.now()-before;return remember(result,d);};
     }
     const create = device.createCommandEncoder.bind(device);
     device.createCommandEncoder = desc => {

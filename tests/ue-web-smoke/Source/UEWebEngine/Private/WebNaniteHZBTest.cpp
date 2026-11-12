@@ -70,8 +70,9 @@ void Occlusion(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& Candidates,
 {
     if (!Capture || Candidates.View->Family->FrameNumber != CaptureFrame) return;
     check(Output.Entries.Num() == 1);
-    Copy(Graph, Output.Entries[0].Result.State, Final ? TEXT("finalState") : TEXT("mainState"));
-    Copy(Graph, Output.Entries[0].Result.ClusterKeys, Final ? TEXT("finalKeys") : TEXT("mainKeys"));
+    const auto& E = Output.Entries[0];
+    Copy(Graph, WebNaniteCullReadbackRange(Graph, E.Result.State, E.Result.StateOffset, 4), Final ? TEXT("finalState") : TEXT("mainState"));
+    Copy(Graph, WebNaniteCullReadbackRange(Graph, E.Result.ClusterKeys, E.Result.ClusterOffset, E.Input.MaxVisibleClusters), Final ? TEXT("finalKeys") : TEXT("mainKeys"));
 }
 void Depth(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View, FIntRect Rect,
     FRDGTextureRef Visibility, FRDGTextureRef DepthTexture, bool After)

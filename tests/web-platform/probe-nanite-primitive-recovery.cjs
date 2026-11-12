@@ -22,7 +22,7 @@ function observe(scalar){
 (async()=>{let context,page;try{
  const pkg=JSON.parse(fs.readFileSync(report.package.file));assert(pkg.pass);
  for(const p of pkg.products)assert.equal(audit(p.file).sha256,p.sha256,p.file);
- context=await chromium.launchPersistentContext(`C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/${tag}-${mode}`,{channel:'msedge',headless:true,viewport:{width:960,height:640}});
+ context=await chromium.launchPersistentContext(`G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}-${mode}`,{channel:'msedge',headless:true,viewport:{width:960,height:640}});
  await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:`(${observe.toString()})(${scalar});\n`+await r.text()});});
  await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebMaterialTestClock",')});});
  await context.route('**/config-files.json*',async route=>{

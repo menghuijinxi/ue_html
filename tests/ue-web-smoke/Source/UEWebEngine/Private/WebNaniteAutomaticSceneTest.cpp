@@ -14,6 +14,7 @@
 #include "Rendering/NaniteResources.h"
 #include "Rendering/NaniteWebMaterial.h"
 #include "Rendering/NaniteWebGBuffer.h"
+#include "Rendering/NaniteWebHZB.h"
 #include "Rendering/NaniteStreamingManager.h"
 #include "RenderingThread.h"
 #include "StaticMeshSceneProxy.h"
@@ -28,7 +29,7 @@
 
 namespace
 {
-FDelegateHandle CullObserver, GraphObserver, GBufferObserver;
+FDelegateHandle CullObserver, GraphObserver, GBufferObserver, OcclusionObserver;
 TArray<FPrimitiveComponentId> Candidates;
 TArray<TSharedPtr<FJsonValue>> Assets;
 TSharedPtr<FJsonObject> Report;
@@ -37,6 +38,7 @@ bool Requested = false, MaterialComplete = false, HierarchyCaptured = false;
 uint32 MaterialFrame = MAX_uint32, MaterialDraws = 0;
 uint32 HierarchyFrame = MAX_uint32, HierarchyBatchedEntries = 0, HierarchyBuffers = 0;
 uint32 HierarchySnapshotFrame = MAX_uint32;
+uint32 OcclusionFrames[2] = {MAX_uint32, MAX_uint32}, OcclusionBatchedEntries[2] = {}, OcclusionBuffers[2] = {};
 struct FCopy { FString Name; uint32 Bytes; TUniquePtr<FRHIGPUBufferReadback> Readback; };
 TArray<FCopy> Copies;
 
@@ -60,6 +62,15 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetNumberField(TEXT("primitiveVisibilitySkipped"), Cull.PrimitiveVisibilitySkipped);
     Report->SetBoolField(TEXT("primitiveVisibility"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebPrimitiveVisibility"))->GetInt() != 0);
     Report->SetBoolField(TEXT("hierarchyBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchHierarchy"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("occlusionBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchOcclusion"))->GetInt() != 0);
+    for (uint32 Final = 0; Final < 2; ++Final)
+    {
+        const bool Valid = OcclusionFrames[Final] == Cull.View->Family->FrameNumber;
+        const FString Prefix = Final ? TEXT("finalOcclusion") : TEXT("mainOcclusion");
+        Report->SetNumberField(Prefix + TEXT("Frame"), Valid ? OcclusionFrames[Final] : -1.0);
+        Report->SetNumberField(Prefix + TEXT("BatchedEntries"), Valid ? OcclusionBatchedEntries[Final] : 0);
+        Report->SetNumberField(Prefix + TEXT("DispatchBuffers"), Valid ? OcclusionBuffers[Final] : 0);
+    }
     check(HierarchyFrame == Cull.View->Family->FrameNumber);
     Report->SetNumberField(TEXT("hierarchyBatchedEntries"), HierarchyBatchedEntries);
     Report->SetNumberField(TEXT("hierarchyDispatchBuffers"), HierarchyBuffers);
@@ -195,6 +206,36 @@ void ObserveGraph(FRDGBuilder&, const Nanite::FWebSceneRasterView& Saved, uint32
     MaterialFrame = Saved.Cull->View->Family->FrameNumber; MaterialDraws = Draws; MaterialComplete = Complete;
 }
 
+void ObserveOcclusion(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& Candidates,
+    const Nanite::FWebSceneCullView& Output, bool Final)
+{
+    if (!Requested || Report || !HierarchyCaptured || Candidates.View->bIsSceneCapture ||
+        Candidates.View->Family->FrameNumber != HierarchySnapshotFrame) return;
+    check(OcclusionFrames[Final] != HierarchySnapshotFrame);
+    OcclusionFrames[Final] = HierarchySnapshotFrame; OcclusionBatchedEntries[Final] = 0;
+    TSet<FRDGBufferRef> Buffers;
+    uint32 Total = 0;
+    for (const auto& E : Output.Entries)
+    {
+        Total += E.Input.MaxVisibleClusters; Buffers.Add(E.Result.State);
+        OcclusionBatchedEntries[Final] += E.Result.State->Desc.NumElements > 4 ? 1u : 0u;
+    }
+    OcclusionBuffers[Final] = Buffers.Num();
+    if (Output.Entries.IsEmpty()) return;
+    auto* Keys = Graph.CreateBuffer(FRDGBufferDesc::CreateStructuredDesc(4, Total), TEXT("Nanite.Web.TestOcclusionKeys"));
+    auto* States = Graph.CreateBuffer(FRDGBufferDesc::CreateStructuredDesc(4, Output.Entries.Num() * 4), TEXT("Nanite.Web.TestOcclusionStates"));
+    uint32 Base = 0;
+    for (int32 Index = 0; Index < Output.Entries.Num(); ++Index)
+    {
+        const auto& E = Output.Entries[Index];
+        AddCopyBufferPass(Graph, Keys, uint64(Base) * 4, E.Result.ClusterKeys, uint64(E.Result.ClusterOffset) * 4, uint64(E.Input.MaxVisibleClusters) * 4);
+        AddCopyBufferPass(Graph, States, Index * 16, E.Result.State, uint64(E.Result.StateOffset) * 4, 16);
+        Base += E.Input.MaxVisibleClusters;
+    }
+    Copy(Graph, Keys, Final ? TEXT("finalOcclusionKeys") : TEXT("mainOcclusionKeys"));
+    Copy(Graph, States, Final ? TEXT("finalOcclusionStates") : TEXT("mainOcclusionStates"));
+}
+
 void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const Nanite::FWebGBufferTargets& Targets)
 {
     if (!Requested || Report || Settled < 60 || !Saved.Cull || Saved.Cull->View->bIsSceneCapture) return;
@@ -268,6 +309,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteHierarchyBatchTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchHierarchy"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteOcclusionBatchTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchOcclusion"));
     static int Saved = -1;
     if (!CVar || Enabled < -1 || Enabled > 1) return 0;
     if (Enabled < 0)
@@ -482,6 +538,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteAutomaticSceneTest(int RequestedSte
             Nanite::GetWebSceneCullDelegate().Remove(CullObserver);
             Nanite::GetWebNativeMaterialGraphDelegate().Remove(GraphObserver);
             Nanite::GetWebNativeMaterialGBufferDelegate().Remove(GBufferObserver);
+            Nanite::GetWebOcclusionDelegate().Remove(OcclusionObserver);
         }); return 1;
     }
     if (RequestedStep != Last + 1) return 0;
@@ -492,6 +549,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteAutomaticSceneTest(int RequestedSte
             CullObserver = Nanite::GetWebSceneCullDelegate().AddStatic(&ObserveCull);
             GraphObserver = Nanite::GetWebNativeMaterialGraphDelegate().AddStatic(&ObserveGraph);
             GBufferObserver = Nanite::GetWebNativeMaterialGBufferDelegate().AddStatic(&ObserveGBuffer);
+            OcclusionObserver = Nanite::GetWebOcclusionDelegate().AddStatic(&ObserveOcclusion);
         });
     }
     // Native r.Nanite owns proxy recreation; neither this probe nor the page

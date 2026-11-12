@@ -18,6 +18,7 @@
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
+#include "WebNaniteCullReadback.h"
 #include "Serialization/JsonSerializer.h"
 #include <emscripten.h>
 
@@ -71,7 +72,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved, const
     Report->SetArrayField(TEXT("localToClip"), Values);
     Copy(Graph, Nanite::AddWebGBufferSnapshotPass(Graph, Saved, Targets, 8), TEXT("pixels"));
     Copy(Graph, Nanite::AddWebMaterialInputResolvePasses(Graph, *Saved.Cull, Saved.Raster, 8), TEXT("inputs"));
-    Copy(Graph, Entry.Result.State, TEXT("cullState"));
+    Copy(Graph, WebNaniteCullReadbackRange(Graph, Entry.Result.State, Entry.Result.StateOffset, 4), TEXT("cullState"));
 }
 void Poll()
 {
