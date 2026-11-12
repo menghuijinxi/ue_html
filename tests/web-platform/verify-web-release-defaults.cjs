@@ -1,4 +1,5 @@
 'use strict';
+require('./project-output.cjs').initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
@@ -34,6 +35,14 @@ function capture(folder, withoutSubgroups = false) {
 }
 const source = fixture('source');
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.VSMPageOptimization'], 3);
+assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.TSRLargeTiles'], 0,
+  'Unaccepted TSR large tiles must stay opt-in in ordinary releases');
+const sourceConfig = JSON.parse(fs.readFileSync(path.join(source, 'config-files.json')));
+const effectiveTSR = Buffer.from(sourceConfig.find(item =>
+  item.path === '/Engine/Platforms/Web/Config/WebEngine.ini').data, 'base64').toString()
+  .match(/^r\.WebGPU\.TSRLargeTiles=(\d+)$/gm)?.at(-1);
+assert.equal(effectiveTSR, 'r.WebGPU.TSRLargeTiles=0',
+  'The actual published configuration must restore the accepted small tiles');
 assert(!readPage(source).args.includes('-WebPSOPrecacheTest'), 'Accepted defaults must not request speculative PSOs');
 const corpus = capture(source);
 const dest = fixture('dest');

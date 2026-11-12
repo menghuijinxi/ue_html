@@ -18,6 +18,8 @@ const settings=Object.freeze({
   'r.Shadow.Virtual.SMRT.AdaptiveRayCount':1,
   'r.WebGPU.IndirectDrawReuse':2,
   'r.WebGPU.VSMPageOptimization':3,
+  // Larger tiles improved one pass but did not pass movement smoothness acceptance.
+  'r.WebGPU.TSRLargeTiles':0,
 });
 const runtimeAssets=Object.freeze({performanceProfile:profile,gameFrameClock:'page',pageFrameBudget:3,
   inputBridge:'direct-game-thread',pageFrameMaxFPS:0,localFrameBudget:0,localFrameBudgetMode:'submitted',
