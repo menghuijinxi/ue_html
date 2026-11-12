@@ -8,6 +8,7 @@ const {audit} = require('./content-file-metadata.cjs');
 const option = name => process.argv.find(a => a.startsWith('--' + name + '='))?.slice(name.length + 3);
 const modes = (option('modes') || 'legacy,off,no-scene').split(',');
 const candidateFolder = option('folder');
+const baselineFolder = option('baseline-folder');assert(!baselineFolder||/^[a-z0-9-]+$/.test(baselineFolder));
 assert(modes.every(m => ['legacy', 'off', 'no-scene','candidate'].includes(m)));
 assert(!modes.includes('candidate') || /^[a-z0-9-]+$/.test(candidateFolder));
 const tour = process.argv.includes('--tour');
@@ -34,7 +35,7 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
   boundary: 'Serial fresh Edge contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
@@ -43,6 +44,7 @@ const report = {date: new Date().toISOString(), pass: false, source: audit(__fil
       + 'Identical requested inputs do not guarantee identical world trajectories; sampled camera coordinates are retained.' :
       'Mouse-only DOM input follows the same absolute trajectory; actual camera state and event count are retained.')};
 const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
+if(baselineFolder)report.boundary+=' Explicit baseline-folder overrides the predefined baseline directories; mode names do not change its r.Nanite setting. Compare recorded package/configuration provenance.';
 function installObserver(detailed) {
   const state = globalThis.__naniteOffFrames = {active: false, times: [], frames: [], samples: [], gpu: []};
   let sampled = 0;
@@ -110,7 +112,7 @@ function statistics(times) {
 (async () => {
   try {
     for (const [index, mode] of modes.entries()) {
-      const folder = mode === 'candidate' ? candidateFolder : mode === 'legacy' ? 'villa-default-20261107' : 'villa-nanite-off-20261111';
+      const folder = mode === 'candidate' ? candidateFolder : baselineFolder || (mode === 'legacy' ? 'villa-default-20261107' : 'villa-nanite-off-20261111');
       const run = {index, mode, folder, errors: [], phases: [], assets: []}; report.runs.push(run);
       for (const file of ['index.html', 'asset-versions.json', 'config-files.json'])
         run.assets.push(audit(path.join(__dirname, 'build', folder, file)));

@@ -6,6 +6,9 @@
 #include "EngineUtils.h"
 #include "StaticMeshResources.h"
 #include "Rendering/NaniteResources.h"
+#include "Rendering/NaniteStreamingManager.h"
+#include "Rendering/NaniteWebScene.h"
+#include "RenderingThread.h"
 #include "UObject/StrongObjectPtr.h"
 #include <emscripten.h>
 
@@ -21,6 +24,21 @@ struct FWebEligibilityComponent
           ForceDisable(C->IsForceDisableNanite()), Visible(C->IsVisible()) {}
 };
 TArray<FWebEligibilityComponent> WebEligibilityComponents;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteIdleStatusTest()
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    ENQUEUE_RENDER_COMMAND(WebNaniteIdleStatus)([](FRHICommandListImmediate&)
+    {
+        const auto Status = Nanite::GStreamingManager.GetWebStatus();
+        static uint32 Sequence = 0;
+        MAIN_THREAD_ASYNC_EM_ASM({globalThis.__webNaniteIdleStatus = ({sequence:$0,allocated:!!$1,
+            resources:$2,initializations:$3,updates:$4,stagingBytes:$5,proxies:!!$6,enabled:!!$7});},
+            ++Sequence, Status.Allocated, Status.Resources, Status.Initializations, Status.Updates,
+            double(Status.StagingBytes), Nanite::HasWebSceneProxies(), Nanite::IsWebSceneRenderingEnabled());
+    });
+    return 1;
 }
 
 // Diagnostic component changes only. Preserve authored assets, restore original

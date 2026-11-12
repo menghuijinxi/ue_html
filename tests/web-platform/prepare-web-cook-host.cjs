@@ -116,6 +116,9 @@ try {
   report.nativeNaniteBuilder = require('./activate-native-nanite-builder.cjs').activate(path.join(host, 'Engine'));
   // Match the installed sources used by the rebuilt modules, including their dependent DLL exports.
   for (const entry of fs.readdirSync(path.join(engine, 'Binaries/Win64'), {withFileTypes: true})) {
+    // Cook loads DLLs, not debug symbols. Retain existing PDBs without trying
+    // to replace symbols left by other native targets in the isolated host.
+    if (/\.pdb$/i.test(entry.name)) continue;
     if (/^UnrealEditor-(?:BuildSettings(?:Stock)?|RenderCore|Renderer|NaniteBuilder)\./.test(entry.name)) continue;
     const source = path.join(engine, 'Binaries/Win64', entry.name);
     const destination = path.join(binaries, entry.name);

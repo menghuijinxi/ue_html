@@ -2,10 +2,11 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const [folder,tag,expectation]=process.argv.slice(2);assert([folder,tag].every(n=>/^[a-z0-9-]+$/.test(n)));
+const idleStatus=process.argv.includes('--idle-status');
 assert(['before','fixed'].includes(expectation));
 const output=path.join(__dirname,'results',tag);assert(!fs.existsSync(output));fs.mkdirSync(output);
 fs.copyFileSync(__filename,path.join(output,'source.cjs'));
-const report={pass:false,expectation,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],errors:[],
+const report={pass:false,expectation,idleStatus,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],errors:[],
   boundary:'Real component flags, visibility and mesh replacement through the normal render-state lifecycle. GPU instrumentation is only for correctness/work attribution, not accepted FPS.'};
 const save=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
 function observe(){
@@ -46,6 +47,10 @@ function observe(){
   await page.waitForFunction(()=>globalThis.__webEngineFailure||(globalThis.__webEngineFrames>180&&globalThis.__webPSOPrecacheReady),null,{timeout:300000});
   assert(!await page.evaluate(()=>globalThis.__webEngineFailure));owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
   assert.equal(await page.evaluate(()=>__webEngineRPC('WebProjectViewTest',-175,-80,160,-5,50)),1);
+  const status=async()=>{const prev=await owner.evaluate(()=>globalThis.__webNaniteIdleStatus?.sequence||0);
+    assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteIdleStatusTest')),1);
+    let s;const deadline=Date.now()+10000;do{await page.waitForTimeout(50);s=await owner.evaluate(()=>globalThis.__webNaniteIdleStatus);}while(!(s?.sequence>prev)&&Date.now()<deadline);
+    assert(s?.sequence>prev);return s;};
   // Step 2/3 of the ordinary scene observer are reserved for global r.Nanite.
   // Do them first, then independently exercise authored component policies.
   const modes=[0,0,0,1,0,2,0,3,0,4,0,5,0];
@@ -58,6 +63,8 @@ function observe(){
     }while(t?.step!==step&&Date.now()<deadline);
     assert.equal(t?.step,step);
     const readbackFile=path.join(output,`step-${step}.json`);fs.writeFileSync(readbackFile,JSON.stringify(t));
+    const idleBefore=idleStatus?await status():null;
+    const historyBefore=idleStatus?await page.evaluate(()=>__webOcclusionHistory):null;
     await owner.evaluate(()=>Object.assign(__naniteEligibilityGPU,{active:true,resources:{},dispatches:0,draws:0,pipelines:{}}));
     const frame=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>f+90,frame,{timeout:120000});
     const gpu=await owner.evaluate(()=>{__naniteEligibilityGPU.active=false;return __naniteEligibilityGPU;});
@@ -65,6 +72,8 @@ function observe(){
     const record={step,mode,changed,readback:audit(readbackFile),enabled:t.enabled,assets:t.assets.length,registered:t.registered,entries:t.entries,covered,
       materialComplete:t.materialComplete,materialDraws:t.materialDraws,
       suppressed:t.batches.filter(b=>!b.material&&!b.depth&&!b.occluder).length,gpu};
+    if(idleStatus){record.idleBefore=idleBefore;record.idleAfter=await status();
+      record.historyBefore=historyBefore;record.historyAfter=await page.evaluate(()=>__webOcclusionHistory);}
     report.tests.push(record);save();
     if(step===2){assert(!t.enabled&&t.registered===0&&t.entries===0);}
     else if(mode===5){assert(t.enabled&&t.assets.length===0&&t.registered===0&&t.entries===0);}
@@ -74,6 +83,10 @@ function observe(){
     if(t.entries===0&&t.assets.length>0&&mode!==4){assert(t.batches.length>2000);
       assert(t.batches.every(b=>b.created&&b.triangles>0&&b.material),'Disabled Nanite must retain ordinary material draws');}
     if(expectation==='fixed'&&t.entries===0){assert.deepEqual(gpu.resources,{});assert.equal(gpu.dispatches,0);assert.equal(gpu.draws,0);}
+    if(idleStatus){assert.equal(record.idleAfter.proxies,t.registered>0);assert.equal(record.idleAfter.initializations,1);
+      if(t.registered===0){assert.equal(record.idleAfter.updates,idleBefore.updates);assert.equal(record.historyAfter.naniteActiveScenes,0);
+        assert.equal(record.historyAfter.boundsChangeSerial,historyBefore.boundsChangeSerial);}
+      else {assert(record.idleAfter.updates>idleBefore.updates);assert.equal(record.historyAfter.naniteActiveScenes,1);}}
     if(t.entries>0){assert(t.materialComplete&&t.materialDraws>0&&covered>100);
       assert(gpu.dispatches>0&&gpu.draws>0,'Positive control must observe real Nanite execution');}
     console.log(JSON.stringify({step,mode,registered:t.registered,entries:t.entries,naniteDispatches:gpu.dispatches,naniteDraws:gpu.draws,resources:Object.keys(gpu.resources)}));

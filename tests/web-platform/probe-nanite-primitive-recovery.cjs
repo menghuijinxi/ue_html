@@ -2,8 +2,12 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility'),mode=scalar?'scalar':'packed';
-const folder='nanite-core-default',dir=path.join(__dirname,'results/nanite-primitive-recovery');fs.mkdirSync(dir,{recursive:true});
+const folder=process.argv.find(a=>a.startsWith('--folder='))?.slice(9)||'nanite-core-default';
+const tag=process.argv.find(a=>a.startsWith('--tag='))?.slice(6)||'nanite-primitive-recovery';
+assert([folder,tag].every(n=>/^[a-z0-9-]+$/.test(n)));
+const dir=path.join(__dirname,'results',tag);fs.mkdirSync(dir,{recursive:true});
 const file=path.join(dir,mode+'.json');
+assert(!fs.existsSync(file),'Use a new result tag');fs.copyFileSync(__filename,path.join(dir,mode+'-source.cjs'));
 const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],errors:[],logs:[]};
 const save=()=>fs.writeFileSync(file,JSON.stringify(report,null,2)+'\n');
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
@@ -18,7 +22,7 @@ function observe(scalar){
 (async()=>{let context,page;try{
  const pkg=JSON.parse(fs.readFileSync(report.package.file));assert(pkg.pass);
  for(const p of pkg.products)assert.equal(audit(p.file).sha256,p.sha256,p.file);
- context=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:960,height:640}});
+ context=await chromium.launchPersistentContext(`C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/${tag}-${mode}`,{channel:'msedge',headless:true,viewport:{width:960,height:640}});
  await context.route('**/web-engine-worker.js?*',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:`(${observe.toString()})(${scalar});\n`+await r.text()});});
  await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebMaterialTestClock",')});});
  await context.route('**/config-files.json*',async route=>{
