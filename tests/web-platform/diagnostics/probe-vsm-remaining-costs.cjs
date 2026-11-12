@@ -1,4 +1,6 @@
 'use strict';
+const {initializeProjectOutput, assertProjectOutputTree} = require('../project-output.cjs');
+initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 const {audit} = require('../content-file-metadata.cjs');
@@ -12,11 +14,17 @@ assert([folder, tag].every(value => value && /^[a-z0-9-]+$/.test(value)));
 assert(['gpu', 'cpu'].includes(kind));
 const cpuPhase = option('phase') || 'turning';
 assert(['standing', 'turning'].includes(cpuPhase));
-const base = path.resolve(__dirname, '..'), directory = path.join(base, 'results', tag);
+const gpuSamples = Number(option('gpu-samples') || 6);
+const gpuInterval = Number(option('gpu-interval-ms') ?? 1000);
+assert(Number.isInteger(gpuSamples) && gpuSamples > 0 && gpuSamples <= 240);
+assert(Number.isInteger(gpuInterval) && gpuInterval >= 0 && gpuInterval <= 1000);
+const base = path.resolve(__dirname, '..');
+const directory = assertProjectOutputTree(path.join(base, 'results', tag));
+const browserProfile = assertProjectOutputTree(path.join(base, 'build/browser-profiles', profile));
 assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
-process.env.TEMP = process.env.TMP = path.join(base, 'build/test-tmp');
 const report = {date: new Date().toISOString(), pass: false, folder, kind, source: audit(__filename),
-  package: audit(path.join(base, 'build', folder, 'asset-versions.json')), errors: [], phases: [],
+  package: audit(path.join(base, 'build', folder, 'asset-versions.json')), gpuSamples, gpuInterval,
+  errors: [], phases: [],
   overrides: {...(kind === 'gpu' ? {'r.WebGPU.ReuseComputePass': 0} : {}),
     ...(pageMode === undefined ? {} : {'r.WebGPU.VSMPageOptimization': Number(pageMode)})},
   boundary: 'Diagnostic only, not an FPS benchmark. GPU mode splits compute dispatches for attribution; pass/driver overhead changes. CPU mode preserves packaged settings. No package files are modified.'};
@@ -42,8 +50,7 @@ function namePipelines() {
 let context, log;
 (async () => {
   try {
-    context = await chromium.launchPersistentContext(path.join(base, 'build/browser-profiles',
-      profile), {channel: 'msedge', headless: false,
+    context = await chromium.launchPersistentContext(browserProfile, {channel: 'msedge', headless: false,
       viewport: {width: 1280, height: 800}, deviceScaleFactor: 1.5,
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']});
@@ -119,8 +126,8 @@ ${marker}`);
         assert.equal(new Set(phase.profiles.map(p => p.target.parentFrameId)).size, 1,
           'CPU workers must belong to one scene page');
       } else {
-        for (let sample = 0; sample < 6; ++sample) {
-          await page.waitForTimeout(1000);
+        for (let sample = 0; sample < gpuSamples; ++sample) {
+          if (gpuInterval) await page.waitForTimeout(gpuInterval);
           phase.gpuFrames.push({state: await state(),
             capture: await owner.evaluate(() => __webCaptureGPUFrame())});
         }

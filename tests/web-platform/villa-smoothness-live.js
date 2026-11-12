@@ -6,6 +6,8 @@
     old: {folder: 'villa-vsm-sampling-adaptive-20261112', label: '老版 · 自适应'},
     large: {folder: 'villa-tsr-tiles-20261112', label: '上版 · 32×32'},
     small: {folder: 'villa-tsr-small-20261112', label: '回退版 · 16×16'},
+    off: {folder: 'villa-added-optimizations-off-20261112', label: '新增优化关闭'},
+    plain: {folder: 'villa-web-optimizations-off-20261112', label: '早期优化也关闭'},
   };
   const poses = {kitchen: [-175, -80, 160, -5, 230], interior: [-175, -80, 160, -5, 50],
     living: [-20, 200, 130, 12, -35]};
@@ -52,8 +54,11 @@
     if (!sampling?.enabled || sampling.errors?.length) throw Error('自适应采样未生效');
     if (state.mode !== 'old') {
       const rhi = child.__webOcclusionRHI;
-      if (!rhi || rhi.indirectDrawReuse !== 2 || rhi.vsmPageOptimization !== 3)
+      const isolated = ['off', 'plain'].includes(state.mode);
+      if (!rhi || rhi.indirectDrawReuse !== (isolated ? 0 : 2) || rhi.vsmPageOptimization !== (isolated ? 0 : 3))
         throw Error('间接绘制或页同步配置不一致');
+      if (isolated && child.__villaOptimizationIsolation?.mode !== state.mode)
+        throw Error('优化隔离配置未生效');
     }
     return true;
   }
@@ -154,7 +159,7 @@
   element('retry').onclick = () => select(state.mode);
   for (const radio of radios) radio.onchange = () => select(radio.value);
   window.addEventListener('hashchange', () => {
-    const mode = location.hash.slice(1) in variants ? location.hash.slice(1) : 'small';
+    const mode = location.hash.slice(1) in variants ? location.hash.slice(1) : 'off';
     if (mode !== state.mode) select(mode);
   });
   element('export').onclick = () => {
@@ -166,5 +171,5 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   setInterval(update, 250);
-  select(location.hash.slice(1) in variants ? location.hash.slice(1) : 'small');
+  select(location.hash.slice(1) in variants ? location.hash.slice(1) : 'off');
 })();

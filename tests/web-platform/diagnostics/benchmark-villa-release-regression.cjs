@@ -4,9 +4,16 @@ initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright'), {execFileSync} = require('node:child_process');
 const {audit} = require('../content-file-metadata.cjs');
+const observeMemory = require('./villa-gpu-memory-observer.cjs');
+const {settings: acceptedSettings} = require('../web-accepted-defaults.cjs');
 const option = name => process.argv.find(value => value.startsWith('--' + name + '='))?.slice(name.length + 3);
 const base = path.resolve(__dirname, '..'), tag = option('tag');
 const seconds = Number(option('seconds') || 15);
+const traceSeconds = Number(option('trace-seconds') || 0);
+const retainCooks = process.argv.includes('--retain-cooks');
+assert(traceSeconds === 0 || traceSeconds >= 10 && traceSeconds <= 30);
+const earlierOff = Object.fromEntries(Object.keys(acceptedSettings)
+  .filter(key => /^r\.Web(GPU)?\./.test(key)).map(key => [key, 0]));
 const variants = {
   old: {folder: 'villa-vsm-sampling-adaptive-20261112', url: 'vsm-adaptive-live.html#adaptive', settings: {}},
   latest: {folder: 'villa-tsr-tiles-20261112', settings: {}},
@@ -15,6 +22,11 @@ const variants = {
   indirectoff: {folder: 'villa-tsr-tiles-20261112', settings: {'r.WebGPU.IndirectDrawReuse': 0}},
   previous: {folder: 'villa-tsr-tiles-20261112', settings: {'r.WebGPU.TSRLargeTiles': 0,
     'r.WebGPU.VSMPageOptimization': 0, 'r.WebGPU.IndirectDrawReuse': 0}},
+  previous4: {folder: 'villa-tsr-tiles-20261112', search: '?clock=page&framebudget=4',
+    settings: {'r.WebGPU.TSRLargeTiles': 0, 'r.WebGPU.VSMPageOptimization': 0, 'r.WebGPU.IndirectDrawReuse': 0}},
+  passoff: {folder: 'villa-tsr-tiles-20261112', settings: {'r.WebGPU.TSRLargeTiles': 0,
+    'r.WebGPU.VSMPageOptimization': 0, 'r.WebGPU.IndirectDrawReuse': 0, 'r.WebGPU.ReuseComputePass': 0}},
+  unoptimized: {folder: 'villa-tsr-tiles-20261112', settings: earlierOff},
 };
 const order = (option('order') || 'old,latest,latest,old').split(',');
 const phases = (option('phases') || 'standing,turning,input').split(',');
@@ -24,21 +36,36 @@ assert(phases.length && phases.every(name => ['standing', 'turning', 'input'].in
 const directory = assertProjectOutputTree(path.join(base, 'results', tag));
 assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
 fs.copyFileSync(__filename, path.join(directory, 'benchmark-source.cjs'));
+fs.copyFileSync(path.join(__dirname, 'villa-gpu-memory-observer.cjs'), path.join(directory, 'memory-observer.cjs'));
 const packages = Object.fromEntries([...new Set(order.map(name => variants[name].folder))].map(folder =>
   [folder, audit(path.join(base, 'build', folder, 'asset-versions.json'))]));
-const report = {date: new Date().toISOString(), pass: false, order, seconds, phases, packages, runs: [],
+const report = {date: new Date().toISOString(), pass: false, order, seconds, traceSeconds, retainCooks,
+  phases, packages, runs: [],
   startupFailures: [], source: audit(path.join(directory, 'benchmark-source.cjs')),
+  memoryObserver: audit(path.join(directory, 'memory-observer.cjs')),
   boundary: 'Sequential old live wrapper versus current release, fixed physical resolution and native input. ' +
     'RHI submission intervals and page rAF observations are not display scanout timestamps. ' +
     'Startup overrides are diagnostic only; immutable packages and recorded prewarm stay unchanged.'};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 const gpu = () => execFileSync('nvidia-smi', ['--query-gpu=utilization.gpu,memory.used,pstate,clocks.gr',
   '--format=csv,noheader'], {encoding: 'utf8'}).trim();
+const memory = () => JSON.parse(execFileSync('powershell.exe', ['-NoProfile', '-Command',
+  'Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUAdapterMemory | ' +
+  'Select-Object Name,DedicatedUsage,SharedUsage,TotalCommitted | ConvertTo-Json -Compress'],
+{encoding: 'utf8'}));
 function install() {
-  const capture = globalThis.__releaseRegression = {active: false, times: [], completions: [], creations: []};
+  const capture = globalThis.__releaseRegression = {active: false, times: [], details: [],
+    completions: [], creations: []};
   let frames = 0;
   Object.defineProperty(globalThis, '__webRHIFrames', {configurable: true, get: () => frames, set(value) {
-    if (capture.active && value > frames) capture.times.push(performance.now());
+    if (capture.active && value > frames) {
+      capture.times.push(performance.now());
+      capture.details.push({frame: value, rhiMs: globalThis.__webThreadStages?.rhiWorkMilliseconds,
+        gameMs: globalThis.__webThreadFrameTimes?.at(-1), game: globalThis.__webEngineFrames,
+        pendingTextures: globalThis.__webTextureStreaming?.pending,
+        ioCompleted: globalThis.__webContentIO?.stats?.completed,
+        scheduler: typeof frameScheduler === 'undefined' || !frameScheduler ? null : Array.from(frameScheduler.state)});
+    }
     frames = value;
   }});
   for (const name of ['createShaderModule', 'createComputePipeline', 'createRenderPipeline',
@@ -60,13 +87,14 @@ function summary(times) {
     max: sorted.at(-1), over33: intervals.filter(value => value > 33.34).length,
     over50: intervals.filter(value => value > 50).length};
 }
-let context, log, run;
+let context, log, run, sampler;
 (async () => {
   try {
     const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/villa-regression-20261112'));
     for (let index = 0; index < order.length; ++index) {
       const name = order[index], variant = variants[name];
-      run = {name, index: index + 1, errors: [], phases: [], gpuBefore: gpu()};
+      run = {name, index: index + 1, errors: [], phases: [], gpuBefore: gpu(), adapterBefore: memory(),
+        overrides: variant.settings, search: variant.search || ''};
       report.runs.push(run); save();
       context = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: false,
         viewport: {width: 1280, height: 800}, deviceScaleFactor: 1.5,
@@ -76,6 +104,20 @@ let context, log, run;
       const anchor = context.pages()[0] || await context.newPage();
       for (const page of context.pages()) if (page !== anchor) await page.close();
       await anchor.goto('about:blank');
+      if (retainCooks) {
+        const storage = await context.newCDPSession(anchor);
+        await storage.send('Storage.overrideQuotaForOrigin', {
+          origin: 'http://127.0.0.1:8765', quotaSize: 12 * 1024 ** 3});
+        await storage.detach();
+        // Keep both immutable Cook files for this diagnostic; production cache policy is unchanged.
+        await context.route('**/web-content-worker.js?*', async route => {
+          const response = await route.fetch(), body = await response.text();
+          const marker = 'const diskLimit = 1024 * 1024 * 1024;';
+          assert.equal(body.split(marker).length, 2);
+          await route.fulfill({response, body: body.replace(marker,
+            'const diskLimit = 12 * 1024 * 1024 * 1024;')});
+        });
+      }
       await context.route('**/web-engine-worker.js?*', async route => {
         const response = await route.fetch(), marker = "        removeRunDependency('worker-content');";
         let body = await response.text();
@@ -91,7 +133,8 @@ let context, log, run;
         FS.writeFile(regressionIni,FS.readFile(regressionIni,{encoding:'utf8'})+${JSON.stringify(ini)});
 ${marker}`);
         }
-        await route.fulfill({response, body: '(' + install.toString() + ')();\n' + body});
+        await route.fulfill({response, body: '(' + observeMemory.toString() + ')();\n(' +
+          install.toString() + ')();\n' + body});
       });
       const page = await context.newPage();
       log = fs.createWriteStream(path.join(directory, 'run-' + run.index + '-' + report.startupFailures.length + '.log'));
@@ -102,7 +145,8 @@ ${marker}`);
           run.errors.push(text);
       });
       console.log(JSON.stringify({name, run: run.index, stage: 'starting'}));
-      await page.goto('http://127.0.0.1:8765/' + (variant.url || 'build/' + variant.folder + '/index.html'));
+      await page.goto('http://127.0.0.1:8765/' + (variant.url || 'build/' + variant.folder + '/index.html') +
+        (variant.search || ''));
       const wrapper = !!variant.url;
       await page.waitForFunction(wrapper => {
         if (wrapper) return globalThis.__vsmAdaptiveLive?.error || globalThis.__vsmAdaptiveLive?.ready;
@@ -123,7 +167,10 @@ ${marker}`);
         camera: __webDefaultCamera, player: globalThis.__webPlayerView, settings: __webProjectSettings,
         rhi: __webOcclusionRHI, prewarm: __webPipelinePrewarm, stages: __webThreadStages,
         sampling: globalThis.__webVSMAdaptiveSampling || globalThis.__webVSMAdaptiveProbe,
-        scheduler: globalThis.__webFrameScheduler, failure: globalThis.__webEngineFailure}));
+        streaming: globalThis.__webTextureStreaming, resources: globalThis.__villaGPUResources,
+        scheduler: typeof frameScheduler === 'undefined' || !frameScheduler ? null : {
+          maxAhead: frameScheduler.maxAhead, counters: Array.from(frameScheduler.state)},
+        failure: globalThis.__webEngineFailure}));
       const motion = (duration, mode) => scene.evaluate(({duration, mode}) =>
         __webEngineRPC('WebMotionBenchmarkControl', mode, duration), {duration, mode});
       const playerControl = async player => {
@@ -142,6 +189,13 @@ ${marker}`);
         for (const key of ['gi', 'reflections', 'virtualShadows', 'virtualTextures']) assert.equal(value.settings[key], 1);
         assert.deepEqual([value.view.width, value.view.height, value.view.outputWidth,
           value.view.outputHeight, value.view.antiAliasing], [1400, 788, 1920, 1080, 4]);
+        assert.equal(value.scheduler.maxAhead, run.name === 'previous4' ? 4 : 3);
+        for (const [key, field] of [['r.WebGPU.IndirectDrawReuse', 'indirectDrawReuse'],
+          ['r.WebGPU.VSMPageOptimization', 'vsmPageOptimization']])
+          if (key in variant.settings) assert.equal(value.rhi[field], variant.settings[key]);
+        if ('r.WebGPU.ReuseComputePass' in variant.settings)
+          assert.equal(value.rhi.reuseComputePass, !!variant.settings['r.WebGPU.ReuseComputePass']);
+        assert.deepEqual(value.resources.unknownFormats, {}, 'Resource estimates must cover every texture format');
       }
       // Register the real possessed camera before a scripted route replaces its view target.
       await playerControl(null);
@@ -149,10 +203,24 @@ ${marker}`);
       run.native = native;
       const offset = Object.fromEntries(['x', 'y', 'z'].map(axis =>
         [axis, native.camera[axis] - native.player[axis]]));
-      for (const mode of [2, 1]) {
-        await motion(0, mode); const serial = await motion(15, mode);
-        await scene.waitForFunction(serial => globalThis.__webMotionBenchmark?.serial === serial &&
-          __webMotionBenchmark.completed, serial, {timeout: 45000});
+      try {
+        for (const mode of [2, 1]) {
+          await motion(0, mode); const serial = await motion(15, mode);
+          await scene.waitForFunction(serial => globalThis.__webEngineFailure ||
+            globalThis.__webMotionBenchmark?.serial === serial && __webMotionBenchmark.completed,
+          serial, {timeout: 45000});
+          const failure = await scene.evaluate(() => globalThis.__webEngineFailure || null);
+          assert(!failure, failure);
+          assert.deepEqual(run.errors, []);
+        }
+      } catch (error) {
+        if (!run.errors.length ||
+            !run.errors.every(message => /external Instance reference|E_OUTOFMEMORY/.test(message)) ||
+            report.startupFailures.length >= 3) throw error;
+        report.startupFailures.push({...run, failure: error.message, stage: 'route-warmup',
+          excluded: 'No measured window'});
+        report.runs.pop(); save(); await context.close(); context = null;
+        log.end(); log = null; --index; continue;
       }
       await motion(0, 2); await page.waitForTimeout(3000);
       run.initial = await state(); check(run.initial);
@@ -165,9 +233,20 @@ ${marker}`);
             controlPitch: -5, controlYaw: 50, controlRoll: 0});
           await page.waitForTimeout(2500);
         }
-        const phase = {kind, before: await state()}; check(phase.before); run.phases.push(phase);
+        const phase = {kind, before: await state(), samples: []}; check(phase.before); run.phases.push(phase);
+        let sampleInFlight = false;
+        sampler = setInterval(async () => {
+          if (sampleInFlight) return;
+          sampleInFlight = true;
+          try {
+            phase.samples.push({date: new Date().toISOString(), state: await state(),
+              page: await scene.evaluate(() => ({scheduler: globalThis.__webFrameSchedulerPage,
+                live: globalThis.__webLivePerformance}))});
+          } catch (error) {phase.sampleError = error.message;}
+          finally {sampleInFlight = false;}
+        }, 1000);
         await owner.evaluate(() => Object.assign(__releaseRegression,
-          {active: true, times: [], completions: [], creations: []}));
+          {active: true, times: [], details: [], completions: [], creations: []}));
         if (kind === 'turning') await motion(seconds, 2);
         const began = Date.now();
         if (kind === 'input') {
@@ -186,6 +265,8 @@ ${marker}`);
             }
           } finally {await page.mouse.up({button: 'right'});}
         } else await page.waitForTimeout(seconds * 1000);
+        clearInterval(sampler); sampler = null;
+        assert(!phase.sampleError, phase.sampleError);
         phase.capture = await owner.evaluate(() => {__releaseRegression.active = false; return __releaseRegression;});
         phase.after = await state(); check(phase.after); phase.gpu = gpu();
         if (kind === 'input') {
@@ -204,12 +285,35 @@ ${marker}`);
         phase.summary.rhiMs = (phase.after.stages.rhiWorkMilliseconds - phase.before.stages.rhiWorkMilliseconds) / frames;
         console.log(JSON.stringify({name, kind, ...phase.summary})); save();
       }
+      if (traceSeconds) {
+        await motion(traceSeconds + 10, 2);
+        const cdp = await context.newCDPSession(page);
+        const complete = new Promise(resolve => cdp.once('Tracing.tracingComplete', resolve));
+        const available = await cdp.send('Tracing.getCategories');
+        run.traceCategories = available.categories.filter(category => /dawn|webgpu|gpu.service/i.test(category));
+        await cdp.send('Tracing.start', {categories: 'toplevel,v8,blink.user_timing,disabled-by-default-v8.gc,gpu,' +
+          run.traceCategories.join(','),
+          transferMode: 'ReturnAsStream'});
+        await page.waitForTimeout(traceSeconds * 1000);
+        await cdp.send('Tracing.end');
+        const {stream} = await complete;
+        const file = path.join(directory, 'run-' + run.index + '-trace.json'), descriptor = fs.openSync(file, 'w');
+        try {
+          for (;;) {
+            const chunk = await cdp.send('IO.read', {handle: stream, size: 1024 * 1024});
+            fs.writeSync(descriptor, Buffer.from(chunk.data, chunk.base64Encoded ? 'base64' : 'utf8'));
+            if (chunk.eof) break;
+          }
+        } finally {fs.closeSync(descriptor); await cdp.send('IO.close', {handle: stream}); await cdp.detach();}
+        run.trace = audit(file); save();
+      }
       await page.screenshot({path: path.join(directory, 'run-' + run.index + '.png')});
       await context.close(); context = null; log.end(); log = null;
       await new Promise(resolve => setTimeout(resolve, 3000));
+      run.gpuAfterClose = gpu(); run.adapterAfterClose = memory(); save();
     }
     for (const record of Object.values(packages)) assert.equal(audit(record.file).sha256, record.sha256);
     report.pass = true;
   } catch (error) {report.error = error.stack; console.error(error); process.exitCode = 1;}
-  finally {save(); log?.end(); await context?.close();}
+  finally {clearInterval(sampler); save(); log?.end(); await context?.close();}
 })();

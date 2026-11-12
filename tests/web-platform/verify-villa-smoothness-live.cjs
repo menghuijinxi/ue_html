@@ -5,9 +5,12 @@ const fs = require('node:fs'), path = require('node:path'), assert = require('no
 const {chromium} = require('playwright'), sharp = require('sharp');
 const {audit} = require('./content-file-metadata.cjs');
 const tag = process.argv[2]; assert(tag && /^[a-z0-9-]+$/.test(tag));
+const modes = (process.argv.find(arg => arg.startsWith('--modes='))?.slice(8) ||
+  'off,plain,large,old,small,off').split(',');
+assert(modes.length >= 2 && modes.every(mode => ['old', 'large', 'small', 'off', 'plain'].includes(mode)));
 const directory = assertProjectOutputTree(path.join(__dirname, 'results', tag));
 assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
-const report = {date: new Date().toISOString(), pass: false, errors: [], checks: [], states: [],
+const report = {date: new Date().toISOString(), pass: false, modes, errors: [], checks: [], states: [],
   source: audit(__filename), startupFailures: [],
   boundary: 'Functional verification of real player controls, preserved poses, shader dispatch, metrics and sizing. ' +
     'No performance claim; shader dispatch observation is diagnostic instrumentation.'};
@@ -97,9 +100,17 @@ let context, log;
         if (mode !== 'old') {
           const owner = page.workers().find(worker => worker.url().includes('/web-engine-worker.js?'));
           const groups = await owner.evaluate(() => __smoothnessTSRGroups);
-          assert(Object.keys(groups).length && groups[mode === 'small' ? 256 : 1024] > 0);
-          assert(!groups[mode === 'small' ? 1024 : 256], 'Only the selected TSR tile may be dispatched');
+          const expected = mode === 'large' ? 1024 : 256;
+          assert(Object.keys(groups).length && groups[expected] > 0);
+          assert(!groups[expected === 256 ? 1024 : 256], 'Only the selected TSR tile may be dispatched');
           state.tsrGroups = groups;
+          if (['off', 'plain'].includes(mode)) {
+            assert.equal(state.rhi.indirectDrawReuse, 0);
+            assert.equal(state.rhi.vsmPageOptimization, 0);
+            state.isolation = await owner.evaluate(() => __villaOptimizationIsolation);
+            assert.equal(state.isolation.mode, mode); assert(state.isolation.diagnosticOnly);
+            if (mode === 'plain') assert.equal(state.rhi.reuseComputePass, false);
+          }
         }
         report.states.push(state); save(); console.log(JSON.stringify({mode, ready: true, groups: state.tsrGroups}));
         return state;
@@ -156,27 +167,28 @@ let context, log;
       await page.screenshot({path: path.join(directory, name + '.png')});
       report.checks.push({name, bounds}); save();
     };
-    await page.goto('http://127.0.0.1:8765/villa-smoothness-live.html');
-    const spawn = await ready('small');
-    await input('small');
+    await page.goto('http://127.0.0.1:8765/villa-smoothness-live.html#' + modes[0]);
+    const spawn = await ready(modes[0]);
+    await input(modes[0]);
     await page.locator('#viewpoint').selectOption('kitchen');
     await page.waitForFunction(() => !__villaSmoothnessLive.busy);
     await page.waitForTimeout(1000); await layout('desktop-small');
-    for (const mode of ['large', 'old', 'small']) {
+    for (const mode of modes.slice(1)) {
       const held = await snapshot();
       await page.locator('.modes label').filter({has: page.locator('[value=' + mode + ']')}).click();
       preserved(held, await ready(mode)); await input(mode);
     }
-    await page.waitForFunction(() => Number.isFinite(__villaSmoothnessLive.observations.small.metrics?.low) &&
-      Number.isFinite(__villaSmoothnessLive.observations.small.metrics?.p99Ms), null, {timeout: 20000});
+    const last = modes.at(-1);
+    await page.waitForFunction(mode => Number.isFinite(__villaSmoothnessLive.observations[mode].metrics?.low) &&
+      Number.isFinite(__villaSmoothnessLive.observations[mode].metrics?.p99Ms), last, {timeout: 20000});
     assert.match(await page.locator('#p99').textContent(), /^\d+\.\d ms$/);
     assert.match(await page.locator('#long-frames').textContent(), /^\d+$/);
     await page.setViewportSize({width: 390, height: 844}); await page.waitForTimeout(1200);
-    await ready('small'); await layout('mobile-small');
+    await ready(last); await layout('mobile-isolation');
     const download = page.waitForEvent('download'); await page.locator('#export').click();
     await (await download).saveAs(path.join(directory, 'ui-export.json'));
     const exported = JSON.parse(fs.readFileSync(path.join(directory, 'ui-export.json')));
-    assert(['small', 'large', 'old'].every(mode => exported.observations[mode]));
+    assert(modes.every(mode => exported.observations[mode]));
     await page.setViewportSize({width: 1600, height: 1000});
     await page.locator('#reset').click(); await page.waitForFunction(() => !__villaSmoothnessLive.busy);
     await page.waitForTimeout(600); preserved(spawn, await snapshot());

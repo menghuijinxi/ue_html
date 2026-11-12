@@ -102,3 +102,12 @@ Lumen、虚拟纹理、VSM、TSR、抗闪烁、历史重建与渲染尺寸不变
 
 证据摘要：
 `tests/web-platform/evidence/villa-smoothness-regression-20261112.json`。
+
+## 后续隔离
+
+用户确认 16x16 仍卡后，已补测新增三项同时关闭及更早 17 个 Web 性能 CVar 关闭。
+结果仍有长帧；用户释放空间后，已补完老版/三项全关/三项全关/老版四轮交叉验证。
+旧版最后一轮转向 Low 同样降至约 19，尚未隔离具体调用，不能把最初旧版较快当作固定版本差距。
+`villa-smoothness-live.html` 现在默认打开“新增优化关闭”的诊断模式，
+原来的 old/large/small 模式仍保留。普通发布默认值没有继续更改。
+详见 `UE58_WEB_OPTIMIZATION_ISOLATION.md`，其中区分有效窗口、失败轮次和正式包边界。
