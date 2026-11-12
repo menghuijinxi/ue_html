@@ -86,6 +86,7 @@ try {
   }));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
     JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, trace, distanceFields, runtime: runtime + '.js',
+      ...(desktop && cook.vsmAdaptiveSampling ? {vsmAdaptiveSampling: cook.vsmAdaptiveSampling} : {}),
       wasm: metadata(wasm.file, runtime + '.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
@@ -93,6 +94,9 @@ try {
     ...(parallelRecording ? ['-WebParallelDrawRecording'] : [])];
   html = html.replace(original, `arguments: ${JSON.stringify(report.engineArguments)},`)
     .replaceAll('UE 默认关卡', stage.projectName);
+  if (desktop && cook.vsmAdaptiveSampling === 'cooked-with-fallback') {
+    report.vsmAdaptiveSampling = cook.vsmAdaptiveSampling;
+  }
   if (report.textureCompression === 'BC' || report.textureCompression === 'Project') {
     const marker = 'const requiredTextureFeatures = desktopRenderer ?';
     assert(html.includes(marker));

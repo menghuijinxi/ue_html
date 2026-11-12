@@ -2,6 +2,7 @@
 // User accepted the complete villa input/performance candidate on 2026-11-07.
 // Apply only to desktop threaded packages, after staging, so source projects and
 // archived comparison packages keep their own settings.
+// VSM adaptive SMRT sampling was additionally accepted on 2026-11-12.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
 const profile='desktop-accepted-20261107';
 const settings=Object.freeze({
@@ -13,6 +14,7 @@ const settings=Object.freeze({
   'r.Web.OcclusionMotionQueryInterval':0,'r.Web.OcclusionGroupMotionQueries':1,
   'r.Web.LightGridAllocationBuckets':1,'r.WebGPU.StagingReadbackPool':1,
   'r.WebGPU.GroupAccessRevalidation':2,'r.WebGPU.DynamicGlobalsGroupReuse':1,'r.WebGPU.BindingPlan':1,
+  'r.Shadow.Virtual.SMRT.AdaptiveRayCount':1,
 });
 const runtimeAssets=Object.freeze({performanceProfile:profile,gameFrameClock:'page',pageFrameBudget:3,
   inputBridge:'direct-game-thread',pageFrameMaxFPS:0,localFrameBudget:0,localFrameBudgetMode:'submitted',

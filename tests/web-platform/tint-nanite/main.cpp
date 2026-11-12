@@ -9,11 +9,12 @@
 #include "src/tint/lang/wgsl/writer/writer.h"
 
 // The pinned CLI does not expose this library option. Workgroup barrier
-// uniformity is still validated; the VSM policy is explicitly diagnostic.
+// uniformity is still validated for both Nanite and VSM active-lane votes.
 int main(int argc, char** argv)
 {
-    const bool vsmProbe = argc == 4 && std::string_view(argv[3]) == "--vsm-adaptive-probe";
-    if (argc != 3 && !vsmProbe) return 2;
+    const bool vsmAdaptive = argc == 4 && (std::string_view(argv[3]) == "--vsm-adaptive" ||
+        std::string_view(argv[3]) == "--vsm-adaptive-probe");
+    if (argc != 3 && !vsmAdaptive) return 2;
     std::ifstream input(argv[1], std::ios::binary | std::ios::ate);
     if (!input) return 3;
     const auto size = input.tellg();
@@ -30,7 +31,7 @@ int main(int argc, char** argv)
     tint::wgsl::writer::Options options;
     options.allowed_features = tint::wgsl::AllowedFeatures::Everything();
     options.allow_non_uniform_subgroup_operations = true;
-    options.allow_non_uniform_derivatives = vsmProbe;
+    options.allow_non_uniform_derivatives = vsmAdaptive;
     auto result = tint::wgsl::writer::WgslFromIR(ir.Get(), options);
     if (result != tint::Success)
     {

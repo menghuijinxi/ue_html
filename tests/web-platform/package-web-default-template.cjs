@@ -77,6 +77,7 @@ try {
     [name, audit(copies.find(([, target]) => target === name)[0]).sha256]));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
     JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, distanceFields, runtime: runtime + '.js',
+      ...(desktop && cook.vsmAdaptiveSampling ? {vsmAdaptiveSampling: cook.vsmAdaptiveSampling} : {}),
       wasm: metadata(copies.find(([, target]) => target === runtime + '.wasm')[0],
       runtime + '.wasm')}) + ';');
   fs.writeFileSync(path.join(output, 'index.html'), html);

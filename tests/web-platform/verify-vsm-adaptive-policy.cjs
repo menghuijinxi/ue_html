@@ -19,14 +19,14 @@ let browser;
   try {
     run(dxc, [input, '-E', 'MainCS', '-T', 'cs_6_0', '-HV', '2021', '-spirv',
       '-fspv-target-env=vulkan1.1', '-Fo', spv]);
-    run(converter, [spv, wgsl, '--vsm-adaptive-probe']);
+    run(converter, [spv, wgsl, '--vsm-adaptive']);
     const code = fs.readFileSync(wgsl, 'utf8');
     assert.match(code, /subgroupAll/); assert.match(code, /enable subgroups/);
     const invalid = path.join(directory, 'invalid.spv');
     run(dxc, [path.join(__dirname, 'shader-fixtures/nanite-transcode-policy.hlsl'),
       '-E', 'InvalidBarrier', '-T', 'cs_6_0', '-spirv', '-Fo', invalid]);
     const rejected = spawnSync(converter, [invalid, path.join(directory, 'invalid.wgsl'),
-      '--vsm-adaptive-probe'], {encoding: 'utf8', windowsHide: true});
+      '--vsm-adaptive'], {encoding: 'utf8', windowsHide: true});
     assert.notEqual(rejected.status, 0);
     assert.match(rejected.stdout + rejected.stderr, /workgroupBarrier.*uniform control flow/);
     report.invalidWorkgroupBarrierRejected = true;

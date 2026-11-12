@@ -562,11 +562,12 @@ bool UE::WebGPUShader::ValidateBindings(const TSharedRef<FJsonObject> &Metadata,
 
 class FWebGPUShaderFormat final : public IShaderFormat
 {
-    static bool IsVSMAdaptiveProbe(const FShaderCompilerInput& Input)
+    static bool UsesVSMAdaptiveSampling(const FShaderCompilerInput& Input)
     {
-        return Input.VirtualSourceFilePath == TEXT("/Engine/Private/VirtualShadowMaps/VirtualShadowMapProjection.usf") &&
-            FParse::Param(FCommandLine::Get(), TEXT("VirtualResourceShaderProbe")) &&
-            FParse::Param(FCommandLine::Get(), TEXT("WebVSMAdaptiveProbe"));
+        return Input.ShaderFormat == UE::WebGPUShader::SM5Format &&
+            Input.VirtualSourceFilePath == TEXT("/Engine/Private/VirtualShadowMaps/VirtualShadowMapProjection.usf") &&
+            !Input.Environment.GetCompileArgument(TEXT("WebVSMFullSampling"), false) &&
+            !FParse::Param(FCommandLine::Get(), TEXT("WebVSMFullSampling"));
     }
   public:
     FWebGPUShaderFormat()
@@ -600,7 +601,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
 
     virtual void AppendToKeyString(FString &Key) const override
     {
-        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1_NaniteResolve1");
+        Key += TEXT("_WebGPUShaderSchema1_DesktopSampling25_WaterClip_Tint20261009.190412_Uncompressed1_LumenStorage7_SkyUniform2_VolumeMarks1_NanitePackedAtomic1_NaniteResolve1_VSMAdaptive1");
     }
 
     virtual void ModifyShaderCompilerInput(FShaderCompilerInput &Input) const override
@@ -617,11 +618,11 @@ class FWebGPUShaderFormat final : public IShaderFormat
         Input.Environment.SetDefine(TEXT("WEB_VSM_SCALAR_ATOMICS"),
             Input.VirtualSourceFilePath.StartsWith(TEXT("/Engine/Private/VirtualShadowMaps/")) ? 1 : 0);
         Input.Environment.SetDefine(TEXT("EARLYDEPTHSTENCIL"), TEXT(""));
-        if (IsVSMAdaptiveProbe(Input))
+        if (UsesVSMAdaptiveSampling(Input))
         {
-            Input.Environment.SetDefine(TEXT("WEB_VSM_ADAPTIVE_PROBE"), 1);
+            Input.Environment.SetDefine(TEXT("WEB_VSM_ADAPTIVE"), 1);
             Input.Environment.CompilerFlags.Add(CFLAG_WaveOperations);
-            Input.Environment.SetCompileArgument(TEXT("WebVSMAdaptiveProbeVersion"), int32(1));
+            Input.Environment.SetCompileArgument(TEXT("WebVSMAdaptiveVersion"), int32(1));
         }
         // Metadata fields are additive. Invalidate only the affected jobs while
         // AppendToKeyString invalidates complete shader maps containing them.
@@ -730,9 +731,43 @@ class FWebGPUShaderFormat final : public IShaderFormat
             return;
         }
 
+        UE::WebGPUShader::FPayload FallbackPayload;
+        if (UsesVSMAdaptiveSampling(Input))
+        {
+            FShaderCompilerInput FallbackInput = Input;
+            FallbackInput.Environment.SetDefine(TEXT("WEB_VSM_ADAPTIVE"), 0);
+            FallbackInput.Environment.SetCompileArgument(TEXT("WebVSMFullSampling"), true);
+            FShaderCompilerEnvironment FallbackEnvironment = FallbackInput.Environment;
+            if (FallbackInput.SharedEnvironment)
+                FallbackEnvironment.Merge(*FallbackInput.SharedEnvironment);
+            FShaderPreprocessOutput FallbackPreprocessed;
+            FShaderCompilerOutput FallbackOutput;
+            FString FallbackError;
+            if (!PreprocessShader(FallbackInput, FallbackEnvironment, FallbackPreprocessed))
+            {
+                Output.bSucceeded = false;
+                FShaderCompilerError Diagnostic;
+                Diagnostic.StrippedErrorMessage = TEXT("Web VSM full-sampling fallback preprocessing failed");
+                Output.Errors.Add(MoveTemp(Diagnostic));
+                return;
+            }
+            CompilePreprocessedShader(FallbackInput, FallbackPreprocessed, FallbackOutput);
+            if (!FallbackOutput.bSucceeded ||
+                !UE::WebGPUShader::Decode(FallbackOutput.ShaderCode.GetReadView().Left(
+                    FallbackOutput.ShaderCode.GetShaderCodeSize()), FallbackPayload, FallbackError))
+            {
+                Output.bSucceeded = false;
+                Output.Errors.Append(FallbackOutput.Errors);
+                FShaderCompilerError Diagnostic;
+                Diagnostic.StrippedErrorMessage = TEXT("Web VSM full-sampling fallback compilation failed: ") + FallbackError;
+                Output.Errors.Add(MoveTemp(Diagnostic));
+                return;
+            }
+        }
         FString Error, DiagnosticDirectory;
         TArray<uint8> Payload;
-        if (!Convert(Input, Output, Payload, Error, DiagnosticDirectory))
+        if (!Convert(Input, Output, Payload, Error, DiagnosticDirectory,
+            UsesVSMAdaptiveSampling(Input) ? &FallbackPayload : nullptr))
         {
             FFileHelper::SaveStringToFile(FString(Preprocessed.GetSourceView()),
                 *(DiagnosticDirectory / TEXT("preprocessed.hlsl")));
@@ -897,7 +932,7 @@ class FWebGPUShaderFormat final : public IShaderFormat
     }
 
     bool Convert(const FShaderCompilerInput &Input, FShaderCompilerOutput &NativeOutput, TArray<uint8> &Payload,
-                 FString &Error, FString &DiagnosticDirectory) const
+                 FString &Error, FString &DiagnosticDirectory, const UE::WebGPUShader::FPayload* Fallback = nullptr) const
     {
         DiagnosticDirectory = NewDiagnosticDirectory();
         const TConstArrayView<uint8> Code = NativeOutput.ShaderCode.GetReadView();
@@ -1172,16 +1207,16 @@ class FWebGPUShaderFormat final : public IShaderFormat
         const FString DerivativeOptions = Input.ShaderFormat == FName(TEXT("SF_WEBGPU_SM5"))
             ? TEXT(" --allow-non-uniform-derivatives true") : TEXT("");
         const bool NaniteTranscode = Input.VirtualSourceFilePath == TEXT("/Engine/Private/Nanite/NaniteTranscode.usf");
-        const bool VSMAdaptiveProbe = IsVSMAdaptiveProbe(Input);
-        const FString Converter = Tools / ((NaniteTranscode || VSMAdaptiveProbe) ? TEXT("tint_nanite.exe") : TEXT("tint.exe"));
+        const bool VSMAdaptive = UsesVSMAdaptiveSampling(Input);
+        const FString Converter = Tools / ((NaniteTranscode || VSMAdaptive) ? TEXT("tint_nanite.exe") : TEXT("tint.exe"));
         if (!FPaths::FileExists(Converter))
         {
             Error = TEXT("Subgroup shader conversion requires tint_nanite.exe; run tests/web-platform/build-tint-nanite.ps1");
             return false;
         }
-        const FString Arguments = (NaniteTranscode || VSMAdaptiveProbe)
+        const FString Arguments = (NaniteTranscode || VSMAdaptive)
             ? FString::Printf(TEXT("\"%s\" \"%s\"%s"), *SpirvPath, *WgslPath,
-                VSMAdaptiveProbe ? TEXT(" --vsm-adaptive-probe") : TEXT(""))
+                VSMAdaptive ? TEXT(" --vsm-adaptive") : TEXT(""))
             : FString::Printf(TEXT("\"%s\" --format wgsl -o \"%s\"%s"), *SpirvPath, *WgslPath, *DerivativeOptions);
         const bool Executed = FPlatformProcess::ExecProcess(*Converter, *Arguments, &ExitCode, &StandardOut,
             &StandardError);
@@ -1192,8 +1227,8 @@ class FWebGPUShaderFormat final : public IShaderFormat
         }
         if (NaniteTranscode)
             Metadata->SetStringField(TEXT("subgroupUniformityPolicy"), TEXT("nanite-active-lanes"));
-        if (VSMAdaptiveProbe)
-            Metadata->SetStringField(TEXT("subgroupUniformityPolicy"), TEXT("vsm-adaptive-probe-active-lanes"));
+        if (VSMAdaptive)
+            Metadata->SetStringField(TEXT("subgroupUniformityPolicy"), TEXT("vsm-adaptive-active-lanes"));
         int32 NaniteAtomicBindings = 0;
         for (const auto& Value : Bindings)
         {
@@ -1292,6 +1327,18 @@ class FWebGPUShaderFormat final : public IShaderFormat
         if (!UE::WebGPUShader::ValidateBindings(Metadata, WebReflection, Error))
             return false;
         Metadata->SetBoolField(TEXT("bindingContractVerified"), true);
+        if (Fallback)
+        {
+            TSharedPtr<FJsonObject> FallbackMetadata;
+            if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Fallback->MetadataJson), FallbackMetadata) ||
+                !FallbackMetadata || Fallback->Wgsl.Contains(TEXT("enable subgroups;")))
+            {
+                Error = TEXT("Invalid Web VSM full-sampling fallback");
+                return false;
+            }
+            Metadata->SetObjectField(TEXT("vsmFullSamplingMetadata"), FallbackMetadata);
+            Metadata->SetStringField(TEXT("vsmFullSamplingWgsl"), Fallback->Wgsl);
+        }
         InputJson.Reset();
         FJsonSerializer::Serialize(InputDiagnostic, TJsonWriterFactory<>::Create(&InputJson));
         FFileHelper::SaveStringToFile(InputJson, *(DiagnosticDirectory / TEXT("input.json")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);

@@ -123,7 +123,7 @@ if (!globalThis.setImmediate) {
 // Only diagnostic values cross to the page. Enumerating globalThis also visits the
 // engine's many exported symbols on the RHI owner every 100 ms.
 const diagnosticStateKeys = [
-  '__webEngineFrames', '__webEngineRuntime', '__webEngineGPUDeviceReady',
+  '__webEngineFrames', '__webEngineRuntime', '__webEngineGPUDeviceReady', '__webVSMAdaptiveSampling',
   '__webDefaultCamera', '__webPlayerView', '__webDefaultCloudBudget', '__webDefaultFog', '__webDefaultSamples',
   '__webDefaultShadowCamera', '__webDefaultShadowControl', '__webRenderView',
   '__webTextureStreaming', '__webOcclusionRHI', '__webVisualTestClock', '__webGPUHandleDiagnostics',

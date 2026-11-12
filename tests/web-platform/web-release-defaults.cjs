@@ -11,6 +11,13 @@ function releaseOptions(argv = process.argv) {
   const option = name => argv.find(value => value.startsWith('--' + name + '='))?.slice(name.length + 3);
   const result = {corpus: option('pipeline-corpus'), captureOnly: argv.includes('--capture-prewarm'),
     legacyPrecache: argv.includes('--legacy-precache'), refresh: argv.includes('--refresh-prewarm')};
+  const size = option('render-size');
+  if (size) {
+    assert(/^\d+x\d+$/.test(size), 'Render size must be physical WIDTHxHEIGHT');
+    const [width, height] = size.split('x').map(Number);
+    assert(width >= 640 && width <= 3840 && height >= 360 && height <= 2160, 'Render size out of range');
+    result.renderSize = {width, height};
+  }
   assert([!!result.corpus, result.captureOnly, result.legacyPrecache, result.refresh].filter(Boolean).length <= 1,
     'Select one startup mode');
   return result;
@@ -56,6 +63,7 @@ function matchingCapture(folder, resultsDirectory) {
     try {
       const capture = JSON.parse(fs.readFileSync(path.join(directory, 'result.json')));
       if (!capture.pass || !capture.capture || capture.cvars || !capture.package) continue;
+      if (capture.withoutSubgroups) continue;
       const versions = JSON.parse(fs.readFileSync(capture.package.file));
       if (!coreFiles.every(name => versions[name]?.sha256 === hashes[name])) continue;
       assert.deepEqual(startupContext(path.dirname(capture.package.file)), context);
@@ -72,6 +80,11 @@ function finalizeDesktopRelease(folder, options = {}) {
   const page = readPage(folder);
   assert(page.assets.threads && page.assets.renderer === 'desktop', 'Desktop threaded release required');
   assert([!!options.corpus, options.captureOnly, options.legacyPrecache, options.refresh].filter(Boolean).length <= 1);
+  if (options.renderSize) {
+    page.assets.fixedRenderSize = options.renderSize;
+    page.args = page.args.filter(arg => !/^-Res[XY]=/.test(arg) && arg !== '-ForceRes');
+    page.args.push('-ResX=' + options.renderSize.width, '-ResY=' + options.renderSize.height, '-ForceRes');
+  }
   const size = resolveWebRenderSize(page.assets, page.args);
   if (size) page.assets.fixedRenderSize = size;
   page.assets.renderSizing = size ? 'fixed-physical-pixels' : 'css-dpr-once';

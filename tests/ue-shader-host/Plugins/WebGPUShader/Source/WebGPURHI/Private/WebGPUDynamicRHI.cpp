@@ -1443,12 +1443,38 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     }
     const ANSICHAR *Utf8 = reinterpret_cast<const ANSICHAR *>(Desc.Code.GetData() + 28);
     const auto Bytes = Desc.Code.Slice(28, Header[5]);
+    const bool SupportsVSMAdaptive = wgpuDeviceHasFeature(Device, WGPUFeatureName_Subgroups);
+    bool VSMFullSampling = false;
+    FString VSMFullSamplingSource;
+    if (Header[1] == 2)
+    {
+        if (Bytes.IsEmpty() || ValidateCompactBinary(MakeMemoryView(Bytes),
+                ECbValidateMode::Default | ECbValidateMode::Padding) != ECbValidateError::None)
+            return Fail(TEXT("Web shader binary metadata invalid"));
+        const UE::WebGPUShader::FMetadataField Root(FCbFieldView(Bytes.GetData()));
+        if (Root["vsmFullSamplingMetadata"].IsObject())
+        {
+            VSMFullSampling = !SupportsVSMAdaptive;
+            if (VSMFullSampling && !Root["vsmFullSamplingWgsl"].String(VSMFullSamplingSource))
+                return Fail(TEXT("Web VSM full-sampling fallback source missing"));
+#if PLATFORM_WEB
+            EM_ASM({
+                const state = globalThis.__webVSMAdaptiveSampling ||= ({supported:!!$0, enabled:!!$0,
+                    adaptiveModules:0, fullSamplingModules:0});
+                if ($0) ++state.adaptiveModules; else ++state.fullSamplingModules;
+            }, SupportsVSMAdaptive);
+#endif
+        }
+    }
     const bool KeepDOM = !NativeShaderMetadata || FParse::Param(FCommandLine::Get(), TEXT("WebShaderMetadataValidate")) || !NativeStorageContracts;
     const double MetadataStart = FPlatformTime::Seconds();
     if (Header[1] == 2 && NativeShaderMetadata)
     {
         TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataNative);
-        if (!UE::WebGPUShader::DecodeRuntimeMetadata(Bytes, Data.RuntimeMetadata))
+        const UE::WebGPUShader::FMetadataField Root(FCbFieldView(Bytes.GetData()));
+        if (!(VSMFullSampling ? UE::WebGPUShader::ReadRuntimeMetadata(
+                Root["vsmFullSamplingMetadata"], Data.RuntimeMetadata) :
+                UE::WebGPUShader::ReadRuntimeMetadata(Root, Data.RuntimeMetadata)))
             return Fail(TEXT("Web shader native metadata invalid"));
         ++NativeMetadataLoads;
     }
@@ -1468,6 +1494,8 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
                 return Fail(TEXT("Web shader metadata invalid"));
         }
         ++DOMMetadataLoads;
+        if (VSMFullSampling)
+            Data.Metadata = Data.Metadata->GetObjectField(TEXT("vsmFullSamplingMetadata"));
         UE::WebGPUShader::FRuntimeMetadata Reference;
         if (!UE::WebGPUShader::ReadRuntimeMetadata(Data.Metadata, Reference))
             return Fail(TEXT("Web shader legacy runtime metadata invalid"));
@@ -1518,7 +1546,8 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     Data.ResourceTable.ShaderResourceViewMap = MoveTemp(Data.RuntimeMetadata.SRVs);
     Data.ResourceTable.UnorderedAccessViewMap = MoveTemp(Data.RuntimeMetadata.UAVs);
     Data.ResourceTable.ResourceTableLayoutHashes = MoveTemp(Data.RuntimeMetadata.LayoutHashes);
-    FString Source(FUTF8ToTCHAR(Utf8 + Header[5], Header[6]));
+    FString Source = VSMFullSampling ? MoveTemp(VSMFullSamplingSource) :
+        FString(FUTF8ToTCHAR(Utf8 + Header[5], Header[6]));
     if (Source.Contains(TEXT("enable atomic_vec2u_min_max;")) &&
         !wgpuDeviceHasFeature(Device, WGPUFeatureName_AtomicVec2uMinMax))
         return Fail(TEXT("Nanite packed visibility requires the WebGPU atomic-vec2u-min-max device feature"));

@@ -44,6 +44,7 @@ function prepareRecordedPrewarm(folder, input) {
   const captureFile = path.join(path.dirname(path.resolve(input)), 'result.json');
   const capture = JSON.parse(fs.readFileSync(captureFile));
   assert(capture.pass && capture.capture, 'Require a successful capture');
+  assert(!capture.withoutSubgroups, 'A masked-device capture is not a normal release capture');
   assert(!capture.cvars, 'Do not publish a capture made with configuration overrides');
   assert(capture.package && audit(capture.package.file).sha256 === capture.package.sha256,
     'Captured package has changed');

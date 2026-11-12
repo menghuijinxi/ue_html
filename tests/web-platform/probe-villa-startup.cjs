@@ -40,6 +40,16 @@ const recorder = fs.readFileSync(path.join(__dirname, 'web-startup-probe.js'), '
 const candidate = option('worker');
 const capture = process.argv.includes('--capture');
 const plain = process.argv.includes('--plain');
+const withoutSubgroups = process.argv.includes('--without-subgroups');
+assert(!withoutSubgroups || capture && direct && selected === 'ours' && !plain && !cvars && !candidate,
+  'Subgroup masking is only for an explicit fallback pipeline capture');
+report.withoutSubgroups = withoutSubgroups;
+function maskSubgroups() {
+  const descriptor = Object.getOwnPropertyDescriptor(GPUAdapter.prototype, 'features');
+  Object.defineProperty(GPUAdapter.prototype, 'features', {...descriptor, get() {
+    return new Set([...descriptor.get.call(this)].filter(feature => feature !== 'subgroups'));
+  }});
+}
 const motionSeconds = Number(option('motion-seconds') || 0);
 const scriptedMotionSeconds = Number(option('scripted-motion-seconds') || 0);
 assert(!plain || (!capture && selected === 'ours' && !cvars && !candidate));
@@ -101,7 +111,8 @@ let context, server;
       const response = await route.fetch();
       await route.fulfill({response, body: (capture ?
         'globalThis.__webStartupPSOCorpus = true;\n' +
-        fs.readFileSync(path.join(__dirname, 'web-startup-profile.js'), 'utf8') + '\n' : '') + recorder + '\n' +
+        fs.readFileSync(path.join(__dirname, 'web-startup-profile.js'), 'utf8') + '\n' : '') +
+        (withoutSubgroups ? '(' + maskSubgroups.toString() + ')();\n' : '') + recorder + '\n' +
         (candidate ? fs.readFileSync(path.resolve(candidate), 'utf8') : await response.text())});
     });
     const page = context.pages()[0];

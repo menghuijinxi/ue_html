@@ -20,12 +20,13 @@ function fixture(name) {
   return folder;
 }
 let captures = 0;
-function capture(folder) {
+function capture(folder, withoutSubgroups = false) {
   const snapshot = path.join(root, 'capture-' + ++captures); fs.mkdirSync(snapshot);
   for (const name of [...coreFiles, 'index.html']) fs.copyFileSync(path.join(folder, name), path.join(snapshot, name));
   const versions = writeVersions(snapshot, fs.readdirSync(snapshot).map(name => audit(path.join(snapshot, name))));
   const directory = path.join(resultsDirectory, 'villa-startup-' + captures); fs.mkdirSync(directory);
-  fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify({pass: true, capture: true, package: versions}));
+  fs.writeFileSync(path.join(directory, 'result.json'),
+    JSON.stringify({pass: true, capture: true, package: versions, withoutSubgroups}));
   const file = path.join(directory, '0-corpus.json');
   fs.writeFileSync(file, JSON.stringify({version: 1, devices: [{id: 1, descriptor: {}}],
     modules: [], layouts: [], descriptors: [{deviceId: 1, kind: 'compute', descriptor: {}}]}));
@@ -82,9 +83,21 @@ assert(!diagnostic.releaseReady && readPage(dest).args.includes('-WebPSOPrecache
 const captureOnly = finalizeDesktopRelease(dest, {captureOnly: true});
 assert(!captureOnly.releaseReady && !readPage(dest).args.includes('-WebPSOPrecacheTest'));
 assert.throws(() => releaseOptions(['--capture-prewarm', '--legacy-precache']));
+assert.throws(() => releaseOptions(['--render-size=1920,1080']));
+assert.throws(() => releaseOptions(['--render-size=9999x1080']));
+assert.deepEqual(releaseOptions(['--render-size=1920x1080']).renderSize, {width: 1920, height: 1080});
+const explicitSize = finalizeDesktopRelease(dest, {captureOnly: true, renderSize: {width: 1600, height: 900}});
+assert.deepEqual(explicitSize.fixedRenderSize, {width: 1600, height: 900});
+assert.deepEqual(readPage(dest).args.slice(-3), ['-ResX=1600', '-ResY=900', '-ForceRes']);
 assert.throws(() => resolveWebRenderSize({}, ['-ForceRes', '-ResX=1920']));
 assert.throws(() => resolveWebRenderSize({fixedRenderSize: {width: 1, height: 1}},
   ['-ForceRes', '-ResX=1920', '-ResY=1080']), /disagrees/);
+const maskedCorpus = capture(source, true);
+assert.throws(() => prepareRecordedPrewarm(source, maskedCorpus), /masked-device capture/);
+const acceptedConfigs = JSON.parse(fs.readFileSync(path.join(source, 'config-files.json')));
+assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
+  .includes('r.Shadow.Virtual.SMRT.AdaptiveRayCount=1')));
 console.log(JSON.stringify({pass: true, automaticReuse: true, invalidatedCaptures: calls,
   hardlinksPreserved: true, staleWorkersRejected: true, captureFailureBlocksRelease: true,
-  forcedPhysicalSize: fixed.fixedRenderSize, diagnosticsRequireExplicitFlags: true}));
+  forcedPhysicalSize: fixed.fixedRenderSize, diagnosticsRequireExplicitFlags: true,
+  maskedCapturesRejected: true, adaptiveDefault: true}));

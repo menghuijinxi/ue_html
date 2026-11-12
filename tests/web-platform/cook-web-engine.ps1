@@ -102,6 +102,7 @@ $taskReport = [ordered]@{
     templateEnvironment = [bool]$TemplateEnvironment
     distanceFields = [bool]$DistanceFields
     useProjectSettings = [bool]$UseProjectSettings
+    vsmAdaptiveSampling = $(if ($Mode -eq 'WebGPU-SM5') { 'cooked-with-fallback' } else { $null })
     lumen = $null
     manualVertexFetch = [bool]$ManualVertexFetch
     shaderFormats = @($(if ($taskWebGPU) { $taskFormat }))

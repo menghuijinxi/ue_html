@@ -3,12 +3,14 @@ param(
     [string]$ShaderTypes,
     [ValidateRange(-1, 2147483647)][int]$Permutation = -1,
     [switch]$AllPermutations,
-    [switch]$VSMAdaptiveProbe
+    [switch]$VSMAdaptiveProbe,
+    [switch]$VSMFullSampling
 )
 $ErrorActionPreference = 'Stop'
 if ($VSMAdaptiveProbe -and $ShaderTypes -ne 'FVirtualShadowMapProjectionCS') {
     throw 'VSMAdaptiveProbe is restricted to the projection shader.'
 }
+if ($VSMAdaptiveProbe -and $VSMFullSampling) { throw 'Select adaptive or full sampling.' }
 if ($Permutation -ge 0 -and (-not $ShaderTypes -or $AllPermutations)) {
     throw 'Permutation requires explicit ShaderTypes and cannot be combined with AllPermutations.'
 }
@@ -26,6 +28,7 @@ $taskReport = [ordered]@{
     project = $taskProject
     completeVirtualResourceScene = $false
     adaptiveProbe = [bool]$VSMAdaptiveProbe
+    fullSampling = [bool]$VSMFullSampling
     output = $taskOutput
 }
 try {
@@ -40,6 +43,7 @@ try {
     if ($Permutation -ge 0) { $taskArguments += "-Permutation=$Permutation" }
     if ($AllPermutations) { $taskArguments += '-AllPermutations' }
     if ($VSMAdaptiveProbe) { $taskArguments += '-WebVSMAdaptiveProbe' }
+    if ($VSMFullSampling) { $taskArguments += '-WebVSMFullSampling' }
     $taskChild = Start-Process -FilePath (Join-Path $taskHost 'Binaries/Win64/UnrealEditor-Cmd.exe') `
         -ArgumentList ($taskArguments | ForEach-Object { '"' + $_ + '"' }) -PassThru -WindowStyle Hidden `
         -RedirectStandardOutput "$taskOutput/shaders.console" -RedirectStandardError "$taskOutput/shaders.stderr"
