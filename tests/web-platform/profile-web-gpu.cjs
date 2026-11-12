@@ -9,6 +9,7 @@ assert(!fs.existsSync(file),'Use a new result tag');fs.copyFileSync(__filename,f
 const spawn=process.argv.includes('--spawn'),width=Number(option('width')||1280),height=Number(option('height')||720);
 const hierarchyBatch=option('nanite-hierarchy-batch');assert(hierarchyBatch===undefined||hierarchyBatch==='0'||hierarchyBatch==='1');
 const occlusionBatch=option('nanite-occlusion-batch');assert(occlusionBatch===undefined||occlusionBatch==='0'||occlusionBatch==='1');
+const packBatch=option('nanite-pack-batch');assert(packBatch===undefined||packBatch==='0'||packBatch==='1');
 const primitiveVisibility=option('nanite-primitive-visibility');assert(primitiveVisibility===undefined||primitiveVisibility==='0'||primitiveVisibility==='1');
 const report={pass:false,source:audit(__filename),spawn,width,height,errors:[],boundary:'Diagnostic GPU timestamp pass durations. Instrumented FPS is not a game-performance acceptance metric; copies, barriers and idle gaps are excluded from summed pass time.'};
 function instrument(){
@@ -96,6 +97,7 @@ function instrument(){
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
  if(hierarchyBatch!==undefined){assert.equal(await page.evaluate(v=>__webEngineRPC('WebNaniteHierarchyBatchTest',v),Number(hierarchyBatch)),1);report.hierarchyBatch=Number(hierarchyBatch);}
  if(occlusionBatch!==undefined){assert.equal(await page.evaluate(v=>__webEngineRPC('WebNaniteOcclusionBatchTest',v),Number(occlusionBatch)),1);report.occlusionBatch=Number(occlusionBatch);}
+ if(packBatch!==undefined){assert.equal(await page.evaluate(v=>__webEngineRPC('WebNanitePackBatchTest',v),Number(packBatch)),1);report.packBatch=Number(packBatch);}
  if(primitiveVisibility!==undefined){assert.equal(await page.evaluate(v=>__webEngineRPC('WebNanitePrimitiveVisibilityTest',v),Number(primitiveVisibility)),1);report.primitiveVisibility=Number(primitiveVisibility);}
  report.clock=await owner.evaluate(()=>globalThis.__webVisualTestClock||null);assert(!report.clock?.renderTimeFrozen&&!report.clock?.materialTimeFrozen);
  if(!spawn)assert.equal(await page.evaluate(()=>__webEngineRPC('WebProjectViewTest',-175,-80,160,-5,50)),1);
@@ -107,9 +109,11 @@ function instrument(){
   }while(state?.step!==1&&Date.now()-started<180000);
   assert.equal(state?.step,1);assert.equal(state.primitiveVisibility,primitiveVisibility==='1');
   if(occlusionBatch!==undefined)assert.equal(state.occlusionBatch,occlusionBatch==='1');
+  if(packBatch!==undefined)assert.equal(state.packBatch,packBatch==='1');
   report.nativeBeforeCapture={frame:state.frame,registered:state.registered,entries:state.entries,primitiveVisibility:state.primitiveVisibility,
    hierarchyBatch:state.hierarchyBatch,hierarchyDispatchBuffers:state.hierarchyDispatchBuffers,occlusionBatch:state.occlusionBatch,
-   mainOcclusionDispatchBuffers:state.mainOcclusionDispatchBuffers,finalOcclusionDispatchBuffers:state.finalOcclusionDispatchBuffers};
+   mainOcclusionDispatchBuffers:state.mainOcclusionDispatchBuffers,finalOcclusionDispatchBuffers:state.finalOcclusionDispatchBuffers,
+   packBatch:state.packBatch,packBatchedEntries:state.packBatchedEntries,packDispatchBuffers:state.packDispatchBuffers};
   assert.equal(await page.evaluate(()=>__webEngineRPC('WebNaniteAutomaticSceneTest',-1)),1);
   report.boundary+=' Explicit primitive-visibility override isolates submission work; it is not the normal shipping configuration or FPS acceptance. Native counts are sampled before the capture.';
  }

@@ -16,6 +16,8 @@ const hierarchyBatches = option('hierarchy-batches')?.split(',');
 assert(!hierarchyBatches || (hierarchyBatches.length === modes.length && hierarchyBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const occlusionBatches = option('occlusion-batches')?.split(',');
 assert(!occlusionBatches || (occlusionBatches.length === modes.length && occlusionBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
+const packBatches = option('pack-batches')?.split(',');
+assert(!packBatches || (packBatches.length === modes.length && packBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const materialPrecaches = option('material-precaches')?.split(',');
 assert(!materialPrecaches || (materialPrecaches.length === modes.length && materialPrecaches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const tour = process.argv.includes('--tour');
@@ -44,7 +46,7 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, occlusionBatches, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, occlusionBatches, packBatches, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
   boundary: 'Serial fresh Edge contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
@@ -60,6 +62,7 @@ if(hierarchyBatches)report.boundary='Serial fresh Edge contexts, same package, N
   +(!(trace||gpuProbe||gpuTimestamps)?'No CPU/GPU profiler or WebGPU method wrapper in the measured window. ':'Instrumented diagnostic; exclude its FPS from game-performance acceptance. ')
   +'First native camera tour includes simultaneous translation and rotation, with no route warmup. Actual sampled trajectories are retained.';
 if(materialPrecaches)report.boundary='Serial fresh Edge contexts, same package and enabled Nanite/hierarchy/HZB batching. Material precache set in WebEngine.ini before engine startup and verified by native readback. Normal advancing clocks; first simultaneous movement/turn route without warmup. All viewport submission intervals retained. Explicit diagnostics are excluded from FPS acceptance.';
+if(packBatches)report.boundary='Serial fresh Edge contexts, same package with enabled Nanite/hierarchy/HZB/material precache. Native cluster pack switch independently verified. Normal advancing clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics are excluded from FPS acceptance.';
 if (gpuTimestamps) { report.gpuWindow = {start:gpuStart,end:gpuEnd}; report.boundary += ' GPU timestamp instrumentation is diagnostic and is excluded from game-performance acceptance.'; }
 if (trace) report.boundary += ' DevTools trace instrumentation is diagnostic.';
 function installObserver(detailed) {
@@ -185,8 +188,8 @@ ${marker}
         assert(!await page.evaluate(() => globalThis.__webEngineFailure));
         run.startupReadyMs = Date.now() - startupBegin;
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
-        if (hierarchyBatches || occlusionBatches || materialPrecaches) {
-          for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest']])
+        if (hierarchyBatches || occlusionBatches || packBatches || materialPrecaches) {
+          for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest']])
             if(values)assert.equal(await page.evaluate(a => __webEngineRPC(a[0],a[1]), [fn,Number(values[index])]), 1);
           assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteAutomaticSceneTest', 1)), 1);
           await page.waitForFunction(() => __webPSOPrecacheReady, null, {timeout:180000});
@@ -196,6 +199,10 @@ ${marker}
             state = await owner.evaluate(() => globalThis.__webNaniteAutomaticSceneTest);
           } while (state?.step !== 1 && Date.now() - start < 120000);
           assert.equal(state?.step, 1); assert(state.enabled && state.entries > 1);
+          if(packBatches){const enabled=Number(packBatches[index]);
+            assert.equal(state.packBatch,!!enabled);assert(state.hierarchyBatch&&state.occlusionBatch&&state.materialPrecache);
+            assert.equal(state.packBatchedEntries>0,!!enabled);
+            run.pack={enabled,registered:state.registered,entries:state.entries,batchedEntries:state.packBatchedEntries,dispatchBuffers:state.packDispatchBuffers};}
           if(materialPrecaches){const enabled=Number(materialPrecaches[index]);
             assert.equal(state.materialPrecache,!!enabled);assert(state.hierarchyBatch&&state.occlusionBatch);
             run.materialPrecache={enabled,registered:state.registered,entries:state.entries,

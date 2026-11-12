@@ -24,6 +24,8 @@ const materialBatch = option('nanite-material-batch');
 const primitiveVisibility = option('nanite-primitive-visibility');
 const hierarchyBatch = option('nanite-hierarchy-batch');
 const occlusionBatch = option('nanite-occlusion-batch');
+const packBatch = option('nanite-pack-batch');
+assert(packBatch === undefined || packBatch === '0' || packBatch === '1');
 assert(occlusionBatch === undefined || occlusionBatch === '0' || occlusionBatch === '1');
 assert(hierarchyBatch === undefined || hierarchyBatch === '0' || hierarchyBatch === '1');
 assert(primitiveVisibility === undefined || primitiveVisibility === '0' || primitiveVisibility === '1');
@@ -107,13 +109,17 @@ function summarize(profile) {
       assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteOcclusionBatchTest', v), Number(occlusionBatch)), 1);
       report.settingsOverrides.push({naniteOcclusionBatch: Number(occlusionBatch)});
     }
+    if (packBatch !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNanitePackBatchTest', v), Number(packBatch)), 1);
+      report.settingsOverrides.push({nanitePackBatch:Number(packBatch)});
+    }
     report.visualClock = await owner.evaluate(() => globalThis.__webVisualTestClock || null);
     if (primitiveVisibility !== undefined) {
       assert.equal(await page.evaluate(v => __webEngineRPC('WebNanitePrimitiveVisibilityTest', v), Number(primitiveVisibility)), 1);
       report.settingsOverrides.push({nanitePrimitiveVisibility: Number(primitiveVisibility)});
     }
     assert(!report.visualClock?.renderTimeFrozen && !report.visualClock?.materialTimeFrozen, 'Game performance requires advancing render and material clocks');
-    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined || primitiveVisibility !== undefined || hierarchyBatch !== undefined || occlusionBatch !== undefined) {
+    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined || primitiveVisibility !== undefined || hierarchyBatch !== undefined || occlusionBatch !== undefined || packBatch !== undefined) {
       for (const step of naniteOff ? [1, 2] : [1]) {
         assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteAutomaticSceneTest', s), step), 1);
         const start = Date.now(); let value;
@@ -127,10 +133,12 @@ function summarize(profile) {
         if (hierarchyBatch !== undefined) { assert.equal(value.hierarchyBatch, hierarchyBatch === '1'); assert.equal(value.hierarchyBatchedEntries > 0, hierarchyBatch === '1' && value.entries > 1); }
         if (occlusionBatch !== undefined) {assert.equal(value.occlusionBatch,occlusionBatch==='1');
           assert.equal(value.finalOcclusionBatchedEntries>0,occlusionBatch==='1'&&value.entries>1);}
+        if (packBatch !== undefined) {assert.equal(value.packBatch,packBatch==='1');
+          assert.equal(value.packBatchedEntries>0,packBatch==='1'&&value.entries>1);}
         if (rasterBatch !== undefined) assert.equal(value.rasterBatch, rasterBatch === '1');
         if (materialBatch !== undefined) { assert.equal(value.materialPassBatch, materialBatch !== '0'); assert.equal(value.materialPassBatchMode, Number(materialBatch)); }
         if (primitiveVisibility !== undefined) assert.equal(value.primitiveVisibility, primitiveVisibility === '1');
-        report.nanite = {occlusionBatch:value.occlusionBatch,occlusionBatchedEntries:value.finalOcclusionBatchedEntries,occlusionDispatchBuffers:value.finalOcclusionDispatchBuffers,hierarchyBatch: value.hierarchyBatch, hierarchyBatchedEntries: value.hierarchyBatchedEntries, hierarchyDispatchBuffers: value.hierarchyDispatchBuffers, enabled: value.enabled, primitiveVisibility: value.primitiveVisibility, primitiveVisibilitySkipped: value.primitiveVisibilitySkipped, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
+        report.nanite = {packBatch:value.packBatch,packBatchedEntries:value.packBatchedEntries,packDispatchBuffers:value.packDispatchBuffers,occlusionBatch:value.occlusionBatch,occlusionBatchedEntries:value.finalOcclusionBatchedEntries,occlusionDispatchBuffers:value.finalOcclusionDispatchBuffers,hierarchyBatch: value.hierarchyBatch, hierarchyBatchedEntries: value.hierarchyBatchedEntries, hierarchyDispatchBuffers: value.hierarchyDispatchBuffers, enabled: value.enabled, primitiveVisibility: value.primitiveVisibility, primitiveVisibilitySkipped: value.primitiveVisibilitySkipped, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
       }
       if (naniteOff) report.settingsOverrides.push({nanite: false, verifiedEntries: 0});
     }

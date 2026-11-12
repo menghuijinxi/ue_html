@@ -2,7 +2,11 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility');
-const output=path.join(__dirname,'results/nanite-wpo');fs.mkdirSync(output,{recursive:true});
+const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3);
+const folder=option('folder')||'nanite-browser',tag=option('tag')||'nanite-wpo';assert([folder,tag].every(n=>/^[a-z0-9-]+$/.test(n)));
+const output=path.join(__dirname,'results',tag);fs.mkdirSync(output,{recursive:true});
+assert(!fs.existsSync(path.join(output,scalar?'browser-scalar.json':'browser.json')),'Use a new result tag');
+fs.copyFileSync(__filename,path.join(output,scalar?'scalar-source.cjs':'packed-source.cjs'));
 const source=path.join(__dirname,'results/nanite-programmable/wpo-source-triangles.bin');
 const bytes=fs.readFileSync(source),vertices=new Float32Array(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
 assert.equal(vertices.length,2048*3*8);
@@ -11,7 +15,7 @@ for(let i=0;i<vertices.length;i+=8)for(let j=0;j<3;j++){
   bounds.min[j]=Math.min(bounds.min[j],vertices[i+j]);bounds.max[j]=Math.max(bounds.max[j],vertices[i+j]);
 }
 const sourceCenter=bounds.min.map((v,j)=>(v+bounds.max[j])/2);
-const report={pass:false,scalar,source:audit(__filename),geometry:audit(source),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],validationFailures:[],logs:[]};
+const report={pass:false,scalar,source:audit(__filename),geometry:audit(source),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],errors:[],validationFailures:[],logs:[]};
 const save=()=>fs.writeFileSync(path.join(output,scalar?'browser-scalar.json':'browser.json'),JSON.stringify(report,null,2));
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
 const mul=(v,m)=>[0,1,2,3].map(c=>v.reduce((n,x,r)=>n+x*m[r*4+c],0));
@@ -228,13 +232,13 @@ function verify(t){
     maxVelocityError,maxVelocityDepthError,maxVelocityDepthTolerance,moving};
 }
 (async()=>{let browser,page,owner;try{
-  browser=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:960,height:640}});
+  browser=await chromium.launchPersistentContext(`G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}-${scalar?'scalar':'packed'}`,{channel:'msedge',headless:true,viewport:{width:960,height:640}});
   await browser.route('**/web-engine-worker.js?*',async route=>{const response=await route.fetch();await route.fulfill({response,body:'('+observe.toString()+')('+JSON.stringify(scalar)+');\n'+await response.text()});});
-  await browser.route('**/nanite-browser/index.html',async route=>{const response=await route.fetch();await route.fulfill({response,
+  await browser.route('**/'+folder+'/index.html',async route=>{const response=await route.fetch();await route.fulfill({response,
     body:(await response.text()).replace('"-WebNaniteRootPages=2"','"-WebNaniteRootPages=128","-WebNaniteStreamingPages=12","-WebNaniteScene"')});});
   page=await browser.newPage();page.on('console',m=>{const s=m.text();report.logs.push(s);if(/GPU validation:|Fatal error:|Assertion failed|DeviceLost/.test(s))report.errors.push(s);});
   page.on('pageerror',e=>report.errors.push(e.stack));
-  await page.goto('http://127.0.0.1:8765/build/nanite-browser/index.html');
+  await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html');
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=120,null,{timeout:180000});
   assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);

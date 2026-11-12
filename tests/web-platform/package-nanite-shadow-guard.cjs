@@ -7,6 +7,7 @@ const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3
 const project=option('project'),baseline=option('baseline'),name=option('output');
 const defaultScene=process.argv.includes('--default-scene'),hierarchyBatch=process.argv.includes('--hierarchy-batch');
 const occlusionBatch=process.argv.includes('--occlusion-batch');
+const packBatch=process.argv.includes('--pack-batch');
 assert([baseline,name].every(n=>/^[a-z0-9-]+$/.test(n)));
 assert(defaultScene||/^[a-z0-9-]+$/.test(project));
 const root=__dirname,base=path.join(root,'build',baseline),output=path.join(root,'build',name);
@@ -23,6 +24,8 @@ if(hierarchyBatch){verify(cook.shaderInventory.artifact);const inventory=read(co
   assert(inventory.types.some(t=>t.name==='FWebNaniteHierarchyCull_CS'&&t.permutations===5),'Cook must include the new rigid hierarchy batch permutation');}
 if(occlusionBatch){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
   assert(inventory.types.some(t=>t.name==='FWebNaniteOcclusionCS'&&t.permutations===5),'Cook must include the rigid occlusion batch permutation');}
+if(packBatch){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
+  assert(inventory.types.some(t=>t.name==='FWebNaniteVisibleClustersCS'&&t.permutations===2),'Cook must include both visible-cluster packing permutations');}
 const coreFile=path.join(root,'build/nanite-core-scene/package.json'),core=read(coreFile);
 assert(core.pass);core.products.forEach(verify);
 verify(core.archive);verify(core.streamingShaders);

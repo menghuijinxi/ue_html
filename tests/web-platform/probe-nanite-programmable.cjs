@@ -2,18 +2,38 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const scalar=process.argv.includes('--scalar-visibility');
-const output=path.join(__dirname,'results/nanite-programmable');fs.mkdirSync(output,{recursive:true});
-const report={pass:false,scalar,source:audit(__filename),package:audit(path.join(__dirname,'build/nanite-browser/package.json')),tests:[],errors:[],logs:[]};
+const verifyPack=process.argv.includes('--verify-pack-batch');
+const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3);
+const folder=option('folder')||'nanite-browser',tag=option('tag')||'nanite-programmable';assert([folder,tag].every(n=>/^[a-z0-9-]+$/.test(n)));
+const output=path.join(__dirname,'results',tag);fs.mkdirSync(output,{recursive:true});
+assert(!fs.existsSync(path.join(output,scalar?'browser-scalar.json':'browser.json')),'Use a new result tag');
+fs.copyFileSync(__filename,path.join(output,scalar?'scalar-source.cjs':'packed-source.cjs'));
+const report={pass:false,scalar,verifyPack,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],errors:[],logs:[]};
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
 const srgb=v=>v<=.0031308?v*12.92:1.055*v**(1/2.4)-.055;
 function observe(scalar){
   const request=GPUAdapter.prototype.requestDevice;
-  globalThis.__programmableGPU={errors:[]};
+  globalThis.__programmableGPU={errors:[],current:{groups:[],programmableDraws:0,nonzeroOffsets:[]}};
+  const shaders=new WeakMap(),pipelines=new WeakMap(),current=new WeakMap();
   GPUAdapter.prototype.requestDevice=async function(d){
     if(scalar)d={...d,requiredFeatures:[...(d?.requiredFeatures||[])].filter(f=>f!=='atomic-vec2u-min-max')};
     const device=await request.call(this,d);__programmableGPU.features=[...device.features];
-    device.addEventListener('uncapturederror',e=>__programmableGPU.errors.push(e.error.message));return device;
+    device.addEventListener('uncapturederror',e=>__programmableGPU.errors.push(e.error.message));
+    const module=device.createShaderModule.bind(device);device.createShaderModule=d=>{const r=module(d);shaders.set(r,d.code);return r;};
+    for(const name of ['createComputePipeline','createComputePipelineAsync','createRenderPipeline','createRenderPipelineAsync']){
+      const original=device[name].bind(device),remember=(p,d)=>{const code=[d.compute,d.vertex,d.fragment].filter(Boolean).map(s=>shaders.get(s.module)||'').join('\n');
+        pipelines.set(p,{pack:code.includes('WebPackBatchData'),programmable:code.includes('WebRasterPixelProgrammable')});return p;};
+      device[name]=d=>{const p=original(d);return name.endsWith('Async')?p.then(p=>remember(p,d)):remember(p,d);};
+    }
+    return device;
   };
+  for(const proto of [GPUComputePassEncoder.prototype,GPURenderPassEncoder.prototype]){
+    const set=proto.setPipeline;proto.setPipeline=function(p){current.set(this,pipelines.get(p));return set.call(this,p);};
+  }
+  const dispatch=GPUComputePassEncoder.prototype.dispatchWorkgroups;
+  GPUComputePassEncoder.prototype.dispatchWorkgroups=function(...args){if(current.get(this)?.pack){const g=__programmableGPU.current.groups;if(!g.includes(args[0]))g.push(args[0]);}return dispatch.apply(this,args);};
+  const draw=GPURenderPassEncoder.prototype.drawIndirect;
+  GPURenderPassEncoder.prototype.drawIndirect=function(buffer,offset){if(current.get(this)?.programmable){const s=__programmableGPU.current;s.programmableDraws++;if(offset&&!s.nonzeroOffsets.includes(offset))s.nonzeroOffsets.push(offset);}return draw.call(this,buffer,offset);};
 }
 function entry(t,id){const index=(id>>>8)-1;return t.entries.find(e=>index>=e.clusterBase&&index<e.clusterBase+e.clusterCount);}
 function checker(t,i){
@@ -76,19 +96,20 @@ function verify(t){
   return {scenario,phase,counts,compared,holes,pdoChangedWinner,maxDepthError,maxColorError};
 }
 (async()=>{let browser,page,owner;try{
-  browser=await chromium.launchPersistentContext(path.join(__dirname,'results/nanite-browser/profile'),{channel:'msedge',headless:true,viewport:{width:960,height:640}});
+  browser=await chromium.launchPersistentContext(`G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}-${scalar?'scalar':'packed'}`,{channel:'msedge',headless:true,viewport:{width:960,height:640}});
   await browser.route('**/web-engine-worker.js?*',async route=>{const response=await route.fetch();await route.fulfill({response,body:'('+observe.toString()+')('+JSON.stringify(scalar)+');\n'+await response.text()});});
   // The real two-slot corrugated plane has more root data than the small
   // uploader fixture. Use the same verified budget as the sidedness suite.
-  await browser.route('**/nanite-browser/index.html',async route=>{const response=await route.fetch();await route.fulfill({response,
+  await browser.route('**/'+folder+'/index.html',async route=>{const response=await route.fetch();await route.fulfill({response,
     body:(await response.text()).replace('"-WebNaniteRootPages=2"','"-WebNaniteRootPages=128","-WebNaniteStreamingPages=12"')});});
   page=await browser.newPage();page.on('console',m=>{const s=m.text();report.logs.push(s);if(/GPU validation:|Fatal error:|Assertion failed|DeviceLost/.test(s))report.errors.push(s);});
   page.on('pageerror',e=>report.errors.push(e.stack));
-  await page.goto('http://127.0.0.1:8765/build/nanite-browser/index.html');
+  await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html');
   await page.waitForFunction(()=>globalThis.__webEngineFailure||globalThis.__webEngineFrames>=120,null,{timeout:180000});
   assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
   owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
   for(let step=1;step<=52;step++){
+    await owner.evaluate(()=>{__programmableGPU.current={groups:[],programmableDraws:0,nonzeroOffsets:[]};});
     assert.equal(await page.evaluate(s=>__webEngineRPC('WebNaniteProgrammableTest',s),step),1);
     let test;const start=Date.now();
     do{
@@ -97,6 +118,8 @@ function verify(t){
       test=await owner.evaluate(()=>globalThis.__webNaniteProgrammableTest||null);
     }while((!test||test.step!==step)&&Date.now()-start<90000);
     assert(test&&test.step===step);report.tests.push(test);test.validation=verify(test);
+    test.packGPU=await owner.evaluate(()=>__programmableGPU.current);
+    if(verifyPack&&test.entries.length===2)assert(test.packGPU.groups.includes(2),'The shared argument batch must actually execute');
     const pipelineStart=Date.now();
     do{
       test.rhi=await owner.evaluate(()=>globalThis.__webOptimizationRHI);
@@ -113,6 +136,7 @@ function verify(t){
   const cleanup=await page.evaluate(()=>globalThis.__webEngineFrames);
   await page.waitForFunction(f=>globalThis.__webEngineFrames>f+20,cleanup,{timeout:30000});
   report.gpu=await owner.evaluate(()=>globalThis.__programmableGPU);
+  if(verifyPack)assert(report.tests.some(t=>t.packGPU.programmableDraws>0&&t.packGPU.nonzeroOffsets.includes(16)),'Programmable raster must consume a nonzero shared argument offset');
   assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);assert.deepEqual(report.gpu.errors,[]);
   report.frames=await page.evaluate(()=>globalThis.__webEngineFrames);assert.deepEqual(report.errors,[]);report.pass=true;
 }catch(e){report.failure=e.stack;console.error(e.stack);process.exitCode=1;}

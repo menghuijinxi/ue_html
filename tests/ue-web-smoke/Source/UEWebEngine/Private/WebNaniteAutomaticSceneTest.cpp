@@ -64,6 +64,7 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("hierarchyBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchHierarchy"))->GetInt() != 0);
     Report->SetBoolField(TEXT("occlusionBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchOcclusion"))->GetInt() != 0);
     Report->SetBoolField(TEXT("materialPrecache"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialPrecache"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("packBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"))->GetInt() != 0);
     for (uint32 Final = 0; Final < 2; ++Final)
     {
         const bool Valid = OcclusionFrames[Final] == Cull.View->Family->FrameNumber;
@@ -243,6 +244,8 @@ void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved
     Describe(*Saved.Cull);
     Report->SetBoolField(TEXT("materialComplete"), MaterialComplete && MaterialFrame == Saved.Cull->View->Family->FrameNumber);
     Report->SetNumberField(TEXT("materialDraws"), MaterialDraws);
+    Report->SetNumberField(TEXT("packBatchedEntries"), Saved.Raster.PackBatchedEntries);
+    Report->SetNumberField(TEXT("packDispatchBuffers"), Saved.Raster.PackDispatchBuffers);
     Report->SetBoolField(TEXT("customDataTarget"), Targets.D != nullptr);
     Report->SetBoolField(TEXT("precomputedShadowTarget"), Targets.E != nullptr);
     Report->SetNumberField(TEXT("width"), FMath::DivideAndRoundUp(uint32(Saved.Raster.Rect.Width()), 8u));
@@ -252,6 +255,7 @@ void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved
     for (int32 I = 0; I < Saved.Cull->Entries.Num(); ++I) AddCopyBufferPass(Graph, States, I * 16, Saved.Cull->Entries[I].Result.State,
         uint64(Saved.Cull->Entries[I].Result.StateOffset) * 4, 16);
     Copy(Graph, States, TEXT("cullStates"));
+    Copy(Graph, Saved.Raster.VisibleClusters, TEXT("packedVisibleClusters"));
     const auto& Input = Saved.Cull->Entries[0].Input;
     if (Input.MaxStreamingPages && Input.StreamingPageOwners)
         Copy(Graph, Input.StreamingPageOwners->Desc.Buffer, TEXT("poolOwners"));
@@ -310,6 +314,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteHierarchyBatchTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchHierarchy"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNanitePackBatchTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"));
     static int Saved = -1;
     if (!CVar || Enabled < -1 || Enabled > 1) return 0;
     if (Enabled < 0)
