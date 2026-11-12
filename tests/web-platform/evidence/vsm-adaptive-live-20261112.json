@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-12T01:49:40.333Z",
+  "pass": true,
+  "diagnosticOnly": true,
+  "releaseReady": false,
+  "url": "http://127.0.0.1:8765/vsm-adaptive-live.html",
+  "verification": {
+    "file": "tests/web-platform/results/vsm-adaptive-live-20261112/result.json",
+    "sha256": "1d5eb9fe954aa62ec12fc83cc9b64266b91e86fc36da6ecbf316a697a28853a5"
+  },
+  "sources": [
+    {
+      "file": "tests/web-platform/vsm-adaptive-live.html",
+      "sha256": "1a31b6494743e58d0f6ae87dc6dd67009aa3d8544fce7b1d54212be625c59ecd"
+    },
+    {
+      "file": "tests/web-platform/vsm-adaptive-live.js",
+      "sha256": "202e58b5a7f7a296bcbcef6493a31646c08e4c7bd03caafbc35cf4b47b4fc1ca"
+    },
+    {
+      "file": "tests/web-platform/diagnostics/package-vsm-adaptive-live.cjs",
+      "sha256": "ce4359123f17d4db2baeb40aeba17a883ac8ab3f9df764c55281d8ced5956c4e"
+    },
+    {
+      "file": "tests/web-platform/verify-vsm-adaptive-live.cjs",
+      "sha256": "85c17ca1dc9938e18c4db556e7692079c684ce21b8684dad27085433777eb902"
+    }
+  ],
+  "base": {
+    "file": "tests/web-platform/build/villa-shadow-on-20261111-sparse/asset-versions.json",
+    "sha256": "1a394981818e23075c1d8f60313f7aa5d801d2bce90093167b5d9de525798f4d"
+  },
+  "variants": {
+    "file": "tests/web-platform/results/vsm-adaptive-variants-20261111-v2.json",
+    "sha256": "5272aa15fbde21ca892d44db4b1947134d290d749f5b1702508efcd0e17ea3e7"
+  },
+  "packages": [
+    {
+      "mode": "baseline",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-vsm-sampling-baseline-20261112/asset-versions.json",
+        "sha256": "1e4f76d0a5d1a88e1d5598f5cb94b211fc33d8e60a36cf68bac823dab4538510"
+      }
+    },
+    {
+      "mode": "adaptive",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-vsm-sampling-adaptive-20261112/asset-versions.json",
+        "sha256": "d6b2ad789063e236ab725c5e38fb3192bb97cb7572ab0a2d867e7aef5746d4f6"
+      }
+    }
+  ],
+  "checks": [
+    "Actual projection module matching in both prewarm and runtime creation, two modules replaced only in adaptive mode",
+    "VSM, Lumen GI and reflections, virtual textures and TSR remain enabled",
+    "1400x788 internal rendering and 1920x1080 canvas at browser DPR 1.5",
+    "Five native WASD and mouse drag checks, including after switching modes and using presets",
+    "Adaptive to baseline to adaptive retains the complete possessed player and visible camera",
+    "Three player viewpoint presets and original player spawn reset",
+    "1600px and 390px layouts, rendered scene pixel variation, diagnostics export",
+    "Mismatched shader mode is rejected and exposes the retry button"
+  ],
+  "gpuErrors": [],
+  "startupFailures": [],
+  "boundary": "Explicit live diagnostic with one running instance. Original descriptor keys are retained only for the shader replacement experiment. Mode switching rebuilds temporal history. Live five-second Low is not a controlled benchmark. This is not a new Cook or release corpus and does not establish that previous intermittent GPU startup failures are fixed."
+}

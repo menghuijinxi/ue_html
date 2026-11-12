@@ -127,6 +127,43 @@ GPU 归属：
 已验证桌面拖动/缩放、全部视角和对照组合、差分增益、390px 手机布局、
 缺图错误后的重试以及篡改截图拒绝。没有改动正式包或发布入口。
 
+## 实际漫游诊断页
+
+2026-11-12 新增 `tests/web-platform/vsm-adaptive-live.html`，
+地址为 `http://127.0.0.1:8765/vsm-adaptive-live.html`。
+这是实际引擎场景，默认自适应采样；原版和候选均以最新按页同步包为基础，
+均保留 VSM、Lumen、虚拟纹理、TSR 和 1400 × 788 → 1920 × 1080 的尺寸。
+切换时只运行一个实例，重新加载后恢复完整玩家位置和控制朝向。
+使用 `WebPlayerViewControl` 恢复玩家控制，不使用不能漫游的测试相机。
+厨房、餐厅和客厅快捷视角也通过玩家接口定位。
+
+页面校验两个投影模块均精确匹配，候选均已替换，原版均未替换；
+候选设备必须具备 subgroups，同时校验实际引擎配置、预热采用状态和 GPU 错误。
+控制台状态通过现有 worker 状态镜像传递，正式宿主、worker 和缓存锁逻辑不变。
+导出记录包含每种模式最后的玩家视角、实际配置、FPS、近五秒 Low、替换计数和预热状态。
+切换会重建时间历史，实时数字不作为受控性能基准。
+
+生成独立诊断目录：
+
+```powershell
+node tests/web-platform/diagnostics/package-vsm-adaptive-live.cjs
+```
+
+生成工具拒绝覆盖已有目录，先校验基础包与当前宿主、缓存 worker 和全部文件哈希，
+校验原版预热记录的源码与实验替换表匹配。
+不可变的大资源使用硬链接，修改的入口及 worker 单独写入；两个目录明确标记
+`diagnosticOnly: true, releaseReady: false`，不进入正常发布收尾流程。
+必须保留 `results/vsm-adaptive-variants-20261111-v2.json` 才能重新生成；
+已生成目录可直接通过现有 8765 服务运行。
+
+验证命令为 `node tests/web-platform/verify-vsm-adaptive-live.cjs <新结果目录名>`。
+已在 Edge、DPR 1.5 下验证：自适应 → 原版 → 自适应的实际着色器匹配、
+玩家与相机完整保持、五次键盘移动和鼠标转向、三个快捷视角、恢复入口、
+1600px / 390px 布局、非空渲染、记录导出及篡改采样状态后的拒绝与重试入口。
+结果保存在 `results/vsm-adaptive-live-20261112/result.json`，本轮无 GPU 错误或启动重试；
+这不代表此前偶发的设备启动错误已经修复。
+证据摘要为 `tests/web-platform/evidence/vsm-adaptive-live-20261112.json`。
+
 ## 诊断与发布边界
 
 实验在预热和引擎创建着色器时应用同一替换，因此二者使用同一候选 GPU 管线。
