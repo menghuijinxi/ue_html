@@ -2,7 +2,7 @@
 // Diagnostic only. Timestamp existing passes during the reproduced interior
 // segment; resolve in the same encoder, without changing submission ordering.
 module.exports = function observeMotionGPU({start = 28, end = 41} = {}) {
-  const state = globalThis.__motionGPU = {results: [], errors: [], pending: 0, shaders:{}, pipelines:{}, markers:{}, pipelineCreations:[], slowCalls:[], window:{start,end}};
+  const state = globalThis.__motionGPU = {results: [], errors: [], pending: 0, shaders:{}, pipelines:{}, markers:{}, pipelineCreations:[], startupPipelines:[], slowCalls:[], window:{start,end}};
   const elapsedNow=()=>{const c=globalThis.__naniteOffFrames;return c?.active&&c.times.length?performance.now()-c.times[0]:-1;};
   const encoders = new WeakMap(), commands = new WeakMap(), passes = new WeakMap(), views = new WeakMap();
   const shaders = new WeakMap(), pipelines = new WeakMap();
@@ -29,8 +29,8 @@ module.exports = function observeMotionGPU({start = 28, end = 41} = {}) {
         const code=[d.compute,d.vertex,d.fragment].filter(Boolean).map(s=>shaders.get(s.module)||'').join('\n');
         state.markers[p.label]=['WebHierarchyBatchData','WebCullLODMode','WebOcclusionBatchData','WebOcclusionPrevious','WebRasterClusterKeys','WebNativeMaterial','WebMaterialTile'].filter(s=>code.includes(s));
         return p;};
-      device[name] = d => {const elapsed=elapsedNow(),before=performance.now(),record=elapsed>=0?{kind:name,elapsed,label:d.label}:null;
-        if(record)state.pipelineCreations.push(record);
+      device[name] = d => {const elapsed=elapsedNow(),before=performance.now(),record={kind:name,elapsed,time:before,label:d.label};
+        (elapsed>=0?state.pipelineCreations:state.startupPipelines).push(record);
         const result=original(d);if(record)record.requestMs=performance.now()-before;
         if(name.endsWith('Async'))return result.then(p=>{if(record)record.completionMs=performance.now()-before;return remember(p,d);},e=>{if(record)record.error=String(e);throw e;});
         if(record)record.completionMs=performance.now()-before;return remember(result,d);};

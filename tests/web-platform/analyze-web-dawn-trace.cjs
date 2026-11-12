@@ -1,6 +1,8 @@
 'use strict';
 const fs=require('node:fs'),readline=require('node:readline'),assert=require('node:assert/strict');
+const {audit}=require('./content-file-metadata.cjs');
 const input=process.argv[2],output=process.argv[3];assert(input&&output);
+assert(!fs.existsSync(output),'Use a new output path');
 (async()=>{
   const totals=new Map(),stacks=new Map(),long=[],categories=new Map();
   for await(const line of readline.createInterface({input:fs.createReadStream(input)})) {
@@ -22,8 +24,9 @@ const input=process.argv[2],output=process.argv[3];assert(input&&output);
     totals.set(event.name,total);
     if(event.dur>2000)long.push(event);
   }
-  const result={input,categories:[...categories],totals:[...totals].sort((a,b)=>b[1].totalMs-a[1].totalMs),
+  const result={input,provenance:audit(input),source:audit(__filename),categories:[...categories],totals:[...totals].sort((a,b)=>b[1].totalMs-a[1].totalMs),
     long:long.sort((a,b)=>b.dur-a.dur),boundary:'Inclusive CPU trace durations. Nested categories overlap; do not add their totals or interpret as GPU execution time.'};
   fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+  fs.copyFileSync(__filename,output.replace(/\.json$/,'-source.cjs'));
   console.log(JSON.stringify({categories:result.categories,totals:result.totals.slice(0,35),long:result.long.slice(0,8)},null,2));
 })().catch(error=>{console.error(error);process.exitCode=1;});

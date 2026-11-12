@@ -4,10 +4,12 @@ const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.
 const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3);
 const folder=option('folder'),tag=option('tag'),villa=process.argv.includes('--villa'),scalar=process.argv.includes('--scalar-visibility');
 const occlusion=process.argv.includes('--occlusion-batch'),batchRPC=occlusion?'WebNaniteOcclusionBatchTest':'WebNaniteHierarchyBatchTest';
+const materialPrecache=option('material-precache');assert(materialPrecache===undefined||['0','1'].includes(materialPrecache));
 assert([folder,tag].every(n=>/^[a-z0-9-]+$/.test(n)));
 const output=path.join(__dirname,'results',tag);assert(!fs.existsSync(output));fs.mkdirSync(output);
+const log=fs.createWriteStream(path.join(output,'engine.log'));
 fs.copyFileSync(__filename,path.join(output,'source.cjs'));
-const report={pass:false,villa,scalar,occlusion,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],comparisons:[],errors:[],
+const report={pass:false,villa,scalar,occlusion,materialPrecache,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],comparisons:[],errors:[],
  boundary:'Correctness only: frozen visual clock and fixed temporal index. Same runtime/Cook, native hierarchy batch switch 0/1/0. Compare sorted per-instance cluster keys, all hierarchy counters, depth and material channels. Not FPS evidence.'};
 if(occlusion)report.boundary='Correctness only: frozen visual clock and fixed temporal index. Same runtime/Cook, hierarchy batching enabled, native occlusion batch switch 0/1/0. Compare both main/final per-instance key sets and counters, unchanged hierarchy selection, depth and material channels. Not FPS evidence.';
 const save=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
@@ -67,12 +69,13 @@ function compare(before,after){
  await context.route('**/'+folder+'/index.html',async route=>{const r=await route.fetch();await route.fulfill({response:r,body:(await r.text()).replace('arguments: [','arguments: ["-WebVisualTestClock",')});});
  await context.route('**/config-files.json*',async route=>{
   const r=await route.fetch(),files=await r.json(),f=files.find(f=>f.path==='/Engine/Platforms/Web/Config/WebEngine.ini');assert(f);
-  const data=Buffer.from(Buffer.from(f.data,'base64').toString()+'\n[SystemSettings]\nr.Test.FreezeTemporalSequences=1\n');
+  const data=Buffer.from(Buffer.from(f.data,'base64').toString()+'\n[SystemSettings]\nr.Test.FreezeTemporalSequences=1\n'+
+   (materialPrecache===undefined?'':'r.Nanite.WebMaterialPrecache='+materialPrecache+'\n'));
   f.data=data.toString('base64');f.sha256=crypto.createHash('sha256').update(data).digest('hex');report.temporalConfig={path:f.path,sha256:f.sha256};
   await route.fulfill({response:r,body:JSON.stringify(files)});
  });
  page=context.pages()[0];page.on('pageerror',e=>report.errors.push(e.stack));
- page.on('console',m=>{if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text()))report.errors.push(m.text());});
+ page.on('console',m=>{log.write(m.text()+'\n');if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text()))report.errors.push(m.text());});
  await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`,{waitUntil:'commit'});
  await page.waitForFunction(()=>globalThis.__webEngineFailure||(globalThis.__webEngineFrames>=180&&globalThis.__webPSOPrecacheReady),null,{timeout:600000});
  assert(!await page.evaluate(()=>globalThis.__webEngineFailure));owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
@@ -87,6 +90,7 @@ function compare(before,after){
   do{await page.waitForTimeout(100);assert.deepEqual(report.errors,[]);assert(!await page.evaluate(()=>globalThis.__webEngineFailure));assert.equal(await rpc('WebNaniteAutomaticSceneTest',0),1);t=await owner.evaluate(()=>globalThis.__webNaniteAutomaticSceneTest);}
   while(t?.step!==step&&Date.now()-start<180000);
   assert.equal(t?.step,step);assert.equal(t[occlusion?'occlusionBatch':'hierarchyBatch'],!!batch);assert.equal(t.rejected,0);
+  if(materialPrecache!==undefined)assert.equal(t.materialPrecache,materialPrecache==='1');
   const batched=t[occlusion?'finalOcclusionBatchedEntries':'hierarchyBatchedEntries'],buffers=t[occlusion?'finalOcclusionDispatchBuffers':'hierarchyDispatchBuffers'];
   if(t.entries){assert(t.materialComplete);hierarchy(t);if(batch&&t.entries>1)assert(batched>0);else assert.equal(batched,0);
    if(occlusion){assert(t.hierarchyBatch);for(const prefix of ['mainOcclusion','finalOcclusion'])occlusionRows(t,prefix);}}
@@ -111,4 +115,4 @@ function compare(before,after){
  assert.deepEqual(report.errors,[]);report.pass=true;
 }catch(e){report.failure=e.stack;console.error(e.stack);process.exitCode=1;
  report.engineFailure=await page?.evaluate(()=>globalThis.__webEngineFailure||null).catch(()=>null);
-}finally{await context?.close();save();console.log({pass:report.pass,output,failure:report.failure});}})();
+}finally{await context?.close();log.end();save();console.log({pass:report.pass,output,failure:report.failure});}})();

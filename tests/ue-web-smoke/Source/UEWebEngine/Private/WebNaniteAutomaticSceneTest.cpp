@@ -63,6 +63,7 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("primitiveVisibility"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebPrimitiveVisibility"))->GetInt() != 0);
     Report->SetBoolField(TEXT("hierarchyBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchHierarchy"))->GetInt() != 0);
     Report->SetBoolField(TEXT("occlusionBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchOcclusion"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("materialPrecache"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialPrecache"))->GetInt() != 0);
     for (uint32 Final = 0; Final < 2; ++Final)
     {
         const bool Valid = OcclusionFrames[Final] == Cull.View->Family->FrameNumber;
