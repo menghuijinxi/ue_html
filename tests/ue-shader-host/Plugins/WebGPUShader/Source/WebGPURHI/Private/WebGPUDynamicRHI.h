@@ -123,8 +123,10 @@ struct FWebGPUShaderData
     TArray<uint64, TInlineAllocator<4>> GroupGlobalsVersions;
     TMap<uint32, uint32> ResourceGroupMasks;
     uint32 GlobalsGroupMask = 0;
+    uint64 BindingVersion = 1;
     void InvalidateGroups(uint32 Mask, bool GlobalsOnly = false)
     {
+        if (Mask) ++BindingVersion;
         if (GlobalsOnly) GroupGlobalsVersions.SetNumZeroed(GroupVersions.Num());
         for (int32 Group = 0; Group < GroupVersions.Num(); ++Group)
             if (Mask & (1u << Group))
@@ -682,6 +684,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     FString AdapterName;
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;
     uint32 IndirectDraws = 0;
+    uint32 IndirectBindingHits = 0;
+    TRefCountPtr<FWebGPUGraphicsPipeline> PreparedDrawPipeline;
+    uint32 PreparedDrawFrame = MAX_uint32;
+    uint64 PreparedDrawAccess = 0, PreparedDrawVersions[2] = {};
     uint32 UniformUploads = 0;
     uint32 BindGroupCacheHits = 0, BindGroupCacheEntries = 0;
     uint32 BindGroupFastHits = 0;
@@ -995,7 +1001,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<FWebGPUResolvedGroup> BoundGraphicsGroups;
     void ResetEncoderBindings();
     void SetIndexBinding(FWebGPUBuffer*);
-    void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr);
+    void SetVertexBindings();
+    void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr, bool Indirect = false, bool Vertex = true);
     WGPUComputePassEncoder BeginComputePass();
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
     TMap<FString, WGPUComputePipeline> ClearPipelines;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WebGPUProbeUtils.h"
+#include "HAL/IConsoleManager.h"
 
 inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmediate& Cmd,
     TArray<TSharedPtr<FJsonValue>>& Cases, TArray<TSharedPtr<FJsonValue>>& DepthCases)
@@ -121,6 +122,11 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
             .SetInitialState(ERHIAccess::UAVGraphics), Zero, sizeof(Zero));
         auto UAV = Cmd.CreateUnorderedAccessView(Result, FRHIViewDesc::CreateBufferUAV()
             .SetType(FRHIViewDesc::EBufferType::Typed).SetFormat(PF_R32_UINT));
+        auto Alternate = WebGPUProbe::Buffer(RHI, Cmd, FRHIBufferCreateDesc::Create(TEXT("UAVRasterAlternate"),
+            sizeof(Zero), 4, BUF_UnorderedAccess | BUF_ShaderResource)
+            .SetInitialState(ERHIAccess::UAVGraphics), Zero, sizeof(Zero));
+        auto AlternateUAV = Cmd.CreateUnorderedAccessView(Alternate, FRHIViewDesc::CreateBufferUAV()
+            .SetType(FRHIViewDesc::EBufferType::Typed).SetFormat(PF_R32_UINT));
         auto Mask = Cmd.CreateTexture(FRHITextureCreateDesc::Create2D(TEXT("UAVRasterMask"), 32, 16, PF_R8)
             .SetFlags(ETextureCreateFlags::UAV).SetInitialState(ERHIAccess::UAVGraphics));
         auto MaskUAV = Cmd.CreateUnorderedAccessView(Mask, FRHIViewDesc::CreateTextureUAV()
@@ -140,17 +146,36 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         RHI.RHISetViewport(0, 0, 0, Extent.X, Extent.Y, 1);
         RHI.RHISetScissorRect(false, 0, 0, 0, 0);
         RHI.RHISetGraphicsPipelineState(Pipeline, 0, false);
+        const uint32 BeforeHits = RHI.IndirectBindingHits;
+        RHI.RHIDrawIndexedPrimitiveIndirect(Index, Indirect, 0);
+        RHI.RHIDrawIndexedPrimitiveIndirect(Index, Indirect, 0);
+        PS->Data.Resources.Add(0, AlternateUAV.GetReference());
+        PS->Data.InvalidateGroups(1);
+        RHI.RHIDrawIndexedPrimitiveIndirect(Index, Indirect, 0);
+        RHI.RHIDrawIndexedPrimitive(Index, 0, 0, 0, 0, 1, 1);
+        PS->Data.Resources.Add(0, UAV.GetReference());
+        PS->Data.InvalidateGroups(1);
         RHI.RHIDrawIndexedPrimitiveIndirect(Index, Indirect, 0);
         RHI.RHIEndRenderPass();
         Cmd.Transition(FRHITransitionInfo(Result, ERHIAccess::UAVGraphics, ERHIAccess::CopySrc));
         const auto Bytes = RHI.ReadBuffer(Result, sizeof(Zero));
-        bool OK = Bytes.Num() == sizeof(Zero);
+        bool OK = Bytes.Num() == sizeof(Zero) && RHI.IndirectBindingHits > BeforeHits;
         if (OK)
         {
             FMemory::Memcpy(Zero, Bytes.GetData(), sizeof(Zero));
             for (uint32 Y = 0; Y < 16; ++Y)
                 for (uint32 X = 0; X < 32; ++X)
-                    OK &= Zero[Y * 32 + X] == uint32(X < uint32(Extent.X) && Y < uint32(Extent.Y));
+                    OK &= Zero[Y * 32 + X] == 3 * uint32(X < uint32(Extent.X) && Y < uint32(Extent.Y));
+        }
+        Cmd.Transition(FRHITransitionInfo(Alternate, ERHIAccess::UAVGraphics, ERHIAccess::CopySrc));
+        const auto AlternateBytes = RHI.ReadBuffer(Alternate, sizeof(Zero));
+        OK &= AlternateBytes.Num() == sizeof(Zero);
+        if (AlternateBytes.Num() == sizeof(Zero))
+        {
+            FMemory::Memcpy(Zero, AlternateBytes.GetData(), sizeof(Zero));
+            for (uint32 Y = 0; Y < 16; ++Y)
+                for (uint32 X = 0; X < 32; ++X)
+                    OK &= Zero[Y * 32 + X] == 2 * uint32(X < uint32(Extent.X) && Y < uint32(Extent.Y));
         }
         Cmd.Transition(FRHITransitionInfo(Mask, ERHIAccess::UAVGraphics, ERHIAccess::CopySrc));
         if (!RHI.ContextOpen) RHI.RHIGetCommandContext(ERHIPipeline::Graphics);
@@ -199,6 +224,7 @@ inline bool RunWebGPUUAVRasterCases(FWebGPUDynamicRHI& RHI, FRHICommandListImmed
         Case->SetBoolField(TEXT("pixelAtomicsAndR8Storage"), true);
         Case->SetBoolField(TEXT("pixelVolumeR8UInt"), true);
         Case->SetBoolField(TEXT("unusedVertexDeclarationIgnored"), true);
+        Case->SetBoolField(TEXT("indirectBindingReuseAndResourceMutation"), true);
         Case->SetNumberField(TEXT("extentAttachmentBytes"),
             RHI.RasterExtentAttachment->GetDesc().CalcMemorySizeEstimate());
         Case->SetBoolField(TEXT("pass"), OK);

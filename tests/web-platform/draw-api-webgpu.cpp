@@ -95,6 +95,65 @@ struct GPU {
  void verify(unsigned mode,unsigned n){auto e=wgpuDeviceCreateCommandEncoder(device,nullptr);WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=target;WGPUTexelCopyBufferInfo dst=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;dst.buffer=pixels;dst.layout.bytesPerRow=256;dst.layout.rowsPerImage=64;WGPUExtent3D size{64,64,1};wgpuCommandEncoderCopyTextureToBuffer(e,&src,&dst,&size);auto c=wgpuCommandEncoderFinish(e,nullptr);wgpuQueueSubmit(queue,1,&c);wgpuCommandBufferRelease(c);wgpuCommandEncoderRelease(e);auto p=(const uint8_t*)map(pixels,64*256);verifyPixel(p,mode,n);require(p[4]==0&&p[7]==0,"outside-scissor pixel modified");wgpuBufferUnmap(pixels);}
  void checkErrors(){if(!errors.empty())require(false,errors.front().c_str());}
 #ifdef DRAW_COMMAND_STREAM
+ void verifyIndirectTemplates(){
+  UEWebGPUStream::IndirectTemplates=true;
+  auto& cache=UEWebGPUStream::indirectCache();
+  auto vd=vertexData();auto ix=indexData();
+  auto vertex=buffer(vd.size()*4,WGPUBufferUsage_Vertex,vd.data());
+  auto index=buffer(ix.size()*2,WGPUBufferUsage_Index,ix.data());
+  uint32_t args[]={3,1,0,0,0, 0,1,0,0,0};
+  auto indirect=buffer(sizeof(args),WGPUBufferUsage_Indirect,args);
+  std::vector<uint32_t> wideIndices(ix.begin(),ix.end());
+  for(unsigned frame=0;frame<4;frame++){
+   // Frame 1 reads changed indirect data through the same cached geometry.
+   // Its second draw becomes empty; frame 2 replaces the underlying VB and IB.
+   args[0]=frame==1?0:3;wgpuQueueWriteBuffer(queue,indirect,20,args,20);
+   begin(0,false);
+   UEWebGPUStream::VertexBinding bindings[8]{};bindings[0]={vertex,vd.size()*4,0};
+   for(unsigned pixel=0;pixel<5;pixel++){
+    wgpuRenderPassEncoderSetScissorRect(pass,pixel,0,1,1);
+    wgpuRenderPassEncoderSetBindGroup(pass,0,groups[pixel],0,nullptr);
+    bindings[0].offset=(pixel==2?1:pixel)*256;
+    require(UEWebGPUStream::drawIndexedIndirectTemplate(pass,1,bindings,index,ix.size()*(frame==3?4:2),
+     frame==3?WGPUIndexFormat_Uint32:WGPUIndexFormat_Uint16,pixel==2?0:1,pixel==0,indirect,pixel==4?20:0),
+     "template path rejected valid geometry");
+   }
+   // executeBundles clears encoder bindings. Reestablish state before reusing.
+   WGPUTextureFormat format=WGPUTextureFormat_RGBA8Unorm;
+   auto bd=WGPU_RENDER_BUNDLE_ENCODER_DESCRIPTOR_INIT;bd.colorFormatCount=1;bd.colorFormats=&format;
+   auto be=wgpuDeviceCreateRenderBundleEncoder(device,&bd);auto bundle=wgpuRenderBundleEncoderFinish(be,nullptr);
+   wgpuRenderBundleEncoderRelease(be);wgpuRenderPassEncoderExecuteBundles(pass,1,&bundle);wgpuRenderBundleRelease(bundle);
+   wgpuRenderPassEncoderSetScissorRect(pass,5,0,1,1);wgpuRenderPassEncoderSetPipeline(pass,pipelines[0]);
+   wgpuRenderPassEncoderSetBindGroup(pass,0,groups[5],0,nullptr);
+   require(UEWebGPUStream::drawIndexedIndirectTemplate(pass,1,bindings,index,ix.size()*(frame==3?4:2),
+    frame==3?WGPUIndexFormat_Uint32:WGPUIndexFormat_Uint16,1,true,indirect,0),"template state reset rejected");
+   end();submit();wait();
+   auto e=wgpuDeviceCreateCommandEncoder(device,nullptr);
+   WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=target;
+   WGPUTexelCopyBufferInfo dst=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;dst.buffer=pixels;dst.layout.bytesPerRow=256;dst.layout.rowsPerImage=64;
+   WGPUExtent3D size{64,64,1};wgpuCommandEncoderCopyTextureToBuffer(e,&src,&dst,&size);
+   auto command=wgpuCommandEncoderFinish(e,nullptr);wgpuQueueSubmit(queue,1,&command);
+   wgpuCommandBufferRelease(command);wgpuCommandEncoderRelease(e);
+   auto p=(const uint8_t*)map(pixels,64*256);
+   for(unsigned pixel=0;pixel<6;pixel++)for(unsigned channel=0;channel<4;channel++){
+    const unsigned expected[]={(pixel*3+17)%256,(pixel*5+31)%256,(pixel*7+47)%256,255};
+    require(std::abs(int(p[pixel*4+channel])-int(frame==1&&pixel==4?0:expected[channel]))<=1,
+     "cached indirect geometry, current arguments, vertex offsets or reset mismatch");
+   }
+   require(p[24]==0&&p[27]==0,"template drew outside scissor");wgpuBufferUnmap(pixels);
+   cache.endFrame();
+   if(frame==1){
+    wgpuBufferRelease(vertex);wgpuBufferRelease(index);
+    vertex=buffer(vd.size()*4,WGPUBufferUsage_Vertex,vd.data());index=buffer(ix.size()*2,WGPUBufferUsage_Index,ix.data());
+   }
+   if(frame==2){wgpuBufferRelease(index);index=buffer(wideIndices.size()*4,WGPUBufferUsage_Index,wideIndices.data());}
+  }
+  require(cache.hits>=21&&cache.created==3,"geometry templates did not reuse or invalidate");
+  wgpuBufferRelease(vertex);wgpuBufferRelease(index);wgpuBufferRelease(indirect);
+  for(unsigned k=0;k<3;k++)cache.endFrame();
+  require(cache.entries==0,"unused template leases were not retired");
+  UEWebGPUStream::IndirectTemplates=false;checkErrors();
+ }
  void verifyStream(){
   // Exercise deferred lifetime, immediate dynamic-offset copying, object-table
   // overflow, indirect draws, and ordered viewport/scissor boundaries on GPU.
@@ -197,6 +256,13 @@ int main(int argc,char**argv){
 #ifdef DRAW_COMMAND_STREAM
  UEWebGPUStream::StateCommands=EM_ASM_INT({return !Module.arguments?.includes('--legacy-states');});
  g.verifyStream();
+ g.verifyIndirectTemplates();
+ if(EM_ASM_INT({return Module.arguments?.includes('--preflight-only');})){
+  const auto& cache=UEWebGPUStream::indirectCache();
+  EM_ASM({postMessage({result:{pass:true,indirectTemplates:true,hits:$0,created:$1,retained:$2,
+   indexFormats:[16,32],currentIndirectArguments:true,bufferReplacement:true,bundleStateReset:true}});},
+   cache.hits,cache.created,cache.entries);emscripten_exit_with_live_runtime();return 0;
+ }
 #endif
  auto r=benchmark(g);
 #ifdef DRAW_PACKED_GROUPS

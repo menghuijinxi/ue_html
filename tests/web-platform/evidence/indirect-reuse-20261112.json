@@ -1,0 +1,415 @@
+{
+  "date": "2026-11-12",
+  "pass": true,
+  "releaseReady": true,
+  "folder": "villa-vsm-indirect-20261112",
+  "referenceEngineCommit": "231b20bb0827ef5f38021789a067947e4e41aa57",
+  "url": "http://127.0.0.1:8765/build/villa-vsm-indirect-20261112/index.html",
+  "setting": {
+    "r.WebGPU.IndirectDrawReuse": 2
+  },
+  "sameQuality": true,
+  "wasm": "e30cdd070c73d0e594c59d1f1ef68ed655c986013cb51c1094bbcaf97d904f00",
+  "content": "f65626c4db7487698a13752728737025cf418a07d57f7eaa22b30f3b83cb6413",
+  "gpu": {
+    "pass": true,
+    "indirectTemplates": true,
+    "hits": 21,
+    "created": 3,
+    "retained": 0,
+    "indexFormats": [
+      16,
+      32
+    ],
+    "currentIndirectArguments": true,
+    "bufferReplacement": true,
+    "bundleStateReset": true
+  },
+  "native": {
+    "pass": true,
+    "rasterCases": [
+      {
+        "width": 9,
+        "height": 7,
+        "pixelAtomicsAndR8Storage": true,
+        "pixelVolumeR8UInt": true,
+        "unusedVertexDeclarationIgnored": true,
+        "indirectBindingReuseAndResourceMutation": true,
+        "extentAttachmentBytes": 63,
+        "pass": true
+      },
+      {
+        "width": 13,
+        "height": 11,
+        "pixelAtomicsAndR8Storage": true,
+        "pixelVolumeR8UInt": true,
+        "unusedVertexDeclarationIgnored": true,
+        "indirectBindingReuseAndResourceMutation": true,
+        "extentAttachmentBytes": 143,
+        "pass": true
+      },
+      {
+        "width": 5,
+        "height": 3,
+        "pixelAtomicsAndR8Storage": true,
+        "pixelVolumeR8UInt": true,
+        "unusedVertexDeclarationIgnored": true,
+        "indirectBindingReuseAndResourceMutation": true,
+        "extentAttachmentBytes": 143,
+        "pass": true
+      }
+    ],
+    "volatilePassVersions": true,
+    "errors": []
+  },
+  "browser": "157.0.4341.42",
+  "performance": [
+    {
+      "name": "standing",
+      "off": {
+        "mode": 0,
+        "frames": 1377,
+        "fps": 45.40139432067156,
+        "low1Fps": 31.58773493371485,
+        "p99Ms": 29.394999999552965,
+        "maxMs": 37.74000000022352,
+        "runs": [
+          {
+            "frames": 690,
+            "fps": 45.45804913817446,
+            "low1Fps": 30.42552266672865,
+            "p99Ms": 30.115000000223517,
+            "maxMs": 37.74000000022352,
+            "rhiMs": 10.9918559166871,
+            "indirectTemplateHitsPerFrame": 0,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 0,
+            "indirectDrawsPerFrame": 6600.195369030391
+          },
+          {
+            "frames": 687,
+            "fps": 45.344634069793784,
+            "low1Fps": 33.199743887877716,
+            "p99Ms": 28.705000000074506,
+            "maxMs": 32.78500000014901,
+            "rhiMs": 10.72473477485568,
+            "indirectTemplateHitsPerFrame": 0,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 0,
+            "indirectDrawsPerFrame": 6628.969476744186
+          }
+        ]
+      },
+      "on": {
+        "mode": 2,
+        "frames": 1378,
+        "fps": 45.55112899365901,
+        "low1Fps": 33.64535393737229,
+        "p99Ms": 26.489999998360872,
+        "maxMs": 46.44999999925494,
+        "runs": [
+          {
+            "frames": 691,
+            "fps": 45.55813161553427,
+            "low1Fps": 33.55704698022534,
+            "p99Ms": 26.489999998360872,
+            "maxMs": 46.44999999925494,
+            "rhiMs": 9.753572113941171,
+            "indirectTemplateHitsPerFrame": 6590.653179190752,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4044.034682080925,
+            "indirectDrawsPerFrame": 6590.653179190752
+          },
+          {
+            "frames": 687,
+            "fps": 45.54408777081534,
+            "low1Fps": 33.73412688867828,
+            "p99Ms": 26.595000000670552,
+            "maxMs": 40.82000000029802,
+            "rhiMs": 9.838495836701505,
+            "indirectTemplateHitsPerFrame": 6628.957848837209,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4067.533430232558,
+            "indirectDrawsPerFrame": 6628.957848837209
+          }
+        ]
+      },
+      "rhiOffMs": 10.85829534577139,
+      "rhiOnMs": 9.796033975321338,
+      "rhiSavedPercent": 9.782947844237222,
+      "averageFpsChangePercent": 0.32980192619167514,
+      "low1FpsChangePercent": 6.513980847234668
+    },
+    {
+      "name": "turning",
+      "off": {
+        "mode": 0,
+        "frames": 1374,
+        "fps": 45.34621288990597,
+        "low1Fps": 32.592247701167324,
+        "p99Ms": 28.47499999962747,
+        "maxMs": 37.475000001490116,
+        "runs": [
+          {
+            "frames": 688,
+            "fps": 45.35604827518152,
+            "low1Fps": 31.263957123924015,
+            "p99Ms": 29.929999999701977,
+            "maxMs": 37.475000001490116,
+            "rhiMs": 10.879510026884702,
+            "indirectTemplateHitsPerFrame": 0,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 0,
+            "indirectDrawsPerFrame": 6087.583454281567,
+            "degrees": 335.7233964843748,
+            "distance": 0
+          },
+          {
+            "frames": 686,
+            "fps": 45.336353113353084,
+            "low1Fps": 34.837136387298536,
+            "p99Ms": 27.66499999910593,
+            "maxMs": 30.445000000298023,
+            "rhiMs": 10.670884727911137,
+            "indirectTemplateHitsPerFrame": 0,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 0,
+            "indirectDrawsPerFrame": 5812.484716157205,
+            "degrees": 336.5072402343752,
+            "distance": 0
+          }
+        ]
+      },
+      "on": {
+        "mode": 2,
+        "frames": 1371,
+        "fps": 45.28959325419814,
+        "low1Fps": 32.228731914396754,
+        "p99Ms": 28.68500000052154,
+        "maxMs": 43.459999999031425,
+        "runs": [
+          {
+            "frames": 686,
+            "fps": 45.17183239933195,
+            "low1Fps": 31.146410376059585,
+            "p99Ms": 28.96499999985099,
+            "maxMs": 43.459999999031425,
+            "rhiMs": 10.095303062094699,
+            "indirectTemplateHitsPerFrame": 6103.407569141194,
+            "indirectTemplatesCreatedPerFrame": 0.09315866084425037,
+            "indirectBindingHitsPerFrame": 3721.2227074235807,
+            "indirectDrawsPerFrame": 6103.5007278020375,
+            "degrees": 336.15683789062496,
+            "distance": 0
+          },
+          {
+            "frames": 685,
+            "fps": 45.408142972680054,
+            "low1Fps": 33.47680535605029,
+            "p99Ms": 28.155000001192093,
+            "maxMs": 32.44999999925494,
+            "rhiMs": 10.081829899601617,
+            "indirectTemplateHitsPerFrame": 6111.244897959184,
+            "indirectTemplatesCreatedPerFrame": 0.09329446064139942,
+            "indirectBindingHitsPerFrame": 3725.921282798834,
+            "indirectDrawsPerFrame": 6111.338192419825,
+            "degrees": 336.32639648437487,
+            "distance": 0
+          }
+        ]
+      },
+      "rhiOffMs": 10.77519737739792,
+      "rhiOnMs": 10.088566480848158,
+      "rhiSavedPercent": 6.37232778668203,
+      "averageFpsChangePercent": -0.12486078130778955,
+      "low1FpsChangePercent": -1.1153443300492283
+    },
+    {
+      "name": "moving",
+      "off": {
+        "mode": 0,
+        "frames": 1354,
+        "fps": 44.78735104650189,
+        "low1Fps": 33.76504353256985,
+        "p99Ms": 28.455000000074506,
+        "maxMs": 32.55499999970198,
+        "runs": [
+          {
+            "frames": 678,
+            "fps": 44.828520989404474,
+            "low1Fps": 33.3937601372253,
+            "p99Ms": 28.875,
+            "maxMs": 32.15499999932945,
+            "rhiMs": 10.757854655494747,
+            "indirectTemplateHitsPerFrame": 0,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 0,
+            "indirectDrawsPerFrame": 5956.534609720176,
+            "degrees": 0,
+            "distance": 1839.7732021246054
+          },
+          {
+            "frames": 676,
+            "fps": 44.74613518496062,
+            "low1Fps": 34.55339733923591,
+            "p99Ms": 27.53500000014901,
+            "maxMs": 32.55499999970198,
+            "rhiMs": 10.577506117489701,
+            "indirectTemplateHitsPerFrame": 0,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 0,
+            "indirectDrawsPerFrame": 6266.759231905466,
+            "degrees": 0,
+            "distance": 1841.691825691067
+          }
+        ]
+      },
+      "on": {
+        "mode": 2,
+        "frames": 1359,
+        "fps": 44.89424580640362,
+        "low1Fps": 34.59951066383411,
+        "p99Ms": 27.28500000014901,
+        "maxMs": 31.600000001490116,
+        "runs": [
+          {
+            "frames": 678,
+            "fps": 44.78766978276021,
+            "low1Fps": 34.037587221119956,
+            "p99Ms": 27.730000000447035,
+            "maxMs": 31.600000001490116,
+            "rhiMs": 9.970643910111665,
+            "indirectTemplateHitsPerFrame": 6246.369661266568,
+            "indirectTemplatesCreatedPerFrame": 0.11192930780559647,
+            "indirectBindingHitsPerFrame": 3838.659793814433,
+            "indirectDrawsPerFrame": 6246.481590574374,
+            "degrees": 0,
+            "distance": 1847.8916206721444
+          },
+          {
+            "frames": 681,
+            "fps": 45.00085739519068,
+            "low1Fps": 35.315188053071076,
+            "p99Ms": 26.71000000089407,
+            "maxMs": 31.065000001341105,
+            "rhiMs": 9.852449215751939,
+            "indirectTemplateHitsPerFrame": 6215.205278592375,
+            "indirectTemplatesCreatedPerFrame": 0.11143695014662756,
+            "indirectBindingHitsPerFrame": 3819.5615835777126,
+            "indirectDrawsPerFrame": 6215.316715542522,
+            "degrees": 0,
+            "distance": 1843.7774012567445
+          }
+        ]
+      },
+      "rhiOffMs": 10.667680386492224,
+      "rhiOnMs": 9.911546562931802,
+      "rhiSavedPercent": 7.0880809713596555,
+      "averageFpsChangePercent": 0.2386717620132206,
+      "low1FpsChangePercent": 2.4713936188452745
+    }
+  ],
+  "files": [
+    {
+      "file": "tests/web-platform/results/villa-indirect-reuse-abba-tabs-20261112/result.json",
+      "sha256": "fae0aa78bac4f3bc42d70bd6db3ed6dbc2aee72da215c7d4a47adf3523120fb8"
+    },
+    {
+      "file": "tests/web-platform/results/indirect-template-gpu-wide-20261112.json",
+      "sha256": "2ba0f8667a1261d1be378a7aef33b5fe6bc9283e40513da1e88956ece6eb46e8"
+    },
+    {
+      "file": "tests/web-platform/build/indirect-binding-rhi-v2-20261112/lumen-storage-rhi.json",
+      "sha256": "a7849b11aa0b8d25db33d2349e1fa3cb4ce468ad9f446be7b9690a1e1dc46372"
+    },
+    {
+      "file": "tests/web-platform/results/villa-indirect-release-20261112/result.json",
+      "sha256": "8aa8192407fb1e70008325d103d6dc8063267bcd4a17f2f77cb769f202c10134"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-vsm-indirect-20261112/result.json",
+      "sha256": "a2d3ade309c6af83039a82c3a68d559f267e3d5736bf1e908886721bfdadf895"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-vsm-indirect-20261112/0-corpus.json",
+      "sha256": "3b4d9f71dfc5beb17a6f22cb071e8232c21b5a594c3062684e5fa87635bc16af"
+    },
+    {
+      "file": "tests/web-platform/results/web-project-triplex-virtual-distance-fields-threads-package-results.json",
+      "sha256": "403a2f6384a4feff49d0cd6fdf92ff66057043166ab6795d35d616ee1a3b787e"
+    },
+    {
+      "file": "tests/web-platform/results/web-engine-full-thread-build-results.json",
+      "sha256": "c550303d6cc9ed9e312babb46b6b956add6afe1674efc40a0f088e1fa3a454a9"
+    },
+    {
+      "file": "tests/web-platform/results/indirect-binding-native-build-20261112.log",
+      "sha256": "9148bcf155f466e73a671521555fd345466208c197a2783631b84898b76afd7f"
+    },
+    {
+      "file": "tests/web-platform/build/villa-vsm-indirect-20261112/asset-versions.json",
+      "sha256": "a97d6df6006804942f250d84e9a1b4165335f0d9d8ee3ba89ec3cd66a2bb5870"
+    },
+    {
+      "file": "tests/web-platform/build/villa-vsm-indirect-20261112/pipeline-prewarm.json",
+      "sha256": "c58bfd19da33752a08289c6a49d47a8546dd1964ad480b59b16dea156fc71c55"
+    },
+    {
+      "file": "UE58_WEB_INDIRECT_DRAW_REUSE.md",
+      "sha256": "dd78bbe5aeee8a70bc409be8a6c1985b330288ac3bec2beafeaef4d38a04a7a7"
+    },
+    {
+      "file": "tests/web-platform/benchmark-villa-indirect-reuse.cjs",
+      "sha256": "c9aa9e177114f93588ed564d44d2dee6d8fbd7c49c96eec684b5e6887c0599c9"
+    },
+    {
+      "file": "tests/web-platform/verify-indirect-templates.cjs",
+      "sha256": "af9cee733a49506a200553391e116a259cc629aa4b889af3504a28f2c713c822"
+    },
+    {
+      "file": "tests/web-platform/verify-villa-indirect-release.cjs",
+      "sha256": "c8798fbc64479999376c9b6bc6d21aeb1021d19ff3eeb07783e0833e49876bc3"
+    },
+    {
+      "file": "tests/web-platform/diagnostics/probe-indirect-reuse.cjs",
+      "sha256": "5456463843ff2267236d309c4ef15a316b0f1b88c1e3a44b0a25a52a595d94e5"
+    },
+    {
+      "file": "tests/web-platform/draw-api-webgpu.cpp",
+      "sha256": "518b059f886e5b82f072a993db8515762545858609ec27bc377ac73d16d255ee"
+    },
+    {
+      "file": "tests/web-platform/web-accepted-defaults.cjs",
+      "sha256": "ebabc774f08dbfdc38a28d2ce3a148ea1ad0367b6928a40c5e45a38c06b250a4"
+    },
+    {
+      "file": "tests/web-platform/verify-web-release-defaults.cjs",
+      "sha256": "ffe184518601cfc9616401b0df43c311ba0245eeb9be793f13dc73c029f0b341"
+    },
+    {
+      "file": "reference-engine/Engine/Platforms/Web/Build/WebGPUCommandStream.js",
+      "sha256": "f7903d6999f225adde4b9e3ce10c126a100d6d51d12b05cd2fa893fad3b10db8"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUCommandStream.h",
+      "sha256": "6c744adee16729ec23c553a607b5e941eb7baf8c988d3efc6caf55546e5be1e2"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.cpp",
+      "sha256": "ad4381b52953a71a4873a3809ae39bd285db5fde1bd13a94437d41b0ef933994"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUDynamicRHI.h",
+      "sha256": "2f7c72f52a08d6fed42e9c36858788eadc647553cb1ba5e2b786c8896ae2f021"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPUUAVRasterProbe.h",
+      "sha256": "092124c18a5e70c4fd1d16233dccaaee513438e04294010f6b8624be760d4585"
+    },
+    {
+      "file": "tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private/WebGPULumenStorageProbe.h",
+      "sha256": "f81d171af5e7e3f7794401ed4c0eb4c212ade3bbcb40fe37111d2f55d10542c7"
+    }
+  ],
+  "boundary": "Stable reduction in RHI CPU submission work in this ABBA; overall FPS essentially unchanged and turning 1% low did not improve. No reduction in draw count, resolution or sampling. Geometry transport templates, not cross-frame reuse of GPU results or full render bundles. GPU load and longer-term stability remain separate concerns."
+}

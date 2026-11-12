@@ -57,6 +57,9 @@ static TAutoConsoleVariable<int32> CVarWebGPUOcclusionQueryWaitMs(
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUIndirectDrawReuse(
+    TEXT("r.WebGPU.IndirectDrawReuse"), 0,
+    TEXT("Reuse indirect geometry command templates and validated graphics bindings. 1: templates; 2: both; 3: bindings only."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUStagingReadbackPool(
     TEXT("r.WebGPU.StagingReadbackPool"), 0,
     TEXT("Experimental reuse of completed, unreferenced staging readbacks. Bounded to 64 entries and 32 MiB."), ECVF_RenderThreadSafe);
@@ -1059,6 +1062,10 @@ void FWebGPUDynamicRHI::Shutdown()
     for (const auto& Buffer : VertexFetchFormatBuffers) wgpuBufferRelease(Buffer.Value);
     VertexFetchFormatBuffers.Empty();
     DrawBundleCache.Empty();
+#ifdef __EMSCRIPTEN__
+    UEWebGPUStream::indirectCache().buckets.clear();
+    UEWebGPUStream::indirectCache().entries = 0;
+#endif
     StagingReadbackPool.Empty();
     StagingReadbackPoolBytes = 0;
     ReleaseFrameBindings();
@@ -1149,6 +1156,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame && !FrameUniformDirtyEnd);
     check(PendingDrawBundles.IsEmpty());
     check(!StagingDirtyEnd);
+#ifdef __EMSCRIPTEN__
+    UEWebGPUStream::indirectCache().endFrame();
+#endif
     for (auto Bucket = DrawBundleCache.CreateIterator(); Bucket; ++Bucket)
     {
         DrawBundleEntries -= Bucket.Value().RemoveAll([this](const auto& Entry) {
@@ -1254,6 +1264,14 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             BindGroupFastHits, UniformUploads, UniformWriteCalls, PipelineLayoutCache.Num(),
             DrawBundleHits, DrawBundlesCreated, DrawBundleReadyEntries);
         // This toolchain supports at most 16 EM_ASM arguments per call.
+#ifdef __EMSCRIPTEN__
+        const auto& IndirectCache = UEWebGPUStream::indirectCache();
+        EM_ASM({
+            Object.assign(globalThis.__webOcclusionRHI, {indirectDrawReuse:$0, indirectTemplateHits:$1,
+                indirectTemplatesCreated:$2, indirectTemplates:$3, indirectBindingHits:$4});
+        }, CVarWebGPUIndirectDrawReuse.GetValueOnAnyThread(), IndirectCache.hits,
+            IndirectCache.created, IndirectCache.entries, IndirectBindingHits);
+#endif
         EM_ASM({
             globalThis.__webOcclusionRHI.resourceTableCommits = $0;
             globalThis.__webOcclusionRHI.resourceTableBuffers = $1;
@@ -1443,7 +1461,7 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     }
     const ANSICHAR *Utf8 = reinterpret_cast<const ANSICHAR *>(Desc.Code.GetData() + 28);
     const auto Bytes = Desc.Code.Slice(28, Header[5]);
-    const bool SupportsVSMAdaptive = wgpuDeviceHasFeature(Device, WGPUFeatureName_Subgroups);
+    const bool SupportsVSMAdaptive = wgpuDeviceHasFeature(Device, WGPUFeatureName_Subgroups) != 0;
     bool VSMFullSampling = false;
     FString VSMFullSamplingSource;
     if (Header[1] == 2)
@@ -1457,7 +1475,7 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
             VSMFullSampling = !SupportsVSMAdaptive;
             if (VSMFullSampling && !Root["vsmFullSamplingWgsl"].String(VSMFullSamplingSource))
                 return Fail(TEXT("Web VSM full-sampling fallback source missing"));
-#if PLATFORM_WEB
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
             EM_ASM({
                 const state = globalThis.__webVSMAdaptiveSampling ||= ({supported:!!$0, enabled:!!$0,
                     adaptiveModules:0, fullSamplingModules:0});
@@ -5340,6 +5358,7 @@ void FWebGPUDynamicRHI::ResetEncoderBindings()
     // Like D3D12 DirtyStateForNewCommandList: a new pass has different
     // attachment hazards and encoder state, even if shader resources match.
     ++BindingStateSerial;
+    PreparedDrawPipeline = nullptr;
     BoundVertexBuffers.Reset();
     BoundVertexOffsets.Reset();
     BoundIndexBuffer.SafeRelease();
@@ -5474,15 +5493,8 @@ void FWebGPUDynamicRHI::DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint
     }
     for (const auto& Group : Groups) if (Group.OwnedHandle) wgpuBindGroupRelease(Group.Handle);
 }
-void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
+void FWebGPUDynamicRHI::SetVertexBindings()
 {
-    TRACE_CPUPROFILER_EVENT_SCOPE(WebGPU_SetDrawBindings);
-    check(Pass && GraphicsPipeline);
-    if (UseRenderBundles)
-    {
-        FlushDrawBundles();
-        wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
-    }
     if (BoundVertexBuffers.Num() < VertexBuffers.Num())
     {
         BoundVertexBuffers.SetNum(VertexBuffers.Num());
@@ -5503,10 +5515,40 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
                 BoundVertexOffsets[Stream] = VertexOffsets[Stream];
             }
         }
+}
+void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups, bool Indirect, bool Vertex)
+{
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebGPU_SetDrawBindings);
+    check(Pass && GraphicsPipeline);
+    if (UseRenderBundles)
+    {
+        FlushDrawBundles();
+        wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
+    }
+    if (Vertex) SetVertexBindings();
     auto &VS = ShaderData(GraphicsPipeline->GetShader(SF_Vertex));
     if (VS.HasVertexFetchFormats) ++ManualVertexFetchDraws;
     auto *Pixel = GraphicsPipeline->GetShader(SF_Pixel);
     FWebGPUShaderData *Shaders[] = {&VS, Pixel ? &ShaderData(Pixel) : nullptr};
+    const bool ReuseBindings = Indirect && CVarWebGPUIndirectDrawReuse.GetValueOnAnyThread() >= 2 &&
+        CVarWebGPUBindingGroupCache.GetValueOnAnyThread() && !CVarWebGPUValidateBindingCache.GetValueOnAnyThread() &&
+        !VS.HasVertexFetchFormats && (!Pixel || !Shaders[1]->HasVertexFetchFormats);
+    if (ReuseBindings && PreparedDrawPipeline == GraphicsPipeline.GetReference() &&
+        PreparedDrawFrame == EndFrames && PreparedDrawAccess == BindingStateSerial)
+    {
+        bool Reuse = true;
+        for (auto* Shader : MakeArrayView(Shaders, Pixel ? 2 : 1))
+        {
+            TrackShaderBindings(*Shader);
+            CommitShaderResources(*Shader);
+        }
+        for (int32 Index = 0; Index < (Pixel ? 2 : 1); ++Index)
+            Reuse &= PreparedDrawVersions[Index] == Shaders[Index]->BindingVersion;
+        for (const auto& Group : GraphicsPipeline->PreparedGroups)
+            for (const auto& Reference : Group.TextureReferences)
+                Reuse &= Reference.Key->GetReferencedTexture() == Reference.Value;
+        if (Reuse) { ++IndirectBindingHits; return; }
+    }
     FWebGPUResolvedGroups LocalGroups;
     if (!PreparedGroups)
         LocalGroups = CreateGroups(GraphicsPipeline->Handle, nullptr, MakeArrayView(Shaders, Pixel ? 2 : 1));
@@ -5526,6 +5568,16 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
         }
         else if (Group.OwnedHandle) wgpuBindGroupRelease(Group.Handle);
         Bound.DynamicOffsets = MoveTemp(Groups[Index].DynamicOffsets);
+    }
+    // Any intervening direct draw replaces the bound groups, including another
+    // PSO using these same shaders. Only the immediately prepared state is reused.
+    PreparedDrawPipeline = ReuseBindings ? GraphicsPipeline.GetReference() : nullptr;
+    if (ReuseBindings)
+    {
+        PreparedDrawFrame = EndFrames;
+        PreparedDrawAccess = BindingStateSerial;
+        for (int32 Index = 0; Index < (Pixel ? 2 : 1); ++Index)
+            PreparedDrawVersions[Index] = Shaders[Index]->BindingVersion;
     }
 }
 void FWebGPUDynamicRHI::RHIDrawPrimitive(uint32 Base, uint32 Primitives, uint32 Instances)
@@ -5582,7 +5634,51 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIB
     check(GraphicsPipeline && GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList);
     auto* Buffer = static_cast<FWebGPUBuffer*>(Index);
     check(Buffer && (Buffer->GetStride() == 2 || Buffer->GetStride() == 4));
-    SetDrawBindings();
+#ifdef __EMSCRIPTEN__
+    const int32 ReuseMode = CVarWebGPUIndirectDrawReuse.GetValueOnAnyThread();
+    UEWebGPUStream::IndirectTemplates = ReuseMode == 1 || ReuseMode == 2;
+    const uint32 Streams = GraphicsPipeline->VertexStreamMask;
+    if (UEWebGPUStream::Enabled && UEWebGPUStream::IndirectTemplates && !(Streams & ~255u))
+    {
+        SetDrawBindings(nullptr, true, false);
+        RequireAccess(Buffer, ERHIAccess::VertexOrIndexBuffer);
+        UEWebGPUStream::VertexBinding Vertices[8] = {};
+        if (BoundVertexBuffers.Num() < VertexBuffers.Num())
+        {
+            BoundVertexBuffers.SetNum(VertexBuffers.Num());
+            BoundVertexOffsets.SetNum(VertexBuffers.Num());
+        }
+        uint32 Changed = 0;
+        for (uint32 Stream = 0; Stream < 8; ++Stream)
+            if (Streams & (1u << Stream))
+            {
+                check(VertexBuffers.IsValidIndex(Stream) && VertexBuffers[Stream]);
+                auto* VertexBuffer = VertexBuffers[Stream].GetReference();
+                RequireAccess(VertexBuffer, ERHIAccess::VertexOrIndexBuffer);
+                Vertices[Stream] = {VertexBuffer->Handle, VertexBuffer->GetSize(), VertexOffsets[Stream]};
+                if (BoundVertexBuffers[Stream] != VertexBuffer || BoundVertexOffsets[Stream] != VertexOffsets[Stream])
+                    Changed |= 1u << Stream;
+            }
+        if (UEWebGPUStream::drawIndexedIndirectTemplate(Pass, Streams, Vertices, Buffer->Handle,
+            Buffer->GetSize(), Buffer->GetStride() == 2 ? WGPUIndexFormat_Uint16 : WGPUIndexFormat_Uint32,
+            Changed, BoundIndexBuffer != Buffer, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset))
+        {
+            for (uint32 Stream = 0; Stream < 8; ++Stream)
+                if (Streams & (1u << Stream))
+                {
+                    BoundVertexBuffers[Stream] = VertexBuffers[Stream];
+                    BoundVertexOffsets[Stream] = VertexOffsets[Stream];
+                }
+            BoundIndexBuffer = Buffer;
+            ++Draws;
+            ++IndirectDraws;
+            return;
+        }
+        SetVertexBindings();
+    }
+    else
+#endif
+        SetDrawBindings(nullptr, true);
     SetIndexBinding(Buffer);
     wgpuRenderPassEncoderDrawIndexedIndirect(Pass, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
     ++Draws;

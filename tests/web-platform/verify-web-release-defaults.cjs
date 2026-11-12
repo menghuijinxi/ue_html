@@ -97,7 +97,9 @@ assert.throws(() => prepareRecordedPrewarm(source, maskedCorpus), /masked-device
 const acceptedConfigs = JSON.parse(fs.readFileSync(path.join(source, 'config-files.json')));
 assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
   .includes('r.Shadow.Virtual.SMRT.AdaptiveRayCount=1')));
+assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
+  .includes('r.WebGPU.IndirectDrawReuse=2')));
 console.log(JSON.stringify({pass: true, automaticReuse: true, invalidatedCaptures: calls,
   hardlinksPreserved: true, staleWorkersRejected: true, captureFailureBlocksRelease: true,
   forcedPhysicalSize: fixed.fixedRenderSize, diagnosticsRequireExplicitFlags: true,
-  maskedCapturesRejected: true, adaptiveDefault: true}));
+  maskedCapturesRejected: true, adaptiveDefault: true, indirectReuseDefault: true}));

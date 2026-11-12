@@ -15,6 +15,9 @@
 
 inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString& Output)
 {
+    auto* ReuseSetting = IConsoleManager::Get().FindConsoleVariable(TEXT("r.WebGPU.IndirectDrawReuse"));
+    const int32 PreviousReuse = ReuseSetting->GetInt();
+    ReuseSetting->Set(2, ECVF_SetByCode);
     bool Success = false;
     IFileManager::Get().MakeDirectory(*Output, true);
     ENQUEUE_RENDER_COMMAND(WebLumenStorageProbe)([&](FRHICommandListImmediate& Cmd) {
@@ -614,5 +617,6 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         check(FFileHelper::SaveStringToFile(Json, *(Output / TEXT("lumen-storage-rhi.json"))));
     });
     FlushRenderingCommands();
+    ReuseSetting->Set(PreviousReuse, ECVF_SetByCode);
     return Success;
 }
