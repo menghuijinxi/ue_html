@@ -1,8 +1,8 @@
 'use strict';
 // Diagnostic only. Timestamp existing passes during the reproduced interior
 // segment; resolve in the same encoder, without changing submission ordering.
-module.exports = function observeMotionGPU() {
-  const state = globalThis.__motionGPU = {results: [], errors: [], pending: 0, shaders:{}, pipelines:{}};
+module.exports = function observeMotionGPU({start = 28, end = 41} = {}) {
+  const state = globalThis.__motionGPU = {results: [], errors: [], pending: 0, shaders:{}, pipelines:{}, markers:{}, window:{start,end}};
   const encoders = new WeakMap(), commands = new WeakMap(), passes = new WeakMap(), views = new WeakMap();
   const shaders = new WeakMap(), pipelines = new WeakMap();
   const createView = GPUTexture.prototype.createView;
@@ -16,16 +16,19 @@ module.exports = function observeMotionGPU() {
       requiredFeatures: [...new Set([...(desc.requiredFeatures || []), 'timestamp-query'])]});
     const shader = device.createShaderModule.bind(device);
     device.createShaderModule = d => {const result = shader(d); shaders.set(result,d.code); return result;};
-    for (const name of ['createRenderPipeline','createRenderPipelineAsync']) {
+    for (const name of ['createRenderPipeline','createRenderPipelineAsync','createComputePipeline','createComputePipelineAsync']) {
       const original = device[name].bind(device);
-      const remember = (p,d) => {pipelines.set(p,d); return p;};
+      const remember = (p,d) => {pipelines.set(p,d);
+        const code=[d.compute,d.vertex,d.fragment].filter(Boolean).map(s=>shaders.get(s.module)||'').join('\n');
+        state.markers[p.label]=['WebHierarchyBatchData','WebCullLODMode','WebOcclusionPrevious','WebRasterClusterKeys','WebNativeMaterial','WebMaterialTile'].filter(s=>code.includes(s));
+        return p;};
       device[name] = d => name.endsWith('Async') ? original(d).then(p=>remember(p,d)) : remember(original(d),d);
     }
     const create = device.createCommandEncoder.bind(device);
     device.createCommandEncoder = desc => {
       const encoder = create(desc), capture = globalThis.__naniteOffFrames;
       const elapsed = capture?.times.length ? performance.now() - capture.times[0] : -1;
-      if (capture?.active && elapsed >= 28000 && elapsed <= 41000)
+      if (capture?.active && elapsed >= start * 1000 && elapsed <= end * 1000)
         encoders.set(encoder, {device, frame:globalThis.__webRHIFrames, time:performance.now(), elapsed, passes:[], indirect:[]});
       return encoder;
     };

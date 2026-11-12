@@ -17,6 +17,7 @@
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
+#include "WebNaniteCullReadback.h"
 #include "Serialization/JsonSerializer.h"
 #include <emscripten.h>
 
@@ -101,8 +102,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
         C.Json->SetNumberField(TEXT("instanceId"), E.InstanceSceneDataOffset); C.Json->SetArrayField(TEXT("localToWorld"), MatrixJSON(E.LocalToWorld));
         C.Keys = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebInstancesKeys"));
         C.State = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebInstancesState"));
-        AddEnqueueCopyPass(Graph, C.Keys.Get(), E.Result.ClusterKeys, C.Capacity * 4);
-        AddEnqueueCopyPass(Graph, C.State.Get(), E.Result.State, 16);
+        AddEnqueueCopyPass(Graph, C.Keys.Get(), WebNaniteCullReadbackRange(Graph, E.Result.ClusterKeys, E.Result.ClusterOffset, C.Capacity), C.Capacity * 4);
+        AddEnqueueCopyPass(Graph, C.State.Get(), WebNaniteCullReadbackRange(Graph, E.Result.State, E.Result.StateOffset, 4), 16);
     }
 }
 void ObserveDepth(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View, FIntRect Rect,

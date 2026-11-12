@@ -11,6 +11,9 @@ const seconds = Number(option('seconds') || 15);
 const width = Number(option('width') || 1280), height = Number(option('height') || 720);
 const dpr = Number(option('dpr') || 1), warmup = Number(option('warmup') || 90);
 const output = path.join(__dirname, 'results', `cpu-${tag}`);
+assert(!fs.existsSync(output + '.json'), 'Use a new result tag');
+fs.copyFileSync(__filename, output + '-source.cjs');
+const browserProfile = `G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}`;
 const report = {date: new Date().toISOString(), tag, folder, seconds, width, height, dpr,
   source: audit(__filename),
   cameraMode: process.argv.includes('--spawn') ? 'original-spawn' : 'fixed-room-wall',
@@ -19,6 +22,8 @@ const naniteOff = process.argv.includes('--nanite-off');
 const rasterBatch = option('nanite-raster-batch');
 const materialBatch = option('nanite-material-batch');
 const primitiveVisibility = option('nanite-primitive-visibility');
+const hierarchyBatch = option('nanite-hierarchy-batch');
+assert(hierarchyBatch === undefined || hierarchyBatch === '0' || hierarchyBatch === '1');
 assert(primitiveVisibility === undefined || primitiveVisibility === '0' || primitiveVisibility === '1');
 assert(materialBatch === undefined || /^(?:[0-9]|[12][0-9]|3[0-2])$/.test(materialBatch));
 assert(rasterBatch === undefined || rasterBatch === '0' || rasterBatch === '1');
@@ -66,7 +71,7 @@ function summarize(profile) {
       assert(packaged.pass);
       for (const product of packaged.products) assert.equal(audit(product.file).sha256, product.sha256, product.file);
     }
-    context = await chromium.launchPersistentContext('C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/user-profile-effect-20261111',
+    context = await chromium.launchPersistentContext(browserProfile,
       {channel: 'msedge', headless: !process.argv.includes('--visible'), viewport: {width, height}, deviceScaleFactor: dpr});
     if (process.argv.includes('--count-gpu')) await context.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
@@ -92,13 +97,17 @@ function summarize(profile) {
       assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteMaterialPassBatchTest', v), Number(materialBatch)), 1);
       report.settingsOverrides.push({naniteMaterialPassBatch: Number(materialBatch)});
     }
+    if (hierarchyBatch !== undefined) {
+      assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteHierarchyBatchTest', v), Number(hierarchyBatch)), 1);
+      report.settingsOverrides.push({naniteHierarchyBatch: Number(hierarchyBatch)});
+    }
     report.visualClock = await owner.evaluate(() => globalThis.__webVisualTestClock || null);
     if (primitiveVisibility !== undefined) {
       assert.equal(await page.evaluate(v => __webEngineRPC('WebNanitePrimitiveVisibilityTest', v), Number(primitiveVisibility)), 1);
       report.settingsOverrides.push({nanitePrimitiveVisibility: Number(primitiveVisibility)});
     }
     assert(!report.visualClock?.renderTimeFrozen && !report.visualClock?.materialTimeFrozen, 'Game performance requires advancing render and material clocks');
-    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined || primitiveVisibility !== undefined) {
+    if (naniteOff || rasterBatch !== undefined || materialBatch !== undefined || primitiveVisibility !== undefined || hierarchyBatch !== undefined) {
       for (const step of naniteOff ? [1, 2] : [1]) {
         assert.equal(await page.evaluate(s => __webEngineRPC('WebNaniteAutomaticSceneTest', s), step), 1);
         const start = Date.now(); let value;
@@ -109,10 +118,11 @@ function summarize(profile) {
         } while ((!value || value.step !== step) && Date.now() - start < 120000);
         assert.equal(value?.step, step); assert.equal(value.enabled, step === 1);
         if (step === 2) assert.equal(value.entries, 0);
+        if (hierarchyBatch !== undefined) { assert.equal(value.hierarchyBatch, hierarchyBatch === '1'); assert.equal(value.hierarchyBatchedEntries > 0, hierarchyBatch === '1' && value.entries > 1); }
         if (rasterBatch !== undefined) assert.equal(value.rasterBatch, rasterBatch === '1');
         if (materialBatch !== undefined) { assert.equal(value.materialPassBatch, materialBatch !== '0'); assert.equal(value.materialPassBatchMode, Number(materialBatch)); }
         if (primitiveVisibility !== undefined) assert.equal(value.primitiveVisibility, primitiveVisibility === '1');
-        report.nanite = {enabled: value.enabled, primitiveVisibility: value.primitiveVisibility, primitiveVisibilitySkipped: value.primitiveVisibilitySkipped, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
+        report.nanite = {hierarchyBatch: value.hierarchyBatch, hierarchyBatchedEntries: value.hierarchyBatchedEntries, hierarchyDispatchBuffers: value.hierarchyDispatchBuffers, enabled: value.enabled, primitiveVisibility: value.primitiveVisibility, primitiveVisibilitySkipped: value.primitiveVisibilitySkipped, rasterBatch: value.rasterBatch, materialPassBatch: value.materialPassBatch, materialPassBatchMode: value.materialPassBatchMode, registered: value.registered, entries: value.entries};
       }
       if (naniteOff) report.settingsOverrides.push({nanite: false, verifiedEntries: 0});
     }
@@ -126,6 +136,7 @@ function summarize(profile) {
       (report.plainSamples ||= []).push(value);fs.writeFileSync(output+'.json',JSON.stringify(report,null,2));console.log({plain:label,fps:value.fps,rhiMs:value.rhiMs});
     };
     await plainSample('before-profiler');
+    if (process.argv.includes('--plain-only')) { report.pass = !report.errors.length; logs.end(); return; }
     const cdp = await context.browser().newBrowserCDPSession();
     const {targetInfos} = await cdp.send('Target.getTargets');
     const target = targetInfos.find(target => target.type === 'worker' && target.url.includes('web-engine-worker.js'));
@@ -174,7 +185,7 @@ function summarize(profile) {
         logs: report.logCount - logCount, profile: summarize(profile),
         callsPerFrame: Object.fromEntries(Object.entries(after.calls).map(([key, value]) =>
           [key, (value - (before.calls[key] || 0)) / frames])),
-        memory: processMemory({profile: 'C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/user-profile-effect-20261111'})};
+        memory: processMemory({profile: browserProfile})};
       report.samples.push(sample);
       await page.locator('canvas').screenshot({path: output + `-${index}.png`, timeout: 60000});
       fs.writeFileSync(output + '.json', JSON.stringify(report, null, 2));

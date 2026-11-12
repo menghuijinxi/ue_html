@@ -11,11 +11,15 @@ const candidateFolder = option('folder');
 const baselineFolder = option('baseline-folder');assert(!baselineFolder||/^[a-z0-9-]+$/.test(baselineFolder));
 assert(modes.every(m => ['legacy', 'off', 'no-scene','candidate'].includes(m)));
 assert(!modes.includes('candidate') || /^[a-z0-9-]+$/.test(candidateFolder));
+const hierarchyBatches = option('hierarchy-batches')?.split(',');
+assert(!hierarchyBatches || (hierarchyBatches.length === modes.length && hierarchyBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const tour = process.argv.includes('--tour');
 const walk = process.argv.includes('--walk') || tour, headed = process.argv.includes('--headed');
 const trace = process.argv.includes('--trace'), gpuProbe = process.argv.includes('--gpu-probe');
 const traceStart = Number(option('trace-start') || 0), traceSeconds = Number(option('trace-seconds') || 0);
 const gpuTimestamps = process.argv.includes('--gpu-timestamps');
+const gpuStart = Number(option('gpu-start') || 28), gpuEnd = Number(option('gpu-end') || 41);
+assert(!gpuTimestamps || (gpuStart >= 0 && gpuEnd > gpuStart));
 const observeMotionGPU = gpuTimestamps ? require('./observe-nanite-motion-gpu.cjs') : null;
 const pointOnly = process.argv.includes('--shadow-point-only');
 const pointDiagnostic = pointOnly ? require('./diagnose-point-shadow-vsm.cjs') : null;
@@ -35,7 +39,7 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
   boundary: 'Serial fresh Edge contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
@@ -45,6 +49,12 @@ const report = {date: new Date().toISOString(), pass: false, source: audit(__fil
       'Mouse-only DOM input follows the same absolute trajectory; actual camera state and event count are retained.')};
 const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
 if(baselineFolder)report.boundary+=' Explicit baseline-folder overrides the predefined baseline directories; mode names do not change its r.Nanite setting. Compare recorded package/configuration provenance.';
+if(hierarchyBatches)report.boundary='Serial fresh Edge contexts, same package, Nanite enabled, native hierarchy batch switch independently verified. '
+  +'Normal advancing clocks; viewport submission intervals include every stall. '
+  +(!(trace||gpuProbe||gpuTimestamps)?'No CPU/GPU profiler or WebGPU method wrapper in the measured window. ':'Instrumented diagnostic; exclude its FPS from game-performance acceptance. ')
+  +'First native camera tour includes simultaneous translation and rotation, with no route warmup. Actual sampled trajectories are retained.';
+if (gpuTimestamps) { report.gpuWindow = {start:gpuStart,end:gpuEnd}; report.boundary += ' GPU timestamp instrumentation is diagnostic and is excluded from game-performance acceptance.'; }
+if (trace) report.boundary += ' DevTools trace instrumentation is diagnostic.';
 function installObserver(detailed) {
   const state = globalThis.__naniteOffFrames = {active: false, times: [], frames: [], samples: [], gpu: []};
   let sampled = 0;
@@ -117,7 +127,7 @@ function statistics(times) {
       for (const file of ['index.html', 'asset-versions.json', 'config-files.json'])
         run.assets.push(audit(path.join(__dirname, 'build', folder, file)));
       const context = await chromium.launchPersistentContext(
-        `C:/Users/wap80/.cache/ue-html-build-archive/nanite-core-browser/${tag}-${index}`, {
+        `G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}-${index}`, {
           channel: 'msedge', headless: !headed, viewport: {width, height}, deviceScaleFactor: 1});
       const log = fs.createWriteStream(path.join(output, index + '-' + mode + '.log'));
       try {
@@ -136,7 +146,7 @@ ${marker}
           }
           await route.fulfill({response, body: `(${installObserver.toString()})(${walk});\n` +
             (pointOnly ? `(${pointDiagnostic.toString()})();\n` : '') +
-            (gpuTimestamps ? `(${observeMotionGPU.toString()})();\n` : '') + body});
+            (gpuTimestamps ? `(${observeMotionGPU.toString()})(${JSON.stringify({start:gpuStart,end:gpuEnd})});\n` : '') + body});
         });
         if (mode === 'no-scene') await context.route('**/index.html', async route => {
           const response = await route.fetch(), html = await response.text();
@@ -157,6 +167,20 @@ ${marker}
           (globalThis.__webEngineFrames >= 180 && globalThis.__webPSOPrecacheReady), null, {timeout: 300000});
         assert(!await page.evaluate(() => globalThis.__webEngineFailure));
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
+        if (hierarchyBatches) {
+          const enabled = Number(hierarchyBatches[index]);
+          assert.equal(await page.evaluate(v => __webEngineRPC('WebNaniteHierarchyBatchTest', v), enabled), 1);
+          assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteAutomaticSceneTest', 1)), 1);
+          await page.waitForFunction(() => __webPSOPrecacheReady, null, {timeout:180000});
+          const start = Date.now(); let state;
+          do {
+            await page.waitForTimeout(100); assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteAutomaticSceneTest', 0)), 1);
+            state = await owner.evaluate(() => globalThis.__webNaniteAutomaticSceneTest);
+          } while (state?.step !== 1 && Date.now() - start < 120000);
+          assert.equal(state?.step, 1); assert(state.enabled && state.entries > 1);
+          assert.equal(state.hierarchyBatch, !!enabled); assert.equal(state.hierarchyBatchedEntries > 0, !!enabled);
+          run.hierarchy = {enabled, registered:state.registered, entries:state.entries, batchedEntries:state.hierarchyBatchedEntries, dispatchBuffers:state.hierarchyDispatchBuffers};
+        }
         const snapshot = () => owner.evaluate(() => ({time: performance.now(), stages: globalThis.__webThreadStages,
           frame: globalThis.__webRHIFrames, view: globalThis.__webRenderView, camera: globalThis.__webDefaultCamera,
           settings: globalThis.__webProjectSettings, history: globalThis.__webOcclusionHistory,

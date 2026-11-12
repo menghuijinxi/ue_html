@@ -33,8 +33,10 @@ TArray<FPrimitiveComponentId> Candidates;
 TArray<TSharedPtr<FJsonValue>> Assets;
 TSharedPtr<FJsonObject> Report;
 int Step = 0, Settled = 0, SavedNanite = 1;
-bool Requested = false, MaterialComplete = false;
+bool Requested = false, MaterialComplete = false, HierarchyCaptured = false;
 uint32 MaterialFrame = MAX_uint32, MaterialDraws = 0;
+uint32 HierarchyFrame = MAX_uint32, HierarchyBatchedEntries = 0, HierarchyBuffers = 0;
+uint32 HierarchySnapshotFrame = MAX_uint32;
 struct FCopy { FString Name; uint32 Bytes; TUniquePtr<FRHIGPUBufferReadback> Readback; };
 TArray<FCopy> Copies;
 
@@ -57,6 +59,11 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetNumberField(TEXT("skipped"), Cull.Skipped);
     Report->SetNumberField(TEXT("primitiveVisibilitySkipped"), Cull.PrimitiveVisibilitySkipped);
     Report->SetBoolField(TEXT("primitiveVisibility"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebPrimitiveVisibility"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("hierarchyBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchHierarchy"))->GetInt() != 0);
+    check(HierarchyFrame == Cull.View->Family->FrameNumber);
+    Report->SetNumberField(TEXT("hierarchyBatchedEntries"), HierarchyBatchedEntries);
+    Report->SetNumberField(TEXT("hierarchyDispatchBuffers"), HierarchyBuffers);
+    if (!Cull.Entries.IsEmpty()) Report->SetNumberField(TEXT("hierarchySnapshotFrame"), HierarchySnapshotFrame);
     Report->SetNumberField(TEXT("rejected"), Cull.Rejected);
     Report->SetArrayField(TEXT("assets"), Assets);
     if (!Cull.Entries.IsEmpty())
@@ -81,6 +88,9 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetNumberField(TEXT("boundedEntryPixels"), double(BoundedPixels));
     Report->SetNumberField(TEXT("hierarchyDispatchLevels"), Levels);
     Report->SetArrayField(TEXT("entryInstanceIDs"), EntryIDs);
+    TArray<TSharedPtr<FJsonValue>> Capacities;
+    for (const auto& E : Cull.Entries) Capacities.Add(MakeShared<FJsonValueNumber>(E.Input.MaxVisibleClusters));
+    Report->SetArrayField(TEXT("hierarchyCapacities"), Capacities);
     Report->SetBoolField(TEXT("instanceFrustum"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebInstanceFrustum"))->GetInt() != 0);
     Report->SetBoolField(TEXT("materialBins"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialBins"))->GetInt() != 0);
     Report->SetBoolField(TEXT("rasterBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebRasterBatch"))->GetInt() != 0);
@@ -140,9 +150,17 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetArrayField(TEXT("batches"), Batches);
 }
 
-void ObserveCull(FRDGBuilder&, const Nanite::FWebSceneCullView& Cull)
+void ObserveCull(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& Cull)
 {
     if (!Requested || Report || Cull.View->bIsSceneCapture) return;
+    HierarchyFrame = Cull.View->Family->FrameNumber; HierarchyBatchedEntries = 0;
+    TSet<FRDGBufferRef> Buffers;
+    for (const auto& E : Cull.Entries)
+    {
+        Buffers.Add(E.Result.State);
+        HierarchyBatchedEntries += E.Result.State->Desc.NumElements > 4 ? 1u : 0u;
+    }
+    HierarchyBuffers = Buffers.Num();
     if (Cull.View->Family->FrameNumber % 120 == 0)
         MAIN_THREAD_ASYNC_EM_ASM({ globalThis.__webNaniteAutomaticProgress = ({registered: $0, entries: $1,
             rejected: $2, settled: $3, pendingPipelines: $4, materialFrame: $5, materialDraws: $6, materialComplete: !!$7}); },
@@ -151,6 +169,24 @@ void ObserveCull(FRDGBuilder&, const Nanite::FWebSceneCullView& Cull)
     if (PipelineStateCache::NumActivePrecacheRequests()) { Settled = 0; return; }
     if (++Settled < 60) return;
     if (Cull.Entries.IsEmpty()) Describe(Cull);
+    else if (!HierarchyCaptured)
+    {
+        HierarchyCaptured = true;
+        HierarchySnapshotFrame = Cull.View->Family->FrameNumber;
+        uint32 Total = 0;
+        for (const auto& E : Cull.Entries) Total += E.Input.MaxVisibleClusters;
+        auto* Keys = Graph.CreateBuffer(FRDGBufferDesc::CreateStructuredDesc(4, Total), TEXT("Nanite.Web.TestHierarchyKeys"));
+        auto* States = Graph.CreateBuffer(FRDGBufferDesc::CreateStructuredDesc(4, Cull.Entries.Num() * 4), TEXT("Nanite.Web.TestHierarchyStates"));
+        uint32 Base = 0;
+        for (int32 Index = 0; Index < Cull.Entries.Num(); ++Index)
+        {
+            const auto& E = Cull.Entries[Index];
+            AddCopyBufferPass(Graph, Keys, uint64(Base) * 4, E.Result.ClusterKeys, uint64(E.Result.ClusterOffset) * 4, uint64(E.Input.MaxVisibleClusters) * 4);
+            AddCopyBufferPass(Graph, States, Index * 16, E.Result.State, uint64(E.Result.StateOffset) * 4, 16);
+            Base += E.Input.MaxVisibleClusters;
+        }
+        Copy(Graph, Keys, TEXT("hierarchyKeys")); Copy(Graph, States, TEXT("hierarchyStates"));
+    }
 }
 
 void ObserveGraph(FRDGBuilder&, const Nanite::FWebSceneRasterView& Saved, uint32 Draws, bool Complete)
@@ -171,7 +207,8 @@ void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved
     Report->SetNumberField(TEXT("height"), FMath::DivideAndRoundUp(uint32(Saved.Raster.Rect.Height()), 8u));
     Copy(Graph, Nanite::AddWebGBufferSnapshotPass(Graph, Saved, Targets, 8), TEXT("pixels"));
     auto* States = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Saved.Cull->Entries.Num() * 16), TEXT("Nanite.Web.AutomaticStates"));
-    for (int32 I = 0; I < Saved.Cull->Entries.Num(); ++I) AddCopyBufferPass(Graph, States, I * 16, Saved.Cull->Entries[I].Result.State, 0, 16);
+    for (int32 I = 0; I < Saved.Cull->Entries.Num(); ++I) AddCopyBufferPass(Graph, States, I * 16, Saved.Cull->Entries[I].Result.State,
+        uint64(Saved.Cull->Entries[I].Result.StateOffset) * 4, 16);
     Copy(Graph, States, TEXT("cullStates"));
     const auto& Input = Saved.Cull->Entries[0].Input;
     if (Input.MaxStreamingPages && Input.StreamingPageOwners)
@@ -216,6 +253,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteOcclusionModeTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebLocalOcclusion"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteHierarchyBatchTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchHierarchy"));
     static int Saved = -1;
     if (!CVar || Enabled < -1 || Enabled > 1) return 0;
     if (Enabled < 0)
@@ -466,6 +518,6 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteAutomaticSceneTest(int RequestedSte
     }
     ENQUEUE_RENDER_COMMAND(RequestAutomaticNanite)([RequestedStep, IDs = MoveTemp(IDs), Meshes = MoveTemp(Meshes)](FRHICommandListImmediate&) mutable {
         check(!Requested && !Report && Copies.IsEmpty()); Candidates = MoveTemp(IDs); Assets = MoveTemp(Meshes);
-        Step = RequestedStep; Settled = 0; Requested = true;
+        Step = RequestedStep; Settled = 0; Requested = true; HierarchyCaptured = false;
     }); Last = RequestedStep; return 1;
 }

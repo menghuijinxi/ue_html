@@ -96,7 +96,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     if (StateBytes)
     {
         auto* Buffer = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(StateBytes), TEXT("Nanite.InstanceDistance.States"));
-        for (int I = 0; I < Selected.Entries.Num(); ++I) AddCopyBufferPass(Graph, Buffer, I * 16, Selected.Entries[I].Result.State, 0, 16);
+        for (int I = 0; I < Selected.Entries.Num(); ++I) AddCopyBufferPass(Graph, Buffer, I * 16, Selected.Entries[I].Result.State, Selected.Entries[I].Result.StateOffset * 4, 16);
         States = MakeUnique<FRHIGPUBufferReadback>(TEXT("Nanite.InstanceDistance.States"));
         AddEnqueueCopyPass(Graph, States.Get(), Buffer, StateBytes);
     }

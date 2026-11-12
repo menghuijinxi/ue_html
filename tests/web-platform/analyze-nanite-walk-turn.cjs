@@ -2,6 +2,8 @@
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
 const tag = process.argv[2]; assert(/^[a-z0-9-]+$/.test(tag));
+const minimumWindowFrames = Number(process.argv.find(a=>a.startsWith('--minimum-window-frames='))?.split('=')[1] || 100);
+assert(Number.isInteger(minimumWindowFrames) && minimumWindowFrames >= 10);
 const directory = path.join(__dirname, 'results', tag), input = path.join(directory, 'report.json');
 const report = JSON.parse(fs.readFileSync(input)); assert(report.walk && report.pass);
 function distribution(intervals) {
@@ -20,7 +22,7 @@ const runs = report.runs.map(run => {
   const windows = [];
   for (let end=p.times[0]+5000; end<=p.times.at(-1); end+=250) {
     const values=frames.filter(f=>f.time>end-5000&&f.time<=end).map(f=>f.ms);
-    if(values.length<100)continue;
+    if(values.length<minimumWindowFrames)continue;
     const s={endSeconds:(end-p.times[0])/1000,...distribution(values)};
     windows.push(s); if(s.low1<lowest.low1)lowest=s;
   }
@@ -34,13 +36,13 @@ const runs = report.runs.map(run => {
       rhi:counterDelta(before,after,'rhi'),optimization:counterDelta(before,after,'optimization'),
       io:counterDelta(before,after,'io'),streamingBefore:before.streaming,streamingAfter:after.streaming};
   });
-  return {mode:run.mode,browser:run.browser,initialCamera:run.initial.camera,finalCamera:p.after.camera,
+  return {index:run.index,mode:run.mode,hierarchy:run.hierarchy,browser:run.browser,initialCamera:run.initial.camera,finalCamera:p.after.camera,
     view:p.before.view,travelCm:p.travelCm,radiusCm:p.radiusCm,turnDegrees:p.turnDegrees,pitchRange:p.pitchRange,
     driver:report.tour?'native-camera-tour':'keyboard-and-mouse',inputEvents:run.motion.events||0,
     keyEvents:run.motion.keyEvents?.length||0,overall:distribution(frames.map(f=>f.ms)),
     lowest5s:lowest,windows,worst};
 });
-const analysis={date:new Date().toISOString(),source:audit(__filename),input:audit(input),runs,
+const analysis={date:new Date().toISOString(),source:audit(__filename),input:audit(input),minimumWindowFrames,runs,
   boundary:(report.tour?'First native game-frame camera tour with simultaneous translation and rotation. ':'First simultaneous keyboard/mouse movement. ')
     +'No route warmup. Five-second windows sampled every 250 ms with the HUD low definition. '
     +'Actual paths can diverge despite identical requested inputs. RHI/game fields are asynchronous publications; nearest 200 ms telemetry brackets a stall and does not prove exclusive causation.'};

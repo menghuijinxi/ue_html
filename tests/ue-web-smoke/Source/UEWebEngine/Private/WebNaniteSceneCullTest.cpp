@@ -17,6 +17,7 @@
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
+#include "WebNaniteCullReadback.h"
 #include "Serialization/JsonSerializer.h"
 #include <emscripten.h>
 
@@ -108,6 +109,7 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
         for (auto& Entry : RasterView.Entries)
         {
             Entry.Result.State = Graph.CreateBuffer(FRDGBufferDesc::CreateStructuredDesc(4, 4), TEXT("WebRasterInvalidCullState"));
+            Entry.Result.StateOffset = 0;
             TArray<uint32> Invalid = {Entry.Input.MaxVisibleClusters + (ActiveStep == 19 ? 1u : 0u),
                 ActiveStep == 19 ? 0u : 1u << (ActiveStep - 14), 0, 0};
             Graph.QueueBufferUpload(Entry.Result.State, MakeArrayView(Invalid));
@@ -178,8 +180,8 @@ void Observe(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
         Copy.Json->SetArrayField(TEXT("lodParameters"), LODParameters);
         Copy.Keys = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullKeys"));
         Copy.State = MakeUnique<FRHIGPUBufferReadback>(TEXT("WebSceneCullState"));
-        AddEnqueueCopyPass(Graph, Copy.Keys.Get(), Entry.Result.ClusterKeys, Copy.Capacity * 4);
-        AddEnqueueCopyPass(Graph, Copy.State.Get(), Entry.Result.State, 16);
+        AddEnqueueCopyPass(Graph, Copy.Keys.Get(), WebNaniteCullReadbackRange(Graph, Entry.Result.ClusterKeys, Entry.Result.ClusterOffset, Copy.Capacity), Copy.Capacity * 4);
+        AddEnqueueCopyPass(Graph, Copy.State.Get(), WebNaniteCullReadbackRange(Graph, Entry.Result.State, Entry.Result.StateOffset, 4), 16);
     }
 }
 

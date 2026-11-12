@@ -16,6 +16,7 @@
 #include "RHIGPUReadback.h"
 #include "RenderGraphBuilder.h"
 #include "RenderGraphUtils.h"
+#include "WebNaniteCullReadback.h"
 #include "Serialization/JsonSerializer.h"
 #include <emscripten.h>
 
@@ -60,7 +61,8 @@ void Cull(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& View)
     if (!View.Entries.IsEmpty())
     {
         const auto& E = View.Entries[0];
-        Copy(Graph, E.Result.State, TEXT("candidateState")); Copy(Graph, E.Result.ClusterKeys, TEXT("candidateKeys"));
+        Copy(Graph, WebNaniteCullReadbackRange(Graph, E.Result.State, E.Result.StateOffset, 4), TEXT("candidateState"));
+        Copy(Graph, WebNaniteCullReadbackRange(Graph, E.Result.ClusterKeys, E.Result.ClusterOffset, E.Input.MaxVisibleClusters), TEXT("candidateKeys"));
     }
 }
 void Occlusion(FRDGBuilder& Graph, const Nanite::FWebSceneCullView& Candidates,

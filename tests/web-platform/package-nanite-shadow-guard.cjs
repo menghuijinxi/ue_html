@@ -5,16 +5,21 @@ const {audit,metadata}=require('./content-file-metadata.cjs');
 const {writeVersions}=require('./asset-versions.cjs');
 const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3);
 const project=option('project'),baseline=option('baseline'),name=option('output');
-assert([project,baseline,name].every(n=>/^[a-z0-9-]+$/.test(n)));
+const defaultScene=process.argv.includes('--default-scene'),hierarchyBatch=process.argv.includes('--hierarchy-batch');
+assert([baseline,name].every(n=>/^[a-z0-9-]+$/.test(n)));
+assert(defaultScene||/^[a-z0-9-]+$/.test(project));
 const root=__dirname,base=path.join(root,'build',baseline),output=path.join(root,'build',name);
 assert(!fs.existsSync(output),'Candidate must have its own new directory');
 const read=f=>JSON.parse(fs.readFileSync(f,'utf8').replace(/^\uFEFF/,''));
 const verify=a=>assert.equal(audit(a.file).sha256,a.sha256,a.file);
-const stageFile=path.join(root,'results',`web-project-${project}-desktop-stage-results.json`);
-const stage=read(stageFile);assert(stage.pass&&stage.useProjectSettings&&stage.mode==='WebGPU-SM5');
+const stageFile=path.join(root,'results',defaultScene?'web-engine-webgpu-sm5-default-stage-results.json':`web-project-${project}-desktop-stage-results.json`);
+const stage=read(stageFile);assert(stage.pass&&stage.mode==='WebGPU-SM5');
+assert(defaultScene?stage.scene==='DefaultTemplate':stage.useProjectSettings);
 [...stage.sourceFiles,stage.cookReport,stage.pack,stage.manifest,stage.configBundle].forEach(verify);
 const cook=read(stage.cookReport.file);assert(cook.pass&&cook.naniteCookData&&cook.exitCode===0);
 [...cook.sourceFiles,...cook.products].forEach(verify);
+if(hierarchyBatch){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
+  assert(inventory.types.some(t=>t.name==='FWebNaniteHierarchyCull_CS'&&t.permutations===5),'Cook must include the new rigid hierarchy batch permutation');}
 const coreFile=path.join(root,'build/nanite-core-scene/package.json'),core=read(coreFile);
 assert(core.pass);core.products.forEach(verify);
 verify(core.archive);verify(core.streamingShaders);
@@ -47,12 +52,12 @@ const products=baselineProducts.map(p=>audit(path.join(output,path.basename(p.fi
 products.push(writeVersions(output,products));
 const old=read(path.join(base,'content-files.json'));
 const changes=manifest.files.filter(f=>old.files.find(a=>a.path===f.path)?.sha256!==f.sha256).map(f=>({path:f.path,size:f.size}));
-const report={date:new Date().toISOString(),pass:true,output,baselineProducts,baselineVersions:audit(path.join(base,'asset-versions.json')),
+const report={date:new Date().toISOString(),pass:true,output,defaultScene,hierarchyBatch,baselineProducts,baselineVersions:audit(path.join(base,'asset-versions.json')),
   core:audit(coreFile),stage:audit(stageFile),cook:stage.cookReport,archive:core.archive,streamingArchive:streaming.archive,
   performanceProfile:core.performanceProfile,products,changes,
   sources:[__filename,require.resolve('./prepare-web-cook-shaders.cjs'),
     path.join(root,'../../reference-engine/Engine/Shaders/Private/ShadowDepthPixelShader.usf')].map(audit),
-  boundary:'Same existing runtime and configuration. Fresh complete scene Cook with guarded combined shadow fragment shader. '
+  boundary:'Same existing runtime and configuration. Fresh complete scene Cook; optional hierarchy batch permutation is verified against its shader inventory. '
     +'Reuses the baseline verified Nanite transcode/streaming archive bytes; no change to those shaders. '
     +'Performance and full compatibility acceptance require separate browser reports.'};
 fs.writeFileSync(path.join(output,'package.json'),JSON.stringify(report,null,2)+'\n');
