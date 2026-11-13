@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triplex Villa · 间接绘制分项对照</title>
+<style>
+*{box-sizing:border-box;letter-spacing:0}
+:root{color-scheme:dark;font:14px/1.5 system-ui,sans-serif;background:#191c1a;color:#e5eee9}
+body{margin:0;height:100dvh;display:flex;flex-direction:column}
+header,.toolbar,.metrics{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:8px 14px;border-bottom:1px solid #48534c}
+header{justify-content:space-between;background:#2b322d}
+h1{font-size:16px;margin:0}#status,.metrics{font-size:12px;color:#b8c9bf}
+#status[data-error=true]{color:#ffb5a9}
+.modes{display:flex;flex-wrap:wrap;gap:4px}
+.modes label{position:relative;cursor:pointer}
+.modes input{position:absolute;opacity:0;width:1px;height:1px}
+.modes span{display:block;padding:6px 10px;border:1px solid #63756a;border-radius:4px}
+.modes input:checked+span{background:#245242;border-color:#99d6bc}
+.modes input:disabled+span{opacity:.5;cursor:wait}
+.modes input:focus-visible+span{outline:2px solid #fff}
+.field{display:flex;align-items:center;gap:6px}
+button,select{font:inherit;color:inherit;background:#303b33;border:1px solid #82988b;border-radius:4px;min-height:34px;padding:4px 8px}
+button{cursor:pointer}button:disabled,select:disabled{opacity:.45}
+.metrics{font-variant-numeric:tabular-nums}.metrics b{color:#fff;font-weight:550}
+main{flex:1;min-height:180px;position:relative;overflow:hidden;background:#000}
+iframe{width:100%;height:100%;border:0;display:block}
+#loading{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:18px;background:#191e1beF}
+#loading-title{font-size:18px}#loading-detail{overflow-wrap:anywhere}
+#retry{justify-self:center}[hidden]{display:none!important}
+@media(max-width:650px){header,.toolbar,.metrics{padding:6px 9px;gap:5px 10px}.modes span{padding:5px 7px;font-size:12px}}
+</style>
+<header><h1>Triplex Villa · 间接绘制分项对照</h1><span id="status" role="status">准备场景</span></header>
+<div class="toolbar">
+  <div class="modes" role="radiogroup" aria-label="间接绘制模式">
+    <label><input type="radio" name="mode" value="adaptive" checked><span>② 正式自适应基线</span></label>
+    <label><input type="radio" name="mode" value="disabled"><span>③ 复用全关</span></label>
+    <label><input type="radio" name="mode" value="templates"><span>③ 仅命令模板</span></label>
+    <label><input type="radio" name="mode" value="bindings"><span>③ 仅绑定复用</span></label>
+    <label><input type="radio" name="mode" value="combined"><span>③ 全部开启原版</span></label>
+  </div>
+  <div class="field"><label for="viewpoint">视角</label><select id="viewpoint" disabled>
+    <option value="current">当前位置</option><option value="kitchen">厨房</option>
+    <option value="interior">餐厅</option><option value="living">客厅</option>
+  </select></div>
+  <button id="reset" title="恢复入口视角" aria-label="恢复入口视角" disabled>↺</button>
+  <button id="export" hidden disabled>导出记录</button>
+</div>
+<div class="metrics">
+  <span>FPS <b id="fps">待采样</b></span><span>1% Low <b id="low">待采样</b></span>
+  <span>P99 <b id="p99">待采样</b></span><span>近5秒 &gt;50ms <b id="long-frames">待采样</b></span>
+  <span>渲染 <b id="render-size">待确认</b></span><span>输出 <b id="output-size">待确认</b></span>
+  <span>抗锯齿 <b id="aa">待确认</b></span><span id="quality">Lumen / VT / VSM 待确认</span>
+</div>
+<main id="stage">
+  <div id="loading"><strong id="loading-title">加载场景</strong><p id="loading-detail">准备资源与管线</p><button id="retry" hidden>重试</button></div>
+</main>
+<script src="villa-indirect-isolation-live.js"></script>
+<script src="villa-smoothness-live.js"></script>
+</html>

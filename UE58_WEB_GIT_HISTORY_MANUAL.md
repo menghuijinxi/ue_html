@@ -11,6 +11,9 @@
 | 5 | `628ac0e` | `3839f747a3` | TSR 大分块 | `villa-tsr-tiles-20261112` |
 | 6 | `1c25b77` | `2ac751c827` | 恢复 TSR 小分块 | `villa-tsr-small-20261112` |
 
+2026-11-13 人工对照反馈：从③间接绘制复用开始退化。后续以②、③为边界，
+在 `villa-indirect-isolation-live.html` 分离模板与绑定路径，见 `UE58_WEB_INDIRECT_REGRESSION.md`。
+
 包均位于 `tests/web-platform/build/`。页面一次只运行一个场景，切换版本保留玩家位置和方向，重新累计滚动 FPS、1% Low、P99。加载期间等待就绪后再操作；场景保留原生键鼠输入。页面显示实际内部渲染尺寸、输出尺寸、抗锯齿类型，以及 Lumen、VT、VSM 的运行状态。
 
 ## 构建边界

@@ -9,6 +9,7 @@
     off: {folder: 'villa-added-optimizations-off-20261112', label: '新增优化关闭'},
     plain: {folder: 'villa-web-optimizations-off-20261112', label: '早期优化也关闭'},
   };
+  const defaultMode = globalThis.__villaHistoryVariants ? Object.keys(variants)[0] : 'off';
   const poses = {kitchen: [-175, -80, 160, -5, 230], interior: [-175, -80, 160, -5, 50],
     living: [-20, 200, 130, 12, -35]};
   const state = globalThis.__villaSmoothnessLive = {mode: null, ready: false, busy: false, error: null,
@@ -164,7 +165,7 @@
   for (const radio of radios) radio.onchange = () => select(radio.value);
   window.addEventListener('hashchange', () => {
     const mode = location.hash.slice(1) in variants ? location.hash.slice(1) :
-      globalThis.__villaHistoryVariants ? 'old' : 'off';
+      defaultMode;
     if (mode !== state.mode) select(mode);
   });
   element('export').onclick = () => {
@@ -177,5 +178,5 @@
   };
   setInterval(update, 250);
   select(location.hash.slice(1) in variants ? location.hash.slice(1) :
-    globalThis.__villaHistoryVariants ? 'old' : 'off');
+    defaultMode);
 })();

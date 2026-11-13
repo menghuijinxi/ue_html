@@ -1,0 +1,326 @@
+{
+  "date": "2026-11-13T05:43:32.415Z",
+  "pass": true,
+  "url": "http://127.0.0.1:8765/villa-indirect-isolation-live.html#adaptive",
+  "humanObservation": {
+    "date": "2026-11-13",
+    "source": "User manual comparison of six historical packages",
+    "lastGoodRoot": "2abb246",
+    "firstBadRoot": "410778f",
+    "statement": "Smoothness regression starts at indirect draw reuse node 3; no numeric Low-FPS values supplied."
+  },
+  "originalPackage": {
+    "file": "tests/web-platform/build/villa-git-indirect-20261113/asset-versions.json",
+    "sha256": "3a7a33685678edcf29f7d463a5d6dd556a7c280fa769373676784690d1e3a9d6"
+  },
+  "packages": [
+    {
+      "id": "disabled",
+      "mode": 0,
+      "report": {
+        "file": "tests/web-platform/results/indirect-isolation-20261113/disabled-package.json",
+        "sha256": "b649890372a750780cc3be0673a0e34d10253e190daffee1d234f7b27fbce7cf"
+      },
+      "folder": "tests/web-platform/build/villa-indirect-disabled-20261113",
+      "rootCommit": "410778f5649675da4c6e6d1efe8c60314b30a5fd",
+      "engineCommit": "231b20bb0827ef5f38021789a067947e4e41aa57",
+      "onlyConfigDifference": "r.WebGPU.IndirectDrawReuse",
+      "runtimeAndContentMatchSource": true,
+      "currentWorkersVerified": true,
+      "releaseReady": true,
+      "prewarm": {
+        "modules": 312,
+        "pipelines": 320,
+        "capture": {
+          "file": "tests/web-platform/results/villa-startup-indirect-isolation-disabled-20261113-1794547975096/result.json",
+          "sha256": "6c8fde94a2fa6da2ff1e745b7fa1a6ae8e1b29022ec216f6ec916e1112bd14a3"
+        }
+      }
+    },
+    {
+      "id": "templates",
+      "mode": 1,
+      "report": {
+        "file": "tests/web-platform/results/indirect-isolation-20261113/templates-package.json",
+        "sha256": "ba9e90a18f2e19ca2a013f63e01ce8d98432d794ccacfad4901d8a52560a6837"
+      },
+      "folder": "tests/web-platform/build/villa-indirect-templates-20261113",
+      "rootCommit": "410778f5649675da4c6e6d1efe8c60314b30a5fd",
+      "engineCommit": "231b20bb0827ef5f38021789a067947e4e41aa57",
+      "onlyConfigDifference": "r.WebGPU.IndirectDrawReuse",
+      "runtimeAndContentMatchSource": true,
+      "currentWorkersVerified": true,
+      "releaseReady": true,
+      "prewarm": {
+        "modules": 312,
+        "pipelines": 320,
+        "capture": {
+          "file": "tests/web-platform/results/villa-startup-indirect-isolation-templates-20261113-1794548097724/result.json",
+          "sha256": "df90285fb099836bacd35b048b63fedcf83f62058b0ad755249b7c5f5a418193"
+        }
+      }
+    },
+    {
+      "id": "bindings",
+      "mode": 3,
+      "report": {
+        "file": "tests/web-platform/results/indirect-isolation-20261113/bindings-package.json",
+        "sha256": "71546077ef4f5c33c3f903108d556caffd8a5b838dcaa690bfe2d354b32ed43a"
+      },
+      "folder": "tests/web-platform/build/villa-indirect-bindings-20261113",
+      "rootCommit": "410778f5649675da4c6e6d1efe8c60314b30a5fd",
+      "engineCommit": "231b20bb0827ef5f38021789a067947e4e41aa57",
+      "onlyConfigDifference": "r.WebGPU.IndirectDrawReuse",
+      "runtimeAndContentMatchSource": true,
+      "currentWorkersVerified": true,
+      "releaseReady": true,
+      "prewarm": {
+        "modules": 312,
+        "pipelines": 320,
+        "capture": {
+          "file": "tests/web-platform/results/villa-startup-indirect-isolation-bindings-20261113-1794548208965/result.json",
+          "sha256": "1e91c6780ebbbc2311a78e4dda2f3a3bef68ea20d00cc1024ecaba83cfc2bbd0"
+        }
+      }
+    }
+  ],
+  "defaults": {
+    "value": 0,
+    "failedBeforeFix": {
+      "file": "tests/web-platform/results/indirect-isolation-20261113/defaults-before.log",
+      "sha256": "8cc7ad284ae3acd7fb74ec0808b662b593911a9df3f273243af88631a5ea4bce"
+    },
+    "passedAfterFix": {
+      "file": "tests/web-platform/results/indirect-isolation-20261113/defaults-after.log",
+      "sha256": "bbda6ae4824e312a88a7f2474a8c015223ba1d7566da173eccb26a8fa95ff47e"
+    },
+    "checks": {
+      "pass": true,
+      "automaticReuse": true,
+      "invalidatedCaptures": 3,
+      "hardlinksPreserved": true,
+      "staleWorkersRejected": true,
+      "captureFailureBlocksRelease": true,
+      "forcedPhysicalSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "diagnosticsRequireExplicitFlags": true,
+      "maskedCapturesRejected": true,
+      "adaptiveDefault": true,
+      "indirectReuseOptIn": true,
+      "inheritedIndirectReuseOverridden": true
+    }
+  },
+  "browser": {
+    "report": {
+      "file": "tests/web-platform/results/indirect-isolation-browser-20261113/result.json",
+      "sha256": "1b8e2d35c603d6d524ad7598999aa98060c3868c0d2ad0467982a44f5c76e61a"
+    },
+    "views": [
+      {
+        "mode": "adaptive",
+        "render": [
+          1400,
+          788
+        ],
+        "output": [
+          1920,
+          1080
+        ],
+        "antiAliasing": "TSR",
+        "lumenGI": true,
+        "lumenReflections": true,
+        "virtualTextures": true,
+        "virtualShadows": true,
+        "prewarmAdopted": true,
+        "indirectReuse": null,
+        "templateHits": null,
+        "bindingHits": null
+      },
+      {
+        "mode": "disabled",
+        "render": [
+          1400,
+          788
+        ],
+        "output": [
+          1920,
+          1080
+        ],
+        "antiAliasing": "TSR",
+        "lumenGI": true,
+        "lumenReflections": true,
+        "virtualTextures": true,
+        "virtualShadows": true,
+        "prewarmAdopted": true,
+        "indirectReuse": 0,
+        "templateHits": 0,
+        "bindingHits": 0
+      },
+      {
+        "mode": "templates",
+        "render": [
+          1400,
+          788
+        ],
+        "output": [
+          1920,
+          1080
+        ],
+        "antiAliasing": "TSR",
+        "lumenGI": true,
+        "lumenReflections": true,
+        "virtualTextures": true,
+        "virtualShadows": true,
+        "prewarmAdopted": true,
+        "indirectReuse": 1,
+        "templateHits": 439130,
+        "bindingHits": 0
+      },
+      {
+        "mode": "bindings",
+        "render": [
+          1400,
+          788
+        ],
+        "output": [
+          1920,
+          1080
+        ],
+        "antiAliasing": "TSR",
+        "lumenGI": true,
+        "lumenReflections": true,
+        "virtualTextures": true,
+        "virtualShadows": true,
+        "prewarmAdopted": true,
+        "indirectReuse": 3,
+        "templateHits": 0,
+        "bindingHits": 268337
+      },
+      {
+        "mode": "combined",
+        "render": [
+          1400,
+          788
+        ],
+        "output": [
+          1920,
+          1080
+        ],
+        "antiAliasing": "TSR",
+        "lumenGI": true,
+        "lumenReflections": true,
+        "virtualTextures": true,
+        "virtualShadows": true,
+        "prewarmAdopted": true,
+        "indirectReuse": 2,
+        "templateHits": 439129,
+        "bindingHits": 268338
+      }
+    ],
+    "controls": [
+      {
+        "mode": "adaptive",
+        "nativeMovementCm": 52.7289791124409,
+        "nativeTurnDegrees": 38.146185874938965
+      },
+      {
+        "mode": "disabled",
+        "nativeMovementCm": 52.819323299812595,
+        "nativeTurnDegrees": 38.146185874938965
+      },
+      {
+        "mode": "templates",
+        "nativeMovementCm": 53.014201776928054,
+        "nativeTurnDegrees": 38.146185874938965
+      },
+      {
+        "mode": "bindings",
+        "nativeMovementCm": 53.02787449335004,
+        "nativeTurnDegrees": 38.146185874938965
+      },
+      {
+        "mode": "combined",
+        "nativeMovementCm": 52.8065694197036,
+        "nativeTurnDegrees": 38.146185874938965
+      }
+    ],
+    "layouts": [
+      {
+        "name": "adaptive-desktop",
+        "nonblank": true,
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "name": "disabled-desktop",
+        "nonblank": true,
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "name": "templates-desktop",
+        "nonblank": true,
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "name": "bindings-desktop",
+        "nonblank": true,
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "name": "combined-desktop",
+        "nonblank": true,
+        "width": 1600,
+        "scrollWidth": 1600
+      },
+      {
+        "name": "mobile",
+        "nonblank": true,
+        "width": 390,
+        "scrollWidth": 390
+      }
+    ],
+    "errors": []
+  },
+  "sources": [
+    {
+      "file": "tests/web-platform/package-villa-indirect-isolation.cjs",
+      "sha256": "92139bef24cf3b5fcd2ff4fe700e7e7205e8a8b1498870ca48676f0bb28bf724"
+    },
+    {
+      "file": "tests/web-platform/verify-villa-git-history.cjs",
+      "sha256": "fcdaedeeff9043b239f78443d4c289913eabe0ca3ebc72e1675ec8be6e6b1c0f"
+    },
+    {
+      "file": "tests/web-platform/verify-web-release-defaults.cjs",
+      "sha256": "8a36e0b77b5bf4e1dcd1757414c2dd5ddd2fd3f83343d9bf0b6f67d0615bf127"
+    },
+    {
+      "file": "tests/web-platform/web-accepted-defaults.cjs",
+      "sha256": "22f84d7582ed5f0a6637940675998d8694e6b53363af138e4f4d476ac14832c9"
+    },
+    {
+      "file": "tests/web-platform/villa-indirect-isolation-live.html",
+      "sha256": "ffd259220424fd692aa009512208684fb148cdad1e12017961a780432f3b8371"
+    },
+    {
+      "file": "tests/web-platform/villa-indirect-isolation-live.js",
+      "sha256": "224d390cd5105f2d4c0d457068a12176d4b688d54abe65ca62e7d5c5821f12e5"
+    },
+    {
+      "file": "tests/web-platform/villa-smoothness-live.js",
+      "sha256": "ee65b74b15f1eb5060e41fd44882fddd539eeb26f79b460981a7bb39861441fd"
+    }
+  ],
+  "boundaries": [
+    "Only the first bad Git node has been confirmed by human comparison. Template versus binding causality remains unconfirmed.",
+    "Disabling the default is containment, not proof that node 3 with both paths off matches node 2 performance.",
+    "All node 3 variants use exactly the historical node 3 runtime and content, with individual matching actual-pipeline prewarm captures. Archived source packages are preserved.",
+    "Browser tests check configuration, feature counters, controls, pose preservation, sizing and layout. They do not establish Low-FPS recovery or a performance ranking.",
+    "Only the browser profile created for this run was removed after browser shutdown; packages, capture snapshots, logs and screenshots were retained."
+  ]
+}

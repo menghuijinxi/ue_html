@@ -12,7 +12,10 @@ const resultsDirectory = path.join(root, 'results'); fs.mkdirSync(resultsDirecto
 function fixture(name) {
   const folder = path.join(root, name); fs.mkdirSync(folder);
   for (const file of coreFiles) fs.writeFileSync(path.join(folder, file),
-    file === 'config-files.json' ? '[]' : 'fixture:' + file);
+    file === 'config-files.json' ? JSON.stringify([{
+      path: '/Engine/Platforms/Web/Config/WebEngine.ini',
+      data: Buffer.from('[SystemSettings]\nr.WebGPU.IndirectDrawReuse=2\n').toString('base64'),
+    }]) : 'fixture:' + file);
   const assets = {threads: true, renderer: 'desktop', versions: {},
     wasm: {sha256: audit(path.join(folder, coreFiles[0])).sha256}};
   fs.writeFileSync(path.join(folder, 'index.html'), 'const localRuntimeAssets = ' + JSON.stringify(assets) +
@@ -34,6 +37,8 @@ function capture(folder, withoutSubgroups = false) {
   return file;
 }
 const source = fixture('source');
+assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.IndirectDrawReuse'], 0,
+  'Manual regression starts at indirect reuse; ordinary releases must keep it opt-in');
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.VSMPageOptimization'], 3);
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.TSRLargeTiles'], 0,
   'Unaccepted TSR large tiles must stay opt-in in ordinary releases');
@@ -43,6 +48,11 @@ const effectiveTSR = Buffer.from(sourceConfig.find(item =>
   .match(/^r\.WebGPU\.TSRLargeTiles=(\d+)$/gm)?.at(-1);
 assert.equal(effectiveTSR, 'r.WebGPU.TSRLargeTiles=0',
   'The actual published configuration must restore the accepted small tiles');
+const effectiveIndirectReuse = Buffer.from(sourceConfig.find(item =>
+  item.path === '/Engine/Platforms/Web/Config/WebEngine.ini').data, 'base64').toString()
+  .match(/^r\.WebGPU\.IndirectDrawReuse=(\d+)$/gm)?.at(-1);
+assert.equal(effectiveIndirectReuse, 'r.WebGPU.IndirectDrawReuse=0',
+  'Published defaults must override inherited indirect reuse settings');
 assert(!readPage(source).args.includes('-WebPSOPrecacheTest'), 'Accepted defaults must not request speculative PSOs');
 const corpus = capture(source);
 const dest = fixture('dest');
@@ -108,8 +118,9 @@ const acceptedConfigs = JSON.parse(fs.readFileSync(path.join(source, 'config-fil
 assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
   .includes('r.Shadow.Virtual.SMRT.AdaptiveRayCount=1')));
 assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
-  .includes('r.WebGPU.IndirectDrawReuse=2')));
+  .includes('r.WebGPU.IndirectDrawReuse=0')));
 console.log(JSON.stringify({pass: true, automaticReuse: true, invalidatedCaptures: calls,
   hardlinksPreserved: true, staleWorkersRejected: true, captureFailureBlocksRelease: true,
   forcedPhysicalSize: fixed.fixedRenderSize, diagnosticsRequireExplicitFlags: true,
-  maskedCapturesRejected: true, adaptiveDefault: true, indirectReuseDefault: true}));
+  maskedCapturesRejected: true, adaptiveDefault: true, indirectReuseOptIn: true,
+  inheritedIndirectReuseOverridden: true}));

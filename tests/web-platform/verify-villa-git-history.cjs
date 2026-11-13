@@ -5,14 +5,19 @@ initializeProjectOutput();
 const {chromium} = require('playwright'), sharp = require('sharp');
 const {audit} = require('./content-file-metadata.cjs');
 const tag = process.argv[2]; assert(tag && /^[a-z0-9-]+$/.test(tag));
+const pageName = process.argv.find(arg => arg.startsWith('--page='))?.slice(7) || 'villa-git-history-live.html';
+assert(['villa-git-history-live.html', 'villa-indirect-isolation-live.html'].includes(pageName));
+const isolation = pageName === 'villa-indirect-isolation-live.html';
 const modes = (process.argv.find(arg => arg.startsWith('--modes='))?.slice(8) ||
-  'old,adaptive,indirect,pages,large,small').split(',');
+  (isolation ? 'adaptive,disabled,templates,bindings,combined' : 'old,adaptive,indirect,pages,large,small')).split(',');
 const profile = process.argv.find(arg => arg.startsWith('--profile='))?.slice(10) || 'git-history-manual-verification';
 assert(/^[a-z0-9-]+$/.test(profile));
-assert(modes.every(mode => ['old', 'adaptive', 'indirect', 'pages', 'large', 'small'].includes(mode)));
+const allowedModes = isolation ? ['adaptive', 'disabled', 'templates', 'bindings', 'combined'] :
+  ['old', 'adaptive', 'indirect', 'pages', 'large', 'small'];
+assert(modes.every(mode => allowedModes.includes(mode)));
 const directory = assertProjectOutputTree(path.join(__dirname, 'results', tag));
 assert(!fs.existsSync(directory)); fs.mkdirSync(directory);
-const report = {date: new Date().toISOString(), pass: false, modes, errors: [], states: [], checks: [],
+const report = {date: new Date().toISOString(), pass: false, page: pageName, modes, errors: [], states: [], checks: [],
   source: audit(__filename),
   boundary: 'Functional historical-package checks only: startup, prewarm, scene pixels, native movement/turning, pose preservation and physical sizing. No Low-FPS regression measurement or performance claim.'};
 const save = () => fs.writeFileSync(assertProjectOutput(path.join(directory, 'result.json')), JSON.stringify(report, null, 2));
@@ -50,6 +55,14 @@ let context, log;
         state.view.outputHeight, state.view.antiAliasing, ...state.canvas], [1400, 788, 1920, 1080, 4, 1920, 1080]);
       assert.equal(state.settings.gi, 1); assert.equal(state.settings.reflections, 1);
       assert.equal(state.settings.virtualTextures, 1); assert.equal(state.settings.virtualShadows, 1);
+      if (isolation && mode !== 'adaptive') {
+        const setting = {disabled: 0, templates: 1, bindings: 3, combined: 2}[mode];
+        assert.equal(state.rhi.indirectDrawReuse, setting);
+        assert.equal(state.rhi.indirectTemplateHits > 0, setting === 1 || setting === 2);
+        assert.equal(state.rhi.indirectTemplatesCreated > 0, setting === 1 || setting === 2);
+        assert.equal(state.rhi.indirectBindingHits > 0, setting === 2 || setting === 3);
+        assert(!('vsmPageOptimization' in state.rhi), 'Later page optimization must be absent');
+      }
       assert.equal(await page.locator('iframe').count(), 1);
       report.states.push({mode, ...state}); save(); console.log(JSON.stringify({mode, ready: true}));
       return state;
@@ -101,7 +114,8 @@ let context, log;
       await page.screenshot({path: assertProjectOutput(path.join(directory, name + '.png'))});
       report.checks.push({name, nonblank: true, layout}); save();
     }
-    await page.goto('http://127.0.0.1:8765/villa-git-history-live.html#' + modes[0]);
+    const defaultMode = isolation ? 'adaptive' : 'old';
+    await page.goto('http://127.0.0.1:8765/' + pageName + (modes[0] === defaultMode ? '' : '#' + modes[0]));
     let previous;
     for (const mode of modes) {
       if (previous) {
