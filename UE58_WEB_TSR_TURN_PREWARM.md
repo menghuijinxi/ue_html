@@ -82,6 +82,66 @@ Lumen GI、Lumen 反射、VT 和 VSM 均开启，间接绘制复用为 2，页�
 预热覆盖就不足以解释问题，应继续查 GPU 时序与调度。
 最终因果判断和修复验收等待用户新记录。
 
+## 补齐版人工复测
+
+新记录：`tests/web-platform/results/villa-turn-manual/villa-turn-2026-11-13T08-46-26-590Z-7f08cb28.json`。
+哈希 `db23c8cb43f8a241aa98066baea338bc1f19616ed6b3a8be48f610c678096816`。
+
+本次确实运行了 319 条预热的诊断包，WASM、Cook、配置和 TSR 设置符合对照身份，
+预热就绪且已采用，初始未命中为 0。原先补入的 8 条标签在录制中没有再出现创建事件。
+总命中计数从 347 增至 362；现有记录没有逐条命中计数，不能证明所有 8 条在本段都被调用。
+
+| 指标 | 原⑤ | 补齐 8 条后 |
+| --- | ---: | ---: |
+| 帧数 / 时长 | 373 / 8.85 s | 606 / 14.18 s |
+| 帧间隔中位数 | 21.525 ms | 22.445 ms |
+| P99 | 83.640 ms | 44.225 ms |
+| 1% Low | 8.600 FPS | 12.754 FPS |
+| 最长帧 | 162.695 ms | 215.705 ms |
+| 超过 50 ms / 超过 100 ms | 7 / 3 | 4 / 1 |
+| 动态图形管线创建 / 计算管线创建 | 12 / 0 | 6 / 0 |
+
+结论是长帧尚未解决。此次路线和录制长度不同，开始时引擎已到约 2086 帧，
+也比原记录更晚，不能直接将 P99、Low 的变化认定为补齐带来的因果收益。
+分辨率仍为 1400×788 输出 1920×1080，Lumen、VT、VSM 保持开启，无中断及记录到的引擎错误。
+
+6 次动态图形管线创建分为：此前两版共有的基础通道 4 次，以及本次路线额外出现的 2 次：
+
+- `main_00000358_683e3579 / main_00000ee0_ddf80c9f`
+- `main_00000d80_35b2d539 / main_000159dc_52178f7c`
+
+215.705 ms 的提交间隔在记录开始后约 6.275 s 结束，起止时间为
+owner 时钟 55511.495～55727.200 ms。上述两次创建分别在间隔开始前约
+142.150、37.645 ms 结束。它们到长帧结束相隔约 358、253 ms，
+原分析只回看结束前 200 ms 会丢掉这批事件。本次增加按“间隔开始前 200 ms 至结束”
+筛选事件，同时保留原字段，避免历史结果含义改变。
+
+停顿中的上下文 61 相对 60：RHI 累计耗时、提交计数、读取量、读取耗时均无增长，
+队列提交 2332、完成 2329，保持 3 帧未完成；采样间隔约 93.445 ms。
+下一批才恢复，新增 RHI 耗时 25.889 ms、读取 0.5 MiB / 1.095 ms。
+采样 Game 耗时约 1 ms。这支持继续检查 GPU 执行、编译或完成通知等待，
+无法区分这些原因，也不能用采样 Game 值排除批次间的其他停顿。
+该段镜头方向约 179.765 度保持不变而位置移动，记录包含移动，不只是原地转角。
+
+新增第二批诊断入口：`http://127.0.0.1:8765/villa-git-history-live.html#warm2`。
+在第一批 319 条基础上仅追加上述两条历史实际描述符，共 321 条，
+WASM、Cook、配置、参数、宿主、worker 和计算管线仍保持原⑤。
+两条来自历史捕获，所需 4 个着色器逐一校验目标 Cook 字节，
+目标设备要求保持原样，历史设备的所需特性是目标的子集。
+
+`00000d80 / 000159dc` 这个标签已在原包中出现，但原包只有背面剔除、深度 greater-equal
+的版本；缺少前面剔除、深度 always 的记录。此次按展开依赖后的完整描述符筛选，
+不再用标签出现与否代表预热覆盖。分析结果的 `labelMatchesInPack` 也明确仅统计标签。
+人工记录没有完整运行时描述符；新增候选是否准确命中，仍由新记录的实际命中及创建事件验证。
+原来的四次共有基础通道创建继续保留。第二批诊断并未被标记为性能修复或正式发布。
+两条新增图形管线通过浏览器编译，未捕获 GPU 校验错误；核心文件及计算管线不变检查、
+诊断身份记录、合成长帧、版本分段、项目内导出和桌面及窄屏布局检查通过。
+验证仍未启动 UE 自动性能对比，第一批报告没有被本次验证覆盖。
+
+复测继续使用原键鼠操作，记录首次及重复经过有问题位置的过程，导出数据。
+若两次创建均已消失而 215 ms 停顿仍存在，应继续检查 GPU 与完成通知时序；
+不能因为新增了更多预热就直接断言问题已解决。
+
 ## 复核命令
 
 ```powershell
@@ -89,8 +149,12 @@ node tests/web-platform/diagnostics/analyze-villa-manual-turn.cjs tests/web-plat
 node tests/web-platform/package-villa-turn-prewarm.cjs
 node tests/web-platform/verify-villa-turn-prewarm.cjs
 node tests/web-platform/verify-villa-turn-recorder.cjs
+node tests/web-platform/package-villa-turn-prewarm.cjs --followup
+node tests/web-platform/verify-villa-turn-prewarm.cjs --followup
+node tests/web-platform/verify-villa-turn-recorder.cjs --followup
 ```
 
 打包命令拒绝覆盖现有诊断包。浏览器验证需要可用的 Playwright 模块路径。
 所有入口初始化项目内临时目录，产物、profile 和报告均在项目内。
 入库摘要：`tests/web-platform/evidence/tsr-turn-prewarm-20261113.json`。
+补齐版复测摘要：`tests/web-platform/evidence/tsr-turn-prewarm-followup-20261113.json`。

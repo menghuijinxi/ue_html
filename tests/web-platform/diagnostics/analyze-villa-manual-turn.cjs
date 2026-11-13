@@ -18,7 +18,9 @@ function analyze(file) {
     const pipelineLabel = descriptor => [descriptor.vertex?.entryPoint, descriptor.fragment?.entryPoint].filter(Boolean).join(' / ');
     const delta = (a, b, key) => typeof a?.[key] === 'number' && typeof b?.[key] === 'number' ? b[key] - a[key] : null;
     const missingLabels = [...new Set(events.filter(event => event.name === 'createRenderPipeline').map(event => event.label))]
-      .map(label => ({label, presentInOwnPack: pack.descriptors.some(item => pipelineLabel(item.descriptor) === label)}));
+      .map(label => ({label, labelMatchesInPack: pack.descriptors.filter(item =>
+        pipelineLabel(item.descriptor) === label).length,
+        boundary: 'Labels do not identify full pipeline state; a different descriptor can share this label.'}));
     return {mode: metadata.mode, label: metadata.label, metadata,
       summary: {frames: frames.length, durationMs: frames.at(-1).time - frames[0].time,
         p50Ms: sorted[Math.floor(sorted.length * .5)], p99Ms: sorted[Math.floor(sorted.length * .99)],
@@ -33,14 +35,22 @@ function analyze(file) {
       missingLabels,
       worst: intervals.toSorted((a, b) => b.ms - a.ms).slice(0, 8).map(frame => {
         const context = contexts[frame.context], previous = contexts[frame.context - 1];
-        return {time: frame.time, sinceRecordingMs: frame.time + record.timeOrigin - record.startEpoch,
+        const intervalStart = frame.time - frame.ms;
+        return {time: frame.time, intervalStart, sinceRecordingMs: frame.time + record.timeOrigin - record.startEpoch,
           ms: frame.ms, context: frame.context, camera: context.camera, gameMs: context.gameMs,
           batchRhiMs: delta(previous?.stages, context.stages, 'rhiWorkMilliseconds'),
           batchSubmissions: delta(previous?.stages, context.stages, 'presented'),
           batchReadMiB: delta(previous?.io, context.io, 'diskReadBytes') / 1048576,
           batchReadMs: delta(previous?.io, context.io, 'diskReadMs'),
           pendingTextures: context.streaming.pending, prewarm: context.prewarm,
-          eventsWithin200msBefore: events.filter(event => event.start <= frame.time && event.end >= frame.time - 200)};
+          eventsWithin200msBefore: events.filter(event => event.start <= frame.time && event.end >= frame.time - 200),
+          eventsNearInterval: events.filter(event => event.start <= frame.time && event.end >= intervalStart - 200),
+          nearbyBatches: contexts.map((batch, index) => ({index, at: batch.at,
+            rhiMs: delta(contexts[index - 1]?.stages, batch.stages, 'rhiWorkMilliseconds'),
+            presents: delta(contexts[index - 1]?.stages, batch.stages, 'presented'),
+            readBytes: delta(contexts[index - 1]?.io, batch.io, 'diskReadBytes'),
+            readMs: delta(contexts[index - 1]?.io, batch.io, 'diskReadMs'),
+            scheduler: batch.scheduler})).filter(batch => batch.at >= intervalStart - 200 && batch.at <= frame.time + 100)};
       }),
       failures: [...new Set(contexts.map(context => context.failure).filter(Boolean))],
       interruptions: record.interruptions,

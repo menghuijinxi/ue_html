@@ -1,0 +1,137 @@
+{
+  "date": "2026-11-13",
+  "purpose": "Analyze the human followup of the eight-pipeline supplement and isolate two further graphics candidates.",
+  "performanceAcceptance": "Not fixed: the supplied warm capture still contains a 215.705 ms interval. Second supplement awaits human retest.",
+  "source": {
+    "file": "tests/web-platform/results/villa-turn-manual/villa-turn-2026-11-13T08-46-26-590Z-7f08cb28.json",
+    "sha256": "db23c8cb43f8a241aa98066baea338bc1f19616ed6b3a8be48f610c678096816"
+  },
+  "capture": {
+    "mode": "warm",
+    "frames": 606,
+    "intervals": 605,
+    "durationMs": 14180.775,
+    "medianMs": 22.445,
+    "p99Ms": 44.225,
+    "maxMs": 215.705,
+    "lowFps": 12.754056,
+    "lowTailIntervals": 7,
+    "over50": 4,
+    "over100": 1,
+    "prewarmPipelines": 319,
+    "prewarmReady": true,
+    "prewarmAdopted": true,
+    "initialHits": 347,
+    "lastHits": 362,
+    "prewarmMissesDelta": 6,
+    "renderPipelineApiCalls": 6,
+    "computePipelineApiCalls": 0,
+    "originalEightLabelsCreatedAgain": [],
+    "perPipelineHitsAvailable": false,
+    "sharedBasePassCreates": 4,
+    "additionalGraphicsCreates": 2,
+    "interruptions": [],
+    "recordedFailures": [],
+    "downloadsDelta": 0,
+    "diskReadMiB": 567,
+    "diskReadMs": 1328.705,
+    "rhiMsPerSubmission": 10.989675,
+    "initialEngineFrame": 2086,
+    "renderSize": [1400, 788],
+    "outputSize": [1920, 1080],
+    "antiAliasing": "TSR",
+    "lumenGi": true,
+    "lumenReflections": true,
+    "virtualTextures": true,
+    "virtualShadows": true
+  },
+  "longest": {
+    "sinceRecordingMs": 6275.23999,
+    "ownerStartMs": 55511.495,
+    "ownerEndMs": 55727.2,
+    "context": 62,
+    "precedingGraphics": [
+      {
+        "label": "main_00000358_683e3579 / main_00000ee0_ddf80c9f",
+        "endMs": 55369.345,
+        "leadToIntervalStartMs": 142.15
+      },
+      {
+        "label": "main_00000d80_35b2d539 / main_000159dc_52178f7c",
+        "endMs": 55473.85,
+        "leadToIntervalStartMs": 37.645
+      }
+    ],
+    "sampledNoProgress": {
+      "context": 61,
+      "batchIntervalMs": 93.445,
+      "rhiMsDelta": 0,
+      "presentsDelta": 0,
+      "readBytesDelta": 0,
+      "readMsDelta": 0,
+      "submitted": 2332,
+      "completed": 2329,
+      "outstanding": 3
+    },
+    "context62Batch": {
+      "rhiMsDelta": 25.889158,
+      "presentsDelta": 1,
+      "readMiBDelta": 0.5,
+      "readMsDelta": 1.095,
+      "sampledGameMs": 1.045166
+    }
+  },
+  "analysisChecks": {
+    "rawIntervalConsistency": true,
+    "recordedPrewarmHashMatches": true,
+    "old200msEndWindowMissedBothGraphicsEvents": true,
+    "intervalBasedWindowRetainsBothGraphicsEvents": true,
+    "labelPresenceDoesNotProveFullDescriptorCoverage": true
+  },
+  "diagnostic": {
+    "url": "http://127.0.0.1:8765/villa-git-history-live.html#warm2",
+    "folder": "tests/web-platform/build/villa-tsr-turn-prewarm2-20261113",
+    "diagnosticOnly": true,
+    "ordinaryRelease": false,
+    "originalPipelines": 319,
+    "supplementedPipelines": 321,
+    "addedGraphicsCandidates": 2,
+    "targetCookShaderBytesVerified": 4,
+    "originalDescriptorsUnchanged": true,
+    "computePipelinesUnchanged": true,
+    "coreHashesUnchanged": true,
+    "argumentsUnchanged": true,
+    "browserCompileCompleted": 2,
+    "browserCompileGpuErrors": [],
+    "manifestSha256": "e65ac8726543c6318b581ce6cfbd8e1f72beed1c4563baa42f663c7c7f5ea5dc",
+    "packSha256": "0c2fd75510cac64ab98a8681fa38477018630f0a45244f47fb2b03a5d85e0920",
+    "sharedFourBasePassCreatesRetained": true,
+    "engineSourceChanged": false,
+    "releaseDefaultsChanged": false,
+    "recorderDiagnosticIdentityChecked": true,
+    "recorderExportRoundTrip": true,
+    "synthetic117msFrameRetained": true,
+    "versionBoundariesChecked": true,
+    "layoutWidths": [1500, 390],
+    "httpEndpointsStatus": 200
+  },
+  "reports": [
+    {
+      "file": "tests/web-platform/results/villa-manual-turn-followup-20261113.json",
+      "sha256": "8e795dfc93935266b0f85aab1a5295a00739ac1db2984235ba84e9c4437103e8"
+    },
+    {
+      "file": "tests/web-platform/results/villa-tsr-turn-prewarm2-package.json",
+      "sha256": "365010e9b00335fe32817947c9bedd187114eb2bbe48d60b1c22f487192cd58a"
+    },
+    {
+      "file": "tests/web-platform/results/villa-turn-prewarm2-verification.json",
+      "sha256": "11bbb6c8be2d97f15e7321b14d13284b18de29eed5f1edd0969ad0861a921447"
+    },
+    {
+      "file": "tests/web-platform/results/turn-recorder-verification-prewarm2.json",
+      "sha256": "95f2c9d9ba8f0e285c64ab09867502148d791e9a76d5dcbd24f42e713540d7e8"
+    }
+  ],
+  "boundary": "The human run starts later and follows a longer route than earlier captures. No causal FPS improvement is claimed. Sampled queue completion can include GPU execution, compilation and callback delivery. Existing events contain labels, not full runtime descriptors; the two added recorded candidates require human hit verification. No UE scene or automated performance comparison ran this round."
+}

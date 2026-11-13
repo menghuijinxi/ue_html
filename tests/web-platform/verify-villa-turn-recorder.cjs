@@ -4,6 +4,7 @@ initializeProjectOutput();
 const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path');
 const {createRecorder} = require('./villa-turn-recorder.js');
 const server = require('./serve.cjs');
+const suffix = process.argv.includes('--followup') ? '-prewarm2' : '';
 const recorder = createRecorder(), origin = 100000;
 recorder.start({mode: 'pages'}, origin + 10);
 const batch = {timeOrigin: origin, at: 60, times: [0, 12, 28, 44], events: []};
@@ -32,7 +33,7 @@ let browser;
     assert.equal((await post(recorder.export(), {Origin: 'http://other.invalid'})).status, 403);
     assert.equal((await post({version: 1, kind: 'villa-manual-turn', records: []})).status, 400);
     const {chromium} = require('playwright');
-    const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles/turn-recorder-ui'));
+    const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles/turn-recorder-ui' + suffix));
     browser = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: true,
       viewport: {width: 1500, height: 900}, downloadsPath: assertProjectOutput(path.join(profile, 'downloads'))});
     const page = browser.pages()[0] || await browser.newPage(), errors = report.errors = [];
@@ -40,18 +41,18 @@ let browser;
     // Exercise real UI and HTTP export without starting another UE instance.
     await page.route('**/villa-smoothness-live.js', route => route.fulfill({contentType: 'text/javascript', body: `
       const frame=document.createElement('iframe');frame.src='/recorder-fixture.html';document.getElementById('stage').prepend(frame);
-      frame.onload=()=>{window.__villaGitHistory={ready:true,busy:false,mode:'pages'};
+      frame.onload=()=>{window.__villaGitHistory={ready:true,busy:false,mode:location.hash.slice(1)};
         document.getElementById('loading').hidden=true;};`}));
     await page.route('**/recorder-fixture.html', route => route.fulfill({contentType: 'text/html',
       headers: {'Cross-Origin-Embedder-Policy': 'require-corp', 'Cross-Origin-Opener-Policy': 'same-origin'}, body: `
       <canvas id="canvas" tabindex="0" style="width:100%;height:100%;background:#223a30"></canvas>
-      <script>const localRuntimeAssets={"wasm":{"sha256":"fixture-wasm"},"versions":{"web-engine-worker.js":"fixture-worker"}};
+      <script>const localRuntimeAssets={"wasm":{"sha256":"fixture-wasm"},"versions":{"web-engine-worker.js":"fixture-worker"},"diagnosticPrewarm":{"kind":"fixture","addedRenderPipelines":2}};
       const options={arguments: ["-webgpu","-ForceRes"],};
       window.__webDefaultCamera={x:1,y:2,z:3,yaw:50,pitch:-5};
       window.__webLivePerformance={submitted:{maxMs:117}};
       window.__webPipelinePrewarm={ready:true,adopted:true,counts:{hits:320,misses:0}};
       </script>`}));
-    await page.goto(address + '/villa-git-history-live.html#pages');
+    await page.goto(address + '/villa-git-history-live.html#' + (suffix ? 'warm2' : 'pages'));
     await page.waitForFunction(() => !document.getElementById('record').disabled);
     await page.locator('#record').click();
     await page.evaluate(() => {
@@ -62,6 +63,8 @@ let browser;
     await page.locator('#record').click();
     assert((await page.locator('#capture-status').textContent()).includes('117.0 ms'));
     assert.equal(await page.evaluate(() => __villaTurnRecorder.records[0].metadata.wasm), 'fixture-wasm');
+    assert.equal(await page.evaluate(() => __villaTurnRecorder.records[0].metadata.diagnosticPrewarm.addedRenderPipelines), 2);
+    assert.equal(await page.evaluate(() => __villaTurnRecorder.records[0].metadata.mode), suffix ? 'warm2' : 'pages');
     assert.deepEqual(await page.evaluate(() => __villaTurnRecorder.records[0].metadata.arguments), ['-webgpu', '-ForceRes']);
     await page.locator('#record').click();
     await page.evaluate(() => __villaGitHistory.mode = 'large');
@@ -76,7 +79,7 @@ let browser;
     for (const width of [1500, 390]) {
       await page.setViewportSize({width, height: 900});
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-      const file = assertProjectOutput(path.join(__dirname, 'results', 'turn-recorder-ui-' + width + '.png'));
+      const file = assertProjectOutput(path.join(__dirname, 'results', 'turn-recorder-ui' + suffix + '-' + width + '.png'));
       await page.screenshot({path: file});
     }
     assert.deepEqual(errors, []);
@@ -86,6 +89,6 @@ let browser;
   } catch (error) {report.failure = error.stack; throw error;}
   finally {
     await browser?.close(); await new Promise(resolve => server.close(resolve));
-    fs.writeFileSync(assertProjectOutput(path.join(__dirname, 'results/turn-recorder-verification.json')), JSON.stringify(report, null, 2));
+    fs.writeFileSync(assertProjectOutput(path.join(__dirname, 'results/turn-recorder-verification' + suffix + '.json')), JSON.stringify(report, null, 2));
   }
 })().catch(error => {console.error(error); process.exitCode = 1;});

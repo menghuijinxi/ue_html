@@ -5,13 +5,17 @@ const fs = require('node:fs'), path = require('node:path'), crypto = require('no
 const {audit} = require('./content-file-metadata.cjs');
 const {readPage, writePage, replaceFile, coreFiles} = require('./web-pipeline-prewarm-package.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
-const base = __dirname, source = path.join(base, 'build/villa-tsr-tiles-20261112');
-const donor = path.join(base, 'build/villa-git-pages-20261113');
-const output = assertProjectOutputTree(path.join(base, 'build/villa-tsr-turn-prewarm-20261113'));
+const followup = process.argv.includes('--followup'), tag = followup ? 'prewarm2' : 'prewarm';
+const base = __dirname, source = path.join(base, 'build/' +
+  (followup ? 'villa-tsr-turn-prewarm-20261113' : 'villa-tsr-tiles-20261112'));
+const output = assertProjectOutputTree(path.join(base, 'build/villa-tsr-turn-' + tag + '-20261113'));
 assert(!fs.existsSync(output), 'Preserve existing diagnostic packages');
 const parse = file => JSON.parse(fs.readFileSync(file));
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const labels = [
+const labels = followup ? [
+  'main_00000d80_35b2d539 / main_000159dc_52178f7c',
+  'main_00000358_683e3579 / main_00000ee0_ddf80c9f',
+] : [
   'main_00001dc0_c525be22 / main_00003aa4_79c6efa3',
   'main_00001f00_a30a26d4 / main_000045b0_769410c6',
   'main_00001bd8_e02fd6df / main_000009f4_2d0d1a47',
@@ -22,19 +26,57 @@ const labels = [
   'main_00001ec4_56192608 / main_00001a7c_b30566da',
 ];
 const pack = parse(path.join(source, 'pipeline-prewarm.json'));
-const recorded = parse(path.join(donor, 'pipeline-prewarm.json'));
-assert.deepEqual(pack.devices, recorded.devices);
 const label = descriptor => [descriptor.vertex?.entryPoint, descriptor.fragment?.entryPoint].filter(Boolean).join(' / ');
-const selected = labels.map(name => {
-  assert(!pack.descriptors.some(item => label(item.descriptor) === name));
-  const match = recorded.descriptors.filter(item => item.kind === 'render' && label(item.descriptor) === name);
-  assert.equal(match.length, 1); return match[0];
+const donors = [{file: path.join(base, 'build/villa-git-pages-20261113/pipeline-prewarm.json'),
+  labels: followup ? labels.slice(0, 1) : labels}];
+if (followup) donors.push({
+  file: path.join(base, 'results/villa-startup-20261109-prewarm-input-capture/0-corpus.json'),
+  labels: labels.slice(1),
 });
-const sourceResources = new Map([...recorded.modules, ...recorded.layouts].map(item => [item.id, item]));
-const selectedModules = new Set(selected.flatMap(item => [item.descriptor.vertex.module.id, item.descriptor.fragment.module.id]));
+function semanticKey(corpus, descriptor) {
+  const resources = new Map([...corpus.modules, ...corpus.layouts].map(item => [item.id, item]));
+  function expand(value) {
+    if (value === null || typeof value !== 'object') return value;
+    if (Array.isArray(value)) return value.map(expand);
+    if (value.$gpu) {
+      const item = resources.get(value.id); assert(item && item.$gpu === value.$gpu);
+      return {$gpu: item.$gpu, descriptor: expand(item.descriptor)};
+    }
+    return Object.fromEntries(Object.keys(value).sort().filter(key => key !== 'label')
+      .map(key => [key, expand(value[key])]));
+  }
+  return hash(JSON.stringify(expand(descriptor)));
+}
+const existing = new Set(pack.descriptors.map(item => semanticKey(pack, item.descriptor)));
+const sourceResources = new Map(), selected = [];
+for (const [index, donor] of donors.entries()) {
+  const recorded = parse(donor.file);
+  assert.equal(recorded.devices.length, 1);
+  for (const [name, value] of Object.entries(recorded.devices[0].descriptor.requiredLimits))
+    assert.equal(pack.devices[0].descriptor.requiredLimits[name], value, 'Device limit differs: ' + name);
+  assert(recorded.devices[0].descriptor.requiredFeatures.every(feature =>
+    pack.devices[0].descriptor.requiredFeatures.includes(feature)), 'Donor requires unavailable features');
+  for (const resource of [...recorded.modules, ...recorded.layouts])
+    sourceResources.set(index + ':' + resource.id, resource);
+  for (const name of donor.labels) {
+    // Labels can describe both front/back or depth-state variants. Compare full
+    // descriptors with resolved resources before selecting the missing variant.
+    const matches = recorded.descriptors.filter(item => item.kind === 'render' &&
+      label(item.descriptor) === name && !existing.has(semanticKey(recorded, item.descriptor)));
+    assert.equal(matches.length, 1, 'Require one recorded missing descriptor: ' + name);
+    selected.push({record: matches[0], sourceIndex: index});
+  }
+}
+const selectedModules = new Set(selected.flatMap(({record, sourceIndex}) =>
+  [record.descriptor.vertex.module.id, record.descriptor.fragment.module.id].map(id => sourceIndex + ':' + id)));
 // Verify shader bytes against the target Cook, not just labels from another runtime.
 const manifest = parse(path.join(source, 'content-files.json'));
-const wanted = new Map([...selectedModules].map(id => [hash(sourceResources.get(id).descriptor.code), id]));
+const wanted = new Map();
+for (const id of selectedModules) {
+  const digest = hash(sourceResources.get(id).descriptor.code);
+  if (!wanted.has(digest)) wanted.set(digest, []);
+  wanted.get(digest).push(id);
+}
 const shaderProof = [];
 const fd = fs.openSync(path.join(source, manifest.pack.url), 'r');
 const read = (offset, size) => {
@@ -59,7 +101,8 @@ try {
       const metadata = header.readUInt32LE(20), length = header.readUInt32LE(24);
       assert(28 + metadata + length <= size);
       const digest = hash(read(offset + 28 + metadata, length));
-      if (wanted.has(digest)) shaderProof.push({moduleId: wanted.get(digest), sha256: digest, archive: file.path, shaderIndex: index});
+      for (const id of wanted.get(digest) || [])
+        shaderProof.push({moduleId: id, sha256: digest, archive: file.path, shaderIndex: index});
     }
   }
 } finally {fs.closeSync(fd);}
@@ -67,21 +110,22 @@ assert.equal(new Set(shaderProof.map(item => item.moduleId)).size, selectedModul
   'All added WGSL modules must be byte-identical to target Cook shaders');
 let next = Math.max(...pack.modules.map(item => item.id), ...pack.layouts.map(item => item.id));
 const remapped = new Map(), original = structuredClone(pack);
-function transfer(value) {
+function transfer(value, sourceIndex) {
   if (value === null || typeof value !== 'object') return value;
-  if (Array.isArray(value)) return value.map(transfer);
+  if (Array.isArray(value)) return value.map(child => transfer(child, sourceIndex));
   if (value.$gpu) {
-    if (remapped.has(value.id)) return remapped.get(value.id);
-    const resource = sourceResources.get(value.id); assert(resource && resource.$gpu === value.$gpu);
-    const reference = {$gpu: resource.$gpu, id: ++next}; remapped.set(value.id, reference);
-    const descriptor = transfer(resource.descriptor);
+    const key = sourceIndex + ':' + value.id;
+    if (remapped.has(key)) return remapped.get(key);
+    const resource = sourceResources.get(key); assert(resource && resource.$gpu === value.$gpu);
+    const reference = {$gpu: resource.$gpu, id: ++next}; remapped.set(key, reference);
+    const descriptor = transfer(resource.descriptor, sourceIndex);
     pack[resource.$gpu === 'module' ? 'modules' : 'layouts'].push({...reference, descriptor});
     return reference;
   }
-  return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, transfer(child)]));
+  return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, transfer(child, sourceIndex)]));
 }
-for (const item of selected) pack.descriptors.push({...item, id: pack.descriptors.length + 1,
-  deviceId: pack.devices[0].id, descriptor: transfer(item.descriptor)});
+for (const {record, sourceIndex} of selected) pack.descriptors.push({...record, id: pack.descriptors.length + 1,
+  deviceId: pack.devices[0].id, descriptor: transfer(record.descriptor, sourceIndex)});
 assert.deepEqual(pack.descriptors.slice(0, original.descriptors.length), original.descriptors);
 assert.deepEqual(pack.descriptors.filter(item => item.kind === 'compute'), original.descriptors.filter(item => item.kind === 'compute'));
 fs.mkdirSync(output);
@@ -94,7 +138,9 @@ replaceFile(path.join(output, 'pipeline-prewarm.json'), JSON.stringify(pack));
 const page = readPage(output);
 page.assets.diagnosticOnly = true;
 page.assets.diagnosticPrewarm = {kind: 'manual-turn-coverage', addedRenderPipelines: labels.length,
-  donorWasm: recorded.wasm, originalPrewarm: audit(path.join(source, 'pipeline-prewarm.json')).sha256,
+  donors: donors.map(donor => audit(donor.file)),
+  previous: page.assets.diagnosticPrewarm,
+  originalPrewarm: audit(path.join(source, 'pipeline-prewarm.json')).sha256,
   boundary: 'Supplemented recorded graphics descriptors with WGSL verified against the target Cook. Not a same-runtime capture or an approved ordinary release.'};
 page.assets.pipelinePrewarm.sha256 = audit(path.join(output, 'pipeline-prewarm.json')).sha256;
 writePage(output, page);
@@ -105,10 +151,10 @@ const core = coreFiles.map(name => {
 const products = fs.readdirSync(output).map(name => audit(path.join(output, name)));
 writeVersions(output, products);
 const report = {date: new Date().toISOString(), pass: true, diagnosticOnly: true,
-  source, donor, output, core, originalPipelines: original.descriptors.length,
+  source, donors: donors.map(donor => audit(donor.file)), output, core, originalPipelines: original.descriptors.length,
   supplementedPipelines: pack.descriptors.length, added: labels, shaderProof,
   unchangedComputePipelines: true, unchangedSourcePack: audit(path.join(source, 'pipeline-prewarm.json')),
   pack: audit(path.join(output, 'pipeline-prewarm.json')),
   boundary: page.assets.diagnosticPrewarm.boundary};
-fs.writeFileSync(assertProjectOutput(path.join(base, 'results/villa-tsr-turn-prewarm-package.json')), JSON.stringify(report, null, 2));
+fs.writeFileSync(assertProjectOutput(path.join(base, 'results/villa-tsr-turn-' + tag + '-package.json')), JSON.stringify(report, null, 2));
 console.log(JSON.stringify({pass: true, output, added: labels.length, verifiedShaders: selectedModules.size, pipelines: pack.descriptors.length}));

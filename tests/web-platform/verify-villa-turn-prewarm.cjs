@@ -4,12 +4,13 @@ initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright'), {audit} = require('./content-file-metadata.cjs');
 const {readPage, coreFiles} = require('./web-pipeline-prewarm-package.cjs');
-const base = __dirname, folder = path.join(base, 'build/villa-tsr-turn-prewarm-20261113');
-const source = path.join(base, 'build/villa-tsr-tiles-20261112');
+const followup = process.argv.includes('--followup'), tag = followup ? 'prewarm2' : 'prewarm', expectedAdded = followup ? 2 : 8;
+const base = __dirname, folder = path.join(base, 'build/villa-tsr-turn-' + tag + '-20261113');
+const source = path.join(base, 'build/' + (followup ? 'villa-tsr-turn-prewarm-20261113' : 'villa-tsr-tiles-20261112'));
 const pack = JSON.parse(fs.readFileSync(path.join(folder, 'pipeline-prewarm.json')));
 const original = JSON.parse(fs.readFileSync(path.join(source, 'pipeline-prewarm.json')));
 const report = {date: new Date().toISOString(), pass: false, errors: [], package: audit(path.join(folder, 'asset-versions.json')),
-  boundary: 'Compile only the eight supplemental graphics pipelines. No engine scene, camera automation or performance comparison.'};
+  boundary: 'Compile only the ' + expectedAdded + ' supplemental graphics pipelines. No engine scene, camera automation or performance comparison.'};
 let browser;
 (async () => {
   try {
@@ -18,10 +19,10 @@ let browser;
     for (const name of coreFiles) assert.equal(audit(path.join(folder, name)).sha256, audit(path.join(source, name)).sha256);
     assert.deepEqual(pack.descriptors.slice(0, original.descriptors.length), original.descriptors);
     assert.deepEqual(pack.descriptors.filter(item => item.kind === 'compute'), original.descriptors.filter(item => item.kind === 'compute'));
-    assert.equal(pack.descriptors.length - original.descriptors.length, 8);
+    assert.equal(pack.descriptors.length - original.descriptors.length, expectedAdded);
     assert.equal(page.assets.pipelinePrewarm.sha256, audit(path.join(folder, 'pipeline-prewarm.json')).sha256);
     assert.equal(page.assets.diagnosticOnly, true);
-    const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/turn-prewarm-compile'));
+    const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/turn-' + tag + '-compile'));
     browser = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: true,
       downloadsPath: assertProjectOutput(path.join(profile, 'downloads'))});
     const tab = browser.pages()[0] || await browser.newPage();
@@ -59,13 +60,13 @@ let browser;
       await device.queue.onSubmittedWorkDone();
       device.destroy(); return {completed, errors, resources: objects.size};
     }, {pack, added});
-    assert.equal(report.gpu.completed.length, 8); assert.deepEqual(report.gpu.errors, []);
+    assert.equal(report.gpu.completed.length, expectedAdded); assert.deepEqual(report.gpu.errors, []);
     report.pass = true; report.coreUnchanged = true; report.computeUnchanged = true;
     report.actualTurnAcceptance = 'Pending human retest';
     console.log(JSON.stringify(report));
   } catch (error) {report.errors.push(error.stack); throw error;}
   finally {
     await browser?.close();
-    fs.writeFileSync(assertProjectOutput(path.join(base, 'results/villa-turn-prewarm-verification.json')), JSON.stringify(report, null, 2));
+    fs.writeFileSync(assertProjectOutput(path.join(base, 'results/villa-turn-' + tag + '-verification.json')), JSON.stringify(report, null, 2));
   }
 })().catch(error => {console.error(error); process.exitCode = 1;});

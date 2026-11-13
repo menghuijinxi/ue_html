@@ -13,4 +13,6 @@ globalThis.__villaHistoryVariants = {
     expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
   warm: {folder: 'villa-tsr-turn-prewarm-20261113', label: '⑤ 补齐转向预热 · 诊断',
     expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
+  warm2: {folder: 'villa-tsr-turn-prewarm2-20261113', label: '⑤ 预热第二批 · 诊断',
+    expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
 };
