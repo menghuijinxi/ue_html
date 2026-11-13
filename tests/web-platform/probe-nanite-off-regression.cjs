@@ -20,11 +20,13 @@ const packBatches = option('pack-batches')?.split(',');
 assert(!packBatches || (packBatches.length === modes.length && packBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const microBatches = option('micro-batches')?.split(',');
 assert(!microBatches || (microBatches.length === modes.length && microBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
+const fixedMerges = option('fixed-merges')?.split(',');
+assert(!fixedMerges || (fixedMerges.length === modes.length && fixedMerges.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const nanites = option('nanites')?.split(',');
 assert(!nanites || (nanites.length === modes.length && nanites.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const materialPrecaches = option('material-precaches')?.split(',');
 assert(!materialPrecaches || (materialPrecaches.length === modes.length && materialPrecaches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
-assert(!nanites || ![packBatches,microBatches,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
+assert(!nanites || ![packBatches,microBatches,fixedMerges,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
 const tour = process.argv.includes('--tour');
 const walk = process.argv.includes('--walk') || tour, headed = process.argv.includes('--headed');
 const trace = process.argv.includes('--trace'), gpuProbe = process.argv.includes('--gpu-probe');
@@ -51,7 +53,7 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, nanites, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, nanites, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
   boundary: 'Serial fresh Edge contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
@@ -69,6 +71,7 @@ if(hierarchyBatches)report.boundary='Serial fresh Edge contexts, same package, N
 if(materialPrecaches)report.boundary='Serial fresh Edge contexts, same package and enabled Nanite/hierarchy/HZB batching. Material precache set in WebEngine.ini before engine startup and verified by native readback. Normal advancing clocks; first simultaneous movement/turn route without warmup. All viewport submission intervals retained. Explicit diagnostics are excluded from FPS acceptance.';
 if(packBatches)report.boundary='Serial fresh Edge contexts, same package with enabled Nanite/hierarchy/HZB/material precache. Native cluster pack switch independently verified. Normal advancing clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics are excluded from FPS acceptance.';
 if(microBatches)report.boundary='Serial fresh Edge contexts, same package with enabled Nanite/hierarchy/HZB/packing/material precache. Only native micro batch switch changes; actual indirect workgroups are read back before capture. Normal clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics are excluded from FPS acceptance.';
+if(fixedMerges)report.boundary='Serial fresh Edge contexts, same package with Nanite and previous optimizations enabled. Only native fixed draw merge switch changes; actual draw counts and arguments read back before capture. Normal clocks, first movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics excluded from FPS acceptance.';
 if(nanites)report.boundary='Serial fresh Edge contexts, identical runtime/Cook/configuration except r.Nanite set before startup and verified by native readback. Scene opt-in and all optimization settings retained. Normal clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Nanite-off uses the same converted assets\' cooked fallback geometry. Explicit diagnostics are excluded from FPS acceptance.';
 if (gpuTimestamps) { report.gpuWindow = {start:gpuStart,end:gpuEnd}; report.boundary += ' GPU timestamp instrumentation is diagnostic and is excluded from game-performance acceptance.'; }
 if (trace) report.boundary += ' DevTools trace instrumentation is diagnostic.';
@@ -197,8 +200,8 @@ ${marker}
         assert(!await page.evaluate(() => globalThis.__webEngineFailure));
         run.startupReadyMs = Date.now() - startupBegin;
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
-        if (hierarchyBatches || occlusionBatches || packBatches || microBatches || materialPrecaches || nanites) {
-          for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest'],[microBatches,'WebNaniteMicroBatchTest']])
+        if (hierarchyBatches || occlusionBatches || packBatches || microBatches || fixedMerges || materialPrecaches || nanites) {
+          for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest'],[microBatches,'WebNaniteMicroBatchTest'],[fixedMerges,'WebNaniteFixedMergeTest']])
             if(values)assert.equal(await page.evaluate(a => __webEngineRPC(a[0],a[1]), [fn,Number(values[index])]), 1);
           assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteAutomaticSceneTest', 1)), 1);
           await page.waitForFunction(() => __webPSOPrecacheReady, null, {timeout:180000});
@@ -224,6 +227,11 @@ ${marker}
             assert.equal(state.microBatchedEntries>0,!!enabled);
             run.micro={enabled,registered:state.registered,entries:state.entries,batchedEntries:state.microBatchedEntries,
               dispatchBuffers:state.microDispatchBuffers,directGroups:state.microDirectGroups,indirectArguments:state.microDispatchArguments};}
+          if(fixedMerges){const enabled=Number(fixedMerges[index]);
+            assert.equal(state.fixedMerge,!!enabled);assert(state.hierarchyBatch&&state.occlusionBatch&&state.packBatch&&state.microBatch&&state.materialPrecache);
+            assert.equal(state.fixedMergedEntries>0,!!enabled);
+            run.fixed={enabled,registered:state.registered,entries:state.entries,mergedEntries:state.fixedMergedEntries,
+              drawCalls:state.fixedDrawCalls,indirectArguments:state.fixedDrawArguments};}
           if(materialPrecaches){const enabled=Number(materialPrecaches[index]);
             assert.equal(state.materialPrecache,!!enabled);assert(state.hierarchyBatch&&state.occlusionBatch);
             run.materialPrecache={enabled,registered:state.registered,entries:state.entries,

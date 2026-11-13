@@ -66,6 +66,7 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("materialPrecache"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialPrecache"))->GetInt() != 0);
     Report->SetBoolField(TEXT("packBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"))->GetInt() != 0);
     Report->SetBoolField(TEXT("microBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchMicroRaster"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("fixedMerge"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMergeFixedRaster"))->GetInt() != 0);
     for (uint32 Final = 0; Final < 2; ++Final)
     {
         const bool Valid = OcclusionFrames[Final] == Cull.View->Family->FrameNumber;
@@ -250,6 +251,16 @@ void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved
     Report->SetNumberField(TEXT("microBatchedEntries"), Saved.Raster.MicroBatchedEntries);
     Report->SetNumberField(TEXT("microDispatchBuffers"), Saved.Raster.MicroDispatchBuffers);
     Report->SetNumberField(TEXT("microDirectGroups"), Saved.Raster.MicroDirectGroups);
+    Report->SetNumberField(TEXT("fixedMergedEntries"), Saved.Raster.FixedMergedEntries);
+    Report->SetNumberField(TEXT("fixedDrawCalls"), Saved.Raster.FixedDrawCalls);
+    if (!Saved.Raster.FixedDrawArguments.IsEmpty())
+    {
+        auto* Arguments = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Saved.Raster.FixedDrawArguments.Num() * 16), TEXT("Nanite.Web.TestFixedArguments"));
+        for (int32 Index = 0; Index < Saved.Raster.FixedDrawArguments.Num(); ++Index)
+            AddCopyBufferPass(Graph, Arguments, Index * 16, Saved.Raster.FixedDrawArguments[Index], 0, 16);
+        Copy(Graph, Arguments, TEXT("fixedDrawArguments"));
+    }
+    else Report->SetArrayField(TEXT("fixedDrawArguments"), {});
     if (!Saved.Raster.MicroDispatchArguments.IsEmpty())
     {
         auto* Arguments = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Saved.Raster.MicroDispatchArguments.Num() * 12), TEXT("Nanite.Web.TestMicroArguments"));
@@ -341,6 +352,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNanitePackBatchTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteFixedMergeTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMergeFixedRaster"));
     static int Saved = -1;
     if (!CVar || Enabled < -1 || Enabled > 1) return 0;
     if (Enabled < 0)

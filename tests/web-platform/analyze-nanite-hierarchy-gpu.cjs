@@ -8,13 +8,14 @@ for(const tag of tags){
  const file=path.join(__dirname,'results',`gpu-${tag}.json`),r=JSON.parse(fs.readFileSync(file));assert(r.pass&&r.frames.length===16);
  const groups=new Map(),pipelineWork=new Map();
  const kindOf=shader=>{const marker=shader?.markers||[];return marker.includes('WebRasterClusterKeys')?'pack':
+  marker.includes('WebFixedBatchSlotsOutput')?'fixed-arguments':marker.includes('WebFixedBatchData')?'nanite-fixed-merged':
   marker.includes('WebMicroBatchPrefixOutput')?'micro-arguments':marker.includes('WebMicroBatchData')?'micro-raster':
   marker.includes('WebRasterMaterialMasks')?(shader.compute?'micro-raster':'nanite-raster'):
   marker.includes('WebNativeMaterial')?'native-material':shader?.compute?'other-compute':'other-render';};
  for(const command of r.capture.results)for(const pass of command.passes){
   const markers=new Set(Object.keys(pass.pipelines).flatMap(p=>r.capture.pipelines[p]?.markers||[]));
   const microKinds=[...new Set(Object.keys(pass.pipelines).map(p=>kindOf(r.capture.pipelines[p])))];
-  const phase=microKinds.some(k=>k==='micro-arguments'||k==='micro-raster')?
+  const phase=microKinds.some(k=>['micro-arguments','micro-raster','fixed-arguments','nanite-fixed-merged'].includes(k))?
    (microKinds.length===1?microKinds[0]:'mixed: '+microKinds.toSorted().join(', ')):
    markers.has('WebHierarchyBatchData')?'hierarchy-batch':markers.has('WebCullLODMode')?'hierarchy-single':
    markers.has('WebOcclusionBatchData')?'hzb-batch':markers.has('WebOcclusionPrevious')?'hzb':markers.has('WebRasterClusterKeys')?'pack':

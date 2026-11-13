@@ -36,7 +36,7 @@ const runs = report.runs.map(run => {
       rhi:counterDelta(before,after,'rhi'),optimization:counterDelta(before,after,'optimization'),
       io:counterDelta(before,after,'io'),streamingBefore:before.streaming,streamingAfter:after.streaming};
   });
-  return {index:run.index,mode:run.mode,nanite:run.nanite,hierarchy:run.hierarchy,occlusion:run.occlusion,pack:run.pack,micro:run.micro,materialPrecache:run.materialPrecache,browser:run.browser,initialCamera:run.initial.camera,finalCamera:p.after.camera,
+  return {index:run.index,mode:run.mode,nanite:run.nanite,hierarchy:run.hierarchy,occlusion:run.occlusion,pack:run.pack,micro:run.micro,fixed:run.fixed,materialPrecache:run.materialPrecache,browser:run.browser,initialCamera:run.initial.camera,finalCamera:p.after.camera,
     view:p.before.view,travelCm:p.travelCm,radiusCm:p.radiusCm,turnDegrees:p.turnDegrees,pitchRange:p.pitchRange,
     driver:report.tour?'native-camera-tour':'keyboard-and-mouse',inputEvents:run.motion.events||0,
     keyEvents:run.motion.keyEvents?.length||0,overall:distribution(frames.map(f=>f.ms)),
