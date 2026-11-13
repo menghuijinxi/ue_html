@@ -65,6 +65,7 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("occlusionBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchOcclusion"))->GetInt() != 0);
     Report->SetBoolField(TEXT("materialPrecache"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMaterialPrecache"))->GetInt() != 0);
     Report->SetBoolField(TEXT("packBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("microBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchMicroRaster"))->GetInt() != 0);
     for (uint32 Final = 0; Final < 2; ++Final)
     {
         const bool Valid = OcclusionFrames[Final] == Cull.View->Family->FrameNumber;
@@ -246,6 +247,17 @@ void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved
     Report->SetNumberField(TEXT("materialDraws"), MaterialDraws);
     Report->SetNumberField(TEXT("packBatchedEntries"), Saved.Raster.PackBatchedEntries);
     Report->SetNumberField(TEXT("packDispatchBuffers"), Saved.Raster.PackDispatchBuffers);
+    Report->SetNumberField(TEXT("microBatchedEntries"), Saved.Raster.MicroBatchedEntries);
+    Report->SetNumberField(TEXT("microDispatchBuffers"), Saved.Raster.MicroDispatchBuffers);
+    Report->SetNumberField(TEXT("microDirectGroups"), Saved.Raster.MicroDirectGroups);
+    if (!Saved.Raster.MicroDispatchArguments.IsEmpty())
+    {
+        auto* Arguments = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Saved.Raster.MicroDispatchArguments.Num() * 12), TEXT("Nanite.Web.TestMicroArguments"));
+        for (int32 Index = 0; Index < Saved.Raster.MicroDispatchArguments.Num(); ++Index)
+            AddCopyBufferPass(Graph, Arguments, Index * 12, Saved.Raster.MicroDispatchArguments[Index], 0, 12);
+        Copy(Graph, Arguments, TEXT("microDispatchArguments"));
+    }
+    else Report->SetArrayField(TEXT("microDispatchArguments"), {});
     Report->SetBoolField(TEXT("customDataTarget"), Targets.D != nullptr);
     Report->SetBoolField(TEXT("precomputedShadowTarget"), Targets.E != nullptr);
     Report->SetNumberField(TEXT("width"), FMath::DivideAndRoundUp(uint32(Saved.Raster.Rect.Width()), 8u));
@@ -329,6 +341,21 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNanitePackBatchTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteMicroBatchTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchMicroRaster"));
     static int Saved = -1;
     if (!CVar || Enabled < -1 || Enabled > 1) return 0;
     if (Enabled < 0)

@@ -7,9 +7,16 @@ const summaries=[];
 for(const tag of tags){
  const file=path.join(__dirname,'results',`gpu-${tag}.json`),r=JSON.parse(fs.readFileSync(file));assert(r.pass&&r.frames.length===16);
  const groups=new Map(),pipelineWork=new Map();
+ const kindOf=shader=>{const marker=shader?.markers||[];return marker.includes('WebRasterClusterKeys')?'pack':
+  marker.includes('WebMicroBatchPrefixOutput')?'micro-arguments':marker.includes('WebMicroBatchData')?'micro-raster':
+  marker.includes('WebRasterMaterialMasks')?(shader.compute?'micro-raster':'nanite-raster'):
+  marker.includes('WebNativeMaterial')?'native-material':shader?.compute?'other-compute':'other-render';};
  for(const command of r.capture.results)for(const pass of command.passes){
   const markers=new Set(Object.keys(pass.pipelines).flatMap(p=>r.capture.pipelines[p]?.markers||[]));
-  const phase=markers.has('WebHierarchyBatchData')?'hierarchy-batch':markers.has('WebCullLODMode')?'hierarchy-single':
+  const microKinds=[...new Set(Object.keys(pass.pipelines).map(p=>kindOf(r.capture.pipelines[p])))];
+  const phase=microKinds.some(k=>k==='micro-arguments'||k==='micro-raster')?
+   (microKinds.length===1?microKinds[0]:'mixed: '+microKinds.toSorted().join(', ')):
+   markers.has('WebHierarchyBatchData')?'hierarchy-batch':markers.has('WebCullLODMode')?'hierarchy-single':
    markers.has('WebOcclusionBatchData')?'hzb-batch':markers.has('WebOcclusionPrevious')?'hzb':markers.has('WebRasterClusterKeys')?'pack':
    markers.has('WebMaterialTile')?'material-tiles':markers.has('WebNativeMaterial')?'native-material':
    /Nanite.*MicroRaster/.test(pass.label)?'micro-raster':/Nanite.*Raster/.test(pass.label)?'raster':pass.label||pass.kind;
@@ -17,9 +24,7 @@ for(const tag of tags){
   g.milliseconds+=pass.nanoseconds/1e6;g.passes++;
   for(const [label,p] of Object.entries(pass.pipelines)){
    g.dispatches+=p.dispatches;g.draws+=p.draws;
-   const shader=r.capture.pipelines[label],marker=shader?.markers||[];
-   const kind=marker.includes('WebRasterClusterKeys')?'pack':marker.includes('WebRasterMaterialMasks')?(shader.compute?'micro-raster':'nanite-raster'):
-    marker.includes('WebNativeMaterial')?'native-material':shader?.compute?'other-compute':'other-render';
+   const kind=kindOf(r.capture.pipelines[label]);
    const work=pipelineWork.get(kind)||{draws:0,dispatches:0};work.draws+=p.draws;work.dispatches+=p.dispatches;pipelineWork.set(kind,work);
   }
   groups.set(phase,g);
