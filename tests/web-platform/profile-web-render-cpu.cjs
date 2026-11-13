@@ -5,7 +5,13 @@ const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3
 const folder=option('folder')||'nanite-core-scene',tag=option('tag');
 const nanite=option('nanite');assert(nanite===undefined||nanite==='0'||nanite==='1');
 assert(/^[a-z0-9-]+$/.test(folder)&&/^[a-z0-9-]+$/.test(tag));
-const file=path.join(__dirname,'results','render-cpu-'+tag),report={pass:false,source:audit(__filename),errors:[]};
+// --thread=rhi samples the RHI thread (the WebGPU owner) instead of the rendering thread; output prefix follows the thread.
+const thread=option('thread')||'render';assert(['render','rhi'].includes(thread));
+const threadPattern=thread==='rhi'?/FRHIThread::Run/:/FRenderingThread::Run|RenderingThreadMain/;
+// Startup console variables, name=value, comma separated.
+const cvars=(option('cvars')||'').split(',').filter(Boolean).map(v=>v.split('='));
+assert(cvars.every(v=>v.length===2&&/^[A-Za-z0-9_.]+$/.test(v[0])&&/^-?[0-9.]+$/.test(v[1])));
+const file=path.join(__dirname,'results',thread+'-cpu-'+tag),report={pass:false,thread,cvars,source:audit(__filename),errors:[]};
 const summarize=p=>{
  const nodes=new Map(p.nodes.map(n=>[n.id,n])),parents=new Map(),self=new Map(),total=new Map();
  for(const n of p.nodes)for(const child of n.children||[])parents.set(child,n.id);
@@ -20,10 +26,10 @@ const summarize=p=>{
  const packageFile=path.join(__dirname,'build',folder,'package.json'),pkg=JSON.parse(fs.readFileSync(packageFile));
  assert(pkg.pass);for(const p of pkg.products)assert.equal(audit(p.file).sha256,p.sha256,p.file);report.package=audit(packageFile);
  context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/cpu-villa'),{channel:'msedge',headless:true,viewport:{width:1280,height:720}});
- if(nanite!==undefined)await context.route('**/config-files.json*',async route=>{const response=await route.fetch(),files=await response.json();
+ if(nanite!==undefined||cvars.length)await context.route('**/config-files.json*',async route=>{const response=await route.fetch(),files=await response.json();
   const f=files.find(x=>x.path==='/Engine/Platforms/Web/Config/WebEngine.ini');assert(f);
-  const data=Buffer.from(Buffer.from(f.data,'base64').toString()+'\n[SystemSettings]\nr.Nanite='+Number(nanite)+'\n');
-  f.data=data.toString('base64');f.sha256=require('node:crypto').createHash('sha256').update(data).digest('hex');report.nanite=Number(nanite);
+  const data=Buffer.from(Buffer.from(f.data,'base64').toString()+'\n[SystemSettings]\n'+(nanite===undefined?'':'r.Nanite='+Number(nanite)+'\n')+cvars.map(v=>v.join('=')+'\n').join(''));
+  f.data=data.toString('base64');f.sha256=require('node:crypto').createHash('sha256').update(data).digest('hex');if(nanite!==undefined)report.nanite=Number(nanite);
   await route.fulfill({response,body:JSON.stringify(files)});});
  const page=context.pages()[0];page.on('pageerror',e=>report.errors.push(e.stack));
  page.on('console',m=>{if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text()))report.errors.push(m.text());});
@@ -44,11 +50,11 @@ const summarize=p=>{
  await page.waitForTimeout(2000);
  report.discovery=[];let render;
  for(const s of sessions){const {profile}=await command(s.sessionId,'Profiler.stop');const names=profile.nodes.map(n=>n.callFrame.functionName);
-  const matches=names.filter(n=>/FRenderingThread::Run|RenderingThreadMain/.test(n));
+  const matches=names.filter(n=>threadPattern.test(n));
   report.discovery.push({target:s.target,matches,samples:profile.samples.length,top:summarize(profile).self.slice(0,3)});
-  if(matches.length){assert(!render,'More than one rendering thread');render=s;}
+  if(matches.length){assert(!render,'More than one matching thread');render=s;}
  }
- assert(render,'The sampled thread must actually execute the UE rendering loop');report.target=render.target;
+ assert(render,'The sampled thread must actually execute the requested UE thread loop');report.target=render.target;
  for(const s of sessions)if(s!==render)await cdp.send('Target.detachFromTarget',{sessionId:s.sessionId});
  const state=()=>page.evaluate(()=>({frames:__webEngineFrames,time:performance.now(),stages:__webThreadStages}));
  const baseline=await state();await page.waitForTimeout(5000);const baselineAfter=await state();

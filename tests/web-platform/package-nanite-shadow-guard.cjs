@@ -9,6 +9,8 @@ const defaultScene=process.argv.includes('--default-scene'),hierarchyBatch=proce
 const occlusionBatch=process.argv.includes('--occlusion-batch');
 const packBatch=process.argv.includes('--pack-batch');
 const microBatch=process.argv.includes('--micro-batch');
+// The rigid batch round prepares fixed and micro raster together; its Cook no longer has the separate micro prepare shader.
+const rigidBatch=process.argv.includes('--rigid-batch');
 const fixedMerge=process.argv.includes('--fixed-merge'),programmableMerge=process.argv.includes('--programmable-merge'),shadeBinning=process.argv.includes('--shade-binning');
 assert([baseline,name].every(n=>/^[a-z0-9-]+$/.test(n)));
 assert(defaultScene||/^[a-z0-9-]+$/.test(project));
@@ -29,11 +31,14 @@ if(occlusionBatch){verify(cook.shaderInventory.artifact);const inventory=read(co
 if(packBatch){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
   assert(inventory.types.some(t=>t.name==='FWebNaniteVisibleClustersCS'&&t.permutations===2),'Cook must include both visible-cluster packing permutations');}
 if(microBatch){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
-  for(const [name,permutations] of [['FWebNaniteMicroRasterCS',6],['FWebNaniteMicroArgumentsCS',1]])
+  for(const [name,permutations] of [['FWebNaniteMicroRasterCS',6],...(rigidBatch?[]:[['FWebNaniteMicroArgumentsCS',1]])])
     assert(inventory.types.some(t=>t.name===name&&t.permutations===permutations),'Cook must include '+name+' with all permutations');}
 if(fixedMerge){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
   for(const name of ['FWebNaniteFixedBatchArgumentsCS','FWebNaniteFixedBatchVS'])
     assert(inventory.types.some(t=>t.name===name&&t.permutations===1),'Cook must include '+name);}
+if(rigidBatch){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
+  assert(microBatch&&fixedMerge,'The rigid batch serves both the fixed and the micro raster');
+  assert(!inventory.types.some(t=>t.name==='FWebNaniteMicroArgumentsCS'),'A rigid batch Cook must not contain the removed micro prepare shader');}
 if(programmableMerge){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
   assert(inventory.types.some(t=>t.name==='FWebNaniteProgrammableBatchArgumentsCS'&&t.permutations===1),'Cook must include FWebNaniteProgrammableBatchArgumentsCS');}
 if(shadeBinning){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
@@ -71,7 +76,7 @@ const products=baselineProducts.map(p=>audit(path.join(output,path.basename(p.fi
 products.push(writeVersions(output,products));
 const old=read(path.join(base,'content-files.json'));
 const changes=manifest.files.filter(f=>old.files.find(a=>a.path===f.path)?.sha256!==f.sha256).map(f=>({path:f.path,size:f.size}));
-const report={date:new Date().toISOString(),pass:true,output,defaultScene,hierarchyBatch,occlusionBatch,packBatch,microBatch,fixedMerge,programmableMerge,shadeBinning,baselineProducts,baselineVersions:audit(path.join(base,'asset-versions.json')),
+const report={date:new Date().toISOString(),pass:true,output,defaultScene,hierarchyBatch,occlusionBatch,packBatch,microBatch,rigidBatch,fixedMerge,programmableMerge,shadeBinning,baselineProducts,baselineVersions:audit(path.join(base,'asset-versions.json')),
   core:audit(coreFile),stage:audit(stageFile),cook:stage.cookReport,archive:core.archive,streamingArchive:streaming.archive,
   performanceProfile:core.performanceProfile,products,changes,
   sources:[__filename,require.resolve('./prepare-web-cook-shaders.cjs'),

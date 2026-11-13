@@ -5,7 +5,8 @@
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const tag = process.argv[2], minimum = Number(process.argv[3] || 60), filter = process.argv[4] ? new RegExp(process.argv[4]) : null;
 assert(/^[a-z0-9-]+$/.test(tag || ''), 'usage: analyze-render-cpu-tree.cjs <tag> [minimum ms] [root name regexp]');
-const profile = JSON.parse(fs.readFileSync(path.join(__dirname, 'results', `render-cpu-${tag}.cpuprofile`), 'utf8'));
+// The tag may carry the thread prefix of profile-web-render-cpu.cjs (rhi-cpu-...); render-cpu- is assumed otherwise.
+const profile = JSON.parse(fs.readFileSync(path.join(__dirname, 'results', (/^(render|rhi)-cpu-/.test(tag) ? tag : 'render-cpu-' + tag) + '.cpuprofile'), 'utf8'));
 const nodes = new Map(profile.nodes.map(n => [n.id, {...n, self: 0, total: 0}]));
 const deltas = profile.timeDeltas; let last = 0;
 for (let i = 0; i < profile.samples.length; i++) { const d = deltas[i] / 1000; const n = nodes.get(profile.samples[i]); n.self += d; last = i; }

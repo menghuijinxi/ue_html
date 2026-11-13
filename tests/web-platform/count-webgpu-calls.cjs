@@ -19,7 +19,15 @@ const report = {date: new Date().toISOString(), pass: false, source: audit(__fil
   boundary: 'Diagnostic call counts with wrapped WebGPU methods in the GPU owner worker. Normal clocks, first interior tour without warmup. '
     + 'Wrapping adds per-call overhead, so the frame rate here is not game performance. Counts cover only the measured tour window.'};
 function installCounter() {
-  const state = globalThis.__gpuCalls = {active: false, start: 0, methods: {}, writeBytes: 0, createBufferBytes: 0, copyBytes: 0, pipelines: []};
+  const state = globalThis.__gpuCalls = {active: false, start: 0, methods: {}, writeBytes: 0, createBufferBytes: 0, copyBytes: 0, pipelines: [],
+    indirectPasses: 0, indirectValidations: 0, indirectByTarget: {}};
+  // Dawn validates indirect draws on the GPU. For every render pass, each distinct
+  // pair of indirect buffer and draw type costs the browser one buffer write, one
+  // compute pass, one bind group and one dispatch of its own
+  // (dawn/native/IndirectDrawValidationEncoder.cpp). Count those pairs per render
+  // pass, keyed by the label of the pass's first attachment.
+  const passes = new WeakMap(), ids = new WeakMap(), views = new WeakMap(); let nextId = 0;
+  const idOf = b => { let v = ids.get(b); if (v === undefined) ids.set(b, v = ++nextId); return v; };
   // Shader text identifies which pipelines are first created inside the window.
   const modules = new WeakMap();
   const kindOf = d => {
@@ -27,7 +35,9 @@ function installCounter() {
     const kind = text.includes('WebRasterPixelProgrammable') ? 'nanite-programmable-raster' :
       text.includes('WebShadeBinTiles') || text.includes('WebNativeMaterialTiles') ? 'nanite-material' :
       /WebRaster|WebNanite|WebShadeBin|WebHierarchy|WebOcclusion/.test(text) ? 'nanite-other' : 'other';
-    return {kind, shaderBytes: text.length};
+    // Engine identifiers that survive into the shader text tell which pass the pipeline belongs to.
+    const markers = [...new Set(text.match(/\bWeb[A-Z][A-Za-z]+/g) || [])].slice(0, 16);
+    return {kind, shaderBytes: text.length, markers, label: d.label, entries: [d.compute, d.vertex, d.fragment].filter(Boolean).map(v => v.entryPoint)};
   };
   const wrap = (cls) => {
     const proto = globalThis[cls]?.prototype; if (!proto) return;
@@ -41,8 +51,22 @@ function installCounter() {
           if (key === 'GPUQueue.writeBuffer') state.writeBytes += args[4] ?? (args[2].byteLength - (args[3] || 0));
           else if (key === 'GPUDevice.createBuffer') state.createBufferBytes += args[0].size;
           else if (key === 'GPUCommandEncoder.copyBufferToBuffer') state.copyBytes += args.length >= 5 ? args[4] : (args[2] ?? 0);
+          else if (key === 'GPURenderPassEncoder.drawIndirect' || key === 'GPURenderPassEncoder.drawIndexedIndirect')
+            passes.get(this)?.pairs.add((name === 'drawIndirect' ? 'd' : 'i') + idOf(args[0]));
+          else if (key === 'GPURenderPassEncoder.end') {
+            const pass = passes.get(this);
+            if (pass?.pairs.size) {
+              state.indirectPasses++; state.indirectValidations += pass.pairs.size;
+              const row = state.indirectByTarget[pass.label] ??= {passes: 0, validations: 0}; row.passes++; row.validations += pass.pairs.size;
+            }
+          }
         }
         const result = original.apply(this, args);
+        if (key === 'GPUTexture.createView') views.set(result, this.label);
+        else if (key === 'GPUCommandEncoder.beginRenderPass' && state.active) {
+          const d = args[0] || {}, view = d.colorAttachments?.find(Boolean)?.view || d.depthStencilAttachment?.view;
+          passes.set(result, {pairs: new Set(), label: d.label || views.get(view) || ''});
+        }
         if (key === 'GPUDevice.createShaderModule') modules.set(result, args[0].code);
         else if (state.active && /^GPUDevice\.create(Render|Compute)Pipeline(Async)?$/.test(key))
           state.pipelines.push({seconds: (performance.now() - state.start) / 1000, method: name, ...kindOf(args[0])});
@@ -85,7 +109,7 @@ function installCounter() {
     const snapshot = () => owner.evaluate(() => ({frame: globalThis.__webRHIFrames, time: performance.now(),
       presented: globalThis.__webThreadStages?.presented, clock: globalThis.__webVisualTestClock}));
     const before = await snapshot();
-    await owner.evaluate(() => { const s = globalThis.__gpuCalls; s.methods = {}; s.writeBytes = s.createBufferBytes = s.copyBytes = 0; s.pipelines = []; s.start = performance.now(); s.active = true; });
+    await owner.evaluate(() => { const s = globalThis.__gpuCalls; s.methods = {}; s.writeBytes = s.createBufferBytes = s.copyBytes = 0; s.pipelines = []; s.indirectPasses = s.indirectValidations = 0; s.indirectByTarget = {}; s.start = performance.now(); s.active = true; });
     assert(await page.evaluate(s => __webEngineRPC('WebMotionBenchmarkControl', 3, s), seconds));
     await page.waitForFunction(() => globalThis.__webMotionBenchmark?.completed && !globalThis.__webMotionBenchmark.active, null, {timeout: (seconds + 60) * 1000});
     const counts = await owner.evaluate(() => { const s = globalThis.__gpuCalls; s.active = false; return s; });
@@ -98,11 +122,15 @@ function installCounter() {
     report.writeBytesPerFrame = counts.writeBytes / frames; report.createBufferBytesPerFrame = counts.createBufferBytes / frames;
     report.copyBytesPerFrame = counts.copyBytes / frames;
     report.pipelinesCreated = counts.pipelines;
+    report.indirect = {renderPassesWithIndirectDraws: counts.indirectPasses / frames, drawValidationPasses: counts.indirectValidations / frames,
+      byTarget: Object.fromEntries(Object.entries(counts.indirectByTarget).map(([k, v]) => [k, {passes: v.passes / frames, validations: v.validations / frames}])
+        .sort((a, b) => b[1].validations - a[1].validations))};
     report.motion = await page.evaluate(() => globalThis.__webMotionBenchmark);
     assert.deepEqual(report.errors, []); report.pass = true;
   } catch (e) { report.failure = e.stack; process.exitCode = 1; console.error(e.stack); }
   finally {
     await context?.close(); fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
-    console.log(JSON.stringify({pass: report.pass, output, frames: report.frames, totalCallsPerFrame: report.totalCallsPerFrame}));
+    console.log(JSON.stringify({pass: report.pass, output, frames: report.frames, totalCallsPerFrame: report.totalCallsPerFrame,
+      indirectDrawValidationPasses: report.indirect?.drawValidationPasses}));
   }
 })();

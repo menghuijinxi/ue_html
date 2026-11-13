@@ -91,6 +91,8 @@ function observe(scalar){
  assert.equal(await rpc('WebNanitePrimitiveVisibilityTest',-1),1);
  await waitFrames(30);report.gpu=await owner.evaluate(()=>__primitiveGPU);assert.deepEqual(report.gpu.errors,[]);
  assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);assert.deepEqual(report.errors,[]);
+ // Informational: how the changed-occluder history was held during the moves above.
+ report.occlusionHistory=await page.evaluate(()=>globalThis.__webOcclusionHistory||null);
  report.frames=await page.evaluate(()=>__webEngineFrames);report.pass=true;
 }catch(e){report.failure=e.stack;process.exitCode=1;console.error(e.stack);
  const owner=page?.workers().find(w=>w.url().includes('web-engine-worker.js'));

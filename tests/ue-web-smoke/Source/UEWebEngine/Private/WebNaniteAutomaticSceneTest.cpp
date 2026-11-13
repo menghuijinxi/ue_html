@@ -68,6 +68,8 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("microBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchMicroRaster"))->GetInt() != 0);
     Report->SetBoolField(TEXT("fixedMerge"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMergeFixedRaster"))->GetInt() != 0);
     Report->SetBoolField(TEXT("shadeBinning"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebShadeBinning"))->GetInt() != 0);
+    Report->SetNumberField(TEXT("hzbMode"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"))->GetInt());
+    Report->SetNumberField(TEXT("hzbAutoClusters"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZBAutoClusters"))->GetInt());
     Report->SetBoolField(TEXT("programmableMerge"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMergeProgrammableRaster"))->GetInt() != 0);
     for (uint32 Final = 0; Final < 2; ++Final)
     {
@@ -390,6 +392,48 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteShadeBinningTest(int Enabled)
     }
     if (Saved < 0) Saved = CVar->GetInt();
     CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+// Mode is the r.Nanite.WebHZB value; a positive AutoClusters also replaces the
+// automatic threshold. Mode -1 restores both.
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteHZBModeTest(int Mode, int AutoClusters)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZB"));
+    auto* Threshold = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebHZBAutoClusters"));
+    static int Saved = -1, SavedThreshold = -1;
+    if (!CVar || !Threshold || Mode < -1 || Mode > 2) return 0;
+    if (Mode < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Threshold->Set(SavedThreshold, ECVF_SetByCode); Saved = SavedThreshold = -1; return 1;
+    }
+    if (Saved < 0) { Saved = CVar->GetInt(); SavedThreshold = Threshold->GetInt(); }
+    CVar->Set(Mode, ECVF_SetByCode);
+    Threshold->Set(AutoClusters > 0 ? AutoClusters : SavedThreshold, ECVF_SetByCode); return 1;
+}
+
+// Sets one integer console variable from a fixed list, so one browser session can
+// alternate a setting between measured laps. A negative Value restores the value
+// found at the first call for that entry.
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteTestSwitch(int Id, int Value)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    static const TCHAR* const Names[] = {TEXT("r.Web.OcclusionMergeBoundsChanges"),
+        TEXT("r.Nanite.WebHZB"), TEXT("r.RDG.Validation"), TEXT("r.Nanite.WebShadeBinning"), TEXT("r.Nanite.WebMergeProgrammableRaster"),
+        TEXT("r.Nanite.WebMergeFixedRaster"), TEXT("r.Nanite.WebHZBAutoClusters"), TEXT("r.Nanite"), TEXT("r.Nanite.WebBatchInstances")};
+    static int Saved[UE_ARRAY_COUNT(Names)];
+    static bool HasSaved[UE_ARRAY_COUNT(Names)] = {};
+    if (Id < 0 || Id >= int(UE_ARRAY_COUNT(Names))) return 0;
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(Names[Id]);
+    if (!CVar) return 0;
+    if (Value < 0)
+    {
+        if (!HasSaved[Id]) return 0;
+        CVar->Set(Saved[Id], ECVF_SetByCode); HasSaved[Id] = false; return 1;
+    }
+    if (!HasSaved[Id]) { Saved[Id] = CVar->GetInt(); HasSaved[Id] = true; }
+    CVar->Set(Value, ECVF_SetByCode); return 1;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteProgrammableMergeTest(int Enabled)
