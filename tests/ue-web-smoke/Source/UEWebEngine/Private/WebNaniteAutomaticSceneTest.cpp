@@ -67,6 +67,8 @@ void Describe(const Nanite::FWebSceneCullView& Cull)
     Report->SetBoolField(TEXT("packBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"))->GetInt() != 0);
     Report->SetBoolField(TEXT("microBatch"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchMicroRaster"))->GetInt() != 0);
     Report->SetBoolField(TEXT("fixedMerge"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMergeFixedRaster"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("shadeBinning"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebShadeBinning"))->GetInt() != 0);
+    Report->SetBoolField(TEXT("programmableMerge"), IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMergeProgrammableRaster"))->GetInt() != 0);
     for (uint32 Final = 0; Final < 2; ++Final)
     {
         const bool Valid = OcclusionFrames[Final] == Cull.View->Family->FrameNumber;
@@ -253,6 +255,18 @@ void ObserveGBuffer(FRDGBuilder& Graph, const Nanite::FWebSceneRasterView& Saved
     Report->SetNumberField(TEXT("microDirectGroups"), Saved.Raster.MicroDirectGroups);
     Report->SetNumberField(TEXT("fixedMergedEntries"), Saved.Raster.FixedMergedEntries);
     Report->SetNumberField(TEXT("fixedDrawCalls"), Saved.Raster.FixedDrawCalls);
+    Report->SetNumberField(TEXT("shadeBinnedDraws"), Saved.Raster.ShadeBinnedDraws);
+    Report->SetNumberField(TEXT("shadeBinLegacyDraws"), Saved.Raster.ShadeBinLegacyDraws);
+    Report->SetNumberField(TEXT("programmableMergedEntries"), Saved.Raster.ProgrammableMergedEntries);
+    Report->SetNumberField(TEXT("programmableDrawCalls"), Saved.Raster.ProgrammableDrawCalls);
+    if (!Saved.Raster.ProgrammableDrawArguments.IsEmpty())
+    {
+        auto* Arguments = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Saved.Raster.ProgrammableDrawArguments.Num() * 16), TEXT("Nanite.Web.TestProgrammableArguments"));
+        for (int32 Index = 0; Index < Saved.Raster.ProgrammableDrawArguments.Num(); ++Index)
+            AddCopyBufferPass(Graph, Arguments, Index * 16, Saved.Raster.ProgrammableDrawArguments[Index], 0, 16);
+        Copy(Graph, Arguments, TEXT("programmableDrawArguments"));
+    }
+    else Report->SetArrayField(TEXT("programmableDrawArguments"), {});
     if (!Saved.Raster.FixedDrawArguments.IsEmpty())
     {
         auto* Arguments = Graph.CreateBuffer(FRDGBufferDesc::CreateByteAddressDesc(Saved.Raster.FixedDrawArguments.Num() * 16), TEXT("Nanite.Web.TestFixedArguments"));
@@ -352,6 +366,36 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebNanitePackBatchTest(int Enabled)
 {
     FTaskTagScope Scope(ETaskTag::EGameThread);
     auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebBatchPack"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteShadeBinningTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebShadeBinning"));
+    static int Saved = -1;
+    if (!CVar || Enabled < -1 || Enabled > 1) return 0;
+    if (Enabled < 0)
+    {
+        if (Saved < 0) return 0;
+        CVar->Set(Saved, ECVF_SetByCode); Saved = -1; return 1;
+    }
+    if (Saved < 0) Saved = CVar->GetInt();
+    CVar->Set(Enabled, ECVF_SetByCode); return 1;
+}
+
+extern "C" EMSCRIPTEN_KEEPALIVE int WebNaniteProgrammableMergeTest(int Enabled)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Nanite.WebMergeProgrammableRaster"));
     static int Saved = -1;
     if (!CVar || Enabled < -1 || Enabled > 1) return 0;
     if (Enabled < 0)

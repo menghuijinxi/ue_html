@@ -90,6 +90,7 @@ function instrument(){
  const packageFile=path.join(__dirname,'build',folder,'package.json'),pkg=JSON.parse(fs.readFileSync(packageFile));
  assert(pkg.pass);for(const item of pkg.products)assert.equal(audit(item.file).sha256,item.sha256,item.file);report.package=audit(packageFile);
  context=await chromium.launchPersistentContext(`G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/gpu-${tag}`,{channel:'msedge',headless:!process.argv.includes('--visible'),viewport:{width,height},deviceScaleFactor:1});
+ await require('./startup-cvars.cjs')(context,process.argv,report);
  await context.route('**/web-engine-worker.js?*',async route=>{const response=await route.fetch();await route.fulfill({response,body:`(${instrument.toString()})();\n`+await response.text()});});
  const page=context.pages()[0];page.on('pageerror',e=>report.errors.push(e.stack));
  page.on('console',m=>{if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text()))report.errors.push(m.text());});

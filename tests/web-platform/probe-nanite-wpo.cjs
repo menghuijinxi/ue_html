@@ -233,7 +233,8 @@ function verify(t){
 }
 (async()=>{let browser,page,owner;try{
   browser=await chromium.launchPersistentContext(`G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}-${scalar?'scalar':'packed'}`,{channel:'msedge',headless:true,viewport:{width:960,height:640}});
-  await browser.route('**/web-engine-worker.js?*',async route=>{const response=await route.fetch();await route.fulfill({response,body:'('+observe.toString()+')('+JSON.stringify(scalar)+');\n'+await response.text()});});
+  await require('./startup-cvars.cjs')(browser,process.argv,report);
+  await browser.route('**/web-engine-worker.js?*',async route=>{const response=await route.fetch();await route.fulfill({response,body:'('+require('./observe-nanite-paths.cjs').toString()+')();\n('+observe.toString()+')('+JSON.stringify(scalar)+');\n'+await response.text()});});
   await browser.route('**/'+folder+'/index.html',async route=>{const response=await route.fetch();await route.fulfill({response,
     body:(await response.text()).replace('"-WebNaniteRootPages=2"','"-WebNaniteRootPages=128","-WebNaniteStreamingPages=12","-WebNaniteScene"')});});
   page=await browser.newPage();page.on('console',m=>{const s=m.text();report.logs.push(s);if(/GPU validation:|Fatal error:|Assertion failed|DeviceLost/.test(s))report.errors.push(s);});
@@ -265,6 +266,7 @@ function verify(t){
   assert(report.rhi.asyncPrecacheRequested>100);assert.equal(report.rhi.asyncPrecacheRequested,report.rhi.asyncPrecacheCompleted);
   assert.equal(report.rhi.asyncPrecacheFailed||0,0);
   report.gpu=await owner.evaluate(()=>globalThis.__wpoGPU);
+  report.paths=await owner.evaluate(()=>globalThis.__nanitePaths);
   assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);assert.deepEqual(report.gpu.errors,[]);
   report.frames=await page.evaluate(()=>globalThis.__webEngineFrames);assert.deepEqual(report.errors,[]);
   assert.deepEqual(report.validationFailures,[],'Every WPO scenario must satisfy its independent oracle');report.pass=true;

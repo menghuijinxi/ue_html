@@ -4,20 +4,22 @@ const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.
 const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3);
 const folder=option('folder'),tag=option('tag'),villa=process.argv.includes('--villa'),scalar=process.argv.includes('--scalar-visibility');
 const occlusion=process.argv.includes('--occlusion-batch'),pack=process.argv.includes('--pack-batch'),micro=process.argv.includes('--micro-batch');
-const fixed=process.argv.includes('--fixed-merge');
-assert([occlusion,pack,micro,fixed].filter(Boolean).length<=1);
-const batchRPC=fixed?'WebNaniteFixedMergeTest':micro?'WebNaniteMicroBatchTest':pack?'WebNanitePackBatchTest':occlusion?'WebNaniteOcclusionBatchTest':'WebNaniteHierarchyBatchTest';
+const fixed=process.argv.includes('--fixed-merge'),programmable=process.argv.includes('--programmable-merge'),shade=process.argv.includes('--shade-binning');
+assert([occlusion,pack,micro,fixed,programmable,shade].filter(Boolean).length<=1);
+const batchRPC=shade?'WebNaniteShadeBinningTest':programmable?'WebNaniteProgrammableMergeTest':fixed?'WebNaniteFixedMergeTest':micro?'WebNaniteMicroBatchTest':pack?'WebNanitePackBatchTest':occlusion?'WebNaniteOcclusionBatchTest':'WebNaniteHierarchyBatchTest';
 const materialPrecache=option('material-precache');assert(materialPrecache===undefined||['0','1'].includes(materialPrecache));
 assert([folder,tag].every(n=>/^[a-z0-9-]+$/.test(n)));
 const output=path.join(__dirname,'results',tag);assert(!fs.existsSync(output));fs.mkdirSync(output);
 const log=fs.createWriteStream(path.join(output,'engine.log'));
 fs.copyFileSync(__filename,path.join(output,'source.cjs'));
-const report={pass:false,villa,scalar,occlusion,pack,micro,fixed,materialPrecache,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],comparisons:[],errors:[],
+const report={pass:false,villa,scalar,occlusion,pack,micro,fixed,programmable,shade,materialPrecache,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],comparisons:[],errors:[],
  boundary:'Correctness only: frozen visual clock and fixed temporal index. Same runtime/Cook, native hierarchy batch switch 0/1/0. Compare sorted per-instance cluster keys, all hierarchy counters, depth and material channels. Not FPS evidence.'};
 if(occlusion)report.boundary='Correctness only: frozen visual clock and fixed temporal index. Same runtime/Cook, hierarchy batching enabled, native occlusion batch switch 0/1/0. Compare both main/final per-instance key sets and counters, unchanged hierarchy selection, depth and material channels. Not FPS evidence.';
 if(pack)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, hierarchy/HZB/material precache enabled, native packing batch switch 0/1/0. Compare per-instance packed 12-byte records, both HZB key sets/counters, hierarchy, exact depth and material channels. Not FPS evidence.';
 if(micro)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, native micro batch switch 0/1/0. Compare per-instance records, hierarchy/HZB, exact depth and material channels. Read back actual indirect arguments and verify fewer raster dispatches and no increase in cluster workgroups. Not FPS evidence.';
 if(fixed)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, native fixed draw merge switch 0/1/0. Compare per-instance records, hierarchy/HZB, exact depth/material channels and actual indirect draw arguments. Micro batching remains enabled. Not FPS evidence.';
+if(programmable)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, native programmable draw merge switch 0/1/0. Compare per-instance records, hierarchy/HZB, exact depth/material channels and actual indirect draw arguments. Fixed merge and micro batching remain enabled. Not FPS evidence.';
+if(shade)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, native shade binning switch 0/1/0. Compare per-instance records, hierarchy/HZB, exact depth and material channels. All other batching remains enabled. Not FPS evidence.';
 const save=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
 function observe(scalar){
@@ -54,8 +56,19 @@ function occlusionRows(t,prefix){
 function compare(before,after){
  assert.deepEqual(after.view,before.view);assert.equal(after.registered,before.registered);
  assert.deepEqual(hierarchy(after),hierarchy(before),'Hierarchy selection, LOD and error counters must match per instance');
- if(occlusion||pack||micro||fixed)for(const prefix of ['mainOcclusion','finalOcclusion'])assert.deepEqual(occlusionRows(after,prefix),occlusionRows(before,prefix),prefix+' per-instance keys and counters');
- if(pack||micro||fixed)assert.deepEqual(packedRows(after),packedRows(before),'Packed 12-byte records per instance');
+ if(occlusion||pack||micro||fixed||programmable||shade)for(const prefix of ['mainOcclusion','finalOcclusion'])assert.deepEqual(occlusionRows(after,prefix),occlusionRows(before,prefix),prefix+' per-instance keys and counters');
+ if(pack||micro||fixed||programmable||shade)assert.deepEqual(packedRows(after),packedRows(before),'Packed 12-byte records per instance');
+ if(shade){
+  const binned=after.shadeBinning?after:before,original=after.shadeBinning?before:after;
+  assert.equal(original.shadeBinnedDraws,0);assert.equal(binned.shadeBinLegacyDraws,0);
+  assert.equal(binned.shadeBinnedDraws,original.shadeBinLegacyDraws);assert.equal(binned.materialDraws,original.materialDraws);
+ }
+ if(programmable){
+  const merged=after.programmableMerge?after:before,original=after.programmableMerge?before:after;
+  assert.equal(original.programmableMergedEntries,0);assert.equal(original.programmableDrawArguments.length,0);
+  if(merged.programmableMergedEntries)assert(merged.programmableDrawCalls<original.programmableDrawCalls);
+  else assert.equal(merged.programmableDrawCalls,original.programmableDrawCalls);
+ }
  if(fixed){
   const merged=after.fixedMerge?after:before,original=after.fixedMerge?before:after;
   assert.equal(original.fixedMergedEntries,0);assert.equal(original.fixedDrawArguments.length,0);
@@ -118,12 +131,14 @@ function packedRows(t){
   assert.equal(await rpc('WebNaniteAutomaticSceneTest',++step),1);let t;const start=Date.now();
   do{await page.waitForTimeout(100);assert.deepEqual(report.errors,[]);assert(!await page.evaluate(()=>globalThis.__webEngineFailure));assert.equal(await rpc('WebNaniteAutomaticSceneTest',0),1);t=await owner.evaluate(()=>globalThis.__webNaniteAutomaticSceneTest);}
   while(t?.step!==step&&Date.now()-start<180000);
-  assert.equal(t?.step,step);assert.equal(t[fixed?'fixedMerge':micro?'microBatch':pack?'packBatch':occlusion?'occlusionBatch':'hierarchyBatch'],!!batch);assert.equal(t.rejected,0);
+  assert.equal(t?.step,step);assert.equal(t[shade?'shadeBinning':programmable?'programmableMerge':fixed?'fixedMerge':micro?'microBatch':pack?'packBatch':occlusion?'occlusionBatch':'hierarchyBatch'],!!batch);assert.equal(t.rejected,0);
   if(materialPrecache!==undefined)assert.equal(t.materialPrecache,materialPrecache==='1');
-  const batched=t[fixed?'fixedMergedEntries':micro?'microBatchedEntries':pack?'packBatchedEntries':occlusion?'finalOcclusionBatchedEntries':'hierarchyBatchedEntries'],buffers=t[fixed?'fixedDrawCalls':micro?'microDispatchBuffers':pack?'packDispatchBuffers':occlusion?'finalOcclusionDispatchBuffers':'hierarchyDispatchBuffers'];
-  if(t.entries){assert(t.materialComplete);hierarchy(t);if(batch&&t.entries>1)assert(batched>0);else assert.equal(batched,0);
-   if(occlusion||pack||micro||fixed){assert(t.hierarchyBatch);for(const prefix of ['mainOcclusion','finalOcclusion'])occlusionRows(t,prefix);}
-   if(pack||micro||fixed){assert(t.occlusionBatch&&t.materialPrecache);packedRows(t);}
+  const batched=t[shade?'shadeBinnedDraws':programmable?'programmableMergedEntries':fixed?'fixedMergedEntries':micro?'microBatchedEntries':pack?'packBatchedEntries':occlusion?'finalOcclusionBatchedEntries':'hierarchyBatchedEntries'],buffers=t[shade?'shadeBinLegacyDraws':programmable?'programmableDrawCalls':fixed?'fixedDrawCalls':micro?'microDispatchBuffers':pack?'packDispatchBuffers':occlusion?'finalOcclusionDispatchBuffers':'hierarchyDispatchBuffers'];
+  if(t.entries){assert(t.materialComplete);hierarchy(t);if(shade){if(batch)assert(batched>0);else assert.equal(batched,0);}else if(programmable){if(!batch)assert.equal(batched,0);}else if(batch&&t.entries>1)assert(batched>0);else assert.equal(batched,0);
+   if(occlusion||pack||micro||fixed||programmable||shade){assert(t.hierarchyBatch);for(const prefix of ['mainOcclusion','finalOcclusion'])occlusionRows(t,prefix);}
+   if(pack||micro||fixed||programmable||shade){assert(t.occlusionBatch&&t.materialPrecache);packedRows(t);}
+   if(programmable){assert(t.microBatch&&t.packBatch&&t.fixedMerge);assert.equal(t.programmableDrawArguments.length%4,0);
+    for(let i=0;i<t.programmableDrawArguments.length;i+=4)assert(t.programmableDrawArguments[i]===384&&t.programmableDrawArguments[i+1]<=65535&&t.programmableDrawArguments[i+2]===0&&t.programmableDrawArguments[i+3]===0);}
    if(fixed){assert(t.microBatch&&t.packBatch);assert.equal(t.fixedDrawArguments.length%4,0);
     for(let i=0;i<t.fixedDrawArguments.length;i+=4)assert(t.fixedDrawArguments[i]===384&&t.fixedDrawArguments[i+1]<=65535&&t.fixedDrawArguments[i+2]===0&&t.fixedDrawArguments[i+3]===0);}
    if(micro){assert(t.packBatch);assert.equal(t.microDispatchArguments.length%3,0);

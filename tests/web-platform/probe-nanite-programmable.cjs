@@ -97,7 +97,8 @@ function verify(t){
 }
 (async()=>{let browser,page,owner;try{
   browser=await chromium.launchPersistentContext(`G:/UE_HTML/ue_html/tests/web-platform/results/browser-profiles/${tag}-${scalar?'scalar':'packed'}`,{channel:'msedge',headless:true,viewport:{width:960,height:640}});
-  await browser.route('**/web-engine-worker.js?*',async route=>{const response=await route.fetch();await route.fulfill({response,body:'('+observe.toString()+')('+JSON.stringify(scalar)+');\n'+await response.text()});});
+  await require('./startup-cvars.cjs')(browser,process.argv,report);
+  await browser.route('**/web-engine-worker.js?*',async route=>{const response=await route.fetch();await route.fulfill({response,body:'('+require('./observe-nanite-paths.cjs').toString()+')();\n('+observe.toString()+')('+JSON.stringify(scalar)+');\n'+await response.text()});});
   // The real two-slot corrugated plane has more root data than the small
   // uploader fixture. Use the same verified budget as the sidedness suite.
   await browser.route('**/'+folder+'/index.html',async route=>{const response=await route.fetch();await route.fulfill({response,
@@ -136,6 +137,7 @@ function verify(t){
   const cleanup=await page.evaluate(()=>globalThis.__webEngineFrames);
   await page.waitForFunction(f=>globalThis.__webEngineFrames>f+20,cleanup,{timeout:30000});
   report.gpu=await owner.evaluate(()=>globalThis.__programmableGPU);
+  report.paths=await owner.evaluate(()=>globalThis.__nanitePaths);
   if(verifyPack)assert(report.tests.some(t=>t.packGPU.programmableDraws>0&&t.packGPU.nonzeroOffsets.includes(16)),'Programmable raster must consume a nonzero shared argument offset');
   assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);assert.deepEqual(report.gpu.errors,[]);
   report.frames=await page.evaluate(()=>globalThis.__webEngineFrames);assert.deepEqual(report.errors,[]);report.pass=true;

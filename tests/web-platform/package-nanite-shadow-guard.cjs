@@ -9,7 +9,7 @@ const defaultScene=process.argv.includes('--default-scene'),hierarchyBatch=proce
 const occlusionBatch=process.argv.includes('--occlusion-batch');
 const packBatch=process.argv.includes('--pack-batch');
 const microBatch=process.argv.includes('--micro-batch');
-const fixedMerge=process.argv.includes('--fixed-merge');
+const fixedMerge=process.argv.includes('--fixed-merge'),programmableMerge=process.argv.includes('--programmable-merge'),shadeBinning=process.argv.includes('--shade-binning');
 assert([baseline,name].every(n=>/^[a-z0-9-]+$/.test(n)));
 assert(defaultScene||/^[a-z0-9-]+$/.test(project));
 const root=__dirname,base=path.join(root,'build',baseline),output=path.join(root,'build',name);
@@ -34,6 +34,11 @@ if(microBatch){verify(cook.shaderInventory.artifact);const inventory=read(cook.s
 if(fixedMerge){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
   for(const name of ['FWebNaniteFixedBatchArgumentsCS','FWebNaniteFixedBatchVS'])
     assert(inventory.types.some(t=>t.name===name&&t.permutations===1),'Cook must include '+name);}
+if(programmableMerge){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
+  assert(inventory.types.some(t=>t.name==='FWebNaniteProgrammableBatchArgumentsCS'&&t.permutations===1),'Cook must include FWebNaniteProgrammableBatchArgumentsCS');}
+if(shadeBinning){verify(cook.shaderInventory.artifact);const inventory=read(cook.shaderInventory.artifact.file);
+  for(const [name,permutations] of [['FWebNaniteShadeBinTilesCS',2],['FWebNaniteShadeBinReserveCS',1],['FWebNaniteMaterialBinTilesVS',1]])
+    assert(inventory.types.some(t=>t.name===name&&t.permutations===permutations),'Cook must include '+name+' with all permutations');}
 const coreFile=path.join(root,'build/nanite-core-scene/package.json'),core=read(coreFile);
 assert(core.pass);core.products.forEach(verify);
 verify(core.archive);verify(core.streamingShaders);
@@ -66,7 +71,7 @@ const products=baselineProducts.map(p=>audit(path.join(output,path.basename(p.fi
 products.push(writeVersions(output,products));
 const old=read(path.join(base,'content-files.json'));
 const changes=manifest.files.filter(f=>old.files.find(a=>a.path===f.path)?.sha256!==f.sha256).map(f=>({path:f.path,size:f.size}));
-const report={date:new Date().toISOString(),pass:true,output,defaultScene,hierarchyBatch,occlusionBatch,packBatch,microBatch,fixedMerge,baselineProducts,baselineVersions:audit(path.join(base,'asset-versions.json')),
+const report={date:new Date().toISOString(),pass:true,output,defaultScene,hierarchyBatch,occlusionBatch,packBatch,microBatch,fixedMerge,programmableMerge,shadeBinning,baselineProducts,baselineVersions:audit(path.join(base,'asset-versions.json')),
   core:audit(coreFile),stage:audit(stageFile),cook:stage.cookReport,archive:core.archive,streamingArchive:streaming.archive,
   performanceProfile:core.performanceProfile,products,changes,
   sources:[__filename,require.resolve('./prepare-web-cook-shaders.cjs'),

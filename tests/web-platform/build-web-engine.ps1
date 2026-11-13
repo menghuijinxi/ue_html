@@ -89,7 +89,9 @@ $taskNaniteOverlays = @(
     'Source/Runtime/Renderer/Private/BasePassRendering.cpp',
     'Source/Runtime/Renderer/Private/DeferredShadingRenderer.cpp',
     'Source/Runtime/Renderer/Private/GlobalDistanceField.cpp',
-    'Source/Runtime/Renderer/Private/SplineMeshSceneResources.cpp'
+    'Source/Runtime/Renderer/Private/SplineMeshSceneResources.cpp',
+    # Carries the render-thread frame timing published to __webThreadStages.
+    'Source/Runtime/Renderer/Private/SceneRendering.cpp'
 )
 foreach ($taskNaniteRelative in $taskNaniteOverlays) {
     $taskNaniteDestination = Join-Path $taskHost $taskNaniteRelative

@@ -22,11 +22,19 @@ const microBatches = option('micro-batches')?.split(',');
 assert(!microBatches || (microBatches.length === modes.length && microBatches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const fixedMerges = option('fixed-merges')?.split(',');
 assert(!fixedMerges || (fixedMerges.length === modes.length && fixedMerges.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
+const programmableMerges = option('programmable-merges')?.split(',');
+assert(!programmableMerges || (programmableMerges.length === modes.length && programmableMerges.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
+const shadeBinnings = option('shade-binnings')?.split(',');
+assert(!shadeBinnings || (shadeBinnings.length === modes.length && shadeBinnings.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
+// Generic same-package A/B of one startup console variable, one value per run.
+const cvarName = option('cvar'), cvarValues = option('cvar-values')?.split(',');
+assert(!cvarName === !cvarValues);
+assert(!cvarName || (/^[A-Za-z0-9_.]+$/.test(cvarName) && cvarValues.length === modes.length && cvarValues.every(v=>/^-?[0-9.]+$/.test(v)) && modes.every(m=>m==='candidate')));
 const nanites = option('nanites')?.split(',');
 assert(!nanites || (nanites.length === modes.length && nanites.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
 const materialPrecaches = option('material-precaches')?.split(',');
 assert(!materialPrecaches || (materialPrecaches.length === modes.length && materialPrecaches.every(v=>v==='0'||v==='1') && modes.every(m=>m==='candidate')));
-assert(!nanites || ![packBatches,microBatches,fixedMerges,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
+assert(!nanites || ![packBatches,microBatches,fixedMerges,programmableMerges,shadeBinnings,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
 const tour = process.argv.includes('--tour');
 const walk = process.argv.includes('--walk') || tour, headed = process.argv.includes('--headed');
 const trace = process.argv.includes('--trace'), gpuProbe = process.argv.includes('--gpu-probe');
@@ -53,7 +61,7 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, nanites, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
   boundary: 'Serial fresh Edge contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
@@ -72,6 +80,9 @@ if(materialPrecaches)report.boundary='Serial fresh Edge contexts, same package a
 if(packBatches)report.boundary='Serial fresh Edge contexts, same package with enabled Nanite/hierarchy/HZB/material precache. Native cluster pack switch independently verified. Normal advancing clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics are excluded from FPS acceptance.';
 if(microBatches)report.boundary='Serial fresh Edge contexts, same package with enabled Nanite/hierarchy/HZB/packing/material precache. Only native micro batch switch changes; actual indirect workgroups are read back before capture. Normal clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics are excluded from FPS acceptance.';
 if(fixedMerges)report.boundary='Serial fresh Edge contexts, same package with Nanite and previous optimizations enabled. Only native fixed draw merge switch changes; actual draw counts and arguments read back before capture. Normal clocks, first movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics excluded from FPS acceptance.';
+if(programmableMerges)report.boundary='Serial fresh Edge contexts, same package with Nanite and previous optimizations enabled. Only native programmable draw merge switch changes; actual draw counts and arguments read back before capture. Normal clocks, first movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics excluded from FPS acceptance.';
+if(shadeBinnings)report.boundary='Serial fresh Edge contexts, same package with Nanite and previous optimizations enabled. Only native shade binning switch changes; actual binned and legacy material draw counts read back before capture. Normal clocks, first movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics excluded from FPS acceptance.';
+if(cvarName)report.boundary='Serial fresh Edge contexts, same package with Nanite and all other settings unchanged. Only the recorded console variable is written to WebEngine.ini before engine startup; this probe does not read it back natively. Normal clocks, first movement/turn route without warmup, all viewport submission intervals retained. Explicit diagnostics excluded from FPS acceptance.';
 if(nanites)report.boundary='Serial fresh Edge contexts, identical runtime/Cook/configuration except r.Nanite set before startup and verified by native readback. Scene opt-in and all optimization settings retained. Normal clocks, first simultaneous movement/turn route without warmup, all viewport submission intervals retained. Nanite-off uses the same converted assets\' cooked fallback geometry. Explicit diagnostics are excluded from FPS acceptance.';
 if (gpuTimestamps) { report.gpuWindow = {start:gpuStart,end:gpuEnd}; report.boundary += ' GPU timestamp instrumentation is diagnostic and is excluded from game-performance acceptance.'; }
 if (trace) report.boundary += ' DevTools trace instrumentation is diagnostic.';
@@ -85,7 +96,8 @@ function installObserver(detailed) {
         const now = performance.now(); state.times.push(now);
         if (detailed) {
           state.frames.push([next, now, globalThis.__webEngineFrames,
-            globalThis.__webThreadStages?.rhiWorkMilliseconds, globalThis.__webThreadFrameTimes?.at(-1)]);
+            globalThis.__webThreadStages?.rhiWorkMilliseconds, globalThis.__webThreadFrameTimes?.at(-1),
+            globalThis.__webThreadStages?.renderWorkMilliseconds, globalThis.__webThreadStages?.renderCommands]);
           if (now - sampled >= 200) {
             sampled = now;
             state.samples.push({time:now, frame:next, camera:{...globalThis.__webDefaultCamera},
@@ -152,15 +164,15 @@ function statistics(times) {
       const log = fs.createWriteStream(path.join(output, index + '-' + mode + '.log'));
       try {
         run.browser = context.browser().version();
-        if (materialPrecaches || nanites) await context.route('**/config-files.json*', async route => {
+        if (materialPrecaches || nanites || cvarName) await context.route('**/config-files.json*', async route => {
           const response = await route.fetch(), files = await response.json();
           const file = files.find(f => f.path === '/Engine/Platforms/Web/Config/WebEngine.ini'); assert(file);
-          const setting = nanites ? 'r.Nanite' : 'r.Nanite.WebMaterialPrecache';
-          const value = Number((nanites || materialPrecaches)[index]);
+          const setting = cvarName || (nanites ? 'r.Nanite' : 'r.Nanite.WebMaterialPrecache');
+          const value = Number((cvarValues || nanites || materialPrecaches)[index]);
           const data = Buffer.from(Buffer.from(file.data, 'base64').toString() +
             '\n[SystemSettings]\n' + setting + '=' + value + '\n');
           file.data = data.toString('base64'); file.sha256 = crypto.createHash('sha256').update(data).digest('hex');
-          run.startupConfig = {path:file.path, sha256:file.sha256, [nanites?'nanite':'materialPrecache']:value};
+          run.startupConfig = {path:file.path, sha256:file.sha256, [cvarName?'value':nanites?'nanite':'materialPrecache']:value, setting};
           await route.fulfill({response, body:JSON.stringify(files)});
         });
         await context.route('**/web-engine-worker.js?*', async route => {
@@ -200,8 +212,8 @@ ${marker}
         assert(!await page.evaluate(() => globalThis.__webEngineFailure));
         run.startupReadyMs = Date.now() - startupBegin;
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
-        if (hierarchyBatches || occlusionBatches || packBatches || microBatches || fixedMerges || materialPrecaches || nanites) {
-          for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest'],[microBatches,'WebNaniteMicroBatchTest'],[fixedMerges,'WebNaniteFixedMergeTest']])
+        if (hierarchyBatches || occlusionBatches || packBatches || microBatches || fixedMerges || programmableMerges || shadeBinnings || materialPrecaches || nanites || cvarName) {
+          for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest'],[microBatches,'WebNaniteMicroBatchTest'],[fixedMerges,'WebNaniteFixedMergeTest'],[programmableMerges,'WebNaniteProgrammableMergeTest'],[shadeBinnings,'WebNaniteShadeBinningTest']])
             if(values)assert.equal(await page.evaluate(a => __webEngineRPC(a[0],a[1]), [fn,Number(values[index])]), 1);
           assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteAutomaticSceneTest', 1)), 1);
           await page.waitForFunction(() => __webPSOPrecacheReady, null, {timeout:180000});
@@ -215,7 +227,7 @@ ${marker}
             assert(state.hierarchyBatch&&state.occlusionBatch&&state.packBatch&&state.materialPrecache);
             if(enabled)assert(state.entries>1&&state.registered>1&&state.packBatchedEntries>0);
             else {assert.equal(state.entries,0);assert.equal(state.registered,0);}
-            run.nanite={enabled,registered:state.registered,entries:state.entries,packDispatchBuffers:state.packDispatchBuffers,
+            run.nanite={enabled,registered:state.registered,entries:state.entries,packDispatchBuffers:state.packDispatchBuffers,fixedDrawCalls:state.fixedDrawCalls,programmableDrawCalls:state.programmableDrawCalls,programmableMergedEntries:state.programmableMergedEntries,shadeBinnedDraws:state.shadeBinnedDraws,shadeBinLegacyDraws:state.shadeBinLegacyDraws,materialDraws:state.materialDraws,
               hierarchyBatch:state.hierarchyBatch,occlusionBatch:state.occlusionBatch,packBatch:state.packBatch,materialPrecache:state.materialPrecache};
           } else assert(state.enabled && state.entries > 1);
           if(packBatches){const enabled=Number(packBatches[index]);
@@ -232,6 +244,16 @@ ${marker}
             assert.equal(state.fixedMergedEntries>0,!!enabled);
             run.fixed={enabled,registered:state.registered,entries:state.entries,mergedEntries:state.fixedMergedEntries,
               drawCalls:state.fixedDrawCalls,indirectArguments:state.fixedDrawArguments};}
+          if(cvarName)run.cvar={name:cvarName,value:Number(cvarValues[index]),registered:state.registered,entries:state.entries,programmableDrawCalls:state.programmableDrawCalls,
+            shadeBinnedDraws:state.shadeBinnedDraws,materialDraws:state.materialDraws};
+          if(shadeBinnings){const enabled=Number(shadeBinnings[index]);
+            assert.equal(state.shadeBinning,!!enabled);assert.equal(state.shadeBinnedDraws>0,!!enabled);
+            run.shade={enabled,registered:state.registered,entries:state.entries,binnedDraws:state.shadeBinnedDraws,legacyDraws:state.shadeBinLegacyDraws,materialDraws:state.materialDraws};}
+          if(programmableMerges){const enabled=Number(programmableMerges[index]);
+            assert.equal(state.programmableMerge,!!enabled);assert(state.hierarchyBatch&&state.occlusionBatch&&state.packBatch&&state.microBatch&&state.fixedMerge&&state.materialPrecache);
+            if(!enabled)assert.equal(state.programmableMergedEntries,0);
+            run.programmable={enabled,registered:state.registered,entries:state.entries,mergedEntries:state.programmableMergedEntries,
+              drawCalls:state.programmableDrawCalls,indirectArguments:state.programmableDrawArguments};}
           if(materialPrecaches){const enabled=Number(materialPrecaches[index]);
             assert.equal(state.materialPrecache,!!enabled);assert(state.hierarchyBatch&&state.occlusionBatch);
             run.materialPrecache={enabled,registered:state.registered,entries:state.entries,
@@ -256,7 +278,7 @@ ${marker}
           let traceDone, traceWindowMark;
           const beginTrace = async () => {
             traceDone = new Promise(resolve => cdp.once('Tracing.tracingComplete', resolve));
-            await cdp.send('Tracing.start', {categories:'toplevel,devtools.timeline,v8,blink.user_timing,gpu,disabled-by-default-v8.gc,disabled-by-default-gpu.service,disabled-by-default-gpu.dawn',
+            await cdp.send('Tracing.start', {categories:'toplevel,devtools.timeline,v8,blink.user_timing,gpu,disabled-by-default-v8.gc,disabled-by-default-gpu.service,disabled-by-default-gpu.dawn,gpu.dawn,disabled-by-default-gpu.decoder,disabled-by-default-gpu.debug',
               transferMode:'ReturnAsStream'});
           };
           if (trace && !traceStart) {
@@ -287,9 +309,11 @@ ${marker}
           const result = statistics(times);
           result.rhiMs = (after.stages.rhiWorkMilliseconds - before.stages.rhiWorkMilliseconds) /
             (after.stages.presented - before.stages.presented);
+          result.renderMs = (after.stages.renderWorkMilliseconds - before.stages.renderWorkMilliseconds) /
+            (after.stages.presented - before.stages.presented);
           const phase = {name, before, after, result, times, traceMark};
           if (walk) {
-            phase.frameColumns = ['rhiFrame','time','gameFrame','rhiTotalMs','lastGameMs'];
+            phase.frameColumns = ['rhiFrame','time','gameFrame','rhiTotalMs','lastGameMs','renderTotalMs','renderCommands'];
             phase.frames = capture.frames; phase.samples = capture.samples;
             if (gpuProbe) phase.gpu = capture.gpu;
             const cameras = [before.camera, ...capture.samples.map(s => s.camera), after.camera];
@@ -325,6 +349,9 @@ ${marker}
           await page.waitForFunction(() => __naniteOffMotion.done, null, {timeout: (seconds + 30) * 1000});
         };
         await page.waitForTimeout(10000);
+        // Recorded outside the measured window: CPU speed and desktop state.
+        run.environmentBefore = await require('./sample-test-environment.cjs')(page);
+        await page.waitForTimeout(1000);
         run.initial = await snapshot();
         save();
         if (walk) {
@@ -335,12 +362,37 @@ ${marker}
               !globalThis.__webMotionBenchmark.active, null, {timeout:(seconds+30)*1000});
           });
           run.motion = await page.evaluate(isTour => isTour ? globalThis.__webMotionBenchmark : __naniteOffMotion, tour);
+          run.environmentAfter = await require('./sample-test-environment.cjs')(page);
           if (pointOnly) {
             run.pointDiagnostic = await owner.evaluate(() => globalThis.__pointShadowDiagnostic);
             assert.equal(new Set(run.pointDiagnostic.patched).size,3);
           }
           if (gpuTimestamps) {
-            run.gpuTimestamps = await owner.evaluate(() => globalThis.__motionGPU);
+            // A long window holds more pass records than one message can carry;
+            // --gpu-summary reduces them to per-frame and per-pass totals in the worker.
+            run.gpuTimestamps = await owner.evaluate(summary => {
+              const s = globalThis.__motionGPU; if (!summary) return s;
+              const frames = new Map(), groups = {}; let invalid = 0;
+              for (const r of s.results) {
+                let f = frames.get(r.frame); if (!f) frames.set(r.frame, f = {ns:0, passes:0, draws:0, dispatches:0});
+                for (const p of r.passes) {
+                  if (!(p.ns >= 0 && p.ns < 1e9)) { invalid++; continue; }
+                  f.ns += p.ns; f.passes++; f.draws += p.draws; f.dispatches += p.dispatches;
+                  const key = (p.kind === 'beginComputePass' ? 'compute:' : 'render:') + (p.label || p.pipelines[0] || '');
+                  const g = groups[key] ??= {ns:0, passes:0, draws:0, dispatches:0};
+                  g.ns += p.ns; g.passes++; g.draws += p.draws; g.dispatches += p.dispatches;
+                }
+              }
+              const totals = [...frames.values()].map(f => f.ns / 1e6).sort((a, b) => a - b), n = totals.length;
+              const at = q => n ? totals[Math.min(n - 1, Math.floor(q * n))] : null;
+              const mean = k => n ? [...frames.values()].reduce((sum, f) => sum + f[k], 0) / n : null;
+              return {summary:true, window:s.window, pending:s.pending, errors:s.errors, frames:n, invalidPasses:invalid,
+                passMs:{mean:n ? totals.reduce((a, b) => a + b, 0) / n : null, p50:at(.5), p95:at(.95), p99:at(.99), max:n ? totals[n - 1] : null},
+                passesPerFrame:mean('passes'), drawsPerFrame:mean('draws'), dispatchesPerFrame:mean('dispatches'),
+                groups:Object.fromEntries(Object.entries(groups).map(([k, g]) => [k, {msPerFrame:g.ns / 1e6 / n, passesPerFrame:g.passes / n,
+                  drawsPerFrame:g.draws / n, dispatchesPerFrame:g.dispatches / n}]).sort((a, b) => b[1].msPerFrame - a[1].msPerFrame)),
+                pipelineCreations:s.pipelineCreations, slowCalls:s.slowCalls};
+            }, process.argv.includes('--gpu-summary'));
             assert.equal(run.gpuTimestamps.pending, 0);
             assert.equal(run.gpuTimestamps.errors.length, 0, run.gpuTimestamps.errors.slice(0,3).join('\n'));
           }
