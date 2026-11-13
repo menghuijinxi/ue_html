@@ -3,6 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {chromium}=require('playwright'),{audit}=require('./content-file-metadata.cjs');
 const option=n=>process.argv.find(a=>a.startsWith('--'+n+'='))?.slice(n.length+3);
 const folder=option('folder')||'nanite-core-scene',tag=option('tag');
+const nanite=option('nanite');assert(nanite===undefined||nanite==='0'||nanite==='1');
 assert(/^[a-z0-9-]+$/.test(folder)&&/^[a-z0-9-]+$/.test(tag));
 const file=path.join(__dirname,'results','render-cpu-'+tag),report={pass:false,source:audit(__filename),errors:[]};
 const summarize=p=>{
@@ -19,6 +20,11 @@ const summarize=p=>{
  const packageFile=path.join(__dirname,'build',folder,'package.json'),pkg=JSON.parse(fs.readFileSync(packageFile));
  assert(pkg.pass);for(const p of pkg.products)assert.equal(audit(p.file).sha256,p.sha256,p.file);report.package=audit(packageFile);
  context=await chromium.launchPersistentContext(path.join(__dirname,'build/browser-profiles/cpu-villa'),{channel:'msedge',headless:true,viewport:{width:1280,height:720}});
+ if(nanite!==undefined)await context.route('**/config-files.json*',async route=>{const response=await route.fetch(),files=await response.json();
+  const f=files.find(x=>x.path==='/Engine/Platforms/Web/Config/WebEngine.ini');assert(f);
+  const data=Buffer.from(Buffer.from(f.data,'base64').toString()+'\n[SystemSettings]\nr.Nanite='+Number(nanite)+'\n');
+  f.data=data.toString('base64');f.sha256=require('node:crypto').createHash('sha256').update(data).digest('hex');report.nanite=Number(nanite);
+  await route.fulfill({response,body:JSON.stringify(files)});});
  const page=context.pages()[0];page.on('pageerror',e=>report.errors.push(e.stack));
  page.on('console',m=>{if(/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text()))report.errors.push(m.text());});
  await page.goto('http://127.0.0.1:8765/build/'+folder+'/index.html',{waitUntil:'commit'});
