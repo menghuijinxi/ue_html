@@ -6,6 +6,7 @@ const {chromium} = require('playwright'), {execFileSync} = require('node:child_p
 const {audit} = require('../content-file-metadata.cjs');
 const observeMemory = require('./villa-gpu-memory-observer.cjs');
 const {settings: acceptedSettings} = require('../web-accepted-defaults.cjs');
+const {readPage} = require('../web-pipeline-prewarm-package.cjs');
 const option = name => process.argv.find(value => value.startsWith('--' + name + '='))?.slice(name.length + 3);
 const base = path.resolve(__dirname, '..'), tag = option('tag');
 const seconds = Number(option('seconds') || 15);
@@ -16,6 +17,13 @@ const earlierOff = Object.fromEntries(Object.keys(acceptedSettings)
   .filter(key => /^r\.Web(GPU)?\./.test(key)).map(key => [key, 0]));
 const variants = {
   old: {folder: 'villa-vsm-sampling-adaptive-20261112', url: 'vsm-adaptive-live.html#adaptive', settings: {}},
+  oldforced: {folder: 'villa-vsm-sampling-adaptive-20261112', url: 'vsm-adaptive-live.html#adaptive',
+    forceResolution: true, settings: {}},
+  runtimeonly: {folder: 'villa-runtime-factor-20261113', url: 'vsm-adaptive-live.html#adaptive',
+    wrapperFolder: true, settings: {'r.WebGPU.TSRLargeTiles': 0,
+      'r.WebGPU.VSMPageOptimization': 0, 'r.WebGPU.IndirectDrawReuse': 0}},
+  runtimepages: {folder: 'villa-runtime-factor-pages-20261113', url: 'vsm-adaptive-live.html#adaptive',
+    wrapperFolder: true, settings: {'r.WebGPU.VSMPageOptimization': 0, 'r.WebGPU.IndirectDrawReuse': 0}},
   latest: {folder: 'villa-tsr-tiles-20261112', settings: {}},
   small: {folder: 'villa-tsr-tiles-20261112', settings: {'r.WebGPU.TSRLargeTiles': 0}},
   pagesoff: {folder: 'villa-tsr-tiles-20261112', settings: {'r.WebGPU.VSMPageOptimization': 0}},
@@ -45,7 +53,8 @@ const report = {date: new Date().toISOString(), pass: false, order, seconds, tra
   memoryObserver: audit(path.join(directory, 'memory-observer.cjs')),
   boundary: 'Sequential old live wrapper versus current release, fixed physical resolution and native input. ' +
     'RHI submission intervals and page rAF observations are not display scanout timestamps. ' +
-    'Startup overrides are diagnostic only; immutable packages and recorded prewarm stay unchanged.'};
+    'Startup overrides are diagnostic only; immutable packages and recorded prewarm files stay unchanged. ' +
+    'Mixed-runtime variants replay old descriptors with a diagnostic WASM identity override; this is not a release capture.'};
 const save = () => fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify(report, null, 2));
 const gpu = () => execFileSync('nvidia-smi', ['--query-gpu=utilization.gpu,memory.used,pstate,clocks.gr',
   '--format=csv,noheader'], {encoding: 'utf8'}).trim();
@@ -94,7 +103,8 @@ let context, log, run, sampler;
     for (let index = 0; index < order.length; ++index) {
       const name = order[index], variant = variants[name];
       run = {name, index: index + 1, errors: [], phases: [], gpuBefore: gpu(), adapterBefore: memory(),
-        overrides: variant.settings, search: variant.search || ''};
+        overrides: variant.settings, search: variant.search || '', forceResolution: !!variant.forceResolution,
+        diagnosticPrewarmIdentityOverride: !!variant.wrapperFolder};
       report.runs.push(run); save();
       context = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: false,
         viewport: {width: 1280, height: 800}, deviceScaleFactor: 1.5,
@@ -104,6 +114,24 @@ let context, log, run, sampler;
       const anchor = context.pages()[0] || await context.newPage();
       for (const page of context.pages()) if (page !== anchor) await page.close();
       await anchor.goto('about:blank');
+      if (variant.wrapperFolder) {
+        await context.route('**/vsm-adaptive-live.js', async route => {
+          const response = await route.fetch(), source = await response.text();
+          const marker = 'frame.src = `build/villa-vsm-sampling-${mode}-20261112/index.html`;';
+          assert.equal(source.split(marker).length, 2);
+          await route.fulfill({response, body: source.replace(marker,
+            'frame.src = ' + JSON.stringify('build/' + variant.folder + '/index.html') + ';')});
+        });
+      }
+      if (variant.forceResolution) {
+        const sourcePage = readPage(path.join(base, 'build', variant.folder));
+        const body = sourcePage.html.replace(sourcePage.argsMatch[0], 'arguments: ' +
+          JSON.stringify([...sourcePage.args, '-ResX=1920', '-ResY=1080', '-ForceRes']) + ',');
+        await context.route('**/' + variant.folder + '/index.html', async route => {
+          const response = await route.fetch();
+          await route.fulfill({response, body});
+        });
+      }
       if (retainCooks) {
         const storage = await context.newCDPSession(anchor);
         await storage.send('Storage.overrideQuotaForOrigin', {
@@ -139,6 +167,7 @@ ${marker}`);
       const page = await context.newPage();
       log = fs.createWriteStream(path.join(directory, 'run-' + run.index + '-' + report.startupFailures.length + '.log'));
       page.on('pageerror', error => run.errors.push(error.message));
+      page.on('crash', () => {run.errors.push('Diagnostic browser page crashed'); save();});
       page.on('console', message => {
         const text = message.text(); log.write(text + '\n');
         if (/GPU validation:|GPUValidationError|Fatal error:|Assertion failed:|DeviceLost|WebGPU device lost|Failed to create (compute|graphics) pipeline/.test(text))
@@ -153,8 +182,19 @@ ${marker}`);
         return globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 90 &&
           document.getElementById('loading')?.hidden;
       }, wrapper, {timeout: 240000});
+      const wrapperError = wrapper ? await page.evaluate(() => globalThis.__vsmAdaptiveLive.error) : null;
       const scene = wrapper ? page.frames().find(frame => frame.url().includes('/build/')) : page.mainFrame();
-      assert(scene);
+      assert(scene, wrapperError || 'Missing scene frame');
+      run.actualStartup = await scene.evaluate(() => ({
+        arguments: Module.arguments, runtime: localRuntimeAssets.runtime, wasm: localRuntimeAssets.wasm.sha256,
+        content: localRuntimeAssets.pipelinePrewarm.content, config: localRuntimeAssets.pipelinePrewarm.config,
+        fixedRenderSize: localRuntimeAssets.fixedRenderSize, clock: localRuntimeAssets.gameFrameClock,
+        frameBudget: localRuntimeAssets.pageFrameBudget,
+      }));
+      const expectedPage = readPage(path.join(base, 'build', variant.folder));
+      assert.equal(run.actualStartup.wasm, expectedPage.assets.wasm.sha256);
+      assert.equal(run.actualStartup.arguments.includes('-ForceRes'),
+        !!variant.forceResolution || expectedPage.args.includes('-ForceRes'));
       const failure = await scene.evaluate(() => globalThis.__webEngineFailure || null);
       if (failure && /external Instance reference|E_OUTOFMEMORY/.test(failure) && report.startupFailures.length < 3) {
         report.startupFailures.push({...run, failure, excluded: 'No measured window'});
@@ -162,6 +202,7 @@ ${marker}`);
         log.end(); log = null; --index; continue;
       }
       assert(!failure, failure);
+      assert.equal(wrapperError, null, 'Diagnostic wrapper must be ready');
       const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js')); assert(owner);
       const state = () => owner.evaluate(() => ({frames: __webRHIFrames, view: __webRenderView,
         camera: __webDefaultCamera, player: globalThis.__webPlayerView, settings: __webProjectSettings,
