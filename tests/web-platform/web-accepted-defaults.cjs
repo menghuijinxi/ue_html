@@ -3,8 +3,8 @@
 // Apply only to desktop threaded packages, after staging, so source projects and
 // archived comparison packages keep their own settings.
 // VSM adaptive SMRT sampling was additionally accepted on 2026-11-12.
-// Manual historical comparison found a smoothness regression starting at
-// indirect reuse on 2026-11-13. Keep it opt-in while isolating the two paths.
+// The 2026-11-13 manual retest retracted the indirect-reuse regression.
+// Keep its accepted default; TSR large tiles remain opt-in pending acceptance.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
 const profile='desktop-accepted-20261107';
 const settings=Object.freeze({
@@ -17,7 +17,7 @@ const settings=Object.freeze({
   'r.Web.LightGridAllocationBuckets':1,'r.WebGPU.StagingReadbackPool':1,
   'r.WebGPU.GroupAccessRevalidation':2,'r.WebGPU.DynamicGlobalsGroupReuse':1,'r.WebGPU.BindingPlan':1,
   'r.Shadow.Virtual.SMRT.AdaptiveRayCount':1,
-  'r.WebGPU.IndirectDrawReuse':0,
+  'r.WebGPU.IndirectDrawReuse':2,
   'r.WebGPU.VSMPageOptimization':3,
   // Larger tiles improved one pass but did not pass movement smoothness acceptance.
   'r.WebGPU.TSRLargeTiles':0,

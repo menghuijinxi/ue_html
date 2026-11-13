@@ -41,6 +41,10 @@ const server = http.createServer(async (request, response) => {
   response.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   response.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
   response.setHeader('Cache-Control', 'no-cache');
+  if (pathname === '/__diagnostics/villa-turn') {
+    await require('./villa-turn-export.cjs')(request, response);
+    return;
+  }
   if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405).end(); return; }
   try {
     const stat = await fs.promises.stat(file);
@@ -65,7 +69,9 @@ const server = http.createServer(async (request, response) => {
     stream.pipe(response);
   } catch { if (!response.headersSent) response.writeHead(404).end(); else response.destroy(); }
 });
-if (require.main === module) server.listen(Number(process.env.PORT || 8765), host, () => {
+if (require.main === module) {
+  require('./project-output.cjs').initializeProjectOutput();
+  server.listen(Number(process.env.PORT || 8765), host, () => {
   const port = server.address().port;
   console.log(`P0 server listening on ${host}:${port}`);
   if (host === '0.0.0.0') {
@@ -81,5 +87,6 @@ if (require.main === module) server.listen(Number(process.env.PORT || 8765), hos
     const address = host.includes(':') ? `[${host}]` : host;
     console.log(`P0 server http://${address}:${port}`);
   }
-});
+  });
+}
 module.exports = server;

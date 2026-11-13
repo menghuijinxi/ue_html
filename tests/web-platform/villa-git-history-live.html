@@ -27,6 +27,9 @@ iframe{width:100%;height:100%;border:0;display:block}
 #loading{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:18px;background:#191e1beF}
 #loading-title{font-size:18px}#loading-detail{overflow-wrap:anywhere}
 #retry{justify-self:center}[hidden]{display:none!important}
+.recording{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:6px 14px;border-bottom:1px solid #48534c;font-size:12px}
+.recording a{color:#b8e7d1;overflow-wrap:anywhere}
+#record{min-width:100px}#record:not(:disabled){color:#ffd8cd}
 @media(max-width:650px){header,.toolbar,.metrics{padding:6px 9px;gap:5px 10px}.modes span{padding:5px 7px;font-size:12px}}
 </style>
 <header><h1>Triplex Villa · Git 版本对照</h1><span id="status" role="status">准备场景</span></header>
@@ -49,12 +52,18 @@ iframe{width:100%;height:100%;border:0;display:block}
 <div class="metrics">
   <span>FPS <b id="fps">待采样</b></span><span>1% Low <b id="low">待采样</b></span>
   <span>P99 <b id="p99">待采样</b></span><span>近5秒 &gt;50ms <b id="long-frames">待采样</b></span>
+  <span>近5秒最长 <b id="max-frame">待采样</b></span>
   <span>渲染 <b id="render-size">待确认</b></span><span>输出 <b id="output-size">待确认</b></span>
   <span>抗锯齿 <b id="aa">待确认</b></span><span id="quality">Lumen / VT / VSM 待确认</span>
+</div>
+<div class="recording">
+  <button id="record" disabled>● 开始记录</button><button id="save-capture" disabled>导出数据</button>
+  <span id="capture-status" role="status">尚未记录</span><a id="capture-file"></a>
 </div>
 <main id="stage">
   <div id="loading"><strong id="loading-title">加载场景</strong><p id="loading-detail">准备资源与管线</p><button id="retry" hidden>重试</button></div>
 </main>
 <script src="villa-git-history-live.js"></script>
 <script src="villa-smoothness-live.js"></script>
+<script src="villa-turn-recorder.js"></script>
 </html>
