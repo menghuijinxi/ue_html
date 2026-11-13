@@ -12,11 +12,18 @@ const base = path.resolve(__dirname, '..'), tag = option('tag');
 const seconds = Number(option('seconds') || 15);
 const traceSeconds = Number(option('trace-seconds') || 0);
 const retainCooks = process.argv.includes('--retain-cooks');
+const lean = process.argv.includes('--lean');
+const foreground = process.argv.includes('--foreground');
+const allowPipelineCreation = process.argv.includes('--allow-pipeline-creation');
 assert(traceSeconds === 0 || traceSeconds >= 10 && traceSeconds <= 30);
 const earlierOff = Object.fromEntries(Object.keys(acceptedSettings)
   .filter(key => /^r\.Web(GPU)?\./.test(key)).map(key => [key, 0]));
 const variants = {
   old: {folder: 'villa-vsm-sampling-adaptive-20261112', url: 'vsm-adaptive-live.html#adaptive', settings: {}},
+  liveoff: {folder: 'villa-added-optimizations-off-20261112',
+    url: 'villa-smoothness-live.html#off', settings: {}},
+  liveplain: {folder: 'villa-web-optimizations-off-20261112',
+    url: 'villa-smoothness-live.html#plain', settings: {}},
   oldforced: {folder: 'villa-vsm-sampling-adaptive-20261112', url: 'vsm-adaptive-live.html#adaptive',
     forceResolution: true, settings: {}},
   runtimeonly: {folder: 'villa-runtime-factor-20261113', url: 'vsm-adaptive-live.html#adaptive',
@@ -48,6 +55,7 @@ fs.copyFileSync(path.join(__dirname, 'villa-gpu-memory-observer.cjs'), path.join
 const packages = Object.fromEntries([...new Set(order.map(name => variants[name].folder))].map(folder =>
   [folder, audit(path.join(base, 'build', folder, 'asset-versions.json'))]));
 const report = {date: new Date().toISOString(), pass: false, order, seconds, traceSeconds, retainCooks,
+  lean, foreground, allowPipelineCreation,
   phases, packages, runs: [],
   startupFailures: [], source: audit(path.join(directory, 'benchmark-source.cjs')),
   memoryObserver: audit(path.join(directory, 'memory-observer.cjs')),
@@ -62,14 +70,14 @@ const memory = () => JSON.parse(execFileSync('powershell.exe', ['-NoProfile', '-
   'Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUAdapterMemory | ' +
   'Select-Object Name,DedicatedUsage,SharedUsage,TotalCommitted | ConvertTo-Json -Compress'],
 {encoding: 'utf8'}));
-function install() {
+function install(lean) {
   const capture = globalThis.__releaseRegression = {active: false, times: [], details: [],
     completions: [], creations: []};
   let frames = 0;
   Object.defineProperty(globalThis, '__webRHIFrames', {configurable: true, get: () => frames, set(value) {
     if (capture.active && value > frames) {
       capture.times.push(performance.now());
-      capture.details.push({frame: value, rhiMs: globalThis.__webThreadStages?.rhiWorkMilliseconds,
+      if (!lean) capture.details.push({frame: value, rhiMs: globalThis.__webThreadStages?.rhiWorkMilliseconds,
         gameMs: globalThis.__webThreadFrameTimes?.at(-1), game: globalThis.__webEngineFrames,
         pendingTextures: globalThis.__webTextureStreaming?.pending,
         ioCompleted: globalThis.__webContentIO?.stats?.completed,
@@ -108,7 +116,8 @@ let context, log, run, sampler;
       report.runs.push(run); save();
       context = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: false,
         viewport: {width: 1280, height: 800}, deviceScaleFactor: 1.5,
-        args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
+        args: [foreground ? '--window-position=20,20' : '--window-position=-32000,-32000',
+          '--disable-background-timer-throttling',
           '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']});
       report.browser = context.browser().version();
       const anchor = context.pages()[0] || await context.newPage();
@@ -161,8 +170,8 @@ let context, log, run, sampler;
         FS.writeFile(regressionIni,FS.readFile(regressionIni,{encoding:'utf8'})+${JSON.stringify(ini)});
 ${marker}`);
         }
-        await route.fulfill({response, body: '(' + observeMemory.toString() + ')();\n(' +
-          install.toString() + ')();\n' + body});
+        await route.fulfill({response, body: (lean ? '' : '(' + observeMemory.toString() + ')();\n') +
+          '(' + install.toString() + ')(' + JSON.stringify(lean) + ');\n' + body});
       });
       const page = await context.newPage();
       log = fs.createWriteStream(path.join(directory, 'run-' + run.index + '-' + report.startupFailures.length + '.log'));
@@ -176,13 +185,16 @@ ${marker}`);
       console.log(JSON.stringify({name, run: run.index, stage: 'starting'}));
       await page.goto('http://127.0.0.1:8765/' + (variant.url || 'build/' + variant.folder + '/index.html') +
         (variant.search || ''));
+      if (foreground) await page.bringToFront();
       const wrapper = !!variant.url;
       await page.waitForFunction(wrapper => {
-        if (wrapper) return globalThis.__vsmAdaptiveLive?.error || globalThis.__vsmAdaptiveLive?.ready;
+        const live = globalThis.__villaSmoothnessLive || globalThis.__vsmAdaptiveLive;
+        if (wrapper) return live?.error || live?.ready;
         return globalThis.__webEngineFailure || globalThis.__webEngineFrames >= 90 &&
           document.getElementById('loading')?.hidden;
       }, wrapper, {timeout: 240000});
-      const wrapperError = wrapper ? await page.evaluate(() => globalThis.__vsmAdaptiveLive.error) : null;
+      const wrapperError = wrapper ? await page.evaluate(() =>
+        (globalThis.__villaSmoothnessLive || globalThis.__vsmAdaptiveLive).error) : null;
       const scene = wrapper ? page.frames().find(frame => frame.url().includes('/build/')) : page.mainFrame();
       assert(scene, wrapperError || 'Missing scene frame');
       run.actualStartup = await scene.evaluate(() => ({
@@ -236,7 +248,8 @@ ${marker}`);
           if (key in variant.settings) assert.equal(value.rhi[field], variant.settings[key]);
         if ('r.WebGPU.ReuseComputePass' in variant.settings)
           assert.equal(value.rhi.reuseComputePass, !!variant.settings['r.WebGPU.ReuseComputePass']);
-        assert.deepEqual(value.resources.unknownFormats, {}, 'Resource estimates must cover every texture format');
+        if (!lean)
+          assert.deepEqual(value.resources.unknownFormats, {}, 'Resource estimates must cover every texture format');
       }
       // Register the real possessed camera before a scripted route replaces its view target.
       await playerControl(null);
@@ -280,9 +293,12 @@ ${marker}`);
           if (sampleInFlight) return;
           sampleInFlight = true;
           try {
-            phase.samples.push({date: new Date().toISOString(), state: await state(),
+            phase.samples.push({date: new Date().toISOString(), state: lean ?
+              await owner.evaluate(() => ({frames: __webRHIFrames, camera: __webDefaultCamera,
+                failure: globalThis.__webEngineFailure})) : await state(),
               page: await scene.evaluate(() => ({scheduler: globalThis.__webFrameSchedulerPage,
-                live: globalThis.__webLivePerformance}))});
+                live: globalThis.__webLivePerformance, hidden: document.hidden,
+                focused: document.hasFocus()}))});
           } catch (error) {phase.sampleError = error.message;}
           finally {sampleInFlight = false;}
         }, 1000);
@@ -293,6 +309,7 @@ ${marker}`);
         if (kind === 'input') {
           phase.cameras = [phase.before.camera];
           const canvas = scene.locator('#canvas'), box = await canvas.boundingBox();
+          phase.canvasBox = box;
           const center = {x: box.x + box.width / 2, y: box.y + box.height / 2};
           await page.mouse.click(center.x, center.y); await page.mouse.move(center.x, center.y);
           try {
@@ -301,7 +318,8 @@ ${marker}`);
               const elapsed = (Date.now() - began) / 1000;
               await page.mouse.move(center.x + Math.sin(elapsed * Math.PI / 2) * box.width * .20,
                 center.y + Math.sin(elapsed * Math.PI / 3) * box.height * .025);
-              if (elapsed >= phase.cameras.length) phase.cameras.push((await state()).camera);
+              if (elapsed >= phase.cameras.length) phase.cameras.push(lean ?
+                await owner.evaluate(() => __webDefaultCamera) : (await state()).camera);
               await page.waitForTimeout(32);
             }
           } finally {await page.mouse.up({button: 'right'});}
@@ -310,6 +328,10 @@ ${marker}`);
         assert(!phase.sampleError, phase.sampleError);
         phase.capture = await owner.evaluate(() => {__releaseRegression.active = false; return __releaseRegression;});
         phase.after = await state(); check(phase.after); phase.gpu = gpu();
+        assert(phase.samples.every(sample => !sample.state.failure && !sample.page.hidden),
+          'Measured scene must stay visible and healthy');
+        if (foreground) assert(phase.samples.every(sample => sample.page.focused),
+          'Foreground measurement lost focus');
         if (kind === 'input') {
           phase.cameras.push(phase.after.camera);
           phase.yawTravel = phase.cameras.slice(1).reduce((total, camera, index) =>
@@ -317,14 +339,16 @@ ${marker}`);
           assert(phase.yawTravel > 50, 'Native drag must rotate the actual possessed camera');
           assert(phase.after.player.active, 'Script camera must not own the native input phase');
         }
-        assert.equal(phase.before.prewarm.counts.misses, phase.after.prewarm.counts.misses);
-        assert.deepEqual(phase.capture.creations, []);
         phase.summary = summary(phase.capture.times);
         phase.gpuCompletionSummary = summary(phase.capture.completions.filter((value, index, values) =>
           index === 0 || value > values[index - 1]));
         const frames = phase.after.frames - phase.before.frames;
         phase.summary.rhiMs = (phase.after.stages.rhiWorkMilliseconds - phase.before.stages.rhiWorkMilliseconds) / frames;
         console.log(JSON.stringify({name, kind, ...phase.summary})); save();
+        if (!allowPipelineCreation) {
+          assert.equal(phase.before.prewarm.counts.misses, phase.after.prewarm.counts.misses);
+          assert.deepEqual(phase.capture.creations, []);
+        }
       }
       if (traceSeconds) {
         await motion(traceSeconds + 10, 2);

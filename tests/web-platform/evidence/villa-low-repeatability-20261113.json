@@ -1,0 +1,424 @@
+{
+  "measurementPassed": true,
+  "usableForBisection": false,
+  "baseline": "old",
+  "candidate": "liveoff",
+  "criterion": "At least three sequential counterbalanced pairs. Each pair must show >=10% lower candidate whole-run 1% Low AND median of disjoint five-second Low windows. No measured run is retried, discarded or reordered. This is an operational gate, not statistical proof.",
+  "runs": [
+    {
+      "index": 1,
+      "name": "old",
+      "fps": 45.440110708633405,
+      "low1": 33.68056390889492,
+      "fiveSecondLows": [
+        26.039406301544744,
+        31.496062992125985,
+        36.15982643269511,
+        35.45680179672774,
+        33.74957813057747,
+        37.924277858328125,
+        36.76470588231098,
+        38.03727653094648,
+        36.73544358046448,
+        37.544584193826324,
+        35.63368571091568,
+        37.01647233000828
+      ],
+      "medianFiveSecondLow": 36.447635006579794,
+      "liveHudLowMedian": 36.70737953321556,
+      "gpuCompletionLow": 34.598869358380306,
+      "pageObservedLowMedian": 32.66461607885967,
+      "pageRefreshHzMedian": 116,
+      "over50": 0,
+      "prewarmMissDelta": 0,
+      "pipelineCreations": [],
+      "gpuBefore": "6 %, 2636 MiB, P0, 1815 MHz",
+      "gpuDuring": "100 %, 7484 MiB, P0, 1890 MHz",
+      "yawTravel": 2501.72495919466,
+      "canvasBox": {
+        "x": 42.66666793823242,
+        "y": 128.33334350585938,
+        "width": 1194.666706085205,
+        "height": 672.0000305175781
+      },
+      "actualStartup": {
+        "arguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebFrameScheduler=3",
+          "-WebRHIWake=priority"
+        ],
+        "runtime": "UEWebEngineThreads.js",
+        "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+        "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+        "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "clock": "page",
+        "frameBudget": 3
+      }
+    },
+    {
+      "index": 2,
+      "name": "liveoff",
+      "fps": 45.328342492220344,
+      "low1": 32.76980964250506,
+      "fiveSecondLows": [
+        21.28187848042607,
+        36.30862329782865,
+        35.71853792128407,
+        34.60008073349198,
+        37.84533871577261,
+        36.077205219055884,
+        35.4044963710936,
+        36.74444240286858,
+        36.16854542173806,
+        36.66585186982489,
+        35.344015079965736
+      ],
+      "medianFiveSecondLow": 36.077205219055884,
+      "liveHudLowMedian": 36.02089211756506,
+      "gpuCompletionLow": 32.59148896544878,
+      "pageObservedLowMedian": 29.983509070011408,
+      "pageRefreshHzMedian": 116,
+      "over50": 2,
+      "prewarmMissDelta": 0,
+      "pipelineCreations": [],
+      "gpuBefore": "5 %, 2240 MiB, P0, 1815 MHz",
+      "gpuDuring": "100 %, 7376 MiB, P0, 1875 MHz",
+      "yawTravel": 2498.750254780054,
+      "canvasBox": {
+        "x": 42.66666793823242,
+        "y": 128.33334350585938,
+        "width": 1194.666706085205,
+        "height": 672.0000305175781
+      },
+      "actualStartup": {
+        "arguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-ResX=1920",
+          "-ResY=1080",
+          "-ForceRes",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebFrameScheduler=3",
+          "-WebRHIWake=priority"
+        ],
+        "runtime": "UEWebEngineThreads.js",
+        "wasm": "aec1db17611832b74d37927ff3413a8baef68c4dd578c4bfa3f564cf395b969c",
+        "content": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc",
+        "config": "d9cea2aadb6e9df2d59881aeb09f27b9ea6af8497fd8b69fed14846d25cb936a",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "clock": "page",
+        "frameBudget": 3
+      }
+    },
+    {
+      "index": 3,
+      "name": "liveoff",
+      "fps": 48.11816059577783,
+      "low1": 31.999293808687703,
+      "fiveSecondLows": [
+        21.74700978619845,
+        26.989339210948334,
+        30.89439266773673,
+        35.089771331610955,
+        42.07868714473022,
+        36.780481824337095,
+        41.7420342281327,
+        37.027894346853465,
+        41.41358365520471,
+        38.11217684057269,
+        41.220115416175474
+      ],
+      "medianFiveSecondLow": 37.027894346853465,
+      "liveHudLowMedian": 38.10733566206988,
+      "gpuCompletionLow": 32.21810546426045,
+      "pageObservedLowMedian": 39.8128805621014,
+      "pageRefreshHzMedian": 117,
+      "over50": 3,
+      "prewarmMissDelta": 1,
+      "pipelineCreations": [
+        "createShaderModule",
+        "createShaderModule",
+        "createRenderPipeline"
+      ],
+      "gpuBefore": "5 %, 2375 MiB, P0, 1815 MHz",
+      "gpuDuring": "100 %, 7444 MiB, P0, 1890 MHz",
+      "yawTravel": 2579.242209136486,
+      "canvasBox": {
+        "x": 42.66666793823242,
+        "y": 128.33334350585938,
+        "width": 1194.666706085205,
+        "height": 672.0000305175781
+      },
+      "actualStartup": {
+        "arguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-ResX=1920",
+          "-ResY=1080",
+          "-ForceRes",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebFrameScheduler=3",
+          "-WebRHIWake=priority"
+        ],
+        "runtime": "UEWebEngineThreads.js",
+        "wasm": "aec1db17611832b74d37927ff3413a8baef68c4dd578c4bfa3f564cf395b969c",
+        "content": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc",
+        "config": "d9cea2aadb6e9df2d59881aeb09f27b9ea6af8497fd8b69fed14846d25cb936a",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "clock": "page",
+        "frameBudget": 3
+      }
+    },
+    {
+      "index": 4,
+      "name": "old",
+      "fps": 44.97203707742769,
+      "low1": 32.07374585719226,
+      "fiveSecondLows": [
+        20.68894176077777,
+        36.984528138535275,
+        36.260349307884724,
+        36.266924564502915,
+        33.6059146411451,
+        37.27865796805429,
+        36.9026385391121,
+        34.178296781761304,
+        34.61005999126151,
+        32.948929159869714,
+        36.67257502611001
+      ],
+      "medianFiveSecondLow": 36.260349307884724,
+      "liveHudLowMedian": 36.029544226410614,
+      "gpuCompletionLow": 32.25286244151442,
+      "pageObservedLowMedian": 30.000000074997814,
+      "pageRefreshHzMedian": 116,
+      "over50": 2,
+      "prewarmMissDelta": 0,
+      "pipelineCreations": [],
+      "gpuBefore": "2 %, 2368 MiB, P0, 1815 MHz",
+      "gpuDuring": "100 %, 7458 MiB, P0, 1890 MHz",
+      "yawTravel": 2502.4248897731304,
+      "canvasBox": {
+        "x": 42.66666793823242,
+        "y": 128.33334350585938,
+        "width": 1194.666706085205,
+        "height": 672.0000305175781
+      },
+      "actualStartup": {
+        "arguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebFrameScheduler=3",
+          "-WebRHIWake=priority"
+        ],
+        "runtime": "UEWebEngineThreads.js",
+        "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+        "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+        "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "clock": "page",
+        "frameBudget": 3
+      }
+    },
+    {
+      "index": 5,
+      "name": "old",
+      "fps": 45.305293168418345,
+      "low1": 30.972423481512696,
+      "fiveSecondLows": [
+        22.424876663290753,
+        36.337209302096035,
+        36.092396535081406,
+        28.716377907604944,
+        34.18024381960935,
+        36.46308113019042,
+        36.807557818168625,
+        35.01809268124909,
+        30.70781513885919,
+        37.792894935805286,
+        35.47147502248215
+      ],
+      "medianFiveSecondLow": 35.47147502248215,
+      "liveHudLowMedian": 35.88302135060556,
+      "gpuCompletionLow": 31.07778881533093,
+      "pageObservedLowMedian": 32.64950995354141,
+      "pageRefreshHzMedian": 116,
+      "over50": 1,
+      "prewarmMissDelta": 0,
+      "pipelineCreations": [],
+      "gpuBefore": "2 %, 2383 MiB, P0, 1815 MHz",
+      "gpuDuring": "100 %, 7442 MiB, P0, 1875 MHz",
+      "yawTravel": 2501.549977242947,
+      "canvasBox": {
+        "x": 42.66666793823242,
+        "y": 128.33334350585938,
+        "width": 1194.666706085205,
+        "height": 672.0000305175781
+      },
+      "actualStartup": {
+        "arguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebFrameScheduler=3",
+          "-WebRHIWake=priority"
+        ],
+        "runtime": "UEWebEngineThreads.js",
+        "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+        "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+        "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "clock": "page",
+        "frameBudget": 3
+      }
+    },
+    {
+      "index": 6,
+      "name": "liveoff",
+      "fps": 45.328890357432826,
+      "low1": 31.082446188512467,
+      "fiveSecondLows": [
+        18.169154831558977,
+        37.974683543856116,
+        36.1467558286157,
+        29.188558085156533,
+        36.69051550189325,
+        38.60755421140369,
+        34.228991955997756,
+        37.181632273416476,
+        38.05657744509913,
+        33.09796999095622,
+        37.00962250203757
+      ],
+      "medianFiveSecondLow": 36.69051550189325,
+      "liveHudLowMedian": 36.25596712787417,
+      "gpuCompletionLow": 31.38872696294792,
+      "pageObservedLowMedian": 32.6459547187706,
+      "pageRefreshHzMedian": 116,
+      "over50": 3,
+      "prewarmMissDelta": 0,
+      "pipelineCreations": [],
+      "gpuBefore": "2 %, 2397 MiB, P0, 1815 MHz",
+      "gpuDuring": "100 %, 7464 MiB, P0, 1890 MHz",
+      "yawTravel": 2500.5000762939458,
+      "canvasBox": {
+        "x": 42.66666793823242,
+        "y": 128.33334350585938,
+        "width": 1194.666706085205,
+        "height": 672.0000305175781
+      },
+      "actualStartup": {
+        "arguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+          "-ResX=1920",
+          "-ResY=1080",
+          "-ForceRes",
+          "-WebDesktop",
+          "-WebOcclusionMode=history",
+          "-WebFrameScheduler=3",
+          "-WebRHIWake=priority"
+        ],
+        "runtime": "UEWebEngineThreads.js",
+        "wasm": "aec1db17611832b74d37927ff3413a8baef68c4dd578c4bfa3f564cf395b969c",
+        "content": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc",
+        "config": "d9cea2aadb6e9df2d59881aeb09f27b9ea6af8497fd8b69fed14846d25cb936a",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "clock": "page",
+        "frameBudget": 3
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "order": [
+        "old",
+        "liveoff"
+      ],
+      "wholeRunLowDrop": 0.027040944707856562,
+      "fiveSecondMedianDrop": 0.01016334221567572
+    },
+    {
+      "order": [
+        "liveoff",
+        "old"
+      ],
+      "wholeRunLowDrop": 0.0023212769982043913,
+      "fiveSecondMedianDrop": -0.02116761293311198
+    },
+    {
+      "order": [
+        "old",
+        "liveoff"
+      ],
+      "wholeRunLowDrop": -0.0035522795646083516,
+      "fiveSecondMedianDrop": -0.03436678284842842
+    }
+  ],
+  "counterbalanced": true,
+  "allWindowsPrewarmed": false,
+  "medianWholeRunDrop": 0.0023212769982043913,
+  "boundary": "Native right-drag at a fixed possessed-camera starting pose. RHI submission timing does not measure physical presentation or input latency. Existing published packages are used without exchanging runtime/Cook files. Shader/resource observers are disabled except creation counts.",
+  "date": "2026-11-13T02:20:04.789Z",
+  "assessmentSource": {
+    "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\assess-villa-low-repeatability.cjs",
+    "sha256": "98a4c7590de5351f6fe15c7acc132ceb35f6d35ac18e21653fbcdade7872a2a1"
+  },
+  "segments": [
+    {
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-low-repeatability-20261113\\result.json",
+        "sha256": "5c3c8d07a6ea7577b61b3b9fda258ee95f97364cd6210d27708c50df4769a1dc"
+      },
+      "fullSegmentPassed": false,
+      "originalError": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n14 !== 15\n\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-villa-release-regression.cjs:341:16",
+      "benchmarkSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-low-repeatability-20261113\\benchmark-source.cjs",
+        "sha256": "c7f76c4ce2b153eeaa4a71c35583f99e95a5dc351207fd98a51086cccaef8a12"
+      },
+      "measuredRuns": 3
+    },
+    {
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-low-repeatability-continuation-20261113\\result.json",
+        "sha256": "df5cf8180bc2ad0292aabc00919cad68de62e2eefe668cde5dff6ada7de7b7ad"
+      },
+      "fullSegmentPassed": true,
+      "originalError": null,
+      "benchmarkSource": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-low-repeatability-continuation-20261113\\benchmark-source.cjs",
+        "sha256": "59dc4692c0d18215dc98751e7d98477e6a97f48f7fbe2fe4924f8f7d0793d05e"
+      },
+      "measuredRuns": 3
+    }
+  ],
+  "productionDefaultsChanged": false,
+  "gitVersionBuildsStarted": false
+}
