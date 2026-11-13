@@ -2,8 +2,8 @@
 // Per-device interning uses complete descriptors, including shader source. A
 // miss always reaches WebGPU; no pipeline or draw is substituted or skipped.
 function createWebPipelineCache(device) {
-  const resources = new WeakMap(), records = new Map(), pipelines = new Map();
-  const native = {}, counts = {modules: 0, layouts: 0, ready: 0, hits: 0, misses: 0};
+  const resources = new WeakMap(), records = new Map(), pipelines = new Map(), pending = new Map();
+  const native = {}, counts = {modules: 0, layouts: 0, ready: 0, hits: 0, misses: 0, pendingHits: 0, syncWhilePending: 0};
   let sequence = 0;
   const encode = value => {
     if (value === null || typeof value !== 'object') return value;
@@ -35,8 +35,12 @@ function createWebPipelineCache(device) {
     for (const suffix of ['', 'Async']) {
       const name = 'create' + kind + 'Pipeline' + suffix;
       device[name] = descriptor => {
-        const value = pipelines.get(keyFor(kind, descriptor));
+        const key = keyFor(kind, descriptor), value = pipelines.get(key);
         if (value) {++counts.hits; return suffix ? Promise.resolve(value) : value;}
+        if (pending.has(key)) {
+          if (suffix) {++counts.hits; ++counts.pendingHits; return pending.get(key);}
+          ++counts.syncWhilePending;
+        }
         ++counts.misses;
         return native[name](descriptor);
       };
@@ -65,8 +69,13 @@ function createWebPipelineCache(device) {
         const record = pack.descriptors[next++], descriptor = decode(record.descriptor);
         const kind = record.kind === 'render' ? 'Render' : 'Compute', key = keyFor(kind, descriptor);
         if (pipelines.has(key)) continue;
-        const pipeline = await native['create' + kind + 'PipelineAsync'](descriptor);
-        pipelines.set(key, pipeline); ++counts.ready;
+        if (pending.has(key)) {await pending.get(key); continue;}
+        const creation = native['create' + kind + 'PipelineAsync'](descriptor);
+        pending.set(key, creation);
+        try {
+          const pipeline = await creation;
+          pipelines.set(key, pipeline); ++counts.ready;
+        } finally {pending.delete(key);}
       }
     }));
   }
@@ -76,8 +85,11 @@ function createWebPipelineCache(device) {
 async function prepareWebPipelinePrewarm(assets) {
   const requestDevice = GPUAdapter.prototype.requestDevice;
   const settings = assets.pipelinePrewarm;
+  if (settings.handoff !== undefined && !['complete', 'overlap'].includes(settings.handoff))
+    throw new Error('Invalid pipeline prewarm handoff');
   const state = globalThis.__webPipelinePrewarm = {
-    mode: 'preparing', start: performance.now(), ready: false, adopted: false, concurrency: 2
+    mode: 'preparing', start: performance.now(), ready: false, adopted: false, concurrency: 2,
+    handoff: settings.handoff || 'complete'
   };
   const response = await fetch(settings.url + '?v=' + settings.sha256);
   if (!response.ok) throw new Error('Prewarm pack HTTP ' + response.status);
@@ -103,22 +115,30 @@ async function prepareWebPipelinePrewarm(assets) {
   try {
     const cache = createWebPipelineCache(device);
     state.counts = cache.counts;
-    await cache.replay(pack, state.concurrency);
-    if (lost) throw new Error('Prewarm device lost: ' + lost.message);
-    if (validation) throw validation;
-    state.ready = true; state.mode = 'ready'; state.completed = performance.now();
+    const completed = cache.replay(pack, state.concurrency).then(() => {
+      if (lost) throw new Error('Prewarm device lost: ' + lost.message);
+      if (validation) throw validation;
+      state.ready = true; state.mode = state.adopted ? 'active' : 'ready'; state.completed = performance.now();
+    }).catch(error => {
+      state.error = error.message; state.mode = 'failed'; device.destroy(); throw error;
+    });
+    // Overlap callers still observe completion/failure before exposing the scene.
+    completed.catch(() => {});
+    if (state.handoff === 'complete') await completed;
     return {
-      state,
+      state, completed,
       take(request) {
         const features = Array.from(request.requiredFeatures || []);
         const fits = features.every(feature => device.features.has(feature)) &&
           Object.entries(request.requiredLimits || {}).every(([name, value]) =>
             name.startsWith('min') ? device.limits[name] <= value : device.limits[name] >= value);
-        if (!fits || state.adopted || lost) return null;
-        state.adopted = true; state.mode = 'active'; return device;
+        if (!fits || state.adopted || lost || state.error) return null;
+        state.adopted = true; state.adoptedAt = performance.now();
+        state.mode = state.ready ? 'active' : 'overlapping'; return device;
       },
       dispose() {if (!state.adopted) device.destroy();}
     };
   } catch (error) {device.destroy(); throw error;}
 }
-if (typeof module !== 'undefined' && module.exports) module.exports = {createWebPipelineCache};
+if (typeof module !== 'undefined' && module.exports)
+  module.exports = {createWebPipelineCache, prepareWebPipelinePrewarm};

@@ -17,6 +17,15 @@ function resolveWebRenderSize(assets, args) {
   return size;
 }
 
+function isWebPipelinePrecacheReady(assets, args, state) {
+  const warm = state.__webPipelinePrewarm, pso = state.__webPSOPrecache, rhi = state.__webOptimizationRHI;
+  const recordedReady = !assets.pipelinePrewarm || !!(warm?.adopted && warm.ready && !warm.error);
+  const automatic = !assets.pipelinePrewarm || args.includes('-WebPSOPrecacheTest');
+  const automaticReady = !automatic || !!(pso?.enabled && pso.active === 0 &&
+    rhi && rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted);
+  return state.__webEngineFrames >= 30 && recordedReady && automaticReady;
+}
+
 class WebInputMailbox {
   constructor(focused) {
     this.focused = focused;
@@ -475,11 +484,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
       render();
     } else if (message.type === 'state') {
       Object.assign(globalThis, message.state);
-      const pso = message.state.__webPSOPrecache, rhi = message.state.__webOptimizationRHI;
-      if (!globalThis.__webPSOPrecacheReady && message.state.__webEngineFrames >= 30 &&
-          (assets.pipelinePrewarm ? message.state.__webPipelinePrewarm?.adopted &&
-            message.state.__webPipelinePrewarm.ready : pso?.enabled && pso.active === 0 && rhi &&
-            rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted)) {
+      if (!globalThis.__webPSOPrecacheReady &&
+          isWebPipelinePrecacheReady(assets, module.arguments, message.state)) {
         globalThis.__webPSOPrecacheReady = true;
         performanceHUD.reset();
       }
@@ -660,4 +666,4 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
 };
 
 if (typeof module !== 'undefined' && module.exports)
-  module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox, resolveWebRenderSize};
+  module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox, resolveWebRenderSize, isWebPipelinePrecacheReady};

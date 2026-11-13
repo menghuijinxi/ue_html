@@ -286,7 +286,10 @@ async function start(message) {
     importScripts(versioned('web-pipeline-prewarm.js'));
     // Start before the WASM/content download. A rejected warmup is handled now
     // and rethrown before engine startup, without an unhandled rejection.
-    prewarm = prepareWebPipelinePrewarm(assets).then(value => ({value}), error => ({error}));
+    prewarm = prepareWebPipelinePrewarm(assets).then(value => {
+      value.completed.catch(fail);
+      return {value};
+    }, error => ({error}));
   }
   updateBrowserMetrics(message.browser);
   globalThis.__webStartupDiagnostics = {mode: message.debug ? 'debug' : 'normal'};
