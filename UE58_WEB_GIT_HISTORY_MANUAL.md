@@ -1,0 +1,45 @@
+# Git 版本人工对照
+
+入口：`http://127.0.0.1:8765/villa-git-history-live.html#old`
+
+| 顺序 | 工作区提交 | 引擎提交 | 对照内容 | 包目录 |
+| --- | --- | --- | --- | --- |
+| 1 | `835b776` | 旧诊断包原产物 | 原自适应诊断页面 | `villa-vsm-sampling-adaptive-20261112` |
+| 2 | `2abb246` | `0239f495b4` | 正式 Cook 自适应采样 | `villa-git-adaptive-20261113` |
+| 3 | `410778f` | `231b20bb08` | 间接绘制和绑定复用 | `villa-git-indirect-20261113` |
+| 4 | `23d4f43` | `231b20bb08` | 页标记和镜像同步 | `villa-git-pages-20261113` |
+| 5 | `628ac0e` | `3839f747a3` | TSR 大分块 | `villa-tsr-tiles-20261112` |
+| 6 | `1c25b77` | `2ac751c827` | 恢复 TSR 小分块 | `villa-tsr-small-20261112` |
+
+包均位于 `tests/web-platform/build/`。页面一次只运行一个场景，切换版本保留玩家位置和方向，重新累计滚动 FPS、1% Low、P99。加载期间等待就绪后再操作；场景保留原生键鼠输入。页面显示实际内部渲染尺寸、输出尺寸、抗锯齿类型，以及 Lumen、VT、VSM 的运行状态。
+
+## 构建边界
+
+1、5、6 复用各节点保留下来的原始包，不改写原产物。节点 1 是当时的 WGSL 自适应诊断包，其运行时早于页面提交；这个提交号标识当时发布的诊断页面，不代表其 WASM 在该提交重新编译。
+
+2、3、4 从各自 Git 提交提取插件源码、引擎命令流、TSR 源码和已接受配置，重新编译全部六个 WebGPURHI 翻译单元及包含 TSR 的 Renderer 翻译单元，再链接完整运行时。基线完整构建的 421 个目标文件及相关源文件均通过哈希核对，变化的 7 个目标文件由历史源码生成，其余 414 个复用；运行时执行完整 WASM 校验。三个节点的 TSR 源码一致，可以复用同一份已验证的 TSR 目标文件。
+
+这三个节点的 Cook 编译源码相同，共用一次匹配旧 TSR 排列的完整 Cook；不将旧排列运行时与新版 TSR 全局着色器混合。天空捕获数据复用原包中的不可变场景数据。
+
+新包按当前工作约定共用当前启动宿主、worker、物理像素处理和多页缓存锁修复，并经过 `web-release-defaults.cjs` 完成启动及转向、移动路线的实际管线采集和预热安装；保留的原包沿用原来的记录。因此这是历史渲染代码和配置的对照，不是完全恢复当时浏览器、驱动、缓存和启动宿主的实验。
+
+本轮只验证版本身份、启动和真实操作，不宣称自动测试已经复现用户感受到的 Low 帧差距。首次退化节点由人工运行确认。
+
+## 验证结果
+
+六个节点均通过浏览器启动、实际管线预热采用、键盘移动、鼠标转向、版本切换位置和方向保持检查。输出均为 `1920×1080` 物理像素，内部渲染为 `1400×788`，抗锯齿为 TSR；Lumen GI、Lumen 反射、虚拟纹理和虚拟阴影均开启。桌面与窄屏布局检查通过，未记录页面或 GPU 错误。
+
+三个重建节点均通过历史源码核对、完整 WASM 校验及正式发布校验，各自记录了 312 个模块、320 条实际管线。匹配历史着色器的完整 Cook 成功，临时替换的隔离宿主和着色器已恢复；原始包的关键文件哈希检查通过。
+
+验证摘要：`tests/web-platform/evidence/git-history-manual-20261113.json`。完整操作报告分别为 `tests/web-platform/results/git-history-existing-20261113/result.json` 和 `tests/web-platform/results/git-history-rebuilt-20261113/result.json`，同目录保留截图。自动测试中的短时 FPS 数值只用于检查统计控件，不作为节点性能排名。
+
+## 复现入口
+
+```powershell
+node tests/web-platform/build-villa-git-history.cjs
+node tests/web-platform/build-villa-git-history.cjs --cook
+node tests/web-platform/build-villa-git-history.cjs --audit-only
+node tests/web-platform/package-villa-git-history.cjs
+```
+
+这些入口自行调用 `initializeProjectOutput()`。原始日志、构建与打包报告位于 `tests/web-platform/results/git-history-20261113/`；浏览器操作检查使用 `verify-villa-git-history.cjs`。本轮产生的内容全部留在项目目录内。

@@ -2,7 +2,7 @@
 (() => {
   const element = id => document.getElementById(id), sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const keys = ['x', 'y', 'z', 'pitch', 'yaw', 'roll', 'controlPitch', 'controlYaw', 'controlRoll'];
-  const variants = {
+  const variants = globalThis.__villaHistoryVariants || {
     old: {folder: 'villa-vsm-sampling-adaptive-20261112', label: '老版 · 自适应'},
     large: {folder: 'villa-tsr-tiles-20261112', label: '上版 · 32×32'},
     small: {folder: 'villa-tsr-small-20261112', label: '回退版 · 16×16'},
@@ -13,6 +13,7 @@
     living: [-20, 200, 130, 12, -35]};
   const state = globalThis.__villaSmoothnessLive = {mode: null, ready: false, busy: false, error: null,
     player: null, observations: {}, diagnosticOnly: true};
+  if (globalThis.__villaHistoryVariants) globalThis.__villaGitHistory = state;
   const radios = [...document.querySelectorAll('[name=mode]')];
   let frame, generation = 0, spawn, cameraOffset;
   const valid = value => value && keys.every(key => Number.isFinite(value[key]));
@@ -55,7 +56,10 @@
     if (state.mode !== 'old') {
       const rhi = child.__webOcclusionRHI;
       const isolated = ['off', 'plain'].includes(state.mode);
-      if (!rhi || rhi.indirectDrawReuse !== (isolated ? 0 : 2) || rhi.vsmPageOptimization !== (isolated ? 0 : 3))
+      const expected = variants[state.mode].expected;
+      if (expected ? !rhi || Object.entries(expected).some(([name, value]) =>
+        value === null ? name in rhi : rhi[name] !== value) :
+        (!rhi || rhi.indirectDrawReuse !== (isolated ? 0 : 2) || rhi.vsmPageOptimization !== (isolated ? 0 : 3)))
         throw Error('间接绘制或页同步配置不一致');
       if (isolated && child.__villaOptimizationIsolation?.mode !== state.mode)
         throw Error('优化隔离配置未生效');
@@ -159,7 +163,8 @@
   element('retry').onclick = () => select(state.mode);
   for (const radio of radios) radio.onchange = () => select(radio.value);
   window.addEventListener('hashchange', () => {
-    const mode = location.hash.slice(1) in variants ? location.hash.slice(1) : 'off';
+    const mode = location.hash.slice(1) in variants ? location.hash.slice(1) :
+      globalThis.__villaHistoryVariants ? 'old' : 'off';
     if (mode !== state.mode) select(mode);
   });
   element('export').onclick = () => {
@@ -171,5 +176,6 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   setInterval(update, 250);
-  select(location.hash.slice(1) in variants ? location.hash.slice(1) : 'off');
+  select(location.hash.slice(1) in variants ? location.hash.slice(1) :
+    globalThis.__villaHistoryVariants ? 'old' : 'off');
 })();
