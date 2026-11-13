@@ -129,6 +129,7 @@
         folder: root.__villaHistoryVariants[state.mode].folder,
         wasm: assets?.wasm?.sha256, prewarm: assets?.pipelinePrewarm,
         runtime: assets?.versions, arguments: args ? [...args[1].matchAll(/['"]([^'"]+)['"]/g)].map(value => value[1]) : [],
+        diagnosticPrewarm: assets.diagnosticPrewarm,
         clock: assets.gameFrameClock, frameBudget: assets.pageFrameBudget,
         fixedRenderSize: assets.fixedRenderSize, renderSizing: assets.renderSizing,
         settings: scene.__webProjectSettings, renderView: scene.__webRenderView,

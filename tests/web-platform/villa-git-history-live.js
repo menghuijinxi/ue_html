@@ -11,4 +11,6 @@ globalThis.__villaHistoryVariants = {
     expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
   small: {folder: 'villa-tsr-small-20261112', label: '⑥ TSR 小分块 · 1c25b77',
     expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
+  warm: {folder: 'villa-tsr-turn-prewarm-20261113', label: '⑤ 补齐转向预热 · 诊断',
+    expected: {indirectDrawReuse: 2, vsmPageOptimization: 3}},
 };

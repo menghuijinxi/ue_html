@@ -1,0 +1,114 @@
+{
+  "date": "2026-11-13",
+  "purpose": "Analyze two human turn captures and provide a graphics-prewarm-only diagnostic variant.",
+  "performanceAcceptance": "Pending human retest. No automated UE scene or performance comparison this round.",
+  "captures": [
+    {
+      "mode": "pages",
+      "file": "tests/web-platform/results/villa-turn-manual/villa-turn-2026-11-13T08-09-30-804Z-345f86ff.json",
+      "sha256": "7111367842565e8b1dd0f3ff96c7b15cc8021e606b6746c7cf98bed402bb07c8",
+      "frames": 346,
+      "durationMs": 8045.435,
+      "medianMs": 21.83,
+      "p99Ms": 48.835,
+      "maxMs": 79.845,
+      "lowFps": 16.045891,
+      "over50": 3,
+      "over100": 0,
+      "prewarmPipelines": 320,
+      "renderPipelineApiCalls": 4,
+      "computePipelineApiCalls": 0,
+      "prewarmMissesDelta": 4,
+      "diskReadMiB": 356,
+      "diskReadMs": 838.985,
+      "rhiMsPerSubmission": 11.563189
+    },
+    {
+      "mode": "large",
+      "file": "tests/web-platform/results/villa-turn-manual/villa-turn-2026-11-13T08-10-42-171Z-cee10f53.json",
+      "sha256": "2ef34fe1a37a0932c5cc587224ba328cf52b8fd691551c4fc07e745a287f088f",
+      "frames": 373,
+      "durationMs": 8854.825,
+      "medianMs": 21.525,
+      "p99Ms": 83.64,
+      "maxMs": 162.695,
+      "lowFps": 8.600116,
+      "over50": 7,
+      "over100": 3,
+      "prewarmPipelines": 311,
+      "renderPipelineApiCalls": 12,
+      "computePipelineApiCalls": 0,
+      "prewarmMissesDelta": 12,
+      "diskReadMiB": 359.75,
+      "diskReadMs": 835.725,
+      "rhiMsPerSubmission": 11.510252,
+      "spikes": [
+        {"sinceRecordingMs": 4177.934814, "intervalMs": 109.27, "context": 41, "precedingAdditionalGraphics": 2},
+        {"sinceRecordingMs": 4472.714844, "intervalMs": 162.695, "context": 44, "precedingAdditionalGraphics": 4},
+        {"sinceRecordingMs": 4678.744873, "intervalMs": 109.505, "context": 47, "precedingAdditionalGraphics": 2}
+      ]
+    }
+  ],
+  "shared": {
+    "renderSize": [1400, 788],
+    "outputSize": [1920, 1080],
+    "antiAliasing": "TSR",
+    "lumenGi": true,
+    "lumenReflections": true,
+    "virtualTextures": true,
+    "virtualShadows": true,
+    "indirectDrawReuse": 2,
+    "vsmPageOptimization": 3,
+    "interruptions": 0,
+    "recordedEngineFailures": 0,
+    "downloadsDelta": 0,
+    "commonUnprewarmedGraphicsLabels": 2,
+    "commonUnprewarmedGraphicsCalls": 4
+  },
+  "diagnostic": {
+    "url": "http://127.0.0.1:8765/villa-git-history-live.html#warm",
+    "folder": "tests/web-platform/build/villa-tsr-turn-prewarm-20261113",
+    "diagnosticOnly": true,
+    "ordinaryRelease": false,
+    "originalPipelines": 311,
+    "supplementedPipelines": 319,
+    "addedGraphics": 8,
+    "targetCookShaderBytesVerified": 16,
+    "originalDescriptorsUnchanged": true,
+    "computePipelinesUnchanged": true,
+    "coreHashesUnchanged": true,
+    "argumentsUnchanged": true,
+    "browserCompileCompleted": 8,
+    "browserCompileGpuErrors": [],
+    "wasm": "aec1db17611832b74d37927ff3413a8baef68c4dd578c4bfa3f564cf395b969c",
+    "cook": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc",
+    "config": "d9cea2aadb6e9df2d59881aeb09f27b9ea6af8497fd8b69fed14846d25cb936a",
+    "manifest": "49ac00dbd7eab35531fdf59bfe7063976793e034117a9b7cc5b509af58f96235",
+    "commonFourMissesRetained": true,
+    "engineSourceChanged": false,
+    "releaseDefaultsChanged": false,
+    "recorderExportRoundTrip": true,
+    "synthetic117msFrameRetained": true,
+    "versionBoundariesChecked": true,
+    "layoutWidths": [1500, 390]
+  },
+  "reports": [
+    {
+      "file": "tests/web-platform/results/villa-manual-turn-comparison-20261113.json",
+      "sha256": "289f353fea7ccb5cc93ece09326494f55dd53dc52851becb07c63cffea69e292"
+    },
+    {
+      "file": "tests/web-platform/results/villa-tsr-turn-prewarm-package.json",
+      "sha256": "22e4d064a480d55c2e2bc7d754bdc5c103f4de1c0608654eb3331ff29be406c0"
+    },
+    {
+      "file": "tests/web-platform/results/villa-turn-prewarm-verification.json",
+      "sha256": "08bca9560006a6b5f29b83de4a589e361381f211f1444e6d0fbecea8cf9eb09b"
+    },
+    {
+      "file": "tests/web-platform/results/turn-recorder-verification.json",
+      "sha256": "453652a681106e6cae8f5624b498119290373a109bd76d2ea68bcdc74e9f6628"
+    }
+  ],
+  "boundary": "Human routes and durations differ. RHI submission intervals are not display or GPU pass durations. Context deltas describe sampled delivery batches. Nearby pipeline API events do not prove deferred driver compilation caused the spikes. Four common graphics misses remain. Diagnostic descriptors come from the older capture with byte-identical target Cook WGSL, not a new same-runtime release capture."
+}
