@@ -1,17 +1,20 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <string_view>
 #include <vector>
 
 #include "src/tint/lang/core/ir/module.h"
 #include "src/tint/lang/spirv/reader/reader.h"
 #include "src/tint/lang/wgsl/writer/writer.h"
 
-// The pinned CLI does not expose this library option. Scope it to Nanite's
-// active-lane prefix scans; workgroup barrier uniformity is still validated.
+// The pinned CLI does not expose this library option. Workgroup barrier
+// uniformity is still validated for both Nanite and VSM active-lane votes.
 int main(int argc, char** argv)
 {
-    if (argc != 3) return 2;
+    const bool vsmAdaptive = argc == 4 && (std::string_view(argv[3]) == "--vsm-adaptive" ||
+        std::string_view(argv[3]) == "--vsm-adaptive-probe");
+    if (argc != 3 && !vsmAdaptive) return 2;
     std::ifstream input(argv[1], std::ios::binary | std::ios::ate);
     if (!input) return 3;
     const auto size = input.tellg();
@@ -28,6 +31,7 @@ int main(int argc, char** argv)
     tint::wgsl::writer::Options options;
     options.allowed_features = tint::wgsl::AllowedFeatures::Everything();
     options.allow_non_uniform_subgroup_operations = true;
+    options.allow_non_uniform_derivatives = vsmAdaptive;
     auto result = tint::wgsl::writer::WgslFromIR(ir.Get(), options);
     if (result != tint::Success)
     {

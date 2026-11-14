@@ -1,0 +1,583 @@
+{
+  "date": "2026-11-12T08:54:24.264Z",
+  "pass": true,
+  "performanceAccepted": false,
+  "regressionReproducedInFirstPair": true,
+  "causeIsolated": false,
+  "completeStutterFixProven": false,
+  "referenceEngineCommit": "2ac751c827e56e7bb43e1481c9e98c3bb3ea5c6f",
+  "defaultTSRLargeTiles": 0,
+  "retainedDefaults": {
+    "r.WebGPU.IndirectDrawReuse": 2,
+    "r.WebGPU.VSMPageOptimization": 3,
+    "r.Shadow.Virtual.SMRT.AdaptiveRayCount": 1
+  },
+  "page": "http://127.0.0.1:8765/villa-smoothness-live.html",
+  "release": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-tsr-small-20261112-package.json",
+    "sha256": "e47e78c91f102b10491dc826aa2ce423098a8197dc86331e40511ebe90fe68a4"
+  },
+  "runtime": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-tsr-small-20261112\\config-files.json",
+      "sha256": "7c050df042624384b36e953a54a3e4f59dc7e160dd2533ee65b55944e74dabd9"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-tsr-small-20261112\\content.bin",
+      "sha256": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-tsr-small-20261112\\UEWebEngineThreads.wasm",
+      "sha256": "4df57231377492efab0f318428c2a56f80ea57d009436b114e77f84c055a4017"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-tsr-small-20261112\\asset-versions.json",
+      "sha256": "45ec4868b92d1e4cdefd446be54d057c8e8d1960f84f4ed4af817438d7513e34"
+    }
+  ],
+  "qa": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-smoothness-live-v3-20261112\\result.json",
+    "sha256": "c878a5b3d055d0fe3b4d657ccf29e1deccb97b06139ccfcfee1e9aa64578d968"
+  },
+  "input": [
+    {
+      "mode": "small",
+      "distance": 52.832556497672854,
+      "yaw": 38.146185874938965
+    },
+    {
+      "mode": "large",
+      "distance": 52.883799196071486,
+      "yaw": 38.146185874938965
+    },
+    {
+      "mode": "old",
+      "distance": 53.10722954446792,
+      "yaw": 38.146185874938965
+    },
+    {
+      "mode": "small",
+      "distance": 53.16367809570226,
+      "yaw": 38.146185874938965
+    }
+  ],
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-villa-release-regression.cjs",
+      "sha256": "b2ff50fcfdc061ffde772921e0f10fb9851e73c1714059606dd9b87c3d19354f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\summarize-villa-smoothness-regression.cjs",
+      "sha256": "076d88579ba0a651a006f6df33e2329c39e617ec3464c96445de9b86d39aa3b5"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-accepted-defaults.cjs",
+      "sha256": "5d19229c505032e87fd1a877a3f32ee60de45ec413af7ce3b044dc0f551e6a30"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-release-defaults.cjs",
+      "sha256": "9f8b8858fa83f0cc3e248a47ddabae4733b95fd34f9907abef8fa04988fc1854"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\package-villa-tsr-smoothness.cjs",
+      "sha256": "03e656e719c64149feb4e660ead6909ef9d2cbfa37051b5bf87a711e164dd3ce"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\villa-smoothness-live.html",
+      "sha256": "e9699f8d14bd08cf2c8c44c1560e8a1092ac56224c7776ab8019d7a18dd3a746"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\villa-smoothness-live.js",
+      "sha256": "ad40512845f5c911c90fb8ca1f9da68f3ca6bb6f82da6495a7db7f31af505ebc"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-villa-smoothness-live.cjs",
+      "sha256": "1a00aef14ebc2ec22533f96edd081c33693168b64287f35fb056f5d8c5da4fae"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\TemporalSuperResolution.cpp",
+      "sha256": "2e1d878f50572cb6b181994ce77539bc5e32fccff220aa5208a6e737f5e3bdbe"
+    }
+  ],
+  "measurements": [
+    {
+      "name": "villa-release-regression-native-20261112",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-release-regression-native-20261112\\result.json",
+        "sha256": "044f19619b8e4a6888ab1c8f8f3f73f8107a783f2982cc53e19621a50e7a94b0"
+      },
+      "runs": [
+        {
+          "name": "old",
+          "index": 1,
+          "gpuBefore": "2 %, 2660 MiB, P0, 1815 MHz",
+          "phases": [
+            {
+              "kind": "standing",
+              "frames": 702,
+              "fps": 46.82135053584388,
+              "low1": 36.94382229990967,
+              "p95": 24.530000001192093,
+              "p99": 25.234999999403954,
+              "max": 32.0950000025332,
+              "over33": 0,
+              "over50": 0,
+              "rhiMs": 10.126634416255085,
+              "gpu": "100 %, 7375 MiB, P0, 1845 MHz"
+            },
+            {
+              "kind": "turning",
+              "frames": 709,
+              "fps": 47.35794120535025,
+              "low1": 35.67685686781926,
+              "p95": 24.49500000104308,
+              "p99": 26.385000001639128,
+              "max": 32.76500000059605,
+              "over33": 0,
+              "over50": 0,
+              "rhiMs": 10.197763201556628,
+              "gpu": "100 %, 7383 MiB, P0, 1845 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 689,
+              "fps": 45.89496514246557,
+              "low1": 30.581039755053062,
+              "p95": 25.33999999985099,
+              "p99": 27.114999998360872,
+              "max": 49.685000002384186,
+              "over33": 2,
+              "over50": 0,
+              "rhiMs": 10.52759039229241,
+              "gpu": "100 %, 7343 MiB, P0, 1860 MHz",
+              "yawTravel": 624.3376004099846
+            }
+          ]
+        },
+        {
+          "name": "latest",
+          "index": 2,
+          "gpuBefore": "100 %, 7360 MiB, P0, 1875 MHz",
+          "phases": [
+            {
+              "kind": "standing",
+              "frames": 729,
+              "fps": 48.60460123558943,
+              "low1": 35.57927507144514,
+              "p95": 23.975000001490116,
+              "p99": 25.12000000104308,
+              "max": 38.26500000059605,
+              "over33": 1,
+              "over50": 0,
+              "rhiMs": 9.849120819405334,
+              "gpu": "100 %, 7397 MiB, P0, 1830 MHz"
+            },
+            {
+              "kind": "turning",
+              "frames": 708,
+              "fps": 47.22967597973121,
+              "low1": 19.589837771655954,
+              "p95": 29.00499999895692,
+              "p99": 40.30000000074506,
+              "max": 91.23999999836087,
+              "over33": 12,
+              "over50": 2,
+              "rhiMs": 10.016236890354344,
+              "gpu": "100 %, 7391 MiB, P0, 1860 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 683,
+              "fps": 45.479833888736906,
+              "low1": 22.32783643253294,
+              "p95": 30.689999997615814,
+              "p99": 41.0299999974668,
+              "max": 60.58000000193715,
+              "over33": 20,
+              "over50": 1,
+              "rhiMs": 10.257897669808907,
+              "gpu": "100 %, 7424 MiB, P0, 1890 MHz",
+              "yawTravel": 668.7831567227843
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "villa-release-regression-isolate-20261112",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-release-regression-isolate-20261112\\result.json",
+        "sha256": "57263ec0ac0b020239c3a751e7e3f43aa2d76335a257b020630e855053aeee5e"
+      },
+      "runs": [
+        {
+          "name": "small",
+          "index": 1,
+          "gpuBefore": "0 %, 2447 MiB, P0, 1815 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 643,
+              "fps": 42.90458001386927,
+              "low1": 17.02334630353279,
+              "p95": 34.16499999910593,
+              "p99": 47.524999998509884,
+              "max": 119.40000000223517,
+              "over33": 44,
+              "over50": 2,
+              "rhiMs": 9.90131367807803,
+              "gpu": "100 %, 7448 MiB, P0, 1890 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 654,
+              "fps": 43.64311940197001,
+              "low1": 23.092021706659324,
+              "p95": 27.71499999985099,
+              "p99": 34.625,
+              "max": 53.09499999880791,
+              "over33": 9,
+              "over50": 2,
+              "rhiMs": 10.134016542129865,
+              "gpu": "100 %, 7364 MiB, P0, 1860 MHz",
+              "yawTravel": 668.9581386446953
+            }
+          ]
+        },
+        {
+          "name": "pagesoff",
+          "index": 2,
+          "gpuBefore": "100 %, 3773 MiB, P0, 1860 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 657,
+              "fps": 43.809272962779296,
+              "low1": 20.38201723728356,
+              "p95": 32.229999996721745,
+              "p99": 44.63500000163913,
+              "max": 51.39000000059605,
+              "over33": 24,
+              "over50": 4,
+              "rhiMs": 10.167901639155703,
+              "gpu": "94 %, 7350 MiB, P0, 1875 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 611,
+              "fps": 40.612956530175474,
+              "low1": 16.397090687577922,
+              "p95": 34.73499999940395,
+              "p99": 51.07000000029802,
+              "max": 89.93500000238419,
+              "over33": 51,
+              "over50": 7,
+              "rhiMs": 10.648787021636963,
+              "gpu": "92 %, 7340 MiB, P0, 1890 MHz",
+              "yawTravel": 668.9581351876258
+            }
+          ]
+        },
+        {
+          "name": "indirectoff",
+          "index": 3,
+          "gpuBefore": "91 %, 5917 MiB, P0, 1890 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 614,
+              "fps": 40.92259797180239,
+              "low1": 12.121422015921857,
+              "p95": 39.33999999985099,
+              "p99": 65.62999999895692,
+              "max": 97.04500000178814,
+              "over33": 56,
+              "over50": 17,
+              "rhiMs": 12.493959674990274,
+              "gpu": "92 %, 7374 MiB, P0, 1890 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 625,
+              "fps": 41.604246428933685,
+              "low1": 19.95353676431521,
+              "p95": 34.15500000119209,
+              "p99": 46.17999999970198,
+              "max": 54.75,
+              "over33": 45,
+              "over50": 2,
+              "rhiMs": 10.662235391025726,
+              "gpu": "72 %, 7403 MiB, P0, 1890 MHz",
+              "yawTravel": 670.5329768955708
+            }
+          ]
+        },
+        {
+          "name": "latest",
+          "index": 4,
+          "gpuBefore": "92 %, 4104 MiB, P0, 1890 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 665,
+              "fps": 44.37966570432909,
+              "low1": 19.334613100883814,
+              "p95": 32.46499999985099,
+              "p99": 42.064999997615814,
+              "max": 63.810000002384186,
+              "over33": 21,
+              "over50": 3,
+              "rhiMs": 10.338103449022448,
+              "gpu": "100 %, 7359 MiB, P0, 1860 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 662,
+              "fps": 44.16737165441772,
+              "low1": 21.44279368925169,
+              "p95": 27.949999999254942,
+              "p99": 41.67999999970198,
+              "max": 53.355000000447035,
+              "over33": 14,
+              "over50": 2,
+              "rhiMs": 10.32699071443998,
+              "gpu": "100 %, 7379 MiB, P0, 1830 MHz",
+              "yawTravel": 670.7079655528069
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "villa-release-regression-fresh-baab-20261112",
+      "report": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-release-regression-fresh-baab-20261112\\result.json",
+        "sha256": "b16817a7e6e3e331092aecd941f66943845f68cddc804bb72e84d31b26c6ad8f"
+      },
+      "runs": [
+        {
+          "name": "latest",
+          "index": 1,
+          "gpuBefore": "4 %, 2354 MiB, P0, 1815 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 732,
+              "fps": 48.86988393402323,
+              "low1": 38.25371778270643,
+              "p95": 23.75499999895692,
+              "p99": 25.45999999716878,
+              "max": 27.179999999701977,
+              "over33": 0,
+              "over50": 0,
+              "rhiMs": 9.839519168115766,
+              "gpuCompletion": {
+                "frames": 733,
+                "fps": 48.865428742463116,
+                "low1": 37.67897513182353,
+                "p95": 24.105000000447035,
+                "p99": 25.53999999910593,
+                "max": 29.34000000357628,
+                "over33": 0,
+                "over50": 0
+              },
+              "gpu": "100 %, 7375 MiB, P0, 1830 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 705,
+              "fps": 47.01562485932638,
+              "low1": 32.378177108863106,
+              "p95": 25.00499999895692,
+              "p99": 27.28500000014901,
+              "max": 39.53999999910593,
+              "over33": 1,
+              "over50": 0,
+              "rhiMs": 10.003923694405271,
+              "gpuCompletion": {
+                "frames": 704,
+                "fps": 47.02943013558405,
+                "low1": 32.760703536068455,
+                "p95": 24.96499999985099,
+                "p99": 27.524999998509884,
+                "max": 38.349999997764826,
+                "over33": 1,
+                "over50": 0
+              },
+              "gpu": "100 %, 7362 MiB, P0, 1830 MHz",
+              "yawTravel": 670.7079623937607
+            }
+          ]
+        },
+        {
+          "name": "old",
+          "index": 2,
+          "gpuBefore": "3 %, 2336 MiB, P0, 1815 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 639,
+              "fps": 42.63174644052113,
+              "low1": 17.917018607871267,
+              "p95": 33.75500000268221,
+              "p99": 44.975000001490116,
+              "max": 64.74500000104308,
+              "over33": 35,
+              "over50": 5,
+              "rhiMs": 11.18415938152724,
+              "gpuCompletion": {
+                "frames": 639,
+                "fps": 42.61619415377632,
+                "low1": 18.39612104644767,
+                "p95": 32.940000001341105,
+                "p99": 42.875,
+                "max": 62.70499999821186,
+                "over33": 24,
+                "over50": 5
+              },
+              "gpu": "100 %, 7409 MiB, P0, 1890 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 461,
+              "fps": 30.78711842922552,
+              "low1": 7.484357692396126,
+              "p95": 46.375,
+              "p99": 108.32000000029802,
+              "max": 167.10000000149012,
+              "over33": 163,
+              "over50": 21,
+              "rhiMs": 10.630762938297156,
+              "gpuCompletion": {
+                "frames": 461,
+                "fps": 30.769107549046442,
+                "low1": 10.786555636988094,
+                "p95": 38.04500000178814,
+                "p99": 81.43500000238419,
+                "max": 116.15000000223517,
+                "over33": 61,
+                "over50": 19
+              },
+              "gpu": "69 %, 7399 MiB, P0, 1905 MHz",
+              "yawTravel": 626.0874125063419
+            }
+          ]
+        },
+        {
+          "name": "old",
+          "index": 3,
+          "gpuBefore": "3 %, 2601 MiB, P0, 1815 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 589,
+              "fps": 39.28739731664841,
+              "low1": 9.918420987400799,
+              "p95": 46.394999999552965,
+              "p99": 69.69999999925494,
+              "max": 220.99000000208616,
+              "over33": 69,
+              "over50": 20,
+              "rhiMs": 10.613597853709075,
+              "gpuCompletion": {
+                "frames": 589,
+                "fps": 39.31163918189114,
+                "low1": 10.145846544071022,
+                "p95": 42.29999999701977,
+                "p99": 70.17500000074506,
+                "max": 151.3149999976158,
+                "over33": 48,
+                "over50": 22
+              },
+              "gpu": "71 %, 7457 MiB, P0, 1905 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 403,
+              "fps": 26.82256143481562,
+              "low1": 5.229769942412897,
+              "p95": 80.99000000208616,
+              "p99": 169.32499999925494,
+              "max": 203.95500000193715,
+              "over33": 148,
+              "over50": 99,
+              "rhiMs": 11.077569262816175,
+              "gpuCompletion": {
+                "frames": 403,
+                "fps": 26.83677050432325,
+                "low1": 7.547226771595799,
+                "p95": 74.80499999970198,
+                "p99": 115.03500000014901,
+                "max": 160.75,
+                "over33": 148,
+                "over50": 107
+              },
+              "gpu": "60 %, 7440 MiB, P0, 1905 MHz",
+              "yawTravel": 625.9124362766743
+            }
+          ]
+        },
+        {
+          "name": "latest",
+          "index": 4,
+          "gpuBefore": "4 %, 2790 MiB, P0, 1815 MHz",
+          "phases": [
+            {
+              "kind": "turning",
+              "frames": 615,
+              "fps": 41.01331565648599,
+              "low1": 15.9137927114452,
+              "p95": 41.20499999821186,
+              "p99": 51.07000000029802,
+              "max": 101.71499999985099,
+              "over33": 80,
+              "over50": 7,
+              "rhiMs": 10.17155469237984,
+              "gpuCompletion": {
+                "frames": 615,
+                "fps": 41.016789539186334,
+                "low1": 19.23816852619084,
+                "p95": 32.769999999552965,
+                "p99": 42.23999999836087,
+                "max": 68.78500000014901,
+                "over33": 23,
+                "over50": 3
+              },
+              "gpu": "67 %, 7415 MiB, P0, 1890 MHz"
+            },
+            {
+              "kind": "input",
+              "frames": 514,
+              "fps": 34.194789219724086,
+              "low1": 7.7024789144020875,
+              "p95": 57.0950000025332,
+              "p99": 107.58000000193715,
+              "max": 161.5650000013411,
+              "over33": 124,
+              "over50": 39,
+              "rhiMs": 10.413703177739116,
+              "gpuCompletion": {
+                "frames": 513,
+                "fps": 34.28917471370066,
+                "low1": 9.033967718619992,
+                "p95": 54.89000000059605,
+                "p99": 104.07999999821186,
+                "max": 120.60000000149012,
+                "over33": 95,
+                "over50": 30
+              },
+              "gpu": "71 %, 7329 MiB, P0, 1920 MHz",
+              "yawTravel": 670.3579921126363
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "retainedInvalidDiagnostics": [
+    "villa-release-regression-repro-20261112",
+    "villa-smoothness-live-20261112",
+    "villa-smoothness-live-v2-20261112"
+  ],
+  "boundary": "Restores the previously used tile size as default after user smoothness rejection. Cross-version samples are highly variable in both releases, so no stable speedup or complete stutter fix is claimed. Functional acceptance covers actual TSR selection, native input, pose continuity, fixed dimensions and prewarm. RHI submission and GPU completion callbacks do not measure physical display or input latency."
+}

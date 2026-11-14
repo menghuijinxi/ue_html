@@ -743,6 +743,9 @@ function prepare() {
   }
   copy();
   for (const relative of ['Private/WebTranslucencyVolume.ush', 'Private/Lumen/WebLumenAdaptiveProbe.usf',
+    'Private/VirtualShadowMaps/WebVirtualShadowDepth.ush',
+    'Private/VirtualShadowMaps/WebVirtualShadowPoolSync.ush',
+    'Private/VirtualShadowMaps/WebVirtualShadowPoolSync.usf',
     'Private/Nanite/WebNaniteVisibility.usf', 'Private/Nanite/WebNaniteHierarchy.usf', 'Private/Nanite/WebNaniteLOD.ush', 'Private/Nanite/WebNaniteSpline.ush', 'Private/Nanite/WebNaniteScalarVisibility.ush',
     'Private/Nanite/WebNanitePageOwnership.ush', 'Private/Nanite/WebNaniteFaceCulling.ush',
     'Private/Nanite/WebNaniteHZB.ush', 'Private/Nanite/WebNaniteHZB.usf', 'Private/Nanite/WebNaniteOcclusion.usf',

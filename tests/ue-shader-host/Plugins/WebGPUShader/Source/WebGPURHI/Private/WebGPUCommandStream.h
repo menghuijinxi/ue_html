@@ -3,9 +3,12 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 extern "C" void ueWGPUReplay(double pass,double commands,uint32_t count,double objects,uint32_t objectCount,double offsets);
+extern "C" uint32_t ueWGPUCreateIndirectTemplate(double fields,uint32_t count);
+extern "C" void ueWGPUDeleteIndirectTemplate(uint32_t id);
 
 namespace UEWebGPUStream {
 // Rebuilt for every render pass. Only transports calls across the WASM/JS
@@ -13,6 +16,61 @@ namespace UEWebGPUStream {
 // A chunk retains each referenced C API object until synchronous JS replay.
 inline bool Enabled=true; // Set once at startup on the WebGPU owner.
 inline bool StateCommands=true;
+inline bool IndirectTemplates=false;
+struct VertexBinding { WGPUBuffer buffer=nullptr; uint64_t size=0; uint32_t offset=0; };
+struct IndirectTemplate {
+ uint32_t id=0,mask=0,lastFrame=0;WGPUBuffer index=nullptr;
+ uint64_t indexSize=0;WGPUIndexFormat format=WGPUIndexFormat_Undefined;
+ std::array<VertexBinding,8> vertices{};
+ ~IndirectTemplate(){
+  if(id)ueWGPUDeleteIndirectTemplate(id);
+  if(index)wgpuBufferRelease(index);
+  for(const auto& vertex:vertices)if(vertex.buffer)wgpuBufferRelease(vertex.buffer);
+ }
+ bool matches(uint32_t streams,const VertexBinding* bindings,WGPUBuffer ib,uint64_t bytes,WGPUIndexFormat type)const {
+  if(mask!=streams||index!=ib||indexSize!=bytes||format!=type)return false;
+  for(uint32_t slot=0;slot<8;++slot)if((mask&(1u<<slot))&&
+   (vertices[slot].buffer!=bindings[slot].buffer||vertices[slot].size!=bindings[slot].size))return false;
+  return true;
+ }
+};
+struct IndirectTemplateCache {
+ std::unordered_map<uint64_t,std::vector<std::unique_ptr<IndirectTemplate>>> buckets;
+ uint32_t frame=0,entries=0,hits=0,created=0;
+ IndirectTemplate* find(uint32_t mask,const VertexBinding* vertices,WGPUBuffer index,uint64_t bytes,WGPUIndexFormat format){
+  uint64_t hash=14695981039346656037ULL;
+  const auto add=[&](uint64_t value){hash=(hash^value)*1099511628211ULL;};
+  add(mask);add(reinterpret_cast<uintptr_t>(index));add(bytes);add(uint32_t(format));
+  for(uint32_t slot=0;slot<8;++slot)if(mask&(1u<<slot)){add(reinterpret_cast<uintptr_t>(vertices[slot].buffer));add(vertices[slot].size);}
+  auto found=buckets.find(hash);
+  if(found!=buckets.end())for(auto& entry:found->second)if(entry->matches(mask,vertices,index,bytes,format)){
+   entry->lastFrame=frame;++hits;return entry.get();
+  }
+  if(entries>=8192)return nullptr;
+  auto entry=std::make_unique<IndirectTemplate>();entry->mask=mask;entry->index=index;
+  entry->indexSize=bytes;entry->format=format;entry->lastFrame=frame;
+  std::array<double,28> fields{};uint32_t count=0;
+  fields[count++]=double(reinterpret_cast<uintptr_t>(index));fields[count++]=double(bytes);fields[count++]=uint32_t(format);fields[count++]=mask;
+  wgpuBufferAddRef(index);
+  for(uint32_t slot=0;slot<8;++slot)if(mask&(1u<<slot)){
+   entry->vertices[slot]=vertices[slot];wgpuBufferAddRef(vertices[slot].buffer);
+   fields[count++]=slot;fields[count++]=double(reinterpret_cast<uintptr_t>(vertices[slot].buffer));fields[count++]=double(vertices[slot].size);
+  }
+  entry->id=ueWGPUCreateIndirectTemplate(double(reinterpret_cast<uintptr_t>(fields.data())),count);
+  auto* result=entry.get();buckets[hash].push_back(std::move(entry));++entries;++created;return result;
+ }
+ void endFrame(){
+  // Retain only recently used geometries. Native leases prevent opaque-ID reuse;
+  // offsets and indirect arguments are supplied anew, never captured here.
+  for(auto bucket=buckets.begin();bucket!=buckets.end();){
+   auto& values=bucket->second;
+   for(auto entry=values.begin();entry!=values.end();)if(frame-(*entry)->lastFrame>1){entry=values.erase(entry);--entries;}else ++entry;
+   if(values.empty())bucket=buckets.erase(bucket);else ++bucket;
+  }
+  ++frame;
+ }
+};
+inline IndirectTemplateCache& indirectCache(){static thread_local std::unique_ptr<IndirectTemplateCache> value(new IndirectTemplateCache);return *value;}
 constexpr uint64_t MaxExact=9007199254740991ULL;
 enum class Kind { Pipeline, Group, Buffer };
 struct Lease {uintptr_t pointer;Kind kind;};
@@ -93,6 +151,16 @@ inline void drawIndirect(WGPURenderPassEncoder p,WGPUBuffer b,uint64_t offset){
 inline void drawIndexedIndirect(WGPURenderPassEncoder p,WGPUBuffer b,uint64_t offset){
  if(!p||!Enabled||offset>MaxExact){flush();wgpuRenderPassEncoderDrawIndexedIndirect(p,b,offset);return;}
  auto& s=stream();s.reserveFor(p);auto id=s.object(b,Kind::Buffer);s.write(8,id,offset);
+}
+inline bool drawIndexedIndirectTemplate(WGPURenderPassEncoder pass,uint32_t mask,const VertexBinding* vertices,
+ WGPUBuffer index,uint64_t indexBytes,WGPUIndexFormat format,uint32_t changedStreams,bool changedIndex,
+ WGPUBuffer arguments,uint64_t argumentOffset){
+ if(!Enabled||!IndirectTemplates||(mask&~255u)||indexBytes>MaxExact||argumentOffset>MaxExact)return false;
+ for(uint32_t slot=0;slot<8;++slot)if((mask&(1u<<slot))&&vertices[slot].size>MaxExact)return false;
+ auto* command=indirectCache().find(mask,vertices,index,indexBytes,format);if(!command)return false;
+ auto& s=stream();s.reserveFor(pass,7,8);auto id=s.object(arguments,Kind::Buffer);auto at=s.offsets.size();
+ for(uint32_t slot=0;slot<8;++slot)s.offsets.push_back(vertices[slot].offset);
+ s.write(16,command->id,changedStreams,changedIndex?1:0,at,id,argumentOffset);return true;
 }
 inline void RenderPassEncoderSetScissorRect(WGPURenderPassEncoder p,uint32_t x,uint32_t y,uint32_t w,uint32_t h){
  if(!p||!Enabled||!StateCommands){flush();wgpuRenderPassEncoderSetScissorRect(p,x,y,w,h);return;}

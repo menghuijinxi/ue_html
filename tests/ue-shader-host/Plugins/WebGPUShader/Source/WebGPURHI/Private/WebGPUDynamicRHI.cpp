@@ -1,5 +1,6 @@
 #include "WebGPUDynamicRHI.h"
 #include "WebGPUSamplerBias.h"
+#include "WebGPUTextureAtomicHeaders.h"
 #include "../../WebGPUShaderFormat/Public/WebGPUShaderMetadata.h"
 #include "DataDrivenShaderPlatformInfo.h"
 #include "GlobalRenderResources.h"
@@ -65,6 +66,13 @@ static TAutoConsoleVariable<int32> CVarWebGPUOcclusionQueryWaitMs(
 static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUIndirectDrawReuse(
+    TEXT("r.WebGPU.IndirectDrawReuse"), 0,
+    TEXT("Reuse indirect geometry command templates and validated graphics bindings. 1: templates; 2: both; 3: bindings only."), ECVF_RenderThreadSafe);
+static TAutoConsoleVariable<int32> CVarWebGPUVSMPageOptimization(
+    TEXT("r.WebGPU.VSMPageOptimization"), 0,
+    TEXT("Startup only. Bit 1: immutable atomic texture header uniforms; bit 2: defer mirror copies across compute UAV transitions."),
+    ECVF_ReadOnly);
 static TAutoConsoleVariable<int32> CVarWebGPUStagingReadbackPool(
     TEXT("r.WebGPU.StagingReadbackPool"), 0,
     TEXT("Experimental reuse of completed, unreferenced staging readbacks. Bounded to 64 entries and 32 MiB."), ECVF_RenderThreadSafe);
@@ -648,6 +656,9 @@ void WriteTextureMip(FWebGPUDynamicRHI &RHI, FWebGPUTexture *Texture, uint32 Mip
     // WebGPU copies address physical blocks, including the 2x2 and 1x1 mip tails.
     WGPUExtent3D Extent{Blocks.X * Pixel.BlockSizeX, Blocks.Y * Pixel.BlockSizeY, Blocks.Z * Pixel.BlockSizeZ};
     wgpuQueueWriteTexture(RHI.Queue, &Destination, Bytes, Size, &Layout, &Extent);
+    // Uploads bypass transition tracking, so the atomic mirror is behind now.
+    if (Texture->AtomicMips.IsValidIndex(Mip))
+        for (uint8& Stale : Texture->AtomicMips[Mip].StaleSlices) Stale = 1;
     if (RHI.StartupProbeMode)
         UE_LOG(LogRHI, Display, TEXT("P3_TEXTURE_UPLOAD name=%s mip=%u extent=%ux%ux%u bytes=%llu"),
                *Texture->GetName().ToString(), Mip, Extent.width, Extent.height, Extent.depthOrArrayLayers, Size);
@@ -1048,6 +1059,9 @@ void FWebGPUDynamicRHI::Init()
         wgpuAdapterInfoFreeMembers(WaveInfo);
         GRHIMaxDispatchThreadGroupsPerDimension = FIntVector(Limits.maxComputeWorkgroupsPerDimension);
         GRHIGlobals.MaxComputeSharedMemory = Limits.maxComputeWorkgroupStorageSize;
+        // UE's TSR LDS shaders flatten the tile into a single X dimension.
+        GRHIGlobals.MaxWorkGroupInvocations = FMath::Min(
+            Limits.maxComputeInvocationsPerWorkgroup, Limits.maxComputeWorkgroupSizeX);
     }
     if (StartupProbeMode)
     {
@@ -1109,6 +1123,10 @@ void FWebGPUDynamicRHI::Shutdown()
     for (const auto& Buffer : VertexFetchFormatBuffers) wgpuBufferRelease(Buffer.Value);
     VertexFetchFormatBuffers.Empty();
     DrawBundleCache.Empty();
+#ifdef __EMSCRIPTEN__
+    UEWebGPUStream::indirectCache().buckets.clear();
+    UEWebGPUStream::indirectCache().entries = 0;
+#endif
     StagingReadbackPool.Empty();
     StagingReadbackPoolBytes = 0;
     ReleaseFrameBindings();
@@ -1200,6 +1218,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
     check(!ContextOpen && !Encoder && !Pass && !Args.bProfileNextFrame && !FrameUniformDirtyEnd);
     check(PendingDrawBundles.IsEmpty());
     check(!StagingDirtyEnd);
+#ifdef __EMSCRIPTEN__
+    UEWebGPUStream::indirectCache().endFrame();
+#endif
     for (auto Bucket = DrawBundleCache.CreateIterator(); Bucket; ++Bucket)
     {
         DrawBundleEntries -= Bucket.Value().RemoveAll([this](const auto& Entry) {
@@ -1305,6 +1326,19 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
             BindGroupFastHits, UniformUploads, UniformWriteCalls, PipelineLayoutCache.Num(),
             DrawBundleHits, DrawBundlesCreated, DrawBundleReadyEntries);
         // This toolchain supports at most 16 EM_ASM arguments per call.
+#ifdef __EMSCRIPTEN__
+        const auto& IndirectCache = UEWebGPUStream::indirectCache();
+        EM_ASM({
+            Object.assign(globalThis.__webOcclusionRHI, {indirectDrawReuse:$0, indirectTemplateHits:$1,
+                indirectTemplatesCreated:$2, indirectTemplates:$3, indirectBindingHits:$4});
+        }, CVarWebGPUIndirectDrawReuse.GetValueOnAnyThread(), IndirectCache.hits,
+            IndirectCache.created, IndirectCache.entries, IndirectBindingHits);
+#endif
+        EM_ASM({
+            Object.assign(globalThis.__webOcclusionRHI, {vsmPageOptimization:$0, atomicHeaderBindings:$1,
+                atomicCopiesToTexture:$2, atomicCopiesToBuffer:$3, atomicCopyBytes:$4});
+        }, CVarWebGPUVSMPageOptimization.GetValueOnAnyThread(), AtomicHeaderBindings,
+            double(AtomicCopiesToTexture), double(AtomicCopiesToBuffer), double(AtomicCopyBytes));
         EM_ASM({
             globalThis.__webOcclusionRHI.resourceTableCommits = $0;
             globalThis.__webOcclusionRHI.resourceTableBuffers = $1;
@@ -1497,12 +1531,38 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     }
     const ANSICHAR *Utf8 = reinterpret_cast<const ANSICHAR *>(Desc.Code.GetData() + 28);
     const auto Bytes = Desc.Code.Slice(28, Header[5]);
+    const bool SupportsVSMAdaptive = wgpuDeviceHasFeature(Device, WGPUFeatureName_Subgroups) != 0;
+    bool VSMFullSampling = false;
+    FString VSMFullSamplingSource;
+    if (Header[1] == 2)
+    {
+        if (Bytes.IsEmpty() || ValidateCompactBinary(MakeMemoryView(Bytes),
+                ECbValidateMode::Default | ECbValidateMode::Padding) != ECbValidateError::None)
+            return Fail(TEXT("Web shader binary metadata invalid"));
+        const UE::WebGPUShader::FMetadataField Root(FCbFieldView(Bytes.GetData()));
+        if (Root["vsmFullSamplingMetadata"].IsObject())
+        {
+            VSMFullSampling = !SupportsVSMAdaptive;
+            if (VSMFullSampling && !Root["vsmFullSamplingWgsl"].String(VSMFullSamplingSource))
+                return Fail(TEXT("Web VSM full-sampling fallback source missing"));
+#if defined(PLATFORM_WEB) && PLATFORM_WEB
+            EM_ASM({
+                const state = globalThis.__webVSMAdaptiveSampling ||= ({supported:!!$0, enabled:!!$0,
+                    adaptiveModules:0, fullSamplingModules:0});
+                if ($0) ++state.adaptiveModules; else ++state.fullSamplingModules;
+            }, SupportsVSMAdaptive);
+#endif
+        }
+    }
     const bool KeepDOM = !NativeShaderMetadata || FParse::Param(FCommandLine::Get(), TEXT("WebShaderMetadataValidate")) || !NativeStorageContracts;
     const double MetadataStart = FPlatformTime::Seconds();
     if (Header[1] == 2 && NativeShaderMetadata)
     {
         TRACE_CPUPROFILER_EVENT_SCOPE(WebShader_MetadataNative);
-        if (!UE::WebGPUShader::DecodeRuntimeMetadata(Bytes, Data.RuntimeMetadata))
+        const UE::WebGPUShader::FMetadataField Root(FCbFieldView(Bytes.GetData()));
+        if (!(VSMFullSampling ? UE::WebGPUShader::ReadRuntimeMetadata(
+                Root["vsmFullSamplingMetadata"], Data.RuntimeMetadata) :
+                UE::WebGPUShader::ReadRuntimeMetadata(Root, Data.RuntimeMetadata)))
             return Fail(TEXT("Web shader native metadata invalid"));
         ++NativeMetadataLoads;
     }
@@ -1522,6 +1582,8 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
                 return Fail(TEXT("Web shader metadata invalid"));
         }
         ++DOMMetadataLoads;
+        if (VSMFullSampling)
+            Data.Metadata = Data.Metadata->GetObjectField(TEXT("vsmFullSamplingMetadata"));
         UE::WebGPUShader::FRuntimeMetadata Reference;
         if (!UE::WebGPUShader::ReadRuntimeMetadata(Data.Metadata, Reference))
             return Fail(TEXT("Web shader legacy runtime metadata invalid"));
@@ -1572,7 +1634,8 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     Data.ResourceTable.ShaderResourceViewMap = MoveTemp(Data.RuntimeMetadata.SRVs);
     Data.ResourceTable.UnorderedAccessViewMap = MoveTemp(Data.RuntimeMetadata.UAVs);
     Data.ResourceTable.ResourceTableLayoutHashes = MoveTemp(Data.RuntimeMetadata.LayoutHashes);
-    FString Source(FUTF8ToTCHAR(Utf8 + Header[5], Header[6]));
+    FString Source = VSMFullSampling ? MoveTemp(VSMFullSamplingSource) :
+        FString(FUTF8ToTCHAR(Utf8 + Header[5], Header[6]));
     if (Source.Contains(TEXT("enable atomic_vec2u_min_max;")) &&
         !wgpuDeviceHasFeature(Device, WGPUFeatureName_AtomicVec2uMinMax))
         return Fail(TEXT("Nanite packed visibility requires the WebGPU atomic-vec2u-min-max device feature"));
@@ -1601,6 +1664,8 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
     Data.RuntimeMetadata.Bindings.Empty();
     if (!PrepareWebGPUPackedShadowMaskFormat(Source, Data, Error)) return false;
     if (!LowerWebGPUViewSamplerBias(Source, Data, Error)) return false;
+    if (CVarWebGPUVSMPageOptimization.GetValueOnAnyThread() & 1)
+        AtomicHeaderBindings += LowerWebGPUTextureAtomicHeaders(Source, Data, Limits.maxUniformBuffersPerShaderStage);
     if (!Data.StorageFormatSource.IsEmpty()) Data.StorageFormatSource = Source;
     const FTCHARToUTF8 Code(*Source);
     WGPUShaderSourceWGSL WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
@@ -1971,6 +2036,7 @@ FRHITextureInitializer FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHIComman
             const uint32 Header[] = {Width, Height, Mip.RowPitch / 4u, Texture->LayerCount()};
             wgpuQueueWriteBuffer(Queue, Mip.Buffer, 0, Header, sizeof(Header));
             Mip.DirtySlices.SetNumZeroed(Texture->LayerCount());
+            Mip.StaleSlices.SetNumZeroed(Texture->LayerCount());
         }
     }
     const bool Writable = In.InitAction == ERHITextureInitAction::Initializer;
@@ -2137,6 +2203,8 @@ void FWebGPUDynamicRHI::RHIUpdateTexture2D(FRHICommandListBase &Cmd, FRHITexture
         EndComputePass();
         wgpuCommandEncoderCopyBufferToTexture(Encoder, &Source, &Destination, &Extent);
         wgpuBufferRelease(Staging);
+        if (Texture->AtomicMips.IsValidIndex(Mip))
+            for (uint8& Stale : Texture->AtomicMips[Mip].StaleSlices) Stale = 1;
     };
     if (Cmd.Bypass())
         Upload(Cmd);
@@ -2473,9 +2541,10 @@ bool FWebGPUDynamicRHI::ValidateBufferSRV(FRHIViewableResource *Resource, const 
         EnumHasAnyFlags(Buffer->GetUsage(), BUF_StructuredBuffer | BUF_AccelerationStructure) ||
         !EnumHasAnyFlags(Buffer->GetUsage(), BUF_ShaderResource))
     {
-        Error = FString::Printf(TEXT("Unsupported typed buffer SRV name=%s format=%u type=%u usage=0x%llx stride=%u count=%u offset=%u"),
+        Error = FString::Printf(TEXT("Unsupported typed buffer SRV name=%s format=%u type=%u usage=0x%llx stride=%u count=%u offset=%u counter=%u append=%u"),
             *Buffer->GetName().ToString(), uint32(View.Format), uint32(View.BufferType),
-            uint64(Buffer->GetUsage()), View.Stride, View.NumElements, View.OffsetInBytes);
+            uint64(Buffer->GetUsage()), View.Stride, View.NumElements, View.OffsetInBytes,
+            uint32(View.bAtomicCounter), uint32(View.bAppendBuffer));
         return false;
     }
     const uint64 Size = Buffer->GetSize();
@@ -2727,10 +2796,9 @@ bool FWebGPUDynamicRHI::ValidateTextureAtomicBinding(FRHIResource* Resource,
     return true;
 }
 
-void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level, uint32 Slice, ERHIAccess NextAccess)
+void FWebGPUDynamicRHI::CopyTextureAtomicSlice(FWebGPUTexture* Texture, uint32 Level, uint32 Slice, bool ToTexture)
 {
-    if (Texture->AtomicMips.IsEmpty()) return;
-    check(Encoder && !Pass && Slice < Texture->LayerCount());
+    check(Encoder && !Pass && Texture->AtomicMips.IsValidIndex(Level) && Slice < Texture->LayerCount());
     auto& Mip = Texture->AtomicMips[Level];
     const uint32 Width = FMath::Max(1u, uint32(Texture->GetDesc().Extent.X) >> Level);
     const uint32 Height = FMath::Max(1u, uint32(Texture->GetDesc().Extent.Y) >> Level);
@@ -2745,13 +2813,77 @@ void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 
     Buffer.layout.bytesPerRow = Mip.RowPitch;
     Buffer.layout.rowsPerImage = Height;
     const WGPUExtent3D Extent{Width, Height, 1};
+    AtomicCopyBytes += uint64(Width) * Height * 4;
+    if (ToTexture) ++AtomicCopiesToTexture; else ++AtomicCopiesToBuffer;
+    if (ToTexture)
+        wgpuCommandEncoderCopyBufferToTexture(Encoder, &Buffer, &Image, &Extent);
+    else
+        wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Image, &Buffer, &Extent);
+}
+// Each copy moves a whole slice (256 MiB per slice for a 16384x4096 virtual
+// shadow pool), so a transition only copies when one side is really behind.
+void FWebGPUDynamicRHI::SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level, uint32 Slice,
+    ERHIAccess PreviousAccess, ERHIAccess NextAccess)
+{
+    if (Texture->AtomicMips.IsEmpty()) return;
+    check(Encoder && !Pass && Slice < Texture->LayerCount());
+    auto& Mip = Texture->AtomicMips[Level];
+    if (Mip.ExplicitSync) return;
+    // Only compute UAV use can wait: it resolves all texture bindings before
+    // opening a pass. Graphics/copy/read transitions retain eager visibility.
+    if (DeferTextureAtomicSync() && NextAccess == ERHIAccess::UAVCompute)
+    {
+        if (PreviousAccess == ERHIAccess::Unknown && !Mip.DirtySlices[Slice])
+            Mip.StaleSlices[Slice] = 1;
+        return;
+    }
     if (Mip.DirtySlices[Slice])
     {
-        wgpuCommandEncoderCopyBufferToTexture(Encoder, &Buffer, &Image, &Extent);
+        // Atomic writes went to the mirror. After this copy both sides match.
+        CopyTextureAtomicSlice(Texture, Level, Slice, true);
         Mip.DirtySlices[Slice] = 0;
+        Mip.StaleSlices[Slice] = 0;
     }
-    if (EnumHasAnyFlags(NextAccess, ERHIAccess::UAVMask))
-        wgpuCommandEncoderCopyTextureToBuffer(Encoder, &Image, &Buffer, &Extent);
+    else if (PreviousAccess == ERHIAccess::Unknown ||
+        (!DeferTextureAtomicSync() && EnumHasAnyFlags(PreviousAccess, ~ERHIAccess::ReadOnlyMask)))
+        // A writable state without an atomic binding may have changed the texture.
+        Mip.StaleSlices[Slice] = 1;
+    // A render pass cannot be interrupted for a copy, so graphics use is prepared
+    // here. Compute-only use refreshes at the first atomic binding instead, which
+    // skips the copy for passes that only write the texture.
+    if (Mip.StaleSlices[Slice] && EnumHasAnyFlags(NextAccess, ERHIAccess::UAVGraphics))
+    {
+        CopyTextureAtomicSlice(Texture, Level, Slice, false);
+        Mip.StaleSlices[Slice] = 0;
+    }
+}
+bool FWebGPUDynamicRHI::DeferTextureAtomicSync() const
+{
+    return (CVarWebGPUVSMPageOptimization.GetValueOnAnyThread() & 2) != 0;
+}
+void FWebGPUDynamicRHI::PrepareTextureAtomicTextureUse(FWebGPUTexture* Texture, uint32 Level, uint32 Slice, bool Write)
+{
+    if (!DeferTextureAtomicSync() || !Texture->AtomicMips.IsValidIndex(Level)) return;
+    auto& Mip = Texture->AtomicMips[Level];
+    if (Mip.ExplicitSync) return;
+    if (Mip.DirtySlices[Slice])
+    {
+        CopyTextureAtomicSlice(Texture, Level, Slice, true);
+        Mip.DirtySlices[Slice] = 0;
+        Mip.StaleSlices[Slice] = 0;
+    }
+    if (Write) Mip.StaleSlices[Slice] = 1;
+}
+void FWebGPUDynamicRHI::RefreshTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Level)
+{
+    auto& Mip = Texture->AtomicMips[Level];
+    if (Mip.ExplicitSync) return;
+    for (uint32 Slice = 0; Slice < Texture->LayerCount(); ++Slice)
+    {
+        if (!Mip.StaleSlices[Slice]) continue;
+        CopyTextureAtomicSlice(Texture, Level, Slice, false);
+        Mip.StaleSlices[Slice] = 0;
+    }
 }
 bool FWebGPUDynamicRHI::ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                               ERHIAccess Access, FString &Error) const
@@ -3640,6 +3772,72 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
     {
         TrackShaderBindings(*Shader);
         CommitShaderResources(*Shader);
+        if (Shader->TextureAtomicHeadersGroup != INDEX_NONE)
+        {
+            TArray<FUintVector4> Values;
+            for (int32 Index : Shader->TextureAtomicHeaderSources)
+            {
+                auto* Resource = ResolveDrawBinding(*Shader, Shader->Bindings[Index]);
+                check(Resource && Resource->GetType() == RRT_UnorderedAccessView);
+                auto* UAV = static_cast<FRHIUnorderedAccessView*>(Resource);
+                auto* Texture = static_cast<FWebGPUTexture*>(UAV->GetResource());
+                const auto Info = UAV->GetDesc().Texture.UAV.GetViewInfo(Texture);
+                check(Texture->AtomicMips.IsValidIndex(Info.MipLevel));
+                Values.Emplace(FMath::Max(1u, Texture->GetSizeX() >> Info.MipLevel),
+                    FMath::Max(1u, Texture->GetSizeY() >> Info.MipLevel),
+                    Texture->AtomicMips[Info.MipLevel].RowPitch / 4u, Texture->LayerCount());
+            }
+            if (Values != Shader->TextureAtomicHeaderValues)
+            {
+                if (Shader->TextureAtomicHeadersBuffer) wgpuBufferRelease(Shader->TextureAtomicHeadersBuffer);
+                Shader->TextureAtomicHeadersBuffer = CreateBuffer(Values.Num() * sizeof(FUintVector4),
+                    WGPUBufferUsage_Uniform, Values.GetData());
+                Shader->TextureAtomicHeaderValues = MoveTemp(Values);
+                ++Shader->TextureAtomicHeadersVersion;
+                Shader->InvalidateGroups(1u << Shader->TextureAtomicHeadersGroup);
+            }
+        }
+        if (Compute && DeferTextureAtomicSync())
+            for (auto& Binding : Shader->Bindings)
+            {
+                if (Binding.Descriptor != 2 && Binding.Descriptor != 3) continue;
+                auto* Resource = ResolveDrawBinding(*Shader, Binding);
+                auto* Texture = Resource->GetType() == RRT_Texture ? static_cast<FWebGPUTexture*>(Resource) :
+                    Resource->GetType() == RRT_ShaderResourceView ?
+                    static_cast<FWebGPUTexture*>(static_cast<FRHIShaderResourceView*>(Resource)->GetTexture()) :
+                    static_cast<FWebGPUTexture*>(static_cast<FRHIUnorderedAccessView*>(Resource)->GetResource());
+                // Cached descriptors still perform a real texture write. Mark
+                // its exact mip/layers before group reuse can skip preparation.
+                if (Binding.Descriptor == 3 && !Texture->AtomicMips.IsEmpty())
+                {
+                    auto* UAV = static_cast<FRHIUnorderedAccessView*>(Resource);
+                    const auto Info = UAV->GetDesc().Texture.UAV.GetViewInfo(Texture);
+                    const uint32 Faces = Texture->GetDesc().IsTextureCube() ? 6u : 1u;
+                    for (uint32 Slice = Info.ArrayRange.First * Faces;
+                        Slice < (Info.ArrayRange.First + Info.ArrayRange.Num) * Faces; ++Slice)
+                        RequireAccess(Texture, ERHIAccess::UAVCompute, false, 0, Info.MipLevel, Slice);
+                    continue;
+                }
+                // Full preparation below validates the exact sampled range.
+                // Flush dirty subresources even when the SRV group is reused.
+                for (int32 Level = 0; Level < Texture->AtomicMips.Num(); ++Level)
+                    for (uint32 Slice = 0; Slice < Texture->LayerCount(); ++Slice)
+                        PrepareTextureAtomicTextureUse(Texture, Level, Slice, false);
+            }
+        if (Compute && DeferTextureAtomicSync())
+            for (auto& Binding : Shader->Bindings)
+            {
+                if (Binding.Descriptor != 7 ||
+                    Binding.StorageContract.Packing != FWebGPUStorageContract::EPacking::TextureUIntAtomic ||
+                    Binding.Name == TEXT("WebShadowPoolAtomicBuffer")) continue;
+                auto* UAV = static_cast<FRHIUnorderedAccessView*>(ResolveDrawBinding(*Shader, Binding));
+                auto* Texture = static_cast<FWebGPUTexture*>(UAV->GetResource());
+                const uint32 Level = UAV->GetDesc().Texture.UAV.GetViewInfo(Texture).MipLevel;
+                // Mirror coherence belongs to each dispatch, not the lifetime
+                // of its cached descriptor or current access generation.
+                RefreshTextureAtomicBuffer(Texture, Level);
+                for (uint8& Dirty : Texture->AtomicMips[Level].DirtySlices) Dirty = 1;
+            }
         if (Shader->SamplerBiasGroup != INDEX_NONE)
         {
             float Values[4] = {};
@@ -3731,6 +3929,9 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             }
             else if (Binding.Descriptor == 7)
             {
+                // The resource is a texture UAV backed by its atomic mirror. Full
+                // preparation marks the mirror dirty and refreshes a stale one.
+                if (Binding.StorageContract.Packing == FWebGPUStorageContract::EPacking::TextureUIntAtomic) return false;
                 const bool ReadOnly = Resource->GetType() == RRT_ShaderResourceView;
                 auto* Buffer = ReadOnly ? static_cast<FRHIShaderResourceView*>(Resource)->GetBuffer() :
                     static_cast<FRHIBuffer*>(static_cast<FRHIUnorderedAccessView*>(Resource)->GetResource());
@@ -3839,8 +4040,10 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
             bool FromTable = false;
             const bool VertexFormats = Name == TEXT("WebVertexFetchFormats");
             const bool SamplerBias = Name == TEXT("WebViewSamplerBias");
-            uint64 Version = VertexFormats ? VertexFetchKey : SamplerBias ? Shader->SamplerBiasVersion : Shader->GlobalsVersion;
-            if (Name != TEXT("$Globals") && !VertexFormats && !SamplerBias)
+            const bool AtomicHeader = Reflected.TextureAtomicHeaders;
+            uint64 Version = VertexFormats ? VertexFetchKey : SamplerBias ? Shader->SamplerBiasVersion :
+                AtomicHeader ? Shader->TextureAtomicHeadersVersion : Shader->GlobalsVersion;
+            if (Name != TEXT("$Globals") && !VertexFormats && !SamplerBias && !AtomicHeader)
             {
                 FString Error;
                 Resource = ResolveDrawBinding(*Shader, Reflected);
@@ -3935,6 +4138,12 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                 {
                     Entry.buffer = Shader->SamplerBiasBuffer;
                     Entry.size = sizeof(Shader->SamplerBiasValues);
+                }
+                else if (AtomicHeader)
+                {
+                    Entry.buffer = Shader->TextureAtomicHeadersBuffer;
+                    check(Entry.buffer);
+                    Entry.size = Reflected.PaddedSize;
                 }
                 else if (Name == TEXT("$Globals"))
                 {
@@ -4067,7 +4276,21 @@ FWebGPUResolvedGroups FWebGPUDynamicRHI::CreateGroups(WGPURenderPipeline Render,
                             if (TextureAtomic)
                             {
                                 auto* Texture = static_cast<FWebGPUTexture*>(View->GetResource());
-                                auto& Mip = Texture->AtomicMips[View->GetDesc().Texture.UAV.GetViewInfo(Texture).MipLevel];
+                                const uint32 AtomicLevel = View->GetDesc().Texture.UAV.GetViewInfo(Texture).MipLevel;
+                                auto& Mip = Texture->AtomicMips[AtomicLevel];
+                                if (Name == TEXT("WebShadowPoolAtomicBuffer"))
+                                {
+                                    checkf(Compute && AtomicLevel == 0 && Texture->GetDesc().NumMips == 1,
+                                        TEXT("Explicit VSM synchronization requires a compute pass and a single mip"));
+                                    auto* Paired = Shader->Bindings.FindByPredicate([](const auto& B) {
+                                        return B.Name == TEXT("WebShadowPoolTexture") && B.Descriptor == 3;
+                                    });
+                                    checkf(Paired && ResolveDrawBinding(*Shader, *Paired) == Resource,
+                                        TEXT("Explicit VSM synchronization must bind the same UAV as texture and mirror"));
+                                    Mip.ExplicitSync = true;
+                                }
+                                // Compute bindings are resolved before their pass opens.
+                                if (Compute) RefreshTextureAtomicBuffer(Texture, AtomicLevel);
                                 Entry.buffer = Mip.Buffer;
                                 Entry.size = Mip.Bytes;
                                 for (uint8& Dirty : Mip.DirtySlices) Dirty = 1;
@@ -4281,7 +4504,8 @@ WGPUPipelineLayout FWebGPUDynamicRHI::CreatePipelineLayout(
     for (bool Priority : {true, false})
         for (const auto* Shader : Shaders)
             for (const auto& Binding : Shader->Bindings)
-                if (Binding.Descriptor == 6 && DynamicBindings.Num() < int32(DynamicLimit) &&
+                if (Binding.Descriptor == 6 && !Binding.TextureAtomicHeaders &&
+                    DynamicBindings.Num() < int32(DynamicLimit) &&
                     (Binding.Name == TEXT("$Globals") || Binding.Name == TEXT("Primitive")) == Priority)
                     DynamicBindings.Add((uint64(Binding.Group) << 32) | Binding.Index);
     TMap<uint32, TArray<WGPUBindGroupLayoutEntry>> Groups;
@@ -5434,6 +5658,7 @@ void FWebGPUDynamicRHI::ResetEncoderBindings()
     // Like D3D12 DirtyStateForNewCommandList: a new pass has different
     // attachment hazards and encoder state, even if shader resources match.
     ++BindingStateSerial;
+    PreparedDrawPipeline = nullptr;
     BoundVertexBuffers.Reset();
     BoundVertexOffsets.Reset();
     BoundIndexBuffer.SafeRelease();
@@ -5568,15 +5793,9 @@ void FWebGPUDynamicRHI::DrawIndexedBundle(FWebGPUBuffer* Index, int32 Base, uint
     }
     for (const auto& Group : Groups) if (Group.OwnedHandle) wgpuBindGroupRelease(Group.Handle);
 }
-void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
+void FWebGPUDynamicRHI::SetVertexBindings()
 {
-    TRACE_CPUPROFILER_EVENT_SCOPE(WebGPU_SetDrawBindings);
     check(Pass && GraphicsPipeline);
-    if (UseRenderBundles)
-    {
-        FlushDrawBundles();
-        wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
-    }
     const auto& Streams = GraphicsPipeline->VertexStreams;
     if (BoundVertexBuffers.Num() < Streams.Num())
     {
@@ -5598,10 +5817,40 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
                 BoundVertexOffsets[Slot] = VertexOffsets[Stream];
             }
         }
+}
+void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups, bool Indirect, bool Vertex)
+{
+    TRACE_CPUPROFILER_EVENT_SCOPE(WebGPU_SetDrawBindings);
+    check(Pass && GraphicsPipeline);
+    if (UseRenderBundles)
+    {
+        FlushDrawBundles();
+        wgpuRenderPassEncoderSetPipeline(Pass, GraphicsPipeline->Handle);
+    }
+    if (Vertex) SetVertexBindings();
     auto &VS = ShaderData(GraphicsPipeline->GetShader(SF_Vertex));
     if (VS.HasVertexFetchFormats) ++ManualVertexFetchDraws;
     auto *Pixel = GraphicsPipeline->GetShader(SF_Pixel);
     FWebGPUShaderData *Shaders[] = {&VS, Pixel ? &ShaderData(Pixel) : nullptr};
+    const bool ReuseBindings = Indirect && CVarWebGPUIndirectDrawReuse.GetValueOnAnyThread() >= 2 &&
+        CVarWebGPUBindingGroupCache.GetValueOnAnyThread() && !CVarWebGPUValidateBindingCache.GetValueOnAnyThread() &&
+        !VS.HasVertexFetchFormats && (!Pixel || !Shaders[1]->HasVertexFetchFormats);
+    if (ReuseBindings && PreparedDrawPipeline == GraphicsPipeline.GetReference() &&
+        PreparedDrawFrame == EndFrames && PreparedDrawAccess == BindingStateSerial)
+    {
+        bool Reuse = true;
+        for (auto* Shader : MakeArrayView(Shaders, Pixel ? 2 : 1))
+        {
+            TrackShaderBindings(*Shader);
+            CommitShaderResources(*Shader);
+        }
+        for (int32 Index = 0; Index < (Pixel ? 2 : 1); ++Index)
+            Reuse &= PreparedDrawVersions[Index] == Shaders[Index]->BindingVersion;
+        for (const auto& Group : GraphicsPipeline->PreparedGroups)
+            for (const auto& Reference : Group.TextureReferences)
+                Reuse &= Reference.Key->GetReferencedTexture() == Reference.Value;
+        if (Reuse) { ++IndirectBindingHits; return; }
+    }
     FWebGPUResolvedGroups LocalGroups;
     if (!PreparedGroups)
         LocalGroups = CreateGroups(GraphicsPipeline->Handle, nullptr, MakeArrayView(Shaders, Pixel ? 2 : 1));
@@ -5621,6 +5870,16 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups)
         }
         else if (Group.OwnedHandle) wgpuBindGroupRelease(Group.Handle);
         Bound.DynamicOffsets = MoveTemp(Groups[Index].DynamicOffsets);
+    }
+    // Any intervening direct draw replaces the bound groups, including another
+    // PSO using these same shaders. Only the immediately prepared state is reused.
+    PreparedDrawPipeline = ReuseBindings ? GraphicsPipeline.GetReference() : nullptr;
+    if (ReuseBindings)
+    {
+        PreparedDrawFrame = EndFrames;
+        PreparedDrawAccess = BindingStateSerial;
+        for (int32 Index = 0; Index < (Pixel ? 2 : 1); ++Index)
+            PreparedDrawVersions[Index] = Shaders[Index]->BindingVersion;
     }
 }
 void FWebGPUDynamicRHI::RHIDrawPrimitive(uint32 Base, uint32 Primitives, uint32 Instances)
@@ -5679,7 +5938,53 @@ void FWebGPUDynamicRHI::RHIDrawIndexedPrimitiveIndirect(FRHIBuffer* Index, FRHIB
         GraphicsPipeline->Initializer.PrimitiveType == PT_LineList || GraphicsPipeline->Initializer.PrimitiveType == PT_PointList));
     auto* Buffer = static_cast<FWebGPUBuffer*>(Index);
     check(Buffer && (Buffer->GetStride() == 2 || Buffer->GetStride() == 4));
-    SetDrawBindings();
+#ifdef __EMSCRIPTEN__
+    const int32 ReuseMode = CVarWebGPUIndirectDrawReuse.GetValueOnAnyThread();
+    UEWebGPUStream::IndirectTemplates = ReuseMode == 1 || ReuseMode == 2;
+    const auto& Streams = GraphicsPipeline->VertexStreams;
+    if (UEWebGPUStream::Enabled && UEWebGPUStream::IndirectTemplates && Streams.Num() <= 8)
+    {
+        SetDrawBindings(nullptr, true, false);
+        RequireAccess(Buffer, ERHIAccess::VertexOrIndexBuffer);
+        UEWebGPUStream::VertexBinding Vertices[8] = {};
+        if (BoundVertexBuffers.Num() < Streams.Num())
+        {
+            BoundVertexBuffers.SetNum(Streams.Num());
+            BoundVertexOffsets.SetNum(Streams.Num());
+        }
+        // Pipeline vertex slots are dense; UE stream indices may be sparse.
+        const uint32 StreamMask = (1u << Streams.Num()) - 1;
+        uint32 Changed = 0;
+        for (int32 Slot = 0; Slot < Streams.Num(); ++Slot)
+            {
+                const uint8 Stream = Streams[Slot];
+                check(VertexBuffers.IsValidIndex(Stream) && VertexBuffers[Stream]);
+                auto* VertexBuffer = VertexBuffers[Stream].GetReference();
+                RequireAccess(VertexBuffer, ERHIAccess::VertexOrIndexBuffer);
+                Vertices[Slot] = {VertexBuffer->Handle, VertexBuffer->GetSize(), VertexOffsets[Stream]};
+                if (BoundVertexBuffers[Slot] != VertexBuffer || BoundVertexOffsets[Slot] != VertexOffsets[Stream])
+                    Changed |= 1u << Slot;
+            }
+        if (UEWebGPUStream::drawIndexedIndirectTemplate(Pass, StreamMask, Vertices, Buffer->Handle,
+            Buffer->GetSize(), Buffer->GetStride() == 2 ? WGPUIndexFormat_Uint16 : WGPUIndexFormat_Uint32,
+            Changed, BoundIndexBuffer != Buffer, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset))
+        {
+            for (int32 Slot = 0; Slot < Streams.Num(); ++Slot)
+                {
+                    const uint8 Stream = Streams[Slot];
+                    BoundVertexBuffers[Slot] = VertexBuffers[Stream];
+                    BoundVertexOffsets[Slot] = VertexOffsets[Stream];
+                }
+            BoundIndexBuffer = Buffer;
+            ++Draws;
+            ++IndirectDraws;
+            return;
+        }
+        SetVertexBindings();
+    }
+    else
+#endif
+        SetDrawBindings(nullptr, true);
     SetIndexBinding(Buffer);
     wgpuRenderPassEncoderDrawIndexedIndirect(Pass, static_cast<FWebGPUBuffer*>(Arguments)->Handle, Offset);
     ++Draws;
@@ -5741,6 +6046,10 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
 {
     check(Encoder && !Pass && ComputePipeline);
     TGuardValue<TRefCountPtr<FWebGPUComputePipeline>> Variant(ComputePipeline, ResolveComputePipeline(*ComputePipeline));
+    // Resolve bindings before opening the pass: a stale texture atomic mirror is
+    // refreshed with an encoder copy, which has to end any open compute pass.
+    FWebGPUShaderData *Shaders[] = {&ShaderData(ComputePipeline->GetComputeShader())};
+    const auto Groups = CreateGroups(nullptr, ComputePipeline->Handle, Shaders);
     if (!CVarWebGPUReuseComputePass.GetValueOnAnyThread()) EndComputePass();
     if (!ComputePass)
     {
@@ -5750,8 +6059,6 @@ WGPUComputePassEncoder FWebGPUDynamicRHI::BeginComputePass()
     else ++ComputePassesReused;
     auto Compute = ComputePass;
     wgpuComputePassEncoderSetPipeline(Compute, ComputePipeline->Handle);
-    FWebGPUShaderData *Shaders[] = {&ShaderData(ComputePipeline->GetComputeShader())};
-    const auto Groups = CreateGroups(nullptr, ComputePipeline->Handle, Shaders);
     for (int32 Index = 0; Index < Groups.Num(); ++Index)
     {
         const auto& Group = Groups[Index];

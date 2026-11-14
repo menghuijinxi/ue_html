@@ -179,3 +179,9 @@ node tests/web-platform/probe-web-virtual-scene.cjs --folder=triplex-vt-fixture-
 别墅入口已更新为本次修复包，最终 Cook 为 `20261106-142850`。
 同步了用户新设置 `r.RayTracing=False`，原工程未改动；本次重新取得对应原生截图。
 玻璃专项通过不改变其余桌面视觉一致性和持续性能的验收边界。
+
+## 2026-11-10 后续：转向与移动性能
+
+已定位并修复 Web 虚拟阴影像素着色器对原子镜像头部的共享访问热点。
+保持 VSM、Lumen、VT 和画质设置，新增同路线性能回归及 GPU 深度回读；
+实现、发布与验证边界见 [UE58_WEB_VSM_MOTION.md](UE58_WEB_VSM_MOTION.md)。

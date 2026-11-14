@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-13",
+  "page": "http://127.0.0.1:8765/villa-git-history-live.html#pages",
+  "scope": "Manual recording controls and local export. Synthetic timestamps only; no UE performance comparison.",
+  "verification": {
+    "command": "node tests/web-platform/verify-villa-turn-recorder.cjs",
+    "pass": true,
+    "single117msFrameRetainedAcrossBatches": true,
+    "duplicateBatchesIgnored": true,
+    "versionSwitchStopsSegment": true,
+    "packageIdentityAndArgumentsCaptured": true,
+    "sameOriginExportAndReadback": true,
+    "invalidOriginAndEmptyRecordingRejected": true,
+    "desktopAndNarrowLayout": [1500, 390],
+    "pageErrors": [],
+    "report": "tests/web-platform/results/turn-recorder-verification.json"
+  },
+  "releaseDefaults": {
+    "command": "node tests/web-platform/verify-web-release-defaults.cjs",
+    "pass": true,
+    "indirectDrawReuse": 2,
+    "tsrLargeTiles": 0,
+    "reason": "User retracted the indirect-draw regression after retesting. Preserve accepted defaults while investigating the TSR-node turn hitch."
+  },
+  "output": "tests/web-platform/results/villa-turn-manual/villa-turn-*.json",
+  "boundary": "Submission timings are not physical presentation or GPU pass timings. Contexts are sampled, not exact per-frame camera poses. Historical packages remain unchanged. Automatic performance comparison stopped at the user's request."
+}

@@ -110,10 +110,11 @@ module.exports = new Map([
     storage('RWTexture2D<tsr_half2> DecimateMaskOutput;', 'rg8'),
   ]],
   ['TSRConvolutionNetworkPass.ush', [{
-    ...branch('\t#define GROUP_TILE_SIZE 32', [
-      '\t// Keep one pixel per lane and the original halo on a 256-invocation workgroup.',
-      '\t#define GROUP_TILE_SIZE 16',
-    ]), count: 2,
+    before: '\t#define GROUP_TILE_SIZE 32',
+    after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU && !WEB_TSR_LARGE_TILE',
+      '\t// The 256-invocation fallback retains the same filter halo as the large tile.',
+      '\t#define GROUP_TILE_SIZE 16', '#else', '\t#define GROUP_TILE_SIZE 32', '#endif'].join('\n'),
+    count: 2,
   }]],
   ['TSRConvolutionNetwork.ush', [{
     before: 'groupshared uint SharedAtomic;',

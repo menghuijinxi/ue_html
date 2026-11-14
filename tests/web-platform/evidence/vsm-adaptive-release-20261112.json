@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-12",
+  "pass": true,
+  "diagnosticOnly": false,
+  "releaseReady": true,
+  "referenceEngineCommit": "0239f495b4",
+  "acceptedByUser": "User tested the adaptive live scene and accepted the small visual difference on 2026-11-12.",
+  "url": "http://127.0.0.1:8765/build/villa-vsm-adaptive-20261112/index.html",
+  "package": {
+    "file": "tests/web-platform/build/villa-vsm-adaptive-20261112/asset-versions.json",
+    "sha256": "9ba7e5231acf22421d9ae55c3b3e69915935d3dacca1e41408dbedc9e22c4a8e"
+  },
+  "wasm": "c55e513aee2907cb5b191ca6790a31f58942ce496e2db0c302bc6f67dac764df",
+  "content": "f65626c4db7487698a13752728737025cf418a07d57f7eaa22b30f3b83cb6413",
+  "verification": {
+    "file": "tests/web-platform/results/vsm-adaptive-release-20261112-v2/result.json",
+    "sha256": "7fae0ffa6bfe89cb769ee93b476e61fa173fb9fa14a93669e7dd56282b15c5ab"
+  },
+  "reports": [
+    {
+      "file": "tests/web-platform/results/web-project-triplex-virtual-distance-fields-threads-package-results.json",
+      "sha256": "2849287171e956be29b053d968bcba1d41d22a4f05e4e41a61e20778b870c619"
+    },
+    {
+      "file": "tests/web-platform/results/web-project-triplex-virtual-desktop-cook-results.json",
+      "sha256": "6634689e495fd72f627de5936bc3397724ee481bea0f9f31cff21a672ebb91fb"
+    },
+    {
+      "file": "tests/web-platform/results/web-engine-full-thread-build-results.json",
+      "sha256": "c87e3351eb70df52217fd55d86b1ec02bcafff85b64fca12c612d508cf7d33fd"
+    },
+    {
+      "file": "tests/web-platform/build/virtual-resource-probe/20261112-103700/probe-results.json",
+      "sha256": "80a39c5a5200d6a6547541a0f750ce95c2675c24c9a6b50171e714827a10448e"
+    },
+    {
+      "file": "tests/web-platform/results/vsm-adaptive-policy-20261111/result.json",
+      "sha256": "ef4311fba8de3ae23c083296ee584879b48124ea3960bb14414838bf979d27d3"
+    },
+    {
+      "file": "tests/web-platform/results/content-multitab-vsm-adaptive-20261112.json",
+      "sha256": "eb39f2f9528b50380ad5fb73e644affa0ecabe16af14d5733c19237a6ca5e91f"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-vsm-adaptive-cooked-20261112/result.json",
+      "sha256": "efb653a9ca151a2d9dc8f111b5d2bb22566e5a1a6ef112fc939659f015d52610"
+    }
+  ],
+  "checks": {
+    "normalCookAdaptiveByDefault": true,
+    "fullProjectionPermutations": 170,
+    "fallbackModulesCompiledOnDeviceWithoutSubgroups": 170,
+    "adaptiveModuleRejectedWithoutSubgroups": true,
+    "gpuSemanticFixtureLanes": 384,
+    "actualModulesPrewarmed": 312,
+    "actualPipelinesPrewarmed": 320,
+    "dprs": [1.5, 1],
+    "internalRenderSize": [1400, 788],
+    "physicalOutputSize": [1920, 1080],
+    "antiAliasing": "TSR",
+    "lumenGI": true,
+    "lumenReflections": true,
+    "virtualTextures": true,
+    "virtualShadowMaps": true,
+    "actualAdaptiveProjectionModules": 2,
+    "nativeMovementCm": [124.36543917362908, 121.67152831719073],
+    "nativeTurnDegrees": [39.19608116149902, 39.19608116149902],
+    "scriptedTurnAndMovementSecondsEach": 12,
+    "prewarmHits": [365, 355],
+    "prewarmMisses": [0, 0],
+    "gpuErrors": [],
+    "multitabSharedCacheLocks": true,
+    "captureFailureBlocksRelease": true
+  },
+  "unsupportedCapabilityAttempt": {
+    "file": "tests/web-platform/results/villa-startup-vsm-full-sampling-cooked-20261112/result.json",
+    "sha256": "21f8ac50f356a6a8bb9a9cdb368612fdd5d7a474f262167303e58b7d2b565f95",
+    "pass": false,
+    "published": false,
+    "reason": "Existing non-VSM subgroup shaders are eagerly created. Eleven of the thirteen subgroup modules match the previous sparse release; the two new modules are VSM projections."
+  },
+  "boundary": "Acceptance covers the current desktop scene. VSM fallback WGSL compiles on a real GPUDevice without subgroups; whole-scene non-subgroup hardware support remains unverified and is not claimed. Controlled performance was not remeasured here. Dynamic occluders, point-light face transitions, long-term temporal noise and previous intermittent device-startup failures remain outside this functional release verification."
+}

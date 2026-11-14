@@ -1,0 +1,894 @@
+{
+  "date": "2026-11-11T02:18:27.055Z",
+  "pass": true,
+  "url": "http://127.0.0.1:8765/villa-shadow-comparison.html",
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\villa-shadow-comparison.html",
+      "sha256": "64240a8e9bf82b59b0df8b39dac298d4c6118e2578d34ee5b9e8c1c3aec56a65"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\villa-shadow-comparison.js",
+      "sha256": "2ab2024f046061eed87d5364d1568e288cd7e24c31dfb0c8d177655503ec8c8f"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-villa-shadow-comparison.cjs",
+      "sha256": "310403ec18756b936af589d394a4e1e4964a5c11e2644ba2477de85d0a691962"
+    }
+  ],
+  "packager": {
+    "file": "tests/web-platform/package-villa-shadow-comparison.cjs",
+    "sha256": "5bb11dba7e2714952651b7b8d0cab1814f6ba8009773c270a1aeac904b345480"
+  },
+  "verification": {
+    "file": "tests/web-platform/results/villa-shadow-page-final-20261111/result.json",
+    "sha256": "b54249f985824c3ca88f771639f1f58c77ac5abf7430c2792405ac579bc46edc"
+  },
+  "packages": [
+    {
+      "mode": "on",
+      "report": {
+        "file": "tests/web-platform/results/villa-shadow-on-20261111-release.json",
+        "sha256": "302dfe65e87dc6b9bf42b4a1279b58b4561d385f937a6fe27930e5af8197d709"
+      },
+      "manifest": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111\\asset-versions.json",
+        "sha256": "7f7cfb8c09661a3166016cd57ee0044136a83ec4313c722d1fcedb53f13ff12e"
+      },
+      "releaseReady": true,
+      "prewarm": {
+        "mode": "recorded",
+        "concurrency": 2,
+        "modules": 311,
+        "pipelines": 319,
+        "capture": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-page-on-20261111\\result.json",
+          "sha256": "a9dee494432bcd356280336b3179c809740a96f00f4b03bc703e18d2f6a31476"
+        },
+        "corpus": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-page-on-20261111\\0-corpus.json",
+          "sha256": "66e557e4fc892e5d431f76d3f0e10184a075a835ea49149e18d112da8a798020"
+        },
+        "pack": {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111\\pipeline-prewarm.json",
+          "sha256": "4ce68844e07c3ac104b888d4d7bd7933ff411de4960dea32eaa2ee24f362b954"
+        },
+        "engineArguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+        ],
+        "files": [
+          "web-engine-host.js",
+          "web-engine-worker.js",
+          "web-content-worker.js",
+          "web-pipeline-prewarm.js",
+          "pipeline-prewarm.json"
+        ],
+        "selection": "explicit"
+      },
+      "renderSizing": "fixed-physical-pixels",
+      "fixedRenderSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cacheLock": "shared-read-short-prepare"
+    },
+    {
+      "mode": "off",
+      "report": {
+        "file": "tests/web-platform/results/villa-shadow-off-20261111-release.json",
+        "sha256": "c90e81a65b9e30ff963a2f5c8ec3255739ca769c2f1ec9ece1ae79e57d2c32fc"
+      },
+      "manifest": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111\\asset-versions.json",
+        "sha256": "48fbd36698b9c5d0c537a27352d9c48e5cc94c2daade13e1640249d422d50a8f"
+      },
+      "releaseReady": true,
+      "prewarm": {
+        "mode": "recorded",
+        "concurrency": 2,
+        "modules": 308,
+        "pipelines": 319,
+        "capture": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-page-off-20261111\\result.json",
+          "sha256": "72bcc032be8f16c3b3d55249c4db7b9a3756759499e37ce5cb2840b8fc295679"
+        },
+        "corpus": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-page-off-20261111\\0-corpus.json",
+          "sha256": "7d7132d5bbd1c420daedacf1b976e20cd1880f556e81921d55216ce435a440c3"
+        },
+        "pack": {
+          "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111\\pipeline-prewarm.json",
+          "sha256": "4d42afec6a9d395a7d849f855ed5df1e207697a82f2571073cab66f83a633e13"
+        },
+        "engineArguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+        ],
+        "files": [
+          "web-engine-host.js",
+          "web-engine-worker.js",
+          "web-content-worker.js",
+          "web-pipeline-prewarm.js",
+          "pipeline-prewarm.json"
+        ],
+        "selection": "explicit"
+      },
+      "renderSizing": "fixed-physical-pixels",
+      "fixedRenderSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cacheLock": "shared-read-short-prepare"
+    }
+  ],
+  "checks": [
+    {
+      "name": "desktop-on",
+      "width": 1600,
+      "scroll": 1600,
+      "bounds": [
+        {
+          "name": "H1",
+          "left": 18,
+          "right": 203.4479217529297,
+          "width": 185,
+          "scroll": 185
+        },
+        {
+          "name": "DIV",
+          "left": 18,
+          "right": 254.98959350585938,
+          "width": 236,
+          "scroll": 236
+        },
+        {
+          "name": "reset",
+          "left": 266.9895935058594,
+          "right": 344.3229293823242,
+          "width": 76,
+          "scroll": 76
+        },
+        {
+          "name": "route",
+          "left": 387.32293701171875,
+          "right": 484.6562728881836,
+          "width": 96,
+          "scroll": 96
+        },
+        {
+          "name": "run",
+          "left": 491.65625,
+          "right": 579.6979217529297,
+          "width": 87,
+          "scroll": 87
+        },
+        {
+          "name": "stop",
+          "left": 586.6979370117188,
+          "right": 636.0312728881836,
+          "width": 48,
+          "scroll": 48
+        },
+        {
+          "name": "export",
+          "left": 1504.666748046875,
+          "right": 1582.0000839233398,
+          "width": 76,
+          "scroll": 76
+        },
+        {
+          "name": "DIV",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        },
+        {
+          "name": "IFRAME",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        },
+        {
+          "name": "FOOTER",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        }
+      ],
+      "tableRows": 3,
+      "scenePixelStats": [
+        {
+          "min": 10,
+          "max": 255,
+          "sum": 13332396,
+          "squaresSum": 1971219026,
+          "mean": 89.45515297906603,
+          "stdev": 72.27667615303149,
+          "minX": 719,
+          "minY": 86,
+          "maxX": 112,
+          "maxY": 37
+        },
+        {
+          "min": 8,
+          "max": 255,
+          "sum": 14002846,
+          "squaresSum": 2183218982,
+          "mean": 93.95360976918948,
+          "stdev": 76.29745843900658,
+          "minX": 719,
+          "minY": 90,
+          "maxX": 330,
+          "maxY": 36
+        },
+        {
+          "min": 6,
+          "max": 255,
+          "sum": 10989401,
+          "squaresSum": 1415744333,
+          "mean": 73.73457461084273,
+          "stdev": 63.73640632469856,
+          "minX": 719,
+          "minY": 112,
+          "maxX": 421,
+          "maxY": 106
+        }
+      ]
+    },
+    {
+      "name": "desktop-off",
+      "width": 1600,
+      "scroll": 1600,
+      "bounds": [
+        {
+          "name": "H1",
+          "left": 18,
+          "right": 203.4479217529297,
+          "width": 185,
+          "scroll": 185
+        },
+        {
+          "name": "DIV",
+          "left": 18,
+          "right": 254.98959350585938,
+          "width": 236,
+          "scroll": 236
+        },
+        {
+          "name": "reset",
+          "left": 266.9895935058594,
+          "right": 344.3229293823242,
+          "width": 76,
+          "scroll": 76
+        },
+        {
+          "name": "route",
+          "left": 387.32293701171875,
+          "right": 484.6562728881836,
+          "width": 96,
+          "scroll": 96
+        },
+        {
+          "name": "run",
+          "left": 491.65625,
+          "right": 579.6979217529297,
+          "width": 87,
+          "scroll": 87
+        },
+        {
+          "name": "stop",
+          "left": 586.6979370117188,
+          "right": 636.0312728881836,
+          "width": 48,
+          "scroll": 48
+        },
+        {
+          "name": "export",
+          "left": 1504.666748046875,
+          "right": 1582.0000839233398,
+          "width": 76,
+          "scroll": 76
+        },
+        {
+          "name": "DIV",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        },
+        {
+          "name": "IFRAME",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        },
+        {
+          "name": "FOOTER",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        }
+      ],
+      "tableRows": 3,
+      "scenePixelStats": [
+        {
+          "min": 4,
+          "max": 186,
+          "sum": 3982876,
+          "squaresSum": 173130712,
+          "mean": 26.723537305421363,
+          "stdev": 21.154072756540003,
+          "minX": 698,
+          "minY": 37,
+          "maxX": 62,
+          "maxY": 177
+        },
+        {
+          "min": 4,
+          "max": 184,
+          "sum": 3170552,
+          "squaresSum": 129180438,
+          "mean": 21.273161567364465,
+          "stdev": 20.35203913268485,
+          "minX": 696,
+          "minY": 32,
+          "maxX": 62,
+          "maxY": 177
+        },
+        {
+          "min": 3,
+          "max": 182,
+          "sum": 2771845,
+          "squaresSum": 108970099,
+          "mean": 18.597993827160494,
+          "stdev": 19.62813989911653,
+          "minX": 697,
+          "minY": 15,
+          "maxX": 62,
+          "maxY": 177
+        }
+      ]
+    },
+    {
+      "name": "mobile-off",
+      "width": 390,
+      "scroll": 390,
+      "bounds": [
+        {
+          "name": "H1",
+          "left": 10,
+          "right": 173.625,
+          "width": 164,
+          "scroll": 164
+        },
+        {
+          "name": "DIV",
+          "left": 10,
+          "right": 380,
+          "width": 369,
+          "scroll": 369
+        },
+        {
+          "name": "reset",
+          "left": 10,
+          "right": 73.33333587646484,
+          "width": 62,
+          "scroll": 62
+        },
+        {
+          "name": "route",
+          "left": 114.33333587646484,
+          "right": 197.6666717529297,
+          "width": 82,
+          "scroll": 82
+        },
+        {
+          "name": "run",
+          "left": 204.6666717529297,
+          "right": 277.1770935058594,
+          "width": 71,
+          "scroll": 71
+        },
+        {
+          "name": "stop",
+          "left": 284.1770935058594,
+          "right": 323.5104293823242,
+          "width": 38,
+          "scroll": 38
+        },
+        {
+          "name": "export",
+          "left": 10,
+          "right": 73.33333587646484,
+          "width": 62,
+          "scroll": 62
+        },
+        {
+          "name": "DIV",
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scroll": 390
+        },
+        {
+          "name": "IFRAME",
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scroll": 390
+        },
+        {
+          "name": "FOOTER",
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scroll": 390
+        }
+      ],
+      "tableRows": 3,
+      "scenePixelStats": [
+        {
+          "min": 12,
+          "max": 255,
+          "sum": 1763257,
+          "squaresSum": 196172893,
+          "mean": 60.71821625344353,
+          "stdev": 55.39556657243851,
+          "minX": 89,
+          "minY": 0,
+          "maxX": 8,
+          "maxY": 64
+        },
+        {
+          "min": 12,
+          "max": 255,
+          "sum": 1733757,
+          "squaresSum": 205329637,
+          "mean": 59.70237603305785,
+          "stdev": 59.214245108677595,
+          "minX": 89,
+          "minY": 0,
+          "maxX": 8,
+          "maxY": 64
+        },
+        {
+          "min": 11,
+          "max": 255,
+          "sum": 1501226,
+          "squaresSum": 155492126,
+          "mean": 51.69511019283747,
+          "stdev": 51.789188002863256,
+          "minX": 89,
+          "minY": 0,
+          "maxX": 8,
+          "maxY": 64
+        }
+      ]
+    },
+    {
+      "name": "mobile-on",
+      "width": 390,
+      "scroll": 390,
+      "bounds": [
+        {
+          "name": "H1",
+          "left": 10,
+          "right": 173.625,
+          "width": 164,
+          "scroll": 164
+        },
+        {
+          "name": "DIV",
+          "left": 10,
+          "right": 380,
+          "width": 369,
+          "scroll": 369
+        },
+        {
+          "name": "reset",
+          "left": 10,
+          "right": 73.33333587646484,
+          "width": 62,
+          "scroll": 62
+        },
+        {
+          "name": "route",
+          "left": 114.33333587646484,
+          "right": 197.6666717529297,
+          "width": 82,
+          "scroll": 82
+        },
+        {
+          "name": "run",
+          "left": 204.6666717529297,
+          "right": 277.1770935058594,
+          "width": 71,
+          "scroll": 71
+        },
+        {
+          "name": "stop",
+          "left": 284.1770935058594,
+          "right": 323.5104293823242,
+          "width": 38,
+          "scroll": 38
+        },
+        {
+          "name": "export",
+          "left": 10,
+          "right": 73.33333587646484,
+          "width": 62,
+          "scroll": 62
+        },
+        {
+          "name": "DIV",
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scroll": 390
+        },
+        {
+          "name": "IFRAME",
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scroll": 390
+        },
+        {
+          "name": "FOOTER",
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scroll": 390
+        }
+      ],
+      "tableRows": 3,
+      "scenePixelStats": [
+        {
+          "min": 8,
+          "max": 255,
+          "sum": 2669734,
+          "squaresSum": 412292476,
+          "mean": 91.93298898071626,
+          "stdev": 75.80186482348945,
+          "minX": 97,
+          "minY": 141,
+          "maxX": 43,
+          "maxY": 79
+        },
+        {
+          "min": 7,
+          "max": 255,
+          "sum": 2769904,
+          "squaresSum": 442403860,
+          "mean": 95.38236914600552,
+          "stdev": 78.3371410951055,
+          "minX": 97,
+          "minY": 141,
+          "maxX": 78,
+          "maxY": 63
+        },
+        {
+          "min": 5,
+          "max": 255,
+          "sum": 2434716,
+          "squaresSum": 360552756,
+          "mean": 83.8400826446281,
+          "stdev": 73.39451307040105,
+          "minX": 97,
+          "minY": 142,
+          "maxX": 138,
+          "maxY": 84
+        }
+      ]
+    },
+    {
+      "name": "desktop-return",
+      "width": 1600,
+      "scroll": 1600,
+      "bounds": [
+        {
+          "name": "H1",
+          "left": 18,
+          "right": 203.4479217529297,
+          "width": 185,
+          "scroll": 185
+        },
+        {
+          "name": "DIV",
+          "left": 18,
+          "right": 254.98959350585938,
+          "width": 236,
+          "scroll": 236
+        },
+        {
+          "name": "reset",
+          "left": 266.9895935058594,
+          "right": 344.3229293823242,
+          "width": 76,
+          "scroll": 76
+        },
+        {
+          "name": "route",
+          "left": 387.32293701171875,
+          "right": 484.6562728881836,
+          "width": 96,
+          "scroll": 96
+        },
+        {
+          "name": "run",
+          "left": 491.65625,
+          "right": 579.6979217529297,
+          "width": 87,
+          "scroll": 87
+        },
+        {
+          "name": "stop",
+          "left": 586.6979370117188,
+          "right": 636.0312728881836,
+          "width": 48,
+          "scroll": 48
+        },
+        {
+          "name": "export",
+          "left": 1504.666748046875,
+          "right": 1582.0000839233398,
+          "width": 76,
+          "scroll": 76
+        },
+        {
+          "name": "DIV",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        },
+        {
+          "name": "IFRAME",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        },
+        {
+          "name": "FOOTER",
+          "left": 0,
+          "right": 1600,
+          "width": 1600,
+          "scroll": 1600
+        }
+      ],
+      "tableRows": 3,
+      "scenePixelStats": [
+        {
+          "min": 10,
+          "max": 255,
+          "sum": 13350781,
+          "squaresSum": 1974474105,
+          "mean": 89.5785091250671,
+          "stdev": 72.27498402728021,
+          "minX": 719,
+          "minY": 85,
+          "maxX": 111,
+          "maxY": 92
+        },
+        {
+          "min": 8,
+          "max": 255,
+          "sum": 14021952,
+          "squaresSum": 2186691598,
+          "mean": 94.08180354267311,
+          "stdev": 76.29218231454269,
+          "minX": 719,
+          "minY": 90,
+          "maxX": 78,
+          "maxY": 80
+        },
+        {
+          "min": 6,
+          "max": 255,
+          "sum": 11007977,
+          "squaresSum": 1418534753,
+          "mean": 73.85921229200214,
+          "stdev": 63.73897058178702,
+          "minX": 719,
+          "minY": 112,
+          "maxX": 408,
+          "maxY": 145
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "mode": "on",
+      "view": {
+        "frame": 71,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "prewarm": {
+        "modules": 367,
+        "layouts": 475,
+        "ready": 318,
+        "hits": 334,
+        "misses": 0
+      },
+      "frames": 70
+    },
+    {
+      "mode": "off",
+      "view": {
+        "frame": 76,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 0,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": false
+      },
+      "prewarm": {
+        "modules": 351,
+        "layouts": 442,
+        "ready": 310,
+        "hits": 404,
+        "misses": 0
+      },
+      "frames": 76
+    },
+    {
+      "mode": "off",
+      "view": {
+        "frame": 546,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 0,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": false
+      },
+      "prewarm": {
+        "modules": 351,
+        "layouts": 442,
+        "ready": 310,
+        "hits": 404,
+        "misses": 0
+      },
+      "frames": 545
+    },
+    {
+      "mode": "on",
+      "view": {
+        "frame": 73,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 4,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "prewarm": {
+        "modules": 367,
+        "layouts": 475,
+        "ready": 318,
+        "hits": 346,
+        "misses": 0
+      },
+      "frames": 72
+    }
+  ],
+  "boundary": "Functional UI and actual WebGPU rendering checks, not a new performance benchmark."
+}

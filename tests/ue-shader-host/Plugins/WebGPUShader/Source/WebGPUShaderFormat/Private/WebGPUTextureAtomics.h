@@ -9,7 +9,8 @@ inline const TCHAR* TextureAtomicNames[] = {
     TEXT("OutPageReceiverMasks"),
     TEXT("InOutPageRequestFlags"),
     TEXT("InOutPageReceiverMasks"),
-    TEXT("ShadowDepthPass_OutDepthBufferArray")
+    TEXT("ShadowDepthPass_OutDepthBufferArray"),
+    TEXT("WebShadowPoolAtomicBuffer")
 };
 
 inline bool IsTextureAtomicBinding(const FString& Name)

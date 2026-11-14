@@ -1,0 +1,466 @@
+{
+  "date": "2026-11-13T04:26:11.244Z",
+  "pass": true,
+  "url": "http://127.0.0.1:8765/villa-git-history-live.html#old",
+  "purpose": "Manual historical-renderer regression comparison; no automated Low-FPS performance ranking.",
+  "packages": [
+    {
+      "mode": "old",
+      "rootCommit": "835b77691a3cf904189845ab00bb80b7186902fa",
+      "engineCommit": null,
+      "kind": "preserved",
+      "folder": "villa-vsm-sampling-adaptive-20261112",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-vsm-sampling-adaptive-20261112/asset-versions.json",
+        "sha256": "d6b2ad789063e236ab725c5e38fb3192bb97cb7572ab0a2d867e7aef5746d4f6"
+      },
+      "core": {
+        "UEWebEngineThreads.js": "20db4f100e2f2faed52803a0869ed15a3c031a3e662e69cb7ca8710815e7f1cd",
+        "UEWebEngineThreads.wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+        "content.bin": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+        "config-files.json": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0"
+      }
+    },
+    {
+      "mode": "adaptive",
+      "rootCommit": "2abb246dd1c399374df52738ac0debf263fe4739",
+      "engineCommit": "0239f495b44664946d98b2e116b5f33de00bfa7e",
+      "kind": "rebuilt",
+      "folder": "villa-git-adaptive-20261113",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-git-adaptive-20261113/asset-versions.json",
+        "sha256": "eec16415acf06761a17ee781030bee89c3bba91e096d30b2f8b1c7309e10940c"
+      },
+      "core": {
+        "UEWebEngineThreads.js": "3eab659f37cc7487f7988d1de145f9bdfaad26ce7685f9bcbd7ee42d9f777753",
+        "UEWebEngineThreads.wasm": "b298a0b90030ad9efffcebdf5deb958499d7407883a56339523e63be738da51b",
+        "content.bin": "328641a01ceb57d4a6a6855ad3f574d6a2a44d7ecc0b02776cf92bbfd139694f",
+        "config-files.json": "c40b128dd53984d667d0acbb88e64574ee1ff3a0104c68e7a53858ed4c9a7d5c"
+      },
+      "runtime": {
+        "file": "tests/web-platform/results/git-history-20261113/adaptive-runtime.json",
+        "sha256": "bd58e2a462caf8780071a9158d52e6d00476603c1257d9a8f64c8a270859f55e"
+      },
+      "package": {
+        "file": "tests/web-platform/results/git-history-20261113/adaptive-package.json",
+        "sha256": "cc502462c9db0101c664be152c8afc4e6b13c266b48d764c401636d65ba6b45f"
+      },
+      "historicalSourcesVerified": 84,
+      "recompiledObjects": 7,
+      "wasmValidated": true,
+      "releaseReady": true,
+      "prewarm": {
+        "modules": 312,
+        "pipelines": 320,
+        "capture": {
+          "file": "tests/web-platform/results/villa-startup-git-history-adaptive-20261113-1794543124025/result.json",
+          "sha256": "ebe6fb54f4a94e82bf74a2f8c6acbea78f21a1951c98130c3becb035d3359d29"
+        }
+      }
+    },
+    {
+      "mode": "indirect",
+      "rootCommit": "410778f5649675da4c6e6d1efe8c60314b30a5fd",
+      "engineCommit": "231b20bb0827ef5f38021789a067947e4e41aa57",
+      "kind": "rebuilt",
+      "folder": "villa-git-indirect-20261113",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-git-indirect-20261113/asset-versions.json",
+        "sha256": "3a7a33685678edcf29f7d463a5d6dd556a7c280fa769373676784690d1e3a9d6"
+      },
+      "core": {
+        "UEWebEngineThreads.js": "a6be588ac14bb1eaca07c03a09d755e071e52b600e79ec6f39907c403c5dcbe9",
+        "UEWebEngineThreads.wasm": "5a97872e9abe2a16aff8d88d30b1064e9a95433a1afeed066bd18db17ecda8bc",
+        "content.bin": "328641a01ceb57d4a6a6855ad3f574d6a2a44d7ecc0b02776cf92bbfd139694f",
+        "config-files.json": "dafacf263d3e86913e74a6acf54649b90b75446cf5b8d2635ff1fbc0ad688a45"
+      },
+      "runtime": {
+        "file": "tests/web-platform/results/git-history-20261113/indirect-runtime.json",
+        "sha256": "69a918bb526d30214e099f6f7103be36fbf52140f2610094f370ed876f3b0ede"
+      },
+      "package": {
+        "file": "tests/web-platform/results/git-history-20261113/indirect-package.json",
+        "sha256": "e5894cadbeea35354c235a4df86d5f01c8bbbad65e49aa785bbe1d790d800740"
+      },
+      "historicalSourcesVerified": 84,
+      "recompiledObjects": 7,
+      "wasmValidated": true,
+      "releaseReady": true,
+      "prewarm": {
+        "modules": 312,
+        "pipelines": 320,
+        "capture": {
+          "file": "tests/web-platform/results/villa-startup-git-history-indirect-20261113-1794543238133/result.json",
+          "sha256": "ef82cce91cfec25e952025ff13330275e15a148011af514538bed1947e8ddc33"
+        }
+      }
+    },
+    {
+      "mode": "pages",
+      "rootCommit": "23d4f43e0274e286fb31676ec3e20d9c2679e43d",
+      "engineCommit": "231b20bb0827ef5f38021789a067947e4e41aa57",
+      "kind": "rebuilt",
+      "folder": "villa-git-pages-20261113",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-git-pages-20261113/asset-versions.json",
+        "sha256": "910b9988f1f6511e366aabb5e6e91908eae6bd694bb83a1f53a5d2a8ba0568d2"
+      },
+      "core": {
+        "UEWebEngineThreads.js": "f70db7badba1a3d698b91a1638c3e5dd2f1215bc15b36199c3dd7992ba447d76",
+        "UEWebEngineThreads.wasm": "7ce9c1a43b46246571909b9d5b60344b30e343976a7de45abaf45c6a54158a7e",
+        "content.bin": "328641a01ceb57d4a6a6855ad3f574d6a2a44d7ecc0b02776cf92bbfd139694f",
+        "config-files.json": "09683ac16b0b9b0d236e89fa154545e869d7d2b8b3a3042718b1c750c8642600"
+      },
+      "runtime": {
+        "file": "tests/web-platform/results/git-history-20261113/pages-runtime.json",
+        "sha256": "6b9fefe4a02eba5ca79533cb4eb4d544ba77b928851dd3beb7471c1b016e9218"
+      },
+      "package": {
+        "file": "tests/web-platform/results/git-history-20261113/pages-package.json",
+        "sha256": "9810f4ffd77a13a3e27b4ced0e09f3bd4fd07eb8c4a82c33c112c5135a97248a"
+      },
+      "historicalSourcesVerified": 85,
+      "recompiledObjects": 7,
+      "wasmValidated": true,
+      "releaseReady": true,
+      "prewarm": {
+        "modules": 312,
+        "pipelines": 320,
+        "capture": {
+          "file": "tests/web-platform/results/villa-startup-git-history-pages-20261113-1794543348986/result.json",
+          "sha256": "770a34074069f0eaf60479a4485983904829e1e2020b02b2103d998233946103"
+        }
+      }
+    },
+    {
+      "mode": "large",
+      "rootCommit": "628ac0ec86247b924954afdc6c33245aacf95e8c",
+      "engineCommit": "3839f747a32391cb0c8448c9c7bc3194431b60da",
+      "kind": "preserved",
+      "folder": "villa-tsr-tiles-20261112",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-tsr-tiles-20261112/asset-versions.json",
+        "sha256": "9fcc38b967db3829cacb508921ff6d936efaaa70c9961d13c34de6aceba1ef43"
+      },
+      "core": {
+        "UEWebEngineThreads.js": "832efbfb5ab1df7b73d411c597e256f0cadfa61c9d1e58d1d0e09adedf17715c",
+        "UEWebEngineThreads.wasm": "aec1db17611832b74d37927ff3413a8baef68c4dd578c4bfa3f564cf395b969c",
+        "content.bin": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc",
+        "config-files.json": "d9cea2aadb6e9df2d59881aeb09f27b9ea6af8497fd8b69fed14846d25cb936a"
+      }
+    },
+    {
+      "mode": "small",
+      "rootCommit": "1c25b77989bdc48713a848d2708fd62bef990ced",
+      "engineCommit": "2ac751c827e56e7bb43e1481c9e98c3bb3ea5c6f",
+      "kind": "preserved",
+      "folder": "villa-tsr-small-20261112",
+      "manifest": {
+        "file": "tests/web-platform/build/villa-tsr-small-20261112/asset-versions.json",
+        "sha256": "45ec4868b92d1e4cdefd446be54d057c8e8d1960f84f4ed4af817438d7513e34"
+      },
+      "core": {
+        "UEWebEngineThreads.js": "832efbfb5ab1df7b73d411c597e256f0cadfa61c9d1e58d1d0e09adedf17715c",
+        "UEWebEngineThreads.wasm": "4df57231377492efab0f318428c2a56f80ea57d009436b114e77f84c055a4017",
+        "content.bin": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc",
+        "config-files.json": "7c050df042624384b36e953a54a3e4f59dc7e160dd2533ee65b55944e74dabd9"
+      }
+    }
+  ],
+  "build": {
+    "base": {
+      "file": "tests/web-platform/results/git-history-20261113/base-audit.json",
+      "sha256": "3cc37783410d545f9d0fcab5e8c69c404c19798590f69eb57552118e65a10903"
+    },
+    "totalObjects": 421,
+    "replacedObjects": 7,
+    "reusedObjects": 414,
+    "matchingCook": {
+      "file": "tests/web-platform/results/git-history-20261113/cook.json",
+      "sha256": "b3d65485a6d7b96542a7677ee49fdb8281465ababcf0ae146195809a938a9f86"
+    },
+    "cookProducts": 5164,
+    "cookHostRestored": true,
+    "runtimeContentFiles": 5163,
+    "contentSha256": "328641a01ceb57d4a6a6855ad3f574d6a2a44d7ecc0b02776cf92bbfd139694f",
+    "preservedPackages": {
+      "file": "tests/web-platform/results/git-history-20261113/preserved-packages.json",
+      "sha256": "4c501ac9e365b563aaf6563b4b0edbace2678b6f1d6da1c6902d8fbc2dc61228"
+    }
+  },
+  "browserChecks": [
+    {
+      "report": {
+        "file": "tests/web-platform/results/git-history-existing-20261113/result.json",
+        "sha256": "026f8103de80cc57c5bccd905c1db7f93c8814d0f72f4d3b400c9944534dc06d"
+      },
+      "modes": [
+        "old",
+        "large",
+        "small"
+      ],
+      "errors": 0,
+      "controls": [
+        {
+          "mode": "old",
+          "nativeMovementCm": 53.112157577854326,
+          "nativeTurnDegrees": 38.146185874938965
+        },
+        {
+          "mode": "large",
+          "nativeMovementCm": 52.95389604969557,
+          "nativeTurnDegrees": 38.146185874938965
+        },
+        {
+          "mode": "small",
+          "nativeMovementCm": 52.9783997230079,
+          "nativeTurnDegrees": 38.146185874938965
+        }
+      ],
+      "sceneAndLayout": [
+        {
+          "name": "old-desktop",
+          "nonblank": true,
+          "viewportWidth": 1600,
+          "scrollWidth": 1600
+        },
+        {
+          "name": "large-desktop",
+          "nonblank": true,
+          "viewportWidth": 1600,
+          "scrollWidth": 1600
+        },
+        {
+          "name": "small-desktop",
+          "nonblank": true,
+          "viewportWidth": 1600,
+          "scrollWidth": 1600
+        },
+        {
+          "name": "mobile",
+          "nonblank": true,
+          "viewportWidth": 390,
+          "scrollWidth": 390
+        }
+      ],
+      "views": [
+        {
+          "mode": "old",
+          "render": [
+            1400,
+            788
+          ],
+          "output": [
+            1920,
+            1080
+          ],
+          "canvas": [
+            1920,
+            1080
+          ],
+          "antiAliasing": "TSR",
+          "lumenGI": true,
+          "lumenReflections": true,
+          "virtualTextures": true,
+          "virtualShadows": true,
+          "recordedPrewarmAdopted": true
+        },
+        {
+          "mode": "large",
+          "render": [
+            1400,
+            788
+          ],
+          "output": [
+            1920,
+            1080
+          ],
+          "canvas": [
+            1920,
+            1080
+          ],
+          "antiAliasing": "TSR",
+          "lumenGI": true,
+          "lumenReflections": true,
+          "virtualTextures": true,
+          "virtualShadows": true,
+          "recordedPrewarmAdopted": true
+        },
+        {
+          "mode": "small",
+          "render": [
+            1400,
+            788
+          ],
+          "output": [
+            1920,
+            1080
+          ],
+          "canvas": [
+            1920,
+            1080
+          ],
+          "antiAliasing": "TSR",
+          "lumenGI": true,
+          "lumenReflections": true,
+          "virtualTextures": true,
+          "virtualShadows": true,
+          "recordedPrewarmAdopted": true
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "tests/web-platform/results/git-history-rebuilt-20261113/result.json",
+        "sha256": "86c88038b1a3f9f77ea5cba9f50a2a6d3bc46d53039c3fee225ce9fe676015c9"
+      },
+      "modes": [
+        "adaptive",
+        "indirect",
+        "pages"
+      ],
+      "errors": 0,
+      "controls": [
+        {
+          "mode": "adaptive",
+          "nativeMovementCm": 52.70406223872345,
+          "nativeTurnDegrees": 38.146185874938965
+        },
+        {
+          "mode": "indirect",
+          "nativeMovementCm": 52.96746852021508,
+          "nativeTurnDegrees": 38.146185874938965
+        },
+        {
+          "mode": "pages",
+          "nativeMovementCm": 52.9338512650702,
+          "nativeTurnDegrees": 38.146185874938965
+        }
+      ],
+      "sceneAndLayout": [
+        {
+          "name": "adaptive-desktop",
+          "nonblank": true,
+          "viewportWidth": 1600,
+          "scrollWidth": 1600
+        },
+        {
+          "name": "indirect-desktop",
+          "nonblank": true,
+          "viewportWidth": 1600,
+          "scrollWidth": 1600
+        },
+        {
+          "name": "pages-desktop",
+          "nonblank": true,
+          "viewportWidth": 1600,
+          "scrollWidth": 1600
+        },
+        {
+          "name": "mobile",
+          "nonblank": true,
+          "viewportWidth": 390,
+          "scrollWidth": 390
+        }
+      ],
+      "views": [
+        {
+          "mode": "adaptive",
+          "render": [
+            1400,
+            788
+          ],
+          "output": [
+            1920,
+            1080
+          ],
+          "canvas": [
+            1920,
+            1080
+          ],
+          "antiAliasing": "TSR",
+          "lumenGI": true,
+          "lumenReflections": true,
+          "virtualTextures": true,
+          "virtualShadows": true,
+          "recordedPrewarmAdopted": true
+        },
+        {
+          "mode": "indirect",
+          "render": [
+            1400,
+            788
+          ],
+          "output": [
+            1920,
+            1080
+          ],
+          "canvas": [
+            1920,
+            1080
+          ],
+          "antiAliasing": "TSR",
+          "lumenGI": true,
+          "lumenReflections": true,
+          "virtualTextures": true,
+          "virtualShadows": true,
+          "recordedPrewarmAdopted": true
+        },
+        {
+          "mode": "pages",
+          "render": [
+            1400,
+            788
+          ],
+          "output": [
+            1920,
+            1080
+          ],
+          "canvas": [
+            1920,
+            1080
+          ],
+          "antiAliasing": "TSR",
+          "lumenGI": true,
+          "lumenReflections": true,
+          "virtualTextures": true,
+          "virtualShadows": true,
+          "recordedPrewarmAdopted": true
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "file": "tests/web-platform/build-villa-git-history.cjs",
+      "sha256": "d088e521b147060c7d02bb3cb170169b3a8398beaf402c5917c02f2d79d51494"
+    },
+    {
+      "file": "tests/web-platform/package-villa-git-history.cjs",
+      "sha256": "96a29d265adcb75c3014206b3ba54898152846e8a9b4070917454117758313bb"
+    },
+    {
+      "file": "tests/web-platform/verify-villa-git-history.cjs",
+      "sha256": "4e892211f1cc5c4b82c1d4e1753237e9ee3b10e0d77f5c692b1dd96eec46f989"
+    },
+    {
+      "file": "tests/web-platform/villa-git-history-live.html",
+      "sha256": "2445a6f5db2df52af8a41cfcbb7a300ee2522e614d85854b7f8dc914fc15618a"
+    },
+    {
+      "file": "tests/web-platform/villa-git-history-live.js",
+      "sha256": "82aea49ee6215948b6c37dce3ed03ce29661b0d87290db09640867e4044b5ac8"
+    },
+    {
+      "file": "tests/web-platform/villa-smoothness-live.js",
+      "sha256": "0fa1b64acea81816f29d4bd04d17a23fac841854d719999b73af673f541e0fc1"
+    }
+  ],
+  "boundaries": [
+    "Nodes 2, 3 and 4 use historical Git renderer sources and accepted defaults with matching pre-TSR Cook; unchanged audited objects are reused for the full runtime link.",
+    "Rebuilt nodes use the current shared startup host and workers, fixed physical-pixel sizing, shared-read cache locks and actual pipeline prewarm, as required by project release rules.",
+    "Nodes 1, 5 and 6 preserve archived packages. Node 1 revision identifies the diagnostic page, whose WASM predates that page commit.",
+    "Cook output was rebuilt and is not claimed byte-identical to the original historical package.",
+    "Browser tests validate startup, controls, pose preservation, nonblank scene, sizing and layout. Short test FPS samples do not establish Low-FPS regression or ranking."
+  ]
+}

@@ -1,0 +1,1216 @@
+{
+  "date": "2026-11-11T10:48:37.824Z",
+  "pass": true,
+  "qualityAccepted": false,
+  "releaseReady": false,
+  "source": {
+    "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\summarize-vsm-adaptive.cjs",
+    "sha256": "144a1f6b42e8469d6e8e6d417af364d287fbd14e29f6af8f8e8399347d47c854"
+  },
+  "variants": {
+    "source": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-variants-20261111-v2.json",
+      "sha256": "5272aa15fbde21ca892d44db4b1947134d290d749f5b1702508efcd0e17ea3e7"
+    },
+    "preparation": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\prepare-vsm-adaptive-probe.cjs",
+        "sha256": "ce4a8feaf64628dcea9549913086a723ca3cb34678635bfdf76fb2c3a25dd916"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\pipeline-prewarm.json",
+        "sha256": "9561847ebda11bd23b02552b079164c043da3c4b3f5846bf3d2807b943d84f4c"
+      },
+      {
+        "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-174431\\probe-results.json",
+        "sha256": "5bba9fab29d93a49e7d1b0b4bfb3017ed655460558ca700c1d6e19c741d4bdd5"
+      },
+      {
+        "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-174457\\probe-results.json",
+        "sha256": "81c199077ce6c6440c671512efac57cf6f016521f8d5e85a2167fb2dc82d442c"
+      }
+    ],
+    "modules": [
+      {
+        "entry": "main_0000be1c_baae4d21",
+        "permutation": 17,
+        "sources": [
+          {
+            "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-174431\\ShaderConversion\\64D453ED4855BF5D0E66EDAA126A37C2\\input.json",
+            "sha256": "90d873cbc2268e88735b27e5192694d088ccf8293c501617cc352598acc1ef88"
+          },
+          {
+            "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-174431\\ShaderConversion\\64D453ED4855BF5D0E66EDAA126A37C2\\output.wgsl",
+            "sha256": "50e36874b43c11134ad70bb243b25cf17325664362aef78f0ff38a627baba839"
+          },
+          {
+            "file": "tests/web-platform/build/web-project-triplex-virtual-desktop-cook/20261110-140727\\ShaderConversion\\AE9489F8425AE4F7BE1459B20EA976BE\\input.json",
+            "sha256": "e6143abce8434df3a8e783e4cbd7deefb323e9d95e8175bfcf18ee1861b781a5"
+          },
+          {
+            "file": "tests\\web-platform\\build\\web-project-triplex-virtual-desktop-cook\\20261110-140727\\ShaderConversion\\AE9489F8425AE4F7BE1459B20EA976BE\\output.wgsl",
+            "sha256": "143b5ce87d45751dbf507f809bca519bee0c72673254b24799dd153497a6eacd"
+          }
+        ]
+      },
+      {
+        "entry": "main_000126b4_bf84489e",
+        "permutation": 18,
+        "sources": [
+          {
+            "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-174457\\ShaderConversion\\8C58536E4B3413329E0C8E9FB86E0F93\\input.json",
+            "sha256": "d44b02977965d8847f87fd3ca8876bfd58ce9fa6db6951de3994ef29b89c59a1"
+          },
+          {
+            "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-174457\\ShaderConversion\\8C58536E4B3413329E0C8E9FB86E0F93\\output.wgsl",
+            "sha256": "9444352bbdfb4a493eaec38b1b5aaa7c57655f80ad4076ec0e192a645468acef"
+          },
+          {
+            "file": "tests/web-platform/build/web-project-triplex-virtual-desktop-cook/20261110-140727\\ShaderConversion\\721B245A43F89CCDC6213395C9AECF00\\input.json",
+            "sha256": "9524a8018b67d74dec1270cb54fae15345022e44edc483f77f22da8b34913d11"
+          },
+          {
+            "file": "tests\\web-platform\\build\\web-project-triplex-virtual-desktop-cook\\20261110-140727\\ShaderConversion\\721B245A43F89CCDC6213395C9AECF00\\output.wgsl",
+            "sha256": "d0871626e25ad0d9dccaf403eb5521f6f3a2786a11346c90129b017d1a73e831"
+          }
+        ]
+      }
+    ]
+  },
+  "boundary": "Opt-in experiment, not an official package or default. GPU captures split compute passes; timing captures preserve normal pass reuse. Image differences include temporal noise and do not establish dynamic visual equivalence.",
+  "policy": {
+    "source": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-policy-20261111\\result.json",
+      "sha256": "640493b5bfb3290ca46652708cf77a1ea2e1e60bd87ada4687831b19b320dc66"
+    },
+    "checkedLanes": 384,
+    "invalidWorkgroupBarrierRejected": true,
+    "inputs": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\verify-vsm-adaptive-policy.cjs",
+        "sha256": "7e6da0bfcea42e50e044f2abf13b5d4bfc238850d749d8bd278e8db8b414cb24"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\shader-fixtures\\vsm-adaptive-policy.hlsl",
+        "sha256": "1de9d2c88f1f82089ff20119988b4b6cca19c6a30a8532d34a7b9ea1e25a459f"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\dxc-v1.9.2609\\bin\\x64\\dxc.exe",
+        "sha256": "aa7965b3763d9c710baaa5a28cedcc633449962a75d1391d161a85304a41b3e2"
+      },
+      {
+        "file": "H:\\ue_html\\.tools\\dawn-v20261009.190412\\bin\\tint_nanite.exe",
+        "sha256": "62f13c785c560877e5bf6123032550635b571b3287c021e01a010002f6aa66de"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-policy-20261111\\policy.spv",
+        "sha256": "a9691b4bc98c403e642ec16daa2ea8bcb3f850bb6ca66f403abba191a7981bbe"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-policy-20261111\\policy.wgsl",
+        "sha256": "347f7da9fa9836da42d3624b095321d90cc5fced1afdd18b9c7a1c2b51b848d5"
+      }
+    ]
+  },
+  "gpu": {
+    "source": {
+      "file": "tests/web-platform/results/vsm-adaptive-gpu-20261111-v3/result.json",
+      "sha256": "994c547b8532b789a991a76bad9ac01301f287cc7e9e8bcb2efbb5af9b3247a9"
+    },
+    "browser": "157.0.4341.42",
+    "package": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-sparse\\asset-versions.json",
+      "sha256": "1a394981818e23075c1d8f60313f7aa5d801d2bce90093167b5d9de525798f4d"
+    },
+    "overrides": {
+      "r.Shadow.Virtual.SMRT.AdaptiveRayCount": 1,
+      "r.WebGPU.ReuseComputePass": 0
+    },
+    "adapter": {
+      "vendor": "nvidia",
+      "architecture": "ampere",
+      "device": "",
+      "description": "",
+      "features": [
+        "depth32float-stencil8",
+        "rg11b10ufloat-renderable",
+        "texture-formats-tier1",
+        "bgra8unorm-storage",
+        "texture-compression-bc",
+        "dual-source-blending",
+        "core-features-and-limits",
+        "float32-filterable",
+        "indirect-first-instance",
+        "float32-blendable",
+        "atomic-vec2u-min-max",
+        "subgroup-size-control",
+        "texture-compression-unaligned",
+        "depth-clip-control",
+        "texture-compression-bc-sliced-3d",
+        "shader-f16",
+        "texture-formats-tier2",
+        "timestamp-query",
+        "clip-distances",
+        "primitive-index",
+        "texture-component-swizzle",
+        "subgroups"
+      ]
+    },
+    "startupFailures": [],
+    "phases": [
+      {
+        "name": "standing",
+        "baseline": {
+          "main_0000be1c_baae4d21": 0.32768,
+          "main_000126b4_bf84489e": 2.4357546666666665
+        },
+        "adaptive": {
+          "main_0000be1c_baae4d21": 0.16383999999999999,
+          "main_000126b4_bf84489e": 0.8628906666666667
+        },
+        "baselineMs": 2.7634346666666665,
+        "adaptiveMs": 1.0267306666666667,
+        "savedMs": 1.7367039999999998,
+        "reductionPercent": 62.84584980237153
+      },
+      {
+        "name": "turning",
+        "baseline": {
+          "main_0000be1c_baae4d21": 0.34952533333333335,
+          "main_000126b4_bf84489e": 1.9223893333333333
+        },
+        "adaptive": {
+          "main_0000be1c_baae4d21": 0.24029866666666663,
+          "main_000126b4_bf84489e": 0.8192
+        },
+        "baselineMs": 2.2719146666666665,
+        "adaptiveMs": 1.0594986666666666,
+        "savedMs": 1.212416,
+        "reductionPercent": 53.36538461538461
+      }
+    ],
+    "runs": [
+      {
+        "adaptive": 1,
+        "matched": {
+          "main_000126b4_bf84489e": 2,
+          "main_0000be1c_baae4d21": 2
+        },
+        "replaced": {
+          "main_000126b4_bf84489e": 2,
+          "main_0000be1c_baae4d21": 2
+        },
+        "phases": [
+          {
+            "name": "standing",
+            "samples": 6
+          },
+          {
+            "name": "turning",
+            "samples": 6
+          }
+        ]
+      },
+      {
+        "adaptive": 0,
+        "matched": {
+          "main_000126b4_bf84489e": 2,
+          "main_0000be1c_baae4d21": 2
+        },
+        "replaced": {},
+        "phases": [
+          {
+            "name": "standing",
+            "samples": 6
+          },
+          {
+            "name": "turning",
+            "samples": 6
+          }
+        ]
+      }
+    ]
+  },
+  "timing": [
+    {
+      "source": {
+        "file": "tests/web-platform/results/vsm-adaptive-timing-isolated-20261111/result.json",
+        "sha256": "d64d4c61c6672889f7cda18ea20b11b35a6fa810a919e3dc30d9d9fa09e7a453"
+      },
+      "probe": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\benchmark-source.cjs",
+        "sha256": "8c2b950e40a72215f7092c38d18f12348c57896a626d8803dce12f86acff68f3"
+      },
+      "browser": "157.0.4341.42",
+      "order": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "seconds": 30,
+      "overrides": {
+        "r.Shadow.Virtual.SMRT.AdaptiveRayCount": 1
+      },
+      "startupFailures": [
+        {
+          "index": 1,
+          "adaptive": 0,
+          "phases": [],
+          "errors": [],
+          "restoredPagesClosed": 0,
+          "logFile": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-1-attempt-1.log",
+          "startupFailure": "GPUPipelineError: A valid external Instance reference no longer exists.",
+          "excluded": "No timed frames; exact startup error only"
+        },
+        {
+          "index": 4,
+          "adaptive": 0,
+          "phases": [],
+          "errors": [],
+          "restoredPagesClosed": 0,
+          "logFile": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-4-attempt-2.log",
+          "startupFailure": "GPUPipelineError: A valid external Instance reference no longer exists.",
+          "excluded": "No timed frames; exact startup error only"
+        }
+      ],
+      "comparisons": [
+        {
+          "name": "standing",
+          "baseline": {
+            "intervals": 2681,
+            "fps": 44.69201103214096,
+            "low1Fps": 37.28380570990744,
+            "p99Ms": 25.644999999552965,
+            "maxMs": 33.09499999880791,
+            "over50Ms": 0
+          },
+          "adaptive": {
+            "intervals": 2864,
+            "fps": 47.74071325192827,
+            "low1Fps": 37.39522888387204,
+            "p99Ms": 24.83999999985099,
+            "maxMs": 32.90500000119209,
+            "over50Ms": 0
+          },
+          "averageGainPercent": 6.821582089010914,
+          "low1GainPercent": 0.29885139631815605
+        },
+        {
+          "name": "turning",
+          "baseline": {
+            "intervals": 2707,
+            "fps": 45.139123380546806,
+            "low1Fps": 36.364344760342874,
+            "p99Ms": 27,
+            "maxMs": 29.5,
+            "over50Ms": 0
+          },
+          "adaptive": {
+            "intervals": 2909,
+            "fps": 48.50507573353354,
+            "low1Fps": 37.280047718343724,
+            "p99Ms": 25.125,
+            "maxMs": 38.20500000193715,
+            "over50Ms": 0
+          },
+          "averageGainPercent": 7.45684032144347,
+          "low1GainPercent": 2.518134078960421
+        },
+        {
+          "name": "moving",
+          "baseline": {
+            "intervals": 2692,
+            "fps": 44.89327715669952,
+            "low1Fps": 37.404670041890284,
+            "p99Ms": 25.899999998509884,
+            "maxMs": 32.62000000104308,
+            "over50Ms": 0
+          },
+          "adaptive": {
+            "intervals": 2874,
+            "fps": 47.89366606266428,
+            "low1Fps": 38.53385331942066,
+            "p99Ms": 24.975000001490116,
+            "maxMs": 29.644999999552965,
+            "over50Ms": 0
+          },
+          "averageGainPercent": 6.6833813345636095,
+          "low1GainPercent": 3.018829670909473
+        }
+      ],
+      "runs": [
+        {
+          "index": 1,
+          "adaptive": 0,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          },
+          "view": {
+            "frame": 63,
+            "width": 1400,
+            "height": 788,
+            "outputWidth": 1920,
+            "outputHeight": 1080,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 5,
+            "parallelRendering": true
+          },
+          "matched": {
+            "main_000126b4_bf84489e": 2,
+            "main_0000be1c_baae4d21": 2
+          },
+          "replaced": {},
+          "phases": [
+            {
+              "name": "standing",
+              "intervals": 1341,
+              "fps": 44.708293388419996,
+              "low1Fps": 36.76374044812191,
+              "p99Ms": 25.74500000104308,
+              "maxMs": 33.09499999880791,
+              "over50Ms": 0,
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "turning",
+              "intervals": 1355,
+              "fps": 45.19636821331062,
+              "low1Fps": 36.338624064251135,
+              "p99Ms": 27.054999999701977,
+              "maxMs": 28.984999999403954,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 347.92043847656225,
+                "distance": 0
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "moving",
+              "intervals": 1347,
+              "fps": 44.93235129292756,
+              "low1Fps": 37.21276397805921,
+              "p99Ms": 25.694999996572733,
+              "maxMs": 32.62000000104308,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 0,
+                "distance": 2104.5084979371836
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "adaptive": 1,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          },
+          "view": {
+            "frame": 62,
+            "width": 1400,
+            "height": 788,
+            "outputWidth": 1920,
+            "outputHeight": 1080,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "matched": {
+            "main_000126b4_bf84489e": 2,
+            "main_0000be1c_baae4d21": 2
+          },
+          "replaced": {
+            "main_000126b4_bf84489e": 2,
+            "main_0000be1c_baae4d21": 2
+          },
+          "phases": [
+            {
+              "name": "standing",
+              "intervals": 1432,
+              "fps": 47.73697725593504,
+              "low1Fps": 37.63501561805308,
+              "p99Ms": 24.83999999985099,
+              "maxMs": 32.90500000119209,
+              "over50Ms": 0,
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "turning",
+              "intervals": 1452,
+              "fps": 48.418076081741994,
+              "low1Fps": 38.77421772936572,
+              "p99Ms": 25.065000001341105,
+              "maxMs": 27.71499999985099,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 348.13565917968725,
+                "distance": 0
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "moving",
+              "intervals": 1437,
+              "fps": 47.90031135202426,
+              "low1Fps": 38.8782333730455,
+              "p99Ms": 24.949999999254942,
+              "maxMs": 28.239999998360872,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 0,
+                "distance": 2106.4046042189602
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "adaptive": 1,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          },
+          "view": {
+            "frame": 61,
+            "width": 1400,
+            "height": 788,
+            "outputWidth": 1920,
+            "outputHeight": 1080,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "matched": {
+            "main_000126b4_bf84489e": 2,
+            "main_0000be1c_baae4d21": 2
+          },
+          "replaced": {
+            "main_000126b4_bf84489e": 2,
+            "main_0000be1c_baae4d21": 2
+          },
+          "phases": [
+            {
+              "name": "standing",
+              "intervals": 1432,
+              "fps": 47.74444983274104,
+              "low1Fps": 37.34269390102379,
+              "p99Ms": 24.75,
+              "maxMs": 32.78999999910593,
+              "over50Ms": 0,
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "turning",
+              "intervals": 1457,
+              "fps": 48.59208842759619,
+              "low1Fps": 35.97381106564713,
+              "p99Ms": 25.509999997913837,
+              "maxMs": 38.20500000193715,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 347.8808994140627,
+                "distance": 0
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "moving",
+              "intervals": 1437,
+              "fps": 47.88702261687249,
+              "low1Fps": 38.29852423127792,
+              "p99Ms": 25.04000000283122,
+              "maxMs": 29.644999999552965,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 0,
+                "distance": 2101.675587975926
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "adaptive": 0,
+          "settings": {
+            "antiAliasing": 4,
+            "generateDistanceFields": 1,
+            "distanceFieldAO": 1,
+            "distanceFieldShadows": 1,
+            "gi": 1,
+            "reflections": 1,
+            "virtualShadows": 1,
+            "texturePoolMiB": 1000,
+            "screenPercentage": 0,
+            "staticLighting": 1,
+            "shadowCacheMiB": 256,
+            "dbuffer": 1,
+            "ssrQuality": 3,
+            "volumetricFog": 1,
+            "virtualTextures": 1,
+            "virtualTexturePathActive": true,
+            "virtualShadowPathActive": true
+          },
+          "view": {
+            "frame": 63,
+            "width": 1400,
+            "height": 788,
+            "outputWidth": 1920,
+            "outputHeight": 1080,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          },
+          "matched": {
+            "main_000126b4_bf84489e": 2,
+            "main_0000be1c_baae4d21": 2
+          },
+          "replaced": {},
+          "phases": [
+            {
+              "name": "standing",
+              "intervals": 1340,
+              "fps": 44.67572839357716,
+              "low1Fps": 37.954265109943826,
+              "p99Ms": 25.614999998360872,
+              "maxMs": 31.690000001341105,
+              "over50Ms": 0,
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "turning",
+              "intervals": 1352,
+              "fps": 45.081896834144,
+              "low1Fps": 36.39719741584128,
+              "p99Ms": 26.96499999985099,
+              "maxMs": 29.5,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 348.2080195312501,
+                "distance": 0
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            },
+            {
+              "name": "moving",
+              "intervals": 1345,
+              "fps": 44.854212969470396,
+              "low1Fps": 37.75213029841707,
+              "p99Ms": 25.99500000104308,
+              "maxMs": 27.549999997019768,
+              "over50Ms": 0,
+              "route": {
+                "degrees": 0,
+                "distance": 2101.118485128698
+              },
+              "creations": 0,
+              "prewarmMisses": 0
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "name": "interior",
+          "sources": [
+            {
+              "run": 1,
+              "adaptive": 0,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-1-interior.png",
+                "sha256": "16fa3a62b13333d166bed77589cd6bffacdac7ab5876ed399fa7427595c5d0fc"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              }
+            },
+            {
+              "run": 2,
+              "adaptive": 1,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-2-interior.png",
+                "sha256": "94e0bf49fdcc405813557904512cda05169e3b34ab10ef501a7a66820f8c4e27"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              }
+            },
+            {
+              "run": 3,
+              "adaptive": 1,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-3-interior.png",
+                "sha256": "cdb92ada78fd36fbcb181ea5ab030b621a6e43e0e69aabb8cb18f802fe1e29a8"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              }
+            },
+            {
+              "run": 4,
+              "adaptive": 0,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-4-interior.png",
+                "sha256": "605cdcf6197f540622c0451473045ee2e3a1f6701fef0e59b68c751f65bf6491"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.0000000000000036,
+                "yaw": 50.00000000000001
+              }
+            }
+          ],
+          "comparisons": [
+            {
+              "runs": [
+                1,
+                2
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.70955954218107,
+              "rootMeanSquareDifference": 1.4985867613783999,
+              "pixelsOver16Percent": 0.15948109567901234,
+              "maximumChannelDifference": 171
+            },
+            {
+              "runs": [
+                1,
+                3
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6359452160493827,
+              "rootMeanSquareDifference": 1.3014914086659488,
+              "pixelsOver16Percent": 0.11477623456790123,
+              "maximumChannelDifference": 169
+            },
+            {
+              "runs": [
+                1,
+                4
+              ],
+              "type": "baseline-repeat",
+              "meanAbsoluteChannelDifference": 0.6541962448559671,
+              "rootMeanSquareDifference": 1.251914300642126,
+              "pixelsOver16Percent": 0.08502121913580248,
+              "maximumChannelDifference": 148
+            },
+            {
+              "runs": [
+                2,
+                3
+              ],
+              "type": "adaptive-repeat",
+              "meanAbsoluteChannelDifference": 0.6609320344650206,
+              "rootMeanSquareDifference": 1.2945908506856567,
+              "pixelsOver16Percent": 0.08940972222222222,
+              "maximumChannelDifference": 141
+            },
+            {
+              "runs": [
+                2,
+                4
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.7203462577160494,
+              "rootMeanSquareDifference": 1.5255008285077323,
+              "pixelsOver16Percent": 0.16878858024691357,
+              "maximumChannelDifference": 160
+            },
+            {
+              "runs": [
+                3,
+                4
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.36819412294238685,
+              "rootMeanSquareDifference": 1.187593130417837,
+              "pixelsOver16Percent": 0.12610918209876543,
+              "maximumChannelDifference": 167
+            }
+          ]
+        },
+        {
+          "name": "living",
+          "sources": [
+            {
+              "run": 1,
+              "adaptive": 0,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-1-living.png",
+                "sha256": "60b4226f2447ec3d40689bd815952981f41c85c6416c3bdcfee3e63eac661cf7"
+              },
+              "camera": {
+                "x": -20,
+                "y": 200,
+                "z": 130,
+                "pitch": 12.000000000000009,
+                "yaw": -34.999999999999986
+              }
+            },
+            {
+              "run": 2,
+              "adaptive": 1,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-2-living.png",
+                "sha256": "8fc0a8a3e63cffd7435f96d77e8478581fdd3471ec7b6db62494da69dd804cd1"
+              },
+              "camera": {
+                "x": -20,
+                "y": 200,
+                "z": 130,
+                "pitch": 12.000000000000009,
+                "yaw": -34.999999999999986
+              }
+            },
+            {
+              "run": 3,
+              "adaptive": 1,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-3-living.png",
+                "sha256": "34ce2c85913aacecec3d698505b54b2e5621718003c2c6cb2fdaf1f50b4920e0"
+              },
+              "camera": {
+                "x": -20,
+                "y": 200,
+                "z": 130,
+                "pitch": 12.000000000000009,
+                "yaw": -34.999999999999986
+              }
+            },
+            {
+              "run": 4,
+              "adaptive": 0,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-4-living.png",
+                "sha256": "7b8aac0bf033139235a0595e8703b72194a3b95ae5b42b838f4282ec57dd97cd"
+              },
+              "camera": {
+                "x": -20,
+                "y": 200,
+                "z": 130,
+                "pitch": 12.000000000000009,
+                "yaw": -34.999999999999986
+              }
+            }
+          ],
+          "comparisons": [
+            {
+              "runs": [
+                1,
+                2
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.3134104938271605,
+              "rootMeanSquareDifference": 0.7173553968794678,
+              "pixelsOver16Percent": 0.008777006172839507,
+              "maximumChannelDifference": 78
+            },
+            {
+              "runs": [
+                1,
+                3
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6080441422325102,
+              "rootMeanSquareDifference": 0.9275413281254148,
+              "pixelsOver16Percent": 0.005787037037037037,
+              "maximumChannelDifference": 100
+            },
+            {
+              "runs": [
+                1,
+                4
+              ],
+              "type": "baseline-repeat",
+              "meanAbsoluteChannelDifference": 0.5969013631687243,
+              "rootMeanSquareDifference": 0.8987744213043374,
+              "pixelsOver16Percent": 0.0038097993827160494,
+              "maximumChannelDifference": 74
+            },
+            {
+              "runs": [
+                2,
+                3
+              ],
+              "type": "adaptive-repeat",
+              "meanAbsoluteChannelDifference": 0.579507941100823,
+              "rootMeanSquareDifference": 0.9087283410283108,
+              "pixelsOver16Percent": 0.0060281635802469135,
+              "maximumChannelDifference": 134
+            },
+            {
+              "runs": [
+                2,
+                4
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6388843878600823,
+              "rootMeanSquareDifference": 0.9890148627106428,
+              "pixelsOver16Percent": 0.009982638888888888,
+              "maximumChannelDifference": 74
+            },
+            {
+              "runs": [
+                3,
+                4
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6224811921296296,
+              "rootMeanSquareDifference": 0.9589608955679032,
+              "pixelsOver16Percent": 0.008294753086419753,
+              "maximumChannelDifference": 86
+            }
+          ]
+        },
+        {
+          "name": "kitchen",
+          "sources": [
+            {
+              "run": 1,
+              "adaptive": 0,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-1-kitchen.png",
+                "sha256": "60bff8cdc7710de49745aa143d0229f7bb48a8ae5ebab7b210f1ed10c4318e44"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.000000000000006,
+                "yaw": -130.00000000000003
+              }
+            },
+            {
+              "run": 2,
+              "adaptive": 1,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-2-kitchen.png",
+                "sha256": "abacae36d9a519f1e43451c6bb918d319f4eb643577cf2ed5864cf3fc19bd967"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.000000000000006,
+                "yaw": -130.00000000000003
+              }
+            },
+            {
+              "run": 3,
+              "adaptive": 1,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-3-kitchen.png",
+                "sha256": "3a4189a62fd78d38aa6eef6bd46686aa3c3ca26c7ff1881aec350155d4e0a4fb"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.000000000000006,
+                "yaw": -130.00000000000003
+              }
+            },
+            {
+              "run": 4,
+              "adaptive": 0,
+              "source": {
+                "file": "H:\\ue_html\\tests\\web-platform\\results\\vsm-adaptive-timing-isolated-20261111\\run-4-kitchen.png",
+                "sha256": "3479aef0161262cf02064f6dac7d7053f77c6481c49ccff7e181131ad55d2da7"
+              },
+              "camera": {
+                "x": -175,
+                "y": -80,
+                "z": 160,
+                "pitch": -5.000000000000006,
+                "yaw": -130.00000000000003
+              }
+            }
+          ],
+          "comparisons": [
+            {
+              "runs": [
+                1,
+                2
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6828784079218106,
+              "rootMeanSquareDifference": 2.226854041540465,
+              "pixelsOver16Percent": 0.3448591820987654,
+              "maximumChannelDifference": 116
+            },
+            {
+              "runs": [
+                1,
+                3
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6802097800925926,
+              "rootMeanSquareDifference": 2.21976133271764,
+              "pixelsOver16Percent": 0.3570119598765432,
+              "maximumChannelDifference": 96
+            },
+            {
+              "runs": [
+                1,
+                4
+              ],
+              "type": "baseline-repeat",
+              "meanAbsoluteChannelDifference": 0.5324098186728395,
+              "rootMeanSquareDifference": 0.8879073537698631,
+              "pixelsOver16Percent": 0.020013503086419752,
+              "maximumChannelDifference": 57
+            },
+            {
+              "runs": [
+                2,
+                3
+              ],
+              "type": "adaptive-repeat",
+              "meanAbsoluteChannelDifference": 0.1471606545781893,
+              "rootMeanSquareDifference": 0.6071084986776801,
+              "pixelsOver16Percent": 0.017602237654320986,
+              "maximumChannelDifference": 95
+            },
+            {
+              "runs": [
+                2,
+                4
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6769783629115226,
+              "rootMeanSquareDifference": 2.210095492776581,
+              "pixelsOver16Percent": 0.33805941358024694,
+              "maximumChannelDifference": 100
+            },
+            {
+              "runs": [
+                3,
+                4
+              ],
+              "type": "baseline-adaptive",
+              "meanAbsoluteChannelDifference": 0.6800620498971194,
+              "rootMeanSquareDifference": 2.212072233763362,
+              "pixelsOver16Percent": 0.3529610339506173,
+              "maximumChannelDifference": 101
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "defaultCompiles": [
+    {
+      "permutation": 17,
+      "identicalToPackagedOriginal": true,
+      "sources": [
+        {
+          "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-184516\\probe-results.json",
+          "sha256": "c381aae026bbc5787fa0230578e989220c28689f9204b963d658cad3a857066a"
+        },
+        {
+          "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-184516\\ShaderConversion\\28A1255442189CBD6687D3B853ED944C\\input.json",
+          "sha256": "0a10ba5ebb0ca81df22b79fcf13450ac23929a5c890f731247404cc719741a43"
+        },
+        {
+          "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-184516\\ShaderConversion\\28A1255442189CBD6687D3B853ED944C\\output.wgsl",
+          "sha256": "143b5ce87d45751dbf507f809bca519bee0c72673254b24799dd153497a6eacd"
+        }
+      ]
+    },
+    {
+      "permutation": 18,
+      "identicalToPackagedOriginal": true,
+      "sources": [
+        {
+          "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-184526\\probe-results.json",
+          "sha256": "0cb1dd5fa864d1eed86c8ddfbcc60185de67c92b6f3f56ea2e102a3940dc5b7e"
+        },
+        {
+          "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-184526\\ShaderConversion\\A23B40F14A7D3479B9ED8789D2F4641B\\input.json",
+          "sha256": "592baa15649f8377c49ee7dc9c8a82acdac524184748e58f22c179ca792f9356"
+        },
+        {
+          "file": "tests\\web-platform\\build\\virtual-resource-probe\\20261111-184526\\ShaderConversion\\A23B40F14A7D3479B9ED8789D2F4641B\\output.wgsl",
+          "sha256": "d0871626e25ad0d9dccaf403eb5521f6f3a2786a11346c90129b017d1a73e831"
+        }
+      ]
+    }
+  ],
+  "supportingChecks": [
+    {
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\nanite-converter\\results.json",
+        "sha256": "a1b060fdd51c58d443fa4b5d7fb218d5be9ee3addb84bc6afd33294c1f8b2acd"
+      },
+      "pass": true,
+      "cases": 5
+    },
+    {
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\web-material-host-build-results.json",
+        "sha256": "2004c53831f816a81cf22555de1c5989bda12fe47391c884a1f3508031cf3e29"
+      },
+      "pass": true,
+      "normalUBTBuildVerified": false
+    }
+  ],
+  "excluded": [
+    {
+      "source": {
+        "file": "tests/web-platform/results/vsm-adaptive-gpu-20261111/result.json",
+        "sha256": "95f5989ead93b3503835fc4556169ef358603cc16bd796917223325e2d92b707"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: [\"Unrecognized runtime shader variant: main_000126b4_bf84489e\"]\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-vsm-adaptive.cjs:125:7",
+      "completedPhases": 0,
+      "startupFailures": []
+    },
+    {
+      "source": {
+        "file": "tests/web-platform/results/vsm-adaptive-gpu-20261111-v2/result.json",
+        "sha256": "387b270098ea0b38c98bfecf49b24272de0c26379d1b29eaff4a1a5d2cdfc5b2"
+      },
+      "error": "browserContext.newPage: Protocol error (Target.createTarget): Failed to open a new tab\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-vsm-adaptive.cjs:109:34",
+      "completedPhases": 2,
+      "startupFailures": []
+    },
+    {
+      "source": {
+        "file": "tests/web-platform/results/vsm-adaptive-timing-20261111/result.json",
+        "sha256": "f06745e614eb21bb9092a66db5f2b4da9bac1e6315b39b5d359ba2a8c5229d1a"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: []\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-vsm-adaptive.cjs:127:7",
+      "completedPhases": 9,
+      "startupFailures": []
+    },
+    {
+      "source": {
+        "file": "tests/web-platform/results/vsm-adaptive-timing-fresh-20261111/result.json",
+        "sha256": "6484b13605a5e65d64c673b5260bf8dbe7c02a8e5cbc89ceb001dd553624a769"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: {\"failure\":\"GPUPipelineError: A valid external Instance reference no longer exists.\",\"errors\":[]}\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-vsm-adaptive.cjs:128:7",
+      "completedPhases": 0,
+      "startupFailures": [
+        {
+          "index": 1,
+          "adaptive": 0,
+          "failure": "GPUPipelineError: A valid external Instance reference no longer exists."
+        }
+      ]
+    },
+    {
+      "source": {
+        "file": "tests/web-platform/results/vsm-adaptive-timing-fresh2-20261111/result.json",
+        "sha256": "311e87078aa3ff61bfcd0c65fa90db0ee8fb12ad5b3eeb2ae77f99061d0d22fd"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: {\"failure\":\"GPUPipelineError: A valid external Instance reference no longer exists.\",\"errors\":[]}\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-vsm-adaptive.cjs:134:7",
+      "completedPhases": 6,
+      "startupFailures": [
+        {
+          "index": 3,
+          "adaptive": 1,
+          "failure": "GPUPipelineError: A valid external Instance reference no longer exists."
+        }
+      ]
+    }
+  ]
+}

@@ -114,6 +114,9 @@ int32 InputMotionCaptureRemaining = 0;
 FVector MotionBenchmarkOrigin;
 FRotator MotionBenchmarkOriginRotation;
 TWeakObjectPtr<ACameraActor> MotionBenchmarkCamera;
+TWeakObjectPtr<AActor> PlayerViewTarget;
+TWeakObjectPtr<APawn> PlayerViewPawn;
+int32 PlayerViewSerial = 0;
 #if UE_WEB_ENGINE_WORKER
 UE::Tasks::FTask ThreadIOProbe;
 std::atomic<int32> ThreadIOResult{0};
@@ -404,6 +407,18 @@ void EngineFrame(void*)
             globalThis.__webRecoveryCamera = ({version: 1, args: [$0, $1, $2, $3, $4, $5, $6, $7]});
         }, RestoreLocation.X, RestoreLocation.Y, RestoreLocation.Z, Rotation.Pitch, Rotation.Yaw,
             Rotation.Roll, double(Controller->PlayerCameraManager->GetFOVAngle()), int(PawnTarget));
+        if (PlayerViewPawn.IsValid() && Controller->GetPawn() == PlayerViewPawn.Get())
+        {
+            const FVector Position = PlayerViewPawn->GetActorLocation();
+            const FRotator ActorRotation = PlayerViewPawn->GetActorRotation();
+            const FRotator ControlRotation = Controller->GetControlRotation();
+            MAIN_THREAD_ASYNC_EM_ASM({
+                globalThis.__webPlayerView = ({x:$0, y:$1, z:$2, pitch:$3, yaw:$4, roll:$5,
+                    controlPitch:$6, controlYaw:$7, controlRoll:$8, active:!!$9, serial:$10});
+            }, Position.X, Position.Y, Position.Z, ActorRotation.Pitch, ActorRotation.Yaw, ActorRotation.Roll,
+                ControlRotation.Pitch, ControlRotation.Yaw, ControlRotation.Roll,
+                Controller->GetViewTarget() == PlayerViewTarget.Get(), PlayerViewSerial);
+        }
     }
 #if STATS
     if (Frames % 60 == 0 && !FPlatformProcess::SupportsMultithreading())
@@ -854,6 +869,39 @@ extern "C" EMSCRIPTEN_KEEPALIVE int WebRestoreCamera(double X, double Y, double 
     Controller->PlayerCameraManager->SetFOV(FOV);
     Controller->FlushPressedKeys();
     return 1;
+}
+
+// The comparison UI must restore the possessed pawn and its camera rig. A test
+// CameraActor can render an identical pose but cannot receive the pawn's input.
+extern "C" EMSCRIPTEN_KEEPALIVE int WebPlayerViewControl(int Mode,
+    double X, double Y, double Z, double Pitch, double Yaw, double Roll,
+    double ControlPitch, double ControlYaw, double ControlRoll)
+{
+    FTaskTagScope Scope(ETaskTag::EGameThread);
+    APlayerController* Controller = TemplateController.Get();
+    APawn* Pawn = Controller ? Controller->GetPawn() : nullptr;
+    if (!Pawn || Mode < 0 || Mode > 1)
+        return 0;
+    for (double Value : {X, Y, Z, Pitch, Yaw, Roll, ControlPitch, ControlYaw, ControlRoll})
+        if (!FMath::IsFinite(Value)) return 0;
+    if (PlayerViewPawn.Get() != Pawn)
+    {
+        PlayerViewPawn = Pawn;
+        PlayerViewTarget = Controller->GetViewTarget();
+    }
+    MotionBenchmarkActive = false;
+    PublishMotionBenchmark(true, 0);
+    Controller->FlushPressedKeys();
+    if (auto* Movement = Pawn->GetMovementComponent())
+        Movement->StopMovementImmediately();
+    if (Mode == 1)
+    {
+        Pawn->SetActorLocationAndRotation(FVector(X, Y, Z), FRotator(Pitch, Yaw, Roll),
+            false, nullptr, ETeleportType::TeleportPhysics);
+        Controller->SetControlRotation(FRotator(ControlPitch, ControlYaw, ControlRoll));
+    }
+    Controller->SetViewTarget(PlayerViewTarget.IsValid() ? PlayerViewTarget.Get() : Pawn);
+    return ++PlayerViewSerial;
 }
 
 extern "C" EMSCRIPTEN_KEEPALIVE int WebProjectViewTest(double X, double Y, double Z, double Pitch, double Yaw)

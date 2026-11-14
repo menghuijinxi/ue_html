@@ -1,0 +1,731 @@
+{
+  "date": "2026-11-09",
+  "pass": true,
+  "candidate": "villa-prewarm-20261109-v3",
+  "unchanged": {
+    "UEWebEngineThreads.wasm": "88f09cc19f6694495d0c73c45394a52ce2ac369450674b14c0b9aeffda38171a",
+    "UEWebEngineThreads.js": "15d92c188511f4c7d7afcca8bc65ca543435e3513fcea0eae0ed4fdd45d8d10a",
+    "content.bin": "af8ef1013bdaaf735ec664759a279c5ae9aa5560f8f7cf7641e209159212c309",
+    "config-files.json": "289b4328ca93cadd9ac76953f4d7457548ddbdf38237d63fbd1721da9990b76b"
+  },
+  "baseline": [
+    {
+      "engine": "ours",
+      "index": 0,
+      "elapsedMs": 23903,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pipelines": {
+        "createShaderModule": {
+          "count": 2542,
+          "jsMs": 1967.203125,
+          "first": 1794215234794.52,
+          "last": 1794215247368.1301,
+          "failed": 0
+        },
+        "createRenderPipelineAsync": {
+          "count": 523,
+          "jsMs": 14.863525390625,
+          "first": 1794215234806.5352,
+          "last": 1794215248168.935,
+          "failed": 0,
+          "lastCompleted": 1794215248203.7302
+        },
+        "createRenderPipeline": {
+          "count": 101,
+          "jsMs": 1.3203125,
+          "first": 1794215237916.25,
+          "last": 1794215247375.56,
+          "failed": 0
+        },
+        "createComputePipelineAsync": {
+          "count": 838,
+          "jsMs": 10.072265625,
+          "first": 1794215239658.0552,
+          "last": 1794215248168.86,
+          "failed": 2,
+          "lastCompleted": 1794215248182.725
+        },
+        "createComputePipeline": {
+          "count": 145,
+          "jsMs": 0.474365234375,
+          "first": 1794215242104.07,
+          "last": 1794215246435.01,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "engine": "official",
+      "index": 0,
+      "elapsedMs": 5107,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "engine": "ours",
+      "index": 1,
+      "elapsedMs": 16392,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "pipelines": {
+        "createShaderModule": {
+          "count": 2541,
+          "jsMs": 1984.208740234375,
+          "first": 1794215261313.675,
+          "last": 1794215273700.94,
+          "failed": 0
+        },
+        "createRenderPipelineAsync": {
+          "count": 523,
+          "jsMs": 14.908203125,
+          "first": 1794215261324.4648,
+          "last": 1794215274160.67,
+          "failed": 0,
+          "lastCompleted": 1794215274200.765
+        },
+        "createRenderPipeline": {
+          "count": 101,
+          "jsMs": 1.110595703125,
+          "first": 1794215264604.265,
+          "last": 1794215273707.52,
+          "failed": 0
+        },
+        "createComputePipelineAsync": {
+          "count": 838,
+          "jsMs": 10.263916015625,
+          "first": 1794215265715.54,
+          "last": 1794215274160.53,
+          "failed": 2,
+          "lastCompleted": 1794215274166.21
+        },
+        "createComputePipeline": {
+          "count": 133,
+          "jsMs": 0.442626953125,
+          "first": 1794215268602.42,
+          "last": 1794215272772.8298,
+          "failed": 0
+        }
+      }
+    },
+    {
+      "engine": "official",
+      "index": 1,
+      "elapsedMs": 4954,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      }
+    }
+  ],
+  "chrome": [
+    {
+      "engine": "ours",
+      "index": 0,
+      "elapsedMs": 15867,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 6.9500000001862645,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 367,
+          "misses": 0
+        },
+        "completed": 4260.989999999758
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 6.9500000001862645,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 387,
+          "misses": 0
+        },
+        "completed": 4260.989999999758
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.79205262213387,
+      "maxTurnDegrees": 167.98320960998535
+    },
+    {
+      "engine": "ours",
+      "index": 1,
+      "elapsedMs": 9909,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 15.18500000005588,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 365,
+          "misses": 0
+        },
+        "completed": 3935.6750000002794
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 15.18500000005588,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 384,
+          "misses": 0
+        },
+        "completed": 3935.6750000002794
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.73106511013725,
+      "maxTurnDegrees": 167.98320770263672
+    },
+    {
+      "engine": "ours",
+      "index": 2,
+      "elapsedMs": 10106,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 6.774999999906868,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 368,
+          "misses": 0
+        },
+        "completed": 3971.4599999999627
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 6.774999999906868,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 387,
+          "misses": 0
+        },
+        "completed": 3971.4599999999627
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.73155596314672,
+      "maxTurnDegrees": 167.98320770263672
+    }
+  ],
+  "edge": [
+    {
+      "engine": "ours",
+      "index": 0,
+      "elapsedMs": 16216,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 13.865000000223517,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 366,
+          "misses": 0
+        },
+        "completed": 4772.135000000242
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 13.865000000223517,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 385,
+          "misses": 0
+        },
+        "completed": 4772.135000000242
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.72782142614554,
+      "maxTurnDegrees": 167.9832057952881
+    },
+    {
+      "engine": "ours",
+      "index": 1,
+      "elapsedMs": 10953,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 5.75,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 366,
+          "misses": 0
+        },
+        "completed": 4392.73499999987
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 5.75,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 385,
+          "misses": 0
+        },
+        "completed": 4392.73499999987
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.77232563797088,
+      "maxTurnDegrees": 167.9832057952881
+    },
+    {
+      "engine": "ours",
+      "index": 2,
+      "elapsedMs": 10822,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 13.760000000707805,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 366,
+          "misses": 0
+        },
+        "completed": 4436.895000000484
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 13.760000000707805,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 384,
+          "misses": 0
+        },
+        "completed": 4436.895000000484
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.72733683730144,
+      "maxTurnDegrees": 167.9832057952881
+    }
+  ],
+  "release": [
+    {
+      "engine": "ours",
+      "index": 0,
+      "elapsedMs": 15958,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 7.1749999998137355,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 366,
+          "misses": 0
+        },
+        "completed": 4178.0449999999255
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 7.1749999998137355,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 385,
+          "misses": 0
+        },
+        "completed": 4178.0449999999255
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.78294462458783,
+      "maxTurnDegrees": 167.9832038879394
+    },
+    {
+      "engine": "ours",
+      "index": 1,
+      "elapsedMs": 10712,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 6.195000000298023,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 369,
+          "misses": 0
+        },
+        "completed": 4616.780000000261
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 6.195000000298023,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 387,
+          "misses": 0
+        },
+        "completed": 4616.780000000261
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.7837400485506,
+      "maxTurnDegrees": 167.98320770263672
+    },
+    {
+      "engine": "ours",
+      "index": 2,
+      "elapsedMs": 10019,
+      "pass": true,
+      "errorCount": 0,
+      "canvas": {
+        "width": 1920,
+        "height": 1080
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 6.310000000521541,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 369,
+          "misses": 0
+        },
+        "completed": 4011.6349999997765
+      },
+      "finalPrewarm": {
+        "mode": "active",
+        "start": 6.310000000521541,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "counts": {
+          "modules": 305,
+          "layouts": 388,
+          "ready": 301,
+          "hits": 387,
+          "misses": 0
+        },
+        "completed": 4011.6349999997765
+      },
+      "motionSeconds": 20,
+      "maxTravelCm": 217.72735238974755,
+      "maxTurnDegrees": 167.98320770263672
+    }
+  ],
+  "reproducedFailures": [
+    {
+      "index": 0,
+      "elapsedMs": 14065,
+      "failure": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8766/build/villa-ue59-comparison-20261109-v4/web-engine-worker.js?v=64620b1048f684be62c78ea5d98fc5e5c2a903b8bf1f2f9b1fd7db83e7d31f02:645:45"
+    },
+    {
+      "index": 1,
+      "elapsedMs": 8602,
+      "failure": "Error: WebGPU device lost: A valid external Instance reference no longer exists.\n    at http://127.0.0.1:8766/build/villa-ue59-comparison-20261109-v4/web-engine-worker.js?v=64620b1048f684be62c78ea5d98fc5e5c2a903b8bf1f2f9b1fd7db83e7d31f02:645:45"
+    }
+  ],
+  "crashInspection": {
+    "date": "2026-11-09",
+    "origin": "Output of diagnostics/inspect-minidump.cjs read during this investigation, before browser-profile cleanup.",
+    "rawDumpsRemoved": true,
+    "removal": "The user subsequently removed the browser-profiles directory to recover disk space. These are retained inspection results, not newly inspected dumps.",
+    "dumps": [
+      {
+        "name": "e00a7b2a-30dc-44d0-9ca7-1f32857b8560.dmp",
+        "sha256": "710fb0f477ed0841acc5217bb7dd3593766c8dc142a4eaa2fbff9f0f07683a6f",
+        "timestamp": "2026-11-09T09:17:52.000Z",
+        "threadId": 32040,
+        "exceptionCode": "0xc0000005",
+        "address": "0x7ffd2b6ba523",
+        "parameters": [
+          "0x0",
+          "0x7e13bd319414"
+        ],
+        "module": {
+          "path": "C:\\Program Files\\Google\\Chrome\\Application\\157.0.8103.39\\dxcompiler.dll",
+          "base": "0x7ffd2b460000",
+          "size": 26038272,
+          "offset": "0x25a523"
+        }
+      },
+      {
+        "name": "6086db0c-90ee-4db9-9a4e-aac038b156d1.dmp",
+        "sha256": "9e737c1944f848f23264e10caec0aedcc3adf46a8e5e6781905c9d055eb647c2",
+        "timestamp": "2026-11-09T09:18:02.000Z",
+        "threadId": 28028,
+        "exceptionCode": "0xc0000005",
+        "address": "0xf64cf044c8",
+        "parameters": [
+          "0x8",
+          "0xf64cf044c8"
+        ],
+        "module": null
+      }
+    ],
+    "boundary": "Exception locations only. No stack unwinding, root-cause attribution, or hardware diagnosis."
+  },
+  "comparison": {
+    "pass": true,
+    "dpr": 1.5,
+    "affinity": 0,
+    "runs": [
+      {
+        "engine": "ours",
+        "pass": true,
+        "errors": [],
+        "readySeconds": 14.879,
+        "canvas": {
+          "width": 1920,
+          "height": 1080
+        },
+        "prewarm": {
+          "mode": "active",
+          "start": 6.185000000521541,
+          "ready": true,
+          "adopted": true,
+          "concurrency": 2,
+          "counts": {
+            "modules": 305,
+            "layouts": 388,
+            "ready": 301,
+            "hits": 369,
+            "misses": 0
+          },
+          "completed": 3995.7550000008196
+        },
+        "hudMeasured": true
+      },
+      {
+        "engine": "official",
+        "pass": true,
+        "errors": [],
+        "readySeconds": 13.545,
+        "officialReadyMs": 10830,
+        "canvas": {
+          "width": 1920,
+          "height": 1080
+        },
+        "officialPrewarm": {
+          "modules": 256,
+          "module_kb": 1919,
+          "layouts": 306,
+          "pipelines": 261,
+          "pipelines_ready": 261,
+          "pipeline_errors": 0,
+          "twins": 0
+        },
+        "hudMeasured": true
+      }
+    ],
+    "boundary": "This final UI check waits for >60 engine frames / >120 official canvas acquisitions; its readySeconds are not comparable to the startup probe. Official own ready marker was 10.83 s in this fresh-profile run, unlike the earlier approximately 5 s measurements."
+  },
+  "files": [
+    {
+      "file": "tests/web-platform/results/villa-startup-20261109-baseline/result.json",
+      "sha256": "06fe525c98d60aefd5e588987fdc51438a292750e8f6b1bfd7c45d60335e5e46"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-20261109-prewarm-v2-plain/result.json",
+      "sha256": "1077d110e831873322a6f140ba83d303610b7ec122f4786cb6d5c2ae2152f73c"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-20261109-prewarm-v2-edge/result.json",
+      "sha256": "d7411c0bb13c8606175ead381ec479309006edea6b2affac97e846513166a60b"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-20261109-prewarm-v3-plain/result.json",
+      "sha256": "591594d42e1da39cacf3deb92c31483f18e83a9a8069bb5b3732ad256ae985fd"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-20261109-target-capture/result.json",
+      "sha256": "6ccb09e0b09d8612b71775f3b079f11d0c1f5deeee0f142441aed382e9a52103"
+    },
+    {
+      "file": "tests/web-platform/results/villa-engine-comparison-20261109-prewarm-v3-final/result.json",
+      "sha256": "b29b0fd0a6bbad9fe50db3b7545a129496a90db3c4e960921fb9f62335d0b1ad"
+    },
+    {
+      "file": "tests/web-platform/results/villa-prewarm-20261109-v3-package.json",
+      "sha256": "adf31108341cebb60eee3272ba044fb8272840bad144a7ba0e57b95a7cf28f5b"
+    },
+    {
+      "file": "tests/web-platform/build/villa-prewarm-20261109-v3/asset-versions.json",
+      "sha256": "5e0156df471551c8080c6514ae3f1fa48bf42030ce0b1816f2981ec358236f6f"
+    },
+    {
+      "file": "tests/web-platform/build/villa-prewarm-20261109-v2/asset-versions.json",
+      "sha256": "0b7bf35072b308fec74a6cbc398826b78f1ed3b52494ea1b5ef8c8cb8dc1d945"
+    },
+    {
+      "file": "tests/web-platform/build/villa-ue59-comparison-20261109-v4/asset-versions.json",
+      "sha256": "f9afbafc7cb174800f0e6ef4c9dec2dbd0f3b6b7d284470625ba4d2183b67285"
+    },
+    {
+      "file": "tests/web-platform/evidence/villa-startup-crash-inspection-20261109.json",
+      "sha256": "215a8be2b1adc612873f72f065c7279d3aa693cecc88c973b690bb8117346a48"
+    },
+    {
+      "file": "tests/web-platform/web-engine-host.js",
+      "sha256": "a251568d6ee5d9cca0c97aca02af9d15dfd5359394198a35d2af6608c369d2ab"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "8f6218cc77dfd80f081e12155eb2f156ed9f1ebc1b90d8bd396a5bcde7fa5402"
+    },
+    {
+      "file": "tests/web-platform/web-pipeline-prewarm.js",
+      "sha256": "4c011646359fd16698cdafe2e443396abdaaac58993e334e6cf869abd9229469"
+    },
+    {
+      "file": "tests/web-platform/package-villa-prewarm.cjs",
+      "sha256": "4ba5c892a82be94a872c95a45d13b24fa86cf4d66aeb67ea49d9e58c10084657"
+    },
+    {
+      "file": "tests/web-platform/probe-villa-startup.cjs",
+      "sha256": "9839cef6c0a2c005a86e4e9a8374330873c949bdecfec4157c21643fb9bd4e0b"
+    },
+    {
+      "file": "tests/web-platform/web-startup-probe.js",
+      "sha256": "8bcd979161fa9e83afc79f26458f0b4c929de4a580b86b7b6fa76c7ebc3edf9e"
+    },
+    {
+      "file": "tests/web-platform/web-startup-profile.js",
+      "sha256": "51d5bdceec0f11b8cccd2949a0cb14e9ae31e1a633451054ce6990039431cea9"
+    },
+    {
+      "file": "tests/web-platform/verify-web-pipeline-prewarm.cjs",
+      "sha256": "8d3f8bb1a15287c550e0357b20b151eccd3991fc964c85dbb7952bacd1380f7c"
+    },
+    {
+      "file": "tests/web-platform/verify-villa-engine-comparison.cjs",
+      "sha256": "dfb51d16efa7a1063ae08b728239f8a02f8ef9540dd6e3c3a3efc0a23719bcf5"
+    },
+    {
+      "file": "tests/web-platform/villa-engine-comparison.json",
+      "sha256": "1d8de179948ab53face3824b630a710842b0c792990332009800051c5bdaa85e"
+    }
+  ],
+  "boundary": "Recorded PSO prewarm improves measured startup. The v2 candidate passed six uninstrumented starts across Chrome and Edge; v3 retains its pipeline pack and additionally distinguishes nested constants named label, with three Chrome starts and the comparison-page checks. Native compiler crash root cause is not fixed or proven. Coverage is limited to the captured route; new pipelines still compile on demand. Cold means no page content cache, not a cleared system driver cache. No FPS ranking or long-term reliability guarantee."
+}

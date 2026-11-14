@@ -2,6 +2,9 @@
 // User accepted the complete villa input/performance candidate on 2026-11-07.
 // Apply only to desktop threaded packages, after staging, so source projects and
 // archived comparison packages keep their own settings.
+// VSM adaptive SMRT sampling was additionally accepted on 2026-11-12.
+// The 2026-11-13 manual retest retracted the indirect-reuse regression.
+// Keep its accepted default; TSR large tiles remain opt-in pending acceptance.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
 const profile='desktop-accepted-20261107';
 const settings=Object.freeze({
@@ -13,6 +16,11 @@ const settings=Object.freeze({
   'r.Web.OcclusionMotionQueryInterval':0,'r.Web.OcclusionGroupMotionQueries':1,
   'r.Web.LightGridAllocationBuckets':1,'r.WebGPU.StagingReadbackPool':1,
   'r.WebGPU.GroupAccessRevalidation':2,'r.WebGPU.DynamicGlobalsGroupReuse':1,'r.WebGPU.BindingPlan':1,
+  'r.Shadow.Virtual.SMRT.AdaptiveRayCount':1,
+  'r.WebGPU.IndirectDrawReuse':2,
+  'r.WebGPU.VSMPageOptimization':3,
+  // Larger tiles improved one pass but did not pass movement smoothness acceptance.
+  'r.WebGPU.TSRLargeTiles':0,
 });
 const runtimeAssets=Object.freeze({performanceProfile:profile,gameFrameClock:'page',pageFrameBudget:3,
   inputBridge:'direct-game-thread',pageFrameMaxFPS:0,localFrameBudget:0,localFrameBudgetMode:'submitted',
@@ -29,8 +37,7 @@ function applyAcceptedDefaults(folder){
   assert(/^\[\s*(?:['"][a-zA-Z0-9_./=:-]+['"]\s*,?\s*)*\]$/.test(args[1]));
   const values=[...args[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(m=>m[1])
     .filter(v=>!/^-(WebGameLocalClock|WebFrameScheduler=|WebOcclusionMode=|WebRHIWake=)/.test(v));
-  if(!values.includes('-WebPSOPrecacheTest'))values.push('-WebPSOPrecacheTest');
-  html=html.replace(args[0],'arguments: '+JSON.stringify(values)+',');
+  html=html.replace(args[0],'arguments: '+JSON.stringify(values.filter(v=>v!=='-WebPSOPrecacheTest'))+',');
   const configs=JSON.parse(fs.readFileSync(configPath));
   function append(file,text){
     let item=configs.find(c=>c.path===file);

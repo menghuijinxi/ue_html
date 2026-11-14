@@ -3,6 +3,15 @@ const branch = (before, lines) => ({before,
   after: ['#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU', ...lines,
     '#else', before, '#endif'].join('\n')});
 module.exports = new Map([
+  ['Private/ShadowDepthPixelShader.usf', [
+    {before: '#include "VirtualShadowMaps/VirtualShadowMapPageAccessCommon.ush"',
+      after: ['#include "VirtualShadowMaps/VirtualShadowMapPageAccessCommon.ush"',
+        '#if defined(COMPILER_WEBGPU) && COMPILER_WEBGPU',
+        '#include "VirtualShadowMaps/WebVirtualShadowDepth.ush"', '#endif'].join('\n')},
+    branch('\t\tInterlockedMax( PassStruct.OutDepthBufferArray[ uint3( pAddress, ArrayIndex ) ], asuint( DeviceZ ) );', [
+      '\t\tWebStoreVirtualShadowDepth(PassStruct.OutDepthBufferArray, uint2(VirtualShadowMap.PhysicalPoolSize),',
+      '\t\t\tVirtualShadowMap.StaticCachedArrayIndex + 1u, uint3(pAddress, ArrayIndex), asuint(DeviceZ));']),
+  ]],
   ['Private/Froxel/FroxelBuild.ush', [
     branch('\tWaveInterlockedAddScalarInGroups(OutFroxelArgs[FroxelArgsOffset * FroxelArgsStride + 3], OutFroxelArgs[FroxelArgsOffset * FroxelArgsStride], 64, 1, WriteOffset);', [
       '\tuint ArgsIndex = FroxelArgsOffset * FroxelArgsStride;',
@@ -110,19 +119,19 @@ module.exports = new Map([
   }]],
   ['Private/VirtualShadowMaps/VirtualShadowMapProjectionDirectional.ush', [{
     before: '\t\t#if COMPUTESHADER',
-    after: '\t\t#if COMPUTESHADER && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)',
+    after: '\t\t#if COMPUTESHADER && (!(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU) || WEB_VSM_ADAPTIVE)',
   }]],
   ['Private/VirtualShadowMaps/VirtualShadowMapProjectionSpot.ush', [
     branch('\tif (WaveActiveAnyTrue(RayStartFaceHandle.Id != RayEndFaceHandle.Id))', [
       '\tif (RayStartFaceHandle.Id != RayEndFaceHandle.Id)']),
     {before: '\t\tif (MaxRayCount > 1 && Settings.AdaptiveRayCount > 0)',
-      after: '#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)\n\t\tif (MaxRayCount > 1 && Settings.AdaptiveRayCount > 0)'},
+      after: '#if !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU) || WEB_VSM_ADAPTIVE\n\t\tif (MaxRayCount > 1 && Settings.AdaptiveRayCount > 0)'},
     {before: '\t\tuint Seed = asuint( StepOffset );',
       after: '#endif\n\t\tuint Seed = asuint( StepOffset );'},
   ]],
   ['Private/VirtualShadowMaps/VirtualShadowMapProjection.usf', [{
     before: '\t\t\t\t\t#if COMPUTESHADER && USE_ADAPTATIVE',
-    after: '\t\t\t\t\t#if COMPUTESHADER && USE_ADAPTATIVE && !(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU)',
+    after: '\t\t\t\t\t#if COMPUTESHADER && USE_ADAPTATIVE && (!(defined(COMPILER_WEBGPU) && COMPILER_WEBGPU) || WEB_VSM_ADAPTIVE)',
   }]],
   ['Private/VirtualShadowMaps/VirtualShadowMapShadowCasterBounds.usf', [
     branch('\tOutput.SvPosition = asfloat(0xFFFFFFFF);', [

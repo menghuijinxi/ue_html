@@ -1,0 +1,513 @@
+{
+  "date": "2026-11-13T01:49:22.655Z",
+  "pass": true,
+  "diagnosticOnly": true,
+  "productionDefaultsChanged": false,
+  "archivedPackagesModified": false,
+  "performanceRegressionFixed": false,
+  "source": {
+    "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\summarize-villa-package-parameters.cjs",
+    "sha256": "358db5f3e05e578c983ef4816bec1339aab69eb992bb4b4440d10335e8e004b5"
+  },
+  "parameters": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-package-parameters-20261113.json",
+    "sha256": "ac6759d88aff5636ed1d8fbd49d049cafa5721b3b291ef5a933fa91ea4313fdc"
+  },
+  "findings": {
+    "hostAndCacheCodeIdentical": true,
+    "frameClockAndBudgetIdentical": true,
+    "fixedOutputIdentical": true,
+    "historicalLinkFlagsIdentical": true,
+    "plainDisablesEarlierEnabledSettings": [
+      "r.WebGPU.ReuseComputePass",
+      "r.WebGPU.StagingUploadPages",
+      "r.WebGPU.RDGMergeRenderPasses",
+      "r.WebGPU.BatchSubmissions",
+      "r.WebGPU.ReusePresentEncoder",
+      "r.WebGPU.FrameUniformSnapshots",
+      "r.WebGPU.MergeShadowMaskClear",
+      "r.Web.OcclusionGroupMotionQueries",
+      "r.Web.LightGridAllocationBuckets",
+      "r.WebGPU.StagingReadbackPool",
+      "r.WebGPU.GroupAccessRevalidation",
+      "r.WebGPU.DynamicGlobalsGroupReuse",
+      "r.WebGPU.BindingPlan"
+    ],
+    "flagComparison": [
+      {
+        "name": "oldforced",
+        "actualStartup": {
+          "arguments": [
+            "-webgpu",
+            "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+            "-ResX=1920",
+            "-ResY=1080",
+            "-ForceRes",
+            "-WebDesktop",
+            "-WebOcclusionMode=history",
+            "-WebFrameScheduler=3",
+            "-WebRHIWake=priority"
+          ],
+          "runtime": "UEWebEngineThreads.js",
+          "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+          "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+          "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+          "fixedRenderSize": {
+            "width": 1920,
+            "height": 1080
+          },
+          "clock": "page",
+          "frameBudget": 3
+        },
+        "errors": [],
+        "completeMeasuredWindows": true,
+        "phases": [
+          {
+            "kind": "turning",
+            "summary": {
+              "frames": 694,
+              "fps": 46.30233489864934,
+              "low1": 30.030030030198002,
+              "p95": 25.96499999985099,
+              "p99": 30.229999999981374,
+              "max": 39.87999999988824,
+              "over33": 3,
+              "over50": 0,
+              "rhiMs": 10.615194887136626
+            },
+            "prewarmMissesBefore": 0,
+            "prewarmMissesAfter": 0,
+            "gpu": "100 %, 7088 MiB, P0, 1905 MHz"
+          },
+          {
+            "kind": "input",
+            "summary": {
+              "frames": 673,
+              "fps": 44.91120361024683,
+              "low1": 34.34655675757831,
+              "p95": 26.46499999985099,
+              "p99": 28.03000000026077,
+              "max": 31.06499999994412,
+              "over33": 0,
+              "over50": 0,
+              "rhiMs": 10.541591291074399
+            },
+            "prewarmMissesBefore": 0,
+            "prewarmMissesAfter": 0,
+            "gpu": "100 %, 7113 MiB, P0, 1890 MHz"
+          }
+        ]
+      },
+      {
+        "name": "old",
+        "actualStartup": {
+          "arguments": [
+            "-webgpu",
+            "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+            "-WebDesktop",
+            "-WebOcclusionMode=history",
+            "-WebFrameScheduler=3",
+            "-WebRHIWake=priority"
+          ],
+          "runtime": "UEWebEngineThreads.js",
+          "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+          "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+          "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+          "fixedRenderSize": {
+            "width": 1920,
+            "height": 1080
+          },
+          "clock": "page",
+          "frameBudget": 3
+        },
+        "errors": [],
+        "completeMeasuredWindows": true,
+        "phases": [
+          {
+            "kind": "turning",
+            "summary": {
+              "frames": 682,
+              "fps": 45.48608922676588,
+              "low1": 35.87260101984789,
+              "p95": 25.759999999776483,
+              "p99": 27.46499999985099,
+              "max": 28.524999999906868,
+              "over33": 0,
+              "over50": 0,
+              "rhiMs": 10.478167986347728
+            },
+            "prewarmMissesBefore": 0,
+            "prewarmMissesAfter": 0,
+            "gpu": "100 %, 7092 MiB, P0, 1890 MHz"
+          },
+          {
+            "kind": "input",
+            "summary": {
+              "frames": 648,
+              "fps": 43.19442791879831,
+              "low1": 28.07749388311111,
+              "p95": 27.459999999962747,
+              "p99": 32.15499999979511,
+              "max": 42.04000000003725,
+              "over33": 4,
+              "over50": 0,
+              "rhiMs": 11.211665178407356
+            },
+            "prewarmMissesBefore": 0,
+            "prewarmMissesAfter": 0,
+            "gpu": "100 %, 7150 MiB, P0, 1890 MHz"
+          }
+        ]
+      }
+    ],
+    "flagComparisonBoundary": "One valid pair with mixed Low directions; full six-run plan failed. No systematic slowdown established and no general exclusion claimed.",
+    "currentRuntimeOldCookCompatible": false,
+    "incompatibility": "FTSRRejectShadingCS permutation 19 missing",
+    "compatibilityLog": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-runtime-factor-incompatible-20261113\\run-1-0.log",
+      "sha256": "4ea004499a4090a2df1b720ea4354d34aaf9234eae56be4eb1f77fad60ab20b5"
+    },
+    "repeatedIncompatibilityVerified": true,
+    "missingPreTSRRuntime": "H:\\ue_html\\tests\\web-platform\\build\\villa-vsm-pages-final-20261112\\asset-versions.json",
+    "nextRequiredIsolation": "Restore or rebuild a pre-TSR compatible runtime with matching Cook. Runtime switch-off does not restore the compiled permutation domain."
+  },
+  "experiments": [
+    {
+      "name": "villa-runtime-isolation-abba-20261113",
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-runtime-isolation-abba-20261113\\result.json",
+        "sha256": "e130cdee00ad69b5b24619b46a239ec46ace5cbc19c828db05ed1f51a94817cb"
+      },
+      "fullExperimentPassed": false,
+      "expectedIncompatibilityFailure": false,
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(scene)\n\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-villa-release-regression.cjs:196:7",
+      "order": [
+        "old",
+        "runtimeonly",
+        "runtimeonly",
+        "old"
+      ],
+      "seconds": 15,
+      "runs": [
+        {
+          "name": "old",
+          "actualStartup": {
+            "arguments": [
+              "-webgpu",
+              "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+              "-WebDesktop",
+              "-WebOcclusionMode=history",
+              "-WebFrameScheduler=3",
+              "-WebRHIWake=priority"
+            ],
+            "runtime": "UEWebEngineThreads.js",
+            "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+            "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+            "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+            "fixedRenderSize": {
+              "width": 1920,
+              "height": 1080
+            },
+            "clock": "page",
+            "frameBudget": 3
+          },
+          "errors": [],
+          "completeMeasuredWindows": true,
+          "phases": [
+            {
+              "kind": "turning",
+              "summary": {
+                "frames": 660,
+                "fps": 44.02149716444919,
+                "low1": 33.171425186567305,
+                "p95": 27.25499999988824,
+                "p99": 28.270000000018626,
+                "max": 34.18500000005588,
+                "over33": 1,
+                "over50": 0,
+                "rhiMs": 10.85436848355204
+              },
+              "prewarmMissesBefore": 0,
+              "prewarmMissesAfter": 0,
+              "gpu": "100 %, 7511 MiB, P0, 1905 MHz"
+            },
+            {
+              "kind": "input",
+              "summary": {
+                "frames": 648,
+                "fps": 43.26873960431828,
+                "low1": 26.129640344185585,
+                "p95": 27.510000000009313,
+                "p99": 31.68500000005588,
+                "max": 58.669999999925494,
+                "over33": 3,
+                "over50": 1,
+                "rhiMs": 11.012146549840127
+              },
+              "prewarmMissesBefore": 0,
+              "prewarmMissesAfter": 0,
+              "gpu": "100 %, 7472 MiB, P0, 1890 MHz"
+            }
+          ]
+        },
+        {
+          "name": "runtimeonly",
+          "errors": [],
+          "completeMeasuredWindows": false,
+          "phases": []
+        }
+      ]
+    },
+    {
+      "name": "villa-package-factors-20261113",
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-package-factors-20261113\\result.json",
+        "sha256": "8b4a82766b0d80f20782c3cac0970b7ce0f09e79f4cb7cbab1d53149616dbb31"
+      },
+      "fullExperimentPassed": false,
+      "expectedIncompatibilityFailure": false,
+      "error": "page.waitForFunction: Target page, context or browser has been closed\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-villa-release-regression.cjs:192:18",
+      "order": [
+        "oldforced",
+        "old",
+        "runtimeonly",
+        "runtimeonly",
+        "old",
+        "oldforced"
+      ],
+      "seconds": 15,
+      "runs": [
+        {
+          "name": "oldforced",
+          "actualStartup": {
+            "arguments": [
+              "-webgpu",
+              "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+              "-ResX=1920",
+              "-ResY=1080",
+              "-ForceRes",
+              "-WebDesktop",
+              "-WebOcclusionMode=history",
+              "-WebFrameScheduler=3",
+              "-WebRHIWake=priority"
+            ],
+            "runtime": "UEWebEngineThreads.js",
+            "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+            "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+            "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+            "fixedRenderSize": {
+              "width": 1920,
+              "height": 1080
+            },
+            "clock": "page",
+            "frameBudget": 3
+          },
+          "errors": [],
+          "completeMeasuredWindows": true,
+          "phases": [
+            {
+              "kind": "turning",
+              "summary": {
+                "frames": 694,
+                "fps": 46.30233489864934,
+                "low1": 30.030030030198002,
+                "p95": 25.96499999985099,
+                "p99": 30.229999999981374,
+                "max": 39.87999999988824,
+                "over33": 3,
+                "over50": 0,
+                "rhiMs": 10.615194887136626
+              },
+              "prewarmMissesBefore": 0,
+              "prewarmMissesAfter": 0,
+              "gpu": "100 %, 7088 MiB, P0, 1905 MHz"
+            },
+            {
+              "kind": "input",
+              "summary": {
+                "frames": 673,
+                "fps": 44.91120361024683,
+                "low1": 34.34655675757831,
+                "p95": 26.46499999985099,
+                "p99": 28.03000000026077,
+                "max": 31.06499999994412,
+                "over33": 0,
+                "over50": 0,
+                "rhiMs": 10.541591291074399
+              },
+              "prewarmMissesBefore": 0,
+              "prewarmMissesAfter": 0,
+              "gpu": "100 %, 7113 MiB, P0, 1890 MHz"
+            }
+          ]
+        },
+        {
+          "name": "old",
+          "actualStartup": {
+            "arguments": [
+              "-webgpu",
+              "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+              "-WebDesktop",
+              "-WebOcclusionMode=history",
+              "-WebFrameScheduler=3",
+              "-WebRHIWake=priority"
+            ],
+            "runtime": "UEWebEngineThreads.js",
+            "wasm": "02dab03f9067de6e9e680b12f7a1d8815d69d7c018e4d72414615d4a22cad199",
+            "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+            "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+            "fixedRenderSize": {
+              "width": 1920,
+              "height": 1080
+            },
+            "clock": "page",
+            "frameBudget": 3
+          },
+          "errors": [],
+          "completeMeasuredWindows": true,
+          "phases": [
+            {
+              "kind": "turning",
+              "summary": {
+                "frames": 682,
+                "fps": 45.48608922676588,
+                "low1": 35.87260101984789,
+                "p95": 25.759999999776483,
+                "p99": 27.46499999985099,
+                "max": 28.524999999906868,
+                "over33": 0,
+                "over50": 0,
+                "rhiMs": 10.478167986347728
+              },
+              "prewarmMissesBefore": 0,
+              "prewarmMissesAfter": 0,
+              "gpu": "100 %, 7092 MiB, P0, 1890 MHz"
+            },
+            {
+              "kind": "input",
+              "summary": {
+                "frames": 648,
+                "fps": 43.19442791879831,
+                "low1": 28.07749388311111,
+                "p95": 27.459999999962747,
+                "p99": 32.15499999979511,
+                "max": 42.04000000003725,
+                "over33": 4,
+                "over50": 0,
+                "rhiMs": 11.211665178407356
+              },
+              "prewarmMissesBefore": 0,
+              "prewarmMissesAfter": 0,
+              "gpu": "100 %, 7150 MiB, P0, 1890 MHz"
+            }
+          ]
+        },
+        {
+          "name": "runtimeonly",
+          "errors": [],
+          "completeMeasuredWindows": false,
+          "phases": []
+        }
+      ]
+    },
+    {
+      "name": "villa-runtime-factor-retry-20261113",
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-runtime-factor-retry-20261113\\result.json",
+        "sha256": "298d79c5268ad4d081cb79ae403698ec7ff7c393e2cfeafc1f9b9d935c47cf54"
+      },
+      "fullExperimentPassed": false,
+      "expectedIncompatibilityFailure": false,
+      "error": "page.waitForFunction: Timeout 240000ms exceeded.\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-villa-release-regression.cjs:195:18",
+      "order": [
+        "runtimeonly",
+        "old",
+        "old",
+        "runtimeonly"
+      ],
+      "seconds": 15,
+      "runs": [
+        {
+          "name": "runtimeonly",
+          "errors": [],
+          "completeMeasuredWindows": false,
+          "phases": []
+        }
+      ]
+    },
+    {
+      "name": "villa-runtime-factor-package-abba-20261113",
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-runtime-factor-package-abba-20261113\\result.json",
+        "sha256": "91f3294196736ec4532eba71fc34d9cc5b1423df2188feb33937e39ece766973"
+      },
+      "fullExperimentPassed": false,
+      "expectedIncompatibilityFailure": false,
+      "error": "AssertionError [ERR_ASSERTION]: Old diagnostic wrapper must be ready before selecting the scene\n+ actual - expected\n\n+ 'Uncaught RuntimeError: unreachable'\n- null\n\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-villa-release-regression.cjs:187:27",
+      "order": [
+        "runtimeonly",
+        "old",
+        "old",
+        "runtimeonly"
+      ],
+      "seconds": 15,
+      "runs": [
+        {
+          "name": "runtimeonly",
+          "errors": [
+            "Fatal error: [File:H:/ue_html/.tools/ue58-web-build-host/Engine/Source\\Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp] [Line: 4974] \nMissing global shader FTSRRejectShadingCS's permutation 19, Please make sure cooking was successful.\n",
+            "unreachable"
+          ],
+          "completeMeasuredWindows": false,
+          "phases": []
+        }
+      ]
+    },
+    {
+      "name": "villa-runtime-factor-incompatible-20261113",
+      "source": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-runtime-factor-incompatible-20261113\\result.json",
+        "sha256": "5f7673bda8daf023bbe03ecd1451f228c7f47612d842b36e4d256202d61db2a0"
+      },
+      "fullExperimentPassed": false,
+      "expectedIncompatibilityFailure": true,
+      "error": "AssertionError [ERR_ASSERTION]: Uncaught RuntimeError: unreachable\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\benchmark-villa-release-regression.cjs:204:7",
+      "order": [
+        "runtimeonly"
+      ],
+      "seconds": 15,
+      "runs": [
+        {
+          "name": "runtimeonly",
+          "actualStartup": {
+            "arguments": [
+              "-webgpu",
+              "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+              "-WebDesktop",
+              "-WebOcclusionMode=history",
+              "-WebFrameScheduler=3",
+              "-WebRHIWake=priority"
+            ],
+            "runtime": "UEWebEngineThreads.js",
+            "wasm": "aec1db17611832b74d37927ff3413a8baef68c4dd578c4bfa3f564cf395b969c",
+            "content": "7c5a4a61065a28b870a609534805410da164c79f400672b9ec30f0368bc1faa5",
+            "config": "ff0e890869e216f7ad9c713b41e03a44c392c931270ee8fc5f89cef87fe023a0",
+            "fixedRenderSize": {
+              "width": 1920,
+              "height": 1080
+            },
+            "clock": "page",
+            "frameBudget": 3
+          },
+          "errors": [
+            "Fatal error: [File:H:/ue_html/.tools/ue58-web-build-host/Engine/Source\\Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp] [Line: 4974] \nMissing global shader FTSRRejectShadingCS's permutation 19, Please make sure cooking was successful.\n",
+            "unreachable"
+          ],
+          "completeMeasuredWindows": false,
+          "phases": []
+        }
+      ]
+    }
+  ],
+  "boundary": "Audit and evidence verification passed. All four planned performance experiments remain failed; only individually completed windows are reported. No definitive cause or repair of sustained Low regression."
+}

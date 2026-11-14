@@ -1,0 +1,111 @@
+{
+  "date": "2026-11-10",
+  "pass": true,
+  "baseCommit": "3174004",
+  "engineCommitUnchanged": "06b08ff55dc",
+  "release": "villa-lumen-vt-20261110-v5",
+  "defaults": "desktop-startup-20261110",
+  "releaseSelection": "automatic-reuse",
+  "recordedDescriptors": 326,
+  "recordedModules": 321,
+  "deduplicatedPipelines": 319,
+  "sourceAudits": 15,
+  "productAudits": 13,
+  "coreFilesIdenticalToV3": [
+    "UEWebEngineThreads.wasm",
+    "UEWebEngineThreads.js",
+    "config-files.json",
+    "content.bin"
+  ],
+  "rendering": {
+    "css": [1280, 720],
+    "dpr": 1.5,
+    "output": [1920, 1080],
+    "tsrInternal": [1400, 788],
+    "gi": 1,
+    "reflections": 1,
+    "virtualShadows": 1,
+    "virtualTextures": 1,
+    "virtualShadowPathActive": true,
+    "virtualTexturePathActive": true
+  },
+  "regressions": {
+    "automaticReuseAndCaptureInvalidation": true,
+    "staleRuntimeRejected": true,
+    "hardlinkedArchivesPreserved": true,
+    "captureFailureBlocksRelease": true,
+    "prewarmDescriptorAndDeviceIsolation": true,
+    "dpiBrowserCasesPassed": 9,
+    "cacheLockCasesPassed": 5,
+    "inputBridgeAndFrameCredits": true
+  },
+  "multitabEdge": {
+    "pass": true,
+    "secondPageDownloads": 0,
+    "secondPagePersistentHits": 2,
+    "pendingLocks": 0,
+    "bothPagesAdvanceAtLeast60Frames": true,
+    "reloadDownloads": 0,
+    "startupMs": [18248, 50851, 14075],
+    "advanceMs": [28920, 47231, 2890],
+    "errors": []
+  },
+  "singleTabChrome": {
+    "pass": true,
+    "startupMs": [17524, 12605],
+    "movementSecondsPerRun": 10,
+    "prewarmMissesOnMeasuredRoute": [0, 0],
+    "affinityRestriction": false,
+    "errors": []
+  },
+  "automaticCapture": {
+    "pass": true,
+    "package": "villa-defaults-autocapture-final-20261110",
+    "nodePathClearedBeforePackaging": true,
+    "temporaryServerStartedAutomatically": true,
+    "descriptors": 311,
+    "modules": 303,
+    "edgeReplayStartupMs": 16651,
+    "movementSeconds": 10,
+    "prewarmAdopted": true,
+    "onDemandMissesDuringMovement": 9,
+    "errors": []
+  },
+  "reports": [
+    {
+      "file": "tests/web-platform/results/web-project-triplex-virtual-distance-fields-threads-package-results.json",
+      "sha256": "7a9b936ac9999045f781034ba4d0e492556dc2a89891f95462a8ea762dda0c46"
+    },
+    {
+      "file": "tests/web-platform/build/villa-lumen-vt-20261110-v5/asset-versions.json",
+      "sha256": "652743bde605bc615c208f5b98df90edef3615a32204cb66d9879a95f4d5d8d1"
+    },
+    {
+      "file": "tests/web-platform/results/content-multitab-release-defaults-20261110.json",
+      "sha256": "1362ee1e2bb6cda4c2cedd4ce4226b886ce40582dadd0e3c0d83fc79b821be02"
+    },
+    {
+      "file": "tests/web-platform/results/villa-multitab-release-defaults-edge-final-20261110/result.json",
+      "sha256": "5b71bd347468de651c6810922de6044ec6753899573b059831c99810461f57b6"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-release-defaults-chrome-20261110/result.json",
+      "sha256": "8ba04d87b70da3e62c29710695273908ca907cc28024929c2722fa6985508d74"
+    },
+    {
+      "file": "tests/web-platform/results/villa-defaults-autocapture-final-20261110-package.json",
+      "sha256": "d1fc2ff0b7630e73d5c35f1820da4cd7c8f2fe161d323c6e4078217c799f5c1b"
+    },
+    {
+      "file": "tests/web-platform/results/villa-startup-release-defaults-autocapture-edge-20261110/result.json",
+      "sha256": "c6535b52baefb20dc70e644401397742d248acf7505ec38dcc611b28e4cbdc1e"
+    }
+  ],
+  "limitations": [
+    "The first full dual-scene run passed startup and cache checks but timed out during a 30-second sustained movement step. Its failed report was retained.",
+    "Final dual-scene checks use a short movement pulse and require the same 60-frame progress within 90 seconds. They do not establish good dual-scene frame rate.",
+    "The default template packager uses the shared finalizer, but Template_Default was not recooked or browser-tested in this turn.",
+    "Actual virtual-texture asset coverage is unchanged. Enabled settings are not evidence of new VT asset coverage.",
+    "Future captures cover observed pipelines; unobserved pipelines compile on demand."
+  ]
+}

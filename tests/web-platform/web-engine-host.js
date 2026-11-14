@@ -1,4 +1,31 @@
 'use strict';
+function resolveWebRenderSize(assets, args) {
+  let size = assets.fixedRenderSize;
+  if (args.some(arg => /^-ForceRes$/i.test(arg))) {
+    const dimension = key => {
+      const matches = args.filter(arg => new RegExp('^-' + key + '=', 'i').test(arg));
+      if (matches.length !== 1) throw new Error('ForceRes requires one ' + key);
+      return Number(matches[0].split('=')[1]);
+    };
+    const forced = {width: dimension('ResX'), height: dimension('ResY')};
+    if (size && (size.width !== forced.width || size.height !== forced.height))
+      throw new Error('Fixed render size disagrees with ForceRes');
+    size = forced;
+  }
+  if (size && ![size.width, size.height].every(value => Number.isSafeInteger(value) && value > 0))
+    throw new Error('Invalid fixed render size');
+  return size;
+}
+
+function isWebPipelinePrecacheReady(assets, args, state) {
+  const warm = state.__webPipelinePrewarm, pso = state.__webPSOPrecache, rhi = state.__webOptimizationRHI;
+  const recordedReady = !assets.pipelinePrewarm || !!(warm?.adopted && warm.ready && !warm.error);
+  const automatic = !assets.pipelinePrewarm || args.includes('-WebPSOPrecacheTest');
+  const automaticReady = !automatic || !!(pso?.enabled && pso.active === 0 &&
+    rhi && rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted);
+  return state.__webEngineFrames >= 30 && recordedReady && automaticReady;
+}
+
 class WebInputMailbox {
   constructor(focused) {
     this.focused = focused;
@@ -115,9 +142,10 @@ class WebFrameSamples {
   }
 }
 
-function createWebPerformanceHUD(counter, canvas) {
+function createWebPerformanceHUD(counter, canvas, options = {}) {
+  const source = options.source || 'rhi-owner-submission-intervals';
   const visual = new WebFrameSamples(), submitted = new WebFrameSamples(), refresh = new WebFrameSamples();
-  let contexts = [], events = [];
+  let contexts = [], events = [], renderView = null;
   const element = document.createElement('aside');
   element.id = 'web-performance-hud'; element.setAttribute('aria-label', '实时帧率');
   Object.assign(element.style, {position:'fixed', top:'12px', left:'12px', zIndex:3,
@@ -129,6 +157,9 @@ function createWebPerformanceHUD(counter, canvas) {
     '<div title="最近1秒引擎完成提交的帧数。浏览器没有提供显示器实际呈现时间。">FPS <b data-stat="fps">—</b></div>' +
     '<div title="最近5秒最慢1%提交间隔的平均值换算为FPS；不足100个间隔时等待采样。">1% Low <b data-stat="low">采样中</b> <small>近5秒</small></div>' +
     '<div>帧间隔 <b data-stat="ms">—</b> ms</div>' +
+    '<div title="引擎当前主视图的实际渲染尺寸，单位为物理像素。">渲染分辨率 <b data-stat="render-size">—</b></div>' +
+    '<div title="抗锯齿或超分辨率处理后的主视图输出尺寸，单位为物理像素。">输出分辨率 <b data-stat="output-size">—</b></div>' +
+    '<div>抗锯齿 <b data-stat="anti-aliasing">—</b></div>' +
     '<div style="color:#a7c0b6;font-size:11px">P99 <span data-stat="p99">—</span> ms · 最长 <span data-stat="max">—</span> ms</div>' +
     '<svg viewBox="0 0 216 48" width="216" height="48" style="display:block;margin-top:4px" aria-label="近5秒帧间隔曲线"><path d="M0 32H216" stroke="#617d70" stroke-dasharray="3 3"/><polyline data-stat="graph" fill="none" stroke="#8fe2b6" stroke-width="1.5"/></svg>' +
     '<div style="color:#a7c0b6;font-size:11px">页面观察 <span data-stat="submit">—</span> FPS · 刷新 <span data-stat="refresh">—</span> Hz</div>' +
@@ -149,10 +180,10 @@ function createWebPerformanceHUD(counter, canvas) {
   element.querySelector('[data-action="export"]').onclick = () => {
     const now = performance.now(); submitted.prune(now);
     const data = {version:1,date:new Date().toISOString(),timeOrigin:performance.timeOrigin,
-      source:'rhi-owner-submission-intervals',lowWindowMs:5000,
+      source,lowWindowMs:5000,
       lowDefinition:'1000 / mean(slowest ceil(N*0.01) submission intervals)',
       boundary:'Submission intervals are not physical display timings. Async creation events measure API invocation only. Context counters are sampled every 100 ms.',
-      summary:submitted.read(now),frames:submitted.samples.slice(submitted.head),
+      summary:submitted.read(now),renderView,frames:submitted.samples.slice(submitted.head),
       pipelineEvents:events.filter(e=>e.end>now-30000),contexts:contexts.filter(c=>c.time>now-30000)};
     const url = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
     const link = document.createElement('a'); link.href = url;
@@ -161,6 +192,10 @@ function createWebPerformanceHUD(counter, canvas) {
     canvas.focus({preventScroll:true});
   };
   const format = value => value === null ? '—' : value.toFixed(1);
+  const formatSize = (width, height) => [width, height].every(value => Number.isSafeInteger(value) && value > 0) ?
+    `${width} × ${height}` : '—';
+  // EAntiAliasingMethod in Engine/Public/SceneUtils.h.
+  const antiAliasingNames = ['关闭', 'FXAA', 'TAA', 'MSAA', 'TSR', 'SMAA'];
   function update(now) {
     if (stopped) return;
     if (!document.hidden) {
@@ -173,6 +208,10 @@ function createWebPerformanceHUD(counter, canvas) {
         const v = visual.read(now), s = submitted.read(submittedAt !== null && now - submittedAt < 500 ? submittedAt : now), r = refresh.read(now);
         fields.fps.textContent = format(s.fps); fields.low.textContent = s.low === null ? '采样中' : format(s.low);
         fields.ms.textContent = format(s.frameMs); fields.submit.textContent = format(v.fps);
+        fields['render-size'].textContent = formatSize(renderView?.width, renderView?.height);
+        fields['output-size'].textContent = formatSize(renderView?.outputWidth, renderView?.outputHeight);
+        fields['anti-aliasing'].textContent = Number.isInteger(renderView?.antiAliasing) ?
+          antiAliasingNames[renderView.antiAliasing] ?? `未知 (${renderView.antiAliasing})` : '—';
         fields.p99.textContent = format(s.p99Ms); fields.max.textContent = format(s.maxMs);
         const graphTime = submittedAt ?? now;
         const graphSamples = submitted.samples.slice(submitted.head).filter(sample => sample.time > graphTime - 5000);
@@ -181,7 +220,7 @@ function createWebPerformanceHUD(counter, canvas) {
         fields.refresh.textContent = format(r.fps);
         fields.state.textContent = submitted.first !== null ? `近5秒 >50ms：${s.over50ms} 帧 · 提交间隔统计` : '等待场景画面';
         globalThis.__webLivePerformance = {visual:v, submitted:s, refresh:r, visible:true,
-          frame:current, source:'rhi-owner-submission-intervals', windowMs:5000, time:now};
+          frame:current, source, renderView, windowMs:5000, time:now};
         lastUpdate = now;
       }
     }
@@ -200,6 +239,7 @@ function createWebPerformanceHUD(counter, canvas) {
   return {
     reset,
     ingest(pacing, state) {
+      if (state?.__webRenderView) renderView = {...state.__webRenderView};
       if (!pacing || document.hidden) return;
       const offset = pacing.timeOrigin - performance.timeOrigin;
       for (const time of pacing.times) if (time + offset >= visibleSince) submitted.add(time + offset);
@@ -209,7 +249,7 @@ function createWebPerformanceHUD(counter, canvas) {
       events = events.filter(event=>event.end>submittedAt-30000);
       if(state)contexts.push({time:submittedAt,frame:state.__webEngineFrames,
         stages:state.__webThreadStages,io:state.__webLocalContentStats,
-        streaming:state.__webTextureStreaming,pso:state.__webOptimizationRHI});
+        streaming:state.__webTextureStreaming,pso:state.__webOptimizationRHI,renderView});
       contexts = contexts.filter(context=>context.time>submittedAt-30000);
     },
     dispose() { stopped = true; cancelAnimationFrame(raf); document.removeEventListener('visibilitychange', visibility); element.remove(); }
@@ -428,7 +468,8 @@ function startWebEngineSession({assets, module, record, failed, stage, diagnosti
   if (!['owner-forwarded', 'direct-game-thread', 'shared-mailbox'].includes(inputMode))
     throw new Error('Invalid browser input mode');
   const canvas = module.canvas;
-  globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest');
+  const fixedRenderSize = resolveWebRenderSize(assets, module.arguments);
+  globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest') || !!assets.pipelinePrewarm;
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
   if (!canvas.transferControlToOffscreen || typeof Worker === 'undefined')
     throw new Error('此线程包需要 OffscreenCanvas 和 Worker 支持。');
@@ -545,10 +586,8 @@ function startWebEngineSession({assets, module, record, failed, stage, diagnosti
     } else if (message.type === 'state') {
       for (const key of Object.keys(message.state)) publishedKeys.add(key);
       Object.assign(globalThis, message.state);
-      const pso = message.state.__webPSOPrecache, rhi = message.state.__webOptimizationRHI;
-      if (!globalThis.__webPSOPrecacheReady && message.state.__webEngineFrames >= 30 &&
-          pso?.enabled && pso.active === 0 && rhi &&
-          rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted) {
+      if (!globalThis.__webPSOPrecacheReady &&
+          isWebPipelinePrecacheReady(assets, module.arguments, message.state)) {
         globalThis.__webPSOPrecacheReady = true;
         performanceHUD.reset();
       }
@@ -644,8 +683,16 @@ function startWebEngineSession({assets, module, record, failed, stage, diagnosti
     document.body.append(button);
   }
   const browser = () => {
+    // A fixed render target is already measured in pixels, not CSS pixels.
+    if (fixedRenderSize) return {width: fixedRenderSize.width, height: fixedRenderSize.height, dpr: 1};
     const rect = canvas.getBoundingClientRect();
     return {width: rect.width, height: rect.height, dpr: devicePixelRatio};
+  };
+  const canvasPoint = event => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = fixedRenderSize ? fixedRenderSize.width / (rect.width || 1) : devicePixelRatio;
+    const scaleY = fixedRenderSize ? fixedRenderSize.height / (rect.height || 1) : devicePixelRatio;
+    return [Math.round((event.clientX - rect.left) * scaleX), Math.round((event.clientY - rect.top) * scaleY)];
   };
   const resize = () => { if (!stopped) worker.postMessage({type: 'browser', state: browser()}); };
   observer = new ResizeObserver(resize);
@@ -673,9 +720,8 @@ function startWebEngineSession({assets, module, record, failed, stage, diagnosti
     });
   }
   const mouse = (event, id) => {
-    const rect = canvas.getBoundingClientRect();
-    input(id, event.button, 0, Math.round((event.clientX - rect.left) * devicePixelRatio),
-      Math.round((event.clientY - rect.top) * devicePixelRatio), event.movementX, event.movementY);
+    const [x, y] = canvasPoint(event);
+    input(id, event.button, 0, x, y, event.movementX, event.movementY);
   };
   listen(canvas, 'mousedown', event => {
     event.preventDefault();
@@ -687,9 +733,8 @@ function startWebEngineSession({assets, module, record, failed, stage, diagnosti
   listen(canvas, 'contextmenu', event => event.preventDefault());
   listen(canvas, 'wheel', event => {
     event.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    input(9, 0, 0, Math.round((event.clientX - rect.left) * devicePixelRatio),
-      Math.round((event.clientY - rect.top) * devicePixelRatio), 0, 0,
+    const [x, y] = canvasPoint(event);
+    input(9, 0, 0, x, y, 0, 0,
       -event.deltaY / (event.deltaMode === 0 ? 100 : event.deltaMode === 1 ? 3 : 1));
   }, {passive: false});
   listen(canvas, 'focus', () => input(13));
@@ -711,4 +756,5 @@ function startWebEngineSession({assets, module, record, failed, stage, diagnosti
   return {dispose, rpc};
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox};
+if (typeof module !== 'undefined' && module.exports)
+  module.exports = {WebFrameSamples, WebInputBridge, WebInputMailbox, resolveWebRenderSize, isWebPipelinePrecacheReady};

@@ -1,0 +1,702 @@
+{
+  "date": "2026-11-13T10:40:52.696Z",
+  "diagnosticOnly": true,
+  "formalReleaseApproved": false,
+  "sources": [
+    {
+      "file": "tests/web-platform/results/villa-pso-startup-check-20261113-b.json",
+      "sha256": "9c81d27ac7ef27471c47d69ce2a2dad936d23db7a543eef974d77bd2a637b791"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-startup-route-20261113-c.json",
+      "sha256": "5eef8ce42fc09eefc9d71b267d2c5661e2ab29d684fee05b53f10c749e28704c"
+    }
+  ],
+  "originalPipelines": 311,
+  "manualPipelineSupplements": 0,
+  "defaultsChanged": false,
+  "startup": [
+    {
+      "mode": "components",
+      "functionalPass": true,
+      "startupTo60FramesMs": 9496.599999999627,
+      "downloadedBytes": 0,
+      "prewarm": {
+        "mode": "active",
+        "start": 15.285000000149012,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "overlap",
+        "counts": {
+          "modules": 489,
+          "layouts": 597,
+          "ready": 311,
+          "hits": 369,
+          "misses": 396,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "adoptedAt": 2354.085000000894,
+        "completed": 5969.804999999702
+      },
+      "automatic": {
+        "requested": 487,
+        "completed": 487,
+        "failed": 0,
+        "usedGraphics": 79
+      },
+      "newPipelines": [
+        {
+          "name": "createRenderPipeline",
+          "start": 9422.22000000067,
+          "label": "main_000007c0_d889bb5b / main_000004e8_31236922"
+        }
+      ],
+      "failedPipelines": [],
+      "errors": [],
+      "view": {
+        "frame": 62,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      }
+    },
+    {
+      "mode": "automatic",
+      "functionalPass": false,
+      "startupTo60FramesMs": 36319.324999999255,
+      "downloadedBytes": 0,
+      "prewarm": {
+        "mode": "active",
+        "start": 5.175000000745058,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "overlap",
+        "counts": {
+          "modules": 2535,
+          "layouts": 1517,
+          "ready": 311,
+          "hits": 485,
+          "misses": 1381,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "adoptedAt": 2314.464999999851,
+        "completed": 10432.560000000522
+      },
+      "automatic": {
+        "requested": 1610,
+        "completed": 1610,
+        "failed": 2,
+        "usedGraphics": 82
+      },
+      "newPipelines": [],
+      "failedPipelines": [
+        {
+          "name": "createComputePipelineAsync",
+          "start": 27486.300000000745,
+          "label": "main_00005884_08dcdb95",
+          "error": "Texture binding (group:0, binding:17) is TextureSampleType::UnfilterableFloat but used statically with a sampler (group:0, binding:19) that's SamplerBindingType::Filtering\n - While validating compute stage ([ShaderModule (unlabeled)], entryPoint: \"main_00005884_08dcdb95\").\n"
+        },
+        {
+          "name": "createComputePipelineAsync",
+          "start": 27486.34500000067,
+          "label": "main_00005998_995efe04",
+          "error": "Texture binding (group:0, binding:17) is TextureSampleType::UnfilterableFloat but used statically with a sampler (group:0, binding:19) that's SamplerBindingType::Filtering\n - While validating compute stage ([ShaderModule (unlabeled)], entryPoint: \"main_00005998_995efe04\").\n"
+        }
+      ],
+      "errors": [],
+      "view": {
+        "frame": 1392,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      }
+    },
+    {
+      "mode": "recorded",
+      "functionalPass": true,
+      "startupTo60FramesMs": 12070.109999999404,
+      "downloadedBytes": 0,
+      "prewarm": {
+        "mode": "active",
+        "start": 5.214999999850988,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "complete",
+        "counts": {
+          "modules": 359,
+          "layouts": 468,
+          "ready": 311,
+          "hits": 336,
+          "misses": 0,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "completed": 5490.36999999918,
+        "adoptedAt": 5629.6899999994785
+      },
+      "automatic": {
+        "requested": 0,
+        "completed": 0,
+        "failed": 0,
+        "usedGraphics": 0
+      },
+      "newPipelines": [
+        {
+          "name": "createRenderPipeline",
+          "start": 11493.560000000522,
+          "label": "main_00003450_12328add / main_00000f58_4e1377bf"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11496.709999999031,
+          "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11496.775000000373,
+          "label": "main_00001bd8_e02fd6df / main_000009f4_2d0d1a47"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11496.820000000298,
+          "label": "main_000007c0_d889bb5b / main_000004e8_31236922"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11498.699999999255,
+          "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11498.830000000075,
+          "label": "main_0000548c_25787371 / main_000110a4_f094ac0f"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11509.509999999776,
+          "label": "main_000055bc_931ef210 / main_00005e8c_312b1082"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11509.879999998957,
+          "label": "main_00001d84_18961c06 / main_00001ac0_643db501"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 11510.36999999918,
+          "label": "main_00001ec4_56192608 / main_00001a7c_b30566da"
+        }
+      ],
+      "failedPipelines": [],
+      "errors": [],
+      "view": {
+        "frame": 65,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      }
+    },
+    {
+      "mode": "overlap",
+      "functionalPass": true,
+      "startupTo60FramesMs": 8488.75,
+      "downloadedBytes": 0,
+      "prewarm": {
+        "mode": "active",
+        "start": 5.699999999254942,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "overlap",
+        "counts": {
+          "modules": 359,
+          "layouts": 468,
+          "ready": 311,
+          "hits": 339,
+          "misses": 0,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "adoptedAt": 2318.964999999851,
+        "completed": 5734.674999998882
+      },
+      "automatic": {
+        "requested": 0,
+        "completed": 0,
+        "failed": 0,
+        "usedGraphics": 0
+      },
+      "newPipelines": [
+        {
+          "name": "createRenderPipeline",
+          "start": 8268.539999999106,
+          "label": "main_00003450_12328add / main_00000f58_4e1377bf"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8271.539999999106,
+          "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8271.589999999851,
+          "label": "main_00001bd8_e02fd6df / main_000009f4_2d0d1a47"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8271.625,
+          "label": "main_000007c0_d889bb5b / main_000004e8_31236922"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8273.384999999776,
+          "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8273.509999999776,
+          "label": "main_0000548c_25787371 / main_000110a4_f094ac0f"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8284.314999999478,
+          "label": "main_000055bc_931ef210 / main_00005e8c_312b1082"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8284.894999999553,
+          "label": "main_00001d84_18961c06 / main_00001ac0_643db501"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 8285.434999998659,
+          "label": "main_00001ec4_56192608 / main_00001a7c_b30566da"
+        }
+      ],
+      "failedPipelines": [],
+      "errors": [],
+      "view": {
+        "frame": 63,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 14,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      }
+    }
+  ],
+  "manualRoute": [
+    {
+      "mode": "recorded",
+      "functionalPass": true,
+      "startupTo60FramesMs": 11417.490000000224,
+      "downloadedBytes": 0,
+      "prewarm": {
+        "mode": "active",
+        "start": 6.644999999552965,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "complete",
+        "counts": {
+          "modules": 359,
+          "layouts": 468,
+          "ready": 311,
+          "hits": 336,
+          "misses": 0,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "completed": 5458.3300000000745,
+        "adoptedAt": 5599.24499999918
+      },
+      "automatic": {
+        "requested": 0,
+        "completed": 0,
+        "failed": 0,
+        "usedGraphics": 0
+      },
+      "newPipelines": [
+        {
+          "name": "createRenderPipeline",
+          "start": 13367.539999999106,
+          "label": "main_00003450_12328add / main_00000f58_4e1377bf"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13371.140000000596,
+          "label": "main_00001dc0_c525be22 / main_00003aa4_79c6efa3"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13371.189999999478,
+          "label": "main_00001bd8_e02fd6df / main_000009f4_2d0d1a47"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13371.224999999627,
+          "label": "main_000007c0_d889bb5b / main_000004e8_31236922"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13372.27999999933,
+          "label": "main_00001f00_a30a26d4 / main_000045b0_769410c6"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13372.390000000596,
+          "label": "main_000055bc_931ef210 / main_00005e8c_312b1082"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13384.359999999404,
+          "label": "main_0000548c_25787371 / main_000110a4_f094ac0f"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13384.875,
+          "label": "main_00001d84_18961c06 / main_00001ac0_643db501"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 13385.464999999851,
+          "label": "main_00001ec4_56192608 / main_00001a7c_b30566da"
+        },
+        {
+          "name": "createRenderPipeline",
+          "start": 14463.525000000373,
+          "label": "main_00000d80_35b2d539 / main_000159dc_52178f7c"
+        }
+      ],
+      "failedPipelines": [],
+      "errors": [],
+      "view": {
+        "frame": 63,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "route": {
+        "source": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-turn-manual\\villa-turn-2026-11-13T09-17-23-425Z-10ddd198.json",
+          "sha256": "c79a02b50e8660d33e9a8b2450a5e1459327e5009ebbf6a9463b890dfc1d91db"
+        },
+        "samples": 11
+      }
+    },
+    {
+      "mode": "components",
+      "functionalPass": true,
+      "startupTo60FramesMs": 9545.794999999925,
+      "downloadedBytes": 0,
+      "prewarm": {
+        "mode": "active",
+        "start": 7.1099999994039536,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "overlap",
+        "counts": {
+          "modules": 489,
+          "layouts": 597,
+          "ready": 311,
+          "hits": 355,
+          "misses": 399,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "adoptedAt": 2298.89999999851,
+        "completed": 5797.75
+      },
+      "automatic": {
+        "requested": 487,
+        "completed": 487,
+        "failed": 0,
+        "usedGraphics": 79
+      },
+      "newPipelines": [
+        {
+          "name": "createRenderPipeline",
+          "start": 11355.134999999776,
+          "label": "main_000007c0_d889bb5b / main_000004e8_31236922"
+        },
+        {
+          "name": "createRenderPipelineAsync",
+          "start": 12180.90499999933,
+          "label": "main_00000d80_35b2d539 / main_000159dc_52178f7c",
+          "completed": 12398.65499999933
+        }
+      ],
+      "failedPipelines": [],
+      "errors": [],
+      "view": {
+        "frame": 64,
+        "width": 1400,
+        "height": 788,
+        "outputWidth": 1920,
+        "outputHeight": 1080,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 5,
+        "parallelRendering": true
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "route": {
+        "source": {
+          "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-turn-manual\\villa-turn-2026-11-13T09-17-23-425Z-10ddd198.json",
+          "sha256": "c79a02b50e8660d33e9a8b2450a5e1459327e5009ebbf6a9463b890dfc1d91db"
+        },
+        "samples": 11
+      }
+    }
+  ],
+  "live": [
+    {
+      "source": {
+        "file": "tests/web-platform/results/villa-pso-live-20261113-e.json",
+        "sha256": "15bcad6748bb35bde04700887668ae51dc86a2de95f951f39f8f44e189543feb"
+      },
+      "mode": "recorded",
+      "pass": true,
+      "dpr": 1.5,
+      "distance": 103.3369649838788,
+      "yaw": 32.896711349487305,
+      "exportURL": "/results/villa-turn-manual/villa-turn-2026-11-13T10-31-29-616Z-4d74968c.json",
+      "forcedGC": 0,
+      "layouts": [
+        {
+          "width": 1600,
+          "height": 1000
+        },
+        {
+          "width": 900,
+          "height": 700
+        }
+      ]
+    },
+    {
+      "source": {
+        "file": "tests/web-platform/results/villa-pso-live-20261113-f.json",
+        "sha256": "a7d822acc3e62f28a7b83c0240e12a3c66a01ea4d7c73cde064a11896bf8e843"
+      },
+      "mode": "components",
+      "pass": true,
+      "dpr": 1.5,
+      "distance": 103.02198989121825,
+      "yaw": 32.896711349487305,
+      "exportURL": "/results/villa-turn-manual/villa-turn-2026-11-13T10-32-49-949Z-fcf39e7b.json",
+      "forcedGC": 0,
+      "layouts": [
+        {
+          "width": 1600,
+          "height": 1000
+        },
+        {
+          "width": 900,
+          "height": 700
+        }
+      ]
+    },
+    {
+      "source": {
+        "file": "tests/web-platform/results/villa-pso-live-20261113-g.json",
+        "sha256": "b7cdb3b67d7a9e9600ae87c1b3376575b01cf39d7d1baa250781810ffbe4b1de"
+      },
+      "mode": "components",
+      "pass": true,
+      "dpr": 1.5,
+      "distance": 103.53962082510762,
+      "yaw": 32.896711349487305,
+      "exportURL": "/results/villa-turn-manual/villa-turn-2026-11-13T10-36-01-697Z-73724164.json",
+      "forcedGC": 29,
+      "layouts": [
+        {
+          "width": 1600,
+          "height": 1000
+        },
+        {
+          "width": 900,
+          "height": 700
+        }
+      ]
+    }
+  ],
+  "unresolved": [
+    "Automatic component mode still uses the recorded global corpus; it is not capture-free automatic global coverage.",
+    "Manual-route sampling still triggers two pipeline creations in component mode; sampled camera poses do not reproduce human frame pacing.",
+    "One component live launch and one full-automatic probe lost the external WebGPU instance. Later live and forced-GC checks passed; the cause is unresolved.",
+    "Full global automatic collection creates many unused candidates and has two sampled-texture/filtering-sampler validation failures.",
+    "Warm browser/driver caches retained. No statistical performance claim or new UE 5.9 speed ranking."
+  ]
+}

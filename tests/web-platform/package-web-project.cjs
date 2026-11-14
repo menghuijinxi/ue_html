@@ -5,6 +5,7 @@ const {metadata, audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
 const {validateCook} = require('./cached-cook-validation.cjs');
 const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
+const {releaseOptions, finalizeDesktopRelease} = require('./web-release-defaults.cjs');
 const id = process.argv.find(value => value.startsWith('--project='))?.slice(10);
 assert(id && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id));
 const desktop = process.argv.includes('--desktop');
@@ -26,6 +27,7 @@ const outputFolder = process.argv.find(value => value.startsWith('--output-folde
   id + suffix + (parallelRecording ? '-parallel-recording' : '');
 assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outputFolder));
 const output = path.join(__dirname, 'build', outputFolder);
+const startupOptions = releaseOptions();
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
@@ -37,12 +39,14 @@ const report = {date: new Date().toISOString(), pass: false, id, output, archite
       path.join(__dirname, name))].map(audit), fullNormalUBTBuildVerified: false,
   completeUEScene: false};
 try {
+  const acceptedDefaults = threads && !trace && !process.argv.includes('--legacy-defaults');
+  assert(!Object.values(startupOptions).some(Boolean) || acceptedDefaults,
+    'Startup options require an ordinary desktop threaded package');
   const buildOption = process.argv.find(value => value.startsWith('--build-report='))?.slice(15);
   const buildFile = buildOption ? path.resolve(buildOption) : path.join(directory, `web-engine-full${trace ? '-thread-trace' : threads ? '-thread' : ''}-build-results.json`);
   const stageFile = path.join(directory, `${stagePrefix}-stage-results.json`);
   const prepareFile = path.join(directory, `web-project-${id}-prepare-results.json`);
   const build = read(buildFile), stage = read(stageFile), prepared = read(prepareFile);
-  const acceptedDefaults = threads && !trace && !process.argv.includes('--legacy-defaults');
   if (acceptedDefaults) assert(build.lowerMemory64, 'Default desktop runtime requires lowered memory64; rebuild or select --legacy-defaults');
   assert.equal(build.trace === true, trace, 'Trace package must use the matching diagnostic runtime');
   assert(build.pass && build.buildSucceeded && build.exitCode === 0 &&
@@ -82,6 +86,7 @@ try {
   }));
   html = html.replace('const localRuntimeAssets = {};', 'const localRuntimeAssets = ' +
     JSON.stringify({versions, renderer: desktop ? 'desktop' : 'mobile', threads, trace, distanceFields, runtime: runtime + '.js',
+      ...(desktop && cook.vsmAdaptiveSampling ? {vsmAdaptiveSampling: cook.vsmAdaptiveSampling} : {}),
       wasm: metadata(wasm.file, runtime + '.wasm')}) + ';');
   const original = "arguments: ['-webgpu', '-WebDefaultTemplate'],";
   assert(html.includes(original) && /^\/Game\/[a-zA-Z0-9_/]+$/.test(stage.map));
@@ -89,6 +94,9 @@ try {
     ...(parallelRecording ? ['-WebParallelDrawRecording'] : [])];
   html = html.replace(original, `arguments: ${JSON.stringify(report.engineArguments)},`)
     .replaceAll('UE 默认关卡', stage.projectName);
+  if (desktop && cook.vsmAdaptiveSampling === 'cooked-with-fallback') {
+    report.vsmAdaptiveSampling = cook.vsmAdaptiveSampling;
+  }
   if (report.textureCompression === 'BC' || report.textureCompression === 'Project') {
     const marker = 'const requiredTextureFeatures = desktopRenderer ?';
     assert(html.includes(marker));
@@ -116,9 +124,19 @@ try {
   if (acceptedDefaults) {
     report.performanceProfile = applyAcceptedDefaults(output);
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
-    report.engineArguments.push('-WebPSOPrecacheTest');
   }
-  report.products = ['index.html', ...copies.map(([, name]) => name)].map(name => audit(path.join(output, name)));
+  const extraFiles = [];
+  if (acceptedDefaults) {
+    report.releaseDefaults = finalizeDesktopRelease(output, startupOptions);
+    report.startupPrewarm = report.releaseDefaults.prewarm;
+    report.engineArguments = report.releaseDefaults.engineArguments;
+    extraFiles.push(...report.releaseDefaults.files);
+    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs',
+      'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
+      audit(path.join(__dirname, name))));
+  }
+  report.products = [...new Set(['index.html', ...copies.map(([, name]) => name), ...extraFiles])]
+    .map(name => audit(path.join(output, name)));
   report.products.push(writeVersions(output, report.products));
   report.totalBytes = report.products.reduce((total, item) => total + fs.statSync(item.file).size, 0);
   report.fullNormalUBTBuildVerified = true;

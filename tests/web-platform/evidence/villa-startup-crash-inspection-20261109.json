@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-09",
+  "origin": "Output of diagnostics/inspect-minidump.cjs read during this investigation, before browser-profile cleanup.",
+  "rawDumpsRemoved": true,
+  "removal": "The user subsequently removed the browser-profiles directory to recover disk space. These are retained inspection results, not newly inspected dumps.",
+  "dumps": [
+    {
+      "name": "e00a7b2a-30dc-44d0-9ca7-1f32857b8560.dmp",
+      "sha256": "710fb0f477ed0841acc5217bb7dd3593766c8dc142a4eaa2fbff9f0f07683a6f",
+      "timestamp": "2026-11-09T09:17:52.000Z",
+      "threadId": 32040,
+      "exceptionCode": "0xc0000005",
+      "address": "0x7ffd2b6ba523",
+      "parameters": ["0x0", "0x7e13bd319414"],
+      "module": {
+        "path": "C:\\Program Files\\Google\\Chrome\\Application\\157.0.8103.39\\dxcompiler.dll",
+        "base": "0x7ffd2b460000",
+        "size": 26038272,
+        "offset": "0x25a523"
+      }
+    },
+    {
+      "name": "6086db0c-90ee-4db9-9a4e-aac038b156d1.dmp",
+      "sha256": "9e737c1944f848f23264e10caec0aedcc3adf46a8e5e6781905c9d055eb647c2",
+      "timestamp": "2026-11-09T09:18:02.000Z",
+      "threadId": 28028,
+      "exceptionCode": "0xc0000005",
+      "address": "0xf64cf044c8",
+      "parameters": ["0x8", "0xf64cf044c8"],
+      "module": null
+    }
+  ],
+  "boundary": "Exception locations only. No stack unwinding, root-cause attribution, or hardware diagnosis."
+}

@@ -1,0 +1,284 @@
+{
+  "date": "2026-11-11T03:01:46.953Z",
+  "pass": true,
+  "url": "http://127.0.0.1:8765/villa-shadow-comparison.html",
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\villa-shadow-comparison.html",
+      "sha256": "64240a8e9bf82b59b0df8b39dac298d4c6118e2578d34ee5b9e8c1c3aec56a65"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\villa-shadow-comparison.js",
+      "sha256": "bb23b193111936ddb1debbb099961c94ce6d846d64503da70a4362e99b465d82"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-villa-shadow-comparison.cjs",
+      "sha256": "2f4876df21f8335327df95b2bd58b20d519ea2301a3a7f75e9966f8707795da6"
+    },
+    {
+      "file": "tests/web-platform/web-engine-worker.js",
+      "sha256": "996dd8def7b029b1e29da602da87bb4882cef4153b3ad236f1b6883bca435f35"
+    },
+    {
+      "file": "tests/web-platform/package-villa-shadow-comparison.cjs",
+      "sha256": "36aabc5445364b0493b749bcd4660895e2690cfd1b26ee9e594844879df9b806"
+    },
+    {
+      "file": "tests/web-platform/probe-villa-startup.cjs",
+      "sha256": "a4f5a02c423d739c66c2f9703eb4500c5f835aa9c7fd825bead656c1a8553277"
+    },
+    {
+      "file": "tests/ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp",
+      "sha256": "41c6b2b1a16b440dcf1d50888afaef095544e9051057c426f9f5e3448aa269eb"
+    }
+  ],
+  "build": {
+    "file": "tests/web-platform/results/web-engine-full-thread-build-results.json",
+    "sha256": "8ec2f2573d0d02777a46412b25fb8c1e2565898ea919923a0b62b514b91f835c"
+  },
+  "before": {
+    "file": "tests/web-platform/results/villa-shadow-input-before-20261111/result.json",
+    "sha256": "1baa9b1c9e346ed73472323defb15d83bb081d81ee46d5b4c847b0a818654980"
+  },
+  "verification": {
+    "file": "tests/web-platform/results/villa-shadow-input-final-20261111/result.json",
+    "sha256": "51fe4aa312416139de4be74ae6237d788755d4501e6d554a71862a7d7400dddc"
+  },
+  "inputs": [
+    {
+      "name": "initial-player-input",
+      "keys": [
+        {
+          "key": "w",
+          "distance": 103.57166591644138
+        }
+      ],
+      "distanceCm": 103.57166591644138,
+      "turnDegrees": 30.271973133087158
+    },
+    {
+      "name": "after-route-stop",
+      "keys": [
+        {
+          "key": "w",
+          "distance": 48.96749639269144
+        }
+      ],
+      "distanceCm": 48.96749639269144,
+      "turnDegrees": 30.27197289466858
+    },
+    {
+      "name": "after-shadow-switch-off",
+      "keys": [
+        {
+          "key": "w",
+          "distance": 0.3598341750581994
+        },
+        {
+          "key": "s",
+          "distance": 85.26053231154155
+        }
+      ],
+      "distanceCm": 85.26053231154155,
+      "turnDegrees": 30.271972894668522
+    },
+    {
+      "name": "after-player-reset",
+      "keys": [
+        {
+          "key": "w",
+          "distance": 103.85699766792806
+        }
+      ],
+      "distanceCm": 103.85699766792806,
+      "turnDegrees": 30.27197289466858
+    },
+    {
+      "name": "after-route-completion",
+      "keys": [
+        {
+          "key": "w",
+          "distance": 63.98615891516171
+        }
+      ],
+      "distanceCm": 63.98615891516171,
+      "turnDegrees": 30.27197289466858
+    },
+    {
+      "name": "after-shadow-switch-on",
+      "keys": [
+        {
+          "key": "w",
+          "distance": 102.00862090623397
+        }
+      ],
+      "distanceCm": 102.00862090623397,
+      "turnDegrees": 30.27197289466858
+    }
+  ],
+  "gpuErrors": [],
+  "packages": [
+    {
+      "mode": "on",
+      "report": {
+        "file": "tests/web-platform/results/villa-shadow-on-20261111-input-v2-release.json",
+        "sha256": "89253869235c4e9f588173d741fb7e6d0a5e025574afc172320305cb3bb6f03b"
+      },
+      "manifest": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-input-v2\\asset-versions.json",
+        "sha256": "af03e25eb31bfe62f80c66a9fd665a6b5de5a40977dfcbbdc1f2ae32c0a4e9db"
+      },
+      "releaseDefaults": {
+        "version": "desktop-startup-20261110",
+        "releaseReady": true,
+        "renderSizing": "fixed-physical-pixels",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "cacheLock": "shared-read-short-prepare",
+        "files": [
+          "web-engine-host.js",
+          "web-engine-worker.js",
+          "web-content-worker.js",
+          "web-pipeline-prewarm.js",
+          "pipeline-prewarm.json"
+        ],
+        "prewarm": {
+          "mode": "recorded",
+          "concurrency": 2,
+          "modules": 317,
+          "pipelines": 325,
+          "capture": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-input-v2-on-20261111\\result.json",
+            "sha256": "a8218bac5444033e2d0c02c74e20e2227bcfd390bcfaca4d5289456d1cef2086"
+          },
+          "corpus": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-input-v2-on-20261111\\0-corpus.json",
+            "sha256": "9b667eb89fbe4e92d5355c5203ec658bf2662ffccdbcb53837940e7398f9edc2"
+          },
+          "pack": {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-input-v2\\pipeline-prewarm.json",
+            "sha256": "9ec97514e7ad3882475f314b1871d0e274bd970bed5adfb6b38854befbf8eb56"
+          },
+          "engineArguments": [
+            "-webgpu",
+            "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+          ],
+          "files": [
+            "web-engine-host.js",
+            "web-engine-worker.js",
+            "web-content-worker.js",
+            "web-pipeline-prewarm.js",
+            "pipeline-prewarm.json"
+          ],
+          "selection": "explicit"
+        },
+        "engineArguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+        ],
+        "runtime": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-input-v2\\web-engine-host.js",
+            "sha256": "8fa8b3144f86b644a6ba8250c62c8bf0bd2eb04e072477c7c80d0589db5be4e2"
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-input-v2\\web-engine-worker.js",
+            "sha256": "996dd8def7b029b1e29da602da87bb4882cef4153b3ad236f1b6883bca435f35"
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-input-v2\\web-content-worker.js",
+            "sha256": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-on-20261111-input-v2\\web-pipeline-prewarm.js",
+            "sha256": "4c011646359fd16698cdafe2e443396abdaaac58993e334e6cf869abd9229469"
+          }
+        ]
+      }
+    },
+    {
+      "mode": "off",
+      "report": {
+        "file": "tests/web-platform/results/villa-shadow-off-20261111-input-v2-release.json",
+        "sha256": "d310535be7529254e5ef42156bc1bb1f26315f4f28d4fec12a1094d750786192"
+      },
+      "manifest": {
+        "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-input-v2\\asset-versions.json",
+        "sha256": "c1fba06b24aeddc07acfe0a969e78ed124b8dbd36c58c8cfd623d18199f40a5c"
+      },
+      "releaseDefaults": {
+        "version": "desktop-startup-20261110",
+        "releaseReady": true,
+        "renderSizing": "fixed-physical-pixels",
+        "fixedRenderSize": {
+          "width": 1920,
+          "height": 1080
+        },
+        "cacheLock": "shared-read-short-prepare",
+        "files": [
+          "web-engine-host.js",
+          "web-engine-worker.js",
+          "web-content-worker.js",
+          "web-pipeline-prewarm.js",
+          "pipeline-prewarm.json"
+        ],
+        "prewarm": {
+          "mode": "recorded",
+          "concurrency": 2,
+          "modules": 308,
+          "pipelines": 319,
+          "capture": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-input-v2-off-20261111\\result.json",
+            "sha256": "00120ac41642ce23a01349eee2bc88543fd680620a6a79bb29ab77ed9b1d129d"
+          },
+          "corpus": {
+            "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-shadow-input-v2-off-20261111\\0-corpus.json",
+            "sha256": "d4d70889dcda118ab6e8bce1c0d07d61cbad7ba81f9178ac2677d0e13d1faa46"
+          },
+          "pack": {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-input-v2\\pipeline-prewarm.json",
+            "sha256": "b0a364ab9523477c0713344fbfefc5f8b5b430ca9dd6dbda7e7727120e4073dc"
+          },
+          "engineArguments": [
+            "-webgpu",
+            "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+          ],
+          "files": [
+            "web-engine-host.js",
+            "web-engine-worker.js",
+            "web-content-worker.js",
+            "web-pipeline-prewarm.js",
+            "pipeline-prewarm.json"
+          ],
+          "selection": "explicit"
+        },
+        "engineArguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+        ],
+        "runtime": [
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-input-v2\\web-engine-host.js",
+            "sha256": "8fa8b3144f86b644a6ba8250c62c8bf0bd2eb04e072477c7c80d0589db5be4e2"
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-input-v2\\web-engine-worker.js",
+            "sha256": "996dd8def7b029b1e29da602da87bb4882cef4153b3ad236f1b6883bca435f35"
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-input-v2\\web-content-worker.js",
+            "sha256": "345bfb4927e29e3869c05fe9c46bd16518d24d5d6fb18c06ed7a754b1a360f60"
+          },
+          {
+            "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-shadow-off-20261111-input-v2\\web-pipeline-prewarm.js",
+            "sha256": "4c011646359fd16698cdafe2e443396abdaaac58993e334e6cf869abd9229469"
+          }
+        ]
+      }
+    }
+  ],
+  "v7Unchanged": true,
+  "boundary": "Real player input regression, not a new performance benchmark. Failed GPU lifetime probes and the injected-worker experiment were excluded from release captures. Final captures and UI use the retained GPU instance/adapter lifetime in the normal host. Free exploration can create pipelines outside recorded routes."
+}

@@ -1,0 +1,1115 @@
+{
+  "recordedAt": "2026-11-09T07:02:46.538Z",
+  "engine": "E:/UE59WebBenchmark/engine-5.9",
+  "commit": "589a52b5abcf7b0ee0e2fd9de58b4d2872672f21",
+  "trackedEngineClean": true,
+  "machine": {
+    "cpu": "Intel Core i9-14900KF",
+    "ramGiB": 64,
+    "gpu": "NVIDIA GeForce RTX 3070",
+    "driver": "610.88",
+    "browserScheduling": "default; no CPU affinity override",
+    "output": [
+      1920,
+      1080
+    ],
+    "deviceScaleFactor": 1
+  },
+  "configuration": "Development, official Emscripten 6.0.10, C++ O2/link O1, all three Wasm shader platforms",
+  "originalInputs": {
+    "count": 1633,
+    "sha256Unchanged": true
+  },
+  "archiveCopy": {
+    "files": 70,
+    "sha1Matches": true,
+    "bytes": 1600888468
+  },
+  "manifests": {
+    "wasm-manifest.json": {
+      "entries": 21,
+      "sizesAndHashesMatch": true
+    },
+    "wasm-cache.json": {
+      "entries": 23,
+      "sizesAndHashesMatch": true
+    }
+  },
+  "stamp": {
+    "written_utc": "2026-11-09T06:23:05.764501+00:00",
+    "config": "Development",
+    "tree": {
+      "commit": "589a52b5abcf7b0ee0e2fd9de58b4d2872672f21",
+      "branch": "",
+      "describe": "589a52b5a",
+      "dirty": false
+    },
+    "host": "Meng",
+    "project": "TriplexHouseVilla",
+    "wasm": "TriplexHouseVilla/Binaries/Wasm/TriplexHouseVilla.wasm",
+    "wasm_sha1": "4d303c65fa19b9bba13d3ff5dc7be6ea0df3f6c3",
+    "note": "Official UE5.9 commit 589a52b5; isolated villa; all three tiers; local benchmark only",
+    "stage_sha1": "de719cdb2dc524fde78244077fc71e203fa0b8a9",
+    "files": {
+      "_headers": "65bc2e5cab71a0a06c4040962259ce2b7d00200e",
+      "Engine/Config/StagedBuild_TriplexHouseVilla.ini": "57218c316b6921e2cd61027a2387edc31a2d9471",
+      "Engine/Content/Renderer/TessellationTable.bin": "3a3402ca2d3531ab8352c818ea1181288bd78c72",
+      "Engine/Content/Renderer/TessellationTable.bin.br": "64b20393259f07817f51dd973d98f9c7af6c6c24",
+      "Engine/GlobalShaderCache-SP_WEBGPU_ES3_1_DEFERRED.bin": "c5998db04f5b2c95bf55e79e5ec6f36ddee20685",
+      "Engine/GlobalShaderCache-SP_WEBGPU_ES3_1_DEFERRED.bin.br": "c4a50eaff53ca3f7de0ac25f473e0d9d36b6bc22",
+      "Engine/GlobalShaderCache-SP_WEBGPU_SM5.bin": "4409bf2023677e4034457d1e11dc090b88be81ac",
+      "Engine/GlobalShaderCache-SP_WEBGPU_SM5.bin.br": "5e810bd753a491f76b7df8a645dde8a2fb4b12f5",
+      "index.html": "bcdff5c8ba70cc6d562132af06573cb6448133bf",
+      "index.html.br": "da35d55cda0f349fe8a4f4968ba1ffd03a6fdc59",
+      "NOTICES.txt": "e0ebddf80347f3f0740cb6781f300047dc197e3e",
+      "sw.js": "8f4c4900986f3bbd83997d6615334c328718bd99",
+      "sw.js.br": "1dbba75b023edff278b03754e6279a8887f5a56f",
+      "TriplexHouseVilla/Binaries/Wasm/TriplexHouseVilla.js": "441b8487978ba371308b98679a6c3287805d86ba",
+      "TriplexHouseVilla/Binaries/Wasm/TriplexHouseVilla.js.br": "0c06d72a3701dd570807d6fae6d64bf53235d57d",
+      "TriplexHouseVilla/Binaries/Wasm/TriplexHouseVilla.wasm": "4d303c65fa19b9bba13d3ff5dc7be6ea0df3f6c3",
+      "TriplexHouseVilla/Binaries/Wasm/TriplexHouseVilla.wasm.br": "042a73f9533ac608106b96ca0d86479aadf32df2",
+      "TriplexHouseVilla/Content/Paks/global.ucas": "35969151a65f41419212abcc1e0ba7155ab2d102",
+      "TriplexHouseVilla/Content/Paks/global.utoc": "92acad515874542c0e24a27e7e38aa46515b054a",
+      "TriplexHouseVilla/Content/Paks/TriplexHouseVilla-Wasm.pak": "5d2743da09dfb8d15f120711a694b5551e78003a",
+      "TriplexHouseVilla/Content/Paks/TriplexHouseVilla-Wasm.pak.br": "ff03e4f043de1e4d58fc18702ca31bad55d97692",
+      "TriplexHouseVilla/Content/Paks/TriplexHouseVilla-Wasm.ucas": "29e8876860cce079b11bea3d8861999628c7cd55",
+      "TriplexHouseVilla/Content/Paks/TriplexHouseVilla-Wasm.utoc": "c1f7062acbbd1f43ae05fb407624840882f48d7a",
+      "TriplexHouseVilla/Content/Paks/TriplexHouseVilla-Wasm.utoc.br": "fcfbd91eaed6993bfa1530fd4e146428ba11bbcb",
+      "TriplexHouseVilla/Content/ShaderArchive-Global-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.ushaderbytecode": "00e4be5c2a01fb14fcde0c3711e26c0321797754",
+      "TriplexHouseVilla/Content/ShaderArchive-Global-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.ushaderbytecode.br": "1ac73029df10b5ffa8e83c9a2f4315bfc9ee422b",
+      "TriplexHouseVilla/Content/ShaderArchive-Global-SF_WEBGPU_SM5-SP_WEBGPU_SM5.ushaderbytecode": "f693c006299377fa734716944221d8a5c5de85f2",
+      "TriplexHouseVilla/Content/ShaderArchive-Global-SF_WEBGPU_SM5-SP_WEBGPU_SM5.ushaderbytecode.br": "da8141b0d2b6be50c604acfedd3ebd17a8afcf02",
+      "TriplexHouseVilla/Content/ShaderArchive-TriplexHouseVilla-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.ushaderbytecode": "9a07c1978b65d0c8ac347545ed4bcd215ec67b55",
+      "TriplexHouseVilla/Content/ShaderArchive-TriplexHouseVilla-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.ushaderbytecode.br": "e29ee0d4488b9f0786b4af8c6360ba49fdd6bccd",
+      "TriplexHouseVilla/Content/ShaderArchive-TriplexHouseVilla-SF_WEBGPU_SM5-SP_WEBGPU_SM5.ushaderbytecode": "897af835a8a5ab4e7f647ff530b7422e89ded518",
+      "TriplexHouseVilla/Content/ShaderArchive-TriplexHouseVilla-SF_WEBGPU_SM5-SP_WEBGPU_SM5.ushaderbytecode.br": "6e098214e86342fcbc6ce41e4314c1c683aed739",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-Global-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.assetinfo.json": "8cf3694747dfffe7a573195f97ba24872ef45f35",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-Global-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.assetinfo.json.br": "0dd89a6659edd2f26b8876e5fa02c6372fe8bbfc",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-Global-SF_WEBGPU_SM5-SP_WEBGPU_SM5.assetinfo.json": "f42f35c5a6b3bf06adb6e0fea134fdc8da4cd4bd",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-Global-SF_WEBGPU_SM5-SP_WEBGPU_SM5.assetinfo.json.br": "cb089887acc537b1327f7341ab2331249cb90896",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-TriplexHouseVilla-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.assetinfo.json": "a15da76b5ef47c31e4358e564af09e29bcd05afd",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-TriplexHouseVilla-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.assetinfo.json.br": "8f77d5b975a3e186942c4a3f71df97fe2a2efdef",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-TriplexHouseVilla-SF_WEBGPU_SM5-SP_WEBGPU_SM5.assetinfo.json": "d1063969b028204744ea96e069359f70eacc07cd",
+      "TriplexHouseVilla/Content/ShaderAssetInfo-TriplexHouseVilla-SF_WEBGPU_SM5-SP_WEBGPU_SM5.assetinfo.json.br": "fcf4237f1aedf9a8c552eef99caca86db7c5fc12",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-Global-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.stinfo": "076ea549ff1bcad0b66605804ea6a1b46c1785e4",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-Global-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.stinfo.br": "7727f5cc46d90e023b89b45deffb06c923aea952",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-Global-SF_WEBGPU_SM5-SP_WEBGPU_SM5.stinfo": "14344ff7b37678544feee4bf1a88d1d8de1ce73e",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-Global-SF_WEBGPU_SM5-SP_WEBGPU_SM5.stinfo.br": "c4308ceec9dea486071fc89748eb6bb7a88221c5",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-TriplexHouseVilla-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.stinfo": "2d0468d92ace3d273f4eccb3912654517e542f9d",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-TriplexHouseVilla-SF_WEBGPU_ES3_1_DEFERRED-SP_WEBGPU_ES3_1_DEFERRED.stinfo.br": "a70fb3f3111a01d132192e8e6d406ba692bf16ce",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-TriplexHouseVilla-SF_WEBGPU_SM5-SP_WEBGPU_SM5.stinfo": "e84bc85faac6c53ad3333c99d66fa99e142efee3",
+      "TriplexHouseVilla/Content/ShaderTypeInfo-TriplexHouseVilla-SF_WEBGPU_SM5-SP_WEBGPU_SM5.stinfo.br": "66434435b87d285a8f3cc02017964f9d86812def",
+      "UECommandLine.txt": "4df1689ed43450aa56e2935d9ea3844fa0781d07",
+      "wasm-cache.json": "c6d96dd1b63213b7c445942831c19bf0d2567bd2",
+      "wasm-compat.js": "dbc3c23f7e6e85e939b0b4e51344365768db9095",
+      "wasm-compat.js.br": "1d08496ef4e818743823b4a7c90e3c5f32a0d443",
+      "wasm-debug.js": "7b1b2bc715a564d08334cead0efa2b7ff243371a",
+      "wasm-debug.js.br": "c1495c68074348ce5f42363406a345df8e860c08",
+      "wasm-harness.js": "e6412c22258b7a4d224c95a46d5a6d47537df41b",
+      "wasm-harness.js.br": "f72baeba6d43ff45cad4b8bcb924c3521536444e",
+      "wasm-loader.js": "677e6de75302095659d4fd1f1baf262790057901",
+      "wasm-loader.js.br": "ca2a3463f02f593b33bad2c5f0fa7e6a440caadf",
+      "wasm-manifest.json": "2e7532893989f9d8a97bca9d9f0e5028b9f69f27",
+      "wasm-manifest.json.br": "9d884251318e98e3033f495b66b111cc0846a7c4",
+      "wasm-memory.js": "2151970699afb5b34dc2bc6cc4613bbf85a8deb4",
+      "wasm-memory.js.br": "3571bf9a071061b94cb2d0672833d239e351b812",
+      "wasm-play.js": "eb67399cdcc5613bf2d4586754cdceceec138d93",
+      "wasm-play.js.br": "47bad8a4fac7bfd978bac22dbe9f69141ca23958",
+      "wasm-prewarm.js": "3440251ed56eb4916607ddf26cf2bf1db2c79e98",
+      "wasm-prewarm.js.br": "163e9fec01e81b1184cda5e4ab084922a5ec49f8",
+      "wasm-profile.js": "4825f7fab03dc818694bb2e4e44d714c272fea7a",
+      "wasm-profile.js.br": "53f479a4ba0c86a31f0ae53b563be85305bf3076",
+      "wasm-strings.js": "e0980d165b645ccf58faa566097f5e4c8893b741",
+      "wasm-tiers.json": "6ce19229b0fec8a5ad10badbd2aef20ab4a73f4a"
+    }
+  },
+  "publicReleaseScan": {
+    "completed": "2026-11-09T14:32:33.1767736+08:00",
+    "status": "cancelled",
+    "reason": "Full public-release byte scanner still running after 10 minutes. Local stage hashes were verified separately. This is not a public release hygiene pass.",
+    "log": "stage-check.log"
+  },
+  "measurements": [
+    {
+      "tag": "official-defaults-20261109",
+      "reportSha256": "a00309bb443bc3d601f170af4ff5030b8f02029b5a862eef313b6ba436317474",
+      "seconds": 30,
+      "warmup": 30,
+      "bootMode": "Official harness=1 skips the page GPU benchmark and automatic quality preset. Project and renderer defaults apply.",
+      "qualityOverrides": [],
+      "runs": [
+        {
+          "tier": "forward",
+          "run": 1,
+          "cache": "cold-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 5.017740000002086,
+          "readySeconds": 5.032460000000894,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 3601,
+            "seconds": 30.008605000000447,
+            "fps": 119.99891364493439,
+            "intervalFps": 120.00472018565944,
+            "low1Fps": 103.84215991813139,
+            "p50Ms": 8.33500000089407,
+            "p95Ms": 8.66499999910593,
+            "p99Ms": 9.20499999821186,
+            "maxMs": 14.929999999701977,
+            "intervalsOver33Ms": 0,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 773193728,
+            "mainThreadJsHeapBytes": 41039162
+          },
+          "workingSetSumBytes": 3688988672,
+          "privateBytesSum": 4504649728,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794205982135.770",
+            "-WebGPUNoMobileDeferred",
+            "-WebGPUNoSM5",
+            "-WebWorkerThreads=2"
+          ],
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "442223fd9f6ee17a12efb6de17044bdf6f21d070f2946ff5c013afac7015c525",
+          "screenshotSha256": "9921d7bcf6e82d79a4e9a05fdf0ebf7fcc528164402d7f3d0779a90e92348158"
+        },
+        {
+          "tier": "forward",
+          "run": 2,
+          "cache": "warm-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 3.3389199999980628,
+          "readySeconds": 3.355484999999404,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 3601,
+            "seconds": 30.0090549999997,
+            "fps": 119.99711420436384,
+            "intervalFps": 120.00092000705517,
+            "low1Fps": 103.40667547520641,
+            "p50Ms": 8.33499999716878,
+            "p95Ms": 8.67000000178814,
+            "p99Ms": 9.134999997913837,
+            "maxMs": 13.855000000447035,
+            "intervalsOver33Ms": 0,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 697106432,
+            "mainThreadJsHeapBytes": 38695166
+          },
+          "workingSetSumBytes": 3557060608,
+          "privateBytesSum": 4209446912,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794206051318.030",
+            "-WebGPUNoMobileDeferred",
+            "-WebGPUNoSM5",
+            "-WebWorkerThreads=2"
+          ],
+          "interaction": {
+            "afterPerformanceMeasurement": true,
+            "keys": [
+              "s:1000ms",
+              "d:1000ms"
+            ],
+            "mouseDelta": [
+              100,
+              30
+            ],
+            "movementImageDifference": 59.91902777777778,
+            "turnImageDifference": 44.8518287037037,
+            "pointerLock": null,
+            "note": "Image differences plus screenshot inspection verify visible input response; they are not world-space travel measurements."
+          },
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "8060f8f72853ebafbe82c275c90029cc6a09d6c9f0b9ddd153091e0bfffb40fb",
+          "screenshotSha256": "3f038912944564470d7f445b4b5ab65f065f149a7a66f9188988cf1150beb75a"
+        },
+        {
+          "tier": "deferred",
+          "run": 1,
+          "cache": "cold-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 4.27225,
+          "readySeconds": 4.294379999998957,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 3600,
+            "seconds": 30.004859999999404,
+            "fps": 119.98056314877228,
+            "intervalFps": 120.00086691374007,
+            "low1Fps": 104.10641989118314,
+            "p50Ms": 8.33499999716878,
+            "p95Ms": 8.625,
+            "p99Ms": 8.949999999254942,
+            "maxMs": 14.730000000447035,
+            "intervalsOver33Ms": 0,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 733085696,
+            "mainThreadJsHeapBytes": 45714660
+          },
+          "workingSetSumBytes": 3762450432,
+          "privateBytesSum": 4640985088,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794206123773.800",
+            "-WebGPUMobileDeferred",
+            "-WebGPUNoSM5"
+          ],
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "ac89c021a3427578d9fb8a01a5a23dce56b6a32d34edf764dfdfbb99ec5552c5",
+          "screenshotSha256": "6946d456061e9b1af9824e6678b021cefff1f4b53fcc78917f4b608f7533c95e"
+        },
+        {
+          "tier": "deferred",
+          "run": 2,
+          "cache": "warm-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 3.7206350000016393,
+          "readySeconds": 3.735804999999702,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 3600,
+            "seconds": 30.004230000000447,
+            "fps": 119.98308238538188,
+            "intervalFps": 120.00042678672646,
+            "low1Fps": 105.39413013500337,
+            "p50Ms": 8.33500000089407,
+            "p95Ms": 8.574999999254942,
+            "p99Ms": 8.989999998360872,
+            "maxMs": 13.804999999701977,
+            "intervalsOver33Ms": 0,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 734134272,
+            "mainThreadJsHeapBytes": 44887808
+          },
+          "workingSetSumBytes": 3610537984,
+          "privateBytesSum": 4419903488,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794206192170.410",
+            "-WebGPUMobileDeferred",
+            "-WebGPUNoSM5"
+          ],
+          "interaction": {
+            "afterPerformanceMeasurement": true,
+            "keys": [
+              "s:1000ms",
+              "d:1000ms"
+            ],
+            "mouseDelta": [
+              100,
+              30
+            ],
+            "movementImageDifference": 54.56175925925926,
+            "turnImageDifference": 43.58902777777778,
+            "pointerLock": null,
+            "note": "Image differences plus screenshot inspection verify visible input response; they are not world-space travel measurements."
+          },
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "267ac5c8e2f7fa2d0048887606a43d03e3f040863b04ac6d735b15ad481c3d5d",
+          "screenshotSha256": "a50562f28bfd21961374634b6e13804932ccfaf84a8afc747298951242eaf438"
+        },
+        {
+          "tier": "desktop",
+          "run": 1,
+          "cache": "cold-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 7.92842499999702,
+          "readySeconds": 7.980379999998957,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 2180,
+            "seconds": 30.01434499999881,
+            "fps": 72.63193649570186,
+            "intervalFps": 72.64442371535857,
+            "low1Fps": 37.374603956270875,
+            "p50Ms": 14.115000002086163,
+            "p95Ms": 19.179999999701977,
+            "p99Ms": 24.989999998360872,
+            "maxMs": 30.37000000104308,
+            "intervalsOver33Ms": 0,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 773193728,
+            "mainThreadJsHeapBytes": 35878321
+          },
+          "workingSetSumBytes": 4608200704,
+          "privateBytesSum": 7400312832,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794206264989.670",
+            "-WebGPUSM5",
+            "-WebGPUNoMobileDeferred"
+          ],
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "87b0a5f59eac89cd7990a6506b1dba1d99e8e511529d07aac3f30e5610a805ad",
+          "screenshotSha256": "b63e598c1c25b4a2c97f157e322b3f2226a33dfc292402449cf37fb7ed6c3006"
+        },
+        {
+          "tier": "desktop",
+          "run": 2,
+          "cache": "warm-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 4.582495000001043,
+          "readySeconds": 4.61375,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 2195,
+            "seconds": 30.0110700000003,
+            "fps": 73.13967812543765,
+            "intervalFps": 73.13981839723158,
+            "low1Fps": 38.32919552235356,
+            "p50Ms": 14.03999999910593,
+            "p95Ms": 19.54000000283122,
+            "p99Ms": 24.53999999910593,
+            "maxMs": 28.29000000283122,
+            "intervalsOver33Ms": 0,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 773193728,
+            "mainThreadJsHeapBytes": 35782066
+          },
+          "workingSetSumBytes": 4297564160,
+          "privateBytesSum": 7082323968,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794206338556.830",
+            "-WebGPUSM5",
+            "-WebGPUNoMobileDeferred"
+          ],
+          "interaction": {
+            "afterPerformanceMeasurement": true,
+            "keys": [
+              "s:1000ms",
+              "d:1000ms"
+            ],
+            "mouseDelta": [
+              100,
+              30
+            ],
+            "movementImageDifference": 46.12821759259259,
+            "turnImageDifference": 24.869560185185186,
+            "pointerLock": null,
+            "note": "Image differences plus screenshot inspection verify visible input response; they are not world-space travel measurements."
+          },
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "fb6a136e2b8586558750339bad366c1397c92315be390bf854bf2dae48400123",
+          "screenshotSha256": "cea15d014bef0534a880ec816fb926779dfc524b67d27fbf2a4a3f2cc7abe095"
+        }
+      ],
+      "diagnostics": [
+        {
+          "tier": "forward",
+          "sourceFile": "triplexhousevilla.log",
+          "modified": 1794206122663,
+          "logFiles": [
+            {
+              "name": "triplexhousevilla.log",
+              "modified": 1794206122663,
+              "size": 129674
+            },
+            {
+              "name": "triplexhousevilla-backup-2026.11.09-06.34.12.log",
+              "modified": 1794206052317,
+              "size": 124985
+            }
+          ],
+          "relevant": [
+            "LogCsvProfiler: Display: Metadata set : commandline=\"\"-dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206051318.030 -WebGPUNoMobileDeferred -WebGPUNoSM5 -WebWorkerThreads=2\"\"",
+            "LogInit: Command Line: -dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206051318.030 -WebGPUNoMobileDeferred -WebGPUNoSM5 -WebWorkerThreads=2",
+            "[2026.11.09-06.34.13:384][  0]LogLoad: LoadMap: /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla?Name=Player",
+            "[2026.11.09-06.34.14:277][  0]LogLoad: Game class is 'FirstPersonGameMode_C'",
+            "[2026.11.09-06.34.14:345][  0]LogWorld: Bringing World /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla up for play (max tick rate 0) at 2026.11.09-14.34.14",
+            "[2026.11.09-06.34.14:350][  0]LogGameMode: FindPlayerStart: PATHS NOT DEFINED or NO PLAYERSTART with positive rating",
+            "[2026.11.09-06.35.15:384][245]t.MaxFPS = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.35.15:417][249]r.VSync = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.35.15:465][255]r.ScreenPercentage = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.35.15:514][261]sg.ResolutionQuality = \"0\"      LastSetBy: Scalability",
+            "[2026.11.09-06.35.15:574][267]r.DynamicRes.OperationMode = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.35.15:607][272]r.AntiAliasingMethod = \"4\"      LastSetBy: Constructor",
+            "[2026.11.09-06.35.15:664][279]r.DynamicGlobalIlluminationMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.35.15:713][285]r.Lumen.DiffuseIndirect.Allow = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.35.15:763][291]r.ReflectionMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.35.15:807][296]r.Lumen.Reflections.Allow = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.35.15:865][303]r.Shadow.Virtual.Enable = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.35.15:914][309]r.Streaming.PoolSize = \"192\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.35.15:965][315]r.Streaming.UseFixedPoolSize = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.35.16:014][321]sg.GlobalIlluminationQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.35.16:063][327]sg.ReflectionQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.35.16:115][333]sg.ShadowQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.35.16:215][345]0) FirstPersonGameMode_C /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonGameMode_C_2147482408.DefaultPawnClass = /Script/Engine.BlueprintGeneratedClass'/Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'",
+            "[2026.11.09-06.35.16:258][350]0) PlayerController /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.PlayerController_2147482375.Pawn = /Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonCharacter_C_1'"
+          ]
+        },
+        {
+          "tier": "deferred",
+          "sourceFile": "triplexhousevilla.log",
+          "modified": 1794206264277,
+          "logFiles": [
+            {
+              "name": "triplexhousevilla.log",
+              "modified": 1794206264277,
+              "size": 128689
+            },
+            {
+              "name": "triplexhousevilla-backup-2026.11.09-06.36.33.log",
+              "modified": 1794206193167,
+              "size": 124108
+            }
+          ],
+          "relevant": [
+            "LogCsvProfiler: Display: Metadata set : commandline=\"\"-dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206192170.410 -WebGPUMobileDeferred -WebGPUNoSM5\"\"",
+            "LogInit: Command Line: -dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206192170.410 -WebGPUMobileDeferred -WebGPUNoSM5",
+            "[2026.11.09-06.36.34:291][  0]LogLoad: LoadMap: /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla?Name=Player",
+            "[2026.11.09-06.36.35:479][  0]LogLoad: Game class is 'FirstPersonGameMode_C'",
+            "[2026.11.09-06.36.35:549][  0]LogWorld: Bringing World /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla up for play (max tick rate 0) at 2026.11.09-14.36.35",
+            "[2026.11.09-06.36.35:553][  0]LogGameMode: FindPlayerStart: PATHS NOT DEFINED or NO PLAYERSTART with positive rating",
+            "[2026.11.09-06.37.36:621][244]t.MaxFPS = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.37.36:622][245]r.VSync = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.37.36:663][250]r.ScreenPercentage = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.37.36:731][257]sg.ResolutionQuality = \"0\"      LastSetBy: Scalability",
+            "[2026.11.09-06.37.36:781][263]r.DynamicRes.OperationMode = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.37.36:822][269]r.AntiAliasingMethod = \"4\"      LastSetBy: Constructor",
+            "[2026.11.09-06.37.36:862][274]r.DynamicGlobalIlluminationMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.37.36:922][281]r.Lumen.DiffuseIndirect.Allow = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.37.36:971][287]r.ReflectionMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.37.37:022][293]r.Lumen.Reflections.Allow = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.37.37:063][298]r.Shadow.Virtual.Enable = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.37.37:122][305]r.Streaming.PoolSize = \"192\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.37.37:171][311]r.Streaming.UseFixedPoolSize = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.37.37:221][317]sg.GlobalIlluminationQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.37.37:277][322]sg.ReflectionQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.37.37:327][329]sg.ShadowQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.37.37:424][341]0) FirstPersonGameMode_C /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonGameMode_C_2147482408.DefaultPawnClass = /Script/Engine.BlueprintGeneratedClass'/Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'",
+            "[2026.11.09-06.37.37:468][346]0) PlayerController /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.PlayerController_2147482375.Pawn = /Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonCharacter_C_1'"
+          ]
+        },
+        {
+          "tier": "desktop",
+          "sourceFile": "triplexhousevilla.log",
+          "modified": 1794206412329,
+          "logFiles": [
+            {
+              "name": "triplexhousevilla.log",
+              "modified": 1794206412329,
+              "size": 121243
+            },
+            {
+              "name": "triplexhousevilla-backup-2026.11.09-06.38.59.log",
+              "modified": 1794206339568,
+              "size": 118165
+            }
+          ],
+          "relevant": [
+            "LogCsvProfiler: Display: Metadata set : commandline=\"\"-dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206338556.830 -WebGPUSM5 -WebGPUNoMobileDeferred\"\"",
+            "LogInit: Command Line: -dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206338556.830 -WebGPUSM5 -WebGPUNoMobileDeferred",
+            "[2026.11.09-06.39.00:758][  0]LogLoad: LoadMap: /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla?Name=Player",
+            "[2026.11.09-06.39.01:955][  0]LogLoad: Game class is 'FirstPersonGameMode_C'",
+            "[2026.11.09-06.39.02:022][  0]LogWorld: Bringing World /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla up for play (max tick rate 0) at 2026.11.09-14.39.02",
+            "[2026.11.09-06.39.02:026][  0]LogGameMode: FindPlayerStart: PATHS NOT DEFINED or NO PLAYERSTART with positive rating",
+            "[2026.11.09-06.40.05:213][415]t.MaxFPS = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.40.05:239][417]r.VSync = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.40.05:296][421]r.ScreenPercentage = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.40.05:337][424]sg.ResolutionQuality = \"0\"      LastSetBy: Scalability",
+            "[2026.11.09-06.40.05:407][429]r.DynamicRes.OperationMode = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.40.05:446][432]r.AntiAliasingMethod = \"2\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.40.05:489][435]r.DynamicGlobalIlluminationMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.40.05:541][439]r.Lumen.DiffuseIndirect.Allow = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.40.05:599][443]r.ReflectionMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.40.05:647][446]r.Lumen.Reflections.Allow = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.40.05:691][450]r.Shadow.Virtual.Enable = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.40.05:733][453]r.Streaming.PoolSize = \"496\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.40.05:804][458]r.Streaming.UseFixedPoolSize = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.40.05:844][461]sg.GlobalIlluminationQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.40.05:894][465]sg.ReflectionQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.40.05:959][469]sg.ShadowQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.40.06:038][475]0) FirstPersonGameMode_C /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonGameMode_C_2147482408.DefaultPawnClass = /Script/Engine.BlueprintGeneratedClass'/Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'",
+            "[2026.11.09-06.40.06:085][479]0) PlayerController /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.PlayerController_2147482375.Pawn = /Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonCharacter_C_1'"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "normal-page-desktop-20261109",
+      "reportSha256": "4262dc48752f0efce4132da6b0991b95fd98bc54bf55d0a09aedb186dd0ddd4f",
+      "seconds": 30,
+      "warmup": 30,
+      "bootMode": "Normal official page with GPU benchmark, automatic quality selection, and a start click.",
+      "qualityOverrides": [],
+      "runs": [
+        {
+          "tier": "desktop",
+          "run": 1,
+          "cache": "cold-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 6.936265000000596,
+          "readySeconds": 6.963685000002384,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 3590,
+            "seconds": 30.007070000000297,
+            "fps": 119.63847186679554,
+            "intervalFps": 119.63283486318807,
+            "low1Fps": 72.31529468370024,
+            "p50Ms": 8.280000001192093,
+            "p95Ms": 9.160000000149012,
+            "p99Ms": 11.33500000089407,
+            "maxMs": 18.984999999403954,
+            "intervalsOver33Ms": 0,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 773193728,
+            "mainThreadJsHeapBytes": 38897578
+          },
+          "workingSetSumBytes": 4337987584,
+          "privateBytesSum": 5819482112,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794206623712.830",
+            "-WebGPUSM5",
+            "-WebGPUNoMobileDeferred",
+            "-WebQualityPreset=Medium"
+          ],
+          "pageConfiguration": [
+            "UE_RUN CONFIG {\"web_default_culture\":\"zh-CN\",\"applied\":false}",
+            "UE_RUN CONFIG {\"web_screen_percentage\":0,\"web_quality_preset\":\"Medium\",\"applied\":true,\"reason\":\"first start\"}"
+          ],
+          "interaction": {
+            "afterPerformanceMeasurement": true,
+            "keys": [
+              "s:1000ms",
+              "d:1000ms"
+            ],
+            "mouseDelta": [
+              100,
+              30
+            ],
+            "movementImageDifference": 65.911875,
+            "turnImageDifference": 28.499699074074073,
+            "pointerLock": null,
+            "note": "Image differences plus screenshot inspection verify visible input response; they are not world-space travel measurements."
+          },
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "83f6bc3e5a2a31cdcd8c07dfee75a200be16618f1fddf6979a3e296d449171ad",
+          "screenshotSha256": "ada348033ad012864cd36a6da138f4cfdff4849b8094e75c6e027f26787d59ea"
+        }
+      ],
+      "diagnostics": [
+        {
+          "tier": "desktop",
+          "sourceFile": "triplexhousevilla.log",
+          "modified": 1794206700489,
+          "logFiles": [
+            {
+              "name": "triplexhousevilla.log",
+              "modified": 1794206700489,
+              "size": 151155
+            }
+          ],
+          "relevant": [
+            "LogCsvProfiler: Display: Metadata set : commandline=\"\"-dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206623712.830 -WebGPUSM5 -WebGPUNoMobileDeferred -WebQualityPreset=Medium\"\"",
+            "LogInit: Command Line: -dpcvars=t.MaxFPS=0,r.VSync=0 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794206623712.830 -WebGPUSM5 -WebGPUNoMobileDeferred -WebQualityPreset=Medium",
+            "[2026.11.09-06.43.46:201][  0]LogLoad: LoadMap: /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla?Name=Player",
+            "[2026.11.09-06.43.47:096][  0]LogLoad: Game class is 'FirstPersonGameMode_C'",
+            "[2026.11.09-06.43.47:164][  0]LogWorld: Bringing World /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla up for play (max tick rate 0) at 2026.11.09-14.43.47",
+            "[2026.11.09-06.43.47:168][  0]LogGameMode: FindPlayerStart: PATHS NOT DEFINED or NO PLAYERSTART with positive rating",
+            "[2026.11.09-06.44.53:243][262]t.MaxFPS = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.44.53:274][266]r.VSync = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.44.53:324][272]r.ScreenPercentage = \"71\"      LastSetBy: Scalability",
+            "[2026.11.09-06.44.53:382][279]sg.ResolutionQuality = \"71\"      LastSetBy: Scalability",
+            "[2026.11.09-06.44.53:425][284]r.DynamicRes.OperationMode = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.44.53:473][290]r.AntiAliasingMethod = \"2\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.44.53:529][296]r.DynamicGlobalIlluminationMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.44.53:585][301]r.Lumen.DiffuseIndirect.Allow = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.44.53:631][306]r.ReflectionMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.44.53:685][312]r.Lumen.Reflections.Allow = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.44.53:726][317]r.Shadow.Virtual.Enable = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.44.53:776][323]r.Streaming.PoolSize = \"496\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.44.53:823][329]r.Streaming.UseFixedPoolSize = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.44.53:872][335]sg.GlobalIlluminationQuality = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.44.53:930][342]sg.ReflectionQuality = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.44.53:979][348]sg.ShadowQuality = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.44.54:083][361]0) FirstPersonGameMode_C /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonGameMode_C_2147482408.DefaultPawnClass = /Script/Engine.BlueprintGeneratedClass'/Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'",
+            "[2026.11.09-06.44.54:132][367]0) PlayerController /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.PlayerController_2147482375.Pawn = /Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonCharacter_C_1'"
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "desktop-native1080-20261109",
+      "reportSha256": "98b3da3cb70005639b65aa28867b32cbe3401479882e00317a890a80174b58ae",
+      "seconds": 30,
+      "warmup": 30,
+      "bootMode": "Official harness=1 skips the page GPU benchmark and automatic quality preset. Project and renderer defaults apply.",
+      "qualityOverrides": [
+        {
+          "r.ScreenPercentage": 100
+        }
+      ],
+      "runs": [
+        {
+          "tier": "desktop",
+          "run": 1,
+          "cache": "cold-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 8.188839999999852,
+          "readySeconds": 8.250380000002682,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 1509,
+            "seconds": 30.006550000000747,
+            "fps": 50.28902023058174,
+            "intervalFps": 50.2938840402517,
+            "low1Fps": 30.377247441614628,
+            "p50Ms": 19.684999998658895,
+            "p95Ms": 28.349999997764826,
+            "p99Ms": 32.03000000119209,
+            "maxMs": 35.23999999836087,
+            "intervalsOver33Ms": 5,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 773193728,
+            "mainThreadJsHeapBytes": 32120736
+          },
+          "workingSetSumBytes": 4767821824,
+          "privateBytesSum": 7688691712,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0,r.ScreenPercentage=100",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794207421600.950",
+            "-WebGPUSM5",
+            "-WebGPUNoMobileDeferred"
+          ],
+          "pageConfiguration": [
+            "WEB_COMPAT {\"version\":1,\"pass\":true,\"reason\":null,\"browser\":{\"name\":\"Chrome\",\"version\":157,\"os\":\"Windows\",\"mobile\":false,\"ua\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36\",\"device\":\"\",\"webkit\":0,\"webkitVersion\":null},\"cpus\":32,\"device_memory_gb\":32,\"screen\":{\"width\":1920,\"height\":1080,\"dpr\":1.0000000298023224},\"tests\":{\"secure_context\":true,\"webassembly\":true,\"apple_version\":true,\"memory64\":true,\"threads\":true,\"simd\":true,\"cross_origin_isolated\":true,\"webgpu\":true,\"mobile\":true,\"chromium_version\":true},\"adapter\":{\"vendor\":\"nvidia\",\"architecture\":\"ampere\",\"device\":\"\",\"description\":\"\",\"fallback\":false,\"features\":[\"atomic-vec2u-min-max\",\"bgra8unorm-storage\",\"clip-distances\",\"core-features-and-limits\",\"depth-clip-control\",\"depth32float-stencil8\",\"dual-source-blending\",\"float32-blendable\",\"float32-filterable\",\"indirect-first-instance\",\"primitive-index\",\"rg11b10ufloat-renderable\",\"shader-f16\",\"subgroup-size-control\",\"subgroups\",\"texture-component-swizzle\",\"texture-compression-bc\",\"texture-compression-bc-sliced-3d\",\"texture-compression-unaligned\",\"texture-formats-tier1\",\"texture-formats-tier2\",\"timestamp-query\"],\"limits\":{\"maxTextureDimension1D\":16384,\"maxTextureDimension2D\":16384,\"maxTextureDimension3D\":2048,\"maxTextureArrayLayers\":2048,\"maxBindGroups\":4,\"maxBindGroupsPlusVertexBuffers\":24,\"maxBindingsPerBindGroup\":1000,\"maxDynamicUniformBuffersPerPipelineLayout\":10,\"maxDynamicStorageBuffersPerPipelineLayout\":8,\"maxSampledTexturesPerShaderStage\":48,\"maxSamplersPerShaderStage\":16,\"maxStorageBuffersPerShaderStage\":16,\"maxStorageTexturesPerShaderStage\":8,\"maxUniformBuffersPerShaderStage\":12,\"maxUniformBufferBindingSize\":65536,\"maxStorageBufferBindingSize\":2147483644,\"minUniformBufferOffsetAlignment\":256,\"minStorageBufferOffsetAlignment\":256,\"maxVertexBuffers\":8,\"maxBufferSize\":2147483648,\"maxVertexAttributes\":30,\"maxVertexBufferArrayStride\":2048,\"maxInterStageShaderVariables\":28,\"maxColorAttachments\":8,\"maxColorAttachmentBytesPerSample\":128,\"maxComputeWorkgroupStorageSize\":32768,\"maxComputeInvocationsPerWorkgroup\":1024,\"maxComputeWorkgroupSizeX\":1024,\"maxComputeWorkgroupSizeY\":1024,\"maxComputeWorkgroupSizeZ\":64,\"maxComputeWorkgroupsPerDimension\":65535,\"maxImmediateSize\":64,\"maxStorageBuffersInFragmentStage\":16,\"maxStorageTexturesInFragmentStage\":8,\"maxStorageBuffersInVertexStage\":16,\"maxStorageTexturesInVertexStage\":8},\"shader_compiler\":\"dxc\",\"integrated\":false},\"gpu_bench\":null,\"screen_percentage\":null,\"warnings\":[]}",
+            "UE_RUN CONFIG {\"web_default_culture\":\"zh-CN\",\"applied\":false}"
+          ],
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "d91e7c14ff9217c517adcebdba54217be8355c845ca547885e2093971d5cb3b5",
+          "screenshotSha256": "4e2dc8c291767c25cb7986e5bb7fc7badbabf3599272bcb4da2e0bd8d7f33c97"
+        },
+        {
+          "tier": "desktop",
+          "run": 2,
+          "cache": "warm-browser-profile",
+          "browserVersion": "157.0.8103.39",
+          "firstCanvasSeconds": 4.343519999999553,
+          "readySeconds": 4.404144999999553,
+          "dimensions": {
+            "width": 1920,
+            "height": 1080
+          },
+          "timing": {
+            "frames": 1521,
+            "seconds": 30.00511999999732,
+            "fps": 50.69134867649708,
+            "intervalFps": 50.68369638865653,
+            "low1Fps": 29.722926594087575,
+            "p50Ms": 19.480000000447035,
+            "p95Ms": 28.144999999552965,
+            "p99Ms": 32.01500000059605,
+            "maxMs": 36.19500000029802,
+            "intervalsOver33Ms": 9,
+            "intervalsOver100Ms": 0
+          },
+          "wasmMemory": {
+            "wasmAllocatedBytes": 773193728,
+            "mainThreadJsHeapBytes": 31362200
+          },
+          "workingSetSumBytes": 4390830080,
+          "privateBytesSum": 7441985536,
+          "actualArguments": [
+            "./this.program",
+            "-dpcvars=t.MaxFPS=0,r.VSync=0,r.ScreenPercentage=100",
+            "-TaskGraphUseDynamicThreadCreation=1",
+            "-oversubscriptionratio=1.25",
+            "-NoLogThread",
+            "-ini:Engine:[ConsoleVariables]:t.MaxFPS=120",
+            "-WebBrowserLang=zh-CN",
+            "-resx=1920",
+            "-resy=1080",
+            "-windowed",
+            "-ForceRes",
+            "-UERunTimeOrigin=1794207495698.925",
+            "-WebGPUSM5",
+            "-WebGPUNoMobileDeferred"
+          ],
+          "pageConfiguration": [
+            "WEB_COMPAT {\"version\":1,\"pass\":true,\"reason\":null,\"browser\":{\"name\":\"Chrome\",\"version\":157,\"os\":\"Windows\",\"mobile\":false,\"ua\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36\",\"device\":\"\",\"webkit\":0,\"webkitVersion\":null},\"cpus\":32,\"device_memory_gb\":32,\"screen\":{\"width\":1920,\"height\":1080,\"dpr\":1.0000000298023224},\"tests\":{\"secure_context\":true,\"webassembly\":true,\"apple_version\":true,\"memory64\":true,\"threads\":true,\"simd\":true,\"cross_origin_isolated\":true,\"webgpu\":true,\"mobile\":true,\"chromium_version\":true},\"adapter\":{\"vendor\":\"nvidia\",\"architecture\":\"ampere\",\"device\":\"\",\"description\":\"\",\"fallback\":false,\"features\":[\"atomic-vec2u-min-max\",\"bgra8unorm-storage\",\"clip-distances\",\"core-features-and-limits\",\"depth-clip-control\",\"depth32float-stencil8\",\"dual-source-blending\",\"float32-blendable\",\"float32-filterable\",\"indirect-first-instance\",\"primitive-index\",\"rg11b10ufloat-renderable\",\"shader-f16\",\"subgroup-size-control\",\"subgroups\",\"texture-component-swizzle\",\"texture-compression-bc\",\"texture-compression-bc-sliced-3d\",\"texture-compression-unaligned\",\"texture-formats-tier1\",\"texture-formats-tier2\",\"timestamp-query\"],\"limits\":{\"maxTextureDimension1D\":16384,\"maxTextureDimension2D\":16384,\"maxTextureDimension3D\":2048,\"maxTextureArrayLayers\":2048,\"maxBindGroups\":4,\"maxBindGroupsPlusVertexBuffers\":24,\"maxBindingsPerBindGroup\":1000,\"maxDynamicUniformBuffersPerPipelineLayout\":10,\"maxDynamicStorageBuffersPerPipelineLayout\":8,\"maxSampledTexturesPerShaderStage\":48,\"maxSamplersPerShaderStage\":16,\"maxStorageBuffersPerShaderStage\":16,\"maxStorageTexturesPerShaderStage\":8,\"maxUniformBuffersPerShaderStage\":12,\"maxUniformBufferBindingSize\":65536,\"maxStorageBufferBindingSize\":2147483644,\"minUniformBufferOffsetAlignment\":256,\"minStorageBufferOffsetAlignment\":256,\"maxVertexBuffers\":8,\"maxBufferSize\":2147483648,\"maxVertexAttributes\":30,\"maxVertexBufferArrayStride\":2048,\"maxInterStageShaderVariables\":28,\"maxColorAttachments\":8,\"maxColorAttachmentBytesPerSample\":128,\"maxComputeWorkgroupStorageSize\":32768,\"maxComputeInvocationsPerWorkgroup\":1024,\"maxComputeWorkgroupSizeX\":1024,\"maxComputeWorkgroupSizeY\":1024,\"maxComputeWorkgroupSizeZ\":64,\"maxComputeWorkgroupsPerDimension\":65535,\"maxImmediateSize\":64,\"maxStorageBuffersInFragmentStage\":16,\"maxStorageTexturesInFragmentStage\":8,\"maxStorageBuffersInVertexStage\":16,\"maxStorageTexturesInVertexStage\":8},\"shader_compiler\":\"dxc\",\"integrated\":false},\"gpu_bench\":null,\"screen_percentage\":null,\"warnings\":[]}",
+            "UE_RUN CONFIG {\"web_default_culture\":\"zh-CN\",\"applied\":false}"
+          ],
+          "interaction": {
+            "afterPerformanceMeasurement": true,
+            "keys": [
+              "s:1000ms",
+              "d:1000ms"
+            ],
+            "mouseDelta": [
+              100,
+              30
+            ],
+            "movementImageDifference": 32.192708333333336,
+            "turnImageDifference": 31.203333333333333,
+            "pointerLock": null,
+            "beforeMove": {
+              "x": 412.489075,
+              "y": -438.574615,
+              "z": 92.400001,
+              "pitch": -89.900002,
+              "yaw": -102.017334,
+              "roll": 0
+            },
+            "afterMove": {
+              "x": 449.078406,
+              "y": -300.315381,
+              "z": 92.4,
+              "pitch": -89.900002,
+              "yaw": -102.017334,
+              "roll": 0
+            },
+            "afterTurn": {
+              "x": 448.800681,
+              "y": -301.745869,
+              "z": 92.400001,
+              "pitch": -89.900002,
+              "yaw": -80.724546,
+              "roll": 0
+            },
+            "distanceCm": 143.01886214515312,
+            "turnDegrees": 21.292787999999973,
+            "note": "Official LogLoc/FlushLog captures pawn position and view rotation outside the performance measurement."
+          },
+          "counterAgreement": true,
+          "errors": [],
+          "samplesSha256": "8641419961702fac5088ad7ad56f422959aa11d803c35ef312bcb7099d98bfd3",
+          "screenshotSha256": "fc7c8d010acac286f20d82a5d8091e34edf3957d8bc8caf93bbab607f0c81a5f"
+        }
+      ],
+      "diagnostics": [
+        {
+          "tier": "desktop",
+          "sourceFile": "triplexhousevilla.log",
+          "modified": 1794207571240,
+          "logFiles": [
+            {
+              "name": "triplexhousevilla.log",
+              "modified": 1794207571240,
+              "size": 116568
+            },
+            {
+              "name": "triplexhousevilla-backup-2026.11.09-06.58.16.log",
+              "modified": 1794207496703,
+              "size": 112101
+            }
+          ],
+          "relevant": [
+            "LogCsvProfiler: Display: Metadata set : commandline=\"\"-dpcvars=t.MaxFPS=0,r.VSync=0,r.ScreenPercentage=100 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794207495698.925 -WebGPUSM5 -WebGPUNoMobileDeferred\"\"",
+            "LogInit: Command Line: -dpcvars=t.MaxFPS=0,r.VSync=0,r.ScreenPercentage=100 -TaskGraphUseDynamicThreadCreation=1 -oversubscriptionratio=1.25 -NoLogThread -ini:Engine:[ConsoleVariables]:t.MaxFPS=120 -WebBrowserLang=zh-CN -resx=1920 -resy=1080 -windowed -ForceRes -UERunTimeOrigin=1794207495698.925 -WebGPUSM5 -WebGPUNoMobileDeferred",
+            "[2026.11.09-06.58.17:849][  0]LogLoad: LoadMap: /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla?Name=Player",
+            "[2026.11.09-06.58.18:768][  0]LogLoad: Game class is 'FirstPersonGameMode_C'",
+            "[2026.11.09-06.58.18:837][  0]LogWorld: Bringing World /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla up for play (max tick rate 0) at 2026.11.09-14.58.18",
+            "[2026.11.09-06.58.18:842][  0]LogGameMode: FindPlayerStart: PATHS NOT DEFINED or NO PLAYERSTART with positive rating",
+            "[2026.11.09-06.59.22:254][ 68]t.MaxFPS = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.59.22:291][ 70]r.VSync = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.59.22:354][ 73]r.ScreenPercentage = \"100\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.59.22:394][ 75]sg.ResolutionQuality = \"0\"      LastSetBy: Scalability",
+            "[2026.11.09-06.59.22:648][ 87]r.DynamicRes.OperationMode = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.59.22:692][ 89]r.AntiAliasingMethod = \"2\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.59.22:753][ 92]r.DynamicGlobalIlluminationMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.59.22:805][ 94]r.Lumen.DiffuseIndirect.Allow = \"1\"      LastSetBy: Scalability",
+            "[2026.11.09-06.59.22:859][ 97]r.ReflectionMethod = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.59.22:901][ 99]r.Lumen.Reflections.Allow = \"0\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.59.22:940][101]r.Shadow.Virtual.Enable = \"1\"      LastSetBy: ProjectSetting",
+            "[2026.11.09-06.59.22:985][103]r.Streaming.PoolSize = \"496\"      LastSetBy: DeviceProfile",
+            "[2026.11.09-06.59.23:049][106]r.Streaming.UseFixedPoolSize = \"0\"      LastSetBy: Constructor",
+            "[2026.11.09-06.59.23:092][108]sg.GlobalIlluminationQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.59.23:135][110]sg.ReflectionQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.59.23:197][113]sg.ShadowQuality = \"3\"      LastSetBy: Scalability",
+            "[2026.11.09-06.59.23:303][118]0) FirstPersonGameMode_C /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonGameMode_C_2147482408.DefaultPawnClass = /Script/Engine.BlueprintGeneratedClass'/Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'",
+            "[2026.11.09-06.59.23:344][120]0) PlayerController /Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.PlayerController_2147482375.Pawn = /Game/BigTriplexHouseVilla/Blueprint/FPS_Character/FirstPersonCharacter.FirstPersonCharacter_C'/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla.BigTriplexHouseVilla:PersistentLevel.FirstPersonCharacter_C_1'"
+          ]
+        }
+      ]
+    }
+  ],
+  "separateDiagnostics": {
+    "performanceExcluded": true,
+    "textureSizes": [
+      {
+        "label": "Lumen.ScreenProbeGather.ScreenProbeSceneDepth",
+        "width": 88,
+        "height": 75,
+        "layers": 1,
+        "format": "r32uint"
+      },
+      {
+        "label": "SceneDepthZ",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "depth32float-stencil8"
+      },
+      {
+        "label": "Lumen.SceneDepth",
+        "width": 4096,
+        "height": 4096,
+        "layers": 1,
+        "format": "r16float"
+      },
+      {
+        "label": "SceneColor",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "rgba16float"
+      },
+      {
+        "label": "GBufferA",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "rgb10a2unorm"
+      },
+      {
+        "label": "GBufferB",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "bgra8unorm"
+      },
+      {
+        "label": "GBufferC",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "bgra8unorm-srgb"
+      },
+      {
+        "label": "GBufferD",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "bgra8unorm"
+      },
+      {
+        "label": "GBufferE",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "bgra8unorm"
+      },
+      {
+        "label": "DistortedSceneColor",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "rgba16float"
+      },
+      {
+        "label": "PostDOFTranslucency.SceneColor",
+        "width": 1400,
+        "height": 792,
+        "layers": 1,
+        "format": "rg11b10ufloat"
+      },
+      {
+        "label": "PostProcessing.SceneColor.HalfRes",
+        "width": 960,
+        "height": 540,
+        "layers": 1,
+        "format": "rg11b10ufloat"
+      },
+      {
+        "label": "MotionBlur.SceneColor",
+        "width": 1920,
+        "height": 1080,
+        "layers": 1,
+        "format": "rg11b10ufloat"
+      },
+      {
+        "label": "MotionBlur.SceneColor.HalfRes",
+        "width": 960,
+        "height": 540,
+        "layers": 1,
+        "format": "rg11b10ufloat"
+      }
+    ],
+    "interaction": {
+      "afterPerformanceMeasurement": true,
+      "keys": [
+        "s:1000ms",
+        "d:1000ms"
+      ],
+      "mouseDelta": [
+        100,
+        30
+      ],
+      "movementImageDifference": 27.79546296296296,
+      "turnImageDifference": 25.12273148148148,
+      "pointerLock": null,
+      "beforeMove": {
+        "x": 412.489075,
+        "y": -438.574615,
+        "z": 92.400001,
+        "pitch": -89.900002,
+        "yaw": -102.017334,
+        "roll": 0
+      },
+      "afterMove": {
+        "x": 449.108477,
+        "y": -300.297837,
+        "z": 92.400002,
+        "pitch": -89.900002,
+        "yaw": -102.017334,
+        "roll": 0
+      },
+      "afterTurn": {
+        "x": 449.108477,
+        "y": -300.297837,
+        "z": 92.4,
+        "pitch": -89.900002,
+        "yaw": -83.516692,
+        "roll": 0
+      },
+      "distanceCm": 143.0435176332674,
+      "turnDegrees": 18.50064199999997,
+      "note": "Official LogLoc/FlushLog captures pawn position and view rotation outside the performance measurement."
+    }
+  },
+  "boundaries": [
+    "Final canvas CPU submission intervals cross-checked against official RHI present counts, not physical display or GPU completion FPS.",
+    "Fresh browser profiles are not cold OS files or cold GPU-driver shader caches. Local unshaped HTTP only.",
+    "Two stationary entry-view runs per baseline; the normal page has one supplementary run. No whole-villa performance average.",
+    "Default frame gate 2 follows browser animation frames; observed approximately 120 FPS cap in this display environment.",
+    "Desktop default auto resolution allocates 1400x792 SceneColor/Depth; 1920x1080 is the canvas output. The separate 100-percent run is explicit.",
+    "Desktop is experimental; Lumen reflections are disabled by the official device profile. No native Windows visual parity acceptance.",
+    "Texture pool warnings and unbuilt lighting remain. Forward M_GlassBlur falls back to default material; runtime engine warnings remain.",
+    "First camera-diagnostic attempt failed in the measurement helper; its results are excluded. The corrected v2 run passed.",
+    "Browser working-set sums may double-count shared pages; private bytes measure committed private memory.",
+    "No direct performance ratio against the historical customized 5.8 builds. No public deployment."
+  ]
+}

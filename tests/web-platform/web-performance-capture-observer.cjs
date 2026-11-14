@@ -130,8 +130,9 @@ module.exports = function installPerformanceCapture() {
     get: () => presented, set(value) {
       if (value <= presented) return;
       const time = now();
+      const intervalMs = previousPresent === undefined ? null : time - previousPresent;
       if (capture.active) capture.frames.push({presented: value, time,
-        intervalMs: previousPresent === undefined ? null : time - previousPresent,
+        intervalMs,
         rhiWorkTotal: globalThis.__webThreadStages?.rhiWorkMilliseconds, calls: frameCalls, apiMs: frameAPIMs});
       frameCalls = {}; frameAPIMs = {}; previousPresent = time; presented = value;
       // Arm at a present boundary so the first capture includes a complete frame.
@@ -153,7 +154,8 @@ module.exports = function installPerformanceCapture() {
           gpuStartMs: Number(times[index * 2] - origin) / 1e6,
           gpuMs: Number(times[index * 2 + 1] - times[index * 2]) / 1e6}));
         readback.unmap(); gpuBusy = false;
-        completed.resolve({presented: value, entries, totalPassMs: entries.reduce((sum, e) => sum + e.gpuMs, 0)});
+        completed.resolve({presented: value, submittedAt: time, submissionIntervalMs: intervalMs,
+          entries, totalPassMs: entries.reduce((sum, e) => sum + e.gpuMs, 0)});
       }, error => { gpuBusy = false; completed.reject(error); });
     }});
   globalThis.__webStartPerformanceCapture = () => {

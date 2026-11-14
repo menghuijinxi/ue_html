@@ -2,7 +2,16 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const {audit} = require('./content-file-metadata.cjs');
+function validateTSRTileInventory(cook) {
+  if (cook.mode !== 'WebGPU-SM5') return;
+  const types = cook.shaderInventory?.detail?.types;
+  const minimums = {FTSRRejectShadingCS: 48, FTSRDetectThinGeometryCS: 24, FTSRWeightRelaxationCS: 8};
+  for (const [name, minimum] of Object.entries(minimums))
+    assert(types?.some(type => type.name === name && type.permutations >= minimum),
+      'Cook lacks the current 16x16/32x32 TSR permutations; rerun the native Renderer build and Cook: ' + name);
+}
 function validateCook(cook, reuse, report) {
+  validateTSRTileInventory(cook);
   const valid = item => fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
   assert(cook.pass && cook.sourceFiles.every(valid) && cook.products.every(valid),
     'Cook inputs or cooked products changed');
@@ -17,4 +26,4 @@ function validateCook(cook, reuse, report) {
     recompiledHostBinaries: changed.map(item => ({historical: item, current: audit(item.file)})),
     boundary: 'Reuses historical Cook output with identical source/config/shader/resource audits. Host binaries were recompiled; Cook was not rerun.'};
 }
-module.exports = {validateCook};
+module.exports = {validateCook, validateTSRTileInventory};

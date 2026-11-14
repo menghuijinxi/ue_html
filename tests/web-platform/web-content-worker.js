@@ -19,6 +19,7 @@ const hash = async bytes => {
 };
 const markerName = value => value + '.json';
 const lockName = value => 'ue-web-local-' + value;
+const preparationLockName = value => lockName(value) + '-prepare';
 const cacheDirectory = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('ue-web-local-v1', {create: true});
 
 async function removeEntry(name) {
@@ -39,7 +40,10 @@ async function exists(info) {
     const file = await (await directory.getFileHandle(info.sha256 + '.bin')).getFile();
     return marker.sha256 === info.sha256 && marker.size === info.size && file.size === info.size &&
       (!fullVerification || marker.verification === 'full');
-  } catch { return false; }
+  } catch (error) {
+    if (error.name === 'InvalidStateError') throw error;
+    return false;
+  }
 }
 
 async function download(info) {
@@ -122,14 +126,29 @@ async function trimDisk(quotaRecovery = false) {
   for (const item of items.sort((a, b) => a.used - b.used)) {
     if (!quotaRecovery && bytes <= diskLimit) break;
     if (assets.has(item.sha256)) continue;
-    await navigator.locks.request(lockName(item.sha256), {ifAvailable: true}, async lock => {
-      if (!lock) return;
-      await discard(item.sha256);
-      bytes -= item.size;
-      ++stats.diskEvictions;
-      stats.reclaimedBytes += item.size;
+    await navigator.locks.request(preparationLockName(item.sha256), {ifAvailable: true}, async preparing => {
+      if (!preparing) return;
+      await navigator.locks.request(lockName(item.sha256), {ifAvailable: true}, async lock => {
+        if (!lock) return;
+        await discard(item.sha256);
+        bytes -= item.size;
+        ++stats.diskEvictions;
+        stats.reclaimedBytes += item.size;
+      });
     });
   }
+}
+
+function openShared(info) {
+  let ready, failed;
+  const opened = new Promise((resolve, reject) => { ready = resolve; failed = reject; });
+  navigator.locks.request(lockName(info.sha256), {mode: 'shared'}, async () => {
+    if (!await exists(info)) return;
+    ready(await (await directory.getFileHandle(info.sha256 + '.bin')).getFile());
+    // Keep immutable content alive until this worker closes, including bulk reads.
+    await new Promise(() => {});
+  }).then(() => ready(null), failed);
+  return opened;
 }
 
 async function asset(info) {
@@ -145,7 +164,7 @@ async function asset(info) {
         if (!['NotFoundError', 'InvalidStateError'].includes(error.name) || attempt !== 0) throw error;
         // OPFS can invalidate a cached directory/file handle independently of
         // our Web Locks (for example when browser storage is reclaimed).
-        // Reopen from the storage root and revalidate under the exclusive lock.
+        // Reopen from the storage root and revalidate under the preparation lock.
         // A stale snapshot can also fail with InvalidStateError after browser
         // storage changes. Download already discards any partial write while
         // holding the exclusive lock. Retry opening with fresh handles once;
@@ -160,10 +179,20 @@ async function asset(info) {
 }
 
 async function openAsset(info) {
-    let opened;
-    await navigator.locks.request(lockName(info.sha256), async () => {
-      if (await exists(info)) ++stats.persistentHits;
-      else {
+  return navigator.locks.request(preparationLockName(info.sha256), async () => {
+    // Cache hits acquire a shared lease so another page's lifetime lease cannot
+    // block preparation. Only a missing asset needs the exclusive content lock.
+    let downloaded = false;
+    for (;;) {
+      const file = await openShared(info);
+      if (file) {
+        if (!downloaded) ++stats.persistentHits;
+        return {info, file};
+      }
+      if (downloaded) throw new DOMException('Local content cache disappeared after download', 'NotFoundError');
+      await navigator.locks.request(lockName(info.sha256), {ifAvailable: true}, async lock => {
+        if (!lock) throw new Error('Local content cache needs rebuilding but another page is using it. Close that page and reload.');
+        if (await exists(info)) return;
         try { await download(info); }
         catch (error) {
           if (error.name !== 'QuotaExceededError') throw error;
@@ -181,19 +210,10 @@ async function openAsset(info) {
             throw retryError;
           }
         }
-      }
-      // Queue the shared lease before releasing the exclusive lock so another
-      // worker's quota cleanup cannot delete the file between download and use.
-      let ready, failed;
-      opened = new Promise((resolve, reject) => { ready = resolve; failed = reject; });
-      navigator.locks.request(lockName(info.sha256), {mode: 'shared'}, async () => {
-        try { ready(await (await directory.getFileHandle(info.sha256 + '.bin')).getFile()); }
-        catch (error) { failed(error); return; }
-        await new Promise(() => {});
-      }).catch(failed);
-    });
-    const file = await opened;
-    return {info, file};
+        downloaded = true;
+      });
+    }
+  });
 }
 
 async function block(value, index) {

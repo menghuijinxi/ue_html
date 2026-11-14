@@ -32,6 +32,7 @@ struct FWebGPUShaderBinding : UE::WebGPUShader::FRuntimeBinding
     const FJsonObject* Metadata = nullptr; // Only legacy/explicit validation loads own a DOM.
     bool StorageContractChecked = false;
     int32 SamplerBiasSlot = INDEX_NONE;
+    bool TextureAtomicHeaders = false;
     // Prepared descriptors are reusable only while their source and access
     // state are unchanged. The bind-group cache below owns GPU handle refs.
     TRefCountPtr<FRHIResource> PreparedResource;
@@ -128,8 +129,10 @@ struct FWebGPUShaderData
     TArray<uint64, TInlineAllocator<4>> GroupGlobalsVersions;
     TMap<uint32, uint32> ResourceGroupMasks;
     uint32 GlobalsGroupMask = 0;
+    uint64 BindingVersion = 1;
     void InvalidateGroups(uint32 Mask, bool GlobalsOnly = false)
     {
+        if (Mask) ++BindingVersion;
         if (GlobalsOnly) GroupGlobalsVersions.SetNumZeroed(GroupVersions.Num());
         for (int32 Group = 0; Group < GroupVersions.Num(); ++Group)
             if (Mask & (1u << Group))
@@ -148,6 +151,11 @@ struct FWebGPUShaderData
     WGPUBuffer SamplerBiasBuffer = nullptr;
     float SamplerBiasValues[4] = {};
     uint64 SamplerBiasVersion = 1;
+    int32 TextureAtomicHeadersGroup = INDEX_NONE;
+    TArray<int32> TextureAtomicHeaderSources;
+    TArray<FUintVector4> TextureAtomicHeaderValues;
+    WGPUBuffer TextureAtomicHeadersBuffer = nullptr;
+    uint64 TextureAtomicHeadersVersion = 1;
     EShaderFrequency Frequency = SF_NumFrequencies;
     ~FWebGPUShaderData()
     {
@@ -155,6 +163,8 @@ struct FWebGPUShaderData
             WebGPUOnOwner([&] { wgpuBufferRelease(GlobalsBuffer); });
         if (SamplerBiasBuffer)
             WebGPUOnOwner([&] { wgpuBufferRelease(SamplerBiasBuffer); });
+        if (TextureAtomicHeadersBuffer)
+            WebGPUOnOwner([&] { wgpuBufferRelease(TextureAtomicHeadersBuffer); });
         if (Module)
             WebGPUOnOwner([&] { wgpuShaderModuleRelease(Module); });
     }
@@ -273,7 +283,13 @@ class FWebGPUTexture final : public FRHITexture
         WGPUBuffer Buffer = nullptr;
         uint64 Bytes = 0;
         uint32 RowPitch = 0;
+        // The mirror was bound for atomics after the last buffer-to-texture copy.
         TArray<uint8> DirtySlices;
+        // The texture may have been written without the mirror after the last
+        // texture-to-buffer copy. A new texture and its mirror both start zeroed.
+        TArray<uint8> StaleSlices;
+        // Opted in by the paired texture/mirror VSM synchronization shader.
+        bool ExplicitSync = false;
     };
     TArray<FAtomicMip> AtomicMips;
     FWebGPUResourceState State;
@@ -690,6 +706,10 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     FString AdapterName;
     uint32 Draws = 0, Dispatches = 0, Finalized = 0, Submitted = 0, BoundGroups = 0;
     uint32 IndirectDraws = 0;
+    uint32 IndirectBindingHits = 0;
+    TRefCountPtr<FWebGPUGraphicsPipeline> PreparedDrawPipeline;
+    uint32 PreparedDrawFrame = MAX_uint32;
+    uint64 PreparedDrawAccess = 0, PreparedDrawVersions[2] = {};
     uint32 UniformUploads = 0;
     uint32 BindGroupCacheHits = 0, BindGroupCacheEntries = 0;
     uint32 BindGroupFastHits = 0;
@@ -838,7 +858,14 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
                                                   FString &Error) const;
     bool ValidateTextureAtomicBinding(FRHIResource* Resource, const FWebGPUStorageContract& Binding,
         ERHIAccess Access, FString& Error) const;
-    void SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, ERHIAccess NextAccess);
+    void SyncTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice,
+        ERHIAccess PreviousAccess, ERHIAccess NextAccess);
+    void CopyTextureAtomicSlice(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, bool ToTexture);
+    void RefreshTextureAtomicBuffer(FWebGPUTexture* Texture, uint32 Mip);
+    void PrepareTextureAtomicTextureUse(FWebGPUTexture* Texture, uint32 Mip, uint32 Slice, bool Write);
+    bool DeferTextureAtomicSync() const;
+    uint64 AtomicCopiesToTexture = 0, AtomicCopiesToBuffer = 0, AtomicCopyBytes = 0;
+    uint32 AtomicHeaderBindings = 0;
     uint64 RHIGetMinimumAlignmentForBufferBackedSRV(EPixelFormat Format) override;
     bool ResolveSampledTexture(FRHIResource *Resource, FWebGPUTexture *&Texture, WGPUTextureView &View,
                                ERHIAccess Access, FString &Error) const;
@@ -1002,7 +1029,8 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     TArray<FWebGPUResolvedGroup> BoundGraphicsGroups;
     void ResetEncoderBindings();
     void SetIndexBinding(FWebGPUBuffer*);
-    void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr);
+    void SetVertexBindings();
+    void SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups = nullptr, bool Indirect = false, bool Vertex = true);
     WGPUComputePassEncoder BeginComputePass();
     void ClearStorageUAV(FRHIUnorderedAccessView*, const FUintVector4&, bool Float);
     TMap<FString, WGPUComputePipeline> ClearPipelines;

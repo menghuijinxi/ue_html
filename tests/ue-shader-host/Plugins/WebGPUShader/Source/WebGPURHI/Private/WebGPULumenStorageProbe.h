@@ -4,6 +4,7 @@
 #include "WebGPUProbeUtils.h"
 #include "WebGPUUAVRasterProbe.h"
 #include "WebGPUTextureAtomicProbe.h"
+#include "WebGPUTextureExplicitSyncProbe.h"
 #include "WebGPUTextureUploadProbe.h"
 #include "WebGPUVirtualResourceViewProbe.h"
 #include "WebGPUSamplerBiasProbe.h"
@@ -14,6 +15,12 @@
 
 inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString& Output)
 {
+    auto* ReuseSetting = IConsoleManager::Get().FindConsoleVariable(TEXT("r.WebGPU.IndirectDrawReuse"));
+    const int32 PreviousReuse = ReuseSetting->GetInt();
+    ReuseSetting->Set(2, ECVF_SetByCode);
+    auto* PageSetting = IConsoleManager::Get().FindConsoleVariable(TEXT("r.WebGPU.VSMPageOptimization"));
+    const int32 PreviousPage = PageSetting->GetInt();
+    PageSetting->Set(3, ECVF_SetByCode);
     bool Success = false;
     IFileManager::Get().MakeDirectory(*Output, true);
     ENQUEUE_RENDER_COMMAND(WebLumenStorageProbe)([&](FRHICommandListImmediate& Cmd) {
@@ -574,6 +581,8 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Pass &= RunWebGPUUAVRasterCases(RHI, Cmd, RasterCases, DepthAtlasCases);
         TArray<TSharedPtr<FJsonValue>> TextureAtomicCases;
         Pass &= RunWebGPUTextureAtomicCases(RHI, Cmd, TextureAtomicCases);
+        TArray<TSharedPtr<FJsonValue>> TextureExplicitSyncCases;
+        Pass &= RunWebGPUTextureExplicitSyncCases(RHI, Cmd, TextureExplicitSyncCases);
         TArray<TSharedPtr<FJsonValue>> TextureUploadCases;
         Pass &= RunWebGPUTextureUploadCases(RHI, Cmd, TextureUploadCases);
         TArray<TSharedPtr<FJsonValue>> TextureViewCases;
@@ -589,6 +598,9 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetBoolField(TEXT("pass"), Pass && RHI.Errors.IsEmpty());
         Report->SetArrayField(TEXT("packedShadowMaskCases"), PackedShadowMaskCases);
         Report->SetNumberField(TEXT("pipelines"), RHI.ComputePipelinesCreated);
+        Report->SetNumberField(TEXT("atomicHeaderBindings"), RHI.AtomicHeaderBindings);
+        Report->SetNumberField(TEXT("atomicCopiesToTexture"), double(RHI.AtomicCopiesToTexture));
+        Report->SetNumberField(TEXT("atomicCopiesToBuffer"), double(RHI.AtomicCopiesToBuffer));
         Report->SetArrayField(TEXT("cases"), Cases);
         Report->SetArrayField(TEXT("volumeCases"), VolumeCases);
         Report->SetArrayField(TEXT("bufferCases"), BufferCases);
@@ -596,6 +608,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         Report->SetArrayField(TEXT("rasterCases"), RasterCases);
         Report->SetArrayField(TEXT("depthAtlasCases"), DepthAtlasCases);
         Report->SetArrayField(TEXT("textureAtomicCases"), TextureAtomicCases);
+        Report->SetArrayField(TEXT("textureExplicitSyncCases"), TextureExplicitSyncCases);
         Report->SetArrayField(TEXT("textureUploadCases"), TextureUploadCases);
         Report->SetArrayField(TEXT("textureViewCases"), TextureViewCases);
         Report->SetBoolField(TEXT("volatilePassVersions"), VolatilePass);
@@ -610,5 +623,7 @@ inline bool RunWebGPULumenStorageProbe(IDynamicRHIModule& Module, const FString&
         check(FFileHelper::SaveStringToFile(Json, *(Output / TEXT("lumen-storage-rhi.json"))));
     });
     FlushRenderingCommands();
+    ReuseSetting->Set(PreviousReuse, ECVF_SetByCode);
+    PageSetting->Set(PreviousPage, ECVF_SetByCode);
     return Success;
 }

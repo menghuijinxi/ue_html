@@ -1,0 +1,656 @@
+{
+  "date": "2026-11-12T07:50:49.345Z",
+  "pass": true,
+  "package": {
+    "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-tsr-tiles-20261112\\asset-versions.json",
+    "sha256": "9fcc38b967db3829cacb508921ff6d936efaaa70c9961d13c34de6aceba1ef43"
+  },
+  "referenceEngineCommit": "3839f747a32391cb0c8448c9c7bc3194431b60da",
+  "packageReport": {
+    "file": "H:\\ue_html\\tests\\web-platform\\results\\web-project-triplex-virtual-distance-fields-threads-package-results.json",
+    "sha256": "a9ba623a55ae934d961c62866243fd38a2b34eca0f142957ea921ab1c9f3d2a8"
+  },
+  "sources": [
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\diagnostics\\summarize-lumen-tsr-hotspots.cjs",
+      "sha256": "75a8dd9a1fac3412d9a2d80bb188562bf9ba790626dcb473791311a374076ba4"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\web-tsr-shader-overrides.cjs",
+      "sha256": "8c8c398febcefad2f4428c4c26190a74b69fff65d1038fbd32d36093e4752f01"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\cached-cook-validation.cjs",
+      "sha256": "47022a93a678ab5ff8cb5e7c34336ca92ab126bddf86c3f957bbc10759a6cc41"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\verify-web-tsr-cook-policy.cjs",
+      "sha256": "6eba2d0aaf5b6f35162812e9aecb928e491f3352bb04791ee5a7b21e2002c4af"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\web-platform\\project-output.cjs",
+      "sha256": "2e8e7b71ade05656e07c80fad0c9f3310f6ce292b14572e04ee8d7ecff0b53ad"
+    },
+    {
+      "file": "H:\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\PostProcess\\TemporalSuperResolution.cpp",
+      "sha256": "9c9ef8523252b0250b50fb4bf9f914b592119d4c9c5c2a022e99aeab8aa0d5f8"
+    },
+    {
+      "file": "H:\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+      "sha256": "bc799e255b799ce66ee065df08bde7c990e660f81657d926f701ac348c998c57"
+    }
+  ],
+  "inputs": {
+    "benchmark": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-abba-20261112\\result.json",
+      "sha256": "1440dc8abbbaa61d867b3a4fb6a8bb42fb0e347b078b713c45e8ed16e437ff29"
+    },
+    "control": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-control-gpu-20261112\\result.json",
+      "sha256": "2ad7722b5aa554b2ed3d237e7c64053c240f01714905a5aa691930d60ae529ee"
+    },
+    "candidate": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-candidate-gpu-20261112\\result.json",
+      "sha256": "2d66babf7d5195acf88338ebace0c56f163698e8b397616b6a1dd39cad7e730f"
+    },
+    "release": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-release-20261112\\result.json",
+      "sha256": "dc3e067603bf88da8f771b1bd8d5ac7149673149e433823ae5eb577d7ceaa721"
+    },
+    "repeat": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-baab-20261112\\result.json",
+      "sha256": "40d277fa3b0ecfde49e59c1db41d2134dc59d358f3000568013e90dfb16586f2"
+    },
+    "recovery": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-package-recovery-20261112.json",
+      "sha256": "9f4f396bc0b316ce3d47f0b727c5039d0375250f97429129024ef91a392fde27"
+    },
+    "fallback-invocations": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-fallback-invocations-20261112\\result.json",
+      "sha256": "ce39f098c0293744fb3bca21bcf8e45d86c2bc298f4721ed8cfc97fa42ae8964"
+    },
+    "fallback-x": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-fallback-x-v3-20261112\\result.json",
+      "sha256": "155e0cfbe94318a28fb7249bf7b0b4f9048e3873a2e67aebc230c2879cede3b7"
+    },
+    "fallback-storage": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-fallback-storage-v2-20261112\\result.json",
+      "sha256": "4d172eb1d2c4fba37705bcd7c354a988b53abbf79782071d3646c09925c29ba5"
+    }
+  },
+  "performance": [
+    {
+      "phase": "standing",
+      "before": {
+        "mode": 0,
+        "runs": [
+          {
+            "frames": 964,
+            "fps": 47.74441089513871,
+            "low1Fps": 38.77622242144245,
+            "p99Ms": 24.96000000089407,
+            "maxMs": 29.28999999910593,
+            "rhiMs": 9.654822127189043,
+            "indirectTemplateHitsPerFrame": 6780.979274611399,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4160.813471502591,
+            "indirectDrawsPerFrame": 6780.979274611399
+          },
+          {
+            "frames": 934,
+            "fps": 46.26680391494062,
+            "low1Fps": 31.9473507658769,
+            "p99Ms": 29.195000000298023,
+            "maxMs": 35.774999998509884,
+            "rhiMs": 10.522305391689036,
+            "indirectTemplateHitsPerFrame": 6574.4053475935825,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4034.063101604278,
+            "indirectDrawsPerFrame": 6574.4053475935825
+          },
+          {
+            "frames": 922,
+            "fps": 45.73565831197394,
+            "low1Fps": 33.91382497050939,
+            "p99Ms": 26.240000002086163,
+            "maxMs": 38.78000000119209,
+            "rhiMs": 9.934585763470452,
+            "indirectTemplateHitsPerFrame": 6659.875406283857,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4086.5059588299023,
+            "indirectDrawsPerFrame": 6659.875406283857
+          },
+          {
+            "frames": 925,
+            "fps": 45.82724367707895,
+            "low1Fps": 35.755787968082096,
+            "p99Ms": 26.984999999403954,
+            "maxMs": 30.87999999895692,
+            "rhiMs": 9.958072048541537,
+            "indirectTemplateHitsPerFrame": 6638.291576673866,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4073.2591792656585,
+            "indirectDrawsPerFrame": 6638.291576673866
+          }
+        ],
+        "frames": 3745,
+        "fps": 46.393836222697026,
+        "low1Fps": 33.774175198946736,
+        "p99Ms": 27.20499999821186
+      },
+      "after": {
+        "mode": 1,
+        "runs": [
+          {
+            "frames": 963,
+            "fps": 47.59527704603379,
+            "low1Fps": 36.41793218933595,
+            "p99Ms": 26.275000002235174,
+            "maxMs": 31.469999998807907,
+            "rhiMs": 10.087959499279988,
+            "indirectTemplateHitsPerFrame": 6582.317427385892,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4038.914937759336,
+            "indirectDrawsPerFrame": 6582.317427385892
+          },
+          {
+            "frames": 959,
+            "fps": 47.48457989020334,
+            "low1Fps": 36.15917267865517,
+            "p99Ms": 25.925000000745058,
+            "maxMs": 33.899999998509884,
+            "rhiMs": 9.82478233083354,
+            "indirectTemplateHitsPerFrame": 6602.8532778355875,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4051.5109261186262,
+            "indirectDrawsPerFrame": 6602.8532778355875
+          },
+          {
+            "frames": 951,
+            "fps": 47.15004970338576,
+            "low1Fps": 33.974315417561535,
+            "p99Ms": 27.50499999895692,
+            "maxMs": 34.775000002235174,
+            "rhiMs": 9.970784688196263,
+            "indirectTemplateHitsPerFrame": 6665.290966386555,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4089.828781512605,
+            "indirectDrawsPerFrame": 6665.290966386555
+          },
+          {
+            "frames": 936,
+            "fps": 46.23036104875066,
+            "low1Fps": 35.01277966419396,
+            "p99Ms": 27.125,
+            "maxMs": 30.989999998360872,
+            "rhiMs": 10.017747431198332,
+            "indirectTemplateHitsPerFrame": 6560.355389541089,
+            "indirectTemplatesCreatedPerFrame": 0,
+            "indirectBindingHitsPerFrame": 4025.435432230523,
+            "indirectDrawsPerFrame": 6560.355389541089
+          }
+        ],
+        "frames": 3809,
+        "fps": 47.11472410581142,
+        "low1Fps": 35.12975490234575,
+        "p99Ms": 26.71000000089407
+      },
+      "fpsChangePercent": 1.5538440918186458,
+      "low1ChangePercent": 4.01365746288096
+    },
+    {
+      "phase": "turning",
+      "before": {
+        "mode": 0,
+        "runs": [
+          {
+            "frames": 976,
+            "fps": 48.252860811267155,
+            "low1Fps": 38.0285975051947,
+            "p99Ms": 25.725000001490116,
+            "maxMs": 27.769999999552965,
+            "rhiMs": 9.722203778878937,
+            "indirectTemplateHitsPerFrame": 5959.635619242579,
+            "indirectTemplatesCreatedPerFrame": 0.06550665301944729,
+            "indirectBindingHitsPerFrame": 3633.370522006141,
+            "indirectDrawsPerFrame": 5959.701125895599,
+            "degrees": 342.05490087890644,
+            "distance": 0
+          },
+          {
+            "frames": 956,
+            "fps": 47.355450706492796,
+            "low1Fps": 34.39558360669464,
+            "p99Ms": 27.46500000357628,
+            "maxMs": 35.25,
+            "rhiMs": 10.581626912020342,
+            "indirectTemplateHitsPerFrame": 6096.6551724137935,
+            "indirectTemplatesCreatedPerFrame": 0.06687565308254964,
+            "indirectBindingHitsPerFrame": 3717.2831765935216,
+            "indirectDrawsPerFrame": 6096.722048066876,
+            "degrees": 342.3449707031251,
+            "distance": 0
+          },
+          {
+            "frames": 933,
+            "fps": 46.10297665623035,
+            "low1Fps": 34.21318234000996,
+            "p99Ms": 27.32999999821186,
+            "maxMs": 34.36500000208616,
+            "rhiMs": 10.146303146247945,
+            "indirectTemplateHitsPerFrame": 6048.134903640257,
+            "indirectTemplatesCreatedPerFrame": 0.06852248394004283,
+            "indirectBindingHitsPerFrame": 3687.5310492505355,
+            "indirectDrawsPerFrame": 6048.203426124197,
+            "degrees": 341.92277929687475,
+            "distance": 0
+          },
+          {
+            "frames": 928,
+            "fps": 46.06053386541532,
+            "low1Fps": 35.09141313089486,
+            "p99Ms": 27.67000000178814,
+            "maxMs": 29.934999998658895,
+            "rhiMs": 10.221988187282797,
+            "indirectTemplateHitsPerFrame": 6081.388589881593,
+            "indirectTemplatesCreatedPerFrame": 0.0688912809472551,
+            "indirectBindingHitsPerFrame": 3707.881593110872,
+            "indirectDrawsPerFrame": 6081.457481162541,
+            "degrees": 342.31049999999993,
+            "distance": 0
+          }
+        ],
+        "frames": 3793,
+        "fps": 46.94351375975531,
+        "low1Fps": 34.93883405438254,
+        "p99Ms": 27.32999999821186
+      },
+      "after": {
+        "mode": 1,
+        "runs": [
+          {
+            "frames": 964,
+            "fps": 47.86291346619381,
+            "low1Fps": 36.08479927781894,
+            "p99Ms": 26.950000002980232,
+            "maxMs": 29.399999998509884,
+            "rhiMs": 10.255280488766498,
+            "indirectTemplateHitsPerFrame": 6238.060041407867,
+            "indirectTemplatesCreatedPerFrame": 0.06625258799171843,
+            "indirectBindingHitsPerFrame": 3804.0207039337474,
+            "indirectDrawsPerFrame": 6238.126293995859,
+            "degrees": 342.1908896484375,
+            "distance": 0
+          },
+          {
+            "frames": 968,
+            "fps": 47.803838332155415,
+            "low1Fps": 33.74274530982627,
+            "p99Ms": 27.24499999731779,
+            "maxMs": 36.82999999821186,
+            "rhiMs": 10.092288224935778,
+            "indirectTemplateHitsPerFrame": 6016.046439628483,
+            "indirectTemplatesCreatedPerFrame": 0.06604747162022703,
+            "indirectBindingHitsPerFrame": 3667.890608875129,
+            "indirectDrawsPerFrame": 6016.112487100103,
+            "degrees": 341.83880859375,
+            "distance": 0
+          },
+          {
+            "frames": 935,
+            "fps": 46.27496435342441,
+            "low1Fps": 32.07852823756916,
+            "p99Ms": 28.109999999403954,
+            "maxMs": 37.16499999910593,
+            "rhiMs": 10.387974080561065,
+            "indirectTemplateHitsPerFrame": 6020.776947705443,
+            "indirectTemplatesCreatedPerFrame": 0.06830309498399147,
+            "indirectBindingHitsPerFrame": 3671.016008537887,
+            "indirectDrawsPerFrame": 6020.845250800427,
+            "degrees": 341.8686035156248,
+            "distance": 0
+          },
+          {
+            "frames": 939,
+            "fps": 46.570901221333735,
+            "low1Fps": 35.706634292822564,
+            "p99Ms": 26.87999999895692,
+            "maxMs": 29.605000000447035,
+            "rhiMs": 10.225094379262721,
+            "indirectTemplateHitsPerFrame": 6001.076595744681,
+            "indirectTemplatesCreatedPerFrame": 0.06808510638297872,
+            "indirectBindingHitsPerFrame": 3658.7255319148935,
+            "indirectDrawsPerFrame": 6001.144680851064,
+            "degrees": 342.0341103515624,
+            "distance": 0
+          }
+        ],
+        "frames": 3806,
+        "fps": 47.128230268086966,
+        "low1Fps": 34.13342668962499,
+        "p99Ms": 27.260000001639128
+      },
+      "fpsChangePercent": 0.39348675362689267,
+      "low1ChangePercent": -2.305192450051219
+    },
+    {
+      "phase": "moving",
+      "before": {
+        "mode": 0,
+        "runs": [
+          {
+            "frames": 968,
+            "fps": 47.95951582688476,
+            "low1Fps": 38.53564547261486,
+            "p99Ms": 25.28500000014901,
+            "maxMs": 26.849999997764826,
+            "rhiMs": 9.529161994548282,
+            "indirectTemplateHitsPerFrame": 6284.783281733746,
+            "indirectTemplatesCreatedPerFrame": 0.0784313725490196,
+            "indirectBindingHitsPerFrame": 3862.1527347781216,
+            "indirectDrawsPerFrame": 6284.861713106295,
+            "degrees": 0,
+            "distance": 1964.373295368872
+          },
+          {
+            "frames": 925,
+            "fps": 45.70610873261519,
+            "low1Fps": 29.54864445554527,
+            "p99Ms": 31.54500000178814,
+            "maxMs": 37.88500000163913,
+            "rhiMs": 11.374107704821725,
+            "indirectTemplateHitsPerFrame": 6170.861771058316,
+            "indirectTemplatesCreatedPerFrame": 0.08207343412526998,
+            "indirectBindingHitsPerFrame": 3792.1771058315335,
+            "indirectDrawsPerFrame": 6170.943844492441,
+            "degrees": 0,
+            "distance": 1960.7559637915047
+          },
+          {
+            "frames": 930,
+            "fps": 45.93064374020092,
+            "low1Fps": 34.411562284751284,
+            "p99Ms": 26.734999999403954,
+            "maxMs": 34.98499999940395,
+            "rhiMs": 9.92340764989146,
+            "indirectTemplateHitsPerFrame": 6135.269602577873,
+            "indirectTemplatesCreatedPerFrame": 0.08163265306122448,
+            "indirectBindingHitsPerFrame": 3770.3995703544574,
+            "indirectDrawsPerFrame": 6135.351235230934,
+            "degrees": 0,
+            "distance": 1965.0543519662365
+          },
+          {
+            "frames": 926,
+            "fps": 45.841947262948956,
+            "low1Fps": 36.35041803059493,
+            "p99Ms": 26.189999997615814,
+            "maxMs": 33.20500000193715,
+            "rhiMs": 9.95877465512503,
+            "indirectTemplateHitsPerFrame": 6162.093851132686,
+            "indirectTemplatesCreatedPerFrame": 0.08198489751887811,
+            "indirectBindingHitsPerFrame": 3786.8673139158577,
+            "indirectDrawsPerFrame": 6162.175836030205,
+            "degrees": 0,
+            "distance": 1958.2855765019256
+          }
+        ],
+        "frames": 3749,
+        "fps": 46.358671065445776,
+        "low1Fps": 32.428050263395434,
+        "p99Ms": 27.945000000298023
+      },
+      "after": {
+        "mode": 1,
+        "runs": [
+          {
+            "frames": 960,
+            "fps": 47.52008280374569,
+            "low1Fps": 36.372233437171616,
+            "p99Ms": 26.5,
+            "maxMs": 28.799999997019768,
+            "rhiMs": 9.910059322190632,
+            "indirectTemplateHitsPerFrame": 6127.971933471934,
+            "indirectTemplatesCreatedPerFrame": 0.079002079002079,
+            "indirectBindingHitsPerFrame": 3765.9178794178792,
+            "indirectDrawsPerFrame": 6128.050935550936,
+            "degrees": 0,
+            "distance": 1958.5643993593
+          },
+          {
+            "frames": 958,
+            "fps": 47.296123100257326,
+            "low1Fps": 30.162727917099268,
+            "p99Ms": 30.279999997466803,
+            "maxMs": 38.96999999880791,
+            "rhiMs": 10.42899340391159,
+            "indirectTemplateHitsPerFrame": 6140.680208333333,
+            "indirectTemplatesCreatedPerFrame": 0.07916666666666666,
+            "indirectBindingHitsPerFrame": 3773.753125,
+            "indirectDrawsPerFrame": 6140.759375,
+            "degrees": 0,
+            "distance": 1969.5613158874114
+          },
+          {
+            "frames": 938,
+            "fps": 46.42802431184871,
+            "low1Fps": 34.344197547613376,
+            "p99Ms": 26.224999997764826,
+            "maxMs": 37.23499999940395,
+            "rhiMs": 9.924570719401041,
+            "indirectTemplateHitsPerFrame": 6077.698615548456,
+            "indirectTemplatesCreatedPerFrame": 0.08093716719914804,
+            "indirectBindingHitsPerFrame": 3735.1203407880726,
+            "indirectDrawsPerFrame": 6077.779552715655,
+            "degrees": 0,
+            "distance": 1963.8189541848844
+          },
+          {
+            "frames": 932,
+            "fps": 46.30523246643233,
+            "low1Fps": 35.98805196709442,
+            "p99Ms": 26.675000000745058,
+            "maxMs": 31.074999999254942,
+            "rhiMs": 10.00879585167986,
+            "indirectTemplateHitsPerFrame": 6118.4640943194,
+            "indirectTemplatesCreatedPerFrame": 0.08145766345123258,
+            "indirectBindingHitsPerFrame": 3760.154340836013,
+            "indirectDrawsPerFrame": 6118.545551982851,
+            "degrees": 0,
+            "distance": 1943.2500432777188
+          }
+        ],
+        "frames": 3788,
+        "fps": 46.88816621533223,
+        "low1Fps": 32.88804649303211,
+        "p99Ms": 27.74500000104308
+      },
+      "fpsChangePercent": 1.1421706828889544,
+      "low1ChangePercent": 1.4185133731456911
+    }
+  ],
+  "gpu": [
+    {
+      "phase": "standing",
+      "framesPerVariant": [
+        8,
+        8
+      ],
+      "passes": [
+        {
+          "name": "FTSRRejectShadingCS",
+          "beforeMs": 1.179648,
+          "afterMs": 0.9748479999999999,
+          "changePercent": -17.361111111111114
+        },
+        {
+          "name": "FTSRUpdateHistoryCS",
+          "beforeMs": 0.917504,
+          "afterMs": 0.909312,
+          "changePercent": -0.8928571428571397
+        },
+        {
+          "name": "FScreenProbeTraceVoxelsCS",
+          "beforeMs": 1.327104,
+          "afterMs": 1.318912,
+          "changePercent": -0.6172839506172867
+        },
+        {
+          "name": "FReflectionTraceVoxelsCS",
+          "beforeMs": 1.1059200000000002,
+          "afterMs": 1.089536,
+          "changePercent": -1.4814814814814947
+        },
+        {
+          "name": "FLumenRadiosityDistanceFieldTracingCS",
+          "beforeMs": 1.171456,
+          "afterMs": 1.220608,
+          "changePercent": 4.195804195804187
+        }
+      ]
+    },
+    {
+      "phase": "turning",
+      "framesPerVariant": [
+        8,
+        8
+      ],
+      "passes": [
+        {
+          "name": "FTSRRejectShadingCS",
+          "beforeMs": 1.3025280000000001,
+          "afterMs": 0.98304,
+          "changePercent": -24.52830188679246
+        },
+        {
+          "name": "FTSRUpdateHistoryCS",
+          "beforeMs": 0.974848,
+          "afterMs": 0.94208,
+          "changePercent": -3.361344537815125
+        },
+        {
+          "name": "FScreenProbeTraceVoxelsCS",
+          "beforeMs": 1.3926399999999999,
+          "afterMs": 1.335296,
+          "changePercent": -4.117647058823515
+        },
+        {
+          "name": "FReflectionTraceVoxelsCS",
+          "beforeMs": 0.9093120000000001,
+          "afterMs": 1.024,
+          "changePercent": 12.612612612612594
+        },
+        {
+          "name": "FLumenRadiosityDistanceFieldTracingCS",
+          "beforeMs": 1.040384,
+          "afterMs": 1.1878399999999998,
+          "changePercent": 14.173228346456668
+        }
+      ]
+    }
+  ],
+  "visual": {
+    "images": [
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-control-gpu-20261112\\standing.png",
+        "sha256": "d9d97ebcb6a38f40a6b1373bc76d2c10ee29ad28ee4d11013f96fa681e3878fb"
+      },
+      {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-candidate-gpu-20261112\\standing.png",
+        "sha256": "83594e8d9c91b19478b97d3d36024da82d63167bc28726c3e76ab2b59cb81d85"
+      }
+    ],
+    "pixels": 1925400,
+    "meanAbsChannelDifference": 0.7247669748269047,
+    "fractionOver8": 0.0033489145112703855,
+    "boundary": "Same camera after route warmup; letterbox and live HUD excluded. Scene time, temporal history and stochastic noise are not pixel-identical. This is a coarse image regression check plus manual inspection, not a guarantee for all views."
+  },
+  "fallbacks": [
+    {
+      "name": "fallback-invocations",
+      "limits": {
+        "invocations": 256,
+        "x": 1024,
+        "sharedBytes": 32768,
+        "physical": {
+          "invocations": 1024,
+          "x": 1024,
+          "sharedBytes": 32768
+        }
+      },
+      "dispatches": [
+        {
+          "entry": "main_000146bc_545bb051",
+          "workgroup": "256u, 1u, 1u"
+        }
+      ],
+      "boundary": "RHI capability-report fixture on a physical high-limit device; recorded prewarm was not replayed. Other existing shaders still require 1024 threads."
+    },
+    {
+      "name": "fallback-x",
+      "limits": {
+        "invocations": 1024,
+        "x": 256,
+        "sharedBytes": 32768,
+        "physical": {
+          "invocations": 1024,
+          "x": 1024,
+          "sharedBytes": 32768
+        }
+      },
+      "dispatches": [
+        {
+          "entry": "main_000146bc_545bb051",
+          "workgroup": "256u, 1u, 1u"
+        }
+      ],
+      "boundary": "RHI capability-report fixture on a physical high-limit device; recorded prewarm was not replayed. Other existing shaders still require 1024 threads."
+    },
+    {
+      "name": "fallback-storage",
+      "limits": {
+        "invocations": 1024,
+        "x": 1024,
+        "sharedBytes": 16384,
+        "physical": {
+          "invocations": 1024,
+          "x": 1024,
+          "sharedBytes": 32768
+        }
+      },
+      "dispatches": [
+        {
+          "entry": "main_000146bc_545bb051",
+          "workgroup": "256u, 1u, 1u"
+        }
+      ],
+      "boundary": "RHI capability-report fixture on a physical high-limit device; recorded prewarm was not replayed. Other existing shaders still require 1024 threads."
+    }
+  ],
+  "startupFailures": [
+    {
+      "input": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-startup-auto-prewarm-522a1c84-860a-436c-a58b-0f0e0883bf49\\result.json",
+        "sha256": "54800254c38dbc06c2b315b82c3aa91f9c9525fafc3b994f962cf5f8e16f52d2"
+      },
+      "excluded": "Failed during startup before any valid timed window"
+    },
+    {
+      "input": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-fallback-x-20261112\\result.json",
+        "sha256": "2b5aee11e989bc21c031c981bef945207ca6ded8691af40f12a2fe70e9ed4fa8"
+      },
+      "excluded": "Failed during startup before any valid timed window",
+      "failure": "AssertionError [ERR_ASSERTION]: \"Error: WebGPU device lost: A valid external Instance reference no longer exists.\\n    at http://127.0.0.1:8765/build/villa-tsr-tiles-20261112/web-engine-worker.js?v=b2108887dff6f4f87ffb68027029fcb10476fb3d4a32d64d506ea0752e4c4143:548:45\"\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\probe-lumen-tsr-hotspots.cjs:115:5"
+    },
+    {
+      "input": {
+        "file": "H:\\ue_html\\tests\\web-platform\\results\\tsr-tiles-fallback-storage-20261112\\result.json",
+        "sha256": "34a072ace0ece190f021d094490030e6d05bf23f7e34a229b5cfef80c01e473b"
+      },
+      "excluded": "Failed during startup before any valid timed window",
+      "failure": "AssertionError [ERR_ASSERTION]: \"Error: WebGPU device lost: DXC compile failed with E_OUTOFMEMORY (0x8007000E)\\n - While initializing [RenderPipeline \\\"main_00000d80_35b2d539 / main_000159dc_52178f7c\\\"]\\n - While handling unexpected error type Internal when allowed errors are (Validation|PipelineUncategorized).\\n    at CheckHRESULTImpl (..\\\\..\\\\third_party\\\\dawn\\\\src\\\\dawn\\\\native\\\\d3d\\\\D3DError.cpp:121)\\n\\nBackend messages:\\n * Device removed reason: S_OK (0x00000000)\\n\\n    at http://127.0.0.1:8765/build/villa-tsr-tiles-20261112/web-engine-worker.js?v=b2108887dff6f4f87ffb68027029fcb10476fb3d4a32d64d506ea0752e4c4143:548:45\"\n    at H:\\ue_html\\tests\\web-platform\\diagnostics\\probe-lumen-tsr-hotspots.cjs:115:5"
+    }
+  ],
+  "boundary": "GPU attribution splits compute passes; FPS and 1% Low use separate ABBA windows with normal pass reuse and no pipeline creation. Lumen settings, TSR quality, resolution and the first three accepted VSM optimizations remain active. Masked device tests prove shader/dispatch selection, not low-capability prewarm portability."
+}

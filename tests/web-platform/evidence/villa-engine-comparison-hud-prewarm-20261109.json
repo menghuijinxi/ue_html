@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-09",
+  "pass": true,
+  "entry": "http://127.0.0.1:8766/villa-engine-comparison.html#official",
+  "validation": {
+    "report": "tests/web-platform/results/villa-engine-comparison-20261109-hud-final/result.json",
+    "sha256": "6fe1a312e399ea4f60a2908472efc23f411e90788f994f3d1a7d2ce1efb90289",
+    "cpuAffinityOverride": false,
+    "bothRendered": true,
+    "bothHUDsShowFPSAndLow": true,
+    "bothSceneAndCanvasSize": [1920, 1080],
+    "outerWindowResizeKeeps1080p": true,
+    "officialEngineViewportResize": [1280, 720],
+    "officialRestoredTo1080p": true,
+    "engineSwitchAndMovement": true,
+    "pageAndGPUValidationErrors": [],
+    "officialFinalHUDPositionReport": "tests/web-platform/results/villa-engine-comparison-20261109-hud-layout/result.json"
+  },
+  "prewarm": {
+    "previousOfficialPipelineCount": 0,
+    "oursPSOPrecacheEnabled": true,
+    "tool": "Epic UE 5.9 prewarm_pack.py",
+    "stagePath": "TriplexHouseVilla/Content/WebGPUPrewarm-SF_WEBGPU_SM5.json",
+    "packSHA256": "ba1ecbcf409aee5c61d48abfda01d83dfecfe117825a1ce24637de66098c5525",
+    "packSHA1": "cbb04441c7f02ef83b2ace78630a7f5ab11abf72",
+    "buildStamp": "c71b876caee6fad40abf67cb24621f6207bc13fe",
+    "pipelinesReady": 261,
+    "renderHits": 145,
+    "computeHits": 128,
+    "failures": 0,
+    "captureReport": "tests/web-platform/results/villa-quality-20261109-capture/result.json",
+    "captureCpuAffinity": 4294901760,
+    "coverage": "Spawn view and short movement; not complete scene coverage."
+  },
+  "diagnostics": {
+    "clarityCauseResolved": false,
+    "sameActualResolutionConfirmed": true,
+    "texturePoolExperiment": [496, 2048],
+    "sharpenExperiment": 1,
+    "experimentsAppliedToDeliveredProfile": false,
+    "engineWasmOrCookModified": false,
+    "fpsRankingClaimed": false,
+    "boundary": "Both FPS panels measure submission intervals, not physical presentation. Common quality settings and active prewarming do not imply identical internal render work or cache implementations."
+  }
+}
