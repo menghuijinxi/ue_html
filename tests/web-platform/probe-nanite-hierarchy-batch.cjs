@@ -8,18 +8,20 @@ const fixed=process.argv.includes('--fixed-merge'),programmable=process.argv.inc
 // --hzb-mode: forced two-phase occlusion (0) against the automatic policy (1), which must take one round in these scenes.
 // --hzb-auto-two-phase: forced two-phase (0) against the automatic policy with threshold 1 (1), which must take two-phase.
 const hzbMode=process.argv.includes('--hzb-mode'),hzbAuto=process.argv.includes('--hzb-auto-two-phase');
-assert([occlusion,pack,micro,fixed,programmable,shade,hzbMode,hzbAuto].filter(Boolean).length<=1);
+// --batch-instances: the earlier 128 instances per rigid batch (0) against one batch per view (1), through WebNaniteTestSwitch.
+const batchInstances=process.argv.includes('--batch-instances'),batchInstancesSwitch=8;
+assert([occlusion,pack,micro,fixed,programmable,shade,hzbMode,hzbAuto,batchInstances].filter(Boolean).length<=1);
 // Startup r.Nanite.WebHZB. The switches that compare occlusion output need two-phase occlusion unless told otherwise.
-const hzb=option('hzb')??((occlusion||pack||micro||fixed||programmable||shade)?'1':undefined);
+const hzb=option('hzb')??((occlusion||pack||micro||fixed||programmable||shade||batchInstances)?'1':undefined);
 assert(hzb===undefined||(['0','1','2'].includes(hzb)&&!hzbMode&&!hzbAuto));
-const needsOcclusion=occlusion||pack||micro||fixed||programmable||shade||hzbAuto;
+const needsOcclusion=occlusion||pack||micro||fixed||programmable||shade||hzbAuto||batchInstances;
 const batchRPC=hzbMode||hzbAuto?'WebNaniteHZBModeTest':shade?'WebNaniteShadeBinningTest':programmable?'WebNaniteProgrammableMergeTest':fixed?'WebNaniteFixedMergeTest':micro?'WebNaniteMicroBatchTest':pack?'WebNanitePackBatchTest':occlusion?'WebNaniteOcclusionBatchTest':'WebNaniteHierarchyBatchTest';
 const materialPrecache=option('material-precache');assert(materialPrecache===undefined||['0','1'].includes(materialPrecache));
 assert([folder,tag].every(n=>/^[a-z0-9-]+$/.test(n)));
 const output=path.join(__dirname,'results',tag);assert(!fs.existsSync(output));fs.mkdirSync(output);
 const log=fs.createWriteStream(path.join(output,'engine.log'));
 fs.copyFileSync(__filename,path.join(output,'source.cjs'));
-const report={pass:false,villa,scalar,occlusion,pack,micro,fixed,programmable,shade,hzbMode,hzbAuto,hzb,materialPrecache,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],comparisons:[],errors:[],
+const report={pass:false,villa,scalar,occlusion,pack,micro,fixed,programmable,shade,hzbMode,hzbAuto,batchInstances,hzb,materialPrecache,source:audit(__filename),package:audit(path.join(__dirname,'build',folder,'package.json')),tests:[],comparisons:[],errors:[],
  boundary:'Correctness only: frozen visual clock and fixed temporal index. Same runtime/Cook, native hierarchy batch switch 0/1/0. Compare sorted per-instance cluster keys, all hierarchy counters, depth and material channels. Not FPS evidence.'};
 if(occlusion)report.boundary='Correctness only: frozen visual clock and fixed temporal index. Same runtime/Cook, hierarchy batching enabled, native occlusion batch switch 0/1/0. Compare both main/final per-instance key sets and counters, unchanged hierarchy selection, depth and material channels. Not FPS evidence.';
 if(pack)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, hierarchy/HZB/material precache enabled, native packing batch switch 0/1/0. Compare per-instance packed 12-byte records, both HZB key sets/counters, hierarchy, exact depth and material channels. Not FPS evidence.';
@@ -29,6 +31,7 @@ if(programmable)report.boundary='Correctness only: frozen visual clock and tempo
 if(shade)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, native shade binning switch 0/1/0. Compare per-instance records, hierarchy/HZB, exact depth and material channels. All other batching remains enabled. Not FPS evidence.';
 if(hzbMode)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, r.Nanite.WebHZB 1/2/1. The automatic value must select one raster round here. Compare hierarchy selection, exact depth and material channels; cluster occlusion output exists only in the two-phase steps. Not FPS evidence.';
 if(hzbAuto)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, r.Nanite.WebHZB 1/2/1 with the automatic threshold set to one cluster, which must select two-phase occlusion. Compare hierarchy, both occlusion key sets, packed records, exact depth and material channels. Not FPS evidence.';
+if(batchInstances)report.boundary='Correctness only: frozen visual clock and temporal sequence. Same runtime/Cook, r.Nanite.WebBatchInstances 128/4096/128. Compare hierarchy selection, occlusion key sets, packed records, exact depth and material channels, and that a view larger than 128 instances uses fewer dispatches. Not FPS evidence.';
 if(hzb!==undefined&&hzb!=='1')report.boundary+=' Startup r.Nanite.WebHZB='+hzb+': one raster round is asserted and cluster occlusion output is absent.';
 const save=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');
 const float=w=>new Float32Array(new Uint32Array([w]).buffer)[0];
@@ -80,7 +83,13 @@ function compare(before,after){
  assert.deepEqual(after.view,before.view);assert.equal(after.registered,before.registered);
  assert.deepEqual(hierarchy(after),hierarchy(before),'Hierarchy selection, LOD and error counters must match per instance');
  if(needsOcclusion&&hzb!=='0'&&hzb!=='2')for(const prefix of ['mainOcclusion','finalOcclusion'])assert.deepEqual(occlusionRows(after,prefix),occlusionRows(before,prefix),prefix+' per-instance keys and counters');
- if(pack||micro||fixed||programmable||shade||hzbAuto)assert.deepEqual(packedRows(after),packedRows(before),'Packed 12-byte records per instance');
+ if(pack||micro||fixed||programmable||shade||hzbAuto||batchInstances)assert.deepEqual(packedRows(after),packedRows(before),'Packed 12-byte records per instance');
+ if(batchInstances){
+  const one=after.batchInstances===4096?after:before,many=after.batchInstances===4096?before:after;
+  // One batch per view where the earlier limit needed several; never more dispatches.
+  for(const key of ['hierarchyDispatchBuffers','packDispatchBuffers','fixedDrawCalls','microDispatchBuffers'])assert(one[key]<=many[key],key);
+  if(one.entries>128){assert(one.hierarchyDispatchBuffers<many.hierarchyDispatchBuffers);assert(one.packDispatchBuffers<many.packDispatchBuffers);assert(one.fixedDrawCalls<many.fixedDrawCalls);}
+ }
  if(shade){
   const binned=after.shadeBinning?after:before,original=after.shadeBinning?before:after;
   assert.equal(original.shadeBinnedDraws,0);assert.equal(binned.shadeBinLegacyDraws,0);
@@ -151,6 +160,7 @@ function packedRows(t){
  let step=0;
  async function capture(label,batch){
   if(hzbMode||hzbAuto)assert.equal(await rpc(batchRPC,batch?2:1,batch&&hzbAuto?1:0),1);
+  else if(batchInstances)assert.equal(await rpc('WebNaniteTestSwitch',batchInstancesSwitch,batch?4096:128),1);
   else assert.equal(await rpc(batchRPC,batch),1);
   assert.equal(await rpc('WebNaniteAutomaticSceneTest',++step),1);let t;const start=Date.now();
   do{await page.waitForTimeout(100);assert.deepEqual(report.errors,[]);assert(!await page.evaluate(()=>globalThis.__webEngineFailure));assert.equal(await rpc('WebNaniteAutomaticSceneTest',0),1);t=await owner.evaluate(()=>globalThis.__webNaniteAutomaticSceneTest);}
@@ -159,10 +169,11 @@ function packedRows(t){
   if(hzbMode||hzbAuto){assert.equal(t.hzbMode,batch?2:1);if(hzbAuto&&batch)assert.equal(t.hzbAutoClusters,1);if(hzbMode&&t.entries)assert(capacity(t)<t.hzbAutoClusters,'The automatic policy must be below its threshold here');}
   else if(hzb!==undefined)assert.equal(t.hzbMode,Number(hzb));
   const twoPhase=checkOcclusionMode(t,batch);
-  if(!(hzbMode||hzbAuto))assert.equal(t[shade?'shadeBinning':programmable?'programmableMerge':fixed?'fixedMerge':micro?'microBatch':pack?'packBatch':occlusion?'occlusionBatch':'hierarchyBatch'],!!batch);assert.equal(t.rejected,0);
+  if(batchInstances)t.batchInstances=batch?4096:128;
+  if(!(hzbMode||hzbAuto||batchInstances))assert.equal(t[shade?'shadeBinning':programmable?'programmableMerge':fixed?'fixedMerge':micro?'microBatch':pack?'packBatch':occlusion?'occlusionBatch':'hierarchyBatch'],!!batch);assert.equal(t.rejected,0);
   if(materialPrecache!==undefined)assert.equal(t.materialPrecache,materialPrecache==='1');
-  const batched=hzbMode||hzbAuto?Number(!!twoPhase):t[shade?'shadeBinnedDraws':programmable?'programmableMergedEntries':fixed?'fixedMergedEntries':micro?'microBatchedEntries':pack?'packBatchedEntries':occlusion?'finalOcclusionBatchedEntries':'hierarchyBatchedEntries'],buffers=t[shade?'shadeBinLegacyDraws':programmable?'programmableDrawCalls':fixed?'fixedDrawCalls':micro?'microDispatchBuffers':pack?'packDispatchBuffers':occlusion?'finalOcclusionDispatchBuffers':'hierarchyDispatchBuffers'];
-  if(t.entries){assert(t.materialComplete);hierarchy(t);if(hzbMode||hzbAuto){assert(t.hierarchyBatch&&t.occlusionBatch&&t.shadeBinning);packedRows(t);}else if(shade){if(batch)assert(batched>0);else assert.equal(batched,0);}else if(programmable){if(!batch)assert.equal(batched,0);}else if(batch&&t.entries>1)assert(batched>0);else assert.equal(batched,0);
+  const batched=batchInstances?t.hierarchyBatchedEntries:hzbMode||hzbAuto?Number(!!twoPhase):t[shade?'shadeBinnedDraws':programmable?'programmableMergedEntries':fixed?'fixedMergedEntries':micro?'microBatchedEntries':pack?'packBatchedEntries':occlusion?'finalOcclusionBatchedEntries':'hierarchyBatchedEntries'],buffers=t[shade?'shadeBinLegacyDraws':programmable?'programmableDrawCalls':fixed?'fixedDrawCalls':micro?'microDispatchBuffers':pack?'packDispatchBuffers':occlusion?'finalOcclusionDispatchBuffers':'hierarchyDispatchBuffers'];
+  if(t.entries){assert(t.materialComplete);hierarchy(t);if(hzbMode||hzbAuto||batchInstances){assert(t.hierarchyBatch&&t.occlusionBatch&&t.packBatch&&t.microBatch&&t.fixedMerge&&t.shadeBinning);packedRows(t);}else if(shade){if(batch)assert(batched>0);else assert.equal(batched,0);}else if(programmable){if(!batch)assert.equal(batched,0);}else if(batch&&t.entries>1)assert(batched>0);else assert.equal(batched,0);
    if(occlusion||pack||micro||fixed||programmable||shade)assert(t.hierarchyBatch);
    if(pack||micro||fixed||programmable||shade){assert(t.occlusionBatch&&t.materialPrecache);packedRows(t);}
    if(programmable){assert(t.microBatch&&t.packBatch&&t.fixedMerge);assert.equal(t.programmableDrawArguments.length%4,0);
@@ -187,7 +198,8 @@ function packedRows(t){
   report.comparisons.push({name:c.name,on:compare(before,after),restored:compare(after,restored)});save();
   console.log(report.comparisons.at(-1));
  }
- assert.equal(await rpc('WebNaniteAutomaticSceneTest',-1),1);assert.equal(await rpc(batchRPC,-1,...(hzbMode||hzbAuto?[0]:[])),1);
+ assert.equal(await rpc('WebNaniteAutomaticSceneTest',-1),1);if(batchInstances)assert.equal(await rpc('WebNaniteTestSwitch',batchInstancesSwitch,-1),1);
+ else assert.equal(await rpc(batchRPC,-1,...(hzbMode||hzbAuto?[0]:[])),1);
  report.gpu=await owner.evaluate(()=>__batchGPU);assert.deepEqual(report.gpu.errors,[]);assert.equal(report.gpu.features.includes('atomic-vec2u-min-max'),!scalar);
  assert.deepEqual(report.errors,[]);report.pass=true;
 }catch(e){report.failure=e.stack;console.error(e.stack);process.exitCode=1;

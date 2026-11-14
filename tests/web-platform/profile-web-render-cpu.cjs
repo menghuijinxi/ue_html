@@ -6,12 +6,15 @@ const folder=option('folder')||'nanite-core-scene',tag=option('tag');
 const nanite=option('nanite');assert(nanite===undefined||nanite==='0'||nanite==='1');
 assert(/^[a-z0-9-]+$/.test(folder)&&/^[a-z0-9-]+$/.test(tag));
 // --thread=rhi samples the RHI thread (the WebGPU owner) instead of the rendering thread; output prefix follows the thread.
+// --tour samples during the interior tour instead of the fixed room view.
+const tour=process.argv.includes('--tour');
 const thread=option('thread')||'render';assert(['render','rhi'].includes(thread));
-const threadPattern=thread==='rhi'?/FRHIThread::Run/:/FRenderingThread::Run|RenderingThreadMain/;
+// The WebGPU owner worker replays the RHI command stream; it is the thread the frame period follows.
+const threadPattern=thread==='rhi'?/UEWebGPUStream::Stream::flush|FRHIThread::Run/:/FRenderingThread::Run|RenderingThreadMain/;
 // Startup console variables, name=value, comma separated.
 const cvars=(option('cvars')||'').split(',').filter(Boolean).map(v=>v.split('='));
 assert(cvars.every(v=>v.length===2&&/^[A-Za-z0-9_.]+$/.test(v[0])&&/^-?[0-9.]+$/.test(v[1])));
-const file=path.join(__dirname,'results',thread+'-cpu-'+tag),report={pass:false,thread,cvars,source:audit(__filename),errors:[]};
+const file=path.join(__dirname,'results',thread+'-cpu-'+tag),report={pass:false,thread,tour,cvars,source:audit(__filename),errors:[]};
 const summarize=p=>{
  const nodes=new Map(p.nodes.map(n=>[n.id,n])),parents=new Map(),self=new Map(),total=new Map();
  for(const n of p.nodes)for(const child of n.children||[])parents.set(child,n.id);
@@ -38,7 +41,7 @@ const summarize=p=>{
  assert.equal(await page.evaluate(()=>globalThis.__webEngineFailure||null),null);
  const owner=page.workers().find(w=>w.url().includes('web-engine-worker.js'));assert(owner);
  report.clock=await owner.evaluate(()=>globalThis.__webVisualTestClock||null);assert(!report.clock?.renderTimeFrozen&&!report.clock?.materialTimeFrozen);
- assert.equal(await page.evaluate(()=>__webEngineRPC('WebProjectViewTest',-175,-80,160,-5,50)),1);
+ if(!tour)assert.equal(await page.evaluate(()=>__webEngineRPC('WebProjectViewTest',-175,-80,160,-5,50)),1);
  const initial=await page.evaluate(()=>__webEngineFrames);await page.waitForFunction(f=>__webEngineFrames>=f+240,initial,{timeout:120000});
  const cdp=await context.browser().newBrowserCDPSession(),pending=new Map();let id=0;
  cdp.on('Target.receivedMessageFromTarget',event=>{const m=JSON.parse(event.message),task=pending.get(m.id);if(task){pending.delete(m.id);m.error?task.reject(Error(JSON.stringify(m.error))):task.resolve(m.result);}});
@@ -57,6 +60,9 @@ const summarize=p=>{
  assert(render,'The sampled thread must actually execute the requested UE thread loop');report.target=render.target;
  for(const s of sessions)if(s!==render)await cdp.send('Target.detachFromTarget',{sessionId:s.sessionId});
  const state=()=>page.evaluate(()=>({frames:__webEngineFrames,time:performance.now(),stages:__webThreadStages}));
+ // One warm-up lap first, so the sampled lap has no first-visit work.
+ if(tour){for(let lap=0;lap<2;lap++){const serial=await page.evaluate(()=>__webEngineRPC('WebMotionBenchmarkControl',3,30));assert(serial>0);
+   if(lap===0)await page.waitForFunction(s=>globalThis.__webMotionBenchmark?.serial===s&&globalThis.__webMotionBenchmark.completed&&!globalThis.__webMotionBenchmark.active,serial,{timeout:90000});}}
  const baseline=await state();await page.waitForTimeout(5000);const baselineAfter=await state();
  report.baselineFPS=(baselineAfter.frames-baseline.frames)*1000/(baselineAfter.time-baseline.time);
  await command(render.sessionId,'Profiler.setSamplingInterval',{interval:500});
