@@ -48,17 +48,19 @@ static TAutoConsoleVariable<int32> CVarWebGPUValidateBindingCache(
 static TAutoConsoleVariable<int32> CVarWebGPUBindingGroupCache(
     TEXT("r.WebGPU.BindingGroupCache"), 1,
     TEXT("Reuse prepared binding groups when resource, uniform and access generations match."), ECVF_RenderThreadSafe);
+// Keep accepted Web backend efficiencies at constructor priority. Project and
+// user configuration can still override each control through normal UE priority.
 static TAutoConsoleVariable<int32> CVarWebGPUGroupAccessRevalidation(
-    TEXT("r.WebGPU.GroupAccessRevalidation"), 0,
+    TEXT("r.WebGPU.GroupAccessRevalidation"), PLATFORM_WEB ? 2 : 0,
     TEXT("Experiment: reuse unchanged groups across access generations. 1: uniform/sampler groups; 2: revalidate resource access."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUDynamicGlobalsGroupReuse(
-    TEXT("r.WebGPU.DynamicGlobalsGroupReuse"), 0,
+    TEXT("r.WebGPU.DynamicGlobalsGroupReuse"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experiment: update dynamic globals offsets without rebuilding unchanged group descriptors."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUBindingPlan(
-    TEXT("r.WebGPU.BindingPlan"), 0,
+    TEXT("r.WebGPU.BindingPlan"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experiment: precompute descriptor slots and dynamic offset order per pipeline."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUStagingUploadPages(
-    TEXT("r.WebGPU.StagingUploadPages"), 0,
+    TEXT("r.WebGPU.StagingUploadPages"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experiment: reuse up to four 1 MiB upload pages after all frame encoders are submitted."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUOcclusionQueryWaitMs(
     TEXT("r.WebGPU.OcclusionQueryWaitMs"), 0,
@@ -67,23 +69,23 @@ static TAutoConsoleVariable<int32> CVarWebGPURenderBundles(
     TEXT("r.WebGPU.RenderBundles"), 0,
     TEXT("Experimental indexed draw bundle cache; disabled until performance benefits are established."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUIndirectDrawReuse(
-    TEXT("r.WebGPU.IndirectDrawReuse"), 0,
+    TEXT("r.WebGPU.IndirectDrawReuse"), PLATFORM_WEB ? 2 : 0,
     TEXT("Reuse indirect geometry command templates and validated graphics bindings. 1: templates; 2: both; 3: bindings only."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUVSMPageOptimization(
-    TEXT("r.WebGPU.VSMPageOptimization"), 0,
+    TEXT("r.WebGPU.VSMPageOptimization"), PLATFORM_WEB ? 3 : 0,
     TEXT("Startup only. Bit 1: immutable atomic texture header uniforms; bit 2: defer mirror copies across compute UAV transitions."),
     ECVF_ReadOnly);
 static TAutoConsoleVariable<int32> CVarWebGPUStagingReadbackPool(
-    TEXT("r.WebGPU.StagingReadbackPool"), 0,
+    TEXT("r.WebGPU.StagingReadbackPool"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experimental reuse of completed, unreferenced staging readbacks. Bounded to 64 entries and 32 MiB."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUReuseComputePass(
-    TEXT("r.WebGPU.ReuseComputePass"), 0,
+    TEXT("r.WebGPU.ReuseComputePass"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experiment: reuse compute passes across adjacent dispatches, preserving encoder boundaries."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUBatchSubmissions(
-    TEXT("r.WebGPU.BatchSubmissions"), 0,
+    TEXT("r.WebGPU.BatchSubmissions"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experiment: batch lists inside one RHI submission, preserving readback and fence boundaries."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUFrameUniformSnapshots(
-    TEXT("r.WebGPU.FrameUniformSnapshots"), 0,
+    TEXT("r.WebGPU.FrameUniformSnapshots"), PLATFORM_WEB ? 1 : 0,
     TEXT("Experiment: allocate small multi-frame uniform snapshots from existing frame pages."), ECVF_RenderThreadSafe);
 static TAutoConsoleVariable<int32> CVarWebGPUBatchStagingWrites(
     TEXT("r.WebGPU.BatchStagingWrites"), 0,

@@ -7,8 +7,17 @@ const {chromium} = require('playwright');
 const {audit} = require('./content-file-metadata.cjs');
 const crypto = require('node:crypto');
 const option = name => process.argv.find(a => a.startsWith('--' + name + '='))?.slice(name.length + 3);
+const origin = option('origin') || 'http://127.0.0.1:8765';
+assert(/^http:\/\/127\.0\.0\.1:\d+$/.test(origin));
 const modes = (option('modes') || 'legacy,off,no-scene').split(',');
 const candidateFolder = option('folder');
+const runtimeDefaultModes = option('runtime-defaults')?.split(',');
+assert(!runtimeDefaultModes || (runtimeDefaultModes.length === modes.length &&
+  runtimeDefaultModes.every(v => ['off', 'on'].includes(v)) && modes.every(m => m === 'candidate')));
+const backendDefaultModes = option('backend-defaults')?.split(',');
+assert(!backendDefaultModes || (backendDefaultModes.length === modes.length &&
+  backendDefaultModes.every(v => ['off', 'on', 'disabled'].includes(v)) && modes.every(m => m === 'candidate')));
+const recordIdleStatus = process.argv.includes('--idle-status') || !!(runtimeDefaultModes || backendDefaultModes);
 const baselineFolder = option('baseline-folder');assert(!baselineFolder||/^[a-z0-9-]+$/.test(baselineFolder));
 assert(modes.every(m => ['legacy', 'off', 'no-scene','candidate'].includes(m)));
 assert(!modes.includes('candidate') || /^[a-z0-9-]+$/.test(candidateFolder));
@@ -61,7 +70,7 @@ fs.mkdirSync(output, {recursive: true});
 fs.copyFileSync(__filename, path.join(output, 'source.cjs'));
 if (gpuTimestamps) fs.copyFileSync(require.resolve('./observe-nanite-motion-gpu.cjs'), path.join(output,'gpu-observer.cjs'));
 if (pointOnly) fs.copyFileSync(require.resolve('./diagnose-point-shadow-vsm.cjs'), path.join(output,'point-diagnostic.cjs'));
-const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
+const report = {date: new Date().toISOString(), pass: false, source: audit(__filename), origin, runtimeDefaultModes, backendDefaultModes, recordIdleStatus, baselineFolder, hierarchyBatches, occlusionBatches, packBatches, microBatches, fixedMerges, programmableMerges, shadeBinnings, cvarName, cvarValues, nanites, materialPrecaches, walk, tour, headed, trace, traceStart, traceSeconds, gpuProbe, gpuTimestamps, pointOnly, width, height, seconds, runs: [],
   boundary: 'Serial fresh Edge contexts at the recorded viewport, DPR 1. Viewport submission intervals, not physical display timestamps. '
     + 'All intervals retained, including stalls. No-scene changes only the HTML -WebNaniteScene argument of the shipped Nanite-off package. '
     + 'Legacy also has different runtime and Cook, so its difference cannot be assigned to one code change. '
@@ -72,6 +81,8 @@ const report = {date: new Date().toISOString(), pass: false, source: audit(__fil
 const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
 if(occlusionBatches)report.boundary='Serial fresh Edge contexts, same package and enabled Nanite/hierarchy batching, native occlusion batch switch verified in both HZB stages. Normal advancing clocks; viewport submission intervals include all stalls. No CPU/GPU profiler or WebGPU method wrapper unless explicitly requested as diagnostic. First movement/turn route without warmup; actual camera samples retained.';
 if(baselineFolder)report.boundary+=' Explicit baseline-folder overrides the predefined baseline directories; mode names do not change its r.Nanite setting. Compare recorded package/configuration provenance.';
+if(runtimeDefaultModes)report.boundary+=' Runtime-defaults comparison changes only browser scheduling, input delivery and replay scratch reuse in localRuntimeAssets. Runtime, cooked content, configuration, resolution and startup arguments remain identical.';
+if(backendDefaultModes)report.boundary+=' Explicit backend diagnostic changes only r.WebGPU.* and r.Web.* optimization controls in the intercepted configuration. Authored quality settings are retained. This is a diagnostic override, not a deliverable package.';
 if(hierarchyBatches)report.boundary='Serial fresh Edge contexts, same package, Nanite enabled, native hierarchy batch switch independently verified. '
   +'Normal advancing clocks; viewport submission intervals include every stall. '
   +(!(trace||gpuProbe||gpuTimestamps)?'No CPU/GPU profiler or WebGPU method wrapper in the measured window. ':'Instrumented diagnostic; exclude its FPS from game-performance acceptance. ')
@@ -164,6 +175,19 @@ function statistics(times) {
       const log = fs.createWriteStream(path.join(output, index + '-' + mode + '.log'));
       try {
         run.browser = context.browser().version();
+        if (runtimeDefaultModes) await context.route('**/index.html', async route => {
+          const response = await route.fetch(), html = await response.text();
+          const match = html.match(/const localRuntimeAssets = (\{[^\n]+\});/); assert(match);
+          const assets = JSON.parse(match[1]);
+          if (runtimeDefaultModes[index] === 'on') {
+            Object.assign(assets, require('./web-accepted-defaults.cjs').runtimeAssets);
+            delete assets.gameFrameBridge;
+          }
+          const body = html.replace(match[0], 'const localRuntimeAssets = ' + JSON.stringify(assets) + ';');
+          run.runtimeDefaults = {mode: runtimeDefaultModes[index], assets,
+            htmlSha256: crypto.createHash('sha256').update(body).digest('hex')};
+          await route.fulfill({response, body});
+        });
         if (materialPrecaches || nanites || cvarName) await context.route('**/config-files.json*', async route => {
           const response = await route.fetch(), files = await response.json();
           const file = files.find(f => f.path === '/Engine/Platforms/Web/Config/WebEngine.ini'); assert(file);
@@ -178,6 +202,20 @@ function statistics(times) {
         await context.route('**/web-engine-worker.js?*', async route => {
           const response = await route.fetch();
           let body = await response.text();
+          if (backendDefaultModes) {
+            const settings = backendDefaultModes[index] !== 'off' ? Object.fromEntries(
+              Object.entries(require('./web-accepted-defaults.cjs').settings).filter(([key]) => /^r\.Web(?:GPU)?\./.test(key))
+                .map(([key, value]) => [key, backendDefaultModes[index] === 'disabled' ? 0 : value])) : {};
+            run.backendDefaults = {mode: backendDefaultModes[index], settings};
+            if (Object.keys(settings).length) {
+              const marker = "        removeRunDependency('worker-content');";
+              assert.equal(body.split(marker).length, 2);
+              const ini = '\n[SystemSettings]\n' + Object.entries(settings).map(([key, value]) => key + '=' + value).join('\n') + '\n';
+              // Explicit diagnostic only, after the source configuration passed integrity checks.
+              body = body.replace(marker, "        const backendIni = '/Engine/Platforms/Web/Config/WebEngine.ini';\n" +
+                '        FS.writeFile(backendIni, FS.readFile(backendIni, {encoding:"utf8"}) + ' + JSON.stringify(ini) + ');\n' + marker);
+            }
+          }
           if (gpuProbe) {
             const marker = '  frameScheduler.queue.onSubmittedWorkDone().then(() => {';
             assert.equal(body.split(marker).length, 2);
@@ -206,12 +244,25 @@ ${marker}
           if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text())) run.errors.push(m.text());
         });
         const startupBegin = Date.now();
-        await page.goto(`http://127.0.0.1:8765/build/${folder}/index.html`, {waitUntil: 'commit'});
+        const response = await page.goto(`${origin}/build/${folder}/index.html`, {waitUntil: 'commit'});
+        assert(response?.ok(), 'Package entry HTTP ' + response?.status());
         await page.waitForFunction(() => globalThis.__webEngineFailure ||
           (globalThis.__webEngineFrames >= 180 && globalThis.__webPSOPrecacheReady), null, {timeout: 300000});
-        assert(!await page.evaluate(() => globalThis.__webEngineFailure));
+        const startupFailure = await page.evaluate(() => globalThis.__webEngineFailure);
+        assert(!startupFailure, startupFailure);
         run.startupReadyMs = Date.now() - startupBegin;
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
+        const idleStatus = async () => {
+          const previous = await owner.evaluate(() => globalThis.__webNaniteIdleStatus?.sequence || 0);
+          assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteIdleStatusTest')), 1);
+          let status; const deadline = Date.now() + 10000;
+          do {
+            await page.waitForTimeout(50);
+            status = await owner.evaluate(() => globalThis.__webNaniteIdleStatus);
+          } while (!(status?.sequence > previous) && Date.now() < deadline);
+          assert(status?.sequence > previous); return status;
+        };
+        if (recordIdleStatus) run.naniteIdleBefore = await idleStatus();
         if (hierarchyBatches || occlusionBatches || packBatches || microBatches || fixedMerges || programmableMerges || shadeBinnings || materialPrecaches || nanites || cvarName) {
           for(const [values,fn] of [[hierarchyBatches,'WebNaniteHierarchyBatchTest'],[occlusionBatches,'WebNaniteOcclusionBatchTest'],[packBatches,'WebNanitePackBatchTest'],[microBatches,'WebNaniteMicroBatchTest'],[fixedMerges,'WebNaniteFixedMergeTest'],[programmableMerges,'WebNaniteProgrammableMergeTest'],[shadeBinnings,'WebNaniteShadeBinningTest']])
             if(values)assert.equal(await page.evaluate(a => __webEngineRPC(a[0],a[1]), [fn,Number(values[index])]), 1);
@@ -363,6 +414,7 @@ ${marker}
           });
           run.motion = await page.evaluate(isTour => isTour ? globalThis.__webMotionBenchmark : __naniteOffMotion, tour);
           run.environmentAfter = await require('./sample-test-environment.cjs')(page);
+          if (recordIdleStatus) run.naniteIdleAfter = await idleStatus();
           if (pointOnly) {
             run.pointDiagnostic = await owner.evaluate(() => globalThis.__pointShadowDiagnostic);
             assert.equal(new Set(run.pointDiagnostic.patched).size,3);
