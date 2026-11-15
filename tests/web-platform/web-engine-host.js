@@ -138,7 +138,8 @@ class WebFrameSamples {
       samples: samples.length, seconds: this.first === null ? 0 : Math.min(windowMs / 1000, (now - this.first) / 1000),
       p99Ms: samples.length >= 100 ? samples.map(sample => sample.ms).sort((a,b) => a-b)[Math.ceil(samples.length*.99)-1] : null,
       maxMs: samples.length ? Math.max(...samples.map(sample => sample.ms)) : null,
-      over50ms: samples.filter(sample => sample.ms > 50).length};
+      over50ms: samples.filter(sample => sample.ms > 50).length,
+      over100ms: samples.filter(sample => sample.ms > 100).length};
   }
 }
 
@@ -160,6 +161,7 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
     '<div title="引擎当前主视图的实际渲染尺寸，单位为物理像素。">渲染分辨率 <b data-stat="render-size">—</b></div>' +
     '<div title="抗锯齿或超分辨率处理后的主视图输出尺寸，单位为物理像素。">输出分辨率 <b data-stat="output-size">—</b></div>' +
     '<div>抗锯齿 <b data-stat="anti-aliasing">—</b></div>' +
+    '<div title="实际使用时未在预热记录中找到的管线数量。首次移动时增加可能触发编译。">预热未命中 <b data-stat="pipeline-misses">—</b></div>' +
     '<div style="color:#a7c0b6;font-size:11px">P99 <span data-stat="p99">—</span> ms · 最长 <span data-stat="max">—</span> ms</div>' +
     '<svg viewBox="0 0 216 48" width="216" height="48" style="display:block;margin-top:4px" aria-label="近5秒帧间隔曲线"><path d="M0 32H216" stroke="#617d70" stroke-dasharray="3 3"/><polyline data-stat="graph" fill="none" stroke="#8fe2b6" stroke-width="1.5"/></svg>' +
     '<div style="color:#a7c0b6;font-size:11px">页面观察 <span data-stat="submit">—</span> FPS · 刷新 <span data-stat="refresh">—</span> Hz</div>' +
@@ -218,7 +220,7 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
         fields.graph.setAttribute('points', graphSamples.map(sample =>
           `${((sample.time-graphTime+5000)/5000*216).toFixed(1)},${(48-Math.min(150,sample.ms)/150*48).toFixed(1)}`).join(' '));
         fields.refresh.textContent = format(r.fps);
-        fields.state.textContent = submitted.first !== null ? `近5秒 >50ms：${s.over50ms} 帧 · 提交间隔统计` : '等待场景画面';
+        fields.state.textContent = submitted.first !== null ? `近5秒 >50ms：${s.over50ms} · >100ms：${s.over100ms}` : '等待场景画面';
         globalThis.__webLivePerformance = {visual:v, submitted:s, refresh:r, visible:true,
           frame:current, source, renderView, windowMs:5000, time:now};
         lastUpdate = now;
@@ -240,6 +242,7 @@ function createWebPerformanceHUD(counter, canvas, options = {}) {
     reset,
     ingest(pacing, state) {
       if (state?.__webRenderView) renderView = {...state.__webRenderView};
+      if (state?.__webPipelinePrewarm?.counts) fields['pipeline-misses'].textContent = String(state.__webPipelinePrewarm.counts.misses);
       if (!pacing || document.hidden) return;
       const offset = pacing.timeOrigin - performance.timeOrigin;
       for (const time of pacing.times) if (time + offset >= visibleSince) submitted.add(time + offset);

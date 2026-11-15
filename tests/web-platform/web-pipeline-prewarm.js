@@ -5,6 +5,11 @@ function createWebPipelineCache(device) {
   const resources = new WeakMap(), records = new Map(), pipelines = new Map(), pending = new Map();
   const native = {}, counts = {modules: 0, layouts: 0, ready: 0, hits: 0, misses: 0, pendingHits: 0, syncWhilePending: 0};
   let sequence = 0;
+  const observe = (name, descriptor, invoke) => {
+    const start = performance.now();
+    try {return invoke();}
+    finally {globalThis.__webRecordPipelineEvent?.({name,start,end:performance.now(),label:descriptor.label,cacheMiss:true});}
+  };
   const encode = value => {
     if (value === null || typeof value !== 'object') return value;
     if (resources.has(value)) return {$resource: resources.get(value)};
@@ -25,7 +30,7 @@ function createWebPipelineCache(device) {
     device[name] = descriptor => {
       const key = keyFor(name, descriptor);
       if (records.has(key)) return records.get(key);
-      const value = native[name](descriptor);
+      const value = observe(name, descriptor, () => native[name](descriptor));
       resources.set(value, ++sequence); records.set(key, value);
       ++counts[name === 'createShaderModule' ? 'modules' : 'layouts'];
       return value;
@@ -42,7 +47,7 @@ function createWebPipelineCache(device) {
           ++counts.syncWhilePending;
         }
         ++counts.misses;
-        return native[name](descriptor);
+        return observe(name, descriptor, () => native[name](descriptor));
       };
     }
   }

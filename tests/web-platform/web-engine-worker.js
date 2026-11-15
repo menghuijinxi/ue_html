@@ -224,7 +224,7 @@ async function start(message) {
     return adapter;
   };
   const assets = message.assets;
-  if (assets.reuseReplayScratch !== undefined) globalThis.__webReuseReplayScratch = !!assets.reuseReplayScratch;
+  globalThis.__webReuseReplayScratch = assets.reuseReplayScratch !== false;
   // Approved default; older hosts may omit the option. Explicit channel remains
   // available, and browsers without postTask use the MessageChannel fallback.
   const priorityRequested = !message.arguments.includes('-WebRHIWake=channel');
@@ -253,6 +253,12 @@ async function start(message) {
   }
   if (message.frameCounter) {
     frameCounter = new Uint32Array(message.frameCounter);
+    // The adopted prewarm device has instance methods. Its misses bypass the
+    // prototype observers below, so record at the cache's actual native call.
+    globalThis.__webRecordPipelineEvent = event => {
+      pipelineEvents.push(event);
+      if (pipelineEvents.length > 2048) pipelineEvents.splice(0, pipelineEvents.length - 2048);
+    };
     // Pipeline creation is rare; retain its timestamps for user-triggered stutter
     // exports without wrapping per-draw calls or waiting for GPU completion.
     for (const name of ['createRenderPipeline','createComputePipeline','createShaderModule',

@@ -114,6 +114,22 @@ assert.throws(() => resolveWebRenderSize({fixedRenderSize: {width: 1, height: 1}
   ['-ForceRes', '-ResX=1920', '-ResY=1080']), /disagrees/);
 const maskedCorpus = capture(source, true);
 assert.throws(() => prepareRecordedPrewarm(source, maskedCorpus), /masked-device capture/);
+const movement = fixture('movement'), movementPage = readPage(movement);
+movementPage.args = movementPage.args.map(arg => arg === '-WebProjectMap=/Game/Fixture' ?
+  '-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla' : arg);
+writePage(movement, movementPage);
+assert.throws(() => finalizeDesktopRelease(movement, {resultsDirectory, capture(folder) {
+  return capture(folder); // A successful startup capture still lacks movement coverage.
+}}), /movement coverage/);
+const movementCorpus = capture(movement), movementResult = path.join(path.dirname(movementCorpus), 'result.json');
+const movementCapture = JSON.parse(fs.readFileSync(movementResult));
+Object.assign(movementCapture, {scriptedMotionModes:[3,2,1], scriptedMotionSeconds:20,
+  runs:[{engine:'ours',pass:true,scriptedMotion:[3,2,1].map(mode => ({motion:{mode,elapsed:20,completed:true,updates:600}}))}]});
+fs.writeFileSync(movementResult, JSON.stringify(movementCapture));
+prepareRecordedPrewarm(movement, movementCorpus);
+movementCapture.runs[0].scriptedMotion[0].motion.completed = false;
+fs.writeFileSync(movementResult, JSON.stringify(movementCapture));
+assert.throws(() => prepareRecordedPrewarm(movement, movementCorpus), /routes did not complete/);
 const acceptedConfigs = JSON.parse(fs.readFileSync(path.join(source, 'config-files.json')));
 assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
   .includes('r.Shadow.Virtual.SMRT.AdaptiveRayCount=1')));
@@ -123,4 +139,4 @@ console.log(JSON.stringify({pass: true, automaticReuse: true, invalidatedCapture
   hardlinksPreserved: true, staleWorkersRejected: true, captureFailureBlocksRelease: true,
   forcedPhysicalSize: fixed.fixedRenderSize, diagnosticsRequireExplicitFlags: true,
   maskedCapturesRejected: true, adaptiveDefault: true, acceptedIndirectReuseRestored: true,
-  inheritedIndirectReuseOverridden: true}));
+  inheritedIndirectReuseOverridden: true, startupOnlyVillaCaptureRejected:true, unfinishedRoutesRejected:true}));

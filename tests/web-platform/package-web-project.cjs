@@ -130,11 +130,11 @@ try {
   }
   const extraFiles = [];
   if (acceptedDefaults) {
-    report.releaseDefaults = finalizeDesktopRelease(output, startupOptions);
+    report.releaseDefaults = finalizeDesktopRelease(output, {...startupOptions, optimizationBuild:build});
     report.startupPrewarm = report.releaseDefaults.prewarm;
     report.engineArguments = report.releaseDefaults.engineArguments;
     extraFiles.push(...report.releaseDefaults.files);
-    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs',
+    report.sourceFiles.push(...['web-release-defaults.cjs', 'web-pipeline-prewarm-package.cjs', 'web-optimization-contract.cjs',
       'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
       audit(path.join(__dirname, name))));
   }

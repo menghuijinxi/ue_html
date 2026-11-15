@@ -29,7 +29,7 @@ for (const name of ['UEWebEngineThreads.wasm', 'UEWebEngineThreads.js', 'content
 assert.equal(audit(originalVersions.file).sha256, originalVersions.sha256);
 for (const [name, item] of Object.entries(versions))
   assert.equal(audit(path.join(source, name)).sha256, item.sha256, 'Source package was modified: ' + name);
-const products = Object.keys(versions).map(name => audit(path.join(output, name)));
+const products = [...new Set([...Object.keys(versions), ...releaseDefaults.files])].map(name => audit(path.join(output, name)));
 products.push(writeVersions(output, products));
 const report = {date: new Date().toISOString(), pass: true, source: originalVersions, output,
   performanceHUDVisible: false, sceneAndProjectConfigurationPreserved: true, releaseDefaults, products};
