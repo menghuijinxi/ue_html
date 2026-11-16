@@ -1,0 +1,321 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-native-streaming-20261110.json",
+    "bytes": 2609089,
+    "sha256": "fd3b30f43354f9701b0d6e214b8f249ad9387608c89df116b18711013d40448b",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T19:15:32.543Z",
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-streaming-evidence.cjs",
+        "sha256": "5ecc585abc9bd59344c142ec0ff6b882765fe6683855f94678f957a004714bb7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming\\browser.json",
+        "sha256": "fd0d2d71796f8149f783a42978d2d85d7eb34b8e6737fa2df22489409dc110ec"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming\\browser-scalar.json",
+        "sha256": "418971eb153afa41d13117fd154b4ef84a86283c83e15262524e04e21a57b00f"
+      }
+    ],
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "7f9dcf7056782e6e63193ae1709eef8893a55451155e8e15a93cfd62e5a65257"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "17f03da498a32f8476450e20806d8aead7951e1d547a5860e14aea3463a13d21"
+    },
+    "cook": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-streaming-desktop-cook-results.json",
+      "sha256": "a716c502bd9357c8fc363caa419f5fff92ffc34c3f6fb6ae49fd6282af2c8571"
+    },
+    "compilation": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming-shaders\\verified.json",
+      "sha256": "09a6d4c5a0bdc11b8089c27548e3e9e5e186b86c62d1071f5223e108c7f50d19"
+    },
+    "fixture": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming\\assets.json",
+        "sha256": "73acf828553da8aeb172c007f8871c75fe3d2f31e319bfc57dfdc255fbcce46f"
+      },
+      "assets": [
+        {
+          "asset": "/Game/WebNaniteStreaming/NaniteStreamingSphere.NaniteStreamingSphere",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\lumen-off-v59\\Content\\WebNaniteStreaming/NaniteStreamingSphere.uasset",
+          "resident": false,
+          "triangles": 65024,
+          "clusters": 1059,
+          "roots": 1,
+          "pages": 12,
+          "dependencies": 26,
+          "bulkBytes": 0,
+          "hierarchyNodes": 23,
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\lumen-off-v59\\Content\\WebNaniteStreaming/NaniteStreamingSphere.uasset",
+            "sha256": "7ee5dc0726e76a5822b58b33ca29d825eb4cd31fe75ea1e6ed523797777b82c5"
+          }
+        },
+        {
+          "asset": "/Game/WebNaniteStreaming/NaniteResidentSphere.NaniteResidentSphere",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\lumen-off-v59\\Content\\WebNaniteStreaming/NaniteResidentSphere.uasset",
+          "resident": true,
+          "triangles": 65024,
+          "clusters": 1059,
+          "roots": 43,
+          "pages": 43,
+          "dependencies": 182,
+          "bulkBytes": 0,
+          "hierarchyNodes": 34,
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\lumen-off-v59\\Content\\WebNaniteStreaming/NaniteResidentSphere.uasset",
+            "sha256": "2a9a87f343e092d8052320b0dd7e472b781ff3c1caffe60674455f2426840550"
+          }
+        },
+        {
+          "asset": "/Game/WebNaniteStreaming/NaniteStreamingSphereB.NaniteStreamingSphereB",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\lumen-off-v59\\Content\\WebNaniteStreaming/NaniteStreamingSphereB.uasset",
+          "resident": false,
+          "triangles": 65024,
+          "clusters": 1059,
+          "roots": 1,
+          "pages": 12,
+          "dependencies": 26,
+          "bulkBytes": 0,
+          "hierarchyNodes": 23,
+          "source": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\projects\\lumen-off-v59\\Content\\WebNaniteStreaming/NaniteStreamingSphereB.uasset",
+            "sha256": "3a8466dd524d6b4821ca592a5ca85b0af3b1beb178da77b9c334b79406dc374d"
+          }
+        }
+      ],
+      "producer": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteStreamingProbe.cpp",
+          "sha256": "a51e3f804391eb76621d3cf1be63297440a19542a43836fde8796a4c1e54f809"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-nanite-streaming-fixture.ps1",
+          "sha256": "431aca9c48d59c3e0809253a9d7f870e5c24b5c70bb0e8d172e92f5be1d765fb"
+        }
+      ]
+    },
+    "nullBuffer": {
+      "proof": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-canvas-transitions.json",
+        "sha256": "71ffd58de4806a9fc961d5445cd699c9a83063a43dfbbc893dd85235d694a79f"
+      },
+      "checks": [
+        {
+          "name": "null-buffer-empty-array-no-upload",
+          "pass": true
+        },
+        {
+          "name": "null-buffer-default-no-allocation",
+          "pass": true
+        }
+      ]
+    },
+    "runs": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "array",
+      "entries": 2,
+      "bytes": 136742,
+      "sha256": "6bc4e8a3a03dd2c5292e943eccd18492bc4f029a8fcd338eddea6d09610d34d6"
+    },
+    "regressions": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\results.json",
+          "sha256": "6538f99c2d1d83f76f4502f2741e8a842ca7aa8e5f91a83f17c65e41039ec732"
+        },
+        "scalarVisibility": false,
+        "frames": 42483,
+        "errors": [],
+        "enabledPipelines": {
+          "sampleFrame": 42480,
+          "graphicsPipelines": 972,
+          "computePipelines": 1579,
+          "graphicsPipelineCreateMs": 56.971073150634766,
+          "computePipelineCreateMs": 44.83604431152344,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 757,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 41879,
+          "asyncPrecacheRequested": 2254,
+          "asyncPrecacheCompleted": 2254,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 89,
+          "precachedGraphicsBinds": 427844,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "disabledPipelines": {
+          "sampleFrame": 540,
+          "graphicsPipelines": 850,
+          "computePipelines": 1568,
+          "graphicsPipelineCreateMs": 50.791025161743164,
+          "computePipelineCreateMs": 41.18943214416504,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 735,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 278,
+          "asyncPrecacheRequested": 2232,
+          "asyncPrecacheCompleted": 2232,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 114904,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "groups": {
+          "cases": 4,
+          "residency": 4,
+          "scene": 5,
+          "sceneCulling": 19,
+          "sceneDepth": 5,
+          "sceneGBuffer": 26,
+          "sceneLOD": 10,
+          "sceneHZB": 9,
+          "sceneInstances": 13,
+          "sceneMicroRepeats": 128,
+          "sceneViews": 10
+        }
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser-scalar\\results.json",
+          "sha256": "a75cc92e5349ba9d30a4120bc83e0ac5dd704c61de56f6df42ca20e3e915af1d"
+        },
+        "scalarVisibility": true,
+        "frames": 41468,
+        "errors": [],
+        "enabledPipelines": {
+          "sampleFrame": 41460,
+          "graphicsPipelines": 974,
+          "computePipelines": 1577,
+          "graphicsPipelineCreateMs": 55.391788482666016,
+          "computePipelineCreateMs": 42.84524917602539,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 757,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 40881,
+          "asyncPrecacheRequested": 2253,
+          "asyncPrecacheCompleted": 2253,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 89,
+          "precachedGraphicsBinds": 414193,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "disabledPipelines": {
+          "sampleFrame": 570,
+          "graphicsPipelines": 850,
+          "computePipelines": 1567,
+          "graphicsPipelineCreateMs": 55.89032173156738,
+          "computePipelineCreateMs": 38.68556022644043,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 735,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 272,
+          "asyncPrecacheRequested": 2231,
+          "asyncPrecacheCompleted": 2231,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 121326,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "groups": {
+          "cases": 4,
+          "residency": 4,
+          "scene": 5,
+          "sceneCulling": 19,
+          "sceneDepth": 5,
+          "sceneGBuffer": 26,
+          "sceneLOD": 10,
+          "sceneHZB": 9,
+          "sceneInstances": 13,
+          "sceneMicroRepeats": 128,
+          "sceneViews": 10
+        }
+      }
+    ],
+    "failure": {
+      "artifact": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming\\failure-reinitialize-index-20261110.json",
+        "sha256": "3239c26771fc91c9f31f6de0ffdc17de62d6b8a23ee8468003ad3fd2d3d5c64c"
+      },
+      "failure": {
+        "$omitted": true,
+        "reason": "Large text",
+        "type": "string",
+        "bytes": 2957,
+        "sha256": "b4ed428610c5f18c028578fed2c176a94dcb2b84113de61bba389b449585031f"
+      },
+      "errors": [
+        "Assertion failed: (Index >= 0) & (Index < ArrayNum) [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source/Runtime/Core/Public\\Containers/Array.h] [Line: 1339] \nArray index out of bounds: 0 into an array of size 0\n",
+        {
+          "$omitted": true,
+          "reason": "Large text",
+          "type": "string",
+          "bytes": 2396,
+          "sha256": "fc79ccead3d71b7ba24c3e733b783708a3b407ca05fbeb833166e2bff9e722f0"
+        }
+      ]
+    },
+    "payloadEncoding": "gzip-base64-json",
+    "payloadSchema": "{streaming: browser reports, materials: browser reports, composition: browser reports}",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 2295748,
+      "sha256": "f2d5cc6c941cfd7f4ddac40144e362e35e455605c34c642947b5ec609021db29"
+    },
+    "boundary": "Bounded rigid opaque Web Nanite streaming: real cooked bulk IO, GPU feedback, native dependencies/relative-page transcode, LRU eviction, cold/hot CPU cache, retry, resource versioning, pool reset, HZB and page-owner rejection. Both atomic capabilities. Full device recovery, remaining materials/instances and complete-scene acceptance remain open."
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/test-cache-cleanup-20261113.json",
+    "bytes": 6825,
+    "sha256": "05033d9fedf40d8ace6256ea3d65e6669456fb0a3709dc8bf8be2e82aaf5327f",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-13T01:29:10.536Z",
+    "pass": true,
+    "deletedDirectories": 82,
+    "browserCaches": 76,
+    "failedPackageDirectories": 6,
+    "failures": 0,
+    "freeBefore": 1394331648,
+    "freeAfter": 237695250432,
+    "freedBytes": 236300918784,
+    "logicalBytes": 247110133714,
+    "remainingTargets": 0,
+    "repeatPreviewNoTargets": true,
+    "protectedPaths": [
+      {
+        "Path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107",
+        "Exists": true,
+        "InCleanup": false
+      },
+      {
+        "Path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-default-20261112",
+        "Exists": true,
+        "InCleanup": false
+      },
+      {
+        "Path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-villa-20261112",
+        "Exists": true,
+        "InCleanup": false
+      },
+      {
+        "Path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-regression-20261112",
+        "Exists": true,
+        "InCleanup": false
+      },
+      {
+        "Path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-regression-content-20261112",
+        "Exists": true,
+        "InCleanup": false
+      },
+      {
+        "Path": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-pack-batch-20261112.json",
+        "Exists": true,
+        "InCleanup": false
+      }
+    ],
+    "retainedArchives": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-programmable-20261112\\package.json",
+          "sha256": "477058664d2dca2da8b80059aafc52740dabe63cce226e1a4d27950586ad307c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-pack-batch-20261112\\261-package.json.gz",
+          "sha256": "b2f0ee26aecda55b2e3a341c5ea99ea84ccddc4ad414cfb5f9adbefaa29a5c1a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-material-20261112\\package.json",
+          "sha256": "6c73c16abbe8e3747863558e5bf1e030af04f583c0627cda69467ba99ea160ab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-pack-batch-20261112\\269-package.json.gz",
+          "sha256": "c82506ac28d5cee1d225fcf4a9510da64ccb7a9500b7743964e3dd6b08a34802"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-pack-fixture-20261112\\package.json",
+          "sha256": "141e7c51babac283a6ee87237b5e2fc020a1a33b5ad6a31ba7535bf78980de74"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-pack-batch-20261112\\277-package.json.gz",
+          "sha256": "d8e699dd7e207fb16e5c2f052b84fce183633da12ee70165f6a4877b40ec58fb"
+        }
+      }
+    ],
+    "plan": {
+      "file": "cleanup-test-cache-20261113.json",
+      "sha256": "8ac40ee3e9eb44edd0dda538d1bdf52a822c21fab4dd170f222e55b966207012"
+    },
+    "standalone": {
+      "file": "cleanup-test-cache-standalone-20261113.bat",
+      "sha256": "7a68de61fb153256a69f9f6ebc4ee5b1e731d6a6999736551edef2975ea4ab99"
+    },
+    "records": [
+      {
+        "original": {
+          "file": "G:/UE_HTML/cleanup-old-tests-20261113-092712-895.json",
+          "sha256": "d4d7462a9d253e3b4e7955ccb6bef7c60a8d165dc77bc985d0dd0a51d19bf42c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\0-cleanup-old-tests-20261113-092712-895.json.gz",
+          "sha256": "cf28f68fb017fb19a556b8ff8d92cc89247c86ce0d401eedfe3f8efad2bfb031"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-20261113\\browser-inventory.json",
+          "sha256": "9876f7cbc71ae91e04c080846a7b36ead982d92cdf3b12d7f22cb05973313ac3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\1-browser-inventory.json.gz",
+          "sha256": "d4ba092c597641e57ccd87eee1cb573e70edcea48436c11641ef63aac90f2d66"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-20261113\\original-cleanup.bat",
+          "sha256": "7be74632e48dfc076f0b59d77365e021dc304193662afff98b9645a8f415fbfc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\2-original-cleanup.bat.gz",
+          "sha256": "3caa2ad0aecac09892bbd1221d41edf288042140aec91d9917ddbaa8b97b84fe"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-20261113\\package.json",
+          "sha256": "bb435d260b985ecd1488861150c15e34a5f748ddb4e7cbd5d8a1568e65aeb565"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\3-package.json.gz",
+          "sha256": "179335994c3b5a3c5b18730f3ebe17b8f57363e3e297b69269fd1b14f2e0eef6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-20261113\\preview.log",
+          "sha256": "eda52fee90f221592656b3d2e15735d3d05fdacaaeb0c5bb9e6fd3f56cc41e59"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\4-preview.log.gz",
+          "sha256": "dfd3d4bdac35221c3d93da01d1cb1351650ef80b231b2a12a9a110799807ad3b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-20261113\\execute.log",
+          "sha256": "b2145383149839d931f2f462c1592d7fbf944194d9a4b71c9fbdfece68704955"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\5-execute.log.gz",
+          "sha256": "b288c521a4976ce24ac1b90b874cf79b68bc9d262efd12c0c2e7453075233331"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-20261113\\preview-after.log",
+          "sha256": "0261b251b7f008c49f34a7534fd91deee1e54f53f22779ea4af2022cac32c26b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\6-preview-after.log.gz",
+          "sha256": "1ff203b9971e4107ebd7d1264a02ed5068055287c72e052276c5e3f1dcacbcc4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cleanup-20261113\\protected-before.json",
+          "sha256": "0139ffb0c266e987e5939101b372011cc6bf1da157c87c48495d8e60b9792588"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\test-cache-cleanup-20261113\\7-protected-before.json.gz",
+          "sha256": "1145d7465b77c36775bd39b80fb00793660d0334060afde1a7b1fa011a45c0bc"
+        }
+      }
+    ]
+  }
+}

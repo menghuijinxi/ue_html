@@ -1,0 +1,1045 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-device-recovery-20261110.json",
+    "bytes": 290086,
+    "sha256": "ef9ce5854151c9c437b6a8476f7e7f9a789a96a9f156adbf7a4516238992c438",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T20:06:02.050Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-recovery-evidence.cjs",
+      "sha256": "e3cf17388c87f16c9a9cc6ff9c5a3dffdd1b40f7e72634d1a78bc14a590a96ca"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "e4f7faa2df4a481c896f9cfa368a2f76b503a3d9286a5c0e5355634c77bd9882"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "d81a9f564459727ccbd362b839a1266d7261e2ed1279932d8bdfdd755cb3170f"
+    },
+    "unit": [
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-device-recovery.cjs",
+          "sha256": "b1f67343e3af1e24747460309abe69d4348c1d190107b153202f08f368cffb0c"
+        },
+        "output": "PASS: checkpoint restoration, stale generations, bounded retries, ordinary errors, invalid checkpoints, shutdown, timeout and failed restore\n"
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-input-bridge.cjs",
+          "sha256": "faba23ebdd0c3b79a5d5d8c30459193787256d92a2ef69385ef379df5c1e59e7"
+        },
+        "output": "PASS: input/frame MessagePorts, shared queue wrap/overflow, local clock pause/resume, cancellation and bounded backpressure\n"
+      }
+    ],
+    "ordinaryErrors": {
+      "artifact": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-device-recovery\\ordinary-errors.json",
+        "sha256": "a41306dd5ed6bf92beee7f39d6fdb0874a0deb421109718873ca2bc224dd32dc"
+      },
+      "pass": true,
+      "source": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-worker-failure.cjs",
+        "sha256": "cede8f414ada4282e372a2307b1fd0fb487cf58369388ef7b649b985529c8a77"
+      },
+      "package": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+        "sha256": "e4f7faa2df4a481c896f9cfa368a2f76b503a3d9286a5c0e5355634c77bd9882"
+      },
+      "tests": [
+        {
+          "kind": "error",
+          "failure": "Error: Injected engine worker failure\n    at eval (eval at evaluate (:311:30), <anonymous>:2:31)",
+          "recovery": {
+            "generation": 1,
+            "attempts": 0,
+            "phase": "failed",
+            "events": [
+              {
+                "kind": "starting",
+                "generation": 1,
+                "at": 177.6449999809265
+              },
+              {
+                "kind": "ready",
+                "generation": 1,
+                "at": 22321.439999997616
+              },
+              {
+                "kind": "failed",
+                "generation": 1,
+                "at": 22445.480000019073,
+                "message": "Error: Injected engine worker failure\n    at eval (eval at evaluate (:311:30), <anonymous>:2:31)"
+              }
+            ]
+          },
+          "huds": 0
+        },
+        {
+          "kind": "rejection",
+          "failure": "A valid external Instance reference no longer exists.",
+          "recovery": {
+            "generation": 1,
+            "attempts": 0,
+            "phase": "failed",
+            "events": [
+              {
+                "kind": "starting",
+                "generation": 1,
+                "at": 120.90499997138977
+              },
+              {
+                "kind": "ready",
+                "generation": 1,
+                "at": 23468.564999997616
+              },
+              {
+                "kind": "failed",
+                "generation": 1,
+                "at": 23595.365000009537,
+                "message": "A valid external Instance reference no longer exists."
+              }
+            ]
+          },
+          "huds": 0
+        }
+      ],
+      "pageErrors": [],
+      "logs": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "array",
+        "entries": 240,
+        "bytes": 33420,
+        "sha256": "56039048182896d901247dddf72decd9f510f9b2b12d2185e6c69e27d8dd929c"
+      }
+    },
+    "runs": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-device-recovery\\browser.json",
+          "sha256": "be7f4e3da14b64212e65c5941c602fa7ff121bc9d34eebf96e8387257eb1916d"
+        },
+        "scalarVisibility": false,
+        "repeatCrashes": false,
+        "generations": [
+          {
+            "generation": 1,
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "atomic-vec2u-min-max",
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "clip-distances",
+                "texture-formats-tier2",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            }
+          },
+          {
+            "generation": 2,
+            "comparison": {
+              "covered": 964,
+              "depthDifferences": 0,
+              "maskDifferences": 0
+            },
+            "restore": {
+              "generation": 2,
+              "expected": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              },
+              "actual": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              }
+            },
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "atomic-vec2u-min-max",
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "clip-distances",
+                "texture-formats-tier2",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            },
+            "input": {
+              "before": 1,
+              "after": {
+                "mode": "direct-game-thread",
+                "ready": true,
+                "sent": 3,
+                "acknowledged": 3,
+                "maxQueue": 1,
+                "trace": []
+              }
+            },
+            "resized": {
+              "width": 944,
+              "height": 531
+            },
+            "oldWorkerCount": 30,
+            "newWorkerCount": 30
+          }
+        ],
+        "limit": {
+          "state": {
+            "generation": 3,
+            "attempts": 2,
+            "phase": "failed",
+            "events": [
+              {
+                "kind": "starting",
+                "generation": 1,
+                "at": 175.1899999976158
+              },
+              {
+                "kind": "ready",
+                "generation": 1,
+                "at": 22230.960000038147
+              },
+              {
+                "kind": "device-lost",
+                "generation": 1,
+                "at": 28191.110000014305,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 2,
+                "at": 28191.884999990463
+              },
+              {
+                "kind": "recovered",
+                "generation": 2,
+                "at": 53876.83500003815
+              },
+              {
+                "kind": "device-lost",
+                "generation": 2,
+                "at": 56210.71000003815,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 3,
+                "at": 56211.12000000477
+              },
+              {
+                "kind": "failed",
+                "generation": 3,
+                "at": 58787.75499999523,
+                "message": "P3_ENGINE_PREINIT_FAILED browser WebGPU device"
+              }
+            ]
+          },
+          "failure": "P3_ENGINE_PREINIT_FAILED browser WebGPU device",
+          "huds": 0
+        }
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-device-recovery\\browser-scalar.json",
+          "sha256": "7188a335908a921239b3b9d71132d47ccfc8276ba5a4ff09ca210127eb533004"
+        },
+        "scalarVisibility": true,
+        "repeatCrashes": false,
+        "generations": [
+          {
+            "generation": 1,
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "texture-formats-tier2",
+                "clip-distances",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            }
+          },
+          {
+            "generation": 2,
+            "comparison": {
+              "covered": 964,
+              "depthDifferences": 0,
+              "maskDifferences": 0
+            },
+            "restore": {
+              "generation": 2,
+              "expected": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              },
+              "actual": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              }
+            },
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "texture-formats-tier2",
+                "clip-distances",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            },
+            "input": {
+              "before": 1,
+              "after": {
+                "mode": "direct-game-thread",
+                "ready": true,
+                "sent": 3,
+                "acknowledged": 3,
+                "maxQueue": 1,
+                "trace": []
+              }
+            },
+            "resized": {
+              "width": 944,
+              "height": 531
+            },
+            "oldWorkerCount": 30,
+            "newWorkerCount": 30
+          }
+        ],
+        "limit": {
+          "state": {
+            "generation": 3,
+            "attempts": 2,
+            "phase": "failed",
+            "events": [
+              {
+                "kind": "starting",
+                "generation": 1,
+                "at": 159.875
+              },
+              {
+                "kind": "ready",
+                "generation": 1,
+                "at": 23607.040000021458
+              },
+              {
+                "kind": "device-lost",
+                "generation": 1,
+                "at": 30148.64500004053,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 2,
+                "at": 30149.350000023842
+              },
+              {
+                "kind": "recovered",
+                "generation": 2,
+                "at": 55743.87999999523
+              },
+              {
+                "kind": "device-lost",
+                "generation": 2,
+                "at": 58230.75999999046,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 3,
+                "at": 58231.16500002146
+              },
+              {
+                "kind": "failed",
+                "generation": 3,
+                "at": 60797.75,
+                "message": "P3_ENGINE_PREINIT_FAILED browser WebGPU device"
+              }
+            ]
+          },
+          "failure": "P3_ENGINE_PREINIT_FAILED browser WebGPU device",
+          "huds": 0
+        }
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-device-recovery\\browser-repeated.json",
+          "sha256": "da84ad57d9e814f1ff0a84adb6c6e2f722dee093560f11e50bb046b660383735"
+        },
+        "scalarVisibility": false,
+        "repeatCrashes": true,
+        "generations": [
+          {
+            "generation": 1,
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "atomic-vec2u-min-max",
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "clip-distances",
+                "texture-formats-tier2",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            }
+          },
+          {
+            "generation": 2,
+            "comparison": {
+              "covered": 964,
+              "depthDifferences": 0,
+              "maskDifferences": 0
+            },
+            "restore": {
+              "generation": 2,
+              "expected": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              },
+              "actual": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              }
+            },
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "atomic-vec2u-min-max",
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "clip-distances",
+                "texture-formats-tier2",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            },
+            "input": {
+              "before": 1,
+              "after": {
+                "mode": "direct-game-thread",
+                "ready": true,
+                "sent": 3,
+                "acknowledged": 3,
+                "maxQueue": 1,
+                "trace": []
+              }
+            },
+            "resized": {
+              "width": 944,
+              "height": 531
+            },
+            "oldWorkerCount": 30,
+            "newWorkerCount": 30
+          },
+          {
+            "generation": 3,
+            "comparison": {
+              "covered": 964,
+              "depthDifferences": 0,
+              "maskDifferences": 0
+            },
+            "restore": {
+              "generation": 3,
+              "expected": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              },
+              "actual": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              }
+            },
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "atomic-vec2u-min-max",
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "clip-distances",
+                "texture-formats-tier2",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            },
+            "input": {
+              "before": 1,
+              "after": {
+                "mode": "direct-game-thread",
+                "ready": true,
+                "sent": 3,
+                "acknowledged": 3,
+                "maxQueue": 1,
+                "trace": []
+              }
+            },
+            "resized": {
+              "width": 944,
+              "height": 531
+            },
+            "oldWorkerCount": 30,
+            "newWorkerCount": 30
+          }
+        ],
+        "limit": {
+          "state": {
+            "generation": 3,
+            "attempts": 2,
+            "phase": "failed",
+            "events": [
+              {
+                "kind": "starting",
+                "generation": 1,
+                "at": 147.30500000715256
+              },
+              {
+                "kind": "ready",
+                "generation": 1,
+                "at": 23797.794999957085
+              },
+              {
+                "kind": "device-lost",
+                "generation": 1,
+                "at": 30472.459999978542,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 2,
+                "at": 30473.214999973774
+              },
+              {
+                "kind": "recovered",
+                "generation": 2,
+                "at": 56420.4849999547
+              },
+              {
+                "kind": "device-lost",
+                "generation": 2,
+                "at": 58946.76999998093,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 3,
+                "at": 58947.15499997139
+              },
+              {
+                "kind": "recovered",
+                "generation": 3,
+                "at": 84891.29999995232
+              },
+              {
+                "kind": "device-lost",
+                "generation": 3,
+                "at": 87092.37999999523,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "failed",
+                "generation": 3,
+                "at": 87092.42499995232,
+                "message": "图形设备连续丢失，自动恢复已停止。"
+              }
+            ]
+          },
+          "failure": "图形设备连续丢失，自动恢复已停止。",
+          "huds": 0
+        }
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-device-recovery\\browser-scalar-repeated.json",
+          "sha256": "33817e52bad6c38c3db7b268eb1b63a360659114116e817d5efb10977b58fcca"
+        },
+        "scalarVisibility": true,
+        "repeatCrashes": true,
+        "generations": [
+          {
+            "generation": 1,
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "texture-formats-tier2",
+                "clip-distances",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            }
+          },
+          {
+            "generation": 2,
+            "comparison": {
+              "covered": 964,
+              "depthDifferences": 0,
+              "maskDifferences": 0
+            },
+            "restore": {
+              "generation": 2,
+              "expected": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              },
+              "actual": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              }
+            },
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "texture-formats-tier2",
+                "clip-distances",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            },
+            "input": {
+              "before": 1,
+              "after": {
+                "mode": "direct-game-thread",
+                "ready": true,
+                "sent": 3,
+                "acknowledged": 3,
+                "maxQueue": 1,
+                "trace": []
+              }
+            },
+            "resized": {
+              "width": 944,
+              "height": 531
+            },
+            "oldWorkerCount": 30,
+            "newWorkerCount": 30
+          },
+          {
+            "generation": 3,
+            "comparison": {
+              "covered": 964,
+              "depthDifferences": 0,
+              "maskDifferences": 0
+            },
+            "restore": {
+              "generation": 3,
+              "expected": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              },
+              "actual": {
+                "version": 1,
+                "args": [
+                  100000,
+                  0,
+                  100000,
+                  0,
+                  0,
+                  0,
+                  90,
+                  0
+                ]
+              }
+            },
+            "gpu": {
+              "devices": 1,
+              "losses": [],
+              "errors": [],
+              "features": [
+                "rg11b10ufloat-renderable",
+                "texture-formats-tier1",
+                "texture-compression-bc",
+                "texture-formats-tier2",
+                "clip-distances",
+                "core-features-and-limits",
+                "float32-filterable",
+                "subgroups"
+              ]
+            },
+            "input": {
+              "before": 1,
+              "after": {
+                "mode": "direct-game-thread",
+                "ready": true,
+                "sent": 3,
+                "acknowledged": 3,
+                "maxQueue": 1,
+                "trace": []
+              }
+            },
+            "resized": {
+              "width": 944,
+              "height": 531
+            },
+            "oldWorkerCount": 30,
+            "newWorkerCount": 30
+          }
+        ],
+        "limit": {
+          "state": {
+            "generation": 3,
+            "attempts": 2,
+            "phase": "failed",
+            "events": [
+              {
+                "kind": "starting",
+                "generation": 1,
+                "at": 162.3149999976158
+              },
+              {
+                "kind": "ready",
+                "generation": 1,
+                "at": 23419.180000007153
+              },
+              {
+                "kind": "device-lost",
+                "generation": 1,
+                "at": 29138.42500001192,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 2,
+                "at": 29139.389999985695
+              },
+              {
+                "kind": "recovered",
+                "generation": 2,
+                "at": 55029.56999999285
+              },
+              {
+                "kind": "device-lost",
+                "generation": 2,
+                "at": 58018.860000014305,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "starting",
+                "generation": 3,
+                "at": 58019.264999985695
+              },
+              {
+                "kind": "recovered",
+                "generation": 3,
+                "at": 83961.57999998331
+              },
+              {
+                "kind": "device-lost",
+                "generation": 3,
+                "at": 86390.85000002384,
+                "reason": "unknown",
+                "message": "A valid external Instance reference no longer exists."
+              },
+              {
+                "kind": "failed",
+                "generation": 3,
+                "at": 86390.89999997616,
+                "message": "图形设备连续丢失，自动恢复已停止。"
+              }
+            ]
+          },
+          "failure": "图形设备连续丢失，自动恢复已停止。",
+          "huds": 0
+        }
+      }
+    ],
+    "regressions": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\results.json",
+          "sha256": "0af014716d2f928133d41e18fee5e3b1eb10e94c99c6d1cde2adb8bb21777976"
+        },
+        "scalarVisibility": false,
+        "frames": 42034,
+        "enabled": {
+          "sampleFrame": 42030,
+          "graphicsPipelines": 972,
+          "computePipelines": 1579,
+          "graphicsPipelineCreateMs": 60.19163131713867,
+          "computePipelineCreateMs": 44.45838928222656,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 757,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 41436,
+          "asyncPrecacheRequested": 2254,
+          "asyncPrecacheCompleted": 2254,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 89,
+          "precachedGraphicsBinds": 427563,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "disabled": {
+          "sampleFrame": 540,
+          "graphicsPipelines": 850,
+          "computePipelines": 1568,
+          "graphicsPipelineCreateMs": 51.85270309448242,
+          "computePipelineCreateMs": 40.78102111816406,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 735,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 282,
+          "asyncPrecacheRequested": 2232,
+          "asyncPrecacheCompleted": 2232,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 114909,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        }
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser-scalar\\results.json",
+          "sha256": "5394e3d72eedb76890ceed95d9278809762b0b66a716c07ef6ea41b488b6c98f"
+        },
+        "scalarVisibility": true,
+        "frames": 41473,
+        "enabled": {
+          "sampleFrame": 41460,
+          "graphicsPipelines": 974,
+          "computePipelines": 1579,
+          "graphicsPipelineCreateMs": 57.28745460510254,
+          "computePipelineCreateMs": 42.68527030944824,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 757,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 40858,
+          "asyncPrecacheRequested": 2253,
+          "asyncPrecacheCompleted": 2253,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 89,
+          "precachedGraphicsBinds": 421969,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        },
+        "disabled": {
+          "sampleFrame": 540,
+          "graphicsPipelines": 850,
+          "computePipelines": 1567,
+          "graphicsPipelineCreateMs": 54.105281829833984,
+          "computePipelineCreateMs": 40.74716567993164,
+          "textureReadbacks": 0,
+          "textureReadbacksReady": 0,
+          "textureReadbackMaps": 0,
+          "textureReadbackNotReady": 0,
+          "psoPrecaching": true,
+          "precachedGraphicsPipelines": 735,
+          "storageFormatPrecached": 9,
+          "storageFormatPrecachedUsed": 1,
+          "storageFormatPrecachedBinds": 264,
+          "asyncPrecacheRequested": 2231,
+          "asyncPrecacheCompleted": 2231,
+          "asyncPrecacheFailed": 0,
+          "unsupportedPrecacheRequests": 0,
+          "precachedGraphicsUsed": 70,
+          "precachedGraphicsBinds": 114950,
+          "precacheConcurrency": 8,
+          "runtimeAsyncPSO": false,
+          "runtimeAsyncRequested": 0,
+          "runtimeAsyncCompleted": 0,
+          "runtimeAsyncFailed": 0
+        }
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 225104,
+      "sha256": "e73221bfc31bc1666b80c3085e579cad7390dba8e31afcc231257fcb31f5b7ea"
+    },
+    "references": [
+      "https://www.w3.org/TR/webgpu/#dom-gpudevice-lost",
+      "https://html.spec.whatwg.org/multipage/workers.html#terminate-a-worker",
+      "https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-crashGpuProcess"
+    ],
+    "boundary": "Actual isolated-browser GPU process crashes. Fresh adapter, GPU device, engine and Nanite pages; camera restored automatically, dynamic application assets restored through explicit checkpoint hooks. Native full-world in-place GPU reconstruction is not implemented. Default browser refusal after consecutive GPU crashes terminates cleanly. Repeated-crash diagnostic alone uses --disable-domain-blocking-for-3d-apis; production/default runs do not. Remaining material/instance and complete-scene acceptance stay open."
+  }
+}

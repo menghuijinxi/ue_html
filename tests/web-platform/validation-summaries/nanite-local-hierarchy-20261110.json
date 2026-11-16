@@ -1,0 +1,601 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-local-hierarchy-20261110.json",
+    "bytes": 10498620,
+    "sha256": "dbaea449b5ffb65d6c3cf8ebd9b4c2900a822a3487ad17272691ecb60b01fcc1",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T01:58:14.605Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-local-hierarchy-evidence.cjs",
+      "sha256": "d1f96431331e01770a146480ed36cac1486dfba06791abfe124071bfc9db2a4a"
+    },
+    "packages": {
+      "nanite-browser": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+        "sha256": "ad8ce7b39a7855a27c72e21e0d6e2e269eec1588acf889d5fc2fe40d8cd3fa69"
+      },
+      "nanite-default-scene": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+        "sha256": "19826887edfe55d7816deb5b5e0725c5739257ed6f96bb7fe2db96e9e780afb1"
+      },
+      "nanite-full-scene": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-full-scene\\package.json",
+        "sha256": "8acf8f793c716caeb97ff8e53e4e166dbc414258c68822b869563f0e21dd8318"
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "c0e5a37c07a58ebe4657742a2b6aff8da47cc809aea88b4387de7719ab285dbb"
+    },
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-packed-4.png",
+        "sha256": "0709dbebaa66bc1358174a4dc3bbe92fddfc8558fc5b75950aebbf366725af98"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-packed-5.png",
+        "sha256": "bf98e03a20853fa00b4d0f3392abcc2b77a3cfaec66fc2ac0ca75818465ffe2e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-packed-6.png",
+        "sha256": "b011da8b6726fe68f93f913629f8890f4151ee300e0836cc32a92e248223ad0a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-packed-7.png",
+        "sha256": "06711ac560df5f3dfa7bdeda03addd0954d7827ada19b70284d83b8c3b4f0b3e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-packed-8.png",
+        "sha256": "2b726f2f4d1da15da57908044e0a6ff944fb13f05e7f665597fccaee12296c92"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-packed-9.png",
+        "sha256": "5b535d976e4f17a9061194898a285f576aab3cc3ca89da9f1ed23f7c4d401f71"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-scalar-4.png",
+        "sha256": "a044d9bb8c5332ffa2e42cb0d113ad1156255857044062decb9def7f214f0cdf"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-scalar-5.png",
+        "sha256": "f8b964f3b72a7655044da26fe8d92b21618a85cba5d095b1a29cc6d71b4743c4"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-scalar-6.png",
+        "sha256": "f79ff3b7e025fa81762499188949f007eaf51fd3cd683adfa3605baca301eb28"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-scalar-7.png",
+        "sha256": "7d3a79f2e7a32b899da3a32a98ba825041eb116353a1e8b2a69e5cdd928443f9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-scalar-8.png",
+        "sha256": "55bf8fe1665520b4587a8b496776376985b0ad6ca70d0116943ec5d8f54543b8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-hierarchy-20261110-scalar-9.png",
+        "sha256": "32e1b104456cfc569c51a600b7c90c9710c8d4c22105eb25a53a6f560c6efe8a"
+      }
+    ],
+    "historicalEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-programmable-20261110.json",
+      "sha256": "58e87cd1cd97ef8323e830f8ebd015149c5853de9409e7a2fc6de002218da337"
+    },
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 2574,
+        "steps": [
+          {
+            "step": 1,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 395,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 7162.224999964237,
+              "fps": 16.75456998357343,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 2,
+            "entries": 0,
+            "levels": 0,
+            "localEntries": 0,
+            "performance": {
+              "frames": 122,
+              "milliseconds": 1186.0649999976158,
+              "fps": 102.86114167456694,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 3,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 395,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 7105.865000009537,
+              "fps": 16.887458458588636,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 4,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 0,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 8412.70499998331,
+              "fps": 14.383007605786728,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 5,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 395,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 7047.439999997616,
+              "fps": 17.16935511335193,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 13624,
+              "before": 624,
+              "after": 395,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 6,
+            "entries": 326,
+            "levels": 468,
+            "localEntries": 0,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 7733.420000016689,
+              "fps": 15.51706748110681,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 7,
+            "entries": 326,
+            "levels": 468,
+            "localEntries": 326,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 6361.8900000452995,
+              "fps": 18.862319216324952,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 14377,
+              "before": 468,
+              "after": 326,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 8,
+            "entries": 377,
+            "levels": 595,
+            "localEntries": 0,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 8475.865000009537,
+              "fps": 14.157847016188317,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 9,
+            "entries": 377,
+            "levels": 595,
+            "localEntries": 377,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 6927.3900000452995,
+              "fps": 17.32254138993406,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 13918,
+              "before": 595,
+              "after": 377,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          }
+        ]
+      },
+      {
+        "scalar": true,
+        "frames": 2502,
+        "steps": [
+          {
+            "step": 1,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 395,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 9359.800000011921,
+              "fps": 12.820786768931725,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 2,
+            "entries": 0,
+            "levels": 0,
+            "localEntries": 0,
+            "performance": {
+              "frames": 125,
+              "milliseconds": 1157.7150000333786,
+              "fps": 107.97130554272516,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 3,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 395,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 9473.189999997616,
+              "fps": 12.667327478920004,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 4,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 0,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 11185.974999964237,
+              "fps": 10.81711697016906,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 5,
+            "entries": 395,
+            "levels": 624,
+            "localEntries": 395,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 9822.475000023842,
+              "fps": 12.318687499811025,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 13624,
+              "before": 624,
+              "after": 395,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 6,
+            "entries": 326,
+            "levels": 468,
+            "localEntries": 0,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 9479.144999980927,
+              "fps": 12.659369595068064,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 7,
+            "entries": 326,
+            "levels": 468,
+            "localEntries": 326,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 8577.479999959469,
+              "fps": 13.990122973247042,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 14377,
+              "before": 468,
+              "after": 326,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 8,
+            "entries": 377,
+            "levels": 595,
+            "localEntries": 0,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 10501.910000026226,
+              "fps": 11.426492895073403,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 9,
+            "entries": 377,
+            "levels": 595,
+            "localEntries": 377,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 9069.145000040531,
+              "fps": 13.231677296973828,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 13918,
+              "before": 595,
+              "after": 377,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          }
+        ]
+      }
+    ],
+    "regressions": [
+      {
+        "suite": "automatic",
+        "mode": "packed",
+        "frames": 4550,
+        "steps": 8
+      },
+      {
+        "suite": "streaming-budget",
+        "mode": "packed",
+        "frames": 12810,
+        "steps": 45
+      },
+      {
+        "suite": "automatic",
+        "mode": "scalar",
+        "frames": 4562,
+        "steps": 8
+      },
+      {
+        "suite": "streaming-budget",
+        "mode": "scalar",
+        "frames": 13684,
+        "steps": 45
+      }
+    ],
+    "profiles": [
+      {
+        "file": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-programmable.json",
+          "sha256": "911379594c5921bb676c1684973d14c4235c8fc16d0521c0ea18406f3033814d"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 12.353128278311045,
+              "durationMs": 5018.971599999997
+            },
+            "callsPerFrame": {
+              "createBuffer": 1963,
+              "writeBuffer": 1960,
+              "submit": 12.058823529411764,
+              "createBindGroup": 1203,
+              "draw": 50,
+              "drawIndexed": 1323.1078431372548
+            },
+            "rhiMsPerFrame": 49.81455382178812
+          },
+          {
+            "baseline": {
+              "fps": 14.85132751858317,
+              "durationMs": 5050.053599999999
+            },
+            "callsPerFrame": {
+              "createBuffer": 1687.0852713178294,
+              "writeBuffer": 1684.0852713178294,
+              "submit": 12.4031007751938,
+              "createBindGroup": 996,
+              "draw": 65,
+              "drawIndexed": 1113
+            },
+            "rhiMsPerFrame": 39.23914783684782
+          }
+        ]
+      },
+      {
+        "file": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-local-hierarchy.json",
+          "sha256": "100b4851c926f6fce5a63920f5c4b30137121a54de4dd6c124b2593dc57d1a65"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 14.512472088092853,
+              "durationMs": 5030.1561
+            },
+            "callsPerFrame": {
+              "createBuffer": 1173.088,
+              "writeBuffer": 1170.088,
+              "submit": 12.24,
+              "createBindGroup": 808,
+              "draw": 50,
+              "drawIndexed": 1323.064
+            },
+            "rhiMsPerFrame": 41.67863845825195
+          },
+          {
+            "baseline": {
+              "fps": 18.95446493071838,
+              "durationMs": 5012.011699999988
+            },
+            "callsPerFrame": {
+              "createBuffer": 1032.5510204081634,
+              "writeBuffer": 1029.5510204081634,
+              "submit": 12.476190476190476,
+              "createBindGroup": 670,
+              "draw": 65,
+              "drawIndexed": 1113
+            },
+            "rhiMsPerFrame": 35.567919413248696
+          }
+        ]
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 10480652,
+      "sha256": "867371a5485c5617e538d26d1f7ae2f126565b2ab47943130c9347bc740cda62"
+    },
+    "boundary": "Small rigid hierarchies use a bounded single-workgroup queue; larger resources retain ordered per-level dispatches. Paired full-scene GPU states/depth and five streaming budgets are verified for both atomic paths. Full performance, deformation, remaining material/view permutations and native full-scene acceptance remain open."
+  }
+}

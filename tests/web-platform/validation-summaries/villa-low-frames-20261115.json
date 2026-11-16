@@ -1,0 +1,520 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/villa-low-frames-20261115.json",
+    "bytes": 19826,
+    "sha256": "6abcbad50d54324e910a79634c6b284230761b5ef18578a8b27bc832b892c8ad",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-15T14:49:11.593Z",
+    "pass": true,
+    "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115",
+    "url": "http://127.0.0.1:8775/build/villa-presentation-performance-20261115/index.html",
+    "hardware": {
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "driver": "621.24",
+      "userRTX3070Verified": false
+    },
+    "originalInputsUnmodified": 1632,
+    "exactProjectConfigCount": 3,
+    "rendererOverrides": [],
+    "performanceHUDVisible": true,
+    "comparison": {
+      "before": {
+        "folder": "villa-project-performance-20261115",
+        "seconds": 20,
+        "trace": false,
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 1,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1,
+          "virtualTextures": 1,
+          "virtualTexturePathActive": true,
+          "virtualShadowPathActive": true
+        },
+        "environmentBefore": {
+          "mainMs": 278.8699999973178,
+          "workerMs": 286.5249999985099
+        },
+        "environmentAfter": {
+          "mainMs": 278.20499999821186,
+          "workerMs": 283.48499999940395
+        },
+        "phases": [
+          {
+            "name": "first-tour",
+            "frames": 535,
+            "fps": 26.690027508192273,
+            "low1": 5.086038823448958,
+            "p99": 83.3449999988079,
+            "max": 466.0899999961257,
+            "over50": 33,
+            "over100": 3,
+            "prewarmMissesBefore": 0,
+            "prewarmMissesAfter": 8,
+            "longFrames": [
+              {
+                "frame": 405,
+                "ms": 103.22499999403954,
+                "rhiMs": 22.200584411621094,
+                "renderMs": 52.51002311706543,
+                "gameMs": 99.83984375,
+                "pendingTextures": 15,
+                "prewarmMisses": 0
+              },
+              {
+                "frame": 638,
+                "ms": 466.0899999961257,
+                "rhiMs": 26.17955207824707,
+                "renderMs": 24.18994903564453,
+                "gameMs": 3.385009765625,
+                "pendingTextures": 30,
+                "prewarmMisses": 1
+              },
+              {
+                "frame": 742,
+                "ms": 346.9650000035763,
+                "rhiMs": 22.225141525268555,
+                "renderMs": 16.869783401489258,
+                "gameMs": 2.02490234375,
+                "pendingTextures": 20,
+                "prewarmMisses": 6
+              }
+            ]
+          },
+          {
+            "name": "repeat-tour",
+            "frames": 613,
+            "fps": 30.569777262021052,
+            "low1": 15.438395288353336,
+            "p99": 53.230000004172325,
+            "max": 97.60500000417233,
+            "over50": 13,
+            "over100": 0,
+            "prewarmMissesBefore": 8,
+            "prewarmMissesAfter": 8,
+            "longFrames": []
+          }
+        ]
+      },
+      "after": {
+        "folder": "villa-presentation-performance-20261115",
+        "seconds": 20,
+        "trace": false,
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 1,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1,
+          "virtualTextures": 1,
+          "virtualTexturePathActive": true,
+          "virtualShadowPathActive": true
+        },
+        "environmentBefore": {
+          "mainMs": 278.46000000089407,
+          "workerMs": 284.78999999910593
+        },
+        "environmentAfter": {
+          "mainMs": 278.3850000053644,
+          "workerMs": 283.304999999702
+        },
+        "phases": [
+          {
+            "name": "first-tour",
+            "frames": 570,
+            "fps": 28.347786560064886,
+            "low1": 14.107356986836598,
+            "p99": 53.28999999910593,
+            "max": 113.28999999910593,
+            "over50": 21,
+            "over100": 1,
+            "prewarmMissesBefore": 0,
+            "prewarmMissesAfter": 0,
+            "longFrames": [
+              {
+                "frame": 407,
+                "ms": 113.28999999910593,
+                "rhiMs": 23.410797119140625,
+                "renderMs": 20.72000503540039,
+                "gameMs": 108.02490234375,
+                "pendingTextures": 0,
+                "prewarmMisses": 0
+              }
+            ]
+          },
+          {
+            "name": "repeat-tour",
+            "frames": 613,
+            "fps": 30.45863600464003,
+            "low1": 16.929681359150546,
+            "p99": 50.440000005066395,
+            "max": 90.30499999970198,
+            "over50": 8,
+            "over100": 0,
+            "prewarmMissesBefore": 0,
+            "prewarmMissesAfter": 0,
+            "longFrames": []
+          }
+        ]
+      }
+    },
+    "pipelineWarmup": {
+      "recipe": {
+        "recipe": "villa-interior-turning-20261115",
+        "modes": [
+          3,
+          2,
+          1
+        ],
+        "seconds": 20
+      },
+      "capture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-auto-prewarm-a145dbc6-a3e5-4b2f-9cfb-49e575b736fd\\result.json",
+        "sha256": "f3f769749780f53136c0b0588f85964f1910a8448b56a45bf6bee1fc6250a246"
+      },
+      "modules": 326,
+      "pipelines": 331,
+      "routes": [
+        {
+          "mode": 3,
+          "duration": 20,
+          "elapsed": 20.009614990234375,
+          "updates": 958,
+          "active": false,
+          "completed": true,
+          "serial": 1,
+          "driver": "game-frame"
+        },
+        {
+          "mode": 2,
+          "duration": 20,
+          "elapsed": 20.007664794921876,
+          "updates": 1002,
+          "active": false,
+          "completed": true,
+          "serial": 2,
+          "driver": "game-frame"
+        },
+        {
+          "mode": 1,
+          "duration": 20,
+          "elapsed": 20.00875,
+          "updates": 1019,
+          "active": false,
+          "completed": true,
+          "serial": 3,
+          "driver": "game-frame"
+        }
+      ]
+    },
+    "optimizationContract": {
+      "version": "web-backend-20261115",
+      "defaults": {
+        "r.WebGPU.ReuseComputePass": 1,
+        "r.WebGPU.StagingUploadPages": 1,
+        "r.WebGPU.RDGMergeRenderPasses": 1,
+        "r.WebGPU.BatchSubmissions": 1,
+        "r.WebGPU.ReusePresentEncoder": 1,
+        "r.WebGPU.FrameUniformSnapshots": 1,
+        "r.WebGPU.MergeShadowMaskClear": 1,
+        "r.Web.OcclusionMotionQueryInterval": 0,
+        "r.Web.OcclusionGroupMotionQueries": 1,
+        "r.Web.LightGridAllocationBuckets": 1,
+        "r.WebGPU.StagingReadbackPool": 1,
+        "r.WebGPU.GroupAccessRevalidation": 2,
+        "r.WebGPU.DynamicGlobalsGroupReuse": 1,
+        "r.WebGPU.BindingPlan": 1,
+        "r.WebGPU.IndirectDrawReuse": 2,
+        "r.WebGPU.VSMPageOptimization": 3,
+        "r.WebGPU.TSRLargeTiles": 0
+      },
+      "explicitOverrides": {},
+      "runtime": {
+        "gameFrameClock": "owner",
+        "inputBridge": "owner-forwarded",
+        "reuseReplayScratch": true
+      },
+      "nativeReadback": {
+        "r.WebGPU.GroupAccessRevalidation": 2,
+        "r.WebGPU.DynamicGlobalsGroupReuse": true,
+        "r.WebGPU.BindingPlan": true,
+        "r.WebGPU.IndirectDrawReuse": 2,
+        "r.WebGPU.VSMPageOptimization": 3,
+        "r.WebGPU.ReuseComputePass": true,
+        "r.Web.OcclusionGroupMotionQueries": true,
+        "r.Web.OcclusionMotionQueryInterval": 0,
+        "r.WebGPU.StagingReadbackPool": true,
+        "r.WebGPU.StagingUploadPages": true
+      }
+    },
+    "replayScratch": {
+      "calls": 94597,
+      "allocations": 1,
+      "reuses": 94596,
+      "inUse": 0,
+      "maxObjects": 383
+    },
+    "traceAttribution": {
+      "baselineTrace": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-baseline2-20261115\\trace.json",
+        "sha256": "c534198d1d2e5005f976fb43fdb45cb9e111e7f3c995d72bb860f4214ac4029a"
+      },
+      "cpuTrace": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-cpu-trace-20261115\\trace.json",
+        "sha256": "863004c8c352c4e6b2c36dd4ab9a0cf9efbd8ec1942cb92a35393abd8043913a"
+      },
+      "compileEvents": [
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36134713083,
+          "dur": 22389,
+          "args": {}
+        },
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36134765831,
+          "dur": 354732,
+          "args": {}
+        },
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36138406709,
+          "dur": 29923,
+          "args": {}
+        },
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36138440370,
+          "dur": 58170,
+          "args": {}
+        },
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36139412863,
+          "dur": 238069,
+          "args": {}
+        },
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36139663132,
+          "dur": 21871,
+          "args": {}
+        },
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36144152672,
+          "dur": 49310,
+          "args": {}
+        },
+        {
+          "name": "CompileShaderDXC",
+          "pid": 33664,
+          "tid": 8436,
+          "ts": 36144526288,
+          "dur": 46007,
+          "args": {}
+        }
+      ],
+      "streamingWaits": [
+        {
+          "frame": 400,
+          "frameMs": 158.89000000059605,
+          "waitMs": 117.927,
+          "stack": [
+            "__pthread_cond_timedwait",
+            "emscripten_proxy_sync_with_ctx",
+            "emscripten_proxy_sync",
+            "FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHICommandListBase&, FRHITextureCreateDesc const&)",
+            "FRHICommandListBase::CreateTexture(FRHITextureCreateDesc const&)",
+            "FRHICommandListImmediate::AsyncReallocateTexture2D(FRHITexture*, int, int, int, FThreadSafeCounter*)",
+            "FTexture2DUpdate::DoAsyncReallocate(FRHICommandListImmediate&, FTexture2DUpdateContext const&)",
+            "FTexture2DStreamIn_IO_AsyncReallocate::AsyncReallocate(FTexture2DUpdateContext const&)",
+            "UE::Core::Private::Function::TFunctionRefCaller<FTexture2DStreamIn_IO_AsyncReallocate::FTexture2DStreamIn_IO_AsyncReallocate(UTexture2D*, bool)::$_0, void, FTexture2DUpdateContext const&>::Call(void*, FTexture2DUpdateContext const&)",
+            "TRenderAssetUpdate<FTexture2DUpdateContext>::TickInternal(FRenderAssetUpdate::EThreadType, bool)",
+            "UE::Core::Private::Function::TFunctionRefCaller<FRenderAssetUpdate::ScheduleRenderTask()::$_0, void, FRHICommandListImmediate&>::Call(void*, FRHICommandListImmediate&)"
+          ]
+        },
+        {
+          "frame": 400,
+          "frameMs": 158.89000000059605,
+          "waitMs": 3.641,
+          "stack": [
+            "__pthread_cond_timedwait",
+            "FPThreadEvent::Wait(unsigned int, bool)",
+            "FNamedTaskThread::ProcessTasksNamedThread(int, bool)",
+            "FTaskGraphCompatibilityImplementation::WaitUntilTasksComplete(TArray<TRefCountPtr<FBaseGraphTask>, TSizedInlineAllocator<4u, 32, TSizedDefaultAllocator<32>>> const&, ENamedThreads::Type)",
+            "FTaskGraphInterface::WaitUntilTaskCompletes(TRefCountPtr<FBaseGraphTask> const&, ENamedThreads::Type)",
+            "FRHICommandListExecutor::Submit(TArrayView<FRHICommandListBase* const, int>, ERHISubmitFlags)",
+            "FWebGPUDynamicRHI::RHIUnlockTexture(FRHICommandListImmediate&, FRHILockTextureArgs const&)",
+            "FTexture2DStreamIn::DoUnlockNewMips(FRHICommandListImmediate&, FTexture2DUpdateContext const&)",
+            "FTexture2DStreamIn_IO_AsyncReallocate::Finalize(FTexture2DUpdateContext const&)",
+            "UE::Core::Private::Function::TFunctionRefCaller<FTexture2DStreamIn_IO_AsyncReallocate::LoadMips(FTexture2DUpdateContext const&)::$_0, void, FTexture2DUpdateContext const&>::Call(void*, FTexture2DUpdateContext const&)",
+            "TRenderAssetUpdate<FTexture2DUpdateContext>::TickInternal(FRenderAssetUpdate::EThreadType, bool)"
+          ]
+        },
+        {
+          "frame": 659,
+          "frameMs": 135.00499999523163,
+          "waitMs": 56.942,
+          "stack": [
+            "__pthread_cond_timedwait",
+            "emscripten_proxy_sync_with_ctx",
+            "emscripten_proxy_sync",
+            "FWebGPUDynamicRHI::RHICreateTextureInitializer(FRHICommandListBase&, FRHITextureCreateDesc const&)",
+            "FRHICommandListBase::CreateTexture(FRHITextureCreateDesc const&)",
+            "FRHICommandListImmediate::AsyncReallocateTexture2D(FRHITexture*, int, int, int, FThreadSafeCounter*)",
+            "FTexture2DUpdate::DoAsyncReallocate(FRHICommandListImmediate&, FTexture2DUpdateContext const&)",
+            "FTexture2DStreamIn_IO_AsyncReallocate::AsyncReallocate(FTexture2DUpdateContext const&)",
+            "UE::Core::Private::Function::TFunctionRefCaller<FTexture2DStreamIn_IO_AsyncReallocate::FTexture2DStreamIn_IO_AsyncReallocate(UTexture2D*, bool)::$_0, void, FTexture2DUpdateContext const&>::Call(void*, FTexture2DUpdateContext const&)",
+            "TRenderAssetUpdate<FTexture2DUpdateContext>::TickInternal(FRenderAssetUpdate::EThreadType, bool)",
+            "UE::Core::Private::Function::TFunctionRefCaller<FRenderAssetUpdate::ScheduleRenderTask()::$_0, void, FRHICommandListImmediate&>::Call(void*, FRHICommandListImmediate&)"
+          ]
+        }
+      ],
+      "traceExcludedFromFPS": true
+    },
+    "remaining": "First movement still contains a 113 ms frame; average 28–30 FPS in this run has not recovered to the historical 50+ FPS. Synchronous texture reallocation/owner proxy and frame-fence waits remain. Traced CPU samples locate waits, not a separately validated fix for streaming or driver latency.",
+    "sourceAudits": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-final-before-20261115\\report.json",
+        "sha256": "bcf8595b3fe3db57a36bb49c9a0fc33ef01ba63cc194301abeaf1b0a0f6e82a2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-final-after-20261115\\report.json",
+        "sha256": "daabd54690aedcecdd567994f8e2c6f95c30313e54a9a6b250c8730ad2fe9e60"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-baseline2-20261115\\report.json",
+        "sha256": "c44b1b24bc8e39973b9c7a477730a8017b837f5e5679204e0eec6075190b6298"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-cpu-trace-20261115\\report.json",
+        "sha256": "98e630838711a9e721a5582fdf3715a6231bc033fc9a405d477e92a46518a612"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-presentation-performance-20261115-hud-restored.json",
+        "sha256": "dd5fe9f8e3f0c2466b3f2ad1f386bc0d44b0b084398eddb392cfc03c5251b307"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+        "sha256": "8dc1df894046a1e9b6f3dd782768b28429e2bf7bec1c9e478de5bab20e592c63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-villa-project-settings-20261114-prepare-results.json",
+        "sha256": "439e5dee88da2a3d09137a2b32d91edca47a94d073e6060feec71451ba41a638"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-baseline2-20261115\\trace-attribution.json",
+        "sha256": "5e3cd8b72525d63ff8eb9f13a4809d8a0abefce2cdff6e51b5206466b3b1aa9b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-low-cpu-trace-20261115\\trace-attribution.json",
+        "sha256": "f019353bb757fe9da451100bc871fcd3ad6d3eec6817200bc57e4b82928d4bd1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnostics\\summarize-villa-low-frames.cjs",
+        "sha256": "992d313ab2b8109e9e0fd41af8b3148be6e5837346e52849f91700f9a4a607eb"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\diagnostics\\analyze-villa-low-trace.py",
+        "sha256": "21003646318568fd0b947282641ccc83e8670098426613489d31cb376b6adf39"
+      }
+    ],
+    "products": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\index.html",
+        "sha256": "28eadaf17aa3803d8cd27eec98ecb10a8fc13525b53a27cf6befe71e8f198e85"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\content.bin",
+        "sha256": "fe80081639ea8a173eaa6c0ae95091b0636c92d816359b26de605c6b953625e7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\content-files.json",
+        "sha256": "af5fb7905ec91ae7c933145dbc655ae9ada6f3e9ec7346c330ad14bc70936c6a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\config-files.json",
+        "sha256": "5e8dbf562e585761797e58ec10fbef891d65a35cf66b7062c8d188be27a1c683"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-content-io.js",
+        "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-content-worker.js",
+        "sha256": "0de74a879caf4e6c11d5c434ab3935871a56f46f7c09b288812cfdb8c8fad3a6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-engine-host.js",
+        "sha256": "37ccc43aa6667a7ead707a6c12a23f33275a1f36ad0e757656baed7b2f42a2c4"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-engine-worker.js",
+        "sha256": "4dbe6f9a6c0b7d4b4942d3b8aef413373f54a5c16a35fe467fb7aaf1c7f622b9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\UEWebEngineThreads.js",
+        "sha256": "d85ea563fbf13088db7ff872f756873fd38df7fd797139335f19a994c29a3abf"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\UEWebEngineThreads.wasm",
+        "sha256": "90d836ae1774df80246f49db3cd926b820093b9b54130381a7a137667147556d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-pipeline-prewarm.js",
+        "sha256": "dbf5193f92dd843cd8dfdd625f3a8224b7cb9a89bdf866bee339573cd1fe7825"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\pipeline-prewarm.json",
+        "sha256": "b1f80544e80727676d21a3dd9d7b4289367f827931b103e1439be0769a45327f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\optimization-contract.json",
+        "sha256": "f9d8bc09a67c302fe5799d43f276f052bc6aebf668246d65cf9c9f4f0740d4b2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\asset-versions.json",
+        "sha256": "cd46a947e2e52412dc1bdaa838e34d24f2bcb5358548aa68b320188fa0b8a060"
+      }
+    ],
+    "boundary": "Two sequential normal-clock 20 s first/repeat route samples on one RTX 4090 at 1280x720 DPR 1. RHI owner submission intervals, not physical scanout. No trace or GPU draw wrapper in accepted comparison. CPU/driver trace runs are diagnostic only. Final HUD text was refreshed after the performance comparison; its packaged hashes match the subsequent CPU trace. No RTX 3070 result or stable average-FPS restoration is claimed."
+  }
+}

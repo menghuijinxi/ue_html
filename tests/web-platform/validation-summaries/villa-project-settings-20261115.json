@@ -1,0 +1,174 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/villa-project-settings-20261115.json",
+    "bytes": 5415,
+    "sha256": "a34363236b47ec9c7966a5641e3198ec72107a087c426ed56a50f4638b77056e",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-14T16:43:33.387Z",
+    "pass": true,
+    "sourceBase": {
+      "workspace": "f99166276b32a22afe8681d5ee94c29cf2536ad8",
+      "engine": "94189abfe3d34becdd3eaa7b6cde26249f7bd555"
+    },
+    "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-project-settings-20261115",
+    "url": "http://127.0.0.1:8765/build/villa-project-settings-20261115/index.html",
+    "originalProject": "G:/UE_HTML/TriplexHouseVilla/TriplexHouseVilla.uproject",
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+        "sha256": "c62550f95d5576b454b00a49ed49e177dc5cae2ae34de52887906e75ed96a4ea"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-villa-project-settings-20261114-prepare-results.json",
+        "sha256": "439e5dee88da2a3d09137a2b32d91edca47a94d073e6060feec71451ba41a638"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-villa-project-settings-20261114-desktop-cook-results.json",
+        "sha256": "00d78bf2c63105c95ef76298fb781ed84aeb63007b77fbe8b3e2b04db82e8f8d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-villa-project-settings-20261114-desktop-stage-results.json",
+        "sha256": "f520997f681853bd80104a964d7335a4e00a3bd14d29e3ec704a76b63b917af8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-villa-project-settings-20261114-distance-fields-threads-package-results.json",
+        "sha256": "4a5f19eb2b029057190bcfe59415d2d115720e78fe81fda15cd6f673e02107e5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-project-settings-20261115-validation.json",
+        "sha256": "68166d133a9e635cff326a36865d4f15fa2174679c859b66baf4c792763c33b2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-project-settings-20261115\\result.json",
+        "sha256": "8bcd5916a109f7e7b122e4e0ed10475d0929b7e2ea49eb9ebba9aafd729a543c"
+      }
+    ],
+    "build": {
+      "objects": 447,
+      "wasm": {
+        "sha256": "ae93fa98b075ecb31d1d48c5e205c8c1b3b5c9df9cdcb8dcab880262016fbb5a",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm"
+      }
+    },
+    "cook": {
+      "pass": true,
+      "products": 5165,
+      "bytes": 3924243548
+    },
+    "package": {
+      "pass": true,
+      "files": 13,
+      "bytes": 3689261018,
+      "arguments": [
+        "-webgpu",
+        "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+      ],
+      "projectSettingsPreserved": true
+    },
+    "config": {
+      "originalInputsUnmodified": 1632,
+      "exactProjectConfigs": [
+        {
+          "file": "G:\\UE_HTML\\TriplexHouseVilla\\Config\\DefaultEngine.ini",
+          "sha256": "47303db32991e3abaf49ce1f5f3b9dad47634e4fe9fddb3792788ba9a500d103"
+        },
+        {
+          "file": "G:\\UE_HTML\\TriplexHouseVilla\\Config\\DefaultGame.ini",
+          "sha256": "e077708fde4bc847143980c5937832d71acffeac9ae856c94c9ea861c9c7b807"
+        },
+        {
+          "file": "G:\\UE_HTML\\TriplexHouseVilla\\Config\\DefaultInput.ini",
+          "sha256": "919610a773558f52c41fde354c86d6a7631614c95b62f0d2bdf60db554cb484a"
+        }
+      ],
+      "rendererOverrides": [],
+      "configBundle": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-project-settings-20261115\\config-files.json",
+        "sha256": "5e8dbf562e585761797e58ec10fbef891d65a35cf66b7062c8d188be27a1c683"
+      }
+    },
+    "browser": {
+      "pass": true,
+      "errors": [],
+      "startupMs": 28012,
+      "motionSeconds": 12,
+      "frames": [
+        34,
+        503
+      ],
+      "startCamera": {
+        "x": 410.7359315721519,
+        "y": -478.05903852213453,
+        "z": 156.64842176437378,
+        "pitch": 0,
+        "yaw": 89.99945068359375
+      },
+      "endCamera": {
+        "x": 419.8162973893602,
+        "y": -286.572680097883,
+        "z": 156.64842231144522,
+        "pitch": 0,
+        "yaw": -157.1842541694641
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "view": {
+        "frame": 504,
+        "width": 1280,
+        "height": 720,
+        "outputWidth": 1280,
+        "outputHeight": 720,
+        "antiAliasing": 4,
+        "jitterX": 0,
+        "jitterY": 0,
+        "x": 0,
+        "y": 0,
+        "outputX": 0,
+        "outputY": 0,
+        "threadId": 3,
+        "parallelRendering": true
+      },
+      "prewarm": {
+        "mode": "active",
+        "start": 9.509999990463257,
+        "ready": true,
+        "adopted": true,
+        "concurrency": 2,
+        "handoff": "complete",
+        "counts": {
+          "modules": 382,
+          "layouts": 495,
+          "ready": 320,
+          "hits": 347,
+          "misses": 9,
+          "pendingHits": 0,
+          "syncWhilePending": 0
+        },
+        "completed": 6989.969999998808,
+        "adoptedAt": 20359.92999997735
+      }
+    },
+    "boundary": "构建、配置保持、首屏及短时移动通过；长期稳定性、音频、与原生硬件光追画质对照尚未验收。"
+  }
+}

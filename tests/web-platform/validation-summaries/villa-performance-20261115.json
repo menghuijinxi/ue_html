@@ -1,0 +1,455 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/villa-performance-20261115.json",
+    "bytes": 14498,
+    "sha256": "bb6afa4306c781aca61e087f52d9a500e788d6493fbe918135a8b2c0af8cb704",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-15T06:55:32.432Z",
+    "pass": true,
+    "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115",
+    "url": "http://127.0.0.1:8775/build/villa-presentation-performance-20261115/index.html",
+    "hardware": {
+      "gpu": "NVIDIA GeForce RTX 4090",
+      "driver": "621.24",
+      "userRTX3070Verified": false
+    },
+    "originalInputsUnmodified": 1632,
+    "exactProjectConfigCount": 3,
+    "sourceConfigBundlePreserved": true,
+    "originalContentPreserved": true,
+    "performanceHUDVisible": false,
+    "rendererOverrides": [],
+    "resolution": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1
+    },
+    "normalReleaseComparison": [
+      {
+        "folder": "villa-presentation-20261115",
+        "browser": "157.0.4341.60",
+        "startupReadyMs": 34367,
+        "result": {
+          "frames": 1483,
+          "fps": 49.35873583058163,
+          "low1Fps": 14.204949004274168,
+          "p50Ms": 19.640000000596046,
+          "p95Ms": 30.109999999403954,
+          "p99Ms": 39.17999999970198,
+          "maxMs": 210.99000000022352,
+          "over33Ms": 28,
+          "over50Ms": 7,
+          "rhiMs": 14.133606078559165,
+          "renderMs": 9.552389723114484
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 1,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1,
+          "virtualTextures": 1,
+          "virtualTexturePathActive": true,
+          "virtualShadowPathActive": true
+        },
+        "naniteIdleBefore": {
+          "sequence": 1,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "naniteIdleAfter": {
+          "sequence": 2,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "errors": [],
+        "travelCm": 1977.6601083506682,
+        "turnDegrees": 267.9228510742189
+      },
+      {
+        "folder": "villa-presentation-performance-20261115",
+        "browser": "157.0.4341.60",
+        "startupReadyMs": 32163,
+        "result": {
+          "frames": 1725,
+          "fps": 57.26945227495929,
+          "low1Fps": 15.908578701014266,
+          "p50Ms": 17.375,
+          "p95Ms": 26.8600000012666,
+          "p99Ms": 32.73499999940395,
+          "maxMs": 234.63499999977648,
+          "over33Ms": 14,
+          "over50Ms": 7,
+          "rhiMs": 11.571474691300793,
+          "renderMs": 9.139703494317255
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 1,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1,
+          "virtualTextures": 1,
+          "virtualTexturePathActive": true,
+          "virtualShadowPathActive": true
+        },
+        "naniteIdleBefore": {
+          "sequence": 1,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "naniteIdleAfter": {
+          "sequence": 2,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "errors": [],
+        "travelCm": 1981.9127670410026,
+        "turnDegrees": 268.6349721679692
+      }
+    ],
+    "explicitOverrideCheck": {
+      "folder": "villa-presentation-performance-20261115",
+      "browser": "157.0.4341.60",
+      "startupReadyMs": 31669,
+      "result": {
+        "frames": 797,
+        "fps": 49.32695321892091,
+        "low1Fps": 10.642755941670078,
+        "p50Ms": 19.740000000223517,
+        "p95Ms": 29.91499999910593,
+        "p99Ms": 45.08999999985099,
+        "maxMs": 229.20999999903142,
+        "over33Ms": 16,
+        "over50Ms": 6,
+        "rhiMs": 13.670983379834318,
+        "renderMs": 9.450837357403481
+      },
+      "settings": {
+        "antiAliasing": 4,
+        "generateDistanceFields": 1,
+        "distanceFieldAO": 1,
+        "distanceFieldShadows": 1,
+        "gi": 1,
+        "reflections": 1,
+        "virtualShadows": 1,
+        "texturePoolMiB": 1000,
+        "screenPercentage": 0,
+        "staticLighting": 1,
+        "shadowCacheMiB": 256,
+        "dbuffer": 1,
+        "ssrQuality": 3,
+        "volumetricFog": 1,
+        "virtualTextures": 1,
+        "virtualTexturePathActive": true,
+        "virtualShadowPathActive": true
+      },
+      "naniteIdleBefore": {
+        "sequence": 1,
+        "allocated": false,
+        "resources": 0,
+        "initializations": 0,
+        "updates": 0,
+        "stagingBytes": 0,
+        "proxies": false,
+        "enabled": false
+      },
+      "naniteIdleAfter": {
+        "sequence": 2,
+        "allocated": false,
+        "resources": 0,
+        "initializations": 0,
+        "updates": 0,
+        "stagingBytes": 0,
+        "proxies": false,
+        "enabled": false
+      },
+      "errors": [],
+      "travelCm": 1981.0939432974833,
+      "turnDegrees": 267.2673345752063
+    },
+    "reverseOrderConfirmation": [
+      {
+        "folder": "villa-presentation-performance-20261115",
+        "browser": "157.0.4341.60",
+        "startupReadyMs": 32642,
+        "result": {
+          "frames": 948,
+          "fps": 47.25386741501993,
+          "low1Fps": 11.395167309502423,
+          "p50Ms": 20.169999999925494,
+          "p95Ms": 33.41000000014901,
+          "p99Ms": 42.92999999970198,
+          "maxMs": 240.01500000059605,
+          "over33Ms": 50,
+          "over50Ms": 6,
+          "rhiMs": 13.539959299739301,
+          "renderMs": 10.734495376890811
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 1,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1,
+          "virtualTextures": 1,
+          "virtualTexturePathActive": true,
+          "virtualShadowPathActive": true
+        },
+        "naniteIdleBefore": {
+          "sequence": 1,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "naniteIdleAfter": {
+          "sequence": 2,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "errors": [],
+        "travelCm": 1974.2983793174894,
+        "turnDegrees": 267.9893891601562
+      },
+      {
+        "folder": "villa-presentation-20261115",
+        "browser": "157.0.4341.60",
+        "startupReadyMs": 36342,
+        "result": {
+          "frames": 838,
+          "fps": 41.7496386763048,
+          "low1Fps": 10.61752717790533,
+          "p50Ms": 22.994999999180436,
+          "p95Ms": 34.84500000067055,
+          "p99Ms": 52.244999999180436,
+          "maxMs": 251.8449999988079,
+          "over33Ms": 57,
+          "over50Ms": 9,
+          "rhiMs": 16.214954655784805,
+          "renderMs": 11.008455680053567
+        },
+        "settings": {
+          "antiAliasing": 4,
+          "generateDistanceFields": 1,
+          "distanceFieldAO": 1,
+          "distanceFieldShadows": 1,
+          "gi": 1,
+          "reflections": 1,
+          "virtualShadows": 1,
+          "texturePoolMiB": 1000,
+          "screenPercentage": 0,
+          "staticLighting": 1,
+          "shadowCacheMiB": 256,
+          "dbuffer": 1,
+          "ssrQuality": 3,
+          "volumetricFog": 1,
+          "virtualTextures": 1,
+          "virtualTexturePathActive": true,
+          "virtualShadowPathActive": true
+        },
+        "naniteIdleBefore": {
+          "sequence": 1,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "naniteIdleAfter": {
+          "sequence": 2,
+          "allocated": false,
+          "resources": 0,
+          "initializations": 0,
+          "updates": 0,
+          "stagingBytes": 0,
+          "proxies": false,
+          "enabled": false
+        },
+        "errors": [],
+        "travelCm": 1970.9151696860977,
+        "turnDegrees": 266.80882763671855
+      }
+    ],
+    "screenshotReviewed": true,
+    "fpsImprovementPercent": 16.026983493925616,
+    "releaseDefaults": {
+      "version": "desktop-startup-20261110",
+      "releaseReady": true,
+      "renderSizing": "css-dpr-once",
+      "fixedRenderSize": null,
+      "cacheLock": "shared-read-short-prepare",
+      "files": [
+        "web-engine-host.js",
+        "web-engine-worker.js",
+        "web-content-worker.js",
+        "web-pipeline-prewarm.js",
+        "pipeline-prewarm.json"
+      ],
+      "prewarm": {
+        "mode": "recorded",
+        "concurrency": 2,
+        "modules": 312,
+        "pipelines": 320,
+        "capture": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-auto-prewarm-c0033b85-2099-4e40-89b3-98b001160ac1\\result.json",
+          "sha256": "b9eabb5a3bf23b450ea265abdc2b9206ab8031bdc217145584455e2a8c4db6d7"
+        },
+        "corpus": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-startup-auto-prewarm-c0033b85-2099-4e40-89b3-98b001160ac1\\0-corpus.json",
+          "sha256": "aabb8efe10434fb767f78796a5941c5358ab00eb6d40a43ab11ffeed44166b13"
+        },
+        "pack": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\pipeline-prewarm.json",
+          "sha256": "25dac13477d52ea226b82eb0819fe129429c454829b11c2dbad7f25fb5b76db9"
+        },
+        "engineArguments": [
+          "-webgpu",
+          "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+        ],
+        "files": [
+          "web-engine-host.js",
+          "web-engine-worker.js",
+          "web-content-worker.js",
+          "web-pipeline-prewarm.js",
+          "pipeline-prewarm.json"
+        ],
+        "selection": "automatic-reuse"
+      },
+      "engineArguments": [
+        "-webgpu",
+        "-WebProjectMap=/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla"
+      ],
+      "runtime": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-engine-host.js",
+          "sha256": "9cb1f2c7fd050c1d1d3b4fbbda19cc3b15c69710738e581366ffbad5208e2387"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-engine-worker.js",
+          "sha256": "99246275c02b1a4629e77d2dc2b5c0e8cb95c0af345eb409709f8d849e31a607"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-content-worker.js",
+          "sha256": "0de74a879caf4e6c11d5c434ab3935871a56f46f7c09b288812cfdb8c8fad3a6"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\web-pipeline-prewarm.js",
+          "sha256": "89ccf48171cefe82f5350bd9d595acc119513222f2adff19b79a5e79e4640963"
+        }
+      ]
+    },
+    "packageFiles": 13,
+    "packageBytes": 3689260339,
+    "wasm": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\UEWebEngineThreads.wasm",
+      "sha256": "90d836ae1774df80246f49db3cd926b820093b9b54130381a7a137667147556d"
+    },
+    "configBundle": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-presentation-performance-20261115\\config-files.json",
+      "sha256": "5e8dbf562e585761797e58ec10fbef891d65a35cf66b7062c8d188be27a1c683"
+    },
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-villa-project-settings-20261114-prepare-results.json",
+        "sha256": "439e5dee88da2a3d09137a2b32d91edca47a94d073e6060feec71451ba41a638"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-villa-project-settings-20261114-distance-fields-threads-package-results.json",
+        "sha256": "f2f417c0dcb1908dff57c429e3215608336bdd6561136c22326917689fb01cf1"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-presentation-performance-20261115-package.json",
+        "sha256": "3f94b9015f590ad67c1b7a7d3474e8a98710c555bfadd9852e3988c8bf03ca5b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-performance-release-ab2-20261115\\report.json",
+        "sha256": "9bdea128a92c99bb451b0e99f9b078d976acde8e12558ceb2f4146aa387fff7e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-performance-release-confirm-ba-20261115\\report.json",
+        "sha256": "6953be690e8a905aa7c976332baf38113bd3378850212a0b7482affe5e2fb85d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-performance-project-override-20261115\\report.json",
+        "sha256": "1d1d492dc740119544b676caef7b019b62190d276c0ed92e3bccdaac98c36c1f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\.cache\\villa-performance-20261115\\verify.cjs",
+        "sha256": "dcbe4a8f0aa86f59bf7ffe2580fa57010d10b0f918c904546ed753da26ffd388"
+      }
+    ],
+    "screenshots": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-performance-release-ab2-20261115\\0-legacy.png",
+        "sha256": "60ab4b4297ea6d0a151fc79157985a547105f5cca59b00d132fa0e99efddd44f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\villa-performance-release-ab2-20261115\\1-candidate.png",
+        "sha256": "737200d3f7ac1a5f976a4a02da10a9c00f20068cf0815c5f2e2f7edc085a216b"
+      }
+    ],
+    "boundary": "Normal advancing clocks and identical content/configuration at DPR 1. All first-tour viewport submission intervals retained; no CPU/GPU profiler, GPU method wrapper or startup setting override in normal release comparison. Explicit override run only validates CVar priority. RTX 3070 and physical display timing remain unmeasured."
+  }
+}

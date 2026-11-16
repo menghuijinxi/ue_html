@@ -1,0 +1,654 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/vectorvm-web-20261111.json",
+    "bytes": 29458,
+    "sha256": "ebbdc57d76b68e89b3d1b9f13882e30e2582ef88daeb48f14a5ad5c2030c3381",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T01:45:09.324Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-vectorvm-web-evidence.cjs",
+      "sha256": "b34a96bcaf7e3c1312c98e2f0b0149210cb55d2d032abff2d2c346ab09654c67"
+    },
+    "verified": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\verified.json",
+      "sha256": "0a3b34faccb0f705143476ec48bbf3a7364be1f0996b73617290035b364cc604"
+    },
+    "report": {
+      "web": [
+        {
+          "mode": "wasm64",
+          "result": {
+            "pass": true,
+            "halfValues": 1304576,
+            "byteCases": 4096,
+            "shiftCases": 1024,
+            "integerCases": 8192,
+            "checks": 1066502
+          }
+        },
+        {
+          "mode": "wasm32-asan",
+          "result": {
+            "pass": true,
+            "halfValues": 1304576,
+            "byteCases": 4096,
+            "shiftCases": 1024,
+            "integerCases": 8192,
+            "checks": 1066502
+          }
+        }
+      ],
+      "native": {
+        "pass": true,
+        "halfValues": 1304576,
+        "byteCases": 4096,
+        "shiftCases": 1024,
+        "integerCases": 8192,
+        "checks": 2133004
+      },
+      "sourceFiles": [
+        {
+          "sha256": "8cee5ee883d25116e21a68475b615c767e5f9288d5d52c810afd7fc0802dc752",
+          "bytes": 4641,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-vectorvm-web.ps1"
+        },
+        {
+          "sha256": "5971eb30b5e8299a0867468cfaf706ccc629410db741bf730da173528122d390",
+          "bytes": 8922,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\fixtures\\vectorvm\\vectorvm-web-contract.cpp"
+        },
+        {
+          "sha256": "d1013ae63e877d55eb7d6160abb73775d867611a50f96a3319b4f6c5790148e9",
+          "bytes": 479,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\fixtures\\vectorvm/Platforms/VectorVMPlatformBase.h"
+        },
+        {
+          "sha256": "c777014cec74395ad4bfcbfbd8ea07453ed38df1f1a4b5cdb783dfdb12b4a24b",
+          "bytes": 4350,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private/Platforms/VectorVMPlatformGeneric.h"
+        },
+        {
+          "sha256": "0f6a40d7574fa93aa323f121c269c3ebf56f4b33c96cc70032b1414ccdbb93c4",
+          "bytes": 3601,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private/Platforms/VectorVMWebScalar.h"
+        },
+        {
+          "sha256": "9b1e5fc31003b3ab5aaf58a596cae09d0022b877e34246a6de561b6766862175",
+          "bytes": 1634,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private/Platforms/VectorVMPlatformWeb.h"
+        },
+        {
+          "sha256": "34a7e963a8ba6bba68041d70684def5fbf27ba0403e6b21598808702e3d75604",
+          "bytes": 142614,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private/VectorVMRuntime.cpp"
+        },
+        {
+          "sha256": "aaef21b5aea19a0ef3af4f1e40d90ec053ebce1517d79f74eb942353615e8ef2",
+          "bytes": 9007120,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm/reference.bin"
+        },
+        {
+          "sha256": "ff310dd3b042f7f48181196e0c11b5cd92892996fa337a10b00c4607fa327acf",
+          "bytes": 179200,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm/contract.exe"
+        },
+        {
+          "sha256": "0c4d6b73d1abb9647c9924e2b40bbc9a8b8be4dc539cc766a2c7ea9d6817a016",
+          "bytes": 95227,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm/wasm64.js"
+        },
+        {
+          "sha256": "1ada7a50ac99f6f0ccba89ae80bb30086c5a8886739afba8bb5070659dc4d3ec",
+          "bytes": 23053,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm/wasm64.wasm"
+        },
+        {
+          "sha256": "ccf83d7ae706d9ab4d9a9b164c9af6ca962ec73267d0a08fb6b3619905fd17ea",
+          "bytes": 107982,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm/wasm32-asan.js"
+        },
+        {
+          "sha256": "5f149476c8d1335d661f5e0f233ab9e8c61464d83c297a3266d3183698aa52ad",
+          "bytes": 288967,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm/wasm32-asan.wasm"
+        },
+        {
+          "sha256": "62035998c92a0ebd8c62c06d922e51d4376aa0f013dc6ecd67413c1e1ae6cfce",
+          "bytes": 3277,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\fixtures\\vectorvm/prepare-integer-contract.cjs"
+        },
+        {
+          "sha256": "a4bf0a8cd960a1cf641ae5fe40e820eba3690f0d2264ddd75aff304e952d1dd4",
+          "bytes": 5717,
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm/integer-contract.h"
+        },
+        {
+          "sha256": "f840a2106731b27ac47387545a30d8470cb41299b387ee964b6d54ebff32e92f",
+          "bytes": 91839,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Core\\Public\\Math\\UnrealMathFPU.h"
+        },
+        {
+          "sha256": "379c3ce9f8893f429223c841421e79c83287c4f9e7fdb19bcda7eefcb9cfeafc",
+          "bytes": 122524,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Core\\Public\\Math\\UnrealMathSSE.h"
+        },
+        {
+          "sha256": "9b1e5fc31003b3ab5aaf58a596cae09d0022b877e34246a6de561b6766862175",
+          "bytes": 1634,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private\\Platforms\\VectorVMPlatformWeb.h"
+        },
+        {
+          "sha256": "34a7e963a8ba6bba68041d70684def5fbf27ba0403e6b21598808702e3d75604",
+          "bytes": 142614,
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private\\VectorVMRuntime.cpp"
+        }
+      ],
+      "boundary": "Production scalar operations compared bitwise with desktop VectorVM half conversion and x86 byte/shift instructions. All 65536 half encodings, signed midpoint neighborhoods, 1048576 random float bit patterns, nonaligned exact-width IO and all byte mask values. Actual FPU/SSE primitives and four Runtime integer functions are extracted unchanged; 8192 four-lane cases include signed edges, inverted clamp bounds and arbitrary boolean masks. Shifts >=32 explicitly return zero, matching SSE logical shifts. This contract does not by itself validate Niagara simulation or Groom rendering.",
+      "pass": true
+    },
+    "fullTarget": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+        "sha256": "62eab2b61ce8042174bbf57fe255952955c713614668916e6d8f0b09af935685"
+      },
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.js",
+          "sha256": "bfe55e20e796df9613d884a41f91c59c928866cc509146ff3582139962017bbc"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.wasm",
+          "sha256": "0bac131c7699cacd4f1110605599e87aed0287a1fcccd238e5e8a3722b1c735e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Binaries\\Web\\UEWebEngineThreads.target",
+          "sha256": "4e4dcfb6d0c7a62c529093529b2f7abf4a43b3662a0994dae901bd48676d4b4a"
+        }
+      ],
+      "vectorVM": {
+        "id": 5,
+        "source": "Module.VectorVM.cpp",
+        "attempts": [
+          {
+            "code": 0,
+            "log": {
+              "$omitted": true,
+              "reason": "Full diagnostic data is retained in the original report",
+              "type": "string",
+              "bytes": 107,
+              "sha256": "1b34ed9942fe91cd61df98b88fd550a843631ad8bbe54e673875ad19cb3710b4"
+            }
+          }
+        ],
+        "code": 0,
+        "milliseconds": 4875
+      },
+      "sourceFiles": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\VectorVM\\Private\\Platforms\\VectorVMPlatformWeb.h",
+          "sha256": "9b1e5fc31003b3ab5aaf58a596cae09d0022b877e34246a6de561b6766862175"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\VectorVM\\Private\\Platforms\\VectorVMWebScalar.h",
+          "sha256": "0f6a40d7574fa93aa323f121c269c3ebf56f4b33c96cc70032b1414ccdbb93c4"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\VectorVM\\Private\\VectorVMRuntime.cpp",
+          "sha256": "34a7e963a8ba6bba68041d70684def5fbf27ba0403e6b21598808702e3d75604"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private\\Platforms\\VectorVMPlatformWeb.h",
+          "sha256": "9b1e5fc31003b3ab5aaf58a596cae09d0022b877e34246a6de561b6766862175"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private\\Platforms\\VectorVMWebScalar.h",
+          "sha256": "0f6a40d7574fa93aa323f121c269c3ebf56f4b33c96cc70032b1414ccdbb93c4"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\VectorVM\\Private\\VectorVMRuntime.cpp",
+          "sha256": "34a7e963a8ba6bba68041d70684def5fbf27ba0403e6b21598808702e3d75604"
+        }
+      ]
+    },
+    "files": [
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\compile.cmd",
+          "sha256": "3f5e2a36833daa57d6a153412c55782bc2cb941fd170491ad50be11a2af2463b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\compile.cmd.gz",
+          "sha256": "5c901121071819496e70db744e9b6b6fe5cd1befb500bc0a668baff23d5d827e"
+        },
+        "encoding": "gzip-file",
+        "bytes": 620
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\contract.exe",
+          "sha256": "ff310dd3b042f7f48181196e0c11b5cd92892996fa337a10b00c4607fa327acf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\contract.exe.gz",
+          "sha256": "d2c8eadb632217ba146367b82860cad5f5b97d9cf7fc2a4f9b05b9a26c409d6f"
+        },
+        "encoding": "gzip-file",
+        "bytes": 179200
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\contract.obj",
+          "sha256": "93718cf931e1fffc0eb6aaf87af03a2fde8d427f20f61a7f6edf2cc7fb249190"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\contract.obj.gz",
+          "sha256": "3d4f71806fa785752894d23b184cf87af2d3cec621b8a4cfd89fa32c45ab5d01"
+        },
+        "encoding": "gzip-file",
+        "bytes": 76147
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log",
+          "sha256": "89b22794f07a1de1151dea78683b346af70ba5994abb560a8ee9b344c5a53d00"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log.gz",
+          "sha256": "34f964259c8d622e883a0753442aaf48450aa829b66705c0fa9c64f879b19059"
+        },
+        "encoding": "gzip-file",
+        "bytes": 2413
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log.actions.json",
+          "sha256": "cd6887d759e344729b21ad8d26b0110616c0720fd257f99e7cd8e64a1a09edf5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log.actions.json.gz",
+          "sha256": "1e3e1d8911999d14d37d3b4770c33f1ed6d1c17a8a6b4f686580be0954be4430"
+        },
+        "encoding": "gzip-file",
+        "bytes": 39209
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log.actions.json.5.log",
+          "sha256": "5d111e81923b77ef0ff0cc17a5c4d781847799517804ac68178535f8d744f700"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log.actions.json.5.log.gz",
+          "sha256": "9e78b85ae3938510820957a545e68e2f0470fe99ea2cfa7c6e731acfc79eaa1a"
+        },
+        "encoding": "gzip-file",
+        "bytes": 55220
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log.actions.json.results.json",
+          "sha256": "867a739cdcbd23c378ccfe79c7e9859f3ccf2acde971b619433c0b22372a7bec"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\full-ue-build\\web-engine-full-thread-20261111-093515.log.actions.json.results.json.gz",
+          "sha256": "967f28a5015358b849392304f00c124cc73f06c50c9af239b9b740b498f96a4d"
+        },
+        "encoding": "gzip-file",
+        "bytes": 6664
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\full-ue-build\\web-engine-full-thread-build-results.json",
+          "sha256": "62eab2b61ce8042174bbf57fe255952955c713614668916e6d8f0b09af935685"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\full-ue-build\\web-engine-full-thread-build-results.json.gz",
+          "sha256": "6ff415a51502e1bde9f1df08b933b76fc45d8f8856ed8e7340030b5e6c280d05"
+        },
+        "encoding": "gzip-file",
+        "bytes": 4848960
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\integer-contract-sources.json",
+          "sha256": "9d5d1df27ac1f0c1738a9778c2e575c5899c714e29eafe5f1eeca81d8696d99e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\integer-contract-sources.json.gz",
+          "sha256": "39ae1a0c32fb3c506387c5b365ddefc03a035ac00e2f9ff27c6d3dece7b51505"
+        },
+        "encoding": "gzip-file",
+        "bytes": 446
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\integer-contract.h",
+          "sha256": "a4bf0a8cd960a1cf641ae5fe40e820eba3690f0d2264ddd75aff304e952d1dd4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\integer-contract.h.gz",
+          "sha256": "b46bc510ab332d2e483e368b94e0c7b6e14c07f2cdef40543cafc132e9e501cb"
+        },
+        "encoding": "gzip-file",
+        "bytes": 5717
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\native-build.log",
+          "sha256": "a4f993f1990ba180f1f40ece05230c8d31a075a9a666c3d6a8addbc38ec40b4e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\native-build.log.gz",
+          "sha256": "97d572126b0fb3faeb96ac30881f8fd6c34e0c4065f008614ad4f0e0dc3b3350"
+        },
+        "encoding": "gzip-file",
+        "bytes": 27
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\native.json",
+          "sha256": "bb383318064ea50fc7fa4bf7a69395afd7ed6cf1bc4787cb278b8d2d99a7cb0a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\native.json.gz",
+          "sha256": "d868b874bc11ec098bf0d9ed8f78d4001b2a8516c58b9401469b0a33f7cc57f4"
+        },
+        "encoding": "gzip-file",
+        "bytes": 108
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\reference.bin",
+          "sha256": "aaef21b5aea19a0ef3af4f1e40d90ec053ebce1517d79f74eb942353615e8ef2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\reference.bin.gz",
+          "sha256": "56bc7b86a57d5a258ae41e665e4a1816344b99a81097f42f35159b6b99424ecb"
+        },
+        "encoding": "gzip-file",
+        "bytes": 9007120
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\verified.json",
+          "sha256": "0a3b34faccb0f705143476ec48bbf3a7364be1f0996b73617290035b364cc604"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\verified.json.gz",
+          "sha256": "d0d8dd8d2c6ff1c023533abf924a0fd805c9f781a62be6f2b5c01d4d1b5e9c43"
+        },
+        "encoding": "gzip-file",
+        "bytes": 5822
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm32-asan-build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm32-asan-build.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        },
+        "encoding": "gzip-file",
+        "bytes": 0
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm32-asan-stderr.log",
+          "sha256": "3567767587b55e6e72dbb7ba21802be39a88e9665185f9b13874a88c2cfa9cf3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm32-asan-stderr.log.gz",
+          "sha256": "770263c6276540206d2dec525c6bbe149bdde3cca81b9d83ec718c3540dfbf2a"
+        },
+        "encoding": "gzip-file",
+        "bytes": 91
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm32-asan.data",
+          "sha256": "aaef21b5aea19a0ef3af4f1e40d90ec053ebce1517d79f74eb942353615e8ef2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm32-asan.data.gz",
+          "sha256": "56bc7b86a57d5a258ae41e665e4a1816344b99a81097f42f35159b6b99424ecb"
+        },
+        "encoding": "gzip-file",
+        "bytes": 9007120
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm32-asan.js",
+          "sha256": "ccf83d7ae706d9ab4d9a9b164c9af6ca962ec73267d0a08fb6b3619905fd17ea"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm32-asan.js.gz",
+          "sha256": "cd4826ceacd02e3fbc6c308be2fbd823a1970d041e49d6d8298ce2af527a6215"
+        },
+        "encoding": "gzip-file",
+        "bytes": 107982
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm32-asan.json",
+          "sha256": "71a2047650105e2fd187eab3297ca2429dc584f6834d75d49fae9f61b4997bb2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm32-asan.json.gz",
+          "sha256": "2934e5df1187da8f082f2f2639b3a89d2e0a7bb7f5db007346aac8065f6dc4b5"
+        },
+        "encoding": "gzip-file",
+        "bytes": 107
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm32-asan.wasm",
+          "sha256": "5f149476c8d1335d661f5e0f233ab9e8c61464d83c297a3266d3183698aa52ad"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm32-asan.wasm.gz",
+          "sha256": "c5aec2d647833c3d5b6bc1bb6eedff6e16860f862802f4bc38299a7dbe18cedb"
+        },
+        "encoding": "gzip-file",
+        "bytes": 288967
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm64-build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm64-build.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        },
+        "encoding": "gzip-file",
+        "bytes": 0
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm64-stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm64-stderr.log.gz",
+          "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e"
+        },
+        "encoding": "gzip-file",
+        "bytes": 0
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm64.data",
+          "sha256": "aaef21b5aea19a0ef3af4f1e40d90ec053ebce1517d79f74eb942353615e8ef2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm64.data.gz",
+          "sha256": "56bc7b86a57d5a258ae41e665e4a1816344b99a81097f42f35159b6b99424ecb"
+        },
+        "encoding": "gzip-file",
+        "bytes": 9007120
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm64.js",
+          "sha256": "0c4d6b73d1abb9647c9924e2b40bbc9a8b8be4dc539cc766a2c7ea9d6817a016"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm64.js.gz",
+          "sha256": "25773b7d632d47dbfb6a513ea33a7fa4ab97cdb759a7985748d344d9117481f6"
+        },
+        "encoding": "gzip-file",
+        "bytes": 95227
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm64.json",
+          "sha256": "71a2047650105e2fd187eab3297ca2429dc584f6834d75d49fae9f61b4997bb2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm64.json.gz",
+          "sha256": "2934e5df1187da8f082f2f2639b3a89d2e0a7bb7f5db007346aac8065f6dc4b5"
+        },
+        "encoding": "gzip-file",
+        "bytes": 107
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\vectorvm\\wasm64.wasm",
+          "sha256": "1ada7a50ac99f6f0ccba89ae80bb30086c5a8886739afba8bb5070659dc4d3ec"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\vectorvm\\wasm64.wasm.gz",
+          "sha256": "ea76b6785bad70c2061483b9159ec9a5b888ef3fb22fcf8a86b3d7c1cb7eedfe"
+        },
+        "encoding": "gzip-file",
+        "bytes": 23053
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-vectorvm-platform\\build.log",
+          "sha256": "06f4f97c29bcf2fa3722e2f0b552eb3db562b93a04e26968c520422c473e15fe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-vectorvm-platform\\build.log.gz",
+          "sha256": "512b616fca46b70996f770a4150119b1b02fb7f2e54440832259914d5c991e45"
+        },
+        "encoding": "gzip-file",
+        "bytes": 35721490
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-vectorvm-unaligned\\vectorvm-console-3.log",
+          "sha256": "2531ef6f4d7e7466b13c0a659e2d5e5bb40491c9cae0b302eda4f86d3f0c7db2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-vectorvm-unaligned\\vectorvm-console-3.log.gz",
+          "sha256": "f4a4187819b7764c49c8726e83e0d7bf83c96227fdd3b30090134055c8efac3d"
+        },
+        "encoding": "gzip-file",
+        "bytes": 957
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-vectorvm-unaligned\\VectorVMWebScalar.h",
+          "sha256": "e1a2707eb5c0fad09e6f25c3da1337a2ee9d9ee82e3420fdb555beb79a6dee59"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-vectorvm-unaligned\\VectorVMWebScalar.h.gz",
+          "sha256": "eb463f38386a3713fee704eb927b883f02c7fcef53b0c2191678a706219aaa96"
+        },
+        "encoding": "gzip-file",
+        "bytes": 3602
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-vectorvm-unaligned\\verified.json",
+          "sha256": "5179651a2461628bc2538f5c6849cccf80dec9ed980f6f6df76ce184d3d94882"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-vectorvm-unaligned\\verified.json.gz",
+          "sha256": "d855ef2e549b2d8f012aeae93fccc9bbac57d774b393e85fd3c1030a83171f97"
+        },
+        "encoding": "gzip-file",
+        "bytes": 4183
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-vectorvm-unaligned\\verify-vectorvm-web.ps1",
+          "sha256": "ff2be34db9d61b516c8f20405662579421584dab5947807ad035e21d39f02ec9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-vectorvm-unaligned\\verify-vectorvm-web.ps1.gz",
+          "sha256": "afaf6fa66fcd7e2e03a616d362ec2026f39ce52e59226d28ea0b48d5383c8d8a"
+        },
+        "encoding": "gzip-file",
+        "bytes": 3687
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-sdk-cache-config\\verify-vectorvm-web.ps1",
+          "sha256": "ef47ad4a55415aa300ac55e9b083c8eb2c53118717c173fd2978e8f7521a7cbd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-sdk-cache-config\\verify-vectorvm-web.ps1.gz",
+          "sha256": "f7461fb53cc2c4f5eb55640ca82a6c8908087269f1d032a044be105281597f90"
+        },
+        "encoding": "gzip-file",
+        "bytes": 3410
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-sdk-cache-config\\wasm64-build.log",
+          "sha256": "28b68b98d31fea6ad76fc276b70ac5e094ca568fd8389adead3b44168a46aac0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-sdk-cache-config\\wasm64-build.log.gz",
+          "sha256": "0fb847fa4d2334e7b34f9a4b3d5d1e00bdf5cc36a2cd6dac4c7dabab7e58c2e4"
+        },
+        "encoding": "gzip-file",
+        "bytes": 603
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-sdk-cache-config\\web-engine-full-thread-20261111-082018.log",
+          "sha256": "fe3836e64d08ad234fb8887bbc096b1c8361002a93311b195f24e25ea6cf3ef3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-sdk-cache-config\\web-engine-full-thread-20261111-082018.log.gz",
+          "sha256": "c765f605478d4218d6a82af0b3efe2466674c92bdc14bbfd61b665e38cbbd113"
+        },
+        "encoding": "gzip-file",
+        "bytes": 203502
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-vectorvm-register-type\\web-engine-full-thread-20261111-091355.log.actions.json.311.log",
+          "sha256": "9a28c643f625b20b8030b5fb60a5b1d7797a01631fb404549b4fc3495913a2ff"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-vectorvm-register-type\\web-engine-full-thread-20261111-091355.log.actions.json.311.log.gz",
+          "sha256": "b0275cfa984890fe5eabb02d7842c2f3eecd301f89fc00af62e6be9a371f0d84"
+        },
+        "encoding": "gzip-file",
+        "bytes": 63293
+      },
+      {
+        "source": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-curves\\failure-vectorvm-register-type\\web-engine-full-thread-20261111-091355.log.actions.json.results.json",
+          "sha256": "9a006247982fb1d2685a10a988cb49c59ade33c3b6d178b23632216560c9e7d5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\vectorvm-web-20261111\\failure-vectorvm-register-type\\web-engine-full-thread-20261111-091355.log.actions.json.results.json.gz",
+          "sha256": "52d32c7eba815dae9ae3eecf757ff3287164ba63136e822dc04f9df94617244d"
+        },
+        "encoding": "gzip-file",
+        "bytes": 100515
+      }
+    ],
+    "boundary": "VectorVM Web arithmetic, integer register interfaces and memory access contract, plus actual VectorVM module compilation and complete UE target link. Niagara simulation and Nanite Groom browser scene acceptance remain separate requirements."
+  }
+}

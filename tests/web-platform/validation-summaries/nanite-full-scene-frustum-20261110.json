@@ -1,0 +1,495 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-full-scene-frustum-20261110.json",
+    "bytes": 14815882,
+    "sha256": "45c024eee2eefa72ec94150149c92a53935506428241d8d28028a3aa295843b6",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T00:01:02.492Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-full-scene-frustum-evidence.cjs",
+      "sha256": "7ca4e958e90ff775879e955affe67eb53125130027ef0e664ea5dff051fe4fa3"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-full-scene\\package.json",
+      "sha256": "697ba24db818f19ebaa1d176f879ce7828999ae9fc23529733835a7148048c38"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "3e3a1c96f05bd504ca709e02890cf5f03aacba591325673c8d2dda718550c4e4"
+    },
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 2652,
+        "steps": [
+          {
+            "step": 1,
+            "entries": 148,
+            "skipped": 1106,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 4627.585000038147,
+              "fps": 25.93145236640943,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 2,
+            "entries": 0,
+            "skipped": 0,
+            "pixels": 0,
+            "performance": {
+              "frames": 126,
+              "milliseconds": 1120.3849999904633,
+              "fps": 112.46134141484625,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 3,
+            "entries": 148,
+            "skipped": 1106,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 4283,
+              "fps": 28.251225776325004,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 4,
+            "entries": 1254,
+            "skipped": 0,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 32883.530000030994,
+              "fps": 3.64924325338207,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 5,
+            "entries": 148,
+            "skipped": 1106,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 122,
+              "milliseconds": 4363.425000011921,
+              "fps": 27.959687630626558,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 6503,
+              "before": 1254,
+              "after": 148,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 6,
+            "entries": 1254,
+            "skipped": 0,
+            "visible": 193,
+            "pixels": 1970,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 33617.13499999046,
+              "fps": 3.5696081774973996,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 7,
+            "entries": 175,
+            "skipped": 1079,
+            "visible": 193,
+            "pixels": 1970,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 5289.785000026226,
+              "fps": 22.685232008371806,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 1970,
+              "before": 1254,
+              "after": 175,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 8,
+            "entries": 1254,
+            "skipped": 0,
+            "visible": 493,
+            "pixels": 6418,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 32992.65499997139,
+              "fps": 3.6371731829434175,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 9,
+            "entries": 119,
+            "skipped": 1135,
+            "visible": 493,
+            "pixels": 6418,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 3979.9950000047684,
+              "fps": 30.402048243742776,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 6418,
+              "before": 1254,
+              "after": 119,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          }
+        ]
+      },
+      {
+        "scalar": true,
+        "frames": 2610,
+        "steps": [
+          {
+            "step": 1,
+            "entries": 148,
+            "skipped": 1106,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 122,
+              "milliseconds": 5386.27999997139,
+              "fps": 22.650140728043848,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 2,
+            "entries": 0,
+            "skipped": 0,
+            "pixels": 0,
+            "performance": {
+              "frames": 123,
+              "milliseconds": 1165.2400000095367,
+              "fps": 105.55765335810075,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 3,
+            "entries": 148,
+            "skipped": 1106,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 5307.8949999809265,
+              "fps": 22.796230897641117,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 4,
+            "entries": 1254,
+            "skipped": 0,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 41117.64500004053,
+              "fps": 2.9184550817509542,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 5,
+            "entries": 148,
+            "skipped": 1106,
+            "visible": 679,
+            "pixels": 6503,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 5540.635000050068,
+              "fps": 21.838652067661304,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 6503,
+              "before": 1254,
+              "after": 148,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 6,
+            "entries": 1254,
+            "skipped": 0,
+            "visible": 193,
+            "pixels": 1970,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 42168.160000026226,
+              "fps": 2.845749020111984,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 7,
+            "entries": 175,
+            "skipped": 1079,
+            "visible": 193,
+            "pixels": 1970,
+            "performance": {
+              "frames": 122,
+              "milliseconds": 6534.584999978542,
+              "fps": 18.669892579314617,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 1970,
+              "before": 1254,
+              "after": 175,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          },
+          {
+            "step": 8,
+            "entries": 1254,
+            "skipped": 0,
+            "visible": 493,
+            "pixels": 6418,
+            "performance": {
+              "frames": 120,
+              "milliseconds": 41894.25999999046,
+              "fps": 2.8643542098613826,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            }
+          },
+          {
+            "step": 9,
+            "entries": 119,
+            "skipped": 1135,
+            "visible": 493,
+            "pixels": 6418,
+            "performance": {
+              "frames": 121,
+              "milliseconds": 4732.4800000190735,
+              "fps": 25.567989721987697,
+              "runtime": {
+                "heapBytes": 1521156096,
+                "sharedMemory": true,
+                "engineWorker": true,
+                "gameThread": 2,
+                "renderThread": true,
+                "rhiThread": true
+              }
+            },
+            "comparison": {
+              "compared": 6418,
+              "before": 1254,
+              "after": 119,
+              "maxDepthDifference": 0,
+              "maxSpecularDifference": 0.003921598196029663
+            }
+          }
+        ]
+      }
+    ],
+    "regressions": [
+      {
+        "suite": "nanite-default-frustum",
+        "mode": "packed",
+        "frames": 5923,
+        "steps": 11
+      },
+      {
+        "suite": "nanite-default-frustum",
+        "mode": "scalar",
+        "frames": 5782,
+        "steps": 11
+      },
+      {
+        "suite": "nanite-automatic-scene",
+        "mode": "packed",
+        "frames": 4545,
+        "steps": 8
+      },
+      {
+        "suite": "nanite-automatic-scene",
+        "mode": "scalar",
+        "frames": 4373,
+        "steps": 8
+      },
+      {
+        "suite": "nanite-instance-distance",
+        "mode": "packed",
+        "frames": 3541,
+        "steps": 17
+      },
+      {
+        "suite": "nanite-instance-distance",
+        "mode": "scalar",
+        "frames": 3431,
+        "steps": 17
+      }
+    ],
+    "previousFailure": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-frustum\\failure-scalar-unculled-2gb.json",
+      "sha256": "8ee1801d2be3be969ed943aa01a102c163f60059a7e4fa3d01e984d4d285f37c"
+    },
+    "expectationFailure": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\failure-frustum-entry-expectation.json",
+      "sha256": "05bee2635323955d1cda74562805ff80d5f0ddee85d1bbc384ef384aa3addc51"
+    },
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 14802304,
+      "sha256": "8618060ad6f879859a6289ccf2385134b5235f946fe660c3c916d3243fd568cf"
+    },
+    "boundary": "Conservative CPU root-bound rejection matches the uncullled GPU path in three real Villa views for both device configurations. Removed entries had zero GPU-visible clusters, retained states and sampled depths match exactly, and material quantization differences are reported. Full-scene performance, programmable raster and remaining compatibility are still open."
+  }
+}

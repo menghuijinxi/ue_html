@@ -1,0 +1,1321 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-idle-20261112.json",
+    "bytes": 61107,
+    "sha256": "17652639313ee20bb6a01247245e67b408bd4755a86960604f227a3d1ded8419",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-12T03:57:33.824Z",
+    "pass": true,
+    "coldNaniteStreamingAllocationEliminated": true,
+    "idleStreamingPaused": true,
+    "idleOcclusionChangesPaused": true,
+    "naniteFullPerformanceAccepted": false,
+    "originalScene": {
+      "map": "/Game/BigTriplexHouseVilla/Maps/BigTriplexHouseVilla",
+      "actors": 2339,
+      "meshes": 2240,
+      "litMeshes": 2239,
+      "camera": true,
+      "projectGameplayPreserved": true
+    },
+    "coldState": {
+      "sequence": 1,
+      "allocated": false,
+      "resources": 0,
+      "initializations": 0,
+      "updates": 0,
+      "stagingBytes": 0,
+      "proxies": false,
+      "enabled": true
+    },
+    "performance": {
+      "before": {
+        "fps": 134.46964107031843,
+        "low1": 49.24229182432359,
+        "maxMs": 47.84999990463257,
+        "over50": 0,
+        "frames": 16151
+      },
+      "fixed": {
+        "fps": 137.5717261997212,
+        "low1": 51.13033461265537,
+        "maxMs": 40.7849999666214,
+        "over50": 0,
+        "frames": 16519
+      },
+      "runs": [
+        {
+          "mode": "legacy",
+          "overall": {
+            "frames": 7826,
+            "fps": 130.30249876602034,
+            "low1": 46.86327488936275,
+            "maxMs": 40.56500005722046,
+            "over33Ms": 3,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowest5s": {
+            "endSeconds": 36,
+            "frames": 593,
+            "fps": 118.6678780265707,
+            "low1": 34.7564154079775,
+            "maxMs": 35.60000002384186,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1986.655358846572,
+          "turnDegrees": 269.4880623372394
+        },
+        {
+          "mode": "candidate",
+          "overall": {
+            "frames": 8231,
+            "fps": 137.08897042546607,
+            "low1": 51.236939983297475,
+            "maxMs": 40.7849999666214,
+            "over33Ms": 4,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowest5s": {
+            "endSeconds": 27.5,
+            "frames": 631,
+            "fps": 126.21476712570745,
+            "low1": 37.15893409388936,
+            "maxMs": 36.59499990940094,
+            "over33Ms": 1,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1983.7222405334187,
+          "turnDegrees": 269.340290527344
+        },
+        {
+          "mode": "candidate",
+          "overall": {
+            "frames": 8288,
+            "fps": 138.05453870563042,
+            "low1": 51.03170113688789,
+            "maxMs": 35.510000109672546,
+            "over33Ms": 3,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowest5s": {
+            "endSeconds": 58.5,
+            "frames": 466,
+            "fps": 93.21743165865338,
+            "low1": 39.98720406876635,
+            "maxMs": 33.31000006198883,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.7374018764567,
+          "turnDegrees": 269.18679182883125
+        },
+        {
+          "mode": "legacy",
+          "overall": {
+            "frames": 8325,
+            "fps": 138.63758802243356,
+            "low1": 52.64163891189369,
+            "maxMs": 47.84999990463257,
+            "over33Ms": 5,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowest5s": {
+            "endSeconds": 54.75,
+            "frames": 563,
+            "fps": 112.8723610057074,
+            "low1": 40.20369870560127,
+            "maxMs": 38.480000019073486,
+            "over33Ms": 1,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1986.213399536824,
+          "turnDegrees": 269.754530761718
+        }
+      ]
+    },
+    "recoveries": [
+      {
+        "mode": "packed",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-recovery-20261112\\packed.json",
+          "sha256": "8f56d964d71dad61c903b1936f38137cb87360462e478ada3d224b72f607ed8f"
+        },
+        "tests": 8,
+        "frames": 8916
+      },
+      {
+        "mode": "scalar",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-recovery-20261112\\scalar.json",
+          "sha256": "8e6fc4b7adb816494f3c28f75d11960ad4235e44f2f9be29f20cfcb456338c50"
+        },
+        "tests": 8,
+        "frames": 8718
+      }
+    ],
+    "failures": [
+      {
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-20261112\\report.json",
+          "sha256": "270de1ace038d1687984880cbe770bf19396b107c3af288a0539ee054826e486"
+        },
+        "failure": "page.waitForFunction: ReferenceError: __webEngineFrames is not defined\n    at eval (eval at predicate (eval at evaluate (:311:30)), <anonymous>:1:37)\n    at predicate (eval at evaluate (:311:30), <anonymous>:7:27)\n    at next (eval at evaluate (:311:30), <anonymous>:29:33)\n    at eval (eval at evaluate (:311:30), <anonymous>:42:13)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-idle.cjs:29:14",
+        "errors": [
+          "__webEngineFrames is not defined"
+        ]
+      },
+      {
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-compatible-20261112\\report.json",
+          "sha256": "f9ff117d5ee0ee5f4a3cb6cc35c6bb31a449ca6dccc7599344de0427df3b8f20"
+        },
+        "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!await page.evaluate(()=>__webEngineFailure))\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-idle.cjs:30:3",
+        "errors": [
+          "Fatal error: [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source\\Runtime/Engine/Private/Materials/MaterialShared.cpp] [Line: 3167] \nFailed to find shader map for default material WorldGridMaterial(/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial)! Please make sure cooking was successful (Contains inline shaders, has GTSM)\n",
+          "unreachable"
+        ]
+      },
+      {
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-complete-20261112\\report.json",
+          "sha256": "a5318738ded913aa84cad14b1003930864877fd31983faacd8c0985a29805ef2"
+        },
+        "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(report.end.gpu.allocations.some(x=>/StreamingManager\\.ClusterPageData/.test(x.label)))\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-idle.cjs:53:9",
+        "errors": []
+      },
+      {
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-cooked-20261112\\report.json",
+          "sha256": "3a12d9140ffb42801d79a4cc124590329625f4a90037038a885dfbefc7725866"
+        },
+        "failure": "page.evaluate: ReferenceError: __webEngineFailure is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:5)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-idle.cjs:30:22",
+        "errors": []
+      },
+      {
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-final-20261112\\report.json",
+          "sha256": "5c916a1908549f8d764dcb27354125f25079dc2106585e157cbb852e981ded48"
+        },
+        "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(t.batches.length>2000)\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-idle.cjs:37:90",
+        "errors": []
+      },
+      {
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-retry-20261112\\report.json",
+          "sha256": "e2f09e48c7b4a81a8a52df86d52d1a5254e5c437928bee0389a05936f1a54cd8"
+        },
+        "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!await page.evaluate(()=>__webEngineFailure))\n\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-idle.cjs:30:3",
+        "errors": [
+          "Fatal error: [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source\\Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp] [Line: 4974] \nMissing global shader FWebNaniteGPUInstanceTestCS's permutation 0, Please make sure cooking was successful.\n",
+          "unreachable"
+        ]
+      }
+    ],
+    "records": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-pass-20261112\\report.json",
+          "sha256": "71a5a7b80bcc6da324e1bc9bbe3cae43ef4acfa2c642c2b7df0499d1a3197250"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\0-report.json.gz",
+          "sha256": "868e5c4f7a0eff384a466eb52e44d2550bf7173c697aa2ddb8a1303a0b5bda78"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-pass-20261112\\source.cjs",
+          "sha256": "44ef9ee21f6fc82b116617af63c58fb21028931423aa73164cda720075eef065"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\1-source.cjs.gz",
+          "sha256": "4b99e43bf08e926f54badb12f1a6dab39c3d840240f34defed218499413a1d69"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-fixed-20261112\\report.json",
+          "sha256": "4b5f12c59c8269e7a7932be075bc9b3b413014f2a5697731b8b5d8de98be5b1a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\2-report.json.gz",
+          "sha256": "78e75f66a66f40ac4277b831201978aac4badc35ce3d26a0db9fd37dd66ba3bc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-fixed-20261112\\source.cjs",
+          "sha256": "bfb3ace1157c0c9006a514b454097dc40bcdf8f78d0596b6097976e5385d000f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\3-source.cjs.gz",
+          "sha256": "351219980958356fe8f33ab10319b0bdaa0d01754ea216b6122bb02b99a3de73"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-before-cooked-20261112\\package.json",
+          "sha256": "dcb031c6481fbe575963b529315a9e1af4abafbb9fc26362ae7118a7c49f89bd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\4-package.json.gz",
+          "sha256": "a85259822911b2e05da060735159e1290b73bb796875f36df49649210f85b101"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-before-cooked-20261112\\config-files.json",
+          "sha256": "106f3c0d03bab60e1f139d0d6b607dc7b6f0e2a539114e4e66f379c012b2b166"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\5-config-files.json.gz",
+          "sha256": "f7e5fb368debe5f447232e4fa1bbb0a49e06ec8590f30d72066b6d03df7205c9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-before-cooked-20261112\\content-files.json",
+          "sha256": "15ab5777708ea46c89066b2c62ee4f47e3834726e31ca11d4488a198c12d6365"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\6-content-files.json.gz",
+          "sha256": "ea3c3d49db413b444d541ba60d744fdf57c40e245ba33faa4e471cf9c283f111"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-before-cooked-20261112\\index.html",
+          "sha256": "a76bd87d19883b1950a109ff8c9aad9d75f2e9356d189e6303cc0ee036ca003f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\7-index.html.gz",
+          "sha256": "98e75e5c44f6a7a1c217da717b61ebd85c5d2781810627cc26eab60d9e95c82b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-before-cooked-20261112\\asset-versions.json",
+          "sha256": "92687d07b43e0cea29585c17665a58bf64b71ba2313b038a8c671283448c8110"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\8-asset-versions.json.gz",
+          "sha256": "2d47c5158de97905d5de5600126e277f2321ca9c63cc4a4fe50f7900d43f2cae"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-fixed-20261112\\package.json",
+          "sha256": "a5265eacd386da6e66746bfacf877db849a2eae26dda386e1d945229dbcf24f7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\9-package.json.gz",
+          "sha256": "4c3723eda874c388b1dcd59590a11969273dade275669b78faf4d3deb5824bfa"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-fixed-20261112\\config-files.json",
+          "sha256": "106f3c0d03bab60e1f139d0d6b607dc7b6f0e2a539114e4e66f379c012b2b166"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\10-config-files.json.gz",
+          "sha256": "f7e5fb368debe5f447232e4fa1bbb0a49e06ec8590f30d72066b6d03df7205c9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-fixed-20261112\\content-files.json",
+          "sha256": "15ab5777708ea46c89066b2c62ee4f47e3834726e31ca11d4488a198c12d6365"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\11-content-files.json.gz",
+          "sha256": "ea3c3d49db413b444d541ba60d744fdf57c40e245ba33faa4e471cf9c283f111"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-fixed-20261112\\index.html",
+          "sha256": "bdb479c3b97a2d4c7dadb2aede6aa59a2d0dc4b0d247b6b7a8ddad35005d18ce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\12-index.html.gz",
+          "sha256": "10e5c27e832cabea1740ed83c5196c3bfa6009ba4cf03302041858746093a3f5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-fixed-20261112\\asset-versions.json",
+          "sha256": "3fbdf7d09fb578e5ff6693d7d482345d7882cd8e32568d1dc540e572917669df"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\13-asset-versions.json.gz",
+          "sha256": "fa292828ab36e975fb08d01c11244fcf84cef91bc069806ad169fe2da477579d"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\report.json",
+          "sha256": "c116474e7484ce9bc31225847dcc7d4d1d0548a460021fb5f0780600bcdfcf3d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\14-report.json.gz",
+          "sha256": "8a10215d63a040630f0771ac7cd3cf634620b573385a832dcc7c2be5bdb69581"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\source.cjs",
+          "sha256": "ed4977b7607f9e973bc1394174dccf5d0f657cbd67f3d0d6b8e20490ceb5f06f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\15-source.cjs.gz",
+          "sha256": "4c37500214a2e881f43a2ec5ae89a3742dc7411d6d5871b245a9d4b79ab161bc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-eligibility-20261112\\package.json",
+          "sha256": "7c05dfa4b3c3f90d5697077f427d145be22fb5543d05e745062ceac8ae1db695"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\16-package.json.gz",
+          "sha256": "d73dcbf80ac940326befcb7133125ab6bcfc8d326052aa6fbfa3957e61c1276e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-eligibility-20261112\\config-files.json",
+          "sha256": "106f3c0d03bab60e1f139d0d6b607dc7b6f0e2a539114e4e66f379c012b2b166"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\17-config-files.json.gz",
+          "sha256": "f7e5fb368debe5f447232e4fa1bbb0a49e06ec8590f30d72066b6d03df7205c9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-eligibility-20261112\\content-files.json",
+          "sha256": "6db516ba431ad8f74b80ce5041ce6146aef896850f43ba46b3ed6a526511d5c8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\18-content-files.json.gz",
+          "sha256": "8c01e1751bd033e7e31f5dcc06bdd8069d827eb316ea1e52237f60d9588a680c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-eligibility-20261112\\index.html",
+          "sha256": "0f48be5d64058ce6eb812a0e57ff9683acd1a5fe015345cd7ce22d0fd415f5d9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\19-index.html.gz",
+          "sha256": "ea6f834242d42d9daa51120b626fb356fca75fb77ac8454a7ba4885228101205"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-eligibility-20261112\\asset-versions.json",
+          "sha256": "99e625ca07feb933031ba0269d5573c04b765eac5edc6a385770c3b84488b9d2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\20-asset-versions.json.gz",
+          "sha256": "2e25f9cb3a66c1c3362eb8c867611dd9227e7b20d922483e2cdcb200a298b297"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-1.json",
+          "sha256": "65b9bef724783bc098a34f0a6e334f9ef0047b3e5351fb6e40e1c99856f57df2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\21-step-1.json.gz",
+          "sha256": "d314031c0ef51b0a56ea9c8ff5350dee626a4074cd0c244b5272f6b96ec81a18"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-2.json",
+          "sha256": "07d7485ca1f1292afe6c6905b0b54fed5746561a148cb4dbaab030589583ae72"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\22-step-2.json.gz",
+          "sha256": "86f198fe92f60815e6bfd1c3c2ce5dd68277fd645aad95351f48f61e92d316dd"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-3.json",
+          "sha256": "fa1f56dfe64e99a984714c2c3085d69bd52e821e68ccb7443c3e8c09f5fd109c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\23-step-3.json.gz",
+          "sha256": "af4cffd177de4bd7f9227ff634e6dcff52d9cb0b60130595305c7485cdf3ba9b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-4.json",
+          "sha256": "bb6042ced90f2d4d4d56c09beabeaf170633158ad4da6895af870648cc0f4da9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\24-step-4.json.gz",
+          "sha256": "84baf1272d238213042e878e3698c6f3e7c9c65177e4730e3f15ca08de71bec1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-5.json",
+          "sha256": "3d030f4169a394edc620668cd0af45fdd12ae2ac7253ec18cf8eafc3fb154a05"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\25-step-5.json.gz",
+          "sha256": "ad3706f132a5637f815fe2aa3ed0c84c23096877b925a7dacc34b53a2f99e8c9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-6.json",
+          "sha256": "eb381da7fae847849fc4a3c685be06592d58272313c24135904ddee7a02dd70e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\26-step-6.json.gz",
+          "sha256": "48c32286af03d5d1b1b6a9d48d2a922a140a1df1efc01c3190badb166f822a42"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-7.json",
+          "sha256": "b902491def9f80b7ab34306816a88926f68acb7846466d9569875a2f3f040e80"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\27-step-7.json.gz",
+          "sha256": "6f2fa9683ee71330db35ec808024161d976e04ed3549e425f436e8a4c5f9ba51"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-8.json",
+          "sha256": "94010ea4b1650a6e280406d3d837b1a959cd555864d61ce7a34883b60c5fefa8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\28-step-8.json.gz",
+          "sha256": "8ec8b960ef7db78a5e0924c47976cd574da28f6a08b3ed2ec71d7ce978989126"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-9.json",
+          "sha256": "e236d4b23b2583888024bebb72f6d539641f8333cc305cb6344869470896b755"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\29-step-9.json.gz",
+          "sha256": "8c523239f20b1cd0426f40d31bc75be0a54cea94761a58cefbea6d5d55e10986"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-10.json",
+          "sha256": "fe1fc3b01617b5b4a4fd8aceff77db435691915108662e991ecea86edb0aff64"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\30-step-10.json.gz",
+          "sha256": "8f26ba8d60740f6a49e4cf96c508d8f7e424126957e40725a3a9f0d0740cda72"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-11.json",
+          "sha256": "512754925b9dbded0a163f7869a0f248f69fb4ece3853fc247ea0afad3f595fb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\31-step-11.json.gz",
+          "sha256": "cd55877fcc85d316b0d5a188a497cf87e3f24e94ef070ceb2b701cc75c196f38"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-12.json",
+          "sha256": "a9f5e3a47783e20885eb44520fadcd2978010686494abc20c1c8e1b34229a421"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\32-step-12.json.gz",
+          "sha256": "256b26f8ace58ab83a9604ba80dd496d373dd2fc2c204dace858fd56a1c82b06"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-eligibility-20261112\\step-13.json",
+          "sha256": "904fa48ad226fd4bca71544bc6b002ad0abff63ae78194d7281eee249069680e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\33-step-13.json.gz",
+          "sha256": "98678a27d2c75577a9469412715843aa8abac8042284af265464f7e776653bc6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-recovery-20261112\\packed.json",
+          "sha256": "8f56d964d71dad61c903b1936f38137cb87360462e478ada3d224b72f607ed8f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\34-packed.json.gz",
+          "sha256": "b28b90f7332473d9be69cfb9644966f18c8e89dbb2763e151700052fe19cac1f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-recovery-20261112\\packed-source.cjs",
+          "sha256": "a160052702f2e07e3f57c9fd8d7364e173cf14a1ac7f891d7a022286d2471da5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\35-packed-source.cjs.gz",
+          "sha256": "f415a9227f2ffb9df42e1504a89fe8ef7214ae247e618afad55888f1a5fba763"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-default-20261112\\package.json",
+          "sha256": "89cd945c7b9bc302f41ffe29b569eff814aa819c9ce5af8d729757009495fd03"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\36-package.json.gz",
+          "sha256": "9ca952b47912728020c87dba7c6e040a0b9c171f1c77643417bb764e89320ac7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-default-20261112\\config-files.json",
+          "sha256": "bc11e76c9f1dd43f24ea3e8477ce14ab4e177fb23a910049a01db08813f1e30a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\37-config-files.json.gz",
+          "sha256": "42de863d35995c57ef5ae2b23503db8f7b05610c1d326402119198dea57864cf"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-default-20261112\\content-files.json",
+          "sha256": "8f7bbeb773a0ba683c2614fd769628d66d42bc9751be8f7350d2202788d42b29"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\38-content-files.json.gz",
+          "sha256": "31e2e1f23858827da24741e7e953dfff00b067ff2e1667270af3b784b4ef0f0b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-default-20261112\\index.html",
+          "sha256": "b4e1d66376b958f0d38d5db9f75875651a2e23f127a32418477fa6f23033be43"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\39-index.html.gz",
+          "sha256": "042dddd613194d8405cc5da6169278a392516746d302358fa28027e8e7d3781e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-default-20261112\\asset-versions.json",
+          "sha256": "d89e2a8f8b8f705ff138e3899ba2afbce9a5ab13f54d9e029126471dd02056d6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\40-asset-versions.json.gz",
+          "sha256": "92861a271fe94aad48aaec28b6a38d84414520967f27514428e0b8f92657d261"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-recovery-20261112\\scalar.json",
+          "sha256": "8e6fc4b7adb816494f3c28f75d11960ad4235e44f2f9be29f20cfcb456338c50"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\41-scalar.json.gz",
+          "sha256": "3d562e17d2e506ba2a7357f54b29cb3a02eed04c8b191b407b18bed9314e7fdc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-recovery-20261112\\scalar-source.cjs",
+          "sha256": "a160052702f2e07e3f57c9fd8d7364e173cf14a1ac7f891d7a022286d2471da5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\42-scalar-source.cjs.gz",
+          "sha256": "f415a9227f2ffb9df42e1504a89fe8ef7214ae247e618afad55888f1a5fba763"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\report.json",
+          "sha256": "68f1f532cc2c28fd134466d0b5978c0c605db5122c85fde4e3f0e168349de20f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\43-report.json.gz",
+          "sha256": "2e9857a50fbf6c24b4dcc3ecf9d8d010636d579813080b6a4529a9f4dfc823cb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\source.cjs",
+          "sha256": "9ee3c5c33f6d5a8320cde81a25d0b67f349fa333852dc176e020676ae7a2963d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\44-source.cjs.gz",
+          "sha256": "ff2aba3680e731acfcf52a6d14bdca6ab2567ab8ffe01feb89ac2e686555fb1c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\0-legacy.log",
+          "sha256": "8d02d8cf88dbc6dd6e10b83e75c0e11499de85f07a98266d2663dae9331bbe61"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\45-0-legacy.log.gz",
+          "sha256": "d8855687d348dd28db84e33a823d4515ea98b98ef49b058ef1b7fa5a48144997"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\0-legacy.png",
+          "sha256": "99e8fa42ce14340dcc1d22f612fdbe7b1b1b40c96b8655069e6beb50f45f6253"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\46-0-legacy.png.gz",
+          "sha256": "c53e72451b7857517a34b44667b981a97691ce0688e8c829a4b2cf44554efd8a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\1-candidate.log",
+          "sha256": "6f87c33a5e495e44f84b0330bc60bb71ed3990a6a2941fcee89e7d38f26d7d90"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\47-1-candidate.log.gz",
+          "sha256": "d14e91ede7d8613cfe81be5de0fcf370d9a84dc9bb1740045d53f95d53688577"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\1-candidate.png",
+          "sha256": "46448b9b01f61a84b7c51856957a5e8ac9692cb67aa6b6dd36a37f2b73041c34"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\48-1-candidate.png.gz",
+          "sha256": "ff2cbad60b8a2a2ba6be4623fa872a1cdc215172c05e79f9d8c2df1736277d1f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\2-candidate.log",
+          "sha256": "227a2fcf28099e3d22674af12d8081867f747a788f8cd5c18c00a388d178fda5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\49-2-candidate.log.gz",
+          "sha256": "0fed4e4ceb6b976483755637ca005e71e4503f2bb34c03abc5a0c7fdf3aee138"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\2-candidate.png",
+          "sha256": "1c4e64a5d649aadc48aa3ffaa7a9dce13faef7ccec4a1d91e039596e5d31409a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\50-2-candidate.png.gz",
+          "sha256": "714e916ce21cbee37144766effe1881b85b916d47b986391f5386e3b866fe5e2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\3-legacy.log",
+          "sha256": "cd8478f7f2e9ffab4719e6846b505c91ed26082a44d86c0a522302299a47eddd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\51-3-legacy.log.gz",
+          "sha256": "69caae2e124189c19c5549bbcdb15f8ca2ad71c670fa342c17ace254732bdde4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\3-legacy.png",
+          "sha256": "e504ebff97da35a39ea347d4339a65ff3d7d0f27c3efbabb4578b13254be4a58"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\52-3-legacy.png.gz",
+          "sha256": "cf5b4410685e6e51982e0ddd2a157255876e586953fa0d3bb70817c5746a37d2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\analysis.json",
+          "sha256": "c54583acea5c01bdf5ca1ec977dc28d30ccb54b4cdb67c20d3075d0094bb948e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\53-analysis.json.gz",
+          "sha256": "f85c6e81a5607843849e945202239eef920d495ef80ae378d32ecb5540b1d1d7"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-motion-abba-20261112\\analysis-source.cjs",
+          "sha256": "8e21c704b93b0456e726048ef1f232f753f9aa00a7db2431c78be653dc78e89e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\54-analysis-source.cjs.gz",
+          "sha256": "e43d9e7cb248c24f1c1d681c1a3143bd53628a8f80a4203fe2c414aa5fc97065"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-fixed-20261112\\runtime-build.json",
+          "sha256": "f71d55cb8013da565e5310606f54d4ce8726d11e3693ac14ee16b14f6013dbd5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\55-runtime-build.json.gz",
+          "sha256": "e93f2f66e37f2dc5901630613b07904e0babda82e83b231443910033b3b274dc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261112-112922.log",
+          "sha256": "e669180c8e2fc5af2ebde450d91e2b270094dc45d83fbf7c32311b442f7ab4ab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\56-web-engine-full-thread-20261112-112922.log.gz",
+          "sha256": "1e06804119b570e30a2b70ce6cdcc718c006f705c0edaea1e6d9891abcc75877"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "9e637844abe9fc70a95f330e745443b053d510f20c4dda3f94dac6fc17a86c15"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\57-UEWebEngineThreads.js.rsp.gz",
+          "sha256": "c738f590bb12e1421249318a9cae28e7fd232ec2f9997816a73f4d66e1e06291"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-idle-original-before-cooked-20261112\\runtime-build.json",
+          "sha256": "0ae590eb985ddcad04e3530359e0148463eaa432c07547c7efcc813062d25a2d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\58-runtime-build.json.gz",
+          "sha256": "4a7522f834b81db157e72123882b339746a41577d303b2f98fe9be4ce74502ba"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261112-100938.log",
+          "sha256": "65ae1c333e17ff22e2a7485e73c23d116df8435a56f8d474ada65c2cebd6d142"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\59-web-engine-full-thread-20261112-100938.log.gz",
+          "sha256": "7c5c63d616fc0314b6f5d0c095e03980aba45c4ca15d160326c28867a8368ef5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\sources.json",
+          "sha256": "ef1c28667f08221753a641958ec45b0339542bbb371fdc7c8351dc542118d418"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\60-sources.json.gz",
+          "sha256": "1a1ab5b87a0739c0a562d64b6dd88d2db583ec37d910a079dc89da4c23adde91"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\0-before-source",
+          "sha256": "b702fc0ef2ddba07a13680c935190e364ad75f7489e4f1e7b8ac68915d3494c0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\61-0-before-source.gz",
+          "sha256": "0e797fcfc3b85dc5889aa4b12d3c2dc74fe977e30d113a161f914f13bb5cacc6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\NaniteStreamingManager.cpp",
+          "sha256": "d512dfc200be40378b8019ee238c6fb0d32055e533034a9c5c330d58507d1f3d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\62-NaniteStreamingManager.cpp.gz",
+          "sha256": "8b6f000e5c7f71c66f0b7d6ad1437ad04d639e41c27706ed8d0cb9f669fc7337"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\1-before-source",
+          "sha256": "9d698827554a02be09e190902e5a974d60bf06a018b9dc70fb281fa2b39a6b25"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\63-1-before-source.gz",
+          "sha256": "8c13fbaa3f84ad2f99cffd531c324b9e30879d6bc2b8e33df4d786ac63b786ea"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\Rendering\\NaniteStreamingManager.h",
+          "sha256": "556add8a65d54b44d434c3c6fb891ff954badadea787815b68d003b118ae5d19"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\64-NaniteStreamingManager.h.gz",
+          "sha256": "7bd96da0f7da8ceb584eacbc1e393e6ec239ba208d2e223d4e6daa60a0495b13"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\2-before-source",
+          "sha256": "1511074399ddb1453b7a9c9379e1762826686f236a72d63cabf2710d7cd4665d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\65-2-before-source.gz",
+          "sha256": "ca470fad2abd0384693912fafc4d89f11a2e96f8c10ab8d7968c2215fc7d57f6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebScene.cpp",
+          "sha256": "3087d0ba87e5e72be9dfc93aeccb3121337d39a470b88b62b004a52c70071a89"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\66-NaniteWebScene.cpp.gz",
+          "sha256": "4f0034a06c0953fb547022dad433e0cd8e685b8124c27daa040acbfdd97422d6"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\3-before-source",
+          "sha256": "15689638fbc9f4b1ca3b54230480efd071a54eb33fdb4468d8a6cef13ed63ea9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\67-3-before-source.gz",
+          "sha256": "a1501a9af3d31d648fa24a4813d3942b31bc51aefb6148eda710b937d6fc2f80"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\Rendering\\NaniteWebScene.h",
+          "sha256": "a3f800802e325296c2ec1a80983561fcfaa60fe5f0ac084c233a94b2427410c5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\68-NaniteWebScene.h.gz",
+          "sha256": "47490b53fe0ddf9a139a0f11aeb9080be07d516492b476231943c49ea51102bc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\4-before-source",
+          "sha256": "6b371dcfd9273ef6493077f7f4f43c083e37b9f1c8cba14bfe0084c3c630c0a3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\69-4-before-source.gz",
+          "sha256": "6d61d69457bf1fa6dec91f268a924fb15656eaae0fb68977a8c5ce4cb8e8b5f1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\RendererScene.cpp",
+          "sha256": "71f690cd90093b2809cca52e5a585fad604a5fd83d2221876dee270ad91353cc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\70-RendererScene.cpp.gz",
+          "sha256": "98ab55e5b049260f1cc0a8096447e1d5ac1d5130de35170589dbbf9dac3144f5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\5-before-source",
+          "sha256": "bacdf7a2f9e668c2a9e6a87588bcb0e676358c79990f5f9d69714c6c7dec32b7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\71-5-before-source.gz",
+          "sha256": "1889648fba8fd644f9908c499a1b2f8efd3340312de70512c603e70a34d143a1"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\SceneOcclusion.cpp",
+          "sha256": "e0442d9e258f6ee6dcd8cf9123d366ecd6ac7e79f3cbf6497931884ac596f00a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\72-SceneOcclusion.cpp.gz",
+          "sha256": "2acc34aabcdb3496d2e59929be4f220009ac2d3a127b43ec34b6d044bbb1fe5c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\6-before-source",
+          "sha256": "ef8d9a2eca333279549cf0fdf1a9634f94a874944a3c497df7d242b2473f4e6b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\73-6-before-source.gz",
+          "sha256": "4f24b600770a56fd62030e2a519c65164c42e28edfbc43cd2881a8aaf1df6c38"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\WebOcclusionHistory.h",
+          "sha256": "fe9566971e68dc608dae0163dc9b322c32adee7127e5344ba0cf47578c970fc3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\74-WebOcclusionHistory.h.gz",
+          "sha256": "6a86d774ab656ebd5c33c1690378330e3f29f55e3454a941b47981e3b3cfba58"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion-verified.json",
+          "sha256": "75f300f75ff1104216527437ba712b02e9f4eee8936bdbc31b6755bdaba8e915"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\75-nanite-full-scene-conversion-verified.json.gz",
+          "sha256": "91ceddc1722ffc2e2e8ad3dc1f67d6521f5e8e246fa8d0af387a2ec4cc6b8fe2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-idle-original-desktop-cook-results.json",
+          "sha256": "d3770fc01634e1eef762146a817ffb91e98800e82f57da4901757ab6896e4f7d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\76-web-project-nanite-idle-original-desktop-cook-results.json.gz",
+          "sha256": "1188610ddf7468a560a82d44e057303dfd89dc57ff8a6f3d392e3ab7018c3a95"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-idle-original-desktop-cook-20261112-111019.log",
+          "sha256": "9da4421af9921c82454ed5e6108d6c7fd7a47c9613c7aed8b586b0216d3747f2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\77-web-project-nanite-idle-original-desktop-cook-20261112-111019.log.gz",
+          "sha256": "cf038f89314d344b23e43929e4b16b886cbaf923d63a6a8f14253f1036ab16b2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-cook-shader-sources.json",
+          "sha256": "7088fc5778ee77834b6e4242c933dc3ab73acd8dd2af4f79423138ea9e5b062a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\78-web-cook-shader-sources.json.gz",
+          "sha256": "f42c2a3ed18b803e67c926d34e04b5039047aabadd93cfb36315532bfbfe4a33"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-idle-original-desktop-stage-results.json",
+          "sha256": "441873a595d0a24a3a50f43c0a55ce3c2732b4a2e6321adc0ded6afdaa29d520"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\79-web-project-nanite-idle-original-desktop-stage-results.json.gz",
+          "sha256": "fbb04be249c9394a61909426e9f4f0eaebff23dbe0321071974cb47a9a6be109"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-20261112\\report.json",
+          "sha256": "270de1ace038d1687984880cbe770bf19396b107c3af288a0539ee054826e486"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\80-report.json.gz",
+          "sha256": "6e4e6c473a0e0ace44171a75595a08d8f3b6b52b083aa421f4c94235b4b8aa2e"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-20261112\\source.cjs",
+          "sha256": "ba7ae5fcb7a2adce05a1420a0edbf81ec92ac750a8722c01f08c6c3e616b9d65"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\81-source.cjs.gz",
+          "sha256": "6c15ccc036f7d4cf5707e9239718debddcfaa7bb59639b1ed2044613b486401f"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-compatible-20261112\\report.json",
+          "sha256": "f9ff117d5ee0ee5f4a3cb6cc35c6bb31a449ca6dccc7599344de0427df3b8f20"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\82-report.json.gz",
+          "sha256": "0516ff1f6d4bdd9f89f8ca8a626c8430503f49c39824563a260b2e2a05bee7fa"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-compatible-20261112\\source.cjs",
+          "sha256": "0412164373da25d180efa7b6283447edc6f9062992ba77c6dca322fc48145198"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\83-source.cjs.gz",
+          "sha256": "8d4030cccb560e6b72e188c2aa4f3d071df4f7f103db45ab75b1234db81a6435"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-complete-20261112\\report.json",
+          "sha256": "a5318738ded913aa84cad14b1003930864877fd31983faacd8c0985a29805ef2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\84-report.json.gz",
+          "sha256": "caa773a7348074975304a0f861a5697842325bc8c8817f69745a4d144ade8bb5"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-complete-20261112\\source.cjs",
+          "sha256": "4921c905474bdd7ab6a7e897136015e96d37091e719362114a836dab18c97832"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\85-source.cjs.gz",
+          "sha256": "445d254657fd4b4884b092affed8542c0e00a6f6e5d9115a6da32acb47d2d87a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-cooked-20261112\\report.json",
+          "sha256": "3a12d9140ffb42801d79a4cc124590329625f4a90037038a885dfbefc7725866"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\86-report.json.gz",
+          "sha256": "fad4d6d0df70cf8fcc11d9741af7e88cb9cd692ac81a7c236159bca5ff953219"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-cooked-20261112\\source.cjs",
+          "sha256": "0412164373da25d180efa7b6283447edc6f9062992ba77c6dca322fc48145198"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\87-source.cjs.gz",
+          "sha256": "8d4030cccb560e6b72e188c2aa4f3d071df4f7f103db45ab75b1234db81a6435"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-final-20261112\\report.json",
+          "sha256": "5c916a1908549f8d764dcb27354125f25079dc2106585e157cbb852e981ded48"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\88-report.json.gz",
+          "sha256": "51101b8e39c96656bd661432fdd8840c3a820eba35d0fd4777dc11ced4018aa9"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-final-20261112\\source.cjs",
+          "sha256": "aca8ae31c5670babe3603d41eea48d9b0b498d4a7ce3048dbaa6efd9b3753c3b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\89-source.cjs.gz",
+          "sha256": "458bbe8bb1e0cbfb3d2648a2f568c9c1b3aab8dce78cce038eb2736ca692abee"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-retry-20261112\\report.json",
+          "sha256": "e2f09e48c7b4a81a8a52df86d52d1a5254e5c437928bee0389a05936f1a54cd8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\90-report.json.gz",
+          "sha256": "2208adb4e05d8682091934952f5bae6f78150af3c764a80905be8dcc6fe93652"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-original-before-retry-20261112\\source.cjs",
+          "sha256": "0412164373da25d180efa7b6283447edc6f9062992ba77c6dca322fc48145198"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\91-source.cjs.gz",
+          "sha256": "8d4030cccb560e6b72e188c2aa4f3d071df4f7f103db45ab75b1234db81a6435"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\failed-cook-preparation.json",
+          "sha256": "3774e46d4ce9d04f421489d9c2907cc12626e6ea2a2103e60c7e440c82612e3e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\92-failed-cook-preparation.json.gz",
+          "sha256": "514e2b4adcccdb3106825ce5df0f7907c7d2f544a72ee5dc2e0e17ea1448f425"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\failed-global-only-package.cjs",
+          "sha256": "a5c705f389841137379d547917ca5a2179ee47d44d32082e0fbaeccc76a11903"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\93-failed-global-only-package.cjs.gz",
+          "sha256": "171b982854c04f3772320e0e8ecf0ba0e7cd998ecefbd50b59483bfe1bcf9c68"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\review-interrupted-build.json",
+          "sha256": "c8c2178f000141388bd299a3678f021bf49fe1c886de43a2c6fd249b1c68004f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\94-review-interrupted-build.json.gz",
+          "sha256": "a6240ade6dc4d032b62c7450da80d894e9dc87984cf9378f0233fd4d5323964c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\first-collector.cjs",
+          "sha256": "8de62bc94786be1e4947bb958c626a70c9ba39817191a6303e1401d56db70f0d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\95-first-collector.cjs.gz",
+          "sha256": "117ac0eda5a61cc6d1315d85aa0fe342243d04a93a4397cbf727dc517e3d32e4"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-idle-20261112\\failed-first-collector.json",
+          "sha256": "85ab0f99a921a37d0dc0fa1da14c26db1b42260ba251786c8e777ac4123adf19"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\96-failed-first-collector.json.gz",
+          "sha256": "d0a349f6628048e823326a76134029a058c3d6d55d27395c4917c5e2f7784a3b"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261112-111853.log",
+          "sha256": "bc35ed4a34639c45f6f4ba72f6bd8ed4843c2629e0c83b314b4414af2470af20"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\97-web-engine-full-thread-20261112-111853.log.gz",
+          "sha256": "7b3c030d6d36cc5218ab4fec18c52b9495fee6f3691f027f4677b417eb09b81a"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-cook-host-20261112-110817.log",
+          "sha256": "04b497a30e680565a206cf44685c9cf3e779c8f380e6fe127bc397288432a31d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\98-web-cook-host-20261112-110817.log.gz",
+          "sha256": "8e3aef9ae82f281359ce458e96ed94055e75afdf8bb3bc9fce51ae47131ee7eb"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-idle.cjs",
+          "sha256": "0af0ef4a8df4d686eccd0415e8246dd83841c62bb63d164ca26f0d14f99173d7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\99-collect-nanite-idle.cjs.gz",
+          "sha256": "48c0732084105ec519345567e24bb677339bc8dcc7d74e489b28faecd17173b0"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-idle.cjs",
+          "sha256": "bfb3ace1157c0c9006a514b454097dc40bcdf8f78d0596b6097976e5385d000f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\100-probe-nanite-idle.cjs.gz",
+          "sha256": "351219980958356fe8f33ab10319b0bdaa0d01754ea216b6122bb02b99a3de73"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-eligibility.cjs",
+          "sha256": "ed4977b7607f9e973bc1394174dccf5d0f657cbd67f3d0d6b8e20490ceb5f06f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\101-probe-nanite-eligibility.cjs.gz",
+          "sha256": "4c37500214a2e881f43a2ec5ae89a3742dc7411d6d5871b245a9d4b79ab161bc"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-primitive-recovery.cjs",
+          "sha256": "a160052702f2e07e3f57c9fd8d7364e173cf14a1ac7f891d7a022286d2471da5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\102-probe-nanite-primitive-recovery.cjs.gz",
+          "sha256": "f415a9227f2ffb9df42e1504a89fe8ef7214ae247e618afad55888f1a5fba763"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-off-regression.cjs",
+          "sha256": "9ee3c5c33f6d5a8320cde81a25d0b67f349fa333852dc176e020676ae7a2963d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\103-probe-nanite-off-regression.cjs.gz",
+          "sha256": "ff2aba3680e731acfcf52a6d14bdca6ab2567ab8ffe01feb89ac2e686555fb1c"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-runtime-variant.cjs",
+          "sha256": "bfd25f3c6629a7a83b589ea9cb341d8c20d6b2efd2dba276f78b9328d85d3be3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\104-package-nanite-runtime-variant.cjs.gz",
+          "sha256": "f8ceda46a011c99d4ea5a4128fbf3f24903efe5af7d9dc3c066dc5655f2923f2"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-shadow-guard.cjs",
+          "sha256": "32d8bb8430d2b360461d45446550ad541829d11176ce00f0b50898dcfb253e21"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\105-package-nanite-shadow-guard.cjs.gz",
+          "sha256": "d3166294cb2dd0c3b0537a2bb637a93ddba01b6eb7343bd4db9c1583c2570401"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-cook-host.cjs",
+          "sha256": "debeccf4748055c3d965e324718ce74d4ffe0e6b4d63197a2e841eba22a4503a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\106-prepare-web-cook-host.cjs.gz",
+          "sha256": "3ad5b1c3057206143514c21b187bd15c0d5c9a45fc36cce51c00d55f44b9bb31"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "f3596648b0992d8a9cbaf3d636741ffebc5c6032cbeb658bcd9db32d340566ba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\107-web-engine-worker.js.gz",
+          "sha256": "18d87494886212f99ee8a276d69c6179f3ed3d310dbb62845b384af7e8837622"
+        }
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteEligibilityTest.cpp",
+          "sha256": "58bff04c37036bf08a30a6417e063ea2cafbddceea05e13be6999f0d96a937af"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-idle-20261112\\108-WebNaniteEligibilityTest.cpp.gz",
+          "sha256": "e8eaed2489ed4e0d6d69d9cba79c2cde602f1a29e4f7cebc795c14534ec5740b"
+        }
+      }
+    ],
+    "boundary": "Original Villa uses the same fresh Cook and configuration before/after. Native counters establish zero cold streamer allocation/updates and no Nanite bounds-change collection. After Nanite has actually been used, valid loaded asset pages remain cached while streaming sleeps. Per-scene activity changes invalidate old pending/completed occlusion queries once. Both atomic paths preserve first-frame disocclusion. GPU resource labels were unavailable in the old runtime and do not independently prove absence of GPU allocations. Ordinary occlusion and texture streaming still operate. Movement measurements are viewport submission intervals on this machine; they do not establish full Nanite-on performance acceptance."
+  }
+}

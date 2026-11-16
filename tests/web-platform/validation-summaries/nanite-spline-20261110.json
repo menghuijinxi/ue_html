@@ -1,0 +1,1778 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-spline-20261110.json",
+    "bytes": 182149844,
+    "sha256": "da80db6dae98b4cfa4e08d60265b1fcd0fdd537bf19b95859ec36d44c23bf1c4",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T09:05:10.958Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-spline-evidence.cjs",
+      "sha256": "04794d7dc41826b979bd5c8ddaba56c44c9453c616e3424172b976ce6b32367b"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "e08a2f4b948b9c55b4e1cb82e8701815e6ef656550eee214ecd8c374f99a6e40"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "7cdb50fd8462d8b69af712c8d7da62524135f14c486090474ebc23bbb21c6790"
+    },
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-3.png",
+        "sha256": "107debc332f15e4b1bbcca723f56243452640a3af43c3ebc29d3e655ab5aef51"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-5.png",
+        "sha256": "451c2e133d77a78a73a2abf2ce55e1a4376c442e7a37a6322172c2737693ddbf"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-11.png",
+        "sha256": "1373779494c09a0aa6e0f742b6af2d1727e54f72f6b36a5f95fe0ceca130aa4e"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-18.png",
+        "sha256": "dbedc278e4dd5540b2b79b1c7b2d5e09ad190a48db27089381348bf9cd0fa283"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-21.png",
+        "sha256": "ea86225bb69a10e383cae8918c8e7984494ae1bed43dcf0f1696e3577dca9b9c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-22.png",
+        "sha256": "0faacd33865533bcd446b5bbbef4c8885988ed926c14209f11f7071b221dbd51"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-26.png",
+        "sha256": "1e01cc686f47c09f3981dad491176f165d2a0c0e62872dc302b450a18d67c097"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-packed-31.png",
+        "sha256": "1eef79e38df063a7519db94224b979924bb5a12ec12f795c05e3145fba6fc80d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-3.png",
+        "sha256": "160d59769a1ee6e41db355b2eb84453aac5378df664fa611b3a6f6e92b5c6f96"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-5.png",
+        "sha256": "67f6bd090c5ef51a38d87e2a0b453868683b89f94b43f345ee86ea56b544a941"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-11.png",
+        "sha256": "a8083c74ee4f61fd62c12d881f2b7985c8eeb5a9e4b84d7ea0bb37ad93c62c13"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-18.png",
+        "sha256": "ed306cde0ce61c63df423f588127b76314a7cae7e0132822e7c06c28060f37f5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-21.png",
+        "sha256": "5a73b81e58e33b1a8278788f13f95ac6f4a35dc5ba9972f3026b40496b83adf6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-22.png",
+        "sha256": "0078f339bb95e303bc515903fca11ad84d826f2b4878b3e7f87ddd9fdedb684f"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-26.png",
+        "sha256": "be2b573c37da40a648a08b503b5f05fba9e312a0d4469f27a359f763d2516560"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-spline-20261110-scalar-31.png",
+        "sha256": "76038ac2df48bd79b289a5aca7697194abc0fe1068a2cafad6cfd6f60adde8c6"
+      }
+    ],
+    "summaries": [
+      {
+        "suite": "spline",
+        "scalar": false,
+        "frames": 20612,
+        "steps": 38,
+        "checks": [
+          {
+            "step": 1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 856,
+            "edgeSamples": 44,
+            "maxDepthError": 6.129663956966347e-9,
+            "maxDepthResidual": 6.129663956966347e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 856,
+            "maxNormalCosineError": 0.000023305226576897375,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 2,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 3,
+            "counts": {
+              "0": 653,
+              "1": 197
+            },
+            "compared": 846,
+            "edgeSamples": 4,
+            "maxDepthError": 1.0683895715693503e-7,
+            "maxDepthResidual": 7.464223514969115e-8,
+            "subpixelChecks": 1,
+            "maxDepthIntervalWidth": 1.0409731706489955e-7,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 846,
+            "maxNormalCosineError": 0.00002453379608635675,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 4,
+            "counts": {
+              "0": 655,
+              "1": 209
+            },
+            "compared": 852,
+            "edgeSamples": 12,
+            "maxDepthError": 1.965295638381437e-8,
+            "maxDepthResidual": 1.965295638381437e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 852,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 5,
+            "counts": {
+              "0": 809
+            },
+            "compared": 796,
+            "edgeSamples": 13,
+            "maxDepthError": 4.448413876145807e-8,
+            "maxDepthResidual": 4.448413876145807e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 796,
+            "maxNormalCosineError": 0.00002186980688712037,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 6,
+            "counts": {
+              "0": 779
+            },
+            "compared": 770,
+            "edgeSamples": 9,
+            "maxDepthError": 6.026818832188807e-8,
+            "maxDepthResidual": 6.026818832188807e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 770,
+            "maxNormalCosineError": 0.000022774183032647777,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 7,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 8,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 9,
+            "counts": {
+              "0": 1020
+            },
+            "compared": 997,
+            "edgeSamples": 23,
+            "maxDepthError": 6.072018195191209e-8,
+            "maxDepthResidual": 6.072018195191209e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 997,
+            "maxNormalCosineError": 0.00002085294856801756,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 10,
+            "counts": {
+              "0": 289
+            },
+            "compared": 285,
+            "edgeSamples": 4,
+            "maxDepthError": 3.751965731435547e-7,
+            "maxDepthResidual": 8.906307080724929e-8,
+            "subpixelChecks": 3,
+            "maxDepthIntervalWidth": 4.087624889681507e-7,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 285,
+            "maxNormalCosineError": 0.000017886233412367503,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 11,
+            "counts": {
+              "0": 802
+            },
+            "compared": 798,
+            "edgeSamples": 4,
+            "maxDepthError": 6.869846164159199e-8,
+            "maxDepthResidual": 6.869846164159199e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 798,
+            "maxNormalCosineError": 0.000022687282795863517,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 12,
+            "counts": {
+              "0": 902,
+              "1": 135
+            },
+            "compared": 1031,
+            "edgeSamples": 6,
+            "maxDepthError": 3.637706747633418e-8,
+            "maxDepthResidual": 3.637706747633418e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 1031,
+            "maxNormalCosineError": 0.00002417509226182446,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 13,
+            "counts": {
+              "0": 495,
+              "1": 243
+            },
+            "compared": 733,
+            "edgeSamples": 6,
+            "maxDepthError": 2.6554691882896275e-8,
+            "maxDepthResidual": 2.6554691882896275e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 733,
+            "maxNormalCosineError": 0.00002066766737218728,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 14,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 15,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 16,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 17,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 18,
+            "counts": {
+              "0": 722,
+              "1": 729
+            },
+            "compared": 1437,
+            "edgeSamples": 14,
+            "maxDepthError": 1.0000715336411226e-7,
+            "maxDepthResidual": 5.2514937481928925e-8,
+            "subpixelChecks": 1,
+            "maxDepthIntervalWidth": 1.1712905995109324e-7,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 1437,
+            "maxNormalCosineError": 0.000023945307704331675,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 19,
+            "counts": {
+              "0": 184,
+              "1": 576
+            },
+            "compared": 753,
+            "edgeSamples": 8,
+            "maxDepthError": 3.540056044137874e-8,
+            "maxDepthResidual": 3.540056044137874e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 753,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 20,
+            "counts": {
+              "0": 184,
+              "1": 576
+            },
+            "compared": 753,
+            "edgeSamples": 8,
+            "maxDepthError": 3.540056044137874e-8,
+            "maxDepthResidual": 3.540056044137874e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013215053025081303,
+            "maxVelocityDepthError": 4.178362912610201e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 184,
+            "normalSamples": 753,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 21,
+            "counts": {
+              "0": 31,
+              "1": 729
+            },
+            "compared": 753,
+            "edgeSamples": 8,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 753,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 22,
+            "counts": {
+              "0": 509,
+              "1": 297
+            },
+            "compared": 795,
+            "edgeSamples": 11,
+            "maxDepthError": 4.015712090979506e-8,
+            "maxDepthResidual": 4.015712090979506e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 795,
+            "maxNormalCosineError": 0.000023898352045970128,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 23,
+            "counts": {
+              "0": 780,
+              "1": 27
+            },
+            "compared": 798,
+            "edgeSamples": 9,
+            "maxDepthError": 5.8864927748175644e-8,
+            "maxDepthResidual": 5.8864927748175644e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000002179548141287291,
+            "maxVelocityDepthError": 3.70928423948369e-8,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 771,
+            "normalSamples": 798,
+            "maxNormalCosineError": 0.000021170771230427654,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 24,
+            "counts": {
+              "0": 807
+            },
+            "compared": 799,
+            "edgeSamples": 8,
+            "maxDepthError": 6.710788492958475e-8,
+            "maxDepthResidual": 6.710788492958475e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000022206076186970236,
+            "cameraReconstructed": 799,
+            "maxCameraReprojectionError": 4.265286596139006e-9
+          },
+          {
+            "step": 25,
+            "counts": {
+              "0": 529,
+              "1": 359
+            },
+            "compared": 884,
+            "edgeSamples": 4,
+            "maxDepthError": 1.2183101639681726e-7,
+            "maxDepthResidual": 6.040205556209766e-8,
+            "subpixelChecks": 1,
+            "maxDepthIntervalWidth": 1.215912472443681e-7,
+            "maxVelocityError": 0.000003332035798964475,
+            "maxVelocityDepthError": 8.762702319656257e-8,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 526,
+            "normalSamples": 884,
+            "maxNormalCosineError": 0.00002142524746473473,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 26,
+            "counts": {
+              "0": 725,
+              "1": 169
+            },
+            "compared": 883,
+            "edgeSamples": 11,
+            "maxDepthError": 9.894923812953094e-8,
+            "maxDepthResidual": 9.894923812953094e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.0000027673156743355035,
+            "maxVelocityDepthError": 6.419068738702793e-8,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 715,
+            "normalSamples": 883,
+            "maxNormalCosineError": 0.000024748772159299826,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 27,
+            "counts": {
+              "0": 808
+            },
+            "compared": 723,
+            "edgeSamples": 85,
+            "maxDepthError": 5.7448278717453505e-8,
+            "maxDepthResidual": 5.7448278717453505e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 723,
+            "maxNormalCosineError": 0.000024367518313583858,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 28,
+            "counts": {
+              "0": 808
+            },
+            "compared": 793,
+            "edgeSamples": 15,
+            "maxDepthError": 6.077181802927045e-8,
+            "maxDepthResidual": 6.077181802927045e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 793,
+            "maxNormalCosineError": 0.000024388291942178952,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 29,
+            "counts": {
+              "0": 406,
+              "1": 362
+            },
+            "compared": 753,
+            "edgeSamples": 15,
+            "maxDepthError": 5.8909172880039495e-8,
+            "maxDepthResidual": 5.8909172880039495e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 753,
+            "maxNormalCosineError": 0.000023337164200554206,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 30,
+            "counts": {
+              "0": 808
+            },
+            "compared": 793,
+            "edgeSamples": 15,
+            "maxDepthError": 6.077181802927045e-8,
+            "maxDepthResidual": 6.077181802927045e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 793,
+            "maxNormalCosineError": 0.000024388291942178952,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 31,
+            "counts": {
+              "0": 681,
+              "1": 280
+            },
+            "compared": 942,
+            "edgeSamples": 20,
+            "maxDepthError": 6.15997063045659e-8,
+            "maxDepthResidual": 6.15997063045659e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 942,
+            "maxNormalCosineError": 0.000023072853509775726,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 32,
+            "counts": {
+              "0": 808
+            },
+            "compared": 793,
+            "edgeSamples": 15,
+            "maxDepthError": 6.077181802927045e-8,
+            "maxDepthResidual": 6.077181802927045e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 793,
+            "maxNormalCosineError": 0.000024388291942178952,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 33,
+            "counts": {
+              "0": 808
+            },
+            "compared": 790,
+            "edgeSamples": 18,
+            "maxDepthError": 2.6839167107522988e-8,
+            "maxDepthResidual": 2.6839167107522988e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 790,
+            "maxNormalCosineError": 0.000020537784913843282,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 34,
+            "counts": {
+              "0": 808
+            },
+            "compared": 790,
+            "edgeSamples": 18,
+            "maxDepthError": 5.276667068565555e-8,
+            "maxDepthResidual": 5.276667068565555e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 790,
+            "maxNormalCosineError": 0.000024148434375037553,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 35,
+            "counts": {
+              "0": 808
+            },
+            "compared": 788,
+            "edgeSamples": 20,
+            "maxDepthError": 4.80364495819563e-8,
+            "maxDepthResidual": 4.80364495819563e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 788,
+            "maxNormalCosineError": 0.0000242026636021464,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 36,
+            "counts": {
+              "1": 729
+            },
+            "compared": 718,
+            "edgeSamples": 11,
+            "maxDepthError": 9.976347886686554e-9,
+            "maxDepthResidual": 9.976347886686554e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 718,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 37,
+            "counts": {
+              "0": 1019
+            },
+            "compared": 1007,
+            "edgeSamples": 12,
+            "maxDepthError": 1.1078147203746891e-7,
+            "maxDepthResidual": 4.810418904530045e-8,
+            "subpixelChecks": 1,
+            "maxDepthIntervalWidth": 1.3092467460174007e-7,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 1007,
+            "maxNormalCosineError": 0.00002268613162037525,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 38,
+            "counts": {
+              "1": 729
+            },
+            "compared": 718,
+            "edgeSamples": 11,
+            "maxDepthError": 9.976347886686554e-9,
+            "maxDepthResidual": 9.976347886686554e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 718,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          }
+        ]
+      },
+      {
+        "suite": "spline-streaming",
+        "scalar": false,
+        "frames": 2388,
+        "steps": 9
+      },
+      {
+        "suite": "wpo",
+        "scalar": false,
+        "frames": 17151,
+        "steps": 36
+      },
+      {
+        "suite": "wpo-streaming",
+        "scalar": false,
+        "frames": 2243,
+        "steps": 9
+      },
+      {
+        "suite": "programmable",
+        "scalar": false,
+        "frames": 23152,
+        "steps": 52
+      },
+      {
+        "suite": "materials",
+        "scalar": false,
+        "frames": 3584,
+        "steps": 10
+      },
+      {
+        "suite": "composition",
+        "scalar": false,
+        "frames": 1307,
+        "steps": 9
+      },
+      {
+        "suite": "composition-unmerged",
+        "scalar": false,
+        "frames": 1256,
+        "steps": 9
+      },
+      {
+        "suite": "streaming",
+        "scalar": false,
+        "frames": 2229,
+        "steps": 9
+      },
+      {
+        "suite": "spline-budget",
+        "scalar": false,
+        "steps": 45,
+        "frames": 14433
+      },
+      {
+        "suite": "spline",
+        "scalar": true,
+        "frames": 21195,
+        "steps": 38,
+        "checks": [
+          {
+            "step": 1,
+            "counts": {
+              "0": 900
+            },
+            "compared": 856,
+            "edgeSamples": 44,
+            "maxDepthError": 6.129663956966347e-9,
+            "maxDepthResidual": 6.129663956966347e-9,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 856,
+            "maxNormalCosineError": 0.000023305226576897375,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 2,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 3,
+            "counts": {
+              "0": 653,
+              "1": 197
+            },
+            "compared": 846,
+            "edgeSamples": 4,
+            "maxDepthError": 1.0683895715693503e-7,
+            "maxDepthResidual": 7.464223514969115e-8,
+            "subpixelChecks": 1,
+            "maxDepthIntervalWidth": 1.0409731706489955e-7,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 846,
+            "maxNormalCosineError": 0.00002453379608635675,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 4,
+            "counts": {
+              "0": 655,
+              "1": 209
+            },
+            "compared": 852,
+            "edgeSamples": 12,
+            "maxDepthError": 1.965295638381437e-8,
+            "maxDepthResidual": 1.965295638381437e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 852,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 5,
+            "counts": {
+              "0": 809
+            },
+            "compared": 796,
+            "edgeSamples": 13,
+            "maxDepthError": 4.448413876145807e-8,
+            "maxDepthResidual": 4.448413876145807e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 796,
+            "maxNormalCosineError": 0.00002186980688712037,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 6,
+            "counts": {
+              "0": 779
+            },
+            "compared": 770,
+            "edgeSamples": 9,
+            "maxDepthError": 6.026818832188807e-8,
+            "maxDepthResidual": 6.026818832188807e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 770,
+            "maxNormalCosineError": 0.000022774183032647777,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 7,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 8,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 9,
+            "counts": {
+              "0": 1020
+            },
+            "compared": 997,
+            "edgeSamples": 23,
+            "maxDepthError": 6.072018195191209e-8,
+            "maxDepthResidual": 6.072018195191209e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 997,
+            "maxNormalCosineError": 0.00002085294856801756,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 10,
+            "counts": {
+              "0": 289
+            },
+            "compared": 285,
+            "edgeSamples": 4,
+            "maxDepthError": 3.751965731435547e-7,
+            "maxDepthResidual": 8.906307080724929e-8,
+            "subpixelChecks": 3,
+            "maxDepthIntervalWidth": 4.087624889681507e-7,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 285,
+            "maxNormalCosineError": 0.000017886233412367503,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 11,
+            "counts": {
+              "0": 802
+            },
+            "compared": 798,
+            "edgeSamples": 4,
+            "maxDepthError": 6.869846164159199e-8,
+            "maxDepthResidual": 6.869846164159199e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 798,
+            "maxNormalCosineError": 0.000022687282795863517,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 12,
+            "counts": {
+              "0": 902,
+              "1": 135
+            },
+            "compared": 1031,
+            "edgeSamples": 6,
+            "maxDepthError": 3.637706747633418e-8,
+            "maxDepthResidual": 3.637706747633418e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 1031,
+            "maxNormalCosineError": 0.00002417509226182446,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 13,
+            "counts": {
+              "0": 495,
+              "1": 243
+            },
+            "compared": 733,
+            "edgeSamples": 6,
+            "maxDepthError": 2.6554691882896275e-8,
+            "maxDepthResidual": 2.6554691882896275e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 733,
+            "maxNormalCosineError": 0.00002066766737218728,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 14,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 15,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 16,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 17,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 2.7303480844287353e-8,
+            "maxDepthResidual": 2.7303480844287353e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024502008259874586,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 18,
+            "counts": {
+              "0": 722,
+              "1": 729
+            },
+            "compared": 1437,
+            "edgeSamples": 14,
+            "maxDepthError": 1.0000715336411226e-7,
+            "maxDepthResidual": 5.2514937481928925e-8,
+            "subpixelChecks": 1,
+            "maxDepthIntervalWidth": 1.1712905995109324e-7,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 1437,
+            "maxNormalCosineError": 0.000023945307704331675,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 19,
+            "counts": {
+              "0": 184,
+              "1": 576
+            },
+            "compared": 753,
+            "edgeSamples": 8,
+            "maxDepthError": 3.540056044137874e-8,
+            "maxDepthResidual": 3.540056044137874e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 753,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 20,
+            "counts": {
+              "0": 184,
+              "1": 576
+            },
+            "compared": 753,
+            "edgeSamples": 8,
+            "maxDepthError": 3.540056044137874e-8,
+            "maxDepthResidual": 3.540056044137874e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000013215053025081303,
+            "maxVelocityDepthError": 4.178362912610201e-9,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 184,
+            "normalSamples": 753,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 21,
+            "counts": {
+              "0": 31,
+              "1": 729
+            },
+            "compared": 753,
+            "edgeSamples": 8,
+            "maxDepthError": 1.0931963466409567e-8,
+            "maxDepthResidual": 1.0931963466409567e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 753,
+            "maxNormalCosineError": 0.000023356112481609514,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 22,
+            "counts": {
+              "0": 509,
+              "1": 297
+            },
+            "compared": 795,
+            "edgeSamples": 11,
+            "maxDepthError": 4.015712090979506e-8,
+            "maxDepthResidual": 4.015712090979506e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 795,
+            "maxNormalCosineError": 0.000023898352045970128,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 23,
+            "counts": {
+              "0": 780,
+              "1": 27
+            },
+            "compared": 798,
+            "edgeSamples": 9,
+            "maxDepthError": 5.8864927748175644e-8,
+            "maxDepthResidual": 5.8864927748175644e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.000002179548141287291,
+            "maxVelocityDepthError": 3.70928423948369e-8,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 771,
+            "normalSamples": 798,
+            "maxNormalCosineError": 0.000021170771230427654,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 24,
+            "counts": {
+              "0": 807
+            },
+            "compared": 799,
+            "edgeSamples": 8,
+            "maxDepthError": 6.710788492958475e-8,
+            "maxDepthResidual": 6.710788492958475e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000022206076186970236,
+            "cameraReconstructed": 799,
+            "maxCameraReprojectionError": 4.265286596139006e-9
+          },
+          {
+            "step": 25,
+            "counts": {
+              "0": 529,
+              "1": 359
+            },
+            "compared": 884,
+            "edgeSamples": 4,
+            "maxDepthError": 1.2183101639681726e-7,
+            "maxDepthResidual": 6.040205556209766e-8,
+            "subpixelChecks": 1,
+            "maxDepthIntervalWidth": 1.215912472443681e-7,
+            "maxVelocityError": 0.000003332035798964475,
+            "maxVelocityDepthError": 8.762702319656257e-8,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 526,
+            "normalSamples": 884,
+            "maxNormalCosineError": 0.00002142524746473473,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 26,
+            "counts": {
+              "0": 727,
+              "1": 167
+            },
+            "compared": 863,
+            "edgeSamples": 31,
+            "maxDepthError": 5.6793636835084094e-8,
+            "maxDepthResidual": 5.6793636835084094e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0.0000029008676017934845,
+            "maxVelocityDepthError": 6.212108322189991e-8,
+            "maxVelocityDepthTolerance": 1e-7,
+            "moving": 703,
+            "normalSamples": 863,
+            "maxNormalCosineError": 0.000020884423636902127,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 27,
+            "counts": {
+              "0": 808
+            },
+            "compared": 726,
+            "edgeSamples": 82,
+            "maxDepthError": 5.8745652571634555e-8,
+            "maxDepthResidual": 5.8745652571634555e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 726,
+            "maxNormalCosineError": 0.00002479071106153974,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 28,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 5.92760663123415e-8,
+            "maxDepthResidual": 5.92760663123415e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024808725744618343,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 29,
+            "counts": {
+              "0": 405,
+              "1": 363
+            },
+            "compared": 759,
+            "edgeSamples": 9,
+            "maxDepthError": 5.92760663123415e-8,
+            "maxDepthResidual": 5.92760663123415e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 759,
+            "maxNormalCosineError": 0.00002207843246515573,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 30,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 5.92760663123415e-8,
+            "maxDepthResidual": 5.92760663123415e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024808725744618343,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 31,
+            "counts": {
+              "0": 678,
+              "1": 281
+            },
+            "compared": 949,
+            "edgeSamples": 11,
+            "maxDepthError": 6.079213069748457e-8,
+            "maxDepthResidual": 6.079213069748457e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 949,
+            "maxNormalCosineError": 0.000024735121345820232,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 32,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 5.92760663123415e-8,
+            "maxDepthResidual": 5.92760663123415e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.000024808725744618343,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 33,
+            "counts": {
+              "0": 808
+            },
+            "compared": 799,
+            "edgeSamples": 9,
+            "maxDepthError": 3.682732534551758e-8,
+            "maxDepthResidual": 3.682732534551758e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 799,
+            "maxNormalCosineError": 0.00002101317535396774,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 34,
+            "counts": {
+              "0": 780
+            },
+            "compared": 770,
+            "edgeSamples": 10,
+            "maxDepthError": 5.19972966211979e-8,
+            "maxDepthResidual": 5.19972966211979e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 770,
+            "maxNormalCosineError": 0.000025252570871048263,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 35,
+            "counts": {
+              "0": 780
+            },
+            "compared": 769,
+            "edgeSamples": 11,
+            "maxDepthError": 5.521122366236586e-8,
+            "maxDepthResidual": 5.521122366236586e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 769,
+            "maxNormalCosineError": 0.000023421390329736447,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 36,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0047943706237294e-8,
+            "maxDepthResidual": 1.0047943706237294e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481720537,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 37,
+            "counts": {
+              "0": 1019
+            },
+            "compared": 1008,
+            "edgeSamples": 11,
+            "maxDepthError": 5.265320458108791e-8,
+            "maxDepthResidual": 5.265320458108791e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 1008,
+            "maxNormalCosineError": 0.000021946900628178057,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          },
+          {
+            "step": 38,
+            "counts": {
+              "1": 729
+            },
+            "compared": 729,
+            "edgeSamples": 0,
+            "maxDepthError": 1.0047943706237294e-8,
+            "maxDepthResidual": 1.0047943706237294e-8,
+            "subpixelChecks": 0,
+            "maxDepthIntervalWidth": 0,
+            "maxVelocityError": 0,
+            "maxVelocityDepthError": 0,
+            "maxVelocityDepthTolerance": 0,
+            "moving": 0,
+            "normalSamples": 729,
+            "maxNormalCosineError": 0.000023356112481720537,
+            "cameraReconstructed": 0,
+            "maxCameraReprojectionError": 0
+          }
+        ]
+      },
+      {
+        "suite": "spline-streaming",
+        "scalar": true,
+        "frames": 2360,
+        "steps": 9
+      },
+      {
+        "suite": "wpo",
+        "scalar": true,
+        "frames": 17168,
+        "steps": 36
+      },
+      {
+        "suite": "wpo-streaming",
+        "scalar": true,
+        "frames": 2152,
+        "steps": 9
+      },
+      {
+        "suite": "programmable",
+        "scalar": true,
+        "frames": 24036,
+        "steps": 52
+      },
+      {
+        "suite": "materials",
+        "scalar": true,
+        "frames": 3669,
+        "steps": 10
+      },
+      {
+        "suite": "composition",
+        "scalar": true,
+        "frames": 1277,
+        "steps": 9
+      },
+      {
+        "suite": "composition-unmerged",
+        "scalar": true,
+        "frames": 1252,
+        "steps": 9
+      },
+      {
+        "suite": "streaming",
+        "scalar": true,
+        "frames": 2142,
+        "steps": 9
+      },
+      {
+        "suite": "spline-budget",
+        "scalar": true,
+        "steps": 45,
+        "frames": 13169
+      }
+    ],
+    "kernelChecks": 60,
+    "referenceChecks": 3096,
+    "oracleRejections": 28,
+    "payloadEncoding": "gzip-base64-json-sections",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "object",
+      "bytes": 182093893,
+      "sha256": "0cfb28d828078953a523ec7cffdc5166e988e24c51303c68820f416faed2fe26"
+    },
+    "boundary": "Spline component registration, native position/normal deformation, bounds/LOD/HZB, mirrors, material graphs, rigid/WPO velocity and bounded streaming are covered. Native Nanite uses the current spline shape for both velocity frames; shape-edit velocity shares that native limitation. Skinning, assemblies, curves, displacement, remaining materials/instances/views, full-scene temporal reconstruction and performance remain open in the completion tracker."
+  }
+}

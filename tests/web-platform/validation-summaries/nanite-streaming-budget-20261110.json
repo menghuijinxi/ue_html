@@ -1,0 +1,715 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-streaming-budget-20261110.json",
+    "bytes": 1405126,
+    "sha256": "1266efa5b3b802e064cdae8331222e81446c18efe7615be0b8944628302b5e0d",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T20:11:57.429Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-streaming-budget-evidence.cjs",
+      "sha256": "169f23301d53d7a725d55fe43c2a562a1b6501fcfdc25e39ab631f55eafa72fb"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "e4f7faa2df4a481c896f9cfa368a2f76b503a3d9286a5c0e5355634c77bd9882"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "d81a9f564459727ccbd362b839a1266d7261e2ed1279932d8bdfdd755cb3170f"
+    },
+    "runs": [
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming-budget\\browser.json",
+          "sha256": "0b9a6a7c23a30c5d0e6f5fe1f904fd526e524e0af1e585a34d8eefe9dbd0ee74"
+        },
+        "scalarVisibility": false,
+        "budgets": [
+          {
+            "budget": 1,
+            "frames": 2662,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 4,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 5,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 6,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 8,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 9,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              }
+            ]
+          },
+          {
+            "budget": 2,
+            "frames": 2728,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 4,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 5,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 6,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 8,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 9,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              }
+            ]
+          },
+          {
+            "budget": 4,
+            "frames": 2593,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 4,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 5,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 6,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 8,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 9,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              }
+            ]
+          },
+          {
+            "budget": 8,
+            "frames": 2630,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 4,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 5,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 6,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 8,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 9,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              }
+            ]
+          },
+          {
+            "budget": 12,
+            "frames": 2723,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 4,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 5,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 6,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 8,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 9,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming-budget\\browser-scalar.json",
+          "sha256": "1a62c0a56ce7758ac1457ff27e88838fc619da37600705cbb6c3dbef2ad67a46"
+        },
+        "scalarVisibility": true,
+        "budgets": [
+          {
+            "budget": 1,
+            "frames": 2524,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 4,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 5,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 6,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 8,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              },
+              {
+                "step": 9,
+                "residentClusters": 120,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00010484457015991211
+              }
+            ]
+          },
+          {
+            "budget": 2,
+            "frames": 2729,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 4,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 5,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 6,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 8,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 9,
+                "residentClusters": 219,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              }
+            ]
+          },
+          {
+            "budget": 4,
+            "frames": 2687,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 4,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 5,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00006151944398880005
+              },
+              {
+                "step": 6,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 8,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 9,
+                "residentClusters": 420,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              }
+            ]
+          },
+          {
+            "budget": 8,
+            "frames": 2708,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 4,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 5,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 6,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 8,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              },
+              {
+                "step": 9,
+                "residentClusters": 836,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0.00007349252700805664
+              }
+            ]
+          },
+          {
+            "budget": 12,
+            "frames": 2706,
+            "comparisons": [
+              {
+                "step": 3,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 4,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 5,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 6,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 8,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              },
+              {
+                "step": 9,
+                "residentClusters": 1059,
+                "totalClusters": 1059,
+                "covered": 964,
+                "core": 867,
+                "missingCore": 0,
+                "differentCoverage": 0,
+                "maxDepthError": 0
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 1383936,
+      "sha256": "c0593b87f3caa7e8c69eed12453d24b0d2945c2d2684896361a9a899fe07686b"
+    },
+    "boundary": "Two actual WebGPU atomic configurations and five page budgets. Native streamable Cook geometry, resource replacement/reinitialization and pool reset. A bounded cache retains parent geometry under pressure; detailed geometry is exact once the full dependency group fits. This does not replace complete-scene visual/performance acceptance."
+  }
+}

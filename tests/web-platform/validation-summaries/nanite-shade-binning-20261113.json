@@ -1,0 +1,2096 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-shade-binning-20261113.json",
+    "bytes": 174233,
+    "sha256": "3e52304c9dc9926312c22cc3feb0849cf23e270c9a95b691cb52ae9e48c67367",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-13T12:56:48.235Z",
+    "pass": true,
+    "naniteFullPerformanceAccepted": false,
+    "programmableMerge": {
+      "switches": [
+        {
+          "tag": "nanite-programmable3-default-correctness-20261113",
+          "scalar": false,
+          "package": "82625d0d83607ed66a3dacd5fb6d29539f0554ff55fe055cea386dc40a98b5ac",
+          "comparisons": [
+            {
+              "name": "spawn",
+              "on": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "moved",
+              "on": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "portrait",
+              "on": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            }
+          ],
+          "steps": [
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 1,
+              "entries": 4,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            }
+          ]
+        },
+        {
+          "tag": "nanite-programmable3-default-scalar-20261113",
+          "scalar": true,
+          "package": "82625d0d83607ed66a3dacd5fb6d29539f0554ff55fe055cea386dc40a98b5ac",
+          "comparisons": [
+            {
+              "name": "spawn",
+              "on": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "moved",
+              "on": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "portrait",
+              "on": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            }
+          ],
+          "steps": [
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 1,
+              "entries": 4,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 1,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 0
+            }
+          ]
+        },
+        {
+          "tag": "nanite-programmable3-villa-correctness-20261113",
+          "scalar": false,
+          "package": "b9f30d4fe42007058aab4e638d93d51723095389b78128f6c43e5caf5d53ce22",
+          "comparisons": [
+            {
+              "name": "spawn",
+              "on": {
+                "covered": 13424,
+                "entries": 606,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 13424,
+                "entries": 606,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "room",
+              "on": {
+                "covered": 13619,
+                "entries": 308,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 13619,
+                "entries": 308,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "room-turn",
+              "on": {
+                "covered": 13772,
+                "entries": 237,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 13772,
+                "entries": 237,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "portrait",
+              "on": {
+                "covered": 4267,
+                "entries": 625,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 4267,
+                "entries": 625,
+                "maxSpecularDifference": 0
+              }
+            }
+          ],
+          "steps": [
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 606,
+              "batched": 320,
+              "other": 132
+            },
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 606,
+              "batched": 312,
+              "other": 141
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 606,
+              "batched": 0,
+              "other": 387
+            },
+            {
+              "label": "spawn",
+              "batch": 1,
+              "entries": 606,
+              "batched": 312,
+              "other": 141
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 606,
+              "batched": 0,
+              "other": 387
+            },
+            {
+              "label": "room",
+              "batch": 0,
+              "entries": 308,
+              "batched": 0,
+              "other": 229
+            },
+            {
+              "label": "room",
+              "batch": 1,
+              "entries": 308,
+              "batched": 192,
+              "other": 80
+            },
+            {
+              "label": "room",
+              "batch": 0,
+              "entries": 308,
+              "batched": 0,
+              "other": 229
+            },
+            {
+              "label": "room-turn",
+              "batch": 0,
+              "entries": 237,
+              "batched": 0,
+              "other": 200
+            },
+            {
+              "label": "room-turn",
+              "batch": 1,
+              "entries": 237,
+              "batched": 180,
+              "other": 53
+            },
+            {
+              "label": "room-turn",
+              "batch": 0,
+              "entries": 237,
+              "batched": 0,
+              "other": 200
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 625,
+              "batched": 0,
+              "other": 393
+            },
+            {
+              "label": "portrait",
+              "batch": 1,
+              "entries": 625,
+              "batched": 314,
+              "other": 146
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 625,
+              "batched": 0,
+              "other": 393
+            }
+          ]
+        }
+      ],
+      "fixtures": [
+        {
+          "tag": "nanite-programmable3-recovery-20261113",
+          "file": "packed.json",
+          "scalar": false,
+          "tests": 8,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable3-recovery-20261113\\packed.json",
+            "sha256": "7a89daae6b49059fa2e72d7ed93f699c88da654b62926f65d469c47bf3f34279"
+          }
+        },
+        {
+          "tag": "nanite-programmable3-recovery-20261113",
+          "file": "scalar.json",
+          "scalar": true,
+          "tests": 8,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable3-recovery-20261113\\scalar.json",
+            "sha256": "13cfe008b886910145dad0fb6d3f1f681615ee36e08c82463aba0739d982235d"
+          }
+        }
+      ],
+      "staleShaderFailures": [
+        {
+          "tag": "nanite-programmable3-programmable-20261113",
+          "file": "browser.json",
+          "completedTests": 3,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable3-programmable-20261113\\browser.json",
+            "sha256": "872886ef10ba5cde4bc198624471e77438b581850f058d2b6e5f416051f7c270"
+          }
+        },
+        {
+          "tag": "nanite-programmable3-programmable-20261113",
+          "file": "browser-scalar.json",
+          "completedTests": 3,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable3-programmable-20261113\\browser-scalar.json",
+            "sha256": "1233dc06363e6d8e7dc2addf99cd2196e2198910ad5fbcd396518f066ef5b98e"
+          }
+        },
+        {
+          "tag": "nanite-programmable3-wpo-20261113",
+          "file": "browser.json",
+          "completedTests": 0,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable3-wpo-20261113\\browser.json",
+            "sha256": "5ba11ef1798e7da75bb2bd2a473adab186162ad3ed972e22e13a14a9c3db7d5e"
+          }
+        },
+        {
+          "tag": "nanite-programmable3-wpo-20261113",
+          "file": "browser-scalar.json",
+          "completedTests": 0,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable3-wpo-20261113\\browser-scalar.json",
+            "sha256": "c85c0a0822d7172522be5f60956f1bef898078e3ade5143be7e6b335e90d346f"
+          }
+        }
+      ],
+      "eligibility": {
+        "tests": 13,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-programmable3-eligibility-20261113\\report.json",
+          "sha256": "1187c519acfcb7614e5116f8cf3ca26f76443ab2982e5ee0008636e593c3c22d"
+        }
+      },
+      "oldNew": {
+        "tag": "nanite-programmable3-oldnew-abba-20261113",
+        "instrumented": false,
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-fixed-final-villa-20261113",
+            "fps": 88.98,
+            "low1Fps": 29.38,
+            "p99Ms": 28.07,
+            "over50Ms": 2,
+            "rhiMs": 7.77,
+            "renderMs": null
+          },
+          {
+            "index": 1,
+            "folder": "nanite-programmable3-villa-20261113",
+            "fps": 93.67,
+            "low1Fps": 32.21,
+            "p99Ms": 25.82,
+            "over50Ms": 1,
+            "rhiMs": 7.14,
+            "renderMs": 7.74
+          },
+          {
+            "index": 2,
+            "folder": "nanite-programmable3-villa-20261113",
+            "fps": 93.45,
+            "low1Fps": 32.03,
+            "p99Ms": 25.61,
+            "over50Ms": 2,
+            "rhiMs": 7.13,
+            "renderMs": 7.81
+          },
+          {
+            "index": 3,
+            "folder": "nanite-fixed-final-villa-20261113",
+            "fps": 89.14,
+            "low1Fps": 28.55,
+            "p99Ms": 26.98,
+            "over50Ms": 5,
+            "rhiMs": 7.74,
+            "renderMs": null
+          }
+        ]
+      },
+      "onOff": {
+        "tag": "nanite-programmable3-onoff-abba-20261113",
+        "instrumented": false,
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-programmable3-villa-20261113",
+            "nanite": 0,
+            "fps": 138.01,
+            "low1Fps": 52.73,
+            "p99Ms": 14.39,
+            "over50Ms": 0,
+            "rhiMs": 4.84,
+            "renderMs": 4.36
+          },
+          {
+            "index": 1,
+            "folder": "nanite-programmable3-villa-20261113",
+            "nanite": 1,
+            "fps": 92.6,
+            "low1Fps": 29.93,
+            "p99Ms": 25.89,
+            "over50Ms": 5,
+            "rhiMs": 7.2,
+            "renderMs": 7.84
+          },
+          {
+            "index": 2,
+            "folder": "nanite-programmable3-villa-20261113",
+            "nanite": 1,
+            "fps": 90.2,
+            "low1Fps": 31.31,
+            "p99Ms": 25.76,
+            "over50Ms": 4,
+            "rhiMs": 7.41,
+            "renderMs": 8.15
+          },
+          {
+            "index": 3,
+            "folder": "nanite-programmable3-villa-20261113",
+            "nanite": 0,
+            "fps": 135.83,
+            "low1Fps": 54.77,
+            "p99Ms": 14.51,
+            "over50Ms": 0,
+            "rhiMs": 4.93,
+            "renderMs": 4.42
+          }
+        ]
+      },
+      "firstVersion": {
+        "tag": "nanite-programmable-motion-abba-20261113",
+        "instrumented": false,
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-programmable-villa-20261113",
+            "fps": 78.96,
+            "low1Fps": 15.18,
+            "p99Ms": 48.39,
+            "over50Ms": 36,
+            "rhiMs": 8.51,
+            "renderMs": 9.38
+          },
+          {
+            "index": 1,
+            "folder": "nanite-programmable-villa-20261113",
+            "fps": 78.07,
+            "low1Fps": 21.61,
+            "p99Ms": 35.89,
+            "over50Ms": 13,
+            "rhiMs": 8.53,
+            "renderMs": 9.42
+          },
+          {
+            "index": 2,
+            "folder": "nanite-programmable-villa-20261113",
+            "fps": 78.35,
+            "low1Fps": 21.05,
+            "p99Ms": 34.99,
+            "over50Ms": 16,
+            "rhiMs": 8.49,
+            "renderMs": 9.41
+          },
+          {
+            "index": 3,
+            "folder": "nanite-programmable-villa-20261113",
+            "fps": 79.52,
+            "low1Fps": 24.42,
+            "p99Ms": 31.12,
+            "over50Ms": 7,
+            "rhiMs": 8.62,
+            "renderMs": 9.38
+          }
+        ]
+      },
+      "gpuProcess": {
+        "on": {
+          "tag": "nanite-programmable2-stall-trace-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-programmable2-villa-20261113",
+              "nanite": 1,
+              "fps": 92.81,
+              "low1Fps": 27.6,
+              "p99Ms": 25.78,
+              "over50Ms": 7,
+              "rhiMs": 7.22,
+              "renderMs": 7.77
+            }
+          ],
+          "frames": 542,
+          "tracedFps": 83.4,
+          "handleDawnMsPerFrame": 9.94,
+          "handleDawnShare": 0.829,
+          "intervalsOver30Ms": 5,
+          "blocksOver8Ms": [
+            70
+          ]
+        },
+        "off": {
+          "tag": "nanite-programmable2-off-trace-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-programmable2-villa-20261113",
+              "nanite": 0,
+              "fps": 136.88,
+              "low1Fps": 56.04,
+              "p99Ms": 14.35,
+              "over50Ms": 0,
+              "rhiMs": 4.89,
+              "renderMs": 4.38
+            }
+          ],
+          "frames": 861,
+          "tracedFps": 132.5,
+          "handleDawnMsPerFrame": 5.63,
+          "handleDawnShare": 0.746,
+          "intervalsOver30Ms": 0,
+          "blocksOver8Ms": []
+        }
+      }
+    },
+    "shadeBinning": {
+      "switches": [
+        {
+          "tag": "nanite-shadebin-default-correctness-20261113",
+          "scalar": false,
+          "package": "7f587675d72e6014e919f15654eb248c00b57c3b82d5c4c0e63d2a2ffb501544",
+          "comparisons": [
+            {
+              "name": "spawn",
+              "on": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "moved",
+              "on": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "portrait",
+              "on": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            }
+          ],
+          "steps": [
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            },
+            {
+              "label": "spawn",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 4
+            },
+            {
+              "label": "moved",
+              "batch": 1,
+              "entries": 4,
+              "batched": 4,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 4
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            },
+            {
+              "label": "portrait",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-default-scalar-20261113",
+          "scalar": true,
+          "package": "7f587675d72e6014e919f15654eb248c00b57c3b82d5c4c0e63d2a2ffb501544",
+          "comparisons": [
+            {
+              "name": "spawn",
+              "on": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 612,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "moved",
+              "on": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 2657,
+                "entries": 4,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "portrait",
+              "on": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 112,
+                "entries": 8,
+                "maxSpecularDifference": 0
+              }
+            }
+          ],
+          "steps": [
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            },
+            {
+              "label": "spawn",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 4
+            },
+            {
+              "label": "moved",
+              "batch": 1,
+              "entries": 4,
+              "batched": 4,
+              "other": 0
+            },
+            {
+              "label": "moved",
+              "batch": 0,
+              "entries": 4,
+              "batched": 0,
+              "other": 4
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            },
+            {
+              "label": "portrait",
+              "batch": 1,
+              "entries": 8,
+              "batched": 8,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 8,
+              "batched": 0,
+              "other": 8
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-villa-correctness-20261113",
+          "scalar": false,
+          "package": "bd30aee945d33991d555f5c257dfb60c926b2b8012e4a7a020058e569ac522ab",
+          "comparisons": [
+            {
+              "name": "spawn",
+              "on": {
+                "covered": 13424,
+                "entries": 606,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 13424,
+                "entries": 606,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "room",
+              "on": {
+                "covered": 13619,
+                "entries": 308,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 13619,
+                "entries": 308,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "room-turn",
+              "on": {
+                "covered": 13772,
+                "entries": 237,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 13772,
+                "entries": 237,
+                "maxSpecularDifference": 0
+              }
+            },
+            {
+              "name": "portrait",
+              "on": {
+                "covered": 4267,
+                "entries": 625,
+                "maxSpecularDifference": 0
+              },
+              "restored": {
+                "covered": 4267,
+                "entries": 625,
+                "maxSpecularDifference": 0
+              }
+            }
+          ],
+          "steps": [
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 606,
+              "batched": 149,
+              "other": 0
+            },
+            {
+              "label": "lifecycle",
+              "batch": 1,
+              "entries": 606,
+              "batched": 149,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 606,
+              "batched": 0,
+              "other": 149
+            },
+            {
+              "label": "spawn",
+              "batch": 1,
+              "entries": 606,
+              "batched": 149,
+              "other": 0
+            },
+            {
+              "label": "spawn",
+              "batch": 0,
+              "entries": 606,
+              "batched": 0,
+              "other": 149
+            },
+            {
+              "label": "room",
+              "batch": 0,
+              "entries": 308,
+              "batched": 0,
+              "other": 94
+            },
+            {
+              "label": "room",
+              "batch": 1,
+              "entries": 308,
+              "batched": 94,
+              "other": 0
+            },
+            {
+              "label": "room",
+              "batch": 0,
+              "entries": 308,
+              "batched": 0,
+              "other": 94
+            },
+            {
+              "label": "room-turn",
+              "batch": 0,
+              "entries": 237,
+              "batched": 0,
+              "other": 81
+            },
+            {
+              "label": "room-turn",
+              "batch": 1,
+              "entries": 237,
+              "batched": 81,
+              "other": 0
+            },
+            {
+              "label": "room-turn",
+              "batch": 0,
+              "entries": 237,
+              "batched": 0,
+              "other": 81
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 625,
+              "batched": 0,
+              "other": 154
+            },
+            {
+              "label": "portrait",
+              "batch": 1,
+              "entries": 625,
+              "batched": 154,
+              "other": 0
+            },
+            {
+              "label": "portrait",
+              "batch": 0,
+              "entries": 625,
+              "batched": 0,
+              "other": 154
+            }
+          ]
+        }
+      ],
+      "fixtures": [
+        {
+          "state": "on",
+          "tag": "nanite-shadebin-programmable-on-20261113",
+          "file": "browser.json",
+          "scalar": false,
+          "tests": 52,
+          "paths": {
+            "programmablePrepareDispatches": 23989,
+            "programmablePrepareBatches": 23989,
+            "programmableDraws": 23989,
+            "shadeBinDispatches": 77415,
+            "binnedMaterialDraws": 40375,
+            "legacyMaterialDraws": 0
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-programmable-on-20261113\\browser.json",
+            "sha256": "2c9732266412ec7178d15fb3e04b3b65db3e710e4c22125d64fb432b2252eadf"
+          }
+        },
+        {
+          "state": "on",
+          "tag": "nanite-shadebin-programmable-on-20261113",
+          "file": "browser-scalar.json",
+          "scalar": true,
+          "tests": 52,
+          "paths": {
+            "programmablePrepareDispatches": 45098,
+            "programmablePrepareBatches": 45098,
+            "programmableDraws": 45098,
+            "shadeBinDispatches": 74310,
+            "binnedMaterialDraws": 38614,
+            "legacyMaterialDraws": 0
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-programmable-on-20261113\\browser-scalar.json",
+            "sha256": "db84636dbb69154718365c2fb67ea3a08a7c047edc7a02ca2eb55198b164325d"
+          }
+        },
+        {
+          "state": "on",
+          "tag": "nanite-shadebin-wpo-on-20261113",
+          "file": "browser.json",
+          "scalar": false,
+          "tests": 36,
+          "paths": {
+            "programmablePrepareDispatches": 19802,
+            "programmablePrepareBatches": 34963,
+            "programmableDraws": 37820,
+            "shadeBinDispatches": 57855,
+            "binnedMaterialDraws": 39686,
+            "legacyMaterialDraws": 0
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-wpo-on-20261113\\browser.json",
+            "sha256": "ed1c06100ac94ba8b0202c434499050abdcab4c8ce6455318b6a4c9fa812b1a9"
+          }
+        },
+        {
+          "state": "on",
+          "tag": "nanite-shadebin-wpo-on-20261113",
+          "file": "browser-scalar.json",
+          "scalar": true,
+          "tests": 36,
+          "paths": {
+            "programmablePrepareDispatches": 38548,
+            "programmablePrepareBatches": 68092,
+            "programmableDraws": 73642,
+            "shadeBinDispatches": 56535,
+            "binnedMaterialDraws": 38730,
+            "legacyMaterialDraws": 0
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-wpo-on-20261113\\browser-scalar.json",
+            "sha256": "9c254b50f29e40a8314a91aeeb465eb387bdceaf4e7102652389070ca40446f9"
+          }
+        },
+        {
+          "state": "off",
+          "tag": "nanite-shadebin-programmable-off-20261113",
+          "file": "browser.json",
+          "scalar": false,
+          "tests": 52,
+          "paths": {
+            "programmablePrepareDispatches": 23697,
+            "programmablePrepareBatches": 23697,
+            "programmableDraws": 23697,
+            "shadeBinDispatches": 0,
+            "binnedMaterialDraws": 0,
+            "legacyMaterialDraws": 40475
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-programmable-off-20261113\\browser.json",
+            "sha256": "fdf500d5650ade57f13bd40ec47d1a3c664b537ad04c6ac1cef2f68143311e87"
+          }
+        },
+        {
+          "state": "off",
+          "tag": "nanite-shadebin-programmable-off-20261113",
+          "file": "browser-scalar.json",
+          "scalar": true,
+          "tests": 52,
+          "paths": {
+            "programmablePrepareDispatches": 45724,
+            "programmablePrepareBatches": 45724,
+            "programmableDraws": 45724,
+            "shadeBinDispatches": 0,
+            "binnedMaterialDraws": 0,
+            "legacyMaterialDraws": 39208
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-programmable-off-20261113\\browser-scalar.json",
+            "sha256": "ce756eeac03d8819dacfdce60162ad5d00d129ae0c7b511449d39f96194b25f2"
+          }
+        },
+        {
+          "state": "off",
+          "tag": "nanite-shadebin-wpo-off-20261113",
+          "file": "browser.json",
+          "scalar": false,
+          "tests": 36,
+          "paths": {
+            "programmablePrepareDispatches": 19959,
+            "programmablePrepareBatches": 35343,
+            "programmableDraws": 38128,
+            "shadeBinDispatches": 0,
+            "binnedMaterialDraws": 0,
+            "legacyMaterialDraws": 39908
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-wpo-off-20261113\\browser.json",
+            "sha256": "e37cea6d9e1d89b1fb8e97b7d18d81a19ae5879652026c037988184a9714443f"
+          }
+        },
+        {
+          "state": "off",
+          "tag": "nanite-shadebin-wpo-off-20261113",
+          "file": "browser-scalar.json",
+          "scalar": true,
+          "tests": 36,
+          "paths": {
+            "programmablePrepareDispatches": 39328,
+            "programmablePrepareBatches": 69600,
+            "programmableDraws": 75314,
+            "shadeBinDispatches": 0,
+            "binnedMaterialDraws": 0,
+            "legacyMaterialDraws": 39602
+          },
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-wpo-off-20261113\\browser-scalar.json",
+            "sha256": "92c70b7b1c804fdf859aecabe9e81763bd66a51c384c6e3680ad277d15b54f5c"
+          }
+        },
+        {
+          "tag": "nanite-shadebin-recovery-20261113",
+          "file": "packed.json",
+          "scalar": false,
+          "tests": 8,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-recovery-20261113\\packed.json",
+            "sha256": "efe452bc391a53916492ae789c73d59103877c5f4930d6cd04703d4be1844cc5"
+          }
+        },
+        {
+          "tag": "nanite-shadebin-recovery-20261113",
+          "file": "scalar.json",
+          "scalar": true,
+          "tests": 8,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-recovery-20261113\\scalar.json",
+            "sha256": "409254653425efcc2ee0c4e2774d1a4b084d03b6779a6a68b8766790de7c2d11"
+          }
+        }
+      ],
+      "eligibility": {
+        "tests": 13,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-eligibility-20261113\\report.json",
+          "sha256": "3c2cc70d2495cfd1a016fcae2b5e0b9534911bbe8b73ed361e2dcc64fdd0b451"
+        }
+      },
+      "calls": {
+        "legacy": {
+          "tag": "webgpu-calls-shadebin-legacy-20261113",
+          "nanite": "1",
+          "cvars": [
+            [
+              "r.Nanite.WebShadeBinning",
+              "0"
+            ]
+          ],
+          "total": 7474,
+          "copyBufferToBuffer": 687.2,
+          "writeBuffer": 335.6,
+          "clearBuffer": 104,
+          "beginComputePass": 117.1,
+          "dispatchWorkgroups": 256.5,
+          "drawIndirect": 218.6,
+          "createBindGroup": 38.8,
+          "writeBytes": 1115766,
+          "copyBytes": 1813968
+        },
+        "binned": {
+          "tag": "webgpu-calls-shadebin-on-20261113",
+          "nanite": "1",
+          "cvars": [],
+          "total": 6064,
+          "copyBufferToBuffer": 88.4,
+          "writeBuffer": 89.4,
+          "clearBuffer": 21,
+          "beginComputePass": 35.8,
+          "dispatchWorkgroups": 178.8,
+          "drawIndirect": 223.4,
+          "createBindGroup": 23.4,
+          "writeBytes": 1054135,
+          "copyBytes": 1760367
+        },
+        "binnedSingleRoundHZB": {
+          "tag": "webgpu-calls-shadebin-hzb0-20261113",
+          "nanite": "1",
+          "cvars": [
+            [
+              "r.Nanite.WebHZB",
+              "0"
+            ]
+          ],
+          "total": 5604,
+          "copyBufferToBuffer": 71,
+          "writeBuffer": 72,
+          "clearBuffer": 18,
+          "beginComputePass": 27.8,
+          "dispatchWorkgroups": 137,
+          "drawIndirect": 154.3,
+          "createBindGroup": 17.8,
+          "writeBytes": 863270,
+          "copyBytes": 1592120
+        },
+        "naniteOff": {
+          "tag": "webgpu-calls-shadebin-off-20261113",
+          "nanite": "0",
+          "cvars": [],
+          "total": 6403,
+          "copyBufferToBuffer": 49.3,
+          "writeBuffer": 51.3,
+          "clearBuffer": 15,
+          "beginComputePass": 21,
+          "dispatchWorkgroups": 115,
+          "drawIndirect": 0,
+          "createBindGroup": 14.1,
+          "writeBytes": 558687,
+          "copyBytes": 560122
+        },
+        "previousRuntimeOn": {
+          "tag": "webgpu-calls-prog3-on-20261113",
+          "nanite": "1",
+          "cvars": [],
+          "total": 7442,
+          "copyBufferToBuffer": 687,
+          "writeBuffer": 336,
+          "clearBuffer": 103.8,
+          "beginComputePass": 117.5,
+          "dispatchWorkgroups": 256.9,
+          "drawIndirect": 216.3,
+          "createBindGroup": 37,
+          "writeBytes": 1113725,
+          "copyBytes": 1812523
+        },
+        "previousRuntimeOff": {
+          "tag": "webgpu-calls-prog3-off-20261113",
+          "nanite": "0",
+          "cvars": [],
+          "total": 6410,
+          "copyBufferToBuffer": 49.3,
+          "writeBuffer": 51.3,
+          "clearBuffer": 15,
+          "beginComputePass": 21,
+          "dispatchWorkgroups": 115.2,
+          "drawIndirect": 0,
+          "createBindGroup": 13.9,
+          "writeBytes": 559087,
+          "copyBytes": 560190
+        }
+      },
+      "motion": [
+        {
+          "tag": "nanite-shadebin-motion-abba-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 89.76,
+              "low1Fps": 29.71,
+              "p99Ms": 26.79,
+              "over50Ms": 5,
+              "rhiMs": 7.48,
+              "renderMs": 8.17
+            },
+            {
+              "index": 1,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 103.66,
+              "low1Fps": 37.59,
+              "p99Ms": 19.8,
+              "over50Ms": 3,
+              "rhiMs": 6.42,
+              "renderMs": 7.52
+            },
+            {
+              "index": 2,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 103.87,
+              "low1Fps": 37.58,
+              "p99Ms": 20.59,
+              "over50Ms": 2,
+              "rhiMs": 6.45,
+              "renderMs": 7.46
+            },
+            {
+              "index": 3,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 83.16,
+              "low1Fps": 26.93,
+              "p99Ms": 29.21,
+              "over50Ms": 6,
+              "rhiMs": 7.97,
+              "renderMs": 8.75
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-motion-baab-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 103.97,
+              "low1Fps": 36.98,
+              "p99Ms": 20.42,
+              "over50Ms": 2,
+              "rhiMs": 6.4,
+              "renderMs": 7.51
+            },
+            {
+              "index": 1,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 83.5,
+              "low1Fps": 25.94,
+              "p99Ms": 27.52,
+              "over50Ms": 6,
+              "rhiMs": 7.9,
+              "renderMs": 8.75
+            },
+            {
+              "index": 2,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 83.15,
+              "low1Fps": 27.95,
+              "p99Ms": 29.28,
+              "over50Ms": 5,
+              "rhiMs": 7.98,
+              "renderMs": 8.84
+            },
+            {
+              "index": 3,
+              "folder": "nanite-shadebin-villa-20261113",
+              "fps": 104.4,
+              "low1Fps": 36.93,
+              "p99Ms": 20.7,
+              "over50Ms": 2,
+              "rhiMs": 6.43,
+              "renderMs": 7.47
+            }
+          ]
+        }
+      ],
+      "onOff": [
+        {
+          "tag": "nanite-shadebin-onoff-abba-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 0,
+              "fps": 124.13,
+              "low1Fps": 48.33,
+              "p99Ms": 16.73,
+              "over50Ms": 0,
+              "rhiMs": 5.42,
+              "renderMs": 4.95
+            },
+            {
+              "index": 1,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 1,
+              "fps": 104.72,
+              "low1Fps": 37.29,
+              "p99Ms": 21.68,
+              "over50Ms": 2,
+              "rhiMs": 6.39,
+              "renderMs": 7.41
+            },
+            {
+              "index": 2,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 1,
+              "fps": 100.42,
+              "low1Fps": 35.21,
+              "p99Ms": 21.38,
+              "over50Ms": 4,
+              "rhiMs": 6.6,
+              "renderMs": 7.66
+            },
+            {
+              "index": 3,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 0,
+              "fps": 122.91,
+              "low1Fps": 47.69,
+              "p99Ms": 17.58,
+              "over50Ms": 0,
+              "rhiMs": 5.47,
+              "renderMs": 4.97
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-onoff-baab-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 1,
+              "fps": 104.48,
+              "low1Fps": 38.73,
+              "p99Ms": 20.91,
+              "over50Ms": 1,
+              "rhiMs": 6.4,
+              "renderMs": 7.51
+            },
+            {
+              "index": 1,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 0,
+              "fps": 123.44,
+              "low1Fps": 48.82,
+              "p99Ms": 16.53,
+              "over50Ms": 0,
+              "rhiMs": 5.44,
+              "renderMs": 4.97
+            },
+            {
+              "index": 2,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 0,
+              "fps": 123.19,
+              "low1Fps": 49.77,
+              "p99Ms": 16.26,
+              "over50Ms": 0,
+              "rhiMs": 5.46,
+              "renderMs": 4.96
+            },
+            {
+              "index": 3,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 1,
+              "fps": 104.25,
+              "low1Fps": 38.79,
+              "p99Ms": 20.41,
+              "over50Ms": 1,
+              "rhiMs": 6.39,
+              "renderMs": 7.46
+            }
+          ]
+        }
+      ],
+      "foregroundWindow": {
+        "tag": "nanite-shadebin-onoff-env-20261113",
+        "instrumented": false,
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-shadebin-villa-20261113",
+            "nanite": 0,
+            "fps": 135.29,
+            "low1Fps": 54.24,
+            "p99Ms": 14.91,
+            "over50Ms": 0,
+            "rhiMs": 4.96,
+            "renderMs": 4.55,
+            "foreground": [
+              "msedge",
+              "msedge"
+            ]
+          },
+          {
+            "index": 1,
+            "folder": "nanite-shadebin-villa-20261113",
+            "nanite": 1,
+            "fps": 104.13,
+            "low1Fps": 38.17,
+            "p99Ms": 20.44,
+            "over50Ms": 1,
+            "rhiMs": 6.41,
+            "renderMs": 7.45,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          },
+          {
+            "index": 2,
+            "folder": "nanite-shadebin-villa-20261113",
+            "nanite": 1,
+            "fps": 103.93,
+            "low1Fps": 39.13,
+            "p99Ms": 20.27,
+            "over50Ms": 1,
+            "rhiMs": 6.41,
+            "renderMs": 7.46,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          },
+          {
+            "index": 3,
+            "folder": "nanite-shadebin-villa-20261113",
+            "nanite": 0,
+            "fps": 123.8,
+            "low1Fps": 47.63,
+            "p99Ms": 17.39,
+            "over50Ms": 0,
+            "rhiMs": 5.43,
+            "renderMs": 4.94,
+            "foreground": [
+              "Clidex",
+              "Clidex"
+            ]
+          }
+        ]
+      },
+      "rdgValidation": {
+        "tag": "nanite-shadebin-rdgvalidation-abba-20261113",
+        "instrumented": false,
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.RDG.Validation",
+              "value": 1
+            },
+            "fps": 103.1,
+            "low1Fps": 36.88,
+            "p99Ms": 20.39,
+            "over50Ms": 2,
+            "rhiMs": 6.48,
+            "renderMs": 7.47
+          },
+          {
+            "index": 1,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.RDG.Validation",
+              "value": 0
+            },
+            "fps": 106.75,
+            "low1Fps": 38.24,
+            "p99Ms": 20.92,
+            "over50Ms": 2,
+            "rhiMs": 6.4,
+            "renderMs": 6.14
+          },
+          {
+            "index": 2,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.RDG.Validation",
+              "value": 0
+            },
+            "fps": 106.94,
+            "low1Fps": 37.42,
+            "p99Ms": 20.72,
+            "over50Ms": 3,
+            "rhiMs": 6.36,
+            "renderMs": 6.08
+          },
+          {
+            "index": 3,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.RDG.Validation",
+              "value": 1
+            },
+            "fps": 104.27,
+            "low1Fps": 36.92,
+            "p99Ms": 20.2,
+            "over50Ms": 2,
+            "rhiMs": 6.4,
+            "renderMs": 7.47
+          }
+        ]
+      },
+      "gpuProcess": {
+        "on": {
+          "tag": "nanite-shadebin-on-trace-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 1,
+              "fps": 114.18,
+              "low1Fps": 41.87,
+              "p99Ms": 18.84,
+              "over50Ms": 1,
+              "rhiMs": 5.96,
+              "renderMs": 6.85
+            }
+          ],
+          "frames": 742,
+          "tracedFps": 114.2,
+          "handleDawnMsPerFrame": 7.27,
+          "handleDawnShare": 0.83,
+          "intervalsOver30Ms": 0,
+          "blocksOver8Ms": []
+        },
+        "off": {
+          "tag": "nanite-shadebin-off-trace-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 0,
+              "fps": 134.41,
+              "low1Fps": 54.31,
+              "p99Ms": 14.79,
+              "over50Ms": 0,
+              "rhiMs": 4.97,
+              "renderMs": 4.62
+            }
+          ],
+          "frames": 854,
+          "tracedFps": 131.4,
+          "handleDawnMsPerFrame": 5.78,
+          "handleDawnShare": 0.759,
+          "intervalsOver30Ms": 0,
+          "blocksOver8Ms": []
+        },
+        "singleRoundHZB": {
+          "tag": "nanite-shadebin-hzb0-trace-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "cvar": {
+                "name": "r.Nanite.WebHZB",
+                "value": 0
+              },
+              "fps": 111.62,
+              "low1Fps": 44.07,
+              "p99Ms": 17.75,
+              "over50Ms": 2,
+              "rhiMs": 5.84,
+              "renderMs": 6.68
+            }
+          ],
+          "frames": 725,
+          "tracedFps": 111.5,
+          "handleDawnMsPerFrame": 7.08,
+          "handleDawnShare": 0.789,
+          "intervalsOver30Ms": 1,
+          "blocksOver8Ms": [
+            73.1
+          ]
+        }
+      }
+    },
+    "twoRoundHZB": {
+      "backgroundWindow": {
+        "tag": "nanite-shadebin-hzb-abba-20261113",
+        "instrumented": false,
+        "runs": [
+          {
+            "index": 0,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 1
+            },
+            "fps": 115.07,
+            "low1Fps": 41.76,
+            "p99Ms": 18.24,
+            "over50Ms": 2,
+            "rhiMs": 5.87,
+            "renderMs": 6.86
+          },
+          {
+            "index": 1,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 0
+            },
+            "fps": 111.16,
+            "low1Fps": 40.13,
+            "p99Ms": 18.65,
+            "over50Ms": 3,
+            "rhiMs": 5.9,
+            "renderMs": 6.63
+          },
+          {
+            "index": 2,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 0
+            },
+            "fps": 112.12,
+            "low1Fps": 42.61,
+            "p99Ms": 17.55,
+            "over50Ms": 1,
+            "rhiMs": 5.82,
+            "renderMs": 6.63
+          },
+          {
+            "index": 3,
+            "folder": "nanite-shadebin-villa-20261113",
+            "cvar": {
+              "name": "r.Nanite.WebHZB",
+              "value": 1
+            },
+            "fps": 102.97,
+            "low1Fps": 38.66,
+            "p99Ms": 20.61,
+            "over50Ms": 1,
+            "rhiMs": 6.46,
+            "renderMs": 7.56
+          }
+        ]
+      },
+      "foregroundWindow": [
+        {
+          "tag": "nanite-shadebin-fg-hzb1-a-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "cvar": {
+                "name": "r.Nanite.WebHZB",
+                "value": 1
+              },
+              "fps": 114.34,
+              "low1Fps": 39.58,
+              "p99Ms": 18.37,
+              "over50Ms": 2,
+              "rhiMs": 5.94,
+              "renderMs": 6.83,
+              "foreground": [
+                "msedge",
+                "msedge"
+              ]
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-fg-hzb0-a-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "cvar": {
+                "name": "r.Nanite.WebHZB",
+                "value": 0
+              },
+              "fps": 124.02,
+              "low1Fps": 47.57,
+              "p99Ms": 16.41,
+              "over50Ms": 1,
+              "rhiMs": 5.35,
+              "renderMs": 6.08,
+              "foreground": [
+                "msedge",
+                "msedge"
+              ]
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-fg-hzb0-b-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "cvar": {
+                "name": "r.Nanite.WebHZB",
+                "value": 0
+              },
+              "fps": 123.21,
+              "low1Fps": 43.82,
+              "p99Ms": 16.62,
+              "over50Ms": 2,
+              "rhiMs": 5.4,
+              "renderMs": 6.09,
+              "foreground": [
+                "msedge",
+                "msedge"
+              ]
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-fg-hzb1-b-20261113",
+          "instrumented": false,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "cvar": {
+                "name": "r.Nanite.WebHZB",
+                "value": 1
+              },
+              "fps": 115.17,
+              "low1Fps": 41.14,
+              "p99Ms": 18.73,
+              "over50Ms": 1,
+              "rhiMs": 5.95,
+              "renderMs": 6.81,
+              "foreground": [
+                "msedge",
+                "msedge"
+              ]
+            }
+          ]
+        }
+      ],
+      "gpuTime": [
+        {
+          "tag": "nanite-shadebin-gputime-hzb1-d-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "cvar": {
+                "name": "r.Nanite.WebHZB",
+                "value": 1
+              },
+              "fps": 111.03,
+              "low1Fps": 33.02,
+              "p99Ms": 18.37,
+              "over50Ms": 7,
+              "rhiMs": 6.15,
+              "renderMs": 6.74,
+              "foreground": [
+                "Clidex",
+                "Clidex"
+              ],
+              "gpu": {
+                "frames": 5813,
+                "passMs": {
+                  "mean": 4.678298577670678,
+                  "p50": 4.784128,
+                  "p95": 5.57056,
+                  "p99": 5.89824,
+                  "max": 6.356992
+                },
+                "rasterExtentMs": 0.656
+              }
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-gputime-hzb0-d-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "cvar": {
+                "name": "r.Nanite.WebHZB",
+                "value": 0
+              },
+              "fps": 119.24,
+              "low1Fps": 37,
+              "p99Ms": 16.77,
+              "over50Ms": 6,
+              "rhiMs": 5.65,
+              "renderMs": 5.96,
+              "foreground": [
+                "Clidex",
+                "Clidex"
+              ],
+              "gpu": {
+                "frames": 6181,
+                "passMs": {
+                  "mean": 4.28779962336225,
+                  "p50": 4.390912,
+                  "p95": 5.046272,
+                  "p99": 5.308416,
+                  "max": 5.89824
+                },
+                "rasterExtentMs": 0.409
+              }
+            }
+          ]
+        },
+        {
+          "tag": "nanite-shadebin-gputime-off-d-20261113",
+          "instrumented": true,
+          "runs": [
+            {
+              "index": 0,
+              "folder": "nanite-shadebin-villa-20261113",
+              "nanite": 0,
+              "fps": 117.16,
+              "low1Fps": 36.74,
+              "p99Ms": 18.22,
+              "over50Ms": 4,
+              "rhiMs": 5.71,
+              "renderMs": 5,
+              "foreground": [
+                "Clidex",
+                "Clidex"
+              ],
+              "gpu": {
+                "frames": 6175,
+                "passMs": {
+                  "mean": 3.4993358458298043,
+                  "p50": 3.538944,
+                  "p95": 4.063232,
+                  "p99": 4.25984,
+                  "max": 4.718592
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "failedAttempts": [
+        {
+          "tag": "nanite-shadebin-gputime-hzb1-20261113",
+          "pass": false,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-gputime-hzb1-20261113\\report.json",
+            "sha256": "d2c59d24f56bdf49e333353a7fb13041058f8a75b4ddd268a8abba6bf352039f"
+          }
+        },
+        {
+          "tag": "nanite-shadebin-gputime-hzb1-b-20261113",
+          "pass": false,
+          "report": null
+        },
+        {
+          "tag": "nanite-shadebin-gputime-hzb1-c-20261113",
+          "pass": false,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-gputime-hzb1-c-20261113\\report.json",
+            "sha256": "efe4cfe882b578f62d79aa052c60fb8224581d1d9d1d3da2a356a0d5bef30955"
+          }
+        },
+        {
+          "tag": "nanite-shadebin-gputime-hzb0-c-20261113",
+          "pass": false,
+          "report": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-shadebin-gputime-hzb0-c-20261113\\report.json",
+            "sha256": "89489e3188760c836f407b84623148e5c83156c7e2322050a06da98fbcb753a8"
+          }
+        }
+      ]
+    },
+    "records": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 174,
+      "bytes": 70511,
+      "sha256": "61df4b180b6663ad2699ce43fd16224f49b6f51ae77e9c04bc9a8c64e4343218"
+    },
+    "referencedOnly": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 155,
+      "bytes": 30350,
+      "sha256": "4c1f5ee9f045b2088308b976558fa08234d5f57d9b957b62e6c31c2a9446fcc6"
+    },
+    "boundary": "Programmable raster draws merge by material and state buffer; material tiles for every shading bin come from three dispatches over the shading mask. Exact frozen-clock depth and material comparisons, mask/PDO/WPO fixtures in both visibility formats with the new path on and off, recovery and eligibility pass. Performance rows are single first-tour runs; rows with different foreground windows are not comparable, and instrumented rows are not frame-rate evidence. Readbacks, images, large per-test reports, engine logs, CPU profiles and traces are recorded by hash only and remain in results/. Two-round HZB is slower than one round in the accepted scene; full enabled performance acceptance stays open."
+  }
+}

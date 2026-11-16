@@ -1,0 +1,281 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-core-lifecycle-20261111.json",
+    "bytes": 12014,
+    "sha256": "e63ab350ab04b83addc1319bb631173ce0914ec5eb6dc34beffbb1bc28d20c5e",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T10:38:11.966Z",
+    "runtimeEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-disocclusion-20261111.json",
+      "sha256": "3de6c9a2056c7ed41354242bbedfb5c79811f2a3e58fcbf8eed7756604a45e74"
+    },
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-core-lifecycle-evidence.cjs",
+      "sha256": "c5cf4fdbe9c7d8dafc191dac2c29c4d63db4c7ddb61e8f1ccc58039d928be91d"
+    },
+    "runs": [
+      {
+        "scene": "default",
+        "mode": "packed",
+        "frames": 10301,
+        "cameraCaptures": 10,
+        "comparison": {
+          "covered": 1086,
+          "maxSpecularDifference": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\default-packed-12.json",
+          "sha256": "495c4dcdd075389ab98a64da3adcd06ea2a0e912f25907a05d867609a72e0ca7"
+        }
+      },
+      {
+        "scene": "default",
+        "mode": "scalar",
+        "frames": 10196,
+        "cameraCaptures": 10,
+        "comparison": {
+          "covered": 1086,
+          "maxSpecularDifference": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\default-scalar-12.json",
+          "sha256": "62febb4667970a1ccc2533fb77ecf4ef72fc7fcbd5f65269c2565de817f4ffdc"
+        }
+      },
+      {
+        "scene": "villa",
+        "mode": "packed",
+        "frames": 6995,
+        "cameraCaptures": 12,
+        "comparison": {
+          "covered": 13620,
+          "maxSpecularDifference": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\villa-packed-12.json",
+          "sha256": "f430e7f2dbcd6678a53171849cf8f359edb8557c430d67d9f03555713c7ba66b"
+        }
+      },
+      {
+        "scene": "villa",
+        "mode": "scalar",
+        "frames": 6707,
+        "cameraCaptures": 12,
+        "comparison": {
+          "covered": 13620,
+          "maxSpecularDifference": 0
+        },
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\villa-scalar-12.json",
+          "sha256": "5e2e9aa0a078b727600ef0ad06b7a4ddf0e11727840e1ee08428d4234919e97b"
+        }
+      }
+    ],
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-disocclusion-20261111.json",
+          "sha256": "3de6c9a2056c7ed41354242bbedfb5c79811f2a3e58fcbf8eed7756604a45e74"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\0-nanite-disocclusion-20261111.json.gz",
+          "sha256": "61843da11fb9c69688a950bf85183a09cd1c2c90cb360a82ee2ad0a257d50cf7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "8dfeaf84cc05c3dc90a4fbaa6ff461abf191f81f92a0ecf6302bb67dc930aa30"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\1-package.json.gz",
+          "sha256": "542fe7de890a47a0d9eeea62fe9f13e9869b8ff359bfbeac1b35476c7401d540"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\default-packed-12.json",
+          "sha256": "495c4dcdd075389ab98a64da3adcd06ea2a0e912f25907a05d867609a72e0ca7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\2-default-packed-12.json.gz",
+          "sha256": "e7e341810c1c2cce03d4c6164d0e60d1778e3296766ba28375005a523722b0a5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-core-lifecycle.cjs",
+          "sha256": "73f1bb2a22bb2afca2ee4ef6d1047d2f811b5083eb142f018b6ba8272ba3fd19"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\3-probe-nanite-core-lifecycle.cjs.gz",
+          "sha256": "f8222105df0b369202d6758a4cd5dc4aaf87a6ca037a6a0f1b5ccfac0bc734b5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\default-scalar-12.json",
+          "sha256": "62febb4667970a1ccc2533fb77ecf4ef72fc7fcbd5f65269c2565de817f4ffdc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\4-default-scalar-12.json.gz",
+          "sha256": "e04f249e069c10986bcaaa0f6810dc01a5f25d3762c127926e3572d7ff442460"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "832e046c28df949c7ce26b0d47c5c5f43f0f64d09ad36e733d3a1174be6e7d55"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\5-package.json.gz",
+          "sha256": "a044e2542b709be1a2d4074221612454aceb98ad547806984221b058fabfa11a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\villa-packed-12.json",
+          "sha256": "f430e7f2dbcd6678a53171849cf8f359edb8557c430d67d9f03555713c7ba66b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\6-villa-packed-12.json.gz",
+          "sha256": "ea7871d0d7c389bff4095ab67db34c378ef7750c50a4dbf4eea9b6f4bb0e3877"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core-lifecycle\\villa-scalar-12.json",
+          "sha256": "5e2e9aa0a078b727600ef0ad06b7a4ddf0e11727840e1ee08428d4234919e97b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\7-villa-scalar-12.json.gz",
+          "sha256": "415b5b22b5caec01024eb32ef23b2df7ba58be975cf9318183f893d73e687afa"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\lifecycle-pool-allocation-failure.cjs",
+          "sha256": "ccd6a06460ae682d88261f523b3c36cbbeaa2f24ee2d9f93059b83914cb5d4fe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\8-lifecycle-pool-allocation-failure.cjs.gz",
+          "sha256": "4489b49d4df91dc1c08aca522aac957aca091acb52a09cda75535619ed1de3db"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\lifecycle-pool-allocation-failure.json",
+          "sha256": "ccf660d0b51c893bcc286634dd6a71555ffe2af819ffc9a73c4113b7c695af18"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\9-lifecycle-pool-allocation-failure.json.gz",
+          "sha256": "964f6698d453b5c1adcac64ed8f6389abc9c14b763ee74212db0c8da1976f4bd"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\lifecycle-pool-alignment-observed-failure.cjs",
+          "sha256": "527d99574b6d69fa8b1995ba05e4bd0c338702f1263996f0df8fbc675a2ede8e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\10-lifecycle-pool-alignment-observed-failure.cjs.gz",
+          "sha256": "02c01c12ba2ee214974c55fd76922ca065c425649197b0a616f8669654b804c6"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\lifecycle-pool-alignment-observed-failure.json",
+          "sha256": "0bc1fbf878d4ade01a8ec5be0e4a1de9bd9fdf674809dc5fd6da3edccd6d288a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\11-lifecycle-pool-alignment-observed-failure.json.gz",
+          "sha256": "1cc5913208c9bfd9215e6ea100a7671f19664bc8c7b1b26145c460532494eb24"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+          "sha256": "11af6dc3cc00c1be1419405e3a25bfcd863ced1cdf88f24a8ff52ff7336460b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\12-WebNaniteAutomaticSceneTest.cpp.gz",
+          "sha256": "4d4c191117e4703905275701a1e7db7e0ff3a4c8314078db60e9099227eb0b57"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+          "sha256": "fa7fad1965fb653337dd6febb08d62da8ce11f8547d77f7584a5fcd047d91cd9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\13-WebGPUDynamicRHI.cpp.gz",
+          "sha256": "12f5524934f8e81c7db7a4c965a3535f885fe4f2e817eddafb75202fba955ae4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderGraphResourcePool.cpp",
+          "sha256": "a55f52c346af955f0dc44a0e8370dcbd73b45bcaa7f096fa3be27f989b90a75d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\14-RenderGraphResourcePool.cpp.gz",
+          "sha256": "77f51840c6b77fa9b2fdcc796c56bf626a51d1d8086b672048d6ab5d413f2ec3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-host.js",
+          "sha256": "6a8ff5a7297f32aabf79692a4f8247480f205a29fc9fabdd5ac325b54538c0e3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\15-web-engine-host.js.gz",
+          "sha256": "5b92b61f3441e05b9237e4cdf7ddb4b33f1309da3c311e740ccfbf4a64f91f47"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "b2e72908b8fc23bd15dfe2251f413f82cdc8e7a58618408107cddf5e21492b8b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\16-web-engine-worker.js.gz",
+          "sha256": "c133f668a482814f07b33ee65e86f5d6875c7a254e4b752841629412a87b683d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-core-lifecycle-evidence.cjs",
+          "sha256": "c5cf4fdbe9c7d8dafc191dac2c29c4d63db4c7ddb61e8f1ccc58039d928be91d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-core-lifecycle-20261111\\17-collect-nanite-core-lifecycle-evidence.cjs.gz",
+          "sha256": "941f45c7cbe64716501334f4ec84bf31ed55cc4971b75d29c6cfcc489068319d"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Actual Template_Default and Villa packages, fresh isolated browser profiles, 12-page Nanite streaming budgets and GPU page-owner readback. Each atomic configuration undergoes one real GPU-process crash, runtime recreation and repeated camera sweeps. Final depth and material samples match across recovery, including the existing one-level specular tolerance. This is a bounded scene/device lifecycle test, not a claim of unlimited runtime or every experimental Nanite feature."
+  }
+}

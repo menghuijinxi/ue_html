@@ -1,0 +1,364 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-full-scene-bounds-20261110.json",
+    "bytes": 5801122,
+    "sha256": "45a978169baf74c0cf5f5fc22e5fd203b8ed0bb84e43269217f40ac84d0cd438",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T23:25:34.636Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-full-scene-bounds-evidence.cjs",
+      "sha256": "6d99887d96c112a28fa1e74258bcdeda05167bd3a250b7c063117f9721fc4caa"
+    },
+    "packages": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-full-scene\\package.json",
+        "sha256": "b66e829f3eecb88cc99d85df03b139ffd46b457f4debffd69d14fd1bbf9268a4"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+        "sha256": "3486680a5135e714bb7c106dda5066b22ae4d82779770129e59d0e96679825da"
+      }
+    ],
+    "assets": {
+      "components": 2240,
+      "localMeshes": 587,
+      "uniqueClusters": 16898,
+      "rootPages": 587,
+      "pages": 928,
+      "potentialInstanceClusters": 53725,
+      "opaque": 169,
+      "masked": 86,
+      "pdoConnected": 14,
+      "wpoConnected": 0
+    },
+    "scene": {
+      "scalar": false,
+      "frames": 1533,
+      "steps": [
+        {
+          "step": 1,
+          "entries": 1254,
+          "draws": 1261,
+          "covered": 6499,
+          "suppressed": 1254,
+          "ordinaryFallback": 907,
+          "visible": 679,
+          "shadingModels": {
+            "0": 293,
+            "1": 6206
+          },
+          "unboundedPixels": 1155686400,
+          "boundedPixels": 29173566,
+          "hierarchyDispatchLevels": 1944,
+          "performance": {
+            "frames": 120,
+            "milliseconds": 32949.375,
+            "fps": 3.641950719854322,
+            "runtime": {
+              "heapBytes": 2147483648,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          }
+        },
+        {
+          "step": 2,
+          "entries": 0,
+          "covered": 0,
+          "suppressed": 0,
+          "unboundedPixels": 0,
+          "boundedPixels": 0,
+          "hierarchyDispatchLevels": 0,
+          "performance": {
+            "frames": 128,
+            "milliseconds": 1327.2649999856949,
+            "fps": 96.43891762487489,
+            "runtime": {
+              "heapBytes": 2147483648,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          }
+        },
+        {
+          "step": 3,
+          "entries": 1254,
+          "draws": 1261,
+          "covered": 6497,
+          "suppressed": 1254,
+          "ordinaryFallback": 907,
+          "visible": 679,
+          "shadingModels": {
+            "0": 292,
+            "1": 6205
+          },
+          "unboundedPixels": 1155686400,
+          "boundedPixels": 29174601,
+          "hierarchyDispatchLevels": 1944,
+          "performance": {
+            "frames": 120,
+            "milliseconds": 33332.189999997616,
+            "fps": 3.600123484235767,
+            "runtime": {
+              "heapBytes": 2147483648,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          }
+        },
+        {
+          "step": 4,
+          "entries": 1254,
+          "draws": 1261,
+          "covered": 1975,
+          "suppressed": 1254,
+          "ordinaryFallback": 907,
+          "visible": 193,
+          "shadingModels": {
+            "1": 1975
+          },
+          "unboundedPixels": 1155686400,
+          "boundedPixels": 26649683,
+          "hierarchyDispatchLevels": 1944,
+          "performance": {
+            "frames": 120,
+            "milliseconds": 33892.32999998331,
+            "fps": 3.5406240881066333,
+            "runtime": {
+              "heapBytes": 2147483648,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          }
+        },
+        {
+          "step": 5,
+          "entries": 1254,
+          "draws": 1261,
+          "covered": 6424,
+          "suppressed": 1254,
+          "ordinaryFallback": 907,
+          "visible": 494,
+          "shadingModels": {
+            "0": 4993,
+            "1": 1431
+          },
+          "unboundedPixels": 1155686400,
+          "boundedPixels": 16992235,
+          "hierarchyDispatchLevels": 1944,
+          "performance": {
+            "frames": 120,
+            "milliseconds": 33463.71500003338,
+            "fps": 3.5859736433889755,
+            "runtime": {
+              "heapBytes": 2147483648,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          }
+        },
+        {
+          "step": 6,
+          "entries": 1254,
+          "draws": 1261,
+          "covered": 6509,
+          "suppressed": 1254,
+          "ordinaryFallback": 907,
+          "visible": 679,
+          "shadingModels": {
+            "0": 290,
+            "1": 6219
+          },
+          "unboundedPixels": 1155686400,
+          "boundedPixels": 29173961,
+          "hierarchyDispatchLevels": 1944,
+          "performance": {
+            "frames": 120,
+            "milliseconds": 33643.939999997616,
+            "fps": 3.566764178036476,
+            "runtime": {
+              "heapBytes": 2147483648,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          }
+        }
+      ]
+    },
+    "comparisons": [
+      {
+        "scalar": false,
+        "frames": 4661,
+        "comparisons": [
+          {
+            "step": 5,
+            "view": {
+              "projectionX": 0.9774166510824777,
+              "projectionY": 1.7376296019244049,
+              "jitterX": -0.00025620675296522677,
+              "jitterY": -0.0007889121188782156,
+              "horizontalFOV": 91.30865119173063,
+              "x": 899.9990234375,
+              "y": -1399.99951171875,
+              "z": 649.4998779296875,
+              "width": 1280,
+              "height": 720
+            },
+            "compared": 614,
+            "unboundedPixels": 7372800,
+            "boundedPixels": 101043,
+            "specularQuantizationDifferences": 556,
+            "maxSpecularDifference": 0.003921598196029663
+          },
+          {
+            "step": 7,
+            "view": {
+              "projectionX": 1.3032252432766285,
+              "projectionY": 2.316845204911179,
+              "jitterX": -0.0011957590468227863,
+              "jitterY": -0.0007737247506156564,
+              "horizontalFOV": 75.00000550215972,
+              "x": -1000,
+              "y": -70,
+              "z": 230,
+              "width": 720,
+              "height": 405
+            },
+            "compared": 842,
+            "unboundedPixels": 2332800,
+            "boundedPixels": 152948,
+            "specularQuantizationDifferences": 69,
+            "maxSpecularDifference": 0.003921598196029663
+          },
+          {
+            "step": 9,
+            "view": {
+              "projectionX": 0.9774166510824777,
+              "projectionY": 1.7376296019244049,
+              "jitterX": 0.0005733754951506853,
+              "jitterY": 0.0008553215302526951,
+              "horizontalFOV": 91.30865119173063,
+              "x": 899.9990234375,
+              "y": -1399.99951171875,
+              "z": 649.4998779296875,
+              "width": 1280,
+              "height": 720
+            },
+            "compared": 614,
+            "unboundedPixels": 7372800,
+            "boundedPixels": 101125,
+            "specularQuantizationDifferences": 521,
+            "maxSpecularDifference": 0.003921598196029663
+          }
+        ]
+      },
+      {
+        "scalar": true,
+        "frames": 4565,
+        "comparisons": [
+          {
+            "step": 5,
+            "view": {
+              "projectionX": 0.9774166510824777,
+              "projectionY": 1.7376296019244049,
+              "jitterX": -0.00025620675296522677,
+              "jitterY": -0.0007889121188782156,
+              "horizontalFOV": 91.30865119173063,
+              "x": 899.9990234375,
+              "y": -1399.99951171875,
+              "z": 649.4998779296875,
+              "width": 1280,
+              "height": 720
+            },
+            "compared": 614,
+            "unboundedPixels": 7372800,
+            "boundedPixels": 101043,
+            "specularQuantizationDifferences": 420,
+            "maxSpecularDifference": 0.003921598196029663
+          },
+          {
+            "step": 7,
+            "view": {
+              "projectionX": 1.3032252432766285,
+              "projectionY": 2.316845204911179,
+              "jitterX": -0.0011957590468227863,
+              "jitterY": -0.0007737247506156564,
+              "horizontalFOV": 75.00000550215972,
+              "x": -1000,
+              "y": -70,
+              "z": 230,
+              "width": 720,
+              "height": 405
+            },
+            "compared": 842,
+            "unboundedPixels": 2332800,
+            "boundedPixels": 152948,
+            "specularQuantizationDifferences": 283,
+            "maxSpecularDifference": 0.003921598196029663
+          },
+          {
+            "step": 9,
+            "view": {
+              "projectionX": 0.9774166510824777,
+              "projectionY": 1.7376296019244049,
+              "jitterX": 0.0005733754951506853,
+              "jitterY": 0.0008553215302526951,
+              "horizontalFOV": 91.30865119173063,
+              "x": 899.9990234375,
+              "y": -1399.99951171875,
+              "z": 649.4998779296875,
+              "width": 1280,
+              "height": 720
+            },
+            "compared": 614,
+            "unboundedPixels": 7372800,
+            "boundedPixels": 101125,
+            "specularQuantizationDifferences": 0,
+            "maxSpecularDifference": 0
+          }
+        ]
+      }
+    ],
+    "resolvedMemoryFailure": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene\\failure-2gb-rdg.json",
+      "sha256": "a3c2b7e7bce10cd9c24c251981bb4c9ace8db41f6ac49c246dd265304656d070"
+    },
+    "correctedComparisonFailure": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-bounds\\failure-unowned-pixel-comparison.json",
+      "sha256": "ec678db443a6b664fe9e188ccc9b7c9c932009070d583b11b010e15cbd22e885"
+    },
+    "comparisonBoundary": "Coverage and depth match exactly. Nanite GBuffer channels match exactly except the one-code UNORM8 specular rounding boundary at 0.5; differences are retained. View.PreExposure is not a material output, and scene color is compared after undoing pre-exposure.",
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 5790448,
+      "sha256": "f6b538d30e6ad24b4f515fd508284d92a1e64a9c78d6a7b5f8d3074c14bad644"
+    },
+    "boundary": "The full-scene packed diagnostic survived the original 2 GiB heap failure and six views/toggles with zero GPU errors. Both device configurations passed fixed-jitter GBuffer bounds comparisons. Full-scene performance remains unacceptable, and masked/PDO and other compatibility items remain open; this is not a delivery build."
+  }
+}

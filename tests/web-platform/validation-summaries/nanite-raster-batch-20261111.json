@@ -1,0 +1,1696 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-raster-batch-20261111.json",
+    "bytes": 69500,
+    "sha256": "5faf35baa4d2719ea1135da56afffe2bbf20abaf3230222911243299091baed9",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T06:21:02.827Z",
+    "packages": {
+      "nanite-core-scene": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "82a58c87ba35a42e3adcb0014f7fc762b9bd5a519f3c52f83af759b8ad901f27"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "c152c82e80096e3ea589893ababec78158541f4f4974dcd6aaed9d86297501e3"
+        }
+      },
+      "nanite-core-default": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "e22315629910eb7966795aaa79d43d71141cd625755be67aa9dc9d33a160891e"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "c152c82e80096e3ea589893ababec78158541f4f4974dcd6aaed9d86297501e3"
+        }
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "c476bb390e57b22a246a7fc7e5b7abb3fbc6a4b238d83964560f873014b9daf8"
+    },
+    "runs": [
+      {
+        "suite": "villa",
+        "scalar": false,
+        "steps": 9,
+        "frames": 2588,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed.json",
+          "sha256": "06daf0e9ddc289c418c874f3964f6bcbf3789a12d2756f79db1b4c138d4969f5"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": false,
+        "steps": 8,
+        "frames": 4804,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "48635a6ed02429f5f8697d491cccfc655ed64336d28bdd2a55d352979e4af289"
+        }
+      },
+      {
+        "suite": "villa",
+        "scalar": true,
+        "steps": 9,
+        "frames": 2546,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar.json",
+          "sha256": "25b84b67e8fee97e8a9ee5e586f699439466aa3fa90fb268397b5aa5172e9c31"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": true,
+        "steps": 8,
+        "frames": 4826,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "d290c8967fc3cc2b356db7d82c63f834c522e6f8b0fbae6b969ddea9135c7944"
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "scalar": false,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 5428.2699999809265,
+            "fps": 22.106490649953233,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 1226.6916666666666,
+            "beginComputePass": 455.175,
+            "dispatchWorkgroups": 2557.508333333333,
+            "dispatchWorkgroupsIndirect": 7.933333333333334,
+            "drawIndirect": 1036.2916666666667,
+            "drawIndexedIndirect": 186.43333333333334
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 4418.909999966621,
+            "fps": 27.156018113269205,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 322.725,
+            "beginComputePass": 133.575,
+            "dispatchWorkgroups": 2514.525,
+            "dispatchWorkgroupsIndirect": 7.8,
+            "drawIndirect": 1018.875,
+            "drawIndexedIndirect": 183.3
+          }
+        }
+      },
+      {
+        "scalar": false,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 4557.104999959469,
+            "fps": 26.771382270341604,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 1097.704918032787,
+            "beginComputePass": 490.8196721311475,
+            "dispatchWorkgroups": 2266.2295081967213,
+            "dispatchWorkgroupsIndirect": 7.868852459016393,
+            "drawIndirect": 864.5901639344262,
+            "drawIndexedIndirect": 232.13114754098362
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 3804.110000014305,
+            "fps": 31.54482914520052,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 370,
+            "beginComputePass": 137,
+            "dispatchWorkgroups": 2304,
+            "dispatchWorkgroupsIndirect": 8,
+            "drawIndirect": 879,
+            "drawIndexedIndirect": 236
+          }
+        }
+      },
+      {
+        "scalar": false,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 93,
+          "after": 93,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 121,
+            "milliseconds": 5132.550000011921,
+            "fps": 23.57502605911661,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 1104.809917355372,
+            "beginComputePass": 373.88429752066116,
+            "dispatchWorkgroups": 2353.3884297520663,
+            "dispatchWorkgroupsIndirect": 7.933884297520661,
+            "drawIndirect": 972.8925619834711,
+            "drawIndexedIndirect": 245.9504132231405
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 4316.8599999547005,
+            "fps": 28.261282506562694,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 247.7622950819672,
+            "beginComputePass": 119.97540983606558,
+            "dispatchWorkgroups": 2314.6475409836066,
+            "dispatchWorkgroupsIndirect": 7.80327868852459,
+            "drawIndirect": 956.8770491803278,
+            "drawIndexedIndirect": 241.9016393442623
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 7167.530000030994,
+            "fps": 16.74216919907989,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 2175,
+            "beginComputePass": 783,
+            "dispatchWorkgroups": 2903,
+            "dispatchWorkgroupsIndirect": 8,
+            "drawIndirect": 1983,
+            "drawIndexedIndirect": 188
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 121,
+            "milliseconds": 5234.240000009537,
+            "fps": 23.117014122351964,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 357,
+            "beginComputePass": 136.70247933884298,
+            "dispatchWorkgroups": 2855.0165289256197,
+            "dispatchWorkgroupsIndirect": 7.867768595041323,
+            "drawIndirect": 1950.2231404958677,
+            "drawIndexedIndirect": 184.89256198347107
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 121,
+            "milliseconds": 6432.319999992847,
+            "fps": 18.811253171504923,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 1888,
+            "beginComputePass": 865,
+            "dispatchWorkgroups": 2668,
+            "dispatchWorkgroupsIndirect": 8,
+            "drawIndirect": 1651,
+            "drawIndexedIndirect": 236
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 4472.370000004768,
+            "fps": 26.83141153345364,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 392.7,
+            "beginComputePass": 137.84166666666667,
+            "dispatchWorkgroups": 2645.766666666667,
+            "dispatchWorkgroupsIndirect": 7.933333333333334,
+            "drawIndirect": 1637.2416666666666,
+            "drawIndexedIndirect": 234.03333333333333
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 93,
+          "after": 93,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 121,
+            "milliseconds": 7351.324999988079,
+            "fps": 16.459617824024406,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 1985.6363636363637,
+            "beginComputePass": 623.801652892562,
+            "dispatchWorkgroups": 2605.289256198347,
+            "dispatchWorkgroupsIndirect": 7.933884297520661,
+            "drawIndirect": 1853.5537190082644,
+            "drawIndexedIndirect": 245.9504132231405
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 4821.240000009537,
+            "fps": 24.88986235901192,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 277.6666666666667,
+            "beginComputePass": 122.91666666666667,
+            "dispatchWorkgroups": 2583.2166666666667,
+            "dispatchWorkgroupsIndirect": 7.866666666666666,
+            "drawIndirect": 1837.85,
+            "drawIndexedIndirect": 243.86666666666667
+          }
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "tag": "nanite-raster-batch-0-20261111",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-0-20261111.json",
+          "sha256": "945d0b547e780714bcea621d1968c9f71307f2a931c75a19bc1cf68102ad8089"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 21.534712158146824,
+              "durationMs": 5061.595399999998
+            },
+            "sampledFPS": 21.857025472473296,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 379,
+              "submit": 11.996240601503759,
+              "beginRenderPass": 1238,
+              "beginRenderPass:(unlabelled)": 1238,
+              "createBindGroup": 9,
+              "draw": 50,
+              "beginComputePass": 461,
+              "beginComputePass:(unlabelled)": 461,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 895.015037593985,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMsPerFrame": 26.5266886331085
+          },
+          {
+            "baseline": {
+              "fps": 26.680920384233147,
+              "durationMs": 5022.315499999997
+            },
+            "sampledFPS": 25.984705205164047,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 377.82278481012656,
+              "submit": 11.974683544303797,
+              "beginRenderPass": 1117,
+              "beginRenderPass:(unlabelled)": 1117,
+              "createBindGroup": 9,
+              "draw": 65,
+              "beginComputePass": 501,
+              "beginComputePass:(unlabelled)": 501,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 841,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMsPerFrame": 24.583927438228944
+          }
+        ]
+      },
+      {
+        "tag": "nanite-raster-batch-1-20261111",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-1-20261111.json",
+          "sha256": "06a9e367b7e6d17af99523c25b9325ef88d84c141ab7a8a3967677a48b6ab65e"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 26.95794560485641,
+              "durationMs": 5007.800000000003
+            },
+            "sampledFPS": 26.20123203285421,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 377.83385579937305,
+              "submit": 11.993730407523511,
+              "beginRenderPass": 332,
+              "beginRenderPass:(unlabelled)": 332,
+              "createBindGroup": 9.18808777429467,
+              "draw": 50,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 864.8056426332288,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMsPerFrame": 20.13500282383264
+          },
+          {
+            "baseline": {
+              "fps": 31.80968899269448,
+              "durationMs": 5029.914000000004
+            },
+            "sampledFPS": 31.751254421321047,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 378.9715025906736,
+              "submit": 11.994818652849741,
+              "beginRenderPass": 371,
+              "beginRenderPass:(unlabelled)": 371,
+              "createBindGroup": 16.28497409326425,
+              "draw": 65,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 761.2901554404145,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMsPerFrame": 19.140741368031872
+          }
+        ]
+      },
+      {
+        "tag": "nanite-core-fallback-20261111",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-core-fallback-20261111.json",
+          "sha256": "4893ed058723cf14fa30a96043b6a9efb706fcac9ab4e6f843555b135f6730e1"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 126.37698170053343,
+              "durationMs": 5024.6492
+            },
+            "sampledFPS": 113.79310344827587,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 52.992063492063494,
+              "submit": 11.005050505050505,
+              "beginRenderPass": 187.1082251082251,
+              "beginRenderPass:(unlabelled)": 187.1082251082251,
+              "createBindGroup": 10.897546897546897,
+              "draw": 47.55411255411256,
+              "beginComputePass": 22,
+              "beginComputePass:(unlabelled)": 22,
+              "dispatchWorkgroups": 146.1082251082251,
+              "drawIndexed": 723.085137085137,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 0,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMsPerFrame": 5.773611399002405
+          },
+          {
+            "baseline": {
+              "fps": 108.8513686594302,
+              "durationMs": 5016.0141
+            },
+            "sampledFPS": 109.80424411909853,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 52.99550561797753,
+              "submit": 11.006741573033707,
+              "beginRenderPass": 232.5505617977528,
+              "beginRenderPass:(unlabelled)": 232.5505617977528,
+              "createBindGroup": 9.682397003745319,
+              "draw": 62.78651685393258,
+              "beginComputePass": 22,
+              "beginComputePass:(unlabelled)": 22,
+              "dispatchWorkgroups": 176.57303370786516,
+              "drawIndexed": 624.2823970037454,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 0,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMsPerFrame": 6.075385090117151
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-raster-batch-evidence.cjs",
+        "sha256": "fc8eedca776a37dbaec5843a957d2eb63052997ce0af89e7883408aa85cfb829"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+        "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+        "sha256": "1b0017ed20a1c96a73a497e91a82c602a42a97994038805dfefd4127a7ce3300"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+        "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+        "sha256": "cae22e14021325a8430c88798a7485cfa9c594614865a67ca600cdfe00025174"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-cook-shaders.cjs",
+        "sha256": "ae94eac18c7bf7989142bed1481074e568b986bd17c3a8545cec267a87784447"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-nanite-curve-shader-overrides.cjs",
+        "sha256": "13ef17efaa4e993306208b9c9ac68589ec9471dc1d2ddd938354191e4585aa78"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\overlays\\nanite-curves-shaders.json",
+        "sha256": "b922acbcc0d27d3ba75a301e37b78cdb4d63cd314bfdc5ae82eced5c04d26b98"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+        "sha256": "21085923cc6cd779ff52a51f482dda3d696923e2360214eb483ee0713c1e3ef8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+        "sha256": "5c39fc89f7a92d4b5f301ca26959a9ec64c4c0af50f7f3a3ff1b4b7b9c72bc53"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebRaster.cpp",
+        "sha256": "99dd520abb4c755949404aa18120f9fb1b63097b29a605fcda6c036b53cca48c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\Rendering\\NaniteWebRaster.h",
+        "sha256": "052b00c64ae8b4795c97bbde7cdfd7a4072cde51b810f17576afa4db6db3292a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebProgrammableRaster.cpp",
+        "sha256": "6c7b7808eb71acc4ceb295d36411e1cf4b272d2de15682024b3f0a1201e88b0d"
+      }
+    ],
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "82a58c87ba35a42e3adcb0014f7fc762b9bd5a519f3c52f83af759b8ad901f27"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\0-package.json.gz",
+          "sha256": "6660f9f92e6f60e3319664fbf727b8b04d7c817d173e7604d243707520d0c0cc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "c152c82e80096e3ea589893ababec78158541f4f4974dcd6aaed9d86297501e3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\1-build.json.gz",
+          "sha256": "2c0abd037db245a28b4318a770955be5ec802b7333dd3f52049377287106c62e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261111-133141\\verified.json",
+          "sha256": "8231737b82bf35b58cc9cbf7cf5eff57701e7442b29da7d1ec29aa8606b833e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\2-verified.json.gz",
+          "sha256": "10bb8c37265dfc8d4ea4c47f732b9ad48f22a2598706a1f26e340dcdb60ac1e8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming-shaders\\verified.json",
+          "sha256": "8e2781e574b88c9772cfc4d957ed7707cfb4fe8df2e6d3d600da7b562799f340"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\3-verified.json.gz",
+          "sha256": "19c73cd9095030c07f45620f9d744b9c04a5f798245d1c6aeac5cae84209a3f2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-stage-results.json",
+          "sha256": "7082c581f67f1b2caf34b1c58628cb2729bc8a7abef851893a1348eb6aaadfce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\4-web-project-nanite-full-scene-desktop-stage-results.json.gz",
+          "sha256": "281f9a364bbdc407054f595c391ef845896b17003a4d0fb8c7b812048afd4cc2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-cook-results.json",
+          "sha256": "589adf394c2cda184f530c27b6ec0fc05871caf3cd21f73045749c23a5479473"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\5-web-project-nanite-full-scene-desktop-cook-results.json.gz",
+          "sha256": "3b8a2a4c3dcb23c8f3adc26df4f3dcd764a4f60e23ab098ac122882262ae52da"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-project-nanite-full-scene-desktop-cook\\20261111-133154\\ShaderConversion\\inventory.json",
+          "sha256": "c5b683e44520ff4a2a459a096798505aaa0e3082a8bbd80e210cca7ebf593da0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\6-inventory.json.gz",
+          "sha256": "e84f689a2820fd177130676ca0f2c9b860d755c47f3ced65ad86d0d5c9d64d36"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion-verified.json",
+          "sha256": "75f300f75ff1104216527437ba712b02e9f4eee8936bdbc31b6755bdaba8e915"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\7-nanite-full-scene-conversion-verified.json.gz",
+          "sha256": "91ceddc1722ffc2e2e8ad3dc1f67d6521f5e8e246fa8d0af387a2ec4cc6b8fe2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "e22315629910eb7966795aaa79d43d71141cd625755be67aa9dc9d33a160891e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\8-package.json.gz",
+          "sha256": "4465d167ecff28ee01cc6c6ce2735e5483b4c1eca6075bf81754644ac4aa6dd0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-stage-results.json",
+          "sha256": "1fc2c706bea05104ff2d439da56277cd43ccb597ee972492adfeb482fabc5c1c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\9-web-engine-webgpu-sm5-default-stage-results.json.gz",
+          "sha256": "ef93c4121efb476f1809998f72555cb82aa5b453e97e01ae95ef0f930b906a51"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-cook-results.json",
+          "sha256": "53e986e0e2df6bd27ce67f5815713a40b4b6ebebffc9eb066bbf5473aa694319"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\10-web-engine-webgpu-sm5-default-cook-results.json.gz",
+          "sha256": "f1650493af80969be6f454c126c484e7c54d5c569544357865f4f3391f245aa4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-engine-webgpu-sm5-default-cook\\20261111-135540\\ShaderConversion\\inventory.json",
+          "sha256": "7b5ba6ab844fcc1cb1b9a8b74d3ad64a7872b47215d530ad8fe838790cee4caf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\11-inventory.json.gz",
+          "sha256": "fcab48a20cdbba819552258fd61fefb5dd214d60a40c3012dfdb93adc753b891"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+          "sha256": "c476bb390e57b22a246a7fc7e5b7abb3fbc6a4b238d83964560f873014b9daf8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\12-web-engine-full-thread-build-results.json.gz",
+          "sha256": "71150ba52ee19b76783aec8b0399c4fce4cd4ffe6e13211f23621c5a9163b888"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261111-135527.log",
+          "sha256": "aebb629ed7deb4a902b2c834f9a80e63d7044e6949667fae6cb0c38142515045"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\13-web-engine-full-thread-20261111-135527.log.gz",
+          "sha256": "6c9666c148708a8f59ef7ed8ed4d8060ed059e5fb4da7630642bb4ac303b0b1e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "5e9f663e0ab2e52e6718490b14facb06d72aeec0e2485e7e1d9971f8f3cd0e69"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\14-UEWebEngineThreads.js.rsp.gz",
+          "sha256": "e9ad1e3e37582676665fdafd5da45cee0ee966d6caff529f69c76349204df5fb"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-1.png",
+          "sha256": "a820abffffc8e9c7d9a21efb9a1696fddf68a0a516c20b4222999676ee4ccea3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\15-packed-1.png.gz",
+          "sha256": "154e47722b9ce91127e6409dac27310fb19038ec04bb5a48b30b6a58124a1863"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-2.png",
+          "sha256": "837daf137b2c7b56413ca2612bcd6df2b90ef796dbae51d1a21ae4e5ef7afab3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\16-packed-2.png.gz",
+          "sha256": "3496f2a20ed6d6215680fbae71cbfa927c7abd425085843efcde826cc7e6d285"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-3.png",
+          "sha256": "ba3772b3be7b8f38c1fe1446e701ed68c06c2b41e72a7d204060c0971a13b151"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\17-packed-3.png.gz",
+          "sha256": "26e058b27c6a92947a3af206a2b786b440c61fa813686a5c45b665c29d64cb23"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-4.png",
+          "sha256": "4f6e6878c2383222c8de5bb751f471bfd142df83d64c50cc12cd4a8ed9e748b7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\18-packed-4.png.gz",
+          "sha256": "3690d932a644b544b63489332c7f70ab2f6e944d96ed6c496ecc39278405be7c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-5.png",
+          "sha256": "d4ae868830037dc10be4827ef45eb6495e956a4213ce685a23fc036531bb9f5e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\19-packed-5.png.gz",
+          "sha256": "c20be9870575e74288cf312c121e2a202b98e1e64ac911aa36851cc7044f5998"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-6.png",
+          "sha256": "000d667eb7a4abdc7a7dc2b1c7130ea0b112b0172b5c170928eb4ff68021eb8a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\20-packed-6.png.gz",
+          "sha256": "daef1ec72a76f07bbf7a7f5ac05742ca5e5250dcdc7e66a84ed897b32146c3ee"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-7.png",
+          "sha256": "9a339fd0311a081ad8b87310ca29ca0a93deaaf14b3281311450a7b9363411c9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\21-packed-7.png.gz",
+          "sha256": "56fd22e728018aa3cbe265f300a17cf6bee33eb51a394c0944fea0dd729cba0d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-8.png",
+          "sha256": "6a871f852f6341a0cc428676a264f7cf5565397306c610f418a4e16d67501409"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\22-packed-8.png.gz",
+          "sha256": "89905fca2717c7f93bd148222a395bbc1f3757e5b2d9b6db32ef6a962916d482"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed-9.png",
+          "sha256": "4e44e9e08e6104c46125353ee1ab48d8bd9f5cc35e4dfe10bbf98661bd66ff56"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\23-packed-9.png.gz",
+          "sha256": "5f119df8b9b42a11e4c60c7f3a4afff39b6299b20756ec18ee9bc88ba55d9da9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\packed.json",
+          "sha256": "06daf0e9ddc289c418c874f3964f6bcbf3789a12d2756f79db1b4c138d4969f5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\24-packed.json.gz",
+          "sha256": "fd731b19cbb1332b139d805e2da10ddf54157539f18001d5396fdc616576cac7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-1.png",
+          "sha256": "f6dfe54b8065981a43e0ea10b1be386bb730aca79daae6a54aee6e1b6697c8ad"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\25-packed-1.png.gz",
+          "sha256": "457561c7a06f30456310fabec8fc1519cbd67c1a97855df7eec4d3e0e18a3d5b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-2.png",
+          "sha256": "ec091513fd2d6e5ed5193e15d87f3ec859bff5189edbfb5f28cb8cf179354603"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\26-packed-2.png.gz",
+          "sha256": "ab10dc2a19238e2077ad12ffc7db42c8d3154953dd0b9edcbe31a2d20f926c9d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-3.png",
+          "sha256": "b1560cb7adf0f25fbe700cf21b6abc1f7c452bfa80073601c16bc974aee7d572"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\27-packed-3.png.gz",
+          "sha256": "71c41fcc798338308bdf84563e52a1b36ec6f9a1aaf4cc0ec883737578876ed4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-4.png",
+          "sha256": "b4fb87f092d1ab6688bf32bd74c667fdeca1847323574aba7a0a2d2c92cc9e72"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\28-packed-4.png.gz",
+          "sha256": "e1cac2624126d6722da7bfe099ea63821d69e28b8321001662739e41ecd8e33d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-5.png",
+          "sha256": "b5092a79433c1631d5e9f550c04ee404e7561552e784712dbea0fbfd38a25eec"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\29-packed-5.png.gz",
+          "sha256": "7d18dba7f0163d62de9517450b71463164aa59a6d9d13afc67f4d21c8c06b993"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-6.png",
+          "sha256": "df0a28287fd34d995e9492593a08911f6c343d9425db432c093b52ae34e64f50"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\30-packed-6.png.gz",
+          "sha256": "39bfd4c6d0fbbd807a311300092e43f255cc14d2de0ab8788eafb071aa31015c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-7.png",
+          "sha256": "aecc9770f250d48fa5b5fd0262eb2b486e1c30228dfd69b29f58d94a465e30ec"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\31-packed-7.png.gz",
+          "sha256": "ff5672fe771f0d4da99d84b0baf4de822294e88969be13703e91791f63b2268a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-8.png",
+          "sha256": "830821a5447afd0ca9b580f15639566b436e34614142870164b626ea773d82ce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\32-packed-8.png.gz",
+          "sha256": "a0dc104dcc9cc5a4061e60e8d345889a1d6a06f5cd766334c49cfc6d43a133de"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "48635a6ed02429f5f8697d491cccfc655ed64336d28bdd2a55d352979e4af289"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\33-packed.json.gz",
+          "sha256": "9a641a3b67fa2377c99169bd540950c8cc37f138b01617f4b8c18fb308663b7a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-1.png",
+          "sha256": "a6d67fc4c840a6bf2f426c158009945f5a38e1a6fb04d469254d55fd0235d56c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\34-scalar-1.png.gz",
+          "sha256": "e1163754fc2e996b142c29a36e1dd05eab023a8bad686762588dc3584e204cbe"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-2.png",
+          "sha256": "bbebdc73f7a5fe2e084f8f44f66003ff984f1ed1b0e642e34541d3ff19d61136"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\35-scalar-2.png.gz",
+          "sha256": "f9ee442e6dfe6eb0d4bf962945928db9e441b1748f00679b777c07daf572e1d1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-3.png",
+          "sha256": "f9eca506286c7d62242274a9709b5ed2f5fad5f4af39b30ad6fb458be6e3769d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\36-scalar-3.png.gz",
+          "sha256": "0b9744f73e01786281e3de12e7e5a5972b94251fd68964071cea0e013228a476"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-4.png",
+          "sha256": "da764c1a7c1df9676cde4119918a013b589f080c39d443b1e97c2d105d09da78"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\37-scalar-4.png.gz",
+          "sha256": "a09753e3294cb66c57dc178592895258ac3603861247dfbe7331f81235bbcd17"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-5.png",
+          "sha256": "729c0959563ee6b201eea833d900619e17910248d8994134affaafc67957cc93"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\38-scalar-5.png.gz",
+          "sha256": "c4ca122d66d8508f96ec08b4e4fa0bc0834ca469edab150e726ca60b9793506d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-6.png",
+          "sha256": "4f74ed6410011373f7290d063ec38a6fcbd125aa40b40f8ff75ef5d9bbfdf985"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\39-scalar-6.png.gz",
+          "sha256": "81f6ff6efdcf8c1d9572561a9f08ac705ec7ab9f7e1df0009ce8478d938763f1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-7.png",
+          "sha256": "93ac86e97b2f383ca5086eba14d83f4f42a61b3de622008e48c900652917d39a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\40-scalar-7.png.gz",
+          "sha256": "da81798e870dad73525a5164a57062a5edb5d79a0ec379b9fe3414c68ae12b87"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-8.png",
+          "sha256": "0981e1c7ac3bf5f1402bc7e860f96b852c824f4e5ae4cb02d41b8161a53aa88d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\41-scalar-8.png.gz",
+          "sha256": "3292ce55ea8f33d8c4436a97848f2380da06919918e2f5392526fc2ff964988f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar-9.png",
+          "sha256": "8943a683ae3d5a2409d166a26fc3359427b3bdb4cda7b7bd553e7310d1adbebf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\42-scalar-9.png.gz",
+          "sha256": "ded8db388aa3c2845f2238b6f81a8bfcf726e85f1eccde7ab281a7915795ec46"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-raster-batch\\scalar.json",
+          "sha256": "25b84b67e8fee97e8a9ee5e586f699439466aa3fa90fb268397b5aa5172e9c31"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\43-scalar.json.gz",
+          "sha256": "3e26773c8f77ff1305511d1d6aeb646db647c00ae9f55a067cbf424ae99a6d54"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-1.png",
+          "sha256": "311c8ca215d6eb63338164e5f39855be8bd33f9883bc92c58f63a6ad525813d8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\44-scalar-1.png.gz",
+          "sha256": "1b57f00c7dd85c8b516df4b3b1e09eda4d4d17e52147f486eaadfec91670cdf3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-2.png",
+          "sha256": "3f6adf80d2b408d0ee0aa7bb537cdfd080d4226fac3b228a979c3cdcf891d16c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\45-scalar-2.png.gz",
+          "sha256": "c10aeb4ef6658d464c9261046ffb9bbb3aab7d32951fdb7af0313bf5bff9d379"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-3.png",
+          "sha256": "5c6d2beb7340ab4900c554b3e62bf0f8b720aaa5ffa44795bb39aed6593a4cd8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\46-scalar-3.png.gz",
+          "sha256": "d842d41a56f5201b5c4944c8ee066775bd075024bedbb98cf2f194a4eb891064"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-4.png",
+          "sha256": "54174730663c1f70de75d6c2df77b500b34f6e147cbe0951f1863d6d32c227ed"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\47-scalar-4.png.gz",
+          "sha256": "dfad11ad4ff073aaa8c4b2148dd1e507c9fb3baaef62a4f78c9837c8d20d144d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-5.png",
+          "sha256": "f052d69774b23a43e84ca9a33adce01aeb8067a510e3da499ec4239be2073c7a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\48-scalar-5.png.gz",
+          "sha256": "53c0163aac22ad4663b1bca9cff4bc90bb351e371d70dc62475845881878d1a6"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-6.png",
+          "sha256": "4183abc85bc5298190f23f7b4b9199d3ee1119cc3b6fa056daa696f9d7f2996c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\49-scalar-6.png.gz",
+          "sha256": "60675fd3fc5edc1e81b3d81e09a7f1f05c59769586420df22f345343b708e4a7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-7.png",
+          "sha256": "81aed949222ada7675ac74ba81107151d0dbf5f436fc3a612f36b92b824d2399"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\50-scalar-7.png.gz",
+          "sha256": "e4db014ef9a2ff8bfc5b5d4782ed3d38890f6d479146b16b36de0264c41253d7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-8.png",
+          "sha256": "a23e4c5807f282f1cf1c46aaf0e63bd469ac22ed4dec95e099453719a27fd1a3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\51-scalar-8.png.gz",
+          "sha256": "34b0e8e4f736fae706dfad4c00ccb57fa61e9de58da936f740cd09f405600955"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "d290c8967fc3cc2b356db7d82c63f834c522e6f8b0fbae6b969ddea9135c7944"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\52-scalar.json.gz",
+          "sha256": "7e18ebbfe642b6d52c1bc77e2b1536f8e31043b3db2abd8e579755be7cdd3311"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-0-20261111.json",
+          "sha256": "945d0b547e780714bcea621d1968c9f71307f2a931c75a19bc1cf68102ad8089"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\53-cpu-nanite-raster-batch-0-20261111.json.gz",
+          "sha256": "171910acda188f5b86835db4abcfb30006972a01472fc211bcfbebd303cab33c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-0-20261111.log",
+          "sha256": "642f53af2658c2e395b1720adc3426747fed3212fffe54b08d46e5f9bfe7bafe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\54-cpu-nanite-raster-batch-0-20261111.log.gz",
+          "sha256": "89bda8619d3ff12b09bcf73d041552cca0a97b8a3fa679f76b65c0cc911607cc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-0-20261111-0.cpuprofile",
+          "sha256": "7cb0cec0a555caea3b448db41d65ec4cd13261a09996d6ae50a06c27cb3ae1db"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\55-cpu-nanite-raster-batch-0-20261111-0.cpuprofile.gz",
+          "sha256": "440e29bf8fb66dcf42f13c8ec76b5caecf782a1b17c777929cb4c0db42b46072"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-0-20261111-0.png",
+          "sha256": "d34e2628746f09174e562d4c2e59a049d5637524f57affc529f781dabceccc2a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\56-cpu-nanite-raster-batch-0-20261111-0.png.gz",
+          "sha256": "4e8388c01924734438d28ccf3ee385b32a2ea5aa7df1bef4f032bf887d3afa81"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-0-20261111-1.cpuprofile",
+          "sha256": "49084eba477cb41d9432f66c1fdae2e287e2d2dd139875966c72d2d78eaae3e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\57-cpu-nanite-raster-batch-0-20261111-1.cpuprofile.gz",
+          "sha256": "cffeb995f82ae1a1f98dbb51d7a1b39080896e2ae99b78c7458ec95594c7a388"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-0-20261111-1.png",
+          "sha256": "10c3b55f53addc7de7847925df371d865223a234bcba7abbf3fa65de371c1172"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\58-cpu-nanite-raster-batch-0-20261111-1.png.gz",
+          "sha256": "5b10c4b615b1940502664d1181e770d7336f6d3390ea49ebe83ad955c86aa776"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-1-20261111.json",
+          "sha256": "06a9e367b7e6d17af99523c25b9325ef88d84c141ab7a8a3967677a48b6ab65e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\59-cpu-nanite-raster-batch-1-20261111.json.gz",
+          "sha256": "f249c955e783a7b1f564794e7a85aec7c73fabe5437cbd93c0204aab1e72f827"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-1-20261111.log",
+          "sha256": "095780029d0e5bc2f219668988d4f159fd90a9429de57fb3de895d71840d952c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\60-cpu-nanite-raster-batch-1-20261111.log.gz",
+          "sha256": "8ac643669cd3c1d2fb872d1b3ab7a982bd207bbdb6616fab6080f01ab3f5c589"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-1-20261111-0.cpuprofile",
+          "sha256": "7b7dc6e64c9a60edc62500762699d80205060c67499a7223428d4f1e5482461b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\61-cpu-nanite-raster-batch-1-20261111-0.cpuprofile.gz",
+          "sha256": "fb7e2e6ef967a8d198af8fdaaf06e95ddd9741fcf7b752ad70ff054a7fc19fbd"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-1-20261111-0.png",
+          "sha256": "e55e1cf1d44ed2717589421ec1a6aa174d0ed09f97605a92b6eaf3082786d613"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\62-cpu-nanite-raster-batch-1-20261111-0.png.gz",
+          "sha256": "648c6a8248332eca09d45489d4a4a921dc2bf4ba85ba79a7b9fc7031bb15296d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-1-20261111-1.cpuprofile",
+          "sha256": "8be8d911e1dd09cffa9a7fe046b44c69d6c35b7f5855b40d977ee03dbb4181a8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\63-cpu-nanite-raster-batch-1-20261111-1.cpuprofile.gz",
+          "sha256": "6ff5af8ac9f15a4535fd72495708a1b12d9854b4f4ddc12ad2bc488358ac0afb"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-raster-batch-1-20261111-1.png",
+          "sha256": "2bffe0976988b3367c8726aa95391a6cd73338ef7ecd831607d90a8691a0d7b7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\64-cpu-nanite-raster-batch-1-20261111-1.png.gz",
+          "sha256": "7dec5f452036435abb05bd73d99020b9855a1a5958434cce7c5aa554309b5ca3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-core-fallback-20261111.json",
+          "sha256": "4893ed058723cf14fa30a96043b6a9efb706fcac9ab4e6f843555b135f6730e1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\65-cpu-nanite-core-fallback-20261111.json.gz",
+          "sha256": "a2439715b12c2e882b698a0b6f0063f087ec63d81ad5280a79a5cf44b15094ba"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-core-fallback-20261111.log",
+          "sha256": "41283057ba5cae2e41750f0870bafed1eb1e88a2e2cf9603d71b95049421359b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\66-cpu-nanite-core-fallback-20261111.log.gz",
+          "sha256": "b50a98ea28628c2aea8cb69cb246affed4f172c8fc96a3539f2e4a50fad85ec2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-core-fallback-20261111-0.cpuprofile",
+          "sha256": "2168ecfd760b4885f5bdb901ea473603e0cbec1b97af2fa39bd51226e79944bd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\67-cpu-nanite-core-fallback-20261111-0.cpuprofile.gz",
+          "sha256": "0882868746b463f3c82fa64521c7c1315b2e73aacb3a5aba15e6da9fe914a4de"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-core-fallback-20261111-0.png",
+          "sha256": "be2906038a9911e7b6b96c2d59109cdca5a7646b5bb25c8b95bd218ef2324547"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\68-cpu-nanite-core-fallback-20261111-0.png.gz",
+          "sha256": "b8658b95080ff0312a053afd61145917b5347d7c41c574984483474fb8702a34"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-core-fallback-20261111-1.cpuprofile",
+          "sha256": "c54634af0a079b0acbc645d0c2f75a25a79af46a88279adbfbae6b86f903157d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\69-cpu-nanite-core-fallback-20261111-1.cpuprofile.gz",
+          "sha256": "555cafc804800ef5f0838274d3c7a4a5bbd92efb0af5fbdccb78a633a6b75e63"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-core-fallback-20261111-1.png",
+          "sha256": "2e708fc2a46ba40008e83d1b3535641c7b61ac4984fdb278cf74cc21e917dd59"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\70-cpu-nanite-core-fallback-20261111-1.png.gz",
+          "sha256": "8554e62d44a2e491ff91b2e4508a1311f87b63d6d97735234b8f0990f52d53ea"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-raster-batch-evidence.cjs",
+          "sha256": "fc8eedca776a37dbaec5843a957d2eb63052997ce0af89e7883408aa85cfb829"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\71-collect-nanite-raster-batch-evidence.cjs.gz",
+          "sha256": "55e78b483ecda00635f422631d587e019b9f32e1c8e587a15e9ac617a845b24f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+          "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\72-package-web-nanite-scene.cjs.gz",
+          "sha256": "80e9f9d3898270bc211ca24d5d5ed01c6e95b479d275f39304a97c827517d03c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+          "sha256": "1b0017ed20a1c96a73a497e91a82c602a42a97994038805dfefd4127a7ce3300"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\73-probe-nanite-full-scene.cjs.gz",
+          "sha256": "cc3da44d684fbc1641646abd6411d592f07b62c9aed8b75db898810b6911c85b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+          "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\74-probe-nanite-automatic-scene.cjs.gz",
+          "sha256": "8c0f7ff93a1c9b3305eecc45966283a6741b065a1a09af979d8fe1f80ac2d2f7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+          "sha256": "cae22e14021325a8430c88798a7485cfa9c594614865a67ca600cdfe00025174"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\75-profile-web-cpu.cjs.gz",
+          "sha256": "1b0fd47aadc2b039fdff780e9e15c82372554ff02510b530e49199fcf4192fbd"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-cook-shaders.cjs",
+          "sha256": "ae94eac18c7bf7989142bed1481074e568b986bd17c3a8545cec267a87784447"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\76-prepare-web-cook-shaders.cjs.gz",
+          "sha256": "8d8bc09ec3e2b8163f2deea2f61c5ea462863159221bbfcec8343462f18a8293"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-nanite-curve-shader-overrides.cjs",
+          "sha256": "13ef17efaa4e993306208b9c9ac68589ec9471dc1d2ddd938354191e4585aa78"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\77-web-nanite-curve-shader-overrides.cjs.gz",
+          "sha256": "57e4ee348827d0a04e80715747fcc13c3190071688222dfeba96355d8e1d382f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\overlays\\nanite-curves-shaders.json",
+          "sha256": "b922acbcc0d27d3ba75a301e37b78cdb4d63cd314bfdc5ae82eced5c04d26b98"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\78-nanite-curves-shaders.json.gz",
+          "sha256": "17c9d25c3647cf2ec6fe20cfff0e3622f40ac6de84aa847f8bf4403c6f4a0789"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "21085923cc6cd779ff52a51f482dda3d696923e2360214eb483ee0713c1e3ef8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\79-web-engine-worker.js.gz",
+          "sha256": "0cc15c36c0ee6076452965269e3e0af5dad6ad3152e011ab6d77d79d656511d5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+          "sha256": "5c39fc89f7a92d4b5f301ca26959a9ec64c4c0af50f7f3a3ff1b4b7b9c72bc53"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\80-WebNaniteAutomaticSceneTest.cpp.gz",
+          "sha256": "6418fe4be4c7a4cd82834a68067c418099aedcc0490f988d5fea344b22cfc343"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebRaster.cpp",
+          "sha256": "99dd520abb4c755949404aa18120f9fb1b63097b29a605fcda6c036b53cca48c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\81-NaniteWebRaster.cpp.gz",
+          "sha256": "bcc2c03a0a5b61c0632b5cf8812a9e337cdeb4467e225a55df086a8d43341eb7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Public\\Rendering\\NaniteWebRaster.h",
+          "sha256": "052b00c64ae8b4795c97bbde7cdfd7a4072cde51b810f17576afa4db6db3292a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\82-NaniteWebRaster.h.gz",
+          "sha256": "23f991d19617e0bd9c811f6b292829fbec03dd5f6b0e91b0f2b049983476a201"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebProgrammableRaster.cpp",
+          "sha256": "6c7b7808eb71acc4ceb295d36411e1cf4b272d2de15682024b3f0a1201e88b0d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\83-NaniteWebProgrammableRaster.cpp.gz",
+          "sha256": "c723eeef25626ec2d0bc9bf141dc9181f13652af9de5cb9d443737274ab8dea0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\full-build-single-console.log",
+          "sha256": "106823ba54c08aef8979eb4f46d1f78412a8af997c792ad2a5827c5281aff17e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\84-full-build-single-console.log.gz",
+          "sha256": "15972c3ce0d418fb5d16d63699f6ca23197d3e6a6de7ad12cc5f821b2f1731d1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\package-console.log",
+          "sha256": "2f7ca028dd152ef6015f1296872315b9d4dd4aefc01f902b4aaa2d44c7683c55"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\85-package-console.log.gz",
+          "sha256": "4773ea9e37b5eb8115a2a069587f96c8935dcc42a36be80e4909916b4e165317"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\villa-conversion-verification.log",
+          "sha256": "b0c840714cc6a61659483ad15069e76edb6708e3dec82e4f462b5aa1286736d1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\86-villa-conversion-verification.log.gz",
+          "sha256": "4601638f93f16c8a07f5b163f9e52eb657faa23e86917846e4e5d85073790cf3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\villa-conversion-recheck.log",
+          "sha256": "058c7e8e6394ac36282e4f0bd01baeb11fde9a3b2089336efbb02fd63e2e0e6e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\87-villa-conversion-recheck.log.gz",
+          "sha256": "2013bce8936eabb953ef1cbec0eddfdb74f0484eb6ecc1997292a31fe07c7600"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\conversion-original-verified.json",
+          "sha256": "f9b53bb9a9e33ffbe0637ddc6bb61ea2e812bcdae024c89e6664600d6d7e9456"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\88-conversion-original-verified.json.gz",
+          "sha256": "6d99a6752231c06d3c8b1127ddda66f56a2c293109d97e24afc0e86a79e95e33"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\conversion-original-descriptor-failure.json",
+          "sha256": "80402ee320f1476ff2f1223f0afcb063eb3882aea006133aad6348d320b5b94d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\89-conversion-original-descriptor-failure.json.gz",
+          "sha256": "a63b4b76bd85ad80ccff4ed0c6001a737246ed0e98a8c1eec27ce1582053dae5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\lumen-off-descriptor-before.json",
+          "sha256": "1a364edbd8ab00240a676d4669ea6e37682bea6472167d8f8547c6c634c9a86a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\90-lumen-off-descriptor-before.json.gz",
+          "sha256": "877897cb23f108ab4e04ef98c692d63d5f67378b1f61bf0f000984a86ac28a8a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\lumen-off-descriptor-restored.json",
+          "sha256": "42ac03ffa7d6fa82959c71f5a48415e5b6bfae15aa3527593ba40c36b6ac7bac"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\91-lumen-off-descriptor-restored.json.gz",
+          "sha256": "1164c845e06e0981206f53f17de7be8e7f4a7620f9c3a5b84930461ce632c2fe"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\villa-recheck.json",
+          "sha256": "ba9763cd13164ff6c32f71bbfb823a1fb3e57d1588628428b916eb67c91f741c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\92-villa-recheck.json.gz",
+          "sha256": "051822ae107b9ede51dfb7b77ab006784b9531d916155ba96914c7f3fb1b66e8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\villa-recheck.log",
+          "sha256": "1fb87a5839db1beb02f34de9441e8eb3b34e5954d534842c817477948c7bf068"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-raster-batch-20261111\\93-villa-recheck.log.gz",
+          "sha256": "deb7ecf48c6139254220cfb8aedca298045eaf8c1111b855ef0cbfc7f1b141c8"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Explicit batches of up to 32 fixed and programmable Nanite raster draws preserve per-draw RDG resources and depth-to-ID phase dependencies. Six Villa A/B view pairs have bit-identical depths and preserved materials, plus both default-scene lifecycle suites. Actual advancing-clock game profiles improve, but Villa performance remains below the ordinary mesh path. Native temporal comparisons and complete Nanite delivery remain open."
+  }
+}

@@ -1,0 +1,360 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-release-launcher-failure-20261111.json",
+    "bytes": 19218,
+    "sha256": "c1b47f16eb71587030bdf8412af72e2af3859a22133c7d1fdbf0674e1f691c9c",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": false,
+    "date": "2026-11-11T11:16:15.306Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-release.cjs",
+      "sha256": "63739fa4cd35ffa9376497d382a61fb1091f72b9646b9b52dde90b7abe64f717"
+    },
+    "manifest": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+      "sha256": "9cad2af08de76fa6411a2d8a48310983e8c4845bb42534418e78810713cadf91"
+    },
+    "scenes": [
+      {
+        "scene": "default",
+        "errors": []
+      }
+    ],
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-release.cjs",
+          "sha256": "63739fa4cd35ffa9376497d382a61fb1091f72b9646b9b52dde90b7abe64f717"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\0-verify-nanite-release.cjs.gz",
+          "sha256": "6d074e3a3c5e389b51a6c170c77a2e044cdfad2fa5fc7b72b0d195ac09502dc9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+          "sha256": "9cad2af08de76fa6411a2d8a48310983e8c4845bb42534418e78810713cadf91"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\1-manifest.json.gz",
+          "sha256": "401cb972e51a1379d612676d59630cbbed8670ddbca2841aa5fca9d00c9c6567"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-nanite-release.cjs",
+          "sha256": "0f13518a5571f7ea061f888ed3e0970c43f82a7ceb0b7cd7720d7bec30ab379f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\2-package-nanite-release.cjs.gz",
+          "sha256": "84f5dbda083e38e8f2e36e509e2b323d673a6a1b319b084970a70484ca4e8585"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\nanite-release-launcher.ps1",
+          "sha256": "7a81b278bbeb08012462e76f6bf9014a4ec9c35e01291238a78d7be37b840ce9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\3-nanite-release-launcher.ps1.gz",
+          "sha256": "a9e321e6ab297165b213c1ea511356c77e2c398c4319a1a3b5ebde2dc46bd529"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\start.ps1",
+          "sha256": "b8fa38b59401faff93a459f150c33cafe0bdeb03182e65c913196ac8749589c9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\4-start.ps1.gz",
+          "sha256": "9c2d9ff678e1a7298c0e9f0ee50146ea5b7b86c1db11ade3a3965a895c2555a5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\serve.cjs",
+          "sha256": "b156a428092cfa67080da2be0551af60416f270bc4e4d9ce6d25c79ebefe24ee"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\5-serve.cjs.gz",
+          "sha256": "6e326e0b7f3aa6220a4b4b9370035b2ddf358c4e42ab14c73a52777c157627a4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\index.html",
+          "sha256": "a5783a9660f34744f29ab9b3cfc9958990f96ee4cb088b9b1548eb3caea4b270"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\6-index.html.gz",
+          "sha256": "e1d85fbdfa9f231ee6fc568d2da71d225ec9d4185e58df5326a6fc19d7a49db7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\测试说明.md",
+          "sha256": "ce5d866c6f5bfb79f94417d9f229cd0984d410db62090393671fca9d4a8d4a88"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\7-测试说明.md.gz",
+          "sha256": "c8440a8cc7727b94622be718729a1da834f38ab73476ca2ab5a264ab76ca71c0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-release-20261111.json",
+          "sha256": "fdb475b4494a8f27b70a1155fd3e4979d4f80882919799346c89a5f114d33a7f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\8-nanite-release-20261111.json.gz",
+          "sha256": "477ee7c73d301ab134582090d70845f6a29df54cbea729dd21663731afb1e5d6"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\chrome-testing.json",
+          "sha256": "1df5904c3bdec9635cec9a0f0123ef73aec33113c7ec82a41d5832ad20521d3c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\9-chrome-testing.json.gz",
+          "sha256": "07e9ddbee3c62c41b2de5a55bf72aae00139b90da692b49c2dbcafc51afd6dc3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\nanite-core-lifecycle-20261111.json",
+          "sha256": "e63ab350ab04b83addc1319bb631173ce0914ec5eb6dc34beffbb1bc28d20c5e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\10-nanite-core-lifecycle-20261111.json.gz",
+          "sha256": "36a71ae57d67a45bf4bf78a915224901946a3f3b2ca08b45a58fa333aa2443e0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\nanite-disocclusion-20261111.json",
+          "sha256": "3de6c9a2056c7ed41354242bbedfb5c79811f2a3e58fcbf8eed7756604a45e74"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\11-nanite-disocclusion-20261111.json.gz",
+          "sha256": "61843da11fb9c69688a950bf85183a09cd1c2c90cb360a82ee2ad0a257d50cf7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\nanite-disocclusion-native-20261111.json",
+          "sha256": "d404f7c0c3072dc70a3e7b757b8e4958dd4fb71f42cfe996061adebb041453da"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\12-nanite-disocclusion-native-20261111.json.gz",
+          "sha256": "751e72cd88e1e76becb519ace13f266b9ac26c8fc655fe7f8d33b12634fbb563"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\probe-web-browser-lifecycle.cjs",
+          "sha256": "5c7e91341f99ab0513200948ac1ab2c5cab1ea6fccd176ae20d38a023874b277"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\13-probe-web-browser-lifecycle.cjs.gz",
+          "sha256": "d3e005ded3231d107ddf0b3807adf5c2d138ee962804bbc9600370069e7f2749"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-default-results.json",
+          "sha256": "0971dbf457cee74772eccd16dc8e5e52337888d7e46df0828bf06952653e93b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\14-web-browser-lifecycle-chrome-nanite-final-default-results.json.gz",
+          "sha256": "a5f60ef9a46d40aac3522ff30b8211f96c9607a6f2f9d1d70ce72bf157903717"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-default.png",
+          "sha256": "4516562be79c66a72f5b074add9fca1e5410a3389ac987aab463fa024c15d7c0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\15-web-browser-lifecycle-chrome-nanite-final-default.png.gz",
+          "sha256": "13aac5b501bf50e6603c6285a8b92aa93f88201938724a4218ad3177a8b1430d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-villa-results.json",
+          "sha256": "662dc24c234c93ce8dcc17a4b7fb7a6f1a2bfbba688b222328665e627e859303"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\16-web-browser-lifecycle-chrome-nanite-final-villa-results.json.gz",
+          "sha256": "f6754984d55b8d80f2f9052d40f11d53556aae039716e47ab256e5d54d81dd39"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-chrome-nanite-final-villa.png",
+          "sha256": "1fba89ba6eb05392910549142214ce65fc0d6f030f7ae9299cf3339325d83dfd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\17-web-browser-lifecycle-chrome-nanite-final-villa.png.gz",
+          "sha256": "d25c1d031142e44097aa7fa29bca0fd06afd368b489838356989d114d6815b67"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-default-results.json",
+          "sha256": "17782ebaf5e808377c54717ac2d16f0879f6c3f8120df519e663cf91c802236c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\18-web-browser-lifecycle-msedge-nanite-final-default-results.json.gz",
+          "sha256": "411db10b7f8c3b506c15a8841bc36b11cd843a941fd003be32168ff38d3ab1cc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-default.png",
+          "sha256": "c441f5f8755b5405cdae94936ae73bdbfda1e95184308274171ae0f1d14b14fe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\19-web-browser-lifecycle-msedge-nanite-final-default.png.gz",
+          "sha256": "7aac8d2b236747933b2b384bae834d1af425b9a1112289548891cedbce7ecb95"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-villa-results.json",
+          "sha256": "0fbb92fa51ff5189d3729427687a408b224f3e161d5f4dde79022676f57e12f0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\20-web-browser-lifecycle-msedge-nanite-final-villa-results.json.gz",
+          "sha256": "5e1d1b3142dd605da52ecbee90d9aa7dfe84ca7ee5502c0addbad74d8f3da1bb"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\validation\\web-browser-lifecycle-msedge-nanite-final-villa.png",
+          "sha256": "495b5661de4f66bcd184ce831312af3a41a3be18fe54c49781b8b9f6e8f336e0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\21-web-browser-lifecycle-msedge-nanite-final-villa.png.gz",
+          "sha256": "db432b1c08e42120d245897175a2f3e5bab7147beaf21528aed0e2f2c0d41dbf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\probe-web-browser-lifecycle.cjs",
+          "sha256": "09dfe19157681896812a68b405e2a20d25839d17d5274e1ef92616e1abedebcd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\22-probe-web-browser-lifecycle.cjs.gz",
+          "sha256": "8226e735a06b720fff29badf3480cc5ba818ac21e46732eca6871c7469164b34"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-chrome-nanite-final-default-results.json",
+          "sha256": "7790ddcbd9bd916716af77d8bf29b7eddb6b965338a449c2d7d3781da1124757"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\23-web-browser-lifecycle-chrome-nanite-final-default-results.json.gz",
+          "sha256": "79bac960eb0e17667c60ca0fde36ff4bc2f019042b1a30e871d023b540a05276"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-default-results.json",
+          "sha256": "8268273b4b95cb2b9be3bfdeb9f69e9a7db0025ee7c99d0429b2d2764e529908"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\24-web-browser-lifecycle-msedge-nanite-final-default-results.json.gz",
+          "sha256": "16c26820c4fe9ae09f45782c901c12c05cbcae251d72f21fe7428102b3a5a879"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-default.png",
+          "sha256": "b83278f37db668f6e789584d352fa11ab24e58417b4ac5c0753dadb3d8b49694"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\25-web-browser-lifecycle-msedge-nanite-final-default.png.gz",
+          "sha256": "9aafa278d1e959031004be7f4e4add4a1272abf6086a321856ef49bb9671d9b8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-villa-results.json",
+          "sha256": "11eb50f4205997a5f4029052d8360684b47ea6c34bd46cf6ee3a45b52bfac4cb"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\26-web-browser-lifecycle-msedge-nanite-final-villa-results.json.gz",
+          "sha256": "f4939a4adf89c2a62aa2a188e52e3452c1a4caaad90dabf2dfde18bebfed2f03"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\web-browser-lifecycle-msedge-nanite-final-villa.png",
+          "sha256": "55fec88ddcb02b8e1e8af52e981c723bb75e471b6105f7b8196e68fcdf922add"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\27-web-browser-lifecycle-msedge-nanite-final-villa.png.gz",
+          "sha256": "6efe3259c87eea03d5bd2a391f15a6c629026aee6dc7cc9485b8fc0a555fed1c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-browser-tools\\versions.json",
+          "sha256": "8555d2a54393a7450bc48ef6415428a9066c7100b7db373fee450f650b0b3993"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-release-launcher-failure-20261111\\28-versions.json.gz",
+          "sha256": "4dcef9b76602882001a40c9c5bf303094c84f4ab7e5c7446cdd397e0d9c37a73"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Verifies every delivered file, the Windows PowerShell 5.1 launcher, local HTTP isolation/versioning, and normal rendering/input from both relocated scene URLs. No renderer, GPU, clock or project setting overrides.",
+    "filesVerified": 43,
+    "bytesVerified": 3993107106,
+    "prerequisiteFailure": {
+      "reason": "browserType.launchPersistentContext: Chromium distribution 'chrome' is not found at C:\\Users\\wap80\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe\nRun \"npx playwright install chrome\"\n    at async G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-browser-lifecycle.cjs:85:15",
+      "originalProbe": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\browser-before-executable\\probe-web-browser-lifecycle.cjs",
+        "sha256": "09dfe19157681896812a68b405e2a20d25839d17d5274e1ef92616e1abedebcd"
+      }
+    },
+    "failure": "Error: Command failed: powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\start.ps1 -Scene default -NoBrowser\nGet-FileHash : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, script file, or operable pr\r\nogram. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.\r\nAt G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\start.ps1:6 char:16\r\n+ $taskETag='\"'+(Get-FileHash -LiteralPath $taskIndex -Algorithm SHA256 ...\r\n+                ~~~~~~~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : CommandNotFoundException\r\n \r\n\n    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at checkExecSyncError (node:child_process:925:11)\n    at Object.execFileSync (node:child_process:961:15)\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-release.cjs:68:28\n    at Object.<anonymous> (G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-release.cjs:135:3)\n    at Module._compile (node:internal/modules/cjs/loader:1830:14)\n    at Object..js (node:internal/modules/cjs/loader:1961:10)\n    at Module.load (node:internal/modules/cjs/loader:1553:32)\n    at Module._load (node:internal/modules/cjs/loader:1355:12)"
+  }
+}

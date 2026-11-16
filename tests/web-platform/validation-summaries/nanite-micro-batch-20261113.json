@@ -1,0 +1,1090 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-micro-batch-20261113.json",
+    "bytes": 211515,
+    "sha256": "562a84c894bab02b7ec30b16f666541899cc3c7d9724cd1ebc8f223ddb696299",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-13T02:30:52.740Z",
+    "pass": true,
+    "naniteFullPerformanceAccepted": false,
+    "correctness": [
+      {
+        "tag": "nanite-micro-default-correctness-20261113",
+        "scalar": false,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "spawn",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 4
+          },
+          {
+            "label": "moved",
+            "batch": 1,
+            "entries": 4,
+            "batched": 4,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 4
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "portrait",
+            "batch": 1,
+            "entries": 8,
+            "batched": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 8
+          }
+        ]
+      },
+      {
+        "tag": "nanite-micro-default-scalar-20261113",
+        "scalar": true,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          },
+          {
+            "label": "spawn",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "moved",
+            "batch": 1,
+            "entries": 4,
+            "batched": 8,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "moved",
+            "batch": 0,
+            "entries": 4,
+            "batched": 0,
+            "dispatchBuffers": 8
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          },
+          {
+            "label": "portrait",
+            "batch": 1,
+            "entries": 8,
+            "batched": 16,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 8,
+            "batched": 0,
+            "dispatchBuffers": 16
+          }
+        ]
+      },
+      {
+        "tag": "nanite-micro-villa-correctness-20261113",
+        "scalar": false,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 606,
+            "batched": 326,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "lifecycle",
+            "batch": 1,
+            "entries": 606,
+            "batched": 326,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 606,
+            "batched": 0,
+            "dispatchBuffers": 326
+          },
+          {
+            "label": "spawn",
+            "batch": 1,
+            "entries": 606,
+            "batched": 326,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "spawn",
+            "batch": 0,
+            "entries": 606,
+            "batched": 0,
+            "dispatchBuffers": 326
+          },
+          {
+            "label": "room",
+            "batch": 0,
+            "entries": 308,
+            "batched": 0,
+            "dispatchBuffers": 136
+          },
+          {
+            "label": "room",
+            "batch": 1,
+            "entries": 308,
+            "batched": 136,
+            "dispatchBuffers": 3
+          },
+          {
+            "label": "room",
+            "batch": 0,
+            "entries": 308,
+            "batched": 0,
+            "dispatchBuffers": 136
+          },
+          {
+            "label": "room-turn",
+            "batch": 0,
+            "entries": 237,
+            "batched": 0,
+            "dispatchBuffers": 96
+          },
+          {
+            "label": "room-turn",
+            "batch": 1,
+            "entries": 237,
+            "batched": 96,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "room-turn",
+            "batch": 0,
+            "entries": 237,
+            "batched": 0,
+            "dispatchBuffers": 96
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 625,
+            "batched": 0,
+            "dispatchBuffers": 339
+          },
+          {
+            "label": "portrait",
+            "batch": 1,
+            "entries": 625,
+            "batched": 339,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "portrait",
+            "batch": 0,
+            "entries": 625,
+            "batched": 0,
+            "dispatchBuffers": 339
+          }
+        ]
+      }
+    ],
+    "argumentCases": 36,
+    "recovery": [
+      {
+        "mode": "packed",
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-micro-recovery-20261113\\packed.json",
+          "sha256": "e32d21fefc6fd4b60e51854e71a21ca125d0eb2be0b85f383527cbf432379dd9"
+        }
+      },
+      {
+        "mode": "scalar",
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-micro-recovery-20261113\\scalar.json",
+          "sha256": "dbef3c5b3c767dde7a1a4414fc40de60b8c7a68e1f4f3fc7a3726b07e6e3e551"
+        }
+      }
+    ],
+    "materials": [
+      {
+        "tag": "nanite-micro-programmable-20261113",
+        "scalar": false,
+        "tests": 52,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-micro-programmable-20261113\\browser.json",
+          "sha256": "f3887fde49ba4e4a4c471bee3418deb9712b496990f4ba02862cbe9669073f33"
+        }
+      },
+      {
+        "tag": "nanite-micro-programmable-20261113",
+        "scalar": true,
+        "tests": 52,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-micro-programmable-20261113\\browser-scalar.json",
+          "sha256": "442c1fd665c5c5a6596b992c7b68d9fbbb2dbcd7343287b70aff5ca7b9643a70"
+        }
+      },
+      {
+        "tag": "nanite-micro-wpo-20261113",
+        "scalar": false,
+        "tests": 36,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-micro-wpo-20261113\\browser.json",
+          "sha256": "af321d8745dd49eb916ca6c26ac0cb5e5b8054669d4b5ba35066d4d8c5e50524"
+        }
+      },
+      {
+        "tag": "nanite-micro-wpo-20261113",
+        "scalar": true,
+        "tests": 36,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-micro-wpo-20261113\\browser-scalar.json",
+          "sha256": "a912e1abc08e28c301d89282b1113b148e985de045385b6025210def6427fa14"
+        }
+      }
+    ],
+    "motion": {
+      "tag": "nanite-micro-motion-abba-20261113",
+      "field": "micro",
+      "off": {
+        "frames": 9554,
+        "fps": 79.4798685662188,
+        "low1": 22.55967739663851,
+        "maxMs": 79.875,
+        "over50": 18
+      },
+      "on": {
+        "frames": 10133,
+        "fps": 84.33695881825362,
+        "low1": 25.230413036678186,
+        "maxMs": 75.65000000037253,
+        "over50": 18
+      },
+      "runs": [
+        {
+          "index": 0,
+          "setting": {
+            "enabled": 0,
+            "registered": 2062,
+            "entries": 142,
+            "batchedEntries": 0,
+            "dispatchBuffers": 88,
+            "directGroups": 2705,
+            "indirectArguments": []
+          },
+          "overall": {
+            "frames": 4752,
+            "fps": 79.10400070314613,
+            "low1": 22.159948662792075,
+            "maxMs": 79.875,
+            "over33Ms": 64,
+            "over50Ms": 9,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 151,
+            "fps": 30.160429516476853,
+            "low1": 16.5604040739207,
+            "maxMs": 61.59499999973923,
+            "over33Ms": 52,
+            "over50Ms": 5,
+            "over100Ms": 0
+          },
+          "travelCm": 1987.3326083890975,
+          "turnDegrees": 269.84836962890597
+        },
+        {
+          "index": 1,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 143,
+            "batchedEntries": 89,
+            "dispatchBuffers": 2,
+            "directGroups": 0,
+            "indirectArguments": [
+              267,
+              1,
+              1,
+              15,
+              1,
+              1
+            ]
+          },
+          "overall": {
+            "frames": 5079,
+            "fps": 84.49235135443092,
+            "low1": 26.339641935769215,
+            "maxMs": 73.1499999994412,
+            "over33Ms": 33,
+            "over50Ms": 5,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 190,
+            "fps": 37.85369546701856,
+            "low1": 20.733982997941762,
+            "maxMs": 51.30000000074506,
+            "over33Ms": 20,
+            "over50Ms": 1,
+            "over100Ms": 0
+          },
+          "travelCm": 1985.0032344563974,
+          "turnDegrees": 268.5558110351575
+        },
+        {
+          "index": 2,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 140,
+            "batchedEntries": 87,
+            "dispatchBuffers": 2,
+            "directGroups": 0,
+            "indirectArguments": [
+              272,
+              1,
+              1,
+              5,
+              1,
+              1
+            ]
+          },
+          "overall": {
+            "frames": 5054,
+            "fps": 84.18137238123082,
+            "low1": 24.246112302269182,
+            "maxMs": 75.65000000037253,
+            "over33Ms": 29,
+            "over50Ms": 13,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 194,
+            "fps": 38.64033812287513,
+            "low1": 19.740413561584273,
+            "maxMs": 50.674999999813735,
+            "over33Ms": 12,
+            "over50Ms": 3,
+            "over100Ms": 0
+          },
+          "travelCm": 1985.136559405566,
+          "turnDegrees": 268.7243894856766
+        },
+        {
+          "index": 3,
+          "setting": {
+            "enabled": 0,
+            "registered": 2062,
+            "entries": 138,
+            "batchedEntries": 0,
+            "dispatchBuffers": 86,
+            "directGroups": 2651,
+            "indirectArguments": []
+          },
+          "overall": {
+            "frames": 4802,
+            "fps": 79.8553557092955,
+            "low1": 23.054646569968504,
+            "maxMs": 64.32500000018626,
+            "over33Ms": 61,
+            "over50Ms": 9,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 156,
+            "fps": 31.094186483393305,
+            "low1": 17.299541562237792,
+            "maxMs": 58.09999999962747,
+            "over33Ms": 45,
+            "over50Ms": 3,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.03009649515,
+          "turnDegrees": 269.46647119140687
+        }
+      ]
+    },
+    "naniteGap": {
+      "tag": "nanite-micro-onoff-abba-20261113",
+      "field": "nanite",
+      "off": {
+        "frames": 16272,
+        "fps": 135.42695256856692,
+        "low1": 54.15210429115651,
+        "maxMs": 37.485000000335276,
+        "over50": 0
+      },
+      "on": {
+        "frames": 10089,
+        "fps": 83.9754436126213,
+        "low1": 25.187848982640496,
+        "maxMs": 77.71999999973923,
+        "over50": 13
+      },
+      "runs": [
+        {
+          "index": 0,
+          "setting": {
+            "enabled": 0,
+            "registered": 0,
+            "entries": 0,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 8136,
+            "fps": 135.45059799041724,
+            "low1": 53.0622413622896,
+            "maxMs": 37.485000000335276,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 59.75,
+            "frames": 455,
+            "fps": 90.93107424572106,
+            "low1": 43.94638541037561,
+            "maxMs": 27.009999999776483,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.3929617724018,
+          "turnDegrees": 268.6729711914064
+        },
+        {
+          "index": 1,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 141,
+            "packDispatchBuffers": 2,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 5067,
+            "fps": 84.28594443299099,
+            "low1": 25.579488259753365,
+            "maxMs": 70.00999999977648,
+            "over33Ms": 38,
+            "over50Ms": 5,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 187,
+            "fps": 37.34472979990032,
+            "low1": 19.633829087474712,
+            "maxMs": 51.0550000006333,
+            "over33Ms": 21,
+            "over50Ms": 2,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.0765766077363,
+          "turnDegrees": 268.70298974609443
+        },
+        {
+          "index": 2,
+          "setting": {
+            "enabled": 1,
+            "registered": 2062,
+            "entries": 143,
+            "packDispatchBuffers": 2,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 5022,
+            "fps": 83.66447048820002,
+            "low1": 24.918039194633018,
+            "maxMs": 77.71999999973923,
+            "over33Ms": 36,
+            "over50Ms": 8,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 191,
+            "fps": 38.088514916833034,
+            "low1": 17.386768669003445,
+            "maxMs": 57.81500000040978,
+            "over33Ms": 15,
+            "over50Ms": 3,
+            "over100Ms": 0
+          },
+          "travelCm": 1985.3017403926178,
+          "turnDegrees": 268.8928872070311
+        },
+        {
+          "index": 3,
+          "setting": {
+            "enabled": 0,
+            "registered": 0,
+            "entries": 0,
+            "hierarchyBatch": true,
+            "occlusionBatch": true,
+            "packBatch": true,
+            "materialPrecache": true
+          },
+          "overall": {
+            "frames": 8136,
+            "fps": 135.40331540077227,
+            "low1": 55.41720028261255,
+            "maxMs": 35.31000000052154,
+            "over33Ms": 2,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 456,
+            "fps": 91.19334288598223,
+            "low1": 45.25296406943642,
+            "maxMs": 31.97499999962747,
+            "over33Ms": 0,
+            "over50Ms": 0,
+            "over100Ms": 0
+          },
+          "travelCm": 1984.3350603205536,
+          "turnDegrees": 269.363971191407
+        }
+      ]
+    },
+    "controlledGPU": [
+      {
+        "tag": "nanite-micro-controlled-off-20261113",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-micro-controlled-off-20261113.json",
+          "sha256": "2ffce7e722f386099bd4d5a0e63d76f3d1cc03bd0e9b4d72a00054ce06e768ae"
+        },
+        "meanSpanMs": 13.43488,
+        "meanPassMs": 6.848511999999999,
+        "view": {
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 536,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "nativeBeforeCapture": {
+          "frame": 408,
+          "registered": 2062,
+          "entries": 395,
+          "primitiveVisibility": false,
+          "hierarchyBatch": true,
+          "hierarchyDispatchBuffers": 4,
+          "occlusionBatch": true,
+          "mainOcclusionDispatchBuffers": 4,
+          "finalOcclusionDispatchBuffers": 4,
+          "packBatch": true,
+          "packBatchedEntries": 395,
+          "packDispatchBuffers": 4,
+          "microBatch": false,
+          "microBatchedEntries": 0,
+          "microDispatchBuffers": 162,
+          "microDirectGroups": 4778,
+          "microDispatchArguments": []
+        },
+        "phases": [
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 2.8303360000000364,
+            "passes": 225,
+            "dispatches": 0,
+            "draws": 1760.5
+          },
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 2.596864000000015,
+            "passes": 129,
+            "dispatches": 269,
+            "draws": 0
+          },
+          {
+            "phase": "mixed: micro-raster, other-compute",
+            "milliseconds": 0.7782400000000003,
+            "passes": 2,
+            "dispatches": 326,
+            "draws": 0
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.282624,
+            "passes": 1,
+            "dispatches": 6,
+            "draws": 0
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.2703359999999997,
+            "passes": 7,
+            "dispatches": 0,
+            "draws": 107
+          },
+          {
+            "phase": "hzb-batch",
+            "milliseconds": 0.08192000000000002,
+            "passes": 2,
+            "dispatches": 20,
+            "draws": 0
+          },
+          {
+            "phase": "pack",
+            "milliseconds": 0.008192,
+            "passes": 2,
+            "dispatches": 8,
+            "draws": 0
+          }
+        ],
+        "pipelineWork": {
+          "other-compute": {
+            "draws": 0,
+            "dispatches": 297
+          },
+          "other-render": {
+            "draws": 822.5,
+            "dispatches": 0
+          },
+          "pack": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "nanite-raster": {
+            "draws": 938,
+            "dispatches": 0
+          },
+          "micro-raster": {
+            "draws": 0,
+            "dispatches": 324
+          },
+          "native-material": {
+            "draws": 107,
+            "dispatches": 0
+          }
+        }
+      },
+      {
+        "tag": "nanite-micro-controlled-on-20261113",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-micro-controlled-on-20261113.json",
+          "sha256": "592baaebcf74a4d4e2d7c9012a08ab6a79ee74b10d004be00850243e6ef0ab02"
+        },
+        "meanSpanMs": 13.254655999999999,
+        "meanPassMs": 6.156287999999997,
+        "view": {
+          "camera": {
+            "x": -175,
+            "y": -80,
+            "z": 160,
+            "pitch": -5.0000000000000036,
+            "yaw": 50.00000000000001
+          },
+          "view": {
+            "frame": 539,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "nativeBeforeCapture": {
+          "frame": 408,
+          "registered": 2062,
+          "entries": 395,
+          "primitiveVisibility": false,
+          "hierarchyBatch": true,
+          "hierarchyDispatchBuffers": 4,
+          "occlusionBatch": true,
+          "mainOcclusionDispatchBuffers": 4,
+          "finalOcclusionDispatchBuffers": 4,
+          "packBatch": true,
+          "packBatchedEntries": 395,
+          "packDispatchBuffers": 4,
+          "microBatch": true,
+          "microBatchedEntries": 161,
+          "microDispatchBuffers": 4,
+          "microDirectGroups": 14,
+          "microDispatchArguments": [
+            471,
+            1,
+            1,
+            250,
+            1,
+            1,
+            162,
+            1,
+            1
+          ]
+        },
+        "phases": [
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 2.732032000000013,
+            "passes": 129,
+            "dispatches": 269,
+            "draws": 0
+          },
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 2.7279360000000343,
+            "passes": 225,
+            "dispatches": 0,
+            "draws": 1747.375
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.2662399999999997,
+            "passes": 7,
+            "dispatches": 0,
+            "draws": 107
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.14745600000000003,
+            "passes": 1,
+            "dispatches": 6,
+            "draws": 0
+          },
+          {
+            "phase": "mixed: micro-arguments, micro-raster, other-compute",
+            "milliseconds": 0.11059200000000004,
+            "passes": 2,
+            "dispatches": 18,
+            "draws": 0
+          },
+          {
+            "phase": "hzb-batch",
+            "milliseconds": 0.09420800000000003,
+            "passes": 2,
+            "dispatches": 20,
+            "draws": 0
+          },
+          {
+            "phase": "pack",
+            "milliseconds": 0.077824,
+            "passes": 2,
+            "dispatches": 8,
+            "draws": 0
+          }
+        ],
+        "pipelineWork": {
+          "other-compute": {
+            "draws": 0,
+            "dispatches": 297
+          },
+          "other-render": {
+            "draws": 809.375,
+            "dispatches": 0
+          },
+          "pack": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "nanite-raster": {
+            "draws": 938,
+            "dispatches": 0
+          },
+          "micro-arguments": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "micro-raster": {
+            "draws": 0,
+            "dispatches": 8
+          },
+          "native-material": {
+            "draws": 107,
+            "dispatches": 0
+          }
+        }
+      }
+    ],
+    "originalFilesVerified": 1643,
+    "previousEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-pack-batch-20261112.json",
+      "sha256": "31f5b722112ca060f2336cc192f6523fbb56e4aea532ef05c16e40df85df8430"
+    },
+    "records": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 382,
+      "bytes": 154024,
+      "sha256": "9fe6bcd749698e31843a54b8201b5abfb083f1bac47123eca2fb37d0ac1062a8"
+    },
+    "boundary": "Rigid micro raster batches use actual visible cluster counts and bounded indirect dispatches. Exact geometry/depth/material comparisons, packed/scalar recovery, empty-scene work checks, complete runtime/Cooks, first movement ABBA and separate GPU diagnostics are archived. All stalls retained. Other raster draws remain per instance; full enabled performance acceptance stays open."
+  }
+}

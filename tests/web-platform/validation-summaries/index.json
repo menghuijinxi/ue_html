@@ -1,0 +1,609 @@
+{
+  "format": "validation-summary-index-v1",
+  "originalCommit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a",
+  "baseline": "origin/master",
+  "reports": [
+    {
+      "file": "cleanup-standalone-20261111.json",
+      "bytes": 2329,
+      "originalBytes": 4403,
+      "originalSHA256": "ee940781fe62a9c4be469561c3ffa1028f71006f1f9c3442ce98a0a0ade9d97b",
+      "pass": true
+    },
+    {
+      "file": "hair-follicle-web-20261111.json",
+      "bytes": 29434,
+      "originalBytes": 27825,
+      "originalSHA256": "8b27463e7029147af0d9dd79e27e6c1d1b7d2dbe3eead5c07211e1a979dafd8b",
+      "pass": true
+    },
+    {
+      "file": "nanite-assembly-20261111.json",
+      "bytes": 42605,
+      "originalBytes": 45748,
+      "originalSHA256": "4ef869d6f6d6b6fded0b3fb4907f6aa669e55b4688ee118f60bf8da73dd2e6b1",
+      "pass": true
+    },
+    {
+      "file": "nanite-automatic-scene-20261110.json",
+      "bytes": 46265,
+      "originalBytes": 1900290,
+      "originalSHA256": "23c3390ff41bc5774c38a384b60ae24f2336620f4c65d93f135c87b066fb5e4c",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-hzb-fallback-20261109.json",
+      "bytes": 116515,
+      "originalBytes": 7243903,
+      "originalSHA256": "5b5c3ee2d40d055e9371f5674fc0069b470c11a82070dd855972fe1df3be3cfb",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-hzb-packed-20261109.json",
+      "bytes": 116490,
+      "originalBytes": 7239104,
+      "originalSHA256": "006465ddd560f460b4c55db8aed2f42f75ec26082da30ba88030bb312d4362e5",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-instances-fallback-20261109.json",
+      "bytes": 118550,
+      "originalBytes": 7582827,
+      "originalSHA256": "b076bbcf6a326a6175d1a3375054cbdc95f1c4dac7a87aeae5718a19e3113c3d",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-instances-packed-20261109.json",
+      "bytes": 118525,
+      "originalBytes": 7577281,
+      "originalSHA256": "4505a3e07cc513ea435cb3b4d728ac7d64eb35db4c973f4f34ee5e7f50108960",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-lod-20261109.json",
+      "bytes": 106522,
+      "originalBytes": 7127887,
+      "originalSHA256": "9e41f4916c5bd9c4124d50e501a520c0f0389821f54bc41bc97b658f94115672",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-material-bins-20261109.json",
+      "bytes": 29612,
+      "originalBytes": 1237042,
+      "originalSHA256": "4720a802ffd2dc3495bf3c7ad3a8dd4dd080da24de628f0f7bae61bb17eb5d96",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-micro-fallback-20261110.json",
+      "bytes": 109721,
+      "originalBytes": 18551327,
+      "originalSHA256": "ed66a42815ebacd7cce672ea48a00f9b363e81fb5c9ba0eef048e6aa9ec4ee56",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-micro-packed-20261110.json",
+      "bytes": 109696,
+      "originalBytes": 18538539,
+      "originalSHA256": "2212ec85b8a075295574a726747369071c302ce4d882c3a602094f955a13c926",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-multimaterial-20261109.json",
+      "bytes": 26250,
+      "originalBytes": 1120018,
+      "originalSHA256": "b686ae62d6379e44f38b67d814068c40a9891c63da87b46051f10dac5d0e5976",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-pipelines-20261109.json",
+      "bytes": 96602,
+      "originalBytes": 6839502,
+      "originalSHA256": "662f124e043c5b628ab367b1690424fbc94eb150123b5461a903d1018080c9ab",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-resource-lifetime-20261109.json",
+      "bytes": 63802,
+      "originalBytes": 1709041,
+      "originalSHA256": "e9e71f2fd4e617accafc4c78e1e6a9282ad01defd085979e1ce5f7da05e3b5a0",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-scalar-fallback-20261109.json",
+      "bytes": 112105,
+      "originalBytes": 7125561,
+      "originalSHA256": "5a413301cb70c8f5d725a193dfd0d8988a947f757807500a20146c1b643aecd9",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-scalar-packed-20261109.json",
+      "bytes": 112080,
+      "originalBytes": 7120092,
+      "originalSHA256": "59c6606fdb0dcebc896b252ad987ec2afa78f463246cfdfac8351619fb0c69c0",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-storage-precache-20261109.json",
+      "bytes": 73012,
+      "originalBytes": 4400687,
+      "originalSHA256": "2ed2d5a50c35b6a6c2354905e193a63d15b57da38b335becb9756b2b6cdad068",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-textures-20261109.json",
+      "bytes": 20838,
+      "originalBytes": 961860,
+      "originalSHA256": "0c3b30283f2f3ca3c7f43bcf025e5f819e5f01ef0777d7d387a8641bebdcc79a",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-tiles-20261109.json",
+      "bytes": 24228,
+      "originalBytes": 1000073,
+      "originalSHA256": "1e5a6aa01ef9f8cf3bd6254d39f52bf65eb9a1cb22db03ead4d828960d7690e7",
+      "pass": true
+    },
+    {
+      "file": "nanite-browser-uniform-buffer-failure-20261109.json",
+      "bytes": 2133,
+      "originalBytes": 3867,
+      "originalSHA256": "36926137ec88f495fc963222fb1ac58ab01bfb83bcaff687b0e15a6c295b92ca",
+      "pass": false
+    },
+    {
+      "file": "nanite-buffer-pool-rejected-20261111.json",
+      "bytes": 99149,
+      "originalBytes": 94832,
+      "originalSHA256": "f54b4c9e052309ee7fad0b06fc91e7dec073aa1cb21c6c09ce8d9f64930d372f",
+      "pass": true
+    },
+    {
+      "file": "nanite-cold-start-20261110.json",
+      "bytes": 2339,
+      "originalBytes": 44929,
+      "originalSHA256": "48417d1fae692f2bdd23e3542474c3f4295b28d6e0a6aa200e91d18252752a71",
+      "pass": true
+    },
+    {
+      "file": "nanite-core-lifecycle-20261111.json",
+      "bytes": 12895,
+      "originalBytes": 12014,
+      "originalSHA256": "e63ab350ab04b83addc1319bb631173ce0914ec5eb6dc34beffbb1bc28d20c5e",
+      "pass": true
+    },
+    {
+      "file": "nanite-core-native-20261111.json",
+      "bytes": 3285,
+      "originalBytes": 237827,
+      "originalSHA256": "44da52e98d03d55aca79d89b20d607ababb5b3748a2e4aab1a1925a7700931f9",
+      "pass": true
+    },
+    {
+      "file": "nanite-curve-material-20261111.json",
+      "bytes": 45069,
+      "originalBytes": 1062555,
+      "originalSHA256": "29c0d63a7f676283c3167488e501a6aa190c4a66d8ff17f41a2377820bf96d12",
+      "pass": true
+    },
+    {
+      "file": "nanite-curve-native-fixes-20261111.json",
+      "bytes": 11599,
+      "originalBytes": 846120,
+      "originalSHA256": "70d59c225e5d3c15a63958269e93fcf650dc56a58cbbd2b391f1aa26368641ff",
+      "pass": true
+    },
+    {
+      "file": "nanite-curve-visualization-20261111.json",
+      "bytes": 13953,
+      "originalBytes": 13039,
+      "originalSHA256": "5700694643889abfb4988251043f0b024db935ceb1234585d5bd33417b711177",
+      "pass": true
+    },
+    {
+      "file": "nanite-default-native-20261110.json",
+      "bytes": 29667,
+      "originalBytes": 1883975,
+      "originalSHA256": "4800de137f214c0dd0fa9c0f01aca2b9ece525df464e190f6f2935c7a5048e83",
+      "pass": true
+    },
+    {
+      "file": "nanite-default-temporal-20261111.json",
+      "bytes": 69862,
+      "originalBytes": 66867,
+      "originalSHA256": "002807b13982be1c799f050971a92fdf51f65cfad5912d1c305b76010048fce1",
+      "pass": true
+    },
+    {
+      "file": "nanite-device-recovery-20261110.json",
+      "bytes": 32766,
+      "originalBytes": 290086,
+      "originalSHA256": "ef9ce5854151c9c437b6a8476f7e7f9a789a96a9f156adbf7a4516238992c438",
+      "pass": true
+    },
+    {
+      "file": "nanite-disocclusion-20261111.json",
+      "bytes": 13389,
+      "originalBytes": 83749,
+      "originalSHA256": "3de6c9a2056c7ed41354242bbedfb5c79811f2a3e58fcbf8eed7756604a45e74",
+      "pass": true
+    },
+    {
+      "file": "nanite-disocclusion-native-20261111.json",
+      "bytes": 3236,
+      "originalBytes": 241178,
+      "originalSHA256": "d404f7c0c3072dc70a3e7b757b8e4958dd4fb71f42cfe996061adebb041453da",
+      "pass": true
+    },
+    {
+      "file": "nanite-distance-20261110.json",
+      "bytes": 60124,
+      "originalBytes": 185008840,
+      "originalSHA256": "2d7bb2ff1c924af503a8ec82921f4a520fef1e03e372e9457a4d566e9f1f2047",
+      "pass": true
+    },
+    {
+      "file": "nanite-eligibility-20261112.json",
+      "bytes": 83902,
+      "originalBytes": 80024,
+      "originalSHA256": "2b75ea96d4e7f171fcf968fde64feb4a0aefdc99c790332930dd2a87453e8de6",
+      "pass": true
+    },
+    {
+      "file": "nanite-fixed-batch-20261113.json",
+      "bytes": 31338,
+      "originalBytes": 251843,
+      "originalSHA256": "5276beffedb1b2f1b9df4ddd4f3204146839b98bf6970b343106449873498ea9",
+      "pass": true
+    },
+    {
+      "file": "nanite-fixed-bins-20261111.json",
+      "bytes": 22023,
+      "originalBytes": 20778,
+      "originalSHA256": "c19604873571c5605d60064faf20d6f826650ddb557cb654f5ba9df1c343d219",
+      "pass": true
+    },
+    {
+      "file": "nanite-fixed-profile-cleanup-20261113.json",
+      "bytes": 4839,
+      "originalBytes": 4449,
+      "originalSHA256": "2e6832686ba1b81d33bbc2c174efc68cc8a6a5befb5428af65437a4e672c0bb0",
+      "pass": true
+    },
+    {
+      "file": "nanite-full-scene-bounds-20261110.json",
+      "bytes": 11949,
+      "originalBytes": 5801122,
+      "originalSHA256": "45a978169baf74c0cf5f5fc22e5fd203b8ed0bb84e43269217f40ac84d0cd438",
+      "pass": true
+    },
+    {
+      "file": "nanite-full-scene-frustum-20261110.json",
+      "bytes": 15118,
+      "originalBytes": 14815882,
+      "originalSHA256": "45c024eee2eefa72ec94150149c92a53935506428241d8d28028a3aa295843b6",
+      "pass": true
+    },
+    {
+      "file": "nanite-full-scene-native-20261110.json",
+      "bytes": 8246,
+      "originalBytes": 15399979,
+      "originalSHA256": "d989cad166e3e4e6f0aad1060f808190611cb6f78df4dd06972a1a66f87af889",
+      "pass": true
+    },
+    {
+      "file": "nanite-gpu-instances-20261110.json",
+      "bytes": 114663,
+      "originalBytes": 277877216,
+      "originalSHA256": "59f0e086ebde855c2836e319dc27168dd26de60f7f5c58c1339e2023e5aa671f",
+      "pass": true
+    },
+    {
+      "file": "nanite-hierarchy-batch-20261112.json",
+      "bytes": 123373,
+      "originalBytes": 207581,
+      "originalSHA256": "61362ce2f31963e7fc0d6f6ec176c7c6145a0465b0f9f1861c95fd0c698f966f",
+      "pass": true
+    },
+    {
+      "file": "nanite-hzb-auto-20261114.json",
+      "bytes": 123665,
+      "originalBytes": 146639,
+      "originalSHA256": "1830dd32299ec40af541ada4bf985698078b54b4022c3b7c0e87ff4100626ed2",
+      "pass": true
+    },
+    {
+      "file": "nanite-idle-20261112.json",
+      "bytes": 64058,
+      "originalBytes": 61107,
+      "originalSHA256": "17652639313ee20bb6a01247245e67b408bd4755a86960604f227a3d1ded8419",
+      "pass": true
+    },
+    {
+      "file": "nanite-instance-distance-20261110.json",
+      "bytes": 9572,
+      "originalBytes": 2102767,
+      "originalSHA256": "26ad4658caa03336d2bd34793d9a02494499867ce7aa268d0184ab257a96c7bc",
+      "pass": true
+    },
+    {
+      "file": "nanite-local-hierarchy-20261110.json",
+      "bytes": 19717,
+      "originalBytes": 10498620,
+      "originalSHA256": "dbaea449b5ffb65d6c3cf8ebd9b4c2900a822a3487ad17272691ecb60b01fcc1",
+      "pass": true
+    },
+    {
+      "file": "nanite-local-occlusion-20261110.json",
+      "bytes": 14246,
+      "originalBytes": 19915367,
+      "originalSHA256": "d3a3f009a9dc12da9f97f9338f4403f3b661fc5e1d742812d6b9aa40a53b2973",
+      "pass": true
+    },
+    {
+      "file": "nanite-material-bins-20261110.json",
+      "bytes": 14178,
+      "originalBytes": 12149299,
+      "originalSHA256": "7a438138e9b778dd9b646a3fe3de0b920f77bcdc44b7ada27f226a73a04f0daf",
+      "pass": true
+    },
+    {
+      "file": "nanite-material-pass-20261111.json",
+      "bytes": 89011,
+      "originalBytes": 84673,
+      "originalSHA256": "650f95b0e502b9d01e5986db133388b22a723622ebb0071c187c534a0e2f157f",
+      "pass": true
+    },
+    {
+      "file": "nanite-material-precache-20261112.json",
+      "bytes": 220126,
+      "originalBytes": 314711,
+      "originalSHA256": "e151fafc9895e8cfa901e533a7c3082a43737c79223209b7144db6ec8094c17f",
+      "pass": true
+    },
+    {
+      "file": "nanite-micro-batch-20261113.json",
+      "bytes": 29624,
+      "originalBytes": 211515,
+      "originalSHA256": "562a84c894bab02b7ec30b16f666541899cc3c7d9724cd1ebc8f223ddb696299",
+      "pass": true
+    },
+    {
+      "file": "nanite-micro-profile-cleanup-20261113.json",
+      "bytes": 2965,
+      "originalBytes": 2590,
+      "originalSHA256": "5721d929e276f11b96b1f9ceabedd5d4e7ded53ee969f4788f3c52bf6a35c6ee",
+      "pass": true
+    },
+    {
+      "file": "nanite-motion-shadow-fix-20261112.json",
+      "bytes": 66891,
+      "originalBytes": 63483,
+      "originalSHA256": "c63a5dc0d2944213ab01d67459e5aee2b18baa216deb8151f3ba8ee2b1d57207",
+      "pass": true
+    },
+    {
+      "file": "nanite-native-composition-20261110.json",
+      "bytes": 70626,
+      "originalBytes": 1864006,
+      "originalSHA256": "21d693ed997c88aab077399c4df1ac4804074219841ff53750fc5b9d466fdfe4",
+      "pass": true
+    },
+    {
+      "file": "nanite-native-materials-20261110.json",
+      "bytes": 53820,
+      "originalBytes": 1455098,
+      "originalSHA256": "9555477232e475cbb6a4de2792dabc84197b958cfe522d0c4b4f4a6c42513ddf",
+      "pass": true
+    },
+    {
+      "file": "nanite-native-streaming-20261110.json",
+      "bytes": 12912,
+      "originalBytes": 2609089,
+      "originalSHA256": "fd3b30f43354f9701b0d6e214b8f249ad9387608c89df116b18711013d40448b",
+      "pass": true
+    },
+    {
+      "file": "nanite-occlusion-batch-20261112.json",
+      "bytes": 117357,
+      "originalBytes": 183764,
+      "originalSHA256": "b4fb332345e86af43a93390569b598abf1e3fed01a43e8da5cd924655206ec48",
+      "pass": true
+    },
+    {
+      "file": "nanite-off-regression-20261111.json",
+      "bytes": 51532,
+      "originalBytes": 66432,
+      "originalSHA256": "d71314ff66cb1664d826503efeb284283fefacdf9529938e5d8edd19f351e6f2"
+    },
+    {
+      "file": "nanite-on-off-gap-20261112.json",
+      "bytes": 19185,
+      "originalBytes": 17946,
+      "originalSHA256": "9150db2abb319bad01d300a8b7598c67257ee59e043bb3976178eb2a37cae12a",
+      "pass": true
+    },
+    {
+      "file": "nanite-pack-batch-20261112.json",
+      "bytes": 115990,
+      "originalBytes": 288406,
+      "originalSHA256": "31f5b722112ca060f2336cc192f6523fbb56e4aea532ef05c16e40df85df8430",
+      "pass": true
+    },
+    {
+      "file": "nanite-primitive-visibility-20261111.json",
+      "bytes": 72285,
+      "originalBytes": 68866,
+      "originalSHA256": "293a66d159287093249789e4ea4e2d59795d4c77e1f9c7d53ee9a9431d3d0eac",
+      "pass": true
+    },
+    {
+      "file": "nanite-programmable-20261110.json",
+      "bytes": 52774,
+      "originalBytes": 18371100,
+      "originalSHA256": "58e87cd1cd97ef8323e830f8ebd015149c5853de9409e7a2fc6de002218da337",
+      "pass": true
+    },
+    {
+      "file": "nanite-raster-batch-20261111.json",
+      "bytes": 73209,
+      "originalBytes": 69500,
+      "originalSHA256": "5faf35baa4d2719ea1135da56afffe2bbf20abaf3230222911243299091baed9",
+      "pass": true
+    },
+    {
+      "file": "nanite-release-20261111.json",
+      "bytes": 30507,
+      "originalBytes": 28753,
+      "originalSHA256": "3899480611517039dcceb5a0c87f84b5ee3d9764b65e3841f0641cf6a3a11dbe",
+      "pass": true
+    },
+    {
+      "file": "nanite-release-launcher-failure-20261111.json",
+      "bytes": 20267,
+      "originalBytes": 19218,
+      "originalSHA256": "c1b47f16eb71587030bdf8412af72e2af3859a22133c7d1fdbf0674e1f691c9c",
+      "pass": false
+    },
+    {
+      "file": "nanite-rigid-batch-20261114.json",
+      "bytes": 154518,
+      "originalBytes": 207513,
+      "originalSHA256": "44413dc0f78a5e97b7d0f94f3a7bd3613077a146b77097ccbb12e3a73f0dd9e9",
+      "pass": true
+    },
+    {
+      "file": "nanite-runtime-profile-20261110.json",
+      "bytes": 11468,
+      "originalBytes": 14829425,
+      "originalSHA256": "d2e86757e1945a464797ffb32786e016387a5d8889c8c310e655571e61b5c50e",
+      "pass": true
+    },
+    {
+      "file": "nanite-shade-binning-20261113.json",
+      "bytes": 60323,
+      "originalBytes": 174233,
+      "originalSHA256": "3e52304c9dc9926312c22cc3feb0849cf23e270c9a95b691cb52ae9e48c67367",
+      "pass": true
+    },
+    {
+      "file": "nanite-sidedness-20261110.json",
+      "bytes": 30063,
+      "originalBytes": 2872992,
+      "originalSHA256": "fb9e08a5d665c62d0bac32866b14efdf68303595ebd3e5aac825232ffe5d017c",
+      "pass": true
+    },
+    {
+      "file": "nanite-skinning-20261111.json",
+      "bytes": 2270,
+      "originalBytes": 400515883,
+      "originalSHA256": "deaf122615702c177a7b8efb899289dea039050fc46401c78297d1abe0f3e521",
+      "pass": true
+    },
+    {
+      "file": "nanite-spline-20261110.json",
+      "bytes": 59872,
+      "originalBytes": 182149844,
+      "originalSHA256": "da80db6dae98b4cfa4e08d60265b1fcd0fdd537bf19b95859ec36d44c23bf1c4",
+      "pass": true
+    },
+    {
+      "file": "nanite-streaming-budget-20261110.json",
+      "bytes": 23166,
+      "originalBytes": 1405126,
+      "originalSHA256": "1266efa5b3b802e064cdae8331222e81446c18efe7615be0b8944628302b5e0d",
+      "pass": true
+    },
+    {
+      "file": "nanite-user-performance-20261111.json",
+      "bytes": 20196,
+      "originalBytes": 18931,
+      "originalSHA256": "cca57b244398777a9ecee95bc1479fcb775e989d1e53bb5c18e13e7289801104",
+      "pass": true
+    },
+    {
+      "file": "nanite-wpo-20261110.json",
+      "bytes": 44424,
+      "originalBytes": 61554180,
+      "originalSHA256": "9d53c48e6905176517f11661572033429bd7021257999827d831e9e5a651cba1",
+      "pass": true
+    },
+    {
+      "file": "niagara-finite-web-20261111.json",
+      "bytes": 14366,
+      "originalBytes": 13466,
+      "originalSHA256": "0178c2169d0703678dab964c3e58f5cf4e671ea7f29a3b14825fa438779fe1a5",
+      "pass": true
+    },
+    {
+      "file": "test-cache-cleanup-20261113.json",
+      "bytes": 7496,
+      "originalBytes": 6825,
+      "originalSHA256": "05033d9fedf40d8ace6256ea3d65e6669456fb0a3709dc8bf8be2e82aaf5327f",
+      "pass": true
+    },
+    {
+      "file": "vectorvm-web-20261111.json",
+      "bytes": 31230,
+      "originalBytes": 29458,
+      "originalSHA256": "ebbdc57d76b68e89b3d1b9f13882e30e2582ef88daeb48f14a5ad5c2030c3381",
+      "pass": true
+    },
+    {
+      "file": "villa-baseline-comparison-20261111.json",
+      "bytes": 28901,
+      "originalBytes": 27170,
+      "originalSHA256": "95ae95cd5f069b1388a0902cf88b9db522c3af27bbb18d231de2f7718351fb3f",
+      "pass": true
+    },
+    {
+      "file": "villa-low-frames-20261115.json",
+      "bytes": 21181,
+      "originalBytes": 19826,
+      "originalSHA256": "6abcbad50d54324e910a79634c6b284230761b5ef18578a8b27bc832b892c8ad",
+      "pass": true
+    },
+    {
+      "file": "villa-nanite-off-delivery-20261111.json",
+      "bytes": 13716,
+      "originalBytes": 12799,
+      "originalSHA256": "86abdc7245479683505a0230672964f15cf1a546cfd97c822c8be70621d400e0",
+      "pass": true
+    },
+    {
+      "file": "villa-performance-20261115.json",
+      "bytes": 15724,
+      "originalBytes": 14498,
+      "originalSHA256": "bb6afa4306c781aca61e087f52d9a500e788d6493fbe918135a8b2c0af8cb704",
+      "pass": true
+    },
+    {
+      "file": "villa-presentation-20261115.json",
+      "bytes": 3023,
+      "originalBytes": 2539,
+      "originalSHA256": "d925ce7998544f042133ee687e861578517d0b3c6d1d0b1bc731881a77837b91",
+      "pass": true
+    },
+    {
+      "file": "villa-project-settings-20261115.json",
+      "bytes": 6083,
+      "originalBytes": 5415,
+      "originalSHA256": "a34363236b47ec9c7966a5641e3198ec72107a087c426ed56a50f4638b77056e",
+      "pass": true
+    },
+    {
+      "file": "web-local-recovery-20261110.json",
+      "bytes": 34327,
+      "originalBytes": 44875,
+      "originalSHA256": "f8c9f1d7d40883d5b8fae79e6256e90e8de1bd08872fd51fe8ab92b983a0e16d",
+      "pass": true
+    },
+    {
+      "file": "web-local-stale-recovery-20261111.json",
+      "bytes": 44196,
+      "originalBytes": 55146,
+      "originalSHA256": "cdec498321b79df6ee01d917c50731c1e84b6eec4dc0c8c5626291abce35839a",
+      "pass": true
+    }
+  ],
+  "boundary": "Summaries preserve original verdicts and available measurements. Omitted payloads remain in the local evidence directory and its external backup. These historical reports are not a new test run."
+}

@@ -1,0 +1,399 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-instance-distance-20261110.json",
+    "bytes": 2102767,
+    "sha256": "26ad4658caa03336d2bd34793d9a02494499867ce7aa268d0184ab257a96c7bc",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-09T22:31:09.000Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-instance-distance-evidence.cjs",
+      "sha256": "d48fb353013a87110f1a60ac5b406a792f085cd9fc3ff4a14e20aa6dff86920b"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-default-scene\\package.json",
+      "sha256": "79859b972d4212008ece479869a6f781d9127eeb57065d2ce2e470bb669e2d82"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "4afdf17e3da8d7ab98a76cc8c9af3644522b3e3ee1656aa487cb8184224f6039"
+    },
+    "cook": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-cook-results.json",
+      "sha256": "4470d832144c683bdf7e7929d085b0ab230bd91345b81ecdc03179f7b14193a1"
+    },
+    "nativeSources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteCullingCommon.ush",
+        "sha256": "cc7995489aaedb0d63637e8684f3b409cb2678adf1f1ac5726010327ed03d992"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\PrimitiveUniformShaderParameters.cpp",
+        "sha256": "6ff3fc29820c69afe1f3b02ee16d462f716963be4bd436731832da37636bb350"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Rendering\\NaniteResources.cpp",
+        "sha256": "5282cfc0bcc4ff395288854a695b3e6c2a87a7cd8387a567c7c83e63e2ccf330"
+      }
+    ],
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 3549,
+        "pipelines": {
+          "requested": 1794,
+          "completed": 1794,
+          "failed": 0
+        },
+        "steps": [
+          {
+            "step": 1,
+            "selected": 6,
+            "coverage": 675,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 2,
+            "selected": 2,
+            "coverage": 306,
+            "components": [
+              1,
+              1
+            ]
+          },
+          {
+            "step": 3,
+            "selected": 0,
+            "coverage": 0,
+            "components": [
+              0,
+              0
+            ]
+          },
+          {
+            "step": 4,
+            "selected": 6,
+            "coverage": 676,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 5,
+            "selected": 2,
+            "coverage": 182,
+            "components": [
+              1,
+              1
+            ]
+          },
+          {
+            "step": 6,
+            "selected": 0,
+            "coverage": 0,
+            "components": [
+              0,
+              0
+            ]
+          },
+          {
+            "step": 7,
+            "selected": 12,
+            "coverage": 1963,
+            "components": [
+              6,
+              6
+            ]
+          },
+          {
+            "step": 8,
+            "selected": 2,
+            "coverage": 1142,
+            "components": [
+              1,
+              1
+            ]
+          },
+          {
+            "step": 9,
+            "selected": 6,
+            "coverage": 328,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 10,
+            "selected": 12,
+            "coverage": 1964,
+            "components": [
+              6,
+              6
+            ]
+          },
+          {
+            "step": 11,
+            "selected": 6,
+            "coverage": 675,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 12,
+            "selected": 3,
+            "coverage": 406,
+            "components": [
+              1,
+              2
+            ]
+          },
+          {
+            "step": 13,
+            "selected": 1,
+            "coverage": 205,
+            "components": [
+              1,
+              0
+            ]
+          },
+          {
+            "step": 14,
+            "selected": 3,
+            "coverage": 410,
+            "components": [
+              1,
+              2
+            ]
+          },
+          {
+            "step": 15,
+            "selected": 7,
+            "coverage": 860,
+            "components": [
+              4,
+              3
+            ]
+          },
+          {
+            "step": 16,
+            "selected": 6,
+            "coverage": 804,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 17,
+            "selected": 3,
+            "coverage": 389,
+            "components": [
+              3,
+              0
+            ]
+          }
+        ]
+      },
+      {
+        "scalar": true,
+        "frames": 3502,
+        "pipelines": {
+          "requested": 1793,
+          "completed": 1793,
+          "failed": 0
+        },
+        "steps": [
+          {
+            "step": 1,
+            "selected": 6,
+            "coverage": 676,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 2,
+            "selected": 2,
+            "coverage": 306,
+            "components": [
+              1,
+              1
+            ]
+          },
+          {
+            "step": 3,
+            "selected": 0,
+            "coverage": 0,
+            "components": [
+              0,
+              0
+            ]
+          },
+          {
+            "step": 4,
+            "selected": 6,
+            "coverage": 678,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 5,
+            "selected": 2,
+            "coverage": 183,
+            "components": [
+              1,
+              1
+            ]
+          },
+          {
+            "step": 6,
+            "selected": 0,
+            "coverage": 0,
+            "components": [
+              0,
+              0
+            ]
+          },
+          {
+            "step": 7,
+            "selected": 12,
+            "coverage": 1964,
+            "components": [
+              6,
+              6
+            ]
+          },
+          {
+            "step": 8,
+            "selected": 2,
+            "coverage": 1141,
+            "components": [
+              1,
+              1
+            ]
+          },
+          {
+            "step": 9,
+            "selected": 6,
+            "coverage": 330,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 10,
+            "selected": 12,
+            "coverage": 1964,
+            "components": [
+              6,
+              6
+            ]
+          },
+          {
+            "step": 11,
+            "selected": 6,
+            "coverage": 672,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 12,
+            "selected": 3,
+            "coverage": 406,
+            "components": [
+              1,
+              2
+            ]
+          },
+          {
+            "step": 13,
+            "selected": 1,
+            "coverage": 202,
+            "components": [
+              1,
+              0
+            ]
+          },
+          {
+            "step": 14,
+            "selected": 3,
+            "coverage": 406,
+            "components": [
+              1,
+              2
+            ]
+          },
+          {
+            "step": 15,
+            "selected": 7,
+            "coverage": 861,
+            "components": [
+              4,
+              3
+            ]
+          },
+          {
+            "step": 16,
+            "selected": 6,
+            "coverage": 801,
+            "components": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 17,
+            "selected": 3,
+            "coverage": 389,
+            "components": [
+              3,
+              0
+            ]
+          }
+        ]
+      }
+    ],
+    "automatic": [
+      {
+        "scalar": false,
+        "frames": 4427,
+        "steps": 8
+      },
+      {
+        "scalar": true,
+        "frames": 4300,
+        "steps": 8
+      }
+    ],
+    "resolvedHostFailure": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-cook-host-20261110-062151.log",
+      "sha256": "44cd848081d29c78597cc1efe998d19ce9b1a3eb73c0f74a83b58782c9c7f644"
+    },
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 2094540,
+      "sha256": "4c04afbf8ee4de2bfd7c47b758412405c070793fd840d712249c4f52532a0e67"
+    },
+    "boundary": "Real Cooked streamable Nanite spheres and materials in ordinary ISM/HISM components. CPU instance range matches native center-distance and scalability semantics; GPU traversal/raster and fallback suppression are read back. GPU-only instances, remaining view/fade policies and full-scene performance remain open."
+  }
+}

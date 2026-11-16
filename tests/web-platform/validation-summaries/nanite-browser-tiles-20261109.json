@@ -1,0 +1,528 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-browser-tiles-20261109.json",
+    "bytes": 1000073,
+    "sha256": "1e5a6aa01ef9f8cf3bd6254d39f52bf65eb9a1cb22db03ead4d828960d7690e7",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-09T01:35:35.597Z",
+    "pass": true,
+    "canvasTransitions": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-canvas-transitions.json",
+        "sha256": "6cf69d6d553d5216daa6b729ed9deb3a9c7bb3825e519ef67a2eaa059ec72d9e"
+      },
+      "pass": true,
+      "checks": [
+        {
+          "name": "canvas-backbuffer-accept-rdg-epilogue",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-partial-srv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-uav",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-expired-frame",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-actual-srv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-restores-rtv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-restores-present",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-preserves-clear",
+          "pass": true
+        }
+      ],
+      "runtime": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-canvas-transitions-native-rhi\\rhi-results.json",
+        "sha256": "e7d121a10222818fd8b8ef60c505e6a69732eff034ec4ddead847b0325b15a96"
+      },
+      "log": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "object",
+        "bytes": 179,
+        "sha256": "5f7e9ffb7feeaa9abae8114f8557afcb45815b4e5b488fcc90ae18a1875fb99b"
+      },
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-canvas-transitions.ps1",
+          "sha256": "a80142b999aa39d738393605f393df84d599106409ff1bf06ac71eaa0e4f46ea"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp",
+          "sha256": "a5f34089154d27a9fe71d5b7856b4972f0cc9e4eb63cf79ff678ea0d8d55e5d7"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitionProbe.cpp",
+          "sha256": "a07a4a411b89d95ddc21676cb1c9f5e88a3a2a3f27c06e081b0ac97b4d33caf9"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitionProbe.h",
+          "sha256": "af269d537218d6a92476150d25d93a927d98b74988e87a911eee10c7ac03838c"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+          "sha256": "ae12fd2b1eff09fa07df312fc30495a42be05d4d884254b4314c061544172017"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPURHIProbe.cpp",
+          "sha256": "ee07c89ddbecffd9fe82a7fb8dfc28c3eb9c3415e769d55161037a119f704834"
+        }
+      ],
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Binaries\\Win64\\UnrealEditor-WebGPURHI.dll",
+          "sha256": "9847abe27c5e12457e177bee6175f64743a47dca241b1b006ffe5fa670a47e4b"
+        }
+      ]
+    },
+    "referenceCommit": "e16eaf18b2934559b4111ee8633dcce3d667d535",
+    "browser": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 325661,
+      "sha256": "d1beead7d7c5659449a0037f37247ad5f92a809309195a835a774a19ce94e02b"
+    },
+    "package": {
+      "date": "2026-11-09T01:28:00.396Z",
+      "pass": true,
+      "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser",
+      "build": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+        "sha256": "21d93ffbb8ee9ed0f7045afd3b5ae4be5e3b4d5061b3ad235b0678c2005614cd"
+      },
+      "native": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\verified.json",
+        "sha256": "0f3f051e2b224c72848bafbbf2f50770b318bddff33bbb674e4e4d888d2cf9b7"
+      },
+      "browserOracle": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\browser-results.json",
+        "sha256": "16c48ab41c9151e2c917430aa4d9e28470142cf57351e8cf55ded52f40e5d03a"
+      },
+      "archive": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\uploader-global-shaders.bin",
+        "sha256": "09290c026a79a9da4ff556903a1507dc31963d3457a2b372b9459f0957e5791f"
+      },
+      "hierarchyShaders": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\verified.json",
+        "sha256": "3467b1fcfb2ec30cecfea44634445465ed87bdfec9a57280cd6e2f7edc144e09"
+      },
+      "baseline": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\content.bin",
+          "sha256": "7b809d558609dda228024c9eab0e6c9dd8e899715da68ec3b5c52e3762bd915d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\content-files.json",
+          "sha256": "f608f0dca802946a5abbbc83ca261750db3bd1b411ee2c448db441f7dc73194e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\config-files.json",
+          "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\index.html",
+          "sha256": "fa4d27a0e08a3dbdc021d6b89a9e225c6493f3aad3d1c280bd7ec8b6bd84a036"
+        }
+      ],
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-runtime.cjs",
+          "sha256": "6cf8585cbc9445ad88dd51090fad328e58cbd6fd07b115ff7ed875c20d9f0261"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-host.js",
+          "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "c7b6d779c2b2feefab3f9980505cd4cfa1af8ad36386e36726a8911cea144fb0"
+        }
+      ],
+      "cookedResource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\resources.cooked.bin",
+        "sha256": "08db60680ea1e67239933b7ca19c2e2168fda301607b6c53ec49fe9f5ca4b957"
+      },
+      "sourceTriangles": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\source-triangles.bin",
+        "sha256": "b6823c0f37c541cfc4447ddd45d855fcbbd28e1c31715d9a91c95e27015fbd70"
+      },
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\index.html",
+          "sha256": "0fbad54a6b20de224b591e15f3902020ea252f7d7d194d3832c096efa340df49"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\content.bin",
+          "sha256": "dbd8c0fb5e37aaee18c78495affeca9a18ec07df8ccf3fae0535307e35903240"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\content-files.json",
+          "sha256": "b5a2b047207b430a2a83568697129afea8f1ebb8f37471da88966f7f443af993"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\config-files.json",
+          "sha256": "f59cbb29faf01d82ab6739c9de0c5bc41d56bcb5de9c6a5583768c505c61536a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-engine-host.js",
+          "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-engine-worker.js",
+          "sha256": "c7b6d779c2b2feefab3f9980505cd4cfa1af8ad36386e36726a8911cea144fb0"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.js",
+          "sha256": "8bea871e75bd5dc3e88c7422934fab97e5237968c5544bdb5284bce8089d8cc0"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.wasm",
+          "sha256": "1809bb83e941b22937125d89e3e9afbe08f657c076386ba8470d0c9e21120137"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\asset-versions.json",
+          "sha256": "039b10def28c4ac1d6569684d861bc67de20aa9995d327553811690966f97fe9"
+        }
+      ],
+      "boundary": "Existing Villa Cook plus resident Nanite depth, visible records and constant DefaultLit GBuffer export/snapshot global shaders. Explicit component bindings and default-off toggles; no whole-level Cook, arbitrary UMaterial graph, lightmaps, Substrate or complete scene acceptance."
+    },
+    "build": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 162409,
+      "sha256": "cd782e66c9becb5561b67a497825191a8fe457e82acbae760d1b3938b3c55ad5"
+    },
+    "native": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\verified.json",
+        "sha256": "0f3f051e2b224c72848bafbbf2f50770b318bddff33bbb674e4e4d888d2cf9b7"
+      },
+      "policyChecks": 21,
+      "modes": [
+        {
+          "bypass": false,
+          "adapter": "D3D12 driver version 32.0.16.2101 NVIDIA GeForce RTX 4090",
+          "minimumWaveSize": 32,
+          "maximumWaveSize": 32,
+          "cases": [
+            {
+              "prefix": 0,
+              "index": 0,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 1,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 2,
+              "pages": 2,
+              "dispatches": 3,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 3,
+              "pages": 2,
+              "dispatches": 4,
+              "pass": true
+            }
+          ],
+          "errors": [],
+          "pass": true
+        },
+        {
+          "bypass": true,
+          "adapter": "D3D12 driver version 32.0.16.2101 NVIDIA GeForce RTX 4090",
+          "minimumWaveSize": 32,
+          "maximumWaveSize": 32,
+          "cases": [
+            {
+              "prefix": 0,
+              "index": 0,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 1,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 2,
+              "pages": 2,
+              "dispatches": 3,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 3,
+              "pages": 2,
+              "dispatches": 4,
+              "pass": true
+            }
+          ],
+          "errors": [],
+          "pass": true
+        }
+      ],
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-0-0-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-0-1-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-0-2-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-0-2-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-0-3-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-0-3-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-1-0-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-1-1-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-1-2-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-1-2-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-1-3-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\page-1-3-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        }
+      ],
+      "runtimeShaderArchive": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-092225\\uploader-global-shaders.bin",
+        "sha256": "09290c026a79a9da4ff556903a1507dc31963d3457a2b372b9459f0957e5791f"
+      }
+    },
+    "hierarchyShaders": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\verified.json",
+        "sha256": "3467b1fcfb2ec30cecfea44634445465ed87bdfec9a57280cd6e2f7edc144e09"
+      },
+      "binary": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Binaries\\Win64\\UnrealEditor-UEShaderHost.dll",
+        "sha256": "1b88623dfe976f14b2ee8bcf54d114fd3d30e495389864b1653a26610b14871c"
+      },
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebHierarchy.cpp",
+          "sha256": "14369dc103d875f9b593ed77796e857ceb7bae7998c6bc5266a3c8e7d6d210cb"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteHierarchy.usf",
+          "sha256": "fb02290b49d471754be05d7d8a8d2876760b51682e61cb2038e889a24a8677b2"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebRaster.cpp",
+          "sha256": "26c758307e7911f54b15971e64518a8c65fc9d858542d617c716be485b56873d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteRaster.usf",
+          "sha256": "c6aa68ae54fb57781d9e45ca55f60a55bdba6c1beb2882ca006b2323c09a9e5e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebDepth.cpp",
+          "sha256": "7cc09da72272bcbc679aa1170aeba542da4755b3674b5f4bf2b8b8e1adcba500"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteDepth.usf",
+          "sha256": "40f32f2ba9d0e48cd7f12b5c9ec0a9f17cdabd0f45f51c1e4bcc0af77aaf027a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebGBuffer.cpp",
+          "sha256": "48f7ae91ae716d460f77495bf4535e18f62589937b19e737dada259e3d858252"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteGBuffer.usf",
+          "sha256": "a1cfe88649712050de55a58e1c881f1ff3b0066ad8e8992fab54b14be4202498"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteDataDecode.ush",
+          "sha256": "c8c57dcc4e71ba964c4a08d4d03a659a8646c641afdc872d4f66c75539c892c5"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Shared\\NaniteDefinitions.h",
+          "sha256": "7e439de653d4067deac388d7c6ae8b587057303d0146e1e6e00ba5c2879d76ba"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteHierarchyProbe.cpp",
+          "sha256": "91e0816d04c9f2483af1f1d710d3ec214ae801c5deacc7e0d632d14de33bcae8"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebShaderProbeCommandlet.cpp",
+          "sha256": "69cc7a52aa078c8c4f52fcb4e3e81764f39061388033a9e2f3932c0988cd68c3"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\UEShaderHost.Build.cs",
+          "sha256": "5d94f99c3b84f2e1a219b54cb06cfa5443b6dc6d8c1207192a4d1fc322f7ca74"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\UEShaderHost.uproject",
+          "sha256": "e40ef4964c50fc85b89a08dfdae9dc1735fc14c74b25cf6cd2b20cf49e1e197d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\compile-nanite-hierarchy.ps1",
+          "sha256": "ff3bedc1ffe6479456e416872a83d45900497cf823addfb7c7c21eb291a2fc25"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-cook-shaders.cjs",
+          "sha256": "23ad20ea7b6536ebc0ebf7942875458c01bbaf864cb5ef29d79c4bae1c58c604"
+        }
+      ],
+      "shaderInputs": {
+        "$omitted": true,
+        "reason": "Large array",
+        "type": "array",
+        "entries": 1234,
+        "bytes": 226603,
+        "sha256": "ea65aaea66ee6f68016fcc828eef89b32c999c218e669addb988918e8bf9615e"
+      },
+      "logs": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "array",
+        "entries": 2,
+        "bytes": 354,
+        "sha256": "86e56d3c09a16c3142a3fd1a2c69cb7f5acdd1d11de43a2d9545e3911104a622"
+      },
+      "compiler": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Binaries\\Win64\\UnrealEditor-WebGPUShaderFormat.dll",
+          "sha256": "008cefeab497b7877dfa7f5d808039ca481770f15060c0a2716d0dcb4e35bd7e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\dawn-v20261009.190412\\bin\\tint.exe",
+          "sha256": "4ee682cf76942170f5fcb035c44d32d1888f8134d74756ff28c6773bed6c4536"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\dawn-v20261009.190412\\bin\\tint_info.exe",
+          "sha256": "9b8c51fd8e21ef7ad2f8bf3ac45c90e6f3c3b1fe94d1c3cc4da42c04c3e59c80"
+        }
+      ],
+      "pass": true,
+      "archive": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\hierarchy-global-shaders.bin",
+        "sha256": "b1147ac4e51909e7370139ef1589a7d7cef182ac6dd1b2149946fb2f6fb35f3a"
+      }
+    },
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-browser-evidence.cjs",
+        "sha256": "60254c4f00dfdfea0e9be41ae474458ab9493d907b49f0d1975384b5c79291da"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1",
+        "sha256": "7ce290ea412a8fde060d1c4f5312bb59ec0ca657a56f0b65f0c14d18d458c6a6"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\UE58_WEBGPU_NANITE_IMPLEMENTATION.md",
+        "sha256": "dc366cb3e85ded6eba13f2b67d9bc840a02a123a8f545d9efb918f03113e4d8a"
+      }
+    ],
+    "boundary": "Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures now write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Zero-fallback fixtures verify this subset. GPU-compacted 8x8 tiles and indirect draws replace fullscreen instance shading; no arbitrary UMaterial graph, lightmaps, normal maps, Substrate, shared material bins, LOD/HZB/streaming or complete-scene acceptance.",
+    "gbufferPreview": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-tiles-20261109.png",
+      "sha256": "112b9d95be92d473a131ff33b2759fad2e35e88c7b2c0ab976d6a3265359b03b"
+    },
+    "sceneScreenshots": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-tiles-20261109-scene-7.png",
+        "sha256": "a1f0e70c8612891d1549beeee9d7824c1f42516515676673a0efd36228068fa5"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-tiles-20261109-scene-8.png",
+        "sha256": "967c536407ab4d2e9971a1b1f564e7adda3ea37d8c156179eb7fa3c5d6d70755"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-tiles-20261109-scene-9.png",
+        "sha256": "8aa1f2a209e5f9b1b840c4cc745008573127afcc65e82555f59d511c1e7b01bd"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-tiles-20261109-scene-10.png",
+        "sha256": "ed3fee3fd1851f02440ab3aab5685376a3665127f84f244185445f90c212f6b9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-tiles-20261109-scene-11.png",
+        "sha256": "8e33bcb99c195c2e5b5cc980ac0930dedc11fa5494728b90d44a4469cff1df59"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-tiles-20261109-scene-12.png",
+        "sha256": "e537dcfc02543a17816c07014fa9cc9d068170a27bd847c78084ca2e91b39a7c"
+      }
+    ]
+  }
+}

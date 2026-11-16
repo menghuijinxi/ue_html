@@ -1,0 +1,840 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-assembly-20261111.json",
+    "bytes": 45748,
+    "sha256": "4ef869d6f6d6b6fded0b3fb4907f6aa669e55b4688ee118f60bf8da73dd2e6b1",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T23:35:03.151Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-assembly-evidence.cjs",
+      "sha256": "575b479d2442c8abe10af58968a49e2ec6343c6cb113317cda8fe53a6e69ee36"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\package.json",
+      "sha256": "a92fdeae4b3eb2c406793290e95385f4552531104071205f57caef383015ee47"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "1ecfa1ca3133f61183ed21d56c6b2fbd2350037f483384dcd5ee355d8b931961"
+    },
+    "regression": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-skinning-20261111.json",
+      "sha256": "deaf122615702c177a7b8efb899289dea039050fc46401c78297d1abe0f3e521"
+    },
+    "summaries": [
+      {
+        "kind": "static",
+        "suite": "scene",
+        "scalar": false,
+        "steps": 34,
+        "frames": 20282
+      },
+      {
+        "kind": "static",
+        "suite": "streaming",
+        "scalar": false,
+        "steps": 9,
+        "frames": 2332
+      },
+      {
+        "kind": "static",
+        "suite": "budget",
+        "scalar": false,
+        "steps": 45,
+        "frames": 18653
+      },
+      {
+        "kind": "static",
+        "suite": "scene",
+        "scalar": true,
+        "steps": 34,
+        "frames": 18296
+      },
+      {
+        "kind": "static",
+        "suite": "streaming",
+        "scalar": true,
+        "steps": 9,
+        "frames": 2290
+      },
+      {
+        "kind": "static",
+        "suite": "budget",
+        "scalar": true,
+        "steps": 45,
+        "frames": 18459
+      },
+      {
+        "kind": "skin",
+        "suite": "scene",
+        "scalar": false,
+        "steps": 34,
+        "frames": 20607
+      },
+      {
+        "kind": "skin",
+        "suite": "streaming",
+        "scalar": false,
+        "steps": 9,
+        "frames": 2180
+      },
+      {
+        "kind": "skin",
+        "suite": "budget",
+        "scalar": false,
+        "steps": 45,
+        "frames": 18165
+      },
+      {
+        "kind": "skin",
+        "suite": "scene",
+        "scalar": true,
+        "steps": 34,
+        "frames": 20643
+      },
+      {
+        "kind": "skin",
+        "suite": "streaming",
+        "scalar": true,
+        "steps": 9,
+        "frames": 2185
+      },
+      {
+        "kind": "skin",
+        "suite": "budget",
+        "scalar": true,
+        "steps": 45,
+        "frames": 18328
+      }
+    ],
+    "shaderChecks": 60,
+    "materialTileChecks": 14,
+    "kernelChecks": 121,
+    "hierarchyPipelineChecks": 4,
+    "oracleRejections": 54,
+    "payloadEncoding": "gzip-json-files",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "object",
+      "bytes": 4581,
+      "sha256": "4eb35a49931e316ed53165c2431ece9ca165702f6a3af48b64739b936858a536"
+    },
+    "failureFiles": [
+      {
+        "directory": "failure-archive-size",
+        "name": "collect-nanite-assembly-evidence.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-archive-size\\collect-nanite-assembly-evidence.cjs",
+        "sha256": "af81b9e68e6ce0689ab2ff17147821719e872706b4bb456acd37c97594aef346",
+        "encoding": "gzip-file",
+        "bytes": 9979,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-archive-size\\collect-nanite-assembly-evidence.cjs.gz",
+          "sha256": "32741908f000a9dbd54a2e383043ec266103e5d5691bd054fdb0fdbf36f3ffc4"
+        }
+      },
+      {
+        "directory": "failure-archive-size",
+        "name": "collect.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-archive-size\\collect.log",
+        "sha256": "cb8914d558981e54529b4684c1f3866c26aa695525774b0df70e5857b0e5a25a",
+        "encoding": "gzip-file",
+        "bytes": 2514,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-archive-size\\collect.log.gz",
+          "sha256": "82b6a34415185c4604169250df2373af53fd90dd73d2987ac8c35043e64da48e"
+        }
+      },
+      {
+        "directory": "failure-budget-coverage",
+        "name": "browser.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-budget-coverage\\browser.json",
+        "sha256": "a0d71a36ab670e4f4094e1fe3ad9e54c7314a73f9a573387660be4fea2b15d47",
+        "encoding": "gzip-file",
+        "bytes": 13374879,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-budget-coverage\\browser.json.gz",
+          "sha256": "496ee5ef3aece45bd34082fab62845d286ef33a8c28d23f192b5aa83c3c897a4"
+        }
+      },
+      {
+        "directory": "failure-budget-coverage",
+        "name": "budget-diagnostic.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-budget-coverage\\budget-diagnostic.json",
+        "sha256": "ec125ef9e8cdafd4e41c266df211877e5af20fe1397ec77971835704637c9d2e",
+        "encoding": "gzip-file",
+        "bytes": 908441,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-budget-coverage\\budget-diagnostic.json.gz",
+          "sha256": "048869a7e28891d336f5a7ef4324ee3b5692235fc34cfec2ec364dabbb6a0af0"
+        }
+      },
+      {
+        "directory": "failure-budget-coverage",
+        "name": "diagnose-budget.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-budget-coverage\\diagnose-budget.cjs",
+        "sha256": "5ca0d9f0c8460c6115557437c7ef2de22cffccebc19255645820405712f657fc",
+        "encoding": "gzip-file",
+        "bytes": 4285,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-budget-coverage\\diagnose-budget.cjs.gz",
+          "sha256": "5d3131c0b1dcc69ed6ef10c1e771c40492710a0be5aee55f9c6f60ef09709ed5"
+        }
+      },
+      {
+        "directory": "failure-budget-coverage",
+        "name": "probe-nanite-assembly-budget.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-budget-coverage\\probe-nanite-assembly-budget.cjs",
+        "sha256": "2340b784b440520926284236b539852c5c1c915566ffe1bf5687df19e69c065b",
+        "encoding": "gzip-file",
+        "bytes": 5194,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-budget-coverage\\probe-nanite-assembly-budget.cjs.gz",
+          "sha256": "e3415fd5f4161f5ffda291c95480209130fb9b6b32431a7962e34e40b9f1d331"
+        }
+      },
+      {
+        "directory": "failure-budget-coverage",
+        "name": "verify-nanite-budget-coverage.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-budget-coverage\\verify-nanite-budget-coverage.cjs",
+        "sha256": "2d98185bfb27cb58fcf109c37d4eb63ab88cbf3f5ee35847bdbe8adf301ad221",
+        "encoding": "gzip-file",
+        "bytes": 2397,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-budget-coverage\\verify-nanite-budget-coverage.cjs.gz",
+          "sha256": "1a3423bdf80bf10f8cc72509ad07890e25d65299556de813afc5bab8dc5ade5d"
+        }
+      },
+      {
+        "directory": "failure-disabled-assemblies",
+        "name": "fixture-console.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-disabled-assemblies\\fixture-console.log",
+        "sha256": "82619af2a4bb8d609f7e83fc9c183d43a9bca56887511e70365bacc4ad517d47",
+        "encoding": "gzip-file",
+        "bytes": 22206,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-disabled-assemblies\\fixture-console.log.gz",
+          "sha256": "6485da8bd0ff940d269b6db2dea03ec1cb97d4bdabde04d325138dcf06b8c086"
+        }
+      },
+      {
+        "directory": "failure-disabled-assemblies",
+        "name": "fixture.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-disabled-assemblies\\fixture.log",
+        "sha256": "b5ae6c573fecc9d2a8df291f578216888efe3ab61ac3d12c9ca4c2f74c04d176",
+        "encoding": "gzip-file",
+        "bytes": 115477,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-disabled-assemblies\\fixture.log.gz",
+          "sha256": "43b91e23b7568f5d78f2c35cb6e898fa5c31e3bdf1f37f61ba1b642356033eb3"
+        }
+      },
+      {
+        "directory": "failure-duplicate-hzb-registration",
+        "name": "build-missing-predicate.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-duplicate-hzb-registration\\build-missing-predicate.log",
+        "sha256": "0f95f8601b4c70d4ff0dfd0a7c65fe6485502d3705882a292e098c0c07589ff2",
+        "encoding": "gzip-file",
+        "bytes": 1907,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-duplicate-hzb-registration\\build-missing-predicate.log.gz",
+          "sha256": "a15656dc3a4cb8b1ff4778989b0869b2aabf72618a7a05ca1c35d1a133da0ce2"
+        }
+      },
+      {
+        "directory": "failure-duplicate-hzb-registration",
+        "name": "build.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-duplicate-hzb-registration\\build.log",
+        "sha256": "b8d985b0265c5a691580c16d4f14357e3b0d67a5101a3d92e6907d61dcd8df47",
+        "encoding": "gzip-file",
+        "bytes": 12332,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-duplicate-hzb-registration\\build.log.gz",
+          "sha256": "7ac967435cc7567308623209a661d730d9d8f9252f37298ce0186cbfe1131a57"
+        }
+      },
+      {
+        "directory": "failure-global-macro-reset",
+        "name": "occlusion-kernel.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-global-macro-reset\\occlusion-kernel.log",
+        "sha256": "8c6bf4ce6628176deee67f27ff3dedee4c6843042b251cc76fa54ee20e3c319a",
+        "encoding": "gzip-file",
+        "bytes": 305,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-global-macro-reset\\occlusion-kernel.log.gz",
+          "sha256": "98fe8a04442027bace96739ec2ff447dd987f8a60fc4de1536f13f6366743889"
+        }
+      },
+      {
+        "directory": "failure-global-macro-reset",
+        "name": "occlusion.wgsl",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-global-macro-reset\\occlusion.wgsl",
+        "sha256": "d60674db4c59bf82de16a3e5b1bbbfb4f27ca9d54fd9e7b32105fedbac50b3c7",
+        "encoding": "gzip-file",
+        "bytes": 25033,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-global-macro-reset\\occlusion.wgsl.gz",
+          "sha256": "97b3f0254a6eb8859137f3813fd7572bc37b1a418499f3d131fcd895af085979"
+        }
+      },
+      {
+        "directory": "failure-global-macro-reset",
+        "name": "shader.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-global-macro-reset\\shader.log",
+        "sha256": "4351825685f2b0a22c2998c8117993c78d23e813353b0c9e210b251ad3862922",
+        "encoding": "gzip-file",
+        "bytes": 102024,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-global-macro-reset\\shader.log.gz",
+          "sha256": "80764c01e66363f6e5da0acfcbd2596d90dacc74ec75451aab749e5e2734202f"
+        }
+      },
+      {
+        "directory": "failure-helper-link",
+        "name": "build.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-helper-link\\build.log",
+        "sha256": "75c7123ea2b85b4153fac106e5c9ee7461c31f742b07d14ad3bdcd2705f5921b",
+        "encoding": "gzip-file",
+        "bytes": 3194,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-helper-link\\build.log.gz",
+          "sha256": "7ef47a3d1aeff41739a08a8ce29e343334fdc13d763b4442dc679d2714dde5cc"
+        }
+      },
+      {
+        "directory": "failure-hierarchy-bindings-and-io",
+        "name": "browser.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-hierarchy-bindings-and-io\\browser.json",
+        "sha256": "1f0c519d4b5f43ed789abb8b4e60740124b6f4533ece570913bf975165d89307",
+        "encoding": "gzip-file",
+        "bytes": 95866921,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-hierarchy-bindings-and-io\\browser.json.gz",
+          "sha256": "783ae7bd160bffe3f47b7802c89dbc5822f0f6f71294227474734bd3e8ef9e10"
+        }
+      },
+      {
+        "directory": "failure-hierarchy-bindings-and-io",
+        "name": "NaniteWebHierarchy.cpp",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-hierarchy-bindings-and-io\\NaniteWebHierarchy.cpp",
+        "sha256": "6351127423116072a2f94a1813cdef9efb8435e6013395a16a13e34939609e52",
+        "encoding": "gzip-file",
+        "bytes": 14022,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-hierarchy-bindings-and-io\\NaniteWebHierarchy.cpp.gz",
+          "sha256": "d3081a62e83464bfaa2623e711364e602eba98c6286b2140ad1df5e2aef7718f"
+        }
+      },
+      {
+        "directory": "failure-hierarchy-bindings-and-io",
+        "name": "probe-nanite-assembly-streaming.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-hierarchy-bindings-and-io\\probe-nanite-assembly-streaming.cjs",
+        "sha256": "adf9589d6b553a7eb695b9f2ab5c3dee4ebe1d8ad495129ef046f94d821d8b60",
+        "encoding": "gzip-file",
+        "bytes": 16242,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-hierarchy-bindings-and-io\\probe-nanite-assembly-streaming.cjs.gz",
+          "sha256": "5c4389382268839737ef7bea737a00d7416f4cda4e7ccd0ecb9510cc28c5dded"
+        }
+      },
+      {
+        "directory": "failure-hierarchy-bindings-and-io",
+        "name": "regression-static-streaming.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-hierarchy-bindings-and-io\\regression-static-streaming.log",
+        "sha256": "c798ee65d8b32d8e4639fc7098dd3241c53af09ce6d0caa14d4411fe67f3154e",
+        "encoding": "gzip-file",
+        "bytes": 3045,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-hierarchy-bindings-and-io\\regression-static-streaming.log.gz",
+          "sha256": "cc9227efceac80396c5e7ee8138653745af1856a65bf06cba2cd3d4f23da3d84"
+        }
+      },
+      {
+        "directory": "failure-hierarchy-bindings-and-io",
+        "name": "rejected-shader.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-hierarchy-bindings-and-io\\rejected-shader.json",
+        "sha256": "6ac28d1e3e86ae519ed3c49dcce97d731226d827f0961d4dff3cfb17a493b0b3",
+        "encoding": "gzip-file",
+        "bytes": 35645,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-hierarchy-bindings-and-io\\rejected-shader.json.gz",
+          "sha256": "6863c2623c5b342db6ece3b077ac375ab69fb7b6762bf935d47a23649ecca5ee"
+        }
+      },
+      {
+        "directory": "failure-hierarchy-bindings-and-io",
+        "name": "rejected-shader.wgsl",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-hierarchy-bindings-and-io\\rejected-shader.wgsl",
+        "sha256": "b4f5dc9f677e4218a0e42b5dec4c10bceef518f2dfeb9dcaf199b38b507188d5",
+        "encoding": "gzip-file",
+        "bytes": 79775,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-hierarchy-bindings-and-io\\rejected-shader.wgsl.gz",
+          "sha256": "96f005da9b6781b9876d347183e53e500722f8b1af3d69ffc9b1027b908353f6"
+        }
+      },
+      {
+        "directory": "failure-hierarchy-bindings-and-io",
+        "name": "WebNaniteHierarchy.usf",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-hierarchy-bindings-and-io\\WebNaniteHierarchy.usf",
+        "sha256": "8696884d0c061242ce70bba44149dfae322530aac399f34606807440cfd3dab5",
+        "encoding": "gzip-file",
+        "bytes": 9028,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-hierarchy-bindings-and-io\\WebNaniteHierarchy.usf.gz",
+          "sha256": "b3c78de58c8770e8750dbdef848d2ad552956883a1fa4645655857ebd6580017"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "baseline-console.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\baseline-console.log",
+        "sha256": "ebfb508e608b034cedd5952b0605f374db157dad4bf109bdd4f1db033b0be369",
+        "encoding": "gzip-file",
+        "bytes": 1247,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\baseline-console.log.gz",
+          "sha256": "56e04f9930120bdc08b84f7134d042e019290b7000e401ba41dcec16bf864e7d"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "browser.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\browser.json",
+        "sha256": "3e053237c7319ddb67bd4f9cc48d04256985cfabb85d6ba30adead2f2e16b193",
+        "encoding": "gzip-file",
+        "bytes": 1884,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\browser.json.gz",
+          "sha256": "035508ec7271dbfd6ad32dcdef77dbdbe5fc1efcc03694077225ea8a62ca044c"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "console.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\console.log",
+        "sha256": "7aed392e522f7f4df31f034a1e5bc381bd6c450548aa8f1390ded53733754a49",
+        "encoding": "gzip-file",
+        "bytes": 551,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\console.log.gz",
+          "sha256": "cd0814e17276806e6ae48952b861b9117d8d23d274039918ca50b7c2d7bce4bd"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "diagnose.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\diagnose.cjs",
+        "sha256": "6e7cf72a63b392aae6c08c24cef823c7c351a2c27fd17b46a9af4e3691649e6a",
+        "encoding": "gzip-file",
+        "bytes": 3193,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\diagnose.cjs.gz",
+          "sha256": "c2f17be62aacc26c39bdffcab49c6cff2328ecf958f1579a19f232989da2fd13"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "diagnostic-console.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\diagnostic-console.log",
+        "sha256": "0e6910379fdace4fdc0ce527e66b7867d22779ae85f719566f1073dfa2a45ac4",
+        "encoding": "gzip-file",
+        "bytes": 1162,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\diagnostic-console.log.gz",
+          "sha256": "0e82e17659f9d382592d1a47a3eca4b56e8977d7450045b200e15cded83f91cf"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "diagnostic.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\diagnostic.json",
+        "sha256": "250967e96ef9dce501cab7ebc247212634bf75f21ad2934b6170b5634847a7e9",
+        "encoding": "gzip-file",
+        "bytes": 1112,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\diagnostic.json.gz",
+          "sha256": "c9b134e2a5f0da44a24ab61e1966b56cf1d6e9394b2f068007c7769aa331a3aa"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "io-regression.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\io-regression.log",
+        "sha256": "6cc2e66c6aff1a51dd2b679f72e9e89ee2c5d727b2bcb090ff86f61ea5d28d23",
+        "encoding": "gzip-file",
+        "bytes": 3730,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\io-regression.log.gz",
+          "sha256": "2b6f194f668c12a07b8ca93368b439bd7cbe992983cdc3496d055cda159d32ce"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "package.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\package.json",
+        "sha256": "5760765c098b96bb00ff7aecf87bcf109532f6cad1b9578fd5043f5abc6ad3da",
+        "encoding": "gzip-file",
+        "bytes": 10627,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\package.json.gz",
+          "sha256": "9269cbb39953f5d6b7d8b40fa021a0142928b0ed23c8444a03d03de463faba06"
+        }
+      },
+      {
+        "directory": "failure-opfs-invalid-state",
+        "name": "web-content-worker.js",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-opfs-invalid-state\\web-content-worker.js",
+        "sha256": "68162df4a825001e8ff88e939c14bdc85989aee42a1ce80bc1da9c41587befae",
+        "encoding": "gzip-file",
+        "bytes": 13162,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-opfs-invalid-state\\web-content-worker.js.gz",
+          "sha256": "e9fb82b64d99624088e8e74323a2d25c6c5bcf92c7ec6fb2f388d8a21f0b065c"
+        }
+      },
+      {
+        "directory": "failure-pack-reference",
+        "name": "gpu-instance-layout.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-pack-reference\\gpu-instance-layout.log",
+        "sha256": "1b7c5b1156ef46d550fc4cf80288d3cceae7f1f46b843782e09388eed919e32d",
+        "encoding": "gzip-file",
+        "bytes": 394,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-pack-reference\\gpu-instance-layout.log.gz",
+          "sha256": "c210f3cf42efdd0db97cd9a5261261ea44d231407b1c2455fba8da5b2a74de08"
+        }
+      },
+      {
+        "directory": "failure-pack-reference",
+        "name": "pack-kernel.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-pack-reference\\pack-kernel.log",
+        "sha256": "fa64715a951e20b61aeb14a2527ef59ad03877e8c2344d8a669e8086e3b3b8d4",
+        "encoding": "gzip-file",
+        "bytes": 397,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-pack-reference\\pack-kernel.log.gz",
+          "sha256": "f908e5004ce46bc3cbdbad6f01d20c7d7b5360d9f00503297d3b14edac3c4dd1"
+        }
+      },
+      {
+        "directory": "failure-pack-reference",
+        "name": "verify-pack.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-pack-reference\\verify-pack.cjs",
+        "sha256": "43b07f07992555cce9ae738a6b5a5148910c212e3dfc756642fc6fba8b026d43",
+        "encoding": "gzip-file",
+        "bytes": 8920,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-pack-reference\\verify-pack.cjs.gz",
+          "sha256": "8799224efabb1161cebdf6382b58aeba4f4d31442c6f25eff7293010cd2d3c00"
+        }
+      },
+      {
+        "directory": "failure-proxy-wpo-state",
+        "name": "probe-nanite-assembly.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-proxy-wpo-state\\probe-nanite-assembly.cjs",
+        "sha256": "27f8aca61e784aaa6cb7bb6b84cc87cbf465504439533269bfdd755888d640c8",
+        "encoding": "gzip-file",
+        "bytes": 24858,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-proxy-wpo-state\\probe-nanite-assembly.cjs.gz",
+          "sha256": "318e089646f7e786f720a27f31e4a9957b712be6f0fe782c511f257f682c7628"
+        }
+      },
+      {
+        "directory": "failure-proxy-wpo-state",
+        "name": "regression-skin-scene.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-proxy-wpo-state\\regression-skin-scene.log",
+        "sha256": "a66f89c5c468bd79e63de15275f36531677243367e72580b606fa42a0e93e82e",
+        "encoding": "gzip-file",
+        "bytes": 24211,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-proxy-wpo-state\\regression-skin-scene.log.gz",
+          "sha256": "85cf1c1e2f727cfbc11fe2aeb946ecf854c303dea2eee52eb08a1f0756f8f48e"
+        }
+      },
+      {
+        "directory": "failure-refpose-reference",
+        "name": "transform-kernel.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-refpose-reference\\transform-kernel.log",
+        "sha256": "369d4cbb4dbfc67fdb158e146c94c508e9e5e5b09beb5e2ba61a1a3b05b0a391",
+        "encoding": "gzip-file",
+        "bytes": 316,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-refpose-reference\\transform-kernel.log.gz",
+          "sha256": "dc9070495a3267cc039a1956f056a4067731e98fbee36208c1b0a0e46b13516d"
+        }
+      },
+      {
+        "directory": "failure-refpose-reference",
+        "name": "verify-transforms.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-refpose-reference\\verify-transforms.cjs",
+        "sha256": "49fc18ef7f7d4058501d7b79d5e5d9098a885bf697334b0e649edb797e0172ab",
+        "encoding": "gzip-file",
+        "bytes": 8515,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-refpose-reference\\verify-transforms.cjs.gz",
+          "sha256": "931c056263d4b9e4490616b6a59dabb39d05fd1db1a107457f6bf5acb83e5dc5"
+        }
+      },
+      {
+        "directory": "failure-selected-depth",
+        "name": "browser.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-selected-depth\\browser.json",
+        "sha256": "f67f02978baf85dcc5f553cecf99f1653790f38fb72623ef190feaffb8b38d11",
+        "encoding": "gzip-file",
+        "bytes": 38893263,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-selected-depth\\browser.json.gz",
+          "sha256": "f11dc3cf45d3cb802de995bb1c3671e3a1e363f905d668243a21c425f04a6b4e"
+        }
+      },
+      {
+        "directory": "failure-selected-depth",
+        "name": "probe-nanite-assembly-budget.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-selected-depth\\probe-nanite-assembly-budget.cjs",
+        "sha256": "f5260a8eef92914435cf99f7c038a66d9206318da44aabbc1521fea5f6357a3c",
+        "encoding": "gzip-file",
+        "bytes": 5406,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-selected-depth\\probe-nanite-assembly-budget.cjs.gz",
+          "sha256": "285c674641b72daa42ae50363968a5d8d2e5f0433bf90de2eaea9431a2c8cc46"
+        }
+      },
+      {
+        "directory": "failure-selected-depth",
+        "name": "verify-nanite-assembly-budget.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-selected-depth\\verify-nanite-assembly-budget.cjs",
+        "sha256": "b39c87bfd6183ac09921e8aeb815acc249a54aeff7be638e3473e655f5a94260",
+        "encoding": "gzip-file",
+        "bytes": 6272,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-selected-depth\\verify-nanite-assembly-budget.cjs.gz",
+          "sha256": "acc62112e406ad11234a4102daf1979f7ab1c273c092012c5fa8fb6ea0b629b9"
+        }
+      },
+      {
+        "directory": "failure-shader-declaration",
+        "name": "prepare.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-shader-declaration\\prepare.log",
+        "sha256": "48d4d6bfb1149c2aebd7732170e2287c627b2d126553b9e36e79624da5243a6f",
+        "encoding": "gzip-file",
+        "bytes": 15498,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-shader-declaration\\prepare.log.gz",
+          "sha256": "a6ec8e45f86d7da6aaa6c647991cce670d369dd74a48cdd3b2f81a4fb758b500"
+        }
+      },
+      {
+        "directory": "failure-shader-declaration",
+        "name": "run-native-integration.ps1",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-shader-declaration\\run-native-integration.ps1",
+        "sha256": "1b4eb9d177e6edc5485a8e809c4a001775b14b4b19fe24b31578a5cbabc763d1",
+        "encoding": "gzip-file",
+        "bytes": 3937,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-shader-declaration\\run-native-integration.ps1.gz",
+          "sha256": "2fd8cca66121f1b049ae27de83268cc0e058ef0b46a522f2a7789b166351e323"
+        }
+      },
+      {
+        "directory": "failure-shader-declaration",
+        "name": "web-nanite-shader-overrides.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-shader-declaration\\web-nanite-shader-overrides.cjs",
+        "sha256": "72fb7b32f8540afac2dabb2b05cfb1c51ab238a6bdf04e2679e57c96ebc64580",
+        "encoding": "gzip-file",
+        "bytes": 5271,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-shader-declaration\\web-nanite-shader-overrides.cjs.gz",
+          "sha256": "2b528dfc5eb1453183c1c58d2283d9a418f86944ea2c7b82f9cf86f03ba413d0"
+        }
+      },
+      {
+        "directory": "failure-static-merged-velocity",
+        "name": "browser.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-merged-velocity\\browser.json",
+        "sha256": "a9a87a6e19d07fc337b6e28877dfe979b023489edeeee804418cffa56437ab01",
+        "encoding": "gzip-file",
+        "bytes": 11278144,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-merged-velocity\\browser.json.gz",
+          "sha256": "cdd194269e653bd0420fe1b1616b853248d4e645d50cb90792825828c1b2eaf8"
+        }
+      },
+      {
+        "directory": "failure-static-merged-velocity",
+        "name": "probe-nanite-assembly-streaming.cjs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-merged-velocity\\probe-nanite-assembly-streaming.cjs",
+        "sha256": "63806b827edfbba470c8b0ff1dfcfdf313a9f5155fc52cf09ed160852a279c28",
+        "encoding": "gzip-file",
+        "bytes": 16081,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-merged-velocity\\probe-nanite-assembly-streaming.cjs.gz",
+          "sha256": "43f6bc600bcd0f76cacdd841a62e0ce7e10b93dcd406f9f0b3b6efbcbf0334bb"
+        }
+      },
+      {
+        "directory": "failure-static-merged-velocity",
+        "name": "regression-static-streaming.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-merged-velocity\\regression-static-streaming.log",
+        "sha256": "3bc09a846172ba06f43d1fa88cff3b59b6cc7cfdd6ff27a13a6d73614cc2d557",
+        "encoding": "gzip-file",
+        "bytes": 420,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-merged-velocity\\regression-static-streaming.log.gz",
+          "sha256": "4d333c57cd0007cdae15384e431ef1b79c38f5f008c404c528b9823f880b27db"
+        }
+      },
+      {
+        "directory": "failure-static-part-in-skeletal-assembly",
+        "name": "fixture-console.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-part-in-skeletal-assembly\\fixture-console.log",
+        "sha256": "c7405762aba763c6666e8d39e6ca30d27d561808485784b1a93660937d7943cb",
+        "encoding": "gzip-file",
+        "bytes": 25807,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-part-in-skeletal-assembly\\fixture-console.log.gz",
+          "sha256": "c3709d4d5c5daffaad9536374a6ee9c63e4e4d267f64ac6b8e03b822c03a64d4"
+        }
+      },
+      {
+        "directory": "failure-static-part-in-skeletal-assembly",
+        "name": "fixture.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-part-in-skeletal-assembly\\fixture.log",
+        "sha256": "53b13b2f0de377d519c178cd5c4dd9670503824371ec345e72b305be89586004",
+        "encoding": "gzip-file",
+        "bytes": 129345,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-part-in-skeletal-assembly\\fixture.log.gz",
+          "sha256": "a8167cce64cff55a930103de08f0650947f57777c3792628c6c46e0bdced9b6b"
+        }
+      },
+      {
+        "directory": "failure-static-part-in-skeletal-assembly",
+        "name": "WebNaniteAssemblyProbe.cpp",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-part-in-skeletal-assembly\\WebNaniteAssemblyProbe.cpp",
+        "sha256": "343f4f1e74fe97e166b41518adf34a829fc904a91aa9bb0dcd942dbad01e816d",
+        "encoding": "gzip-file",
+        "bytes": 14825,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-part-in-skeletal-assembly\\WebNaniteAssemblyProbe.cpp.gz",
+          "sha256": "226565b9d78fc615e5775583cd26865b25d13f09b2b49a6629919ef1abf3ffb2"
+        }
+      },
+      {
+        "directory": "failure-static-transforms",
+        "name": "browser.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-transforms\\browser.json",
+        "sha256": "4a273434beafaa713fe20230458688fbd1f1a0042a99b90709c41d36f8cbf56a",
+        "encoding": "gzip-file",
+        "bytes": 186280807,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-transforms\\browser.json.gz",
+          "sha256": "95a07a84e0b22c764d2090f04fd16e5c25ec2ee33dda12da96bb59afaf65a7af"
+        }
+      },
+      {
+        "directory": "failure-static-transforms",
+        "name": "old-kernel-new-cases.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-transforms\\old-kernel-new-cases.log",
+        "sha256": "3038e70b31a64670679940007f577af296de6408916967fae718b9f1fb5201e0",
+        "encoding": "gzip-file",
+        "bytes": 325,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-transforms\\old-kernel-new-cases.log.gz",
+          "sha256": "5942d5246130503cc97c3283c531c345817cfb5571865bd7e06682309286ce87"
+        }
+      },
+      {
+        "directory": "failure-static-transforms",
+        "name": "packed-3.png",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-static-transforms\\packed-3.png",
+        "sha256": "60087dd133cede745082e1439280871eb01c6e1849d514d61dd1d3d62018fdae",
+        "encoding": "gzip-file",
+        "bytes": 935203,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-static-transforms\\packed-3.png.gz",
+          "sha256": "1b30fcfe560564ee5ce404378ae684567fd7948394f95850b14dbfe8ae880e11"
+        }
+      },
+      {
+        "directory": "failure-tile-fixture",
+        "name": "console.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-tile-fixture\\console.log",
+        "sha256": "c4b2e60d8c9302b571a922957e8f76948295f04caf7401bdd65214ecf358c333",
+        "encoding": "gzip-file",
+        "bytes": 6315,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-tile-fixture\\console.log.gz",
+          "sha256": "1b2e491b2100757826f0af8ab79dc3459186311c4dc3136d4684d56ee8178a4b"
+        }
+      },
+      {
+        "directory": "failure-tile-fixture",
+        "name": "material-tiles.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-tile-fixture\\material-tiles.json",
+        "sha256": "ae45891e7a5e02c911bd6490ab1e6d7423ec24c48f05d0c1cad5146eadc589ed",
+        "encoding": "gzip-file",
+        "bytes": 20002,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-tile-fixture\\material-tiles.json.gz",
+          "sha256": "6525582302232e768a0b7ed4290d598985cbfaf97a7dde88875952d764860105"
+        }
+      },
+      {
+        "directory": "failure-transform-bindings",
+        "name": "shader.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-transform-bindings\\shader.log",
+        "sha256": "1f68fe95ea048e7aba658d192d0597836657ce264bab1f330a37112ae5f187a0",
+        "encoding": "gzip-file",
+        "bytes": 110565,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-transform-bindings\\shader.log.gz",
+          "sha256": "0d9026347e25ebc7a8ca9ba47e323b4b74dd8fcbff3eaff9a8531dcff51bcf6f"
+        }
+      },
+      {
+        "directory": "failure-unity",
+        "name": "full-build-console.log",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-unity\\full-build-console.log",
+        "sha256": "4e32188234904df531906a63366e0922b2fc710f71ff779c977d13cfdc0e8779",
+        "encoding": "gzip-file",
+        "bytes": 20843,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-unity\\full-build-console.log.gz",
+          "sha256": "0a72935ebae73984e57becd64203094ab87833bc21cc30ab3350d23cce299ef4"
+        }
+      },
+      {
+        "directory": "failure-unity",
+        "name": "UEWebEngine.Build.cs",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-unity\\UEWebEngine.Build.cs",
+        "sha256": "0fdd517ea9b25798e2ffddbaaafdac5d832b53ff7c23ab156b7e456052fa0c0b",
+        "encoding": "gzip-file",
+        "bytes": 594,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-unity\\UEWebEngine.Build.cs.gz",
+          "sha256": "fec28ea42becdcd20cb1afdf66c21bebdd50a8eeb43b3f48c539c39849a275c1"
+        }
+      },
+      {
+        "directory": "failure-unity",
+        "name": "web-engine-full-thread-20261111-032821.log.actions.json.results.json",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-assembly\\failure-unity\\web-engine-full-thread-20261111-032821.log.actions.json.results.json",
+        "sha256": "c59b0a64f34550f978c9313edf2a0e078087634ffd05c4f592a071906f361897",
+        "encoding": "gzip-file",
+        "bytes": 3543,
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-assembly-20261111\\failure-unity\\web-engine-full-thread-20261111-032821.log.actions.json.results.json.gz",
+          "sha256": "5b986db3c5036e4d1d6b64d9d9067ee6f5c945043780ac37c8d70895caca71a1"
+        }
+      }
+    ],
+    "boundary": "Ordinary static and skeletal assemblies, repeated shared subtrees, authored bone attachments, material remaps, mirrored parts, current/previous motion, page IO and budget recovery are checked. Remaining curves, displacement, material/view policies and complete-scene temporal/performance acceptance remain open."
+  }
+}

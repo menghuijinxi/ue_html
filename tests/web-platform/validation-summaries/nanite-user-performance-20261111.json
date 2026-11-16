@@ -1,0 +1,472 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-user-performance-20261111.json",
+    "bytes": 18931,
+    "sha256": "cca57b244398777a9ecee95bc1479fcb775e989d1e53bb5c18e13e7289801104",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "performanceAccepted": false,
+    "failureReproduced": true,
+    "date": "2026-11-11T11:52:25.507Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-user-performance-evidence.cjs",
+      "sha256": "a06e4e730fa15ac8d9cb4ee2866dbbf0385561475350a112ca01a978c798747f"
+    },
+    "manifest": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+      "sha256": "d1728d67286e28389d209ac16586a9203bc0e9cab20774dae2c1b07ebbe3aa4b"
+    },
+    "samples": [
+      {
+        "name": "1440-normal",
+        "frames": 189,
+        "milliseconds": 20012.889999985695,
+        "fps": 9.44391339782186,
+        "rhiMillisecondsPerFrame": 45.40231114342099
+      },
+      {
+        "name": "720-normal",
+        "frames": 200,
+        "milliseconds": 20014.78499996662,
+        "fps": 9.992612960885342,
+        "rhiMillisecondsPerFrame": 43.37136626243591
+      },
+      {
+        "name": "1440-nanite-on",
+        "frames": 150,
+        "milliseconds": 20011.97000002861,
+        "fps": 7.495513934899241,
+        "rhiMillisecondsPerFrame": 57.19825267791748
+      },
+      {
+        "name": "1440-nanite-off",
+        "frames": 1098,
+        "milliseconds": 20017.069999992847,
+        "fps": 54.85318280849257,
+        "rhiMillisecondsPerFrame": 13.798209053136828
+      },
+      {
+        "name": "1440-nanite-restored",
+        "frames": 151,
+        "milliseconds": 20006.069999992847,
+        "fps": 7.5477092702391815,
+        "rhiMillisecondsPerFrame": 57.05043653778682
+      }
+    ],
+    "nanite": [
+      {
+        "step": 1,
+        "enabled": true,
+        "registered": 2062,
+        "entries": 606,
+        "primitiveVisibilitySkipped": 1453,
+        "materialDraws": 149,
+        "boundedEntryPixels": 46365859,
+        "unboundedEntryPixels": 821066976,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\nanite-1.json",
+          "sha256": "2b79ccea9ecaf848b94223de943d7576741ab180fdaeecbe314762c65bc203ca"
+        }
+      },
+      {
+        "step": 2,
+        "enabled": false,
+        "registered": 0,
+        "entries": 0,
+        "primitiveVisibilitySkipped": 0,
+        "boundedEntryPixels": 0,
+        "unboundedEntryPixels": 0,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\nanite-2.json",
+          "sha256": "583a49af23b33724530595978ab6fed17a8835fb3c5ced666b24714b6029ecef"
+        }
+      },
+      {
+        "step": 3,
+        "enabled": true,
+        "registered": 2062,
+        "entries": 606,
+        "primitiveVisibilitySkipped": 1453,
+        "materialDraws": 149,
+        "boundedEntryPixels": 46373013,
+        "unboundedEntryPixels": 821066976,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\nanite-3.json",
+          "sha256": "7f385116b3db5171fc2438b219f5196f368aab72f506f08051e3e19d102bd6b6"
+        }
+      }
+    ],
+    "normalCamera": {
+      "x": 410.7359315721519,
+      "y": -478.05903852213453,
+      "z": 156.64842176437378,
+      "pitch": 0,
+      "yaw": 89.99945068359375
+    },
+    "cpu": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-user-spawn-20261111.json",
+        "sha256": "ba8b0ab656f157a1d0332102d4c2041f06e824851e988fb15ae098e81464b31f"
+      },
+      "plainSamples": [
+        {
+          "label": "before-profiler",
+          "fps": 6.536596708452435,
+          "rhiMs": 59.62814993530739
+        },
+        {
+          "label": "after-profiler-disabled",
+          "fps": 7.387531693386249,
+          "rhiMs": 58.9548768223943
+        }
+      ],
+      "profiledFps": 6.8279360124853685,
+      "baseline": {
+        "fps": 7.3386405985458785,
+        "durationMs": 5041.805699999997
+      },
+      "selfTime": [
+        {
+          "name": "(idle)",
+          "milliseconds": 5240.669999999978
+        },
+        {
+          "name": "FWebGPUDynamicRHI::CreateGroups(WGPURenderPipelineImpl*, WGPUComputePipelineImpl*, TArrayView<FWebGPUShaderData* const, int>)",
+          "milliseconds": 674.077
+        },
+        {
+          "name": "FWebGPUDynamicRHI::Bind(FWebGPUShaderData&, FRHIShaderParameterResource const&)",
+          "milliseconds": 213.50099999999992
+        },
+        {
+          "name": "FWebGPUDynamicRHI::ValidateTransitionBatch(TArrayView<FRHITransition const*, int>, bool, FString&) const",
+          "milliseconds": 201.37600000000003
+        },
+        {
+          "name": "setBindGroup",
+          "milliseconds": 184.09699999999998
+        },
+        {
+          "name": "writeBuffer",
+          "milliseconds": 183.289
+        },
+        {
+          "name": "bigintToI53Checked",
+          "milliseconds": 156.38499999999993
+        },
+        {
+          "name": "WebGPU.getJsObject",
+          "milliseconds": 154.715
+        },
+        {
+          "name": "FWebGPUDynamicRHI::ValidateAccess(FRHIViewableResource*, ERHIAccess, FString&, bool, unsigned int, unsigned int, unsigned int) const",
+          "milliseconds": 133.79899999999998
+        },
+        {
+          "name": "FWebGPUDynamicRHI::Parameters(FWebGPUShaderData&, TArrayView<unsigned char const, int>, TArrayView<FRHIShaderParameter const, int>, TArrayView<FRHIShaderParameterResource const, int>, TArrayView<FRHIShaderParameterResource const, int>)",
+          "milliseconds": 129.722
+        },
+        {
+          "name": "wasm-to-js",
+          "milliseconds": 117.02300000000001
+        },
+        {
+          "name": "FRHICommandListExecutor::FTranslateState::Translate_ExecuteCommandList(FRHICommandListBase*)",
+          "milliseconds": 94.247
+        },
+        {
+          "name": "beginRenderPass",
+          "milliseconds": 93.77300000000001
+        },
+        {
+          "name": "FMallocPoisonProxy::Realloc(void*, unsigned long, unsigned int)",
+          "milliseconds": 82.01199999999999
+        },
+        {
+          "name": "growMemViews",
+          "milliseconds": 78.847
+        },
+        {
+          "name": "",
+          "milliseconds": 75.97200000000002
+        },
+        {
+          "name": "FWebGPUDynamicRHI::CommitShaderResources(FWebGPUShaderData&)",
+          "milliseconds": 66.582
+        },
+        {
+          "name": "setPipeline",
+          "milliseconds": 60.282000000000004
+        },
+        {
+          "name": "FMemory::Free(void*)",
+          "milliseconds": 58.212
+        },
+        {
+          "name": "FWebGPUDynamicRHI::RHISetStaticUniformBuffers(FUniformBufferStaticBindings const&)",
+          "milliseconds": 57.732000000000006
+        }
+      ]
+    },
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\1440-normal.png",
+          "sha256": "a332f3720973a76135b0b169d526db7d77489eac52200fdc1c4964cc188d94c9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\0-1440-normal.png.gz",
+          "sha256": "975f042d7dca71fca264f6d6074d171af2f55e6b7525e52d6f39ba1d4059d4cc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\720-normal.png",
+          "sha256": "62815cbcb6a4001af4ac87e2e9248fca60ed457b44010b72078e36ff86e22492"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\1-720-normal.png.gz",
+          "sha256": "92d60893177cbf1cf18ca704d500bcfac51c3bf4ddb096736b5ea2a37f0152b3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\1440-nanite-on.png",
+          "sha256": "97716546f1bee0e2f86e9defa9a58724952818d1866a7c7460fe923e38229afa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\2-1440-nanite-on.png.gz",
+          "sha256": "f8a6b85653cefc956288f6f7d45a0d67fafdf23e2b68a31df18d075844f64471"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\1440-nanite-off.png",
+          "sha256": "fce6b4fe9fceffd09fef99fb88641c7322e1f95f41b542249c927ef52b21c044"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\3-1440-nanite-off.png.gz",
+          "sha256": "5d385fc178e78b36ff0dd15ac25a4ca1c6a2c8ba25d7f2e6609ea51ec5a25432"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\1440-nanite-restored.png",
+          "sha256": "482916a088bf118fc83f272152c172dd723346bbba583149256e7d5c66af21b5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\4-1440-nanite-restored.png.gz",
+          "sha256": "931b28ab331c7498e3d5e6b1701d4c76326cdd8dd093c00956ebc0fcaf2e6a36"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\nanite-1.json",
+          "sha256": "2b79ccea9ecaf848b94223de943d7576741ab180fdaeecbe314762c65bc203ca"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\5-nanite-1.json.gz",
+          "sha256": "2a3781ce8ab586045e08207f5dff38a8834b8f2102d92fe747737dc918d7503b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\nanite-2.json",
+          "sha256": "583a49af23b33724530595978ab6fed17a8835fb3c5ced666b24714b6029ecef"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\6-nanite-2.json.gz",
+          "sha256": "81aaf57dff1f37289b150ec16334ec09204b34f67da558cb58debf125001a25d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\nanite-3.json",
+          "sha256": "7f385116b3db5171fc2438b219f5196f368aab72f506f08051e3e19d102bd6b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\7-nanite-3.json.gz",
+          "sha256": "68276f1da084313069955a4e9417656d31f936180a30353f0623200c9a93911a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\report.json",
+          "sha256": "2716eb0d6846f658d3e9aaa86b839de8dc5cce90fe26b8a61566b7dbc2708b1d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\8-report.json.gz",
+          "sha256": "19766dadd494293014a1a651a93fc9fbcac29c11616246a0c7cddf48c52321b9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-user-performance.cjs",
+          "sha256": "06758346a8a0b30f34675edc05d9abb928867e513871a73b03dfc8aca17492fa"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\9-probe-nanite-user-performance.cjs.gz",
+          "sha256": "dcdea336b097946d1052984e2a8525b8fc651b62fcd1de135c34aaa882d369e0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-release-20261111\\manifest.json",
+          "sha256": "d1728d67286e28389d209ac16586a9203bc0e9cab20774dae2c1b07ebbe3aa4b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\10-manifest.json.gz",
+          "sha256": "04b77d18fcf5af7517bb7cd6b0cae9ad771a28fea20c8ea7e1ea64ee69bd4bd8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-user-performance-20261111\\browser.log",
+          "sha256": "0662b1b468ec21e2e34dad1ec6b914afd8c4618fcc74cd43a42e2cdce9696b17"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\11-browser.log.gz",
+          "sha256": "3b4110dda0dc4dff45e36938188ef8db1e534fed47eb928146a1fd2a8f8606e0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-user-spawn-20261111.json",
+          "sha256": "ba8b0ab656f157a1d0332102d4c2041f06e824851e988fb15ae098e81464b31f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\12-cpu-nanite-user-spawn-20261111.json.gz",
+          "sha256": "4e14eaa9c8087ecba3072c9925b765881e8bf6cf6dbe507ac24e66c132ca6014"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-user-spawn-20261111.log",
+          "sha256": "b5865e886ddb53f9eaec5318e59608a78a99145c82896e03f5e5bb52c81739fd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\13-cpu-nanite-user-spawn-20261111.log.gz",
+          "sha256": "af27a74789da97feb01fa4b0dfd4c4e9044c4b84a12c5d923c93fdc7e3438b5a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-user-spawn-20261111-0.cpuprofile",
+          "sha256": "2d323bd1f4e443d3ef8f6e33eadda7635c22287a29b277dac8182114564d0778"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\14-cpu-nanite-user-spawn-20261111-0.cpuprofile.gz",
+          "sha256": "dee3198195b1148dd3fbf05fbc5048293e3bbb2673b7375111d5d01df604b2f4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-user-spawn-20261111-0.png",
+          "sha256": "e1f6162ed68223591577246c925b0eec64ded52ebb7a0c079bad0964a8374b1a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\15-cpu-nanite-user-spawn-20261111-0.png.gz",
+          "sha256": "bdc72ebd25f45b993f4a7925fb5a5c912e708911021c2e5250d262cf99ca4cc4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-nanite-user-cpu.cjs",
+          "sha256": "327b431efbb8d02dc356880a602cd00022424715caf3f78360be139063772d92"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\16-profile-nanite-user-cpu.cjs.gz",
+          "sha256": "5b85d011b1716b9a144c86f81fbb2dc48f68b452e76134dd4471f8d58e955f62"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "832e046c28df949c7ce26b0d47c5c5f43f0f64d09ad36e733d3a1174be6e7d55"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\17-package.json.gz",
+          "sha256": "a044e2542b709be1a2d4074221612454aceb98ad547806984221b058fabfa11a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+          "sha256": "11af6dc3cc00c1be1419405e3a25bfcd863ced1cdf88f24a8ff52ff7336460b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\18-WebNaniteAutomaticSceneTest.cpp.gz",
+          "sha256": "4d4c191117e4703905275701a1e7db7e0ff3a4c8314078db60e9099227eb0b57"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp",
+          "sha256": "fa7fad1965fb653337dd6febb08d62da8ce11f8547d77f7584a5fcd047d91cd9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\19-WebGPUDynamicRHI.cpp.gz",
+          "sha256": "12f5524934f8e81c7db7a4c965a3535f885fe4f2e817eddafb75202fba955ae4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebScene.cpp",
+          "sha256": "7e640feb1868faa256ee23277e7251dc1a49d8198680f4e1439b48df4a6a34a2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\20-NaniteWebScene.cpp.gz",
+          "sha256": "da35afb97862c7bf7147fdee7ca4eb10268530d88776eff096b1e5627362d4b7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RenderCore\\Private\\RenderingThread.cpp",
+          "sha256": "b44fd2000412b863fc35f658257fb9b29863423e51e2b63ca9f29c58b5a5a351"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\21-RenderingThread.cpp.gz",
+          "sha256": "1e87a2af0a4c09a0bcdcf3ce30e163d41677a3d0c5ff3b5de472d7da91f8e01e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-user-performance-evidence.cjs",
+          "sha256": "a06e4e730fa15ac8d9cb4ee2866dbbf0385561475350a112ca01a978c798747f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-user-performance-20261111\\22-collect-nanite-user-performance-evidence.cjs.gz",
+          "sha256": "8852bec0ff654ae201b59325a27b1e1fc778cbef9f37db5b0ac585fc0fab2733"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "pass means evidence integrity and successful reproduction, NOT acceptable performance. Normal Villa spawn in an isolated headless Edge process, unchanged delivered files and advancing clocks. Five 20-second present-count windows follow ten-second settling periods; no CPU profiler or GPU method wrappers during those windows. The last three windows use the same settled scene observer for native r.Nanite on/off/on. Independent RHI-worker profiling identifies CPU binding/submission overhead but does not attribute all frame latency or measure GPU duration. The initial unsampled window also reproduces single-digit FPS. Prior fixed-view results do not close entrance performance acceptance."
+  }
+}

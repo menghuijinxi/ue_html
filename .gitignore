@@ -25,3 +25,6 @@
 *.a
 *.wasm
 /tests/ue-shader-host/Content/DefaultTemplateSamples/
+
+# 原始验证截图、逐像素回读和跟踪归档只在本地保留；提交精简摘要。
+/tests/web-platform/evidence/

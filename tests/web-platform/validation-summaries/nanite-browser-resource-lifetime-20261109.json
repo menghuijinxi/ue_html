@@ -1,0 +1,1332 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-browser-resource-lifetime-20261109.json",
+    "bytes": 1709041,
+    "sha256": "e9e71f2fd4e617accafc4c78e1e6a9282ad01defd085979e1ce5f7da05e3b5a0",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-09T08:13:57.402Z",
+    "pass": true,
+    "resourceLifetime": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\verified.json",
+        "sha256": "d0079f2f8b70ed91b77830825e1716812795b1de5f874302ca48c68b42e2c95a"
+      },
+      "date": "2026-11-09T04:39:13.632Z",
+      "pass": true,
+      "baseline": "a81426dc1",
+      "variants": [
+        {
+          "variant": "baseline",
+          "pass": true,
+          "fixed": false,
+          "releaseTouchedDeleted": true,
+          "lostDelete": true,
+          "deletedLive": true,
+          "threads": 8,
+          "referencePairs": 160000,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\baseline\\RHIResources.input.h",
+              "sha256": "be0e195684f3a81e4e36219abf47775e501438763b1446e269e55593f68d59d7"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\baseline\\RHIResources.input.cpp",
+              "sha256": "6c0f2a07839254066310914e8b532c708be4d3a26d19dbd79193ef8cb02d8468"
+            }
+          ],
+          "generated": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\baseline\\rhi-resource-lifetime.generated.h",
+            "sha256": "d63b68338a98f1b510f1463c78bd5abb5fc8568e125a7f79a4cf7e067d10cb79"
+          },
+          "compileLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\baseline\\compile.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "runLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\baseline\\run.log",
+            "sha256": "284a4d9620b98829fcfd211733c58d0e0380ce2ecea058bd6db632f3e8a11b5b"
+          },
+          "products": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\baseline\\probe.cjs",
+              "sha256": "e5940d878e915a9ee7fc6b110c1441e4ecf8a7e0089b667f7fd8fd739f842984"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\baseline\\probe.wasm",
+              "sha256": "abb30d4e70b84efbf50e60b66b1a858a9767cb4e20f49c767cc167a53c25668f"
+            }
+          ]
+        },
+        {
+          "variant": "web-fixed",
+          "pass": true,
+          "fixed": true,
+          "releaseTouchedDeleted": false,
+          "lostDelete": false,
+          "deletedLive": false,
+          "threads": 8,
+          "referencePairs": 160000,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed\\RHIResources.input.h",
+              "sha256": "44263453ef8d972c9934a393e0d594f84d4a7b77201c76faca43b28ffdd9c99d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed\\RHIResources.input.cpp",
+              "sha256": "c7786c3a27294f1791df016f9cbec17069684d12f9a27d839536e8fbd731b103"
+            }
+          ],
+          "generated": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed\\rhi-resource-lifetime.generated.h",
+            "sha256": "729dbfde7b524c4acd122ab2db26e8153f33669a6396ccf633bf3c1545497d91"
+          },
+          "compileLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed\\compile.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "runLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed\\run.log",
+            "sha256": "e508dc5866eed79cc735fff68488f1f1c905fb831370590a00ad832b2ca531f5"
+          },
+          "products": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed\\probe.cjs",
+              "sha256": "c259c9202e63b7cbe20d3072a586b701cb7361a46c795787666d1ad77bea3a5d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed\\probe.wasm",
+              "sha256": "13a5f6f4f59d76aa74b06bc4bbb8c407c6ac114c52025576c0708544e1999d95"
+            }
+          ]
+        },
+        {
+          "variant": "web-fixed-no-check",
+          "pass": true,
+          "fixed": true,
+          "releaseTouchedDeleted": false,
+          "lostDelete": false,
+          "deletedLive": false,
+          "threads": 8,
+          "referencePairs": 160000,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed-no-check\\RHIResources.input.h",
+              "sha256": "44263453ef8d972c9934a393e0d594f84d4a7b77201c76faca43b28ffdd9c99d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed-no-check\\RHIResources.input.cpp",
+              "sha256": "c7786c3a27294f1791df016f9cbec17069684d12f9a27d839536e8fbd731b103"
+            }
+          ],
+          "generated": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed-no-check\\rhi-resource-lifetime.generated.h",
+            "sha256": "729dbfde7b524c4acd122ab2db26e8153f33669a6396ccf633bf3c1545497d91"
+          },
+          "compileLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed-no-check\\compile.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "runLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed-no-check\\run.log",
+            "sha256": "e508dc5866eed79cc735fff68488f1f1c905fb831370590a00ad832b2ca531f5"
+          },
+          "products": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed-no-check\\probe.cjs",
+              "sha256": "537865b2e957da6d04c775c0d2d8b61738a587490e1c92073f456e71966b026d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\web-fixed-no-check\\probe.wasm",
+              "sha256": "a2fc22314165bd491b456aa803d7c486ae0d11b498face4ac808801109c9d7c0"
+            }
+          ]
+        },
+        {
+          "variant": "non-web-control",
+          "pass": true,
+          "fixed": false,
+          "releaseTouchedDeleted": true,
+          "lostDelete": true,
+          "deletedLive": true,
+          "threads": 8,
+          "referencePairs": 160000,
+          "inputs": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\non-web-control\\RHIResources.input.h",
+              "sha256": "44263453ef8d972c9934a393e0d594f84d4a7b77201c76faca43b28ffdd9c99d"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\non-web-control\\RHIResources.input.cpp",
+              "sha256": "c7786c3a27294f1791df016f9cbec17069684d12f9a27d839536e8fbd731b103"
+            }
+          ],
+          "generated": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\non-web-control\\rhi-resource-lifetime.generated.h",
+            "sha256": "729dbfde7b524c4acd122ab2db26e8153f33669a6396ccf633bf3c1545497d91"
+          },
+          "compileLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\non-web-control\\compile.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "runLog": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\non-web-control\\run.log",
+            "sha256": "284a4d9620b98829fcfd211733c58d0e0380ce2ecea058bd6db632f3e8a11b5b"
+          },
+          "products": [
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\non-web-control\\probe.cjs",
+              "sha256": "e5940d878e915a9ee7fc6b110c1441e4ecf8a7e0089b667f7fd8fd739f842984"
+            },
+            {
+              "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\rhi-resource-lifetime\\non-web-control\\probe.wasm",
+              "sha256": "abb30d4e70b84efbf50e60b66b1a858a9767cb4e20f49c767cc167a53c25668f"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-rhi-resource-lifetime.cjs",
+          "sha256": "1e8dba14301ba0c3521bf2087a0c9ca7e0e9845fff2d190d51b80b380b333081"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\rhi-resource-lifetime-probe.cpp",
+          "sha256": "9f1faa7cc51f88a2fd2db16e3f87653a93f54c17689a560c3f8deb463a2d0773"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RHI\\Public\\RHIResources.h",
+          "sha256": "44263453ef8d972c9934a393e0d594f84d4a7b77201c76faca43b28ffdd9c99d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RHI\\Private\\RHIResources.cpp",
+          "sha256": "c7786c3a27294f1791df016f9cbec17069684d12f9a27d839536e8fbd731b103"
+        }
+      ],
+      "boundary": "Runs extracted production refcount methods in Wasm pthreads with a controlled atomic schedule and logical deletion claims. This proves three state races and the Web fix, not the identity of the resource in the earlier browser crash."
+    },
+    "motionBlurStorage": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-motion-blur-shaders\\verified.json",
+        "sha256": "bb19c6502d49205da2848169df3ab8272460f4db236a5ccc1c47309d7792fedb"
+      },
+      "pass": true,
+      "cases": [
+        {
+          "entry": "main_0000362c_8681433e",
+          "format": "rg11b10ufloat",
+          "pass": true
+        },
+        {
+          "entry": "main_0000362c_8681433e",
+          "format": "rgba32float",
+          "pass": true
+        },
+        {
+          "entry": "main_00004f04_9835c671",
+          "format": "rg11b10ufloat",
+          "pass": true
+        },
+        {
+          "entry": "main_00004f04_9835c671",
+          "format": "rgba32float",
+          "pass": true
+        }
+      ],
+      "compiled": [
+        {
+          "input": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-motion-blur-shaders\\conversion-20261109-151610-906\\12676ADD49CA03664C6E4081E65FB3F2\\input.json",
+            "sha256": "773c67c93b1bd8dd134f8b91bc4f48d9ac6c2b436e4617257446e2c38ad76aec"
+          },
+          "wgsl": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-motion-blur-shaders\\conversion-20261109-151610-906\\12676ADD49CA03664C6E4081E65FB3F2\\output.wgsl",
+            "sha256": "9d29635c1670313fb16fba3ccc9017d97f1d651aa2697e17c5d35b908b69e73c"
+          },
+          "binding": {
+            "name": "OutVelocityFlatTexture",
+            "offset": 0,
+            "size": 0,
+            "paddedSize": 0,
+            "arrayStride": 0,
+            "matrixStride": 0,
+            "arrayDimensions": [],
+            "members": [],
+            "group": 0,
+            "binding": 2,
+            "descriptorType": 3,
+            "textureDimension": 1,
+            "textureArrayed": false,
+            "textureMultisampled": false,
+            "textureDepth": 2,
+            "storageImageReadDetected": false,
+            "storageImageFormat": 1,
+            "storageTextureAccess": "write",
+            "textureSampleType": "float",
+            "runtimeStorageFormat": true,
+            "storageFormatOffset": 3659,
+            "storageFormatLength": 11
+          },
+          "entry": "main_0000362c_8681433e"
+        },
+        {
+          "input": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-motion-blur-shaders\\conversion-20261109-151610-906\\DC8D51C94591A8C1411B9A95C58571C9\\input.json",
+            "sha256": "bbc89131376a8c97d4f8d654a1c33d1a6bcea917658bc97aa802c14b46df5d5c"
+          },
+          "wgsl": {
+            "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-motion-blur-shaders\\conversion-20261109-151610-906\\DC8D51C94591A8C1411B9A95C58571C9\\output.wgsl",
+            "sha256": "2ab120571586a99931e1e288ddcb3fa7ed37e348adf7ead36265e8794cf9e988"
+          },
+          "binding": {
+            "name": "OutVelocityFlatTexture",
+            "offset": 0,
+            "size": 0,
+            "paddedSize": 0,
+            "arrayStride": 0,
+            "matrixStride": 0,
+            "arrayDimensions": [],
+            "members": [],
+            "group": 0,
+            "binding": 2,
+            "descriptorType": 3,
+            "textureDimension": 1,
+            "textureArrayed": false,
+            "textureMultisampled": false,
+            "textureDepth": 2,
+            "storageImageReadDetected": false,
+            "storageImageFormat": 1,
+            "storageTextureAccess": "write",
+            "textureSampleType": "float",
+            "runtimeStorageFormat": true,
+            "storageFormatOffset": 3716,
+            "storageFormatLength": 11
+          },
+          "entry": "main_00004f04_9835c671"
+        }
+      ],
+      "log": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "object",
+        "bytes": 179,
+        "sha256": "9ba94258c2dd3c72a7e19fb71bb8c6be2161392f2fdfd934434c35cb0cd9f4d0"
+      },
+      "archive": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-motion-blur-shaders\\supplement-global-shaders.bin",
+        "sha256": "e28525c0deb928772cd5edb0fdf63091e67303abc3036c391306baf500d8d09b"
+      },
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-motion-blur-storage-formats.cjs",
+          "sha256": "117019ca7b11326e0a4dfcdb20726ad43ffc15b6128448bd86b66fd562913274"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\compile-web-motion-blur-shaders.ps1",
+          "sha256": "81b325bb4d308f5c2adc0c328d08f073a47614ee7882c5ac9211cc67bfb153cf"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPUShaderFormat\\Private\\WebGPUShaderFormat.cpp",
+          "sha256": "8dd715bdd8ff40d7d56de3a065a889be18a970682d4654111d0176a9e5cbcdfc"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteHierarchyProbe.cpp",
+          "sha256": "03d9ba0c033aea92438fd1b707d351ab879f996d8eca069e7809033bd3a4445d"
+        }
+      ],
+      "compiler": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Binaries\\Win64\\UnrealEditor-WebGPUShaderFormat.dll",
+        "sha256": "561d4c445b13342fde8d8cb351ed1e63af4615b25dffaf8d1c0d246b1e7b2a7c"
+      },
+      "boundary": "Validates both compiled UE permutations with both storage formats using real browser compute pipelines. Scene execution and pixels are verified by the separate Nanite browser regression.",
+      "failedRun": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-orthographic-motion-blur-20261109.json",
+        "sha256": "e09acb34fd07690a260ff2d328d7e92ef9526aff2fc9dc0b03b1ef4eb2ff9468"
+      },
+      "failure": [
+        "Assertion failed: ExpectedFormat == StorageImageFormat(Info.Format) [File:G:/UE_HTML/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private\\WebGPUDynamicRHI.cpp] [Line: 3930] \nWebGPU storage format mismatch: shader=main_0000362c_8681433e binding=OutVelocityFlatTexture texture=MotionBlur.VelocityFlatten shaderFormat=8 textureFormat=1\n"
+      ]
+    },
+    "materialPrecision": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-precision\\verified.json",
+        "sha256": "ef24e997d29b84f6afcc5412a9b00601c61dca8b4285710175482373cc5e00a3"
+      },
+      "pass": true,
+      "adapter": {
+        "vendor": "nvidia",
+        "architecture": "lovelace"
+      },
+      "oldBitExact": true,
+      "oldFailure": "AssertionError [ERR_ASSERTION]: step 24, 63,31 position[0]: GPU -8.745462417602539, CPU -8.741821407509775\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-material-inputs.cjs:122:9\n    at Array.forEach (<anonymous>)\n    at verifyMaterialInputs (G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-material-inputs.cjs:119:16)\n    at verifyGBuffer (G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-gbuffer-output.cjs:64:25)\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-uploader.cjs:411:27\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:472:9)",
+      "validation": {
+        "pass": true,
+        "validRecords": 16,
+        "covered": 105,
+        "empty": 8055,
+        "maxError": {
+          "position": 0.00030696468260771326,
+          "normal": 0.000006198075031854655,
+          "uv": 0.0000017487971085694554,
+          "color": 1.1920928966180355e-7
+        },
+        "materialSlots": [
+          0,
+          7,
+          31,
+          63
+        ]
+      },
+      "tolerances": {
+        "position": 0.001953125,
+        "normal": 0.0000390625,
+        "uv": 0.000008,
+        "color": 0.000001
+      },
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-precision\\original.bin",
+          "sha256": "e44c23d18505c21c2903f0af2d9a3941bbc1195c1cd2322457a6458397709d78"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-precision\\fixed.bin",
+          "sha256": "2f16e852a19c18f97bd16eed46b961e0739dd7399bd428a8121f3707ff793968"
+        }
+      ],
+      "inputs": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-jitter-precision-20261109.json",
+          "sha256": "f20168a0e95d6ac18bd1badc9858112a077c30923ba53638203c907083bbb4d0"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-jitter-precision\\gbuffer-24-before.bin",
+          "sha256": "9a8692a6ca25a5733452260e408cd4f4e236c89b1f8e97529516ce4486c6ee63"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-jitter-precision\\gbuffer-24-materialInputs.bin",
+          "sha256": "e44c23d18505c21c2903f0af2d9a3941bbc1195c1cd2322457a6458397709d78"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-jitter-precision\\gbuffer-24-tilePixels.bin",
+          "sha256": "b2d8ad6a1be7769668b1d029b5f60dbda0470fedcb1acbcaf699cdc49f21e63a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-151811\\page-0-0-0.bin",
+          "sha256": "1ecd2ae4a7c3e2df7cab940878afac501ccad3af9f18eb49ef66b9d8ce403f7a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-jitter-precision\\before.wgsl",
+          "sha256": "539ff62f8cc81e21bb8051b7570f18eb5d32bcbdf0e4cf63a21471520a138f7a"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\conversion\\DB7359F842AC46282BB8A39A7D2E4692\\input.json",
+          "sha256": "1b5cfde0143dee74e576aa722ff392aa4c2e0533a72d211edcb67c82a9f60bba"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\conversion\\DB7359F842AC46282BB8A39A7D2E4692\\output.wgsl",
+          "sha256": "8fd5812d7c13d8076495734ff67328042dc1c4b9e375cba418a38ae2d0fd32c6"
+        }
+      ],
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-material-precision.cjs",
+          "sha256": "c671936ce478224d2add49ccdf20985e192a461c9593f311f471e5441a477d92"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-nanite-material-inputs.cjs",
+          "sha256": "d61505b5bbcc20a9dcbd2a20c9651ed6053bd5712f3b2439980ce48b511df476"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteRaster.usf",
+          "sha256": "3826a105264f64099eac0dc880bba8d4a7291ce9b1abaaba65581aa528ab0543"
+        }
+      ],
+      "hierarchy": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\verified.json",
+        "sha256": "bc01ed50c4fb17a1e8b09815a3f3cf3970b7227cb11495c9cce23b383fab3134"
+      },
+      "boundary": "Replays the recorded failing visibility, transforms, jitter and Nanite page through old and newly compiled production material-input shaders. The old shader must match the captured output; fixed output must satisfy the unchanged independent attribute tolerances."
+    },
+    "sampleCoverage": {
+      "failedRun": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage-20261109.json",
+        "sha256": "8b3ad3db3c663d9d049bffbb11a84bd2769b857ecec36c8ed0c4c0eaec57bf8f"
+      },
+      "failedPackage": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-package-20261109.json",
+        "sha256": "77647d9f1c83ced69bf06f466ca7d1493ec91531f7485c22e48f910eef91da75"
+      },
+      "failedBuild": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-build-20261109.json",
+        "sha256": "c07eb00cb7af4b3f16e83ef20bce539c59ff82d141777fddb8c67d15041fbca2"
+      },
+      "inputs": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage\\gbuffer-23-before.bin",
+          "sha256": "f8dfa77d8ea3d7a2f5ccb0de1b700e22a9e3ebe989a8bf7f38e3a0174e7d4d24"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage\\gbuffer-23-after.bin",
+          "sha256": "d3737a95a08e94fa9cbaa002f1ef0e09a4d2c51af1a3afb5aabd13e73615ec01"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage\\gbuffer-23-materialInputs.bin",
+          "sha256": "e2dc45ec2d67ffd31498b57b7a041289cb8ac7656a03dfb4bad362bd48a94762"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage\\gbuffer-23-tilePixels.bin",
+          "sha256": "2a4f91efe7f8015667401c15109bf4fb336a800f6c441e04ac1cb7301348f6ea"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage\\gbuffer-23-tiles0.bin",
+          "sha256": "48cec5a6064fd8856f0d4e571de48a8ee0157a3abf7ba849f12c697b01356f83"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage\\gbuffer-23-tiles1.bin",
+          "sha256": "8c28b3ddd346403feacd55e1e33daeb5f86c71d5bfc5f89a8fb335e4e3732b7d"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-gbuffer-sample-coverage\\gbuffer-23-tiles2.bin",
+          "sha256": "c9376ba65092c1a9100cdd8a9351ecf6c78d7166c22fc4887016aa2bf0c618c1"
+        }
+      ],
+      "bySlot": {
+        "1/0": 23,
+        "1/63": 5,
+        "1/31": 10,
+        "0/7": 16,
+        "0/0": 12,
+        "0/31": 16,
+        "1/7": 10,
+        "0/63": 8
+      },
+      "fullResolutionTiles": {
+        "pass": true,
+        "pixels": 518400,
+        "nanitePixels": 6420,
+        "owned": 6420,
+        "occluded": 0,
+        "unbound": 0,
+        "bins": 3,
+        "members": 8,
+        "separateTiles": 260,
+        "savedTiles": 83,
+        "tileCount": 177,
+        "emptyBins": 0,
+        "edgeTiles": 0,
+        "fullScreenTiles": 24480,
+        "indirectVertices": 1062
+      },
+      "fixture": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteGBufferTest.cpp",
+        "sha256": "8fc3de1ab5342f260ec12f3b2af1a20e6432bf81bf3b2213299ce649539ae0f8"
+      },
+      "boundary": "Moved the rear fixture laterally from 70 to 90 while retaining partial overlap and the original per-slot sample threshold. Pixel and tile acceptance tolerances are unchanged."
+    },
+    "fullTargetValidation": {
+      "compileExecution": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261109-153628.log.actions.json.results.json",
+        "sha256": "206f6355d7e39ede6b5d177b1e830733ccc3aa95c94a48232bb9687efe651d5c"
+      },
+      "exportedActions": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261109-153628.log.actions.json",
+        "sha256": "5174971323925dcc4a28262c019170746ceac506fe09df45f4b16ba5e99f1e8f"
+      },
+      "compiledActions": 1,
+      "linkedObjects": 422,
+      "headerRebuild": {
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-rhi-lifetime-full-build-results.json",
+          "sha256": "32ec448348fd4ff61fb4cded27568d654df56a5386992b4e9cecdbca4d262278"
+        },
+        "compileExecution": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261109-121446.log.actions.json.results.json",
+          "sha256": "4d871f025e20cb5c6cfd21a106a825aab8ad90277ea9ab8c96f0dfa06d153663"
+        },
+        "exportedActions": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261109-121446.log.actions.json",
+          "sha256": "3418f1f170bf29367f58ab36a9b57b4f5c969ab007e26804baa398832f621026"
+        },
+        "compiledActions": 185,
+        "sourceFiles": [
+          {
+            "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RHI\\Public\\RHIResources.h",
+            "sha256": "44263453ef8d972c9934a393e0d594f84d4a7b77201c76faca43b28ffdd9c99d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RHI\\Public\\RHIResources.h",
+            "sha256": "44263453ef8d972c9934a393e0d594f84d4a7b77201c76faca43b28ffdd9c99d"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\RHI\\Private\\RHIResources.cpp",
+            "sha256": "c7786c3a27294f1791df016f9cbec17069684d12f9a27d839536e8fbd731b103"
+          },
+          {
+            "file": "G:\\UE_HTML\\ue_html\\.tools\\ue58-web-build-host\\Engine\\Source\\Runtime\\RHI\\Private\\RHIResources.cpp",
+            "sha256": "c7786c3a27294f1791df016f9cbec17069684d12f9a27d839536e8fbd731b103"
+          }
+        ],
+        "compileLogs": {
+          "$omitted": true,
+          "reason": "Large array",
+          "type": "array",
+          "entries": 185,
+          "bytes": 37446,
+          "sha256": "c5e25d7bf2f3d2e0581d65d9a377bb82d80497a558f985482ced0274c121adf6"
+        }
+      },
+      "rhiDependentObjects": 184,
+      "dependencies": {
+        "$omitted": true,
+        "reason": "Large array",
+        "type": "array",
+        "entries": 184,
+        "bytes": 41046,
+        "sha256": "b9cfe1dd8deb6b844cb2c0e16bb83903bee2a6c3bf54c35064cfcf2094ef3c9d"
+      },
+      "compileLogs": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261109-153628.log.actions.json.0.log",
+          "sha256": "cb44539fa0cc382d248c273c39dac2de6fba20f3e9bc3591435c3d9effeceb2d"
+        }
+      ]
+    },
+    "interruptedRun": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-uniform-buffer-failure-20261109.json",
+        "sha256": "36926137ec88f495fc963222fb1ac58ab01bfb83bcaff687b0e15a6c295b92ca"
+      },
+      "historicalEvidence": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-material-bins-20261109.json",
+        "sha256": "4720a802ffd2dc3495bf3c7ad3a8dd4dd080da24de628f0f7bae61bb17eb5d96"
+      },
+      "date": "2026-11-09T03:29:25.661Z",
+      "pass": false,
+      "stage": "scene cull/raster before GBuffer activation",
+      "completedSceneCullSteps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "errors": [
+        "Assertion failed: (OldPacked & DeletingBit) == 0 [File:G:/UE_HTML/ue_html/.tools/ue58-web-build-host/Engine/Source/Runtime/RHI/Public\\RHIResources.h] [Line: 171] \n\n",
+        {
+          "$omitted": true,
+          "reason": "Large text",
+          "type": "string",
+          "bytes": 2351,
+          "sha256": "7653ec65d95f82c71cb2afe58258b52483e4ca666acf61ebd2774f573eee32b1"
+        }
+      ],
+      "failure": "worker.evaluate: Target page, context or browser has been closed\n    at G:\\UE_HTML\\ue_html\\tests\\web-platform\\verify-web-nanite-uploader.cjs:322:40",
+      "runtime": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.js",
+          "sha256": "993c76461336ad063ee1b6ac94b70897c9c26879e1bdd2b0310b277e6079d6cf"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.wasm",
+          "sha256": "649b47e8d6869ea8a1fa73ed57206ddd355b6ff2008a368b2b876cdb9b7f277d"
+        }
+      ],
+      "rawReport": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-uniform-buffer-20261109-113044.json",
+        "sha256": "4921d474db47c13241aab3d14113bebf8daefbc431771446385e3c51516038ca"
+      },
+      "status": "The unchanged-build rerun passed all 26 GBuffer states, resource/depth regressions, cleanup and default-disabled checks. Root cause of this earlier assertion remains unconfirmed; the failed run is retained separately and not counted as passing."
+    },
+    "shadowDummy": {
+      "failedRun": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-shadow-dummy-20261109.json",
+        "sha256": "11ceff8e546f79bacfbb3d75d1ac50296618a1fa0b3e374dbb52531e2ba7679c"
+      },
+      "failedPackage": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-shadow-dummy-package-20261109.json",
+        "sha256": "04316beea817b91c4089646750e7eab1e07dbd402edead7aa86ea651bdb6e34e"
+      },
+      "failedBuild": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-browser\\failure-shadow-dummy-build-20261109.json",
+        "sha256": "fc8c3f940b6f17eb6a2b9db59c767089d883dae8e17fe2d023e82db183dc3f39"
+      },
+      "errors": [
+        "Assertion failed: Valid [File:G:/UE_HTML/ue_html/tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private\\WebGPUDynamicRHI.cpp] [Line: 3982] \nTexture atomics require a full-layer R32_UINT atomic-compatible mip view: texture=Dummy-OutDepthBuffer format=28 mip=0 atomicMips=0 firstLayer=0 layers=1 textureLayers=1 flags=0x20008\n"
+      ],
+      "failedRuntime": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\UEWebEngineThreads.js",
+          "sha256": "adbbb1c4615b8b7b6ed6344bb0429471f568db8d457274b19c1d0b184845f5f1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\UEWebEngineThreads.wasm",
+          "sha256": "3772992367869e02f17754e98f573cc9d4b5d87158921060973eef39d90071af"
+        }
+      ],
+      "successfulCreation": "[2026.11.09-08.04.55:967][  0]LogRHI: Display: P3_TEXTURE_CREATE name=Dummy-OutDepthBuffer dimension=1 format=28 extent=4x4 depth=1 array=1 mips=1 samples=1 init=0 flags=0x200020008\n"
+    },
+    "canvasTransitions": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-canvas-transitions.json",
+        "sha256": "0f386f4f45f72e1d4d08a70a5acb74cbeb09a9514a552b9dd5e60ca6230c1256"
+      },
+      "pass": true,
+      "checks": [
+        {
+          "name": "canvas-backbuffer-accept-rdg-epilogue",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-partial-srv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-uav",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-expired-frame",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-reject-actual-srv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-restores-rtv",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-restores-present",
+          "pass": true
+        },
+        {
+          "name": "canvas-backbuffer-preserves-clear",
+          "pass": true
+        }
+      ],
+      "runtime": {
+        "sha256": "e7d121a10222818fd8b8ef60c505e6a69732eff034ec4ddead847b0325b15a96",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-canvas-transitions-native-rhi\\rhi-results.json"
+      },
+      "log": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "object",
+        "bytes": 179,
+        "sha256": "79b6c63342a0d4ebde6a40203e8b416b852a15f86b00bb18a44bc983f00bf23d"
+      },
+      "sources": [
+        {
+          "sha256": "a80142b999aa39d738393605f393df84d599106409ff1bf06ac71eaa0e4f46ea",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-web-canvas-transitions.ps1"
+        },
+        {
+          "sha256": "a5f34089154d27a9fe71d5b7856b4972f0cc9e4eb63cf79ff678ea0d8d55e5d7",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitions.cpp"
+        },
+        {
+          "sha256": "a07a4a411b89d95ddc21676cb1c9f5e88a3a2a3f27c06e081b0ac97b4d33caf9",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitionProbe.cpp"
+        },
+        {
+          "sha256": "af269d537218d6a92476150d25d93a927d98b74988e87a911eee10c7ac03838c",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUTransitionProbe.h"
+        },
+        {
+          "sha256": "586296f0436dae7f375afc3148221fdf1fcc8752d0288225f7e2815289903b98",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPUDynamicRHI.cpp"
+        },
+        {
+          "sha256": "ee07c89ddbecffd9fe82a7fb8dfc28c3eb9c3415e769d55161037a119f704834",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Source\\WebGPURHI\\Private\\WebGPURHIProbe.cpp"
+        }
+      ],
+      "products": [
+        {
+          "sha256": "8bd0be2005157e746b9c1741bbc9fa1cac6ffdcc3499b2052337499fc1a71b10",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Binaries\\Win64\\UnrealEditor-WebGPURHI.dll"
+        }
+      ]
+    },
+    "multiMaterial": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 15510,
+      "sha256": "c86ff2bd5eb5dfa118124d6d7913133de6b71fe5bdaeb2913224aa6519641f4f"
+    },
+    "referenceCommit": "36b3e324519d6abf182786b6978116b0397bf15d",
+    "browser": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 426852,
+      "sha256": "5f7f005153fb1eb85547800a4def887293de820f858d4ba92c3b58be1d8615b0"
+    },
+    "package": {
+      "date": "2026-11-09T08:02:56.232Z",
+      "pass": true,
+      "output": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser",
+      "build": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+        "sha256": "9665d7d21a6b5f0b01fb5bfaf58e18e1e40684a28591e67e9553edf855d758e1"
+      },
+      "native": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\verified.json",
+        "sha256": "51c6cf4f52da5784d7c7ceaa1f98f32ab4c09c5ed9461eab1cec24ee84cdc87e"
+      },
+      "browserOracle": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\browser-results.json",
+        "sha256": "16c48ab41c9151e2c917430aa4d9e28470142cf57351e8cf55ded52f40e5d03a"
+      },
+      "archive": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\uploader-global-shaders.bin",
+        "sha256": "09290c026a79a9da4ff556903a1507dc31963d3457a2b372b9459f0957e5791f"
+      },
+      "hierarchyShaders": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\verified.json",
+        "sha256": "bc01ed50c4fb17a1e8b09815a3f3cf3970b7227cb11495c9cce23b383fab3134"
+      },
+      "multiMaterial": {
+        "native": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-151811\\verified.json",
+          "sha256": "2b736c92f75ecf35c200753f06616b5f17bb4571653f2d52c92df3dbbe1484e0"
+        },
+        "fixture": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-multimaterial\\fixture.json",
+          "sha256": "2d837681ae2ca63b7661a65f5de0212bc41d23e8d32159f585f92049bccad0a6"
+        },
+        "browserOracle": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-multimaterial\\browser-results.json",
+          "sha256": "25cf25e10d12635c7159d99907418420748aaf3974b8a6cb418b64314d223392"
+        },
+        "gpuPage": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-151811\\page-0-0-0.bin",
+          "sha256": "1ecd2ae4a7c3e2df7cab940878afac501ccad3af9f18eb49ef66b9d8ce403f7a"
+        },
+        "cookedResource": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-multimaterial\\resources.cooked.bin",
+          "sha256": "aa49f49b009e0498d834ce58afc50444a050c707127842e94c5a60dc661c6c34"
+        },
+        "sourceTriangles": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-multimaterial\\source-triangles.bin",
+          "sha256": "b6823c0f37c541cfc4447ddd45d855fcbbd28e1c31715d9a91c95e27015fbd70"
+        },
+        "sourceMaterials": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-multimaterial\\source-materials.bin",
+          "sha256": "5b643c9b52982ff3e4dfa0717abb624beb02f91103a7f96fd57f034cdef903c4"
+        }
+      },
+      "sceneCook": {
+        "stage": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-lifetime-desktop-stage-results.json",
+          "sha256": "f8544c0bbe8920001c9ed4a1cfe11bc951674c0003b1fcbf457d130b7230a931"
+        },
+        "cook": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-lifetime-desktop-cook-results.json",
+          "sha256": "89172a482e0625792934171ead11860ce7e03a0158a10732a0866da765a1ef36"
+        },
+        "inventory": {
+          "sha256": "ff7e4273725e24c9a3d72cb7fd46e29e7f6fcb997bfb017d453d1d38cb8ded02",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\web-project-nanite-lifetime-desktop-cook\\20261109-155900\\ShaderConversion\\inventory.json"
+        },
+        "naniteTypes": [
+          "FWebNaniteHierarchyCull_CS",
+          "FWebNaniteRasterVS",
+          "FWebNaniteRasterPS",
+          "FWebNaniteVisibleClustersCS",
+          "FWebNaniteMaterialInputsCS",
+          "FWebNaniteResolveCS",
+          "FWebNaniteDepthVS",
+          "FWebNaniteDepthPS",
+          "FWebNaniteDepthSnapshotCS",
+          "FWebNaniteGBufferVS",
+          "FWebNaniteGBufferPS",
+          "FWebNaniteGBufferSnapshotCS",
+          "FWebNaniteGBufferTilesCS",
+          "FWebNaniteVisibilityClearCS",
+          "FWebNaniteVisibilityResolveCS"
+        ],
+        "supplementApplied": false,
+        "hierarchyArchiveApplied": false
+      },
+      "baseline": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\web-project-nanite-lifetime-desktop\\content.bin",
+          "sha256": "4b74312dfb19be9ec0946b4df0751e1b447eeeff489997ae6a550ff1faaba6e0"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\web-project-nanite-lifetime-desktop\\content-files.json",
+          "sha256": "fbd37ba2291832226cdfa6dd813c7065985aed46c31751ef098f4f96545b9bb3"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\web-project-nanite-lifetime-desktop\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\villa-default-20261107\\index.html",
+          "sha256": "fa4d27a0e08a3dbdc021d6b89a9e225c6493f3aad3d1c280bd7ec8b6bd84a036"
+        }
+      ],
+      "sources": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-runtime.cjs",
+          "sha256": "244c255bea730c2009b2751d3f634cb5da4c00a1acbf1749475e5343d87a1942"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\cached-cook-validation.cjs",
+          "sha256": "fca3b75e149e07b47c8422353af31066063b98e840e2f3830f1c2d0c288d0b2e"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-host.js",
+          "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "c7b6d779c2b2feefab3f9980505cd4cfa1af8ad36386e36726a8911cea144fb0"
+        }
+      ],
+      "cookedResource": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\resources.cooked.bin",
+        "sha256": "08db60680ea1e67239933b7ca19c2e2168fda301607b6c53ec49fe9f5ca4b957"
+      },
+      "sourceTriangles": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-cook\\20261107-183130\\sm5-retained\\source-triangles.bin",
+        "sha256": "b6823c0f37c541cfc4447ddd45d855fcbbd28e1c31715d9a91c95e27015fbd70"
+      },
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\index.html",
+          "sha256": "3425109a5b375dd2c508058485357bf1c096f47a1b0531ebff488dbe81580992"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\content.bin",
+          "sha256": "b9453490e09e38a46a9dc8928f73b2d7dc4763d8fb98692aa4adda4d1605f217"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\content-files.json",
+          "sha256": "5eb2d964682dcbc2b0d59fbc6e0934ae4199b02e2e761e59668b0c0b030ff288"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\config-files.json",
+          "sha256": "bf97901fd6d66161162c58b82dd11206b13bca881cc0910e02549bd16655a134"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-content-io.js",
+          "sha256": "d0bfb1b2b3333f7380e59d67bab291e54a30c37559e15060dc3e5016c4574a37"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-content-worker.js",
+          "sha256": "275dae8c7469cfc8dbb9ab7b87780ad7ef542c3fd57a00737ef7ccd3aa7c7a05"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-engine-host.js",
+          "sha256": "05d6e43f4bd851bad2ac1cd2a6121b053da533729adfdd18fbcbfe36bbf6933f"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\web-engine-worker.js",
+          "sha256": "c7b6d779c2b2feefab3f9980505cd4cfa1af8ad36386e36726a8911cea144fb0"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.js",
+          "sha256": "adbbb1c4615b8b7b6ed6344bb0429471f568db8d457274b19c1d0b184845f5f1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\UEWebEngineThreads.wasm",
+          "sha256": "aa7e90d8b3b75aa2a5e05a369df27f17e81c8f580a6ae7df3c031065181cc372"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser\\asset-versions.json",
+          "sha256": "2059d79882fc1ac910bb2793ebaadcfff813c312c6ca2bdf905e50f99cd98436"
+        }
+      ],
+      "boundary": "Fresh Villa scene Cook with resident Nanite depth, visible records and constant DefaultLit GBuffer export/snapshot shaders. Explicit component bindings and default-off toggles; no automatic whole-level Nanite conversion, arbitrary UMaterial graph, lightmaps, Substrate or complete scene acceptance."
+    },
+    "build": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+        "sha256": "9665d7d21a6b5f0b01fb5bfaf58e18e1e40684a28591e67e9553edf855d758e1"
+      },
+      "incrementalDiagnostic": false,
+      "fullTargetBuild": true,
+      "fullRebuild": false,
+      "fullEngineBuild": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+        "sha256": "0c27ed267712484a96c53b0894a0a62c050468d490aeaaea4baeb0806e5c6b58"
+      },
+      "compiled": [],
+      "sources": {
+        "$omitted": true,
+        "reason": "Large array",
+        "type": "array",
+        "entries": 550,
+        "bytes": 110281,
+        "sha256": "ca6c01bd21ab4d0a1f3baa669b916be1d9696829e19b586a5d27cfc22717596a"
+      },
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\UEWebEngineThreads.js",
+          "sha256": "adbbb1c4615b8b7b6ed6344bb0429471f568db8d457274b19c1d0b184845f5f1"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\UEWebEngineThreads.wasm",
+          "sha256": "aa7e90d8b3b75aa2a5e05a369df27f17e81c8f580a6ae7df3c031065181cc372"
+        }
+      ],
+      "log": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "object",
+        "bytes": 181,
+        "sha256": "dae8e3190c39ba13184e78ad4c78289757c46621da3679d78546f26a4bed1e45"
+      },
+      "preservedLinkInputs": 1689
+    },
+    "native": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\verified.json",
+        "sha256": "51c6cf4f52da5784d7c7ceaa1f98f32ab4c09c5ed9461eab1cec24ee84cdc87e"
+      },
+      "policyChecks": 21,
+      "modes": [
+        {
+          "bypass": false,
+          "adapter": "D3D12 driver version 32.0.16.2101 NVIDIA GeForce RTX 4090",
+          "minimumWaveSize": 32,
+          "maximumWaveSize": 32,
+          "cases": [
+            {
+              "prefix": 0,
+              "index": 0,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 1,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 2,
+              "pages": 2,
+              "dispatches": 3,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 3,
+              "pages": 2,
+              "dispatches": 4,
+              "pass": true
+            }
+          ],
+          "errors": [],
+          "pass": true
+        },
+        {
+          "bypass": true,
+          "adapter": "D3D12 driver version 32.0.16.2101 NVIDIA GeForce RTX 4090",
+          "minimumWaveSize": 32,
+          "maximumWaveSize": 32,
+          "cases": [
+            {
+              "prefix": 0,
+              "index": 0,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 1,
+              "pages": 1,
+              "dispatches": 2,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 2,
+              "pages": 2,
+              "dispatches": 3,
+              "pass": true
+            },
+            {
+              "prefix": 256,
+              "index": 3,
+              "pages": 2,
+              "dispatches": 4,
+              "pass": true
+            }
+          ],
+          "errors": [],
+          "pass": true
+        }
+      ],
+      "products": [
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-0-0-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-0-1-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-0-2-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-0-2-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-0-3-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-0-3-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-1-0-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-1-1-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-1-2-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-1-2-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-1-3-0.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        },
+        {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\page-1-3-1.bin",
+          "sha256": "81a72778b57a0bbdedb3e8d23eae40d43aef90fa81b02d7f0c73a2b141f22c95"
+        }
+      ],
+      "runtimeShaderArchive": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261109-144949\\uploader-global-shaders.bin",
+        "sha256": "09290c026a79a9da4ff556903a1507dc31963d3457a2b372b9459f0957e5791f"
+      }
+    },
+    "hierarchyShaders": {
+      "report": {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\verified.json",
+        "sha256": "bc01ed50c4fb17a1e8b09815a3f3cf3970b7227cb11495c9cce23b383fab3134"
+      },
+      "archive": {
+        "sha256": "4b9690ed0435b38dc4fb2dbf5eed0c53f74ffb0da2bb08ed15be8d66b7ab84fd",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-hierarchy-shaders\\hierarchy-global-shaders.bin"
+      },
+      "sources": [
+        {
+          "sha256": "14369dc103d875f9b593ed77796e857ceb7bae7998c6bc5266a3c8e7d6d210cb",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebHierarchy.cpp"
+        },
+        {
+          "sha256": "fb02290b49d471754be05d7d8a8d2876760b51682e61cb2038e889a24a8677b2",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteHierarchy.usf"
+        },
+        {
+          "sha256": "26c758307e7911f54b15971e64518a8c65fc9d858542d617c716be485b56873d",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebRaster.cpp"
+        },
+        {
+          "sha256": "3826a105264f64099eac0dc880bba8d4a7291ce9b1abaaba65581aa528ab0543",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteRaster.usf"
+        },
+        {
+          "sha256": "7cc09da72272bcbc679aa1170aeba542da4755b3674b5f4bf2b8b8e1adcba500",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebDepth.cpp"
+        },
+        {
+          "sha256": "40f32f2ba9d0e48cd7f12b5c9ec0a9f17cdabd0f45f51c1e4bcc0af77aaf027a",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteDepth.usf"
+        },
+        {
+          "sha256": "4b93b2b4029a1f5fd493b0722a9f4f7ff667843dd7f0fc5c8933fd1dc6beed0d",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Engine\\Private\\Nanite\\NaniteWebGBuffer.cpp"
+        },
+        {
+          "sha256": "c1dde327cd378caa40135e9c596f2ef46061e92596a4fcdfc722fb029ec3c9b3",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\WebNaniteGBuffer.usf"
+        },
+        {
+          "sha256": "c8c57dcc4e71ba964c4a08d4d03a659a8646c641afdc872d4f66c75539c892c5",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Private\\Nanite\\NaniteDataDecode.ush"
+        },
+        {
+          "sha256": "7e439de653d4067deac388d7c6ae8b587057303d0146e1e6e00ba5c2879d76ba",
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Shaders\\Shared\\NaniteDefinitions.h"
+        },
+        {
+          "sha256": "03d9ba0c033aea92438fd1b707d351ab879f996d8eca069e7809033bd3a4445d",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebNaniteHierarchyProbe.cpp"
+        },
+        {
+          "sha256": "69cc7a52aa078c8c4f52fcb4e3e81764f39061388033a9e2f3932c0988cd68c3",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\Private\\WebShaderProbeCommandlet.cpp"
+        },
+        {
+          "sha256": "5d94f99c3b84f2e1a219b54cb06cfa5443b6dc6d8c1207192a4d1fc322f7ca74",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Source\\UEShaderHost\\UEShaderHost.Build.cs"
+        },
+        {
+          "sha256": "e40ef4964c50fc85b89a08dfdae9dc1735fc14c74b25cf6cd2b20cf49e1e197d",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\UEShaderHost.uproject"
+        },
+        {
+          "sha256": "ff3bedc1ffe6479456e416872a83d45900497cf823addfb7c7c21eb291a2fc25",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\compile-nanite-hierarchy.ps1"
+        },
+        {
+          "sha256": "23ad20ea7b6536ebc0ebf7942875458c01bbaf864cb5ef29d79c4bae1c58c604",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\prepare-web-cook-shaders.cjs"
+        }
+      ],
+      "logs": {
+        "$omitted": true,
+        "reason": "Full diagnostic data is retained in the original report",
+        "type": "array",
+        "entries": 2,
+        "bytes": 354,
+        "sha256": "f5cb4a3c7df266ac217eeb28a101e11499a6ceb2fdf25845aff0f8508727f085"
+      },
+      "pass": true,
+      "shaderInputs": {
+        "$omitted": true,
+        "reason": "Large array",
+        "type": "array",
+        "entries": 1234,
+        "bytes": 226603,
+        "sha256": "e323a905185bef45b91a8f9106289aa5c09d7758217a881514fb576e7b0b8cf2"
+      },
+      "compiler": [
+        {
+          "sha256": "561d4c445b13342fde8d8cb351ed1e63af4615b25dffaf8d1c0d246b1e7b2a7c",
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Plugins\\WebGPUShader\\Binaries\\Win64\\UnrealEditor-WebGPUShaderFormat.dll"
+        },
+        {
+          "sha256": "4ee682cf76942170f5fcb035c44d32d1888f8134d74756ff28c6773bed6c4536",
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\dawn-v20261009.190412\\bin\\tint.exe"
+        },
+        {
+          "sha256": "9b8c51fd8e21ef7ad2f8bf3ac45c90e6f3c3b1fe94d1c3cc4da42c04c3e59c80",
+          "file": "G:\\UE_HTML\\ue_html\\.tools\\dawn-v20261009.190412\\bin\\tint_info.exe"
+        }
+      ],
+      "binary": {
+        "sha256": "7f2878f537d963d786071fdc2a264caa5c2ea8dd931cc7de64149ce252aedc71",
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-shader-host\\Binaries\\Win64\\UnrealEditor-UEShaderHost.dll"
+      }
+    },
+    "historicalShaderAudit": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 314263,
+      "sha256": "947aabbabc2355bf0c72a2837f2d43df05edad121751a91bf75a13396de78222"
+    },
+    "sceneCook": {
+      "$omitted": true,
+      "reason": "Detailed section exceeds the summary budget",
+      "type": "object",
+      "bytes": 14482,
+      "sha256": "92e714fe89296677eb7de29f9b0a09bc21926ccc474685a14aae28e5cc4b8a22"
+    },
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-browser-evidence.cjs",
+        "sha256": "df5b8dcffef10fb3eb00e70402ab361737a197584a45f8dff96a1f11b8b12fa3"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build-web-engine.ps1",
+        "sha256": "9c9073100317b435a9ddae09490181bd373f240205dba1a2ba424d215ae0120b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\UE58_WEBGPU_NANITE_IMPLEMENTATION.md",
+        "sha256": "075af2a347ad833899e6fd95360ac998ba5502ac413487b1b4168fb4c0573c12"
+      }
+    ],
+    "boundary": "Default-off resident Nanite depth and explicit DefaultLit bindings with optional resident base-color textures write actual legacy GBuffer A-E and scene color using UE EncodeGBuffer. Exact prepass visibility and page attributes determine pixels; equal read-only depth preserves nearer ordinary meshes. Equal explicit materials share bins of up to 64 instance/slot members, one GPU-compacted union of 8x8 tiles and one indirect draw. Per-pixel member transforms remain distinct. Zero-fallback fixtures verify this subset; no automatic UMaterial bindings, arbitrary graphs, lightmaps, normal maps, Substrate, full Nanite shading bins, LOD/HZB/streaming or complete-scene acceptance.",
+    "gbufferPreview": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109.png",
+      "sha256": "fc14ab956357a76a6121e9c0e6d76dc3072efef7ded4d6cd9d5a4876d38a59ea"
+    },
+    "sceneScreenshots": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-12.png",
+        "sha256": "b178aa1289e1861800692464c9c8f5326f7bfab311e112e55bde5385b38721cc"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-13.png",
+        "sha256": "0273cc40af39e59f3500db08b446507ecf26cfaffae009597dcce07aac6ffd2a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-14.png",
+        "sha256": "838935d710edd5ed96830bf6e9a2b20327343522be74b433a6249a732a9a92ed"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-15.png",
+        "sha256": "40d4543829fd02c98cbaced4b5eadc36f716ff1b20a5cd00bd3a2daa6457ace7"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-18.png",
+        "sha256": "6f7b607083d188ff5e75b1bf1922c4f9105d144586829e05ac68b0f598aafc4a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-19.png",
+        "sha256": "62bc4ae5d1406bc0408fa0a679b3420300c06f33318810b00008d3f5060f24c2"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-20.png",
+        "sha256": "6e495a10c1c092a49c854228a9919fce744a0994290c1af724a999acea99939d"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-21.png",
+        "sha256": "fa0c697aad6583f581b76de31b42a35a49d62f3ccf35eb8dbcfeb6f27f1bb927"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-24.png",
+        "sha256": "a0e430754412ef6cf571f5ed52b7890a6b0314737f08fdf2b48c1dd2d0476e82"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-25.png",
+        "sha256": "6648efb8abdbc154d54df5f5b563a064022340e9ded0f299eeb4aa74623403e9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-browser-resource-lifetime-20261109-scene-26.png",
+        "sha256": "0195537b47520da22fd0f4a8983a86c060da72b74da7d41ba6ba2be8f99cdef7"
+      }
+    ]
+  }
+}

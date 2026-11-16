@@ -1,0 +1,2010 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-material-pass-20261111.json",
+    "bytes": 84673,
+    "sha256": "650f95b0e502b9d01e5986db133388b22a723622ebb0071c187c534a0e2f157f",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-11T07:56:24.452Z",
+    "packages": {
+      "nanite-core-scene": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "239e816692f7c92dcbeb1f246b408298e10277e51e2e37b7dc9716d2fe0cde23"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "9df099037a4b83d6f00b4b7cdc8bd0a1cdbe0da8b5ff79c44c110e4e53807266"
+        }
+      },
+      "nanite-core-default": {
+        "package": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "7cf26a46ea63d09eadcfb66ac6bdcb2606e039861fd49957359f44e4a77e4347"
+        },
+        "runtime": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "9df099037a4b83d6f00b4b7cdc8bd0a1cdbe0da8b5ff79c44c110e4e53807266"
+        }
+      }
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "f24e9b4752af9620ab9e70e863c31a59497207a718969f098d7d7ad2c22afbb5"
+    },
+    "runs": [
+      {
+        "suite": "villa",
+        "scalar": false,
+        "steps": 9,
+        "frames": 2709,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed.json",
+          "sha256": "103f8b3341c3cff9fd5d8aa3204b0138c6dd5c56312fed1428e3cf463325997e"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": false,
+        "steps": 8,
+        "frames": 4717,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "cc843a0632e850ccef5ffd758aba5d55be1a36d3d31fc8ecb1e7c2476ede5ca1"
+        }
+      },
+      {
+        "suite": "villa",
+        "scalar": true,
+        "steps": 9,
+        "frames": 2635,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar.json",
+          "sha256": "257a007e7a5814548ae6ef793869e0ccf809032761695664c99465cbb934df1e"
+        }
+      },
+      {
+        "suite": "default",
+        "scalar": true,
+        "steps": 8,
+        "frames": 4624,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "d4bb231f90c285bf58e329fa8f9e27ed0a261d136e13b50cc106185abc2d008a"
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "scalar": false,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 121,
+            "milliseconds": 4470.024999976158,
+            "fps": 27.06919983683433,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 328.26446280991735,
+            "beginComputePass": 135.86776859504133,
+            "dispatchWorkgroups": 2557.685950413223,
+            "dispatchWorkgroupsIndirect": 7.933884297520661,
+            "drawIndirect": 1036.3636363636363,
+            "drawIndexedIndirect": 186.44628099173553
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 4435.495000004768,
+            "fps": 27.505385531912186,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 227.21311475409837,
+            "beginComputePass": 134.75409836065575,
+            "dispatchWorkgroups": 2536.72131147541,
+            "dispatchWorkgroupsIndirect": 7.868852459016393,
+            "drawIndirect": 1027.8688524590164,
+            "drawIndexedIndirect": 184.91803278688525
+          }
+        }
+      },
+      {
+        "scalar": false,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 3779.585000038147,
+            "fps": 32.27867609771143,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 370,
+            "beginComputePass": 137,
+            "dispatchWorkgroups": 2304,
+            "dispatchWorkgroupsIndirect": 8,
+            "drawIndirect": 879,
+            "drawIndexedIndirect": 236
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 3679.774999976158,
+            "fps": 32.61068951247766,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 267.75,
+            "beginComputePass": 135.85833333333332,
+            "dispatchWorkgroups": 2284.8,
+            "dispatchWorkgroupsIndirect": 7.933333333333334,
+            "drawIndirect": 871.675,
+            "drawIndexedIndirect": 234.03333333333333
+          }
+        }
+      },
+      {
+        "scalar": false,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 93,
+          "after": 93,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 4299.975000023842,
+            "fps": 28.372257978086747,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 253.98360655737704,
+            "beginComputePass": 123,
+            "dispatchWorkgroups": 2373,
+            "dispatchWorkgroupsIndirect": 8,
+            "drawIndirect": 981,
+            "drawIndexedIndirect": 248
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 4108.40499997139,
+            "fps": 29.208415431496082,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 162.88333333333333,
+            "beginComputePass": 119.925,
+            "dispatchWorkgroups": 2313.675,
+            "dispatchWorkgroupsIndirect": 7.8,
+            "drawIndirect": 956.475,
+            "drawIndexedIndirect": 241.8
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 5,
+        "entries": 395,
+        "comparison": {
+          "compared": 13624,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 5220.564999997616,
+            "fps": 23.369118093550355,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 363,
+            "beginComputePass": 139,
+            "dispatchWorkgroups": 2903,
+            "dispatchWorkgroupsIndirect": 8,
+            "drawIndirect": 1983,
+            "drawIndexedIndirect": 188
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 121,
+            "milliseconds": 5126.77999997139,
+            "fps": 23.601558873342576,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 260.8264462809917,
+            "beginComputePass": 137.8512396694215,
+            "dispatchWorkgroups": 2879.00826446281,
+            "dispatchWorkgroupsIndirect": 7.933884297520661,
+            "drawIndirect": 1966.611570247934,
+            "drawIndexedIndirect": 186.44628099173553
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 7,
+        "entries": 326,
+        "comparison": {
+          "compared": 14377,
+          "before": 107,
+          "after": 107,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 4371.689999997616,
+            "fps": 27.906827794300725,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 392.75409836065575,
+            "beginComputePass": 137.86065573770492,
+            "dispatchWorkgroups": 2646.1311475409834,
+            "dispatchWorkgroupsIndirect": 7.934426229508197,
+            "drawIndirect": 1637.467213114754,
+            "drawIndexedIndirect": 234.0655737704918
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 121,
+            "milliseconds": 4218.299999952316,
+            "fps": 28.68454116619676,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 288.6611570247934,
+            "beginComputePass": 135.55371900826447,
+            "dispatchWorkgroups": 2601.8512396694214,
+            "dispatchWorkgroupsIndirect": 7.801652892561983,
+            "drawIndirect": 1610.0661157024792,
+            "drawIndexedIndirect": 230.1487603305785
+          }
+        }
+      },
+      {
+        "scalar": true,
+        "step": 9,
+        "entries": 377,
+        "comparison": {
+          "compared": 13918,
+          "before": 93,
+          "after": 93,
+          "maxDepthDifference": 0,
+          "maxSpecularDifference": 0.003921598196029663
+        },
+        "before": {
+          "performance": {
+            "frames": 122,
+            "milliseconds": 4880.830000042915,
+            "fps": 24.995748673673802,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 279.58196721311475,
+            "beginComputePass": 123.97540983606558,
+            "dispatchWorkgroups": 2605.467213114754,
+            "dispatchWorkgroupsIndirect": 7.934426229508197,
+            "drawIndirect": 1853.6803278688524,
+            "drawIndexedIndirect": 245.9672131147541
+          }
+        },
+        "after": {
+          "performance": {
+            "frames": 120,
+            "milliseconds": 4726.850000023842,
+            "fps": 25.38688555790743,
+            "runtime": {
+              "heapBytes": 1521221632,
+              "sharedMemory": true,
+              "engineWorker": true,
+              "gameThread": 2,
+              "renderThread": true,
+              "rhiThread": true
+            }
+          },
+          "calls": {
+            "beginRenderPass": 193.26666666666668,
+            "beginComputePass": 123.95833333333333,
+            "dispatchWorkgroups": 2605.108333333333,
+            "dispatchWorkgroupsIndirect": 7.933333333333334,
+            "drawIndirect": 1853.425,
+            "drawIndexedIndirect": 245.93333333333334
+          }
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "tag": "nanite-material-final-0-20261111",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-0-20261111.json",
+          "sha256": "558fb63205fdc629040ee247cafe1f0591bea7e3dbecd11ab53399da00b5ba33"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 26.950063149986867,
+              "durationMs": 5009.2647
+            },
+            "sampledFPS": 26.617222908941077,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 377.88235294117646,
+              "submit": 12,
+              "beginRenderPass": 332,
+              "beginRenderPass:(unlabelled)": 332,
+              "createBindGroup": 9.154798761609907,
+              "draw": 50,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 871.6996904024768,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMsPerFrame": 19.93594154853939
+          },
+          {
+            "baseline": {
+              "fps": 32.65211205408468,
+              "durationMs": 5022.645999999993
+            },
+            "sampledFPS": 31.904369332234133,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 379,
+              "submit": 12.002583979328165,
+              "beginRenderPass": 371,
+              "beginRenderPass:(unlabelled)": 371,
+              "createBindGroup": 12.162790697674419,
+              "draw": 65,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 808.8010335917313,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMsPerFrame": 19.068119753854834
+          }
+        ]
+      },
+      {
+        "tag": "nanite-material-final-16-20261111",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-16-20261111.json",
+          "sha256": "30d0bd8dc04bc9dc095b5fcc3df955fcfdbb3e18724a2639e03fc914781883ac"
+        },
+        "samples": [
+          {
+            "baseline": {
+              "fps": 27.642574432901643,
+              "durationMs": 5028.475200000001
+            },
+            "sampledFPS": 27.069277604080963,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 379,
+              "submit": 12,
+              "beginRenderPass": 232,
+              "beginRenderPass:(unlabelled)": 232,
+              "createBindGroup": 9.27355623100304,
+              "draw": 50,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2579,
+              "drawIndexed": 846.8054711246201,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 1045,
+              "drawIndexedIndirect": 188
+            },
+            "rhiMsPerFrame": 18.603353877198007
+          },
+          {
+            "baseline": {
+              "fps": 33.1485441778436,
+              "durationMs": 5007.761400000003
+            },
+            "sampledFPS": 32.48948627030593,
+            "calls": {
+              "createBuffer": 6,
+              "writeBuffer": 378.0837563451777,
+              "submit": 12.00253807106599,
+              "beginRenderPass": 271,
+              "beginRenderPass:(unlabelled)": 271,
+              "createBindGroup": 9.345177664974619,
+              "draw": 65,
+              "beginComputePass": 137,
+              "beginComputePass:(unlabelled)": 137,
+              "dispatchWorkgroups": 2304,
+              "drawIndexed": 837.6548223350254,
+              "dispatchWorkgroupsIndirect": 8,
+              "drawIndirect": 879,
+              "drawIndexedIndirect": 236
+            },
+            "rhiMsPerFrame": 17.771726332340144
+          }
+        ]
+      }
+    ],
+    "sizes": [
+      {
+        "size": 0,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-0-20261111.json",
+          "sha256": "e91c2cae143f30e6ba7dbce00b1d13a3d357dfdb6b34e52bbd96ad19aa2ba562"
+        },
+        "fps": [
+          26.353693924405437,
+          32.72088090995974
+        ]
+      },
+      {
+        "size": 2,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-2-20261111.json",
+          "sha256": "f140101d1daddb05d78e2de211582e81ad7f58f464007f9a64a93012a63bb74f"
+        },
+        "fps": [
+          26.882853128578667,
+          31.9818016000396
+        ]
+      },
+      {
+        "size": 4,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-4-20261111.json",
+          "sha256": "0613a5156d10d8f728f73101af22884e596ee08ee1a7ecae94cfd7ba674da902"
+        },
+        "fps": [
+          26.742421427273342,
+          32.659159334917774
+        ]
+      },
+      {
+        "size": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-8-20261111.json",
+          "sha256": "cd26e32ae9c4e5a0351d4aab49b843dc440577699c67659efd8d1b3082e9074c"
+        },
+        "fps": [
+          27.112158774543182,
+          32.47624536986864
+        ]
+      },
+      {
+        "size": 16,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-16-20261111.json",
+          "sha256": "e04c845d9cafb8c288fba9b77b4091119dd33712d8dc5231bb8c8390b3f6ac24"
+        },
+        "fps": [
+          27.247011301185214,
+          33.00406608105924
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-material-pass-evidence.cjs",
+        "sha256": "b30aca57ef630ac4a6ecd241d955aac705642e82f86e093a486819c9f32519a9"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+        "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+        "sha256": "b9d2c151170470beeeeb44e497d54a084b3e46fd6edffd8652505dd1e6f1e588"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+        "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+        "sha256": "cf0266eaa70f2b46d33752b5baf39cc249dbdd8404b9882d0855a0f2dbe690dd"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-gpu.cjs",
+        "sha256": "847156feed1c08fa5584ac8af74b6e5edb07c4f6df34948f9d175c07cad4e20c"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+        "sha256": "cb5fbcb605dfcd1274e17be7f89be75c51232ecc05925d60178b95041a70b243"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+        "sha256": "38bd407744fb764d3b9cde39cb0ffca5c98feb9305f16745456b83490e01390a"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebMaterialPass.cpp",
+        "sha256": "bd6fcba42a905e931df073ccb9b06dbd4817b8d8e2fb71d7386358a4ae1b8315"
+      }
+    ],
+    "artifacts": [
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-scene\\package.json",
+          "sha256": "239e816692f7c92dcbeb1f246b408298e10277e51e2e37b7dc9716d2fe0cde23"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\0-package.json.gz",
+          "sha256": "0a8634f429f1468b196e56d35c90ad1e3d29e903543be303b2316f6330420637"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-browser-runtime\\build.json",
+          "sha256": "9df099037a4b83d6f00b4b7cdc8bd0a1cdbe0da8b5ff79c44c110e4e53807266"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\1-build.json.gz",
+          "sha256": "118a26c5da965ae99f359342cfa58debd0a56f360c05128d5e17a807115c802b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-uploader\\20261111-133141\\verified.json",
+          "sha256": "8231737b82bf35b58cc9cbf7cf5eff57701e7442b29da7d1ec29aa8606b833e4"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\2-verified.json.gz",
+          "sha256": "10bb8c37265dfc8d4ea4c47f732b9ad48f22a2598706a1f26e340dcdb60ac1e8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-streaming-shaders\\verified.json",
+          "sha256": "8e2781e574b88c9772cfc4d957ed7707cfb4fe8df2e6d3d600da7b562799f340"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\3-verified.json.gz",
+          "sha256": "19c73cd9095030c07f45620f9d744b9c04a5f798245d1c6aeac5cae84209a3f2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-stage-results.json",
+          "sha256": "7082c581f67f1b2caf34b1c58628cb2729bc8a7abef851893a1348eb6aaadfce"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\4-web-project-nanite-full-scene-desktop-stage-results.json.gz",
+          "sha256": "281f9a364bbdc407054f595c391ef845896b17003a4d0fb8c7b812048afd4cc2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-project-nanite-full-scene-desktop-cook-results.json",
+          "sha256": "589adf394c2cda184f530c27b6ec0fc05871caf3cd21f73045749c23a5479473"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\5-web-project-nanite-full-scene-desktop-cook-results.json.gz",
+          "sha256": "3b8a2a4c3dcb23c8f3adc26df4f3dcd764a4f60e23ab098ac122882262ae52da"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-project-nanite-full-scene-desktop-cook\\20261111-133154\\ShaderConversion\\inventory.json",
+          "sha256": "c5b683e44520ff4a2a459a096798505aaa0e3082a8bbd80e210cca7ebf593da0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\6-inventory.json.gz",
+          "sha256": "e84f689a2820fd177130676ca0f2c9b860d755c47f3ced65ad86d0d5c9d64d36"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-full-scene-conversion-verified.json",
+          "sha256": "75f300f75ff1104216527437ba712b02e9f4eee8936bdbc31b6755bdaba8e915"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\7-nanite-full-scene-conversion-verified.json.gz",
+          "sha256": "91ceddc1722ffc2e2e8ad3dc1f67d6521f5e8e246fa8d0af387a2ec4cc6b8fe2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-core-default\\package.json",
+          "sha256": "7cf26a46ea63d09eadcfb66ac6bdcb2606e039861fd49957359f44e4a77e4347"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\8-package.json.gz",
+          "sha256": "e67bfd3daa7399d046c04d483f0fe9f4f5bcb72b08ee3774b9260fd36a935edf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-stage-results.json",
+          "sha256": "1fc2c706bea05104ff2d439da56277cd43ccb597ee972492adfeb482fabc5c1c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\9-web-engine-webgpu-sm5-default-stage-results.json.gz",
+          "sha256": "ef93c4121efb476f1809998f72555cb82aa5b453e97e01ae95ef0f930b906a51"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-webgpu-sm5-default-cook-results.json",
+          "sha256": "53e986e0e2df6bd27ce67f5815713a40b4b6ebebffc9eb066bbf5473aa694319"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\10-web-engine-webgpu-sm5-default-cook-results.json.gz",
+          "sha256": "f1650493af80969be6f454c126c484e7c54d5c569544357865f4f3391f245aa4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "C:\\Users\\wap80\\.cache\\ue-html-build-archive\\nanite-core-cook\\web-engine-webgpu-sm5-default-cook\\20261111-135540\\ShaderConversion\\inventory.json",
+          "sha256": "7b5ba6ab844fcc1cb1b9a8b74d3ad64a7872b47215d530ad8fe838790cee4caf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\11-inventory.json.gz",
+          "sha256": "fcab48a20cdbba819552258fd61fefb5dd214d60a40c3012dfdb93adc753b891"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+          "sha256": "f24e9b4752af9620ab9e70e863c31a59497207a718969f098d7d7ad2c22afbb5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\12-web-engine-full-thread-build-results.json.gz",
+          "sha256": "e8a403be33aca25fd6638c9852f85c6fcbfe6b3b26c98395c2f429c215f41ec1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261111-153732.log",
+          "sha256": "86ec1a88086eaec81296254ab3b0882a362696568475363dd0d3faff4ca47676"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\13-web-engine-full-thread-20261111-153732.log.gz",
+          "sha256": "80555c99029459b7a96ef1c4d7e5d4e74c4fbd94f4fb41b6f4d23e0a0957461d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Intermediate\\Build\\Web\\wasm64\\UEWebEngineThreads\\Development\\UEWebEngineThreads.js.rsp",
+          "sha256": "5e9f663e0ab2e52e6718490b14facb06d72aeec0e2485e7e1d9971f8f3cd0e69"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\14-UEWebEngineThreads.js.rsp.gz",
+          "sha256": "e9ad1e3e37582676665fdafd5da45cee0ee966d6caff529f69c76349204df5fb"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-1.png",
+          "sha256": "08a818f6a188ce172cb40876ab612f3a918fa4e85c19f2a103bd0b3b7c3502ac"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\15-packed-1.png.gz",
+          "sha256": "ab4a44ecea681b32690f754e02d55d58954848e683ad82d5eb8d2a66e77647be"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-2.png",
+          "sha256": "c449862d731fab7aec5f2050c570c3e5eb70c80a945f5316fb4b7bcb60e4d775"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\16-packed-2.png.gz",
+          "sha256": "6a9c437821102bdab1987c33de5c03d53ff8ecfb85fc05aa3d495e1ed58db3f7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-3.png",
+          "sha256": "d5b88c5884cbb6475a4c89b96ee1cc20ff7dafdd2b0f63eff116df068261c649"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\17-packed-3.png.gz",
+          "sha256": "adcc1d33745dc2a7d9102f2766816055f47893209f4f24954aa48013302f750e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-4.png",
+          "sha256": "bfd67a49c967a287dc55bf1dbf8f02316e3696def87743bc4a3fad87b7b0dbfe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\18-packed-4.png.gz",
+          "sha256": "1f9b99e6bbf859a70fa01639c275d168c78709353f4f859ad25b89f2eb5b6009"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-5.png",
+          "sha256": "3c6397e209f71bde882450f248d084832e9bd3d115c58faae480bc5668e59360"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\19-packed-5.png.gz",
+          "sha256": "429e3bbf0b98b8d976abb52ddb7c890578e0d102632f77aba244c49004200ecc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-6.png",
+          "sha256": "4de73e3c207dbdca89f23d98a2b43dab2b95016af88491188b8457439a2a91da"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\20-packed-6.png.gz",
+          "sha256": "3dd7b851f5ae8ad171e9061ae03d242957034dee6e0e9f3912541a906a58ed24"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-7.png",
+          "sha256": "6106f2d61a838eeb71b7daa470067f0c94df9bb486183bc1648d52ec774a3330"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\21-packed-7.png.gz",
+          "sha256": "6a31b99286717ae6202f66bffe362b3e2c100f533d3f931f487520f1f18b577a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-8.png",
+          "sha256": "7bd89e5cca9b830c3724f4311a0f6e0f769c82b66984867e0b9741fc9fe9025c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\22-packed-8.png.gz",
+          "sha256": "ba3958c28cd7c2563d3c7f30bbaa85d195fa0b2ffd90a904cae737b0321987b6"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed-9.png",
+          "sha256": "e02d06fa1c59bf4d6cc0764bb3c2198f17003fdfa80b7df7a696c875e532565b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\23-packed-9.png.gz",
+          "sha256": "ab45fd70a39dd3f4d78e6bdc2afcd3ad87b7f512be7a5cf4fafa6082a78ff957"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\packed.json",
+          "sha256": "103f8b3341c3cff9fd5d8aa3204b0138c6dd5c56312fed1428e3cf463325997e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\24-packed.json.gz",
+          "sha256": "21f014195b579017961d20d7c65b360c8745bb40cfa9f1bf66299b2b4546b85b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-1.png",
+          "sha256": "f9ca2560203d4ed826509db455f0be8ba7a097cc190ea10352a19455d0f5d707"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\25-packed-1.png.gz",
+          "sha256": "5867efa6dd4cc456549722acabf0c118257dedde23c54473140f582687499f97"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-2.png",
+          "sha256": "c642b3f2dc31d7b65797ce460b3144281586f36fc9d353058fd48657cfeae5c0"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\26-packed-2.png.gz",
+          "sha256": "be05ea5c424d32fe8d271fc16720914485566f2c417786c1432ced317135d332"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-3.png",
+          "sha256": "5ad137a9c792abac3bc266ebcae3519dae6cf40514881930e1a37043e14ee30f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\27-packed-3.png.gz",
+          "sha256": "862b1a3cc523bfea218491a14cc3aeff5269e6e54d500d5ade886b209bd5cf70"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-4.png",
+          "sha256": "8b0ff5fbd2386a636249185e09389387f16144cbe3bdffb0fe9e53269fc6aa2e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\28-packed-4.png.gz",
+          "sha256": "01a60e0e36e20bbe22e0e1276cb9a2c9b3b7b761fef0f72aacefd829db91ac50"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-5.png",
+          "sha256": "27bdbcfff5f9a86d97aa48e7b14700024d2c5dbf57d53fa26739b91f0c340fb5"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\29-packed-5.png.gz",
+          "sha256": "05bd6e6b9c1ac3d75a076367ea051f1fde4fcb11d4e8d4d452783955487d43d9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-6.png",
+          "sha256": "3b785e157f6ed1f76f61eb37d08655431a8413ad52ca2b9abd6731fe62432e41"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\30-packed-6.png.gz",
+          "sha256": "ec88120e02e142daad64127e13e9f5286ce4a97479528f263efed671816cfe32"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-7.png",
+          "sha256": "04acb90cfa5bb4909adbe7df8642ba3a3001f70961b75ed530bd7383ecdcab6a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\31-packed-7.png.gz",
+          "sha256": "5c5010fa40dbe12be73e2d6aa2b5f8130e54bd708b923d184dc034614d77b57b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed-8.png",
+          "sha256": "8bf0459bd3e4206a752ddb8d6f1ec0fb490862999276e2c16e84eea96a6bb0d3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\32-packed-8.png.gz",
+          "sha256": "277a326e89911ace4bc6189743bfab9088441ea4ec50b5c4bb86f2bfef414346"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\packed.json",
+          "sha256": "cc843a0632e850ccef5ffd758aba5d55be1a36d3d31fc8ecb1e7c2476ede5ca1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\33-packed.json.gz",
+          "sha256": "2df9fa0410c83e4a8f8727e7d2944c29462b701ef9b517e6f0d099d7048b85d3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-1.png",
+          "sha256": "fe969e780c8a989fddf8bf16d67d6b6f9f195451ffdf0fbcd48b73dec6a75787"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\34-scalar-1.png.gz",
+          "sha256": "0a3e5294a8855e6e53f1bf31a58b0c38496a4b8e9386e274129230ef3c5a9b69"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-2.png",
+          "sha256": "fafc911bbe834fc3943d18d509cf3c4c84d83a2418261cf145272eb4b9e75bb1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\35-scalar-2.png.gz",
+          "sha256": "2f811b29e2b698f745efaab4934f017d58759b338d8f5b26cac69bc7f058b2c3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-3.png",
+          "sha256": "78c02e9d60b6d85099d6d5c2cdddf32c5cf42998bcbc3cd170cf8890ceae518b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\36-scalar-3.png.gz",
+          "sha256": "19710b112abf485264ab95a016af898fab537b11d391ba95a7c2b32fc8a07a35"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-4.png",
+          "sha256": "79f8e4494864c3cf59ba2c9949cb7beb8d2568714cf54bde7754d960c95b26d6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\37-scalar-4.png.gz",
+          "sha256": "1609671a48c71dcce2ad4b8f95d649cf8306ebc3be7dc9f1236bb9bfa337a04a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-5.png",
+          "sha256": "61dc03efbc16a4e47d1234e16ef943cf32a0583218e00b7f9631afa09f990fd7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\38-scalar-5.png.gz",
+          "sha256": "b798e926bef85110fc7681770f555d9ec50caf2cde6530ffc3c39605f883b4b8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-6.png",
+          "sha256": "80e14f21efc78499ba3acae3f8fcaee3425e2ca577a490bc820e0837f8d158e7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\39-scalar-6.png.gz",
+          "sha256": "0f3001e6ebf7023a643b3a97da26876b92edf35a72a149ba8773c8252fc79f34"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-7.png",
+          "sha256": "a6bf7229eef40b10aabd08cdd5eb1ba18bb21a2d539b079842dc89dfe2c6b037"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\40-scalar-7.png.gz",
+          "sha256": "2ea28b4c26885efcca3e995a1d69693e9c2b4baf1ddaf888d2ec43b067d464f9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-8.png",
+          "sha256": "7d08deffa04dcad3ff7309d4e1a81d43e82937a900940d3c80c873253c0590e1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\41-scalar-8.png.gz",
+          "sha256": "37dddeb58a0dcfdadd1afc69ee80981b9653ed72ae7375b0eadf6a42cde05fcc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar-9.png",
+          "sha256": "d0385df8b8d428482b6b68b19936a9ea480eb1af710f0be2b06107f99630e59b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\42-scalar-9.png.gz",
+          "sha256": "f0081aa89cb09a6a71202e96f4bec3609a79725b0282bcdd31c38d14ca3fcc23"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-material-pass\\scalar.json",
+          "sha256": "257a007e7a5814548ae6ef793869e0ccf809032761695664c99465cbb934df1e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\43-scalar.json.gz",
+          "sha256": "b05491428f5d322c3ac706b9376fbceb4356d47293bf69a4f563b40da656ff8d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-1.png",
+          "sha256": "fd14e80998aadb5e5d7107cf6470d3deaaa85f881dd8278f96b2609ce03a36cf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\44-scalar-1.png.gz",
+          "sha256": "4151c16deacd188c2b849703c02fb9b0c28a6cfa8056de4183f1492e827a8b70"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-2.png",
+          "sha256": "b120bebac878f43356bc5df4d72c4f44766ba9fce97a7a28cc7011a389811dbc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\45-scalar-2.png.gz",
+          "sha256": "44512833f3408cacd5f263e18f58b5acf8411b3ebc6ddfac737363d125908595"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-3.png",
+          "sha256": "5657f33517026d86fbe5f22fb71b174d60d6bbe1b392fcf120ddc5513114bbab"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\46-scalar-3.png.gz",
+          "sha256": "20278a8404a393d6411a66cb734cd60f769ba3ed8b4dbd3a4a4604d8fdeb6dcc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-4.png",
+          "sha256": "6d325ba88e2ab9a02c0b290ce5cf9252dc00173950dcc3b58a924d7aada6c32f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\47-scalar-4.png.gz",
+          "sha256": "bbb6560accd9aa1b0787d36bcc185acff83282ed7b327bba09bc1331846fa929"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-5.png",
+          "sha256": "dea9c1676a5d20c9b6da95f3a8387bd081f0d2d9674231529b7fd376f7859fa1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\48-scalar-5.png.gz",
+          "sha256": "be3e78071ff99f9707cff80c14d3869710e9a6d2402fb264d47c7974d82764ae"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-6.png",
+          "sha256": "cfd950bc211d921053c6a3141dd706dcbd9aedc87373479a4282bde8f5c11c4e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\49-scalar-6.png.gz",
+          "sha256": "b0bc2d8c8c8e05097e4d14cd280fc26c83b4fad17fcc82aacba79c5f7b8fd24d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-7.png",
+          "sha256": "bb478bb5676c3d29253c316dba3ead751909a23a40500418814c63fc47fc89cf"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\50-scalar-7.png.gz",
+          "sha256": "7a1e7b15a70bf30a457dd9073f8a358a178edfde3a234476a448e037af04e9ea"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar-8.png",
+          "sha256": "82b2d4ae6dbcfae52a0f6caf043817540a0a1e12392de241712aa607b838829e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\51-scalar-8.png.gz",
+          "sha256": "228016e63032f52aa84eb1d5c16ca88c5dba15e0caa96660545559e43692207b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-automatic-scene\\scalar.json",
+          "sha256": "d4bb231f90c285bf58e329fa8f9e27ed0a261d136e13b50cc106185abc2d008a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\52-scalar.json.gz",
+          "sha256": "e8b5447fe9c88a4df0eefc787396a1517c9afd1d2c80ed6f3224cd0d54a4e099"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-0-20261111.json",
+          "sha256": "558fb63205fdc629040ee247cafe1f0591bea7e3dbecd11ab53399da00b5ba33"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\53-cpu-nanite-material-final-0-20261111.json.gz",
+          "sha256": "721b43046ac608f419a9a491d86a8338856f70abefe09920dd86a51d8b048126"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-0-20261111.log",
+          "sha256": "59643e775ba3e717f7a5218f1b8acd3eea372301bf590997648d64d624b331b2"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\54-cpu-nanite-material-final-0-20261111.log.gz",
+          "sha256": "f667d253cc646ac2931d1ee37733c50d5da6799a4360aded385c467d933382b3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-0-20261111-0.cpuprofile",
+          "sha256": "e41c24d4d6896e9fe571cffb98a3596110b88b0221aeb259366d1927db1ee44f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\55-cpu-nanite-material-final-0-20261111-0.cpuprofile.gz",
+          "sha256": "5615e21a42f8b3e24a46a25e7f5be08a63c4af00e2df0c4e3234ebd12cca33c1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-0-20261111-0.png",
+          "sha256": "09fa77741592c71809ba2a67cb858efde8b136d5a92c6830fed7109b834f6133"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\56-cpu-nanite-material-final-0-20261111-0.png.gz",
+          "sha256": "8f8874d9cafa41b4f8d2fc944c0deef554877287ffea246e2ab386ed3f899edd"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-0-20261111-1.cpuprofile",
+          "sha256": "0f448a3a0c935bfd53bc41f3878e825cd2027a1a413adc6ae9c5deeb8741bf9f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\57-cpu-nanite-material-final-0-20261111-1.cpuprofile.gz",
+          "sha256": "be4cc1095b29cfcd58c9d38ccf93929a21011be23668e292f72aa72dcd9ff3b1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-0-20261111-1.png",
+          "sha256": "a2762807bdd438084d1124fcdc5bce50e6b9228ac6087a5c58ee0ced6c8640ee"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\58-cpu-nanite-material-final-0-20261111-1.png.gz",
+          "sha256": "db0d91b9c524e253a47dd9587b51094bcf1147db7baa6dca75a410a4a6cfe67a"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-16-20261111.json",
+          "sha256": "30d0bd8dc04bc9dc095b5fcc3df955fcfdbb3e18724a2639e03fc914781883ac"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\59-cpu-nanite-material-final-16-20261111.json.gz",
+          "sha256": "460471b2a88e109ce5c0f41f89b2d04cf8bb627140ad23b2a00e0baf045be3b9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-16-20261111.log",
+          "sha256": "a67a015d41b825459e4c01b5297d2ad685c75e55057f3ae287b74b9cb17a8d13"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\60-cpu-nanite-material-final-16-20261111.log.gz",
+          "sha256": "28feb7c18599a161c4a8c1a5352a97bc3b96b74fc21515711a353e6b136c14cc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-16-20261111-0.cpuprofile",
+          "sha256": "37aeab162b3ccf5c8e62e61d9c0a68c7a69b931dd78b2fc8a2f45d32e589206d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\61-cpu-nanite-material-final-16-20261111-0.cpuprofile.gz",
+          "sha256": "f38e40fc7748b3b9f81b2637e3f90b77d7ab5d83b5373d6d02ca931656ebd894"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-16-20261111-0.png",
+          "sha256": "a5ad40d408f0991287745efadc8d93b867221750a5b4c469b17a87b1226d6c09"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\62-cpu-nanite-material-final-16-20261111-0.png.gz",
+          "sha256": "d86326c649bea795e431d744d5e82a603f1f123226d513655dc64ca6b07a93d3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-16-20261111-1.cpuprofile",
+          "sha256": "8fdd55087e457619195a2bcb2836fc417d6c7c559a2821c78b1599b58f8684dd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\63-cpu-nanite-material-final-16-20261111-1.cpuprofile.gz",
+          "sha256": "df29a156d0adfbd1a5123065c1814a009e347382ef02a9963e722698a9ead83b"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-final-16-20261111-1.png",
+          "sha256": "270ad270c16931b3907be9cf9d727748af0f28676e121393d7245c3e186459cc"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\64-cpu-nanite-material-final-16-20261111-1.png.gz",
+          "sha256": "fb932bcfc51290f679c62f55bb75b1d1b0330cd0afc9f1ac54b2ae822cac1242"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-material-pass-evidence.cjs",
+          "sha256": "b30aca57ef630ac4a6ecd241d955aac705642e82f86e093a486819c9f32519a9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\65-collect-nanite-material-pass-evidence.cjs.gz",
+          "sha256": "1cd4c0b87ba41f7c3e7c5cc828183001a45b211fd165782f0894d9ad87bae38f"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\package-web-nanite-scene.cjs",
+          "sha256": "aa644bb28696d04b6fd8040cfd8d531ac36482bfee6d0b6b2de5ca6ca6baa54b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\66-package-web-nanite-scene.cjs.gz",
+          "sha256": "80e9f9d3898270bc211ca24d5d5ed01c6e95b479d275f39304a97c827517d03c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-full-scene.cjs",
+          "sha256": "b9d2c151170470beeeeb44e497d54a084b3e46fd6edffd8652505dd1e6f1e588"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\67-probe-nanite-full-scene.cjs.gz",
+          "sha256": "e0f7121decfb21578d7657061a2fec4ef995c044aca86d70a738f32b14b7ccce"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\probe-nanite-automatic-scene.cjs",
+          "sha256": "6b95ec930e030e7fcb3b650cd683ec8005b20e52b036b619a7efc538a7cafa63"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\68-probe-nanite-automatic-scene.cjs.gz",
+          "sha256": "8c0f7ff93a1c9b3305eecc45966283a6741b065a1a09af979d8fe1f80ac2d2f7"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-cpu.cjs",
+          "sha256": "cf0266eaa70f2b46d33752b5baf39cc249dbdd8404b9882d0855a0f2dbe690dd"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\69-profile-web-cpu.cjs.gz",
+          "sha256": "bc7cd4248df2ed6645d93a93e7566b59693e817eb79045086fc4adc76289b393"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\profile-web-gpu.cjs",
+          "sha256": "847156feed1c08fa5584ac8af74b6e5edb07c4f6df34948f9d175c07cad4e20c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\70-profile-web-gpu.cjs.gz",
+          "sha256": "c0c06ca5bdfbe7d16fe52d3c05bea490c6b4f933dd1c10f0942a35d43d7c8b58"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\web-engine-worker.js",
+          "sha256": "cb5fbcb605dfcd1274e17be7f89be75c51232ecc05925d60178b95041a70b243"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\71-web-engine-worker.js.gz",
+          "sha256": "8a714273d2222a9a188a955da55e802d5e674d69a553570623a77887afc19f9d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\ue-web-smoke\\Source\\UEWebEngine\\Private\\WebNaniteAutomaticSceneTest.cpp",
+          "sha256": "38bd407744fb764d3b9cde39cb0ffca5c98feb9305f16745456b83490e01390a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\72-WebNaniteAutomaticSceneTest.cpp.gz",
+          "sha256": "7cb99ca9ef6822ec46fa68fb02c2f3773459ba3749b40dd3f0b709f3b69695be"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\reference-engine\\Engine\\Source\\Runtime\\Renderer\\Private\\Nanite\\NaniteWebMaterialPass.cpp",
+          "sha256": "bd6fcba42a905e931df073ccb9b06dbd4817b8d8e2fb71d7386358a4ae1b8315"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\73-NaniteWebMaterialPass.cpp.gz",
+          "sha256": "c3fe2aad3fa4d36b192cb881eac5db7b5f47d6ab204b4f1f8ba843dda88858fc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-explicit-build-console.log",
+          "sha256": "20fcca56b9295329ad6bc25c2a0435cc9841e9b4df192dec176c2edce15987a6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\74-material-explicit-build-console.log.gz",
+          "sha256": "2bddaa45655748afa4bc9da66e8f735a188fcd64de92e1a402bc0c95e42328d1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-explicit-repair-build-console.log",
+          "sha256": "af3d88a18d4e33effd0519f38dc3b029b65ad407c3f55aa77f598c144e4f99e3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\75-material-explicit-repair-build-console.log.gz",
+          "sha256": "5297190f3aa9af5110769aac6c1c7a448e7173d70330107b6ab70e20207526cf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\restored-original-buffer-pool.json",
+          "sha256": "64ddb67f60a0ef7854aceb2c42369ca4d0ff8e208b130d337a3b61eb250004f1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\76-restored-original-buffer-pool.json.gz",
+          "sha256": "0a21c9340845024caa826296b86c2cc6eb09ba9fd889fc776b8a342e812dae80"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-interleaved-candidate.cpp",
+          "sha256": "4b4b14d085ecc5c9c85d7b54f2bd9ce801cbe347dccdfd16cb53f81b8cff07da"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\77-material-interleaved-candidate.cpp.gz",
+          "sha256": "05dc2975b7555d45e531d9626d782b20f787bb461ba0f3cc5006ad13c1204997"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-interleaved-package.json",
+          "sha256": "92759149bf7bbdccd12d2e84775a841a46b8fbbdb3ef9e902d1c369450b5191f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\78-material-interleaved-package.json.gz",
+          "sha256": "ffeebc80b48e4f0c6dc475c84b4d082e8a714c2443bed20a12c482297b2fc6a1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-interleaved-build.json",
+          "sha256": "69cbae97e78a3497d13818cebfff9bad9fde4a5c3f0ee4cf5555b8c9f6dbd0d9"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\79-material-interleaved-build.json.gz",
+          "sha256": "23f0b4bd0c77a23197924ba4b862d177ea01a21536309d3cdae5249244ad9541"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-interleaved-full-build.json",
+          "sha256": "3bb0cefb7a324254dcf5c098dbb1dd44e4ee9f2d5be4191b39a5991263519f43"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\80-material-interleaved-full-build.json.gz",
+          "sha256": "8dabc89d0213dffa29dbca92059cd5e49a92dee9e8d20cd5cf31af5241138ce5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-explicit32-candidate.cpp",
+          "sha256": "9b005cafff5c415f896424bdada04dd711fe3d407fbbd9919d6047ee80a84dde"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\81-material-explicit32-candidate.cpp.gz",
+          "sha256": "6c92870f4958c6ed47f2c659a5f9afc72b0cd220d202b2452d6198876fe7c3aa"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-explicit32-package.json",
+          "sha256": "5085ddb58c7e2d316d7796a37a6bf04fa0000138bddc608f0a0d50125d7c522a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\82-material-explicit32-package.json.gz",
+          "sha256": "9bb21b17a52a4b9a507ed1c995932551e646de0aab8c795c25d740683633b89c"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-explicit32-build.json",
+          "sha256": "1832a3f0e07702ed737a8fbcfb334671ea4c19a0ba2e68be9d36c9a160828169"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\83-material-explicit32-build.json.gz",
+          "sha256": "720ec7565b44fd45e83f296fc6f561483d47699df0646d7227ae162a0f7707e8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-explicit32-full-build.json",
+          "sha256": "92d2fca2c48a38c5f8015f08609df4e94885e6fe564e77707cd6fa86d4b425b6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\84-material-explicit32-full-build.json.gz",
+          "sha256": "ca5e3845637492d5d2fdcbabf471ed1b5cda3a10a14b8a3de4a6a148021aa8e4"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-sizes-candidate.cpp",
+          "sha256": "bc1076e6e3531dc36027b8a5e2032624dfdaa62b733cb0c8d2f4763fc384603e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\85-material-sizes-candidate.cpp.gz",
+          "sha256": "ef54a8a9095908e20b3e849c671ad8e8b517c94cec99cb92ce4c1439e827fedf"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-sizes-package.json",
+          "sha256": "3ce375dc941cc3e421de50516d109a6ef7303b23d11fc4580527e1ed38e1985f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\86-material-sizes-package.json.gz",
+          "sha256": "e067284987cb523cdf78517df5407635f3139b4b5b7359dc73fd10609ba22683"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-sizes-build.json",
+          "sha256": "fb414bb3a254adaf5c233196203f9866fc39b87739511583a3916f47acacb1f7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\87-material-sizes-build.json.gz",
+          "sha256": "354b094ce324096790ef12792c8da05c76d2d62fe8ff9ce8f65afd79e648b31e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-sizes-full-build.json",
+          "sha256": "d9ab4999f288812036d8445c21be47f15e494ab16cc6eeca70f0ebd4d512c524"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\88-material-sizes-full-build.json.gz",
+          "sha256": "52b4401f15662d8875b0565a33db7f4d42203784ff3f0d1f405de2669d6005ed"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-batch-build-console.log",
+          "sha256": "5a5e025b326d1d2cbf781fd0ecebcd42fa23a33b93225c9d5b939a6ced57b543"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\89-material-batch-build-console.log.gz",
+          "sha256": "9c77cd97195772c662b342a81a89c370c42b306f95ffc174983fe3212b34e322"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-explicit-runtime-import.log",
+          "sha256": "d239145de55850100c826dd9b9784a9d402d1f939ef883a6525e58edd09af32a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\90-material-explicit-runtime-import.log.gz",
+          "sha256": "e6172fe239927fe32ad4ebae4fe736d0566518089f96765ff1795620a8fca131"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-final-build-console.log",
+          "sha256": "8e0243a6ee20b4c50e0dd36c15a4af08eb4c262a2db2c5b103928116e23e6599"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\91-material-final-build-console.log.gz",
+          "sha256": "80acdceaefc70a327dfd929de77ddc5a8452ede3dae2ec336fcd68a99633abd3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\material-final-runtime-import.log",
+          "sha256": "d239145de55850100c826dd9b9784a9d402d1f939ef883a6525e58edd09af32a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\92-material-final-runtime-import.log.gz",
+          "sha256": "e6172fe239927fe32ad4ebae4fe736d0566518089f96765ff1795620a8fca131"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-0-20261111.json",
+          "sha256": "4dbedae2f8e2ac52954cd79c66025cef834597c97fb378a64b3a2825d3e67376"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\93-cpu-nanite-material-pass-0-20261111.json.gz",
+          "sha256": "fd1bb1d0cf3b677c84135ac06d012369196e8da87a7cc1633e10c756bf049784"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-0-20261111.log",
+          "sha256": "71811b744050f063ee1095ad04837a9ddee48d9fa01e8d5268ae5dde3cdee4a6"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\94-cpu-nanite-material-pass-0-20261111.log.gz",
+          "sha256": "8cd323937aa168f320e227b9434628c9ca95e2cd1c0392f449581fbb5f2a1c8e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-0-20261111-0.cpuprofile",
+          "sha256": "aee5fbf6d5df012812e36add1d9bf8b3baa6f3bed1ab2b0bc6800faec19e1f2a"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\95-cpu-nanite-material-pass-0-20261111-0.cpuprofile.gz",
+          "sha256": "607ef78d991af2b56d6662b60913fcf68f3c3b4e6604f8d2254916e8657adac8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-0-20261111-1.cpuprofile",
+          "sha256": "a4d94e5241b781417978405da4c325fed02ad14130403a9b4d9cd446b28f59ca"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\96-cpu-nanite-material-pass-0-20261111-1.cpuprofile.gz",
+          "sha256": "4fdfc4d515cdf4df690a85042cbef01c6895cf29feb726712e0bb7d6ea7589ba"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-1-20261111.json",
+          "sha256": "89566836f00492b2fe8cc9131bdbe198ddfba60933f488c680c11b3e635bd77d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\97-cpu-nanite-material-pass-1-20261111.json.gz",
+          "sha256": "8b1730bce5e1c8a59bdc6295971b7edce7111482a7c5e74cd604973fd8234371"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-1-20261111.log",
+          "sha256": "944b2e70afc8c8199baa424d736a03c6fddc49bff8596f01c17141e061c18c4b"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\98-cpu-nanite-material-pass-1-20261111.log.gz",
+          "sha256": "883fc8460d150cbeb8510af5810aaf6d34e9e7711122e27372e37f4b2e1b8efa"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-1-20261111-0.cpuprofile",
+          "sha256": "5ad21b198df47f207751eeb41318db57f36d2a8a449f85b7e94d170bddb5fcc7"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\99-cpu-nanite-material-pass-1-20261111-0.cpuprofile.gz",
+          "sha256": "1068dcbeb9ade94c59099bf841dda697017d8caecb17bd93d6d627719d1f0121"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-pass-1-20261111-1.cpuprofile",
+          "sha256": "bdc978aa026ac8747e896ef0a118056db6f68cd53fac2a6f724c03b87e568980"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\100-cpu-nanite-material-pass-1-20261111-1.cpuprofile.gz",
+          "sha256": "05b61c762b3f1fc2b182dc889c466145516339e47a2ad13d1becc1fe5557772e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-material-pass-20261111.json",
+          "sha256": "9dc4dd1ced29c18ef2d7c661658900f53a493ceb68c4faa8f0aaf3b6c55be735"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\101-gpu-nanite-material-pass-20261111.json.gz",
+          "sha256": "a2dffcc9473ed695f6f5ea06e4214c3ad8dc08ea80dbf76f886f815d127649b8"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-core\\profile-web-gpu-original.cjs",
+          "sha256": "897fec0db53e2eb75ddc0e7ddb2277d7f12aeff8e4adf64084cdd7efde69a7fe"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\102-profile-web-gpu-original.cjs.gz",
+          "sha256": "06ed676aa05d7358f5146ae6110f2af861b8165d1e22359d35ba8db0cd3979bd"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-material-final-20261111.json",
+          "sha256": "3b469e6537f2d669163d29a64d28c1ee5763b4d66083670abed978daca51cff3"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\103-gpu-nanite-material-final-20261111.json.gz",
+          "sha256": "b12ffdc49b2ef9154174fbf760694ae15ae144b18f798164c01b4837d095c021"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-0-20261111.json",
+          "sha256": "e91c2cae143f30e6ba7dbce00b1d13a3d357dfdb6b34e52bbd96ad19aa2ba562"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\104-cpu-nanite-material-size-0-20261111.json.gz",
+          "sha256": "48b02bb5a7dbf81106c54254577c014c7562582ef76ca5c2c88373d31eec5529"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-0-20261111.log",
+          "sha256": "b3d916c69c027472b2b984f8297c287d8bb35363f8c0afd4e23c87dc518e419d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\105-cpu-nanite-material-size-0-20261111.log.gz",
+          "sha256": "7451f80e57d3b2a2b9159ada735f9db5ce5033aa80493c1833f56fd208ccbcc5"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-0-20261111-0.cpuprofile",
+          "sha256": "2b1c69626ee48f9eb56cdf5926b370940ab08fe1aa429558e78c95497e476538"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\106-cpu-nanite-material-size-0-20261111-0.cpuprofile.gz",
+          "sha256": "36a654af0d1d998b808a4281618feec8da256b41174dba864e885bc328f7dfc1"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-0-20261111-1.cpuprofile",
+          "sha256": "fff97e54f0986a448caef30eac65055d817d4e517fcb2d9cdd78c712bc224246"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\107-cpu-nanite-material-size-0-20261111-1.cpuprofile.gz",
+          "sha256": "b004d74fb08c673dea878085476969f4e464c0ba96058319e3d2cb008dec1844"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-2-20261111.json",
+          "sha256": "f140101d1daddb05d78e2de211582e81ad7f58f464007f9a64a93012a63bb74f"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\108-cpu-nanite-material-size-2-20261111.json.gz",
+          "sha256": "7bd1b5dc0d17a643b351e307ec3fdbb8bce5efaf6e806b6e6793797942ded6b3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-2-20261111.log",
+          "sha256": "ceb5ac8ab00c0b8073a340a35a0311b941e7cf45e283ddaab582c35a2ea958c8"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\109-cpu-nanite-material-size-2-20261111.log.gz",
+          "sha256": "f325841d204783d5ceabd269851dafea03f38aa9d837dbc2e49cf192d1c8591d"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-2-20261111-0.cpuprofile",
+          "sha256": "54c52b4b288738b3aee1949d0663ffaada32e4ef8ec4ecd851d643a3faf8fbff"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\110-cpu-nanite-material-size-2-20261111-0.cpuprofile.gz",
+          "sha256": "2c76e631d616ddefe8b45ad68a4d2c993d6edb177750d41a8328bb93db427ae0"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-2-20261111-1.cpuprofile",
+          "sha256": "130368aec5105c4704d36ecf175f2671c084354b553ff1248fd36eed371c1309"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\111-cpu-nanite-material-size-2-20261111-1.cpuprofile.gz",
+          "sha256": "f4a69ceda1f6108dc248c2d11d281a787f70f7ce37dfa4271f8924adeb0bffe3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-4-20261111.json",
+          "sha256": "0613a5156d10d8f728f73101af22884e596ee08ee1a7ecae94cfd7ba674da902"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\112-cpu-nanite-material-size-4-20261111.json.gz",
+          "sha256": "a5127cd5906d6febe552ac92b9d9622a6703d856a48eff3677beb0d46291aee9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-4-20261111.log",
+          "sha256": "89c7a43868ba38c323e10b292b1a5a5c679adcad69943c27118b3cee1cee3979"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\113-cpu-nanite-material-size-4-20261111.log.gz",
+          "sha256": "6534c4f89b2b6d0ddf71c97b379afa6aeaff712429811ed7688c2cc255485cf9"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-4-20261111-0.cpuprofile",
+          "sha256": "050769a2cdc08ab9042c7fc5170d2684ca330b794c0ecc5c68fccb1f293b528d"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\114-cpu-nanite-material-size-4-20261111-0.cpuprofile.gz",
+          "sha256": "53fed0a58a23b582354f4633021b134065567781dc40ba38af172e3814c45d07"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-4-20261111-1.cpuprofile",
+          "sha256": "f9c7b5442b1472e19000a38f49019e08e1d9647e1ee01d4f48d3f712e541173e"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\115-cpu-nanite-material-size-4-20261111-1.cpuprofile.gz",
+          "sha256": "f74c81f32be1cb9938be3a64075b7e56a636c0127e0df662dc18952dc6d731bd"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-8-20261111.json",
+          "sha256": "cd26e32ae9c4e5a0351d4aab49b843dc440577699c67659efd8d1b3082e9074c"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\116-cpu-nanite-material-size-8-20261111.json.gz",
+          "sha256": "dcc81fb38e89bcd812fde9560131c0ef0fee21dc56d8cd60c21889c9f8ee01d2"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-8-20261111.log",
+          "sha256": "aeec6471dee4791b9ac186985ec099f84ab7a92ca96cedb085c08ebdd1f12ec1"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\117-cpu-nanite-material-size-8-20261111.log.gz",
+          "sha256": "55099f81f035f97c3888ff65b45b6624132a81a5465fbfe70aa72f741e405504"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-8-20261111-0.cpuprofile",
+          "sha256": "0fce538f753f0c14277065c9f5290a5dd85ea8f1c2e5065f2942d8f895633f25"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\118-cpu-nanite-material-size-8-20261111-0.cpuprofile.gz",
+          "sha256": "cac25586ab02a7bfa118f18af660efab634c7a3e6e8157e0099a4941ffb77b6e"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-8-20261111-1.cpuprofile",
+          "sha256": "794e3ff22753a8fde2fbb8a2e94b995eb37f4089da49958fd472752d54b49a36"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\119-cpu-nanite-material-size-8-20261111-1.cpuprofile.gz",
+          "sha256": "fdfc7fa051aa5dac93ed8b93252dc7051511dd4942134fa4de22c7a1ef8eb0da"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-16-20261111.json",
+          "sha256": "e04c845d9cafb8c288fba9b77b4091119dd33712d8dc5231bb8c8390b3f6ac24"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\120-cpu-nanite-material-size-16-20261111.json.gz",
+          "sha256": "0ed34e9013a742d4e6cc18a4093bb44ed78bdccab2840c7a594694a8b469ffc3"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-16-20261111.log",
+          "sha256": "bf4b75b58c414e733d2b7d7ef6c1f549e8acbf9e866b2edbc445e54f3ac9dc19"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\121-cpu-nanite-material-size-16-20261111.log.gz",
+          "sha256": "fee157673f2074e241a333349b197de27545b9857b453261980d427dbd47f063"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-16-20261111-0.cpuprofile",
+          "sha256": "931a404b276d6460fc5bedbce95682f21c1a1a938dc6d686615fa747e8295bba"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\122-cpu-nanite-material-size-16-20261111-0.cpuprofile.gz",
+          "sha256": "13cc480e0df72ef120c016b08d02c50efb1772333b39a09bbcd526de87336ecc"
+        },
+        "encoding": "gzip"
+      },
+      {
+        "original": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\cpu-nanite-material-size-16-20261111-1.cpuprofile",
+          "sha256": "a2a41d08559aa87eed47af031cdfedb2cbcfa804358f180771dc596a00f91328"
+        },
+        "archive": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-material-pass-20261111\\123-cpu-nanite-material-size-16-20261111-1.cpuprofile.gz",
+          "sha256": "6ed770d883edceefb63329629f09d7667ec583d81434e4b82821225c2fb93111"
+        },
+        "encoding": "gzip"
+      }
+    ],
+    "boundary": "Explicit batches default to 16 Nanite material draws (maximum 32), preserving per-draw resources, shared static uniform bindings, draw order and matching target layouts. Six Villa A/B view pairs plus both default-scene lifecycle suites must pass. Actual advancing-clock game performance improves modestly. GPU timestamps are diagnostic and not acceptance FPS. The earlier pass-reordering candidate did not reduce render-pass count and is retained separately. Full Nanite delivery and remaining scene performance work remain open."
+  }
+}

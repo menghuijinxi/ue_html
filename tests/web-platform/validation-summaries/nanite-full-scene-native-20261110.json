@@ -1,0 +1,247 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-full-scene-native-20261110.json",
+    "bytes": 15399979,
+    "sha256": "d989cad166e3e4e6f0aad1060f808190611cb6f78df4dd06972a1a66f87af889",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "pass": true,
+    "date": "2026-11-10T05:15:08.717Z",
+    "source": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\collect-nanite-full-scene-native-evidence.cjs",
+      "sha256": "805787e19f814cbb88d05c0f2a062854bb477bfd78c1f986b0147790d278bbc0"
+    },
+    "package": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\build\\nanite-full-scene\\package.json",
+      "sha256": "62e17bc59521e3c4e48fa248f8c692874db75c85d883cda252b31b13b23271a6"
+    },
+    "build": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-build-results.json",
+      "sha256": "c96bdac7700bac9352f7628ba27ebf6ed2b5850bd071c3392b1f71049b413e1a"
+    },
+    "historicalEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-local-occlusion-20261110.json",
+      "sha256": "d3a3f009a9dc12da9f97f9338f4403f3b661fc5e1d742812d6b9aa40a53b2973"
+    },
+    "nativeBuild": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-native-capture-build.json",
+      "sha256": "211952de66386871fe415feec7b77d16ce51ffa1299bd7cf8f4f80ab390a6220"
+    },
+    "images": [
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-full-scene-native-20261110-packed-0.png",
+        "sha256": "6c501f083957ff84f5f72a84394742ad2b6ed5435d3ce9c2f15522f4e9ec9398"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-full-scene-native-20261110-packed-1.png",
+        "sha256": "4577942ad045c1919faa995276e89ea3d95cc1a94241368f2ba914157306f432"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-full-scene-native-20261110-packed-2.png",
+        "sha256": "411983a56fcb6738bd536ef3cb5c0affe3d7b1493bd5656422e3bf84b8e73ecb"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-full-scene-native-20261110-scalar-0.png",
+        "sha256": "d504104a7c88d7de83e6ad706b5503ab546fb99da2b5f24e3effdc7d76e25b9b"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-full-scene-native-20261110-scalar-1.png",
+        "sha256": "16dbd845298062fb654301243d2537611e9e29082a01245119e0d3de00f8bca8"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-full-scene-native-20261110-scalar-2.png",
+        "sha256": "dba245e632a455b4384c3f74f933857de4d44050f3655b775ff6ce5f7798c9ab"
+      },
+      {
+        "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-full-scene-native-20261110-texture-diagnostic.png",
+        "sha256": "d607fbfafed25f6b30d116114a2cd840eb90e9bf8e73891694c1fd4dd77ec8de"
+      }
+    ],
+    "native": [
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 160,
+          "pitch": -5,
+          "name": "0-1",
+          "nanite": true,
+          "x": -175,
+          "yaw": 50,
+          "y": -80
+        },
+        "assets": 2180,
+        "naniteProxies": 2062,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 160,
+          "pitch": -5,
+          "name": "0-2",
+          "nanite": false,
+          "x": -175,
+          "yaw": 50,
+          "y": -80
+        },
+        "assets": 2180,
+        "naniteProxies": 0,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 160,
+          "pitch": -5,
+          "name": "0-3",
+          "nanite": true,
+          "x": -175,
+          "yaw": 50,
+          "y": -80
+        },
+        "assets": 2180,
+        "naniteProxies": 2062,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 160,
+          "pitch": -5,
+          "name": "1-1",
+          "nanite": true,
+          "x": -175,
+          "yaw": 230,
+          "y": -80
+        },
+        "assets": 2180,
+        "naniteProxies": 2062,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 160,
+          "pitch": -5,
+          "name": "1-2",
+          "nanite": false,
+          "x": -175,
+          "yaw": 230,
+          "y": -80
+        },
+        "assets": 2180,
+        "naniteProxies": 0,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 160,
+          "pitch": -5,
+          "name": "1-3",
+          "nanite": true,
+          "x": -175,
+          "yaw": 230,
+          "y": -80
+        },
+        "assets": 2180,
+        "naniteProxies": 2062,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 230,
+          "pitch": -8,
+          "name": "2-1",
+          "nanite": true,
+          "x": -1000,
+          "yaw": 65,
+          "y": -70
+        },
+        "assets": 2180,
+        "naniteProxies": 2062,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 230,
+          "pitch": -8,
+          "name": "2-2",
+          "nanite": false,
+          "x": -1000,
+          "yaw": 65,
+          "y": -70
+        },
+        "assets": 2180,
+        "naniteProxies": 0,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      },
+      {
+        "view": {
+          "fov": 90.00000250447816,
+          "z": 230,
+          "pitch": -8,
+          "name": "2-3",
+          "nanite": true,
+          "x": -1000,
+          "yaw": 65,
+          "y": -70
+        },
+        "assets": 2180,
+        "naniteProxies": 2062,
+        "projectionX": 0.9999999562886109,
+        "projectionY": 1.7777777133141177
+      }
+    ],
+    "runs": [
+      {
+        "scalar": false,
+        "frames": 13794,
+        "steps": 9,
+        "comparisons": {
+          "$omitted": true,
+          "reason": "Large array",
+          "type": "array",
+          "entries": 156,
+          "bytes": 132167,
+          "sha256": "b86367358624b295c3bb16d72ec484be3bd283e019080fc1287c5c87d99b7a5b"
+        }
+      },
+      {
+        "scalar": true,
+        "frames": 13920,
+        "steps": 9,
+        "comparisons": {
+          "$omitted": true,
+          "reason": "Large array",
+          "type": "array",
+          "entries": 156,
+          "bytes": 130977,
+          "sha256": "1bd8a52e7714d8dea9d65377001188e18482f8acbc301b222f939629188971c0"
+        }
+      }
+    ],
+    "payloadEncoding": "gzip-base64-json",
+    "payload": {
+      "$omitted": true,
+      "reason": "Full diagnostic data is retained in the original report",
+      "type": "string",
+      "bytes": 14913856,
+      "sha256": "cccebff6e3dd5884ca3f96d60c95ac2b8f8bb573a3a15f3c6fd5a75f0cf86e00"
+    },
+    "boundary": "Native SM6 and both Web atomic paths use the original converted Villa scene, three effective projections, frozen material expressions/general sampling and temporal AA index zero. Actual TSR, projection jitter and material mip bias match. World/render clocks continue, preserving texture visibility and streaming. All four independently recorded AO phases retain AO jitter and active histories. Nanite on/off/restoration differences satisfy the existing mean 5/P95 18 thresholds across the whole image and all 12 tiles for every phase; absolute platform differences remain separately reported. Native capture is an editor viewport, not standalone performance acceptance. Deformation and the other tracker requirements remain open."
+  }
+}

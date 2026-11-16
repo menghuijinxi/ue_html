@@ -1,0 +1,3982 @@
+{
+  "format": "validation-summary-v1",
+  "summaryOnly": true,
+  "originalReport": {
+    "path": "tests/web-platform/evidence/nanite-occlusion-batch-20261112.json",
+    "bytes": 183764,
+    "sha256": "b4fb332345e86af43a93390569b598abf1e3fed01a43e8da5cd924655206ec48",
+    "commit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a"
+  },
+  "result": {
+    "date": "2026-11-12T06:10:52.271Z",
+    "pass": true,
+    "naniteFullPerformanceAccepted": false,
+    "correctness": [
+      {
+        "tag": "nanite-occlusion-default-correctness-20261112",
+        "scalar": false,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "entries": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "lifecycle",
+            "entries": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "spawn",
+            "entries": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "moved",
+            "entries": 4,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "portrait",
+            "entries": 8,
+            "dispatchBuffers": 1
+          }
+        ]
+      },
+      {
+        "tag": "nanite-occlusion-villa-correctness-20261112",
+        "scalar": false,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13424,
+              "entries": 606,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room",
+            "on": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13619,
+              "entries": 308,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "room-turn",
+            "on": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 13772,
+              "entries": 237,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 4267,
+              "entries": 625,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "entries": 606,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "lifecycle",
+            "entries": 606,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "spawn",
+            "entries": 606,
+            "dispatchBuffers": 5
+          },
+          {
+            "label": "room",
+            "entries": 308,
+            "dispatchBuffers": 3
+          },
+          {
+            "label": "room-turn",
+            "entries": 237,
+            "dispatchBuffers": 2
+          },
+          {
+            "label": "portrait",
+            "entries": 625,
+            "dispatchBuffers": 5
+          }
+        ]
+      },
+      {
+        "tag": "nanite-occlusion-default-scalar-20261112",
+        "scalar": true,
+        "comparisons": [
+          {
+            "name": "spawn",
+            "on": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 612,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "moved",
+            "on": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 2657,
+              "entries": 4,
+              "maxSpecularDifference": 0
+            }
+          },
+          {
+            "name": "portrait",
+            "on": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            },
+            "restored": {
+              "covered": 112,
+              "entries": 8,
+              "maxSpecularDifference": 0
+            }
+          }
+        ],
+        "dispatches": [
+          {
+            "label": "lifecycle",
+            "entries": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "lifecycle",
+            "entries": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "spawn",
+            "entries": 8,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "moved",
+            "entries": 4,
+            "dispatchBuffers": 1
+          },
+          {
+            "label": "portrait",
+            "entries": 8,
+            "dispatchBuffers": 1
+          }
+        ]
+      }
+    ],
+    "recovery": [
+      {
+        "mode": "packed",
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-occlusion-recovery-20261112\\packed.json",
+          "sha256": "a7510615b7c7b962781bee9f98a042c5b285cf8751b393d8f880374a5019d791"
+        }
+      },
+      {
+        "mode": "scalar",
+        "tests": 8,
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\nanite-occlusion-recovery-20261112\\scalar.json",
+          "sha256": "b252d8df233522fdcb6991090247dde7563ad3208dd8c7449f9566e1d632aa4d"
+        }
+      }
+    ],
+    "performance": {
+      "off": {
+        "frames": 4244,
+        "fps": 35.36820518360059,
+        "low1": 4.623206021304501,
+        "maxMs": 423.40499997138977,
+        "over50": 273
+      },
+      "on": {
+        "frames": 5919,
+        "fps": 49.18186846728526,
+        "low1": 7.891668437014667,
+        "maxMs": 406.27499997615814,
+        "over50": 266
+      },
+      "runs": [
+        {
+          "index": 0,
+          "occlusion": {
+            "enabled": 0,
+            "hierarchyBatch": true,
+            "registered": 2062,
+            "entries": 606,
+            "batchedEntries": 0,
+            "dispatchBuffers": 606
+          },
+          "overall": {
+            "frames": 2139,
+            "fps": 35.64790568555514,
+            "low1": 4.6163401654521135,
+            "maxMs": 412.4950000047684,
+            "over33Ms": 304,
+            "over50Ms": 133,
+            "over100Ms": 46
+          },
+          "lowest5s": {
+            "endSeconds": 57.25,
+            "frames": 43,
+            "fps": 8.702119370732557,
+            "low1": 3.5489938604808593,
+            "maxMs": 281.7699999809265,
+            "over33Ms": 43,
+            "over50Ms": 42,
+            "over100Ms": 18
+          },
+          "travelCm": 1986.3884110758281,
+          "turnDegrees": 268.88503409444945,
+          "lowestFPS5s": {
+            "endSeconds": 60,
+            "frames": 25,
+            "fps": 5.020448285877957,
+            "low1": 3.5489938604808593,
+            "maxMs": 281.7699999809265,
+            "over33Ms": 25,
+            "over50Ms": 25,
+            "over100Ms": 25
+          }
+        },
+        {
+          "index": 1,
+          "occlusion": {
+            "enabled": 1,
+            "hierarchyBatch": true,
+            "registered": 2062,
+            "entries": 138,
+            "batchedEntries": 138,
+            "dispatchBuffers": 2
+          },
+          "overall": {
+            "frames": 2950,
+            "fps": 48.87523585408935,
+            "low1": 7.78144514395776,
+            "maxMs": 406.27499997615814,
+            "over33Ms": 226,
+            "over50Ms": 142,
+            "over100Ms": 32
+          },
+          "lowest5s": {
+            "endSeconds": 57.25,
+            "frames": 65,
+            "fps": 13.14181330719744,
+            "low1": 5.385319617059882,
+            "maxMs": 185.69000005722046,
+            "over33Ms": 63,
+            "over50Ms": 54,
+            "over100Ms": 16
+          },
+          "travelCm": 1984.6771407863064,
+          "turnDegrees": 268.7923881835934,
+          "lowestFPS5s": {
+            "endSeconds": 59.25,
+            "frames": 49,
+            "fps": 9.747383623183463,
+            "low1": 5.385319617059882,
+            "maxMs": 185.69000005722046,
+            "over33Ms": 49,
+            "over50Ms": 49,
+            "over100Ms": 25
+          }
+        },
+        {
+          "index": 2,
+          "occlusion": {
+            "enabled": 1,
+            "hierarchyBatch": true,
+            "registered": 2062,
+            "entries": 141,
+            "batchedEntries": 141,
+            "dispatchBuffers": 2
+          },
+          "overall": {
+            "frames": 2969,
+            "fps": 49.49037333891326,
+            "low1": 8.011012472515088,
+            "maxMs": 402.91999995708466,
+            "over33Ms": 214,
+            "over50Ms": 124,
+            "over100Ms": 28
+          },
+          "lowest5s": {
+            "endSeconds": 37.75,
+            "frames": 222,
+            "fps": 44.49142988927106,
+            "low1": 5.836519100062899,
+            "maxMs": 402.91999995708466,
+            "over33Ms": 4,
+            "over50Ms": 3,
+            "over100Ms": 1
+          },
+          "travelCm": 1985.8163449538736,
+          "turnDegrees": 269.084417154948,
+          "lowestFPS5s": {
+            "endSeconds": 59,
+            "frames": 49,
+            "fps": 9.841985911749346,
+            "low1": 7.184940367702724,
+            "maxMs": 139.1799999475479,
+            "over33Ms": 49,
+            "over50Ms": 49,
+            "over100Ms": 23
+          }
+        },
+        {
+          "index": 3,
+          "occlusion": {
+            "enabled": 0,
+            "hierarchyBatch": true,
+            "registered": 2062,
+            "entries": 606,
+            "batchedEntries": 0,
+            "dispatchBuffers": 606
+          },
+          "overall": {
+            "frames": 2105,
+            "fps": 35.08844747455554,
+            "low1": 4.67491789672128,
+            "maxMs": 423.40499997138977,
+            "over33Ms": 305,
+            "over50Ms": 140,
+            "over100Ms": 44
+          },
+          "lowest5s": {
+            "endSeconds": 58.25,
+            "frames": 32,
+            "fps": 6.356799192662417,
+            "low1": 3.7683944753982694,
+            "maxMs": 265.36500000953674,
+            "over33Ms": 32,
+            "over50Ms": 32,
+            "over100Ms": 23
+          },
+          "travelCm": 1985.9352139698722,
+          "turnDegrees": 269.33883056640605,
+          "lowestFPS5s": {
+            "endSeconds": 59.75,
+            "frames": 26,
+            "fps": 5.1646428551173,
+            "low1": 3.7683944753982694,
+            "maxMs": 265.36500000953674,
+            "over33Ms": 26,
+            "over50Ms": 26,
+            "over100Ms": 26
+          }
+        }
+      ]
+    },
+    "cpus": [
+      {
+        "tag": "nanite-occlusion-off-spawn-20261112",
+        "nanite": {
+          "occlusionBatch": false,
+          "occlusionBatchedEntries": 0,
+          "occlusionDispatchBuffers": 606,
+          "hierarchyBatch": true,
+          "hierarchyBatchedEntries": 606,
+          "hierarchyDispatchBuffers": 5,
+          "enabled": true,
+          "primitiveVisibility": true,
+          "primitiveVisibilitySkipped": 1453,
+          "rasterBatch": true,
+          "materialPassBatch": true,
+          "materialPassBatchMode": 16,
+          "registered": 2062,
+          "entries": 606
+        },
+        "plainSamples": [
+          {
+            "label": "before-profiler",
+            "before": {
+              "time": 56363.235000014305,
+              "stages": {
+                "rhiWorkMilliseconds": 12564.082622528076,
+                "renderCommandThreadId": 22,
+                "renderCommandFrame": 425,
+                "rhiThreadId": 1,
+                "rhiFrames": 423,
+                "submitted": 19856,
+                "presented": 424,
+                "parallelCommandRecording": false,
+                "parallelRHITranslation": false,
+                "resourceProxyCalls": 57305
+              },
+              "view": {
+                "frame": 425,
+                "width": 1552,
+                "height": 873,
+                "outputWidth": 2560,
+                "outputHeight": 1440,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              }
+            },
+            "after": {
+              "time": 76372.87000000477,
+              "stages": {
+                "rhiWorkMilliseconds": 22921.940565109253,
+                "renderCommandThreadId": 22,
+                "renderCommandFrame": 866,
+                "rhiThreadId": 1,
+                "rhiFrames": 864,
+                "submitted": 25148,
+                "presented": 865,
+                "parallelCommandRecording": false,
+                "parallelRHITranslation": false,
+                "resourceProxyCalls": 57305
+              },
+              "view": {
+                "frame": 866,
+                "width": 1552,
+                "height": 873,
+                "outputWidth": 2560,
+                "outputHeight": 1440,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              }
+            },
+            "fps": 22.039382527477898,
+            "rhiMs": 23.487206219004936
+          }
+        ]
+      },
+      {
+        "tag": "nanite-occlusion-on-spawn-20261112",
+        "nanite": {
+          "occlusionBatch": true,
+          "occlusionBatchedEntries": 143,
+          "occlusionDispatchBuffers": 2,
+          "hierarchyBatch": true,
+          "hierarchyBatchedEntries": 143,
+          "hierarchyDispatchBuffers": 2,
+          "enabled": true,
+          "primitiveVisibility": true,
+          "primitiveVisibilitySkipped": 1918,
+          "rasterBatch": true,
+          "materialPassBatch": true,
+          "materialPassBatchMode": 16,
+          "registered": 2062,
+          "entries": 143
+        },
+        "plainSamples": [
+          {
+            "label": "before-profiler",
+            "before": {
+              "time": 53656.82000005245,
+              "stages": {
+                "rhiWorkMilliseconds": 14608.14642906189,
+                "renderCommandThreadId": 22,
+                "renderCommandFrame": 1163,
+                "rhiThreadId": 1,
+                "rhiFrames": 1161,
+                "submitted": 28477,
+                "presented": 1162,
+                "parallelCommandRecording": false,
+                "parallelRHITranslation": false,
+                "resourceProxyCalls": 37493
+              },
+              "view": {
+                "frame": 1163,
+                "width": 1552,
+                "height": 873,
+                "outputWidth": 2560,
+                "outputHeight": 1440,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 5,
+                "parallelRendering": true
+              }
+            },
+            "after": {
+              "time": 73669.09500002861,
+              "stages": {
+                "rhiWorkMilliseconds": 29460.27684211731,
+                "renderCommandThreadId": 22,
+                "renderCommandFrame": 2635,
+                "rhiThreadId": 1,
+                "rhiFrames": 2634,
+                "submitted": 45781,
+                "presented": 2635,
+                "parallelCommandRecording": false,
+                "parallelRHITranslation": false,
+                "resourceProxyCalls": 43074
+              },
+              "view": {
+                "frame": 2635,
+                "width": 1552,
+                "height": 873,
+                "outputWidth": 2560,
+                "outputHeight": 1440,
+                "antiAliasing": 4,
+                "jitterX": 0,
+                "jitterY": 0,
+                "x": 0,
+                "y": 0,
+                "outputX": 0,
+                "outputY": 0,
+                "threadId": 3,
+                "parallelRendering": true
+              }
+            },
+            "fps": 73.60482503872024,
+            "rhiMs": 10.082912704043055
+          }
+        ]
+      }
+    ],
+    "gpu": [
+      {
+        "tag": "nanite-occlusion-off-spawn-20261112",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-occlusion-off-spawn-20261112.json",
+          "sha256": "fb07b7cd733f45ddd91241c03b1b5414e48d2eb7f335a0b3ef2e085d287a8407"
+        },
+        "meanSpanMs": 20.09088,
+        "meanPassMs": 15.204351999999995,
+        "view": {
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 182,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "phases": [
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 4.546560000000008,
+            "passes": 173,
+            "dispatches": 979,
+            "draws": 0
+          },
+          {
+            "phase": "hzb",
+            "milliseconds": 4.4277760000000015,
+            "passes": 2,
+            "dispatches": 1224,
+            "draws": 0
+          },
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 3.362816000000045,
+            "passes": 281,
+            "dispatches": 0,
+            "draws": 3347
+          },
+          {
+            "phase": "pack",
+            "milliseconds": 2.342912,
+            "passes": 2,
+            "dispatches": 1212,
+            "draws": 0
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.28672000000000003,
+            "passes": 1,
+            "dispatches": 7,
+            "draws": 0
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.23756799999999972,
+            "passes": 10,
+            "dispatches": 0,
+            "draws": 149
+          }
+        ]
+      },
+      {
+        "tag": "nanite-occlusion-on-spawn-20261112",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-occlusion-on-spawn-20261112.json",
+          "sha256": "a195394db5b0d25ec78625f3ed6cae1a6e7cfb9e0781be16776a2e1d10e7a682"
+        },
+        "meanSpanMs": 11.882496,
+        "meanPassMs": 6.4389119999999975,
+        "view": {
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 305,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "phases": [
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 2.932736000000033,
+            "passes": 245,
+            "dispatches": 0,
+            "draws": 1642.625
+          },
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 2.65830400000001,
+            "passes": 98.625,
+            "dispatches": 423.5,
+            "draws": 0
+          },
+          {
+            "phase": "pack",
+            "milliseconds": 0.5120000000000001,
+            "passes": 2,
+            "dispatches": 275.125,
+            "draws": 0
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.18022399999999988,
+            "passes": 5,
+            "dispatches": 0,
+            "draws": 74.625
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.08192000000000002,
+            "passes": 1,
+            "dispatches": 4,
+            "draws": 0
+          },
+          {
+            "phase": "hzb-batch",
+            "milliseconds": 0.07372800000000002,
+            "passes": 2,
+            "dispatches": 16,
+            "draws": 0
+          }
+        ]
+      }
+    ],
+    "controlledGPU": [
+      {
+        "tag": "nanite-occlusion-controlled-off-20261112",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-occlusion-controlled-off-20261112.json",
+          "sha256": "67eb0399ea271400c02664fa77f06fb1b931e785638865ed3633facd4a1928e4"
+        },
+        "meanSpanMs": 20.365312000000003,
+        "meanPassMs": 15.507455999999992,
+        "view": {
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 285,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "nativeBeforeCapture": {
+          "frame": 250,
+          "registered": 2062,
+          "entries": 695,
+          "primitiveVisibility": false,
+          "hierarchyBatch": true,
+          "hierarchyDispatchBuffers": 6,
+          "occlusionBatch": false,
+          "mainOcclusionDispatchBuffers": 695,
+          "finalOcclusionDispatchBuffers": 695
+        },
+        "phases": [
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 4.743168000000003,
+            "passes": 183,
+            "dispatches": 1037,
+            "draws": 0
+          },
+          {
+            "phase": "hzb",
+            "milliseconds": 4.538368000000001,
+            "passes": 2,
+            "dispatches": 1402,
+            "draws": 0
+          },
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 3.2440320000000455,
+            "passes": 285,
+            "dispatches": 0,
+            "draws": 3547.5
+          },
+          {
+            "phase": "pack",
+            "milliseconds": 2.453504000000001,
+            "passes": 2,
+            "dispatches": 1390,
+            "draws": 0
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.2785279999999996,
+            "passes": 10,
+            "dispatches": 0,
+            "draws": 159
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.24985600000000002,
+            "passes": 1,
+            "dispatches": 8,
+            "draws": 0
+          }
+        ]
+      },
+      {
+        "tag": "nanite-occlusion-controlled-on-20261112",
+        "report": {
+          "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\results\\gpu-nanite-occlusion-controlled-on-20261112.json",
+          "sha256": "0195ac08b8961cbfda58efa4e0a1cc23e9257578b6c70a3440a8381bc2b30166"
+        },
+        "meanSpanMs": 15.597568,
+        "meanPassMs": 10.838015999999994,
+        "view": {
+          "camera": {
+            "x": 410.7359315721519,
+            "y": -478.05903852213453,
+            "z": 156.64842176437378,
+            "pitch": 0,
+            "yaw": 89.99945068359375
+          },
+          "view": {
+            "frame": 377,
+            "width": 1552,
+            "height": 873,
+            "outputWidth": 2560,
+            "outputHeight": 1440,
+            "antiAliasing": 4,
+            "jitterX": 0,
+            "jitterY": 0,
+            "x": 0,
+            "y": 0,
+            "outputX": 0,
+            "outputY": 0,
+            "threadId": 3,
+            "parallelRendering": true
+          }
+        },
+        "nativeBeforeCapture": {
+          "frame": 319,
+          "registered": 2062,
+          "entries": 695,
+          "primitiveVisibility": false,
+          "hierarchyBatch": true,
+          "hierarchyDispatchBuffers": 6,
+          "occlusionBatch": true,
+          "mainOcclusionDispatchBuffers": 6,
+          "finalOcclusionDispatchBuffers": 6
+        },
+        "phases": [
+          {
+            "phase": "beginComputePass",
+            "milliseconds": 4.734976000000003,
+            "passes": 183,
+            "dispatches": 1037,
+            "draws": 0
+          },
+          {
+            "phase": "beginRenderPass",
+            "milliseconds": 3.2030720000000463,
+            "passes": 285,
+            "dispatches": 0,
+            "draws": 3548.375
+          },
+          {
+            "phase": "pack",
+            "milliseconds": 2.3060479999999997,
+            "passes": 2,
+            "dispatches": 1390,
+            "draws": 0
+          },
+          {
+            "phase": "native-material",
+            "milliseconds": 0.26214399999999966,
+            "passes": 10,
+            "dispatches": 0,
+            "draws": 159
+          },
+          {
+            "phase": "hierarchy-batch",
+            "milliseconds": 0.237568,
+            "passes": 1,
+            "dispatches": 8,
+            "draws": 0
+          },
+          {
+            "phase": "hzb-batch",
+            "milliseconds": 0.09420800000000003,
+            "passes": 2,
+            "dispatches": 24,
+            "draws": 0
+          }
+        ]
+      }
+    ],
+    "stallDiagnostic": [
+      {
+        "index": 0,
+        "frames": 825,
+        "top": [
+          {
+            "frame": 3391,
+            "elapsed": 37257.77499997616,
+            "spanMs": 412.680192,
+            "sumMs": 7.602175999999992,
+            "phases": {
+              "beginComputePass": {
+                "ms": 3.3423360000000004,
+                "dispatches": 400,
+                "draws": 0,
+                "passes": 101
+              },
+              "hierarchy": {
+                "ms": 0.131072,
+                "dispatches": 5,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 64,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.262144,
+                "dispatches": 18,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 1.048576,
+                "dispatches": 552,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 0.7864320000000001,
+                "dispatches": 0,
+                "draws": 670,
+                "passes": 22
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 0.786432,
+                "dispatches": 0,
+                "draws": 74,
+                "passes": 46
+              },
+              "native-material": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 77,
+                "passes": 5
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 495,
+                "passes": 16
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 98,
+                "passes": 6
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 27,
+                "passes": 6
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 186,
+                "passes": 6
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 110,
+                "passes": 38
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 26,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 39,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 1376256,
+                "start": "1794463619055222784",
+                "end": "1794463619056599040"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 276,
+                "indirect": [],
+                "ns": 524288,
+                "start": "1794463618644770816",
+                "end": "1794463618645295104"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 276,
+                "indirect": [],
+                "ns": 524288,
+                "start": "1794463618646540288",
+                "end": "1794463618647064576"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 85,
+                "indirect": [],
+                "ns": 327680,
+                "start": "1794463618648178688",
+                "end": "1794463618648506368"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 85,
+                "indirect": [],
+                "ns": 262144,
+                "start": "1794463618646212608",
+                "end": "1794463618646474752"
+              }
+            ]
+          },
+          {
+            "frame": 4134,
+            "elapsed": 57052.09000003338,
+            "spanMs": 64.22528,
+            "sumMs": 46.399488000000176,
+            "phases": {
+              "beginComputePass": {
+                "ms": 24.313855999999987,
+                "dispatches": 1790,
+                "draws": 0,
+                "passes": 225
+              },
+              "hierarchy": {
+                "ms": 1.048576,
+                "dispatches": 11,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.458752,
+                "dispatches": 0,
+                "draws": 221,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.786432,
+                "dispatches": 30,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 10.15808,
+                "dispatches": 2064,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 2.2937600000000002,
+                "dispatches": 0,
+                "draws": 2366,
+                "passes": 76
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 1.6384000000000003,
+                "dispatches": 0,
+                "draws": 142,
+                "passes": 68
+              },
+              "native-material": {
+                "ms": 0.6553599999999999,
+                "dispatches": 0,
+                "draws": 201,
+                "passes": 13
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.262144,
+                "dispatches": 0,
+                "draws": 50,
+                "passes": 6
+              },
+              "ShadowDepthAtlas": {
+                "ms": 1.572864,
+                "dispatches": 0,
+                "draws": 506,
+                "passes": 68
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.393216,
+                "dispatches": 0,
+                "draws": 33,
+                "passes": 2
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 252,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 1.114112,
+                "dispatches": 0,
+                "draws": 174,
+                "passes": 60
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 30,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 54,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0.589824,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 10420224,
+                "start": "1794463638541434880",
+                "end": "1794463638551855104"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1032,
+                "indirect": [],
+                "ns": 5373952,
+                "start": "1794463638505652224",
+                "end": "1794463638511026176"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1032,
+                "indirect": [],
+                "ns": 4784128,
+                "start": "1794463638490578944",
+                "end": "1794463638495363072"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 694,
+                "indirect": [],
+                "ns": 3670016,
+                "start": "1794463638517252096",
+                "end": "1794463638520922112"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 694,
+                "indirect": [],
+                "ns": 3080192,
+                "start": "1794463638501785600",
+                "end": "1794463638504865792"
+              }
+            ]
+          },
+          {
+            "frame": 4135,
+            "elapsed": 57175.03500008583,
+            "spanMs": 45.809664,
+            "sumMs": 31.260672000000124,
+            "phases": {
+              "beginComputePass": {
+                "ms": 11.993087999999995,
+                "dispatches": 1807,
+                "draws": 0,
+                "passes": 226
+              },
+              "hierarchy": {
+                "ms": 1.376256,
+                "dispatches": 11,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.45875199999999994,
+                "dispatches": 0,
+                "draws": 227,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.393216,
+                "dispatches": 30,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 10.878976,
+                "dispatches": 2088,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 2.5559039999999995,
+                "dispatches": 0,
+                "draws": 2400,
+                "passes": 76
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 0.5898239999999999,
+                "dispatches": 0,
+                "draws": 144,
+                "passes": 68
+              },
+              "native-material": {
+                "ms": 0.524288,
+                "dispatches": 0,
+                "draws": 202,
+                "passes": 13
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.524288,
+                "dispatches": 0,
+                "draws": 875,
+                "passes": 44
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 42,
+                "passes": 6
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 166,
+                "passes": 28
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 228,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.9175040000000001,
+                "dispatches": 0,
+                "draws": 174,
+                "passes": 60
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 30,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 54,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1044,
+                "indirect": [],
+                "ns": 5963776,
+                "start": "1794463638626435072",
+                "end": "1794463638632398848"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1044,
+                "indirect": [],
+                "ns": 4915200,
+                "start": "1794463638611951616",
+                "end": "1794463638616866816"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 702,
+                "indirect": [],
+                "ns": 4390912,
+                "start": "1794463638640066560",
+                "end": "1794463638644457472"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 702,
+                "indirect": [],
+                "ns": 2752512,
+                "start": "1794463638623354880",
+                "end": "1794463638626107392"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 1835008,
+                "start": "1794463638653370368",
+                "end": "1794463638655205376"
+              }
+            ]
+          },
+          {
+            "frame": 4129,
+            "elapsed": 56422.34000003338,
+            "spanMs": 37.617664,
+            "sumMs": 24.379392000000088,
+            "phases": {
+              "beginComputePass": {
+                "ms": 11.141119999999994,
+                "dispatches": 1659,
+                "draws": 0,
+                "passes": 220
+              },
+              "hierarchy": {
+                "ms": 0.720896,
+                "dispatches": 10,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.32767999999999997,
+                "dispatches": 0,
+                "draws": 241,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.196608,
+                "dispatches": 28,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 6.553599999999999,
+                "dispatches": 1908,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 2.0971520000000003,
+                "dispatches": 0,
+                "draws": 2180,
+                "passes": 70
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 0.8519680000000001,
+                "dispatches": 0,
+                "draws": 138,
+                "passes": 69
+              },
+              "native-material": {
+                "ms": 0.393216,
+                "dispatches": 0,
+                "draws": 196,
+                "passes": 13
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 46,
+                "passes": 6
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.589824,
+                "dispatches": 0,
+                "draws": 480,
+                "passes": 68
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 31,
+                "passes": 2
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 246,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.524288,
+                "dispatches": 0,
+                "draws": 177,
+                "passes": 61
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 30,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 52,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 954,
+                "indirect": [],
+                "ns": 3670016,
+                "start": "1794463637861892096",
+                "end": "1794463637865562112"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 954,
+                "indirect": [],
+                "ns": 2883584,
+                "start": "1794463637851406336",
+                "end": "1794463637854289920"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 630,
+                "indirect": [],
+                "ns": 2359296,
+                "start": "1794463637871722496",
+                "end": "1794463637874081792"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 2293760,
+                "start": "1794463637884698624",
+                "end": "1794463637886992384"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 630,
+                "indirect": [],
+                "ns": 2228224,
+                "start": "1794463637859532800",
+                "end": "1794463637861761024"
+              }
+            ]
+          },
+          {
+            "frame": 4132,
+            "elapsed": 56780.550000071526,
+            "spanMs": 36.634624,
+            "sumMs": 24.96921600000008,
+            "phases": {
+              "beginComputePass": {
+                "ms": 11.665407999999996,
+                "dispatches": 1751,
+                "draws": 0,
+                "passes": 224
+              },
+              "hierarchy": {
+                "ms": 0.720896,
+                "dispatches": 10,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.32767999999999997,
+                "dispatches": 0,
+                "draws": 218,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.196608,
+                "dispatches": 28,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 6.291456,
+                "dispatches": 2008,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 2.3592959999999996,
+                "dispatches": 0,
+                "draws": 2298,
+                "passes": 74
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 0.8519680000000001,
+                "dispatches": 0,
+                "draws": 141,
+                "passes": 68
+              },
+              "native-material": {
+                "ms": 0.393216,
+                "dispatches": 0,
+                "draws": 200,
+                "passes": 13
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 58,
+                "passes": 6
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.393216,
+                "dispatches": 0,
+                "draws": 183,
+                "passes": 30
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.39321599999999995,
+                "dispatches": 0,
+                "draws": 336,
+                "passes": 38
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 246,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.524288,
+                "dispatches": 0,
+                "draws": 174,
+                "passes": 60
+              },
+              "DistanceFieldNormal": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 30,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 54,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1004,
+                "indirect": [],
+                "ns": 3342336,
+                "start": "1794463638221225984",
+                "end": "1794463638224568320"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1004,
+                "indirect": [],
+                "ns": 2949120,
+                "start": "1794463638210674688",
+                "end": "1794463638213623808"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 675,
+                "indirect": [],
+                "ns": 2359296,
+                "start": "1794463638230007808",
+                "end": "1794463638232367104"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 2228224,
+                "start": "1794463638243573760",
+                "end": "1794463638245801984"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 675,
+                "indirect": [],
+                "ns": 2162688,
+                "start": "1794463638218932224",
+                "end": "1794463638221094912"
+              }
+            ]
+          },
+          {
+            "frame": 4130,
+            "elapsed": 56540.125,
+            "spanMs": 36.241408,
+            "sumMs": 23.33081600000007,
+            "phases": {
+              "beginComputePass": {
+                "ms": 10.354687999999992,
+                "dispatches": 1687,
+                "draws": 0,
+                "passes": 222
+              },
+              "hierarchy": {
+                "ms": 0.786432,
+                "dispatches": 10,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.32767999999999997,
+                "dispatches": 0,
+                "draws": 219,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.524288,
+                "dispatches": 28,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 6.094848,
+                "dispatches": 1944,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 1.8350080000000004,
+                "dispatches": 0,
+                "draws": 2226,
+                "passes": 72
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 1.1141120000000002,
+                "dispatches": 0,
+                "draws": 139,
+                "passes": 69
+              },
+              "native-material": {
+                "ms": 0.393216,
+                "dispatches": 0,
+                "draws": 198,
+                "passes": 13
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 50,
+                "passes": 6
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.39321599999999995,
+                "dispatches": 0,
+                "draws": 485,
+                "passes": 68
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 31,
+                "passes": 2
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 246,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.39321599999999995,
+                "dispatches": 0,
+                "draws": 177,
+                "passes": 61
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 30,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 53,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 972,
+                "indirect": [],
+                "ns": 3080192,
+                "start": "1794463637975859200",
+                "end": "1794463637978939392"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 972,
+                "indirect": [],
+                "ns": 3014656,
+                "start": "1794463637965111296",
+                "end": "1794463637968125952"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 645,
+                "indirect": [],
+                "ns": 2490368,
+                "start": "1794463637984444416",
+                "end": "1794463637986934784"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 2293760,
+                "start": "1794463637997158400",
+                "end": "1794463637999452160"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 645,
+                "indirect": [],
+                "ns": 2228224,
+                "start": "1794463637973434368",
+                "end": "1794463637975662592"
+              }
+            ]
+          },
+          {
+            "frame": 4133,
+            "elapsed": 56913.420000076294,
+            "spanMs": 35.848192,
+            "sumMs": 23.78956800000008,
+            "phases": {
+              "beginComputePass": {
+                "ms": 10.682367999999993,
+                "dispatches": 1777,
+                "draws": 0,
+                "passes": 225
+              },
+              "hierarchy": {
+                "ms": 0.65536,
+                "dispatches": 10,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.39321599999999995,
+                "dispatches": 0,
+                "draws": 220,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.196608,
+                "dispatches": 28,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 6.094848,
+                "dispatches": 2042,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 1.7694720000000002,
+                "dispatches": 0,
+                "draws": 2338,
+                "passes": 76
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 1.179648,
+                "dispatches": 0,
+                "draws": 141,
+                "passes": 68
+              },
+              "native-material": {
+                "ms": 0.393216,
+                "dispatches": 0,
+                "draws": 201,
+                "passes": 13
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 540,
+                "passes": 4
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 42,
+                "passes": 6
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.7208960000000001,
+                "dispatches": 0,
+                "draws": 505,
+                "passes": 68
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.262144,
+                "dispatches": 0,
+                "draws": 252,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.524288,
+                "dispatches": 0,
+                "draws": 174,
+                "passes": 60
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 29,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 53,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1021,
+                "indirect": [],
+                "ns": 3342336,
+                "start": "1794463638339256320",
+                "end": "1794463638342598656"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 1021,
+                "indirect": [],
+                "ns": 2752512,
+                "start": "1794463638349938688",
+                "end": "1794463638352691200"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 687,
+                "indirect": [],
+                "ns": 2424832,
+                "start": "1794463638358392832",
+                "end": "1794463638360817664"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 2228224,
+                "start": "1794463638371237888",
+                "end": "1794463638373466112"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 687,
+                "indirect": [],
+                "ns": 2162688,
+                "start": "1794463638347579392",
+                "end": "1794463638349742080"
+              }
+            ]
+          },
+          {
+            "frame": 4131,
+            "elapsed": 56661.85000002384,
+            "spanMs": 35.127296,
+            "sumMs": 23.592960000000083,
+            "phases": {
+              "beginComputePass": {
+                "ms": 10.485759999999994,
+                "dispatches": 1720,
+                "draws": 0,
+                "passes": 223
+              },
+              "hierarchy": {
+                "ms": 0.65536,
+                "dispatches": 10,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.32767999999999997,
+                "dispatches": 0,
+                "draws": 217,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.196608,
+                "dispatches": 28,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 5.767168,
+                "dispatches": 1970,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 2.0971520000000003,
+                "dispatches": 0,
+                "draws": 2254,
+                "passes": 72
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 0.8519680000000001,
+                "dispatches": 0,
+                "draws": 141,
+                "passes": 68
+              },
+              "native-material": {
+                "ms": 0.45875199999999994,
+                "dispatches": 0,
+                "draws": 199,
+                "passes": 13
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.589824,
+                "dispatches": 0,
+                "draws": 841,
+                "passes": 40
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 42,
+                "passes": 6
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.32767999999999997,
+                "dispatches": 0,
+                "draws": 183,
+                "passes": 30
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.262144,
+                "dispatches": 0,
+                "draws": 246,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.8519680000000002,
+                "dispatches": 0,
+                "draws": 174,
+                "passes": 60
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 30,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 54,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 985,
+                "indirect": [],
+                "ns": 2883584,
+                "start": "1794463638090940416",
+                "end": "1794463638093824000"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 985,
+                "indirect": [],
+                "ns": 2883584,
+                "start": "1794463638101426176",
+                "end": "1794463638104309760"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 660,
+                "indirect": [],
+                "ns": 2359296,
+                "start": "1794463638109880320",
+                "end": "1794463638112239616"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 660,
+                "indirect": [],
+                "ns": 2228224,
+                "start": "1794463638099066880",
+                "end": "1794463638101295104"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 2228224,
+                "start": "1794463638122266624",
+                "end": "1794463638124494848"
+              }
+            ]
+          },
+          {
+            "frame": 4128,
+            "elapsed": 56293.65499997139,
+            "spanMs": 34.799616,
+            "sumMs": 23.330816000000077,
+            "phases": {
+              "beginComputePass": {
+                "ms": 10.878975999999993,
+                "dispatches": 1594,
+                "draws": 0,
+                "passes": 217
+              },
+              "hierarchy": {
+                "ms": 0.589824,
+                "dispatches": 10,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.39321599999999995,
+                "dispatches": 0,
+                "draws": 215,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.196608,
+                "dispatches": 28,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 5.701632,
+                "dispatches": 1838,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 2.0316160000000005,
+                "dispatches": 0,
+                "draws": 2102,
+                "passes": 68
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 0.524288,
+                "dispatches": 0,
+                "draws": 138,
+                "passes": 69
+              },
+              "native-material": {
+                "ms": 0.393216,
+                "dispatches": 0,
+                "draws": 193,
+                "passes": 13
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 541,
+                "passes": 4
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 42,
+                "passes": 6
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.589824,
+                "dispatches": 0,
+                "draws": 474,
+                "passes": 68
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 246,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.9175040000000002,
+                "dispatches": 0,
+                "draws": 177,
+                "passes": 61
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 32,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 53,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 919,
+                "indirect": [],
+                "ns": 2883584,
+                "start": "1794463637729312768",
+                "end": "1794463637732196352"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 919,
+                "indirect": [],
+                "ns": 2818048,
+                "start": "1794463637719220224",
+                "end": "1794463637722038272"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 2555904,
+                "start": "1794463637749956608",
+                "end": "1794463637752512512"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 601,
+                "indirect": [],
+                "ns": 2228224,
+                "start": "1794463637737701376",
+                "end": "1794463637739929600"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 601,
+                "indirect": [],
+                "ns": 2097152,
+                "start": "1794463637727019008",
+                "end": "1794463637729116160"
+              }
+            ]
+          },
+          {
+            "frame": 4127,
+            "elapsed": 56174.045000076294,
+            "spanMs": 33.619968,
+            "sumMs": 23.592960000000062,
+            "phases": {
+              "beginComputePass": {
+                "ms": 10.289151999999994,
+                "dispatches": 1569,
+                "draws": 0,
+                "passes": 217
+              },
+              "hierarchy": {
+                "ms": 0.589824,
+                "dispatches": 10,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneDepthZ": {
+                "ms": 0.6553599999999999,
+                "dispatches": 0,
+                "draws": 208,
+                "passes": 6
+              },
+              "SceneVelocity": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "hzb": {
+                "ms": 0.196608,
+                "dispatches": 28,
+                "draws": 0,
+                "passes": 2
+              },
+              "pack": {
+                "ms": 5.505024000000001,
+                "dispatches": 1794,
+                "draws": 0,
+                "passes": 2
+              },
+              "Nanite.Web.RasterExtent": {
+                "ms": 2.6214400000000007,
+                "dispatches": 0,
+                "draws": 2056,
+                "passes": 66
+              },
+              "Nanite.Web.ShadingMask": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 2
+              },
+              "LightFunction.Atlas": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 0,
+                "passes": 1
+              },
+              "SceneColor": {
+                "ms": 1.5073280000000002,
+                "dispatches": 0,
+                "draws": 138,
+                "passes": 69
+              },
+              "native-material": {
+                "ms": 0.32767999999999997,
+                "dispatches": 0,
+                "draws": 193,
+                "passes": 13
+              },
+              "WholeSceneShadowmap": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 61,
+                "passes": 6
+              },
+              "CachedShadowDepthMap": {
+                "ms": 0.262144,
+                "dispatches": 0,
+                "draws": 202,
+                "passes": 30
+              },
+              "ShadowDepthAtlas": {
+                "ms": 0.7864320000000002,
+                "dispatches": 0,
+                "draws": 303,
+                "passes": 40
+              },
+              "WebCubeShadowFace": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 246,
+                "passes": 18
+              },
+              "AmbientOcclusionSetup": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "AmbientOcclusion": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ScreenSpaceAO": {
+                "ms": 0.131072,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "ShadowMaskTexture": {
+                "ms": 0.196608,
+                "dispatches": 0,
+                "draws": 177,
+                "passes": 61
+              },
+              "DistanceFieldNormal": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Dummy": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "DistanceFieldAOHistory": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "PerViewDistanceFieldBentNormalAO": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Translucency.AfterDOF.Color": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 33,
+                "passes": 2
+              },
+              "Distortion": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 54,
+                "passes": 1
+              },
+              "DistortedSceneColor": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "HistogramReduce": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "Scene(1/4)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/8)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/16)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/32)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "Scene(1/64)": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 2,
+                "passes": 2
+              },
+              "BloomX": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 6,
+                "passes": 6
+              },
+              "BloomY": {
+                "ms": 0.065536,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              },
+              "beginRenderPass": {
+                "ms": 0,
+                "dispatches": 0,
+                "draws": 1,
+                "passes": 1
+              }
+            },
+            "longest": [
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 897,
+                "indirect": [],
+                "ns": 2818048,
+                "start": "1794463637603942400",
+                "end": "1794463637606760448"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001aac_06486aa9"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 897,
+                "indirect": [],
+                "ns": 2686976,
+                "start": "1794463637594243072",
+                "end": "1794463637596930048"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00001870_98347f45",
+                  "main_0000e7fc_255a1354",
+                  "main_00009dec_0f65085d",
+                  "main_000146bc_545bb051",
+                  "main_0000d490_b43d604c",
+                  "main_0000f980_25572049",
+                  "main_00008a14_e627bf36",
+                  "main_00003030_3ec149e1"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 8,
+                "indirect": [],
+                "ns": 2293760,
+                "start": "1794463637624061952",
+                "end": "1794463637626355712"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 586,
+                "indirect": [],
+                "ns": 2031616,
+                "start": "1794463637601779712",
+                "end": "1794463637603811328"
+              },
+              {
+                "kind": "beginComputePass",
+                "label": "",
+                "pipelines": [
+                  "main_00006404_60bc9159",
+                  "main_00000704_d92e1dee"
+                ],
+                "draws": 0,
+                "indices": 0,
+                "dispatches": 586,
+                "indirect": [],
+                "ns": 1900544,
+                "start": "1794463637612003328",
+                "end": "1794463637613903872"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "previousEvidence": {
+      "file": "G:\\UE_HTML\\ue_html\\tests\\web-platform\\evidence\\nanite-hierarchy-batch-20261112.json",
+      "sha256": "61362ce2f31963e7fc0d6f6ec176c7c6145a0465b0f9f1861c95fd0c698f966f"
+    },
+    "records": {
+      "$omitted": true,
+      "reason": "Large array",
+      "type": "array",
+      "entries": 151,
+      "bytes": 62807,
+      "sha256": "bab773a4a49fd8e5e8bc00fb40065bed9838d01ae1884763c7f008eddb4b76f0"
+    },
+    "boundary": "Rigid HZB batching checkpoint. Both previous/current HZB decisions and per-instance state remain independent. Actual movement performance includes every stall; diagnostic GPU times are separate. Complete scene performance remains open; original project hashes unchanged."
+  }
+}

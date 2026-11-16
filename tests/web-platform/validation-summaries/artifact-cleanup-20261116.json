@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-16",
+  "pass": true,
+  "action": "Remove newly added raw validation artifacts from the unpushed html_nanite history; preserve all source trees, commit messages and local captures.",
+  "originalCommit": "63cebd369a943d6ebbfff1ac04a8d458b0902c4a",
+  "rewrittenCommitBeforePolicyCommit": "b2986104b02b41445107b4b426733881729fa011",
+  "baseline": "0ebf3c855f2f9c4794a647348433517c1b440173",
+  "preservedCommitCount": 83,
+  "removedRawArtifactPaths": 7289,
+  "originalHistoryBlobBytes": 4908453597,
+  "cleanedHistoryBlobBytesBeforeSummaries": 19880858,
+  "compactReports": 86,
+  "compactReportBytes": 4261158,
+  "rawArchiveBackup": "C:\\Users\\wap80\\.cache\\ue-html-backups\\html_nanite-before-artifact-cleanup-20261116",
+  "rawArchiveBackupFiles": 7443,
+  "rawArchiveBackupBytes": 4590247327,
+  "backupSHA256AndGitBlobChecksPassed": true,
+  "originalBackupBranch": "backup/html_nanite-before-artifact-cleanup-20261116",
+  "originalCommitsRetainedInLocalBackup": true,
+  "noRawFilesDeleted": true,
+  "noCodeTreeChangesInRewrittenCommits": true,
+  "noBlobsOver100MiBInCleanedHistory": true,
+  "checks": [
+    "release-defaults regression",
+    "pipeline-prewarm regression",
+    "optimization contract verification",
+    "live-performance unit checks",
+    "86 summary hashes match verified backup"
+  ],
+  "boundary": "Historical summaries retain original verdicts; this cleanup does not rerun full GPU/Nanite acceptance. The already-pushed engine source branch is unchanged. Raw archive backups are local and excluded from the push."
+}
