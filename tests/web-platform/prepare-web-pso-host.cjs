@@ -7,12 +7,22 @@ const root = path.resolve(__dirname, '../..');
 const files = [
   'Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp',
   'Source/Runtime/Renderer/Private/AnisotropyRendering.h',
+  'Source/Runtime/Renderer/Private/DistanceFieldShadowing.cpp',
   'Source/Runtime/Renderer/Private/FogRendering.cpp',
   'Source/Runtime/Renderer/Private/InstanceCulling/InstanceCullingContext.cpp',
+  'Source/Runtime/Renderer/Private/Lumen/LumenReflections.cpp',
+  'Source/Runtime/Renderer/Private/Lumen/LumenReflectionTracing.cpp',
   'Source/Runtime/Renderer/Private/Lumen/LumenSceneCardCapture.h',
+  'Source/Runtime/Renderer/Private/Lumen/LumenSceneDirectLighting.cpp',
+  'Source/Runtime/Renderer/Private/Lumen/LumenSceneDirectLightingStochastic.inl',
   'Source/Runtime/Renderer/Private/Lumen/LumenSceneRendering.cpp',
+  'Source/Runtime/Renderer/Private/Lumen/LumenScreenProbeTracing.cpp',
+  'Source/Runtime/Renderer/Private/PostProcess/PostProcessSubsurface.cpp',
+  'Source/Runtime/Renderer/Private/PostProcess/PostProcessTonemap.cpp',
   'Source/Runtime/Renderer/Private/PostProcess/PostProcessUpscale.cpp',
   'Source/Runtime/Renderer/Private/PostProcess/TemporalAA.cpp',
+  'Source/Runtime/Renderer/Private/SceneTextureReductions.cpp',
+  'Source/Runtime/Renderer/Private/SkyAtmosphereRendering.cpp',
 ];
 for (const relative of files) {
   const target = assertProjectOutput(path.join(root, '.tools/ue58-web-build-host/Engine', relative));

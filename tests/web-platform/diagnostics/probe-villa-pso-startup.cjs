@@ -17,13 +17,16 @@ const contexts = route?.records?.[0]?.contexts;
 assert(!route || contexts?.length, 'The route must contain exported manual camera contexts');
 const routeStep = Number(option('route-step') || 15);
 assert(Number.isInteger(routeStep) && routeStep > 0);
+const maxPipelinesOption = option('max-pipelines');
+const maxPipelines = maxPipelinesOption === undefined ? null : Number(maxPipelinesOption);
+assert(maxPipelines === null || (Number.isInteger(maxPipelines) && maxPipelines > 0));
 const routePoses = contexts && contexts.filter((_, index) => index % routeStep === 0 || index === contexts.length - 1)
   .map(context => context.camera);
 const output = assertProjectOutput(path.join(base, 'results', tag + '.json'));
 assert(!fs.existsSync(output), 'Preserve prior results');
 const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/villa-pso-startup-20261113'));
 const report = {date: new Date().toISOString(), suite: audit(path.join(base, 'build', suiteName, 'suite.json')),
-  modes, routeStep, routePoseCount: routePoses?.length || 0, runs: [], pass: false,
+  modes, routeStep, routePoseCount: routePoses?.length || 0, maxPipelines, runs: [], pass: false,
   boundary: 'Functional startup and first-use coverage diagnostic. Sparse pipeline API hooks only; no FPS ranking, per-draw hooks, tracing, quality overrides or pre-tour camera warmup. Browser/driver caches retained; the first content download is reported separately.'};
 function observe() {
   const result = globalThis.__psoStartupCheck = {calls: [], pending: 0, errors: [], collectors: []};
@@ -151,9 +154,16 @@ async function failureSnapshot(promise) {
         if (process.argv.includes('--expect-zero'))
           assert.deepEqual(active.newCalls, [], 'The first route visit must not create pipelines or shader modules');
         active.failedPipelines = active.after.capture.calls.filter(call => call.error);
+        assert.equal(active.startup.rhi.asyncPrecacheFailed, 0);
+        assert.equal(active.startup.rhi.asyncPrecacheRequested, active.startup.rhi.asyncPrecacheCompleted);
+        assert.equal(active.startup.pso.active, 0);
         assert.deepEqual(active.after.capture.errors, []);
         assert.equal(active.after.capture.pending, 0);
         assert.deepEqual(active.errors, []);
+        active.startupPipelines = active.startup.rhi.graphicsPipelines + active.startup.rhi.computePipelines;
+        if (maxPipelines !== null)
+          assert(active.startupPipelines <= maxPipelines,
+            `Startup created ${active.startupPipelines} pipelines, exceeding the ${maxPipelines} budget`);
         await page.screenshot({path: assertProjectOutput(path.join(base, 'results', tag + '-' + mode + '.png'))});
         active.pass = active.failedPipelines.length === 0;
         console.log(JSON.stringify({mode, pass: active.pass, startupMs: active.startup.ms,

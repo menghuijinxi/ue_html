@@ -11,6 +11,8 @@ const base = path.resolve(__dirname, '..');
 const suiteFile = path.join(base, 'build', suite, 'suite.json');
 const variants = JSON.parse(fs.readFileSync(suiteFile)).variants;
 assert(variants[initialMode]);
+const switchMode = Object.keys(variants).find(mode => mode !== initialMode);
+assert(switchMode, 'Live verification requires a second comparison mode');
 const output = assertProjectOutput(path.join(base, 'results', tag + '.json'));
 assert(!fs.existsSync(output), 'Preserve prior verification results');
 const report = {date: new Date().toISOString(), suite: audit(suiteFile), initialMode, pass: false,
@@ -32,6 +34,10 @@ let browser, gcTimer, gcPending = false;
     for (const restored of browser.pages()) await restored.close();
     const page = await browser.newPage(), errors = [];
     page.on('pageerror', error => errors.push(error.message));
+    page.on('response', async response => {
+      if (new URL(response.url()).pathname === '/__diagnostics/villa-turn')
+        report.exportResponse = {status: response.status(), text: await response.text().catch(error => error.message)};
+    });
     if (process.argv.includes('--gc') || workerGC) {
       report.forcedGC = 0;
       report.forcedWorkerGC = 0;
@@ -119,7 +125,10 @@ let browser, gcTimer, gcPending = false;
     Object.assign(report, {distance, yaw});
     await page.locator('#record').click();
     await page.locator('#save-capture').click();
-    await page.waitForFunction(() => document.getElementById('capture-file').hasAttribute('href'));
+    await page.waitForFunction(() => document.getElementById('capture-file').hasAttribute('href') ||
+      document.getElementById('capture-file').textContent.includes('可重试'));
+    assert(await page.locator('#capture-file').getAttribute('href'),
+      'Export failed: ' + await page.locator('#capture-file').textContent());
     report.exportURL = await page.locator('#capture-file').getAttribute('href');
     const exported = await (await page.request.get(new URL(report.exportURL, page.url()).href)).json();
     assert.equal(exported.kind, 'villa-manual-turn');
@@ -130,13 +139,14 @@ let browser, gcTimer, gcPending = false;
     // Finish checking the automatic worker before the mode switch disposes it.
     clearInterval(gcTimer);
     while (gcPending) await page.waitForTimeout(20);
-    await page.locator('[name=mode][value=overlap]').check();
-    await ready('overlap'); report.afterSwitch = await state();
+    report.switchMode = switchMode;
+    await page.locator('[name=mode][value=' + switchMode + ']').check();
+    await ready(switchMode); report.afterSwitch = await state();
     for (const axis of ['x', 'y', 'z', 'controlPitch', 'controlYaw'])
       assert(Math.abs(report.afterSwitch.player[axis] - beforeSwitch.player[axis]) < .1,
         'Player pose must survive a mode switch: ' + axis);
-    assert.equal(report.afterSwitch.pso.enabled, false);
-    await page.waitForFunction(() => __villaGitHistory.observations.overlap?.startupObserved);
+    assert.equal(report.afterSwitch.pso.enabled, !!variants[switchMode].automatic);
+    await page.waitForFunction(mode => __villaGitHistory.observations[mode]?.startupObserved, switchMode);
     const firstTiming = await page.locator('#startup-ms').textContent();
     await page.waitForTimeout(1000);
     assert.equal(await page.locator('#startup-ms').textContent(), firstTiming, 'Startup timing must freeze');
@@ -161,6 +171,18 @@ let browser, gcTimer, gcPending = false;
     console.log(JSON.stringify({pass: true, distance, yaw, exportURL: report.exportURL, layouts: report.layouts.length}));
   } catch (error) {
     report.error = error.stack;
+    const page = browser?.pages()[0];
+    if (page && !page.isClosed()) {
+      report.failureState = await page.evaluate(() => ({
+        error: globalThis.__villaGitHistory?.error,
+        exportText: document.getElementById('capture-file')?.textContent,
+        recordText: document.getElementById('record')?.textContent,
+        captureStatus: document.getElementById('capture-status')?.textContent,
+        records: globalThis.__villaTurnRecorder?.records.map(record => ({
+          frames: record.frames.length, contexts: record.contexts.length, reason: record.reason,
+        })),
+      })).catch(snapshotError => ({error: snapshotError.message}));
+    }
     throw error;
   } finally {
     clearInterval(gcTimer);

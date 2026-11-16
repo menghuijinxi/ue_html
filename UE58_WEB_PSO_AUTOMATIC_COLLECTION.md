@@ -25,6 +25,22 @@ Web 对已经关闭的 Lumen、VT、VSM 功能族作开关判断。
   不收集 Web 不支持的局部雾组合。
 - 实例剔除按立体渲染和遮挡剔除开关筛选；单实例分支不收集实例剔除的
   不可达组合，继续保留合批、顺序保持及 WPO 的合法状态。
+- HZB 依据分批缩减的输入约束，排除后续 closest-only 批次不会读取的
+  visibility 和 froxel 组合；保留有效输入格式与各批次 mip 数。
+- Tonemap 在平台没有硬件及软件 VRS 能力时不收集 VRS 亮度输出组合；
+  保留曝光、颗粒、色差、锐化及输出格式状态。
+- 次表面散射按当前半分辨率、separable 和 profile cache 配置筛选；
+  保留由视图上采样器和场景颜色格式决定的质量及棋盘格状态。
+- 大气 LUT 排除实时反射捕获不会使用的阴影与独立散射输出组合；
+  保留第二大气灯、云遮蔽和云阴影状态。
+- Lumen 探针体素追踪按 radiance cache、额外 AO 和 SDF coverage 配置筛选；
+  阴影按实际线程组、SDF coverage 和 mesh SDF 索引结构筛选。
+  随机光照采样按开关及采样数筛选，保留场景灯光种类和 IES 状态。
+- Lumen 反射 mesh SDF 追踪按实际线程组及索引结构筛选；throughput resolve
+  仅保留运行期使用的前层、两轴相同缩减比例组合。距离场阴影按当前立体渲染
+  及深度子采样设置筛选，继续保留输出历史有效与失效状态。
+- Web 灯光网格不收集运行期已排除的链表和双层父网格组合；
+  HZB 有效与失效、矩形灯存在与否、indirection 状态继续保留。
 
 以上筛选不改变实际绘制路径、TSR 分块大小或画质配置。
 
@@ -74,7 +90,8 @@ RHI 自动并发为浏览器逻辑处理器数量的一半，范围 2 到 16；�
 启动服务槽位。不能只放开 RHI 并发上限，否则严格线程池会在启动时耗尽。
 
 `prepare-web-pso-host.cjs` 在增量构建时也同步空间放大、TAA、雾、实例剔除、
-Lumen 表面缓存及相关声明；
+HZB、Tonemap、次表面散射、大气、距离场阴影、Lumen 探针、反射与直接光照、
+表面缓存及相关声明；
 只修改参考源码、没有更新隔离宿主，不等于改动已经进入 WASM。
 
 ## 对照和验证
@@ -85,12 +102,18 @@ Lumen 表面缓存及相关声明；
 新引擎使用同一个原 Cook、配置与分辨率，仅替换 JS/WASM 和当前宿主。
 `--concurrency=auto`（默认）检查硬件默认调度；`--concurrency=1..32` 调节明确
 的诊断请求并发。`--only=overlap,automatic` 可跳过不需要的历史模式。
+`--baseline-suite=<上版包标签> --only=previous,automatic` 可直接比较两次自动收集构建；
+打包前校验上版文件哈希，以及 Cook、配置和渲染参数与当前场景一致。
+两版使用同一份当前网页宿主和缓存 worker，上版保留原 JS/WASM。
 
 启动诊断保留资源及驱动缓存，计时到加载门槛且至少 60 帧，包含引擎启动和
 帧进展，不能当作纯编译耗时或人工 low 帧对比。请求数会随首次使用和异步
 预缓存重叠略有波动；已完成 native 状态可复用，未完成请求仍可能并行重复。
 比较数量时分别报告 RHI 图形与计算管线创建次数、异步预缓存请求数，以及
 后端提前拒绝的推测性请求数；异步请求数不代表全部 PSO 或唯一 PSO 数。
+`probe-villa-pso-startup.cjs --max-pipelines=<上限>` 对启动时实际图形与计算
+管线创建次数之和设置回归检查；数量检查与路线零新增检查同时执行，
+不能通过把预缓存工作推迟到操作阶段来满足数量上限。
 
 路线默认每 15 个导出上下文采样一次，`--route-step=1` 检查全部上下文。
 计时前不预巡游；路线只作覆盖验证输入，不生成新的预热记录。
@@ -109,6 +132,8 @@ Lumen 表面缓存及相关声明；
 候选曾出现外部 WebGPU Instance 丢失及浏览器 target crash。
 单次路线或受控 GC 检查通过不等于已经证明该问题彻底修复，
 候选不自动替换为普通发布默认值。
+同一浏览器交替导航的启动失败必须单独保留；重新启动浏览器后的成功
+不能覆盖该失败，也不能以自动重试将整轮对照标记为通过。
 
 全局收集仍有过量组合；运行期 UAV 格式、动态设置、新地图和新引擎 pass
 尚未获得穷尽覆盖。新增 pass 应通过标准的收集器描述 PSO；注册后的全局 shader
@@ -119,7 +144,8 @@ Lumen 表面缓存及相关声明；
 
 ```powershell
 node tests/web-platform/diagnostics/package-villa-pso-startup.cjs --tag=<新包标签> --capture-free --concurrency=auto --only=overlap,automatic
-node tests/web-platform/diagnostics/probe-villa-pso-startup.cjs --suite=<包标签> --tag=<新结果标签> --modes=automatic --expect-zero --route=<导出的路线文件> --route-step=1
+node tests/web-platform/diagnostics/package-villa-pso-startup.cjs --tag=<新对照包标签> --capture-free --baseline-suite=<上版包标签> --only=previous,automatic
+node tests/web-platform/diagnostics/probe-villa-pso-startup.cjs --suite=<包标签> --tag=<新结果标签> --modes=automatic --expect-zero --max-pipelines=1500 --route=<导出的路线文件> --route-step=1
 node tests/web-platform/diagnostics/verify-villa-pso-live.cjs <包标签> <新页面结果标签> automatic --worker-gc
 node tests/web-platform/diagnostics/verify-depth-atlas-bilinear.cjs <新数值结果标签>
 ```

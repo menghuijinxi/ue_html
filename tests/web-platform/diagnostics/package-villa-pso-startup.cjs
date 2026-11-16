@@ -16,7 +16,7 @@ const source = path.join(base, 'build/villa-tsr-tiles-20261112');
 const suite = assertProjectOutputTree(path.join(base, 'build', tag));
 assert(!fs.existsSync(suite), 'Preserve existing diagnostic suites; choose a new tag');
 const captureFree = process.argv.includes('--capture-free');
-const variants = captureFree ? {
+let variants = captureFree ? {
   overlap: {label: '记录预热参考', handoff: 'overlap'},
   legacy: {label: '旧自动收集 · 无记录', automatic: true, captureFree: true},
   automatic: {label: '新自动收集 · 无记录', automatic: true, captureFree: true, latestRuntime: true},
@@ -26,6 +26,27 @@ const variants = captureFree ? {
   components: {label: '并行启动 + 自动组件', handoff: 'overlap', automatic: true, globalShaders: 0},
   automatic: {label: '并行启动 + 自动组件及全局', handoff: 'overlap', automatic: true},
 };
+const baselineSuite = option('baseline-suite');
+if (baselineSuite) {
+  assert(captureFree && /^[a-z0-9-]+$/.test(baselineSuite),
+    'An automatic baseline requires capture-free mode and a valid suite tag');
+  const previousSuite = JSON.parse(fs.readFileSync(path.join(base, 'build', baselineSuite, 'suite.json')));
+  const previous = previousSuite.variants?.automatic;
+  assert(previousSuite.pass && previous?.captureFree && previous.automatic,
+    'The baseline must be a packaged automatic mode without a pipeline corpus');
+  const previousFolder = assertProjectOutputTree(path.join(base, 'build', previous.folder));
+  for (const name of ['content.bin', 'config-files.json'])
+    assert.equal(audit(path.join(previousFolder, name)).sha256, audit(path.join(source, name)).sha256,
+      'The automatic baseline must use the same cooked scene and configuration');
+  const comparableArgs = folder => readPage(folder).args.filter(arg =>
+    arg !== '-WebPSOPrecacheTest' && !arg.startsWith('-WebPSOPrecacheConcurrency='));
+  assert.deepEqual(comparableArgs(previousFolder), comparableArgs(source),
+    'The automatic baseline must use matching rendering arguments');
+  for (const [name, file] of Object.entries(previous.files))
+    assert.equal(audit(path.join(previousFolder, name)).sha256, file.sha256, 'The baseline package changed');
+  variants = {previous: {label: '上版自动收集 · 无记录', automatic: true, captureFree: true,
+    source: previousFolder, baselineSuite}, ...variants};
+}
 const only = option('only');
 if (only) {
   const selected = only.split(',');
@@ -34,15 +55,16 @@ if (only) {
 }
 fs.mkdirSync(suite);
 for (const [mode, variant] of Object.entries(variants)) {
+  const variantSource = variant.source || source;
   const folder = assertProjectOutputTree(path.join(suite, mode));
   fs.mkdirSync(folder);
   const mutable = new Set(['index.html', 'asset-versions.json', 'pipeline-prewarm.json', 'config-files.json', ...runtimeFiles]);
-  for (const entry of fs.readdirSync(source, {withFileTypes: true})) {
+  for (const entry of fs.readdirSync(variantSource, {withFileTypes: true})) {
     if (!entry.isFile()) continue;
     if (variant.captureFree && entry.name === 'pipeline-prewarm.json') continue;
     const target = assertProjectOutput(path.join(folder, entry.name));
-    if (mutable.has(entry.name)) fs.copyFileSync(path.join(source, entry.name), target);
-    else fs.linkSync(path.join(source, entry.name), target);
+    if (mutable.has(entry.name)) fs.copyFileSync(path.join(variantSource, entry.name), target);
+    else fs.linkSync(path.join(variantSource, entry.name), target);
   }
   const page = readPage(folder), pack = JSON.parse(fs.readFileSync(path.join(source, 'pipeline-prewarm.json')));
   assert.equal(pack.descriptors.length, 311, 'Use the original capture, without manual supplements');
