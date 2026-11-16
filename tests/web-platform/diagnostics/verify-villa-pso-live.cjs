@@ -20,7 +20,9 @@ const report = {date: new Date().toISOString(), suite: audit(suiteFile), initial
 let browser, gcTimer, gcPending = false;
 (async () => {
   try {
-    const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/villa-pso-startup-20261113'));
+    const profileName = process.argv.find(arg => arg.startsWith('--profile='))?.slice(10) || 'villa-pso-startup-20261113';
+    assert(/^[a-z0-9-]+$/.test(profileName));
+    const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles', profileName));
     browser = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: false,
       viewport: {width: 1600, height: 1000}, deviceScaleFactor: 1.5,
       downloadsPath: assertProjectOutput(path.join(profile, 'downloads')),
@@ -89,7 +91,7 @@ let browser, gcTimer, gcPending = false;
     assert.equal(report.initial.pso.active, 0);
     assert.equal(report.initial.rhi.asyncPrecacheRequested, report.initial.rhi.asyncPrecacheCompleted);
     if (variants[initialMode].captureFree) assert(!report.initial.prewarm?.adopted);
-    else assert.equal(report.initial.prewarm.counts.ready, 311);
+    else assert.equal(report.initial.prewarm.counts.ready, variants[initialMode].pipelines || 311);
     assert.deepEqual([report.initial.view.width, report.initial.view.height,
       report.initial.view.outputWidth, report.initial.view.outputHeight], [1400, 788, 1920, 1080]);
     for (const key of ['gi', 'reflections', 'virtualShadows', 'virtualTextures'])

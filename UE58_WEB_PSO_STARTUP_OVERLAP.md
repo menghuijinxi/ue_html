@@ -91,6 +91,46 @@
 并修正推测性布局及设备生命周期。扩大人工捕获路线只能作为诊断，
 不能代替这项自动覆盖工作。
 
+## 直接复用 5.9 页面实现的对照
+
+`diagnostics/package-villa-ue59-prewarm.cjs` 为当前引擎建立三组独立诊断：
+当前无记录自动收集、当前重放器使用同一采集、5.9 原版页面采集与重放。
+三组必须保持相同的引擎 JS/WASM、Cook、配置与渲染尺寸，差别只限预热机制。
+包均标记 `diagnosticOnly`，不经过或替代普通发布收尾。
+
+工具只读本地 5.9 `wasm-prewarm.js` 和 `prewarm_pack.py`，保存文件哈希。
+前者的完整源码体放入词法包装，后者由 Python helper 直接调用其 `build()`；
+没有重写采集去重、紧急管线排序、重放并发或描述符匹配算法。
+默认自动加载两次，就绪后六秒保存，不操作相机，也不补选管线。
+全部采集、预热包、浏览器 profile 和报告保留在项目输出目录中。
+失败采集使用原标签保存，修复后换新标签，不能覆盖为成功。
+
+`ue59-prewarm-bridge.js` 适配页面事件、帧回调及存储到现有 RHI Worker。
+设备使用当前 RHI 的 features/limits，并在接管时逐项检查，避免因 5.9 的
+设备特性表不含当前 VSM 所需特性而改变渲染能力。
+回访标记保存在同 profile 的 OPFS，保留原版回访并发策略和就绪后十秒清理。
+仍等待整份重放完成才开放操作；没有引入 5.9 RHI 暂时跳过绘制的回退。
+因此它测试的是当前引擎上的 5.9 采集/重放方案，不是完整 5.9 引擎性能。
+
+使用 `probe-villa-pso-startup.cjs --profile=<标签>` 交替测量三组。
+`startup.loadingHiddenMs` 是加载层隐藏时间，`startup.ms` 还包括等到六十帧
+的诊断等待，二者不能混用。首轮资源下载单列；保留浏览器和驱动缓存的轮次
+不能代表驱动冷缓存。native 管线创建次数与 RHI 请求计数分别保留。
+路线探测只检查首次访问的新增 API，不是人工连续移动的 low 帧成绩；
+零 API 漏项应与启动速度分别验收，不能仅凭数量少或一次流畅就认定覆盖完整。
+
+```powershell
+. ./tests/web-platform/project-output.ps1
+Initialize-ProjectOutput
+node tests/web-platform/diagnostics/package-villa-ue59-prewarm.cjs --tag=<新标签> --source=<当前包目录>
+node tests/web-platform/diagnostics/capture-villa-ue59-prewarm.cjs <新标签>
+# 使用已配置的 Python；禁止向外部引擎写入 __pycache__。
+$env:PYTHONDONTWRITEBYTECODE='1'
+python tests/web-platform/diagnostics/pack-ue59-prewarm.py --suite=H:/ue_html/tests/web-platform/build/<新标签>
+node tests/web-platform/diagnostics/package-villa-ue59-prewarm.cjs --tag=<新标签> --source=<当前包目录> --finish
+node tests/web-platform/diagnostics/probe-villa-pso-startup.cjs --suite=<新标签> --tag=<结果新标签> --profile=<浏览器标签> --modes=ue59,automatic,automatic,ue59
+```
+
 ## 复现
 
 服务 `8765` 上的独立页面：

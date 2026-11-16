@@ -24,7 +24,9 @@ const routePoses = contexts && contexts.filter((_, index) => index % routeStep =
   .map(context => context.camera);
 const output = assertProjectOutput(path.join(base, 'results', tag + '.json'));
 assert(!fs.existsSync(output), 'Preserve prior results');
-const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/villa-pso-startup-20261113'));
+const profileName = option('profile') || 'villa-pso-startup-20261113';
+assert(/^[a-z0-9-]+$/.test(profileName));
+const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles', profileName));
 const report = {date: new Date().toISOString(), suite: audit(path.join(base, 'build', suiteName, 'suite.json')),
   modes, routeStep, routePoseCount: routePoses?.length || 0, maxPipelines, runs: [], pass: false,
   boundary: 'Functional startup and first-use coverage diagnostic. Sparse pipeline API hooks only; no FPS ranking, per-draw hooks, tracing, quality overrides or pre-tour camera warmup. Browser/driver caches retained; the first content download is reported separately.'};
@@ -54,6 +56,7 @@ function observe() {
       result.calls.push(call);
       try {
         const created = original.call(this, descriptor);
+        call.returned = performance.now();
         if (name.endsWith('Async')) {
           ++result.pending;
           created.then(() => {--result.pending; call.completed = performance.now();},
@@ -90,6 +93,12 @@ async function failureSnapshot(promise) {
     });
     report.restoredPages = browser.pages().map(page => page.url());
     for (const restored of browser.pages()) await restored.close();
+    await browser.addInitScript(() => {
+      new MutationObserver(() => {
+        if (document.getElementById('loading')?.hidden && globalThis.__psoLoadingHiddenAt === undefined)
+          globalThis.__psoLoadingHiddenAt = performance.now();
+      }).observe(document, {subtree: true, attributes: true, childList: true, attributeFilter: ['hidden']});
+    });
     const page = await browser.newPage();
     let active;
     page.on('pageerror', error => active?.errors.push(error.message));
@@ -114,7 +123,8 @@ async function failureSnapshot(promise) {
         await page.goto('http://127.0.0.1:8765/build/' + suite.variants[mode].folder + '/index.html');
         await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webPSOPrecacheReady &&
           __webEngineFrames >= 60 && document.getElementById('loading')?.hidden, null, {timeout: 180000});
-        active.startup = await page.evaluate(() => ({ms: performance.now(), failure: globalThis.__webEngineFailure,
+        active.startup = await page.evaluate(() => ({ms: performance.now(),
+          loadingHiddenMs: globalThis.__psoLoadingHiddenAt, failure: globalThis.__webEngineFailure,
           prewarm: globalThis.__webPipelinePrewarm, pso: globalThis.__webPSOPrecache, rhi: globalThis.__webOptimizationRHI,
           view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera}));
         assert.equal(browser.pages().length, 1, 'Restored engine tabs must not compete with the measured scene');
@@ -128,7 +138,7 @@ async function failureSnapshot(promise) {
           assert(!fs.existsSync(path.join(base, 'build', suite.variants[mode].folder, 'pipeline-prewarm.json')));
           assert(!active.startup.prewarm?.adopted, 'Capture-free mode must not adopt a replay device');
           assert.deepEqual(active.recordedRequests, []);
-        } else assert(active.startup.prewarm.ready && active.startup.prewarm.adopted);
+        } else assert(active.startup.prewarm.ready && active.startup.prewarm.adopted && !active.startup.prewarm.error);
         assert.equal(!!active.startup.pso.enabled, !!suite.variants[mode].automatic);
         assert.equal(active.startup.view.width, 1400); assert.equal(active.startup.view.height, 788);
         assert.equal(active.startup.view.outputWidth, 1920); assert.equal(active.startup.view.outputHeight, 1080);
@@ -150,6 +160,7 @@ async function failureSnapshot(promise) {
           assert(!active.turns.at(-1).failure);
         }
         active.after = await owner.evaluate(() => ({capture: __psoStartupCheck, io: __webContentIO.stats}));
+        assert(!active.turns.at(-1)?.prewarm?.error, 'Recorded prewarm failed during the route');
         active.newCalls = active.after.capture.calls.slice(active.before.capture.calls.length);
         if (process.argv.includes('--expect-zero'))
           assert.deepEqual(active.newCalls, [], 'The first route visit must not create pipelines or shader modules');
@@ -164,7 +175,11 @@ async function failureSnapshot(promise) {
         if (maxPipelines !== null)
           assert(active.startupPipelines <= maxPipelines,
             `Startup created ${active.startupPipelines} pipelines, exceeding the ${maxPipelines} budget`);
-        await page.screenshot({path: assertProjectOutput(path.join(base, 'results', tag + '-' + mode + '.png'))});
+        active.startupNativeCalls = Object.fromEntries(['createShaderModule', 'createRenderPipeline',
+          'createRenderPipelineAsync', 'createComputePipeline', 'createComputePipelineAsync'].map(name =>
+          [name, active.before.capture.calls.filter(call => call.name === name).length]));
+        await page.screenshot({path: assertProjectOutput(path.join(base, 'results',
+          tag + '-' + (report.runs.length - 1) + '-' + mode + '.png'))});
         active.pass = active.failedPipelines.length === 0;
         console.log(JSON.stringify({mode, pass: active.pass, startupMs: active.startup.ms,
           counts: active.startup.prewarm?.counts, automatic: active.startup.rhi.asyncPrecacheRequested,

@@ -13,10 +13,11 @@
     const warm = scene.__webPipelinePrewarm, pso = scene.__webPSOPrecache;
     const rhi = scene.__webOptimizationRHI, variant = __villaHistoryVariants[mode];
     const automatic = document.getElementById('automatic-pso');
-    automatic.textContent = !variant.automatic ? '关闭' : !rhi ? '等待引擎' :
+    automatic.textContent = !variant.automatic ? warm?.counts ?
+      '重放 ' + warm.counts.ready + ' / ' + (variant.pipelines || warm.target || 311) : '等待重放' : !rhi ? '等待引擎' :
       rhi.asyncPrecacheCompleted + ' / ' + rhi.asyncPrecacheRequested +
       ' · 排队 ' + (pso?.active ?? '—') + ' · 失败 ' + rhi.asyncPrecacheFailed;
-    automatic.style.color = rhi?.asyncPrecacheFailed ? '#ffb8a9' : '';
+    automatic.style.color = rhi?.asyncPrecacheFailed || warm?.error ? '#ffb8a9' : '';
     if (live.ready && !startupObserved) {
       const seconds = (performance.now() - began) / 1000;
       display.textContent = seconds.toFixed(1) + ' s';
