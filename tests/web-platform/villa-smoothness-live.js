@@ -127,7 +127,12 @@
         element('loading-detail').textContent = `加载中 · ${Math.floor((performance.now() - began) / 1000)} 秒`;
         if (child.__webEngineFrames >= 60 && child.__webPSOPrecacheReady &&
             child.document.getElementById('loading')?.hidden && verify(child)) {
-          if (!child.__webPipelinePrewarm?.ready || !child.__webPipelinePrewarm.adopted)
+          if (variants[mode].captureFree) {
+            const pso = child.__webPSOPrecache, rhi = child.__webOptimizationRHI;
+            if (child.__webPipelinePrewarm?.adopted || !pso?.enabled || pso.active ||
+                !rhi || rhi.asyncPrecacheFailed || rhi.asyncPrecacheRequested !== rhi.asyncPrecacheCompleted)
+              throw Error('自动 PSO 队列未完成或发生失败');
+          } else if (!child.__webPipelinePrewarm?.ready || !child.__webPipelinePrewarm.adopted)
             throw Error('实际管线预热未生效');
           const saved = state.player, initial = await restore(null);
           if (ticket !== generation) return;

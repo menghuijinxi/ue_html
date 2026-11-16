@@ -724,6 +724,15 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     struct FPipelineLayout { TArray<WGPUBindGroupLayout> Groups; WGPUPipelineLayout Handle; };
     TMap<uint32, TArray<FGroupLayout>> GroupLayoutCache;
     TArray<FPipelineLayout> PipelineLayoutCache;
+    struct FNativeGraphicsPipeline
+    {
+        TArray<uint64> Key;
+        WGPURenderPipeline Handle = nullptr;
+        TRefCountPtr<FRHIVertexShader> Vertex;
+        TRefCountPtr<FRHIPixelShader> Pixel;
+    };
+    TMap<uint32, TArray<FNativeGraphicsPipeline>> NativeGraphicsPipelineCache;
+    uint32 NativeGraphicsPipelineEntries = 0, NativeGraphicsPipelineHits = 0;
     struct FDrawBundle
     {
         TArray<uint64> Key;

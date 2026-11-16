@@ -1,5 +1,7 @@
 #include "WebGPUDynamicRHI.h"
 #include "WebGPUSamplerBias.h"
+#include "WebGPUDepthAtlasSampling.h"
+#include "WebGPURenderPipelineKey.h"
 #include "WebGPUTextureAtomicHeaders.h"
 #include "../../WebGPUShaderFormat/Public/WebGPUShaderMetadata.h"
 #include "DataDrivenShaderPlatformInfo.h"
@@ -132,10 +134,12 @@ template <typename HandleType> struct TWebGPUPrecacheRequest : FWebGPUPrecacheTi
     bool bPrecache = true;
     FEvent* Event = FPlatformProcess::GetSynchEventFromPool(true);
     HandleType Handle = nullptr;
+    TFunction<void(HandleType)> OnSuccess;
     FString Error;
     ~TWebGPUPrecacheRequest() { FPlatformProcess::ReturnSynchEventToPool(Event); }
     void Complete(HandleType Pipeline, WGPUStringView Message)
     {
+        if (Pipeline && OnSuccess) OnSuccess(Pipeline);
         Handle = Pipeline;
         if (!Pipeline && Message.data)
             Error = FString(FUTF8ToTCHAR(Message.data, Message.length == WGPU_STRLEN ?
@@ -1096,6 +1100,10 @@ void FWebGPUDynamicRHI::Shutdown()
     for (const auto& Entry : ClearPipelines)
         wgpuComputePipelineRelease(Entry.Value);
     ClearPipelines.Empty();
+    for (const auto& Bucket : NativeGraphicsPipelineCache)
+        for (const auto& Pipeline : Bucket.Value) wgpuRenderPipelineRelease(Pipeline.Handle);
+    NativeGraphicsPipelineCache.Empty();
+    NativeGraphicsPipelineEntries = 0;
     for (const auto& Layout : PipelineLayoutCache) wgpuPipelineLayoutRelease(Layout.Handle);
     PipelineLayoutCache.Empty();
     for (const auto& Bucket : GroupLayoutCache)
@@ -1324,6 +1332,9 @@ void FWebGPUDynamicRHI::RHIEndFrame(const FRHIEndFrameArgs &Args)
         }, EndFrames, GraphicsPipelinesCreated, ComputePipelinesCreated, GraphicsPipelineCreateMs, ComputePipelineCreateMs,
             TextureReadbacksPending.load(), TextureReadbacksReady->load(), TextureReadbackMaps.load(), TextureReadbackNotReady.load(),
             GRHISupportsPSOPrecaching, PrecachedGraphicsPipelines);
+        EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
+            {nativeGraphicsPipelineEntries:$0, nativeGraphicsPipelineHits:$1}); },
+            NativeGraphicsPipelineEntries, NativeGraphicsPipelineHits);
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
         EM_ASM({ Object.assign(globalThis.__webOptimizationRHI,
             {asyncPrecacheRequested:$0, asyncPrecacheCompleted:$1, asyncPrecacheFailed:$2, unsupportedPrecacheRequests:$3,
@@ -1605,11 +1616,18 @@ bool FWebGPUDynamicRHI::LoadShader(const FRHICreateShaderDesc &Desc, EShaderFreq
         if (Data.Bindings.Last().Name == TEXT("$Globals")) Data.Globals.SetNumZeroed(Data.Bindings.Last().PaddedSize);
     }
     Data.RuntimeMetadata.Bindings.Empty();
+    if (!LowerWebGPUDepthAtlasSampling(Source, Data, Error)) return false;
     if (!PrepareWebGPUPackedShadowMaskFormat(Source, Data, Error)) return false;
     if (!LowerWebGPUViewSamplerBias(Source, Data, Error)) return false;
     if (CVarWebGPUVSMPageOptimization.GetValueOnAnyThread() & 1)
         AtomicHeaderBindings += LowerWebGPUTextureAtomicHeaders(Source, Data, Limits.maxUniformBuffersPerShaderStage);
-    if (!Data.StorageFormatSource.IsEmpty()) Data.StorageFormatSource = Source;
+    if (!Data.StorageFormatSource.IsEmpty())
+    {
+        // ResolveComputePipeline creates the module with actual UAV formats.
+        // A placeholder module cannot be used or precached and only adds work.
+        Data.StorageFormatSource = MoveTemp(Source);
+        return true;
+    }
     const FTCHARToUTF8 Code(*Source);
     WGPUShaderSourceWGSL WGSL = WGPU_SHADER_SOURCE_WGSL_INIT;
     WGSL.code = {Code.Get(), size_t(Code.Length())};
@@ -4640,8 +4658,6 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             return nullptr;
         }
     }
-    ++GraphicsPipelinesCreated;
-    if (In.bPSOPrecache) ++PrecachedGraphicsPipelines;
     auto &VS = static_cast<FWebGPUVertexShader *>(In.BoundShaderState.GetVertexShader())->Data;
     auto *Pixel = static_cast<FWebGPUPixelShader *>(In.BoundShaderState.GetPixelShader());
     const bool Attachmentless = In.RenderTargetsEnabled == 0 && In.DepthStencilTargetFormat == PF_Unknown;
@@ -4794,6 +4810,45 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
             Depth.stencilWriteMask = 0;
         Desc.depthStencil = &Depth;
     }
+    const auto NativeKey = WebGPURenderPipelineKey(Desc);
+    TArray<uint64> Key;
+    Key.Append(NativeKey.data(), int32(NativeKey.size()));
+    const uint32 KeyHash = FCrc::MemCrc32(Key.GetData(), Key.Num() * sizeof(uint64));
+    const auto ReleaseDescriptor = [&] {
+        if (DepthOnlyFragment) wgpuShaderModuleRelease(DepthOnlyFragment);
+        wgpuPipelineLayoutRelease(Desc.layout);
+    };
+    // The temporary empty fragment has no retained shader owner, so its module
+    // identity can be recycled. Do not look it up or retain it in this cache.
+    const bool Cacheable = !DepthOnlyFragment;
+    if (const auto* Bucket = Cacheable ? NativeGraphicsPipelineCache.Find(KeyHash) : nullptr)
+        if (const auto* Cached = Bucket->FindByPredicate([&](const auto& Entry) { return Entry.Key == Key; }))
+        {
+            ++NativeGraphicsPipelineHits;
+            wgpuRenderPipelineAddRef(Cached->Handle);
+#if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
+            if (GraphicsPrecacheRequest && GraphicsPrecacheRequest->Initializer == &In)
+                GraphicsPrecacheRequest->Complete(Cached->Handle, {});
+            else
+#endif
+                Result->Handle = Cached->Handle;
+            ReleaseDescriptor();
+            return Result;
+        }
+    // Bound native handles survive UE pass/load-store variants. Shader refs prevent
+    // module identities from being recycled while a cache entry still uses them.
+    const auto Remember = [this, Cacheable, KeyHash, Key = MoveTemp(Key),
+        Vertex = TRefCountPtr<FRHIVertexShader>(In.BoundShaderState.GetVertexShader()),
+        PixelShader = TRefCountPtr<FRHIPixelShader>(In.BoundShaderState.GetPixelShader())](WGPURenderPipeline Handle) {
+        if (!Cacheable || !Handle || NativeGraphicsPipelineEntries >= 2048) return;
+        auto& Bucket = NativeGraphicsPipelineCache.FindOrAdd(KeyHash);
+        if (Bucket.ContainsByPredicate([&](const auto& Entry) { return Entry.Key == Key; })) return;
+        wgpuRenderPipelineAddRef(Handle);
+        Bucket.Add({Key, Handle, Vertex, PixelShader});
+        ++NativeGraphicsPipelineEntries;
+    };
+    ++GraphicsPipelinesCreated;
+    if (In.bPSOPrecache) ++PrecachedGraphicsPipelines;
     const double CreateStart = FPlatformTime::Seconds();
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
     // A synchronous owner proxy can run reentrantly during this creation.
@@ -4805,6 +4860,7 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         auto Callback = WGPU_CREATE_RENDER_PIPELINE_ASYNC_CALLBACK_INFO_INIT;
         Callback.mode = WGPUCallbackMode_AllowSpontaneous;
         Callback.userdata1 = GraphicsPrecacheRequest;
+        GraphicsPrecacheRequest->OnSuccess = Remember;
         Callback.callback = [](WGPUCreatePipelineAsyncStatus Status, WGPURenderPipeline Pipeline,
             WGPUStringView Message, void* Userdata, void*) {
             const bool Success = Status == WGPUCreatePipelineAsyncStatus_Success;
@@ -4825,11 +4881,12 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     }
     else
 #endif
+    {
         Result->Handle = wgpuDeviceCreateRenderPipeline(Device, &Desc);
+        Remember(Result->Handle);
+    }
     GraphicsPipelineCreateMs += (FPlatformTime::Seconds() - CreateStart) * 1000;
-    if (DepthOnlyFragment)
-        wgpuShaderModuleRelease(DepthOnlyFragment);
-    wgpuPipelineLayoutRelease(Desc.layout);
+    ReleaseDescriptor();
     return Result;
 }
 FComputePipelineStateRHIRef FWebGPUDynamicRHI::RHICreateComputePipelineState(const FComputePipelineStateInitializer &In)

@@ -3,16 +3,19 @@ const {initializeProjectOutput, assertProjectOutput, assertProjectOutputTree} = 
 initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {chromium} = require('playwright'), sharp = require('sharp');
+const {audit} = require('../content-file-metadata.cjs');
 const [suite, tag, initialMode = 'components'] = process.argv.slice(2);
+const workerGC = process.argv.includes('--worker-gc');
 assert([suite, tag].every(value => value && /^[a-z0-9-]+$/.test(value)));
 const base = path.resolve(__dirname, '..');
-const variants = JSON.parse(fs.readFileSync(path.join(base, 'build', suite, 'suite.json'))).variants;
+const suiteFile = path.join(base, 'build', suite, 'suite.json');
+const variants = JSON.parse(fs.readFileSync(suiteFile)).variants;
 assert(variants[initialMode]);
 const output = assertProjectOutput(path.join(base, 'results', tag + '.json'));
 assert(!fs.existsSync(output), 'Preserve prior verification results');
-const report = {date: new Date().toISOString(), initialMode, pass: false,
+const report = {date: new Date().toISOString(), suite: audit(suiteFile), initialMode, pass: false,
   boundary: 'Live page operation, native input, mode switching and manual export only; no FPS comparison.'};
-let browser, gcTimer;
+let browser, gcTimer, gcPending = false;
 (async () => {
   try {
     const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/villa-pso-startup-20261113'));
@@ -21,21 +24,36 @@ let browser, gcTimer;
       downloadsPath: assertProjectOutput(path.join(profile, 'downloads')),
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
+        ...(workerGC ? ['--js-flags=--expose-gc'] : []),
         '--enable-logging', '--log-file=' + assertProjectOutput(path.join(base, 'results', tag + '-browser.log')),
         '--disk-cache-dir=' + assertProjectOutput(path.join(profile, 'http-cache')),
         '--crash-dumps-dir=' + assertProjectOutput(path.join(profile, 'crashes'))]});
     const page = browser.pages()[0] || await browser.newPage(), errors = [];
     page.on('pageerror', error => errors.push(error.message));
-    if (process.argv.includes('--gc')) {
+    if (process.argv.includes('--gc') || workerGC) {
       report.forcedGC = 0;
+      report.forcedWorkerGC = 0;
       const session = await browser.newCDPSession(page);
-      let pending = false;
       gcTimer = setInterval(async () => {
-        if (pending) return;
-        pending = true;
-        try {await session.send('HeapProfiler.collectGarbage'); ++report.forcedGC;}
+        if (gcPending) return;
+        gcPending = true;
+        try {
+          await session.send('HeapProfiler.collectGarbage'); ++report.forcedGC;
+          if (workerGC) {
+            const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
+            if (owner) {
+              const performed = await owner.evaluate(() => {
+                if (typeof globalThis.gc !== 'function') return false;
+                globalThis.gc();
+                return true;
+              });
+              assert(performed, 'Explicit worker GC requires exposed V8 GC');
+              ++report.forcedWorkerGC;
+            }
+          }
+        }
         catch (error) {report.gcError = error.message;}
-        finally {pending = false;}
+        finally {gcPending = false;}
       }, 1000);
     }
     await page.goto('http://127.0.0.1:8765/build/' + suite + '/comparison.html#' + initialMode);
@@ -62,13 +80,20 @@ let browser, gcTimer;
     assert.equal(report.initial.rhi.asyncPrecacheFailed, 0);
     assert.equal(report.initial.pso.active, 0);
     assert.equal(report.initial.rhi.asyncPrecacheRequested, report.initial.rhi.asyncPrecacheCompleted);
-    assert.equal(report.initial.prewarm.counts.ready, 311);
+    if (variants[initialMode].captureFree) assert(!report.initial.prewarm?.adopted);
+    else assert.equal(report.initial.prewarm.counts.ready, 311);
     assert.deepEqual([report.initial.view.width, report.initial.view.height,
       report.initial.view.outputWidth, report.initial.view.outputHeight], [1400, 788, 1920, 1080]);
     for (const key of ['gi', 'reflections', 'virtualShadows', 'virtualTextures'])
       assert.equal(report.initial.settings[key], 1);
+    const canvas = page.frameLocator('iframe').locator('#canvas');
+    const initialPixels = (await sharp(await canvas.screenshot()).stats()).channels.slice(0, 3);
+    assert(initialPixels.every(channel => channel.mean > 3 && channel.stdev > 5),
+      'The automatic scene itself must contain rendered content before switching modes');
+    report.initialPixels = initialPixels;
+    await page.screenshot({path: assertProjectOutput(path.join(base, 'results', tag + '-initial.png'))});
     await page.locator('#record').click();
-    const canvas = page.frameLocator('iframe').locator('#canvas'), box = await canvas.boundingBox();
+    const box = await canvas.boundingBox();
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
     let moved, distance = 0;
     for (const key of ['w', 's', 'a', 'd']) {
@@ -100,6 +125,9 @@ let browser, gcTimer;
     assert.equal(exported.records[0].metadata.arguments.includes('-WebPSOPrecacheTest'), !!variants[initialMode].automatic);
     assert(exported.records[0].frames.length > 1 && exported.records[0].contexts.length > 1);
     const beforeSwitch = await state();
+    // Finish checking the automatic worker before the mode switch disposes it.
+    clearInterval(gcTimer);
+    while (gcPending) await page.waitForTimeout(20);
     await page.locator('[name=mode][value=overlap]').check();
     await ready('overlap'); report.afterSwitch = await state();
     for (const axis of ['x', 'y', 'z', 'controlPitch', 'controlYaw'])
@@ -122,7 +150,12 @@ let browser, gcTimer;
       await page.screenshot({path: assertProjectOutput(path.join(base, 'results', tag + '-' + viewport.width + '.png'))});
       report.layouts.push({viewport, geometry, pixels});
     }
-    assert.deepEqual(errors, []); report.pass = true;
+    assert.deepEqual(errors, []);
+    if (workerGC) {
+      assert(!report.gcError, report.gcError);
+      assert(report.forcedWorkerGC >= 5, 'Worker GC must actually execute repeatedly');
+    }
+    report.pass = true;
     console.log(JSON.stringify({pass: true, distance, yaw, exportURL: report.exportURL, layouts: report.layouts.length}));
   } catch (error) {
     report.error = error.stack;

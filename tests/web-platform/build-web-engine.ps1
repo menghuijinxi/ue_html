@@ -48,6 +48,8 @@ $taskLibraryVariant = if ($Threads) { '-thread' } else { '' }
 if (-not $SkipHostPreparation) { & (Join-Path $PSScriptRoot 'prepare-web-core-host.ps1') -Engine $Engine }
 & node (Join-Path $PSScriptRoot 'prepare-web-rhi-host.cjs') $Engine
 if ($LASTEXITCODE -ne 0) { throw 'RHI cache overlay preparation failed.' }
+& node (Join-Path $PSScriptRoot 'prepare-web-pso-host.cjs')
+if ($LASTEXITCODE -ne 0) { throw 'Automatic PSO collector overlay preparation failed.' }
 $taskNaniteOverlays = @(
     'Source/Runtime/Engine/Private/Nanite/NaniteStreamingPageUploader.cpp',
     'Source/Runtime/Engine/Private/Rendering/NaniteStreamingManager.cpp',
@@ -378,7 +380,8 @@ try {
     $taskFiles += Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPUShaderFormat/Public/WebGPUShaderRuntimeMetadata.h'
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot 'tests/ue-shader-host/Plugins/WebGPUShader/Source/WebGPURHI/Private') -File |
         Where-Object { $_.Name -in @('WebGPUDynamicRHI.cpp', 'WebGPUDynamicRHI.h', 'WebGPUUnsupportedRHI.h',
-            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h', 'WebGPUCommandStream.h', 'WebGPUPackedDescriptors.h') } |
+            'WebGPUTransitions.cpp', 'WebGPUBufferLock.cpp', 'WebGPUBreadcrumbs.cpp', 'WebGPUViewport.cpp', 'WebGPUOwner.h', 'WebGPUCommandStream.h', 'WebGPUPackedDescriptors.h',
+            'WebGPUDepthAtlasSampling.h', 'WebGPURenderPipelineKey.h') } |
         ForEach-Object { $_.FullName })
     $taskFiles += @(Get-ChildItem -LiteralPath (Join-Path $taskRoot '.tools/emdawnwebgpu-v20261009.190412/emdawnwebgpu_pkg') -File -Recurse |
         Where-Object { $_.Extension -in @('.py', '.cpp', '.h', '.js') } | ForEach-Object { $_.FullName })
@@ -390,6 +393,9 @@ try {
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Renderer/Private/TranslucentRendering.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/Renderer/Private/TranslucentRendering.cpp'
     $taskFiles += Join-Path $taskRoot 'tests/web-platform/prepare-web-rhi-host.cjs'
+    $taskFiles += Join-Path $taskRoot 'tests/web-platform/prepare-web-pso-host.cjs'
+    $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp'
+    $taskFiles += Join-Path $taskHost 'Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RHI/Private/PipelineStateCache.cpp'
     $taskFiles += Join-Path $taskHost 'Source/Runtime/RHI/Private/PipelineStateCache.cpp'
     $taskFiles += Join-Path $taskRoot 'reference-engine/Engine/Source/Runtime/RHI/Private/RHICommandList.cpp'

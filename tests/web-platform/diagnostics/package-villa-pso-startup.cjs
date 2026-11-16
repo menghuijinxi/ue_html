@@ -2,17 +2,24 @@
 const {initializeProjectOutput, assertProjectOutput, assertProjectOutputTree} = require('../project-output.cjs');
 initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
-const {audit} = require('../content-file-metadata.cjs');
+const {audit, metadata} = require('../content-file-metadata.cjs');
 const {readPage, writePage, replaceFile, runtimeFiles} = require('../web-pipeline-prewarm-package.cjs');
 const {writeVersions} = require('../asset-versions.cjs');
 const base = path.resolve(__dirname, '..');
 const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3);
 const tag = option('tag') || 'villa-pso-startup-20261113';
 assert(/^[a-z0-9-]+$/.test(tag));
+const concurrency = Number(option('concurrency') || 2);
+assert(Number.isInteger(concurrency) && concurrency >= 1 && concurrency <= 8);
 const source = path.join(base, 'build/villa-tsr-tiles-20261112');
 const suite = assertProjectOutputTree(path.join(base, 'build', tag));
 assert(!fs.existsSync(suite), 'Preserve existing diagnostic suites; choose a new tag');
-const variants = {
+const captureFree = process.argv.includes('--capture-free');
+const variants = captureFree ? {
+  overlap: {label: '记录预热参考', handoff: 'overlap'},
+  legacy: {label: '旧自动收集 · 无记录', automatic: true, captureFree: true},
+  automatic: {label: '新自动收集 · 无记录', automatic: true, captureFree: true, latestRuntime: true},
+} : {
   recorded: {label: '记录预热 · 整包等待', handoff: 'complete'},
   overlap: {label: '记录预热 · 并行启动', handoff: 'overlap'},
   components: {label: '并行启动 + 自动组件', handoff: 'overlap', automatic: true, globalShaders: 0},
@@ -25,14 +32,15 @@ for (const [mode, variant] of Object.entries(variants)) {
   const mutable = new Set(['index.html', 'asset-versions.json', 'pipeline-prewarm.json', 'config-files.json', ...runtimeFiles]);
   for (const entry of fs.readdirSync(source, {withFileTypes: true})) {
     if (!entry.isFile()) continue;
+    if (variant.captureFree && entry.name === 'pipeline-prewarm.json') continue;
     const target = assertProjectOutput(path.join(folder, entry.name));
     if (mutable.has(entry.name)) fs.copyFileSync(path.join(source, entry.name), target);
     else fs.linkSync(path.join(source, entry.name), target);
   }
-  const page = readPage(folder), pack = JSON.parse(fs.readFileSync(path.join(folder, 'pipeline-prewarm.json')));
+  const page = readPage(folder), pack = JSON.parse(fs.readFileSync(path.join(source, 'pipeline-prewarm.json')));
   assert.equal(pack.descriptors.length, 311, 'Use the original capture, without manual supplements');
   page.args = page.args.filter(arg => arg !== '-WebPSOPrecacheTest' && !arg.startsWith('-WebPSOPrecacheConcurrency='));
-  if (variant.automatic) page.args.push('-WebPSOPrecacheTest', '-WebPSOPrecacheConcurrency=2');
+  if (variant.automatic) page.args.push('-WebPSOPrecacheTest', '-WebPSOPrecacheConcurrency=' + concurrency);
   if (variant.globalShaders === 0) {
     const file = path.join(folder, 'config-files.json'), configs = JSON.parse(fs.readFileSync(file));
     const config = configs.find(item => item.path === '/Engine/Platforms/Web/Config/WebEngine.ini');
@@ -49,13 +57,27 @@ for (const [mode, variant] of Object.entries(variants)) {
     replaceFile(path.join(folder, name), fs.readFileSync(path.join(base, name)));
     page.assets.versions[name] = audit(path.join(folder, name)).sha256;
   }
-  replaceFile(path.join(folder, 'pipeline-prewarm.json'), JSON.stringify(pack));
-  page.assets.pipelinePrewarm.sha256 = audit(path.join(folder, 'pipeline-prewarm.json')).sha256;
-  page.assets.pipelinePrewarm.handoff = variant.handoff;
+  if (variant.latestRuntime) {
+    for (const name of ['UEWebEngineThreads.js', 'UEWebEngineThreads.wasm']) {
+      replaceFile(path.join(folder, name), fs.readFileSync(path.resolve(base, '../ue-web-smoke/Binaries/Web', name)));
+      page.assets.versions[name] = audit(path.join(folder, name)).sha256;
+    }
+    page.assets.wasm = metadata(path.join(folder, 'UEWebEngineThreads.wasm'), 'UEWebEngineThreads.wasm');
+  }
+  if (variant.captureFree) {
+    delete page.assets.pipelinePrewarm;
+    delete page.assets.releaseDefaults;
+    assert(!fs.existsSync(path.join(folder, 'pipeline-prewarm.json')));
+  } else {
+    replaceFile(path.join(folder, 'pipeline-prewarm.json'), JSON.stringify(pack));
+    page.assets.pipelinePrewarm.sha256 = audit(path.join(folder, 'pipeline-prewarm.json')).sha256;
+    page.assets.pipelinePrewarm.handoff = variant.handoff;
+  }
   page.assets.diagnosticOnly = true;
   page.assets.psoStartupExperiment = {mode, automatic: !!variant.automatic,
-    globalShaders: variant.globalShaders ?? 1, concurrency: 2,
-    boundary: 'Diagnostic only. Component mode leaves global pipelines to the recorded startup corpus and runtime misses; it does not provide capture-free global coverage.'};
+    globalShaders: variant.globalShaders ?? 1, concurrency, captureFree: !!variant.captureFree,
+    boundary: variant.captureFree ? 'Diagnostic automatic UE collectors only. No pipeline corpus, replay or camera warmup.' :
+      'Diagnostic only. Component mode leaves global pipelines to the recorded startup corpus and runtime misses; it does not provide capture-free global coverage.'};
   writePage(folder, page);
   writeVersions(folder, fs.readdirSync(folder).map(name => audit(path.join(folder, name))));
   variant.folder = tag + '/' + mode;
@@ -77,6 +99,7 @@ let html = fs.readFileSync(path.join(base, 'villa-git-history-live.html'), 'utf8
 replaceFile(path.join(suite, 'comparison.html'), html);
 const report = {date: new Date().toISOString(), pass: true, diagnosticOnly: true, source, variants,
   page: path.join(suite, 'comparison.html'), originalRecordedPipelines: 311,
-  boundary: 'Same original WASM/Cook/TSR settings. No hand-selected pipeline supplements. Automatic component/global collection is an explicit diagnostic; ordinary release defaults are unchanged.'};
+  boundary: captureFree ? 'Legacy and new automatic modes contain no pipeline corpus. New runtime changes PSO collection, exact native raster-state reuse, unused placeholder modules and depth-atlas sampling compatibility. Same Cook, TSR and render settings. Diagnostic only; release defaults unchanged.' :
+    'Same original WASM/Cook/TSR settings. No hand-selected pipeline supplements. Automatic component/global collection is an explicit diagnostic; ordinary release defaults are unchanged.'};
 replaceFile(path.join(suite, 'suite.json'), JSON.stringify(report, null, 2));
 console.log(JSON.stringify({pass: true, suite, page: report.page, modes: Object.keys(variants)}));

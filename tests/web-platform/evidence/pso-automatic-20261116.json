@@ -1,0 +1,246 @@
+{
+  "date": "2026-11-16T03:13:41.509Z",
+  "pass": true,
+  "diagnosticOnly": true,
+  "formalReleaseApproved": false,
+  "defaultsChanged": false,
+  "testedPackageMatchesLatestSource": false,
+  "latestBuild": {
+    "pass": false,
+    "buildSucceeded": false,
+    "standaloneCompilationPassed": true,
+    "compiledUnits": 419,
+    "linkFailedForSpace": true,
+    "failure": null,
+    "log": {
+      "sha256": "4b4e456fa7b7c91a50d0887246da41eebe422f0fb78c75d5946a358a73ba9cf7",
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\web-engine-full-thread-20261116-103039.log"
+    }
+  },
+  "sources": [
+    {
+      "file": "tests/web-platform/build/villa-pso-automatic-20261116-c/suite.json",
+      "sha256": "6cc8b1330162ebbd29f3ca0968e35e89c8c4d1057d8e3bad6f41bd7a3fb7c5c1"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-automatic-route-20261116-f.json",
+      "sha256": "595593c0fc33f1d558d261f1e6927f3d0d285dfdf20c426f02013644b5fbb6ce"
+    },
+    {
+      "file": "tests/web-platform/results/villa-pso-automatic-live-20261116-worker-c.json",
+      "sha256": "2bdf98c5b545c6755143c86919939ba074d026c143dbeba98acebd120304efe6"
+    },
+    {
+      "file": "tests/web-platform/results/web-engine-full-thread-build-results.json",
+      "sha256": "b170878ee60348c373fa6582c8a184408fac031958c82bf26c980b573a12c7c9"
+    }
+  ],
+  "package": {
+    "UEWebEngineThreads.wasm": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pso-automatic-20261116-c\\automatic\\UEWebEngineThreads.wasm",
+      "sha256": "d837fc25c308ae52d4bef9ba3f78e7ed141e5806a981ed7d06bd4637f49fbdae"
+    },
+    "content.bin": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pso-automatic-20261116-c\\automatic\\content.bin",
+      "sha256": "e56bf7c3728758cbc6ed3fa509b3ec524786ffa39ec29eaa1910942c59099bfc"
+    },
+    "config-files.json": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pso-automatic-20261116-c\\automatic\\config-files.json",
+      "sha256": "d9cea2aadb6e9df2d59881aeb09f27b9ea6af8497fd8b69fed14846d25cb936a"
+    },
+    "index.html": {
+      "file": "H:\\ue_html\\tests\\web-platform\\build\\villa-pso-automatic-20261116-c\\automatic\\index.html",
+      "sha256": "e5474d1688fd3dd6ee9a8d38d191cb107368b41598b0e575877fc7c996e9cab9"
+    }
+  },
+  "automaticPrecacheWithoutRecordedCorpus": true,
+  "cameraWarmupBeforeCoverageCheck": false,
+  "route": {
+    "source": {
+      "file": "H:\\ue_html\\tests\\web-platform\\results\\villa-turn-manual\\villa-turn-2026-11-13T09-17-23-425Z-10ddd198.json",
+      "sha256": "c79a02b50e8660d33e9a8b2450a5e1459327e5009ebbf6a9463b890dfc1d91db"
+    },
+    "samples": 11
+  },
+  "startup": {
+    "milliseconds": 23427.125,
+    "downloadedBytes": 0,
+    "rhi": {
+      "sampleFrame": 270,
+      "graphicsPipelines": 640,
+      "computePipelines": 1190,
+      "graphicsPipelineCreateMs": 34.397125244140625,
+      "computePipelineCreateMs": 26.857614517211914,
+      "textureReadbacks": 0,
+      "textureReadbacksReady": 0,
+      "textureReadbackMaps": 0,
+      "textureReadbackNotReady": 0,
+      "psoPrecaching": true,
+      "precachedGraphicsPipelines": 599,
+      "asyncPrecacheRequested": 1583,
+      "asyncPrecacheCompleted": 1583,
+      "asyncPrecacheFailed": 0,
+      "unsupportedPrecacheRequests": 1322,
+      "precachedGraphicsUsed": 69,
+      "precachedGraphicsBinds": 131380,
+      "precacheConcurrency": 8,
+      "runtimeAsyncPSO": false,
+      "runtimeAsyncRequested": 0,
+      "runtimeAsyncCompleted": 0,
+      "runtimeAsyncFailed": 0
+    },
+    "view": {
+      "frame": 276,
+      "width": 1400,
+      "height": 788,
+      "outputWidth": 1920,
+      "outputHeight": 1080,
+      "antiAliasing": 4,
+      "jitterX": 0,
+      "jitterY": 0,
+      "x": 0,
+      "y": 0,
+      "outputX": 0,
+      "outputY": 0,
+      "threadId": 3,
+      "parallelRendering": true
+    },
+    "settings": {
+      "antiAliasing": 4,
+      "generateDistanceFields": 1,
+      "distanceFieldAO": 1,
+      "distanceFieldShadows": 1,
+      "gi": 1,
+      "reflections": 1,
+      "virtualShadows": 1,
+      "texturePoolMiB": 1000,
+      "screenPercentage": 0,
+      "staticLighting": 1,
+      "shadowCacheMiB": 256,
+      "dbuffer": 1,
+      "ssrQuality": 3,
+      "volumetricFog": 1,
+      "virtualTextures": 1,
+      "virtualTexturePathActive": true,
+      "virtualShadowPathActive": true
+    }
+  },
+  "routeNewCalls": [],
+  "gpuErrors": [],
+  "selectedGlobalShaderTypes": 433,
+  "selectedGlobalPermutations": 2504,
+  "selectedFamilies": [
+    {
+      "shader": "FVirtualShadowMapProjectionCS",
+      "selected": 7
+    },
+    {
+      "shader": "FTSRVisualizeCS",
+      "selected": 1
+    },
+    {
+      "shader": "FTSRResolveHistoryCS",
+      "selected": 2
+    },
+    {
+      "shader": "FTSRUpdateHistoryCS",
+      "selected": 4
+    },
+    {
+      "shader": "FTSRSpatialAntiAliasingCS",
+      "selected": 2
+    },
+    {
+      "shader": "FTSRRejectShadingCS",
+      "selected": 12
+    },
+    {
+      "shader": "FTSRDecimateHistoryCS",
+      "selected": 8
+    },
+    {
+      "shader": "FTSRWeightRelaxationCS",
+      "selected": 2
+    },
+    {
+      "shader": "FTSRDetectThinGeometryCS",
+      "selected": 6
+    },
+    {
+      "shader": "FTSRDilateVelocityCS",
+      "selected": 10
+    },
+    {
+      "shader": "FTSRClearPrevTexturesCS",
+      "selected": 1
+    },
+    {
+      "shader": "FTSRMeasureThinGeometryCoverageCS",
+      "selected": 4
+    },
+    {
+      "shader": "FTSRMeasureFlickeringLumaCS",
+      "selected": 1
+    },
+    {
+      "shader": "FUpscaleCS",
+      "selected": 120
+    },
+    {
+      "shader": "FScreenProbeTemporalReprojectionCS",
+      "selected": 160
+    },
+    {
+      "shader": "FLumenRadiosityIntegrateCS",
+      "selected": 1
+    },
+    {
+      "shader": "FLumenRadiosityConvertToSH",
+      "selected": 1
+    },
+    {
+      "shader": "FLumenRadiositySpatialFilterProbeRadiance",
+      "selected": 1
+    },
+    {
+      "shader": "FLumenRadiosityDistanceFieldTracingCS",
+      "selected": 3
+    },
+    {
+      "shader": "FLumenRadiosityIndirectArgsCS",
+      "selected": 1
+    },
+    {
+      "shader": "FBuildRadiosityTilesCS",
+      "selected": 1
+    }
+  ],
+  "live": {
+    "distance": 101.52595956278135,
+    "yaw": 33.071693897247314,
+    "forcedMainThreadGC": 26,
+    "forcedWorkerGC": 24,
+    "exportURL": "/results/villa-turn-manual/villa-turn-2026-11-16T03-11-54-551Z-d3eec82e.json",
+    "layouts": [
+      {
+        "width": 1600,
+        "height": 1000
+      },
+      {
+        "width": 900,
+        "height": 700
+      }
+    ],
+    "retainedPoseOnSwitch": true,
+    "fixedOutputAtDPR": 1.5
+  },
+  "limitations": [
+    "Candidate-only evidence: this tested package predates the latest source changes. The latest source build did not produce a linked, verified runtime; do not attribute candidate results to the latest source.",
+    "Warm resource and browser/driver caches retained; timing is one functional run, not an FPS ranking or a statistical speed guarantee.",
+    "The exported route is sampled at eleven poses after initial-scene readiness; no claim that all maps, dynamic settings or future features are covered.",
+    "Runtime-format compute PSOs still require actual UAV formats at dispatch and can be rejected by speculative collection.",
+    "Initial requests can overlap before their native cache entry completes; async call totals may vary slightly between runs.",
+    "External WebGPU Instance loss in an earlier candidate and one browser target crash remain unresolved; successful subsequent launches do not prove a fix.",
+    "Ordinary releases still use the recorded-prewarm release gate; this explicit automatic diagnostic does not change release defaults."
+  ]
+}

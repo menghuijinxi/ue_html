@@ -9,7 +9,7 @@ const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='
 const suiteName = option('suite') || 'villa-pso-startup-20261113', tag = option('tag');
 assert(tag && [suiteName, tag].every(value => /^[a-z0-9-]+$/.test(value)));
 const suite = JSON.parse(fs.readFileSync(path.join(base, 'build', suiteName, 'suite.json')));
-const modes = (option('modes') || 'recorded,overlap,components,automatic').split(',');
+const modes = (option('modes') || Object.keys(suite.variants).join(',')).split(',');
 assert(modes.every(mode => suite.variants[mode]));
 const routeFile = option('route');
 const route = routeFile ? JSON.parse(fs.readFileSync(path.resolve(routeFile))) : null;
@@ -24,7 +24,13 @@ const report = {date: new Date().toISOString(), suite: audit(path.join(base, 'bu
   modes, runs: [], pass: false,
   boundary: 'Functional startup and first-use coverage diagnostic. Sparse pipeline API hooks only; no FPS ranking, per-draw hooks, tracing, quality overrides or pre-tour camera warmup. Browser/driver caches retained; the first content download is reported separately.'};
 function observe() {
-  const result = globalThis.__psoStartupCheck = {calls: [], pending: 0, errors: []};
+  const result = globalThis.__psoStartupCheck = {calls: [], pending: 0, errors: [], collectors: []};
+  const post = globalThis.postMessage.bind(globalThis);
+  globalThis.postMessage = function(message, ...args) {
+    if (message.type === 'log' && message.text?.includes('WEB_GLOBAL_PSO:'))
+      result.collectors.push(message.text);
+    return post(message, ...args);
+  };
   const originalRequest = GPUAdapter.prototype.requestDevice;
   GPUAdapter.prototype.requestDevice = async function(...args) {
     const device = await originalRequest.apply(this, args);
@@ -38,6 +44,8 @@ function observe() {
     GPUDevice.prototype[name] = function(descriptor) {
       const call = {name, start: performance.now(), label: descriptor.label ||
         [descriptor.vertex?.entryPoint, descriptor.fragment?.entryPoint, descriptor.compute?.entryPoint].filter(Boolean).join(' / ')};
+      if (descriptor.vertex) call.state = {primitive: descriptor.primitive, depthStencil: descriptor.depthStencil,
+        multisample: descriptor.multisample, targets: descriptor.fragment?.targets, buffers: descriptor.vertex.buffers};
       result.calls.push(call);
       try {
         const created = original.call(this, descriptor);
@@ -68,8 +76,21 @@ let browser;
     const page = browser.pages()[0] || await browser.newPage();
     let active;
     page.on('pageerror', error => active?.errors.push(error.message));
+    browser.on('request', request => {
+      if (request.url().includes('/pipeline-prewarm.json')) active?.recordedRequests.push(request.url());
+    });
+    page.on('console', message => {
+      if (message.text().includes('WEB_GLOBAL_PSO:')) active?.collectorLog.push(message.text());
+      if (active) {
+        active.logs ||= [];
+        active.logs.push(message.text().slice(0, 2000));
+        if (active.logs.length > 100) active.logs.shift();
+      }
+    });
     for (const mode of modes) {
-      active = {mode, errors: [], pass: false, package: suite.variants[mode].files};
+      active = {mode, errors: [], recordedRequests: [], collectorLog: [],
+        pass: false, package: suite.variants[mode].files};
+      const captureFree = !!suite.variants[mode].captureFree;
       report.runs.push(active);
       console.log(JSON.stringify({mode, stage: 'starting'}));
       try {
@@ -83,7 +104,11 @@ let browser;
         const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
         assert(owner);
         active.before = await owner.evaluate(() => ({capture: structuredClone(__psoStartupCheck), io: __webContentIO.stats}));
-        assert(active.startup.prewarm.ready && active.startup.prewarm.adopted);
+        if (captureFree) {
+          assert(!fs.existsSync(path.join(base, 'build', suite.variants[mode].folder, 'pipeline-prewarm.json')));
+          assert(!active.startup.prewarm?.adopted, 'Capture-free mode must not adopt a replay device');
+          assert.deepEqual(active.recordedRequests, []);
+        } else assert(active.startup.prewarm.ready && active.startup.prewarm.adopted);
         assert.equal(!!active.startup.pso.enabled, !!suite.variants[mode].automatic);
         assert.equal(active.startup.view.width, 1400); assert.equal(active.startup.view.height, 788);
         assert.equal(active.startup.view.outputWidth, 1920); assert.equal(active.startup.view.outputHeight, 1080);
@@ -100,12 +125,14 @@ let browser;
           await page.waitForFunction(frame => globalThis.__webEngineFailure || __webEngineFrames >= frame + 30,
             before, {timeout: 30000});
           active.turns.push(await page.evaluate(() => ({camera: __webDefaultCamera,
-            frames: __webEngineFrames, prewarm: __webPipelinePrewarm, rhi: __webOptimizationRHI,
+            frames: __webEngineFrames, prewarm: globalThis.__webPipelinePrewarm, rhi: __webOptimizationRHI,
             failure: globalThis.__webEngineFailure})));
           assert(!active.turns.at(-1).failure);
         }
         active.after = await owner.evaluate(() => ({capture: __psoStartupCheck, io: __webContentIO.stats}));
         active.newCalls = active.after.capture.calls.slice(active.before.capture.calls.length);
+        if (process.argv.includes('--expect-zero'))
+          assert.deepEqual(active.newCalls, [], 'The first route visit must not create pipelines or shader modules');
         active.failedPipelines = active.after.capture.calls.filter(call => call.error);
         assert.deepEqual(active.after.capture.errors, []);
         assert.equal(active.after.capture.pending, 0);
@@ -113,7 +140,7 @@ let browser;
         await page.screenshot({path: assertProjectOutput(path.join(base, 'results', tag + '-' + mode + '.png'))});
         active.pass = active.failedPipelines.length === 0;
         console.log(JSON.stringify({mode, pass: active.pass, startupMs: active.startup.ms,
-          counts: active.startup.prewarm.counts, automatic: active.startup.rhi.asyncPrecacheRequested,
+          counts: active.startup.prewarm?.counts, automatic: active.startup.rhi.asyncPrecacheRequested,
           automaticFailed: active.startup.rhi.asyncPrecacheFailed, failed: active.failedPipelines.length,
           startupCalls: active.before.capture.calls.length, turnCalls: active.newCalls.map(call => ({name: call.name, label: call.label})),
           downloaded: active.before.io.downloadedBytes}));
@@ -122,7 +149,7 @@ let browser;
         console.error(JSON.stringify({mode, error: error.message}));
       } finally {
         fs.writeFileSync(output, JSON.stringify(report, null, 2));
-        await page.goto('about:blank');
+        if (!page.isClosed()) await page.goto('about:blank').catch(() => {});
       }
     }
     report.pass = report.runs.every(run => run.pass);
