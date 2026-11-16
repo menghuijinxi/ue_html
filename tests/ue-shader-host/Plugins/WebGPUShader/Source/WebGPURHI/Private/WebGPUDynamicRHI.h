@@ -733,6 +733,7 @@ class FWebGPUDynamicRHI final : public FWebGPUUnsupportedRHI
     };
     TMap<uint32, TArray<FNativeGraphicsPipeline>> NativeGraphicsPipelineCache;
     uint32 NativeGraphicsPipelineEntries = 0, NativeGraphicsPipelineHits = 0;
+    WGPUShaderModule EmptyFragmentModule = nullptr;
     struct FDrawBundle
     {
         TArray<uint64> Key;

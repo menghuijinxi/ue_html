@@ -1670,9 +1670,9 @@ int main(int argc, char** argv)
         if (FCStringAnsi::Strncmp(argv[Index], PrecacheConcurrencyOption, FCStringAnsi::Strlen(PrecacheConcurrencyOption)) == 0)
         {
             PSOPrecacheConcurrency = FCStringAnsi::Atoi(argv[Index] + FCStringAnsi::Strlen(PrecacheConcurrencyOption));
-            if (PSOPrecacheConcurrency < 1 || PSOPrecacheConcurrency > 8)
+            if (PSOPrecacheConcurrency < 1 || PSOPrecacheConcurrency > 32)
             {
-                std::printf("P3_ENGINE_PREINIT_FAILED PSO concurrency must be between 1 and 8\n");
+                std::printf("P3_ENGINE_PREINIT_FAILED PSO concurrency must be between 1 and 32\n");
                 return 1;
             }
         }

@@ -1,14 +1,7 @@
 # Web PSO 无记录自动收集候选
 
-2026-11-16。此候选落实自动选择 PSO 的路径，保留显式诊断开关。
+此候选落实自动选择 PSO 的路径，保留显式诊断开关。
 普通发布仍执行 `web-release-defaults.cjs`，未改变正式包的记录预热门槛。
-独立引擎仓库提交为 `330fc26ffa`。
-
-本轮最后一次构建的 419 个编译单元全部通过，链接因 H 盘空间不足失败，已停止重试。
-当前可运行的是此前成功打包的 `villa-pso-automatic-20261116-c`，不是最新源码完整产物。
-下面的 23.427 秒及零新增管线结果只对应这个包。
-最后追加的 Lumen 时间重投影、空间放大组合筛减、灯光枚举顺序调整、native cache
-计数及临时空片元缓存排除尚未完成新包运行验证，不应从旧包结果推导它们已通过。
 
 ## 收集来源
 
@@ -25,10 +18,20 @@ Web 对已经关闭的 Lumen、VT、VSM 功能族作开关判断。
 - Lumen 按当前 radiosity 线程组、空间过滤、时间累积、AO 配置筛选；
   时间重投影同时保留历史有效和失效，以及材质背面、短程 GI 等状态。
 - 空间放大按当前方法、alpha、锐化质量选择，同时保留 secondary SmoothStep
-  及镜头畸变维度。没有修改实际绘制路径、TSR 分块大小或画质配置。
+  及镜头畸变维度。方法先执行运行期的 `RemapPermutation`，避免把主放大器的
+  method-set 组合误排除。
+- TAA 按当前 alpha 和主通道画质选择；DOF、SSR、光轴的独立画质组合继续保留。
+- 雾按当前过滤质量选择，同时保留反射捕获固定使用的质量零；
+  不收集 Web 不支持的局部雾组合。
+- 实例剔除按立体渲染和遮挡剔除开关筛选；单实例分支不收集实例剔除的
+  不可达组合，继续保留合批、顺序保持及 WPO 的合法状态。
+
+以上筛选不改变实际绘制路径、TSR 分块大小或画质配置。
 
 延迟光照遍历整个 `Scene.Lights`，依据灯光形状、纹理、IES、透射、光函数及
 VSM 能力派生合法组合，收集相机位于灯体内外、正常和反向剔除的状态。
+特殊光照通道依据整个场景的 primitive 属性决定；各向异性依据平台和配置，
+大气及云透射依据场景大气灯和组件决定，不能仅看初始视锥。
 这是场景属性收集，视锥外灯光也参与，不用先操作相机访问每盏灯。
 新增灯光属性组合在后续帧继续加入队列；本轮没有保证动态加载过程完全无等待。
 
@@ -49,9 +52,30 @@ Lumen 深度 atlas 的 PF_G16 在浏览器是不可过滤的 R16Unorm。
 再次创建。新增设备范围内的 native raster cache，键包含布局、shader module、
 entry point、常量、顶点输入、剔除、深度模板、多重采样、混合和输出格式；
 哈希只选择桶，完整键相等才复用，最多保留 2048 条。
-缓存保留 shader 引用防止 module 地址复用，临时空片元模块不进入此缓存；
-关闭 RHI 时释放句柄。
+缓存保留 shader 引用防止 module 地址复用。
+空片元模块设备内只创建一次，随 RHI 释放，因此采用它的管线也能安全缓存。
+关闭 RHI 时先释放管线缓存，再释放共享空片元模块和布局句柄。
 UE wrapper 仍保存各自 initializer。缓存键 C++ 检查覆盖 20 项相等及差异条件。
+
+Lumen 表面缓存清理和重采样图形管线通过标准的全局 PSO 收集器提交，
+使用实际 card capture 的目标格式、矩形顶点着色器及深度模板状态。
+重采样不一定在初始镜头执行，不能靠延长启动等待碰巧覆盖它。
+
+## 启动调度
+
+Web 全局计算收集在每个模块就绪后立即调用标准的 `RequestPrecachePSOs`，
+让浏览器编译与后续模块创建重叠，不再等待全部模块生成后才提交整批请求。
+渲染命令仍等待所有模块生产任务结束；加载门槛继续检查 UE 活动请求和 RHI
+异步完成计数，不能仅凭提交完成就开放操作。
+
+RHI 自动并发为浏览器逻辑处理器数量的一半，范围 2 到 16；显式诊断参数
+`-WebPSOPrecacheConcurrency=1..32` 可覆盖。线程目标的 pthread pool 同步读取
+相同参数和硬件默认值，在原有至少 28 个槽位的基础上保证额外 20 个引擎/
+启动服务槽位。不能只放开 RHI 并发上限，否则严格线程池会在启动时耗尽。
+
+`prepare-web-pso-host.cjs` 在增量构建时也同步空间放大、TAA、雾、实例剔除、
+Lumen 表面缓存及相关声明；
+只修改参考源码、没有更新隔离宿主，不等于改动已经进入 WASM。
 
 ## 对照和验证
 
@@ -59,24 +83,22 @@ UE wrapper 仍保存各自 initializer。缓存键 C++ 检查覆盖 20 项相等
 历史记录参考、旧引擎自动收集、新引擎自动收集。
 两种自动模式都不包含 `pipeline-prewarm.json`，也不采用记录预热的 device。
 新引擎使用同一个原 Cook、配置与分辨率，仅替换 JS/WASM 和当前宿主。
-`--concurrency=1..8` 调节明确的诊断请求并发。
+`--concurrency=auto`（默认）检查硬件默认调度；`--concurrency=1..32` 调节明确
+的诊断请求并发。`--only=overlap,automatic` 可跳过不需要的历史模式。
 
-在完成缓存及灯光状态修复、尚未作最后组合筛减的同一 WASM 上：
+启动诊断保留资源及驱动缓存，计时到加载门槛且至少 60 帧，包含引擎启动和
+帧进展，不能当作纯编译耗时或人工 low 帧对比。请求数会随首次使用和异步
+预缓存重叠略有波动；已完成 native 状态可复用，未完成请求仍可能并行重复。
+比较数量时分别报告 RHI 图形与计算管线创建次数、异步预缓存请求数，以及
+后端提前拒绝的推测性请求数；异步请求数不代表全部 PSO 或唯一 PSO 数。
 
-| 请求并发 | 到加载门槛且至少 60 帧 | 请求失败 | 用户路线采样新增 |
-| --- | ---: | ---: | ---: |
-| 2 | 52.910 秒 | 0 | 0 |
-| 8 | 23.427 秒 | 0 | 0 |
-
-这是保留资源及驱动缓存的单轮诊断，计时包含引擎启动和帧进展，不能当作
-纯编译耗时、统计提速结论或人工帧率对比。不同并发下实际请求数略有波动，
-原因包括首次使用与异步预缓存重叠；已完成 native 状态可复用，未完成请求仍可能并行重复。
-
-用户 `2026-11-13T09-17-23` 导出路线每 15 个上下文取一个位置，共 11 个。
-计入检查前没有预巡游；路线仅作覆盖验证输入，未生成新的预热记录。
-已打包候选的实际结果、资源哈希、队列统计、页面验证，以及最新构建失败状态见
-`tests/web-platform/evidence/pso-automatic-20261116.json`。
-报告明确标记 `testedPackageMatchesLatestSource: false`。
+路线默认每 15 个导出上下文采样一次，`--route-step=1` 检查全部上下文。
+计时前不预巡游；路线只作覆盖验证输入，不生成新的预热记录。
+失败时保存有限时长的状态快照和浏览器日志，不能因 worker 已失去响应而
+无限等待诊断取数。构建、路线和页面报告留在 `tests/web-platform/results/`，
+不把一次性采集输出提交到 Git。
+持久化浏览器 profile 可能恢复上次的测试页；诊断启动后关闭所有恢复页，
+只创建一个被测页面，并检查上下文内只有该页面，避免旧场景争用 GPU。
 
 真实页面检查原生键鼠、录制导出、切版保留玩家位置，以及 DPR 1.5 下固定
 1400×788 渲染、1920×1080 输出，检查 1600×1000 和 900×700 两种布局的非空画布。
@@ -84,9 +106,9 @@ UE wrapper 仍保存各自 initializer。缓存键 C++ 检查覆盖 20 项相等
 
 ## 未关闭边界
 
-此前和本轮早期候选出现过外部 WebGPU Instance 丢失；另有一次新候选的
-浏览器 target crash。后续路线及受控主线程、GPU worker GC 检查通过，仍未证明原因和修复，
-因此本轮不将候选替换为普通发布默认值。
+候选曾出现外部 WebGPU Instance 丢失及浏览器 target crash。
+单次路线或受控 GC 检查通过不等于已经证明该问题彻底修复，
+候选不自动替换为普通发布默认值。
 
 全局收集仍有过量组合；运行期 UAV 格式、动态设置、新地图和新引擎 pass
 尚未获得穷尽覆盖。新增 pass 应通过标准的收集器描述 PSO；注册后的全局 shader
@@ -96,11 +118,10 @@ UE wrapper 仍保存各自 initializer。缓存键 C++ 检查覆盖 20 项相等
 ## 复现命令
 
 ```powershell
-node tests/web-platform/diagnostics/package-villa-pso-startup.cjs --tag=<新包标签> --capture-free --concurrency=8
-node tests/web-platform/diagnostics/probe-villa-pso-startup.cjs --suite=<包标签> --tag=<新结果标签> --modes=automatic --expect-zero --route=tests/web-platform/results/villa-turn-manual/villa-turn-2026-11-13T09-17-23-425Z-10ddd198.json
+node tests/web-platform/diagnostics/package-villa-pso-startup.cjs --tag=<新包标签> --capture-free --concurrency=auto --only=overlap,automatic
+node tests/web-platform/diagnostics/probe-villa-pso-startup.cjs --suite=<包标签> --tag=<新结果标签> --modes=automatic --expect-zero --route=<导出的路线文件> --route-step=1
 node tests/web-platform/diagnostics/verify-villa-pso-live.cjs <包标签> <新页面结果标签> automatic --worker-gc
 node tests/web-platform/diagnostics/verify-depth-atlas-bilinear.cjs <新数值结果标签>
-node tests/web-platform/diagnostics/analyze-villa-pso-automatic.cjs <包标签> <路线结果标签> <页面结果标签> <新证据标签>
 ```
 
 最后一条命令默认要求最新源码构建成功且 WASM 哈希匹配。

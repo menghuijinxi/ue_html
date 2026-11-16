@@ -28,7 +28,9 @@ let browser, gcTimer, gcPending = false;
         '--enable-logging', '--log-file=' + assertProjectOutput(path.join(base, 'results', tag + '-browser.log')),
         '--disk-cache-dir=' + assertProjectOutput(path.join(profile, 'http-cache')),
         '--crash-dumps-dir=' + assertProjectOutput(path.join(profile, 'crashes'))]});
-    const page = browser.pages()[0] || await browser.newPage(), errors = [];
+    report.restoredPages = browser.pages().map(page => page.url());
+    for (const restored of browser.pages()) await restored.close();
+    const page = await browser.newPage(), errors = [];
     page.on('pageerror', error => errors.push(error.message));
     if (process.argv.includes('--gc') || workerGC) {
       report.forcedGC = 0;

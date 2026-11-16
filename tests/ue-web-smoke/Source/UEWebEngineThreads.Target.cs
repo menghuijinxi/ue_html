@@ -14,9 +14,9 @@ public class UEWebEngineThreadsTarget : UEWebEngineTarget
         AdditionalLinkerArguments += FixedHeap
             ? " -sINITIAL_MEMORY=2147483648 -sMAXIMUM_MEMORY=2147483648 -sALLOW_MEMORY_GROWTH=0"
             : " -sINITIAL_MEMORY=134217728";
-        // Reserve capacity for up to eight blocked PSO request threads plus
-        // engine threads and startup services; strict pool exhaustion is fatal.
-        AdditionalLinkerArguments += " -sPTHREAD_POOL_SIZE=28";
+        // Match the RHI's hardware default or explicit diagnostic concurrency,
+        // retaining the existing twenty slots for engine/startup services.
+        AdditionalLinkerArguments += " -sPTHREAD_POOL_SIZE=\"Math.max(28,20+Math.min(32,Math.max(2,Math.floor(Number(((Module['arguments']||[]).find(a=>a.startsWith('-WebPSOPrecacheConcurrency='))||'').split('=')[1])||Math.min(16,(navigator.hardwareConcurrency||4)/2)))))\"";
         AdditionalLinkerArguments += " -sINCOMING_MODULE_JS_API=arguments,canvas,locateFile,print,printErr,onAbort,onRuntimeInitialized,preRun,mainScriptUrlOrBlob";
         string Workspace = Path.GetFullPath(Path.Combine(ProjectFile.Directory.FullName, "../.."));
         AdditionalLinkerArguments += " --js-library=\"" +

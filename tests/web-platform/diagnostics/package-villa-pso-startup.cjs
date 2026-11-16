@@ -9,8 +9,9 @@ const base = path.resolve(__dirname, '..');
 const option = name => process.argv.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3);
 const tag = option('tag') || 'villa-pso-startup-20261113';
 assert(/^[a-z0-9-]+$/.test(tag));
-const concurrency = Number(option('concurrency') || 2);
-assert(Number.isInteger(concurrency) && concurrency >= 1 && concurrency <= 8);
+const concurrencyOption = option('concurrency') || 'auto';
+const concurrency = concurrencyOption === 'auto' ? null : Number(concurrencyOption);
+assert(concurrency === null || (Number.isInteger(concurrency) && concurrency >= 1 && concurrency <= 32));
 const source = path.join(base, 'build/villa-tsr-tiles-20261112');
 const suite = assertProjectOutputTree(path.join(base, 'build', tag));
 assert(!fs.existsSync(suite), 'Preserve existing diagnostic suites; choose a new tag');
@@ -25,6 +26,12 @@ const variants = captureFree ? {
   components: {label: '并行启动 + 自动组件', handoff: 'overlap', automatic: true, globalShaders: 0},
   automatic: {label: '并行启动 + 自动组件及全局', handoff: 'overlap', automatic: true},
 };
+const only = option('only');
+if (only) {
+  const selected = only.split(',');
+  assert(selected.length && selected.every(mode => Object.hasOwn(variants, mode)), 'Unknown PSO mode');
+  for (const mode of Object.keys(variants)) if (!selected.includes(mode)) delete variants[mode];
+}
 fs.mkdirSync(suite);
 for (const [mode, variant] of Object.entries(variants)) {
   const folder = assertProjectOutputTree(path.join(suite, mode));
@@ -40,7 +47,10 @@ for (const [mode, variant] of Object.entries(variants)) {
   const page = readPage(folder), pack = JSON.parse(fs.readFileSync(path.join(source, 'pipeline-prewarm.json')));
   assert.equal(pack.descriptors.length, 311, 'Use the original capture, without manual supplements');
   page.args = page.args.filter(arg => arg !== '-WebPSOPrecacheTest' && !arg.startsWith('-WebPSOPrecacheConcurrency='));
-  if (variant.automatic) page.args.push('-WebPSOPrecacheTest', '-WebPSOPrecacheConcurrency=' + concurrency);
+  if (variant.automatic) {
+    page.args.push('-WebPSOPrecacheTest');
+    if (concurrency !== null) page.args.push('-WebPSOPrecacheConcurrency=' + concurrency);
+  }
   if (variant.globalShaders === 0) {
     const file = path.join(folder, 'config-files.json'), configs = JSON.parse(fs.readFileSync(file));
     const config = configs.find(item => item.path === '/Engine/Platforms/Web/Config/WebEngine.ini');

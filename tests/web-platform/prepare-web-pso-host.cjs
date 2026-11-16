@@ -4,7 +4,16 @@ initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '../..');
-const files = ['Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp'];
+const files = [
+  'Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp',
+  'Source/Runtime/Renderer/Private/AnisotropyRendering.h',
+  'Source/Runtime/Renderer/Private/FogRendering.cpp',
+  'Source/Runtime/Renderer/Private/InstanceCulling/InstanceCullingContext.cpp',
+  'Source/Runtime/Renderer/Private/Lumen/LumenSceneCardCapture.h',
+  'Source/Runtime/Renderer/Private/Lumen/LumenSceneRendering.cpp',
+  'Source/Runtime/Renderer/Private/PostProcess/PostProcessUpscale.cpp',
+  'Source/Runtime/Renderer/Private/PostProcess/TemporalAA.cpp',
+];
 for (const relative of files) {
   const target = assertProjectOutput(path.join(root, '.tools/ue58-web-build-host/Engine', relative));
   assert.equal(fs.statSync(target).nlink, 1, 'PSO overlay must be an independent build-host copy');

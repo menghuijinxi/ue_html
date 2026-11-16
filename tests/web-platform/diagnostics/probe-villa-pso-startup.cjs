@@ -15,13 +15,15 @@ const routeFile = option('route');
 const route = routeFile ? JSON.parse(fs.readFileSync(path.resolve(routeFile))) : null;
 const contexts = route?.records?.[0]?.contexts;
 assert(!route || contexts?.length, 'The route must contain exported manual camera contexts');
-const routePoses = contexts && contexts.filter((_, index) => index % 15 === 0 || index === contexts.length - 1)
+const routeStep = Number(option('route-step') || 15);
+assert(Number.isInteger(routeStep) && routeStep > 0);
+const routePoses = contexts && contexts.filter((_, index) => index % routeStep === 0 || index === contexts.length - 1)
   .map(context => context.camera);
 const output = assertProjectOutput(path.join(base, 'results', tag + '.json'));
 assert(!fs.existsSync(output), 'Preserve prior results');
 const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles/villa-pso-startup-20261113'));
 const report = {date: new Date().toISOString(), suite: audit(path.join(base, 'build', suiteName, 'suite.json')),
-  modes, runs: [], pass: false,
+  modes, routeStep, routePoseCount: routePoses?.length || 0, runs: [], pass: false,
   boundary: 'Functional startup and first-use coverage diagnostic. Sparse pipeline API hooks only; no FPS ranking, per-draw hooks, tracing, quality overrides or pre-tour camera warmup. Browser/driver caches retained; the first content download is reported separately.'};
 function observe() {
   const result = globalThis.__psoStartupCheck = {calls: [], pending: 0, errors: [], collectors: []};
@@ -60,6 +62,15 @@ function observe() {
   }
 }
 let browser;
+async function failureSnapshot(promise) {
+  let timer;
+  try {
+    return await Promise.race([promise, new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Failure snapshot timed out')), 5000);
+    })]);
+  } catch { return null; }
+  finally { clearTimeout(timer); }
+}
 (async () => {
   try {
     browser = await chromium.launchPersistentContext(profile, {channel: 'msedge', headless: false,
@@ -67,13 +78,16 @@ let browser;
       downloadsPath: assertProjectOutput(path.join(profile, 'downloads')),
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
         '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
+        '--enable-logging', '--log-file=' + assertProjectOutput(path.join(base, 'results', tag + '-browser.log')),
         '--disk-cache-dir=' + assertProjectOutput(path.join(profile, 'http-cache')),
         '--crash-dumps-dir=' + assertProjectOutput(path.join(profile, 'crashes'))]});
     await browser.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
       await route.fulfill({response, body: '(' + observe.toString() + ')();\n' + await response.text()});
     });
-    const page = browser.pages()[0] || await browser.newPage();
+    report.restoredPages = browser.pages().map(page => page.url());
+    for (const restored of browser.pages()) await restored.close();
+    const page = await browser.newPage();
     let active;
     page.on('pageerror', error => active?.errors.push(error.message));
     browser.on('request', request => {
@@ -100,10 +114,13 @@ let browser;
         active.startup = await page.evaluate(() => ({ms: performance.now(), failure: globalThis.__webEngineFailure,
           prewarm: globalThis.__webPipelinePrewarm, pso: globalThis.__webPSOPrecache, rhi: globalThis.__webOptimizationRHI,
           view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera}));
+        assert.equal(browser.pages().length, 1, 'Restored engine tabs must not compete with the measured scene');
         assert(!active.startup.failure, JSON.stringify(active.startup.failure));
         const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
         assert(owner);
-        active.before = await owner.evaluate(() => ({capture: structuredClone(__psoStartupCheck), io: __webContentIO.stats}));
+        active.before = await owner.evaluate(() => ({capture: structuredClone(__psoStartupCheck), io: __webContentIO.stats,
+          gpuLifetime: {sameGPU: navigator.gpu === globalThis.__webGPUKeepAlive?.gpu,
+            adapters: globalThis.__webGPUKeepAlive?.adapters.length}}));
         if (captureFree) {
           assert(!fs.existsSync(path.join(base, 'build', suite.variants[mode].folder, 'pipeline-prewarm.json')));
           assert(!active.startup.prewarm?.adopted, 'Capture-free mode must not adopt a replay device');
@@ -146,6 +163,13 @@ let browser;
           downloaded: active.before.io.downloadedBytes}));
       } catch (error) {
         active.errors.push(error.stack);
+        active.failureState = await failureSnapshot(page.evaluate(() => ({
+          failure: globalThis.__webEngineFailure, pso: globalThis.__webPSOPrecache,
+          rhi: globalThis.__webOptimizationRHI, frames: globalThis.__webEngineFrames,
+          log: globalThis.__webEngineLog?.slice(-20),
+        })));
+        const owner = page.workers().find(worker => worker.url().includes('web-engine-worker.js'));
+        if (owner) active.failedCapture = await failureSnapshot(owner.evaluate(() => __psoStartupCheck));
         console.error(JSON.stringify({mode, error: error.message}));
       } finally {
         fs.writeFileSync(output, JSON.stringify(report, null, 2));

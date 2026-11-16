@@ -758,10 +758,10 @@ void FWebGPUDynamicRHI::ConfigureStartup()
         // Match the bounded request pool to the target's reserved pthread capacity.
         int32 Concurrency = 2;
 #if defined(UE_WEB_ENGINE_WORKER) && UE_WEB_ENGINE_WORKER
-        Concurrency = FMath::Clamp(emscripten_num_logical_cores() / 2, 2, 8);
+        Concurrency = FMath::Clamp(emscripten_num_logical_cores() / 2, 2, 16);
 #endif
         FParse::Value(FCommandLine::Get(), TEXT("WebPSOPrecacheConcurrency="), Concurrency);
-        PrecacheRequestConcurrency = FMath::Clamp(Concurrency, 1, 8);
+        PrecacheRequestConcurrency = FMath::Clamp(Concurrency, 1, 32);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolSize"))->Set(PrecacheRequestConcurrency, ECVF_SetByCode);
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.PrecompileThreadPoolPercentOfHardwareThreads"))->Set(0, ECVF_SetByCode);
         // Keep completed RHI objects in UE's existing bounded cache. A successful
@@ -1104,6 +1104,8 @@ void FWebGPUDynamicRHI::Shutdown()
         for (const auto& Pipeline : Bucket.Value) wgpuRenderPipelineRelease(Pipeline.Handle);
     NativeGraphicsPipelineCache.Empty();
     NativeGraphicsPipelineEntries = 0;
+    if (EmptyFragmentModule) wgpuShaderModuleRelease(EmptyFragmentModule);
+    EmptyFragmentModule = nullptr;
     for (const auto& Layout : PipelineLayoutCache) wgpuPipelineLayoutRelease(Layout.Handle);
     PipelineLayoutCache.Empty();
     for (const auto& Bucket : GroupLayoutCache)
@@ -4771,11 +4773,15 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     WGPUShaderModule DepthOnlyFragment = nullptr;
     if (!Pixel && !Targets.IsEmpty())
     {
-        auto Source = WGPU_SHADER_SOURCE_WGSL_INIT;
-        Source.code = Text("@fragment fn main() {}");
-        auto Module = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
-        Module.nextInChain = &Source.chain;
-        DepthOnlyFragment = wgpuDeviceCreateShaderModule(Device, &Module);
+        if (!EmptyFragmentModule)
+        {
+            auto Source = WGPU_SHADER_SOURCE_WGSL_INIT;
+            Source.code = Text("@fragment fn main() {}");
+            auto Module = WGPU_SHADER_MODULE_DESCRIPTOR_INIT;
+            Module.nextInChain = &Source.chain;
+            EmptyFragmentModule = wgpuDeviceCreateShaderModule(Device, &Module);
+        }
+        DepthOnlyFragment = EmptyFragmentModule;
     }
     WGPUFragmentState Fragment = WGPU_FRAGMENT_STATE_INIT;
     Fragment.module = Pixel ? Pixel->Data.Module : DepthOnlyFragment;
@@ -4815,13 +4821,11 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
     Key.Append(NativeKey.data(), int32(NativeKey.size()));
     const uint32 KeyHash = FCrc::MemCrc32(Key.GetData(), Key.Num() * sizeof(uint64));
     const auto ReleaseDescriptor = [&] {
-        if (DepthOnlyFragment) wgpuShaderModuleRelease(DepthOnlyFragment);
         wgpuPipelineLayoutRelease(Desc.layout);
     };
-    // The temporary empty fragment has no retained shader owner, so its module
-    // identity can be recycled. Do not look it up or retain it in this cache.
-    const bool Cacheable = !DepthOnlyFragment;
-    if (const auto* Bucket = Cacheable ? NativeGraphicsPipelineCache.Find(KeyHash) : nullptr)
+    // Both real shaders and the shared empty fragment retain their module identity
+    // for as long as a native pipeline key can refer to it.
+    if (const auto* Bucket = NativeGraphicsPipelineCache.Find(KeyHash))
         if (const auto* Cached = Bucket->FindByPredicate([&](const auto& Entry) { return Entry.Key == Key; }))
         {
             ++NativeGraphicsPipelineHits;
@@ -4837,10 +4841,10 @@ FGraphicsPipelineStateRHIRef FWebGPUDynamicRHI::RHICreateGraphicsPipelineState(c
         }
     // Bound native handles survive UE pass/load-store variants. Shader refs prevent
     // module identities from being recycled while a cache entry still uses them.
-    const auto Remember = [this, Cacheable, KeyHash, Key = MoveTemp(Key),
+    const auto Remember = [this, KeyHash, Key = MoveTemp(Key),
         Vertex = TRefCountPtr<FRHIVertexShader>(In.BoundShaderState.GetVertexShader()),
         PixelShader = TRefCountPtr<FRHIPixelShader>(In.BoundShaderState.GetPixelShader())](WGPURenderPipeline Handle) {
-        if (!Cacheable || !Handle || NativeGraphicsPipelineEntries >= 2048) return;
+        if (!Handle || NativeGraphicsPipelineEntries >= 2048) return;
         auto& Bucket = NativeGraphicsPipelineCache.FindOrAdd(KeyHash);
         if (Bucket.ContainsByPredicate([&](const auto& Entry) { return Entry.Key == Key; })) return;
         wgpuRenderPipelineAddRef(Handle);
