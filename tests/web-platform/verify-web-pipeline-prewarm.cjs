@@ -32,10 +32,13 @@ const pack = {
 (async () => {
   const readyState = {__webEngineFrames: 30, __webPipelinePrewarm: {adopted: true, ready: true},
     __webPSOPrecache: {enabled: true, active: 0},
-    __webOptimizationRHI: {asyncPrecacheRequested: 2, asyncPrecacheCompleted: 2}};
+    __webOptimizationRHI: {asyncPrecacheRequested: 2, asyncPrecacheCompleted: 2, asyncPrecacheFailed: 0}};
   assert(isWebPipelinePrecacheReady({pipelinePrewarm: {}}, [], readyState));
   assert(isWebPipelinePrecacheReady({}, ['-WebPSOPrecacheTest'], readyState));
   assert(isWebPipelinePrecacheReady({pipelinePrewarm: {}}, ['-WebPSOPrecacheTest'], readyState));
+  assert(isWebPipelinePrecacheReady({pipelinePrewarm: {}}, ['-WebPSOPrecache'], readyState));
+  assert(!isWebPipelinePrecacheReady({pipelinePrewarm: {}}, ['-WebPSOPrecache'], {...readyState,
+    __webOptimizationRHI: {asyncPrecacheRequested: 2, asyncPrecacheCompleted: 2, asyncPrecacheFailed: 1}}));
   for (const changed of [
     {__webEngineFrames: 29}, {__webPipelinePrewarm: {adopted: true, ready: false}},
     {__webPipelinePrewarm: {adopted: false, ready: true}},
@@ -70,6 +73,42 @@ const pack = {
   await secondCache.replay(pack, 1);
   assert.equal(secondCache.counts.hits, 0);
   assert.notEqual(second.calls.at(-1), warm, 'Never reuse pipelines across devices');
+  const progressive = fakeDevice(), progressiveCache = createWebPipelineCache(progressive);
+  const twoShaders = {...pack, modules: [...pack.modules, {id: 4, descriptor: {code: 'shader-second'}}],
+    descriptors: [...pack.descriptors, {kind: 'compute', descriptor: {
+      ...pack.descriptors[0].descriptor, compute: {module: {$gpu: 'module', id: 4}, entryPoint: 'main'}}}]};
+  await progressiveCache.replay(twoShaders, 2);
+  assert(progressive.calls.findIndex(call => call.name === 'createComputePipeline') <
+    progressive.calls.findIndex(call => call.name === 'createShaderModule' && call.descriptor.code === 'shader-second'),
+  'Submit the first pipeline before preparing later shaders');
+  const parallel = fakeDevice(), completions = [];
+  let inFlight = 0, peak = 0;
+  const nativeParallel = parallel.createComputePipelineAsync;
+  parallel.createComputePipelineAsync = descriptor => new Promise(resolve => {
+    peak = Math.max(peak, ++inFlight);
+    completions.push(async () => {--inFlight; resolve(await nativeParallel(descriptor));});
+  });
+  const parallelCache = createWebPipelineCache(parallel);
+  const parallelPack = {...pack, descriptors: Array.from({length: 9}, (_, index) => ({
+    kind: 'compute', descriptor: {...pack.descriptors[0].descriptor,
+      compute: {...pack.descriptors[0].descriptor.compute, constants: {size: index}}}
+  }))};
+  const parallelDone = parallelCache.replay(parallelPack, 3);
+  assert.equal(completions.length, 3);
+  const engineModule = parallel.createShaderModule(pack.modules[0].descriptor);
+  const engineGroup = parallel.createBindGroupLayout(pack.layouts[0].descriptor);
+  const engineLayout = parallel.createPipelineLayout({bindGroupLayouts: [engineGroup]});
+  const engineCompile = parallel.createComputePipelineAsync({layout: engineLayout,
+    compute: {module: engineModule, entryPoint: 'main', constants: {size: 99}}});
+  assert.equal(completions.length, 3, 'Engine misses share the prewarm concurrency budget');
+  for (let index = 0; index < 10; ++index) {
+    assert(completions.length, 'Completed work must immediately refill the bounded compile queue');
+    await completions.shift()();
+    await new Promise(resolve => setImmediate(resolve));
+  }
+  await Promise.all([parallelDone, engineCompile]);
+  assert.equal(peak, 3);
+  assert.equal(parallelCache.counts.ready, 10);
   const rejected = fakeDevice();
   rejected.createComputePipelineAsync = async () => {throw new Error('compiler rejected');};
   const rejectedCache = createWebPipelineCache(rejected);
@@ -119,10 +158,11 @@ const pack = {
     content: 'content', config: 'config', handoff: 'overlap'}};
   try {
     for (const [name, value] of Object.entries({GPUAdapter: Adapter,
-      navigator: {gpu: {requestAdapter: async () => new Adapter()}},
+      navigator: {hardwareConcurrency: 8, gpu: {requestAdapter: async () => new Adapter()}},
       fetch: async () => ({ok: true, arrayBuffer: async () => Uint8Array.from(bytes).buffer})}))
       Object.defineProperty(globalThis, name, {configurable: true, value});
     const prepared = await prepareWebPipelinePrewarm(assets);
+    assert.equal(prepared.state.concurrency, 4);
     assert(!prepared.state.ready, 'Device must be available before compilation finishes in overlap mode');
     assert.equal(prepared.take({}), createdDevice);
     assert.equal(prepared.take({}), null, 'Device can only be adopted once');
@@ -143,11 +183,19 @@ const pack = {
     assert(!resolved, 'Default mode must keep waiting for complete replay');
     await resolveCompile();
     assert((await blocking).state.ready);
+    const defaults = {...assets.pipelinePrewarm};
+    delete defaults.handoff;
+    const defaultPrepared = await prepareWebPipelinePrewarm({...assets, pipelinePrewarm: defaults});
+    assert.equal(defaultPrepared.state.handoff, 'overlap');
+    assert(!defaultPrepared.state.ready);
+    await resolveCompile(); await defaultPrepared.completed;
+    await assert.rejects(prepareWebPipelinePrewarm({...assets,
+      pipelinePrewarm: {...assets.pipelinePrewarm, concurrency: 0}}), /Invalid.*concurrency/);
   } finally {
     for (const [name, descriptor] of Object.entries(savedGlobals)) {
       if (descriptor) Object.defineProperty(globalThis, name, descriptor);
       else delete globalThis[name];
     }
   }
-  console.log('PASS: exact descriptors, device isolation, in-flight reuse, sync fallback, early adoption, completion/failure gates');
+  console.log('PASS: progressive submission, bounded parallel compile, exact descriptors, device isolation, in-flight reuse, early adoption, completion/failure gates');
 })().catch(error => {console.error(error); process.exitCode = 1;});

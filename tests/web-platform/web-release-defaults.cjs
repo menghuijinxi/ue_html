@@ -25,7 +25,7 @@ function releaseOptions(argv = process.argv) {
 
 function capturePipelines(folder) {
   const tag = 'auto-prewarm-' + require('node:crypto').randomUUID();
-  const snapshot = path.join(__dirname, 'build', tag);
+  const snapshot = require('./project-output.cjs').assertProjectOutputTree(path.join(__dirname, 'build', tag));
   fs.mkdirSync(snapshot);
   for (const entry of fs.readdirSync(folder, {withFileTypes: true})) {
     if (!entry.isFile() || ['asset-versions.json', 'pipeline-prewarm.json'].includes(entry.name)) continue;
@@ -34,7 +34,7 @@ function capturePipelines(folder) {
     fs.copyFileSync(source, target, fs.constants.COPYFILE_FICLONE);
   }
   writeVersions(snapshot, fs.readdirSync(snapshot).map(name => audit(path.join(snapshot, name))));
-  console.log('No matching pipeline capture; recording actual startup pipelines in ' + tag);
+  console.log('No matching automatic catalog; collecting component/global/scene PSOs in ' + tag);
   const env = {...process.env};
   try {require.resolve('playwright');}
   catch {
@@ -88,10 +88,11 @@ function finalizeDesktopRelease(folder, options = {}) {
   const size = resolveWebRenderSize(page.assets, page.args);
   if (size) page.assets.fixedRenderSize = size;
   page.assets.renderSizing = size ? 'fixed-physical-pixels' : 'css-dpr-once';
-  page.assets.releaseDefaults = 'desktop-startup-20261110';
+  page.assets.releaseDefaults = 'desktop-startup-20261117';
   delete page.assets.pipelinePrewarm;
-  page.args = page.args.filter(arg => arg !== '-WebPSOPrecacheTest');
+  page.args = page.args.filter(arg => !['-WebPSOPrecache', '-WebPSOPrecacheTest'].includes(arg));
   if (options.legacyPrecache) page.args.push('-WebPSOPrecacheTest');
+  else if (!options.captureOnly) page.args.push('-WebPSOPrecache');
   for (const name of runtimeFiles) {
     replaceFile(path.join(folder, name), fs.readFileSync(path.join(__dirname, name)));
     page.assets.versions[name] = audit(path.join(folder, name)).sha256;
@@ -106,7 +107,9 @@ function finalizeDesktopRelease(folder, options = {}) {
     const cached = !options.corpus && !options.refresh &&
       matchingCapture(folder, options.resultsDirectory || path.join(__dirname, 'results'));
     const corpus = options.corpus || cached?.corpus || (options.capture || capturePipelines)(folder);
-    report.prewarm = installRecordedPrewarm(folder, cached?.prepared || prepareRecordedPrewarm(folder, corpus));
+    const prepared = cached?.prepared || prepareRecordedPrewarm(folder, corpus);
+    assert.equal(prepared.source, 'automatic-collectors', 'A normal release requires the full automatic catalog');
+    report.prewarm = installRecordedPrewarm(folder, prepared);
     report.prewarm.selection = options.corpus ? 'explicit' : cached ? 'automatic-reuse' : 'automatic-capture';
     report.files = report.prewarm.files;
     report.releaseReady = true;
@@ -128,7 +131,10 @@ function verifyDesktopRelease(folder, report) {
   assert.equal(assets.renderSizing, size ? 'fixed-physical-pixels' : 'css-dpr-once');
   if (!report.releaseReady) return;
   assert(!args.includes('-WebPSOPrecacheTest'), 'Speculative precache is diagnostic only');
+  assert(args.includes('-WebPSOPrecache'), 'Ordinary releases must retain automatic collectors');
   assert.equal(report.prewarm.mode, 'recorded');
+  assert.equal(report.prewarm.source, 'automatic-collectors');
+  assert.equal(assets.pipelinePrewarm?.source, 'automatic-collectors');
   assert.equal(assets.pipelinePrewarm?.url, 'pipeline-prewarm.json');
   const packFile = path.join(folder, assets.pipelinePrewarm.url);
   assert.equal(audit(packFile).sha256, assets.pipelinePrewarm.sha256);

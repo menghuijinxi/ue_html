@@ -85,7 +85,7 @@ bool ScalarWebGPUStates = false, LegacyWebGPUDescriptors = false;
 FString RHIExperiment;
 FString WebOcclusionMode = TEXT("history");
 bool ShaderMetadataDOM = false, ShaderMetadataValidate = false;
-bool PSOPrecacheTest = false;
+bool PSOPrecacheEnabled = false;
 bool RuntimeAsyncPSO = false;
 bool StartupTrace = false;
 // Diagnostic only: retain the same WASM/Cook while collapsing rendering onto
@@ -1431,7 +1431,7 @@ int32 StartEngine()
         (RHIExperiment.IsEmpty() ? FString() : TEXT(" -WebRHIExperiment=") + RHIExperiment) +
         (WebOcclusionMode.IsEmpty() ? FString() : TEXT(" -WebOcclusionMode=") + WebOcclusionMode) +
         (PSOPrecacheConcurrency > 0 ? FString::Printf(TEXT(" -WebPSOPrecacheConcurrency=%d"), PSOPrecacheConcurrency) : FString()) +
-        (PSOPrecacheTest ? TEXT(" -WebPSOPrecacheTest") : TEXT("")) +
+        (PSOPrecacheEnabled ? TEXT(" -WebPSOPrecache") : TEXT("")) +
         (WebNaniteResidentResources ? FString::Printf(TEXT(" -WebNaniteResidentResources -WebNaniteRootPages=%u"), WebNaniteRootPages) : FString()) +
         (RuntimeAsyncPSO ? TEXT(" -WebRuntimeAsyncPSO") : TEXT("")) + (UseWebGPU ?
         FString(DesktopRenderer ? TEXT(" -sm5") : TEXT(" -es31")) +
@@ -1631,7 +1631,8 @@ int main(int argc, char** argv)
                 return 1;
             }
         }
-        PSOPrecacheTest |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
+        PSOPrecacheEnabled |= FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecache") == 0 ||
+            FCStringAnsi::Strcmp(argv[Index], "-WebPSOPrecacheTest") == 0;
         WebNaniteResidentResources |= FCStringAnsi::Strcmp(argv[Index], "-WebNaniteResidentResources") == 0;
         constexpr const ANSICHAR* NanitePagesOption = "-WebNaniteRootPages=";
         if (FCStringAnsi::Strncmp(argv[Index], NanitePagesOption, FCStringAnsi::Strlen(NanitePagesOption)) == 0)

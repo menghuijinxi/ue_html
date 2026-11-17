@@ -135,7 +135,8 @@ let browser, gcTimer, gcPending = false;
     const exported = await (await page.request.get(new URL(report.exportURL, page.url()).href)).json();
     assert.equal(exported.kind, 'villa-manual-turn');
     assert.equal(exported.records[0].metadata.mode, initialMode);
-    assert.equal(exported.records[0].metadata.arguments.includes('-WebPSOPrecacheTest'), !!variants[initialMode].automatic);
+    assert.equal(exported.records[0].metadata.arguments.some(arg =>
+      ['-WebPSOPrecache', '-WebPSOPrecacheTest'].includes(arg)), !!variants[initialMode].automatic);
     assert(exported.records[0].frames.length > 1 && exported.records[0].contexts.length > 1);
     const beforeSwitch = await state();
     // Finish checking the automatic worker before the mode switch disposes it.

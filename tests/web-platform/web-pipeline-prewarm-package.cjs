@@ -55,29 +55,58 @@ function prepareRecordedPrewarm(folder, input) {
   assert.equal(audit(path.join(capturedFolder, 'index.html')).sha256, versions['index.html']?.sha256,
     'Captured entry page has changed');
   assert.deepEqual(startupContext(folder), startupContext(capturedFolder), 'Capture startup arguments or render size differ');
+  const automatic = startupContext(capturedFolder).args.includes('-WebPSOPrecache');
+  if (automatic) {
+    assert(!capture.noPrecache && !capture.motionSeconds && !capture.scriptedMotionSeconds &&
+      capture.runs?.length === 1, 'Automatic catalog must be collected before camera movement');
+    const run = capture.runs[0], state = run.last?.worker;
+    assert(capture.runs[0].pass && state?.pso?.enabled && state.pso.active === 0 &&
+      state.rhi?.asyncPrecacheRequested > 0 &&
+      state.rhi.asyncPrecacheRequested === state.rhi.asyncPrecacheCompleted &&
+      state.rhi.asyncPrecacheFailed === 0 && state.pending === 0,
+    'Automatic collectors and browser compiles must complete before exporting the catalog');
+    assert(!(run.errors || []).length && !(state.errors || []).length &&
+      Object.values(state.calls || {}).every(call => call.failed === 0) &&
+      (run.precacheRejections || []).length <= (state.rhi.unsupportedPrecacheRequests || 0),
+    'Automatic catalog contains native failures or unaccounted pipeline rejections');
+    assert(corpus.requests?.length && corpus.requests.every(request => request.success),
+      'Automatic catalog contains unfinished or failed pipeline requests');
+  }
+  const needed = new Set((corpus.requests || []).filter(request => !request.name.endsWith('Async'))
+    .map(request => request.descriptorId));
   return {
     pack: {version: 1, wasm: versions[coreFiles[0]].sha256, content: versions['content.bin'].sha256,
       config: versions['config-files.json'].sha256, devices: corpus.devices,
-      modules: corpus.modules, layouts: corpus.layouts, descriptors: corpus.descriptors},
+      modules: corpus.modules, layouts: corpus.layouts,
+      descriptors: automatic ? corpus.descriptors.slice().sort((a, b) =>
+        Number(needed.has(b.id)) - Number(needed.has(a.id))) : corpus.descriptors},
+    source: automatic ? 'automatic-collectors' : 'recorded',
     capture: audit(captureFile), corpus: audit(path.resolve(input)),
   };
 }
 
 function installRecordedPrewarm(folder, prepared) {
-  const {pack, capture, corpus} = prepared;
+  const {pack, capture, corpus, source = 'recorded'} = prepared;
   const page = readPage(folder), assets = page.assets;
   assert(assets.threads && assets.renderer === 'desktop');
   assert.equal(assets.wasm.sha256, pack.wasm, 'HTML runtime does not match capture');
   const args = page.args = page.args.filter(arg => arg !== '-WebPSOPrecacheTest');
+  const limits = args.filter(arg => arg.startsWith('-WebPSOPrecacheConcurrency='));
+  const concurrency = limits.length ? Number(limits[0].split('=')[1]) : null;
+  assert(limits.length <= 1 && (concurrency === null ||
+    Number.isInteger(concurrency) && concurrency >= 1 && concurrency <= 32), 'Invalid precache concurrency');
   for (const name of runtimeFiles) {
     replaceFile(path.join(folder, name), fs.readFileSync(path.join(__dirname, name)));
     assets.versions[name] = audit(path.join(folder, name)).sha256;
   }
   const name = 'pipeline-prewarm.json', packFile = path.join(folder, name);
   replaceFile(packFile, JSON.stringify(pack));
-  assets.pipelinePrewarm = {url: name, sha256: audit(packFile).sha256, content: pack.content, config: pack.config};
+  assets.pipelinePrewarm = {url: name, sha256: audit(packFile).sha256, content: pack.content,
+    config: pack.config, handoff: 'overlap', source};
+  if (concurrency !== null) assets.pipelinePrewarm.concurrency = concurrency;
   writePage(folder, page);
-  return {mode: 'recorded', concurrency: 2, modules: pack.modules.length, pipelines: pack.descriptors.length,
+  return {mode: 'recorded', source, concurrency: concurrency ?? 'hardware-2-16', handoff: 'overlap',
+    modules: pack.modules.length, pipelines: pack.descriptors.length,
     capture, corpus, pack: audit(packFile), engineArguments: args,
     files: [...runtimeFiles, name]};
 }

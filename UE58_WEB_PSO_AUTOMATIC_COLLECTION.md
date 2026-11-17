@@ -1,7 +1,8 @@
-# Web PSO 无记录自动收集候选
+# Web PSO 自动收集与提前缓存
 
-此候选落实自动选择 PSO 的路径，保留显式诊断开关。
-普通发布仍执行 `web-release-defaults.cjs`，未改变正式包的记录预热门槛。
+预热内容由引擎组件、全局和场景收集器自动决定。
+普通发布通过 `web-release-defaults.cjs` 自动准备完整收集缓存，
+浏览器立即并行编译，并保留引擎内自动补漏；诊断开关继续保留。
 
 ## 收集来源
 
@@ -79,6 +80,11 @@ Lumen 表面缓存清理和重采样图形管线通过标准的全局 PSO 收集
 
 ## 启动调度
 
+Web 在 UObject 默认配置和渲染线程就绪后，立即启动全局计算 PSO 收集，
+与后续引擎初始化重叠。启动末尾的完整收集仍保留，包含稍后注册的 shader type
+和图形收集器；重复请求由原有 UE PSO 缓存合并，不省略晚注册的功能。
+`WebPSOPrecache.h` 只增加 Web 的早期入口，不改变其他平台的启动顺序。
+
 Web 全局计算收集在每个模块就绪后立即调用标准的 `RequestPrecachePSOs`，
 让浏览器编译与后续模块创建重叠，不再等待全部模块生成后才提交整批请求。
 渲染命令仍等待所有模块生产任务结束；加载门槛继续检查 UE 活动请求和 RHI
@@ -93,6 +99,60 @@ RHI 自动并发为浏览器逻辑处理器数量的一半，范围 2 到 16；�
 HZB、Tonemap、次表面散射、大气、距离场阴影、Lumen 探针、反射与直接光照、
 表面缓存及相关声明；
 只修改参考源码、没有更新隔离宿主，不等于改动已经进入 WASM。
+
+## 自动收集的提前缓存
+
+5.9 的初始镜头采集与重放保留作备用。主要优化路径继续使用 UE 的组件、
+全局及场景灯光收集器；不以初始镜头记录代替完整自动收集。
+
+仅调整引擎内的调用顺序，仍需要先初始化 WASM 才能取得 PSO 描述。
+`diagnostics/package-villa-pso-startup.cjs --automatic-corpus=auto` 自动启动
+一次无记录的自动收集包，等待 UE 活动请求和浏览器编译回调全部完成，
+在移动相机前导出完整收集结果，再生成提前缓存对照包。
+收集失败即停止，不读取失败结果或旧构建作为替代；不按手写 shader 名称、
+管线数量上限或相机路线裁剪描述。
+
+缓存严格绑定 WASM、Cook、配置、启动参数和物理分辨率。`--source` 指定
+本次打包的场景包，运行时取本次构建的 JS/WASM；重新构建后可以自动重新生成，
+无需人工补走镜头。已有合格收集报告也可通过 `--automatic-corpus=<报告路径>`
+显式复用，哈希或参数不匹配时拒绝打包。
+
+提前缓存使用我们的描述符重放器，在加载 WASM 和资源之前开始准备设备及编译。
+GPU adapter 请求与缓存文件读取并行，首条管线的依赖就绪后立即提交，
+不等待所有 WGSL 模块生成。完整描述符仍决定命中，异步补漏与重放共享有界队列，
+相同在途请求共享 Promise；同步未命中仍创建真实管线。
+默认并发为硬件逻辑处理器的一半、范围 2 到 16，显式诊断值范围 1 到 32。
+这里的并行编译由同一设备上的 WebGPU 异步接口提交，使用浏览器编译线程；
+不把不同 Worker 的 GPUDevice 或管线对象混用。
+
+设备默认提前交接给引擎，加载层仍同时等待提前缓存和完整 UE 自动队列，
+并要求 RHI 异步失败数为零。
+普通发布由 `web-release-defaults.cjs` 自动加入正式参数 `-WebPSOPrecache`，
+不使用诊断参数 `-WebPSOPrecacheTest`。旧诊断参数仍兼容。
+没有匹配的缓存时，发布入口自动运行完整组件、全局和场景收集器，
+在移动相机前导出描述；已有缓存必须同时匹配二进制、Cook、配置、启动参数
+及物理分辨率，并证明自动队列与浏览器编译全部完成。
+初始镜头记录、带路线记录、未完成或失败的自动收集不能替代正式缓存。
+这些检查失败即停止发布，不能静默降回较小的初始镜头记录。
+浏览器编译立即开始、提前交接设备和硬件自适应并发均通过统一发布收尾生效。
+UE 会将后端明确拒绝的推测性组合也输出为管线失败日志。采集单独保留这些
+日志并与 RHI 的 unsupported 计数核对，不能把它们当作已经预热的管线；
+真实 WebGPU 编译拒绝、验证错误、设备丢失、RHI 异步失败以及无法解释的
+管线失败仍阻止正式缓存生成。
+提前缓存对照包始终保留 UE 自动组件和全局收集，缓存未收录的新请求仍走原路径，
+不能将缓存条数或一条路线零新增解释为所有动态地图、配置和未来 pass 的保证。
+
+```powershell
+node tests/web-platform/diagnostics/package-villa-pso-startup.cjs --tag=<新包标签> --source=<本次场景包目录> --capture-free --automatic-corpus=auto --only=automatic,eager
+node tests/web-platform/diagnostics/package-villa-pso-startup.cjs --tag=<正式默认对照标签> --source=<本次场景包目录> --capture-free --release-defaults
+node tests/web-platform/diagnostics/probe-villa-pso-startup.cjs --suite=<新包标签> --tag=<新结果标签> --modes=automatic,eager,eager,automatic --expect-zero --max-pipelines=1500
+node tests/web-platform/diagnostics/probe-villa-pso-startup.cjs --suite=<新包标签> --tag=<新路线标签> --modes=eager --expect-zero --route=<导出的路线文件> --route-step=1
+```
+
+`--max-pipelines` 是本场景诊断预算，不参与选择或删除预热内容。
+收集过程与加载计时分开，捕获插桩所得加载耗时不作为提速成绩。
+启动报告的 `schedule` 使用页面时间原点，分别给出首条管线、末条完成及实际
+峰值并发；`loadingHiddenMs` 与运行六十帧后的检查时间继续分列。
 
 ## 对照和验证
 
@@ -131,7 +191,7 @@ HZB、Tonemap、次表面散射、大气、距离场阴影、Lumen 探针、反�
 
 候选曾出现外部 WebGPU Instance 丢失及浏览器 target crash。
 单次路线或受控 GC 检查通过不等于已经证明该问题彻底修复，
-候选不自动替换为普通发布默认值。
+自动收集和提前缓存现在通过普通发布收尾启用，仍不能将历史故障视为已经彻底修复。
 同一浏览器交替导航的启动失败必须单独保留；重新启动浏览器后的成功
 不能覆盖该失败，也不能以自动重试将整轮对照标记为通过。
 

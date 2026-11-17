@@ -30,10 +30,13 @@ function capture(folder, withoutSubgroups = false) {
   const versions = writeVersions(snapshot, fs.readdirSync(snapshot).map(name => audit(path.join(snapshot, name))));
   const directory = path.join(resultsDirectory, 'villa-startup-' + captures); fs.mkdirSync(directory);
   fs.writeFileSync(path.join(directory, 'result.json'),
-    JSON.stringify({pass: true, capture: true, package: versions, withoutSubgroups}));
+    JSON.stringify({pass: true, capture: true, package: versions, withoutSubgroups,
+      runs: [{pass: true, last: {worker: {pso: {enabled: true, active: 0}, pending: 0,
+        rhi: {asyncPrecacheRequested: 1, asyncPrecacheCompleted: 1, asyncPrecacheFailed: 0}}}}]}));
   const file = path.join(directory, '0-corpus.json');
   fs.writeFileSync(file, JSON.stringify({version: 1, devices: [{id: 1, descriptor: {}}],
-    modules: [], layouts: [], descriptors: [{deviceId: 1, kind: 'compute', descriptor: {}}]}));
+    modules: [], layouts: [], descriptors: [{id: 1, deviceId: 1, kind: 'compute', descriptor: {}}],
+    requests: [{name: 'createComputePipelineAsync', descriptorId: 1, success: true}]}));
   return file;
 }
 const source = fixture('source');
@@ -55,6 +58,10 @@ assert.equal(effectiveIndirectReuse, 'r.WebGPU.IndirectDrawReuse=2',
   'Published defaults must override inherited indirect reuse settings');
 assert(!readPage(source).args.includes('-WebPSOPrecacheTest'), 'Accepted defaults must not request speculative PSOs');
 const corpus = capture(source);
+const automaticSource = readPage(source);
+automaticSource.args.push('-WebPSOPrecache');
+writePage(source, automaticSource);
+const automaticCorpus = capture(source);
 const dest = fixture('dest');
 const coreHashes = coreFiles.map(name => audit(path.join(dest, name)).sha256);
 // A repackager can inherit old workers and even an HTML file through hardlinks.
@@ -69,6 +76,9 @@ const reused = finalizeDesktopRelease(dest, options);
 assert(reused.releaseReady);
 assert.equal(reused.prewarm.selection, 'automatic-reuse');
 assert.equal(calls, 0, 'A matching capture needs no browser run');
+assert.equal(reused.prewarm.source, 'automatic-collectors');
+assert(readPage(dest).args.includes('-WebPSOPrecache'));
+assert(!readPage(dest).args.includes('-WebPSOPrecacheTest'));
 assert.equal(reused.renderSizing, 'css-dpr-once');
 assert.equal(fs.readFileSync(path.join(source, 'web-content-worker.js'), 'utf8'), 'archived worker');
 assert.equal(audit(path.join(source, 'index.html')).sha256, archivedHTML, 'Archived hardlink was overwritten');
@@ -80,7 +90,7 @@ finalizeDesktopRelease(dest, options);
 const page = readPage(dest);
 page.args.push('-ResX=1920', '-ResY=1080', '-ForceRes');
 writePage(dest, page);
-assert.throws(() => prepareRecordedPrewarm(dest, corpus), /render size differ/);
+assert.throws(() => prepareRecordedPrewarm(dest, automaticCorpus), /render size differ/);
 const fixed = finalizeDesktopRelease(dest, options);
 assert.equal(calls, 1, 'Different startup sizing must capture again');
 assert.equal(fixed.prewarm.selection, 'automatic-capture');
@@ -100,8 +110,10 @@ assert(!readPage(dest).assets.pipelinePrewarm);
 assert(!readPage(dest).args.includes('-WebPSOPrecacheTest'));
 const diagnostic = finalizeDesktopRelease(dest, {legacyPrecache: true});
 assert(!diagnostic.releaseReady && readPage(dest).args.includes('-WebPSOPrecacheTest'));
+assert(!readPage(dest).args.includes('-WebPSOPrecache'));
 const captureOnly = finalizeDesktopRelease(dest, {captureOnly: true});
 assert(!captureOnly.releaseReady && !readPage(dest).args.includes('-WebPSOPrecacheTest'));
+assert(!readPage(dest).args.includes('-WebPSOPrecache'));
 assert.throws(() => releaseOptions(['--capture-prewarm', '--legacy-precache']));
 assert.throws(() => releaseOptions(['--render-size=1920,1080']));
 assert.throws(() => releaseOptions(['--render-size=9999x1080']));
@@ -114,6 +126,21 @@ assert.throws(() => resolveWebRenderSize({fixedRenderSize: {width: 1, height: 1}
   ['-ForceRes', '-ResX=1920', '-ResY=1080']), /disagrees/);
 const maskedCorpus = capture(source, true);
 assert.throws(() => prepareRecordedPrewarm(source, maskedCorpus), /masked-device capture/);
+const incompleteFile = path.join(path.dirname(automaticCorpus), 'result.json');
+const completeCapture = JSON.parse(fs.readFileSync(incompleteFile));
+for (const change of [
+  run => {run.last.worker.pso.active = 1;},
+  run => {run.last.worker.rhi.asyncPrecacheFailed = 1;},
+  run => {run.precacheRejections = ['unaccounted pipeline failure'];},
+  run => {run.last.worker.calls = {createComputePipelineAsync: {failed: 1}};},
+]) {
+  const incomplete = structuredClone(completeCapture);
+  change(incomplete.runs[0]);
+  fs.writeFileSync(incompleteFile, JSON.stringify(incomplete));
+  assert.throws(() => prepareRecordedPrewarm(source, automaticCorpus),
+    /collectors and browser compiles must complete|native failures or unaccounted pipeline rejections/);
+}
+fs.writeFileSync(incompleteFile, JSON.stringify(completeCapture));
 const acceptedConfigs = JSON.parse(fs.readFileSync(path.join(source, 'config-files.json')));
 assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
   .includes('r.Shadow.Virtual.SMRT.AdaptiveRayCount=1')));
@@ -122,5 +149,6 @@ assert(acceptedConfigs.some(item => Buffer.from(item.data, 'base64').toString()
 console.log(JSON.stringify({pass: true, automaticReuse: true, invalidatedCaptures: calls,
   hardlinksPreserved: true, staleWorkersRejected: true, captureFailureBlocksRelease: true,
   forcedPhysicalSize: fixed.fixedRenderSize, diagnosticsRequireExplicitFlags: true,
+  automaticCollectorCompletionRequired: true, nativeFailuresRejected: true,
   maskedCapturesRejected: true, adaptiveDefault: true, acceptedIndirectReuseRestored: true,
   inheritedIndirectReuseOverridden: true}));

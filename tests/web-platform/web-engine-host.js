@@ -20,9 +20,10 @@ function resolveWebRenderSize(assets, args) {
 function isWebPipelinePrecacheReady(assets, args, state) {
   const warm = state.__webPipelinePrewarm, pso = state.__webPSOPrecache, rhi = state.__webOptimizationRHI;
   const recordedReady = !assets.pipelinePrewarm || !!(warm?.adopted && warm.ready && !warm.error);
-  const automatic = !assets.pipelinePrewarm || args.includes('-WebPSOPrecacheTest');
+  const automatic = !assets.pipelinePrewarm ||
+    args.some(arg => ['-WebPSOPrecache', '-WebPSOPrecacheTest'].includes(arg));
   const automaticReady = !automatic || !!(pso?.enabled && pso.active === 0 &&
-    rhi && rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted);
+    rhi && rhi.asyncPrecacheRequested === rhi.asyncPrecacheCompleted && rhi.asyncPrecacheFailed === 0);
   return state.__webEngineFrames >= 30 && recordedReady && automaticReady;
 }
 
@@ -385,7 +386,8 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     throw new Error('Invalid browser input mode');
   const canvas = module.canvas;
   const fixedRenderSize = resolveWebRenderSize(assets, module.arguments);
-  globalThis.__webPSOPrecacheExpected = module.arguments.includes('-WebPSOPrecacheTest') || !!assets.pipelinePrewarm;
+  globalThis.__webPSOPrecacheExpected = module.arguments.some(arg =>
+    ['-WebPSOPrecache', '-WebPSOPrecacheTest'].includes(arg)) || !!assets.pipelinePrewarm;
   globalThis.__webPSOPrecacheReady = !globalThis.__webPSOPrecacheExpected;
   if (!canvas.transferControlToOffscreen || typeof Worker === 'undefined')
     throw new Error('此线程包需要 OffscreenCanvas 和 Worker 支持。');

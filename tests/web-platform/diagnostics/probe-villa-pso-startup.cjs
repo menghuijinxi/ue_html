@@ -11,6 +11,16 @@ assert(tag && [suiteName, tag].every(value => /^[a-z0-9-]+$/.test(value)));
 const suite = JSON.parse(fs.readFileSync(path.join(base, 'build', suiteName, 'suite.json')));
 const modes = (option('modes') || Object.keys(suite.variants).join(',')).split(',');
 assert(modes.every(mode => suite.variants[mode]));
+const captureCorpus = process.argv.includes('--capture-corpus');
+assert(!captureCorpus || modes.length === 1 && suite.variants[modes[0]].captureFree,
+  'Capture the automatic collectors without adopting another corpus');
+const corpusOutput = assertProjectOutput(path.join(base, 'results', tag + '-corpus.json'));
+assert(!captureCorpus || !fs.existsSync(corpusOutput), 'Preserve prior corpora');
+const concurrencyOption = option('concurrency');
+const concurrency = concurrencyOption === undefined ? null : Number(concurrencyOption);
+assert(concurrency === null || Number.isInteger(concurrency) && concurrency >= 1 && concurrency <= 32);
+assert(concurrency === null || modes.every(mode => suite.variants[mode].automatic),
+  'Concurrency overrides require automatic collectors');
 const routeFile = option('route');
 const route = routeFile ? JSON.parse(fs.readFileSync(path.resolve(routeFile))) : null;
 const contexts = route?.records?.[0]?.contexts;
@@ -28,10 +38,11 @@ const profileName = option('profile') || 'villa-pso-startup-20261113';
 assert(/^[a-z0-9-]+$/.test(profileName));
 const profile = assertProjectOutputTree(path.join(base, 'build/browser-profiles', profileName));
 const report = {date: new Date().toISOString(), suite: audit(path.join(base, 'build', suiteName, 'suite.json')),
-  modes, routeStep, routePoseCount: routePoses?.length || 0, maxPipelines, runs: [], pass: false,
+  modes, concurrency, captureCorpus, routeStep, routePoseCount: routePoses?.length || 0, maxPipelines, runs: [], pass: false,
   boundary: 'Functional startup and first-use coverage diagnostic. Sparse pipeline API hooks only; no FPS ranking, per-draw hooks, tracing, quality overrides or pre-tour camera warmup. Browser/driver caches retained; the first content download is reported separately.'};
 function observe() {
-  const result = globalThis.__psoStartupCheck = {calls: [], pending: 0, errors: [], collectors: []};
+  const result = globalThis.__psoStartupCheck = {timeOrigin: performance.timeOrigin,
+    calls: [], pending: 0, errors: [], collectors: []};
   const post = globalThis.postMessage.bind(globalThis);
   globalThis.postMessage = function(message, ...args) {
     if (message.type === 'log' && message.text?.includes('WEB_GLOBAL_PSO:'))
@@ -87,9 +98,20 @@ async function failureSnapshot(promise) {
         '--enable-logging', '--log-file=' + assertProjectOutput(path.join(base, 'results', tag + '-browser.log')),
         '--disk-cache-dir=' + assertProjectOutput(path.join(profile, 'http-cache')),
         '--crash-dumps-dir=' + assertProjectOutput(path.join(profile, 'crashes'))]});
+    if (concurrency !== null) await browser.route('**/index.html', async route => {
+      const response = await route.fetch(), html = await response.text();
+      const match = html.match(/arguments: (\[[^\n]+\]),/);
+      assert(match, 'Missing engine arguments');
+      const args = JSON.parse(match[1]).filter(arg => !arg.startsWith('-WebPSOPrecacheConcurrency='));
+      assert(args.some(arg => ['-WebPSOPrecache', '-WebPSOPrecacheTest'].includes(arg)));
+      args.push('-WebPSOPrecacheConcurrency=' + concurrency);
+      await route.fulfill({response, body: html.replace(match[0], 'arguments: ' + JSON.stringify(args) + ',')});
+    });
     await browser.route('**/web-engine-worker.js?*', async route => {
       const response = await route.fetch();
-      await route.fulfill({response, body: '(' + observe.toString() + ')();\n' + await response.text()});
+      const capture = captureCorpus ? 'globalThis.__webStartupPSOCorpus=true;\n' +
+        fs.readFileSync(path.join(base, 'web-startup-profile.js'), 'utf8') + '\n' : '';
+      await route.fulfill({response, body: capture + '(' + observe.toString() + ')();\n' + await response.text()});
     });
     report.restoredPages = browser.pages().map(page => page.url());
     for (const restored of browser.pages()) await restored.close();
@@ -123,9 +145,10 @@ async function failureSnapshot(promise) {
         await page.goto('http://127.0.0.1:8765/build/' + suite.variants[mode].folder + '/index.html');
         await page.waitForFunction(() => globalThis.__webEngineFailure || globalThis.__webPSOPrecacheReady &&
           __webEngineFrames >= 60 && document.getElementById('loading')?.hidden, null, {timeout: 180000});
-        active.startup = await page.evaluate(() => ({ms: performance.now(),
+        active.startup = await page.evaluate(() => ({ms: performance.now(), timeOrigin: performance.timeOrigin,
           loadingHiddenMs: globalThis.__psoLoadingHiddenAt, failure: globalThis.__webEngineFailure,
           prewarm: globalThis.__webPipelinePrewarm, pso: globalThis.__webPSOPrecache, rhi: globalThis.__webOptimizationRHI,
+          pool: globalThis.__webThreadPool,
           view: globalThis.__webRenderView, settings: globalThis.__webProjectSettings, camera: globalThis.__webDefaultCamera}));
         assert.equal(browser.pages().length, 1, 'Restored engine tabs must not compete with the measured scene');
         assert(!active.startup.failure, JSON.stringify(active.startup.failure));
@@ -134,14 +157,34 @@ async function failureSnapshot(promise) {
         active.before = await owner.evaluate(() => ({capture: structuredClone(__psoStartupCheck), io: __webContentIO.stats,
           gpuLifetime: {sameGPU: navigator.gpu === globalThis.__webGPUKeepAlive?.gpu,
             adapters: globalThis.__webGPUKeepAlive?.adapters.length}}));
+        if (concurrency !== null) assert.equal(active.startup.rhi.precacheConcurrency, concurrency);
+        const asyncCalls = active.before.capture.calls.filter(call => call.name.endsWith('PipelineAsync'));
+        let pending = 0, peak = 0;
+        for (const [, delta] of asyncCalls.flatMap(call => [[call.start, 1], [call.completed, -1]])
+          .sort((a, b) => a[0] - b[0])) peak = Math.max(peak, pending += delta);
+        const originOffset = active.before.capture.timeOrigin - active.startup.timeOrigin;
+        const firstModule = active.before.capture.calls.find(call => call.name === 'createShaderModule')?.start;
+        active.schedule = {firstModuleMs: firstModule === undefined ? null : firstModule + originOffset,
+          firstPipelineMs: asyncCalls.length ? asyncCalls[0].start + originOffset : null,
+          lastPipelineMs: asyncCalls.length ? Math.max(...asyncCalls.map(call => call.completed || 0)) + originOffset : null,
+          peakPending: peak};
         if (captureFree) {
           assert(!fs.existsSync(path.join(base, 'build', suite.variants[mode].folder, 'pipeline-prewarm.json')));
           assert(!active.startup.prewarm?.adopted, 'Capture-free mode must not adopt a replay device');
           assert.deepEqual(active.recordedRequests, []);
         } else assert(active.startup.prewarm.ready && active.startup.prewarm.adopted && !active.startup.prewarm.error);
+        if (captureCorpus) {
+          assert.equal(active.before.capture.pending, 0);
+          const corpus = await owner.evaluate(() => __webStartupProfile.exportPSOCorpus(true));
+          assert(corpus.requests.length && corpus.requests.every(request => request.success));
+          fs.writeFileSync(corpusOutput, JSON.stringify(corpus));
+          active.corpus = audit(corpusOutput);
+          active.corpus.source = 'UE automatic component and global collectors, before camera movement';
+        }
         assert.equal(!!active.startup.pso.enabled, !!suite.variants[mode].automatic);
         assert.equal(active.startup.view.width, 1400); assert.equal(active.startup.view.height, 788);
         assert.equal(active.startup.view.outputWidth, 1920); assert.equal(active.startup.view.outputHeight, 1080);
+        assert.equal(active.startup.view.antiAliasing, 4, 'Keep TSR enabled');
         for (const name of ['virtualShadows', 'gi', 'reflections', 'virtualTextures'])
           assert.equal(active.startup.settings[name], 1, name);
         active.turns = [];
@@ -158,6 +201,8 @@ async function failureSnapshot(promise) {
             frames: __webEngineFrames, prewarm: globalThis.__webPipelinePrewarm, rhi: __webOptimizationRHI,
             failure: globalThis.__webEngineFailure})));
           assert(!active.turns.at(-1).failure);
+          if (active.turns.length % 25 === 0)
+            console.log(JSON.stringify({mode, stage: 'coverage', poses: active.turns.length, total: poses.length}));
         }
         active.after = await owner.evaluate(() => ({capture: __psoStartupCheck, io: __webContentIO.stats}));
         assert(!active.turns.at(-1)?.prewarm?.error, 'Recorded prewarm failed during the route');

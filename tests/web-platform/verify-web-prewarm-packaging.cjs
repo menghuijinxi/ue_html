@@ -1,8 +1,9 @@
 'use strict';
+require('./project-output.cjs').initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
-const {prepareRecordedPrewarm, installRecordedPrewarm} = require('./web-pipeline-prewarm-package.cjs');
+const {prepareRecordedPrewarm, installRecordedPrewarm, readPage, writePage} = require('./web-pipeline-prewarm-package.cjs');
 
 const root = fs.mkdtempSync(path.join(__dirname, 'build/prewarm-packaging-'));
 const source = path.join(root, 'source'), output = path.join(root, 'output');
@@ -37,6 +38,14 @@ assert.equal(installed.pipelinePrewarm.sha256, audit(path.join(output, 'pipeline
 assert.equal(installed.pipelinePrewarm.content, sourceProducts[2].sha256);
 assert.equal(installed.pipelinePrewarm.config, sourceProducts[3].sha256);
 assert.equal(installed.versions['web-pipeline-prewarm.js'], audit(path.join(output, 'web-pipeline-prewarm.js')).sha256);
+const limited = readPage(output);
+limited.args.push('-WebPSOPrecacheConcurrency=3');
+writePage(output, limited);
+assert.equal(installRecordedPrewarm(output, prepared).concurrency, 3);
+assert.equal(readPage(output).assets.pipelinePrewarm.concurrency, 3, 'Replay and UE must share the same explicit budget');
+limited.args.push('-WebPSOPrecacheConcurrency=16');
+writePage(output, limited);
+assert.throws(() => installRecordedPrewarm(output, prepared), /Invalid precache concurrency/);
 for (const name of core) {
   fs.appendFileSync(path.join(output, name), 'changed');
   assert.throws(() => prepareRecordedPrewarm(output, corpusFile), /Capture differs/);

@@ -14,6 +14,8 @@ const selected = option('engine');
 const folder = option('folder');
 const direct = process.argv.includes('--direct');
 const serve = process.argv.includes('--serve');
+const port = Number(option('port') || 0);
+assert(Number.isInteger(port) && port >= 0 && port <= 65535 && (!port || serve));
 const settleFrames = Number(option('settle-frames') || 0);
 assert(Number.isInteger(settleFrames) && settleFrames >= 0 && settleFrames <= 600);
 assert(!serve || direct);
@@ -29,7 +31,8 @@ const profileName = noLumen ? 'villa-engine-comparison-no-lumen.json' : 'villa-e
 const profile = require('./' + profileName);
 const temporary = path.join(__dirname, 'build/test-tmp');
 fs.mkdirSync(temporary, {recursive: true}); process.env.TEMP = process.env.TMP = temporary;
-const directory = path.join(__dirname, 'results', 'villa-startup-' + tag);
+const directory = require('./project-output.cjs').assertProjectOutputTree(
+  path.join(__dirname, 'results', 'villa-startup-' + tag));
 assert(!fs.existsSync(directory), 'Keep prior measurements; use a new tag');
 fs.mkdirSync(directory);
 const report = {date: new Date().toISOString(), profile: direct ? undefined : profile, affinity, rounds, cvars, folder, browser,
@@ -64,8 +67,10 @@ report.motionSeconds = motionSeconds;
 report.scriptedMotionSeconds = scriptedMotionSeconds;
 report.package = require('./content-file-metadata.cjs').audit(
   path.join(__dirname, 'build', folder || profile.ours, 'asset-versions.json'));
-const expectedPrewarm = require('./web-pipeline-prewarm-package.cjs')
-  .readPage(path.dirname(report.package.file)).assets.pipelinePrewarm;
+const packagePage = require('./web-pipeline-prewarm-package.cjs').readPage(path.dirname(report.package.file));
+const expectedPrewarm = packagePage.assets.pipelinePrewarm;
+const automaticCollectors = packagePage.args.some(arg =>
+  ['-WebPSOPrecache', '-WebPSOPrecacheTest'].includes(arg)) && !noPrecache;
 let context, server;
 (async () => {
   try {
@@ -73,7 +78,7 @@ let context, server;
     if (serve) {
       server = require('./serve.cjs');
       await new Promise((resolve, reject) => {
-        server.once('error', reject); server.listen(0, '127.0.0.1', resolve);
+        server.once('error', reject); server.listen(port, '127.0.0.1', resolve);
       });
       origin = 'http://127.0.0.1:' + server.address().port;
     }
@@ -81,9 +86,15 @@ let context, server;
     context = await chromium.launchPersistentContext(browserProfile, {
       channel: browser,
       headless: false, viewport: {width, height}, deviceScaleFactor: dpr,
+      downloadsPath: path.join(browserProfile, 'downloads'),
       args: ['--window-position=-32000,-32000', '--disable-background-timer-throttling',
-        '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows']
+        '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
+        '--enable-logging', '--log-file=' + path.join(directory, 'browser.log'),
+        '--disk-cache-dir=' + path.join(browserProfile, 'http-cache'),
+        '--crash-dumps-dir=' + path.join(browserProfile, 'crashes')]
     });
+    for (const restored of context.pages()) await restored.close();
+    await context.newPage();
     if (affinity) report.affinityCheck = require('./comparison-browser-affinity.cjs')(browserProfile, affinity, true);
     if (!plain) await context.addInitScript({content: recorder});
     if (folder) await context.route('**/' + profileName, async route => {
@@ -94,7 +105,7 @@ let context, server;
       const response = await route.fetch(), html = await response.text();
       const match = html.match(/arguments: (\[[^\n]+\]),/);
       assert(match);
-      const args = JSON.parse(match[1]).filter(arg => arg !== '-WebPSOPrecacheTest');
+      const args = JSON.parse(match[1]).filter(arg => !['-WebPSOPrecache', '-WebPSOPrecacheTest'].includes(arg));
       await route.fulfill({response, body: html.replace(match[0], 'arguments: ' + JSON.stringify(args) + ',')});
     });
     if (cvars) await context.route('**/config-files.json', async route => {
@@ -121,12 +132,18 @@ let context, server;
       if (!run) return;
       const text = message.text();
       fs.appendFileSync(path.join(directory, `${run.index}-${run.engine}.log`), text + '\n');
+      if (run.engine === 'ours' && automaticCollectors && /Failed to create (compute|graphics) pipeline/.test(text)) {
+        // UE logs backend-rejected speculative states as errors too. Reconcile
+        // these with RHI rejection counters; actual native failures still fail.
+        run.precacheRejections.push(text);
+        return;
+      }
       if (/GPU validation:|GPUValidationError|Fatal error:|Assertion failed:|HARNESS ABORT|DeviceLost|WebGPU device lost|Failed to create (compute|graphics) pipeline/.test(text)) run.errors.push(text);
     });
     page.on('pageerror', error => run?.errors.push(error.message));
     for (let index = 0; index < rounds; ++index) {
       for (const engine of selected ? [selected] : ['ours', 'official']) {
-        run = {index, engine, errors: [], samples: []}; report.runs.push(run);
+        run = {index, engine, errors: [], precacheRejections: [], samples: []}; report.runs.push(run);
         console.log(JSON.stringify({index, engine, stage: 'starting'}));
         const began = Date.now();
         await page.goto(direct ? `${origin}/build/${folder}/index.html` :
@@ -158,6 +175,17 @@ let context, server;
             break;
           }
           await page.waitForTimeout(100);
+        }
+        if (run.pass && engine === 'ours' && automaticCollectors) {
+          const worker = run.last.worker;
+          assert(worker?.pso?.enabled && worker.pso.active === 0 &&
+            worker.rhi?.asyncPrecacheRequested > 0 &&
+            worker.rhi.asyncPrecacheRequested === worker.rhi.asyncPrecacheCompleted &&
+            worker.rhi.asyncPrecacheFailed === 0 && worker.pending === 0 &&
+            !worker.errors.length && Object.values(worker.calls).every(call => call.failed === 0),
+          'Automatic collectors or native pipeline compilation failed');
+          assert(run.precacheRejections.length <= worker.rhi.unsupportedPrecacheRequests,
+            'Pipeline failures must be accounted for by unsupported speculative states');
         }
         if (run.pass && engine === 'ours' && expectedPrewarm)
           assert(run.last.prewarm?.ready && run.last.prewarm.adopted && run.last.prewarm.counts.hits > 0,

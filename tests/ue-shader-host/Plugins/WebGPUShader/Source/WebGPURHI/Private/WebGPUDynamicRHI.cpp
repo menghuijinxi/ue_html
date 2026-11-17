@@ -751,7 +751,8 @@ void FWebGPUDynamicRHI::ConfigureStartup()
     if (RuntimeAsyncPSO)
         IConsoleManager::Get().FindConsoleVariable(TEXT("r.pso.CreateOnRHIThread"))->Set(0, ECVF_SetByCode);
 #endif
-    GRHISupportsPSOPrecaching = FParse::Param(FCommandLine::Get(), TEXT("WebPSOPrecacheTest"));
+    GRHISupportsPSOPrecaching = FParse::Param(FCommandLine::Get(), TEXT("WebPSOPrecache")) ||
+        FParse::Param(FCommandLine::Get(), TEXT("WebPSOPrecacheTest"));
     if (GRHISupportsPSOPrecaching)
     {
         // UE waiters block while Dawn builds pipelines on its own workers.
