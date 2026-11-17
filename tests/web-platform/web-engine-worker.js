@@ -94,7 +94,7 @@ const rpcNames = new Set([
   'WebDefaultSceneTestMode', 'WebProjectLightingTestMode', 'WebProjectViewTest', 'WebMotionBenchmarkControl',
   'WebPlayerViewControl',
   'WebDefaultShadowControl', 'WebMaterialLabControl', 'WebMaterialLabShadowTest',
-  'WebProjectWidgetTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
+  'WebProjectWidgetTest', 'WebViewportLayoutTest', 'WebDefaultCloudTracingTestMode', 'WebDefaultCloudBudgetTestMode',
   'WebDefaultFogTestMode', 'WebThreadTestControl', 'WebDistanceFieldTest', 'WebDistanceFieldTestExposure',
   'WebLightingQualityTest', 'WebVisibilityTest', 'WebOptimizationTest', 'WebTextureReadbackTest', 'WebTraceStart', 'WebTraceStop', 'WebTraceExport', 'WebBindingCacheTest', 'WebBindingGroupTest'
 ]);

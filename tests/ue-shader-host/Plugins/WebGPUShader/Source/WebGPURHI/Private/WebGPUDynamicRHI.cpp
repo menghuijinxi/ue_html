@@ -5763,6 +5763,8 @@ void FWebGPUDynamicRHI::SetDrawBindings(FWebGPUResolvedGroups* PreparedGroups, b
 void FWebGPUDynamicRHI::RHIDrawPrimitive(uint32 Base, uint32 Primitives, uint32 Instances)
 {
     WEBGPU_COMMAND_ON_OWNER(RHIDrawPrimitive(Base, Primitives, Instances));
+    // UE direct draws use zero for a single non-instanced draw, including Slate.
+    Instances = FMath::Max(1u, Instances);
     SetDrawBindings();
     wgpuRenderPassEncoderDraw(Pass, VertexCount(GraphicsPipeline->Initializer.PrimitiveType, Primitives), Instances,
                               Base, 0);
@@ -5771,6 +5773,7 @@ void FWebGPUDynamicRHI::RHIDrawPrimitive(uint32 Base, uint32 Primitives, uint32 
 void FWebGPUDynamicRHI::RHIDrawIndexedPrimitive(FRHIBuffer *Index, int32 Base, uint32 FirstInstance, uint32 WebArg3, uint32 StartIndex, uint32 Primitives, uint32 Instances)
 {
     WEBGPU_COMMAND_ON_OWNER(RHIDrawIndexedPrimitive(Index, Base, FirstInstance, WebArg3, StartIndex, Primitives, Instances));
+    Instances = FMath::Max(1u, Instances);
     auto *Buffer = static_cast<FWebGPUBuffer *>(Index);
     check(Buffer->GetStride() == 2 || Buffer->GetStride() == 4);
     check(GraphicsPipeline->Initializer.PrimitiveType == PT_TriangleList);

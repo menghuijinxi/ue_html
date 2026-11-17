@@ -496,6 +496,16 @@ globalThis.startWebEngineWorker = function({assets, module, record, failed, stag
     } else if (message.type === 'dom') {
       if (message.command === 'focus') canvas.focus({preventScroll: true});
       else if (message.command === 'exit-pointer-lock') document.exitPointerLock?.();
+      else if (message.command === 'cursor') {
+        globalThis.__webCursorState = {...globalThis.__webCursorState, ...message.cursor};
+        canvas.style.cursor = message.cursor.css;
+        if (message.cursor.visible && document.pointerLockElement === canvas)
+          document.exitPointerLock?.();
+      } else if (message.command === 'mouse-mode') {
+        globalThis.__webCursorState = {...globalThis.__webCursorState, highPrecision: message.enabled};
+        if (!message.enabled && document.pointerLockElement === canvas)
+          document.exitPointerLock?.();
+      }
     } else if (message.type === 'rpc') {
       const request = pending.get(message.id);
       if (!request) return;

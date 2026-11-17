@@ -60,6 +60,11 @@
 #include "RenderTargetPool.h"
 #include "UObject/UObjectIterator.h"
 #include "Blueprint/UserWidget.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Framework/Application/IInputProcessor.h"
+#include "Widgets/SViewport.h"
+#include "GenericPlatform/GenericApplication.h"
+#include "WebViewportLayout.h"
 #include "ProfilingDebugging/CpuProfilerTrace.h"
 
 #if UE_TRACE_ENABLED
@@ -98,6 +103,22 @@ bool WebNaniteResidentResources = false;
 uint32 WebNaniteRootPages = 1024;
 FString ProjectMap;
 TWeakObjectPtr<APlayerController> TemplateController;
+
+class FWebUIInputProcessor final : public IInputProcessor
+{
+public:
+    void Tick(float, FSlateApplication&, TSharedRef<ICursor>) override {}
+    bool HandleMouseButtonDownEvent(FSlateApplication& Slate, const FPointerEvent& Event) override
+    {
+        if (const auto* Controller = TemplateController.Get(); Controller && Controller->bShowMouseCursor)
+        {
+            // Browser movement and button events can arrive in one frame after
+            // pointer unlock. Update hover before SButton tests it on release.
+            Slate.ProcessMouseMoveEvent(Event);
+        }
+        return false;
+    }
+};
 TWeakObjectPtr<AStaticMeshActor> MaterialMotionSample;
 FVector MaterialMotionOrigin;
 // Diagnostic camera routes are disabled unless explicitly started by the benchmark RPC.
@@ -389,6 +410,28 @@ void EngineFrame(void*)
     }
     if (APlayerController* Controller = TemplateController.Get())
     {
+        if (FSlateApplication::IsInitialized() && GEngine && GEngine->GameViewport)
+        {
+            auto& Slate = FSlateApplication::Get();
+            const auto ViewportWidget = GEngine->GameViewport->GetGameViewportWidget();
+            static const bool InputRegistered = Slate.RegisterInputPreProcessor(MakeShared<FWebUIInputProcessor>());
+            static bool HadVisibleCursor = false;
+            // Browser pointer lock can complete after the Blueprint opens UI.
+            // Release only the game viewport's capture, preserving slider drags.
+            if (Controller->bShowMouseCursor && ViewportWidget.IsValid() && ViewportWidget->HasMouseCapture())
+            {
+                Slate.ReleaseAllPointerCapture();
+                Slate.GetPlatformApplication()->SetCapture(nullptr);
+                Slate.GetPlatformApplication()->SetHighPrecisionMouseMode(false, nullptr);
+            }
+            if (HadVisibleCursor && !Controller->bShowMouseCursor)
+            {
+                const auto Focused = Slate.GetKeyboardFocusedWidget();
+                if (!Focused.IsValid() || !Slate.FindWidgetWindow(Focused.ToSharedRef()).IsValid())
+                    Slate.SetAllUserFocusToGameViewport();
+            }
+            HadVisibleCursor = Controller->bShowMouseCursor;
+        }
         FVector Location;
         FRotator Rotation;
         Controller->GetPlayerViewPoint(Location, Rotation);
