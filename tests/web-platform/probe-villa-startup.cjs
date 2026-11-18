@@ -94,8 +94,9 @@ let context, server;
         '--disk-cache-dir=' + path.join(browserProfile, 'http-cache'),
         '--crash-dumps-dir=' + path.join(browserProfile, 'crashes')]
     });
-    for (const restored of context.pages()) await restored.close();
-    await context.newPage();
+    const page = context.pages()[0] || await context.newPage();
+    for (const restored of context.pages()) if (restored !== page) await restored.close();
+    await page.goto('about:blank');
     if (affinity) report.affinityCheck = require('./comparison-browser-affinity.cjs')(browserProfile, affinity, true);
     if (!plain) await context.addInitScript({content: recorder});
     if (folder) await context.route('**/' + profileName, async route => {
@@ -127,7 +128,6 @@ let context, server;
         (withoutSubgroups ? '(' + maskSubgroups.toString() + ')();\n' : '') + recorder + '\n' +
         (candidate ? fs.readFileSync(path.resolve(candidate), 'utf8') : await response.text())});
     });
-    const page = context.pages()[0];
     let run;
     page.on('console', message => {
       if (!run) return;
