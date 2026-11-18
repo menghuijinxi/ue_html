@@ -123,9 +123,8 @@ try {
     fs.copyFileSync(source, destination);
     assert.equal(audit(source).sha256, audit(destination).sha256);
   }
-  // A project-settings Cook must retain its staged rendering and input settings.
-  if (acceptedDefaults && !report.useProjectSettings) {
-    report.performanceProfile = applyAcceptedDefaults(output);
+  if (acceptedDefaults) {
+    report.performanceProfile = applyAcceptedDefaults(output, {preserveProjectSettings: report.useProjectSettings});
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
   }
   const extraFiles = [];

@@ -3,13 +3,13 @@ require('./project-output.cjs').initializeProjectOutput();
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const {audit} = require('./content-file-metadata.cjs');
 const {writeVersions} = require('./asset-versions.cjs');
-const {applyAcceptedDefaults} = require('./web-accepted-defaults.cjs');
+const {applyAcceptedDefaults, runtimeAssets} = require('./web-accepted-defaults.cjs');
 const {coreFiles, readPage, writePage, prepareRecordedPrewarm} = require('./web-pipeline-prewarm-package.cjs');
 const {releaseOptions, finalizeDesktopRelease, verifyDesktopRelease} = require('./web-release-defaults.cjs');
 const {resolveWebRenderSize} = require('./web-engine-host.js');
 const root = fs.mkdtempSync(path.join(__dirname, 'build/release-defaults-'));
 const resultsDirectory = path.join(root, 'results'); fs.mkdirSync(resultsDirectory);
-function fixture(name) {
+function fixture(name, applyDefaults = true) {
   const folder = path.join(root, name); fs.mkdirSync(folder);
   for (const file of coreFiles) fs.writeFileSync(path.join(folder, file),
     file === 'config-files.json' ? JSON.stringify([{
@@ -20,7 +20,7 @@ function fixture(name) {
     wasm: {sha256: audit(path.join(folder, coreFiles[0])).sha256}};
   fs.writeFileSync(path.join(folder, 'index.html'), 'const localRuntimeAssets = ' + JSON.stringify(assets) +
     ';\narguments: ["-webgpu","-WebProjectMap=/Game/Fixture","-WebPSOPrecacheTest"],\n');
-  applyAcceptedDefaults(folder);
+  if (applyDefaults) applyAcceptedDefaults(folder);
   return folder;
 }
 let captures = 0;
@@ -40,6 +40,20 @@ function capture(folder, withoutSubgroups = false) {
   return file;
 }
 const source = fixture('source');
+const project = fixture('project-settings', false);
+const projectConfigFile = path.join(project, 'config-files.json');
+const projectConfig = fs.readFileSync(projectConfigFile);
+const projectPage = readPage(project);
+projectPage.assets.gameFrameBridge = 'page-raf';
+projectPage.args.push('-WebGameLocalClock', '-WebFrameScheduler=1');
+writePage(project, projectPage);
+applyAcceptedDefaults(project, {preserveProjectSettings: true});
+const preparedProjectPage = readPage(project);
+assert(fs.readFileSync(projectConfigFile).equals(projectConfig), 'Preserve staged project INIs byte for byte');
+for (const [key, value] of Object.entries(runtimeAssets))
+  assert.equal(preparedProjectPage.assets[key], value, 'Project-settings package lost ' + key);
+assert(!preparedProjectPage.assets.gameFrameBridge, 'Remove the obsolete page bridge');
+assert.deepEqual(preparedProjectPage.args, ['-webgpu', '-WebProjectMap=/Game/Fixture']);
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.IndirectDrawReuse'], 2,
   'The corrected manual result restores accepted indirect reuse in ordinary releases');
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.VSMPageOptimization'], 3);

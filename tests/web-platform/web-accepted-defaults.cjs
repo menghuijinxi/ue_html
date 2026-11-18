@@ -6,6 +6,8 @@
 // The 2026-11-13 manual retest retracted the indirect-reuse regression.
 // Keep its accepted default; TSR large tiles remain opt-in pending acceptance.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const {assertProjectOutputTree}=require('./project-output.cjs');
+const {readPage,writePage,replaceFile}=require('./web-pipeline-prewarm-package.cjs');
 const profile='desktop-accepted-20261107';
 const settings=Object.freeze({
   't.MaxFPS':0,'r.VSync':0,'r.MotionBlurQuality':0,
@@ -25,19 +27,18 @@ const settings=Object.freeze({
 const runtimeAssets=Object.freeze({performanceProfile:profile,gameFrameClock:'page',pageFrameBudget:3,
   inputBridge:'direct-game-thread',pageFrameMaxFPS:0,localFrameBudget:0,localFrameBudgetMode:'submitted',
   reuseReplayScratch:true});
-function applyAcceptedDefaults(folder){
-  const htmlPath=path.join(folder,'index.html'),configPath=path.join(folder,'config-files.json');
-  let html=fs.readFileSync(htmlPath,'utf8');
-  const match=html.match(/const localRuntimeAssets = (\{[^\n]+\});/);assert(match);
-  const assets=JSON.parse(match[1]);assert(assets.threads&&assets.renderer==='desktop');
-  Object.assign(assets,runtimeAssets);
-  delete assets.gameFrameBridge;
-  html=html.replace(match[0],'const localRuntimeAssets = '+JSON.stringify(assets)+';');
-  const args=html.match(/arguments: (\[[^\n]+\]),/);assert(args);
-  assert(/^\[\s*(?:['"][a-zA-Z0-9_./=:-]+['"]\s*,?\s*)*\]$/.test(args[1]));
-  const values=[...args[1].matchAll(/['"]([a-zA-Z0-9_./=:-]+)['"]/g)].map(m=>m[1])
-    .filter(v=>!/^-(WebGameLocalClock|WebFrameScheduler=|WebOcclusionMode=|WebRHIWake=)/.test(v));
-  html=html.replace(args[0],'arguments: '+JSON.stringify(values.filter(v=>v!=='-WebPSOPrecacheTest'))+',');
+function applyAcceptedDefaults(folder, {preserveProjectSettings = false} = {}){
+  assertProjectOutputTree(folder);
+  const page=readPage(folder);
+  assert(page.assets.threads&&page.assets.renderer==='desktop');
+  Object.assign(page.assets,runtimeAssets);
+  delete page.assets.gameFrameBridge;
+  page.args=page.args.filter(v=>v!=='-WebPSOPrecacheTest' &&
+    !/^-(WebGameLocalClock|WebFrameScheduler=|WebOcclusionMode=|WebRHIWake=)/.test(v));
+  writePage(folder,page);
+  if(preserveProjectSettings) return profile;
+
+  const configPath=path.join(folder,'config-files.json');
   const configs=JSON.parse(fs.readFileSync(configPath));
   function append(file,text){
     let item=configs.find(c=>c.path===file);
@@ -50,8 +51,7 @@ function applyAcceptedDefaults(folder){
     Object.entries(settings).map(([k,v])=>k+'='+v).join('\n')+'\n');
   append('/Engine/Programs/UEWebEngine/Config/DefaultInput.ini',
     '\n[/Script/Engine.InputSettings]\nbEnableMouseSmoothing=False\n');
-  fs.writeFileSync(htmlPath,html);
-  fs.writeFileSync(configPath,JSON.stringify(configs));
+  replaceFile(configPath,JSON.stringify(configs));
   return profile;
 }
 module.exports={profile,settings,runtimeAssets,applyAcceptedDefaults};

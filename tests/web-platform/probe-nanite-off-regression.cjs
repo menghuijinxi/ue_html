@@ -12,6 +12,9 @@ const origin = option('origin') || 'http://127.0.0.1:8765';
 assert(/^http:\/\/127\.0\.0\.1:\d+$/.test(origin));
 const modes = (option('modes') || 'legacy,off,no-scene').split(',');
 const candidateFolder = option('folder');
+const gameFrameClocks = option('game-frame-clocks')?.split(',');
+assert(!gameFrameClocks || (gameFrameClocks.length === modes.length &&
+  gameFrameClocks.every(v => ['owner', 'page'].includes(v)) && modes.every(m => m === 'candidate')));
 const runtimeDefaultModes = option('runtime-defaults')?.split(',');
 assert(!runtimeDefaultModes || (runtimeDefaultModes.length === modes.length &&
   runtimeDefaultModes.every(v => ['off', 'on'].includes(v)) && modes.every(m => m === 'candidate')));
@@ -99,6 +102,7 @@ const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.strin
 if(occlusionBatches)report.boundary='Serial fresh Edge contexts, same package and enabled Nanite/hierarchy batching, native occlusion batch switch verified in both HZB stages. Normal advancing clocks; viewport submission intervals include all stalls. No CPU/GPU profiler or WebGPU method wrapper unless explicitly requested as diagnostic. First movement/turn route without warmup; actual camera samples retained.';
 if(baselineFolder)report.boundary+=' Explicit baseline-folder overrides the predefined baseline directories; mode names do not change its r.Nanite setting. Compare recorded package/configuration provenance.';
 if(profileNames)report.boundary+=' Explicit browser profiles may reuse persistent caches between runs.';
+if(gameFrameClocks)report.boundary+=' Explicit Game frame clock via the host URL parameter; page clock uses the default frame budget.';
 if(runtimeDefaultModes)report.boundary+=' Runtime-defaults comparison changes only browser scheduling, input delivery and replay scratch reuse in localRuntimeAssets. Runtime, cooked content, configuration, resolution and startup arguments remain identical.';
 if(backendDefaultModes)report.boundary+=' Explicit backend diagnostic changes only r.WebGPU.* and r.Web.* optimization controls in the intercepted configuration. Authored quality settings are retained. This is a diagnostic override, not a deliverable package.';
 if(hierarchyBatches)report.boundary='Serial fresh Edge contexts, same package, Nanite enabled, native hierarchy batch switch independently verified. '
@@ -307,7 +311,12 @@ ${marker}
           if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text())) run.errors.push(m.text());
         });
         const startupBegin = Date.now();
-        const response = await page.goto(`${origin}/build/${folder}/index.html`, {waitUntil: 'commit'});
+        const url = new URL(`/build/${folder}/index.html`, origin);
+        if (gameFrameClocks) {
+          run.gameFrameClock = gameFrameClocks[index];
+          url.searchParams.set('clock', run.gameFrameClock);
+        }
+        const response = await page.goto(url.href, {waitUntil: 'commit'});
         assert(response?.ok(), 'Package entry HTTP ' + response?.status());
         await page.waitForFunction(() => globalThis.__webEngineFailure ||
           (globalThis.__webEngineFrames >= 180 && globalThis.__webPSOPrecacheReady &&
@@ -422,6 +431,7 @@ ${marker}
           for (const s of [before, after]) {
             assert(!s.failure && !s.visualClock?.renderTimeFrozen && !s.visualClock?.materialTimeFrozen);
             assert.equal(s.view.outputWidth, width); assert.equal(s.view.outputHeight, height);
+            if (run.gameFrameClock) assert.equal(s.clock?.mode, run.gameFrameClock);
           }
           const result = statistics(times);
           result.rhiMs = (after.stages.rhiWorkMilliseconds - before.stages.rhiWorkMilliseconds) /
@@ -433,7 +443,7 @@ ${marker}
             phase.input = input;
             phase.page = await page.evaluate(() => ({visible: document.visibilityState === 'visible',
               focused: document.hasFocus(), pointerLock: document.pointerLockElement?.id ?? null,
-              dpr: devicePixelRatio}));
+              dpr: devicePixelRatio, inputMode: globalThis.__webInputBridge?.mode}));
           }
           if (walk) {
             phase.frameColumns = ['rhiFrame','time','gameFrame','rhiTotalMs','lastGameMs','renderTotalMs','renderCommands'];
