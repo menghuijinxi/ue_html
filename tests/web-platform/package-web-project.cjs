@@ -28,6 +28,7 @@ const outputFolder = process.argv.find(value => value.startsWith('--output-folde
 assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(outputFolder));
 const output = path.join(__dirname, 'build', outputFolder);
 const startupOptions = releaseOptions();
+const disableMouseSmoothing = process.argv.includes('--disable-mouse-smoothing');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 const valid = item => item?.file && fs.existsSync(item.file) && audit(item.file).sha256 === item.sha256;
 const template = path.join(__dirname, 'web-default-template.html');
@@ -42,6 +43,7 @@ try {
   const acceptedDefaults = threads && !trace && !process.argv.includes('--legacy-defaults');
   assert(!Object.values(startupOptions).some(Boolean) || acceptedDefaults,
     'Startup options require an ordinary desktop threaded package');
+  assert(!disableMouseSmoothing || acceptedDefaults, 'Mouse input override requires an ordinary desktop threaded package');
   const buildOption = process.argv.find(value => value.startsWith('--build-report='))?.slice(15);
   const buildFile = buildOption ? path.resolve(buildOption) : path.join(directory, `web-engine-full${trace ? '-thread-trace' : threads ? '-thread' : ''}-build-results.json`);
   const stageFile = path.join(directory, `${stagePrefix}-stage-results.json`);
@@ -124,9 +126,10 @@ try {
     assert.equal(audit(source).sha256, audit(destination).sha256);
   }
   if (acceptedDefaults) {
-    report.performanceProfile = applyAcceptedDefaults(output, {preserveProjectSettings: report.useProjectSettings});
+    report.performanceProfile = applyAcceptedDefaults(output, {preserveProjectSettings: report.useProjectSettings, disableMouseSmoothing});
     report.sourceFiles.push(audit(require.resolve('./web-accepted-defaults.cjs')));
   }
+  if (disableMouseSmoothing) report.mouseSmoothing = false;
   const extraFiles = [];
   if (acceptedDefaults) {
     report.releaseDefaults = finalizeDesktopRelease(output, {...startupOptions, optimizationBuild:build});
@@ -137,7 +140,7 @@ try {
       'web-pipeline-prewarm.js', 'probe-villa-startup.cjs', 'web-startup-profile.js'].map(name =>
       audit(path.join(__dirname, name))));
   }
-  if (report.useProjectSettings) {
+  if (report.useProjectSettings && !disableMouseSmoothing) {
     assert.equal(audit(path.join(output, 'config-files.json')).sha256, stage.configBundle.sha256,
       'Packaging must preserve the project-settings configuration from staging');
     report.projectSettingsPreserved = true;
@@ -151,6 +154,7 @@ try {
   report.compressHDRCubemaps = cook.compressHDRCubemaps || false;
   report.boundary = (report.useProjectSettings ? 'Project map and gameplay with the original project rendering settings. ' :
     'Project map and gameplay with the explicitly recorded Web renderer profile. ') +
+    (disableMouseSmoothing ? 'The packaged input configuration disables mouse smoothing. ' : '') +
     'Packaging success does not prove browser compatibility, visual parity, performance or phone support.';
   report.pass = true;
 } catch (error) {

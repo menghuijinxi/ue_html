@@ -54,6 +54,13 @@ for (const [key, value] of Object.entries(runtimeAssets))
   assert.equal(preparedProjectPage.assets[key], value, 'Project-settings package lost ' + key);
 assert(!preparedProjectPage.assets.gameFrameBridge, 'Remove the obsolete page bridge');
 assert.deepEqual(preparedProjectPage.args, ['-webgpu', '-WebProjectMap=/Game/Fixture']);
+applyAcceptedDefaults(project, {preserveProjectSettings: true, disableMouseSmoothing: true});
+const mouseConfig = JSON.parse(fs.readFileSync(projectConfigFile));
+const inputPath = '/Engine/Programs/UEWebEngine/Config/DefaultInput.ini';
+const inputConfig = mouseConfig.find(item => item.path === inputPath);
+assert(Buffer.from(inputConfig.data, 'base64').toString().endsWith('\nbEnableMouseSmoothing=False\n'));
+assert.deepEqual(mouseConfig.filter(item => item.path !== inputPath), JSON.parse(projectConfig),
+  'The desktop mouse override can only change the packaged input configuration');
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.IndirectDrawReuse'], 2,
   'The corrected manual result restores accepted indirect reuse in ordinary releases');
 assert.equal(require('./web-accepted-defaults.cjs').settings['r.WebGPU.VSMPageOptimization'], 3);

@@ -52,6 +52,22 @@ assert(!materialPrecaches || (materialPrecaches.length === modes.length && mater
 assert(!nanites || ![packBatches,microBatches,fixedMerges,programmableMerges,shadeBinnings,hierarchyBatches,occlusionBatches,materialPrecaches].some(Boolean),'Isolate the Nanite switch');
 const tour = process.argv.includes('--tour');
 const interactive = process.argv.includes('--interactive');
+const motionBlurModes = option('motion-blur')?.split(',');
+const mouseSmoothingModes = option('mouse-smoothing')?.split(',');
+const inputPhases = [
+  ['idle', false, false],
+  ['walk-turn-first', true, true],
+  ['walk-turn-repeat', true, true],
+  ['turn-only', false, true],
+  ['walk-only', true, false],
+];
+const selectedPhases = option('interactive-phases')?.split(',');
+for (const settings of [motionBlurModes, mouseSmoothingModes]) {
+  assert(!settings || (interactive && settings.length === modes.length &&
+    settings.every((setting, index) => setting === 'shipped' || (setting === 'off' && modes[index] === 'candidate'))));
+}
+assert(!selectedPhases || (interactive && new Set(selectedPhases).size === selectedPhases.length &&
+  selectedPhases.every(name => inputPhases.some(phase => phase[0] === name))), 'Select valid interactive phases');
 const walk = process.argv.includes('--walk') || tour || interactive, headed = process.argv.includes('--headed');
 assert(!interactive || (headed && !tour), '--interactive needs a headed browser and its own input route');
 const browser = option('browser') || 'msedge';
@@ -99,6 +115,12 @@ const report = {date: new Date().toISOString(), pass: false, source: audit(__fil
       + 'Identical requested inputs do not guarantee identical world trajectories; sampled camera coordinates are retained.' :
       'Mouse-only DOM input follows the same absolute trajectory; actual camera state and event count are retained.')};
 const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
+if (selectedPhases) {
+  report.selectedPhases = selectedPhases;
+  report.boundary += ' Selected interactive windows only, for diagnosis.';
+}
+if ([motionBlurModes, mouseSmoothingModes].some(modes => modes?.includes('off')))
+  report.boundary += ' Explicit per-run motion blur and mouse smoothing overrides are diagnostic.';
 if(occlusionBatches)report.boundary='Serial fresh Edge contexts, same package and enabled Nanite/hierarchy batching, native occlusion batch switch verified in both HZB stages. Normal advancing clocks; viewport submission intervals include all stalls. No CPU/GPU profiler or WebGPU method wrapper unless explicitly requested as diagnostic. First movement/turn route without warmup; actual camera samples retained.';
 if(baselineFolder)report.boundary+=' Explicit baseline-folder overrides the predefined baseline directories; mode names do not change its r.Nanite setting. Compare recorded package/configuration provenance.';
 if(profileNames)report.boundary+=' Explicit browser profiles may reuse persistent caches between runs.';
@@ -229,6 +251,10 @@ async function browserMotion(page, box, seconds, {translate, rotate}) {
     for (const [index, mode] of modes.entries()) {
       const folder = mode === 'candidate' ? candidateFolder : baselineFolder || (mode === 'legacy' ? 'villa-default-20261107' : 'villa-nanite-off-20261111');
       const run = {index, mode, folder, errors: [], phases: [], assets: []}; report.runs.push(run);
+      const motionBlur = motionBlurModes?.[index];
+      const mouseSmoothing = mouseSmoothingModes?.[index];
+      if (motionBlur) run.motionBlur = {mode: motionBlur, loggedQuality: []};
+      if (mouseSmoothing) run.mouseSmoothing = {mode: mouseSmoothing};
       for (const file of ['index.html', 'asset-versions.json', 'config-files.json'])
         run.assets.push(audit(path.join(__dirname, 'build', folder, file)));
       run.browserProfile = profileNames?.[index] || `${tag}-${index}`;
@@ -269,19 +295,22 @@ async function browserMotion(page, box, seconds, {translate, rotate}) {
         await context.route('**/web-engine-worker.js?*', async route => {
           const response = await route.fetch();
           let body = await response.text();
+          const iniSettings = {};
           if (backendDefaultModes) {
             const settings = backendDefaultModes[index] !== 'off' ? Object.fromEntries(
               Object.entries(require('./web-accepted-defaults.cjs').settings).filter(([key]) => /^r\.Web(?:GPU)?\./.test(key))
                 .map(([key, value]) => [key, backendDefaultModes[index] === 'disabled' ? 0 : value])) : {};
             run.backendDefaults = {mode: backendDefaultModes[index], settings};
-            if (Object.keys(settings).length) {
-              const marker = "        removeRunDependency('worker-content');";
-              assert.equal(body.split(marker).length, 2);
-              const ini = '\n[SystemSettings]\n' + Object.entries(settings).map(([key, value]) => key + '=' + value).join('\n') + '\n';
-              // Explicit diagnostic only, after the source configuration passed integrity checks.
-              body = body.replace(marker, "        const backendIni = '/Engine/Platforms/Web/Config/WebEngine.ini';\n" +
-                '        FS.writeFile(backendIni, FS.readFile(backendIni, {encoding:"utf8"}) + ' + JSON.stringify(ini) + ');\n' + marker);
-            }
+            Object.assign(iniSettings, settings);
+          }
+          if (motionBlur === 'off') iniSettings['r.MotionBlurQuality'] = 0;
+          if (Object.keys(iniSettings).length) {
+            const marker = "        removeRunDependency('worker-content');";
+            assert.equal(body.split(marker).length, 2);
+            const ini = '\n[SystemSettings]\n' + Object.entries(iniSettings).map(([key, value]) => key + '=' + value).join('\n') + '\n';
+            // Override the virtual INI after integrity checks on the packaged configuration.
+            body = body.replace(marker, "        const diagnosticIni = '/Engine/Platforms/Web/Config/WebEngine.ini';\n" +
+              '        FS.writeFile(diagnosticIni, FS.readFile(diagnosticIni, {encoding:"utf8"}) + ' + JSON.stringify(ini) + ');\n' + marker);
           }
           if (gpuProbe) {
             const marker = '  frameScheduler.queue.onSubmittedWorkDone().then(() => {';
@@ -308,6 +337,8 @@ ${marker}
         page.on('crash', () => run.errors.push('Page crashed'));
         page.on('console', m => {
           log.write(m.text() + '\n');
+          const blurQuality = motionBlur && m.text().match(/Set CVar \[\[r\.MotionBlurQuality:(\d+)\]\]/);
+          if (blurQuality) run.motionBlur.loggedQuality.push(Number(blurQuality[1]));
           if (/GPU validation:|Fatal error:|Assertion failed:|DeviceLost/.test(m.text())) run.errors.push(m.text());
         });
         const startupBegin = Date.now();
@@ -325,6 +356,14 @@ ${marker}
         assert(!startupFailure, startupFailure);
         run.startupReadyMs = Date.now() - startupBegin;
         const owner = page.workers().find(w => w.url().includes('web-engine-worker.js')); assert(owner);
+        if (motionBlur === 'off') assert.equal(run.motionBlur.loggedQuality.at(-1), 0, 'Motion blur override did not take effect');
+        if (mouseSmoothing) {
+          const inputMode = await page.evaluate(value => __webEngineRPC('WebMotionBenchmarkControl', 7, value),
+            mouseSmoothing === 'off' ? 1 : 0);
+          assert(inputMode === 1 || inputMode === 2, 'Mouse smoothing readback failed');
+          run.mouseSmoothing.enabled = inputMode === 2;
+          if (mouseSmoothing === 'off') assert(!run.mouseSmoothing.enabled, 'Mouse smoothing override did not take effect');
+        }
         const idleStatus = async () => {
           const previous = await owner.evaluate(() => globalThis.__webNaniteIdleStatus?.sequence || 0);
           assert.equal(await page.evaluate(() => __webEngineRPC('WebNaniteIdleStatusTest')), 1);
@@ -527,13 +566,14 @@ ${marker}
             assert(cameraDistance(camera, initial) < 5 && yawDistance(camera, initial) < 1 &&
               Math.abs(camera.pitch - initial.pitch) < 1, 'Could not restore the same starting camera');
           };
-          await measure('idle', () => page.waitForTimeout(seconds * 1000));
-          for (const [name, translate, rotate] of [
-            ['walk-turn-first', true, true], ['walk-turn-repeat', true, true],
-            ['turn-only', false, true], ['walk-only', true, false],
-          ]) {
-            if (name !== 'walk-turn-first') await reset();
-            await measure(name, () => browserMotion(page, box, seconds, {translate, rotate}));
+          for (const [name, translate, rotate] of inputPhases) {
+            if (selectedPhases && !selectedPhases.includes(name)) continue;
+            if (name === 'idle') {
+              await measure(name, () => page.waitForTimeout(seconds * 1000));
+            } else {
+              if (name !== 'walk-turn-first') await reset();
+              await measure(name, () => browserMotion(page, box, seconds, {translate, rotate}));
+            }
           }
           run.environmentAfter = await require('./sample-test-environment.cjs')(page);
           await page.screenshot({path:path.join(output, index + '-' + mode + '.png')});

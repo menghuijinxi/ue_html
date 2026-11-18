@@ -27,7 +27,7 @@ const settings=Object.freeze({
 const runtimeAssets=Object.freeze({performanceProfile:profile,gameFrameClock:'page',pageFrameBudget:3,
   inputBridge:'direct-game-thread',pageFrameMaxFPS:0,localFrameBudget:0,localFrameBudgetMode:'submitted',
   reuseReplayScratch:true});
-function applyAcceptedDefaults(folder, {preserveProjectSettings = false} = {}){
+function applyAcceptedDefaults(folder, {preserveProjectSettings = false, disableMouseSmoothing = false} = {}){
   assertProjectOutputTree(folder);
   const page=readPage(folder);
   assert(page.assets.threads&&page.assets.renderer==='desktop');
@@ -36,7 +36,7 @@ function applyAcceptedDefaults(folder, {preserveProjectSettings = false} = {}){
   page.args=page.args.filter(v=>v!=='-WebPSOPrecacheTest' &&
     !/^-(WebGameLocalClock|WebFrameScheduler=|WebOcclusionMode=|WebRHIWake=)/.test(v));
   writePage(folder,page);
-  if(preserveProjectSettings) return profile;
+  if(preserveProjectSettings && !disableMouseSmoothing) return profile;
 
   const configPath=path.join(folder,'config-files.json');
   const configs=JSON.parse(fs.readFileSync(configPath));
@@ -47,8 +47,10 @@ function applyAcceptedDefaults(folder, {preserveProjectSettings = false} = {}){
     item.data=Buffer.from(value).toString('base64');
     item.sha256=crypto.createHash('sha256').update(value).digest('hex');
   }
-  append('/Engine/Platforms/Web/Config/WebEngine.ini','\n[SystemSettings]\n'+
-    Object.entries(settings).map(([k,v])=>k+'='+v).join('\n')+'\n');
+  if (!preserveProjectSettings) {
+    append('/Engine/Platforms/Web/Config/WebEngine.ini','\n[SystemSettings]\n'+
+      Object.entries(settings).map(([k,v])=>k+'='+v).join('\n')+'\n');
+  }
   append('/Engine/Programs/UEWebEngine/Config/DefaultInput.ini',
     '\n[/Script/Engine.InputSettings]\nbEnableMouseSmoothing=False\n');
   replaceFile(configPath,JSON.stringify(configs));
