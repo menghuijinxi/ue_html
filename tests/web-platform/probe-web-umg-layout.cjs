@@ -9,6 +9,8 @@ const {PNG} = require('pngjs');
 const option = name => process.argv.find(value => value.startsWith('--' + name + '='))?.slice(name.length + 3);
 const folder = option('folder');
 const tag = option('report') || 'umg-layout';
+const browserProfile = option('profile') || tag;
+const existingOrigin = option('origin');
 const adaptive = process.argv.includes('--adaptive');
 const gpuLayout = process.argv.includes('--gpu-layout');
 const cabinet = process.argv.includes('--cabinet');
@@ -17,11 +19,13 @@ const dpr = Number(option('dpr') || 1.5);
 assert(typeof folder === 'string' && /^[a-z0-9-]+(?:\/[a-z0-9-]+)*$/.test(folder),
   'Specify --folder=<package directory relative to build/>');
 assert(/^[a-z0-9-]+$/.test(tag));
+assert(/^[a-z0-9-]+$/.test(browserProfile));
+assert(!existingOrigin || /^http:\/\/127\.0\.0\.1:\d+$/.test(existingOrigin));
 assert([1, 1.25, 1.5, 2].includes(dpr));
 const output = assertProjectOutput(path.join(__dirname, 'results', tag + '.json'));
-const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles', tag));
+const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles', browserProfile));
 const source = readPage(path.join(__dirname, 'build', folder));
-const report = {date: new Date().toISOString(), pass: false, folder, adaptive, cabinet, rapidConfirm, dpr,
+const report = {date: new Date().toISOString(), pass: false, folder, browserProfile, adaptive, cabinet, rapidConfirm, dpr,
   sources: [__filename, 'diagnostics/web-slate-layout-observer.js', 'web-engine-worker.js',
     'web-engine-host.js', 'web-default-template.html',
     '../ue-web-smoke/Source/UEWebEngine/Private/UEWebEngine.cpp',
@@ -42,9 +46,13 @@ const watchdog = setTimeout(() => {
 
 (async () => {
   try {
-    server = require('./serve.cjs');
-    await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-    const origin = 'http://127.0.0.1:' + server.address().port;
+    let origin = existingOrigin;
+    if (!origin) {
+      server = require('./serve.cjs');
+      await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+      origin = 'http://127.0.0.1:' + server.address().port;
+    }
+    report.origin = origin;
     context = await chromium.launchPersistentContext(profile, {
       channel: 'msedge', headless: true, viewport: {width: 1280, height: 800}, deviceScaleFactor: dpr,
       downloadsPath: assertProjectOutput(path.join(profile, 'downloads')),

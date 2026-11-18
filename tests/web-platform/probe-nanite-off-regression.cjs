@@ -73,6 +73,9 @@ assert(Number.isFinite(seconds) && seconds >= 16 && seconds <= 180);
 assert(!tour || seconds <= 60);
 const tag = option('tag') || 'nanite-off-regression-20261111';
 assert(/^[a-z0-9-]+$/.test(tag));
+const profileNames = option('profiles')?.split(',');
+assert(!profileNames || (profileNames.length === modes.length &&
+  profileNames.every(name => /^[a-z0-9-]+$/.test(name))), 'Specify one browser profile name per run');
 initializeProjectOutput();
 const output = assertProjectOutputTree(path.join(__dirname, 'results', tag));
 assert(!fs.existsSync(path.join(output, 'report.json')), 'Use a new result tag');
@@ -91,6 +94,7 @@ const report = {date: new Date().toISOString(), pass: false, source: audit(__fil
 const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
 if(occlusionBatches)report.boundary='Serial fresh Edge contexts, same package and enabled Nanite/hierarchy batching, native occlusion batch switch verified in both HZB stages. Normal advancing clocks; viewport submission intervals include all stalls. No CPU/GPU profiler or WebGPU method wrapper unless explicitly requested as diagnostic. First movement/turn route without warmup; actual camera samples retained.';
 if(baselineFolder)report.boundary+=' Explicit baseline-folder overrides the predefined baseline directories; mode names do not change its r.Nanite setting. Compare recorded package/configuration provenance.';
+if(profileNames)report.boundary+=' Explicit browser profiles may reuse persistent caches between runs.';
 if(runtimeDefaultModes)report.boundary+=' Runtime-defaults comparison changes only browser scheduling, input delivery and replay scratch reuse in localRuntimeAssets. Runtime, cooked content, configuration, resolution and startup arguments remain identical.';
 if(backendDefaultModes)report.boundary+=' Explicit backend diagnostic changes only r.WebGPU.* and r.Web.* optimization controls in the intercepted configuration. Authored quality settings are retained. This is a diagnostic override, not a deliverable package.';
 if(hierarchyBatches)report.boundary='Serial fresh Edge contexts, same package, Nanite enabled, native hierarchy batch switch independently verified. '
@@ -179,7 +183,8 @@ function statistics(times) {
       const run = {index, mode, folder, errors: [], phases: [], assets: []}; report.runs.push(run);
       for (const file of ['index.html', 'asset-versions.json', 'config-files.json'])
         run.assets.push(audit(path.join(__dirname, 'build', folder, file)));
-      const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles', `${tag}-${index}`));
+      run.browserProfile = profileNames?.[index] || `${tag}-${index}`;
+      const profile = assertProjectOutputTree(path.join(__dirname, 'build/browser-profiles', run.browserProfile));
       const context = await chromium.launchPersistentContext(profile, {
         channel: browser, headless: !headed, viewport: {width, height}, deviceScaleFactor: 1,
         downloadsPath: path.join(profile, 'downloads'),
